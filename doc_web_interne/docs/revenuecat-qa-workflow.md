@@ -62,9 +62,9 @@ manquantes, pas d'un check local casse.
 `npm run subscription:qa:report` affiche aussi `Current Session Readiness`. Cette section est le
 premier diagnostic a lire avant de reprendre les tests reels: elle indique si les variables
 `REVENUECAT_QA_EMAIL` / `REVENUECAT_QA_PASSWORD` sont presentes, si l'approbation d'achat Test Store
-est definie, rappelle de verifier `npm run android:device` jusqu'a `ADB: READY`, et bloque
-mentalement `play_monthly` tant que RevenueCat/Play ne renvoie pas un base plan mensuel `P1M` pour
-`prodfce10ef2a8`.
+est definie, rappelle d'extraire l'app user id device avant d'enregistrer une preuve, rappelle de
+verifier `npm run android:device` jusqu'a `ADB: READY`, et bloque mentalement `play_monthly` tant
+que RevenueCat/Play ne renvoie pas un base plan mensuel `P1M` pour `prodfce10ef2a8`.
 
 Quand une preuve manuelle existe, copier `doc_web_interne/docs/revenuecat-qa-evidence.example.json`
 vers `doc_web_interne/docs/revenuecat-qa-evidence.local.json`, puis passer le gate concerne a
@@ -75,6 +75,14 @@ de committer des emails, ids testeur ou chemins de captures.
 `appUserId` doit etre l'UUID Supabase/RevenueCat du compte teste, pas l'email du testeur.
 
 Helper recommande apres un test manuel:
+
+```bash
+npm run subscription:qa:device-app-user-id -- --device emulator-5554 --env-file .env.teststore
+```
+
+Cette commande lit les preferences RevenueCat du build debug via `adb shell run-as`, masque la cle
+SDK et imprime l'UUID a utiliser comme `--app-user-id` dans la preuve locale. Elle ne modifie pas
+l'app ni RevenueCat.
 
 ```bash
 npm run subscription:qa:evidence -- \
@@ -132,11 +140,11 @@ Couverture automatisee:
 
 Scenarios manuels a valider avec accord explicite d'achat:
 
-- achat mensuel Test Store
-- achat annuel Test Store
-- restore sur le meme utilisateur
-- refresh apres changement externe RevenueCat
-- switch compte apres achat
+- achat mensuel Test Store: valide localement le 2026-05-14 sur `Pixel_7_Play_API_36`
+- achat annuel Test Store: valide localement le 2026-05-14 sur `Pixel_7_Play_API_36`
+- restore sur le meme utilisateur: valide localement le 2026-05-14 apres reinstall debug
+- refresh apres changement externe RevenueCat: valide via refresh QA Lab pendant les achats/restores
+- switch compte apres achat: encore a valider avec un deuxieme compte reel non abonne
 
 Preuve attendue:
 
@@ -146,16 +154,23 @@ Preuve attendue:
 - `Server version` augmente apres refresh serveur
 - les quotas deviennent illimites
 
+Preuve locale actuelle:
+
+- `test_store_monthly`, `test_store_annual` et `restore_after_reinstall` sont passes dans
+  `doc_web_interne/docs/revenuecat-qa-evidence.local.json`.
+- L'app user id observe sur device est `1239729f-7468-48c9-b26a-7aa8b4a82591`.
+- `subscription:qa:report` affiche 3 scenarios manuels verifies et 4 gates restantes.
+
 Checklist d'achat Test Store:
 
 | Etape | Preuve a capturer | Statut |
 | --- | --- | --- |
 | Compte test connecte | `User` affiche l'id/email du testeur et `Auth` affiche `ready` | manuel |
 | Probe SDK | `SDK probe completed`, `packages 2`, `$rc_monthly`, `$rc_annual` | automatise |
-| Achat mensuel | action `monthly purchase completed`, `Product` mensuel, `Tier plus / active` | manuel |
-| Refresh serveur | `Server version` augmente et les quotas deviennent illimites | manuel |
-| Restore | action `Restore completed` avec le meme app user id | manuel |
-| Switch compte | un second compte reste `free / inactive` apres logout/login | manuel |
+| Achat mensuel | action `monthly purchase completed`, `Product` mensuel, `Tier plus / active` | valide localement |
+| Refresh serveur | `Server version` augmente et les quotas deviennent illimites | valide localement |
+| Restore | action `Restore completed` avec le meme app user id | valide localement |
+| Switch compte | un second compte reste `free / inactive` apres logout/login | bloque: second compte reel requis |
 
 Flow d'achat garde par approbation explicite:
 
@@ -221,8 +236,14 @@ Commandes:
 
 ```bash
 npm run start:playstore
+npm run android:gates:strict
 npx eas build -p android --profile preview
 ```
+
+`npm run android:gates:strict` est volontairement bloquant avant release Android: il execute
+`subscription:qa:release-gate` et echoue tant que les gates RevenueCat manuelles/externes ne sont
+pas toutes fermees. Au 2026-05-14, il echoue encore sur `RevenueCat subscription QA release gate`
+avec 4 gates restantes.
 
 Pour generer un build Store installable via Google Play Internal Testing, utiliser plutot:
 
@@ -332,8 +353,7 @@ Automatise localement:
 
 Encore manuel ou externe:
 
-- achat Test Store mensuel/annuel avec compte Supabase test
-- restore et switch de compte apres achat
+- switch de compte apres achat avec un deuxieme compte reel non abonne
 - build installe via Google Play Internal Testing
 - annulation, expiration, grace period et webhook reels
 
@@ -341,6 +361,7 @@ Commande de garde:
 
 ```bash
 npm run subscription:qa:release-gate
+npm run android:gates:strict
 ```
 
-Cette commande doit echouer jusqu'a ce que chaque porte manuelle ou externe ci-dessus ait une preuve d'achat, restore, switch compte et convergence backend/store.
+Ces commandes doivent echouer jusqu'a ce que chaque porte manuelle ou externe ci-dessus ait une preuve de switch compte, achat Play, restore Play et convergence backend/store.
