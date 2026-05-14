@@ -1,0 +1,69 @@
+appId: com.tanuki75.noctalia
+---
+# Manual guarded Test Store restore flow using native Google Sign-In.
+# Run after a completed Test Store purchase and app reinstall/reset.
+
+- runFlow: subflows/open-mock-app.yml
+- openLink: noctalia://settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes"
+    timeout: 30000
+
+- swipe:
+    direction: DOWN
+- swipe:
+    direction: DOWN
+- runFlow:
+    when:
+      notVisible:
+        id: text.auth.email
+    commands:
+      - scrollUntilVisible:
+          element:
+            text: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
+          direction: DOWN
+          visibilityPercentage: 70
+          timeout: 30000
+      - tapOn:
+          text: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
+      - tapOn:
+          text: ".*${QA_EMAIL}.*"
+          optional: true
+      - tapOn:
+          text: "Continue|Continuer|I agree|J'accepte|Allow|Autoriser|Accept|Accepter"
+          optional: true
+- extendedWaitUntil:
+    visible:
+      id: text.auth.email
+    timeout: 60000
+
+- scrollUntilVisible:
+    element:
+      text: "Subscription QA Lab"
+    direction: DOWN
+    visibilityPercentage: 40
+    timeout: 30000
+- assertVisible: "RevenueCat Test Store"
+- scrollUntilVisible:
+    element:
+      text: "Restore"
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- tapOn: "Restore"
+- extendedWaitUntil:
+    visible: "Restore completed"
+    timeout: 120000
+- assertVisible: ".*plus / active.*"
+
+- scrollUntilVisible:
+    element:
+      text: "Refresh"
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- tapOn: "Refresh"
+- extendedWaitUntil:
+    visible: "Refresh completed"
+    timeout: 60000
+- assertVisible: ".*plus / active.*"
