@@ -171,6 +171,13 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Offering packages and prices load without purchase');
     expect(result.stdout).toContain('maestro/subscription-teststore-restore-google-manual.yml plus structured evidence');
     expect(result.stdout).toContain('run test:e2e:subscription-teststore:account-switch with a second real email account');
+    expect(result.stdout).toContain('## Evidence Commands');
+    expect(result.stdout).toContain(
+      'npm run subscription:qa:evidence -- --gate account_switch --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --evidence "paid account remains plus while second account remains free / inactive after logout and login"'
+    );
+    expect(result.stdout).toContain(
+      'npm run subscription:qa:evidence -- --gate play_monthly --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --evidence "Play monthly purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"'
+    );
     expect(result.stdout).toContain('Full RevenueCat workflow is not complete');
   });
 

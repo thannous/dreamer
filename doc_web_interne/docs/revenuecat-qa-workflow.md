@@ -139,6 +139,8 @@ doit valoir `com.android.vending`, ou la preuve doit contenir explicitement `ins
 
 Si un fichier de preuve locale existe mais ne passe pas la gate, `npm run subscription:qa:report`
 affiche une section `Evidence Diagnostics` avec le premier champ a corriger pour chaque scenario.
+Quand des gates restent ouvertes, le rapport affiche aussi `Evidence Commands` avec les commandes
+`npm run subscription:qa:evidence -- ...` pre-remplies pour `account_switch` et les gates Play.
 Si le fichier JSON est mal forme, le rapport reste lisible et bloque sur `Local evidence file parses`.
 
 ## 2. RevenueCat Test Store
