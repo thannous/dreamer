@@ -185,6 +185,7 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Play QA device preflight');
     expect(result.stdout).toContain('npm run android:play-qa-device:wait while connecting one Play-installed tester phone');
     expect(result.stdout).toContain('add -- --device <adb-id> when multiple devices are ready');
+    expect(result.stdout).toContain('npm run android:play-qa-device:wait -- --device <adb-id> --require-ui-ready');
     expect(result.stdout).toContain('after the device is ready');
     expect(result.stdout).toContain('Google Play monthly base plan snapshot');
     expect(result.stdout).toContain('Google Play annual base plan snapshot');
