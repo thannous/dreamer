@@ -27,6 +27,7 @@ describe('subscription QA local verifier', () => {
         'Test Store signed-in account env',
         'Account switch second account env',
         'Device app user id extraction',
+        'Google Play monthly base plan snapshot',
         'Play monthly base plan snapshot',
         'expected P1M',
       ])
@@ -35,10 +36,15 @@ describe('subscription QA local verifier', () => {
 
   it('includes the Play store state updater in local verification', () => {
     expect(commands.map((command) => command.label)).toEqual(
-      expect.arrayContaining(['syntax: Play store state updater', 'unit: subscription QA scripts'])
+      expect.arrayContaining([
+        'syntax: Play store state updater',
+        'syntax: Google Play subscription state updater',
+        'unit: subscription QA scripts',
+      ])
     );
     const unitCommand = commands.find((command) => command.label === 'unit: subscription QA scripts');
     expect(unitCommand.args).toContain('scripts/update-revenuecat-play-store-state.test.js');
+    expect(unitCommand.args).toContain('scripts/update-google-play-subscription-state.test.js');
   });
 
   it('returns a non-zero exit when a command expected to fail exits successfully', () => {
