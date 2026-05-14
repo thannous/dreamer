@@ -192,7 +192,8 @@ describe('android release gate preflight', () => {
         (check) =>
           check.status === 'fail' &&
           check.title === 'RevenueCat subscription QA release gate' &&
-          check.details.includes('4 manual or external gate(s) still require evidence')
+          check.details.includes('4 manual or external gate(s) still require evidence') &&
+          check.remediation.includes('remaining evidence gates listed in the report')
       )
     ).toBe(true);
   });
