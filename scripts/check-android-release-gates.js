@@ -9,7 +9,10 @@ const {
   getMaestroCandidates,
   resolveCommand,
 } = require('./android-tooling');
-const { detectAdbMdnsServices } = require('./check-android-adb-device');
+const {
+  detectAdbMdnsServices,
+  detectUsbAndroidDevice,
+} = require('./check-android-adb-device');
 
 const ROOT = path.resolve(__dirname, '..');
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
@@ -68,7 +71,7 @@ function listAdbDevices(spawn = spawnSync, adbCommand = 'adb') {
   return { ok: true, devices, message: `${devices.length} Android device(s) ready` };
 }
 
-function getAdbDeviceVisibilityCheck(spawn = spawnSync, adbCommand = 'adb') {
+function getAdbDeviceVisibilityCheck(spawn = spawnSync, adbCommand = 'adb', platform = process.platform) {
   const devices = listAdbDevices(spawn, adbCommand);
   if (devices.ok && devices.devices.length > 0) {
     return {
@@ -80,7 +83,11 @@ function getAdbDeviceVisibilityCheck(spawn = spawnSync, adbCommand = 'adb') {
   }
 
   const mdns = detectAdbMdnsServices(spawn, adbCommand);
+  const usb = detectUsbAndroidDevice(spawn, platform);
   const baseDetails = devices.ok ? devices.message : devices.message || 'Unable to list adb devices.';
+  const usbDetail = usb.supported
+    ? `USB ${usb.visible ? 'visible' : 'not visible'}: ${usb.message}`
+    : null;
   if (mdns.supported && mdns.services.length > 0) {
     const serviceList = mdns.services
       .map((service) => service.address || service.instance)
@@ -88,17 +95,18 @@ function getAdbDeviceVisibilityCheck(spawn = spawnSync, adbCommand = 'adb') {
       .join(', ');
     return {
       status: 'blocked',
-      details: `${baseDetails}; wireless debugging is visible (${serviceList}).`,
+      details: [baseDetails, usbDetail, `wireless debugging is visible (${serviceList}).`]
+        .filter(Boolean)
+        .join('; '),
       remediation: mdns.next,
     };
   }
 
   return {
     status: 'blocked',
-    details:
-      mdns.supported && mdns.message
-        ? `${baseDetails}; ${mdns.message}`
-        : baseDetails,
+    details: [baseDetails, usbDetail, mdns.supported && mdns.message ? mdns.message : null]
+      .filter(Boolean)
+      .join('; '),
     remediation:
       'Start an Android emulator for local checks, connect/unlock a physical Android device for Play QA, or enable Wireless debugging on the phone and keep the pairing screen open.',
   };
@@ -212,6 +220,7 @@ function checkAndroidReleaseGates({
   existsSync = fs.existsSync,
   readFileSync = fs.readFileSync,
   env = process.env,
+  platform = process.platform,
 } = {}) {
   const checks = [];
   const easJson = readJson(rootDir, 'eas.json');
@@ -294,7 +303,7 @@ function checkAndroidReleaseGates({
   );
 
   if (adbAvailable) {
-    const deviceVisibility = getAdbDeviceVisibilityCheck(spawn, adbCommand);
+    const deviceVisibility = getAdbDeviceVisibilityCheck(spawn, adbCommand, platform);
     addCheck(
       checks,
       deviceVisibility.status,

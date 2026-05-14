@@ -86,6 +86,7 @@ describe('android release gate preflight', () => {
     subscriptionGateStatus = 0,
     adbDevices = true,
     adbMdnsStdout = 'List of discovered mdns services\n',
+    adbUsbStdout = '',
   } = {}) {
     return (command, args) => {
       if (command === 'which' && args[0] === 'adb') return { status: 0 };
@@ -100,6 +101,9 @@ describe('android release gate preflight', () => {
       }
       if (command === 'adb' && args[0] === 'mdns') {
         return { status: 0, stdout: adbMdnsStdout, stderr: '' };
+      }
+      if (command === 'ioreg') {
+        return { status: 0, stdout: adbUsbStdout, stderr: '' };
       }
       if (/^npm(\.cmd)?$/.test(command) && args.join(' ') === 'run subscription:qa:release-gate') {
         return {
@@ -230,7 +234,9 @@ describe('android release gate preflight', () => {
         adbDevices: false,
         adbMdnsStdout:
           'List of discovered mdns services\nadb-123._adb-tls-pairing._tcp.\t_adb-tls-pairing._tcp.\t192.168.1.24:37123\n',
+        adbUsbStdout: '"USB Product Name" = "POCO F8 Ultra"\n"USB Vendor Name" = "Xiaomi"\n',
       }),
+      platform: 'darwin',
     });
 
     expect(report.ok).toBe(false);
@@ -239,9 +245,32 @@ describe('android release gate preflight', () => {
         (check) =>
           check.status === 'blocked' &&
           check.title === 'Android ADB device visibility' &&
+          check.details.includes('USB visible') &&
           check.details.includes('wireless debugging is visible') &&
           check.details.includes('192.168.1.24:37123') &&
           check.remediation.includes('adb pair')
+      )
+    ).toBe(true);
+  });
+
+  it('surfaces missing USB and missing wireless diagnostics when no adb device is ready', () => {
+    const root = setupFixture();
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn: spawnWithTools({
+        adbDevices: false,
+      }),
+      platform: 'darwin',
+    });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'blocked' &&
+          check.title === 'Android ADB device visibility' &&
+          check.details.includes('USB not visible') &&
+          check.details.includes('ADB mDNS does not show wireless debugging services')
       )
     ).toBe(true);
   });
