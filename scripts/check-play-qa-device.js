@@ -92,6 +92,13 @@ function selectPhysicalDevice(physicalReport, requestedDevice) {
         .join(', ')}`,
     };
   }
+  if (physicalReport.usb?.supported && physicalReport.usb.visible) {
+    return {
+      ok: false,
+      message: 'A physical Android phone is visible over USB, but no authorized ADB device is ready.',
+      next: 'Unlock the phone, enable USB debugging, select File transfer / Android Auto USB mode, and accept the RSA fingerprint prompt. If no prompt appears, toggle USB debugging or revoke USB debugging authorizations, then reconnect.',
+    };
+  }
   return {
     ok: false,
     message: 'No ready physical Android device is visible.',
