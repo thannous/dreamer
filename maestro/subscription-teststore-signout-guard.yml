@@ -1,0 +1,27 @@
+appId: com.tanuki75.noctalia
+---
+# Guard that a Plus Test Store session does not leak entitlement after sign-out.
+# This is a local no-leak check, not a full two-account switch proof.
+
+- launchApp
+- openLink: noctalia://settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Sign In Required|Connexion requise"
+    timeout: 30000
+
+- swipe:
+    direction: DOWN
+- swipe:
+    direction: DOWN
+- runFlow:
+    when:
+      visible: "Sign Out|Se déconnecter|Cerrar sesión|Abmelden|Disconnetti"
+    commands:
+      - tapOn:
+          text: "Sign Out|Se déconnecter|Cerrar sesión|Abmelden|Disconnetti"
+- extendedWaitUntil:
+    visible: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
+    timeout: 60000
+- assertVisible: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
+- assertNotVisible: "Noctalia Plus is active"
+- assertNotVisible: "plus / active"
