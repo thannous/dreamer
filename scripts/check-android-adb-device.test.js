@@ -1,6 +1,8 @@
 const {
   checkAndroidAdbDevice,
+  isLikelyEmulator,
   parseAdbDevices,
+  summarizePhysicalDeviceState,
   summarizeAdbState,
 } = require('./check-android-adb-device');
 
@@ -53,6 +55,34 @@ describe('android ADB device diagnostic', () => {
 
     expect(summary.status).toBe('unauthorized');
     expect(summary.next).toContain('RSA');
+  });
+
+  it('detects likely emulators from adb id and sdk details', () => {
+    expect(isLikelyEmulator({ id: 'emulator-5554', details: 'product:sdk_gphone64_arm64' })).toBe(true);
+    expect(isLikelyEmulator({ id: '57275d36', details: 'product:poco model:POCO_F8' })).toBe(false);
+  });
+
+  it('can require a physical device for Play validation', () => {
+    const summary = summarizePhysicalDeviceState([
+      { id: 'emulator-5554', state: 'device', details: 'product:sdk_gphone64_arm64 model:sdk_gphone64_arm64' },
+    ]);
+
+    expect(summary.status).toBe('emulator-only');
+    expect(summary.next).toContain('Play-compatible Android phone');
+  });
+
+  it('fails requirePhysical mode when only an emulator is ready', () => {
+    const report = checkAndroidAdbDevice({
+      spawn: spawnFor({
+        adbStdout: 'List of devices attached\nemulator-5554\tdevice product:sdk_gphone64_arm64 model:sdk_gphone64_arm64\n',
+      }),
+      platform: 'darwin',
+      requirePhysical: true,
+    });
+
+    expect(report.ok).toBe(false);
+    expect(report.adb.status).toBe('emulator-only');
+    expect(report.requirePhysical).toBe(true);
   });
 
   it('distinguishes USB-visible from ADB-missing on macOS', () => {

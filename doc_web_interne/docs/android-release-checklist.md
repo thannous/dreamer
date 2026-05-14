@@ -56,6 +56,8 @@ locales, bloquées et manuelles sans exposer les valeurs sensibles. Utiliser
 
 Installer depuis la piste Internal Testing, pas en sideload.
 
+- [ ] Verifier qu'un telephone Android physique est visible: `npm run android:device:physical`.
+- [ ] Verifier l'origine Play de l'installation: `npm run android:play-install-source -- --device <adb-id>` doit afficher `installerPackageName: com.android.vending`.
 - [ ] Guest session bootstrap sans warning `Missing EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER`.
 - [ ] Google Sign-In.
 - [ ] RevenueCat offering load.

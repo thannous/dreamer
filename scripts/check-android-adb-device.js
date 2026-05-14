@@ -44,6 +44,35 @@ function summarizeAdbState(devices) {
   };
 }
 
+function isLikelyEmulator(device) {
+  const id = String(device?.id || '');
+  const details = String(device?.details || '');
+  return (
+    /^emulator-\d+$/i.test(id) ||
+    /\b(model|product|device):sdk_/i.test(details) ||
+    /\b(model|product|device):.*emulator/i.test(details)
+  );
+}
+
+function summarizePhysicalDeviceState(devices) {
+  const readyDevices = devices.filter((device) => device.state === 'device');
+  const physicalDevices = readyDevices.filter((device) => !isLikelyEmulator(device));
+  if (physicalDevices.length > 0) {
+    return {
+      status: 'ready',
+      message: `${physicalDevices.length} physical Android device(s) ready.`,
+    };
+  }
+  if (readyDevices.length > 0) {
+    return {
+      status: 'emulator-only',
+      message: `${readyDevices.length} ADB device(s) ready, but all visible ready devices look like emulators.`,
+      next: 'Connect a Play-compatible Android phone, enable USB debugging, accept the RSA prompt, then install Noctalia from Play Internal Testing.',
+    };
+  }
+  return summarizeAdbState(devices);
+}
+
 function detectUsbAndroidDevice(spawn = spawnSync, platform = process.platform) {
   if (platform !== 'darwin') {
     return {
@@ -88,6 +117,7 @@ function checkAndroidAdbDevice({
   spawn = spawnSync,
   env = process.env,
   platform = process.platform,
+  requirePhysical = false,
 } = {}) {
   const adbCommand = resolveCommand('adb', { spawn, env });
   if (!adbCommand) {
@@ -110,7 +140,9 @@ function checkAndroidAdbDevice({
   });
   const devices = adbResult.status === 0 ? parseAdbDevices(adbResult.stdout) : [];
   const adb = adbResult.status === 0
-    ? summarizeAdbState(devices)
+    ? requirePhysical
+      ? summarizePhysicalDeviceState(devices)
+      : summarizeAdbState(devices)
     : {
         status: 'adb-error',
         message: (adbResult.stderr || adbResult.stdout || 'Unable to list ADB devices.').trim(),
@@ -120,6 +152,7 @@ function checkAndroidAdbDevice({
 
   return {
     ok: adb.status === 'ready',
+    requirePhysical,
     adbCommand,
     devices,
     adb,
@@ -129,6 +162,9 @@ function checkAndroidAdbDevice({
 
 function formatReport(report) {
   const lines = ['[android-device] Android device diagnostic'];
+  if (report.requirePhysical) {
+    lines.push('[android-device] Mode: physical device required');
+  }
   lines.push(`[android-device] adb: ${report.adbCommand || 'not found'}`);
   lines.push(`[android-device] ADB: ${report.adb.status.toUpperCase()} - ${report.adb.message}`);
   if (report.adb.next) lines.push(`  Next: ${report.adb.next}`);
@@ -152,7 +188,8 @@ function formatReport(report) {
 function main() {
   const json = process.argv.includes('--json');
   const reportOnly = process.argv.includes('--report-only');
-  const report = checkAndroidAdbDevice();
+  const requirePhysical = process.argv.includes('--require-physical');
+  const report = checkAndroidAdbDevice({ requirePhysical });
   process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : `${formatReport(report)}\n`);
   if (!report.ok && !reportOnly) {
     process.exitCode = 1;
@@ -167,6 +204,8 @@ module.exports = {
   checkAndroidAdbDevice,
   detectUsbAndroidDevice,
   formatReport,
+  isLikelyEmulator,
   parseAdbDevices,
+  summarizePhysicalDeviceState,
   summarizeAdbState,
 };

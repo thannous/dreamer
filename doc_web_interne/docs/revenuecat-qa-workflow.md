@@ -66,6 +66,16 @@ est definie, rappelle d'extraire l'app user id device avant d'enregistrer une pr
 verifier `npm run android:device` jusqu'a `ADB: READY`, et bloque mentalement `play_monthly` tant
 que RevenueCat/Play ne renvoie pas un base plan mensuel `P1M` pour `prodfce10ef2a8`.
 
+Pour les gates Google Play, l'emulateur ne suffit pas. Avant de reprendre `play_monthly`,
+`play_annual` ou `play_cancellation_and_expiry`, verifier qu'un vrai telephone Android est visible:
+
+```bash
+npm run android:device:physical
+```
+
+Cette commande echoue volontairement si seuls des AVD `emulator-*` sont visibles, meme si ADB est
+pret pour les tests mock/Test Store.
+
 Apres chaque relecture live RevenueCat MCP de l'etat store Play, enregistrer le JSON compact dans le
 snapshot local gitignore. Le rapport QA le relit ensuite et garde `play_monthly` bloque si le
 produit mensuel live contredit la preuve manuelle:
@@ -354,6 +364,7 @@ Scenarios a valider sur un build installe via Play Internal Testing:
 
 Preuve attendue:
 
+- avant toute preuve Play, `npm run android:device:physical` doit voir un telephone Android reel
 - avant toute preuve Play, `npm run android:play-install-source -- --device <adb-id>` doit afficher
   `installerPackageName: com.android.vending`
 - RevenueCat Customer affiche le meme app user id que Supabase `auth.users.id`
