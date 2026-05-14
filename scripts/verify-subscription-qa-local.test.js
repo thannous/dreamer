@@ -33,6 +33,14 @@ describe('subscription QA local verifier', () => {
     );
   });
 
+  it('includes the Play store state updater in local verification', () => {
+    expect(commands.map((command) => command.label)).toEqual(
+      expect.arrayContaining(['syntax: Play store state updater', 'unit: subscription QA scripts'])
+    );
+    const unitCommand = commands.find((command) => command.label === 'unit: subscription QA scripts');
+    expect(unitCommand.args).toContain('scripts/update-revenuecat-play-store-state.test.js');
+  });
+
   it('returns a non-zero exit when a command expected to fail exits successfully', () => {
     expect(exitCodeForUnexpectedStatus({ status: 0 })).toBe(1);
     expect(

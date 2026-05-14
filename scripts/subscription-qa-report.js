@@ -423,6 +423,12 @@ const checks = [
     fs.existsSync(playStoreStatePath) ? playStoreStateResult.error || playStoreStatePath : 'not provided'
   ),
   check(
+    'Play store state snapshot updater exists',
+    fs.existsSync(path.join(ROOT, 'scripts/update-revenuecat-play-store-state.js')) &&
+      pkg.scripts['subscription:qa:play-state'] === 'node ./scripts/update-revenuecat-play-store-state.js',
+    'npm run subscription:qa:play-state -- --input revenuecat-store-state.json'
+  ),
+  check(
     'Completion audit exists',
     fs.existsSync(path.join(ROOT, 'doc_web_interne/docs/revenuecat-workflow-completion-audit.md')),
     'doc_web_interne/docs/revenuecat-workflow-completion-audit.md'

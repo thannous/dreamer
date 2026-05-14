@@ -19,6 +19,11 @@ const commands = [
     args: ['--check', 'scripts/update-subscription-qa-evidence.js'],
   },
   {
+    label: 'syntax: Play store state updater',
+    command: process.execPath,
+    args: ['--check', 'scripts/update-revenuecat-play-store-state.js'],
+  },
+  {
     label: 'syntax: guarded purchase runner',
     command: process.execPath,
     args: ['--check', 'scripts/run-subscription-teststore-purchase.js'],
@@ -46,6 +51,7 @@ const commands = [
       '--',
       'scripts/subscription-qa-report.test.js',
       'scripts/update-subscription-qa-evidence.test.js',
+      'scripts/update-revenuecat-play-store-state.test.js',
       'scripts/run-subscription-teststore-purchase.test.js',
       'scripts/run-subscription-account-switch.test.js',
       'scripts/verify-subscription-qa-local.test.js',
