@@ -14,7 +14,7 @@ du bundle JavaScript. Référence: Expo EAS Environment Variables
 
 - [x] `EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER=359653779023` visible dans `eas.json` pour `preview`, `release`, `production`, `production-apk`.
 - [ ] Confirmer dans Expo Dashboard que la même variable existe aussi dans les environnements EAS `preview` et `production`, ou conserver la valeur du profil `env` comme source de vérité.
-- [ ] Confirmer dans Google Cloud Console que `359653779023` est bien le **Project number** du projet Play Integrity.
+- [x] Confirmer via `gcloud projects list --filter='PROJECT_NUMBER=359653779023' --format=json` que `359653779023` est bien le **Project number** du projet `gen-lang-client-0336445544` / `dreamweaver` (`ACTIVE`).
 - [ ] `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`
 - [ ] `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID`
 - [ ] `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`
