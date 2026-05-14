@@ -86,6 +86,9 @@ Options:
   --installer-package-name <name>
                        Required for play_* gates; must be com.android.vending.
                        play_monthly evidence must also confirm base plan P1M.
+                       play_annual evidence must also confirm base plan P1Y.
+                       play_cancellation_and_expiry evidence must confirm cancellation/expiry,
+                       RevenueCat webhook, and backend convergence.
 
 Before recording play_* gates, run:
   npm run android:play-qa-device -- --device <adb-id>
@@ -126,6 +129,27 @@ function requirePlayMonthlyBasePlanEvidence(options) {
   if (options.gate !== 'play_monthly') return;
   if (!/\bP1M\b/i.test(options.evidence.trim())) {
     throw new Error('Play monthly evidence must confirm base plan P1M.');
+  }
+}
+
+function requirePlayAnnualBasePlanEvidence(options) {
+  if (options.gate !== 'play_annual') return;
+  if (!/\bP1Y\b/i.test(options.evidence.trim())) {
+    throw new Error('Play annual evidence must confirm base plan P1Y.');
+  }
+}
+
+function requirePlayCancellationConvergenceEvidence(options) {
+  if (options.gate !== 'play_cancellation_and_expiry') return;
+  const evidence = options.evidence.trim();
+  if (!/(cancel|cancellation|cancelled|canceled|expiry|expired)/i.test(evidence)) {
+    throw new Error('Play cancellation evidence must confirm cancellation or expiry was observed.');
+  }
+  if (!/\bwebhook\b/i.test(evidence)) {
+    throw new Error('Play cancellation evidence must confirm the RevenueCat webhook.');
+  }
+  if (!(/\bbackend\b/i.test(evidence) && /converg|sync/i.test(evidence))) {
+    throw new Error('Play cancellation evidence must confirm backend convergence.');
   }
 }
 
@@ -207,6 +231,8 @@ function updateEvidence(options) {
   requirePlayInstalledEvidence(options);
   requirePlayDeviceId(options);
   requirePlayInstallerPackageName(options);
+  requirePlayAnnualBasePlanEvidence(options);
+  requirePlayCancellationConvergenceEvidence(options);
   requireAccountSwitchEvidence(options);
 
   document.gates[options.gate] = {
