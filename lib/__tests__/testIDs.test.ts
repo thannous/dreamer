@@ -6,6 +6,7 @@ describe('TID', () => {
   it('returns static IDs', () => {
     expect(TID.Screen.Recording).toBe('screen.recording');
     expect(TID.Button.AuthSignIn).toBe('btn.auth.signIn');
+    expect(TID.Button.AuthGoogle).toBe('btn.auth.google');
     expect(TID.Chat.Send).toBe('chat.button.send');
   });
 

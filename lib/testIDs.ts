@@ -44,6 +44,7 @@ export const TID = {
     DreamCategory: (id: string) => `btn.dreamCategory.${id}`,
     DreamFreeChat: 'btn.dreamCategory.freeChat',
     AuthSignIn: 'btn.auth.signIn',
+    AuthGoogle: 'btn.auth.google',
     AuthSignUp: 'btn.auth.signUp',
     AuthSignOut: 'btn.auth.signOut',
     AuthResendVerification: 'btn.auth.resendVerification',

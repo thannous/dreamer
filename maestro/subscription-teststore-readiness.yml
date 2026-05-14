@@ -14,19 +14,14 @@ appId: com.tanuki75.noctalia
 - assertVisible:
     id: text.subscription.qa.mode
 - assertVisible: "RevenueCat Test Store"
-- swipe:
-    start: 50%, 78%
-    end: 50%, 28%
-- swipe:
-    start: 50%, 78%
-    end: 50%, 28%
-- assertVisible: "Probe SDK"
-- tapOn:
-    text: "Probe SDK"
-- extendedWaitUntil:
-    visible: "SDK probe completed"
-    timeout: 60000
-- assertVisible:
-    id: text.subscription.qa.action
-- assertVisible: ".*packages 2.*"
-- assertVisible: ".*\\$rc_monthly.*\\$rc_annual.*"
+- assertVisible: "PACKAGES"
+- assertVisible: "2"
+- scrollUntilVisible:
+    element:
+      text: "Buy monthly"
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- assertVisible: "Buy annual"
+- assertVisible: "\\$9\\.99"
+- assertVisible: "\\$79\\.98"
