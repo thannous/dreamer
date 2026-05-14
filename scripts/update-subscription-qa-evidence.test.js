@@ -30,6 +30,13 @@ function runReport(evidencePath) {
 }
 
 describe('subscription QA evidence updater', () => {
+  it('documents the Play QA device preflight in help output', () => {
+    const result = runUpdate(['--help']);
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('npm run android:play-qa-device -- --device <adb-id>');
+  });
+
   it('creates a local evidence file from the example and marks one gate as passed', () => {
     const file = tempFile();
     const result = runUpdate([

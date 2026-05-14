@@ -80,6 +80,9 @@ Options:
   --device-id <id>     Required for play_* gates; ADB serial of the physical tester device.
                        play_monthly evidence must also confirm base plan P1M.
 
+Before recording play_* gates, run:
+  npm run android:play-qa-device -- --device <adb-id>
+
 Gate keys:
   test_store_monthly, test_store_annual, restore_after_reinstall, account_switch,
   play_monthly, play_annual, play_cancellation_and_expiry
