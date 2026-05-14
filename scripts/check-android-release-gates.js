@@ -3,6 +3,13 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const {
+  commandExists,
+  getAdbCandidates,
+  getMaestroCandidates,
+  resolveCommand,
+} = require('./android-tooling');
+const { detectAdbMdnsServices } = require('./check-android-adb-device');
 
 const ROOT = path.resolve(__dirname, '..');
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
@@ -19,30 +26,6 @@ const REQUIRED_TESTSTORE_PUBLIC_ENV = [
   'EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID',
   PLAY_INTEGRITY_PROJECT_NUMBER_KEY,
 ];
-
-function getAdbCandidates(env = process.env) {
-  const sdkRoots = [env.ANDROID_HOME, env.ANDROID_SDK_ROOT].filter(Boolean);
-  if (env.HOME) {
-    sdkRoots.push(path.join(env.HOME, 'Library/Android/sdk'));
-  }
-  sdkRoots.push('/opt/android-sdk', '/usr/local/share/android-sdk');
-
-  return Array.from(
-    new Set(sdkRoots.map((sdkRoot) => path.join(sdkRoot, 'platform-tools', 'adb')))
-  );
-}
-
-function getMaestroCandidates(env = process.env) {
-  const candidates = [];
-  if (env.MAESTRO_CLI_PATH) {
-    candidates.push(env.MAESTRO_CLI_PATH);
-  }
-  candidates.push(
-    '/opt/homebrew/opt/maestro/bin/maestro',
-    '/usr/local/opt/maestro/bin/maestro'
-  );
-  return Array.from(new Set(candidates));
-}
 
 function parseDotEnv(content) {
   const values = {};
@@ -64,32 +47,6 @@ function parseDotEnv(content) {
   return values;
 }
 
-function resolveCommand(command, {
-  spawn = spawnSync,
-  existsSync = fs.existsSync,
-  env = process.env,
-} = {}) {
-  const lookupCommand = process.platform === 'win32' ? 'where' : 'which';
-  const result = spawn(lookupCommand, [command], { encoding: 'utf8' });
-  if (result.status === 0) {
-    return command;
-  }
-
-  if (command === 'adb') {
-    return getAdbCandidates(env).find((candidate) => existsSync(candidate)) || null;
-  }
-
-  if (command === 'maestro') {
-    return getMaestroCandidates(env).find((candidate) => existsSync(candidate)) || null;
-  }
-
-  return null;
-}
-
-function commandExists(command, spawn = spawnSync) {
-  return Boolean(resolveCommand(command, { spawn }));
-}
-
 function listAdbDevices(spawn = spawnSync, adbCommand = 'adb') {
   const result = spawn(adbCommand, ['devices'], {
     encoding: 'utf8',
@@ -109,6 +66,42 @@ function listAdbDevices(spawn = spawnSync, adbCommand = 'adb') {
     })
     .filter((device) => device.id && device.state === 'device');
   return { ok: true, devices, message: `${devices.length} Android device(s) ready` };
+}
+
+function getAdbDeviceVisibilityCheck(spawn = spawnSync, adbCommand = 'adb') {
+  const devices = listAdbDevices(spawn, adbCommand);
+  if (devices.ok && devices.devices.length > 0) {
+    return {
+      status: 'pass',
+      details: devices.message,
+      remediation:
+        'Start an Android emulator for local checks, or connect/unlock a physical Android device for Play QA.',
+    };
+  }
+
+  const mdns = detectAdbMdnsServices(spawn, adbCommand);
+  const baseDetails = devices.ok ? devices.message : devices.message || 'Unable to list adb devices.';
+  if (mdns.supported && mdns.services.length > 0) {
+    const serviceList = mdns.services
+      .map((service) => service.address || service.instance)
+      .filter(Boolean)
+      .join(', ');
+    return {
+      status: 'blocked',
+      details: `${baseDetails}; wireless debugging is visible (${serviceList}).`,
+      remediation: mdns.next,
+    };
+  }
+
+  return {
+    status: 'blocked',
+    details:
+      mdns.supported && mdns.message
+        ? `${baseDetails}; ${mdns.message}`
+        : baseDetails,
+    remediation:
+      'Start an Android emulator for local checks, connect/unlock a physical Android device for Play QA, or enable Wireless debugging on the phone and keep the pairing screen open.',
+  };
 }
 
 function readJson(rootDir, relativePath) {
@@ -301,13 +294,13 @@ function checkAndroidReleaseGates({
   );
 
   if (adbAvailable) {
-    const devices = listAdbDevices(spawn, adbCommand);
+    const deviceVisibility = getAdbDeviceVisibilityCheck(spawn, adbCommand);
     addCheck(
       checks,
-      devices.ok && devices.devices.length > 0 ? 'pass' : 'blocked',
+      deviceVisibility.status,
       'Android ADB device visibility',
-      devices.ok ? devices.message : devices.message || 'Unable to list adb devices.',
-      'Start an Android emulator for local checks, or connect/unlock a physical Android device for Play QA.'
+      deviceVisibility.details,
+      deviceVisibility.remediation
     );
   } else {
     addCheck(
@@ -414,6 +407,7 @@ module.exports = {
   checkAndroidReleaseGates,
   commandExists,
   formatReport,
+  getAdbDeviceVisibilityCheck,
   getAdbCandidates,
   getMaestroCandidates,
   listAdbDevices,
