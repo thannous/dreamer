@@ -151,6 +151,15 @@ function getGateEvidenceIssue(evidence, scenario) {
   if (key === 'play_monthly' && !/\bP1M\b/i.test(evidenceText)) {
     return 'monthly base plan P1M must be confirmed';
   }
+  if (key === 'account_switch' && !/second account/i.test(evidenceText)) {
+    return 'second account must be confirmed';
+  }
+  if (key === 'account_switch' && !/\bfree\b/i.test(evidenceText)) {
+    return 'second account free state must be confirmed';
+  }
+  if (key === 'account_switch' && !/\binactive\b/i.test(evidenceText)) {
+    return 'second account inactive state must be confirmed';
+  }
 
   return null;
 }
