@@ -2,6 +2,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const {
+  buildPlayEvidenceCommands,
   checkPlayQaDevice,
   formatReport,
   getReadyPhysicalDevices,
@@ -80,9 +81,19 @@ describe('Play RevenueCat QA device preflight', () => {
     expect(report.selectedDevice).toBe('57275d36');
     expect(report.playInstallSource.installerPackageName).toBe('com.android.vending');
     expect(report.evidenceArgs).toBe('--device-id 57275d36 --installer-package-name com.android.vending');
+    expect(report.evidenceCommands).toHaveLength(3);
+    expect(report.evidenceCommands[0]).toContain('--gate play_monthly');
+    expect(report.evidenceCommands[0]).toContain('--device-id 57275d36');
+    expect(report.evidenceCommands[1]).toContain('base plan P1Y confirmed');
+    expect(report.evidenceCommands[2]).toContain('RevenueCat webhook and backend state converged');
     expect(formatReport(report)).toContain(
       '[play-qa-device] evidenceArgs: --device-id 57275d36 --installer-package-name com.android.vending'
     );
+    expect(formatReport(report)).toContain('[play-qa-device] evidenceCommands:');
+  });
+
+  it('builds no evidence commands until Play install source has passed', () => {
+    expect(buildPlayEvidenceCommands(null)).toEqual([]);
   });
 
   it('fails when only an emulator is ready', () => {
