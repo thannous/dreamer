@@ -53,6 +53,11 @@ function parseArgs(argv) {
       i += 1;
       continue;
     }
+    if (arg === '--installer-package-name') {
+      options.installerPackageName = argv[i + 1];
+      i += 1;
+      continue;
+    }
     if (arg === '--tested-at') {
       options.testedAt = argv[i + 1];
       i += 1;
@@ -78,6 +83,8 @@ Options:
   --tested-at <iso>    Override timestamp. Defaults to now.
   --eas-build-id <id>  Required for play_* gates; records the installed EAS build id.
   --device-id <id>     Required for play_* gates; ADB serial of the physical tester device.
+  --installer-package-name <name>
+                       Required for play_* gates; must be com.android.vending.
                        play_monthly evidence must also confirm base plan P1M.
 
 Before recording play_* gates, run:
@@ -139,6 +146,14 @@ function requirePlayDeviceId(options) {
   }
 }
 
+function requirePlayInstallerPackageName(options) {
+  if (!options.gate?.startsWith('play_')) return;
+  requireValue(options, 'installerPackageName', '--installer-package-name');
+  if (options.installerPackageName.trim() !== 'com.android.vending') {
+    throw new Error('Play evidence installer package name must be com.android.vending.');
+  }
+}
+
 function requireAccountSwitchEvidence(options) {
   if (options.gate !== 'account_switch') return;
   const evidence = options.evidence.trim();
@@ -191,6 +206,7 @@ function updateEvidence(options) {
   requirePlayMonthlyBasePlanEvidence(options);
   requirePlayInstalledEvidence(options);
   requirePlayDeviceId(options);
+  requirePlayInstallerPackageName(options);
   requireAccountSwitchEvidence(options);
 
   document.gates[options.gate] = {
@@ -202,6 +218,7 @@ function updateEvidence(options) {
     evidence: options.evidence,
     ...(options.easBuildId ? { easBuildId: options.easBuildId } : {}),
     ...(options.deviceId ? { deviceId: options.deviceId } : {}),
+    ...(options.installerPackageName ? { installerPackageName: options.installerPackageName } : {}),
   };
 
   writeJson(options.file, document);
