@@ -156,6 +156,29 @@ confirme que le forfait mensuel existe cote Play Console, mais il faut encore co
 RevenueCat ou relire via MCP/API apres correction, car le snapshot RevenueCat actuel lit toujours
 `prodfce10ef2a8` comme `annual/P1Y`.
 
+Verification profil de paiement Play Console du 2026-05-14: le centre de notifications affiche
+`Un probleme urgent requiert votre attention concernant votre compte de paiement`. La page
+`Profil de paiement` demande encore les informations fiscales, un mode de paiement valide pour
+recevoir les paiements, et les informations fiscales pour l'Irlande. Le snapshot local gitignore
+`doc_web_interne/docs/google-play-payments-profile-state.local.json` enregistre ces trois exigences
+ouvertes, et `android:gates:strict` bloque `Play payments profile for Billing` tant que ce snapshot
+ne revient pas sans exigence ouverte.
+
+Pour rafraichir le snapshot profil de paiement apres correction Play Console:
+
+```bash
+npm run android:google-play-payments-profile-state -- \
+  --account-name "Google Wallet Merchant Account - <email>" \
+  --developer-name Cloudtech \
+  --currency EUR \
+  --monthly-payout-threshold 1.00 \
+  --current-period-earnings <amount> \
+  --tax-information complete \
+  --payout-method complete \
+  --ireland-tax-information complete \
+  --source "Google Play Console payments profile read-only check"
+```
+
 Quand une preuve manuelle existe, copier `doc_web_interne/docs/revenuecat-qa-evidence.example.json`
 vers `doc_web_interne/docs/revenuecat-qa-evidence.local.json`, puis passer le gate concerne a
 `"status": "passed"` avec un `testedAt` valide, `tester`, `appUserId` et une preuve courte. La
@@ -320,8 +343,11 @@ git add \
   scripts/run-subscription-teststore-purchase.test.js \
   scripts/update-subscription-qa-evidence.js \
   scripts/update-subscription-qa-evidence.test.js \
+  scripts/update-google-play-payments-profile-state.js \
+  scripts/update-google-play-payments-profile-state.test.js \
   scripts/verify-subscription-qa-local.js \
   scripts/verify-subscription-qa-local.test.js \
+  doc_web_interne/docs/google-play-payments-profile-state.example.json \
   doc_web_interne/docs/revenuecat-qa-evidence.example.json \
   doc_web_interne/docs/revenuecat-qa-workflow.md \
   doc_web_interne/docs/revenuecat-workflow-completion-audit.md \
@@ -343,7 +369,8 @@ npx eas build -p android --profile preview
 `npm run android:gates:strict` est volontairement bloquant avant release Android: il execute
 `subscription:qa:release-gate` et echoue tant que les gates RevenueCat manuelles/externes ne sont
 pas toutes fermees. Au 2026-05-14, il echoue encore sur `RevenueCat subscription QA release gate`
-avec 3 gates RevenueCat/Play restantes.
+avec 3 gates RevenueCat/Play restantes. Il bloque aussi le profil de paiement Play si
+`doc_web_interne/docs/google-play-payments-profile-state.local.json` contient des exigences ouvertes.
 
 Pour rafraichir la preuve locale du project number Google Cloud utilise par Play Integrity:
 

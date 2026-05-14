@@ -1,0 +1,29 @@
+{
+  "checked_at": "2026-05-14T20:00:00.000Z",
+  "source": "Google Play Console payments profile read-only check",
+  "account_name": "Google Wallet Merchant Account - <email>",
+  "developer_name": "Cloudtech",
+  "currency": "EUR",
+  "monthly_payout_threshold": 1,
+  "current_period_earnings": 2.52,
+  "requirements": {
+    "tax_information": {
+      "label": "Tax information",
+      "severity": "critical",
+      "status": "missing",
+      "message": "Please provide tax information so your payment can be included in the next payment cycle."
+    },
+    "payout_method": {
+      "label": "Payout method",
+      "severity": "critical",
+      "status": "missing",
+      "message": "Please select a valid payout method to receive payments."
+    },
+    "ireland_tax_information": {
+      "label": "Ireland tax information",
+      "severity": "warning",
+      "status": "missing",
+      "message": "Provide Ireland tax information as soon as possible."
+    }
+  }
+}

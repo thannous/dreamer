@@ -13,6 +13,7 @@ const {
   detectAdbMdnsServices,
   detectUsbAndroidDevice,
 } = require('./check-android-adb-device');
+const { getOpenPaymentProfileRequirements } = require('./update-google-play-payments-profile-state');
 
 const ROOT = path.resolve(__dirname, '..');
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
@@ -183,6 +184,29 @@ function readGoogleOAuthAndroidClientState({
   }
 }
 
+function readGooglePlayPaymentsProfileState({
+  rootDir = ROOT,
+  existsSync = fs.existsSync,
+  readFileSync = fs.readFileSync,
+  env = process.env,
+} = {}) {
+  const filePath = env.GOOGLE_PLAY_PAYMENTS_PROFILE_STATE_PATH
+    ? path.resolve(rootDir, env.GOOGLE_PLAY_PAYMENTS_PROFILE_STATE_PATH)
+    : path.join(rootDir, 'doc_web_interne/docs/google-play-payments-profile-state.local.json');
+  if (!existsSync(filePath)) {
+    return { snapshot: null, error: null, filePath };
+  }
+  try {
+    return { snapshot: JSON.parse(readFileSync(filePath, 'utf8')), error: null, filePath };
+  } catch (error) {
+    return {
+      snapshot: null,
+      error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
+      filePath,
+    };
+  }
+}
+
 function getGoogleCloudProjectCheck(envProjectNumber, projectStateResult) {
   const snapshot = projectStateResult.snapshot;
   if (projectStateResult.error) {
@@ -269,6 +293,57 @@ function getGoogleOAuthAndroidClientCheck(oauthStateResult) {
   };
 }
 
+function getPlayPaymentsProfileCheck(paymentsProfileStateResult) {
+  const snapshot = paymentsProfileStateResult.snapshot;
+  if (paymentsProfileStateResult.error) {
+    return {
+      status: 'blocked',
+      details: `Google Play payments profile snapshot is invalid: ${paymentsProfileStateResult.error}`,
+      remediation: 'Regenerate doc_web_interne/docs/google-play-payments-profile-state.local.json from Play Console.',
+    };
+  }
+  if (!snapshot) {
+    return {
+      status: 'manual',
+      details:
+        'Play Console payments profile and payment-method verification are external to the repo, and Play Console currently needs manual confirmation before monetization release.',
+      remediation:
+        'Inspect Play Console payments settings, then run npm run android:google-play-payments-profile-state with the observed profile status.',
+    };
+  }
+
+  let openRequirements;
+  try {
+    openRequirements = getOpenPaymentProfileRequirements(snapshot);
+  } catch (error) {
+    return {
+      status: 'blocked',
+      details: `Google Play payments profile snapshot contains unsupported status data: ${
+        error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error)
+      }`,
+      remediation: 'Regenerate the payments profile snapshot from the current Play Console status.',
+    };
+  }
+
+  if (openRequirements.length > 0) {
+    const summary = openRequirements
+      .map((item) => `${item.key}/${item.status}/${item.severity}`)
+      .join(', ');
+    return {
+      status: 'blocked',
+      details: `${openRequirements.length} open payments profile requirement(s): ${summary}.`,
+      remediation:
+        'Complete the Play Console payments profile requirements, then regenerate the payments profile snapshot before Android production release.',
+    };
+  }
+
+  return {
+    status: 'pass',
+    details: `No open payments profile requirements in ${path.relative(ROOT, paymentsProfileStateResult.filePath)}.`,
+    remediation: 'Keep the payments profile snapshot fresh before release.',
+  };
+}
+
 function checkSubscriptionQaReleaseGate(rootDir, spawn = spawnSync, env = process.env) {
   const result = spawn(npmCommand, ['run', 'subscription:qa:release-gate'], {
     cwd: rootDir,
@@ -304,6 +379,12 @@ function checkAndroidReleaseGates({
   const envValues = existsSync(envPath) ? parseDotEnv(readFileSync(envPath, 'utf8')) : {};
   const projectStateResult = readGoogleCloudProjectState({ rootDir, existsSync, readFileSync, env });
   const oauthStateResult = readGoogleOAuthAndroidClientState({ rootDir, existsSync, readFileSync, env });
+  const paymentsProfileStateResult = readGooglePlayPaymentsProfileState({
+    rootDir,
+    existsSync,
+    readFileSync,
+    env,
+  });
 
   const profilesMissingProjectNumber = REQUIRED_EAS_PROFILES.filter((profile) => {
     const value = easJson.build?.[profile]?.env?.[PLAY_INTEGRITY_PROJECT_NUMBER_KEY];
@@ -423,12 +504,13 @@ function checkAndroidReleaseGates({
     'Supabase Edge Function secrets are intentionally not stored in the repo.',
     'Verify PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64, PLAY_INTEGRITY_PACKAGE_NAME, and GUEST_SESSION_SECRET in Supabase.'
   );
+  const paymentsProfileCheck = getPlayPaymentsProfileCheck(paymentsProfileStateResult);
   addCheck(
     checks,
-    'manual',
+    paymentsProfileCheck.status,
     'Play payments profile for Billing',
-    'Play Console payments profile and payment-method verification are external to the repo, and Play Console currently needs manual confirmation before monetization release.',
-    'Resolve any Play Console payments profile warnings before relying on Google Play Billing in production.'
+    paymentsProfileCheck.details,
+    paymentsProfileCheck.remediation
   );
   addCheck(
     checks,
@@ -494,4 +576,5 @@ module.exports = {
   listAdbDevices,
   parseDotEnv,
   resolveCommand,
+  getPlayPaymentsProfileCheck,
 };
