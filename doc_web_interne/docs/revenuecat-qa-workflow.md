@@ -113,6 +113,7 @@ lance sans `--device`; ajouter `--device <adb-id>` seulement quand plusieurs dev
 ```bash
 npm run android:play-qa-device:wait
 npm run android:play-qa-device:wait -- --device <adb-id>
+npm run android:play-qa-device:wait -- --device <adb-id> --expected-version-code 24
 npm run android:play-qa-device:wait -- --device <adb-id> --require-ui-ready
 npm run android:play-qa-device -- --device <adb-id>
 ```
@@ -130,6 +131,12 @@ flows Maestro pilotes par UI. Avant un achat ou restore pilote par l'agent, pref
 `android:play-qa-device:wait -- --device <adb-id> --require-ui-ready`: cette variante continue a
 poller tant que l'app est Play-installed mais que le telephone n'est pas encore reveille et
 deverrouille.
+
+Pour attendre une build Play precise avant d'acheter, ajouter `--expected-version-code <n>` au helper
+d'attente. Par exemple, la validation release robuste du build Internal Testing actuel doit preferer
+`npm run android:play-qa-device:wait -- --device <adb-id> --expected-version-code 24 --require-ui-ready`
+avant d'ouvrir la feuille d'achat. Le POCO courant reste en `versionCode=12`, donc cette variante
+doit continuer a attendre/echouer tant que Play ne propose pas la mise a jour vers `24`.
 
 Sur une build Play non-debuggable, `adb shell run-as com.tanuki75.noctalia ...` echoue normalement
 avec `package not debuggable`; ne pas utiliser cet echec comme signal RevenueCat. Pour extraire

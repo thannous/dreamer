@@ -33,6 +33,11 @@ function parseArgs(argv) {
       i += 1;
       continue;
     }
+    if (arg === '--expected-version-code') {
+      options.expectedVersionCode = argv[i + 1];
+      i += 1;
+      continue;
+    }
     if (arg === '--interval-ms') {
       options.intervalMs = parsePositiveInteger(argv[i + 1], '--interval-ms');
       i += 1;
@@ -60,12 +65,14 @@ function parseArgs(argv) {
 function printHelp() {
   console.log(`
 Usage:
-  node ./scripts/wait-for-play-qa-device.js [--device <adb-id>] [--package <application-id>] [--interval-ms <ms>] [--timeout-ms <ms>] [--require-ui-ready]
+  node ./scripts/wait-for-play-qa-device.js [--device <adb-id>] [--package <application-id>] [--expected-version-code <code>] [--interval-ms <ms>] [--timeout-ms <ms>] [--require-ui-ready]
 
 Polls the Play RevenueCat QA device preflight until a physical Android device
 is visible and Noctalia is installed from Google Play. When ready, it prints the
 play_* evidence commands.
 
+Use --expected-version-code to wait for a specific Play build before recording
+evidence.
 Use --require-ui-ready before UI-driven purchase or restore flows to keep polling
 until the tester phone also appears awake and unlocked.
 `.trim());
@@ -89,6 +96,7 @@ async function waitForPlayQaDevice(options = {}) {
     ...checkOptions
   } = options;
   const requireUiReady = Boolean(checkOptions.requireUiReady);
+  const expectedVersionCode = checkOptions.expectedVersionCode;
   delete checkOptions.requireUiReady;
 
   const startedAt = now();
@@ -110,10 +118,17 @@ async function waitForPlayQaDevice(options = {}) {
     await sleepFn(intervalMs);
   }
 
+  const criteria = [];
+  if (expectedVersionCode !== undefined && expectedVersionCode !== null) {
+    criteria.push(`matching versionCode ${String(expectedVersionCode).trim()}`);
+  }
+  if (requireUiReady) {
+    criteria.push('UI ready');
+  }
   stderr.write(
-    requireUiReady
-      ? '[play-qa-device:wait] timed out waiting for a Play-installed physical device with UI ready.\n'
-      : '[play-qa-device:wait] timed out waiting for a Play-installed physical device.\n'
+    `[play-qa-device:wait] timed out waiting for a Play-installed physical device${
+      criteria.length > 0 ? ` (${criteria.join(', ')})` : ''
+    }.\n`
   );
   return { ok: false, attempts: attempt, report: lastReport };
 }

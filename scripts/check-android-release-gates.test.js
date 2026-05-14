@@ -190,6 +190,7 @@ describe('android release gate preflight', () => {
           check.details.includes('physical Android device') &&
           check.details.includes('installerPackageName=com.android.vending') &&
           check.remediation.includes('android:play-qa-device:wait') &&
+          check.remediation.includes('--expected-version-code <code>') &&
           check.remediation.includes('--require-ui-ready') &&
           check.remediation.includes('android:play-qa-device')
       )
