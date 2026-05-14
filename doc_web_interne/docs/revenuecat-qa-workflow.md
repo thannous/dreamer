@@ -360,14 +360,15 @@ Configuration attendue:
   - monthly: base plan mensuel, periode `P1M`
   - annual: base plan annuel, periode `P1Y`
 
-Le 2026-05-11, RevenueCat MCP a confirme `status=ok` pour les deux produits Play, mais
-`prodfce10ef2a8` (`noctalia_plus:monthly`) renvoie encore `base_plan_id=annual` et
-`billing_period=P1Y`. Depuis le refresh Google Play direct du 2026-05-14T15:21:48Z, l'API officielle
-confirme pourtant `monthly/P1M/ACTIVE`; le rapport QA signale donc RevenueCat comme `LAGGING` et
-peut accepter une preuve `play_monthly` seulement si elle vient d'une vraie installation Play
-Internal Testing, confirme `P1M`, et montre que le backend converge. L'app utilise
-`product.subscriptionPeriod` comme garde locale pour eviter d'afficher un produit `P1Y` comme
-mensuel, mais cette garde ne remplace pas la preuve d'achat Play reelle.
+Le 2026-05-14T15:36Z, un `codex exec` frais a relu RevenueCat MCP en lecture seule:
+`prodfce10ef2a8` (`noctalia_plus:monthly`) renvoie encore `base_plan_id=annual`,
+`billing_period=P1Y`, `state=ACTIVE`, tandis que `prod98337b31be` renvoie aussi `annual/P1Y/ACTIVE`.
+Depuis le refresh Google Play direct du 2026-05-14T15:21:48Z, l'API officielle confirme pourtant
+`monthly/P1M/ACTIVE`; le rapport QA signale donc RevenueCat comme `LAGGING` et peut accepter une
+preuve `play_monthly` seulement si elle vient d'une vraie installation Play Internal Testing,
+confirme `P1M`, et montre que le backend converge. L'app utilise `product.subscriptionPeriod` comme
+garde locale pour eviter d'afficher un produit `P1Y` comme mensuel, mais cette garde ne remplace pas
+la preuve d'achat Play reelle.
 
 Correction Play Console a faire avant de reprendre `play_monthly`:
 
