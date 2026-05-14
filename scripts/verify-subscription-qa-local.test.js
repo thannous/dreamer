@@ -34,6 +34,8 @@ describe('subscription QA local verifier', () => {
         'Device app user id extraction',
         'Physical Android device visibility',
         'npm run android:device:physical',
+        'Play install source diagnostic exists',
+        'npm run android:play-install-source -- --device <adb-id>',
         'Google Play monthly base plan snapshot',
         'Play monthly base plan snapshot',
         'expected P1M',
@@ -47,6 +49,7 @@ describe('subscription QA local verifier', () => {
         'syntax: Play store state updater',
         'syntax: Google Play subscription state updater',
         'syntax: Google Cloud project state updater',
+        'syntax: Play install source diagnostic',
         'unit: subscription QA scripts',
       ])
     );
@@ -54,6 +57,7 @@ describe('subscription QA local verifier', () => {
     expect(unitCommand.args).toContain('scripts/update-revenuecat-play-store-state.test.js');
     expect(unitCommand.args).toContain('scripts/update-google-play-subscription-state.test.js');
     expect(unitCommand.args).toContain('scripts/update-google-cloud-project-state.test.js');
+    expect(unitCommand.args).toContain('scripts/check-play-install-source.test.js');
   });
 
   it('returns a non-zero exit when a command expected to fail exits successfully', () => {

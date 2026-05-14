@@ -49,6 +49,11 @@ const commands = [
     args: ['--check', 'scripts/check-android-adb-device.js'],
   },
   {
+    label: 'syntax: Play install source diagnostic',
+    command: process.execPath,
+    args: ['--check', 'scripts/check-play-install-source.js'],
+  },
+  {
     label: 'syntax: RevenueCat device app user id extractor',
     command: process.execPath,
     args: ['--check', 'scripts/extract-revenuecat-app-user-id.js'],
@@ -68,6 +73,7 @@ const commands = [
       'scripts/run-subscription-account-switch.test.js',
       'scripts/verify-subscription-qa-local.test.js',
       'scripts/check-android-adb-device.test.js',
+      'scripts/check-play-install-source.test.js',
       'scripts/extract-revenuecat-app-user-id.test.js',
       '--runInBand',
       '--watchman=false',
@@ -89,6 +95,8 @@ const commands = [
       'Device app user id extraction',
       'Physical Android device visibility',
       'npm run android:device:physical',
+      'Play install source diagnostic exists',
+      'npm run android:play-install-source -- --device <adb-id>',
       'Google Play monthly base plan snapshot',
       'Play monthly base plan snapshot',
       'expected P1M',
