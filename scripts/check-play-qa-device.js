@@ -128,6 +128,9 @@ function checkPlayQaDevice({
     device: selection.device.id,
     packageName,
   });
+  const evidenceArgs = playInstallSource.ok
+    ? `--device-id ${selection.device.id} --installer-package-name ${playInstallSource.installerPackageName}`
+    : null;
 
   return {
     ok: physicalReport.ok && playInstallSource.ok,
@@ -135,6 +138,7 @@ function checkPlayQaDevice({
     selectedDevice: selection.device.id,
     physical: physicalReport,
     playInstallSource,
+    evidenceArgs,
     message: playInstallSource.ok
       ? `${selection.device.id} is ready for Play RevenueCat QA.`
       : playInstallSource.message,
@@ -149,6 +153,9 @@ function formatReport(report) {
   lines.push(`[play-qa-device] physicalDevice: ${report.physical.ok ? 'PASS' : 'FAIL'} - ${report.physical.adb.message}`);
   if (report.playInstallSource) {
     lines.push(formatPlayInstallSourceReport(report.playInstallSource));
+  }
+  if (report.evidenceArgs) {
+    lines.push(`[play-qa-device] evidenceArgs: ${report.evidenceArgs}`);
   }
   lines.push(`[play-qa-device] ${report.ok ? 'PASS' : 'FAIL'} - ${report.message}`);
   if (report.next) lines.push(`  Next: ${report.next}`);
