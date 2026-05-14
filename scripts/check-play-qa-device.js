@@ -167,6 +167,19 @@ function formatReport(report) {
   lines.push(`[play-qa-device] package: ${report.packageName}`);
   lines.push(`[play-qa-device] selectedDevice: ${report.selectedDevice || 'missing'}`);
   lines.push(`[play-qa-device] physicalDevice: ${report.physical.ok ? 'PASS' : 'FAIL'} - ${report.physical.adb.message}`);
+  if (report.physical.usb?.supported) {
+    lines.push(
+      `[play-qa-device] usb: ${report.physical.usb.visible ? 'VISIBLE' : 'NOT VISIBLE'} - ${report.physical.usb.message}`
+    );
+  }
+  if (report.physical.mdns?.supported) {
+    lines.push(
+      `[play-qa-device] wireless: ${report.physical.mdns.services.length > 0 ? 'VISIBLE' : 'NOT VISIBLE'} - ${report.physical.mdns.message}`
+    );
+    for (const command of report.physical.mdns.commands || []) {
+      lines.push(`[play-qa-device] wirelessCommand: ${command}`);
+    }
+  }
   if (report.playInstallSource) {
     lines.push(formatPlayInstallSourceReport(report.playInstallSource));
   }
