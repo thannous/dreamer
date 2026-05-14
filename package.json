@@ -76,6 +76,8 @@
     "test:e2e:subscription-teststore": "node ./scripts/run-maestro-android.js --flow maestro/subscription-teststore-readiness.yml --env-file .env.teststore",
     "test:e2e:subscription-teststore:purchase": "node ./scripts/run-subscription-teststore-purchase.js",
     "test:e2e:subscription-teststore:purchase:preflight": "node ./scripts/run-subscription-teststore-purchase.js --preflight",
+    "test:e2e:subscription-teststore:account-switch": "node ./scripts/run-subscription-account-switch.js",
+    "test:e2e:subscription-teststore:account-switch:preflight": "node ./scripts/run-subscription-account-switch.js --preflight",
     "test:e2e:mock-quotas": "node ./scripts/run-maestro-android.js --flow maestro/mock-existing-quotas.yml",
     "test:e2e:quotas": "node ./scripts/run-maestro-android.js --suite quotas",
     "test:e2e:chat-limit": "node ./scripts/run-maestro-android.js --flow maestro/guest-chat-limit.yml",

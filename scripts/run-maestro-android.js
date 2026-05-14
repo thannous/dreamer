@@ -11,7 +11,13 @@ const { resolveCommand } = require('./check-android-release-gates');
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_MAESTRO_BIN_WINDOWS = 'C:\\Users\\thann\\maestro\\maestro\\bin\\maestro.bat';
 const DEFAULT_METRO_PORT = 8081;
-const MAESTRO_FLOW_ENV_KEYS = ['QA_EMAIL', 'QA_PASSWORD', 'QA_PLAN'];
+const MAESTRO_FLOW_ENV_KEYS = [
+  'QA_EMAIL',
+  'QA_PASSWORD',
+  'QA_PLAN',
+  'QA_SWITCH_FREE_EMAIL',
+  'QA_SWITCH_FREE_PASSWORD',
+];
 
 const SUITES = {
   smoke: [
