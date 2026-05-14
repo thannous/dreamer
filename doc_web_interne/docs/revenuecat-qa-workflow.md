@@ -296,6 +296,14 @@ malgre le statut testeur beta; Play ne propose donc pas d'upgrade direct vers le
 appareil a ce moment. Pour une validation de release robuste, preferer mettre a jour l'app depuis
 Play si le bouton apparait, ou faire une desinstallation/reinstallation Play acceptee par le testeur,
 puis re-verifier `dumpsys package` et l'`easBuildId` correspondant avant d'appuyer sur `S'abonner`.
+Le preflight peut exiger le build attendu avant de generer les commandes de preuve:
+
+```bash
+npm run android:play-qa-device -- --device <adb-id> --expected-version-code 24 --report-only
+```
+
+Sur le POCO actuel, cette commande echoue volontairement tant que Play laisse l'app en
+`versionCode=12`.
 `--device-id` doit etre l'id ADB d'un telephone physique, pas un AVD `emulator-*`.
 La preuve Play doit confirmer la source d'installation Play Internal Testing: le champ structure
 `--installer-package-name` doit valoir `com.android.vending`, et le texte de preuve doit contenir
