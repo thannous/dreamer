@@ -84,6 +84,18 @@ Wireless Debugging visibles via mDNS. Si `WIRELESS: VISIBLE` apparait, utiliser 
 VISIBLE` apparait, ouvrir Developer options -> Wireless debugging sur le telephone et garder l'ecran
 d'appairage ouvert pendant le diagnostic.
 
+Interpretation rapide du diagnostic appareil:
+
+- `USB: NOT VISIBLE` veut dire que macOS ne voit pas de telephone Android-like au niveau USB: changer
+  de cable/port, deverrouiller le telephone, choisir `Transfert de fichiers / Android Auto`, puis
+  accepter la popup RSA de debogage USB.
+- `USB: VISIBLE` avec `ADB: MISSING` ou `ADB: UNAUTHORIZED` veut dire que le cable est bon mais que
+  le debogage USB n'est pas encore autorise: deverrouiller le telephone et accepter l'empreinte RSA.
+- `WIRELESS: VISIBLE` veut dire que le telephone publie Wireless Debugging: lancer les commandes
+  `adb pair` / `adb connect` affichees, puis relancer le preflight.
+- `USB: NOT VISIBLE` et `WIRELESS: NOT VISIBLE` ensemble bloquent totalement les preuves Play
+  locales: le Mac n'a aucun chemin ADB pour verifier `installerPackageName=com.android.vending`.
+
 Quand le telephone est visible et que l'app est installee depuis la piste Internal Testing, utiliser
 le helper d'attente pendant la connexion. Si un seul telephone physique est visible, il peut etre
 lance sans `--device`; ajouter `--device <adb-id>` seulement quand plusieurs devices sont prets:
