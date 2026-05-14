@@ -24,6 +24,11 @@ const commands = [
     args: ['--check', 'scripts/run-subscription-teststore-purchase.js'],
   },
   {
+    label: 'syntax: account switch runner',
+    command: process.execPath,
+    args: ['--check', 'scripts/run-subscription-account-switch.js'],
+  },
+  {
     label: 'syntax: Android ADB device diagnostic',
     command: process.execPath,
     args: ['--check', 'scripts/check-android-adb-device.js'],
@@ -37,6 +42,7 @@ const commands = [
       'scripts/subscription-qa-report.test.js',
       'scripts/update-subscription-qa-evidence.test.js',
       'scripts/run-subscription-teststore-purchase.test.js',
+      'scripts/run-subscription-account-switch.test.js',
       'scripts/verify-subscription-qa-local.test.js',
       'scripts/check-android-adb-device.test.js',
       '--runInBand',
@@ -50,6 +56,7 @@ const commands = [
     expectedStdoutIncludes: [
       '## Current Session Readiness',
       'Test Store signed-in account env',
+      'Account switch second account env',
       'RevenueCat product prodfce10ef2a8 must expose billing period P1M',
     ],
   },
@@ -83,6 +90,15 @@ const commands = [
     env: {
       REVENUECAT_QA_EMAIL: 'tester@example.com',
       REVENUECAT_QA_PASSWORD: 'password',
+    },
+  },
+  {
+    label: 'preflight: account switch CLI',
+    command: npmCommand,
+    args: ['run', 'test:e2e:subscription-teststore:account-switch:preflight', '--', '--device', 'emulator-5554'],
+    env: {
+      REVENUECAT_QA_SWITCH_FREE_EMAIL: 'free@example.com',
+      REVENUECAT_QA_SWITCH_FREE_PASSWORD: 'password',
     },
   },
 ];

@@ -67,6 +67,8 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('maestro/subscription-teststore-restore-google-manual.yml');
     expect(result.stdout).toContain('OK | Test Store signout guard exists');
     expect(result.stdout).toContain('maestro/subscription-teststore-signout-guard.yml');
+    expect(result.stdout).toContain('OK | Account switch email flow exists');
+    expect(result.stdout).toContain('REVENUECAT_QA_SWITCH_FREE_EMAIL -> maestro/subscription-teststore-account-switch-free-email-manual.yml');
     expect(result.stdout).toContain('OK | Local subscription QA verifier exists');
     expect(result.stdout).toContain('npm run subscription:qa:verify-local');
     expect(result.stdout).toContain('OK | Android device diagnostic exists');
@@ -74,13 +76,15 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('## Current Session Readiness');
     expect(result.stdout).toContain('Test Store signed-in account env');
     expect(result.stdout).toContain('REVENUECAT_QA_EMAIL=missing, REVENUECAT_QA_PASSWORD=missing');
+    expect(result.stdout).toContain('Account switch second account env');
+    expect(result.stdout).toContain('REVENUECAT_QA_SWITCH_FREE_EMAIL=missing, REVENUECAT_QA_SWITCH_FREE_PASSWORD=missing');
     expect(result.stdout).toContain('RevenueCat product prodfce10ef2a8 must expose billing period P1M');
     expect(result.stdout).toContain('OK | Evidence template covers all release gates');
     expect(result.stdout).toContain('OK | Local evidence file is gitignored');
     expect(result.stdout).toContain('Manual or external gates remaining: 7');
     expect(result.stdout).toContain('Offering packages and prices load without purchase');
     expect(result.stdout).toContain('maestro/subscription-teststore-restore-google-manual.yml plus structured evidence');
-    expect(result.stdout).toContain('maestro/subscription-teststore-signout-guard.yml covers logout/no-leak');
+    expect(result.stdout).toContain('run test:e2e:subscription-teststore:account-switch with a second real email account');
     expect(result.stdout).toContain('Full RevenueCat workflow is not complete');
   });
 

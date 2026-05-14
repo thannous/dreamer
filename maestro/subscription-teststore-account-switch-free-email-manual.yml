@@ -1,0 +1,88 @@
+appId: com.tanuki75.noctalia
+---
+# Manual account-switch proof for Test Store/RevenueCat.
+# Precondition: start from a currently signed-in Plus account.
+# The flow signs out, signs into a second real email/password account, refreshes RevenueCat,
+# and verifies the Plus entitlement does not leak to that second account.
+
+- runFlow: subflows/open-mock-app.yml
+- openLink: noctalia://settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes"
+    timeout: 30000
+
+- scrollUntilVisible:
+    element:
+      text: "Subscription QA Lab"
+    direction: DOWN
+    visibilityPercentage: 40
+    timeout: 30000
+- assertVisible: ".*plus / active.*"
+
+- scrollUntilVisible:
+    element:
+      text: "Sign Out|Se déconnecter|Cerrar sesión|Abmelden|Disconnetti"
+    direction: UP
+    visibilityPercentage: 70
+    timeout: 30000
+- tapOn:
+    text: "Sign Out|Se déconnecter|Cerrar sesión|Abmelden|Disconnetti"
+- extendedWaitUntil:
+    visible: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
+    timeout: 60000
+
+- scrollUntilVisible:
+    element:
+      id: input.auth.email
+    direction: DOWN
+    visibilityPercentage: 70
+    timeout: 30000
+- tapOn:
+    id: input.auth.email
+- eraseText
+- inputText: ${QA_SWITCH_FREE_EMAIL}
+- tapOn:
+    id: input.auth.password
+- eraseText
+- inputText: ${QA_SWITCH_FREE_PASSWORD}
+- runFlow:
+    when:
+      visible: "Use your saved password.*"
+    commands:
+      - tapOn:
+          text: "No thanks"
+          optional: true
+- pressKey: back
+- scrollUntilVisible:
+    element:
+      id: btn.auth.signIn
+    direction: DOWN
+    visibilityPercentage: 70
+    timeout: 30000
+- tapOn:
+    id: btn.auth.signIn
+- extendedWaitUntil:
+    visible:
+      id: text.auth.email
+    timeout: 45000
+
+- scrollUntilVisible:
+    element:
+      text: "Subscription QA Lab"
+    direction: DOWN
+    visibilityPercentage: 40
+    timeout: 30000
+- assertVisible: "RevenueCat Test Store"
+- scrollUntilVisible:
+    element:
+      text: "Refresh"
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- tapOn: "Refresh"
+- extendedWaitUntil:
+    visible: "Refresh completed"
+    timeout: 60000
+- assertVisible: ".*free / inactive.*"
+- assertNotVisible: "Noctalia Plus is active"
+- assertNotVisible: "plus / active"

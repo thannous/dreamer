@@ -166,6 +166,9 @@ const testStoreEnv = readEnv('.env.teststore');
 const playStoreEnv = fs.existsSync(path.join(ROOT, '.env.playstore')) ? readEnv('.env.playstore') : {};
 const subscriptionConstants = read('constants/subscription.ts');
 const purchaseRunner = read('scripts/run-subscription-teststore-purchase.js');
+const accountSwitchRunner = fs.existsSync(path.join(ROOT, 'scripts/run-subscription-account-switch.js'))
+  ? read('scripts/run-subscription-account-switch.js')
+  : '';
 const evidenceExample = readJson('doc_web_interne/docs/revenuecat-qa-evidence.example.json');
 const gitignore = read('.gitignore');
 const evidenceResult = readEvidenceResult();
@@ -249,6 +252,14 @@ const checks = [
     'Test Store signout guard exists',
     fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-signout-guard.yml')),
     'maestro/subscription-teststore-signout-guard.yml'
+  ),
+  check(
+    'Account switch email flow exists',
+    fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-account-switch-free-email-manual.yml')) &&
+      fs.existsSync(path.join(ROOT, 'scripts/run-subscription-account-switch.js')) &&
+      accountSwitchRunner.includes('REVENUECAT_QA_SWITCH_FREE_EMAIL') &&
+      pkg.scripts['test:e2e:subscription-teststore:account-switch:preflight']?.includes('--preflight'),
+    'REVENUECAT_QA_SWITCH_FREE_EMAIL -> maestro/subscription-teststore-account-switch-free-email-manual.yml'
   ),
   check(
     'Test Store purchase preflight exists',
@@ -374,7 +385,7 @@ const scenarios = [
     'Account switch',
     'Test Store or Play',
     'Plus user logout does not leak to free user',
-    'maestro/subscription-teststore-signout-guard.yml covers logout/no-leak; two real auth accounts still required',
+    'maestro/subscription-teststore-signout-guard.yml covers logout/no-leak; run test:e2e:subscription-teststore:account-switch with a second real email account to close this gate',
   ],
   [
     'External store gate',
@@ -474,6 +485,15 @@ const runtimeReadiness = [
     process.env.REVENUECAT_QA_APPROVAL === EXPECTED.purchaseApproval ? 'READY' : 'NOT SET',
     'Test Store purchase approval',
     'Required only before a real purchase; preflight must not require approval',
+  ],
+  [
+    process.env.REVENUECAT_QA_SWITCH_FREE_EMAIL && process.env.REVENUECAT_QA_SWITCH_FREE_PASSWORD
+      ? 'READY'
+      : 'MISSING',
+    'Account switch second account env',
+    `REVENUECAT_QA_SWITCH_FREE_EMAIL=${envState('REVENUECAT_QA_SWITCH_FREE_EMAIL')}, REVENUECAT_QA_SWITCH_FREE_PASSWORD=${envState(
+      'REVENUECAT_QA_SWITCH_FREE_PASSWORD'
+    )}`,
   ],
   ['CHECK', 'Android device visibility', 'Run npm run android:device and require ADB: READY before device flows'],
   [
