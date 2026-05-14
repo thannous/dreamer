@@ -138,6 +138,12 @@ d'attente. Par exemple, la validation release robuste du build Internal Testing 
 avant d'ouvrir la feuille d'achat. Le POCO courant reste en `versionCode=12`, donc cette variante
 doit continuer a attendre/echouer tant que Play ne propose pas la mise a jour vers `24`.
 
+Si la fiche Play affiche `Ouvrir` sans `Mettre a jour` alors que la piste internal API annonce `24`,
+ne pas conclure que le telephone est sur la piste internal. Le 2026-05-15, `edits.tracks.list` montre
+`production=12`, `beta=11` et `internal=24`; le libelle Play Store `testeur beta` peut donc etre
+insuffisant. Verifier l'inscription du compte dans la liste de testeurs internal ou utiliser le lien
+d'opt-in internal correct avant de forcer une desinstallation/reinstallation.
+
 Sur une build Play non-debuggable, `adb shell run-as com.tanuki75.noctalia ...` echoue normalement
 avec `package not debuggable`; ne pas utiliser cet echec comme signal RevenueCat. Pour extraire
 l'appUserId a reporter dans une preuve Play, vider les logs, declencher une action non payante comme
