@@ -69,6 +69,11 @@ const commands = [
     args: ['--check', 'scripts/check-play-qa-device.js'],
   },
   {
+    label: 'syntax: Play QA device wait helper',
+    command: process.execPath,
+    args: ['--check', 'scripts/wait-for-play-qa-device.js'],
+  },
+  {
     label: 'syntax: RevenueCat device app user id extractor',
     command: process.execPath,
     args: ['--check', 'scripts/extract-revenuecat-app-user-id.js'],
@@ -91,6 +96,7 @@ const commands = [
       'scripts/check-android-adb-device.test.js',
       'scripts/check-play-install-source.test.js',
       'scripts/check-play-qa-device.test.js',
+      'scripts/wait-for-play-qa-device.test.js',
       'scripts/extract-revenuecat-app-user-id.test.js',
       '--runInBand',
       '--watchman=false',
@@ -118,6 +124,8 @@ const commands = [
       'npm run android:play-install-source -- --device <adb-id>',
       'Play QA device preflight exists',
       'npm run android:play-qa-device -- --device <adb-id>',
+      'Play QA device wait helper exists',
+      'npm run android:play-qa-device:wait -- --device <adb-id>',
       'Play QA device preflight',
       'after installing the Internal Testing build from Play',
       'Google Play monthly base plan snapshot',
