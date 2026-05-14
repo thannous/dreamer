@@ -92,6 +92,13 @@ Interpretation rapide du diagnostic appareil:
   accepter la popup RSA de debogage USB.
 - `USB: VISIBLE` avec `ADB DEVICE: MISSING` ou `ADB DEVICE: UNAUTHORIZED` veut dire que le cable est bon mais que
   le debogage USB n'est pas encore autorise: deverrouiller le telephone et accepter l'empreinte RSA.
+- `USB: VISIBLE` avec `Android debug interface signature present` mais `ADB DEVICE: MISSING`
+  isole le probleme sur l'autorisation/transport ADB: macOS voit l'interface debug, mais
+  `adb devices -l` ne liste encore aucun transport. Sur le POCO/HyperOS, refaire le cycle cote
+  telephone: Developer options -> `Revoke USB debugging authorizations`, desactiver/reactiver
+  `USB debugging`, reconnecter en `Transfert de fichiers / Android Auto`, puis accepter la popup
+  RSA. Si la popup ne revient pas, utiliser Developer options -> `Wireless debugging` et garder
+  l'ecran d'appairage ouvert pendant `npm run android:device:physical`.
 - `WIRELESS: VISIBLE` veut dire que le telephone publie Wireless Debugging: lancer les commandes
   `adb pair` / `adb connect` affichees, puis relancer le preflight.
 - `USB: NOT VISIBLE` et `WIRELESS: NOT VISIBLE` ensemble bloquent totalement les preuves Play
@@ -540,6 +547,12 @@ mais pas une preuve Play Billing: les gates Play exigent toujours une installati
 
 Sources officielles recoupees le 2026-05-14 pour interpreter le blocage emulateur:
 
+- Android Developers documente `adb devices -l` comme la source de verite des transports ADB et
+  liste les etats `device`, `offline` et `no device`:
+  https://developer.android.com/tools/adb
+- Android Studio / Android Developers rappelle que le test sur appareil physique exige les options
+  developpeur et `USB debugging` active sur le device:
+  https://developer.android.com/studio/run/device
 - Google Play Billing classe `BILLING_UNAVAILABLE` comme un cas ou la facturation n'est pas
   disponible pour l'appareil, le compte, la region, le Play Store ou le moyen de paiement:
   https://developer.android.com/google/play/billing/errors
