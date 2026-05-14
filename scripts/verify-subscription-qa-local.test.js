@@ -41,6 +41,7 @@ describe('subscription QA local verifier', () => {
         'Play QA device preflight exists',
         'npm run android:play-qa-device -- --device <adb-id>',
         'Play QA device wait helper exists',
+        'npm run android:play-qa-device:wait while connecting one Play-installed tester phone',
         'npm run android:play-qa-device:wait -- --device <adb-id>',
         'Play QA device preflight',
         'after the device is ready',
