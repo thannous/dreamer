@@ -127,7 +127,7 @@ const commands = [
       'Play QA device wait helper exists',
       'npm run android:play-qa-device:wait -- --device <adb-id>',
       'Play QA device preflight',
-      'after installing the Internal Testing build from Play',
+      'after the device is ready',
       'Google Play monthly base plan snapshot',
       'Google Play annual base plan snapshot',
       'Play monthly base plan snapshot',

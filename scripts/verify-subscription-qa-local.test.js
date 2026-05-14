@@ -40,8 +40,10 @@ describe('subscription QA local verifier', () => {
         'npm run android:play-install-source -- --device <adb-id>',
         'Play QA device preflight exists',
         'npm run android:play-qa-device -- --device <adb-id>',
+        'Play QA device wait helper exists',
+        'npm run android:play-qa-device:wait -- --device <adb-id>',
         'Play QA device preflight',
-        'after installing the Internal Testing build from Play',
+        'after the device is ready',
         'Google Play monthly base plan snapshot',
         'Google Play annual base plan snapshot',
         'Play monthly base plan snapshot',
@@ -62,6 +64,7 @@ describe('subscription QA local verifier', () => {
         'syntax: Android release gates',
         'syntax: Play install source diagnostic',
         'syntax: Play QA device preflight',
+        'syntax: Play QA device wait helper',
         'unit: subscription QA scripts',
       ])
     );
@@ -72,6 +75,7 @@ describe('subscription QA local verifier', () => {
     expect(unitCommand.args).toContain('scripts/check-android-release-gates.test.js');
     expect(unitCommand.args).toContain('scripts/check-play-install-source.test.js');
     expect(unitCommand.args).toContain('scripts/check-play-qa-device.test.js');
+    expect(unitCommand.args).toContain('scripts/wait-for-play-qa-device.test.js');
   });
 
   it('returns a non-zero exit when a command expected to fail exits successfully', () => {
