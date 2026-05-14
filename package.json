@@ -86,7 +86,7 @@
     "test:e2e:android:all": "node ./scripts/run-maestro-android.js --suite all",
     "build:apk": "echo 'Usage: npm run build:apk:mock | npm run build:apk:prod'",
     "build:apk:mock": "EXPO_PUBLIC_MOCK_MODE=true EAS_LOCAL_BUILD_ARTIFACTS_DIR=dist eas build -p android --profile preview --local",
-    "build:apk:prod": "rm -f .env.local && EAS_LOCAL_BUILD_ARTIFACTS_DIR=dist eas build -p android --profile production-apk --local",
+    "build:apk:prod": "npm run android:gates:strict && rm -f .env.local && EAS_LOCAL_BUILD_ARTIFACTS_DIR=dist eas build -p android --profile production-apk --local",
     "test:perf": "vitest run --config vitest.config.mts",
     "subscription:qa:report": "node ./scripts/subscription-qa-report.js",
     "subscription:qa:verify-local": "node ./scripts/verify-subscription-qa-local.js",
