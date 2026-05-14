@@ -63,8 +63,10 @@ manquantes, pas d'un check local casse.
 premier diagnostic a lire avant de reprendre les tests reels: elle indique si les variables
 `REVENUECAT_QA_EMAIL` / `REVENUECAT_QA_PASSWORD` sont presentes, si l'approbation d'achat Test Store
 est definie, rappelle d'extraire l'app user id device avant d'enregistrer une preuve, rappelle de
-verifier `npm run android:device` jusqu'a `ADB: READY`, et bloque mentalement `play_monthly` tant
-que RevenueCat/Play ne renvoie pas un base plan mensuel `P1M` pour `prodfce10ef2a8`.
+verifier `npm run android:device` jusqu'a `ADB: READY`, puis distingue le snapshot Google Play direct
+du snapshot RevenueCat store-state. Si Google Play direct est `monthly/P1M/ACTIVE` mais RevenueCat
+lit encore `prodfce10ef2a8` en `annual/P1Y`, le rapport affiche `LAGGING`; sans preuve Google Play
+directe prete, cette contradiction reste bloquante pour `play_monthly`.
 
 Pour les gates Google Play, l'emulateur ne suffit pas. Avant de reprendre `play_monthly`,
 `play_annual` ou `play_cancellation_and_expiry`, verifier qu'un vrai telephone Android est visible:
@@ -88,8 +90,8 @@ Il verifie a la fois que `<adb-id>` est un telephone physique et que `installerP
 dans les commandes `npm run subscription:qa:evidence` des gates `play_*`.
 
 Apres chaque relecture live RevenueCat MCP de l'etat store Play, enregistrer le JSON compact dans le
-snapshot local gitignore. Le rapport QA le relit ensuite et garde `play_monthly` bloque si le
-produit mensuel live contredit la preuve manuelle:
+snapshot local gitignore. Le rapport QA le relit ensuite pour signaler si le produit mensuel
+RevenueCat expose bien `P1M`, ou s'il est seulement `LAGGING` alors que Google Play direct est pret:
 
 ```bash
 npm run subscription:qa:play-state -- --input revenuecat-store-state.json
@@ -360,10 +362,12 @@ Configuration attendue:
 
 Le 2026-05-11, RevenueCat MCP a confirme `status=ok` pour les deux produits Play, mais
 `prodfce10ef2a8` (`noctalia_plus:monthly`) renvoie encore `base_plan_id=annual` et
-`billing_period=P1Y`. Ne pas valider `play_monthly` tant que ce produit n'a pas ete corrige
-cote Play Console/RevenueCat. L'app utilise `product.subscriptionPeriod` comme garde locale
-pour eviter d'afficher un produit `P1Y` comme mensuel, mais cette garde ne remplace pas la
-configuration Store correcte.
+`billing_period=P1Y`. Depuis le refresh Google Play direct du 2026-05-14T15:21:48Z, l'API officielle
+confirme pourtant `monthly/P1M/ACTIVE`; le rapport QA signale donc RevenueCat comme `LAGGING` et
+peut accepter une preuve `play_monthly` seulement si elle vient d'une vraie installation Play
+Internal Testing, confirme `P1M`, et montre que le backend converge. L'app utilise
+`product.subscriptionPeriod` comme garde locale pour eviter d'afficher un produit `P1Y` comme
+mensuel, mais cette garde ne remplace pas la preuve d'achat Play reelle.
 
 Correction Play Console a faire avant de reprendre `play_monthly`:
 
@@ -372,7 +376,9 @@ Correction Play Console a faire avant de reprendre `play_monthly`:
 3. Verifier les `Base plans and offers`.
 4. Le base plan utilise par `noctalia_plus:monthly` doit etre auto-renewing avec billing period mensuel (`P1M` cote API/RevenueCat), pas `annual`/`P1Y`.
 5. Si le base plan active est deja `annual`, creer ou selectionner un base plan mensuel dedie, verifier disponibilite regionale/prix, puis reactiver/sauvegarder.
-6. Relancer une lecture RevenueCat MCP `get_product_store_state` sur `prodfce10ef2a8` et ne continuer que si `billing_period=P1M`.
+6. Relancer une lecture RevenueCat MCP `get_product_store_state` sur `prodfce10ef2a8`; si RevenueCat
+   reste en retard mais que Google Play direct est toujours `monthly/P1M/ACTIVE`, continuer seulement
+   avec une preuve Play-installed + backend convergee.
 
 References officielles Google Play: `Create and manage subscriptions` explique que les base plan IDs
 doivent etre planifies car ils ne peuvent plus etre changes/reutilises apres activation, et

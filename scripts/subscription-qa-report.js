@@ -275,10 +275,14 @@ function getPlayMonthlyReadinessRow() {
   }
 
   const summary = summarizeSnapshotBasePlans(monthlyState);
+  const hasMonthlyBasePlan = snapshotHasBillingPeriod(monthlyState, 'P1M');
+  const googlePlayMonthlyReady = isGooglePlayMonthlyReady();
   return [
-    snapshotHasBillingPeriod(monthlyState, 'P1M') ? 'READY' : 'BLOCKED',
+    hasMonthlyBasePlan ? 'READY' : googlePlayMonthlyReady ? 'LAGGING' : 'BLOCKED',
     'Play monthly base plan snapshot',
-    `${EXPECTED.playProductIds.monthly}: ${summary}; expected P1M`,
+    `${EXPECTED.playProductIds.monthly}: ${summary}; expected P1M${
+      !hasMonthlyBasePlan && googlePlayMonthlyReady ? '; Google Play direct snapshot is ready' : ''
+    }`,
   ];
 }
 
