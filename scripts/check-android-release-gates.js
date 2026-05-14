@@ -115,9 +115,11 @@ function getAdbDeviceVisibilityCheck(spawn = spawnSync, adbCommand = 'adb', plat
       .filter(Boolean)
       .join('; '),
     remediation:
-      mdns.supported && mdns.next
-        ? mdns.next
-        : 'Start an Android emulator for local checks, connect/unlock a physical Android device for Play QA, or enable Wireless debugging on the phone and keep the pairing screen open.',
+      usb.supported && usb.visible
+        ? 'Unlock the phone, enable USB debugging, select File transfer / Android Auto USB mode, and accept the RSA fingerprint prompt. If no prompt appears, toggle USB debugging or revoke USB debugging authorizations, then reconnect.'
+        : mdns.supported && mdns.next
+          ? mdns.next
+          : 'Start an Android emulator for local checks, connect/unlock a physical Android device for Play QA, or enable Wireless debugging on the phone and keep the pairing screen open.',
   };
 }
 

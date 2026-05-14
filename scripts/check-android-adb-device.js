@@ -73,7 +73,7 @@ function summarizeAdbState(devices) {
   }
   return {
     status: 'missing',
-    message: 'No ADB device is visible.',
+    message: 'No device is visible to adb.',
     next: 'Enable USB debugging, use File transfer / Android Auto USB mode, and accept the RSA prompt.',
   };
 }
@@ -252,7 +252,8 @@ function formatReport(report) {
     lines.push('[android-device] Mode: physical device required');
   }
   lines.push(`[android-device] adb: ${report.adbCommand || 'not found'}`);
-  lines.push(`[android-device] ADB: ${report.adb.status.toUpperCase()} - ${report.adb.message}`);
+  const adbLabel = ['missing-adb', 'adb-error'].includes(report.adb.status) ? 'ADB' : 'ADB DEVICE';
+  lines.push(`[android-device] ${adbLabel}: ${report.adb.status.toUpperCase()} - ${report.adb.message}`);
   if (report.adb.next) lines.push(`  Next: ${report.adb.next}`);
   if (report.devices.length > 0) {
     for (const device of report.devices) {

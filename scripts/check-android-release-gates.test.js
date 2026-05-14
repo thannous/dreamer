@@ -396,6 +396,30 @@ describe('android release gate preflight', () => {
     ).toBe(true);
   });
 
+  it('prioritizes USB debugging authorization when macOS sees a phone but adb has no ready device', () => {
+    const root = setupFixture();
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn: spawnWithTools({
+        adbDevices: false,
+        adbUsbStdout: '"USB Product Name" = "POCO F8 Ultra"\n"USB Vendor Name" = "Xiaomi"\n',
+      }),
+      platform: 'darwin',
+    });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'blocked' &&
+          check.title === 'Android ADB device visibility' &&
+          check.details.includes('USB visible') &&
+          check.remediation.includes('accept the RSA fingerprint prompt') &&
+          check.remediation.includes('revoke USB debugging authorizations')
+      )
+    ).toBe(true);
+  });
+
   it('does not treat emulator mDNS as phone wireless debugging', () => {
     const root = setupFixture();
     const report = checkAndroidReleaseGates({
