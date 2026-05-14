@@ -88,8 +88,8 @@ function getAdbDeviceVisibilityCheck(spawn = spawnSync, adbCommand = 'adb', plat
   const usbDetail = usb.supported
     ? `USB ${usb.visible ? 'visible' : 'not visible'}: ${usb.message}`
     : null;
-  if (mdns.supported && mdns.services.length > 0) {
-    const serviceList = mdns.services
+  if (mdns.supported && mdns.visible) {
+    const serviceList = (mdns.phoneServices || mdns.services)
       .map((service) => service.address || service.instance)
       .filter(Boolean)
       .join(', ');
@@ -108,7 +108,9 @@ function getAdbDeviceVisibilityCheck(spawn = spawnSync, adbCommand = 'adb', plat
       .filter(Boolean)
       .join('; '),
     remediation:
-      'Start an Android emulator for local checks, connect/unlock a physical Android device for Play QA, or enable Wireless debugging on the phone and keep the pairing screen open.',
+      mdns.supported && mdns.next
+        ? mdns.next
+        : 'Start an Android emulator for local checks, connect/unlock a physical Android device for Play QA, or enable Wireless debugging on the phone and keep the pairing screen open.',
   };
 }
 

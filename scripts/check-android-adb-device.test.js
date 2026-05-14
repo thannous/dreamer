@@ -2,6 +2,7 @@ const {
   buildAdbMdnsCommands,
   checkAndroidAdbDevice,
   formatReport,
+  isLikelyEmulatorMdnsService,
   isLikelyEmulator,
   parseAdbDevices,
   parseAdbMdnsServices,
@@ -152,7 +153,7 @@ describe('android ADB device diagnostic', () => {
     const report = checkAndroidAdbDevice({
       spawn: spawnFor({
         adbStdout: 'List of devices attached\n',
-        mdnsStdout: 'List of discovered mdns services\nadb-123._adb._tcp.\t_adb._tcp.\t10.0.2.15:5555\n',
+        mdnsStdout: 'List of discovered mdns services\nadb-123._adb._tcp.\t_adb._tcp.\t192.168.1.24:5555\n',
       }),
       platform: 'darwin',
     });
@@ -163,5 +164,25 @@ describe('android ADB device diagnostic', () => {
     expect(report.mdns.message).toContain('non-pairing service');
     expect(report.mdns.next).toContain('Wireless debugging');
     expect(report.mdns.next).not.toContain('adb pair');
+  });
+
+  it('ignores emulator mDNS services for physical Play validation', () => {
+    const report = checkAndroidAdbDevice({
+      spawn: spawnFor({
+        adbStdout: 'List of devices attached\n',
+        mdnsStdout:
+          'List of discovered mdns services\nadb-EMULATOR36X5X11X0\t_adb._tcp\t10.0.2.16:5555\n',
+      }),
+      platform: 'darwin',
+      requirePhysical: true,
+    });
+
+    expect(isLikelyEmulatorMdnsService(report.mdns.services[0])).toBe(true);
+    expect(report.mdns.visible).toBe(false);
+    expect(report.mdns.phoneServices).toHaveLength(0);
+    expect(report.mdns.emulatorServices).toHaveLength(1);
+    expect(report.mdns.message).toContain('only sees 1 emulator service');
+    expect(formatReport(report)).toContain('WIRELESS: NOT VISIBLE');
+    expect(formatReport(report)).toContain('Wireless emulator ignored _adb._tcp: 10.0.2.16:5555');
   });
 });

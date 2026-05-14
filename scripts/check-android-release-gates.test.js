@@ -275,6 +275,31 @@ describe('android release gate preflight', () => {
     ).toBe(true);
   });
 
+  it('does not treat emulator mDNS as phone wireless debugging', () => {
+    const root = setupFixture();
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn: spawnWithTools({
+        adbDevices: false,
+        adbMdnsStdout:
+          'List of discovered mdns services\nadb-EMULATOR36X5X11X0\t_adb._tcp\t10.0.2.16:5555\n',
+      }),
+      platform: 'darwin',
+    });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'blocked' &&
+          check.title === 'Android ADB device visibility' &&
+          check.details.includes('ADB mDNS only sees 1 emulator service') &&
+          !check.details.includes('wireless debugging is visible') &&
+          check.remediation.includes('emulator mDNS services are ignored')
+      )
+    ).toBe(true);
+  });
+
   it('uses adb from the standard macOS Android SDK location when PATH misses it', () => {
     const root = setupFixture();
     const fakeHome = path.join(root, 'home');
