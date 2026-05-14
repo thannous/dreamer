@@ -11,7 +11,14 @@ const {
 
 const SCRIPT = path.join(__dirname, 'check-play-qa-device.js');
 
-function spawnFor({ adbDevicesStdout, dumpsysStdout, dumpsysStatus = 0, whichAdb = true } = {}) {
+function spawnFor({
+  adbDevicesStdout,
+  dumpsysStdout,
+  dumpsysStatus = 0,
+  mdnsStdout = 'List of discovered mdns services\n',
+  usbStdout = '',
+  whichAdb = true,
+} = {}) {
   return (command, args) => {
     if (command === 'which' && args[0] === 'adb') {
       return { status: whichAdb ? 0 : 1, stdout: whichAdb ? '/usr/bin/adb\n' : '', stderr: '' };
@@ -19,12 +26,18 @@ function spawnFor({ adbDevicesStdout, dumpsysStdout, dumpsysStatus = 0, whichAdb
     if (command === 'adb' && args[0] === 'devices') {
       return { status: 0, stdout: adbDevicesStdout || 'List of devices attached\n', stderr: '' };
     }
+    if (command === 'adb' && args[0] === 'mdns') {
+      return { status: 0, stdout: mdnsStdout, stderr: '' };
+    }
     if (command === 'adb' && args.includes('dumpsys')) {
       return {
         status: dumpsysStatus,
         stdout: dumpsysStdout || '',
         stderr: dumpsysStatus === 0 ? '' : 'dumpsys failed',
       };
+    }
+    if (command === 'ioreg') {
+      return { status: 0, stdout: usbStdout, stderr: '' };
     }
     return { status: 1, stdout: '', stderr: '' };
   };
@@ -106,6 +119,22 @@ describe('Play RevenueCat QA device preflight', () => {
 
     expect(report.ok).toBe(false);
     expect(report.message).toContain('No ready physical Android device');
+  });
+
+  it('surfaces USB and wireless diagnostics when no physical device is ready', () => {
+    const report = checkPlayQaDevice({
+      spawn: spawnFor({
+        adbDevicesStdout: 'List of devices attached\n',
+        mdnsStdout:
+          'List of discovered mdns services\nadb-123._adb-tls-pairing._tcp.\t_adb-tls-pairing._tcp.\t192.168.1.24:37123\n',
+      }),
+      platform: 'darwin',
+    });
+
+    expect(report.ok).toBe(false);
+    expect(formatReport(report)).toContain('usb: NOT VISIBLE');
+    expect(formatReport(report)).toContain('wireless: VISIBLE');
+    expect(formatReport(report)).toContain('wirelessCommand: adb pair 192.168.1.24:37123 <pair-code>');
   });
 
   it('fails when the app is sideloaded on the physical device', () => {
