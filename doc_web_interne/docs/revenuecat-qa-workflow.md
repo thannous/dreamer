@@ -286,6 +286,13 @@ npm run subscription:qa:evidence -- \
 ```
 
 `--eas-build-id` doit etre l'UUID EAS du build installe, pas seulement le numero de build Android.
+Sur le POCO `192.168.1.116:41183`, l'installation Play observee le 2026-05-15 est
+`versionCode=12`, `versionName=1.1.0`; `eas build:list` la rattache au build EAS
+`9df05e30-0569-4f7c-8af9-62c692fa4c3a` (`appBuildVersion=12`). Cette valeur peut servir pour
+une preuve Play si l'achat est effectue sur ce build, mais le build Internal Testing le plus recent
+documente est `ddbc756d-8db6-4337-80fa-68cc86f8b62a` (`versionCode=24`, `versionName=1.2.0`).
+Pour une validation de release robuste, preferer mettre a jour l'app depuis Play avant d'appuyer sur
+`S'abonner`, puis re-verifier `dumpsys package` et l'`easBuildId` correspondant.
 `--device-id` doit etre l'id ADB d'un telephone physique, pas un AVD `emulator-*`.
 La preuve Play doit confirmer la source d'installation Play Internal Testing: le champ structure
 `--installer-package-name` doit valoir `com.android.vending`, et le texte de preuve doit contenir
