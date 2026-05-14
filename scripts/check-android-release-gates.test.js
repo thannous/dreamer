@@ -135,6 +135,14 @@ describe('android release gate preflight', () => {
           check.remediation.includes('Android OAuth client')
       )
     ).toBe(true);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.title === 'Play-installed RevenueCat purchase and restore' &&
+          check.details.includes('installerPackageName=com.android.vending') &&
+          check.remediation.includes('android:play-install-source')
+      )
+    ).toBe(true);
   });
 
   it('passes the Google Cloud project number check from a local snapshot', () => {

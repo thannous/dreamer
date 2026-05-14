@@ -13,6 +13,7 @@
     "android": "expo run:android",
     "android:device": "node ./scripts/check-android-adb-device.js --report-only",
     "android:device:strict": "node ./scripts/check-android-adb-device.js",
+    "android:play-install-source": "node ./scripts/check-play-install-source.js",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "build:web": "npx expo export -p web && npx workbox-cli generateSW workbox-config.js",
