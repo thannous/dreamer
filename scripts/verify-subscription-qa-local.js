@@ -34,6 +34,11 @@ const commands = [
     args: ['--check', 'scripts/check-android-adb-device.js'],
   },
   {
+    label: 'syntax: RevenueCat device app user id extractor',
+    command: process.execPath,
+    args: ['--check', 'scripts/extract-revenuecat-app-user-id.js'],
+  },
+  {
     label: 'unit: subscription QA scripts',
     command: npmCommand,
     args: [
@@ -45,6 +50,7 @@ const commands = [
       'scripts/run-subscription-account-switch.test.js',
       'scripts/verify-subscription-qa-local.test.js',
       'scripts/check-android-adb-device.test.js',
+      'scripts/extract-revenuecat-app-user-id.test.js',
       '--runInBand',
       '--watchman=false',
     ],
@@ -57,6 +63,7 @@ const commands = [
       '## Current Session Readiness',
       'Test Store signed-in account env',
       'Account switch second account env',
+      'Device app user id extraction',
       'RevenueCat product prodfce10ef2a8 must expose billing period P1M',
     ],
   },
