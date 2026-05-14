@@ -902,7 +902,7 @@ const runtimeReadiness = [
   [
     'CHECK',
     'Play QA device preflight',
-    'Run npm run android:play-qa-device:wait -- --device <adb-id> while connecting the Play-installed tester phone, or npm run android:play-qa-device -- --device <adb-id> after the device is ready',
+    'Run npm run android:play-qa-device:wait while connecting one Play-installed tester phone, add -- --device <adb-id> when multiple devices are ready, or run npm run android:play-qa-device -- --device <adb-id> after the device is ready',
   ],
   getGooglePlayMonthlyReadinessRow(),
   getGooglePlayAnnualReadinessRow(),

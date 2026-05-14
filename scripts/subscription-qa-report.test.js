@@ -180,6 +180,7 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('before recording play_monthly, play_annual, or play_cancellation_and_expiry evidence');
     expect(result.stdout).toContain('checks USB and ADB Wireless Debugging mDNS visibility');
     expect(result.stdout).toContain('Play QA device preflight');
+    expect(result.stdout).toContain('npm run android:play-qa-device:wait while connecting one Play-installed tester phone');
     expect(result.stdout).toContain('npm run android:play-qa-device:wait -- --device <adb-id>');
     expect(result.stdout).toContain('after the device is ready');
     expect(result.stdout).toContain('Google Play monthly base plan snapshot');

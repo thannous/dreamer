@@ -34,6 +34,7 @@ describe('subscription QA evidence updater', () => {
     const result = runUpdate(['--help']);
 
     expect(result.status).toBe(0);
+    expect(result.stdout).toContain('npm run android:play-qa-device:wait');
     expect(result.stdout).toContain('npm run android:play-qa-device:wait -- --device <adb-id>');
     expect(result.stdout).toContain('npm run android:play-qa-device -- --device <adb-id>');
     expect(result.stdout).toContain('play_annual evidence must also confirm base plan P1Y');
