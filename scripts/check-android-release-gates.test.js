@@ -70,6 +70,32 @@ function setupFixture() {
 }
 
 describe('android release gate preflight', () => {
+  function spawnWithTools({ subscriptionGateStatus = 0, adbDevices = true } = {}) {
+    return (command, args) => {
+      if (command === 'which' && args[0] === 'adb') return { status: 0 };
+      if (command === 'which' && args[0] === 'maestro') return { status: 0 };
+      if (command === 'adb' && args[0] === 'devices') {
+        return {
+          status: 0,
+          stdout: adbDevices
+            ? 'List of devices attached\nemulator-5554\tdevice\n'
+            : 'List of devices attached\n',
+        };
+      }
+      if (/^npm(\.cmd)?$/.test(command) && args.join(' ') === 'run subscription:qa:release-gate') {
+        return {
+          status: subscriptionGateStatus,
+          stdout:
+            subscriptionGateStatus === 0
+              ? 'Full RevenueCat workflow is complete.\n'
+              : 'Manual or external gates remaining: 4\nFull RevenueCat workflow is not complete: 4 manual or external gate(s) still require evidence.\n',
+          stderr: '',
+        };
+      }
+      return { status: 1, stdout: '', stderr: '' };
+    };
+  }
+
   it('parses dotenv values without exposing comments or quotes', () => {
     expect(parseDotEnv("A=one\n# nope\nB='two'\nC=\"three\"")).toEqual({
       A: 'one',
@@ -80,17 +106,7 @@ describe('android release gate preflight', () => {
 
   it('passes local config checks and keeps manual gates non-fatal', () => {
     const root = setupFixture();
-    const spawn = (command, args) => {
-      if (command === 'which' && args[0] === 'adb') return { status: 0 };
-      if (command === 'which' && args[0] === 'maestro') return { status: 0 };
-      if (command === 'adb' && args[0] === 'devices') {
-        return {
-          status: 0,
-          stdout: 'List of devices attached\nemulator-5554\tdevice\n',
-        };
-      }
-      return { status: 1 };
-    };
+    const spawn = spawnWithTools();
 
     const report = checkAndroidReleaseGates({ rootDir: root, spawn });
 
@@ -98,6 +114,24 @@ describe('android release gate preflight', () => {
     expect(report.counts.fail || 0).toBe(0);
     expect(report.counts.blocked || 0).toBe(0);
     expect(report.counts.manual).toBeGreaterThan(0);
+  });
+
+  it('fails when the RevenueCat subscription release gate is still red', () => {
+    const root = setupFixture();
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn: spawnWithTools({ subscriptionGateStatus: 1 }),
+    });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'fail' &&
+          check.title === 'RevenueCat subscription QA release gate' &&
+          check.details.includes('4 manual or external gate(s) still require evidence')
+      )
+    ).toBe(true);
   });
 
   it('blocks when Android CLI tooling is unavailable', () => {
@@ -124,6 +158,9 @@ describe('android release gate preflight', () => {
     const spawn = (command, args) => {
       if (command === 'which' && args[0] === 'adb') return { status: 1 };
       if (command === 'which' && args[0] === 'maestro') return { status: 0 };
+      if (/^npm(\.cmd)?$/.test(command) && args.join(' ') === 'run subscription:qa:release-gate') {
+        return { status: 0, stdout: 'ok\n', stderr: '' };
+      }
       if (command === adbPath && args[0] === 'devices') {
         return {
           status: 0,
@@ -154,6 +191,9 @@ describe('android release gate preflight', () => {
     const spawn = (command, args) => {
       if (command === 'which' && args[0] === 'maestro') return { status: 1 };
       if (command === 'which' && args[0] === 'adb') return { status: 0 };
+      if (/^npm(\.cmd)?$/.test(command) && args.join(' ') === 'run subscription:qa:release-gate') {
+        return { status: 0, stdout: 'ok\n', stderr: '' };
+      }
       if (command === 'adb' && args[0] === 'devices') {
         return {
           status: 0,
@@ -185,7 +225,7 @@ describe('android release gate preflight', () => {
 
     const report = checkAndroidReleaseGates({
       rootDir: root,
-      spawn: () => ({ status: 0, stdout: 'List of devices attached\nemulator-5554\tdevice\n' }),
+      spawn: spawnWithTools(),
     });
 
     expect(report.ok).toBe(false);
