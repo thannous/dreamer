@@ -65,7 +65,7 @@ Installer depuis la piste Internal Testing, pas en sideload.
 - [ ] Google Sign-In.
 - [ ] RevenueCat offering load.
 - [ ] Achat test et restore.
-- [ ] Enregistrer les preuves `play_monthly`, `play_annual` et `play_cancellation_and_expiry` avec `npm run subscription:qa:evidence -- --device-id <adb-id> --installer-package-name com.android.vending`.
+- [ ] Enregistrer les preuves `play_monthly`, `play_annual` et `play_cancellation_and_expiry` avec `npm run subscription:qa:evidence -- --device-id <adb-id> --installer-package-name com.android.vending --version-code <installed-version-code>`.
 - [ ] Relancer `npm run subscription:qa:release-gate` puis `npm run android:gates:strict`.
 - [ ] Limite quota vers paywall.
 - [ ] Enregistrement audio et fallback texte.
