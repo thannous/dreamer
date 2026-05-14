@@ -69,6 +69,18 @@ function setupFixture() {
   return root;
 }
 
+function writeGoogleCloudProjectSnapshot(root, overrides = {}) {
+  writeJson(root, 'doc_web_interne/docs/google-cloud-project-state.local.json', {
+    project_number: '359653779023',
+    project_id: 'gen-lang-client-0336445544',
+    name: 'dreamweaver',
+    lifecycle_state: 'ACTIVE',
+    checked_at: '2026-05-14T12:00:00.000Z',
+    source: 'test',
+    ...overrides,
+  });
+}
+
 describe('android release gate preflight', () => {
   function spawnWithTools({ subscriptionGateStatus = 0, adbDevices = true } = {}) {
     return (command, args) => {
@@ -121,6 +133,39 @@ describe('android release gate preflight', () => {
           check.title === 'Play App Signing SHA-1 for Google OAuth' &&
           check.details.includes('BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59') &&
           check.remediation.includes('Android OAuth client')
+      )
+    ).toBe(true);
+  });
+
+  it('passes the Google Cloud project number check from a local snapshot', () => {
+    const root = setupFixture();
+    writeGoogleCloudProjectSnapshot(root);
+
+    const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'pass' &&
+          check.title === 'Google Cloud project number confirmation' &&
+          check.details.includes('359653779023 -> gen-lang-client-0336445544/ACTIVE')
+      )
+    ).toBe(true);
+  });
+
+  it('blocks the Google Cloud project number check when the snapshot disagrees with env', () => {
+    const root = setupFixture();
+    writeGoogleCloudProjectSnapshot(root, { project_number: '000000000000' });
+
+    const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'blocked' &&
+          check.title === 'Google Cloud project number confirmation' &&
+          check.details.includes('does not match')
       )
     ).toBe(true);
   });

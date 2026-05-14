@@ -29,6 +29,11 @@ const commands = [
     args: ['--check', 'scripts/update-google-play-subscription-state.js'],
   },
   {
+    label: 'syntax: Google Cloud project state updater',
+    command: process.execPath,
+    args: ['--check', 'scripts/update-google-cloud-project-state.js'],
+  },
+  {
     label: 'syntax: guarded purchase runner',
     command: process.execPath,
     args: ['--check', 'scripts/run-subscription-teststore-purchase.js'],
@@ -58,6 +63,7 @@ const commands = [
       'scripts/update-subscription-qa-evidence.test.js',
       'scripts/update-revenuecat-play-store-state.test.js',
       'scripts/update-google-play-subscription-state.test.js',
+      'scripts/update-google-cloud-project-state.test.js',
       'scripts/run-subscription-teststore-purchase.test.js',
       'scripts/run-subscription-account-switch.test.js',
       'scripts/verify-subscription-qa-local.test.js',

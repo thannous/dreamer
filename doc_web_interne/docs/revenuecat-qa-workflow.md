@@ -279,6 +279,17 @@ npx eas build -p android --profile preview
 pas toutes fermees. Au 2026-05-14, il echoue encore sur `RevenueCat subscription QA release gate`
 avec 4 gates restantes.
 
+Pour rafraichir la preuve locale du project number Google Cloud utilise par Play Integrity:
+
+```bash
+gcloud projects list --filter='PROJECT_NUMBER=359653779023' --format=json \
+  | npm run android:google-cloud-project-state
+```
+
+Cette commande ecrit `doc_web_interne/docs/google-cloud-project-state.local.json` (gitignore).
+`android:gates:strict` lit ce snapshot pour passer le gate `Google Cloud project number confirmation`
+sans relancer `gcloud` a chaque preflight.
+
 Pour generer un build Store installable via Google Play Internal Testing, utiliser plutot:
 
 ```bash

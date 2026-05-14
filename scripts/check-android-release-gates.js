@@ -7,6 +7,7 @@ const { spawnSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '..');
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const PLAY_INTEGRITY_PROJECT_NUMBER_KEY = 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER';
+const EXPECTED_GOOGLE_CLOUD_PROJECT_ID = 'gen-lang-client-0336445544';
 const REQUIRED_EAS_PROFILES = ['preview', 'release', 'production-apk', 'production'];
 const REQUIRED_TESTSTORE_PUBLIC_ENV = [
   'EXPO_PUBLIC_API_URL',
@@ -130,6 +131,67 @@ function summarizeCommandOutput(output) {
   return (important.length > 0 ? important : lines.slice(-3)).join(' ');
 }
 
+function readGoogleCloudProjectState({
+  rootDir = ROOT,
+  existsSync = fs.existsSync,
+  readFileSync = fs.readFileSync,
+  env = process.env,
+} = {}) {
+  const filePath = env.GOOGLE_CLOUD_PROJECT_STATE_PATH
+    ? path.resolve(rootDir, env.GOOGLE_CLOUD_PROJECT_STATE_PATH)
+    : path.join(rootDir, 'doc_web_interne/docs/google-cloud-project-state.local.json');
+  if (!existsSync(filePath)) {
+    return { snapshot: null, error: null, filePath };
+  }
+  try {
+    return { snapshot: JSON.parse(readFileSync(filePath, 'utf8')), error: null, filePath };
+  } catch (error) {
+    return {
+      snapshot: null,
+      error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
+      filePath,
+    };
+  }
+}
+
+function getGoogleCloudProjectCheck(envProjectNumber, projectStateResult) {
+  const snapshot = projectStateResult.snapshot;
+  if (projectStateResult.error) {
+    return {
+      status: 'blocked',
+      details: `Google Cloud project snapshot is invalid: ${projectStateResult.error}`,
+      remediation: 'Regenerate doc_web_interne/docs/google-cloud-project-state.local.json from gcloud projects list.',
+    };
+  }
+  if (!snapshot) {
+    return {
+      status: 'manual',
+      details: `${PLAY_INTEGRITY_PROJECT_NUMBER_KEY} is locally configured, but no Google Cloud project snapshot is present.`,
+      remediation:
+        "Run gcloud projects list --filter='PROJECT_NUMBER=359653779023' --format=json | npm run android:google-cloud-project-state, then verify Play Console / Google Cloud before release.",
+    };
+  }
+  if (snapshot.project_number !== envProjectNumber) {
+    return {
+      status: 'blocked',
+      details: `Google Cloud project snapshot project_number=${snapshot.project_number || 'missing'} does not match ${PLAY_INTEGRITY_PROJECT_NUMBER_KEY}=${envProjectNumber || 'missing'}.`,
+      remediation: 'Regenerate the Google Cloud project snapshot for the configured Play Integrity project number.',
+    };
+  }
+  if (snapshot.project_id !== EXPECTED_GOOGLE_CLOUD_PROJECT_ID || snapshot.lifecycle_state !== 'ACTIVE') {
+    return {
+      status: 'blocked',
+      details: `Google Cloud project snapshot is ${snapshot.project_id || 'missing'}/${snapshot.lifecycle_state || 'missing'}; expected ${EXPECTED_GOOGLE_CLOUD_PROJECT_ID}/ACTIVE.`,
+      remediation: 'Verify the Google Cloud project number and regenerate the snapshot from the correct project.',
+    };
+  }
+  return {
+    status: 'pass',
+    details: `${envProjectNumber} -> ${snapshot.project_id}/${snapshot.lifecycle_state} from ${path.relative(ROOT, projectStateResult.filePath)}.`,
+    remediation: 'Keep the Google Cloud project snapshot fresh before release.',
+  };
+}
+
 function checkSubscriptionQaReleaseGate(rootDir, spawn = spawnSync, env = process.env) {
   const result = spawn(npmCommand, ['run', 'subscription:qa:release-gate'], {
     cwd: rootDir,
@@ -162,6 +224,7 @@ function checkAndroidReleaseGates({
   const easJson = readJson(rootDir, 'eas.json');
   const envPath = path.join(rootDir, '.env.teststore');
   const envValues = existsSync(envPath) ? parseDotEnv(readFileSync(envPath, 'utf8')) : {};
+  const projectStateResult = readGoogleCloudProjectState({ rootDir, existsSync, readFileSync, env });
 
   const profilesMissingProjectNumber = REQUIRED_EAS_PROFILES.filter((profile) => {
     const value = easJson.build?.[profile]?.env?.[PLAY_INTEGRITY_PROJECT_NUMBER_KEY];
@@ -270,13 +333,8 @@ function checkAndroidReleaseGates({
     'Install Maestro CLI and make maestro available in PATH.'
   );
 
-  addCheck(
-    checks,
-    'manual',
-    'Google Cloud project number confirmation',
-    `${PLAY_INTEGRITY_PROJECT_NUMBER_KEY} is locally configured, but Google Cloud ownership cannot be proven from this repo.`,
-    'Confirm the project number in Google Cloud / Play Console before release.'
-  );
+  const projectCheck = getGoogleCloudProjectCheck(envValues[PLAY_INTEGRITY_PROJECT_NUMBER_KEY], projectStateResult);
+  addCheck(checks, projectCheck.status, 'Google Cloud project number confirmation', projectCheck.details, projectCheck.remediation);
   addCheck(
     checks,
     'manual',
