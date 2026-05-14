@@ -113,6 +113,7 @@ const commands = [
       'Device app user id extraction',
       'Physical Android device visibility',
       'npm run android:device:physical',
+      'checks USB and ADB Wireless Debugging mDNS visibility',
       'Play install source diagnostic exists',
       'npm run android:play-install-source -- --device <adb-id>',
       'Play QA device preflight exists',
