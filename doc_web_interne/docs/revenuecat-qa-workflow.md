@@ -354,6 +354,8 @@ Scenarios a valider sur un build installe via Play Internal Testing:
 
 Preuve attendue:
 
+- avant toute preuve Play, `npm run android:play-install-source -- --device <adb-id>` doit afficher
+  `installerPackageName: com.android.vending`
 - RevenueCat Customer affiche le meme app user id que Supabase `auth.users.id`
 - la preuve locale de chaque gate Play contient l'id du build EAS installe
 - `subscription_state` contient `tier=plus`, `is_active=true`, `product_id` correct
