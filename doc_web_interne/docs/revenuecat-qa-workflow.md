@@ -137,19 +137,20 @@ L'appUserId attendu est le UUID Supabase passe a `Purchases.logIn(...)`; c'est l
 utilisee pour l'achat, le restore, la convergence webhook et la preuve `subscription:qa:evidence`.
 
 Le preflight non destructif de la feuille Google Play peut etre pousse jusqu'a l'ecran de
-confirmation, mais il ne ferme pas `play_monthly` tant que le bouton final `S'abonner` n'est pas
-appuye. Sur le POCO Play-installe le 2026-05-15, la feuille mensuelle a confirme:
+confirmation, mais il ne ferme pas les gates `play_*` tant que le bouton final `S'abonner` n'est pas
+appuye. Sur le POCO Play-installe le 2026-05-15, les feuilles mensuelle et annuelle ont confirme:
 
 - app `Noctalia Plus` / package app `Noctalia: Smart Dream Journal`
-- prix `3,59 EUR/5 min`
+- prix mensuel `3,59 EUR/5 min`
+- prix annuel `22,99 EUR/30 min`
 - moyen de paiement `Carte test, toujours approuvee`
 - message Google Play: `Il s'agit d'un abonnement test ... Il ne vous sera pas facture`
-- fermeture volontaire de la feuille, avec log RevenueCat `PurchaseCancelledError` pour
-  `$rc_monthly`
+- fermeture volontaire des feuilles, avec logs RevenueCat `PurchaseCancelledError` pour
+  `$rc_monthly` et `$rc_annual`
 
 Ce preflight prouve que le compte testeur peut ouvrir Play Billing et que l'achat est une transaction
-test non facturee. La preuve `play_monthly` doit toutefois attendre une validation effective du
-bouton `S'abonner`, puis un refresh/convergence backend observee.
+test non facturee. Les preuves `play_monthly` et `play_annual` doivent toutefois attendre une
+validation effective du bouton `S'abonner`, puis un refresh/convergence backend observee.
 
 Apres chaque relecture live RevenueCat MCP de l'etat store Play, enregistrer le JSON compact dans le
 snapshot local gitignore. Le rapport QA le relit ensuite pour signaler si le produit mensuel
