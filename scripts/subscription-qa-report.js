@@ -9,6 +9,9 @@ const requireFullCoverage = args.has('--require-full');
 const evidencePath = process.env.REVENUECAT_QA_EVIDENCE_PATH
   ? path.resolve(ROOT, process.env.REVENUECAT_QA_EVIDENCE_PATH)
   : path.join(ROOT, 'doc_web_interne/docs/revenuecat-qa-evidence.local.json');
+const playStoreStatePath = process.env.REVENUECAT_PLAY_STORE_STATE_PATH
+  ? path.resolve(ROOT, process.env.REVENUECAT_PLAY_STORE_STATE_PATH)
+  : path.join(ROOT, 'doc_web_interne/docs/revenuecat-play-store-state.local.json');
 
 if (args.has('--help') || args.has('-h')) {
   console.log(`
@@ -34,6 +37,10 @@ const EXPECTED = {
   offering: 'default',
   testStoreProducts: ['monthly', 'yearly'],
   playProducts: ['noctalia_plus:monthly', 'noctalia_plus:annual'],
+  playProductIds: {
+    monthly: 'prodfce10ef2a8',
+    annual: 'prod98337b31be',
+  },
   manualGateKeys: [
     'test_store_monthly',
     'test_store_annual',
@@ -120,6 +127,95 @@ function readEvidenceResult() {
   }
 }
 
+function readPlayStoreStateResult() {
+  if (!fs.existsSync(playStoreStatePath)) {
+    return { snapshot: null, error: null };
+  }
+  try {
+    return { snapshot: readJsonFile(playStoreStatePath), error: null };
+  } catch (error) {
+    return {
+      snapshot: null,
+      error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
+    };
+  }
+}
+
+function getSnapshotProductState(snapshot, productId) {
+  if (!snapshot) return null;
+  if (Array.isArray(snapshot)) {
+    return snapshot.find((item) => item?.product_id === productId || item?.productId === productId) ?? null;
+  }
+  return snapshot.store_state?.[productId] ?? snapshot.storeState?.[productId] ?? snapshot.products?.[productId] ?? null;
+}
+
+function getSnapshotBasePlans(productState) {
+  if (!productState) return [];
+  if (Array.isArray(productState.base_plans)) {
+    return productState.base_plans.map((plan) => ({
+      id: plan?.base_plan_id ?? plan?.basePlanId ?? 'unknown',
+      duration: plan?.billing_period_duration ?? plan?.billingPeriodDuration ?? 'unknown',
+    }));
+  }
+  const ids = productState.base_plan_ids ?? productState.basePlanIds ?? [];
+  const durations = productState.billing_period_duration_values ?? productState.billingPeriodDurationValues ?? [];
+  return ids.map((id, index) => ({
+    id,
+    duration: durations[index] ?? 'unknown',
+  }));
+}
+
+function summarizeSnapshotBasePlans(productState) {
+  const plans = getSnapshotBasePlans(productState);
+  if (plans.length === 0) return 'none';
+  return plans.map((plan) => `${plan.id}/${plan.duration}`).join(', ');
+}
+
+function snapshotHasBillingPeriod(productState, expectedDuration) {
+  return getSnapshotBasePlans(productState).some((plan) => plan.duration === expectedDuration);
+}
+
+function getPlayMonthlySnapshotIssue() {
+  if (!fs.existsSync(playStoreStatePath)) return null;
+  if (playStoreStateResult.error) return 'play store state snapshot is invalid';
+
+  const monthlyState = getSnapshotProductState(playStoreStateResult.snapshot, EXPECTED.playProductIds.monthly);
+  if (!monthlyState) return `live snapshot missing product ${EXPECTED.playProductIds.monthly}`;
+  if (!snapshotHasBillingPeriod(monthlyState, 'P1M')) {
+    return `live snapshot still reports base plans ${summarizeSnapshotBasePlans(monthlyState)}; expected P1M`;
+  }
+  return null;
+}
+
+function getPlayMonthlyReadinessRow() {
+  if (!fs.existsSync(playStoreStatePath)) {
+    return [
+      'CHECK LIVE',
+      'Play monthly base plan snapshot',
+      `RevenueCat product ${EXPECTED.playProductIds.monthly} must expose billing period P1M before play_monthly evidence`,
+    ];
+  }
+  if (playStoreStateResult.error) {
+    return ['BLOCKED', 'Play monthly base plan snapshot', playStoreStateResult.error];
+  }
+
+  const monthlyState = getSnapshotProductState(playStoreStateResult.snapshot, EXPECTED.playProductIds.monthly);
+  if (!monthlyState) {
+    return [
+      'MISSING',
+      'Play monthly base plan snapshot',
+      `Snapshot does not contain ${EXPECTED.playProductIds.monthly}`,
+    ];
+  }
+
+  const summary = summarizeSnapshotBasePlans(monthlyState);
+  return [
+    snapshotHasBillingPeriod(monthlyState, 'P1M') ? 'READY' : 'BLOCKED',
+    'Play monthly base plan snapshot',
+    `${EXPECTED.playProductIds.monthly}: ${summary}; expected P1M`,
+  ];
+}
+
 function getGateEvidenceIssue(evidence, scenario) {
   const key = slugify(scenario);
   const gate = evidence.gates?.[key];
@@ -150,6 +246,10 @@ function getGateEvidenceIssue(evidence, scenario) {
   }
   if (key === 'play_monthly' && !/\bP1M\b/i.test(evidenceText)) {
     return 'monthly base plan P1M must be confirmed';
+  }
+  if (key === 'play_monthly') {
+    const snapshotIssue = getPlayMonthlySnapshotIssue();
+    if (snapshotIssue) return snapshotIssue;
   }
   if (key === 'account_switch' && !/second account/i.test(evidenceText)) {
     return 'second account must be confirmed';
@@ -182,6 +282,7 @@ const evidenceExample = readJson('doc_web_interne/docs/revenuecat-qa-evidence.ex
 const gitignore = read('.gitignore');
 const evidenceResult = readEvidenceResult();
 const evidence = evidenceResult.evidence;
+const playStoreStateResult = readPlayStoreStateResult();
 
 const checks = [
   check(
@@ -317,6 +418,11 @@ const checks = [
     fs.existsSync(evidencePath) ? evidenceResult.error || evidencePath : 'not provided'
   ),
   check(
+    'Play store state snapshot parses',
+    !fs.existsSync(playStoreStatePath) || !playStoreStateResult.error,
+    fs.existsSync(playStoreStatePath) ? playStoreStateResult.error || playStoreStatePath : 'not provided'
+  ),
+  check(
     'Completion audit exists',
     fs.existsSync(path.join(ROOT, 'doc_web_interne/docs/revenuecat-workflow-completion-audit.md')),
     'doc_web_interne/docs/revenuecat-workflow-completion-audit.md'
@@ -442,6 +548,7 @@ console.log(`- Offering: ${EXPECTED.offering}`);
 console.log(`- Test Store products: ${EXPECTED.testStoreProducts.join(', ')}`);
 console.log(`- Google Play products: ${EXPECTED.playProducts.join(', ')}`);
 console.log(`- Manual evidence: ${fs.existsSync(evidencePath) ? 'local file present' : 'not provided'}`);
+console.log(`- Play Store state snapshot: ${fs.existsSync(playStoreStatePath) ? 'local file present' : 'not provided'}`);
 console.log('');
 console.log('## Local Checks');
 console.log('');
@@ -522,11 +629,7 @@ const runtimeReadiness = [
     'Run npm run subscription:qa:device-app-user-id -- --device emulator-5554 --env-file .env.teststore before recording manual evidence',
   ],
   ['CHECK', 'Android device visibility', 'Run npm run android:device and require ADB: READY before device flows'],
-  [
-    'CHECK LIVE',
-    'Play monthly base plan',
-    'RevenueCat product prodfce10ef2a8 must expose billing period P1M before play_monthly evidence',
-  ],
+  getPlayMonthlyReadinessRow(),
 ];
 
 console.log('');

@@ -32,7 +32,11 @@ function evidenceForKey(key) {
 function runReport(args = [], env = {}) {
   return spawnSync(process.execPath, [SCRIPT, ...args], {
     cwd: ROOT,
-    env: { ...process.env, ...env },
+    env: {
+      ...process.env,
+      REVENUECAT_PLAY_STORE_STATE_PATH: path.join(os.tmpdir(), 'missing-revenuecat-play-store-state.local.json'),
+      ...env,
+    },
     encoding: 'utf8',
   });
 }
@@ -47,6 +51,31 @@ function writeEvidenceFile(gates) {
 function writeInvalidEvidenceFile() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'subscription-qa-evidence-invalid-'));
   const filePath = path.join(dir, 'evidence.json');
+  fs.writeFileSync(filePath, '{ invalid json', 'utf8');
+  return filePath;
+}
+
+function writePlayStoreStateSnapshot(storeState) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'revenuecat-play-store-state-'));
+  const filePath = path.join(dir, 'snapshot.json');
+  fs.writeFileSync(
+    filePath,
+    JSON.stringify(
+      {
+        project_id: 'proje6db7596',
+        store_state: storeState,
+      },
+      null,
+      2
+    ),
+    'utf8'
+  );
+  return filePath;
+}
+
+function writeInvalidPlayStoreStateSnapshot() {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'revenuecat-play-store-state-invalid-'));
+  const filePath = path.join(dir, 'snapshot.json');
   fs.writeFileSync(filePath, '{ invalid json', 'utf8');
   return filePath;
 }
@@ -86,7 +115,9 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Account switch second account env');
     expect(result.stdout).toContain('REVENUECAT_QA_SWITCH_FREE_EMAIL=missing, REVENUECAT_QA_SWITCH_FREE_PASSWORD=missing');
     expect(result.stdout).toContain('Device app user id extraction');
+    expect(result.stdout).toContain('Play monthly base plan snapshot');
     expect(result.stdout).toContain('RevenueCat product prodfce10ef2a8 must expose billing period P1M');
+    expect(result.stdout).toContain('OK | Play store state snapshot parses');
     expect(result.stdout).toContain('OK | Evidence template covers all release gates');
     expect(result.stdout).toContain('OK | Local evidence file is gitignored');
     expect(result.stdout).toContain('Manual or external gates remaining: 7');
@@ -107,6 +138,58 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Manual evidence: local file present');
     expect(result.stdout).toContain('Manual or external gates remaining: 7');
     expect(result.stderr).toBe('');
+  });
+
+  it('blocks on an invalid Play store state snapshot file', () => {
+    const snapshotPath = writeInvalidPlayStoreStateSnapshot();
+    const result = runReport([], {
+      REVENUECAT_PLAY_STORE_STATE_PATH: snapshotPath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('BLOCKED | Play store state snapshot parses');
+    expect(result.stdout).toContain('Play monthly base plan snapshot');
+    expect(result.stderr).toBe('');
+  });
+
+  it('surfaces a Play monthly snapshot that still points at the annual base plan', () => {
+    const snapshotPath = writePlayStoreStateSnapshot({
+      prodfce10ef2a8: {
+        store: 'play_store',
+        status: 'ok',
+        base_plans: [{ base_plan_id: 'annual', billing_period_duration: 'P1Y' }],
+      },
+      prod98337b31be: {
+        store: 'play_store',
+        status: 'ok',
+        base_plans: [{ base_plan_id: 'annual', billing_period_duration: 'P1Y' }],
+      },
+    });
+    const result = runReport([], {
+      REVENUECAT_PLAY_STORE_STATE_PATH: snapshotPath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('Play Store state snapshot: local file present');
+    expect(result.stdout).toContain('BLOCKED | Play monthly base plan snapshot');
+    expect(result.stdout).toContain('prodfce10ef2a8: annual/P1Y; expected P1M');
+  });
+
+  it('accepts a Play monthly snapshot with a P1M base plan', () => {
+    const snapshotPath = writePlayStoreStateSnapshot({
+      prodfce10ef2a8: {
+        store: 'play_store',
+        status: 'ok',
+        base_plans: [{ base_plan_id: 'monthly', billing_period_duration: 'P1M' }],
+      },
+    });
+    const result = runReport([], {
+      REVENUECAT_PLAY_STORE_STATE_PATH: snapshotPath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('READY | Play monthly base plan snapshot');
+    expect(result.stdout).toContain('prodfce10ef2a8: monthly/P1M; expected P1M');
   });
 
   it('passes the full release gate when every manual and external gate has evidence', () => {
@@ -345,6 +428,40 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Manual or external gates remaining: 2');
     expect(result.stdout).toContain('Account switch: second account must be confirmed');
     expect(result.stdout).toContain('Play monthly: monthly base plan P1M must be confirmed');
+  });
+
+  it('keeps Play monthly blocked when evidence says P1M but the live snapshot still says P1Y', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: evidenceForKey(key),
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+    const snapshotPath = writePlayStoreStateSnapshot({
+      prodfce10ef2a8: {
+        store: 'play_store',
+        status: 'ok',
+        base_plans: [{ base_plan_id: 'annual', billing_period_duration: 'P1Y' }],
+      },
+    });
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+      REVENUECAT_PLAY_STORE_STATE_PATH: snapshotPath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 6');
+    expect(result.stdout).toContain('Manual or external gates remaining: 1');
+    expect(result.stdout).toContain('Play monthly: live snapshot still reports base plans annual/P1Y; expected P1M');
   });
 
   it('keeps gates blocked when evidence text is still the example placeholder', () => {

@@ -1,0 +1,44 @@
+{
+  "notes": "Copy the compact RevenueCat MCP store-state output to revenuecat-play-store-state.local.json after a live check. Do not commit the local file.",
+  "project_id": "proje6db7596",
+  "offering": {
+    "lookup_key": "default",
+    "id": "ofrngc19257e4d5",
+    "packages": [
+      {
+        "identifier": "$rc_monthly",
+        "package_type": "monthly",
+        "product_identifier": "noctalia_plus:monthly",
+        "product_id": "prodfce10ef2a8"
+      },
+      {
+        "identifier": "$rc_annual",
+        "package_type": "annual",
+        "product_identifier": "noctalia_plus:annual",
+        "product_id": "prod98337b31be"
+      }
+    ]
+  },
+  "store_state": {
+    "prodfce10ef2a8": {
+      "store": "play_store",
+      "status": "ok",
+      "base_plans": [
+        {
+          "base_plan_id": "monthly",
+          "billing_period_duration": "P1M"
+        }
+      ]
+    },
+    "prod98337b31be": {
+      "store": "play_store",
+      "status": "ok",
+      "base_plans": [
+        {
+          "base_plan_id": "annual",
+          "billing_period_duration": "P1Y"
+        }
+      ]
+    }
+  }
+}
