@@ -82,7 +82,11 @@ function writeGoogleCloudProjectSnapshot(root, overrides = {}) {
 }
 
 describe('android release gate preflight', () => {
-  function spawnWithTools({ subscriptionGateStatus = 0, adbDevices = true } = {}) {
+  function spawnWithTools({
+    subscriptionGateStatus = 0,
+    adbDevices = true,
+    adbMdnsStdout = 'List of discovered mdns services\n',
+  } = {}) {
     return (command, args) => {
       if (command === 'which' && args[0] === 'adb') return { status: 0 };
       if (command === 'which' && args[0] === 'maestro') return { status: 0 };
@@ -93,6 +97,9 @@ describe('android release gate preflight', () => {
             ? 'List of devices attached\nemulator-5554\tdevice\n'
             : 'List of devices attached\n',
         };
+      }
+      if (command === 'adb' && args[0] === 'mdns') {
+        return { status: 0, stdout: adbMdnsStdout, stderr: '' };
       }
       if (/^npm(\.cmd)?$/.test(command) && args.join(' ') === 'run subscription:qa:release-gate') {
         return {
@@ -212,6 +219,30 @@ describe('android release gate preflight', () => {
     expect(report.ok).toBe(false);
     expect(report.checks.some((check) => check.status === 'blocked' && check.title.includes('adb'))).toBe(true);
     expect(formatReport(report)).toContain('BLOCKED');
+  });
+
+  it('surfaces wireless debugging services when adb has no ready device', () => {
+    const root = setupFixture();
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn: spawnWithTools({
+        adbDevices: false,
+        adbMdnsStdout:
+          'List of discovered mdns services\nadb-123._adb-tls-pairing._tcp.\t_adb-tls-pairing._tcp.\t192.168.1.24:37123\n',
+      }),
+    });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'blocked' &&
+          check.title === 'Android ADB device visibility' &&
+          check.details.includes('wireless debugging is visible') &&
+          check.details.includes('192.168.1.24:37123') &&
+          check.remediation.includes('adb pair')
+      )
+    ).toBe(true);
   });
 
   it('uses adb from the standard macOS Android SDK location when PATH misses it', () => {

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const { spawnSync } = require('child_process');
-const { resolveCommand } = require('./check-android-release-gates');
+const { resolveCommand } = require('./android-tooling');
 
 function parseAdbDevices(output) {
   return String(output || '')

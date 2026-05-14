@@ -34,6 +34,16 @@ const commands = [
     args: ['--check', 'scripts/update-google-cloud-project-state.js'],
   },
   {
+    label: 'syntax: Android tooling resolver',
+    command: process.execPath,
+    args: ['--check', 'scripts/android-tooling.js'],
+  },
+  {
+    label: 'syntax: Android release gates',
+    command: process.execPath,
+    args: ['--check', 'scripts/check-android-release-gates.js'],
+  },
+  {
     label: 'syntax: guarded purchase runner',
     command: process.execPath,
     args: ['--check', 'scripts/run-subscription-teststore-purchase.js'],
@@ -77,6 +87,7 @@ const commands = [
       'scripts/run-subscription-teststore-purchase.test.js',
       'scripts/run-subscription-account-switch.test.js',
       'scripts/verify-subscription-qa-local.test.js',
+      'scripts/check-android-release-gates.test.js',
       'scripts/check-android-adb-device.test.js',
       'scripts/check-play-install-source.test.js',
       'scripts/check-play-qa-device.test.js',
