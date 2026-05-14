@@ -3,6 +3,7 @@ const os = require('os');
 const path = require('path');
 const {
   EXPECTED,
+  getMonthlyFollowup,
   getMonthlyStatus,
   normalizeSnapshot,
   parseArgs,
@@ -61,6 +62,13 @@ describe('RevenueCat Play store state updater', () => {
     );
 
     expect(getMonthlyStatus(document)).toEqual({ ready: false, summary: 'annual/P1Y' });
+  });
+
+  it('uses the QA report as the source of truth for non-P1M followup', () => {
+    expect(getMonthlyFollowup({ ready: true, summary: 'monthly/P1M' })).toBeNull();
+    expect(getMonthlyFollowup({ ready: false, summary: 'annual/P1Y' })).toContain(
+      'Run npm run subscription:qa:report to classify it as BLOCKED or LAGGING'
+    );
   });
 
   it('writes the normalized snapshot to the requested file', () => {
