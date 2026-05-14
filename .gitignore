@@ -91,3 +91,4 @@ maestro-results/
 
 # Local RevenueCat QA evidence can contain tester ids, emails or screenshots paths
 doc_web_interne/docs/revenuecat-qa-evidence.local.json
+doc_web_interne/docs/revenuecat-play-store-state.local.json
