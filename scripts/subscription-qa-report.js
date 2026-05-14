@@ -18,6 +18,9 @@ const googlePlaySubscriptionStatePath = process.env.GOOGLE_PLAY_SUBSCRIPTION_STA
 const googleOAuthAndroidClientStatePath = process.env.GOOGLE_OAUTH_ANDROID_CLIENT_STATE_PATH
   ? path.resolve(ROOT, process.env.GOOGLE_OAUTH_ANDROID_CLIENT_STATE_PATH)
   : path.join(ROOT, 'doc_web_interne/docs/google-oauth-android-client-state.local.json');
+const googlePlayPaymentsProfileStatePath = process.env.GOOGLE_PLAY_PAYMENTS_PROFILE_STATE_PATH
+  ? path.resolve(ROOT, process.env.GOOGLE_PLAY_PAYMENTS_PROFILE_STATE_PATH)
+  : path.join(ROOT, 'doc_web_interne/docs/google-play-payments-profile-state.local.json');
 
 if (args.has('--help') || args.has('-h')) {
   console.log(`
@@ -173,6 +176,58 @@ function readGoogleOAuthAndroidClientStateResult() {
       error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
     };
   }
+}
+
+function readGooglePlayPaymentsProfileStateResult() {
+  if (!fs.existsSync(googlePlayPaymentsProfileStatePath)) {
+    return { snapshot: null, error: null };
+  }
+  try {
+    return { snapshot: readJsonFile(googlePlayPaymentsProfileStatePath), error: null };
+  } catch (error) {
+    return {
+      snapshot: null,
+      error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
+    };
+  }
+}
+
+function normalizeRequirementStatus(value) {
+  return String(value || 'missing').trim().toLowerCase().replace(/\s+/g, '_');
+}
+
+function getOpenPaymentRequirements(snapshot) {
+  return Object.entries(snapshot?.requirements ?? {})
+    .map(([key, requirement]) => ({
+      key,
+      status: normalizeRequirementStatus(requirement?.status),
+      severity: requirement?.severity || 'warning',
+    }))
+    .filter((requirement) => !['complete', 'completed', 'valid', 'resolved', 'not_required', 'not-applicable'].includes(requirement.status));
+}
+
+function getPaymentsProfileReadinessRow() {
+  if (!fs.existsSync(googlePlayPaymentsProfileStatePath)) {
+    return [
+      'CHECK LIVE',
+      'Google Play payments profile snapshot',
+      'Run npm run android:google-play-payments-profile-state from the current Play Console payments profile status',
+    ];
+  }
+  if (googlePlayPaymentsProfileStateResult.error) {
+    return ['BLOCKED', 'Google Play payments profile snapshot', googlePlayPaymentsProfileStateResult.error];
+  }
+  const openRequirements = getOpenPaymentRequirements(googlePlayPaymentsProfileStateResult.snapshot);
+  if (openRequirements.length > 0) {
+    return [
+      'BLOCKED',
+      'Google Play payments profile snapshot',
+      `${openRequirements.length} open requirement(s): ${openRequirements
+        .map((item) => `${item.key}/${item.status}/${item.severity}`)
+        .join(', ')}`,
+    ];
+  }
+  return ['READY', 'Google Play payments profile snapshot', 'No open payments profile requirements recorded'];
 }
 
 function getSnapshotProductState(snapshot, productId) {
@@ -507,6 +562,7 @@ const evidence = evidenceResult.evidence;
 const playStoreStateResult = readPlayStoreStateResult();
 const googlePlaySubscriptionStateResult = readGooglePlaySubscriptionStateResult();
 const googleOAuthAndroidClientStateResult = readGoogleOAuthAndroidClientStateResult();
+const googlePlayPaymentsProfileStateResult = readGooglePlayPaymentsProfileStateResult();
 
 const checks = [
   check(
@@ -690,6 +746,13 @@ const checks = [
       : 'not provided'
   ),
   check(
+    'Google Play payments profile snapshot parses',
+    !fs.existsSync(googlePlayPaymentsProfileStatePath) || !googlePlayPaymentsProfileStateResult.error,
+    fs.existsSync(googlePlayPaymentsProfileStatePath)
+      ? googlePlayPaymentsProfileStateResult.error || googlePlayPaymentsProfileStatePath
+      : 'not provided'
+  ),
+  check(
     'Play store state snapshot updater exists',
     fs.existsSync(path.join(ROOT, 'scripts/update-revenuecat-play-store-state.js')) &&
       pkg.scripts['subscription:qa:play-state'] === 'node ./scripts/update-revenuecat-play-store-state.js',
@@ -707,6 +770,13 @@ const checks = [
       pkg.scripts['android:google-oauth-android-client-state'] ===
         'node ./scripts/update-google-oauth-android-client-state.js',
     'npm run android:google-oauth-android-client-state -- --client-id <id> --package-name com.tanuki75.noctalia --sha1 <sha1>'
+  ),
+  check(
+    'Google Play payments profile state updater exists',
+    fs.existsSync(path.join(ROOT, 'scripts/update-google-play-payments-profile-state.js')) &&
+      pkg.scripts['android:google-play-payments-profile-state'] ===
+        'node ./scripts/update-google-play-payments-profile-state.js',
+    'npm run android:google-play-payments-profile-state -- --tax-information <status> --payout-method <status>'
   ),
   check(
     'Completion audit exists',
@@ -845,6 +915,11 @@ console.log(
     fs.existsSync(googleOAuthAndroidClientStatePath) ? 'local file present' : 'not provided'
   }`
 );
+console.log(
+  `- Google Play payments profile snapshot: ${
+    fs.existsSync(googlePlayPaymentsProfileStatePath) ? 'local file present' : 'not provided'
+  }`
+);
 console.log('');
 console.log('## Local Checks');
 console.log('');
@@ -943,6 +1018,7 @@ const runtimeReadiness = [
   ],
   getGooglePlayMonthlyReadinessRow(),
   getGooglePlayAnnualReadinessRow(),
+  getPaymentsProfileReadinessRow(),
   getPlayMonthlyReadinessRow(),
   getPlayAnnualReadinessRow(),
 ];

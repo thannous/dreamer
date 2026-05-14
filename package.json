@@ -100,7 +100,8 @@
     "subscription:qa:google-play-state": "node ./scripts/update-google-play-subscription-state.js",
     "subscription:qa:device-app-user-id": "node ./scripts/extract-revenuecat-app-user-id.js",
     "android:google-cloud-project-state": "node ./scripts/update-google-cloud-project-state.js",
-    "android:google-oauth-android-client-state": "node ./scripts/update-google-oauth-android-client-state.js"
+    "android:google-oauth-android-client-state": "node ./scripts/update-google-oauth-android-client-state.js",
+    "android:google-play-payments-profile-state": "node ./scripts/update-google-play-payments-profile-state.js"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",
