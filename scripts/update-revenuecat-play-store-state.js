@@ -175,6 +175,11 @@ function getMonthlyStatus(document) {
   };
 }
 
+function getMonthlyFollowup(monthly) {
+  if (monthly.ready) return null;
+  return 'RevenueCat monthly store-state is not P1M. Run npm run subscription:qa:report to classify it as BLOCKED or LAGGING against the Google Play direct snapshot.';
+}
+
 if (require.main === module) {
   try {
     const options = parseArgs(process.argv.slice(2));
@@ -182,9 +187,8 @@ if (require.main === module) {
     const monthly = getMonthlyStatus(document);
     console.log(`Updated ${path.relative(ROOT, options.file)}`);
     console.log(`${EXPECTED.monthlyProductId}: ${monthly.summary}; expected ${EXPECTED.monthlyBillingPeriod}`);
-    if (!monthly.ready) {
-      console.log('Play monthly remains blocked until the live snapshot exposes P1M.');
-    }
+    const followup = getMonthlyFollowup(monthly);
+    if (followup) console.log(followup);
   } catch (error) {
     console.error(error instanceof Error ? error.message : error);
     process.exit(1);
@@ -193,6 +197,7 @@ if (require.main === module) {
 
 module.exports = {
   EXPECTED,
+  getMonthlyFollowup,
   getMonthlyStatus,
   normalizeSnapshot,
   parseArgs,
