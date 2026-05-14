@@ -229,7 +229,19 @@ function getGooglePlayMonthlyReadinessRow() {
   ];
 }
 
+function isGooglePlayMonthlyReady() {
+  if (!fs.existsSync(googlePlaySubscriptionStatePath) || googlePlaySubscriptionStateResult.error) return false;
+  const monthly = getGooglePlayBasePlan(googlePlaySubscriptionStateResult.snapshot, 'monthly');
+  return (
+    monthly?.billing_period_duration === 'P1M' &&
+    monthly?.state === 'ACTIVE' &&
+    monthly?.new_subscriber_availability?.US === true &&
+    monthly?.new_subscriber_availability?.FR === true
+  );
+}
+
 function getPlayMonthlySnapshotIssue() {
+  if (isGooglePlayMonthlyReady()) return null;
   if (!fs.existsSync(playStoreStatePath)) return null;
   if (playStoreStateResult.error) return 'play store state snapshot is invalid';
 
@@ -598,7 +610,7 @@ const scenarios = [
     'Play monthly',
     'Google Play Internal Testing',
     'Product noctalia_plus:monthly with base plan P1M',
-    'Requires corrected Play monthly base plan and Play-installed internal testing build',
+    'Google Play API confirms monthly/P1M/ACTIVE; requires Play-installed internal testing purchase and backend convergence',
   ],
   [
     'External store gate',
