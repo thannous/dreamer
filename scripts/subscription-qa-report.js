@@ -630,7 +630,7 @@ const checks = [
     'Play QA device wait helper exists',
     fs.existsSync(path.join(ROOT, 'scripts/wait-for-play-qa-device.js')) &&
       pkg.scripts['android:play-qa-device:wait'] === 'node ./scripts/wait-for-play-qa-device.js',
-    'npm run android:play-qa-device:wait -- --device <adb-id>'
+    'npm run android:play-qa-device:wait'
   ),
   check(
     'Evidence template covers all release gates',
