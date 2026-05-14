@@ -2,17 +2,21 @@ const {
   checkAndroidAdbDevice,
   isLikelyEmulator,
   parseAdbDevices,
+  parseAdbMdnsServices,
   summarizePhysicalDeviceState,
   summarizeAdbState,
 } = require('./check-android-adb-device');
 
-function spawnFor({ adbStdout, usbStdout = '', adbStatus = 0, whichAdb = true } = {}) {
+function spawnFor({ adbStdout, mdnsStdout = 'List of discovered mdns services\n', usbStdout = '', adbStatus = 0, whichAdb = true } = {}) {
   return (command, args) => {
     if (command === 'which' && args[0] === 'adb') {
       return { status: whichAdb ? 0 : 1, stdout: whichAdb ? '/usr/bin/adb\n' : '', stderr: '' };
     }
     if (command === 'adb' && args[0] === 'devices') {
       return { status: adbStatus, stdout: adbStdout || '', stderr: adbStatus === 0 ? '' : 'adb failed' };
+    }
+    if (command === 'adb' && args[0] === 'mdns') {
+      return { status: 0, stdout: mdnsStdout, stderr: '' };
     }
     if (command === 'ioreg') {
       return { status: 0, stdout: usbStdout, stderr: '' };
@@ -32,6 +36,25 @@ describe('android ADB device diagnostic', () => {
         id: '57275d36',
         state: 'device',
         details: 'product:poco model:POCO_F8 device:poco',
+      },
+    ]);
+  });
+
+  it('parses adb mDNS wireless debugging services', () => {
+    expect(
+      parseAdbMdnsServices(
+        'List of discovered mdns services\nadb-123._adb-tls-pairing._tcp.\t_adb-tls-pairing._tcp.\t192.168.1.24:37123\nadb-123._adb-tls-connect._tcp.\t_adb-tls-connect._tcp.\t192.168.1.24:41235\n'
+      )
+    ).toEqual([
+      {
+        instance: 'adb-123._adb-tls-pairing._tcp.',
+        service: '_adb-tls-pairing._tcp.',
+        address: '192.168.1.24:37123',
+      },
+      {
+        instance: 'adb-123._adb-tls-connect._tcp.',
+        service: '_adb-tls-connect._tcp.',
+        address: '192.168.1.24:41235',
       },
     ]);
   });
@@ -97,5 +120,21 @@ describe('android ADB device diagnostic', () => {
     expect(report.ok).toBe(false);
     expect(report.adb.status).toBe('missing');
     expect(report.usb.visible).toBe(true);
+  });
+
+  it('surfaces wireless debugging services when no USB device is connected', () => {
+    const report = checkAndroidAdbDevice({
+      spawn: spawnFor({
+        adbStdout: 'List of devices attached\n',
+        mdnsStdout:
+          'List of discovered mdns services\nadb-123._adb-tls-pairing._tcp.\t_adb-tls-pairing._tcp.\t192.168.1.24:37123\n',
+      }),
+      platform: 'darwin',
+    });
+
+    expect(report.ok).toBe(false);
+    expect(report.mdns.services).toHaveLength(1);
+    expect(report.mdns.message).toContain('pairing service');
+    expect(report.mdns.next).toContain('adb pair');
   });
 });

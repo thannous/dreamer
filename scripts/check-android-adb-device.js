@@ -16,6 +16,19 @@ function parseAdbDevices(output) {
     .filter((device) => device.id && device.state);
 }
 
+function parseAdbMdnsServices(output) {
+  return String(output || '')
+    .split(/\r?\n/)
+    .slice(1)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [instance, service, address] = line.split(/\s+/);
+      return { instance, service, address };
+    })
+    .filter((service) => service.instance && service.service);
+}
+
 function summarizeAdbState(devices) {
   if (devices.some((device) => device.state === 'device')) {
     return {
@@ -113,6 +126,38 @@ function detectUsbAndroidDevice(spawn = spawnSync, platform = process.platform) 
   };
 }
 
+function detectAdbMdnsServices(spawn = spawnSync, adbCommand = 'adb') {
+  const result = spawn(adbCommand, ['mdns', 'services'], {
+    encoding: 'utf8',
+    timeout: 8000,
+  });
+  if (result.status !== 0) {
+    return {
+      supported: true,
+      services: [],
+      message: (result.stderr || result.stdout || 'Unable to inspect ADB mDNS services.').trim(),
+    };
+  }
+  const services = parseAdbMdnsServices(result.stdout);
+  const pairServices = services.filter((service) => service.service === '_adb-tls-pairing._tcp.');
+  const connectServices = services.filter((service) => service.service === '_adb-tls-connect._tcp.');
+  const parts = [];
+  if (pairServices.length > 0) parts.push(`${pairServices.length} pairing service(s)`);
+  if (connectServices.length > 0) parts.push(`${connectServices.length} connect service(s)`);
+  return {
+    supported: true,
+    services,
+    message:
+      services.length > 0
+        ? `ADB mDNS sees ${parts.join(', ') || `${services.length} service(s)`}.`
+        : 'ADB mDNS does not show wireless debugging services.',
+    next:
+      services.length > 0
+        ? 'Use adb pair <host>:<pair-port> <pair-code>, then adb connect <host>:<connect-port>.'
+        : 'On the phone, enable Developer options -> Wireless debugging, keep the pairing screen open, then retry.',
+  };
+}
+
 function checkAndroidAdbDevice({
   spawn = spawnSync,
   env = process.env,
@@ -131,6 +176,11 @@ function checkAndroidAdbDevice({
         next: 'Install Android SDK platform-tools or add adb to PATH.',
       },
       usb: detectUsbAndroidDevice(spawn, platform),
+      mdns: {
+        supported: false,
+        services: [],
+        message: 'ADB mDNS inspection requires adb.',
+      },
     };
   }
 
@@ -149,6 +199,7 @@ function checkAndroidAdbDevice({
         next: 'Restart adb with adb kill-server && adb start-server.',
       };
   const usb = detectUsbAndroidDevice(spawn, platform);
+  const mdns = detectAdbMdnsServices(spawn, adbCommand);
 
   return {
     ok: adb.status === 'ready',
@@ -157,6 +208,7 @@ function checkAndroidAdbDevice({
     devices,
     adb,
     usb,
+    mdns,
   };
 }
 
@@ -182,6 +234,17 @@ function formatReport(report) {
   } else {
     lines.push(`[android-device] USB: SKIPPED - ${report.usb.message}`);
   }
+  if (report.mdns.supported) {
+    lines.push(
+      `[android-device] WIRELESS: ${report.mdns.services.length > 0 ? 'VISIBLE' : 'NOT VISIBLE'} - ${report.mdns.message}`
+    );
+    if (report.mdns.next) lines.push(`  Next: ${report.mdns.next}`);
+    for (const service of report.mdns.services) {
+      lines.push(`[android-device] Wireless ${service.service}: ${service.address || service.instance}`);
+    }
+  } else {
+    lines.push(`[android-device] WIRELESS: SKIPPED - ${report.mdns.message}`);
+  }
   return lines.join('\n');
 }
 
@@ -202,10 +265,12 @@ if (require.main === module) {
 
 module.exports = {
   checkAndroidAdbDevice,
+  detectAdbMdnsServices,
   detectUsbAndroidDevice,
   formatReport,
   isLikelyEmulator,
   parseAdbDevices,
+  parseAdbMdnsServices,
   summarizePhysicalDeviceState,
   summarizeAdbState,
 };
