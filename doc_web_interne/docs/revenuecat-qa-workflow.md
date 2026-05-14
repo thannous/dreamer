@@ -311,6 +311,9 @@ Sur le POCO `192.168.1.116:41183`, l'installation Play observee le 2026-05-15 es
 `9df05e30-0569-4f7c-8af9-62c692fa4c3a` (`appBuildVersion=12`). Cette valeur peut servir pour
 une preuve Play si l'achat est effectue sur ce build, mais le build Internal Testing le plus recent
 documente est `ddbc756d-8db6-4337-80fa-68cc86f8b62a` (`versionCode=24`, `versionName=1.2.0`).
+La relecture Play Developer API du 2026-05-15 confirme aussi que la piste `internal` sert la release
+`1.2.0` avec `versionCodes=["24"]` et `status=completed`; si le POCO reste en v12, le blocage est
+donc cote disponibilite/update de l'appareil ou cache Play, pas cote build absent de la piste internal.
 La fiche Google Play ouverte depuis ce POCO affiche `Ouvrir` et `Desinstaller`, pas `Mettre a jour`,
 malgre le statut testeur beta; Play ne propose donc pas d'upgrade direct vers le build 24 sur cet
 appareil a ce moment. Pour une validation de release robuste, preferer mettre a jour l'app depuis
