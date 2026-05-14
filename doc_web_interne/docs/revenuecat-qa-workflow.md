@@ -121,6 +121,21 @@ Ces commandes verifient a la fois que `<adb-id>` est un telephone physique et qu
 aussi des `evidenceArgs` a recopier dans les commandes `npm run subscription:qa:evidence` des gates
 `play_*`.
 
+Sur une build Play non-debuggable, `adb shell run-as com.tanuki75.noctalia ...` echoue normalement
+avec `package not debuggable`; ne pas utiliser cet echec comme signal RevenueCat. Pour extraire
+l'appUserId a reporter dans une preuve Play, vider les logs, declencher une action non payante comme
+`Restaurer les achats` ou `Refresh`, puis lire le dernier `userId` loggue par le parcours
+subscription:
+
+```bash
+adb -s <adb-id> logcat -c
+# Dans l'app Play installee: Settings -> paywall -> Restaurer les achats, ou QA Lab -> Refresh
+npm run subscription:qa:device-app-user-id -- --device <adb-id> --source logcat --json
+```
+
+L'appUserId attendu est le UUID Supabase passe a `Purchases.logIn(...)`; c'est l'identite RevenueCat
+utilisee pour l'achat, le restore, la convergence webhook et la preuve `subscription:qa:evidence`.
+
 Apres chaque relecture live RevenueCat MCP de l'etat store Play, enregistrer le JSON compact dans le
 snapshot local gitignore. Le rapport QA le relit ensuite pour signaler si le produit mensuel
 RevenueCat expose bien `P1M`, si le produit annuel expose bien `P1Y`, ou si monthly est seulement

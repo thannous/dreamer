@@ -16,11 +16,14 @@ function usage() {
   return `
 Usage:
   node ./scripts/extract-revenuecat-app-user-id.js [--device emulator-5554] [--env-file .env.teststore]
+  node ./scripts/extract-revenuecat-app-user-id.js --source logcat [--device <adb-id>]
 
 Options:
   --app-id <id>       Android application id. Defaults to ${DEFAULT_APP_ID}.
   --device <serial>   ADB device serial passed to adb -s.
   --env-file <path>   Env file containing EXPO_PUBLIC_REVENUECAT_ANDROID_KEY. Defaults to ${DEFAULT_ENV_FILE}.
+  --source <source>   prefs reads RevenueCat shared_prefs via run-as; logcat reads the latest app user id
+                      from subscription logs. Defaults to prefs.
   --json              Print machine-readable JSON.
 `.trim();
 }
@@ -30,6 +33,7 @@ function parseArgs(argv) {
     appId: DEFAULT_APP_ID,
     device: null,
     envFile: DEFAULT_ENV_FILE,
+    source: 'prefs',
     json: false,
   };
 
@@ -39,7 +43,7 @@ function parseArgs(argv) {
       options.help = true;
     } else if (arg === '--json') {
       options.json = true;
-    } else if (arg === '--app-id' || arg === '--device' || arg === '--env-file') {
+    } else if (arg === '--app-id' || arg === '--device' || arg === '--env-file' || arg === '--source') {
       const next = argv[index + 1];
       if (!next || next.startsWith('--')) {
         throw new Error(`Missing value for ${arg}`);
@@ -47,6 +51,12 @@ function parseArgs(argv) {
       if (arg === '--app-id') options.appId = next;
       if (arg === '--device') options.device = next;
       if (arg === '--env-file') options.envFile = next;
+      if (arg === '--source') {
+        if (next !== 'prefs' && next !== 'logcat') {
+          throw new Error(`Invalid --source value: ${next}. Expected prefs or logcat.`);
+        }
+        options.source = next;
+      }
       index += 1;
     } else {
       throw new Error(`Unknown argument: ${arg}`);
@@ -111,6 +121,21 @@ function parseAppUserIdFromPrefsXml(xml, revenueCatKey) {
   throw new Error(`No RevenueCat app user id found for key ${mask(revenueCatKey)}`);
 }
 
+function parseAppUserIdFromLogcat(output) {
+  const matches = [];
+  const pattern = /userId:\s*['"]([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})['"]/gi;
+  let match = pattern.exec(String(output));
+  while (match) {
+    matches.push(match[1]);
+    match = pattern.exec(String(output));
+  }
+
+  if (!matches.length) {
+    throw new Error('No subscription userId UUID found in logcat. Clear logcat, trigger Restore or Refresh, then retry.');
+  }
+  return matches[matches.length - 1];
+}
+
 function readPrefsXmlFromDevice({
   adbCommand,
   appId,
@@ -134,35 +159,70 @@ function readPrefsXmlFromDevice({
   return result.stdout;
 }
 
+function readLogcatFromDevice({
+  adbCommand,
+  device,
+  spawn = spawnSync,
+}) {
+  const args = [];
+  if (device) args.push('-s', device);
+  args.push('logcat', '-d', '-v', 'time', 'ReactNativeJS:I', '*:S');
+
+  const result = spawn(adbCommand, args, {
+    encoding: 'utf8',
+    timeout: 10000,
+    maxBuffer: 1024 * 1024 * 4,
+  });
+  if (result.status !== 0) {
+    throw new Error((result.stderr || result.stdout || 'Unable to read logcat').trim());
+  }
+  return result.stdout;
+}
+
 function extractRevenueCatAppUserId({
   appId = DEFAULT_APP_ID,
   device = null,
   envFile = DEFAULT_ENV_FILE,
+  source = 'prefs',
   env = process.env,
   existsSync = fs.existsSync,
   readFile = fs.readFileSync,
   spawn = spawnSync,
 } = {}) {
-  const envPath = path.resolve(ROOT, envFile);
-  if (!existsSync(envPath)) {
-    throw new Error(`Env file not found: ${envPath}`);
-  }
-
-  const revenueCatKey = getRevenueCatKey(envPath, readFile);
   const adbCommand = resolveCommand('adb', { spawn, existsSync, env });
   if (!adbCommand) {
     throw new Error('adb is not available in PATH or common Android SDK locations.');
   }
 
-  const xml = readPrefsXmlFromDevice({ adbCommand, appId, device, spawn });
-  const appUserId = parseAppUserIdFromPrefsXml(xml, revenueCatKey);
+  let appUserId;
+  let envFileValue = 'not-read';
+  let revenueCatKeyMasked = 'not-read';
+
+  if (source === 'prefs') {
+    const envPath = path.resolve(ROOT, envFile);
+    if (!existsSync(envPath)) {
+      throw new Error(`Env file not found: ${envPath}`);
+    }
+
+    const revenueCatKey = getRevenueCatKey(envPath, readFile);
+    const xml = readPrefsXmlFromDevice({ adbCommand, appId, device, spawn });
+    appUserId = parseAppUserIdFromPrefsXml(xml, revenueCatKey);
+    envFileValue = path.relative(ROOT, envPath);
+    revenueCatKeyMasked = mask(revenueCatKey);
+  } else if (source === 'logcat') {
+    const output = readLogcatFromDevice({ adbCommand, device, spawn });
+    appUserId = parseAppUserIdFromLogcat(output);
+  } else {
+    throw new Error(`Invalid source: ${source}`);
+  }
 
   return {
     appId,
     appUserId,
     device: device || 'default',
-    envFile: path.relative(ROOT, envPath),
-    revenueCatKeyMasked: mask(revenueCatKey),
+    envFile: envFileValue,
+    revenueCatKeyMasked,
+    source,
   };
 }
 
@@ -206,7 +266,9 @@ module.exports = {
   formatReport,
   getRevenueCatKey,
   mask,
+  parseAppUserIdFromLogcat,
   parseAppUserIdFromPrefsXml,
   parseArgs,
+  readLogcatFromDevice,
   readPrefsXmlFromDevice,
 };
