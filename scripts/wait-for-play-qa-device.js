@@ -18,6 +18,7 @@ function parseArgs(argv) {
   const options = {
     intervalMs: DEFAULT_INTERVAL_MS,
     timeoutMs: DEFAULT_TIMEOUT_MS,
+    requireUiReady: false,
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -42,6 +43,10 @@ function parseArgs(argv) {
       i += 1;
       continue;
     }
+    if (arg === '--require-ui-ready') {
+      options.requireUiReady = true;
+      continue;
+    }
     if (arg === '--help' || arg === '-h') {
       printHelp();
       process.exit(0);
@@ -55,11 +60,14 @@ function parseArgs(argv) {
 function printHelp() {
   console.log(`
 Usage:
-  node ./scripts/wait-for-play-qa-device.js [--device <adb-id>] [--package <application-id>] [--interval-ms <ms>] [--timeout-ms <ms>]
+  node ./scripts/wait-for-play-qa-device.js [--device <adb-id>] [--package <application-id>] [--interval-ms <ms>] [--timeout-ms <ms>] [--require-ui-ready]
 
 Polls the Play RevenueCat QA device preflight until a physical Android device
 is visible and Noctalia is installed from Google Play. When ready, it prints the
 play_* evidence commands.
+
+Use --require-ui-ready before UI-driven purchase or restore flows to keep polling
+until the tester phone also appears awake and unlocked.
 `.trim());
 }
 
@@ -80,6 +88,8 @@ async function waitForPlayQaDevice(options = {}) {
     stderr = process.stderr,
     ...checkOptions
   } = options;
+  const requireUiReady = Boolean(checkOptions.requireUiReady);
+  delete checkOptions.requireUiReady;
 
   const startedAt = now();
   let attempt = 0;
@@ -90,14 +100,21 @@ async function waitForPlayQaDevice(options = {}) {
     stdout.write(`[play-qa-device:wait] attempt ${attempt}\n`);
     lastReport = check(checkOptions);
     stdout.write(`${formatReport(lastReport)}\n`);
-    if (lastReport.ok) {
+    if (lastReport.ok && (!requireUiReady || lastReport.uiState?.ok)) {
       stdout.write('[play-qa-device:wait] ready\n');
       return { ok: true, attempts: attempt, report: lastReport };
+    }
+    if (lastReport.ok && requireUiReady && !lastReport.uiState?.ok) {
+      stdout.write('[play-qa-device:wait] waiting for unlocked awake phone (--require-ui-ready)\n');
     }
     await sleepFn(intervalMs);
   }
 
-  stderr.write('[play-qa-device:wait] timed out waiting for a Play-installed physical device.\n');
+  stderr.write(
+    requireUiReady
+      ? '[play-qa-device:wait] timed out waiting for a Play-installed physical device with UI ready.\n'
+      : '[play-qa-device:wait] timed out waiting for a Play-installed physical device.\n'
+  );
   return { ok: false, attempts: attempt, report: lastReport };
 }
 

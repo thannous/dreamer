@@ -113,6 +113,7 @@ lance sans `--device`; ajouter `--device <adb-id>` seulement quand plusieurs dev
 ```bash
 npm run android:play-qa-device:wait
 npm run android:play-qa-device:wait -- --device <adb-id>
+npm run android:play-qa-device:wait -- --device <adb-id> --require-ui-ready
 npm run android:play-qa-device -- --device <adb-id>
 ```
 
@@ -125,7 +126,10 @@ Le meme preflight affiche aussi un signal `ui: READY` ou `ui: WARN` lu via
 `adb shell dumpsys window policy`. `ui: WARN` ne bloque pas l'impression des `evidenceArgs`, mais il
 signale que le telephone est verrouille, endormi ou dans un etat UI inconnu. Dans ce cas, deverrouiller
 le telephone et garder l'ecran allume avant de reprendre Google Sign-In, Play Billing, Restore ou les
-flows Maestro pilotes par UI.
+flows Maestro pilotes par UI. Avant un achat ou restore pilote par l'agent, preferer
+`android:play-qa-device:wait -- --device <adb-id> --require-ui-ready`: cette variante continue a
+poller tant que l'app est Play-installed mais que le telephone n'est pas encore reveille et
+deverrouille.
 
 Sur une build Play non-debuggable, `adb shell run-as com.tanuki75.noctalia ...` echoue normalement
 avec `package not debuggable`; ne pas utiliser cet echec comme signal RevenueCat. Pour extraire
