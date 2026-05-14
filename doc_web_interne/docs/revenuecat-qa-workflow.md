@@ -79,6 +79,14 @@ La commande accepte aussi le JSON en stdin et normalise les deux produits Play a
 (`prodfce10ef2a8` et `prod98337b31be`) dans
 `doc_web_interne/docs/revenuecat-play-store-state.local.json`.
 
+La route Google Play Developer API directe n'est exploitable que si une authentification locale porte
+le scope `https://www.googleapis.com/auth/androidpublisher`, comme demande par l'endpoint officiel
+`monetization.subscriptions.get`. Au dernier essai local du 2026-05-14, `gcloud auth print-access-token`
+refuse ce scope pour le compte utilisateur configure, et l'ADC locale atteint l'endpoint mais renvoie
+`403 PERMISSION_DENIED` / `insufficient authentication scopes` pour `noctalia_plus:monthly` et
+`noctalia_plus:annual`. Sans service account Play Developer ou reauth ADC avec ce scope, la correction
+`P1M` reste a faire/verifier via Play Console puis RevenueCat MCP.
+
 Quand une preuve manuelle existe, copier `doc_web_interne/docs/revenuecat-qa-evidence.example.json`
 vers `doc_web_interne/docs/revenuecat-qa-evidence.local.json`, puis passer le gate concerne a
 `"status": "passed"` avec un `testedAt` valide, `tester`, `appUserId` et une preuve courte. La
