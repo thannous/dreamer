@@ -351,7 +351,7 @@ Scenarios manuels a valider avec accord explicite d'achat:
 - achat annuel Test Store: valide localement le 2026-05-14 sur `Pixel_7_Play_API_36`
 - restore sur le meme utilisateur: valide localement le 2026-05-14 apres reinstall debug
 - refresh apres changement externe RevenueCat: valide via refresh QA Lab pendant les achats/restores
-- switch compte apres achat: encore a valider avec un deuxieme compte reel non abonne
+- switch compte apres achat: valide localement le 2026-05-14 avec un second compte reel non abonne
 
 Preuve attendue:
 
@@ -363,10 +363,14 @@ Preuve attendue:
 
 Preuve locale actuelle:
 
-- `test_store_monthly`, `test_store_annual` et `restore_after_reinstall` sont passes dans
+- `test_store_monthly`, `test_store_annual`, `restore_after_reinstall` et `account_switch` sont passes dans
   `doc_web_interne/docs/revenuecat-qa-evidence.local.json`.
 - L'app user id observe sur device est `1239729f-7468-48c9-b26a-7aa8b4a82591`.
-- `subscription:qa:report` affiche 3 scenarios manuels verifies et 4 gates restantes.
+- `subscription:qa:report` affiche 4 scenarios manuels verifies et 3 gates Play restantes.
+- Le 2026-05-14T22:39Z, une relecture RevenueCat MCP fraiche sur
+  `1239729f-7468-48c9-b26a-7aa8b4a82591` confirme `active_entitlements_count=0`,
+  `sandbox_purchase_count=0`, `production_purchase_count=0` et `errors=[]` avant toute validation
+  d'achat Play.
 
 Checklist d'achat Test Store:
 
@@ -377,7 +381,7 @@ Checklist d'achat Test Store:
 | Achat mensuel | action `monthly purchase completed`, `Product` mensuel, `Tier plus / active` | valide localement |
 | Refresh serveur | `Server version` augmente et les quotas deviennent illimites | valide localement |
 | Restore | action `Restore completed` avec le meme app user id | valide localement |
-| Switch compte | un second compte reste `free / inactive` apres logout/login | bloque: second compte reel requis |
+| Switch compte | un second compte reste `free / inactive` apres logout/login | valide localement |
 
 Flow d'achat garde par approbation explicite:
 
