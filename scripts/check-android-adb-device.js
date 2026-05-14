@@ -44,6 +44,12 @@ function buildAdbMdnsCommands(services) {
     .filter(Boolean);
 }
 
+function isLikelyEmulatorMdnsService(service) {
+  const instance = String(service?.instance || '');
+  const address = String(service?.address || '');
+  return /^adb-EMULATOR/i.test(instance) || /^10\.0\.2\.\d+:/i.test(address);
+}
+
 function summarizeAdbState(devices) {
   if (devices.some((device) => device.state === 'device')) {
     return {
@@ -154,25 +160,35 @@ function detectAdbMdnsServices(spawn = spawnSync, adbCommand = 'adb') {
     };
   }
   const services = parseAdbMdnsServices(result.stdout);
-  const commands = buildAdbMdnsCommands(services);
-  const pairServices = services.filter((service) => service.service === '_adb-tls-pairing._tcp.');
-  const connectServices = services.filter((service) => service.service === '_adb-tls-connect._tcp.');
+  const emulatorServices = services.filter(isLikelyEmulatorMdnsService);
+  const phoneServices = services.filter((service) => !isLikelyEmulatorMdnsService(service));
+  const commands = buildAdbMdnsCommands(phoneServices);
+  const pairServices = phoneServices.filter((service) => service.service === '_adb-tls-pairing._tcp.');
+  const connectServices = phoneServices.filter((service) => service.service === '_adb-tls-connect._tcp.');
   const parts = [];
   if (pairServices.length > 0) parts.push(`${pairServices.length} pairing service(s)`);
   if (connectServices.length > 0) parts.push(`${connectServices.length} connect service(s)`);
-  if (services.length > 0 && parts.length === 0) parts.push(`${services.length} non-pairing service(s)`);
+  if (phoneServices.length > 0 && parts.length === 0) parts.push(`${phoneServices.length} non-pairing service(s)`);
+  if (emulatorServices.length > 0) parts.push(`${emulatorServices.length} emulator service(s) ignored`);
   return {
     supported: true,
     services,
+    phoneServices,
+    emulatorServices,
     commands,
+    visible: phoneServices.length > 0,
     message:
-      services.length > 0
+      phoneServices.length > 0
         ? `ADB mDNS sees ${parts.join(', ') || `${services.length} service(s)`}.`
+        : emulatorServices.length > 0
+          ? `ADB mDNS only sees ${emulatorServices.length} emulator service(s), which cannot satisfy Play QA.`
         : 'ADB mDNS does not show wireless debugging services.',
     next:
       commands.length > 0
         ? 'Use adb pair <host>:<pair-port> <pair-code>, then adb connect <host>:<connect-port>.'
-        : 'On the phone, enable Developer options -> Wireless debugging, keep the pairing screen open, then retry.',
+        : phoneServices.length > 0
+          ? 'On the phone, enable Developer options -> Wireless debugging, keep the pairing screen open, then retry.'
+          : 'Connect a physical Android phone over USB or enable Wireless debugging on the phone; emulator mDNS services are ignored for Play QA.',
   };
 }
 
@@ -254,11 +270,14 @@ function formatReport(report) {
   }
   if (report.mdns.supported) {
     lines.push(
-      `[android-device] WIRELESS: ${report.mdns.services.length > 0 ? 'VISIBLE' : 'NOT VISIBLE'} - ${report.mdns.message}`
+      `[android-device] WIRELESS: ${report.mdns.visible ? 'VISIBLE' : 'NOT VISIBLE'} - ${report.mdns.message}`
     );
     if (report.mdns.next) lines.push(`  Next: ${report.mdns.next}`);
-    for (const service of report.mdns.services) {
+    for (const service of report.mdns.phoneServices || report.mdns.services) {
       lines.push(`[android-device] Wireless ${service.service}: ${service.address || service.instance}`);
+    }
+    for (const service of report.mdns.emulatorServices || []) {
+      lines.push(`[android-device] Wireless emulator ignored ${service.service}: ${service.address || service.instance}`);
     }
     for (const command of report.mdns.commands || []) {
       lines.push(`[android-device] Wireless command: ${command}`);
@@ -290,6 +309,7 @@ module.exports = {
   detectAdbMdnsServices,
   detectUsbAndroidDevice,
   formatReport,
+  isLikelyEmulatorMdnsService,
   isLikelyEmulator,
   parseAdbDevices,
   parseAdbMdnsServices,

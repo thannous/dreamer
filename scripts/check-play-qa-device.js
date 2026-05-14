@@ -174,7 +174,7 @@ function formatReport(report) {
   }
   if (report.physical.mdns?.supported) {
     lines.push(
-      `[play-qa-device] wireless: ${report.physical.mdns.services.length > 0 ? 'VISIBLE' : 'NOT VISIBLE'} - ${report.physical.mdns.message}`
+      `[play-qa-device] wireless: ${report.physical.mdns.visible ? 'VISIBLE' : 'NOT VISIBLE'} - ${report.physical.mdns.message}`
     );
     for (const command of report.physical.mdns.commands || []) {
       lines.push(`[play-qa-device] wirelessCommand: ${command}`);

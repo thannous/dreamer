@@ -78,7 +78,8 @@ npm run android:device:physical
 
 Cette commande echoue volontairement si seuls des AVD `emulator-*` sont visibles, meme si ADB est
 pret pour les tests mock/Test Store. Elle affiche aussi l'etat USB macOS et les services ADB
-Wireless Debugging visibles via mDNS. Si `WIRELESS: VISIBLE` apparait, utiliser la commande
+Wireless Debugging visibles via mDNS; les services mDNS d'emulateur sont ignores pour les preuves
+Play. Si `WIRELESS: VISIBLE` apparait, utiliser la commande
 `adb pair <host>:<pair-port> <pair-code>` affichee par Android, puis `adb connect
 <host>:<connect-port>` avant de relancer `npm run android:device:physical`. Si `WIRELESS: NOT
 VISIBLE` apparait, ouvrir Developer options -> Wireless debugging sur le telephone et garder l'ecran
@@ -95,6 +96,8 @@ Interpretation rapide du diagnostic appareil:
   `adb pair` / `adb connect` affichees, puis relancer le preflight.
 - `USB: NOT VISIBLE` et `WIRELESS: NOT VISIBLE` ensemble bloquent totalement les preuves Play
   locales: le Mac n'a aucun chemin ADB pour verifier `installerPackageName=com.android.vending`.
+- Une ligne `emulator service(s) ignored` veut dire que seul un AVD publie mDNS; cela ne compte pas
+  comme telephone Play QA et ne peut pas fermer les gates `play_*`.
 
 Quand le telephone est visible et que l'app est installee depuis la piste Internal Testing, utiliser
 le helper d'attente pendant la connexion. Si un seul telephone physique est visible, il peut etre
