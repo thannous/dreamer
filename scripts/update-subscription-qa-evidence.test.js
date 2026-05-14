@@ -115,8 +115,8 @@ describe('subscription QA evidence updater', () => {
       'tester@example.com',
       '--app-user-id',
       '00000000-0000-4000-8000-000000000000',
-	  '--evidence',
-	  'monthly purchase completed through Play Internal Testing with base plan P1M confirmed',
+      '--evidence',
+      'monthly purchase completed through Play Internal Testing with base plan P1M confirmed',
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
@@ -242,6 +242,53 @@ describe('subscription QA evidence updater', () => {
       easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9',
       evidence: 'monthly purchase completed through Play Internal Testing with base plan P1M confirmed',
     });
+  });
+
+  it('records account switch evidence only when the second free inactive account is explicit', () => {
+    const file = tempFile();
+    const result = runUpdate([
+      '--file',
+      file,
+      '--gate',
+      'account_switch',
+      '--tester',
+      'tester@example.com',
+      '--app-user-id',
+      '00000000-0000-4000-8000-000000000000',
+      '--evidence',
+      'paid account remains plus while second account remains free / inactive after logout and login',
+      '--tested-at',
+      '2026-05-09T12:00:00.000Z',
+    ]);
+
+    expect(result.status).toBe(0);
+    const evidence = JSON.parse(fs.readFileSync(file, 'utf8'));
+    expect(evidence.gates.account_switch).toMatchObject({
+      status: 'passed',
+      evidence: 'paid account remains plus while second account remains free / inactive after logout and login',
+    });
+  });
+
+  it('rejects account switch evidence that does not prove the second account state', () => {
+    const file = tempFile();
+    const result = runUpdate([
+      '--file',
+      file,
+      '--gate',
+      'account_switch',
+      '--tester',
+      'tester@example.com',
+      '--app-user-id',
+      '00000000-0000-4000-8000-000000000000',
+      '--evidence',
+      'paid account logout and login verified by manual QA',
+      '--tested-at',
+      '2026-05-09T12:00:00.000Z',
+    ]);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('Account switch evidence must confirm the second account');
+    expect(fs.existsSync(file)).toBe(false);
   });
 
   it('rejects Play monthly evidence that does not confirm base plan P1M', () => {

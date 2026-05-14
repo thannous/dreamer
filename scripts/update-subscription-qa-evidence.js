@@ -113,6 +113,20 @@ function requirePlayMonthlyBasePlanEvidence(options) {
   }
 }
 
+function requireAccountSwitchEvidence(options) {
+  if (options.gate !== 'account_switch') return;
+  const evidence = options.evidence.trim();
+  if (!/second account/i.test(evidence)) {
+    throw new Error('Account switch evidence must confirm the second account.');
+  }
+  if (!/\bfree\b/i.test(evidence)) {
+    throw new Error('Account switch evidence must confirm the second account is free.');
+  }
+  if (!/\binactive\b/i.test(evidence)) {
+    throw new Error('Account switch evidence must confirm the second account is inactive.');
+  }
+}
+
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
@@ -149,6 +163,7 @@ function updateEvidence(options) {
   }
   requireNonTemplateEvidence(options);
   requirePlayMonthlyBasePlanEvidence(options);
+  requireAccountSwitchEvidence(options);
 
   document.gates[options.gate] = {
     ...gate,
