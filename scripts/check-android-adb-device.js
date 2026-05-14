@@ -160,6 +160,7 @@ function detectAdbMdnsServices(spawn = spawnSync, adbCommand = 'adb') {
   const parts = [];
   if (pairServices.length > 0) parts.push(`${pairServices.length} pairing service(s)`);
   if (connectServices.length > 0) parts.push(`${connectServices.length} connect service(s)`);
+  if (services.length > 0 && parts.length === 0) parts.push(`${services.length} non-pairing service(s)`);
   return {
     supported: true,
     services,
@@ -169,7 +170,7 @@ function detectAdbMdnsServices(spawn = spawnSync, adbCommand = 'adb') {
         ? `ADB mDNS sees ${parts.join(', ') || `${services.length} service(s)`}.`
         : 'ADB mDNS does not show wireless debugging services.',
     next:
-      services.length > 0
+      commands.length > 0
         ? 'Use adb pair <host>:<pair-port> <pair-code>, then adb connect <host>:<connect-port>.'
         : 'On the phone, enable Developer options -> Wireless debugging, keep the pairing screen open, then retry.',
   };
