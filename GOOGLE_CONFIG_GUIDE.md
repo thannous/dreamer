@@ -187,10 +187,19 @@ keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androi
 8. Après avoir obtenu l’empreinte SHA-1 de production (Étape 4), retourner sur ce **même client Android** dans Google Cloud
    Console, cliquer **Edit** et ajouter l’empreinte de production en plus de celle de développement, puis **Save**
 
+   Empreinte Play App Signing extraite de l'APK universel Play `com.tanuki75.noctalia` versionCode 24 :
+   - **SHA-1 Play** : `BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59`
+   - **SHA-256 Play** : `6A:8C:B2:E2:CD:D2:C1:FD:D7:C5:CF:CF:00:D7:C3:CC:58:61:C2:CD:3F:AF:49:F6:9A:31:25:35:A4:4F:EE:0F`
+
+   Note : `gcloud iam oauth-clients list --project gen-lang-client-0336445544 --location=global`
+   renvoie `[]` pour les clients OAuth Android classiques. La presence de ce SHA-1 doit donc etre
+   confirmee dans **Google Cloud Console > APIs & Services > Credentials**.
+
 ### ✅ Validation :
 - [x] L'Android OAuth client ID est créé
 - [x] Package name : `com.tanuki75.noctalia`
 - [x] SHA-1 ajouté
+- [ ] SHA-1 Play App Signing ajouté/verifié dans Google Cloud Console
 - [x] Android Client ID : `359653779023-b2ehl3qp5eas6b8ncu4cenjbtb3ivqfp.apps.googleusercontent.com`
 
 ---
