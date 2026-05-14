@@ -113,6 +113,14 @@ function requirePlayMonthlyBasePlanEvidence(options) {
   }
 }
 
+function requirePlayInstalledEvidence(options) {
+  if (!options.gate?.startsWith('play_')) return;
+  const evidence = options.evidence.trim();
+  if (!/(com\.android\.vending|play-installed|installed from play|installation play)/i.test(evidence)) {
+    throw new Error('Play evidence must confirm the app was installed from Play Internal Testing.');
+  }
+}
+
 function requireAccountSwitchEvidence(options) {
   if (options.gate !== 'account_switch') return;
   const evidence = options.evidence.trim();
@@ -163,6 +171,7 @@ function updateEvidence(options) {
   }
   requireNonTemplateEvidence(options);
   requirePlayMonthlyBasePlanEvidence(options);
+  requirePlayInstalledEvidence(options);
   requireAccountSwitchEvidence(options);
 
   document.gates[options.gate] = {
