@@ -398,6 +398,15 @@ function getGateEvidenceIssue(evidence, scenario) {
     const snapshotIssue = getPlayAnnualSnapshotIssue();
     if (snapshotIssue) return snapshotIssue;
   }
+  if (key === 'play_cancellation_and_expiry' && !/(cancel|cancellation|cancelled|canceled|expiry|expired)/i.test(evidenceText)) {
+    return 'cancellation or expiry must be observed';
+  }
+  if (key === 'play_cancellation_and_expiry' && !/\bwebhook\b/i.test(evidenceText)) {
+    return 'RevenueCat webhook must be confirmed';
+  }
+  if (key === 'play_cancellation_and_expiry' && !(/\bbackend\b/i.test(evidenceText) && /converg|sync/i.test(evidenceText))) {
+    return 'backend convergence must be confirmed';
+  }
   if (key === 'account_switch' && !/second account/i.test(evidenceText)) {
     return 'second account must be confirmed';
   }
