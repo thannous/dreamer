@@ -1,9 +1,14 @@
+const path = require('path');
+const { spawnSync } = require('child_process');
+
 const {
   checkPlayQaDevice,
   formatReport,
   getReadyPhysicalDevices,
   selectPhysicalDevice,
 } = require('./check-play-qa-device');
+
+const SCRIPT = path.join(__dirname, 'check-play-qa-device.js');
 
 function spawnFor({ adbDevicesStdout, dumpsysStdout, dumpsysStatus = 0, whichAdb = true } = {}) {
   return (command, args) => {
@@ -25,6 +30,17 @@ function spawnFor({ adbDevicesStdout, dumpsysStdout, dumpsysStatus = 0, whichAdb
 }
 
 describe('Play RevenueCat QA device preflight', () => {
+  it('documents evidenceArgs in help output', () => {
+    const result = spawnSync(process.execPath, [SCRIPT, '--help'], {
+      cwd: path.resolve(__dirname, '..'),
+      encoding: 'utf8',
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('evidenceArgs');
+    expect(result.stdout).toContain('npm run subscription:qa:evidence');
+  });
+
   it('filters ready physical devices from emulators', () => {
     expect(
       getReadyPhysicalDevices([

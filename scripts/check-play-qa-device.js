@@ -58,6 +58,9 @@ Usage:
 Checks the two preconditions for Play RevenueCat QA evidence:
 1. a physical Android tester device is visible in ADB
 2. the app on that device was installed by Google Play
+
+When both checks pass, the report prints evidenceArgs that can be copied into
+npm run subscription:qa:evidence for play_* gates.
 `.trim());
 }
 
