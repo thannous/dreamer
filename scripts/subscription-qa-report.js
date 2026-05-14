@@ -291,6 +291,8 @@ function getGateEvidenceIssue(evidence, scenario) {
   const testedAt = typeof gate?.testedAt === 'string' ? gate.testedAt.trim() : '';
   const easBuildId = typeof gate?.easBuildId === 'string' ? gate.easBuildId.trim() : '';
   const deviceId = typeof gate?.deviceId === 'string' ? gate.deviceId.trim() : '';
+  const installerPackageName =
+    typeof gate?.installerPackageName === 'string' ? gate.installerPackageName.trim() : '';
   const tester = typeof gate?.tester === 'string' ? gate.tester.trim() : '';
   const appUserId = typeof gate?.appUserId === 'string' ? gate.appUserId.trim() : '';
 
@@ -316,6 +318,12 @@ function getGateEvidenceIssue(evidence, scenario) {
   }
   if (requiresEasBuild && /^emulator-\d+$/i.test(deviceId)) {
     return 'deviceId must be a physical Android device, not an emulator';
+  }
+  if (requiresEasBuild && installerPackageName.length === 0) {
+    return 'installerPackageName is required for Play evidence';
+  }
+  if (requiresEasBuild && installerPackageName !== 'com.android.vending') {
+    return 'installerPackageName must be com.android.vending';
   }
   if (
     requiresEasBuild &&
@@ -368,6 +376,7 @@ function getEvidenceCommand(scenario) {
       ...baseArgs,
       '--eas-build-id <eas-build-uuid>',
       '--device-id <physical-adb-id>',
+      '--installer-package-name com.android.vending',
       '--evidence "Play monthly purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"',
     ].join(' ');
   }
@@ -377,6 +386,7 @@ function getEvidenceCommand(scenario) {
       ...baseArgs,
       '--eas-build-id <eas-build-uuid>',
       '--device-id <physical-adb-id>',
+      '--installer-package-name com.android.vending',
       '--evidence "Play annual purchase completed after installed from Play (com.android.vending), product noctalia_plus:annual, backend converged"',
     ].join(' ');
   }
@@ -386,6 +396,7 @@ function getEvidenceCommand(scenario) {
       ...baseArgs,
       '--eas-build-id <eas-build-uuid>',
       '--device-id <physical-adb-id>',
+      '--installer-package-name com.android.vending',
       '--evidence "Play cancellation or expiry observed after installed from Play (com.android.vending), RevenueCat webhook and backend state converged"',
     ].join(' ');
   }

@@ -25,6 +25,7 @@ describe('subscription QA local verifier', () => {
       expect.arrayContaining([
         '## Evidence Commands',
         'npm run subscription:qa:evidence -- --gate play_monthly',
+        '--installer-package-name com.android.vending',
         '## Current Session Readiness',
         'Verified manual/external scenarios: 4',
         'Manual or external gates remaining: 3',

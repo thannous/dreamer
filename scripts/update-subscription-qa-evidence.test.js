@@ -240,6 +240,8 @@ describe('subscription QA evidence updater', () => {
       '310244ed-027b-4028-8522-70c0f676a0e9',
       '--device-id',
       '57275d36',
+      '--installer-package-name',
+      'com.android.vending',
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
@@ -250,6 +252,7 @@ describe('subscription QA evidence updater', () => {
       status: 'passed',
       easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9',
       deviceId: '57275d36',
+      installerPackageName: 'com.android.vending',
       evidence:
         'monthly purchase completed through Play Internal Testing after installed from Play (com.android.vending) with base plan P1M confirmed',
     });
@@ -296,6 +299,8 @@ describe('subscription QA evidence updater', () => {
       '310244ed-027b-4028-8522-70c0f676a0e9',
       '--device-id',
       'emulator-5554',
+      '--installer-package-name',
+      'com.android.vending',
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
@@ -322,12 +327,68 @@ describe('subscription QA evidence updater', () => {
       '310244ed-027b-4028-8522-70c0f676a0e9',
       '--device-id',
       '57275d36',
+      '--installer-package-name',
+      'com.android.vending',
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
 
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('Play evidence must confirm the app was installed from Play Internal Testing');
+    expect(fs.existsSync(file)).toBe(false);
+  });
+
+  it('requires the Play installer package name for Play evidence', () => {
+    const file = tempFile();
+    const result = runUpdate([
+      '--file',
+      file,
+      '--gate',
+      'play_annual',
+      '--tester',
+      'tester@example.com',
+      '--app-user-id',
+      '00000000-0000-4000-8000-000000000000',
+      '--evidence',
+      'annual purchase completed through Play Internal Testing after installed from Play (com.android.vending)',
+      '--eas-build-id',
+      '310244ed-027b-4028-8522-70c0f676a0e9',
+      '--device-id',
+      '57275d36',
+      '--tested-at',
+      '2026-05-09T12:00:00.000Z',
+    ]);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('Missing --installer-package-name');
+    expect(fs.existsSync(file)).toBe(false);
+  });
+
+  it('rejects non-Play installer package names for Play evidence', () => {
+    const file = tempFile();
+    const result = runUpdate([
+      '--file',
+      file,
+      '--gate',
+      'play_annual',
+      '--tester',
+      'tester@example.com',
+      '--app-user-id',
+      '00000000-0000-4000-8000-000000000000',
+      '--evidence',
+      'annual purchase completed through Play Internal Testing after installed from Play (com.android.vending)',
+      '--eas-build-id',
+      '310244ed-027b-4028-8522-70c0f676a0e9',
+      '--device-id',
+      '57275d36',
+      '--installer-package-name',
+      'com.android.shell',
+      '--tested-at',
+      '2026-05-09T12:00:00.000Z',
+    ]);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('installer package name must be com.android.vending');
     expect(fs.existsSync(file)).toBe(false);
   });
 
