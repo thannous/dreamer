@@ -192,6 +192,7 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Play annual base plan snapshot');
     expect(result.stdout).toContain('RevenueCat product prodfce10ef2a8 must expose billing period P1M');
     expect(result.stdout).toContain('OK | Play store state snapshot parses');
+    expect(result.stdout).toContain('OK | Google OAuth Android client snapshot parses');
     expect(result.stdout).toContain('OK | Play store state snapshot updater exists');
     expect(result.stdout).toContain('npm run subscription:qa:play-state');
     expect(result.stdout).toContain('OK | Evidence template covers all release gates');
@@ -199,6 +200,8 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('OK | Google Play subscription state snapshot is gitignored');
     expect(result.stdout).toContain('OK | Google Play subscription state updater exists');
     expect(result.stdout).toContain('npm run subscription:qa:google-play-state');
+    expect(result.stdout).toContain('OK | Google OAuth Android client state updater exists');
+    expect(result.stdout).toContain('npm run android:google-oauth-android-client-state');
     expect(result.stdout).toContain('Manual or external gates remaining: 7');
     expect(result.stdout).toContain('Offering packages and prices load without purchase');
     expect(result.stdout).toContain('maestro/subscription-teststore-restore-google-manual.yml plus structured evidence');

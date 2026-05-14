@@ -15,6 +15,9 @@ const playStoreStatePath = process.env.REVENUECAT_PLAY_STORE_STATE_PATH
 const googlePlaySubscriptionStatePath = process.env.GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH
   ? path.resolve(ROOT, process.env.GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH)
   : path.join(ROOT, 'doc_web_interne/docs/google-play-subscription-state.local.json');
+const googleOAuthAndroidClientStatePath = process.env.GOOGLE_OAUTH_ANDROID_CLIENT_STATE_PATH
+  ? path.resolve(ROOT, process.env.GOOGLE_OAUTH_ANDROID_CLIENT_STATE_PATH)
+  : path.join(ROOT, 'doc_web_interne/docs/google-oauth-android-client-state.local.json');
 
 if (args.has('--help') || args.has('-h')) {
   console.log(`
@@ -150,6 +153,20 @@ function readGooglePlaySubscriptionStateResult() {
   }
   try {
     return { snapshot: readJsonFile(googlePlaySubscriptionStatePath), error: null };
+  } catch (error) {
+    return {
+      snapshot: null,
+      error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
+    };
+  }
+}
+
+function readGoogleOAuthAndroidClientStateResult() {
+  if (!fs.existsSync(googleOAuthAndroidClientStatePath)) {
+    return { snapshot: null, error: null };
+  }
+  try {
+    return { snapshot: readJsonFile(googleOAuthAndroidClientStatePath), error: null };
   } catch (error) {
     return {
       snapshot: null,
@@ -489,6 +506,7 @@ const evidenceResult = readEvidenceResult();
 const evidence = evidenceResult.evidence;
 const playStoreStateResult = readPlayStoreStateResult();
 const googlePlaySubscriptionStateResult = readGooglePlaySubscriptionStateResult();
+const googleOAuthAndroidClientStateResult = readGoogleOAuthAndroidClientStateResult();
 
 const checks = [
   check(
@@ -665,6 +683,13 @@ const checks = [
     fs.existsSync(playStoreStatePath) ? playStoreStateResult.error || playStoreStatePath : 'not provided'
   ),
   check(
+    'Google OAuth Android client snapshot parses',
+    !fs.existsSync(googleOAuthAndroidClientStatePath) || !googleOAuthAndroidClientStateResult.error,
+    fs.existsSync(googleOAuthAndroidClientStatePath)
+      ? googleOAuthAndroidClientStateResult.error || googleOAuthAndroidClientStatePath
+      : 'not provided'
+  ),
+  check(
     'Play store state snapshot updater exists',
     fs.existsSync(path.join(ROOT, 'scripts/update-revenuecat-play-store-state.js')) &&
       pkg.scripts['subscription:qa:play-state'] === 'node ./scripts/update-revenuecat-play-store-state.js',
@@ -675,6 +700,13 @@ const checks = [
     fs.existsSync(path.join(ROOT, 'scripts/update-google-play-subscription-state.js')) &&
       pkg.scripts['subscription:qa:google-play-state'] === 'node ./scripts/update-google-play-subscription-state.js',
     'npm run subscription:qa:google-play-state -- --input google-play-subscription.json'
+  ),
+  check(
+    'Google OAuth Android client state updater exists',
+    fs.existsSync(path.join(ROOT, 'scripts/update-google-oauth-android-client-state.js')) &&
+      pkg.scripts['android:google-oauth-android-client-state'] ===
+        'node ./scripts/update-google-oauth-android-client-state.js',
+    'npm run android:google-oauth-android-client-state -- --client-id <id> --package-name com.tanuki75.noctalia --sha1 <sha1>'
   ),
   check(
     'Completion audit exists',
@@ -808,6 +840,11 @@ console.log(
   }`
 );
 console.log(`- Play Store state snapshot: ${fs.existsSync(playStoreStatePath) ? 'local file present' : 'not provided'}`);
+console.log(
+  `- Google OAuth Android client snapshot: ${
+    fs.existsSync(googleOAuthAndroidClientStatePath) ? 'local file present' : 'not provided'
+  }`
+);
 console.log('');
 console.log('## Local Checks');
 console.log('');

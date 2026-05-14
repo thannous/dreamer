@@ -343,7 +343,7 @@ npx eas build -p android --profile preview
 `npm run android:gates:strict` est volontairement bloquant avant release Android: il execute
 `subscription:qa:release-gate` et echoue tant que les gates RevenueCat manuelles/externes ne sont
 pas toutes fermees. Au 2026-05-14, il echoue encore sur `RevenueCat subscription QA release gate`
-avec 4 gates restantes.
+avec 3 gates RevenueCat/Play restantes.
 
 Pour rafraichir la preuve locale du project number Google Cloud utilise par Play Integrity:
 
@@ -355,6 +355,21 @@ gcloud projects list --filter='PROJECT_NUMBER=359653779023' --format=json \
 Cette commande ecrit `doc_web_interne/docs/google-cloud-project-state.local.json` (gitignore).
 `android:gates:strict` lit ce snapshot pour passer le gate `Google Cloud project number confirmation`
 sans relancer `gcloud` a chaque preflight.
+
+Pour rafraichir la preuve locale que le SHA-1 Play App Signing est bien dans le client OAuth Android
+Google Cloud:
+
+```bash
+npm run android:google-oauth-android-client-state -- \
+  --client-id 359653779023-5dhs012rh7l3cjf0leoknn7j0dlgq0ok.apps.googleusercontent.com \
+  --name "Noctalia Android Production" \
+  --package-name com.tanuki75.noctalia \
+  --sha1 BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59
+```
+
+Cette commande ecrit `doc_web_interne/docs/google-oauth-android-client-state.local.json`
+(gitignore). Elle doit rester une copie de la lecture Google Cloud Console; elle ne modifie pas
+Google Cloud.
 
 Pour generer un build Store installable via Google Play Internal Testing, utiliser plutot:
 

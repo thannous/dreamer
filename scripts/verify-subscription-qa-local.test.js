@@ -50,6 +50,8 @@ describe('subscription QA local verifier', () => {
         'Google Play annual base plan snapshot',
         'Play monthly base plan snapshot',
         'Play annual base plan snapshot',
+        'Google OAuth Android client snapshot parses',
+        'Google OAuth Android client state updater exists',
         'expected P1M',
         'expected P1Y',
       ])
@@ -62,6 +64,7 @@ describe('subscription QA local verifier', () => {
         'syntax: Play store state updater',
         'syntax: Google Play subscription state updater',
         'syntax: Google Cloud project state updater',
+        'syntax: Google OAuth Android client state updater',
         'syntax: Android tooling resolver',
         'syntax: Android release gates',
         'syntax: Play install source diagnostic',
@@ -74,6 +77,7 @@ describe('subscription QA local verifier', () => {
     expect(unitCommand.args).toContain('scripts/update-revenuecat-play-store-state.test.js');
     expect(unitCommand.args).toContain('scripts/update-google-play-subscription-state.test.js');
     expect(unitCommand.args).toContain('scripts/update-google-cloud-project-state.test.js');
+    expect(unitCommand.args).toContain('scripts/update-google-oauth-android-client-state.test.js');
     expect(unitCommand.args).toContain('scripts/check-android-release-gates.test.js');
     expect(unitCommand.args).toContain('scripts/check-play-install-source.test.js');
     expect(unitCommand.args).toContain('scripts/check-play-qa-device.test.js');
