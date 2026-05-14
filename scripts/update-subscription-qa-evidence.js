@@ -58,6 +58,11 @@ function parseArgs(argv) {
       i += 1;
       continue;
     }
+    if (arg === '--version-code') {
+      options.versionCode = argv[i + 1];
+      i += 1;
+      continue;
+    }
     if (arg === '--tested-at') {
       options.testedAt = argv[i + 1];
       i += 1;
@@ -85,6 +90,7 @@ Options:
   --device-id <id>     Required for play_* gates; ADB serial of the physical tester device.
   --installer-package-name <name>
                        Required for play_* gates; must be com.android.vending.
+  --version-code <n>   Required for play_* gates; installed Android versionCode from Play.
                        play_monthly evidence must also confirm base plan P1M.
                        play_annual evidence must also confirm base plan P1Y.
                        play_cancellation_and_expiry evidence must confirm cancellation/expiry,
@@ -180,6 +186,15 @@ function requirePlayInstallerPackageName(options) {
   }
 }
 
+function requirePlayVersionCode(options) {
+  if (!options.gate?.startsWith('play_')) return;
+  requireValue(options, 'versionCode', '--version-code');
+  const value = String(options.versionCode).trim();
+  if (!/^[1-9]\d*$/.test(value)) {
+    throw new Error('Play evidence versionCode must be a positive integer.');
+  }
+}
+
 function requireAccountSwitchEvidence(options) {
   if (options.gate !== 'account_switch') return;
   const evidence = options.evidence.trim();
@@ -233,6 +248,7 @@ function updateEvidence(options) {
   requirePlayInstalledEvidence(options);
   requirePlayDeviceId(options);
   requirePlayInstallerPackageName(options);
+  requirePlayVersionCode(options);
   requirePlayAnnualBasePlanEvidence(options);
   requirePlayCancellationConvergenceEvidence(options);
   requireAccountSwitchEvidence(options);
@@ -247,6 +263,7 @@ function updateEvidence(options) {
     ...(options.easBuildId ? { easBuildId: options.easBuildId } : {}),
     ...(options.deviceId ? { deviceId: options.deviceId } : {}),
     ...(options.installerPackageName ? { installerPackageName: options.installerPackageName } : {}),
+    ...(options.versionCode ? { versionCode: Number.parseInt(String(options.versionCode).trim(), 10) } : {}),
   };
 
   writeJson(options.file, document);

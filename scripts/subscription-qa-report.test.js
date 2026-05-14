@@ -24,6 +24,7 @@ function playEvidenceFields(overrides = {}) {
     easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9',
     deviceId: '57275d36',
     installerPackageName: 'com.android.vending',
+    versionCode: 24,
     ...overrides,
   };
 }
@@ -215,13 +216,13 @@ describe('subscription QA report release gate', () => {
       'npm run subscription:qa:evidence -- --gate account_switch --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --evidence "paid account remains plus while second account remains free / inactive after logout and login"'
     );
     expect(result.stdout).toContain(
-      'npm run subscription:qa:evidence -- --gate play_monthly --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --evidence "Play monthly purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"'
+      'npm run subscription:qa:evidence -- --gate play_monthly --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --version-code <installed-version-code> --evidence "Play monthly purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"'
     );
     expect(result.stdout).toContain(
-      'npm run subscription:qa:evidence -- --gate play_annual --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --evidence "Play annual purchase completed after installed from Play (com.android.vending), product noctalia_plus:annual, base plan P1Y confirmed, backend converged"'
+      'npm run subscription:qa:evidence -- --gate play_annual --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --version-code <installed-version-code> --evidence "Play annual purchase completed after installed from Play (com.android.vending), product noctalia_plus:annual, base plan P1Y confirmed, backend converged"'
     );
     expect(result.stdout).toContain(
-      'npm run subscription:qa:evidence -- --gate play_cancellation_and_expiry --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --evidence "Play cancellation or expiry observed after installed from Play (com.android.vending), RevenueCat webhook and backend state converged"'
+      'npm run subscription:qa:evidence -- --gate play_cancellation_and_expiry --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --version-code <installed-version-code> --evidence "Play cancellation or expiry observed after installed from Play (com.android.vending), RevenueCat webhook and backend state converged"'
     );
     expect(result.stdout).toContain('Full RevenueCat workflow is not complete');
   });
@@ -647,6 +648,32 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Verified manual/external scenarios: 4');
     expect(result.stdout).toContain('Manual or external gates remaining: 3');
     expect(result.stdout).toContain('Play monthly: installerPackageName must be com.android.vending');
+  });
+
+  it('keeps Play gates blocked when installed versionCode evidence is missing', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: evidenceForKey(key),
+          ...(key.startsWith('play_') ? playEvidenceFields({ versionCode: undefined }) : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 4');
+    expect(result.stdout).toContain('Manual or external gates remaining: 3');
+    expect(result.stdout).toContain('Play monthly: versionCode is required for Play evidence');
   });
 
   it('keeps account switch blocked when the second free inactive account is not explicit', () => {

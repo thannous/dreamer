@@ -282,10 +282,13 @@ npm run subscription:qa:evidence -- \
   --eas-build-id 00000000-0000-4000-8000-000000000000 \
   --device-id 57275d36 \
   --installer-package-name com.android.vending \
+  --version-code 24 \
   --evidence "Play purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"
 ```
 
 `--eas-build-id` doit etre l'UUID EAS du build installe, pas seulement le numero de build Android.
+`--version-code` doit etre le `versionCode` Android reel lu sur le telephone Play-installed au moment
+du test; il force la preuve a declarer explicitement si l'achat a ete fait sur le build 12 ou 24.
 Sur le POCO `192.168.1.116:41183`, l'installation Play observee le 2026-05-15 est
 `versionCode=12`, `versionName=1.1.0`; `eas build:list` la rattache au build EAS
 `9df05e30-0569-4f7c-8af9-62c692fa4c3a` (`appBuildVersion=12`). Cette valeur peut servir pour

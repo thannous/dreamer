@@ -467,6 +467,10 @@ function getGateEvidenceIssue(evidence, scenario) {
   const deviceId = typeof gate?.deviceId === 'string' ? gate.deviceId.trim() : '';
   const installerPackageName =
     typeof gate?.installerPackageName === 'string' ? gate.installerPackageName.trim() : '';
+  const versionCodeText =
+    typeof gate?.versionCode === 'number' || typeof gate?.versionCode === 'string'
+      ? String(gate.versionCode).trim()
+      : '';
   const tester = typeof gate?.tester === 'string' ? gate.tester.trim() : '';
   const appUserId = typeof gate?.appUserId === 'string' ? gate.appUserId.trim() : '';
 
@@ -498,6 +502,9 @@ function getGateEvidenceIssue(evidence, scenario) {
   }
   if (requiresEasBuild && installerPackageName !== 'com.android.vending') {
     return 'installerPackageName must be com.android.vending';
+  }
+  if (requiresEasBuild && !/^[1-9]\d*$/.test(versionCodeText)) {
+    return 'versionCode is required for Play evidence';
   }
   if (
     requiresEasBuild &&
@@ -567,6 +574,7 @@ function getEvidenceCommand(scenario) {
       '--eas-build-id <eas-build-uuid>',
       '--device-id <physical-adb-id>',
       '--installer-package-name com.android.vending',
+      '--version-code <installed-version-code>',
       '--evidence "Play monthly purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"',
     ].join(' ');
   }
@@ -577,6 +585,7 @@ function getEvidenceCommand(scenario) {
       '--eas-build-id <eas-build-uuid>',
       '--device-id <physical-adb-id>',
       '--installer-package-name com.android.vending',
+      '--version-code <installed-version-code>',
       '--evidence "Play annual purchase completed after installed from Play (com.android.vending), product noctalia_plus:annual, base plan P1Y confirmed, backend converged"',
     ].join(' ');
   }
@@ -587,6 +596,7 @@ function getEvidenceCommand(scenario) {
       '--eas-build-id <eas-build-uuid>',
       '--device-id <physical-adb-id>',
       '--installer-package-name com.android.vending',
+      '--version-code <installed-version-code>',
       '--evidence "Play cancellation or expiry observed after installed from Play (com.android.vending), RevenueCat webhook and backend state converged"',
     ].join(' ');
   }
