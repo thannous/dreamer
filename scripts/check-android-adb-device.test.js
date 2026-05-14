@@ -119,7 +119,8 @@ describe('android ADB device diagnostic', () => {
     const report = checkAndroidAdbDevice({
       spawn: spawnFor({
         adbStdout: 'List of devices attached\n',
-        usbStdout: '"USB Product Name" = "POCO F8 Ultra"\n"USB Vendor Name" = "Xiaomi"\n',
+        usbStdout:
+          '"USB Product Name" = "POCO F8 Ultra"\n"USB Vendor Name" = "Xiaomi"\n"USB Serial Number" = "57275d36"\n"idVendor" = 10007\n"idProduct" = 65352\n"UsbDeviceSignature" = <172748ff12063537323735643336000000060101ff4201>\n',
       }),
       platform: 'darwin',
     });
@@ -127,7 +128,11 @@ describe('android ADB device diagnostic', () => {
     expect(report.ok).toBe(false);
     expect(report.adb.status).toBe('missing');
     expect(report.usb.visible).toBe(true);
+    expect(report.usb.adbLikeInterface).toBe(true);
+    expect(report.usb.idVendor).toBe('10007');
+    expect(report.usb.idProduct).toBe('65352');
     expect(formatReport(report)).toContain('ADB DEVICE: MISSING - No device is visible to adb.');
+    expect(formatReport(report)).toContain('Android debug interface signature present');
     expect(formatReport(report)).not.toContain('ADB: MISSING');
   });
 
