@@ -21,6 +21,9 @@ const googleOAuthAndroidClientStatePath = process.env.GOOGLE_OAUTH_ANDROID_CLIEN
 const googlePlayPaymentsProfileStatePath = process.env.GOOGLE_PLAY_PAYMENTS_PROFILE_STATE_PATH
   ? path.resolve(ROOT, process.env.GOOGLE_PLAY_PAYMENTS_PROFILE_STATE_PATH)
   : path.join(ROOT, 'doc_web_interne/docs/google-play-payments-profile-state.local.json');
+const supabasePlayIntegritySecretsStatePath = process.env.SUPABASE_PLAY_INTEGRITY_SECRETS_STATE_PATH
+  ? path.resolve(ROOT, process.env.SUPABASE_PLAY_INTEGRITY_SECRETS_STATE_PATH)
+  : path.join(ROOT, 'doc_web_interne/docs/supabase-play-integrity-secrets-state.local.json');
 
 if (args.has('--help') || args.has('-h')) {
   console.log(`
@@ -192,6 +195,20 @@ function readGooglePlayPaymentsProfileStateResult() {
   }
 }
 
+function readSupabasePlayIntegritySecretsStateResult() {
+  if (!fs.existsSync(supabasePlayIntegritySecretsStatePath)) {
+    return { snapshot: null, error: null };
+  }
+  try {
+    return { snapshot: readJsonFile(supabasePlayIntegritySecretsStatePath), error: null };
+  } catch (error) {
+    return {
+      snapshot: null,
+      error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
+    };
+  }
+}
+
 function normalizeRequirementStatus(value) {
   return String(value || 'missing').trim().toLowerCase().replace(/\s+/g, '_');
 }
@@ -228,6 +245,38 @@ function getPaymentsProfileReadinessRow() {
     ];
   }
   return ['READY', 'Google Play payments profile snapshot', 'No open payments profile requirements recorded'];
+}
+
+function getSupabaseSecretsReadinessRow() {
+  if (!fs.existsSync(supabasePlayIntegritySecretsStatePath)) {
+    return [
+      'CHECK LIVE',
+      'Supabase Play Integrity secrets snapshot',
+      'Run npm run android:supabase-play-integrity-secrets-state after confirming the three required Supabase Edge Function secrets',
+    ];
+  }
+  if (supabasePlayIntegritySecretsStateResult.error) {
+    return ['BLOCKED', 'Supabase Play Integrity secrets snapshot', supabasePlayIntegritySecretsStateResult.error];
+  }
+  const secrets = supabasePlayIntegritySecretsStateResult.snapshot?.secrets ?? {};
+  const issues = [
+    ['PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64', 'present'],
+    ['PLAY_INTEGRITY_PACKAGE_NAME', 'com.tanuki75.noctalia'],
+    ['GUEST_SESSION_SECRET', 'present'],
+  ]
+    .map(([name, expected]) => {
+      const secret = secrets[name];
+      if (secret?.status !== 'present') return `${name}/${secret?.status || 'missing'}`;
+      if (expected !== 'present' && secret?.value !== expected) {
+        return `${name}/value=${secret?.value || 'missing'} expected ${expected}`;
+      }
+      return null;
+    })
+    .filter(Boolean);
+  if (issues.length > 0) {
+    return ['BLOCKED', 'Supabase Play Integrity secrets snapshot', issues.join(', ')];
+  }
+  return ['READY', 'Supabase Play Integrity secrets snapshot', 'Required secret names are present; values are not stored'];
 }
 
 function getSnapshotProductState(snapshot, productId) {
@@ -563,6 +612,7 @@ const playStoreStateResult = readPlayStoreStateResult();
 const googlePlaySubscriptionStateResult = readGooglePlaySubscriptionStateResult();
 const googleOAuthAndroidClientStateResult = readGoogleOAuthAndroidClientStateResult();
 const googlePlayPaymentsProfileStateResult = readGooglePlayPaymentsProfileStateResult();
+const supabasePlayIntegritySecretsStateResult = readSupabasePlayIntegritySecretsStateResult();
 
 const checks = [
   check(
@@ -753,6 +803,13 @@ const checks = [
       : 'not provided'
   ),
   check(
+    'Supabase Play Integrity secrets snapshot parses',
+    !fs.existsSync(supabasePlayIntegritySecretsStatePath) || !supabasePlayIntegritySecretsStateResult.error,
+    fs.existsSync(supabasePlayIntegritySecretsStatePath)
+      ? supabasePlayIntegritySecretsStateResult.error || supabasePlayIntegritySecretsStatePath
+      : 'not provided'
+  ),
+  check(
     'Play store state snapshot updater exists',
     fs.existsSync(path.join(ROOT, 'scripts/update-revenuecat-play-store-state.js')) &&
       pkg.scripts['subscription:qa:play-state'] === 'node ./scripts/update-revenuecat-play-store-state.js',
@@ -777,6 +834,13 @@ const checks = [
       pkg.scripts['android:google-play-payments-profile-state'] ===
         'node ./scripts/update-google-play-payments-profile-state.js',
     'npm run android:google-play-payments-profile-state -- --tax-information <status> --payout-method <status>'
+  ),
+  check(
+    'Supabase Play Integrity secrets state updater exists',
+    fs.existsSync(path.join(ROOT, 'scripts/update-supabase-play-integrity-secrets-state.js')) &&
+      pkg.scripts['android:supabase-play-integrity-secrets-state'] ===
+        'node ./scripts/update-supabase-play-integrity-secrets-state.js',
+    'npm run android:supabase-play-integrity-secrets-state -- --PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64 present --PLAY_INTEGRITY_PACKAGE_NAME present --PLAY_INTEGRITY_PACKAGE_NAME-value com.tanuki75.noctalia --GUEST_SESSION_SECRET present'
   ),
   check(
     'Completion audit exists',
@@ -920,6 +984,11 @@ console.log(
     fs.existsSync(googlePlayPaymentsProfileStatePath) ? 'local file present' : 'not provided'
   }`
 );
+console.log(
+  `- Supabase Play Integrity secrets snapshot: ${
+    fs.existsSync(supabasePlayIntegritySecretsStatePath) ? 'local file present' : 'not provided'
+  }`
+);
 console.log('');
 console.log('## Local Checks');
 console.log('');
@@ -1019,6 +1088,7 @@ const runtimeReadiness = [
   getGooglePlayMonthlyReadinessRow(),
   getGooglePlayAnnualReadinessRow(),
   getPaymentsProfileReadinessRow(),
+  getSupabaseSecretsReadinessRow(),
   getPlayMonthlyReadinessRow(),
   getPlayAnnualReadinessRow(),
 ];

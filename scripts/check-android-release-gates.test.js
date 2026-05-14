@@ -93,6 +93,30 @@ function writeGoogleOAuthAndroidClientSnapshot(root, overrides = {}) {
   });
 }
 
+function writeSupabasePlayIntegritySecretsSnapshot(root, overrides = {}) {
+  writeJson(root, 'doc_web_interne/docs/supabase-play-integrity-secrets-state.local.json', {
+    checked_at: '2026-05-14T21:30:00.000Z',
+    source: 'test',
+    project_ref: 'usuyppgsmmowzizhaoqj',
+    secrets: {
+      PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64: {
+        label: 'Play Integrity service account JSON',
+        status: 'present',
+      },
+      PLAY_INTEGRITY_PACKAGE_NAME: {
+        label: 'Play Integrity package name',
+        status: 'present',
+        value: 'com.tanuki75.noctalia',
+      },
+      GUEST_SESSION_SECRET: {
+        label: 'Guest session signing secret',
+        status: 'present',
+      },
+    },
+    ...overrides,
+  });
+}
+
 describe('android release gate preflight', () => {
   function spawnWithTools({
     subscriptionGateStatus = 0,
@@ -150,6 +174,7 @@ describe('android release gate preflight', () => {
     expect(report.counts.blocked || 0).toBe(0);
     expect(report.counts.manual).toBeGreaterThan(0);
     expect(report.checks.some((check) => check.title === 'Play payments profile for Billing')).toBe(true);
+    expect(report.checks.some((check) => check.title === 'Supabase Play Integrity secrets')).toBe(true);
     expect(
       report.checks.some(
         (check) =>
@@ -199,6 +224,56 @@ describe('android release gate preflight', () => {
           check.title === 'Play App Signing SHA-1 for Google OAuth' &&
           check.details.includes('359653779023-5dhs012rh7l3cjf0leoknn7j0dlgq0ok') &&
           check.details.includes('BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59')
+      )
+    ).toBe(true);
+  });
+
+  it('passes the Supabase Play Integrity secrets check from a local snapshot', () => {
+    const root = setupFixture();
+    writeSupabasePlayIntegritySecretsSnapshot(root);
+
+    const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'pass' &&
+          check.title === 'Supabase Play Integrity secrets' &&
+          check.details.includes('Required Supabase Play Integrity secrets are present')
+      )
+    ).toBe(true);
+  });
+
+  it('blocks the Supabase Play Integrity secrets check when a required secret is missing', () => {
+    const root = setupFixture();
+    writeSupabasePlayIntegritySecretsSnapshot(root, {
+      secrets: {
+        PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64: {
+          label: 'Play Integrity service account JSON',
+          status: 'missing',
+        },
+        PLAY_INTEGRITY_PACKAGE_NAME: {
+          label: 'Play Integrity package name',
+          status: 'present',
+          value: 'com.example.other',
+        },
+        GUEST_SESSION_SECRET: {
+          label: 'Guest session signing secret',
+          status: 'present',
+        },
+      },
+    });
+
+    const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'blocked' &&
+          check.title === 'Supabase Play Integrity secrets' &&
+          check.details.includes('PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64/missing') &&
+          check.details.includes('PLAY_INTEGRITY_PACKAGE_NAME/value=com.example.other')
       )
     ).toBe(true);
   });
