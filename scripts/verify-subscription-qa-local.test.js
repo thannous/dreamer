@@ -43,8 +43,11 @@ describe('subscription QA local verifier', () => {
         'Play QA device preflight',
         'after installing the Internal Testing build from Play',
         'Google Play monthly base plan snapshot',
+        'Google Play annual base plan snapshot',
         'Play monthly base plan snapshot',
+        'Play annual base plan snapshot',
         'expected P1M',
+        'expected P1Y',
       ])
     );
   });

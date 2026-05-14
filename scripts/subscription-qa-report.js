@@ -203,87 +203,136 @@ function summarizeGooglePlayBasePlan(plan, basePlanId) {
   return `${basePlanId}/${duration}/${state}`;
 }
 
-function getGooglePlayMonthlyReadinessRow() {
+function getGooglePlayBasePlanReadinessRow({ basePlanId, expectedDuration, label, followup }) {
   if (!fs.existsSync(googlePlaySubscriptionStatePath)) {
-    return [
-      'CHECK LIVE',
-      'Google Play monthly base plan snapshot',
-      'Run npm run subscription:qa:google-play-state with subscriptions.get JSON to confirm noctalia_plus monthly P1M',
-    ];
+    return ['CHECK LIVE', label, followup];
   }
   if (googlePlaySubscriptionStateResult.error) {
-    return ['BLOCKED', 'Google Play monthly base plan snapshot', googlePlaySubscriptionStateResult.error];
+    return ['BLOCKED', label, googlePlaySubscriptionStateResult.error];
   }
 
-  const monthly = getGooglePlayBasePlan(googlePlaySubscriptionStateResult.snapshot, 'monthly');
-  const summary = summarizeGooglePlayBasePlan(monthly, 'monthly');
+  const plan = getGooglePlayBasePlan(googlePlaySubscriptionStateResult.snapshot, basePlanId);
+  const summary = summarizeGooglePlayBasePlan(plan, basePlanId);
   const isReady =
-    monthly?.billing_period_duration === 'P1M' &&
-    monthly?.state === 'ACTIVE' &&
-    monthly?.new_subscriber_availability?.US === true &&
-    monthly?.new_subscriber_availability?.FR === true;
+    plan?.billing_period_duration === expectedDuration &&
+    plan?.state === 'ACTIVE' &&
+    plan?.new_subscriber_availability?.US === true &&
+    plan?.new_subscriber_availability?.FR === true;
   return [
     isReady ? 'READY' : 'BLOCKED',
-    'Google Play monthly base plan snapshot',
-    `${summary}; expected monthly/P1M/ACTIVE with US+FR availability`,
+    label,
+    `${summary}; expected ${basePlanId}/${expectedDuration}/ACTIVE with US+FR availability`,
   ];
 }
 
-function isGooglePlayMonthlyReady() {
+function getGooglePlayMonthlyReadinessRow() {
+  return getGooglePlayBasePlanReadinessRow({
+    basePlanId: 'monthly',
+    expectedDuration: 'P1M',
+    label: 'Google Play monthly base plan snapshot',
+    followup: 'Run npm run subscription:qa:google-play-state with subscriptions.get JSON to confirm noctalia_plus monthly P1M',
+  });
+}
+
+function getGooglePlayAnnualReadinessRow() {
+  return getGooglePlayBasePlanReadinessRow({
+    basePlanId: 'annual',
+    expectedDuration: 'P1Y',
+    label: 'Google Play annual base plan snapshot',
+    followup: 'Run npm run subscription:qa:google-play-state with subscriptions.get JSON to confirm noctalia_plus annual P1Y',
+  });
+}
+
+function isGooglePlayBasePlanReady(basePlanId, expectedDuration) {
   if (!fs.existsSync(googlePlaySubscriptionStatePath) || googlePlaySubscriptionStateResult.error) return false;
-  const monthly = getGooglePlayBasePlan(googlePlaySubscriptionStateResult.snapshot, 'monthly');
+  const plan = getGooglePlayBasePlan(googlePlaySubscriptionStateResult.snapshot, basePlanId);
   return (
-    monthly?.billing_period_duration === 'P1M' &&
-    monthly?.state === 'ACTIVE' &&
-    monthly?.new_subscriber_availability?.US === true &&
-    monthly?.new_subscriber_availability?.FR === true
+    plan?.billing_period_duration === expectedDuration &&
+    plan?.state === 'ACTIVE' &&
+    plan?.new_subscriber_availability?.US === true &&
+    plan?.new_subscriber_availability?.FR === true
   );
 }
 
-function getPlayMonthlySnapshotIssue() {
-  if (isGooglePlayMonthlyReady()) return null;
+function isGooglePlayMonthlyReady() {
+  return isGooglePlayBasePlanReady('monthly', 'P1M');
+}
+
+function isGooglePlayAnnualReady() {
+  return isGooglePlayBasePlanReady('annual', 'P1Y');
+}
+
+function getPlaySnapshotIssue({ productId, expectedDuration, googlePlayReady }) {
+  if (googlePlayReady) return null;
   if (!fs.existsSync(playStoreStatePath)) return null;
   if (playStoreStateResult.error) return 'play store state snapshot is invalid';
 
-  const monthlyState = getSnapshotProductState(playStoreStateResult.snapshot, EXPECTED.playProductIds.monthly);
-  if (!monthlyState) return `live snapshot missing product ${EXPECTED.playProductIds.monthly}`;
-  if (!snapshotHasBillingPeriod(monthlyState, 'P1M')) {
-    return `live snapshot still reports base plans ${summarizeSnapshotBasePlans(monthlyState)}; expected P1M`;
+  const productState = getSnapshotProductState(playStoreStateResult.snapshot, productId);
+  if (!productState) return `live snapshot missing product ${productId}`;
+  if (!snapshotHasBillingPeriod(productState, expectedDuration)) {
+    return `live snapshot still reports base plans ${summarizeSnapshotBasePlans(productState)}; expected ${expectedDuration}`;
   }
   return null;
 }
 
-function getPlayMonthlyReadinessRow() {
+function getPlayMonthlySnapshotIssue() {
+  return getPlaySnapshotIssue({
+    productId: EXPECTED.playProductIds.monthly,
+    expectedDuration: 'P1M',
+    googlePlayReady: isGooglePlayMonthlyReady(),
+  });
+}
+
+function getPlayAnnualSnapshotIssue() {
+  return getPlaySnapshotIssue({
+    productId: EXPECTED.playProductIds.annual,
+    expectedDuration: 'P1Y',
+    googlePlayReady: isGooglePlayAnnualReady(),
+  });
+}
+
+function getPlayBasePlanReadinessRow({ productId, expectedDuration, label, followup, googlePlayReady }) {
   if (!fs.existsSync(playStoreStatePath)) {
-    return [
-      'CHECK LIVE',
-      'Play monthly base plan snapshot',
-      `RevenueCat product ${EXPECTED.playProductIds.monthly} must expose billing period P1M before play_monthly evidence`,
-    ];
+    return ['CHECK LIVE', label, followup];
   }
   if (playStoreStateResult.error) {
-    return ['BLOCKED', 'Play monthly base plan snapshot', playStoreStateResult.error];
+    return ['BLOCKED', label, playStoreStateResult.error];
   }
 
-  const monthlyState = getSnapshotProductState(playStoreStateResult.snapshot, EXPECTED.playProductIds.monthly);
-  if (!monthlyState) {
-    return [
-      'MISSING',
-      'Play monthly base plan snapshot',
-      `Snapshot does not contain ${EXPECTED.playProductIds.monthly}`,
-    ];
+  const productState = getSnapshotProductState(playStoreStateResult.snapshot, productId);
+  if (!productState) {
+    return ['MISSING', label, `Snapshot does not contain ${productId}`];
   }
 
-  const summary = summarizeSnapshotBasePlans(monthlyState);
-  const hasMonthlyBasePlan = snapshotHasBillingPeriod(monthlyState, 'P1M');
-  const googlePlayMonthlyReady = isGooglePlayMonthlyReady();
+  const summary = summarizeSnapshotBasePlans(productState);
+  const hasExpectedBasePlan = snapshotHasBillingPeriod(productState, expectedDuration);
   return [
-    hasMonthlyBasePlan ? 'READY' : googlePlayMonthlyReady ? 'LAGGING' : 'BLOCKED',
-    'Play monthly base plan snapshot',
-    `${EXPECTED.playProductIds.monthly}: ${summary}; expected P1M${
-      !hasMonthlyBasePlan && googlePlayMonthlyReady ? '; Google Play direct snapshot is ready' : ''
+    hasExpectedBasePlan ? 'READY' : googlePlayReady ? 'LAGGING' : 'BLOCKED',
+    label,
+    `${productId}: ${summary}; expected ${expectedDuration}${
+      !hasExpectedBasePlan && googlePlayReady ? '; Google Play direct snapshot is ready' : ''
     }`,
   ];
+}
+
+function getPlayMonthlyReadinessRow() {
+  return getPlayBasePlanReadinessRow({
+    productId: EXPECTED.playProductIds.monthly,
+    expectedDuration: 'P1M',
+    label: 'Play monthly base plan snapshot',
+    followup: `RevenueCat product ${EXPECTED.playProductIds.monthly} must expose billing period P1M before play_monthly evidence`,
+    googlePlayReady: isGooglePlayMonthlyReady(),
+  });
+}
+
+function getPlayAnnualReadinessRow() {
+  return getPlayBasePlanReadinessRow({
+    productId: EXPECTED.playProductIds.annual,
+    expectedDuration: 'P1Y',
+    label: 'Play annual base plan snapshot',
+    followup: `RevenueCat product ${EXPECTED.playProductIds.annual} must expose billing period P1Y before play_annual evidence`,
+    googlePlayReady: isGooglePlayAnnualReady(),
+  });
 }
 
 function getGateEvidenceIssue(evidence, scenario) {
@@ -342,6 +391,13 @@ function getGateEvidenceIssue(evidence, scenario) {
     const snapshotIssue = getPlayMonthlySnapshotIssue();
     if (snapshotIssue) return snapshotIssue;
   }
+  if (key === 'play_annual' && !/\bP1Y\b/i.test(evidenceText)) {
+    return 'annual base plan P1Y must be confirmed';
+  }
+  if (key === 'play_annual') {
+    const snapshotIssue = getPlayAnnualSnapshotIssue();
+    if (snapshotIssue) return snapshotIssue;
+  }
   if (key === 'account_switch' && !/second account/i.test(evidenceText)) {
     return 'second account must be confirmed';
   }
@@ -391,7 +447,7 @@ function getEvidenceCommand(scenario) {
       '--eas-build-id <eas-build-uuid>',
       '--device-id <physical-adb-id>',
       '--installer-package-name com.android.vending',
-      '--evidence "Play annual purchase completed after installed from Play (com.android.vending), product noctalia_plus:annual, backend converged"',
+      '--evidence "Play annual purchase completed after installed from Play (com.android.vending), product noctalia_plus:annual, base plan P1Y confirmed, backend converged"',
     ].join(' ');
   }
 
@@ -834,7 +890,9 @@ const runtimeReadiness = [
     'Run npm run android:play-qa-device -- --device <adb-id> after installing the Internal Testing build from Play',
   ],
   getGooglePlayMonthlyReadinessRow(),
+  getGooglePlayAnnualReadinessRow(),
   getPlayMonthlyReadinessRow(),
+  getPlayAnnualReadinessRow(),
 ];
 
 console.log('');
