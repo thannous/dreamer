@@ -85,15 +85,17 @@ VISIBLE` apparait, ouvrir Developer options -> Wireless debugging sur le telepho
 d'appairage ouvert pendant le diagnostic.
 
 Quand le telephone est visible et que l'app est installee depuis la piste Internal Testing, utiliser
-le preflight compose:
+le helper d'attente pendant la connexion, puis le preflight compose si le telephone est deja pret:
 
 ```bash
+npm run android:play-qa-device:wait -- --device <adb-id>
 npm run android:play-qa-device -- --device <adb-id>
 ```
 
-Il verifie a la fois que `<adb-id>` est un telephone physique et que `installerPackageName` vaut
-`com.android.vending`. Quand les deux checks passent, il imprime aussi des `evidenceArgs` a recopier
-dans les commandes `npm run subscription:qa:evidence` des gates `play_*`.
+Ces commandes verifient a la fois que `<adb-id>` est un telephone physique et que
+`installerPackageName` vaut `com.android.vending`. Quand les deux checks passent, elles impriment
+aussi des `evidenceArgs` a recopier dans les commandes `npm run subscription:qa:evidence` des gates
+`play_*`.
 
 Apres chaque relecture live RevenueCat MCP de l'etat store Play, enregistrer le JSON compact dans le
 snapshot local gitignore. Le rapport QA le relit ensuite pour signaler si le produit mensuel
@@ -410,6 +412,8 @@ Preuve attendue:
   connecte en USB ou via ADB Wireless Debugging
 - avant toute preuve Play, `npm run android:play-install-source -- --device <adb-id>` doit afficher
   `installerPackageName: com.android.vending`
+- `npm run android:play-qa-device:wait -- --device <adb-id>` peut attendre le telephone Play
+  pendant la connexion et imprimer les commandes d'evidence quand il est pret
 - `npm run android:play-qa-device -- --device <adb-id>` doit passer pour le telephone teste
 - `subscription:qa:evidence` doit recevoir `--device-id <adb-id>` pour lier la preuve Play au
   telephone physique utilise

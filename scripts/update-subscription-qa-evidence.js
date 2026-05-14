@@ -91,6 +91,7 @@ Options:
                        RevenueCat webhook, and backend convergence.
 
 Before recording play_* gates, run:
+  npm run android:play-qa-device:wait -- --device <adb-id>
   npm run android:play-qa-device -- --device <adb-id>
 
 Gate keys:
