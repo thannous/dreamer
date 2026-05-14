@@ -105,6 +105,8 @@ const commands = [
       'npm run android:play-install-source -- --device <adb-id>',
       'Play QA device preflight exists',
       'npm run android:play-qa-device -- --device <adb-id>',
+      'Play QA device preflight',
+      'after installing the Internal Testing build from Play',
       'Google Play monthly base plan snapshot',
       'Play monthly base plan snapshot',
       'expected P1M',

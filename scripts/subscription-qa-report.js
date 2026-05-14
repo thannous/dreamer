@@ -813,6 +813,11 @@ const runtimeReadiness = [
     'Physical Android device visibility',
     'Run npm run android:device:physical before recording play_monthly, play_annual, or play_cancellation_and_expiry evidence',
   ],
+  [
+    'CHECK',
+    'Play QA device preflight',
+    'Run npm run android:play-qa-device -- --device <adb-id> after installing the Internal Testing build from Play',
+  ],
   getGooglePlayMonthlyReadinessRow(),
   getPlayMonthlyReadinessRow(),
 ];
