@@ -742,7 +742,8 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Verified manual/external scenarios: 7');
     expect(result.stdout).toContain('Manual or external gates remaining: 0');
     expect(result.stdout).toContain('READY | Google Play monthly base plan snapshot');
-    expect(result.stdout).toContain('BLOCKED | Play monthly base plan snapshot');
+    expect(result.stdout).toContain('LAGGING | Play monthly base plan snapshot');
+    expect(result.stdout).toContain('Google Play direct snapshot is ready');
     expect(result.stdout).not.toContain('Play monthly: live snapshot still reports base plans annual/P1Y; expected P1M');
   });
 
