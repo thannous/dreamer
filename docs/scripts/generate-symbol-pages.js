@@ -75,6 +75,14 @@ function finalizeGeneratedHtml(html) {
   return inlineLucideIcons(html);
 }
 
+function localizedHomePath(lang) {
+  return lang === 'en' ? '/' : `/${lang}/`;
+}
+
+function localizedHomeUrl(lang) {
+  return lang === 'en' ? 'https://noctalia.app/' : `https://noctalia.app/${lang}/`;
+}
+
 // Configuration
 const CONFIG = {
   dataDir: path.join(__dirname, '..', 'data'),
@@ -567,7 +575,7 @@ function renderLegacyPseoFooter(lang, t, allSymbols, curationPages = OPTIONAL_CU
   return `    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
-                <a href="/${lang}/" class="flex items-center gap-2 mb-4">
+                <a href="${localizedHomePath(lang)}" class="flex items-center gap-2 mb-4">
                     <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
                     <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
                 </a>
@@ -609,6 +617,8 @@ function renderLegacyPseoFooter(lang, t, allSymbols, curationPages = OPTIONAL_CU
 function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const t = i18n[lang];
   const symbolData = symbol[lang];
+  const homePath = localizedHomePath(lang);
+  const homeUrl = localizedHomeUrl(lang);
   const hreflang = generateHreflangUrls(symbol);
   const metaTitle = generateMetaTitle(symbol, i18n, lang);
   const metaDescription = generateMetaDescription(symbol, i18n, lang);
@@ -835,7 +845,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t.home, item: `https://noctalia.app/${lang}/` },
+      { '@type': 'ListItem', position: 1, name: t.home, item: homeUrl },
       { '@type': 'ListItem', position: 2, name: t.symbols, item: `https://noctalia.app/${lang}/guides/${t.dictionary_slug}` },
       { '@type': 'ListItem', position: 3, name: symbolData.name, item: `https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}` }
     ]
@@ -1183,7 +1193,7 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
             <nav class="symbol-breadcrumb text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap">
                     <li>
-                        <a href="/${lang}/" class="hover:text-dream-salmon transition-colors">${t.home}</a>
+                        <a href="${homePath}" class="hover:text-dream-salmon transition-colors">${t.home}</a>
                     </li>
                     <li class="text-purple-400">/</li>
                     <li>
@@ -1281,7 +1291,7 @@ ${relatedArticleHtml}
                 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
-                <a href="/${lang}/" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
+                <a href="${homePath}" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
                     ${t.cta_button} <i data-lucide="arrow-right" class="w-5 h-5"></i>
                 </a>
             </aside>
@@ -1552,6 +1562,8 @@ function getCurationMetaTitle(page, lang) {
 // Generate category page HTML
 function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCategories, i18n, lang, curationPages) {
   const t = i18n[lang];
+  const homePath = localizedHomePath(lang);
+  const homeUrl = localizedHomeUrl(lang);
   const categoryName = getCategoryNameById(categoryId, lang);
   const categorySchemaName = t.category_h1_template.replace(/{category}/g, categoryName);
   const categorySlug = t.category_slugs[categoryId];
@@ -1729,7 +1741,7 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t.home, item: `https://noctalia.app/${lang}/` },
+      { '@type': 'ListItem', position: 1, name: t.home, item: homeUrl },
       { '@type': 'ListItem', position: 2, name: t.symbols, item: `https://noctalia.app/${lang}/guides/${t.dictionary_slug}` },
       { '@type': 'ListItem', position: 3, name: categoryName, item: `https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${categorySlug}` }
     ]
@@ -1836,7 +1848,7 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
             <nav class="text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap">
                     <li>
-                        <a href="/${lang}/" class="hover:text-dream-salmon transition-colors">${t.home}</a>
+                        <a href="${homePath}" class="hover:text-dream-salmon transition-colors">${t.home}</a>
                     </li>
                     <li class="text-purple-400">/</li>
                     <li>
@@ -1893,7 +1905,7 @@ ${relatedGuidesHtml}
                 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
-                <a href="/${lang}/" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
+                <a href="${homePath}" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
                     ${t.cta_button} <i data-lucide="arrow-right" class="w-5 h-5"></i>
                 </a>
             </aside>
@@ -2056,6 +2068,8 @@ function generateCurationHreflangUrls(page) {
 // Generate a single curation page HTML
 function generateCurationPage(page, allSymbols, i18n, extended, lang) {
   const t = i18n[lang];
+  const homePath = localizedHomePath(lang);
+  const homeUrl = localizedHomeUrl(lang);
   const pageData = { ...page[lang], metaDescription: truncateMetaDescription(page[lang].metaDescription) };
   const metaTitle = getCurationMetaTitle(page, lang);
   const slug = page.slugs[lang];
@@ -2188,7 +2202,7 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t.home, item: `https://noctalia.app/${lang}/` },
+      { '@type': 'ListItem', position: 1, name: t.home, item: homeUrl },
       { '@type': 'ListItem', position: 2, name: t.symbols, item: `https://noctalia.app/${lang}/guides/${t.dictionary_slug}` },
       { '@type': 'ListItem', position: 3, name: pageData.title, item: `https://noctalia.app/${lang}/guides/${slug}` }
     ]
@@ -2313,7 +2327,7 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
             <nav class="text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap">
                     <li>
-                        <a href="/${lang}/" class="hover:text-dream-salmon transition-colors">${t.home}</a>
+                        <a href="${homePath}" class="hover:text-dream-salmon transition-colors">${t.home}</a>
                     </li>
                     <li class="text-purple-400">/</li>
                     <li>
@@ -2370,7 +2384,7 @@ ${guideHowToHtml}
                 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
-                <a href="/${lang}/" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
+                <a href="${homePath}" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
                     ${t.cta_button} <i data-lucide="arrow-right" class="w-5 h-5"></i>
                 </a>
             </aside>

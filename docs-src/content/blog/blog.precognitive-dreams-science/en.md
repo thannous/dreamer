@@ -31,7 +31,7 @@
   "jsonLd": [
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Precognitive dreams, confirmation bias and coincidence\",\n  \"description\": \"Why precognitive dreams feel real: confirmation bias, coincidence, memory reconstruction, probability and how a dream journal keeps the test honest.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/precognitive-dreams-science.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-05-04\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/precognitive-dreams-science\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1118,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/en/blog/precognitive-dreams-science\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Are precognitive dreams real?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"People do report dreams that later seem connected to real events, but mainstream science has not confirmed reliable dream-based prediction. Most cases can be explained by chance, memory, and interpretation after the fact.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"What is confirmation bias in precognitive dreams?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Confirmation bias is the tendency to notice dream details that match later events while ignoring the many dreams that do not. It makes coincidences feel more meaningful than they may be.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Can a dream journal test a precognitive dream?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"A dated dream journal can help because it records details before an event happens. It does not prove prediction by itself, but it reduces memory distortion and makes comparison more honest.\"\n      }\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/en/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Precognitive Dreams\",\n      \"item\": \"https://noctalia.app/en/blog/precognitive-dreams-science\"\n    }\n  ]\n}"
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Precognitive Dreams\",\n      \"item\": \"https://noctalia.app/en/blog/precognitive-dreams-science\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -41,7 +41,7 @@
 <nav aria-label="Breadcrumb" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<a class="hover:text-dream-salmon transition-colors" href="/en/" itemprop="item"><span itemprop="name">Home</span></a>
+<a class="hover:text-dream-salmon transition-colors" href="/" itemprop="item"><span itemprop="name">Home</span></a>
 <meta content="1" itemprop="position">
 </li>
 <li class="text-purple-400">/</li>
@@ -264,7 +264,7 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Document Your Potentially Predictive Dreams</h4>
 <p class="text-sm text-gray-400 mb-4">Noctalia timestamps your dream records, creating a verifiable log. If a dream later seems prophetic, you'll have documented evidence of when you recorded it.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/">
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
                                 Start Recording Dreams <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
@@ -359,7 +359,7 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Document your dreams with Noctalia's timestamped journal. Track patterns over time. If your dreams ever seem to predict the future, you'll have the evidence.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/en/">
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
                     Start Tracking Your Dreams <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>

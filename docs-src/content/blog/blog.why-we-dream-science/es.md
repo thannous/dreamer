@@ -202,7 +202,7 @@
 <li>Ser perseguido o atacado (47% de los sueños contienen elementos amenazantes)</li>
 <li>Caídas o pérdida de control</li>
 <li>Conflictos sociales y vergüenza</li>
-<li>Incapacidad para escapar o moverse (como la parálisis del sueño)</li>
+<li>Incapacidad para escapar o moverse (como la <a class="text-dream-salmon hover:underline" href="guia-paralisis-sueno">parálisis del sueño</a>)</li>
 </ul>
 <h3>Aplicaciones modernas</h3>
 <p>

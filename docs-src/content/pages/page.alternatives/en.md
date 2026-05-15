@@ -5,7 +5,7 @@
   "lang": "en",
   "slug": "dream-journal-apps",
   "title": "Best Dream Journal Apps and Noctalia Alternatives | Noctalia",
-  "description": "Compare Noctalia with dream journal apps such as DreamApp, Oniri, DreamKit, and Rosebud, and choose the right app for voice capture, AI interpretation, symbols, and lucid dreaming.",
+  "description": "Compare Noctalia with dream journal apps such as DreamApp, Oniri, DreamKit, and Rosebud, and choose the right app for voice capture, AI interpretation.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",
@@ -29,8 +29,8 @@
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n      \"@context\": \"https://schema.org\",\n      \"@type\": \"WebPage\",\n      \"name\": \"Best Dream Journal Apps and Noctalia Alternatives\",\n      \"url\": \"https://noctalia.app/en/dream-journal-apps\",\n      \"inLanguage\": \"en\",\n      \"about\": { \"@id\": \"https://noctalia.app/#software\" },\n      \"publisher\": { \"@id\": \"https://noctalia.app/#organization\" }\n    }",
-    "{\n      \"@context\": \"https://schema.org\",\n      \"@type\": \"BreadcrumbList\",\n      \"itemListElement\": [\n        { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Home\", \"item\": \"https://noctalia.app/en/\" },\n        { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Dream journal apps\", \"item\": \"https://noctalia.app/en/dream-journal-apps\" }\n      ]\n    }"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Best Dream Journal Apps and Noctalia Alternatives\",\n    \"url\": \"https://noctalia.app/en/dream-journal-apps\",\n    \"inLanguage\": \"en\",\n    \"about\": {\n        \"@id\": \"https://noctalia.app/#software\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Dream journal apps\",\n            \"item\": \"https://noctalia.app/en/dream-journal-apps\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }

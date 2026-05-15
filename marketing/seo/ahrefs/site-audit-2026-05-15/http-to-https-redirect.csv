@@ -1,0 +1,5 @@
+PR,URL,Title,Content type,Is rendered page,HTTP status code,Organic traffic,Redirect chain URLs,Redirect chain URLs codes,Is redirect loop,No. of all inlinks,No. of redirect inlinks,First found at
+0,http://noctalia.app/,,text/html; charset=utf-8,false,301,0,https://noctalia.app/,200,false,0,0,
+0,http://www.noctalia.app/,,text/html; charset=utf-8,false,301,0,"https://www.noctalia.app/
+https://noctalia.app/","301
+200",false,0,0,

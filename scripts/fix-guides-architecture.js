@@ -366,6 +366,14 @@ function renderJsonLd(data) {
     .join('\n')}\n    </script>`;
 }
 
+function homeUrl(lang) {
+  return lang === 'en' ? DOMAIN : `${DOMAIN}/${lang}/`;
+}
+
+function homePath(lang) {
+  return lang === 'en' ? '/' : `/${lang}/`;
+}
+
 function parseSourceDocument(raw) {
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
   if (!match) return { meta: {}, body: raw };
@@ -1073,6 +1081,9 @@ function generateHubPage(lang, t, pages, version) {
   const copy = COPY[lang];
   const ui = GUIDE_HUB_UI[lang] || GUIDE_HUB_UI.en;
   const currentPaths = Object.fromEntries(SUPPORTED_LANGS.map((candidate) => [candidate, `/${candidate}/guides/`]));
+  const socialTitle = copy.title;
+  const socialDescription = copy.desc;
+  const socialImage = `${DOMAIN}/img/og/noctalia-${lang}-1200x630.jpg`;
   const cards = (GUIDE_HUB_BENTO_COPY[lang] || GUIDE_HUB_BENTO_COPY.en).map((card) => renderHubBentoCard(lang, t, pages, card)).join('\n');
   const itemList = {
     '@context': 'https://schema.org',
@@ -1084,7 +1095,7 @@ function generateHubPage(lang, t, pages, version) {
     ],
   };
   const collection = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: copy.label, headline: copy.label, description: copy.desc, url: `${DOMAIN}/${lang}/guides/`, inLanguage: lang };
-  const breadcrumb = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: t.home, item: `${DOMAIN}/${lang}/` }, { '@type': 'ListItem', position: 2, name: copy.label, item: `${DOMAIN}/${lang}/guides/` }] };
+  const breadcrumb = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: t.home, item: homeUrl(lang) }, { '@type': 'ListItem', position: 2, name: copy.label, item: `${DOMAIN}/${lang}/guides/` }] };
   return `<!DOCTYPE html>
 <html lang="${lang}" class="scroll-smooth">
 <head>
@@ -1100,6 +1111,21 @@ ${SUPPORTED_LANGS.map((targetLang) => `    <link rel="alternate" hreflang="${tar
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
     <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
     <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="${escapeHtml(socialTitle)}">
+    <meta property="og:description" content="${escapeHtml(socialDescription)}">
+    <meta property="og:url" content="${DOMAIN}/${lang}/guides/">
+    <meta property="og:image" content="${socialImage}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="${escapeHtml(copy.label)}">
+    <meta property="og:site_name" content="Noctalia">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@NoctaliaDreams">
+    <meta name="twitter:title" content="${escapeHtml(socialTitle)}">
+    <meta name="twitter:description" content="${escapeHtml(socialDescription)}">
+    <meta name="twitter:image" content="${socialImage}">
+    <meta name="twitter:image:alt" content="${escapeHtml(copy.label)}">
     <link rel="stylesheet" href="/css/styles.min.css?v=${version}">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=${version}">
 ${renderViewTransitionHeadStyles()}
@@ -2169,7 +2195,7 @@ function generateDictionaryPage(lang, t) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t.home, item: `${DOMAIN}/${lang}/` },
+      { '@type': 'ListItem', position: 1, name: t.home, item: homeUrl(lang) },
       { '@type': 'ListItem', position: 2, name: copy.label, item: guidesUrl },
       { '@type': 'ListItem', position: 3, name: pageTitle, item: canonical },
     ],
@@ -2431,7 +2457,7 @@ ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
             <!-- Breadcrumb -->
             <nav class="text-sm text-purple-200/75 mb-8" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap" itemscope itemtype="https://schema.org/BreadcrumbList">
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/${lang}/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">${escapeHtml(t.home)}</span></a><meta itemprop="position" content="1"></li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="${homePath(lang)}" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">${escapeHtml(t.home)}</span></a><meta itemprop="position" content="1"></li>
                     <li class="text-purple-400">/</li>
                     <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/${lang}/guides/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">${escapeHtml(copy.label)}</span></a><meta itemprop="position" content="2"></li>
                     <li class="text-purple-400">/</li>

@@ -78,54 +78,83 @@
     </style>
     <script type="application/ld+json">
 {
-      "@context": "https://schema.org",
-      "@graph": [
+    "@context": "https://schema.org",
+    "@graph": [
         {
-          "@type": "WebPage",
-          "name": "Noctalia Press Kit",
-          "url": "https://noctalia.app/en/press",
-          "inLanguage": "en",
-          "about": { "@id": "https://noctalia.app/#software" },
-          "publisher": { "@id": "https://noctalia.app/#organization" }
+            "@type": "WebPage",
+            "@id": "https://noctalia.app/en/press#webpage",
+            "name": "Noctalia Press Kit",
+            "description": "Press kit for Noctalia, the AI-powered dream journal app for voice capture, dream interpretation, symbols, themes, images, and Dream Chat.",
+            "url": "https://noctalia.app/en/press",
+            "inLanguage": "en",
+            "about": {
+                "@id": "https://noctalia.app/#software"
+            },
+            "publisher": {
+                "@id": "https://noctalia.app/#organization"
+            }
         },
         {
-          "@type": "Organization",
-          "@id": "https://noctalia.app/#organization",
-          "name": "Noctalia",
-          "url": "https://noctalia.app",
-          "founder": "Thanh Chau",
-          "email": "contact@noctalia.app"
+            "@type": "Organization",
+            "@id": "https://noctalia.app/#organization",
+            "name": "Noctalia",
+            "url": "https://noctalia.app",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://noctalia.app/logo/logo_noctalia.png"
+            },
+            "founder": {
+                "@type": "Person",
+                "name": "Thanh Chau",
+                "url": "https://noctalia.app/en/about#person"
+            },
+            "email": "contact@noctalia.app"
         },
         {
-          "@type": "SoftwareApplication",
-          "@id": "https://noctalia.app/#software",
-          "name": "Noctalia",
-          "applicationCategory": "LifestyleApplication",
-          "operatingSystem": "Android",
-          "url": "https://noctalia.app",
-          "downloadUrl": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
-          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+            "@type": "SoftwareApplication",
+            "@id": "https://noctalia.app/#software",
+            "name": "Noctalia",
+            "applicationCategory": "LifestyleApplication",
+            "operatingSystem": "Android",
+            "url": "https://noctalia.app",
+            "downloadUrl": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock"
+            }
         }
-      ]
-    }
+    ]
+}
     </script>
 
     <script type="application/ld+json">
 {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://noctalia.app/en/" },
-        { "@type": "ListItem", "position": 2, "name": "Press kit", "item": "https://noctalia.app/en/press" }
-      ]
-    }
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://noctalia.app/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Press kit",
+            "item": "https://noctalia.app/en/press"
+        }
+    ]
+}
     </script>
 </head>
 <body class="bg-dream-dark text-white font-sans antialiased selection:bg-dream-salmon selection:text-dream-dark">
 
     <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
         <div class="noctalia-premium-nav-inner px-4 sm:px-8">
-            <a href="/en/" class="flex items-center gap-2 min-w-max">
+            <a href="/" class="flex items-center gap-2 min-w-max">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="moon" class="lucide lucide-moon w-6 h-6 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg>
                 <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
@@ -238,7 +267,7 @@
     <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
-                <a href="/en/" class="flex items-center gap-2 mb-4">
+                <a href="/" class="flex items-center gap-2 mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="moon" class="lucide lucide-moon w-6 h-6 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg>
                     <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
                 </a>

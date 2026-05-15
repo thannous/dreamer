@@ -9,11 +9,16 @@ function downloadAppLabel(lang) {
   return 'Download app';
 }
 
+function normalizeHomePath(lang, pagePath) {
+  if (lang !== 'en') return pagePath;
+  return pagePath === '/en/' ? '/' : pagePath;
+}
+
 function renderLanguageDropdown({ entry, lang, locales }) {
   return siteConfig.languages
     .map((candidate) => {
       const locale = locales[candidate];
-      const pagePath = entry?.locales?.[candidate]?.path || `/${candidate}/`;
+      const pagePath = normalizeHomePath(candidate, entry?.locales?.[candidate]?.path || `/${candidate}/`);
       const currentClass = candidate === lang ? '' : ' hidden';
       return [
         `                    <a href="${pagePath}" hreflang="${candidate}" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">`,
@@ -41,7 +46,7 @@ function renderMobileMenuPanel(context) {
   const langLinks = siteConfig.languages
     .map((candidate) => {
       const candidateLocale = locales[candidate];
-      const pagePath = entry?.locales?.[candidate]?.path || `/${candidate}/`;
+      const pagePath = normalizeHomePath(candidate, entry?.locales?.[candidate]?.path || `/${candidate}/`);
       const activeClass = candidate === lang ? ' text-dream-salmon' : '';
       return `                    <a href="${pagePath}" hreflang="${candidate}" class="${linkClass}${activeClass}">${escapeHtml(candidateLocale.language)}</a>`;
     })
@@ -71,6 +76,7 @@ function renderNavigation(context) {
   const guidesHref = routePath('guide.index');
   const dictionaryHref = routePath('guide.dictionary');
   const aboutHref = routePath('page.about');
+  const homeHref = lang === 'en' ? '/' : `/${lang}/`;
   const isBlogPremium = meta.layout === 'blogIndex' && String(meta.mainClass || '').includes('blog-premium');
   const downloadLabel = downloadAppLabel(lang);
   const storeHref = getAndroidStoreUrl(lang);
@@ -82,7 +88,7 @@ function renderNavigation(context) {
   return [
     `    <nav class="${navClasses}" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">`,
     '        <div class="noctalia-premium-nav-inner px-4 sm:px-8">',
-    `            <a href="/${lang}/" class="flex items-center gap-2 min-w-max">`,
+    `            <a href="${homeHref}" class="flex items-center gap-2 min-w-max">`,
     '                <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>',
     '                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>',
     '            </a>',

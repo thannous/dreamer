@@ -31,7 +31,7 @@
   "jsonLd": [
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"How to remember dreams: 10 recall techniques that work\",\n  \"description\": \"Learn how to remember your dreams with simple recall techniques: wake slowly, record fragments, use intention, REM timing and a dream journal.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/how-to-remember-dreams.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-01-06\",\n  \"dateModified\": \"2026-05-04\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/how-to-remember-dreams\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1036,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/en/blog/how-to-remember-dreams\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Why do I forget dreams so quickly?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Dream memories fade fast because waking attention, movement and light interrupt the fragile transition from REM sleep to waking memory.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"What is the best way to remember dreams?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Wake slowly, stay still, recall the last image or feeling, then write fragments immediately in a dream journal.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Does keeping a dream journal improve recall?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes. Consistent recording trains attention and makes dream memories easier to catch over time.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"When should I record my dreams?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Record them immediately after waking, before checking your phone or starting the day.\"\n      }\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/en/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Dream Recall\",\n      \"item\": \"https://noctalia.app/en/blog/why-we-forget-dreams\"\n    }\n  ]\n}"
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Dream Recall\",\n      \"item\": \"https://noctalia.app/en/blog/why-we-forget-dreams\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -41,7 +41,7 @@
 <nav aria-label="Breadcrumb" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<a class="hover:text-dream-salmon transition-colors" href="/en/" itemprop="item">
+<a class="hover:text-dream-salmon transition-colors" href="/" itemprop="item">
 <span itemprop="name">Home</span>
 </a>
 <meta content="1" itemprop="position">
@@ -258,7 +258,7 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Capture Your Dreams by Voice</h4>
 <p class="text-sm text-gray-400 mb-4">Noctalia automatically transcribes and analyzes your dream narratives. Simpler than a notebook, richer than a voice memo.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/">
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
                                 Discover Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
@@ -348,7 +348,7 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Noctalia combines voice recording, automatic transcription, and Noctalia analysis to help you better understand your nights.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/en/">
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
                     Discover Noctalia <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>

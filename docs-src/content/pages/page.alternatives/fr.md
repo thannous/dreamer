@@ -4,7 +4,7 @@
   "layout": "content",
   "lang": "fr",
   "slug": "applications-journal-de-reves",
-  "title": "Meilleures applications de journal de reves et alternatives a Noctalia | Noctalia",
+  "title": "Applications de journal de rêves et alternatives | Noctalia",
   "description": "Comparez Noctalia avec DreamApp, Oniri, DreamKit et Rosebud pour choisir une application de journal de reves avec voix, IA, symboles et reve lucide.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
@@ -29,8 +29,8 @@
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n      \"@context\": \"https://schema.org\",\n      \"@type\": \"WebPage\",\n      \"name\": \"Meilleures applications de journal de reves et alternatives a Noctalia\",\n      \"url\": \"https://noctalia.app/fr/applications-journal-de-reves\",\n      \"inLanguage\": \"fr\",\n      \"about\": { \"@id\": \"https://noctalia.app/#software\" },\n      \"publisher\": { \"@id\": \"https://noctalia.app/#organization\" }\n    }",
-    "{\n      \"@context\": \"https://schema.org\",\n      \"@type\": \"BreadcrumbList\",\n      \"itemListElement\": [\n        { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Accueil\", \"item\": \"https://noctalia.app/fr/\" },\n        { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Applications de reves\", \"item\": \"https://noctalia.app/fr/applications-journal-de-reves\" }\n      ]\n    }"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Meilleures applications de journal de reves et alternatives a Noctalia\",\n    \"url\": \"https://noctalia.app/fr/applications-journal-de-reves\",\n    \"inLanguage\": \"fr\",\n    \"about\": {\n        \"@id\": \"https://noctalia.app/#software\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Applications de reves\",\n            \"item\": \"https://noctalia.app/fr/applications-journal-de-reves\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }

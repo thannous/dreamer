@@ -30,7 +30,7 @@
   "preloadImage": "",
   "jsonLd": [
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Terms of Service\",\n    \"url\": \"https://noctalia.app/en/terms\",\n    \"inLanguage\": \"en\",\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 1,\n                    \"name\": \"Home\",\n                    \"item\": \"https://noctalia.app/en/\"\n                },\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 2,\n                    \"name\": \"Terms of Use\",\n                    \"item\": \"https://noctalia.app/en/terms\"\n                }\n            ]\n        }"
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 1,\n                    \"name\": \"Home\",\n                    \"item\": \"https://noctalia.app/\"\n                },\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 2,\n                    \"name\": \"Terms of Use\",\n                    \"item\": \"https://noctalia.app/en/terms\"\n                }\n            ]\n        }"
   ],
   "activeNav": null
 }
