@@ -70,7 +70,7 @@ None identified.
 
 ### P1 — High Priority
 
-~~1. **Sitemap contained 400 URLs but 530 indexable HTML files existed (130 missing).**~~ -- **RESOLVED** (2026-02-09, commit `bd2acb0`). All 130 blog URLs (25 articles × 5 languages + 5 blog index pages) were added to `sitemap.xml` via `scripts/add-blogs-to-sitemap.js`. Sitemap now has 530 URLs matching all indexable pages. `check-site.js` validates with 0 errors, 0 warnings.
+~~1. **Sitemap contained 400 URLs but 530 indexable HTML files existed (130 missing).**~~ -- **RESOLVED** (2026-02-09, commit `bd2acb0`). All 130 blog URLs (25 articles x 5 languages + 5 blog index pages) were added to `sitemap.xml` via `docs/scripts/archive/add-blogs-to-sitemap.js`. Sitemap now has 530 URLs matching all indexable pages. `check-site.js` validates with 0 errors, 0 warnings.
 
 ### P2 — Optimization
 

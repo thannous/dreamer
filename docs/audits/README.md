@@ -79,8 +79,8 @@ node scripts/check-content-depth.js
 
 ### Resolved P1 (Fixed 2026-02-09, commit `bd2acb0`)
 
-- ~~**Sitemap completeness**: 130 blog URLs were missing~~ — Added via `scripts/add-blogs-to-sitemap.js` (400→530 URLs)
-- ~~**OG image dimensions**: 50 pages missing `og:image:width`/`og:image:height`~~ — Added via `scripts/fix-p1-seo.js`
+- ~~**Sitemap completeness**: 130 blog URLs were missing~~ - Added via `docs/scripts/archive/add-blogs-to-sitemap.js` (400->530 URLs)
+- ~~**OG image dimensions**: 50 pages missing `og:image:width`/`og:image:height`~~ - Added via `docs/scripts/archive/fix-p1-seo.js`
 - ~~**og:site_name**: 525 pages missing~~ — Added "Noctalia" to all pages
 - ~~**og:locale:alternate**: DE/IT missing on blog articles~~ — 374 tags added
 - ~~**twitter:image:alt**: 55 pages missing~~ — Added using og:title as value

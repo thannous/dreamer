@@ -9,11 +9,11 @@ const {
   readSourceDocument,
   walkFiles,
   writeSourceDocument,
-} = require('./lib/docs-source-utils');
+} = require('../../../../../scripts/lib/docs-source-utils');
 
-const ROOT_DIR = path.join(__dirname, '..');
+const ROOT_DIR = path.resolve(__dirname, '..', '..', '..', '..', '..');
 const DOCS_SRC_DIR = path.join(ROOT_DIR, 'docs-src');
-const AHREFS_DIR = path.join(ROOT_DIR, 'marketing', 'seo', 'ahrefs', 'site-audit-2026-05-15');
+const AHREFS_DIR = path.resolve(__dirname, '..');
 const SITE_MANIFEST_PATH = path.join(ROOT_DIR, 'data', 'site-manifest.json');
 const DOMAIN = 'https://noctalia.app';
 

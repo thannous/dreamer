@@ -73,7 +73,7 @@ None identified.
 
 ### P1 --- High Priority
 
-~~1. **~10 pages per language missing og:image:width/height**~~ -- **RESOLVED** (2026-02-09, commit `bd2acb0`). Added `og:image:width="1200"` and `og:image:height="630"` to all 50 pages (10 per language) via `scripts/fix-p1-seo.js`. Coverage now 100%.
+~~1. **~10 pages per language missing og:image:width/height**~~ -- **RESOLVED** (2026-02-09, commit `bd2acb0`). Added `og:image:width="1200"` and `og:image:height="630"` to all 50 pages (10 per language) via `docs/scripts/archive/fix-p1-seo.js`. Coverage now 100%.
 
 ### P2 --- Optimization
 

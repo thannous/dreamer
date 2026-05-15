@@ -126,7 +126,7 @@ None identified.
 
 ### P2 --- Optimization
 
-~~1. **Incomplete og:locale:alternate on some blog articles**~~ -- **RESOLVED** (2026-02-09, commit `bd2acb0`). Added 374 missing `og:locale:alternate` tags across all 530 pages via `scripts/fix-p1-seo.js`. All pages now have all 4 alternates.
+~~1. **Incomplete og:locale:alternate on some blog articles**~~ -- **RESOLVED** (2026-02-09, commit `bd2acb0`). Added 374 missing `og:locale:alternate` tags across all 530 pages via `docs/scripts/archive/fix-p1-seo.js`. All pages now have all 4 alternates.
 
 2. **No hreflang in HTTP headers**: Hreflang annotations are present in HTML `<link>` elements and in the sitemap, but not in HTTP response headers (`Link:` header). While HTML + sitemap is adequate for most search engines, HTTP headers provide an additional signal and defense in depth.
 

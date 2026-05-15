@@ -31,6 +31,10 @@ Context shown in Ahrefs during export:
 | `structured-data-schema-validation-error.csv` | Structured data has schema.org validation error | 1 |
 | `link-opportunities.csv` | Internal link opportunities | 79 |
 
+## Audit-specific script
+
+`scripts/fix-site-audit.js` is the one-shot implementation script used for this export. It is kept next to the CSV files as audit provenance, not as part of the normal docs build workflow.
+
 ## Suggested fix order
 
 1. Fix internal links pointing to redirects, especially links to `https://noctalia.app/en/`.

@@ -123,7 +123,7 @@ function isWatchableDocsPath(filePath, rootDir = ROOT_DIR) {
   if (relativePath.startsWith('docs-src/')) return true;
   if (relativePath.startsWith('data/')) return true;
   if (relativePath.startsWith('scripts/lib/')) return true;
-  return /^scripts\/(?:docs|generate-|fix-guides|check-docs|validate-i18n|build-(?:content|site))/.test(relativePath);
+  return /^scripts\/(?:docs|generate-|check-docs|validate-i18n|build-(?:content|site|guides))/.test(relativePath);
 }
 
 function walkDirs(dirPath) {
