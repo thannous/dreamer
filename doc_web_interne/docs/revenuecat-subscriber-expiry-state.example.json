@@ -1,0 +1,31 @@
+{
+  "checked_at": "2026-05-15T00:52:04.774Z",
+  "app_user_id": "1239729f-7468-48c9-b26a-7aa8b4a82591",
+  "source": "RevenueCat subscriber API v1",
+  "entitlement": {
+    "id": "Noctalia Plus",
+    "product_identifier": "noctalia_plus",
+    "purchase_date": "2026-05-14T23:58:07Z",
+    "expires_date": "2026-05-15T00:28:06Z",
+    "is_active_at_check": false
+  },
+  "play_subscription": {
+    "product_identifier": "noctalia_plus",
+    "store": "play_store",
+    "is_sandbox": true,
+    "period_type": "normal",
+    "purchase_date": "2026-05-14T23:58:07Z",
+    "expires_date": "2026-05-15T00:28:06Z",
+    "unsubscribe_detected_at": "2026-05-15T00:31:45Z",
+    "billing_issues_detected_at": null,
+    "is_active_at_check": false
+  },
+  "subscription_keys": [
+    "monthly",
+    "noctalia_plus",
+    "yearly"
+  ],
+  "entitlement_keys": [
+    "Noctalia Plus"
+  ]
+}

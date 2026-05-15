@@ -236,6 +236,17 @@ cette preuve echoue encore avec `Play cancellation evidence must confirm the Rev
 Le validateur exige textuellement trois familles de signaux pour cette gate:
 `cancel|cancellation|expiry|expired`, le mot `webhook`, puis `backend` avec `converg` ou `sync`.
 
+Durcissement du 2026-05-15T01:31Z: ajout de
+`scripts/update-revenuecat-subscriber-expiry-state.js`, du script npm
+`subscription:qa:revenuecat-subscriber-expiry`, de
+`doc_web_interne/docs/revenuecat-subscriber-expiry-state.example.json` et d'un snapshot local
+gitignore. Le helper normalise la lecture RevenueCat Subscriber API v1 et refuse les entitlements
+encore actifs ou les achats Play non-sandbox. `subscription:qa:report` affiche desormais
+`RevenueCat subscriber expiry snapshot` en readiness separee, avec le detail explicite que cette
+preuve directe ne remplace pas la convergence webhook/backend. `npm run subscription:qa:verify-local`
+passe et couvre ce nouveau helper; le rapport force un fichier d'evidence manquant temporaire dans
+ce verificateur pour rester stable meme quand les preuves locales Play monthly/annual existent deja.
+
 ## Conditions pour declarer l'objectif complet
 
 Ne pas declarer l'objectif complet tant que ces sept portes ne sont pas passees dans `revenuecat-qa-evidence.local.json`:
