@@ -346,6 +346,21 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
         localStatus: nextStatus,
       });
 
+      if (result) {
+        console.log('[useSubscription] Subscription convergence completed', {
+          timestamp: new Date().toISOString(),
+          userId,
+          source,
+          syncedTier: result.tier,
+          isActive: result.isActive,
+          version: result.version,
+          changed: result.changed,
+          updated: result.updated ?? null,
+          skipped: result.skipped ?? null,
+          outcome: result.outcome ?? null,
+        });
+      }
+
       return result
         ? { ...nextStatus, tier: result.tier, isActive: result.isActive }
         : nextStatus;

@@ -288,6 +288,32 @@ describe('useSubscription', () => {
       expect(mockSetUserTierLocally).toHaveBeenCalledWith(expect.objectContaining({ tier: 'plus' }));
     });
 
+    it('given backend sync succeeds when restoring then logs convergence completion', async () => {
+      const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => undefined);
+      const { result } = renderSubscriptionHook();
+      await act(async () => {});
+
+      try {
+        await act(async () => {
+          await result.current.restore();
+        });
+
+        expect(consoleLogSpy).toHaveBeenCalledWith(
+          '[useSubscription] Subscription convergence completed',
+          expect.objectContaining({
+            userId: 'user-1',
+            source: 'restore',
+            syncedTier: 'plus',
+            isActive: true,
+            version: 1,
+            changed: true,
+          })
+        );
+      } finally {
+        consoleLogSpy.mockRestore();
+      }
+    });
+
     it('given authenticated user when restoring fails then sets error and throws', async () => {
       // Given
       const { restoreSubscriptionPurchases } = require('../services/subscriptionService');
