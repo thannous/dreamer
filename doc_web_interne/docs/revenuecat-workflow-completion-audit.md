@@ -288,6 +288,13 @@ mais ne ferme toujours pas `play_cancellation_and_expiry`: aucune relecture webh
 backend convergence n'a pu etre obtenue. Le token RevenueCat MCP courant renvoie encore `403 access
 token has been revoked`, et la CLI Supabase locale n'est pas authentifiee.
 
+Instrumentation ajoutee le 2026-05-15T07:25Z: `convergeServerSubscription` logge maintenant
+`[useSubscription] Subscription convergence completed` quand `/subscription/refresh` repond, avec
+`source`, `syncedTier`, `isActive`, `version`, `changed`, `updated`, `skipped` et `outcome`. Le test
+cible `hooks/useSubscription.test.tsx` couvre le cas restore -> backend sync success. Cette
+instrumentation servira de preuve app/backend sur un prochain build Play/Test Store, mais elle ne
+retro-valide pas la build Play v24 deja testee.
+
 ## Conditions pour declarer l'objectif complet
 
 Ne pas declarer l'objectif complet tant que ces sept portes ne sont pas passees dans `revenuecat-qa-evidence.local.json`:
