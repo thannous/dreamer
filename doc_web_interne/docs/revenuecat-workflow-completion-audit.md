@@ -250,6 +250,22 @@ preuve directe ne remplace pas la convergence webhook/backend. `npm run subscrip
 passe et couvre ce nouveau helper; le rapport force un fichier d'evidence manquant temporaire dans
 ce verificateur pour rester stable meme quand les preuves locales Play monthly/annual existent deja.
 
+Fallback emulateur du 2026-05-15T02:01Z: apres blocage du POCO sur keyguard securise, un APK
+release local autonome a ete genere avec `.env.teststore` via `./gradlew --no-daemon
+-Dorg.gradle.jvmargs='-Xmx6g -XX:MaxMetaspaceSize=1536m -Dfile.encoding=UTF-8'
+app:assembleRelease`, puis installe uniquement sur `emulator-5554` depuis
+`android/app/build/outputs/apk/release/app-release.apk`. L'app se lance sans Metro, Google Sign-In
+selectionne `thannous@gmail.com`, et le QA Lab affiche `RevenueCat Test Store`, `PACKAGES=2`,
+`USER=thannous@gmail.com`, `free (free / inactive)`, `PRODUCT=none`, `EXPIRY=none`,
+`SERVER VERSION=182`, `AUTH=ready`, puis `Refresh completed` avec
+`appUserId 1239729f-7468-48c9-b26a-7aa8b4a82591`. Logcat confirme `[useSubscription] Refresh
+completed` avec `tier: 'free'`, `isActive: false`, puis `Subscription convergence started` en
+`source: 'manual_refresh'`, `targetTier: 'free'`, `currentTier: 'free'`, `expiryDate: null`. Captures
+locales: `/private/tmp/noctalia-emulator-after-google-account.png` et
+`/private/tmp/noctalia-emulator-qa-lab-refresh-result.png`. Cette preuve ferme le fallback local
+Test Store/backend-refresh du meme appUserId, mais ne remplace toujours pas la preuve
+Play-installed POCO post-expiry ni la relecture webhook/Supabase.
+
 ## Conditions pour declarer l'objectif complet
 
 Ne pas declarer l'objectif complet tant que ces sept portes ne sont pas passees dans `revenuecat-qa-evidence.local.json`:
