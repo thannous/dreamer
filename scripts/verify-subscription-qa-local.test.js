@@ -27,8 +27,8 @@ describe('subscription QA local verifier', () => {
         'npm run subscription:qa:evidence -- --gate play_monthly',
         '--installer-package-name com.android.vending',
         '## Current Session Readiness',
-        'Verified manual/external scenarios: 4',
-        'Manual or external gates remaining: 3',
+        'Verified manual/external scenarios: 0',
+        'Manual or external gates remaining: 7',
         'Account switch | Test Store or Play | Plus user logout does not leak to free user',
         'Test Store signed-in account env',
         'Account switch second account env',
@@ -50,6 +50,8 @@ describe('subscription QA local verifier', () => {
         'Google Play annual base plan snapshot',
         'Google Play internal track snapshot',
         'Google Play track state updater exists',
+        'RevenueCat subscriber expiry snapshot',
+        'RevenueCat subscriber expiry state updater exists',
         'Play monthly base plan snapshot',
         'Play annual base plan snapshot',
         'Google OAuth Android client snapshot parses',
@@ -64,6 +66,7 @@ describe('subscription QA local verifier', () => {
     expect(commands.map((command) => command.label)).toEqual(
       expect.arrayContaining([
         'syntax: Play store state updater',
+        'syntax: RevenueCat subscriber expiry state updater',
         'syntax: Google Play subscription state updater',
         'syntax: Google Play track state updater',
         'syntax: Google Cloud project state updater',
@@ -78,6 +81,7 @@ describe('subscription QA local verifier', () => {
     );
     const unitCommand = commands.find((command) => command.label === 'unit: subscription QA scripts');
     expect(unitCommand.args).toContain('scripts/update-revenuecat-play-store-state.test.js');
+    expect(unitCommand.args).toContain('scripts/update-revenuecat-subscriber-expiry-state.test.js');
     expect(unitCommand.args).toContain('scripts/update-google-play-subscription-state.test.js');
     expect(unitCommand.args).toContain('scripts/update-google-play-track-state.test.js');
     expect(unitCommand.args).toContain('scripts/update-google-cloud-project-state.test.js');

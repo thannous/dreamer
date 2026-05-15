@@ -701,6 +701,21 @@ Google Play et sans facturation reelle. Google Play Developer API a confirme les
 restauration app finale attend le deverrouillage du POCO. La gate reste ouverte tant que la convergence
 webhook/backend RevenueCat n'est pas relue.
 
+Pour rendre la relecture RevenueCat directe reproductible sans rouvrir le dashboard, normaliser la
+reponse Subscriber API v1 avec le helper gitignore:
+
+```bash
+npm run subscription:qa:revenuecat-subscriber-expiry -- \
+  --input /private/tmp/noctalia-revenuecat-subscriber-after-play-expiry.json \
+  --app-user-id 1239729f-7468-48c9-b26a-7aa8b4a82591
+```
+
+Cette commande ecrit `doc_web_interne/docs/revenuecat-subscriber-expiry-state.local.json` et le
+rapport affiche alors `RevenueCat subscriber expiry snapshot` en `READY` si l'entitlement
+`Noctalia Plus` et la subscription Play sandbox `noctalia_plus` sont inactifs au `checked_at`.
+Cette preuve ne remplace pas la gate `play_cancellation_and_expiry`: il faut encore prouver la
+convergence webhook/Supabase ou backend equivalent.
+
 Reprise exacte quand le POCO est deverrouille et Noctalia visible:
 
 ```bash

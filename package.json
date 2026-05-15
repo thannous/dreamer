@@ -97,6 +97,7 @@
     "subscription:qa:release-gate": "node ./scripts/subscription-qa-report.js --require-full",
     "subscription:qa:evidence": "node ./scripts/update-subscription-qa-evidence.js",
     "subscription:qa:play-state": "node ./scripts/update-revenuecat-play-store-state.js",
+    "subscription:qa:revenuecat-subscriber-expiry": "node ./scripts/update-revenuecat-subscriber-expiry-state.js",
     "subscription:qa:google-play-state": "node ./scripts/update-google-play-subscription-state.js",
     "android:google-play-track-state": "node ./scripts/update-google-play-track-state.js",
     "subscription:qa:device-app-user-id": "node ./scripts/extract-revenuecat-app-user-id.js",

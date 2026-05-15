@@ -12,6 +12,9 @@ const evidencePath = process.env.REVENUECAT_QA_EVIDENCE_PATH
 const playStoreStatePath = process.env.REVENUECAT_PLAY_STORE_STATE_PATH
   ? path.resolve(ROOT, process.env.REVENUECAT_PLAY_STORE_STATE_PATH)
   : path.join(ROOT, 'doc_web_interne/docs/revenuecat-play-store-state.local.json');
+const revenueCatSubscriberExpiryStatePath = process.env.REVENUECAT_SUBSCRIBER_EXPIRY_STATE_PATH
+  ? path.resolve(ROOT, process.env.REVENUECAT_SUBSCRIBER_EXPIRY_STATE_PATH)
+  : path.join(ROOT, 'doc_web_interne/docs/revenuecat-subscriber-expiry-state.local.json');
 const googlePlaySubscriptionStatePath = process.env.GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH
   ? path.resolve(ROOT, process.env.GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH)
   : path.join(ROOT, 'doc_web_interne/docs/google-play-subscription-state.local.json');
@@ -148,6 +151,20 @@ function readPlayStoreStateResult() {
   }
   try {
     return { snapshot: readJsonFile(playStoreStatePath), error: null };
+  } catch (error) {
+    return {
+      snapshot: null,
+      error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
+    };
+  }
+}
+
+function readRevenueCatSubscriberExpiryStateResult() {
+  if (!fs.existsSync(revenueCatSubscriberExpiryStatePath)) {
+    return { snapshot: null, error: null };
+  }
+  try {
+    return { snapshot: readJsonFile(revenueCatSubscriberExpiryStatePath), error: null };
   } catch (error) {
     return {
       snapshot: null,
@@ -294,6 +311,38 @@ function getSupabaseSecretsReadinessRow() {
     return ['BLOCKED', 'Supabase Play Integrity secrets snapshot', issues.join(', ')];
   }
   return ['READY', 'Supabase Play Integrity secrets snapshot', 'Required secret names are present; values are not stored'];
+}
+
+function getRevenueCatSubscriberExpiryReadinessRow() {
+  if (!fs.existsSync(revenueCatSubscriberExpiryStatePath)) {
+    return [
+      'CHECK LIVE',
+      'RevenueCat subscriber expiry snapshot',
+      'Run npm run subscription:qa:revenuecat-subscriber-expiry with RevenueCat subscriber API JSON after Play expiry; this does not replace webhook evidence',
+    ];
+  }
+  if (revenueCatSubscriberExpiryStateResult.error) {
+    return ['BLOCKED', 'RevenueCat subscriber expiry snapshot', revenueCatSubscriberExpiryStateResult.error];
+  }
+  const snapshot = revenueCatSubscriberExpiryStateResult.snapshot;
+  const entitlement = snapshot?.entitlement ?? {};
+  const playSubscription = snapshot?.play_subscription ?? {};
+  const ready =
+    entitlement.id === EXPECTED.entitlement &&
+    entitlement.product_identifier === 'noctalia_plus' &&
+    entitlement.is_active_at_check === false &&
+    playSubscription.product_identifier === 'noctalia_plus' &&
+    playSubscription.store === 'play_store' &&
+    playSubscription.is_sandbox === true &&
+    playSubscription.is_active_at_check === false;
+  const summary = `${playSubscription.product_identifier || 'missing'}/${playSubscription.store || 'missing'}/sandbox=${
+    playSubscription.is_sandbox === true
+  }/active=${playSubscription.is_active_at_check === true}`;
+  return [
+    ready ? 'READY' : 'BLOCKED',
+    'RevenueCat subscriber expiry snapshot',
+    `${summary}; direct RevenueCat subscriber state only, webhook/backend convergence still required separately`,
+  ];
 }
 
 function getSnapshotProductState(snapshot, productId) {
@@ -663,6 +712,7 @@ const gitignore = read('.gitignore');
 const evidenceResult = readEvidenceResult();
 const evidence = evidenceResult.evidence;
 const playStoreStateResult = readPlayStoreStateResult();
+const revenueCatSubscriberExpiryStateResult = readRevenueCatSubscriberExpiryStateResult();
 const googlePlaySubscriptionStateResult = readGooglePlaySubscriptionStateResult();
 const googlePlayTrackStateResult = readGooglePlayTrackStateResult();
 const googleOAuthAndroidClientStateResult = readGoogleOAuthAndroidClientStateResult();
@@ -827,6 +877,11 @@ const checks = [
     'doc_web_interne/docs/google-play-subscription-state.local.json'
   ),
   check(
+    'RevenueCat subscriber expiry snapshot is gitignored',
+    gitignore.includes('doc_web_interne/docs/revenuecat-subscriber-expiry-state.local.json'),
+    'doc_web_interne/docs/revenuecat-subscriber-expiry-state.local.json'
+  ),
+  check(
     'Google Play track state snapshot is gitignored',
     gitignore.includes('doc_web_interne/docs/google-play-track-state.local.json'),
     'doc_web_interne/docs/google-play-track-state.local.json'
@@ -854,6 +909,13 @@ const checks = [
     'Play store state snapshot parses',
     !fs.existsSync(playStoreStatePath) || !playStoreStateResult.error,
     fs.existsSync(playStoreStatePath) ? playStoreStateResult.error || playStoreStatePath : 'not provided'
+  ),
+  check(
+    'RevenueCat subscriber expiry snapshot parses',
+    !fs.existsSync(revenueCatSubscriberExpiryStatePath) || !revenueCatSubscriberExpiryStateResult.error,
+    fs.existsSync(revenueCatSubscriberExpiryStatePath)
+      ? revenueCatSubscriberExpiryStateResult.error || revenueCatSubscriberExpiryStatePath
+      : 'not provided'
   ),
   check(
     'Google OAuth Android client snapshot parses',
@@ -887,6 +949,13 @@ const checks = [
     fs.existsSync(path.join(ROOT, 'scripts/update-google-play-subscription-state.js')) &&
       pkg.scripts['subscription:qa:google-play-state'] === 'node ./scripts/update-google-play-subscription-state.js',
     'npm run subscription:qa:google-play-state -- --input google-play-subscription.json'
+  ),
+  check(
+    'RevenueCat subscriber expiry state updater exists',
+    fs.existsSync(path.join(ROOT, 'scripts/update-revenuecat-subscriber-expiry-state.js')) &&
+      pkg.scripts['subscription:qa:revenuecat-subscriber-expiry'] ===
+        'node ./scripts/update-revenuecat-subscriber-expiry-state.js',
+    'npm run subscription:qa:revenuecat-subscriber-expiry -- --input revenuecat-subscriber.json --app-user-id <uuid>'
   ),
   check(
     'Google Play track state updater exists',
@@ -1053,6 +1122,11 @@ console.log(
 );
 console.log(`- Play Store state snapshot: ${fs.existsSync(playStoreStatePath) ? 'local file present' : 'not provided'}`);
 console.log(
+  `- RevenueCat subscriber expiry snapshot: ${
+    fs.existsSync(revenueCatSubscriberExpiryStatePath) ? 'local file present' : 'not provided'
+  }`
+);
+console.log(
   `- Google OAuth Android client snapshot: ${
     fs.existsSync(googleOAuthAndroidClientStatePath) ? 'local file present' : 'not provided'
   }`
@@ -1166,6 +1240,7 @@ const runtimeReadiness = [
   getGooglePlayMonthlyReadinessRow(),
   getGooglePlayAnnualReadinessRow(),
   getGooglePlayTrackReadinessRow(),
+  getRevenueCatSubscriberExpiryReadinessRow(),
   getPaymentsProfileReadinessRow(),
   getSupabaseSecretsReadinessRow(),
   getPlayMonthlyReadinessRow(),
