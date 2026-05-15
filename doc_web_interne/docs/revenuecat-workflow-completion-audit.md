@@ -266,6 +266,16 @@ locales: `/private/tmp/noctalia-emulator-after-google-account.png` et
 Test Store/backend-refresh du meme appUserId, mais ne remplace toujours pas la preuve
 Play-installed POCO post-expiry ni la relecture webhook/Supabase.
 
+Tentative de reprise sans POCO du 2026-05-15T09:10+02: `Pixel_7_Play_API_36` a ete relance sans
+fenetre mais ne contient plus `com.tanuki75.noctalia`. `Pixel_8_Play_API_36` contient une build
+debug `com.tanuki75.noctalia` avec `run-as` disponible, mais c'est une Development Build
+`versionCode=1`, `installerPackageName=null`, ouverte sur Expo Dev Launcher. Le stockage local ne
+contient pas de session Supabase du compte Play: `RKStorage` ne liste que des cles guest/mock, et
+`SecureStore.xml` ne contient que `guest-session-v1` et `device-fingerprint-v1` chiffres. Les
+preferences RevenueCat de cet emulateur correspondent a la cle Test Store et a un utilisateur
+anonyme `$RCAnonymousID:4361d8c404204a8daa14e6c8df93da13`, sans abonnement. Cette piste ne peut donc
+pas prouver la convergence backend du compte Play `1239729f-7468-48c9-b26a-7aa8b4a82591`.
+
 ## Conditions pour declarer l'objectif complet
 
 Ne pas declarer l'objectif complet tant que ces sept portes ne sont pas passees dans `revenuecat-qa-evidence.local.json`:
