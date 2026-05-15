@@ -209,13 +209,12 @@ Checklist preuve actuelle:
 | Switch de compte sans fuite entitlement | preuve locale `account_switch` | Couvert |
 | Play Internal Testing monthly | preuve locale `play_monthly`, POCO v24 Play-installed, Play API `monthly` expired ensuite | Couvert |
 | Play Internal Testing annual | preuve locale `play_annual`, POCO v24 Play-installed, Play API `annual` expired ensuite | Couvert |
-| Cancellation/expiry app + backend | Play API monthly/annual expired; RevenueCat subscriber API direct voit le Play sandbox expire; app restore free observe pour monthly seulement; annual app restore et Supabase/webhook non relus | Manquant |
+| Cancellation/expiry app + backend | Play API monthly/annual expired; RevenueCat subscriber API direct voit le Play sandbox expire; app restore free observe pour monthly et annual; Supabase/webhook non relus | Manquant |
 | Commit utilisateur demande | commits `0068ce37e` et `25b1dd1ee`; autres changements workspace non lies conserves hors staging | Couvert |
 | Publication Android production | `android:gates:strict -- --report-only` = 10 pass, 1 fail, 1 blocked, 2 manual | Interdite |
 
-Conclusion: ne pas marquer l'objectif complet. Le prochain pas necessaire est deverrouiller le
-POCO pour executer la sequence de reprise annual post-expiry, puis restaurer un acces Supabase ou
-webhook/reconcile pour prouver la convergence app-backend.
+Conclusion: ne pas marquer l'objectif complet. Le prochain pas necessaire est restaurer un acces
+Supabase, webhook ou reconcile pour prouver la convergence app-backend apres expiration Play.
 
 Tentative backend supplementaire: la config client expose bien `EXPO_PUBLIC_API_URL`,
 `EXPO_PUBLIC_SUPABASE_URL` et la cle anon publique Supabase dans les `.env*`, mais une tentative
@@ -275,6 +274,19 @@ contient pas de session Supabase du compte Play: `RKStorage` ne liste que des cl
 preferences RevenueCat de cet emulateur correspondent a la cle Test Store et a un utilisateur
 anonyme `$RCAnonymousID:4361d8c404204a8daa14e6c8df93da13`, sans abonnement. Cette piste ne peut donc
 pas prouver la convergence backend du compte Play `1239729f-7468-48c9-b26a-7aa8b4a82591`.
+
+Reprise POCO Play-installed du 2026-05-15T07:18:14Z / 09:18 Paris: le telephone physique
+`192.168.1.116:41183` etait bien sur la build Play Internal Testing `versionCode=24` avec
+`installerPackageName=com.android.vending`. Depuis l'ecran premium, l'action `Restaurer les achats`
+a ete lancee apres expiration annuelle Play sans nouvel achat. Capture locale:
+`/private/tmp/noctalia-poco-v24-annual-after-expiry-restore-20260515.png`. Logcat confirme
+`[useSubscription] Purchase restore started` avec `currentTier: 'free'`, puis
+`[useSubscription] Purchase restore completed` avec `restoredTier: 'free'` et `isActive: false`,
+puis `Subscription convergence started` avec `source: 'restore'`, `targetTier: 'free'` et
+`currentTier: 'free'`. Cette preuve ferme le comportement app Play-installed annual post-expiry,
+mais ne ferme toujours pas `play_cancellation_and_expiry`: aucune relecture webhook, Supabase ou
+backend convergence n'a pu etre obtenue. Le token RevenueCat MCP courant renvoie encore `403 access
+token has been revoked`, et la CLI Supabase locale n'est pas authentifiee.
 
 ## Conditions pour declarer l'objectif complet
 
