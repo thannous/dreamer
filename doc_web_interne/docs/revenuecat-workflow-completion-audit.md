@@ -295,6 +295,32 @@ cible `hooks/useSubscription.test.tsx` couvre le cas restore -> backend sync suc
 instrumentation servira de preuve app/backend sur un prochain build Play/Test Store, mais elle ne
 retro-valide pas la build Play v24 deja testee.
 
+Relecture Supabase backend du 2026-05-15T07:34Z via Supabase Management API read-only:
+`subscription_state` pour `1239729f-7468-48c9-b26a-7aa8b4a82591` est `tier=free`,
+`is_active=false`, `source=subscription_refresh`, `source_updated_at=2026-05-15T00:31:46.013Z`,
+`updated_at=2026-05-15T07:18:15.548449Z`, `version=188`. `subscription_events` contient un webhook
+RevenueCat `EXPIRATION` (`source_event_id=D7D88494-40FE-44F5-9449-D1FCB295F516`) traite le
+2026-05-15T00:31:48.325880Z, passant `prior_tier=plus`, `prior_is_active=true` a `next_tier=free`,
+`next_is_active=false`, `outcome=updated`, puis un `subscription_refresh` `metadata.requestedSource=restore`
+traite le 2026-05-15T07:18:15.548449Z garde `free/inactive`. La gate locale
+`play_cancellation_and_expiry` a ete enregistree comme `passed`, et `npm run subscription:qa:release-gate`
+passe avec 7 preuves manuelles/externes verifiees et 0 gate restante.
+
+Doc RevenueCat Expo relue le 2026-05-15: RevenueCat indique que l'utilisation et le test avec Expo
+necessitent une development build, qu'Expo Go ne supporte pas le code natif requis pour les achats
+in-app reels et que les vrais achats RevenueCat necessitent une development build. Cette doc confirme
+que Safari/web ne prouve pas le parcours Android natif; la preuve finale doit rester un build Android
+sur device/emulateur, et pour Play Billing un build installe via Play/Internal Testing.
+
+Snapshot Supabase Play Integrity du 2026-05-15T07:35Z: `supabase secrets list --project-ref
+usuyppgsmmowzizhaoqj` confirme la presence de `PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64`,
+`PLAY_INTEGRITY_PACKAGE_NAME` et `GUEST_SESSION_SECRET`; le snapshot local gitignore
+`supabase-play-integrity-secrets-state.local.json` a ete regenere avec
+`PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia`. `npm run android:gates:strict -- --report-only`
+affiche maintenant `12 pass, 0 fail, 1 blocked, 1 manual`. Le seul blocage dur restant pour la
+production Android est le profil de paiement Google Play: `tax_information/missing/critical`,
+`payout_method/missing/critical`, `ireland_tax_information/missing/warning`.
+
 ## Conditions pour declarer l'objectif complet
 
 Ne pas declarer l'objectif complet tant que ces sept portes ne sont pas passees dans `revenuecat-qa-evidence.local.json`:
