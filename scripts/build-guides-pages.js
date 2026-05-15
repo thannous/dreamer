@@ -2924,7 +2924,7 @@ function main() {
       console.log(`${DRY_RUN ? 'Would generate' : 'Generated'} docs/${lang}/guides/${i18n[lang].dictionary_slug}.html`);
     }
   }
-  console.log(`[fix-guides-architecture] mode=${DRY_RUN ? 'dry-run' : 'write'} hubPages=${hubs} dictionaryPages=${dictionaries}`);
+  console.log(`[build-guides-pages] mode=${DRY_RUN ? 'dry-run' : 'write'} hubPages=${hubs} dictionaryPages=${dictionaries}`);
 }
 
 if (require.main === module) main();

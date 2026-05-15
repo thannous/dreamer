@@ -91,7 +91,7 @@ None identified.
 
 ### P1 -- High Priority
 
-~~1. **~50 pages missing og:image:width/height**~~ -- **RESOLVED** (2026-02-09, commit `bd2acb0`). Added `og:image:width="1200"` and `og:image:height="630"` to all 50 pages via `scripts/fix-p1-seo.js`.
+~~1. **~50 pages missing og:image:width/height**~~ -- **RESOLVED** (2026-02-09, commit `bd2acb0`). Added `og:image:width="1200"` and `og:image:height="630"` to all 50 pages via `docs/scripts/archive/fix-p1-seo.js`.
 
 ~~2. **Blog articles missing de_DE and it_IT from og:locale:alternate**~~ -- **RESOLVED** (2026-02-09). Added 374 missing `og:locale:alternate` tags across all 530 pages.
 

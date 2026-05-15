@@ -403,7 +403,7 @@ node scripts/generate-symbol-pages.js --categories
 node scripts/generate-symbol-pages.js --curation
 
 # Add "Related Symbols" CTAs inside blog posts that were missing them
-node scripts/add-blog-symbol-ctas.js --apply
+node docs/scripts/archive/add-blog-symbol-ctas.js --apply
 
 # Generate specific priority
 node scripts/generate-symbol-pages.js --priority=1

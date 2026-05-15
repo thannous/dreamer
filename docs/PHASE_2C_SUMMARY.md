@@ -58,7 +58,7 @@ Successfully added 5 new Tier 3 dream symbols to the Noctalia programmatic SEO s
    - Total symbols with extended content: 43 → 48 (85.7% coverage)
    - Each entry includes full interpretation (400-500 words) + 7 variations in all 3 languages
 
-3. **docs/scripts/add-new-symbols-to-sitemap.py**
+3. **docs/scripts/archive/add-new-symbols-to-sitemap.py**
    - Updated `new_symbols` list with Tier 3 symbols
    - Changed comment from "Tier 2" to "Tier 3"
 
@@ -148,7 +148,7 @@ This phase completes coverage of:
 ## Files Changed Summary
 - `docs/data/dream-symbols.json` - Added 5 symbols, updated meta
 - `docs/data/dream-symbols-extended.json` - Added 5 complete extended entries
-- `docs/scripts/add-new-symbols-to-sitemap.py` - Updated symbol list
+- `docs/scripts/archive/add-new-symbols-to-sitemap.py` - Updated symbol list
 - `docs/sitemap.xml` - Added 15 URLs
 - **15 new HTML files** generated in en/symbols/, fr/symboles/, es/simbolos/
 
