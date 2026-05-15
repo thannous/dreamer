@@ -30,7 +30,7 @@
   "preloadImage": "",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"CollectionPage\",\n            \"name\": \"Dream Journal: recall, methods & routines\",\n            \"description\": \"Topic hub: dream journaling, recall, REM sleep, and daily routines.\",\n            \"inLanguage\": \"en\",\n            \"url\": \"https://noctalia.app/en/blog/dream-journal\"\n        }",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/en/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Resources\",\n            \"item\": \"https://noctalia.app/en/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Dream journal\",\n            \"item\": \"https://noctalia.app/en/blog/dream-journal\"\n        }\n    ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Resources\",\n            \"item\": \"https://noctalia.app/en/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Dream journal\",\n            \"item\": \"https://noctalia.app/en/blog/dream-journal\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -40,7 +40,7 @@
 <nav aria-label="Breadcrumb" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<a class="hover:text-dream-salmon transition-colors" href="/en/" itemprop="item"><span itemprop="name">Home</span></a>
+<a class="hover:text-dream-salmon transition-colors" href="/" itemprop="item"><span itemprop="name">Home</span></a>
 <meta content="1" itemprop="position">
 </li>
 <li class="text-purple-400">/</li>

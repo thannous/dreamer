@@ -1,0 +1,5 @@
+PR,URL,Title,Content type,Is rendered page,HTTP status code,Organic traffic,Schema items,Structured data issues,Is indexable page
+24,https://noctalia.app/en/press,Noctalia Press Kit | AI Dream Journal,text/html; charset=utf-8,false,200,0,"BreadcrumbList
+Organization
+SoftwareApplication
+WebPage",Schema.org validation error,true

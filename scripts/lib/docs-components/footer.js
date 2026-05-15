@@ -120,6 +120,7 @@ function renderFooter(context) {
   const { lang, locale, meta, routePath } = context;
   const { featuredResources, featuredGuides, popularSymbols } = buildSeoFooterLinks(context);
   const isBlogPremium = meta.layout === 'blogIndex' && String(meta.mainClass || '').includes('blog-premium');
+  const homeHref = lang === 'en' ? '/' : `/${lang}/`;
   const footerClass = meta.layout === 'landing'
     ? 'site-footer landing-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]'
     : `site-footer${isBlogPremium ? ' blog-premium-footer' : ''} pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]`;
@@ -137,7 +138,7 @@ function renderFooter(context) {
     `    <footer class="${footerClass}">`,
     '        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">',
     '            <div class="xl:col-span-2">',
-    `                <a href="/${lang}/" class="flex items-center gap-2 mb-4">`,
+    `                <a href="${homeHref}" class="flex items-center gap-2 mb-4">`,
     '                    <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>',
     '                    <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>',
     '                </a>',

@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "en",
   "slug": "vivid-dreams-restful-sleep",
-  "title": "Vivid Dreams and Restful Sleep: What the New PLOS Biology Study Shows | Noctalia",
+  "title": "Vivid Dreams and Restful Sleep: What the New | Noctalia",
   "description": "A March 2026 PLOS Biology study suggests immersive dreams may make sleep feel deeper and more restorative. Here is what it means for dream journaling.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
@@ -13,12 +13,12 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Vivid Dreams and Restful Sleep: What the New PLOS Biology Study Shows | Noctalia",
+  "ogTitle": "Vivid Dreams and Restful Sleep: What the New | Noctalia",
   "ogDescription": "A March 2026 PLOS Biology study suggests immersive dreams may make sleep feel deeper and more restorative.",
   "ogImage": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
   "ogImageAlt": "A sleeping person surrounded by soft dreamlike light and REM sleep waves",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Vivid Dreams and Restful Sleep: What the New PLOS Biology Study Shows | Noctalia",
+  "twitterTitle": "Vivid Dreams and Restful Sleep: What the New | Noctalia",
   "twitterDescription": "A March 2026 PLOS Biology study suggests immersive dreams may make sleep feel deeper and more restorative.",
   "twitterImage": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
   "twitterImageAlt": "A sleeping person surrounded by soft dreamlike light and REM sleep waves",
@@ -35,7 +35,7 @@
 <article class="max-w-5xl mx-auto">
 <nav aria-label="Breadcrumb" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap">
-<li><a class="hover:text-dream-salmon transition-colors" href="/en/">Home</a></li>
+<li><a class="hover:text-dream-salmon transition-colors" href="/">Home</a></li>
 <li class="text-purple-400">/</li>
 <li><a class="hover:text-dream-salmon transition-colors" href="/en/blog/">Resources</a></li>
 <li class="text-purple-400">/</li>
@@ -93,7 +93,7 @@
 <div>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Track the feeling, not only the plot</h3>
 <p class="text-sm text-gray-400 mb-4">In Noctalia, record not just what happened in the dream, but how present, vivid and rested you felt on waking. Those details often reveal patterns that a sleep score cannot see.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/">Start a dream journal <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">Start a dream journal <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
 </div>
 </div>
 </aside>
