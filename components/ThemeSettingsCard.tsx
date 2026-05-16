@@ -49,7 +49,11 @@ export default function ThemeSettingsCard() {
   };
 
   return (
-    <View style={[styles.card, { backgroundColor: GlassCardTokens.getBackground(colors.backgroundCard, mode), borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}>
+    <View
+      style={[styles.card, { backgroundColor: GlassCardTokens.getBackground(colors.backgroundCard, mode), borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}
+      accessibilityRole="radiogroup"
+      accessibilityLabel={t('settings.theme.title')}
+    >
       <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>{t('settings.theme.title')}</Text>
       <Text style={[styles.description, { color: colors.textSecondary }]}>
         {t('settings.theme.description')}
@@ -57,6 +61,12 @@ export default function ThemeSettingsCard() {
 
       {THEME_OPTIONS.map((option, index) => {
         const isSelected = preference === option.value;
+        const optionLabel = t(option.labelKey);
+        const optionDescription = option.value === 'auto'
+          ? `${t(option.descriptionKey)}\n${t('settings.theme.option.auto.system_hint', {
+              theme: t(`settings.theme.option.${systemMode}.label`),
+            })}`
+          : t(option.descriptionKey);
 
         const iconColor = isSelected
           ? colors.textOnAccentSurface
@@ -74,6 +84,10 @@ export default function ThemeSettingsCard() {
                 pressed && styles.optionPressed,
               ]}
               onPress={() => handleSelectTheme(option.value)}
+              accessibilityRole="radio"
+              accessibilityLabel={optionLabel}
+              accessibilityHint={optionDescription.replace(/\s+/g, ' ')}
+              accessibilityState={{ checked: isSelected }}
             >
               <View style={styles.optionLeft}>
                 <View
@@ -88,14 +102,10 @@ export default function ThemeSettingsCard() {
                 </View>
                 <View style={styles.optionInfo}>
                   <Text style={[styles.optionLabel, { color: colors.textPrimary }]}>
-                    {t(option.labelKey)}
+                    {optionLabel}
                   </Text>
                   <Text style={[styles.optionDescription, { color: colors.textSecondary }]}>
-                    {option.value === 'auto'
-                      ? `${t(option.descriptionKey)}\n${t('settings.theme.option.auto.system_hint', {
-                          theme: t(`settings.theme.option.${systemMode}.label`),
-                        })}`
-                      : t(option.descriptionKey)}
+                    {optionDescription}
                   </Text>
                 </View>
               </View>
