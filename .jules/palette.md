@@ -25,3 +25,7 @@ Add entries only for critical UX/a11y learnings in this format:
 ## 2026-05-16 - Settings pickers need radio semantics
 **Learning:** Noctalia settings cards use custom rows with visual radio indicators; without `radio`/`radiogroup` roles and checked state, screen readers miss the selection model.
 **Action:** For custom single-choice settings rows, expose the group as `radiogroup` and each option as `radio` with `accessibilityState.checked`, using the visible label and helper text as the accessible name and hint.
+
+## 2026-05-16 - Quota meters should announce progress
+**Learning:** Noctalia quota cards use custom progress tracks that visually show consumption, but assistive tech only heard the adjacent text and missed the meter semantics.
+**Action:** For custom usage meters, set `accessibilityRole="progressbar"` and pass `accessibilityValue` with min, max, now, and the same formatted value shown on screen.
