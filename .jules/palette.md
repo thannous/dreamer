@@ -21,3 +21,7 @@ Add entries only for critical UX/a11y learnings in this format:
 ## 2026-01-08 - Don’t ship dead CTAs on static pages
 **Learning:** A styled `<button>` without any handler on static landing pages looks tappable but is a dead end; for navigation (e.g., to a store listing) it should be a real `<a href>` and the URL should be localized per page so it still works without JS.
 **Action:** Prefer anchors for navigational CTAs, and audit per-locale “store” constants/rewrites so both JS and no-JS paths point to the same localized destination.
+
+## 2026-05-16 - Settings pickers need radio semantics
+**Learning:** Noctalia settings cards use custom rows with visual radio indicators; without `radio`/`radiogroup` roles and checked state, screen readers miss the selection model.
+**Action:** For custom single-choice settings rows, expose the group as `radiogroup` and each option as `radio` with `accessibilityState.checked`, using the visible label and helper text as the accessible name and hint.

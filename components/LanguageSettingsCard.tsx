@@ -89,7 +89,11 @@ export default function LanguageSettingsCard() {
   };
 
   return (
-    <View style={[styles.card, { backgroundColor: GlassCardTokens.getBackground(colors.backgroundCard, mode), borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}>
+    <View
+      style={[styles.card, { backgroundColor: GlassCardTokens.getBackground(colors.backgroundCard, mode), borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}
+      accessibilityRole="radiogroup"
+      accessibilityLabel={t('settings.language.title')}
+    >
       <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
         {t('settings.language.title')}
       </Text>
@@ -116,6 +120,10 @@ export default function LanguageSettingsCard() {
                 pressed && styles.optionPressed,
               ]}
               onPress={() => handleSelectLanguage(option.value)}
+              accessibilityRole="radio"
+              accessibilityLabel={option.label}
+              accessibilityHint={option.description.replace(/\s+/g, ' ')}
+              accessibilityState={{ checked: isSelected }}
             >
               <View style={styles.optionLeft}>
                 <View
