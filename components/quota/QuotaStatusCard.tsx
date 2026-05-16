@@ -41,6 +41,13 @@ const getProgress = (usage?: UsageEntry) => {
   return Math.min(100, (usage.used / usage.limit) * 100);
 };
 
+const getProgressAccessibilityValue = (usage: UsageEntry, text: string) => ({
+  min: 0,
+  max: usage.limit ?? 0,
+  now: Math.min(Math.max(usage.used, 0), usage.limit ?? 0),
+  text,
+});
+
 export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const { user } = useAuth();
   const { dreams } = useDreams();
@@ -204,7 +211,12 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
               </Text>
             </View>
             {row.usage && row.usage.limit !== null && (
-              <View style={[styles.progressTrack, { backgroundColor: colors.backgroundSecondary }] }>
+              <View
+                style={[styles.progressTrack, { backgroundColor: colors.backgroundSecondary }]}
+                accessibilityRole="progressbar"
+                accessibilityLabel={row.label}
+                accessibilityValue={getProgressAccessibilityValue(row.usage, formattedValue)}
+              >
                 <View
                   style={[
                     styles.progressFill,
