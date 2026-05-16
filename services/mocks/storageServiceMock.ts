@@ -37,6 +37,7 @@ const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
 const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
 
 const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
+const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
@@ -252,6 +253,29 @@ export async function saveLanguagePreference(preference: LanguagePreference): Pr
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save language preference:', error);
     throw new Error('Failed to save language preference');
+  }
+}
+
+export async function getRecordingVoiceStatusHidden(): Promise<boolean> {
+  console.log('[MOCK STORAGE] getRecordingVoiceStatusHidden called');
+  try {
+    const savedPreference = mockStorage[RECORDING_VOICE_STATUS_HIDDEN_KEY];
+    if (savedPreference) {
+      return JSON.parse(savedPreference) === true;
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to retrieve recording voice status preference:', error);
+  }
+  return false;
+}
+
+export async function saveRecordingVoiceStatusHidden(hidden: boolean): Promise<void> {
+  console.log('[MOCK STORAGE] saveRecordingVoiceStatusHidden called:', hidden);
+  try {
+    mockStorage[RECORDING_VOICE_STATUS_HIDDEN_KEY] = JSON.stringify(hidden);
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to save recording voice status preference:', error);
+    throw new Error('Failed to save recording voice status preference');
   }
 }
 

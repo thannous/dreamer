@@ -23,6 +23,7 @@ const RECORDING_TRANSCRIPT_KEY = 'gemini_dream_journal_recording_transcript';
 const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
 const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
 const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
+const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
@@ -908,6 +909,31 @@ export async function saveLanguagePreference(preference: LanguagePreference): Pr
       console.error('Failed to save language preference:', error);
     }
     throw new Error('Failed to save language preference');
+  }
+}
+
+export async function getRecordingVoiceStatusHidden(): Promise<boolean> {
+  try {
+    const savedPreference = await getItem(RECORDING_VOICE_STATUS_HIDDEN_KEY);
+    if (savedPreference) {
+      return JSON.parse(savedPreference) === true;
+    }
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to retrieve recording voice status preference:', error);
+    }
+  }
+  return false;
+}
+
+export async function saveRecordingVoiceStatusHidden(hidden: boolean): Promise<void> {
+  try {
+    await setItem(RECORDING_VOICE_STATUS_HIDDEN_KEY, JSON.stringify(hidden));
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to save recording voice status preference:', error);
+    }
+    throw new Error('Failed to save recording voice status preference');
   }
 }
 

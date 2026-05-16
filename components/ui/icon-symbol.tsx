@@ -20,6 +20,7 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   // Filled icons
   'house.fill': 'home',
   'book.fill': 'menu-book',
+  'book.closed.fill': 'menu-book',
   'chart.bar.fill': 'insert-chart',
   'chart.pie.fill': 'pie-chart',
   'checkmark.circle.fill': 'check-circle',
