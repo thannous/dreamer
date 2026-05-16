@@ -26,7 +26,7 @@
   "modifiedTime": "2026-05-12",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/lebendige-traeume-erholsamer-schlaf",
-  "nextPath": "",
+  "nextPath": "/de/blog/traeume-zu-real-mobius-modell",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],
   "activeNav": "resources"

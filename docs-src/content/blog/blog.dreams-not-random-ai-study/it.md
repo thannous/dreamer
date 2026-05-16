@@ -26,7 +26,7 @@
   "modifiedTime": "2026-05-12",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/sogni-vividi-sonno-riparatore",
-  "nextPath": "",
+  "nextPath": "/it/blog/sogni-troppo-reali-modello-mobius",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],
   "activeNav": "resources"

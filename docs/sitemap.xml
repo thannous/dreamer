@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://noctalia.app/</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
@@ -112,7 +112,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves"/>
@@ -123,7 +123,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/ki-schlafanalyse-traeume</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/ia-analyse-sommeil-reves"/>
@@ -167,7 +167,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/lebendige-traeume-erholsamer-schlaf</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/vivid-dreams-restful-sleep"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-vivaces-sommeil-reparateur"/>
@@ -211,7 +211,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-health-priority"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-sante-priorite"/>
@@ -222,7 +222,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/schlaf-tracker-wearables-traeume</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves"/>
@@ -244,7 +244,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/schlafschuld-gesundheit-traeume</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-debt-health-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/dette-sommeil-sante-reves"/>
@@ -255,7 +255,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/schlaftag-umgebung-traeume</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/journee-sommeil-environnement-reves"/>
@@ -299,7 +299,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/traeume-nicht-zufaellig-ki-studie</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-not-random-ai-study"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-pas-aleatoires-etude-ia"/>
@@ -386,6 +386,17 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/snake-dreams-meaning"/>
   </url>
   <url>
+    <loc>https://noctalia.app/de/blog/traeume-zu-real-mobius-modell</loc>
+    <lastmod>2026-05-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-feel-real-mobius-model"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-trop-reels-modele-mobius"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-demasiado-reales-modelo-mobius"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traeume-zu-real-mobius-modell"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-troppo-reali-modello-mobius"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-feel-real-mobius-model"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/de/blog/traumbedeutungen-interpretation-symbole</loc>
     <lastmod>2026-05-14</lastmod>
     <priority>0.6</priority>
@@ -409,7 +420,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/traumkontrolle-problemloesung</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/controler-reves-resolution-problemes"/>
@@ -428,6 +439,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traumtagebuch-erinnerung-methoden-und-routinen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/dream-journal-richiamo-metodi-e-routine"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-journal"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/de/blog/wachtraeumen-onirische-zustaende</loc>
+    <lastmod>2026-05-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreamlike-wakefulness-sleep"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/rever-eveille-etats-oniriques"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sonar-despierto-estados-oniricos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/wachtraeumen-onirische-zustaende"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sognare-da-svegli-stati-onirici"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreamlike-wakefulness-sleep"/>
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern</loc>
@@ -475,7 +497,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/zeitumstellung-schlaf-traeume</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/daylight-saving-time-sleep"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/heure-ete-sommeil-reves"/>
@@ -497,7 +519,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/guides/</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/"/>
@@ -1432,7 +1454,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/about</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/about"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/a-propos"/>
@@ -1443,7 +1465,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/account-deletion</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.3</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/suppression-compte"/>
@@ -1454,7 +1476,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
@@ -1465,7 +1487,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/ai-sleep-analysis-dreams</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/ia-analyse-sommeil-reves"/>
@@ -1476,7 +1498,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/anxiety-dreams-meaning</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/anxiety-dreams-meaning"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-anxiete-signification"/>
@@ -1487,7 +1509,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/being-chased-dreams</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/being-chased-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-etre-poursuivi"/>
@@ -1498,7 +1520,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/children-dreams-guide</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/children-dreams-guide"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-reves-enfants"/>
@@ -1509,7 +1531,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/daylight-saving-time-sleep</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/daylight-saving-time-sleep"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/heure-ete-sommeil-reves"/>
@@ -1520,7 +1542,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/death-dreams-meaning</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/death-dreams-meaning"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-mort"/>
@@ -1531,7 +1553,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/dream-control-problem-solving</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/controler-reves-resolution-problemes"/>
@@ -1542,7 +1564,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/dream-incubation-guide</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-incubation-guide"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-incubation-reves"/>
@@ -1553,7 +1575,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/dream-interpretation-history</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-interpretation-history"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/histoire-interpretation-reves"/>
@@ -1564,7 +1586,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/dream-journal</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-journal"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/journal-de-reves"/>
@@ -1575,7 +1597,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/dream-journal-guide</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-journal-guide"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-journal-reves"/>
@@ -1586,7 +1608,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/dream-meanings</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-meanings"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/signification-des-reves"/>
@@ -1596,8 +1618,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-meanings"/>
   </url>
   <url>
+    <loc>https://noctalia.app/en/blog/dreamlike-wakefulness-sleep</loc>
+    <lastmod>2026-05-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreamlike-wakefulness-sleep"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/rever-eveille-etats-oniriques"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sonar-despierto-estados-oniricos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/wachtraeumen-onirische-zustaende"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sognare-da-svegli-stati-onirici"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreamlike-wakefulness-sleep"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/en/blog/dreams-about-ex</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-about-ex"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-ex-partenaire"/>
@@ -1608,7 +1641,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/dreams-and-creativity</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-and-creativity"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-et-creativite"/>
@@ -1618,8 +1651,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-and-creativity"/>
   </url>
   <url>
+    <loc>https://noctalia.app/en/blog/dreams-feel-real-mobius-model</loc>
+    <lastmod>2026-05-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-feel-real-mobius-model"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-trop-reels-modele-mobius"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-demasiado-reales-modelo-mobius"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traeume-zu-real-mobius-modell"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-troppo-reali-modello-mobius"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-feel-real-mobius-model"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/en/blog/dreams-mental-health</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-mental-health"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-sante-mentale"/>
@@ -1630,7 +1674,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/dreams-not-random-ai-study</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-not-random-ai-study"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-pas-aleatoires-etude-ia"/>
@@ -1641,7 +1685,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/exam-dreams-meaning</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/exam-dreams-meaning"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/rever-examen-signification"/>
@@ -1652,7 +1696,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/falling-dreams-meaning</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/falling-dreams-meaning"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-chute"/>
@@ -1663,7 +1707,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/flying-dreams-meaning</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/flying-dreams-meaning"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-voler"/>
@@ -1674,7 +1718,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/how-to-remember-dreams</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/how-to-remember-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves"/>
@@ -1685,7 +1729,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/lucid-dreaming</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/lucid-dreaming"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reve-lucide"/>
@@ -1696,7 +1740,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/lucid-dreaming-beginners-guide</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-reve-lucide-debutant"/>
@@ -1707,7 +1751,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/precognitive-dreams-science</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/precognitive-dreams-science"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-premonitoires-science"/>
@@ -1718,7 +1762,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/pregnancy-dreams-meaning</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-grossesse"/>
@@ -1729,7 +1773,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/recurring-dreams-meaning</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/recurring-dreams-meaning"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/signification-reves-recurrents"/>
@@ -1740,7 +1784,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/rem-sleep-dreams</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/rem-sleep-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-paradoxal-reves"/>
@@ -1751,7 +1795,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/sleep-day-environment-dreams</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/journee-sommeil-environnement-reves"/>
@@ -1762,7 +1806,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/sleep-debt-health-dreams</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-debt-health-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/dette-sommeil-sante-reves"/>
@@ -1773,7 +1817,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/sleep-health-priority</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-health-priority"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-sante-priorite"/>
@@ -1784,7 +1828,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/sleep-paralysis-guide</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-paralysis-guide"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-paralysie-sommeil"/>
@@ -1795,7 +1839,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/snake-dreams-meaning</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/snake-dreams-meaning"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-serpents"/>
@@ -1806,7 +1850,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/spring-sleep-disruption-dreams</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves"/>
@@ -1817,7 +1861,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/stop-nightmares-guide</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/stop-nightmares-guide"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-cauchemars"/>
@@ -1828,7 +1872,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/stress-dreams-work</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/stress-dreams-work"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-stress-travail"/>
@@ -1839,7 +1883,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/teeth-falling-out-dreams</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/teeth-falling-out-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-dents-qui-tombent"/>
@@ -1850,7 +1894,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/vivid-dreams-restful-sleep</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/vivid-dreams-restful-sleep"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-vivaces-sommeil-reparateur"/>
@@ -1861,7 +1905,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/water-dreams-meaning</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/water-dreams-meaning"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-eau"/>
@@ -1872,7 +1916,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/wearable-sleep-trackers-dreams</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves"/>
@@ -1883,7 +1927,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/why-we-dream-science</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/why-we-dream-science"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/pourquoi-nous-revons-science"/>
@@ -1894,7 +1938,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/why-we-forget-dreams</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/why-we-forget-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/pourquoi-oublie-reves-reveil"/>
@@ -1905,7 +1949,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/dream-journal-apps</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/dream-journal-apps"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/applications-journal-de-reves"/>
@@ -1916,7 +1960,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/guides/</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/"/>
@@ -1927,7 +1971,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/guides/animal-dream-symbols</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/animal-dream-symbols"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/symboles-reves-animaux"/>
@@ -1938,7 +1982,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/guides/death-transformation-dreams</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/death-transformation-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/reves-mort-transformation"/>
@@ -1949,7 +1993,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/guides/dream-locations</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/dream-locations"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/lieux-dans-les-reves"/>
@@ -1960,7 +2004,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/guides/dream-symbols-dictionary</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/dream-symbols-dictionary"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/dictionnaire-symboles-reves"/>
@@ -1971,7 +2015,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/guides/most-common-dream-symbols</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/most-common-dream-symbols"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/symboles-reves-les-plus-courants"/>
@@ -1982,7 +2026,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/guides/people-in-dreams</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/people-in-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/personnes-dans-les-reves"/>
@@ -1993,7 +2037,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/guides/positive-dream-symbols</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/positive-dream-symbols"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/symboles-reves-positifs"/>
@@ -2004,7 +2048,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/guides/scary-dream-symbols</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/scary-dream-symbols"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/symboles-reves-effrayants"/>
@@ -2015,7 +2059,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/guides/water-dream-symbols</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/water-dream-symbols"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/symboles-reves-eau"/>
@@ -2026,7 +2070,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/legal-notice</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.3</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales"/>
@@ -2037,7 +2081,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/press</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/press"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/presse"/>
@@ -2048,7 +2092,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/privacy-policy</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.3</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/privacy-policy"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/politique-confidentialite"/>
@@ -2059,7 +2103,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/abandonment</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/abandonment"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/abandon"/>
@@ -2070,7 +2114,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/accident</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/accident"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/accident"/>
@@ -2081,7 +2125,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/actions</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/actions"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/actions"/>
@@ -2092,7 +2136,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/angel</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/angel"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/ange"/>
@@ -2103,7 +2147,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/animals</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/animals"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/animaux"/>
@@ -2114,7 +2158,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/apocalypse</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/apocalypse"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/apocalypse"/>
@@ -2125,7 +2169,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/arguing</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/arguing"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/dispute"/>
@@ -2136,7 +2180,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/baby</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/baby"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/bebe"/>
@@ -2147,7 +2191,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/being-chased</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/being-chased"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/poursuite"/>
@@ -2158,7 +2202,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/bird</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/bird"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/oiseau"/>
@@ -2169,7 +2213,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/blood</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/blood"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/sang"/>
@@ -2180,7 +2224,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/body</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/body"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/corps"/>
@@ -2191,7 +2235,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/bridge</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/bridge"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/pont"/>
@@ -2202,7 +2246,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/car</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/car"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/voiture"/>
@@ -2213,7 +2257,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/cat</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/cat"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/chat"/>
@@ -2224,7 +2268,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/celestial</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/celestial"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/celeste"/>
@@ -2235,7 +2279,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/child</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/child"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/enfant"/>
@@ -2246,7 +2290,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/cliff</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/cliff"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/falaise"/>
@@ -2257,7 +2301,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/clothes</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/clothes"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/vetements"/>
@@ -2268,7 +2312,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/crying</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/crying"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/pleurer"/>
@@ -2279,7 +2323,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/death</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/death"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/mort"/>
@@ -2290,7 +2334,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/deceased-person</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/deceased-person"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/defunt"/>
@@ -2301,7 +2345,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/dog</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/dog"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/chien"/>
@@ -2312,7 +2356,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/door</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/door"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/porte"/>
@@ -2323,7 +2367,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/elevator</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/elevator"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/ascenseur"/>
@@ -2334,7 +2378,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/ex-partner</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/ex-partner"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/ex-partenaire"/>
@@ -2345,7 +2389,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/exam</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/exam"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/examen"/>
@@ -2356,7 +2400,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/falling</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/falling"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/chute"/>
@@ -2367,7 +2411,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/fire</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/fire"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/feu"/>
@@ -2378,7 +2422,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/flood</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/flood"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/inondation"/>
@@ -2389,7 +2433,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/flying</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/flying"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/voler"/>
@@ -2400,7 +2444,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/forest</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/forest"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/foret"/>
@@ -2411,7 +2455,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/horse</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/horse"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/cheval"/>
@@ -2422,7 +2466,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/hospital</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/hospital"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/hopital"/>
@@ -2433,7 +2477,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/house</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/house"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/maison"/>
@@ -2444,7 +2488,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/key</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/key"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/cle"/>
@@ -2455,7 +2499,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/lion</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/lion"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/lion"/>
@@ -2466,7 +2510,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/lost</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/lost"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/perdu"/>
@@ -2477,7 +2521,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/mirror</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/mirror"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/miroir"/>
@@ -2488,7 +2532,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/money</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/money"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/argent"/>
@@ -2499,7 +2543,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/moon</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/moon"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/lune"/>
@@ -2510,7 +2554,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/mountain</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/mountain"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/montagne"/>
@@ -2521,7 +2565,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/mouth</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/mouth"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/bouche"/>
@@ -2532,7 +2576,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/nature</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/nature"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/nature"/>
@@ -2543,7 +2587,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/night</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/night"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/nuit"/>
@@ -2554,7 +2598,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/nudity</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/nudity"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/nudite"/>
@@ -2565,7 +2609,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/objects</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/objects"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/objets"/>
@@ -2576,7 +2620,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/ocean</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/ocean"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/mer"/>
@@ -2587,7 +2631,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/path</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/path"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/chemin"/>
@@ -2598,7 +2642,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/people</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/people"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/personnes"/>
@@ -2609,7 +2653,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/phone</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/phone"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/telephone"/>
@@ -2620,7 +2664,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/places</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/places"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/lieux"/>
@@ -2631,7 +2675,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/plane</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/plane"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/avion"/>
@@ -2642,7 +2686,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/pregnancy</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/pregnancy"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/grossesse"/>
@@ -2653,7 +2697,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/rain</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/rain"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/pluie"/>
@@ -2664,7 +2708,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/rainbow</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/rainbow"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/arc-en-ciel"/>
@@ -2675,7 +2719,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/running</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/running"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/courir"/>
@@ -2686,7 +2730,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/school</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/school"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/ecole"/>
@@ -2697,7 +2741,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/snake</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/snake"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/serpent"/>
@@ -2708,7 +2752,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/spider</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/spider"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/araignee"/>
@@ -2719,7 +2763,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/stairs</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/stairs"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/escalier"/>
@@ -2730,7 +2774,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/storm</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/storm"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/orage"/>
@@ -2741,7 +2785,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/sun</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/sun"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/soleil"/>
@@ -2752,7 +2796,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/swimming</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/swimming"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/nager"/>
@@ -2763,7 +2807,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/teeth</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/teeth"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/dents"/>
@@ -2774,7 +2818,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/train</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/train"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/train"/>
@@ -2785,7 +2829,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/tree</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/tree"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/arbre"/>
@@ -2796,7 +2840,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/water</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/water"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/eau"/>
@@ -2807,7 +2851,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/wedding</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/wedding"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/mariage"/>
@@ -2818,7 +2862,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/symbols/wolf</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/wolf"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/loup"/>
@@ -2829,7 +2873,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/terms</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.3</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/terms"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu"/>
@@ -2884,7 +2928,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/alteracion-sueno-primavera-suenos</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves"/>
@@ -2906,7 +2950,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/controler-reves-resolution-problemes"/>
@@ -2917,7 +2961,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/deuda-sueno-salud-suenos</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-debt-health-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/dette-sommeil-sante-reves"/>
@@ -3027,7 +3071,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/horario-verano-sueno-suenos</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/daylight-saving-time-sleep"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/heure-ete-sommeil-reves"/>
@@ -3038,7 +3082,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/ia-analisis-sueno-suenos</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/ia-analyse-sommeil-reves"/>
@@ -3060,7 +3104,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/por-que-sonamos-ciencia</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/why-we-dream-science"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/pourquoi-nous-revons-science"/>
@@ -3071,7 +3115,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/rastreadores-sueno-wearables-suenos</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves"/>
@@ -3114,8 +3158,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/exam-dreams-meaning"/>
   </url>
   <url>
+    <loc>https://noctalia.app/es/blog/sonar-despierto-estados-oniricos</loc>
+    <lastmod>2026-05-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreamlike-wakefulness-sleep"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/rever-eveille-etats-oniriques"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sonar-despierto-estados-oniricos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/wachtraeumen-onirische-zustaende"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sognare-da-svegli-stati-onirici"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreamlike-wakefulness-sleep"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/es/blog/sueno-rem-suenos</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/rem-sleep-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-paradoxal-reves"/>
@@ -3126,7 +3181,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/sueno-salud-prioridad</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-health-priority"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-sante-priorite"/>
@@ -3214,7 +3269,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/suenos-de-volar</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/flying-dreams-meaning"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-voler"/>
@@ -3222,6 +3277,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/flying-dreams-meaning"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/blog/suenos-demasiado-reales-modelo-mobius</loc>
+    <lastmod>2026-05-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-feel-real-mobius-model"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-trop-reels-modele-mobius"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-demasiado-reales-modelo-mobius"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traeume-zu-real-mobius-modell"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-troppo-reali-modello-mobius"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-feel-real-mobius-model"/>
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/suenos-dientes-caen</loc>
@@ -3258,7 +3324,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/suenos-no-son-aleatorios-estudio-ia</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-not-random-ai-study"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-pas-aleatoires-etude-ia"/>
@@ -3302,7 +3368,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/suenos-vividos-sueno-reparador</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/vivid-dreams-restful-sleep"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-vivaces-sommeil-reparateur"/>
@@ -3335,7 +3401,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/guides/</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/"/>
@@ -4281,7 +4347,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/applications-journal-de-reves</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/dream-journal-apps"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/applications-journal-de-reves"/>
@@ -4314,7 +4380,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/controler-reves-resolution-problemes</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/controler-reves-resolution-problemes"/>
@@ -4325,7 +4391,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/dette-sommeil-sante-reves</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-debt-health-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/dette-sommeil-sante-reves"/>
@@ -4402,7 +4468,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/heure-ete-sommeil-reves</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/daylight-saving-time-sleep"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/heure-ete-sommeil-reves"/>
@@ -4424,7 +4490,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/ia-analyse-sommeil-reves</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/ia-analyse-sommeil-reves"/>
@@ -4446,7 +4512,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/journee-sommeil-environnement-reves</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/journee-sommeil-environnement-reves"/>
@@ -4457,7 +4523,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves"/>
@@ -4498,6 +4564,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/klares-traeumen-anleitungen-und-techniken"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-lucidi-guide-e-tecniche"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/lucid-dreaming"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/blog/rever-eveille-etats-oniriques</loc>
+    <lastmod>2026-05-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreamlike-wakefulness-sleep"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/rever-eveille-etats-oniriques"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sonar-despierto-estados-oniricos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/wachtraeumen-onirische-zustaende"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sognare-da-svegli-stati-onirici"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreamlike-wakefulness-sleep"/>
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/rever-examen-signification</loc>
@@ -4633,7 +4710,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/reves-pas-aleatoires-etude-ia</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-not-random-ai-study"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-pas-aleatoires-etude-ia"/>
@@ -4676,8 +4753,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/stress-dreams-work"/>
   </url>
   <url>
+    <loc>https://noctalia.app/fr/blog/reves-trop-reels-modele-mobius</loc>
+    <lastmod>2026-05-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-feel-real-mobius-model"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-trop-reels-modele-mobius"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-demasiado-reales-modelo-mobius"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traeume-zu-real-mobius-modell"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-troppo-reali-modello-mobius"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-feel-real-mobius-model"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/fr/blog/reves-vivaces-sommeil-reparateur</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/vivid-dreams-restful-sleep"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-vivaces-sommeil-reparateur"/>
@@ -4721,7 +4809,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/sommeil-sante-priorite</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-health-priority"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-sante-priorite"/>
@@ -4732,7 +4820,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves"/>
@@ -4754,7 +4842,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/guides/</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/"/>
@@ -5722,7 +5810,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/controllare-sogni-risoluzione-problemi</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/controler-reves-resolution-problemes"/>
@@ -5733,7 +5821,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/debito-sonno-salute-sogni</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-debt-health-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/dette-sommeil-sante-reves"/>
@@ -5744,7 +5832,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves"/>
@@ -5777,7 +5865,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/journee-sommeil-environnement-reves"/>
@@ -5821,7 +5909,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/ia-analisi-sonno-sogni</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/ia-analyse-sommeil-reves"/>
@@ -5876,7 +5964,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/ora-legale-sonno-sogni</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/daylight-saving-time-sleep"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/heure-ete-sommeil-reves"/>
@@ -5950,6 +6038,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/recurring-dreams-meaning"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/it/blog/sognare-da-svegli-stati-onirici</loc>
+    <lastmod>2026-05-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreamlike-wakefulness-sleep"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/rever-eveille-etats-oniriques"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sonar-despierto-estados-oniricos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/wachtraeumen-onirische-zustaende"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sognare-da-svegli-stati-onirici"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreamlike-wakefulness-sleep"/>
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/sognare-esame-significato</loc>
@@ -6052,7 +6151,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/sogni-non-casuali-studio-ia</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-not-random-ai-study"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-pas-aleatoires-etude-ia"/>
@@ -6106,8 +6205,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/death-dreams-meaning"/>
   </url>
   <url>
+    <loc>https://noctalia.app/it/blog/sogni-troppo-reali-modello-mobius</loc>
+    <lastmod>2026-05-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-feel-real-mobius-model"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-trop-reels-modele-mobius"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-demasiado-reales-modelo-mobius"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traeume-zu-real-mobius-modell"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-troppo-reali-modello-mobius"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-feel-real-mobius-model"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/it/blog/sogni-vividi-sonno-riparatore</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/vivid-dreams-restful-sleep"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-vivaces-sommeil-reparateur"/>
@@ -6129,7 +6239,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/sonno-salute-priorita</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-health-priority"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-sante-priorite"/>
@@ -6140,7 +6250,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/tracker-sonno-wearable-sogni</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves"/>
@@ -6173,7 +6283,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/it/guides/</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/"/>
