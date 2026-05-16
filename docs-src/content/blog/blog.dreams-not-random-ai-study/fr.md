@@ -26,7 +26,7 @@
   "modifiedTime": "2026-05-12",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-vivaces-sommeil-reparateur",
-  "nextPath": "",
+  "nextPath": "/fr/blog/reves-trop-reels-modele-mobius",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],
   "activeNav": "resources"

@@ -605,6 +605,34 @@
             }
           }
         },
+        "blog.dreamlike-wakefulness-sleep": {
+          "id": "blog.dreamlike-wakefulness-sleep",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dreamlike-wakefulness-sleep",
+          "locales": {
+            "en": {
+              "slug": "dreamlike-wakefulness-sleep",
+              "path": "/en/blog/dreamlike-wakefulness-sleep"
+            },
+            "fr": {
+              "slug": "rever-eveille-etats-oniriques",
+              "path": "/fr/blog/rever-eveille-etats-oniriques"
+            },
+            "es": {
+              "slug": "sonar-despierto-estados-oniricos",
+              "path": "/es/blog/sonar-despierto-estados-oniricos"
+            },
+            "de": {
+              "slug": "wachtraeumen-onirische-zustaende",
+              "path": "/de/blog/wachtraeumen-onirische-zustaende"
+            },
+            "it": {
+              "slug": "sognare-da-svegli-stati-onirici",
+              "path": "/it/blog/sognare-da-svegli-stati-onirici"
+            }
+          }
+        },
         "blog.dreams-about-ex": {
           "id": "blog.dreams-about-ex",
           "type": "blogArticle",
@@ -658,6 +686,34 @@
             "it": {
               "slug": "sogni-e-creativita",
               "path": "/it/blog/sogni-e-creativita"
+            }
+          }
+        },
+        "blog.dreams-feel-real-mobius-model": {
+          "id": "blog.dreams-feel-real-mobius-model",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dreams-feel-real-mobius-model",
+          "locales": {
+            "en": {
+              "slug": "dreams-feel-real-mobius-model",
+              "path": "/en/blog/dreams-feel-real-mobius-model"
+            },
+            "fr": {
+              "slug": "reves-trop-reels-modele-mobius",
+              "path": "/fr/blog/reves-trop-reels-modele-mobius"
+            },
+            "es": {
+              "slug": "suenos-demasiado-reales-modelo-mobius",
+              "path": "/es/blog/suenos-demasiado-reales-modelo-mobius"
+            },
+            "de": {
+              "slug": "traeume-zu-real-mobius-modell",
+              "path": "/de/blog/traeume-zu-real-mobius-modell"
+            },
+            "it": {
+              "slug": "sogni-troppo-reali-modello-mobius",
+              "path": "/it/blog/sogni-troppo-reali-modello-mobius"
             }
           }
         },
