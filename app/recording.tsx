@@ -4,6 +4,14 @@ import { SubjectProposition } from '@/components/journal/SubjectProposition';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
 import { FirstUseGuideCard } from '@/components/recording/FirstUseGuideCard';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
+import {
+  RECORDING_ONBOARDING_TARGETS,
+  RecordingOnboardingTour,
+} from '@/components/recording/RecordingOnboardingTour';
+import {
+  RecordingOnboardingSpotlightOverlay,
+  type RecordingSpotlightRect,
+} from '@/components/recording/RecordingOnboardingSpotlightOverlay';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import {
   AnalyzePromptSheet,
@@ -48,6 +56,10 @@ import {
   type OfflineModelPromptHandler,
 } from '@/services/nativeSpeechRecognition';
 import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
+import {
+  getRecordingVoiceStatusHidden,
+  saveRecordingVoiceStatusHidden,
+} from '@/services/storageService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -56,6 +68,7 @@ import {
   AppState,
   Keyboard,
   KeyboardAvoidingView,
+  type LayoutChangeEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -120,6 +133,21 @@ export default function RecordingScreen() {
   const recordingStartedAtRef = useRef<number | null>(null);
   const [recordingDurationSeconds, setRecordingDurationSeconds] = useState(0);
   const [voiceFallbackReason, setVoiceFallbackReason] = useState<VoiceFallbackReason>(null);
+  const [voiceStatusHidden, setVoiceStatusHidden] = useState(false);
+  const [recordingOnboardingStep, setRecordingOnboardingStep] = useState(0);
+  const [recordingOnboardingDismissed, setRecordingOnboardingDismissed] = useState(false);
+  const recordingOnboardingViewportRef = useRef<View | null>(null);
+  const [recordingOnboardingTargetRect, setRecordingOnboardingTargetRect] =
+    useState<RecordingSpotlightRect | null>(null);
+  const [recordingOnboardingPanelRect, setRecordingOnboardingPanelRect] =
+    useState<RecordingSpotlightRect | null>(null);
+  const [recordingOnboardingMeasureKey, setRecordingOnboardingMeasureKey] = useState(0);
+  const [recordingOnboardingViewport, setRecordingOnboardingViewport] = useState({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
 
   // Subject detection for reference image generation
   const [showSubjectProposition, setShowSubjectProposition] = useState(false);
@@ -155,6 +183,35 @@ export default function RecordingScreen() {
     });
 
     return offlineModelPromptPromiseRef.current;
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+
+    getRecordingVoiceStatusHidden()
+      .then((hidden) => {
+        if (isActive) {
+          setVoiceStatusHidden(hidden);
+        }
+      })
+      .catch((error) => {
+        if (__DEV__) {
+          console.warn('[Recording] Failed to load voice status preference', error);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const updateVoiceStatusHidden = useCallback((hidden: boolean) => {
+    setVoiceStatusHidden(hidden);
+    saveRecordingVoiceStatusHidden(hidden).catch((error) => {
+      if (__DEV__) {
+        console.warn('[Recording] Failed to save voice status preference', error);
+      }
+    });
   }, []);
 
   const handleOfflineModelPromptShow = useCallback(
@@ -1114,6 +1171,70 @@ export default function RecordingScreen() {
     && !analyzePromptDream
     && !pendingAnalysisDream
     && !isAnalyzing;
+  const showRecordingOnboardingTour = showFirstUseGuide && inputMode === 'voice' && !recordingOnboardingDismissed;
+  const recordingOnboardingTarget = RECORDING_ONBOARDING_TARGETS[recordingOnboardingStep] ?? 'voice';
+
+  useEffect(() => {
+    if (!showRecordingOnboardingTour) {
+      setRecordingOnboardingTargetRect(null);
+      setRecordingOnboardingPanelRect(null);
+      return;
+    }
+
+    setRecordingOnboardingTargetRect(null);
+    setRecordingOnboardingPanelRect(null);
+
+    const frame = requestAnimationFrame(() => {
+      if (recordingOnboardingTarget === 'explore') {
+        scrollViewRef.current?.scrollToEnd({ animated: false });
+      } else {
+        scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+      }
+
+      requestAnimationFrame(() => {
+        setRecordingOnboardingMeasureKey((current) => current + 1);
+      });
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [recordingOnboardingTarget, showRecordingOnboardingTour]);
+
+  const handleRecordingOnboardingViewportLayout = useCallback((event: LayoutChangeEvent) => {
+    const { width, height } = event.nativeEvent.layout;
+
+    requestAnimationFrame(() => {
+      recordingOnboardingViewportRef.current?.measureInWindow((x, y) => {
+        setRecordingOnboardingViewport((current) =>
+          current.x === x && current.y === y && current.width === width && current.height === height
+            ? current
+            : { x, y, width, height }
+        );
+      });
+    });
+  }, []);
+
+  const handleRecordingOnboardingTargetLayout = useCallback((rect: RecordingSpotlightRect) => {
+    setRecordingOnboardingTargetRect(rect);
+  }, []);
+
+  const handleRecordingOnboardingPanelLayout = useCallback((rect: RecordingSpotlightRect) => {
+    setRecordingOnboardingPanelRect(rect);
+  }, []);
+
+  const handleRecordingOnboardingNext = useCallback(() => {
+    if (recordingOnboardingStep >= RECORDING_ONBOARDING_TARGETS.length - 1) {
+      setRecordingOnboardingDismissed(true);
+      return;
+    }
+
+    setRecordingOnboardingStep((current) =>
+      Math.min(current + 1, RECORDING_ONBOARDING_TARGETS.length - 1)
+    );
+  }, [recordingOnboardingStep]);
+
+  const handleRecordingOnboardingSkip = useCallback(() => {
+    setRecordingOnboardingDismissed(true);
+  }, []);
 
   useEffect(() => {
     if (inputMode === 'text' && !isMockMode) {
@@ -1161,12 +1282,17 @@ export default function RecordingScreen() {
 
   return (
     <>
-      <LinearGradient
-        colors={gradientColors}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+      <View
+        ref={recordingOnboardingViewportRef}
         style={styles.gradient}
+        onLayout={handleRecordingOnboardingViewportLayout}
       >
+        <LinearGradient
+          colors={gradientColors}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFillObject}
+        />
         <AtmosphereBackground />
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -1182,10 +1308,19 @@ export default function RecordingScreen() {
             <MockRecordingTools onFillTranscript={handleMockFillTranscript} />
             <View style={mainContentStyle}>
               <View style={styles.bodySection}>
-                {showFirstUseGuide ? (
-                  <FirstUseGuideCard
-                    onUseText={switchToTextMode}
-                    showUseTextAction={inputMode === 'voice'}
+                {showFirstUseGuide && !showRecordingOnboardingTour ? (
+                  <FirstUseGuideCard />
+                ) : null}
+
+                {showRecordingOnboardingTour && recordingOnboardingTarget !== 'explore' ? (
+                  <RecordingOnboardingTour
+                    target={recordingOnboardingTarget}
+                    index={recordingOnboardingStep}
+                    total={RECORDING_ONBOARDING_TARGETS.length}
+                    onNext={handleRecordingOnboardingNext}
+                    onSkip={handleRecordingOnboardingSkip}
+                    onSpotlightLayout={handleRecordingOnboardingPanelLayout}
+                    spotlightMeasureKey={recordingOnboardingMeasureKey}
                   />
                 ) : null}
 
@@ -1198,9 +1333,20 @@ export default function RecordingScreen() {
                     voiceStatusTitle={voiceStatus.title}
                     voiceStatusDetail={voiceStatus.detail}
                     voiceStatusTone={voiceStatus.tone}
+                    voiceStatusHidden={voiceStatusHidden}
+                    spotlightTarget={
+                      showRecordingOnboardingTour
+                      && (recordingOnboardingTarget === 'voice' || recordingOnboardingTarget === 'text')
+                        ? recordingOnboardingTarget
+                        : undefined
+                    }
+                    onSpotlightLayout={handleRecordingOnboardingTargetLayout}
+                    spotlightMeasureKey={recordingOnboardingMeasureKey}
                     recordingDurationLabel={recordingDurationLabel}
                     onToggleRecording={toggleRecording}
                     onSwitchToText={switchToTextMode}
+                    onHideVoiceStatus={() => updateVoiceStatusHidden(true)}
+                    onShowVoiceStatus={() => updateVoiceStatusHidden(false)}
                   />
                 ) : (
                   <RecordingTextInput
@@ -1237,11 +1383,40 @@ export default function RecordingScreen() {
                 journalLinkLabel={t('recording.nav_button')}
                 saveButtonAccessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
                 journalLinkAccessibilityLabel={t('recording.nav_button.accessibility')}
+                spotlightExplore={showRecordingOnboardingTour && recordingOnboardingTarget === 'explore'}
+                onSpotlightLayout={handleRecordingOnboardingTargetLayout}
+                spotlightMeasureKey={recordingOnboardingMeasureKey}
               />
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
-      </LinearGradient>
+        {showRecordingOnboardingTour && recordingOnboardingTarget === 'explore' ? (
+          <View
+            pointerEvents="box-none"
+            style={[styles.onboardingTourDock, { top: insets.top + 18 }]}
+          >
+            <RecordingOnboardingTour
+              target={recordingOnboardingTarget}
+              index={recordingOnboardingStep}
+              total={RECORDING_ONBOARDING_TARGETS.length}
+              onNext={handleRecordingOnboardingNext}
+              onSkip={handleRecordingOnboardingSkip}
+              onSpotlightLayout={handleRecordingOnboardingPanelLayout}
+              spotlightMeasureKey={recordingOnboardingMeasureKey}
+            />
+          </View>
+        ) : null}
+        {showRecordingOnboardingTour ? (
+          <RecordingOnboardingSpotlightOverlay
+            width={recordingOnboardingViewport.width}
+            height={recordingOnboardingViewport.height}
+            originX={recordingOnboardingViewport.x}
+            originY={recordingOnboardingViewport.y}
+            targetRect={recordingOnboardingTargetRect}
+            panelRect={recordingOnboardingPanelRect}
+          />
+        ) : null}
+      </View>
 
       <RecordingOverlays
         firstDreamVisible={Boolean(firstDreamPrompt)}
@@ -1483,6 +1658,7 @@ function RecordingOverlays({
 const styles = StyleSheet.create({
   gradient: {
     flex: 1,
+    position: 'relative',
   },
   keyboardView: {
     flex: 1,
@@ -1518,6 +1694,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     gap: 24,
+  },
+  onboardingTourDock: {
+    position: 'absolute',
+    left: 16,
+    right: 16,
+    zIndex: 30,
   },
   subjectPropositionOverlay: {
     ...StyleSheet.absoluteFillObject,

@@ -1,13 +1,17 @@
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { TID } from '@/lib/testIDs';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
+import type { RecordingSpotlightRect } from './RecordingOnboardingSpotlightOverlay';
 
 interface RecordingFooterProps {
   onSave: () => void;
   onGoToJournal: () => void;
   isSaveDisabled: boolean;
+  spotlightExplore?: boolean;
+  onSpotlightLayout?: (rect: RecordingSpotlightRect) => void;
+  spotlightMeasureKey?: number;
   saveButtonLabel: string;
   journalLinkLabel: string;
   saveButtonAccessibilityLabel?: string;
@@ -18,12 +22,36 @@ export function RecordingFooter({
   onSave,
   onGoToJournal,
   isSaveDisabled,
+  spotlightExplore,
+  onSpotlightLayout,
+  spotlightMeasureKey = 0,
   saveButtonLabel,
   journalLinkLabel,
   saveButtonAccessibilityLabel,
   journalLinkAccessibilityLabel,
 }: RecordingFooterProps) {
   const { colors, shadows } = useTheme();
+  const exploreSpotlightRef = useRef<View | null>(null);
+
+  useEffect(() => {
+    if (!spotlightExplore || !onSpotlightLayout) {
+      return;
+    }
+
+    const measureExploreLink = () => {
+      exploreSpotlightRef.current?.measureInWindow((x, y, width, height) => {
+        onSpotlightLayout({ x, y, width, height });
+      });
+    };
+
+    const frame = requestAnimationFrame(measureExploreLink);
+    const timeout = setTimeout(measureExploreLink, 220);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(timeout);
+    };
+  }, [onSpotlightLayout, spotlightMeasureKey, spotlightExplore]);
 
   return (
     <View style={styles.footerActions}>
@@ -57,21 +85,36 @@ export function RecordingFooter({
         </View>
       </View>
 
-      <Pressable
-        onPress={onGoToJournal}
-        style={({ pressed }) => [
-          styles.journalLinkButton,
-          pressed && styles.journalLinkPressed,
+      <View
+        ref={exploreSpotlightRef}
+        collapsable={false}
+        style={[
+          styles.journalLinkTarget,
+          spotlightExplore && [
+            styles.journalLinkSpotlight,
+            {
+              backgroundColor: `${colors.accent}1A`,
+              borderColor: colors.accentLight,
+            },
+          ],
         ]}
-        testID={TID.Button.NavigateJournal}
-        accessibilityRole="link"
-        accessibilityLabel={journalLinkAccessibilityLabel ?? journalLinkLabel}
       >
-        <Text style={[styles.journalLinkText, { color: colors.accent }]}>
-          {journalLinkLabel}
-          <Text style={styles.journalLinkArrow}>{' '}→</Text>
-        </Text>
-      </Pressable>
+        <Pressable
+          onPress={onGoToJournal}
+          style={({ pressed }) => [
+            styles.journalLinkButton,
+            pressed && styles.journalLinkPressed,
+          ]}
+          testID={TID.Button.NavigateJournal}
+          accessibilityRole="link"
+          accessibilityLabel={journalLinkAccessibilityLabel ?? journalLinkLabel}
+        >
+          <Text style={[styles.journalLinkText, { color: colors.accent }]}>
+            {journalLinkLabel}
+            <Text style={styles.journalLinkArrow}>{' '}→</Text>
+          </Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -109,10 +152,20 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.bold,
     letterSpacing: 0.5,
   },
-  journalLinkButton: {
-    paddingVertical: 12,
+  journalLinkTarget: {
+    borderWidth: 1,
+    borderColor: 'transparent',
+    borderRadius: 999,
     alignItems: 'center',
     alignSelf: 'center',
+  },
+  journalLinkButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+  },
+  journalLinkSpotlight: {
+    borderCurve: 'continuous',
   },
   journalLinkText: {
     fontSize: 16,

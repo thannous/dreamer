@@ -23,6 +23,8 @@ const analyzePromptSheetKeys = [
 const recordingStatusKeys = [
   'recording.status.ready.title',
   'recording.status.ready.detail',
+  'recording.status.hide',
+  'recording.status.show',
   'recording.status.preparing.title',
   'recording.status.preparing.detail',
   'recording.status.recording.title',
@@ -38,6 +40,13 @@ const recordingStatusKeys = [
   'recording.status.retry_voice',
 ] as const;
 
+const recordingModeKeys = [
+  'recording.mode.switch_to_text',
+  'recording.mode.switch_to_text_hint',
+  'recording.mode.switch_to_text_edit',
+  'recording.mode.switch_to_text_edit_hint',
+] as const;
+
 const firstUseGuideKeys = [
   'recording.first_use.eyebrow',
   'recording.first_use.title',
@@ -48,6 +57,19 @@ const firstUseGuideKeys = [
   'recording.first_use.step.backup.title',
   'recording.first_use.step.backup.body',
   'recording.first_use.type_instead',
+] as const;
+
+const onboardingTourKeys = [
+  'recording.onboarding.step_count',
+  'recording.onboarding.voice.title',
+  'recording.onboarding.voice.body',
+  'recording.onboarding.text.title',
+  'recording.onboarding.text.body',
+  'recording.onboarding.explore.title',
+  'recording.onboarding.explore.body',
+  'recording.onboarding.skip',
+  'recording.onboarding.next',
+  'recording.onboarding.done',
 ] as const;
 
 describe('Recording i18n - bottom sheets', () => {
@@ -96,6 +118,21 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
+  it('has translations for recording mode switch copy in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of recordingModeKeys) {
+        const value = t(key);
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
   it('has translations for the first-use recording guide in all supported languages', async () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
@@ -104,6 +141,21 @@ describe('Recording i18n - bottom sheets', () => {
 
       for (const key of firstUseGuideKeys) {
         const value = t(key);
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('has translations for the recording onboarding tour in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of onboardingTourKeys) {
+        const value = t(key, { current: 1, total: 3 });
         expect(value).not.toBe(key);
         expect(typeof value).toBe('string');
         expect(value.length).toBeGreaterThan(0);

@@ -11,6 +11,7 @@ const RECORDING_TRANSCRIPT_KEY = 'gemini_dream_journal_recording_transcript';
 const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
 const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
 const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
+const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
@@ -329,6 +330,7 @@ describe('storageServiceReal', () => {
 
       await storage.saveThemePreference('dark');
       await storage.saveLanguagePreference('fr');
+      await storage.saveRecordingVoiceStatusHidden(true);
       await storage.saveRitualPreference('focus');
       await storage.saveRitualStepProgress({ stepIndex: 2, completedAt: 123 } as any);
       await storage.saveFirstLaunchCompleted(true);
@@ -336,6 +338,7 @@ describe('storageServiceReal', () => {
 
       expect(localStorage.getItem(THEME_PREFERENCE_KEY)).toBe(JSON.stringify('dark'));
       expect(localStorage.getItem(LANGUAGE_PREFERENCE_KEY)).toBe(JSON.stringify('fr'));
+      expect(localStorage.getItem(RECORDING_VOICE_STATUS_HIDDEN_KEY)).toBe(JSON.stringify(true));
       expect(localStorage.getItem(RITUAL_PREFERENCE_KEY)).toBe(JSON.stringify('focus'));
       expect(localStorage.getItem(RITUAL_PROGRESS_KEY)).toContain('"stepIndex":2');
       expect(localStorage.getItem(FIRST_LAUNCH_COMPLETED_KEY)).toBe(JSON.stringify(true));
@@ -343,6 +346,7 @@ describe('storageServiceReal', () => {
 
       expect(await storage.getThemePreference()).toBe('dark');
       expect(await storage.getLanguagePreference()).toBe('fr');
+      expect(await storage.getRecordingVoiceStatusHidden()).toBe(true);
       expect(await storage.getRitualPreference()).toBe('focus');
       expect(await storage.getRitualStepProgress()).toEqual({ stepIndex: 2, completedAt: 123 });
       expect(await storage.getFirstLaunchCompleted()).toBe(true);

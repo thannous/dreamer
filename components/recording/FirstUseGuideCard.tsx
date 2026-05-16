@@ -5,32 +5,26 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 type GuideIconName = React.ComponentProps<typeof IconSymbol>['name'];
 
-export function FirstUseGuideCard({
-  onUseText,
-  showUseTextAction,
-}: {
-  onUseText: () => void;
-  showUseTextAction: boolean;
-}) {
+export function FirstUseGuideCard() {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const steps: { icon: GuideIconName; title: string; body: string }[] = [
     {
-      icon: 'sparkles',
+      icon: 'mic',
       title: t('recording.first_use.step.value.title'),
       body: t('recording.first_use.step.value.body'),
     },
     {
-      icon: 'mic',
+      icon: 'keyboard',
       title: t('recording.first_use.step.privacy.title'),
       body: t('recording.first_use.step.privacy.body'),
     },
     {
-      icon: 'lock.fill',
+      icon: 'book.closed.fill',
       title: t('recording.first_use.step.backup.title'),
       body: t('recording.first_use.step.backup.body'),
     },
@@ -74,19 +68,6 @@ export function FirstUseGuideCard({
         ))}
       </View>
 
-      {showUseTextAction ? (
-        <Pressable
-          style={[styles.textAction, { backgroundColor: colors.backgroundSecondary }]}
-          onPress={onUseText}
-          accessibilityRole="button"
-          testID={TID.Button.FirstUseTypeInstead}
-        >
-          <IconSymbol name="keyboard" size={15} color={colors.textPrimary} />
-          <Text style={[styles.textActionLabel, { color: colors.textPrimary }]}>
-            {t('recording.first_use.type_instead')}
-          </Text>
-        </Pressable>
-      ) : null}
     </View>
   );
 }
@@ -140,20 +121,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     fontFamily: Fonts.spaceGrotesk.regular,
-  },
-  textAction: {
-    minHeight: 40,
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 7,
-    borderRadius: ThemeLayout.borderRadius.full,
-    borderCurve: 'continuous',
-    paddingHorizontal: 13,
-    paddingVertical: 9,
-  },
-  textActionLabel: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.medium,
   },
 });
