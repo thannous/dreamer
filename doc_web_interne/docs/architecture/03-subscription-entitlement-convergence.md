@@ -14,11 +14,11 @@
 
 - The convergence lag described here is still plausible because server enforcement depends on JWT freshness after webhook-driven metadata changes.
 
-### Wrong / stale
+### Updated after local verification (2026-05-08)
 
-- There is still no `public.subscription_state` table or `subscription_events` audit table in `supabase/migrations/*`.
-- Quota enforcement has not moved to a server-owned subscription table lookup; JWT/app metadata remains the enforcement path.
-- Monotonic versioning and version-based client convergence are not implemented yet.
+- `public.subscription_state` and `public.subscription_events` now exist in migrations `20260316140000_add_subscription_state_convergence.sql` and `20260316154500_harden_subscription_state_rpcs.sql`.
+- `apply_subscription_state_update(...)` writes the server-owned subscription state, mirrors cache fields into `auth.users.raw_app_meta_data`, and records audit events.
+- The remaining release risk is operational verification: purchase/restore/webhook convergence still needs to be validated with RevenueCat Test Store and Google Play Internal Testing.
 
 ## Problem
 

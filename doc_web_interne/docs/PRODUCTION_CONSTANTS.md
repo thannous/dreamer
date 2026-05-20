@@ -73,11 +73,14 @@ restent bloquantes pour un build production fiable, sauf waiver explicite.
   - Où placer : variable EAS en `plaintext` (ex : `eas env:create --environment production --scope project --visibility plaintext --name EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID --value 359653779023-d3ddevr4qepqa13uqlv1ckd0th6k79gf.apps.googleusercontent.com`) + plugin config (reversed ID si nécessaire).
 
 ## RevenueCat (abonnements)
-- [ ] `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`  
+- [x] `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`
   - Pourquoi : clé SDK RevenueCat côté Android pour les achats In-App.  
   - Où récupérer : RevenueCat Dashboard → Project → API Keys → Public SDK Key (Android) (https://app.revenuecat.com/projects).  
-  - Où placer : variable EAS en `plaintext` (ex : `eas env:create --environment production --scope project --visibility plaintext --name EXPO_PUBLIC_REVENUECAT_ANDROID_KEY --value <public_sdk_key_android>`).
-  - Note locale : `app.json` contient un fallback Android public, mais la release doit confirmer la valeur EAS production et le produit RevenueCat/Google Play associé.
+  - Valeur RevenueCat MCP confirmée pour `Noctalia (Play Store)` / `com.tanuki75.noctalia` : `goog_BFWJqTqAtQUnwYisczZcZrnsanw`.
+  - Où placer : variable EAS en `plaintext` (ex : `eas env:create --environment production --scope project --visibility plaintext --name EXPO_PUBLIC_REVENUECAT_ANDROID_KEY --value goog_BFWJqTqAtQUnwYisczZcZrnsanw`).
+  - État local : valeur câblée dans `.env.playstore` et dans `eas.json` (`preview`, `release`, `production`, `production-apk`).
+  - Test Store QA : `.env.teststore` et le profil EAS `revenuecat-teststore` doivent utiliser la clé `test_zqltcBoDiTWPWmuyXTXTbYkJPrz` et ne doivent jamais servir à une soumission Play.
+  - Produits RevenueCat/Google Play confirmés : `noctalia_plus:monthly` et `noctalia_plus:annual`.
 - [ ] `EXPO_PUBLIC_REVENUECAT_IOS_KEY` (si iOS)  
   - Pourquoi : clé SDK RevenueCat côté iOS.  
   - Où récupérer : RevenueCat Dashboard → Public SDK Key (iOS) (https://app.revenuecat.com/projects).  

@@ -98,7 +98,9 @@
     "android:google-cloud-project-state": "node ./scripts/update-google-cloud-project-state.js",
     "android:google-oauth-android-client-state": "node ./scripts/update-google-oauth-android-client-state.js",
     "android:google-play-payments-profile-state": "node ./scripts/update-google-play-payments-profile-state.js",
-    "android:supabase-play-integrity-secrets-state": "node ./scripts/update-supabase-play-integrity-secrets-state.js"
+    "android:supabase-play-integrity-secrets-state": "node ./scripts/update-supabase-play-integrity-secrets-state.js",
+    "security:audit:mobile": "node ./scripts/check-mobile-security.js",
+    "security:audit:mobile:strict": "node ./scripts/check-mobile-security.js --strict"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",

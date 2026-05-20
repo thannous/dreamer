@@ -16,13 +16,13 @@ appId: com.tanuki75.noctalia
       id: input.searchDreams
 - eraseText
 - inputText: "The Shadowy Pursuer"
-- pressKey: back
+- hideKeyboard
 - extendedWaitUntil:
       visible: "The Shadowy Pursuer"
       timeout: 10000
 - assertVisible: "The Shadowy Pursuer"
 - tapOn:
-      point: "50%,58%"
+      point: "50%,56%"
 - scrollUntilVisible:
       element:
           id: btn.dream.primaryCta
@@ -40,13 +40,13 @@ appId: com.tanuki75.noctalia
       id: input.searchDreams
 - eraseText
 - inputText: "The Infinite Library"
-- pressKey: back
+- hideKeyboard
 - extendedWaitUntil:
       visible: "The Infinite Library"
       timeout: 10000
 - assertVisible: "The Infinite Library"
 - tapOn:
-      point: "50%,58%"
+      point: "50%,56%"
 - scrollUntilVisible:
       element:
           id: btn.dream.primaryCta
@@ -64,13 +64,13 @@ appId: com.tanuki75.noctalia
       id: input.searchDreams
 - eraseText
 - inputText: "Ocean of Stars"
-- pressKey: back
+- hideKeyboard
 - extendedWaitUntil:
       visible: "Ocean of Stars"
       timeout: 10000
 - assertVisible: "Ocean of Stars"
 - tapOn:
-      point: "50%,58%"
+      point: "50%,56%"
 - scrollUntilVisible:
       element:
           id: btn.dream.primaryCta

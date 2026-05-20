@@ -17,13 +17,13 @@ appId: com.tanuki75.noctalia
       id: input.searchDreams
 - eraseText
 - inputText: "The Infinite Library"
-- pressKey: back
+- hideKeyboard
 - extendedWaitUntil:
       visible: "The Infinite Library"
       timeout: 10000
 - assertVisible: "The Infinite Library"
 - tapOn:
-      point: "50%,58%"
+      point: "50%,56%"
 
 # Verify initial state (Read Mode)
 - assertVisible: "Symbolic Dream"
@@ -41,7 +41,7 @@ appId: com.tanuki75.noctalia
 - tapOn: "The Infinite Library"
 - eraseText
 - inputText: "The Infinite dark"
-- pressKey: back
+- hideKeyboard
 - extendedWaitUntil:
       visible:
           id: chip.type.Symbolic Dream

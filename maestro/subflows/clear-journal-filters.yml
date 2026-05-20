@@ -8,7 +8,9 @@ appId: com.tanuki75.noctalia
       - tapOn:
           id: input.searchDreams
       - eraseText
-      - pressKey: back
+      - hideKeyboard
+      - tapOn:
+          point: "37%,92%"
       - extendedWaitUntil:
           visible:
             id: screen.journal
