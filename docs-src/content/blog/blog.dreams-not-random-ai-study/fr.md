@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Fragments de mémoire onirique formant un motif lumineux dans la nuit",
   "publishedTime": "2026-05-12",
-  "modifiedTime": "2026-05-12",
+  "modifiedTime": "2026-05-16",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-vivaces-sommeil-reparateur",
   "nextPath": "/fr/blog/reves-trop-reels-modele-mobius",

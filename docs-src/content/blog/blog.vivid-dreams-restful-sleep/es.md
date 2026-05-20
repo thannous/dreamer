@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "es",
   "slug": "suenos-vividos-sueno-reparador",
-  "title": "Sueños vívidos y sueño reparador: lo que revela | Noctalia",
+  "title": "Sueños vívidos y sueño reparador | Noctalia",
   "description": "Un estudio de PLOS Biology publicado en marzo de 2026 sugiere que los sueños inmersivos pueden hacer que el sueño se perciba como más profundo.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
@@ -13,17 +13,17 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Sueños vívidos y sueño reparador: lo que revela | Noctalia",
+  "ogTitle": "Sueños vívidos y sueño reparador | Noctalia",
   "ogDescription": "Un estudio de PLOS Biology publicado en marzo de 2026 sugiere que los sueños inmersivos pueden hacer que el sueño se perciba como más profundo.",
   "ogImage": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
   "ogImageAlt": "Persona dormida rodeada de luz onírica y ondas de sueño REM",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Sueños vívidos y sueño reparador: lo que revela | Noctalia",
+  "twitterTitle": "Sueños vívidos y sueño reparador | Noctalia",
   "twitterDescription": "Un estudio de PLOS Biology publicado en marzo de 2026 sugiere que los sueños inmersivos pueden hacer que el sueño se perciba como más profundo.",
   "twitterImage": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
   "twitterImageAlt": "Persona dormida rodeada de luz onírica y ondas de sueño REM",
   "publishedTime": "2026-05-12",
-  "modifiedTime": "2026-05-12",
+  "modifiedTime": "2026-05-16",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/rastreadores-sueno-wearables-suenos",
   "nextPath": "/es/blog/suenos-no-son-aleatorios-estudio-ia",
@@ -48,9 +48,14 @@
 <p>Los sueños con mayor duración subjetiva, vividez, rareza, riqueza sensorial e intensidad emocional se relacionaron con una mayor percepción de sueño profundo. En cambio, los estados mentales vagos o puramente abstractos se asociaron con una sensación de sueño más ligero.</p>
 <p>Esto no prueba que los sueños vívidos causen mejor descanso, pero ayuda a corregir una interpretación común: despertar con un sueño muy presente no significa automáticamente que la noche haya sido mala.</p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h3 class="font-serif text-lg text-dream-cream mb-2">Qué anotar en Noctalia</h3><p class="text-sm text-gray-400 mb-4">Añade una nota rápida sobre vividez, emoción dominante y sensación de descanso. Con varias semanas de registros, esos detalles revelan patrones personales.</p><a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">Empezar un diario de sueños <i class="w-4 h-4" data-lucide="arrow-right"></i></a></aside>
+<h2>Cómo aplicarlo en un diario de sueños</h2>
+<p>La parte útil para una persona que registra sus sueños es separar historia y sensación. La historia responde a "qué pasó"; la sensación responde a "cómo fue estar ahí". Anotar ambas cosas evita reducir el sueño a una interpretación rápida y ayuda a comparar noches distintas.</p>
+<p>Una entrada más completa puede incluir tres notas breves: vividez, emoción dominante y descanso al despertar. Si una semana de sueños muy visuales coincide con mejor energía matutina, el patrón no significa lo mismo que si coincide con estrés, despertares frecuentes o cansancio durante el día.</p>
 <h2>Límites prácticos</h2>
 <p>La muestra era pequeña y de adultos sanos en laboratorio. Si tienes insomnio persistente, somnolencia diurna o pesadillas repetidas, consulta a un profesional. El diario de sueños sirve para observar patrones, no para diagnosticar.</p>
+<p>El estudio tampoco recomienda buscar sueños intensos a propósito. Su valor está en cambiar la pregunta: en vez de asumir que un sueño vívido arruinó la noche, conviene mirar el conjunto formado por duración del sueño, despertares, emoción y sensación corporal al despertar.</p>
 </div>
+<section class="mt-16"><h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas frecuentes</h2><div class="space-y-4"><details class="glass-panel rounded-xl p-4 group cursor-pointer"><summary class="font-medium flex justify-between items-center text-dream-cream">¿Soñar con mucha intensidad significa dormir mal?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary><p class="mt-4 text-sm text-gray-400 leading-relaxed">No necesariamente. Un sueño vívido puede formar parte de una noche reparadora si no va acompañado de despertares frecuentes o cansancio diurno.</p></details><details class="glass-panel rounded-xl p-4 group cursor-pointer"><summary class="font-medium flex justify-between items-center text-dream-cream">¿Qué datos conviene registrar al despertar?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary><p class="mt-4 text-sm text-gray-400 leading-relaxed">Anota la vividez, la emoción principal, la sensación de descanso y cualquier factor de contexto como estrés, hora de dormir o despertares.</p></details></div></section>
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources"><h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / lecturas complementarias</h2><ul class="mt-6 space-y-2 text-sm text-gray-400"><li><a href="https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3003683" rel="nofollow noopener noreferrer" target="_blank">Michalak et al. (2026), PLOS Biology</a></li><li><a href="https://www.imtlucca.it/en/comunicato-stampa/the-paradox-of-sleep-the-more-we-dream-the-more-rested-we-feel" rel="nofollow noopener noreferrer" target="_blank">IMT School: The paradox of sleep</a></li></ul><p class="mt-6 text-xs text-purple-200/60">Actualizado el 12 de mayo de 2026</p></section>
 <section aria-label="Leer después" class="mt-12"><a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="suenos-no-son-aleatorios-estudio-ia"><span class="text-xs text-dream-salmon uppercase mb-2 block">Actualidad</span><h2 class="font-serif text-lg text-dream-cream mb-2">Tus sueños no son aleatorios</h2><p class="text-sm text-gray-400">Un estudio con IA muestra cómo los sueños transforman la vida cotidiana.</p></a></section>
 </article>

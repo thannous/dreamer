@@ -84,13 +84,183 @@ function renderLocaleAlternates(lang) {
     .join('\n');
 }
 
-function renderJsonLd(meta) {
+function stripHtml(value) {
+  return String(value || '')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;|&#160;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function stripSiteSuffix(title) {
+  return String(title || '').replace(/\s*\|\s*Noctalia\s*$/i, '').trim();
+}
+
+function estimateWordCount(bodyHtml) {
+  return stripHtml(bodyHtml).split(/\s+/).filter(Boolean).length;
+}
+
+function estimateReadingTimeMinutes(wordCount) {
+  return Math.max(1, Math.ceil(wordCount / 220));
+}
+
+function extractFaqEntities(bodyHtml) {
+  const entities = [];
+  const detailsBlocks = String(bodyHtml || '').match(/<details\b[\s\S]*?<\/details>/gi) || [];
+
+  for (const block of detailsBlocks) {
+    const question = stripHtml(block.match(/<summary\b[^>]*>([\s\S]*?)<\/summary>/i)?.[1] || '');
+    const answer = stripHtml(block.replace(/<summary\b[\s\S]*?<\/summary>/i, ''));
+    if (!question || !answer) continue;
+    entities.push({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: answer,
+      },
+    });
+  }
+
+  return entities;
+}
+
+function blogSectionLabel(lang) {
+  if (lang === 'fr') return 'Ressources';
+  if (lang === 'es') return 'Recursos';
+  if (lang === 'de') return 'Ressourcen';
+  if (lang === 'it') return 'Risorse';
+  return 'Resources';
+}
+
+function homeLabel(lang) {
+  if (lang === 'fr') return 'Accueil';
+  if (lang === 'es') return 'Inicio';
+  if (lang === 'de') return 'Startseite';
+  if (lang === 'it') return 'Home';
+  return 'Home';
+}
+
+function buildFallbackBlogJsonLd(meta, entry, bodyHtml) {
+  if (meta.layout !== 'blogArticle' || !entry) return [];
+
+  const lang = meta.lang || siteConfig.defaultLanguage;
+  const pagePath = entry.locales?.[lang]?.path || meta.currentPath || '/';
+  const canonicalUrl = absoluteUrl(pagePath);
+  const title = stripSiteSuffix(meta.title);
+  const description = meta.description || meta.ogDescription || title;
+  const wordCount = estimateWordCount(bodyHtml);
+  const imageUrl = meta.ogImage || meta.twitterImage || `${siteConfig.domain}/img/og/noctalia-${lang}-1200x630.jpg`;
+  const faqEntities = extractFaqEntities(bodyHtml);
+
+  const blocks = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: title,
+      description,
+      image: {
+        '@type': 'ImageObject',
+        url: imageUrl,
+        width: 1200,
+        height: 630,
+      },
+      author: {
+        '@type': 'Person',
+        '@id': `${siteConfig.domain}/en/about#person`,
+        name: meta.author || 'Thanh Chau',
+        url: `${siteConfig.domain}/en/about`,
+      },
+      publisher: {
+        '@type': 'Organization',
+        '@id': `${siteConfig.domain}/#organization`,
+        name: siteConfig.organization.name,
+        url: siteConfig.organization.url,
+        logo: {
+          '@type': 'ImageObject',
+          url: siteConfig.organization.logoUrl,
+        },
+      },
+      datePublished: meta.publishedTime,
+      dateModified: meta.modifiedTime || meta.publishedTime,
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': canonicalUrl,
+      },
+      inLanguage: lang,
+      isAccessibleForFree: true,
+      wordCount,
+      timeRequired: `PT${estimateReadingTimeMinutes(wordCount)}M`,
+      url: canonicalUrl,
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      '@id': canonicalUrl,
+      url: canonicalUrl,
+      name: meta.title,
+      description,
+      inLanguage: lang,
+      reviewedBy: {
+        '@type': 'Organization',
+        '@id': `${siteConfig.domain}/#organization`,
+        name: siteConfig.organization.name,
+        url: siteConfig.organization.url,
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: homeLabel(lang),
+          item: lang === 'en' ? `${siteConfig.domain}/` : `${siteConfig.domain}/${lang}/`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: blogSectionLabel(lang),
+          item: `${siteConfig.domain}/${lang}/blog/`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: title,
+          item: canonicalUrl,
+        },
+      ],
+    },
+  ];
+
+  if (faqEntities.length > 0) {
+    blocks.push({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqEntities,
+    });
+  }
+
+  return blocks;
+}
+
+function renderJsonLd(meta, entry, bodyHtml) {
   const blocks = Array.isArray(meta.jsonLd) ? meta.jsonLd : [];
-  return blocks
-    .map(
-      (block) =>
-        `    <script type="application/ld+json">\n${block.trim()}\n    </script>`
-    )
+  const normalizedBlocks = blocks.length > 0 ? blocks : buildFallbackBlogJsonLd(meta, entry, bodyHtml);
+
+  return normalizedBlocks
+    .map((block) => {
+      const payload = typeof block === 'string' ? block.trim() : JSON.stringify(block, null, 2);
+      return `    <script type="application/ld+json">\n${payload.replace(/</g, '\\u003c')}\n    </script>`;
+    })
     .join('\n\n');
 }
 
@@ -136,7 +306,7 @@ function renderAnalyticsHeadScript() {
   ].join('\n');
 }
 
-function renderCommonHead(meta, entry, assetVersion) {
+function renderCommonHead(meta, entry, assetVersion, bodyHtml) {
   const lang = meta.lang;
   const pagePath = entry?.locales?.[lang]?.path || meta.currentPath || '/';
   const canonicalUrl = absoluteUrl(pagePath);
@@ -228,7 +398,7 @@ function renderCommonHead(meta, entry, assetVersion) {
     renderStyles(meta, assetVersion),
     renderViewTransitionHeadStyles(),
     renderHeadScripts(meta, assetVersion),
-    renderJsonLd(meta),
+    renderJsonLd(meta, entry, bodyHtml),
   ]
     .filter(Boolean)
     .join('\n');
@@ -322,7 +492,7 @@ function renderManagedPage({ manifest, entryId, meta, bodyHtml, entryOverride = 
   const html = renderTemplate({
     HTML_ATTRS: htmlAttributes(meta),
     BODY_ATTRS: bodyAttributes(meta),
-    HEAD_HTML: renderCommonHead(meta, entry, assetVersion),
+    HEAD_HTML: renderCommonHead(meta, entry, assetVersion, bodyHtml),
     BEFORE_BODY_HTML: renderBeforeBody(meta),
     NAV_HTML: navHtml,
     CONTENT_HTML: renderContent(meta, bodyHtml, renderPageHero(context)),

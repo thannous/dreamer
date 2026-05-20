@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Dream memory fragments forming a luminous pattern in the night",
   "publishedTime": "2026-05-12",
-  "modifiedTime": "2026-05-12",
+  "modifiedTime": "2026-05-16",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/vivid-dreams-restful-sleep",
   "nextPath": "/en/blog/dreams-feel-real-mobius-model",

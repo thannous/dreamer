@@ -338,6 +338,10 @@ function extractHreflangAlternates(html) {
 }
 
 function expectedCanonicalForFile(relHtml) {
+  if (relHtml === 'en/index.html') {
+    return `${SITE_ORIGIN}/`;
+  }
+
   const urlPath = fileUrlPathFromRelHtml(relHtml);
   if (!urlPath) return null;
   return `${SITE_ORIGIN}${urlPath}`;
