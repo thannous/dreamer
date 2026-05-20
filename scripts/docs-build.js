@@ -169,7 +169,7 @@ function writeManagedPages(manifest) {
       meta: {
         ...englishHomeMeta,
         robots: 'noindex, follow',
-        currentPath: `/${manifest.defaultLanguage}/`,
+        currentPath: '/',
       },
       bodyHtml: englishHomeBody,
       entryOverride: {
@@ -178,7 +178,7 @@ function writeManagedPages(manifest) {
           ...homeEntry.locales,
           [manifest.defaultLanguage]: {
             ...homeEntry.locales[manifest.defaultLanguage],
-            path: `/${manifest.defaultLanguage}/`,
+            path: '/',
           },
         },
       },

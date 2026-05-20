@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
   "twitterImageAlt": "Personne endormie entourée de lumière onirique et d'ondes de sommeil paradoxal",
   "publishedTime": "2026-05-12",
-  "modifiedTime": "2026-05-12",
+  "modifiedTime": "2026-05-16",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/traqueurs-sommeil-connectes-reves",
   "nextPath": "/fr/blog/reves-pas-aleatoires-etude-ia",
