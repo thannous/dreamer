@@ -20,6 +20,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import LanguageSettingsCard from '@/components/LanguageSettingsCard';
 import NotificationSettingsCard from '@/components/NotificationSettingsCard';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
+import RecordingOnboardingSettingsCard from '@/components/RecordingOnboardingSettingsCard';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { SubscriptionQALab } from '@/components/subscription/SubscriptionQALab';
@@ -382,6 +383,15 @@ export default function SettingsScreen() {
                   >
                     <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
                       <LanguageSettingsCard />
+                    </View>
+                  </MotiView>
+                  <MotiView
+                    from={{ opacity: 1, translateY: 16 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{ type: 'timing', duration: 500, delay: 900 }}
+                  >
+                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+                      <RecordingOnboardingSettingsCard />
                     </View>
                   </MotiView>
                 </View>

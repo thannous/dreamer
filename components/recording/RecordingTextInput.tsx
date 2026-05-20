@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { Fonts } from '@/constants/theme';
@@ -40,6 +40,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     const { colors, shadows } = useTheme();
     const { t } = useTranslation();
     const hasValue = value.trim().length > 0;
+    const [isFocused, setIsFocused] = useState(false);
 
     return (
       <>
@@ -78,16 +79,19 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
                 styles.textInput,
                 {
                   backgroundColor: colors.backgroundSecondary,
+                  borderColor: isFocused ? colors.accent : colors.divider,
                   color: colors.textPrimary,
                 },
               ]}
               multiline
               editable={!disabled}
-              placeholder={t('recording.placeholder')}
-              placeholderTextColor={colors.textSecondary}
+              placeholder=""
+              placeholderTextColor="transparent"
               testID={TID.Input.DreamTranscript}
               accessibilityLabel={t('recording.placeholder.accessibility')}
               autoFocus={autoFocus}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
             />
           </View>
 
@@ -177,6 +181,7 @@ const styles = StyleSheet.create({
   textInput: {
     minHeight: 160,
     maxHeight: 240,
+    borderWidth: 1,
     borderRadius: 16,
     padding: 20,
     fontSize: 16,

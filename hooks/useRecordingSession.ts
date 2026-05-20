@@ -3,7 +3,7 @@ import {
     setAudioModeAsync,
     useAudioRecorder,
 } from 'expo-audio';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, AppState, Platform } from 'react-native';
 
 import { createScopedLogger } from '@/lib/logger';
@@ -17,6 +17,8 @@ import {
 } from '@/services/nativeSpeechRecognition';
 
 const log = createScopedLogger('[useRecordingSession]');
+
+export type RecordingPermissionState = 'unknown' | 'granted' | 'denied';
 
 export interface RecordingSessionResult {
   transcript: string;
@@ -45,6 +47,8 @@ export function useRecordingSession({
   onLanguagePackMissing,
 }: UseRecordingSessionOptions) {
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingPermissionState, setRecordingPermissionState] =
+    useState<RecordingPermissionState>('unknown');
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
   const skipRecorderRef = useRef(false);
   const recorderReleasedRef = useRef(false);
@@ -66,6 +70,28 @@ export function useRecordingSession({
     },
     []
   );
+
+  useEffect(() => {
+    if (Platform.OS === 'web') {
+      return;
+    }
+
+    let isMounted = true;
+    AudioModule.getRecordingPermissionsAsync()
+      .then((permission) => {
+        if (!isMounted || !permission.granted) {
+          return;
+        }
+        setRecordingPermissionState('granted');
+      })
+      .catch((error) => {
+        log.warn('Failed to read recording permission status', error);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const getRecorderIsRecording = useCallback(() => {
     if (recorderReleasedRef.current) {
@@ -287,6 +313,7 @@ export function useRecordingSession({
           }
         } else {
           const { granted } = await AudioModule.requestRecordingPermissionsAsync();
+          setRecordingPermissionState(granted ? 'granted' : 'denied');
           if (!granted) {
             Alert.alert(
               t('recording.alert.permission_required.title'),
@@ -409,6 +436,7 @@ export function useRecordingSession({
   // Request microphone permissions on mount
   const requestPermissions = useCallback(async () => {
     const status = await AudioModule.requestRecordingPermissionsAsync();
+    setRecordingPermissionState(status.granted ? 'granted' : 'denied');
     if (!status.granted) {
       Alert.alert(
         t('recording.alert.permission_required.title'),
@@ -449,6 +477,7 @@ export function useRecordingSession({
 
   return {
     isRecording,
+    recordingPermissionState,
     isRecordingRef,
     baseTranscriptRef,
     startRecording,

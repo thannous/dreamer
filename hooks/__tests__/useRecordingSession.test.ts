@@ -36,6 +36,7 @@ function mockCreateMockRecorder(overrides?: Record<string, unknown>) {
 // Mock dependencies
 jest.mock('expo-audio', () => ({
   AudioModule: {
+    getRecordingPermissionsAsync: jest.fn().mockResolvedValue({ granted: false }),
     requestRecordingPermissionsAsync: jest.fn().mockResolvedValue({ granted: true }),
   },
   AudioQuality: { MEDIUM: 'medium' },
@@ -92,6 +93,7 @@ describe('useRecordingSession', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Reset default mock implementations
+    jest.mocked(AudioModule.getRecordingPermissionsAsync).mockResolvedValue({ granted: false } as never);
     jest.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValue({ granted: true } as never);
     jest.mocked(useAudioRecorder).mockReturnValue(mockCreateMockRecorder() as never);
     jest.mocked(ensureOfflineSttModel).mockResolvedValue(false as never);
@@ -107,6 +109,12 @@ describe('useRecordingSession', () => {
     const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
     expect(result.current.isRecording).toBe(false);
+  });
+
+  it('should initialize with unknown recording permission state', () => {
+    const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+    expect(result.current.recordingPermissionState).toBe('unknown');
   });
 
   it('should provide startRecording function', () => {
@@ -154,6 +162,7 @@ describe('useRecordingSession', () => {
     });
 
     expect(response?.success).toBe(true);
+    expect(result.current.recordingPermissionState).toBe('granted');
   });
 
   it('stopRecording should return transcript result', async () => {
@@ -195,6 +204,7 @@ describe('useRecordingSession', () => {
 
     expect(response?.success).toBe(false);
     expect(response?.error).toBe('permission_denied');
+    expect(result.current.recordingPermissionState).toBe('denied');
   });
 
   describe('stopRecording', () => {
@@ -646,4 +656,3 @@ describe('useRecordingSession', () => {
     });
   });
 });
-

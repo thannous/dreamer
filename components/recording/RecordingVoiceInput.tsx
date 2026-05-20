@@ -47,19 +47,24 @@ export function RecordingVoiceInput({
   onToggleRecording,
   onSwitchToText,
   onHideVoiceStatus,
-  onShowVoiceStatus,
 }: RecordingVoiceInputProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
   const { t } = useTranslation();
+  const isRecording = status === 'recording';
   const isPreparing = status === 'preparing';
   const canHideVoiceStatus = status === 'idle' && voiceStatusTone === 'neutral';
-  const shouldShowVoiceStatus = !voiceStatusHidden || !canHideVoiceStatus;
+  const shouldShowVoiceStatus = !voiceStatusHidden;
   const micSpotlightRef = useRef<View | null>(null);
   const textSpotlightRef = useRef<View | null>(null);
 
   const switchButtonLabel = transcript
     ? t('recording.mode.switch_to_text_edit') || t('recording.mode.switch_to_text') || 'Modifier mon r\u00eave'
     : t('recording.mode.switch_to_text') || '\u00c9crire mon r\u00eave';
+  const modeSwitchColor = mode === 'light' ? colors.textOnAccentSurface : colors.accentLight;
+  const modeSwitchSpotlightBorder = mode === 'light' ? colors.accentDark : colors.accentLight;
+  const modeSwitchSpotlightBackground = mode === 'light'
+    ? colors.backgroundSecondary
+    : `${colors.accent}1A`;
 
   useEffect(() => {
     if (!spotlightTarget || !onSpotlightLayout) {
@@ -84,12 +89,14 @@ export function RecordingVoiceInput({
 
   return (
     <>
-      <View style={styles.recordingSection}>
-        <TypewriterText
-          style={[styles.instructionText, { color: colors.textSecondary }]}
-          text={instructionText}
-        />
-      </View>
+      {!isRecording ? (
+        <View style={styles.recordingSection}>
+          <TypewriterText
+            style={[styles.instructionText, { color: colors.textSecondary }]}
+            text={instructionText}
+          />
+        </View>
+      ) : null}
 
       <View style={styles.micContainer}>
         <View style={styles.micButtonWrapper}>
@@ -120,7 +127,7 @@ export function RecordingVoiceInput({
         {shouldShowVoiceStatus ? (
           <View
             style={[
-              styles.voiceStatus,
+              isRecording ? styles.recordingStatusCompact : styles.voiceStatus,
               {
                 backgroundColor: colors.backgroundSecondary,
                 borderColor: voiceStatusTone === 'active' ? colors.accent : colors.divider,
@@ -159,26 +166,16 @@ export function RecordingVoiceInput({
                 ) : null}
               </View>
             </View>
-            <Text
-              style={[styles.voiceStatusDetail, { color: colors.textSecondary }]}
-              testID={TID.Text.RecordingVoiceStatusDetail}
-            >
-              {voiceStatusDetail}
-            </Text>
+            {!isRecording ? (
+              <Text
+                style={[styles.voiceStatusDetail, { color: colors.textSecondary }]}
+                testID={TID.Text.RecordingVoiceStatusDetail}
+              >
+                {voiceStatusDetail}
+              </Text>
+            ) : null}
           </View>
-        ) : (
-          <Pressable
-            onPress={onShowVoiceStatus}
-            style={styles.voiceStatusShowButton}
-            testID={TID.Button.ShowRecordingVoiceStatus}
-            accessibilityRole="button"
-            accessibilityLabel={t('recording.status.show')}
-          >
-            <Text style={[styles.voiceStatusShowText, { color: colors.textSecondary }]}>
-              {t('recording.status.show')}
-            </Text>
-          </Pressable>
-        )}
+        ) : null}
 
         {transcript ? (
           <View style={styles.liveTranscriptContainer}>
@@ -188,39 +185,41 @@ export function RecordingVoiceInput({
           </View>
         ) : null}
 
-        {transcript ? (
+        {transcript && !isRecording ? (
           <View style={styles.draftProgressWrap}>
             <RecordingDraftProgress value={transcript} />
           </View>
         ) : null}
 
-        <View
-          ref={textSpotlightRef}
-          collapsable={false}
-          style={[
-            styles.modeSwitchTarget,
-            spotlightTarget === 'text' && [
-              styles.modeSwitchSpotlight,
-              {
-                borderColor: colors.accentLight,
-                backgroundColor: `${colors.accent}1A`,
-              },
-            ],
-          ]}
-        >
-          <Pressable
-            onPress={onSwitchToText}
-            style={styles.modeSwitchButton}
-            testID={TID.Button.SwitchToText}
-            accessibilityRole="button"
-            accessibilityLabel={switchButtonLabel}
+        {!isRecording ? (
+          <View
+            ref={textSpotlightRef}
+            collapsable={false}
+            style={[
+              styles.modeSwitchTarget,
+              spotlightTarget === 'text' && [
+                styles.modeSwitchSpotlight,
+                {
+                  borderColor: modeSwitchSpotlightBorder,
+                  backgroundColor: modeSwitchSpotlightBackground,
+                },
+              ],
+            ]}
           >
-            <IconSymbol name="keyboard" size={15} color={colors.accentLight} />
-            <Text style={[styles.modeSwitchText, { color: colors.accentLight }]}>
-              {switchButtonLabel}
-            </Text>
-          </Pressable>
-        </View>
+            <Pressable
+              onPress={onSwitchToText}
+              style={styles.modeSwitchButton}
+              testID={TID.Button.SwitchToText}
+              accessibilityRole="button"
+              accessibilityLabel={switchButtonLabel}
+            >
+              <IconSymbol name="keyboard" size={15} color={modeSwitchColor} />
+              <Text style={[styles.modeSwitchText, { color: modeSwitchColor }]}>
+                {switchButtonLabel}
+              </Text>
+            </Pressable>
+          </View>
+        ) : null}
       </View>
     </>
   );
@@ -282,6 +281,14 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 6,
   },
+  recordingStatusCompact: {
+    width: '100%',
+    maxWidth: 512,
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
   voiceStatusHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -315,14 +322,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     fontFamily: Fonts.spaceGrotesk.regular,
-  },
-  voiceStatusShowButton: {
-    paddingVertical: 4,
-    paddingHorizontal: 0,
-  },
-  voiceStatusShowText: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.medium,
   },
   instructionText: {
     fontSize: 24,

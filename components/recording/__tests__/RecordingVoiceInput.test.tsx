@@ -112,10 +112,10 @@ describe('RecordingVoiceInput', () => {
     render(<RecordingVoiceInput {...baseProps} status="idle" voiceStatusHidden />);
 
     expect(screen.queryByTestId(TID.Component.RecordingVoiceStatus)).toBeNull();
-    expect(screen.getByTestId(TID.Button.ShowRecordingVoiceStatus)).toBeTruthy();
+    expect(screen.queryByTestId(TID.Button.ShowRecordingVoiceStatus)).toBeNull();
   });
 
-  it('keeps the voice status visible while recording even when the ready state is hidden', () => {
+  it('keeps the voice status fully hidden when the saved preference is hidden', () => {
     render(
       <RecordingVoiceInput
         {...baseProps}
@@ -126,8 +126,8 @@ describe('RecordingVoiceInput', () => {
       />
     );
 
-    expect(screen.getByTestId(TID.Component.RecordingVoiceStatus)).toBeTruthy();
-    expect(screen.getByTestId(TID.Text.RecordingVoiceStatusDuration).textContent).toBe('0:05');
+    expect(screen.queryByTestId(TID.Component.RecordingVoiceStatus)).toBeNull();
+    expect(screen.queryByTestId(TID.Text.RecordingVoiceStatusDuration)).toBeNull();
   });
 
   it('calls the hide action from the ready status card', () => {
@@ -165,5 +165,29 @@ describe('RecordingVoiceInput', () => {
     fireEvent.click(screen.getByTestId(TID.Button.SwitchToText));
 
     expect(onSwitchToText).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the recording view focused while dictation is active', () => {
+    render(
+      <RecordingVoiceInput
+        {...baseProps}
+        status="recording"
+        transcript="A quiet dream"
+        voiceStatusHidden={false}
+        voiceStatusTitle="Recording"
+        voiceStatusDetail="Speak naturally."
+        voiceStatusTone="active"
+        recordingDurationLabel="0:10"
+      />
+    );
+
+    expect(screen.queryByText('Speak your dream')).toBeNull();
+    expect(screen.getByTestId(TID.Component.RecordingVoiceStatus)).toBeTruthy();
+    expect(screen.getByTestId(TID.Text.RecordingVoiceStatusTitle).textContent).toBe('Recording');
+    expect(screen.getByTestId(TID.Text.RecordingVoiceStatusDuration).textContent).toBe('0:10');
+    expect(screen.queryByTestId(TID.Text.RecordingVoiceStatusDetail)).toBeNull();
+    expect(screen.getByText('A quiet dream')).toBeTruthy();
+    expect(screen.queryByTestId('draft')).toBeNull();
+    expect(screen.queryByTestId(TID.Button.SwitchToText)).toBeNull();
   });
 });

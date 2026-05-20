@@ -2,7 +2,6 @@ import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { SubjectProposition } from '@/components/journal/SubjectProposition';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
-import { FirstUseGuideCard } from '@/components/recording/FirstUseGuideCard';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import {
   RECORDING_ONBOARDING_TARGETS,
@@ -57,7 +56,9 @@ import {
 } from '@/services/nativeSpeechRecognition';
 import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
 import {
+  getRecordingOnboardingCompleted,
   getRecordingVoiceStatusHidden,
+  saveRecordingOnboardingCompleted,
   saveRecordingVoiceStatusHidden,
 } from '@/services/storageService';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -136,6 +137,7 @@ export default function RecordingScreen() {
   const [voiceStatusHidden, setVoiceStatusHidden] = useState(false);
   const [recordingOnboardingStep, setRecordingOnboardingStep] = useState(0);
   const [recordingOnboardingDismissed, setRecordingOnboardingDismissed] = useState(false);
+  const [recordingOnboardingLoaded, setRecordingOnboardingLoaded] = useState(false);
   const recordingOnboardingViewportRef = useRef<View | null>(null);
   const [recordingOnboardingTargetRect, setRecordingOnboardingTargetRect] =
     useState<RecordingSpotlightRect | null>(null);
@@ -197,6 +199,22 @@ export default function RecordingScreen() {
       .catch((error) => {
         if (__DEV__) {
           console.warn('[Recording] Failed to load voice status preference', error);
+        }
+      });
+
+    getRecordingOnboardingCompleted()
+      .then((completed) => {
+        if (isActive) {
+          setRecordingOnboardingDismissed(completed);
+          setRecordingOnboardingLoaded(true);
+        }
+      })
+      .catch((error) => {
+        if (isActive) {
+          setRecordingOnboardingLoaded(true);
+        }
+        if (__DEV__) {
+          console.warn('[Recording] Failed to load onboarding preference', error);
         }
       });
 
@@ -312,6 +330,7 @@ export default function RecordingScreen() {
   const {
     isRecording,
     isRecordingRef,
+    recordingPermissionState,
     startRecording: startSessionRecording,
     stopRecording: stopSessionRecording,
     forceStopRecording,
@@ -1075,7 +1094,7 @@ export default function RecordingScreen() {
 
   const focusTranscriptEnd = useCallback((value: string) => {
     const len = value.length;
-    requestAnimationFrame(() => {
+    const focus = () => {
       const input = textInputRef.current;
       if (!input) return;
       input.focus();
@@ -1084,7 +1103,11 @@ export default function RecordingScreen() {
       // Web fallback
       (input as unknown as { setSelectionRange?: (start: number, end: number) => void })
         ?.setSelectionRange?.(len, len);
-    });
+    };
+
+    requestAnimationFrame(focus);
+    setTimeout(focus, 80);
+    setTimeout(focus, 240);
   }, []);
   const analyzePromptTranscript = analyzePromptDream?.transcript?.trim();
   const voiceStatus = useMemo(() => {
@@ -1113,11 +1136,19 @@ export default function RecordingScreen() {
     }
 
     return {
-      title: t('recording.status.ready.title'),
-      detail: t('recording.status.ready.detail'),
+      title: t(
+        recordingPermissionState === 'granted'
+          ? 'recording.status.ready.title'
+          : 'recording.status.permission_prompt.title'
+      ),
+      detail: t(
+        recordingPermissionState === 'granted'
+          ? 'recording.status.ready.detail'
+          : 'recording.status.permission_prompt.detail'
+      ),
       tone: 'neutral' as const,
     };
-  }, [interactionDisabled, isPreparingRecording, isRecording, t]);
+  }, [interactionDisabled, isPreparingRecording, isRecording, recordingPermissionState, t]);
   const recordingDurationLabel = isRecording
     ? t('recording.status.duration', { duration: formatRecordingDuration(recordingDurationSeconds) })
     : undefined;
@@ -1148,7 +1179,8 @@ export default function RecordingScreen() {
     }
     setVoiceFallbackReason(null);
     setInputMode('text');
-  }, [isRecordingRef, stopRecording]);
+    focusTranscriptEnd(baseTranscriptRef.current || transcript);
+  }, [focusTranscriptEnd, isRecordingRef, stopRecording, transcript]);
 
   const switchToVoiceMode = useCallback(async () => {
     setVoiceFallbackReason(null);
@@ -1164,14 +1196,17 @@ export default function RecordingScreen() {
     }
   }, [isRecordingRef, startRecording]);
 
-  const showFirstUseGuide = dreams.length === 0
+  const isInitialRecordingState = dreams.length === 0
     && !trimmedTranscript
     && !draftDream
     && !firstDreamPrompt
     && !analyzePromptDream
     && !pendingAnalysisDream
     && !isAnalyzing;
-  const showRecordingOnboardingTour = showFirstUseGuide && inputMode === 'voice' && !recordingOnboardingDismissed;
+  const showRecordingOnboardingTour = recordingOnboardingLoaded
+    && isInitialRecordingState
+    && inputMode === 'voice'
+    && !recordingOnboardingDismissed;
   const recordingOnboardingTarget = RECORDING_ONBOARDING_TARGETS[recordingOnboardingStep] ?? 'voice';
 
   useEffect(() => {
@@ -1224,6 +1259,11 @@ export default function RecordingScreen() {
   const handleRecordingOnboardingNext = useCallback(() => {
     if (recordingOnboardingStep >= RECORDING_ONBOARDING_TARGETS.length - 1) {
       setRecordingOnboardingDismissed(true);
+      saveRecordingOnboardingCompleted(true).catch((error) => {
+        if (__DEV__) {
+          console.warn('[Recording] Failed to save onboarding preference', error);
+        }
+      });
       return;
     }
 
@@ -1234,10 +1274,19 @@ export default function RecordingScreen() {
 
   const handleRecordingOnboardingSkip = useCallback(() => {
     setRecordingOnboardingDismissed(true);
+    saveRecordingOnboardingCompleted(true).catch((error) => {
+      if (__DEV__) {
+        console.warn('[Recording] Failed to save onboarding preference', error);
+      }
+    });
   }, []);
 
+  const previousInputModeRef = useRef(inputMode);
   useEffect(() => {
-    if (inputMode === 'text' && !isMockMode) {
+    const previousInputMode = previousInputModeRef.current;
+    previousInputModeRef.current = inputMode;
+
+    if (inputMode === 'text' && previousInputMode !== 'text' && !isMockMode) {
       focusTranscriptEnd(baseTranscriptRef.current || transcript);
     }
   }, [focusTranscriptEnd, inputMode, transcript]);
@@ -1308,10 +1357,6 @@ export default function RecordingScreen() {
             <MockRecordingTools onFillTranscript={handleMockFillTranscript} />
             <View style={mainContentStyle}>
               <View style={styles.bodySection}>
-                {showFirstUseGuide && !showRecordingOnboardingTour ? (
-                  <FirstUseGuideCard />
-                ) : null}
-
                 {showRecordingOnboardingTour && recordingOnboardingTarget !== 'explore' ? (
                   <RecordingOnboardingTour
                     target={recordingOnboardingTarget}
@@ -1375,18 +1420,20 @@ export default function RecordingScreen() {
                 ) : null}
               </View>
 
-              <RecordingFooter
-                onSave={handleSaveDream}
-                onGoToJournal={handleGoToJournal}
-                isSaveDisabled={isSaveDisabled}
-                saveButtonLabel={t('recording.button.save_dream')}
-                journalLinkLabel={t('recording.nav_button')}
-                saveButtonAccessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
-                journalLinkAccessibilityLabel={t('recording.nav_button.accessibility')}
-                spotlightExplore={showRecordingOnboardingTour && recordingOnboardingTarget === 'explore'}
-                onSpotlightLayout={handleRecordingOnboardingTargetLayout}
-                spotlightMeasureKey={recordingOnboardingMeasureKey}
-              />
+              {!isRecording ? (
+                <RecordingFooter
+                  onSave={handleSaveDream}
+                  onGoToJournal={handleGoToJournal}
+                  isSaveDisabled={isSaveDisabled}
+                  saveButtonLabel={t('recording.button.save_dream')}
+                  journalLinkLabel={t('recording.nav_button')}
+                  saveButtonAccessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
+                  journalLinkAccessibilityLabel={t('recording.nav_button.accessibility')}
+                  spotlightExplore={showRecordingOnboardingTour && recordingOnboardingTarget === 'explore'}
+                  onSpotlightLayout={handleRecordingOnboardingTargetLayout}
+                  spotlightMeasureKey={recordingOnboardingMeasureKey}
+                />
+              ) : null}
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
