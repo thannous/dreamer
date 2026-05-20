@@ -78,7 +78,7 @@ describe('supabase secure storage adapter', () => {
     await storage.setItem('token', large);
 
     const chunkedWrites = mockSecureStore.setItemAsync.mock.calls.filter(
-      ([key]) => typeof key === 'string' && key.startsWith('token.__chunk_')
+      ([key]: [unknown, ...unknown[]]) => typeof key === 'string' && key.startsWith('token.__chunk_')
     );
     expect(chunkedWrites.length).toBeGreaterThan(0);
 

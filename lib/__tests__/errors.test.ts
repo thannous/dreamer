@@ -152,7 +152,7 @@ describe('classifyError with i18n', () => {
   });
 
   it('should fall back to default message when translation returns key', () => {
-    const mockTranslate = jest.fn().mockImplementation((key) => key);
+    const mockTranslate = jest.fn().mockImplementation((key: string) => key);
     const error = new Error('Network request failed');
     
     const result = classifyError(error, mockTranslate);
@@ -181,7 +181,7 @@ describe('classifyError with i18n', () => {
   });
 
   it('should pass owner-agent limit placeholders to translation', () => {
-    const mockTranslate = jest.fn().mockImplementation((key) => key);
+    const mockTranslate = jest.fn().mockImplementation((key: string) => key);
     const error = Object.assign(new Error('HTTP 400 Bad Request'), {
       status: 400,
       body: {

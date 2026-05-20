@@ -32,6 +32,15 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   ...overrides,
 });
 
+const legacyMutation = (mutation: {
+  id: string;
+  type: DreamMutation['operation'];
+  dream?: DreamAnalysis;
+  dreamId?: number;
+  remoteId?: number;
+  createdAt: number;
+}): DreamMutation => mutation as unknown as DreamMutation;
+
 describe('dreamUtils', () => {
   describe('sortDreams', () => {
     it('given unsorted dreams when sorting then returns descending by id', () => {
@@ -299,7 +308,7 @@ describe('dreamUtils', () => {
   describe('hasPendingMutationsForDream', () => {
     it('given create mutation for dream when checking then returns true', () => {
       const mutations: DreamMutation[] = [
-        { id: 'm1', type: 'create', dream: buildDream({ id: 123 }), createdAt: Date.now() },
+        legacyMutation({ id: 'm1', type: 'create', dream: buildDream({ id: 123 }), createdAt: Date.now() }),
       ];
 
       expect(hasPendingMutationsForDream(mutations, 123)).toBe(true);
@@ -307,7 +316,7 @@ describe('dreamUtils', () => {
 
     it('given update mutation for dream when checking then returns true', () => {
       const mutations: DreamMutation[] = [
-        { id: 'm1', type: 'update', dream: buildDream({ id: 456 }), createdAt: Date.now() },
+        legacyMutation({ id: 'm1', type: 'update', dream: buildDream({ id: 456 }), createdAt: Date.now() }),
       ];
 
       expect(hasPendingMutationsForDream(mutations, 456)).toBe(true);
@@ -315,7 +324,7 @@ describe('dreamUtils', () => {
 
     it('given delete mutation for dream when checking then returns true', () => {
       const mutations: DreamMutation[] = [
-        { id: 'm1', type: 'delete', dreamId: 789, createdAt: Date.now() },
+        legacyMutation({ id: 'm1', type: 'delete', dreamId: 789, createdAt: Date.now() }),
       ];
 
       expect(hasPendingMutationsForDream(mutations, 789)).toBe(true);
@@ -323,7 +332,7 @@ describe('dreamUtils', () => {
 
     it('given no mutations for dream when checking then returns false', () => {
       const mutations: DreamMutation[] = [
-        { id: 'm1', type: 'create', dream: buildDream({ id: 100 }), createdAt: Date.now() },
+        legacyMutation({ id: 'm1', type: 'create', dream: buildDream({ id: 100 }), createdAt: Date.now() }),
       ];
 
       expect(hasPendingMutationsForDream(mutations, 999)).toBe(false);
@@ -339,7 +348,7 @@ describe('dreamUtils', () => {
       const source = [buildDream({ id: 1 })];
       const newDream = buildDream({ id: 2 });
       const mutations: DreamMutation[] = [
-        { id: 'm1', type: 'create', dream: newDream, createdAt: Date.now() },
+        legacyMutation({ id: 'm1', type: 'create', dream: newDream, createdAt: Date.now() }),
       ];
 
       const result = applyPendingMutations(source, mutations);
@@ -351,7 +360,7 @@ describe('dreamUtils', () => {
     it('given update mutation when applying then updates dream', () => {
       const source = [buildDream({ id: 1, title: 'Original' })];
       const mutations: DreamMutation[] = [
-        { id: 'm1', type: 'update', dream: buildDream({ id: 1, title: 'Updated' }), createdAt: Date.now() },
+        legacyMutation({ id: 'm1', type: 'update', dream: buildDream({ id: 1, title: 'Updated' }), createdAt: Date.now() }),
       ];
 
       const result = applyPendingMutations(source, mutations);
@@ -362,7 +371,7 @@ describe('dreamUtils', () => {
     it('given delete mutation when applying then removes dream', () => {
       const source = [buildDream({ id: 1 }), buildDream({ id: 2 })];
       const mutations: DreamMutation[] = [
-        { id: 'm1', type: 'delete', dreamId: 1, createdAt: Date.now() },
+        legacyMutation({ id: 'm1', type: 'delete', dreamId: 1, createdAt: Date.now() }),
       ];
 
       const result = applyPendingMutations(source, mutations);
@@ -381,9 +390,9 @@ describe('dreamUtils', () => {
     it('given multiple mutations when applying then applies in order', () => {
       const source: DreamAnalysis[] = [];
       const mutations: DreamMutation[] = [
-        { id: 'm1', type: 'create', dream: buildDream({ id: 1 }), createdAt: 1 },
-        { id: 'm2', type: 'create', dream: buildDream({ id: 2 }), createdAt: 2 },
-        { id: 'm3', type: 'delete', dreamId: 1, createdAt: 3 },
+        legacyMutation({ id: 'm1', type: 'create', dream: buildDream({ id: 1 }), createdAt: 1 }),
+        legacyMutation({ id: 'm2', type: 'create', dream: buildDream({ id: 2 }), createdAt: 2 }),
+        legacyMutation({ id: 'm3', type: 'delete', dreamId: 1, createdAt: 3 }),
       ];
 
       const result = applyPendingMutations(source, mutations);

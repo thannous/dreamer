@@ -28,6 +28,8 @@ export type RevenueCatV2CustomerResponse = {
   } | null;
 };
 
+export type RevenueCatEntitlementLookupById = Record<string, string>;
+
 const PREMIUM_ENTITLEMENT_KEYS = [
   'premium',
   'noctalia_premium',
@@ -49,6 +51,22 @@ function tierFromEntitlementKey(key: string): InferredTier {
   if (PREMIUM_ENTITLEMENT_KEYS.includes(normalized)) return 'plus';
   if (PLUS_ENTITLEMENT_KEYS.includes(normalized)) return 'plus';
   return null;
+}
+
+export function mapEntitlementKeys(
+  keys: string[],
+  entitlementLookupById?: RevenueCatEntitlementLookupById
+): string[] {
+  const mapped = new Set<string>();
+  for (const key of keys) {
+    if (typeof key !== 'string') continue;
+    const normalized = key.trim();
+    if (!normalized) continue;
+    const lookup = entitlementLookupById?.[normalized];
+    const resolved = typeof lookup === 'string' && lookup.trim() ? lookup.trim() : normalized;
+    if (resolved) mapped.add(resolved);
+  }
+  return Array.from(mapped);
 }
 
 export function inferTierFromEntitlementKeys(keys: string[]): InferredTier {
@@ -107,14 +125,16 @@ export function inferTierFromSubscriber(
 
 export function inferTierFromCustomer(
   customer: RevenueCatV2CustomerResponse | null,
-  nowMs: number = Date.now()
+  nowMs: number = Date.now(),
+  entitlementLookupById?: RevenueCatEntitlementLookupById
 ): InferredTier {
   if (!customer) return null;
   const items = customer.active_entitlements?.items ?? [];
-  const activeEntitlementKeys = items
+  const entitlementIds = items
     .filter((ent) => isActiveEntitlementV2(ent, nowMs))
     .map((ent) => (typeof ent.entitlement_id === 'string' ? ent.entitlement_id.trim() : ''))
     .filter(Boolean);
 
+  const activeEntitlementKeys = mapEntitlementKeys(entitlementIds, entitlementLookupById);
   return inferTierFromEntitlementKeys(activeEntitlementKeys);
 }

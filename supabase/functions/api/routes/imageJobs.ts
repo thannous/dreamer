@@ -25,6 +25,17 @@ const serviceUnavailable = (message = 'Service unavailable') =>
     headers: { 'Content-Type': 'application/json', ...corsHeaders },
   });
 
+const triggerWorkerAndLog = async (options: {
+  supabaseUrl: string;
+  serviceRoleKey: string;
+  jobId: string;
+}) => {
+  const triggered = await triggerImageJobWorker(options);
+  if (!triggered) {
+    console.warn('[api] /image-jobs worker trigger returned false', { jobId: options.jobId });
+  }
+};
+
 export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
   const { req, user, supabase, supabaseUrl, supabaseServiceRoleKey } = ctx;
 
@@ -151,7 +162,7 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
     const existingJob = (existingJobData ?? null) as ImageJobRow | null;
 
     if (existingJob) {
-      void triggerImageJobWorker({
+      await triggerWorkerAndLog({
         supabaseUrl,
         serviceRoleKey: supabaseServiceRoleKey,
         jobId: existingJob.id,
@@ -208,7 +219,7 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
       const normalizedDuplicatedJob = (duplicatedJob ?? null) as ImageJobRow | null;
 
       if (normalizedDuplicatedJob) {
-        void triggerImageJobWorker({
+        await triggerWorkerAndLog({
           supabaseUrl,
           serviceRoleKey: supabaseServiceRoleKey,
           jobId: normalizedDuplicatedJob.id,
@@ -231,7 +242,7 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
       return serviceUnavailable();
     }
 
-    void triggerImageJobWorker({
+    await triggerWorkerAndLog({
       supabaseUrl,
       serviceRoleKey: supabaseServiceRoleKey,
       jobId: normalizedInsertedJob.id,
@@ -300,7 +311,7 @@ export async function handleGetImageJobStatus(ctx: ApiContext): Promise<Response
     }
 
     if (normalizedJob.status === 'queued') {
-      void triggerImageJobWorker({
+      await triggerWorkerAndLog({
         supabaseUrl,
         serviceRoleKey: supabaseServiceRoleKey,
         jobId: normalizedJob.id,

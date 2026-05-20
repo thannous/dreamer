@@ -84,7 +84,7 @@ describe('usePrefersReducedMotion', () => {
 
   it('updates when reduce motion changes', async () => {
     let changeHandler: (enabled: boolean) => void;
-    mockAddEventListener.mockImplementation((event, handler) => {
+    mockAddEventListener.mockImplementation((event: string, handler: (enabled: boolean) => void) => {
       changeHandler = handler;
       return { remove: mockRemove };
     });

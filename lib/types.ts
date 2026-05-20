@@ -144,6 +144,11 @@ export interface DreamMutation {
   lastError?: string;
   createdAt: number;
   lastAttemptAt?: number;
+  // Legacy aliases still read by migration/normalization paths for persisted queues.
+  type?: SyncMutationOperation;
+  dream?: DreamAnalysis;
+  dreamId?: number;
+  remoteId?: number;
 }
 
 /**

@@ -178,6 +178,60 @@ describe('supabaseDreamService', () => {
     expect(dream.imageGenerationFailed).toBe(true);
   });
 
+  it('createDreamInSupabase retries without client_updated_at on schema cache errors', async () => {
+    const singleMock = jest.fn()
+      .mockResolvedValueOnce({
+        data: null,
+        error: {
+          code: 'PGRST204',
+          message: "Could not find the 'client_updated_at' column of 'dreams' in the schema cache",
+        },
+      })
+      .mockResolvedValueOnce({
+        data: buildRow({
+          client_updated_at: null,
+          is_analyzed: true,
+          analysis_status: 'done',
+        }),
+        error: null,
+      });
+
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({
+        single: singleMock,
+      })),
+    }));
+
+    mocks.from.mockReturnValue({
+      upsert: upsertMock,
+    });
+
+    const { createDreamInSupabase } = require('../supabaseDreamService');
+
+    const dream = await createDreamInSupabase(
+      {
+        ...buildDream({
+          clientUpdatedAt: 1_700_000_000_000,
+          isAnalyzed: true,
+          analysisStatus: 'done',
+        }),
+      } as any,
+      'user-1',
+    );
+
+    expect(upsertMock).toHaveBeenCalledTimes(2);
+
+    const firstRow = (((upsertMock as any).mock.calls[0]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+    const secondRow = (((upsertMock as any).mock.calls[1]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+
+    expect(firstRow).toHaveProperty('client_updated_at');
+    expect(firstRow).toHaveProperty('image_generation_failed');
+    expect(secondRow).not.toHaveProperty('client_updated_at');
+    expect(secondRow).toHaveProperty('image_generation_failed');
+    expect(dream.remoteId).toBe(42);
+    expect(dream.analysisStatus).toBe('done');
+  });
+
   it('mapRowToDream forces imageGenerationFailed=false when image_url is present', async () => {
     const singleMock = jest.fn().mockResolvedValueOnce({
       data: {
@@ -370,6 +424,61 @@ describe('supabaseDreamService', () => {
     expect(result).toEqual(expect.objectContaining({ status: 'ack', remoteId: 42 }));
   });
 
+  it('syncDreamMutationsInSupabase falls back to direct writes when the RPC schema is missing client_updated_at', async () => {
+    mocks.rpc = jest.fn().mockResolvedValue({
+      data: null,
+      error: {
+        code: '42703',
+        message: 'column "client_updated_at" of relation "dreams" does not exist',
+      },
+    });
+
+    const singleMock = jest.fn().mockResolvedValueOnce({
+      data: buildRow({ client_updated_at: null }),
+      error: null,
+    });
+
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({
+        single: singleMock,
+      })),
+    }));
+
+    mocks.from.mockReturnValue({
+      upsert: upsertMock,
+    });
+
+    const { syncDreamMutationsInSupabase } = require('../supabaseDreamService');
+
+    const [result] = await syncDreamMutationsInSupabase(
+      [
+        {
+          version: 1,
+          id: 'mut-create',
+          userScope: 'user:user-1',
+          entityType: 'dream',
+          entityKey: 'client:dream-req-1',
+          operation: 'create',
+          clientRequestId: 'mutation-create',
+          clientUpdatedAt: 1,
+          payload: {
+            dream: buildDream({ clientUpdatedAt: 1 }),
+          },
+          status: 'pending',
+          retryCount: 0,
+          createdAt: 1,
+        },
+      ],
+      'user-1',
+    );
+
+    expect(mocks.rpc).toHaveBeenCalledTimes(1);
+    expect(upsertMock).toHaveBeenCalledTimes(1);
+    const directRow = (((upsertMock as any).mock.calls[0]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+    expect(directRow).not.toHaveProperty('client_updated_at');
+    expect(result).toEqual(expect.objectContaining({ status: 'ack', remoteId: 42 }));
+  });
+
   it('fetchDreamsFromSupabase maps rows correctly', async () => {
     const orderMock = jest.fn().mockResolvedValue({
       data: [
@@ -488,7 +597,7 @@ describe('supabaseDreamService', () => {
 
     expect(mocks.storageUpload).toHaveBeenCalled();
     expect(
-      mocks.storageUpload.mock.calls.some((call) => String(call[0]).includes('-thumb'))
+      mocks.storageUpload.mock.calls.some((call: unknown[]) => String(call[0]).includes('-thumb'))
     ).toBe(true);
 
     const firstRow = (((upsertMock as any).mock.calls[0]?.[0] ?? {}) as unknown) as Record<string, unknown>;
@@ -531,6 +640,61 @@ describe('supabaseDreamService', () => {
         chatHistory: [],
       } as any),
     ).rejects.toMatchObject({ code: 'NOT_FOUND' });
+  });
+
+  it('updateDreamInSupabase retries without client_updated_at on schema cache errors', async () => {
+    const singleMock = jest.fn()
+      .mockResolvedValueOnce({
+        data: null,
+        error: {
+          code: 'PGRST204',
+          message: "Could not find the 'client_updated_at' column of 'dreams' in the schema cache",
+        },
+      })
+      .mockResolvedValueOnce({
+        data: buildRow({
+          id: 123,
+          title: 'Analyzed dream',
+          client_updated_at: null,
+          is_analyzed: true,
+          analysis_status: 'done',
+        }),
+        error: null,
+      });
+
+    const updateMock = jest.fn((_row: any) => ({
+      eq: jest.fn(() => ({
+        select: jest.fn(() => ({
+          single: singleMock,
+        })),
+      })),
+    }));
+
+    mocks.from.mockReturnValue({
+      update: updateMock,
+    });
+
+    const { updateDreamInSupabase } = require('../supabaseDreamService');
+
+    const dream = await updateDreamInSupabase({
+      ...buildDream({
+        remoteId: 123,
+        title: 'Analyzed dream',
+        clientUpdatedAt: 1_700_000_000_000,
+        isAnalyzed: true,
+        analysisStatus: 'done',
+      }),
+    } as any);
+
+    expect(updateMock).toHaveBeenCalledTimes(2);
+
+    const firstRow = (((updateMock as any).mock.calls[0]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+    const secondRow = (((updateMock as any).mock.calls[1]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+
+    expect(firstRow).toHaveProperty('client_updated_at');
+    expect(secondRow).not.toHaveProperty('client_updated_at');
+    expect(dream.remoteId).toBe(123);
+    expect(dream.isAnalyzed).toBe(true);
   });
 
   it('deleteDreamFromSupabase throws on error', async () => {

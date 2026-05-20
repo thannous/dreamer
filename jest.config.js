@@ -21,5 +21,9 @@ module.exports = {
     '^@expo/vector-icons$': '<rootDir>/tests/expo-vector-icons-stub.ts',
     '^expo-linear-gradient$': '<rootDir>/tests/expo-linear-gradient-stub.ts',
   },
-  testPathIgnorePatterns: ['<rootDir>/node_modules/', '\\.perf\\.test\\.(ts|tsx)$'],
+  testPathIgnorePatterns: [
+    '<rootDir>/node_modules/',
+    '\\.perf\\.test\\.(ts|tsx)$',
+    '<rootDir>/supabase/functions/.*\\.test\\.ts$',
+  ],
 };

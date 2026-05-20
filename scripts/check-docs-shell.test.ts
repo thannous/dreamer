@@ -3,7 +3,7 @@ const os = require('os');
 const path = require('path');
 
 describe('docs shell check', () => {
-  function writeFile(root, relativePath, html) {
+  function writeFile(root: string, relativePath: string, html: string) {
     const filePath = path.join(root, relativePath);
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
     fs.writeFileSync(filePath, html, 'utf8');

@@ -1,7 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // Mock dependencies before importing the module
-const mockGetAccessToken = jest.fn<() => Promise<string | null>>();
+type AnyFunction = (...args: any[]) => any;
+const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
+
+const mockGetAccessToken = typedJestFn<() => Promise<string | null>>();
 const mockClassifyError = jest.fn();
 
 jest.mock('../auth', () => ({
@@ -355,7 +358,7 @@ describe('http', () => {
 
     it('given external abort with retries when aborted then stops retrying', async () => {
       const controller = new AbortController();
-      global.fetch = jest.fn().mockImplementation((_url, options) => {
+      global.fetch = jest.fn().mockImplementation((_url: RequestInfo | URL, options?: RequestInit) => {
         const abortSignal = (options as RequestInit).signal;
         return new Promise((_, reject) => {
           abortSignal?.addEventListener('abort', () => {
@@ -407,7 +410,7 @@ describe('http', () => {
   describe('timeout handling', () => {
     it('given custom timeout when request takes too long then aborts', async () => {
       let abortSignal: AbortSignal | null | undefined;
-      global.fetch = jest.fn().mockImplementation((_url, options) => {
+      global.fetch = jest.fn().mockImplementation((_url: RequestInfo | URL, options?: RequestInit) => {
         abortSignal = (options as RequestInit).signal;
         return new Promise((_, reject) => {
           abortSignal?.addEventListener('abort', () => {
@@ -430,7 +433,7 @@ describe('http', () => {
 
     it('given external abort signal when aborted then rejects', async () => {
       let abortSignal: AbortSignal | null | undefined;
-      global.fetch = jest.fn().mockImplementation((_url, options) => {
+      global.fetch = jest.fn().mockImplementation((_url: RequestInfo | URL, options?: RequestInit) => {
         abortSignal = (options as RequestInit).signal;
         return new Promise((_, reject) => {
           abortSignal?.addEventListener('abort', () => {

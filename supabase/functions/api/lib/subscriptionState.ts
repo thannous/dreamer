@@ -104,13 +104,16 @@ export function buildSubscriptionSnapshotFromCustomer(
 
   const activeEntitlement = getFirstActiveEntitlement(customer, nowMs);
   const mappedEntitlementId = activeEntitlement?.entitlement_id
-    ? mapEntitlementKeys([activeEntitlement.entitlement_id], entitlementLookupById)[0] ?? activeEntitlement.entitlement_id
+    ? mapEntitlementKeys([activeEntitlement.entitlement_id], entitlementLookupById)[0] ??
+      activeEntitlement.entitlement_id
     : null;
 
   return {
     tier: inferredTier === 'plus' ? 'plus' : 'free',
     isActive: inferredTier === 'plus',
-    productId: normalizeText(activeEntitlement?.product_identifier ?? activeEntitlement?.product_id ?? null),
+    productId: normalizeText(
+      activeEntitlement?.product_identifier ?? activeEntitlement?.product_id ?? null
+    ),
     entitlementId: normalizeText(mappedEntitlementId),
     revenueCatCustomerId: normalizeText(customer?.id),
   };

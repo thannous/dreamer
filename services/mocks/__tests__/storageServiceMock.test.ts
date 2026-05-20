@@ -44,6 +44,15 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   ...overrides,
 });
 
+const legacyMutation = (mutation: {
+  id: string;
+  type: DreamMutation['operation'];
+  dream?: DreamAnalysis;
+  dreamId?: number;
+  remoteId?: number;
+  createdAt: number;
+}): DreamMutation => mutation as unknown as DreamMutation;
+
 describe('storageServiceMock', () => {
   beforeEach(() => {
     resetMockStorage();
@@ -337,8 +346,8 @@ describe('storageServiceMock', () => {
     it('given saved mutations when retrieving then returns mutations', async () => {
       const dream = buildDream({ id: 1 });
       const mutations: DreamMutation[] = [
-        { id: 'mut-1', type: 'create', dream, createdAt: Date.now() },
-        { id: 'mut-2', type: 'delete', dreamId: 2, createdAt: Date.now() },
+        legacyMutation({ id: 'mut-1', type: 'create', dream, createdAt: Date.now() }),
+        legacyMutation({ id: 'mut-2', type: 'delete', dreamId: 2, createdAt: Date.now() }),
       ];
       await savePendingDreamMutations(mutations);
 

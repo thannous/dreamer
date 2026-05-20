@@ -1,7 +1,9 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import {
+  callGeminiWithFallback,
   classifyGeminiError,
+  GEMINI_FLASH_LITE_MODEL,
 } from '../services/gemini.ts';
 import { generateImageWithReferences } from '../services/geminiImages.ts';
 import { optimizeImage } from '../services/image.ts';

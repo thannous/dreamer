@@ -7,6 +7,9 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 import type { DreamAnalysis, DreamMutation } from '../../lib/types';
 import { useDreamPersistence } from '../useDreamPersistence';
 
+type AnyFunction = (...args: any[]) => any;
+const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
+
 // Mock user state
 const mockUser = ((factory: any) => factory())(() => ({ current: { id: 'user-123' } as { id: string } | null }));
 const mockSessionReady = ((factory: any) => factory())(() => ({ current: true }));
@@ -19,13 +22,13 @@ jest.mock('../../context/AuthContext', () => ({
 }));
 
 // Mock storage service
-const mockGetSavedDreams = jest.fn<() => Promise<DreamAnalysis[]>>();
-const mockSaveDreams = jest.fn<(dreams: DreamAnalysis[]) => Promise<void>>();
-const mockGetCachedRemoteDreams = jest.fn<() => Promise<DreamAnalysis[]>>();
-const mockSaveCachedRemoteDreams = jest.fn<(dreams: DreamAnalysis[]) => Promise<void>>();
-const mockGetPendingMutations = jest.fn<() => Promise<DreamMutation[]>>();
-const mockGetDreamsMigrationSynced = jest.fn<() => Promise<boolean>>();
-const mockSetDreamsMigrationSynced = jest.fn<(userId: string, synced: boolean) => Promise<void>>();
+const mockGetSavedDreams = typedJestFn<() => Promise<DreamAnalysis[]>>();
+const mockSaveDreams = typedJestFn<(dreams: DreamAnalysis[]) => Promise<void>>();
+const mockGetCachedRemoteDreams = typedJestFn<() => Promise<DreamAnalysis[]>>();
+const mockSaveCachedRemoteDreams = typedJestFn<(dreams: DreamAnalysis[]) => Promise<void>>();
+const mockGetPendingMutations = typedJestFn<() => Promise<DreamMutation[]>>();
+const mockGetDreamsMigrationSynced = typedJestFn<() => Promise<boolean>>();
+const mockSetDreamsMigrationSynced = typedJestFn<(userId: string, synced: boolean) => Promise<void>>();
 
 jest.mock('../../services/storageService', () => ({
   getSavedDreams: () => mockGetSavedDreams(),
@@ -38,14 +41,14 @@ jest.mock('../../services/storageService', () => ({
     mockSetDreamsMigrationSynced(userId, synced),
 }));
 
-const mockGetAccessToken = jest.fn<() => Promise<string | null>>();
+const mockGetAccessToken = typedJestFn<() => Promise<string | null>>();
 
 jest.mock('../../lib/auth', () => ({
   getAccessToken: () => mockGetAccessToken(),
 }));
 
 // Mock supabase service
-const mockFetchFromSupabase = jest.fn<() => Promise<DreamAnalysis[]>>();
+const mockFetchFromSupabase = typedJestFn<() => Promise<DreamAnalysis[]>>();
 const mockCreateInSupabase = jest.fn();
 
 jest.mock('../../services/supabaseDreamService', () => ({
@@ -75,6 +78,15 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   dreamType: 'Symbolic Dream',
   ...overrides,
 });
+
+const legacyMutation = (mutation: {
+  id: string;
+  type: DreamMutation['operation'];
+  dream?: DreamAnalysis;
+  dreamId?: number;
+  remoteId?: number;
+  createdAt: number;
+}): DreamMutation => mutation as unknown as DreamMutation;
 
 describe('useDreamPersistence', () => {
   beforeEach(() => {
@@ -198,7 +210,7 @@ describe('useDreamPersistence', () => {
     it('loads pending mutations from storage', async () => {
       const dream = buildDream({ id: 1 });
       const mutations: DreamMutation[] = [
-        { id: 'mut-1', type: 'create', dream, createdAt: Date.now() },
+        legacyMutation({ id: 'mut-1', type: 'create', dream, createdAt: Date.now() }),
       ];
       mockGetPendingMutations.mockResolvedValue(mutations);
       mockFetchFromSupabase.mockResolvedValue([]);
@@ -216,7 +228,7 @@ describe('useDreamPersistence', () => {
       const remoteDream = buildDream({ id: 1, title: 'Original', remoteId: 101 });
       const updatedDream = buildDream({ id: 1, title: 'Updated', remoteId: 101 });
       const mutations: DreamMutation[] = [
-        { id: 'mut-1', type: 'update', dream: updatedDream, createdAt: Date.now() },
+        legacyMutation({ id: 'mut-1', type: 'update', dream: updatedDream, createdAt: Date.now() }),
       ];
       mockFetchFromSupabase.mockResolvedValue([remoteDream]);
       mockGetPendingMutations.mockResolvedValue(mutations);

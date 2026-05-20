@@ -2,6 +2,10 @@
  * @jest-environment jsdom
  */
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import type { DreamAnalysis } from '../../lib/types';
+
+type AnyFunction = (...args: any[]) => any;
+const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
 
 const DREAMS_STORAGE_KEY = 'gemini_dream_journal_dreams';
 const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
@@ -19,9 +23,9 @@ const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed'
 const DREAMS_MIGRATION_SYNCED_PREFIX = 'gemini_dream_journal_dreams_migration_synced_';
 
 const mockAsyncStorage = {
-  getItem: jest.fn<(key: string) => Promise<string | null>>(),
-  setItem: jest.fn<(key: string, value: string) => Promise<void>>(),
-  removeItem: jest.fn<(key: string) => Promise<void>>(),
+  getItem: typedJestFn<(key: string) => Promise<string | null>>(),
+  setItem: typedJestFn<(key: string, value: string) => Promise<void>>(),
+  removeItem: typedJestFn<(key: string) => Promise<void>>(),
 };
 
 const mockReportSyncQueueClearedWithPending = jest.fn();
@@ -441,7 +445,7 @@ describe('storageServiceReal', () => {
       const storage = require('../storageServiceReal');
       const sorted = await storage.getSavedDreams();
 
-      expect(sorted.map((dream) => dream.id)).toEqual([5, 3, 2]);
+      expect(sorted.map((dream: DreamAnalysis) => dream.id)).toEqual([5, 3, 2]);
 
       localStorage.setItem(DREAMS_STORAGE_KEY, '{invalid json');
       const fallback = await storage.getSavedDreams();

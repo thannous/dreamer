@@ -2,9 +2,12 @@ import type { DreamAnalysis } from '@/lib/types';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { GuestQuotaProvider } from '../GuestQuotaProvider';
 
+type AnyFunction = (...args: any[]) => any;
+const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
+
 // Use jest.hoisted to ensure mock is available during module loading
 const { mockGetDreams, mockLocalCounterConfig } = ((factory: any) => factory())(() => ({
-  mockGetDreams: jest.fn<() => Promise<DreamAnalysis[]>>(),
+  mockGetDreams: typedJestFn<() => Promise<DreamAnalysis[]>>(),
   mockLocalCounterConfig: {
     analysisCount: 0,
     explorationCount: 0,
