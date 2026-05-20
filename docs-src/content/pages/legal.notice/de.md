@@ -38,7 +38,12 @@
 <h1 class="font-serif text-4xl md:text-5xl mb-10 text-dream-cream">Impressum</h1>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
-            <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+<section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-white/5">
+                <h2 class="text-2xl font-serif text-white mb-4">Suchen Sie Noctalia?</h2>
+                <p>Noctalia ist eine Traumtagebuch-App mit Sprachaufnahme, KI-Deutung, Symbolen, Bildern und Dream Chat. Diese Seite enthält rechtliche Informationen; um das Produkt zu entdecken, starten Sie auf der <a href="/de/" class="text-dream-salmon hover:underline">Noctalia-Startseite</a>, lesen Sie <a href="/de/ueber-uns" class="text-dream-salmon hover:underline">die Projektgeschichte</a> oder die <a href="/de/datenschutz" class="text-dream-salmon hover:underline">Datenschutzerklärung</a>.</p>
+            </section>
+
+                        <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
                 <h2 class="text-2xl font-serif text-white mb-4">1. Herausgeber</h2>
                 <p>Die Website und App <strong>Noctalia</strong> werden von <strong>TiMax</strong> herausgegeben.</p>
                 <ul class="list-disc pl-5 mt-2 space-y-1">

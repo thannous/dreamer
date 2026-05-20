@@ -36,131 +36,93 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">AGB (Nutzungsbedingungen)</h1>
-    <p class="text-lg text-purple-200/80 mb-10">Gültig ab 22. November 2025</p>
+<p class="text-lg text-purple-200/80 mb-10">Gültig ab 22. November 2025</p>
 
-    <div class="space-y-8 text-gray-300 leading-relaxed">
-      <div class="p-6 rounded-2xl bg-white/5 border border-white/10">
-        <p class="text-sm text-purple-200/80">
-          Hinweis: Diese Seite ist derzeit auf Englisch verfügbar. Für die maßgebliche Fassung siehe
-          <a href="/en/terms" class="text-dream-salmon hover:underline">https://noctalia.app/en/terms</a>.
-        </p>
-      </div>
-
-      <div class="p-6 rounded-2xl bg-red-900/20 border border-red-500/20 flex gap-4 items-start">
-        <i data-lucide="alert-triangle" class="w-6 h-6 text-red-400 shrink-0 mt-1"></i>
-        <div>
-          <h2 class="text-red-200 font-bold mb-1">Important medical notice</h2>
-          <p class="text-sm text-red-200/80">
-            Noctalia is a wellbeing and self-discovery app. <strong>It is not a medical device.</strong>
-            AI insights are recreational and reflective only. They never replace professional medical, psychological,
-            or psychiatric advice. If you experience sleep disorders or distress, contact a qualified healthcare professional.
-          </p>
-        </div>
-      </div>
-
-      <section>
-        <h2 class="text-2xl font-serif text-white mb-4 mt-4">1. Purpose and acceptance</h2>
-        <p>
-          These Terms of Use govern access to and use of the <strong>Noctalia</strong> mobile app and website (the "Service"),
-          published by <strong>TiMax</strong>.
-        </p>
-        <p class="mt-3">
-          By installing the app, creating an account, or using the Service, you confirm that you have read these Terms,
-          the <a href="impressum" class="text-dream-salmon hover:underline">Legal notice</a>, and the
-          <a href="datenschutz" class="text-dream-salmon hover:underline">Privacy policy</a> and accept them without reservation.
-          If you do not agree, do not use Noctalia.
-        </p>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-serif text-white mb-4 mt-8">2. Definitions</h2>
-        <ul class="list-disc pl-5 mt-2 space-y-2">
-          <li><strong>User</strong>: any person accessing the Service, with or without an account.</li>
-          <li><strong>Account</strong>: the personal space created within Noctalia.</li>
-          <li><strong>User Content</strong>: dreams, notes, voice transcripts, AI analyses, generated images, titles, tags, favorites.</li>
-          <li><strong>Premium subscription</strong>: paid offer providing additional features, billed via the Apple App Store or Google Play Store.</li>
-        </ul>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-serif text-white mb-4 mt-8">3. Access and account</h2>
-        <p>Noctalia is available on iOS and Android (and, where applicable, via web). Connection and device costs are yours.</p>
-        <p class="mt-3">Some features require an Account with a valid email and secure password. Provide accurate information and keep it updated.</p>
-        <p class="mt-3">You are solely responsible for your credentials and activity. If you suspect unauthorized access, contact us at
-          <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a> immediately.</p>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-serif text-white mb-4 mt-8">4. Audience and minors</h2>
-        <p>Noctalia is intended for a general audience but <strong>not designed for children under 16</strong>.</p>
-        <p class="mt-3">By using Noctalia, you declare you are 16+ or have parental consent where required by law. If you believe a minor under 16 is using Noctalia without consent, contact us.</p>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-serif text-white mb-4 mt-8">5. Service description</h2>
-        <p>Noctalia notably offers:</p>
-        <ul class="list-disc pl-5 mt-4 space-y-2">
-          <li><a href="blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer" class="text-dream-salmon hover:underline">Dream journal</a> with voice recording and speech-to-text;</li>
-          <li>AI dream analysis and interpretation;</li>
-          <li>AI image generation to visualize dreams;</li>
-          <li>Organization tools (titles, tags, favorites, filters).</li>
-        </ul>
-        <p class="mt-3">The Service may evolve (add, modify, or remove features) to improve experience, security, or legal compliance.</p>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-serif text-white mb-4 mt-8">6. Subscriptions and payment</h2>
-        <p>Premium features are billed through the Apple App Store or Google Play Store and are subject to their pricing, billing, and refund rules.</p>
-        <p class="mt-3">Prices, duration, renewal, trials, and withdrawal rights (if applicable) are detailed on the relevant store page. Noctalia does not directly collect payments.</p>
-        <p class="mt-3">You can manage or cancel your subscription in your App Store or Google Play settings at any time.</p>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-serif text-white mb-4 mt-8">7. Acceptable use</h2>
-        <p>Use Noctalia lawfully and respectfully. In particular, you must not:</p>
-        <ul class="list-disc pl-5 mt-4 space-y-2">
-          <li>Use the Service for illegal or harmful purposes;</li>
-          <li>Infringe third-party rights (privacy, IP, image rights);</li>
-          <li>Upload or record content constituting a criminal offense (e.g., incitement to hatred, severe violence, sexual abuse);</li>
-          <li>Attempt unauthorized access, disrupt the Service, or use automated means without prior written approval.</li>
-        </ul>
-        <p class="mt-3">You remain solely responsible for the User Content you enter, record, or generate.</p>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-serif text-white mb-4 mt-8">8. User content, license, and moderation</h2>
-        <p>User Content is private by default. Noctalia does not publish it for others unless you choose to share or export it.</p>
-        <p class="mt-3">You grant Noctalia a non-exclusive, worldwide, revocable license limited to providing the Service (hosting, processing, analysing, transforming your content for features such as journal, search, analyses, image generation, backups). Noctalia does not sell your data or use it for targeted ads.</p>
-        <p class="mt-3">You may report illegal content or abuse at <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>. We will take appropriate action in line with applicable law.</p>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-serif text-white mb-4 mt-8">9. Data protection and security</h2>
-        <p>We describe data collection, purposes, retention, and your rights in the
-          <a href="datenschutz" class="text-dream-salmon hover:underline">Privacy policy</a>.</p>
-        <p class="mt-3">We implement reasonable technical and organizational measures to protect your data, but no system is 100% secure. Protect your credentials and device.</p>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-serif text-white mb-4 mt-8">10. Intellectual property</h2>
-        <p>All elements of the Service (brand, design, texts, graphics, code, databases) are protected. Any reproduction, adaptation, or extraction without prior authorization is prohibited, except for your personal use of the Service.</p>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-serif text-white mb-4 mt-8">11. Availability and liability</h2>
-        <p>Noctalia is provided "as is" without guarantee of uninterrupted availability. We strive to maintain a stable Service but may suspend or limit access for maintenance, security, or legal reasons.</p>
-        <p class="mt-3">To the extent permitted by law, Noctalia is not liable for indirect damages, loss of data, or prejudice resulting from improper use of the Service.</p>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-serif text-white mb-4 mt-8">12. Changes to the Service or Terms</h2>
-        <p>We may update the Service or these Terms to reflect product evolution, legal changes, or security needs. We will inform you of material changes. Continued use after notification constitutes acceptance of the updated Terms.</p>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-serif text-white mb-4 mt-8">13. Contact</h2>
-        <p>Questions or issues regarding these Terms can be sent to
-          <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>.
-        </p>
-      </section>
+<div class="space-y-8 text-gray-300 leading-relaxed">
+  <div class="p-6 rounded-2xl bg-red-900/20 border border-red-500/20 flex gap-4 items-start">
+    <i data-lucide="alert-triangle" class="w-6 h-6 text-red-400 shrink-0 mt-1"></i>
+    <div>
+      <h2 class="text-red-200 font-bold mb-1">Wichtiger medizinischer Hinweis</h2>
+      <p class="text-sm text-red-200/80">Noctalia ist eine App für Wohlbefinden und Selbsterkundung. <strong>Sie ist kein Medizinprodukt.</strong> KI-Hinweise dienen nur der Reflexion und ersetzen keine medizinische, psychologische oder psychiatrische Beratung. Bei Schlafstörungen oder Belastung wende dich an qualifiziertes Fachpersonal.</p>
     </div>
+  </div>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-4">1. Zweck und Annahme</h2>
+    <p>Diese Bedingungen regeln den Zugriff auf die mobile App und Website <strong>Noctalia</strong> (der Dienst), veröffentlicht von <strong>TiMax</strong>.</p>
+    <p class="mt-3">Durch Installation, Kontoerstellung oder Nutzung bestätigst du, dass du diese Bedingungen, das <a href="impressum" class="text-dream-salmon hover:underline">Impressum</a> und die <a href="datenschutz" class="text-dream-salmon hover:underline">Datenschutzerklärung</a> gelesen hast und akzeptierst. Wenn du nicht einverstanden bist, nutze Noctalia nicht.</p>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">2. Begriffe</h2>
+    <ul class="list-disc pl-5 mt-2 space-y-2">
+      <li><strong>Nutzer:</strong> jede Person, die den Dienst mit oder ohne Konto nutzt.</li>
+      <li><strong>Konto:</strong> persönlicher Bereich innerhalb von Noctalia.</li>
+      <li><strong>Nutzerinhalte:</strong> Träume, Notizen, Transkripte, KI-Analysen, generierte Bilder, Titel, Tags und Favoriten.</li>
+      <li><strong>Premium-Abonnement:</strong> kostenpflichtiges Angebot mit zusätzlichen Funktionen, abgerechnet über App Store oder Google Play.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">3. Zugriff und Konto</h2>
+    <p>Noctalia ist auf unterstützten Plattformen verfügbar; Verbindungs- und Gerätekosten trägst du selbst. Einige Funktionen erfordern ein Konto mit gültiger E-Mail und sicherem Passwort.</p>
+    <p class="mt-3">Du bist für Zugangsdaten und Kontonutzung verantwortlich. Bei Verdacht auf unbefugten Zugriff kontaktiere <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>.</p>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">4. Zielgruppe und Minderjährige</h2>
+    <p>Noctalia richtet sich an ein allgemeines Publikum, ist aber <strong>nicht für Kinder unter 16 Jahren konzipiert</strong>. Mit der Nutzung erklärst du, mindestens 16 Jahre alt zu sein oder die erforderliche Zustimmung zu haben.</p>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">5. Beschreibung des Dienstes</h2>
+    <ul class="list-disc pl-5 mt-4 space-y-2">
+      <li><a href="blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer" class="text-dream-salmon hover:underline">Traumtagebuch</a> mit Spracheingabe und Transkription;</li>
+      <li>KI-gestützte Traumdeutung und Reflexion;</li>
+      <li>KI-Bilder zur Visualisierung von Träumen;</li>
+      <li>Organisation mit Titeln, Tags, Favoriten und Filtern.</li>
+    </ul>
+    <p class="mt-3">Der Dienst kann weiterentwickelt, geändert oder eingeschränkt werden, um Nutzererlebnis, Sicherheit oder Rechtskonformität zu verbessern.</p>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">6. Abonnements und Zahlung</h2>
+    <p>Premium-Funktionen werden über Apple App Store oder Google Play abgerechnet und unterliegen deren Preis-, Abrechnungs- und Erstattungsregeln.</p>
+    <p class="mt-3">Preis, Laufzeit, Verlängerung, Probezeit und mögliche Widerrufsrechte werden im jeweiligen Store angezeigt. Noctalia erhebt Zahlungen nicht direkt. Kündigungen verwaltest du in deinen Store-Einstellungen.</p>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">7. Zulässige Nutzung</h2>
+    <p>Nutze Noctalia rechtmäßig und respektvoll. Untersagt sind insbesondere rechtswidrige oder schädliche Zwecke, Verletzungen von Rechten Dritter, strafbare Inhalte, unbefugter Zugriff, Störung des Dienstes oder automatisierte Nutzung ohne schriftliche Zustimmung.</p>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">8. Nutzerinhalte und Lizenz</h2>
+    <p>Nutzerinhalte sind standardmäßig privat. Du gewährst Noctalia eine nicht exklusive, weltweite, widerrufliche Lizenz, beschränkt auf die Bereitstellung des Dienstes: Hosting, Verarbeitung, Analyse, Suche, Bildgenerierung und Sicherungen. Noctalia verkauft deine Daten nicht und nutzt sie nicht für zielgerichtete Werbung.</p>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">9. Datenschutz und Sicherheit</h2>
+    <p>Datenerhebung, Zwecke, Aufbewahrung und Rechte beschreiben wir in der <a href="datenschutz" class="text-dream-salmon hover:underline">Datenschutzerklärung</a>. Kein System ist vollständig risikofrei; schütze auch deine Zugangsdaten und dein Gerät.</p>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">10. Geistiges Eigentum</h2>
+    <p>Marke, Design, Texte, Grafiken, Code und Datenbanken des Dienstes sind geschützt. Jede Vervielfältigung, Anpassung oder Extraktion ohne Genehmigung ist untersagt, außer für die persönliche Nutzung des Dienstes.</p>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">11. Verfügbarkeit und Haftung</h2>
+    <p>Noctalia wird ohne Garantie unterbrechungsfreier Verfügbarkeit bereitgestellt. Soweit gesetzlich zulässig, haften wir nicht für indirekte Schäden, Datenverlust oder Folgen unsachgemäßer Nutzung.</p>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">12. Änderungen</h2>
+    <p>Wir können den Dienst oder diese Bedingungen aufgrund von Produktentwicklung, Rechtsänderungen oder Sicherheitsbedarf aktualisieren. Wesentliche Änderungen teilen wir mit.</p>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">13. Kontakt</h2>
+    <p>Fragen zu diesen Bedingungen: <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>.</p>
+  </section>
+</div>

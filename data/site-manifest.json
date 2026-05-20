@@ -124,6 +124,90 @@
             }
           }
         },
+        "page.dreamapp-alternative": {
+          "id": "page.dreamapp-alternative",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dreamapp-alternative",
+          "locales": {
+            "en": {
+              "slug": "dreamapp-alternative",
+              "path": "/en/dreamapp-alternative"
+            },
+            "fr": {
+              "slug": "alternative-dreamapp",
+              "path": "/fr/alternative-dreamapp"
+            },
+            "es": {
+              "slug": "alternativa-dreamapp",
+              "path": "/es/alternativa-dreamapp"
+            },
+            "de": {
+              "slug": "dreamapp-alternative",
+              "path": "/de/dreamapp-alternative"
+            },
+            "it": {
+              "slug": "alternativa-dreamapp",
+              "path": "/it/alternativa-dreamapp"
+            }
+          }
+        },
+        "page.oniri-alternative": {
+          "id": "page.oniri-alternative",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "oniri-alternative",
+          "locales": {
+            "en": {
+              "slug": "oniri-alternative",
+              "path": "/en/oniri-alternative"
+            },
+            "fr": {
+              "slug": "alternative-oniri",
+              "path": "/fr/alternative-oniri"
+            },
+            "es": {
+              "slug": "alternativa-oniri",
+              "path": "/es/alternativa-oniri"
+            },
+            "de": {
+              "slug": "oniri-alternative",
+              "path": "/de/oniri-alternative"
+            },
+            "it": {
+              "slug": "alternativa-oniri",
+              "path": "/it/alternativa-oniri"
+            }
+          }
+        },
+        "page.ai-dream-interpretation-app": {
+          "id": "page.ai-dream-interpretation-app",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "ai-dream-interpretation-app",
+          "locales": {
+            "en": {
+              "slug": "ai-dream-interpretation-app",
+              "path": "/en/ai-dream-interpretation-app"
+            },
+            "fr": {
+              "slug": "application-interpretation-reves-ia",
+              "path": "/fr/application-interpretation-reves-ia"
+            },
+            "es": {
+              "slug": "app-interpretacion-suenos-ia",
+              "path": "/es/app-interpretacion-suenos-ia"
+            },
+            "de": {
+              "slug": "ki-traumdeutung-app",
+              "path": "/de/ki-traumdeutung-app"
+            },
+            "it": {
+              "slug": "app-interpretazione-sogni-ai",
+              "path": "/it/app-interpretazione-sogni-ai"
+            }
+          }
+        },
         "legal.notice": {
           "id": "legal.notice",
           "type": "content",
@@ -3468,6 +3552,2470 @@
             "it": {
               "slug": "apocalisse",
               "path": "/it/simboli/apocalisse"
+            }
+          }
+        },
+        "symbol.mother": {
+          "id": "symbol.mother",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "mother",
+          "locales": {
+            "en": {
+              "slug": "mother",
+              "path": "/en/symbols/mother"
+            },
+            "fr": {
+              "slug": "mere",
+              "path": "/fr/symboles/mere"
+            },
+            "es": {
+              "slug": "madre",
+              "path": "/es/simbolos/madre"
+            },
+            "de": {
+              "slug": "mutter",
+              "path": "/de/traumsymbole/mutter"
+            },
+            "it": {
+              "slug": "madre",
+              "path": "/it/simboli/madre"
+            }
+          }
+        },
+        "symbol.father": {
+          "id": "symbol.father",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "father",
+          "locales": {
+            "en": {
+              "slug": "father",
+              "path": "/en/symbols/father"
+            },
+            "fr": {
+              "slug": "pere",
+              "path": "/fr/symboles/pere"
+            },
+            "es": {
+              "slug": "padre",
+              "path": "/es/simbolos/padre"
+            },
+            "de": {
+              "slug": "vater",
+              "path": "/de/traumsymbole/vater"
+            },
+            "it": {
+              "slug": "padre",
+              "path": "/it/simboli/padre"
+            }
+          }
+        },
+        "symbol.sibling": {
+          "id": "symbol.sibling",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "sibling",
+          "locales": {
+            "en": {
+              "slug": "sibling",
+              "path": "/en/symbols/sibling"
+            },
+            "fr": {
+              "slug": "frere-ou-soeur",
+              "path": "/fr/symboles/frere-ou-soeur"
+            },
+            "es": {
+              "slug": "hermano-o-hermana",
+              "path": "/es/simbolos/hermano-o-hermana"
+            },
+            "de": {
+              "slug": "geschwister",
+              "path": "/de/traumsymbole/geschwister"
+            },
+            "it": {
+              "slug": "fratello-o-sorella",
+              "path": "/it/simboli/fratello-o-sorella"
+            }
+          }
+        },
+        "symbol.partner": {
+          "id": "symbol.partner",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "partner",
+          "locales": {
+            "en": {
+              "slug": "partner",
+              "path": "/en/symbols/partner"
+            },
+            "fr": {
+              "slug": "partenaire",
+              "path": "/fr/symboles/partenaire"
+            },
+            "es": {
+              "slug": "pareja",
+              "path": "/es/simbolos/pareja"
+            },
+            "de": {
+              "slug": "partner",
+              "path": "/de/traumsymbole/partner"
+            },
+            "it": {
+              "slug": "partner",
+              "path": "/it/simboli/partner"
+            }
+          }
+        },
+        "symbol.friend": {
+          "id": "symbol.friend",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "friend",
+          "locales": {
+            "en": {
+              "slug": "friend",
+              "path": "/en/symbols/friend"
+            },
+            "fr": {
+              "slug": "ami",
+              "path": "/fr/symboles/ami"
+            },
+            "es": {
+              "slug": "amigo",
+              "path": "/es/simbolos/amigo"
+            },
+            "de": {
+              "slug": "freund",
+              "path": "/de/traumsymbole/freund"
+            },
+            "it": {
+              "slug": "amico",
+              "path": "/it/simboli/amico"
+            }
+          }
+        },
+        "symbol.stranger": {
+          "id": "symbol.stranger",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "stranger",
+          "locales": {
+            "en": {
+              "slug": "stranger",
+              "path": "/en/symbols/stranger"
+            },
+            "fr": {
+              "slug": "inconnu",
+              "path": "/fr/symboles/inconnu"
+            },
+            "es": {
+              "slug": "desconocido",
+              "path": "/es/simbolos/desconocido"
+            },
+            "de": {
+              "slug": "fremder",
+              "path": "/de/traumsymbole/fremder"
+            },
+            "it": {
+              "slug": "sconosciuto",
+              "path": "/it/simboli/sconosciuto"
+            }
+          }
+        },
+        "symbol.teacher": {
+          "id": "symbol.teacher",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "teacher",
+          "locales": {
+            "en": {
+              "slug": "teacher",
+              "path": "/en/symbols/teacher"
+            },
+            "fr": {
+              "slug": "professeur",
+              "path": "/fr/symboles/professeur"
+            },
+            "es": {
+              "slug": "profesor",
+              "path": "/es/simbolos/profesor"
+            },
+            "de": {
+              "slug": "lehrer",
+              "path": "/de/traumsymbole/lehrer"
+            },
+            "it": {
+              "slug": "insegnante",
+              "path": "/it/simboli/insegnante"
+            }
+          }
+        },
+        "symbol.police": {
+          "id": "symbol.police",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "police",
+          "locales": {
+            "en": {
+              "slug": "police",
+              "path": "/en/symbols/police"
+            },
+            "fr": {
+              "slug": "police",
+              "path": "/fr/symboles/police"
+            },
+            "es": {
+              "slug": "policia",
+              "path": "/es/simbolos/policia"
+            },
+            "de": {
+              "slug": "polizei",
+              "path": "/de/traumsymbole/polizei"
+            },
+            "it": {
+              "slug": "polizia",
+              "path": "/it/simboli/polizia"
+            }
+          }
+        },
+        "symbol.doctor": {
+          "id": "symbol.doctor",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "doctor",
+          "locales": {
+            "en": {
+              "slug": "doctor",
+              "path": "/en/symbols/doctor"
+            },
+            "fr": {
+              "slug": "medecin",
+              "path": "/fr/symboles/medecin"
+            },
+            "es": {
+              "slug": "medico",
+              "path": "/es/simbolos/medico"
+            },
+            "de": {
+              "slug": "arzt",
+              "path": "/de/traumsymbole/arzt"
+            },
+            "it": {
+              "slug": "medico",
+              "path": "/it/simboli/medico"
+            }
+          }
+        },
+        "symbol.coworker": {
+          "id": "symbol.coworker",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "coworker",
+          "locales": {
+            "en": {
+              "slug": "coworker",
+              "path": "/en/symbols/coworker"
+            },
+            "fr": {
+              "slug": "collegue",
+              "path": "/fr/symboles/collegue"
+            },
+            "es": {
+              "slug": "companero-de-trabajo",
+              "path": "/es/simbolos/companero-de-trabajo"
+            },
+            "de": {
+              "slug": "kollege",
+              "path": "/de/traumsymbole/kollege"
+            },
+            "it": {
+              "slug": "collega",
+              "path": "/it/simboli/collega"
+            }
+          }
+        },
+        "symbol.grandmother": {
+          "id": "symbol.grandmother",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "grandmother",
+          "locales": {
+            "en": {
+              "slug": "grandmother",
+              "path": "/en/symbols/grandmother"
+            },
+            "fr": {
+              "slug": "grand-mere",
+              "path": "/fr/symboles/grand-mere"
+            },
+            "es": {
+              "slug": "abuela",
+              "path": "/es/simbolos/abuela"
+            },
+            "de": {
+              "slug": "grossmutter",
+              "path": "/de/traumsymbole/grossmutter"
+            },
+            "it": {
+              "slug": "nonna",
+              "path": "/it/simboli/nonna"
+            }
+          }
+        },
+        "symbol.birth": {
+          "id": "symbol.birth",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "birth",
+          "locales": {
+            "en": {
+              "slug": "birth",
+              "path": "/en/symbols/birth"
+            },
+            "fr": {
+              "slug": "naissance",
+              "path": "/fr/symboles/naissance"
+            },
+            "es": {
+              "slug": "nacimiento",
+              "path": "/es/simbolos/nacimiento"
+            },
+            "de": {
+              "slug": "geburt",
+              "path": "/de/traumsymbole/geburt"
+            },
+            "it": {
+              "slug": "nascita",
+              "path": "/it/simboli/nascita"
+            }
+          }
+        },
+        "symbol.funeral": {
+          "id": "symbol.funeral",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "funeral",
+          "locales": {
+            "en": {
+              "slug": "funeral",
+              "path": "/en/symbols/funeral"
+            },
+            "fr": {
+              "slug": "enterrement",
+              "path": "/fr/symboles/enterrement"
+            },
+            "es": {
+              "slug": "funeral",
+              "path": "/es/simbolos/funeral"
+            },
+            "de": {
+              "slug": "beerdigung",
+              "path": "/de/traumsymbole/beerdigung"
+            },
+            "it": {
+              "slug": "funerale",
+              "path": "/it/simboli/funerale"
+            }
+          }
+        },
+        "symbol.grandfather": {
+          "id": "symbol.grandfather",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "grandfather",
+          "locales": {
+            "en": {
+              "slug": "grandfather",
+              "path": "/en/symbols/grandfather"
+            },
+            "fr": {
+              "slug": "grand-pere",
+              "path": "/fr/symboles/grand-pere"
+            },
+            "es": {
+              "slug": "abuelo",
+              "path": "/es/simbolos/abuelo"
+            },
+            "de": {
+              "slug": "grossvater",
+              "path": "/de/traumsymbole/grossvater"
+            },
+            "it": {
+              "slug": "nonno",
+              "path": "/it/simboli/nonno"
+            }
+          }
+        },
+        "symbol.classroom": {
+          "id": "symbol.classroom",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "classroom",
+          "locales": {
+            "en": {
+              "slug": "classroom",
+              "path": "/en/symbols/classroom"
+            },
+            "fr": {
+              "slug": "salle-de-classe",
+              "path": "/fr/symboles/salle-de-classe"
+            },
+            "es": {
+              "slug": "aula",
+              "path": "/es/simbolos/aula"
+            },
+            "de": {
+              "slug": "klassenzimmer",
+              "path": "/de/traumsymbole/klassenzimmer"
+            },
+            "it": {
+              "slug": "aula",
+              "path": "/it/simboli/aula"
+            }
+          }
+        },
+        "symbol.bathroom": {
+          "id": "symbol.bathroom",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "bathroom",
+          "locales": {
+            "en": {
+              "slug": "bathroom",
+              "path": "/en/symbols/bathroom"
+            },
+            "fr": {
+              "slug": "salle-de-bain",
+              "path": "/fr/symboles/salle-de-bain"
+            },
+            "es": {
+              "slug": "bano",
+              "path": "/es/simbolos/bano"
+            },
+            "de": {
+              "slug": "badezimmer",
+              "path": "/de/traumsymbole/badezimmer"
+            },
+            "it": {
+              "slug": "bagno",
+              "path": "/it/simboli/bagno"
+            }
+          }
+        },
+        "symbol.bedroom": {
+          "id": "symbol.bedroom",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "bedroom",
+          "locales": {
+            "en": {
+              "slug": "bedroom",
+              "path": "/en/symbols/bedroom"
+            },
+            "fr": {
+              "slug": "chambre",
+              "path": "/fr/symboles/chambre"
+            },
+            "es": {
+              "slug": "dormitorio",
+              "path": "/es/simbolos/dormitorio"
+            },
+            "de": {
+              "slug": "schlafzimmer",
+              "path": "/de/traumsymbole/schlafzimmer"
+            },
+            "it": {
+              "slug": "camera-da-letto",
+              "path": "/it/simboli/camera-da-letto"
+            }
+          }
+        },
+        "symbol.kitchen": {
+          "id": "symbol.kitchen",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "kitchen",
+          "locales": {
+            "en": {
+              "slug": "kitchen",
+              "path": "/en/symbols/kitchen"
+            },
+            "fr": {
+              "slug": "cuisine",
+              "path": "/fr/symboles/cuisine"
+            },
+            "es": {
+              "slug": "cocina",
+              "path": "/es/simbolos/cocina"
+            },
+            "de": {
+              "slug": "kuche",
+              "path": "/de/traumsymbole/kuche"
+            },
+            "it": {
+              "slug": "cucina",
+              "path": "/it/simboli/cucina"
+            }
+          }
+        },
+        "symbol.workplace": {
+          "id": "symbol.workplace",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "workplace",
+          "locales": {
+            "en": {
+              "slug": "workplace",
+              "path": "/en/symbols/workplace"
+            },
+            "fr": {
+              "slug": "lieu-de-travail",
+              "path": "/fr/symboles/lieu-de-travail"
+            },
+            "es": {
+              "slug": "lugar-de-trabajo",
+              "path": "/es/simbolos/lugar-de-trabajo"
+            },
+            "de": {
+              "slug": "arbeitsplatz",
+              "path": "/de/traumsymbole/arbeitsplatz"
+            },
+            "it": {
+              "slug": "luogo-di-lavoro",
+              "path": "/it/simboli/luogo-di-lavoro"
+            }
+          }
+        },
+        "symbol.road": {
+          "id": "symbol.road",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "road",
+          "locales": {
+            "en": {
+              "slug": "road",
+              "path": "/en/symbols/road"
+            },
+            "fr": {
+              "slug": "route",
+              "path": "/fr/symboles/route"
+            },
+            "es": {
+              "slug": "carretera",
+              "path": "/es/simbolos/carretera"
+            },
+            "de": {
+              "slug": "strasse",
+              "path": "/de/traumsymbole/strasse"
+            },
+            "it": {
+              "slug": "strada",
+              "path": "/it/simboli/strada"
+            }
+          }
+        },
+        "symbol.bus": {
+          "id": "symbol.bus",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "bus",
+          "locales": {
+            "en": {
+              "slug": "bus",
+              "path": "/en/symbols/bus"
+            },
+            "fr": {
+              "slug": "bus",
+              "path": "/fr/symboles/bus"
+            },
+            "es": {
+              "slug": "autobus",
+              "path": "/es/simbolos/autobus"
+            },
+            "de": {
+              "slug": "bus",
+              "path": "/de/traumsymbole/bus"
+            },
+            "it": {
+              "slug": "autobus",
+              "path": "/it/simboli/autobus"
+            }
+          }
+        },
+        "symbol.bicycle": {
+          "id": "symbol.bicycle",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "bicycle",
+          "locales": {
+            "en": {
+              "slug": "bicycle",
+              "path": "/en/symbols/bicycle"
+            },
+            "fr": {
+              "slug": "velo",
+              "path": "/fr/symboles/velo"
+            },
+            "es": {
+              "slug": "bicicleta",
+              "path": "/es/simbolos/bicicleta"
+            },
+            "de": {
+              "slug": "fahrrad",
+              "path": "/de/traumsymbole/fahrrad"
+            },
+            "it": {
+              "slug": "bicicletta",
+              "path": "/it/simboli/bicicletta"
+            }
+          }
+        },
+        "symbol.boat": {
+          "id": "symbol.boat",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "boat",
+          "locales": {
+            "en": {
+              "slug": "boat",
+              "path": "/en/symbols/boat"
+            },
+            "fr": {
+              "slug": "bateau",
+              "path": "/fr/symboles/bateau"
+            },
+            "es": {
+              "slug": "barco",
+              "path": "/es/simbolos/barco"
+            },
+            "de": {
+              "slug": "boot",
+              "path": "/de/traumsymbole/boot"
+            },
+            "it": {
+              "slug": "barca",
+              "path": "/it/simboli/barca"
+            }
+          }
+        },
+        "symbol.airport": {
+          "id": "symbol.airport",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "airport",
+          "locales": {
+            "en": {
+              "slug": "airport",
+              "path": "/en/symbols/airport"
+            },
+            "fr": {
+              "slug": "aeroport",
+              "path": "/fr/symboles/aeroport"
+            },
+            "es": {
+              "slug": "aeropuerto",
+              "path": "/es/simbolos/aeropuerto"
+            },
+            "de": {
+              "slug": "flughafen",
+              "path": "/de/traumsymbole/flughafen"
+            },
+            "it": {
+              "slug": "aeroporto",
+              "path": "/it/simboli/aeroporto"
+            }
+          }
+        },
+        "symbol.suitcase": {
+          "id": "symbol.suitcase",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "suitcase",
+          "locales": {
+            "en": {
+              "slug": "suitcase",
+              "path": "/en/symbols/suitcase"
+            },
+            "fr": {
+              "slug": "valise",
+              "path": "/fr/symboles/valise"
+            },
+            "es": {
+              "slug": "maleta",
+              "path": "/es/simbolos/maleta"
+            },
+            "de": {
+              "slug": "koffer",
+              "path": "/de/traumsymbole/koffer"
+            },
+            "it": {
+              "slug": "valigia",
+              "path": "/it/simboli/valigia"
+            }
+          }
+        },
+        "symbol.passport": {
+          "id": "symbol.passport",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "passport",
+          "locales": {
+            "en": {
+              "slug": "passport",
+              "path": "/en/symbols/passport"
+            },
+            "fr": {
+              "slug": "passeport",
+              "path": "/fr/symboles/passeport"
+            },
+            "es": {
+              "slug": "pasaporte",
+              "path": "/es/simbolos/pasaporte"
+            },
+            "de": {
+              "slug": "reisepass",
+              "path": "/de/traumsymbole/reisepass"
+            },
+            "it": {
+              "slug": "passaporto",
+              "path": "/it/simboli/passaporto"
+            }
+          }
+        },
+        "symbol.ring": {
+          "id": "symbol.ring",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "ring",
+          "locales": {
+            "en": {
+              "slug": "ring",
+              "path": "/en/symbols/ring"
+            },
+            "fr": {
+              "slug": "bague",
+              "path": "/fr/symboles/bague"
+            },
+            "es": {
+              "slug": "anillo",
+              "path": "/es/simbolos/anillo"
+            },
+            "de": {
+              "slug": "ring",
+              "path": "/de/traumsymbole/ring"
+            },
+            "it": {
+              "slug": "anello",
+              "path": "/it/simboli/anello"
+            }
+          }
+        },
+        "symbol.watch": {
+          "id": "symbol.watch",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "watch",
+          "locales": {
+            "en": {
+              "slug": "watch",
+              "path": "/en/symbols/watch"
+            },
+            "fr": {
+              "slug": "montre",
+              "path": "/fr/symboles/montre"
+            },
+            "es": {
+              "slug": "reloj",
+              "path": "/es/simbolos/reloj"
+            },
+            "de": {
+              "slug": "uhr",
+              "path": "/de/traumsymbole/uhr"
+            },
+            "it": {
+              "slug": "orologio",
+              "path": "/it/simboli/orologio"
+            }
+          }
+        },
+        "symbol.book": {
+          "id": "symbol.book",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "book",
+          "locales": {
+            "en": {
+              "slug": "book",
+              "path": "/en/symbols/book"
+            },
+            "fr": {
+              "slug": "livre",
+              "path": "/fr/symboles/livre"
+            },
+            "es": {
+              "slug": "libro",
+              "path": "/es/simbolos/libro"
+            },
+            "de": {
+              "slug": "buch",
+              "path": "/de/traumsymbole/buch"
+            },
+            "it": {
+              "slug": "libro",
+              "path": "/it/simboli/libro"
+            }
+          }
+        },
+        "symbol.letter": {
+          "id": "symbol.letter",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "letter",
+          "locales": {
+            "en": {
+              "slug": "letter",
+              "path": "/en/symbols/letter"
+            },
+            "fr": {
+              "slug": "lettre",
+              "path": "/fr/symboles/lettre"
+            },
+            "es": {
+              "slug": "carta",
+              "path": "/es/simbolos/carta"
+            },
+            "de": {
+              "slug": "brief",
+              "path": "/de/traumsymbole/brief"
+            },
+            "it": {
+              "slug": "lettera",
+              "path": "/it/simboli/lettera"
+            }
+          }
+        },
+        "symbol.hair": {
+          "id": "symbol.hair",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "hair",
+          "locales": {
+            "en": {
+              "slug": "hair",
+              "path": "/en/symbols/hair"
+            },
+            "fr": {
+              "slug": "cheveux",
+              "path": "/fr/symboles/cheveux"
+            },
+            "es": {
+              "slug": "cabello",
+              "path": "/es/simbolos/cabello"
+            },
+            "de": {
+              "slug": "haare",
+              "path": "/de/traumsymbole/haare"
+            },
+            "it": {
+              "slug": "capelli",
+              "path": "/it/simboli/capelli"
+            }
+          }
+        },
+        "symbol.eyes": {
+          "id": "symbol.eyes",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "eyes",
+          "locales": {
+            "en": {
+              "slug": "eyes",
+              "path": "/en/symbols/eyes"
+            },
+            "fr": {
+              "slug": "yeux",
+              "path": "/fr/symboles/yeux"
+            },
+            "es": {
+              "slug": "ojos",
+              "path": "/es/simbolos/ojos"
+            },
+            "de": {
+              "slug": "augen",
+              "path": "/de/traumsymbole/augen"
+            },
+            "it": {
+              "slug": "occhi",
+              "path": "/it/simboli/occhi"
+            }
+          }
+        },
+        "symbol.hands": {
+          "id": "symbol.hands",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "hands",
+          "locales": {
+            "en": {
+              "slug": "hands",
+              "path": "/en/symbols/hands"
+            },
+            "fr": {
+              "slug": "mains",
+              "path": "/fr/symboles/mains"
+            },
+            "es": {
+              "slug": "manos",
+              "path": "/es/simbolos/manos"
+            },
+            "de": {
+              "slug": "hande",
+              "path": "/de/traumsymbole/hande"
+            },
+            "it": {
+              "slug": "mani",
+              "path": "/it/simboli/mani"
+            }
+          }
+        },
+        "symbol.feet": {
+          "id": "symbol.feet",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "feet",
+          "locales": {
+            "en": {
+              "slug": "feet",
+              "path": "/en/symbols/feet"
+            },
+            "fr": {
+              "slug": "pieds",
+              "path": "/fr/symboles/pieds"
+            },
+            "es": {
+              "slug": "pies",
+              "path": "/es/simbolos/pies"
+            },
+            "de": {
+              "slug": "fusse",
+              "path": "/de/traumsymbole/fusse"
+            },
+            "it": {
+              "slug": "piedi",
+              "path": "/it/simboli/piedi"
+            }
+          }
+        },
+        "symbol.heart": {
+          "id": "symbol.heart",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "heart",
+          "locales": {
+            "en": {
+              "slug": "heart",
+              "path": "/en/symbols/heart"
+            },
+            "fr": {
+              "slug": "coeur",
+              "path": "/fr/symboles/coeur"
+            },
+            "es": {
+              "slug": "corazon",
+              "path": "/es/simbolos/corazon"
+            },
+            "de": {
+              "slug": "herz",
+              "path": "/de/traumsymbole/herz"
+            },
+            "it": {
+              "slug": "cuore",
+              "path": "/it/simboli/cuore"
+            }
+          }
+        },
+        "symbol.pregnancy-test": {
+          "id": "symbol.pregnancy-test",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "pregnancy-test",
+          "locales": {
+            "en": {
+              "slug": "pregnancy-test",
+              "path": "/en/symbols/pregnancy-test"
+            },
+            "fr": {
+              "slug": "test-de-grossesse",
+              "path": "/fr/symboles/test-de-grossesse"
+            },
+            "es": {
+              "slug": "prueba-de-embarazo",
+              "path": "/es/simbolos/prueba-de-embarazo"
+            },
+            "de": {
+              "slug": "schwangerschaftstest",
+              "path": "/de/traumsymbole/schwangerschaftstest"
+            },
+            "it": {
+              "slug": "test-di-gravidanza",
+              "path": "/it/simboli/test-di-gravidanza"
+            }
+          }
+        },
+        "symbol.illness": {
+          "id": "symbol.illness",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "illness",
+          "locales": {
+            "en": {
+              "slug": "illness",
+              "path": "/en/symbols/illness"
+            },
+            "fr": {
+              "slug": "maladie",
+              "path": "/fr/symboles/maladie"
+            },
+            "es": {
+              "slug": "enfermedad",
+              "path": "/es/simbolos/enfermedad"
+            },
+            "de": {
+              "slug": "krankheit",
+              "path": "/de/traumsymbole/krankheit"
+            },
+            "it": {
+              "slug": "malattia",
+              "path": "/it/simboli/malattia"
+            }
+          }
+        },
+        "symbol.basement": {
+          "id": "symbol.basement",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "basement",
+          "locales": {
+            "en": {
+              "slug": "basement",
+              "path": "/en/symbols/basement"
+            },
+            "fr": {
+              "slug": "sous-sol",
+              "path": "/fr/symboles/sous-sol"
+            },
+            "es": {
+              "slug": "sotano",
+              "path": "/es/simbolos/sotano"
+            },
+            "de": {
+              "slug": "keller",
+              "path": "/de/traumsymbole/keller"
+            },
+            "it": {
+              "slug": "seminterrato",
+              "path": "/it/simboli/seminterrato"
+            }
+          }
+        },
+        "symbol.surgery": {
+          "id": "symbol.surgery",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "surgery",
+          "locales": {
+            "en": {
+              "slug": "surgery",
+              "path": "/en/symbols/surgery"
+            },
+            "fr": {
+              "slug": "chirurgie",
+              "path": "/fr/symboles/chirurgie"
+            },
+            "es": {
+              "slug": "cirugia",
+              "path": "/es/simbolos/cirugia"
+            },
+            "de": {
+              "slug": "operation",
+              "path": "/de/traumsymbole/operation"
+            },
+            "it": {
+              "slug": "intervento-chirurgico",
+              "path": "/it/simboli/intervento-chirurgico"
+            }
+          }
+        },
+        "symbol.bleeding": {
+          "id": "symbol.bleeding",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "bleeding",
+          "locales": {
+            "en": {
+              "slug": "bleeding",
+              "path": "/en/symbols/bleeding"
+            },
+            "fr": {
+              "slug": "saignement",
+              "path": "/fr/symboles/saignement"
+            },
+            "es": {
+              "slug": "sangrado",
+              "path": "/es/simbolos/sangrado"
+            },
+            "de": {
+              "slug": "bluten",
+              "path": "/de/traumsymbole/bluten"
+            },
+            "it": {
+              "slug": "sanguinamento",
+              "path": "/it/simboli/sanguinamento"
+            }
+          }
+        },
+        "symbol.drowning": {
+          "id": "symbol.drowning",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "drowning",
+          "locales": {
+            "en": {
+              "slug": "drowning",
+              "path": "/en/symbols/drowning"
+            },
+            "fr": {
+              "slug": "noyade",
+              "path": "/fr/symboles/noyade"
+            },
+            "es": {
+              "slug": "ahogamiento",
+              "path": "/es/simbolos/ahogamiento"
+            },
+            "de": {
+              "slug": "ertrinken",
+              "path": "/de/traumsymbole/ertrinken"
+            },
+            "it": {
+              "slug": "annegamento",
+              "path": "/it/simboli/annegamento"
+            }
+          }
+        },
+        "symbol.trapped": {
+          "id": "symbol.trapped",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "trapped",
+          "locales": {
+            "en": {
+              "slug": "trapped",
+              "path": "/en/symbols/trapped"
+            },
+            "fr": {
+              "slug": "piege",
+              "path": "/fr/symboles/piege"
+            },
+            "es": {
+              "slug": "atrapado",
+              "path": "/es/simbolos/atrapado"
+            },
+            "de": {
+              "slug": "gefangen",
+              "path": "/de/traumsymbole/gefangen"
+            },
+            "it": {
+              "slug": "intrappolato",
+              "path": "/it/simboli/intrappolato"
+            }
+          }
+        },
+        "symbol.attic": {
+          "id": "symbol.attic",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "attic",
+          "locales": {
+            "en": {
+              "slug": "attic",
+              "path": "/en/symbols/attic"
+            },
+            "fr": {
+              "slug": "grenier",
+              "path": "/fr/symboles/grenier"
+            },
+            "es": {
+              "slug": "atico",
+              "path": "/es/simbolos/atico"
+            },
+            "de": {
+              "slug": "dachboden",
+              "path": "/de/traumsymbole/dachboden"
+            },
+            "it": {
+              "slug": "soffitta",
+              "path": "/it/simboli/soffitta"
+            }
+          }
+        },
+        "symbol.late": {
+          "id": "symbol.late",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "being-late",
+          "locales": {
+            "en": {
+              "slug": "being-late",
+              "path": "/en/symbols/being-late"
+            },
+            "fr": {
+              "slug": "etre-en-retard",
+              "path": "/fr/symboles/etre-en-retard"
+            },
+            "es": {
+              "slug": "llegar-tarde",
+              "path": "/es/simbolos/llegar-tarde"
+            },
+            "de": {
+              "slug": "zu-spat-kommen",
+              "path": "/de/traumsymbole/zu-spat-kommen"
+            },
+            "it": {
+              "slug": "essere-in-ritardo",
+              "path": "/it/simboli/essere-in-ritardo"
+            }
+          }
+        },
+        "symbol.missing-train": {
+          "id": "symbol.missing-train",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "missing-a-train",
+          "locales": {
+            "en": {
+              "slug": "missing-a-train",
+              "path": "/en/symbols/missing-a-train"
+            },
+            "fr": {
+              "slug": "rater-un-train",
+              "path": "/fr/symboles/rater-un-train"
+            },
+            "es": {
+              "slug": "perder-un-tren",
+              "path": "/es/simbolos/perder-un-tren"
+            },
+            "de": {
+              "slug": "einen-zug-verpassen",
+              "path": "/de/traumsymbole/einen-zug-verpassen"
+            },
+            "it": {
+              "slug": "perdere-un-treno",
+              "path": "/it/simboli/perdere-un-treno"
+            }
+          }
+        },
+        "symbol.unable-to-speak": {
+          "id": "symbol.unable-to-speak",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "unable-to-speak",
+          "locales": {
+            "en": {
+              "slug": "unable-to-speak",
+              "path": "/en/symbols/unable-to-speak"
+            },
+            "fr": {
+              "slug": "incapable-de-parler",
+              "path": "/fr/symboles/incapable-de-parler"
+            },
+            "es": {
+              "slug": "no-poder-hablar",
+              "path": "/es/simbolos/no-poder-hablar"
+            },
+            "de": {
+              "slug": "nicht-sprechen-konnen",
+              "path": "/de/traumsymbole/nicht-sprechen-konnen"
+            },
+            "it": {
+              "slug": "non-riuscire-a-parlare",
+              "path": "/it/simboli/non-riuscire-a-parlare"
+            }
+          }
+        },
+        "symbol.paralysis": {
+          "id": "symbol.paralysis",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "paralysis",
+          "locales": {
+            "en": {
+              "slug": "paralysis",
+              "path": "/en/symbols/paralysis"
+            },
+            "fr": {
+              "slug": "paralysie",
+              "path": "/fr/symboles/paralysie"
+            },
+            "es": {
+              "slug": "paralisis",
+              "path": "/es/simbolos/paralisis"
+            },
+            "de": {
+              "slug": "lahmung",
+              "path": "/de/traumsymbole/lahmung"
+            },
+            "it": {
+              "slug": "paralisi",
+              "path": "/it/simboli/paralisi"
+            }
+          }
+        },
+        "symbol.screaming": {
+          "id": "symbol.screaming",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "screaming",
+          "locales": {
+            "en": {
+              "slug": "screaming",
+              "path": "/en/symbols/screaming"
+            },
+            "fr": {
+              "slug": "cri",
+              "path": "/fr/symboles/cri"
+            },
+            "es": {
+              "slug": "grito",
+              "path": "/es/simbolos/grito"
+            },
+            "de": {
+              "slug": "schreien",
+              "path": "/de/traumsymbole/schreien"
+            },
+            "it": {
+              "slug": "urlare",
+              "path": "/it/simboli/urlare"
+            }
+          }
+        },
+        "symbol.hiding": {
+          "id": "symbol.hiding",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "hiding",
+          "locales": {
+            "en": {
+              "slug": "hiding",
+              "path": "/en/symbols/hiding"
+            },
+            "fr": {
+              "slug": "se-cacher",
+              "path": "/fr/symboles/se-cacher"
+            },
+            "es": {
+              "slug": "esconderse",
+              "path": "/es/simbolos/esconderse"
+            },
+            "de": {
+              "slug": "sich-verstecken",
+              "path": "/de/traumsymbole/sich-verstecken"
+            },
+            "it": {
+              "slug": "nascondersi",
+              "path": "/it/simboli/nascondersi"
+            }
+          }
+        },
+        "symbol.shadow": {
+          "id": "symbol.shadow",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "shadow",
+          "locales": {
+            "en": {
+              "slug": "shadow",
+              "path": "/en/symbols/shadow"
+            },
+            "fr": {
+              "slug": "ombre",
+              "path": "/fr/symboles/ombre"
+            },
+            "es": {
+              "slug": "sombra",
+              "path": "/es/simbolos/sombra"
+            },
+            "de": {
+              "slug": "schatten",
+              "path": "/de/traumsymbole/schatten"
+            },
+            "it": {
+              "slug": "ombra",
+              "path": "/it/simboli/ombra"
+            }
+          }
+        },
+        "symbol.ghost": {
+          "id": "symbol.ghost",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "ghost",
+          "locales": {
+            "en": {
+              "slug": "ghost",
+              "path": "/en/symbols/ghost"
+            },
+            "fr": {
+              "slug": "fantome",
+              "path": "/fr/symboles/fantome"
+            },
+            "es": {
+              "slug": "fantasma",
+              "path": "/es/simbolos/fantasma"
+            },
+            "de": {
+              "slug": "geist",
+              "path": "/de/traumsymbole/geist"
+            },
+            "it": {
+              "slug": "fantasma",
+              "path": "/it/simboli/fantasma"
+            }
+          }
+        },
+        "symbol.demon": {
+          "id": "symbol.demon",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "demon",
+          "locales": {
+            "en": {
+              "slug": "demon",
+              "path": "/en/symbols/demon"
+            },
+            "fr": {
+              "slug": "demon",
+              "path": "/fr/symboles/demon"
+            },
+            "es": {
+              "slug": "demonio",
+              "path": "/es/simbolos/demonio"
+            },
+            "de": {
+              "slug": "damon",
+              "path": "/de/traumsymbole/damon"
+            },
+            "it": {
+              "slug": "demone",
+              "path": "/it/simboli/demone"
+            }
+          }
+        },
+        "symbol.monster": {
+          "id": "symbol.monster",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "monster",
+          "locales": {
+            "en": {
+              "slug": "monster",
+              "path": "/en/symbols/monster"
+            },
+            "fr": {
+              "slug": "monstre",
+              "path": "/fr/symboles/monstre"
+            },
+            "es": {
+              "slug": "monstruo",
+              "path": "/es/simbolos/monstruo"
+            },
+            "de": {
+              "slug": "monster",
+              "path": "/de/traumsymbole/monster"
+            },
+            "it": {
+              "slug": "mostro",
+              "path": "/it/simboli/mostro"
+            }
+          }
+        },
+        "symbol.zombie": {
+          "id": "symbol.zombie",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "zombie",
+          "locales": {
+            "en": {
+              "slug": "zombie",
+              "path": "/en/symbols/zombie"
+            },
+            "fr": {
+              "slug": "zombie",
+              "path": "/fr/symboles/zombie"
+            },
+            "es": {
+              "slug": "zombi",
+              "path": "/es/simbolos/zombi"
+            },
+            "de": {
+              "slug": "zombie",
+              "path": "/de/traumsymbole/zombie"
+            },
+            "it": {
+              "slug": "zombie",
+              "path": "/it/simboli/zombie"
+            }
+          }
+        },
+        "symbol.prison": {
+          "id": "symbol.prison",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "prison",
+          "locales": {
+            "en": {
+              "slug": "prison",
+              "path": "/en/symbols/prison"
+            },
+            "fr": {
+              "slug": "prison",
+              "path": "/fr/symboles/prison"
+            },
+            "es": {
+              "slug": "prision",
+              "path": "/es/simbolos/prision"
+            },
+            "de": {
+              "slug": "gefangnis",
+              "path": "/de/traumsymbole/gefangnis"
+            },
+            "it": {
+              "slug": "prigione",
+              "path": "/it/simboli/prigione"
+            }
+          }
+        },
+        "symbol.earthquake": {
+          "id": "symbol.earthquake",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "earthquake",
+          "locales": {
+            "en": {
+              "slug": "earthquake",
+              "path": "/en/symbols/earthquake"
+            },
+            "fr": {
+              "slug": "tremblement-de-terre",
+              "path": "/fr/symboles/tremblement-de-terre"
+            },
+            "es": {
+              "slug": "terremoto",
+              "path": "/es/simbolos/terremoto"
+            },
+            "de": {
+              "slug": "erdbeben",
+              "path": "/de/traumsymbole/erdbeben"
+            },
+            "it": {
+              "slug": "terremoto",
+              "path": "/it/simboli/terremoto"
+            }
+          }
+        },
+        "symbol.tornado": {
+          "id": "symbol.tornado",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "tornado",
+          "locales": {
+            "en": {
+              "slug": "tornado",
+              "path": "/en/symbols/tornado"
+            },
+            "fr": {
+              "slug": "tornade",
+              "path": "/fr/symboles/tornade"
+            },
+            "es": {
+              "slug": "tornado",
+              "path": "/es/simbolos/tornado"
+            },
+            "de": {
+              "slug": "tornado",
+              "path": "/de/traumsymbole/tornado"
+            },
+            "it": {
+              "slug": "tornado",
+              "path": "/it/simboli/tornado"
+            }
+          }
+        },
+        "symbol.hotel": {
+          "id": "symbol.hotel",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "hotel",
+          "locales": {
+            "en": {
+              "slug": "hotel",
+              "path": "/en/symbols/hotel"
+            },
+            "fr": {
+              "slug": "hotel",
+              "path": "/fr/symboles/hotel"
+            },
+            "es": {
+              "slug": "hotel",
+              "path": "/es/simbolos/hotel"
+            },
+            "de": {
+              "slug": "hotel",
+              "path": "/de/traumsymbole/hotel"
+            },
+            "it": {
+              "slug": "hotel",
+              "path": "/it/simboli/hotel"
+            }
+          }
+        },
+        "symbol.lightning": {
+          "id": "symbol.lightning",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "lightning",
+          "locales": {
+            "en": {
+              "slug": "lightning",
+              "path": "/en/symbols/lightning"
+            },
+            "fr": {
+              "slug": "eclair",
+              "path": "/fr/symboles/eclair"
+            },
+            "es": {
+              "slug": "rayo",
+              "path": "/es/simbolos/rayo"
+            },
+            "de": {
+              "slug": "blitz",
+              "path": "/de/traumsymbole/blitz"
+            },
+            "it": {
+              "slug": "fulmine",
+              "path": "/it/simboli/fulmine"
+            }
+          }
+        },
+        "symbol.snow": {
+          "id": "symbol.snow",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "snow",
+          "locales": {
+            "en": {
+              "slug": "snow",
+              "path": "/en/symbols/snow"
+            },
+            "fr": {
+              "slug": "neige",
+              "path": "/fr/symboles/neige"
+            },
+            "es": {
+              "slug": "nieve",
+              "path": "/es/simbolos/nieve"
+            },
+            "de": {
+              "slug": "schnee",
+              "path": "/de/traumsymbole/schnee"
+            },
+            "it": {
+              "slug": "neve",
+              "path": "/it/simboli/neve"
+            }
+          }
+        },
+        "symbol.mall": {
+          "id": "symbol.mall",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "mall",
+          "locales": {
+            "en": {
+              "slug": "mall",
+              "path": "/en/symbols/mall"
+            },
+            "fr": {
+              "slug": "centre-commercial",
+              "path": "/fr/symboles/centre-commercial"
+            },
+            "es": {
+              "slug": "centro-comercial",
+              "path": "/es/simbolos/centro-comercial"
+            },
+            "de": {
+              "slug": "einkaufszentrum",
+              "path": "/de/traumsymbole/einkaufszentrum"
+            },
+            "it": {
+              "slug": "centro-commerciale",
+              "path": "/it/simboli/centro-commerciale"
+            }
+          }
+        },
+        "symbol.cow": {
+          "id": "symbol.cow",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "cow",
+          "locales": {
+            "en": {
+              "slug": "cow",
+              "path": "/en/symbols/cow"
+            },
+            "fr": {
+              "slug": "vache",
+              "path": "/fr/symboles/vache"
+            },
+            "es": {
+              "slug": "vaca",
+              "path": "/es/simbolos/vaca"
+            },
+            "de": {
+              "slug": "kuh",
+              "path": "/de/traumsymbole/kuh"
+            },
+            "it": {
+              "slug": "mucca",
+              "path": "/it/simboli/mucca"
+            }
+          }
+        },
+        "symbol.rabbit": {
+          "id": "symbol.rabbit",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "rabbit",
+          "locales": {
+            "en": {
+              "slug": "rabbit",
+              "path": "/en/symbols/rabbit"
+            },
+            "fr": {
+              "slug": "lapin",
+              "path": "/fr/symboles/lapin"
+            },
+            "es": {
+              "slug": "conejo",
+              "path": "/es/simbolos/conejo"
+            },
+            "de": {
+              "slug": "kaninchen",
+              "path": "/de/traumsymbole/kaninchen"
+            },
+            "it": {
+              "slug": "coniglio",
+              "path": "/it/simboli/coniglio"
+            }
+          }
+        },
+        "symbol.mouse": {
+          "id": "symbol.mouse",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "mouse",
+          "locales": {
+            "en": {
+              "slug": "mouse",
+              "path": "/en/symbols/mouse"
+            },
+            "fr": {
+              "slug": "souris",
+              "path": "/fr/symboles/souris"
+            },
+            "es": {
+              "slug": "raton",
+              "path": "/es/simbolos/raton"
+            },
+            "de": {
+              "slug": "maus",
+              "path": "/de/traumsymbole/maus"
+            },
+            "it": {
+              "slug": "topo",
+              "path": "/it/simboli/topo"
+            }
+          }
+        },
+        "symbol.rat": {
+          "id": "symbol.rat",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "rat",
+          "locales": {
+            "en": {
+              "slug": "rat",
+              "path": "/en/symbols/rat"
+            },
+            "fr": {
+              "slug": "rat",
+              "path": "/fr/symboles/rat"
+            },
+            "es": {
+              "slug": "rata",
+              "path": "/es/simbolos/rata"
+            },
+            "de": {
+              "slug": "ratte",
+              "path": "/de/traumsymbole/ratte"
+            },
+            "it": {
+              "slug": "ratto",
+              "path": "/it/simboli/ratto"
+            }
+          }
+        },
+        "symbol.bear": {
+          "id": "symbol.bear",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "bear",
+          "locales": {
+            "en": {
+              "slug": "bear",
+              "path": "/en/symbols/bear"
+            },
+            "fr": {
+              "slug": "ours",
+              "path": "/fr/symboles/ours"
+            },
+            "es": {
+              "slug": "oso",
+              "path": "/es/simbolos/oso"
+            },
+            "de": {
+              "slug": "baer",
+              "path": "/de/traumsymbole/baer"
+            },
+            "it": {
+              "slug": "orso",
+              "path": "/it/simboli/orso"
+            }
+          }
+        },
+        "symbol.elephant": {
+          "id": "symbol.elephant",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "elephant",
+          "locales": {
+            "en": {
+              "slug": "elephant",
+              "path": "/en/symbols/elephant"
+            },
+            "fr": {
+              "slug": "elephant",
+              "path": "/fr/symboles/elephant"
+            },
+            "es": {
+              "slug": "elefante",
+              "path": "/es/simbolos/elefante"
+            },
+            "de": {
+              "slug": "elefant",
+              "path": "/de/traumsymbole/elefant"
+            },
+            "it": {
+              "slug": "elefante",
+              "path": "/it/simboli/elefante"
+            }
+          }
+        },
+        "symbol.fish": {
+          "id": "symbol.fish",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "fish",
+          "locales": {
+            "en": {
+              "slug": "fish",
+              "path": "/en/symbols/fish"
+            },
+            "fr": {
+              "slug": "poisson",
+              "path": "/fr/symboles/poisson"
+            },
+            "es": {
+              "slug": "pez",
+              "path": "/es/simbolos/pez"
+            },
+            "de": {
+              "slug": "fisch",
+              "path": "/de/traumsymbole/fisch"
+            },
+            "it": {
+              "slug": "pesce",
+              "path": "/it/simboli/pesce"
+            }
+          }
+        },
+        "symbol.shark": {
+          "id": "symbol.shark",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "shark",
+          "locales": {
+            "en": {
+              "slug": "shark",
+              "path": "/en/symbols/shark"
+            },
+            "fr": {
+              "slug": "requin",
+              "path": "/fr/symboles/requin"
+            },
+            "es": {
+              "slug": "tiburon",
+              "path": "/es/simbolos/tiburon"
+            },
+            "de": {
+              "slug": "hai",
+              "path": "/de/traumsymbole/hai"
+            },
+            "it": {
+              "slug": "squalo",
+              "path": "/it/simboli/squalo"
+            }
+          }
+        },
+        "symbol.whale": {
+          "id": "symbol.whale",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "whale",
+          "locales": {
+            "en": {
+              "slug": "whale",
+              "path": "/en/symbols/whale"
+            },
+            "fr": {
+              "slug": "baleine",
+              "path": "/fr/symboles/baleine"
+            },
+            "es": {
+              "slug": "ballena",
+              "path": "/es/simbolos/ballena"
+            },
+            "de": {
+              "slug": "wal",
+              "path": "/de/traumsymbole/wal"
+            },
+            "it": {
+              "slug": "balena",
+              "path": "/it/simboli/balena"
+            }
+          }
+        },
+        "symbol.dolphin": {
+          "id": "symbol.dolphin",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dolphin",
+          "locales": {
+            "en": {
+              "slug": "dolphin",
+              "path": "/en/symbols/dolphin"
+            },
+            "fr": {
+              "slug": "dauphin",
+              "path": "/fr/symboles/dauphin"
+            },
+            "es": {
+              "slug": "delfin",
+              "path": "/es/simbolos/delfin"
+            },
+            "de": {
+              "slug": "delfin",
+              "path": "/de/traumsymbole/delfin"
+            },
+            "it": {
+              "slug": "delfino",
+              "path": "/it/simboli/delfino"
+            }
+          }
+        },
+        "symbol.frog": {
+          "id": "symbol.frog",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "frog",
+          "locales": {
+            "en": {
+              "slug": "frog",
+              "path": "/en/symbols/frog"
+            },
+            "fr": {
+              "slug": "grenouille",
+              "path": "/fr/symboles/grenouille"
+            },
+            "es": {
+              "slug": "rana",
+              "path": "/es/simbolos/rana"
+            },
+            "de": {
+              "slug": "frosch",
+              "path": "/de/traumsymbole/frosch"
+            },
+            "it": {
+              "slug": "rana",
+              "path": "/it/simboli/rana"
+            }
+          }
+        },
+        "symbol.butterfly": {
+          "id": "symbol.butterfly",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "butterfly",
+          "locales": {
+            "en": {
+              "slug": "butterfly",
+              "path": "/en/symbols/butterfly"
+            },
+            "fr": {
+              "slug": "papillon",
+              "path": "/fr/symboles/papillon"
+            },
+            "es": {
+              "slug": "mariposa",
+              "path": "/es/simbolos/mariposa"
+            },
+            "de": {
+              "slug": "schmetterling",
+              "path": "/de/traumsymbole/schmetterling"
+            },
+            "it": {
+              "slug": "farfalla",
+              "path": "/it/simboli/farfalla"
+            }
+          }
+        },
+        "symbol.bee": {
+          "id": "symbol.bee",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "bee",
+          "locales": {
+            "en": {
+              "slug": "bee",
+              "path": "/en/symbols/bee"
+            },
+            "fr": {
+              "slug": "abeille",
+              "path": "/fr/symboles/abeille"
+            },
+            "es": {
+              "slug": "abeja",
+              "path": "/es/simbolos/abeja"
+            },
+            "de": {
+              "slug": "biene",
+              "path": "/de/traumsymbole/biene"
+            },
+            "it": {
+              "slug": "ape",
+              "path": "/it/simboli/ape"
+            }
+          }
+        },
+        "symbol.ant": {
+          "id": "symbol.ant",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "ant",
+          "locales": {
+            "en": {
+              "slug": "ant",
+              "path": "/en/symbols/ant"
+            },
+            "fr": {
+              "slug": "fourmi",
+              "path": "/fr/symboles/fourmi"
+            },
+            "es": {
+              "slug": "hormiga",
+              "path": "/es/simbolos/hormiga"
+            },
+            "de": {
+              "slug": "ameise",
+              "path": "/de/traumsymbole/ameise"
+            },
+            "it": {
+              "slug": "formica",
+              "path": "/it/simboli/formica"
+            }
+          }
+        },
+        "symbol.owl": {
+          "id": "symbol.owl",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "owl",
+          "locales": {
+            "en": {
+              "slug": "owl",
+              "path": "/en/symbols/owl"
+            },
+            "fr": {
+              "slug": "hibou",
+              "path": "/fr/symboles/hibou"
+            },
+            "es": {
+              "slug": "buho",
+              "path": "/es/simbolos/buho"
+            },
+            "de": {
+              "slug": "eule",
+              "path": "/de/traumsymbole/eule"
+            },
+            "it": {
+              "slug": "gufo",
+              "path": "/it/simboli/gufo"
+            }
+          }
+        },
+        "symbol.eagle": {
+          "id": "symbol.eagle",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "eagle",
+          "locales": {
+            "en": {
+              "slug": "eagle",
+              "path": "/en/symbols/eagle"
+            },
+            "fr": {
+              "slug": "aigle",
+              "path": "/fr/symboles/aigle"
+            },
+            "es": {
+              "slug": "aguila",
+              "path": "/es/simbolos/aguila"
+            },
+            "de": {
+              "slug": "adler",
+              "path": "/de/traumsymbole/adler"
+            },
+            "it": {
+              "slug": "aquila",
+              "path": "/it/simboli/aquila"
+            }
+          }
+        },
+        "symbol.crow": {
+          "id": "symbol.crow",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "crow",
+          "locales": {
+            "en": {
+              "slug": "crow",
+              "path": "/en/symbols/crow"
+            },
+            "fr": {
+              "slug": "corbeau",
+              "path": "/fr/symboles/corbeau"
+            },
+            "es": {
+              "slug": "cuervo",
+              "path": "/es/simbolos/cuervo"
+            },
+            "de": {
+              "slug": "krahe",
+              "path": "/de/traumsymbole/krahe"
+            },
+            "it": {
+              "slug": "corvo",
+              "path": "/it/simboli/corvo"
+            }
+          }
+        },
+        "symbol.rose": {
+          "id": "symbol.rose",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "rose",
+          "locales": {
+            "en": {
+              "slug": "rose",
+              "path": "/en/symbols/rose"
+            },
+            "fr": {
+              "slug": "rose",
+              "path": "/fr/symboles/rose"
+            },
+            "es": {
+              "slug": "rosa",
+              "path": "/es/simbolos/rosa"
+            },
+            "de": {
+              "slug": "rose",
+              "path": "/de/traumsymbole/rose"
+            },
+            "it": {
+              "slug": "rosa",
+              "path": "/it/simboli/rosa"
+            }
+          }
+        },
+        "symbol.garden": {
+          "id": "symbol.garden",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "garden",
+          "locales": {
+            "en": {
+              "slug": "garden",
+              "path": "/en/symbols/garden"
+            },
+            "fr": {
+              "slug": "jardin",
+              "path": "/fr/symboles/jardin"
+            },
+            "es": {
+              "slug": "jardin",
+              "path": "/es/simbolos/jardin"
+            },
+            "de": {
+              "slug": "garten",
+              "path": "/de/traumsymbole/garten"
+            },
+            "it": {
+              "slug": "giardino",
+              "path": "/it/simboli/giardino"
+            }
+          }
+        },
+        "symbol.desert": {
+          "id": "symbol.desert",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "desert",
+          "locales": {
+            "en": {
+              "slug": "desert",
+              "path": "/en/symbols/desert"
+            },
+            "fr": {
+              "slug": "desert",
+              "path": "/fr/symboles/desert"
+            },
+            "es": {
+              "slug": "desierto",
+              "path": "/es/simbolos/desierto"
+            },
+            "de": {
+              "slug": "wuste",
+              "path": "/de/traumsymbole/wuste"
+            },
+            "it": {
+              "slug": "deserto",
+              "path": "/it/simboli/deserto"
+            }
+          }
+        },
+        "symbol.island": {
+          "id": "symbol.island",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "island",
+          "locales": {
+            "en": {
+              "slug": "island",
+              "path": "/en/symbols/island"
+            },
+            "fr": {
+              "slug": "ile",
+              "path": "/fr/symboles/ile"
+            },
+            "es": {
+              "slug": "isla",
+              "path": "/es/simbolos/isla"
+            },
+            "de": {
+              "slug": "insel",
+              "path": "/de/traumsymbole/insel"
+            },
+            "it": {
+              "slug": "isola",
+              "path": "/it/simboli/isola"
+            }
+          }
+        },
+        "symbol.cave": {
+          "id": "symbol.cave",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "cave",
+          "locales": {
+            "en": {
+              "slug": "cave",
+              "path": "/en/symbols/cave"
+            },
+            "fr": {
+              "slug": "grotte",
+              "path": "/fr/symboles/grotte"
+            },
+            "es": {
+              "slug": "cueva",
+              "path": "/es/simbolos/cueva"
+            },
+            "de": {
+              "slug": "hohle",
+              "path": "/de/traumsymbole/hohle"
+            },
+            "it": {
+              "slug": "grotta",
+              "path": "/it/simboli/grotta"
+            }
+          }
+        },
+        "symbol.river": {
+          "id": "symbol.river",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "river",
+          "locales": {
+            "en": {
+              "slug": "river",
+              "path": "/en/symbols/river"
+            },
+            "fr": {
+              "slug": "riviere",
+              "path": "/fr/symboles/riviere"
+            },
+            "es": {
+              "slug": "rio",
+              "path": "/es/simbolos/rio"
+            },
+            "de": {
+              "slug": "fluss",
+              "path": "/de/traumsymbole/fluss"
+            },
+            "it": {
+              "slug": "fiume",
+              "path": "/it/simboli/fiume"
+            }
+          }
+        },
+        "symbol.lake": {
+          "id": "symbol.lake",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "lake",
+          "locales": {
+            "en": {
+              "slug": "lake",
+              "path": "/en/symbols/lake"
+            },
+            "fr": {
+              "slug": "lac",
+              "path": "/fr/symboles/lac"
+            },
+            "es": {
+              "slug": "lago",
+              "path": "/es/simbolos/lago"
+            },
+            "de": {
+              "slug": "see",
+              "path": "/de/traumsymbole/see"
+            },
+            "it": {
+              "slug": "lago",
+              "path": "/it/simboli/lago"
+            }
+          }
+        },
+        "symbol.waterfall": {
+          "id": "symbol.waterfall",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "waterfall",
+          "locales": {
+            "en": {
+              "slug": "waterfall",
+              "path": "/en/symbols/waterfall"
+            },
+            "fr": {
+              "slug": "cascade",
+              "path": "/fr/symboles/cascade"
+            },
+            "es": {
+              "slug": "cascada",
+              "path": "/es/simbolos/cascada"
+            },
+            "de": {
+              "slug": "wasserfall",
+              "path": "/de/traumsymbole/wasserfall"
+            },
+            "it": {
+              "slug": "cascata",
+              "path": "/it/simboli/cascata"
+            }
+          }
+        },
+        "symbol.volcano": {
+          "id": "symbol.volcano",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "volcano",
+          "locales": {
+            "en": {
+              "slug": "volcano",
+              "path": "/en/symbols/volcano"
+            },
+            "fr": {
+              "slug": "volcan",
+              "path": "/fr/symboles/volcan"
+            },
+            "es": {
+              "slug": "volcan",
+              "path": "/es/simbolos/volcan"
+            },
+            "de": {
+              "slug": "vulkan",
+              "path": "/de/traumsymbole/vulkan"
+            },
+            "it": {
+              "slug": "vulcano",
+              "path": "/it/simboli/vulcano"
+            }
+          }
+        },
+        "symbol.mask": {
+          "id": "symbol.mask",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "mask",
+          "locales": {
+            "en": {
+              "slug": "mask",
+              "path": "/en/symbols/mask"
+            },
+            "fr": {
+              "slug": "masque",
+              "path": "/fr/symboles/masque"
+            },
+            "es": {
+              "slug": "mascara",
+              "path": "/es/simbolos/mascara"
+            },
+            "de": {
+              "slug": "maske",
+              "path": "/de/traumsymbole/maske"
+            },
+            "it": {
+              "slug": "maschera",
+              "path": "/it/simboli/maschera"
             }
           }
         },

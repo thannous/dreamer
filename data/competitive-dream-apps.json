@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-05-20",
+  "maintainer": "Noctalia marketing/SEO",
+  "methodology": [
+    "Use public store pages, official product pages, and Noctalia owned pages as the source of truth.",
+    "Prefer store-visible facts for ratings, downloads, privacy labels, platform support, and in-app purchase signals.",
+    "Do not claim that Noctalia is cheaper, more private, or medically safer than a competitor unless the exact source supports the comparison.",
+    "Prices, ratings, downloads, and subscription labels change by country and store; refresh before major publication or paid acquisition pushes."
+  ],
+  "apps": {
+    "noctalia": {
+      "name": "Noctalia",
+      "positioning": "Android-first AI dream journal for fast voice capture, structured reflection, generated dream images, symbols, and Dream Chat.",
+      "platforms": ["Android", "Web resources"],
+      "pricing": {
+        "model": "Freemium with premium plan advertised on Noctalia owned pages",
+        "publicPriceSignals": [
+          "Free Dreamer tier",
+          "Onironaut premium advertised at EUR 2.99/month or EUR 19/year on Noctalia owned pricing copy",
+          "Google Play lists in-app purchases but does not expose the full purchase catalog publicly"
+        ],
+        "comparisonRule": "Use exact owned-site price where shown. Avoid broad 'cheaper than competitors' claims unless all compared store prices were rechecked in the same market."
+      },
+      "strengths": [
+        "Voice-first morning capture",
+        "AI analysis plus Dream Chat follow-up",
+        "Generated dream visuals",
+        "Recurring symbols and dream dictionary surface",
+        "EU-hosted journal data disclosed in privacy copy"
+      ],
+      "limitations": [
+        "Android-first; no iOS App Store listing yet",
+        "Not an advanced lucid dreaming training product",
+        "Public social proof is early compared with established competitors"
+      ],
+      "privacyNotes": [
+        "Do not say 'only you can access' without qualification.",
+        "Safe claim: Noctalia does not sell personal data and does not display targeted advertising.",
+        "Safe claim: audio is used for transcription and is not persistently stored by Noctalia after processing.",
+        "Disclose AI, speech, infrastructure, and subscription providers when discussing privacy."
+      ],
+      "bestFor": [
+        "Android users who forget dream details if they have to type",
+        "Users who want a reflective AI companion rather than a deterministic meaning oracle",
+        "Users who value visual dream memory and recurring symbol tracking"
+      ],
+      "notIdealFor": [
+        "Users who need iOS today",
+        "Users seeking deep lucid dreaming alarms, audio cues, and technique coaching",
+        "Users who want offline-only or fully local AI processing"
+      ],
+      "sources": [
+        {
+          "label": "Noctalia homepage and pricing",
+          "url": "https://noctalia.app/",
+          "observedFacts": ["free tier", "EUR 2.99/month", "EUR 19/year", "Android Google Play CTA"]
+        },
+        {
+          "label": "Noctalia Google Play",
+          "url": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
+          "observedFacts": ["in-app purchases", "data safety", "encrypted in transit", "data deletion request available"]
+        },
+        {
+          "label": "Noctalia privacy policy",
+          "url": "https://noctalia.app/en/privacy-policy",
+          "observedFacts": ["AI providers", "speech recognition providers", "RevenueCat subscription management", "EU-hosted journal data"]
+        }
+      ]
+    },
+    "dreamapp": {
+      "name": "DreamApp",
+      "positioning": "Mainstream dream interpretation app with dream dictionary, AI analysis, and therapist-guided messaging.",
+      "platforms": ["Android", "iOS", "iPad"],
+      "pricing": {
+        "model": "Free download with in-app purchases/subscription signals",
+        "publicPriceSignals": [
+          "Google Play lists in-app purchases",
+          "Apple App Store lists free download with in-app purchases",
+          "A visible Google Play review mentions an annual price around $60; treat as user-review evidence, not official pricing"
+        ],
+        "comparisonRule": "Do not publish exact DreamApp pricing as official unless verified in the store purchase flow or visible App Store IAP table for the target country."
+      },
+      "storeSignals": [
+        "Google Play showed 1M+ downloads, 4.0 stars, and about 12.5K reviews on 2026-05-20.",
+        "Apple App Store showed 4.6 stars from about 3.8K ratings on 2026-05-20.",
+        "Apple App Store listed English plus 29 more languages."
+      ],
+      "strengths": [
+        "Large public Android footprint",
+        "Strong mainstream interpretation and dream meaning positioning",
+        "Therapist-guided messaging may appeal to users looking for emotional framing",
+        "Broad localization signal on App Store"
+      ],
+      "limitations": [
+        "Public Play listing emphasizes text/reporting more than voice-first morning capture",
+        "Data safety labels disclose shared or collected data categories",
+        "Some public reviews complain about paywall, trial, cancellation, or support clarity"
+      ],
+      "bestFor": [
+        "Users who want a large, familiar dream meaning app",
+        "Users attracted to therapist-guided positioning",
+        "Users who prioritize public install/review volume"
+      ],
+      "notIdealFor": [
+        "Users whose first priority is fast Android voice capture after waking",
+        "Users who want generated dream visuals and Dream Chat as a core workflow",
+        "Users who want a privacy page that explains AI, audio, and providers in detail before signup"
+      ],
+      "migrationNotes": [
+        "Export or copy the dream text you want to keep before switching.",
+        "Move recurring symbols manually first, then rebuild tags and favorites in Noctalia.",
+        "Start with recent dreams rather than importing an entire archive at once."
+      ],
+      "sources": [
+        {
+          "label": "DreamApp Google Play",
+          "url": "https://play.google.com/store/apps/details?id=com.dreamapp.app&hl=en-US",
+          "observedFacts": ["in-app purchases", "1M+ downloads", "4.0 stars", "12.5K reviews", "data safety categories", "DreamApp Ltd"]
+        },
+        {
+          "label": "DreamApp App Store",
+          "url": "https://apps.apple.com/us/app/dreamapp-dream-interpretation/id1524421486",
+          "observedFacts": ["free with in-app purchases", "4.6 stars", "3.8K ratings", "English plus 29 more languages"]
+        },
+        {
+          "label": "DreamApp privacy policy",
+          "url": "https://dreamapp.io/privacy-policy/",
+          "observedFacts": ["linked from public store pages"]
+        }
+      ]
+    },
+    "oniri": {
+      "name": "Oniri",
+      "positioning": "Mature dream journal and lucid dreaming app with AI interpretation, oral notes, generated images, statistics, export, and technique training.",
+      "platforms": ["iOS", "iPad", "Android"],
+      "pricing": {
+        "model": "Free download with Oniri Premium and full-version in-app purchase options",
+        "publicPriceSignals": [
+          "Apple App Store lists Oniri Premium $12.99 and $47.99, Full version $49.99, Monthly Premium Subscription $0.99, and Yearly Premium Subscription $5.99 in the US listing",
+          "Google Play lists in-app purchases and Oniri Premium subscription copy",
+          "The App Store description states prices may vary by location"
+        ],
+        "comparisonRule": "Use the App Store IAP table only with country/date context; do not generalize it to every market."
+      },
+      "storeSignals": [
+        "Apple App Store showed 4.6 stars from about 3.6K ratings on 2026-05-20.",
+        "Google Play showed 10K+ downloads and about 269 reviews on 2026-05-20.",
+        "Google Play listing said the app was developed and tested for 10 years with dreamers."
+      ],
+      "strengths": [
+        "Advanced lucid dreaming toolkit with reality checks, WILD, MILD, SSILD, and audio cues",
+        "Dream journal with oral notes, generated images, statistics, PDF export, and password lock",
+        "Strong App Store reputation and mature iOS presence"
+      ],
+      "limitations": [
+        "Less focused than Noctalia on Android-first quick voice capture as the primary use case",
+        "Premium gates several features including lucid tools, interpretation panel, vocal notes, statistics, images, and filtered PDF export",
+        "Users who do not want lucid dreaming training may find the product broader than necessary"
+      ],
+      "bestFor": [
+        "Users training lucid dreaming seriously",
+        "iOS users who want a mature dream journal plus lucid toolkit",
+        "Users who value PDF export, statistics, reminders, and technique libraries"
+      ],
+      "notIdealFor": [
+        "Android users whose main problem is capturing dreams fast before memory fades",
+        "Users who primarily want AI visual journaling and a focused reflection chat",
+        "Users who do not need lucid dreaming alarms or technique coaching"
+      ],
+      "migrationNotes": [
+        "Export PDFs or copy text from Oniri before switching.",
+        "Recreate symbol patterns in Noctalia from your most recurring themes.",
+        "Keep Oniri if lucid alarms and technique practice are the core habit; use Noctalia if capture and reflection are the core habit."
+      ],
+      "sources": [
+        {
+          "label": "Oniri official site",
+          "url": "https://www.oniri.io/",
+          "observedFacts": ["dream journal", "dream analysis", "lucid dreaming positioning"]
+        },
+        {
+          "label": "Oniri Google Play",
+          "url": "https://play.google.com/store/apps/details?id=io.oniri.oniriapp&hl=en_US",
+          "observedFacts": ["10K+ downloads", "269 reviews", "AI interpretation", "oral notes", "generated images", "lucid techniques", "premium subscription copy"]
+        },
+        {
+          "label": "Oniri App Store",
+          "url": "https://apps.apple.com/us/app/oniri-your-dream-journal/id968737914",
+          "observedFacts": ["free with in-app purchases", "4.6 stars", "3.6K ratings", "US IAP price table", "English plus 6 more languages"]
+        }
+      ]
+    }
+  }
+}

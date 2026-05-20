@@ -12,6 +12,7 @@ import {
   getCategoryIcon,
   getCategoryName,
   getExtendedContent,
+  getRelatedSymbols,
   getSymbolById,
   parseHtmlParagraphs,
 } from '@/services/symbolDictionaryService';
@@ -29,6 +30,7 @@ export default function SymbolDetailScreen() {
 
   const symbol = useMemo(() => getSymbolById(id!), [id]);
   const extended = useMemo(() => (id ? getExtendedContent(id, lang) : undefined), [id, lang]);
+  const relatedSymbols = useMemo(() => (symbol ? getRelatedSymbols(symbol) : []), [symbol]);
 
   const gradientColors = mode === 'dark'
     ? (['#131022', '#4A3B5F'] as const)
@@ -194,7 +196,7 @@ export default function SymbolDetailScreen() {
         )}
 
         {/* Related symbols */}
-        {symbol.relatedSymbols.length > 0 && (
+        {relatedSymbols.length > 0 && (
           <MotiView
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
@@ -203,9 +205,8 @@ export default function SymbolDetailScreen() {
           >
             <SectionTitle text={t('symbols.related')} colors={colors} />
             <View style={styles.relatedList}>
-              {symbol.relatedSymbols.map((relId) => {
-                const related = getSymbolById(relId);
-                if (!related) return null;
+              {relatedSymbols.map((related) => {
+                const relId = related.id;
                 const relContent = related[lang] ?? related.en;
                 return (
                   <Pressable

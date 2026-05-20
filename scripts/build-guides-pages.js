@@ -76,7 +76,7 @@ const GUIDE_HUB_UI = {
     chooseTitle: 'Choose your entry point',
     chooseIntro: 'Start with the dictionary or explore practical guides by theme.',
     featuredLabel: 'Dream dictionary',
-    dictionarySummary: 'Access our complete dictionary of more than 2000 symbols and interpretations.',
+    dictionarySummary: 'Access our dictionary of 150 dream symbols with meanings and reflection prompts.',
     dictionaryCta: 'Consult the dictionary',
     trustVerified: 'Verified content',
     trustVerifiedDesc: 'Guides written with sleep and dream research references.',
@@ -100,7 +100,7 @@ const GUIDE_HUB_UI = {
     chooseTitle: "Choisissez votre point d'entrée",
     chooseIntro: 'Commencez par le dictionnaire ou explorez nos guides pratiques par thématique.',
     featuredLabel: 'Dictionnaire des rêves',
-    dictionarySummary: 'Accédez à notre dictionnaire complet de plus de 2000 symboles et leurs interprétations.',
+    dictionarySummary: 'Accédez à notre dictionnaire de 150 symboles de rêves avec significations et questions de réflexion.',
     dictionaryCta: 'Consulter le dictionnaire',
     trustVerified: 'Contenus vérifiés',
     trustVerifiedDesc: 'Guides rédigés avec des références sur le rêve et le sommeil.',
@@ -124,7 +124,7 @@ const GUIDE_HUB_UI = {
     chooseTitle: 'Elige tu punto de entrada',
     chooseIntro: 'Empieza por el diccionario o explora nuestras guías prácticas por tema.',
     featuredLabel: 'Diccionario de sueños',
-    dictionarySummary: 'Accede a nuestro diccionario completo de más de 2000 símbolos e interpretaciones.',
+    dictionarySummary: 'Accede a nuestro diccionario de 150 símbolos de sueños con significados y preguntas de reflexión.',
     dictionaryCta: 'Consultar diccionario',
     trustVerified: 'Contenido verificado',
     trustVerifiedDesc: 'Guías basadas en referencias sobre sueños y sueño.',
@@ -148,7 +148,7 @@ const GUIDE_HUB_UI = {
     chooseTitle: 'Wählen Sie Ihren Einstieg',
     chooseIntro: 'Starten Sie im Lexikon oder erkunden Sie praktische Ratgeber nach Thema.',
     featuredLabel: 'Traumlexikon',
-    dictionarySummary: 'Greifen Sie auf unser vollständiges Lexikon mit über 2000 Symbolen und Deutungen zu.',
+    dictionarySummary: 'Öffnen Sie unser Lexikon mit 150 Traumsymbolen, Bedeutungen und Reflexionsfragen.',
     dictionaryCta: 'Lexikon öffnen',
     trustVerified: 'Geprüfte Inhalte',
     trustVerifiedDesc: 'Ratgeber mit Bezügen zu Traum- und Schlafforschung.',
@@ -172,7 +172,7 @@ const GUIDE_HUB_UI = {
     chooseTitle: 'Scegli il tuo punto di partenza',
     chooseIntro: 'Inizia dal dizionario o esplora le guide pratiche per tema.',
     featuredLabel: 'Dizionario dei sogni',
-    dictionarySummary: 'Accedi al nostro dizionario completo con oltre 2000 simboli e interpretazioni.',
+    dictionarySummary: 'Accedi al dizionario con 150 simboli dei sogni, significati e domande di riflessione.',
     dictionaryCta: 'Consulta il dizionario',
     trustVerified: 'Contenuti verificati',
     trustVerifiedDesc: 'Guide basate su riferimenti su sogni e sonno.',
@@ -1551,8 +1551,10 @@ function renderLayoutCss() {
           opacity: 0.58;
           background-image:
             linear-gradient(90deg, rgba(5,2,10,0), rgba(5,2,10,0.52)),
-            url('/img/symbols/dream-symbol-atlas.png');
-          background-size: 100% 100%, 800% 800%;
+            url('/img/symbols/dream-symbol-atlas-v2.webp');
+          background-size:
+            100% 100%,
+            calc(var(--symbol-atlas-columns, 8) * 100%) calc(var(--symbol-atlas-rows, 8) * 100%);
           background-position: center, var(--symbol-x, 0%) var(--symbol-y, 0%);
           background-repeat: no-repeat;
           transform: scale(1.08);
@@ -1903,6 +1905,9 @@ function renderLayoutCss() {
           .symbol-card-image {
             width: min(48%, 11rem);
             opacity: 0.5;
+            background-image:
+              linear-gradient(90deg, rgba(5,2,10,0), rgba(5,2,10,0.52)),
+              url('/img/symbols/dream-symbol-atlas-v2-mobile.webp');
           }
           .symbol-card-title-link,
           .symbol-card-desc,
@@ -2028,14 +2033,16 @@ const OG_LOCALES = { en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it
 const CATEGORY_ICONS = { nature: 'leaf', animals: 'paw-print', body: 'user', places: 'home', objects: 'package', actions: 'zap', people: 'users', celestial: 'star' };
 const SYMBOL_ATLAS_COLUMNS = 8;
 
-function getSymbolAtlasPosition(index) {
+function getSymbolAtlasPosition(index, totalSymbols = SYMBOL_ATLAS_COLUMNS * SYMBOL_ATLAS_COLUMNS) {
   const safeIndex = Math.max(0, Number(index) || 0);
   const col = safeIndex % SYMBOL_ATLAS_COLUMNS;
   const row = Math.floor(safeIndex / SYMBOL_ATLAS_COLUMNS);
-  const maxStep = SYMBOL_ATLAS_COLUMNS - 1;
+  const totalRows = Math.max(1, Math.ceil(totalSymbols / SYMBOL_ATLAS_COLUMNS));
+  const maxColumnStep = SYMBOL_ATLAS_COLUMNS - 1;
+  const maxRowStep = Math.max(1, totalRows - 1);
   return {
-    x: `${((col / maxStep) * 100).toFixed(3)}%`,
-    y: `${((row / maxStep) * 100).toFixed(3)}%`,
+    x: `${((col / maxColumnStep) * 100).toFixed(3)}%`,
+    y: `${((row / maxRowStep) * 100).toFixed(3)}%`,
   };
 }
 
@@ -2063,7 +2070,8 @@ function generateDictionaryPage(lang, t) {
 
   // ── Build symbols grouped by first letter ────────────────────────────
   const allSymbols = symbolsData.symbols || [];
-  const symbolAtlasPositions = new Map(allSymbols.map((sym, index) => [sym.id, getSymbolAtlasPosition(index)]));
+  const symbolAtlasRows = Math.max(1, Math.ceil(allSymbols.length / SYMBOL_ATLAS_COLUMNS));
+  const symbolAtlasPositions = new Map(allSymbols.map((sym, index) => [sym.id, getSymbolAtlasPosition(index, allSymbols.length)]));
   const sorted = [...allSymbols].sort((a, b) => (a[lang].name).localeCompare(b[lang].name, lang));
   const groups = {};
   sorted.forEach((sym) => {
@@ -2107,7 +2115,7 @@ function generateDictionaryPage(lang, t) {
       const catColor = CATEGORY_COLORS[sym.category] || '#c084fc';
       const atlasPosition = symbolAtlasPositions.get(sym.id) || getSymbolAtlasPosition(0);
       return `
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="${dataSymbol}" style="--cat-color:${catColor};--symbol-x:${atlasPosition.x};--symbol-y:${atlasPosition.y}">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="${dataSymbol}" style="--cat-color:${catColor};--symbol-x:${atlasPosition.x};--symbol-y:${atlasPosition.y};--symbol-atlas-columns:${SYMBOL_ATLAS_COLUMNS};--symbol-atlas-rows:${symbolAtlasRows}">
                             <div class="symbol-card-image-layer" aria-hidden="true">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>

@@ -31,6 +31,30 @@ function alternativesLabel(lang) {
   return 'Dream journal apps';
 }
 
+function dreamAppAlternativeLabel(lang) {
+  if (lang === 'fr') return 'Alternative DreamApp';
+  if (lang === 'es') return 'Alternativa DreamApp';
+  if (lang === 'de') return 'DreamApp Alternative';
+  if (lang === 'it') return 'Alternativa DreamApp';
+  return 'DreamApp alternative';
+}
+
+function oniriAlternativeLabel(lang) {
+  if (lang === 'fr') return 'Alternative Oniri';
+  if (lang === 'es') return 'Alternativa Oniri';
+  if (lang === 'de') return 'Oniri Alternative';
+  if (lang === 'it') return 'Alternativa Oniri';
+  return 'Oniri alternative';
+}
+
+function aiDreamAppLabel(lang) {
+  if (lang === 'fr') return 'Application reves IA';
+  if (lang === 'es') return 'App suenos IA';
+  if (lang === 'de') return 'KI-Traumdeutung-App';
+  if (lang === 'it') return 'App sogni IA';
+  return 'AI dream app';
+}
+
 function loadFeaturedBlogTitles() {
   const titles = new Map();
   const featuredEntries = siteConfig.seoLinking?.featuredBlogEntries || [];
@@ -60,6 +84,18 @@ function buildSeoFooterLinks(context) {
     {
       href: routePath('page.alternatives'),
       label: alternativesLabel(lang),
+    },
+    {
+      href: routePath('page.dreamapp-alternative'),
+      label: dreamAppAlternativeLabel(lang),
+    },
+    {
+      href: routePath('page.oniri-alternative'),
+      label: oniriAlternativeLabel(lang),
+    },
+    {
+      href: routePath('page.ai-dream-interpretation-app'),
+      label: aiDreamAppLabel(lang),
     },
     ...(siteConfig.seoLinking?.featuredBlogEntries || [])
       .map((entryId) => {
