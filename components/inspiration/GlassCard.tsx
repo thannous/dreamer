@@ -75,9 +75,9 @@ function GlassCardFrame({
         strong: 0.5,
       }[intensity]
     : {
-        subtle: 0.5,
-        moderate: 0.65,
-        strong: 0.75,
+        subtle: 0.92,
+        moderate: 0.96,
+        strong: 0.98,
       }[intensity];
 
   const isIos = Platform.OS === 'ios';

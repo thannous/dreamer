@@ -54,8 +54,8 @@ export function PageHeaderContent({
     () =>
       mode === 'dark'
         ? ([colors.accentLight, colors.accent] as const)
-        : ([colors.textPrimary, colors.accentDark] as const),
-    [colors.accent, colors.accentDark, colors.accentLight, colors.textPrimary, mode],
+        : ([colors.textPrimary, colors.textPrimary] as const),
+    [colors.accent, colors.accentLight, colors.textPrimary, mode],
   );
 
   return (
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontFamily: Fonts.fraunces.semiBold,
-    letterSpacing: 0.5,
+    letterSpacing: 0,
   },
   headerRule: {
     ...DecoLines.rule,

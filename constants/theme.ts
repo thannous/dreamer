@@ -70,7 +70,7 @@ export const Fonts = {
  * Dark mode uses 30% opacity, light mode uses 70% opacity.
  */
 export function getGlassCardBackground(backgroundCard: string, mode: 'light' | 'dark'): string {
-  const opacity = mode === 'dark' ? 0.3 : 0.7;
+  const opacity = mode === 'dark' ? 0.3 : 0.96;
   const opacityHex = Math.round(opacity * 255)
     .toString(16)
     .padStart(2, '0');

@@ -34,8 +34,8 @@ export function AtmosphericBackground() {
 
   const isWeb = Platform.OS === 'web';
 
-  // Theme-aware gradient colors using system theme colors
-  // Dark mode: very progressive gradient staying in deep dark tones
+  // Theme-aware gradient colors using system theme colors.
+  // Light mode stays near-flat so text never sits on a busy wash.
   const gradientColors: readonly [string, string, ...string[]] = mode === 'dark'
     ? [
         colors.backgroundDark, // rgb(26, 15, 43) — deepest
@@ -47,11 +47,11 @@ export function AtmosphericBackground() {
         colors.backgroundDark, // match navbar exactly
       ]
     : [
-        colors.backgroundDark, // soft cream (#F8F6F2)
-        colors.backgroundCard, // beige sable (#E3DACC)
-        colors.backgroundSecondary, // light beige (#EEEBE6)
-        colors.backgroundCard, // beige sable
-        colors.backgroundDark, // soft cream
+        colors.backgroundDark,
+        colors.backgroundDark,
+        colors.backgroundSecondary,
+        colors.backgroundDark,
+        colors.backgroundDark,
       ];
 
   const gradientLocations: readonly [number, number, ...number[]] = mode === 'dark'
@@ -59,9 +59,9 @@ export function AtmosphericBackground() {
     : [0, 0.25, 0.5, 0.75, 1];
 
   // Theme-aware orb colors - balanced between subtle and visible
-  const orb1Color = mode === 'dark' ? `${colors.accent}45` : `${colors.accent}20`;
-  const orb2Color = mode === 'dark' ? `${colors.accentLight}38` : `${colors.accentLight}18`;
-  const orb3Color = mode === 'dark' ? `${colors.accentDark}30` : `${colors.accentDark}15`;
+  const orb1Color = mode === 'dark' ? `${colors.accent}45` : `${colors.accent}0E`;
+  const orb2Color = mode === 'dark' ? `${colors.accentLight}38` : `${colors.accentLight}0C`;
+  const orb3Color = mode === 'dark' ? `${colors.accentDark}30` : `${colors.accentDark}0A`;
 
   return (
     <View style={styles.container} pointerEvents="none">
@@ -80,7 +80,7 @@ export function AtmosphericBackground() {
         animate={
           shouldAnimate
             ? { translateY: [-20, 0, -20], translateX: [-10, 10, -10], opacity: 0.3 }
-            : { translateY: 0, translateX: 0, opacity: showAnimations ? 0.3 : 0 }
+            : { translateY: 0, translateX: 0, opacity: showAnimations ? (mode === 'dark' ? 0.3 : 0.12) : 0 }
         }
         transition={
           shouldAnimate
@@ -113,7 +113,7 @@ export function AtmosphericBackground() {
         animate={
           shouldAnimate
             ? { translateY: [20, 0, 20], translateX: [10, -10, 10], opacity: 0.25 }
-            : { translateY: 0, translateX: 0, opacity: showAnimations ? 0.25 : 0 }
+            : { translateY: 0, translateX: 0, opacity: showAnimations ? (mode === 'dark' ? 0.25 : 0.1) : 0 }
         }
         transition={
           shouldAnimate
@@ -146,7 +146,7 @@ export function AtmosphericBackground() {
         animate={
           shouldAnimate
             ? { translateY: [-15, 15, -15], opacity: 0.2 }
-            : { translateY: 0, opacity: showAnimations ? 0.2 : 0 }
+            : { translateY: 0, opacity: showAnimations ? (mode === 'dark' ? 0.2 : 0.08) : 0 }
         }
         transition={
           shouldAnimate
@@ -188,7 +188,7 @@ export function AtmosphericBackground() {
           StyleSheet.absoluteFill,
           {
             backgroundColor: isWeb ? 'transparent' : `${colors.textPrimary}05`,
-            opacity: reduceEffects ? 0.25 : 0.5,
+            opacity: mode === 'dark' ? (reduceEffects ? 0.25 : 0.5) : 0.18,
           },
         ]}
       />

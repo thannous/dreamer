@@ -674,6 +674,7 @@ export default function JournalListScreen() {
           accessibilityLabel={t('journal.add_button.accessibility')}
           bottomOffset={floatingOffset - 60}
           isDesktopLayout={isDesktopLayout}
+          compactLabelVisible={!isScrolling}
           testID={TID.Button.AddDream}
         />
       )}
