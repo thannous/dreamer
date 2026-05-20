@@ -67,12 +67,19 @@ export function RecordingOnboardingTour({
       testID={TID.Component.RecordingOnboardingTour}
     >
       <View style={styles.copy}>
-        <Text style={[styles.eyebrow, { color: colors.accentLight }]}>
-          {t('recording.onboarding.step_count', { current: index + 1, total })}
-        </Text>
-        <Text style={[styles.title, { color: colors.textPrimary }]}>
-          {t(`recording.onboarding.${target}.title`)}
-        </Text>
+        <View
+          style={[
+            styles.stepBadge,
+            {
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: colors.divider,
+            },
+          ]}
+        >
+          <Text style={[styles.stepText, { color: colors.textPrimary }]}>
+            {t('recording.onboarding.step_count', { current: index + 1, total })}
+          </Text>
+        </View>
         <Text style={[styles.body, { color: colors.textSecondary }]}>
           {t(`recording.onboarding.${target}.body`)}
         </Text>
@@ -113,22 +120,25 @@ const styles = StyleSheet.create({
     gap: ThemeLayout.spacing.md,
   },
   copy: {
-    gap: 5,
+    alignItems: 'flex-start',
+    gap: 8,
   },
-  eyebrow: {
+  stepBadge: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: ThemeLayout.borderRadius.full,
+    borderCurve: 'continuous',
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+  },
+  stepText: {
     fontSize: 11,
     fontFamily: Fonts.spaceGrotesk.bold,
     textTransform: 'uppercase',
     letterSpacing: 0,
   },
-  title: {
-    fontSize: 17,
-    lineHeight: 22,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
   body: {
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 15,
+    lineHeight: 21,
     fontFamily: Fonts.spaceGrotesk.regular,
   },
   actions: {

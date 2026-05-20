@@ -70,8 +70,7 @@ jest.mock('@/hooks/useTranslation', () => ({
     t: (key: string, params?: Record<string, unknown>) => {
       const values: Record<string, string> = {
         'recording.onboarding.step_count': `Étape ${params?.current}/${params?.total}`,
-        'recording.onboarding.voice.title': 'Touchez le grand micro',
-        'recording.onboarding.voice.body': 'Le bouton micro au centre lance la dictée vocale.',
+        'recording.onboarding.voice.body': 'Le grand micro lance la dictée vocale pour enregistrer votre rêve.',
         'recording.onboarding.skip': 'Ignorer',
         'recording.onboarding.next': 'Suivant',
         'recording.onboarding.done': 'Terminer',
@@ -98,7 +97,8 @@ describe('RecordingOnboardingTour', () => {
 
     expect(screen.getByTestId(TID.Component.RecordingOnboardingTour)).toBeTruthy();
     expect(screen.getByText('Étape 1/3')).toBeTruthy();
-    expect(screen.getByText('Touchez le grand micro')).toBeTruthy();
+    expect(screen.queryByText('Touchez le grand micro')).toBeNull();
+    expect(screen.getByText('Le grand micro lance la dictée vocale pour enregistrer votre rêve.')).toBeTruthy();
 
     fireEvent.click(screen.getByTestId(TID.Button.RecordingOnboardingNext));
     fireEvent.click(screen.getByTestId(TID.Button.RecordingOnboardingSkip));

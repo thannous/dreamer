@@ -38,6 +38,7 @@ const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
 
 const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
 const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
+const RECORDING_ONBOARDING_COMPLETED_KEY = 'gemini_dream_journal_recording_onboarding_completed';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
@@ -276,6 +277,29 @@ export async function saveRecordingVoiceStatusHidden(hidden: boolean): Promise<v
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save recording voice status preference:', error);
     throw new Error('Failed to save recording voice status preference');
+  }
+}
+
+export async function getRecordingOnboardingCompleted(): Promise<boolean> {
+  console.log('[MOCK STORAGE] getRecordingOnboardingCompleted called');
+  try {
+    const savedFlag = mockStorage[RECORDING_ONBOARDING_COMPLETED_KEY];
+    if (savedFlag) {
+      return JSON.parse(savedFlag) === true;
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to retrieve recording onboarding flag:', error);
+  }
+  return false;
+}
+
+export async function saveRecordingOnboardingCompleted(completed: boolean): Promise<void> {
+  console.log('[MOCK STORAGE] saveRecordingOnboardingCompleted called:', completed);
+  try {
+    mockStorage[RECORDING_ONBOARDING_COMPLETED_KEY] = JSON.stringify(completed);
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to save recording onboarding flag:', error);
+    throw new Error('Failed to save recording onboarding flag');
   }
 }
 
