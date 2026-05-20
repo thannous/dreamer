@@ -97,28 +97,6 @@ jest.mock('@/components/ui/SearchBar', () => ({
   ),
 }));
 
-// ── FlashList stub ──────────────────────────────────────────────────────────
-jest.mock('@shopify/flash-list', () => ({
-  FlashList: ({ data, renderItem, ListEmptyComponent }: any) => {
-    if (!data || data.length === 0) {
-      return typeof ListEmptyComponent === 'function' ? (
-        <ListEmptyComponent />
-      ) : (
-        ListEmptyComponent ?? null
-      );
-    }
-    return (
-      <div data-testid="flash-list">
-        {data.map((item: any, index: number) => (
-          <div key={item?.id ?? index}>
-            {renderItem({ item, index })}
-          </div>
-        ))}
-      </div>
-    );
-  },
-}));
-
 // ── Child components stubs ──────────────────────────────────────────────────
 jest.mock('@/components/symbols/CategoryHeader', () => ({
   CategoryHeader: ({ category, count }: { category: string; count: number }) => (
@@ -188,6 +166,13 @@ const MOCK_SYMBOLS = [
     fr: { name: 'Main', shortDescription: 'Action et création' },
     relatedSymbols: [],
   },
+  {
+    id: 'abandonment',
+    category: 'people',
+    en: { name: 'Abandonment', shortDescription: 'Fear of rejection and loneliness' },
+    fr: { name: 'Abandon', shortDescription: 'Peur du rejet et solitude' },
+    relatedSymbols: [],
+  },
 ];
 
 jest.mock('@/services/symbolDictionaryService', () => ({
@@ -238,11 +223,20 @@ describe('SymbolDictionaryScreen', () => {
       render(<SymbolDictionaryScreen />);
 
       // In alphabetical mode, letter headers should appear
+      expect(screen.getByTestId('letter-header-A')).toBeTruthy();
       expect(screen.getByTestId('letter-header-B')).toBeTruthy();
       expect(screen.getByTestId('letter-header-C')).toBeTruthy();
       expect(screen.getByTestId('letter-header-H')).toBeTruthy();
       expect(screen.getByTestId('letter-header-M')).toBeTruthy();
       expect(screen.getByTestId('letter-header-W')).toBeTruthy();
+    });
+
+    it('renders the first alphabetical item instead of leaving a blank first row', () => {
+      render(<SymbolDictionaryScreen />);
+
+      expect(screen.getByTestId('symbol-card-abandonment')).toBeTruthy();
+      expect(screen.getByTestId('symbol-card-bird')).toBeTruthy();
+      expect(screen.getByTestId('symbol-card-water')).toBeTruthy();
     });
   });
 
@@ -260,10 +254,9 @@ describe('SymbolDictionaryScreen', () => {
     it('disables letters that have no matching symbols', () => {
       render(<SymbolDictionaryScreen />);
 
-      // Letters with symbols: B (Bird), C (Cat), H (Hand), M (Moon), W (Water)
-      // Letter A has no symbols, so its Pressable should be disabled
-      // The 'A' letter element should exist but its parent pressable should have opacity 0.3
-      expect(screen.getByText('A')).toBeTruthy();
+      // Letters with symbols: A (Abandonment), B (Bird), C (Cat), H (Hand), M (Moon), W (Water)
+      // Letter D has no symbols, so it should still render as an unavailable alphabet option.
+      expect(screen.getByText('D')).toBeTruthy();
 
       // Letters with symbols should not be disabled
       const letterB = screen.getByText('B');
