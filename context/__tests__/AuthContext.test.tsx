@@ -30,7 +30,7 @@ const {
 
   const mockGetCurrentUser = jest.fn(() => Promise.resolve(currentUser));
   const mockWasAccountCreatedOnDevice = jest.fn(() => Promise.resolve(accountCreated));
-  const mockOnAuthChange = jest.fn((handler) => {
+  const mockOnAuthChange = jest.fn((handler: typeof authChangeHandler) => {
     authChangeHandler = handler;
     return () => {};
   });

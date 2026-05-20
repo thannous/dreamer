@@ -509,7 +509,12 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
   };
 };
 
-const mapDreamToRow = (dream: DreamAnalysis, userId?: string, includeImageColumns = true) => {
+const mapDreamToRow = (
+  dream: DreamAnalysis,
+  userId?: string,
+  includeImageColumns = true,
+  includeClientUpdatedAtColumn = true
+) => {
   const base = {
     user_id: userId,
     transcript: dream.transcript,
@@ -523,7 +528,9 @@ const mapDreamToRow = (dream: DreamAnalysis, userId?: string, includeImageColumn
     is_favorite: dream.isFavorite ?? false,
     is_analyzed: dream.isAnalyzed ?? false,
     analysis_status: dream.analysisStatus ?? 'none',
-    client_updated_at: new Date(dream.clientUpdatedAt ?? Date.now()).toISOString(),
+    ...(includeClientUpdatedAtColumn
+      ? { client_updated_at: new Date(dream.clientUpdatedAt ?? Date.now()).toISOString() }
+      : {}),
   };
 
   // Avoid clearing existing server-side values when a field is missing locally.
@@ -587,11 +594,57 @@ const createConflictError = (message: string, remoteDream?: DreamAnalysis): Conf
 };
 
 let imageGenerationFailedColumnAvailable = true;
+let clientUpdatedAtColumnAvailable = true;
 
 const isMissingImageGenerationColumnError = (error: PostgrestError | null): boolean => {
   if (!error) return false;
   if (error.code !== 'PGRST204') return false;
   return /image_generation_failed|image_source/.test(error.message ?? '');
+};
+
+const isMissingClientUpdatedAtColumnError = (error: PostgrestError | null): boolean => {
+  if (!error) return false;
+
+  const combinedText = [error.message, error.details, error.hint]
+    .filter((value): value is string => typeof value === 'string' && value.length > 0)
+    .join(' ')
+    .toLowerCase();
+
+  if (!combinedText.includes('client_updated_at')) {
+    return false;
+  }
+
+  return (
+    error.code === 'PGRST204' ||
+    error.code === '42703' ||
+    combinedText.includes('schema cache') ||
+    combinedText.includes('does not exist')
+  );
+};
+
+const shouldRetryDreamWriteWithoutOptionalColumn = (
+  error: PostgrestError | null,
+  options: { includeImageColumn: boolean; includeClientUpdatedAtColumn: boolean }
+): Partial<typeof options> | null => {
+  if (
+    options.includeImageColumn &&
+    imageGenerationFailedColumnAvailable &&
+    isMissingImageGenerationColumnError(error)
+  ) {
+    imageGenerationFailedColumnAvailable = false;
+    return { includeImageColumn: false };
+  }
+
+  if (
+    options.includeClientUpdatedAtColumn &&
+    clientUpdatedAtColumnAvailable &&
+    isMissingClientUpdatedAtColumnError(error)
+  ) {
+    clientUpdatedAtColumnAvailable = false;
+    return { includeClientUpdatedAtColumn: false };
+  }
+
+  return null;
 };
 
 const isSingleObjectResultError = (error: PostgrestError | null): boolean => {
@@ -795,21 +848,34 @@ const syncDreamMutationsDirectly = async (
   for (const mutation of mutations) {
     if (mutation.operation === 'create' && mutation.payload.dream) {
       const preparedDream = await ensureRemoteImage(mutation.payload.dream, userId);
-      const upsert = (includeImageColumn: boolean) =>
+      const upsert = (options: { includeImageColumn: boolean; includeClientUpdatedAtColumn: boolean }) =>
         supabase
           .from(DREAMS_TABLE)
-          .upsert(mapDreamToRow(preparedDream, userId, includeImageColumn), {
-            onConflict: 'user_id,client_request_id',
-          })
+          .upsert(
+            mapDreamToRow(
+              preparedDream,
+              userId,
+              options.includeImageColumn,
+              options.includeClientUpdatedAtColumn
+            ),
+            {
+              onConflict: 'user_id,client_request_id',
+            }
+          )
           .select('*')
           .single();
 
-      const tryImageColumn = imageGenerationFailedColumnAvailable;
-      let { data, error } = await upsert(tryImageColumn);
+      let writeOptions = {
+        includeImageColumn: imageGenerationFailedColumnAvailable,
+        includeClientUpdatedAtColumn: clientUpdatedAtColumnAvailable,
+      };
+      let { data, error } = await upsert(writeOptions);
 
-      if ((error || !data) && tryImageColumn && isMissingImageGenerationColumnError(error)) {
-        imageGenerationFailedColumnAvailable = false;
-        ({ data, error } = await upsert(false));
+      let retryOptions = shouldRetryDreamWriteWithoutOptionalColumn(error, writeOptions);
+      while ((error || !data) && retryOptions) {
+        writeOptions = { ...writeOptions, ...retryOptions };
+        ({ data, error } = await upsert(writeOptions));
+        retryOptions = shouldRetryDreamWriteWithoutOptionalColumn(error, writeOptions);
       }
 
       if (error || !data) {
@@ -835,20 +901,32 @@ const syncDreamMutationsDirectly = async (
       }
 
       const preparedDream = await ensureRemoteImage(dreamToUpdate, userId);
-      const update = (includeImageColumn: boolean) =>
+      const update = (options: { includeImageColumn: boolean; includeClientUpdatedAtColumn: boolean }) =>
         supabase
           .from(DREAMS_TABLE)
-          .update(mapDreamToRow(preparedDream, undefined, includeImageColumn))
+          .update(
+            mapDreamToRow(
+              preparedDream,
+              undefined,
+              options.includeImageColumn,
+              options.includeClientUpdatedAtColumn
+            )
+          )
           .eq('id', dreamToUpdate.remoteId)
           .select('*')
           .single();
 
-      const tryImageColumn = imageGenerationFailedColumnAvailable;
-      let { data, error } = await update(tryImageColumn);
+      let writeOptions = {
+        includeImageColumn: imageGenerationFailedColumnAvailable,
+        includeClientUpdatedAtColumn: clientUpdatedAtColumnAvailable,
+      };
+      let { data, error } = await update(writeOptions);
 
-      if ((error || !data) && tryImageColumn && isMissingImageGenerationColumnError(error)) {
-        imageGenerationFailedColumnAvailable = false;
-        ({ data, error } = await update(false));
+      let retryOptions = shouldRetryDreamWriteWithoutOptionalColumn(error, writeOptions);
+      while ((error || !data) && retryOptions) {
+        writeOptions = { ...writeOptions, ...retryOptions };
+        ({ data, error } = await update(writeOptions));
+        retryOptions = shouldRetryDreamWriteWithoutOptionalColumn(error, writeOptions);
       }
 
       if (isSingleObjectResultError(error) || (!error && !data)) {
@@ -988,6 +1066,11 @@ export async function syncDreamMutationsInSupabase(
     });
 
     if (isMissingSyncMutationsRpcError(error)) {
+      return syncDreamMutationsDirectly(batch, userId);
+    }
+
+    if (isMissingClientUpdatedAtColumnError(error)) {
+      clientUpdatedAtColumnAvailable = false;
       return syncDreamMutationsDirectly(batch, userId);
     }
 

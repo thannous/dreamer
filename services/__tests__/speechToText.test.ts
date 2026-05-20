@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
+type AnyFunction = (...args: any[]) => any;
+const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
+
 type PlatformOSType = 'ios' | 'android' | 'macos' | 'windows' | 'web';
 const { mockPlatform } = ((factory: any) => factory())(() => {
   const mockPlatform = { OS: 'ios' as PlatformOSType };
@@ -7,8 +10,8 @@ const { mockPlatform } = ((factory: any) => factory())(() => {
 });
 
 const { mockReadAsStringAsyncInner, mockFileBase64Inner, MockFile } = ((factory: any) => factory())(() => {
-  const mockReadAsStringAsyncInner = jest.fn<(uri: string, options?: { encoding: 'base64' }) => Promise<string>>();
-  const mockFileBase64Inner = jest.fn<() => string | Promise<string>>();
+  const mockReadAsStringAsyncInner = typedJestFn<(uri: string, options?: { encoding: 'base64' }) => Promise<string>>();
+  const mockFileBase64Inner = typedJestFn<() => string | Promise<string>>();
 
   class MockFile {
     uri: string;
@@ -162,7 +165,7 @@ describe('transcribeAudio', () => {
       }
     }
 
-    const fetchMock = jest.fn<typeof fetch>().mockResolvedValue({
+    const fetchMock = typedJestFn<typeof fetch>().mockResolvedValue({
       ok: true,
       blob: async () => ({} as Blob),
     } as Response);

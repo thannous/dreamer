@@ -57,6 +57,15 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   ...overrides,
 });
 
+const legacyMutation = (mutation: {
+  id: string;
+  type: DreamMutation['operation'];
+  dream?: DreamAnalysis;
+  dreamId?: number;
+  remoteId?: number;
+  createdAt: number;
+}): DreamMutation => mutation as unknown as DreamMutation;
+
 describe('useOfflineSyncQueue', () => {
   const defaultOptions = {
     canUseRemoteSync: true,
@@ -84,7 +93,7 @@ describe('useOfflineSyncQueue', () => {
     it('initializes with provided initial mutations', async () => {
       const dream = buildDream({ id: 1 });
       const initialMutations: DreamMutation[] = [
-        { id: 'mut-1', type: 'create', dream, createdAt: Date.now() },
+        legacyMutation({ id: 'mut-1', type: 'create', dream, createdAt: Date.now() }),
       ];
 
       const { result } = renderHook(() =>
@@ -119,7 +128,7 @@ describe('useOfflineSyncQueue', () => {
 
       const dream = buildDream({ id: 1 });
       const mutations: DreamMutation[] = [
-        { id: 'mut-1', type: 'create', dream, createdAt: Date.now() },
+        legacyMutation({ id: 'mut-1', type: 'create', dream, createdAt: Date.now() }),
       ];
 
       act(() => {
@@ -135,7 +144,7 @@ describe('useOfflineSyncQueue', () => {
 
       const dream = buildDream({ id: 1 });
       const mutations: DreamMutation[] = [
-        { id: 'mut-1', type: 'create', dream, createdAt: Date.now() },
+        legacyMutation({ id: 'mut-1', type: 'create', dream, createdAt: Date.now() }),
       ];
 
       act(() => {
@@ -144,7 +153,7 @@ describe('useOfflineSyncQueue', () => {
 
       expect(result.current.pendingMutationsRef.current[0].type).toBe('create');
       if (result.current.pendingMutationsRef.current[0].type === 'create') {
-        expect(result.current.pendingMutationsRef.current[0].dream.clientRequestId).toBeDefined();
+        expect(result.current.pendingMutationsRef.current[0].dream?.clientRequestId).toBeDefined();
       }
     });
   });
@@ -159,7 +168,7 @@ describe('useOfflineSyncQueue', () => {
         type: 'create',
         dream,
         createdAt: Date.now(),
-      };
+      } as unknown as DreamMutation;
 
       await act(async () => {
         await result.current.queueOfflineOperation(mutation, [dream]);
@@ -178,7 +187,7 @@ describe('useOfflineSyncQueue', () => {
         type: 'update',
         dream,
         createdAt: Date.now(),
-      };
+      } as unknown as DreamMutation;
 
       await act(async () => {
         await result.current.queueOfflineOperation(mutation, (prev) =>
@@ -197,7 +206,7 @@ describe('useOfflineSyncQueue', () => {
         type: 'delete',
         dreamId: 1,
         createdAt: Date.now(),
-      };
+      } as unknown as DreamMutation;
 
       await act(async () => {
         await result.current.queueOfflineOperation(mutation, (prev) =>
@@ -218,9 +227,9 @@ describe('useOfflineSyncQueue', () => {
 
       act(() => {
         result.current.setPendingMutations([
-          { id: 'mut-1', type: 'create', dream: dream1, createdAt: Date.now() },
-          { id: 'mut-2', type: 'update', dream: dream1, createdAt: Date.now() },
-          { id: 'mut-3', type: 'create', dream: dream2, createdAt: Date.now() },
+          legacyMutation({ id: 'mut-1', type: 'create', dream: dream1, createdAt: Date.now() }),
+          legacyMutation({ id: 'mut-2', type: 'update', dream: dream1, createdAt: Date.now() }),
+          legacyMutation({ id: 'mut-3', type: 'create', dream: dream2, createdAt: Date.now() }),
         ]);
       });
 
@@ -241,7 +250,7 @@ describe('useOfflineSyncQueue', () => {
 
       act(() => {
         result.current.setPendingMutations([
-          { id: 'mut-1', type: 'create', dream, createdAt: Date.now() },
+          legacyMutation({ id: 'mut-1', type: 'create', dream, createdAt: Date.now() }),
         ]);
       });
 
@@ -258,8 +267,8 @@ describe('useOfflineSyncQueue', () => {
 
       act(() => {
         result.current.setPendingMutations([
-          { id: 'mut-1', type: 'delete', dreamId: 1, createdAt: Date.now() },
-          { id: 'mut-2', type: 'delete', dreamId: 2, createdAt: Date.now() },
+          legacyMutation({ id: 'mut-1', type: 'delete', dreamId: 1, createdAt: Date.now() }),
+          legacyMutation({ id: 'mut-2', type: 'delete', dreamId: 2, createdAt: Date.now() }),
         ]);
       });
 
@@ -280,7 +289,7 @@ describe('useOfflineSyncQueue', () => {
       const dream = buildDream({ id: 1 });
       act(() => {
         result.current.setPendingMutations([
-          { id: 'mut-1', type: 'create', dream, createdAt: Date.now() },
+          legacyMutation({ id: 'mut-1', type: 'create', dream, createdAt: Date.now() }),
         ]);
       });
 
@@ -298,7 +307,7 @@ describe('useOfflineSyncQueue', () => {
       const dream = buildDream({ id: 1 });
       act(() => {
         result.current.setPendingMutations([
-          { id: 'mut-1', type: 'create', dream, createdAt: Date.now() },
+          legacyMutation({ id: 'mut-1', type: 'create', dream, createdAt: Date.now() }),
         ]);
       });
 
@@ -316,7 +325,7 @@ describe('useOfflineSyncQueue', () => {
       const dream = buildDream({ id: 1 });
       act(() => {
         result.current.setPendingMutations([
-          { id: 'mut-1', type: 'create', dream, createdAt: Date.now() },
+          legacyMutation({ id: 'mut-1', type: 'create', dream, createdAt: Date.now() }),
         ]);
       });
 
@@ -348,7 +357,7 @@ describe('useOfflineSyncQueue', () => {
 
       act(() => {
         result.current.setPendingMutations([
-          { id: 'mut-1', type: 'create', dream, createdAt: Date.now() },
+          legacyMutation({ id: 'mut-1', type: 'create', dream, createdAt: Date.now() }),
         ]);
       });
 
@@ -371,7 +380,7 @@ describe('useOfflineSyncQueue', () => {
 
       act(() => {
         result.current.setPendingMutations([
-          { id: 'mut-1', type: 'update', dream, createdAt: Date.now() },
+          legacyMutation({ id: 'mut-1', type: 'update', dream, createdAt: Date.now() }),
         ]);
       });
 
@@ -389,7 +398,7 @@ describe('useOfflineSyncQueue', () => {
 
       act(() => {
         result.current.setPendingMutations([
-          { id: 'mut-1', type: 'delete', dreamId: 1, remoteId: 1001, createdAt: Date.now() },
+          legacyMutation({ id: 'mut-1', type: 'delete', dreamId: 1, remoteId: 1001, createdAt: Date.now() }),
         ]);
       });
 
@@ -410,7 +419,7 @@ describe('useOfflineSyncQueue', () => {
       const dream = buildDream({ id: 1 });
       act(() => {
         result.current.setPendingMutations([
-          { id: 'mut-1', type: 'create', dream, createdAt: Date.now() },
+          legacyMutation({ id: 'mut-1', type: 'create', dream, createdAt: Date.now() }),
         ]);
       });
 

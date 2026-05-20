@@ -2,12 +2,13 @@
 import React from 'react';
 import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import type { DreamAnalysis } from '../../lib/types';
 
 const { mockJournal } = ((factory: any) => factory())(() => {
   const mockJournal = {
     dreams: [{ id: 1, title: 'Dream', transcript: 'text', isAnalyzed: false }],
     loaded: true,
-    addDream: jest.fn(async (dream) => dream),
+    addDream: jest.fn(async (dream: DreamAnalysis) => dream),
     updateDream: jest.fn(async () => undefined),
     deleteDream: jest.fn(async () => undefined),
     toggleFavorite: jest.fn(async () => undefined),

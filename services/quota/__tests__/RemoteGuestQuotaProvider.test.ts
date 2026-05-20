@@ -2,6 +2,9 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { QuotaStatus } from '@/lib/types';
 
+type AnyFunction = (...args: any[]) => any;
+const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
+
 jest.mock('../../../lib/http', () => ({
   fetchJSON: jest.fn(),
 }));
@@ -65,7 +68,7 @@ const buildUsage = (analysisUsed: number) => ({
 const createFallback = (initialAnalysisUsed: number) => {
   let analysisUsed = initialAnalysisUsed;
 
-  const getQuotaStatus = jest.fn<() => Promise<QuotaStatus>>(() =>
+  const getQuotaStatus = typedJestFn<() => Promise<QuotaStatus>>().mockImplementation(() =>
     Promise.resolve({
       tier: 'guest',
       usage: buildUsage(analysisUsed),

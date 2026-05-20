@@ -384,7 +384,7 @@ describe('useQuota', () => {
 
     it('refetches when quota service notifies subscribers', async () => {
       let listener: (() => void) | undefined;
-      mockSubscribe.mockImplementation((cb) => {
+      mockSubscribe.mockImplementation((cb: () => void) => {
         listener = cb;
         return () => {
           listener = undefined;

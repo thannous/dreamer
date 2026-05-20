@@ -7,6 +7,9 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import type { DreamAnalysis, DreamMutation, PendingImageJob, QuotaStatus } from '../../lib/types';
 import { QuotaError, QuotaErrorCode } from '../../lib/errors';
 
+type AnyFunction = (...args: any[]) => any;
+const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
+
 // Hoist mock functions
 const {
   mockGetSavedDreams,
@@ -34,32 +37,32 @@ const {
   mockGetAccessToken,
   mockMarkMockAnalysis,
 } = ((factory: any) => factory())(() => ({
-  mockGetSavedDreams: jest.fn<() => Promise<DreamAnalysis[]>>(),
-  mockSaveDreams: jest.fn<(dreams: DreamAnalysis[]) => Promise<void>>(),
-  mockGetCachedRemoteDreams: jest.fn<() => Promise<DreamAnalysis[]>>(),
-  mockSaveCachedRemoteDreams: jest.fn<(dreams: DreamAnalysis[]) => Promise<void>>(),
-  mockGetPendingDreamMutations: jest.fn<() => Promise<DreamMutation[]>>(),
-  mockSavePendingDreamMutations: jest.fn<(mutations: DreamMutation[]) => Promise<void>>(),
-  mockGetPendingImageJobs: jest.fn<() => Promise<PendingImageJob[]>>(),
-  mockSavePendingImageJobs: jest.fn<(jobs: PendingImageJob[]) => Promise<void>>(),
-  mockCreateDreamInSupabase: jest.fn<(dream: DreamAnalysis, userId: string) => Promise<DreamAnalysis>>(),
-  mockUpdateDreamInSupabase: jest.fn<(dream: DreamAnalysis) => Promise<DreamAnalysis>>(),
-  mockDeleteDreamFromSupabase: jest.fn<(remoteId: number) => Promise<void>>(),
-  mockFetchDreamsFromSupabase: jest.fn<() => Promise<DreamAnalysis[]>>(),
-  mockAnalyzeDreamText: jest.fn<(transcript: string, lang?: string, fingerprint?: string) => Promise<unknown>>(),
-  mockSubmitImageGenerationJob: jest.fn<(request: unknown) => Promise<unknown>>(),
-  mockGetImageGenerationJobStatus: jest.fn<(jobId: string) => Promise<unknown>>(),
-  mockGetQuotaStatus: jest.fn<(user: unknown, tier: string, target?: unknown) => Promise<QuotaStatus>>(),
-  mockInvalidateQuota: jest.fn<(user: unknown) => void>(),
-  mockGetThumbnailUrl: jest.fn<(url: string | undefined) => string | undefined>(),
-  mockIncrementLocalAnalysisCount: jest.fn<() => Promise<number>>(),
-  mockSyncWithServerCount: jest.fn<(count: number, quotaType: 'analysis' | 'exploration') => Promise<number>>(),
+  mockGetSavedDreams: typedJestFn<() => Promise<DreamAnalysis[]>>(),
+  mockSaveDreams: typedJestFn<(dreams: DreamAnalysis[]) => Promise<void>>(),
+  mockGetCachedRemoteDreams: typedJestFn<() => Promise<DreamAnalysis[]>>(),
+  mockSaveCachedRemoteDreams: typedJestFn<(dreams: DreamAnalysis[]) => Promise<void>>(),
+  mockGetPendingDreamMutations: typedJestFn<() => Promise<DreamMutation[]>>(),
+  mockSavePendingDreamMutations: typedJestFn<(mutations: DreamMutation[]) => Promise<void>>(),
+  mockGetPendingImageJobs: typedJestFn<() => Promise<PendingImageJob[]>>(),
+  mockSavePendingImageJobs: typedJestFn<(jobs: PendingImageJob[]) => Promise<void>>(),
+  mockCreateDreamInSupabase: typedJestFn<(dream: DreamAnalysis, userId: string) => Promise<DreamAnalysis>>(),
+  mockUpdateDreamInSupabase: typedJestFn<(dream: DreamAnalysis) => Promise<DreamAnalysis>>(),
+  mockDeleteDreamFromSupabase: typedJestFn<(remoteId: number) => Promise<void>>(),
+  mockFetchDreamsFromSupabase: typedJestFn<() => Promise<DreamAnalysis[]>>(),
+  mockAnalyzeDreamText: typedJestFn<(transcript: string, lang?: string, fingerprint?: string) => Promise<unknown>>(),
+  mockSubmitImageGenerationJob: typedJestFn<(request: unknown) => Promise<unknown>>(),
+  mockGetImageGenerationJobStatus: typedJestFn<(jobId: string) => Promise<unknown>>(),
+  mockGetQuotaStatus: typedJestFn<(user: unknown, tier: string, target?: unknown) => Promise<QuotaStatus>>(),
+  mockInvalidateQuota: typedJestFn<(user: unknown) => void>(),
+  mockGetThumbnailUrl: typedJestFn<(url: string | undefined) => string | undefined>(),
+  mockIncrementLocalAnalysisCount: typedJestFn<() => Promise<number>>(),
+  mockSyncWithServerCount: typedJestFn<(count: number, quotaType: 'analysis' | 'exploration') => Promise<number>>(),
   mockGuestDreamCounterState: { count: 0 },
-  mockUseAuth: jest.fn<
+  mockUseAuth: typedJestFn<
     () => { user: { id: string; app_metadata?: Record<string, unknown> } | null; sessionReady: boolean }
   >(),
-  mockGetAccessToken: jest.fn<() => Promise<string | null>>(),
-  mockMarkMockAnalysis: jest.fn<() => Promise<number>>(),
+  mockGetAccessToken: typedJestFn<() => Promise<string | null>>(),
+  mockMarkMockAnalysis: typedJestFn<() => Promise<number>>(),
 }));
 
 let mockSubscriptionStatus: any = { tier: 'free' };
@@ -213,6 +216,15 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   ...overrides,
 });
 
+const legacyMutation = (mutation: {
+  id: string;
+  type: DreamMutation['operation'];
+  dream?: DreamAnalysis;
+  dreamId?: number;
+  remoteId?: number;
+  createdAt: number;
+}): DreamMutation => mutation as unknown as DreamMutation;
+
 const buildQuotaStatus = (overrides: Partial<QuotaStatus> = {}): QuotaStatus => ({
   tier: 'guest',
   canAnalyze: true,
@@ -246,7 +258,7 @@ describe('useDreamJournal', () => {
     mockGetPendingImageJobs.mockResolvedValue([]);
     mockSavePendingImageJobs.mockResolvedValue(undefined);
     mockFetchDreamsFromSupabase.mockResolvedValue([]);
-    mockGetThumbnailUrl.mockImplementation((url) => url ? `${url}-thumb` : undefined);
+    mockGetThumbnailUrl.mockImplementation((url: string | undefined) => url ? `${url}-thumb` : undefined);
     mockIncrementLocalAnalysisCount.mockResolvedValue(1);
     mockSyncWithServerCount.mockResolvedValue(1);
     mockGetAccessToken.mockResolvedValue('test-token');
@@ -319,12 +331,12 @@ describe('useDreamJournal', () => {
       setMockUser({ id: 'user-1' });
       const remoteDreams = [buildDream({ id: 1, remoteId: 101 })];
       const pendingMutations: DreamMutation[] = [
-        {
+        legacyMutation({
           id: 'mut-1',
           type: 'create',
           createdAt: Date.now(),
           dream: buildDream({ id: 2 }),
-        },
+        }),
       ];
 
       mockFetchDreamsFromSupabase.mockResolvedValue(remoteDreams);
@@ -337,7 +349,7 @@ describe('useDreamJournal', () => {
       });
 
       expect(result.current.dreams).toHaveLength(2);
-      expect(result.current.dreams.some((d) => d.id === 2)).toBe(true);
+      expect(result.current.dreams.some((d: DreamAnalysis) => d.id === 2)).toBe(true);
     });
 
     it('normalizes dream images with thumbnails', async () => {
@@ -400,7 +412,7 @@ describe('useDreamJournal', () => {
       await expect(result.current.addDream(buildDream({ id: 2 }))).rejects.toMatchObject({
         code: QuotaErrorCode.GUEST_LIMIT_REACHED,
       });
-      expect(result.current.dreams.map((d) => d.id)).toEqual([3, 1]);
+      expect(result.current.dreams.map((d: DreamAnalysis) => d.id)).toEqual([3, 1]);
     });
   });
 
@@ -805,15 +817,15 @@ describe('useDreamJournal', () => {
 
       mockFetchDreamsFromSupabase.mockResolvedValue([]);
       mockGetPendingDreamMutations.mockResolvedValue([
-        {
+        legacyMutation({
           id: 'mutation-create-1',
           type: 'create',
           createdAt: Date.now(),
           dream: { ...localDream, pendingSync: true },
-        },
+        }),
       ]);
       mockCreateDreamInSupabase.mockResolvedValue(syncedDream);
-      mockUpdateDreamInSupabase.mockImplementation(async (dream) => ({ ...dream }));
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream }));
 
       const { result } = renderHook(() => useDreamJournal());
 

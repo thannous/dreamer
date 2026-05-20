@@ -4,9 +4,12 @@ import type { DreamAnalysis } from '@/lib/types';
 import type { User } from '@supabase/supabase-js';
 import { MockQuotaProvider } from '../MockQuotaProvider';
 
+type AnyFunction = (...args: any[]) => any;
+const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
+
 // Use jest.hoisted to ensure mock is available during module loading
 const { mockGetSavedDreams, mockQuotaEventStore } = ((factory: any) => factory())(() => ({
-  mockGetSavedDreams: jest.fn<() => Promise<DreamAnalysis[]>>(),
+  mockGetSavedDreams: typedJestFn<() => Promise<DreamAnalysis[]>>(),
   mockQuotaEventStore: {
     analysisCount: 0,
     explorationCount: 0,

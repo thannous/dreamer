@@ -210,39 +210,18 @@ const claimGuestImageQuota = async (
   });
 };
 
-serve(async (req: Request) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
-  }
-
-  if (req.method !== 'POST') {
-    return json({ error: 'Method not allowed' }, 405);
-  }
-
+const processImageJob = async (input: {
+  supabaseUrl: string;
+  serviceRoleKey: string;
+  storageBucket: string;
+  jobId: string;
+}) => {
   try {
-    const supabaseUrl = getRequiredEnv('SUPABASE_URL');
-    const serviceRoleKey = getRequiredEnv('SUPABASE_SERVICE_ROLE_KEY');
-    const storageBucket = Deno.env.get('SUPABASE_STORAGE_BUCKET')?.trim() || 'dream-images';
+    const adminClient = createAdminClient(input.supabaseUrl, input.serviceRoleKey);
+    const job = await claimSpecificJob(adminClient, input.jobId);
 
-    if (!isAuthorized(req, serviceRoleKey)) {
-      return json({ error: 'Unauthorized' }, 401);
-    }
-
-    const body = (await req.json().catch(() => ({}))) as { jobId?: string };
-    const jobId = String(body?.jobId ?? '').trim();
-    if (!jobId) {
-      return json({ error: 'Missing jobId' }, 400);
-    }
-
-    const adminClient = createAdminClient(supabaseUrl, serviceRoleKey);
-    const job = await claimSpecificJob(adminClient, jobId);
-
-    if (!job) {
-      return json({ ok: true, skipped: true, reason: 'not_found_or_already_claimed' });
-    }
-
-    if (job.status !== 'running') {
-      return json({ ok: true, skipped: true, status: job.status });
+    if (!job || job.status !== 'running') {
+      return;
     }
 
     const apiKey = getRequiredEnv('GEMINI_API_KEY');
@@ -276,9 +255,9 @@ serve(async (req: Request) => {
         apiKey,
         prompt,
         previousImageUrl: requestPayload.previousImageUrl,
-        supabaseUrl,
-        supabaseServiceRoleKey: serviceRoleKey,
-        storageBucket,
+        supabaseUrl: input.supabaseUrl,
+        supabaseServiceRoleKey: input.serviceRoleKey,
+        storageBucket: input.storageBucket,
         ownerId,
       });
 
@@ -294,8 +273,6 @@ serve(async (req: Request) => {
         error_message: null,
         finished_at: new Date().toISOString(),
       });
-
-      return json({ ok: true, jobId: job.id, status: 'succeeded' });
     } catch (error) {
       const serialized = serializeImageJobError(error);
       let guestClaimCleared = false;
@@ -305,12 +282,7 @@ serve(async (req: Request) => {
 
       if (serialized.retryable && job.attempt_count < job.max_attempts) {
         await requeueJob(adminClient, job, serialized.errorCode, serialized.errorMessage);
-        return json({
-          ok: true,
-          jobId: job.id,
-          status: 'queued',
-          retryable: true,
-        });
+        return;
       }
 
       if (!guestClaimCleared && job.guest_fingerprint && (job.quota_claimed || claimedQuotaThisRun)) {
@@ -318,13 +290,54 @@ serve(async (req: Request) => {
       }
 
       await markTerminalFailure(adminClient, job, serialized.errorCode, serialized.errorMessage);
-      return json({
-        ok: true,
-        jobId: job.id,
-        status: 'failed',
-        errorCode: serialized.errorCode,
-      });
     }
+  } catch (error) {
+    console.error('[image-job-worker] Unhandled background error', error);
+  }
+};
+
+const runInBackground = (task: Promise<void>): boolean => {
+  const edgeRuntime = (globalThis as {
+    EdgeRuntime?: { waitUntil?: (promise: Promise<unknown>) => void };
+  }).EdgeRuntime;
+  if (typeof edgeRuntime?.waitUntil !== 'function') {
+    return false;
+  }
+  edgeRuntime.waitUntil(task);
+  return true;
+};
+
+serve(async (req: Request) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders });
+  }
+
+  if (req.method !== 'POST') {
+    return json({ error: 'Method not allowed' }, 405);
+  }
+
+  try {
+    const supabaseUrl = getRequiredEnv('SUPABASE_URL');
+    const serviceRoleKey = getRequiredEnv('SUPABASE_SERVICE_ROLE_KEY');
+    const storageBucket = Deno.env.get('SUPABASE_STORAGE_BUCKET')?.trim() || 'dream-images';
+
+    if (!isAuthorized(req, serviceRoleKey)) {
+      return json({ error: 'Unauthorized' }, 401);
+    }
+
+    const body = (await req.json().catch(() => ({}))) as { jobId?: string };
+    const jobId = String(body?.jobId ?? '').trim();
+    if (!jobId) {
+      return json({ error: 'Missing jobId' }, 400);
+    }
+
+    const task = processImageJob({ supabaseUrl, serviceRoleKey, storageBucket, jobId });
+    if (runInBackground(task)) {
+      return json({ ok: true, jobId, status: 'accepted' }, 202);
+    }
+
+    await task;
+    return json({ ok: true, jobId, status: 'processed' });
   } catch (error) {
     console.error('[image-job-worker] Unhandled error', error);
     return json({ error: 'Internal server error' }, 500);

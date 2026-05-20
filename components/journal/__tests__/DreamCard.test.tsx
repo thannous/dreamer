@@ -153,7 +153,10 @@ describe('DreamCard image fallback', () => {
       transcript: 'dream transcript',
       title: 'Dream title',
       interpretation: 'Dream interpretation',
+      shareableQuote: 'Dream quote',
+      imageUrl: '',
       chatHistory: [],
+      dreamType: 'Symbolic Dream',
       isAnalyzed: true,
       analyzedAt: Date.now(),
     };

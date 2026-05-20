@@ -94,6 +94,9 @@ const IMAGE_FALLBACK_RATIO = 2 / 3;
 const DREAM_IMAGE_ASPECT = 9 / 16;
 const DREAM_IMAGE_CROP_EPSILON = 0.01;
 
+const isTechnicalRevisionConflict = (message?: string | null): boolean =>
+  String(message ?? '').toLowerCase().includes('revision conflict');
+
 const generateUUID = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -1337,16 +1340,39 @@ export default function JournalDetailScreen() {
         ? t('journal.detail.sync.failed_title')
         : t('journal.detail.sync.pending_title');
     const message = isSyncConflict
-      ? (dream.lastSyncError || t('journal.detail.sync.conflict_message'))
+      ? (dream.lastSyncError && !isTechnicalRevisionConflict(dream.lastSyncError)
+          ? dream.lastSyncError
+          : t('journal.detail.sync.conflict_message'))
       : isSyncFailed
         ? (dream.lastSyncError || t('journal.detail.sync.failed_message'))
         : t('journal.detail.sync.pending_message');
-    const cardBackground = isSyncConflict
-      ? '#FEF2F2'
+    const cardTone = isSyncConflict
+      ? {
+          background: mode === 'dark' ? '#3A1D3E' : '#FFF1F2',
+          border: mode === 'dark' ? '#8E536A' : '#FDA4AF',
+          icon: mode === 'dark' ? '#FCA5A5' : '#9F1239',
+          title: mode === 'dark' ? '#FFF7F7' : '#7F1D1D',
+          message: mode === 'dark' ? '#F3CAD4' : '#9F1239',
+          primaryBackground: mode === 'dark' ? '#9F5F78' : '#BE123C',
+          primaryText: '#FFFFFF',
+          secondaryBorder: mode === 'dark' ? '#C98A9D' : '#BE123C',
+          secondaryText: mode === 'dark' ? '#FFE4EA' : '#9F1239',
+        }
       : isSyncFailed
-        ? '#FEF3C7'
-        : colors.backgroundSecondary;
-    const iconColor = isSyncConflict ? '#991B1B' : isSyncFailed ? '#92400E' : colors.accent;
+        ? {
+            background: mode === 'dark' ? '#3F2F19' : '#FEF3C7',
+            border: mode === 'dark' ? '#9A6B2D' : '#F59E0B',
+            icon: mode === 'dark' ? '#FBBF24' : '#92400E',
+            title: mode === 'dark' ? '#FFF7D6' : colors.textPrimary,
+            message: mode === 'dark' ? '#F1D79D' : colors.textSecondary,
+          }
+        : {
+            background: colors.backgroundSecondary,
+            border: colors.divider,
+            icon: colors.accentLight,
+            title: colors.textPrimary,
+            message: colors.textOnAccentSurface,
+          };
     const iconName = isSyncConflict
       ? 'exclamationmark.octagon.fill'
       : isSyncFailed
@@ -1354,12 +1380,12 @@ export default function JournalDetailScreen() {
         : 'arrow.triangle.2.circlepath';
 
     return (
-      <View style={[styles.statusCard, { backgroundColor: cardBackground }]}>
+      <View style={[styles.statusCard, { backgroundColor: cardTone.background, borderColor: cardTone.border }]}>
         <View style={styles.statusHeader}>
-          <IconSymbol name={iconName} size={24} color={iconColor} />
-          <Text style={[styles.statusTitle, { color: colors.textPrimary }]}>{title}</Text>
+          <IconSymbol name={iconName} size={24} color={cardTone.icon} />
+          <Text style={[styles.statusTitle, { color: cardTone.title }]}>{title}</Text>
         </View>
-        <Text style={[styles.statusMessage, { color: colors.textSecondary }]}>{message}</Text>
+        <Text style={[styles.statusMessage, { color: cardTone.message }]}>{message}</Text>
         {isSyncPending ? (
           <ActivityIndicator size="small" color={colors.accent} />
         ) : null}
@@ -1377,18 +1403,18 @@ export default function JournalDetailScreen() {
         {isSyncConflict ? (
           <View style={styles.sheetButtons}>
             <Pressable
-              style={[styles.sheetPrimaryButton, { backgroundColor: colors.accent }]}
+              style={[styles.sheetPrimaryButton, { backgroundColor: cardTone.primaryBackground }]}
               onPress={handleKeepLocalVersion}
             >
-              <Text style={[styles.sheetPrimaryButtonText, { color: colors.textPrimary }]}>
+              <Text style={[styles.sheetPrimaryButtonText, { color: cardTone.primaryText }]}>
                 {t('journal.detail.sync.keep_local')}
               </Text>
             </Pressable>
             <Pressable
-              style={[styles.sheetSecondaryButton, { borderColor: colors.divider }]}
+              style={[styles.sheetSecondaryButton, { borderColor: cardTone.secondaryBorder }]}
               onPress={handleUseServerVersion}
             >
-              <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
+              <Text style={[styles.sheetSecondaryButtonText, { color: cardTone.secondaryText }]}>
                 {t('journal.detail.sync.use_server')}
               </Text>
             </Pressable>
@@ -1614,7 +1640,33 @@ export default function JournalDetailScreen() {
                     </View>
                   )
                 ) : dream.analysisStatus === 'pending' || isImageJobPending ? (
-                  <Skeleton style={{ width: '100%', height: '100%' }} />
+                  <View
+                    style={[
+                      styles.dreamImage,
+                      styles.imageGeneratingCard,
+                      {
+                        backgroundColor: mode === 'dark' ? 'rgba(99, 83, 160, 0.32)' : colors.backgroundSecondary,
+                        borderColor: mode === 'dark' ? 'rgba(180, 168, 212, 0.35)' : colors.divider,
+                      },
+                    ]}
+                  >
+                    <View style={[styles.imageGeneratingIcon, { backgroundColor: colors.accent }]}>
+                      <IconSymbol name="sparkles" size={28} color={colors.textPrimary} />
+                    </View>
+                    <ActivityIndicator size="large" color={colors.accentLight} />
+                    <Text style={[styles.imagePlaceholderTitle, { color: colors.textPrimary }]}>
+                      {isImageJobPending
+                        ? t('journal.detail.image.generating_title')
+                        : t('journal.detail.image.preparing_title')}
+                    </Text>
+                    <Text style={[styles.imagePlaceholderSubtitle, { color: colors.textOnAccentSurface }]}>
+                      {dream.imageJobStatus === 'queued'
+                        ? t('journal.detail.image.queued_subtitle')
+                        : dream.imageJobStatus === 'running'
+                          ? t('journal.detail.image.running_subtitle')
+                          : t('journal.detail.image.preparing_subtitle')}
+                    </Text>
+                  </View>
                 ) : (
                   <View
                     style={[
@@ -2162,6 +2214,23 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     borderRadius: 16,
     borderWidth: 1,
+  },
+  imageGeneratingCard: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    gap: 12,
+    paddingHorizontal: 24,
+    paddingVertical: 28,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  imageGeneratingIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   imagePlaceholderTitle: {
     fontSize: 18,
@@ -2786,6 +2855,7 @@ const styles = StyleSheet.create({
   statusCard: {
     padding: 24,
     borderRadius: 16,
+    borderWidth: 1,
     marginBottom: 16,
   },
   statusHeader: {

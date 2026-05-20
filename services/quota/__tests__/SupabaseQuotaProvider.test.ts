@@ -5,6 +5,9 @@ import { supabase } from '../../../lib/supabase';
 import type { DreamAnalysis } from '../../../lib/types';
 import { SupabaseQuotaProvider } from '../SupabaseQuotaProvider';
 
+type AnyFunction = (...args: any[]) => any;
+const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
+
 // Use jest.hoisted for mocks that need to be accessed
 const { mockBuilder, mockGetCachedRemoteDreams } = ((factory: any) => factory())(() => {
   const mockBuilder = {
@@ -26,7 +29,7 @@ const { mockBuilder, mockGetCachedRemoteDreams } = ((factory: any) => factory())
   mockBuilder.lt.mockReturnValue(mockBuilder);
   mockBuilder.single.mockReturnValue(mockBuilder);
 
-  const mockGetCachedRemoteDreams = jest.fn<() => Promise<unknown[]>>();
+  const mockGetCachedRemoteDreams = typedJestFn<() => Promise<unknown[]>>();
   mockGetCachedRemoteDreams.mockResolvedValue([]);
 
   return { mockBuilder, mockGetCachedRemoteDreams };

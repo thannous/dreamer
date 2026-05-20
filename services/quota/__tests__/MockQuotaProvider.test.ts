@@ -4,9 +4,12 @@ import type { DreamAnalysis } from '@/lib/types';
 
 let MockQuotaProvider: typeof import('../MockQuotaProvider').MockQuotaProvider;
 
+type AnyFunction = (...args: any[]) => any;
+const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
+
 // Use jest.hoisted to ensure mock is available during module loading
 const { mockGetSavedDreams, mockStorage } = ((factory: any) => factory())(() => ({
-  mockGetSavedDreams: jest.fn<() => Promise<DreamAnalysis[]>>(),
+  mockGetSavedDreams: typedJestFn<() => Promise<DreamAnalysis[]>>(),
   mockStorage: new Map<string, string>(),
 }));
 

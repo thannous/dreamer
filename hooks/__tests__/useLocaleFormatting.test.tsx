@@ -5,6 +5,7 @@ import { renderHook } from '@testing-library/react';
 import { describe, expect, it, jest } from '@jest/globals';
 
 import { useLocaleFormatting } from '../useLocaleFormatting';
+
 // Mock useLanguage
 const mockLocale = {
   languageTag: 'en-US',
@@ -22,16 +23,20 @@ jest.mock('../../context/LanguageContext', () => ({
 }));
 
 // Mock dateUtils
-jest.mock('../../lib/dateUtils', () => ({
-  formatDreamDate: jest.fn((timestamp: number, locale: string) => `formatted-date-${timestamp}-${locale}`),
-  formatDreamTime: jest.fn((timestamp: number, locale: string) => `formatted-time-${timestamp}-${locale}`),
-  formatLocaleDate: jest.requireActual<typeof import('../../lib/dateUtils')>('../../lib/dateUtils').formatLocaleDate,
-  formatLocaleNumber: jest.requireActual<typeof import('../../lib/dateUtils')>('../../lib/dateUtils').formatLocaleNumber,
-  formatLocalePercent: jest.requireActual<typeof import('../../lib/dateUtils')>('../../lib/dateUtils').formatLocalePercent,
-  formatLocaleTime: jest.requireActual<typeof import('../../lib/dateUtils')>('../../lib/dateUtils').formatLocaleTime,
-  formatShortDate: jest.fn((timestamp: number, locale: string) => `short-date-${timestamp}-${locale}`),
-  getCurrentMoonCycleTimestamp: jest.fn((locale: string) => `moon-cycle-${locale}`),
-}));
+jest.mock('../../lib/dateUtils', () => {
+  const actualDateUtils = jest.requireActual('../../lib/dateUtils') as typeof import('../../lib/dateUtils');
+
+  return {
+    formatDreamDate: jest.fn((timestamp: number, locale: string) => `formatted-date-${timestamp}-${locale}`),
+    formatDreamTime: jest.fn((timestamp: number, locale: string) => `formatted-time-${timestamp}-${locale}`),
+    formatLocaleDate: actualDateUtils.formatLocaleDate,
+    formatLocaleNumber: actualDateUtils.formatLocaleNumber,
+    formatLocalePercent: actualDateUtils.formatLocalePercent,
+    formatLocaleTime: actualDateUtils.formatLocaleTime,
+    formatShortDate: jest.fn((timestamp: number, locale: string) => `short-date-${timestamp}-${locale}`),
+    getCurrentMoonCycleTimestamp: jest.fn((locale: string) => `moon-cycle-${locale}`),
+  };
+});
 
 
 describe('useLocaleFormatting', () => {

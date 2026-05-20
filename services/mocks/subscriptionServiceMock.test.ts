@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import type { PurchasePackage } from '@/lib/types';
 
 describe('subscriptionServiceMock', () => {
   beforeEach(() => {
@@ -114,17 +115,17 @@ describe('subscriptionServiceMock', () => {
 
       // Then
       expect(offerings).toHaveLength(2);
-      const ids = offerings.map((item) => item.id);
+      const ids = offerings.map((item: PurchasePackage) => item.id);
       expect(ids).toContain('mock_monthly');
       expect(ids).toContain('mock_annual');
       
-      const monthlyPackage = offerings.find((o) => o.id === 'mock_monthly');
+      const monthlyPackage = offerings.find((o: PurchasePackage) => o.id === 'mock_monthly');
       expect(monthlyPackage?.interval).toBe('monthly');
       expect(monthlyPackage?.priceFormatted).toBe('$4.99');
       expect(monthlyPackage?.currency).toBe('USD');
       expect(monthlyPackage?.title).toBe('Monthly');
       
-      const annualPackage = offerings.find((o) => o.id === 'mock_annual');
+      const annualPackage = offerings.find((o: PurchasePackage) => o.id === 'mock_annual');
       expect(annualPackage?.interval).toBe('annual');
       expect(annualPackage?.priceFormatted).toBe('$39.99');
       expect(annualPackage?.currency).toBe('USD');
