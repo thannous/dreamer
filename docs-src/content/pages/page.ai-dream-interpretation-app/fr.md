@@ -57,6 +57,53 @@
     </div>
   </section>
 
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Comparaison des apps IA de rêves</h2>
+    <div class="grid md:grid-cols-3 gap-4 text-sm">
+      <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-2">
+        <h3 class="text-white font-medium">Noctalia</h3>
+        <p><span class="text-purple-200">Idéal pour:</span> capture vocale Android, réflexion IA, symboles et images générées.</p>
+        <p><span class="text-purple-200">Prix:</span> la page publique Noctalia indique 2,99 €/mois ou 19 €/an.</p>
+        <p><span class="text-purple-200">Preuve:</span> produit jeune avec Google Play public et ressources web.</p>
+        <p><span class="text-purple-200">Migration:</span> à choisir si la capture rapide au réveil compte plus que l’iOS aujourd’hui.</p>
+      </article>
+      <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-2">
+        <h3 class="text-white font-medium">DreamApp</h3>
+        <p><span class="text-purple-200">Idéal pour:</span> significations de rêves grand public et interprétation large.</p>
+        <p><span class="text-purple-200">Prix:</span> les stores indiquent des achats intégrés; le prix exact doit être vérifié dans le store.</p>
+        <p><span class="text-purple-200">Preuve:</span> forte présence Android et signal App Store observés le 20 mai 2026.</p>
+        <p><span class="text-purple-200">Migration:</span> à comparer si vous voulez une app plus installée.</p>
+      </article>
+      <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-2">
+        <h3 class="text-white font-medium">Oniri</h3>
+        <p><span class="text-purple-200">Idéal pour:</span> rêve lucide, export, statistiques et techniques.</p>
+        <p><span class="text-purple-200">Prix:</span> les prix App Store varient selon le pays et la date.</p>
+        <p><span class="text-purple-200">Preuve:</span> bon signal App Store et positionnement mature.</p>
+        <p><span class="text-purple-200">Migration:</span> à garder si l’entraînement lucide est votre habitude principale.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="grid md:grid-cols-2 gap-6">
+    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+      <h2 class="text-2xl font-serif text-white mb-4">Qui devrait changer</h2>
+      <p>Choisissez Noctalia si vous utilisez Android, oubliez vite vos rêves, voulez une capture vocale et préférez des pistes IA avec symboles et visuels.</p>
+    </div>
+    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+      <h2 class="text-2xl font-serif text-white mb-4">Qui ne devrait pas changer</h2>
+      <p>Ne changez pas si vous avez besoin d’iOS aujourd’hui, d’alarmes de rêve lucide avancées, d’IA entièrement hors ligne ou d’un outil médical/thérapeutique.</p>
+    </div>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Migration</h2>
+    <ul class="list-disc pl-5 space-y-2">
+      <li>Exportez ou copiez vos rêves récents depuis l’app actuelle avant de changer.</li>
+      <li>Déplacez d’abord les symboles récurrents: ce sont eux qui reconstruisent le contexte le plus vite.</li>
+      <li>Gardez l’ancienne app si elle couvre un besoin que Noctalia ne revendique pas, comme iOS ou les alarmes lucides.</li>
+    </ul>
+  </section>
+
       <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Comment juger une app</h2>
     <ul class="list-disc pl-5 space-y-2">
@@ -74,7 +121,8 @@
     <ul class="list-disc pl-5 space-y-2">
       <li><a href="/fr/applications-journal-de-reves" class="text-dream-salmon hover:underline">Meilleures applications de journal de rêves en 2026</a></li>
       <li><a href="/fr/guides/dictionnaire-symboles-reves" class="text-dream-salmon hover:underline">Dictionnaire des symboles de rêve</a></li>
-      <li><a href="/fr/application-interpretation-reves-ia" class="text-dream-salmon hover:underline">Application d’interprétation de rêves IA</a></li>
+      <li><a href="/fr/alternative-dreamapp" class="text-dream-salmon hover:underline">Alternative DreamApp</a></li>
+      <li><a href="/fr/alternative-oniri" class="text-dream-salmon hover:underline">Alternative Oniri</a></li>
     </ul>
   </section>
 

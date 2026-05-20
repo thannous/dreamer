@@ -133,7 +133,7 @@
     "oniri": {
       "name": "Oniri",
       "positioning": "Mature dream journal and lucid dreaming app with AI interpretation, oral notes, generated images, statistics, export, and technique training.",
-      "platforms": ["iOS", "iPad", "Android"],
+      "platforms": ["iOS", "iPad", "Android beta / Google Play listing"],
       "pricing": {
         "model": "Free download with Oniri Premium and full-version in-app purchase options",
         "publicPriceSignals": [
