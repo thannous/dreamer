@@ -17,7 +17,9 @@ du bundle JavaScript. Référence: Expo EAS Environment Variables
 - [x] Confirmer via `gcloud projects list --filter='PROJECT_NUMBER=359653779023' --format=json` que `359653779023` est bien le **Project number** du projet `gen-lang-client-0336445544` / `dreamweaver` (`ACTIVE`).
 - [ ] `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`
 - [ ] `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID`
-- [ ] `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`
+- [x] `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY=goog_BFWJqTqAtQUnwYisczZcZrnsanw` visible dans `.env.playstore` et `eas.json` pour `preview`, `release`, `production`, `production-apk`.
+- [x] RevenueCat Test Store séparé : `.env.teststore` et `eas build --profile revenuecat-teststore` utilisent `test_zqltcBoDiTWPWmuyXTXTbYkJPrz` avec `EXPO_PUBLIC_SUBSCRIPTION_QA_LAB=true`.
+- [x] RevenueCat Play Store app confirmée via MCP : `Noctalia (Play Store)`, package `com.tanuki75.noctalia`, produits `noctalia_plus:monthly` et `noctalia_plus:annual`.
 - [ ] `EXPO_PUBLIC_API_URL`
 - [ ] `EXPO_PUBLIC_SUPABASE_URL`
 - [ ] `EXPO_PUBLIC_SUPABASE_ANON_KEY`

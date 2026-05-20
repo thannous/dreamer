@@ -4,13 +4,10 @@ appId: com.tanuki75.noctalia
 - runFlow: subflows/open-mock-app.yml
 - tapOn:
       id: btn.mockNav.home
-- scrollUntilVisible:
-      element:
-          text: "Rituel du jour|Ritual de hoy|Today's ritual"
-      direction: DOWN
-      visibilityPercentage: 50
-      centerElement: true
-- assertVisible: "Rituel du jour|Ritual de hoy|Today's ritual"
+- swipe:
+      start: 50%, 78%
+      end: 50%, 28%
+- assertVisible: ".*Rituel du jour.*|.*Ritual de hoy.*|.*Today's ritual.*"
 
 # Open the lucid dream ritual and verify a lucid-specific step
 - tapOn:
@@ -24,7 +21,7 @@ appId: com.tanuki75.noctalia
 
 - pressKey: back
 - waitForAnimationToEnd
-- assertVisible: "Rituel du jour|Ritual de hoy|Today's ritual"
+- assertVisible: ".*Rituel du jour.*|.*Ritual de hoy.*|.*Today's ritual.*"
 
 # Open the starter ritual and ensure the calm evening step is shown
 - tapOn:
@@ -38,13 +35,14 @@ appId: com.tanuki75.noctalia
 
 - pressKey: back
 - waitForAnimationToEnd
-- assertVisible: "Rituel du jour|Ritual de hoy|Today's ritual"
+- assertVisible: ".*Rituel du jour.*|.*Ritual de hoy.*|.*Today's ritual.*"
 
-# Swipe the horizontal ritual carousel, open the recall ritual, and verify one step
-- swipe:
-      start: 86%, 58%
-      end: 16%, 58%
-- waitForAnimationToEnd
+# Scroll the horizontal ritual carousel, open the recall ritual, and verify one step
+- scrollUntilVisible:
+      element:
+          id: btn.inspiration.ritual.memory
+      direction: RIGHT
+      timeout: 20000
 - tapOn:
       id: btn.inspiration.ritual.memory
 - waitForAnimationToEnd

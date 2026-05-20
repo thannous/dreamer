@@ -2,13 +2,6 @@
 appId: com.tanuki75.noctalia
 ---
 - runFlow: subflows/open-mock-app.yml
-- runFlow:
-    when:
-      visible:
-        id: btn.navigateJournal
-    commands:
-      - tapOn:
-          id: btn.navigateJournal
 - runFlow: subflows/select-existing-mock-profile.yml
 - scrollUntilVisible:
     element:
