@@ -225,6 +225,17 @@ function extractCanonicalFromContent(content) {
 }
 
 /**
+ * Extract a page-owned modified date before falling back to generated file history.
+ */
+function extractLastmodFromContent(content) {
+  const metaMatch = content.match(/<meta\s+property=(["'])article:modified_time\1\s+content=(["'])(\d{4}-\d{2}-\d{2})\2/i);
+  if (metaMatch) return metaMatch[3];
+
+  const jsonLdMatch = content.match(/"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})"/);
+  return jsonLdMatch ? jsonLdMatch[1] : null;
+}
+
+/**
  * Determine whether a page is indexable (so it can appear in sitemap)
  */
 function isIndexable(content) {
@@ -291,7 +302,10 @@ function groupUrlsByContent(files) {
 
     const hreflangs = extractHreflangsFromContent(content);
     if (hreflangs && Object.keys(hreflangs).length > 0) {
-      urlToMeta.set(canonical, { hreflangs, lastmod: getLastmodFromFilePath(fullPath) });
+      urlToMeta.set(canonical, {
+        hreflangs,
+        lastmod: extractLastmodFromContent(content) || getLastmodFromFilePath(fullPath),
+      });
     }
   }
 

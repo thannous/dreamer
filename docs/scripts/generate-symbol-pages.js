@@ -75,6 +75,47 @@ function finalizeGeneratedHtml(html) {
   return inlineLucideIcons(html);
 }
 
+function extractGeneratedModifiedDate(html) {
+  const metaMatch = html.match(/<meta\s+property="article:modified_time"\s+content="(\d{4}-\d{2}-\d{2})">/);
+  if (metaMatch) return metaMatch[1];
+
+  const jsonLdMatch = html.match(/"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})"/);
+  return jsonLdMatch ? jsonLdMatch[1] : null;
+}
+
+function replaceGeneratedModifiedDate(html, date) {
+  return html
+    .replace(
+      /(<meta\s+property="article:modified_time"\s+content=")\d{4}-\d{2}-\d{2}(">)/g,
+      `$1${date}$2`
+    )
+    .replace(/("dateModified"\s*:\s*")\d{4}-\d{2}-\d{2}(")/g, `$1${date}$2`);
+}
+
+function writeGeneratedHtml(filepath, html) {
+  const nextHtml = finalizeGeneratedHtml(html);
+
+  if (!fs.existsSync(filepath)) {
+    fs.writeFileSync(filepath, nextHtml, 'utf8');
+    return;
+  }
+
+  const currentHtml = fs.readFileSync(filepath, 'utf8');
+  if (currentHtml === nextHtml) {
+    return;
+  }
+
+  const currentModifiedDate = extractGeneratedModifiedDate(currentHtml);
+  if (currentModifiedDate) {
+    const nextWithCurrentDate = replaceGeneratedModifiedDate(nextHtml, currentModifiedDate);
+    if (nextWithCurrentDate === currentHtml) {
+      return;
+    }
+  }
+
+  fs.writeFileSync(filepath, nextHtml, 'utf8');
+}
+
 function localizedHomePath(lang) {
   return lang === 'en' ? '/' : `/${lang}/`;
 }
@@ -1467,7 +1508,7 @@ function main() {
         if (args['dry-run']) {
           console.log(`  [DRY RUN] Would create: ${filepath}`);
         } else {
-          fs.writeFileSync(filepath, finalizeGeneratedHtml(html), 'utf8');
+          writeGeneratedHtml(filepath, html);
           console.log(`  ✅ ${lang}/${CONFIG.symbolsPath[lang]}/${filename}`);
         }
         generated++;
@@ -2001,7 +2042,7 @@ function generateCategoryPages(symbols, i18n, languages) {
         if (args['dry-run']) {
           console.log(`  [DRY RUN] Would create: ${filepath}`);
         } else {
-          fs.writeFileSync(filepath, finalizeGeneratedHtml(html), 'utf8');
+          writeGeneratedHtml(filepath, html);
           console.log(`  ✅ ${lang}/${CONFIG.symbolsPath[lang]}/${filename} (${symbolsInCategory.length} symbols)`);
         }
         generated++;
@@ -2453,7 +2494,7 @@ function generateCurationPages(symbols, i18n, extended, languages) {
         if (args['dry-run']) {
           console.log(`  [DRY RUN] Would create: ${filepath}`);
         } else {
-          fs.writeFileSync(filepath, finalizeGeneratedHtml(html), 'utf8');
+          writeGeneratedHtml(filepath, html);
           console.log(`  ✅ ${lang}/guides/${filename} (${page.symbols.length} symbols)`);
         }
         generated++;
