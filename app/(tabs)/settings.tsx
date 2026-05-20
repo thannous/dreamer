@@ -30,6 +30,7 @@ import { useAuth } from '@/context/AuthContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
+import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -68,6 +69,7 @@ export default function SettingsScreen() {
   const { width } = useWindowDimensions();
   const appVersion = getAppVersionString();
   const scrollPerf = useScrollIdle();
+  const { formatDate, formatTime } = useLocaleFormatting();
   useClearWebFocus();
 
   const [showAnimations, setShowAnimations] = useState(false);
@@ -125,12 +127,12 @@ export default function SettingsScreen() {
     try {
       const date = new Date(expiryDate);
       if (Number.isNaN(date.getTime())) return null;
-      const dateStr = date.toLocaleDateString(undefined, {
+      const dateStr = formatDate(date, {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
       });
-      const timeStr = date.toLocaleTimeString(undefined, {
+      const timeStr = formatTime(date, {
         hour: '2-digit',
         minute: '2-digit',
       });
@@ -138,7 +140,7 @@ export default function SettingsScreen() {
     } catch {
       return null;
     }
-  }, [subscriptionStatus?.expiryDate]);
+  }, [formatDate, formatTime, subscriptionStatus?.expiryDate]);
 
   const subscriptionExpiryLabel = useMemo(() => {
     if (!isActive || !formattedExpiryDate) return undefined;

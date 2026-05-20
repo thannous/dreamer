@@ -41,7 +41,7 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
     let dreamsThisWeek = 0;
     let dreamsThisMonth = 0;
 
-    const streaks = calculateStreaks(dreams);
+    const streaks = calculateStreaks(dreams, effectiveNow, { sortedDescending: true });
     const currentStreak = streaks.current;
     const longestStreak = streaks.longest;
 

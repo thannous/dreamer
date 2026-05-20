@@ -12,6 +12,7 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
+import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -26,6 +27,7 @@ const log = createScopedLogger('[Paywall]');
 export default function PaywallScreen() {
   const { colors } = useTheme();
   const { t, translationRevision } = useTranslation();
+  const { formatDate, formatTime } = useLocaleFormatting();
   const params = useLocalSearchParams<{ trigger?: string }>();
   useClearWebFocus();
   const {
@@ -158,12 +160,12 @@ export default function PaywallScreen() {
     try {
       const date = new Date(expiryDate);
       if (Number.isNaN(date.getTime())) return null;
-      const dateStr = date.toLocaleDateString(undefined, {
+      const dateStr = formatDate(date, {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
       });
-      const timeStr = date.toLocaleTimeString(undefined, {
+      const timeStr = formatTime(date, {
         hour: '2-digit',
         minute: '2-digit',
       });
@@ -171,7 +173,7 @@ export default function PaywallScreen() {
     } catch {
       return null;
     }
-  }, [subscriptionStatus?.expiryDate]);
+  }, [formatDate, formatTime, subscriptionStatus?.expiryDate]);
 
   const subscriptionFeatures = useMemo(
     () => {

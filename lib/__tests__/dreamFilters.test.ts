@@ -383,6 +383,7 @@ describe('dreamFilters', () => {
       const result = applyFilters(mockDreams, filters);
 
       // Then
+      expect(result).toBe(mockDreams);
       expect(result).toEqual(mockDreams);
     });
 
