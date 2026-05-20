@@ -1,4 +1,3 @@
-import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, router } from "expo-router";
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
@@ -236,8 +235,8 @@ export default function SymbolDictionaryScreen() {
     router.push(`/symbol-detail/${id}` as any);
   }, []);
 
-  const renderItem = useCallback(
-    ({ item }: ListRenderItemInfo<Row>) => {
+  const renderListRow = useCallback(
+    (item: Row) => {
       if (item.type === "category-header") {
         return (
           <CategoryHeader
@@ -260,9 +259,6 @@ export default function SymbolDictionaryScreen() {
     },
     [lang, handleSymbolPress],
   );
-
-  const keyExtractor = useCallback((item: Row) => item.id, []);
-  const getItemType = useCallback((item: Row | undefined) => item?.type ?? "item", []);
 
   const renderEmptyComponent = useCallback(
     () => (
@@ -612,17 +608,20 @@ export default function SymbolDictionaryScreen() {
       </MotiView>
 
       {/* Symbol list */}
-      <FlashList
-        data={listData}
-        renderItem={renderItem}
-        keyExtractor={keyExtractor}
-        getItemType={getItemType}
-        drawDistance={240}
+      <ScrollView
+        testID="symbol-list"
         style={styles.list}
         contentContainerStyle={styles.listContent}
-        ListEmptyComponent={renderEmptyComponent}
         showsVerticalScrollIndicator={false}
-      />
+      >
+        {listData.length === 0
+          ? renderEmptyComponent()
+          : listData.map((item) => (
+              <React.Fragment key={item.id}>
+                {renderListRow(item)}
+              </React.Fragment>
+            ))}
+      </ScrollView>
     </LinearGradient>
   );
 }
