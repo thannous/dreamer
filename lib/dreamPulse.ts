@@ -25,13 +25,23 @@ function isAnalyzed(dream: DreamAnalysis): boolean {
 
 export function getDreamPulse(dreams: DreamAnalysis[], now = Date.now()): DreamPulse {
   const totalCount = dreams.length;
-  const analyzedCount = dreams.filter(isAnalyzed).length;
-  const favoriteCount = dreams.filter((dream) => dream.isFavorite === true).length;
-  const lastDreamAt = dreams.reduce<number | null>((latest, dream) => {
-    if (typeof dream.id !== 'number') return latest;
-    if (latest === null || dream.id > latest) return dream.id;
-    return latest;
-  }, null);
+  let analyzedCount = 0;
+  let favoriteCount = 0;
+  let lastDreamAt: number | null = null;
+
+  // Perf: this drives the Inspiration screen summary, so collect all pulse counters
+  // in one pass instead of filtering/reducing the same dream list three times.
+  for (const dream of dreams) {
+    if (isAnalyzed(dream)) {
+      analyzedCount += 1;
+    }
+    if (dream.isFavorite === true) {
+      favoriteCount += 1;
+    }
+    if (typeof dream.id === 'number' && (lastDreamAt === null || dream.id > lastDreamAt)) {
+      lastDreamAt = dream.id;
+    }
+  }
 
   if (totalCount === 0 || lastDreamAt === null) {
     return {

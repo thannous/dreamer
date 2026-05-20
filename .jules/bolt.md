@@ -1,5 +1,20 @@
 # Bolt's Journal - Critical Learnings Only
 
+## 2026-05-16 - Shared Locale Formatting Cache
+**Learning:** Several screens format many dates and numbers through `useLocaleFormatting()` (statistics, journal detail, subscription/paywall). Creating fresh `Intl.DateTimeFormat` / `Intl.NumberFormat` instances per label is much slower than reusing cached formatters.
+
+**Action:** Route repeated locale formatting through `lib/dateUtils.ts` cached helpers before adding screen-local formatters. Keep custom option objects finite and stable so cache keys stay bounded.
+
+## 2026-05-16 - Sorted Dreams Can Skip Streak Sorts
+**Learning:** Statistics consumes the same newest-first `dreams` array produced by `useDreamPersistence`, so streak calculations on that screen can skip the defensive copy/sort while preserving the existing streak semantics.
+
+**Action:** Use `calculateStreaks(..., { sortedDescending: true })` only at call sites backed by persistence-sorted dreams. Keep the generic default sorted defensively for arbitrary test/util callers.
+
+## 2026-05-16 - Journal Filters Preserve Persistence Order
+**Learning:** `useDreamPersistence` normalizes and stores `dreams` newest-first before the journal screen receives them. `applyFilters()` preserves array order, so sorting again in the journal screen is redundant JS-thread work and allocation during search/filter updates.
+
+**Action:** In journal list hot paths, treat `dreams` as already newest-first unless a new data source bypasses `useDreamPersistence`. Prefer early returns for inactive filters and avoid post-filter sorts that only recreate the same order.
+
 ## 2025-12-10 - Thumbnail URL Normalization Pattern
 **Learning:** The `normalizeDreamImages()` function in this codebase is called on EVERY dream operation (load, add, update, sync). Functions that derive data from stored fields should check if the derived value already exists before recomputing.
 

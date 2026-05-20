@@ -25,6 +25,10 @@ jest.mock('../../context/LanguageContext', () => ({
 jest.mock('../../lib/dateUtils', () => ({
   formatDreamDate: jest.fn((timestamp: number, locale: string) => `formatted-date-${timestamp}-${locale}`),
   formatDreamTime: jest.fn((timestamp: number, locale: string) => `formatted-time-${timestamp}-${locale}`),
+  formatLocaleDate: jest.requireActual<typeof import('../../lib/dateUtils')>('../../lib/dateUtils').formatLocaleDate,
+  formatLocaleNumber: jest.requireActual<typeof import('../../lib/dateUtils')>('../../lib/dateUtils').formatLocaleNumber,
+  formatLocalePercent: jest.requireActual<typeof import('../../lib/dateUtils')>('../../lib/dateUtils').formatLocalePercent,
+  formatLocaleTime: jest.requireActual<typeof import('../../lib/dateUtils')>('../../lib/dateUtils').formatLocaleTime,
   formatShortDate: jest.fn((timestamp: number, locale: string) => `short-date-${timestamp}-${locale}`),
   getCurrentMoonCycleTimestamp: jest.fn((locale: string) => `moon-cycle-${locale}`),
 }));

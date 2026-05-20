@@ -171,6 +171,21 @@ export function applyFilters(
 
   const trimmedQuery = searchQuery?.trim() ?? '';
   const hasSearchQuery = Boolean(trimmedQuery);
+  if (
+    !favoritesOnly &&
+    !analyzedOnly &&
+    !exploredOnly &&
+    !theme &&
+    !dreamType &&
+    !startDate &&
+    !endDate &&
+    !hasSearchQuery
+  ) {
+    // Perf: the unfiltered journal is the common path; preserve the existing sorted array
+    // instead of scanning every dream and allocating a copy on each render.
+    return dreams;
+  }
+
   const normalizedQuery = hasSearchQuery ? trimmedQuery.toLowerCase() : '';
   const queryHasWhitespace = hasSearchQuery && /\s/.test(normalizedQuery);
   const startTime = startDate ? startDate.getTime() : null;

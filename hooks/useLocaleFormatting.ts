@@ -4,11 +4,13 @@ import { useLanguage } from '@/context/LanguageContext';
 import {
   formatDreamDate as baseFormatDreamDate,
   formatDreamTime as baseFormatDreamTime,
+  formatLocaleDate,
+  formatLocaleNumber,
+  formatLocalePercent,
+  formatLocaleTime,
   formatShortDate as baseFormatShortDate,
   getCurrentMoonCycleTimestamp as baseGetCurrentMoonCycleTimestamp,
 } from '@/lib/dateUtils';
-
-const ensureDate = (value: Date | number): Date => (typeof value === 'number' ? new Date(value) : value);
 
 export function useLocaleFormatting() {
   const { locale } = useLanguage();
@@ -16,34 +18,28 @@ export function useLocaleFormatting() {
 
   const formatDate = useCallback(
     (value: Date | number, options?: Intl.DateTimeFormatOptions) => {
-      return new Intl.DateTimeFormat(localeTag, options).format(ensureDate(value));
+      return formatLocaleDate(value, localeTag, options);
     },
     [localeTag]
   );
 
   const formatTime = useCallback(
     (value: Date | number, options?: Intl.DateTimeFormatOptions) => {
-      const defaultOptions: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit' };
-      return new Intl.DateTimeFormat(localeTag, { ...defaultOptions, ...options }).format(ensureDate(value));
+      return formatLocaleTime(value, localeTag, options);
     },
     [localeTag]
   );
 
   const formatNumber = useCallback(
     (value: number, options?: Intl.NumberFormatOptions) => {
-      return new Intl.NumberFormat(localeTag, options).format(value);
+      return formatLocaleNumber(value, localeTag, options);
     },
     [localeTag]
   );
 
   const formatPercent = useCallback(
     (fraction: number, options?: Intl.NumberFormatOptions) => {
-      return new Intl.NumberFormat(localeTag, {
-        style: 'percent',
-        maximumFractionDigits: 0,
-        minimumFractionDigits: 0,
-        ...options,
-      }).format(fraction);
+      return formatLocalePercent(fraction, localeTag, options);
     },
     [localeTag]
   );

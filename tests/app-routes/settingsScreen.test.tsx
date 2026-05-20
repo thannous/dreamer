@@ -99,6 +99,13 @@ jest.doMock('@/hooks/useClearWebFocus', () => ({
   useClearWebFocus: () => {},
 }));
 
+jest.doMock('@/hooks/useLocaleFormatting', () => ({
+  useLocaleFormatting: () => ({
+    formatDate: () => '1 janvier 2026',
+    formatTime: () => '10:30',
+  }),
+}));
+
 jest.doMock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({ t: (key: string, _repl?: any) => key }),
 }));

@@ -20,6 +20,7 @@ vi.mock('react-native', async () => {
       },
     },
     View: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+    SafeAreaView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
     Text: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
     ScrollView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
     Image: (props: { alt?: string }) => <img alt={props.alt ?? ''} />,
@@ -108,10 +109,10 @@ vi.mock('../../../context/ThemeContext', () => ({
 
 vi.mock('../../../context/ChatContext', () => ({
   MessageContextProvider: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
-  useComposerHeightContext: () => ({ composerHeight: { value: { value: 0 } } }),
-  useMessageListContext: () => ({ isNearBottom: { value: { value: true } } }),
+  useComposerHeightContext: () => ({ composerHeight: { value: { value: 0 }, get: () => 0, set: () => {} } }),
+  useMessageListContext: () => ({ isNearBottom: { value: { value: true }, get: () => true, set: () => {} } }),
   useNewMessageAnimationContext: () => ({
-    isStreaming: { value: { value: false } },
+    isStreaming: { value: { value: false }, get: () => false, set: () => {} },
     hasAnimatedMessages: { current: new Set<string>() },
   }),
 }));

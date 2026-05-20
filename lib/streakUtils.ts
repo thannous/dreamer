@@ -12,6 +12,10 @@ export interface TimestampedItem {
   id: number;
 }
 
+export interface CalculateStreaksOptions {
+  sortedDescending?: boolean;
+}
+
 /**
  * Returns the start of the day (midnight) for a given timestamp.
  */
@@ -20,6 +24,8 @@ export const startOfDay = (timestamp: number): Date => {
   date.setHours(0, 0, 0, 0);
   return date;
 };
+
+const startOfDayTime = (timestamp: number): number => startOfDay(timestamp).getTime();
 
 /**
  * Checks if a timestamp falls within a certain number of days from a reference point.
@@ -39,11 +45,13 @@ export const isWithinDays = (timestamp: number, days: number, now: number): bool
  */
 export const calculateStreaks = <T extends TimestampedItem>(
   items: T[],
-  referenceTime?: number
+  referenceTime?: number,
+  options: CalculateStreaksOptions = {}
 ): StreakResult => {
   if (items.length === 0) return { current: 0, longest: 0 };
 
-  const sortedItems = [...items].sort((a, b) => b.id - a.id);
+  // Perf: callers that already receive newest-first data can skip a copy + sort here.
+  const sortedItems = options.sortedDescending ? items : [...items].sort((a, b) => b.id - a.id);
   const dayInMs = 24 * 60 * 60 * 1000;
 
   let currentStreak = 0;
@@ -54,26 +62,22 @@ export const calculateStreaks = <T extends TimestampedItem>(
   today.setHours(0, 0, 0, 0);
   const todayTimestamp = today.getTime();
 
-  const mostRecentItem = new Date(sortedItems[0].id);
-  mostRecentItem.setHours(0, 0, 0, 0);
+  const mostRecentItemDay = startOfDayTime(sortedItems[0].id);
 
-  const daysSinceLastItem = Math.floor((todayTimestamp - mostRecentItem.getTime()) / dayInMs);
+  const daysSinceLastItem = Math.floor((todayTimestamp - mostRecentItemDay) / dayInMs);
 
   if (daysSinceLastItem <= 1) {
     currentStreak = 1;
+    let previousDay = mostRecentItemDay;
 
     for (let i = 1; i < sortedItems.length; i++) {
-      const currentDate = new Date(sortedItems[i - 1].id);
-      currentDate.setHours(0, 0, 0, 0);
-
-      const prevDate = new Date(sortedItems[i].id);
-      prevDate.setHours(0, 0, 0, 0);
-
-      const daysDiff = Math.floor((currentDate.getTime() - prevDate.getTime()) / dayInMs);
+      const currentDay = startOfDayTime(sortedItems[i].id);
+      const daysDiff = Math.floor((previousDay - currentDay) / dayInMs);
 
       if (daysDiff <= 1) {
         currentStreak++;
         tempStreak++;
+        previousDay = currentDay;
       } else {
         break;
       }
@@ -83,14 +87,10 @@ export const calculateStreaks = <T extends TimestampedItem>(
   }
 
   tempStreak = 1;
+  let previousDay = mostRecentItemDay;
   for (let i = 1; i < sortedItems.length; i++) {
-    const currentDate = new Date(sortedItems[i - 1].id);
-    currentDate.setHours(0, 0, 0, 0);
-
-    const prevDate = new Date(sortedItems[i].id);
-    prevDate.setHours(0, 0, 0, 0);
-
-    const daysDiff = Math.floor((currentDate.getTime() - prevDate.getTime()) / dayInMs);
+    const currentDay = startOfDayTime(sortedItems[i].id);
+    const daysDiff = Math.floor((previousDay - currentDay) / dayInMs);
 
     if (daysDiff <= 1) {
       tempStreak++;
@@ -98,6 +98,7 @@ export const calculateStreaks = <T extends TimestampedItem>(
       longestStreak = Math.max(longestStreak, tempStreak);
       tempStreak = 1;
     }
+    previousDay = currentDay;
   }
 
   longestStreak = Math.max(longestStreak, tempStreak, currentStreak);
