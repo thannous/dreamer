@@ -484,6 +484,7 @@ export default function InspirationScreen() {
             accessibilityLabel={t("journal.add_button.accessibility")}
             bottomOffset={floatingOffset - 60}
             isDesktopLayout={isDesktopLayout}
+            compactLabelVisible={!scrollPerf.isScrolling}
             testID={TID.Button.AddDream}
           />
         )}
@@ -595,7 +596,7 @@ const DreamPulseCard = memo(function DreamPulseCard({
                 {
                   borderColor: colors.divider,
                   backgroundColor:
-                    mode === "dark" ? `${colors.backgroundSecondary}CC` : `${colors.backgroundSecondary}88`,
+                    mode === "dark" ? `${colors.backgroundSecondary}CC` : colors.backgroundCard,
                 },
               ]}
             >
@@ -981,7 +982,7 @@ const InfoCard = memo(function InfoCard({ colors, icon, title, body }: InfoCardP
         <IconSymbol
           name={icon}
           size={18}
-          color={colors.textOnAccentSurface}
+          color={colors.accent}
         />
       </View>
       <View style={styles.infoContent}>

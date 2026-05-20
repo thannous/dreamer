@@ -7,12 +7,16 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { MotiView } from '@/lib/moti';
 
+const COMPACT_BUTTON_SIZE = 56;
+const COMPACT_BUTTON_EXPANDED_WIDTH = 220;
+
 type FloatingAddDreamButtonProps = {
   onPress: () => void;
   label: string;
   accessibilityLabel: string;
   bottomOffset: number;
   isDesktopLayout?: boolean;
+  compactLabelVisible?: boolean;
   testID?: string;
   animationDelay?: number;
 };
@@ -23,16 +27,21 @@ export function FloatingAddDreamButton({
   accessibilityLabel,
   bottomOffset,
   isDesktopLayout = false,
+  compactLabelVisible = true,
   testID,
   animationDelay = 400,
 }: FloatingAddDreamButtonProps) {
   const { colors } = useTheme();
   const contentColor = colors.textOnAccentSurface;
+  const isCompact = !isDesktopLayout;
+  const showLabel = !isCompact || compactLabelVisible;
+  const animatedCompactWidth = showLabel ? COMPACT_BUTTON_EXPANDED_WIDTH : COMPACT_BUTTON_SIZE;
 
   return (
     <View
       style={[
         styles.container,
+        isCompact && styles.containerCompact,
         isDesktopLayout && styles.containerDesktop,
         { bottom: bottomOffset },
       ]}
@@ -49,19 +58,65 @@ export function FloatingAddDreamButton({
       >
         <Pressable
           style={({ pressed }) => [
-            styles.button,
-            { backgroundColor: colors.accent },
+            styles.pressableFrame,
             pressed && styles.buttonPressed,
           ]}
           onPress={onPress}
           accessibilityRole="button"
           testID={testID}
           accessibilityLabel={accessibilityLabel}
-        > 
-          <DreamIcon size={22} color={contentColor} />
-          <Text style={[styles.buttonText, { color: contentColor }]}>
-            {label}
-          </Text>
+        >
+          <MotiView
+            animate={
+              isCompact
+                ? {
+                    width: animatedCompactWidth,
+                    paddingHorizontal: showLabel ? 18 : 0,
+                  }
+                : {}
+            }
+            transition={{
+              type: 'timing',
+              duration: 240,
+            }}
+            style={[
+              styles.button,
+              isCompact && styles.buttonCompact,
+              !isCompact && styles.buttonDesktop,
+              { backgroundColor: colors.accent },
+            ]}
+          >
+            <DreamIcon size={22} color={contentColor} />
+            {isCompact ? (
+              <MotiView
+                animate={{
+                  opacity: showLabel ? 1 : 0,
+                  translateX: showLabel ? 0 : 8,
+                  width: showLabel ? COMPACT_BUTTON_EXPANDED_WIDTH - 74 : 0,
+                  marginLeft: showLabel ? 10 : 0,
+                }}
+                transition={{
+                  type: 'timing',
+                  duration: showLabel ? 220 : 160,
+                }}
+                style={styles.labelClip}
+              >
+                <Text
+                  style={[styles.buttonText, { color: contentColor }]}
+                  numberOfLines={1}
+                >
+                  {label}
+                </Text>
+              </MotiView>
+            ) : (
+              <Text
+                style={[styles.buttonText, { color: contentColor }]}
+                numberOfLines={1}
+              >
+                {label}
+              </Text>
+            )}
+          </MotiView>
         </Pressable>
       </MotiView>
     </View>
@@ -76,22 +131,38 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     alignItems: 'center',
   },
+  containerCompact: {
+    alignItems: 'flex-end',
+    paddingRight: ThemeLayout.spacing.lg,
+  },
   containerDesktop: {
     alignSelf: 'center',
     maxWidth: LAYOUT_MAX_WIDTH,
   },
-  button: {
+  pressableFrame: {
     borderRadius: ThemeLayout.borderRadius.full,
-    paddingVertical: 14,
-    paddingHorizontal: 28,
+  },
+  button: {
+    minHeight: COMPACT_BUTTON_SIZE,
+    borderRadius: ThemeLayout.borderRadius.full,
+    paddingVertical: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
+    overflow: 'hidden',
+  },
+  buttonCompact: {
+    height: COMPACT_BUTTON_SIZE,
+  },
+  buttonDesktop: {
+    paddingHorizontal: 28,
   },
   buttonPressed: {
     transform: [{ scale: 0.96 }],
     opacity: 0.9,
+  },
+  labelClip: {
+    overflow: 'hidden',
   },
   buttonText: {
     fontSize: 16,

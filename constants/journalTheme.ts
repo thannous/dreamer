@@ -68,7 +68,7 @@ export const DarkTheme: ThemeColors = {
   overlay: 'rgba(27, 21, 51, 0.85)', // Semi-transparent overlay
 
   // Navbar colors
-  navbarBg: 'rgb(26, 15, 43)', // Same as backgroundDark
+  navbarBg: 'rgb(22, 12, 38)', // Same as backgroundDark
   navbarBorder: '#423776', // Same as divider
   navbarTextActive: '#FFFFFF', // White for active tab
   navbarTextInactive: '#9B8EC7', // Muted purple for inactive tabs
@@ -87,29 +87,29 @@ export const DarkTheme: ThemeColors = {
  */
 export const LightTheme: ThemeColors = {
   // Background colors
-  backgroundDark: '#F8F6F2', // Main background - soft cream
-  backgroundCard: '#D9CFBF', // Card background - darker beige for contrast
-  backgroundSecondary: '#EEEBE6', // Secondary elements - light beige
+  backgroundDark: '#FBFAF7', // Main background - quiet paper tone
+  backgroundCard: '#FFFDF8', // Card background - clean readable surface
+  backgroundSecondary: '#F3EFE7', // Secondary elements - soft warm neutral
 
   // Text colors
   textPrimary: '#2A2838', // Main text - deep purple-gray
   textSecondary: '#6B6880', // Secondary text - muted purple-gray
   textTertiary: '#9B98AC', // Tertiary text - lighter gray
-  textOnAccentSurface: '#7A4B1F', // Rich amber for better contrast on warm cards
+  textOnAccentSurface: '#4A2F1B', // Deep amber-brown for contrast on warm accents
 
   // Accent colors
   accent: '#D4A574', // Champagne gold accent
-  accentDark: '#C9A567', // Darker champagne
-  accentLight: '#E3C592', // Lighter champagne
+  accentDark: '#9A6332', // Darker amber for text, borders, pressed states
+  accentLight: '#EAD4B4', // Lighter champagne
 
   // UI elements
-  timeline: '#D4CFBF', // Timeline - soft beige
-  divider: '#C5BDB0', // Dividers - stronger beige for visibility
-  overlay: 'rgba(248, 246, 242, 0.9)', // Semi-transparent cream overlay
+  timeline: '#E7DED0', // Timeline - subtle warm line
+  divider: '#E4DDD2', // Dividers - soft but visible
+  overlay: 'rgba(251, 250, 247, 0.92)', // Semi-transparent paper overlay
 
   // Navbar colors
-  navbarBg: '#F8F6F2', // Same as backgroundDark (light theme)
-  navbarBorder: '#E8E4DC', // Same as divider
+  navbarBg: '#FBFAF7', // Same as backgroundDark
+  navbarBorder: '#E8E2D8', // Same family as divider
   navbarTextActive: '#2A2838', // Dark text for active tab
   navbarTextInactive: '#9B98AC', // Muted gray for inactive tabs
 
