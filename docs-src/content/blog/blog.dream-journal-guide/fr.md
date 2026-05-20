@@ -4,8 +4,8 @@
   "layout": "blogArticle",
   "lang": "fr",
   "slug": "guide-journal-reves",
-  "title": "Tenir un journal de rêves : guide complet débutant",
-  "description": "Comment commencer un journal de rêves, quoi noter chaque matin et comment la pratique améliore le rappel et l'analyse.",
+  "title": "Journal de rêves : méthode simple pour commencer ce soir",
+  "description": "Comment tenir un journal de rêves, quoi noter au réveil, et comment améliorer le rappel sans transformer vos matinées en corvée.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -13,23 +13,23 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Tenir un journal de rêves : guide complet débutant",
-  "ogDescription": "Comment commencer un journal de rêves, quoi noter chaque matin et comment la pratique améliore le rappel et l'analyse.",
+  "ogTitle": "Journal de rêves : méthode simple pour commencer ce soir",
+  "ogDescription": "Comment tenir un journal de rêves, quoi noter au réveil, et comment améliorer le rappel sans transformer vos matinées en corvée.",
   "ogImage": "https://noctalia.app/img/blog/dream-journal-guide.webp",
   "ogImageAlt": "Journal de rêves ouvert sur une table de chevet avec un stylo",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Tenir un journal de rêves : guide complet débutant",
-  "twitterDescription": "Comment commencer un journal de rêves, quoi noter chaque matin et comment la pratique améliore le rappel et l'analyse.",
+  "twitterTitle": "Journal de rêves : méthode simple pour commencer ce soir",
+  "twitterDescription": "Comment tenir un journal de rêves, quoi noter au réveil, et comment améliorer le rappel sans transformer vos matinées en corvée.",
   "twitterImage": "https://noctalia.app/img/blog/dream-journal-guide.webp",
   "twitterImageAlt": "Journal de rêves ouvert sur une table de chevet avec un stylo",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-03-06",
+  "modifiedTime": "2026-05-20",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/guide-paralysie-sommeil",
   "nextPath": "/fr/blog/reves-sante-mentale",
   "preloadImage": "/img/blog/dream-journal-guide.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Tenir un journal de rêves : guide complet débutant\",\n            \"description\": \"Comment commencer un journal de rêves, quoi noter chaque matin et comment la pratique améliore le rappel et l'analyse.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dream-journal-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1373,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Journal de rêves : méthode simple pour commencer ce soir\",\n            \"description\": \"Comment tenir un journal de rêves, quoi noter au réveil, et comment améliorer le rappel sans transformer vos matinées en corvée.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dream-journal-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-05-20\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1373,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"Combien de temps faut-il pour améliorer la mémoire des rêves ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"La plupart des gens remarquent une amélioration significative de leur mémoire onirique en 1 a 2 semaines de journaling régulier. Apres un mois, vous pouvez vous souvenir de 2 a 4 rêves par nuit contre des fragments occasionnels avant de commencer.\" } },\n                { \"@type\": \"Question\", \"name\": \"Dois-je écrire ou taper mon journal de rêves ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Les deux méthodes fonctionnent, mais l'enregistrement vocal est souvent le meilleur pour capturer les rêves immédiatement au réveil. Écrire à la main peut approfondir le traitement, tandis que taper est plus rapide. La clé est de choisir une méthode que vous utiliserez régulièrement.\" } },\n                { \"@type\": \"Question\", \"name\": \"Et si je ne me souviens d'aucun rêve ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Commencez par écrire 'Je ne me souviens pas de mes rêves' chaque matin - cela signale l'intention à votre cerveau. Fixez une intention avant de dormir, réveillez-vous lentement sans bouger, et essayez de vous réveiller pendant les cycles REM (environ 90 minutes apres l'endormissement, puis toutes les 90 minutes).\" } }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Guide journal de rêves\",\n            \"item\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n        }\n    ]\n}"
   ],
@@ -66,10 +66,10 @@
 <span class="text-sm text-purple-300/60">5 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Journal de rêves : le guide complet pour enregistrer vos aventures nocturnes
+                    Journal de rêves : la méthode simple pour commencer ce soir
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Chaque nuit, votre cerveau crée des histoires élaborées, des images vivides et des expériences émotionnelles - puis les efface au matin. Un journal de rêves capture ces moments fugaces, transformant des murmures oublies en précieuses révélations sur votre monde intérieur.
+                    Un journal de rêves sert à capturer les images avant qu’elles ne disparaissent : lieu, émotion, personnages, phrase étrange, sensation au réveil. Vous n’avez pas besoin d’écrire trois pages chaque matin. Une note vocale, cinq mots-clés et une émotion suffisent pour entraîner le rappel et repérer les motifs qui reviennent.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,17 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Réponse rapide</h2>
-    <p class="text-purple-100/80 leading-relaxed">Tenez un journal de rêves efficace dès ce soir. Techniques éprouvées pour améliorer votre mémoire onirique et transformer votre sommeil.</p>
+    <p class="text-purple-100/80 leading-relaxed">Pour commencer un journal de rêves, notez une date, trois détails, l’émotion dominante et une question. Faites-le dans les deux minutes après le réveil, avant de regarder votre téléphone. La régularité compte plus que la longueur.</p>
+</section>
+<section class="glass-panel rounded-2xl p-6 mb-10 border border-white/10 bg-white/5">
+    <h2 class="font-serif text-2xl text-dream-cream mb-4">Modèle de journal de rêves en 60 secondes</h2>
+    <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-300">
+        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">1. Le décor</h3><p>Où étiez-vous ? Maison, école, route, hôpital, forêt, lieu inconnu.</p></div>
+        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">2. L’émotion</h3><p>Notez le ressenti brut : peur, calme, honte, curiosité, soulagement.</p></div>
+        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">3. Le symbole</h3><p>Choisissez l’image qui reste : eau, porte, chien, maison, chute, personne.</p></div>
+        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">4. La question</h3><p>Demandez-vous : “À quoi cela ressemble dans ma vie éveillée ?”</p></div>
+    </div>
+    <p class="text-sm text-purple-200/70 mt-4">Pour aller plus vite, utilisez aussi le <a class="text-dream-salmon hover:underline" href="/fr/guides/dictionnaire-symboles-reves">dictionnaire des symboles de rêves</a> après avoir noté votre souvenir brut.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">

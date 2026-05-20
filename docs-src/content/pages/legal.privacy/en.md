@@ -46,6 +46,28 @@
                 </p>
             </div>
 
+            <section class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5">
+                <h2 class="text-2xl font-serif text-white mb-4 mt-0">Privacy summary</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-white font-semibold mb-2">What Noctalia stores</h3>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>Your account data and preferences.</li>
+                            <li>Your dream transcripts, analyses, generated images, symbols, favorites and Dream Chat history.</li>
+                            <li>Technical logs needed for security, stability and quota abuse prevention.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-semibold mb-2">What Noctalia does not store or sell</h3>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>No persistent Noctalia storage of voice recordings after transcription processing.</li>
+                            <li>No sale of personal data and no targeted advertising profile.</li>
+                            <li>No medical diagnosis, prediction or therapeutic decision-making based on your dreams.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
             <section>
                 <h2 class="text-2xl font-serif text-white mb-4 mt-8">1. Who is responsible for your data?</h2>
                 <p>Noctalia is published by <strong>TiMax</strong>. TiMax acts as the <strong>Data Controller</strong> within the meaning of the GDPR for the processing described in this policy.</p>

@@ -36,124 +36,121 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Datenschutzerklärung</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Gültig ab 22. November 2025</p>
+<p class="text-lg text-purple-200/80 mb-10">Gültig ab 22. November 2025</p>
 
-        <div class="space-y-8 text-gray-300 leading-relaxed">
-            <div class="p-6 rounded-2xl bg-white/5 border border-white/10">
-                <p class="text-sm text-purple-200/80">
-                    Hinweis: Diese Seite ist derzeit auf Englisch verfügbar. Für die maßgebliche Fassung siehe
-                    <a href="/en/privacy-policy" class="text-dream-salmon hover:underline">https://noctalia.app/en/privacy-policy</a>.
-                </p>
-            </div>
-            <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
-                <p class="text-dream-salmon font-medium flex gap-2 items-start">
-                    <i data-lucide="shield-check" class="w-5 h-5 mt-0.5 shrink-0"></i>
-                    In short: Your dreams belong to you. We never sell your data and we do not display targeted advertising. Audio recordings are used only to transcribe your dream and are not retained by Noctalia. Your transcripts and analyses are securely stored in the European Union.
-                </p>
-            </div>
+<div class="space-y-8 text-gray-300 leading-relaxed">
+  <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
+    <p class="text-dream-salmon font-medium flex gap-2 items-start">
+      <i data-lucide="shield-check" class="w-5 h-5 mt-0.5 shrink-0"></i>
+      Kurz gesagt: Deine Träume gehören dir. Wir verkaufen deine personenbezogenen Daten nicht und zeigen keine zielgerichtete Werbung. Sprachaufnahmen werden nur zur Transkription verarbeitet und von Noctalia nicht dauerhaft gespeichert. Transkripte und Analysen werden sicher in der Europäischen Union gespeichert.
+    </p>
+  </div>
 
-            <section>
-                <h2 class="text-2xl font-serif text-white mb-4 mt-8">1. Who is responsible for your data?</h2>
-                <p>Noctalia is published by <strong>TiMax</strong>. TiMax acts as the <strong>Data Controller</strong> within the meaning of the GDPR for the processing described in this policy.</p>
-                <p class="mt-4">For any questions regarding your personal data or to exercise your rights, you can contact us at: <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>.</p>
-            </section>
+  <section class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4 mt-0">Datenschutz kurz gefasst</h2>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="text-white font-semibold mb-2">Was Noctalia speichert</h3>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>Konto- und Präferenzdaten.</li>
+          <li>Traumtranskripte, Analysen, generierte Bilder, Symbole, Favoriten und Dream-Chat-Verlauf.</li>
+          <li>Technische Protokolle für Sicherheit, Stabilität und Schutz vor Quotenmissbrauch.</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold mb-2">Was Noctalia nicht speichert oder verkauft</h3>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>Keine dauerhafte Speicherung von Sprachaufnahmen durch Noctalia nach der Transkription.</li>
+          <li>Kein Verkauf personenbezogener Daten und kein zielgerichtetes Werbeprofil.</li>
+          <li>Keine medizinische Diagnose, Vorhersage oder therapeutische Entscheidung auf Basis deiner Träume.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
-            <section>
-                <h2 class="text-2xl font-serif text-white mb-4 mt-8">2. Data we collect</h2>
-                <p>When using the Noctalia app, we may process the following categories of data:</p>
-                <ul class="list-disc pl-5 mt-4 space-y-2">
-                    <li><strong>Account data:</strong> email address, password (stored in hashed form), language or display preferences, information related to the creation and management of your account.</li>
-                    <li><strong>Dream data:</strong> text transcriptions of your dreams, AI-generated analyses, shareable quotes, themes or categories, dream type, favorite status, as well as images generated to illustrate your dreams, and the history of conversations with the AI assistant about your dreams.</li>
-                    <li><strong>Audio recordings:</strong> when you use the voice recording feature, your voice is processed to produce a transcript. Noctalia does not record or store your audio files on its servers: they are processed in real-time only to produce the transcript, then deleted from the technical flow. Only the transcribed text is saved in your journal.</li>
-                    <li><strong>Technical and usage data:</strong> technical logs (errors, performance, security events), basic device information (operating system, app version), a hashed device identifier used solely for free-tier quota management, technical identifiers necessary to provide the service. We currently use <strong>no third-party marketing analytics tools</strong> (such as Google Analytics, Mixpanel, etc.).</li>
-                    <li><strong>Support data:</strong> content of your exchanges with us (for example when you contact us by email) and information necessary to track your requests.</li>
-                </ul>
-                <p class="mt-4">Content you record in Noctalia may, at your discretion, contain sensitive information within the meaning of the GDPR (for example elements related to your health, sexual life, beliefs, etc.). This information is processed solely to provide you with the <a href="blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer" class="text-dream-salmon hover:underline">dream journal</a> and analysis service, based on your <strong>explicit consent</strong> and your initiative in recording it.</p>
-            </section>
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">1. Verantwortlicher</h2>
+    <p>Noctalia wird von <strong>TiMax</strong> veröffentlicht. TiMax ist Verantwortlicher im Sinne der DSGVO für die in dieser Erklärung beschriebenen Verarbeitungen.</p>
+    <p class="mt-4">Fragen zu deinen Daten oder zur Ausübung deiner Rechte kannst du an <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a> senden.</p>
+  </section>
 
-            <section>
-                <h2 class="text-2xl font-serif text-white mb-4 mt-8">3. Purposes and legal bases</h2>
-                <p>We process your personal data for the following purposes and legal bases:</p>
-                <ul class="list-disc pl-5 mt-4 space-y-2">
-                    <li><strong>Providing the app and its features</strong> (dream journal, analyses, generated images, account creation and management): processing necessary for the <strong>performance of the contract</strong> (acceptance of Terms of Service) between you and Noctalia.</li>
-                    <li><strong>Transcription and analysis of your dreams, including when they contain sensitive information:</strong> processing based on your <strong>explicit consent</strong>, which you can withdraw at any time by deleting the relevant dreams and/or your account.</li>
-                    <li><strong>Improving the app, measuring stability, preventing abuse and ensuring security:</strong> processing based on our <strong>legitimate interest</strong> in ensuring the proper functioning, security and development of the service, without marketing profiling.</li>
-                    <li><strong>Managing rights exercise requests, user support and legal compliance:</strong> processing necessary to comply with our <strong>legal obligations</strong> and to <strong>exercise our rights</strong> (evidence, legal defense, etc.).</li>
-                </ul>
-            </section>
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">2. Welche Daten wir verarbeiten</h2>
+    <ul class="list-disc pl-5 mt-4 space-y-2">
+      <li><strong>Kontodaten:</strong> E-Mail-Adresse, gehashter Passwortwert, Sprache, Anzeigepräferenzen und Kontoverwaltungsdaten.</li>
+      <li><strong>Traumdaten:</strong> Texte, Transkripte, KI-Analysen, Zitate, Themen, Traumtypen, Favoriten, generierte Bilder und Dream-Chat-Verlauf.</li>
+      <li><strong>Audio:</strong> Wenn du die Sprachfunktion nutzt, wird deine Stimme zur Erstellung eines Transkripts verarbeitet. Noctalia speichert Audiodateien nicht dauerhaft auf seinen Servern; sie werden nur im technischen Ablauf verarbeitet. Gespeichert wird das Transkript.</li>
+      <li><strong>Technische Daten:</strong> Fehler-, Leistungs- und Sicherheitsprotokolle, App-Version, Betriebssystem und ein gehashter Geräteindikator zur Verwaltung kostenloser Kontingente. Wir verwenden derzeit keine Drittanbieter-Marketing-Analytics wie Google Analytics oder Mixpanel.</li>
+      <li><strong>Supportdaten:</strong> Inhalte deiner Nachrichten an uns und Informationen zur Bearbeitung deiner Anfrage.</li>
+    </ul>
+    <p class="mt-4">Deine Einträge können sensible Informationen enthalten. Wir verarbeiten sie nur, um das <a href="blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer" class="text-dream-salmon hover:underline">Traumtagebuch</a> und die Analyse bereitzustellen, auf Grundlage deiner ausdrücklichen Einwilligung und deiner eigenen Eingabe.</p>
+  </section>
 
-            <section>
-                <h2 class="text-2xl font-serif text-white mb-4 mt-8">4. Use of Artificial Intelligence and voice</h2>
-                <p>Noctalia relies on Artificial Intelligence services to transcribe and analyze your dreams, as well as to generate associated images.</p>
-                <ul class="list-disc pl-5 mt-4 space-y-2">
-                    <li><strong>Speech recognition:</strong> we primarily use your device's native speech recognition (via system interfaces). In case of failure or unavailability, an audio recording may be temporarily transmitted to a third-party speech recognition service (e.g., Google Cloud Speech-to-Text) via our backend to produce a transcript. These audio recordings are processed in real-time to produce the transcript and are not persistently stored by Noctalia.</li>
-                    <li><strong>Dream analysis and content generation:</strong> the text of your dreams and certain strictly necessary metadata are sent to our main AI provider, currently <strong>Google (Gemini)</strong>, to generate analyses, summaries, conversation elements and visuals.</li>
-                    <li><strong>Other leading AI providers:</strong> in the future, we may use other high-level AI providers such as <strong>Anthropic, OpenAI, Perplexity, Mistral</strong>, or equivalent services. We will only enable them if we have equivalent contractual and technical guarantees (security, confidentiality, usage limitations).</li>
-                    <li><strong>Model training:</strong> where these services allow it, we configure our AI providers so that they <strong>do not use your data to train their general models</strong>. Where applicable, your data is only used to provide the requested service (transcription, analysis, image or text generation).</li>
-                </ul>
-            </section>
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">3. Zwecke und Rechtsgrundlagen</h2>
+    <ul class="list-disc pl-5 mt-4 space-y-2">
+      <li><strong>Bereitstellung der App:</strong> Konto, Traumtagebuch, Analysen, Bilder und Kernfunktionen auf Grundlage der Vertragserfüllung.</li>
+      <li><strong>Transkription und Analyse:</strong> Verarbeitung auf Grundlage deiner ausdrücklichen Einwilligung, insbesondere wenn deine Einträge sensible Informationen enthalten.</li>
+      <li><strong>Sicherheit, Stabilität und Verbesserung:</strong> berechtigtes Interesse an einem sicheren und zuverlässigen Dienst ohne Marketingprofiling.</li>
+      <li><strong>Support, Rechteanfragen und Rechtspflichten:</strong> Erfüllung gesetzlicher Pflichten und Wahrung unserer Rechte.</li>
+    </ul>
+  </section>
 
-            <section>
-                <h2 class="text-2xl font-serif text-white mb-4 mt-8">5. Storage, security and data location</h2>
-                <p>The security and location of your data are at the core of our approach.</p>
-                <ul class="list-disc pl-5 mt-4 space-y-2">
-                    <li><strong>Communication encryption:</strong> exchanges between your device and our servers are protected by SSL/TLS encryption protocols.</li>
-                    <li><strong>Database in the European Union:</strong> your account data and dreams are hosted in a <strong>Supabase</strong> database located in <strong>Western Europe (EU)</strong>, on secure servers subject to the GDPR.</li>
-                    <li><strong>Limited access:</strong> access to your data is strictly limited to only those persons and service providers who need it to provide the service (on a need-to-know basis). You retain control over your dream journal via your account.</li>
-                    <li><strong>Controlled international transfers:</strong> some of our service providers (notably AI providers) may be located outside the European Economic Area (for example in the United States). In this case, we implement <strong>appropriate safeguards</strong> such as the European Commission's <strong>Standard Contractual Clauses</strong> and, where applicable, adherence to the <strong>Data Privacy Framework</strong> or equivalent mechanisms.</li>
-                </ul>
-            </section>
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">4. Künstliche Intelligenz und Sprache</h2>
+    <p>Noctalia nutzt KI-Dienste, um Träume zu transkribieren, zu analysieren und Bilder oder Texte zu erzeugen.</p>
+    <ul class="list-disc pl-5 mt-4 space-y-2">
+      <li><strong>Spracherkennung:</strong> bevorzugt nutzen wir die native Spracherkennung deines Geräts. Wenn sie nicht verfügbar ist, kann Audio vorübergehend über unser Backend an einen Drittanbieter wie Google Cloud Speech-to-Text gesendet werden. Noctalia speichert diese Aufnahmen nicht dauerhaft.</li>
+      <li><strong>Analyse und Generierung:</strong> Traumtext und erforderliche Metadaten werden an unseren Haupt-KI-Anbieter, derzeit <strong>Google Gemini</strong>, gesendet, um Analysen, Zusammenfassungen, Chat-Antworten und visuelle Inhalte zu erzeugen.</li>
+      <li><strong>Weitere Anbieter:</strong> zukünftig können vergleichbare Anbieter wie Anthropic, OpenAI, Perplexity oder Mistral eingesetzt werden, wenn angemessene Sicherheits- und Vertraulichkeitsgarantien bestehen.</li>
+      <li><strong>Modelltraining:</strong> soweit Anbieter diese Option erlauben, konfigurieren wir die Dienste so, dass deine Daten nicht zum Training allgemeiner Modelle verwendet werden.</li>
+    </ul>
+  </section>
 
-            <section>
-                <h2 class="text-2xl font-serif text-white mb-4 mt-8">6. Retention periods</h2>
-                <p>We retain your personal data for a limited period, proportionate to the purposes pursued:</p>
-                <ul class="list-disc pl-5 mt-4 space-y-2">
-                    <li><strong>Account and dream journal:</strong> your account data and journal content (transcripts, analyses, images) are retained as long as your account is active. When you delete your account, we delete or anonymize your data within a reasonable timeframe (generally within 30 days, unless a legal obligation requires otherwise).</li>
-                    <li><strong>Audio recordings:</strong> recordings necessary for voice transcription are retained only for the time strictly necessary for technical processing (generally a few minutes) and are not stored long-term by Noctalia.</li>
-                    <li><strong>Technical and security logs:</strong> retained for a maximum period of 12 months, to ensure security, incident detection and evidence in case of dispute.</li>
-                    <li><strong>Support exchanges:</strong> retained for the duration necessary to handle your request and, where applicable, to defend our rights (generally up to 24 months).</li>
-                </ul>
-            </section>
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">5. Speicherung, Sicherheit und Ort der Daten</h2>
+    <ul class="list-disc pl-5 mt-4 space-y-2">
+      <li>Übertragungen zwischen App und Servern werden mit SSL/TLS geschützt.</li>
+      <li>Konto- und Traumdaten werden in einer <strong>Supabase</strong>-Datenbank in <strong>Westeuropa innerhalb der EU</strong> gehostet.</li>
+      <li>Zugriff auf Daten ist auf Personen und Dienstleister beschränkt, die ihn zur Bereitstellung des Dienstes benötigen.</li>
+      <li>Einige Anbieter, insbesondere KI-Dienste, können außerhalb des EWR sitzen. In diesem Fall nutzen wir geeignete Garantien wie Standardvertragsklauseln oder gleichwertige Mechanismen.</li>
+    </ul>
+  </section>
 
-            <section>
-                <h2 class="text-2xl font-serif text-white mb-4 mt-8">7. Data sharing and service providers</h2>
-                <p>Noctalia does not sell your personal data. We do not display targeted advertising in the app.</p>
-                <p class="mt-4">Your data may only be shared with the following categories of recipients:</p>
-                <ul class="list-disc pl-5 mt-4 space-y-2">
-                    <li><strong>Technical providers:</strong> notably Supabase (hosting, database, authentication) and cloud infrastructure providers necessary for the app's operation.</li>
-                    <li><strong>AI and speech recognition providers:</strong> Google (Gemini, Google Cloud Speech-to-Text), and where applicable other leading AI providers (Anthropic, OpenAI, Perplexity, Mistral, or equivalent services) for transcription, analysis of your dreams and generation of images or content.</li>
-                    <li><strong>Subscription management:</strong> RevenueCat (USA) for managing in-app subscriptions. RevenueCat receives an anonymous user identifier and purchase information provided by Apple/Google. Your complete payment information never passes through Noctalia.</li>
-                    <li><strong>External advisors and authorities:</strong> legal firms, accountants or administrative and judicial authorities when required by law or to defend our rights.</li>
-                </ul>
-                <p class="mt-4">In all cases, we require our service providers to offer sufficient guarantees regarding security and confidentiality, and not to use your data for their own marketing purposes.</p>
-            </section>
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">6. Aufbewahrung</h2>
+    <ul class="list-disc pl-5 mt-4 space-y-2">
+      <li>Konto- und Traumdaten bleiben gespeichert, solange dein Konto aktiv ist.</li>
+      <li>Nach Kontolöschung löschen oder anonymisieren wir Daten in der Regel innerhalb von 30 Tagen, soweit keine gesetzliche Pflicht entgegensteht.</li>
+      <li>Audio wird nur für die technische Verarbeitung benötigt und nicht langfristig durch Noctalia gespeichert.</li>
+      <li>Sicherheitsprotokolle werden maximal 12 Monate aufbewahrt; Supportaustausch in der Regel bis zu 24 Monate.</li>
+    </ul>
+  </section>
 
-            <section>
-                <h2 class="text-2xl font-serif text-white mb-4 mt-8">8. Minor users</h2>
-                <p>Noctalia is intended for a general audience but is <strong>not designed for children under 16 years of age</strong>. We do not knowingly collect data concerning persons under 16 without the appropriate consent of a parental authority holder where required by law.</p>
-                <p class="mt-4">If you believe that a child under 16 has provided us with personal data without authorization, please contact us at <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a> so that we can delete the account and associated data.</p>
-            </section>
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">7. Empfänger und Dienstleister</h2>
+    <p>Noctalia verkauft deine personenbezogenen Daten nicht und zeigt keine zielgerichtete Werbung in der App.</p>
+    <ul class="list-disc pl-5 mt-4 space-y-2">
+      <li><strong>Technische Anbieter:</strong> insbesondere Supabase und Infrastrukturprovider.</li>
+      <li><strong>KI- und Sprachanbieter:</strong> Google Gemini, Google Cloud Speech-to-Text und gegebenenfalls vergleichbare Anbieter.</li>
+      <li><strong>Abonnementverwaltung:</strong> RevenueCat verarbeitet anonyme Nutzerkennungen und von Apple oder Google bereitgestellte Kaufdaten. Vollständige Zahlungsdaten laufen nicht über Noctalia.</li>
+      <li><strong>Behörden und Berater:</strong> soweit gesetzlich erforderlich oder zur Wahrung unserer Rechte.</li>
+    </ul>
+  </section>
 
-            <section>
-                <h2 class="text-2xl font-serif text-white mb-4 mt-8">9. Your rights (GDPR and other applicable laws)</h2>
-                <p>In accordance with the General Data Protection Regulation (GDPR) and, where applicable, other applicable laws, you have the following rights over your personal data:</p>
-                <ul class="list-disc pl-5 mt-4 space-y-2">
-                    <li><strong>Right of access:</strong> obtain confirmation that we process your data and receive a copy.</li>
-                    <li><strong>Right to rectification:</strong> correct inaccurate or incomplete data concerning you.</li>
-                    <li><strong>Right to erasure:</strong> request the deletion of your data in cases provided by law (including deletion of your account and dream journal).</li>
-                    <li><strong>Right to restriction of processing:</strong> request the temporary suspension of certain processing.</li>
-                    <li><strong>Right to object:</strong> object to certain processing based on our legitimate interest.</li>
-                    <li><strong>Right to data portability:</strong> receive the data you have provided to us in a structured, commonly used and machine-readable format, or request its transmission to another controller where technically feasible.</li>
-                    <li><strong>Right to withdraw consent:</strong> where processing is based on your consent (notably for certain sensitive data), you can withdraw it at any time, without affecting the lawfulness of prior processing.</li>
-                </ul>
-                <p class="mt-4">You can exercise your rights by contacting us at: <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>, specifying the email address used to create your account. We may need to ask you for additional information to verify your identity.</p>
-                <p class="mt-4">If you reside in the European Economic Area or the United Kingdom, you also have the right to lodge a complaint with your local supervisory authority (in France: the CNIL).</p>
-                <p class="mt-4">If you reside in a jurisdiction with specific rights (for example in California under the CCPA/CPRA), you may also benefit from rights of access, deletion and limitation of use of your data. Noctalia does not sell your personal data within the meaning of these laws and does not engage in behavioral advertising based on cross-site tracking.</p>
-            </section>
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">8. Minderjährige</h2>
+    <p>Noctalia richtet sich an ein allgemeines Publikum, ist aber <strong>nicht für Kinder unter 16 Jahren konzipiert</strong>. Wenn du glaubst, dass ein Kind unter 16 ohne erforderliche Zustimmung Daten bereitgestellt hat, kontaktiere uns bitte.</p>
+  </section>
 
-            <section>
-                <h2 class="text-2xl font-serif text-white mb-4 mt-8">10. Changes to this policy</h2>
-                <p>We may update this privacy policy to reflect legal, technical or functional changes to Noctalia. In case of significant changes, we will inform you by reasonable means (in-app notification, email, or banner) before the new terms take effect where required by law.</p>
-                <p class="mt-4">The date of the last update appears at the top of this page. We encourage you to regularly review this policy to stay informed about how we protect your data.</p>
-            </section>
-        </div>
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">9. Deine Rechte</h2>
+    <p>Nach DSGVO kannst du Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch, Datenübertragbarkeit und den Widerruf einer Einwilligung verlangen.</p>
+    <p class="mt-4">Schreibe dazu an <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a> und nenne die E-Mail-Adresse deines Kontos. Im EWR oder Vereinigten Königreich kannst du dich außerdem bei deiner Datenschutzaufsichtsbehörde beschweren.</p>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-8">10. Änderungen</h2>
+    <p>Wir können diese Erklärung aktualisieren, um rechtliche, technische oder funktionale Änderungen abzubilden. Wesentliche Änderungen teilen wir dir auf angemessene Weise mit.</p>
+  </section>
+</div>

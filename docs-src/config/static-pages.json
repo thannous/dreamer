@@ -45,6 +45,39 @@
       }
     },
     {
+      "pageId": "page.dreamapp-alternative",
+      "layout": "content",
+      "slugs": {
+        "en": "dreamapp-alternative",
+        "fr": "alternative-dreamapp",
+        "es": "alternativa-dreamapp",
+        "de": "dreamapp-alternative",
+        "it": "alternativa-dreamapp"
+      }
+    },
+    {
+      "pageId": "page.oniri-alternative",
+      "layout": "content",
+      "slugs": {
+        "en": "oniri-alternative",
+        "fr": "alternative-oniri",
+        "es": "alternativa-oniri",
+        "de": "oniri-alternative",
+        "it": "alternativa-oniri"
+      }
+    },
+    {
+      "pageId": "page.ai-dream-interpretation-app",
+      "layout": "content",
+      "slugs": {
+        "en": "ai-dream-interpretation-app",
+        "fr": "application-interpretation-reves-ia",
+        "es": "app-interpretacion-suenos-ia",
+        "de": "ki-traumdeutung-app",
+        "it": "app-interpretazione-sogni-ai"
+      }
+    },
+    {
       "pageId": "legal.notice",
       "layout": "content",
       "slugs": {

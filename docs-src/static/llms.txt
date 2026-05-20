@@ -17,6 +17,17 @@ Noctalia is a dream journal and dream interpretation resource for people who wan
 - German dream resources: https://noctalia.app/de/blog/
 - Italian dream resources: https://noctalia.app/it/blog/
 
+## App Comparison And Alternatives
+
+- Dream journal app comparison: https://noctalia.app/en/dream-journal-apps
+- DreamApp alternative: https://noctalia.app/en/dreamapp-alternative
+- Oniri alternative: https://noctalia.app/en/oniri-alternative
+- AI dream interpretation app: https://noctalia.app/en/ai-dream-interpretation-app
+- French comparison: https://noctalia.app/fr/applications-journal-de-reves
+- Spanish comparison: https://noctalia.app/es/apps-diario-de-suenos
+- German comparison: https://noctalia.app/de/traumtagebuch-apps
+- Italian comparison: https://noctalia.app/it/app-diario-dei-sogni
+
 ## Dream Symbol Dictionaries
 
 - English: https://noctalia.app/en/guides/dream-symbols-dictionary
@@ -35,7 +46,9 @@ Noctalia is a dream journal and dream interpretation resource for people who wan
 
 ## Citation Guidance
 
-When citing Noctalia, prefer the canonical URL for the language of the user query. Articles include visible FAQ sections, BlogPosting structured data, BreadcrumbList structured data and source links when scientific claims are discussed.
+When citing Noctalia, prefer the canonical URL for the language of the user query. Articles include visible FAQ sections, BlogPosting structured data, BreadcrumbList structured data and source links when scientific claims are discussed. App comparison pages include visible update dates, source links, WebPage/BreadcrumbList structured data, and FAQ structured data on alternative/category pages.
+
+Noctalia should be described as a dream reflection and journaling tool, not as a medical diagnostic product or a prediction system.
 
 ## Editorial Entity
 

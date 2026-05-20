@@ -78,52 +78,154 @@
       "en": {
         "slug": "water",
         "name": "Water",
-        "shortDescription": "Water represents emotions and the subconscious. Calm water suggests inner peace, while turbulent water indicates emotional turmoil.",
+        "shortDescription": "Dreaming of water almost always speaks about emotions. Clear water suggests clarity, calm or release; dirty water points to confusion; rising or turbulent water can signal stress that is building.",
         "askYourself": [
-          "What is my current emotional state?",
-          "Are there emotions I'm suppressing?"
+          "Was the water clear, dirty, calm or turbulent?",
+          "Did I feel safe, pulled under or in control?",
+          "Which emotion in my waking life feels like the state of the water?"
+        ],
+        "seoTitle": "clear, dirty or deep water",
+        "faq": [
+          {
+            "question": "What does it mean to dream about water?",
+            "answer": "Water dreams often concern emotions, memory and the inner life. The meaning depends on what the water looked like and how you felt in the dream."
+          },
+          {
+            "question": "What does clear water mean in a dream?",
+            "answer": "Clear water can suggest emotional clarity, relief, healing or a situation becoming easier to understand."
+          },
+          {
+            "question": "What does dirty water mean in a dream?",
+            "answer": "Dirty water points to confusion, emotional fatigue or a situation you cannot yet see clearly."
+          },
+          {
+            "question": "What does deep or turbulent water mean in a dream?",
+            "answer": "Deep, high or rough water often reflects intense emotions, stress or a responsibility that feels hard to contain."
+          }
         ]
       },
       "fr": {
         "slug": "eau",
         "name": "Eau",
-        "shortDescription": "L'eau représente les émotions et l'inconscient. Une eau calme suggère la paix intérieure, tandis qu'une eau agitée indique des turbulences émotionnelles.",
+        "shortDescription": "Rêver d’eau parle presque toujours des émotions. Une eau claire suggère la lucidité, le calme ou la libération; une eau trouble indique la confusion; une eau haute ou agitée peut signaler un stress qui monte.",
         "askYourself": [
-          "Quel est mon état émotionnel actuel ?",
-          "Y a-t-il des émotions que je réprime ?"
+          "L’eau était-elle claire, trouble, calme ou agitée ?",
+          "Me sentais-je en sécurité, emporté ou en difficulté ?",
+          "Quelle émotion de ma vie ressemble à l’état de cette eau ?"
+        ],
+        "seoTitle": "eau claire, trouble ou profonde",
+        "faq": [
+          {
+            "question": "Que signifie rêver d’eau ?",
+            "answer": "Rêver d’eau concerne souvent les émotions, la mémoire et la vie intérieure. Le sens dépend de l’état de l’eau et de ce que vous ressentiez dans le rêve."
+          },
+          {
+            "question": "Que signifie rêver d’eau claire ?",
+            "answer": "L’eau claire peut indiquer une clarté émotionnelle, un soulagement, une guérison ou une situation qui devient plus compréhensible."
+          },
+          {
+            "question": "Que signifie rêver d’eau trouble ?",
+            "answer": "L’eau trouble suggère confusion, fatigue émotionnelle ou situation que vous ne voyez pas encore clairement."
+          },
+          {
+            "question": "Que signifie rêver d’eau profonde ou agitée ?",
+            "answer": "Une eau profonde, haute ou agitée indique souvent des émotions intenses, du stress ou une responsabilité difficile à contenir."
+          }
         ]
       },
       "es": {
         "slug": "agua",
         "name": "Agua",
-        "shortDescription": "El agua representa las emociones y el subconsciente. El agua tranquila sugiere paz interior, mientras que el agua turbulenta indica agitación emocional.",
+        "shortDescription": "Soñar con agua casi siempre habla de emociones. El agua limpia sugiere claridad, calma o liberación; el agua sucia indica confusión; el agua profunda o agitada puede señalar estrés que está creciendo.",
         "askYourself": [
-          "¿Cuál es mi estado emocional actual?",
-          "¿Hay emociones que estoy reprimiendo?"
+          "¿El agua era limpia, sucia, tranquila o agitada?",
+          "¿Me sentía seguro, arrastrado o en dificultad?",
+          "¿Qué emoción de mi vida se parece al estado del agua?"
+        ],
+        "seoTitle": "agua limpia, sucia o profunda",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con agua?",
+            "answer": "Soñar con agua suele tratar de emociones, memoria y vida interior. El significado depende de cómo estaba el agua y de cómo te sentías en el sueño."
+          },
+          {
+            "question": "¿Qué significa soñar con agua limpia?",
+            "answer": "El agua limpia puede indicar claridad emocional, alivio, sanación o una etapa en la que algo se vuelve más comprensible."
+          },
+          {
+            "question": "¿Qué significa soñar con agua sucia?",
+            "answer": "El agua sucia sugiere confusión, cansancio emocional o una situación que todavía no puedes ver con claridad."
+          },
+          {
+            "question": "¿Qué significa soñar con agua profunda o agitada?",
+            "answer": "El agua profunda, alta o agitada suele indicar emociones intensas, estrés o una responsabilidad difícil de contener."
+          }
         ]
       },
       "de": {
         "slug": "wasser",
         "name": "Wasser",
-        "shortDescription": "Wasser repräsentiert Emotionen und das Unterbewusstsein. Ruhiges Wasser deutet auf inneren Frieden hin, während aufgewühltes Wasser auf emotionale Turbulenzen hinweist.",
+        "shortDescription": "Von Wasser zu träumen spricht fast immer über Emotionen. Klares Wasser deutet auf Klarheit, Ruhe oder Erleichterung hin; schmutziges Wasser auf Verwirrung; hohes oder unruhiges Wasser auf wachsenden Stress.",
         "askYourself": [
-          "Wie ist mein aktueller emotionaler Zustand?",
-          "Gibt es Emotionen, die ich unterdrücke?"
+          "War das Wasser klar, schmutzig, ruhig oder aufgewühlt?",
+          "Fühlte ich mich sicher, mitgerissen oder überfordert?",
+          "Welche Emotion in meinem Leben ähnelt dem Zustand des Wassers?"
+        ],
+        "seoTitle": "klares, schmutziges oder tiefes Wasser",
+        "faq": [
+          {
+            "question": "Was bedeutet Wasser im Traum?",
+            "answer": "Wasserträume betreffen oft Emotionen, Erinnerung und das Innenleben. Die Bedeutung hängt davon ab, wie das Wasser aussah und wie Sie sich fühlten."
+          },
+          {
+            "question": "Was bedeutet klares Wasser im Traum?",
+            "answer": "Klares Wasser kann emotionale Klarheit, Erleichterung, Heilung oder eine Situation zeigen, die verständlicher wird."
+          },
+          {
+            "question": "Was bedeutet schmutziges Wasser im Traum?",
+            "answer": "Schmutziges Wasser deutet auf Verwirrung, emotionale Müdigkeit oder eine Situation hin, die noch nicht klar erkennbar ist."
+          },
+          {
+            "question": "Was bedeutet tiefes oder unruhiges Wasser im Traum?",
+            "answer": "Tiefes, hohes oder aufgewühltes Wasser zeigt oft intensive Gefühle, Stress oder Verantwortung, die schwer zu halten ist."
+          }
         ]
       },
       "it": {
         "slug": "acqua",
         "name": "Acqua",
-        "shortDescription": "L'acqua rappresenta le emozioni e il subconscio. L'acqua calma suggerisce pace interiore, mentre l'acqua turbolenta indica agitazione emotiva.",
+        "shortDescription": "Sognare acqua parla quasi sempre di emozioni. L’acqua pulita suggerisce chiarezza, calma o liberazione; l’acqua sporca indica confusione; l’acqua alta o agitata può segnalare stress che sta crescendo.",
         "askYourself": [
-          "Qual è il mio stato emotivo attuale?",
-          "Ci sono emozioni che sto reprimendo?"
+          "L’acqua era pulita, sporca, calma o agitata?",
+          "Mi sentivo al sicuro, trascinato o in difficoltà?",
+          "Quale emozione nella mia vita somiglia allo stato dell’acqua?"
+        ],
+        "seoTitle": "acqua pulita, sporca o profonda",
+        "faq": [
+          {
+            "question": "Cosa significa sognare acqua?",
+            "answer": "Sognare acqua riguarda emozioni, memoria e vita interiore. Il significato dipende da com’era l’acqua e da come ti sentivi nel sogno."
+          },
+          {
+            "question": "Cosa significa sognare acqua pulita?",
+            "answer": "L’acqua pulita può indicare chiarezza emotiva, sollievo, guarigione o una fase in cui qualcosa diventa più comprensibile."
+          },
+          {
+            "question": "Cosa significa sognare acqua sporca?",
+            "answer": "L’acqua sporca suggerisce confusione, stanchezza emotiva o una situazione che non riesci ancora a leggere con lucidità."
+          },
+          {
+            "question": "Cosa significa sognare acqua alta o agitata?",
+            "answer": "Acqua alta, onde o acqua agitata indicano spesso emozioni intense, stress o una responsabilità che sembra difficile da contenere."
+          }
         ]
       },
       "relatedSymbols": [
+        "flood",
         "ocean",
-        "rain",
-        "flood"
+        "river",
+        "lake",
+        "rain"
       ],
       "relatedArticles": {
         "en": "water-dreams-meaning",
@@ -184,7 +286,6 @@
       },
       "relatedSymbols": [
         "mouth",
-        "body",
         "mirror"
       ],
       "relatedArticles": {
@@ -371,7 +472,7 @@
       "relatedSymbols": [
         "spider",
         "death",
-        "transformation"
+        "butterfly"
       ],
       "relatedArticles": {
         "en": "snake-dreams-meaning",
@@ -430,7 +531,8 @@
       "relatedSymbols": [
         "deceased-person",
         "snake",
-        "transformation"
+        "funeral",
+        "butterfly"
       ],
       "relatedArticles": {
         "en": "death-dreams-meaning",
@@ -494,7 +596,7 @@
       },
       "relatedSymbols": [
         "running",
-        "fear",
+        "hiding",
         "monster"
       ],
       "relatedArticles": {
@@ -512,52 +614,154 @@
       "en": {
         "slug": "house",
         "name": "House",
-        "shortDescription": "A house represents the self and psychological state. Each room can symbolize a different aspect of your personality. A ruined house can indicate a need for inner reconstruction.",
+        "shortDescription": "A house dream often speaks about the self, inner safety and personal history. An unknown house can reveal an unexplored part of you; a ruined house invites rebuilding or protecting what matters.",
         "askYourself": [
-          "How is my inner space?",
-          "Are there \"rooms\" of myself that I'm neglecting?"
+          "Was the house familiar, unknown, old or ruined?",
+          "Which room was I in, and what emotion dominated?",
+          "Which part of my inner life needs more attention?"
+        ],
+        "seoTitle": "unknown, old or ruined house",
+        "faq": [
+          {
+            "question": "What does it mean to dream about a house?",
+            "answer": "A house usually points to your inner world, safety, family or identity. Rooms, condition and emotion guide the interpretation."
+          },
+          {
+            "question": "What does an unknown house mean in a dream?",
+            "answer": "An unknown house may represent a part of yourself you are discovering, a change of reference points or a new situation where you are trying to find your place."
+          },
+          {
+            "question": "What does an old house mean in a dream?",
+            "answer": "An old house often evokes the past, family memories or old habits that still shape the present."
+          },
+          {
+            "question": "What does a ruined house mean in a dream?",
+            "answer": "A ruined house can suggest fatigue, lost safety or the need to rebuild a stronger emotional foundation."
+          }
         ]
       },
       "fr": {
         "slug": "maison",
         "name": "Maison",
-        "shortDescription": "La maison représente le soi et l'état psychologique. Chaque pièce peut symboliser un aspect différent de votre personnalité. Une maison en ruine peut indiquer un besoin de reconstruction intérieure.",
+        "shortDescription": "Rêver d’une maison parle souvent de vous-même, de votre sécurité intérieure et de votre histoire personnelle. Une maison inconnue peut signaler une partie de vous encore inexplorée; une maison en ruine invite à reconstruire ou à protéger ce qui compte.",
         "askYourself": [
-          "Comment va mon espace intérieur ?",
-          "Y a-t-il des \"pièces\" de moi que je néglige ?"
+          "La maison était-elle connue, inconnue, ancienne ou en ruine ?",
+          "Dans quelle pièce étais-je et quelle émotion dominait ?",
+          "Quelle partie de ma vie intérieure demande plus d’attention ?"
+        ],
+        "seoTitle": "maison inconnue, ancienne ou en ruine",
+        "faq": [
+          {
+            "question": "Que signifie rêver d’une maison ?",
+            "answer": "Rêver d’une maison renvoie souvent à votre monde intérieur, votre sécurité, votre famille ou votre identité. Les pièces, l’état de la maison et l’émotion du rêve orientent l’interprétation."
+          },
+          {
+            "question": "Que signifie rêver d’une maison inconnue ?",
+            "answer": "Une maison inconnue peut représenter une partie de vous que vous découvrez, un changement de repères ou une situation nouvelle dans laquelle vous cherchez votre place."
+          },
+          {
+            "question": "Que signifie rêver d’une vieille maison ?",
+            "answer": "Une vieille maison évoque souvent le passé, les souvenirs familiaux ou d’anciennes habitudes qui influencent encore le présent."
+          },
+          {
+            "question": "Que signifie rêver d’une maison en ruine ?",
+            "answer": "Une maison en ruine peut signaler fatigue, perte de sécurité ou besoin de reconstruire une base émotionnelle plus solide."
+          }
         ]
       },
       "es": {
         "slug": "casa",
         "name": "Casa",
-        "shortDescription": "Una casa representa el yo y el estado psicológico. Cada habitación puede simbolizar un aspecto diferente de tu personalidad. Una casa en ruinas puede indicar necesidad de reconstrucción interior.",
+        "shortDescription": "Soñar con una casa suele hablar de ti, de tu seguridad interior y de tu historia personal. Una casa desconocida puede señalar una parte de ti todavía inexplorada; una casa en ruinas invita a reconstruir o proteger lo importante.",
         "askYourself": [
-          "¿Cómo está mi espacio interior?",
-          "¿Hay \"habitaciones\" de mí mismo que estoy descuidando?"
+          "¿La casa era conocida, desconocida, antigua o en ruinas?",
+          "¿En qué habitación estaba y qué emoción dominaba?",
+          "¿Qué parte de mi vida interior necesita más atención?"
+        ],
+        "seoTitle": "casa desconocida, antigua o en ruinas",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una casa?",
+            "answer": "Soñar con una casa suele referirse a tu mundo interior, seguridad, familia o identidad. Las habitaciones, el estado de la casa y la emoción del sueño orientan la interpretación."
+          },
+          {
+            "question": "¿Qué significa soñar con una casa desconocida?",
+            "answer": "Una casa desconocida puede representar una parte de ti que estás descubriendo, un cambio de referencias o una situación nueva en la que buscas tu lugar."
+          },
+          {
+            "question": "¿Qué significa soñar con una casa antigua?",
+            "answer": "Una casa antigua evoca a menudo el pasado, recuerdos familiares o hábitos antiguos que todavía influyen en el presente."
+          },
+          {
+            "question": "¿Qué significa soñar con una casa en ruinas?",
+            "answer": "Una casa en ruinas puede señalar cansancio, pérdida de seguridad o necesidad de reconstruir una base emocional más sólida."
+          }
         ]
       },
       "de": {
         "slug": "haus",
         "name": "Haus",
-        "shortDescription": "Ein Haus repräsentiert das Selbst und die Psyche. Verschiedene Räume stehen für verschiedene Aspekte Ihrer Persönlichkeit, Erinnerungen und Ihres emotionalen Zustands.",
+        "shortDescription": "Ein Haus im Traum spricht oft über das Selbst, innere Sicherheit und persönliche Geschichte. Ein unbekanntes Haus zeigt einen unerforschten Teil von Ihnen; ein zerstörtes Haus lädt zum Wiederaufbau ein.",
         "askYourself": [
-          "Wie fühle ich mich in Bezug auf mich selbst?",
-          "Welche Teile meiner Persönlichkeit erkunde ich?"
+          "War das Haus vertraut, unbekannt, alt oder zerstört?",
+          "In welchem Raum war ich, und welche Emotion war am stärksten?",
+          "Welcher Teil meines Innenlebens braucht mehr Aufmerksamkeit?"
+        ],
+        "seoTitle": "unbekanntes, altes oder zerstörtes Haus",
+        "faq": [
+          {
+            "question": "Was bedeutet ein Haus im Traum?",
+            "answer": "Ein Haus verweist oft auf Innenwelt, Sicherheit, Familie oder Identität. Räume, Zustand und Gefühl bestimmen die Deutung."
+          },
+          {
+            "question": "Was bedeutet ein unbekanntes Haus im Traum?",
+            "answer": "Ein unbekanntes Haus kann einen Teil von Ihnen darstellen, den Sie gerade entdecken, oder eine neue Situation, in der Sie Ihren Platz suchen."
+          },
+          {
+            "question": "Was bedeutet ein altes Haus im Traum?",
+            "answer": "Ein altes Haus erinnert oft an Vergangenheit, Familienerinnerungen oder alte Gewohnheiten, die die Gegenwart noch beeinflussen."
+          },
+          {
+            "question": "Was bedeutet ein zerstörtes Haus im Traum?",
+            "answer": "Ein zerstörtes Haus kann Müdigkeit, verlorene Sicherheit oder den Wunsch nach einer stabileren emotionalen Basis anzeigen."
+          }
         ]
       },
       "it": {
         "slug": "casa",
         "name": "Casa",
-        "shortDescription": "Una casa rappresenta il sé e la psiche. Diverse stanze simboleggiano diversi aspetti della personalità, dei ricordi e dello stato emotivo.",
+        "shortDescription": "Sognare una casa parla spesso di te, della tua sicurezza interiore e della tua storia personale. Una casa sconosciuta può indicare una parte di te ancora inesplorata; una casa in rovina invita a ricostruire o proteggere ciò che conta.",
         "askYourself": [
-          "Come mi sento riguardo a me stesso?",
-          "Quali parti della mia personalità sto esplorando?"
+          "La casa era conosciuta, sconosciuta, vecchia o in rovina?",
+          "In quale stanza ero e quale emozione dominava?",
+          "Quale parte della mia vita interiore ha bisogno di più attenzione?"
+        ],
+        "seoTitle": "casa sconosciuta, vecchia o in rovina",
+        "faq": [
+          {
+            "question": "Cosa significa sognare una casa?",
+            "answer": "Sognare una casa riguarda spesso il mondo interiore, la sicurezza, la famiglia o l’identità. Stanze, stato della casa ed emozione guidano l’interpretazione."
+          },
+          {
+            "question": "Cosa significa sognare una casa sconosciuta?",
+            "answer": "Una casa sconosciuta può rappresentare una parte di te che stai scoprendo, un cambiamento di riferimenti o una situazione nuova in cui cerchi il tuo posto."
+          },
+          {
+            "question": "Cosa significa sognare una casa vecchia?",
+            "answer": "Una casa vecchia richiama spesso il passato, i ricordi familiari o abitudini antiche che influenzano ancora il presente."
+          },
+          {
+            "question": "Cosa significa sognare una casa in rovina?",
+            "answer": "Una casa in rovina può segnalare stanchezza, perdita di sicurezza o bisogno di ricostruire una base emotiva più solida."
+          }
         ]
       },
       "relatedSymbols": [
         "door",
-        "room",
-        "stairs"
+        "bedroom",
+        "kitchen",
+        "bathroom",
+        "basement"
       ],
       "relatedArticles": {
         "de": "",
@@ -613,7 +817,7 @@
       "relatedSymbols": [
         "water",
         "drowning",
-        "waves"
+        "storm"
       ],
       "relatedArticles": {
         "en": "water-dreams-meaning",
@@ -692,72 +896,153 @@
       "en": {
         "slug": "dog",
         "name": "Dog",
-        "shortDescription": "Dogs represent loyalty, friendship, and protection. An aggressive dog can symbolize internal conflict or a perceived threat in your environment.",
+        "shortDescription": "Dreaming of a dog is usually about trust, loyalty and protection. A friendly dog suggests support; a dog that attacks, bites or growls can point to conflict, betrayal anxiety or a relationship that feels unsafe.",
         "askYourself": [
-          "Who are my loyal allies?",
-          "Do I feel protected?"
+          "Was the dog friendly, aggressive, stray or protective?",
+          "Did it attack, bite, follow or defend someone?",
+          "Which relationship of trust feels strong, fragile or wounded now?"
+        ],
+        "seoTitle": "dog, dogs or dog attack",
+        "faq": [
+          {
+            "question": "What does it mean to dream about a dog?",
+            "answer": "A dog dream often concerns trust, loyalty, protection and relationships. The meaning changes depending on whether the dog is friendly, aggressive, stray, hurt or following you."
+          },
+          {
+            "question": "What does it mean to dream about dogs?",
+            "answer": "Several dogs can represent a group, family, friends or social dynamics. Calm dogs suggest support; aggressive dogs suggest pressure or conflict."
+          },
+          {
+            "question": "What does a dog attacking you in a dream mean?",
+            "answer": "A dog attack may indicate fear of betrayal, conflict in a relationship or a perceived threat from someone who should feel trustworthy."
+          },
+          {
+            "question": "What does a dog bite mean in a dream?",
+            "answer": "A dog bite can symbolize wounded trust, harsh words or a protective relationship that has become painful."
+          }
         ]
       },
       "fr": {
         "slug": "chien",
         "name": "Chien",
-        "shortDescription": "Le chien représente la loyauté, l'amitié et la protection. Un chien agressif peut symboliser un conflit interne ou une menace perçue dans votre environnement.",
+        "shortDescription": "Rêver de chien parle souvent de confiance, de loyauté et de protection. Un chien affectueux évoque le soutien; un chien qui attaque, mord ou grogne peut signaler conflit, peur de trahison ou relation devenue insécurisante.",
         "askYourself": [
-          "Qui sont mes alliés fidèles ?",
-          "Est-ce que je me sens protégé ?"
+          "Le chien était-il affectueux, agressif, errant ou protecteur ?",
+          "M’attaquait-il, me mordait-il, me suivait-il ou défendait-il quelqu’un ?",
+          "Quel lien de confiance semble solide, fragile ou blessé maintenant ?"
+        ],
+        "seoTitle": "chien, chiens ou chien agressif",
+        "faq": [
+          {
+            "question": "Que signifie rêver d’un chien ?",
+            "answer": "Rêver d’un chien concerne souvent la confiance, la loyauté, la protection et les relations. Le sens change si le chien est affectueux, agressif, errant, blessé ou s’il vous suit."
+          },
+          {
+            "question": "Que signifie rêver de chiens ?",
+            "answer": "Plusieurs chiens peuvent représenter un groupe, la famille, les amis ou les dynamiques sociales. Des chiens calmes indiquent le soutien; des chiens agressifs indiquent une pression ou un conflit."
+          },
+          {
+            "question": "Que signifie rêver d’un chien qui attaque ?",
+            "answer": "Un chien qui attaque peut indiquer une peur de trahison, un conflit relationnel ou une menace perçue chez quelqu’un qui devrait inspirer confiance."
+          },
+          {
+            "question": "Que signifie rêver d’un chien qui mord ?",
+            "answer": "La morsure d’un chien signale une confiance blessée, une parole agressive ou une relation protectrice devenue douloureuse."
+          }
         ]
       },
       "es": {
         "slug": "perro",
         "name": "Perro",
-        "shortDescription": "Los perros representan lealtad, amistad y protección. Un perro agresivo puede simbolizar conflicto interno o una amenaza percibida en tu entorno.",
+        "shortDescription": "Soñar con un perro suele hablar de confianza, lealtad y protección. Un perro cariñoso sugiere apoyo; un perro que ataca, muerde o gruñe puede indicar conflicto, miedo a la traición o una relación que ya no se siente segura.",
         "askYourself": [
-          "¿Quiénes son mis aliados leales?",
-          "¿Me siento protegido?"
+          "¿El perro era cariñoso, agresivo, callejero o protector?",
+          "¿Me atacaba, mordía, seguía o defendía a alguien?",
+          "¿Qué relación de confianza se siente fuerte, frágil o herida ahora?"
+        ],
+        "seoTitle": "perro, perros o perro que ataca",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un perro?",
+            "answer": "Soñar con un perro suele relacionarse con confianza, lealtad, protección y relaciones. El significado cambia si el perro es cariñoso, agresivo, callejero, herido o si te sigue."
+          },
+          {
+            "question": "¿Qué significa soñar con perros?",
+            "answer": "Varios perros pueden representar grupo, familia, amistades o dinámicas sociales. Si están tranquilos hablan de apoyo; si son agresivos indican presión o conflicto."
+          },
+          {
+            "question": "¿Qué significa soñar con un perro que te ataca?",
+            "answer": "Un perro que ataca puede indicar miedo a la traición, conflicto en una relación o una amenaza percibida en alguien que normalmente debería ser confiable."
+          },
+          {
+            "question": "¿Qué significa soñar con un perro que muerde?",
+            "answer": "La mordida de un perro señala confianza herida, una palabra agresiva o una relación que pasó de protegerte a doler."
+          }
         ]
       },
       "de": {
         "slug": "hund",
         "name": "Hund",
-        "shortDescription": "Hunde repräsentieren Loyalität, Freundschaft und bedingungslose Liebe. Ihr Verhalten im Traum spiegelt wider, wie Sie Beziehungen und Vertrauen in Ihrem Leben erleben.",
+        "shortDescription": "Von einem Hund zu träumen geht meist um Vertrauen, Loyalität und Schutz. Ein freundlicher Hund zeigt Unterstützung; ein Hund, der angreift, beißt oder knurrt, kann Konflikt, Angst vor Verrat oder eine unsichere Beziehung spiegeln.",
         "askYourself": [
-          "Wem vertraue ich bedingungslos?",
-          "Wie drücke ich Loyalität in meinen Beziehungen aus?"
+          "War der Hund freundlich, aggressiv, herrenlos oder beschützend?",
+          "Hat er angegriffen, gebissen, gefolgt oder jemanden verteidigt?",
+          "Welche Vertrauensbeziehung wirkt gerade stark, fragil oder verletzt?"
+        ],
+        "seoTitle": "Hund, Hunde oder angreifender Hund",
+        "faq": [
+          {
+            "question": "Was bedeutet ein Hund im Traum?",
+            "answer": "Ein Hund im Traum betrifft oft Vertrauen, Loyalität, Schutz und Beziehungen. Die Bedeutung hängt davon ab, ob der Hund freundlich, aggressiv, herrenlos, verletzt oder Ihnen gefolgt ist."
+          },
+          {
+            "question": "Was bedeuten mehrere Hunde im Traum?",
+            "answer": "Mehrere Hunde können Gruppe, Familie, Freundschaften oder soziale Dynamiken darstellen. Ruhige Hunde sprechen für Unterstützung; aggressive Hunde für Druck oder Konflikt."
+          },
+          {
+            "question": "Was bedeutet ein angreifender Hund im Traum?",
+            "answer": "Ein angreifender Hund kann Angst vor Verrat, Beziehungskonflikt oder eine Bedrohung durch jemanden zeigen, der eigentlich vertrauenswürdig sein sollte."
+          },
+          {
+            "question": "Was bedeutet ein Hundebiss im Traum?",
+            "answer": "Ein Hundebiss deutet auf verletztes Vertrauen, harte Worte oder eine schützende Beziehung hin, die schmerzhaft geworden ist."
+          }
         ]
       },
       "it": {
         "slug": "cane",
         "name": "Cane",
-        "shortDescription": "Sognare un cane parla di fiducia, protezione e legami. Un cane che attacca o morde segnala conflitto, minaccia percepita o lealtà ferita.",
+        "shortDescription": "Sognare un cane riguarda fiducia, protezione e legami. Un cane affettuoso parla di lealtà; un cane che attacca, morde o ringhia può indicare conflitto, paura di tradimento o una relazione diventata difficile.",
         "askYourself": [
-          "Il cane era amichevole, aggressivo o protettivo?",
+          "Il cane era affettuoso, aggressivo, randagio o protettivo?",
           "Mi attaccava, mi mordeva o difendeva qualcuno?",
-          "Quale rapporto di fiducia sembra fragile in questo momento?"
+          "Quale rapporto di fiducia sembra fragile o ferito adesso?"
         ],
-        "seoTitle": "un cane che attacca o morde",
+        "seoTitle": "cane, cani o cane che attacca",
         "faq": [
           {
             "question": "Cosa significa sognare un cane?",
-            "answer": "Sognare un cane riguarda spesso fiducia, lealtà, protezione e relazioni. Il significato cambia molto se il cane è affettuoso, aggressivo, randagio o ferito."
+            "answer": "Sognare un cane riguarda spesso fiducia, lealtà, protezione e relazioni. Il significato cambia se il cane è affettuoso, aggressivo, randagio, ferito o se ti segue."
+          },
+          {
+            "question": "Cosa significa sognare cani?",
+            "answer": "Più cani possono rappresentare gruppo, famiglia, amicizie o dinamiche sociali. Se sono tranquilli parlano di sostegno; se sono aggressivi indicano pressione o conflitto."
           },
           {
             "question": "Cosa significa sognare un cane che ti attacca?",
-            "answer": "Un cane che attacca può indicare conflitto, paura di essere tradito o una minaccia percepita in una relazione. Può anche mostrare rabbia o difesa che non hai ancora espresso."
+            "answer": "Un cane che attacca può indicare paura di tradimento, conflitto in una relazione o una minaccia percepita da qualcuno che normalmente dovrebbe essere affidabile."
           },
           {
             "question": "Cosa significa sognare un cane che morde?",
             "answer": "Il morso di un cane segnala una ferita nella fiducia, una parola aggressiva o una relazione che da protettiva è diventata dolorosa."
-          },
-          {
-            "question": "Cosa significa sognare un cane che ti protegge?",
-            "answer": "Un cane protettivo indica sostegno, alleati fedeli o una parte istintiva di te che cerca sicurezza."
           }
         ]
       },
       "relatedSymbols": [
-        "cat",
         "wolf",
-        "animal"
+        "cat",
+        "friend",
+        "horse"
       ],
       "relatedArticles": {
         "de": "",
@@ -815,8 +1100,7 @@
       },
       "relatedSymbols": [
         "dog",
-        "lion",
-        "animal"
+        "lion"
       ],
       "relatedArticles": {
         "de": "",
@@ -874,8 +1158,8 @@
       },
       "relatedSymbols": [
         "snake",
-        "web",
-        "insect"
+        "ant",
+        "bee"
       ],
       "relatedArticles": {
         "de": "",
@@ -889,52 +1173,153 @@
       "en": {
         "slug": "fire",
         "name": "Fire",
-        "shortDescription": "Fire symbolizes passion, transformation, and purification. Controlled fire represents positive energy, while a wildfire can indicate anger or destruction.",
+        "shortDescription": "Dreaming of fire can signal passion, anger, transformation or urgency. Controlled fire suggests creative energy; a blaze or flames out of control point to intense emotions or change moving too fast.",
         "askYourself": [
-          "What ignites my passion?",
-          "Is there a situation consuming me?"
+          "Did the fire warm, illuminate or destroy?",
+          "Did I feel fascination, fear, anger or relief?",
+          "Which change in my life feels urgent or out of control?"
+        ],
+        "seoTitle": "fire, blaze or flames",
+        "faq": [
+          {
+            "question": "What does it mean to dream about fire?",
+            "answer": "Fire in dreams can represent energy, desire, anger, transformation or purification. The meaning depends on whether the fire was useful or out of control."
+          },
+          {
+            "question": "What does a blaze or house fire mean in a dream?",
+            "answer": "A blaze often suggests intense emotion, conflict or a situation that may consume too much energy if it is not handled."
+          },
+          {
+            "question": "What do flames mean in a dream?",
+            "answer": "Flames can point to passion, creativity or anger. If they frighten you, the dream suggests emotional intensity has become difficult to contain."
+          },
+          {
+            "question": "Is dreaming of fire positive or negative?",
+            "answer": "It can be either. A fire that warms or lights the way is different from a fire that destroys. Notice control, distance and the dominant emotion."
+          }
         ]
       },
       "fr": {
         "slug": "feu",
         "name": "Feu",
-        "shortDescription": "Le feu symbolise la passion, la transformation et la purification. Un feu contrôlé représente l'énergie positive, tandis qu'un incendie peut indiquer la colère ou la destruction.",
+        "shortDescription": "Rêver de feu peut indiquer passion, colère, transformation ou urgence. Un feu maîtrisé parle d’énergie créative; un incendie ou des flammes incontrôlables signalent des émotions intenses ou un changement trop rapide.",
         "askYourself": [
-          "Qu'est-ce qui m'enflamme de passion ?",
-          "Y a-t-il une situation qui me consume ?"
+          "Le feu réchauffait-il, éclairait-il ou détruisait-il ?",
+          "Ressentais-je fascination, peur, colère ou soulagement ?",
+          "Quel changement dans ma vie semble urgent ou hors de contrôle ?"
+        ],
+        "seoTitle": "feu, incendie ou flammes",
+        "faq": [
+          {
+            "question": "Que signifie rêver de feu ?",
+            "answer": "Rêver de feu peut représenter énergie, désir, colère, transformation ou purification. Le sens dépend du fait que le feu soit utile ou hors de contrôle."
+          },
+          {
+            "question": "Que signifie rêver d’un incendie ?",
+            "answer": "Un incendie indique souvent des émotions intenses, un conflit ou une situation qui risque de consommer trop d’énergie."
+          },
+          {
+            "question": "Que signifient les flammes en rêve ?",
+            "answer": "Les flammes peuvent parler de passion, de créativité ou de colère. Si elles font peur, l’intensité émotionnelle devient difficile à contenir."
+          },
+          {
+            "question": "Rêver de feu est-il positif ou négatif ?",
+            "answer": "Cela peut être les deux. Un feu qui éclaire ou réchauffe n’a pas le même sens qu’un feu qui détruit."
+          }
         ]
       },
       "es": {
         "slug": "fuego",
         "name": "Fuego",
-        "shortDescription": "El fuego simboliza pasión, transformación y purificación. Un fuego controlado representa energía positiva, mientras que un incendio puede indicar ira o destrucción.",
+        "shortDescription": "Soñar con fuego puede indicar pasión, rabia, transformación o urgencia. Un fuego controlado habla de energía creativa; un incendio o llamas fuera de control señalan emociones intensas o un cambio que va demasiado rápido.",
         "askYourself": [
-          "¿Qué enciende mi pasión?",
-          "¿Hay una situación que me está consumiendo?"
+          "¿El fuego calentaba, iluminaba o destruía?",
+          "¿Sentía fascinación, miedo, rabia o alivio?",
+          "¿Qué cambio en mi vida parece urgente o fuera de control?"
+        ],
+        "seoTitle": "fuego, incendio o llamas",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con fuego?",
+            "answer": "Soñar con fuego puede representar energía, deseo, rabia, transformación o purificación. El significado depende de si el fuego era útil o estaba fuera de control."
+          },
+          {
+            "question": "¿Qué significa soñar con un incendio?",
+            "answer": "Un incendio suele indicar emociones intensas, conflicto o una situación que puede consumir demasiada energía si no se maneja."
+          },
+          {
+            "question": "¿Qué significan las llamas en un sueño?",
+            "answer": "Las llamas pueden hablar de pasión, creatividad o rabia. Si dan miedo, el sueño sugiere que la intensidad emocional se volvió difícil de contener."
+          },
+          {
+            "question": "¿Soñar con fuego es positivo o negativo?",
+            "answer": "Puede ser ambas cosas. Un fuego que ilumina o calienta es distinto de un incendio que destruye."
+          }
         ]
       },
       "de": {
         "slug": "feuer",
         "name": "Feuer",
-        "shortDescription": "Feuer repräsentiert Leidenschaft, Transformation, Zerstörung und Erneuerung. Es kann innere Wut, kreative Energie oder den Wunsch nach tiefgreifender Veränderung symbolisieren.",
+        "shortDescription": "Von Feuer zu träumen kann Leidenschaft, Wut, Transformation oder Dringlichkeit anzeigen. Kontrolliertes Feuer spricht für kreative Energie; ein Brand oder außer Kontrolle geratene Flammen zeigen intensive Gefühle oder zu schnellen Wandel.",
         "askYourself": [
-          "Was brennt leidenschaftlich in mir?",
-          "Welcher Aspekt meines Lebens muss transformiert werden?"
+          "Hat das Feuer gewärmt, erhellt oder zerstört?",
+          "Spürte ich Faszination, Angst, Wut oder Erleichterung?",
+          "Welche Veränderung in meinem Leben wirkt dringend oder außer Kontrolle?"
+        ],
+        "seoTitle": "Feuer, Brand oder Flammen",
+        "faq": [
+          {
+            "question": "Was bedeutet Feuer im Traum?",
+            "answer": "Feuer im Traum kann Energie, Wunsch, Wut, Transformation oder Reinigung darstellen. Die Bedeutung hängt davon ab, ob das Feuer hilfreich oder außer Kontrolle war."
+          },
+          {
+            "question": "Was bedeutet ein Brand im Traum?",
+            "answer": "Ein Brand deutet oft auf intensive Emotionen, Konflikt oder eine Situation hin, die zu viel Energie verbraucht."
+          },
+          {
+            "question": "Was bedeuten Flammen im Traum?",
+            "answer": "Flammen können Leidenschaft, Kreativität oder Wut zeigen. Wenn sie Angst machen, ist die emotionale Intensität schwer zu halten."
+          },
+          {
+            "question": "Ist Feuer im Traum positiv oder negativ?",
+            "answer": "Beides ist möglich. Ein Feuer, das wärmt oder leuchtet, unterscheidet sich von einem Feuer, das zerstört."
+          }
         ]
       },
       "it": {
         "slug": "fuoco",
         "name": "Fuoco",
-        "shortDescription": "Il fuoco rappresenta passione, trasformazione, distruzione e rinnovamento. Può simboleggiare rabbia interiore, energia creativa o il desiderio di un cambiamento profondo.",
+        "shortDescription": "Sognare fuoco può indicare passione, rabbia, trasformazione o urgenza. Un fuoco controllato parla di energia creativa; un incendio o fiamme fuori controllo segnalano emozioni intense o un cambiamento che brucia troppo in fretta.",
         "askYourself": [
-          "Cosa brucia appassionatamente dentro di me?",
-          "Quale aspetto della mia vita ha bisogno di trasformazione?"
+          "Il fuoco scaldava, illuminava o distruggeva?",
+          "Provavo fascino, paura, rabbia o sollievo?",
+          "Quale cambiamento nella mia vita sembra urgente o fuori controllo?"
+        ],
+        "seoTitle": "fuoco, incendio o fiamme",
+        "faq": [
+          {
+            "question": "Cosa significa sognare fuoco?",
+            "answer": "Sognare fuoco può rappresentare energia, desiderio, rabbia, trasformazione o purificazione. Il significato dipende dal fatto che il fuoco fosse utile o fuori controllo."
+          },
+          {
+            "question": "Cosa significa sognare un incendio?",
+            "answer": "Un incendio indica spesso emozioni intense, conflitto o una situazione che rischia di consumare troppe energie se non viene gestita."
+          },
+          {
+            "question": "Cosa significa sognare fiamme?",
+            "answer": "Le fiamme possono parlare di passione, creatività o rabbia. Se ti spaventano, il sogno suggerisce che l’intensità emotiva è diventata difficile da contenere."
+          },
+          {
+            "question": "Sognare fuoco è positivo o negativo?",
+            "answer": "Può essere entrambe le cose. Un fuoco che illumina o scalda è diverso da un incendio che distrugge: osserva controllo, distanza ed emozione dominante."
+          }
         ]
       },
       "relatedSymbols": [
-        "smoke",
-        "burning",
-        "destruction"
+        "volcano",
+        "lightning",
+        "storm",
+        "apocalypse"
       ],
       "relatedArticles": {
         "de": "",
@@ -948,30 +1333,71 @@
       "en": {
         "slug": "flood",
         "name": "Flood",
-        "shortDescription": "A flood often symbolizes overwhelming emotions, sudden change, or feeling that problems are \"spilling over.\" It can also represent cleansing and a chance to rebuild after disruption.",
+        "shortDescription": "A flood dream points to emotions, stress or change that feels hard to contain. If water enters a house, rises quickly or looks dirty, the dream shows which area of life feels invaded.",
         "askYourself": [
-          "What feels overwhelming right now?",
-          "Where in my life do I need to set stronger boundaries?"
+          "Was the flood clear, dirty, rainwater or seawater?",
+          "Was water entering my house, carrying me away or letting me escape?",
+          "Which situation is overflowing in my waking life?"
+        ],
+        "seoTitle": "flood, flooded house or dirty water",
+        "faq": [
+          {
+            "question": "What does a flood dream mean?",
+            "answer": "A flood dream usually suggests emotions, stress or changes that feel difficult to contain. It can appear when family, work or relationship pressure becomes overwhelming."
+          },
+          {
+            "question": "What does a flooded house mean in a dream?",
+            "answer": "A flooded house suggests worries, conflicts or intense feelings entering your private space and sense of safety."
+          },
+          {
+            "question": "What does clean flood water mean in a dream?",
+            "answer": "Clean flood water may suggest emotional release, clarity or a necessary clearing after tension."
+          },
+          {
+            "question": "What does dirty flood water mean in a dream?",
+            "answer": "Dirty flood water points to confusion, fatigue or mixed emotions that still need sorting."
+          }
         ]
       },
       "fr": {
         "slug": "inondation",
         "name": "Inondation",
-        "shortDescription": "Une inondation symbolise souvent des émotions débordantes, un changement soudain ou la sensation que les problèmes vous submergent. Elle peut aussi représenter une purification et une opportunité de repartir sur de nouvelles bases.",
+        "shortDescription": "Rêver d’inondation indique des émotions, un stress ou des changements difficiles à contenir. Si l’eau entre dans la maison, monte vite ou paraît trouble, le rêve montre quelle zone de vie se sent envahie.",
         "askYourself": [
-          "Qu'est-ce qui me submerge en ce moment ?",
-          "Où ai-je besoin de poser des limites plus claires ?"
+          "L’inondation était-elle d’eau claire, trouble, de pluie ou de mer ?",
+          "L’eau entrait-elle dans ma maison, m’emportait-elle ou me laissait-elle sortir ?",
+          "Quelle situation déborde dans ma vie éveillée ?"
+        ],
+        "seoTitle": "inondation, maison inondée ou eau trouble",
+        "faq": [
+          {
+            "question": "Que signifie rêver d’inondation ?",
+            "answer": "Rêver d’inondation indique souvent des émotions, du stress ou des changements qui semblent difficiles à contenir."
+          },
+          {
+            "question": "Que signifie rêver d’une maison inondée ?",
+            "answer": "Une maison inondée suggère que des inquiétudes, conflits ou émotions intenses envahissent votre espace de sécurité."
+          },
+          {
+            "question": "Que signifie rêver d’une inondation d’eau claire ?",
+            "answer": "L’eau claire peut indiquer libération émotionnelle, clarté ou nettoyage nécessaire après une période de tension."
+          },
+          {
+            "question": "Que signifie rêver d’une inondation d’eau trouble ?",
+            "answer": "L’eau trouble signale confusion, fatigue ou émotions mélangées qui demandent encore à être ordonnées."
+          }
         ]
       },
       "es": {
         "slug": "inundacion",
         "name": "Inundación",
-        "shortDescription": "Soñar con inundación indica emociones que se desbordan, estrés acumulado o cambios repentinos. La casa, el agua limpia o sucia y tu reacción cambian el significado.",
+        "shortDescription": "Soñar con inundación indica emociones que se desbordan, estrés acumulado o cambios difíciles de contener. Si el agua entra en casa, es sucia o sube rápido, el sueño señala qué área de tu vida se siente invadida.",
         "askYourself": [
-          "¿Qué se siente abrumador ahora mismo?",
-          "¿Dónde necesito poner límites más firmes en mi vida?"
+          "¿La inundación era de agua limpia, sucia, de lluvia o de mar?",
+          "¿El agua entraba en mi casa, me arrastraba o yo lograba salir?",
+          "¿Qué situación se está desbordando en mi vida despierta?"
         ],
-        "seoTitle": "inundaciones y agua que se desborda",
+        "seoTitle": "inundación, casa inundada o agua sucia",
         "faq": [
           {
             "question": "¿Qué significa soñar con inundación?",
@@ -994,25 +1420,66 @@
       "de": {
         "slug": "ueberschwemmung",
         "name": "Überschwemmung",
-        "shortDescription": "Überschwemmungen symbolisieren überwältigende Emotionen, Kontrollverlust und das Gefühl, von Umständen mitgerissen zu werden. Sie können auch emotionale Reinigung und Erneuerung darstellen.",
+        "shortDescription": "Eine Überschwemmung im Traum zeigt Emotionen, Stress oder Veränderungen, die schwer zu halten sind. Dringt Wasser ins Haus ein, steigt schnell oder wirkt schmutzig, zeigt der Traum, welcher Lebensbereich überflutet wird.",
         "askYourself": [
-          "Welche Emotionen überwältigen mich?",
-          "Wo fühle ich mich vom Leben mitgerissen?"
+          "War die Überschwemmung klares, schmutziges, Regen- oder Meerwasser?",
+          "Drang Wasser ins Haus ein, riss es mich mit oder konnte ich entkommen?",
+          "Welche Situation läuft in meinem Wachleben über?"
+        ],
+        "seoTitle": "Überschwemmung, überflutetes Haus oder schmutziges Wasser",
+        "faq": [
+          {
+            "question": "Was bedeutet eine Überschwemmung im Traum?",
+            "answer": "Eine Überschwemmung deutet oft auf Emotionen, Stress oder Veränderungen hin, die sich schwer kontrollieren lassen."
+          },
+          {
+            "question": "Was bedeutet ein überflutetes Haus im Traum?",
+            "answer": "Ein überflutetes Haus zeigt Sorgen, Konflikte oder intensive Gefühle, die in den privaten Sicherheitsraum eindringen."
+          },
+          {
+            "question": "Was bedeutet klares Wasser bei einer Überschwemmung?",
+            "answer": "Klares Wasser kann emotionale Befreiung, Klarheit oder eine nötige Reinigung nach Anspannung anzeigen."
+          },
+          {
+            "question": "Was bedeutet schmutziges Wasser bei einer Überschwemmung?",
+            "answer": "Schmutziges Wasser zeigt Verwirrung, Müdigkeit oder gemischte Gefühle, die noch geordnet werden müssen."
+          }
         ]
       },
       "it": {
         "slug": "alluvione",
         "name": "Alluvione",
-        "shortDescription": "Le alluvioni simboleggiano emozioni travolgenti, perdita di controllo e la sensazione di essere trascinati dalle circostanze. Possono anche rappresentare purificazione emotiva e rinnovamento.",
+        "shortDescription": "Sognare un’alluvione indica emozioni, stress o cambiamenti difficili da contenere. Se l’acqua entra in casa, sale rapidamente o è sporca, il sogno mostra quale area della vita si sente invasa.",
         "askYourself": [
-          "Quali emozioni mi stanno travolgendo?",
-          "Dove mi sento trascinato dalla vita?"
+          "L’alluvione era di acqua pulita, sporca, pioggia o mare?",
+          "L’acqua entrava in casa, mi trascinava o riuscivo a uscire?",
+          "Quale situazione sta traboccando nella mia vita da sveglio?"
+        ],
+        "seoTitle": "alluvione, casa allagata o acqua sporca",
+        "faq": [
+          {
+            "question": "Cosa significa sognare un’alluvione?",
+            "answer": "Sognare un’alluvione indica spesso emozioni, stress o cambiamenti che sembrano difficili da contenere."
+          },
+          {
+            "question": "Cosa significa sognare una casa allagata?",
+            "answer": "Una casa allagata suggerisce che preoccupazioni, conflitti o emozioni intense stanno invadendo il tuo spazio di sicurezza."
+          },
+          {
+            "question": "Cosa significa sognare un’alluvione di acqua pulita?",
+            "answer": "L’acqua pulita può indicare liberazione emotiva, chiarezza o una pulizia necessaria dopo un periodo di tensione."
+          },
+          {
+            "question": "Cosa significa sognare un’alluvione di acqua sporca?",
+            "answer": "L’acqua sporca segnala confusione, stanchezza o emozioni mescolate che hanno ancora bisogno di ordine."
+          }
         ]
       },
       "relatedSymbols": [
         "water",
-        "ocean",
         "rain",
+        "ocean",
+        "drowning",
         "storm"
       ],
       "relatedArticles": {
@@ -1073,9 +1540,8 @@
         ]
       },
       "relatedSymbols": [
-        "driving",
         "road",
-        "crash"
+        "accident"
       ],
       "relatedArticles": {
         "de": "",
@@ -1089,31 +1555,71 @@
       "en": {
         "slug": "door",
         "name": "Door",
-        "shortDescription": "A door symbolizes opportunities, transitions, and new beginnings. A closed door can indicate obstacles, while an open door suggests possibilities.",
+        "shortDescription": "A door dream speaks about opportunities, decisions and boundaries. Opening a closed door suggests moving past a block; an open door can mean access or vulnerability; a door that will not open points to a pending choice.",
         "askYourself": [
-          "What new opportunities are available to me?",
-          "What's blocking me?"
+          "Was the door open, closed, blocked or broken?",
+          "Was I opening it, closing it or crossing through?",
+          "Which decision, boundary or opportunity is present in my life now?"
+        ],
+        "seoTitle": "open, closed or blocked door",
+        "faq": [
+          {
+            "question": "What does it mean to dream about doors?",
+            "answer": "Doors in dreams usually relate to opportunities, decisions and transitions. The meaning depends on whether the door was open, closed, blocked or crossed."
+          },
+          {
+            "question": "What does opening a closed door mean in a dream?",
+            "answer": "Opening a closed door suggests trying to overcome a block, reach an opportunity or solve something that felt inaccessible."
+          },
+          {
+            "question": "What does an open front door mean in a dream?",
+            "answer": "An open front door can suggest vulnerability, trust, exposure or emotional openness."
+          },
+          {
+            "question": "What does a door that will not open mean?",
+            "answer": "It often shows frustration, fear of rejection or an opportunity that needs more preparation, patience or a symbolic key."
+          }
         ]
       },
       "fr": {
         "slug": "porte",
         "name": "Porte",
-        "shortDescription": "La porte symbolise les opportunités, les transitions et les nouveaux départs. Une porte fermée peut indiquer des obstacles, tandis qu'une porte ouverte suggère des possibilités.",
+        "shortDescription": "Rêver de porte parle d’opportunités, de décisions et de limites. Ouvrir une porte fermée suggère dépasser un blocage; une porte ouverte peut indiquer accès ou vulnérabilité; une porte qui ne s’ouvre pas signale une décision en attente.",
         "askYourself": [
-          "Quelles nouvelles opportunités s'offrent à moi ?",
-          "Qu'est-ce qui me bloque ?"
+          "La porte était-elle ouverte, fermée, bloquée ou cassée ?",
+          "Essayais-je de l’ouvrir, de la fermer ou de la franchir ?",
+          "Quelle décision, limite ou opportunité apparaît maintenant dans ma vie ?"
+        ],
+        "seoTitle": "porte ouverte, fermée ou bloquée",
+        "faq": [
+          {
+            "question": "Que signifie rêver de portes ?",
+            "answer": "Les portes en rêve sont liées aux opportunités, aux décisions et aux transitions. Le sens dépend du fait que la porte soit ouverte, fermée, bloquée ou franchie."
+          },
+          {
+            "question": "Que signifie ouvrir une porte fermée en rêve ?",
+            "answer": "Ouvrir une porte fermée indique que vous essayez de dépasser un blocage, d’accéder à une opportunité ou de résoudre quelque chose qui semblait inaccessible."
+          },
+          {
+            "question": "Que signifie rêver d’une porte d’entrée ouverte ?",
+            "answer": "Une porte d’entrée ouverte peut signaler vulnérabilité, confiance, exposition ou ouverture émotionnelle."
+          },
+          {
+            "question": "Que signifie une porte impossible à ouvrir ?",
+            "answer": "Elle montre souvent frustration, peur du rejet ou opportunité qui demande préparation, patience ou clé symbolique."
+          }
         ]
       },
       "es": {
         "slug": "puerta",
         "name": "Puerta",
-        "shortDescription": "Soñar con puertas habla de oportunidades, cambios y límites. Una puerta cerrada señala bloqueo o decisión pendiente; una puerta abierta sugiere acceso, permiso o un nuevo comienzo.",
+        "shortDescription": "Soñar con puertas habla de oportunidades, decisiones y límites. Abrir una puerta cerrada sugiere superar un bloqueo; una puerta abierta puede indicar acceso o vulnerabilidad; una puerta que no abre señala una decisión pendiente.",
         "askYourself": [
-          "¿Qué puerta quiero abrir o cerrar en mi vida?",
-          "¿Estoy evitando una decisión, una conversación o un cambio?",
-          "¿La puerta del sueño era de mi casa, desconocida, abierta o cerrada?"
+          "¿La puerta estaba abierta, cerrada, bloqueada o rota?",
+          "¿Yo intentaba abrirla, cerrarla o cruzarla?",
+          "¿Qué decisión, límite u oportunidad aparece ahora en mi vida?"
         ],
-        "seoTitle": "puertas abiertas o cerradas",
+        "seoTitle": "puerta abierta, cerrada o bloqueada",
         "faq": [
           {
             "question": "¿Qué significa soñar con puertas?",
@@ -1136,10 +1642,30 @@
       "de": {
         "slug": "tuer",
         "name": "Tür",
-        "shortDescription": "Türen symbolisieren Übergänge, Möglichkeiten und neue Kapitel. Eine offene Tür lädt ein, eine geschlossene kann auf Hindernisse oder noch nicht bereitstehende Wege hinweisen.",
+        "shortDescription": "Eine Tür im Traum spricht von Chancen, Entscheidungen und Grenzen. Eine geschlossene Tür zu öffnen zeigt, dass Sie eine Blockade überwinden; eine offene Tür kann Zugang oder Verletzlichkeit bedeuten.",
         "askYourself": [
-          "Welche neuen Möglichkeiten stehen mir offen?",
-          "Welche Türen habe ich geschlossen, die ich wieder öffnen sollte?"
+          "War die Tür offen, geschlossen, blockiert oder kaputt?",
+          "Wollte ich sie öffnen, schließen oder hindurchgehen?",
+          "Welche Entscheidung, Grenze oder Chance zeigt sich gerade in meinem Leben?"
+        ],
+        "seoTitle": "offene, geschlossene oder blockierte Tür",
+        "faq": [
+          {
+            "question": "Was bedeuten Türen im Traum?",
+            "answer": "Türen im Traum hängen meist mit Chancen, Entscheidungen und Übergängen zusammen. Die Deutung hängt davon ab, ob die Tür offen, geschlossen, blockiert oder überschritten wurde."
+          },
+          {
+            "question": "Was bedeutet es, eine geschlossene Tür im Traum zu öffnen?",
+            "answer": "Eine geschlossene Tür zu öffnen zeigt den Versuch, eine Blockade zu überwinden, eine Gelegenheit zu erreichen oder etwas Unzugängliches zu lösen."
+          },
+          {
+            "question": "Was bedeutet eine offene Haustür im Traum?",
+            "answer": "Eine offene Haustür kann Verletzlichkeit, Vertrauen, Ausgesetztsein oder emotionale Offenheit zeigen."
+          },
+          {
+            "question": "Was bedeutet eine Tür, die sich nicht öffnen lässt?",
+            "answer": "Sie zeigt oft Frustration, Angst vor Ablehnung oder eine Chance, die Vorbereitung, Geduld oder einen symbolischen Schlüssel braucht."
+          }
         ]
       },
       "it": {
@@ -1168,9 +1694,10 @@
         "seoTitle": "una porta aperta o chiusa"
       },
       "relatedSymbols": [
-        "house",
         "key",
-        "window"
+        "house",
+        "path",
+        "road"
       ],
       "relatedArticles": {
         "de": "",
@@ -1228,8 +1755,7 @@
       },
       "relatedSymbols": [
         "school",
-        "failure",
-        "stress"
+        "classroom"
       ],
       "relatedArticles": {
         "de": "",
@@ -1287,8 +1813,7 @@
       },
       "relatedSymbols": [
         "clothes",
-        "shame",
-        "exposure"
+        "mirror"
       ],
       "relatedArticles": {
         "de": "",
@@ -1348,7 +1873,7 @@
       "relatedSymbols": [
         "death",
         "ghost",
-        "memory"
+        "funeral"
       ],
       "relatedArticles": {
         "en": "death-dreams-meaning",
@@ -1409,8 +1934,7 @@
       },
       "relatedSymbols": [
         "flying",
-        "cage",
-        "freedom"
+        "prison"
       ],
       "relatedArticles": {
         "en": "flying-dreams-meaning",
@@ -1492,7 +2016,7 @@
       "relatedSymbols": [
         "road",
         "water",
-        "crossing"
+        "path"
       ],
       "relatedArticles": {
         "de": "",
@@ -1550,7 +2074,7 @@
       },
       "relatedSymbols": [
         "house",
-        "climbing",
+        "mountain",
         "elevator"
       ],
       "relatedArticles": {
@@ -1609,8 +2133,7 @@
       },
       "relatedSymbols": [
         "sun",
-        "night",
-        "stars"
+        "night"
       ],
       "relatedArticles": {
         "de": "",
@@ -1668,8 +2191,7 @@
       },
       "relatedSymbols": [
         "moon",
-        "light",
-        "day"
+        "rainbow"
       ],
       "relatedArticles": {
         "de": "",
@@ -1727,8 +2249,7 @@
       },
       "relatedSymbols": [
         "water",
-        "storm",
-        "clouds"
+        "storm"
       ],
       "relatedArticles": {
         "de": "",
@@ -1802,7 +2323,7 @@
       },
       "relatedSymbols": [
         "tree",
-        "darkness",
+        "night",
         "path"
       ],
       "relatedArticles": {
@@ -1861,8 +2382,7 @@
       },
       "relatedSymbols": [
         "forest",
-        "roots",
-        "leaves"
+        "garden"
       ],
       "relatedArticles": {
         "de": "",
@@ -1919,9 +2439,9 @@
         ]
       },
       "relatedSymbols": [
-        "climbing",
-        "peak",
-        "valley"
+        "stairs",
+        "cliff",
+        "road"
       ],
       "relatedArticles": {
         "de": "",
@@ -1979,8 +2499,8 @@
       },
       "relatedSymbols": [
         "cat",
-        "power",
-        "king"
+        "bear",
+        "elephant"
       ],
       "relatedArticles": {
         "de": "",
@@ -2037,9 +2557,9 @@
         ]
       },
       "relatedSymbols": [
-        "reflection",
-        "glass",
-        "self"
+        "water",
+        "door",
+        "eyes"
       ],
       "relatedArticles": {
         "de": "",
@@ -2096,9 +2616,9 @@
         ]
       },
       "relatedSymbols": [
-        "wealth",
-        "loss",
-        "power"
+        "ring",
+        "lost",
+        "key"
       ],
       "relatedArticles": {
         "de": "",
@@ -2155,9 +2675,9 @@
         ]
       },
       "relatedSymbols": [
-        "wound",
-        "injury",
-        "family"
+        "bleeding",
+        "surgery",
+        "mother"
       ],
       "relatedArticles": {
         "de": "",
@@ -2215,8 +2735,7 @@
       },
       "relatedSymbols": [
         "baby",
-        "innocence",
-        "play"
+        "friend"
       ],
       "relatedArticles": {
         "de": "",
@@ -2271,8 +2790,8 @@
       },
       "relatedSymbols": [
         "nudity",
-        "identity",
-        "appearance"
+        "mask",
+        "mirror"
       ],
       "relatedArticles": {
         "de": "",
@@ -2330,8 +2849,7 @@
       },
       "relatedSymbols": [
         "road",
-        "crossroads",
-        "journey"
+        "bridge"
       ],
       "relatedArticles": {
         "de": "",
@@ -2388,9 +2906,8 @@
         ]
       },
       "relatedSymbols": [
-        "communication",
-        "connection",
-        "message"
+        "letter",
+        "friend"
       ],
       "relatedArticles": {
         "de": "",
@@ -2448,8 +2965,9 @@
       },
       "relatedSymbols": [
         "flying",
-        "travel",
-        "crash"
+        "airport",
+        "passport",
+        "accident"
       ],
       "relatedArticles": {
         "en": "flying-dreams-meaning",
@@ -2509,9 +3027,9 @@
         ]
       },
       "relatedSymbols": [
-        "travel",
-        "journey",
-        "station"
+        "bus",
+        "road",
+        "airport"
       ],
       "relatedArticles": {
         "de": "",
@@ -2569,8 +3087,8 @@
       },
       "relatedSymbols": [
         "moon",
-        "darkness",
-        "fear"
+        "shadow",
+        "hiding"
       ],
       "relatedArticles": {
         "de": "",
@@ -2628,8 +3146,7 @@
       },
       "relatedSymbols": [
         "door",
-        "lock",
-        "secret"
+        "mask"
       ],
       "relatedArticles": {
         "de": "",
@@ -2687,8 +3204,8 @@
       },
       "relatedSymbols": [
         "teeth",
-        "voice",
-        "communication"
+        "unable-to-speak",
+        "letter"
       ],
       "relatedArticles": {
         "de": "",
@@ -2746,8 +3263,7 @@
       },
       "relatedSymbols": [
         "ring",
-        "dress",
-        "ceremony"
+        "clothes"
       ],
       "relatedArticles": {
         "de": "",
@@ -2761,89 +3277,98 @@
       "en": {
         "slug": "hospital",
         "name": "Hospital",
-        "shortDescription": "A hospital dream often points to healing, vulnerability, health anxiety, or a need to accept help before stress becomes urgent.",
+        "shortDescription": "A hospital dream often points to healing, vulnerability, health anxiety or a need to accept help before stress becomes urgent. Notice whether you were a patient, visitor, doctor or waiting for news.",
         "askYourself": [
-          "What part of my life is asking for care or recovery?",
-          "Am I trying to handle stress, illness, or emotional pain without enough support?",
-          "Did the dream feel like emergency, relief, waiting, or fear?"
+          "Was I a patient, visitor, doctor or looking for help?",
+          "Did the dream feel like an emergency, a wait, relief or fear?",
+          "What part of my life needs care, rest or support now?"
         ],
         "faq": [
           {
             "question": "What does it mean to dream about a hospital?",
-            "answer": "Dreaming about a hospital usually suggests that something needs care, healing, or closer attention. It may point to physical health worries, emotional exhaustion, family concern, or a situation where you need support rather than control."
+            "answer": "Dreaming about a hospital usually suggests that something needs care, healing or closer attention. It may point to health worries, emotional exhaustion, family concern or a situation where you need support rather than control."
           },
           {
             "question": "What does it mean to dream that you are in a hospital?",
-            "answer": "Being in a hospital in a dream often reflects vulnerability and recovery. The dream may be showing that you need rest, guidance, treatment, or help processing a stressful period."
+            "answer": "Being in a hospital often reflects vulnerability and recovery. The dream may show that you need rest, guidance, treatment or help processing a stressful period."
           },
           {
-            "question": "What does a dream about doctors, nurses, or sick people in a hospital mean?",
-            "answer": "Doctors and nurses can symbolize guidance, care, or the part of you that knows what needs to be repaired. Sick people may reflect worry for others or a neglected part of your own wellbeing."
+            "question": "What do doctors or nurses mean in a hospital dream?",
+            "answer": "Doctors and nurses can symbolize guidance, diagnosis or the part of you that knows what needs to be repaired."
+          },
+          {
+            "question": "What do sick people in a hospital dream mean?",
+            "answer": "Sick people may reflect worry for others, a neglected part of your own wellbeing or a relationship that needs more care."
           }
-        ]
+        ],
+        "seoTitle": "hospital, doctors or sick people"
       },
       "fr": {
         "slug": "hopital",
         "name": "Hôpital",
-        "shortDescription": "Rêver d'hôpital évoque souvent un besoin de guérison, une inquiétude de santé, une période de vulnérabilité ou l'urgence de demander de l'aide.",
+        "shortDescription": "Rêver d’hôpital évoque souvent un besoin de guérison, une inquiétude de santé, une période de vulnérabilité ou l’urgence de demander de l’aide. Le sens change selon que vous êtes patient, visiteur ou en attente d’un diagnostic.",
         "askYourself": [
-          "Quelle partie de ma vie demande du soin ou du repos ?",
-          "Est-ce que je porte seul une fatigue, une peur ou une douleur émotionnelle ?",
-          "Le rêve ressemblait-il à une urgence, une attente, un soulagement ou une peur ?"
+          "Étais-je patient, visiteur, médecin ou à la recherche d’aide ?",
+          "Le rêve ressemblait-il à une urgence, une attente, un soulagement ou une peur ?",
+          "Quelle partie de ma vie a besoin de soin, de repos ou de soutien ?"
         ],
-        "seoTitle": "Hôpital",
+        "seoTitle": "hôpital, médecin ou personne malade",
         "faq": [
           {
-            "question": "Que signifie rêver d'un hôpital ?",
-            "answer": "Rêver d'un hôpital indique souvent qu'une situation demande de l'attention, du soin ou une forme de réparation. Le rêve peut parler de santé, mais aussi de fatigue émotionnelle, d'inquiétude pour un proche ou d'un besoin d'accompagnement."
+            "question": "Que signifie rêver d’un hôpital ?",
+            "answer": "Rêver d’un hôpital indique souvent qu’une situation demande de l’attention, du soin ou une forme de réparation. Le rêve peut parler de santé, mais aussi de fatigue émotionnelle, d’inquiétude pour un proche ou d’un besoin d’accompagnement."
           },
           {
-            "question": "Que signifie rêver d'être à l'hôpital ?",
-            "answer": "Être à l'hôpital dans un rêve renvoie souvent à la vulnérabilité et à la récupération. Votre inconscient peut signaler que vous avez besoin de repos, de soutien ou d'un temps pour guérir."
+            "question": "Que signifie rêver d’être à l’hôpital ?",
+            "answer": "Être à l’hôpital dans un rêve renvoie souvent à la vulnérabilité et à la récupération. Votre inconscient peut signaler que vous avez besoin de repos, de soutien ou d’un temps pour guérir."
           },
           {
-            "question": "Que signifient les médecins, infirmières ou malades dans un rêve d'hôpital ?",
-            "answer": "Les soignants peuvent symboliser l'aide, le diagnostic ou la partie de vous qui sait quoi réparer. Les personnes malades peuvent représenter une inquiétude pour autrui ou un aspect de votre bien-être que vous négligez."
+            "question": "Que signifie rêver de médecins ou d’infirmières ?",
+            "answer": "Les soignants peuvent symboliser l’aide, le diagnostic ou la partie de vous qui sait quoi réparer."
+          },
+          {
+            "question": "Que signifient les malades dans un rêve d’hôpital ?",
+            "answer": "Les personnes malades peuvent représenter une inquiétude pour autrui ou un aspect de votre bien-être que vous négligez."
           }
         ]
       },
       "es": {
         "slug": "hospital",
         "name": "Hospital",
-        "shortDescription": "Soñar con hospital suele hablar de sanación, salud, enfermos, doctores y necesidad de apoyo. Puede aparecer cuando el estrés, la preocupación o el cansancio piden atención.",
+        "shortDescription": "Soñar con hospital suele señalar necesidad de cuidado, sanación o apoyo. Si estás en un hospital, ves enfermos o buscas un doctor, el sueño puede reflejar cansancio, preocupación por la salud o una situación que pide atención urgente.",
         "askYourself": [
-          "¿Qué parte de mi vida necesita sanación, descanso o atención?",
-          "¿Estoy cargando solo con estrés, miedo o dolor emocional?",
-          "¿El sueño se sentía como emergencia, espera, alivio o miedo?"
+          "¿Yo estaba en el hospital, visitaba a alguien o buscaba ayuda?",
+          "¿El sueño se sentía como emergencia, espera, alivio o miedo?",
+          "¿Qué parte de mi vida necesita cuidado, descanso o apoyo ahora?"
         ],
-        "seoTitle": "hospital, doctores o enfermos",
+        "seoTitle": "hospital, enfermos y doctores",
         "faq": [
           {
             "question": "¿Qué significa soñar con hospital?",
-            "answer": "Soñar con hospital suele indicar que algo en tu vida necesita atención, cuidado o sanación. Puede relacionarse con preocupaciones de salud, cansancio emocional, miedo por un familiar o una situación en la que necesitas apoyo."
+            "answer": "Soñar con hospital suele indicar que algo necesita atención, cuidado o sanación. Puede relacionarse con preocupaciones de salud, agotamiento emocional, miedo por un familiar o una situación que ya no conviene resolver en soledad."
+          },
+          {
+            "question": "¿Qué significa soñar con un hospital?",
+            "answer": "Un hospital en sueños representa un lugar de reparación. Si entras en él, el sueño puede mostrar que estás buscando ayuda; si no puedes salir, puede señalar miedo, dependencia o una preocupación que ocupa demasiado espacio."
           },
           {
             "question": "¿Qué significa soñar que estás en un hospital?",
-            "answer": "Estar en un hospital en sueños suele reflejar vulnerabilidad, recuperación o necesidad de ayuda. El sueño puede aparecer cuando estás agotado, preocupado o intentando resolver algo que requiere cuidado."
+            "answer": "Estar en un hospital suele reflejar vulnerabilidad, recuperación o necesidad de apoyo. El detalle clave es cómo te sentías: alivio si recibías atención, ansiedad si esperabas un diagnóstico o urgencia si había caos."
           },
           {
-            "question": "¿Qué significa soñar con hospital y doctores?",
-            "answer": "Los doctores pueden simbolizar diagnóstico, guía o una parte de ti que busca una respuesta clara. El sueño sugiere mirar el problema con más cuidado en vez de ignorarlo."
-          },
-          {
-            "question": "¿Qué significa soñar con enfermos en un hospital?",
-            "answer": "Ver enfermos puede reflejar preocupación por otros, miedo a la fragilidad o una parte de tu propio bienestar que necesita atención."
+            "question": "¿Qué significa soñar con enfermos o doctores en un hospital?",
+            "answer": "Los enfermos pueden representar partes de ti o de una relación que necesitan cuidado. Los doctores suelen simbolizar guía, diagnóstico o la necesidad de mirar un problema con más claridad."
           }
         ]
       },
       "de": {
         "slug": "krankenhaus",
         "name": "Krankenhaus",
-        "shortDescription": "Ein Krankenhaus im Traum weist oft auf Heilung, Verletzlichkeit, Gesundheitsangst oder den Wunsch nach Unterstützung hin.",
+        "shortDescription": "Ein Krankenhaus im Traum weist oft auf Heilung, Verletzlichkeit, Gesundheitsangst oder den Wunsch nach Unterstützung hin. Entscheidend ist, ob Sie Patient, Besucher oder wartend im Krankenhaus waren.",
         "askYourself": [
-          "Welcher Bereich meines Lebens braucht Pflege oder Erholung?",
-          "Trage ich Stress, Angst oder emotionale Belastung allein?",
-          "Fühlte sich der Traum wie Notfall, Warten, Erleichterung oder Furcht an?"
+          "War ich Patient, Besucher, Arzt oder auf der Suche nach Hilfe?",
+          "Fühlte sich der Traum wie Notfall, Warten, Erleichterung oder Angst an?",
+          "Welcher Bereich meines Lebens braucht Pflege, Ruhe oder Unterstützung?"
         ],
         "faq": [
           {
@@ -2852,22 +3377,27 @@
           },
           {
             "question": "Was bedeutet es, im Traum selbst im Krankenhaus zu sein?",
-            "answer": "Selbst im Krankenhaus zu sein steht oft für Verletzlichkeit und Erholung. Der Traum kann zeigen, dass Sie Ruhe, Begleitung oder eine bewusstere Fürsorge für sich brauchen."
+            "answer": "Selbst im Krankenhaus zu sein steht oft für Verletzlichkeit und Erholung. Der Traum kann zeigen, dass Sie Ruhe, Begleitung oder bewusstere Fürsorge brauchen."
           },
           {
-            "question": "Was bedeuten Ärzte, Pflegekräfte oder kranke Menschen im Krankenhaustraum?",
-            "answer": "Ärzte und Pflegekräfte können Hilfe, Orientierung oder Diagnose symbolisieren. Kranke Menschen können Sorge um andere oder einen vernachlässigten Teil des eigenen Wohlbefindens darstellen."
+            "question": "Was bedeuten Ärzte oder Pflegekräfte im Traum?",
+            "answer": "Ärzte und Pflegekräfte können Hilfe, Orientierung oder Diagnose symbolisieren."
+          },
+          {
+            "question": "Was bedeuten kranke Menschen im Krankenhaustraum?",
+            "answer": "Kranke Menschen können Sorge um andere oder einen vernachlässigten Teil des eigenen Wohlbefindens darstellen."
           }
-        ]
+        ],
+        "seoTitle": "Krankenhaus, Arzt oder kranke Menschen"
       },
       "it": {
         "slug": "ospedale",
         "name": "Ospedale",
-        "shortDescription": "Sognare un ospedale parla spesso di guarigione, vulnerabilità, preoccupazioni di salute o bisogno di accettare aiuto.",
+        "shortDescription": "Sognare un ospedale parla spesso di guarigione, vulnerabilità, preoccupazioni di salute o bisogno di accettare aiuto. Il senso cambia se sei paziente, visitatore o in attesa di una diagnosi.",
         "askYourself": [
-          "Quale parte della mia vita ha bisogno di cura o recupero?",
-          "Sto affrontando stress, paura o dolore emotivo senza abbastanza sostegno?",
-          "Il sogno sembrava un’emergenza, un’attesa, un sollievo o una paura?"
+          "Ero paziente, visitatore, medico o cercavo aiuto?",
+          "Il sogno sembrava un’emergenza, un’attesa, un sollievo o una paura?",
+          "Quale parte della mia vita ha bisogno di cura, riposo o sostegno?"
         ],
         "faq": [
           {
@@ -2879,18 +3409,23 @@
             "answer": "Essere in ospedale in sogno richiama vulnerabilità e recupero. Può indicare che hai bisogno di riposo, aiuto o tempo per affrontare una situazione stressante."
           },
           {
-            "question": "Cosa significano medici, infermieri o malati in un sogno di ospedale?",
-            "answer": "Medici e infermieri possono rappresentare guida, diagnosi o sostegno. I malati possono riflettere preoccupazione per gli altri o una parte del tuo benessere che stai trascurando."
+            "question": "Cosa significano medici o infermieri in un sogno?",
+            "answer": "Medici e infermieri possono rappresentare guida, diagnosi o sostegno."
+          },
+          {
+            "question": "Cosa significano persone malate in un sogno di ospedale?",
+            "answer": "Le persone malate possono riflettere preoccupazione per gli altri o una parte del tuo benessere che stai trascurando."
           }
-        ]
+        ],
+        "seoTitle": "ospedale, medici o persone malate"
       },
       "relatedSymbols": [
-        "house",
-        "death",
-        "blood",
+        "doctor",
+        "illness",
+        "surgery",
+        "bleeding",
         "accident",
-        "child",
-        "pregnancy"
+        "blood"
       ],
       "relatedArticles": {
         "de": "",
@@ -2948,8 +3483,8 @@
       },
       "relatedSymbols": [
         "chase",
-        "escape",
-        "marathon"
+        "hiding",
+        "road"
       ],
       "relatedArticles": {
         "de": "",
@@ -3066,8 +3601,7 @@
       },
       "relatedSymbols": [
         "baby",
-        "birth",
-        "creation"
+        "birth"
       ],
       "relatedArticles": {
         "en": "pregnancy-dreams-meaning",
@@ -3189,9 +3723,9 @@
         ]
       },
       "relatedSymbols": [
-        "tears",
-        "sadness",
-        "grief"
+        "water",
+        "abandonment",
+        "funeral"
       ],
       "relatedArticles": {
         "de": "",
@@ -3249,8 +3783,8 @@
       },
       "relatedSymbols": [
         "stairs",
-        "building",
-        "height"
+        "hotel",
+        "cliff"
       ],
       "relatedArticles": {
         "en": "falling-dreams-meaning",
@@ -3310,7 +3844,6 @@
         ]
       },
       "relatedSymbols": [
-        "edge",
         "falling",
         "mountain"
       ],
@@ -3372,9 +3905,9 @@
         ]
       },
       "relatedSymbols": [
-        "maze",
+        "mall",
         "path",
-        "wandering"
+        "road"
       ],
       "relatedArticles": {
         "de": "",
@@ -3388,35 +3921,75 @@
       "en": {
         "slug": "wolf",
         "name": "Wolf",
-        "shortDescription": "Wolves in dreams symbolize instinct, pack mentality, and untamed aspects of the self. They can represent both danger and loyalty depending on the dream context.",
+        "shortDescription": "Dreaming of wolves points to instinct, protection, danger and belonging. A lone wolf can suggest independence or intuition; a pack or attacking wolves often reflects pressure, conflict or fear of losing control.",
         "askYourself": [
-          "What instincts am I suppressing?",
-          "How do I relate to my community or pack?"
+          "Was it one wolf, several wolves or a pack?",
+          "Was the wolf attacking, protecting, chasing or watching?",
+          "What instinct am I ignoring, or what group is pressuring me?"
+        ],
+        "seoTitle": "wolves, lone wolf or wolf attack",
+        "faq": [
+          {
+            "question": "What does it mean to dream about wolves?",
+            "answer": "Wolves in dreams can represent instinct, threat, protection or belonging to a group. The meaning changes if the wolves attack, accompany you, chase you or appear as a pack."
+          },
+          {
+            "question": "What does a lone wolf mean in a dream?",
+            "answer": "A lone wolf often points to intuition, independence or an instinctive part of you that needs attention."
+          },
+          {
+            "question": "What does it mean to dream of wolves attacking?",
+            "answer": "Attacking wolves can reflect pressure, fear, conflict or an instinctive emotion that feels out of control."
+          },
+          {
+            "question": "What does a pack of wolves mean in a dream?",
+            "answer": "A pack can symbolize loyalty and collective strength, but also social pressure. Your feeling in the dream is the key difference."
+          }
         ]
       },
       "fr": {
         "slug": "loup",
         "name": "Loup",
-        "shortDescription": "Les loups dans les rêves symbolisent l'instinct, la mentalité de meute et les aspects sauvages du soi. Ils peuvent représenter à la fois le danger et la loyauté selon le contexte du rêve.",
+        "shortDescription": "Rêver de loup parle d’instinct, de protection, de menace et d’appartenance. Un loup seul peut représenter l’intuition ou l’indépendance; une meute ou des loups qui attaquent signalent souvent pression, conflit ou peur de perdre le contrôle.",
         "askYourself": [
-          "Quels instincts est-ce que je réprime ?",
-          "Comment je me rapporte à ma communauté ou ma meute ?"
+          "Était-ce un loup seul, plusieurs loups ou une meute ?",
+          "Le loup attaquait-il, protégeait-il, poursuivait-il ou observait-il ?",
+          "Quel instinct est-ce que j’ignore, ou quel groupe me met sous pression ?"
+        ],
+        "seoTitle": "loup, loups ou meute",
+        "faq": [
+          {
+            "question": "Que signifie rêver de loups ?",
+            "answer": "Rêver de loups peut parler d’instinct, de menace, de protection ou d’appartenance à un groupe. Le sens change si les loups attaquent, accompagnent, poursuivent ou apparaissent en meute."
+          },
+          {
+            "question": "Que signifie rêver d’un loup ?",
+            "answer": "Un seul loup représente souvent l’intuition, l’indépendance ou une force instinctive que vous devez écouter."
+          },
+          {
+            "question": "Que signifie rêver de loups qui attaquent ?",
+            "answer": "Des loups qui attaquent reflètent une pression, une peur, un conflit ou une émotion instinctive qui semble difficile à contrôler."
+          },
+          {
+            "question": "Que signifie rêver d’une meute de loups ?",
+            "answer": "Une meute peut parler d’appartenance, de loyauté et de force collective, mais aussi de pression sociale."
+          }
         ]
       },
       "es": {
         "slug": "lobo",
         "name": "Lobo",
-        "shortDescription": "Soñar con lobos habla de instinto, amenaza, protección y pertenencia. Un lobo puede reflejar intuición; una manada o lobos que atacan señalan presión o conflicto.",
+        "shortDescription": "Soñar con lobos habla de instinto, protección, amenaza y pertenencia. Un lobo solo puede representar intuición o independencia; una manada o lobos que atacan suelen apuntar a presión, conflicto o miedo a perder el control.",
         "askYourself": [
-          "¿El lobo me atacaba, me protegía o solo me observaba?",
-          "¿Era un lobo solo o una manada de lobos?",
-          "¿Qué instinto estoy ignorando en mi vida despierta?"
+          "¿Era un lobo solo, varios lobos o una manada?",
+          "¿El lobo atacaba, protegía, perseguía o solo observaba?",
+          "¿Qué instinto estoy ignorando o qué grupo me está presionando?"
         ],
-        "seoTitle": "lobos, manadas o ataques",
+        "seoTitle": "lobos, lobo que ataca o manada",
         "faq": [
           {
             "question": "¿Qué significa soñar con lobos?",
-            "answer": "Soñar con lobos puede hablar de instinto, protección, amenaza o pertenencia a un grupo. La interpretación depende de si los lobos atacan, acompañan, persiguen o aparecen como manada."
+            "answer": "Soñar con lobos puede hablar de instinto, amenaza, protección o pertenencia a un grupo. La interpretación cambia si los lobos atacan, acompañan, persiguen o aparecen como manada."
           },
           {
             "question": "¿Qué significa soñar con un lobo?",
@@ -3424,36 +3997,77 @@
           },
           {
             "question": "¿Qué significa soñar con lobos que atacan?",
-            "answer": "Lobos que atacan reflejan presión, miedo, conflicto o una emoción instintiva que se siente fuera de control. También pueden simbolizar sentirte rodeado por críticas o expectativas."
+            "answer": "Lobos que atacan reflejan presión, miedo, conflicto o una emoción instintiva que se siente fuera de control. Pregúntate quién o qué se siente amenazante en tu vida actual."
           },
           {
             "question": "¿Qué significa soñar con una manada de lobos?",
-            "answer": "Una manada de lobos habla de grupo, familia, presión social o necesidad de apoyo. El tono cambia según si la manada protege, observa o amenaza."
+            "answer": "Una manada puede hablar de pertenencia, lealtad y fuerza colectiva, pero también de presión social. Si te sentías protegido, el sueño es distinto a si te sentías perseguido."
           }
         ]
       },
       "de": {
         "slug": "wolf",
         "name": "Wolf",
-        "shortDescription": "Wölfe in Träumen symbolisieren Instinkt, Rudelmentalität und ungezähmte Aspekte des Selbst. Sie können je nach Traumkontext sowohl Gefahr als auch Loyalität darstellen.",
+        "shortDescription": "Von Wölfen zu träumen spricht von Instinkt, Schutz, Gefahr und Zugehörigkeit. Ein einzelner Wolf kann Intuition oder Unabhängigkeit zeigen; ein Rudel oder angreifende Wölfe deuten oft auf Druck, Konflikt oder Kontrollverlust hin.",
         "askYourself": [
-          "Welche Instinkte unterdrücke ich?",
-          "Wie stehe ich zu meiner Gemeinschaft oder meinem Rudel?"
+          "War es ein einzelner Wolf, mehrere Wölfe oder ein Rudel?",
+          "Hat der Wolf angegriffen, beschützt, verfolgt oder nur beobachtet?",
+          "Welchen Instinkt ignoriere ich, oder welche Gruppe setzt mich unter Druck?"
+        ],
+        "seoTitle": "Wolf, Wölfe oder Rudel",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Wölfen zu träumen?",
+            "answer": "Wölfe im Traum können Instinkt, Bedrohung, Schutz oder Zugehörigkeit zu einer Gruppe darstellen. Die Deutung hängt davon ab, ob sie angreifen, begleiten, verfolgen oder als Rudel erscheinen."
+          },
+          {
+            "question": "Was bedeutet ein einzelner Wolf im Traum?",
+            "answer": "Ein einzelner Wolf steht oft für Intuition, Unabhängigkeit oder eine instinktive Kraft, die beachtet werden möchte."
+          },
+          {
+            "question": "Was bedeuten angreifende Wölfe im Traum?",
+            "answer": "Angreifende Wölfe spiegeln Druck, Angst, Konflikt oder eine Emotion wider, die sich nicht mehr kontrollierbar anfühlt."
+          },
+          {
+            "question": "Was bedeutet ein Wolfsrudel im Traum?",
+            "answer": "Ein Rudel kann Loyalität und kollektive Stärke zeigen, aber auch sozialen Druck. Entscheidend ist, ob Sie sich geschützt oder verfolgt fühlten."
+          }
         ]
       },
       "it": {
         "slug": "lupo",
         "name": "Lupo",
-        "shortDescription": "I lupi nei sogni simboleggiano istinto, mentalità di branco e aspetti selvaggi del sé. Possono rappresentare sia pericolo che lealtà a seconda del contesto del sogno.",
+        "shortDescription": "Sognare lupi parla di istinto, protezione, minaccia e appartenenza. Un lupo solo può indicare intuizione o indipendenza; un branco o lupi che attaccano segnalano spesso pressione, conflitto o paura di perdere il controllo.",
         "askYourself": [
-          "Quali istinti sto sopprimendo?",
-          "Come mi relaziono con la mia comunità o il mio branco?"
+          "Era un lupo solo, più lupi o un branco?",
+          "Il lupo attaccava, proteggeva, inseguiva o osservava?",
+          "Quale istinto sto ignorando, o quale gruppo mi mette pressione?"
+        ],
+        "seoTitle": "lupo, lupi o branco",
+        "faq": [
+          {
+            "question": "Cosa significa sognare lupi?",
+            "answer": "Sognare lupi può parlare di istinto, minaccia, protezione o appartenenza a un gruppo. Il significato cambia se i lupi attaccano, accompagnano, inseguono o appaiono come branco."
+          },
+          {
+            "question": "Cosa significa sognare un lupo?",
+            "answer": "Un lupo solo rappresenta spesso intuizione, indipendenza o una forza istintiva che devi ascoltare."
+          },
+          {
+            "question": "Cosa significa sognare lupi che attaccano?",
+            "answer": "Lupi che attaccano riflettono pressione, paura, conflitto o un’emozione istintiva che sembra fuori controllo."
+          },
+          {
+            "question": "Cosa significa sognare un branco di lupi?",
+            "answer": "Un branco può indicare appartenenza, lealtà e forza collettiva, ma anche pressione sociale."
+          }
         ]
       },
       "relatedSymbols": [
         "dog",
-        "animal",
-        "pack"
+        "bear",
+        "shadow",
+        "friend"
       ],
       "relatedArticles": {
         "de": "",
@@ -3510,9 +4124,9 @@
         ]
       },
       "relatedSymbols": [
-        "animal",
+        "dog",
         "running",
-        "freedom"
+        "flying"
       ],
       "relatedArticles": {
         "de": "",
@@ -3569,9 +4183,9 @@
         ]
       },
       "relatedSymbols": [
-        "relationship",
-        "love",
-        "past"
+        "partner",
+        "heart",
+        "abandonment"
       ],
       "relatedArticles": {
         "en": "dreams-about-ex",
@@ -3633,7 +4247,7 @@
       "relatedSymbols": [
         "rain",
         "storm",
-        "sky"
+        "sun"
       ],
       "relatedArticles": {
         "de": "",
@@ -3691,7 +4305,6 @@
       },
       "relatedSymbols": [
         "rain",
-        "thunder",
         "lightning"
       ],
       "relatedArticles": {

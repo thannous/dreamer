@@ -23,6 +23,7 @@ const extendedData = extendedDataJson as {
 
 const tier3Data = tier3DataJson as Record<string, Record<string, ExtendedSymbolContent>>;
 const ALL_SYMBOLS = symbolsData.symbols;
+const SYMBOLS_BY_ID = new Map(ALL_SYMBOLS.map((symbol) => [symbol.id, symbol]));
 const CATEGORY_LIST = Object.keys(symbolsData.categories) as SymbolCategory[];
 const POPULAR_SYMBOLS = ALL_SYMBOLS
   .filter((s) => s.priority === 1)
@@ -53,7 +54,24 @@ export function getCategoryList(): SymbolCategory[] {
 }
 
 export function getSymbolById(id: string): DreamSymbol | undefined {
-  return ALL_SYMBOLS.find((s) => s.id === id);
+  return SYMBOLS_BY_ID.get(id);
+}
+
+export function getRelatedSymbols(symbol: DreamSymbol): DreamSymbol[] {
+  const seen = new Set<string>();
+  const related: DreamSymbol[] = [];
+
+  for (const relatedId of symbol.relatedSymbols) {
+    if (seen.has(relatedId) || relatedId === symbol.id) continue;
+
+    const relatedSymbol = SYMBOLS_BY_ID.get(relatedId);
+    if (!relatedSymbol) continue;
+
+    seen.add(relatedId);
+    related.push(relatedSymbol);
+  }
+
+  return related;
 }
 
 export function getExtendedContent(

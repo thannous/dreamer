@@ -210,7 +210,7 @@
                 </p>
 <h3>The case for local-first approaches</h3>
 <p>
-                    Dream journals, by contrast, can operate on a <strong>local-first privacy model</strong>. Apps like Noctalia store your dream data on your device, giving you complete control over who sees your most intimate nocturnal experiences. No cloud servers process your dream narratives. No algorithms mine your emotional content for advertising insights. Your dreams stay yours, searchable and analyzable by you, but not by third parties. In an era of growing data consciousness, the privacy architecture of your sleep tools matters as much as their accuracy.
+                    Dream journals, by contrast, can take a clearer data-minimization posture than many wearable ecosystems. Noctalia discloses EU-hosted journal data, necessary service providers for AI, transcription and subscriptions, no sale of personal data, and no targeted advertising. It is not an offline-only journal, so the right comparison is transparency and control rather than a blanket local-first claim. In an era of growing data consciousness, the privacy architecture of your sleep tools matters as much as their accuracy.
                 </p>
 <p>
                     When evaluating any sleep tracking technology, consider not just what it measures but where that data goes, who can access it, and what happens to it if you stop using the service. The most accurate tracker in the world provides little comfort if it simultaneously creates a detailed behavioral profile that you cannot control or delete.

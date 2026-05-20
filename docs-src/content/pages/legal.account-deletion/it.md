@@ -35,42 +35,36 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Eliminazione account</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Puoi eliminare il tuo account Noctalia in qualsiasi momento. L’eliminazione rimuove i tuoi dati personali dai sistemi attivi, salvo obblighi legali di conservazione (ad esempio log o fatture, ove previsto dalla legge).</p>
+<p class="text-lg text-purple-200/80 mb-10">Puoi eliminare il tuo account Noctalia in qualsiasi momento. L’eliminazione rimuove i dati personali dai sistemi attivi, salvo obblighi legali di conservazione.</p>
 
-        <div class="space-y-8 text-gray-300 leading-relaxed">
-            <div class="p-6 rounded-2xl bg-white/5 border border-white/10">
-                <p class="text-sm text-purple-200/80">
-                    Nota: questa pagina è attualmente disponibile in inglese. Per la versione di riferimento vedi
-                    <a href="/en/account-deletion" class="text-dream-salmon hover:underline">https://noctalia.app/en/account-deletion</a>.
-                </p>
-            </div>
-            <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-                <h2 class="text-2xl font-serif text-white mb-4">Delete directly in the app</h2>
-                <ol class="list-decimal pl-5 space-y-3">
-                    <li>Open Noctalia and sign in.</li>
-                    <li>Go to <strong>Settings</strong> &gt; <strong>Account</strong>.</li>
-                    <li>Choose <strong>Delete my account</strong> and confirm.</li>
-                </ol>
-                <p class="mt-4 text-sm text-gray-400">This action is irreversible. Your dreams, notes, images, and AI analyses will be removed from active databases.</p>
-            </section>
+<div class="space-y-8 text-gray-300 leading-relaxed">
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Eliminare direttamente nell’app</h2>
+    <ol class="list-decimal pl-5 space-y-3">
+      <li>Apri Noctalia e accedi.</li>
+      <li>Vai su <strong>Impostazioni</strong> &gt; <strong>Account</strong>.</li>
+      <li>Scegli <strong>Elimina il mio account</strong> e conferma.</li>
+    </ol>
+    <p class="mt-4 text-sm text-gray-400">L’azione è definitiva. Sogni, note, immagini e analisi IA saranno rimossi dai database attivi.</p>
+  </section>
 
-            <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-                <h2 class="text-2xl font-serif text-white mb-4">Ask us to delete it for you</h2>
-                <p>Send an email to <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a> from the address linked to your account. Please include:</p>
-                <ul class="list-disc pl-5 mt-3 space-y-2">
-                    <li>Your request to delete the account and associated data;</li>
-                    <li>The email used for Noctalia;</li>
-                    <li>Any identifier visible in the app (if available) to help us locate the account.</li>
-                </ul>
-                <p class="mt-4 text-sm text-gray-400">We process deletion requests as quickly as possible and will confirm once done.</p>
-            </section>
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Chiederci di eliminarlo per te</h2>
+    <p>Invia un’email da un indirizzo collegato al tuo account a <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>. Includi:</p>
+    <ul class="list-disc pl-5 mt-3 space-y-2">
+      <li>la richiesta di eliminare account e dati associati;</li>
+      <li>l’email usata per Noctalia;</li>
+      <li>eventuali identificativi visibili nell’app.</li>
+    </ul>
+    <p class="mt-4 text-sm text-gray-400">Gestiamo le richieste il più rapidamente possibile e confermiamo quando l’eliminazione è completata.</p>
+  </section>
 
-            <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-                <h2 class="text-2xl font-serif text-white mb-4">Effects of deletion</h2>
-                <ul class="list-disc pl-5 space-y-2">
-                    <li>Access to the app is revoked and your account credentials are invalidated.</li>
-                    <li>Your dreams, notes, generated images, and analyses are deleted from active storage.</li>
-                    <li>Backups and logs may be retained temporarily for security or legal reasons, then purged according to our retention schedule.</li>
-                </ul>
-            </section>
-        </div>
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Effetti dell’eliminazione</h2>
+    <ul class="list-disc pl-5 space-y-2">
+      <li>L’accesso all’app viene revocato e le credenziali diventano non valide.</li>
+      <li>Sogni, note, immagini generate e analisi vengono cancellati dallo storage attivo.</li>
+      <li>Backup e log possono essere conservati temporaneamente per ragioni di sicurezza o legge, poi eliminati secondo il piano di conservazione.</li>
+    </ul>
+  </section>
+</div>
