@@ -15,9 +15,10 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - Languages: English, French, Spanish, German, Italian
 - Primary logo: `docs/logo512.png`
 - Preferred screenshots:
-  - `docs/screenshot/demo1_cropped-1600w.jpg`
-  - `docs/screenshot/s_fiche_reve.jpg`
+  - `docs/screenshot/noctalia-landing-saashub-2026-05-21.png`
   - `docs/screenshot/s_conversationIA.jpg`
+  - `docs/screenshot/s_fiche_reve.jpg`
+  - `docs/screenshot/s_journal.jpg`
 
 ## Submission tracker
 
@@ -25,8 +26,8 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 | --- | --- | --- | --- |
 | AppBrain Featured Apps | https://www.appbrain.com/product/featured | Outreach sent — developer claim needed | Verified 2026-05-09: free, no credit card, app must be live on Google Play and developer account must be claimed in AppBrain. Browser reached AppBrain signup for Featured Apps; Google signup stalled in the Google OAuth page, so a guidance email was sent to `contact@appbrain.com` on 2026-05-09. |
 | AlternativeTo | https://alternativeto.net/browse/new-apps/ | Outreach sent — account flow blocked | Retried 2026-05-09 in Chrome. Legacy submit URL `/contribute/new-app/` now returns 404. Google OAuth reached `thannous@gmail.com`, but AlternativeTo returned `access_denied`: Google signup is disabled for new accounts. Email sent to `hello@alternativeto.net` requesting the current submission path. |
-| SaaSHub | https://www.saashub.com/noctalia-dream-journal | Created — pending approval | Created on 2026-05-09 as `Noctalia Dream Journal` after the plain `Noctalia` name collided with an unrelated SaaSHub listing for a Linux/Wayland desktop shell. Public profile is live but marked `Pending approval...`; outbound `noctalia.app` backlink is not visible yet, so re-check after moderation. |
-| SaaSHub alternatives article | https://www.saashub.com/alternatives | Submitted — pending approval | Submitted on 2026-05-12 as `Best dream journal apps and Noctalia alternatives`, targeting `https://noctalia.app/en/dream-journal-apps`. SaaSHub confirmed: `Thanks for contributing. Once we have approved the post, it will appear online.` |
+| SaaSHub | https://www.saashub.com/noctalia-app | Approved + verified | Approved email found in Zimbra `contact@noctalia.app` on 2026-05-21 from SaaSHub Stan, dated 2026-05-16. Managed/public slug is `noctalia-app`; verification status is `ACTIVE` with latest verification `2026-05-21`. The old dark landing screenshot was removed, a new live 1440x1000 landing capture was uploaded first, and pricing was completed. Public HTML shows the main `Visit website` link to `https://noctalia.app` with empty `rel`; pricing and review links are `nofollow`. |
+| SaaSHub alternatives page | https://www.saashub.com/noctalia-app-alternatives | Live | Public alternatives page is live from the approved profile and includes the refreshed landing screenshot plus competitor placements. The main `Visit website` link to `https://noctalia.app` also appears with empty `rel` in public HTML. The separate contributed article submitted on 2026-05-12 has not been confirmed as a standalone article URL. |
 | Crunchbase | https://www.crunchbase.com/add-new | Submitted — pending publication | Submitted on 2026-05-12 from the `thannous@gmail.com` Google account. Crunchbase confirmed: `Edit successfully made! Your edits have been submitted. They may take a few minutes to appear.` No public profile URL was shown yet. |
 | GoodAITools | https://goodaitools.com/submit | Submitted — pending review | Submitted on 2026-05-12 via Google sign-in. Final page confirmed `AI tool Submitted Successfully!`. Candidate listing URL shown by the badge flow: `https://goodaitools.com/ai/noctalia`. Free plan claims one dofollow link only when their badge/backlink is added; badge was skipped because it requires an explicit Noctalia site change. |
 | FutureTools | https://futuretools.io/submit-a-tool | Submitted — pending review | Submitted on 2026-05-12. Turnstile completed, final page confirmed `Tool Submitted!` and said Matt will review it before publication. |
@@ -48,8 +49,8 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 | Zearches | Live listing created | https://zearches.com/directory.php?slug=software-saas listing links to https://noctalia.app | Nofollow | Keep for discovery/indexation value; check later if an individual listing URL appears. |
 | The Next AI | Submission sent | https://www.thenextai.com/submit-ai-tool/ | Pending approval; unknown until live page exists | Watch `contact@noctalia.app` / Gmail for approval, then record live listing URL and link attributes. |
 | OpenAIToolsHub | Submission sent | https://www.openaitoolshub.org/submit | Pending approval; site claims dofollow if approved | Watch `contact@noctalia.app` / Gmail for approval within ~48h, then record live listing URL and verify dofollow. |
-| SaaSHub | Public profile created, pending approval | https://www.saashub.com/noctalia-dream-journal | Pending approval; outbound site link not visible yet | Submitted as `Noctalia Dream Journal`; SaaSHub confirmed competitor placement against Daylio, dreambox.one, DreamMuse, Dream Oracle AI, DreamStory, Lucid Dreaming Journal, REFLECTLY, and Rosebud App. Re-check after moderation for live `noctalia.app` backlink and follow attributes. |
-| SaaSHub alternatives article | Alternatives article submitted, pending approval | Submitted from https://www.saashub.com/alternatives with target `https://noctalia.app/en/dream-journal-apps` | Pending approval; unknown until article is live | Re-check SaaSHub recent submissions and the eventual article URL. Submitted with competitors DreamApp, Oniri, and Rosebud App, plus AI/Productivity/Health And Fitness categories. |
+| SaaSHub | Live approved profile | https://www.saashub.com/noctalia-app links to https://noctalia.app | Main website link appears with empty `rel` in public HTML; pricing link is `nofollow` | Verified 2026-05-21 after approval email. Profile is active, pricing is filled, screenshots are refreshed, and the public page uses the `noctalia-app` slug. |
+| SaaSHub alternatives page | Live alternatives page | https://www.saashub.com/noctalia-app-alternatives links to https://noctalia.app | Main website link appears with empty `rel` in public HTML; competitor external links are mostly `nofollow` | Public alternatives page lists Noctalia against DreamApp, AI Dream Meaning, Dreamboard.com, RUYA, Daylio, dreambox.one, DreamMuse, Dream Oracle AI, DreamStory, Lucid Dreaming Journal, REFLECTLY, and Rosebud App. Separate submitted article URL still not confirmed. |
 | Crunchbase | Company profile edits submitted, pending appearance | No public profile URL yet; created through https://www.crunchbase.com/add-new | Pending publication; Crunchbase links must be verified once profile appears | Re-check Crunchbase search for `Noctalia` after propagation. Submitted only factual known fields; legal name, founded date, HQ, funding, employees, and phone were left blank. |
 | GoodAITools | AI tool submitted, pending review | Candidate listing URL from badge flow: https://goodaitools.com/ai/noctalia | Pending review; dofollow only if approved and reciprocal badge/backlink is added | Decide whether to add the GoodAITools badge to Noctalia. Without badge, treat it as pending/no guaranteed dofollow. |
 | FutureTools | Tool submitted, pending review | https://futuretools.io/submit-a-tool | Pending approval; unknown until live page exists | Watch `contact@noctalia.app` and re-check FutureTools for `Noctalia`. Final page said Matt will review before publication. |
@@ -80,8 +81,10 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - Gmail checked again on 2026-05-10. Search for Noctalia/backlink platform terms over the last 7 days found only the sent outreach messages plus unrelated Ahrefs email; no inbound approval or rejection found yet.
 - Zimbra `contact@noctalia.app` checked on 2026-05-10. Targeted searches for SaaSHub, AlternativeTo, AppBrain, Digital.Health, SearchGun, Zearches, SaaSCity, and BetterLaunch returned no results. A broad Noctalia search mostly surfaced social notifications, not backlink approvals.
 - Outbound Gmail messages sent on 2026-05-09 for SearchGun, Digital.Health, AlternativeTo, and AppBrain. No inbound approval confirmation found yet for Noctalia, The Next AI, Zearches, SaaSHub, AlternativeTo, AppBrain, Digital.Health, SaaSCity, BetterLaunch, or OpenAIToolsHub.
-- High-priority pass completed on 2026-05-12: SaaSHub alternatives article submitted, Crunchbase company profile submitted, GoodAITools submitted, and FutureTools submitted. All four need later live-page verification before claiming final backlink value.
+- High-priority pass completed on 2026-05-12: SaaSHub alternatives article submitted, Crunchbase company profile submitted, GoodAITools submitted, and FutureTools submitted. SaaSHub is now approved/verified; Crunchbase, GoodAITools, and FutureTools still need later live-page verification before claiming final backlink value.
 - GoodAITools explicitly offered a `Get a Do-Follow Backlink` badge step with link `https://goodaitools.com/ai/noctalia`; skipped for now because it requires adding their reciprocal badge to Noctalia.
+- Zimbra `contact@noctalia.app` checked on 2026-05-21 for the SaaSHub approval thread. SaaSHub Stan confirmed `Noctalia.app has been approved` on 2026-05-16; the profile was verified on SaaSHub the same day this note was updated.
+- SaaSHub screenshot cleanup completed 2026-05-21: removed the dark `Landing page // 2026-05-16` image; added `Landing page // 2026-05-21` from `docs/screenshot/noctalia-landing-saashub-2026-05-21.png`; added Dream Chat, Dream Interpretation, and Dream Journal screenshots; ordered the landing capture first.
 - Avoid paid upgrades, badges requiring site changes, or sponsored placements unless explicitly approved.
 
 ## Submitted copy
@@ -105,20 +108,25 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 
 ### SaaSHub
 
-- Submitted name: Noctalia Dream Journal
-- Public profile: https://www.saashub.com/noctalia-dream-journal
-- Status: Pending approval
+- Submitted name: Noctalia Dream Journal; current public listing name: Noctalia.app
+- Public profile: https://www.saashub.com/noctalia-app
+- Public alternatives page: https://www.saashub.com/noctalia-app-alternatives
+- Status: Active; latest verification: 2026-05-21
 - Website URL submitted: https://noctalia.app
 - Tagline: AI dream journal for voice capture, transcription, dream interpretation, symbols, themes, images, and follow-up Dream Chat.
-- Categories selected: AI, Tech, Web App, Health And Fitness, Note Taking, iPhone.
-- Competitors selected: Daylio, dreambox.one, DreamMuse, Dream Oracle AI, DreamStory, Lucid Dreaming Journal, REFLECTLY, Rosebud App.
+- Categories selected: Productivity, Lifestyle, Health & Wellness, AI, Tech, Web App, Health And Fitness, Note Taking, iPhone.
+- Competitors selected: DreamApp, AI Dream Meaning, Dreamboard.com, RUYA - Dream Journal, Daylio, dreambox.one, DreamMuse, Dream Oracle AI, DreamStory, Lucid Dreaming Journal, REFLECTLY, Rosebud App.
+- Pricing URL: https://noctalia.app/en/press
+- Pricing: Freemium; EUR 2.99/month; specifics `Noctalia Plus; annual plan EUR 19/year`
+- Public link evidence checked 2026-05-21: profile and alternatives page both expose a main `Visit website` link to `https://noctalia.app` with empty `rel`; pricing link uses `rel="nofollow"`.
+- Uploaded screenshots in SaaSHub order: `Landing page // 2026-05-21`, `Dream Chat // 2026-05-21`, `Dream Interpretation // 2026-05-21`, `Dream Journal // 2026-05-21`.
 
 ### SaaSHub alternatives article
 
 - Submitted title: Best dream journal apps and Noctalia alternatives
 - Submitted target URL: https://noctalia.app/en/dream-journal-apps
 - SaaSHub submission URL: https://www.saashub.com/alternatives
-- Status: Pending approval
+- Status: Standalone article URL not confirmed. The SaaSHub-generated alternatives page is live at https://www.saashub.com/noctalia-app-alternatives.
 - Products selected: Noctalia, Android, DreamApp, Oniri, Rosebud App
 - Categories selected: AI, Productivity, Health And Fitness
 - Date field used by SaaSHub: 2026-05-09
