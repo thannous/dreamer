@@ -83,7 +83,7 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
         {/* Footer - Only for non-premium users */}
         {!isPremium && (
           <View style={styles.footerContainer}>
-            <Text style={styles.footer}>Créé avec Noctalia.app</Text>
+            <Text style={styles.footer}>{t('journal.detail.share_image.footer')}</Text>
             <RNImage
               source={require('@/assets/images/icon-transparent.png')}
               style={styles.footerLogo}

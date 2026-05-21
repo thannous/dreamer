@@ -48,6 +48,17 @@ const getProgressAccessibilityValue = (usage: UsageEntry, text: string) => ({
   text,
 });
 
+const QUOTA_REASON_KEYS: Record<string, string> = {
+  'Guest AI is temporarily unavailable. You can still record dreams locally.':
+    'settings.quota.reason.guest_unavailable',
+  'Guest access expired. Please try again in a moment.':
+    'settings.quota.reason.guest_expired',
+  'Guest AI is not available on this platform right now. You can still record dreams locally.':
+    'settings.quota.reason.guest_platform_unsupported',
+  'Guest quota is temporarily unavailable. You can still record dreams locally.':
+    'settings.quota.reason.guest_quota_unavailable',
+};
+
 export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const { user } = useAuth();
   const { dreams } = useDreams();
@@ -121,6 +132,10 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const tierLabel = t(`settings.quota.tier.${tier}` as const);
   const isGuest = tier === 'guest';
   const guestRecordingLimit = recordingUsage.limit ?? getGuestDreamRecordingLimit();
+  const firstQuotaReason = quotaStatus?.reasons?.[0];
+  const localizedQuotaReason = firstQuotaReason
+    ? t(QUOTA_REASON_KEYS[firstQuotaReason] ?? firstQuotaReason)
+    : null;
   const freeResetMessage = useMemo(() => {
     if (tier !== 'free') return null;
     try {
@@ -173,8 +188,8 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
       {isGuest && isUpgradedGuest && (
         <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
           <Text style={[styles.noticeText, { color: colors.textSecondary }]}>
-            {(quotaStatus?.reasons && quotaStatus.reasons.length > 0)
-              ? quotaStatus.reasons[0]
+            {localizedQuotaReason
+              ? localizedQuotaReason
               : t('settings.quota.upgraded_message')}
           </Text>
         </View>
@@ -183,8 +198,8 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
       {isGuest && !isUpgradedGuest && (
         <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
           <Text style={[styles.noticeText, { color: colors.textSecondary }]}>
-            {isDegradedGuest && quotaStatus?.reasons?.length
-              ? quotaStatus.reasons[0]
+            {isDegradedGuest && localizedQuotaReason
+              ? localizedQuotaReason
               : t('settings.quota.guest_message', {
                 recordLimit: guestRecordingLimit,
                 analysisLimit: QUOTAS.guest.analysis ?? 0,
