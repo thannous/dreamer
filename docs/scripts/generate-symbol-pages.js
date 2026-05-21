@@ -167,7 +167,7 @@ const SYMBOL_SHEET_LABELS = {
     questions: 'Questions'
   },
   es: {
-    quick: 'En una frase',
+    quick: 'En breve',
     jumpNav: 'Secciones del símbolo',
     meaning: 'Sentido',
     variations: 'Variantes',
@@ -181,7 +181,7 @@ const SYMBOL_SHEET_LABELS = {
     questions: 'Fragen'
   },
   it: {
-    quick: 'In una frase',
+    quick: 'In breve',
     jumpNav: 'Sezioni del simbolo',
     meaning: 'Significato',
     variations: 'Varianti',
@@ -463,7 +463,8 @@ function getExtendedContent(symbolId, extended, lang) {
   if (extSymbol) {
     return {
       fullInterpretation: extSymbol.fullInterpretation || null,
-      variations: extSymbol.variations || []
+      variations: extSymbol.variations || [],
+      illustration: extSymbol.illustration || null
     };
   }
 
@@ -471,13 +472,15 @@ function getExtendedContent(symbolId, extended, lang) {
   if (tier3Symbol) {
     return {
       fullInterpretation: tier3Symbol.fullInterpretation || null,
-      variations: tier3Symbol.variations || []
+      variations: tier3Symbol.variations || [],
+      illustration: tier3Symbol.illustration || null
     };
   }
 
   return {
     fullInterpretation: null,
-    variations: []
+    variations: [],
+    illustration: null
   };
 }
 
@@ -677,6 +680,12 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const variations = Array.isArray(extendedContent.variations) ? extendedContent.variations : [];
   const hasInterpretation = Boolean(fullInterpretation && String(fullInterpretation).trim());
   const hasVariations = variations.length > 0;
+  const illustration = extendedContent.illustration && extendedContent.illustration.src
+    ? extendedContent.illustration
+    : null;
+  const softCta = symbolData.softCta && symbolData.softCta.href
+    ? symbolData.softCta
+    : null;
 
   // Generate variations HTML
   const variationsHtml = variations.map(v => `
@@ -705,6 +714,17 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                 <div class="grid gap-4">${variationsHtml}
                 </div>
             </section>` : '';
+
+  const illustrationHtml = illustration ? `
+                <figure class="symbol-illustration">
+                    <img src="${escapeHtml(illustration.src)}"
+                         alt="${escapeHtml(illustration.alt || symbolData.name)}"
+                         loading="lazy"
+                         decoding="async"
+                         ${illustration.width ? `width="${escapeHtml(String(illustration.width))}"` : ''}
+                         ${illustration.height ? `height="${escapeHtml(String(illustration.height))}"` : ''}>
+                    ${illustration.caption ? `<figcaption>${escapeHtml(illustration.caption)}</figcaption>` : ''}
+                </figure>` : '';
 
   // Generate ask yourself HTML
   const askYourselfHtml = symbolData.askYourself.map(q => `
@@ -808,6 +828,20 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   ].slice(0, 4);
 
   const reflectionPromptsHtml = reflectionPrompts.map(p => `<li>${escapeHtml(p)}</li>`).join('');
+  const softCtaHtml = softCta ? `
+            <!-- Soft App CTA -->
+            <aside class="symbol-soft-cta glass-panel rounded-2xl p-6 md:p-8 mb-10 border border-dream-salmon/15">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-5">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-dream-salmon mb-2">${escapeHtml(softCta.kicker || 'Noctalia')}</p>
+                        <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-3">${escapeHtml(softCta.title)}</h2>
+                        <p class="text-sm md:text-base text-purple-200/75 leading-relaxed">${escapeHtml(softCta.text)}</p>
+                    </div>
+                    <a href="${escapeHtml(softCta.href)}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors">
+                        ${escapeHtml(softCta.button || t.cta_button)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </aside>` : '';
   const visibleHeadline = `${t.h1_prefix} ${symbolData.name}`.trim();
   const sheetLabels = getSymbolSheetLabels(lang);
   const quickAnswer = firstSentence(symbolData.shortDescription);
@@ -1063,6 +1097,28 @@ ${renderSharedComponentStyles()}
             color: #fda481;
             letter-spacing: 0.01em;
         }
+        .symbol-illustration {
+            margin-top: 1.5rem;
+            overflow: hidden;
+            border-radius: 1.25rem;
+            border: 1px solid rgba(253, 164, 129, 0.16);
+            background: rgba(255, 255, 255, 0.035);
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
+        }
+        .symbol-illustration img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .symbol-illustration figcaption {
+            padding: 0.85rem 1rem 1rem;
+            color: rgba(196, 181, 253, 0.76);
+            font-size: 0.82rem;
+            line-height: 1.45;
+        }
+        .symbol-soft-cta a {
+            flex-shrink: 0;
+        }
         .symbol-jump-nav { display: none; }
         .symbol-meaning,
         .symbol-variations,
@@ -1123,6 +1179,13 @@ ${renderSharedComponentStyles()}
                 margin-top: 0.55rem;
                 font-size: 1rem;
                 line-height: 1.55;
+            }
+            .symbol-illustration {
+                margin-top: 1rem;
+                border-radius: 1.05rem;
+            }
+            .symbol-soft-cta a {
+                width: 100%;
             }
             .symbol-jump-nav {
                 position: sticky;
@@ -1283,6 +1346,7 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
                     </div>
                     <p class="text-dream-cream">${escapeHtml(quickAnswer)}</p>
                 </div>
+${illustrationHtml}
             </header>
 
             <nav class="symbol-jump-nav" aria-label="${escapeHtml(sheetLabels.jumpNav)}" style="grid-template-columns: repeat(${jumpItems.length}, minmax(0, 1fr));">${jumpNavHtml}
@@ -1303,6 +1367,7 @@ ${variationsSectionHtml}
             </section>
 
 ${reflectionSectionHtml}
+${softCtaHtml}
             <!-- FAQ -->
             <section class="mb-10">
                 <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">

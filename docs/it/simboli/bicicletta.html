@@ -140,6 +140,28 @@
             color: #fda481;
             letter-spacing: 0.01em;
         }
+        .symbol-illustration {
+            margin-top: 1.5rem;
+            overflow: hidden;
+            border-radius: 1.25rem;
+            border: 1px solid rgba(253, 164, 129, 0.16);
+            background: rgba(255, 255, 255, 0.035);
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
+        }
+        .symbol-illustration img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .symbol-illustration figcaption {
+            padding: 0.85rem 1rem 1rem;
+            color: rgba(196, 181, 253, 0.76);
+            font-size: 0.82rem;
+            line-height: 1.45;
+        }
+        .symbol-soft-cta a {
+            flex-shrink: 0;
+        }
         .symbol-jump-nav { display: none; }
         .symbol-meaning,
         .symbol-variations,
@@ -200,6 +222,13 @@
                 margin-top: 0.55rem;
                 font-size: 1rem;
                 line-height: 1.55;
+            }
+            .symbol-illustration {
+                margin-top: 1rem;
+                border-radius: 1.05rem;
+            }
+            .symbol-soft-cta a {
+                width: 100%;
             }
             .symbol-jump-nav {
                 position: sticky;
@@ -501,10 +530,11 @@
                 <div class="symbol-quick-card p-5">
                     <div class="symbol-quick-label flex items-center gap-2 text-sm font-bold">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="eye" class="lucide lucide-eye w-5 h-5" aria-hidden="true" focusable="false"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                        In una frase
+                        In breve
                     </div>
                     <p class="text-dream-cream">Quando bicicletta domina un sogno, parti dall’atmosfera della scena.</p>
                 </div>
+
             </header>
 
             <nav class="symbol-jump-nav" aria-label="Sezioni del simbolo" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
@@ -603,6 +633,7 @@
                     <ul><li>Che cosa ha cambiato bicicletta nella scena?</li><li>Quale emozione è rimasta dopo il risveglio?</li><li>Cosa è successo subito prima che apparisse il simbolo?</li><li>Quale emozione è rimasta al risveglio?</li></ul>
                 </div>
             </section>
+
             <!-- FAQ -->
             <section class="mb-10">
                 <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
