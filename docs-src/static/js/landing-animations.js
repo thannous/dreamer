@@ -37,6 +37,12 @@
 
   const shouldUseDesktopMotion = () => desktopMotion.matches && !prefersReducedMotion.matches;
 
+  const keepHeroAccessibleDuringMotion = () => {
+    getHeroItems().forEach((el) => {
+      el.style.visibility = 'visible';
+    });
+  };
+
   const showStaticState = () => {
     getHeroItems().forEach((el) => {
       el.classList.remove('opacity-0');
@@ -166,14 +172,19 @@
     const heroItems = gsapLib.utils.toArray('.hero-anim');
     if (!heroItems.length) return;
 
-    gsapLib.set(heroItems, { autoAlpha: 0, y: 16 });
+    gsapLib.set(heroItems, { opacity: 0, visibility: 'visible', y: 16 });
     gsapLib.to(heroItems, {
-      autoAlpha: 1,
+      opacity: 1,
       y: 0,
       duration: 1,
       ease: 'power2.out',
       stagger: 0.12,
       delay: 0.12,
+      onComplete: () => {
+        heroItems.forEach((el) => {
+          el.style.visibility = 'visible';
+        });
+      },
     });
 
     gsapLib.fromTo(
@@ -307,6 +318,8 @@
   };
 
   const boot = (forceImmediate = false) => {
+    keepHeroAccessibleDuringMotion();
+
     if (!shouldUseDesktopMotion()) {
       initLightMotion();
       return;

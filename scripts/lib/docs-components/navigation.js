@@ -115,6 +115,7 @@ function renderNavigation(context) {
     '                </button>',
     '            </div>',
     '        </div>',
+    '        <div id="mobileMenuBackdrop" class="hidden mobile-menu-backdrop" aria-hidden="true"></div>',
     renderMobileMenuPanel(context),
     '    </nav>',
   ].join('\n');
