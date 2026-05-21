@@ -138,7 +138,9 @@ describe('docs shared components', () => {
     expect(html).toContain('.noctalia-premium-nav.py-2 { background: rgba(10, 5, 20, 0.78)');
     expect(html).toContain('.noctalia-premium-nav-inner');
     expect(html).toContain('.noctalia-premium-nav-actions');
-    expect(html).toContain('.mobile-menu-surface { background: #120720');
+    expect(html).toContain('.mobile-menu-backdrop');
+    expect(html).toContain('#mobileMenuPanel { position: fixed');
+    expect(html).toContain('.mobile-menu-surface { min-height: calc(100dvh - 5.25rem)');
     expect(html).toContain('justify-content: space-between');
     expect(html).toContain('margin-left: auto');
     expect(html).toContain('#mobileMenuButton');
