@@ -331,51 +331,44 @@ export default function SymbolDictionaryScreen() {
 
       {!useNativeHeaderSearch ? (
         <>
-          {/* Floating Back Button */}
-          <Pressable
-            onPress={() => router.back()}
-            style={[
-              styles.floatingBackButton,
-              shadows.lg,
-              {
-                backgroundColor:
-                  mode === "dark"
-                    ? "rgba(35, 26, 63, 0.85)"
-                    : colors.backgroundCard,
-                borderWidth: 1,
-                borderColor:
-                  mode === "dark" ? "rgba(160, 151, 184, 0.25)" : colors.divider,
-              },
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel={t("journal.back_button")}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <IconSymbol
-              name="chevron.left"
-              size={22}
-              color={colors.textPrimary}
-            />
-          </Pressable>
-
-          {/* Page header with icon */}
+          {/* Compact page header */}
           <MotiView
             from={{ opacity: 0, translateY: -8 }}
             animate={{ opacity: 1, translateY: 0 }}
             transition={{ type: "timing", duration: 500 }}
             style={styles.headerSection}
           >
-            <View
-              style={[
-                styles.headerIconContainer,
-                { backgroundColor: colors.backgroundSecondary },
-              ]}
-            >
-              <IconSymbol name="book.fill" size={28} color={colors.accent} />
+            <View style={styles.headerTopRow}>
+              <Pressable
+                onPress={() => router.back()}
+                style={[
+                  styles.headerBackButton,
+                  shadows.sm,
+                  {
+                    backgroundColor:
+                      mode === "dark"
+                        ? "rgba(35, 26, 63, 0.85)"
+                        : colors.backgroundCard,
+                    borderColor:
+                      mode === "dark" ? "rgba(160, 151, 184, 0.25)" : colors.divider,
+                  },
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel={t("journal.back_button")}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <IconSymbol
+                  name="chevron.left"
+                  size={21}
+                  color={colors.textPrimary}
+                />
+              </Pressable>
+              <View style={styles.headerCopy}>
+                <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
+                  {t("symbols.dictionary_title")}
+                </Text>
+              </View>
             </View>
-            <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
-              {t("symbols.dictionary_title")}
-            </Text>
           </MotiView>
         </>
       ) : null}
@@ -389,9 +382,6 @@ export default function SymbolDictionaryScreen() {
         <View style={styles.popularHeader}>
           <Text style={[styles.popularTitle, { color: colors.textPrimary }]}>
             {t("symbols.popular_title")}
-          </Text>
-          <Text style={[styles.popularSubtitle, { color: colors.textSecondary }]}>
-            {t("symbols.dictionary_subtitle")}
           </Text>
         </View>
 
@@ -427,7 +417,7 @@ export default function SymbolDictionaryScreen() {
                 </View>
                 <Text
                   style={[styles.popularCardTitle, { color: colors.textPrimary }]}
-                  numberOfLines={2}
+                  numberOfLines={1}
                 >
                   {content.name}
                 </Text>
@@ -630,77 +620,75 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  floatingBackButton: {
-    position: "absolute",
-    top: 50,
-    left: 16,
-    zIndex: 50,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   headerSection: {
-    alignItems: "center",
-    paddingTop: 48,
-    paddingBottom: 8,
-    gap: 12,
+    paddingHorizontal: ThemeLayout.spacing.md,
+    paddingTop: 38,
+    paddingBottom: 18,
   },
-  headerIconContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+  headerTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
+  headerBackButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  headerCopy: {
+    flex: 1,
+    gap: 2,
   },
   headerTitle: {
     fontFamily: Fonts.fraunces.bold,
-    fontSize: 28,
+    fontSize: 24,
+    lineHeight: 31,
     letterSpacing: 0.3,
-    textAlign: "center",
   },
   popularSection: {
-    gap: 14,
+    gap: 10,
   },
   popularHeader: {
     paddingHorizontal: ThemeLayout.spacing.md,
-    gap: 4,
   },
   popularTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 20,
-    letterSpacing: 0.3,
-  },
-  popularSubtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 12,
+    lineHeight: 16,
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
   },
   popularScrollContent: {
     paddingHorizontal: ThemeLayout.spacing.md,
-    gap: 12,
+    paddingTop: 2,
+    paddingBottom: 2,
+    gap: 8,
   },
   popularCard: {
-    width: 112,
-    minHeight: 112,
-    borderRadius: 20,
+    minHeight: 52,
+    borderRadius: 16,
     borderWidth: 1,
-    padding: 14,
-    justifyContent: "space-between",
-    gap: 18,
+    paddingVertical: 8,
+    paddingLeft: 8,
+    paddingRight: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   popularIconWrap: {
-    width: 38,
-    height: 38,
-    borderRadius: 12,
+    width: 32,
+    height: 32,
+    borderRadius: 11,
     alignItems: "center",
     justifyContent: "center",
   },
   popularCardTitle: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 13,
-    lineHeight: 17,
+    lineHeight: 16,
   },
   searchContainer: {
     paddingHorizontal: ThemeLayout.spacing.md,

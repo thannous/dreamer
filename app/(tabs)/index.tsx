@@ -23,14 +23,12 @@ import {
   TAB_BAR_HEIGHT,
 } from "@/constants/layout";
 import { Fonts } from "@/constants/theme";
-import { useDreams } from "@/context/DreamsContext";
 import { useTheme } from "@/context/ThemeContext";
 import { ScrollPerfProvider } from "@/context/ScrollPerfContext";
 import { useAppState } from "@/hooks/useAppState";
 import { useClearWebFocus } from "@/hooks/useClearWebFocus";
 import { useScrollIdle } from "@/hooks/useScrollIdle";
 import { useTranslation } from "@/hooks/useTranslation";
-import { getDreamPulse, type DreamPulse, type DreamPulseState } from "@/lib/dreamPulse";
 import {
   RITUALS,
   type RitualConfig,
@@ -62,15 +60,6 @@ const TIP_KEYS = [
 ] as const;
 
 const DATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
-
-const PULSE_STATE_ICON: Record<DreamPulseState | "loading", IconName> = {
-  loading: "sparkles",
-  empty: "moon.stars.fill",
-  today: "checkmark.circle.fill",
-  stale: "pencil",
-  analyze: "sparkles",
-  steady: "calendar",
-};
 
 type CopyCard = {
   id: string;
@@ -142,7 +131,6 @@ const MYTH_CARDS: CopyCard[] = [
  * Tracks daily ritual progress and resets it when the local date changes.
  */
 export default function InspirationScreen() {
-  const { dreams, loaded } = useDreams();
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
@@ -168,15 +156,6 @@ export default function InspirationScreen() {
   const handleAddDream = useCallback(() => {
     router.push("/recording");
   }, []);
-  const dreamPulse = useMemo(() => getDreamPulse(dreams), [dreams]);
-  const handlePulsePrimary = useCallback(() => {
-    if (dreamPulse.state === "analyze") {
-      router.push("/(tabs)/journal");
-      return;
-    }
-    router.push("/recording");
-  }, [dreamPulse.state]);
-
   const tips = useMemo(() => TIP_KEYS.map((key) => t(key)), [t]);
   const prompts = useMemo(
     (): ResolvedCopyCard[] =>
@@ -356,28 +335,10 @@ export default function InspirationScreen() {
             ]}
           >
             <View style={isDesktopLayout ? styles.desktopGrid : undefined}>
-              <View
-                style={[
-                  styles.sectionSpacing,
-                  !isDesktopLayout && styles.mobileSectionPadding,
-                  isDesktopLayout && styles.desktopFullSection,
-                ]}
-              >
-                <DreamPulseCard
-                  colors={colors}
-                  loaded={loaded}
-                  mode={mode}
-                  pulse={dreamPulse}
-                  t={t}
-                  onPrimaryPress={handlePulsePrimary}
-                />
-              </View>
-
               {/* Dream dictionary card */}
               <View style={styles.sectionSpacing}>
                 <DictionaryCardSection
                   colors={colors}
-                  reserveFloatingButtonSpace={!isDesktopLayout}
                   t={t}
                 />
               </View>
@@ -495,145 +456,11 @@ export default function InspirationScreen() {
 
 type DictionaryCardSectionProps = {
   colors: ReturnType<typeof useTheme>["colors"];
-  reserveFloatingButtonSpace: boolean;
   t: TranslateFn;
 };
-
-type DreamPulseCardProps = {
-  colors: ReturnType<typeof useTheme>["colors"];
-  loaded: boolean;
-  mode: "light" | "dark";
-  pulse: DreamPulse;
-  t: TranslateFn;
-  onPrimaryPress: () => void;
-};
-
-const DreamPulseCard = memo(function DreamPulseCard({
-  colors,
-  loaded,
-  mode,
-  pulse,
-  t,
-  onPrimaryPress,
-}: DreamPulseCardProps) {
-  const stateKey: DreamPulseState | "loading" = loaded ? pulse.state : "loading";
-  const lastDreamLabel =
-    pulse.daysSinceLastDream === null
-      ? t("inspiration.pulse.last.none")
-      : pulse.daysSinceLastDream === 0
-        ? t("inspiration.pulse.last.today")
-        : pulse.daysSinceLastDream === 1
-          ? t("inspiration.pulse.last.yesterday")
-          : t("inspiration.pulse.last.days").replace("{count}", String(pulse.daysSinceLastDream));
-
-  const metricItems = [
-    {
-      id: "total",
-      label: t("inspiration.pulse.metric.total"),
-      value: loaded ? String(pulse.totalCount) : "–",
-    },
-    {
-      id: "analyzed",
-      label: t("inspiration.pulse.metric.analyzed"),
-      value: loaded ? String(pulse.analyzedCount) : "–",
-    },
-    {
-      id: "favorites",
-      label: t("inspiration.pulse.metric.favorites"),
-      value: loaded ? String(pulse.favoriteCount) : "–",
-    },
-    {
-      id: "last",
-      label: t("inspiration.pulse.metric.last"),
-      value: loaded ? lastDreamLabel : "–",
-    },
-  ];
-
-  return (
-    <FlatGlassCard
-      intensity="moderate"
-      style={styles.pulseCard}
-      animationDelay={90}
-      testID={TID.Component.InspirationPulse}
-    >
-      <View style={[styles.pulseAccent, { backgroundColor: colors.accent }]} />
-      <View style={styles.pulseInner}>
-        <View style={styles.pulseHeaderRow}>
-          <View
-            style={[
-              styles.pulseIconWrap,
-              {
-                backgroundColor:
-                  mode === "dark" ? `${colors.accent}38` : `${colors.accent}24`,
-              },
-            ]}
-          >
-            <IconSymbol
-              name={PULSE_STATE_ICON[stateKey]}
-              size={21}
-              color={colors.accent}
-            />
-          </View>
-          <View style={styles.pulseCopy}>
-            <Text style={[styles.pulseEyebrow, { color: colors.accent }]}>
-              {t("inspiration.pulse.eyebrow")}
-            </Text>
-            <Text style={[styles.pulseTitle, { color: colors.textPrimary }]}>
-              {t(`inspiration.pulse.${stateKey}.title`)}
-            </Text>
-            <Text style={[styles.pulseBody, { color: colors.textSecondary }]}>
-              {t(`inspiration.pulse.${stateKey}.body`)}
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.pulseMetricsGrid}>
-          {metricItems.map((item) => (
-            <View
-              key={item.id}
-              style={[
-                styles.pulseMetric,
-                {
-                  borderColor: colors.divider,
-                  backgroundColor:
-                    mode === "dark" ? `${colors.backgroundSecondary}CC` : colors.backgroundCard,
-                },
-              ]}
-            >
-              <Text style={[styles.pulseMetricValue, { color: colors.textPrimary }]}>
-                {item.value}
-              </Text>
-              <Text style={[styles.pulseMetricLabel, { color: colors.textSecondary }]}>
-                {item.label}
-              </Text>
-            </View>
-          ))}
-        </View>
-
-        <Pressable
-          onPress={onPrimaryPress}
-          style={({ pressed }) => [
-            styles.pulseButton,
-            { backgroundColor: colors.accent },
-            pressed && styles.pressedButton,
-          ]}
-          accessibilityRole="button"
-          accessibilityLabel={t(`inspiration.pulse.${stateKey}.cta`)}
-          testID={TID.Button.InspirationPulseCta}
-        >
-          <Text style={[styles.pulseButtonLabel, { color: colors.textOnAccentSurface }]}>
-            {t(`inspiration.pulse.${stateKey}.cta`)}
-          </Text>
-          <IconSymbol name="arrow.right" size={16} color={colors.textOnAccentSurface} />
-        </Pressable>
-      </View>
-    </FlatGlassCard>
-  );
-});
 
 const DictionaryCardSection = memo(function DictionaryCardSection({
   colors,
-  reserveFloatingButtonSpace,
   t,
 }: DictionaryCardSectionProps) {
   return (
@@ -645,45 +472,41 @@ const DictionaryCardSection = memo(function DictionaryCardSection({
         accessibilityRole="button"
         accessibilityLabel={t("symbols.home_card_title")}
       >
-        <View
-          style={[
-            styles.dictionaryCardContent,
-            reserveFloatingButtonSpace &&
-              styles.dictionaryCardContentFloatingSafe,
-          ]}
-        >
+        <View style={styles.dictionaryCardContent}>
           <View style={styles.dictionaryCardHeaderRow}>
-            <View
-              style={[
-                styles.dictionaryCardIconWrap,
-                { backgroundColor: `${colors.accent}22` },
-              ]}
-            >
-              <IconSymbol
-                name="book.closed.fill"
-                size={22}
-                color={colors.accent}
-              />
+            <View style={styles.dictionaryTitleRow}>
+              <View
+                style={[
+                  styles.dictionaryCardIconWrap,
+                  { backgroundColor: `${colors.accent}22` },
+                ]}
+              >
+                <IconSymbol
+                  name="book.closed.fill"
+                  size={20}
+                  color={colors.accent}
+                />
+              </View>
+              <Text
+                style={[styles.dictionaryCardTitle, { color: colors.textPrimary }]}
+                numberOfLines={2}
+              >
+                {t("symbols.home_card_title")}
+              </Text>
             </View>
             <Text style={[styles.dictionaryCardCta, { color: colors.accent }]}>
               {t("symbols.open_dictionary")} →
             </Text>
           </View>
-          <View style={styles.dictionaryCardCopy}>
-            <Text
-              style={[styles.dictionaryCardTitle, { color: colors.textPrimary }]}
-            >
-              {t("symbols.home_card_title")}
-            </Text>
-            <Text
-              style={[
-                styles.dictionaryCardBody,
-                { color: colors.textSecondary },
-              ]}
-            >
-              {t("symbols.home_card_body")}
-            </Text>
-          </View>
+          <Text
+            style={[
+              styles.dictionaryCardBody,
+              { color: colors.textSecondary },
+            ]}
+            numberOfLines={2}
+          >
+            {t("symbols.home_card_body")}
+          </Text>
         </View>
       </FlatGlassCard>
     </View>
@@ -1099,94 +922,9 @@ const styles = StyleSheet.create({
     marginBottom: 44,
   },
 
-  // Dream pulse
-  pulseCard: {
-    borderRadius: 28,
-    overflow: "hidden",
-  },
-  pulseAccent: {
-    height: 3,
-    opacity: 0.9,
-  },
-  pulseInner: {
-    padding: 22,
-    gap: 18,
-  },
-  pulseHeaderRow: {
-    flexDirection: "row",
-    gap: 14,
-    alignItems: "flex-start",
-  },
-  pulseIconWrap: {
-    width: 46,
-    height: 46,
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  pulseCopy: {
-    flex: 1,
-    gap: 5,
-  },
-  pulseEyebrow: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-  },
-  pulseTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 24,
-    lineHeight: 30,
-    letterSpacing: 0.2,
-  },
-  pulseBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  pulseMetricsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  pulseMetric: {
-    minWidth: 132,
-    flex: 1,
-    borderWidth: 1,
-    borderRadius: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 13,
-    gap: 3,
-  },
-  pulseMetricValue: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 19,
-    fontVariant: ["tabular-nums"],
-  },
-  pulseMetricLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 11,
-    letterSpacing: 0.2,
-    textTransform: "uppercase",
-  },
-  pulseButton: {
-    minHeight: 48,
-    borderRadius: 18,
-    paddingHorizontal: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    alignSelf: "flex-start",
-  },
   pressedButton: {
     opacity: 0.82,
     transform: [{ scale: 0.98 }],
-  },
-  pulseButtonLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
   },
 
   // Info cards stack
@@ -1201,33 +939,33 @@ const styles = StyleSheet.create({
     borderRadius: 24,
   },
   dictionaryCardContent: {
-    minHeight: 132,
-    padding: 22,
-    gap: 14,
-    justifyContent: "space-between",
-  },
-  dictionaryCardContentFloatingSafe: {
-    paddingBottom: ADD_BUTTON_RESERVED_SPACE + ThemeLayout.spacing.lg,
+    padding: 18,
+    gap: 10,
   },
   dictionaryCardHeaderRow: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
     gap: 12,
   },
+  dictionaryTitleRow: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 12,
+  },
   dictionaryCardIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+    width: 40,
+    height: 40,
+    borderRadius: 13,
     alignItems: "center",
     justifyContent: "center",
   },
-  dictionaryCardCopy: {
-    gap: 6,
-  },
   dictionaryCardTitle: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 22,
+    flex: 1,
+    fontSize: 20,
+    lineHeight: 24,
     letterSpacing: 0.3,
   },
   dictionaryCardBody: {
