@@ -52,12 +52,12 @@
         <div class="max-w-5xl mx-auto text-center z-10 flex flex-col items-center">
             <!-- H1 Title -->
             <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.2] md:leading-[1.12] lg:leading-[1.08] pb-4 mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 drop-shadow-2xl opacity-0 hero-anim">
-                Unlock what your<br>dreams are telling you
+                Record dreams before<br>they disappear
             </h1>
             
             <!-- Subtitle/Baseline -->
             <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed opacity-0 hero-anim">
-                Your intelligent dream companion. Describe your dreams, then let Noctalia help you explore and understand them.
+                Wake up, speak the dream, and let Noctalia turn it into a private journal entry with symbols, images, reflection questions, and follow-up prompts.
             </p>
 
             <!-- CTA & Reassurance -->
@@ -65,15 +65,15 @@
                 <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] text-center">
                         <span class="relative z-10 flex items-center justify-center gap-2">
-                            Download the app <i data-lucide="play" class="w-4 h-4"></i>
+                            Record my first dream <i data-lucide="play" class="w-4 h-4"></i>
                         </span>
                     </a>
                     <a href="/en/guides/dream-symbols-dictionary" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group border border-dream-salmon/30 hover:border-dream-salmon hover:text-dream-salmonLight transition-colors" aria-label="Explore the dream symbols dictionary">
-                        <i data-lucide="book-open" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Dream Dictionary
+                        <i data-lucide="book-open" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Explore dream symbols
                     </a>
                 </div>
                 <p class="text-xs text-purple-300/60 font-sans flex items-center gap-2">
-                    <i data-lucide="shield-check" class="w-3 h-3 text-dream-salmon"></i> Available on Google Play
+                    <i data-lucide="shield-check" class="w-3 h-3 text-dream-salmon"></i> Android app on Google Play · Reflection tool, not diagnosis
                 </p>
             </div>
 
@@ -92,8 +92,8 @@
     <section id="how-it-works" class="py-24 px-4 relative border-t border-white/5">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 reveal">
-                <h2 class="font-serif text-3xl md:text-5xl mb-4 text-dream-cream">From pillow to clarity</h2>
-                <p class="text-purple-200/60 max-w-lg mx-auto">Turn blurry memories into concrete insights in three simple steps.</p>
+                <h2 class="font-serif text-3xl md:text-5xl mb-4 text-dream-cream">From half-awake memory to a dream you can revisit</h2>
+                <p class="text-purple-200/60 max-w-lg mx-auto">Capture the scene, see the patterns, then return to the dream when you are ready to think about it.</p>
             </div>
 
             <div id="how-it-works-steps" class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
@@ -432,7 +432,7 @@
                         <li class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-4 h-4 text-dream-salmon"></i> Deep stats &amp; insights</li>
                     </ul>
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Download the app</a>
-                    <p class="text-[10px] text-gray-500 mt-3">Available on Google Play.</p>
+                    <p class="text-[10px] text-gray-500 mt-3">Android app on Google Play · Reflection tool, not diagnosis.</p>
                 </div>
 
                 <div data-subscription="live" class="glass-panel p-8 rounded-3xl border-dream-salmon/50 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.1)]">

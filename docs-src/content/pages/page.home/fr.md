@@ -53,12 +53,12 @@
 
             <!-- H1 Title -->
             <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.2] md:leading-[1.12] lg:leading-[1.08] pb-4 mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 drop-shadow-2xl opacity-0 hero-anim hero-title">
-                Révélez ce que vos<br>rêves racontent
+                Capturez vos rêves<br>avant qu’ils s’effacent
             </h1>
 
             <!-- Subtitle/Baseline -->
             <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed opacity-0 hero-anim hero-subtitle">
-                Le compagnon de rêves intelligent. Décrivez vos rêves, puis laissez Noctalia vous aider à les explorer et les comprendre.
+                Au réveil, racontez votre rêve à voix haute. Noctalia le transforme en journal privé avec symboles, image, questions de réflexion et pistes de suivi.
             </p>
 
             <!-- CTA & Reassurance -->
@@ -66,15 +66,15 @@
                 <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] text-center">
                         <span class="relative z-10 flex items-center justify-center gap-2">
-                            Téléchargez l'application <i data-lucide="play" class="w-4 h-4"></i>
+                            Enregistrer mon premier rêve <i data-lucide="play" class="w-4 h-4"></i>
                         </span>
                     </a>
                     <a href="/fr/guides/dictionnaire-symboles-reves" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group border border-dream-salmon/30 hover:border-dream-salmon hover:text-dream-salmonLight transition-colors" aria-label="Explorer le dictionnaire des symboles de rêves">
-                        <i data-lucide="book-open" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Dictionnaire des rêves
+                        <i data-lucide="book-open" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Explorer les symboles
                     </a>
                 </div>
                 <p class="text-xs text-purple-300/60 font-sans flex items-center gap-2">
-                    <i data-lucide="shield-check" class="w-3 h-3 text-dream-salmon"></i> Disponible sur Google Play
+                    <i data-lucide="shield-check" class="w-3 h-3 text-dream-salmon"></i> Application Android sur Google Play · Outil de réflexion, pas de diagnostic
                 </p>
             </div>
 
@@ -93,9 +93,8 @@
     <section id="comment-ca-marche" class="py-24 px-4 relative border-t border-white/5">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 reveal">
-                <h2 class="font-serif text-3xl md:text-5xl mb-4 text-dream-cream">De l'oreiller à la clarté</h2>
-                <p class="text-purple-200/60 max-w-lg mx-auto">Transformez vos souvenirs flous en connaissances
-                    concrètes en trois étapes simples.</p>
+                <h2 class="font-serif text-3xl md:text-5xl mb-4 text-dream-cream">Du souvenir fragile au rêve que vous pouvez relire</h2>
+                <p class="text-purple-200/60 max-w-lg mx-auto">Capturez la scène, repérez les motifs, puis revenez-y quand vous êtes prêt à y réfléchir.</p>
             </div>
 
             <div id="etapes-reves" class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
@@ -444,7 +443,7 @@
                         <li class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-4 h-4 text-dream-salmon"></i> Statistiques et insights avancés</li>
                     </ul>
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Téléchargez l'application</a>
-                    <p class="text-[10px] text-gray-500 mt-3">Disponible sur Google Play.</p>
+                    <p class="text-[10px] text-gray-500 mt-3">Application Android sur Google Play · Outil de réflexion, pas de diagnostic.</p>
                 </div>
 
                 <div data-subscription="live" class="glass-panel p-8 rounded-3xl border-dream-salmon/50 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.1)]">
