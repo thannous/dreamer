@@ -106,29 +106,36 @@
         ]
       },
       "it": {
-        "fullInterpretation": "<p>L'acqua è uno dei simboli più universali e potenti nell'interpretazione dei sogni. Attraverso le culture e nel corso della storia, l'acqua è stata associata alle profondità delle emozioni umane e al vasto regno della mente inconscia. Quando l'acqua appare nei tuoi sogni, spesso funge da specchio che riflette il tuo paesaggio emotivo interiore.</p>\n<p>Lo stato dell'acqua nel tuo sogno fornisce indicazioni cruciali sul tuo benessere emotivo. L'acqua limpida e calma indica tipicamente chiarezza emotiva, pace interiore e un senso di armonia con te stesso. Potresti star vivendo un periodo di stabilità emotiva o aver recentemente acquisito una comprensione di una situazione che prima era confusa.</p>\n<p>Al contrario, l'acqua torbida, turbolenta o tempestosa riflette spesso un tumulto interiore, emozioni irrisolte o situazioni nella tua vita da sveglio che sembrano caotiche e opprimenti. Anche la profondità dell'acqua può essere significativa: l'acqua poco profonda potrebbe rappresentare emozioni di cui sei consapevole e con cui ti senti a tuo agio, mentre l'acqua profonda potrebbe simboleggiare sentimenti più profondi o materiale inconscio che non hai ancora esplorato completamente.</p>\n<p>I sogni d'acqua possono anche collegarsi a temi di purificazione, rinnovamento e trasformazione. Così come l'acqua purifica e rinnova nel mondo fisico, sognare l'acqua può indicare un desiderio di pulizia emotiva o un nuovo inizio in qualche area della tua vita.</p>",
+        "fullInterpretation": "<p>Sognare acqua parla quasi sempre di emozioni. Il colore, la trasparenza e il movimento indicano se quelle emozioni sono leggibili, confuse, tranquille o difficili da contenere.</p>\n<p>Acqua pulita o limpida tende a indicare chiarezza, sollievo o una fase in cui qualcosa diventa più facile da capire. Acqua torbida o sporca suggerisce invece stanchezza, confusione o una situazione che non riesci ancora a vedere bene.</p>\n<p>Se l’acqua scorre, il sogno porta il tema del movimento: cambiamento, passaggio del tempo, emozioni che non restano ferme. Se nuoti in acqua limpida, il simbolo si avvicina a <a class=\"text-dream-salmon hover:underline\" href=\"/it/simboli/nuotare\">nuotare</a>: stai partecipando attivamente alla tua vita emotiva.</p>",
         "variations": [
           {
-            "context": "Acqua calma e limpida",
-            "meaning": "Simboleggia chiarezza emotiva, pace interiore e tranquillità mentale. Potresti trovarti in un periodo di equilibrio emotivo e autocomprensione."
+            "context": "Acqua pulita o limpida",
+            "meaning": "Chiarezza emotiva, sollievo, guarigione o comprensione più semplice."
           },
           {
-            "context": "Acqua turbolenta o tempestosa",
-            "meaning": "Rappresenta turbolenze emotive, conflitti interiori o sentimenti opprimenti. Potresti star affrontando stress, ansia o emozioni irrisolte."
+            "context": "Acqua torbida o sporca",
+            "meaning": "Confusione, stanchezza emotiva o situazione poco chiara."
           },
           {
-            "context": "Annegare",
-            "meaning": "Suggerisce di sentirsi sopraffatti dalle emozioni o dalle circostanze della vita. Potresti sentirti sommerso dalle responsabilità o dai sentimenti."
+            "context": "Acqua che scorre",
+            "meaning": "Movimento emotivo, cambiamento o passaggio del tempo."
           },
           {
-            "context": "Nuotare",
-            "meaning": "Indica che stai navigando attivamente la tua vita emotiva. Nuotare con facilità suggerisce fiducia; faticare può riflettere difficoltà nel gestire le emozioni."
+            "context": "Tanta acqua",
+            "meaning": "Emozioni ampie, pressione o tema che occupa molto spazio interiore."
           },
           {
-            "context": "Alluvione",
-            "meaning": "Rappresenta spesso emozioni travolgenti, grandi cambiamenti di vita o la sensazione di perdere il controllo. Può anche simboleggiare rilascio emotivo o purificazione."
+            "context": "Nuotare in acqua limpida",
+            "meaning": "Capacità di muoversi dentro le emozioni con più fiducia e presenza."
           }
-        ]
+        ],
+        "illustration": {
+          "src": "/img/symbols/plan-a/water-dream-it.jpg",
+          "alt": "Paesaggio onirico con acqua limpida e acqua torbida, simbolo di emozioni",
+          "caption": "L’acqua cambia significato con il suo stato: pulita, torbida, ferma o in movimento raccontano emozioni diverse.",
+          "width": 1400,
+          "height": 895
+        }
       }
     },
     "teeth": {
@@ -1376,25 +1383,36 @@
         ]
       },
       "it": {
-        "fullInterpretation": "<p>Sognare un cane parla prima di tutto di fiducia, lealtà e protezione. Il cane può rappresentare una relazione fedele, un alleato o la parte istintiva che ti avverte quando qualcosa non va.</p><p>Quando nel sogno il cane attacca, ringhia o morde, il simbolo cambia tono: può indicare conflitto, una fiducia ferita, paura di essere tradito o rabbia che non ha ancora trovato parole. Non significa che una persona ti farà del male; mostra dove una relazione si sente meno sicura.</p><p>Un cane che protegge, invece, indica sostegno e difesa. Può rappresentare una persona affidabile o una risorsa interna che ti aiuta a mettere confini.</p>",
+        "fullInterpretation": "<p>Sognare un cane parla di fiducia, lealtà e protezione. Il cane può rappresentare una persona affidabile, un legame familiare o il tuo istinto quando cerca di proteggerti.</p>\n<p>Quando il cane attacca, ringhia o morde, il sogno non va letto come una previsione. Più spesso mostra una fiducia ferita, un conflitto o una relazione che dovrebbe essere sicura ma ora ti mette in allerta.</p>\n<p>Un cane malato o smarrito sposta il tema verso perdita, cura e responsabilità. Se sogni di perdere il cane, chiediti quale legame o parte affettuosa della tua vita temi di trascurare. Il confronto con simboli come <a class=\"text-dream-salmon hover:underline\" href=\"/it/simboli/lupo\">lupo</a> o <a class=\"text-dream-salmon hover:underline\" href=\"/it/simboli/amico\">amico</a> può aiutare a distinguere istinto e relazione.</p>",
         "variations": [
           {
+            "context": "Sognare cane",
+            "meaning": "Fiducia, lealtà, protezione e qualità del legame con qualcuno o con il tuo istinto."
+          },
+          {
             "context": "Cane che attacca",
-            "meaning": "Conflitto, minaccia percepita o rabbia che chiede attenzione."
+            "meaning": "Paura di tradimento, conflitto o relazione che non si sente più sicura."
           },
           {
             "context": "Cane che morde",
-            "meaning": "Fiducia ferita, parole aggressive o relazione diventata dolorosa."
+            "meaning": "Fiducia ferita, parole aggressive o protezione diventata dolorosa."
           },
           {
-            "context": "Cane amichevole",
-            "meaning": "Lealtà, amicizia affidabile e bisogno di vicinanza."
+            "context": "Cane malato",
+            "meaning": "Preoccupazione per un legame, bisogno di cura o paura di perdere qualcosa di fedele."
           },
           {
-            "context": "Cane che ti protegge",
-            "meaning": "Sostegno, sicurezza e istinto protettivo."
+            "context": "Perdere il cane",
+            "meaning": "Timore di distanza, trascuratezza o perdita di una presenza affettiva."
           }
-        ]
+        ],
+        "illustration": {
+          "src": "/img/symbols/plan-a/dog-dream-it.jpg",
+          "alt": "Cane in una stanza onirica tra luce calda e ombra, simbolo di fiducia",
+          "caption": "Nei sogni il cane cambia significato con il comportamento: protegge, segue, attacca o chiede cura.",
+          "width": 1400,
+          "height": 933
+        }
       }
     },
     "cat": {
@@ -1753,29 +1771,36 @@
         ]
       },
       "it": {
-        "fullInterpretation": "<p>Il fuoco è un potente e ambiguo simbolo onirico. Rappresenta sia distruzione che rinnovamento, passione e pericolo, trasformazione e purificazione.</p>\n<p>Un fuoco controllato e caldo simboleggia spesso passione, motivazione, calore nelle relazioni e impulso creativo. Può anche rappresentare il fuoco interiore che ti guida.</p>\n<p>Un fuoco incontrollato, invece, può rappresentare emozioni travolgenti, rabbia, forze distruttive o situazioni che sono sfuggite al controllo.</p>\n<p>Essere bruciati dal fuoco indica spesso dolore emotivo, mentre controllare il fuoco può simboleggiare il controllo su emozioni intense o situazioni difficili.</p>",
+        "fullInterpretation": "<p>Sognare fuoco significa avvicinarsi a un’energia intensa. Può essere passione, rabbia, desiderio, urgenza o trasformazione. La domanda principale è: il fuoco illuminava o stava sfuggendo al controllo?</p>\n<p>Un fuoco controllato può indicare motivazione e creatività. Un incendio, invece, parla spesso di emozioni che consumano troppo spazio. Se il fuoco è in <a class=\"text-dream-salmon hover:underline\" href=\"/it/simboli/casa\">casa</a>, il sogno entra nella vita privata: sicurezza, famiglia, identità e tensioni domestiche.</p>\n<p>Le fiamme nei sogni non sono sempre negative. Possono mostrare ciò che deve cambiare, ciò che brucia troppo forte o una forza che va incanalata invece di essere ignorata.</p>",
         "variations": [
           {
-            "context": "Un fuoco controllato e caldo",
-            "meaning": "Simboleggia passione, calore, motivazione ed energia positiva. Potresti sentirti ispirato e pieno di slancio."
+            "context": "Sognare fuoco significato",
+            "meaning": "Energia intensa, passione, rabbia, trasformazione o bisogno di purificazione."
           },
           {
-            "context": "Una casa in fiamme",
-            "meaning": "Può simboleggiare intense crisi emotive, cambiamenti drastici nella tua vita personale o il crollo di qualcosa di familiare."
+            "context": "Sognare un incendio",
+            "meaning": "Emozioni fuori controllo, conflitto o situazione che consuma troppe energie."
           },
           {
-            "context": "Un incendio o fuoco incontrollato",
-            "meaning": "Rappresenta emozioni travolgenti, rabbia o situazioni che sono sfuggite al controllo."
+            "context": "Fuoco in casa",
+            "meaning": "Tensione nella sfera privata, identità sotto pressione o cambiamento domestico."
           },
           {
-            "context": "Essere bruciati dal fuoco",
-            "meaning": "Indica dolore emotivo, ferite o le conseguenze negative di qualcosa a cui ti sei avvicinato troppo."
+            "context": "Fiamme nei sogni",
+            "meaning": "Passione, creatività, rabbia o intensità emotiva da contenere."
           },
           {
-            "context": "Accendere o controllare il fuoco",
-            "meaning": "Simboleggia il controllo su emozioni intense o la capacità di padroneggiare situazioni difficili."
+            "context": "Fuoco che brucia",
+            "meaning": "Trasformazione dolorosa, conseguenze o bisogno di distanza da qualcosa di troppo intenso."
           }
-        ]
+        ],
+        "illustration": {
+          "src": "/img/symbols/plan-a/fire-dream-it.jpg",
+          "alt": "Fuoco controllato che diventa luce all’alba, simbolo di trasformazione",
+          "caption": "Il fuoco nei sogni è utile da leggere attraverso controllo, luogo ed emozione: calore e incendio non hanno lo stesso senso.",
+          "width": 1400,
+          "height": 768
+        }
       }
     },
     "flood": {
@@ -2112,25 +2137,36 @@
         ]
       },
       "es": {
-        "fullInterpretation": "<p>Soñar con puertas suele aparecer cuando estás ante una decisión, una oportunidad o un límite personal. La puerta marca un antes y un después: cruzarla, abrirla o cerrarla muestra cómo te relacionas con el cambio.</p>\n<p>Una puerta cerrada no siempre significa rechazo; puede señalar una respuesta que aún no tienes, una conversación pendiente o una etapa que requiere preparación. Si sueñas con abrir una puerta cerrada, el sueño apunta a una búsqueda activa de salida, permiso o acceso.</p>\n<p>Cuando la puerta pertenece a tu casa, el símbolo se vuelve más íntimo. Una puerta abierta de casa puede hablar de confianza, vulnerabilidad o sensación de exposición. Muchas puertas sugieren varias opciones a la vez y la necesidad de elegir con calma.</p>",
+        "fullInterpretation": "<p>Soñar con puertas aparece cuando una decisión, una oportunidad o un límite personal se vuelve visible. La puerta marca una frontera: entrar, salir, abrir, cerrar o quedarse delante cambia por completo el significado.</p>\n<p>Una puerta abierta puede hablar de acceso, permiso o vulnerabilidad. Si es la puerta de tu <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/casa\">casa</a>, el tema se vuelve más íntimo: privacidad, seguridad, confianza o exposición.</p>\n<p>Abrir una puerta cerrada suele indicar que intentas superar un bloqueo. Muchas puertas, en cambio, muestran opciones múltiples y cierta dificultad para elegir. Si ninguna se abre, el sueño puede estar señalando frustración o falta de la <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/llave\">llave</a> adecuada.</p>",
         "variations": [
           {
-            "context": "Puerta cerrada",
-            "meaning": "Bloqueo, límite, decisión pendiente o acceso que todavía requiere preparación."
-          },
-          {
             "context": "Abrir una puerta cerrada",
-            "meaning": "Intento de superar un obstáculo, entrar en una nueva etapa o resolver algo inaccesible."
+            "meaning": "Intento de superar un bloqueo, entrar en una nueva etapa o resolver algo inaccesible."
           },
           {
-            "context": "Puerta abierta de casa",
-            "meaning": "Vulnerabilidad, confianza, bienvenida o vida privada demasiado expuesta."
+            "context": "Puertas abiertas",
+            "meaning": "Acceso, oportunidad, bienvenida o sensación de que algo personal queda expuesto."
+          },
+          {
+            "context": "Puerta abierta de mi casa",
+            "meaning": "Tema de privacidad, confianza, seguridad personal o límites en el hogar."
           },
           {
             "context": "Muchas puertas",
-            "meaning": "Varias opciones, caminos posibles o dificultad para decidir."
+            "meaning": "Varias opciones, caminos posibles o dificultad para decidir cuál cruzar."
+          },
+          {
+            "context": "Puertas cerradas",
+            "meaning": "Límites, espera, rechazo temporal o necesidad de preparación antes de avanzar."
           }
-        ]
+        ],
+        "illustration": {
+          "src": "/img/symbols/plan-a/door-dream.jpg",
+          "alt": "Pasillo onírico con varias puertas y una puerta abierta iluminada",
+          "caption": "Una puerta en sueños suele hablar de umbrales: lo que se abre, lo que se cierra y lo que todavía no te atreves a cruzar.",
+          "width": 1400,
+          "height": 768
+        }
       },
       "de": {
         "fullInterpretation": "<p>Türen in Träumen sind kraftvolle Symbole für Möglichkeiten, Übergänge und neue Anfänge. Eine Tür trennt bekanntes Territorium vom Unbekannten und repräsentiert den Übergang von einem Zustand in einen anderen.</p>\n<p>Eine offene Tür symbolisiert willkommene Möglichkeiten, Einladungen und Bereitschaft für Veränderung. Eine geschlossene oder verschlossene Tür hingegen kann auf Hindernisse, Ablehnung oder fehlenden Zugang zu etwas Gewünschtem hindeuten.</p>\n<p>Die Wahl zwischen mehreren Türen spiegelt Entscheidungen wider, die Sie in Ihrem Wachleben treffen müssen.</p>\n<p>Eine Tür nicht öffnen zu können kann Frustration über verpasste Gelegenheiten oder das Gefühl ausdrücken, dass Ihnen der Weg zu etwas Wichtigem versperrt ist.</p>",
@@ -2739,25 +2775,36 @@
         ]
       },
       "es": {
-        "fullInterpretation": "<p>Soñar con un puente habla de transición: pasar de una etapa a otra, conectar dos partes de tu vida o decidir si avanzas. El puente es importante porque no es el destino, sino el paso.</p>\n<p>Un puente roto, inestable o peligroso suele reflejar miedo a que el cambio falle. Puede apuntar a una relación dañada, un proyecto que no tiene suficiente apoyo o una decisión que todavía no se siente segura.</p>\n<p>Cuando el puente aparece sobre agua, el sueño mezcla transición y emoción. Cruzar sobre agua indica que intentas mantener dirección mientras atraviesas incertidumbre, ansiedad o sentimientos intensos.</p>",
+        "fullInterpretation": "<p>Soñar con un puente habla de pasar de un lugar a otro. Por eso aparece en momentos de transición: una decisión, una relación, un cambio de trabajo, una mudanza o una etapa que todavía no se siente estable.</p>\n<p>Si cruzas el puente, el sueño sugiere avance. Si el puente está roto, peligroso o en mal estado, la pregunta cambia: ¿qué parte del cambio se siente insegura? Un puente no es el destino, es el tramo vulnerable entre dos orillas.</p>\n<p>Cuando el puente aparece sobre <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/agua\">agua</a>, la transición se mezcla con emoción. Puede indicar que intentas mantener dirección mientras atraviesas ansiedad, incertidumbre o recuerdos que se mueven bajo la superficie.</p>",
         "variations": [
+          {
+            "context": "Cruzar un puente",
+            "meaning": "Decisión tomada, avance y disposición a dejar atrás una etapa."
+          },
           {
             "context": "Puente roto",
             "meaning": "Miedo a que una transición falle, conexión dañada o falta de apoyo."
           },
           {
-            "context": "Cruzar un puente",
-            "meaning": "Avance, decisión tomada y disposición a dejar una etapa atrás."
+            "context": "Puente con agua",
+            "meaning": "Cambio atravesado con carga emocional, incertidumbre o miedo a perder control."
           },
           {
-            "context": "Puente sobre agua",
-            "meaning": "Cambio atravesado con emoción intensa o miedo a perder el control."
+            "context": "Puente peligroso o en mal estado",
+            "meaning": "Duda, inseguridad o sensación de que el camino actual necesita refuerzo."
           },
           {
-            "context": "Puente peligroso",
-            "meaning": "Duda, inseguridad o sensación de que el camino actual no es estable."
+            "context": "Cruzar un puente con alguien",
+            "meaning": "Una relación participa en el cambio, como apoyo, tensión o compañía."
           }
-        ]
+        ],
+        "illustration": {
+          "src": "/img/symbols/plan-a/bridge-dream.jpg",
+          "alt": "Puente nocturno sobre agua con luz al otro lado, símbolo de transición",
+          "caption": "El puente no representa solo llegada: representa el paso, la duda y la forma de sostenerte mientras cambias.",
+          "width": 1400,
+          "height": 747
+        }
       },
       "de": {
         "fullInterpretation": "<p>Brücken in Träumen sind kraftvolle Symbole für Übergänge, Verbindungen und die Überwindung von Hindernissen. Eine Brücke verbindet zwei getrennte Ufer und repräsentiert den Übergang von einem Lebensabschnitt zum nächsten.</p>\n<p>Eine Brücke erfolgreich zu überqueren symbolisiert die erfolgreiche Bewältigung eines Übergangs oder einer Herausforderung. Eine eingestürzte Brücke hingegen kann auf fehlgeschlagene Verbindungen oder unüberwindbare Hindernisse hindeuten.</p>\n<p>Angst vor dem Überqueren einer Brücke spiegelt häufig die Angst vor Veränderung, Unsicherheit oder dem Unbekannten wider.</p>\n<p>In der Mitte einer Brücke zu stehen kann darauf hindeuten, dass Sie sich zwischen zwei Lebensphasen befinden und noch nicht entschieden haben, in welche Richtung Sie gehen wollen.</p>",
@@ -4565,37 +4612,36 @@
         ]
       },
       "es": {
-        "fullInterpretation": "<p>Soñar con hospital suele hablar de sanación, vulnerabilidad y necesidad de cuidado. Como el hospital es el lugar donde se examina y se trata lo que duele, este sueño aparece a menudo cuando tu mente intenta procesar estrés, preocupación por la salud, heridas emocionales o una situación que ya pesa demasiado para llevarla en soledad.</p>\n<p>Si sueñas que estás en un hospital, el tema central suele ser recuperación. Puede que necesites descanso, apoyo, límites más claros o un plan concreto para atender algo que has estado evitando. No significa necesariamente enfermedad; muchas veces pregunta qué necesita atención antes de convertirse en una urgencia.</p>\n<p>Soñar con hospital y doctores, enfermeras, camillas o exámenes médicos apunta a diagnóstico y guía. Tu subconsciente puede estar buscando una respuesta, una segunda opinión o permiso para aceptar ayuda. Un hospital lleno de enfermos o de gente puede reflejar sobrecarga emocional, preocupación familiar o la sensación de que muchos problemas necesitan cuidado al mismo tiempo.</p>\n<p>El ambiente del sueño cambia la interpretación. Un hospital tranquilo puede sugerir que la sanación es posible y que hay apoyo disponible. Una sala de emergencias caótica señala ansiedad, presión o un problema que se siente inmediato. Un hospital abandonado puede revelar miedo a no recibir ayuda cuando más la necesitas.</p>",
+        "fullInterpretation": "<p>Soñar con hospital concentra una idea simple: algo necesita cuidado. Puede hablar de salud, pero también de cansancio emocional, preocupación por alguien o una situación que ya no conviene llevar en soledad.</p>\n<p>Cuando sueñas que estás en un hospital, la escena suele apuntar a recuperación y vulnerabilidad. Si esperas un diagnóstico o buscas ayuda, el sueño puede estar mostrando que necesitas claridad antes de seguir funcionando en automático.</p>\n<p>Los doctores, enfermeras y enfermos añaden matices. Un <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/medico\">doctor</a> puede simbolizar orientación; una persona enferma puede representar una parte de tu bienestar que pide atención. Si el hospital estaba lleno de gente, mira si tu vida despierta también se siente saturada.</p>\n<p>La clave no es preguntarte si el sueño predice enfermedad, sino qué necesita reparación, descanso o apoyo ahora.</p>",
         "variations": [
           {
             "context": "Estar en un hospital",
-            "meaning": "Suele reflejar vulnerabilidad, recuperación o necesidad de aceptar ayuda en vez de intentar controlarlo todo."
+            "meaning": "Vulnerabilidad, recuperación o necesidad de pedir ayuda en vez de sostener todo solo."
+          },
+          {
+            "context": "Hospital lleno de gente",
+            "meaning": "Sobrecarga emocional, preocupación por varias personas o muchos asuntos pidiendo cuidado a la vez."
           },
           {
             "context": "Hospital con doctores o enfermeras",
-            "meaning": "Sugiere guía, diagnóstico o apoyo. Puedes estar buscando claridad sobre una preocupación de salud, emocional o familiar."
-          },
-          {
-            "context": "Hospital lleno de enfermos",
-            "meaning": "Puede simbolizar sobrecarga emocional, preocupación por otras personas o la sensación de que demasiados asuntos piden cuidado a la vez."
+            "meaning": "Búsqueda de guía, diagnóstico, claridad o una mirada externa sobre un problema."
           },
           {
             "context": "Visitar a alguien en el hospital",
-            "meaning": "Puede representar preocupación por un ser querido, empatía o conciencia de que una relación necesita atención."
+            "meaning": "Preocupación por un vínculo, empatía o conciencia de que una relación necesita más atención."
           },
           {
             "context": "Sala de emergencias",
-            "meaning": "Señala un problema urgente, una sensación de crisis o algo que ya no conviene posponer."
-          },
-          {
-            "context": "Hospital abandonado",
-            "meaning": "Puede expresar miedo a no encontrar apoyo, desconfianza hacia la ayuda o una parte descuidada de tu bienestar."
-          },
-          {
-            "context": "Trabajar en un hospital",
-            "meaning": "Puede mostrar tu papel de cuidador, mediador o persona en la que otros se apoyan cuando algo se complica."
+            "meaning": "Algo se siente urgente o ya no puede seguir posponiéndose."
           }
-        ]
+        ],
+        "illustration": {
+          "src": "/img/symbols/plan-a/hospital-dream.jpg",
+          "alt": "Pasillo de hospital onírico iluminado por la luna, símbolo de cuidado y recuperación",
+          "caption": "En los sueños, el hospital suele ser menos una predicción que una señal de cuidado, pausa y apoyo.",
+          "width": 1400,
+          "height": 933
+        }
       },
       "de": {
         "fullInterpretation": "<p>Ein Krankenhaus im Traum steht häufig für Heilung, Verletzlichkeit und den Wunsch nach Fürsorge. Als Ort, an dem Beschwerden untersucht und behandelt werden, erscheint es oft, wenn Ihre Psyche Stress, Gesundheitsängste, emotionale Wunden oder eine belastende Situation verarbeitet.</p>\n<p>Wenn Sie träumen, selbst im Krankenhaus zu sein, geht es meist um Erholung. Vielleicht brauchen Sie Ruhe, Unterstützung, klarere Grenzen oder einen konkreten Umgang mit etwas, das Sie aufgeschoben haben. Der Traum sagt nicht automatisch Krankheit voraus; er fragt eher, was Aufmerksamkeit braucht, bevor es dringend wird.</p>\n<p>Ärzte, Pflegekräfte, Untersuchungen oder Krankenzimmer verweisen auf Diagnose und Orientierung. Ihr Unterbewusstsein sucht möglicherweise eine Antwort, eine zweite Meinung oder die Erlaubnis, Hilfe anzunehmen. Ein Krankenhaus voller kranker Menschen kann emotionale Überlastung, Sorge um Angehörige oder zu viele gleichzeitige Probleme spiegeln.</p>\n<p>Die Stimmung im Traum ist entscheidend. Ein ruhiges Krankenhaus kann zeigen, dass Heilung möglich ist und Unterstützung vorhanden ist. Eine chaotische Notaufnahme deutet auf Druck, Angst oder ein akutes Thema hin. Ein verlassenes Krankenhaus kann die Sorge ausdrücken, ausgerechnet im Bedarfsfall keine Hilfe zu bekommen.</p>",
@@ -6068,25 +6114,36 @@
         ]
       },
       "es": {
-        "fullInterpretation": "<p>Soñar con lobos conecta con el instinto, la amenaza, la protección y la pertenencia. Un lobo puede ser peligroso, pero también puede representar intuición, fuerza y fidelidad a la propia naturaleza.</p>\n<p>Si aparece un solo lobo, mira si te observaba, te guiaba o te atacaba. Puede simbolizar independencia, desconfianza o una voz interna que necesitas escuchar. Una manada de lobos, en cambio, habla de grupo, presión social, familia o necesidad de apoyo.</p>\n<p>Cuando los lobos atacan o persiguen, el sueño suele reflejar miedo, conflicto o sensación de estar rodeado por expectativas. Si el lobo protege, puede representar una fuerza interna que empieza a defenderte.</p>",
+        "fullInterpretation": "<p>Soñar con lobos conecta con instinto, protección, amenaza y pertenencia. El lobo puede asustar, pero también puede representar una fuerza intuitiva que observa antes de actuar.</p>\n<p>Un solo lobo suele apuntar a independencia, vigilancia o una parte de ti que necesita ser escuchada. Si el lobo te mira, el sueño puede estar llamando tu atención sobre algo que ya percibes, pero no has querido nombrar.</p>\n<p>Muchos lobos o una manada llevan el símbolo hacia el grupo: familia, presión social, lealtad o necesidad de apoyo. Si los lobos atacan o persiguen, el sueño se acerca a temas de <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/persecucion\">persecución</a>, conflicto o miedo a quedar rodeado.</p>",
         "variations": [
           {
-            "context": "Un lobo",
-            "meaning": "Independencia, intuición, vigilancia o fuerza instintiva."
+            "context": "Soñar con lobos",
+            "meaning": "Instinto, grupo, pertenencia, amenaza o presión social según la emoción del sueño."
           },
           {
-            "context": "Muchos lobos",
-            "meaning": "Grupo, pertenencia, presión social o necesidad de apoyo."
+            "context": "Un lobo",
+            "meaning": "Independencia, intuición, vigilancia o fuerza instintiva que necesita atención."
           },
           {
             "context": "Lobos que atacan",
-            "meaning": "Conflicto, miedo, amenaza percibida o emoción instintiva desbordada."
+            "meaning": "Conflicto, miedo, presión o emoción instintiva fuera de control."
           },
           {
-            "context": "Lobo protector",
-            "meaning": "Defensa interna, aliado simbólico o confianza en el instinto."
+            "context": "Manada de lobos",
+            "meaning": "Lealtad, familia, grupo, apoyo o presión colectiva."
+          },
+          {
+            "context": "Un lobo que me mira",
+            "meaning": "Alerta interna, intuición o una verdad que pide ser reconocida."
           }
-        ]
+        ],
+        "illustration": {
+          "src": "/img/symbols/plan-a/wolf-dream.jpg",
+          "alt": "Lobo vigilante en un bosque nocturno, símbolo de instinto y pertenencia",
+          "caption": "El lobo en sueños cambia de sentido según su conducta: observar, atacar, proteger o aparecer en manada no cuentan la misma historia.",
+          "width": 1400,
+          "height": 768
+        }
       },
       "de": {
         "fullInterpretation": "<p>Der Wolf in Träumen ist ein kraftvolles Symbol für Instinkt, Wildheit, soziale Bindungen und die ungezähmte Seite der menschlichen Natur. Wölfe können sowohl Bedrohung als auch Schutz repräsentieren.</p>\n<p>Ein angreifender Wolf kann auf eine Bedrohung, aggressive Tendenzen oder eine Person in Ihrem Leben hindeuten, die Ihnen Angst macht.</p>\n<p>Ein einsamer Wolf kann Unabhängigkeit, Selbstständigkeit oder das Gefühl der Isolation symbolisieren.</p>\n<p>Ein Wolfsrudel repräsentiert Familie, Gemeinschaft, soziale Hierarchien und das Bedürfnis nach Zugehörigkeit.</p>",
