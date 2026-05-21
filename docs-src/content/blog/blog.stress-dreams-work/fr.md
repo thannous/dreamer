@@ -268,10 +268,10 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Suivez vos rêves de stress au travail</h4>
-<p class="text-sm text-gray-400 mb-4">Identifier les liens entre les événements professionnels et le contenu de vos rêves est le chemin le plus rapide vers le soulagement. Le <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> de Noctalia, alimenté par l'IA, vous permet de consigner vos rêves par la voix dès le réveil, révélant des schémas de stress que vous manqueriez autrement.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Repérez ce que vos rêves de travail répètent</h4>
+<p class="text-sm text-gray-400 mb-4">Notez le rêve dès le réveil, puis reliez-le aux tensions de la journée : échéance, conflit, surcharge ou peur d'échouer. Le <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> Noctalia vous aide à garder ces détails par la voix et à repérer les motifs qui reviennent.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Commencer à journaliser avec Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Noter un rêve dans Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
@@ -317,12 +317,12 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Reprenez le contrôle de vos nuits face au stress</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Transformez les rêves de travail en signaux utiles</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia vous aide à capturer vos rêves de stress au travail dès le réveil, repérer les schémas et retrouver un sommeil réparateur. Le journal vocal vous assure de ne perdre aucun détail.
+                    Noctalia vous aide à capturer les détails avant qu'ils s'effacent, à relire les motifs qui se répètent et à préparer des questions concrètes pour votre réflexion personnelle. Ce n'est pas un diagnostic, mais un journal utile pour mieux comprendre vos nuits.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencer votre journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Créer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->

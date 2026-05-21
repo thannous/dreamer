@@ -52,12 +52,12 @@
         <div class="max-w-5xl mx-auto text-center z-10 flex flex-col items-center">
             <!-- H1 Title -->
             <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.2] md:leading-[1.12] lg:leading-[1.08] pb-4 mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 drop-shadow-2xl opacity-0 hero-anim">
-                Entdecke, was deine<br>Träume dir sagen
+                Halte Träume fest,<br>bevor sie verblassen
             </h1>
 
             <!-- Subtitle/Baseline -->
             <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed opacity-0 hero-anim">
-                Dein intelligenter Traumbegleiter. Beschreibe deine Träume und lass Noctalia dir helfen, sie zu erkunden und zu verstehen.
+                Nach dem Aufwachen sprichst du den Traum einfach ein. Noctalia macht daraus einen privaten Eintrag mit Symbolen, Bild, Reflexionsfragen und weiteren Denkanstößen.
             </p>
 
             <!-- CTA & Reassurance -->
@@ -65,15 +65,15 @@
                 <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] text-center">
                         <span class="relative z-10 flex items-center justify-center gap-2">
-                            App herunterladen <i data-lucide="play" class="w-4 h-4"></i>
+                            Ersten Traum aufnehmen <i data-lucide="play" class="w-4 h-4"></i>
                         </span>
                     </a>
                     <a href="/de/guides/traumsymbole-lexikon" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group border border-dream-salmon/30 hover:border-dream-salmon hover:text-dream-salmonLight transition-colors" aria-label="Das Traumsymbole-Lexikon entdecken">
-                        <i data-lucide="book-open" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Traumlexikon
+                        <i data-lucide="book-open" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Symbole entdecken
                     </a>
                 </div>
                 <p class="text-xs text-purple-300/60 font-sans flex items-center gap-2">
-                    <i data-lucide="shield-check" class="w-3 h-3 text-dream-salmon"></i> Verfügbar bei Google Play
+                    <i data-lucide="shield-check" class="w-3 h-3 text-dream-salmon"></i> Android-App bei Google Play · Reflexionstool, keine Diagnose
                 </p>
             </div>
 
@@ -93,8 +93,8 @@
         <span id="so-funktionierts"></span>
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 reveal">
-                <h2 class="font-serif text-3xl md:text-5xl mb-4 text-dream-cream">Vom Kopfkissen zur Klarheit</h2>
-                <p class="text-purple-200/60 max-w-lg mx-auto">Verwandle verschwommene Erinnerungen in konkrete Erkenntnisse – in drei einfachen Schritten.</p>
+                <h2 class="font-serif text-3xl md:text-5xl mb-4 text-dream-cream">Von der halbwachen Erinnerung zum Traum, den du wieder ansehen kannst</h2>
+                <p class="text-purple-200/60 max-w-lg mx-auto">Halte die Szene fest, erkenne Muster und kehre zum Traum zurück, wenn du darüber nachdenken möchtest.</p>
             </div>
 
             <div id="schritte-traeume" class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
@@ -422,7 +422,7 @@
                         <li class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-4 h-4 text-dream-salmon"></i> Tiefe Statistiken &amp; Einblicke</li>
                     </ul>
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">App herunterladen</a>
-                    <p class="text-[10px] text-gray-500 mt-3">Verfügbar bei Google Play.</p>
+                    <p class="text-[10px] text-gray-500 mt-3">Android-App bei Google Play · Reflexionstool, keine Diagnose.</p>
                 </div>
 
                 <!-- Premium Plan (live) -->

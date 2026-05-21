@@ -35,7 +35,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Noctalia Pressekit</h1>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia ist ein KI-gestutztes Traumtagebuch zum Erfassen, Deuten und Erkunden von Traumen mit Sprachnotizen, automatischer Transkription, wiederkehrenden Symbolen, Themen, generierten Bildern und Dream Chat.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia ist ein Android-orientiertes Traumtagebuch, mit dem Menschen Träume per Sprache festhalten, in strukturierte Einträge verwandeln und Symbole, Bilder, Muster und Nachfragen im Dream Chat erkunden.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -53,9 +53,9 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Beschreibungen</h2>
     <h3 class="text-white font-medium mb-2">Kurzbeschreibung</h3>
-    <p>KI-Traumtagebuch fur Sprachaufnahme, Transkription, Traumdeutung, Symbole, Themen, Bilder und Dream Chat.</p>
+    <p>Android-Traumtagebuch mit Sprachaufnahme, KI-Reflexion, Symbolen, generierten Bildern und Dream Chat.</p>
     <h3 class="text-white font-medium mt-6 mb-2">Langbeschreibung</h3>
-    <p>Noctalia hilft dabei, Traume per Stimme oder Text festzuhalten, strukturierte KI-Deutungen zu erhalten, wiederkehrende Symbole und Emotionen zu verfolgen, traumartige Bilder zu erstellen und Folgefragen im Dream Chat zu stellen.</p>
+    <p>Noctalia hilft, Träume festzuhalten, bevor Details verblassen. Nutzer können per Sprache oder Text aufnehmen, eine strukturierte Reflexion erhalten, wiederkehrende Symbole und Emotionen ansehen, ein Traumbild generieren und im Dream Chat weiterfragen.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

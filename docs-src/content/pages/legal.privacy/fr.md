@@ -41,12 +41,12 @@
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
                 <p class="text-dream-salmon font-medium flex gap-2 items-start">
                     <i data-lucide="shield-check" class="w-5 h-5 mt-0.5 shrink-0"></i>
-                    En bref : Vos rêves vous appartiennent. Nous ne vendons jamais vos données et nous ne diffusons pas de publicité ciblée. Les enregistrements audio sont utilisés uniquement pour transcrire votre rêve puis ne sont pas conservés par Noctalia. Vos transcriptions et analyses sont stockées de manière sécurisée dans l'Union européenne.
+                    En bref : votre journal de rêves reste personnel. Noctalia ne vend pas vos données, ne diffuse pas de publicité ciblée et utilise l'audio uniquement pour transcrire votre rêve. Les enregistrements audio ne sont pas conservés par Noctalia; les transcriptions et analyses sont stockées de manière sécurisée dans l'Union européenne.
                 </p>
             </div>
 
             <section class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5">
-                <h2 class="text-2xl font-serif text-white mb-4 mt-0">Résumé confidentialité</h2>
+                <h2 class="text-2xl font-serif text-white mb-4 mt-0">La confidentialité, en clair</h2>
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
                         <h3 class="text-white font-semibold mb-2">Ce que Noctalia stocke</h3>

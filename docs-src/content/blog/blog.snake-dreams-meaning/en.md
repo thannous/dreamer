@@ -234,10 +234,10 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Decode Your Snake Dream with Noctalia</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analyzes the snake's appearance, behavior, your emotions, and personal context to provide a personalized interpretation of your unique snake dream.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Turn a Snake Dream into a Journal Entry</h4>
+<p class="text-sm text-gray-400 mb-4">Record the scene while it is still vivid, then use Noctalia to review the snake's behavior, your emotions, recurring symbols, and questions worth reflecting on.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
-                                Try Noctalia Free <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Record the dream in Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
@@ -342,12 +342,12 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="eye"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Unveil Your Snake Dream's Message</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Keep the Details of Your Snake Dream</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Record your snake dreams in Noctalia and receive personalized interpretations that consider your unique symbols, emotions, and life context.
+                    Save your snake dreams by voice or text, then compare symbols, emotions, and patterns across your private journal.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start Exploring Your Dreams <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Start a private dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- Symbol Guide CTA -->

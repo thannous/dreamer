@@ -42,12 +42,12 @@
   <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
     <p class="text-dream-salmon font-medium flex gap-2 items-start">
       <i data-lucide="shield-check" class="w-5 h-5 mt-0.5 shrink-0"></i>
-      Kurz gesagt: Deine Träume gehören dir. Wir verkaufen deine personenbezogenen Daten nicht und zeigen keine zielgerichtete Werbung. Sprachaufnahmen werden nur zur Transkription verarbeitet und von Noctalia nicht dauerhaft gespeichert. Transkripte und Analysen werden sicher in der Europäischen Union gespeichert.
+      Kurz gesagt: Dein Traumtagebuch bleibt persönlich. Noctalia verkauft keine personenbezogenen Daten, zeigt keine zielgerichtete Werbung und nutzt Audio nur für die Transkription. Sprachaufnahmen werden von Noctalia nicht dauerhaft gespeichert; Transkripte und Analysen liegen sicher in der Europäischen Union.
     </p>
   </div>
 
   <section class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5">
-    <h2 class="text-2xl font-serif text-white mb-4 mt-0">Datenschutz kurz gefasst</h2>
+    <h2 class="text-2xl font-serif text-white mb-4 mt-0">Datenschutz in klarer Sprache</h2>
     <div class="grid md:grid-cols-2 gap-6">
       <div>
         <h3 class="text-white font-semibold mb-2">Was Noctalia speichert</h3>

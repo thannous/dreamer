@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Noctalia Press Kit</h1>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an AI-powered dream journal for capturing, interpreting, and exploring dreams with voice notes, automatic transcription, recurring symbols, themes, generated dream images, and Dream Chat.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an Android-first dream journal that helps people record dreams by voice, turn them into structured entries, and explore symbols, images, patterns, and follow-up questions in Dream Chat.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -54,9 +54,9 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Descriptions</h2>
     <h3 class="text-white font-medium mb-2">Short description</h3>
-    <p>AI dream journal for voice capture, transcription, dream interpretation, symbols, themes, images, and follow-up Dream Chat.</p>
+    <p>Android dream journal for voice capture, AI reflection, symbols, generated images, and Dream Chat.</p>
     <h3 class="text-white font-medium mt-6 mb-2">Long description</h3>
-    <p>Noctalia helps people record dreams by voice or text, receive structured AI interpretations, track recurring symbols and emotional themes, create dream-inspired images, and ask follow-up questions through Dream Chat. It is built for dream journaling, sleep reflection, personal development, and lucid dreaming practice.</p>
+    <p>Noctalia helps people capture dreams before the details fade. Users can record by voice or text, receive a structured reflection, review recurring symbols and emotions, generate a dream image, and continue the exploration in Dream Chat.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
