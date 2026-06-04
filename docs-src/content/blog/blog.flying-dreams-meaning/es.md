@@ -4,8 +4,8 @@
   "layout": "blogArticle",
   "lang": "es",
   "slug": "suenos-de-volar",
-  "title": "Soñar que vuelas: significado | Noctalia",
-  "description": "Qué significa soñar que vuelas, si vuelas alto, bajo, con miedo o sin control. Interpreta el sueño según libertad, escape y confianza.",
+  "title": "Soñar que vuelas o te elevas en el aire | Noctalia",
+  "description": "Qué significa soñar que vuelas, soñar con volar o elevarte en el aire: libertad, escape, miedo, control y caída.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -13,25 +13,25 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Soñar que vuelas: significado | Noctalia",
-  "ogDescription": "Qué significa soñar que vuelas, si vuelas alto, bajo, con miedo o sin control. Interpreta el sueño según libertad, escape y confianza.",
+  "ogTitle": "Soñar que vuelas o te elevas en el aire | Noctalia",
+  "ogDescription": "Qué significa soñar que vuelas, soñar con volar o elevarte en el aire: libertad, escape, miedo, control y caída.",
   "ogImage": "https://noctalia.app/img/blog/flying-dreams-meaning.webp",
   "ogImageAlt": "Vista aérea que captura la libertad de volar en los sueños",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Soñar que vuelas: significado | Noctalia",
-  "twitterDescription": "Qué significa soñar que vuelas, si vuelas alto, bajo, con miedo o sin control. Interpreta el sueño según libertad, escape y confianza.",
+  "twitterTitle": "Soñar que vuelas o te elevas en el aire | Noctalia",
+  "twitterDescription": "Qué significa soñar que vuelas, soñar con volar o elevarte en el aire: libertad, escape, miedo, control y caída.",
   "twitterImage": "https://noctalia.app/img/blog/flying-dreams-meaning.webp",
   "twitterImageAlt": "Vista aérea que captura la libertad de volar en los sueños",
   "publishedTime": "2025-01-10",
-  "modifiedTime": "2026-05-04",
+  "modifiedTime": "2026-06-04",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-de-caer",
   "nextPath": "/es/blog/suenos-con-serpientes",
   "preloadImage": "/img/blog/flying-dreams-meaning.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Soñar que vuelas: significado de volar alto, bajo o con miedo\",\n    \"description\": \"Qué significa soñar que vuelas, si vuelas alto, bajo, con miedo o sin control. Interpreta el sueño según libertad, escape y confianza.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/flying-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-01-10\",\n    \"dateModified\": \"2026-05-04\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-de-volar\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1076,\n    \"timeRequired\": \"PT4M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-de-volar\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar que vuelas?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Suele simbolizar libertad, perspectiva, ambición o deseo de superar límites. El tono emocional del vuelo cambia la interpretación.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar que vuelas alto?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Volar alto indica confianza, visión amplia o sensación de avance. También puede señalar aspiraciones elevadas.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar que vuelas con miedo?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Volar con miedo mezcla deseo de libertad con ansiedad, falta de control o presión por una decisión importante.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar que vuelas y caes?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Puede mostrar miedo a perder control después de avanzar, inseguridad o temor a que una oportunidad no se sostenga.\"\n            }\n        }\n    ]\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños de Volar\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-de-volar\"\n        }\n    ]\n}"
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Soñar que vuelas o te elevas en el aire\",\n  \"description\": \"Qué significa soñar que vuelas, soñar con volar o elevarte en el aire: libertad, escape, miedo, control y caída.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/flying-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-01-10\",\n  \"dateModified\": \"2026-06-04\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/suenos-de-volar\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1076,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/es/blog/suenos-de-volar\"\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar que vuelas?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Suele simbolizar libertad, perspectiva, ambición o deseo de superar límites. El tono emocional del vuelo cambia la interpretación.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar que vuelas alto?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Volar alto indica confianza, visión amplia o sensación de avance. También puede señalar aspiraciones elevadas.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar que vuelas con miedo?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Volar con miedo mezcla deseo de libertad con ansiedad, falta de control o presión por una decisión importante.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar que vuelas y caes?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Puede mostrar miedo a perder control después de avanzar, inseguridad o temor a que una oportunidad no se sostenga.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar que te elevas en el aire?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Elevarte en el aire suele hablar de distancia frente a un problema, deseo de escapar o necesidad de mirar tu vida desde otra perspectiva.\"\n      }\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Recursos\",\n      \"item\": \"https://noctalia.app/es/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sueños de Volar\",\n      \"item\": \"https://noctalia.app/es/blog/suenos-de-volar\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -66,10 +66,10 @@
 <span class="text-sm text-purple-300/60">4 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Soñar que vuelas: significado de volar alto, bajo o con miedo
+                    Soñar que vuelas o te elevas en el aire
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    El viento en tu cabello. El mundo empequeñeciéndose abajo. Una estimulante sensación de libertad mientras te elevas sobre tejados y nubes. ¿Los sueños de volar están entre los sueños más memorables y emocionalmente poderosos que experimentamos. Pero ¿qué significan realmente?
+                    El viento en tu cabello. El mundo empequeñeciéndose abajo. Una sensación de libertad mientras te elevas sobre tejados y nubes. Los sueños de volar están entre los sueños más memorables y emocionalmente poderosos que experimentamos. Pero ¿qué significan realmente?
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,10 +86,8 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rápida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Soñar que vuelas suele relacionarse con libertad, perspectiva y deseo de superar límites. Si vuelas con facilidad, el sueño apunta a confianza; si vuelas con miedo o pierdes altura, puede reflejar ansiedad, falta de control o necesidad de escapar de presión.</p>
+    <p class="text-purple-100/80 leading-relaxed">Soñar que vuelas o que te elevas en el aire suele relacionarse con libertad, perspectiva y deseo de superar límites. Si vuelas con facilidad, el sueño apunta a confianza; si vuelas con miedo o pierdes altura, puede reflejar ansiedad, falta de control o necesidad de escapar de presión.</p>
 </section>
-
-<!-- GSC SEO Update: flying exact-match scenarios -->
 
 <!-- GSC SEO Update: flying exact-match scenarios -->
 <section class="glass-panel rounded-2xl p-6 my-10 border border-dream-salmon/15 bg-white/5">
@@ -100,6 +98,7 @@
 <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Volar bajo</h3><p>Deseo de avanzar, pero con prudencia o miedo a perder estabilidad.</p></div>
 <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Volar con miedo</h3><p>Libertad mezclada con ansiedad, responsabilidad o falta de control.</p></div>
 <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">No poder controlar el vuelo</h3><p>Impulso de escapar sin tener claro hacia dónde ir.</p></div>
+<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Elevarte en el aire</h3><p>Distancia frente a un problema, deseo de mirar desde arriba o necesidad de escapar.</p></div>
 </div>
 </section>
 
@@ -128,6 +127,11 @@
 <div class="glass-panel rounded-xl p-5 border border-white/10">
 <h3 class="font-serif text-lg text-dream-cream mb-2">¿Qué significa soñar que vuelas y caes?</h3>
 <p class="text-sm text-gray-300 leading-relaxed">Puede mostrar miedo a perder control después de avanzar, inseguridad o temor a que una oportunidad no se sostenga.</p>
+</div>
+
+<div class="glass-panel rounded-xl p-5 border border-white/10">
+<h3 class="font-serif text-lg text-dream-cream mb-2">¿Qué significa soñar que te elevas en el aire?</h3>
+<p class="text-sm text-gray-300 leading-relaxed">Elevarte en el aire suele hablar de distancia frente a un problema, deseo de escapar o necesidad de mirar tu vida desde otra perspectiva.</p>
 </div>
 </div>
 </section>
