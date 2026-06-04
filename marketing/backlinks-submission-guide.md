@@ -1,10 +1,10 @@
 # Noctalia — Backlinks Submission Guide
 
-> Generated 2026-03-09. Verified 2026-06-04. Recommended order now: finish SaaSHub Q&A after login/Cloudflare access -> monitor FutureTools resubmission -> re-check Crunchbase for a public profile -> Product Hunt draft/launch prep -> BetaList -> retry AlternativeTo/AppBrain after account replies -> Futurepedia only if paid listing budget is approved.
+> Generated 2026-03-09. Verified 2026-06-04. Recommended order now: create the Product Hunt draft/upcoming page with the prepared gallery -> finish SaaSHub Q&A after login/Cloudflare access -> monitor FutureTools resubmission -> re-check Crunchbase for a public profile -> BetaList -> retry AlternativeTo/AppBrain after account replies -> Futurepedia only if paid listing budget is approved.
 
 ---
 
-## Assets Checklist (local files verified 2026-05-21)
+## Assets Checklist (local files verified 2026-06-04)
 
 
 | Asset                   | Path                                      | Status                                                                                            |
@@ -18,6 +18,10 @@
 | Themes screenshot       | `docs/screenshot/s_themes.jpg`            | ✓                                                                                                 |
 | Stats screenshot        | `docs/screenshot/s_stat.jpg`              | ✓                                                                                                 |
 | Articles screenshot     | `docs/screenshot/s_articles.jpg`          | ✓                                                                                                 |
+| Product Hunt gallery 01 | `docs/screenshot/product-hunt/noctalia-product-hunt-01-voice-capture.png` | ✓ 1270x760 landscape asset generated and visually checked |
+| Product Hunt gallery 02 | `docs/screenshot/product-hunt/noctalia-product-hunt-02-ai-interpretation.png` | ✓ 1270x760 landscape asset generated and visually checked |
+| Product Hunt gallery 03 | `docs/screenshot/product-hunt/noctalia-product-hunt-03-guided-reflection.png` | ✓ 1270x760 landscape asset generated and visually checked |
+| Product Hunt gallery 04 | `docs/screenshot/product-hunt/noctalia-product-hunt-04-dream-journal.png` | ✓ 1270x760 landscape asset generated and visually checked |
 | Logo (full)             | `docs/logo/logo_noctalia.png`             | ✓                                                                                                 |
 | Icon 512px              | `docs/logo512.png`                        | ✓                                                                                                 |
 | Icon 192px              | `docs/logo192.png`                        | ✓                                                                                                 |
@@ -251,16 +255,23 @@ Product is live on Android with Google Play in-app purchases and a public landin
 
 ### Gallery (upload in this order)
 
-Product Hunt recommends gallery images around 1270x760. The current screenshots are mostly portrait mobile captures, so prepare 2-4 landscape gallery images before launch by placing the portrait screenshots into branded 1270x760 frames.
+Use the prepared 1270x760 landscape images first. They place the real portrait app screenshots into branded Product Hunt frames and were visually checked on 2026-06-04 for readability and overlap issues.
+
+1. `docs/screenshot/product-hunt/noctalia-product-hunt-01-voice-capture.png` — Voice-first capture
+2. `docs/screenshot/product-hunt/noctalia-product-hunt-02-ai-interpretation.png` — AI dream interpretation
+3. `docs/screenshot/product-hunt/noctalia-product-hunt-03-guided-reflection.png` — Guided reflection
+4. `docs/screenshot/product-hunt/noctalia-product-hunt-04-dream-journal.png` — Private dream journal
+
+Optional backup/source assets if Product Hunt needs extra media:
 
 1. `docs/screenshot/demo1_cropped-1600w.jpg` — Hero
-2. `docs/screenshot/s_enregistrement.jpg` — Voice Recording
-3. `docs/screenshot/s_fiche_reve.jpg` — AI Dream Analysis
-4. `docs/screenshot/s_conversationIA.jpg` — Guided reflection
-5. `docs/screenshot/s_journal.jpg` — Dream Journal
-6. `docs/screenshot/s_themes.jpg` — Dream Categories
-7. `docs/screenshot/s_stat.jpg` — Statistics & Insights
-8. `docs/screenshot/s_articles.jpg` — Guides & Content
+2. `docs/screenshot/s_enregistrement.jpg` — Voice Recording source
+3. `docs/screenshot/s_fiche_reve.jpg` — AI Dream Analysis source
+4. `docs/screenshot/s_conversationIA.jpg` — Guided reflection source
+5. `docs/screenshot/s_journal.jpg` — Dream Journal source
+6. `docs/screenshot/s_themes.jpg` — Dream Categories source
+7. `docs/screenshot/s_stat.jpg` — Statistics & Insights source
+8. `docs/screenshot/s_articles.jpg` — Guides & Content source
 
 ### Maker Comment (first comment — post immediately after launch)
 
@@ -338,7 +349,7 @@ I'd love to hear your feedback — what features would make you actually use a d
 | FutureTools   | ✓         | ☐        | ☐             | Resubmitted 2026-06-04 with stronger differentiation; waiting for review |
 | SaaSHub       | ✓         | ✓        | ✓             | Active 2026-05-21; profile and alternatives page live; main website link verified in public HTML with empty `rel` |
 | BetaList      | ☐         | ☐        | ☐             |                                             |
-| Product Hunt  | ☐         | ☐        | ☐             |                                             |
+| Product Hunt  | ☐         | ☐        | ☐             | 1270x760 gallery assets prepared and visually checked on 2026-06-04; next step is maker account/draft/upcoming page |
 | Futurepedia   | ☐         | ☐        | ☐             | Paid listing only unless free/basic reopens |
 
 

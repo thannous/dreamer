@@ -14,6 +14,11 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - Pricing: Freemium — Free plan + Noctalia Plus (€2.99/month or €19/year)
 - Languages: English, French, Spanish, German, Italian
 - Primary logo: `docs/logo512.png`
+- Product Hunt gallery assets:
+  - `docs/screenshot/product-hunt/noctalia-product-hunt-01-voice-capture.png`
+  - `docs/screenshot/product-hunt/noctalia-product-hunt-02-ai-interpretation.png`
+  - `docs/screenshot/product-hunt/noctalia-product-hunt-03-guided-reflection.png`
+  - `docs/screenshot/product-hunt/noctalia-product-hunt-04-dream-journal.png`
 - Preferred screenshots:
   - `docs/screenshot/noctalia-landing-saashub-2026-05-21.png`
   - `docs/screenshot/s_conversationIA.jpg`
@@ -74,6 +79,7 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 | Footer crawl path | Built and validated | Added a footer link to the press kit across generated docs pages so crawlers and reviewers can discover it without relying only on direct submission URLs. |
 | Sitemap/docs validation | Passed | `npm run docs:build` and `npm run docs:check` passed; sitemap now includes the new localized press pages. |
 | Dream journal apps / alternatives page | Built and validated | Added a localized comparison page cluster for `dream journal apps`, `Noctalia alternatives`, DreamApp, Oniri, DreamKit, and Rosebud. This gives future AlternativeTo/SaaSHub/editorial submissions a relevant internal destination and creates an SEO landing page for comparison-intent searches. |
+| Product Hunt gallery pack | Prepared and visually checked | Created four 1270x760 landscape assets from real app screenshots for the Product Hunt draft/upcoming page. This removes the biggest remaining asset blocker for a higher-yield launch submission. |
 
 ## Confirmation notes
 
@@ -87,6 +93,7 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - FutureTools public search checked on 2026-06-04; Noctalia was not found. FutureTools FAQ says tools not listed after a week can be resubmitted, but approval is curated and not guaranteed. Resubmission completed the same day and confirmation page showed `Tool Submitted!`.
 - Crunchbase public search checked on 2026-06-04; Noctalia profile was not found, only competitors such as DreamStory surfaced.
 - SaaSHub connected Q&A attempt on 2026-06-04 reached Cloudflare/login and the public page showed `You don't have permissions to manage this product`; resume Q&A after SaaSHub login passes.
+- Product Hunt gallery assets prepared on 2026-06-04 in `docs/screenshot/product-hunt/`: voice capture, AI interpretation, guided reflection, and dream journal. All four are 1270x760 PNGs and were visually checked for readability/no overlap.
 - Zimbra `contact@noctalia.app` checked on 2026-05-21 for the SaaSHub approval thread. SaaSHub Stan confirmed `Noctalia.app has been approved` on 2026-05-16; the profile was verified on SaaSHub the same day this note was updated.
 - SaaSHub screenshot cleanup completed 2026-05-21: removed the dark `Landing page // 2026-05-16` image; added `Landing page // 2026-05-21` from `docs/screenshot/noctalia-landing-saashub-2026-05-21.png`; added guided reflection, Dream Interpretation, and Dream Journal screenshots; ordered the landing capture first.
 - Avoid paid upgrades, badges requiring site changes, or sponsored placements unless explicitly approved.
