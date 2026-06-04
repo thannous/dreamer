@@ -238,6 +238,11 @@ Product is live on Android with Google Play in-app purchases and a public landin
 **URL:** [https://www.producthunt.com/posts/new](https://www.producthunt.com/posts/new)
 **Effort:** High | **Review time:** scheduled launch once account can post | **Backlink:** verify on the live launch page; Product Hunt is valuable even if the outbound link is not followed
 
+### Current status
+
+- 2026-06-04: draft page opened in Chrome at `https://www.producthunt.com/posts/new`, but Product Hunt showed a Cloudflare human verification checkbox before the form. Resume from that browser tab after the check is completed.
+- Prepared assets are ready; do not schedule the public launch until the maker account can access the draft flow and preview the gallery.
+
 ### Form Fields
 
 
@@ -252,6 +257,25 @@ Product is live on Android with Google Play in-app purchases and a public landin
 | Platforms    | `Android`                                                             |
 | Maker        | Thanh Chau                                                            |
 
+### Submission-ready copy
+
+**Short Product Hunt description (250 chars):**
+
+```text
+Noctalia is a voice-first AI dream journal for Android. Record dreams before they fade, get structured interpretations, explore symbols and emotions, ask follow-up questions, and track patterns over time with a privacy-first journal hosted in the EU.
+```
+
+**One-line feedback ask:**
+
+```text
+Would love honest feedback on the positioning, gallery, and what would make you actually use a dream journal.
+```
+
+**Pre-launch social post draft (255 chars):**
+
+```text
+We are preparing Noctalia for Product Hunt: a voice-first AI dream journal for capturing dreams before they fade, interpreting symbols and emotions, and exploring patterns over time. Would love honest feedback on the positioning and gallery before launch.
+```
 
 ### Gallery (upload in this order)
 
@@ -349,7 +373,7 @@ I'd love to hear your feedback — what features would make you actually use a d
 | FutureTools   | ✓         | ☐        | ☐             | Resubmitted 2026-06-04 with stronger differentiation; waiting for review |
 | SaaSHub       | ✓         | ✓        | ✓             | Active 2026-05-21; profile and alternatives page live; main website link verified in public HTML with empty `rel` |
 | BetaList      | ☐         | ☐        | ☐             |                                             |
-| Product Hunt  | ☐         | ☐        | ☐             | 1270x760 gallery assets prepared and visually checked on 2026-06-04; next step is maker account/draft/upcoming page |
+| Product Hunt  | ☐         | ☐        | ☐             | 1270x760 gallery assets prepared and visually checked on 2026-06-04; draft page attempt reached Cloudflare human verification before the form |
 | Futurepedia   | ☐         | ☐        | ☐             | Paid listing only unless free/basic reopens |
 
 
