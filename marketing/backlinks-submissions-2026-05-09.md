@@ -84,7 +84,7 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - High-priority pass completed on 2026-05-12: SaaSHub alternatives article submitted, Crunchbase company profile submitted, GoodAITools submitted, and FutureTools submitted. SaaSHub is now approved/verified; Crunchbase, GoodAITools, and FutureTools still need later live-page verification before claiming final backlink value.
 - GoodAITools explicitly offered a `Get a Do-Follow Backlink` badge step with link `https://goodaitools.com/ai/noctalia`; skipped for now because it requires adding their reciprocal badge to Noctalia.
 - Zimbra `contact@noctalia.app` checked on 2026-05-21 for the SaaSHub approval thread. SaaSHub Stan confirmed `Noctalia.app has been approved` on 2026-05-16; the profile was verified on SaaSHub the same day this note was updated.
-- SaaSHub screenshot cleanup completed 2026-05-21: removed the dark `Landing page // 2026-05-16` image; added `Landing page // 2026-05-21` from `docs/screenshot/noctalia-landing-saashub-2026-05-21.png`; added Dream Chat, Dream Interpretation, and Dream Journal screenshots; ordered the landing capture first.
+- SaaSHub screenshot cleanup completed 2026-05-21: removed the dark `Landing page // 2026-05-16` image; added `Landing page // 2026-05-21` from `docs/screenshot/noctalia-landing-saashub-2026-05-21.png`; added guided reflection, Dream Interpretation, and Dream Journal screenshots; ordered the landing capture first.
 - Avoid paid upgrades, badges requiring site changes, or sponsored placements unless explicitly approved.
 
 ## Submitted copy
@@ -93,7 +93,7 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 
 - Category: Productivity
 - Pricing: Freemium
-- Short description: AI dream journal for voice capture, interpretation, symbols, patterns, and dream chat.
+- Short description: AI dream journal for voice capture, interpretation, symbols, patterns, and guided reflection.
 - Logo URL: https://noctalia.app/logo512.png
 - Email: contact@noctalia.app
 - Tags: Dream Journal, AI Dream Analysis, Dream Interpretation, Sleep Wellness, Voice Journal, Lucid Dreaming
@@ -101,7 +101,7 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 ### OpenAIToolsHub
 
 - Category: Productivity
-- Description: Noctalia is an AI-powered dream journal app for capturing, interpreting, and exploring dreams. Users can record dreams by voice or text, get automatic transcription, guided interpretation, recurring symbols, dominant themes, generated dream images, emotion patterns, and Dream Chat for follow-up questions. It is built for dream journaling, sleep reflection, personal development, and lucid dreaming practice.
+- Description: Noctalia is an AI-powered dream journal app for capturing, interpreting, and exploring dreams. Users can record dreams by voice or text, get automatic transcription, guided interpretation, recurring symbols, dominant themes, generated dream images, emotion patterns, and guided reflection for follow-up questions. It is built for dream journaling, sleep reflection, personal development, and lucid dreaming practice.
 - Website URL: https://noctalia.app
 - Logo URL: https://noctalia.app/logo512.png
 - Email: contact@noctalia.app
@@ -113,13 +113,13 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - Public alternatives page: https://www.saashub.com/noctalia-app-alternatives
 - Status: Active; latest verification: 2026-05-21
 - Website URL submitted: https://noctalia.app
-- Tagline: AI dream journal for voice capture, transcription, dream interpretation, symbols, themes, images, and follow-up Dream Chat.
+- Tagline: AI dream journal for voice capture, transcription, dream interpretation, symbols, themes, images, and follow-up guided reflection.
 - Categories selected: Productivity, Lifestyle, Health & Wellness, AI, Tech, Web App, Health And Fitness, Note Taking, iPhone.
 - Competitors selected: DreamApp, AI Dream Meaning, Dreamboard.com, RUYA - Dream Journal, Daylio, dreambox.one, DreamMuse, Dream Oracle AI, DreamStory, Lucid Dreaming Journal, REFLECTLY, Rosebud App.
 - Pricing URL: https://noctalia.app/en/press
 - Pricing: Freemium; EUR 2.99/month; specifics `Noctalia Plus; annual plan EUR 19/year`
 - Public link evidence checked 2026-05-21: profile and alternatives page both expose a main `Visit website` link to `https://noctalia.app` with empty `rel`; pricing link uses `rel="nofollow"`.
-- Uploaded screenshots in SaaSHub order: `Landing page // 2026-05-21`, `Dream Chat // 2026-05-21`, `Dream Interpretation // 2026-05-21`, `Dream Journal // 2026-05-21`.
+- Uploaded screenshots in SaaSHub order: `Landing page // 2026-05-21`, `guided reflection // 2026-05-21`, `Dream Interpretation // 2026-05-21`, `Dream Journal // 2026-05-21`.
 
 ### SaaSHub alternatives article
 
@@ -138,7 +138,7 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - Submitted website: https://noctalia.app
 - Submitted contact email: contact@noctalia.app
 - Submitted short description: AI-powered dream journal and dream interpretation app
-- Submitted full description: Noctalia is an AI-powered dream journal app for Android. Users can record dreams by voice or text, get automatic transcription, guided AI interpretation, recurring symbols, emotional themes, generated dream images, and Dream Chat for follow-up questions. It is built for dream journaling, sleep reflection, personal development, and lucid dreaming practice.
+- Submitted full description: Noctalia is an AI-powered dream journal app for Android. Users can record dreams by voice or text, get automatic transcription, guided AI interpretation, recurring symbols, emotional themes, generated dream images, and guided reflection for follow-up questions. It is built for dream journaling, sleep reflection, personal development, and lucid dreaming practice.
 - Industries selected: Software, Mobile Apps
 - Account used: Google sign-in with `thannous@gmail.com`
 - Confirmation: `Edit successfully made! Your edits have been submitted. They may take a few minutes to appear.`
@@ -154,8 +154,8 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - Icon uploaded: `docs/logo512.png`
 - Categories selected: Health, Mobile Apps, Personal Development
 - Pricing: Freemium
-- Short description: AI dream journal for voice capture, interpretation, symbols, themes, images, and Dream Chat.
-- About: Noctalia is an AI-powered dream journal app for Android. Users can record dreams by voice or text, get automatic transcription, guided AI interpretation, recurring symbols, emotional themes, generated dream images, and Dream Chat for follow-up questions. It is built for dream journaling, sleep reflection, personal development, and lucid dreaming practice.
+- Short description: AI dream journal for voice capture, interpretation, symbols, themes, images, and guided reflection.
+- About: Noctalia is an AI-powered dream journal app for Android. Users can record dreams by voice or text, get automatic transcription, guided AI interpretation, recurring symbols, emotional themes, generated dream images, and guided reflection for follow-up questions. It is built for dream journaling, sleep reflection, personal development, and lucid dreaming practice.
 - Final confirmation: `AI tool Submitted Successfully!`
 - Badge note: GoodAITools showed a dofollow option only if adding their reciprocal badge. Badge was skipped; do not count a followed backlink until approved and the badge decision is made.
 - Light badge code if approved later:
@@ -179,7 +179,7 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - Category selected: Healthcare
 - Pricing selected: Freemium
 - Newsletter: unchecked
-- Short description: Noctalia is an AI dream journal that turns voice or text dream entries into structured interpretations, recurring symbols, emotional themes, dream images, and follow-up Dream Chat.
+- Short description: Noctalia is an AI dream journal that turns voice or text dream entries into structured interpretations, recurring symbols, emotional themes, dream images, and follow-up guided reflection.
 - Captcha/Turnstile state: success
 - Final confirmation: `Tool Submitted! Thanks for submitting your tool. Matt will review it and, if approved, it will appear in the database soon.`
 
@@ -222,7 +222,7 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - Google Play URL submitted: https://play.google.com/store/apps/details?id=com.tanuki75.noctalia
 - Website URL submitted: https://noctalia.app
 - Press kit submitted: https://noctalia.app/en/press
-- Suggested tagline: AI dream journal for voice capture, transcription, dream interpretation, symbols, themes, images, and follow-up Dream Chat.
+- Suggested tagline: AI dream journal for voice capture, transcription, dream interpretation, symbols, themes, images, and follow-up guided reflection.
 - Remaining blocker: AppBrain developer account claim before launch-date submission.
 
 ### Remaining free-platform packet
@@ -234,8 +234,8 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - Contact email: contact@noctalia.app
 - Product name: Noctalia
 - Maker: Thanh Chau
-- Short description: AI dream journal for voice capture, transcription, dream interpretation, symbols, themes, images, and follow-up Dream Chat.
-- Long description: Noctalia helps people record dreams by voice or text, receive structured AI interpretations, track recurring symbols and emotional themes, create dream-inspired images, and ask follow-up questions through Dream Chat. It is built for dream journaling, sleep reflection, personal development, and lucid dreaming practice.
+- Short description: AI dream journal for voice capture, transcription, dream interpretation, symbols, themes, images, and follow-up guided reflection.
+- Long description: Noctalia helps people record dreams by voice or text, receive structured AI interpretations, track recurring symbols and emotional themes, create dream-inspired images, and ask follow-up questions through guided reflection. It is built for dream journaling, sleep reflection, personal development, and lucid dreaming practice.
 - Category candidates: Productivity, Lifestyle, Health & Wellness, Sleep Wellness, Mobile App.
 - Tags: Dream Journal, AI Dream Analysis, Dream Interpretation, Sleep Wellness, Voice Journal, Lucid Dreaming.
 - Competitor/alternative candidates for SaaSHub or AlternativeTo: DreamApp, DreamKit, Dreamboard, Oniri, Dreamfora.

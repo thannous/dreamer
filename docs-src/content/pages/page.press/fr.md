@@ -35,7 +35,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Kit presse Noctalia</h1>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia est un journal de rêves Android pensé pour enregistrer ses rêves par la voix, les transformer en entrées structurées, puis explorer symboles, images, motifs récurrents et questions de suivi dans Dream Chat.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia est un journal de rêves Android pensé pour enregistrer ses rêves par la voix, les transformer en entrées structurées, puis explorer symboles, images, motifs récurrents et questions de suivi guidées.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -53,9 +53,9 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Descriptions</h2>
     <h3 class="text-white font-medium mb-2">Description courte</h3>
-    <p>Journal de rêves Android avec capture vocale, réflexion IA, symboles, images générées et Dream Chat.</p>
+    <p>Journal de rêves Android avec capture vocale, réflexion IA, symboles, images générées et exploration guidée.</p>
     <h3 class="text-white font-medium mt-6 mb-2">Description longue</h3>
-    <p>Noctalia aide à capturer un rêve avant que les détails ne disparaissent. L'utilisateur peut enregistrer par voix ou texte, recevoir une réflexion structurée, retrouver les symboles et émotions récurrents, générer une image du rêve et poursuivre avec Dream Chat.</p>
+    <p>Noctalia aide à capturer un rêve avant que les détails ne disparaissent. L'utilisateur peut enregistrer par voix ou texte, recevoir une réflexion structurée, retrouver les symboles et émotions récurrents, générer une image du rêve et poursuivre avec une exploration guidée.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

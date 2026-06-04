@@ -128,7 +128,7 @@
                     </div>
                     <h3 class="text-xl font-serif mb-3">Analysieren</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Dein Traumbegleiter transkribiert und entschlüsselt sofort Symbole, Emotionen und verborgene Archetypen in deiner Geschichte.
+                        Noctalia transkribiert und entschlüsselt sofort Symbole, Emotionen und verborgene Archetypen in deiner Geschichte.
                     </p>
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="analyze">
                         <picture>
@@ -147,7 +147,7 @@
                     </div>
                     <h3 class="text-xl font-serif mb-3">Entdecken</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Visualisiere deinen Traum mit einem generierten Bild und chatte mit deinem Traumbegleiter, um die persönliche Bedeutung zu vertiefen.
+                        Visualisiere deinen Traum mit einem generierten Bild und vertiefe die persönliche Bedeutung mit geführten Folgefragen.
                     </p>
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="explore">
                         <picture>
@@ -255,7 +255,7 @@
                         </li>
                         <li class="flex items-start gap-3 text-sm text-gray-300">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
-                            <span><strong>Traumbegleiter:</strong> Stelle deinem Traum Folgefragen.</span>
+                            <span><strong>Geführte Reflexion:</strong> Stelle deinem Traum Folgefragen.</span>
                         </li>
                     </ul>
                 </div>
@@ -404,7 +404,7 @@
 
                     <ul class="space-y-4 text-left mb-8 px-4">
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Unbegrenzte Aufnahmen</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 vollständige Sitzungen mit deinem Traumbegleiter</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 vollständige geführte Reflexionen</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Basis-Tagebuch</li>
                     </ul>
 
@@ -417,7 +417,7 @@
                     <h3 class="text-2xl font-serif mb-3 text-dream-cream">Premium kommt bald</h3>
                     <p class="text-purple-200/70 text-sm mb-6">Sei unter den Ersten, die unbegrenzte Analysen, HD-Bilder und erweiterte Statistiken nutzen können.</p>
                     <ul class="space-y-3 text-left mb-8 px-4 text-sm text-gray-300">
-                        <li class="flex items-center gap-3"><i data-lucide="sparkles" class="w-4 h-4 text-dream-salmon"></i> Unbegrenzte Traumbegleiter-Sitzungen</li>
+                        <li class="flex items-center gap-3"><i data-lucide="sparkles" class="w-4 h-4 text-dream-salmon"></i> Unbegrenzte geführte Reflexionen</li>
                         <li class="flex items-center gap-3"><i data-lucide="image" class="w-4 h-4 text-dream-salmon"></i> HD-Traumbilder</li>
                         <li class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-4 h-4 text-dream-salmon"></i> Tiefe Statistiken &amp; Einblicke</li>
                     </ul>
@@ -435,10 +435,10 @@
                     <p class="text-purple-200/60 text-xs mb-6">Oder 19 EUR/Jahr (2 Monate gratis)</p>
 
                     <ul class="space-y-4 text-left mb-8 px-4">
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Unbegrenzte Sitzungen mit deinem Traumbegleiter</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Unbegrenzte geführte Reflexionen</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> HD-Bildgenerierung</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Erweiterte Statistiken</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Chat mit dem Traum</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Geführte Traumreflexion</li>
                     </ul>
 
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">Kostenlos testen</a>

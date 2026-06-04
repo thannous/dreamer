@@ -53,7 +53,7 @@
                         <h3 class="text-white font-semibold mb-2">What Noctalia stores</h3>
                         <ul class="list-disc pl-5 space-y-2">
                             <li>Your account data and preferences.</li>
-                            <li>Your dream transcripts, analyses, generated images, symbols, favorites and Dream Chat history.</li>
+                            <li>Your dream transcripts, analyses, generated images, symbols, favorites and guided reflection history.</li>
                             <li>Technical logs needed for security, stability and quota abuse prevention.</li>
                         </ul>
                     </div>

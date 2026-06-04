@@ -78,6 +78,39 @@
       }
     },
     {
+      "pageId": "page.dream-dictionary-app",
+      "layout": "content",
+      "slugs": {
+        "en": "dream-dictionary-app",
+        "fr": "dictionnaire-de-reves-application",
+        "es": "diccionario-de-suenos-app",
+        "de": "traumlexikon-app",
+        "it": "dizionario-dei-sogni-app"
+      }
+    },
+    {
+      "pageId": "page.android-dream-analysis-app",
+      "layout": "content",
+      "slugs": {
+        "en": "android-dream-analysis-app",
+        "fr": "application-analyse-de-reve-android",
+        "es": "app-analisis-suenos-android",
+        "de": "android-traumanalyse-app",
+        "it": "app-analisi-sogni-android"
+      }
+    },
+    {
+      "pageId": "page.voice-dream-journal",
+      "layout": "content",
+      "slugs": {
+        "en": "voice-dream-journal",
+        "fr": "journal-de-reves-vocal",
+        "es": "diario-de-suenos-por-voz",
+        "de": "traumtagebuch-spracheingabe",
+        "it": "diario-dei-sogni-vocale"
+      }
+    },
+    {
       "pageId": "legal.notice",
       "layout": "content",
       "slugs": {

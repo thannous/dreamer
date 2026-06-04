@@ -14,7 +14,7 @@
 | Recording screenshot    | `docs/screenshot/s_enregistrement.jpg`    | ✓                                                                                                 |
 | Dream detail screenshot | `docs/screenshot/s_fiche_reve.jpg`        | ✓                                                                                                 |
 | Journal screenshot      | `docs/screenshot/s_journal.jpg`           | ✓                                                                                                 |
-| AI Chat screenshot      | `docs/screenshot/s_conversationIA.jpg`    | ✓                                                                                                 |
+| Guided reflection screenshot | `docs/screenshot/s_conversationIA.jpg`    | ✓                                                                                                 |
 | Themes screenshot       | `docs/screenshot/s_themes.jpg`            | ✓                                                                                                 |
 | Stats screenshot        | `docs/screenshot/s_stat.jpg`              | ✓                                                                                                 |
 | Articles screenshot     | `docs/screenshot/s_articles.jpg`          | ✓                                                                                                 |
@@ -46,19 +46,19 @@
 **Tagline (≤60 chars):**
 
 ```
-Your AI dream companion — capture, interpret, explore
+Voice dream journal — capture, interpret, explore
 ```
 
 **Short Description:**
 
 ```
-Your AI dream companion. Capture dreams by voice, get instant interpretations, and explore what your nights are telling you.
+Capture dreams by voice, get instant interpretations, and explore what your nights are telling you.
 ```
 
 **Long Description (EN):**
 
 ```
-Noctalia is an AI-powered dream journal app that turns the fragile moment after waking into a clear record of your inner world. Record a dream by voice or text, then get automatic transcription, guided interpretation, recurring symbols, dream type, dominant themes, and a unique generated image for each entry. You can ask follow-up questions in Dream Chat, track emotions and patterns over time, explore a dream symbol dictionary, and use lucid dreaming rituals to build a stronger recall habit. Available in 5 languages with a privacy-first approach: voice recordings are used for transcription and are not stored, and journal data is hosted securely in the European Union. Free to start, with Noctalia Plus for unlimited dream companion sessions, HD image generation, advanced stats, and dream chat.
+Noctalia is an AI-powered dream journal app that turns the fragile moment after waking into a clear record of your inner world. Record a dream by voice or text, then get automatic transcription, guided interpretation, recurring symbols, dream type, dominant themes, and a unique generated image for each entry. You can ask follow-up questions in guided reflection, track emotions and patterns over time, explore a dream symbol dictionary, and use lucid dreaming rituals to build a stronger recall habit. Available in 5 languages with a privacy-first approach: voice recordings are used for transcription and are not stored, and journal data is hosted securely in the European Union. Free to start, with Noctalia Plus for unlimited guided reflection sessions, HD image generation, advanced stats, and richer exploration.
 ```
 
 **Tags:**
@@ -74,7 +74,7 @@ Dream Journal, AI Dream Analysis, Dream Interpretation, Sleep Wellness, Personal
 | Crunchbase | Submitted a new company profile with known factual fields only: Noctalia, `https://noctalia.app`, `contact@noctalia.app`, Software, Mobile Apps, and product descriptions. Crunchbase confirmed edits were submitted and may take a few minutes to appear. | Re-check Crunchbase search for `Noctalia`; record the public profile URL and verify the outbound website link once visible. |
 | GoodAITools | Submitted free AI tool listing. Confirmation page showed the candidate URL `https://goodaitools.com/ai/noctalia`. Free plan claims one dofollow link only if their reciprocal badge/backlink is added. | Watch for approval, then decide explicitly whether to add the badge. Do not claim a followed backlink before approval plus badge decision. |
 | FutureTools | Submitted free tool listing. Turnstile passed and final page confirmed Matt will review it before publication. | Re-check FutureTools for `Noctalia` and watch `contact@noctalia.app` for review status. |
-| SaaSHub profile + alternatives page | Approved and verified 2026-05-21 as `https://www.saashub.com/noctalia-app`; public alternatives page live at `https://www.saashub.com/noctalia-app-alternatives`. Gallery refreshed with the new live landing screenshot plus Dream Chat, Dream Interpretation, and Dream Journal captures. | Monitor referral traffic and Search Console backlink discovery. The main `Visit website` link points to `https://noctalia.app` with empty `rel` in public HTML; pricing link is `nofollow`. |
+| SaaSHub profile + alternatives page | Approved and verified 2026-05-21 as `https://www.saashub.com/noctalia-app`; public alternatives page live at `https://www.saashub.com/noctalia-app-alternatives`. Gallery refreshed with the new live landing screenshot plus guided reflection, Dream Interpretation, and Dream Journal captures. | Monitor referral traffic and Search Console backlink discovery. The main `Visit website` link points to `https://noctalia.app` with empty `rel` in public HTML; pricing link is `nofollow`. |
 
 ---
 
@@ -172,7 +172,7 @@ Copy-paste these as bullet points if the form allows:
 • AI Dream Transcription — Speech-to-text converts voice recordings to structured text
 • AI Dream Interpretation — Powered by Google Gemini, inspired by Jungian/Freudian psychology
 • AI Image Generation — Automatic dream illustrations from analysis
-• Dream Companion Chat — Conversational AI for follow-up questions about your dreams
+• Guided Dream Reflection — follow-up questions about your dreams
 • Pattern Recognition — Detects recurring themes and tracks emotional evolution over time
 ```
 
@@ -181,7 +181,7 @@ Copy-paste these as bullet points if the form allows:
 - Go to [https://www.futurepedia.io/submit-tool](https://www.futurepedia.io/submit-tool)
 - Fill form with info above
 - Upload logo (`docs/logo512.png`)
-- Add 2-3 screenshots (hero + dream detail + AI chat)
+- Add 2-3 screenshots (hero + dream detail + guided reflection)
 - Submit
 - Wait for editorial review according to the paid listing tier
 - Verify listing is live and backlink is active
@@ -215,7 +215,7 @@ Copy-paste these as bullet points if the form allows:
 
 ### Angle
 
-Product is live on Android with Google Play in-app purchases and a public landing page on its own domain. Position as an AI-first dream journal: voice/text capture, instant interpretation, generated dream art, dream chat, emotion/pattern tracking, symbol dictionary, and lucid dreaming rituals.
+Product is live on Android with Google Play in-app purchases and a public landing page on its own domain. Position as an AI-first dream journal: voice/text capture, instant interpretation, generated dream art, guided reflection, emotion/pattern tracking, symbol dictionary, and lucid dreaming rituals.
 
 ### Steps:
 
@@ -240,7 +240,7 @@ Product is live on Android with Google Play in-app purchases and a public landin
 | Field        | Value                                                                 |
 | ------------ | --------------------------------------------------------------------- |
 | Product Name | `Noctalia`                                                            |
-| Tagline      | `Your AI dream companion — capture, interpret, explore`               |
+| Tagline      | `Voice dream journal — capture, interpret, explore`                   |
 | Description  | *(long description EN above)*                                         |
 | Website      | `https://noctalia.app`                                                |
 | Topics       | `Health & Fitness`, `Writing`, `Lifestyle`, `Artificial Intelligence` |
@@ -256,7 +256,7 @@ Product Hunt recommends gallery images around 1270x760. The current screenshots 
 1. `docs/screenshot/demo1_cropped-1600w.jpg` — Hero
 2. `docs/screenshot/s_enregistrement.jpg` — Voice Recording
 3. `docs/screenshot/s_fiche_reve.jpg` — AI Dream Analysis
-4. `docs/screenshot/s_conversationIA.jpg` — Dream Companion Chat
+4. `docs/screenshot/s_conversationIA.jpg` — Guided reflection
 5. `docs/screenshot/s_journal.jpg` — Dream Journal
 6. `docs/screenshot/s_themes.jpg` — Dream Categories
 7. `docs/screenshot/s_stat.jpg` — Statistics & Insights
@@ -271,17 +271,17 @@ I'm Thanh, a software engineer based in France, and I built Noctalia because I'v
 
 Every morning, I'd wake up with vivid fragments that vanished the moment I reached for my phone. Writing them down felt like a chore. Existing apps were either too basic (just a text editor) or too esoteric (crystals and horoscopes). I wanted something that respected the science — grounded in Jungian and Freudian psychology — while being effortless to use.
 
-So I built Noctalia: you just speak your dream the moment you wake up. The AI transcribes it, generates a unique illustration, and delivers an interpretation in seconds. But what makes it special is the follow-up — you can chat with your dream companion to dig deeper, ask "why was I flying?" or "what does the ocean mean?", and get thoughtful, personalized answers.
+So I built Noctalia: you just speak your dream the moment you wake up. The AI transcribes it, generates a unique illustration, and delivers an interpretation in seconds. But what makes it special is the follow-up — you can explore guided questions to dig deeper, ask "why was I flying?" or "what does the ocean mean?", and get thoughtful, personalized answers.
 
 What I'm most proud of:
 🎙️ Voice-first — no typing half-asleep
 🎨 Every dream gets a unique AI-generated illustration
 🧠 Interpretations inspired by real psychology, not fortune cookies
-💬 Conversational AI to explore your dreams further
+💬 Guided follow-up questions to explore your dreams further
 📊 Pattern tracking — see your recurring themes and emotional evolution
 🔐 Privacy-first — your dreams are encrypted, only you can see them
 
-It's free to start with unlimited recordings and 2 full sessions with the dream companion. Noctalia Plus is €2.99/month or €19/year, with a 7-day trial, unlimited dream companion sessions, HD image generation, advanced stats, and dream chat.
+It's free to start with unlimited recordings and 2 guided reflection sessions. Noctalia Plus is €2.99/month or €19/year, with a 7-day trial, unlimited guided reflection sessions, HD image generation, advanced stats, and richer exploration.
 
 Currently on Android. Available in 5 languages (EN, FR, ES, DE, IT).
 
@@ -359,7 +359,7 @@ Add to `docs/en/index.html`, `docs/index.html`, and other relevant localized pag
 ```html
 <a href="https://www.producthunt.com/posts/noctalia?utm_source=badge-featured" target="_blank">
   <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=YOUR_POST_ID&theme=light"
-       alt="Noctalia - Your AI dream companion | Product Hunt"
+       alt="Noctalia - Voice dream journal | Product Hunt"
        width="250" height="54" />
 </a>
 ```

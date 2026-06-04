@@ -15,7 +15,7 @@ Noctalia helps people record dreams by voice or text, then turns those entries i
 - Recurring symbols and dominant themes
 - Dream type and emotion tracking
 - Generated image for each dream entry
-- Dream Chat for follow-up questions
+- Guided reflection for follow-up questions
 - Dream symbol dictionary
 - Lucid dreaming rituals and recall habits
 

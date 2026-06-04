@@ -53,7 +53,7 @@
         <h3 class="text-white font-semibold mb-2">Cosa conserva Noctalia</h3>
         <ul class="list-disc pl-5 space-y-2">
           <li>Dati account e preferenze.</li>
-          <li>Trascrizioni, analisi, immagini generate, simboli, preferiti e cronologia Dream Chat.</li>
+          <li>Trascrizioni, analisi, immagini generate, simboli, preferiti e cronologia della riflessione guidata.</li>
           <li>Log tecnici necessari per sicurezza, stabilità e prevenzione degli abusi.</li>
         </ul>
       </div>
@@ -78,7 +78,7 @@
     <h2 class="text-2xl font-serif text-white mb-4 mt-8">2. Dati trattati</h2>
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Dati account:</strong> email, password in forma hash, lingua, preferenze e dati di gestione account.</li>
-      <li><strong>Dati dei sogni:</strong> testi, trascrizioni, analisi IA, citazioni, temi, tipo di sogno, preferiti, immagini generate e cronologia Dream Chat.</li>
+      <li><strong>Dati dei sogni:</strong> testi, trascrizioni, analisi IA, citazioni, temi, tipo di sogno, preferiti, immagini generate e cronologia della riflessione guidata.</li>
       <li><strong>Audio:</strong> quando usi la voce, l’audio viene trattato per produrre una trascrizione. Noctalia non conserva in modo persistente i file audio sui propri server; viene salvata la trascrizione.</li>
       <li><strong>Dati tecnici:</strong> log di errore, prestazioni e sicurezza, versione app, sistema operativo e identificatore dispositivo hashato per gestire le quote gratuite. Al momento non usiamo strumenti di marketing analytics di terze parti come Google Analytics o Mixpanel.</li>
       <li><strong>Dati di supporto:</strong> messaggi che ci invii e informazioni necessarie a gestire la richiesta.</li>
@@ -101,7 +101,7 @@
     <p>Noctalia usa servizi di IA per trascrivere e analizzare i sogni e per generare immagini o testi associati.</p>
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Riconoscimento vocale:</strong> usiamo preferibilmente il riconoscimento nativo del dispositivo. Se non disponibile, l’audio può essere inviato temporaneamente tramite backend a un servizio terzo come Google Cloud Speech-to-Text. Noctalia non conserva tali registrazioni in modo persistente.</li>
-      <li><strong>Analisi e generazione:</strong> il testo del sogno e metadati necessari sono inviati al provider IA principale, attualmente <strong>Google Gemini</strong>, per generare analisi, riassunti, risposte chat e contenuti visuali.</li>
+      <li><strong>Analisi e generazione:</strong> il testo del sogno e metadati necessari sono inviati al provider IA principale, attualmente <strong>Google Gemini</strong>, per generare analisi, riassunti, risposte alle domande di riflessione e contenuti visuali.</li>
       <li><strong>Altri provider:</strong> in futuro potremmo usare servizi equivalenti come Anthropic, OpenAI, Perplexity o Mistral, solo con garanzie adeguate di sicurezza e riservatezza.</li>
       <li><strong>Addestramento modelli:</strong> quando possibile, configuriamo i provider affinché i tuoi dati non siano usati per addestrare modelli generali.</li>
     </ul>

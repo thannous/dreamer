@@ -38,7 +38,7 @@
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Alternative à Oniri pour journal de rêves</h1>
 <p class="text-sm text-purple-300/70 mb-6">Mis à jour le 20 mai 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Oniri est une app mature pour journal de rêves et rêve lucide. Noctalia est l’alternative à envisager si vous n’avez pas besoin d’une suite complète de rêve lucide et cherchez surtout la capture rapide sur Android, l’analyse IA, les images, les symboles et Dream Chat.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Oniri est une app mature pour journal de rêves et rêve lucide. Noctalia est l’alternative à envisager si vous n’avez pas besoin d’une suite complète de rêve lucide et cherchez surtout la capture rapide sur Android, l’analyse IA, les images, les symboles et l’exploration guidée.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -55,7 +55,7 @@
         <tbody class="divide-y divide-white/10">
           <tr><td class="py-4 pr-4 text-white font-medium">Rêve lucide</td><td class="py-4 pr-4 ">Tests de réalité, rappels, signaux audio et techniques WILD/MILD/SSILD sont au cœur du positionnement.</td><td class="py-4 pr-4 ">Outils de base et réflexion, mais pas une suite avancée de rêve lucide.</td><td class="py-4 pr-4 ">Oniri reste le choix si le rêve lucide est prioritaire.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Capture au réveil</td><td class="py-4 pr-4 ">Les notes orales existent, mais le produit est plus large.</td><td class="py-4 pr-4 ">La capture vocale est le cœur du parcours Android.</td><td class="py-4 pr-4 ">Noctalia si la vitesse au réveil est le problème principal.</td></tr>
-          <tr><td class="py-4 pr-4 text-white font-medium">Interprétation</td><td class="py-4 pr-4 ">Interprétation IA, questions et centaines de significations annoncées.</td><td class="py-4 pr-4 ">Carte de rêve IA, symboles récurrents et Dream Chat.</td><td class="py-4 pr-4 ">Noctalia est plus focalisée et conversationnelle.</td></tr>
+          <tr><td class="py-4 pr-4 text-white font-medium">Interprétation</td><td class="py-4 pr-4 ">Interprétation IA, questions et centaines de significations annoncées.</td><td class="py-4 pr-4 ">Carte de rêve IA, symboles récurrents et exploration guidée.</td><td class="py-4 pr-4 ">Noctalia est plus focalisée et conversationnelle.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Images</td><td class="py-4 pr-4 ">Images générées et jusqu’à 5 images par rêve dans l’offre premium.</td><td class="py-4 pr-4 ">Image générée comme mémoire visuelle centrale.</td><td class="py-4 pr-4 ">Choisissez selon le flux global, pas seulement l’image.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Export et stats</td><td class="py-4 pr-4 ">Export PDF, filtres et statistiques avancées sont des forces publiques.</td><td class="py-4 pr-4 ">Stats et symboles existent, mais l’export n’est pas le claim principal.</td><td class="py-4 pr-4 ">Oniri est plus fort pour les utilisateurs orientés export.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Prix sourcé</td><td class="py-4 pr-4 ">L’App Store US liste plusieurs achats intégrés Oniri; les prix varient selon la zone.</td><td class="py-4 pr-4 ">Noctalia affiche Gratuit plus Onironaute à 2,99 €/mois ou 19 €/an.</td><td class="py-4 pr-4 ">Conserver pays/date; pas de claim universel de prix.</td></tr>
@@ -80,7 +80,7 @@
     <ol class="list-decimal pl-5 space-y-2">
       <li>Exportez les PDF ou copiez les rêves clés avant de changer.</li>
       <li>Gardez Oniri si les alarmes lucides et techniques structurent votre pratique.</li>
-      <li>Utilisez Noctalia pour les nouveaux rêves Android où vitesse, image et chat comptent.</li>
+      <li>Utilisez Noctalia pour les nouveaux rêves Android où vitesse, image et questions de suivi comptent.</li>
       <li>Reconstruisez les symboles à partir des rêves récents.</li>
     </ol>
   </section>
@@ -123,7 +123,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Essayer Noctalia</h2>
-    <p>Noctalia est disponible sur Android pour enregistrer vite, retrouver les symboles, créer une mémoire visuelle et poursuivre avec Dream Chat.</p>
+    <p>Noctalia est disponible sur Android pour enregistrer vite, retrouver les symboles, créer une mémoire visuelle et poursuivre avec une exploration guidée.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Google Play</a></p>
   </section>
 </div>

@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "app-interpretacion-suenos-ia",
   "title": "App de interpretación de sueños con IA | Noctalia",
-  "description": "Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con Dream Chat.",
+  "description": "Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con reflexión guiada.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",
@@ -14,12 +14,12 @@
   "mainClass": "pt-32 pb-20 px-6 max-w-6xl mx-auto",
   "ogType": "article",
   "ogTitle": "App de interpretación de sueños con IA",
-  "ogDescription": "Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con Dream Chat.",
+  "ogDescription": "Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con reflexión guiada.",
   "ogImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "ogImageAlt": "Noctalia dream journal app",
   "twitterCard": "summary_large_image",
   "twitterTitle": "App de interpretación de sueños con IA",
-  "twitterDescription": "Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con Dream Chat.",
+  "twitterDescription": "Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con reflexión guiada.",
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
@@ -29,7 +29,7 @@
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"App de interpretación de sueños con IA\",\n    \"description\": \"Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con Dream Chat.\",\n    \"url\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\",\n    \"inLanguage\": \"es\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"App de interpretación de sueños con IA\",\n    \"description\": \"Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con reflexión guiada.\",\n    \"url\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\",\n    \"inLanguage\": \"es\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"App de interpretación de sueños con IA\",\n            \"item\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\"\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Qué buscar\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Captura rápida, privacidad clara, límites transparentes, borrado o exportación, contexto de símbolos, preguntas y disclaimer.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Por qué Noctalia encaja\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Noctalia es Android, vocal, visual, multilingüe y conectado a un diccionario público de símbolos en crecimiento.\"\n            }\n        }\n    ]\n}"
   ],
@@ -43,7 +43,7 @@
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">En resumen</h2>
-    <p>Noctalia combina voz, transcripción, interpretación IA, símbolos recurrentes, imágenes generadas y Dream Chat. La interpretación es una ayuda de reflexión, no una verdad definitiva.</p>
+    <p>Noctalia combina voz, transcripción, interpretación IA, símbolos recurrentes, imágenes generadas y reflexión guiada. La interpretación es una ayuda de reflexión, no una verdad definitiva.</p>
   </section>
 
   <section class="grid md:grid-cols-2 gap-6">
@@ -139,7 +139,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Probar Noctalia</h2>
-    <p>Noctalia está en Android para grabar un sueño antes de olvidar los detalles, revisar símbolos, crear una imagen de recuerdo y seguir la reflexión en Dream Chat.</p>
+    <p>Noctalia está en Android para grabar un sueño antes de olvidar los detalles, revisar símbolos, crear una imagen de recuerdo y seguir con una reflexión guiada.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Google Play</a></p>
   </section>
 </div>

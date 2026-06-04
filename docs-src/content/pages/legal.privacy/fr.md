@@ -52,7 +52,7 @@
                         <h3 class="text-white font-semibold mb-2">Ce que Noctalia stocke</h3>
                         <ul class="list-disc pl-5 space-y-2">
                             <li>Vos données de compte et préférences.</li>
-                            <li>Vos transcriptions de rêves, analyses, images générées, symboles, favoris et historique Dream Chat.</li>
+                            <li>Vos transcriptions de rêves, analyses, images générées, symboles, favoris et historique d’exploration guidée.</li>
                             <li>Les journaux techniques nécessaires à la sécurité, à la stabilité et à la prévention des abus de quotas.</li>
                         </ul>
                     </div>
@@ -78,7 +78,7 @@
                 <p>Dans le cadre de l'utilisation de l'application Noctalia, nous pouvons traiter les catégories de données suivantes&nbsp;:</p>
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Données de compte&nbsp;:</strong> adresse émail, mot de passe (stocké sous forme hachée), préférences de langue ou d'affichage, informations liées à la création et à la gestion de votre compte.</li>
-                    <li><strong>Données de rêves&nbsp;:</strong> transcriptions textuelles de vos rêves, analyses générées par l'IA, citations partageables, thèmes ou catégories, type de rêve, statut de favori, ainsi que les images générées pour illustrer vos rêves et l'historique des conversations avec l'assistant IA concernant vos rêves.</li>
+                    <li><strong>Données de rêves&nbsp;:</strong> transcriptions textuelles de vos rêves, analyses générées par l'IA, citations partageables, thèmes ou catégories, type de rêve, statut de favori, ainsi que les images générées pour illustrer vos rêves et l'historique d’exploration guidée concernant vos rêves.</li>
                     <li><strong>Enregistrements audio&nbsp;:</strong> lorsque vous utilisez la fonction d'enregistrement vocal, votre voix est traitée afin de produire une transcription. Noctalia n'enregistre ni ne stocke vos fichiers audio sur ses propres serveurs&nbsp;: ils sont traités en temps réel uniquement pour produire la transcription, puis supprimés du flux technique. Seul le texte transcrit est enregistré dans votre journal.</li>
                     <li><strong>Données techniques et d'utilisation&nbsp;:</strong> journaux techniques (erreurs, performances, événements de sécurité), informations de base sur l'appareil (système d'exploitation, version de l'application), un identifiant d'appareil hashé utilisé uniquement pour la gestion des quotas d'utilisation gratuite, identifiants techniques nécessaires à la fourniture du service. Nous n'utilisons actuellement <strong>aucun outil d'analytics marketing tiers</strong> (type Google Analytics, Mixpanel, etc.).</li>
                     <li><strong>Données de support&nbsp;:</strong> contenu de vos échanges avec nous (par exemple lorsque vous nous contactez par émail) et informations nécessaires au suivi de vos demandes.</li>

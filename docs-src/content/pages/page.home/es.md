@@ -130,7 +130,7 @@
                     </div>
                     <h3 class="text-xl font-serif mb-3">Analiza</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Tu compañero de sueños transcribe instantáneamente y decodifica símbolos, emociones y arquetipos ocultos en tu historia.
+                        Noctalia transcribe tu sueño y revela símbolos, emociones y patrones recurrentes en tu historia.
                     </p>
                              <!-- 2. Analyzing screen -->
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="analyze">
@@ -150,7 +150,7 @@
                     </div>
                     <h3 class="text-xl font-serif mb-3">Explora</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Visualiza tu sueño con una imagen generada y chatea con tu compañero de sueños para profundizar en el significado personal.
+                        Visualiza tu sueño con una imagen generada y usa preguntas guiadas para profundizar en el significado personal.
                     </p>
                     <!-- 3. Exploring screen -->
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="explore">
@@ -188,7 +188,7 @@
             <!-- Bento Grid -->
             <div class="grid grid-cols-1 md:grid-cols-6 md:grid-rows-4 gap-6 h-auto md:h-[900px]">
 
-                <!-- Feature 1: Voice & dream companion (Large) -->
+                <!-- Feature 1: Voice and guided reflection (Large) -->
                 <div class="col-span-1 md:col-span-4 md:row-span-2 glass-panel rounded-3xl p-0 flex flex-col md:flex-row justify-between group relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-dream-salmon/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
 
@@ -262,7 +262,7 @@
                         </li>
                         <li class="flex items-start gap-3 text-sm text-gray-300">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
-                            <span><strong>Compañero de sueños:</strong> Haz preguntas de seguimiento a tu sueño.</span>
+                            <span><strong>Exploración guiada:</strong> Haz preguntas de seguimiento sobre tu sueño.</span>
                         </li>
                     </ul>
                 </div>
@@ -414,7 +414,7 @@
 
                     <ul class="space-y-4 text-left mb-8 px-4">
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Grabaciones ilimitadas</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 sesiones completas con tu compañero de sueños</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 exploraciones guiadas completas</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Diario básico</li>
                     </ul>
 
@@ -427,7 +427,7 @@
                     <h3 class="text-2xl font-serif mb-3 text-dream-cream">Premium próximamente</h3>
                     <p class="text-purple-200/70 text-sm mb-6">Sé el primero en acceder a análisis ilimitados, imágenes HD y estadísticas avanzadas cuando lancemos.</p>
                     <ul class="space-y-3 text-left mb-8 px-4 text-sm text-gray-300">
-                        <li class="flex items-center gap-3"><i data-lucide="sparkles" class="w-4 h-4 text-dream-salmon"></i> Sesiones ilimitadas con tu compañero de sueños</li>
+                        <li class="flex items-center gap-3"><i data-lucide="sparkles" class="w-4 h-4 text-dream-salmon"></i> Exploraciones guiadas ilimitadas</li>
                         <li class="flex items-center gap-3"><i data-lucide="image" class="w-4 h-4 text-dream-salmon"></i> Visuales de sueños en HD</li>
                         <li class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-4 h-4 text-dream-salmon"></i> Estadísticas e insights profundos</li>
                     </ul>
@@ -444,10 +444,10 @@
                     <p class="text-purple-200/60 text-xs mb-6">O 19 EUR/año (2 meses gratis)</p>
 
                     <ul class="space-y-4 text-left mb-8 px-4">
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Sesiones ilimitadas con tu compañero de sueños</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Exploraciones guiadas ilimitadas</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Generación de imágenes HD</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Estadísticas avanzadas</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Chatea con el sueño</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Reflexión guiada del sueño</li>
                     </ul>
 
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es" class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">Pruébalo gratis</a>
