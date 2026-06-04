@@ -1020,21 +1020,21 @@
       "it": {
         "slug": "cane",
         "name": "Cane",
-        "shortDescription": "Sognare un cane riguarda fiducia, legami e protezione: un cane affettuoso, cani in gruppo, un cane che attacca o morde, un cane malato o la paura di perdere il cane.",
+        "shortDescription": "Sognare un cane o sognare cani riguarda fiducia, legami e protezione. Un cane che ti attacca, morde, segue o si ammala cambia il significato del sogno.",
         "askYourself": [
           "Il cane era affettuoso, aggressivo, malato o smarrito?",
           "Attaccava, mordeva, seguiva o proteggeva qualcuno?",
           "Quale rapporto di fiducia sembra forte, ferito o fragile adesso?"
         ],
-        "seoTitle": "cane, cani o cane che attacca",
+        "seoTitle": "cane, cani o cane che ti attacca",
         "faq": [
           {
             "question": "Cosa significa sognare un cane?",
-            "answer": "Sognare un cane riguarda spesso fiducia, lealtà, protezione e relazioni. Il significato cambia se il cane è affettuoso, aggressivo, malato, randagio o se ti segue."
+            "answer": "Sognare un cane riguarda spesso fiducia, lealtà, protezione e relazioni. Il significato cambia se il cane è affettuoso, aggressivo, malato, randagio, ti segue o ti attacca."
           },
           {
             "question": "Cosa significa sognare cani?",
-            "answer": "Più cani possono rappresentare famiglia, amici o dinamiche di gruppo. Cani tranquilli indicano sostegno; cani aggressivi segnalano pressione o conflitto."
+            "answer": "Sognare cani può rappresentare famiglia, amici o dinamiche di gruppo. Cani tranquilli indicano sostegno; cani aggressivi segnalano pressione, conflitto o fiducia ferita."
           },
           {
             "question": "Cosa significa sognare un cane che ti attacca?",
@@ -1305,17 +1305,17 @@
       "it": {
         "slug": "fuoco",
         "name": "Fuoco",
-        "shortDescription": "Sognare fuoco può parlare di passione, rabbia, urgenza o trasformazione: fuoco controllato, incendio, fiamme, fuoco in casa o qualcosa che brucia troppo in fretta.",
+        "shortDescription": "Sognare fuoco parla spesso di passione, rabbia, urgenza o trasformazione. Il significato cambia se vedi il fuoco, un incendio, fiamme fuori controllo o fuoco in casa.",
         "askYourself": [
           "Il fuoco scaldava, illuminava, bruciava o distruggeva?",
           "Era un incendio, una fiamma controllata o fuoco in casa?",
           "Quale emozione nella mia vita sembra accendersi troppo in fretta?"
         ],
-        "seoTitle": "fuoco, incendio o fiamme",
+        "seoTitle": "fuoco, incendio o fuoco in casa",
         "faq": [
           {
             "question": "Cosa significa sognare fuoco?",
-            "answer": "Sognare fuoco può rappresentare energia, desiderio, rabbia, trasformazione o purificazione. Il significato dipende dal fatto che il fuoco fosse controllato o fuori controllo."
+            "answer": "Sognare fuoco può rappresentare energia, desiderio, rabbia, trasformazione o purificazione. Il significato dipende dal fatto che il fuoco fosse controllato, minaccioso o fuori controllo."
           },
           {
             "question": "Cosa significa sognare un incendio?",
@@ -1326,8 +1326,8 @@
             "answer": "Il fuoco in casa porta il simbolo nella sfera privata: identità, famiglia, sicurezza o tensioni domestiche che chiedono attenzione."
           },
           {
-            "question": "Cosa significano le fiamme nei sogni?",
-            "answer": "Le fiamme possono parlare di passione, creatività o rabbia. Se ti spaventano, il sogno suggerisce che l’intensità è diventata difficile da contenere."
+            "question": "Cosa significa sognare il fuoco?",
+            "answer": "Sognare il fuoco porta l'attenzione su un'intensità: passione, creatività, rabbia o cambiamento. Se ti spaventa, qualcosa potrebbe essere difficile da contenere."
           }
         ],
         "softCta": {
@@ -1638,17 +1638,17 @@
       "es": {
         "slug": "puerta",
         "name": "Puerta",
-        "shortDescription": "Soñar con puertas habla de decisiones, oportunidades y límites: abrir una puerta cerrada, ver puertas abiertas, encontrar la puerta de casa abierta o estar frente a muchas puertas.",
+        "shortDescription": "Soñar con puertas habla de decisiones, oportunidades y límites: abrir una puerta cerrada, ver puertas abiertas, encontrar la puerta de casa abierta o no poder cruzar.",
         "askYourself": [
           "¿La puerta estaba abierta, cerrada, bloqueada o era la puerta de mi casa?",
           "¿Yo la abría, la cerraba, intentaba cruzarla o solo la veía?",
           "¿Qué decisión u oportunidad se siente como una puerta ahora?"
         ],
-        "seoTitle": "puertas abiertas, cerradas o muchas puertas",
+        "seoTitle": "abrir una puerta cerrada, puertas abiertas o puerta de casa",
         "faq": [
           {
             "question": "¿Qué significa soñar con puertas?",
-            "answer": "Soñar con puertas suele relacionarse con oportunidades, decisiones y cambios de etapa. La interpretación depende de si la puerta estaba abierta, cerrada, bloqueada o si intentabas cruzarla."
+            "answer": "Soñar con puertas suele relacionarse con oportunidades, decisiones y cambios de etapa. La interpretación depende de si la puerta estaba abierta, cerrada, bloqueada, era de tu casa o intentabas cruzarla."
           },
           {
             "question": "¿Qué significa soñar con abrir una puerta cerrada?",
@@ -1656,7 +1656,7 @@
           },
           {
             "question": "¿Qué significa soñar con puertas abiertas?",
-            "answer": "Las puertas abiertas pueden señalar acceso, permiso, confianza o exposición. Si la puerta era de tu casa, mira primero privacidad, seguridad y límites personales."
+            "answer": "Las puertas abiertas pueden señalar acceso, permiso, confianza o exposición. Si sueñas con la puerta abierta de tu casa, mira primero privacidad, seguridad y límites personales."
           },
           {
             "question": "¿Qué significa soñar con muchas puertas?",
@@ -2001,13 +2001,13 @@
       "es": {
         "slug": "puente",
         "name": "Puente",
-        "shortDescription": "Soñar con un puente habla de transición y avance: cruzar un puente, ver un puente roto, pasar por un puente peligroso o mirar un puente sobre agua.",
+        "shortDescription": "Soñar con un puente habla de transición y avance: cruzar un puente, ver un puente roto, pasar por un puente peligroso o mirar un puente roto y agua.",
         "askYourself": [
           "¿Cruzaba el puente o me quedaba antes de pasar?",
           "¿El puente estaba roto, peligroso, en mal estado o sobre agua?",
           "¿Qué cambio estoy intentando atravesar sin perder estabilidad?"
         ],
-        "seoTitle": "puente roto, cruzar puente o puente con agua",
+        "seoTitle": "puente roto, cruzar un puente o puente peligroso",
         "faq": [
           {
             "question": "¿Qué significa soñar con un puente?",
@@ -2019,11 +2019,11 @@
           },
           {
             "question": "¿Qué significa soñar con cruzar un puente?",
-            "answer": "Cruzar un puente señala decisión, movimiento y disposición a dejar algo atrás. Si cruzas con alguien, observa qué papel tiene esa persona en el cambio."
+            "answer": "Cruzar un puente señala decisión, movimiento y disposición a dejar algo atrás. Si sueñas con cruzar un puente con alguien, observa qué papel tiene esa persona en el cambio."
           },
           {
             "question": "¿Qué significa soñar con un puente y agua?",
-            "answer": "El agua añade carga emocional. Un puente sobre agua puede mostrar que intentas avanzar mientras manejas incertidumbre, miedo o emociones intensas."
+            "answer": "El agua añade carga emocional. Un puente sobre agua, roto o peligroso puede mostrar que intentas avanzar mientras manejas incertidumbre, miedo o emociones intensas."
           }
         ],
         "softCta": {
@@ -3377,21 +3377,21 @@
       "es": {
         "slug": "hospital",
         "name": "Hospital",
-        "shortDescription": "Soñar con hospital habla de cuidado, salud y apoyo: estar en un hospital, ver doctores o enfermos, encontrar un hospital lleno de gente o sentir que algo necesita atención.",
+        "shortDescription": "Soñar con hospital suele hablar de cuidado, sanación y apoyo: estar en un hospital, verlo lleno de gente, encontrar doctores o esperar noticias importantes.",
         "askYourself": [
           "¿Yo estaba en el hospital, visitaba a alguien o esperaba noticias?",
           "¿Aparecían doctores, enfermeras, enfermos o mucha gente?",
           "¿Qué parte de mi vida necesita cuidado antes de sentirse urgente?"
         ],
-        "seoTitle": "hospital, estar en un hospital o doctores",
+        "seoTitle": "hospital, estar en un hospital o lleno de gente",
         "faq": [
           {
             "question": "¿Qué significa soñar con hospital?",
             "answer": "Soñar con hospital suele indicar que algo necesita cuidado, sanación o apoyo. Puede tratarse de una preocupación de salud, agotamiento emocional, una situación familiar o la necesidad de pedir ayuda."
           },
           {
-            "question": "¿Qué significa soñar que estás en un hospital?",
-            "answer": "Estar en un hospital en sueños habla de vulnerabilidad y recuperación. El sueño puede aparecer cuando necesitas descanso, orientación o tiempo para atender algo que has pospuesto."
+            "question": "¿Qué significa soñar con un hospital?",
+            "answer": "Soñar con un hospital habla de vulnerabilidad, recuperación y necesidad de apoyo. Puede aparecer cuando necesitas descanso, orientación o tiempo para atender algo que has pospuesto."
           },
           {
             "question": "¿Qué significa soñar con un hospital lleno de gente?",
