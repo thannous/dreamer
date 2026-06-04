@@ -1,6 +1,6 @@
 # Noctalia — Backlinks Submission Guide
 
-> Generated 2026-03-09. Verified 2026-06-04. Recommended order now: create the Product Hunt draft/upcoming page with the prepared gallery -> finish SaaSHub Q&A after login/Cloudflare access -> monitor FutureTools resubmission -> re-check Crunchbase for a public profile -> BetaList -> retry AlternativeTo/AppBrain after account replies -> Futurepedia only if paid listing budget is approved.
+> Generated 2026-03-09. Verified 2026-06-04. Recommended order now: finish Product Hunt media/scheduling -> monitor SaaSHub maker-note manual approval -> monitor FutureTools resubmission -> re-check Crunchbase for a public profile -> create/approve a BetaList account if desired -> retry AlternativeTo/AppBrain after account replies -> Futurepedia only if paid listing budget is approved.
 
 ---
 
@@ -78,7 +78,7 @@ Dream Journal, AI Dream Analysis, Dream Interpretation, Sleep Wellness, Personal
 | Crunchbase | Submitted a new company profile with known factual fields only: Noctalia, `https://noctalia.app`, `contact@noctalia.app`, Software, Mobile Apps, and product descriptions. Crunchbase confirmed edits were submitted and may take a few minutes to appear. Public search on 2026-06-04 still surfaced dream-journal competitors, not Noctalia. | Re-check Crunchbase search for `Noctalia`; record the public profile URL and verify the outbound website link once visible. |
 | GoodAITools | Live at `https://goodaitools.com/ai/noctalia`; page published 2026-05-11 and public HTML links to `https://noctalia.app/` with `rel="noopener noreferrer nofollow"`. | Treat as discovery/indexation value, not followed SEO equity. Do not add the reciprocal badge unless the badge's followed-link value is explicitly confirmed and worth a Noctalia site change. |
 | FutureTools | Initial submission from 2026-05-12 was not found publicly on 2026-06-04. Resubmitted 2026-06-04 with a stronger angle: voice-first AI dream journal, Android live app, privacy-first EU hosting, and generated dream imagery. Confirmation page showed `Tool Submitted!`. | Monitor FutureTools public search and `contact@noctalia.app` for approval. Do not claim a backlink until a live FutureTools listing exists. |
-| SaaSHub profile + alternatives page | Approved and verified 2026-05-21 as `https://www.saashub.com/noctalia-app`; public alternatives page live at `https://www.saashub.com/noctalia-app-alternatives`. Gallery refreshed with the new live landing screenshot plus guided reflection, Dream Interpretation, and Dream Journal captures. | Monitor referral traffic and Search Console backlink discovery. The main `Visit website` link points to `https://noctalia.app` with empty `rel` in public HTML; pricing link is `nofollow`. |
+| SaaSHub profile + alternatives page | Approved and verified 2026-05-21 as `https://www.saashub.com/noctalia-app`; public alternatives page live at `https://www.saashub.com/noctalia-app-alternatives`. Gallery refreshed with the new live landing screenshot plus guided reflection, Dream Interpretation, and Dream Journal captures. Maker note submitted and email-confirmed 2026-06-04; awaiting SaaSHub manual approval before it appears publicly. | Monitor referral traffic and Search Console backlink discovery. The main `Visit website` link points to `https://noctalia.app` with empty `rel` in public HTML; pricing link is `nofollow`. Re-check the discussion block for the approved maker note. |
 
 ---
 
@@ -137,7 +137,7 @@ Submit Noctalia as alternative to each of these (one at a time):
 | Zearches | Live nofollow listing in Software & SaaS Tools. | Keep as discovery/indexation value. |
 | The Next AI | Submitted 2026-05-09; approval pending. | Watch Gmail and `contact@noctalia.app`. |
 | OpenAIToolsHub | Submitted 2026-05-09; approval pending. | Watch Gmail and `contact@noctalia.app`. |
-| SaaSHub | Approved and active public profile `https://www.saashub.com/noctalia-app`; alternatives page live at `https://www.saashub.com/noctalia-app-alternatives`. | Keep profile fresh quarterly. Main website link is visible in public HTML with empty `rel`; pricing link is `nofollow`. |
+| SaaSHub | Approved and active public profile `https://www.saashub.com/noctalia-app`; alternatives page live at `https://www.saashub.com/noctalia-app-alternatives`. Maker note submitted and confirmed by email 2026-06-04; waiting for manual approval. | Keep profile fresh quarterly. Main website link is visible in public HTML with empty `rel`; pricing link is `nofollow`. Re-check the discussion block and document the public comment URL/state once approved. |
 | Crunchbase | New company profile submitted 2026-05-12; public profile URL not visible yet. | Re-check Crunchbase search for `Noctalia` and verify the website backlink once the profile appears. |
 | GoodAITools | Live 2026-06-04 at `https://goodaitools.com/ai/noctalia`; outbound link is `nofollow`. | Keep as discovery/indexation value. Badge remains skipped until followed-link value is proven. |
 | FutureTools | Resubmitted 2026-06-04 after public search still did not find Noctalia. | Watch for publication; verify live URL and link attributes if approved. |
@@ -196,6 +196,8 @@ Copy-paste these as bullet points if the form allows:
 
 **URL:** [https://betalist.com/submit](https://betalist.com/submit)
 **Effort:** Medium | **Review time:** up to a few weeks; if selected, regular features can take about two months, priority review takes a few days | **Backlink:** verify on the live listing; do not assume dofollow before inspection
+
+**2026-06-04 status:** submission redirects to `https://betalist.com/sign_in`. Magic-link sign-in for `thannous@gmail.com` returned `We couldn't find an account with that email address`. Sign-up requires username, email, password, and password confirmation. Do not create a BetaList password account without an explicit credential decision from the user; X OAuth can be considered only if the user approves authorizing BetaList with the relevant X account.
 
 ### Form Fields
 
@@ -382,8 +384,8 @@ I'd love to hear your feedback — what features would make you actually use a d
 | Crunchbase    | ✓         | ☐        | ☐             | Submitted 2026-05-12; public search still did not find Noctalia on 2026-06-04 |
 | GoodAITools   | ✓         | ✓        | ✓             | Live 2026-06-04; link exists but is `nofollow`, so count as discovery/indexation value only |
 | FutureTools   | ✓         | ☐        | ☐             | Resubmitted 2026-06-04 with stronger differentiation; waiting for review |
-| SaaSHub       | ✓         | ✓        | ✓             | Active 2026-05-21; profile and alternatives page live; main website link verified in public HTML with empty `rel` |
-| BetaList      | ☐         | ☐        | ☐             |                                             |
+| SaaSHub       | ✓         | ✓        | ✓             | Active 2026-05-21; profile and alternatives page live; main website link verified in public HTML with empty `rel`; maker note confirmed 2026-06-04 and awaiting manual approval |
+| BetaList      | ☐         | ☐        | ☐             | Sign-in checked 2026-06-04; no `thannous@gmail.com` account, email/password signup required before submission |
 | Product Hunt  | ☐         | ☐        | ☐             | Draft in progress 2026-06-04: profile/main info/tags/first comment completed; media upload blocked until Chrome file access is enabled or gallery images are uploaded manually |
 | Futurepedia   | ☐         | ☐        | ☐             | Paid listing only unless free/basic reopens |
 
