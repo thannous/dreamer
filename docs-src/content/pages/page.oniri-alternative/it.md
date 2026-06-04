@@ -38,7 +38,7 @@
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Alternativa a Oniri per diario dei sogni</h1>
 <p class="text-sm text-purple-300/70 mb-6">Aggiornato il 20 maggio 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Oniri è un prodotto maturo per diario dei sogni e sogno lucido. Noctalia è l’alternativa se non ti serve una suite completa di training lucido e cerchi cattura rapida su Android, IA, immagini, simboli e Dream Chat.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Oniri è un prodotto maturo per diario dei sogni e sogno lucido. Noctalia è l’alternativa se non ti serve una suite completa di training lucido e cerchi cattura rapida su Android, IA, immagini, simboli e riflessione guidata.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -55,7 +55,7 @@
         <tbody class="divide-y divide-white/10">
           <tr><td class="py-4 pr-4 text-white font-medium">Sogno lucido</td><td class="py-4 pr-4 ">Reality check, promemoria, segnali audio e tecniche WILD/MILD/SSILD.</td><td class="py-4 pr-4 ">Supporto base e riflessione; non una suite avanzata di lucidità.</td><td class="py-4 pr-4 ">Oniri se la lucidità è prioritaria.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Cattura al risveglio</td><td class="py-4 pr-4 ">Note vocali annunciate dentro un prodotto più ampio.</td><td class="py-4 pr-4 ">Voce come centro del flusso Android.</td><td class="py-4 pr-4 ">Noctalia se la velocità pesa di più.</td></tr>
-          <tr><td class="py-4 pr-4 text-white font-medium">Interpretazione</td><td class="py-4 pr-4 ">IA, domande e centinaia di significati.</td><td class="py-4 pr-4 ">Scheda IA, simboli ricorrenti e Dream Chat.</td><td class="py-4 pr-4 ">Noctalia è più focalizzata e conversazionale.</td></tr>
+          <tr><td class="py-4 pr-4 text-white font-medium">Interpretazione</td><td class="py-4 pr-4 ">IA, domande e centinaia di significati.</td><td class="py-4 pr-4 ">Scheda IA, simboli ricorrenti e riflessione guidata.</td><td class="py-4 pr-4 ">Noctalia è più focalizzata e conversazionale.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Immagini</td><td class="py-4 pr-4 ">Immagini generate e fino a 5 immagini per sogno in premium.</td><td class="py-4 pr-4 ">Immagine generata come memoria visuale centrale.</td><td class="py-4 pr-4 ">Decidere sul flusso completo.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Export e statistiche</td><td class="py-4 pr-4 ">PDF, filtri e statistiche sono punti forti pubblici.</td><td class="py-4 pr-4 ">Stats e simboli, ma export non è il claim principale.</td><td class="py-4 pr-4 ">Oniri per utenti orientati all’export.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Prezzo con fonte</td><td class="py-4 pr-4 ">App Store US lista vari acquisti in-app e avvisa che variano per località.</td><td class="py-4 pr-4 ">Noctalia mostra Gratis più Onironauta a 2,99 €/mese o 19 €/anno.</td><td class="py-4 pr-4 ">Mantenere paese e data.</td></tr>
@@ -80,7 +80,7 @@
     <ol class="list-decimal pl-5 space-y-2">
       <li>Esporta PDF o copia i sogni chiave prima di cambiare.</li>
       <li>Mantieni Oniri se allarmi e tecniche lucide sono il tuo rituale.</li>
-      <li>Usa Noctalia per nuovi sogni Android dove contano velocità, immagine e chat.</li>
+      <li>Usa Noctalia per nuovi sogni Android dove contano velocità, immagine e domande guidate.</li>
       <li>Ricostruisci simboli dai sogni recenti.</li>
     </ol>
   </section>
@@ -123,7 +123,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Prova Noctalia</h2>
-    <p>Noctalia è su Android per registrare rapidamente, ritrovare simboli, creare memoria visuale e continuare con Dream Chat.</p>
+    <p>Noctalia è su Android per registrare rapidamente, ritrovare simboli, creare memoria visuale e continuare con riflessione guidata.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Google Play</a></p>
   </section>
 </div>

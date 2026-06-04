@@ -130,8 +130,8 @@
                     </div>
                     <h3 class="text-xl font-serif mb-3">Analysez</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Votre compagnon de rêves transcrit et décode instantanément les symboles, les émotions et les
-                        archétypes cachés dans votre récit.
+                        Noctalia transcrit votre rêve et fait émerger les symboles, les émotions et les motifs récurrents
+                        dans votre récit.
                     </p>
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="analyze">
                         <picture>
@@ -150,7 +150,7 @@
                     </div>
                     <h3 class="text-xl font-serif mb-3">Explorez</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Visualisez votre rêve grâce à une image générée et échangez avec votre compagnon de rêves pour
+                        Visualisez votre rêve grâce à une image générée et utilisez des questions de suivi guidées pour
                         approfondir le sens personnel du message.
                     </p>
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="explore">
@@ -242,7 +242,7 @@
                             <h3 class="font-serif text-xl">Journal Visuel</h3>
                         </div>
                         <p class="text-xs text-gray-300">Retrouvez tous vos voyages oniriques illustrés automatiquement
-                            par votre compagnon de rêves.</p>
+                            avec Noctalia.</p>
                     </div>
                 </div>
 
@@ -265,7 +265,7 @@
                         </li>
                         <li class="flex items-start gap-3 text-sm text-gray-300">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
-                            <span><strong>Compagnon de rêves :</strong> Posez des questions à votre rêve.</span>
+                            <span><strong>Exploration guidée :</strong> Posez des questions de suivi autour de votre rêve.</span>
                         </li>
                     </ul>
                 </div>
@@ -425,7 +425,7 @@
 
                     <ul class="space-y-4 text-left mb-8 px-4">
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Enregistrements illimités</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 analyses complètes avec votre compagnon de rêves</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 explorations guidées complètes</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Journal de base</li>
                     </ul>
 
@@ -438,7 +438,7 @@
                     <h3 class="text-2xl font-serif mb-3 text-dream-cream">Premium arrive bientôt</h3>
                     <p class="text-purple-200/70 text-sm mb-6">Soyez parmi les premiers à profiter des analyses illimitées, images HD et stats avancées dès le lancement.</p>
                     <ul class="space-y-3 text-left mb-8 px-4 text-sm text-gray-300">
-                        <li class="flex items-center gap-3"><i data-lucide="sparkles" class="w-4 h-4 text-dream-salmon"></i> Compagnon de rêves illimité</li>
+                        <li class="flex items-center gap-3"><i data-lucide="sparkles" class="w-4 h-4 text-dream-salmon"></i> Explorations guidées illimitées</li>
                         <li class="flex items-center gap-3"><i data-lucide="image" class="w-4 h-4 text-dream-salmon"></i> Visuels HD de vos rêves</li>
                         <li class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-4 h-4 text-dream-salmon"></i> Statistiques et insights avancés</li>
                     </ul>
@@ -456,11 +456,11 @@
                     <p class="text-purple-200/60 text-xs mb-6">Ou 19 €/an (2 mois offerts)</p>
 
                     <ul class="space-y-4 text-left mb-8 px-4">
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Analyses illimitées avec votre compagnon de rêves
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Explorations guidées illimitées
                         </li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Génération d'images HD</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Statistiques avancées</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Chat avec le rêve</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Exploration guidée du rêve</li>
                     </ul>
 
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">Essayer

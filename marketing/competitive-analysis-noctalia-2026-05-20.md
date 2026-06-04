@@ -2,7 +2,7 @@
 
 ## Synthèse exécutive
 
-Noctalia est bien positionné sur une promesse claire: capturer un rêve très vite, surtout par la voix, puis transformer cette trace en analyse, image, symboles, chat et historique personnel. Le marché est cependant plus dense qu'il y a quelques mois. Trois familles de concurrents ressortent:
+Noctalia est bien positionné sur une promesse claire: capturer un rêve très vite, surtout par la voix, puis transformer cette trace en analyse, image, symboles, questions de suivi et historique personnel. Le marché est cependant plus dense qu'il y a quelques mois. Trois familles de concurrents ressortent:
 
 1. **Apps à forte traction**: DreamApp domine en volume Android avec 1M+ téléchargements et 12K+ avis sur Google Play. Oniri est l'app la plus crédible côté rêve lucide, avec forte reconnaissance iOS et une présence Android plus petite.
 2. **Nouveaux entrants "AI dream journal"**: Dreamiary, Dreamlab, Dreamz Journal, DreamMirror et DreamStream attaquent la même zone produit que Noctalia: capture rapide, IA, patterns, privacy, export, images ou visual storytelling.
@@ -10,7 +10,7 @@ Noctalia est bien positionné sur une promesse claire: capturer un rêve très v
 
 Le plus gros gap de Noctalia n'est pas le concept produit. C'est l'échelle: **62 symboles** dans la base locale, **50+ téléchargements Google Play**, et une page comparaison déjà présente mais trop courte et avec un panel concurrentiel daté. En face, Dream Bible annonce **6 572 symboles**, Dream Moods **5 900+ mots-clés / 20 000+ meanings**, Auntyflo **5 000 dream meanings**, et ThePleasantDream revendique **2 000+ scénarios** et **1M+ lecteurs mensuels**.
 
-Le plan recommandé: consolider la page comparaison existante, lancer des pages alternatives ciblées, étendre le dictionnaire à 300+ symboles utiles, et transformer l'avantage "voice + AI + images + chat + privacy EU" en preuves visibles sur Google Play, sur le site et dans les contenus SEO.
+Le plan recommandé: consolider la page comparaison existante, lancer des pages alternatives ciblées, étendre le dictionnaire à 300+ symboles utiles, et transformer l'avantage "voice + AI + images + guided reflection + privacy EU" en preuves visibles sur Google Play, sur le site et dans les contenus SEO.
 
 ## Méthodologie
 
@@ -29,9 +29,9 @@ Limites:
 
 ### Produit
 
-Noctalia se présente comme un journal de rêves intelligent: capture voix/texte, transcription, analyse IA, symboles, thèmes, image générée, Dream Chat, stats/patterns et outils de rêve lucide. La page publique met en avant un abonnement **Onironaut Premium à EUR 2.99/mois ou EUR 19/an** avec essai de 7 jours.
+Noctalia se présente comme un journal de rêves intelligent: capture voix/texte, transcription, analyse IA, symboles, thèmes, image générée, guided reflection, stats/patterns et outils de rêve lucide. La page publique met en avant un abonnement **Onironaut Premium à EUR 2.99/mois ou EUR 19/an** avec essai de 7 jours.
 
-Google Play affiche Noctalia comme **Smart Dream Journal**, avec **50+ téléchargements**, achats intégrés, capture vocale, interprétation intelligente, dream art, Dream Chat, stats, calendrier, rappels, mode hors ligne et dictionnaire de symboles.
+Google Play affiche Noctalia comme **Smart Dream Journal**, avec **50+ téléchargements**, achats intégrés, capture vocale, interprétation intelligente, dream art, guided reflection, stats, calendrier, rappels, mode hors ligne et dictionnaire de symboles.
 
 ### Contenu et SEO
 
@@ -58,7 +58,7 @@ Noctalia possède déjà une page `/en/dream-journal-apps`, localisée en 5 lang
 | Dreamz Journal | iOS, grimoire + symboles | Site iOS, Android à venir | Mystique éditorial, privacy, 302 symboles web, 5 700+ symboles app revendiqués | Moyenne |
 | DreamMirror | Journal calme Android direct | Distribution hors stores | Privacy, réflexions non prédictives, anti-hype IA | Moyenne niche |
 | DreamStream | Visual storytelling / early access | Early access | Digital twin, BD de rêve, images, mind mapping | Moyenne niche, forte différenciation visuelle |
-| DreamNotes | iOS journal + chat IA | App Store 3.3, 3 avis | Chat IA, symbol tracking, import/export, analytics | Faible à moyenne |
+| DreamNotes | iOS journal + assistant IA | App Store 3.3, 3 avis | Assistant IA, symbol tracking, import/export, analytics | Faible à moyenne |
 
 ## Profils concurrents
 
@@ -79,7 +79,7 @@ Noctalia possède déjà une page `/en/dream-journal-apps`, localisée en 5 lang
 
 **Implication Noctalia**
 
-DreamApp capte l'intention grand public "interprétation de rêve" mieux que Noctalia actuellement. Noctalia doit éviter de l'affronter seulement sur "AI interpretation" et insister sur une promesse plus concrète: **capture vocale immédiate + analyse contextuelle + image + chat + données EU**.
+DreamApp capte l'intention grand public "interprétation de rêve" mieux que Noctalia actuellement. Noctalia doit éviter de l'affronter seulement sur "AI interpretation" et insister sur une promesse plus concrète: **capture vocale immédiate + analyse contextuelle + image + questions de suivi + données EU**.
 
 ### Oniri
 
@@ -233,7 +233,7 @@ Noctalia a seulement 50+ téléchargements visibles sur Google Play. Le produit 
 Actions:
 
 - Obtenir 20-50 avis qualifiés sur Android.
-- Mettre en avant les screenshots différenciants: voice capture, image générée, Dream Chat, symbol dictionary, stats.
+- Mettre en avant les screenshots différenciants: voice capture, image générée, guided reflection, symbol dictionary, stats.
 - Ajouter plus de mots-clés dans description longue: dream meaning, dream dictionary, AI dream interpretation, dream journal, lucid dream, voice dream journal, dream symbols.
 - Localiser la fiche Google Play en français, espagnol, allemand, italien si ce n'est pas déjà fait.
 
@@ -297,7 +297,7 @@ Noctalia doit occuper un territoire net:
 
 1. Monter à 300+ symboles et créer des clusters par thème: animals, body, places, objects, actions, people, celestial, emotions.
 2. Publier des comparatifs secondaires: `Dreamiary vs Noctalia`, `Dreamlab alternative`, `best AI dream interpretation apps`.
-3. Ajouter pages feature: voice capture, dream images, dream chat, dream symbols, lucid dreaming preparation.
+3. Ajouter pages feature: voice capture, dream images, guided reflection, dream symbols, lucid dreaming preparation.
 4. Lancer une boucle ASO: tests screenshots, titres, short description, avis, mots-clés localisés.
 5. Enrichir `llms.txt` avec les pages comparaison et les pages symboles prioritaires.
 

@@ -130,7 +130,7 @@
                     </div>
                     <h3 class="text-xl font-serif mb-3">Analyze</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Your dream companion instantly transcribes and decodes symbols, emotions, and hidden archetypes in your story.
+                        Noctalia instantly transcribes your dream and surfaces symbols, emotions, and recurring patterns in your story.
                     </p>
                              <!-- 2. Analyzing screen -->
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="analyze">
@@ -150,7 +150,7 @@
                     </div>
                     <h3 class="text-xl font-serif mb-3">Explore</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Visualize your dream with a generated image and chat with your dream companion to deepen the personal meaning.
+                        Visualize your dream with a generated image and use guided follow-up questions to deepen the personal meaning.
                     </p>
                     <!-- 3. Exploring screen -->
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="explore">
@@ -188,7 +188,7 @@
             <!-- Bento Grid -->
             <div class="grid grid-cols-1 md:grid-cols-6 md:grid-rows-4 gap-6 h-auto md:h-[900px]">
                 
-                <!-- Feature 1: Voice & dream companion (Large) -->
+                <!-- Feature 1: Voice and guided reflection (Large) -->
                 <div class="col-span-1 md:col-span-4 md:row-span-2 glass-panel rounded-3xl p-0 flex flex-col md:flex-row justify-between group relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-dream-salmon/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
                     
@@ -262,7 +262,7 @@
                         </li>
                         <li class="flex items-start gap-3 text-sm text-gray-300">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
-                            <span><strong>Dream companion:</strong> Ask your dream follow-up questions.</span>
+                            <span><strong>Guided reflection:</strong> Ask follow-up questions about your dream.</span>
                         </li>
                     </ul>
                 </div>
@@ -414,7 +414,7 @@
                     
                     <ul class="space-y-4 text-left mb-8 px-4">
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Unlimited recordings</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 full sessions with your dream companion</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 full guided reflection sessions</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Basic journal</li>
                     </ul>
                     
@@ -427,7 +427,7 @@
                     <h3 class="text-2xl font-serif mb-3 text-dream-cream">Premium coming soon</h3>
                     <p class="text-purple-200/70 text-sm mb-6">Be first to access unlimited analysis, HD images, and advanced stats when we launch.</p>
                     <ul class="space-y-3 text-left mb-8 px-4 text-sm text-gray-300">
-                        <li class="flex items-center gap-3"><i data-lucide="sparkles" class="w-4 h-4 text-dream-salmon"></i> Unlimited dream companion sessions</li>
+                        <li class="flex items-center gap-3"><i data-lucide="sparkles" class="w-4 h-4 text-dream-salmon"></i> Unlimited guided reflection sessions</li>
                         <li class="flex items-center gap-3"><i data-lucide="image" class="w-4 h-4 text-dream-salmon"></i> HD dream visuals</li>
                         <li class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-4 h-4 text-dream-salmon"></i> Deep stats &amp; insights</li>
                     </ul>
@@ -444,10 +444,10 @@
                     <p class="text-purple-200/60 text-xs mb-6">Or EUR 19/year (2 months free)</p>
                     
                     <ul class="space-y-4 text-left mb-8 px-4">
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Unlimited sessions with your dream companion</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Unlimited guided reflection sessions</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> HD image generation</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Advanced stats</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Chat with the dream</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Guided dream reflection</li>
                     </ul>
                     
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">Try it free</a>

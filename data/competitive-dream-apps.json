@@ -11,7 +11,7 @@
   "apps": {
     "noctalia": {
       "name": "Noctalia",
-      "positioning": "Android-first AI dream journal for fast voice capture, structured reflection, generated dream images, symbols, and Dream Chat.",
+      "positioning": "Android-first AI dream journal for fast voice capture, structured reflection, generated dream images, symbols, and guided reflection.",
       "platforms": ["Android", "Web resources"],
       "pricing": {
         "model": "Freemium with premium plan advertised on Noctalia owned pages",
@@ -24,7 +24,7 @@
       },
       "strengths": [
         "Voice-first morning capture",
-        "AI analysis plus Dream Chat follow-up",
+        "AI analysis plus guided reflection follow-up",
         "Generated dream visuals",
         "Recurring symbols and dream dictionary surface",
         "EU-hosted journal data disclosed in privacy copy"
@@ -42,7 +42,7 @@
       ],
       "bestFor": [
         "Android users who forget dream details if they have to type",
-        "Users who want a reflective AI companion rather than a deterministic meaning oracle",
+        "Users who want reflective AI questions rather than a deterministic meaning oracle",
         "Users who value visual dream memory and recurring symbol tracking"
       ],
       "notIdealFor": [
@@ -104,7 +104,7 @@
       ],
       "notIdealFor": [
         "Users whose first priority is fast Android voice capture after waking",
-        "Users who want generated dream visuals and Dream Chat as a core workflow",
+        "Users who want generated dream visuals and guided reflection as a core workflow",
         "Users who want a privacy page that explains AI, audio, and providers in detail before signup"
       ],
       "migrationNotes": [
@@ -165,7 +165,7 @@
       ],
       "notIdealFor": [
         "Android users whose main problem is capturing dreams fast before memory fades",
-        "Users who primarily want AI visual journaling and a focused reflection chat",
+        "Users who primarily want AI visual journaling and focused guided reflection",
         "Users who do not need lucid dreaming alarms or technique coaching"
       ],
       "migrationNotes": [

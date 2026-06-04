@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0514">
+    <title>App Android de análisis de sueños | Noctalia</title>
+    <meta name="description" content="Noctalia es una app Android para analizar sueños con voz, símbolos, imágenes generadas y reflexión guiada.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="https://noctalia.app/es/app-analisis-suenos-android">
+    <link rel="alternate" hreflang="en" href="https://noctalia.app/en/android-dream-analysis-app">
+    <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/application-analyse-de-reve-android">
+    <link rel="alternate" hreflang="es" href="https://noctalia.app/es/app-analisis-suenos-android">
+    <link rel="alternate" hreflang="de" href="https://noctalia.app/de/android-traumanalyse-app">
+    <link rel="alternate" hreflang="it" href="https://noctalia.app/it/app-analisi-sogni-android">
+    <link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/android-dream-analysis-app">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="App Android de análisis de sueños">
+    <meta property="og:description" content="Graba tus sueños por voz y analízalos con contexto, símbolos e imágenes.">
+    <meta property="og:url" content="https://noctalia.app/es/app-analisis-suenos-android">
+    <meta property="og:image" content="https://noctalia.app/img/og/noctalia-es-1200x630.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Noctalia app Android de análisis de sueños">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:locale:alternate" content="fr_FR">
+    <meta property="og:locale:alternate" content="de_DE">
+    <meta property="og:locale:alternate" content="it_IT">
+    <meta property="og:site_name" content="Noctalia">
+    <meta property="article:published_time" content="2026-06-04T00:00:00+02:00">
+    <meta property="article:modified_time" content="2026-06-04T00:00:00+02:00">
+    <meta property="article:author" content="Thanh Chau">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@NoctaliaDreams">
+    <meta name="twitter:title" content="App Android de análisis de sueños">
+    <meta name="twitter:description" content="Graba tus sueños por voz y analízalos con contexto, símbolos e imágenes.">
+    <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-es-1200x630.jpg">
+    <meta name="twitter:image:alt" content="Noctalia app Android de análisis de sueños">
+    <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
+    <script
+      src="https://analytics.ahrefs.com/analytics.js"
+      data-key="qDwc7i0RM0aLBY/cZLkOxA"
+      async
+    ></script>
+    <link rel="stylesheet" href="/css/styles.min.css?v=ac97d131370e">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=ac97d131370e">
+    <style>
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: rgba(10, 5, 20, 0.78); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24); }
+      .noctalia-premium-nav-inner { position: relative; z-index: 70; width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      body.mobile-menu-lock { overflow: hidden; touch-action: none; }
+      .mobile-menu-backdrop { position: fixed; inset: 0; z-index: 48; background: rgba(5, 2, 12, 0.72); opacity: 0; transition: opacity 180ms ease; }
+      .mobile-menu-backdrop.is-visible { opacity: 1; }
+      #mobileMenuPanel { position: fixed; left: 0; right: 0; top: 4.25rem; bottom: 0; z-index: 60; }
+      .mobile-menu-surface { min-height: calc(100dvh - 5.25rem); max-height: calc(100dvh - 5.25rem); overflow-y: auto; background: #120720 !important; border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 18px 48px rgba(0, 0, 0, 0.52); backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+      .site-footer { position: relative; z-index: 2; background: #05020a !important; }
+      .site-footer > .grid { position: relative; z-index: 1; }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 767px) { .site-footer { padding: 2rem 1rem 1.75rem !important; } .site-footer > .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem 1rem; margin-bottom: 2rem; } .site-footer > .grid > :first-child { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.45rem 1rem; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); } .site-footer > .grid > :first-child > a { grid-column: 1; grid-row: 1; margin-bottom: 0; } .site-footer > .grid > :first-child > p { grid-column: 1; grid-row: 2; margin-bottom: 0; max-width: 17rem; } .site-footer > .grid > :first-child > div.flex { grid-column: 2; grid-row: 1 / span 2; gap: 0.45rem; } .site-footer > .grid > :first-child > div.flex a { width: 2.35rem; height: 2.35rem; } .site-footer h5 { margin-bottom: 0.65rem; font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 247, 240, 0.92); } .site-footer ul { font-size: 0.82rem; line-height: 1.35; } .site-footer li + li { margin-top: 0.45rem; } .site-footer > .grid > :nth-child(2) ul, .site-footer > .grid > :nth-child(3) ul { max-height: 11.5rem; overflow-y: auto; padding-right: 0.35rem; } .site-footer > .grid > :nth-child(2) ul::-webkit-scrollbar, .site-footer > .grid > :nth-child(3) ul::-webkit-scrollbar { width: 0.25rem; } .site-footer > .grid > :nth-child(2) ul::-webkit-scrollbar-thumb, .site-footer > .grid > :nth-child(3) ul::-webkit-scrollbar-thumb { background: rgba(253, 164, 129, 0.45); border-radius: 999px; } .site-footer > .border-t:last-child { padding-top: 1rem; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
+
+      @media (prefers-reduced-motion: reduce) {
+        ::view-transition-group(*),
+        ::view-transition-old(*),
+        ::view-transition-new(*) {
+          animation: none !important;
+        }
+      }
+    </style>
+</head>
+<body class="bg-dream-dark text-white font-sans antialiased selection:bg-dream-salmon selection:text-dream-dark">
+
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/es/" class="flex items-center gap-2 min-w-max">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="moon" class="lucide lucide-moon w-6 h-6 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+            </a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
+                <a href="/es/blog/" class="text-dream-salmon transition-colors">Recursos</a>
+                <a href="/es/guides/" class="hover:text-white transition-colors">Guías de sueños</a>
+                <a href="/es/guides/diccionario-simbolos-suenos" class="hover:text-white transition-colors">Diccionario de sueños</a>
+                <a href="/es/sobre" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">Sobre</a>
+            </div>
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
+                    <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="languages" class="lucide lucide-languages w-4 h-4" aria-hidden="true" focusable="false"><path d="m5 8 6 6"></path><path d="m4 14 6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="m22 22-5-10-5 10"></path><path d="M14 18h6"></path></svg>
+                        <span>ES</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" class="lucide lucide-chevron-down w-3 h-3 transition-transform" aria-hidden="true" focusable="false" id="dropdownChevron"><path d="m6 9 6 6 6-6"></path></svg>
+                    </button>
+                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
+                    <a href="/en/android-dream-analysis-app" hreflang="en" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>English</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon hidden" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
+                    </a>
+                    <a href="/fr/application-analyse-de-reve-android" hreflang="fr" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Français</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon hidden" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
+                    </a>
+                    <a href="/es/app-analisis-suenos-android" hreflang="es" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Español</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
+                    </a>
+                    <a href="/de/android-traumanalyse-app" hreflang="de" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Deutsch</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon hidden" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
+                    </a>
+                    <a href="/it/app-analisi-sogni-android" hreflang="it" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Italiano</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon hidden" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
+                    </a>
+                    </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Descargar la app</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="menu" class="lucide lucide-menu w-5 h-5" aria-hidden="true" focusable="false" id="mobileMenuIcon"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuBackdrop" class="hidden mobile-menu-backdrop" aria-hidden="true"></div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="mobile-menu-surface rounded-2xl py-2">
+                <a href="/es/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Recursos</a>
+                <a href="/es/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Guías de sueños</a>
+                <a href="/es/guides/diccionario-simbolos-suenos" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Diccionario de sueños</a>
+                <a href="/es/sobre" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Sobre</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">Descargar la app</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/android-dream-analysis-app" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/application-analyse-de-reve-android" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Français</a>
+                    <a href="/es/app-analisis-suenos-android" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Español</a>
+                    <a href="/de/android-traumanalyse-app" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Deutsch</a>
+                    <a href="/it/app-analisi-sogni-android" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main class="pt-32 pb-20 px-6 max-w-6xl mx-auto">
+<h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">App Android de análisis de sueños</h1>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia está diseñada para los primeros minutos después de despertar: habla el sueño, guarda los detalles y explora símbolos, emociones, imagen generada y preguntas de seguimiento.</p>
+<div class="space-y-8 text-gray-300 leading-relaxed">
+  <section class="grid md:grid-cols-2 gap-6">
+    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Android primero</h2><p>El teléfono junto a la cama es la herramienta real al despertar. Noctalia prioriza la captura rápida antes de que los detalles desaparezcan.</p></div>
+    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Qué incluye</h2><p>Una ficha estructurada, símbolos recurrentes, señales emocionales, imagen del sueño y preguntas para reflexionar.</p></div>
+  </section>
+  <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Analiza tu sueño</h2>
+    <p>Noctalia es una herramienta de reflexión, no un diagnóstico ni una predicción. Úsala para detectar patrones y guardar un registro privado.</p>
+    <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Instalar en Google Play</a></p>
+  </section>
+</div>
+
+    </main>
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
+            <div class="xl:col-span-2">
+                <a href="/es/" class="flex items-center gap-2 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="moon" class="lucide lucide-moon w-6 h-6 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg>
+                    <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
+                </a>
+                <p class="text-sm text-gray-500 max-w-xs mb-6">Tu diario para mejores noches.</p>
+                <div class="flex gap-4">
+                    <a href="https://www.instagram.com/noctaliadreams/" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="Instagram Noctalia">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="instagram" class="lucide lucide-instagram w-5 h-5" aria-hidden="true" focusable="false"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+                    </a>
+                    <a href="https://x.com/NoctaliaDreams" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="X (Twitter) Noctalia">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="twitter" class="lucide lucide-twitter w-5 h-5" aria-hidden="true" focusable="false"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+                    </a>
+                    <a href="https://www.tiktok.com/@noctaliadreams" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="TikTok Noctalia">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="music-2" class="lucide lucide-music-2 w-5 h-5" aria-hidden="true" focusable="false"><circle cx="8" cy="18" r="4"></circle><path d="M12 18V2l7 4"></path></svg>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">Recursos</h5>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="/es/blog/" class="text-dream-salmon transition-colors">Recursos</a></li>
+                    <li><a href="/es/apps-diario-de-suenos" class="hover:text-dream-salmon transition-colors">Apps de suenos</a></li>
+                    <li><a href="/es/alternativa-dreamapp" class="hover:text-dream-salmon transition-colors">Alternativa DreamApp</a></li>
+                    <li><a href="/es/alternativa-oniri" class="hover:text-dream-salmon transition-colors">Alternativa Oniri</a></li>
+                    <li><a href="/es/app-interpretacion-suenos-ia" class="hover:text-dream-salmon transition-colors">App suenos IA</a></li>
+                    <li><a href="/es/diccionario-de-suenos-app" class="hover:text-dream-salmon transition-colors">Diccionario de suenos app</a></li>
+                    <li><a href="/es/app-analisis-suenos-android" class="hover:text-dream-salmon transition-colors">Analisis suenos Android</a></li>
+                    <li><a href="/es/diario-de-suenos-por-voz" class="hover:text-dream-salmon transition-colors">Diario suenos por voz</a></li>
+                    <li><a href="/es/blog/sonar-con-examen-significado" class="hover:text-dream-salmon transition-colors">Soñar con examen: aprobar, reprobar o no estudiar</a></li>
+                    <li><a href="/es/blog/como-recordar-suenos" class="hover:text-dream-salmon transition-colors">Cómo recordar tus sueños al despertar: 10 técnicas</a></li>
+                    <li><a href="/es/blog/guia-diario-suenos" class="hover:text-dream-salmon transition-colors">Diario de sueños: método simple para empezar esta noche</a></li>
+                    <li><a href="/es/blog/guia-suenos-lucidos-principiantes" class="hover:text-dream-salmon transition-colors">Sueños Lúcidos: Guía para Principiantes - Noctalia</a></li>
+                    <li><a href="/es/blog/significado-suenos-recurrentes" class="hover:text-dream-salmon transition-colors">Sueños Recurrentes: Descifra sus Mensajes Ocultos</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">Diccionario de sueños</h5>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="/es/guides/diccionario-simbolos-suenos" class="text-dream-salmon transition-colors">Diccionario de sueños</a></li>
+                    <li><a href="/es/guides/" class="hover:text-dream-salmon transition-colors">Guías de sueños</a></li>
+                    <li><a href="/es/guides/simbolos-suenos-mas-comunes" class="hover:text-dream-salmon transition-colors">Los 20 símbolos de sueños más comunes y sus significados</a></li>
+                    <li><a href="/es/guides/simbolos-suenos-aterradoras" class="hover:text-dream-salmon transition-colors">Sueños aterradores: símbolos y significado</a></li>
+                    <li><a href="/es/guides/simbolos-suenos-animales" class="hover:text-dream-salmon transition-colors">Animales en sueños: símbolos y significado</a></li>
+                    <li><a href="/es/guides/simbolos-suenos-agua" class="hover:text-dream-salmon transition-colors">Agua en sueños: significado</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">Símbolos populares</h5>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="/es/simbolos/agua" class="hover:text-dream-salmon transition-colors">Agua</a></li>
+                    <li><a href="/es/simbolos/caida" class="hover:text-dream-salmon transition-colors">Caída</a></li>
+                    <li><a href="/es/simbolos/volar" class="hover:text-dream-salmon transition-colors">Volar</a></li>
+                    <li><a href="/es/simbolos/dientes" class="hover:text-dream-salmon transition-colors">Dientes (perder dientes)</a></li>
+                    <li><a href="/es/simbolos/serpiente" class="hover:text-dream-salmon transition-colors">Serpiente</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">Legal</h5>
+                <ul class="space-y-2 text-sm text-gray-500 mb-4">
+                    <li><a href="/es/sobre" class="hover:text-dream-salmon transition-colors">Sobre</a></li>
+                    <li><a href="/es/prensa" class="hover:text-dream-salmon transition-colors">Prensa</a></li>
+                    <li><a href="/es/aviso-legal" class="hover:text-dream-salmon transition-colors">Aviso legal</a></li>
+                    <li><a href="/es/politica-privacidad" class="hover:text-dream-salmon transition-colors">Política de privacidad</a></li>
+                    <li><a href="/es/terminos" class="hover:text-dream-salmon transition-colors">Términos</a></li>
+                    <li><a href="/es/eliminacion-cuenta" class="hover:text-dream-salmon transition-colors">Eliminación de cuenta</a></li>
+                </ul>
+                <h5 class="font-bold mb-4 text-white">Descarga</h5>
+                <div class="flex flex-col gap-3">
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="play" class="lucide lucide-play w-5 h-5 fill-current" aria-hidden="true" focusable="false"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg>
+                        <div class="leading-none">
+                            <div class="text-[9px] uppercase">Disponible en</div>
+                            <div class="text-sm font-bold">Google Play</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
+            <span>© 2025 Noctalia Inc.</span>
+            <span class="mt-2 md:mt-0 flex gap-2 items-center">Hecho con <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="heart" class="lucide lucide-heart w-3 h-3 text-dream-salmon fill-current" aria-hidden="true" focusable="false"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg> para soñadores</span>
+        </div>
+    </footer>
+    <script src="/js/site-shell.js?v=ac97d131370e" defer></script>
+    <script src="/js/language-dropdown.js?v=ac97d131370e" defer></script>
+    <script src="/js/mobile-menu.js?v=ac97d131370e" defer></script>
+</body>
+</html>

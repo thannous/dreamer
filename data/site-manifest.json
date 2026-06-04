@@ -208,6 +208,90 @@
             }
           }
         },
+        "page.dream-dictionary-app": {
+          "id": "page.dream-dictionary-app",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-dictionary-app",
+          "locales": {
+            "en": {
+              "slug": "dream-dictionary-app",
+              "path": "/en/dream-dictionary-app"
+            },
+            "fr": {
+              "slug": "dictionnaire-de-reves-application",
+              "path": "/fr/dictionnaire-de-reves-application"
+            },
+            "es": {
+              "slug": "diccionario-de-suenos-app",
+              "path": "/es/diccionario-de-suenos-app"
+            },
+            "de": {
+              "slug": "traumlexikon-app",
+              "path": "/de/traumlexikon-app"
+            },
+            "it": {
+              "slug": "dizionario-dei-sogni-app",
+              "path": "/it/dizionario-dei-sogni-app"
+            }
+          }
+        },
+        "page.android-dream-analysis-app": {
+          "id": "page.android-dream-analysis-app",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "android-dream-analysis-app",
+          "locales": {
+            "en": {
+              "slug": "android-dream-analysis-app",
+              "path": "/en/android-dream-analysis-app"
+            },
+            "fr": {
+              "slug": "application-analyse-de-reve-android",
+              "path": "/fr/application-analyse-de-reve-android"
+            },
+            "es": {
+              "slug": "app-analisis-suenos-android",
+              "path": "/es/app-analisis-suenos-android"
+            },
+            "de": {
+              "slug": "android-traumanalyse-app",
+              "path": "/de/android-traumanalyse-app"
+            },
+            "it": {
+              "slug": "app-analisi-sogni-android",
+              "path": "/it/app-analisi-sogni-android"
+            }
+          }
+        },
+        "page.voice-dream-journal": {
+          "id": "page.voice-dream-journal",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "voice-dream-journal",
+          "locales": {
+            "en": {
+              "slug": "voice-dream-journal",
+              "path": "/en/voice-dream-journal"
+            },
+            "fr": {
+              "slug": "journal-de-reves-vocal",
+              "path": "/fr/journal-de-reves-vocal"
+            },
+            "es": {
+              "slug": "diario-de-suenos-por-voz",
+              "path": "/es/diario-de-suenos-por-voz"
+            },
+            "de": {
+              "slug": "traumtagebuch-spracheingabe",
+              "path": "/de/traumtagebuch-spracheingabe"
+            },
+            "it": {
+              "slug": "diario-dei-sogni-vocale",
+              "path": "/it/diario-dei-sogni-vocale"
+            }
+          }
+        },
         "legal.notice": {
           "id": "legal.notice",
           "type": "content",

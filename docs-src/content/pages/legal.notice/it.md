@@ -40,7 +40,7 @@
         <div class="space-y-8 text-gray-300 leading-relaxed">
 <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-white/5">
                 <h2 class="text-2xl font-serif text-white mb-4">Cerchi Noctalia?</h2>
-                <p>Noctalia è un’app diario dei sogni con registrazione vocale, interpretazione IA, simboli, immagini e Dream Chat. Questa pagina contiene informazioni legali; per scoprire il prodotto, parti dalla <a href="/it/" class="text-dream-salmon hover:underline">homepage di Noctalia</a>, dalla <a href="/it/chi-siamo" class="text-dream-salmon hover:underline">storia del progetto</a> o dall’<a href="/it/privacy-policy" class="text-dream-salmon hover:underline">informativa sulla privacy</a>.</p>
+                <p>Noctalia è un’app diario dei sogni con registrazione vocale, interpretazione IA, simboli, immagini e riflessione guidata. Questa pagina contiene informazioni legali; per scoprire il prodotto, parti dalla <a href="/it/" class="text-dream-salmon hover:underline">homepage di Noctalia</a>, dalla <a href="/it/chi-siamo" class="text-dream-salmon hover:underline">storia del progetto</a> o dall’<a href="/it/privacy-policy" class="text-dream-salmon hover:underline">informativa sulla privacy</a>.</p>
             </section>
 
                         <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

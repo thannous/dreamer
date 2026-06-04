@@ -2,7 +2,7 @@
 
 ## Objective
 
-Move the dream-symbol dictionary from 62 to 150 useful symbols without creating thin SEO pages. Publish in batches of 25-30 symbols, then measure indexation, impressions, CTR, and internal-link performance before expanding toward 300+ symbols.
+Move the dream-symbol dictionary from the current 150 useful symbols to 300 useful symbols without creating thin SEO pages. Publish in batches of 25-30 symbols, then measure indexation, impressions, CTR, and internal-link performance before each new batch.
 
 ## Quality Bar Per Symbol
 
@@ -114,6 +114,175 @@ Each symbol should have:
 87. volcano
 88. mask
 
+## Batch 4: Household And Relationship Symbols
+
+89. apartment
+90. stairs
+91. elevator
+92. window
+93. roof
+94. hallway
+95. mirror
+96. closet
+97. table
+98. chair
+99. bed
+100. key
+101. lock
+102. phone
+103. message
+104. money
+105. wallet
+106. gift
+107. wedding
+108. divorce
+109. kiss
+110. argument
+111. betrayal
+112. reunion
+113. child
+114. baby
+115. family
+116. neighbor
+117. ex-partner
+118. home-invasion
+
+## Batch 5: Body, Health, And Anxiety Symbols
+
+119. blood
+120. teeth-breaking
+121. losing-hair
+122. naked
+123. unable-to-run
+124. choking
+125. vomiting
+126. fever
+127. medicine
+128. ambulance
+129. injection
+130. scar
+131. skin
+132. face
+133. mouth
+134. voice
+135. blindness
+136. aging
+137. public-speaking
+138. crowd
+139. locked-room
+140. dark-room
+141. broken-phone
+142. being-lost
+143. failing-test
+144. running-away
+145. falling-elevator
+146. panic
+147. crying
+148. silence
+
+## Batch 6: Travel, Work, And Life Transition Symbols
+
+149. train
+150. station
+151. taxi
+152. motorcycle
+153. traffic
+154. bridge-collapse
+155. tunnel
+156. map
+157. ticket
+158. border
+159. foreign-country
+160. office
+161. meeting
+162. boss
+163. interview
+164. promotion
+165. being-fired
+166. deadline
+167. computer
+168. school
+169. university
+170. diploma
+171. library
+172. stage
+173. camera
+174. performance
+175. competition
+176. winning
+177. losing
+178. new-job
+
+## Batch 7: Nature, Weather, And Animal Symbols
+
+179. ocean
+180. beach
+181. wave
+182. tsunami
+183. rain
+184. storm
+185. fog
+186. wind
+187. rainbow
+188. mud
+189. mountain
+190. cliff
+191. valley
+192. tree
+193. forest
+194. flowers
+195. roots
+196. harvest
+197. snake-bite
+198. spider
+199. cat
+200. horse
+201. lion
+202. tiger
+203. deer
+204. fox
+205. bat
+206. insect-swarm
+207. egg
+208. nest
+
+## Batch 8: Spiritual, Mystery, And Transformation Symbols
+
+209. angel
+210. temple
+211. church
+212. cemetery
+213. grave
+214. coffin
+215. ancestor
+216. spirit
+217. ritual
+218. candle
+219. clock
+220. labyrinth
+221. maze
+222. portal
+223. eclipse
+224. full-moon
+225. sun
+226. stars
+227. apocalypse
+228. explosion
+229. war
+230. soldier
+231. rescue
+232. treasure
+233. gold
+234. crown
+235. wings
+236. transformation
+237. rebirth
+238. prophecy
+
+## Batch 9: Final 62 Query-Led Symbols
+
+Reserve the final 62 symbol slots for J+14 and J+30 Search Console exports. Do not fill these from intuition alone. Pull candidates from queries with impressions for `reve de`, `rêver de`, `dream about`, `soñar con`, `Traum von`, and `sognare`, plus symbols already mentioned in blog posts but missing a symbol page.
+
 ## Prioritization Inputs
 
 Use the weekly SEO loop before writing each batch:
@@ -122,7 +291,7 @@ Use the weekly SEO loop before writing each batch:
 2. Ahrefs warnings and keyword opportunities already logged in the repo.
 3. Blog topics that already mention a symbol but lack a symbol page.
 4. Competitor dictionary coverage from Dream Moods, Dream Bible, Auntyflo, ThePleasantDream, Dreamiary, and Dreamz.
-5. App product utility: symbols that improve Dream Chat, recurring-symbol tracking, and onboarding.
+5. App product utility: symbols that improve guided reflection, recurring-symbol tracking, and onboarding.
 
 ## Publication Loop
 

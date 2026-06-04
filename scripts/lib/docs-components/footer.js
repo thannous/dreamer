@@ -55,6 +55,30 @@ function aiDreamAppLabel(lang) {
   return 'AI dream app';
 }
 
+function dreamDictionaryAppLabel(lang) {
+  if (lang === 'fr') return 'Dictionnaire de reves app';
+  if (lang === 'es') return 'Diccionario de suenos app';
+  if (lang === 'de') return 'Traumlexikon App';
+  if (lang === 'it') return 'Dizionario sogni app';
+  return 'Dream dictionary app';
+}
+
+function androidDreamAnalysisAppLabel(lang) {
+  if (lang === 'fr') return 'Analyse de reve Android';
+  if (lang === 'es') return 'Analisis suenos Android';
+  if (lang === 'de') return 'Android Traumanalyse';
+  if (lang === 'it') return 'Analisi sogni Android';
+  return 'Android dream analysis';
+}
+
+function voiceDreamJournalLabel(lang) {
+  if (lang === 'fr') return 'Journal de reves vocal';
+  if (lang === 'es') return 'Diario suenos por voz';
+  if (lang === 'de') return 'Traumtagebuch Sprache';
+  if (lang === 'it') return 'Diario sogni vocale';
+  return 'Voice dream journal';
+}
+
 function loadFeaturedBlogTitles() {
   const titles = new Map();
   const featuredEntries = siteConfig.seoLinking?.featuredBlogEntries || [];
@@ -96,6 +120,18 @@ function buildSeoFooterLinks(context) {
     {
       href: routePath('page.ai-dream-interpretation-app'),
       label: aiDreamAppLabel(lang),
+    },
+    {
+      href: routePath('page.dream-dictionary-app'),
+      label: dreamDictionaryAppLabel(lang),
+    },
+    {
+      href: routePath('page.android-dream-analysis-app'),
+      label: androidDreamAnalysisAppLabel(lang),
+    },
+    {
+      href: routePath('page.voice-dream-journal'),
+      label: voiceDreamJournalLabel(lang),
     },
     ...(siteConfig.seoLinking?.featuredBlogEntries || [])
       .map((entryId) => {

@@ -53,7 +53,7 @@
                         <h3 class="text-white font-semibold mb-2">Qué almacena Noctalia</h3>
                         <ul class="list-disc pl-5 space-y-2">
                             <li>Datos de cuenta y preferencias.</li>
-                            <li>Transcripciones de sueños, análisis, imágenes generadas, símbolos, favoritos e historial de Dream Chat.</li>
+                            <li>Transcripciones de sueños, análisis, imágenes generadas, símbolos, favoritos e historial de reflexión guiada.</li>
                             <li>Registros técnicos necesarios para seguridad, estabilidad y prevención de abuso de cuotas.</li>
                         </ul>
                     </div>

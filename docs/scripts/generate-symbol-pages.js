@@ -224,6 +224,18 @@ function parseSourceDocument(raw) {
 
 const SHARED_SITE_CONFIG = loadSharedSiteConfig();
 
+function getSymbolCtaUrl(lang) {
+  const paths = {
+    en: '/en/android-dream-analysis-app',
+    fr: '/fr/application-analyse-de-reve-android',
+    es: '/es/app-analisis-suenos-android',
+    de: '/de/android-traumanalyse-app',
+    it: '/it/app-analisi-sogni-android',
+  };
+
+  return paths[lang] || paths.en;
+}
+
 function loadSiteManifest() {
   return JSON.parse(fs.readFileSync(SITE_MANIFEST_PATH, 'utf8'));
 }
@@ -1397,7 +1409,7 @@ ${relatedArticleHtml}
                 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
-                <a href="${homePath}" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
+                <a href="${getSymbolCtaUrl(lang)}" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
                     ${t.cta_button} <i data-lucide="arrow-right" class="w-5 h-5"></i>
                 </a>
             </aside>

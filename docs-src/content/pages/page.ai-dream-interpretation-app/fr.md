@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "application-interpretation-reves-ia",
   "title": "Application d’interprétation de rêves IA | Noctalia",
-  "description": "Noctalia aide à capturer un rêve par voix, lire les symboles, générer une image et approfondir avec Dream Chat.",
+  "description": "Noctalia aide à capturer un rêve par voix, lire les symboles, générer une image et approfondir avec une exploration guidée.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",
@@ -14,12 +14,12 @@
   "mainClass": "pt-32 pb-20 px-6 max-w-6xl mx-auto",
   "ogType": "article",
   "ogTitle": "Application d’interprétation de rêves IA",
-  "ogDescription": "Noctalia aide à capturer un rêve par voix, lire les symboles, générer une image et approfondir avec Dream Chat.",
+  "ogDescription": "Noctalia aide à capturer un rêve par voix, lire les symboles, générer une image et approfondir avec une exploration guidée.",
   "ogImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "ogImageAlt": "Noctalia dream journal app",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Application d’interprétation de rêves IA",
-  "twitterDescription": "Noctalia aide à capturer un rêve par voix, lire les symboles, générer une image et approfondir avec Dream Chat.",
+  "twitterDescription": "Noctalia aide à capturer un rêve par voix, lire les symboles, générer une image et approfondir avec une exploration guidée.",
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
@@ -29,7 +29,7 @@
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Application d’interprétation de rêves IA\",\n    \"description\": \"Noctalia aide à capturer un rêve par voix, lire les symboles, générer une image et approfondir avec Dream Chat.\",\n    \"url\": \"https://noctalia.app/fr/application-interpretation-reves-ia\",\n    \"inLanguage\": \"fr\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Application d’interprétation de rêves IA\",\n    \"description\": \"Noctalia aide à capturer un rêve par voix, lire les symboles, générer une image et approfondir avec une exploration guidée.\",\n    \"url\": \"https://noctalia.app/fr/application-interpretation-reves-ia\",\n    \"inLanguage\": \"fr\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Application d’interprétation de rêves IA\",\n            \"item\": \"https://noctalia.app/fr/application-interpretation-reves-ia\"\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"À vérifier\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Capture rapide, politique de confidentialité claire, limites visibles, suppression ou export, contexte symbolique, questions de réflexion et disclaimer.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Pourquoi Noctalia convient\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Noctalia est Android, vocal, visuel, multilingue et relié à un dictionnaire public de symboles en croissance.\"\n            }\n        }\n    ]\n}"
   ],
@@ -43,7 +43,7 @@
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">En bref</h2>
-    <p>Noctalia combine capture vocale, transcription, interprétation IA, symboles récurrents, images générées et Dream Chat. L’interprétation sert de support de réflexion, pas de vérité finale.</p>
+    <p>Noctalia combine capture vocale, transcription, interprétation IA, symboles récurrents, images générées et exploration guidée. L’interprétation sert de support de réflexion, pas de vérité finale.</p>
   </section>
 
   <section class="grid md:grid-cols-2 gap-6">
@@ -139,7 +139,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Essayer Noctalia</h2>
-    <p>Noctalia est disponible sur Android pour noter un rêve sans perdre les détails, revoir les symboles, créer une image souvenir et poursuivre la réflexion dans Dream Chat.</p>
+    <p>Noctalia est disponible sur Android pour noter un rêve sans perdre les détails, revoir les symboles, créer une image souvenir et poursuivre avec une exploration guidée.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Google Play</a></p>
   </section>
 </div>

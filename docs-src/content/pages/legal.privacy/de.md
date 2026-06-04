@@ -53,7 +53,7 @@
         <h3 class="text-white font-semibold mb-2">Was Noctalia speichert</h3>
         <ul class="list-disc pl-5 space-y-2">
           <li>Konto- und Präferenzdaten.</li>
-          <li>Traumtranskripte, Analysen, generierte Bilder, Symbole, Favoriten und Dream-Chat-Verlauf.</li>
+          <li>Traumtranskripte, Analysen, generierte Bilder, Symbole, Favoriten und Verlauf der geführten Reflexion.</li>
           <li>Technische Protokolle für Sicherheit, Stabilität und Schutz vor Quotenmissbrauch.</li>
         </ul>
       </div>
@@ -78,7 +78,7 @@
     <h2 class="text-2xl font-serif text-white mb-4 mt-8">2. Welche Daten wir verarbeiten</h2>
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Kontodaten:</strong> E-Mail-Adresse, gehashter Passwortwert, Sprache, Anzeigepräferenzen und Kontoverwaltungsdaten.</li>
-      <li><strong>Traumdaten:</strong> Texte, Transkripte, KI-Analysen, Zitate, Themen, Traumtypen, Favoriten, generierte Bilder und Dream-Chat-Verlauf.</li>
+      <li><strong>Traumdaten:</strong> Texte, Transkripte, KI-Analysen, Zitate, Themen, Traumtypen, Favoriten, generierte Bilder und Verlauf der geführten Reflexion.</li>
       <li><strong>Audio:</strong> Wenn du die Sprachfunktion nutzt, wird deine Stimme zur Erstellung eines Transkripts verarbeitet. Noctalia speichert Audiodateien nicht dauerhaft auf seinen Servern; sie werden nur im technischen Ablauf verarbeitet. Gespeichert wird das Transkript.</li>
       <li><strong>Technische Daten:</strong> Fehler-, Leistungs- und Sicherheitsprotokolle, App-Version, Betriebssystem und ein gehashter Geräteindikator zur Verwaltung kostenloser Kontingente. Wir verwenden derzeit keine Drittanbieter-Marketing-Analytics wie Google Analytics oder Mixpanel.</li>
       <li><strong>Supportdaten:</strong> Inhalte deiner Nachrichten an uns und Informationen zur Bearbeitung deiner Anfrage.</li>
@@ -101,7 +101,7 @@
     <p>Noctalia nutzt KI-Dienste, um Träume zu transkribieren, zu analysieren und Bilder oder Texte zu erzeugen.</p>
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Spracherkennung:</strong> bevorzugt nutzen wir die native Spracherkennung deines Geräts. Wenn sie nicht verfügbar ist, kann Audio vorübergehend über unser Backend an einen Drittanbieter wie Google Cloud Speech-to-Text gesendet werden. Noctalia speichert diese Aufnahmen nicht dauerhaft.</li>
-      <li><strong>Analyse und Generierung:</strong> Traumtext und erforderliche Metadaten werden an unseren Haupt-KI-Anbieter, derzeit <strong>Google Gemini</strong>, gesendet, um Analysen, Zusammenfassungen, Chat-Antworten und visuelle Inhalte zu erzeugen.</li>
+      <li><strong>Analyse und Generierung:</strong> Traumtext und erforderliche Metadaten werden an unseren Haupt-KI-Anbieter, derzeit <strong>Google Gemini</strong>, gesendet, um Analysen, Zusammenfassungen, Antworten auf Reflexionsfragen und visuelle Inhalte zu erzeugen.</li>
       <li><strong>Weitere Anbieter:</strong> zukünftig können vergleichbare Anbieter wie Anthropic, OpenAI, Perplexity oder Mistral eingesetzt werden, wenn angemessene Sicherheits- und Vertraulichkeitsgarantien bestehen.</li>
       <li><strong>Modelltraining:</strong> soweit Anbieter diese Option erlauben, konfigurieren wir die Dienste so, dass deine Daten nicht zum Training allgemeiner Modelle verwendet werden.</li>
     </ul>

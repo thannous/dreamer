@@ -31,7 +31,7 @@
   "jsonLd": [
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Alternativa a DreamApp para diario de sueños\",\n    \"description\": \"Compara DreamApp y Noctalia: interpretación, voz, precio, Android y privacidad.\",\n    \"url\": \"https://noctalia.app/es/alternativa-dreamapp\",\n    \"inLanguage\": \"es\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Alternativa a DreamApp para diario de sueños\",\n            \"item\": \"https://noctalia.app/es/alternativa-dreamapp\"\n        }\n    ]\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Elige DreamApp si\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Elige DreamApp si quieres una app generalista con mucha tracción pública, iOS y enfoque terapéutico.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Elige Noctalia si\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Elige Noctalia si olvidas los sueños antes de escribirlos y quieres voz en Android, tarjetas visuales, Dream Chat y explicaciones de privacidad claras.\"\n            }\n        }\n    ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Elige DreamApp si\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Elige DreamApp si quieres una app generalista con mucha tracción pública, iOS y enfoque terapéutico.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Elige Noctalia si\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Elige Noctalia si olvidas los sueños antes de escribirlos y quieres voz en Android, tarjetas visuales, reflexión guiada y explicaciones de privacidad claras.\"\n            }\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -43,7 +43,7 @@
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Resumen</h2>
-    <p>DreamApp destaca por escala pública y posicionamiento de interpretación. Noctalia destaca en un flujo más concreto: despertar, contar el sueño antes de olvidarlo, recibir una tarjeta estructurada, revisar símbolos, generar una imagen y continuar con Dream Chat.</p>
+    <p>DreamApp destaca por escala pública y posicionamiento de interpretación. Noctalia destaca en un flujo más concreto: despertar, contar el sueño antes de olvidarlo, recibir una tarjeta estructurada, revisar símbolos, generar una imagen y continuar con reflexión guiada.</p>
     <p class="mt-4 text-sm text-purple-200/70">Noctalia es una herramienta de reflexión. No ofrece asesoramiento médico, psicológico, jurídico, financiero ni predictivo.</p>
   </section>
 
@@ -54,7 +54,7 @@
         <thead class="text-purple-200"><tr><th class="py-3 pr-4">Categoría</th><th class="py-3 pr-4">DreamApp</th><th class="py-3 pr-4">Noctalia</th><th class="py-3 pr-4">Conclusión</th></tr></thead>
         <tbody class="divide-y divide-white/10">
           <tr><td class="py-4 pr-4 text-white font-medium">Captura al despertar</td><td class="py-4 pr-4 ">Las fichas públicas destacan relato, análisis IA, temas y enfoque terapéutico.</td><td class="py-4 pr-4 ">La voz es el flujo principal, con texto como alternativa.</td><td class="py-4 pr-4 ">Noctalia si escribir al despertar te hace perder detalles.</td></tr>
-          <tr><td class="py-4 pr-4 text-white font-medium">Interpretación</td><td class="py-4 pr-4 ">Narrativa fuerte de significado y sanación, con caveat sobre significados no universales.</td><td class="py-4 pr-4 ">Análisis reflexivo, símbolos recurrentes y preguntas en Dream Chat.</td><td class="py-4 pr-4 ">Noctalia debe competir en continuidad, no en certeza absoluta.</td></tr>
+          <tr><td class="py-4 pr-4 text-white font-medium">Interpretación</td><td class="py-4 pr-4 ">Narrativa fuerte de significado y sanación, con caveat sobre significados no universales.</td><td class="py-4 pr-4 ">Análisis reflexivo, símbolos recurrentes y preguntas en reflexión guiada.</td><td class="py-4 pr-4 ">Noctalia debe competir en continuidad, no en certeza absoluta.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Memoria visual</td><td class="py-4 pr-4 ">Hay señales de funciones visuales, pero no es el diferenciador más claro.</td><td class="py-4 pr-4 ">La imagen generada es parte central del diario.</td><td class="py-4 pr-4 ">Noctalia tiene el ángulo visual más claro.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Privacidad</td><td class="py-4 pr-4 ">Google Play muestra categorías de datos compartidos/recopilados.</td><td class="py-4 pr-4 ">Noctalia explica hosting UE, audio, proveedores IA, RevenueCat, no venta de datos y no publicidad dirigida.</td><td class="py-4 pr-4 ">Prometer divulgación clara, no privacidad perfecta.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Precio con fuente</td><td class="py-4 pr-4 ">Descarga gratis con compras integradas; el catálogo completo no es público en Google Play.</td><td class="py-4 pr-4 ">Noctalia muestra plan gratuito y Onironauta a 2,99 €/mes o 19 €/año.</td><td class="py-4 pr-4 ">Usar hechos con fuente, no “más barato” genérico.</td></tr>
@@ -92,7 +92,7 @@
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
       <h2 class="text-2xl font-serif text-white mb-4">Elige Noctalia si</h2>
-      <p>Elige Noctalia si olvidas los sueños antes de escribirlos y quieres voz en Android, tarjetas visuales, Dream Chat y explicaciones de privacidad claras.</p>
+      <p>Elige Noctalia si olvidas los sueños antes de escribirlos y quieres voz en Android, tarjetas visuales, reflexión guiada y explicaciones de privacidad claras.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">No cambies si</h2>

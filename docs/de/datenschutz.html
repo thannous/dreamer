@@ -201,7 +201,7 @@
         <h3 class="text-white font-semibold mb-2">Was Noctalia speichert</h3>
         <ul class="list-disc pl-5 space-y-2">
           <li>Konto- und Präferenzdaten.</li>
-          <li>Traumtranskripte, Analysen, generierte Bilder, Symbole, Favoriten und Dream-Chat-Verlauf.</li>
+          <li>Traumtranskripte, Analysen, generierte Bilder, Symbole, Favoriten und Verlauf der geführten Reflexion.</li>
           <li>Technische Protokolle für Sicherheit, Stabilität und Schutz vor Quotenmissbrauch.</li>
         </ul>
       </div>
@@ -226,7 +226,7 @@
     <h2 class="text-2xl font-serif text-white mb-4 mt-8">2. Welche Daten wir verarbeiten</h2>
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Kontodaten:</strong> E-Mail-Adresse, gehashter Passwortwert, Sprache, Anzeigepräferenzen und Kontoverwaltungsdaten.</li>
-      <li><strong>Traumdaten:</strong> Texte, Transkripte, KI-Analysen, Zitate, Themen, Traumtypen, Favoriten, generierte Bilder und Dream-Chat-Verlauf.</li>
+      <li><strong>Traumdaten:</strong> Texte, Transkripte, KI-Analysen, Zitate, Themen, Traumtypen, Favoriten, generierte Bilder und Verlauf der geführten Reflexion.</li>
       <li><strong>Audio:</strong> Wenn du die Sprachfunktion nutzt, wird deine Stimme zur Erstellung eines Transkripts verarbeitet. Noctalia speichert Audiodateien nicht dauerhaft auf seinen Servern; sie werden nur im technischen Ablauf verarbeitet. Gespeichert wird das Transkript.</li>
       <li><strong>Technische Daten:</strong> Fehler-, Leistungs- und Sicherheitsprotokolle, App-Version, Betriebssystem und ein gehashter Geräteindikator zur Verwaltung kostenloser Kontingente. Wir verwenden derzeit keine Drittanbieter-Marketing-Analytics wie Google Analytics oder Mixpanel.</li>
       <li><strong>Supportdaten:</strong> Inhalte deiner Nachrichten an uns und Informationen zur Bearbeitung deiner Anfrage.</li>
@@ -249,7 +249,7 @@
     <p>Noctalia nutzt KI-Dienste, um Träume zu transkribieren, zu analysieren und Bilder oder Texte zu erzeugen.</p>
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Spracherkennung:</strong> bevorzugt nutzen wir die native Spracherkennung deines Geräts. Wenn sie nicht verfügbar ist, kann Audio vorübergehend über unser Backend an einen Drittanbieter wie Google Cloud Speech-to-Text gesendet werden. Noctalia speichert diese Aufnahmen nicht dauerhaft.</li>
-      <li><strong>Analyse und Generierung:</strong> Traumtext und erforderliche Metadaten werden an unseren Haupt-KI-Anbieter, derzeit <strong>Google Gemini</strong>, gesendet, um Analysen, Zusammenfassungen, Chat-Antworten und visuelle Inhalte zu erzeugen.</li>
+      <li><strong>Analyse und Generierung:</strong> Traumtext und erforderliche Metadaten werden an unseren Haupt-KI-Anbieter, derzeit <strong>Google Gemini</strong>, gesendet, um Analysen, Zusammenfassungen, Antworten auf Reflexionsfragen und visuelle Inhalte zu erzeugen.</li>
       <li><strong>Weitere Anbieter:</strong> zukünftig können vergleichbare Anbieter wie Anthropic, OpenAI, Perplexity oder Mistral eingesetzt werden, wenn angemessene Sicherheits- und Vertraulichkeitsgarantien bestehen.</li>
       <li><strong>Modelltraining:</strong> soweit Anbieter diese Option erlauben, konfigurieren wir die Dienste so, dass deine Daten nicht zum Training allgemeiner Modelle verwendet werden.</li>
     </ul>
@@ -311,7 +311,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="moon" class="lucide lucide-moon w-6 h-6 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg>
                     <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
                 </a>
-                <p class="text-sm text-gray-500 max-w-xs mb-6">Dein Begleiter für bessere Nächte.</p>
+                <p class="text-sm text-gray-500 max-w-xs mb-6">Dein Tagebuch für bessere Nächte.</p>
                 <div class="flex gap-4">
                     <a href="https://www.instagram.com/noctaliadreams/" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="Instagram Noctalia">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="instagram" class="lucide lucide-instagram w-5 h-5" aria-hidden="true" focusable="false"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
@@ -332,6 +332,9 @@
                     <li><a href="/de/dreamapp-alternative" class="hover:text-dream-salmon transition-colors">DreamApp Alternative</a></li>
                     <li><a href="/de/oniri-alternative" class="hover:text-dream-salmon transition-colors">Oniri Alternative</a></li>
                     <li><a href="/de/ki-traumdeutung-app" class="hover:text-dream-salmon transition-colors">KI-Traumdeutung-App</a></li>
+                    <li><a href="/de/traumlexikon-app" class="hover:text-dream-salmon transition-colors">Traumlexikon App</a></li>
+                    <li><a href="/de/android-traumanalyse-app" class="hover:text-dream-salmon transition-colors">Android Traumanalyse</a></li>
+                    <li><a href="/de/traumtagebuch-spracheingabe" class="hover:text-dream-salmon transition-colors">Traumtagebuch Sprache</a></li>
                     <li><a href="/de/blog/pruefungstraum-bedeutung" class="hover:text-dream-salmon transition-colors">Prüfungstraum: nicht gelernt, bestanden, durchgefallen</a></li>
                     <li><a href="/de/blog/so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken" class="hover:text-dream-salmon transition-colors">So erinnern Sie sich an Ihre Träume: 10 effektive Techniken</a></li>
                     <li><a href="/de/blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer" class="hover:text-dream-salmon transition-colors">Traumtagebuch: einfache Methode für heute Abend</a></li>

@@ -38,7 +38,7 @@
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Oniri alternative for dream journaling</h1>
 <p class="text-sm text-purple-300/70 mb-6">Updated May 20, 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Oniri is a mature dream journal and lucid dreaming product. Noctalia is the alternative to consider when you do not need a full lucid training suite and mainly want fast Android capture, AI reflection, generated images, symbols, and Dream Chat.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Oniri is a mature dream journal and lucid dreaming product. Noctalia is the alternative to consider when you do not need a full lucid training suite and mainly want fast Android capture, AI reflection, generated images, symbols, and guided reflection.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -55,7 +55,7 @@
         <tbody class="divide-y divide-white/10">
           <tr><td class="py-4 pr-4 text-white font-medium">Lucid dreaming</td><td class="py-4 pr-4 ">Reality checks, reminders, audio cues, WILD, MILD, SSILD and technique content are part of the public positioning.</td><td class="py-4 pr-4 ">Basic lucid support and dream reflection, but not a dedicated lucid training suite.</td><td class="py-4 pr-4 ">Choose Oniri for serious lucid practice.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Morning capture</td><td class="py-4 pr-4 ">Oral notes are advertised, but the product is broader than capture alone.</td><td class="py-4 pr-4 ">Voice-first capture is the center of the Android workflow.</td><td class="py-4 pr-4 ">Choose Noctalia if speed after waking is the main pain.</td></tr>
-          <tr><td class="py-4 pr-4 text-white font-medium">Interpretation</td><td class="py-4 pr-4 ">AI interpretation, questions, and hundreds of meanings are advertised.</td><td class="py-4 pr-4 ">AI dream card, recurring symbols, and Dream Chat follow-up.</td><td class="py-4 pr-4 ">Both interpret; Noctalia is narrower and more conversational.</td></tr>
+          <tr><td class="py-4 pr-4 text-white font-medium">Interpretation</td><td class="py-4 pr-4 ">AI interpretation, questions, and hundreds of meanings are advertised.</td><td class="py-4 pr-4 ">AI dream card, recurring symbols, and guided reflection follow-up.</td><td class="py-4 pr-4 ">Both interpret; Noctalia is narrower and more conversational.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Images and memory</td><td class="py-4 pr-4 ">Generated images and up to 5 images per dream are listed in premium copy.</td><td class="py-4 pr-4 ">Generated dream image is a central visual memory feature.</td><td class="py-4 pr-4 ">Tie on image direction; choose based on broader workflow.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Export and stats</td><td class="py-4 pr-4 ">PDF export, filters and advanced statistics are public strengths.</td><td class="py-4 pr-4 ">Stats and symbol tracking are part of the product, but export is not the strongest claim here.</td><td class="py-4 pr-4 ">Oniri remains stronger for export-heavy users.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Pricing evidence</td><td class="py-4 pr-4 ">App Store lists several Oniri IAP items in the US listing, including premium and full-version options; prices may vary by location.</td><td class="py-4 pr-4 ">Owned Noctalia page advertises Free plus Onironaut at EUR 2.99/month or EUR 19/year.</td><td class="py-4 pr-4 ">Use country/date context; avoid universal pricing claims.</td></tr>
@@ -80,7 +80,7 @@
     <ol class="list-decimal pl-5 space-y-2">
       <li>Export PDFs or copy key dreams from Oniri before switching.</li>
       <li>Keep lucid alarms, techniques and reality-check routines in Oniri if they are central to your practice.</li>
-      <li>Use Noctalia for new Android entries where speed, image memory and Dream Chat matter more.</li>
+      <li>Use Noctalia for new Android entries where speed, image memory and guided reflection matter more.</li>
       <li>Rebuild recurring symbols from recent dreams instead of trying to port every historical tag.</li>
     </ol>
   </section>
@@ -123,7 +123,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Try Noctalia</h2>
-    <p>Noctalia is on Android for people who want to record a dream quickly, revisit the symbols, create a visual memory and continue the reflection in Dream Chat.</p>
+    <p>Noctalia is on Android for people who want to record a dream quickly, revisit the symbols, create a visual memory and continue with guided follow-up questions.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Google Play</a></p>
   </section>
 </div>

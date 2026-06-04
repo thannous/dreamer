@@ -5,7 +5,7 @@
   "lang": "en",
   "slug": "ai-dream-interpretation-app",
   "title": "AI Dream Interpretation App for Android | Noctalia",
-  "description": "Use Noctalia as an AI dream interpretation app for voice capture, dream symbols, visual dream images, reflection questions and Dream Chat.",
+  "description": "Use Noctalia as an AI dream interpretation app for voice capture, dream symbols, visual dream images and guided follow-up questions.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",
@@ -14,12 +14,12 @@
   "mainClass": "pt-32 pb-20 px-6 max-w-6xl mx-auto",
   "ogType": "article",
   "ogTitle": "AI Dream Interpretation App for Android",
-  "ogDescription": "Use Noctalia as an AI dream interpretation app for voice capture, dream symbols, visual dream images, reflection questions and Dream Chat.",
+  "ogDescription": "Use Noctalia as an AI dream interpretation app for voice capture, dream symbols, visual dream images and guided follow-up questions.",
   "ogImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "ogImageAlt": "Noctalia dream journal app",
   "twitterCard": "summary_large_image",
   "twitterTitle": "AI Dream Interpretation App for Android",
-  "twitterDescription": "Use Noctalia as an AI dream interpretation app for voice capture, dream symbols, visual dream images, reflection questions and Dream Chat.",
+  "twitterDescription": "Use Noctalia as an AI dream interpretation app for voice capture, dream symbols, visual dream images and guided follow-up questions.",
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
@@ -29,7 +29,7 @@
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"AI Dream Interpretation App for Android\",\n    \"description\": \"Use Noctalia as an AI dream interpretation app for voice capture, dream symbols, visual dream images, reflection questions and Dream Chat.\",\n    \"url\": \"https://noctalia.app/en/ai-dream-interpretation-app\",\n    \"inLanguage\": \"en\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"AI Dream Interpretation App for Android\",\n    \"description\": \"Use Noctalia as an AI dream interpretation app for voice capture, dream symbols, visual dream images and guided follow-up questions.\",\n    \"url\": \"https://noctalia.app/en/ai-dream-interpretation-app\",\n    \"inLanguage\": \"en\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"AI Dream Interpretation App for Android\",\n            \"item\": \"https://noctalia.app/en/ai-dream-interpretation-app\"\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"What to look for\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Fast capture, clear privacy, transparent limits, export or deletion controls, symbol context, follow-up questions and a visible disclaimer.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Why Noctalia fits\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Noctalia is Android-first, voice-friendly, visual, multilingual and connected to a growing public dream-symbol dictionary.\"\n            }\n        }\n    ]\n}"
   ],
@@ -43,7 +43,7 @@
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Short version</h2>
-    <p>Noctalia combines voice capture, transcription, AI interpretation, recurring symbols, generated images and Dream Chat so you can explore a dream from several angles. The interpretation is a prompt for reflection, not a final truth.</p>
+    <p>Noctalia combines voice capture, transcription, AI interpretation, recurring symbols, generated images and guided reflection so you can explore a dream from several angles. The interpretation is a prompt for reflection, not a final truth.</p>
   </section>
 
   <section class="grid md:grid-cols-2 gap-6">
@@ -139,7 +139,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Try Noctalia</h2>
-    <p>Noctalia is on Android for people who want to record a dream quickly, revisit the symbols, create a visual memory and continue the reflection in Dream Chat.</p>
+    <p>Noctalia is on Android for people who want to record a dream quickly, revisit the symbols, create a visual memory and continue with guided follow-up questions.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Google Play</a></p>
   </section>
 </div>

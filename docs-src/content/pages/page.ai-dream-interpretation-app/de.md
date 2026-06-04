@@ -5,7 +5,7 @@
   "lang": "de",
   "slug": "ki-traumdeutung-app",
   "title": "KI-Traumdeutung-App für Android | Noctalia",
-  "description": "Noctalia erfasst Träume per Sprache, erklärt Symbole, erzeugt Bilder und vertieft Reflexion mit Dream Chat.",
+  "description": "Noctalia erfasst Träume per Sprache, erklärt Symbole, erzeugt Bilder und vertieft die Reflexion mit geführten Fragen.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",
@@ -14,12 +14,12 @@
   "mainClass": "pt-32 pb-20 px-6 max-w-6xl mx-auto",
   "ogType": "article",
   "ogTitle": "KI-Traumdeutung-App für Android",
-  "ogDescription": "Noctalia erfasst Träume per Sprache, erklärt Symbole, erzeugt Bilder und vertieft Reflexion mit Dream Chat.",
+  "ogDescription": "Noctalia erfasst Träume per Sprache, erklärt Symbole, erzeugt Bilder und vertieft die Reflexion mit geführten Fragen.",
   "ogImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "ogImageAlt": "Noctalia dream journal app",
   "twitterCard": "summary_large_image",
   "twitterTitle": "KI-Traumdeutung-App für Android",
-  "twitterDescription": "Noctalia erfasst Träume per Sprache, erklärt Symbole, erzeugt Bilder und vertieft Reflexion mit Dream Chat.",
+  "twitterDescription": "Noctalia erfasst Träume per Sprache, erklärt Symbole, erzeugt Bilder und vertieft die Reflexion mit geführten Fragen.",
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
@@ -29,7 +29,7 @@
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"KI-Traumdeutung-App für Android\",\n    \"description\": \"Noctalia erfasst Träume per Sprache, erklärt Symbole, erzeugt Bilder und vertieft Reflexion mit Dream Chat.\",\n    \"url\": \"https://noctalia.app/de/ki-traumdeutung-app\",\n    \"inLanguage\": \"de\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"KI-Traumdeutung-App für Android\",\n    \"description\": \"Noctalia erfasst Träume per Sprache, erklärt Symbole, erzeugt Bilder und vertieft die Reflexion mit geführten Fragen.\",\n    \"url\": \"https://noctalia.app/de/ki-traumdeutung-app\",\n    \"inLanguage\": \"de\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"KI-Traumdeutung-App für Android\",\n            \"item\": \"https://noctalia.app/de/ki-traumdeutung-app\"\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Worauf achten\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Schnelle Erfassung, klare Privacy, sichtbare Grenzen, Löschung oder Export, Symbolkontext, Reflexionsfragen und Disclaimer.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Warum Noctalia passt\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Noctalia ist Android, sprachfreundlich, visuell, mehrsprachig und mit einem wachsenden öffentlichen Symbollexikon verbunden.\"\n            }\n        }\n    ]\n}"
   ],
@@ -43,7 +43,7 @@
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Kurz gesagt</h2>
-    <p>Noctalia kombiniert Spracheingabe, Transkription, KI-Deutung, wiederkehrende Symbole, generierte Bilder und Dream Chat. Die Deutung ist ein Reflexionsimpuls, keine endgültige Wahrheit.</p>
+    <p>Noctalia kombiniert Spracheingabe, Transkription, KI-Deutung, wiederkehrende Symbole, generierte Bilder und geführte Reflexion. Die Deutung ist ein Reflexionsimpuls, keine endgültige Wahrheit.</p>
   </section>
 
   <section class="grid md:grid-cols-2 gap-6">
@@ -139,7 +139,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Noctalia testen</h2>
-    <p>Noctalia ist auf Android als Freemium-Traumtagebuch für Sprache, KI-Deutung, Symbole, Bilder und Dream Chat verfügbar.</p>
+    <p>Noctalia ist auf Android als Freemium-Traumtagebuch für Sprache, KI-Deutung, Symbole, Bilder und geführte Reflexion verfügbar.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=de" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Google Play</a></p>
   </section>
 </div>
