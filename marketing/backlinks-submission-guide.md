@@ -1,6 +1,6 @@
 # Noctalia — Backlinks Submission Guide
 
-> Generated 2026-03-09. Verified 2026-06-04. Recommended order now: finish Product Hunt media/scheduling -> monitor SaaSHub maker-note manual approval -> monitor FutureTools resubmission -> re-check Crunchbase for a public profile -> create/approve a BetaList account if desired -> retry AlternativeTo/AppBrain after account replies -> Futurepedia only if paid listing budget is approved.
+> Generated 2026-03-09. Verified 2026-06-04. Recommended order now: finish Product Hunt media/scheduling -> monitor JunkStartups and SpotFreeAI approvals -> monitor SaaSHub maker-note manual approval -> monitor FutureTools resubmission -> re-check Crunchbase for a public profile -> create/approve a BetaList account if desired -> retry AlternativeTo/AppBrain after account replies -> Futurepedia only if paid listing budget is approved.
 
 ---
 
@@ -146,6 +146,8 @@ Submit Noctalia as alternative to each of these (one at a time):
 | Digital.Health | Outreach sent; company/account flow needed. | Wait for reply; keep positioning as sleep wellness / dream journaling, not medical. |
 | SaaSCity | Product form filled 2026-05-10 but final submit required account creation; Google sign-up did not progress. | Retry only if creating an email/password SaaSCity account is approved. |
 | BetterLaunch | Google OAuth consent reached `thannous@gmail.com`, then Clerk returned `The External Account was not found.` | Retry later or create a dedicated account; do not add their badge without an explicit site-change decision. |
+| SpotFreeAI | Submitted 2026-06-04 as a free AI tool; confirmation says submissions are reviewed weekly. | Re-check the directory for Noctalia and verify link attributes if accepted. |
+| JunkStartups | Submitted for review 2026-06-04 through a free magic-link account on `thannous@gmail.com`; confirmation says approval within 24-48 hours. | Re-check dashboard/public search for the live listing. Add logo/screenshots after Chrome file upload access is enabled. |
 
 ---
 
@@ -387,6 +389,8 @@ I'd love to hear your feedback — what features would make you actually use a d
 | SaaSHub       | ✓         | ✓        | ✓             | Active 2026-05-21; profile and alternatives page live; main website link verified in public HTML with empty `rel`; maker note confirmed 2026-06-04 and awaiting manual approval |
 | BetaList      | ☐         | ☐        | ☐             | Sign-in checked 2026-06-04; no `thannous@gmail.com` account, email/password signup required before submission |
 | Product Hunt  | ☐         | ☐        | ☐             | Draft in progress 2026-06-04: profile/main info/tags/first comment completed; media upload blocked until Chrome file access is enabled or gallery images are uploaded manually |
+| SpotFreeAI    | ✓         | ☐        | ☐             | Submitted 2026-06-04; weekly review pending |
+| JunkStartups  | ✓         | ☐        | ☐             | Submitted 2026-06-04; dashboard says Noctalia is in review queue with 24-48h approval estimate |
 | Futurepedia   | ☐         | ☐        | ☐             | Paid listing only unless free/basic reopens |
 
 
