@@ -240,8 +240,10 @@ Product is live on Android with Google Play in-app purchases and a public landin
 
 ### Current status
 
-- 2026-06-04: draft page opened in Chrome at `https://www.producthunt.com/posts/new`, but Product Hunt showed a Cloudflare human verification checkbox before the form. Resume from that browser tab after the check is completed.
-- Prepared assets are ready; do not schedule the public launch until the maker account can access the draft flow and preview the gallery.
+- 2026-06-04: Product Hunt draft is in progress at `https://www.producthunt.com/posts/new/submission`.
+- Maker onboarding completed with `Thanh Chau`, username `thannous`, email `thannous@gmail.com`, X link `https://x.com/NoctaliaDreams`, and headline `Founder of Noctalia`. Optional Product Hunt newsletters were unchecked.
+- Main info completed: launch URL `https://noctalia.app`, name `Noctalia`, tagline, description, first comment, and launch tags `Android`, `Artificial Intelligence`, and `Health & Fitness`.
+- Media step is the remaining blocker. Product Hunt auto-added a portrait app screenshot to the gallery, but the prepared 1270x760 Product Hunt images could not be uploaded because the Codex Chrome extension does not currently have file upload access. Enable Chrome extension file access, then replace the auto image and upload the four prepared gallery images before launch/scheduling.
 
 ### Form Fields
 
@@ -249,10 +251,10 @@ Product is live on Android with Google Play in-app purchases and a public landin
 | Field        | Value                                                                 |
 | ------------ | --------------------------------------------------------------------- |
 | Product Name | `Noctalia`                                                            |
-| Tagline      | `Voice dream journal — capture, interpret, explore`                   |
-| Description  | *(long description EN above)*                                         |
+| Tagline      | `Voice dream journal - capture, interpret, explore`                   |
+| Description  | `Noctalia is a voice-first AI dream journal for Android. Record dreams before they fade, get structured interpretations, explore symbols and emotions, ask follow-up questions, generate dream images, and track patterns over time with a privacy-first journal hosted in the EU.` |
 | Website      | `https://noctalia.app`                                                |
-| Topics       | `Health & Fitness`, `Writing`, `Lifestyle`, `Artificial Intelligence` |
+| Topics       | `Android`, `Artificial Intelligence`, `Health & Fitness`              |
 | Pricing      | `Freemium`                                                            |
 | Platforms    | `Android`                                                             |
 | Maker        | Thanh Chau                                                            |
@@ -285,6 +287,15 @@ Use the prepared 1270x760 landscape images first. They place the real portrait a
 2. `docs/screenshot/product-hunt/noctalia-product-hunt-02-ai-interpretation.png` — AI dream interpretation
 3. `docs/screenshot/product-hunt/noctalia-product-hunt-03-guided-reflection.png` — Guided reflection
 4. `docs/screenshot/product-hunt/noctalia-product-hunt-04-dream-journal.png` — Private dream journal
+
+Public URLs verified 2026-06-04 with HTTP 200:
+
+1. `https://noctalia.app/screenshot/product-hunt/noctalia-product-hunt-01-voice-capture.png`
+2. `https://noctalia.app/screenshot/product-hunt/noctalia-product-hunt-02-ai-interpretation.png`
+3. `https://noctalia.app/screenshot/product-hunt/noctalia-product-hunt-03-guided-reflection.png`
+4. `https://noctalia.app/screenshot/product-hunt/noctalia-product-hunt-04-dream-journal.png`
+
+Chrome upload note: local file upload failed with `Not allowed`. To upload from Codex Chrome, enable `Allow access to file URLs` for the Codex Chrome extension in `chrome://extensions`. The gallery link icon accepts a click-through URL, but it does not replace the media image.
 
 Optional backup/source assets if Product Hunt needs extra media:
 
@@ -373,7 +384,7 @@ I'd love to hear your feedback — what features would make you actually use a d
 | FutureTools   | ✓         | ☐        | ☐             | Resubmitted 2026-06-04 with stronger differentiation; waiting for review |
 | SaaSHub       | ✓         | ✓        | ✓             | Active 2026-05-21; profile and alternatives page live; main website link verified in public HTML with empty `rel` |
 | BetaList      | ☐         | ☐        | ☐             |                                             |
-| Product Hunt  | ☐         | ☐        | ☐             | 1270x760 gallery assets prepared and visually checked on 2026-06-04; draft page attempt reached Cloudflare human verification before the form |
+| Product Hunt  | ☐         | ☐        | ☐             | Draft in progress 2026-06-04: profile/main info/tags/first comment completed; media upload blocked until Chrome file access is enabled or gallery images are uploaded manually |
 | Futurepedia   | ☐         | ☐        | ☐             | Paid listing only unless free/basic reopens |
 
 
