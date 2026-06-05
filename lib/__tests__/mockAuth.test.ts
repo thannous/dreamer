@@ -106,6 +106,8 @@ describe('mockAuth', () => {
       expect(user.user_metadata?.profile).toBe('premium');
       expect(user.user_metadata?.tier).toBe('plus');
       expect(user.email_confirmed_at).toBeTruthy();
+      expect(mockSetPreloadDreamsEnabled).toHaveBeenCalledWith(true);
+      expect(mockPreloadDreamsNow).toHaveBeenCalled();
     });
   });
 

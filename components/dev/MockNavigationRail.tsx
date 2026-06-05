@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
@@ -9,6 +9,7 @@ import { isMockModeEnabled } from '@/lib/env';
 import { TID } from '@/lib/testIDs';
 
 const isMockMode = isMockModeEnabled();
+const shouldShowMockRail = isMockMode && Platform.OS !== 'web';
 
 const ITEMS = [
   { label: 'H', testID: TID.Button.MockNavHome, href: '/(tabs)' as const },
@@ -21,7 +22,7 @@ export function MockNavigationRail() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
 
-  if (!isMockMode) {
+  if (!shouldShowMockRail) {
     return null;
   }
 

@@ -396,6 +396,42 @@ describe('auth helpers', () => {
     await expect(auth.signInWithGoogle()).rejects.toThrow('Sign-in already in progress');
   });
 
+  it('treats Google developer configuration errors as expected auth failures', async () => {
+    process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = 'client-id';
+    const developerError = Object.assign(new Error('DEVELOPER_ERROR'), {
+      code: 'DEVELOPER_ERROR',
+    });
+    defaultGoogleModule.GoogleSignin.signIn.mockRejectedValueOnce(developerError);
+    const auth = await loadAuth();
+
+    let caughtError: Error & { code?: string } | undefined;
+    try {
+      await auth.signInWithGoogle();
+    } catch (error) {
+      caughtError = error as Error & { code?: string };
+    }
+
+    expect(caughtError?.message).toBe('Google Sign-In is unavailable');
+    expect(caughtError?.code).toBe('DEVELOPER_ERROR');
+    expect(mockLogger.warn).toHaveBeenCalledWith('Google Sign-In failed', developerError);
+    expect(mockLogger.warn).toHaveBeenCalledWith('Google Sign-In configuration error', {
+      errorCode: 'DEVELOPER_ERROR',
+      errorMessage: 'DEVELOPER_ERROR',
+    });
+    expect(mockLogger.error).not.toHaveBeenCalled();
+  });
+
+  it('warns instead of erroring when Google returns no ID token', async () => {
+    process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = 'client-id';
+    defaultGoogleModule.GoogleSignin.signIn.mockResolvedValueOnce({});
+    const auth = await loadAuth();
+
+    await expect(auth.signInWithGoogle()).rejects.toThrow('No ID token received from Google');
+
+    expect(mockLogger.warn).toHaveBeenCalledWith('No ID token found in response');
+    expect(mockLogger.error).not.toHaveBeenCalled();
+  });
+
   it('signs in with Google on web using OAuth', async () => {
     const auth = await loadAuth({ platformOS: 'web' });
 

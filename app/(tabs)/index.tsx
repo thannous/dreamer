@@ -14,11 +14,10 @@ import { AtmosphericBackground } from "@/components/inspiration/AtmosphericBackg
 import { FlatGlassCard } from "@/components/inspiration/GlassCard";
 import { PageHeader } from "@/components/inspiration/PageHeader";
 import { SectionHeading } from "@/components/inspiration/SectionHeading";
-import { FloatingAddDreamButton } from "@/components/ui/FloatingAddDreamButton";
+import { NoctaliaScreenHeader } from "@/components/NoctaliaScreenHeader";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { DecoLines, ThemeLayout } from "@/constants/journalTheme";
 import {
-  ADD_BUTTON_RESERVED_SPACE,
   DESKTOP_BREAKPOINT,
   TAB_BAR_HEIGHT,
 } from "@/constants/layout";
@@ -38,12 +37,22 @@ import {
   getLocalDateKey,
   shouldResetDailyProgress,
 } from "@/lib/ritualProgressUtils";
+import type { SymbolLanguage } from "@/lib/symbolTypes";
 import { TID } from "@/lib/testIDs";
 import { getRitualPreference, getRitualStepProgress, saveRitualStepProgress } from "@/services/storageService";
+import {
+  getPopularSymbols,
+  getSymbolIcon,
+} from "@/services/symbolDictionaryService";
 
 type IconName = Parameters<typeof IconSymbol>[0]["name"];
 type TranslateFn = ReturnType<typeof useTranslation>["t"];
 type RitualProgressState = Partial<Record<RitualId, Record<string, boolean>>>;
+type SymbolPreview = {
+  id: string;
+  name: string;
+  icon: IconName;
+};
 type ResolvedCopyCard = {
   id: string;
   icon: IconName;
@@ -132,7 +141,7 @@ const MYTH_CARDS: CopyCard[] = [
  */
 export default function InspirationScreen() {
   const { colors, mode } = useTheme();
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
   const { width } = useWindowDimensions();
   const scrollPerf = useScrollIdle();
   useClearWebFocus();
@@ -144,18 +153,41 @@ export default function InspirationScreen() {
 
   const isDesktopLayout = Platform.OS === "web" && width >= DESKTOP_BREAKPOINT;
 
-  const fallbackTabHeight = TAB_BAR_HEIGHT;
-  const floatingOffset = fallbackTabHeight;
-  // Always show add button - quota is enforced on analysis, not recording
-  const showAddButton = true;
-  const scrollContentBottomPadding =
-    floatingOffset +
-    (showAddButton
-      ? ADD_BUTTON_RESERVED_SPACE + ThemeLayout.spacing.sm
-      : ThemeLayout.spacing.sm);
-  const handleAddDream = useCallback(() => {
-    router.push("/recording");
+  const scrollContentBottomPadding = isDesktopLayout
+    ? ThemeLayout.spacing.xl
+    : TAB_BAR_HEIGHT + ThemeLayout.spacing.lg;
+  const symbolLanguage = (currentLang ?? "en") as SymbolLanguage;
+  const featuredSymbols = useMemo(
+    (): SymbolPreview[] =>
+      getPopularSymbols()
+        .slice(0, 4)
+        .map((symbol) => ({
+          id: symbol.id,
+          name: (symbol[symbolLanguage] ?? symbol.en).name,
+          icon: getSymbolIcon(symbol.id, symbol.category),
+        })),
+    [symbolLanguage],
+  );
+  const handleOpenSymbols = useCallback(() => {
+    router.push("/symbol-dictionary" as any);
   }, []);
+  const homeHeaderActions = useMemo(
+    () => [
+      {
+        icon: "book" as IconName,
+        onPress: () => router.push("/symbol-dictionary" as any),
+        accessibilityLabel: t("header.home.dictionary"),
+        testID: TID.Button.HeaderHomeDictionary,
+      },
+      {
+        icon: "moon.stars.fill" as IconName,
+        onPress: () => router.push(`/ritual/${selectedRitualId}` as any),
+        accessibilityLabel: t("header.home.inspiration"),
+        testID: TID.Button.HeaderHomeInspiration,
+      },
+    ],
+    [selectedRitualId, t],
+  );
   const tips = useMemo(() => TIP_KEYS.map((key) => t(key)), [t]);
   const prompts = useMemo(
     (): ResolvedCopyCard[] =>
@@ -310,12 +342,19 @@ export default function InspirationScreen() {
         {/* Atmospheric dreamlike background */}
         <AtmosphericBackground />
 
-        <PageHeader
-          titleKey="inspiration.title"
-          animationSeed={showAnimations ? 1 : 0}
-          topSpacing={ThemeLayout.spacing.md}
-          style={styles.pageHeader}
-        />
+        {isDesktopLayout ? (
+          <PageHeader
+            titleKey="inspiration.title"
+            animationSeed={showAnimations ? 1 : 0}
+            topSpacing={ThemeLayout.spacing.md}
+            style={styles.pageHeader}
+          />
+        ) : (
+          <NoctaliaScreenHeader
+            titleKey="nav.home"
+            actions={homeHeaderActions}
+          />
+        )}
 
         <ScrollView
           style={styles.scrollView}
@@ -335,11 +374,19 @@ export default function InspirationScreen() {
             ]}
           >
             <View style={isDesktopLayout ? styles.desktopGrid : undefined}>
-              {/* Dream dictionary card */}
-              <View style={styles.sectionSpacing}>
-                <DictionaryCardSection
+              <View
+                style={[
+                  styles.homeSectionSpacing,
+                  isDesktopLayout && styles.desktopFullSection,
+                ]}
+              >
+                <HomeStudioSection
                   colors={colors}
+                  mode={mode}
                   t={t}
+                  featuredSymbols={featuredSymbols}
+                  isDesktopLayout={isDesktopLayout}
+                  onOpenSymbols={handleOpenSymbols}
                 />
               </View>
 
@@ -438,75 +485,199 @@ export default function InspirationScreen() {
           </ScreenContainer>
         </ScrollView>
 
-        {showAddButton && (
-          <FloatingAddDreamButton
-            onPress={handleAddDream}
-            label={t("journal.add_button.label")}
-            accessibilityLabel={t("journal.add_button.accessibility")}
-            bottomOffset={floatingOffset - 60}
-            isDesktopLayout={isDesktopLayout}
-            compactLabelVisible={!scrollPerf.isScrolling}
-            testID={TID.Button.AddDream}
-          />
-        )}
       </View>
     </ScrollPerfProvider>
   );
 }
 
-type DictionaryCardSectionProps = {
+type HomeStudioSectionProps = {
   colors: ReturnType<typeof useTheme>["colors"];
+  mode: "light" | "dark";
   t: TranslateFn;
+  featuredSymbols: SymbolPreview[];
+  isDesktopLayout: boolean;
+  onOpenSymbols: () => void;
 };
 
-const DictionaryCardSection = memo(function DictionaryCardSection({
+type DreamSymbolsHeroProps = {
+  colors: ReturnType<typeof useTheme>["colors"];
+  mode: "light" | "dark";
+  t: TranslateFn;
+  isDesktopLayout: boolean;
+  featuredSymbols: SymbolPreview[];
+  onOpenSymbols: () => void;
+};
+
+const HomeStudioSection = memo(function HomeStudioSection({
   colors,
+  mode,
   t,
-}: DictionaryCardSectionProps) {
+  featuredSymbols,
+  isDesktopLayout,
+  onOpenSymbols,
+}: HomeStudioSectionProps) {
   return (
-    <View style={styles.dictionaryCardContainer}>
-      <FlatGlassCard
-        intensity="moderate"
-        style={styles.dictionaryCard}
-        onPress={() => router.push("/symbol-dictionary" as any)}
-        accessibilityRole="button"
-        accessibilityLabel={t("symbols.home_card_title")}
-      >
-        <View style={styles.dictionaryCardContent}>
-          <View style={styles.dictionaryCardHeaderRow}>
-            <View style={styles.dictionaryTitleRow}>
-              <View
-                style={[
-                  styles.dictionaryCardIconWrap,
-                  { backgroundColor: `${colors.accent}22` },
-                ]}
-              >
-                <IconSymbol
-                  name="book.closed.fill"
-                  size={20}
-                  color={colors.accent}
-                />
-              </View>
-              <Text
-                style={[styles.dictionaryCardTitle, { color: colors.textPrimary }]}
-                numberOfLines={2}
-              >
-                {t("symbols.home_card_title")}
-              </Text>
+    <DreamSymbolsHero
+      colors={colors}
+      mode={mode}
+      t={t}
+      featuredSymbols={featuredSymbols}
+      isDesktopLayout={isDesktopLayout}
+      onOpenSymbols={onOpenSymbols}
+    />
+  );
+});
+
+const DreamSymbolsHero = memo(function DreamSymbolsHero({
+  colors,
+  mode,
+  t,
+  featuredSymbols,
+  isDesktopLayout,
+  onOpenSymbols,
+}: DreamSymbolsHeroProps) {
+  const accent = mode === "dark" ? "#D8C39A" : colors.accentDark;
+  const symbolCardStyle = StyleSheet.flatten([
+    styles.symbolHeroCard,
+    isDesktopLayout && styles.symbolHeroCardDesktop,
+    {
+      backgroundColor:
+        mode === "dark" ? "rgba(24, 16, 45, 0.92)" : "rgba(255, 253, 248, 0.97)",
+      borderColor:
+        mode === "dark" ? "rgba(216, 195, 154, 0.24)" : colors.divider,
+    },
+  ]);
+
+  return (
+    <View style={styles.symbolHeroContainer}>
+      <FlatGlassCard intensity="strong" style={symbolCardStyle}>
+        <View
+          style={[
+            styles.symbolHeroAccentLine,
+            { backgroundColor: accent },
+          ]}
+        />
+        <View style={styles.symbolHeroContent}>
+          <View style={styles.symbolHeroTopRow}>
+            <View
+              style={[
+                styles.symbolHeroIconWrap,
+                {
+                  backgroundColor:
+                    mode === "dark"
+                      ? "rgba(216, 195, 154, 0.16)"
+                      : `${colors.accent}1F`,
+                },
+              ]}
+            >
+              <IconSymbol name="book.closed.fill" size={22} color={accent} />
             </View>
-            <Text style={[styles.dictionaryCardCta, { color: colors.accent }]}>
-              {t("symbols.open_dictionary")} →
+            <Text style={[styles.symbolHeroKicker, { color: accent }]}>
+              {t("symbols.home_card_kicker")}
             </Text>
           </View>
+
           <Text
-            style={[
-              styles.dictionaryCardBody,
-              { color: colors.textSecondary },
-            ]}
+            style={[styles.symbolHeroTitle, { color: colors.textPrimary }]}
             numberOfLines={2}
+            adjustsFontSizeToFit
+            minimumFontScale={0.84}
           >
+            {t("symbols.home_card_title")}
+          </Text>
+          <Text style={[styles.symbolHeroBody, { color: colors.textSecondary }]}>
             {t("symbols.home_card_body")}
           </Text>
+
+          <Pressable
+            onPress={onOpenSymbols}
+            accessibilityRole="button"
+            accessibilityLabel={t("symbols.home_explore_button")}
+            style={({ pressed }) => [
+              styles.symbolHeroExploreButton,
+              {
+                backgroundColor:
+                  mode === "dark" ? "rgba(216, 195, 154, 0.14)" : colors.accent,
+                borderColor:
+                  mode === "dark" ? "rgba(216, 195, 154, 0.28)" : colors.accentDark,
+              },
+              pressed && styles.pressedButton,
+            ]}
+          >
+            <IconSymbol
+              name="book.closed.fill"
+              size={18}
+              color={mode === "dark" ? accent : colors.textOnAccentSurface}
+            />
+            <Text
+              style={[
+                styles.symbolHeroExploreText,
+                { color: mode === "dark" ? accent : colors.textOnAccentSurface },
+              ]}
+              numberOfLines={1}
+            >
+              {t("symbols.home_explore_button")}
+            </Text>
+            <Text
+              style={[
+                styles.symbolHeroExploreArrow,
+                { color: mode === "dark" ? accent : colors.textOnAccentSurface },
+              ]}
+            >
+              →
+            </Text>
+          </Pressable>
+
+          <View style={styles.symbolHeroQuickGrid}>
+            {featuredSymbols.map((symbol) => (
+              <Pressable
+                key={symbol.id}
+                onPress={() => router.push(`/symbol-detail/${symbol.id}` as any)}
+                accessibilityRole="button"
+                accessibilityLabel={symbol.name}
+                style={({ pressed }) => [
+                  styles.symbolHeroQuickChip,
+                  {
+                    backgroundColor:
+                      mode === "dark"
+                        ? "rgba(255, 255, 255, 0.06)"
+                        : "rgba(255, 255, 255, 0.72)",
+                    borderColor:
+                      mode === "dark"
+                        ? "rgba(255, 255, 255, 0.09)"
+                        : colors.divider,
+                  },
+                  pressed && styles.pressedButton,
+                ]}
+              >
+                <View
+                  style={[
+                    styles.symbolHeroQuickIcon,
+                    {
+                      backgroundColor:
+                        mode === "dark"
+                          ? "rgba(216, 195, 154, 0.14)"
+                          : `${colors.accent}1A`,
+                    },
+                  ]}
+                >
+                  <IconSymbol name={symbol.icon} size={16} color={accent} />
+                </View>
+                <Text
+                  style={[
+                    styles.symbolHeroQuickName,
+                    { color: colors.textPrimary },
+                  ]}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.78}
+                >
+                  {symbol.name}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+
         </View>
       </FlatGlassCard>
     </View>
@@ -921,6 +1092,9 @@ const styles = StyleSheet.create({
   sectionSpacing: {
     marginBottom: 44,
   },
+  homeSectionSpacing: {
+    marginBottom: 34,
+  },
 
   pressedButton: {
     opacity: 0.82,
@@ -932,49 +1106,101 @@ const styles = StyleSheet.create({
     gap: 14,
   },
 
-  dictionaryCardContainer: {
+  symbolHeroContainer: {
     paddingHorizontal: 20,
   },
-  dictionaryCard: {
-    borderRadius: 24,
+  symbolHeroCard: {
+    borderRadius: 26,
+    borderWidth: 1,
+    overflow: "hidden",
   },
-  dictionaryCardContent: {
+  symbolHeroCardDesktop: {
+    maxWidth: 760,
+  },
+  symbolHeroAccentLine: {
+    height: 3,
+    width: "100%",
+  },
+  symbolHeroContent: {
     padding: 18,
+    gap: 13,
+  },
+  symbolHeroTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
   },
-  dictionaryCardHeaderRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-    gap: 12,
-  },
-  dictionaryTitleRow: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 12,
-  },
-  dictionaryCardIconWrap: {
-    width: 40,
-    height: 40,
-    borderRadius: 13,
+  symbolHeroIconWrap: {
+    width: 42,
+    height: 42,
+    borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
   },
-  dictionaryCardTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
+  symbolHeroKicker: {
     flex: 1,
-    fontSize: 20,
-    lineHeight: 24,
-    letterSpacing: 0.3,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 12,
+    letterSpacing: 0.7,
+    textTransform: "uppercase",
   },
-  dictionaryCardBody: {
+  symbolHeroTitle: {
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: 33,
+    lineHeight: 38,
+    letterSpacing: 0,
+  },
+  symbolHeroBody: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 15,
+    lineHeight: 22,
   },
-  dictionaryCardCta: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+  symbolHeroExploreButton: {
+    minHeight: 50,
+    borderRadius: 18,
+    borderWidth: 1,
+    paddingHorizontal: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 9,
+  },
+  symbolHeroExploreText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 15,
+  },
+  symbolHeroExploreArrow: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 17,
+    lineHeight: 19,
+  },
+  symbolHeroQuickGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  symbolHeroQuickChip: {
+    flexGrow: 1,
+    flexBasis: "47%",
+    minWidth: 0,
+    minHeight: 46,
+    borderRadius: 16,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  symbolHeroQuickIcon: {
+    width: 30,
+    height: 30,
+    borderRadius: 11,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  symbolHeroQuickName: {
+    flex: 1,
+    fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 14,
   },
 

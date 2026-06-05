@@ -11,7 +11,7 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   id: Date.now(),
   transcript: 'Test dream',
   title: 'Test Dream',
-  interpretation: '',
+  interpretation: 'Test interpretation',
   shareableQuote: '',
   imageUrl: '',
   dreamType: 'Symbolic Dream',

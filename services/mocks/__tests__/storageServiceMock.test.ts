@@ -1,11 +1,13 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
 
+import { getDreamAnalysisState, getDreamDetailAction } from '../../../lib/dreamUsage';
 import type { DreamAnalysis, DreamMutation, RitualStepProgress } from '../../../lib/types';
 import { PREDEFINED_DREAMS } from '../../../mock-data/predefinedDreams';
 import {
     clearSavedTranscript,
     getCachedRemoteDreams,
     getFirstLaunchCompleted,
+    getJournalLayoutPreference,
     getLanguagePreference,
     getNotificationSettings,
     getPendingDreamMutations,
@@ -19,6 +21,7 @@ import {
     saveCachedRemoteDreams,
     saveDreams,
     saveFirstLaunchCompleted,
+    saveJournalLayoutPreference,
     saveLanguagePreference,
     saveNotificationSettings,
     savePendingDreamMutations,
@@ -81,6 +84,48 @@ describe('storageServiceMock', () => {
 
       // Then
       expect(dreams).toHaveLength(PREDEFINED_DREAMS.length);
+    });
+
+    it('given enabled preloading when loading dreams then fixtures cover canonical product states', async () => {
+      // Given
+      setPreloadDreamsEnabled(true);
+
+      // When
+      preloadDreamsNow();
+      const dreams = await getSavedDreams();
+
+      // Then
+      const states = dreams.map((dream) => getDreamAnalysisState(dream));
+      expect(states.filter((state) => state.status === 'done')).toHaveLength(5);
+      expect(states.filter((state) => state.status === 'pending')).toHaveLength(1);
+      expect(states.filter((state) => state.status === 'failed')).toHaveLength(1);
+      expect(states.filter((state) => state.status === 'none')).toHaveLength(1);
+      expect(states.filter((state) => state.isExplored)).toHaveLength(1);
+
+      for (const dream of dreams) {
+        const state = getDreamAnalysisState(dream);
+        if (dream.analysisStatus === 'done') {
+          expect(state.isAnalyzed).toBe(true);
+          expect(dream.analyzedAt).toEqual(expect.any(Number));
+          expect(dream.interpretation.trim().length).toBeGreaterThan(0);
+        } else {
+          expect(state.isAnalyzed).toBe(false);
+          expect(dream.analyzedAt).toBeUndefined();
+        }
+      }
+
+      expect(dreams).toEqual(expect.arrayContaining([
+        expect.objectContaining({ analysisStatus: 'pending', imageJobStatus: 'running' }),
+        expect.objectContaining({ analysisStatus: 'failed', isAnalyzed: false }),
+        expect.objectContaining({ analysisStatus: 'none', isAnalyzed: false }),
+        expect.objectContaining({ imageGenerationFailed: true, analysisStatus: 'done' }),
+        expect.objectContaining({ syncState: 'pending', pendingSync: true }),
+        expect.objectContaining({ syncState: 'conflict', conflictRemoteDream: expect.any(Object) }),
+      ]));
+
+      const exploredDream = dreams.find((dream) => getDreamAnalysisState(dream).isExplored);
+      expect(exploredDream).toBeDefined();
+      expect(getDreamDetailAction(exploredDream)).toBe('continue');
     });
 
     it('given preloaded dreams when disabling preloading then resets to empty journal', async () => {
@@ -242,6 +287,24 @@ describe('storageServiceMock', () => {
 
       // Then
       expect(preference).toBe('auto');
+    });
+  });
+
+  describe('journal layout preference', () => {
+    it('given saved journal layout preference when retrieving then returns saved preference', async () => {
+      await saveJournalLayoutPreference('compact');
+
+      const preference = await getJournalLayoutPreference();
+
+      expect(preference).toBe('compact');
+    });
+
+    it('given no saved journal layout preference when retrieving then returns cards by default', async () => {
+      resetMockStorage();
+
+      const preference = await getJournalLayoutPreference();
+
+      expect(preference).toBe('cards');
     });
   });
 

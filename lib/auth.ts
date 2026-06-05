@@ -16,6 +16,7 @@ type GoogleSignInModule = typeof import('@react-native-google-signin/google-sign
 const ACCESS_TOKEN_WAIT_RETRIES = 2;
 const ACCESS_TOKEN_WAIT_DELAY_MS = 150;
 const WEB_REDIRECT_FALLBACK = 'https://dream.noctalia.app';
+const GOOGLE_SIGN_IN_DEVELOPER_ERROR_CODE = 'DEVELOPER_ERROR';
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
@@ -82,6 +83,24 @@ async function getGoogleSignInModule(): Promise<GoogleSignInModule> {
 
 function getGoogleWebClientId(): string | undefined {
   return getExpoPublicEnvValue('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID');
+}
+
+function getErrorCode(error: unknown): string | undefined {
+  const code = (error as { code?: unknown })?.code;
+  return typeof code === 'string' ? code : undefined;
+}
+
+function getErrorMessage(error: unknown): string | undefined {
+  const message = (error as { message?: unknown })?.message;
+  return typeof message === 'string' ? message : undefined;
+}
+
+function createGoogleSignInError(message: string, code?: string): Error {
+  const nextError = new Error(message);
+  if (code) {
+    Object.assign(nextError, { code });
+  }
+  return nextError;
 }
 
 async function ensureGoogleSignInConfigured(): Promise<void> {
@@ -394,7 +413,7 @@ export async function signInWithGoogle(): Promise<User> {
     log.debug('Extracting ID token from response');
     const idToken = (signInResponse as any).idToken ?? (signInResponse as any)?.data?.idToken;
     if (!idToken) {
-      log.error('No ID token found in response');
+      log.warn('No ID token found in response');
       log.debug('Google Sign-In response keys', Object.keys((signInResponse as object) ?? {}));
       throw new Error('No ID token received from Google');
     }
@@ -408,7 +427,7 @@ export async function signInWithGoogle(): Promise<User> {
     });
 
     if (error) {
-      log.error('Supabase signInWithIdToken failed', {
+      log.warn('Supabase signInWithIdToken failed', {
         code: error.code,
         status: error.status,
         message: error.message,
@@ -417,7 +436,7 @@ export async function signInWithGoogle(): Promise<User> {
     }
 
     if (!data.user) {
-      log.error('No user data received from Supabase');
+      log.warn('No user data received from Supabase');
       throw new Error('No user data received from Supabase');
     }
 
@@ -436,11 +455,11 @@ export async function signInWithGoogle(): Promise<User> {
 
     return data.user;
   } catch (error: unknown) {
-    log.error('Google Sign-In failed', error);
+    log.warn('Google Sign-In failed', error);
 
     // Re-throw with more context for specific error codes
-    const errorCode = (error as { code?: string })?.code;
-    const errorMessage = (error as { message?: string })?.message;
+    const errorCode = getErrorCode(error);
+    const errorMessage = getErrorMessage(error);
 
     log.debug('Error details', { errorCode, errorMessage });
 
@@ -453,6 +472,9 @@ export async function signInWithGoogle(): Promise<User> {
     } else if (errorCode === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
       log.debug('Play Services not available');
       throw new Error('Google Play Services not available or outdated');
+    } else if (errorCode === GOOGLE_SIGN_IN_DEVELOPER_ERROR_CODE) {
+      log.warn('Google Sign-In configuration error', { errorCode, errorMessage });
+      throw createGoogleSignInError('Google Sign-In is unavailable', errorCode);
     }
     throw error;
   }

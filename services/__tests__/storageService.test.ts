@@ -19,6 +19,8 @@ const {
     'saveThemePreference',
     'getLanguagePreference',
     'saveLanguagePreference',
+    'getJournalLayoutPreference',
+    'saveJournalLayoutPreference',
     'getRecordingVoiceStatusHidden',
     'saveRecordingVoiceStatusHidden',
     'getCachedRemoteDreams',

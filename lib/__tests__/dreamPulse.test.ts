@@ -31,7 +31,13 @@ describe('getDreamPulse', () => {
 
   it('returns today state when the latest dream is from today', () => {
     const pulse = getDreamPulse([
-      dream({ id: Date.UTC(2026, 4, 4, 7), isAnalyzed: true }),
+      dream({
+        id: Date.UTC(2026, 4, 4, 7),
+        isAnalyzed: true,
+        analysisStatus: 'done',
+        analyzedAt: Date.UTC(2026, 4, 4, 8),
+        interpretation: 'A complete reading.',
+      }),
       dream({ id: Date.UTC(2026, 4, 1, 7), isFavorite: true }),
     ], now);
 
@@ -44,7 +50,13 @@ describe('getDreamPulse', () => {
 
   it('returns stale state after three days without a dream', () => {
     const pulse = getDreamPulse([
-      dream({ id: Date.UTC(2026, 4, 1, 7), isAnalyzed: true }),
+      dream({
+        id: Date.UTC(2026, 4, 1, 7),
+        isAnalyzed: true,
+        analysisStatus: 'done',
+        analyzedAt: Date.UTC(2026, 4, 1, 8),
+        interpretation: 'A complete reading.',
+      }),
     ], now);
 
     expect(pulse.state).toBe('stale');
@@ -54,7 +66,13 @@ describe('getDreamPulse', () => {
   it('returns analyze state for recent unanalyzed dreams', () => {
     const pulse = getDreamPulse([
       dream({ id: Date.UTC(2026, 4, 3, 7), isAnalyzed: false }),
-      dream({ id: Date.UTC(2026, 4, 2, 7), analysisStatus: 'done' }),
+      dream({
+        id: Date.UTC(2026, 4, 2, 7),
+        isAnalyzed: true,
+        analysisStatus: 'done',
+        analyzedAt: Date.UTC(2026, 4, 2, 8),
+        interpretation: 'A complete reading.',
+      }),
     ], now);
 
     expect(pulse.state).toBe('analyze');

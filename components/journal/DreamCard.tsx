@@ -210,11 +210,25 @@ export const DreamCard = memo(function DreamCard({
               {dream.title}
             </Text>
             {isFeatured && dream.shareableQuote ? (
-              <Text style={[styles.shareableQuote, { color: colors.textSecondary }]} numberOfLines={2}>
+              <Text
+                style={[
+                  styles.shareableQuote,
+                  styles.fourLineExcerpt,
+                  { color: colors.textSecondary },
+                ]}
+                numberOfLines={4}
+              >
                 {dream.shareableQuote}
               </Text>
             ) : (
-              <Text style={[styles.description, { color: colors.textSecondary }]} numberOfLines={2}>
+              <Text
+                style={[
+                  styles.description,
+                  styles.fourLineExcerpt,
+                  { color: colors.textSecondary },
+                ]}
+                numberOfLines={4}
+              >
                 {dream.transcript}
               </Text>
             )}
@@ -465,6 +479,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.regular,
     lineHeight: 20,
+  },
+  fourLineExcerpt: {
+    minHeight: 80,
   },
   tagContainer: {
     flexDirection: 'row',

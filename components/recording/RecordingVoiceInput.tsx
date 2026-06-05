@@ -89,6 +89,59 @@ export function RecordingVoiceInput({
 
   return (
     <>
+      {shouldShowVoiceStatus ? (
+        <View
+          style={[
+            isRecording ? styles.recordingStatusCompact : styles.voiceStatus,
+            {
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: voiceStatusTone === 'active' ? colors.accent : colors.divider,
+            },
+          ]}
+          testID={TID.Component.RecordingVoiceStatus}
+        >
+          <View style={styles.voiceStatusHeader}>
+            <Text
+              style={[styles.voiceStatusTitle, { color: colors.textPrimary }]}
+              testID={TID.Text.RecordingVoiceStatusTitle}
+            >
+              {voiceStatusTitle}
+            </Text>
+            <View style={styles.voiceStatusActions}>
+              {recordingDurationLabel ? (
+                <Text
+                  style={[styles.voiceStatusDuration, { color: colors.accent }]}
+                  testID={TID.Text.RecordingVoiceStatusDuration}
+                >
+                  {recordingDurationLabel}
+                </Text>
+              ) : null}
+              {canHideVoiceStatus ? (
+                <Pressable
+                  onPress={onHideVoiceStatus}
+                  style={styles.voiceStatusActionButton}
+                  testID={TID.Button.HideRecordingVoiceStatus}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('recording.status.hide')}
+                >
+                  <Text style={[styles.voiceStatusActionText, { color: colors.textSecondary }]}>
+                    {t('recording.status.hide')}
+                  </Text>
+                </Pressable>
+              ) : null}
+            </View>
+          </View>
+          {!isRecording ? (
+            <Text
+              style={[styles.voiceStatusDetail, { color: colors.textSecondary }]}
+              testID={TID.Text.RecordingVoiceStatusDetail}
+            >
+              {voiceStatusDetail}
+            </Text>
+          ) : null}
+        </View>
+      ) : null}
+
       {!isRecording ? (
         <View style={styles.recordingSection}>
           <TypewriterText
@@ -123,59 +176,6 @@ export function RecordingVoiceInput({
         <View style={styles.preparingSlot}>
           {isPreparing ? <ActivityIndicator size="small" color={colors.textSecondary} /> : null}
         </View>
-
-        {shouldShowVoiceStatus ? (
-          <View
-            style={[
-              isRecording ? styles.recordingStatusCompact : styles.voiceStatus,
-              {
-                backgroundColor: colors.backgroundSecondary,
-                borderColor: voiceStatusTone === 'active' ? colors.accent : colors.divider,
-              },
-            ]}
-            testID={TID.Component.RecordingVoiceStatus}
-          >
-            <View style={styles.voiceStatusHeader}>
-              <Text
-                style={[styles.voiceStatusTitle, { color: colors.textPrimary }]}
-                testID={TID.Text.RecordingVoiceStatusTitle}
-              >
-                {voiceStatusTitle}
-              </Text>
-              <View style={styles.voiceStatusActions}>
-                {recordingDurationLabel ? (
-                  <Text
-                    style={[styles.voiceStatusDuration, { color: colors.accent }]}
-                    testID={TID.Text.RecordingVoiceStatusDuration}
-                  >
-                    {recordingDurationLabel}
-                  </Text>
-                ) : null}
-                {canHideVoiceStatus ? (
-                  <Pressable
-                    onPress={onHideVoiceStatus}
-                    style={styles.voiceStatusActionButton}
-                    testID={TID.Button.HideRecordingVoiceStatus}
-                    accessibilityRole="button"
-                    accessibilityLabel={t('recording.status.hide')}
-                  >
-                    <Text style={[styles.voiceStatusActionText, { color: colors.textSecondary }]}>
-                      {t('recording.status.hide')}
-                    </Text>
-                  </Pressable>
-                ) : null}
-              </View>
-            </View>
-            {!isRecording ? (
-              <Text
-                style={[styles.voiceStatusDetail, { color: colors.textSecondary }]}
-                testID={TID.Text.RecordingVoiceStatusDetail}
-              >
-                {voiceStatusDetail}
-              </Text>
-            ) : null}
-          </View>
-        ) : null}
 
         {transcript ? (
           <View style={styles.liveTranscriptContainer}>

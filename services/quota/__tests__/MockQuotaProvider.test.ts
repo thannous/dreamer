@@ -39,19 +39,28 @@ jest.mock('@/services/storageService', () => ({
   getSavedDreams: mockGetSavedDreams,
 }));
 
-const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
-  id: Date.now(),
-  transcript: 'Mock transcript',
-  title: 'Dream title',
-  interpretation: '',
-  shareableQuote: '',
-  imageUrl: '',
-  chatHistory: [],
-  dreamType: 'Symbolic Dream',
-  isAnalyzed: false,
-  analysisStatus: 'done',
-  ...overrides,
-});
+const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => {
+  const dream: DreamAnalysis = {
+    id: Date.now(),
+    transcript: 'Mock transcript',
+    title: 'Dream title',
+    interpretation: '',
+    shareableQuote: '',
+    imageUrl: '',
+    chatHistory: [],
+    dreamType: 'Symbolic Dream',
+    isAnalyzed: false,
+    analysisStatus: 'none',
+    ...overrides,
+  };
+
+  if (dream.isAnalyzed) {
+    dream.analysisStatus = dream.analysisStatus === 'none' ? 'done' : dream.analysisStatus;
+    dream.interpretation = dream.interpretation || 'Mock interpretation';
+  }
+
+  return dream;
+};
 
 describe('MockQuotaProvider', () => {
   beforeEach(() => {

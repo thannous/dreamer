@@ -33,14 +33,25 @@ jest.mock('../../storageService', () => ({
 const STORAGE_KEY = 'mock_quota_events_v1';
 const MIGRATION_KEY = 'mock_quota_events_migrated_v1';
 
-const buildDream = (overrides: Record<string, unknown>) => ({
-  id: 1,
-  isAnalyzed: false,
-  analyzedAt: null,
-  explorationStartedAt: null,
-  chatHistory: [],
-  ...overrides,
-});
+const buildDream = (overrides: Record<string, unknown>) => {
+  const dream: Record<string, any> = {
+    id: 1,
+    isAnalyzed: false,
+    analyzedAt: null,
+    analysisStatus: 'none',
+    interpretation: '',
+    explorationStartedAt: null,
+    chatHistory: [],
+    ...overrides,
+  };
+
+  if (dream.isAnalyzed) {
+    dream.analysisStatus = dream.analysisStatus === 'none' ? 'done' : dream.analysisStatus;
+    dream.interpretation = dream.interpretation || 'Mock interpretation';
+  }
+
+  return dream;
+};
 
 describe('MockQuotaEventStore', () => {
   beforeEach(async () => {

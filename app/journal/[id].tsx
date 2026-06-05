@@ -30,7 +30,7 @@ import { blurActiveElement } from '@/lib/accessibility';
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamSyncState } from '@/lib/dreamUtils';
-import { getDreamDetailAction } from '@/lib/dreamUsage';
+import { getDreamAnalysisState, getDreamDetailAction } from '@/lib/dreamUsage';
 import { isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
@@ -58,9 +58,6 @@ import {
   Text,
   TextInput,
   View,
-  type LayoutChangeEvent,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
   type StyleProp,
   type TextStyle,
   type ViewStyle
@@ -229,9 +226,6 @@ export default function JournalDetailScreen() {
   const [quotaSheetMode, setQuotaSheetMode] = useState<'quota' | 'login'>('quota');
   const [imageErrorMessage, setImageErrorMessage] = useState<string | null>(null);
   const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
-  const [showFloatingExploreButton, setShowFloatingExploreButton] = useState(false);
-  const [isScrollViewScrollable, setIsScrollViewScrollable] = useState<boolean | null>(null);
-  const floatingExploreVisibleRef = useRef(false);
 
   // Reference image generation state
   const [showReferenceSheet, setShowReferenceSheet] = useState(false);
@@ -277,7 +271,6 @@ export default function JournalDetailScreen() {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [transcriptSectionOffset, setTranscriptSectionOffset] = useState(0);
   const scrollViewRef = useRef<ScrollView | null>(null);
-  const scrollMetricsRef = useRef({ layoutHeight: 0, contentHeight: 0 });
   const lastAnalysisNoticeRef = useRef<AnalysisNotice | null>(null);
 
   const sortedDreamTypes = useMemo(() => {
@@ -365,20 +358,12 @@ export default function JournalDetailScreen() {
 
   const { shareImageRef, shareComposite } = useDreamShareComposite();
 
+  const analysisState = useMemo(() => getDreamAnalysisState(dream), [dream]);
   const primaryAction = useMemo(() => getDreamDetailAction(dream), [dream]);
   const allThemesExplored = useMemo(() => {
     if (!dream) return false;
     return THEME_CATEGORIES.every((category) => isCategoryExplored(dream.chatHistory, category));
   }, [dream]);
-  const exploreButtonLabel = useMemo(() => {
-    if (primaryAction === 'analyze') {
-      return t('journal.detail.analyze_button.default');
-    }
-    if (primaryAction === 'continue') {
-      return t('journal.detail.explore_button.continue');
-    }
-    return t('journal.detail.explore_button.new');
-  }, [primaryAction, t]);
   const isPrimaryActionBusy = primaryAction === 'analyze' && (isAnalyzing || dream?.analysisStatus === 'pending');
   const detailActionCard = useMemo(() => {
     if (!dream) {
@@ -661,34 +646,6 @@ export default function JournalDetailScreen() {
     const ratio = width / height;
     if (!Number.isFinite(ratio) || ratio <= 0) return;
     setImageAspectRatio(ratio);
-  }, []);
-
-  const updateScrollability = useCallback(() => {
-    const { layoutHeight, contentHeight } = scrollMetricsRef.current;
-    if (!layoutHeight || !contentHeight) return;
-    const scrollable = contentHeight - layoutHeight > 8;
-    setIsScrollViewScrollable((prev) => (prev === scrollable ? prev : scrollable));
-  }, []);
-
-  const handleScrollViewLayout = useCallback((event: LayoutChangeEvent) => {
-    scrollMetricsRef.current.layoutHeight = event.nativeEvent.layout.height;
-    updateScrollability();
-  }, [updateScrollability]);
-
-  const handleScrollContentSizeChange = useCallback((_width: number, height: number) => {
-    scrollMetricsRef.current.contentHeight = height;
-    updateScrollability();
-  }, [updateScrollability]);
-
-  const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const scrollY = event.nativeEvent.contentOffset.y;
-    const threshold = 200;
-    const nextVisible = scrollY > threshold;
-    if (floatingExploreVisibleRef.current === nextVisible) {
-      return;
-    }
-    floatingExploreVisibleRef.current = nextVisible;
-    setShowFloatingExploreButton(nextVisible);
   }, []);
 
   // Use full-resolution image config for detail view
@@ -1053,8 +1010,6 @@ export default function JournalDetailScreen() {
     ? 'rgba(19, 16, 34, 0.3)'
     : 'rgba(0, 0, 0, 0.03)';
   const floatingTranscriptBottom = Platform.OS === 'ios' ? 32 : 24;
-  const shouldShowFloatingExploreButton = showFloatingExploreButton || isScrollViewScrollable === false;
-
   // Use a single surface color for the main content card and its inner accent cards/buttons
   // so we don't get a darker band/padding effect on Android where slight
   // alpha tints can look like a different background.
@@ -1431,6 +1386,42 @@ export default function JournalDetailScreen() {
 
     const disabled = detailActionCard.disabled || isPrimaryActionBusy || isAnalysisLocked;
     const onPress = primaryAction === 'analyze' ? handleAnalyze : handleExplorePress;
+    const isCompactExplorationAction = primaryAction === 'continue' || primaryAction === 'explore';
+
+    if (isCompactExplorationAction) {
+      return (
+        <Pressable
+          testID={TID.Component.DreamDetailActionCard}
+          onPress={onPress}
+          disabled={disabled}
+          accessibilityRole="button"
+          accessibilityState={{ disabled }}
+          style={({ pressed }) => [
+            styles.detailActionCompactCard,
+            {
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: accentSurfaceBorderColor,
+              opacity: disabled ? 0.75 : pressed ? 0.82 : 1,
+            },
+          ]}
+        >
+          <View style={[styles.detailActionCompactIcon, { backgroundColor: colors.accent }]}>
+            <IconSymbol name={detailActionCard.icon} size={18} color={colors.textPrimary} />
+          </View>
+          <Text
+            style={[styles.detailActionCompactText, { color: colors.textPrimary }]}
+            testID={TID.Text.DreamDetailActionTitle}
+          >
+            {detailActionCard.cta}
+          </Text>
+          {isPrimaryActionBusy ? (
+            <ActivityIndicator size="small" color={colors.textPrimary} />
+          ) : (
+            <IconSymbol name="arrow.right" size={18} color={colors.textPrimary} />
+          )}
+        </Pressable>
+      );
+    }
 
     return (
       <View
@@ -1500,7 +1491,7 @@ export default function JournalDetailScreen() {
   };
 
   const renderFirstValueBackupCard = () => {
-    if (user || !dream?.isAnalyzed || isEditing || isEditingTranscript) {
+    if (user || !analysisState.isAnalyzed || isEditing || isEditingTranscript) {
       return null;
     }
 
@@ -1587,9 +1578,6 @@ export default function JournalDetailScreen() {
             { paddingBottom: (isEditing || isEditingTranscript) ? 220 : 100 },
           ]}
           keyboardShouldPersistTaps="handled"
-          onLayout={handleScrollViewLayout}
-          onContentSizeChange={handleScrollContentSizeChange}
-          onScroll={handleScroll}
           scrollEventThrottle={16}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
@@ -1758,18 +1746,12 @@ export default function JournalDetailScreen() {
 
           {/* Content Card - Overlaps image */}
           <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
-
-            {renderDetailZoneHeader(t('journal.detail.zone.memory'))}
-
             {/* Premium Metadata Card */}
             {!isEditing && renderMetadataCard()}
-            {renderDetailActionCard()}
             {renderSyncStatusCard()}
 
-            {(dream.isAnalyzed || isAnalysisPending) && (
+            {(analysisState.isAnalyzed || isAnalysisPending) && (
               <>
-                {renderDetailZoneHeader(t('journal.detail.zone.reading'))}
-
                 {/* Quote */}
                 {isAnalysisPending ? (
                   <Skeleton style={{ height: 60, width: '100%', borderRadius: 8 }} />
@@ -1882,6 +1864,8 @@ export default function JournalDetailScreen() {
               </Pressable>
             </View>
 
+            {renderDetailActionCard()}
+
             <Pressable
               onPress={onDelete}
               style={styles.deleteLink}
@@ -1895,34 +1879,6 @@ export default function JournalDetailScreen() {
             </Pressable>
             </View>
         </ScrollView>
-
-        {/* Floating Explore/Analyze Button */}
-        {shouldShowFloatingExploreButton &&
-          !isEditing &&
-          !isEditingTranscript &&
-          (dream.analysisStatus === 'done' || (dream.interpretation && dream.imageUrl)) && (
-          <View style={[styles.floatingExploreButton, shadows.xl]}>
-            <Pressable
-              testID={`${TID.Button.ExploreDream}-floating`}
-              onPress={primaryAction === 'analyze' ? handleAnalyze : handleExplorePress}
-              disabled={isPrimaryActionBusy || isAnalysisLocked}
-              style={[styles.exploreButton, {
-                backgroundColor: colors.accent,
-                borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
-                marginTop: 0,
-                marginBottom: 0,
-                opacity: isPrimaryActionBusy || isAnalysisLocked ? 0.8 : 1,
-              }]}
-            >
-              {isPrimaryActionBusy ? (
-                <ActivityIndicator color={colors.textPrimary} />
-              ) : (
-                <IconSymbol name="sparkles" size={24} color={colors.textPrimary} />
-              )}
-              <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
-            </Pressable>
-          </View>
-        )}
 
         {isEditing && (
           <View
@@ -2559,6 +2515,29 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: Fonts.spaceGrotesk.bold,
   },
+  detailActionCompactCard: {
+    minHeight: 58,
+    borderWidth: 1,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  detailActionCompactIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  detailActionCompactText: {
+    flex: 1,
+    fontSize: 16,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
   firstValueBackupCard: {
     borderWidth: 1,
     borderRadius: 16,
@@ -2610,13 +2589,6 @@ const styles = StyleSheet.create({
     // shadow: applied via theme shadows.xl
     borderWidth: 1,
   },
-  floatingExploreButton: {
-    position: 'absolute',
-    bottom: 24,
-    left: 16,
-    right: 16,
-    zIndex: 100,
-  },
   exploreButtonText: {
     fontSize: 17,
     fontFamily: Fonts.fraunces.medium,
@@ -2649,9 +2621,9 @@ const styles = StyleSheet.create({
   },
   transcriptSection: {
     marginTop: 24,
+    marginBottom: 28,
     paddingTop: 24,
     paddingHorizontal: 16,
-
     paddingBottom: 16,
     borderTopWidth: 1,
     // borderTopColor and backgroundColor: set dynamically

@@ -1,6 +1,7 @@
 import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { SubjectProposition } from '@/components/journal/SubjectProposition';
+import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import {
@@ -24,6 +25,7 @@ import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RecordingVoiceInput } from '@/components/recording/RecordingVoiceInput';
 import { RECORDING } from '@/constants/appConfig';
 import { GradientColors } from '@/constants/gradients';
+import { TAB_BAR_HEIGHT } from '@/constants/layout';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
@@ -777,11 +779,6 @@ export default function RecordingScreen() {
 		  ]);
 
 
-  const handleGoToJournal = useCallback(() => {
-    blurActiveElement();
-    router.push('/(tabs)');
-  }, []);
-
   const handleFirstDreamDismiss = useCallback(() => {
     if (!firstDreamPrompt) {
       return;
@@ -1082,7 +1079,7 @@ export default function RecordingScreen() {
       styles.mainContent,
       {
         paddingTop: 24 + insets.top,
-        paddingBottom: 24 + insets.bottom,
+        paddingBottom: TAB_BAR_HEIGHT + 44 + insets.bottom,
       },
     ],
     [insets.bottom, insets.top]
@@ -1220,11 +1217,7 @@ export default function RecordingScreen() {
     setRecordingOnboardingPanelRect(null);
 
     const frame = requestAnimationFrame(() => {
-      if (recordingOnboardingTarget === 'explore') {
-        scrollViewRef.current?.scrollToEnd({ animated: false });
-      } else {
-        scrollViewRef.current?.scrollTo({ y: 0, animated: false });
-      }
+      scrollViewRef.current?.scrollTo({ y: 0, animated: false });
 
       requestAnimationFrame(() => {
         setRecordingOnboardingMeasureKey((current) => current + 1);
@@ -1357,7 +1350,7 @@ export default function RecordingScreen() {
             <MockRecordingTools onFillTranscript={handleMockFillTranscript} />
             <View style={mainContentStyle}>
               <View style={styles.bodySection}>
-                {showRecordingOnboardingTour && recordingOnboardingTarget !== 'explore' ? (
+                {showRecordingOnboardingTour ? (
                   <RecordingOnboardingTour
                     target={recordingOnboardingTarget}
                     index={recordingOnboardingStep}
@@ -1423,36 +1416,14 @@ export default function RecordingScreen() {
               {!isRecording ? (
                 <RecordingFooter
                   onSave={handleSaveDream}
-                  onGoToJournal={handleGoToJournal}
                   isSaveDisabled={isSaveDisabled}
                   saveButtonLabel={t('recording.button.save_dream')}
-                  journalLinkLabel={t('recording.nav_button')}
                   saveButtonAccessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
-                  journalLinkAccessibilityLabel={t('recording.nav_button.accessibility')}
-                  spotlightExplore={showRecordingOnboardingTour && recordingOnboardingTarget === 'explore'}
-                  onSpotlightLayout={handleRecordingOnboardingTargetLayout}
-                  spotlightMeasureKey={recordingOnboardingMeasureKey}
                 />
               ) : null}
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
-        {showRecordingOnboardingTour && recordingOnboardingTarget === 'explore' ? (
-          <View
-            pointerEvents="box-none"
-            style={[styles.onboardingTourDock, { top: insets.top + 18 }]}
-          >
-            <RecordingOnboardingTour
-              target={recordingOnboardingTarget}
-              index={recordingOnboardingStep}
-              total={RECORDING_ONBOARDING_TARGETS.length}
-              onNext={handleRecordingOnboardingNext}
-              onSkip={handleRecordingOnboardingSkip}
-              onSpotlightLayout={handleRecordingOnboardingPanelLayout}
-              spotlightMeasureKey={recordingOnboardingMeasureKey}
-            />
-          </View>
-        ) : null}
         {showRecordingOnboardingTour ? (
           <RecordingOnboardingSpotlightOverlay
             width={recordingOnboardingViewport.width}
@@ -1463,6 +1434,7 @@ export default function RecordingScreen() {
             panelRect={recordingOnboardingPanelRect}
           />
         ) : null}
+        <NoctaliaBottomNav activeKey="addDream" />
       </View>
 
       <RecordingOverlays
@@ -1739,14 +1711,8 @@ const styles = StyleSheet.create({
   },
   bodySection: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     gap: 24,
-  },
-  onboardingTourDock: {
-    position: 'absolute',
-    left: 16,
-    right: 16,
-    zIndex: 30,
   },
   subjectPropositionOverlay: {
     ...StyleSheet.absoluteFillObject,

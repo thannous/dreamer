@@ -7,9 +7,9 @@ import React, { useEffect, useRef } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { RecordingSpotlightRect } from './RecordingOnboardingSpotlightOverlay';
 
-export type RecordingOnboardingTarget = 'voice' | 'text' | 'explore';
+export type RecordingOnboardingTarget = 'voice' | 'text';
 
-export const RECORDING_ONBOARDING_TARGETS: RecordingOnboardingTarget[] = ['voice', 'text', 'explore'];
+export const RECORDING_ONBOARDING_TARGETS: RecordingOnboardingTarget[] = ['voice', 'text'];
 
 export function RecordingOnboardingTour({
   target,

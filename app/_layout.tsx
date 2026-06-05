@@ -25,7 +25,7 @@ import * as Notifications from 'expo-notifications';
 import { Stack, router, useNavigationContainerRef, usePathname, useRootNavigationState } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { NativeModules, Platform } from 'react-native';
+import { LogBox, NativeModules, Platform } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 
 import AnimatedSplashScreen from '@/components/AnimatedSplashScreen';
@@ -84,6 +84,23 @@ if (__DEV__) {
 SplashScreen.preventAutoHideAsync();
 
 const ROOT_VIEW_STYLE = { flex: 1 } as const;
+
+function runAfterNavigationMount(callback: () => void) {
+  const timeout = setTimeout(callback, 0);
+
+  return () => {
+    clearTimeout(timeout);
+  };
+}
+
+if (__DEV__) {
+  // Expo Router can emit this React 19 development warning while resolving the
+  // async initial URL before the navigation container finishes mounting.
+  // It is outside app code and otherwise blocks device QA with a redbox.
+  LogBox.ignoreLogs([
+    "Can't perform a React state update on a component that hasn't mounted yet",
+  ]);
+}
 
 const KeyboardProviderComponent: React.ComponentType<React.PropsWithChildren> =
   Platform.OS !== 'web' && NativeModules?.KeyboardController
@@ -198,12 +215,19 @@ function RootLayoutNav() {
         currentPath?.startsWith('/(tabs)/settings') ||
         pathname?.startsWith('/(tabs)/settings');
       const isInPaywall = currentPath === '/paywall';
+      const isInJournalList =
+        currentPath === '/journal' ||
+        currentPath === '/(tabs)/journal';
+      const isInStatistics =
+        currentPath === '/statistics' ||
+        currentPath === '/(tabs)/statistics';
       const isInJournalDetail =
         currentPath?.startsWith('/journal/') ||
         currentPath?.startsWith('/dream-chat/') ||
         currentPath?.startsWith('/dream-categories/') ||
         currentPath?.startsWith('/symbol-dictionary') ||
-        currentPath?.startsWith('/symbol-detail/');
+        currentPath?.startsWith('/symbol-detail/') ||
+        currentPath?.startsWith('/ritual/');
 
       if (__DEV__) {
         console.log('[RootLayoutNav] navigateToRecording', {
@@ -226,6 +250,20 @@ function RootLayoutNav() {
         return;
       }
 
+      if (isInJournalList) {
+        if (__DEV__) {
+          console.log('[RootLayoutNav] stay on journal, skip redirect');
+        }
+        return;
+      }
+
+      if (isInStatistics) {
+        if (__DEV__) {
+          console.log('[RootLayoutNav] stay on statistics, skip redirect');
+        }
+        return;
+      }
+
       if (isInJournalDetail) {
         if (__DEV__) {
           console.log('[RootLayoutNav] stay on journal detail, skip redirect');
@@ -234,7 +272,7 @@ function RootLayoutNav() {
       }
 
       if (currentPath !== '/recording') {
-        router.replace('/recording');
+        runAfterNavigationMount(() => router.replace('/recording'));
       }
     },
     [isNavigationReady, pathname, returningGuestBlocked, user]
@@ -488,7 +526,6 @@ export default function RootLayout() {
         if (!completed) {
           await saveFirstLaunchCompleted(true);
           if (!isMounted) return;
-          router.replace('/recording');
         }
       } catch (error) {
         if (__DEV__) {
