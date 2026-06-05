@@ -2,6 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import {
   getAnalyzedDreamCount,
+  getDreamAnalysisState,
   getDreamDetailAction,
   getExploredDreamCount,
   getUserChatMessageCount,
@@ -31,13 +32,35 @@ const buildDream = (overrides: Partial<DreamAnalysis> & { id?: number } = {}): D
 });
 
 describe('dreamUsage helpers', () => {
-  it('only treats dreams as analyzed when a timestamp is present', () => {
-    const partial = buildDream({ id: 1, isAnalyzed: true });
-    const complete = buildDream({ id: 2, isAnalyzed: true, analyzedAt: 1234 });
+  it('only treats dreams as analyzed when the done state is complete', () => {
+    const partial = buildDream({ id: 1, isAnalyzed: true, analysisStatus: 'done' });
+    const complete = buildDream({
+      id: 2,
+      isAnalyzed: true,
+      analysisStatus: 'done',
+      analyzedAt: 1234,
+      interpretation: 'A complete reading.',
+    });
 
     expect(isDreamAnalyzed(partial)).toBe(false);
     expect(isDreamAnalyzed(complete)).toBe(true);
     expect(getAnalyzedDreamCount([partial, complete, buildDream({ id: 3 })])).toBe(1);
+  });
+
+  it('lets pending and failed states dominate old completed content', () => {
+    const failedRerun = buildDream({
+      id: 4,
+      isAnalyzed: true,
+      analysisStatus: 'failed',
+      analyzedAt: 1234,
+      interpretation: 'Old reading.',
+    });
+
+    const state = getDreamAnalysisState(failedRerun);
+
+    expect(state.status).toBe('failed');
+    expect(state.isAnalyzed).toBe(false);
+    expect(getDreamDetailAction(failedRerun)).toBe('analyze');
   });
 
   it('counts explored dreams using exploration timestamps', () => {
@@ -88,17 +111,27 @@ describe('dreamUsage helpers', () => {
 
   it('derives detail CTA state based on analyzed and explored flags', () => {
     const notTaggedAnalyzed = buildDream({ id: 30, isAnalyzed: true, analysisStatus: 'done' });
-    const analyzed = buildDream({ id: 31, isAnalyzed: true, analyzedAt: 5555 });
+    const analyzed = buildDream({
+      id: 31,
+      isAnalyzed: true,
+      analysisStatus: 'done',
+      analyzedAt: 5555,
+      interpretation: 'A complete reading.',
+    });
     const exploredByTimestamp = buildDream({
       id: 32,
       isAnalyzed: true,
+      analysisStatus: 'done',
       analyzedAt: 6666,
+      interpretation: 'A complete reading.',
       explorationStartedAt: 7777,
     });
     const exploredByChat = buildDream({
       id: 33,
       isAnalyzed: true,
+      analysisStatus: 'done',
       analyzedAt: 8888,
+      interpretation: 'A complete reading.',
       chatHistory: [
         { id: 'm1', role: 'user', text: 'hi' },
         { id: 'm2', role: 'model', text: 'hello' },

@@ -12,6 +12,7 @@ import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
+import { getDreamAnalysisState } from '@/lib/dreamUsage';
 import { generateUUID } from '@/lib/dreamUtils';
 import { isChatDebugEnabled, isMockModeEnabled } from '@/lib/env';
 import { getUserErrorMessage, QuotaError, QuotaErrorCode } from '@/lib/errors';
@@ -194,8 +195,7 @@ export default function DreamChatScreen() {
 
   const isExistingExploration = useMemo(() => {
     if (!dream) return false;
-    const hasUserMessages = dream.chatHistory?.some((msg) => msg.role === 'user');
-    return Boolean(dream.explorationStartedAt || hasUserMessages);
+    return getDreamAnalysisState(dream).isExplored;
   }, [dream]);
   const shouldGateOnQuotaCheck = !isExistingExploration;
   const hasQuotaCheckClearance = shouldGateOnQuotaCheck ? quotaCheckComplete : true;
@@ -443,7 +443,7 @@ export default function DreamChatScreen() {
       const baseMessages = options?.baseMessages ?? messages;
       const isFirstUserMessage = baseMessages.filter((msg) => msg.role === 'user').length === 0;
 
-      if (isFirstUserMessage && !dream.explorationStartedAt) {
+      if (isFirstUserMessage && !isExistingExploration) {
         // Block if exploration is already blocked
         if (explorationBlocked) {
           return;
@@ -538,7 +538,7 @@ export default function DreamChatScreen() {
               if (isMockMode) {
                 await markMockExploration({ id: dreamId });
               }
-              if (!user && !synced.explorationStartedAt) {
+              if (!user && !isExistingExploration) {
                 incrementLocalExplorationCount().catch((err) => {
                   if (__DEV__) console.warn('[DreamChat] Failed to increment exploration count', err);
                 });
@@ -662,7 +662,7 @@ export default function DreamChatScreen() {
           if (isMockMode) {
             await markMockExploration({ id: dreamId });
           }
-          if (!user && !dream.explorationStartedAt) {
+          if (!user && !isExistingExploration) {
             incrementLocalExplorationCount().catch((err) => {
               if (__DEV__) console.warn('[DreamChat] Failed to increment exploration count', err);
             });

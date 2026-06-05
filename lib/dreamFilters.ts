@@ -201,7 +201,7 @@ export function applyFilters(
       return false;
     }
 
-    if (analyzedOnly && !isDreamAnalyzed(dream) && !isDreamExplored(dream)) {
+    if (analyzedOnly && !isDreamAnalyzed(dream)) {
       return false;
     }
 

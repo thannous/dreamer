@@ -17,7 +17,9 @@ import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeader } from '@/components/inspiration/PageHeader';
 import { SectionHeading } from '@/components/inspiration/SectionHeading';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import JournalLayoutSettingsCard from '@/components/JournalLayoutSettingsCard';
 import LanguageSettingsCard from '@/components/LanguageSettingsCard';
+import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import NotificationSettingsCard from '@/components/NotificationSettingsCard';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
 import RecordingOnboardingSettingsCard from '@/components/RecordingOnboardingSettingsCard';
@@ -183,7 +185,11 @@ export default function SettingsScreen() {
           style={[styles.container, { backgroundColor: colors.backgroundDark }]}
         >
           <AtmosphericBackground />
-          <PageHeader titleKey="auth.returning_guest.title" animationSeed={showAnimations ? 1 : 0} />
+          {isDesktopLayout ? (
+            <PageHeader titleKey="auth.returning_guest.title" animationSeed={showAnimations ? 1 : 0} />
+          ) : (
+            <NoctaliaScreenHeader titleKey="auth.returning_guest.title" />
+          )}
 
           <ScrollView
             style={styles.scrollView}
@@ -250,7 +256,11 @@ export default function SettingsScreen() {
         style={[styles.container, { backgroundColor: colors.backgroundDark }]}
       >
         <AtmosphericBackground />
-        <PageHeader titleKey="settings.title" animationSeed={showAnimations ? 1 : 0} />
+        {isDesktopLayout ? (
+          <PageHeader titleKey="settings.title" animationSeed={showAnimations ? 1 : 0} />
+        ) : (
+          <NoctaliaScreenHeader titleKey="settings.title" />
+        )}
 
         <ScrollView
           style={styles.scrollView}
@@ -373,13 +383,22 @@ export default function SettingsScreen() {
                     transition={{ type: 'timing', duration: 500, delay: 700 }}
                   >
                     <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+                      <JournalLayoutSettingsCard />
+                    </View>
+                  </MotiView>
+                  <MotiView
+                    from={{ opacity: 1, translateY: 16 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{ type: 'timing', duration: 500, delay: 760 }}
+                  >
+                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
                       <ThemeSettingsCard />
                     </View>
                   </MotiView>
                   <MotiView
                     from={{ opacity: 1, translateY: 16 }}
                     animate={{ opacity: 1, translateY: 0 }}
-                    transition={{ type: 'timing', duration: 500, delay: 800 }}
+                    transition={{ type: 'timing', duration: 500, delay: 840 }}
                   >
                     <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
                       <LanguageSettingsCard />
@@ -388,7 +407,7 @@ export default function SettingsScreen() {
                   <MotiView
                     from={{ opacity: 1, translateY: 16 }}
                     animate={{ opacity: 1, translateY: 0 }}
-                    transition={{ type: 'timing', duration: 500, delay: 900 }}
+                    transition={{ type: 'timing', duration: 500, delay: 920 }}
                   >
                     <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
                       <RecordingOnboardingSettingsCard />

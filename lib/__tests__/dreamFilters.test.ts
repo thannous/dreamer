@@ -19,8 +19,16 @@ import type { DreamAnalysis, DreamTheme, DreamType } from '../types';
 
 // Mock the dreamUsage functions
 jest.mock('../dreamUsage', () => ({
-  isDreamAnalyzed: jest.fn((dream: DreamAnalysis) => Boolean(dream.isAnalyzed && typeof dream.analyzedAt === 'number')),
-  isDreamExplored: jest.fn((dream: DreamAnalysis) => Boolean(dream.explorationStartedAt)),
+  isDreamAnalyzed: jest.fn((dream: DreamAnalysis) => Boolean(
+    dream.analysisStatus === 'done' &&
+      dream.isAnalyzed &&
+      typeof dream.analyzedAt === 'number' &&
+      dream.interpretation?.trim()
+  )),
+  isDreamExplored: jest.fn((dream: DreamAnalysis) => Boolean(
+    dream.explorationStartedAt ||
+      dream.chatHistory?.some((message) => message.role === 'model' && !message.meta?.isError)
+  )),
 }));
 
 describe('dreamFilters', () => {
@@ -46,6 +54,7 @@ describe('dreamFilters', () => {
       theme: 'surreal',
       isFavorite: false,
       isAnalyzed: true,
+      analysisStatus: 'done',
       analyzedAt: 1640000000000,
     }),
     buildDream({
@@ -57,6 +66,7 @@ describe('dreamFilters', () => {
       theme: 'noir',
       isFavorite: true,
       isAnalyzed: true,
+      analysisStatus: 'done',
       analyzedAt: 1640086400000,
       explorationStartedAt: 1640086400000,
     }),

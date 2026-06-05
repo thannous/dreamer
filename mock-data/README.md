@@ -12,8 +12,9 @@ Contains 8 curated, realistic dream entries with:
 - Themes (surreal, mystical, calm, noir)
 - Dream types (Lucid, Recurring, Nightmare, etc.)
 - Some dreams include chat histories to showcase the chat feature
+- Representative product states: none, pending, failed, done, explored, image failed, sync pending, sync conflict
 
-These dreams can be pre-loaded by selecting the **Existing user** profile from the mock quick sign-in card.
+These dreams can be pre-loaded by selecting the **Existing user** or **Premium user** profile from the mock quick sign-in card.
 
 ### `generators.ts`
 Provides functions to generate random dream content:
@@ -40,8 +41,8 @@ Edit `predefinedDreams.ts` and add to the `PREDEFINED_DREAMS` array:
 {
   title: 'Your Dream Title',
   transcript: 'Full dream description...',
-  interpretation: 'What the dream means...',
-  shareableQuote: 'An inspiring quote',
+  interpretation: 'What the dream means...', // empty for none, pending, or failed states
+  shareableQuote: 'An inspiring quote', // empty for none, pending, or failed states
   theme: 'surreal', // or 'mystical', 'calm', 'noir'
   dreamType: 'Lucid Dream',
   imageUrl: 'https://picsum.photos/seed/your-seed/800/600',
@@ -49,6 +50,9 @@ Edit `predefinedDreams.ts` and add to the `PREDEFINED_DREAMS` array:
   chatHistory: [], // or add example chat messages
   isFavorite: false,
   imageGenerationFailed: false,
+  isAnalyzed: true,
+  analysisStatus: 'done',
+  analyzedAt: Date.now(),
 }
 ```
 

@@ -79,7 +79,9 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   calendar: 'event',
   pencil: 'edit',
   'arrow.triangle.2.circlepath': 'autorenew',
+  'list.bullet.rectangle.fill': 'view-list',
   'person.crop.circle.badge.exclamationmark': 'account-circle',
+  'rectangle.stack.fill': 'view-agenda',
   // Symbol dictionary category icons
   'leaf.fill': 'eco',
   'pawprint.fill': 'pets',

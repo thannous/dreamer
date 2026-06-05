@@ -9,6 +9,7 @@ import type {
   DreamAnalysis,
   DreamMutation,
   LanguagePreference,
+  JournalLayoutPreference,
   NotificationSettings,
   PendingImageJob,
   RitualStepProgress,
@@ -23,6 +24,7 @@ const RECORDING_TRANSCRIPT_KEY = 'gemini_dream_journal_recording_transcript';
 const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
 const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
 const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
+const JOURNAL_LAYOUT_PREFERENCE_KEY = 'gemini_dream_journal_layout_preference';
 const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
 const RECORDING_ONBOARDING_COMPLETED_KEY = 'gemini_dream_journal_recording_onboarding_completed';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
@@ -747,6 +749,11 @@ const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
 const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
 
 const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
+const DEFAULT_JOURNAL_LAYOUT_PREFERENCE: JournalLayoutPreference = 'cards';
+
+function isJournalLayoutPreference(value: unknown): value is JournalLayoutPreference {
+  return value === 'cards' || value === 'compact';
+}
 
 export async function getSavedDreams(): Promise<DreamAnalysis[]> {
   try {
@@ -910,6 +917,34 @@ export async function saveLanguagePreference(preference: LanguagePreference): Pr
       console.error('Failed to save language preference:', error);
     }
     throw new Error('Failed to save language preference');
+  }
+}
+
+export async function getJournalLayoutPreference(): Promise<JournalLayoutPreference> {
+  try {
+    const savedPreference = await getItem(JOURNAL_LAYOUT_PREFERENCE_KEY);
+    if (savedPreference) {
+      const parsed = JSON.parse(savedPreference) as unknown;
+      if (isJournalLayoutPreference(parsed)) {
+        return parsed;
+      }
+    }
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to retrieve journal layout preference:', error);
+    }
+  }
+  return DEFAULT_JOURNAL_LAYOUT_PREFERENCE;
+}
+
+export async function saveJournalLayoutPreference(preference: JournalLayoutPreference): Promise<void> {
+  try {
+    await setItem(JOURNAL_LAYOUT_PREFERENCE_KEY, JSON.stringify(preference));
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to save journal layout preference:', error);
+    }
+    throw new Error('Failed to save journal layout preference');
   }
 }
 

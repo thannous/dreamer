@@ -4,6 +4,7 @@ import {
   InteractionManager,
   Platform,
   Pressable,
+  Share,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,8 +16,10 @@ import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackg
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeader } from '@/components/inspiration/PageHeader';
 import { SectionHeading } from '@/components/inspiration/SectionHeading';
+import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
+import { BottomSheet } from '@/components/ui/BottomSheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import type { LabelLineConfig, pieDataItem } from 'react-native-gifted-charts';
@@ -37,7 +40,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamStatsInsight, type DreamStatsInsightKind } from '@/lib/dreamStatsInsight';
 import { splitLabelText } from '@/lib/pieLabelUtils';
-import type { DreamType } from '@/lib/types';
+import type { DreamAnalysis, DreamType } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
 
 const CHART_HORIZONTAL_INSET = ThemeLayout.spacing.lg * 3;
@@ -56,6 +59,29 @@ const MAX_LABEL_WIDTH = 196;
 const MIN_LABEL_LINE = 14;
 const MAX_LABEL_LINE = 28;
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
+type StatsPeriod = 'all' | 'week' | 'month' | 'year';
+
+const STATS_PERIOD_OPTIONS: { id: StatsPeriod; labelKey: string }[] = [
+  { id: 'all', labelKey: 'stats.period.all' },
+  { id: 'week', labelKey: 'stats.period.week' },
+  { id: 'month', labelKey: 'stats.period.month' },
+  { id: 'year', labelKey: 'stats.period.year' },
+];
+
+const STATS_PERIOD_DAYS: Record<Exclude<StatsPeriod, 'all'>, number> = {
+  week: 7,
+  month: 30,
+  year: 365,
+};
+
+function filterDreamsByStatsPeriod(dreams: DreamAnalysis[], period: StatsPeriod, now = Date.now()) {
+  if (period === 'all') {
+    return dreams;
+  }
+
+  const cutoff = now - STATS_PERIOD_DAYS[period] * 24 * 60 * 60 * 1000;
+  return dreams.filter((dream) => dream.id >= cutoff);
+}
 
 const STATS_INSIGHT_ICON: Record<DreamStatsInsightKind, IconName> = {
   record: 'moon.stars.fill',
@@ -436,17 +462,51 @@ export default function StatisticsScreen() {
   const scrollPerf = useScrollIdle();
   useClearWebFocus();
   const { formatNumber, formatPercent } = useLocaleFormatting();
-  const stats = useDreamStatistics(dreams);
+  const [selectedStatsPeriod, setSelectedStatsPeriod] = useState<StatsPeriod>('all');
+  const [showStatsPeriodSheet, setShowStatsPeriodSheet] = useState(false);
+  const periodDreams = useMemo(
+    () => filterDreamsByStatsPeriod(dreams, selectedStatsPeriod),
+    [dreams, selectedStatsPeriod],
+  );
+  const stats = useDreamStatistics(periodDreams);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const pieMetrics = useMemo(() => getPieMetrics(width), [width]);
   const statsInsight = useMemo(() => getDreamStatsInsight(stats), [stats]);
   const handleStatsInsightPress = useCallback(() => {
     router.push(statsInsight.route);
   }, [statsInsight.route]);
+  const selectedPeriodLabel = useMemo(() => {
+    const option = STATS_PERIOD_OPTIONS.find((item) => item.id === selectedStatsPeriod);
+    return t(option?.labelKey ?? 'stats.period.all');
+  }, [selectedStatsPeriod, t]);
+  const handleShareStats = useCallback(async () => {
+    const streakLabel = `${formatNumber(stats.currentStreak)} ${
+      stats.currentStreak === 1 ? t('stats.card.day') : t('stats.card.days')
+    }`;
+    const message = t('stats.share.message', {
+      period: selectedPeriodLabel,
+      total: formatNumber(stats.totalDreams),
+      favorites: formatNumber(stats.favoriteDreams),
+      analyzed: formatNumber(stats.analyzedDreams),
+      explored: formatNumber(stats.dreamsWithChat),
+      streak: streakLabel,
+    });
+
+    try {
+      await Share.share({
+        title: t('stats.share.title'),
+        message,
+      });
+    } catch (error) {
+      if (__DEV__) {
+        console.error('[StatisticsScreen] Failed to share stats', error);
+      }
+    }
+  }, [formatNumber, selectedPeriodLabel, stats, t]);
 
   const [showAnimations, setShowAnimations] = useState(false);
   const [showDeferredSections, setShowDeferredSections] = useState(false);
-  const hasStatisticsContent = loaded && dreams.length > 0;
+  const hasStatisticsContent = loaded && periodDreams.length > 0;
 
   useFocusEffect(
     useCallback(() => {
@@ -536,8 +596,86 @@ export default function StatisticsScreen() {
     [stats.topThemes],
   );
 
-  const header = (
+  const statsHeaderActions = useMemo(
+    () => [
+      {
+        icon: 'calendar' as IconName,
+        onPress: () => setShowStatsPeriodSheet(true),
+        accessibilityLabel: t('stats.header.period'),
+        active: selectedStatsPeriod !== 'all',
+        testID: TID.Button.HeaderStatsPeriod,
+      },
+      {
+        icon: 'square.and.arrow.up' as IconName,
+        onPress: () => {
+          void handleShareStats();
+        },
+        accessibilityLabel: t('stats.header.share'),
+        testID: TID.Button.HeaderStatsShare,
+      },
+    ],
+    [handleShareStats, selectedStatsPeriod, t],
+  );
+
+  const header = isDesktopLayout ? (
     <PageHeader titleKey="stats.title" animationSeed={showAnimations ? 1 : 0} />
+  ) : (
+    <NoctaliaScreenHeader titleKey="stats.title" actions={statsHeaderActions} />
+  );
+
+  const periodSheet = (
+    <BottomSheet
+      visible={showStatsPeriodSheet}
+      onClose={() => setShowStatsPeriodSheet(false)}
+      testID={TID.Modal.StatsPeriod}
+      style={[styles.periodSheet, { backgroundColor: colors.backgroundCard }]}
+    >
+      <Text style={[styles.periodSheetTitle, { color: colors.textPrimary }]}>
+        {t('stats.period.title')}
+      </Text>
+      <View style={styles.periodOptions}>
+        {STATS_PERIOD_OPTIONS.map((option) => {
+          const active = selectedStatsPeriod === option.id;
+
+          return (
+            <Pressable
+              key={option.id}
+              accessibilityRole="button"
+              accessibilityLabel={t(option.labelKey)}
+              testID={TID.Button.StatsPeriodOption(option.id)}
+              onPress={() => {
+                setSelectedStatsPeriod(option.id);
+                setShowStatsPeriodSheet(false);
+              }}
+              style={({ pressed }) => [
+                styles.periodOption,
+                {
+                  borderColor: active ? colors.accentLight : colors.divider,
+                  backgroundColor: active ? colors.accent : `${colors.backgroundSecondary}B8`,
+                },
+                pressed && styles.pressedButton,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.periodOptionText,
+                  { color: active ? colors.textOnAccentSurface : colors.textPrimary },
+                ]}
+              >
+                {t(option.labelKey)}
+              </Text>
+              {active ? (
+                <IconSymbol
+                  name="checkmark"
+                  size={18}
+                  color={colors.textOnAccentSurface}
+                />
+              ) : null}
+            </Pressable>
+          );
+        })}
+      </View>
+    </BottomSheet>
   );
 
   if (!loaded) {
@@ -546,6 +684,7 @@ export default function StatisticsScreen() {
         <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
           <AtmosphericBackground />
           {header}
+          {periodSheet}
           <View style={styles.loadingContainer}>
             <Text style={[styles.loadingText, { color: colors.textSecondary }]}>{t('stats.loading')}</Text>
           </View>
@@ -560,6 +699,7 @@ export default function StatisticsScreen() {
         <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
           <AtmosphericBackground />
           {header}
+          {periodSheet}
           <ScrollView
             style={styles.scrollView}
             contentInsetAdjustmentBehavior="automatic"
@@ -593,6 +733,7 @@ export default function StatisticsScreen() {
       <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
         <AtmosphericBackground />
         {header}
+        {periodSheet}
 
         <ScrollView
           style={styles.scrollView}
@@ -1273,6 +1414,36 @@ const styles = StyleSheet.create({
   mostDiscussedCount: {
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.medium,
+  },
+
+  // Period Sheet
+  periodSheet: {
+    gap: ThemeLayout.spacing.md,
+    paddingBottom: ThemeLayout.spacing.xl,
+  },
+  periodSheetTitle: {
+    fontSize: 24,
+    lineHeight: 30,
+    fontFamily: Fonts.fraunces.semiBold,
+  },
+  periodOptions: {
+    gap: ThemeLayout.spacing.sm,
+  },
+  periodOption: {
+    minHeight: 54,
+    borderWidth: 1,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    paddingHorizontal: ThemeLayout.spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: ThemeLayout.spacing.md,
+  },
+  periodOptionText: {
+    flex: 1,
+    fontSize: 16,
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
 
   // Empty / Loading

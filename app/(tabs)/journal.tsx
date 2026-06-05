@@ -3,27 +3,29 @@ import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackg
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { AdvancedFilterSheet } from '@/components/journal/AdvancedFilterSheet';
+import { AtlasDreamRow } from '@/components/journal/AtlasDreamRow';
 import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
 import { FilterBar } from '@/components/journal/FilterBar';
+import { NoctaliaScreenHeader, type NoctaliaHeaderChip } from '@/components/NoctaliaScreenHeader';
 import { SearchBar } from '@/components/ui/SearchBar';
 import { BottomSheet } from '@/components/ui/BottomSheet';
-import { FloatingAddDreamButton } from '@/components/ui/FloatingAddDreamButton';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
-import { ADD_BUTTON_RESERVED_SPACE, DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT, TABLET_BREAKPOINT } from '@/constants/layout';
+import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT, TABLET_BREAKPOINT } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
+import { useJournalLayoutPreference } from '@/hooks/useJournalLayoutPreference';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { applyFilters, getUniqueDreamTypes, getUniqueThemes } from '@/lib/dreamFilters';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
-import { isDreamAnalyzed } from '@/lib/dreamUsage';
+import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
@@ -35,6 +37,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  type TextInput,
   View,
   type ViewToken,
   useWindowDimensions,
@@ -64,13 +67,18 @@ export default function JournalListScreen() {
   const { colors } = useTheme();
   const { t } = useTranslation();
   useClearWebFocus();
-  const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
+  const { formatDate, formatShortDate: formatDreamListDate } = useLocaleFormatting();
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
+  const searchInputRef = useRef<TextInput>(null);
+  const pendingSearchFocusRef = useRef(false);
   const { width, height } = useWindowDimensions();
+  const { preference: journalLayoutPreference } = useJournalLayoutPreference();
 
   const isWeb = Platform.OS === 'web';
   const isDesktopLayout = isWeb && width >= DESKTOP_BREAKPOINT;
   const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
+  const useAtlasHeader = !isDesktopLayout && !isTabletLayout;
+  const isAtlasLayout = journalLayoutPreference === 'compact' && !isDesktopLayout && !isTabletLayout;
   const isCompactJournalFilters = !isDesktopLayout && !isTabletLayout;
   const desktopColumns = width >= 1440 ? 4 : 3;
 
@@ -95,6 +103,29 @@ export default function JournalListScreen() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showAnalyzedOnly, setShowAnalyzedOnly] = useState(false);
   const [showExploredOnly, setShowExploredOnly] = useState(false);
+  const [showNeedsExplorationOnly, setShowNeedsExplorationOnly] = useState(false);
+  const [showAtlasSearch, setShowAtlasSearch] = useState(false);
+
+  const focusSearchInput = useCallback(() => {
+    requestAnimationFrame(() => {
+      searchInputRef.current?.focus();
+      setTimeout(() => searchInputRef.current?.focus(), 80);
+    });
+  }, []);
+
+  const handleAtlasSearchPress = useCallback(() => {
+    pendingSearchFocusRef.current = true;
+    setShowAtlasSearch(true);
+    focusSearchInput();
+  }, [focusSearchInput]);
+
+  useEffect(() => {
+    if (!pendingSearchFocusRef.current || !(showAtlasSearch || searchQuery.length > 0)) {
+      return;
+    }
+    pendingSearchFocusRef.current = false;
+    focusSearchInput();
+  }, [focusSearchInput, searchQuery.length, showAtlasSearch]);
 
   // Track which items have been animated to prevent re-animation on FlashList recycle
   const animatedIdsRef = useRef(new Set<number>());
@@ -127,19 +158,25 @@ export default function JournalListScreen() {
     setIsScrolling(next);
   }, []);
 
-  // Animations
-  const floatingOffset = TAB_BAR_HEIGHT;
-  // Always show add button - quota is now enforced on analysis, not recording
-  const showAddButton = true;
-  const listBottomPadding = floatingOffset + (showAddButton ? ADD_BUTTON_RESERVED_SPACE + ThemeLayout.spacing.xs : ThemeLayout.spacing.sm);
+  const listBottomPadding = isDesktopLayout
+    ? ThemeLayout.spacing.xl
+    : TAB_BAR_HEIGHT + ThemeLayout.spacing.lg;
   const desktopDateTextStyle = useMemo(() => [styles.desktopDate, { color: colors.textSecondary }], [colors.textSecondary]);
   const listContentStyle = useMemo(
     () => [styles.listContent, { paddingBottom: listBottomPadding }],
     [listBottomPadding]
   );
+  const listContentAtlasStyle = useMemo(
+    () => [styles.listContentAtlas, { paddingBottom: listBottomPadding }],
+    [listBottomPadding]
+  );
   const listContentDesktopStyle = useMemo(
     () => [styles.listContent, styles.listContentDesktop, { paddingBottom: listBottomPadding }],
     [listBottomPadding]
+  );
+  const listExtraData = useMemo(
+    () => ({ isAtlasLayout, isScrolling }),
+    [isAtlasLayout, isScrolling],
   );
   const filtersContainerStyle = useMemo(
     () => [styles.filtersContainer, isDesktopLayout && styles.filtersContainerDesktop],
@@ -153,7 +190,7 @@ export default function JournalListScreen() {
   // Apply filters. `useDreamPersistence` stores dreams newest-first and filtering preserves order,
   // so avoid a redundant sort/copy in this hot path.
   const filteredDreams = useMemo(() => {
-    return applyFilters(dreams, {
+    const baseDreams = applyFilters(dreams, {
       searchQuery: deferredSearchQuery,
       theme: selectedTheme,
       dreamType: selectedDreamType,
@@ -167,7 +204,24 @@ export default function JournalListScreen() {
         dreamTypeLabelResolver: (dreamType) => getDreamTypeLabel(dreamType, t),
       },
     });
-  }, [dreams, deferredSearchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly, t]);
+
+    if (!showNeedsExplorationOnly) {
+      return baseDreams;
+    }
+
+    return baseDreams.filter((dream) => isDreamAnalyzed(dream) && !isDreamExplored(dream));
+  }, [
+    dreams,
+    deferredSearchQuery,
+    selectedTheme,
+    selectedDreamType,
+    dateRange,
+    showFavoritesOnly,
+    showAnalyzedOnly,
+    showExploredOnly,
+    showNeedsExplorationOnly,
+    t,
+  ]);
 
   const rememberPrefetchedUri = useCallback((uri: string): boolean => {
     const cache = prefetchedImageUrisRef.current;
@@ -206,7 +260,16 @@ export default function JournalListScreen() {
       flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deferredSearchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly]);
+  }, [
+    deferredSearchQuery,
+    selectedTheme,
+    selectedDreamType,
+    dateRange,
+    showFavoritesOnly,
+    showAnalyzedOnly,
+    showExploredOnly,
+    showNeedsExplorationOnly,
+  ]);
 
   useFocusEffect(
     useCallback(() => {
@@ -222,6 +285,7 @@ export default function JournalListScreen() {
     setShowFavoritesOnly(false);
     setShowAnalyzedOnly(false);
     setShowExploredOnly(false);
+    setShowNeedsExplorationOnly(false);
   }, []);
 
   const toggleThemeFilter = useCallback((theme: DreamTheme) => {
@@ -256,6 +320,18 @@ export default function JournalListScreen() {
 
   const handleExploredToggle = useCallback(() => {
     setShowExploredOnly((prev) => !prev);
+  }, []);
+
+  const handleNeedsExplorationToggle = useCallback(() => {
+    setShowNeedsExplorationOnly((prev) => !prev);
+  }, []);
+
+  const handleRecurringToggle = useCallback(() => {
+    setSelectedDreamType((current) => (current === 'Recurring Dream' ? null : 'Recurring Dream'));
+  }, []);
+
+  const handleNightmareToggle = useCallback(() => {
+    setSelectedDreamType((current) => (current === 'Nightmare' ? null : 'Nightmare'));
   }, []);
 
   const handleDreamPress = useCallback((dreamId: number) => {
@@ -356,6 +432,42 @@ export default function JournalListScreen() {
       animatedIdsRef.current.add(item.id);
     }
 
+    if (isAtlasLayout) {
+      const monthLabel = formatDate(item.id, { month: 'short', year: 'numeric' }).replace('.', '').toUpperCase();
+      const previousDream = filteredDreams[index - 1];
+      const previousMonthLabel = previousDream
+        ? formatDate(previousDream.id, { month: 'short', year: 'numeric' }).replace('.', '').toUpperCase()
+        : null;
+      const sectionLabel = index === 0 || monthLabel !== previousMonthLabel ? monthLabel : null;
+      const row = (
+        <AtlasDreamRow
+          dream={item}
+          onPress={handleDreamPress}
+          scrollState={isScrolling ? 'scrolling' : 'idle'}
+          testID={TID.List.DreamItem(item.id)}
+          dateLabel={formatDreamListDate(item.id)}
+          sectionLabel={sectionLabel}
+        />
+      );
+
+      if (shouldAnimate) {
+        return (
+          <Animated.View
+            style={styles.atlasListItem}
+            entering={FadeInDown.delay(index * 30).duration(300).springify()}
+          >
+            {row}
+          </Animated.View>
+        );
+      }
+
+      return (
+        <View style={styles.atlasListItem}>
+          {row}
+        </View>
+      );
+    }
+
     const card = (
       <DreamCard
         dream={item}
@@ -383,7 +495,7 @@ export default function JournalListScreen() {
         {card}
       </View>
     );
-  }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
+  }, [filteredDreams, formatDate, formatDreamListDate, t, handleDreamPress, isAtlasLayout, isScrolling]);
 
   const renderDreamItemTablet = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
@@ -458,7 +570,27 @@ export default function JournalListScreen() {
     );
   }, [desktopDateTextStyle, formatDreamListDate, t, handleDreamPress, isScrolling]);
 
-  const hasActiveFilter = !!(searchQuery || selectedTheme || selectedDreamType || dateRange.start || dateRange.end || showFavoritesOnly || showAnalyzedOnly || showExploredOnly);
+  const hasActiveFilter = !!(
+    searchQuery ||
+    selectedTheme ||
+    selectedDreamType ||
+    dateRange.start ||
+    dateRange.end ||
+    showFavoritesOnly ||
+    showAnalyzedOnly ||
+    showExploredOnly ||
+    showNeedsExplorationOnly
+  );
+  const hasActiveNonSearchFilter = !!(
+    selectedTheme ||
+    selectedDreamType ||
+    dateRange.start ||
+    dateRange.end ||
+    showFavoritesOnly ||
+    showAnalyzedOnly ||
+    showExploredOnly ||
+    showNeedsExplorationOnly
+  );
   const advancedFilterCount = Number(Boolean(selectedTheme)) + Number(Boolean(selectedDreamType)) + Number(Boolean(dateRange.start || dateRange.end));
   const advancedFilterLabel = advancedFilterCount > 0
     ? t('journal.filter.more_count', { count: advancedFilterCount })
@@ -551,6 +683,61 @@ export default function JournalListScreen() {
     showFavoritesOnly,
     t,
   ]);
+  const atlasQuickFilters = useMemo<NoctaliaHeaderChip[]>(() => [
+    {
+      id: 'favorites',
+      label: t('journal.filter.favorites'),
+      icon: 'heart',
+      active: showFavoritesOnly,
+      onPress: handleFavoritesToggle,
+      accessibilityLabel: t('journal.filter.accessibility.favorites'),
+      testID: TID.Button.FilterFavorites,
+    },
+    {
+      id: 'to-explore',
+      label: t('journal.atlas.filter.to_explore'),
+      icon: 'sparkles',
+      active: showNeedsExplorationOnly,
+      onPress: handleNeedsExplorationToggle,
+      accessibilityLabel: t('journal.atlas.filter.to_explore'),
+    },
+    {
+      id: 'analyzed',
+      label: t('journal.filter.analyzed'),
+      icon: 'brain',
+      active: showAnalyzedOnly,
+      onPress: handleAnalyzedToggle,
+      accessibilityLabel: t('journal.filter.accessibility.analyzed'),
+      testID: TID.Button.FilterAnalyzed,
+    },
+    {
+      id: 'recurring',
+      label: t('journal.atlas.filter.recurring'),
+      icon: 'arrow.triangle.2.circlepath',
+      active: selectedDreamType === 'Recurring Dream',
+      onPress: handleRecurringToggle,
+      accessibilityLabel: t('journal.atlas.filter.recurring'),
+    },
+    {
+      id: 'nightmares',
+      label: t('journal.atlas.filter.nightmares'),
+      icon: 'moon.stars.fill',
+      active: selectedDreamType === 'Nightmare',
+      onPress: handleNightmareToggle,
+      accessibilityLabel: t('journal.atlas.filter.nightmares'),
+    },
+  ], [
+    handleAnalyzedToggle,
+    handleFavoritesToggle,
+    handleNeedsExplorationToggle,
+    handleNightmareToggle,
+    handleRecurringToggle,
+    selectedDreamType,
+    showAnalyzedOnly,
+    showFavoritesOnly,
+    showNeedsExplorationOnly,
+    t,
+  ]);
   const renderEmptyState = useCallback(() => (
     <EmptyState
       hasActiveFilter={hasActiveFilter}
@@ -560,6 +747,9 @@ export default function JournalListScreen() {
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
   const getDreamItemType = useCallback((item: DreamAnalysis | undefined, index: number) => {
+    if (isAtlasLayout) {
+      return 'atlas-row';
+    }
     if (!item) {
       // FlashList can query item types during layout passes where data isn't resolved yet.
       return 'text-only';
@@ -570,7 +760,7 @@ export default function JournalListScreen() {
     return !item.imageGenerationFailed && (item.thumbnailUrl || item.imageUrl)
       ? 'with-image'
       : 'text-only';
-  }, []);
+  }, [isAtlasLayout]);
 
   return (
     <ScrollPerfProvider isScrolling={isScrolling}>
@@ -578,35 +768,71 @@ export default function JournalListScreen() {
         {/* Atmospheric dreamlike background */}
         <AtmosphericBackground />
 
-        {/* Header */}
-        <PageHeaderContent
-          titleKey="journal.title"
-          animationSeed={showHeaderAnimations ? 1 : 0}
-          style={isDesktopLayout ? styles.headerDesktop : undefined}
-        />
+        {useAtlasHeader ? (
+          <NoctaliaScreenHeader
+            titleKey="nav.journal"
+            chips={atlasQuickFilters}
+            actions={[
+              {
+                icon: 'magnifyingglass',
+                onPress: handleAtlasSearchPress,
+                accessibilityLabel: t('journal.atlas.search'),
+                active: showAtlasSearch || searchQuery.length > 0,
+              },
+              {
+                icon: 'slider.horizontal.3',
+                onPress: () => setShowAdvancedFilters(true),
+                accessibilityLabel: t('journal.filter.accessibility.more'),
+                active: hasActiveNonSearchFilter,
+                testID: TID.Button.FilterMore,
+              },
+            ]}
+            slot={
+              showAtlasSearch || searchQuery.length > 0 ? (
+                <SearchBar
+                  ref={searchInputRef}
+                  testID={TID.Component.SearchBar}
+                  inputTestID={TID.Input.SearchDreams}
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  placeholder={t('journal.search_placeholder')}
+                />
+              ) : null
+            }
+          />
+        ) : (
+          <>
+            {/* Header */}
+            <PageHeaderContent
+              titleKey="journal.title"
+              animationSeed={showHeaderAnimations ? 1 : 0}
+              style={isDesktopLayout ? styles.headerDesktop : undefined}
+            />
 
-        {/* Search and Filters */}
-        <View
-          style={filtersContainerStyle}
-        >
-          <MockNavigationRail />
-          {/* SearchBar */}
-          <SearchBar
-            testID={TID.Component.SearchBar}
-            inputTestID={TID.Input.SearchDreams}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholder={t('journal.search_placeholder')}
-          />
-          <FilterBar
-            items={journalFilterItems}
-            onClear={handleClearFilters}
-            dateRange={dateRange}
-            selectedTheme={selectedTheme}
-            selectedDreamType={selectedDreamType}
-            clearTestID={TID.Button.ClearFilters}
-          />
-        </View>
+            {/* Search and Filters */}
+            <View
+              style={filtersContainerStyle}
+            >
+              <MockNavigationRail />
+              {/* SearchBar */}
+              <SearchBar
+                testID={TID.Component.SearchBar}
+                inputTestID={TID.Input.SearchDreams}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                placeholder={t('journal.search_placeholder')}
+              />
+              <FilterBar
+                items={journalFilterItems}
+                onClear={handleClearFilters}
+                dateRange={dateRange}
+                selectedTheme={selectedTheme}
+                selectedDreamType={selectedDreamType}
+                clearTestID={TID.Button.ClearFilters}
+              />
+            </View>
+          </>
+        )}
 
       {/* Guest Upsell */}
       <View
@@ -625,7 +851,7 @@ export default function JournalListScreen() {
           ref={flatListRef}
           key={`desktop-${desktopColumns}`}
           data={filteredDreams}
-          extraData={isScrolling}
+          extraData={listExtraData}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
@@ -645,15 +871,15 @@ export default function JournalListScreen() {
         <FlashList
           testID={TID.List.Dreams}
           ref={flatListRef}
-          key={isTabletLayout ? 'tablet-2col' : 'mobile-1col'}
+          key={isTabletLayout ? 'tablet-2col' : isAtlasLayout ? 'mobile-compact-1col' : 'mobile-cards-1col'}
           data={filteredDreams}
-          extraData={isScrolling}
+          extraData={listExtraData}
           keyExtractor={keyExtractor}
           renderItem={isTabletLayout ? renderDreamItemTablet : renderDreamItem}
           numColumns={isTabletLayout ? 2 : 1}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
-          contentContainerStyle={listContentStyle}
+          contentContainerStyle={isAtlasLayout ? listContentAtlasStyle : listContentStyle}
           contentInsetAdjustmentBehavior="automatic"
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
@@ -663,19 +889,6 @@ export default function JournalListScreen() {
           onScrollEndDrag={scheduleIdle}
           onMomentumScrollBegin={handleScrollBegin}
           onMomentumScrollEnd={scheduleIdle}
-        />
-      )}
-
-      {/* Add Dream Button */}
-      {showAddButton && (
-        <FloatingAddDreamButton
-          onPress={() => router.push('/recording')}
-          label={t('journal.add_button.label')}
-          accessibilityLabel={t('journal.add_button.accessibility')}
-          bottomOffset={floatingOffset - 60}
-          isDesktopLayout={isDesktopLayout}
-          compactLabelVisible={!isScrolling}
-          testID={TID.Button.AddDream}
         />
       )}
 
@@ -808,6 +1021,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingBottom: ThemeLayout.spacing.xl,
   },
+  listContentAtlas: {
+    paddingHorizontal: ThemeLayout.spacing.lg,
+    paddingBottom: ThemeLayout.spacing.xl,
+  },
   listContentDesktop: {
     alignSelf: 'center',
     width: '100%',
@@ -871,6 +1088,9 @@ const styles = StyleSheet.create({
   },
   listItem: {
     marginBottom: ThemeLayout.spacing.lg,
+  },
+  atlasListItem: {
+    marginBottom: 0,
   },
   tabletCardWrapper: {
     flex: 1,

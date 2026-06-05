@@ -12,6 +12,16 @@ import { TID } from '@/lib/testIDs';
 
 const log = createScopedLogger('[GoogleSignInButton]');
 
+function getErrorCode(error: unknown): string | undefined {
+  const code = (error as { code?: unknown })?.code;
+  return typeof code === 'string' ? code : undefined;
+}
+
+function getErrorMessage(error: unknown): string | undefined {
+  const message = (error as { message?: unknown })?.message;
+  return typeof message === 'string' ? message : undefined;
+}
+
 export default function GoogleSignInButton() {
   const [loading, setLoading] = useState(false);
   const { colors } = useTheme();
@@ -34,24 +44,26 @@ export default function GoogleSignInButton() {
       log.debug('Sign-in successful');
       requestStayOnSettingsIntent();
       // Navigation is handled by auth state listener in settings screen
-    } catch (error: any) {
+    } catch (error: unknown) {
       clearStayOnSettingsIntent();
-      log.error('Sign-in failed', error);
+      log.warn('Sign-in failed', error);
+      const errorCode = getErrorCode(error);
+      const errorMessage = getErrorMessage(error);
 
       // Don't show error if user cancelled
-      if (error.message === 'SIGN_IN_CANCELLED') {
+      if (errorMessage === 'SIGN_IN_CANCELLED' || errorCode === 'SIGN_IN_CANCELLED') {
         log.debug('User cancelled the sign-in dialog');
-      } else if (error.message?.includes('Play Services')) {
-        log.error('Play Services error detected', error);
+      } else if (errorMessage?.includes('Play Services') || errorCode === 'PLAY_SERVICES_NOT_AVAILABLE') {
+        log.warn('Play Services error detected', error);
         Alert.alert(
           t('auth.google.play_services_title'),
           t('auth.google.play_services_message')
         );
       } else {
-        log.warn('Showing generic error alert', error?.message);
+        log.warn('Showing generic error alert', { errorCode, errorMessage });
         Alert.alert(
           t('auth.google.error_title'),
-          error.message || t('auth.google.error_generic')
+          t('auth.google.error_generic')
         );
       }
     } finally {

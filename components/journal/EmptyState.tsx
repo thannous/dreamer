@@ -4,7 +4,6 @@ import { useTheme } from '@/context/ThemeContext';
 import { useFadeInUp } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
-import { router } from 'expo-router';
 import React from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
@@ -58,17 +57,6 @@ export function EmptyState({ hasActiveFilter, onClearFilters }: EmptyStateProps)
           </Text>
         </Pressable>
       ) : null}
-      {!hasActiveFilter && (
-        <Pressable
-          style={[styles.ctaButton, { backgroundColor: colors.accent }]}
-          onPress={() => router.push('/recording')}
-          accessibilityRole="button"
-        >
-          <Text style={[styles.ctaText, { color: colors.backgroundCard }]}>
-            {t('journal.add_button.label')}
-          </Text>
-        </Pressable>
-      )}
     </Animated.View>
   );
 }
@@ -85,17 +73,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
     lineHeight: 24,
-  },
-  ctaButton: {
-    marginTop: ThemeLayout.spacing.sm,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: ThemeLayout.borderRadius.full,
-    borderCurve: 'continuous',
-  },
-  ctaText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
   },
   secondaryButton: {
     marginTop: ThemeLayout.spacing.sm,

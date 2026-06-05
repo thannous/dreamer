@@ -32,7 +32,7 @@ const PROFILE_CONFIG: Record<MockProfile, ProfileConfig> = {
   premium: {
     email: 'mock.premium@dreamer.app',
     displayName: 'Premium Dreamer',
-    preloadDreams: false,
+    preloadDreams: true,
     tier: 'plus',
     emailConfirmed: true,
   },

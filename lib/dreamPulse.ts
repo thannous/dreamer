@@ -1,4 +1,5 @@
 import type { DreamAnalysis } from './types';
+import { isDreamAnalyzed } from './dreamUsage';
 
 export type DreamPulseState = 'empty' | 'today' | 'stale' | 'analyze' | 'steady';
 
@@ -19,10 +20,6 @@ function getLocalDayStart(timestamp: number): number {
   return date.getTime();
 }
 
-function isAnalyzed(dream: DreamAnalysis): boolean {
-  return dream.isAnalyzed === true || dream.analysisStatus === 'done';
-}
-
 export function getDreamPulse(dreams: DreamAnalysis[], now = Date.now()): DreamPulse {
   const totalCount = dreams.length;
   let analyzedCount = 0;
@@ -32,7 +29,7 @@ export function getDreamPulse(dreams: DreamAnalysis[], now = Date.now()): DreamP
   // Perf: this drives the Inspiration screen summary, so collect all pulse counters
   // in one pass instead of filtering/reducing the same dream list three times.
   for (const dream of dreams) {
-    if (isAnalyzed(dream)) {
+    if (isDreamAnalyzed(dream)) {
       analyzedCount += 1;
     }
     if (dream.isFavorite === true) {

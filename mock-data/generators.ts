@@ -72,6 +72,7 @@ const TRANSCRIPTS = [
 export function generateRandomDream(): Omit<DreamAnalysis, 'id'> {
   const theme = THEMES[Math.floor(Math.random() * THEMES.length)];
   const index = Math.floor(Math.random() * DREAM_TITLES.length);
+  const imageUrl = getRandomImageForTheme(theme);
 
   return {
     title: DREAM_TITLES[index],
@@ -80,8 +81,8 @@ export function generateRandomDream(): Omit<DreamAnalysis, 'id'> {
     shareableQuote: SHAREABLE_QUOTES[Math.floor(Math.random() * SHAREABLE_QUOTES.length)],
     theme,
     dreamType: DREAM_TYPES[Math.floor(Math.random() * DREAM_TYPES.length)],
-    imageUrl: getRandomImageForTheme(theme),
-    thumbnailUrl: getThumbnailUrl(getRandomImageForTheme(theme)),
+    imageUrl,
+    thumbnailUrl: getThumbnailUrl(imageUrl),
     imageSource: 'ai',
     chatHistory: [],
     isFavorite: Math.random() > 0.7,

@@ -1,5 +1,5 @@
 import { QUOTAS, QUOTA_CONFIG, type UserTier } from '@/constants/limits';
-import { getUserChatMessageCount } from '@/lib/dreamUsage';
+import { getDreamAnalysisState, getUserChatMessageCount } from '@/lib/dreamUsage';
 import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
 import { supabase } from '@/lib/supabase';
 import type { QuotaStatus } from '@/lib/types';
@@ -317,7 +317,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
 
     const dream = await this.resolveDream(target);
 
-    if (dream?.explorationStartedAt) {
+    if (getDreamAnalysisState(dream).isExplored) {
       return true;
     }
 

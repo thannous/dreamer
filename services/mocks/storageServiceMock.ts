@@ -6,6 +6,7 @@
 import type {
   DreamAnalysis,
   DreamMutation,
+  JournalLayoutPreference,
   LanguagePreference,
   NotificationSettings,
   PendingImageJob,
@@ -37,6 +38,8 @@ const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
 const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
 
 const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
+const DEFAULT_JOURNAL_LAYOUT_PREFERENCE: JournalLayoutPreference = 'cards';
+const JOURNAL_LAYOUT_PREFERENCE_KEY = 'gemini_dream_journal_layout_preference';
 const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
 const RECORDING_ONBOARDING_COMPLETED_KEY = 'gemini_dream_journal_recording_onboarding_completed';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
@@ -46,6 +49,10 @@ const DREAMS_MIGRATION_SYNCED_PREFIX = 'gemini_dream_journal_dreams_migration_sy
 
 const scopedStorageKey = (baseKey: string, userScope?: string | null): string =>
   userScope ? `${baseKey}:${userScope}` : baseKey;
+
+function isJournalLayoutPreference(value: unknown): value is JournalLayoutPreference {
+  return value === 'cards' || value === 'compact';
+}
 
 export function setPreloadDreamsEnabled(enabled: boolean): void {
   shouldPreloadDreams = enabled;
@@ -254,6 +261,35 @@ export async function saveLanguagePreference(preference: LanguagePreference): Pr
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save language preference:', error);
     throw new Error('Failed to save language preference');
+  }
+}
+
+export async function getJournalLayoutPreference(): Promise<JournalLayoutPreference> {
+  console.log('[MOCK STORAGE] getJournalLayoutPreference called');
+  try {
+    const savedPreference = mockStorage[JOURNAL_LAYOUT_PREFERENCE_KEY];
+    if (savedPreference) {
+      const preference = JSON.parse(savedPreference) as unknown;
+      if (isJournalLayoutPreference(preference)) {
+        console.log('[MOCK STORAGE] Returning saved journal layout preference:', preference);
+        return preference;
+      }
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to retrieve journal layout preference:', error);
+  }
+  console.log('[MOCK STORAGE] Returning default journal layout preference');
+  return DEFAULT_JOURNAL_LAYOUT_PREFERENCE;
+}
+
+export async function saveJournalLayoutPreference(preference: JournalLayoutPreference): Promise<void> {
+  console.log('[MOCK STORAGE] saveJournalLayoutPreference called:', preference);
+  try {
+    mockStorage[JOURNAL_LAYOUT_PREFERENCE_KEY] = JSON.stringify(preference);
+    console.log('[MOCK STORAGE] Journal layout preference saved');
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to save journal layout preference:', error);
+    throw new Error('Failed to save journal layout preference');
   }
 }
 

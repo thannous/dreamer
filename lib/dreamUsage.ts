@@ -5,27 +5,65 @@ import type { DreamAnalysis } from './types';
  * Keeping these in one place ensures every screen uses the same definition.
  */
 
+export type DreamAnalysisStateStatus = 'none' | 'pending' | 'failed' | 'done';
+
+export type DreamAnalysisState = {
+  status: DreamAnalysisStateStatus;
+  isAnalyzed: boolean;
+  isPending: boolean;
+  isFailed: boolean;
+  isExplored: boolean;
+  hasAnalysisContent: boolean;
+  hasValidAnalysisTimestamp: boolean;
+  hasModelResponse: boolean;
+  hasUserMessage: boolean;
+};
+
+const isFiniteTimestamp = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isFinite(value);
+
+const hasNonErrorModelResponse = (dream?: DreamAnalysis | null): boolean =>
+  Boolean(dream?.chatHistory?.some((message) => message.role === 'model' && !message.meta?.isError));
+
+const hasUserMessage = (dream?: DreamAnalysis | null): boolean =>
+  Boolean(dream?.chatHistory?.some((message) => message.role === 'user'));
+
+export function getDreamAnalysisState(dream?: DreamAnalysis | null): DreamAnalysisState {
+  const rawStatus = dream?.analysisStatus ?? 'none';
+  const hasAnalysisContent = Boolean(dream?.interpretation?.trim());
+  const hasValidAnalysisTimestamp = isFiniteTimestamp(dream?.analyzedAt);
+  const isPending = rawStatus === 'pending';
+  const isFailed = rawStatus === 'failed';
+  const isAnalyzed = Boolean(
+    rawStatus === 'done' &&
+      dream?.isAnalyzed === true &&
+      hasValidAnalysisTimestamp &&
+      hasAnalysisContent
+  );
+  const hasModelResponse = hasNonErrorModelResponse(dream);
+
+  return {
+    status: isPending ? 'pending' : isFailed ? 'failed' : isAnalyzed ? 'done' : 'none',
+    isAnalyzed,
+    isPending,
+    isFailed,
+    isExplored: Boolean(isFiniteTimestamp(dream?.explorationStartedAt) || hasModelResponse),
+    hasAnalysisContent,
+    hasValidAnalysisTimestamp,
+    hasModelResponse,
+    hasUserMessage: hasUserMessage(dream),
+  };
+}
+
 export function isDreamAnalyzed(dream?: DreamAnalysis | null): dream is DreamAnalysis {
-  return Boolean(dream?.isAnalyzed && typeof dream.analyzedAt === 'number');
+  return getDreamAnalysisState(dream).isAnalyzed;
 }
 
 export function isDreamExplored(dream?: DreamAnalysis | null): boolean {
-  if (!dream) return false;
-
-  // Primary flag
-  if (typeof dream.explorationStartedAt === 'number') {
-    return true;
-  }
-
-  // Fallback: a recorded chat session without the timestamp (legacy data)
-  return Boolean(dream.chatHistory?.some((message) => message.role === 'model'));
+  return getDreamAnalysisState(dream).isExplored;
 }
 
 export type DreamDetailAction = 'analyze' | 'explore' | 'continue';
-
-const hasModelResponse = (dream?: DreamAnalysis | null): boolean => {
-  return Boolean(dream?.chatHistory?.some((message) => message.role === 'model'));
-};
 
 /**
  * Primary CTA state for the dream detail screen.
@@ -34,11 +72,13 @@ const hasModelResponse = (dream?: DreamAnalysis | null): boolean => {
  * - continue: an exploration/chat already exists
  */
 export function getDreamDetailAction(dream?: DreamAnalysis | null): DreamDetailAction {
-  if (!isDreamAnalyzed(dream)) {
+  const state = getDreamAnalysisState(dream);
+
+  if (!state.isAnalyzed || state.isPending || state.isFailed) {
     return 'analyze';
   }
 
-  if (isDreamExplored(dream) || hasModelResponse(dream)) {
+  if (state.isExplored) {
     return 'continue';
   }
 

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { getAnalyzedDreamCount, getExploredDreamCount, isDreamExplored } from '@/lib/dreamUsage';
+import { getAnalyzedDreamCount, getExploredDreamCount, isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import type { DreamAnalysis } from '@/lib/types';
 import { getSavedDreams } from '@/services/storageService';
 
@@ -50,7 +50,7 @@ async function syncWithDreams(state: MockQuotaState): Promise<MockQuotaState> {
   const explorationFromDreams = getExploredDreamCount(dreams);
 
   const analyzedIds = dreams
-    .filter((dream) => dream.isAnalyzed && typeof dream.analyzedAt === 'number')
+    .filter((dream) => isDreamAnalyzed(dream))
     .map((dream) => dream.id);
   const exploredIds = dreams
     .filter((dream) => isDreamExplored(dream))
@@ -131,10 +131,10 @@ async function migrateFromDreamsIfNeeded(): Promise<void> {
   const explorationCount = getExploredDreamCount(dreams);
 
   const analyzedDreamIds = dreams
-    .filter((dream) => dream.isAnalyzed && typeof dream.analyzedAt === 'number')
+    .filter((dream) => isDreamAnalyzed(dream))
     .map((dream) => dream.id);
   const exploredDreamIds = dreams
-    .filter((dream) => typeof dream.explorationStartedAt === 'number')
+    .filter((dream) => isDreamExplored(dream))
     .map((dream) => dream.id);
 
   const next: MockQuotaState = {

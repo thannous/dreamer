@@ -1,5 +1,5 @@
-import React, { memo, useRef } from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import React, { forwardRef, memo, useCallback, useRef, useState } from 'react';
+import { Platform, Pressable, StyleSheet, TextInput, View, type TextStyle } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -14,27 +14,54 @@ interface SearchBarProps {
   inputTestID?: string;
 }
 
-export const SearchBar = memo(function SearchBar({
+type WebTextInputStyle = TextStyle & {
+  outlineColor?: string;
+  outlineWidth?: number;
+};
+
+const webInputFocusResetStyle: WebTextInputStyle | null = Platform.OS === 'web'
+  ? {
+      outlineColor: 'transparent',
+      outlineWidth: 0,
+    }
+  : null;
+
+export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function SearchBar({
   value,
   onChangeText,
   placeholder,
   testID,
   inputTestID,
-}: SearchBarProps) {
+}: SearchBarProps, forwardedRef) {
   const { colors, mode } = useTheme();
   const inputRef = useRef<TextInput>(null);
+  const [isFocused, setIsFocused] = useState(false);
+  const setInputRef = useCallback((node: TextInput | null) => {
+    inputRef.current = node;
+    if (typeof forwardedRef === 'function') {
+      forwardedRef(node);
+      return;
+    }
+    if (forwardedRef) {
+      forwardedRef.current = node;
+    }
+  }, [forwardedRef]);
 
   const glassBackground =
     mode === 'dark' ? 'rgba(35, 26, 63, 0.4)' : `${colors.backgroundCard}A6`;
+  const focusBorderColor = mode === 'dark' ? colors.accentLight : colors.accentDark;
+  const focusBackgroundColor = mode === 'dark'
+    ? 'rgba(45, 33, 80, 0.72)'
+    : 'rgba(255, 253, 248, 0.94)';
 
   return (
     <View
       style={[
         styles.container,
         {
-          backgroundColor: glassBackground,
-          borderWidth: 1,
-          borderColor: colors.divider,
+          backgroundColor: isFocused ? focusBackgroundColor : glassBackground,
+          borderWidth: isFocused ? 1.5 : 1,
+          borderColor: isFocused ? focusBorderColor : colors.divider,
         },
       ]}
       testID={testID}
@@ -45,17 +72,24 @@ export const SearchBar = memo(function SearchBar({
         color={colors.textTertiary}
       />
       <TextInput
-        ref={inputRef}
+        ref={setInputRef}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={colors.textTertiary}
-        style={[styles.input, { color: colors.textPrimary }]}
+        style={[
+          styles.input,
+          webInputFocusResetStyle,
+          { color: colors.textPrimary },
+        ]}
         testID={inputTestID}
         accessibilityLabel={placeholder}
         returnKeyType="search"
+        showSoftInputOnFocus
         autoCapitalize="none"
         autoCorrect={false}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
       />
       {value.length > 0 && (
         <Pressable
@@ -75,7 +109,7 @@ export const SearchBar = memo(function SearchBar({
       )}
     </View>
   );
-});
+}));
 
 const styles = StyleSheet.create({
   container: {
