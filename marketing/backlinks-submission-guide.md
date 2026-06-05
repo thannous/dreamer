@@ -1,6 +1,6 @@
 # Noctalia — Backlinks Submission Guide
 
-> Generated 2026-03-09. Verified 2026-06-04. Recommended order now: finish Product Hunt media/scheduling -> monitor JunkStartups and SpotFreeAI approvals -> monitor SaaSHub maker-note manual approval -> monitor FutureTools resubmission -> re-check Crunchbase for a public profile -> create/approve a BetaList account if desired -> retry AlternativeTo/AppBrain after account replies -> Futurepedia only if paid listing budget is approved.
+> Generated 2026-03-09. Verified 2026-06-05. Recommended order now: monitor PeerPush free queue, JunkStartups approval, SpotFreeAI approval, SaaSHub maker-note approval, FutureTools resubmission, and Crunchbase public profile -> resume Product Hunt only after Chrome file upload access is enabled -> create/approve a BetaList account if desired -> retry AlternativeTo/AppBrain after account replies -> Futurepedia only if paid listing budget is approved.
 
 ---
 
@@ -141,6 +141,7 @@ Submit Noctalia as alternative to each of these (one at a time):
 | Crunchbase | New company profile submitted 2026-05-12; public profile URL not visible yet. | Re-check Crunchbase search for `Noctalia` and verify the website backlink once the profile appears. |
 | GoodAITools | Live 2026-06-04 at `https://goodaitools.com/ai/noctalia`; outbound link is `nofollow`. | Keep as discovery/indexation value. Badge remains skipped until followed-link value is proven. |
 | FutureTools | Resubmitted 2026-06-04 after public search still did not find Noctalia. | Watch for publication; verify live URL and link attributes if approved. |
+| Launch Llama | Live 2026-06-05 at `https://tools.launchllama.co/products/noctalia`; rendered page shows the Noctalia listing, DA 60 / 55k newsletter positioning, and outbound links to `https://noctalia.app` with `rel="noopener noreferrer nofollow"`. | Count as discovery/indexation/newsletter surface, not followed SEO equity. No further action unless the listing needs copy updates. |
 | SearchGun | Guest post submitted by email. | Watch for editorial acceptance/revision. |
 | AppBrain | Outreach sent; developer claim needed before featured submission. | Wait for AppBrain reply or claim the app in their dashboard. |
 | Digital.Health | Outreach sent; company/account flow needed. | Wait for reply; keep positioning as sleep wellness / dream journaling, not medical. |
@@ -148,6 +149,11 @@ Submit Noctalia as alternative to each of these (one at a time):
 | BetterLaunch | Google OAuth consent reached `thannous@gmail.com`, then Clerk returned `The External Account was not found.` | Retry later or create a dedicated account; do not add their badge without an explicit site-change decision. |
 | SpotFreeAI | Submitted 2026-06-04 as a free AI tool; confirmation says submissions are reviewed weekly. | Re-check the directory for Noctalia and verify link attributes if accepted. |
 | JunkStartups | Submitted for review 2026-06-04 through a free magic-link account on `thannous@gmail.com`; confirmation says approval within 24-48 hours. | Re-check dashboard/public search for the live listing. Add logo/screenshots after Chrome file upload access is enabled. |
+| PeerPush | Submitted 2026-06-04 through Google OAuth with `thannous@gmail.com`; standard/free path selected via `Join free launch queue` then `Wait in free queue`. URL created: `https://peerpush.net/p/noctalia`. Rendered page on 2026-06-05 says `Not yet published`; public HTML includes `robots` `noindex, follow`. Queue state from submission: product in queue `#2020`, estimated launch about 29 days. `Visit site` points to `https://noctalia.app/?utm_source=peerpush&ref=peerpush` with `rel="noopener"`. | Monitor the queue until publication. Do not count as a submitted live backlink/discoverable listing until PeerPush publishes it and removes the queued/noindex state. |
+| TAAFT / There Is An AI For That | Attempted but not submitted: automated browser navigation to the target URL was blocked by the browser security policy. | Do not bypass the browser security block. Do not count as submitted or as a backlink. |
+| Fazier | Attempted but not submitted: the free path requires adding a Fazier backlink/badge on the Noctalia homepage/footer. | Pause until there is an explicit site-change decision for reciprocal badges. Do not count as submitted or as a backlink. |
+| The Startup Project | Attempted but not submitted: maintaining the listing requires adding a backlink to their listing. | Pause until there is an explicit site-change decision for reciprocal backlink obligations. Do not count as submitted or as a backlink. |
+| Spot Startups | Attempted but not submitted: despite claiming `No backlink required` and a do-follow SEO link, the final button remained disabled with `Complete Verification to Submit`. | Retry only if verification can be completed without adding a badge/reciprocal link. Do not count as submitted or as a backlink. |
 
 ---
 
@@ -389,9 +395,15 @@ I'd love to hear your feedback — what features would make you actually use a d
 | SaaSHub       | ✓         | ✓        | ✓             | Active 2026-05-21; profile and alternatives page live; main website link verified in public HTML with empty `rel`; maker note confirmed 2026-06-04 and awaiting manual approval |
 | BetaList      | ☐         | ☐        | ☐             | Sign-in checked 2026-06-04; no `thannous@gmail.com` account, email/password signup required before submission |
 | Product Hunt  | ☐         | ☐        | ☐             | Draft in progress 2026-06-04: profile/main info/tags/first comment completed; media upload blocked until Chrome file access is enabled or gallery images are uploaded manually |
+| Launch Llama  | ✓         | ✓        | ✓             | Live 2026-06-05 at `https://tools.launchllama.co/products/noctalia`; website links are `nofollow`, so count as discovery/indexation value only |
+| PeerPush      | ✓         | ☐        | ☐             | Queued at `https://peerpush.net/p/noctalia`; queue `#2020`, estimated launch about 29 days, rendered state `Not yet published`, HTML `noindex, follow`; `Visit site` currently has `rel="noopener"` but is not discoverable yet |
 | SpotFreeAI    | ✓         | ☐        | ☐             | Submitted 2026-06-04; weekly review pending |
 | JunkStartups  | ✓         | ☐        | ☐             | Submitted 2026-06-04; dashboard says Noctalia is in review queue with 24-48h approval estimate |
 | Futurepedia   | ☐         | ☐        | ☐             | Paid listing only unless free/basic reopens |
+| TAAFT / There Is An AI For That | ☐ | ☐ | ☐ | Not submitted; automated browser blocked the URL by security policy |
+| Fazier        | ☐         | ☐        | ☐             | Not submitted; free path requires a Fazier backlink/badge on Noctalia homepage/footer |
+| The Startup Project | ☐   | ☐        | ☐             | Not submitted; listing maintenance requires a backlink to their listing |
+| Spot Startups | ☐         | ☐        | ☐             | Not submitted; final submit stayed disabled behind `Complete Verification to Submit` |
 
 
 ### Monitoring
