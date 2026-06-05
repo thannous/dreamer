@@ -24,6 +24,8 @@ const translations: Record<string, string> = {
     'nav.home': 'Home',
     'nav.journal': 'Journal',
     'nav.add_dream': 'Add',
+    'nav.capture_dream': 'Capture',
+    'nav.capture_dream_accessibility': 'Capture a dream',
     'nav.stats': 'Stats',
     'nav.settings': 'Settings',
     'inspiration.title': 'Dream inspiration',
