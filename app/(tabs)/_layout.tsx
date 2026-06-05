@@ -70,7 +70,7 @@ function AddDreamTabItem({ label, palette }: {
       >
         <IconSymbol
           size={24}
-          name="paintpalette.fill"
+          name="mic.fill"
           color={palette.textOnAccentSurface}
         />
       </View>

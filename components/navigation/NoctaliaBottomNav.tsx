@@ -37,6 +37,7 @@ export function NoctaliaBottomNav({ activeKey }: NoctaliaBottomNavProps) {
 
   const floatingBottomInset = Math.max(insets.bottom, 14);
   const barBackground = mode === 'dark' ? 'rgba(31, 22, 54, 0.97)' : colors.navbarBg;
+  const isDreamCaptureActive = activeKey === 'addDream';
   const items: BottomNavItem[] = [
     {
       key: 'home',
@@ -56,9 +57,11 @@ export function NoctaliaBottomNav({ activeKey }: NoctaliaBottomNavProps) {
     },
     {
       key: 'addDream',
-      label: t('nav.add_dream'),
-      accessibilityLabel: t('journal.add_button.accessibility'),
-      icon: 'paintpalette.fill',
+      label: isDreamCaptureActive ? t('nav.capture_dream') : t('nav.add_dream'),
+      accessibilityLabel: isDreamCaptureActive
+        ? t('nav.capture_dream_accessibility')
+        : t('journal.add_button.accessibility'),
+      icon: 'mic.fill',
       href: '/recording',
       testID: TID.Tab.AddDream,
     },
