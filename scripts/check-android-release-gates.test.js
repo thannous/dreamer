@@ -163,7 +163,7 @@ describe('android release gate preflight', () => {
     });
   });
 
-  it('passes local config checks and keeps manual gates non-fatal', () => {
+  it('passes local config checks without requiring Play-installed purchase evidence', () => {
     const root = setupFixture();
     const spawn = spawnWithTools();
 
@@ -172,7 +172,6 @@ describe('android release gate preflight', () => {
     expect(report.ok).toBe(true);
     expect(report.counts.fail || 0).toBe(0);
     expect(report.counts.blocked || 0).toBe(0);
-    expect(report.counts.manual).toBeGreaterThan(0);
     expect(report.checks.some((check) => check.title === 'Play payments profile for Billing')).toBe(true);
     expect(report.checks.some((check) => check.title === 'Supabase Play Integrity secrets')).toBe(true);
     expect(
@@ -183,18 +182,7 @@ describe('android release gate preflight', () => {
           check.remediation.includes('Android OAuth client')
       )
     ).toBe(true);
-    expect(
-      report.checks.some(
-        (check) =>
-          check.title === 'Play-installed RevenueCat purchase and restore' &&
-          check.details.includes('physical Android device') &&
-          check.details.includes('installerPackageName=com.android.vending') &&
-          check.remediation.includes('android:play-qa-device:wait') &&
-          check.remediation.includes('--expected-version-code <code>') &&
-          check.remediation.includes('--require-ui-ready') &&
-          check.remediation.includes('android:play-qa-device')
-      )
-    ).toBe(true);
+    expect(report.checks.some((check) => check.title === 'Play-installed RevenueCat purchase and restore')).toBe(false);
   });
 
   it('passes the Google Cloud project number check from a local snapshot', () => {
