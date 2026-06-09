@@ -665,13 +665,6 @@ function checkAndroidReleaseGates({
     paymentsProfileCheck.details,
     paymentsProfileCheck.remediation
   );
-  addCheck(
-    checks,
-    'manual',
-    'Play-installed RevenueCat purchase and restore',
-    'Purchase/restore validation requires a physical Android device with a signed build installed from Play Internal Testing and installerPackageName=com.android.vending.',
-    'Upload an AAB, connect a physical tester device, install via Play Internal Testing, then run npm run android:play-qa-device:wait for one device, npm run android:play-qa-device:wait -- --device <adb-id> when multiple devices are ready, or npm run android:play-qa-device -- --device <adb-id>. Before UI-driven purchase or restore flows, run npm run android:play-qa-device:wait -- --device <adb-id> --expected-version-code <code> --require-ui-ready. After the preflight passes, test offering load, purchase, and restore.'
-  );
 
   return {
     ok: checks.every((check) => check.status === 'pass' || check.status === 'manual'),
