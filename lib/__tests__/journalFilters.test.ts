@@ -33,14 +33,18 @@ describe('Journal filters - analyzedOnly / exploredOnly', () => {
       id: 1,
       title: 'Analyzed & explored',
       isAnalyzed: true,
+      analysisStatus: 'done',
       analyzedAt: 1000,
+      interpretation: 'A complete reading.',
       explorationStartedAt: 1000,
     }),
     makeDream({
       id: 2,
       title: 'Analyzed only',
       isAnalyzed: true,
+      analysisStatus: 'done',
       analyzedAt: 2000,
+      interpretation: 'A complete reading.',
     }),
     makeDream({
       id: 3,

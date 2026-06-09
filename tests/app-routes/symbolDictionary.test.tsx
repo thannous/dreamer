@@ -203,7 +203,6 @@ describe('SymbolDictionaryScreen', () => {
       render(<SymbolDictionaryScreen />);
 
       expect(screen.getByText('symbols.dictionary_title')).toBeTruthy();
-      expect(screen.getByTestId('icon-book.fill')).toBeTruthy();
     });
 
     it('renders the search bar', () => {

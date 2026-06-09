@@ -63,6 +63,21 @@ describe('dreamUsage helpers', () => {
     expect(getDreamDetailAction(failedRerun)).toBe('analyze');
   });
 
+  it('keeps legacy analyzed dreams valid when analysisStatus is missing', () => {
+    const legacyAnalyzed = buildDream({
+      id: 5,
+      isAnalyzed: true,
+      analyzedAt: 4321,
+      interpretation: 'A saved reading from an older app version.',
+    });
+
+    const state = getDreamAnalysisState(legacyAnalyzed);
+
+    expect(state.status).toBe('done');
+    expect(state.isAnalyzed).toBe(true);
+    expect(getDreamDetailAction(legacyAnalyzed)).toBe('explore');
+  });
+
   it('counts explored dreams using exploration timestamps', () => {
     const explored = buildDream({ id: 10, explorationStartedAt: 5000 });
     const untouched = buildDream({ id: 11 });
