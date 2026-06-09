@@ -29,9 +29,15 @@ const hasUserMessage = (dream?: DreamAnalysis | null): boolean =>
   Boolean(dream?.chatHistory?.some((message) => message.role === 'user'));
 
 export function getDreamAnalysisState(dream?: DreamAnalysis | null): DreamAnalysisState {
-  const rawStatus = dream?.analysisStatus ?? 'none';
   const hasAnalysisContent = Boolean(dream?.interpretation?.trim());
   const hasValidAnalysisTimestamp = isFiniteTimestamp(dream?.analyzedAt);
+  const hasLegacyCompletedAnalysis = Boolean(
+    dream?.analysisStatus == null &&
+      dream?.isAnalyzed === true &&
+      hasValidAnalysisTimestamp &&
+      hasAnalysisContent
+  );
+  const rawStatus = dream?.analysisStatus ?? (hasLegacyCompletedAnalysis ? 'done' : 'none');
   const isPending = rawStatus === 'pending';
   const isFailed = rawStatus === 'failed';
   const isAnalyzed = Boolean(

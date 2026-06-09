@@ -238,8 +238,20 @@ describe('GuestQuotaProvider', () => {
       // Given - counter is outdated but two dreams are analyzed
       mockLocalCounterConfig.analysisCount = 0;
       mockGetDreams.mockResolvedValueOnce([
-        buildDream({ id: 1, isAnalyzed: true, analyzedAt: Date.now() }),
-        buildDream({ id: 2, isAnalyzed: true, analyzedAt: Date.now() }),
+        buildDream({
+          id: 1,
+          isAnalyzed: true,
+          analysisStatus: 'done',
+          analyzedAt: Date.now(),
+          interpretation: 'A complete reading.',
+        }),
+        buildDream({
+          id: 2,
+          isAnalyzed: true,
+          analysisStatus: 'done',
+          analyzedAt: Date.now(),
+          interpretation: 'A complete reading.',
+        }),
       ]);
       const provider = new GuestQuotaProvider();
 

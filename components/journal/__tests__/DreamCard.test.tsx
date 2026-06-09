@@ -158,6 +158,7 @@ describe('DreamCard image fallback', () => {
       chatHistory: [],
       dreamType: 'Symbolic Dream',
       isAnalyzed: true,
+      analysisStatus: 'done',
       analyzedAt: Date.now(),
     };
 

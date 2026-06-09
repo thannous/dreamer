@@ -123,16 +123,16 @@ jest.doMock('@/components/journal/DreamCard', () => ({
   DreamCard: () => <div />,
 }));
 
+jest.doMock('@/components/journal/AtlasDreamRow', () => ({
+  AtlasDreamRow: () => <div />,
+}));
+
 jest.doMock('@/components/journal/TimelineIndicator', () => ({
   TimelineIndicator: () => <div />,
 }));
 
 jest.doMock('@/components/guest/UpsellCard', () => ({
   UpsellCard: () => <div />,
-}));
-
-jest.doMock('@/components/ui/FloatingAddDreamButton', () => ({
-  FloatingAddDreamButton: () => <div data-testid="add-dream-button" />,
 }));
 
 jest.doMock('@/components/icons/DreamIcons', () => ({
@@ -164,6 +164,13 @@ jest.doMock('react-native', () => {
       contentContainerStyle,
       contentInsetAdjustmentBehavior,
       showsVerticalScrollIndicator,
+      showsHorizontalScrollIndicator,
+      horizontal,
+      numberOfLines,
+      adjustsFontSizeToFit,
+      minimumFontScale,
+      hitSlop,
+      style,
       ...rest
     } = props;
     return {
@@ -287,10 +294,10 @@ describe('Journal advanced filter sheet', () => {
   it('shows a checkmark for the selected theme', () => {
     render(<JournalListScreen />);
 
-    fireEvent.click(screen.getByTestId('open-theme-modal'));
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
     fireEvent.click(screen.getByText('Mystique'));
 
-    fireEvent.click(screen.getByTestId('open-theme-modal'));
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
 
     expect(screen.getAllByTestId('icon-checkmark')).toHaveLength(1);
   });
@@ -299,15 +306,15 @@ describe('Journal advanced filter sheet', () => {
     render(<JournalListScreen />);
 
     // Given
-    fireEvent.click(screen.getByTestId('open-theme-modal'));
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
     fireEvent.click(screen.getByText('Mystique'));
 
     // When
-    fireEvent.click(screen.getByTestId('open-theme-modal'));
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
     fireEvent.click(screen.getByText('Mystique'));
 
     // Then
-    fireEvent.click(screen.getByTestId('open-theme-modal'));
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
     expect(screen.queryAllByTestId('icon-checkmark')).toHaveLength(0);
   });
 });
