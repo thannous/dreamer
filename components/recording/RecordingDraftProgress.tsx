@@ -19,6 +19,7 @@ export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
     .replace('{count}', String(progress.charCount))
     .replace('{limit}', String(progress.limit));
   const hint = t(`recording.draft_progress.${progress.state}`);
+  const shouldShowHint = progress.state !== 'empty';
 
   return (
     <View
@@ -26,9 +27,11 @@ export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
       testID={TID.Component.RecordingDraftProgress}
     >
       <View style={styles.headerRow}>
-        <Text style={[styles.hint, { color: colors.textSecondary }]}>
-          {hint}
-        </Text>
+        {shouldShowHint ? (
+          <Text style={[styles.hint, { color: colors.textSecondary }]}>
+            {hint}
+          </Text>
+        ) : null}
         <Text style={[styles.count, { color: colors.textSecondary }]}>
           {countLabel}
         </Text>

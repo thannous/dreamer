@@ -42,6 +42,7 @@ jest.mock('@/context/ThemeContext', () => ({
       accentLight: '#b4a8d4',
       backgroundCard: '#2d2150',
       backgroundSecondary: '#6353a0',
+      divider: '#7f70bc',
       textPrimary: '#fff',
       textSecondary: '#b4a8d4',
     },
@@ -65,12 +66,24 @@ jest.mock('@/constants/theme', () => ({
   },
 }));
 
+jest.mock('@/components/ui/icon-symbol', () => ({
+  IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon.${name}`} />,
+}));
+
 jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string, params?: Record<string, unknown>) => {
       const values: Record<string, string> = {
         'recording.onboarding.step_count': `Étape ${params?.current}/${params?.total}`,
-        'recording.onboarding.voice.body': 'Le grand micro lance la dictée vocale pour enregistrer votre rêve.',
+        'recording.onboarding.voice.body': 'Appuie sur le micro pour dicter ton rêve.',
+        'recording.onboarding.text.body': 'Appuie sur le champ texte pour écrire ton rêve.',
+        'recording.onboarding.preference.badge': 'Préférence',
+        'recording.onboarding.preference.title': 'Comment veux-tu enregistrer tes rêves ?',
+        'recording.onboarding.preference.voice_detail': 'Un grand micro d’abord, avec le texte juste en dessous.',
+        'recording.onboarding.preference.text_detail': 'Le champ texte d’abord, avec la dictée en option.',
+        'recording.onboarding.preference.settings_hint': 'Tu pourras changer ce choix à tout moment dans les paramètres de capture.',
+        'recording.preference.voice': 'Vocal',
+        'recording.preference.text': 'Écrit',
         'recording.onboarding.skip': 'Ignorer',
         'recording.onboarding.next': 'Suivant',
         'recording.onboarding.done': 'Terminer',
@@ -81,38 +94,67 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 describe('RecordingOnboardingTour', () => {
-  it('shows the current onboarding step and actions', () => {
-    const onNext = jest.fn();
+  it('asks for the preferred capture view and persists the choice', () => {
+    const onSelectPreference = jest.fn();
     const onSkip = jest.fn();
 
     render(
       <RecordingOnboardingTour
-        target="voice"
-        index={0}
-        total={3}
-        onNext={onNext}
+        variant="preference"
+        value="text"
+        onSelectPreference={onSelectPreference}
         onSkip={onSkip}
       />
     );
 
     expect(screen.getByTestId(TID.Component.RecordingOnboardingTour)).toBeTruthy();
-    expect(screen.getByText('Étape 1/3')).toBeTruthy();
-    expect(screen.queryByText('Touchez le grand micro')).toBeNull();
-    expect(screen.getByText('Le grand micro lance la dictée vocale pour enregistrer votre rêve.')).toBeTruthy();
+    expect(screen.getByText('Préférence')).toBeTruthy();
+    expect(screen.getByText('Comment veux-tu enregistrer tes rêves ?')).toBeTruthy();
+    expect(screen.getByText('Vocal')).toBeTruthy();
+    expect(screen.getByText('Écrit')).toBeTruthy();
+    expect(screen.getByText('Écrit').compareDocumentPosition(screen.getByText('Vocal'))).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING
+    );
+    expect(screen.getByText('Tu pourras changer ce choix à tout moment dans les paramètres de capture.')).toBeTruthy();
 
-    fireEvent.click(screen.getByTestId(TID.Button.RecordingOnboardingNext));
+    fireEvent.click(screen.getByTestId(TID.Button.RecordingOnboardingChooseVoice));
     fireEvent.click(screen.getByTestId(TID.Button.RecordingOnboardingSkip));
 
-    expect(onNext).toHaveBeenCalledTimes(1);
+    expect(onSelectPreference).toHaveBeenCalledWith('voice');
     expect(onSkip).toHaveBeenCalledTimes(1);
   });
 
-  it('uses the done label on the last step', () => {
+  it('shows an explanatory step after the preference choice', () => {
+    const onNext = jest.fn();
+    const onSkip = jest.fn();
+
     render(
       <RecordingOnboardingTour
+        variant="step"
         target="voice"
-        index={2}
-        total={3}
+        index={0}
+        total={2}
+        onNext={onNext}
+        onSkip={onSkip}
+      />
+    );
+
+    expect(screen.getByText('Étape 1/2')).toBeTruthy();
+    expect(screen.getByText('Appuie sur le micro pour dicter ton rêve.')).toBeTruthy();
+    expect(screen.getByText('Suivant')).toBeTruthy();
+
+    fireEvent.click(screen.getByTestId(TID.Button.RecordingOnboardingNext));
+
+    expect(onNext).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses the done label on the last explanatory step', () => {
+    render(
+      <RecordingOnboardingTour
+        variant="step"
+        target="text"
+        index={1}
+        total={2}
         onNext={jest.fn()}
         onSkip={jest.fn()}
       />

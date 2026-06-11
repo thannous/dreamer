@@ -10,6 +10,7 @@ import type {
   LanguagePreference,
   NotificationSettings,
   PendingImageJob,
+  RecordingInputModePreference,
   RitualStepProgress,
   ThemePreference,
 } from '@/lib/types';
@@ -40,6 +41,7 @@ const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
 const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
 const DEFAULT_JOURNAL_LAYOUT_PREFERENCE: JournalLayoutPreference = 'cards';
 const JOURNAL_LAYOUT_PREFERENCE_KEY = 'gemini_dream_journal_layout_preference';
+const RECORDING_INPUT_MODE_PREFERENCE_KEY = 'gemini_dream_journal_recording_input_mode_preference';
 const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
 const RECORDING_ONBOARDING_COMPLETED_KEY = 'gemini_dream_journal_recording_onboarding_completed';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
@@ -290,6 +292,34 @@ export async function saveJournalLayoutPreference(preference: JournalLayoutPrefe
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save journal layout preference:', error);
     throw new Error('Failed to save journal layout preference');
+  }
+}
+
+export async function getRecordingInputModePreference(): Promise<RecordingInputModePreference | null> {
+  console.log('[MOCK STORAGE] getRecordingInputModePreference called');
+  try {
+    const savedPreference = mockStorage[RECORDING_INPUT_MODE_PREFERENCE_KEY];
+    if (savedPreference) {
+      const parsed = JSON.parse(savedPreference);
+      if (parsed === 'text' || parsed === 'voice') {
+        return parsed;
+      }
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to retrieve recording input mode preference:', error);
+  }
+  return null;
+}
+
+export async function saveRecordingInputModePreference(
+  preference: RecordingInputModePreference
+): Promise<void> {
+  console.log('[MOCK STORAGE] saveRecordingInputModePreference called:', preference);
+  try {
+    mockStorage[RECORDING_INPUT_MODE_PREFERENCE_KEY] = JSON.stringify(preference);
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to save recording input mode preference:', error);
+    throw new Error('Failed to save recording input mode preference');
   }
 }
 

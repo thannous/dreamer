@@ -1,14 +1,18 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { MicButton, type MicButtonStatus } from '@/components/recording/MicButton';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { RecordingDraftProgress } from '@/components/recording/RecordingDraftProgress';
+import type { RecordingOnboardingTarget } from '@/components/recording/RecordingOnboardingTour';
+import type { RecordingSpotlightRect } from './RecordingOnboardingSpotlightOverlay';
 
 export interface RecordingTextInputProps {
+  layout?: 'textFirst' | 'voiceFirst';
   value: string;
   onChange: (text: string) => void;
   disabled: boolean;
@@ -16,6 +20,14 @@ export interface RecordingTextInputProps {
   instructionText: string;
   fallbackNotice?: string;
   switchToVoiceLabel?: string;
+  voiceCtaDetail?: string;
+  voiceStatus?: MicButtonStatus;
+  voiceAccessibilityHint?: string;
+  recordingDurationLabel?: string;
+  spotlightTarget?: RecordingOnboardingTarget;
+  onSpotlightLayout?: (rect: RecordingSpotlightRect) => void;
+  spotlightMeasureKey?: number;
+  placeholder?: string;
   autoFocus?: boolean;
   onSwitchToVoice: () => void;
   onClear?: () => void;
@@ -25,12 +37,21 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
   function RecordingTextInput(
     {
       value,
+      layout = 'textFirst',
       onChange,
       disabled,
       lengthWarning,
       instructionText,
       fallbackNotice,
       switchToVoiceLabel,
+      voiceCtaDetail,
+      voiceStatus = 'idle',
+      voiceAccessibilityHint,
+      recordingDurationLabel,
+      spotlightTarget,
+      onSpotlightLayout,
+      spotlightMeasureKey = 0,
+      placeholder,
       autoFocus = true,
       onSwitchToVoice,
       onClear,
@@ -41,6 +62,42 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     const { t } = useTranslation();
     const hasValue = value.trim().length > 0;
     const [isFocused, setIsFocused] = useState(false);
+    const textSpotlightRef = useRef<View | null>(null);
+    const voiceSpotlightRef = useRef<View | null>(null);
+    const isVoiceActive = voiceStatus === 'recording';
+    const isVoicePreparing = voiceStatus === 'preparing';
+    const isVoiceFirst = layout === 'voiceFirst';
+    const voiceLabel = switchToVoiceLabel || t('recording.mode.switch_to_voice') || 'Dicter mon r\u00eave';
+    const voiceDetail =
+      voiceCtaDetail ||
+      t('recording.mode.voice_cta_detail') ||
+      'Le micro ne demarre qu apres ton accord.';
+    const voiceIconName: React.ComponentProps<typeof IconSymbol>['name'] =
+      isVoiceActive ? 'pause.fill' : 'mic';
+    const voiceControlDisabled = disabled || isVoicePreparing;
+    const shouldShowVoiceHeroCopy =
+      !isVoiceFirst || isVoiceActive || isVoicePreparing || hasValue || Boolean(recordingDurationLabel);
+
+    useEffect(() => {
+      if (!spotlightTarget || !onSpotlightLayout) {
+        return;
+      }
+
+      const measureTarget = () => {
+        const targetRef = spotlightTarget === 'text' ? textSpotlightRef : voiceSpotlightRef;
+        targetRef.current?.measureInWindow((x, y, width, height) => {
+          onSpotlightLayout({ x, y, width, height });
+        });
+      };
+
+      const frame = requestAnimationFrame(measureTarget);
+      const timeout = setTimeout(measureTarget, 220);
+
+      return () => {
+        cancelAnimationFrame(frame);
+        clearTimeout(timeout);
+      };
+    }, [onSpotlightLayout, spotlightMeasureKey, spotlightTarget, value]);
 
     return (
       <>
@@ -70,7 +127,68 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
             </View>
           ) : null}
 
-          <View style={shadows.md}>
+          {isVoiceFirst ? (
+            <View
+              ref={voiceSpotlightRef}
+              collapsable={false}
+              style={styles.voiceHero}
+            >
+              <MicButton
+                status={voiceStatus}
+                onPress={onSwitchToVoice}
+                interaction={voiceControlDisabled ? 'disabled' : 'enabled'}
+                size="expressive"
+                testID={TID.Button.RecordToggle}
+                accessibilityLabel={voiceLabel}
+              />
+              {shouldShowVoiceHeroCopy ? (
+                <Pressable
+                  onPress={onSwitchToVoice}
+                  style={styles.voiceHeroCopy}
+                  disabled={voiceControlDisabled}
+                  accessibilityRole="button"
+                  accessibilityLabel={voiceLabel}
+                  accessibilityHint={voiceAccessibilityHint}
+                  testID={TID.Button.SwitchToVoice}
+                >
+                  <View style={styles.voiceHeroTitleRow}>
+                    <Text style={[styles.voiceHeroTitle, { color: colors.textPrimary }]}>
+                      {voiceLabel}
+                    </Text>
+                    {recordingDurationLabel ? (
+                      <Text
+                        style={[styles.voiceCaptureDuration, { color: colors.accent }]}
+                        testID={TID.Text.RecordingVoiceStatusDuration}
+                      >
+                        {recordingDurationLabel}
+                      </Text>
+                    ) : null}
+                  </View>
+                  <Text style={[styles.voiceHeroDetail, { color: colors.textSecondary }]}>
+                    {voiceDetail}
+                  </Text>
+                </Pressable>
+              ) : null}
+            </View>
+          ) : null}
+
+          <View
+            ref={textSpotlightRef}
+            collapsable={false}
+            style={[
+              shadows.md,
+              styles.spotlightTarget,
+            ]}
+          >
+            {!hasValue ? (
+              <View
+                style={styles.placeholderIcon}
+                accessibilityElementsHidden={true}
+                importantForAccessibility="no-hide-descendants"
+              >
+                <IconSymbol name="pencil" size={18} color={colors.textSecondary} />
+              </View>
+            ) : null}
             <TextInput
               ref={ref}
               value={value}
@@ -85,8 +203,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               ]}
               multiline
               editable={!disabled}
-              placeholder=""
-              placeholderTextColor="transparent"
+              placeholder={placeholder || t('recording.placeholder')}
+              placeholderTextColor={colors.textSecondary}
               testID={TID.Input.DreamTranscript}
               accessibilityLabel={t('recording.placeholder.accessibility')}
               autoFocus={autoFocus}
@@ -103,21 +221,61 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
             </Text>
           ) : null}
 
-          <Pressable
-            onPress={onSwitchToVoice}
-            style={[styles.modeSwitchButton, styles.modeSwitchVoiceButton]}
-            testID={TID.Button.SwitchToVoice}
-          >
-            <IconSymbol
-              name="mic"
-              size={16}
-              color={colors.textSecondary}
-              style={styles.modeSwitchIcon}
-            />
-            <Text style={[styles.modeSwitchText, { color: colors.textSecondary }]}>
-              {switchToVoiceLabel || t('recording.mode.switch_to_voice') || 'Dicter mon r\u00eave'}
-            </Text>
-          </Pressable>
+          {!isVoiceFirst ? (
+            <View
+              ref={voiceSpotlightRef}
+              collapsable={false}
+              style={[
+                styles.voiceCaptureCard,
+                isVoiceActive && styles.voiceCaptureCardActive,
+                {
+                  backgroundColor: colors.backgroundSecondary,
+                  borderColor: isVoiceActive ? colors.accent : colors.divider,
+                },
+              ]}
+            >
+              <Pressable
+                onPress={onSwitchToVoice}
+                style={styles.voiceCaptureCopy}
+                testID={TID.Button.SwitchToVoice}
+                disabled={voiceControlDisabled}
+                accessibilityRole="button"
+                accessibilityLabel={voiceLabel}
+                accessibilityHint={voiceAccessibilityHint}
+              >
+                <View style={styles.voiceCaptureTitleRow}>
+                  <IconSymbol
+                    name={voiceIconName}
+                    size={16}
+                    color={isVoiceActive ? colors.accent : colors.textPrimary}
+                    style={styles.modeSwitchIcon}
+                  />
+                  <Text style={[styles.voiceCaptureTitle, { color: colors.textPrimary }]}>
+                    {voiceLabel}
+                  </Text>
+                  {recordingDurationLabel ? (
+                    <Text
+                      style={[styles.voiceCaptureDuration, { color: colors.accent }]}
+                      testID={TID.Text.RecordingVoiceStatusDuration}
+                    >
+                      {recordingDurationLabel}
+                    </Text>
+                  ) : null}
+                </View>
+                <Text style={[styles.voiceCaptureDetail, { color: colors.textSecondary }]}>
+                  {voiceDetail}
+                </Text>
+              </Pressable>
+              <MicButton
+                status={voiceStatus}
+                onPress={onSwitchToVoice}
+                interaction={voiceControlDisabled ? 'disabled' : 'enabled'}
+                size="compact"
+                testID={TID.Button.RecordToggle}
+                accessibilityLabel={voiceLabel}
+              />
+            </View>
+          ) : null}
 
           {onClear ? (
             <Pressable
@@ -167,6 +325,13 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     gap: 16,
   },
+  spotlightTarget: {
+    borderWidth: 1,
+    borderColor: 'transparent',
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    padding: 3,
+  },
   fallbackNotice: {
     borderWidth: 1,
     borderRadius: 14,
@@ -183,10 +348,20 @@ const styles = StyleSheet.create({
     maxHeight: 240,
     borderWidth: 1,
     borderRadius: 16,
-    padding: 20,
+    paddingTop: 20,
+    paddingRight: 20,
+    paddingBottom: 20,
+    paddingLeft: 48,
     fontSize: 16,
     fontFamily: Fonts.lora.regularItalic,
     textAlignVertical: 'top',
+  },
+  placeholderIcon: {
+    position: 'absolute',
+    top: 23,
+    left: 21,
+    zIndex: 2,
+    pointerEvents: 'none',
   },
   lengthWarning: {
     fontFamily: Fonts.spaceGrotesk.medium,
@@ -205,6 +380,77 @@ const styles = StyleSheet.create({
   },
   modeSwitchIcon: {
     marginRight: 6,
+  },
+  voiceHero: {
+    alignItems: 'center',
+    gap: 8,
+    paddingTop: 2,
+    paddingBottom: 2,
+  },
+  voiceHeroCopy: {
+    alignItems: 'center',
+    gap: 4,
+    maxWidth: 360,
+    paddingHorizontal: 18,
+    paddingVertical: 2,
+  },
+  voiceHeroTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+  },
+  voiceHeroTitle: {
+    fontSize: 18,
+    lineHeight: 24,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    textAlign: 'center',
+  },
+  voiceHeroDetail: {
+    fontSize: 13,
+    lineHeight: 18,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    textAlign: 'center',
+  },
+  voiceCaptureCard: {
+    minHeight: 94,
+    borderWidth: 1,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  voiceCaptureCardActive: {
+    borderWidth: 1.5,
+  },
+  voiceCaptureCopy: {
+    flex: 1,
+    gap: 6,
+    paddingVertical: 6,
+  },
+  voiceCaptureTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+  voiceCaptureTitle: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  voiceCaptureDetail: {
+    fontSize: 13,
+    lineHeight: 18,
+    fontFamily: Fonts.spaceGrotesk.regular,
+  },
+  voiceCaptureDuration: {
+    marginLeft: 8,
+    fontSize: 13,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontVariant: ['tabular-nums'],
   },
   modeSwitchText: {
     fontSize: 15,

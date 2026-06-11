@@ -10,6 +10,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export type MicButtonStatus = 'idle' | 'preparing' | 'recording';
 export type MicButtonInteraction = 'enabled' | 'disabled';
+export type MicButtonSize = 'compact' | 'expressive';
 
 interface MicButtonProps {
   status: MicButtonStatus;
@@ -17,6 +18,7 @@ interface MicButtonProps {
   testID?: string;
   accessibilityLabel?: string;
   interaction?: MicButtonInteraction;
+  size?: MicButtonSize;
 }
 
 export function MicButton({
@@ -25,6 +27,7 @@ export function MicButton({
   testID,
   accessibilityLabel,
   interaction = 'enabled',
+  size = 'expressive',
 }: MicButtonProps) {
   const { t } = useTranslation();
   const { colors, shadows, mode } = useTheme();
@@ -47,6 +50,24 @@ export function MicButton({
   const isPreparing = status === 'preparing';
   const disabled = interaction === 'disabled';
   const showPulses = isRecording && shouldAnimate;
+  const isCompact = size === 'compact';
+  const dimensions = isCompact
+    ? {
+        container: 76,
+        button: 62,
+        glow: 68,
+        icon: 28,
+        border: 1,
+        pulseScale: 1.2,
+      }
+    : {
+        container: 240,
+        button: 206,
+        glow: 216,
+        icon: 104,
+        border: 2,
+        pulseScale: 1.4,
+      };
 
   return (
     <Pressable
@@ -57,10 +78,17 @@ export function MicButton({
         onPress();
       }}
       disabled={disabled}
-      style={[styles.container, disabled && styles.disabled]}
+      style={[
+        styles.container,
+        {
+          width: dimensions.container,
+          height: dimensions.container,
+        },
+        disabled && styles.disabled,
+      ]}
       accessibilityRole="button"
       accessibilityLabel={
-        accessibilityLabel ?? (isRecording ? t('recording.mic.stop') : t('recording.mic.start'))
+        accessibilityLabel ?? (isRecording ? t('recording.mic.pause') : t('recording.mic.start'))
       }
       accessibilityState={{
         disabled: disabled ?? false,
@@ -68,7 +96,7 @@ export function MicButton({
       } as AccessibilityState}
       accessibilityHint={
         isRecording
-          ? t('recording.mic.stop_hint', { defaultValue: 'Double tap to stop recording' })
+          ? t('recording.mic.pause_hint', { defaultValue: 'Double tap to pause dictation' })
           : t('recording.mic.start_hint', { defaultValue: 'Double tap to start voice recording' })
       }
       testID={testID}
@@ -77,7 +105,7 @@ export function MicButton({
       {showPulses && (
         <MotiView
           from={{ opacity: 0.5, scale: 1 }}
-          animate={{ opacity: 0, scale: 1.4 }}
+          animate={{ opacity: 0, scale: dimensions.pulseScale }}
           transition={{
             type: 'timing',
             duration: 1600,
@@ -88,6 +116,9 @@ export function MicButton({
             styles.pulseCircle,
             {
               backgroundColor: glowColor,
+              width: dimensions.button,
+              height: dimensions.button,
+              borderRadius: dimensions.button / 2,
             }
           ]}
         />
@@ -108,6 +139,10 @@ export function MicButton({
             styles.glow,
             {
               borderColor: glowColor,
+              width: dimensions.glow,
+              height: dimensions.glow,
+              borderRadius: dimensions.glow / 2,
+              borderWidth: isCompact ? 2 : 4,
             },
           ]}
         />
@@ -128,6 +163,10 @@ export function MicButton({
           shadows.xl,
           {
             borderColor: colors.accent,
+            width: dimensions.button,
+            height: dimensions.button,
+            borderRadius: dimensions.button / 2,
+            borderWidth: dimensions.border,
           },
         ]}
       >
@@ -148,8 +187,8 @@ export function MicButton({
           accessibilityElementsHidden={true}
         >
           <IconSymbol
-            name={isRecording ? 'stop.fill' : 'mic.fill'}
-            size={104}
+            name={isRecording ? 'pause.fill' : 'mic.fill'}
+            size={dimensions.icon}
             color={colors.textPrimary}
           />
         </MotiView>
@@ -163,34 +202,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    width: 240,
-    height: 240,
   },
   disabled: {
     opacity: 0.5,
   },
   button: {
-    width: 206,
-    height: 206,
-    borderRadius: 103,
-    borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
   },
   glow: {
     position: 'absolute',
-    width: 216,
-    height: 216,
-    borderRadius: 108,
-    borderWidth: 4,
     zIndex: 5,
   },
   pulseCircle: {
     position: 'absolute',
-    width: 206,
-    height: 206,
-    borderRadius: 103,
     zIndex: 1,
   },
 });

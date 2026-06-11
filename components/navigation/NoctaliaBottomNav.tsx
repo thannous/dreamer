@@ -23,9 +23,10 @@ type BottomNavItem = {
 
 type NoctaliaBottomNavProps = {
   activeKey: BottomNavKey;
+  addDreamIcon?: IconName;
 };
 
-export function NoctaliaBottomNav({ activeKey }: NoctaliaBottomNavProps) {
+export function NoctaliaBottomNav({ activeKey, addDreamIcon = 'pencil' }: NoctaliaBottomNavProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
@@ -61,7 +62,7 @@ export function NoctaliaBottomNav({ activeKey }: NoctaliaBottomNavProps) {
       accessibilityLabel: isDreamCaptureActive
         ? t('nav.capture_dream_accessibility')
         : t('journal.add_button.accessibility'),
-      icon: 'mic.fill',
+      icon: addDreamIcon,
       href: '/recording',
       testID: TID.Tab.AddDream,
     },
