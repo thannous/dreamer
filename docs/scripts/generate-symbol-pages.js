@@ -226,8 +226,8 @@ const SHARED_SITE_CONFIG = loadSharedSiteConfig();
 
 function getSymbolCtaUrl(lang) {
   const paths = {
-    en: '/en/android-dream-analysis-app',
-    fr: '/fr/application-analyse-de-reve-android',
+    en: '/en/ai-dream-interpretation-app',
+    fr: '/fr/application-interpretation-reves-ia',
     es: '/es/app-analisis-suenos-android',
     de: '/de/android-traumanalyse-app',
     it: '/it/app-analisi-sogni-android',
