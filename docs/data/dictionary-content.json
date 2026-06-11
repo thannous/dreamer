@@ -183,6 +183,25 @@
     "sticky_search_placeholder": "Symbole suchen…",
     "no_results_text": "Keine Symbole gefunden für",
     "browse_by_category": "Nach Kategorie durchsuchen",
+    "priority_links_heading": "Gerade häufig gesucht",
+    "priority_links_intro": "Diese Symbole haben frische Sichtbarkeit in Search Console und verdienen einen schnellen Einstieg.",
+    "priority_links": [
+      {
+        "label": "Hund im Traum",
+        "href": "/de/traumsymbole/hund",
+        "desc": "Aggressiver Hund, Hundebiss, Schutz, Vertrauen und Loyalität im Kontext deuten."
+      },
+      {
+        "label": "Tür im Traum",
+        "href": "/de/traumsymbole/tuer",
+        "desc": "Tür öffnen, schließen, blockierte Tür, Türklingel und Grenzen zwischen zwei Phasen."
+      },
+      {
+        "label": "Fallen im Traum",
+        "href": "/de/traumsymbole/fallen",
+        "desc": "Falltraum, Aufwachen beim Fallen, Kontrollverlust und Fragen für dein Traumtagebuch."
+      }
+    ],
     "section_heading": "Symbole mit",
     "ask_yourself_label": "Frage dich:",
     "cta_title": "Deute nicht nur ein Symbol. Verstehe den ganzen Traum.",

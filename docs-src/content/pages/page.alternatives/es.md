@@ -105,7 +105,6 @@
 <li><a href="https://dreamstream.art/" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">DreamStream sitio oficial</a></li>
 <li><a href="https://www.dreammirror.app/features" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">DreamMirror features</a></li>
 <li><a href="https://dreamnotes.app/" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">DreamNotes sitio oficial</a></li>
-<li><a href="https://play.google.com/store/apps/details?id=app.DreamKit.DreamKit.dreamkit&hl=en_US" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">DreamKit Google Play</a></li>
 <li><a href="https://www.rosebud.app/journals/dream" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Rosebud dream journal</a></li>
 <li><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Noctalia Google Play</a></li>
     </ul>

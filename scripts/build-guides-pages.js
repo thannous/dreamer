@@ -2178,6 +2178,26 @@ function generateDictionaryPage(lang, t) {
                     </a>`
   ).join('\n');
 
+  const priorityLinks = Array.isArray(dc.priority_links) ? dc.priority_links : [];
+  const priorityLinksHtml = priorityLinks.length ? `
+            <section class="quick-browse-panel glass-panel rounded-3xl mt-4" aria-label="${escapeHtml(dc.priority_links_heading || 'Priority symbols')}">
+                <div class="quick-browse-copy">
+                    <div>
+                        <h2 class="font-serif text-xl md:text-2xl text-dream-cream flex items-center gap-3">
+                            <i data-lucide="sparkles" class="w-5 h-5 text-dream-salmon"></i>
+                            ${escapeHtml(dc.priority_links_heading || 'Priority symbols')}
+                        </h2>
+                    </div>
+                    <p>${escapeHtml(dc.priority_links_intro || '')}</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-4">
+${priorityLinks.map((item) => `                    <a href="${escapeHtml(item.href)}" class="glass-panel rounded-xl p-5 block hover:border-dream-salmon/30 border border-transparent transition-colors">
+                        <span class="text-dream-cream font-serif text-lg block mb-2">${escapeHtml(item.label)}</span>
+                        <span class="text-sm text-purple-200/70 leading-relaxed">${escapeHtml(item.desc || '')}</span>
+                    </a>`).join('\n')}
+                </div>
+            </section>` : '';
+
   // ── Build JSON-LD ────────────────────────────────────────────────────
   const collection = {
     '@context': 'https://schema.org',
@@ -2554,6 +2574,7 @@ ${stickyAlphaLinks}
 ${catGridCards}
                 </div>
             </section>
+${priorityLinksHtml}
 
             <div id="searchFeedback" class="search-feedback" hidden>
                 <div class="search-feedback-copy">
