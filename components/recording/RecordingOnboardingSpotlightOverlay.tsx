@@ -146,31 +146,6 @@ export function RecordingOnboardingSpotlightOverlay({
           ]}
         />
       ))}
-      {panel ? (
-        <View
-          style={[
-            styles.panelRing,
-            {
-              left: panel.x,
-              top: panel.y,
-              width: panel.width,
-              height: panel.height,
-            },
-          ]}
-        />
-      ) : null}
-      <View
-        style={[
-          styles.targetRing,
-          {
-            left: target.x,
-            top: target.y,
-            width: target.width,
-            height: target.height,
-            borderRadius: Math.min(target.width, target.height) / 2,
-          },
-        ]}
-      />
     </View>
   );
 }
@@ -183,16 +158,5 @@ const styles = StyleSheet.create({
   dimRect: {
     position: 'absolute',
     backgroundColor: OVERLAY_COLOR,
-  },
-  panelRing: {
-    position: 'absolute',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(230, 222, 255, 0.28)',
-    borderRadius: 18,
-  },
-  targetRing: {
-    position: 'absolute',
-    borderWidth: 1,
-    borderColor: 'rgba(230, 222, 255, 0.6)',
   },
 });

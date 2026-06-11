@@ -11,6 +11,7 @@ import {
     getLanguagePreference,
     getNotificationSettings,
     getPendingDreamMutations,
+    getRecordingInputModePreference,
     getRitualPreference,
     getRitualStepProgress,
     getSavedDreams,
@@ -25,6 +26,7 @@ import {
     saveLanguagePreference,
     saveNotificationSettings,
     savePendingDreamMutations,
+    saveRecordingInputModePreference,
     saveRitualPreference,
     saveRitualStepProgress,
     saveThemePreference,
@@ -305,6 +307,24 @@ describe('storageServiceMock', () => {
       const preference = await getJournalLayoutPreference();
 
       expect(preference).toBe('cards');
+    });
+  });
+
+  describe('recording input mode preference', () => {
+    it('given saved recording input mode when retrieving then returns saved preference', async () => {
+      await saveRecordingInputModePreference('voice');
+
+      const preference = await getRecordingInputModePreference();
+
+      expect(preference).toBe('voice');
+    });
+
+    it('given no saved recording input mode when retrieving then returns null', async () => {
+      resetMockStorage();
+
+      const preference = await getRecordingInputModePreference();
+
+      expect(preference).toBeNull();
     });
   });
 

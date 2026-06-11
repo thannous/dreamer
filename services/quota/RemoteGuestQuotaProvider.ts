@@ -173,11 +173,11 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
     const usage = this.buildUsage(undefined, fallback.usage, defaults);
     const reasonsByCode: Record<GuestSessionErrorCode, string> = {
       [GuestSessionErrorCode.UNAVAILABLE]:
-        'Guest AI is temporarily unavailable. You can still record dreams locally.',
+        'Guest analysis is temporarily unavailable. You can still record dreams locally.',
       [GuestSessionErrorCode.EXPIRED]:
         'Guest access expired. Please try again in a moment.',
       [GuestSessionErrorCode.PLATFORM_UNSUPPORTED]:
-        'Guest AI is not available on this platform right now. You can still record dreams locally.',
+        'Guest analysis is not available on this platform right now. You can still record dreams locally.',
       [GuestSessionErrorCode.QUOTA_UNAVAILABLE]:
         'Guest quota is temporarily unavailable. You can still record dreams locally.',
     };

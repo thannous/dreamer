@@ -119,6 +119,8 @@ export type ThemeMode = 'light' | 'dark';
 
 export type JournalLayoutPreference = 'cards' | 'compact';
 
+export type RecordingInputModePreference = 'text' | 'voice';
+
 export type AppLanguage = 'en' | 'fr' | 'es' | 'de' | 'it';
 
 export type LanguagePreference = 'auto' | 'en' | 'fr' | 'es' | 'de' | 'it';

@@ -5,8 +5,8 @@ import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import {
-  RECORDING_ONBOARDING_TARGETS,
   RecordingOnboardingTour,
+  type RecordingOnboardingTarget,
 } from '@/components/recording/RecordingOnboardingTour';
 import {
   RecordingOnboardingSpotlightOverlay,
@@ -21,12 +21,11 @@ import {
   QuotaLimitSheet,
   ReferenceImageSheet,
 } from '@/components/recording/RecordingSheets';
+import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
-import { RecordingVoiceInput } from '@/components/recording/RecordingVoiceInput';
 import { RECORDING } from '@/constants/appConfig';
 import { GradientColors } from '@/constants/gradients';
 import { TAB_BAR_HEIGHT } from '@/constants/layout';
-import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -50,7 +49,7 @@ import { createScopedLogger } from '@/lib/logger';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis, ReferenceImage } from '@/lib/types';
+import type { DreamAnalysis, RecordingInputModePreference, ReferenceImage } from '@/lib/types';
 import { categorizeDream, generateImageWithReference } from '@/services/geminiService';
 import {
   registerOfflineModelPromptHandler,
@@ -58,10 +57,10 @@ import {
 } from '@/services/nativeSpeechRecognition';
 import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
 import {
+  getRecordingInputModePreference,
   getRecordingOnboardingCompleted,
-  getRecordingVoiceStatusHidden,
+  saveRecordingInputModePreference,
   saveRecordingOnboardingCompleted,
-  saveRecordingVoiceStatusHidden,
 } from '@/services/storageService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
@@ -69,14 +68,11 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Alert,
   AppState,
-  Keyboard,
   KeyboardAvoidingView,
   type LayoutChangeEvent,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from 'react-native';
@@ -136,7 +132,8 @@ export default function RecordingScreen() {
   const recordingStartedAtRef = useRef<number | null>(null);
   const [recordingDurationSeconds, setRecordingDurationSeconds] = useState(0);
   const [voiceFallbackReason, setVoiceFallbackReason] = useState<VoiceFallbackReason>(null);
-  const [voiceStatusHidden, setVoiceStatusHidden] = useState(false);
+  const [recordingOnboardingStage, setRecordingOnboardingStage] =
+    useState<'preference' | 'tour'>('preference');
   const [recordingOnboardingStep, setRecordingOnboardingStep] = useState(0);
   const [recordingOnboardingDismissed, setRecordingOnboardingDismissed] = useState(false);
   const [recordingOnboardingLoaded, setRecordingOnboardingLoaded] = useState(false);
@@ -192,15 +189,19 @@ export default function RecordingScreen() {
   useEffect(() => {
     let isActive = true;
 
-    getRecordingVoiceStatusHidden()
-      .then((hidden) => {
+    getRecordingInputModePreference()
+      .then((preference) => {
         if (isActive) {
-          setVoiceStatusHidden(hidden);
+          setInputMode(preference ?? 'text');
+          setInputModePreferenceLoaded(true);
         }
       })
       .catch((error) => {
+        if (isActive) {
+          setInputModePreferenceLoaded(true);
+        }
         if (__DEV__) {
-          console.warn('[Recording] Failed to load voice status preference', error);
+          console.warn('[Recording] Failed to load input mode preference', error);
         }
       });
 
@@ -223,15 +224,6 @@ export default function RecordingScreen() {
     return () => {
       isActive = false;
     };
-  }, []);
-
-  const updateVoiceStatusHidden = useCallback((hidden: boolean) => {
-    setVoiceStatusHidden(hidden);
-    saveRecordingVoiceStatusHidden(hidden).catch((error) => {
-      if (__DEV__) {
-        console.warn('[Recording] Failed to save voice status preference', error);
-      }
-    });
   }, []);
 
   const handleOfflineModelPromptShow = useCallback(
@@ -261,7 +253,16 @@ export default function RecordingScreen() {
   const isSaveDisabled = !trimmedTranscript || interactionDisabled;
   const textInputRef = useRef<TextInput | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
-  const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice');
+  const lastInputSourceRef = useRef<RecordingInputModePreference>('text');
+  const [inputMode, setInputMode] = useState<RecordingInputModePreference>('text');
+  const [inputModePreferenceLoaded, setInputModePreferenceLoaded] = useState(false);
+  const persistInputModePreference = useCallback((preference: RecordingInputModePreference) => {
+    saveRecordingInputModePreference(preference).catch((error) => {
+      if (__DEV__) {
+        console.warn('[Recording] Failed to save input mode preference', error);
+      }
+    });
+  }, []);
   const lengthLimitMessage = useCallback(
     () =>
       t('recording.alert.length_limit', { limit: RECORDING.MAX_TRANSCRIPT_CHARS }) ||
@@ -299,6 +300,7 @@ export default function RecordingScreen() {
 
   const handleTranscriptChange = useCallback(
     (text: string) => {
+      lastInputSourceRef.current = 'text';
       const { text: clamped, truncated } = clampTranscript(text);
       setTranscript(clamped);
       baseTranscriptRef.current = clamped;
@@ -306,12 +308,6 @@ export default function RecordingScreen() {
     },
     [clampTranscript, lengthLimitMessage]
   );
-
-  const handleMockFillTranscript = useCallback(() => {
-    handleTranscriptChange('Fallback text dream');
-    textInputRef.current?.blur();
-    Keyboard.dismiss();
-  }, [handleTranscriptChange]);
 
   const stopRecordingFromPartialRef = useRef<(() => void) | null>(null);
 
@@ -550,11 +546,13 @@ export default function RecordingScreen() {
         if (result.error === 'stt_unavailable') {
           setVoiceFallbackReason('stt_unavailable');
           setInputMode('text');
+          persistInputModePreference('text');
           return;
         }
         if (result.error === 'language_pack_missing') {
           setVoiceFallbackReason('language_pack_missing');
           setInputMode('text');
+          persistInputModePreference('text');
           return;
         }
         if (result.error === 'no_recording') {
@@ -582,6 +580,7 @@ export default function RecordingScreen() {
     combineTranscript,
     lengthLimitMessage,
     normalizeForComparison,
+    persistInputModePreference,
     showQuotaSheet,
     stopSessionRecording,
   ]);
@@ -603,6 +602,9 @@ export default function RecordingScreen() {
 
       const response = await startSessionRecording(transcript);
       if (response.success) {
+        lastInputSourceRef.current = 'voice';
+        setInputMode('voice');
+        persistInputModePreference('voice');
         recordingStartedAtRef.current = Date.now();
         void trackProductEvent('recording_started', {
           input_mode: 'voice',
@@ -623,15 +625,17 @@ export default function RecordingScreen() {
       ) {
         setVoiceFallbackReason(response.error);
         setInputMode('text');
+        persistInputModePreference('text');
         return;
       }
       setVoiceFallbackReason('start_failed');
       setInputMode('text');
+      persistInputModePreference('text');
       Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
     } finally {
       setIsPreparingRecording(false);
     }
-  }, [language, startSessionRecording, t, transcript]);
+  }, [language, persistInputModePreference, startSessionRecording, t, transcript]);
 
   const toggleRecording = useCallback(async () => {
     if (recordingTransitionRef.current) {
@@ -642,7 +646,7 @@ export default function RecordingScreen() {
       if (isRecordingRef.current) {
         await stopRecording();
       } else {
-        if (Platform.OS === 'android' && !hasSeenMicRationaleRef.current) {
+        if (recordingPermissionState !== 'granted' && !hasSeenMicRationaleRef.current) {
           setShowMicRationaleSheet(true);
           return;
         }
@@ -651,7 +655,7 @@ export default function RecordingScreen() {
     } finally {
       recordingTransitionRef.current = false;
     }
-  }, [isRecordingRef, startRecording, stopRecording]);
+  }, [isRecordingRef, recordingPermissionState, startRecording, stopRecording]);
 
   useEffect(() => {
     if (!isRecording) {
@@ -737,7 +741,7 @@ export default function RecordingScreen() {
       const savedDream = await addDream(dreamToSave);
       setDraftDream(savedDream);
       void trackProductEvent('recording_saved', {
-        input_mode: inputMode,
+        input_mode: lastInputSourceRef.current,
         duration_bucket: getRecordingDurationBucket(
           recordingStartedAtRef.current ? Date.now() - recordingStartedAtRef.current : null
         ),
@@ -767,7 +771,6 @@ export default function RecordingScreen() {
 		    buildDraftDream,
 		    dreams.length,
 		    draftDream,
-        inputMode,
         isRecordingRef,
 		    language,
 		    navigateAfterSave,
@@ -1149,6 +1152,39 @@ export default function RecordingScreen() {
   const recordingDurationLabel = isRecording
     ? t('recording.status.duration', { duration: formatRecordingDuration(recordingDurationSeconds) })
     : undefined;
+  const voiceControlStatus = isPreparingRecording ? 'preparing' : isRecording ? 'recording' : 'idle';
+  const voiceControlLabel = useMemo(() => {
+    if (isRecording) {
+      return t('recording.mic.pause');
+    }
+    if (isPreparingRecording) {
+      return t('recording.status.preparing.title');
+    }
+    if (voiceFallbackReason) {
+      return t('recording.status.retry_voice');
+    }
+    if (trimmedTranscript) {
+      return t('recording.mic.resume');
+    }
+    return t('recording.mode.switch_to_voice');
+  }, [isPreparingRecording, isRecording, t, trimmedTranscript, voiceFallbackReason]);
+  const voiceControlDetail = useMemo(() => {
+    if (isRecording) {
+      return t('recording.mode.voice_pause_detail');
+    }
+    if (isPreparingRecording) {
+      return voiceStatus.detail;
+    }
+    if (trimmedTranscript) {
+      return t('recording.mode.voice_resume_detail');
+    }
+    return t('recording.mode.voice_cta_detail');
+  }, [isPreparingRecording, isRecording, t, trimmedTranscript, voiceStatus.detail]);
+  const voiceControlHint = isRecording
+    ? t('recording.mic.pause_hint')
+    : trimmedTranscript
+      ? t('recording.mic.resume_hint')
+      : t('recording.mic.start_hint');
   const textFallbackNotice = useMemo(() => {
     if (!voiceFallbackReason) {
       return '';
@@ -1176,22 +1212,52 @@ export default function RecordingScreen() {
     }
     setVoiceFallbackReason(null);
     setInputMode('text');
+    persistInputModePreference('text');
     focusTranscriptEnd(baseTranscriptRef.current || transcript);
-  }, [focusTranscriptEnd, isRecordingRef, stopRecording, transcript]);
+  }, [focusTranscriptEnd, isRecordingRef, persistInputModePreference, stopRecording, transcript]);
+
+  const handleInputModePreferenceChange = useCallback(
+    async (preference: RecordingInputModePreference) => {
+      if (preference === inputMode) {
+        return;
+      }
+
+      setVoiceFallbackReason(null);
+
+      if (preference === 'text' && isRecordingRef.current) {
+        recordingTransitionRef.current = true;
+        try {
+          await stopRecording({ silent: true });
+        } finally {
+          recordingTransitionRef.current = false;
+        }
+      }
+
+      setInputMode(preference);
+      persistInputModePreference(preference);
+
+      if (preference === 'text') {
+        focusTranscriptEnd(baseTranscriptRef.current || transcript);
+      }
+    },
+    [
+      focusTranscriptEnd,
+      inputMode,
+      isRecordingRef,
+      persistInputModePreference,
+      stopRecording,
+      transcript,
+    ]
+  );
 
   const switchToVoiceMode = useCallback(async () => {
     setVoiceFallbackReason(null);
-    setInputMode('voice');
-    if (isRecordingRef.current) {
-      return;
+    if (inputMode !== 'voice') {
+      setInputMode('voice');
+      persistInputModePreference('voice');
     }
-    recordingTransitionRef.current = true;
-    try {
-      await startRecording();
-    } finally {
-      recordingTransitionRef.current = false;
-    }
-  }, [isRecordingRef, startRecording]);
+    await toggleRecording();
+  }, [inputMode, persistInputModePreference, toggleRecording]);
 
   const isInitialRecordingState = dreams.length === 0
     && !trimmedTranscript
@@ -1201,10 +1267,15 @@ export default function RecordingScreen() {
     && !pendingAnalysisDream
     && !isAnalyzing;
   const showRecordingOnboardingTour = recordingOnboardingLoaded
+    && inputModePreferenceLoaded
     && isInitialRecordingState
-    && inputMode === 'voice'
     && !recordingOnboardingDismissed;
-  const recordingOnboardingTarget = RECORDING_ONBOARDING_TARGETS[recordingOnboardingStep] ?? 'voice';
+  const recordingOnboardingTargets = useMemo<RecordingOnboardingTarget[]>(
+    () => (inputMode === 'voice' ? ['voice', 'text'] : ['text', 'voice']),
+    [inputMode]
+  );
+  const recordingOnboardingTarget =
+    recordingOnboardingTargets[recordingOnboardingStep] ?? recordingOnboardingTargets[0];
 
   useEffect(() => {
     if (!showRecordingOnboardingTour) {
@@ -1225,7 +1296,7 @@ export default function RecordingScreen() {
     });
 
     return () => cancelAnimationFrame(frame);
-  }, [recordingOnboardingTarget, showRecordingOnboardingTour]);
+  }, [recordingOnboardingStage, recordingOnboardingTarget, showRecordingOnboardingTour]);
 
   const handleRecordingOnboardingViewportLayout = useCallback((event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
@@ -1241,31 +1312,15 @@ export default function RecordingScreen() {
     });
   }, []);
 
-  const handleRecordingOnboardingTargetLayout = useCallback((rect: RecordingSpotlightRect) => {
-    setRecordingOnboardingTargetRect(rect);
-  }, []);
-
   const handleRecordingOnboardingPanelLayout = useCallback((rect: RecordingSpotlightRect) => {
     setRecordingOnboardingPanelRect(rect);
   }, []);
 
-  const handleRecordingOnboardingNext = useCallback(() => {
-    if (recordingOnboardingStep >= RECORDING_ONBOARDING_TARGETS.length - 1) {
-      setRecordingOnboardingDismissed(true);
-      saveRecordingOnboardingCompleted(true).catch((error) => {
-        if (__DEV__) {
-          console.warn('[Recording] Failed to save onboarding preference', error);
-        }
-      });
-      return;
-    }
+  const handleRecordingOnboardingTargetLayout = useCallback((rect: RecordingSpotlightRect) => {
+    setRecordingOnboardingTargetRect(rect);
+  }, []);
 
-    setRecordingOnboardingStep((current) =>
-      Math.min(current + 1, RECORDING_ONBOARDING_TARGETS.length - 1)
-    );
-  }, [recordingOnboardingStep]);
-
-  const handleRecordingOnboardingSkip = useCallback(() => {
+  const completeRecordingOnboarding = useCallback(() => {
     setRecordingOnboardingDismissed(true);
     saveRecordingOnboardingCompleted(true).catch((error) => {
       if (__DEV__) {
@@ -1273,6 +1328,52 @@ export default function RecordingScreen() {
       }
     });
   }, []);
+
+  const handleRecordingOnboardingNext = useCallback(() => {
+    if (recordingOnboardingStep >= recordingOnboardingTargets.length - 1) {
+      completeRecordingOnboarding();
+      return;
+    }
+
+    setRecordingOnboardingStep((current) =>
+      Math.min(current + 1, recordingOnboardingTargets.length - 1)
+    );
+  }, [completeRecordingOnboarding, recordingOnboardingStep, recordingOnboardingTargets.length]);
+
+  const handleRecordingOnboardingSkip = useCallback(() => {
+    completeRecordingOnboarding();
+  }, [completeRecordingOnboarding]);
+
+  const handleRecordingOnboardingPreference = useCallback(
+    async (preference: RecordingInputModePreference) => {
+      setVoiceFallbackReason(null);
+
+      if (preference === 'text' && isRecordingRef.current) {
+        recordingTransitionRef.current = true;
+        try {
+          await stopRecording({ silent: true });
+        } finally {
+          recordingTransitionRef.current = false;
+        }
+      }
+
+      setInputMode(preference);
+      persistInputModePreference(preference);
+      setRecordingOnboardingStep(0);
+      setRecordingOnboardingStage('tour');
+
+      if (preference === 'text') {
+        focusTranscriptEnd(baseTranscriptRef.current || transcript);
+      }
+    },
+    [
+      focusTranscriptEnd,
+      isRecordingRef,
+      persistInputModePreference,
+      stopRecording,
+      transcript,
+    ]
+  );
 
   const previousInputModeRef = useRef(inputMode);
   useEffect(() => {
@@ -1347,60 +1448,68 @@ export default function RecordingScreen() {
             testID={TID.Screen.Recording}
           >
             <MockNavigationRail />
-            <MockRecordingTools onFillTranscript={handleMockFillTranscript} />
             <View style={mainContentStyle}>
               <View style={styles.bodySection}>
                 {showRecordingOnboardingTour ? (
-                  <RecordingOnboardingTour
-                    target={recordingOnboardingTarget}
-                    index={recordingOnboardingStep}
-                    total={RECORDING_ONBOARDING_TARGETS.length}
-                    onNext={handleRecordingOnboardingNext}
-                    onSkip={handleRecordingOnboardingSkip}
-                    onSpotlightLayout={handleRecordingOnboardingPanelLayout}
-                    spotlightMeasureKey={recordingOnboardingMeasureKey}
-                  />
+                  recordingOnboardingStage === 'preference' ? (
+                    <RecordingOnboardingTour
+                      variant="preference"
+                      value={inputMode}
+                      onSelectPreference={handleRecordingOnboardingPreference}
+                      onSkip={handleRecordingOnboardingSkip}
+                      onSpotlightLayout={handleRecordingOnboardingPanelLayout}
+                      spotlightMeasureKey={recordingOnboardingMeasureKey}
+                    />
+                  ) : (
+                    <RecordingOnboardingTour
+                      variant="step"
+                      target={recordingOnboardingTarget}
+                      index={recordingOnboardingStep}
+                      total={recordingOnboardingTargets.length}
+                      onNext={handleRecordingOnboardingNext}
+                      onSkip={handleRecordingOnboardingSkip}
+                      onSpotlightLayout={handleRecordingOnboardingPanelLayout}
+                      spotlightMeasureKey={recordingOnboardingMeasureKey}
+                    />
+                  )
                 ) : null}
 
-                {inputMode === 'voice' ? (
-                  <RecordingVoiceInput
-                    status={isPreparingRecording ? 'preparing' : isRecording ? 'recording' : 'idle'}
-                    transcript={transcript}
-                    instructionText={t('recording.instructions')}
-                    interaction={interactionDisabled || isPreparingRecording ? 'disabled' : 'enabled'}
-                    voiceStatusTitle={voiceStatus.title}
-                    voiceStatusDetail={voiceStatus.detail}
-                    voiceStatusTone={voiceStatus.tone}
-                    voiceStatusHidden={voiceStatusHidden}
-                    spotlightTarget={
-                      showRecordingOnboardingTour
-                      && (recordingOnboardingTarget === 'voice' || recordingOnboardingTarget === 'text')
-                        ? recordingOnboardingTarget
-                        : undefined
-                    }
-                    onSpotlightLayout={handleRecordingOnboardingTargetLayout}
-                    spotlightMeasureKey={recordingOnboardingMeasureKey}
-                    recordingDurationLabel={recordingDurationLabel}
-                    onToggleRecording={toggleRecording}
-                    onSwitchToText={switchToTextMode}
-                    onHideVoiceStatus={() => updateVoiceStatusHidden(true)}
-                    onShowVoiceStatus={() => updateVoiceStatusHidden(false)}
-                  />
-                ) : (
-                  <RecordingTextInput
-                    ref={textInputRef}
-                    value={transcript}
-                    onChange={handleTranscriptChange}
-                    disabled={interactionDisabled}
-                    lengthWarning={lengthWarning}
-                    instructionText={t('recording.instructions.text') || "Ou transcris ici les murmures de ton subconscient..."}
-                    fallbackNotice={textFallbackNotice}
-                    switchToVoiceLabel={voiceFallbackReason ? t('recording.status.retry_voice') : undefined}
-                    autoFocus={!isMockMode}
-                    onSwitchToVoice={switchToVoiceMode}
-                    onClear={handleClearTranscript}
-                  />
-                )}
+                <RecordingInputModeSelect
+                  value={inputMode}
+                  disabled={interactionDisabled || isPreparingRecording}
+                  onChange={handleInputModePreferenceChange}
+                />
+
+                <RecordingTextInput
+                  layout={inputMode === 'voice' ? 'voiceFirst' : 'textFirst'}
+                  ref={textInputRef}
+                  value={transcript}
+                  onChange={handleTranscriptChange}
+                  disabled={interactionDisabled}
+                  lengthWarning={lengthWarning}
+                  instructionText={
+                    inputMode === 'voice'
+                      ? t('recording.instructions')
+                      : t('recording.instructions.text') || "Ou transcris ici les murmures de ton subconscient..."
+                  }
+                  fallbackNotice={textFallbackNotice}
+                  switchToVoiceLabel={voiceControlLabel}
+                  voiceCtaDetail={voiceControlDetail}
+                  voiceStatus={voiceControlStatus}
+                  voiceAccessibilityHint={voiceControlHint}
+                  recordingDurationLabel={recordingDurationLabel}
+                  spotlightTarget={
+                    showRecordingOnboardingTour && recordingOnboardingStage === 'tour'
+                      ? recordingOnboardingTarget
+                      : undefined
+                  }
+                  onSpotlightLayout={handleRecordingOnboardingTargetLayout}
+                  spotlightMeasureKey={recordingOnboardingMeasureKey}
+                  placeholder={t('recording.placeholder')}
+                  autoFocus={false}
+                  onSwitchToVoice={switchToVoiceMode}
+                  onClear={handleClearTranscript}
+                />
 
                 {analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE ? (
                   <AnalysisProgress
@@ -1413,14 +1522,12 @@ export default function RecordingScreen() {
                 ) : null}
               </View>
 
-              {!isRecording ? (
-                <RecordingFooter
-                  onSave={handleSaveDream}
-                  isSaveDisabled={isSaveDisabled}
-                  saveButtonLabel={t('recording.button.save_dream')}
-                  saveButtonAccessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
-                />
-              ) : null}
+              <RecordingFooter
+                onSave={handleSaveDream}
+                isSaveDisabled={isSaveDisabled}
+                saveButtonLabel={t('recording.button.save_dream')}
+                saveButtonAccessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
+              />
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
@@ -1430,11 +1537,18 @@ export default function RecordingScreen() {
             height={recordingOnboardingViewport.height}
             originX={recordingOnboardingViewport.x}
             originY={recordingOnboardingViewport.y}
-            targetRect={recordingOnboardingTargetRect}
-            panelRect={recordingOnboardingPanelRect}
+            targetRect={
+              recordingOnboardingStage === 'preference'
+                ? recordingOnboardingPanelRect
+                : recordingOnboardingTargetRect
+            }
+            panelRect={recordingOnboardingStage === 'preference' ? null : recordingOnboardingPanelRect}
           />
         ) : null}
-        <NoctaliaBottomNav activeKey="addDream" />
+        <NoctaliaBottomNav
+          activeKey="addDream"
+          addDreamIcon={inputMode === 'voice' ? 'mic' : 'pencil'}
+        />
       </View>
 
       <RecordingOverlays
@@ -1481,33 +1595,6 @@ export default function RecordingScreen() {
         onOfflineModelDownloadComplete={handleOfflineModelDownloadComplete}
       />
     </>
-  );
-}
-
-function MockRecordingTools({ onFillTranscript }: { onFillTranscript: () => void }) {
-  const { colors } = useTheme();
-
-  if (!isMockMode) {
-    return null;
-  }
-
-  return (
-    <View style={styles.mockTools} collapsable={false}>
-      <Pressable
-        onPress={onFillTranscript}
-        style={[
-          styles.mockToolButton,
-          { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
-        ]}
-        testID={TID.Button.MockFillTranscript}
-        collapsable={false}
-        accessible
-        accessibilityRole="button"
-        accessibilityLabel={TID.Button.MockFillTranscript}
-      >
-        <Text style={[styles.mockToolText, { color: colors.textSecondary }]}>Fill</Text>
-      </Pressable>
-    </View>
   );
 }
 
@@ -1692,22 +1779,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 24,
     position: 'relative',
-  },
-  mockTools: {
-    alignItems: 'flex-end',
-    paddingHorizontal: 16,
-    marginBottom: 8,
-  },
-  mockToolButton: {
-    borderWidth: 1,
-    borderRadius: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    opacity: 0.9,
-  },
-  mockToolText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
   },
   bodySection: {
     flex: 1,

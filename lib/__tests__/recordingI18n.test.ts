@@ -47,6 +47,40 @@ const recordingModeKeys = [
   'recording.mode.switch_to_text_hint',
   'recording.mode.switch_to_text_edit',
   'recording.mode.switch_to_text_edit_hint',
+  'recording.mode.switch_to_voice',
+  'recording.mode.voice_cta_detail',
+  'recording.mode.voice_pause_detail',
+  'recording.mode.voice_resume_detail',
+] as const;
+
+const recordingMicKeys = [
+  'recording.mic.start',
+  'recording.mic.stop',
+  'recording.mic.pause',
+  'recording.mic.resume',
+  'recording.mic.start_hint',
+  'recording.mic.stop_hint',
+  'recording.mic.pause_hint',
+  'recording.mic.resume_hint',
+] as const;
+
+const recordingPreferenceKeys = [
+  'recording.preference.label',
+  'recording.preference.view_title',
+  'recording.preference.text',
+  'recording.preference.voice',
+  'recording.preference.selected',
+  'recording.preference.text_hint',
+  'recording.preference.voice_hint',
+  'recording.preference.accessibility',
+] as const;
+
+const micRationaleKeys = [
+  'recording.mic_rationale.title',
+  'recording.mic_rationale.message',
+  'recording.mic_rationale.allow',
+  'recording.mic_rationale.text_fallback',
+  'recording.mic_rationale.dismiss',
 ] as const;
 
 const onboardingTourKeys = [
@@ -54,6 +88,11 @@ const onboardingTourKeys = [
   'recording.onboarding.voice.body',
   'recording.onboarding.text.body',
   'recording.onboarding.explore.body',
+  'recording.onboarding.preference.badge',
+  'recording.onboarding.preference.title',
+  'recording.onboarding.preference.voice_detail',
+  'recording.onboarding.preference.text_detail',
+  'recording.onboarding.preference.settings_hint',
   'recording.onboarding.skip',
   'recording.onboarding.next',
   'recording.onboarding.done',
@@ -119,6 +158,51 @@ describe('Recording i18n - bottom sheets', () => {
       const t = getTranslator(lang);
 
       for (const key of recordingModeKeys) {
+        const value = t(key);
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('has translations for microphone controls in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of recordingMicKeys) {
+        const value = t(key);
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('has translations for recording preference controls in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of recordingPreferenceKeys) {
+        const value = t(key);
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('has translations for the microphone rationale in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of micRationaleKeys) {
         const value = t(key);
         expect(value).not.toBe(key);
         expect(typeof value).toBe('string');

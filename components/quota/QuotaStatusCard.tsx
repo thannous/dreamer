@@ -49,11 +49,11 @@ const getProgressAccessibilityValue = (usage: UsageEntry, text: string) => ({
 });
 
 const QUOTA_REASON_KEYS: Record<string, string> = {
-  'Guest AI is temporarily unavailable. You can still record dreams locally.':
+  'Guest analysis is temporarily unavailable. You can still record dreams locally.':
     'settings.quota.reason.guest_unavailable',
   'Guest access expired. Please try again in a moment.':
     'settings.quota.reason.guest_expired',
-  'Guest AI is not available on this platform right now. You can still record dreams locally.':
+  'Guest analysis is not available on this platform right now. You can still record dreams locally.':
     'settings.quota.reason.guest_platform_unsupported',
   'Guest quota is temporarily unavailable. You can still record dreams locally.':
     'settings.quota.reason.guest_quota_unavailable',

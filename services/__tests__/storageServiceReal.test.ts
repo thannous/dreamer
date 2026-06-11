@@ -15,6 +15,7 @@ const RECORDING_TRANSCRIPT_KEY = 'gemini_dream_journal_recording_transcript';
 const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
 const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
 const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
+const RECORDING_INPUT_MODE_PREFERENCE_KEY = 'gemini_dream_journal_recording_input_mode_preference';
 const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
 const RECORDING_ONBOARDING_COMPLETED_KEY = 'gemini_dream_journal_recording_onboarding_completed';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
@@ -335,6 +336,7 @@ describe('storageServiceReal', () => {
 
       await storage.saveThemePreference('dark');
       await storage.saveLanguagePreference('fr');
+      await storage.saveRecordingInputModePreference('voice');
       await storage.saveRecordingVoiceStatusHidden(true);
       await storage.saveRecordingOnboardingCompleted(true);
       await storage.saveRitualPreference('focus');
@@ -344,6 +346,7 @@ describe('storageServiceReal', () => {
 
       expect(localStorage.getItem(THEME_PREFERENCE_KEY)).toBe(JSON.stringify('dark'));
       expect(localStorage.getItem(LANGUAGE_PREFERENCE_KEY)).toBe(JSON.stringify('fr'));
+      expect(localStorage.getItem(RECORDING_INPUT_MODE_PREFERENCE_KEY)).toBe(JSON.stringify('voice'));
       expect(localStorage.getItem(RECORDING_VOICE_STATUS_HIDDEN_KEY)).toBe(JSON.stringify(true));
       expect(localStorage.getItem(RECORDING_ONBOARDING_COMPLETED_KEY)).toBe(JSON.stringify(true));
       expect(localStorage.getItem(RITUAL_PREFERENCE_KEY)).toBe(JSON.stringify('focus'));
@@ -353,6 +356,7 @@ describe('storageServiceReal', () => {
 
       expect(await storage.getThemePreference()).toBe('dark');
       expect(await storage.getLanguagePreference()).toBe('fr');
+      expect(await storage.getRecordingInputModePreference()).toBe('voice');
       expect(await storage.getRecordingVoiceStatusHidden()).toBe(true);
       expect(await storage.getRecordingOnboardingCompleted()).toBe(true);
       expect(await storage.getRitualPreference()).toBe('focus');
