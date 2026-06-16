@@ -37,6 +37,22 @@ url: "http://localhost:8081"
     retryTapIfNoChange: true
     waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: "component.exploration360.panel"
+    direction: DOWN
+    visibilityPercentage: 30
+    centerElement: true
+- assertVisible:
+    id: "component.exploration360.panel"
+- assertVisible: "Exploration 360°"
+- assertVisible: "0/3 angles explored|0/3 angles explorés"
+- scrollUntilVisible:
+    element:
+      id: "btn.dreamCategory.symbols"
+    direction: DOWN
+    visibilityPercentage: 30
+    centerElement: true
 - evalScript: ${output.chatReady = 0}
 - evalScript: ${output.chatAttempts = 0}
 - repeat:
