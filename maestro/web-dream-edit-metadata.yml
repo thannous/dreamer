@@ -1,35 +1,6 @@
 url: "http://localhost:8081"
 ---
-- launchApp
-- assertVisible: "(Whisper your dream into the ether.*|Chuchote)"
-- tapOn: "(See dream journal|Voir journal)"
-- waitForAnimationToEnd
-- runFlow:
-    when:
-      visible:
-        id: "tab.settings"
-    commands:
-      - tapOn:
-          id: "tab.settings"
-- runFlow:
-    when:
-      visible: "(Settings|Param.tres)"
-    commands:
-      - tapOn: "(Settings|Param.tres)"
-- waitForAnimationToEnd
-- assertVisible: "(Settings|Param.tres)"
-- runFlow:
-    when:
-      visible: "(Sign Out|Se d.connecter)"
-    commands:
-      - tapOn: "(Sign Out|Se d.connecter)"
-      - waitForAnimationToEnd
-- runFlow:
-    when:
-      visible: "(Quick sign-in.*|Connexion rapide.*)"
-    commands:
-      - tapOn: "(Existing user|Utilisateur existant)"
-      - waitForAnimationToEnd
+- runFlow: subflows/web-select-existing-mock-profile.yml
 - assertVisible: "mock\\.existing@dreamer\\.app"
 - runFlow:
     when:
@@ -82,31 +53,7 @@ url: "http://localhost:8081"
     id: "btn.navigateJournal"
 - waitForAnimationToEnd
 - assertVisible: "(Dream Journey|Voyage onirique|Viaje on.rico)"
-- runFlow:
-    when:
-      visible:
-        id: "tab.settings"
-    commands:
-      - tapOn:
-          id: "tab.settings"
-- runFlow:
-    when:
-      visible: "(Settings|Param.tres)"
-    commands:
-      - tapOn: "(Settings|Param.tres)"
-- waitForAnimationToEnd
-- runFlow:
-    when:
-      visible: "(Sign Out|Se d.connecter)"
-    commands:
-      - tapOn: "(Sign Out|Se d.connecter)"
-      - waitForAnimationToEnd
-- runFlow:
-    when:
-      visible: "(Quick sign-in.*|Connexion rapide.*)"
-    commands:
-      - tapOn: "(Existing user|Utilisateur existant)"
-      - waitForAnimationToEnd
+- runFlow: subflows/web-select-existing-mock-profile.yml
 - assertVisible: "mock\\.existing@dreamer\\.app"
 - runFlow:
     when:

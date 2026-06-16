@@ -1,25 +1,9 @@
 url: "http://localhost:8081"
 ---
-- launchApp
-- assertVisible: "(Whisper your dream into the ether.*|Chuchote)"
-- tapOn: "(See dream journal|Voir journal)"
-- waitForAnimationToEnd
-- tapOn: "(Settings|Param.tres)"
-- waitForAnimationToEnd
-- assertVisible: "(Settings|Param.tres)"
-- runFlow:
-    when:
-      visible: "(Sign Out|Se d.connecter)"
-    commands:
-      - tapOn: "(Sign Out|Se d.connecter)"
-      - waitForAnimationToEnd
-- assertVisible: "(Quick sign-in.*|Connexion rapide.*)"
-- tapOn: "(Existing user|Utilisateur existant)"
-- waitForAnimationToEnd
-- assertVisible: "mock\\.existing@dreamer\\.app"
+- runFlow: subflows/web-select-existing-mock-profile.yml
 - tapOn: "Journal"
 - waitForAnimationToEnd
-- assertVisible: "Dream Journey"
+- assertVisible: "(Dream Journey|Voyage onirique|Viaje on.rico)"
 - assertVisible: "(Search your dream journey.*|Recherchez votre voyage onirique.*)"
 - tapOn: "(Search your dream journey.*|Recherchez votre voyage onirique.*)"
 - inputText: "Ocean"
