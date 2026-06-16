@@ -11,11 +11,11 @@ export type PaywallVariant = {
   primaryLabelKey: string;
 };
 
-const genericFeatureKeys = [
-  'subscription.paywall.card.feature.unlimited_analyses',
-  'subscription.paywall.card.feature.unlimited_explorations',
-  'subscription.paywall.card.feature.recorded_dreams',
-  'subscription.paywall.card.feature.priority',
+export const PLUS_PAYWALL_FEATURE_KEYS = [
+  'subscription.paywall.card.feature.living_profile',
+  'subscription.paywall.card.feature.exploration_360',
+  'subscription.paywall.card.feature.final_synthesis',
+  'subscription.paywall.card.feature.remembered_dreams',
 ] as const;
 
 const variants: Record<PaywallTrigger, PaywallVariant> = {
@@ -96,7 +96,7 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     headerSubtitleKey: 'subscription.paywall.variant.settings_quota.subtitle',
     cardTitleKey: 'subscription.paywall.card.title',
     cardSubtitleKey: 'subscription.paywall.card.subtitle',
-    featureKeys: genericFeatureKeys,
+    featureKeys: PLUS_PAYWALL_FEATURE_KEYS,
     primaryLabelKey: 'subscription.paywall.variant.settings_quota.cta',
   },
   settings: {
@@ -106,7 +106,7 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     headerSubtitleKey: 'subscription.paywall.variant.settings.subtitle',
     cardTitleKey: 'subscription.paywall.card.title',
     cardSubtitleKey: 'subscription.paywall.card.subtitle',
-    featureKeys: genericFeatureKeys,
+    featureKeys: PLUS_PAYWALL_FEATURE_KEYS,
     primaryLabelKey: 'subscription.paywall.variant.settings.cta',
   },
   restore: {
@@ -116,7 +116,7 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     headerSubtitleKey: 'subscription.paywall.variant.restore.subtitle',
     cardTitleKey: 'subscription.paywall.card.title',
     cardSubtitleKey: 'subscription.paywall.card.subtitle',
-    featureKeys: genericFeatureKeys,
+    featureKeys: PLUS_PAYWALL_FEATURE_KEYS,
     primaryLabelKey: 'subscription.paywall.variant.restore.cta',
   },
   direct: {
@@ -126,7 +126,7 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     headerSubtitleKey: 'subscription.paywall.header.subtitle.free',
     cardTitleKey: 'subscription.paywall.card.title',
     cardSubtitleKey: 'subscription.paywall.card.subtitle',
-    featureKeys: genericFeatureKeys,
+    featureKeys: PLUS_PAYWALL_FEATURE_KEYS,
     primaryLabelKey: 'subscription.paywall.button.primary.free',
   },
 };

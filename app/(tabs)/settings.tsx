@@ -40,6 +40,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { getAppVersionString } from '@/lib/appVersion';
 import { isSubscriptionQaLabEnabled } from '@/lib/env';
 import { MotiView } from '@/lib/moti';
+import { PLUS_PAYWALL_FEATURE_KEYS } from '@/lib/paywallVariants';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 
@@ -151,11 +152,7 @@ export default function SettingsScreen() {
   }, [formattedExpiryDate, isActive, t]);
 
   const subscriptionFeatures = useMemo(
-    () => [
-      t('subscription.paywall.card.feature.unlimited_analyses'),
-      t('subscription.paywall.card.feature.unlimited_explorations'),
-      t('subscription.paywall.card.feature.recorded_dreams'),
-    ],
+    () => PLUS_PAYWALL_FEATURE_KEYS.slice(0, 3).map((key) => t(key)),
     [t],
   );
 

@@ -281,6 +281,34 @@ describe('Settings screen', () => {
     expect(capturedSubscriptionProps).toBeNull();
   });
 
+  it('[B] Given a free user When rendering Then the subscription card sells living profile benefits', () => {
+    // Given
+    capturedSubscriptionProps = null;
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+    mockUseSubscription.mockReturnValue({
+      isActive: false,
+      loading: false,
+      status: null,
+    });
+
+    // When
+    render(<SettingsScreen />);
+
+    // Then
+    expect(screen.getByTestId('subscription-card')).toBeTruthy();
+    expect(capturedSubscriptionProps).toMatchObject({
+      title: 'subscription.settings.title.free',
+      subtitle: 'subscription.settings.subtitle.free',
+      features: [
+        'subscription.paywall.card.feature.living_profile',
+        'subscription.paywall.card.feature.exploration_360',
+        'subscription.paywall.card.feature.final_synthesis',
+      ],
+      ctaLabel: 'subscription.settings.cta.free',
+      ctaTestID: TID.Button.SubscriptionSettingsCta,
+    });
+  });
+
   it('[E] Given an invalid expiry date When rendering Then it does not show an expiry label', () => {
     // Given
     capturedSubscriptionProps = null;

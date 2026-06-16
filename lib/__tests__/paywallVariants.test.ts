@@ -1,13 +1,21 @@
-import { getPaywallVariant } from '@/lib/paywallVariants';
+import { SUPPORTED_APP_LANGUAGES } from '@/lib/language';
+import { getPaywallVariant, PLUS_PAYWALL_FEATURE_KEYS } from '@/lib/paywallVariants';
 import { getTranslator, loadTranslations } from '@/lib/i18n';
 
 const variantKeys = [
   'subscription.paywall.variant.analysis_limit.title',
   'subscription.paywall.variant.analysis_limit.cta',
+  'subscription.paywall.variant.analysis_cta.title',
   'subscription.paywall.variant.exploration_limit.title',
+  'subscription.paywall.variant.exploration_limit.card_title',
   'subscription.paywall.variant.exploration_limit.cta',
+  'subscription.paywall.variant.settings.title',
+  'subscription.paywall.variant.settings_quota.title',
   'subscription.paywall.variant.returning_device.title',
+  'subscription.paywall.card.title',
+  'subscription.paywall.card.subtitle',
   'subscription.paywall.button.continue_free',
+  ...PLUS_PAYWALL_FEATURE_KEYS,
 ] as const;
 
 describe('paywallVariants', () => {
@@ -30,13 +38,28 @@ describe('paywallVariants', () => {
       trigger: 'direct',
       headerTitleKey: 'subscription.paywall.header.free',
       primaryLabelKey: 'subscription.paywall.button.primary.free',
+      featureKeys: PLUS_PAYWALL_FEATURE_KEYS,
     });
   });
 
-  it('has English and French copy for the primary variant keys', async () => {
-    await Promise.all([loadTranslations('en'), loadTranslations('fr')]);
+  it('uses living profile benefits for settings-triggered plan browsing', () => {
+    expect(getPaywallVariant('settings')).toMatchObject({
+      trigger: 'settings',
+      headerTitleKey: 'subscription.paywall.variant.settings.title',
+      featureKeys: PLUS_PAYWALL_FEATURE_KEYS,
+    });
 
-    for (const language of ['en', 'fr'] as const) {
+    expect(getPaywallVariant('settings_quota')).toMatchObject({
+      trigger: 'settings_quota',
+      headerTitleKey: 'subscription.paywall.variant.settings_quota.title',
+      featureKeys: PLUS_PAYWALL_FEATURE_KEYS,
+    });
+  });
+
+  it('has localized copy for the primary variant and benefit keys', async () => {
+    await Promise.all(SUPPORTED_APP_LANGUAGES.map((language) => loadTranslations(language)));
+
+    for (const language of SUPPORTED_APP_LANGUAGES) {
       const t = getTranslator(language);
       for (const key of variantKeys) {
         expect(t(key)).not.toBe(key);

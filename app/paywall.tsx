@@ -19,7 +19,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
 import { createScopedLogger } from '@/lib/logger';
 import { calculateAnnualDiscount, sortPackages } from '@/lib/paywallUtils';
-import { getPaywallVariant } from '@/lib/paywallVariants';
+import { getPaywallVariant, PLUS_PAYWALL_FEATURE_KEYS } from '@/lib/paywallVariants';
 import { TID } from '@/lib/testIDs';
 
 const log = createScopedLogger('[Paywall]');
@@ -181,12 +181,7 @@ export default function PaywallScreen() {
       if (!isActive) {
         return paywallVariant.featureKeys.map((key) => translateWithFallback(key));
       }
-      return [
-        t('subscription.paywall.card.feature.unlimited_analyses'),
-        t('subscription.paywall.card.feature.unlimited_explorations'),
-        t('subscription.paywall.card.feature.recorded_dreams'),
-        t('subscription.paywall.card.feature.priority'),
-      ];
+      return PLUS_PAYWALL_FEATURE_KEYS.map((key) => t(key));
     },
     [isActive, paywallVariant.featureKeys, t, translateWithFallback, translationRevision]
   );
