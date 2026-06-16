@@ -5,9 +5,11 @@ import { useFadeInUp } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import React from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import Svg, { Circle, Path } from 'react-native-svg';
+
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 function MoonStarsIcon({ size = 64, color = '#a097b8' }) {
   return (
@@ -32,19 +34,46 @@ interface EmptyStateProps {
   /** Whether a filter is currently active (shows different message) */
   hasActiveFilter: boolean;
   onClearFilters?: () => void;
+  onStartRememberedDream?: () => void;
 }
 
-export function EmptyState({ hasActiveFilter, onClearFilters }: EmptyStateProps) {
+export function EmptyState({
+  hasActiveFilter,
+  onClearFilters,
+  onStartRememberedDream,
+}: EmptyStateProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const animatedStyle = useFadeInUp(100);
+  const showRememberedAction = !hasActiveFilter && !!onStartRememberedDream;
 
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
       <MoonStarsIcon size={64} color={colors.textTertiary} />
-      <Text style={[styles.title, { color: colors.textPrimary }]}>
-        {hasActiveFilter ? t('journal.empty.filtered') : t('journal.empty.default')}
-      </Text>
+      <View style={styles.copy}>
+        <Text style={[styles.title, { color: colors.textPrimary }]}>
+          {hasActiveFilter ? t('journal.empty.filtered') : t('journal.empty.default')}
+        </Text>
+        {showRememberedAction ? (
+          <Text style={[styles.body, { color: colors.textSecondary }]}>
+            {t('journal.empty.remembered_hint')}
+          </Text>
+        ) : null}
+      </View>
+      {showRememberedAction ? (
+        <Pressable
+          style={[styles.primaryButton, { backgroundColor: colors.accent }]}
+          onPress={onStartRememberedDream}
+          accessibilityRole="button"
+          accessibilityLabel={t('journal.empty.remembered_cta')}
+          testID={TID.Button.EmptyStartRememberedDream}
+        >
+          <IconSymbol name="pencil" size={18} color={colors.textOnAccentSurface ?? colors.textPrimary} />
+          <Text style={[styles.primaryText, { color: colors.textOnAccentSurface ?? colors.textPrimary }]}>
+            {t('journal.empty.remembered_cta')}
+          </Text>
+        </Pressable>
+      ) : null}
       {hasActiveFilter && onClearFilters ? (
         <Pressable
           style={[styles.secondaryButton, { borderColor: colors.accent }]}
@@ -73,6 +102,34 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
     lineHeight: 24,
+  },
+  copy: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  body: {
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    textAlign: 'center',
+    lineHeight: 20,
+    maxWidth: 320,
+  },
+  primaryButton: {
+    marginTop: ThemeLayout.spacing.sm,
+    minHeight: 48,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    borderRadius: ThemeLayout.borderRadius.full,
+    borderCurve: 'continuous',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  primaryText: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    textAlign: 'center',
   },
   secondaryButton: {
     marginTop: ThemeLayout.spacing.sm,

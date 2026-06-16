@@ -51,6 +51,10 @@ import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { createScopedLogger } from '@/lib/logger';
 import { buildPaywallHref } from '@/lib/paywallRoute';
+import {
+  getRecordingActivationPromptState,
+  type RecordingCaptureIntent,
+} from '@/lib/recordingActivation';
 import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, RecordingInputModePreference, ReferenceImage } from '@/lib/types';
@@ -95,7 +99,7 @@ type VoiceFallbackReason =
   | 'start_failed'
   | null;
 
-type CaptureIntent = 'fresh' | 'remembered';
+type CaptureIntent = RecordingCaptureIntent;
 
 const formatRecordingDuration = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
@@ -1371,16 +1375,18 @@ export default function RecordingScreen() {
     && !analyzePromptDream
     && !pendingAnalysisDream
     && !isAnalyzing;
-  const showRecordingOnboardingTour = recordingOnboardingLoaded
-    && inputModePreferenceLoaded
-    && isInitialRecordingState
-    && !recordingOnboardingDismissed;
-  const showRememberedDreamPrompt = rememberedDreamPromptLoaded
-    && inputModePreferenceLoaded
-    && isInitialRecordingState
-    && recordingOnboardingDismissed
-    && !rememberedDreamPromptDismissed
-    && captureIntent === 'fresh';
+  const {
+    showRememberedDreamPrompt,
+    showRecordingOnboardingTour,
+  } = getRecordingActivationPromptState({
+    recordingOnboardingLoaded,
+    inputModePreferenceLoaded,
+    isInitialRecordingState,
+    recordingOnboardingDismissed,
+    rememberedDreamPromptLoaded,
+    rememberedDreamPromptDismissed,
+    captureIntent,
+  });
   const recordingOnboardingTargets = useMemo<RecordingOnboardingTarget[]>(
     () => (inputMode === 'voice' ? ['voice', 'text'] : ['text', 'voice']),
     [inputMode]

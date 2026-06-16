@@ -67,6 +67,9 @@ describe('analytics', () => {
       usage_count: 3,
       offering_id: 'plus_monthly',
     });
+    await trackProductEvent('empty_journal_remembered_cta_clicked', {
+      source: 'journal_empty_state',
+    });
 
     expect(events.map((event) => event.name)).toEqual([
       'recording_started',
@@ -74,6 +77,7 @@ describe('analytics', () => {
       'analysis_started',
       'analysis_completed',
       'paywall_viewed',
+      'empty_journal_remembered_cta_clicked',
     ]);
   });
 

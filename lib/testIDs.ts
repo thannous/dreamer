@@ -45,6 +45,7 @@ export const TID = {
     ClearFilters: 'btn.clearFilters',
     AdvancedFiltersClear: 'btn.advancedFilters.clear',
     EmptyClearFilters: 'btn.empty.clearFilters',
+    EmptyStartRememberedDream: 'btn.empty.startRememberedDream',
     MockProfile: (profile: string) => `btn.mockProfile.${profile}`,
     MockResetState: 'btn.mock.resetState',
     ExploreDream: 'btn.exploreDream',

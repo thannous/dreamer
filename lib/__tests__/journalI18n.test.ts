@@ -10,6 +10,13 @@ const badgeKeys = [
   'journal.badge.explored',
 ] as const;
 
+const emptyStateKeys = [
+  'journal.empty.filtered',
+  'journal.empty.default',
+  'journal.empty.remembered_hint',
+  'journal.empty.remembered_cta',
+] as const;
+
 const filterAccessibilityKeys = [
   'journal.filter.analyzed',
   'journal.filter.explored',
@@ -61,6 +68,21 @@ describe('Journal i18n - badges & filter accessibility', () => {
       const t = getTranslator(lang);
 
       for (const key of badgeKeys) {
+        const value = t(key);
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('has translations for journal empty states in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of emptyStateKeys) {
         const value = t(key);
         expect(value).not.toBe(key);
         expect(typeof value).toBe('string');
