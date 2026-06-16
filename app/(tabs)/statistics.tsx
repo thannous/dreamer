@@ -1,4 +1,4 @@
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, type Href } from 'expo-router';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   InteractionManager,
@@ -37,6 +37,7 @@ import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
+import { buildDreamProfile, type DreamProfile } from '@/lib/dreamProfile';
 import { getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamStatsInsight, type DreamStatsInsightKind } from '@/lib/dreamStatsInsight';
 import { splitLabelText } from '@/lib/pieLabelUtils';
@@ -90,6 +91,14 @@ const STATS_INSIGHT_ICON: Record<DreamStatsInsightKind, IconName> = {
   favorite: 'heart.fill',
   streak: 'flame.fill',
   steady: 'checkmark.circle.fill',
+};
+
+const DREAM_PROFILE_NEXT_ROUTE: Record<DreamProfile['nextAction'], Href> = {
+  add_anchor: '/recording?intent=remembered',
+  capture_more: '/recording',
+  analyze_unanalyzed: '/(tabs)/journal',
+  explore_more: '/(tabs)/journal',
+  review_patterns: '/(tabs)/journal',
 };
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
@@ -452,6 +461,197 @@ const StatsInsightCard = memo(function StatsInsightCard({
   );
 });
 
+type DreamProfileCardProps = {
+  colors: ThemeColors;
+  profile: DreamProfile;
+  mode: 'light' | 'dark';
+  t: ReturnType<typeof useTranslation>['t'];
+  formatNumber: ReturnType<typeof useLocaleFormatting>['formatNumber'];
+  onPress: () => void;
+};
+
+const DreamProfileCard = memo(function DreamProfileCard({
+  colors,
+  profile,
+  mode,
+  t,
+  formatNumber,
+  onPress,
+}: DreamProfileCardProps) {
+  const topType = profile.topTypes[0];
+  const topTheme = profile.topThemes[0];
+  const topFragment = profile.topFragments[0];
+  const topTypeLabel = topType
+    ? getDreamTypeLabel(topType.value, t) ?? topType.value
+    : t('stats.profile.signal.none');
+  const topThemeLabel = topTheme
+    ? (() => {
+        const key = `stats.theme.${topTheme.value}`;
+        const label = t(key);
+        return label === key ? topTheme.value : label;
+      })()
+    : t('stats.profile.signal.none');
+  const topFragmentLabel = topFragment
+    ? t(`stats.profile.fragment.${topFragment.value}`)
+    : t('stats.profile.signal.none');
+  const profileMetrics = [
+    {
+      id: 'anchor',
+      label: t('stats.profile.metric.anchor'),
+      value: formatNumber(profile.anchorDreams),
+    },
+    {
+      id: 'remembered',
+      label: t('stats.profile.metric.remembered'),
+      value: formatNumber(profile.rememberedDreams),
+    },
+    {
+      id: 'recurring',
+      label: t('stats.profile.metric.recurring'),
+      value: formatNumber(profile.recurringDreams),
+    },
+    {
+      id: 'explored',
+      label: t('stats.profile.metric.explored'),
+      value: formatNumber(profile.exploredDreams),
+    },
+  ];
+  const signalItems = [
+    {
+      id: 'type',
+      label: t('stats.profile.signal.type'),
+      value: topTypeLabel,
+    },
+    {
+      id: 'theme',
+      label: t('stats.profile.signal.theme'),
+      value: topThemeLabel,
+    },
+    {
+      id: 'fragment',
+      label: t('stats.profile.signal.fragment'),
+      value: topFragmentLabel,
+    },
+  ];
+
+  return (
+    <StaticFlatGlassCard
+      intensity="moderate"
+      animationDelay={260}
+      style={styles.profileCard}
+      testID={TID.Component.DreamProfileCard}
+    >
+      <View style={[styles.profileAccent, { backgroundColor: colors.accent }]} />
+      <View style={styles.profileInner}>
+        <View style={styles.profileHeaderRow}>
+          <View
+            style={[
+              styles.profileIconWrap,
+              {
+                backgroundColor: mode === 'dark' ? `${colors.accent}35` : `${colors.accent}20`,
+              },
+            ]}
+          >
+            <IconSymbol name="brain" size={23} color={colors.accent} />
+          </View>
+          <View style={styles.profileCopy}>
+            <Text style={[styles.profileEyebrow, { color: colors.accent }]}>
+              {t('stats.profile.eyebrow')}
+            </Text>
+            <Text style={[styles.profileTitle, { color: colors.textPrimary }]}>
+              {t('stats.profile.title')}
+            </Text>
+            <Text style={[styles.profileBody, { color: colors.textSecondary }]}>
+              {t(`stats.profile.readiness.${profile.readiness}.body`)}
+            </Text>
+          </View>
+        </View>
+
+        <View
+          style={[
+            styles.profileReadinessPill,
+            {
+              backgroundColor: mode === 'dark' ? `${colors.accent}24` : `${colors.accent}16`,
+              borderColor: `${colors.accent}55`,
+            },
+          ]}
+        >
+          <IconSymbol
+            name={profile.hasEnoughForPatterns ? 'checkmark.circle.fill' : 'hourglass'}
+            size={16}
+            color={colors.accent}
+          />
+          <Text style={[styles.profileReadinessText, { color: colors.textPrimary }]}>
+            {t(`stats.profile.readiness.${profile.readiness}.label`)}
+          </Text>
+        </View>
+
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t(`stats.profile.next_action.${profile.nextAction}.cta`)}
+          testID={TID.Button.DreamProfileCta}
+          onPress={onPress}
+          style={({ pressed }) => [
+            styles.profileButton,
+            { backgroundColor: colors.accent },
+            pressed && styles.pressedButton,
+          ]}
+        >
+          <Text style={[styles.profileButtonText, { color: colors.textOnAccentSurface }]}>
+            {t(`stats.profile.next_action.${profile.nextAction}.cta`)}
+          </Text>
+          <IconSymbol name="arrow.right" size={16} color={colors.textOnAccentSurface} />
+        </Pressable>
+
+        <View style={styles.profileMetricGrid}>
+          {profileMetrics.map((metric) => (
+            <View
+              key={metric.id}
+              style={[
+                styles.profileMetric,
+                {
+                  backgroundColor:
+                    mode === 'dark' ? `${colors.backgroundSecondary}C4` : `${colors.backgroundSecondary}90`,
+                  borderColor: colors.divider,
+                },
+              ]}
+            >
+              <Text style={[styles.profileMetricValue, { color: colors.textPrimary }]}>
+                {metric.value}
+              </Text>
+              <Text style={[styles.profileMetricLabel, { color: colors.textSecondary }]}>
+                {metric.label}
+              </Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.profileSignalGrid}>
+          {signalItems.map((item) => (
+            <View
+              key={item.id}
+              style={[
+                styles.profileSignal,
+                {
+                  borderColor: colors.divider,
+                  backgroundColor: mode === 'dark' ? `${colors.backgroundCard}8F` : `${colors.backgroundCard}AA`,
+                },
+              ]}
+            >
+              <Text style={[styles.profileSignalLabel, { color: colors.textSecondary }]}>
+                {item.label}
+              </Text>
+              <Text style={[styles.profileSignalValue, { color: colors.textPrimary }]} numberOfLines={2}>
+                {item.value}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </View>
+    </StaticFlatGlassCard>
+  );
+});
+
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
 export default function StatisticsScreen() {
@@ -471,7 +671,11 @@ export default function StatisticsScreen() {
   const stats = useDreamStatistics(periodDreams);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const pieMetrics = useMemo(() => getPieMetrics(width), [width]);
+  const dreamProfile = useMemo(() => buildDreamProfile(dreams), [dreams]);
   const statsInsight = useMemo(() => getDreamStatsInsight(stats), [stats]);
+  const handleDreamProfilePress = useCallback(() => {
+    router.push(DREAM_PROFILE_NEXT_ROUTE[dreamProfile.nextAction]);
+  }, [dreamProfile.nextAction]);
   const handleStatsInsightPress = useCallback(() => {
     router.push(statsInsight.route);
   }, [statsInsight.route]);
@@ -712,6 +916,14 @@ export default function StatisticsScreen() {
                 <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
                   {t('stats.empty')}
                 </Text>
+                <DreamProfileCard
+                  colors={colors}
+                  profile={dreamProfile}
+                  mode={mode}
+                  t={t}
+                  formatNumber={formatNumber}
+                  onPress={handleDreamProfilePress}
+                />
                 <StatsInsightCard
                   colors={colors}
                   insight={statsInsight}
@@ -781,6 +993,17 @@ export default function StatisticsScreen() {
                   />
                 </View>
               </SectionGlass>
+            </View>
+
+            <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
+              <DreamProfileCard
+                colors={colors}
+                profile={dreamProfile}
+                mode={mode}
+                t={t}
+                formatNumber={formatNumber}
+                onPress={handleDreamProfilePress}
+              />
             </View>
 
             <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
@@ -1295,6 +1518,132 @@ const styles = StyleSheet.create({
   pressedButton: {
     opacity: 0.82,
     transform: [{ scale: 0.98 }],
+  },
+
+  // Dream profile
+  profileCard: {
+    borderRadius: 26,
+    overflow: 'hidden',
+    padding: 0,
+  },
+  profileAccent: {
+    height: 3,
+    opacity: 0.9,
+  },
+  profileInner: {
+    padding: 22,
+    gap: 16,
+  },
+  profileHeaderRow: {
+    flexDirection: 'row',
+    gap: 14,
+    alignItems: 'flex-start',
+  },
+  profileIconWrap: {
+    width: 46,
+    height: 46,
+    borderRadius: 15,
+    borderCurve: 'continuous',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  profileCopy: {
+    flex: 1,
+    gap: 5,
+  },
+  profileEyebrow: {
+    fontSize: 12,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    letterSpacing: 0,
+    textTransform: 'uppercase',
+  },
+  profileTitle: {
+    fontSize: 24,
+    lineHeight: 30,
+    fontFamily: Fonts.fraunces.semiBold,
+  },
+  profileBody: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontFamily: Fonts.spaceGrotesk.regular,
+  },
+  profileReadinessPill: {
+    alignSelf: 'flex-start',
+    borderWidth: 1,
+    borderRadius: 999,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    minHeight: 34,
+    paddingHorizontal: 12,
+  },
+  profileReadinessText: {
+    fontSize: 13,
+    lineHeight: 17,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  profileMetricGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  profileMetric: {
+    flex: 1,
+    minWidth: 132,
+    borderWidth: 1,
+    borderRadius: 16,
+    borderCurve: 'continuous',
+    padding: 12,
+    gap: 4,
+  },
+  profileMetricValue: {
+    fontSize: 24,
+    fontFamily: Fonts.fraunces.bold,
+    fontVariant: ['tabular-nums'],
+  },
+  profileMetricLabel: {
+    fontSize: 11,
+    lineHeight: 14,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    textTransform: 'uppercase',
+  },
+  profileSignalGrid: {
+    gap: 9,
+  },
+  profileSignal: {
+    borderWidth: 1,
+    borderRadius: 14,
+    borderCurve: 'continuous',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    gap: 3,
+  },
+  profileSignalLabel: {
+    fontSize: 11,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    textTransform: 'uppercase',
+  },
+  profileSignalValue: {
+    fontSize: 15,
+    lineHeight: 19,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    textTransform: 'capitalize',
+  },
+  profileButton: {
+    minHeight: 48,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    paddingHorizontal: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    alignSelf: 'flex-start',
+  },
+  profileButtonText: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    textAlign: 'center',
   },
 
   // Chart / Pie

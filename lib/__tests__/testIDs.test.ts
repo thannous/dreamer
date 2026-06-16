@@ -8,6 +8,8 @@ describe('TID', () => {
     expect(TID.Button.AuthSignIn).toBe('btn.auth.signIn');
     expect(TID.Button.AuthGoogle).toBe('btn.auth.google');
     expect(TID.Chat.Send).toBe('chat.button.send');
+    expect(TID.Button.DreamProfileCta).toBe('btn.stats.dreamProfile.cta');
+    expect(TID.Component.DreamProfileCard).toBe('component.stats.dreamProfile');
   });
 
   it('builds dynamic IDs', () => {
