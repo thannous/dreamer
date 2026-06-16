@@ -11,6 +11,7 @@ describe('TID', () => {
     expect(TID.Button.DreamProfileCta).toBe('btn.stats.dreamProfile.cta');
     expect(TID.Component.DreamProfileCard).toBe('component.stats.dreamProfile');
     expect(TID.Button.Exploration360Synthesis).toBe('btn.exploration360.synthesis');
+    expect(TID.Button.EmptyStartRememberedDream).toBe('btn.empty.startRememberedDream');
     expect(TID.Component.Exploration360Panel).toBe('component.exploration360.panel');
   });
 

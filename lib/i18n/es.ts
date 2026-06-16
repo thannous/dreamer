@@ -138,6 +138,8 @@ const translations: Record<string, string> = {
     'journal.search_placeholder': 'Busca tu viaje onírico...',
     'journal.empty.filtered': 'Ningún sueño coincide con tus filtros',
     'journal.empty.default': 'Todavía no hay sueños.',
+    'journal.empty.remembered_hint': 'No hace falta esperar a esta noche: empieza con un sueño que nunca olvidaste.',
+    'journal.empty.remembered_cta': 'Contar un sueño vivido',
     'journal.filter.theme': 'Tema',
     'journal.filter.date': 'Fecha',
     'journal.filter.favorites': 'Favoritos',

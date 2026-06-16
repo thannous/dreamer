@@ -138,6 +138,8 @@ const translations: Record<string, string> = {
     'journal.search_placeholder': 'Search your dream journey...',
     'journal.empty.filtered': 'No dreams match your filters',
     'journal.empty.default': 'No dreams yet.',
+    'journal.empty.remembered_hint': 'No need to wait until tonight: start with a dream you never forgot.',
+    'journal.empty.remembered_cta': 'Tell a dream you remember',
     'journal.filter.theme': 'Theme',
     'journal.filter.date': 'Date',
     'journal.filter.favorites': 'Favorites',

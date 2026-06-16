@@ -33,6 +33,9 @@ export type AnalyticsEventMap = {
     usage_count: number | null;
     offering_id: string | null;
   };
+  empty_journal_remembered_cta_clicked: {
+    source: 'journal_empty_state';
+  };
 };
 
 export type AnalyticsEventName = keyof AnalyticsEventMap;

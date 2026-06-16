@@ -27,6 +27,7 @@ import { applyFilters, getUniqueDreamTypes, getUniqueThemes } from '@/lib/dreamF
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
+import { trackProductEvent } from '@/lib/analytics';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
@@ -595,6 +596,16 @@ export default function JournalListScreen() {
   const advancedFilterLabel = advancedFilterCount > 0
     ? t('journal.filter.more_count', { count: advancedFilterCount })
     : t('journal.filter.more');
+  const canStartRememberedDreamFromEmpty = dreams.length === 0 && !hasActiveFilter;
+  const handleStartRememberedDreamFromEmpty = useCallback(() => {
+    void trackProductEvent('empty_journal_remembered_cta_clicked', {
+      source: 'journal_empty_state',
+    });
+    router.push({
+      pathname: '/recording',
+      params: { intent: 'remembered' },
+    });
+  }, []);
   const advancedFiltersMaxHeight = Math.min(760, Math.max(420, Math.round(height * 0.86)));
   const journalFilterItems = useMemo(() => {
     if (isCompactJournalFilters) {
@@ -742,8 +753,16 @@ export default function JournalListScreen() {
     <EmptyState
       hasActiveFilter={hasActiveFilter}
       onClearFilters={handleClearFilters}
+      onStartRememberedDream={
+        canStartRememberedDreamFromEmpty ? handleStartRememberedDreamFromEmpty : undefined
+      }
     />
-  ), [handleClearFilters, hasActiveFilter]);
+  ), [
+    canStartRememberedDreamFromEmpty,
+    handleClearFilters,
+    handleStartRememberedDreamFromEmpty,
+    hasActiveFilter,
+  ]);
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
   const getDreamItemType = useCallback((item: DreamAnalysis | undefined, index: number) => {
