@@ -82,16 +82,28 @@ const createChatMessage = (
     meta?: ChatMessage['meta'];
     parts?: ChatMessage['parts'];
   }
-): ChatMessage => ({
-  id: generateUUID(),
-  role,
-  text,
-  ...(options?.parts ? { parts: options.parts } : {}),
-  createdAt: Date.now(),
-  ...(options?.category || options?.meta
-    ? { meta: { ...(options?.meta ?? {}), ...(options?.category ? { category: options.category } : {}) } }
-    : {}),
-});
+): ChatMessage => {
+  const meta = resolveChatMessageMeta(options);
+  return {
+    id: generateUUID(),
+    role,
+    text,
+    ...(options?.parts ? { parts: options.parts } : {}),
+    createdAt: Date.now(),
+    ...(meta ? { meta } : {}),
+  };
+};
+
+const resolveChatMessageMeta = (options?: {
+  category?: Exclude<CategoryType, 'general'>;
+  meta?: ChatMessage['meta'];
+}): ChatMessage['meta'] | undefined => {
+  const meta = {
+    ...(options?.meta ?? {}),
+    ...(options?.category ? { category: options.category } : {}),
+  };
+  return Object.keys(meta).length > 0 ? meta : undefined;
+};
 
 // Track chat history migrations across screen mounts to prevent duplicate writes when
 // users rapidly open the same chat multiple times.
@@ -408,6 +420,10 @@ export default function DreamChatScreen() {
       const textToSend = messageText || inputText.trim();
       if (!textToSend || !dream) return;
       const resolvedDisplayText = displayText ?? textToSend;
+      const messageMeta = resolveChatMessageMeta({
+        category: options?.category,
+        meta: options?.meta,
+      });
 
       // Guard against concurrent sends (double taps, quick topics during streaming, etc.)
       if (isLoading || sendInFlightRef.current) {
@@ -519,6 +535,7 @@ export default function DreamChatScreen() {
             const dreamIdString = String(synced.remoteId);
             const aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
               signal: controller.signal,
+              messageMeta,
             });
 
             // Add user message
@@ -631,13 +648,14 @@ export default function DreamChatScreen() {
             language,
             dreamContext,
             guestFingerprint,
-            { signal: controller.signal }
+            { signal: controller.signal, messageMeta }
           );
         } else {
           // Authenticated mode: send dreamId (current flow)
           const dreamIdString = String(dream.remoteId ?? dream.id);
           aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
             signal: controller.signal,
+            messageMeta,
           });
         }
 

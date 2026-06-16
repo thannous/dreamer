@@ -312,7 +312,7 @@ export async function startOrContinueChat(
     chatHistory?: ChatMessage[];
   },
   fingerprint?: string,
-  options?: { signal?: AbortSignal }
+  options?: { signal?: AbortSignal; messageMeta?: ChatMessage['meta'] }
 ): Promise<{ text: string; message?: Partial<ChatMessage> }> {
   const res = await fetchWithSessionHeaders<{ text: string; message?: Partial<ChatMessage> }>('/chat', {
     method: 'POST',
@@ -320,6 +320,7 @@ export async function startOrContinueChat(
       dreamId,
       message,
       lang,
+      ...(options?.messageMeta && { messageMeta: options.messageMeta }),
       ...(dreamContext && { dreamContext }),
       ...(fingerprint && { fingerprint }),
     },

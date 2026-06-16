@@ -14,6 +14,52 @@ type StoredChatMessage = {
   role: string;
   text?: string;
   parts?: GeminiPart[];
+  meta?: StoredChatMessageMeta;
+};
+
+type StoredChatMessageMeta = {
+  category?: 'symbols' | 'emotions' | 'growth' | 'general';
+  exploration360Synthesis?: boolean;
+  isError?: boolean;
+  retry?: {
+    messageText: string;
+    displayText?: string;
+  };
+};
+
+const ALLOWED_CHAT_CATEGORIES = new Set(['symbols', 'emotions', 'growth', 'general']);
+
+const sanitizeMessageMeta = (meta: unknown): StoredChatMessageMeta | undefined => {
+  if (!meta || typeof meta !== 'object') return undefined;
+
+  const candidate = meta as Record<string, unknown>;
+  const sanitized: StoredChatMessageMeta = {};
+
+  if (typeof candidate.category === 'string' && ALLOWED_CHAT_CATEGORIES.has(candidate.category)) {
+    sanitized.category = candidate.category as StoredChatMessageMeta['category'];
+  }
+
+  if (typeof candidate.exploration360Synthesis === 'boolean') {
+    sanitized.exploration360Synthesis = candidate.exploration360Synthesis;
+  }
+
+  if (typeof candidate.isError === 'boolean') {
+    sanitized.isError = candidate.isError;
+  }
+
+  if (candidate.retry && typeof candidate.retry === 'object') {
+    const retry = candidate.retry as Record<string, unknown>;
+    if (typeof retry.messageText === 'string' && retry.messageText.trim()) {
+      sanitized.retry = {
+        messageText: retry.messageText,
+        ...(typeof retry.displayText === 'string' && retry.displayText.trim()
+          ? { displayText: retry.displayText }
+          : {}),
+      };
+    }
+  }
+
+  return Object.keys(sanitized).length > 0 ? sanitized : undefined;
 };
 
 const sanitizeParts = (parts: unknown): GeminiPart[] | undefined => {
@@ -83,6 +129,7 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       message?: string;
       lang?: string;
       fingerprint?: string;
+      messageMeta?: unknown;
       dreamContext?: {
         transcript: string;
         title: string;
@@ -211,10 +258,12 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
     const existingHistory = Array.isArray(dream.chat_history)
       ? (dream.chat_history as StoredChatMessage[])
       : [];
+    const messageMeta = sanitizeMessageMeta(body?.messageMeta);
     const newUserMessage: StoredChatMessage = {
       role: 'user',
       text: userMessage,
       parts: [{ text: userMessage }],
+      ...(messageMeta ? { meta: messageMeta } : {}),
     };
     const historyWithUserMsg = [...existingHistory, newUserMessage];
 

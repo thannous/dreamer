@@ -240,7 +240,7 @@ export async function startOrContinueChat(
     chatHistory?: ChatMessage[];
   },
   _fingerprint?: string,
-  _options?: { signal?: AbortSignal },
+  _options?: { signal?: AbortSignal; messageMeta?: ChatMessage['meta'] },
 ): Promise<{ text: string; message: { role: 'model'; text: string; parts: { text: string }[] } }> {
   console.log('[MOCK] startOrContinueChat called with dreamId:', dreamId, 'message:', message);
   await delay(1000 + Math.random() * 1000); // 1-2 seconds
