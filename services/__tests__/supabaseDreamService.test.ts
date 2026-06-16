@@ -77,6 +77,7 @@ describe('supabaseDreamService', () => {
     client_request_id: 'dream-req-1',
     has_person: null,
     has_animal: null,
+    memory: {},
     ...overrides,
   });
 
@@ -230,6 +231,44 @@ describe('supabaseDreamService', () => {
     expect(secondRow).toHaveProperty('image_generation_failed');
     expect(dream.remoteId).toBe(42);
     expect(dream.analysisStatus).toBe('done');
+  });
+
+  it('createDreamInSupabase persists remembered dream memory metadata', async () => {
+    const memory = {
+      version: 1,
+      origin: 'remembered',
+      anchorDream: true,
+      dejaVu: true,
+      rememberedKind: 'old',
+      approximatePeriod: 'childhood',
+      strongestFragment: 'place',
+      createdFrom: 'onboarding',
+    };
+    const singleMock = jest.fn().mockResolvedValueOnce({
+      data: buildRow({ memory }),
+      error: null,
+    });
+
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({
+        single: singleMock,
+      })),
+    }));
+
+    mocks.from.mockReturnValue({
+      upsert: upsertMock,
+    });
+
+    const { createDreamInSupabase } = require('../supabaseDreamService');
+
+    const dream = await createDreamInSupabase(
+      buildDream({ memory }) as any,
+      'user-1',
+    );
+
+    const row = (((upsertMock as any).mock.calls[0]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+    expect(row.memory).toEqual(memory);
+    expect(dream.memory).toEqual(memory);
   });
 
   it('mapRowToDream forces imageGenerationFailed=false when image_url is present', async () => {
@@ -503,6 +542,11 @@ describe('supabaseDreamService', () => {
           client_request_id: 'req-1',
           has_person: null,
           has_animal: true,
+          memory: {
+            origin: 'remembered',
+            anchorDream: true,
+            rememberedKind: 'recurring',
+          },
         },
       ],
       error: null,
@@ -519,6 +563,13 @@ describe('supabaseDreamService', () => {
     expect(dreams[0]?.imageGenerationFailed).toBe(true);
     expect(dreams[0]?.hasPerson).toBeUndefined();
     expect(dreams[0]?.hasAnimal).toBe(true);
+    expect(dreams[0]?.memory).toEqual({
+      version: 1,
+      origin: 'remembered',
+      anchorDream: true,
+      recurring: true,
+      rememberedKind: 'recurring',
+    });
   });
 
   it('fetchDreamsFromSupabase throws when supabase returns error', async () => {

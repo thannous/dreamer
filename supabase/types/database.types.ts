@@ -30,6 +30,7 @@ export type Database = {
           interpretation: string
           is_analyzed: boolean | null
           is_favorite: boolean | null
+          memory: Json
           shareable_quote: string
           theme: string | null
           title: string
@@ -51,6 +52,7 @@ export type Database = {
           interpretation: string
           is_analyzed?: boolean | null
           is_favorite?: boolean | null
+          memory?: Json
           shareable_quote: string
           theme?: string | null
           title: string
@@ -72,6 +74,7 @@ export type Database = {
           interpretation?: string
           is_analyzed?: boolean | null
           is_favorite?: boolean | null
+          memory?: Json
           shareable_quote?: string
           theme?: string | null
           title?: string

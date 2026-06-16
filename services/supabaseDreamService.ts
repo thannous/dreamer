@@ -6,6 +6,7 @@ import {
   generateUUID,
   getMutationDreamId,
   getMutationRemoteId,
+  normalizeDreamMemoryMetadata,
 } from '@/lib/dreamUtils';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import * as FileSystem from 'expo-file-system';
@@ -15,6 +16,7 @@ import { Image, Platform } from 'react-native';
 import type {
   ChatMessage,
   DreamAnalysis,
+  DreamMemoryMetadata,
   DreamMutation,
   DreamType,
   DreamTheme,
@@ -473,6 +475,7 @@ type SupabaseDreamRow = {
   client_request_id?: string | null;
   has_person?: boolean | null;
   has_animal?: boolean | null;
+  memory?: DreamMemoryMetadata | Record<string, unknown> | null;
 };
 
 const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
@@ -506,6 +509,7 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
     // Map subject detection: null from DB -> undefined (not checked), true/false preserved
     hasPerson: row.has_person === null ? undefined : row.has_person,
     hasAnimal: row.has_animal === null ? undefined : row.has_animal,
+    memory: normalizeDreamMemoryMetadata(row.memory),
   };
 };
 
@@ -513,8 +517,10 @@ const mapDreamToRow = (
   dream: DreamAnalysis,
   userId?: string,
   includeImageColumns = true,
-  includeClientUpdatedAtColumn = true
+  includeClientUpdatedAtColumn = true,
+  includeMemoryColumn = true
 ) => {
+  const memory = normalizeDreamMemoryMetadata(dream.memory);
   const base = {
     user_id: userId,
     transcript: dream.transcript,
@@ -531,6 +537,7 @@ const mapDreamToRow = (
     ...(includeClientUpdatedAtColumn
       ? { client_updated_at: new Date(dream.clientUpdatedAt ?? Date.now()).toISOString() }
       : {}),
+    ...(includeMemoryColumn ? { memory: memory ?? {} } : {}),
   };
 
   // Avoid clearing existing server-side values when a field is missing locally.
@@ -595,6 +602,7 @@ const createConflictError = (message: string, remoteDream?: DreamAnalysis): Conf
 
 let imageGenerationFailedColumnAvailable = true;
 let clientUpdatedAtColumnAvailable = true;
+let memoryColumnAvailable = true;
 
 const isMissingImageGenerationColumnError = (error: PostgrestError | null): boolean => {
   if (!error) return false;
@@ -622,9 +630,29 @@ const isMissingClientUpdatedAtColumnError = (error: PostgrestError | null): bool
   );
 };
 
+const isMissingMemoryColumnError = (error: PostgrestError | null): boolean => {
+  if (!error) return false;
+
+  const combinedText = [error.message, error.details, error.hint]
+    .filter((value): value is string => typeof value === 'string' && value.length > 0)
+    .join(' ')
+    .toLowerCase();
+
+  if (!combinedText.includes('memory')) {
+    return false;
+  }
+
+  return (
+    error.code === 'PGRST204' ||
+    error.code === '42703' ||
+    combinedText.includes('schema cache') ||
+    combinedText.includes('does not exist')
+  );
+};
+
 const shouldRetryDreamWriteWithoutOptionalColumn = (
   error: PostgrestError | null,
-  options: { includeImageColumn: boolean; includeClientUpdatedAtColumn: boolean }
+  options: { includeImageColumn: boolean; includeClientUpdatedAtColumn: boolean; includeMemoryColumn: boolean }
 ): Partial<typeof options> | null => {
   if (
     options.includeImageColumn &&
@@ -642,6 +670,15 @@ const shouldRetryDreamWriteWithoutOptionalColumn = (
   ) {
     clientUpdatedAtColumnAvailable = false;
     return { includeClientUpdatedAtColumn: false };
+  }
+
+  if (
+    options.includeMemoryColumn &&
+    memoryColumnAvailable &&
+    isMissingMemoryColumnError(error)
+  ) {
+    memoryColumnAvailable = false;
+    return { includeMemoryColumn: false };
   }
 
   return null;
@@ -781,7 +818,7 @@ const createMissingRemoteIdResult = (mutation: DreamMutation): SyncMutationResul
 });
 
 const mapDreamToSyncPayload = (dream: DreamAnalysis, userId?: string, includeImageColumns = true) => ({
-  ...mapDreamToRow(dream, userId, includeImageColumns),
+  ...mapDreamToRow(dream, userId, includeImageColumns, true, memoryColumnAvailable),
   remote_id: dream.remoteId ?? null,
   revision_id: dream.revisionId ?? null,
 });
@@ -848,7 +885,7 @@ const syncDreamMutationsDirectly = async (
   for (const mutation of mutations) {
     if (mutation.operation === 'create' && mutation.payload.dream) {
       const preparedDream = await ensureRemoteImage(mutation.payload.dream, userId);
-      const upsert = (options: { includeImageColumn: boolean; includeClientUpdatedAtColumn: boolean }) =>
+      const upsert = (options: { includeImageColumn: boolean; includeClientUpdatedAtColumn: boolean; includeMemoryColumn: boolean }) =>
         supabase
           .from(DREAMS_TABLE)
           .upsert(
@@ -856,7 +893,8 @@ const syncDreamMutationsDirectly = async (
               preparedDream,
               userId,
               options.includeImageColumn,
-              options.includeClientUpdatedAtColumn
+              options.includeClientUpdatedAtColumn,
+              options.includeMemoryColumn
             ),
             {
               onConflict: 'user_id,client_request_id',
@@ -868,6 +906,7 @@ const syncDreamMutationsDirectly = async (
       let writeOptions = {
         includeImageColumn: imageGenerationFailedColumnAvailable,
         includeClientUpdatedAtColumn: clientUpdatedAtColumnAvailable,
+        includeMemoryColumn: memoryColumnAvailable,
       };
       let { data, error } = await upsert(writeOptions);
 
@@ -901,7 +940,7 @@ const syncDreamMutationsDirectly = async (
       }
 
       const preparedDream = await ensureRemoteImage(dreamToUpdate, userId);
-      const update = (options: { includeImageColumn: boolean; includeClientUpdatedAtColumn: boolean }) =>
+      const update = (options: { includeImageColumn: boolean; includeClientUpdatedAtColumn: boolean; includeMemoryColumn: boolean }) =>
         supabase
           .from(DREAMS_TABLE)
           .update(
@@ -909,7 +948,8 @@ const syncDreamMutationsDirectly = async (
               preparedDream,
               undefined,
               options.includeImageColumn,
-              options.includeClientUpdatedAtColumn
+              options.includeClientUpdatedAtColumn,
+              options.includeMemoryColumn
             )
           )
           .eq('id', dreamToUpdate.remoteId)
@@ -919,6 +959,7 @@ const syncDreamMutationsDirectly = async (
       let writeOptions = {
         includeImageColumn: imageGenerationFailedColumnAvailable,
         includeClientUpdatedAtColumn: clientUpdatedAtColumnAvailable,
+        includeMemoryColumn: memoryColumnAvailable,
       };
       let { data, error } = await update(writeOptions);
 
@@ -1071,6 +1112,11 @@ export async function syncDreamMutationsInSupabase(
 
     if (isMissingClientUpdatedAtColumnError(error)) {
       clientUpdatedAtColumnAvailable = false;
+      return syncDreamMutationsDirectly(batch, userId);
+    }
+
+    if (isMissingMemoryColumnError(error)) {
+      memoryColumnAvailable = false;
       return syncDreamMutationsDirectly(batch, userId);
     }
 

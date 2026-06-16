@@ -7,12 +7,16 @@ import {
   generateUUID,
   isNotFoundError,
   normalizeDreamImages,
+  normalizeDreamMemoryMetadata,
   normalizeDreamList,
   upsertDream,
   removeDream,
   hasPendingMutationsForDream,
   applyPendingMutations,
   resolveDreamListUpdater,
+  areDreamMemoryMetadataEqual,
+  areDreamsEqualForLocalState,
+  buildRememberedDream,
 } from '../dreamUtils';
 
 // Mock imageUtils
@@ -218,6 +222,104 @@ describe('dreamUtils', () => {
 
       expect(result).not.toBe(dreams);
       expect(result[0].thumbnailUrl).toBeDefined();
+    });
+  });
+
+  describe('dream memory metadata', () => {
+    it('given unknown persisted metadata when normalizing then keeps only supported fields', () => {
+      const result = normalizeDreamMemoryMetadata({
+        origin: 'remembered',
+        anchorDream: true,
+        dejaVu: true,
+        recurring: true,
+        rememberedKind: 'recurring',
+        approximatePeriod: 'childhood',
+        strongestFragment: 'place',
+        lingeringEmotion: '  wonder  ',
+        recurrenceNote: '  Same hallway  ',
+        createdFrom: 'onboarding',
+        createdFromOnboarding: true,
+        ignored: 'value',
+      } as any);
+
+      expect(result).toEqual({
+        version: 1,
+        origin: 'remembered',
+        anchorDream: true,
+        dejaVu: true,
+        recurring: true,
+        rememberedKind: 'recurring',
+        approximatePeriod: 'childhood',
+        strongestFragment: 'place',
+        lingeringEmotion: 'wonder',
+        recurrenceNote: 'Same hallway',
+        createdFrom: 'onboarding',
+        createdFromOnboarding: true,
+      });
+    });
+
+    it('given captured metadata without remembered signals when normalizing then returns undefined', () => {
+      expect(normalizeDreamMemoryMetadata({ origin: 'captured' })).toBeUndefined();
+    });
+
+    it('compares normalized memory metadata instead of raw object identity', () => {
+      expect(
+        areDreamMemoryMetadataEqual(
+          { origin: 'remembered', rememberedKind: 'recurring' },
+          { version: 1, origin: 'remembered', rememberedKind: 'recurring', recurring: true }
+        )
+      ).toBe(true);
+    });
+
+    it('given memory changes when comparing local dreams then returns false', () => {
+      const base = buildDream({ id: 1 });
+      const remembered = buildDream({
+        id: 1,
+        memory: {
+          origin: 'remembered',
+          anchorDream: true,
+          rememberedKind: 'old',
+        },
+      });
+
+      expect(areDreamsEqualForLocalState(base, remembered)).toBe(false);
+    });
+  });
+
+  describe('buildRememberedDream', () => {
+    it('builds an anchor dream that remains a normal dream entry', () => {
+      const dream = buildRememberedDream('I still remember the blue house.', {
+        defaultTitle: 'Souvenir de rêve',
+        rememberedKind: 'old',
+        approximatePeriod: 'childhood',
+        strongestFragment: 'place',
+        lingeringEmotion: 'nostalgia',
+        createdFromOnboarding: true,
+        now: () => 123,
+      });
+
+      expect(dream.id).toBe(123);
+      expect(dream.title).toBe('I still remember the blue house.');
+      expect(dream.dreamType).toBe('Symbolic Dream');
+      expect(dream.isAnalyzed).toBe(false);
+      expect(dream.memory).toEqual({
+        version: 1,
+        origin: 'remembered',
+        anchorDream: true,
+        dejaVu: true,
+        rememberedKind: 'old',
+        approximatePeriod: 'childhood',
+        strongestFragment: 'place',
+        lingeringEmotion: 'nostalgia',
+        createdFrom: 'onboarding',
+        createdFromOnboarding: true,
+      });
+    });
+
+    it('maps remembered recurring, nightmare and lucid dreams to canonical dream types', () => {
+      expect(buildRememberedDream('Again', { defaultTitle: 'Dream', rememberedKind: 'recurring' }).dreamType).toBe('Recurring Dream');
+      expect(buildRememberedDream('Fear', { defaultTitle: 'Dream', rememberedKind: 'nightmare' }).dreamType).toBe('Nightmare');
+      expect(buildRememberedDream('Aware', { defaultTitle: 'Dream', rememberedKind: 'lucid' }).dreamType).toBe('Lucid Dream');
     });
   });
 
