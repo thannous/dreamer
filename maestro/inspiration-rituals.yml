@@ -38,11 +38,16 @@ appId: com.tanuki75.noctalia
 - assertVisible: ".*Rituel du jour.*|.*Ritual de hoy.*|.*Today's ritual.*"
 
 # Scroll the horizontal ritual carousel, open the recall ritual, and verify one step
+- swipe:
+      start: 82%, 42%
+      end: 18%, 42%
+      duration: 500
 - scrollUntilVisible:
       element:
           id: btn.inspiration.ritual.memory
       direction: RIGHT
-      timeout: 20000
+      visibilityPercentage: 40
+      timeout: 30000
 - tapOn:
       id: btn.inspiration.ritual.memory
 - waitForAnimationToEnd
