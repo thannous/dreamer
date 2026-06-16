@@ -69,7 +69,7 @@ import {
   saveRememberedDreamPromptDismissed,
 } from '@/services/storageService';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
@@ -111,6 +111,7 @@ export default function RecordingScreen() {
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
   const referenceImagesEnabled = isReferenceImagesEnabled();
+  const recordingParams = useLocalSearchParams<{ intent?: string }>();
 
   const [transcript, setTranscript] = useState('');
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
@@ -1190,6 +1191,29 @@ export default function RecordingScreen() {
   const handleRememberedDreamDismiss = useCallback(() => {
     dismissRememberedDreamPrompt();
   }, [dismissRememberedDreamPrompt]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (recordingParams.intent !== 'remembered' || trimmedTranscript || draftDream) {
+        return;
+      }
+
+      setCaptureIntent('remembered');
+      setRememberedDreamPromptDismissed(true);
+      setVoiceFallbackReason(null);
+      setInputMode('text');
+      persistInputModePreference('text');
+      focusTranscriptEnd(baseTranscriptRef.current || transcript);
+    }, [
+      draftDream,
+      focusTranscriptEnd,
+      persistInputModePreference,
+      recordingParams.intent,
+      transcript,
+      trimmedTranscript,
+    ])
+  );
+
   const analyzePromptTranscript = analyzePromptDream?.transcript?.trim();
   const voiceStatus = useMemo(() => {
     if (isRecording) {
