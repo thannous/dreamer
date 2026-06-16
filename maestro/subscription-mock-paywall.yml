@@ -31,10 +31,10 @@ appId: com.tanuki75.noctalia
 - waitForAnimationToEnd
 
 # Paywall screen should be visible (settings variant, free header, or active header)
-- assertVisible: "Noctalia Plus for deeper nights|Noctalia Plus pour des nuits plus profondes|Unlock Noctalia Plus|Débloquer Noctalia Plus|Desbloquea Noctalia Plus|Noctalia Plus is active|Noctalia Plus est actif|Noctalia Plus está activo|Premium is active|Premium est actif|Premium está activo"
-- assertVisible: "Noctalia Plus dream analysis|Analyse de rêves Noctalia Plus|Análisis de sueños Noctalia Plus|Premium dream analysis|Analyse de rêves premium|Análisis de sueños premium"
-- assertVisible: "Monthly|Mensuel|Mensual"
-- assertVisible: "Annual|Annuel|Anual"
+- assertVisible: "Noctalia Plus, deeper dream patterns|Noctalia Plus, des motifs plus profonds|Noctalia Plus, patrones más profundos|Noctalia Plus, tiefere Traummuster|Noctalia Plus, pattern più profondi|Noctalia Plus is active|Noctalia Plus est actif|Noctalia Plus está activo|Noctalia Plus ist aktiv|Noctalia Plus è attivo"
+- assertVisible: "Noctalia Plus, profile depth|Noctalia Plus, profondeur du profil|Noctalia Plus, profundidad de perfil|Noctalia Plus, mehr Profiltiefe|Noctalia Plus, profondità del profilo"
+- assertVisible: "Monthly|Mensuel|Mensual|Monatlich|Mensile"
+- assertVisible: "Annual|Annuel|Anual|Jährlich|Annuale"
 
 # Select the monthly option and purchase
 - tapOn:
@@ -44,15 +44,15 @@ appId: com.tanuki75.noctalia
 - waitForAnimationToEnd
 
 # After mock purchase, header should reflect premium state
-- assertVisible: "Noctalia Plus is active|Noctalia Plus est actif|Noctalia Plus está activo|Premium is active|Premium est actif|Premium está activo|Already active|Déjà actif|Ya activo"
+- assertVisible: "Noctalia Plus is active|Noctalia Plus est actif|Noctalia Plus está activo|Noctalia Plus ist aktiv|Noctalia Plus è attivo|Already active|Déjà actif|Ya activo|Bereits aktiv|Già attivo"
 
 # Close paywall and verify subscription card reflects active state
 - pressKey: back
 - waitForAnimationToEnd
 - scrollUntilVisible:
       element:
-          text: "Noctalia Plus is active on your account.|Noctalia Plus est actif sur votre compte.|Noctalia Plus está activo en tu cuenta.|Premium is active on your account.|Le premium est actif sur votre compte.|Premium está activo en tu cuenta."
+          text: "Your living dream profile and 360° explorations are active.|Votre profil onirique vivant et vos explorations 360° sont actifs.|Tu perfil onírico vivo y tus exploraciones 360° están activos.|Dein lebendiges Traumprofil und deine 360°-Erkundungen sind aktiv.|Il tuo profilo onirico vivo e le esplorazioni 360° sono attivi."
       direction: DOWN
       visibilityPercentage: 50
       centerElement: true
-- assertVisible: "Noctalia Plus is active on your account.|Noctalia Plus est actif sur votre compte.|Noctalia Plus está activo en tu cuenta.|Premium is active on your account.|Le premium est actif sur votre compte.|Premium está activo en tu cuenta."
+- assertVisible: "Your living dream profile and 360° explorations are active.|Votre profil onirique vivant et vos explorations 360° sont actifs.|Tu perfil onírico vivo y tus exploraciones 360° están activos.|Dein lebendiges Traumprofil und deine 360°-Erkundungen sind aktiv.|Il tuo profilo onirico vivo e le esplorazioni 360° sono attivi."
