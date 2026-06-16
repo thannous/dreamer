@@ -57,11 +57,10 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 jest.mock('react-native', () => {
-  const mockReactNative = jest.requireActual('react-native');
+  const mockReactNative = jest.requireActual('../react-native-stub');
   return {
     ...mockReactNative,
     Platform: {
-      ...mockReactNative.Platform,
       OS: 'web',
       select: (spec: Record<string, unknown>) => (spec as any).web ?? spec.default,
     },

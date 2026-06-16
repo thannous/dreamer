@@ -1,6 +1,6 @@
 // plugins/withOptionalAndroidHardwareFeatures.js
 // Keep Play device filtering broad for features that have in-app fallbacks.
-const { withAndroidManifest } = require('@expo/config-plugins');
+const { withAndroidManifest } = require('expo/config-plugins');
 
 function asArray(value) {
   if (!value) return [];

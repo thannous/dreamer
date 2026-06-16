@@ -217,7 +217,7 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
   });
 
   return (
-    <Animated.View style={[StyleSheet.absoluteFillObject, styles.container, containerStyle]}>
+    <Animated.View style={[StyleSheet.absoluteFill, styles.container, containerStyle]}>
       {/* Background */}
       <LinearGradient
         colors={[COLORS.bgStart, COLORS.bgEnd]}

@@ -38,6 +38,7 @@ export const TID = {
     FilterFavorites: 'btn.filterFavorites',
     FilterAnalyzed: 'btn.filterAnalyzed',
     FilterExplored: 'btn.filterExplored',
+    FilterSearch: 'btn.filterSearch',
     FilterMore: 'btn.filterMore',
     JournalLayoutCards: 'btn.settings.journalLayout.cards',
     JournalLayoutCompact: 'btn.settings.journalLayout.compact',

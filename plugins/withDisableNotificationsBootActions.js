@@ -1,7 +1,7 @@
 // plugins/withDisableNotificationsBootActions.js
 // Workaround for Android 15 BOOT_COMPLETED restrictions
 // See: https://github.com/expo/expo/issues/41627
-const { withAndroidManifest } = require('@expo/config-plugins');
+const { withAndroidManifest } = require('expo/config-plugins');
 
 function asArray(v) {
   if (!v) return [];

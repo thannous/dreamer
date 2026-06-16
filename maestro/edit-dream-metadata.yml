@@ -13,6 +13,7 @@ appId: com.tanuki75.noctalia
 - runFlow: subflows/clear-journal-filters.yml
 
 # Open a specific dream (assuming mock data "The Infinite Library")
+- runFlow: subflows/ensure-journal-search-visible.yml
 - tapOn:
       id: input.searchDreams
 - eraseText

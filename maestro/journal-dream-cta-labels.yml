@@ -12,6 +12,7 @@ appId: com.tanuki75.noctalia
 - runFlow: subflows/clear-journal-filters.yml
 
 # Un-tagged as analyzed -> primary CTA shows Analyze dream
+- runFlow: subflows/ensure-journal-search-visible.yml
 - tapOn:
       id: input.searchDreams
 - eraseText
@@ -36,6 +37,7 @@ appId: com.tanuki75.noctalia
       timeout: 30000
 
 # Analyzed but not explored -> Explore dream further
+- runFlow: subflows/ensure-journal-search-visible.yml
 - tapOn:
       id: input.searchDreams
 - eraseText
@@ -60,6 +62,7 @@ appId: com.tanuki75.noctalia
       timeout: 30000
 
 # Explored -> Continue analyzing
+- runFlow: subflows/ensure-journal-search-visible.yml
 - tapOn:
       id: input.searchDreams
 - eraseText

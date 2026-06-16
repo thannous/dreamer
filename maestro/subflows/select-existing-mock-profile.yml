@@ -1,7 +1,18 @@
 appId: com.tanuki75.noctalia
 ---
-- tapOn:
-    id: btn.mockNav.settings
+- runFlow:
+    when:
+      visible:
+        id: tab.settings
+    commands:
+      - tapOn:
+          id: tab.settings
+- runFlow:
+    when:
+      notVisible: "Settings|Paramètres|Configuración|Ajustes"
+    commands:
+      - tapOn:
+          id: btn.mockNav.settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes"
     timeout: 30000
@@ -10,8 +21,19 @@ appId: com.tanuki75.noctalia
       visible: "Reload"
     commands:
       - pressKey: back
-      - tapOn:
-          id: btn.mockNav.settings
+      - runFlow:
+          when:
+            visible:
+              id: tab.settings
+          commands:
+            - tapOn:
+                id: tab.settings
+      - runFlow:
+          when:
+            notVisible: "Settings|Paramètres|Configuración|Ajustes"
+          commands:
+            - tapOn:
+                id: btn.mockNav.settings
       - extendedWaitUntil:
           visible: "Settings|Paramètres|Configuración|Ajustes"
           timeout: 30000

@@ -15,6 +15,7 @@ appId: com.tanuki75.noctalia
 - runFlow: subflows/go-to-journal-phone.yml
 - assertVisible:
       id: screen.journal
+- runFlow: subflows/ensure-journal-search-visible.yml
 - tapOn:
       id: input.searchDreams
 - inputText: Lucide

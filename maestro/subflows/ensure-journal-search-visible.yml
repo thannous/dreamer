@@ -1,0 +1,15 @@
+appId: com.tanuki75.noctalia
+---
+- runFlow:
+    when:
+      notVisible:
+        id: input.searchDreams
+    commands:
+      - tapOn:
+          id: btn.filterSearch
+      - extendedWaitUntil:
+          visible:
+            id: input.searchDreams
+          timeout: 10000
+- assertVisible:
+    id: input.searchDreams

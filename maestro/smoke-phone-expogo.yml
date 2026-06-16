@@ -15,6 +15,7 @@ appId: host.exp.exponent
 - assertVisible:
     id: screen.recording
 - runFlow: subflows/go-to-journal-phone.yml
+- runFlow: subflows/ensure-journal-search-visible.yml
 - tapOn:
     id: input.searchDreams
 - inputText: Lucide
