@@ -5,7 +5,7 @@ appId: com.tanuki75.noctalia
 # Switch to existing user profile to load predefined dreams
 - runFlow: subflows/select-existing-mock-profile.yml
 - tapOn:
-      id: btn.mockNav.journal
+      id: tab.journal
 - extendedWaitUntil:
       visible:
           id: screen.journal

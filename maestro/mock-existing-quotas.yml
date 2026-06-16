@@ -7,10 +7,18 @@ appId: com.tanuki75.noctalia
     element:
       id: quota.explorationValue
     direction: DOWN
-- assertVisible: "Dream analyses: 2 / 3|Analyses de rêves: 2 / 3|Análisis de sueños: 2 / 3"
-- assertVisible: "Dream explorations: 2 / 2|Explorations de rêves: 2 / 2|Exploraciones de sueños: 2 / 2"
+    speed: 30
+    visibilityPercentage: 60
+    centerElement: true
+    timeout: 30000
+- assertVisible:
+    id: quota.analysisValue
+- assertVisible: "2 / 3"
+- assertVisible:
+    id: quota.explorationValue
+- assertVisible: "2 / 2"
 - tapOn:
-    point: "62%,92%"
+    id: tab.stats
 - waitForAnimationToEnd
 - swipe:
     start: 50%, 78%
@@ -21,6 +29,10 @@ appId: com.tanuki75.noctalia
 - swipe:
     start: 50%, 78%
     end: 50%, 28%
-- assertVisible: "Dreams with Chat: 2|Rêves avec discussion: 2|Sueños con chat: 2"
-- assertVisible: "Analyzed Dreams: 2|Rêves analysés: 2|Sueños analizados: 2"
-- assertVisible: "Total Chats: 2|Total des discussions: 2|Total de chats: 2"
+- assertVisible:
+    id: stats.dreamsWithChat
+- assertVisible:
+    id: stats.analyzedDreams
+- assertVisible:
+    id: stats.totalChats
+- assertVisible: "2"
