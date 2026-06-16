@@ -20,27 +20,30 @@ appId: com.tanuki75.noctalia
 
 # Profile switching should isolate guest and free identities.
 - tapOn:
-    text: "Guest"
+    id: btn.subscription.qa.profile.guest
 
 - tapOn:
-    text: "New free"
+    id: btn.subscription.qa.profile.new
 - extendedWaitUntil:
     visible: ".*free / inactive.*"
     timeout: 15000
 
 # Existing free profile should reset the paid profile to free/inactive.
 - tapOn:
-    text: "Existing free"
+    id: btn.subscription.qa.profile.existing
 - extendedWaitUntil:
     visible: ".*free / inactive.*"
     timeout: 15000
 
 # Monthly scenario should activate Plus and expose the mock product id.
-- swipe:
-    start: 50%, 35%
-    end: 50%, 62%
+- scrollUntilVisible:
+    element:
+      id: btn.subscription.qa.scenario.monthly
+    direction: DOWN
+    visibilityPercentage: 70
+    timeout: 15000
 - tapOn:
-    text: "Monthly"
+    id: btn.subscription.qa.scenario.monthly
 - extendedWaitUntil:
     visible: ".*plus / active.*"
     timeout: 15000
@@ -48,14 +51,14 @@ appId: com.tanuki75.noctalia
 
 # Annual scenario should switch product ids.
 - tapOn:
-    text: "Annual"
+    id: btn.subscription.qa.scenario.annual
 - extendedWaitUntil:
     visible: ".*mock_annual.*"
     timeout: 15000
 
 # Cancelled keeps access active but flips renewal state.
 - tapOn:
-    text: "Cancelled"
+    id: btn.subscription.qa.scenario.cancelled
 - extendedWaitUntil:
     visible: ".*renews no.*"
     timeout: 15000
@@ -64,12 +67,12 @@ appId: com.tanuki75.noctalia
 # Expired returns the user to free/inactive.
 - scrollUntilVisible:
     element:
-      text: "Expired"
+      id: btn.subscription.qa.scenario.expired
     direction: DOWN
     visibilityPercentage: 70
     timeout: 15000
 - tapOn:
-    text: "Expired"
+    id: btn.subscription.qa.scenario.expired
 - extendedWaitUntil:
     visible: ".*free / inactive.*"
     timeout: 15000
@@ -77,12 +80,12 @@ appId: com.tanuki75.noctalia
 # Open the real paywall surface from the lab for visual continuity.
 - scrollUntilVisible:
     element:
-      text: "Open paywall"
+      id: btn.subscription.qa.openPaywall
     direction: DOWN
     visibilityPercentage: 70
     timeout: 15000
 - tapOn:
-    text: "Open paywall"
+    id: btn.subscription.qa.openPaywall
 - extendedWaitUntil:
     visible:
       id: screen.paywall

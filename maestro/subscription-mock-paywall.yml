@@ -17,13 +17,15 @@ appId: com.tanuki75.noctalia
 # Quick sign-in (mock mode) as an existing free user
 - runFlow: subflows/select-existing-mock-profile.yml
 
-# Open the paywall from the subscription card (free or premium copy)
+# Open the paywall from the real subscription card CTA. The dedicated
+# subscription-qa-lab flow separately covers the mock QA lab entry point.
 - scrollUntilVisible:
       element:
           id: btn.subscription.settingsCta
       direction: DOWN
-      visibilityPercentage: 30
+      visibilityPercentage: 60
       centerElement: true
+      timeout: 30000
 - tapOn:
       id: btn.subscription.settingsCta
 - waitForAnimationToEnd

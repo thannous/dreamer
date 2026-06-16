@@ -5,4 +5,4 @@ clearState: true
 - runFlow: subflows/open-mock-app.yml
 - runFlow: subflows/select-existing-mock-profile.yml
 - tapOn:
-      id: btn.mockNav.journal
+      id: tab.journal
