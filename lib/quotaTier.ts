@@ -2,11 +2,17 @@ import type { User } from '@supabase/supabase-js';
 
 import type { SubscriptionTier } from './types';
 
+export function normalizeSubscriptionTier(
+  value: unknown,
+  fallback: SubscriptionTier = 'free'
+): SubscriptionTier {
+  if (value === 'guest' || value === 'free' || value === 'plus') return value;
+  if (value === 'premium') return 'plus';
+  return fallback;
+}
+
 export function deriveUserTier(user: User | null): SubscriptionTier {
   if (!user) return 'guest';
   // ✅ CRITICAL FIX: Read from app_metadata (admin-only) instead of user_metadata (client-modifiable)
-  const tier = user.app_metadata?.tier as SubscriptionTier | undefined;
-  // Backward-compat: legacy "premium" is now treated as "plus".
-  if (tier === 'premium') return 'plus';
-  return tier ?? 'free';
+  return normalizeSubscriptionTier(user.app_metadata?.tier, 'free');
 }

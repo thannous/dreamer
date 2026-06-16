@@ -39,7 +39,7 @@ export interface PurchasesPackageLike {
   };
 }
 
-const PREMIUM_ENTITLEMENT_IDS = [
+const LEGACY_PLUS_ENTITLEMENT_IDS = [
   'premium',
   'noctalia_premium',
   'noctalia-premium',
@@ -57,15 +57,12 @@ const PLUS_ENTITLEMENT_IDS = [
 
 /**
  * Priority order for checking entitlements.
- * Check for premium entitlements first (will be mapped to 'plus' tier).
- * In the future, premium entitlements may be mapped to a separate 'premium' tier.
+ * Legacy "premium" entitlement ids are aliases for the single Noctalia Plus plan.
  */
-const ENTITLEMENT_PRIORITY = [...PREMIUM_ENTITLEMENT_IDS, ...PLUS_ENTITLEMENT_IDS];
+const ENTITLEMENT_PRIORITY = [...LEGACY_PLUS_ENTITLEMENT_IDS, ...PLUS_ENTITLEMENT_IDS];
 
 function tierFromEntitlementId(entitlementId: string): SubscriptionTier {
-  // Map both premium and plus entitlements to 'plus' tier
-  // 'premium' tier will be implemented in the future
-  if (PREMIUM_ENTITLEMENT_IDS.includes(entitlementId)) return 'plus';
+  if (LEGACY_PLUS_ENTITLEMENT_IDS.includes(entitlementId)) return 'plus';
   if (PLUS_ENTITLEMENT_IDS.includes(entitlementId)) return 'plus';
   // Default safe paid tier if an entitlement exists but isn't explicitly mapped.
   return 'plus';

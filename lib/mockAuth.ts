@@ -4,7 +4,7 @@ import type { UserTier } from '@/constants/limits';
 import { resetMockQuotaEvents } from '@/services/quota/MockQuotaEventStore';
 import { preloadDreamsNow, resetMockStorage, setPreloadDreamsEnabled } from '@/services/mocks/storageServiceMock';
 
-export type MockProfile = 'new' | 'existing' | 'premium';
+export type MockProfile = 'new' | 'existing' | 'plus';
 
 type ProfileConfig = {
   email: string;
@@ -29,9 +29,9 @@ const PROFILE_CONFIG: Record<MockProfile, ProfileConfig> = {
     tier: 'free',
     emailConfirmed: true,
   },
-  premium: {
-    email: 'mock.premium@dreamer.app',
-    displayName: 'Premium Dreamer',
+  plus: {
+    email: 'mock.plus@dreamer.app',
+    displayName: 'Plus Dreamer',
     preloadDreams: true,
     tier: 'plus',
     emailConfirmed: true,

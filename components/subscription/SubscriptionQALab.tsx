@@ -23,7 +23,7 @@ import {
   type MockSubscriptionScenario,
 } from '@/services/mocks/subscriptionServiceMock';
 
-type ProfileScenario = 'guest' | 'new' | 'existing' | 'premium';
+type ProfileScenario = 'guest' | 'new' | 'existing' | 'plus';
 
 type ActionState = {
   label: string;
@@ -35,7 +35,7 @@ const PROFILE_SCENARIOS: { id: ProfileScenario; label: string; hint: string }[] 
   { id: 'guest', label: 'Guest', hint: 'No account' },
   { id: 'new', label: 'New free', hint: 'Fresh signup' },
   { id: 'existing', label: 'Existing free', hint: 'Dream history' },
-  { id: 'premium', label: 'Plus user', hint: 'Active access' },
+  { id: 'plus', label: 'Plus user', hint: 'Active access' },
 ];
 
 const MOCK_SCENARIOS: { id: MockSubscriptionScenario; label: string; hint: string }[] = [
@@ -165,7 +165,7 @@ export function SubscriptionQALab() {
       }
 
       await signInMock(profile);
-      const nextStatus = await applyMockScenario(profile === 'premium' ? 'annual' : 'free');
+      const nextStatus = await applyMockScenario(profile === 'plus' ? 'annual' : 'free');
       await syncLocalStatus(nextStatus);
       setAction({
         label: `${profile} profile loaded`,

@@ -52,9 +52,9 @@ const mockProfiles: { profile: MockProfile; titleKey: string; subtitleKey: strin
     subtitleKey: 'settings.account.mock.profile.existing_hint',
   },
   {
-    profile: 'premium',
-    titleKey: 'settings.account.mock.profile.premium',
-    subtitleKey: 'settings.account.mock.profile.premium_hint',
+    profile: 'plus',
+    titleKey: 'settings.account.mock.profile.plus',
+    subtitleKey: 'settings.account.mock.profile.plus_hint',
   },
 ];
 

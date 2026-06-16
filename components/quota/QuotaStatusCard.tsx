@@ -124,7 +124,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
     },
   ]), [quotaStatus?.usage.analysis, quotaStatus?.usage.exploration, recordingLabel, recordingUsage, t]);
 
-  const isPaidTier = tier === 'plus' || tier === 'premium';
+  const isPaidTier = tier === 'plus';
   const showCta = Boolean(quotaStatus) && !isPaidTier;
   const ctaLabel = tier === 'guest'
     ? (isUpgradedGuest ? t('settings.quota.cta_login') : t('settings.quota.cta_guest'))
@@ -251,14 +251,6 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
         <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
           <Text style={[styles.noticeText, { color: colors.textPrimary }]}>
             {t('settings.quota.plus_message')}
-          </Text>
-        </View>
-      )}
-
-      {tier === 'premium' && (
-        <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
-          <Text style={[styles.noticeText, { color: colors.textPrimary }]}>
-            {t('settings.quota.premium_message')}
           </Text>
         </View>
       )}

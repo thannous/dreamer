@@ -26,7 +26,7 @@ export type RevenueCatV2CustomerResponse = {
   } | null;
 };
 
-const PREMIUM_ENTITLEMENT_KEYS = [
+const LEGACY_PLUS_ENTITLEMENT_KEYS = [
   'premium',
   'noctalia_premium',
   'noctalia-premium',
@@ -44,7 +44,7 @@ const PLUS_ENTITLEMENT_KEYS = [
 
 function tierFromEntitlementKey(key: string): InferredTier {
   const normalized = key.trim();
-  if (PREMIUM_ENTITLEMENT_KEYS.includes(normalized)) return 'plus';
+  if (LEGACY_PLUS_ENTITLEMENT_KEYS.includes(normalized)) return 'plus';
   if (PLUS_ENTITLEMENT_KEYS.includes(normalized)) return 'plus';
   return null;
 }

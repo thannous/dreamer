@@ -193,11 +193,11 @@ describe('AuthContext', () => {
     });
 
     await act(async () => {
-      result.current.setUserTierLocally('premium');
+      result.current.setUserTierLocally('plus');
     });
 
-    expect(result.current.user?.app_metadata?.tier).toBe('premium');
-    expect(result.current.user?.user_metadata?.tier).toBe('premium');
+    expect(result.current.user?.app_metadata?.tier).toBe('plus');
+    expect(result.current.user?.user_metadata?.tier).toBe('plus');
   });
 
   it('given auth change to new user__when onAuthChange fires__then clears remote storage and updates state', async () => {

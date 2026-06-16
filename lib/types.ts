@@ -176,7 +176,7 @@ export interface QuotaUsage {
   };
 }
 
-export type SubscriptionTier = 'guest' | 'free' | 'plus' | 'premium';
+export type SubscriptionTier = 'guest' | 'free' | 'plus';
 
 export interface SubscriptionStatus {
   tier: SubscriptionTier;
