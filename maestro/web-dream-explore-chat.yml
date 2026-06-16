@@ -1,22 +1,6 @@
 url: "http://localhost:8081"
 ---
-- launchApp
-- assertVisible: "(Whisper your dream into the ether.*|Chuchote)"
-- tapOn: "(See dream journal|Voir journal)"
-- waitForAnimationToEnd
-- tapOn: "(Settings|Param.tres)"
-- waitForAnimationToEnd
-- assertVisible: "(Settings|Param.tres)"
-- runFlow:
-    when:
-      visible: "(Sign Out|Se d.connecter)"
-    commands:
-      - tapOn: "(Sign Out|Se d.connecter)"
-      - waitForAnimationToEnd
-- assertVisible: "(Quick sign-in.*|Connexion rapide.*)"
-- tapOn: "(Existing user|Utilisateur existant)"
-- waitForAnimationToEnd
-- assertVisible: "mock\\.existing@dreamer\\.app"
+- runFlow: subflows/web-select-existing-mock-profile.yml
 - tapOn: "Journal"
 - waitForAnimationToEnd
 - scrollUntilVisible:
@@ -28,12 +12,12 @@ url: "http://localhost:8081"
 - assertVisible: "Ocean of Stars"
 - scrollUntilVisible:
     element:
-      id: "btn.exploreDream"
+      id: "component.dreamDetail.actionCard"
     direction: DOWN
     visibilityPercentage: 30
-    centerElement: true
+    centerElement: false
 - tapOn:
-    id: "btn.exploreDream"
+    id: "component.dreamDetail.actionCard"
     retryTapIfNoChange: true
     waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd
@@ -46,7 +30,7 @@ url: "http://localhost:8081"
 - assertVisible:
     id: "component.exploration360.panel"
 - assertVisible: "Exploration 360°"
-- assertVisible: "0/3 angles explored|0/3 angles explorés"
+- assertVisible: "1/3 angles explored|1/3 angles explorés"
 - scrollUntilVisible:
     element:
       id: "btn.dreamCategory.symbols"
@@ -89,10 +73,20 @@ url: "http://localhost:8081"
       - runFlow:
           when:
             visible:
-              id: "btn.exploreDream"
+              id: "btn.dream.primaryCta"
           commands:
             - tapOn:
-                id: "btn.exploreDream"
+                id: "btn.dream.primaryCta"
+                retryTapIfNoChange: true
+                waitToSettleTimeoutMs: 500
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible:
+              id: "component.dreamDetail.actionCard"
+          commands:
+            - tapOn:
+                id: "component.dreamDetail.actionCard"
                 retryTapIfNoChange: true
                 waitToSettleTimeoutMs: 500
             - waitForAnimationToEnd
