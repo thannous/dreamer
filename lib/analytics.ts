@@ -13,6 +13,7 @@ export type AnalyticsEventMap = {
   };
   recording_saved: {
     input_mode: 'voice' | 'text';
+    capture_context: 'fresh' | 'remembered';
     duration_bucket: '0_15s' | '16_60s' | '61_180s' | '181s_plus' | 'unknown';
     transcript_length_bucket: '0_100' | '101_500' | '501_1500' | '1501_plus';
   };

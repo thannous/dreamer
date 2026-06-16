@@ -27,6 +27,8 @@ const {
     'saveRecordingVoiceStatusHidden',
     'getRecordingOnboardingCompleted',
     'saveRecordingOnboardingCompleted',
+    'getRememberedDreamPromptDismissed',
+    'saveRememberedDreamPromptDismissed',
     'getCachedRemoteDreams',
     'saveCachedRemoteDreams',
     'clearRemoteDreamStorage',
