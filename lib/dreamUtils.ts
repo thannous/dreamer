@@ -8,6 +8,7 @@ import type {
   ChatMessage,
   DreamApproximatePeriod,
   DreamAnalysis,
+  DreamMemoryCreatedFrom,
   DreamMemoryMetadata,
   DreamMutation,
   DreamStrongestFragment,
@@ -144,6 +145,10 @@ export function normalizeDreamMemoryMetadata(
   const strongestFragment = DREAM_STRONGEST_FRAGMENTS.has(value.strongestFragment as DreamStrongestFragment)
     ? (value.strongestFragment as DreamStrongestFragment)
     : undefined;
+  const createdFrom =
+    value.createdFrom === 'onboarding' || value.createdFrom === 'journal' || value.createdFrom === 'profile'
+      ? value.createdFrom
+      : undefined;
 
   const normalized: DreamMemoryMetadata = {
     version: 1,
@@ -156,8 +161,10 @@ export function normalizeDreamMemoryMetadata(
     ...(strongestFragment ? { strongestFragment } : {}),
     ...(normalizeShortText(value.lingeringEmotion) ? { lingeringEmotion: normalizeShortText(value.lingeringEmotion) } : {}),
     ...(normalizeShortText(value.recurrenceNote) ? { recurrenceNote: normalizeShortText(value.recurrenceNote) } : {}),
-    ...(value.createdFrom === 'onboarding' || value.createdFrom === 'journal' ? { createdFrom: value.createdFrom } : {}),
-    ...(value.createdFromOnboarding === true ? { createdFromOnboarding: true } : {}),
+    ...(createdFrom ? { createdFrom } : {}),
+    ...(createdFrom === 'onboarding' || (!createdFrom && value.createdFromOnboarding === true)
+      ? { createdFromOnboarding: true }
+      : {}),
   };
 
   const hasRememberedSignals =
@@ -738,6 +745,7 @@ export type BuildRememberedDreamOptions = BuildDraftDreamOptions & {
   strongestFragment?: DreamStrongestFragment;
   lingeringEmotion?: string;
   recurrenceNote?: string;
+  createdFrom?: DreamMemoryCreatedFrom;
   createdFromOnboarding?: boolean;
 };
 
@@ -751,6 +759,7 @@ export function buildRememberedDream(
   options: BuildRememberedDreamOptions
 ): DreamAnalysis {
   const draft = buildDraftDream(transcript, options);
+  const createdFrom = options.createdFrom ?? (options.createdFromOnboarding ? 'onboarding' : 'journal');
   const memory = normalizeDreamMemoryMetadata({
     origin: 'remembered',
     anchorDream: true,
@@ -761,8 +770,8 @@ export function buildRememberedDream(
     strongestFragment: options.strongestFragment,
     lingeringEmotion: options.lingeringEmotion,
     recurrenceNote: options.recurrenceNote,
-    createdFrom: options.createdFromOnboarding ? 'onboarding' : 'journal',
-    createdFromOnboarding: options.createdFromOnboarding,
+    createdFrom,
+    createdFromOnboarding: createdFrom === 'onboarding',
   });
 
   return {

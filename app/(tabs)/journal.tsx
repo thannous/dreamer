@@ -603,7 +603,7 @@ export default function JournalListScreen() {
     });
     router.push({
       pathname: '/recording',
-      params: { intent: 'remembered' },
+      params: { intent: 'remembered', source: 'journal' },
     });
   }, []);
   const advancedFiltersMaxHeight = Math.min(760, Math.max(420, Math.round(height * 0.86)));

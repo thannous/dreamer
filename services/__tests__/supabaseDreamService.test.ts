@@ -242,7 +242,7 @@ describe('supabaseDreamService', () => {
       rememberedKind: 'old',
       approximatePeriod: 'childhood',
       strongestFragment: 'place',
-      createdFrom: 'onboarding',
+      createdFrom: 'profile',
     };
     const singleMock = jest.fn().mockResolvedValueOnce({
       data: buildRow({ memory }),

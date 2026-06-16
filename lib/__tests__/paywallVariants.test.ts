@@ -4,6 +4,12 @@ import { getTranslator, loadTranslations } from '@/lib/i18n';
 
 const variantKeys = [
   'subscription.paywall.variant.analysis_limit.title',
+  'subscription.paywall.variant.analysis_limit.subtitle',
+  'subscription.paywall.variant.analysis_limit.card_title',
+  'subscription.paywall.variant.analysis_limit.card_subtitle',
+  'subscription.paywall.variant.analysis_limit.feature_1',
+  'subscription.paywall.variant.analysis_limit.feature_2',
+  'subscription.paywall.variant.analysis_limit.feature_3',
   'subscription.paywall.variant.analysis_limit.cta',
   'subscription.paywall.variant.analysis_cta.title',
   'subscription.paywall.variant.exploration_limit.title',

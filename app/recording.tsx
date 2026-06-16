@@ -54,6 +54,8 @@ import { buildPaywallHref } from '@/lib/paywallRoute';
 import {
   getRecordingActivationPromptState,
   type RecordingCaptureIntent,
+  resolveRememberedCaptureSource,
+  type RememberedCaptureSource,
 } from '@/lib/recordingActivation';
 import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
 import { TID } from '@/lib/testIDs';
@@ -115,7 +117,7 @@ export default function RecordingScreen() {
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
   const referenceImagesEnabled = isReferenceImagesEnabled();
-  const recordingParams = useLocalSearchParams<{ intent?: string }>();
+  const recordingParams = useLocalSearchParams<{ intent?: string; source?: string }>();
 
   const [transcript, setTranscript] = useState('');
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
@@ -153,6 +155,8 @@ export default function RecordingScreen() {
   const [rememberedDreamPromptDismissed, setRememberedDreamPromptDismissed] = useState(false);
   const [rememberedDreamPromptLoaded, setRememberedDreamPromptLoaded] = useState(false);
   const [captureIntent, setCaptureIntent] = useState<CaptureIntent>('fresh');
+  const [rememberedCaptureSource, setRememberedCaptureSource] =
+    useState<RememberedCaptureSource>('journal');
   const [inputMode, setInputMode] = useState<RecordingInputModePreference>('text');
   const [inputModePreferenceLoaded, setInputModePreferenceLoaded] = useState(false);
   const recordingOnboardingViewportRef = useRef<View | null>(null);
@@ -429,7 +433,7 @@ export default function RecordingScreen() {
         return buildRememberedDream(text, {
           defaultTitle: t('recording.remembered.default_title'),
           rememberedKind: 'old',
-          createdFromOnboarding: true,
+          createdFrom: rememberedCaptureSource,
         });
       }
 
@@ -437,7 +441,7 @@ export default function RecordingScreen() {
         defaultTitle: t('recording.draft.default_title'),
       });
     },
-    [captureIntent, trimmedTranscript, t]
+    [captureIntent, rememberedCaptureSource, trimmedTranscript, t]
   );
 
   const resetComposer = useCallback(() => {
@@ -447,6 +451,7 @@ export default function RecordingScreen() {
     setLengthWarning('');
     setVoiceFallbackReason(null);
     setCaptureIntent('fresh');
+    setRememberedCaptureSource('journal');
     baseTranscriptRef.current = '';
   }, [analysisProgress]);
 
@@ -1175,6 +1180,7 @@ export default function RecordingScreen() {
     }
 
     setCaptureIntent('remembered');
+    setRememberedCaptureSource('onboarding');
     dismissRememberedDreamPrompt();
     setVoiceFallbackReason(null);
     setInputMode('text');
@@ -1190,6 +1196,7 @@ export default function RecordingScreen() {
   ]);
   const handleRememberedDreamTonight = useCallback(() => {
     setCaptureIntent('fresh');
+    setRememberedCaptureSource('journal');
     dismissRememberedDreamPrompt();
   }, [dismissRememberedDreamPrompt]);
   const handleRememberedDreamDismiss = useCallback(() => {
@@ -1203,6 +1210,7 @@ export default function RecordingScreen() {
       }
 
       setCaptureIntent('remembered');
+      setRememberedCaptureSource(resolveRememberedCaptureSource(recordingParams.source));
       setRememberedDreamPromptDismissed(true);
       setVoiceFallbackReason(null);
       setInputMode('text');
@@ -1213,6 +1221,7 @@ export default function RecordingScreen() {
       focusTranscriptEnd,
       persistInputModePreference,
       recordingParams.intent,
+      recordingParams.source,
       transcript,
       trimmedTranscript,
     ])
