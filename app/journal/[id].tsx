@@ -243,8 +243,8 @@ export default function JournalDetailScreen() {
   const { canAnalyzeNow, canAnalyze, tier, usage, loading: quotaLoading, quotaStatus } = useQuota();
   const { t } = useTranslation();
   const referenceImagesEnabled = isReferenceImagesEnabled();
-  const isPremium = tier === 'premium' || tier === 'plus';
-  const canGenerateImage = !quotaLoading && canAnalyzeNow && (isPremium || tier === 'guest');
+  const isPlus = tier === 'plus';
+  const canGenerateImage = !quotaLoading && canAnalyzeNow && (isPlus || tier === 'guest');
   const canUseReference = referenceImagesEnabled && Boolean(user);
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
@@ -839,7 +839,7 @@ export default function JournalDetailScreen() {
       const allowed = canAnalyzeNow || (await canAnalyze());
       if (!allowed) {
         // Don't show for paid users
-        if (isPremium) return false;
+        if (isPlus) return false;
         setQuotaSheetMode(!user && quotaStatus?.isUpgraded ? 'login' : 'quota');
         setShowQuotaLimitSheet(true);
         return false;
@@ -856,7 +856,7 @@ export default function JournalDetailScreen() {
       );
       return false;
     }
-  }, [canAnalyze, canAnalyzeNow, isPremium, quotaStatus?.isUpgraded, showAnalysisNotice, t, user]);
+  }, [canAnalyze, canAnalyzeNow, isPlus, quotaStatus?.isUpgraded, showAnalysisNotice, t, user]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
     setShowQuotaLimitSheet(false);
@@ -910,11 +910,11 @@ export default function JournalDetailScreen() {
             return;
           }
           // Show quota limit sheet with upgrade CTA for non-paid users
-          if (!isPremium) {
+          if (!isPlus) {
             setQuotaSheetMode('quota');
             setShowQuotaLimitSheet(true);
           } else {
-            // Premium users should never hit quota errors, but show a notice if they do
+            // Plus users should never hit quota errors, but show a notice if they do.
             showAnalysisNotice(
               t('common.error_title'),
               error.userMessage || t('common.unknown_error'),
@@ -929,7 +929,7 @@ export default function JournalDetailScreen() {
         setIsAnalyzing(false);
       }
     },
-    [analyzeDream, dream, ensureAnalyzeAllowed, isPremium, language, showAnalysisNotice, t, tier]
+    [analyzeDream, dream, ensureAnalyzeAllowed, isPlus, language, showAnalysisNotice, t, tier]
   );
 
   const handleAnalyze = useCallback(async () => {
@@ -1746,7 +1746,7 @@ export default function JournalDetailScreen() {
 
           {/* Content Card - Overlaps image */}
           <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
-            {/* Premium Metadata Card */}
+            {/* Plus metadata card */}
             {!isEditing && renderMetadataCard()}
             {renderSyncStatusCard()}
 
@@ -2091,7 +2091,7 @@ export default function JournalDetailScreen() {
         {/* Hidden composite image generator for sharing */}
         {dream && shareImage && (
           <View style={{ position: 'absolute', left: -10000, top: 0, width: 1080, height: 1350 }}>
-            <DreamShareImage ref={shareImageRef} dream={dream} isPremium={isPremium} t={t} />
+            <DreamShareImage ref={shareImageRef} dream={dream} isPlus={isPlus} t={t} />
           </View>
         )}
         </KeyboardAvoidingView>
@@ -2304,7 +2304,7 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
     // shadow: applied via theme shadows.xl
   },
-  // Premium Metadata Card with Glassmorphism
+  // Plus metadata card
   metadataCard: {
     // backgroundColor and borderColor: set dynamically
     borderTopLeftRadius: 24,

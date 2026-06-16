@@ -308,12 +308,10 @@ describe('QuotaError', () => {
     const guestError = new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, 'guest');
     const freeError = new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, 'free');
     const plusError = new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, 'plus');
-    const premiumError = new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, 'premium');
 
     expect(guestError.canUpgrade).toBe(true);
     expect(freeError.canUpgrade).toBe(true);
     expect(plusError.canUpgrade).toBe(false);
-    expect(premiumError.canUpgrade).toBe(false);
   });
 
   describe('EXPLORATION_LIMIT_REACHED', () => {
@@ -331,8 +329,8 @@ describe('QuotaError', () => {
       expect(error.userMessage).toContain('Plus');
     });
 
-    it('should generate message for premium exploration limit', () => {
-      const error = new QuotaError(QuotaErrorCode.EXPLORATION_LIMIT_REACHED, 'premium');
+    it('should generate message for Plus exploration limit', () => {
+      const error = new QuotaError(QuotaErrorCode.EXPLORATION_LIMIT_REACHED, 'plus');
 
       expect(error.userMessage).toBe('Exploration limit reached.');
     });
@@ -353,8 +351,8 @@ describe('QuotaError', () => {
       expect(error.userMessage).toContain('Plus');
     });
 
-    it('should generate message for premium message limit', () => {
-      const error = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, 'premium');
+    it('should generate message for Plus message limit', () => {
+      const error = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, 'plus');
 
       expect(error.userMessage).toBe('Message limit reached.');
     });

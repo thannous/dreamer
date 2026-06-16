@@ -6,6 +6,7 @@ import { isMockModeEnabled } from '@/lib/env';
 import { getCurrentUser, onAuthChange, wasAccountCreatedOnDevice } from '@/lib/auth';
 import { createCircuitBreaker } from '@/lib/circuitBreaker';
 import { consumeStayOnSettingsIntent } from '@/lib/navigationIntents';
+import { normalizeSubscriptionTier } from '@/lib/quotaTier';
 import type { SubscriptionTier } from '@/lib/types';
 import { clearRemoteDreamStorage } from '@/services/storageService';
 import { supabase } from '@/lib/supabase';
@@ -316,6 +317,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
 
   const setUserTierLocally = useCallback((input: LocalSubscriptionCacheInput) => {
     const cache = typeof input === 'string' ? { tier: input } : input;
+    const tier = normalizeSubscriptionTier(cache.tier, 'free');
 
     setUser((prev) => {
       if (!prev) return prev;
@@ -324,7 +326,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         ...prev,
         app_metadata: {
           ...(prev.app_metadata ?? {}),
-          tier: cache.tier,
+          tier,
           ...(cache.version !== undefined && { subscription_version: cache.version }),
           ...(cache.isActive !== undefined && { subscription_is_active: cache.isActive }),
           ...(cache.productId !== undefined && { subscription_product_id: cache.productId }),
@@ -334,7 +336,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         },
         user_metadata: {
           ...(prev.user_metadata ?? {}),
-          tier: cache.tier,
+          tier,
         },
       } as User;
     });

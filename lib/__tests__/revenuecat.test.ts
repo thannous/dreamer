@@ -23,7 +23,7 @@ describe('revenuecat utils', () => {
       expect(getActiveEntitlement(info)).toBeNull();
     });
 
-    it('given premium entitlement returns it', () => {
+    it('given legacy Plus entitlement alias returns it', () => {
       const info: CustomerInfoLike = {
         entitlements: {
           active: {
@@ -110,7 +110,7 @@ describe('revenuecat utils', () => {
       expect(mapTierFromCustomerInfo(info)).toBe('free');
     });
 
-    it('given active premium entitlement returns plus tier', () => {
+    it('given active legacy Plus entitlement alias returns plus tier', () => {
       const info: CustomerInfoLike = {
         entitlements: {
           active: {
@@ -259,7 +259,7 @@ describe('revenuecat utils', () => {
           price: 4.99,
           priceString: '$4.99',
           currencyCode: 'USD',
-          title: 'Monthly Premium',
+          title: 'Monthly Plus',
           description: 'Full access to all features',
         },
       };
@@ -272,7 +272,7 @@ describe('revenuecat utils', () => {
         price: 4.99,
         priceFormatted: '$4.99',
         currency: 'USD',
-        title: 'Monthly Premium',
+        title: 'Monthly Plus',
         description: 'Full access to all features',
       });
     });
@@ -284,7 +284,7 @@ describe('revenuecat utils', () => {
         product: {
           priceString: '$39.99',
           currencyCode: 'USD',
-          title: 'Annual Premium',
+          title: 'Annual Plus',
           description: 'Best value!',
         },
       };
@@ -320,7 +320,7 @@ describe('revenuecat utils', () => {
         product: {
           priceString: '4,99 €',
           currencyCode: 'EUR',
-          title: 'Mensuel Premium',
+          title: 'Mensuel Plus',
           description: 'Accès complet',
         },
       };

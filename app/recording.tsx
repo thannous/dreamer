@@ -485,7 +485,7 @@ export default function RecordingScreen() {
     if (analyzePromptDream) setAnalyzePromptDream(null);
 
     // Don't show upsell for paid tiers (edge case: network error)
-    if (modeToUse === 'limit' && (tier === 'plus' || tier === 'premium')) return false;
+    if (modeToUse === 'limit' && tier === 'plus') return false;
 
     setQuotaSheetMode(modeToUse);
     setQuotaSheetMessage(message);
@@ -1663,7 +1663,7 @@ function RecordingOverlays({
   onQuotaLimitSecondary?: () => void;
   onQuotaLimitLink?: () => void;
   quotaSheetMode: 'limit' | 'error' | 'login';
-  tier: 'guest' | 'free' | 'plus' | 'premium';
+  tier: 'guest' | 'free' | 'plus';
   usageLimit?: number | null;
   quotaSheetMessage: string;
   isPersisting: boolean;

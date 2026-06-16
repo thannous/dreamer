@@ -40,7 +40,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
   }
 
   private async getMonthlyLimitsFromDb(tier: UserTier): Promise<TierMonthlyLimits> {
-    if (tier === 'plus' || tier === 'premium') {
+    if (tier === 'plus') {
       return { analysis: null, exploration: null, messagesPerDream: null };
     }
 
@@ -394,12 +394,12 @@ export class SupabaseQuotaProvider implements QuotaProvider {
     const reasons: string[] = [];
     if (!canAnalyze) {
       if (tier === 'free') {
-        reasons.push('You have reached your free monthly analysis limit. Upgrade to premium for unlimited analyses!');
+        reasons.push('You have reached your free monthly analysis limit. Upgrade to Noctalia Plus for unlimited analyses!');
       }
     }
     if (!canExplore && target) {
       if (tier === 'free') {
-        reasons.push('You have reached your free monthly exploration limit. Upgrade to premium for unlimited exploration!');
+        reasons.push('You have reached your free monthly exploration limit. Upgrade to Noctalia Plus for unlimited exploration!');
       }
     }
 

@@ -1,6 +1,7 @@
 import type { User } from '@supabase/supabase-js';
 
 import { getCurrentUser } from '@/lib/auth';
+import { normalizeSubscriptionTier } from '@/lib/quotaTier';
 import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 
 type SubscriptionStatusListener = (status: SubscriptionStatus) => void;
@@ -20,7 +21,7 @@ const mockPackages: PurchasePackage[] = [
     priceFormatted: '$4.99',
     currency: 'USD',
     title: 'Monthly',
-    description: 'Unlock premium dream analysis every month.',
+    description: 'Unlock Noctalia Plus dream analysis every month.',
   },
   {
     id: 'mock_annual',
@@ -43,18 +44,13 @@ function getDefaultStatus(): SubscriptionStatus {
 }
 
 function mapTierFromUser(user: User | null): SubscriptionTier {
-  const tier = (user?.app_metadata?.tier ?? user?.user_metadata?.tier) as SubscriptionTier | undefined;
-  if (tier === 'premium' || tier === 'plus' || tier === 'guest') {
-    return tier;
-  }
-  if ((user?.user_metadata as any)?.profile === 'premium') {
-    return 'plus';
-  }
+  const tier = normalizeSubscriptionTier(user?.app_metadata?.tier ?? user?.user_metadata?.tier, 'free');
+  if (tier === 'plus' || tier === 'guest') return tier;
   return 'free';
 }
 
 function buildStatusFromTier(tier: SubscriptionTier): SubscriptionStatus {
-  const isActive = tier === 'plus' || tier === 'premium';
+  const isActive = tier === 'plus';
   return {
     tier,
     isActive,
@@ -73,7 +69,7 @@ async function syncStatusWithCurrentUser(): Promise<SubscriptionStatus> {
   }
 
   // If the user has purchased (currentStatus is paid), preserve that state for this user
-  if (currentStatus?.tier === 'plus' || currentStatus?.tier === 'premium') {
+  if (currentStatus?.tier === 'plus') {
     return currentStatus;
   }
 
@@ -118,7 +114,7 @@ export async function loadOfferings(): Promise<PurchasePackage[]> {
 function setTier(tier: SubscriptionTier, productId: string | null, userId: string | null): SubscriptionStatus {
   const status: SubscriptionStatus = {
     tier,
-    isActive: tier === 'plus' || tier === 'premium',
+    isActive: tier === 'plus',
     expiryDate: null,
     productId,
   };

@@ -87,12 +87,11 @@ export function useQuota(targetInput?: QuotaTargetInput) {
       }
     }
 
-    const optimisticPaidTier =
-      supabaseTier === 'plus' || supabaseTier === 'premium' ? supabaseTier : null;
+    const optimisticPaidTier = supabaseTier === 'plus' ? supabaseTier : null;
 
     return subscriptionStatus?.tier ?? optimisticPaidTier ?? 'free';
   }, [subscriptionStatus?.tier, subscriptionStatus?.expiryDate, subscriptionStatus?.willRenew, supabaseTier, user?.id]);
-  const isPaidTier = tier === 'plus' || tier === 'premium';
+  const isPaidTier = tier === 'plus';
   const isGuestBootstrapReady = user?.id ? true : guestBootstrapState.status === 'ready';
 
   /**

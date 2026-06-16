@@ -61,7 +61,7 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
 });
 
 const userFree = { id: 'u1', user_metadata: { tier: 'free' } } as unknown as User;
-const userPremium = { id: 'u2', user_metadata: { tier: 'premium' } } as unknown as User;
+const userPlus = { id: 'u2', user_metadata: { tier: 'plus' } } as unknown as User;
 
 describe('Quota rules by user tier (MockQuotaProvider)', () => {
   beforeEach(() => {
@@ -152,7 +152,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     await expect(provider4.canExploreDream({ dreamId: 200 }, userFree, 'free')).resolves.toBe(true);
   });
 
-  it('Premium: unlimited analyses, explorations, and messages', async () => {
+  it('Plus: unlimited analyses, explorations, and messages', async () => {
     const heavy: DreamAnalysis[] = Array.from({ length: 50 }).map((_, i) =>
       buildDream({
         id: i + 1000,
@@ -169,10 +169,10 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     mockGetSavedDreams.mockResolvedValue(heavy);
 
     const provider = new MockQuotaProvider();
-    await expect(provider.canAnalyzeDream(userPremium, 'premium')).resolves.toBe(true);
-    await expect(provider.canExploreDream({ dreamId: 12345 }, userPremium, 'premium')).resolves.toBe(true);
-    await expect(provider.canSendChatMessage({ dreamId: heavy[0].id }, userPremium, 'premium')).resolves.toBe(true);
-    const status = await provider.getQuotaStatus(userPremium, 'premium');
+    await expect(provider.canAnalyzeDream(userPlus, 'plus')).resolves.toBe(true);
+    await expect(provider.canExploreDream({ dreamId: 12345 }, userPlus, 'plus')).resolves.toBe(true);
+    await expect(provider.canSendChatMessage({ dreamId: heavy[0].id }, userPlus, 'plus')).resolves.toBe(true);
+    const status = await provider.getQuotaStatus(userPlus, 'plus');
     expect(status.usage.analysis.limit).toBeNull();
     expect(status.usage.exploration.limit).toBeNull();
     expect(status.usage.messages.limit).toBeNull();

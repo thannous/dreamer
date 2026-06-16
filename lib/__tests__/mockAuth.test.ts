@@ -96,14 +96,14 @@ describe('mockAuth', () => {
 
     it('given plus profile when signing in then returns plus user with verified email', async () => {
       // Given
-      const profile = 'premium';
+      const profile = 'plus';
 
       // When
       const user = await signInWithProfile(profile);
 
       // Then
-      expect(user.email).toBe('mock.premium@dreamer.app');
-      expect(user.user_metadata?.profile).toBe('premium');
+      expect(user.email).toBe('mock.plus@dreamer.app');
+      expect(user.user_metadata?.profile).toBe('plus');
       expect(user.user_metadata?.tier).toBe('plus');
       expect(user.email_confirmed_at).toBeTruthy();
       expect(mockSetPreloadDreamsEnabled).toHaveBeenCalledWith(true);
@@ -228,7 +228,7 @@ describe('mockAuth', () => {
     it('given signed in user when updating tier then returns user with new tier', async () => {
       // Given
       await signInWithProfile('new');
-      const newTier = 'premium';
+      const newTier = 'plus';
 
       // When
       const user = await updateUserTier(newTier);
@@ -241,7 +241,7 @@ describe('mockAuth', () => {
     it('given signed out user when updating tier then returns null', async () => {
       // Given
       await signOut();
-      const newTier = 'premium';
+      const newTier = 'plus';
 
       // When
       const user = await updateUserTier(newTier);
@@ -253,7 +253,7 @@ describe('mockAuth', () => {
     it('given user with existing metadata when updating tier then preserves other metadata', async () => {
       // Given
       await signInWithProfile('existing');
-      const newTier = 'premium';
+      const newTier = 'plus';
 
       // When
       const user = await updateUserTier(newTier);

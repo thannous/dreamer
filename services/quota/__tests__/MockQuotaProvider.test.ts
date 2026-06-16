@@ -249,7 +249,7 @@ describe('MockQuotaProvider', () => {
       expect(canExplore).toBe(false); // Usage persists; guest limit reached
     });
 
-    it('given premium user when checking exploration then always allows', async () => {
+    it('given plus user when checking exploration then always allows', async () => {
       // Given
       const dreams = [buildDream({ id: 123 })];
       mockGetSavedDreams.mockResolvedValueOnce(dreams);
@@ -257,10 +257,10 @@ describe('MockQuotaProvider', () => {
       const provider = new MockQuotaProvider();
 
       // When
-      const canExplore = await provider.canExploreDream({ dreamId: 123 }, null, 'premium');
+      const canExplore = await provider.canExploreDream({ dreamId: 123 }, null, 'plus');
 
       // Then
-      expect(canExplore).toBe(true); // Premium has unlimited exploration
+      expect(canExplore).toBe(true); // Plus has unlimited exploration
     });
 
     it('given guest user beyond limits when checking exploration then denies', async () => {
@@ -281,7 +281,7 @@ describe('MockQuotaProvider', () => {
   });
 
   describe('analysis validation', () => {
-    it('given premium user when checking analysis then always allows', async () => {
+    it('given plus user when checking analysis then always allows', async () => {
       // Given
       const dreams = Array(100).fill(null).map((_, i) =>
         buildDream({ id: i + 1, isAnalyzed: true, analyzedAt: Date.now() })
@@ -291,10 +291,10 @@ describe('MockQuotaProvider', () => {
       const provider = new MockQuotaProvider();
 
       // When
-      const canAnalyze = await provider.canAnalyzeDream(null, 'premium');
+      const canAnalyze = await provider.canAnalyzeDream(null, 'plus');
 
       // Then
-      expect(canAnalyze).toBe(true); // Premium has unlimited analysis
+      expect(canAnalyze).toBe(true); // Plus has unlimited analysis
     });
 
     it('given free user within limits when checking analysis then allows', async () => {

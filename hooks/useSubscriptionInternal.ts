@@ -4,6 +4,7 @@ import type { User } from '@supabase/supabase-js';
 import { Platform } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
 import { isMockModeEnabled } from '@/lib/env';
+import { normalizeSubscriptionTier } from '@/lib/quotaTier';
 import { isEntitlementExpired } from '@/lib/revenuecat';
 import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 import { quotaService } from '@/services/quotaService';
@@ -142,15 +143,11 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
   const userId = user?.id;
   // Extract user tier independently from user object reference
   // to avoid re-triggering effects when user object changes
-  const userTierRaw = (
-    (user?.app_metadata?.tier as SubscriptionTier | undefined) ||
-    (user?.user_metadata?.tier as SubscriptionTier | undefined) ||
+  const userTier: SubscriptionTier = normalizeSubscriptionTier(
+    user?.app_metadata?.tier ?? user?.user_metadata?.tier,
     'free'
   );
-  const userTier: SubscriptionTier = userTierRaw === 'premium' ? 'plus' : userTierRaw;
-  const appMetadataTierRaw = user?.app_metadata?.tier as SubscriptionTier | undefined;
-  const appMetadataTier: SubscriptionTier | undefined =
-    appMetadataTierRaw === 'premium' ? 'plus' : appMetadataTierRaw;
+  const appMetadataTier: SubscriptionTier = normalizeSubscriptionTier(user?.app_metadata?.tier, 'free');
 
   useEffect(() => {
     if (lastUserIdRef.current === userId) return;
@@ -183,12 +180,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
   }, [appMetadataTier, userId]);
 
   const getTierFromUser = useCallback((input?: User | null): SubscriptionTier => {
-    const tier = (
-      (input?.app_metadata?.tier as SubscriptionTier | undefined) ||
-      (input?.user_metadata?.tier as SubscriptionTier | undefined) ||
-      'free'
-    );
-    return tier === 'premium' ? 'plus' : tier;
+    return normalizeSubscriptionTier(input?.app_metadata?.tier ?? input?.user_metadata?.tier, 'free');
   }, []);
 
   const getSubscriptionVersionFromUser = useCallback((input?: User | null): number | null => {

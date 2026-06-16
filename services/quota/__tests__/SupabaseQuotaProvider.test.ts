@@ -54,7 +54,7 @@ jest.mock('../../../lib/quotaReset', () => ({
 }));
 
 const freeUser = { id: 'free-user', app_metadata: { tier: 'free' } } as any;
-const premiumUser = { id: 'premium-user', app_metadata: { tier: 'premium' } } as any;
+const plusUser = { id: 'plus-user', app_metadata: { tier: 'plus' } } as any;
 const guestUser = null;
 
 describe('SupabaseQuotaProvider', () => {
@@ -392,13 +392,13 @@ describe('SupabaseQuotaProvider', () => {
       expect(canAnalyze).toBe(false);
     });
 
-    it('given premium user when checking analysis then always allows', async () => {
+    it('given plus user when checking analysis then always allows', async () => {
       // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(100);
 
       // When
-      const canAnalyze = await provider.canAnalyzeDream(premiumUser, 'premium');
+      const canAnalyze = await provider.canAnalyzeDream(plusUser, 'plus');
 
       // Then
       expect(canAnalyze).toBe(true);
@@ -428,13 +428,13 @@ describe('SupabaseQuotaProvider', () => {
       expect(canExplore).toBe(false);
     });
 
-    it('given premium user when checking exploration then always allows', async () => {
+    it('given plus user when checking exploration then always allows', async () => {
       // Given
       const p = provider as any;
       p.getUsedExplorationCount = jest.fn().mockResolvedValue(100);
 
       // When
-      const canExplore = await provider.canExploreDream({ dreamId: 123 }, premiumUser, 'premium');
+      const canExplore = await provider.canExploreDream({ dreamId: 123 }, plusUser, 'plus');
 
       // Then
       expect(canExplore).toBe(true);
@@ -466,7 +466,7 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.canExplore).toBe(true);
     });
 
-    it('given premium tier when getting status then shows unlimited limits', async () => {
+    it('given plus tier when getting status then shows unlimited limits', async () => {
       // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(100);
@@ -474,13 +474,13 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedMessagesCount = jest.fn().mockResolvedValue(20);
 
       // When
-      const status = await provider.getQuotaStatus(premiumUser, 'premium', { dreamId: 1 });
+      const status = await provider.getQuotaStatus(plusUser, 'plus', { dreamId: 1 });
 
       // Then
-      expect(status.tier).toBe('premium');
+      expect(status.tier).toBe('plus');
       expect(status.usage.analysis.limit).toBeNull();
       expect(status.usage.exploration.limit).toBeNull();
-      expect(status.usage.messages.limit).toBeNull(); // Premium has unlimited messages
+      expect(status.usage.messages.limit).toBeNull(); // Plus has unlimited messages
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
     });
@@ -687,27 +687,27 @@ describe('SupabaseQuotaProvider', () => {
     });
   });
 
-  describe('premium tier unlimited access', () => {
-    it('given premium user when checking analysis then always allows', async () => {
+  describe('plus tier unlimited access', () => {
+    it('given plus user when checking analysis then always allows', async () => {
       // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(1000);
 
       // When
-      const result = await provider.canAnalyzeDream(premiumUser, 'premium');
+      const result = await provider.canAnalyzeDream(plusUser, 'plus');
 
       // Then
       expect(result).toBe(true);
     });
 
-    it('given premium user when checking exploration then always allows', async () => {
+    it('given plus user when checking exploration then always allows', async () => {
       // Given
       const p = provider as any;
       p.resolveDream = jest.fn().mockResolvedValue(undefined);
       p.getUsedExplorationCount = jest.fn().mockResolvedValue(1000);
 
       // When
-      const result = await provider.canExploreDream({ dreamId: 1 }, premiumUser, 'premium');
+      const result = await provider.canExploreDream({ dreamId: 1 }, plusUser, 'plus');
 
       // Then
       expect(result).toBe(true);
@@ -838,7 +838,7 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.canExplore).toBe(true);
     });
 
-    it('given premium tier when getting status then shows unlimited limits', async () => {
+    it('given plus tier when getting status then shows unlimited limits', async () => {
       // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(100);
@@ -846,13 +846,13 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedMessagesCount = jest.fn().mockResolvedValue(20);
 
       // When
-      const status = await provider.getQuotaStatus(premiumUser, 'premium', { dreamId: 1 });
+      const status = await provider.getQuotaStatus(plusUser, 'plus', { dreamId: 1 });
 
       // Then
-      expect(status.tier).toBe('premium');
+      expect(status.tier).toBe('plus');
       expect(status.usage.analysis.limit).toBeNull();
       expect(status.usage.exploration.limit).toBeNull();
-      expect(status.usage.messages.limit).toBeNull(); // Premium has unlimited messages
+      expect(status.usage.messages.limit).toBeNull(); // Plus has unlimited messages
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
     });
@@ -882,19 +882,19 @@ describe('SupabaseQuotaProvider', () => {
   describe('critical non-regression: tier parameter usage (RevenueCat SSOT)', () => {
     it('should use tier parameter instead of user.app_metadata.tier', async () => {
       // CRITICAL TEST: Verifies that tier comes from parameter (RevenueCat), not from user metadata
-      // Given: User has 'premium' in app_metadata, but we pass 'free' as tier parameter
-      const userWithPremiumMetadata = { id: 'user-123', app_metadata: { tier: 'premium' } } as any;
+      // Given: User has 'plus' in app_metadata, but we pass 'free' as tier parameter
+      const userWithPlusMetadata = { id: 'user-123', app_metadata: { tier: 'plus' } } as any;
       const p = provider as any;
       p.getMonthlyAnalysisCount = jest.fn().mockResolvedValue(2);
       p.getMonthlyExplorationCount = jest.fn().mockResolvedValue(0);
       p.getUsedMessagesCount = jest.fn().mockResolvedValue(0);
 
       // Act: Pass 'free' tier explicitly (simulating RevenueCat saying user is free)
-      const status = await provider.getQuotaStatus(userWithPremiumMetadata, 'free', { dreamId: 1 });
+      const status = await provider.getQuotaStatus(userWithPlusMetadata, 'free', { dreamId: 1 });
 
-      // Assert: Provider should use 'free' tier (parameter), NOT 'premium' (metadata)
+      // Assert: Provider should use 'free' tier (parameter), NOT 'plus' (metadata)
       expect(status.tier).toBe('free');
-      // Free tier has 3 monthly analyses, premium would be unlimited (null)
+      // Free tier has 3 monthly analyses, plus would be unlimited (null)
       expect(status.usage.analysis.limit).toBe(3);
       expect(status.usage.analysis.used).toBe(2);
       expect(status.usage.analysis.remaining).toBe(1);
@@ -903,22 +903,22 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.canAnalyze).toBe(true);
     });
 
-    it('should use tier parameter even when user has free in metadata but premium passed', async () => {
-      // Verify the opposite: user has 'free' in metadata, but tier='premium' passed
+    it('should use tier parameter even when user has free in metadata but plus passed', async () => {
+      // Verify the opposite: user has 'free' in metadata, but tier='plus' passed
       const userWithFreeMetadata = { id: 'user-456', app_metadata: { tier: 'free' } } as any;
       const p = provider as any;
       p.getMonthlyAnalysisCount = jest.fn().mockResolvedValue(100);
       p.getMonthlyExplorationCount = jest.fn().mockResolvedValue(0);
       p.getUsedMessagesCount = jest.fn().mockResolvedValue(0);
 
-      // Act: Pass 'premium' tier explicitly
-      const status = await provider.getQuotaStatus(userWithFreeMetadata, 'premium', { dreamId: 1 });
+      // Act: Pass 'plus' tier explicitly
+      const status = await provider.getQuotaStatus(userWithFreeMetadata, 'plus', { dreamId: 1 });
 
-      // Assert: Provider should use 'premium' tier (parameter), showing unlimited
-      expect(status.tier).toBe('premium');
-      // Premium tier has unlimited analyses
+      // Assert: Provider should use 'plus' tier (parameter), showing unlimited
+      expect(status.tier).toBe('plus');
+      // Plus tier has unlimited analyses
       expect(status.usage.analysis.limit).toBeNull();
-      // Can analyze should always be true for premium
+      // Can analyze should always be true for plus
       expect(status.canAnalyze).toBe(true);
     });
   });

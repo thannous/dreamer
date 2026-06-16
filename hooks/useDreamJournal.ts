@@ -115,8 +115,7 @@ export const useDreamJournal = () => {
 
       // If Supabase already marks the user as paid, treat them as paid immediately.
       // RevenueCat still overrides once it resolves.
-      const optimisticPaidTier =
-        supabaseTier === 'plus' || supabaseTier === 'premium' ? supabaseTier : null;
+      const optimisticPaidTier = supabaseTier === 'plus' ? supabaseTier : null;
 
       return subscriptionStatus?.tier ?? optimisticPaidTier ?? 'free';
     },
