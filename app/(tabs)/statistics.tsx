@@ -36,10 +36,12 @@ import { useDreamStatistics } from '@/hooks/useDreamStatistics';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
+import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { buildDreamProfile, type DreamProfile } from '@/lib/dreamProfile';
 import { getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamStatsInsight, type DreamStatsInsightKind } from '@/lib/dreamStatsInsight';
+import { buildPaywallHref } from '@/lib/paywallRoute';
 import { splitLabelText } from '@/lib/pieLabelUtils';
 import type { DreamAnalysis, DreamType } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
@@ -467,7 +469,9 @@ type DreamProfileCardProps = {
   mode: 'light' | 'dark';
   t: ReturnType<typeof useTranslation>['t'];
   formatNumber: ReturnType<typeof useLocaleFormatting>['formatNumber'];
+  canShowPremiumSignals: boolean;
   onPress: () => void;
+  onUpgradePress: () => void;
 };
 
 const DreamProfileCard = memo(function DreamProfileCard({
@@ -476,7 +480,9 @@ const DreamProfileCard = memo(function DreamProfileCard({
   mode,
   t,
   formatNumber,
+  canShowPremiumSignals,
   onPress,
+  onUpgradePress,
 }: DreamProfileCardProps) {
   const topType = profile.topTypes[0];
   const topTheme = profile.topThemes[0];
@@ -626,27 +632,87 @@ const DreamProfileCard = memo(function DreamProfileCard({
           ))}
         </View>
 
-        <View style={styles.profileSignalGrid}>
-          {signalItems.map((item) => (
-            <View
-              key={item.id}
-              style={[
-                styles.profileSignal,
-                {
-                  borderColor: colors.divider,
-                  backgroundColor: mode === 'dark' ? `${colors.backgroundCard}8F` : `${colors.backgroundCard}AA`,
-                },
-              ]}
-            >
-              <Text style={[styles.profileSignalLabel, { color: colors.textSecondary }]}>
-                {item.label}
-              </Text>
-              <Text style={[styles.profileSignalValue, { color: colors.textPrimary }]} numberOfLines={2}>
-                {item.value}
+        {canShowPremiumSignals ? (
+          <View style={styles.profileSignalGrid}>
+            {signalItems.map((item) => (
+              <View
+                key={item.id}
+                style={[
+                  styles.profileSignal,
+                  {
+                    borderColor: colors.divider,
+                    backgroundColor: mode === 'dark' ? `${colors.backgroundCard}8F` : `${colors.backgroundCard}AA`,
+                  },
+                ]}
+              >
+                <Text style={[styles.profileSignalLabel, { color: colors.textSecondary }]}>
+                  {item.label}
+                </Text>
+                <Text style={[styles.profileSignalValue, { color: colors.textPrimary }]} numberOfLines={2}>
+                  {item.value}
+                </Text>
+              </View>
+            ))}
+          </View>
+        ) : (
+          <View
+            style={[
+              styles.profilePlusPreview,
+              {
+                borderColor: `${colors.accent}55`,
+                backgroundColor: mode === 'dark' ? `${colors.accent}18` : `${colors.accent}10`,
+              },
+            ]}
+            testID={TID.Component.DreamProfilePlusPreview}
+          >
+            <View style={styles.profilePlusPreviewHeader}>
+              <IconSymbol name="lock.fill" size={16} color={colors.accent} />
+              <Text style={[styles.profilePlusPreviewTitle, { color: colors.textPrimary }]}>
+                {t('stats.profile.plus_preview.title')}
               </Text>
             </View>
-          ))}
-        </View>
+            <Text style={[styles.profilePlusPreviewBody, { color: colors.textSecondary }]}>
+              {t('stats.profile.plus_preview.body')}
+            </Text>
+            <View style={styles.profileSignalGrid}>
+              {signalItems.map((item) => (
+                <View
+                  key={item.id}
+                  style={[
+                    styles.profileSignal,
+                    {
+                      borderColor: colors.divider,
+                      backgroundColor: mode === 'dark' ? `${colors.backgroundCard}70` : `${colors.backgroundCard}9A`,
+                    },
+                  ]}
+                >
+                  <Text style={[styles.profileSignalLabel, { color: colors.textSecondary }]}>
+                    {item.label}
+                  </Text>
+                  <Text style={[styles.profileSignalLockedValue, { color: colors.accent }]} numberOfLines={1}>
+                    {t('stats.profile.plus_preview.locked_value')}
+                  </Text>
+                </View>
+              ))}
+            </View>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('stats.profile.plus_preview.cta')}
+              testID={TID.Button.DreamProfileUpgradeCta}
+              onPress={onUpgradePress}
+              style={({ pressed }) => [
+                styles.profileUpgradeButton,
+                { borderColor: `${colors.accent}66` },
+                pressed && styles.pressedButton,
+              ]}
+            >
+              <Text style={[styles.profileUpgradeButtonText, { color: colors.accent }]}>
+                {t('stats.profile.plus_preview.cta')}
+              </Text>
+              <IconSymbol name="arrow.right" size={15} color={colors.accent} />
+            </Pressable>
+          </View>
+        )}
       </View>
     </StaticFlatGlassCard>
   );
@@ -660,6 +726,7 @@ export default function StatisticsScreen() {
   const { colors, mode } = useTheme();
   const { width } = useWindowDimensions();
   const scrollPerf = useScrollIdle();
+  const { isActive: isPlusActive } = useSubscription();
   useClearWebFocus();
   const { formatNumber, formatPercent } = useLocaleFormatting();
   const [selectedStatsPeriod, setSelectedStatsPeriod] = useState<StatsPeriod>('all');
@@ -673,9 +740,13 @@ export default function StatisticsScreen() {
   const pieMetrics = useMemo(() => getPieMetrics(width), [width]);
   const dreamProfile = useMemo(() => buildDreamProfile(dreams), [dreams]);
   const statsInsight = useMemo(() => getDreamStatsInsight(stats), [stats]);
+  const canShowDreamProfileSignals = isPlusActive;
   const handleDreamProfilePress = useCallback(() => {
     router.push(DREAM_PROFILE_NEXT_ROUTE[dreamProfile.nextAction]);
   }, [dreamProfile.nextAction]);
+  const handleDreamProfileUpgradePress = useCallback(() => {
+    router.push(buildPaywallHref('settings'));
+  }, []);
   const handleStatsInsightPress = useCallback(() => {
     router.push(statsInsight.route);
   }, [statsInsight.route]);
@@ -922,7 +993,9 @@ export default function StatisticsScreen() {
                   mode={mode}
                   t={t}
                   formatNumber={formatNumber}
+                  canShowPremiumSignals={canShowDreamProfileSignals}
                   onPress={handleDreamProfilePress}
+                  onUpgradePress={handleDreamProfileUpgradePress}
                 />
                 <StatsInsightCard
                   colors={colors}
@@ -1002,7 +1075,9 @@ export default function StatisticsScreen() {
                 mode={mode}
                 t={t}
                 formatNumber={formatNumber}
+                canShowPremiumSignals={canShowDreamProfileSignals}
                 onPress={handleDreamProfilePress}
+                onUpgradePress={handleDreamProfileUpgradePress}
               />
             </View>
 
@@ -1628,6 +1703,51 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     fontFamily: Fonts.spaceGrotesk.bold,
     textTransform: 'capitalize',
+  },
+  profilePlusPreview: {
+    borderWidth: 1,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    padding: 14,
+    gap: 12,
+  },
+  profilePlusPreviewHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  profilePlusPreviewTitle: {
+    flex: 1,
+    fontSize: 15,
+    lineHeight: 20,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  profilePlusPreviewBody: {
+    fontSize: 13,
+    lineHeight: 18,
+    fontFamily: Fonts.spaceGrotesk.regular,
+  },
+  profileSignalLockedValue: {
+    fontSize: 14,
+    lineHeight: 18,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  profileUpgradeButton: {
+    minHeight: 42,
+    borderRadius: 15,
+    borderCurve: 'continuous',
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    alignSelf: 'flex-start',
+  },
+  profileUpgradeButtonText: {
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    textAlign: 'center',
   },
   profileButton: {
     minHeight: 48,
