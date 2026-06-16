@@ -20,6 +20,7 @@ export interface ChatMessage {
   createdAt?: number;
   meta?: {
     category?: DreamChatCategory;
+    exploration360Synthesis?: boolean;
     isError?: boolean;
     retry?: {
       messageText: string;

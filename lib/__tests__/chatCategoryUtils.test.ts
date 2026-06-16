@@ -30,13 +30,21 @@ describe('chatCategoryUtils', () => {
     expect(isCategoryExplored(history, 'symbols')).toBe(true);
   });
 
-  it('matches legacy prompt text without meta (any supported language)', () => {
-    const promptEn =
-      'Tell me about the symbolic meanings in my dream. What do the key symbols represent?';
-    const history: ChatMessage[] = [
-      { id: 'm1', role: 'user', text: promptEn },
-      { id: 'm2', role: 'model', text: 'Answer' },
+  it('matches legacy prompt text without meta in every supported language', () => {
+    const prompts = [
+      'Tell me about the symbolic meanings in my dream. What do the key symbols represent?',
+      'Parle-moi des significations symboliques de mon rêve. Que représentent les symboles clés ?',
+      'Cuéntame sobre los significados simbólicos de mi sueño. ¿Qué representan los símbolos clave?',
+      'Erzähle mir von den symbolischen Bedeutungen in meinem Traum. Was repräsentieren die wichtigsten Symbole?',
+      'Parlami dei significati simbolici del mio sogno. Cosa rappresentano i simboli chiave?',
     ];
-    expect(isCategoryExplored(history, 'symbols')).toBe(true);
+
+    for (const prompt of prompts) {
+      const history: ChatMessage[] = [
+        { id: 'm1', role: 'user', text: prompt },
+        { id: 'm2', role: 'model', text: 'Answer' },
+      ];
+      expect(isCategoryExplored(history, 'symbols')).toBe(true);
+    }
   });
 });
