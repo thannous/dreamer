@@ -1,0 +1,42 @@
+url: "http://localhost:8081"
+---
+- launchApp
+- runFlow:
+    when:
+      visible:
+        id: btn.recording.unforgettableDream.skip
+    commands:
+      - tapOn:
+          id: btn.recording.unforgettableDream.skip
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: btn.recording.onboarding.skip
+    commands:
+      - tapOn:
+          id: btn.recording.onboarding.skip
+      - waitForAnimationToEnd
+- openLink: http://localhost:8081/settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes"
+    timeout: 30000
+- runFlow:
+    when:
+      visible:
+        id: btn.auth.signOut
+    commands:
+      - tapOn:
+          id: btn.auth.signOut
+      - waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: btn.mockProfile.existing
+    direction: DOWN
+    visibilityPercentage: 60
+- tapOn:
+    id: btn.mockProfile.existing
+- extendedWaitUntil:
+    visible: "mock\\.existing@dreamer\\.app"
+    timeout: 30000
+- assertVisible: "mock\\.existing@dreamer\\.app"
