@@ -23,6 +23,7 @@ import {
 } from '@/components/recording/RecordingSheets';
 import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
+import { UnforgettableDreamPromptCard } from '@/components/recording/UnforgettableDreamPromptCard';
 import { RECORDING } from '@/constants/appConfig';
 import { GradientColors } from '@/constants/gradients';
 import { TAB_BAR_HEIGHT } from '@/constants/layout';
@@ -40,7 +41,10 @@ import {
   getTranscriptLengthBucket,
   trackProductEvent,
 } from '@/lib/analytics';
-import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
+import {
+  buildDraftDream as buildDraftDreamPure,
+  buildRememberedDream,
+} from '@/lib/dreamUtils';
 import { isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
@@ -59,8 +63,10 @@ import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
 import {
   getRecordingInputModePreference,
   getRecordingOnboardingCompleted,
+  getRememberedDreamPromptDismissed,
   saveRecordingInputModePreference,
   saveRecordingOnboardingCompleted,
+  saveRememberedDreamPromptDismissed,
 } from '@/services/storageService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
@@ -88,6 +94,8 @@ type VoiceFallbackReason =
   | 'no_speech'
   | 'start_failed'
   | null;
+
+type CaptureIntent = 'fresh' | 'remembered';
 
 const formatRecordingDuration = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
@@ -137,6 +145,11 @@ export default function RecordingScreen() {
   const [recordingOnboardingStep, setRecordingOnboardingStep] = useState(0);
   const [recordingOnboardingDismissed, setRecordingOnboardingDismissed] = useState(false);
   const [recordingOnboardingLoaded, setRecordingOnboardingLoaded] = useState(false);
+  const [rememberedDreamPromptDismissed, setRememberedDreamPromptDismissed] = useState(false);
+  const [rememberedDreamPromptLoaded, setRememberedDreamPromptLoaded] = useState(false);
+  const [captureIntent, setCaptureIntent] = useState<CaptureIntent>('fresh');
+  const [inputMode, setInputMode] = useState<RecordingInputModePreference>('text');
+  const [inputModePreferenceLoaded, setInputModePreferenceLoaded] = useState(false);
   const recordingOnboardingViewportRef = useRef<View | null>(null);
   const [recordingOnboardingTargetRect, setRecordingOnboardingTargetRect] =
     useState<RecordingSpotlightRect | null>(null);
@@ -164,6 +177,14 @@ export default function RecordingScreen() {
     hasAnimal?: boolean | null;
     imagePrompt?: string;
   } | null>(null);
+
+  const persistInputModePreference = useCallback((preference: RecordingInputModePreference) => {
+    saveRecordingInputModePreference(preference).catch((error) => {
+      if (__DEV__) {
+        console.warn('[Recording] Failed to save input mode preference', error);
+      }
+    });
+  }, []);
 
   const resolveOfflineModelPrompt = useCallback(() => {
     const resolve = offlineModelPromptResolveRef.current;
@@ -221,6 +242,22 @@ export default function RecordingScreen() {
         }
       });
 
+    getRememberedDreamPromptDismissed()
+      .then((dismissed) => {
+        if (isActive) {
+          setRememberedDreamPromptDismissed(dismissed);
+          setRememberedDreamPromptLoaded(true);
+        }
+      })
+      .catch((error) => {
+        if (isActive) {
+          setRememberedDreamPromptLoaded(true);
+        }
+        if (__DEV__) {
+          console.warn('[Recording] Failed to load remembered dream prompt preference', error);
+        }
+      });
+
     return () => {
       isActive = false;
     };
@@ -254,15 +291,6 @@ export default function RecordingScreen() {
   const textInputRef = useRef<TextInput | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
   const lastInputSourceRef = useRef<RecordingInputModePreference>('text');
-  const [inputMode, setInputMode] = useState<RecordingInputModePreference>('text');
-  const [inputModePreferenceLoaded, setInputModePreferenceLoaded] = useState(false);
-  const persistInputModePreference = useCallback((preference: RecordingInputModePreference) => {
-    saveRecordingInputModePreference(preference).catch((error) => {
-      if (__DEV__) {
-        console.warn('[Recording] Failed to save input mode preference', error);
-      }
-    });
-  }, []);
   const lengthLimitMessage = useCallback(
     () =>
       t('recording.alert.length_limit', { limit: RECORDING.MAX_TRANSCRIPT_CHARS }) ||
@@ -389,11 +417,22 @@ export default function RecordingScreen() {
   );
 
   const buildDraftDream = useCallback(
-    (transcriptText?: string): DreamAnalysis =>
-      buildDraftDreamPure(transcriptText ?? trimmedTranscript, {
+    (transcriptText?: string): DreamAnalysis => {
+      const text = transcriptText ?? trimmedTranscript;
+
+      if (captureIntent === 'remembered') {
+        return buildRememberedDream(text, {
+          defaultTitle: t('recording.remembered.default_title'),
+          rememberedKind: 'old',
+          createdFromOnboarding: true,
+        });
+      }
+
+      return buildDraftDreamPure(text, {
         defaultTitle: t('recording.draft.default_title'),
-      }),
-    [trimmedTranscript, t]
+      });
+    },
+    [captureIntent, trimmedTranscript, t]
   );
 
   const resetComposer = useCallback(() => {
@@ -402,6 +441,7 @@ export default function RecordingScreen() {
     analysisProgress.reset();
     setLengthWarning('');
     setVoiceFallbackReason(null);
+    setCaptureIntent('fresh');
     baseTranscriptRef.current = '';
   }, [analysisProgress]);
 
@@ -742,6 +782,7 @@ export default function RecordingScreen() {
       setDraftDream(savedDream);
       void trackProductEvent('recording_saved', {
         input_mode: lastInputSourceRef.current,
+        capture_context: captureIntent,
         duration_bucket: getRecordingDurationBucket(
           recordingStartedAtRef.current ? Date.now() - recordingStartedAtRef.current : null
         ),
@@ -766,20 +807,21 @@ export default function RecordingScreen() {
     } finally {
       setIsPersisting(false);
     }
-		  }, [
-		    addDream,
-		    buildDraftDream,
-		    dreams.length,
-		    draftDream,
-        isRecordingRef,
-		    language,
-		    navigateAfterSave,
-		    resetComposer,
-		    stopRecording,
-		    t,
-		    transcript,
-		    user,
-		  ]);
+  }, [
+    addDream,
+    buildDraftDream,
+    captureIntent,
+    dreams.length,
+    draftDream,
+    isRecordingRef,
+    language,
+    navigateAfterSave,
+    resetComposer,
+    stopRecording,
+    t,
+    transcript,
+    user,
+  ]);
 
 
   const handleFirstDreamDismiss = useCallback(() => {
@@ -1109,6 +1151,45 @@ export default function RecordingScreen() {
     setTimeout(focus, 80);
     setTimeout(focus, 240);
   }, []);
+  const dismissRememberedDreamPrompt = useCallback(() => {
+    setRememberedDreamPromptDismissed(true);
+    saveRememberedDreamPromptDismissed(true).catch((error) => {
+      if (__DEV__) {
+        console.warn('[Recording] Failed to save remembered dream prompt preference', error);
+      }
+    });
+  }, []);
+  const handleRememberedDreamStart = useCallback(async () => {
+    if (isRecordingRef.current) {
+      recordingTransitionRef.current = true;
+      try {
+        await stopRecording({ silent: true });
+      } finally {
+        recordingTransitionRef.current = false;
+      }
+    }
+
+    setCaptureIntent('remembered');
+    dismissRememberedDreamPrompt();
+    setVoiceFallbackReason(null);
+    setInputMode('text');
+    persistInputModePreference('text');
+    focusTranscriptEnd(baseTranscriptRef.current || transcript);
+  }, [
+    dismissRememberedDreamPrompt,
+    focusTranscriptEnd,
+    isRecordingRef,
+    persistInputModePreference,
+    stopRecording,
+    transcript,
+  ]);
+  const handleRememberedDreamTonight = useCallback(() => {
+    setCaptureIntent('fresh');
+    dismissRememberedDreamPrompt();
+  }, [dismissRememberedDreamPrompt]);
+  const handleRememberedDreamDismiss = useCallback(() => {
+    dismissRememberedDreamPrompt();
+  }, [dismissRememberedDreamPrompt]);
   const analyzePromptTranscript = analyzePromptDream?.transcript?.trim();
   const voiceStatus = useMemo(() => {
     if (isRecording) {
@@ -1270,6 +1351,12 @@ export default function RecordingScreen() {
     && inputModePreferenceLoaded
     && isInitialRecordingState
     && !recordingOnboardingDismissed;
+  const showRememberedDreamPrompt = rememberedDreamPromptLoaded
+    && inputModePreferenceLoaded
+    && isInitialRecordingState
+    && recordingOnboardingDismissed
+    && !rememberedDreamPromptDismissed
+    && captureIntent === 'fresh';
   const recordingOnboardingTargets = useMemo<RecordingOnboardingTarget[]>(
     () => (inputMode === 'voice' ? ['voice', 'text'] : ['text', 'voice']),
     [inputMode]
@@ -1474,6 +1561,15 @@ export default function RecordingScreen() {
                   )
                 ) : null}
 
+                {showRememberedDreamPrompt ? (
+                  <UnforgettableDreamPromptCard
+                    disabled={interactionDisabled || isPreparingRecording}
+                    onStartRememberedDream={handleRememberedDreamStart}
+                    onStartFreshTonight={handleRememberedDreamTonight}
+                    onDismiss={handleRememberedDreamDismiss}
+                  />
+                ) : null}
+
                 <RecordingInputModeSelect
                   value={inputMode}
                   disabled={interactionDisabled || isPreparingRecording}
@@ -1488,7 +1584,9 @@ export default function RecordingScreen() {
                   disabled={interactionDisabled}
                   lengthWarning={lengthWarning}
                   instructionText={
-                    inputMode === 'voice'
+                    captureIntent === 'remembered'
+                      ? t('recording.remembered.active_instruction')
+                      : inputMode === 'voice'
                       ? t('recording.instructions')
                       : t('recording.instructions.text') || "Ou transcris ici les murmures de ton subconscient..."
                   }
@@ -1505,7 +1603,11 @@ export default function RecordingScreen() {
                   }
                   onSpotlightLayout={handleRecordingOnboardingTargetLayout}
                   spotlightMeasureKey={recordingOnboardingMeasureKey}
-                  placeholder={t('recording.placeholder')}
+                  placeholder={
+                    captureIntent === 'remembered'
+                      ? t('recording.remembered.placeholder')
+                      : t('recording.placeholder')
+                  }
                   autoFocus={false}
                   onSwitchToVoice={switchToVoiceMode}
                   onClear={handleClearTranscript}
@@ -1525,8 +1627,16 @@ export default function RecordingScreen() {
               <RecordingFooter
                 onSave={handleSaveDream}
                 isSaveDisabled={isSaveDisabled}
-                saveButtonLabel={t('recording.button.save_dream')}
-                saveButtonAccessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
+                saveButtonLabel={
+                  captureIntent === 'remembered'
+                    ? t('recording.remembered.save_button')
+                    : t('recording.button.save_dream')
+                }
+                saveButtonAccessibilityLabel={
+                  captureIntent === 'remembered'
+                    ? t('recording.remembered.save_button_accessibility')
+                    : t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })
+                }
               />
             </View>
           </ScrollView>

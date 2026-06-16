@@ -18,6 +18,7 @@ const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
 const RECORDING_INPUT_MODE_PREFERENCE_KEY = 'gemini_dream_journal_recording_input_mode_preference';
 const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
 const RECORDING_ONBOARDING_COMPLETED_KEY = 'gemini_dream_journal_recording_onboarding_completed';
+const REMEMBERED_DREAM_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_remembered_dream_prompt_dismissed';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
@@ -339,6 +340,7 @@ describe('storageServiceReal', () => {
       await storage.saveRecordingInputModePreference('voice');
       await storage.saveRecordingVoiceStatusHidden(true);
       await storage.saveRecordingOnboardingCompleted(true);
+      await storage.saveRememberedDreamPromptDismissed(true);
       await storage.saveRitualPreference('focus');
       await storage.saveRitualStepProgress({ stepIndex: 2, completedAt: 123 } as any);
       await storage.saveFirstLaunchCompleted(true);
@@ -349,6 +351,7 @@ describe('storageServiceReal', () => {
       expect(localStorage.getItem(RECORDING_INPUT_MODE_PREFERENCE_KEY)).toBe(JSON.stringify('voice'));
       expect(localStorage.getItem(RECORDING_VOICE_STATUS_HIDDEN_KEY)).toBe(JSON.stringify(true));
       expect(localStorage.getItem(RECORDING_ONBOARDING_COMPLETED_KEY)).toBe(JSON.stringify(true));
+      expect(localStorage.getItem(REMEMBERED_DREAM_PROMPT_DISMISSED_KEY)).toBe(JSON.stringify(true));
       expect(localStorage.getItem(RITUAL_PREFERENCE_KEY)).toBe(JSON.stringify('focus'));
       expect(localStorage.getItem(RITUAL_PROGRESS_KEY)).toContain('"stepIndex":2');
       expect(localStorage.getItem(FIRST_LAUNCH_COMPLETED_KEY)).toBe(JSON.stringify(true));
@@ -359,6 +362,7 @@ describe('storageServiceReal', () => {
       expect(await storage.getRecordingInputModePreference()).toBe('voice');
       expect(await storage.getRecordingVoiceStatusHidden()).toBe(true);
       expect(await storage.getRecordingOnboardingCompleted()).toBe(true);
+      expect(await storage.getRememberedDreamPromptDismissed()).toBe(true);
       expect(await storage.getRitualPreference()).toBe('focus');
       expect(await storage.getRitualStepProgress()).toEqual({ stepIndex: 2, completedAt: 123 });
       expect(await storage.getFirstLaunchCompleted()).toBe(true);

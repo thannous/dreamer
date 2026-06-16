@@ -98,6 +98,20 @@ const onboardingTourKeys = [
   'recording.onboarding.done',
 ] as const;
 
+const rememberedDreamPromptKeys = [
+  'recording.remembered.default_title',
+  'recording.remembered.placeholder',
+  'recording.remembered.active_instruction',
+  'recording.remembered.save_button',
+  'recording.remembered.save_button_accessibility',
+  'recording.remembered_prompt.eyebrow',
+  'recording.remembered_prompt.title',
+  'recording.remembered_prompt.body',
+  'recording.remembered_prompt.yes',
+  'recording.remembered_prompt.tonight',
+  'recording.remembered_prompt.skip',
+] as const;
+
 const settingsOnboardingKeys = [
   'settings.onboarding.title',
   'settings.onboarding.description',
@@ -219,6 +233,21 @@ describe('Recording i18n - bottom sheets', () => {
 
       for (const key of onboardingTourKeys) {
         const value = t(key, { current: 1, total: 3 });
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('has translations for remembered dream onboarding in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of rememberedDreamPromptKeys) {
+        const value = t(key);
         expect(value).not.toBe(key);
         expect(typeof value).toBe('string');
         expect(value.length).toBeGreaterThan(0);

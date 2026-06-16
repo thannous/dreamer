@@ -47,6 +47,7 @@ describe('analytics', () => {
     });
     await trackProductEvent('recording_saved', {
       input_mode: 'voice',
+      capture_context: 'fresh',
       duration_bucket: '16_60s',
       transcript_length_bucket: '101_500',
     });
@@ -149,6 +150,7 @@ describe('analytics', () => {
 
     await trackProductEvent('recording_saved', {
       input_mode: 'text',
+      capture_context: 'remembered',
       duration_bucket: 'unknown',
       transcript_length_bucket: '0_100',
     });
@@ -159,6 +161,7 @@ describe('analytics', () => {
       'recording_saved',
       {
         input_mode: 'text',
+        capture_context: 'remembered',
         duration_bucket: 'unknown',
         transcript_length_bucket: '0_100',
       }
