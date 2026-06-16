@@ -1,5 +1,6 @@
 import { FlatGlassCard, GlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
+import { Exploration360Panel } from '@/components/chat/Exploration360Panel';
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
@@ -9,6 +10,7 @@ import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { isDreamExplored } from '@/lib/dreamUsage';
+import { getExploration360Progress, hasExploration360Synthesis } from '@/lib/exploration360';
 import { MotiView } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
 import type { DreamChatCategory } from '@/lib/types';
@@ -61,6 +63,8 @@ export default function DreamCategoriesScreen() {
   useClearWebFocus();
   const dream = dreams.find((d) => d.id === Number(id));
   const hasExistingChat = isDreamExplored(dream);
+  const exploration360Progress = getExploration360Progress(dream);
+  const hasSynthesis = hasExploration360Synthesis(dream);
 
   const gradientColors = mode === 'dark'
     ? (['#131022', '#4A3B5F'] as const)
@@ -80,6 +84,13 @@ export default function DreamCategoriesScreen() {
     router.push({
       pathname: `/dream-chat/[id]`,
       params: { id: id, category: categoryId },
+    });
+  };
+
+  const handleSynthesisPress = () => {
+    router.push({
+      pathname: `/dream-chat/[id]`,
+      params: { id: id, mode: 'synthesis' },
     });
   };
 
@@ -121,6 +132,14 @@ export default function DreamCategoriesScreen() {
               </View>
             </View>
           </FlatGlassCard>
+
+          <Exploration360Panel
+            progress={exploration360Progress}
+            hasSynthesis={hasSynthesis}
+            onSynthesisPress={handleSynthesisPress}
+            animationDelay={160}
+            style={styles.exploration360Panel}
+          />
 
           {/* Category Cards — Vertical GlassCards */}
           <View style={styles.categoriesContainer}>
@@ -237,6 +256,10 @@ const styles = StyleSheet.create({
   categoriesContainer: {
     paddingHorizontal: 16,
     gap: 10,
+  },
+  exploration360Panel: {
+    marginHorizontal: 16,
+    marginBottom: 16,
   },
   categoryCard: {
     alignItems: 'center',

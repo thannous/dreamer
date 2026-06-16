@@ -1,4 +1,5 @@
 import { Composer } from '@/components/chat/Composer';
+import { Exploration360Panel } from '@/components/chat/Exploration360Panel';
 import { LoadingIndicator, MessagesList } from '@/components/chat/MessagesList';
 import { GradientColors } from '@/constants/gradients';
 import { Fonts } from '@/constants/theme';
@@ -16,6 +17,7 @@ import { getDreamAnalysisState } from '@/lib/dreamUsage';
 import { generateUUID } from '@/lib/dreamUtils';
 import { isChatDebugEnabled, isMockModeEnabled } from '@/lib/env';
 import { getUserErrorMessage, QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { getExploration360SynthesisStatus } from '@/lib/exploration360';
 import { getImageConfig } from '@/lib/imageUtils';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { buildPaywallHref } from '@/lib/paywallRoute';
@@ -40,6 +42,11 @@ import { Pressable as GesturePressable } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 type CategoryType = DreamChatCategory;
+type SendMessageOptions = {
+  baseMessages?: ChatMessage[];
+  category?: Exclude<CategoryType, 'general'>;
+  meta?: ChatMessage['meta'];
+};
 
 const LEGACY_DRAFT_PREFIXES = ['Here is my dream:'];
 
@@ -94,7 +101,7 @@ const chatHistoryMigrationCompletedByDreamId = new Map<number, number>();
 
 export default function DreamChatScreen() {
   const { t } = useTranslation();
-  const { id, category } = useLocalSearchParams<{ id: string; category?: string }>();
+  const { id, category, mode: routeMode } = useLocalSearchParams<{ id: string; category?: string; mode?: string }>();
   const { dreams, updateDream } = useDreams();
   const { colors, mode, shadows } = useTheme();
   const { user } = useAuth();
@@ -103,6 +110,7 @@ export default function DreamChatScreen() {
   const debugChat = __DEV__ && isChatDebugEnabled();
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
+  const exploration360Status = useMemo(() => getExploration360SynthesisStatus(dream), [dream]);
   const { quotaStatus, canExplore, canChat, tier } = useQuota({ dreamId, dream });
   const networkState = useNetworkState();
   const hasNetwork = useMemo(() => {
@@ -125,6 +133,7 @@ export default function DreamChatScreen() {
   const quotaCheckTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
   const lastCategorySentKeyRef = useRef<string | null>(null);
+  const lastSynthesisSentKeyRef = useRef<string | null>(null);
   const requestAbortRef = useRef<AbortController | null>(null);
   const sendInFlightRef = useRef(false);
 
@@ -394,7 +403,7 @@ export default function DreamChatScreen() {
     async (
       messageText?: string,
       displayText?: string,
-      options?: { baseMessages?: ChatMessage[]; category?: Exclude<CategoryType, 'general'> }
+      options?: SendMessageOptions
     ) => {
       const textToSend = messageText || inputText.trim();
       if (!textToSend || !dream) return;
@@ -515,6 +524,7 @@ export default function DreamChatScreen() {
             // Add user message
             const userMessage = createChatMessage('user', resolvedDisplayText, {
               category: options?.category,
+              meta: options?.meta,
             });
             const updatedMessages = [...baseMessages, userMessage];
 
@@ -577,6 +587,7 @@ export default function DreamChatScreen() {
       // Add user message (use displayText if provided, otherwise use textToSend)
       const userMessage = createChatMessage('user', resolvedDisplayText, {
         category: options?.category,
+        meta: options?.meta,
       });
       const updatedMessages = [...baseMessages, userMessage];
       setMessages(updatedMessages);
@@ -741,6 +752,68 @@ export default function DreamChatScreen() {
     },
     [isLoading, messages, sendMessage]
   );
+
+  const sendSynthesisRequest = useCallback(
+    (baseMessages?: ChatMessage[]) => {
+      if (!dream || !exploration360Status.canGenerateSynthesis || isLoading) {
+        return;
+      }
+
+      sendMessage(
+        t('dream_chat.prompt.synthesis_360'),
+        t('dream_chat.exploration360.synthesis.display'),
+        {
+          baseMessages,
+          meta: { exploration360Synthesis: true },
+        },
+      );
+    },
+    [dream, exploration360Status.canGenerateSynthesis, isLoading, sendMessage, t],
+  );
+
+  const handleSynthesisPress = useCallback(() => {
+    sendSynthesisRequest();
+  }, [sendSynthesisRequest]);
+
+  useEffect(() => {
+    if (routeMode !== 'synthesis' || !dream || !exploration360Status.canGenerateSynthesis) {
+      return;
+    }
+    if (!hasQuotaCheckClearance || isQuotaGateBlocked || isLoading || messageLimitReached) {
+      return;
+    }
+
+    const hasStoredHistory = Boolean(dream.chatHistory?.length);
+    const messagesReady = messages.length > 0 || !hasStoredHistory;
+    if (!messagesReady) {
+      return;
+    }
+
+    const synthesisKey = `${dream.id}:synthesis`;
+    if (lastSynthesisSentKeyRef.current === synthesisKey) {
+      return;
+    }
+
+    lastSynthesisSentKeyRef.current = synthesisKey;
+    const timeoutId = setTimeout(() => {
+      const baseMessages = messages.length > 0 ? messages : dream.chatHistory ?? [];
+      sendSynthesisRequest(baseMessages);
+    }, 500);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [
+    dream,
+    exploration360Status.canGenerateSynthesis,
+    hasQuotaCheckClearance,
+    isLoading,
+    isQuotaGateBlocked,
+    messageLimitReached,
+    messages,
+    routeMode,
+    sendSynthesisRequest,
+  ]);
 
   const handleQuickCategory = (categoryId: string) => {
     if (isLoading) return;
@@ -921,6 +994,14 @@ export default function DreamChatScreen() {
       <View style={styles.decoRuleContainer}>
         <View style={[DecoLines.rule, { backgroundColor: colors.accent }]} />
       </View>
+      <Exploration360Panel
+        progress={exploration360Status.progress}
+        hasSynthesis={exploration360Status.hasSynthesis}
+        onSynthesisPress={handleSynthesisPress}
+        synthesisDisabled={isLoading || !hasQuotaCheckClearance || isQuotaGateBlocked || messageLimitReached}
+        animationDelay={160}
+        style={styles.exploration360Panel}
+      />
       {messages.length <= 2 && (
         <View style={styles.quickCategoriesContainer}>
           <Text style={[styles.quickCategoriesLabel, { color: colors.textSecondary }]}>{t('dream_chat.quick_topics')}</Text>
@@ -1229,6 +1310,10 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 8,
     paddingHorizontal: 16,
+  },
+  exploration360Panel: {
+    marginTop: 16,
+    marginHorizontal: 16,
   },
   quickCategoriesLabel: {
     fontSize: 12,

@@ -2,22 +2,28 @@ import type { ChatMessage, DreamChatCategory } from '@/lib/types';
 
 const LEGACY_CATEGORY_PROMPTS: Record<
   Exclude<DreamChatCategory, 'general'>,
-  readonly [en: string, fr: string, es: string]
+  readonly [en: string, fr: string, es: string, de: string, it: string]
 > = {
   symbols: [
     'Tell me about the symbolic meanings in my dream. What do the key symbols represent?',
     'Parle-moi des significations symboliques de mon rêve. Que représentent les symboles clés ?',
     'Cuéntame sobre los significados simbólicos de mi sueño. ¿Qué representan los símbolos clave?',
+    'Erzähle mir von den symbolischen Bedeutungen in meinem Traum. Was repräsentieren die wichtigsten Symbole?',
+    'Parlami dei significati simbolici del mio sogno. Cosa rappresentano i simboli chiave?',
   ],
   emotions: [
     'Help me understand the emotional landscape of this dream. What emotions am I processing?',
     'Aide-moi à comprendre le paysage émotionnel de ce rêve. Quelles émotions suis-je en train de travailler ?',
     'Ayúdame a entender el paisaje emocional de este sueño. ¿Qué emociones estoy procesando?',
+    'Hilf mir, die emotionale Landschaft dieses Traums zu verstehen. Welche Emotionen verarbeite ich?',
+    'Aiutami a capire il panorama emotivo di questo sogno. Quali emozioni sto elaborando?',
   ],
   growth: [
     'What insights for personal growth can you share based on this dream?',
     'Quelles pistes de croissance personnelle vois-tu dans ce rêve ?',
     '¿Qué ideas de crecimiento personal puedes compartir a partir de este sueño?',
+    'Welche Erkenntnisse für persönliches Wachstum kannst du aus diesem Traum ableiten?',
+    'Quali spunti di crescita personale puoi condividere basandoti su questo sogno?',
   ],
 };
 

@@ -22,6 +22,12 @@ export type Exploration360Progress = {
   nextAxis: Exploration360Axis | null;
 };
 
+export type Exploration360SynthesisStatus = {
+  progress: Exploration360Progress;
+  hasSynthesis: boolean;
+  canGenerateSynthesis: boolean;
+};
+
 export const EXPLORATION_360_AXES: readonly Exploration360Axis[] = [
   {
     id: 'symbols',
@@ -62,4 +68,38 @@ export function getExploration360Progress(dream: DreamAnalysis | null | undefine
 
 export function getNextExploration360Axis(dream: DreamAnalysis | null | undefined): Exploration360Axis | null {
   return getExploration360Progress(dream).nextAxis;
+}
+
+export function hasExploration360Synthesis(dream: DreamAnalysis | null | undefined): boolean {
+  const history = dream?.chatHistory;
+  if (!history?.length) return false;
+
+  for (let index = 0; index < history.length; index++) {
+    const message = history[index];
+    if (message.role !== 'user' || !message.meta?.exploration360Synthesis) {
+      continue;
+    }
+
+    for (let replyIndex = index + 1; replyIndex < history.length; replyIndex++) {
+      const reply = history[replyIndex];
+      if (reply.role !== 'model') continue;
+      if (reply.meta?.isError) break;
+      if (reply.text?.trim()) return true;
+    }
+  }
+
+  return false;
+}
+
+export function getExploration360SynthesisStatus(
+  dream: DreamAnalysis | null | undefined
+): Exploration360SynthesisStatus {
+  const progress = getExploration360Progress(dream);
+  const hasSynthesis = hasExploration360Synthesis(dream);
+
+  return {
+    progress,
+    hasSynthesis,
+    canGenerateSynthesis: progress.isComplete && !hasSynthesis,
+  };
 }

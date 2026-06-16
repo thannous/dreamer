@@ -33,6 +33,8 @@ jest.mock('react-native', () => {
       onScrollEndDrag,
       onMomentumScrollBegin,
       onMomentumScrollEnd,
+      numberOfLines,
+      style,
       ...rest
     } = props;
     return {
@@ -67,6 +69,7 @@ jest.mock('react-native', () => {
     },
     StyleSheet: {
       create: <T extends Record<string, any>>(styles: T) => styles,
+      flatten: (style: any) => (Array.isArray(style) ? Object.assign({}, ...style.filter(Boolean)) : style),
       hairlineWidth: 1,
     },
   };
@@ -91,6 +94,7 @@ jest.mock('@/context/ThemeContext', () => ({
       divider: '#3a3357',
       textPrimary: '#fff',
       textSecondary: '#c7c2d7',
+      textOnAccentSurface: '#fff',
     },
     shadows: { xl: {}, lg: {}, md: {}, sm: {} },
   }),
@@ -111,8 +115,14 @@ jest.mock('@/components/ui/icon-symbol', () => ({
 }));
 
 jest.mock('@/components/inspiration/GlassCard', () => ({
-  FlatGlassCard: function MockFlatGlassCard({ children }: { children?: React.ReactNode }) {
-    return <div>{children}</div>;
+  FlatGlassCard: function MockFlatGlassCard({
+    children,
+    testID,
+  }: {
+    children?: React.ReactNode;
+    testID?: string;
+  }) {
+    return <div data-testid={testID}>{children}</div>;
   },
   GlassCard: function MockGlassCard({
     children,
@@ -175,6 +185,52 @@ describe('Dream categories screen', () => {
       pathname: '/dream-chat/[id]',
       params: { id: '123', category: 'symbols' },
     });
+  });
+
+  it('[B] Given a fully explored dream When pressing synthesis Then it opens the synthesis chat route', () => {
+    // Given
+    mockUseLocalSearchParams.mockReturnValue({ id: '123' });
+    mockUseDreams.mockReturnValue({
+      dreams: [
+        {
+          id: 123,
+          title: 'A dream',
+          chatHistory: [
+            { id: 'u1', role: 'user', text: 'symbols', meta: { category: 'symbols' } },
+            { id: 'm1', role: 'model', text: 'Symbol reply' },
+            { id: 'u2', role: 'user', text: 'emotions', meta: { category: 'emotions' } },
+            { id: 'm2', role: 'model', text: 'Emotion reply' },
+            { id: 'u3', role: 'user', text: 'growth', meta: { category: 'growth' } },
+            { id: 'm3', role: 'model', text: 'Growth reply' },
+          ],
+        },
+      ],
+    });
+
+    // When
+    render(<DreamCategoriesScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.Exploration360Synthesis));
+
+    // Then
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: '/dream-chat/[id]',
+      params: { id: '123', mode: 'synthesis' },
+    });
+  });
+
+  it('[S] Given a new dream When rendering Then it shows 360 progress without synthesis CTA', () => {
+    // Given
+    mockUseLocalSearchParams.mockReturnValue({ id: '123' });
+    mockUseDreams.mockReturnValue({
+      dreams: [{ id: 123, title: 'A dream', chatHistory: [] }],
+    });
+
+    // When
+    render(<DreamCategoriesScreen />);
+
+    // Then
+    expect(screen.getByTestId(TID.Component.Exploration360Panel)).toBeTruthy();
+    expect(screen.queryByTestId(TID.Button.Exploration360Synthesis)).toBeNull();
   });
 
   it('[E] Given an unknown dream id When rendering Then it shows a not-found message', () => {
