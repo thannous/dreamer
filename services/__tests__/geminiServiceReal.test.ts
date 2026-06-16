@@ -588,6 +588,29 @@ describe('geminiServiceReal', () => {
       );
       expect(result).toEqual({ text: 'First response' });
     });
+
+    it('sends message metadata for guided Exploration 360 prompts', async () => {
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
+        mockFetchResponse({ text: 'Symbols response' })
+      );
+
+      const dreamId = 'dream-789';
+      await startOrContinueChat(dreamId, 'Tell me about symbols', 'en', undefined, undefined, {
+        messageMeta: { category: 'symbols' },
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          body: JSON.stringify({
+            dreamId,
+            message: 'Tell me about symbols',
+            lang: 'en',
+            messageMeta: { category: 'symbols' },
+          }),
+        })
+      );
+    });
   });
 
   describe('resetChat', () => {
