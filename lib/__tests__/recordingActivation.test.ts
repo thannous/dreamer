@@ -1,4 +1,7 @@
-import { getRecordingActivationPromptState } from '@/lib/recordingActivation';
+import {
+  getRecordingActivationPromptState,
+  resolveRememberedCaptureSource,
+} from '@/lib/recordingActivation';
 
 const baseInput = {
   recordingOnboardingLoaded: true,
@@ -53,5 +56,19 @@ describe('getRecordingActivationPromptState', () => {
       showRememberedDreamPrompt: false,
       showRecordingOnboardingTour: false,
     });
+  });
+});
+
+describe('resolveRememberedCaptureSource', () => {
+  it('defaults remembered route captures to journal instead of onboarding', () => {
+    expect(resolveRememberedCaptureSource(undefined)).toBe('journal');
+    expect(resolveRememberedCaptureSource('')).toBe('journal');
+    expect(resolveRememberedCaptureSource('unknown')).toBe('journal');
+  });
+
+  it('accepts explicit profile and onboarding sources', () => {
+    expect(resolveRememberedCaptureSource('profile')).toBe('profile');
+    expect(resolveRememberedCaptureSource('onboarding')).toBe('onboarding');
+    expect(resolveRememberedCaptureSource(['profile'])).toBe('profile');
   });
 });

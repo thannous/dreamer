@@ -237,7 +237,7 @@ describe('dreamUtils', () => {
         strongestFragment: 'place',
         lingeringEmotion: '  wonder  ',
         recurrenceNote: '  Same hallway  ',
-        createdFrom: 'onboarding',
+        createdFrom: 'profile',
         createdFromOnboarding: true,
         ignored: 'value',
       } as any);
@@ -253,13 +253,24 @@ describe('dreamUtils', () => {
         strongestFragment: 'place',
         lingeringEmotion: 'wonder',
         recurrenceNote: 'Same hallway',
-        createdFrom: 'onboarding',
-        createdFromOnboarding: true,
+        createdFrom: 'profile',
       });
     });
 
     it('given captured metadata without remembered signals when normalizing then returns undefined', () => {
       expect(normalizeDreamMemoryMetadata({ origin: 'captured' })).toBeUndefined();
+    });
+
+    it('keeps legacy onboarding flag when no createdFrom source is present', () => {
+      expect(
+        normalizeDreamMemoryMetadata({
+          origin: 'remembered',
+          createdFromOnboarding: true,
+        })
+      ).toMatchObject({
+        origin: 'remembered',
+        createdFromOnboarding: true,
+      });
     });
 
     it('compares normalized memory metadata instead of raw object identity', () => {
@@ -314,6 +325,35 @@ describe('dreamUtils', () => {
         createdFrom: 'onboarding',
         createdFromOnboarding: true,
       });
+    });
+
+    it('defaults route-created remembered dreams to journal source', () => {
+      const dream = buildRememberedDream('The old garden came back.', {
+        defaultTitle: 'Dream memory',
+        rememberedKind: 'old',
+      });
+
+      expect(dream.memory).toMatchObject({
+        origin: 'remembered',
+        createdFrom: 'journal',
+      });
+      expect(dream.memory?.createdFromOnboarding).toBeUndefined();
+    });
+
+    it('keeps profile-created remembered dreams out of onboarding cohorts', () => {
+      const dream = buildRememberedDream('A recurring staircase.', {
+        defaultTitle: 'Dream memory',
+        rememberedKind: 'recurring',
+        createdFrom: 'profile',
+        createdFromOnboarding: true,
+      });
+
+      expect(dream.memory).toMatchObject({
+        origin: 'remembered',
+        recurring: true,
+        createdFrom: 'profile',
+      });
+      expect(dream.memory?.createdFromOnboarding).toBeUndefined();
     });
 
     it('maps remembered recurring, nightmare and lucid dreams to canonical dream types', () => {

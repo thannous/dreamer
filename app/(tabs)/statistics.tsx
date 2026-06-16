@@ -94,7 +94,7 @@ const STATS_INSIGHT_ICON: Record<DreamStatsInsightKind, IconName> = {
 };
 
 const DREAM_PROFILE_NEXT_ROUTE: Record<DreamProfile['nextAction'], Href> = {
-  add_anchor: '/recording?intent=remembered',
+  add_anchor: '/recording?intent=remembered&source=profile',
   capture_more: '/recording',
   analyze_unanalyzed: '/(tabs)/journal',
   explore_more: '/(tabs)/journal',

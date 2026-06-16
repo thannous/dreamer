@@ -20,6 +20,24 @@ const analyzePromptSheetKeys = [
   'recording.analyze_prompt.sheet.dismiss',
 ] as const;
 
+const analysisLimitSheetKeys = [
+  'recording.alert.analysis_limit.message_free',
+  'recording.analysis_limit.title_guest',
+  'recording.analysis_limit.title_free',
+  'recording.analysis_limit.title_login',
+  'recording.analysis_limit.message_guest',
+  'recording.analysis_limit.message_free',
+  'recording.analysis_limit.message_login',
+  'recording.analysis_limit.feature_analyses',
+  'recording.analysis_limit.feature_explorations',
+  'recording.analysis_limit.feature_priority',
+  'recording.analysis_limit.cta_guest',
+  'recording.analysis_limit.cta_free',
+  'recording.analysis_limit.cta_login',
+  'recording.analysis_limit.journal',
+  'recording.analysis_limit.dismiss',
+] as const;
+
 const recordingStatusKeys = [
   'recording.status.permission_prompt.title',
   'recording.status.permission_prompt.detail',
@@ -143,6 +161,21 @@ describe('Recording i18n - bottom sheets', () => {
 
       for (const key of analyzePromptSheetKeys) {
         const value = t(key);
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('has translations for analysis-limit upsell sheet in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of analysisLimitSheetKeys) {
+        const value = t(key, { limit: 2 });
         expect(value).not.toBe(key);
         expect(typeof value).toBe('string');
         expect(value.length).toBeGreaterThan(0);

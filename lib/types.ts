@@ -56,6 +56,7 @@ export type DreamTheme = 'surreal' | 'mystical' | 'calm' | 'noir';
  * second dream-like model. Missing metadata means a normal captured dream.
  */
 export type DreamMemoryOrigin = 'captured' | 'remembered';
+export type DreamMemoryCreatedFrom = 'onboarding' | 'journal' | 'profile';
 export type RememberedDreamKind =
   | 'old'
   | 'recurring'
@@ -90,7 +91,7 @@ export interface DreamMemoryMetadata {
   strongestFragment?: DreamStrongestFragment;
   lingeringEmotion?: string;
   recurrenceNote?: string;
-  createdFrom?: 'onboarding' | 'journal';
+  createdFrom?: DreamMemoryCreatedFrom;
   createdFromOnboarding?: boolean;
 }
 
