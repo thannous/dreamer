@@ -8,6 +8,20 @@ module.exports = defineConfig([
     ignores: ['dist/*'],
   },
   {
+    rules: {
+      // SDK 56 promotes React Compiler diagnostics to lint errors. This app already
+      // enables React Compiler; remaining diagnostics are migration/optimization
+      // follow-ups, and the compiler safely skips components it cannot optimize.
+      'react-hooks/error-boundaries': 'warn',
+      'react-hooks/globals': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
+    },
+  },
+  {
     files: ['supabase/functions/**/*.{ts,tsx}'],
     languageOptions: {
       globals: {

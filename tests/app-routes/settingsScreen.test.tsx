@@ -86,7 +86,7 @@ jest.doMock('react-native', () => {
   };
 });
 
-jest.doMock('@react-navigation/bottom-tabs', () => ({
+jest.doMock('expo-router/js-tabs', () => ({
   useBottomTabBarHeight: () => 0,
 }));
 

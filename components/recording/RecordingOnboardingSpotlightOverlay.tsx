@@ -152,7 +152,7 @@ export function RecordingOnboardingSpotlightOverlay({
 
 const styles = StyleSheet.create({
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     zIndex: 20,
   },
   dimRect: {

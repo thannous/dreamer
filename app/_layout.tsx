@@ -18,7 +18,7 @@ import {
   SpaceGrotesk_500Medium,
   SpaceGrotesk_700Bold,
 } from '@expo-google-fonts/space-grotesk';
-import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from 'expo-router/react-navigation';
 import { useFonts } from 'expo-font';
 import { useLocales } from 'expo-localization';
 import * as Notifications from 'expo-notifications';

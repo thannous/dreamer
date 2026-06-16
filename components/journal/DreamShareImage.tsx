@@ -104,16 +104,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a0f2b', // Fallback background color (surreal theme)
   },
   backgroundImage: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     width: '100%',
     height: '100%',
   },
   fallbackBackground: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: '#1a0f2b', // Surreal theme background
   },
   gradientOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   textContainer: {
     position: 'absolute',

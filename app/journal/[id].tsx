@@ -1025,7 +1025,7 @@ export default function JournalDetailScreen() {
           <LinearGradient
             colors={gradientColors}
             locations={gradientLocations}
-            style={StyleSheet.absoluteFillObject}
+            style={StyleSheet.absoluteFill}
             pointerEvents="none"
           />
           <KeyboardAvoidingView
@@ -1548,7 +1548,7 @@ export default function JournalDetailScreen() {
         <LinearGradient
           colors={gradientColors}
           locations={gradientLocations}
-          style={StyleSheet.absoluteFillObject}
+          style={StyleSheet.absoluteFill}
           pointerEvents="none"
         />
         <KeyboardAvoidingView
@@ -2289,7 +2289,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(140, 158, 255, 0.05)',
   },
   imageLoadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
@@ -2364,7 +2364,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   metadataOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     justifyContent: 'flex-end',
     paddingHorizontal: 16,
     paddingTop: 24,
@@ -2630,7 +2630,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   transcriptOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     justifyContent: 'flex-end',
     paddingHorizontal: 16,
     paddingTop: 24,

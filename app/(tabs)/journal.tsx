@@ -778,6 +778,7 @@ export default function JournalListScreen() {
                 onPress: handleAtlasSearchPress,
                 accessibilityLabel: t('journal.atlas.search'),
                 active: showAtlasSearch || searchQuery.length > 0,
+                testID: TID.Button.FilterSearch,
               },
               {
                 icon: 'slider.horizontal.3',

@@ -5,6 +5,7 @@ module.exports = {
   ...preset,
   testEnvironment: 'node',
   setupFiles: (preset.setupFiles ?? []).map((entry) =>
+    /@react-native[\\/]jest-preset[\\/]jest[\\/]setup\.js$/.test(entry) ||
     /react-native[\\/]jest[\\/]setup\.js$/.test(entry)
       ? '<rootDir>/tests/jest/react-native-setup.js'
       : entry

@@ -1434,7 +1434,7 @@ export default function RecordingScreen() {
           colors={gradientColors}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFillObject}
+          style={StyleSheet.absoluteFill}
         />
         <AtmosphereBackground />
         <KeyboardAvoidingView
@@ -1786,12 +1786,12 @@ const styles = StyleSheet.create({
     gap: 24,
   },
   subjectPropositionOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     justifyContent: 'flex-end',
     zIndex: 100,
   },
   subjectPropositionBackdrop: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(10, 6, 24, 0.45)',
   },
   subjectPropositionCard: {

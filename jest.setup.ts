@@ -18,9 +18,6 @@ if ((globalThis as any).jest) {
   (globalThis as any).jest.stubGlobal = jestAny.stubGlobal;
 }
 
-// Silence missing native driver warnings in tests.
-jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper', () => ({}), { virtual: true });
-
 // Expo modules expect these globals during evaluation.
 // Keep a single definition here to avoid redefining in each test.
 (globalThis as any).__DEV__ = (globalThis as any).__DEV__ ?? false;
@@ -39,10 +36,23 @@ expoGlobal.EventEmitter =
 (globalThis as any).expo = expoGlobal;
 
 // expo-modules-core pulls TurboModuleRegistry directly; provide a stub.
+const mockSourceCodeModule = {
+  getConstants: () => ({ scriptURL: 'http://localhost/index.bundle?platform=ios' }),
+};
+const mockTurboModuleGet = jest.fn((moduleName: string) =>
+  moduleName === 'SourceCode' ? mockSourceCodeModule : null
+);
+const mockTurboModuleGetEnforcing = jest.fn((moduleName: string) =>
+  mockTurboModuleGet(moduleName) ?? {}
+);
+
 jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => ({
   __esModule: true,
+  get: mockTurboModuleGet,
+  getEnforcing: mockTurboModuleGetEnforcing,
   default: {
-    get: jest.fn(),
+    get: mockTurboModuleGet,
+    getEnforcing: mockTurboModuleGetEnforcing,
   },
 }), { virtual: true });
 
@@ -56,6 +66,23 @@ jest.mock('expo-constants', () => ({
     manifest: null,
   },
 }));
+
+const MockSharedObject = class {};
+const mockExpoFetchModule = {
+  NativeRequest: class extends MockSharedObject {
+    start() {}
+    cancel() {}
+  },
+  NativeResponse: class extends MockSharedObject {
+    startStreaming() {}
+    cancelStreaming() {}
+    arrayBuffer() {}
+    text() {}
+  },
+};
+const mockNativeModules = {
+  ExpoFetchModule: mockExpoFetchModule,
+};
 
 // Avoid loading native/react-native specific logic from expo-modules-core in unit tests.
 jest.mock('expo-modules-core', () => ({
@@ -71,9 +98,10 @@ jest.mock('expo-modules-core', () => ({
     // Minimal stub so legacy Expo modules can extend this base class during tests.
     constructor(..._args: any[]) {}
   },
-  NativeModulesProxy: {},
-  requireNativeModule: jest.fn(),
-  requireOptionalNativeModule: jest.fn(),
+  SharedObject: MockSharedObject,
+  NativeModulesProxy: mockNativeModules,
+  requireNativeModule: jest.fn((moduleName: string) => mockNativeModules[moduleName as keyof typeof mockNativeModules] ?? {}),
+  requireOptionalNativeModule: jest.fn((moduleName: string) => mockNativeModules[moduleName as keyof typeof mockNativeModules] ?? null),
 }));
 
 // Some dependencies pull URL polyfills meant for RN; avoid heavy/unsupported code in unit tests.

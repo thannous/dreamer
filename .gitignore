@@ -5,6 +5,7 @@ node_modules/
 .cache/
 .deno-cache/
 .npm-cache/
+.java-home/
 .gradle-user-home/
 
 # Expo
