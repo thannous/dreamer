@@ -6,9 +6,14 @@
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import type {
   ChatMessage,
+  DreamApproximatePeriod,
   DreamAnalysis,
+  DreamMemoryMetadata,
   DreamMutation,
+  DreamStrongestFragment,
   DreamSyncState,
+  DreamType,
+  RememberedDreamKind,
   SyncMutationStatus,
 } from '@/lib/types';
 
@@ -81,6 +86,122 @@ export const normalizeDreamImages = (dream: DreamAnalysis): DreamAnalysis => {
     ...dream,
     thumbnailUrl: derivedThumbnail,
     imageGenerationFailed: newImageGenerationFailed,
+  };
+};
+
+const REMEMBERED_DREAM_KINDS = new Set<RememberedDreamKind>([
+  'old',
+  'recurring',
+  'nightmare',
+  'lucid',
+  'meaningful',
+  'person',
+]);
+
+const DREAM_APPROXIMATE_PERIODS = new Set<DreamApproximatePeriod>([
+  'childhood',
+  'teen_years',
+  'years_ago',
+  'months_ago',
+  'recent',
+  'unknown',
+]);
+
+const DREAM_STRONGEST_FRAGMENTS = new Set<DreamStrongestFragment>([
+  'place',
+  'person',
+  'sensation',
+  'image',
+  'fear',
+  'color',
+  'other',
+]);
+
+const normalizeShortText = (value: unknown): string | undefined => {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  return trimmed ? trimmed.slice(0, 160) : undefined;
+};
+
+/**
+ * Sanitizes dream memory metadata loaded from storage or Supabase JSON.
+ * Captured dreams with no useful memory data are normalized to undefined.
+ */
+export function normalizeDreamMemoryMetadata(
+  value: DreamMemoryMetadata | Record<string, unknown> | null | undefined
+): DreamMemoryMetadata | undefined {
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+
+  const origin = value.origin === 'remembered' ? 'remembered' : undefined;
+  const rememberedKind = REMEMBERED_DREAM_KINDS.has(value.rememberedKind as RememberedDreamKind)
+    ? (value.rememberedKind as RememberedDreamKind)
+    : undefined;
+  const approximatePeriod = DREAM_APPROXIMATE_PERIODS.has(value.approximatePeriod as DreamApproximatePeriod)
+    ? (value.approximatePeriod as DreamApproximatePeriod)
+    : undefined;
+  const strongestFragment = DREAM_STRONGEST_FRAGMENTS.has(value.strongestFragment as DreamStrongestFragment)
+    ? (value.strongestFragment as DreamStrongestFragment)
+    : undefined;
+
+  const normalized: DreamMemoryMetadata = {
+    version: 1,
+    ...(origin ? { origin } : {}),
+    ...(value.anchorDream === true ? { anchorDream: true } : {}),
+    ...(value.dejaVu === true ? { dejaVu: true } : {}),
+    ...(value.recurring === true || rememberedKind === 'recurring' ? { recurring: true } : {}),
+    ...(rememberedKind ? { rememberedKind } : {}),
+    ...(approximatePeriod ? { approximatePeriod } : {}),
+    ...(strongestFragment ? { strongestFragment } : {}),
+    ...(normalizeShortText(value.lingeringEmotion) ? { lingeringEmotion: normalizeShortText(value.lingeringEmotion) } : {}),
+    ...(normalizeShortText(value.recurrenceNote) ? { recurrenceNote: normalizeShortText(value.recurrenceNote) } : {}),
+    ...(value.createdFrom === 'onboarding' || value.createdFrom === 'journal' ? { createdFrom: value.createdFrom } : {}),
+    ...(value.createdFromOnboarding === true ? { createdFromOnboarding: true } : {}),
+  };
+
+  const hasRememberedSignals =
+    normalized.origin === 'remembered' ||
+    normalized.anchorDream === true ||
+    normalized.dejaVu === true ||
+    normalized.recurring === true ||
+    Boolean(normalized.rememberedKind || normalized.approximatePeriod || normalized.strongestFragment);
+
+  return hasRememberedSignals ? normalized : undefined;
+}
+
+export function areDreamMemoryMetadataEqual(
+  left: DreamMemoryMetadata | null | undefined,
+  right: DreamMemoryMetadata | null | undefined
+): boolean {
+  const a = normalizeDreamMemoryMetadata(left);
+  const b = normalizeDreamMemoryMetadata(right);
+  if (!a && !b) return true;
+  if (!a || !b) return false;
+  return (
+    (a.version ?? 1) === (b.version ?? 1) &&
+    (a.origin ?? null) === (b.origin ?? null) &&
+    (a.anchorDream ?? false) === (b.anchorDream ?? false) &&
+    (a.dejaVu ?? false) === (b.dejaVu ?? false) &&
+    (a.recurring ?? false) === (b.recurring ?? false) &&
+    (a.rememberedKind ?? null) === (b.rememberedKind ?? null) &&
+    (a.approximatePeriod ?? null) === (b.approximatePeriod ?? null) &&
+    (a.strongestFragment ?? null) === (b.strongestFragment ?? null) &&
+    (a.lingeringEmotion ?? null) === (b.lingeringEmotion ?? null) &&
+    (a.recurrenceNote ?? null) === (b.recurrenceNote ?? null) &&
+    (a.createdFrom ?? null) === (b.createdFrom ?? null) &&
+    (a.createdFromOnboarding ?? false) === (b.createdFromOnboarding ?? false)
+  );
+}
+
+export const normalizeDreamMemory = (dream: DreamAnalysis): DreamAnalysis => {
+  const memory = normalizeDreamMemoryMetadata(dream.memory);
+  if (areDreamMemoryMetadataEqual(dream.memory, memory)) {
+    return dream;
+  }
+  return {
+    ...dream,
+    memory,
   };
 };
 
@@ -217,6 +338,7 @@ type DreamRemoteComparable = {
   analysisRequestId: string | null;
   explorationStartedAt: number | null;
   clientRequestId: string | null;
+  memory: DreamMemoryMetadata | undefined;
 };
 
 const toRemoteComparable = (dream: DreamAnalysis): DreamRemoteComparable => {
@@ -240,6 +362,7 @@ const toRemoteComparable = (dream: DreamAnalysis): DreamRemoteComparable => {
     analysisRequestId: dream.analysisRequestId ?? null,
     explorationStartedAt: dream.explorationStartedAt ?? null,
     clientRequestId: dream.clientRequestId ?? null,
+    memory: normalizeDreamMemoryMetadata(dream.memory),
   };
 };
 
@@ -269,7 +392,8 @@ export const areDreamsEqualForRemoteSync = (a: DreamAnalysis, b: DreamAnalysis):
     left.analysisStatus !== right.analysisStatus ||
     left.analysisRequestId !== right.analysisRequestId ||
     left.explorationStartedAt !== right.explorationStartedAt ||
-    left.clientRequestId !== right.clientRequestId
+    left.clientRequestId !== right.clientRequestId ||
+    !areDreamMemoryMetadataEqual(left.memory, right.memory)
   ) {
     return false;
   }
@@ -320,6 +444,7 @@ export const areDreamsEqualForLocalState = (a: DreamAnalysis, b: DreamAnalysis):
   if ((left.imageJobRequestId ?? null) !== (right.imageJobRequestId ?? null)) return false;
   if ((left.imageJobErrorCode ?? null) !== (right.imageJobErrorCode ?? null)) return false;
   if ((left.imageJobErrorMessage ?? null) !== (right.imageJobErrorMessage ?? null)) return false;
+  if (!areDreamMemoryMetadataEqual(left.memory, right.memory)) return false;
 
   const leftChat = Array.isArray(left.chatHistory) ? left.chatHistory : [];
   const rightChat = Array.isArray(right.chatHistory) ? right.chatHistory : [];
@@ -332,7 +457,7 @@ export const areDreamsEqualForLocalState = (a: DreamAnalysis, b: DreamAnalysis):
 export const normalizeDreamList = (list: DreamAnalysis[]): DreamAnalysis[] => {
   let hasChanges = false;
   const normalized = list.map((dream) => {
-    const next = normalizeDreamImages(dream);
+    const next = normalizeDreamMemory(normalizeDreamImages(dream));
     if (next !== dream) {
       hasChanges = true;
     }
@@ -559,6 +684,19 @@ type BuildDraftDreamOptions = {
   now?: () => number;
 };
 
+const dreamTypeForRememberedKind = (kind: RememberedDreamKind): DreamType => {
+  switch (kind) {
+    case 'recurring':
+      return 'Recurring Dream';
+    case 'nightmare':
+      return 'Nightmare';
+    case 'lucid':
+      return 'Lucid Dream';
+    default:
+      return 'Symbolic Dream';
+  }
+};
+
 /**
  * Build a local draft dream object from a transcript.
  * Pure and reusable across screens/hooks.
@@ -591,5 +729,45 @@ export function buildDraftDream(
     lastSyncError: undefined,
     isAnalyzed: false,
     analysisStatus: 'none',
+  };
+}
+
+export type BuildRememberedDreamOptions = BuildDraftDreamOptions & {
+  rememberedKind: RememberedDreamKind;
+  approximatePeriod?: DreamApproximatePeriod;
+  strongestFragment?: DreamStrongestFragment;
+  lingeringEmotion?: string;
+  recurrenceNote?: string;
+  createdFromOnboarding?: boolean;
+};
+
+/**
+ * Builds a first-class dream from a remembered, old, recurring, or anchor dream.
+ * It remains a normal DreamAnalysis so journal, analysis, quota and sync flows
+ * keep working while the app can distinguish its origin.
+ */
+export function buildRememberedDream(
+  transcript: string,
+  options: BuildRememberedDreamOptions
+): DreamAnalysis {
+  const draft = buildDraftDream(transcript, options);
+  const memory = normalizeDreamMemoryMetadata({
+    origin: 'remembered',
+    anchorDream: true,
+    dejaVu: true,
+    recurring: options.rememberedKind === 'recurring',
+    rememberedKind: options.rememberedKind,
+    approximatePeriod: options.approximatePeriod,
+    strongestFragment: options.strongestFragment,
+    lingeringEmotion: options.lingeringEmotion,
+    recurrenceNote: options.recurrenceNote,
+    createdFrom: options.createdFromOnboarding ? 'onboarding' : 'journal',
+    createdFromOnboarding: options.createdFromOnboarding,
+  });
+
+  return {
+    ...draft,
+    dreamType: dreamTypeForRememberedKind(options.rememberedKind),
+    memory,
   };
 }

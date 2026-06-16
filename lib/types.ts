@@ -48,6 +48,51 @@ export type DreamType = 'Lucid Dream' | 'Recurring Dream' | 'Nightmare' | 'Symbo
  */
 export type DreamTheme = 'surreal' | 'mystical' | 'calm' | 'noir';
 
+/**
+ * Metadata for dreams entered from memory rather than freshly captured after waking.
+ *
+ * This lets Noctalia support "anchor dreams" from onboarding without creating a
+ * second dream-like model. Missing metadata means a normal captured dream.
+ */
+export type DreamMemoryOrigin = 'captured' | 'remembered';
+export type RememberedDreamKind =
+  | 'old'
+  | 'recurring'
+  | 'nightmare'
+  | 'lucid'
+  | 'meaningful'
+  | 'person';
+export type DreamApproximatePeriod =
+  | 'childhood'
+  | 'teen_years'
+  | 'years_ago'
+  | 'months_ago'
+  | 'recent'
+  | 'unknown';
+export type DreamStrongestFragment =
+  | 'place'
+  | 'person'
+  | 'sensation'
+  | 'image'
+  | 'fear'
+  | 'color'
+  | 'other';
+
+export interface DreamMemoryMetadata {
+  version?: 1;
+  origin?: DreamMemoryOrigin;
+  anchorDream?: boolean;
+  dejaVu?: boolean;
+  recurring?: boolean;
+  rememberedKind?: RememberedDreamKind;
+  approximatePeriod?: DreamApproximatePeriod;
+  strongestFragment?: DreamStrongestFragment;
+  lingeringEmotion?: string;
+  recurrenceNote?: string;
+  createdFrom?: 'onboarding' | 'journal';
+  createdFromOnboarding?: boolean;
+}
+
 export interface DreamAnalysis {
   id: number; // timestamp for unique ID and sorting
   remoteId?: number; // Supabase row id when persisted online
@@ -66,6 +111,7 @@ export interface DreamAnalysis {
   chatHistory: ChatMessage[];
   theme?: DreamTheme;
   dreamType: DreamType;
+  memory?: DreamMemoryMetadata;
   isFavorite?: boolean;
   imageGenerationFailed?: boolean; // True if analysis succeeded but image generation failed
   syncState?: DreamSyncState;
