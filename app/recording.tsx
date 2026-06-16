@@ -23,6 +23,7 @@ import {
 } from '@/components/recording/RecordingSheets';
 import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
+import { RememberedDreamProfileChips } from '@/components/recording/RememberedDreamProfileChips';
 import { UnforgettableDreamPromptCard } from '@/components/recording/UnforgettableDreamPromptCard';
 import { RECORDING } from '@/constants/appConfig';
 import { GradientColors } from '@/constants/gradients';
@@ -59,7 +60,14 @@ import {
 } from '@/lib/recordingActivation';
 import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis, RecordingInputModePreference, ReferenceImage } from '@/lib/types';
+import type {
+  DreamAnalysis,
+  DreamApproximatePeriod,
+  DreamStrongestFragment,
+  RecordingInputModePreference,
+  ReferenceImage,
+  RememberedDreamKind,
+} from '@/lib/types';
 import { categorizeDream, generateImageWithReference } from '@/services/geminiService';
 import {
   registerOfflineModelPromptHandler,
@@ -157,6 +165,11 @@ export default function RecordingScreen() {
   const [captureIntent, setCaptureIntent] = useState<CaptureIntent>('fresh');
   const [rememberedCaptureSource, setRememberedCaptureSource] =
     useState<RememberedCaptureSource>('journal');
+  const [rememberedKind, setRememberedKind] = useState<RememberedDreamKind>('old');
+  const [rememberedApproximatePeriod, setRememberedApproximatePeriod] =
+    useState<DreamApproximatePeriod | undefined>();
+  const [rememberedStrongestFragment, setRememberedStrongestFragment] =
+    useState<DreamStrongestFragment | undefined>();
   const [inputMode, setInputMode] = useState<RecordingInputModePreference>('text');
   const [inputModePreferenceLoaded, setInputModePreferenceLoaded] = useState(false);
   const recordingOnboardingViewportRef = useRef<View | null>(null);
@@ -432,7 +445,9 @@ export default function RecordingScreen() {
       if (captureIntent === 'remembered') {
         return buildRememberedDream(text, {
           defaultTitle: t('recording.remembered.default_title'),
-          rememberedKind: 'old',
+          rememberedKind,
+          approximatePeriod: rememberedApproximatePeriod,
+          strongestFragment: rememberedStrongestFragment,
           createdFrom: rememberedCaptureSource,
         });
       }
@@ -441,7 +456,15 @@ export default function RecordingScreen() {
         defaultTitle: t('recording.draft.default_title'),
       });
     },
-    [captureIntent, rememberedCaptureSource, trimmedTranscript, t]
+    [
+      captureIntent,
+      rememberedApproximatePeriod,
+      rememberedCaptureSource,
+      rememberedKind,
+      rememberedStrongestFragment,
+      trimmedTranscript,
+      t,
+    ]
   );
 
   const resetComposer = useCallback(() => {
@@ -452,6 +475,9 @@ export default function RecordingScreen() {
     setVoiceFallbackReason(null);
     setCaptureIntent('fresh');
     setRememberedCaptureSource('journal');
+    setRememberedKind('old');
+    setRememberedApproximatePeriod(undefined);
+    setRememberedStrongestFragment(undefined);
     baseTranscriptRef.current = '';
   }, [analysisProgress]);
 
@@ -773,11 +799,12 @@ export default function RecordingScreen() {
       if (latestTranscript) {
         try {
           categorizationResult = await categorizeDream(latestTranscript, language);
+          const preserveRememberedDreamType = dreamToSave.memory?.origin === 'remembered';
           dreamToSave = {
             ...dreamToSave,
             title: categorizationResult.title,
             theme: categorizationResult.theme,
-            dreamType: categorizationResult.dreamType,
+            dreamType: preserveRememberedDreamType ? dreamToSave.dreamType : categorizationResult.dreamType,
             hasPerson: categorizationResult.hasPerson,
             hasAnimal: categorizationResult.hasAnimal,
           };
@@ -1181,6 +1208,9 @@ export default function RecordingScreen() {
 
     setCaptureIntent('remembered');
     setRememberedCaptureSource('onboarding');
+    setRememberedKind('old');
+    setRememberedApproximatePeriod(undefined);
+    setRememberedStrongestFragment(undefined);
     dismissRememberedDreamPrompt();
     setVoiceFallbackReason(null);
     setInputMode('text');
@@ -1211,6 +1241,9 @@ export default function RecordingScreen() {
 
       setCaptureIntent('remembered');
       setRememberedCaptureSource(resolveRememberedCaptureSource(recordingParams.source));
+      setRememberedKind('old');
+      setRememberedApproximatePeriod(undefined);
+      setRememberedStrongestFragment(undefined);
       setRememberedDreamPromptDismissed(true);
       setVoiceFallbackReason(null);
       setInputMode('text');
@@ -1614,6 +1647,18 @@ export default function RecordingScreen() {
                   disabled={interactionDisabled || isPreparingRecording}
                   onChange={handleInputModePreferenceChange}
                 />
+
+                {captureIntent === 'remembered' ? (
+                  <RememberedDreamProfileChips
+                    rememberedKind={rememberedKind}
+                    approximatePeriod={rememberedApproximatePeriod}
+                    strongestFragment={rememberedStrongestFragment}
+                    disabled={interactionDisabled || isPreparingRecording}
+                    onRememberedKindChange={setRememberedKind}
+                    onApproximatePeriodChange={setRememberedApproximatePeriod}
+                    onStrongestFragmentChange={setRememberedStrongestFragment}
+                  />
+                ) : null}
 
                 <RecordingTextInput
                   layout={inputMode === 'voice' ? 'voiceFirst' : 'textFirst'}

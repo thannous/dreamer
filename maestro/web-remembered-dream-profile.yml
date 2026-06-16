@@ -1,0 +1,59 @@
+url: "http://localhost:8081"
+---
+- launchApp
+- openLink: http://localhost:8081/settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: btn.mock.resetState
+    direction: DOWN
+    visibilityPercentage: 60
+- tapOn:
+    id: btn.mock.resetState
+- waitForAnimationToEnd
+- openLink: http://localhost:8081/recording
+- extendedWaitUntil:
+    visible:
+      id: btn.recording.unforgettableDream.yes
+    timeout: 30000
+- tapOn:
+    id: btn.recording.unforgettableDream.yes
+- waitForAnimationToEnd
+- assertVisible:
+    id: component.recording.rememberedProfileChips
+- tapOn:
+    id: btn.recording.remembered.kind.recurring
+- scrollUntilVisible:
+    element:
+      id: btn.recording.remembered.period.childhood
+    direction: DOWN
+    visibilityPercentage: 60
+- tapOn:
+    id: btn.recording.remembered.period.childhood
+- scrollUntilVisible:
+    element:
+      id: btn.recording.remembered.fragment.person
+    direction: DOWN
+    visibilityPercentage: 60
+- tapOn:
+    id: btn.recording.remembered.fragment.person
+- swipe:
+    start: 50%, 80%
+    end: 50%, 45%
+- waitForAnimationToEnd
+- tapOn: "(Tell the dream you never forgot.*|Raconte ce r.ve que tu n.as jamais oubli.*|Cuenta ese sue.o que nunca olvidaste.*)"
+- inputText: "I keep returning to my childhood hallway where my grandmother is waiting near a blue door."
+- swipe:
+    start: 50%, 84%
+    end: 50%, 42%
+- waitForAnimationToEnd
+- tapOn: "(Save this memory|Enregistrer ce souvenir|Guardar este recuerdo)"
+- waitForAnimationToEnd
+- assertVisible:
+    id: text.firstDream.title
+- tapOn:
+    id: btn.firstDream.journal
+- waitForAnimationToEnd
+- assertVisible: "(Dream Journey|Voyage onirique|Viaje on.rico)"

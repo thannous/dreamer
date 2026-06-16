@@ -15,6 +15,7 @@ describe('TID', () => {
     expect(TID.Button.Exploration360Synthesis).toBe('btn.exploration360.synthesis');
     expect(TID.Button.EmptyStartRememberedDream).toBe('btn.empty.startRememberedDream');
     expect(TID.Component.Exploration360Panel).toBe('component.exploration360.panel');
+    expect(TID.Component.RememberedDreamProfileChips).toBe('component.recording.rememberedProfileChips');
   });
 
   it('builds dynamic IDs', () => {
@@ -22,5 +23,8 @@ describe('TID', () => {
     expect(TID.Button.DreamCategory('lucid')).toBe('btn.dreamCategory.lucid');
     expect(TID.List.DreamItem(42)).toBe('dream.item.42');
     expect(TID.Button.InspirationQuickAction('a1')).toBe('btn.inspiration.quick.a1');
+    expect(TID.Button.RememberedDreamKind('recurring')).toBe('btn.recording.remembered.kind.recurring');
+    expect(TID.Button.RememberedDreamPeriod('childhood')).toBe('btn.recording.remembered.period.childhood');
+    expect(TID.Button.RememberedDreamFragment('person')).toBe('btn.recording.remembered.fragment.person');
   });
 });
