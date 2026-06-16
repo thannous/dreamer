@@ -487,6 +487,7 @@ const DreamProfileCard = memo(function DreamProfileCard({
   const topType = profile.topTypes[0];
   const topTheme = profile.topThemes[0];
   const topFragment = profile.topFragments[0];
+  const topPeriod = profile.topPeriods[0];
   const topTypeLabel = topType
     ? getDreamTypeLabel(topType.value, t) ?? topType.value
     : t('stats.profile.signal.none');
@@ -499,6 +500,9 @@ const DreamProfileCard = memo(function DreamProfileCard({
     : t('stats.profile.signal.none');
   const topFragmentLabel = topFragment
     ? t(`stats.profile.fragment.${topFragment.value}`)
+    : t('stats.profile.signal.none');
+  const topPeriodLabel = topPeriod
+    ? t(`stats.profile.period.${topPeriod.value}`)
     : t('stats.profile.signal.none');
   const profileMetrics = [
     {
@@ -537,6 +541,11 @@ const DreamProfileCard = memo(function DreamProfileCard({
       id: 'fragment',
       label: t('stats.profile.signal.fragment'),
       value: topFragmentLabel,
+    },
+    {
+      id: 'period',
+      label: t('stats.profile.signal.period'),
+      value: topPeriodLabel,
     },
   ];
 

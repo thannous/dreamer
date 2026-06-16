@@ -34,6 +34,7 @@ describe('dreamProfile', () => {
           anchorDream: true,
           dejaVu: true,
           rememberedKind: 'recurring',
+          approximatePeriod: 'childhood',
           strongestFragment: 'place',
         },
       }),
@@ -43,6 +44,7 @@ describe('dreamProfile', () => {
         memory: {
           origin: 'remembered',
           rememberedKind: 'nightmare',
+          approximatePeriod: 'years_ago',
           strongestFragment: 'fear',
         },
       }),
@@ -60,6 +62,7 @@ describe('dreamProfile', () => {
     expect(profile.hasAnchorDream).toBe(true);
     expect(profile.hasEnoughForPatterns).toBe(true);
     expect(profile.topFragments.map((facet) => facet.value)).toEqual(['fear', 'place']);
+    expect(profile.topPeriods.map((facet) => facet.value)).toEqual(['childhood', 'years_ago']);
   });
 
   it('prioritizes analysis before exploration once enough dreams exist', () => {

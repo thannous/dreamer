@@ -1,0 +1,222 @@
+import React from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+
+import { Fonts } from '@/constants/theme';
+import { useTheme } from '@/context/ThemeContext';
+import { useTranslation } from '@/hooks/useTranslation';
+import { TID } from '@/lib/testIDs';
+import type {
+  DreamApproximatePeriod,
+  DreamStrongestFragment,
+  RememberedDreamKind,
+} from '@/lib/types';
+
+type RememberedOption<T extends string> = {
+  value: T;
+  labelKey: string;
+};
+
+const KIND_OPTIONS: RememberedOption<RememberedDreamKind>[] = [
+  { value: 'old', labelKey: 'recording.remembered_profile.kind.old' },
+  { value: 'recurring', labelKey: 'recording.remembered_profile.kind.recurring' },
+  { value: 'nightmare', labelKey: 'recording.remembered_profile.kind.nightmare' },
+  { value: 'lucid', labelKey: 'recording.remembered_profile.kind.lucid' },
+  { value: 'meaningful', labelKey: 'recording.remembered_profile.kind.meaningful' },
+  { value: 'person', labelKey: 'recording.remembered_profile.kind.person' },
+];
+
+const PERIOD_OPTIONS: RememberedOption<DreamApproximatePeriod>[] = [
+  { value: 'recent', labelKey: 'recording.remembered_profile.period.recent' },
+  { value: 'months_ago', labelKey: 'recording.remembered_profile.period.months_ago' },
+  { value: 'years_ago', labelKey: 'recording.remembered_profile.period.years_ago' },
+  { value: 'childhood', labelKey: 'recording.remembered_profile.period.childhood' },
+  { value: 'unknown', labelKey: 'recording.remembered_profile.period.unknown' },
+];
+
+const FRAGMENT_OPTIONS: RememberedOption<DreamStrongestFragment>[] = [
+  { value: 'place', labelKey: 'recording.remembered_profile.fragment.place' },
+  { value: 'person', labelKey: 'recording.remembered_profile.fragment.person' },
+  { value: 'sensation', labelKey: 'recording.remembered_profile.fragment.sensation' },
+  { value: 'image', labelKey: 'recording.remembered_profile.fragment.image' },
+  { value: 'fear', labelKey: 'recording.remembered_profile.fragment.fear' },
+  { value: 'color', labelKey: 'recording.remembered_profile.fragment.color' },
+];
+
+type RememberedDreamProfileChipsProps = {
+  rememberedKind: RememberedDreamKind;
+  approximatePeriod?: DreamApproximatePeriod;
+  strongestFragment?: DreamStrongestFragment;
+  disabled?: boolean;
+  onRememberedKindChange: (value: RememberedDreamKind) => void;
+  onApproximatePeriodChange: (value: DreamApproximatePeriod) => void;
+  onStrongestFragmentChange: (value: DreamStrongestFragment) => void;
+};
+
+export function RememberedDreamProfileChips({
+  rememberedKind,
+  approximatePeriod,
+  strongestFragment,
+  disabled = false,
+  onRememberedKindChange,
+  onApproximatePeriodChange,
+  onStrongestFragmentChange,
+}: RememberedDreamProfileChipsProps) {
+  const { colors } = useTheme();
+  const { t } = useTranslation();
+
+  const renderChip = <T extends string>({
+    option,
+    selected,
+    onPress,
+    testID,
+  }: {
+    option: RememberedOption<T>;
+    selected: boolean;
+    onPress: () => void;
+    testID: string;
+  }) => (
+    <Pressable
+      key={option.value}
+      onPress={onPress}
+      disabled={disabled}
+      accessibilityRole="button"
+      accessibilityState={{ selected, disabled }}
+      style={({ pressed }) => [
+        styles.chip,
+        {
+          backgroundColor: selected ? `${colors.accent}28` : `${colors.textPrimary}08`,
+          borderColor: selected ? colors.accent : `${colors.divider}AA`,
+          opacity: disabled ? 0.62 : pressed ? 0.78 : 1,
+        },
+      ]}
+      testID={testID}
+    >
+      <Text
+        style={[
+          styles.chipText,
+          { color: selected ? colors.accent : colors.textSecondary },
+        ]}
+      >
+        {t(option.labelKey)}
+      </Text>
+    </Pressable>
+  );
+
+  return (
+    <View
+      style={[
+        styles.card,
+        {
+          backgroundColor: `${colors.backgroundCard}CC`,
+          borderColor: `${colors.accentLight}44`,
+        },
+      ]}
+      testID={TID.Component.RememberedDreamProfileChips}
+    >
+      <View style={styles.header}>
+        <Text style={[styles.eyebrow, { color: colors.textSecondary }]}>
+          {t('recording.remembered_profile.eyebrow')}
+        </Text>
+        <Text style={[styles.title, { color: colors.textPrimary }]}>
+          {t('recording.remembered_profile.title')}
+        </Text>
+      </View>
+
+      <ChipGroup label={t('recording.remembered_profile.kind_label')}>
+        {KIND_OPTIONS.map((option) =>
+          renderChip({
+            option,
+            selected: rememberedKind === option.value,
+            onPress: () => onRememberedKindChange(option.value),
+            testID: TID.Button.RememberedDreamKind(option.value),
+          })
+        )}
+      </ChipGroup>
+
+      <ChipGroup label={t('recording.remembered_profile.period_label')}>
+        {PERIOD_OPTIONS.map((option) =>
+          renderChip({
+            option,
+            selected: approximatePeriod === option.value,
+            onPress: () => onApproximatePeriodChange(option.value),
+            testID: TID.Button.RememberedDreamPeriod(option.value),
+          })
+        )}
+      </ChipGroup>
+
+      <ChipGroup label={t('recording.remembered_profile.fragment_label')}>
+        {FRAGMENT_OPTIONS.map((option) =>
+          renderChip({
+            option,
+            selected: strongestFragment === option.value,
+            onPress: () => onStrongestFragmentChange(option.value),
+            testID: TID.Button.RememberedDreamFragment(option.value),
+          })
+        )}
+      </ChipGroup>
+    </View>
+  );
+}
+
+function ChipGroup({ label, children }: { label: string; children: React.ReactNode }) {
+  const { colors } = useTheme();
+  return (
+    <View style={styles.group}>
+      <Text style={[styles.groupLabel, { color: colors.textSecondary }]}>{label}</Text>
+      <View style={styles.chipRow}>{children}</View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    width: '100%',
+    maxWidth: 512,
+    alignSelf: 'center',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 12,
+    borderCurve: 'continuous',
+    padding: 14,
+    gap: 14,
+  },
+  header: {
+    gap: 4,
+  },
+  eyebrow: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0,
+  },
+  title: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 16,
+    lineHeight: 21,
+  },
+  group: {
+    gap: 8,
+  },
+  groupLabel: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 12,
+  },
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  chip: {
+    minHeight: 36,
+    borderWidth: 1,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+  },
+  chipText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 13,
+    textAlign: 'center',
+  },
+});

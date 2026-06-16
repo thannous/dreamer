@@ -1,4 +1,5 @@
 import type {
+  DreamApproximatePeriod,
   DreamAnalysis,
   DreamMemoryMetadata,
   DreamStrongestFragment,
@@ -27,6 +28,7 @@ export type DreamProfile = {
   topTypes: DreamProfileFacet<DreamType>[];
   topThemes: DreamProfileFacet<DreamTheme>[];
   topFragments: DreamProfileFacet<DreamStrongestFragment>[];
+  topPeriods: DreamProfileFacet<DreamApproximatePeriod>[];
   hasAnchorDream: boolean;
   hasEnoughForPatterns: boolean;
   nextAction: 'add_anchor' | 'capture_more' | 'analyze_unanalyzed' | 'explore_more' | 'review_patterns';
@@ -96,6 +98,7 @@ export function buildDreamProfile(dreams: DreamAnalysis[]): DreamProfile {
   const typeCounts = new Map<DreamType, number>();
   const themeCounts = new Map<DreamTheme, number>();
   const fragmentCounts = new Map<DreamStrongestFragment, number>();
+  const periodCounts = new Map<DreamApproximatePeriod, number>();
 
   let rememberedDreams = 0;
   let anchorDreams = 0;
@@ -130,6 +133,7 @@ export function buildDreamProfile(dreams: DreamAnalysis[]): DreamProfile {
       recurringDreams += 1;
     }
     increment(fragmentCounts, signals.memory?.strongestFragment);
+    increment(periodCounts, signals.memory?.approximatePeriod);
   }
 
   const totalDreams = dreams.length;
@@ -144,6 +148,7 @@ export function buildDreamProfile(dreams: DreamAnalysis[]): DreamProfile {
     topTypes: toFacets(typeCounts, totalDreams),
     topThemes: toFacets(themeCounts, totalDreams),
     topFragments: toFacets(fragmentCounts, Math.max(rememberedDreams, 1)),
+    topPeriods: toFacets(periodCounts, Math.max(rememberedDreams, 1)),
     hasAnchorDream: anchorDreams > 0,
     hasEnoughForPatterns: totalDreams >= MIN_DREAMS_FOR_PATTERNS,
     nextAction: getNextAction({
