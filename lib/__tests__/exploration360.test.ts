@@ -1,6 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 
 import {
+  canUseExploration360Synthesis,
   EXPLORATION_360_AXES,
   getExploration360Progress,
   getExploration360SynthesisStatus,
@@ -131,5 +132,12 @@ describe('exploration360', () => {
     });
 
     expect(hasExploration360Synthesis(dream)).toBe(false);
+  });
+
+  it('reserves final 360 synthesis generation for Plus users', () => {
+    expect(canUseExploration360Synthesis('plus')).toBe(true);
+    expect(canUseExploration360Synthesis('free')).toBe(false);
+    expect(canUseExploration360Synthesis('guest')).toBe(false);
+    expect(canUseExploration360Synthesis(undefined)).toBe(false);
   });
 });

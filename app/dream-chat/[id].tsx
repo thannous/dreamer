@@ -17,7 +17,8 @@ import { getDreamAnalysisState } from '@/lib/dreamUsage';
 import { generateUUID } from '@/lib/dreamUtils';
 import { isChatDebugEnabled, isMockModeEnabled } from '@/lib/env';
 import { getUserErrorMessage, QuotaError, QuotaErrorCode } from '@/lib/errors';
-import { getExploration360SynthesisStatus } from '@/lib/exploration360';
+import { canUseExploration360Synthesis, getExploration360SynthesisStatus } from '@/lib/exploration360';
+import { HttpError } from '@/lib/http';
 import { getImageConfig } from '@/lib/imageUtils';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { buildPaywallHref } from '@/lib/paywallRoute';
@@ -103,6 +104,16 @@ const resolveChatMessageMeta = (options?: {
     ...(options?.category ? { category: options.category } : {}),
   };
   return Object.keys(meta).length > 0 ? meta : undefined;
+};
+
+const isExploration360SynthesisUpgradeError = (error: unknown): boolean => {
+  if (!(error instanceof HttpError)) return false;
+  const body = error.body as { code?: unknown; error?: unknown } | undefined;
+  return (
+    error.status === 402 &&
+    (body?.code === 'EXPLORATION_360_SYNTHESIS_PLUS_REQUIRED' ||
+      body?.error === 'EXPLORATION_360_SYNTHESIS_PLUS_REQUIRED')
+  );
 };
 
 // Track chat history migrations across screen mounts to prevent duplicate writes when
@@ -574,6 +585,10 @@ export default function DreamChatScreen() {
             quotaService.invalidate(user);
           } catch (error) {
             setIsLoading(false);
+            if (messageMeta?.exploration360Synthesis && isExploration360SynthesisUpgradeError(error)) {
+              router.push(buildPaywallHref('exploration_limit'));
+              return;
+            }
             if (__DEV__) {
               console.error('[DreamChat] Sync error:', error);
             }
@@ -706,6 +721,11 @@ export default function DreamChatScreen() {
             error,
           });
         }
+        if (messageMeta?.exploration360Synthesis && isExploration360SynthesisUpgradeError(error)) {
+          setMessages(baseMessages);
+          router.push(buildPaywallHref('exploration_limit'));
+          return;
+        }
         if (__DEV__) {
           console.error('Chat error:', error);
         }
@@ -777,6 +797,11 @@ export default function DreamChatScreen() {
         return;
       }
 
+      if (!canUseExploration360Synthesis(tier)) {
+        router.push(buildPaywallHref('exploration_limit'));
+        return;
+      }
+
       sendMessage(
         t('dream_chat.prompt.synthesis_360'),
         t('dream_chat.exploration360.synthesis.display'),
@@ -786,7 +811,7 @@ export default function DreamChatScreen() {
         },
       );
     },
-    [dream, exploration360Status.canGenerateSynthesis, isLoading, sendMessage, t],
+    [dream, exploration360Status.canGenerateSynthesis, isLoading, sendMessage, t, tier],
   );
 
   const handleSynthesisPress = useCallback(() => {
@@ -797,7 +822,7 @@ export default function DreamChatScreen() {
     if (routeMode !== 'synthesis' || !dream || !exploration360Status.canGenerateSynthesis) {
       return;
     }
-    if (!hasQuotaCheckClearance || isQuotaGateBlocked || isLoading || messageLimitReached) {
+    if (!hasQuotaCheckClearance || isQuotaGateBlocked || isLoading) {
       return;
     }
 
@@ -827,7 +852,6 @@ export default function DreamChatScreen() {
     hasQuotaCheckClearance,
     isLoading,
     isQuotaGateBlocked,
-    messageLimitReached,
     messages,
     routeMode,
     sendSynthesisRequest,
@@ -1016,7 +1040,7 @@ export default function DreamChatScreen() {
         progress={exploration360Status.progress}
         hasSynthesis={exploration360Status.hasSynthesis}
         onSynthesisPress={handleSynthesisPress}
-        synthesisDisabled={isLoading || !hasQuotaCheckClearance || isQuotaGateBlocked || messageLimitReached}
+        synthesisDisabled={isLoading || !hasQuotaCheckClearance || isQuotaGateBlocked}
         animationDelay={160}
         style={styles.exploration360Panel}
       />
