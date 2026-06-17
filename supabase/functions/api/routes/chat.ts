@@ -98,6 +98,44 @@ const sanitizeParts = (parts: unknown): GeminiPart[] | undefined => {
   return sanitized.length > 0 ? sanitized : undefined;
 };
 
+const normalizeEffectiveSubscriptionTier = (tier: unknown): 'free' | 'plus' => {
+  return tier === 'plus' ? 'plus' : 'free';
+};
+
+const getEffectiveSubscriptionTier = async (
+  supabase: ApiContext['supabase'],
+  userId: string | null
+): Promise<'free' | 'plus'> => {
+  if (!userId) return 'free';
+
+  const { data, error } = await supabase.rpc('get_effective_subscription_tier', {
+    p_user_id: userId,
+  });
+
+  if (error) {
+    console.warn('[api] /chat: failed to resolve subscription tier for synthesis gate', {
+      userId,
+      message: error?.message ?? String(error),
+    });
+    return 'free';
+  }
+
+  return normalizeEffectiveSubscriptionTier(data);
+};
+
+const createSynthesisUpgradeRequiredResponse = () =>
+  new Response(
+    JSON.stringify({
+      error: 'EXPLORATION_360_SYNTHESIS_PLUS_REQUIRED',
+      code: 'EXPLORATION_360_SYNTHESIS_PLUS_REQUIRED',
+      userMessage: 'Upgrade to Noctalia Plus to generate the 360 synthesis.',
+    }),
+    {
+      status: 402,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    }
+  );
+
 const getMessageText = (message: StoredChatMessage): string => {
   if (typeof message.text === 'string' && message.text.trim()) {
     return message.text.trim();
@@ -218,10 +256,25 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       dream = dbDream;
     }
 
+    const existingHistory = Array.isArray(dream.chat_history)
+      ? (dream.chat_history as StoredChatMessage[])
+      : [];
+    const messageMeta = sanitizeMessageMeta(body?.messageMeta);
+
+    if (messageMeta?.exploration360Synthesis) {
+      const effectiveTier = await getEffectiveSubscriptionTier(supabase, currentUserId);
+      if (effectiveTier !== 'plus') {
+        console.log('[api] /chat: blocked non-plus Exploration 360 synthesis', {
+          dreamId,
+          userId: currentUserId,
+          effectiveTier,
+        });
+        return createSynthesisUpgradeRequiredResponse();
+      }
+    }
+
     if (!user && supabaseServiceRoleKey && fingerprint) {
-      const userMessagesInContext = Array.isArray(dream.chat_history)
-        ? (dream.chat_history as { role?: string }[]).filter((msg) => msg?.role === 'user').length
-        : 0;
+      const userMessagesInContext = existingHistory.filter((msg) => msg?.role === 'user').length;
 
       if (userMessagesInContext === 1) {
         const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
@@ -255,10 +308,6 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       }
     }
 
-    const existingHistory = Array.isArray(dream.chat_history)
-      ? (dream.chat_history as StoredChatMessage[])
-      : [];
-    const messageMeta = sanitizeMessageMeta(body?.messageMeta);
     const newUserMessage: StoredChatMessage = {
       role: 'user',
       text: userMessage,

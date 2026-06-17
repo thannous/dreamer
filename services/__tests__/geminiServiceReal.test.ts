@@ -611,6 +611,29 @@ describe('geminiServiceReal', () => {
         })
       );
     });
+
+    it('sends message metadata for final Exploration 360 synthesis prompts', async () => {
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
+        mockFetchResponse({ text: 'Synthesis response' })
+      );
+
+      const dreamId = 'dream-360';
+      await startOrContinueChat(dreamId, 'Generate synthesis', 'fr', undefined, undefined, {
+        messageMeta: { exploration360Synthesis: true },
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          body: JSON.stringify({
+            dreamId,
+            message: 'Generate synthesis',
+            lang: 'fr',
+            messageMeta: { exploration360Synthesis: true },
+          }),
+        })
+      );
+    });
   });
 
   describe('resetChat', () => {

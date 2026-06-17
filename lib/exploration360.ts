@@ -1,4 +1,5 @@
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
+import type { UserTier } from '@/constants/limits';
 import type { DreamAnalysis, DreamChatCategory } from '@/lib/types';
 
 export type Exploration360AxisId = Exclude<DreamChatCategory, 'general'>;
@@ -102,4 +103,8 @@ export function getExploration360SynthesisStatus(
     hasSynthesis,
     canGenerateSynthesis: progress.isComplete && !hasSynthesis,
   };
+}
+
+export function canUseExploration360Synthesis(tier: UserTier | string | null | undefined): boolean {
+  return tier === 'plus';
 }
