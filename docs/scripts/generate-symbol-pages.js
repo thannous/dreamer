@@ -75,25 +75,35 @@ function finalizeGeneratedHtml(html) {
   return inlineLucideIcons(html);
 }
 
+function normalizeIsoDate(value) {
+  if (typeof value !== 'string') return null;
+  const match = value.trim().match(/^(\d{4}-\d{2}-\d{2})(?:$|[T\s])/);
+  return match ? match[1] : null;
+}
+
 function extractGeneratedModifiedDate(html) {
-  const metaMatch = html.match(/<meta\s+property="article:modified_time"\s+content="(\d{4}-\d{2}-\d{2})">/);
+  const metaMatch = html.match(/<meta\s+property="article:modified_time"\s+content="(\d{4}-\d{2}-\d{2})(?:[T\s][^"]*)?">/);
   if (metaMatch) return metaMatch[1];
 
-  const jsonLdMatch = html.match(/"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})"/);
+  const jsonLdMatch = html.match(/"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})(?:[T\s][^"]*)?"/);
   return jsonLdMatch ? jsonLdMatch[1] : null;
 }
 
 function replaceGeneratedModifiedDate(html, date) {
   return html
     .replace(
-      /(<meta\s+property="article:modified_time"\s+content=")\d{4}-\d{2}-\d{2}(">)/g,
+      /(<meta\s+property="article:modified_time"\s+content=")\d{4}-\d{2}-\d{2}([^"]*">)/g,
       `$1${date}$2`
     )
-    .replace(/("dateModified"\s*:\s*")\d{4}-\d{2}-\d{2}(")/g, `$1${date}$2`);
+    .replace(/("dateModified"\s*:\s*")\d{4}-\d{2}-\d{2}([^"]*")/g, `$1${date}$2`);
 }
 
-function writeGeneratedHtml(filepath, html) {
-  const nextHtml = finalizeGeneratedHtml(html);
+function writeGeneratedHtml(filepath, html, options = {}) {
+  const {
+    preserveDateOnlyChanges = true,
+    preserveExistingModifiedDate = false,
+  } = options;
+  let nextHtml = finalizeGeneratedHtml(html);
 
   if (!fs.existsSync(filepath)) {
     fs.writeFileSync(filepath, nextHtml, 'utf8');
@@ -101,12 +111,17 @@ function writeGeneratedHtml(filepath, html) {
   }
 
   const currentHtml = fs.readFileSync(filepath, 'utf8');
+  const currentModifiedDate = extractGeneratedModifiedDate(currentHtml);
+
+  if (preserveExistingModifiedDate && currentModifiedDate) {
+    nextHtml = replaceGeneratedModifiedDate(nextHtml, currentModifiedDate);
+  }
+
   if (currentHtml === nextHtml) {
     return;
   }
 
-  const currentModifiedDate = extractGeneratedModifiedDate(currentHtml);
-  if (currentModifiedDate) {
+  if (preserveDateOnlyChanges && currentModifiedDate) {
     const nextWithCurrentDate = replaceGeneratedModifiedDate(nextHtml, currentModifiedDate);
     if (nextWithCurrentDate === currentHtml) {
       return;
@@ -191,6 +206,18 @@ const SYMBOL_SHEET_LABELS = {
 
 function getSymbolSheetLabels(lang) {
   return SYMBOL_SHEET_LABELS[lang] || SYMBOL_SHEET_LABELS.en;
+}
+
+function getSymbolModifiedDate(symbol, lang) {
+  return (
+    normalizeIsoDate(symbol?.[lang]?.modifiedAt) ||
+    normalizeIsoDate(symbol?.modifiedAt) ||
+    CONFIG.dateModified
+  );
+}
+
+function hasExplicitSymbolModifiedDate(symbol, lang) {
+  return Boolean(normalizeIsoDate(symbol?.[lang]?.modifiedAt) || normalizeIsoDate(symbol?.modifiedAt));
 }
 
 function firstSentence(value) {
@@ -673,6 +700,7 @@ function renderLegacyPseoFooter(lang, t, allSymbols, curationPages = OPTIONAL_CU
 function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const t = i18n[lang];
   const symbolData = symbol[lang];
+  const modifiedDate = getSymbolModifiedDate(symbol, lang);
   const homePath = localizedHomePath(lang);
   const homeUrl = localizedHomeUrl(lang);
   const hreflang = generateHreflangUrls(symbol);
@@ -923,7 +951,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
       logo: { '@type': 'ImageObject', url: 'https://noctalia.app/logo/logo_noctalia.png' }
     },
     datePublished: CONFIG.datePublished,
-    dateModified: CONFIG.dateModified,
+    dateModified: modifiedDate,
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}` },
     inLanguage: lang
   };
@@ -1024,7 +1052,7 @@ ${hreflangLinks}
     <meta property="og:locale" content="${t.locale}">
 ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${{ en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' }[l]}">`).join('\n')}
     <meta property="article:published_time" content="${CONFIG.datePublished}">
-    <meta property="article:modified_time" content="${CONFIG.dateModified}">
+    <meta property="article:modified_time" content="${modifiedDate}">
     <meta property="article:author" content="Noctalia">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
@@ -1585,7 +1613,11 @@ function main() {
         if (args['dry-run']) {
           console.log(`  [DRY RUN] Would create: ${filepath}`);
         } else {
-          writeGeneratedHtml(filepath, html);
+          const hasExplicitModifiedDate = hasExplicitSymbolModifiedDate(symbol, lang);
+          writeGeneratedHtml(filepath, html, {
+            preserveDateOnlyChanges: !hasExplicitModifiedDate,
+            preserveExistingModifiedDate: !hasExplicitModifiedDate,
+          });
           console.log(`  ✅ ${lang}/${CONFIG.symbolsPath[lang]}/${filename}`);
         }
         generated++;
@@ -2119,7 +2151,7 @@ function generateCategoryPages(symbols, i18n, languages) {
         if (args['dry-run']) {
           console.log(`  [DRY RUN] Would create: ${filepath}`);
         } else {
-          writeGeneratedHtml(filepath, html);
+          writeGeneratedHtml(filepath, html, { preserveExistingModifiedDate: true });
           console.log(`  ✅ ${lang}/${CONFIG.symbolsPath[lang]}/${filename} (${symbolsInCategory.length} symbols)`);
         }
         generated++;
@@ -2571,7 +2603,7 @@ function generateCurationPages(symbols, i18n, extended, languages) {
         if (args['dry-run']) {
           console.log(`  [DRY RUN] Would create: ${filepath}`);
         } else {
-          writeGeneratedHtml(filepath, html);
+          writeGeneratedHtml(filepath, html, { preserveExistingModifiedDate: true });
           console.log(`  ✅ ${lang}/guides/${filename} (${page.symbols.length} symbols)`);
         }
         generated++;

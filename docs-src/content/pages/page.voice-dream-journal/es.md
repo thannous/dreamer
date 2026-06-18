@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Diario de sueños por voz Noctalia",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-06-04T00:00:00+02:00",
+  "modifiedTime": "2026-06-18",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",

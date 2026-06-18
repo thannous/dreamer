@@ -14,8 +14,11 @@ const { execFileSync } = require('child_process');
 
 const REPO_ROOT = path.join(__dirname, '..');
 const DOCS_DIR = path.join(__dirname, '../docs');
+const DOCS_SRC_DIR = path.join(REPO_ROOT, 'docs-src');
 const SITEMAP_PATH = path.join(DOCS_DIR, 'sitemap.xml');
 const CONTENT_MANIFEST_PATH = path.join(REPO_ROOT, 'data', 'content-manifest.json');
+const SITE_MANIFEST_PATH = path.join(REPO_ROOT, 'data', 'site-manifest.json');
+const SYMBOL_I18N_PATH = path.join(DOCS_DIR, 'data', 'symbol-i18n.json');
 const DOMAIN = 'https://noctalia.app';
 
 // Directories to exclude from sitemap
@@ -124,6 +127,12 @@ function normalizeUrl(url) {
     .replace(/\.html$/, '');
 }
 
+function normalizeContentDate(value) {
+  if (typeof value !== 'string') return null;
+  const match = value.trim().match(/^(\d{4}-\d{2}-\d{2})(?:$|[T\s])/);
+  return match ? match[1] : null;
+}
+
 function normalizeManifestPathToUrl(manifestPath) {
   if (typeof manifestPath !== 'string' || manifestPath.trim() === '') return null;
   const normalizedPath = manifestPath.startsWith('/') ? manifestPath : `/${manifestPath}`;
@@ -187,6 +196,77 @@ function loadBlogManifestHreflangs() {
   }
 }
 
+function loadManagedSourceLastmodPaths() {
+  const result = {
+    loaded: false,
+    map: new Map(),
+    error: null,
+  };
+
+  if (!fs.existsSync(SITE_MANIFEST_PATH)) {
+    return result;
+  }
+
+  try {
+    const manifest = JSON.parse(fs.readFileSync(SITE_MANIFEST_PATH, 'utf8'));
+    const collections = [
+      { entries: manifest?.collections?.pages?.entries, kind: 'pages' },
+      { entries: manifest?.collections?.blog?.entries, kind: 'blog' },
+    ];
+
+    for (const { entries, kind } of collections) {
+      if (!entries || typeof entries !== 'object') continue;
+
+      for (const entry of Object.values(entries)) {
+        if (!entry || typeof entry !== 'object') continue;
+
+        for (const [lang, locale] of Object.entries(entry.locales || {})) {
+          const pageUrl = normalizeManifestPathToUrl(locale?.path);
+          if (!pageUrl) continue;
+
+          const sourcePath = path.join(
+            DOCS_SRC_DIR,
+            'content',
+            kind,
+            entry.id,
+            `${lang}.md`,
+          );
+          if (fs.existsSync(sourcePath)) {
+            result.map.set(pageUrl, sourcePath);
+          }
+        }
+      }
+    }
+
+    const guideSourcePath = path.join(REPO_ROOT, 'scripts', 'build-guides-pages.js');
+    if (fs.existsSync(guideSourcePath)) {
+      const symbolI18n = fs.existsSync(SYMBOL_I18N_PATH)
+        ? JSON.parse(fs.readFileSync(SYMBOL_I18N_PATH, 'utf8'))
+        : {};
+      const languages = Array.isArray(manifest?.languages) ? manifest.languages : [];
+      for (const lang of languages) {
+        const guidePaths = [`/${lang}/guides/`];
+        if (symbolI18n?.[lang]?.dictionary_slug) {
+          guidePaths.push(`/${lang}/guides/${symbolI18n[lang].dictionary_slug}`);
+        }
+
+        for (const guidePath of guidePaths) {
+          const pageUrl = normalizeManifestPathToUrl(guidePath);
+          if (pageUrl) {
+            result.map.set(pageUrl, guideSourcePath);
+          }
+        }
+      }
+    }
+
+    result.loaded = true;
+    return result;
+  } catch (error) {
+    result.error = error instanceof Error ? error.message : String(error);
+    return result;
+  }
+}
+
 /**
  * Extract hreflang links from HTML content
  */
@@ -228,11 +308,15 @@ function extractCanonicalFromContent(content) {
  * Extract a page-owned modified date before falling back to generated file history.
  */
 function extractLastmodFromContent(content) {
-  const metaMatch = content.match(/<meta\s+property=(["'])article:modified_time\1\s+content=(["'])(\d{4}-\d{2}-\d{2})\2/i);
-  if (metaMatch) return metaMatch[3];
+  const metaTagMatch = content.match(/<meta\s[^>]*property=(["'])article:modified_time\1[^>]*>/i);
+  if (metaTagMatch) {
+    const contentMatch = metaTagMatch[0].match(/content=(["'])([^"']+)\1/i);
+    const metaDate = normalizeContentDate(contentMatch?.[2]);
+    if (metaDate) return metaDate;
+  }
 
-  const jsonLdMatch = content.match(/"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})"/);
-  return jsonLdMatch ? jsonLdMatch[1] : null;
+  const jsonLdMatch = content.match(/"dateModified"\s*:\s*"([^"]+)"/);
+  return normalizeContentDate(jsonLdMatch?.[1]);
 }
 
 /**
@@ -274,7 +358,7 @@ function pathToUrl(filePath) {
 /**
  * Group URLs by their canonical relationship (same content in different languages)
  */
-function groupUrlsByContent(files) {
+function groupUrlsByContent(files, sourceLastmodPaths = new Map()) {
   const urlToMeta = new Map();
 
   for (const file of files) {
@@ -302,9 +386,12 @@ function groupUrlsByContent(files) {
 
     const hreflangs = extractHreflangsFromContent(content);
     if (hreflangs && Object.keys(hreflangs).length > 0) {
+      const sourceLastmodPath = sourceLastmodPaths.get(canonical);
       urlToMeta.set(canonical, {
         hreflangs,
-        lastmod: extractLastmodFromContent(content) || getLastmodFromFilePath(fullPath),
+        lastmod:
+          extractLastmodFromContent(content) ||
+          (sourceLastmodPath ? getLastmodFromFilePath(sourceLastmodPath) : getLastmodFromFilePath(fullPath)),
       });
     }
   }
@@ -429,8 +516,15 @@ function main() {
   const files = findHtmlFiles(DOCS_DIR);
   console.log(`✅ Found ${files.length} HTML files`);
 
+  const managedSources = loadManagedSourceLastmodPaths();
+  if (managedSources.error) {
+    console.warn(`⚠️  Could not load managed source paths: ${managedSources.error}`);
+  } else if (managedSources.loaded) {
+    console.log(`✅ Loaded managed source lastmod paths for ${managedSources.map.size} URLs`);
+  }
+
   // Group URLs by their hreflang relationships
-  const urlToMeta = groupUrlsByContent(files);
+  const urlToMeta = groupUrlsByContent(files, managedSources.map);
   console.log(`✅ Extracted hreflang data from ${urlToMeta.size} URLs`);
 
   // Prefer canonical blog hreflangs from content-manifest when available

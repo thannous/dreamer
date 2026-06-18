@@ -23,14 +23,14 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "AGB: Nutzungsbedingungen der App",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-06-18",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Allgemeine Geschäftsbedingungen\",\n    \"url\": \"https://noctalia.app/de/agb\",\n    \"inLanguage\": \"de\",\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 1,\n                    \"name\": \"Startseite\",\n                    \"item\": \"https://noctalia.app/de/\"\n                },\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 2,\n                    \"name\": \"AGB\",\n                    \"item\": \"https://noctalia.app/de/agb\"\n                }\n            ]\n        }"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Allgemeine Geschäftsbedingungen\",\n    \"url\": \"https://noctalia.app/de/agb\",\n    \"inLanguage\": \"de\",\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"dateModified\": \"2026-06-18\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"AGB\",\n            \"item\": \"https://noctalia.app/de/agb\"\n        }\n    ]\n}"
   ],
   "activeNav": null
 }

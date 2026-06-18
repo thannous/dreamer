@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-05-20T00:00:00+02:00",
+  "modifiedTime": "2026-06-18",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Alternativa a DreamApp para diario de sueños\",\n    \"description\": \"Compara DreamApp y Noctalia en interpretación de sueños, voz, precio, Android, privacidad y cuándo elegir cada diario onírico.\",\n    \"url\": \"https://noctalia.app/es/alternativa-dreamapp\",\n    \"inLanguage\": \"es\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Alternativa a DreamApp para diario de sueños\",\n    \"description\": \"Compara DreamApp y Noctalia en interpretación de sueños, voz, precio, Android, privacidad y cuándo elegir cada diario onírico.\",\n    \"url\": \"https://noctalia.app/es/alternativa-dreamapp\",\n    \"inLanguage\": \"es\",\n    \"dateModified\": \"2026-06-18\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Alternativa a DreamApp para diario de sueños\",\n            \"item\": \"https://noctalia.app/es/alternativa-dreamapp\"\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Elige DreamApp si\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Elige DreamApp si quieres una app generalista con mucha tracción pública, iOS y enfoque terapéutico.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Elige Noctalia si\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Elige Noctalia si olvidas los sueños antes de escribirlos y quieres voz en Android, tarjetas visuales, reflexión guiada y explicaciones de privacidad claras.\"\n            }\n        }\n    ]\n}"
   ],
