@@ -171,7 +171,7 @@
           "Fühlte ich mich sicher, mitgerissen oder überfordert?",
           "Welche Emotion in meinem Leben ähnelt dem Zustand des Wassers?"
         ],
-        "seoTitle": "klares, schmutziges oder tiefes Wasser",
+        "seoTitle": "Wasser klar, schmutzig oder tief",
         "faq": [
           {
             "question": "Was bedeutet Wasser im Traum?",
@@ -194,13 +194,13 @@
       "it": {
         "slug": "acqua",
         "name": "Acqua",
-        "shortDescription": "Sognare acqua parla quasi sempre di emozioni: acqua pulita o limpida, acqua torbida o sporca, acqua che scorre, acqua alta o nuotare in acqua limpida.",
+        "shortDescription": "Sognare acqua parla quasi sempre di emozioni: acqua pulita o limpida, acqua torbida o sporca, acqua che scorre, acqua alta o acqua in casa. Il contesto mostra se stai trovando chiarezza o pressione emotiva.",
         "askYourself": [
           "L’acqua era pulita, limpida, torbida, sporca o in movimento?",
           "Stavo nuotando, osservando l’acqua o venivo trascinato?",
           "Quale emozione attuale somiglia allo stato dell’acqua?"
         ],
-        "seoTitle": "acqua pulita, limpida o sporca",
+        "seoTitle": "acqua pulita, limpida, sporca o in casa",
         "faq": [
           {
             "question": "Cosa significa sognare acqua?",
@@ -217,6 +217,10 @@
           {
             "question": "Cosa significa sognare acqua che scorre?",
             "answer": "Acqua che scorre parla di movimento emotivo, cambiamento e passaggio del tempo. Se il flusso è calmo, può indicare accettazione; se è forte, pressione."
+          },
+          {
+            "question": "Cosa significa sognare tanta acqua o acqua in casa?",
+            "answer": "Tanta acqua indica emozioni che occupano molto spazio. Se entra in casa, il sogno porta il tema nella sfera privata: sicurezza, famiglia, confini e riposo."
           }
         ],
         "softCta": {
@@ -260,6 +264,7 @@
         "slug": "dents",
         "name": "Dents (perdre ses dents)",
         "shortDescription": "Perdre ses dents est un rêve très courant. Il symbolise l'anxiété, la peur de vieillir, la perte de pouvoir ou des préoccupations sur l'apparence et l'image de soi.",
+        "seoTitle": "dents qui tombent",
         "askYourself": [
           "Suis-je anxieux à propos de mon apparence ?",
           "Ai-je peur de perdre quelque chose d'important ?"
@@ -368,7 +373,7 @@
           "Bin ich beim Fallen aufgewacht, gelandet oder weitergefallen?",
           "Was müsste ich loslassen, damit sich die Situation weniger bedrohlich anfühlt?"
         ],
-        "seoTitle": "Fallen im Traum, Bedeutung und Aufwachen",
+        "seoTitle": "Fallen im Traum und Aufwachen",
         "faq": [
           {
             "question": "Was bedeutet Fallen im Traum kurz gesagt?",
@@ -1110,7 +1115,7 @@
           "Mordeva, attaccava, ringhiava, seguiva o proteggeva qualcuno?",
           "Quale rapporto di fiducia sembra forte, ferito o fragile adesso?"
         ],
-        "seoTitle": "un cane, cani o cane che morde",
+        "seoTitle": "un cane che morde o attacca",
         "faq": [
           {
             "question": "Cosa significa sognare un cane?",
@@ -1393,13 +1398,13 @@
       "it": {
         "slug": "fuoco",
         "name": "Fuoco",
-        "shortDescription": "Sognare un incendio o il fuoco parla spesso di passione, rabbia, urgenza o trasformazione. Il significato cambia se vedi fuoco in casa, fiamme, fumo nero o un incendio che divampa.",
+        "shortDescription": "Sognare un incendio o il fuoco parla spesso di passione, rabbia, urgenza o trasformazione. Il significato cambia se vedi un incendio in casa, fiamme, fumo nero o fuoco che divampa.",
         "askYourself": [
           "Il fuoco scaldava, illuminava, bruciava o distruggeva?",
           "Era un fuoco controllato, un incendio, fuoco in casa o fumo nero?",
           "Quale emozione nella mia vita sembra accendersi troppo in fretta?"
         ],
-        "seoTitle": "un incendio, fuoco in casa o fumo nero",
+        "seoTitle": "incendio e fuoco in casa",
         "faq": [
           {
             "question": "Cosa significa sognare fuoco?",
@@ -1508,13 +1513,13 @@
       "es": {
         "slug": "inundacion",
         "name": "Inundación",
-        "shortDescription": "Soñar con inundación indica emociones que se desbordan, estrés acumulado o cambios difíciles de contener. Si el agua entra en casa, es sucia o sube rápido, el sueño señala qué área de tu vida se siente invadida.",
+        "shortDescription": "Soñar con inundación indica emociones que se desbordan, estrés acumulado o cambios difíciles de contener. Si el agua entra en casa, es sucia o sube rápido, el sueño señala qué área se siente invadida y qué límite necesita atención.",
         "askYourself": [
           "¿La inundación era de agua limpia, sucia, de lluvia o de mar?",
           "¿El agua entraba en mi casa, me arrastraba o yo lograba salir?",
           "¿Qué situación se está desbordando en mi vida despierta?"
         ],
-        "seoTitle": "inundación, casa inundada o agua sucia",
+        "seoTitle": "inundación, casa inundada, agua sucia",
         "faq": [
           {
             "question": "¿Qué significa soñar con inundación?",
@@ -1531,6 +1536,10 @@
           {
             "question": "¿Qué significa soñar con inundación de agua sucia?",
             "answer": "El agua sucia señala confusión, cansancio o emociones mezcladas que todavía necesitan orden."
+          },
+          {
+            "question": "¿Qué significa soñar con una inundación y escapar?",
+            "answer": "Escapar de una inundación sugiere que estás buscando salida, límites o ayuda ante una situación que se siente desbordada."
           }
         ]
       },
@@ -1736,7 +1745,7 @@
           "¿Yo la abría, la cerraba, intentaba cruzarla o solo la veía?",
           "¿Qué decisión, límite u oportunidad se siente como una puerta ahora?"
         ],
-        "seoTitle": "puertas abiertas, cerradas o puerta de casa",
+        "seoTitle": "puertas abiertas o cerradas",
         "faq": [
           {
             "question": "¿Qué significa soñar con puertas?",
@@ -2387,10 +2396,26 @@
       "it": {
         "slug": "pioggia",
         "name": "Pioggia",
-        "shortDescription": "La pioggia simboleggia rilascio emotivo, purificazione e rinnovamento. Una pioggia leggera può essere calmante, mentre un acquazzone può indicare sopraffazione emotiva.",
+        "shortDescription": "Sognare pioggia parla di rilascio emotivo, purificazione e rinnovamento. Una pioggia leggera può calmare; un temporale o una pioggia forte può indicare emozioni intense che chiedono spazio.",
         "askYourself": [
-          "Quali emozioni hanno bisogno di espressione?",
-          "Cosa ha bisogno di essere purificato o rinnovato nella mia vita?"
+          "La pioggia era leggera, forte, improvvisa o parte di un temporale?",
+          "Mi sentivo protetto, esposto, triste o sollevato?",
+          "Quale emozione ha bisogno di essere espressa o lasciata andare?"
+        ],
+        "seoTitle": "pioggia, pioggia forte o temporale",
+        "faq": [
+          {
+            "question": "Cosa significa sognare pioggia?",
+            "answer": "Sognare pioggia riguarda spesso rilascio emotivo, purificazione, tristezza che si scioglie o rinnovamento dopo una fase pesante."
+          },
+          {
+            "question": "Cosa significa sognare pioggia forte o temporale?",
+            "answer": "Pioggia forte e temporale indicano emozioni intense, pressione o una situazione che arriva all'improvviso e chiede attenzione."
+          },
+          {
+            "question": "Cosa significa guardare la pioggia da dentro?",
+            "answer": "Guardare la pioggia da un luogo protetto suggerisce distanza emotiva: osservi qualcosa di difficile senza esserne completamente travolto."
+          }
         ]
       },
       "relatedSymbols": [
@@ -3487,7 +3512,7 @@
           "¿Aparecían doctores, enfermeras, enfermos o mucha gente?",
           "¿Qué parte de mi vida necesita cuidado, descanso o apoyo ahora?"
         ],
-        "seoTitle": "hospital, estar allí o verlo lleno de gente",
+        "seoTitle": "hospital o estar allí",
         "faq": [
           {
             "question": "¿Qué significa soñar con hospital?",
