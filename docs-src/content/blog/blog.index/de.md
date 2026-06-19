@@ -188,6 +188,13 @@
 <span id="resultsNumber">10</span> Ressource(n) gefunden
                 </p>
 </div>
+<section class="glass-panel rounded-2xl p-6 mb-10 border border-dream-salmon/15" aria-label="Schnelle Einstiege zu Traumsymbolen">
+<h2 class="font-serif text-xl text-dream-cream mb-3">Häufige Traummuster</h2>
+<p class="text-sm text-purple-200/70 mb-4">Ein schneller Einstieg, wenn ein Traum immer wieder mit Flucht, Angst oder Verfolgung beginnt.</p>
+<div class="flex flex-wrap gap-3">
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="../traumsymbole/verfolgung">Verfolgungsträume deuten</a>
+</div>
+</section>
 <!-- Articles Grid -->
 <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="articles-grid" id="articlesGrid">
 <!-- Article - Dreamlike Wakefulness Sleep -->

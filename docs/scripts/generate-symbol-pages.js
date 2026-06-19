@@ -1455,17 +1455,9 @@ ${relatedArticleHtml}
 
 ${renderPseoFooter(lang, currentPaths, 'dictionary')}
 
+    <script src="/js/site-shell.js?v=${CONFIG.cssVersion}" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Navbar scroll effect
-            window.addEventListener('scroll', () => {
-                const navbar = document.getElementById('navbar');
-                if (navbar) {
-                    navbar.classList.toggle('py-2', window.scrollY > 50);
-                    navbar.classList.toggle('py-6', window.scrollY <= 50);
-                }
-            });
-
             const jumpLinks = Array.from(document.querySelectorAll('.symbol-jump-link'));
             const jumpNav = document.querySelector('.symbol-jump-nav');
             const jumpTargets = jumpLinks
@@ -2073,18 +2065,7 @@ ${relatedGuidesHtml}
 
 ${renderPseoFooter(lang, currentPaths, 'dictionary')}
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Navbar scroll effect
-            window.addEventListener('scroll', () => {
-                const navbar = document.getElementById('navbar');
-                if (navbar) {
-                    navbar.classList.toggle('py-2', window.scrollY > 50);
-                    navbar.classList.toggle('py-6', window.scrollY <= 50);
-                }
-            });
-        });
-    </script>
+    <script src="/js/site-shell.js?v=${CONFIG.cssVersion}" defer></script>
     <script src="/js/language-dropdown.js?v=${CONFIG.cssVersion}" defer></script>
     <script src="/js/mobile-menu.js?v=${CONFIG.cssVersion}" defer></script>
 </body>
@@ -2266,8 +2247,15 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
     if (!symbolData) return '';
     const extContent = getExtendedContent(s.id, extended, lang);
     const firstVariation = extContent.variations.length > 0 ? extContent.variations[0] : null;
+    const symbolHref = `/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}`;
+    const relatedArticle = s.relatedArticles?.[lang];
+    const relatedArticleHtml = relatedArticle ? `
+                        <a href="/${lang}/blog/${relatedArticle}" class="mt-4 inline-flex items-center gap-2 text-xs text-purple-200/70 hover:text-dream-salmon transition-colors">
+                            ${t.read_article} <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                        </a>` : '';
     return `
-                    <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}" class="symbol-card glass-panel rounded-2xl p-6 border border-transparent group">
+                    <article class="symbol-card glass-panel rounded-2xl p-6 border border-transparent group">
+                        <a href="${symbolHref}" class="block">
                         <div class="flex items-start justify-between mb-3">
                             <h2 class="font-serif text-xl text-dream-cream group-hover:text-dream-salmon transition-colors">${i + 1}. ${escapeHtml(symbolData.name)}</h2>
                         </div>
@@ -2276,7 +2264,9 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
                         <span class="inline-flex items-center gap-2 text-xs text-dream-salmon opacity-0 group-hover:opacity-100 transition-opacity">
                             ${t.curation_read_full} <i data-lucide="arrow-right" class="w-3 h-3"></i>
                         </span>
-                    </a>`;
+                        </a>
+                        ${relatedArticleHtml}
+                    </article>`;
   }).join('\n');
 
   // Schema.org ItemList
@@ -2552,18 +2542,7 @@ ${guideHowToHtml}
 
 ${renderPseoFooter(lang, currentPaths, 'dictionary')}
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Navbar scroll effect
-            window.addEventListener('scroll', () => {
-                const navbar = document.getElementById('navbar');
-                if (navbar) {
-                    navbar.classList.toggle('py-2', window.scrollY > 50);
-                    navbar.classList.toggle('py-6', window.scrollY <= 50);
-                }
-            });
-        });
-    </script>
+    <script src="/js/site-shell.js?v=${CONFIG.cssVersion}" defer></script>
     <script src="/js/language-dropdown.js?v=${CONFIG.cssVersion}" defer></script>
     <script src="/js/mobile-menu.js?v=${CONFIG.cssVersion}" defer></script>
 </body>

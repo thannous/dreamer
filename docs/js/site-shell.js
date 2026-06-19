@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     style.id = 'nav-scroll-style';
     style.textContent = `
       .nav-scroll-animate {
-        transition: transform 0.3s ease, opacity 0.2s ease, padding 0.2s ease, background-color 0.2s ease, backdrop-filter 0.2s ease;
+        transition: transform 0.3s ease, opacity 0.2s ease, background-color 0.2s ease, backdrop-filter 0.2s ease, box-shadow 0.2s ease;
         will-change: transform, opacity;
       }
       .nav-scroll-hidden {
@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const expandedClass = navbar.dataset.expandedClass || 'py-6';
   const compactClass = navbar.dataset.compactClass || 'py-2';
   const shrinkOnScroll = Boolean(navbar.dataset.shrinkOnScroll);
+  const canShrinkNavigation = window.matchMedia('(min-width: 768px)');
   const directionThreshold = 8;
   const hideOffset = 64;
   const showOffset = 8;
@@ -32,11 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const syncNavbar = () => {
     const currentScrollY = window.scrollY;
+    const shouldShrink = shrinkOnScroll && canShrinkNavigation.matches;
 
-    if (shrinkOnScroll) {
+    if (shouldShrink) {
       const compact = currentScrollY > 50;
       navbar.classList.toggle(compactClass, compact);
       navbar.classList.toggle(expandedClass, !compact);
+    } else if (shrinkOnScroll) {
+      navbar.classList.remove(compactClass);
+      navbar.classList.add(expandedClass);
     }
 
     const delta = currentScrollY - lastScrollY;
@@ -52,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   navbar.classList.add('nav-scroll-animate');
   syncNavbar();
+  canShrinkNavigation.addEventListener('change', syncNavbar);
   window.addEventListener(
     'scroll',
     () => {

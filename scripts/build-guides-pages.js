@@ -1185,19 +1185,7 @@ ${renderGuideDepthSection(lang)}
     </main>
 ${renderGuidesFooter(lang, t, pages, currentPaths, 'guides')}
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            window.addEventListener('scroll', () => {
-                const navbar = document.getElementById('navbar');
-                if (navbar) {
-                    navbar.classList.toggle('py-3', window.scrollY > 50);
-                    navbar.classList.toggle('py-5', window.scrollY <= 50);
-                    navbar.classList.toggle('bg-dream-dark/75', window.scrollY > 50);
-                    navbar.classList.toggle('backdrop-blur-md', window.scrollY > 50);
-                }
-            });
-        });
-    </script>
+    <script src="/js/site-shell.js?v=${version}" defer></script>
     <script src="/js/language-dropdown.js?v=${version}" defer></script>
     <script src="/js/mobile-menu.js?v=${version}" defer></script>
 </body>
@@ -2114,6 +2102,12 @@ function generateDictionaryPage(lang, t) {
       const catName = (t.category_names || {})[sym.category] || sym.category;
       const catColor = CATEGORY_COLORS[sym.category] || '#c084fc';
       const atlasPosition = symbolAtlasPositions.get(sym.id) || getSymbolAtlasPosition(0);
+      const relatedArticle = sym.relatedArticles?.[lang];
+      const relatedArticleHtml = relatedArticle ? `
+                            <a href="/${lang}/blog/${relatedArticle}" class="mt-3 inline-flex items-center gap-2 text-xs text-dream-salmon hover:text-dream-salmonLight transition-colors">
+                                ${escapeHtml(i18n[lang]?.read_article || 'Read article')}
+                                <span aria-hidden="true">→</span>
+                            </a>` : '';
       return `
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="${dataSymbol}" style="--cat-color:${catColor};--symbol-x:${atlasPosition.x};--symbol-y:${atlasPosition.y};--symbol-atlas-columns:${SYMBOL_ATLAS_COLUMNS};--symbol-atlas-rows:${symbolAtlasRows}">
                             <div class="symbol-card-image-layer" aria-hidden="true">
@@ -2131,6 +2125,7 @@ function generateDictionaryPage(lang, t) {
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">${escapeHtml(dc.ask_yourself_label)}</strong> ${escapeHtml(askText)}
                             </div>
+                            ${relatedArticleHtml}
                         </div>`;
     }).join('\n');
     return `                <section id="${letter}" class="mb-12">
@@ -2637,14 +2632,6 @@ ${renderGuidesFooter(lang, t, pages, currentPaths, 'dictionary')}
             const symbolCards = document.querySelectorAll('.symbol-card');
             const listSections = document.querySelectorAll('#symbolsList > section');
 
-            // ── Navbar scroll effect ──────────────────────────────────────
-            window.addEventListener('scroll', () => {
-                if (navbar) {
-                    navbar.classList.toggle('py-3', window.scrollY > 50);
-                    navbar.classList.toggle('py-5', window.scrollY <= 50);
-                }
-            });
-
             function updateSectionScrollOffset() {
                 if (!stickyBar) return;
                 const navbarHeight = navbar?.getBoundingClientRect().height || 0;
@@ -2923,6 +2910,7 @@ ${symbolCatEntries}
             });
         });
     </script>
+    <script src="/js/site-shell.js?v=${version}" defer></script>
     <script src="/js/language-dropdown.js?v=${version}" defer></script>
     <script src="/js/mobile-menu.js?v=${version}" defer></script>
 </body>
