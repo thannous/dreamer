@@ -65,6 +65,10 @@ function auditDocsShell(docsDir = DOCS_DIR) {
       pageErrors.push('missing /js/language-dropdown.js');
     }
 
+    if (!/\/js\/site-shell\.js(?:\?|["'])/i.test(html)) {
+      pageErrors.push('missing /js/site-shell.js');
+    }
+
     if (!/\/js\/mobile-menu\.js(?:\?|["'])/i.test(html)) {
       pageErrors.push('missing /js/mobile-menu.js');
     }
