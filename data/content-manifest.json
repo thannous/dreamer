@@ -40,6 +40,34 @@
             }
           }
         },
+        "blog.ai-dream-journal-privacy": {
+          "id": "blog.ai-dream-journal-privacy",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "ai-dream-journal-privacy",
+          "locales": {
+            "en": {
+              "slug": "ai-dream-journal-privacy",
+              "path": "/en/blog/ai-dream-journal-privacy"
+            },
+            "fr": {
+              "slug": "confidentialite-ia-journal-reves",
+              "path": "/fr/blog/confidentialite-ia-journal-reves"
+            },
+            "es": {
+              "slug": "privacidad-ia-diario-suenos",
+              "path": "/es/blog/privacidad-ia-diario-suenos"
+            },
+            "de": {
+              "slug": "ki-traumtagebuch-datenschutz",
+              "path": "/de/blog/ki-traumtagebuch-datenschutz"
+            },
+            "it": {
+              "slug": "privacy-ia-diario-sogni",
+              "path": "/it/blog/privacy-ia-diario-sogni"
+            }
+          }
+        },
         "blog.ai-sleep-analysis": {
           "id": "blog.ai-sleep-analysis",
           "type": "blogArticle",
@@ -625,6 +653,34 @@
             "it": {
               "slug": "significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni",
               "path": "/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni"
+            }
+          }
+        },
+        "blog.heatwave-sleep-dreams": {
+          "id": "blog.heatwave-sleep-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "heatwave-sleep-dreams",
+          "locales": {
+            "en": {
+              "slug": "heatwave-sleep-dreams",
+              "path": "/en/blog/heatwave-sleep-dreams"
+            },
+            "fr": {
+              "slug": "canicule-sommeil-reves",
+              "path": "/fr/blog/canicule-sommeil-reves"
+            },
+            "es": {
+              "slug": "ola-calor-sueno-suenos",
+              "path": "/es/blog/ola-calor-sueno-suenos"
+            },
+            "de": {
+              "slug": "hitzewelle-schlaf-traeume",
+              "path": "/de/blog/hitzewelle-schlaf-traeume"
+            },
+            "it": {
+              "slug": "ondata-calore-sonno-sogni",
+              "path": "/it/blog/ondata-calore-sonno-sogni"
             }
           }
         },
