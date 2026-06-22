@@ -190,7 +190,7 @@
 <article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Pourquoi la canicule rend les rêves plus intenses">
 <a class="block" href="canicule-sommeil-reves">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
-<img alt="Chambre chaude la nuit avec fragments de rêves au-dessus du lit" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/heatwave-sleep-dreams.png" width="800">
+<img alt="Chambre chaude la nuit avec fragments de rêves au-dessus du lit" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/heatwave-sleep-dreams.webp" srcset="../../img/blog/heatwave-sleep-dreams-480w.webp 480w, ../../img/blog/heatwave-sleep-dreams-800w.webp 800w, ../../img/blog/heatwave-sleep-dreams-1200w.webp 1200w" width="800">
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
