@@ -48,9 +48,6 @@ https://www.noctalia.app/* https://noctalia.app/:splat 301
 /fr/conditions /fr/cgu 301
 /waitlist /en/ 301
 
-# Legacy optimized assets
-/img/blog/heatwave-sleep-dreams.png /img/blog/heatwave-sleep-dreams.webp 301
-
 # Redirect all .html pages to clean URLs (301 permanent)
 # Pattern-based redirects for blog, guides, and localized pages
 /:lang/blog/:slug.html /:lang/blog/:slug 301
