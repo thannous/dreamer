@@ -33,7 +33,7 @@
 }
 ---
 <article class="max-w-5xl mx-auto">
-<nav aria-label="Breadcrumb" class="text-sm text-purple-200/60 mb-8"><ol class="flex items-center gap-2 flex-wrap"><li><a class="hover:text-dream-salmon transition-colors" href="/en/">Home</a></li><li class="text-purple-400">/</li><li><a class="hover:text-dream-salmon transition-colors" href="/en/blog/">Resources</a></li><li class="text-purple-400">/</li><li class="text-dream-cream">AI privacy</li></ol></nav>
+<nav aria-label="Breadcrumb" class="text-sm text-purple-200/60 mb-8"><ol class="flex items-center gap-2 flex-wrap"><li><a class="hover:text-dream-salmon transition-colors" href="/">Home</a></li><li class="text-purple-400">/</li><li><a class="hover:text-dream-salmon transition-colors" href="/en/blog/">Resources</a></li><li class="text-purple-400">/</li><li class="text-dream-cream">AI privacy</li></ol></nav>
 <header class="mb-12">
 <div class="flex flex-wrap items-center gap-3 mb-6"><span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">AI</span><span class="text-sm text-purple-300/60">Published June 20, 2026</span><span class="text-sm text-purple-300/60">5 min read</span></div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">AI dream journal privacy: questions to ask before you write</h1>

@@ -10,6 +10,7 @@ const { normalizePrettyPath, readJson, walkFiles } = require('./lib/docs-source-
 
 const SITE_MANIFEST_PATH = path.join(ROOT_DIR, 'data', 'site-manifest.json');
 const DOMAIN = siteConfig.domain;
+const BLOG_IMAGE_MAX_BYTES = 250_000;
 
 function runNodeScript(relativeScriptPath, args = []) {
   const scriptPath = path.join(ROOT_DIR, relativeScriptPath);
@@ -36,6 +37,19 @@ function resolveInternalHref(currentPath, href) {
     const resolved = new URL(href, `${DOMAIN}${currentPath}`);
     if (resolved.origin !== DOMAIN) return null;
     return normalizePrettyPath(resolved.pathname);
+  } catch {
+    return null;
+  }
+}
+
+function resolveInternalPathname(currentPath, href) {
+  if (!href || href.startsWith('#')) return null;
+  if (/^(mailto:|tel:|sms:|javascript:|data:)/i.test(href)) return null;
+
+  try {
+    const resolved = new URL(href, `${DOMAIN}${currentPath}`);
+    if (resolved.origin !== DOMAIN) return null;
+    return resolved.pathname || '/';
   } catch {
     return null;
   }
@@ -81,6 +95,57 @@ function extractHrefValues(html) {
   return matchTags(html, 'a')
     .map((tag) => parseTagAttributes(tag).get('href'))
     .filter(Boolean);
+}
+
+function extractSrcsetCandidates(value) {
+  return String(value || '')
+    .split(',')
+    .map((part) => part.trim().split(/\s+/)[0])
+    .filter(Boolean);
+}
+
+function extractBlogImageReferenceValues(html) {
+  const refs = [];
+
+  const pushAttr = (tagName, attr) => {
+    for (const tag of matchTags(html, tagName)) {
+      const value = parseTagAttributes(tag).get(attr);
+      if (!value) continue;
+
+      if (attr === 'srcset') {
+        refs.push(...extractSrcsetCandidates(value));
+      } else {
+        refs.push(value);
+      }
+    }
+  };
+
+  pushAttr('img', 'src');
+  pushAttr('img', 'srcset');
+  pushAttr('source', 'src');
+  pushAttr('source', 'srcset');
+
+  for (const tag of matchTags(html, 'link')) {
+    const attrs = parseTagAttributes(tag);
+    if (String(attrs.get('as') || '').toLowerCase() !== 'image') continue;
+    const href = attrs.get('href');
+    if (href) refs.push(href);
+  }
+
+  for (const tag of matchTags(html, 'meta')) {
+    const attrs = parseTagAttributes(tag);
+    const property = attrs.get('property');
+    const name = attrs.get('name');
+    const content = attrs.get('content');
+    if (!content) continue;
+    if (property === 'og:image' || name === 'twitter:image') refs.push(content);
+  }
+
+  for (const match of html.matchAll(/url\((['"]?)([^'")]+)\1\)/gi)) {
+    refs.push(match[2]);
+  }
+
+  return refs.filter((ref) => ref.includes('/img/blog/'));
 }
 
 function countTagsWithAttribute(html, tagName, attr, value) {
@@ -132,6 +197,80 @@ function assertNoDuplicateCriticalMeta() {
       const count = countTagsWithAttribute(html, selector.tag, selector.attr, selector.value);
       if (count > 1) {
         errors.push(`[duplicate critical meta] ${path.relative(ROOT_DIR, filePath)} selector=${selector.label} count=${count}`);
+      }
+    }
+  }
+
+  if (errors.length > 0) {
+    throw new Error(errors.join('\n'));
+  }
+}
+
+function loadExactRedirectSources() {
+  const redirectsPath = path.join(DOCS_DIR, '_redirects');
+  if (!fs.existsSync(redirectsPath)) return new Set();
+
+  const exactSources = new Set();
+  const lines = fs.readFileSync(redirectsPath, 'utf8').split(/\r?\n/);
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#')) continue;
+
+    const [source, target, status] = line.split(/\s+/);
+    if (!source || !target || !/^30[1278]$/.test(String(status || ''))) continue;
+    if (!source.startsWith('/')) continue;
+    if (/[:*]/.test(source)) continue;
+
+    exactSources.add(source);
+  }
+
+  return exactSources;
+}
+
+function assertNoLinksToExactRedirects() {
+  const redirectSources = loadExactRedirectSources();
+  if (redirectSources.size === 0) return;
+
+  const errors = [];
+
+  for (const page of loadIndexablePages()) {
+    for (const href of page.hrefs) {
+      const pathname = resolveInternalPathname(page.path, href);
+      if (!pathname || !redirectSources.has(pathname)) continue;
+
+      errors.push(
+        `[internal link to redirect] ${path.relative(ROOT_DIR, page.filePath)} href="${href}" redirectSource="${pathname}"`
+      );
+    }
+  }
+
+  if (errors.length > 0) {
+    throw new Error(errors.join('\n'));
+  }
+}
+
+function assertReferencedBlogImagesOptimized() {
+  const htmlFiles = walkFiles(DOCS_DIR, (filePath) => filePath.endsWith('.html'));
+  const errors = [];
+
+  for (const filePath of htmlFiles) {
+    const html = fs.readFileSync(filePath, 'utf8');
+    const currentPath = htmlFileToPath(filePath);
+    const refs = new Set(extractBlogImageReferenceValues(html));
+
+    for (const ref of refs) {
+      const pathname = resolveInternalPathname(currentPath, ref);
+      if (!pathname || !pathname.startsWith('/img/blog/')) continue;
+
+      const imagePath = path.join(DOCS_DIR, pathname.replace(/^\/+/, ''));
+      if (!fs.existsSync(imagePath)) continue;
+
+      const size = fs.statSync(imagePath).size;
+      if (size > BLOG_IMAGE_MAX_BYTES) {
+        errors.push(
+          `[blog image too large] ${path.relative(ROOT_DIR, filePath)} ref="${ref}" size=${size} max=${BLOG_IMAGE_MAX_BYTES}`
+        );
       }
     }
   }
@@ -238,6 +377,8 @@ function main() {
 
   const manifest = readJson(SITE_MANIFEST_PATH);
   assertNoDuplicateCriticalMeta();
+  assertNoLinksToExactRedirects();
+  assertReferencedBlogImagesOptimized();
   assertManifestParity(manifest);
   assertNoOrphans(manifest);
   assertSitemapCoverage(manifest);
