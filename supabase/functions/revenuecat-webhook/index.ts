@@ -12,6 +12,7 @@ import {
   buildSubscriptionSnapshotFromCustomer,
   buildSubscriptionSnapshotFromTier,
 } from '../../lib/subscriptionState.ts';
+import { verifyRevenueCatWebhookAuthorization } from './auth.ts';
 
 const corsHeaders: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
@@ -44,15 +45,6 @@ let entitlementCachePromise: Promise<RevenueCatEntitlementLookupById> | null = n
 
 function isRevenueCatAnonymousId(id: string): boolean {
   return id.startsWith('$RCAnonymousID:');
-}
-
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let result = 0;
-  for (let i = 0; i < a.length; i += 1) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return result === 0;
 }
 
 function getOptionalEnv(name: string): string | null {
@@ -89,30 +81,6 @@ function getWebhookSecret(): string {
     getOptionalEnv('REVENUECAT_WEBHOOK_AUTHORIZATION') ??
     ''
   ).trim();
-}
-
-function verifyWebhookAuthorization(req: Request): boolean {
-  const secret = getWebhookSecret();
-  if (!secret) {
-    throw new Error('Missing REVENUECAT_WEBHOOK_SECRET');
-  }
-
-  // Option A (recommended): RevenueCat sends `Authorization: Bearer <secret>`.
-  const provided = req.headers.get('authorization')?.trim();
-  if (provided && (timingSafeEqual(provided, secret) || timingSafeEqual(provided, `Bearer ${secret}`))) {
-    return true;
-  }
-
-  // Option B: if the function requires JWT verification, RevenueCat may need to use the Supabase
-  // anon key as Authorization. In that case, also allow a secret passed as query param.
-  const url = new URL(req.url);
-  const qp =
-    url.searchParams.get('rc_webhook_secret') ??
-    url.searchParams.get('revenuecat_webhook_secret') ??
-    url.searchParams.get('rc_secret') ??
-    null;
-
-  return typeof qp === 'string' && qp.trim() ? timingSafeEqual(qp.trim(), secret) : false;
 }
 
 function looksLikeUuid(id: string): boolean {
@@ -454,7 +422,7 @@ serve(async (req: Request) => {
   }
 
   try {
-    if (!verifyWebhookAuthorization(req)) {
+    if (!verifyRevenueCatWebhookAuthorization(req, getWebhookSecret())) {
       return new Response(JSON.stringify({ error: 'Invalid webhook authentication' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },

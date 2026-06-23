@@ -3,7 +3,7 @@ import type { Session, User } from '@supabase/supabase-js';
 import * as mockAuth from './mockAuth';
 import { isMockModeEnabled } from './env';
 import { createScopedLogger } from './logger';
-import { supabase } from './supabase';
+import { createWebOAuthState, supabase } from './supabase';
 import type { SubscriptionTier } from './types';
 
 export type { MockProfile } from './mockAuth';
@@ -185,11 +185,13 @@ export async function signInWithGoogleWeb(): Promise<void> {
   }
 
   const redirectTo = getWebRedirectTo();
+  const state = createWebOAuthState();
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
       scopes: 'openid email profile',
       ...(redirectTo ? { redirectTo } : {}),
+      ...(state ? { queryParams: { state } } : {}),
     },
   });
   if (error) throw error;

@@ -1,7 +1,7 @@
 import type { Session, User } from '@supabase/supabase-js';
 import { Platform } from 'react-native';
 
-import { supabase } from './supabase';
+import { createWebOAuthState, supabase } from './supabase';
 import * as mockAuth from './mockAuth';
 import { getExpoPublicEnvValue, isMockModeEnabled } from './env';
 import { createScopedLogger } from './logger';
@@ -490,11 +490,13 @@ export async function signInWithGoogleWeb(): Promise<void> {
   }
 
   if (Platform.OS !== 'web') return;
+  const state = createWebOAuthState();
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
       scopes: 'openid email profile',
       redirectTo: getWebRedirectTo(),
+      ...(state ? { queryParams: { state } } : {}),
     },
   });
   if (error) throw error;
