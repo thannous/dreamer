@@ -10,6 +10,7 @@ import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationReques
 
 import type {
   AnalysisResult,
+  AnalysisRequestContext,
   CategorizeDreamResult,
   ImageJobCommandRequest,
   ImageJobCommandResponse,
@@ -40,7 +41,8 @@ function delay(ms: number): Promise<void> {
 export async function analyzeDream(
   transcript: string,
   lang = 'en',
-  _fingerprint?: string
+  _fingerprint?: string,
+  _context?: AnalysisRequestContext
 ): Promise<AnalysisResult> {
   console.log('[MOCK] analyzeDream called with transcript:', transcript.slice(0, 50) + '...', 'lang:', lang);
   await delay(1000 + Math.random() * 2000); // 1-3 seconds
@@ -99,7 +101,8 @@ export async function categorizeDream(
 export async function analyzeDreamWithImage(
   transcript: string,
   lang = 'en',
-  _fingerprint?: string
+  _fingerprint?: string,
+  _context?: AnalysisRequestContext
 ): Promise<AnalysisResult & { imageUrl: string }> {
   console.log('[MOCK] analyzeDreamWithImage called with lang:', lang);
   await delay(3000 + Math.random() * 2000); // 3-5 seconds
@@ -118,7 +121,8 @@ export async function analyzeDreamWithImage(
 export async function analyzeDreamWithImageResilient(
   transcript: string,
   lang = 'en',
-  _fingerprint?: string
+  _fingerprint?: string,
+  _context?: AnalysisRequestContext
 ): Promise<AnalysisResult & { imageUrl: string | null; imageGenerationFailed: boolean }> {
   console.log('[MOCK] analyzeDreamWithImageResilient called with lang:', lang);
 

@@ -969,7 +969,10 @@ export const useDreamJournal = () => {
       let analysisDone = false;
       let imageDone = !shouldReplaceImage;
 
-      const analysisPromise = analyzeDreamText(transcript, options?.lang, fingerprint)
+      const analysisPromise = analyzeDreamText(transcript, options?.lang, fingerprint, {
+        remoteDreamId: syncedDream.remoteId,
+        analysisRequestId: requestId,
+      })
         .then((result) => {
           analysisDone = true;
           if (imageDone) {

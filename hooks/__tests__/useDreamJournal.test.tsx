@@ -49,7 +49,8 @@ const {
   mockUpdateDreamInSupabase: typedJestFn<(dream: DreamAnalysis) => Promise<DreamAnalysis>>(),
   mockDeleteDreamFromSupabase: typedJestFn<(remoteId: number) => Promise<void>>(),
   mockFetchDreamsFromSupabase: typedJestFn<() => Promise<DreamAnalysis[]>>(),
-  mockAnalyzeDreamText: typedJestFn<(transcript: string, lang?: string, fingerprint?: string) => Promise<unknown>>(),
+  mockAnalyzeDreamText:
+    typedJestFn<(transcript: string, lang?: string, fingerprint?: string, context?: unknown) => Promise<unknown>>(),
   mockSubmitImageGenerationJob: typedJestFn<(request: unknown) => Promise<unknown>>(),
   mockGetImageGenerationJobStatus: typedJestFn<(jobId: string) => Promise<unknown>>(),
   mockGetQuotaStatus: typedJestFn<(user: unknown, tier: string, target?: unknown) => Promise<QuotaStatus>>(),
@@ -778,7 +779,10 @@ describe('useDreamJournal', () => {
         await result.current.analyzeDream(1, 'My dream transcript');
       });
 
-      expect(mockAnalyzeDreamText).toHaveBeenCalledWith('My dream transcript', undefined, 'mock-hash-fingerprint');
+      expect(mockAnalyzeDreamText).toHaveBeenCalledWith('My dream transcript', undefined, 'mock-hash-fingerprint', {
+        remoteDreamId: undefined,
+        analysisRequestId: expect.any(String),
+      });
       expect(mockSubmitImageGenerationJob).toHaveBeenCalledWith(
         expect.objectContaining({
           transcript: 'My dream transcript',
@@ -837,6 +841,10 @@ describe('useDreamJournal', () => {
         await result.current.analyzeDream(1, 'My dream transcript');
       });
 
+      expect(mockAnalyzeDreamText).toHaveBeenCalledWith('My dream transcript', undefined, undefined, {
+        remoteDreamId: 101,
+        analysisRequestId: expect.any(String),
+      });
       expect(mockSubmitImageGenerationJob).toHaveBeenCalledWith(
         expect.objectContaining({
           dreamId: 101,
@@ -935,7 +943,10 @@ describe('useDreamJournal', () => {
         await result.current.analyzeDream(1, 'Mon rêve', { lang: 'fr' });
       });
 
-      expect(mockAnalyzeDreamText).toHaveBeenCalledWith('Mon rêve', 'fr', 'mock-hash-fingerprint');
+      expect(mockAnalyzeDreamText).toHaveBeenCalledWith('Mon rêve', 'fr', 'mock-hash-fingerprint', {
+        remoteDreamId: undefined,
+        analysisRequestId: expect.any(String),
+      });
     });
 
     it('throws error when dream not found', async () => {

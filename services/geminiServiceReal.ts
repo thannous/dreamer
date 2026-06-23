@@ -30,6 +30,11 @@ export type AnalysisResult = {
   quotaUsed?: { analysis: number };
 };
 
+export type AnalysisRequestContext = {
+  remoteDreamId?: number | null;
+  analysisRequestId?: string | null;
+};
+
 export type ImageJobCommandRequest = {
   clientRequestId: string;
   dreamId?: number;
@@ -100,14 +105,30 @@ async function fetchWithSessionHeaders<T>(
   }
 }
 
+function buildAnalysisRequestBody(
+  transcript: string,
+  lang: string,
+  fingerprint?: string,
+  context?: AnalysisRequestContext
+) {
+  return {
+    transcript,
+    lang,
+    ...(fingerprint && { fingerprint }),
+    ...(context?.remoteDreamId != null ? { remoteDreamId: context.remoteDreamId } : {}),
+    ...(context?.analysisRequestId ? { analysisRequestId: context.analysisRequestId } : {}),
+  };
+}
+
 export async function analyzeDream(
   transcript: string,
   lang: string = 'en',
-  fingerprint?: string
+  fingerprint?: string,
+  context?: AnalysisRequestContext
 ): Promise<AnalysisResult> {
   return fetchWithSessionHeaders<AnalysisResult>('/analyzeDream', {
     method: 'POST',
-    body: { transcript, lang, ...(fingerprint && { fingerprint }) },
+    body: buildAnalysisRequestBody(transcript, lang, fingerprint, context),
     ...NETWORK_REQUEST_POLICIES.analyzeDream,
   });
 }
@@ -128,13 +149,14 @@ export async function categorizeDream(transcript: string, lang: string = 'en'): 
 export async function analyzeDreamWithImage(
   transcript: string,
   lang: string = 'en',
-  fingerprint?: string
+  fingerprint?: string,
+  context?: AnalysisRequestContext
 ): Promise<AnalysisResult & { imageUrl: string }> {
   const res = await fetchWithSessionHeaders<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(
     '/analyzeDreamFull',
     {
       method: 'POST',
-      body: { transcript, lang, ...(fingerprint && { fingerprint }) },
+      body: buildAnalysisRequestBody(transcript, lang, fingerprint, context),
       ...NETWORK_REQUEST_POLICIES.analyzeDreamFull,
     }
   );
@@ -152,7 +174,8 @@ export async function analyzeDreamWithImage(
 export async function analyzeDreamWithImageResilient(
   transcript: string,
   lang: string = 'en',
-  fingerprint?: string
+  fingerprint?: string,
+  context?: AnalysisRequestContext
 ): Promise<AnalysisResult & { imageUrl: string | null; imageGenerationFailed: boolean }> {
   try {
     // Try combined analysis + image generation first
@@ -160,7 +183,7 @@ export async function analyzeDreamWithImageResilient(
       '/analyzeDreamFull',
       {
         method: 'POST',
-        body: { transcript, lang, ...(fingerprint && { fingerprint }) },
+        body: buildAnalysisRequestBody(transcript, lang, fingerprint, context),
         ...NETWORK_REQUEST_POLICIES.analyzeDreamFull,
       }
     );
@@ -183,7 +206,7 @@ export async function analyzeDreamWithImageResilient(
     try {
       // Note: fingerprint already consumed on combined call if it was provided,
       // so we don't pass it again for fallback analysis-only call
-      const analysisOnly = await analyzeDream(transcript, lang);
+      const analysisOnly = await analyzeDream(transcript, lang, undefined, context);
 
       // Try to generate image separately
       try {
