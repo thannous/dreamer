@@ -27,16 +27,94 @@ const isAuthorized = (req: Request, serviceRoleKey: string): boolean => {
   return authorization === `Bearer ${serviceRoleKey}` || apikey === serviceRoleKey;
 };
 
+type JobGateDecision =
+  | { allowed: true; claimed?: boolean }
+  | { allowed: false; errorCode: string; errorMessage: string; retryable: boolean };
+
+type RpcClient = {
+  rpc: (
+    fn: string,
+    args?: Record<string, unknown>
+  ) => Promise<{ data: any; error: { message?: string } | null }>;
+};
+
+const asRpcClient = (adminClient: ReturnType<typeof createAdminClient>): RpcClient =>
+  adminClient as unknown as RpcClient;
+
+const normalizeEffectiveSubscriptionTier = (tier: unknown): 'free' | 'plus' =>
+  tier === 'plus' ? 'plus' : 'free';
+
+const requireAuthenticatedImageEntitlement = async (
+  adminClient: ReturnType<typeof createAdminClient>,
+  userId: string | null
+): Promise<JobGateDecision> => {
+  if (!userId) {
+    return { allowed: true };
+  }
+
+  try {
+    const { data, error } = await asRpcClient(adminClient).rpc('get_effective_subscription_tier', {
+      p_user_id: userId,
+    });
+
+    if (error) {
+      console.warn('[image-job-worker] Failed to resolve subscription tier for image gate', {
+        userId,
+        message: error?.message ?? String(error),
+      });
+      return {
+        allowed: false,
+        errorCode: 'SUBSCRIPTION_STATUS_UNAVAILABLE',
+        errorMessage: 'Subscription status unavailable',
+        retryable: true,
+      };
+    }
+
+    const effectiveTier = normalizeEffectiveSubscriptionTier(data);
+    if (effectiveTier !== 'plus') {
+      console.log('[image-job-worker] Blocked non-plus image job', {
+        userId,
+        effectiveTier,
+      });
+      return {
+        allowed: false,
+        errorCode: 'IMAGE_GENERATION_PLUS_REQUIRED',
+        errorMessage: 'Image generation requires Noctalia Plus',
+        retryable: false,
+      };
+    }
+
+    return { allowed: true };
+  } catch (error) {
+    console.warn('[image-job-worker] Subscription tier check threw', {
+      userId,
+      message: error instanceof Error ? error.message : String(error),
+    });
+    return {
+      allowed: false,
+      errorCode: 'SUBSCRIPTION_STATUS_UNAVAILABLE',
+      errorMessage: 'Subscription status unavailable',
+      retryable: true,
+    };
+  }
+};
+
 const releaseImageClaim = async (
   adminClient: ReturnType<typeof createAdminClient>,
   fingerprint: string | null
 ) => {
   if (!fingerprint) return true;
   try {
-    await adminClient.rpc('release_guest_quota_claim', {
+    const { error } = await asRpcClient(adminClient).rpc('release_guest_quota_claim', {
       p_fingerprint: fingerprint,
       p_quota_type: 'image',
     });
+    if (error) {
+      console.warn('[image-job-worker] Failed to release guest image claim', {
+        error: error?.message ?? String(error),
+      });
+      return false;
+    }
     return true;
   } catch (error) {
     console.warn('[image-job-worker] Failed to release guest image claim', {
@@ -175,39 +253,68 @@ const requeueJob = async (
 const claimGuestImageQuota = async (
   adminClient: ReturnType<typeof createAdminClient>,
   job: ImageJobRow
-): Promise<void> => {
+): Promise<JobGateDecision> => {
   if (!job.guest_fingerprint || job.quota_claimed) {
-    return;
+    return { allowed: true, claimed: false };
   }
 
-  const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
-    p_fingerprint: job.guest_fingerprint,
-    p_quota_type: 'image',
-    p_limit: GUEST_LIMITS.image,
-  });
+  const { data: quotaResult, error: quotaError } = await asRpcClient(adminClient).rpc(
+    'increment_guest_quota',
+    {
+      p_fingerprint: job.guest_fingerprint,
+      p_quota_type: 'image',
+      p_limit: GUEST_LIMITS.image,
+    }
+  );
 
   if (quotaError) {
-    throw Object.assign(new Error('Guest quota unavailable'), {
-      code: 'QUOTA_UNAVAILABLE',
-      message: 'Guest quota unavailable',
+    console.warn('[image-job-worker] Guest image quota claim failed', {
+      jobId: job.id,
+      message: quotaError?.message ?? String(quotaError),
     });
+    return {
+      allowed: false,
+      errorCode: 'GUEST_QUOTA_UNAVAILABLE',
+      errorMessage: 'Guest quota unavailable',
+      retryable: true,
+    };
   }
 
-  if (!quotaResult?.allowed) {
-    const isUpgraded = Boolean((quotaResult as Record<string, unknown>)?.is_upgraded);
-    throw Object.assign(
-      new Error(isUpgraded ? 'Login required' : 'Guest image limit reached'),
-      {
-        code: isUpgraded ? 'GUEST_DEVICE_UPGRADED' : 'QUOTA_EXCEEDED',
-        message: isUpgraded ? 'Login required' : 'Guest image limit reached',
-      }
-    );
+  const parsed = (quotaResult ?? null) as Record<string, unknown> | null;
+  if (!parsed || typeof parsed.allowed !== 'boolean') {
+    console.warn('[image-job-worker] Guest image quota claim returned invalid payload', {
+      jobId: job.id,
+      hasPayload: !!parsed,
+    });
+    return {
+      allowed: false,
+      errorCode: 'GUEST_QUOTA_UNAVAILABLE',
+      errorMessage: 'Guest quota unavailable',
+      retryable: true,
+    };
   }
 
-  await updateJob(adminClient, job.id, {
-    quota_claimed: true,
-    quota_claimed_at: new Date().toISOString(),
-  });
+  if (!parsed.allowed) {
+    const isUpgraded = Boolean(parsed.is_upgraded);
+    return {
+      allowed: false,
+      errorCode: isUpgraded ? 'GUEST_DEVICE_UPGRADED' : 'QUOTA_EXCEEDED',
+      errorMessage: isUpgraded ? 'Login required' : 'Guest image limit reached',
+      retryable: false,
+    };
+  }
+
+  try {
+    await updateJob(adminClient, job.id, {
+      quota_claimed: true,
+      quota_claimed_at: new Date().toISOString(),
+    });
+  } catch (error) {
+    await releaseImageClaim(adminClient, job.guest_fingerprint);
+    throw error;
+  }
+
+  return { allowed: true, claimed: true };
 };
 
 const processImageJob = async (input: {
@@ -224,20 +331,49 @@ const processImageJob = async (input: {
       return;
     }
 
-    const apiKey = getRequiredEnv('GEMINI_API_KEY');
     const requestPayload = (job.request_payload ?? {}) as {
       prompt?: string | null;
       transcript?: string | null;
       previousImageUrl?: string | null;
     };
 
+    const entitlementDecision = await requireAuthenticatedImageEntitlement(adminClient, job.user_id);
+    if (!entitlementDecision.allowed) {
+      if (entitlementDecision.retryable && job.attempt_count < job.max_attempts) {
+        await requeueJob(
+          adminClient,
+          job,
+          entitlementDecision.errorCode,
+          entitlementDecision.errorMessage
+        );
+        return;
+      }
+
+      await markTerminalFailure(
+        adminClient,
+        job,
+        entitlementDecision.errorCode,
+        entitlementDecision.errorMessage
+      );
+      return;
+    }
+
+    const apiKey = getRequiredEnv('GEMINI_API_KEY');
     let startedUpstream = false;
-    const hadQuotaClaim = job.quota_claimed;
     let claimedQuotaThisRun = false;
 
     try {
-      await claimGuestImageQuota(adminClient, job);
-      claimedQuotaThisRun = !hadQuotaClaim && Boolean(job.guest_fingerprint);
+      const quotaDecision = await claimGuestImageQuota(adminClient, job);
+      if (!quotaDecision.allowed) {
+        if (quotaDecision.retryable && job.attempt_count < job.max_attempts) {
+          await requeueJob(adminClient, job, quotaDecision.errorCode, quotaDecision.errorMessage);
+          return;
+        }
+
+        await markTerminalFailure(adminClient, job, quotaDecision.errorCode, quotaDecision.errorMessage);
+        return;
+      }
+      claimedQuotaThisRun = quotaDecision.claimed === true;
 
       let prompt = String(requestPayload.prompt ?? '').trim();
       if (!prompt) {

@@ -12,11 +12,13 @@ import { ensureImagePrompt, generateAndStoreImage } from '../services/imagePipel
 import { requireGuestSession, requireUser } from '../lib/guards.ts';
 import type { ApiContext } from '../types.ts';
 
-type GuestQuotaStatus = {
-  analysis_count?: number;
-  exploration_count?: number;
-  image_count?: number;
-  is_upgraded?: boolean;
+type RpcResult<T = unknown> = {
+  data: T | null;
+  error: { message?: string } | null;
+};
+
+type AdminClient = {
+  rpc: (fn: string, args?: Record<string, unknown>) => Promise<RpcResult<any>>;
 };
 
 const toCount = (value: unknown): number => {
@@ -25,8 +27,135 @@ const toCount = (value: unknown): number => {
   return Math.max(0, Math.floor(value));
 };
 
+const jsonResponse = (body: unknown, status: number) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json', ...corsHeaders },
+  });
+
+const normalizeEffectiveSubscriptionTier = (tier: unknown): 'free' | 'plus' =>
+  tier === 'plus' ? 'plus' : 'free';
+
+const imageGenerationPlusRequiredResponse = () =>
+  jsonResponse(
+    {
+      error: 'Image generation requires Noctalia Plus',
+      code: 'IMAGE_GENERATION_PLUS_REQUIRED',
+      userMessage: 'Upgrade to Noctalia Plus to generate dream images.',
+    },
+    402
+  );
+
+const serviceUnavailable = (message = 'Service unavailable') =>
+  jsonResponse({ error: message }, 503);
+
+const requireImageGenerationEntitlement = async (
+  supabase: ApiContext['supabase'],
+  userId: string | null | undefined,
+  route: string
+): Promise<Response | null> => {
+  if (!userId) {
+    return null;
+  }
+
+  const { data, error } = await supabase.rpc('get_effective_subscription_tier', {
+    p_user_id: userId,
+  });
+
+  if (error) {
+    console.warn(`[api] ${route}: failed to resolve subscription tier for image gate`, {
+      userId,
+      message: error?.message ?? String(error),
+    });
+    return serviceUnavailable('Subscription status unavailable');
+  }
+
+  const effectiveTier = normalizeEffectiveSubscriptionTier(data);
+  if (effectiveTier !== 'plus') {
+    console.log(`[api] ${route}: blocked non-plus image generation`, {
+      userId,
+      effectiveTier,
+    });
+    return imageGenerationPlusRequiredResponse();
+  }
+
+  return null;
+};
+
+const releaseGuestImageQuotaClaim = async (
+  adminClient: AdminClient,
+  fingerprint: string,
+  route: string
+) => {
+  const { error } = await adminClient.rpc('release_guest_quota_claim', {
+    p_fingerprint: fingerprint,
+    p_quota_type: 'image',
+  });
+
+  if (error) {
+    console.warn(`[api] ${route}: failed to release guest image quota claim`, {
+      message: error?.message ?? String(error),
+    });
+  }
+};
+
+const claimGuestImageQuota = async (
+  adminClient: AdminClient,
+  fingerprint: string,
+  limit: number,
+  route: string
+): Promise<Response | null> => {
+  const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+    p_fingerprint: fingerprint,
+    p_quota_type: 'image',
+    p_limit: limit,
+  });
+
+  if (quotaError) {
+    console.error(`[api] ${route}: guest image quota claim failed`, quotaError);
+    return serviceUnavailable('Guest quota unavailable');
+  }
+
+  const parsed = (quotaResult ?? null) as Record<string, unknown> | null;
+  if (!parsed || typeof parsed.allowed !== 'boolean') {
+    console.error(`[api] ${route}: guest image quota claim returned invalid payload`, {
+      hasPayload: !!parsed,
+    });
+    return serviceUnavailable('Guest quota unavailable');
+  }
+
+  if (!parsed.allowed) {
+    const used = toCount(parsed.new_count);
+    const isUpgraded = Boolean(parsed.is_upgraded);
+    console.log(`[api] ${route}: guest image quota denied`, {
+      fingerprint: '[redacted]',
+      used,
+      isUpgraded,
+    });
+
+    return jsonResponse(
+      isUpgraded
+        ? {
+            error: 'Login required',
+            code: 'GUEST_DEVICE_UPGRADED',
+            isUpgraded: true,
+            usage: { image: { used, limit } },
+          }
+        : {
+            error: 'Guest image limit reached',
+            code: 'QUOTA_EXCEEDED',
+            usage: { image: { used, limit } },
+          },
+      isUpgraded ? 403 : 429
+    );
+  }
+
+  return null;
+};
+
 export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
-  const { req, user, supabaseUrl, supabaseServiceRoleKey, storageBucket } = ctx;
+  const { req, supabase, user, supabaseUrl, supabaseServiceRoleKey, storageBucket } = ctx;
+  let guestQuotaClaim: { adminClient: AdminClient; fingerprint: string } | null = null;
 
   try {
     const body = (await req.json()) as { prompt?: string; transcript?: string; previousImageUrl?: string };
@@ -46,62 +175,43 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
       });
     }
 
+    const entitlementCheck = await requireImageGenerationEntitlement(
+      supabase,
+      user?.id ?? null,
+      '/generateImage'
+    );
+    if (entitlementCheck) {
+      return entitlementCheck;
+    }
+
     const apiKey = Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
     const guestImageLimit = GUEST_LIMITS.image;
     const adminClient =
-      !user && supabaseServiceRoleKey && fingerprint
-        ? createClient(supabaseUrl, supabaseServiceRoleKey, {
-            auth: { autoRefreshToken: false, persistSession: false },
-          })
+      !user && fingerprint
+        ? supabaseServiceRoleKey
+          ? createClient(supabaseUrl, supabaseServiceRoleKey, {
+              auth: { autoRefreshToken: false, persistSession: false },
+            }) as unknown as AdminClient
+          : null
         : null;
 
-    if (adminClient && fingerprint) {
-      const { data: status, error: statusError } = await adminClient.rpc('get_guest_quota_status', {
-        p_fingerprint: fingerprint,
-      });
-
-      if (statusError) {
-        console.error('[api] /generateImage: quota status check failed', statusError);
-      } else {
-        const parsed = (status ?? {}) as GuestQuotaStatus;
-        const used = toCount(parsed.image_count);
-        const isUpgraded = !!parsed.is_upgraded;
-        if (isUpgraded) {
-          return new Response(
-            JSON.stringify({
-              error: 'Login required',
-              code: 'GUEST_DEVICE_UPGRADED',
-              isUpgraded: true,
-              usage: { image: { used, limit: guestImageLimit } },
-            }),
-            { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-          );
-        }
-        if (used >= guestImageLimit) {
-          console.log('[api] /generateImage: guest image quota exceeded', { fingerprint: '[redacted]', used });
-          return new Response(
-            JSON.stringify({
-              error: 'Guest image limit reached',
-              code: 'QUOTA_EXCEEDED',
-              usage: { image: { used, limit: guestImageLimit } },
-            }),
-            { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-          );
-        }
+    if (!user && fingerprint) {
+      if (!adminClient) {
+        return serviceUnavailable('Guest quota unavailable');
       }
+
+      const quotaCheck = await claimGuestImageQuota(adminClient, fingerprint, guestImageLimit, '/generateImage');
+      if (quotaCheck) {
+        return quotaCheck;
+      }
+      guestQuotaClaim = { adminClient, fingerprint };
     }
 
     prompt = await ensureImagePrompt({ apiKey, prompt, transcript });
     const ownerId = user?.id ?? (fingerprint ? `guest_${fingerprint}` : 'guest');
-    const { deleteImageFromStorage } = createStorageHelpers({
-      supabaseUrl,
-      supabaseServiceRoleKey,
-      storageBucket,
-      ownerId,
-    });
-    const { imageUrl, imageBytes, storedImageUrl } = await generateAndStoreImage({
+    const { imageUrl, imageBytes } = await generateAndStoreImage({
       apiKey,
       prompt,
       previousImageUrl,
@@ -111,37 +221,17 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
       ownerId,
     });
 
-    if (adminClient && fingerprint) {
-      const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
-        p_fingerprint: fingerprint,
-        p_quota_type: 'image',
-        p_limit: guestImageLimit,
-      });
-
-      if (quotaError) {
-        console.error('[api] /generateImage: quota increment failed', quotaError);
-      } else if (!quotaResult?.allowed) {
-        const used = toCount((quotaResult as any)?.new_count);
-        console.log('[api] /generateImage: guest image quota exceeded at commit', { fingerprint: '[redacted]', used });
-        if (storedImageUrl) {
-          await deleteImageFromStorage(storedImageUrl, ownerId);
-        }
-        return new Response(
-          JSON.stringify({
-            error: 'Guest image limit reached',
-            code: 'QUOTA_EXCEEDED',
-            usage: { image: { used, limit: guestImageLimit } },
-          }),
-          { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-        );
-      }
-    }
-
+    guestQuotaClaim = null;
     return new Response(JSON.stringify({ imageUrl, imageBytes, prompt }), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   } catch (e) {
+    if (guestQuotaClaim) {
+      await releaseGuestImageQuotaClaim(guestQuotaClaim.adminClient, guestQuotaClaim.fingerprint, '/generateImage');
+      guestQuotaClaim = null;
+    }
+
     console.error('[api] /generateImage error', e);
     const err = e as any;
     const errorInfo = classifyGeminiError(e);
@@ -171,7 +261,7 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
 }
 
 export async function handleGenerateImageWithReference(ctx: ApiContext): Promise<Response> {
-  const { req, user, supabaseUrl, supabaseServiceRoleKey, storageBucket } = ctx;
+  const { req, supabase, user, supabaseUrl, supabaseServiceRoleKey, storageBucket } = ctx;
 
   const authCheck = requireUser(user);
   if (authCheck) {
@@ -247,6 +337,15 @@ export async function handleGenerateImageWithReference(ctx: ApiContext): Promise
         status: 400,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
+    }
+
+    const entitlementCheck = await requireImageGenerationEntitlement(
+      supabase,
+      user.id,
+      '/generateImageWithReference'
+    );
+    if (entitlementCheck) {
+      return entitlementCheck;
     }
 
     const apiKey = Deno.env.get('GEMINI_API_KEY');
