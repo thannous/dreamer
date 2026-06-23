@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker';
+import { RecordingActivationInsightCard } from '@/components/recording/RecordingActivationInsightCard';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { REFERENCE_IMAGES } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -10,6 +11,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import type { RecordingActivationInsight } from '@/lib/recordingActivationInsight';
 import { TID } from '@/lib/testIDs';
 import type { ReferenceImage, SubscriptionTier } from '@/lib/types';
 
@@ -21,12 +23,14 @@ export function FirstDreamSheet({
   onAnalyze,
   onJournal,
   isPersisting,
+  activationInsight,
 }: {
   visible: boolean;
   onDismiss: () => void;
   onAnalyze: () => void;
   onJournal: () => void;
   isPersisting: boolean;
+  activationInsight?: RecordingActivationInsight | null;
 }) {
   const { t } = useTranslation();
 
@@ -51,7 +55,9 @@ export function FirstDreamSheet({
         onLink: onDismiss,
         linkTestID: TID.Button.FirstDreamDismiss,
       }}
-    />
+    >
+      <RecordingActivationInsightCard insight={activationInsight} />
+    </StandardBottomSheet>
   );
 }
 
@@ -62,6 +68,7 @@ export function AnalyzePromptSheet({
   onJournal,
   transcript,
   isPersisting,
+  activationInsight,
 }: {
   visible: boolean;
   onDismiss: () => void;
@@ -69,6 +76,7 @@ export function AnalyzePromptSheet({
   onJournal: () => void;
   transcript?: string | null;
   isPersisting: boolean;
+  activationInsight?: RecordingActivationInsight | null;
 }) {
   const { t } = useTranslation();
   const { colors, mode: themeMode } = useTheme();
@@ -94,6 +102,7 @@ export function AnalyzePromptSheet({
         onLink: onDismiss,
       }}
     >
+      <RecordingActivationInsightCard insight={activationInsight} />
       {transcript ? (
         <View style={styles.sheetTranscriptContainer}>
           <ScrollView

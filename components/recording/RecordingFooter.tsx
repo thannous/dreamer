@@ -66,7 +66,6 @@ export function RecordingFooter({
 
 const styles = StyleSheet.create({
   footerActions: {
-    marginTop: 'auto',
     width: '100%',
     alignItems: 'center',
     paddingBottom: 8,

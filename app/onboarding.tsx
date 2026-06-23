@@ -146,6 +146,8 @@ export default function OnboardingScreen() {
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
   }) as unknown as ViewStyle, [captureBackgroundUri]);
+  const stickyFooterPaddingBottom = Math.max(insets.bottom + 10, 18);
+  const scrollBottomPadding = stickyFooterPaddingBottom + (step === 'intro' ? 114 : 106);
 
   const applyOnboardingCompletion = useCallback(async (intent: OnboardingCompletionIntent) => {
     const flags = getOnboardingCompletionFlags(intent);
@@ -225,25 +227,27 @@ export default function OnboardingScreen() {
         contentContainerStyle={[
           step === 'intro' ? styles.introContent : styles.content,
           {
-            paddingTop: step === 'intro' ? Math.max(insets.top + 28, 48) : Math.max(insets.top + 18, 34),
-            paddingBottom: Math.max(insets.bottom + 24, step === 'intro' ? 32 : 42),
+            paddingTop: Math.max(insets.top + 18, 34),
+            paddingBottom: scrollBottomPadding,
           },
         ]}
       >
-        <View style={[styles.topBar, step === 'intro' && styles.introTopBar, step !== 'intro' && styles.pathTopBar]}>
+        <View style={[styles.topBar, step === 'intro' && styles.introTopBar, styles.pathTopBar]}>
           <Text style={[styles.brand, step === 'intro' && styles.introBrand, step !== 'intro' && styles.pathBrand, { color: heroOverlayPrimary }]}>Noctalia</Text>
-          <Pressable
-            accessibilityRole="button"
-            onPress={skipOnboarding}
-            disabled={isLeaving}
-            hitSlop={10}
-            style={styles.skipButton}
-            testID={TID.Button.OnboardingSkip}
-          >
-            <Text style={[styles.skipText, step === 'intro' && styles.introSkipText, { color: heroOverlayAccent }]}>
-              {t('onboarding.skip')}
-            </Text>
-          </Pressable>
+          {step === 'intro' ? null : (
+            <Pressable
+              accessibilityRole="button"
+              onPress={skipOnboarding}
+              disabled={isLeaving}
+              hitSlop={10}
+              style={styles.skipButton}
+              testID={TID.Button.OnboardingSkip}
+            >
+              <Text style={[styles.skipText, { color: heroOverlayAccent }]}>
+                {t('onboarding.skip')}
+              </Text>
+            </Pressable>
+          )}
         </View>
 
         {step === 'intro' ? (
@@ -302,35 +306,6 @@ export default function OnboardingScreen() {
                 </React.Fragment>
               ))}
             </View>
-
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => setStep('paths')}
-              style={({ pressed }) => [
-                styles.primaryButton,
-                styles.introPrimaryButton,
-                {
-                  shadowColor: introWheat,
-                  opacity: pressed ? 0.86 : 1,
-                },
-              ]}
-              testID={TID.Button.OnboardingIntroNext}
-            >
-              <View
-                style={[
-                  styles.introPrimarySurface,
-                  {
-                    backgroundColor: introWheat,
-                    borderColor: introWheatSoft,
-                  },
-                ]}
-              >
-                <Text style={[styles.primaryText, styles.introPrimaryText, { color: introOnWheat }]}>
-                  {t('onboarding.intro.cta')}
-                </Text>
-                <IconSymbol name="arrow.right" size={24} color={introOnWheat} />
-              </View>
-            </Pressable>
           </View>
         ) : step === 'paths' ? (
           <>
@@ -419,35 +394,6 @@ export default function OnboardingScreen() {
                   </Pressable>
                 );
               })}
-            </View>
-
-            <View style={styles.primaryActions}>
-              <Pressable
-                accessibilityRole="button"
-                onPress={continueSelectedPath}
-                disabled={isLeaving}
-                style={({ pressed }) => [
-                  styles.primaryButton,
-                  styles.pathPrimaryButton,
-                  {
-                    backgroundColor: introWheat,
-                    shadowColor: introWheat,
-                    opacity: pressed || isLeaving ? 0.82 : 1,
-                  },
-                ]}
-                testID={TID.Button.OnboardingPrimary}
-              >
-                {isLeaving ? (
-                  <ActivityIndicator color={introOnWheat} />
-                ) : (
-                  <>
-                    <Text style={[styles.primaryText, styles.pathPrimaryText, { color: introOnWheat }]}>
-                      {t(`onboarding.path.${selectedPath.id}.cta`)}
-                    </Text>
-                    <IconSymbol name="arrow.right" size={25} color={introOnWheat} />
-                  </>
-                )}
-              </Pressable>
             </View>
           </>
         ) : (
@@ -543,38 +489,81 @@ export default function OnboardingScreen() {
             <Text style={[styles.captureHint, { color: introMutedText }]}>
               {t('onboarding.capture.hint')}
             </Text>
-
-            <View style={styles.primaryActions}>
-              <Pressable
-                accessibilityRole="button"
-                onPress={continueCaptureMode}
-                disabled={isLeaving}
-                style={({ pressed }) => [
-                  styles.primaryButton,
-                  styles.pathPrimaryButton,
-                  {
-                    backgroundColor: introWheat,
-                    shadowColor: introWheat,
-                    opacity: pressed || isLeaving ? 0.82 : 1,
-                  },
-                ]}
-                testID={TID.Button.OnboardingPrimary}
-              >
-                {isLeaving ? (
-                  <ActivityIndicator color={introOnWheat} />
-                ) : (
-                  <>
-                    <Text style={[styles.primaryText, styles.pathPrimaryText, { color: introOnWheat }]}>
-                      {t('onboarding.capture.cta')}
-                    </Text>
-                    <IconSymbol name="arrow.right" size={25} color={introOnWheat} />
-                  </>
-                )}
-              </Pressable>
-            </View>
           </View>
         )}
       </ScrollView>
+
+      <View
+        style={[
+          styles.stickyFooter,
+          {
+            paddingHorizontal: step === 'intro' ? 32 : 20,
+            paddingBottom: stickyFooterPaddingBottom,
+            backgroundColor: screenBackground,
+          },
+        ]}
+      >
+        {step === 'intro' ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => setStep('paths')}
+            style={({ pressed }) => [
+              styles.primaryButton,
+              styles.introPrimaryButton,
+              styles.stickyIntroPrimaryButton,
+              {
+                shadowColor: introWheat,
+                opacity: pressed ? 0.86 : 1,
+              },
+            ]}
+            testID={TID.Button.OnboardingIntroNext}
+          >
+            <View
+              style={[
+                styles.introPrimarySurface,
+                {
+                  backgroundColor: introWheat,
+                  borderColor: introWheatSoft,
+                },
+              ]}
+            >
+              <Text style={[styles.primaryText, styles.introPrimaryText, { color: introOnWheat }]}>
+                {t('onboarding.intro.cta')}
+              </Text>
+              <IconSymbol name="arrow.right" size={24} color={introOnWheat} />
+            </View>
+          </Pressable>
+        ) : (
+          <Pressable
+            accessibilityRole="button"
+            onPress={step === 'paths' ? continueSelectedPath : continueCaptureMode}
+            disabled={isLeaving}
+            style={({ pressed }) => [
+              styles.primaryButton,
+              styles.pathPrimaryButton,
+              {
+                backgroundColor: introWheat,
+                shadowColor: introWheat,
+                opacity: pressed || isLeaving ? 0.82 : 1,
+              },
+            ]}
+            testID={TID.Button.OnboardingPrimary}
+          >
+            {isLeaving ? (
+              <ActivityIndicator color={introOnWheat} />
+            ) : (
+              <>
+                <Text style={[styles.primaryText, styles.pathPrimaryText, { color: introOnWheat }]}>
+                  {step === 'paths'
+                    ? t(`onboarding.path.${selectedPath.id}.cta`)
+                    : t('onboarding.capture.cta')}
+                </Text>
+                <IconSymbol name="arrow.right" size={25} color={introOnWheat} />
+              </>
+            )}
+          </Pressable>
+        )}
+      </View>
     </View>
   );
 }
@@ -601,7 +590,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   introTopBar: {
-    paddingHorizontal: 34,
+    paddingHorizontal: 20,
   },
   pathTopBar: {
     paddingTop: 4,
@@ -629,11 +618,6 @@ const styles = StyleSheet.create({
   skipText: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 14,
-  },
-  introSkipText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
-    lineHeight: 20,
   },
   intro: {
     flex: 1,
@@ -719,7 +703,7 @@ const styles = StyleSheet.create({
     marginTop: -68,
   },
   pathScene: {
-    height: 292,
+    height: 268,
     marginHorizontal: -20,
     marginBottom: 2,
     overflow: 'hidden',
@@ -737,7 +721,7 @@ const styles = StyleSheet.create({
     marginTop: -68,
   },
   captureScene: {
-    height: 330,
+    height: 292,
     marginHorizontal: -20,
     marginBottom: 0,
     overflow: 'hidden',
@@ -841,6 +825,14 @@ const styles = StyleSheet.create({
   primaryActions: {
     gap: 8,
   },
+  stickyFooter: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingTop: 10,
+    zIndex: 8,
+  },
   primaryButton: {
     minHeight: 66,
     borderRadius: 22,
@@ -879,6 +871,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.28,
     shadowRadius: 22,
     shadowOffset: { width: 0, height: 10 },
+  },
+  stickyIntroPrimaryButton: {
+    marginHorizontal: 0,
+    marginTop: 0,
   },
   introPrimarySurface: {
     minHeight: 66,

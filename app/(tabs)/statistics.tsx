@@ -41,6 +41,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { buildDreamProfile, type DreamProfile } from '@/lib/dreamProfile';
 import { getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamStatsInsight, type DreamStatsInsightKind } from '@/lib/dreamStatsInsight';
+import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { splitLabelText } from '@/lib/pieLabelUtils';
 import type { DreamAnalysis, DreamType } from '@/lib/types';
@@ -742,7 +743,11 @@ export default function StatisticsScreen() {
   const pieMetrics = useMemo(() => getPieMetrics(width), [width]);
   const dreamProfile = useMemo(() => buildDreamProfile(dreams), [dreams]);
   const statsInsight = useMemo(() => getDreamStatsInsight(stats), [stats]);
+  const hasAtLeastOneAnalysis = useMemo(() => dreams.some(isDreamAnalyzed), [dreams]);
   const canShowDreamProfileSignals = isPlusActive;
+  const handleAddDreamPress = useCallback(() => {
+    router.push(DREAM_PROFILE_NEXT_ROUTE.add_anchor);
+  }, []);
   const handleDreamProfilePress = useCallback(() => {
     router.push(DREAM_PROFILE_NEXT_ROUTE[dreamProfile.nextAction]);
   }, [dreamProfile.nextAction]);
@@ -990,25 +995,25 @@ export default function StatisticsScreen() {
             <ScreenContainer>
               <MockNavigationRail />
               <View style={styles.emptyState}>
-                <Text style={[styles.emptyStateText, { color: noctalia.text.secondary }]}>
-                  {t('stats.empty')}
-                </Text>
-                <DreamProfileCard
-                  noctalia={noctalia}
-                  profile={dreamProfile}
-                  t={t}
-                  formatNumber={formatNumber}
-                  canShowPremiumSignals={canShowDreamProfileSignals}
-                  onPress={handleDreamProfilePress}
-                  onUpgradePress={handleDreamProfileUpgradePress}
-                />
-                <StatsInsightCard
-                  noctalia={noctalia}
-                  insight={statsInsight}
-                  t={t}
-                  formatPercent={formatPercent}
-                  onPress={handleStatsInsightPress}
-                />
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t('stats.profile.next_action.add_anchor.cta')}
+                  testID={TID.Button.EmptyStartRememberedDream}
+                  onPress={handleAddDreamPress}
+                  style={({ pressed }) => [
+                    styles.emptyPrimaryButton,
+                    {
+                      backgroundColor: noctalia.action.primary,
+                      borderColor: noctalia.action.primaryBorder,
+                    },
+                    pressed && styles.pressedButton,
+                  ]}
+                >
+                  <IconSymbol name="pencil" size={18} color={noctalia.action.primaryText} />
+                  <Text style={[styles.emptyPrimaryButtonText, { color: noctalia.action.primaryText }]}>
+                    {t('stats.profile.next_action.add_anchor.cta')}
+                  </Text>
+                </Pressable>
               </View>
             </ScreenContainer>
           </ScrollView>
@@ -1072,27 +1077,31 @@ export default function StatisticsScreen() {
               </SectionGlass>
             </View>
 
-            <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
-              <DreamProfileCard
-                noctalia={noctalia}
-                profile={dreamProfile}
-                t={t}
-                formatNumber={formatNumber}
-                canShowPremiumSignals={canShowDreamProfileSignals}
-                onPress={handleDreamProfilePress}
-                onUpgradePress={handleDreamProfileUpgradePress}
-              />
-            </View>
+            {hasAtLeastOneAnalysis ? (
+              <>
+                <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
+                  <DreamProfileCard
+                    noctalia={noctalia}
+                    profile={dreamProfile}
+                    t={t}
+                    formatNumber={formatNumber}
+                    canShowPremiumSignals={canShowDreamProfileSignals}
+                    onPress={handleDreamProfilePress}
+                    onUpgradePress={handleDreamProfileUpgradePress}
+                  />
+                </View>
 
-            <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
-              <StatsInsightCard
-                noctalia={noctalia}
-                insight={statsInsight}
-                t={t}
-                formatPercent={formatPercent}
-                onPress={handleStatsInsightPress}
-              />
-            </View>
+                <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
+                  <StatsInsightCard
+                    noctalia={noctalia}
+                    insight={statsInsight}
+                    t={t}
+                    formatPercent={formatPercent}
+                    onPress={handleStatsInsightPress}
+                  />
+                </View>
+              </>
+            ) : null}
 
             {/* Streaks */}
             <View style={[styles.section, isDesktopLayout && styles.sectionStreaksDesktop]}>
@@ -1932,10 +1941,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingBottom: ThemeLayout.spacing.xl,
   },
-  emptyStateText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    textAlign: 'center',
-    lineHeight: 24,
+  emptyPrimaryButton: {
+    minHeight: 50,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    borderWidth: 1,
+    paddingHorizontal: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    alignSelf: 'center',
+  },
+  emptyPrimaryButtonText: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
 });

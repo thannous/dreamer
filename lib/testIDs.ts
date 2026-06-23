@@ -23,6 +23,7 @@ export const TID = {
     SwitchToText: 'btn.recording.switchToText',
     SwitchToVoice: 'btn.recording.switchToVoice',
     InputModeSelect: 'btn.recording.inputMode.select',
+    InputModeDismiss: 'btn.recording.inputMode.dismiss',
     InputModeText: 'btn.recording.inputMode.text',
     InputModeVoice: 'btn.recording.inputMode.voice',
     HideRecordingVoiceStatus: 'btn.recording.voiceStatus.hide',

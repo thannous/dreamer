@@ -79,89 +79,98 @@ export function RecordingInputModeSelect({
       </Pressable>
 
       {isOpen ? (
-        <View
-          style={[
-            styles.menu,
-            {
-              backgroundColor: surfaceColor,
-              borderColor,
-            },
-          ]}
-        >
-          <View style={styles.menuHeader}>
-            <IconSymbol name={selected.icon} size={15} color={mutedColor} />
-            <Text style={[styles.label, { color: mutedColor }]}>
-              {t('recording.preference.view_title')}
-            </Text>
-          </View>
-          {options.map((option) => {
-            const isSelected = option.value === value;
-            return (
-              <Pressable
-                key={option.value}
-                onPress={() => handleSelect(option.value)}
-                style={[
-                  styles.option,
-                  {
-                    backgroundColor: isSelected
-                      ? `${accentColor}24`
-                      : noctalia.surface.soft,
-                    borderColor: isSelected ? accentColor : borderColor,
-                  },
-                ]}
-                accessibilityRole="button"
-                accessibilityState={{ selected: isSelected }}
-                testID={option.testID}
-              >
-                <View
+        <>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('recording.preference.dismiss_accessibility')}
+            onPress={() => setIsOpen(false)}
+            style={styles.dismissLayer}
+            testID={TID.Button.InputModeDismiss}
+          />
+          <View
+            style={[
+              styles.menu,
+              {
+                backgroundColor: surfaceColor,
+                borderColor,
+              },
+            ]}
+          >
+            <View style={styles.menuHeader}>
+              <IconSymbol name={selected.icon} size={15} color={mutedColor} />
+              <Text style={[styles.label, { color: mutedColor }]}>
+                {t('recording.preference.view_title')}
+              </Text>
+            </View>
+            {options.map((option) => {
+              const isSelected = option.value === value;
+              return (
+                <Pressable
+                  key={option.value}
+                  onPress={() => handleSelect(option.value)}
                   style={[
-                    styles.optionIcon,
+                    styles.option,
                     {
                       backgroundColor: isSelected
                         ? `${accentColor}28`
                         : noctalia.surface.soft,
+                      borderColor: isSelected ? accentColor : borderColor,
                     },
                   ]}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: isSelected }}
+                  testID={option.testID}
                 >
-                  <IconSymbol
-                    name={option.icon}
-                    size={16}
-                    color={isSelected ? accentColor : mutedColor}
-                  />
-                </View>
-                <View style={styles.optionCopy}>
-                  <Text
+                  <View
                     style={[
-                      styles.optionText,
-                      { color: textColor },
+                      styles.optionIcon,
+                      {
+                        backgroundColor: isSelected
+                          ? `${accentColor}28`
+                          : noctalia.surface.soft,
+                      },
                     ]}
                   >
-                    {option.label}
-                  </Text>
-                  <Text
-                    style={[
-                      styles.optionMeta,
-                      { color: isSelected ? selectedMetaColor : mutedColor },
-                    ]}
-                  >
-                    {isSelected
-                      ? t('recording.preference.selected')
-                      : t(`recording.preference.${option.value}_hint`)}
-                  </Text>
-                </View>
-                {isSelected ? (
-                  <View style={[styles.checkBadge, { backgroundColor: accentColor }]}>
                     <IconSymbol
-                      name="checkmark"
-                      size={13}
-                      color={noctalia.action.primaryText}
+                      name={option.icon}
+                      size={16}
+                      color={isSelected ? accentColor : mutedColor}
                     />
                   </View>
-                ) : null}
-              </Pressable>
-            );
-          })}
-        </View>
+                  <View style={styles.optionCopy}>
+                    <Text
+                      style={[
+                        styles.optionText,
+                        { color: textColor },
+                      ]}
+                    >
+                      {option.label}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.optionMeta,
+                        { color: isSelected ? selectedMetaColor : mutedColor },
+                      ]}
+                    >
+                      {isSelected
+                        ? t('recording.preference.selected')
+                        : t(`recording.preference.${option.value}_hint`)}
+                    </Text>
+                  </View>
+                  {isSelected ? (
+                    <View style={[styles.checkBadge, { backgroundColor: accentColor }]}>
+                      <IconSymbol
+                        name="checkmark"
+                        size={13}
+                        color={noctalia.action.primaryText}
+                      />
+                    </View>
+                  ) : null}
+                </Pressable>
+              );
+            })}
+          </View>
+        </>
       ) : null}
     </View>
   );
@@ -184,6 +193,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  dismissLayer: {
+    position: 'absolute',
+    top: -1000,
+    right: -1000,
+    bottom: -1000,
+    left: -1000,
+    zIndex: 21,
+  },
   menuHeader: {
     minHeight: 32,
     paddingHorizontal: 10,
@@ -200,6 +217,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     right: 0,
+    zIndex: 22,
     width: 286,
     borderWidth: 1,
     borderRadius: 14,

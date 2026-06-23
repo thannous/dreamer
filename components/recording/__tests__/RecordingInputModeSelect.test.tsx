@@ -68,6 +68,7 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.preference.text_hint': 'Texte en premier',
         'recording.preference.voice_hint': 'Micro en premier',
         'recording.preference.accessibility': 'Ouvrir les réglages de capture',
+        'recording.preference.dismiss_accessibility': 'Fermer les réglages de capture',
       };
       return values[key] ?? key;
     },
@@ -95,5 +96,24 @@ describe('RecordingInputModeSelect', () => {
     fireEvent.click(screen.getByTestId(TID.Button.InputModeVoice));
 
     expect(onChange).toHaveBeenCalledWith('voice');
+  });
+
+  it('closes the preference menu when pressing outside of it', () => {
+    const onChange = jest.fn();
+
+    render(
+      <RecordingInputModeSelect
+        value="text"
+        onChange={onChange}
+      />
+    );
+
+    fireEvent.click(screen.getByTestId(TID.Button.InputModeSelect));
+    expect(screen.getByText('Vue de capture')).toBeTruthy();
+
+    fireEvent.click(screen.getByTestId(TID.Button.InputModeDismiss));
+
+    expect(screen.queryByText('Vue de capture')).toBeNull();
+    expect(onChange).not.toHaveBeenCalled();
   });
 });

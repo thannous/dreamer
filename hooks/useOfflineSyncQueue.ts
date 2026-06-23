@@ -220,6 +220,7 @@ export function useOfflineSyncQueue({
       const normalized = mutations.map((mutation) => normalizeMutation(mutation, userScope));
       pendingMutationsRef.current = normalized;
       reportSyncQueueMetrics({
+        alertOnStalePending: canUseRemoteSync,
         mutations: normalized,
         reason: 'persist_pending_mutations',
         userScope,
@@ -234,11 +235,12 @@ export function useOfflineSyncQueue({
     const normalized = mutations.map((mutation) => normalizeMutation(mutation, userScope));
     pendingMutationsRef.current = normalized;
     reportSyncQueueMetrics({
+      alertOnStalePending: canUseRemoteSync,
       mutations: normalized,
       reason: 'hydrate_pending_mutations',
       userScope,
     });
-  }, [userScope]);
+  }, [canUseRemoteSync, userScope]);
 
   useEffect(() => {
     const current = pendingMutationsRef.current.map((mutation) => normalizeMutation(mutation, userScope));

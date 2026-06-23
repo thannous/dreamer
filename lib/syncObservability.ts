@@ -45,6 +45,7 @@ export type SyncReplayAggregateMetrics = {
 };
 
 type QueueMetricsOptions = {
+  alertOnStalePending?: boolean;
   mutations: DreamMutation[];
   now?: number;
   reason: string;
@@ -52,6 +53,7 @@ type QueueMetricsOptions = {
 };
 
 type ReplayMetricsOptions = {
+  alertOnStalePending?: boolean;
   attemptedCount: number;
   ackCount: number;
   failedCount: number;
@@ -120,6 +122,7 @@ const maybeAlertPendingAge = (reason: string, metrics: SyncQueueMetrics): void =
 };
 
 export const reportSyncQueueMetrics = ({
+  alertOnStalePending = true,
   mutations,
   now = Date.now(),
   reason,
@@ -127,7 +130,9 @@ export const reportSyncQueueMetrics = ({
 }: QueueMetricsOptions): SyncQueueMetrics => {
   const metrics = summarizeSyncQueueMetrics(mutations, userScope, now);
   logger.debug(`${SYNC_LOG_PREFIX} queue metrics`, { reason, metrics });
-  maybeAlertPendingAge(reason, metrics);
+  if (alertOnStalePending) {
+    maybeAlertPendingAge(reason, metrics);
+  }
   return metrics;
 };
 
@@ -135,6 +140,7 @@ const ratio = (numerator: number, denominator: number): number =>
   denominator <= 0 ? 1 : numerator / denominator;
 
 export const recordSyncReplayMetrics = ({
+  alertOnStalePending = true,
   attemptedCount,
   ackCount,
   failedCount,
@@ -200,7 +206,9 @@ export const recordSyncReplayMetrics = ({
     });
   }
 
-  maybeAlertPendingAge(`${reason}:post_replay_queue`, queueMetrics);
+  if (alertOnStalePending) {
+    maybeAlertPendingAge(`${reason}:post_replay_queue`, queueMetrics);
+  }
 
   return { batch, aggregate };
 };

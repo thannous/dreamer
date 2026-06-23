@@ -7,6 +7,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import { getDreamSyncState } from '@/lib/dreamUtils';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
+import { isMockModeEnabled } from '@/lib/env';
 import { getDreamImageVersion, getDreamThumbnailUri, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import { DreamAnalysis } from '@/lib/types';
 import { Image } from 'expo-image';
@@ -103,7 +104,7 @@ export const DreamCard = memo(function DreamCard({
   const isExplored = isDreamExplored(dream);
   const isAnalyzed = isDreamAnalyzed(dream);
   const isFavorite = !!dream.isFavorite;
-  const syncState = getDreamSyncState(dream);
+  const syncState = isMockModeEnabled() ? 'clean' : getDreamSyncState(dream);
 
   const badges = useMemo(() => {
     const list: {

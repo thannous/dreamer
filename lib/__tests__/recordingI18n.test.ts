@@ -104,6 +104,7 @@ const recordingPreferenceKeys = [
   'recording.preference.text_hint',
   'recording.preference.voice_hint',
   'recording.preference.accessibility',
+  'recording.preference.dismiss_accessibility',
 ] as const;
 
 const micRationaleKeys = [
