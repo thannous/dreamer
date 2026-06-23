@@ -27,7 +27,44 @@ type StoredChatMessageMeta = {
   };
 };
 
+type ClientDreamContext = {
+  transcript?: unknown;
+  title?: unknown;
+  interpretation?: unknown;
+  shareableQuote?: unknown;
+  dreamType?: unknown;
+  theme?: unknown;
+  chatHistory?: unknown;
+};
+
 const ALLOWED_CHAT_CATEGORIES = new Set(['symbols', 'emotions', 'growth', 'general']);
+const GUEST_CONTEXT_LIMITS = {
+  transcript: 6000,
+  interpretation: 4000,
+  title: 200,
+  shareableQuote: 500,
+  dreamType: 120,
+  theme: 120,
+  chatHistoryMessages: GUEST_LIMITS.messagesPerDream * 2,
+  chatMessageText: 4000,
+} as const;
+
+const toCount = (value: unknown): number => {
+  if (typeof value !== 'number') return 0;
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.floor(value));
+};
+
+const serviceUnavailable = (message = 'Service unavailable') =>
+  new Response(JSON.stringify({ error: message }), {
+    status: 503,
+    headers: { 'Content-Type': 'application/json', ...corsHeaders },
+  });
+
+const trimToLimit = (value: unknown, maxChars: number): string => {
+  const text = String(value ?? '').trim();
+  return text.length > maxChars ? text.slice(0, maxChars).trimEnd() : text;
+};
 
 const sanitizeMessageMeta = (meta: unknown): StoredChatMessageMeta | undefined => {
   if (!meta || typeof meta !== 'object') return undefined;
@@ -158,6 +195,57 @@ const toContentParts = (message: StoredChatMessage): GeminiPart[] => {
   return text ? [{ text }] : [];
 };
 
+const sanitizeClientHistoryMessage = (message: unknown): StoredChatMessage | null => {
+  if (!message || typeof message !== 'object') return null;
+
+  const candidate = message as Record<string, unknown>;
+  const role = candidate.role === 'model' ? 'model' : candidate.role === 'user' ? 'user' : null;
+  if (!role) return null;
+
+  const text = trimToLimit(getMessageText(candidate as StoredChatMessage), GUEST_CONTEXT_LIMITS.chatMessageText);
+  if (!text) return null;
+
+  const meta = sanitizeMessageMeta(candidate.meta);
+  return {
+    role,
+    text,
+    parts: [{ text }],
+    ...(meta ? { meta } : {}),
+  };
+};
+
+const sanitizeGuestChatHistory = (chatHistory: unknown, currentUserMessage: string): StoredChatMessage[] => {
+  if (!Array.isArray(chatHistory)) return [];
+
+  const sanitized = chatHistory
+    .slice(-GUEST_CONTEXT_LIMITS.chatHistoryMessages)
+    .map(sanitizeClientHistoryMessage)
+    .filter((message): message is StoredChatMessage => message !== null);
+
+  const lastMessage = sanitized[sanitized.length - 1];
+  if (lastMessage?.role === 'user' && getMessageText(lastMessage) === currentUserMessage) {
+    return sanitized.slice(0, -1);
+  }
+
+  return sanitized;
+};
+
+const normalizeGuestDreamContext = (
+  dreamId: string,
+  dreamContext: ClientDreamContext,
+  currentUserMessage: string
+) => ({
+  id: dreamId,
+  user_id: null,
+  chat_history: sanitizeGuestChatHistory(dreamContext.chatHistory, currentUserMessage),
+  transcript: trimToLimit(dreamContext.transcript, GUEST_CONTEXT_LIMITS.transcript),
+  title: trimToLimit(dreamContext.title || 'Untitled Dream', GUEST_CONTEXT_LIMITS.title),
+  interpretation: trimToLimit(dreamContext.interpretation, GUEST_CONTEXT_LIMITS.interpretation),
+  shareable_quote: trimToLimit(dreamContext.shareableQuote, GUEST_CONTEXT_LIMITS.shareableQuote),
+  dream_type: trimToLimit(dreamContext.dreamType || 'Dream', GUEST_CONTEXT_LIMITS.dreamType),
+  theme: dreamContext.theme == null ? null : trimToLimit(dreamContext.theme, GUEST_CONTEXT_LIMITS.theme),
+});
+
 export async function handleChat(ctx: ApiContext): Promise<Response> {
   const { req, supabase, user, supabaseUrl, supabaseServiceRoleKey } = ctx;
 
@@ -168,15 +256,7 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       lang?: string;
       fingerprint?: string;
       messageMeta?: unknown;
-      dreamContext?: {
-        transcript: string;
-        title: string;
-        interpretation: string;
-        shareableQuote: string;
-        dreamType: string;
-        theme?: string;
-        chatHistory?: StoredChatMessage[];
-      };
+      dreamContext?: unknown;
     };
 
     const dreamId = String(body?.dreamId ?? '').trim();
@@ -205,6 +285,18 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
     if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
     const currentUserId = user?.id ?? null;
+    const clientDreamContext = body.dreamContext
+      && typeof body.dreamContext === 'object'
+      && !Array.isArray(body.dreamContext)
+      ? (body.dreamContext as ClientDreamContext)
+      : null;
+    if (body.dreamContext && !clientDreamContext) {
+      return new Response(JSON.stringify({ error: 'dreamContext must be an object' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
     let dream: {
       id: string;
       user_id: string | null;
@@ -218,21 +310,18 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
     };
     let shouldPersist = true;
 
-    if (body.dreamContext) {
+    if (clientDreamContext && !user) {
       console.log('[api] /chat: guest mode with dreamContext', { dreamId });
       shouldPersist = false;
-      dream = {
-        id: dreamId,
-        user_id: null,
-        chat_history: body.dreamContext.chatHistory ?? [],
-        transcript: body.dreamContext.transcript,
-        title: body.dreamContext.title,
-        interpretation: body.dreamContext.interpretation,
-        shareable_quote: body.dreamContext.shareableQuote,
-        dream_type: body.dreamContext.dreamType,
-        theme: body.dreamContext.theme ?? null,
-      };
+      dream = normalizeGuestDreamContext(dreamId, clientDreamContext, userMessage);
     } else {
+      if (clientDreamContext && user) {
+        console.warn('[api] /chat: ignoring client dreamContext for authenticated request', {
+          dreamId,
+          userId: currentUserId,
+        });
+      }
+
       const { data: dbDream, error: dreamError } = await supabase
         .from('dreams')
         .select('id, chat_history, user_id, transcript, title, interpretation, shareable_quote, dream_type, theme')
@@ -273,38 +362,55 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       }
     }
 
-    if (!user && supabaseServiceRoleKey && fingerprint) {
-      const userMessagesInContext = existingHistory.filter((msg) => msg?.role === 'user').length;
-
-      if (userMessagesInContext === 1) {
-        const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
-          auth: { autoRefreshToken: false, persistSession: false },
+    if (!user && !shouldPersist) {
+      if (!supabaseServiceRoleKey || !fingerprint) {
+        console.error('[api] /chat: guest quota unavailable before provider work', {
+          hasServiceRoleKey: !!supabaseServiceRoleKey,
+          hasFingerprint: !!fingerprint,
         });
+        return serviceUnavailable('Guest quota unavailable');
+      }
 
-        const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
-          p_fingerprint: fingerprint,
-          p_quota_type: 'exploration',
-          p_limit: GUEST_LIMITS.exploration,
-        });
+      const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
 
-        if (quotaError) {
-          console.error('[api] /chat: guest exploration quota check failed', quotaError);
-        } else if (!quotaResult?.allowed) {
-          console.log('[api] /chat: guest exploration quota exceeded', {
-            fingerprint: '[redacted]',
-            used: quotaResult?.new_count,
-          });
-          return new Response(
-            JSON.stringify({
+      const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+        p_fingerprint: fingerprint,
+        p_quota_type: 'exploration',
+        p_limit: GUEST_LIMITS.exploration,
+      });
+
+      if (quotaError) {
+        console.error('[api] /chat: guest exploration quota claim failed before provider work', quotaError);
+        return serviceUnavailable('Guest quota unavailable');
+      }
+
+      if (!quotaResult?.allowed) {
+        const used = toCount((quotaResult as any)?.new_count);
+        const isUpgraded = Boolean((quotaResult as any)?.is_upgraded);
+        const payload = isUpgraded
+          ? {
+              error: 'Login required',
+              code: 'GUEST_DEVICE_UPGRADED',
+              isUpgraded: true,
+              usage: { exploration: { used, limit: GUEST_LIMITS.exploration } },
+            }
+          : {
               error: 'Guest exploration limit reached',
               code: 'QUOTA_EXCEEDED',
-              usage: {
-                exploration: { used: quotaResult?.new_count ?? GUEST_LIMITS.exploration, limit: GUEST_LIMITS.exploration },
-              },
-            }),
-            { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-          );
-        }
+              usage: { exploration: { used, limit: GUEST_LIMITS.exploration } },
+            };
+
+        console.log('[api] /chat: guest exploration quota blocked before provider work', {
+          fingerprint: '[redacted]',
+          used,
+          isUpgraded,
+        });
+        return new Response(JSON.stringify(payload), {
+          status: isUpgraded ? 403 : 429,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
       }
     }
 
