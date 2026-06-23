@@ -19,11 +19,60 @@ const toCount = (value: unknown): number => {
   return Math.max(0, Math.floor(value));
 };
 
+const normalizeEffectiveSubscriptionTier = (tier: unknown): 'free' | 'plus' =>
+  tier === 'plus' ? 'plus' : 'free';
+
 const serviceUnavailable = (message = 'Service unavailable') =>
   new Response(JSON.stringify({ error: message }), {
     status: 503,
     headers: { 'Content-Type': 'application/json', ...corsHeaders },
   });
+
+const imageGenerationPlusRequiredResponse = () =>
+  new Response(
+    JSON.stringify({
+      error: 'Image generation requires Noctalia Plus',
+      code: 'IMAGE_GENERATION_PLUS_REQUIRED',
+      userMessage: 'Upgrade to Noctalia Plus to generate dream images.',
+    }),
+    {
+      status: 402,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    }
+  );
+
+const requireImageGenerationEntitlement = async (
+  supabase: ApiContext['supabase'],
+  userId: string | null | undefined,
+  route: string
+): Promise<Response | null> => {
+  if (!userId) {
+    return null;
+  }
+
+  const { data, error } = await supabase.rpc('get_effective_subscription_tier', {
+    p_user_id: userId,
+  });
+
+  if (error) {
+    console.warn(`[api] ${route}: failed to resolve subscription tier for image gate`, {
+      userId,
+      message: error?.message ?? String(error),
+    });
+    return serviceUnavailable('Subscription status unavailable');
+  }
+
+  const effectiveTier = normalizeEffectiveSubscriptionTier(data);
+  if (effectiveTier !== 'plus') {
+    console.log(`[api] ${route}: blocked non-plus image generation job`, {
+      userId,
+      effectiveTier,
+    });
+    return imageGenerationPlusRequiredResponse();
+  }
+
+  return null;
+};
 
 const triggerWorkerAndLog = async (options: {
   supabaseUrl: string;
@@ -96,6 +145,15 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
       }
 
       dreamId = dream.id;
+    }
+
+    const entitlementCheck = await requireImageGenerationEntitlement(
+      supabase,
+      user?.id ?? null,
+      '/image-jobs'
+    );
+    if (entitlementCheck) {
+      return entitlementCheck;
     }
 
     const actor = {
