@@ -9,10 +9,6 @@ type GuestSessionBody = {
   platform?: string;
 };
 
-const isInsecureAllowed = (): boolean => {
-  return (Deno.env.get('ALLOW_INSECURE_GUEST_SESSION') ?? '').toLowerCase() === 'true';
-};
-
 export async function handleGuestSession(req: Request): Promise<Response> {
   try {
     const body = (await req.json().catch(() => ({}))) as GuestSessionBody;
@@ -59,7 +55,7 @@ export async function handleGuestSession(req: Request): Promise<Response> {
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
       }
-    } else if (!isInsecureAllowed()) {
+    } else {
       return new Response(JSON.stringify({ error: 'Guest sessions disabled for this platform' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },

@@ -85,4 +85,48 @@ describe('supabase secure storage adapter', () => {
     await storage.removeItem('token');
     expect(secureStoreData.has('token')).toBe(false);
   });
+
+  it('requires matching one-time state before detecting web OAuth URL sessions', () => {
+    jest.resetModules();
+    const webSessionStorage = new Map<string, string>();
+
+    Object.defineProperty(globalThis, 'sessionStorage', {
+      configurable: true,
+      value: {
+        getItem: jest.fn((key: string) => webSessionStorage.get(key) ?? null),
+        setItem: jest.fn((key: string, value: string) => {
+          webSessionStorage.set(key, value);
+        }),
+        removeItem: jest.fn((key: string) => {
+          webSessionStorage.delete(key);
+        }),
+      },
+    });
+
+    jest.doMock('react-native', () => ({
+      Platform: { OS: 'web' },
+    }));
+
+    const { createWebOAuthState, supabase } = require('../supabase');
+    const detectSessionInUrl = (supabase as any).__options.auth.detectSessionInUrl as (
+      url: URL,
+      params: Record<string, string>
+    ) => boolean;
+
+    expect(detectSessionInUrl(new URL('https://dream.noctalia.app/#access_token=token'), {
+      access_token: 'token',
+    })).toBe(false);
+
+    const state = createWebOAuthState();
+    expect(typeof state).toBe('string');
+
+    expect(detectSessionInUrl(new URL(`https://dream.noctalia.app/#access_token=token&state=${state}`), {
+      access_token: 'token',
+      state,
+    })).toBe(true);
+    expect(detectSessionInUrl(new URL(`https://dream.noctalia.app/#access_token=token&state=${state}`), {
+      access_token: 'token',
+      state,
+    })).toBe(false);
+  });
 });

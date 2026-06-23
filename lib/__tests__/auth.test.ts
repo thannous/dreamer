@@ -20,6 +20,7 @@ const mockSupabaseAuth = {
 };
 
 const mockSupabase = { auth: mockSupabaseAuth };
+const mockCreateWebOAuthState = jest.fn(() => 'oauth-state');
 
 const mockMockAuth = {
   getAccessToken: jest.fn(),
@@ -102,6 +103,7 @@ const loadAuth = async (options?: {
 
   jest.doMock('../supabase', () => ({
     supabase: mockSupabase,
+    createWebOAuthState: mockCreateWebOAuthState,
   }));
 
   jest.doMock('../mockAuth', () => mockMockAuth);
@@ -170,6 +172,7 @@ describe('auth helpers', () => {
 
     mockSupabaseAuth.signOut.mockResolvedValue({ error: null });
     mockSupabaseAuth.signInWithOAuth.mockResolvedValue({ error: null });
+    mockCreateWebOAuthState.mockReturnValue('oauth-state');
     mockFetchJSON.mockResolvedValue({ ok: true });
   });
 
@@ -442,6 +445,7 @@ describe('auth helpers', () => {
       options: {
         scopes: 'openid email profile',
         redirectTo: globalThis.location?.origin ?? 'https://dream.noctalia.app',
+        queryParams: { state: 'oauth-state' },
       },
     });
   });
