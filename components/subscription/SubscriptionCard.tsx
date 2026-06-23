@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
-import { Fonts, GlassCardTokens } from '@/constants/theme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
 export type SubscriptionCardProps = {
@@ -33,37 +34,46 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = function Subscr
   ctaTestID,
 }) {
   const { colors, mode } = useTheme();
-  const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   const showCta = Boolean(ctaLabel && onPress);
   const isLoading = status === 'loading';
   const isCtaDisabled = ctaState === 'disabled' || isLoading;
 
   return (
-    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]} testID={testID}>
+    <View
+      style={[
+        styles.card,
+        {
+          backgroundColor: noctalia.surface.raised,
+          borderColor: noctalia.surface.border,
+        },
+      ]}
+      testID={testID}
+    >
       <View style={styles.headerRow}>
         <View style={styles.headerTextContainer}>
-          <Text style={[styles.title, { color: colors.textPrimary }]}>{title}</Text>
+          <Text style={[styles.title, { color: noctalia.text.primary }]}>{title}</Text>
           {subtitle ? (
-            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>{subtitle}</Text>
+            <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>{subtitle}</Text>
           ) : null}
           {expiryLabel ? (
-            <Text style={[styles.expiryLabel, { color: colors.textSecondary }]}>{expiryLabel}</Text>
+            <Text style={[styles.expiryLabel, { color: noctalia.text.secondary }]}>{expiryLabel}</Text>
           ) : null}
         </View>
         {badge ? (
-          <View style={[styles.badge, { backgroundColor: colors.accent }]}>
-            <Text style={[styles.badgeText, { color: colors.textOnAccentSurface }]}>{badge}</Text>
+          <View style={[styles.badge, { backgroundColor: noctalia.action.primary }]}>
+            <Text style={[styles.badgeText, { color: noctalia.action.primaryText }]}>{badge}</Text>
           </View>
         ) : null}
-        {isLoading ? <ActivityIndicator color={colors.accent} /> : null}
+        {isLoading ? <ActivityIndicator color={noctalia.accent.base} /> : null}
       </View>
 
       <View style={styles.featureList}>
         {features.map((feature) => (
           <View key={feature} style={styles.featureRow}>
-            <Text style={[styles.featureBullet, { color: colors.accent }]}>•</Text>
-          <Text style={[styles.featureText, { color: colors.textPrimary }]}>{feature}</Text>
+            <Text style={[styles.featureBullet, { color: noctalia.accent.base }]}>•</Text>
+          <Text style={[styles.featureText, { color: noctalia.text.primary }]}>{feature}</Text>
         </View>
       ))}
     </View>
@@ -72,7 +82,10 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = function Subscr
         <Pressable
           style={({ pressed }) => [
             styles.ctaButton,
-            { backgroundColor: colors.accent },
+            {
+              backgroundColor: isCtaDisabled ? noctalia.action.disabled : noctalia.action.primary,
+              borderColor: isCtaDisabled ? noctalia.action.disabledBorder : noctalia.action.primaryBorder,
+            },
             isCtaDisabled && styles.ctaDisabled,
             pressed && !isCtaDisabled && styles.ctaPressed,
           ]}
@@ -80,7 +93,14 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = function Subscr
           onPress={onPress}
           testID={ctaTestID}
         >
-          <Text style={[styles.ctaText, { color: colors.textOnAccentSurface }]}>{ctaLabel}</Text>
+          <Text
+            style={[
+              styles.ctaText,
+              { color: isCtaDisabled ? noctalia.action.disabledText : noctalia.action.primaryText },
+            ]}
+          >
+            {ctaLabel}
+          </Text>
         </Pressable>
       )}
     </View>
@@ -93,6 +113,7 @@ const styles = StyleSheet.create({
     padding: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
     gap: ThemeLayout.spacing.sm,
+    borderWidth: 1,
   },
   headerRow: {
     flexDirection: 'row',
@@ -151,11 +172,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: ThemeLayout.borderRadius.full,
     marginTop: ThemeLayout.spacing.sm,
+    borderWidth: 1,
   },
   ctaText: {
     fontSize: 15,
     fontFamily: Fonts.spaceGrotesk.bold,
-    letterSpacing: 0.4,
   },
   ctaDisabled: {
     opacity: 0.6,

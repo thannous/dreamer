@@ -26,8 +26,8 @@ import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RememberedDreamProfileChips } from '@/components/recording/RememberedDreamProfileChips';
 import { UnforgettableDreamPromptCard } from '@/components/recording/UnforgettableDreamPromptCard';
 import { RECORDING } from '@/constants/appConfig';
-import { GradientColors } from '@/constants/gradients';
 import { TAB_BAR_HEIGHT } from '@/constants/layout';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -58,6 +58,7 @@ import {
   resolveRememberedCaptureSource,
   type RememberedCaptureSource,
 } from '@/lib/recordingActivation';
+import { getRecordingActivationInsight } from '@/lib/recordingActivationInsight';
 import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
 import { TID } from '@/lib/testIDs';
 import type {
@@ -1153,9 +1154,8 @@ export default function RecordingScreen() {
     user,
   ]);
 
-  const gradientColors = mode === 'dark'
-    ? GradientColors.surreal
-    : ([colors.backgroundSecondary, colors.backgroundDark] as readonly [string, string]);
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const gradientColors = noctalia.screen.gradient;
   const mainContentStyle = useMemo(
     () => [
       styles.mainContent,
@@ -1351,6 +1351,22 @@ export default function RecordingScreen() {
 
     return t(fallbackKeyByReason[voiceFallbackReason]);
   }, [t, voiceFallbackReason]);
+  const activationInsight = useMemo(
+    () => getRecordingActivationInsight({
+      transcript,
+      captureIntent,
+      rememberedKind,
+      approximatePeriod: rememberedApproximatePeriod,
+      strongestFragment: rememberedStrongestFragment,
+    }),
+    [
+      captureIntent,
+      rememberedApproximatePeriod,
+      rememberedKind,
+      rememberedStrongestFragment,
+      transcript,
+    ]
+  );
 
   const switchToTextMode = useCallback(async () => {
     if (isRecordingRef.current) {
@@ -1693,6 +1709,7 @@ export default function RecordingScreen() {
                       : t('recording.placeholder')
                   }
                   autoFocus={false}
+                  activationInsight={activationInsight}
                   onSwitchToVoice={switchToVoiceMode}
                   onClear={handleClearTranscript}
                 />
@@ -1877,6 +1894,9 @@ function RecordingOverlays({
   offlineModelLocale: string;
   onOfflineModelDownloadComplete: (_success: boolean) => void;
 }) {
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+
   return (
     <>
       <FirstDreamSheet
@@ -1923,7 +1943,7 @@ function RecordingOverlays({
 
       {referenceImagesEnabled && showSubjectProposition && detectedSubjectType ? (
         <View style={styles.subjectPropositionOverlay}>
-          <View style={styles.subjectPropositionBackdrop} />
+          <View style={[styles.subjectPropositionBackdrop, { backgroundColor: noctalia.surface.overlay }]} />
           <View style={[styles.subjectPropositionCard, { marginBottom: subjectPropositionMarginBottom }]}>
             <SubjectProposition
               subjectType={detectedSubjectType}
@@ -1986,7 +2006,6 @@ const styles = StyleSheet.create({
   },
   subjectPropositionBackdrop: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: 'rgba(10, 6, 24, 0.45)',
   },
   subjectPropositionCard: {
     paddingHorizontal: 16,

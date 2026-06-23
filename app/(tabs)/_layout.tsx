@@ -1,5 +1,5 @@
 import { Tabs, router } from 'expo-router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Platform, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -7,6 +7,7 @@ import { HapticTab } from '@/components/haptic-tab';
 import { DesktopSidebar } from '@/components/navigation/DesktopSidebar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT, TAB_BAR_HEIGHT } from '@/constants/layout';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -62,6 +63,7 @@ function AddDreamTabItem({ label, palette }: {
         {
           backgroundColor: palette.accent,
           borderColor: palette.accentLight,
+          shadowColor: palette.accent,
         },
       ]}
     >
@@ -75,7 +77,7 @@ function AddDreamTabItem({ label, palette }: {
         />
       </View>
       <Text
-        style={[styles.addTabLabel, { color: palette.textActive }]}
+        style={[styles.addTabLabel, { color: palette.textOnAccentSurface }]}
         numberOfLines={1}
         ellipsizeMode="tail">
         {label}
@@ -86,6 +88,7 @@ function AddDreamTabItem({ label, palette }: {
 
 export default function TabLayout() {
   const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { returningGuestBlocked } = useAuth();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
@@ -95,13 +98,13 @@ export default function TabLayout() {
   const isDesktopWeb = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
   const palette: TabPalette = {
-    barBg: mode === 'dark' ? 'rgba(31, 22, 54, 0.97)' : colors.navbarBg,
-    barBorder: colors.navbarBorder,
-    accent: colors.accent,
-    accentLight: colors.accentLight,
-    textOnAccentSurface: colors.textOnAccentSurface,
-    text: colors.navbarTextInactive,
-    textActive: colors.navbarTextActive,
+    barBg: noctalia.nav.background,
+    barBorder: noctalia.nav.border,
+    accent: noctalia.action.primary,
+    accentLight: noctalia.action.primaryBorder,
+    textOnAccentSurface: noctalia.action.primaryText,
+    text: noctalia.nav.inactive,
+    textActive: noctalia.nav.active,
   };
 
   const handleAddDreamPress = () => {
@@ -122,7 +125,7 @@ export default function TabLayout() {
     borderWidth: 1,
     borderTopColor: palette.barBorder,
     borderColor: palette.barBorder,
-    shadowColor: '#000000',
+    shadowColor: noctalia.screen.background,
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.22,
     shadowRadius: 24,
@@ -139,7 +142,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         sceneStyle: {
-          backgroundColor: colors.backgroundDark,
+          backgroundColor: noctalia.screen.background,
         },
         headerShown: false,
         tabBarIconStyle: {
@@ -249,7 +252,7 @@ export default function TabLayout() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.backgroundDark }}>
+    <View style={{ flex: 1, backgroundColor: noctalia.screen.background }}>
       {tabs}
     </View>
   );
@@ -272,7 +275,6 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
-    letterSpacing: 0,
   },
   addTabItem: {
     width: 72,
@@ -283,7 +285,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 4,
     transform: [{ translateY: -8 }],
-    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.24,
     shadowRadius: 14,
@@ -299,6 +300,5 @@ const styles = StyleSheet.create({
   addTabLabel: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 12,
-    letterSpacing: 0,
   },
 });

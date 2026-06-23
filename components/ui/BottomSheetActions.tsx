@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
-
-const DANGER_COLOR = '#EF4444';
 
 export type BottomSheetActionState = 'enabled' | 'disabled' | 'loading';
 
@@ -32,18 +31,23 @@ export function BottomSheetPrimaryAction({
   testID,
   variant = 'accent',
 }: BottomSheetPrimaryActionProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   const isDisabled = state !== 'enabled';
   const isLoading = state === 'loading';
-  const backgroundColor = variant === 'danger' ? DANGER_COLOR : colors.accent;
-  const textColor = variant === 'danger' ? '#FFFFFF' : colors.textOnAccentSurface;
+  const backgroundColor = variant === 'danger' ? noctalia.status.danger.background : noctalia.action.primary;
+  const borderColor = variant === 'danger' ? noctalia.status.danger.border : noctalia.action.primaryBorder;
+  const textColor = variant === 'danger' ? noctalia.status.danger.text : noctalia.action.primaryText;
 
   return (
     <Pressable
       style={({ pressed }) => [
         styles.primaryButton,
-        { backgroundColor },
+        {
+          backgroundColor,
+          borderColor,
+        },
         isDisabled && styles.disabledButton,
         pressed && !isDisabled && styles.pressedButton,
       ]}
@@ -75,7 +79,8 @@ export function BottomSheetSecondaryAction({
   state = 'enabled',
   testID,
 }: BottomSheetSecondaryActionProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const isDisabled = state === 'disabled';
 
   return (
@@ -83,8 +88,8 @@ export function BottomSheetSecondaryAction({
       style={({ pressed }) => [
         styles.secondaryButton,
         {
-          borderColor: colors.divider,
-          backgroundColor: colors.backgroundSecondary,
+          borderColor: noctalia.surface.border,
+          backgroundColor: noctalia.surface.soft,
         },
         isDisabled && styles.disabledButton,
         pressed && !isDisabled && styles.pressedButton,
@@ -93,7 +98,7 @@ export function BottomSheetSecondaryAction({
       disabled={isDisabled}
       testID={testID}
     >
-      <Text style={[styles.secondaryButtonText, { color: colors.textPrimary }]}>
+      <Text style={[styles.secondaryButtonText, { color: noctalia.text.primary }]}>
         {label}
       </Text>
     </Pressable>
@@ -107,7 +112,8 @@ export type BottomSheetLinkActionProps = {
 };
 
 export function BottomSheetLinkAction({ label, onPress, testID }: BottomSheetLinkActionProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   return (
     <Pressable
@@ -118,7 +124,7 @@ export function BottomSheetLinkAction({ label, onPress, testID }: BottomSheetLin
       onPress={onPress}
       testID={testID}
     >
-      <Text style={[styles.linkButtonText, { color: colors.textSecondary }]}>
+      <Text style={[styles.linkButtonText, { color: noctalia.text.secondary }]}>
         {label}
       </Text>
     </Pressable>
@@ -131,6 +137,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   primaryButton: {
+    borderWidth: 1,
     borderRadius: ThemeLayout.borderRadius.lg,
     paddingVertical: 16,
     alignItems: 'center',

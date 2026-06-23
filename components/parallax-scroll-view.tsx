@@ -8,8 +8,8 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { ThemedView } from '@/components/themed-view';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useTheme } from '@/context/ThemeContext';
 
 const HEADER_HEIGHT = 250;
 
@@ -23,8 +23,8 @@ export default function ParallaxScrollView({
   headerImage,
   headerBackgroundColor,
 }: Props) {
-  const backgroundColor = useThemeColor({}, 'background');
-  const colorScheme = useColorScheme() === 'dark' ? 'dark' : 'light';
+  const { colors, mode } = useTheme();
+  const noctalia = getNoctaliaDesignTokens(colors, mode);
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollOffset(scrollRef);
   const headerAnimatedStyle = useAnimatedStyle(() => {
@@ -47,12 +47,12 @@ export default function ParallaxScrollView({
   return (
     <Animated.ScrollView
       ref={scrollRef}
-      style={{ backgroundColor, flex: 1 }}
+      style={{ backgroundColor: noctalia.screen.background, flex: 1 }}
       scrollEventThrottle={16}>
       <Animated.View
         style={[
           styles.header,
-          { backgroundColor: headerBackgroundColor[colorScheme] },
+          { backgroundColor: headerBackgroundColor[mode] },
           headerAnimatedStyle,
         ]}>
         {headerImage}

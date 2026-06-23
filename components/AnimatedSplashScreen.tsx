@@ -17,6 +17,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
+import { DarkTheme } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 const DEFAULT_VIEWPORT = { width: 360, height: 640 };
 const seededRandom = (seed: number) => {
@@ -28,12 +29,12 @@ const seededRandom = (seed: number) => {
 const PARTICLE_COUNT = 30;
 
 const COLORS = {
-  bgStart: '#000000',
-  bgEnd: '#1a0f2b', // SurrealTheme.bgStart (Deep Purple)
-  gold: '#FCD34D', // Amber 300 - Pale Gold
-  cyan: '#C4B5FD', // Violet 300 - Soft Lavender (Replaced Cyan)
-  moonFill: '#2e1d47', // SurrealTheme.darkAccent
-  text: '#F8FAFC', // Slate 50
+  bgStart: DarkTheme.backgroundDark,
+  bgEnd: DarkTheme.backgroundCard,
+  gold: DarkTheme.accent,
+  cyan: DarkTheme.accentLight,
+  moonFill: DarkTheme.backgroundSecondary,
+  text: DarkTheme.textPrimary,
 };
 
 // --- Logo Paths ---
@@ -372,7 +373,6 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 36,
-    letterSpacing: 8, // Wide tracking for "Light" feel
     color: COLORS.text,
     textAlign: 'center',
     textTransform: 'uppercase',

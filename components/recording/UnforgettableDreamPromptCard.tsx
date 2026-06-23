@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -21,7 +22,8 @@ export function UnforgettableDreamPromptCard({
   onStartFreshTonight,
   onDismiss,
 }: UnforgettableDreamPromptCardProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
 
   return (
@@ -29,8 +31,8 @@ export function UnforgettableDreamPromptCard({
       style={[
         styles.card,
         {
-          backgroundColor: colors.backgroundCard,
-          borderColor: `${colors.accentLight}55`,
+          backgroundColor: noctalia.surface.raised,
+          borderColor: noctalia.surface.borderStrong,
         },
       ]}
       testID={TID.Component.UnforgettableDreamPrompt}
@@ -40,26 +42,26 @@ export function UnforgettableDreamPromptCard({
           style={[
             styles.iconShell,
             {
-              backgroundColor: `${colors.accentLight}18`,
-              borderColor: `${colors.accentLight}44`,
+              backgroundColor: noctalia.surface.soft,
+              borderColor: noctalia.surface.border,
             },
           ]}
         >
-          <IconSymbol name="moon.stars.fill" size={20} color={colors.accentLight} />
+          <IconSymbol name="moon.stars.fill" size={20} color={noctalia.accent.soft} />
         </View>
         <View style={styles.copy}>
           <Text
-            style={[styles.eyebrow, { color: colors.textSecondary }]}
+            style={[styles.eyebrow, { color: noctalia.text.secondary }]}
           >
             {t('recording.remembered_prompt.eyebrow')}
           </Text>
           <Text
-            style={[styles.title, { color: colors.textPrimary }]}
+            style={[styles.title, { color: noctalia.text.primary }]}
             testID={TID.Text.UnforgettableDreamPromptTitle}
           >
             {t('recording.remembered_prompt.title')}
           </Text>
-          <Text style={[styles.body, { color: colors.textSecondary }]}>
+          <Text style={[styles.body, { color: noctalia.text.secondary }]}>
             {t('recording.remembered_prompt.body')}
           </Text>
         </View>
@@ -73,13 +75,13 @@ export function UnforgettableDreamPromptCard({
           style={[
             styles.primaryButton,
             {
-              backgroundColor: disabled ? colors.divider : colors.accent,
+              backgroundColor: disabled ? noctalia.action.disabled : noctalia.action.primary,
             },
           ]}
           testID={TID.Button.UnforgettableDreamYes}
         >
-          <IconSymbol name="pencil" size={18} color={colors.textPrimary} />
-          <Text style={[styles.primaryText, { color: colors.textPrimary }]}>
+          <IconSymbol name="pencil" size={18} color={disabled ? noctalia.action.disabledText : noctalia.action.primaryText} />
+          <Text style={[styles.primaryText, { color: disabled ? noctalia.action.disabledText : noctalia.action.primaryText }]}>
             {t('recording.remembered_prompt.yes')}
           </Text>
         </Pressable>
@@ -92,7 +94,7 @@ export function UnforgettableDreamPromptCard({
             style={styles.secondaryButton}
             testID={TID.Button.UnforgettableDreamTonight}
           >
-            <Text style={[styles.secondaryText, { color: colors.textSecondary }]}>
+            <Text style={[styles.secondaryText, { color: noctalia.text.secondary }]}>
               {t('recording.remembered_prompt.tonight')}
             </Text>
           </Pressable>
@@ -103,7 +105,7 @@ export function UnforgettableDreamPromptCard({
             style={styles.secondaryButton}
             testID={TID.Button.UnforgettableDreamSkip}
           >
-            <Text style={[styles.secondaryText, { color: colors.textSecondary }]}>
+            <Text style={[styles.secondaryText, { color: noctalia.text.secondary }]}>
               {t('recording.remembered_prompt.skip')}
             </Text>
           </Pressable>

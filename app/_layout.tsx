@@ -22,7 +22,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } fro
 import { useFonts } from 'expo-font';
 import { useLocales } from 'expo-localization';
 import * as Notifications from 'expo-notifications';
-import { Stack, router, useNavigationContainerRef, usePathname, useRootNavigationState } from 'expo-router';
+import { Stack, router, useNavigationContainerRef, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LogBox, NativeModules, Platform } from 'react-native';
@@ -84,6 +84,7 @@ if (__DEV__) {
 SplashScreen.preventAutoHideAsync();
 
 const ROOT_VIEW_STYLE = { flex: 1 } as const;
+const ONBOARDING_ROUTE = '/onboarding' as Href;
 
 function runAfterNavigationMount(callback: () => void) {
   const timeout = setTimeout(callback, 0);
@@ -221,6 +222,7 @@ function RootLayoutNav() {
       const isInStatistics =
         currentPath === '/statistics' ||
         currentPath === '/(tabs)/statistics';
+      const isInOnboarding = currentPath === '/onboarding';
       const isInJournalDetail =
         currentPath?.startsWith('/journal/') ||
         currentPath?.startsWith('/dream-chat/') ||
@@ -260,6 +262,13 @@ function RootLayoutNav() {
       if (isInStatistics) {
         if (__DEV__) {
           console.log('[RootLayoutNav] stay on statistics, skip redirect');
+        }
+        return;
+      }
+
+      if (isInOnboarding) {
+        if (__DEV__) {
+          console.log('[RootLayoutNav] stay on onboarding, skip redirect');
         }
         return;
       }
@@ -349,6 +358,7 @@ function RootLayoutNav() {
         <DreamsProvider>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="onboarding" options={{ headerShown: false }} />
             <Stack.Screen name="recording" options={{ headerShown: false }} />
             <Stack.Screen name="journal/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
@@ -526,6 +536,7 @@ export default function RootLayout() {
         if (!completed) {
           await saveFirstLaunchCompleted(true);
           if (!isMounted) return;
+          runAfterNavigationMount(() => router.replace(ONBOARDING_ROUTE));
         }
       } catch (error) {
         if (__DEV__) {

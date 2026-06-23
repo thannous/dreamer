@@ -1,7 +1,8 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -28,7 +29,8 @@ export const PricingOption: React.FC<PricingOptionProps> = function PricingOptio
   onPress,
   testID,
 }) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   const isDisabled = state === 'disabled' || state === 'selectedDisabled';
   const isSelected = state === 'selected' || state === 'selectedDisabled';
@@ -40,8 +42,8 @@ export const PricingOption: React.FC<PricingOptionProps> = function PricingOptio
     }
   }, [id, isDisabled, onPress]);
 
-  const borderColor = isSelected ? colors.accent : colors.divider;
-  const backgroundColor = isSelected ? colors.backgroundSecondary : colors.backgroundCard;
+  const borderColor = isSelected ? noctalia.accent.base : noctalia.surface.border;
+  const backgroundColor = isSelected ? noctalia.surface.active : noctalia.surface.raised;
 
   return (
     <Pressable
@@ -60,21 +62,21 @@ export const PricingOption: React.FC<PricingOptionProps> = function PricingOptio
     >
       <View style={styles.headerRow}>
         <View style={styles.textContainer}>
-          <Text style={[styles.title, { color: colors.textPrimary }]}>{title}</Text>
+          <Text style={[styles.title, { color: noctalia.text.primary }]}>{title}</Text>
           {subtitle ? (
-            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>{subtitle}</Text>
+            <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>{subtitle}</Text>
           ) : null}
         </View>
         {badge ? (
-          <View style={[styles.badge, { backgroundColor: colors.accent }]}>
-            <Text style={[styles.badgeText, { color: colors.textOnAccentSurface }]}>{badge}</Text>
+          <View style={[styles.badge, { backgroundColor: noctalia.action.primary }]}>
+            <Text style={[styles.badgeText, { color: noctalia.action.primaryText }]}>{badge}</Text>
           </View>
         ) : null}
       </View>
 
       <View style={styles.priceRow}>
-        <Text style={[styles.price, { color: colors.textPrimary }]}>{price}</Text>
-        <Text style={[styles.interval, { color: colors.textSecondary }]}>{intervalLabel}</Text>
+        <Text style={[styles.price, { color: noctalia.text.primary }]}>{price}</Text>
+        <Text style={[styles.interval, { color: noctalia.text.secondary }]}>{intervalLabel}</Text>
       </View>
     </Pressable>
   );

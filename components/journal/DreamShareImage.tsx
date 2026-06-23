@@ -1,3 +1,5 @@
+import { DarkTheme } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import type { DreamAnalysis } from '@/lib/types';
@@ -22,6 +24,7 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
   ref
 ) {
   const [imageError, setImageError] = useState(false);
+  const noctalia = getNoctaliaDesignTokens(DarkTheme, 'dark');
 
   // Use imageUrl first, fallback to thumbnailUrl
   const imageSource = dream.imageUrl || dream.thumbnailUrl;
@@ -37,7 +40,7 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
   const metadataText = metadataParts.join(' \u2022 ');
 
   return (
-    <View ref={ref} style={styles.container} collapsable={false}>
+    <View ref={ref} style={[styles.container, { backgroundColor: noctalia.screen.background }]} collapsable={false}>
       {/* Background Image or Fallback */}
       {hasImage ? (
         <Image
@@ -47,7 +50,7 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
           onError={() => setImageError(true)}
         />
       ) : (
-        <View style={styles.fallbackBackground} />
+        <View style={[styles.fallbackBackground, { backgroundColor: noctalia.screen.background }]} />
       )}
 
       {/* Gradient Overlay */}
@@ -60,13 +63,13 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
       {/* Text Content */}
       <View style={styles.textContainer}>
         {/* Title */}
-        <Text style={styles.title} numberOfLines={2}>
+        <Text style={[styles.title, { color: noctalia.text.primary }]} numberOfLines={2}>
           {dream.title}
         </Text>
 
         {/* Shareable Quote */}
         {dream.shareableQuote && (
-          <Text style={styles.quote} numberOfLines={3}>
+          <Text style={[styles.quote, { color: noctalia.text.secondary }]} numberOfLines={3}>
             {'\u201C'}
             {dream.shareableQuote}
             {'\u201D'}
@@ -75,7 +78,7 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
 
         {/* Metadata */}
         {metadataText && (
-          <Text style={styles.metadata} numberOfLines={1}>
+          <Text style={[styles.metadata, { color: noctalia.text.tertiary }]} numberOfLines={1}>
             {metadataText}
           </Text>
         )}
@@ -83,7 +86,7 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
         {/* Footer - Only for users without Noctalia Plus */}
         {!isPlus && (
           <View style={styles.footerContainer}>
-            <Text style={styles.footer}>{t('journal.detail.share_image.footer')}</Text>
+            <Text style={[styles.footer, { color: noctalia.text.secondary }]}>{t('journal.detail.share_image.footer')}</Text>
             <RNImage
               source={require('@/assets/images/icon-transparent.png')}
               style={styles.footerLogo}
@@ -101,7 +104,6 @@ const styles = StyleSheet.create({
     height: 1350,
     position: 'relative',
     overflow: 'hidden',
-    backgroundColor: '#1a0f2b', // Fallback background color (surreal theme)
   },
   backgroundImage: {
     ...StyleSheet.absoluteFill,
@@ -110,7 +112,6 @@ const styles = StyleSheet.create({
   },
   fallbackBackground: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: '#1a0f2b', // Surreal theme background
   },
   gradientOverlay: {
     ...StyleSheet.absoluteFill,
@@ -127,24 +128,20 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 72,
-    color: '#FFFFFF',
     marginBottom: 24,
     lineHeight: 84,
   },
   quote: {
     fontFamily: Fonts.lora.regularItalic,
     fontSize: 40,
-    color: 'rgba(255, 255, 255, 0.85)',
     marginBottom: 32,
     lineHeight: 52,
   },
   metadata: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 24,
-    color: 'rgba(255, 255, 255, 0.6)',
     marginBottom: 32,
     textTransform: 'uppercase',
-    letterSpacing: 2,
   },
   footerContainer: {
     flexDirection: 'row',
@@ -155,8 +152,6 @@ const styles = StyleSheet.create({
   footer: {
     fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 34,
-    color: 'rgba(255, 255, 255, 0.7)',
-    letterSpacing: 1,
   },
   footerLogo: {
     width: 44,

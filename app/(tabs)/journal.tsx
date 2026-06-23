@@ -13,6 +13,7 @@ import { SearchBar } from '@/components/ui/SearchBar';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT, TABLET_BREAKPOINT } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
@@ -65,8 +66,9 @@ const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
 
 export default function JournalListScreen() {
   const { dreams } = useDreams();
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
   const { t } = useTranslation();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   useClearWebFocus();
   const { formatDate, formatShortDate: formatDreamListDate } = useLocaleFormatting();
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
@@ -162,7 +164,10 @@ export default function JournalListScreen() {
   const listBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
     : TAB_BAR_HEIGHT + ThemeLayout.spacing.lg;
-  const desktopDateTextStyle = useMemo(() => [styles.desktopDate, { color: colors.textSecondary }], [colors.textSecondary]);
+  const desktopDateTextStyle = useMemo(
+    () => [styles.desktopDate, { color: noctalia.text.secondary }],
+    [noctalia.text.secondary]
+  );
   const listContentStyle = useMemo(
     () => [styles.listContent, { paddingBottom: listBottomPadding }],
     [listBottomPadding]
@@ -783,9 +788,9 @@ export default function JournalListScreen() {
 
   return (
     <ScrollPerfProvider isScrolling={isScrolling}>
-      <View style={[styles.container, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Journal}>
+      <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID={TID.Screen.Journal}>
         {/* Atmospheric dreamlike background */}
-        <AtmosphericBackground />
+        <AtmosphericBackground variant="subtle" />
 
         {useAtlasHeader ? (
           <NoctaliaScreenHeader
@@ -931,13 +936,13 @@ export default function JournalListScreen() {
       <BottomSheet
         visible={showThemeModal}
         onClose={() => setShowThemeModal(false)}
-        style={{ backgroundColor: colors.backgroundCard }}
+        style={{ backgroundColor: noctalia.surface.raised }}
         testID={TID.Modal.Theme}
       >
-        <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+        <Text style={[styles.modalTitle, { color: noctalia.text.primary }]}>
           {t('journal.theme_modal.title')}
         </Text>
-        <Text style={[styles.modalSubtext, { color: colors.textSecondary }]}>
+        <Text style={[styles.modalSubtext, { color: noctalia.text.secondary }]}>
           {t('journal.detail.theme_label')}
         </Text>
         {availableThemes.map((theme) => (
@@ -945,24 +950,40 @@ export default function JournalListScreen() {
             key={theme}
             style={[
               styles.modalOption,
-              { backgroundColor: selectedTheme === theme ? colors.accent : colors.backgroundSecondary },
+              {
+                backgroundColor: selectedTheme === theme
+                  ? noctalia.action.primary
+                  : noctalia.surface.soft,
+                borderColor: selectedTheme === theme
+                  ? noctalia.action.primaryBorder
+                  : noctalia.surface.border,
+              },
             ]}
             onPress={() => handleThemeSelect(theme)}
           >
-            <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>
+            <Text
+              style={[
+                styles.modalOptionText,
+                {
+                  color: selectedTheme === theme
+                    ? noctalia.action.primaryText
+                    : noctalia.text.primary,
+                },
+              ]}
+            >
               {getDreamThemeLabel(theme, t) ?? theme}
             </Text>
             {selectedTheme === theme && (
               <View style={styles.modalOptionCheckWrapper}>
-                <View style={[styles.modalOptionCheckBadge, { backgroundColor: colors.backgroundCard }]}>
-                  <IconSymbol name="checkmark" size={14} color={colors.accent} />
+                <View style={[styles.modalOptionCheckBadge, { backgroundColor: noctalia.surface.raised }]}>
+                  <IconSymbol name="checkmark" size={14} color={noctalia.accent.base} />
                 </View>
               </View>
             )}
           </Pressable>
         ))}
         <View style={{ height: 16 }} />
-        <Text style={[styles.modalSubtext, { color: colors.textSecondary }]}>
+        <Text style={[styles.modalSubtext, { color: noctalia.text.secondary }]}>
           {t('journal.detail.dream_type_label')}
         </Text>
         {availableDreamTypes.map((dreamType) => (
@@ -970,17 +991,33 @@ export default function JournalListScreen() {
             key={dreamType}
             style={[
               styles.modalOption,
-              { backgroundColor: selectedDreamType === dreamType ? colors.accent : colors.backgroundSecondary },
+              {
+                backgroundColor: selectedDreamType === dreamType
+                  ? noctalia.action.primary
+                  : noctalia.surface.soft,
+                borderColor: selectedDreamType === dreamType
+                  ? noctalia.action.primaryBorder
+                  : noctalia.surface.border,
+              },
             ]}
             onPress={() => handleDreamTypeSelect(dreamType)}
           >
-            <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>
+            <Text
+              style={[
+                styles.modalOptionText,
+                {
+                  color: selectedDreamType === dreamType
+                    ? noctalia.action.primaryText
+                    : noctalia.text.primary,
+                },
+              ]}
+            >
               {getDreamTypeLabel(dreamType, t) ?? dreamType}
             </Text>
             {selectedDreamType === dreamType && (
               <View style={styles.modalOptionCheckWrapper}>
-                <View style={[styles.modalOptionCheckBadge, { backgroundColor: colors.backgroundCard }]}>
-                  <IconSymbol name="checkmark" size={14} color={colors.accent} />
+                <View style={[styles.modalOptionCheckBadge, { backgroundColor: noctalia.surface.raised }]}>
+                  <IconSymbol name="checkmark" size={14} color={noctalia.accent.base} />
                 </View>
               </View>
             )}
@@ -990,7 +1027,7 @@ export default function JournalListScreen() {
           style={styles.modalCancelButton}
           onPress={() => setShowThemeModal(false)}
         >
-          <Text style={[styles.modalCancelText, { color: colors.textSecondary }]}>
+          <Text style={[styles.modalCancelText, { color: noctalia.text.secondary }]}>
             {t('common.cancel')}
           </Text>
         </Pressable>
@@ -1000,7 +1037,7 @@ export default function JournalListScreen() {
       <BottomSheet
         visible={showDateModal}
         onClose={() => setShowDateModal(false)}
-        style={{ backgroundColor: colors.backgroundCard }}
+        style={{ backgroundColor: noctalia.surface.raised }}
         testID={TID.Modal.DateRange}
       >
         <DateRangePicker
@@ -1132,6 +1169,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalOption: {
+    borderWidth: 1,
     paddingVertical: 12,
     paddingHorizontal: ThemeLayout.spacing.md,
     borderRadius: ThemeLayout.borderRadius.sm,

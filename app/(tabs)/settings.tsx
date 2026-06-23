@@ -28,6 +28,7 @@ import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { SubscriptionQALab } from '@/components/subscription/SubscriptionQALab';
 import ThemeSettingsCard from '@/components/ThemeSettingsCard';
 import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
@@ -67,9 +68,10 @@ function SectionDivider({
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
 export default function SettingsScreen() {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
   const { returningGuestBlocked } = useAuth();
   const { t } = useTranslation();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { width } = useWindowDimensions();
   const appVersion = getAppVersionString();
   const scrollPerf = useScrollIdle();
@@ -176,12 +178,12 @@ export default function SettingsScreen() {
   // When returning guest is blocked, show only the auth hub
   if (returningGuestBlocked) {
     return (
-      <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+          <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
         <KeyboardAvoidingView
           behavior={keyboardBehavior}
-          style={[styles.container, { backgroundColor: colors.backgroundDark }]}
+          style={[styles.container, { backgroundColor: noctalia.screen.background }]}
         >
-          <AtmosphericBackground />
+          <AtmosphericBackground variant="subtle" />
           {isDesktopLayout ? (
             <PageHeader titleKey="auth.returning_guest.title" animationSeed={showAnimations ? 1 : 0} />
           ) : (
@@ -206,13 +208,17 @@ export default function SettingsScreen() {
                 animationDelay={100}
                 style={styles.returningGuestGlassCard}
               >
-                <View style={[styles.returningGuestAccentStripe, { backgroundColor: colors.accent }]} />
+                <View style={[styles.returningGuestAccentStripe, { backgroundColor: noctalia.accent.base }]} />
                 <View style={styles.returningGuestInner}>
-                  <IconSymbol name="person.crop.circle.badge.exclamationmark" size={48} color={colors.accent} />
-                  <Text style={[styles.returningGuestTitle, { color: colors.textPrimary }]}>
+                  <IconSymbol
+                    name="person.crop.circle.badge.exclamationmark"
+                    size={48}
+                    color={noctalia.accent.base}
+                  />
+                  <Text style={[styles.returningGuestTitle, { color: noctalia.text.primary }]}>
                     {t('auth.returning_guest.banner_title')}
                   </Text>
-                  <Text style={[styles.returningGuestMessage, { color: colors.textSecondary }]}>
+                  <Text style={[styles.returningGuestMessage, { color: noctalia.text.secondary }]}>
                     {t('auth.returning_guest.message')}
                   </Text>
                 </View>
@@ -250,9 +256,9 @@ export default function SettingsScreen() {
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <KeyboardAvoidingView
         behavior={keyboardBehavior}
-        style={[styles.container, { backgroundColor: colors.backgroundDark }]}
+        style={[styles.container, { backgroundColor: noctalia.screen.background }]}
       >
-        <AtmosphericBackground />
+        <AtmosphericBackground variant="subtle" />
         {isDesktopLayout ? (
           <PageHeader titleKey="settings.title" animationSeed={showAnimations ? 1 : 0} />
         ) : (
@@ -298,7 +304,7 @@ export default function SettingsScreen() {
               </MotiView>
             </View>
 
-            <SectionDivider color={colors.accent} delay={250} />
+            <SectionDivider color={noctalia.surface.borderStrong} delay={250} />
 
             {/* ─── Subscription Section ─── */}
             <View style={styles.settingsSection}>
@@ -357,7 +363,7 @@ export default function SettingsScreen() {
               </View>
             </View>
 
-            <SectionDivider color={colors.accent} delay={550} />
+            <SectionDivider color={noctalia.surface.borderStrong} delay={550} />
 
             {/* ─── Preferences Section ─── */}
             {showDeferredSections && (
@@ -417,7 +423,7 @@ export default function SettingsScreen() {
             {/* ─── Notifications Section (native only) ─── */}
             {showDeferredSections && Platform.OS !== 'web' && (
               <>
-                <SectionDivider color={colors.accent} delay={850} />
+                <SectionDivider color={noctalia.surface.borderStrong} delay={850} />
                 <View style={styles.settingsSection}>
                   <MotiView
                     from={{ opacity: 1, translateY: 16 }}
@@ -452,8 +458,8 @@ export default function SettingsScreen() {
               transition={{ type: 'timing', duration: 600, delay: 1100 }}
             >
               <View style={styles.versionContainer}>
-                <View style={[styles.versionDecoLine, { backgroundColor: `${colors.accent}40` }]} />
-                <Text style={[styles.versionText, { color: colors.textSecondary }]}>
+                <View style={[styles.versionDecoLine, { backgroundColor: noctalia.surface.borderStrong }]} />
+                <Text style={[styles.versionText, { color: noctalia.text.secondary }]}>
                   {t('settings.app_version', { version: appVersion })}
                 </Text>
               </View>
@@ -549,7 +555,6 @@ const styles = StyleSheet.create({
   versionText: {
     fontSize: 11,
     fontFamily: Fonts.spaceGrotesk.medium,
-    letterSpacing: 0.8,
     textTransform: 'uppercase',
     opacity: 0.5,
   },

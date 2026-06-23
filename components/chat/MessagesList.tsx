@@ -10,6 +10,7 @@
  */
 
 import { Fonts } from '@/constants/theme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import {
   MessageContextProvider,
   useComposerHeightContext,
@@ -75,23 +76,24 @@ interface MessagesListProps {
  */
 // Perf: memoize message bubbles so list-level rerenders don't re-render every visible message on the JS thread.
 const UserMessage = memo(function UserMessage({ message }: { message: ChatMessage; index: number }) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   return (
     <FadeInStaggered>
       <View style={[styles.messageRow, styles.messageRowUser]}>
         <LinearGradient
-          colors={[colors.accent, colors.accentDark]}
+          colors={[noctalia.action.primary, noctalia.accent.strong]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={[styles.messageBubble, styles.messageBubbleUser]}
         >
-          <Text style={[styles.messageText, { color: colors.textPrimary }]}>
+          <Text style={[styles.messageText, { color: noctalia.action.primaryText }]}>
             {message.text}
           </Text>
         </LinearGradient>
-        <View style={[styles.avatar, { backgroundColor: colors.backgroundSecondary }]}>
-          <IconSymbol name="person.fill" size={20} color={colors.textPrimary} />
+        <View style={[styles.avatar, { backgroundColor: noctalia.surface.active }]}>
+          <IconSymbol name="person.fill" size={20} color={noctalia.text.primary} />
         </View>
       </View>
     </FadeInStaggered>
@@ -208,6 +210,7 @@ const AssistantMessage = memo(function AssistantMessage({
   retryA11yLabel?: string;
 }) {
   const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const shouldHandwritePlainText = useMemo(
     () => shouldHandwrite && !hasMarkdownSyntax(message.text),
     [message.text, shouldHandwrite]
@@ -263,7 +266,7 @@ const AssistantMessage = memo(function AssistantMessage({
     markdownTextRef.current = message.text;
   }
 
-  const textStyle = [styles.messageText, { color: colors.textPrimary }];
+  const textStyle = [styles.messageText, { color: noctalia.text.primary }];
 
   useEffect(() => {
     if (!__DEV__) return;
@@ -288,17 +291,11 @@ const AssistantMessage = memo(function AssistantMessage({
     showMarkdown,
   ]);
 
-  const aiBubbleStyle = mode === 'dark'
-    ? {
-      backgroundColor: colors.backgroundCard,
-      borderColor: 'rgba(255,255,255,0.12)',
-      borderWidth: 1,
-    }
-    : {
-      backgroundColor: colors.backgroundSecondary,
-      borderColor: colors.divider,
-      borderWidth: 1,
-    };
+  const aiBubbleStyle = {
+    backgroundColor: noctalia.surface.raised,
+    borderColor: noctalia.surface.border,
+    borderWidth: 1,
+  };
 
   // On Android, we use a single-layer approach to avoid NullPointerException in ViewGroup.dispatchDraw
   // when the view tree changes during a draw cycle. iOS can use the dual-layer approach safely.
@@ -358,10 +355,10 @@ const AssistantMessage = memo(function AssistantMessage({
             from={{ opacity: 0.15, scale: 1 }}
             animate={{ opacity: shouldHandwrite ? 0.5 : 0.15, scale: shouldHandwrite ? 1.25 : 1 }}
             transition={{ type: 'timing', duration: 600 }}
-            style={[styles.avatarGlow, { backgroundColor: colors.accent }]}
+            style={[styles.avatarGlow, { backgroundColor: noctalia.accent.base }]}
           />
-          <View style={[styles.avatar, { backgroundColor: colors.accent }]}>
-            <IconSymbol name="brain" size={20} color={colors.textPrimary} />
+          <View style={[styles.avatar, { backgroundColor: noctalia.accent.base }]}>
+            <IconSymbol name="brain" size={20} color={noctalia.action.primaryText} />
           </View>
         </View>
         <View style={[styles.messageBubble, styles.messageBubbleAI, aiBubbleStyle]}>
@@ -375,13 +372,13 @@ const AssistantMessage = memo(function AssistantMessage({
             style={({ pressed }) => [
               styles.retryButton,
               {
-                backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : colors.backgroundSecondary,
-                borderColor: colors.divider,
+                backgroundColor: noctalia.surface.soft,
+                borderColor: noctalia.surface.border,
               },
               pressed && styles.retryButtonPressed,
             ]}
           >
-            <IconSymbol name="arrow.clockwise" size={18} color={colors.textSecondary} />
+            <IconSymbol name="arrow.clockwise" size={18} color={noctalia.text.secondary} />
           </Pressable>
         )}
       </View>
@@ -425,7 +422,8 @@ function AnimatedDot({ delay, color }: { delay: number; color: string }) {
  * are removed mid-animation.
  */
 export function LoadingIndicator({ text, visible = true }: { text?: string; visible?: boolean }) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   // Keep visibility work on transform/opacity and skip layout animation altogether.
   const animatedVisibilityStyle = useAnimatedStyle(() => {
@@ -442,17 +440,17 @@ export function LoadingIndicator({ text, visible = true }: { text?: string; visi
       pointerEvents={visible ? 'auto' : 'none'}
     >
       <View style={loadingStyles.container}>
-        <View style={[loadingStyles.avatar, { backgroundColor: colors.accent }]}>
-          <IconSymbol name="brain" size={20} color={colors.textPrimary} />
+        <View style={[loadingStyles.avatar, { backgroundColor: noctalia.accent.base }]}>
+          <IconSymbol name="brain" size={20} color={noctalia.action.primaryText} />
         </View>
-        <View style={[loadingStyles.bubble, { backgroundColor: colors.backgroundSecondary }]}>
+        <View style={[loadingStyles.bubble, { backgroundColor: noctalia.surface.active }]}>
           <View style={loadingStyles.dots}>
-            <AnimatedDot delay={0} color={colors.accent} />
-            <AnimatedDot delay={150} color={colors.accent} />
-            <AnimatedDot delay={300} color={colors.accent} />
+            <AnimatedDot delay={0} color={noctalia.accent.base} />
+            <AnimatedDot delay={150} color={noctalia.accent.base} />
+            <AnimatedDot delay={300} color={noctalia.accent.base} />
           </View>
           {text && (
-            <Text style={[loadingStyles.text, { color: colors.textSecondary }]}>
+            <Text style={[loadingStyles.text, { color: noctalia.text.secondary }]}>
               {text}
             </Text>
           )}
@@ -561,7 +559,8 @@ export function MessagesList({
   const { animatedProps, ref, onContentSizeChange, onScroll } = useMessageListProps();
   const { isStreaming, hasAnimatedMessages } = useNewMessageAnimationContext();
   const { isNearBottom } = useMessageListContext();
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const [isStreamingSnapshot, setIsStreamingSnapshot] = useState(false);
   const [isNearBottomSnapshot, setIsNearBottomSnapshot] = useState(true);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
@@ -704,7 +703,7 @@ export function MessagesList({
 
   return (
     <View
-      style={[styles.container, style, { backgroundColor: colors.backgroundDark }]}
+      style={[styles.container, style, { backgroundColor: noctalia.screen.background }]}
       {...loadingAccessibility}
     >
       <AnimatedLegendList

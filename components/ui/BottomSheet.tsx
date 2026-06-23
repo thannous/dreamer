@@ -19,6 +19,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useTheme } from '@/context/ThemeContext';
 import { blurActiveElement } from '@/lib/accessibility';
 
 type BottomSheetProps = {
@@ -52,10 +54,12 @@ export function BottomSheet({
   onClose,
   children,
   style,
-  backdropColor = 'rgba(0,0,0,0.45)',
+  backdropColor,
   testID,
   dismissBehavior = 'pan',
 }: BottomSheetProps) {
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const useNativeIOSSheet = process.env.EXPO_OS === 'ios' && dismissBehavior === 'pan';
   const [isMounted, setIsMounted] = useState(visible);
   const { height: windowHeight } = useWindowDimensions();
@@ -133,6 +137,11 @@ export function BottomSheet({
   const backdropAnimatedStyle = useAnimatedStyle(() => ({
     opacity: backdropOpacity.value,
   }));
+  const resolvedBackdropColor = backdropColor ?? noctalia.surface.overlay;
+  const defaultSheetStyle = {
+    backgroundColor: noctalia.surface.raised,
+    borderColor: noctalia.surface.border,
+  };
 
   const panGesture = useMemo(() => {
     const closeThreshold = Math.min(180, hiddenTranslateY * 0.25);
@@ -182,8 +191,8 @@ export function BottomSheet({
         onRequestClose={onClose}
         presentationStyle="pageSheet"
       >
-        <View style={styles.nativeSheetWrapper}>
-          <View style={[styles.nativeSheet, style]} testID={testID}>
+        <View style={[styles.nativeSheetWrapper, { backgroundColor: noctalia.screen.background }]}>
+          <View style={[styles.nativeSheet, defaultSheetStyle, style]} testID={testID}>
             {normalizedChildren}
           </View>
         </View>
@@ -204,11 +213,11 @@ export function BottomSheet({
       statusBarTranslucent
     >
       <GestureHandlerRootView style={styles.wrapper}>
-        <Animated.View style={[styles.backdrop, { backgroundColor: backdropColor }, backdropAnimatedStyle]}>
+        <Animated.View style={[styles.backdrop, { backgroundColor: resolvedBackdropColor }, backdropAnimatedStyle]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         </Animated.View>
         <GestureDetector gesture={panGesture}>
-          <Animated.View style={[styles.sheet, style, sheetAnimatedStyle]} testID={testID}>
+          <Animated.View style={[styles.sheet, defaultSheetStyle, style, sheetAnimatedStyle]} testID={testID}>
             {normalizedChildren}
           </Animated.View>
         </GestureDetector>
@@ -228,15 +237,15 @@ const styles = StyleSheet.create({
   sheet: {
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
+    borderTopWidth: 1,
     paddingHorizontal: 24,
     paddingVertical: 28,
-    backgroundColor: '#fff',
   },
   nativeSheetWrapper: {
     flex: 1,
   },
   nativeSheet: {
     flex: 1,
-    backgroundColor: '#fff',
+    borderTopWidth: 1,
   },
 });

@@ -26,8 +26,8 @@ import type { LabelLineConfig, pieDataItem } from 'react-native-gifted-charts';
 import { PieChart } from 'react-native-gifted-charts';
 import { Line, Rect, Svg, Text as SvgText } from 'react-native-svg';
 
-import type { ThemeColors } from '@/constants/journalTheme';
 import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
@@ -273,26 +273,26 @@ interface StatCardProps {
   title: string;
   value: string | number;
   subtitle?: string;
-  colors: ThemeColors;
+  noctalia: NoctaliaDesignTokens;
   valueTestID?: string;
 }
 
-function StatCard({ title, value, subtitle, colors, valueTestID }: StatCardProps) {
+function StatCard({ title, value, subtitle, noctalia, valueTestID }: StatCardProps) {
   const valueText = typeof value === 'number' ? String(value) : value;
   const accessibilityLabel = `${title}: ${valueText}`;
 
   return (
     <View style={styles.statCard}>
-      <Text style={[styles.statTitle, { color: colors.textSecondary }]}>{title}</Text>
+      <Text style={[styles.statTitle, { color: noctalia.text.secondary }]}>{title}</Text>
       <Text
-        style={[styles.statValue, { color: colors.accent }]}
+        style={[styles.statValue, { color: noctalia.accent.base }]}
         testID={valueTestID}
         accessibilityLabel={accessibilityLabel}
       >
         {value}
       </Text>
-      <View style={[styles.statValueUnderline, { backgroundColor: `${colors.accent}40` }]} />
-      {subtitle && <Text style={[styles.statSubtitle, { color: colors.textTertiary }]}>{subtitle}</Text>}
+      <View style={[styles.statValueUnderline, { backgroundColor: noctalia.accent.base }]} />
+      {subtitle && <Text style={[styles.statSubtitle, { color: noctalia.text.tertiary }]}>{subtitle}</Text>}
     </View>
   );
 }
@@ -301,11 +301,11 @@ function StatCard({ title, value, subtitle, colors, valueTestID }: StatCardProps
 
 const SectionGlass = memo(function SectionGlass({
   children,
-  colors,
+  noctalia,
   animationDelay = 0,
 }: {
   children: React.ReactNode;
-  colors: ThemeColors;
+  noctalia: NoctaliaDesignTokens;
   animationDelay?: number;
 }) {
   return (
@@ -314,7 +314,7 @@ const SectionGlass = memo(function SectionGlass({
       animationDelay={animationDelay}
       style={styles.sectionGlassCard}
     >
-      <View style={[styles.sectionAccentStripe, { backgroundColor: colors.accent }]} />
+      <View style={[styles.sectionAccentStripe, { backgroundColor: noctalia.accent.base }]} />
       <View style={styles.sectionInner}>
         {children}
       </View>
@@ -323,18 +323,16 @@ const SectionGlass = memo(function SectionGlass({
 });
 
 type StatsInsightCardProps = {
-  colors: ThemeColors;
+  noctalia: NoctaliaDesignTokens;
   insight: ReturnType<typeof getDreamStatsInsight>;
-  mode: 'light' | 'dark';
   t: ReturnType<typeof useTranslation>['t'];
   formatPercent: ReturnType<typeof useLocaleFormatting>['formatPercent'];
   onPress: () => void;
 };
 
 const StatsInsightCard = memo(function StatsInsightCard({
-  colors,
+  noctalia,
   insight,
-  mode,
   t,
   formatPercent,
   onPress,
@@ -367,32 +365,31 @@ const StatsInsightCard = memo(function StatsInsightCard({
       style={styles.insightCard}
       testID={TID.Component.StatsInsight}
     >
-      <View style={[styles.insightAccent, { backgroundColor: colors.accent }]} />
+      <View style={[styles.insightAccent, { backgroundColor: noctalia.accent.base }]} />
       <View style={styles.insightInner}>
         <View style={styles.insightHeaderRow}>
           <View
             style={[
               styles.insightIconWrap,
               {
-                backgroundColor:
-                  mode === 'dark' ? `${colors.accent}35` : `${colors.accent}22`,
+                backgroundColor: noctalia.surface.soft,
               },
             ]}
           >
             <IconSymbol
               name={STATS_INSIGHT_ICON[insight.kind]}
               size={22}
-              color={colors.accent}
+              color={noctalia.accent.base}
             />
           </View>
           <View style={styles.insightCopy}>
-            <Text style={[styles.insightEyebrow, { color: colors.accent }]}>
+            <Text style={[styles.insightEyebrow, { color: noctalia.accent.base }]}>
               {t('stats.insight.eyebrow')}
             </Text>
-            <Text style={[styles.insightTitle, { color: colors.textPrimary }]}>
+            <Text style={[styles.insightTitle, { color: noctalia.text.primary }]}>
               {t(insight.titleKey)}
             </Text>
-            <Text style={[styles.insightBody, { color: colors.textSecondary }]}>
+            <Text style={[styles.insightBody, { color: noctalia.text.secondary }]}>
               {t(insight.bodyKey)}
             </Text>
           </View>
@@ -405,17 +402,16 @@ const StatsInsightCard = memo(function StatsInsightCard({
               style={[
                 styles.insightProgressItem,
                 {
-                  borderColor: colors.divider,
-                  backgroundColor:
-                    mode === 'dark' ? `${colors.backgroundSecondary}C4` : `${colors.backgroundSecondary}90`,
+                  borderColor: noctalia.surface.border,
+                  backgroundColor: noctalia.surface.soft,
                 },
               ]}
             >
               <View style={styles.insightMetricRow}>
-                <Text style={[styles.insightMetricLabel, { color: colors.textSecondary }]}>
+                <Text style={[styles.insightMetricLabel, { color: noctalia.text.secondary }]}>
                   {item.label}
                 </Text>
-                <Text style={[styles.insightMetricValue, { color: colors.textPrimary }]}>
+                <Text style={[styles.insightMetricValue, { color: noctalia.text.primary }]}>
                   {item.value}
                 </Text>
               </View>
@@ -423,8 +419,7 @@ const StatsInsightCard = memo(function StatsInsightCard({
                 style={[
                   styles.insightTrack,
                   {
-                    backgroundColor:
-                      mode === 'dark' ? `${colors.textSecondary}26` : `${colors.textSecondary}1C`,
+                    backgroundColor: noctalia.surface.border,
                   },
                 ]}
               >
@@ -433,7 +428,7 @@ const StatsInsightCard = memo(function StatsInsightCard({
                     styles.insightFill,
                     {
                       width: `${Math.max(5, item.ratio * 100)}%`,
-                      backgroundColor: colors.accent,
+                      backgroundColor: noctalia.accent.base,
                     },
                   ]}
                 />
@@ -449,14 +444,14 @@ const StatsInsightCard = memo(function StatsInsightCard({
           onPress={onPress}
           style={({ pressed }) => [
             styles.insightButton,
-            { backgroundColor: colors.accent },
+            { backgroundColor: noctalia.action.primary },
             pressed && styles.pressedButton,
           ]}
         >
-          <Text style={[styles.insightButtonText, { color: colors.textOnAccentSurface }]}>
+          <Text style={[styles.insightButtonText, { color: noctalia.action.primaryText }]}>
             {t(insight.ctaKey)}
           </Text>
-          <IconSymbol name="arrow.right" size={16} color={colors.textOnAccentSurface} />
+          <IconSymbol name="arrow.right" size={16} color={noctalia.action.primaryText} />
         </Pressable>
       </View>
     </StaticFlatGlassCard>
@@ -464,9 +459,8 @@ const StatsInsightCard = memo(function StatsInsightCard({
 });
 
 type DreamProfileCardProps = {
-  colors: ThemeColors;
+  noctalia: NoctaliaDesignTokens;
   profile: DreamProfile;
-  mode: 'light' | 'dark';
   t: ReturnType<typeof useTranslation>['t'];
   formatNumber: ReturnType<typeof useLocaleFormatting>['formatNumber'];
   canShowPremiumSignals: boolean;
@@ -475,9 +469,8 @@ type DreamProfileCardProps = {
 };
 
 const DreamProfileCard = memo(function DreamProfileCard({
-  colors,
+  noctalia,
   profile,
-  mode,
   t,
   formatNumber,
   canShowPremiumSignals,
@@ -556,27 +549,27 @@ const DreamProfileCard = memo(function DreamProfileCard({
       style={styles.profileCard}
       testID={TID.Component.DreamProfileCard}
     >
-      <View style={[styles.profileAccent, { backgroundColor: colors.accent }]} />
+      <View style={[styles.profileAccent, { backgroundColor: noctalia.accent.base }]} />
       <View style={styles.profileInner}>
         <View style={styles.profileHeaderRow}>
           <View
             style={[
               styles.profileIconWrap,
               {
-                backgroundColor: mode === 'dark' ? `${colors.accent}35` : `${colors.accent}20`,
+                backgroundColor: noctalia.surface.soft,
               },
             ]}
           >
-            <IconSymbol name="brain" size={23} color={colors.accent} />
+            <IconSymbol name="brain" size={23} color={noctalia.accent.base} />
           </View>
           <View style={styles.profileCopy}>
-            <Text style={[styles.profileEyebrow, { color: colors.accent }]}>
+            <Text style={[styles.profileEyebrow, { color: noctalia.accent.base }]}>
               {t('stats.profile.eyebrow')}
             </Text>
-            <Text style={[styles.profileTitle, { color: colors.textPrimary }]}>
+            <Text style={[styles.profileTitle, { color: noctalia.text.primary }]}>
               {t('stats.profile.title')}
             </Text>
-            <Text style={[styles.profileBody, { color: colors.textSecondary }]}>
+            <Text style={[styles.profileBody, { color: noctalia.text.secondary }]}>
               {t(`stats.profile.readiness.${profile.readiness}.body`)}
             </Text>
           </View>
@@ -586,17 +579,17 @@ const DreamProfileCard = memo(function DreamProfileCard({
           style={[
             styles.profileReadinessPill,
             {
-              backgroundColor: mode === 'dark' ? `${colors.accent}24` : `${colors.accent}16`,
-              borderColor: `${colors.accent}55`,
+              backgroundColor: noctalia.surface.soft,
+              borderColor: noctalia.surface.borderStrong,
             },
           ]}
         >
           <IconSymbol
             name={profile.hasEnoughForPatterns ? 'checkmark.circle.fill' : 'hourglass'}
             size={16}
-            color={colors.accent}
+            color={noctalia.accent.base}
           />
-          <Text style={[styles.profileReadinessText, { color: colors.textPrimary }]}>
+          <Text style={[styles.profileReadinessText, { color: noctalia.text.primary }]}>
             {t(`stats.profile.readiness.${profile.readiness}.label`)}
           </Text>
         </View>
@@ -608,14 +601,14 @@ const DreamProfileCard = memo(function DreamProfileCard({
           onPress={onPress}
           style={({ pressed }) => [
             styles.profileButton,
-            { backgroundColor: colors.accent },
+            { backgroundColor: noctalia.action.primary },
             pressed && styles.pressedButton,
           ]}
         >
-          <Text style={[styles.profileButtonText, { color: colors.textOnAccentSurface }]}>
+          <Text style={[styles.profileButtonText, { color: noctalia.action.primaryText }]}>
             {t(`stats.profile.next_action.${profile.nextAction}.cta`)}
           </Text>
-          <IconSymbol name="arrow.right" size={16} color={colors.textOnAccentSurface} />
+          <IconSymbol name="arrow.right" size={16} color={noctalia.action.primaryText} />
         </Pressable>
 
         <View style={styles.profileMetricGrid}>
@@ -625,16 +618,15 @@ const DreamProfileCard = memo(function DreamProfileCard({
               style={[
                 styles.profileMetric,
                 {
-                  backgroundColor:
-                    mode === 'dark' ? `${colors.backgroundSecondary}C4` : `${colors.backgroundSecondary}90`,
-                  borderColor: colors.divider,
+                  backgroundColor: noctalia.surface.soft,
+                  borderColor: noctalia.surface.border,
                 },
               ]}
             >
-              <Text style={[styles.profileMetricValue, { color: colors.textPrimary }]}>
+              <Text style={[styles.profileMetricValue, { color: noctalia.text.primary }]}>
                 {metric.value}
               </Text>
-              <Text style={[styles.profileMetricLabel, { color: colors.textSecondary }]}>
+              <Text style={[styles.profileMetricLabel, { color: noctalia.text.secondary }]}>
                 {metric.label}
               </Text>
             </View>
@@ -649,15 +641,15 @@ const DreamProfileCard = memo(function DreamProfileCard({
                 style={[
                   styles.profileSignal,
                   {
-                    borderColor: colors.divider,
-                    backgroundColor: mode === 'dark' ? `${colors.backgroundCard}8F` : `${colors.backgroundCard}AA`,
+                    borderColor: noctalia.surface.border,
+                    backgroundColor: noctalia.surface.soft,
                   },
                 ]}
               >
-                <Text style={[styles.profileSignalLabel, { color: colors.textSecondary }]}>
+                <Text style={[styles.profileSignalLabel, { color: noctalia.text.secondary }]}>
                   {item.label}
                 </Text>
-                <Text style={[styles.profileSignalValue, { color: colors.textPrimary }]} numberOfLines={2}>
+                <Text style={[styles.profileSignalValue, { color: noctalia.text.primary }]} numberOfLines={2}>
                   {item.value}
                 </Text>
               </View>
@@ -666,21 +658,21 @@ const DreamProfileCard = memo(function DreamProfileCard({
         ) : (
           <View
             style={[
-              styles.profilePlusPreview,
-              {
-                borderColor: `${colors.accent}55`,
-                backgroundColor: mode === 'dark' ? `${colors.accent}18` : `${colors.accent}10`,
-              },
-            ]}
+            styles.profilePlusPreview,
+            {
+                borderColor: noctalia.surface.borderStrong,
+                backgroundColor: noctalia.surface.soft,
+            },
+          ]}
             testID={TID.Component.DreamProfilePlusPreview}
           >
             <View style={styles.profilePlusPreviewHeader}>
-              <IconSymbol name="lock.fill" size={16} color={colors.accent} />
-              <Text style={[styles.profilePlusPreviewTitle, { color: colors.textPrimary }]}>
+              <IconSymbol name="lock.fill" size={16} color={noctalia.accent.base} />
+              <Text style={[styles.profilePlusPreviewTitle, { color: noctalia.text.primary }]}>
                 {t('stats.profile.plus_preview.title')}
               </Text>
             </View>
-            <Text style={[styles.profilePlusPreviewBody, { color: colors.textSecondary }]}>
+            <Text style={[styles.profilePlusPreviewBody, { color: noctalia.text.secondary }]}>
               {t('stats.profile.plus_preview.body')}
             </Text>
             <View style={styles.profileSignalGrid}>
@@ -690,15 +682,15 @@ const DreamProfileCard = memo(function DreamProfileCard({
                   style={[
                     styles.profileSignal,
                     {
-                      borderColor: colors.divider,
-                      backgroundColor: mode === 'dark' ? `${colors.backgroundCard}70` : `${colors.backgroundCard}9A`,
+                      borderColor: noctalia.surface.border,
+                      backgroundColor: noctalia.surface.raised,
                     },
                   ]}
                 >
-                  <Text style={[styles.profileSignalLabel, { color: colors.textSecondary }]}>
+                  <Text style={[styles.profileSignalLabel, { color: noctalia.text.secondary }]}>
                     {item.label}
                   </Text>
-                  <Text style={[styles.profileSignalLockedValue, { color: colors.accent }]} numberOfLines={1}>
+                  <Text style={[styles.profileSignalLockedValue, { color: noctalia.accent.base }]} numberOfLines={1}>
                     {t('stats.profile.plus_preview.locked_value')}
                   </Text>
                 </View>
@@ -711,14 +703,14 @@ const DreamProfileCard = memo(function DreamProfileCard({
               onPress={onUpgradePress}
               style={({ pressed }) => [
                 styles.profileUpgradeButton,
-                { borderColor: `${colors.accent}66` },
+                { borderColor: noctalia.surface.borderStrong },
                 pressed && styles.pressedButton,
               ]}
             >
-              <Text style={[styles.profileUpgradeButtonText, { color: colors.accent }]}>
+              <Text style={[styles.profileUpgradeButtonText, { color: noctalia.accent.base }]}>
                 {t('stats.profile.plus_preview.cta')}
               </Text>
-              <IconSymbol name="arrow.right" size={15} color={colors.accent} />
+              <IconSymbol name="arrow.right" size={15} color={noctalia.accent.base} />
             </Pressable>
           </View>
         )}
@@ -733,6 +725,7 @@ export default function StatisticsScreen() {
   const { dreams, loaded } = useDreams();
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { width } = useWindowDimensions();
   const scrollPerf = useScrollIdle();
   const { isActive: isPlusActive } = useSubscription();
@@ -817,24 +810,28 @@ export default function StatisticsScreen() {
 
   // Memoize color arrays to avoid re-allocation churn
   const dreamTypeColors = useMemo(() =>
-    mode === 'dark'
-      ? ['#B8A4FF', '#D3B8FF', '#9683E2', '#C2A0FF', '#8770CF']
-      : ['#AD96E0', '#D9B28A', '#9BC6B3', '#A1B8E0', '#DCC48C'],
-    [mode]
+    [
+      noctalia.accent.base,
+      colors.tags.calm,
+      colors.tags.mystical,
+      colors.tags.noir,
+      colors.tags.surreal,
+    ],
+    [colors.tags.calm, colors.tags.mystical, colors.tags.noir, colors.tags.surreal, noctalia.accent.base]
   );
 
-  // Memoize label config - depends on chart sizing + colors.textSecondary
+  // Memoize label config - depends on chart sizing + text token
   const pieLabelLineConfig: LabelLineConfig = useMemo(() => ({
     length: pieMetrics.pieLabelLineLength,
     tailLength: pieMetrics.pieLabelTailLength,
-    color: colors.textSecondary,
+    color: noctalia.text.secondary,
     thickness: 1,
     labelComponentWidth: pieMetrics.pieLabelWidth,
     labelComponentHeight: PIE_LABEL_HEIGHT,
     labelComponentMargin: PIE_LABEL_VERTICAL_MARGIN,
     avoidOverlappingOfLabels: true,
   }), [
-    colors.textSecondary,
+    noctalia.text.secondary,
     pieMetrics.pieLabelLineLength,
     pieMetrics.pieLabelTailLength,
     pieMetrics.pieLabelWidth,
@@ -912,9 +909,9 @@ export default function StatisticsScreen() {
       visible={showStatsPeriodSheet}
       onClose={() => setShowStatsPeriodSheet(false)}
       testID={TID.Modal.StatsPeriod}
-      style={[styles.periodSheet, { backgroundColor: colors.backgroundCard }]}
+      style={[styles.periodSheet, { backgroundColor: noctalia.surface.raised }]}
     >
-      <Text style={[styles.periodSheetTitle, { color: colors.textPrimary }]}>
+      <Text style={[styles.periodSheetTitle, { color: noctalia.text.primary }]}>
         {t('stats.period.title')}
       </Text>
       <View style={styles.periodOptions}>
@@ -934,8 +931,8 @@ export default function StatisticsScreen() {
               style={({ pressed }) => [
                 styles.periodOption,
                 {
-                  borderColor: active ? colors.accentLight : colors.divider,
-                  backgroundColor: active ? colors.accent : `${colors.backgroundSecondary}B8`,
+                  borderColor: active ? noctalia.action.primaryBorder : noctalia.surface.border,
+                  backgroundColor: active ? noctalia.action.primary : noctalia.surface.soft,
                 },
                 pressed && styles.pressedButton,
               ]}
@@ -943,7 +940,7 @@ export default function StatisticsScreen() {
               <Text
                 style={[
                   styles.periodOptionText,
-                  { color: active ? colors.textOnAccentSurface : colors.textPrimary },
+                  { color: active ? noctalia.action.primaryText : noctalia.text.primary },
                 ]}
               >
                 {t(option.labelKey)}
@@ -952,7 +949,7 @@ export default function StatisticsScreen() {
                 <IconSymbol
                   name="checkmark"
                   size={18}
-                  color={colors.textOnAccentSurface}
+                  color={noctalia.action.primaryText}
                 />
               ) : null}
             </Pressable>
@@ -965,12 +962,12 @@ export default function StatisticsScreen() {
   if (!loaded) {
     return (
       <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-        <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
-          <AtmosphericBackground />
+        <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
+          <AtmosphericBackground variant="subtle" />
           {header}
           {periodSheet}
           <View style={styles.loadingContainer}>
-            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>{t('stats.loading')}</Text>
+            <Text style={[styles.loadingText, { color: noctalia.text.secondary }]}>{t('stats.loading')}</Text>
           </View>
         </View>
       </ScrollPerfProvider>
@@ -980,8 +977,8 @@ export default function StatisticsScreen() {
   if (dreams.length === 0) {
     return (
       <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-        <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
-          <AtmosphericBackground />
+        <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
+          <AtmosphericBackground variant="subtle" />
           {header}
           {periodSheet}
           <ScrollView
@@ -993,13 +990,12 @@ export default function StatisticsScreen() {
             <ScreenContainer>
               <MockNavigationRail />
               <View style={styles.emptyState}>
-                <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
+                <Text style={[styles.emptyStateText, { color: noctalia.text.secondary }]}>
                   {t('stats.empty')}
                 </Text>
                 <DreamProfileCard
-                  colors={colors}
+                  noctalia={noctalia}
                   profile={dreamProfile}
-                  mode={mode}
                   t={t}
                   formatNumber={formatNumber}
                   canShowPremiumSignals={canShowDreamProfileSignals}
@@ -1007,9 +1003,8 @@ export default function StatisticsScreen() {
                   onUpgradePress={handleDreamProfileUpgradePress}
                 />
                 <StatsInsightCard
-                  colors={colors}
+                  noctalia={noctalia}
                   insight={statsInsight}
-                  mode={mode}
                   t={t}
                   formatPercent={formatPercent}
                   onPress={handleStatsInsightPress}
@@ -1024,8 +1019,8 @@ export default function StatisticsScreen() {
 
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-      <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
-        <AtmosphericBackground />
+      <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
+        <AtmosphericBackground variant="subtle" />
         {header}
         {periodSheet}
 
@@ -1046,7 +1041,7 @@ export default function StatisticsScreen() {
             <View style={[styles.scrollContent, isDesktopLayout && styles.scrollContentDesktop]}>
             {/* Overview Cards */}
             <View style={[styles.section, isDesktopLayout && styles.sectionOverviewDesktop]}>
-              <SectionGlass colors={colors} animationDelay={150}>
+              <SectionGlass noctalia={noctalia} animationDelay={150}>
                 <SectionHeading
                   title={t('stats.section.overview')}
                   icon="chart.bar.fill"
@@ -1056,22 +1051,22 @@ export default function StatisticsScreen() {
                   <StatCard
                     title={t('stats.card.total_dreams')}
                     value={formatNumber(stats.totalDreams)}
-                    colors={colors}
+                    noctalia={noctalia}
                   />
                   <StatCard
                     title={t('stats.card.favorites')}
                     value={formatNumber(stats.favoriteDreams)}
-                    colors={colors}
+                    noctalia={noctalia}
                   />
                   <StatCard
                     title={t('stats.card.this_week')}
                     value={formatNumber(stats.dreamsThisWeek)}
-                    colors={colors}
+                    noctalia={noctalia}
                   />
                   <StatCard
                     title={t('stats.card.this_month')}
                     value={formatNumber(stats.dreamsThisMonth)}
-                    colors={colors}
+                    noctalia={noctalia}
                   />
                 </View>
               </SectionGlass>
@@ -1079,9 +1074,8 @@ export default function StatisticsScreen() {
 
             <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
               <DreamProfileCard
-                colors={colors}
+                noctalia={noctalia}
                 profile={dreamProfile}
-                mode={mode}
                 t={t}
                 formatNumber={formatNumber}
                 canShowPremiumSignals={canShowDreamProfileSignals}
@@ -1092,9 +1086,8 @@ export default function StatisticsScreen() {
 
             <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
               <StatsInsightCard
-                colors={colors}
+                noctalia={noctalia}
                 insight={statsInsight}
-                mode={mode}
                 t={t}
                 formatPercent={formatPercent}
                 onPress={handleStatsInsightPress}
@@ -1103,7 +1096,7 @@ export default function StatisticsScreen() {
 
             {/* Streaks */}
             <View style={[styles.section, isDesktopLayout && styles.sectionStreaksDesktop]}>
-              <SectionGlass colors={colors} animationDelay={300}>
+              <SectionGlass noctalia={noctalia} animationDelay={300}>
                 <SectionHeading
                   title={t('stats.section.streaks')}
                   icon="flame.fill"
@@ -1114,13 +1107,13 @@ export default function StatisticsScreen() {
                     title={t('stats.card.current_streak')}
                     value={formatNumber(stats.currentStreak)}
                     subtitle={stats.currentStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
-                    colors={colors}
+                    noctalia={noctalia}
                   />
                   <StatCard
                     title={t('stats.card.longest_streak')}
                     value={formatNumber(stats.longestStreak)}
                     subtitle={stats.longestStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
-                    colors={colors}
+                    noctalia={noctalia}
                   />
                 </View>
                 <View style={styles.singleStatCard}>
@@ -1130,7 +1123,7 @@ export default function StatisticsScreen() {
                       minimumFractionDigits: 1,
                       maximumFractionDigits: 1,
                     })}
-                    colors={colors}
+                    noctalia={noctalia}
                   />
                 </View>
               </SectionGlass>
@@ -1139,7 +1132,7 @@ export default function StatisticsScreen() {
             {/* Dream Type Distribution */}
             {showDeferredSections && stats.dreamTypeDistribution.length > 0 && (
               <View style={[styles.section, isDesktopLayout && styles.sectionChartDesktop]}>
-                <SectionGlass colors={colors} animationDelay={450}>
+                <SectionGlass noctalia={noctalia} animationDelay={450}>
                     <SectionHeading
                       title={t('stats.section.dream_types')}
                       icon="chart.pie.fill"
@@ -1155,14 +1148,14 @@ export default function StatisticsScreen() {
                           innerRadius={pieMetrics.pieInnerRadius}
                           extraRadius={pieMetrics.pieExtraRadius}
                           strokeWidth={1.5}
-                          strokeColor={colors.backgroundDark}
+                          strokeColor={noctalia.screen.background}
                           showExternalLabels={false}
                           centerLabelComponent={() => (
                             <View>
-                              <Text style={[styles.pieChartCenterText, { color: colors.textPrimary }]}>
+                              <Text style={[styles.pieChartCenterText, { color: noctalia.text.primary }]}>
                                 {formatNumber(stats.totalDreams)}
                               </Text>
-                              <Text style={[styles.pieChartCenterSubtext, { color: colors.textSecondary }]}>
+                              <Text style={[styles.pieChartCenterSubtext, { color: noctalia.text.secondary }]}>
                                 {t('stats.chart.pie_center')}
                               </Text>
                             </View>
@@ -1204,7 +1197,7 @@ export default function StatisticsScreen() {
                                   y1={layout.anchorY}
                                   x2={connectorBendX}
                                   y2={layout.labelCenterY}
-                                  stroke={colors.textSecondary}
+                                  stroke={noctalia.text.secondary}
                                   strokeWidth={1}
                                 />
                                 <Line
@@ -1212,7 +1205,7 @@ export default function StatisticsScreen() {
                                   y1={layout.labelCenterY}
                                   x2={connectorEndX}
                                   y2={layout.labelCenterY}
-                                  stroke={colors.textSecondary}
+                                  stroke={noctalia.text.secondary}
                                   strokeWidth={1}
                                 />
                                 <Rect
@@ -1222,15 +1215,15 @@ export default function StatisticsScreen() {
                                   height={labelHeight}
                                   rx={ThemeLayout.borderRadius.sm}
                                   ry={ThemeLayout.borderRadius.sm}
-                                  fill={colors.backgroundCard}
-                                  stroke={colors.divider}
+                                  fill={noctalia.surface.raised}
+                                  stroke={noctalia.surface.border}
                                   strokeWidth={1}
                                   opacity={0.95}
                                 />
                                 {typeLines.map((line, lineIndex) => (
                                   <SvgText
                                     key={`${layout.item.typeLabel}-${line}-${lineIndex}`}
-                                    fill={colors.textPrimary}
+                                    fill={noctalia.text.primary}
                                     fontSize={12}
                                     fontFamily="SpaceGrotesk_500Medium"
                                     x={textX}
@@ -1240,7 +1233,7 @@ export default function StatisticsScreen() {
                                   </SvgText>
                                 ))}
                                 <SvgText
-                                  fill={colors.textSecondary}
+                                  fill={noctalia.text.secondary}
                                   fontSize={11}
                                   fontFamily="SpaceGrotesk_400Regular"
                                   x={textX}
@@ -1260,7 +1253,7 @@ export default function StatisticsScreen() {
                           key={item.type}
                           style={[
                             styles.legendItem,
-                            { backgroundColor: `${colors.backgroundCard}40` },
+                            { backgroundColor: noctalia.surface.soft },
                           ]}
                         >
                           <View
@@ -1269,7 +1262,7 @@ export default function StatisticsScreen() {
                               { backgroundColor: dreamTypeColors[index % dreamTypeColors.length] },
                             ]}
                           />
-                          <Text style={[styles.legendText, { color: colors.textPrimary }]}>
+                          <Text style={[styles.legendText, { color: noctalia.text.primary }]}>
                             {item.type} ({t('stats.legend.count', { count: formatNumber(item.count) })})
                           </Text>
                         </View>
@@ -1283,7 +1276,7 @@ export default function StatisticsScreen() {
             {/* Top Themes */}
             {showDeferredSections && stats.topThemes.length > 0 && (
               <View style={[styles.section, isDesktopLayout && styles.sectionTopThemesDesktop]}>
-                <SectionGlass colors={colors} animationDelay={600}>
+                <SectionGlass noctalia={noctalia} animationDelay={600}>
                   <SectionHeading
                     title={t('stats.section.top_themes')}
                     icon="star.fill"
@@ -1298,21 +1291,21 @@ export default function StatisticsScreen() {
                           <View
                             style={[
                               styles.themeItem,
-                              !isLast && { borderBottomWidth: 1, borderBottomColor: colors.divider },
+                              !isLast && { borderBottomWidth: 1, borderBottomColor: noctalia.surface.border },
                             ]}
                           >
-                            <View style={[styles.themeRank, { backgroundColor: `${colors.accent}25` }]}>
-                              <Text style={[styles.themeRankText, { color: colors.accent }]}>{index + 1}</Text>
+                            <View style={[styles.themeRank, { backgroundColor: noctalia.surface.soft }]}>
+                              <Text style={[styles.themeRankText, { color: noctalia.accent.base }]}>{index + 1}</Text>
                             </View>
                             <View style={styles.themeContent}>
-                              <Text style={[styles.themeText, { color: colors.textPrimary }]}>
+                              <Text style={[styles.themeText, { color: noctalia.text.primary }]}>
                                 {(() => {
                                   const key = `stats.theme.${theme.theme}`;
                                   const label = t(key);
                                   return label === key ? theme.theme : label;
                                 })()}
                               </Text>
-                              <Text style={[styles.themeCount, { color: colors.textSecondary }]}>
+                              <Text style={[styles.themeCount, { color: noctalia.text.secondary }]}>
                                 {t('stats.legend.count', { count: formatNumber(theme.count) })}
                               </Text>
                               <View style={styles.themeBarTrack}>
@@ -1320,7 +1313,7 @@ export default function StatisticsScreen() {
                                   style={[
                                     styles.themeBarFill,
                                     {
-                                      backgroundColor: colors.accent,
+                                      backgroundColor: noctalia.accent.base,
                                       width: `${barWidth}%` as any,
                                     },
                                   ]}
@@ -1339,7 +1332,7 @@ export default function StatisticsScreen() {
             {/* Engagement */}
             {showDeferredSections && (
               <View style={[styles.section, isDesktopLayout && styles.sectionEngagementDesktop]}>
-                <SectionGlass colors={colors} animationDelay={750}>
+                <SectionGlass noctalia={noctalia} animationDelay={750}>
                   <SectionHeading
                     title={t('stats.section.engagement')}
                     icon="bubble.left.and.bubble.right.fill"
@@ -1349,13 +1342,13 @@ export default function StatisticsScreen() {
                     <StatCard
                       title={t('stats.engagement.total_chats')}
                       value={formatNumber(stats.totalChatMessages)}
-                      colors={colors}
+                      noctalia={noctalia}
                       valueTestID={TID.Stats.TotalChatsValue}
                     />
                     <StatCard
                       title={t('stats.engagement.dreams_with_chat')}
                       value={formatNumber(stats.dreamsWithChat)}
-                      colors={colors}
+                      noctalia={noctalia}
                       valueTestID={TID.Stats.DreamsWithChatValue}
                     />
                   </View>
@@ -1363,22 +1356,22 @@ export default function StatisticsScreen() {
                     <StatCard
                       title={t('stats.engagement.analyzed_dreams')}
                       value={formatNumber(stats.analyzedDreams)}
-                      colors={colors}
+                      noctalia={noctalia}
                       valueTestID={TID.Stats.AnalyzedDreamsValue}
                     />
                   </View>
                   {stats.mostDiscussedDream && (
                     <View style={styles.mostDiscussedCard}>
-                      <View style={[styles.mostDiscussedDecoLine, { backgroundColor: `${colors.accent}60` }]} />
+                      <View style={[styles.mostDiscussedDecoLine, { backgroundColor: noctalia.accent.base }]} />
                       <View style={styles.mostDiscussedInner}>
-                        <IconSymbol name="quote.opening" size={18} color={colors.accent} />
-                        <Text style={[styles.mostDiscussedTitle, { color: colors.textSecondary }]}>
+                        <IconSymbol name="quote.opening" size={18} color={noctalia.accent.base} />
+                        <Text style={[styles.mostDiscussedTitle, { color: noctalia.text.secondary }]}>
                           {t('stats.engagement.most_discussed')}
                         </Text>
-                        <Text style={[styles.mostDiscussedDreamTitle, { color: colors.textPrimary }]} numberOfLines={1}>
+                        <Text style={[styles.mostDiscussedDreamTitle, { color: noctalia.text.primary }]} numberOfLines={1}>
                           {stats.mostDiscussedDream.title}
                         </Text>
-                        <Text style={[styles.mostDiscussedCount, { color: colors.accent }]}>
+                        <Text style={[styles.mostDiscussedCount, { color: noctalia.accent.base }]}>
                           {t('stats.engagement.messages', {
                             count: formatNumber(stats.mostDiscussedDreamUserMessages),
                           })}
@@ -1476,7 +1469,6 @@ const styles = StyleSheet.create({
   statTitle: {
     fontSize: 13,
     fontFamily: Fonts.spaceGrotesk.medium,
-    letterSpacing: 0.5,
     textTransform: 'uppercase',
     marginBottom: ThemeLayout.spacing.xs,
   },
@@ -1530,7 +1522,6 @@ const styles = StyleSheet.create({
   insightEyebrow: {
     fontSize: 12,
     fontFamily: Fonts.spaceGrotesk.medium,
-    letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
   insightTitle: {
@@ -1638,7 +1629,6 @@ const styles = StyleSheet.create({
   profileEyebrow: {
     fontSize: 12,
     fontFamily: Fonts.spaceGrotesk.medium,
-    letterSpacing: 0,
     textTransform: 'uppercase',
   },
   profileTitle: {
@@ -1887,7 +1877,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontFamily: Fonts.fraunces.regular,
     fontStyle: 'italic',
-    letterSpacing: 0.2,
   },
   mostDiscussedCount: {
     fontSize: 14,

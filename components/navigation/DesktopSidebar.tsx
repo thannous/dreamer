@@ -1,9 +1,10 @@
 import { Image } from 'expo-image';
 import { usePathname, useRouter } from 'expo-router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -24,8 +25,9 @@ interface NavItemProps {
 const SIDEBAR_WIDTH = 240;
 
 function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
   const router = useRouter();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   return (
     <Pressable
@@ -33,8 +35,8 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
       onPress={() => router.push(href as '/(tabs)')}
       style={({ hovered }) => [
         styles.navItem,
-        isActive && { backgroundColor: colors.accentDark },
-        hovered && !isActive && { backgroundColor: colors.backgroundSecondary },
+        isActive && { backgroundColor: noctalia.surface.active },
+        hovered && !isActive && { backgroundColor: noctalia.surface.soft },
       ]}
       accessibilityRole="button"
       accessibilityLabel={label}
@@ -42,12 +44,12 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
       <IconSymbol
         name={icon}
         size={22}
-        color={isActive ? colors.textPrimary : colors.textSecondary}
+        color={isActive ? noctalia.accent.base : noctalia.text.secondary}
       />
       <Text
         style={[
           styles.navLabel,
-          { color: isActive ? colors.textPrimary : colors.textSecondary },
+          { color: isActive ? noctalia.text.primary : noctalia.text.secondary },
         ]}
       >
         {label}
@@ -59,9 +61,10 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
 export function DesktopSidebar() {
   const { t } = useTranslation();
   const pathname = usePathname();
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
   const { returningGuestBlocked } = useAuth();
   const appVersion = getAppVersionString({ prefix: 'v' });
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   // When returning guest is blocked, only show settings
   const allNavItems: { icon: IconName; label: string; href: string; testID?: string }[] = [
@@ -83,7 +86,12 @@ export function DesktopSidebar() {
   };
 
   return (
-    <View style={[styles.sidebar, { backgroundColor: colors.backgroundDark, borderRightColor: colors.divider }]}>
+    <View
+      style={[
+        styles.sidebar,
+        { backgroundColor: noctalia.screen.background, borderRightColor: noctalia.surface.border },
+      ]}
+    >
       {/* Logo Section */}
       <View style={styles.logoSection}>
         <Image
@@ -91,7 +99,7 @@ export function DesktopSidebar() {
           style={styles.logo}
           contentFit="contain"
         />
-        <Text style={[styles.appName, { color: colors.textPrimary }]}>Noctalia</Text>
+        <Text style={[styles.appName, { color: noctalia.text.primary }]}>Noctalia</Text>
       </View>
 
       {/* Navigation Items */}
@@ -109,9 +117,9 @@ export function DesktopSidebar() {
       </View>
 
       {/* Footer Section */}
-      <View style={[styles.footer, { borderTopColor: colors.divider }]}>
+      <View style={[styles.footer, { borderTopColor: noctalia.surface.border }]}>
         {appVersion ? (
-          <Text style={[styles.footerText, { color: colors.textSecondary }]}>{appVersion}</Text>
+          <Text style={[styles.footerText, { color: noctalia.text.secondary }]}>{appVersion}</Text>
         ) : null}
       </View>
     </View>
@@ -144,7 +152,6 @@ const styles = StyleSheet.create({
   appName: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 22,
-    letterSpacing: -0.5,
   },
   navSection: {
     flex: 1,

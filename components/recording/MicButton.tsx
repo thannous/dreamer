@@ -1,4 +1,5 @@
 import { useTheme } from '@/context/ThemeContext';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useTranslation } from '@/hooks/useTranslation';
 import { MotiView } from '@/lib/moti';
@@ -31,6 +32,7 @@ export function MicButton({
 }: MicButtonProps) {
   const { t } = useTranslation();
   const { colors, shadows, mode } = useTheme();
+  const noctalia = getNoctaliaDesignTokens(colors, mode);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [isFocused, setIsFocused] = useState(true);
 
@@ -41,10 +43,9 @@ export function MicButton({
     }, [])
   );
 
-  // Dynamic colors
-  const buttonBackground = mode === 'dark' ? '#4f3d6b' : colors.accent;
-  const buttonRecordingBackground = mode === 'dark' ? '#5a3d7b' : colors.accentDark;
-  const glowColor = mode === 'dark' ? colors.accent : colors.accentDark;
+  const buttonBackground = noctalia.surface.active;
+  const buttonRecordingBackground = noctalia.accent.strong;
+  const glowColor = noctalia.accent.base;
   const shouldAnimate = isFocused && !prefersReducedMotion;
   const isRecording = status === 'recording';
   const isPreparing = status === 'preparing';
@@ -162,7 +163,7 @@ export function MicButton({
           styles.button,
           shadows.xl,
           {
-            borderColor: colors.accent,
+            borderColor: noctalia.accent.base,
             width: dimensions.button,
             height: dimensions.button,
             borderRadius: dimensions.button / 2,
@@ -189,7 +190,7 @@ export function MicButton({
           <IconSymbol
             name={isRecording ? 'pause.fill' : 'mic.fill'}
             size={dimensions.icon}
-            color={colors.textPrimary}
+            color={noctalia.text.primary}
           />
         </MotiView>
       </MotiView>

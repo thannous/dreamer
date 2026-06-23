@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -14,6 +15,7 @@ type RecordingDraftProgressProps = {
 export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const progress = useMemo(() => getRecordingDraftProgress(value), [value]);
   const countLabel = t('recording.draft_progress.count')
     .replace('{count}', String(progress.charCount))
@@ -28,11 +30,11 @@ export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
     >
       <View style={styles.headerRow}>
         {shouldShowHint ? (
-          <Text style={[styles.hint, { color: colors.textSecondary }]}>
+          <Text style={[styles.hint, { color: noctalia.text.secondary }]}>
             {hint}
           </Text>
         ) : null}
-        <Text style={[styles.count, { color: colors.textSecondary }]}>
+        <Text style={[styles.count, { color: noctalia.text.secondary }]}>
           {countLabel}
         </Text>
       </View>
@@ -40,8 +42,7 @@ export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
         style={[
           styles.track,
           {
-            backgroundColor:
-              mode === 'dark' ? `${colors.textSecondary}24` : `${colors.textSecondary}1A`,
+            backgroundColor: noctalia.surface.border,
           },
         ]}
       >
@@ -49,7 +50,7 @@ export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
           style={[
             styles.fill,
             {
-              backgroundColor: colors.accent,
+              backgroundColor: noctalia.accent.base,
               width: `${Math.max(4, progress.ratio * 100)}%`,
               opacity: progress.charCount === 0 ? 0.35 : 1,
             },

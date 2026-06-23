@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { BottomSheetActions, BottomSheetPrimaryAction, BottomSheetSecondaryAction } from '@/components/ui/BottomSheetActions';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -32,7 +33,8 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
   testIDPrimaryButton,
   testIDSecondaryButton,
 }) => {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   const handlePrimary = () => {
     onPrimary();
@@ -49,9 +51,9 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
   return (
     <BottomSheet visible={visible} onClose={onClose}>
       <View style={styles.container}>
-        <Text style={[styles.title, { color: colors.textPrimary }]}>{title}</Text>
+        <Text style={[styles.title, { color: noctalia.text.primary }]}>{title}</Text>
         {description ? (
-          <Text style={[styles.description, { color: colors.textSecondary }]}>{description}</Text>
+          <Text style={[styles.description, { color: noctalia.text.secondary }]}>{description}</Text>
         ) : null}
 
         <BottomSheetActions>

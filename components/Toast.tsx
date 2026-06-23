@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { Platform, StyleSheet, Text, type ViewStyle } from 'react-native';
 import Animated, {
   Easing,
@@ -10,6 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -23,12 +24,13 @@ type ToastProps = {
 
 export const Toast: React.FC<ToastProps> = ({
   message,
-  mode = 'info',
+  mode: toastMode = 'info',
   durationMs = 2200,
   onHide,
   testID,
 }) => {
-  const { colors } = useTheme();
+  const { colors, mode: themeMode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, themeMode), [colors, themeMode]);
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(16);
   const handleHide = useCallback(() => onHide?.(), [onHide]);
@@ -72,12 +74,23 @@ export const Toast: React.FC<ToastProps> = ({
   }, [durationMs, handleHide, opacity, translateY]);
 
   const backgroundColor =
-    mode === 'success'
-      ? '#16A34A'
-      : mode === 'error'
-        ? '#DC2626'
-        : colors.backgroundSecondary;
-  const textColor = mode === 'success' || mode === 'error' ? '#FFFFFF' : colors.textPrimary;
+    toastMode === 'success'
+      ? noctalia.status.success.background
+      : toastMode === 'error'
+        ? noctalia.status.danger.background
+        : noctalia.surface.raised;
+  const borderColor =
+    toastMode === 'success'
+      ? noctalia.status.success.border
+      : toastMode === 'error'
+        ? noctalia.status.danger.border
+        : noctalia.surface.border;
+  const textColor =
+    toastMode === 'success'
+      ? noctalia.status.success.text
+      : toastMode === 'error'
+        ? noctalia.status.danger.text
+        : noctalia.text.primary;
   const pointerEventsStyle = Platform.OS === 'web' ? styles.pointerNone : styles.nativePointerNone;
 
   return (
@@ -85,7 +98,7 @@ export const Toast: React.FC<ToastProps> = ({
       style={[
         styles.container,
         animatedStyle,
-        { backgroundColor },
+        { backgroundColor, borderColor },
         pointerEventsStyle,
       ]}
       testID={testID}
@@ -104,6 +117,7 @@ const styles = StyleSheet.create({
     borderRadius: ThemeLayout.borderRadius.md,
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: ThemeLayout.spacing.sm,
+    borderWidth: 1,
   },
   text: {
     fontSize: 14,

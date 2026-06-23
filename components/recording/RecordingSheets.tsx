@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker';
@@ -6,6 +6,7 @@ import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { REFERENCE_IMAGES } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { QUOTAS } from '@/constants/limits';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -70,7 +71,8 @@ export function AnalyzePromptSheet({
   isPersisting: boolean;
 }) {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { colors, mode: themeMode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, themeMode), [colors, themeMode]);
 
   return (
     <StandardBottomSheet
@@ -99,7 +101,7 @@ export function AnalyzePromptSheet({
             showsVerticalScrollIndicator={false}
             style={styles.sheetTranscriptScroll}
           >
-            <Text style={[styles.sheetTranscriptText, { color: colors.textPrimary }]}>
+            <Text style={[styles.sheetTranscriptText, { color: noctalia.text.primary }]}>
               {transcript}
             </Text>
           </ScrollView>
@@ -192,7 +194,8 @@ export function QuotaLimitSheet({
   message?: string;
 }) {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { colors, mode: themeMode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, themeMode), [colors, themeMode]);
 
   const resolvedLimit = typeof usageLimit === 'number'
     ? usageLimit
@@ -253,13 +256,13 @@ export function QuotaLimitSheet({
     >
       {mode === 'limit' && tier === 'free' && (
         <View style={styles.quotaFeaturesList}>
-          <Text style={[styles.quotaFeature, { color: colors.textPrimary }]}>
+          <Text style={[styles.quotaFeature, { color: noctalia.text.primary }]}>
             ✓ {t('recording.analysis_limit.feature_analyses')}
           </Text>
-          <Text style={[styles.quotaFeature, { color: colors.textPrimary }]}>
+          <Text style={[styles.quotaFeature, { color: noctalia.text.primary }]}>
             ✓ {t('recording.analysis_limit.feature_explorations')}
           </Text>
-          <Text style={[styles.quotaFeature, { color: colors.textPrimary }]}>
+          <Text style={[styles.quotaFeature, { color: noctalia.text.primary }]}>
             ✓ {t('recording.analysis_limit.feature_priority')}
           </Text>
         </View>

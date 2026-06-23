@@ -10,6 +10,9 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useTheme } from '@/context/ThemeContext';
+
 interface EmailVerificationIconProps {
   size?: number;
   color?: string;
@@ -21,10 +24,12 @@ const AnimatedView = Animated.createAnimatedComponent(View);
 
 export function EmailVerificationIcon({
   size = 64,
-  color = '#8C9EFF',
+  color,
   verified = false,
-  successColor = '#16A34A',
+  successColor,
 }: EmailVerificationIconProps) {
+  const { colors, mode } = useTheme();
+  const noctalia = getNoctaliaDesignTokens(colors, mode);
   const pulseOpacity = useSharedValue(1);
   const checkScale = useSharedValue(0);
 
@@ -62,7 +67,8 @@ export function EmailVerificationIcon({
     opacity: checkScale.value,
   }));
 
-  const iconColor = verified ? successColor : color;
+  const resolvedSuccessColor = successColor ?? noctalia.status.success.icon;
+  const iconColor = verified ? resolvedSuccessColor : color ?? noctalia.accent.base;
   const badgeSize = size * 0.4;
 
   return (
@@ -91,10 +97,10 @@ export function EmailVerificationIcon({
       {/* Success badge with checkmark */}
       <AnimatedView style={[styles.badge, checkmarkStyle, { width: badgeSize, height: badgeSize }]}>
         <Svg width={badgeSize} height={badgeSize} viewBox="0 0 24 24" fill="none">
-          <Circle cx={12} cy={12} r={12} fill={successColor} />
+          <Circle cx={12} cy={12} r={12} fill={resolvedSuccessColor} />
           <Path
             d="M6.5 12.5l3 3 8-8"
-            stroke="#FFFFFF"
+            stroke={noctalia.text.onAccent}
             strokeWidth={2.5}
             strokeLinecap="round"
             strokeLinejoin="round"

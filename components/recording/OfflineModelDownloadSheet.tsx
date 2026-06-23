@@ -1,8 +1,9 @@
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { createScopedLogger } from '@/lib/logger';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
 
@@ -22,7 +23,8 @@ export function OfflineModelDownloadSheet({
   onDownloadComplete,
 }: OfflineModelDownloadSheetProps) {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownload = useCallback(async () => {
@@ -77,7 +79,7 @@ export function OfflineModelDownloadSheet({
     >
       {isDownloading && (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.accent} />
+          <ActivityIndicator size="large" color={noctalia.accent.base} />
         </View>
       )}
     </StandardBottomSheet>

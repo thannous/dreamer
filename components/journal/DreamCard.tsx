@@ -1,5 +1,6 @@
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { ThemeLayout, getTagColor } from '@/constants/journalTheme';
-import { Fonts, GlassCardTokens } from '@/constants/theme';
+import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useScalePress } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -39,7 +40,8 @@ export const DreamCard = memo(function DreamCard({
   variant = 'standard',
 }: DreamCardProps) {
   const { colors, mode } = useTheme();
-  const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const cardBg = noctalia.surface.raised;
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
   const { t } = useTranslation();
   const handlePress = useCallback(() => {
@@ -154,13 +156,31 @@ export const DreamCard = memo(function DreamCard({
   }, [hasImage, isAnalyzed, isExplored, isFavorite, syncState, t]);
 
   const imageHeight = isFeatured ? 200 : 160;
+  const getBadgeBackgroundColor = useCallback(
+    (variant: 'accent' | 'secondary' | 'warning' | 'danger') => {
+      if (variant === 'accent') return noctalia.action.primary;
+      if (variant === 'danger') return noctalia.status.danger.background;
+      if (variant === 'warning') return noctalia.status.warning.background;
+      return noctalia.surface.soft;
+    },
+    [noctalia]
+  );
+  const getBadgeTextColor = useCallback(
+    (variant: 'accent' | 'secondary' | 'warning' | 'danger') => {
+      if (variant === 'accent') return noctalia.action.primaryText;
+      if (variant === 'danger') return noctalia.status.danger.text;
+      if (variant === 'warning') return noctalia.status.warning.text;
+      return noctalia.text.primary;
+    },
+    [noctalia]
+  );
 
   // Vertical layout: image on top (cards with images)
   if (hasImage) {
     return (
       <Animated.View>
         <AnimatedPressable
-          style={[styles.cardVertical, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }, animatedStyle]}
+          style={[styles.cardVertical, { backgroundColor: cardBg, borderColor: noctalia.surface.border, borderWidth: 1 }, animatedStyle]}
           onPress={handlePress}
           onPressIn={onPressIn}
           onPressOut={onPressOut}
@@ -189,21 +209,21 @@ export const DreamCard = memo(function DreamCard({
             />
             {/* Heart overlay for favorited dreams */}
             {isFavorite && (
-              <View style={styles.favoriteOverlay}>
-                <IconSymbol name="heart.fill" size={18} color="#fff" />
+              <View style={[styles.favoriteOverlay, { backgroundColor: noctalia.surface.overlay }]}>
+                <IconSymbol name="heart.fill" size={18} color={noctalia.accent.soft} />
               </View>
             )}
           </View>
           <View style={styles.verticalContent}>
             {dateLabel && (
-              <Text style={[styles.dateOverline, { color: colors.textTertiary }]}>
+              <Text style={[styles.dateOverline, { color: noctalia.text.tertiary }]}>
                 {dateLabel}
               </Text>
             )}
             <Text
               style={[
                 isFeatured ? styles.titleFeatured : styles.title,
-                { color: colors.textPrimary },
+                { color: noctalia.text.primary },
               ]}
               numberOfLines={isFeatured ? 2 : 1}
             >
@@ -214,7 +234,7 @@ export const DreamCard = memo(function DreamCard({
                 style={[
                   styles.shareableQuote,
                   styles.fourLineExcerpt,
-                  { color: colors.textSecondary },
+                  { color: noctalia.text.secondary },
                 ]}
                 numberOfLines={4}
               >
@@ -225,7 +245,7 @@ export const DreamCard = memo(function DreamCard({
                 style={[
                   styles.description,
                   styles.fourLineExcerpt,
-                  { color: colors.textSecondary },
+                  { color: noctalia.text.secondary },
                 ]}
                 numberOfLines={4}
               >
@@ -236,29 +256,20 @@ export const DreamCard = memo(function DreamCard({
               <View style={styles.tagContainer}>
                 {dream.theme && (
                   <View style={[styles.tag, { backgroundColor: getTagColor(dream.theme, colors) }]}>
-                    <Text style={[styles.tagText, { color: colors.textPrimary }]}>{themeLabel}</Text>
+                    <Text style={[styles.tagText, { color: noctalia.text.primary }]}>{themeLabel}</Text>
                   </View>
                 )}
                   {badges.map((badge, i) => {
-                    const isAccent = badge.variant === 'accent';
-                    const isWarning = badge.variant === 'warning';
-                    const isDanger = badge.variant === 'danger';
                     const key = badge.label || badge.icon || String(i);
+                    const badgeBackground = getBadgeBackgroundColor(badge.variant);
+                    const badgeColor = getBadgeTextColor(badge.variant);
 
                     return (
                     <View
                       key={key}
                       style={[
                         styles.stateBadge,
-                        {
-                          backgroundColor: isAccent
-                            ? colors.accent
-                            : isDanger
-                              ? '#FEE2E2'
-                              : isWarning
-                                ? '#FEF3C7'
-                                : colors.backgroundSecondary,
-                        },
+                        { backgroundColor: badgeBackground },
                       ]}
                       accessibilityLabel={badge.label}
                       accessible={!!badge.label}
@@ -267,16 +278,14 @@ export const DreamCard = memo(function DreamCard({
                         <IconSymbol
                           name={badge.icon}
                           size={14}
-                          color={isAccent ? colors.textOnAccentSurface : isDanger ? '#991B1B' : isWarning ? '#92400E' : colors.textPrimary}
+                          color={badgeColor}
                         />
                       )}
                       {badge.label && (
                         <Text
                           style={[
                             styles.stateBadgeText,
-                            {
-                              color: isAccent ? colors.textOnAccentSurface : isDanger ? '#991B1B' : isWarning ? '#92400E' : colors.textPrimary,
-                            },
+                            { color: badgeColor },
                           ]}
                         >
                           {badge.label}
@@ -297,7 +306,7 @@ export const DreamCard = memo(function DreamCard({
   return (
     <Animated.View>
       <AnimatedPressable
-        style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }, animatedStyle]}
+        style={[styles.card, { backgroundColor: cardBg, borderColor: noctalia.surface.border, borderWidth: 1 }, animatedStyle]}
         onPress={handlePress}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
@@ -307,43 +316,34 @@ export const DreamCard = memo(function DreamCard({
       >
         <View style={styles.content}>
           {dateLabel && (
-            <Text style={[styles.dateOverline, { color: colors.textTertiary }]}>
+            <Text style={[styles.dateOverline, { color: noctalia.text.tertiary }]}>
               {dateLabel}
             </Text>
           )}
-          <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>
+          <Text style={[styles.title, { color: noctalia.text.primary }]} numberOfLines={1}>
             {dream.title}
           </Text>
-          <Text style={[styles.description, { color: colors.textSecondary }]} numberOfLines={3}>
+          <Text style={[styles.description, { color: noctalia.text.secondary }]} numberOfLines={3}>
             {dream.transcript}
           </Text>
           {(dream.theme || badges.length > 0) && (
             <View style={styles.tagContainer}>
               {dream.theme && (
                 <View style={[styles.tag, { backgroundColor: getTagColor(dream.theme, colors) }]}>
-                  <Text style={[styles.tagText, { color: colors.textPrimary }]}>{themeLabel}</Text>
+                  <Text style={[styles.tagText, { color: noctalia.text.primary }]}>{themeLabel}</Text>
                 </View>
               )}
               {badges.map((badge, i) => {
-                const isAccent = badge.variant === 'accent';
-                const isWarning = badge.variant === 'warning';
-                const isDanger = badge.variant === 'danger';
                 const key = badge.label || badge.icon || String(i);
+                const badgeBackground = getBadgeBackgroundColor(badge.variant);
+                const badgeColor = getBadgeTextColor(badge.variant);
 
                 return (
                   <View
                     key={key}
                     style={[
                     styles.stateBadge,
-                    {
-                      backgroundColor: isAccent
-                        ? colors.accent
-                        : isDanger
-                          ? '#FEE2E2'
-                          : isWarning
-                            ? '#FEF3C7'
-                            : colors.backgroundSecondary,
-                    },
+                    { backgroundColor: badgeBackground },
                   ]}
                     accessibilityLabel={badge.label}
                     accessible={!!badge.label}
@@ -352,16 +352,14 @@ export const DreamCard = memo(function DreamCard({
                     <IconSymbol
                       name={badge.icon}
                       size={14}
-                      color={isAccent ? colors.textOnAccentSurface : isDanger ? '#991B1B' : isWarning ? '#92400E' : colors.textPrimary}
+                      color={badgeColor}
                     />
                   )}
                     {badge.label && (
                       <Text
                         style={[
                           styles.stateBadgeText,
-                          {
-                            color: isAccent ? colors.textOnAccentSurface : isDanger ? '#991B1B' : isWarning ? '#92400E' : colors.textPrimary,
-                          },
+                          { color: badgeColor },
                         ]}
                       >
                         {badge.label}
@@ -427,7 +425,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
-    backgroundColor: 'rgba(0,0,0,0.4)',
     borderRadius: 12,
     borderCurve: 'continuous',
     width: 32,
@@ -442,7 +439,6 @@ const styles = StyleSheet.create({
   dateOverline: {
     fontSize: 11,
     fontFamily: Fonts.spaceGrotesk.medium,
-    letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
   // Horizontal layout card (text-only, no image)

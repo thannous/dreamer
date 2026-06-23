@@ -1,15 +1,18 @@
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import type { RecordingInputModePreference } from '@/lib/types';
-import React, { useEffect, useRef } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import type { RecordingSpotlightRect } from './RecordingOnboardingSpotlightOverlay';
 
 export type RecordingOnboardingTarget = 'voice' | 'text';
+
+const CAPTURE_BACKGROUND_IMAGE = require('@/assets/images/onboarding-capture-background.png');
 
 type RecordingOnboardingPreferenceProps = {
   variant: 'preference';
@@ -36,8 +39,9 @@ type RecordingOnboardingTourProps =
   | RecordingOnboardingStepProps;
 
 export function RecordingOnboardingTour(props: RecordingOnboardingTourProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
   const { t } = useTranslation();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const cardRef = useRef<View | null>(null);
   const isPreference = props.variant === 'preference';
   const isLast = props.variant === 'step' && props.index >= props.total - 1;
@@ -90,49 +94,73 @@ export function RecordingOnboardingTour(props: RecordingOnboardingTourProps) {
       collapsable={false}
       style={[
         styles.card,
+        isPreference && styles.preferenceCard,
         {
-          backgroundColor: colors.backgroundCard,
-          borderColor: `${colors.accentLight}55`,
+          backgroundColor: isPreference ? noctalia.screen.background : noctalia.surface.raised,
+          borderColor: isPreference ? 'transparent' : noctalia.surface.borderStrong,
         },
       ]}
       testID={TID.Component.RecordingOnboardingTour}
     >
       {isPreference ? (
         <>
-          <View style={styles.copy}>
-            <View
-              style={[
-                styles.stepBadge,
-                {
-                  backgroundColor: colors.backgroundSecondary,
-                  borderColor: colors.divider,
-                },
-              ]}
-            >
-              <Text style={[styles.stepText, { color: colors.textPrimary }]}>
-                {t('recording.onboarding.preference.badge')}
-              </Text>
+          <View style={styles.preferenceHero}>
+            <Image
+              source={CAPTURE_BACKGROUND_IMAGE}
+              resizeMode="cover"
+              style={styles.preferenceHeroImage}
+            />
+            <View style={[styles.preferenceHeroShade, { backgroundColor: noctalia.atmosphere.horizon }]} />
+            <View style={styles.preferenceTopBar}>
+            <Text style={[styles.preferenceBrand, { color: noctalia.text.primary }]}>Noctalia</Text>
+              <Pressable
+                onPress={props.onSkip}
+                style={styles.preferenceTopSkip}
+                accessibilityRole="button"
+                testID={TID.Button.RecordingOnboardingSkip}
+              >
+                <Text style={[styles.preferenceTopSkipText, { color: noctalia.accent.soft }]}>
+                  {t('recording.onboarding.skip')}
+                </Text>
+              </Pressable>
             </View>
-            <Text style={[styles.title, { color: colors.textPrimary }]}>
-              {t('recording.onboarding.preference.title')}
-            </Text>
           </View>
 
-          <View style={styles.preferenceGrid}>
+          <View style={styles.preferenceCopyBlock}>
+            {t('recording.onboarding.preference.title') === 'Comment veux-tu raconter ?' ? (
+              <Text style={[styles.preferenceHeroTitle, { color: noctalia.text.primary }]}>
+                Comment veux-tu{'\n'}
+                <Text style={[styles.preferenceHeroTitleAccent, { color: noctalia.accent.base }]}>raconter</Text>
+                {' ?'}
+              </Text>
+            ) : (
+              <Text style={[styles.preferenceHeroTitle, { color: noctalia.text.primary }]}>
+                {t('recording.onboarding.preference.title')}
+              </Text>
+            )}
+          </View>
+
+          <View
+            style={[
+              styles.preferencePanel,
+              {
+                backgroundColor: noctalia.surface.raised,
+                borderColor: noctalia.surface.borderStrong,
+              },
+            ]}
+          >
             {options.map((option) => {
               const isSelected = option.value === props.value;
+              const isLast = option.value === options[options.length - 1].value;
 
               return (
                 <Pressable
                   key={option.value}
                   onPress={() => props.onSelectPreference(option.value)}
                   style={[
-                    styles.preferenceButton,
+                    styles.preferenceRow,
                     {
-                      backgroundColor: isSelected
-                        ? `${colors.accentLight}22`
-                        : colors.backgroundSecondary,
-                      borderColor: isSelected ? colors.accentLight : colors.divider,
+                      borderBottomColor: isLast ? 'transparent' : noctalia.surface.border,
                     },
                   ]}
                   accessibilityRole="button"
@@ -143,32 +171,54 @@ export function RecordingOnboardingTour(props: RecordingOnboardingTourProps) {
                     style={[
                       styles.preferenceIcon,
                       {
-                        backgroundColor: isSelected ? colors.backgroundSecondary : `${colors.accentLight}18`,
+                        backgroundColor: noctalia.surface.soft,
+                        borderColor: noctalia.surface.border,
                       },
                     ]}
                   >
                     <IconSymbol
                       name={option.icon}
-                      size={18}
-                      color={isSelected ? colors.textPrimary : colors.textSecondary}
+                      size={28}
+                      color={noctalia.accent.base}
                     />
                   </View>
                   <View style={styles.preferenceCopy}>
-                    <Text style={[styles.preferenceTitle, { color: colors.textPrimary }]}>
+                    <Text style={[styles.preferenceTitle, { color: noctalia.text.primary }]}>
                       {option.title}
                     </Text>
-                    <Text style={[styles.preferenceDetail, { color: colors.textSecondary }]}>
+                    <Text style={[styles.preferenceDetail, { color: noctalia.text.secondary }]}>
                       {option.detail}
                     </Text>
                   </View>
+                  {isSelected ? (
+                    <View style={[styles.preferenceCheck, { backgroundColor: noctalia.accent.base }]}>
+                      <IconSymbol name="checkmark" size={14} color={noctalia.text.onAccent} />
+                    </View>
+                  ) : (
+                    <View style={[styles.preferenceRadio, { borderColor: `${noctalia.text.secondary}8A` }]} />
+                  )}
                 </Pressable>
               );
             })}
           </View>
 
-          <Text style={[styles.settingsHint, { color: colors.textSecondary }]}>
-            {t('recording.onboarding.preference.settings_hint')}
-          </Text>
+          <Pressable
+            onPress={() => props.onSelectPreference(props.value)}
+            style={[
+              styles.preferenceContinue,
+              {
+                backgroundColor: noctalia.action.primary,
+                shadowColor: noctalia.action.primary,
+              },
+            ]}
+            accessibilityRole="button"
+            testID={TID.Button.RecordingOnboardingNext}
+          >
+            <Text style={[styles.preferenceContinueText, { color: noctalia.action.primaryText }]}>
+              {t('recording.onboarding.preference.cta')}
+            </Text>
+            <IconSymbol name="arrow.right" size={25} color={noctalia.action.primaryText} />
+          </Pressable>
         </>
       ) : (
         <View style={styles.copy}>
@@ -176,48 +226,48 @@ export function RecordingOnboardingTour(props: RecordingOnboardingTourProps) {
             style={[
               styles.stepBadge,
               {
-                backgroundColor: colors.backgroundSecondary,
-                borderColor: colors.divider,
+                backgroundColor: noctalia.surface.active,
+                borderColor: noctalia.surface.border,
               },
             ]}
           >
-            <Text style={[styles.stepText, { color: colors.textPrimary }]}>
+            <Text style={[styles.stepText, { color: noctalia.text.primary }]}>
               {t('recording.onboarding.step_count', {
                 current: props.index + 1,
                 total: props.total,
               })}
             </Text>
           </View>
-          <Text style={[styles.body, { color: colors.textSecondary }]}>
+          <Text style={[styles.body, { color: noctalia.text.secondary }]}>
             {t(`recording.onboarding.${props.target}.body`)}
           </Text>
         </View>
       )}
 
-      <View style={styles.actions}>
-        <Pressable
-          onPress={props.onSkip}
-          style={styles.skipButton}
-          accessibilityRole="button"
-          testID={TID.Button.RecordingOnboardingSkip}
-        >
-          <Text style={[styles.skipText, { color: colors.textSecondary }]}>
-            {t('recording.onboarding.skip')}
-          </Text>
-        </Pressable>
-        {!isPreference ? (
+      {!isPreference ? (
+        <View style={styles.actions}>
+          <Pressable
+            onPress={props.onSkip}
+            style={styles.skipButton}
+            accessibilityRole="button"
+            testID={TID.Button.RecordingOnboardingSkip}
+          >
+            <Text style={[styles.skipText, { color: noctalia.text.secondary }]}>
+              {t('recording.onboarding.skip')}
+            </Text>
+          </Pressable>
           <Pressable
             onPress={props.onNext}
-            style={[styles.nextButton, { backgroundColor: colors.backgroundSecondary }]}
+            style={[styles.nextButton, { backgroundColor: noctalia.surface.active }]}
             accessibilityRole="button"
             testID={TID.Button.RecordingOnboardingNext}
           >
-            <Text style={[styles.nextText, { color: colors.textPrimary }]}>
+            <Text style={[styles.nextText, { color: noctalia.text.primary }]}>
               {isLast ? t('recording.onboarding.done') : t('recording.onboarding.next')}
             </Text>
           </Pressable>
-        ) : null}
-      </View>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -229,6 +279,75 @@ const styles = StyleSheet.create({
     borderCurve: 'continuous',
     padding: ThemeLayout.spacing.md,
     gap: ThemeLayout.spacing.md,
+  },
+  preferenceCard: {
+    marginHorizontal: -20,
+    marginTop: -16,
+    padding: 0,
+    gap: 0,
+    borderWidth: 0,
+    borderRadius: 0,
+    overflow: 'hidden',
+  },
+  preferenceHero: {
+    height: 330,
+    overflow: 'hidden',
+  },
+  preferenceHeroImage: {
+    width: '100%',
+    height: '100%',
+  },
+  preferenceHeroShade: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  },
+  preferenceTopBar: {
+    position: 'absolute',
+    left: 24,
+    right: 24,
+    top: 28,
+    minHeight: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 16,
+  },
+  preferenceBrand: {
+    fontFamily: Fonts.fraunces.regular,
+    fontSize: 30,
+    lineHeight: 36,
+  },
+  preferenceTopSkip: {
+    minHeight: 40,
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+  },
+  preferenceTopSkipText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 16,
+    lineHeight: 20,
+  },
+  preferenceCopyBlock: {
+    paddingHorizontal: 24,
+    paddingTop: 18,
+  },
+  preferenceHeroTitle: {
+    fontFamily: Fonts.fraunces.regular,
+    fontSize: 40,
+    lineHeight: 47,
+  },
+  preferenceHeroTitleAccent: {
+  },
+  preferencePanel: {
+    marginTop: 24,
+    marginHorizontal: 20,
+    borderRadius: 28,
+    borderCurve: 'continuous',
+    borderWidth: 1,
+    overflow: 'hidden',
   },
   copy: {
     alignItems: 'flex-start',
@@ -245,7 +364,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontFamily: Fonts.spaceGrotesk.bold,
     textTransform: 'uppercase',
-    letterSpacing: 0,
   },
   body: {
     fontSize: 15,
@@ -257,45 +375,70 @@ const styles = StyleSheet.create({
     lineHeight: 25,
     fontFamily: Fonts.spaceGrotesk.bold,
   },
-  preferenceGrid: {
-    gap: 10,
-  },
-  preferenceButton: {
-    minHeight: 78,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: ThemeLayout.borderRadius.md,
-    borderCurve: 'continuous',
-    paddingHorizontal: 12,
-    paddingVertical: 11,
+  preferenceRow: {
+    minHeight: 104,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 24,
+    paddingVertical: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 18,
   },
   preferenceIcon: {
-    width: 38,
-    height: 38,
-    borderRadius: ThemeLayout.borderRadius.full,
-    borderCurve: 'continuous',
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    borderWidth: StyleSheet.hairlineWidth,
     alignItems: 'center',
     justifyContent: 'center',
   },
   preferenceCopy: {
     flex: 1,
-    gap: 3,
+    gap: 8,
   },
   preferenceTitle: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: 22,
+    lineHeight: 27,
   },
   preferenceDetail: {
-    fontSize: 13,
-    lineHeight: 18,
     fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 16,
+    lineHeight: 21,
   },
-  settingsHint: {
-    fontSize: 12,
-    lineHeight: 16,
-    fontFamily: Fonts.spaceGrotesk.medium,
+  preferenceCheck: {
+    width: 31,
+    height: 31,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  preferenceRadio: {
+    width: 31,
+    height: 31,
+    borderRadius: 16,
+    borderWidth: 1.5,
+  },
+  preferenceContinue: {
+    minHeight: 64,
+    marginHorizontal: 20,
+    marginTop: 26,
+    marginBottom: 18,
+    borderRadius: 22,
+    borderCurve: 'continuous',
+    shadowOpacity: 0.18,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 18,
+  },
+  preferenceContinueText: {
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: 25,
+    lineHeight: 31,
   },
   actions: {
     flexDirection: 'row',

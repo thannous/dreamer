@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native'
 
 import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -28,6 +29,7 @@ export function Exploration360Panel({
 }: Exploration360PanelProps) {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
+  const noctalia = getNoctaliaDesignTokens(colors, mode);
   const bodyKey = hasSynthesis
     ? 'dream_categories.exploration360.body.done'
     : progress.isComplete
@@ -43,25 +45,25 @@ export function Exploration360Panel({
       style={cardStyle}
       testID={TID.Component.Exploration360Panel}
     >
-      <View style={[styles.accent, { backgroundColor: colors.accent }]} />
+      <View style={[styles.accent, { backgroundColor: noctalia.accent.base }]} />
       <View style={styles.inner}>
         <View style={styles.headerRow}>
           <View
             style={[
               styles.iconWrap,
-              { backgroundColor: mode === 'dark' ? `${colors.accent}2E` : `${colors.accent}18` },
+              { backgroundColor: noctalia.surface.soft },
             ]}
           >
-            <IconSymbol name="sparkles" size={21} color={colors.accent} />
+            <IconSymbol name="sparkles" size={21} color={noctalia.accent.base} />
           </View>
           <View style={styles.headerCopy}>
-            <Text style={[styles.eyebrow, { color: colors.accent }]}>
+            <Text style={[styles.eyebrow, { color: noctalia.accent.base }]}>
               {t('dream_categories.exploration360.eyebrow')}
             </Text>
-            <Text style={[styles.title, { color: colors.textPrimary }]}>
+            <Text style={[styles.title, { color: noctalia.text.primary }]}>
               {t('dream_categories.exploration360.title')}
             </Text>
-            <Text style={[styles.body, { color: colors.textSecondary }]}>
+            <Text style={[styles.body, { color: noctalia.text.secondary }]}>
               {t(bodyKey)}
             </Text>
           </View>
@@ -71,17 +73,17 @@ export function Exploration360Panel({
           style={[
             styles.progressPill,
             {
-              borderColor: `${colors.accent}55`,
-              backgroundColor: mode === 'dark' ? `${colors.accent}22` : `${colors.accent}13`,
+              borderColor: noctalia.surface.borderStrong,
+              backgroundColor: noctalia.surface.soft,
             },
           ]}
         >
           <IconSymbol
             name={progress.isComplete ? 'checkmark.circle.fill' : 'bubble.left.and.bubble.right'}
             size={15}
-            color={colors.accent}
+            color={noctalia.accent.base}
           />
-          <Text style={[styles.progressText, { color: colors.textPrimary }]}>
+          <Text style={[styles.progressText, { color: noctalia.text.primary }]}>
             {t('dream_categories.exploration360.progress', {
               completed: progress.completedCount,
               total: progress.totalCount,
@@ -96,10 +98,8 @@ export function Exploration360Panel({
               style={[
                 styles.axisItem,
                 {
-                  borderColor: axis.completed ? `${colors.accent}66` : colors.divider,
-                  backgroundColor: axis.completed
-                    ? mode === 'dark' ? `${colors.accent}1F` : `${colors.accent}10`
-                    : mode === 'dark' ? `${colors.backgroundSecondary}B8` : `${colors.backgroundSecondary}90`,
+                  borderColor: axis.completed ? noctalia.surface.borderStrong : noctalia.surface.border,
+                  backgroundColor: axis.completed ? noctalia.surface.active : noctalia.surface.soft,
                 },
               ]}
             >
@@ -107,13 +107,13 @@ export function Exploration360Panel({
                 <IconSymbol
                   name={axis.completed ? 'checkmark.circle.fill' : 'hourglass'}
                   size={15}
-                  color={axis.completed ? colors.accent : colors.textSecondary}
+                  color={axis.completed ? noctalia.accent.base : noctalia.text.secondary}
                 />
-                <Text style={[styles.axisTitle, { color: colors.textPrimary }]} numberOfLines={1}>
+                <Text style={[styles.axisTitle, { color: noctalia.text.primary }]} numberOfLines={1}>
                   {t(axis.titleKey)}
                 </Text>
               </View>
-              <Text style={[styles.axisState, { color: colors.textSecondary }]}>
+              <Text style={[styles.axisState, { color: noctalia.text.secondary }]}>
                 {axis.completed
                   ? t('dream_categories.exploration360.step.done')
                   : t('dream_categories.exploration360.step.next')}
@@ -130,28 +130,28 @@ export function Exploration360Panel({
             onPress={synthesisDisabled ? undefined : onSynthesisPress}
             style={({ pressed }) => [
               styles.synthesisButton,
-              { backgroundColor: colors.accent },
+              { backgroundColor: noctalia.action.primary },
               synthesisDisabled && styles.synthesisButtonDisabled,
               pressed && !synthesisDisabled && styles.pressed,
             ]}
           >
-            <Text style={[styles.synthesisButtonText, { color: colors.textOnAccentSurface }]}>
+            <Text style={[styles.synthesisButtonText, { color: noctalia.action.primaryText }]}>
               {t('dream_categories.exploration360.synthesis.cta')}
             </Text>
-            <IconSymbol name="arrow.right" size={16} color={colors.textOnAccentSurface} />
+            <IconSymbol name="arrow.right" size={16} color={noctalia.action.primaryText} />
           </Pressable>
         ) : hasSynthesis ? (
           <View
             style={[
               styles.donePill,
               {
-                borderColor: `${colors.accent}55`,
-                backgroundColor: mode === 'dark' ? `${colors.accent}22` : `${colors.accent}13`,
+                borderColor: noctalia.surface.borderStrong,
+                backgroundColor: noctalia.surface.soft,
               },
             ]}
           >
-            <IconSymbol name="checkmark.circle.fill" size={16} color={colors.accent} />
-            <Text style={[styles.doneText, { color: colors.textPrimary }]}>
+            <IconSymbol name="checkmark.circle.fill" size={16} color={noctalia.accent.base} />
+            <Text style={[styles.doneText, { color: noctalia.text.primary }]}>
               {t('dream_categories.exploration360.synthesis.done')}
             </Text>
           </View>
@@ -195,7 +195,6 @@ const styles = StyleSheet.create({
   eyebrow: {
     fontSize: 11,
     fontFamily: Fonts.spaceGrotesk.medium,
-    letterSpacing: 0,
     textTransform: 'uppercase',
   },
   title: {

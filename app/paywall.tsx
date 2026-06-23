@@ -3,12 +3,14 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { Toast } from '@/components/Toast';
 import { PricingOption } from '@/components/subscription/PricingOption';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -25,7 +27,8 @@ import { TID } from '@/lib/testIDs';
 const log = createScopedLogger('[Paywall]');
 
 export default function PaywallScreen() {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, translationRevision } = useTranslation();
   const { formatDate, formatTime } = useLocaleFormatting();
   const params = useLocalSearchParams<{ trigger?: string }>();
@@ -51,8 +54,8 @@ export default function PaywallScreen() {
   const viewedAnalyticsKeyRef = useRef<string | null>(null);
 
   const rootStyle = useMemo(
-    () => [styles.root, { backgroundColor: colors.backgroundDark }],
-    [colors.backgroundDark]
+    () => [styles.root, { backgroundColor: noctalia.screen.background }],
+    [noctalia.screen.background]
   );
   const headerContainerStyle = useMemo(
     () => [styles.headerContainer, { paddingTop: ThemeLayout.spacing.lg + insets.top }],
@@ -224,9 +227,10 @@ export default function PaywallScreen() {
   if (isDeviceUpgraded) {
     return (
       <View style={rootStyle} testID={TID.Screen.Paywall}>
+        <AtmosphericBackground />
         <ScreenContainer style={headerContainerStyle}>
           <View style={styles.headerRow}>
-            <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
+            <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>
               {translateWithFallback(paywallVariant.headerTitleKey)}
             </Text>
             <Pressable
@@ -235,7 +239,7 @@ export default function PaywallScreen() {
               accessibilityRole="button"
               testID={TID.Button.PaywallClose}
             >
-              <Text style={[styles.closeLabel, { color: colors.textSecondary }]}>
+              <Text style={[styles.closeLabel, { color: noctalia.text.secondary }]}>
                 {t('subscription.paywall.button.close')}
               </Text>
             </Pressable>
@@ -245,23 +249,26 @@ export default function PaywallScreen() {
         <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
           <ScreenContainer>
             <View style={styles.upgradedMessageContainer}>
-              <Text style={[styles.upgradedTitle, { color: colors.textPrimary }]}>
+              <Text style={[styles.upgradedTitle, { color: noctalia.text.primary }]}>
                 {translateWithFallback(paywallVariant.cardTitleKey)}
               </Text>
-              <Text style={[styles.upgradedSubtitle, { color: colors.textSecondary }]}>
+              <Text style={[styles.upgradedSubtitle, { color: noctalia.text.secondary }]}>
                 {translateWithFallback(paywallVariant.cardSubtitleKey)}
               </Text>
 
               <Pressable
                 style={({ pressed }) => [
                   styles.primaryButton,
-                  { backgroundColor: colors.accent },
+                  {
+                    backgroundColor: noctalia.action.primary,
+                    borderColor: noctalia.action.primaryBorder,
+                  },
                   pressed && styles.primaryButtonPressed,
                 ]}
                 onPress={handleOpenAuth}
                 testID={TID.Button.PaywallPurchase}
               >
-                <Text style={[styles.primaryLabel, { color: colors.textOnAccentSurface }]}>
+                <Text style={[styles.primaryLabel, { color: noctalia.action.primaryText }]}>
                   {translateWithFallback(paywallVariant.primaryLabelKey)}
                 </Text>
               </Pressable>
@@ -270,7 +277,7 @@ export default function PaywallScreen() {
                 style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
                 onPress={handleClose}
               >
-                <Text style={[styles.secondaryLabel, { color: colors.textSecondary }]}>
+                <Text style={[styles.secondaryLabel, { color: noctalia.text.secondary }]}>
                   {t('subscription.paywall.button.close')}
                 </Text>
               </Pressable>
@@ -283,30 +290,39 @@ export default function PaywallScreen() {
 
   return (
     <View style={rootStyle} testID={TID.Screen.Paywall}>
+      <AtmosphericBackground />
       <ScreenContainer style={headerContainerStyle}>
         <View style={styles.headerRow}>
-          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{headerTitle}</Text>
+          <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>{headerTitle}</Text>
           <Pressable
             onPress={handleClose}
             style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
             accessibilityRole="button"
             testID={TID.Button.PaywallClose}
           >
-            <Text style={[styles.closeLabel, { color: colors.textSecondary }]}>
+            <Text style={[styles.closeLabel, { color: noctalia.text.secondary }]}>
               {t('subscription.paywall.button.close')}
             </Text>
           </Pressable>
         </View>
         {!isActive ? (
-          <View style={[styles.triggerChip, { backgroundColor: colors.backgroundSecondary }]}>
-            <Text style={[styles.triggerChipText, { color: colors.textSecondary }]}>
+          <View
+            style={[
+              styles.triggerChip,
+              {
+                backgroundColor: noctalia.surface.soft,
+                borderColor: noctalia.surface.border,
+              },
+            ]}
+          >
+            <Text style={[styles.triggerChipText, { color: noctalia.text.secondary }]}>
               {translateWithFallback(paywallVariant.chipKey)}
             </Text>
           </View>
         ) : null}
-        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>{headerSubtitle}</Text>
+        <Text style={[styles.headerSubtitle, { color: noctalia.text.secondary }]}>{headerSubtitle}</Text>
         {isActive && formattedExpiryDate ? (
-          <Text style={[styles.expiryDate, { color: colors.textSecondary }]}>
+          <Text style={[styles.expiryDate, { color: noctalia.text.secondary }]}>
             {t('subscription.paywall.expiry_date', { date: formattedExpiryDate })}
             {subscriptionStatus?.willRenew !== undefined
               ? subscriptionStatus.willRenew
@@ -317,8 +333,8 @@ export default function PaywallScreen() {
         ) : null}
         {requiresAuth || loading ? (
           <View style={styles.loadingRow}>
-            {!requiresAuth ? <ActivityIndicator color={colors.accent} /> : null}
-            <Text style={[styles.loadingLabel, { color: colors.textSecondary }]}>
+            {!requiresAuth ? <ActivityIndicator color={noctalia.accent.base} /> : null}
+            <Text style={[styles.loadingLabel, { color: noctalia.text.secondary }]}>
               {requiresAuth
                 ? t('subscription.paywall.auth_required')
                 : t('subscription.paywall.loading')}
@@ -361,7 +377,7 @@ export default function PaywallScreen() {
           ))}
 
           {!loading && sortedPackages.length === 0 ? (
-            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+            <Text style={[styles.emptyText, { color: noctalia.text.secondary }]}>
               {t('subscription.paywall.empty')}
             </Text>
           ) : null}
@@ -372,10 +388,13 @@ export default function PaywallScreen() {
                 styles.primaryButton,
                 {
                   backgroundColor: requiresAuth
-                    ? colors.accent
+                    ? noctalia.action.primary
                     : canPurchase
-                      ? colors.accent
-                      : colors.backgroundSecondary,
+                      ? noctalia.action.primary
+                      : noctalia.action.disabled,
+                  borderColor: requiresAuth || canPurchase
+                    ? noctalia.action.primaryBorder
+                    : noctalia.action.disabledBorder,
                 },
                 !requiresAuth && pressed && canPurchase && styles.primaryButtonPressed,
               ]}
@@ -384,7 +403,7 @@ export default function PaywallScreen() {
               testID={TID.Button.PaywallPurchase}
             >
               {processing ? (
-                <ActivityIndicator color={colors.textOnAccentSurface} />
+                <ActivityIndicator color={noctalia.action.primaryText} />
               ) : (
                 <Text
                   style={[
@@ -392,8 +411,8 @@ export default function PaywallScreen() {
                     {
                       color:
                         requiresAuth || canPurchase
-                          ? colors.textOnAccentSurface
-                          : colors.textSecondary,
+                          ? noctalia.action.primaryText
+                          : noctalia.action.disabledText,
                     },
                   ]}
                 >
@@ -414,7 +433,7 @@ export default function PaywallScreen() {
                 onPress={handleClose}
                 disabled={processing}
               >
-                <Text style={[styles.secondaryLabel, { color: colors.textSecondary }]}>
+                <Text style={[styles.secondaryLabel, { color: noctalia.text.secondary }]}>
                   {t('subscription.paywall.button.continue_free')}
                 </Text>
               </Pressable>
@@ -427,14 +446,14 @@ export default function PaywallScreen() {
                 disabled={processing}
                 testID={TID.Button.PaywallRestore}
               >
-                <Text style={[styles.secondaryLabel, { color: colors.textSecondary }]}>
+                <Text style={[styles.secondaryLabel, { color: noctalia.text.secondary }]}>
                   {t('subscription.paywall.button.restore')}
                 </Text>
               </Pressable>
             ) : null}
           </View>
 
-          <Text style={[styles.notice, { color: colors.textSecondary }]}>
+          <Text style={[styles.notice, { color: noctalia.text.secondary }]}>
             {requiresAuth
               ? t('subscription.paywall.notice.auth')
               : t('subscription.paywall.notice.store')}
@@ -469,6 +488,8 @@ export default function PaywallScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
+    overflow: 'hidden',
+    position: 'relative',
   },
   headerContainer: {
     paddingTop: ThemeLayout.spacing.lg,
@@ -495,6 +516,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     marginBottom: 8,
+    borderWidth: 1,
   },
   triggerChipText: {
     fontSize: 12,
@@ -543,6 +565,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
   },
   primaryButtonPressed: {
     opacity: 0.9,

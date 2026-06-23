@@ -11,6 +11,7 @@
 
 import { LanguagePackMissingSheet } from '@/components/speech/LanguagePackMissingSheet';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useComposerHeightContext, useKeyboardStateContext } from '@/context/ChatContext';
 import { useScrollPerf } from '@/context/ScrollPerfContext';
@@ -464,6 +465,7 @@ function Footer({ children }: { children?: React.ReactNode }) {
 
 function Body({ children }: { children: React.ReactNode }) {
   const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const isScrolling = useScrollPerf();
   const prefersReducedMotion = usePrefersReducedMotion();
   const isWeb = Platform.OS === 'web';
@@ -471,7 +473,7 @@ function Body({ children }: { children: React.ReactNode }) {
   const blurIntensity = reduceEffects ? 0 : mode === 'dark' ? 15 : 5;
   const opacityHex = Math.round((mode === 'dark' ? 0.4 : 0.65) * 255).toString(16).padStart(2, '0');
   const shouldUseBlur = !isWeb && !reduceEffects;
-  const fallbackBackground = `${colors.backgroundCard}${opacityHex}`;
+  const fallbackBackground = mode === 'dark' ? noctalia.surface.raised : `${colors.backgroundCard}${opacityHex}`;
   const glassBackground = shouldUseBlur ? 'transparent' : fallbackBackground;
 
   return (
@@ -480,7 +482,7 @@ function Body({ children }: { children: React.ReactNode }) {
         styles.inputWrapper,
         {
           backgroundColor: glassBackground,
-          borderColor: mode === 'dark' ? 'rgba(255,255,255,0.14)' : colors.divider,
+          borderColor: noctalia.surface.border,
           borderWidth: 1,
           overflow: 'hidden',
         },
@@ -501,6 +503,7 @@ function Body({ children }: { children: React.ReactNode }) {
 function Input() {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const {
     value,
     onChangeText,
@@ -517,13 +520,13 @@ function Input() {
     <TextInput
       ref={textInputRef}
       testID={testID}
-      style={[styles.input, { color: colors.textPrimary }]}
+      style={[styles.input, { color: noctalia.text.primary }]}
       placeholder={
         isRecording
           ? t('dream_chat.input.recording_placeholder')
           : placeholder || t('dream_chat.input.placeholder')
       }
-      placeholderTextColor={mode === 'dark' ? '#e4def7' : colors.textSecondary}
+      placeholderTextColor={noctalia.text.secondary}
       value={value}
       onChangeText={onChangeText}
       onPressIn={handleTextInputPress}
@@ -536,14 +539,18 @@ function Input() {
 
 function MicButton() {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { isRecording, isLoading, isDisabled, toggleRecording, micTestID } = useComposerContext();
 
   return (
     <Pressable
       style={[
         styles.iconButton,
-        { backgroundColor: isRecording ? colors.accent : colors.backgroundCard },
+        {
+          backgroundColor: isRecording ? noctalia.action.primary : noctalia.surface.soft,
+          borderColor: isRecording ? noctalia.action.primaryBorder : noctalia.surface.border,
+        },
         (isLoading || isDisabled) && styles.buttonDisabled,
       ]}
       onPress={toggleRecording}
@@ -555,7 +562,7 @@ function MicButton() {
       <IconSymbol
         name={isRecording ? 'stop.fill' : 'mic.fill'}
         size={20}
-        color={isRecording ? colors.textPrimary : colors.textSecondary}
+        color={isRecording ? noctalia.action.primaryText : noctalia.text.secondary}
       />
     </Pressable>
   );
@@ -563,14 +570,18 @@ function MicButton() {
 
 function SendButton() {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { canSend, handleSend, sendTestID } = useComposerContext();
 
   return (
     <Pressable
       style={[
         styles.iconButton,
-        { backgroundColor: colors.accent },
+        {
+          backgroundColor: noctalia.action.primary,
+          borderColor: noctalia.action.primaryBorder,
+        },
         !canSend && styles.buttonDisabled,
       ]}
       onPress={handleSend}
@@ -580,7 +591,7 @@ function SendButton() {
       accessibilityState={{ disabled: !canSend }}
       testID={sendTestID}
     >
-      <IconSymbol name="paperplane.fill" size={20} color={colors.textPrimary} />
+      <IconSymbol name="paperplane.fill" size={20} color={noctalia.action.primaryText} />
     </Pressable>
   );
 }
@@ -611,7 +622,6 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderTopColor: 'rgba(255,255,255,0.1)',
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -632,6 +642,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },

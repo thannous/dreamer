@@ -47,38 +47,38 @@ export interface ThemeColors {
  */
 export const DarkTheme: ThemeColors = {
   // Background colors
-  backgroundDark: 'rgb(22, 12, 38)', // Main background darkened for better card separation
-  backgroundCard: '#2d2150', // Card background with clear lift above main background
-  backgroundSecondary: '#6353A0', // Secondary elements (buttons, inputs)
+  backgroundDark: '#03040D', // Deep nocturnal base used by the premium onboarding direction
+  backgroundCard: '#0D0B1C', // Matte card surface with a quiet navy/purple undertone
+  backgroundSecondary: '#192344', // Secondary panels and inputs, less saturated than the legacy violet
 
   // Text colors
-  textPrimary: '#FFFFFF', // Main text
-  textSecondary: '#b4a8d4', // Secondary/muted text – brighter for readability
-  textTertiary: '#8B8AAA', // Even more muted – still legible
-  textOnAccentSurface: '#F2EDFF', // High-contrast lavender for tinted cards
+  textPrimary: '#FFF9EF', // Warm ivory, softer than pure white
+  textSecondary: '#B7AEC9', // Muted moon-lilac for secondary copy
+  textTertiary: '#8E84A7', // Tertiary copy and inactive controls
+  textOnAccentSurface: '#3B2412', // Deep amber-brown for gold CTAs
 
   // Accent colors
-  accent: '#8B7AB8', // Vibrant purple accent for CTAs
-  accentDark: '#4F3D6B', // Deeper purple for pressed states
-  accentLight: '#B4A8D4', // Brighter lilac for highlights
+  accent: '#D4A574', // Champagne/wheat accent shared with the light palette
+  accentDark: '#9A6332', // Pressed states and strong borders
+  accentLight: '#EAD4B4', // Soft highlight and hairlines
 
   // UI elements
-  timeline: '#5a4b89', // Timeline line color
-  divider: '#423776', // Dividers – visible contrast
-  overlay: 'rgba(27, 21, 51, 0.85)', // Semi-transparent overlay
+  timeline: '#6B573D', // Timeline line color
+  divider: '#514637', // Warm hairlines, kept as hex for alpha suffix compatibility
+  overlay: 'rgba(3, 4, 13, 0.88)', // Semi-transparent overlay
 
   // Navbar colors
-  navbarBg: 'rgb(22, 12, 38)', // Same as backgroundDark
-  navbarBorder: '#423776', // Same as divider
-  navbarTextActive: '#FFFFFF', // White for active tab
-  navbarTextInactive: '#9B8EC7', // Muted purple for inactive tabs
+  navbarBg: '#050510',
+  navbarBorder: '#514637',
+  navbarTextActive: '#FFF9EF',
+  navbarTextInactive: '#AFA7BB',
 
   // Tag colors
   tags: {
-    surreal: '#6b5a8e',
-    mystical: '#5d4b7a',
-    calm: '#4a6fa5',
-    noir: '#3d3d5c',
+    surreal: '#7F6FA8',
+    mystical: '#6C568F',
+    calm: '#446B8C',
+    noir: '#31354F',
   },
 };
 

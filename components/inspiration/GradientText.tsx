@@ -3,6 +3,9 @@ import MaskedView from '@react-native-masked-view/masked-view';
 import React, { type ReactNode } from 'react';
 import { Platform, Text, type TextProps, type TextStyle } from 'react-native';
 
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useTheme } from '@/context/ThemeContext';
+
 type GradientTextProps = {
   children: ReactNode;
   colors?: readonly [string, string, ...string[]];
@@ -18,18 +21,21 @@ type GradientTextProps = {
  */
 export function GradientText({
   children,
-  colors = ['#E9D5FF', '#FDA481'], // lavender to salmon (dream colors)
+  colors,
   style,
   start = { x: 0, y: 0 },
   end = { x: 1, y: 0 },
   ...textProps
 }: GradientTextProps) {
+  const theme = useTheme();
+  const noctalia = getNoctaliaDesignTokens(theme.colors, theme.mode);
+  const resolvedColors = colors ?? ([noctalia.text.primary, noctalia.accent.base] as const);
   const isWeb = Platform.OS === 'web';
 
   // On web, fall back to solid color (first color in gradient)
   if (isWeb) {
     return (
-      <Text {...textProps} style={[style, { color: colors[0] }]}>
+      <Text {...textProps} style={[style, { color: resolvedColors[0] }]}>
         {children}
       </Text>
     );
@@ -45,7 +51,7 @@ export function GradientText({
       }
     >
       <LinearGradient
-        colors={colors}
+        colors={resolvedColors}
         start={start}
         end={end}
       >

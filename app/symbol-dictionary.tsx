@@ -3,12 +3,14 @@ import { Stack, router } from "expo-router";
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
+import { AtmosphericBackground } from "@/components/inspiration/AtmosphericBackground";
 import { CategoryHeader } from "@/components/symbols/CategoryHeader";
 import { LetterHeader } from "@/components/symbols/LetterHeader";
 import { SymbolCard } from "@/components/symbols/SymbolCard";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { SearchBar } from "@/components/ui/SearchBar";
 import { ThemeLayout } from "@/constants/journalTheme";
+import { getNoctaliaDesignTokens } from "@/constants/noctaliaDesign";
 import { Fonts } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -82,6 +84,7 @@ const FULL_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 export default function SymbolDictionaryScreen() {
   const { colors, shadows, mode } = useTheme();
   const { t, currentLang } = useTranslation();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const lang = (currentLang ?? "en") as SymbolLanguage;
   const useNativeHeaderSearch =
     process.env.EXPO_OS === "ios" && typeof document === "undefined";
@@ -97,13 +100,9 @@ export default function SymbolDictionaryScreen() {
   const allSymbols = useMemo(() => getAllSymbols(), []);
   const deferredSearchQuery = useDeferredValue(searchQuery.trim());
 
-  const gradientColors =
-    mode === "dark"
-      ? (["#131022", "#4A3B5F"] as const)
-      : ([colors.backgroundSecondary, colors.backgroundDark] as const);
+  const gradientColors = noctalia.screen.gradient;
 
-  const glassBackground =
-    mode === "dark" ? "rgba(35, 26, 63, 0.4)" : `${colors.backgroundCard}A6`;
+  const glassBackground = noctalia.surface.raised;
 
   const filteredSymbols = useMemo(
     () =>
@@ -266,38 +265,38 @@ export default function SymbolDictionaryScreen() {
         <IconSymbol
           name="magnifyingglass"
           size={32}
-          color={colors.textTertiary}
+          color={noctalia.text.tertiary}
         />
-        <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+        <Text style={[styles.emptyText, { color: noctalia.text.secondary }]}>
           {t("symbols.no_results")}
         </Text>
       </View>
     ),
-    [colors.textSecondary, colors.textTertiary, t],
+    [noctalia.text.secondary, noctalia.text.tertiary, t],
   );
 
   const getChipStyle = useCallback(
     (isSelected: boolean) => [
       styles.chip,
       {
-        backgroundColor: isSelected ? colors.accent : glassBackground,
-        borderWidth: isSelected ? 0 : 1,
-        borderColor: isSelected ? "transparent" : colors.divider,
+        backgroundColor: isSelected ? noctalia.action.primary : glassBackground,
+        borderWidth: 1,
+        borderColor: isSelected ? noctalia.action.primaryBorder : noctalia.surface.border,
       },
     ],
-    [colors.accent, colors.divider, glassBackground],
+    [glassBackground, noctalia.action.primary, noctalia.action.primaryBorder, noctalia.surface.border],
   );
 
   const getLetterStyle = useCallback(
     (isSelected: boolean) => [
       styles.letterChip,
       {
-        backgroundColor: isSelected ? colors.accent : glassBackground,
-        borderWidth: isSelected ? 0 : 1,
-        borderColor: isSelected ? "transparent" : colors.divider,
+        backgroundColor: isSelected ? noctalia.action.primary : glassBackground,
+        borderWidth: 1,
+        borderColor: isSelected ? noctalia.action.primaryBorder : noctalia.surface.border,
       },
     ],
-    [colors.accent, colors.divider, glassBackground],
+    [glassBackground, noctalia.action.primary, noctalia.action.primaryBorder, noctalia.surface.border],
   );
 
   const handleBrowseModeChange = useCallback((nextMode: BrowseMode) => {
@@ -311,6 +310,7 @@ export default function SymbolDictionaryScreen() {
 
   return (
     <LinearGradient colors={gradientColors} style={styles.container}>
+      <AtmosphericBackground variant="subtle" />
       <Stack.Screen
         options={{
           headerShown: useNativeHeaderSearch,
@@ -345,12 +345,8 @@ export default function SymbolDictionaryScreen() {
                   styles.headerBackButton,
                   shadows.sm,
                   {
-                    backgroundColor:
-                      mode === "dark"
-                        ? "rgba(35, 26, 63, 0.85)"
-                        : colors.backgroundCard,
-                    borderColor:
-                      mode === "dark" ? "rgba(160, 151, 184, 0.25)" : colors.divider,
+                    backgroundColor: noctalia.surface.raised,
+                    borderColor: noctalia.surface.border,
                   },
                 ]}
                 accessibilityRole="button"
@@ -360,11 +356,11 @@ export default function SymbolDictionaryScreen() {
                 <IconSymbol
                   name="chevron.left"
                   size={21}
-                  color={colors.textPrimary}
+                  color={noctalia.text.secondary}
                 />
               </Pressable>
               <View style={styles.headerCopy}>
-                <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
+                <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>
                   {t("symbols.dictionary_title")}
                 </Text>
               </View>
@@ -380,7 +376,7 @@ export default function SymbolDictionaryScreen() {
         style={styles.popularSection}
       >
         <View style={styles.popularHeader}>
-          <Text style={[styles.popularTitle, { color: colors.textPrimary }]}>
+          <Text style={[styles.popularTitle, { color: noctalia.text.primary }]}>
             {t("symbols.popular_title")}
           </Text>
         </View>
@@ -401,8 +397,8 @@ export default function SymbolDictionaryScreen() {
                 style={({ pressed }) => [
                   styles.popularCard,
                   {
-                    backgroundColor: colors.backgroundCard,
-                    borderColor: colors.divider,
+                    backgroundColor: noctalia.surface.raised,
+                    borderColor: noctalia.surface.border,
                   },
                   pressed && styles.chipPressed,
                 ]}
@@ -410,13 +406,13 @@ export default function SymbolDictionaryScreen() {
                 <View
                   style={[
                     styles.popularIconWrap,
-                    { backgroundColor: `${colors.accent}18` },
+                    { backgroundColor: noctalia.surface.soft },
                   ]}
                 >
-                  <IconSymbol name={iconName} size={20} color={colors.accent} />
+                  <IconSymbol name={iconName} size={20} color={noctalia.text.secondary} />
                 </View>
                 <Text
-                  style={[styles.popularCardTitle, { color: colors.textPrimary }]}
+                  style={[styles.popularCardTitle, { color: noctalia.text.primary }]}
                   numberOfLines={1}
                 >
                   {content.name}
@@ -450,7 +446,7 @@ export default function SymbolDictionaryScreen() {
             styles.modeSwitch,
             {
               backgroundColor: glassBackground,
-              borderColor: colors.divider,
+              borderColor: noctalia.surface.border,
             },
           ]}
         >
@@ -459,7 +455,7 @@ export default function SymbolDictionaryScreen() {
             style={({ pressed }) => [
               styles.modeOption,
               browseMode === "alphabetical" && {
-                backgroundColor: colors.accent,
+                backgroundColor: noctalia.action.primary,
               },
               pressed && styles.chipPressed,
             ]}
@@ -470,8 +466,8 @@ export default function SymbolDictionaryScreen() {
                 {
                   color:
                     browseMode === "alphabetical"
-                      ? colors.textOnAccentSurface
-                      : colors.textSecondary,
+                      ? noctalia.action.primaryText
+                      : noctalia.text.secondary,
                 },
               ]}
             >
@@ -483,7 +479,7 @@ export default function SymbolDictionaryScreen() {
             style={({ pressed }) => [
               styles.modeOption,
               browseMode === "theme" && {
-                backgroundColor: colors.accent,
+                backgroundColor: noctalia.action.primary,
               },
               pressed && styles.chipPressed,
             ]}
@@ -494,8 +490,8 @@ export default function SymbolDictionaryScreen() {
                 {
                   color:
                     browseMode === "theme"
-                      ? colors.textOnAccentSurface
-                      : colors.textSecondary,
+                      ? noctalia.action.primaryText
+                      : noctalia.text.secondary,
                 },
               ]}
             >
@@ -519,8 +515,8 @@ export default function SymbolDictionaryScreen() {
                   {
                     color:
                       selectedCategory === null
-                        ? colors.textOnAccentSurface
-                        : colors.textSecondary,
+                        ? noctalia.action.primaryText
+                        : noctalia.text.secondary,
                   },
                 ]}
               >
@@ -544,8 +540,8 @@ export default function SymbolDictionaryScreen() {
                     {
                       color:
                         selectedCategory === cat
-                          ? colors.textOnAccentSurface
-                          : colors.textSecondary,
+                          ? noctalia.action.primaryText
+                          : noctalia.text.secondary,
                     },
                   ]}
                 >
@@ -583,8 +579,8 @@ export default function SymbolDictionaryScreen() {
                       styles.letterText,
                       {
                         color: isSelected
-                          ? colors.textOnAccentSurface
-                          : colors.textSecondary,
+                          ? noctalia.action.primaryText
+                          : noctalia.text.secondary,
                       },
                     ]}
                   >
@@ -619,6 +615,8 @@ export default function SymbolDictionaryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    overflow: "hidden",
+    position: "relative",
   },
   headerSection: {
     paddingHorizontal: ThemeLayout.spacing.md,
@@ -646,7 +644,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.fraunces.bold,
     fontSize: 24,
     lineHeight: 31,
-    letterSpacing: 0.3,
   },
   popularSection: {
     gap: 10,
@@ -658,7 +655,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
     lineHeight: 16,
-    letterSpacing: 0.6,
     textTransform: "uppercase",
   },
   popularScrollContent: {
@@ -746,7 +742,6 @@ const styles = StyleSheet.create({
   letterText: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
-    letterSpacing: 0.6,
   },
   list: {
     flex: 1,

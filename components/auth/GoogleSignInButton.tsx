@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ActivityIndicator, Alert, Platform } from 'react-native';
 import { signInWithGoogle, signInWithGoogleWeb } from '@/lib/auth';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -24,7 +25,8 @@ function getErrorMessage(error: unknown): string | undefined {
 
 export default function GoogleSignInButton() {
   const [loading, setLoading] = useState(false);
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
 
   const handleGoogleSignIn = async () => {
@@ -77,8 +79,8 @@ export default function GoogleSignInButton() {
         style={({ pressed }) => [
           styles.button,
           {
-            backgroundColor: colors.backgroundSecondary,
-            borderColor: colors.textSecondary,
+            backgroundColor: noctalia.surface.active,
+            borderColor: noctalia.surface.borderStrong,
           },
           pressed && styles.buttonPressed,
           loading && styles.buttonDisabled,
@@ -88,11 +90,11 @@ export default function GoogleSignInButton() {
         testID={TID.Button.AuthGoogle}
       >
         {loading ? (
-          <ActivityIndicator color={colors.textPrimary} size="small" />
+          <ActivityIndicator color={noctalia.text.primary} size="small" />
         ) : (
           <>
-            <IconSymbol name="g.circle.fill" size={20} color={colors.textPrimary} />
-            <Text style={[styles.buttonText, { color: colors.textPrimary }]}>{t('auth.google.cta')}</Text>
+            <IconSymbol name="g.circle.fill" size={20} color={noctalia.accent.base} />
+            <Text style={[styles.buttonText, { color: noctalia.text.primary }]}>{t('auth.google.cta')}</Text>
           </>
         )}
       </Pressable>

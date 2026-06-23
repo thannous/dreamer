@@ -33,6 +33,7 @@ jest.mock('react-native', () => {
     View: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
       <div data-testid={testID}>{children}</div>
     ),
+    Image: ({ testID }: { testID?: string }) => <img data-testid={testID} alt="" />,
   };
 });
 
@@ -50,6 +51,11 @@ jest.mock('@/context/ThemeContext', () => ({
 }));
 
 jest.mock('@/constants/journalTheme', () => ({
+  LightTheme: {
+    accent: '#E1AF73',
+    accentLight: '#F0C98C',
+    textOnAccentSurface: '#2B1A10',
+  },
   ThemeLayout: {
     borderRadius: { full: 999, md: 8 },
     spacing: { md: 16 },
@@ -58,6 +64,10 @@ jest.mock('@/constants/journalTheme', () => ({
 
 jest.mock('@/constants/theme', () => ({
   Fonts: {
+    fraunces: {
+      regular: 'Fraunces-Regular',
+      semiBold: 'Fraunces-SemiBold',
+    },
     spaceGrotesk: {
       bold: 'SpaceGrotesk-Bold',
       medium: 'SpaceGrotesk-Medium',
@@ -78,9 +88,10 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.onboarding.voice.body': 'Appuie sur le micro pour dicter ton rêve.',
         'recording.onboarding.text.body': 'Appuie sur le champ texte pour écrire ton rêve.',
         'recording.onboarding.preference.badge': 'Préférence',
-        'recording.onboarding.preference.title': 'Comment veux-tu enregistrer tes rêves ?',
-        'recording.onboarding.preference.voice_detail': 'Un grand micro d’abord, avec le texte juste en dessous.',
-        'recording.onboarding.preference.text_detail': 'Le champ texte d’abord, avec la dictée en option.',
+        'recording.onboarding.preference.title': 'Comment veux-tu raconter ?',
+        'recording.onboarding.preference.voice_detail': 'Parle avant que le rêve s’efface.',
+        'recording.onboarding.preference.text_detail': 'Quelques mots, à ton rythme.',
+        'recording.onboarding.preference.cta': 'Continuer',
         'recording.onboarding.preference.settings_hint': 'Tu pourras changer ce choix à tout moment dans les paramètres de capture.',
         'recording.preference.voice': 'Vocal',
         'recording.preference.text': 'Écrit',
@@ -108,14 +119,16 @@ describe('RecordingOnboardingTour', () => {
     );
 
     expect(screen.getByTestId(TID.Component.RecordingOnboardingTour)).toBeTruthy();
-    expect(screen.getByText('Préférence')).toBeTruthy();
-    expect(screen.getByText('Comment veux-tu enregistrer tes rêves ?')).toBeTruthy();
+    expect(screen.getByText((content) => content.includes('Comment veux-tu'))).toBeTruthy();
+    expect(screen.getByText('raconter')).toBeTruthy();
     expect(screen.getByText('Vocal')).toBeTruthy();
     expect(screen.getByText('Écrit')).toBeTruthy();
     expect(screen.getByText('Écrit').compareDocumentPosition(screen.getByText('Vocal'))).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING
     );
-    expect(screen.getByText('Tu pourras changer ce choix à tout moment dans les paramètres de capture.')).toBeTruthy();
+    expect(screen.getByText('Quelques mots, à ton rythme.')).toBeTruthy();
+    expect(screen.getByText('Parle avant que le rêve s’efface.')).toBeTruthy();
+    expect(screen.getByText('Continuer')).toBeTruthy();
 
     fireEvent.click(screen.getByTestId(TID.Button.RecordingOnboardingChooseVoice));
     fireEvent.click(screen.getByTestId(TID.Button.RecordingOnboardingSkip));

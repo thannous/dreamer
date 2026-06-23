@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { BottomSheetActions, BottomSheetPrimaryAction, BottomSheetSecondaryAction } from '@/components/ui/BottomSheetActions';
 import { EmailVerificationIcon } from '@/components/icons/EmailVerificationIcon';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -32,7 +33,8 @@ export const EmailVerificationPendingDialog: React.FC<EmailVerificationPendingDi
   statusMessage,
   cooldownMessage,
 }) => {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
 
   const title = t('settings.account.verification.title');
@@ -41,39 +43,39 @@ export const EmailVerificationPendingDialog: React.FC<EmailVerificationPendingDi
     <BottomSheet
       visible={visible}
       onClose={onClose}
-      style={[styles.sheet, { backgroundColor: colors.backgroundCard }]}
-      backdropColor="rgba(0,0,0,0.6)"
+      style={[styles.sheet, { backgroundColor: noctalia.surface.raised }]}
+      backdropColor={noctalia.surface.overlay}
     >
       <View style={styles.header}>
         {/* Hero icon */}
         <View style={styles.iconContainer}>
           <EmailVerificationIcon
             size={64}
-            color={colors.accent}
+            color={noctalia.accent.base}
             verified={false}
-            successColor="#16A34A"
+            successColor={noctalia.status.success.icon}
           />
         </View>
 
         {/* Title */}
-        <Text style={[styles.title, { color: colors.textPrimary }]}>
+        <Text style={[styles.title, { color: noctalia.text.primary }]}>
           {title}
         </Text>
 
         {/* Subtitle with email highlighted */}
-        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+        <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
           <>
             {t('settings.account.verification.subtitle_prefix')}{' '}
-            <Text style={[styles.emailHighlight, { color: colors.textPrimary }]}>
+            <Text style={[styles.emailHighlight, { color: noctalia.text.primary }]}>
               {email}
             </Text>
           </>
         </Text>
 
         {/* Status badge - only show when not verified */}
-        <View style={[styles.badge, { backgroundColor: colors.backgroundSecondary }]}>
-          <ActivityIndicator color={colors.accent} size="small" />
-          <Text style={[styles.badgeText, { color: colors.textSecondary }]}>
+        <View style={[styles.badge, { backgroundColor: noctalia.surface.soft }]}>
+          <ActivityIndicator color={noctalia.accent.base} size="small" />
+          <Text style={[styles.badgeText, { color: noctalia.text.secondary }]}>
             {t('settings.account.verification.waiting_short')}
           </Text>
         </View>
@@ -96,12 +98,12 @@ export const EmailVerificationPendingDialog: React.FC<EmailVerificationPendingDi
 
       {/* Status messages */}
       {statusMessage ? (
-        <Text style={[styles.status, { color: colors.textSecondary }]} testID={TID.Text.AuthEmailVerificationStatus}>
+        <Text style={[styles.status, { color: noctalia.text.secondary }]} testID={TID.Text.AuthEmailVerificationStatus}>
           {statusMessage}
         </Text>
       ) : null}
       {cooldownMessage ? (
-        <Text style={[styles.cooldown, { color: colors.textSecondary }]}>{cooldownMessage}</Text>
+        <Text style={[styles.cooldown, { color: noctalia.text.secondary }]}>{cooldownMessage}</Text>
       ) : null}
     </BottomSheet>
   );
@@ -116,29 +118,30 @@ export const EmailVerificationSuccessDialog: React.FC<EmailVerificationSuccessDi
   visible,
   onClose,
 }) => {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
 
   return (
     <BottomSheet
       visible={visible}
       onClose={onClose}
-      style={[styles.sheet, { backgroundColor: colors.backgroundCard }]}
-      backdropColor="rgba(0,0,0,0.6)"
+      style={[styles.sheet, { backgroundColor: noctalia.surface.raised }]}
+      backdropColor={noctalia.surface.overlay}
     >
       <View style={styles.header}>
         <View style={styles.iconContainer}>
           <EmailVerificationIcon
             size={64}
-            color={colors.accent}
+            color={noctalia.accent.base}
             verified
-            successColor="#16A34A"
+            successColor={noctalia.status.success.icon}
           />
         </View>
-        <Text style={[styles.title, { color: colors.textPrimary }]}>
+        <Text style={[styles.title, { color: noctalia.text.primary }]}>
           {t('settings.account.verification.success_title')}
         </Text>
-        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+        <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
           {t('settings.account.verification.success_subtitle')}
         </Text>
       </View>

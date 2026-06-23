@@ -1,11 +1,12 @@
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import type { DreamTheme, DreamType } from '@/lib/types';
 import * as Haptics from 'expo-haptics';
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
@@ -214,12 +215,13 @@ export const FilterBar = memo(function FilterBar({
   selectedTheme,
   selectedDreamType,
 }: FilterBarProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const hasActiveFilters = items.some((item) => item.active);
   const dateRangeBadge = getDateRangeBadge(dateRange, t);
-  const iconColor = colors.textPrimary;
-  const activeIconColor = colors.backgroundCard;
+  const iconColor = noctalia.text.primary;
+  const activeIconColor = noctalia.action.primaryText;
 
   const themeLabelParts: string[] = [];
   if (selectedTheme) themeLabelParts.push(getDreamThemeLabel(selectedTheme, t) ?? selectedTheme);
@@ -246,8 +248,8 @@ export const FilterBar = memo(function FilterBar({
           <FilterPill
             key={item.id}
             isActive={isActive}
-            activeColor={colors.accent}
-            inactiveColor={colors.backgroundSecondary}
+            activeColor={noctalia.action.primary}
+            inactiveColor={noctalia.surface.soft}
             onPress={item.onPress}
             accessibilityLabel={getAccessibilityLabel(item.id, t)}
             testID={item.testID}
@@ -263,7 +265,7 @@ export const FilterBar = memo(function FilterBar({
 
       {hasActiveFilters && (
         <Pressable
-          style={[styles.filterButton, { backgroundColor: colors.backgroundSecondary }]}
+          style={[styles.filterButton, { backgroundColor: noctalia.surface.soft }]}
           onPress={onClear}
           accessibilityRole="button"
           accessibilityLabel={t('journal.filter.accessibility.clear')}

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Fonts } from '@/constants/theme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { AnalysisStep } from '@/hooks/useAnalysisProgress';
 import type { ClassifiedError } from '@/lib/errors';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -17,13 +18,14 @@ interface AnalysisProgressProps {
 
 export function AnalysisProgress({ step, progress, message, error, onRetry }: AnalysisProgressProps) {
   const { t } = useTranslation();
-  const { colors, shadows } = useTheme();
+  const { colors, mode, shadows } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const showError = step === AnalysisStep.ERROR && error;
   const roundedProgress = Math.round(progress);
 
   return (
     <View
-      style={[styles.container, { backgroundColor: colors.backgroundSecondary }]}
+      style={[styles.container, { backgroundColor: noctalia.surface.active, borderColor: noctalia.surface.border }]}
       accessibilityRole="progressbar"
       accessibilityValue={{ min: 0, max: 100, now: roundedProgress }}
       accessibilityLiveRegion="polite"
@@ -32,18 +34,18 @@ export function AnalysisProgress({ step, progress, message, error, onRetry }: An
       {/* Progress Bar */}
       {!showError && (
         <View style={styles.progressBarContainer}>
-          <View style={[styles.progressBarBackground, { backgroundColor: colors.backgroundDark }]}>
+          <View style={[styles.progressBarBackground, { backgroundColor: noctalia.surface.soft }]}>
             <View
               style={[
                 styles.progressBarFill,
-                { backgroundColor: colors.accent },
+                { backgroundColor: noctalia.action.primary },
                 {
                   width: `${progress}%`,
                 },
               ]}
             />
           </View>
-          <Text style={[styles.progressText, { color: colors.textPrimary }]}>{roundedProgress}%</Text>
+          <Text style={[styles.progressText, { color: noctalia.text.primary }]}>{roundedProgress}%</Text>
         </View>
       )}
 
@@ -51,24 +53,31 @@ export function AnalysisProgress({ step, progress, message, error, onRetry }: An
       <View style={styles.messageContainer}>
         {showError ? (
           <View style={styles.errorContent}>
-            <IconSymbol name="exclamationmark.circle.fill" size={24} color="#EF4444" />
-            <Text style={[styles.errorMessage, { color: colors.textPrimary }]}>{message}</Text>
+            <IconSymbol name="exclamationmark.circle.fill" size={24} color={noctalia.status.danger.icon} />
+            <Text style={[styles.errorMessage, { color: noctalia.status.danger.text }]}>{message}</Text>
           </View>
         ) : (
           <View style={styles.statusContent}>
             <View style={styles.spinner}>
-              <IconSymbol name="hourglass" size={20} color={colors.accent} />
+              <IconSymbol name="hourglass" size={20} color={noctalia.accent.base} />
             </View>
-            <Text style={[styles.statusMessage, { color: colors.textSecondary }]}>{message}</Text>
+            <Text style={[styles.statusMessage, { color: noctalia.text.secondary }]}>{message}</Text>
           </View>
         )}
       </View>
 
       {/* Retry Button */}
       {showError && onRetry && error?.canRetry && (
-        <Pressable style={[styles.retryButton, shadows.md, { backgroundColor: colors.accent }]} onPress={onRetry}>
-          <IconSymbol name="arrow.clockwise" size={20} color={colors.textPrimary} />
-          <Text style={[styles.retryButtonText, { color: colors.textPrimary }]}>{t('analysis.retry')}</Text>
+        <Pressable
+          style={[
+            styles.retryButton,
+            shadows.md,
+            { backgroundColor: noctalia.action.primary, borderColor: noctalia.action.primaryBorder },
+          ]}
+          onPress={onRetry}
+        >
+          <IconSymbol name="arrow.clockwise" size={20} color={noctalia.action.primaryText} />
+          <Text style={[styles.retryButtonText, { color: noctalia.action.primaryText }]}>{t('analysis.retry')}</Text>
         </Pressable>
       )}
     </View>
@@ -82,6 +91,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     // backgroundColor: set dynamically
     borderRadius: 16,
+    borderWidth: 1,
     // shadow: applied via theme shadows (inline)
   },
   progressBarContainer: {
@@ -157,6 +167,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.bold,
     // color: set dynamically
-    letterSpacing: 0.3,
   },
 });

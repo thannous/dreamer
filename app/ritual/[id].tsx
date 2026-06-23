@@ -7,6 +7,7 @@ import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackg
 import { GlassCard } from '@/components/inspiration/GlassCard';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -37,6 +38,7 @@ export default function RitualDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const ritualId = id as RitualId;
   const { colors, mode, shadows } = useTheme();
+  const noctalia = getNoctaliaDesignTokens(colors, mode);
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const scrollPerf = useScrollIdle();
@@ -125,28 +127,28 @@ export default function RitualDetailScreen() {
   const contentPaddingTop = backButtonTop + 44 + ThemeLayout.spacing.md;
 
   const checkboxBorderColor =
-    mode === 'dark' ? colors.divider : colors.textSecondary;
+    mode === 'dark' ? noctalia.surface.border : noctalia.text.secondary;
 
   const iconName = RITUAL_ICONS[ritual.id] ?? 'moon.stars.fill';
 
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-      <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
+      <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
         <AtmosphericBackground />
 
         {/* Floating Back Button */}
         <Pressable
           onPress={() => router.back()}
           style={[styles.floatingBackButton, { top: backButtonTop }, shadows.lg, {
-            backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
+            backgroundColor: noctalia.surface.raised,
             borderWidth: 1,
-            borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
+            borderColor: noctalia.surface.border,
           }]}
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
+          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.base} />
         </Pressable>
 
         <ScrollView
@@ -163,19 +165,19 @@ export default function RitualDetailScreen() {
             <View
               style={[
                 styles.iconCircle,
-                { backgroundColor: colors.backgroundSecondary },
+                { backgroundColor: noctalia.surface.soft },
               ]}
             >
               <IconSymbol
                 name={iconName}
                 size={28}
-                color={colors.accent}
+                color={noctalia.accent.base}
               />
             </View>
-            <Text style={[styles.title, { color: colors.textPrimary }]}>
+            <Text style={[styles.title, { color: noctalia.text.primary }]}>
               {t(ritual.labelKey)}
             </Text>
-            <Text style={[styles.description, { color: colors.textSecondary }]}>
+            <Text style={[styles.description, { color: noctalia.text.secondary }]}>
               {t(ritual.descriptionKey)}
             </Text>
           </View>
@@ -185,20 +187,20 @@ export default function RitualDetailScreen() {
             <View
               style={[
                 styles.progressBarBg,
-                { backgroundColor: colors.divider },
+                { backgroundColor: noctalia.surface.soft },
               ]}
             >
               <View
                 style={[
                   styles.progressBarFill,
                   {
-                    backgroundColor: colors.accent,
+                    backgroundColor: noctalia.accent.base,
                     width: `${Math.round(progressPercent * 100)}%`,
                   },
                 ]}
               />
             </View>
-            <Text style={[styles.progressText, { color: colors.accent }]}>
+            <Text style={[styles.progressText, { color: noctalia.accent.base }]}>
               {t('inspiration.ritual.steps_progress')
                 .replace('{completed}', String(completedCount))
                 .replace('{total}', String(totalSteps))}
@@ -231,8 +233,8 @@ export default function RitualDetailScreen() {
                       style={[
                         styles.checkbox,
                         {
-                          borderColor: done ? colors.accent : checkboxBorderColor,
-                          backgroundColor: done ? colors.accent : 'transparent',
+                          borderColor: done ? noctalia.accent.base : checkboxBorderColor,
+                          backgroundColor: done ? noctalia.accent.base : 'transparent',
                         },
                       ]}
                     >
@@ -240,7 +242,7 @@ export default function RitualDetailScreen() {
                         <View
                           style={[
                             styles.checkboxInner,
-                            { backgroundColor: colors.textOnAccentSurface },
+                            { backgroundColor: noctalia.text.onAccent },
                           ]}
                         />
                       ) : null}
@@ -250,7 +252,7 @@ export default function RitualDetailScreen() {
                         style={[
                           styles.stepTitle,
                           {
-                            color: colors.textPrimary,
+                            color: noctalia.text.primary,
                             textDecorationLine: done ? 'line-through' : 'none',
                             opacity: done ? 0.6 : 1,
                           },
@@ -262,7 +264,7 @@ export default function RitualDetailScreen() {
                         style={[
                           styles.stepBody,
                           {
-                            color: colors.textSecondary,
+                            color: noctalia.text.secondary,
                             opacity: done ? 0.5 : 1,
                           },
                         ]}
@@ -319,7 +321,6 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: Fonts.fraunces.bold,
     fontSize: 28,
-    letterSpacing: 0.3,
     textAlign: 'center',
   },
   description: {

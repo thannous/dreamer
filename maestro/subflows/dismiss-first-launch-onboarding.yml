@@ -1,0 +1,14 @@
+appId: com.tanuki75.noctalia
+---
+- runFlow:
+    when:
+      visible:
+        id: screen.onboarding
+    commands:
+      - tapOn:
+          id: btn.onboarding.skip
+      - waitForAnimationToEnd
+      - extendedWaitUntil:
+          visible:
+            id: screen.recording
+          timeout: 30000

@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import type { DreamSymbol, SymbolLanguage } from '@/lib/symbolTypes';
@@ -15,42 +16,41 @@ interface SymbolCardProps {
 
 export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress }: SymbolCardProps) {
   const { colors, mode } = useTheme();
+  const noctalia = getNoctaliaDesignTokens(colors, mode);
   const content = symbol[language] ?? symbol.en;
   const handlePress = useCallback(() => {
     onPress(symbol.id);
   }, [onPress, symbol.id]);
 
-  const glassBackground = mode === 'dark'
-    ? 'rgba(35, 26, 63, 0.4)'
-    : `${colors.backgroundCard}A6`;
+  const glassBackground = noctalia.surface.raised;
   const cardStyle = useMemo(
     () => [
       styles.card,
       {
         backgroundColor: glassBackground,
-        borderColor: colors.divider,
+        borderColor: noctalia.surface.border,
       },
     ],
-    [colors.divider, glassBackground],
+    [glassBackground, noctalia.surface.border],
   );
   const contentStyle = useMemo(() => [styles.content, { gap: 2 }], []);
   const titleStyle = useMemo(
     () => [
       styles.title,
       {
-        color: colors.textPrimary,
+        color: noctalia.text.primary,
       },
     ],
-    [colors.textPrimary],
+    [noctalia.text.primary],
   );
   const descriptionStyle = useMemo(
     () => [
       styles.description,
       {
-        color: colors.textSecondary,
+        color: noctalia.text.secondary,
       },
     ],
-    [colors.textSecondary],
+    [noctalia.text.secondary],
   );
   const pressableStyle = useCallback(
     ({ pressed }: { pressed: boolean }) => [
@@ -78,7 +78,7 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress }
           {content.shortDescription}
         </Text>
       </View>
-      <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
+      <IconSymbol name="chevron.right" size={16} color={noctalia.text.tertiary} />
     </Pressable>
   );
 });

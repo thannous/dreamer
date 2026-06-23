@@ -2,6 +2,8 @@ import { memo } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useTheme } from '@/context/ThemeContext';
 import { MotiView } from '@/lib/moti';
 
 const { width } = Dimensions.get('window');
@@ -14,6 +16,8 @@ type FloatingCloudRowProps = {
 };
 
 function FloatingCloudRowComponent({ top, delay = 0, opacity = 0.4, reverse = false }: FloatingCloudRowProps) {
+  const { colors, mode } = useTheme();
+  const noctalia = getNoctaliaDesignTokens(colors, mode);
   const travel = width + 220;
 
   return (
@@ -30,11 +34,11 @@ function FloatingCloudRowComponent({ top, delay = 0, opacity = 0.4, reverse = fa
       }}
     >
       <Svg width={220} height={90} viewBox="0 0 220 90">
-        <Circle cx="60" cy="50" r="34" fill="rgba(255,255,255,0.18)" />
-        <Circle cx="110" cy="45" r="40" fill="rgba(255,255,255,0.16)" />
-        <Circle cx="150" cy="55" r="30" fill="rgba(255,255,255,0.18)" />
-        <Circle cx="95" cy="65" r="28" fill="rgba(255,255,255,0.14)" />
-        <Circle cx="135" cy="68" r="26" fill="rgba(255,255,255,0.14)" />
+        <Circle cx="60" cy="50" r="34" fill={noctalia.atmosphere.horizon} fillOpacity={0.9} />
+        <Circle cx="110" cy="45" r="40" fill={noctalia.atmosphere.horizon} fillOpacity={0.8} />
+        <Circle cx="150" cy="55" r="30" fill={noctalia.atmosphere.horizon} fillOpacity={0.9} />
+        <Circle cx="95" cy="65" r="28" fill={noctalia.atmosphere.horizon} fillOpacity={0.7} />
+        <Circle cx="135" cy="68" r="26" fill={noctalia.atmosphere.horizon} fillOpacity={0.7} />
       </Svg>
     </MotiView>
   );

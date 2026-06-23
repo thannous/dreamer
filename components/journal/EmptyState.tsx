@@ -1,17 +1,18 @@
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useFadeInUp } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
-function MoonStarsIcon({ size = 64, color = '#a097b8' }) {
+function MoonStarsIcon({ size = 64, color }: { size?: number; color: string }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 64 64" fill="none">
       {/* Crescent moon */}
@@ -42,46 +43,47 @@ export function EmptyState({
   onClearFilters,
   onStartRememberedDream,
 }: EmptyStateProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const animatedStyle = useFadeInUp(100);
   const showRememberedAction = !hasActiveFilter && !!onStartRememberedDream;
 
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
-      <MoonStarsIcon size={64} color={colors.textTertiary} />
+      <MoonStarsIcon size={64} color={noctalia.text.tertiary} />
       <View style={styles.copy}>
-        <Text style={[styles.title, { color: colors.textPrimary }]}>
+        <Text style={[styles.title, { color: noctalia.text.primary }]}>
           {hasActiveFilter ? t('journal.empty.filtered') : t('journal.empty.default')}
         </Text>
         {showRememberedAction ? (
-          <Text style={[styles.body, { color: colors.textSecondary }]}>
+          <Text style={[styles.body, { color: noctalia.text.secondary }]}>
             {t('journal.empty.remembered_hint')}
           </Text>
         ) : null}
       </View>
       {showRememberedAction ? (
         <Pressable
-          style={[styles.primaryButton, { backgroundColor: colors.accent }]}
+          style={[styles.primaryButton, { backgroundColor: noctalia.action.primary, borderColor: noctalia.action.primaryBorder }]}
           onPress={onStartRememberedDream}
           accessibilityRole="button"
           accessibilityLabel={t('journal.empty.remembered_cta')}
           testID={TID.Button.EmptyStartRememberedDream}
         >
-          <IconSymbol name="pencil" size={18} color={colors.textOnAccentSurface ?? colors.textPrimary} />
-          <Text style={[styles.primaryText, { color: colors.textOnAccentSurface ?? colors.textPrimary }]}>
+          <IconSymbol name="pencil" size={18} color={noctalia.action.primaryText} />
+          <Text style={[styles.primaryText, { color: noctalia.action.primaryText }]}>
             {t('journal.empty.remembered_cta')}
           </Text>
         </Pressable>
       ) : null}
       {hasActiveFilter && onClearFilters ? (
         <Pressable
-          style={[styles.secondaryButton, { borderColor: colors.accent }]}
+          style={[styles.secondaryButton, { borderColor: noctalia.action.primaryBorder }]}
           onPress={onClearFilters}
           accessibilityRole="button"
           testID={TID.Button.EmptyClearFilters}
         >
-          <Text style={[styles.secondaryText, { color: colors.accent }]}>
+          <Text style={[styles.secondaryText, { color: noctalia.accent.base }]}>
             {t('journal.filter.clear')}
           </Text>
         </Pressable>
@@ -125,6 +127,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
+    borderWidth: 1,
   },
   primaryText: {
     fontSize: 15,

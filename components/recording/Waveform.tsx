@@ -10,6 +10,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 
 interface WaveformProps {
@@ -58,7 +59,8 @@ const BARS: BarConfig[] = [
 const LOOP_DURATION_MS = 900;
 
 export function Waveform({ isActive }: WaveformProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = getNoctaliaDesignTokens(colors, mode);
   const progress = useSharedValue(0);
 
   useEffect(() => {
@@ -92,8 +94,8 @@ export function Waveform({ isActive }: WaveformProps) {
             isAccent={isAccent}
             isActive={isActive}
             progress={progress}
-            accentColor={colors.accent}
-            baseColor={colors.textSecondary}
+            accentColor={noctalia.accent.base}
+            baseColor={noctalia.text.secondary}
           />
         );
       })}

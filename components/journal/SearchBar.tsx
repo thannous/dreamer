@@ -2,6 +2,7 @@ import React, { memo, useMemo, useRef } from 'react';
 import { View, TextInput, StyleSheet, Pressable } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -15,7 +16,7 @@ interface SearchBarProps {
   inputTestID?: string;
 }
 
-function SearchIcon({ size = 20, color = '#a097b8' }) {
+function SearchIcon({ size = 20, color }: { size?: number; color: string }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <Path
@@ -33,24 +34,25 @@ export const SearchBar = memo(function SearchBar({
   testID,
   inputTestID,
 }: SearchBarProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const placeholderText = useMemo(() => placeholder ?? t('journal.search_placeholder'), [placeholder, t]);
   const inputRef = useRef<TextInput>(null);
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.backgroundSecondary }]} testID={testID}>
+    <View style={[styles.container, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }]} testID={testID}>
       <View style={styles.iconContainer}>
-        <SearchIcon size={20} color={colors.textSecondary} />
+        <SearchIcon size={20} color={noctalia.text.secondary} />
       </View>
       <TextInput
         ref={inputRef}
-        style={[styles.input, { color: colors.textPrimary }]}
+        style={[styles.input, { color: noctalia.text.primary }]}
         testID={inputTestID}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholderText}
-        placeholderTextColor={colors.textSecondary}
+        placeholderTextColor={noctalia.text.secondary}
         accessibilityLabel={placeholderText}
         autoCapitalize="none"
         autoCorrect={false}
@@ -66,7 +68,7 @@ export const SearchBar = memo(function SearchBar({
           hitSlop={8}
           style={({ pressed }) => [styles.clearButton, pressed && styles.clearButtonPressed]}
         >
-          <IconSymbol name="xmark.circle.fill" size={18} color={colors.textSecondary} />
+          <IconSymbol name="xmark.circle.fill" size={18} color={noctalia.text.secondary} />
         </Pressable>
       )}
     </View>
@@ -80,6 +82,7 @@ const styles = StyleSheet.create({
     borderRadius: ThemeLayout.borderRadius.md,
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: 6,
+    borderWidth: 1,
   },
   iconContainer: {
     marginRight: ThemeLayout.spacing.sm,

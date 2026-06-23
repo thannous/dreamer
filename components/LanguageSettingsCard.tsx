@@ -5,7 +5,8 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { LanguagePreference } from '@/lib/types';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { Fonts, GlassCardTokens } from '@/constants/theme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { Fonts } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 import {
   ensureOfflineSttModel,
@@ -25,6 +26,7 @@ export default function LanguageSettingsCard() {
   const { colors, mode } = useTheme();
   const { preference, setPreference, systemLanguage } = useLanguage();
   const { t } = useTranslation();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const systemLanguageLabel = t(LANGUAGE_LABEL_KEYS[systemLanguage]);
   const autoLanguageHint = t('settings.language.option.auto.system_hint', {
     language: systemLanguageLabel,
@@ -90,33 +92,32 @@ export default function LanguageSettingsCard() {
 
   return (
     <View
-      style={[styles.card, { backgroundColor: GlassCardTokens.getBackground(colors.backgroundCard, mode), borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}
+      style={[
+        styles.card,
+        { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
+      ]}
       accessibilityRole="radiogroup"
       accessibilityLabel={t('settings.language.title')}
     >
-      <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
+      <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>
         {t('settings.language.title')}
       </Text>
-      <Text style={[styles.description, { color: colors.textSecondary }]}>
+      <Text style={[styles.description, { color: noctalia.text.secondary }]}>
         {t('settings.language.description')}
       </Text>
 
       {languageOptions.map((option, index) => {
         const isSelected = preference === option.value;
 
-        const iconColor = isSelected
-          ? colors.textOnAccentSurface
-          : mode === 'dark'
-            ? colors.textOnAccentSurface
-            : colors.accent;
+        const iconColor = isSelected ? noctalia.action.primaryText : noctalia.accent.base;
 
         return (
           <View key={option.value}>
-            {index > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
+            {index > 0 && <View style={[styles.divider, { backgroundColor: noctalia.surface.border }]} />}
             <Pressable
               style={({ pressed }) => [
                 styles.optionButton,
-                { backgroundColor: isSelected ? colors.backgroundSecondary : 'transparent' },
+                { backgroundColor: isSelected ? noctalia.surface.active : 'transparent' },
                 pressed && styles.optionPressed,
               ]}
               onPress={() => handleSelectLanguage(option.value)}
@@ -130,17 +131,17 @@ export default function LanguageSettingsCard() {
                   style={[
                     styles.iconContainer,
                     {
-                      backgroundColor: isSelected ? colors.accent : colors.backgroundSecondary,
+                      backgroundColor: isSelected ? noctalia.action.primary : noctalia.surface.soft,
                     },
                   ]}
                 >
                   <IconSymbol name={option.icon} size={20} color={iconColor} />
                 </View>
                 <View style={styles.optionInfo}>
-                  <Text style={[styles.optionLabel, { color: colors.textPrimary }]}>
+                  <Text style={[styles.optionLabel, { color: noctalia.text.primary }]}>
                     {option.label}
                   </Text>
-                  <Text style={[styles.optionDescription, { color: colors.textSecondary }]}>
+                  <Text style={[styles.optionDescription, { color: noctalia.text.secondary }]}>
                     {option.description}
                   </Text>
                 </View>
@@ -150,7 +151,7 @@ export default function LanguageSettingsCard() {
                 style={[
                   styles.radio,
                   {
-                    borderColor: isSelected ? colors.accent : colors.textTertiary,
+                    borderColor: isSelected ? noctalia.action.primary : noctalia.text.tertiary,
                   },
                 ]}
               >
@@ -159,7 +160,7 @@ export default function LanguageSettingsCard() {
                     style={[
                       styles.radioInner,
                       {
-                        backgroundColor: colors.accent,
+                        backgroundColor: noctalia.action.primary,
                       },
                     ]}
                   />
@@ -176,6 +177,7 @@ export default function LanguageSettingsCard() {
 const styles = StyleSheet.create({
   card: {
     borderRadius: ThemeLayout.borderRadius.xl,
+    borderWidth: 1,
     padding: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
   },
