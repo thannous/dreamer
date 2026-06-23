@@ -1,7 +1,9 @@
 import { FlatGlassCard, GlassCard } from '@/components/inspiration/GlassCard';
+import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { Exploration360Panel } from '@/components/chat/Exploration360Panel';
 import { Fonts } from '@/constants/theme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useDreams } from '@/context/DreamsContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -27,7 +29,7 @@ type Category = {
   titleKey: string;
   descriptionKey: string;
   icon: Parameters<typeof IconSymbol>[0]['name'];
-  color: string;
+  color: 'accent' | 'emotion' | 'growth';
 };
 
 const CATEGORIES: Category[] = [
@@ -36,21 +38,21 @@ const CATEGORIES: Category[] = [
     titleKey: 'dream_categories.symbols.title',
     descriptionKey: 'dream_categories.symbols.description',
     icon: 'sparkles',
-    color: '#8C9EFF',
+    color: 'accent',
   },
   {
     id: 'emotions',
     titleKey: 'dream_categories.emotions.title',
     descriptionKey: 'dream_categories.emotions.description',
     icon: 'heart.fill',
-    color: '#FF6B9D',
+    color: 'emotion',
   },
   {
     id: 'growth',
     titleKey: 'dream_categories.growth.title',
     descriptionKey: 'dream_categories.growth.description',
     icon: 'leaf.fill',
-    color: '#4CAF50',
+    color: 'growth',
   },
 ];
 
@@ -59,6 +61,7 @@ export default function DreamCategoriesScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { dreams } = useDreams();
   const { colors, shadows, mode } = useTheme();
+  const noctalia = getNoctaliaDesignTokens(colors, mode);
   const scrollPerf = useScrollIdle();
   useClearWebFocus();
   const dream = dreams.find((d) => d.id === Number(id));
@@ -66,15 +69,14 @@ export default function DreamCategoriesScreen() {
   const exploration360Progress = getExploration360Progress(dream);
   const hasSynthesis = hasExploration360Synthesis(dream);
 
-  const gradientColors = mode === 'dark'
-    ? (['#131022', '#4A3B5F'] as const)
-    : ([colors.backgroundSecondary, colors.backgroundDark] as const);
+  const gradientColors = noctalia.screen.gradient;
 
   if (!dream) {
     return (
       <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
         <LinearGradient colors={gradientColors} style={styles.container}>
-          <Text style={[styles.errorText, { color: colors.textPrimary }]}>{t('dream_categories.not_found.title')}</Text>
+          <AtmosphericBackground />
+          <Text style={[styles.errorText, { color: noctalia.text.primary }]}>{t('dream_categories.not_found.title')}</Text>
         </LinearGradient>
       </ScrollPerfProvider>
     );
@@ -95,10 +97,16 @@ export default function DreamCategoriesScreen() {
   };
 
   const availableCategories = CATEGORIES.filter((category) => !isCategoryExplored(dream.chatHistory, category.id));
+  const getCategoryColor = (category: Category) => {
+    if (category.color === 'emotion') return colors.tags.mystical;
+    if (category.color === 'growth') return colors.tags.calm;
+    return noctalia.accent.base;
+  };
 
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <LinearGradient colors={gradientColors} style={styles.gradient}>
+        <AtmosphericBackground />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -116,17 +124,18 @@ export default function DreamCategoriesScreen() {
               <Pressable
                 onPress={() => router.back()}
                 style={[styles.backButton, {
-                  backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+                  backgroundColor: noctalia.surface.soft,
+                  borderColor: noctalia.surface.border,
                 }]}
               accessibilityRole="button"
               accessibilityLabel={t('journal.back_button')}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
-              <IconSymbol name="chevron.left" size={20} color={colors.textPrimary} />
+              <IconSymbol name="chevron.left" size={20} color={noctalia.accent.base} />
             </Pressable>
             <View style={styles.dreamTitleContent}>
-              <Text style={[styles.dreamTitle, { color: colors.textPrimary }]}>{dream.title}</Text>
-              <Text style={[styles.dreamSubtitle, { color: colors.textSecondary }]}>
+              <Text style={[styles.dreamTitle, { color: noctalia.text.primary }]}>{dream.title}</Text>
+              <Text style={[styles.dreamSubtitle, { color: noctalia.text.secondary }]}>
                   {t('dream_categories.subtitle')}
                 </Text>
               </View>
@@ -143,36 +152,40 @@ export default function DreamCategoriesScreen() {
 
           {/* Category Cards — Vertical GlassCards */}
           <View style={styles.categoriesContainer}>
-            {availableCategories.map((category, index) => (
-              <GlassCard
-                key={category.id}
-                testID={TID.Button.DreamCategory(category.id)}
-                onPress={() => handleCategoryPress(category.id)}
-                animationDelay={200 + index * 120}
-                style={styles.categoryCard}
-              >
-                <MotiView
-                  from={{ translateY: 0 }}
-                  animate={{ translateY: -1 }}
-                  transition={{
-                    type: 'timing',
-                    duration: 3000,
-                    loop: true,
-                    repeatReverse: true,
-                  }}
+            {availableCategories.map((category, index) => {
+              const categoryColor = getCategoryColor(category);
+
+              return (
+                <GlassCard
+                  key={category.id}
+                  testID={TID.Button.DreamCategory(category.id)}
+                  onPress={() => handleCategoryPress(category.id)}
+                  animationDelay={200 + index * 120}
+                  style={styles.categoryCard}
                 >
-                  <View style={[styles.iconRing, { borderColor: category.color }]}>
-                    <IconSymbol name={category.icon} size={24} color={category.color} />
-                  </View>
-                </MotiView>
-                <Text style={[styles.categoryTitle, { color: colors.textPrimary }]}>
-                  {t(category.titleKey)}
-                </Text>
-                <Text style={[styles.categoryDescription, { color: colors.textSecondary }]}>
-                  {t(category.descriptionKey)}
-                </Text>
-              </GlassCard>
-            ))}
+                  <MotiView
+                    from={{ translateY: 0 }}
+                    animate={{ translateY: -1 }}
+                    transition={{
+                      type: 'timing',
+                      duration: 3000,
+                      loop: true,
+                      repeatReverse: true,
+                    }}
+                  >
+                    <View style={[styles.iconRing, { borderColor: categoryColor }]}>
+                      <IconSymbol name={category.icon} size={24} color={categoryColor} />
+                    </View>
+                  </MotiView>
+                  <Text style={[styles.categoryTitle, { color: noctalia.text.primary }]}>
+                    {t(category.titleKey)}
+                  </Text>
+                  <Text style={[styles.categoryDescription, { color: noctalia.text.secondary }]}>
+                    {t(category.descriptionKey)}
+                  </Text>
+                </GlassCard>
+              );
+            })}
           </View>
 
           {/* Free Chat — Solid accent button */}
@@ -185,12 +198,12 @@ export default function DreamCategoriesScreen() {
               onPress={() => (hasExistingChat ? router.push(`/dream-chat/${id}`) : handleCategoryPress('general'))}
               testID={TID.Button.DreamFreeChat}
               style={[styles.freeChatButton, shadows.md, {
-                backgroundColor: colors.accent,
-                borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
+                backgroundColor: noctalia.action.primary,
+                borderColor: noctalia.action.primaryBorder,
               }]}
             >
-              <IconSymbol name="bubble.left.and.bubble.right.fill" size={22} color={colors.textPrimary} />
-              <Text style={[styles.freeChatText, { color: colors.textPrimary }]}>
+              <IconSymbol name="bubble.left.and.bubble.right.fill" size={22} color={noctalia.action.primaryText} />
+              <Text style={[styles.freeChatText, { color: noctalia.action.primaryText }]}>
                 {hasExistingChat ? t('dream_categories.view_chat') : t('dream_categories.free_chat_prompt')}
               </Text>
             </Pressable>
@@ -204,11 +217,15 @@ export default function DreamCategoriesScreen() {
 const styles = StyleSheet.create({
   gradient: {
     flex: 1,
+    overflow: 'hidden',
+    position: 'relative',
   },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
+    position: 'relative',
   },
   errorText: {
     fontSize: 16,
@@ -303,6 +320,5 @@ const styles = StyleSheet.create({
   freeChatText: {
     fontSize: 17,
     fontFamily: Fonts.fraunces.medium,
-    letterSpacing: 0.5,
   },
 });

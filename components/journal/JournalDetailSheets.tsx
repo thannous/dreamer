@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker';
@@ -12,6 +12,7 @@ import {
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { REFERENCE_IMAGES } from '@/constants/appConfig';
 import { QUOTAS } from '@/constants/limits';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -41,17 +42,22 @@ export function AnalysisNoticeSheet({
   notice?: AnalysisNotice | null;
 }) {
   const { colors, mode, shadows } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
 
   const tone = notice?.tone ?? 'info';
-  const toneColor = tone === 'success'
-    ? '#22C55E'
+  const toneTokens = tone === 'success'
+    ? noctalia.status.success
     : tone === 'warning'
-      ? '#F59E0B'
+      ? noctalia.status.warning
       : tone === 'error'
-        ? '#EF4444'
-        : colors.accent;
-  const toneBackground = mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+        ? noctalia.status.danger
+        : {
+          background: noctalia.surface.soft,
+          border: noctalia.surface.border,
+          text: noctalia.text.primary,
+          icon: noctalia.accent.base,
+        };
   const iconName = tone === 'success'
     ? 'checkmark.circle.fill'
     : tone === 'warning'
@@ -64,24 +70,24 @@ export function AnalysisNoticeSheet({
     <BottomSheet
       visible={visible}
       onClose={onClose}
-      backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+      backdropColor={noctalia.surface.overlay}
       style={[
         styles.noticeSheet,
-        { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
+        { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
         shadows.xl,
       ]}
       testID={TID.Sheet.AnalysisNotice}
     >
-      <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
+      <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.border }]} />
       <View style={styles.noticeHeader}>
-        <View style={[styles.noticeIcon, { backgroundColor: toneBackground }]}>
-          <IconSymbol name={iconName} size={24} color={toneColor} />
+        <View style={[styles.noticeIcon, { backgroundColor: toneTokens.background }]}>
+          <IconSymbol name={iconName} size={24} color={toneTokens.icon} />
         </View>
-        <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+        <Text style={[styles.sheetTitle, { color: noctalia.text.primary }]}>
           {notice?.title}
         </Text>
       </View>
-      <Text style={[styles.noticeMessage, { color: colors.textSecondary }]}>
+      <Text style={[styles.noticeMessage, { color: noctalia.text.secondary }]}>
         {notice?.message}
       </Text>
       <BottomSheetActions>
@@ -105,24 +111,25 @@ export function ReplaceImageSheet({
   isLocked: boolean;
 }) {
   const { colors, mode, shadows } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
 
   return (
     <BottomSheet
       visible={visible}
       onClose={onClose}
-      backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+      backdropColor={noctalia.surface.overlay}
       style={[
         styles.replaceImageSheet,
-        { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
+        { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
         shadows.xl,
       ]}
     >
-      <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-      <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+      <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.border }]} />
+      <Text style={[styles.sheetTitle, { color: noctalia.text.primary }]}>
         {t('journal.detail.image_replace.title')}
       </Text>
-      <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
+      <Text style={[styles.sheetSubtitle, { color: noctalia.text.secondary }]}>
         {t('journal.detail.image_replace.subtitle')}
       </Text>
       <BottomSheetActions>
@@ -158,6 +165,7 @@ export function ReanalyzeSheet({
   onImagePolicyChange: (next: 'keep' | 'regenerate') => void;
 }) {
   const { colors, mode, shadows } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const isRegenerate = imagePolicy === 'regenerate';
 
@@ -165,18 +173,18 @@ export function ReanalyzeSheet({
     <BottomSheet
       visible={visible}
       onClose={onClose}
-      backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+      backdropColor={noctalia.surface.overlay}
       style={[
         styles.replaceImageSheet,
-        { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
+        { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
         shadows.xl,
       ]}
     >
-      <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-      <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+      <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.border }]} />
+      <Text style={[styles.sheetTitle, { color: noctalia.text.primary }]}>
         {t('journal.detail.reanalyze_prompt.title')}
       </Text>
-      <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
+      <Text style={[styles.sheetSubtitle, { color: noctalia.text.secondary }]}>
         {t('journal.detail.reanalyze_prompt.message')}
       </Text>
       <Pressable
@@ -190,7 +198,7 @@ export function ReanalyzeSheet({
         disabled={isLocked}
         style={[
           styles.sheetCheckboxRow,
-          { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
+          { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.active },
           isLocked && { opacity: 0.5 },
         ]}
       >
@@ -198,20 +206,20 @@ export function ReanalyzeSheet({
           style={[
             styles.sheetCheckboxBox,
             {
-              borderColor: colors.divider,
-          backgroundColor: isRegenerate ? colors.accent : 'transparent',
+              borderColor: noctalia.surface.border,
+          backgroundColor: isRegenerate ? noctalia.action.primary : 'transparent',
             },
           ]}
         >
           {isRegenerate ? (
-            <IconSymbol name="checkmark" size={16} color={colors.textOnAccentSurface} />
+            <IconSymbol name="checkmark" size={16} color={noctalia.action.primaryText} />
           ) : null}
         </View>
         <View style={styles.sheetCheckboxContent}>
-          <Text style={[styles.sheetCheckboxLabel, { color: colors.textPrimary }]}>
+          <Text style={[styles.sheetCheckboxLabel, { color: noctalia.text.primary }]}>
             {t('journal.detail.reanalyze_prompt.regenerate_label')}
           </Text>
-          <Text style={[styles.sheetCheckboxNote, { color: colors.textSecondary }]}>
+          <Text style={[styles.sheetCheckboxNote, { color: noctalia.text.secondary }]}>
             {t('journal.detail.reanalyze_prompt.regenerate_note')}
           </Text>
         </View>
@@ -244,24 +252,25 @@ export function DeleteConfirmSheet({
   isDeleting: boolean;
 }) {
   const { colors, mode, shadows } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
 
   return (
     <BottomSheet
       visible={visible}
       onClose={onClose}
-      backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.35)'}
+      backdropColor={noctalia.surface.overlay}
       style={[
         styles.deleteSheet,
-        { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
+        { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
         shadows.xl,
       ]}
     >
-      <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-      <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+      <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.border }]} />
+      <Text style={[styles.sheetTitle, { color: noctalia.text.primary }]}>
         {t('journal.detail.delete_confirm.title')}
       </Text>
-      <Text style={[styles.deleteSheetMessage, { color: colors.textSecondary }]}>
+      <Text style={[styles.deleteSheetMessage, { color: noctalia.text.secondary }]}>
         {t('journal.detail.delete_confirm.message')}
       </Text>
       <BottomSheetActions>
@@ -301,6 +310,7 @@ export function QuotaLimitSheet({
   usageLimit?: number | null;
 }) {
   const { colors, mode: themeMode, shadows } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, themeMode), [colors, themeMode]);
   const { t } = useTranslation();
 
   const resolvedLimit = typeof usageLimit === 'number'
@@ -331,22 +341,22 @@ export function QuotaLimitSheet({
     <BottomSheet
       visible={visible}
       onClose={onClose}
-      backdropColor={themeMode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+      backdropColor={noctalia.surface.overlay}
       style={[
         styles.quotaLimitSheet,
-        { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
+        { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
         shadows.xl,
       ]}
       testID={TID.Sheet.QuotaLimit}
     >
-      <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
+      <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.border }]} />
       <Text
-        style={[styles.sheetTitle, { color: colors.textPrimary }]}
+        style={[styles.sheetTitle, { color: noctalia.text.primary }]}
         testID={TID.Text.QuotaLimitTitle}
       >
         {title}
       </Text>
-      <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
+      <Text style={[styles.sheetSubtitle, { color: noctalia.text.secondary }]}>
         {subtitle}
       </Text>
       <BottomSheetActions>
@@ -383,34 +393,35 @@ export function ImageErrorSheet({
   message?: string | null;
 }) {
   const { colors, mode, shadows } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
 
   return (
     <BottomSheet
       visible={visible}
       onClose={onClose}
-      backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+      backdropColor={noctalia.surface.overlay}
       style={[
         styles.noticeSheet,
-        { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
+        { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
         shadows.xl,
       ]}
     >
-      <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
+      <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.border }]} />
       <View style={styles.noticeHeader}>
         <View
           style={[
             styles.noticeIcon,
-            { backgroundColor: mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)' },
+            { backgroundColor: noctalia.status.danger.background },
           ]}
         >
-          <IconSymbol name="exclamationmark.circle.fill" size={24} color="#EF4444" />
+          <IconSymbol name="exclamationmark.circle.fill" size={24} color={noctalia.status.danger.icon} />
         </View>
-        <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+        <Text style={[styles.sheetTitle, { color: noctalia.text.primary }]}>
           {t('image_retry.generation_failed')}
         </Text>
       </View>
-      <Text style={[styles.noticeMessage, { color: colors.textSecondary }]}>
+      <Text style={[styles.noticeMessage, { color: noctalia.text.secondary }]}>
         {message ?? t('common.unknown_error')}
       </Text>
       <BottomSheetActions>

@@ -21,6 +21,7 @@ import {
   DESKTOP_BREAKPOINT,
   TAB_BAR_HEIGHT,
 } from "@/constants/layout";
+import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from "@/constants/noctaliaDesign";
 import { Fonts } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeContext";
 import { ScrollPerfProvider } from "@/context/ScrollPerfContext";
@@ -141,6 +142,7 @@ const MYTH_CARDS: CopyCard[] = [
  */
 export default function InspirationScreen() {
   const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, currentLang } = useTranslation();
   const { width } = useWindowDimensions();
   const scrollPerf = useScrollIdle();
@@ -337,7 +339,7 @@ export default function InspirationScreen() {
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <View
-        style={[styles.container, { backgroundColor: colors.backgroundDark }]}
+        style={[styles.container, { backgroundColor: noctalia.screen.background }]}
       >
         {/* Atmospheric dreamlike background */}
         <AtmosphericBackground />
@@ -382,6 +384,7 @@ export default function InspirationScreen() {
               >
                 <HomeStudioSection
                   colors={colors}
+                  noctalia={noctalia}
                   mode={mode}
                   t={t}
                   featuredSymbols={featuredSymbols}
@@ -394,6 +397,7 @@ export default function InspirationScreen() {
               <View style={styles.sectionSpacing}>
                 <RitualScrollSection
                   colors={colors}
+                  noctalia={noctalia}
                   rituals={RITUALS}
                   selectedRitualId={selectedRitualId}
                   ritualProgress={ritualProgress}
@@ -412,6 +416,7 @@ export default function InspirationScreen() {
               >
                 <TipCard
                   colors={colors}
+                  noctalia={noctalia}
                   tips={tips}
                   title={t("inspiration.tip.title")}
                   subtitle={t("inspiration.tip.subtitle")}
@@ -434,7 +439,7 @@ export default function InspirationScreen() {
                   colors={colors}
                   icon="lightbulb.fill"
                 />
-                <InfoCardsSection colors={colors} cards={prompts} />
+                <InfoCardsSection noctalia={noctalia} cards={prompts} />
               </View>
 
               {/* Exercises */}
@@ -451,7 +456,7 @@ export default function InspirationScreen() {
                   colors={colors}
                   icon="pencil"
                 />
-                <InfoCardsSection colors={colors} cards={exercises} />
+                <InfoCardsSection noctalia={noctalia} cards={exercises} />
               </View>
 
               {/* Myths */}
@@ -468,7 +473,7 @@ export default function InspirationScreen() {
                   colors={colors}
                   icon="quote.opening"
                 />
-                <InfoCardsSection colors={colors} cards={myths} />
+                <InfoCardsSection noctalia={noctalia} cards={myths} />
               </View>
 
               {/* Closing Quote */}
@@ -479,7 +484,7 @@ export default function InspirationScreen() {
                   isDesktopLayout && styles.desktopHalfSection,
                 ]}
               >
-                <QuoteCard colors={colors} mode={mode} />
+                <QuoteCard noctalia={noctalia} />
               </View>
             </View>
           </ScreenContainer>
@@ -492,6 +497,7 @@ export default function InspirationScreen() {
 
 type HomeStudioSectionProps = {
   colors: ReturnType<typeof useTheme>["colors"];
+  noctalia: NoctaliaDesignTokens;
   mode: "light" | "dark";
   t: TranslateFn;
   featuredSymbols: SymbolPreview[];
@@ -501,6 +507,7 @@ type HomeStudioSectionProps = {
 
 type DreamSymbolsHeroProps = {
   colors: ReturnType<typeof useTheme>["colors"];
+  noctalia: NoctaliaDesignTokens;
   mode: "light" | "dark";
   t: TranslateFn;
   isDesktopLayout: boolean;
@@ -510,6 +517,7 @@ type DreamSymbolsHeroProps = {
 
 const HomeStudioSection = memo(function HomeStudioSection({
   colors,
+  noctalia,
   mode,
   t,
   featuredSymbols,
@@ -519,6 +527,7 @@ const HomeStudioSection = memo(function HomeStudioSection({
   return (
     <DreamSymbolsHero
       colors={colors}
+      noctalia={noctalia}
       mode={mode}
       t={t}
       featuredSymbols={featuredSymbols}
@@ -530,21 +539,20 @@ const HomeStudioSection = memo(function HomeStudioSection({
 
 const DreamSymbolsHero = memo(function DreamSymbolsHero({
   colors,
+  noctalia,
   mode,
   t,
   featuredSymbols,
   isDesktopLayout,
   onOpenSymbols,
 }: DreamSymbolsHeroProps) {
-  const accent = mode === "dark" ? "#D8C39A" : colors.accentDark;
+  const accent = noctalia.accent.base;
   const symbolCardStyle = StyleSheet.flatten([
     styles.symbolHeroCard,
     isDesktopLayout && styles.symbolHeroCardDesktop,
     {
-      backgroundColor:
-        mode === "dark" ? "rgba(24, 16, 45, 0.92)" : "rgba(255, 253, 248, 0.97)",
-      borderColor:
-        mode === "dark" ? "rgba(216, 195, 154, 0.24)" : colors.divider,
+      backgroundColor: noctalia.surface.raised,
+      borderColor: noctalia.surface.border,
     },
   ]);
 
@@ -563,10 +571,7 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
               style={[
                 styles.symbolHeroIconWrap,
                 {
-                  backgroundColor:
-                    mode === "dark"
-                      ? "rgba(216, 195, 154, 0.16)"
-                      : `${colors.accent}1F`,
+                  backgroundColor: noctalia.surface.soft,
                 },
               ]}
             >
@@ -578,14 +583,14 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
           </View>
 
           <Text
-            style={[styles.symbolHeroTitle, { color: colors.textPrimary }]}
+            style={[styles.symbolHeroTitle, { color: noctalia.text.primary }]}
             numberOfLines={2}
             adjustsFontSizeToFit
             minimumFontScale={0.84}
           >
             {t("symbols.home_card_title")}
           </Text>
-          <Text style={[styles.symbolHeroBody, { color: colors.textSecondary }]}>
+          <Text style={[styles.symbolHeroBody, { color: noctalia.text.secondary }]}>
             {t("symbols.home_card_body")}
           </Text>
 
@@ -597,9 +602,8 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
               styles.symbolHeroExploreButton,
               {
                 backgroundColor:
-                  mode === "dark" ? "rgba(216, 195, 154, 0.14)" : colors.accent,
-                borderColor:
-                  mode === "dark" ? "rgba(216, 195, 154, 0.28)" : colors.accentDark,
+                  mode === "dark" ? noctalia.surface.active : noctalia.action.primary,
+                borderColor: noctalia.action.primaryBorder,
               },
               pressed && styles.pressedButton,
             ]}
@@ -607,12 +611,12 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
             <IconSymbol
               name="book.closed.fill"
               size={18}
-              color={mode === "dark" ? accent : colors.textOnAccentSurface}
+              color={mode === "dark" ? accent : noctalia.action.primaryText}
             />
             <Text
               style={[
                 styles.symbolHeroExploreText,
-                { color: mode === "dark" ? accent : colors.textOnAccentSurface },
+                { color: mode === "dark" ? accent : noctalia.action.primaryText },
               ]}
               numberOfLines={1}
             >
@@ -621,7 +625,7 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
             <Text
               style={[
                 styles.symbolHeroExploreArrow,
-                { color: mode === "dark" ? accent : colors.textOnAccentSurface },
+                { color: mode === "dark" ? accent : noctalia.action.primaryText },
               ]}
             >
               →
@@ -639,13 +643,8 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
                   styles.symbolHeroQuickChip,
                   {
                     backgroundColor:
-                      mode === "dark"
-                        ? "rgba(255, 255, 255, 0.06)"
-                        : "rgba(255, 255, 255, 0.72)",
-                    borderColor:
-                      mode === "dark"
-                        ? "rgba(255, 255, 255, 0.09)"
-                        : colors.divider,
+                      mode === "dark" ? noctalia.surface.soft : noctalia.surface.raised,
+                    borderColor: noctalia.surface.border,
                   },
                   pressed && styles.pressedButton,
                 ]}
@@ -655,9 +654,7 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
                     styles.symbolHeroQuickIcon,
                     {
                       backgroundColor:
-                        mode === "dark"
-                          ? "rgba(216, 195, 154, 0.14)"
-                          : `${colors.accent}1A`,
+                        mode === "dark" ? noctalia.surface.active : noctalia.surface.soft,
                     },
                   ]}
                 >
@@ -666,7 +663,7 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
                 <Text
                   style={[
                     styles.symbolHeroQuickName,
-                    { color: colors.textPrimary },
+                    { color: noctalia.text.primary },
                   ]}
                   numberOfLines={1}
                   adjustsFontSizeToFit
@@ -696,6 +693,7 @@ const RITUAL_ICONS: Record<RitualId, string> = {
 
 type RitualScrollSectionProps = {
   colors: ReturnType<typeof useTheme>["colors"];
+  noctalia: NoctaliaDesignTokens;
   rituals: RitualConfig[];
   selectedRitualId: RitualId;
   ritualProgress: RitualProgressState;
@@ -705,6 +703,7 @@ type RitualScrollSectionProps = {
 
 const RitualScrollSection = memo(function RitualScrollSection({
   colors,
+  noctalia,
   rituals,
   selectedRitualId,
   ritualProgress,
@@ -732,7 +731,7 @@ const RitualScrollSection = memo(function RitualScrollSection({
   return (
     <View>
       <View style={styles.popularHeader}>
-        <Text style={[styles.popularTitle, { color: colors.textPrimary }]}>
+        <Text style={[styles.popularTitle, { color: noctalia.text.primary }]}>
           {t("inspiration.ritual.title")}
         </Text>
       </View>
@@ -746,7 +745,10 @@ const RitualScrollSection = memo(function RitualScrollSection({
           const ritualCardStyle = StyleSheet.flatten([
             styles.ritualCard,
             isActive && styles.ritualCardActive,
-            isActive && { borderColor: colors.accent },
+            {
+              backgroundColor: noctalia.surface.raised,
+              borderColor: isActive ? noctalia.accent.base : noctalia.surface.border,
+            },
           ]);
 
           return (
@@ -764,18 +766,18 @@ const RitualScrollSection = memo(function RitualScrollSection({
               <View
                 style={[
                   styles.ritualIconWrapper,
-                  { backgroundColor: `${colors.accent}35` },
+                  { backgroundColor: noctalia.surface.soft },
                 ]}
               >
                 <IconSymbol
                   name={iconName as any}
                   size={20}
-                  color={colors.accent}
+                  color={noctalia.accent.base}
                 />
               </View>
 
               <Text
-                style={[styles.ritualName, { color: colors.textPrimary }]}
+                style={[styles.ritualName, { color: noctalia.text.primary }]}
                 numberOfLines={1}
               >
                 {t(ritual.labelKey)}
@@ -783,7 +785,7 @@ const RitualScrollSection = memo(function RitualScrollSection({
               <Text
                 style={[
                   styles.ritualDescription,
-                  { color: colors.textSecondary },
+                  { color: noctalia.text.secondary },
                 ]}
                 numberOfLines={3}
               >
@@ -796,10 +798,7 @@ const RitualScrollSection = memo(function RitualScrollSection({
                   style={[
                     styles.ritualProgressBarTrack,
                     {
-                      backgroundColor:
-                        mode === "dark"
-                          ? `${colors.accent}30`
-                          : `${colors.accent}20`,
+                      backgroundColor: noctalia.surface.border,
                     },
                   ]}
                 >
@@ -807,14 +806,14 @@ const RitualScrollSection = memo(function RitualScrollSection({
                     style={[
                       styles.ritualProgressBarFill,
                       {
-                        backgroundColor: colors.accent,
+                        backgroundColor: noctalia.accent.base,
                         width: `${Math.max(progressRatio * 100, 0)}%` as any,
                       },
                     ]}
                   />
                 </View>
                 <Text
-                  style={[styles.ritualProgressText, { color: colors.accent }]}
+                  style={[styles.ritualProgressText, { color: noctalia.accent.base }]}
                 >
                   {t("inspiration.ritual.steps_progress")
                     .replace("{completed}", String(completedCount))
@@ -833,6 +832,7 @@ const RitualScrollSection = memo(function RitualScrollSection({
 
 type TipCardProps = {
   colors: ReturnType<typeof useTheme>["colors"];
+  noctalia: NoctaliaDesignTokens;
   title: string;
   subtitle: string;
   tips: string[];
@@ -842,6 +842,7 @@ type TipCardProps = {
 
 const TipCard = memo(function TipCard({
   colors,
+  noctalia,
   title,
   subtitle,
   tips,
@@ -868,15 +869,15 @@ const TipCard = memo(function TipCard({
     >
       {/* Decorative accent stripe */}
       <View
-        style={[styles.tipAccentStripe, { backgroundColor: colors.accent }]}
+        style={[styles.tipAccentStripe, { backgroundColor: noctalia.accent.base }]}
       />
       <View style={styles.tipInner}>
         <View style={styles.tipHeaderRow}>
           <View style={styles.tipHeader}>
-            <Text style={[styles.tipTitle, { color: colors.textPrimary }]}>
+            <Text style={[styles.tipTitle, { color: noctalia.text.primary }]}>
               {title}
             </Text>
-            <Text style={[styles.tipSubtitle, { color: colors.textSecondary }]}>
+            <Text style={[styles.tipSubtitle, { color: noctalia.text.secondary }]}>
               {subtitle}
             </Text>
           </View>
@@ -884,16 +885,15 @@ const TipCard = memo(function TipCard({
             style={[
               styles.tipBadgeCircle,
               {
-                backgroundColor:
-                  mode === "dark" ? `${colors.accent}60` : `${colors.accent}30`,
+                backgroundColor: noctalia.surface.soft,
               },
             ]}
           >
-            <IconSymbol name="sparkles" size={18} color={colors.accent} />
+            <IconSymbol name="sparkles" size={18} color={noctalia.accent.base} />
           </View>
         </View>
 
-        <Text style={[styles.tipBody, { color: colors.textPrimary }]}>
+        <Text style={[styles.tipBody, { color: noctalia.text.primary }]}>
           {tips[tipIndex]}
         </Text>
 
@@ -902,8 +902,7 @@ const TipCard = memo(function TipCard({
           style={({ pressed }) => [
             styles.tipButton,
             {
-              backgroundColor:
-                mode === "dark" ? `${colors.accent}50` : `${colors.accent}25`,
+              backgroundColor: noctalia.surface.soft,
             },
             pressed && { opacity: 0.6 },
           ]}
@@ -912,9 +911,9 @@ const TipCard = memo(function TipCard({
           <IconSymbol
             name="arrow.triangle.2.circlepath"
             size={16}
-            color={colors.accent}
+            color={noctalia.accent.base}
           />
-          <Text style={[styles.tipButtonLabel, { color: colors.accent }]}>
+          <Text style={[styles.tipButtonLabel, { color: noctalia.accent.base }]}>
             {nextLabel}
           </Text>
         </Pressable>
@@ -929,17 +928,17 @@ const TipCard = memo(function TipCard({
 // ─── Info Card ───────────────────────────────────────────────────────────────
 
 type InfoCardProps = {
-  colors: ReturnType<typeof useTheme>["colors"];
+  noctalia: NoctaliaDesignTokens;
   icon: IconName;
   title: string;
   body: string;
 };
 
 const InfoCardsSection = memo(function InfoCardsSection({
-  colors,
+  noctalia,
   cards,
 }: {
-  colors: ReturnType<typeof useTheme>["colors"];
+  noctalia: NoctaliaDesignTokens;
   cards: ResolvedCopyCard[];
 }) {
   return (
@@ -947,7 +946,7 @@ const InfoCardsSection = memo(function InfoCardsSection({
       {cards.map((card) => (
         <InfoCard
           key={card.id}
-          colors={colors}
+          noctalia={noctalia}
           icon={card.icon}
           title={card.title}
           body={card.body}
@@ -957,33 +956,31 @@ const InfoCardsSection = memo(function InfoCardsSection({
   );
 });
 
-const InfoCard = memo(function InfoCard({ colors, icon, title, body }: InfoCardProps) {
-  const cardBackgroundColor = colors.backgroundCard;
-
+const InfoCard = memo(function InfoCard({ noctalia, icon, title, body }: InfoCardProps) {
   return (
     <View
       style={[
         styles.infoCard,
-        { borderColor: colors.divider, backgroundColor: cardBackgroundColor },
+        { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.raised },
       ]}
     >
       <View
         style={[
           styles.infoIconWrapper,
-          { backgroundColor: colors.backgroundSecondary },
+          { backgroundColor: noctalia.surface.soft },
         ]}
       >
         <IconSymbol
           name={icon}
           size={18}
-          color={colors.accent}
+          color={noctalia.accent.base}
         />
       </View>
       <View style={styles.infoContent}>
-        <Text style={[styles.infoTitle, { color: colors.textPrimary }]}>
+        <Text style={[styles.infoTitle, { color: noctalia.text.primary }]}>
           {title}
         </Text>
-        <Text style={[styles.infoBody, { color: colors.textSecondary }]}>
+        <Text style={[styles.infoBody, { color: noctalia.text.secondary }]}>
           {body}
         </Text>
       </View>
@@ -994,16 +991,17 @@ const InfoCard = memo(function InfoCard({ colors, icon, title, body }: InfoCardP
 // ─── Quote Card ──────────────────────────────────────────────────────────────
 
 const QuoteCard = memo(function QuoteCard({
-  colors,
-  mode,
+  noctalia,
 }: {
-  colors: ReturnType<typeof useTheme>["colors"];
-  mode: "light" | "dark";
+  noctalia: NoctaliaDesignTokens;
 }) {
   const { t } = useTranslation();
   const quoteCardStyle = useMemo(
-    () => StyleSheet.flatten([styles.quoteCard, { borderColor: colors.divider }]),
-    [colors.divider],
+    () => StyleSheet.flatten([
+      styles.quoteCard,
+      { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.raised },
+    ]),
+    [noctalia.surface.border, noctalia.surface.raised],
   );
 
   return (
@@ -1017,24 +1015,23 @@ const QuoteCard = memo(function QuoteCard({
         style={[
           styles.quoteDecoLine,
           {
-            backgroundColor:
-              mode === "dark" ? `${colors.accent}60` : `${colors.accent}40`,
+            backgroundColor: noctalia.accent.base,
           },
         ]}
       />
       <View style={styles.quoteInner}>
-        <IconSymbol name="quote.opening" size={24} color={colors.accent} />
-        <Text style={[styles.quoteText, { color: colors.textPrimary }]}>
+        <IconSymbol name="quote.opening" size={24} color={noctalia.accent.base} />
+        <Text style={[styles.quoteText, { color: noctalia.text.primary }]}>
           {t("inspiration.quote.text")}
         </Text>
         <View style={styles.quoteAttribution}>
           <View
             style={[
               styles.quoteAttributionDash,
-              { backgroundColor: colors.accent },
+              { backgroundColor: noctalia.accent.base },
             ]}
           />
-          <Text style={[styles.quoteAuthor, { color: colors.textSecondary }]}>
+          <Text style={[styles.quoteAuthor, { color: noctalia.text.secondary }]}>
             {t("inspiration.quote.author")}
           </Text>
         </View>
@@ -1141,14 +1138,12 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 12,
-    letterSpacing: 0.7,
     textTransform: "uppercase",
   },
   symbolHeroTitle: {
     fontFamily: Fonts.fraunces.semiBold,
     fontSize: 33,
     lineHeight: 38,
-    letterSpacing: 0,
   },
   symbolHeroBody: {
     fontFamily: Fonts.spaceGrotesk.regular,
@@ -1212,7 +1207,6 @@ const styles = StyleSheet.create({
   popularTitle: {
     fontFamily: Fonts.fraunces.semiBold,
     fontSize: 20,
-    letterSpacing: 0.3,
   },
   ritualScrollContainer: {
     paddingHorizontal: 20,
@@ -1262,7 +1256,6 @@ const styles = StyleSheet.create({
   ritualProgressText: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 11,
-    letterSpacing: 0.2,
   },
 
   // Tip Card
@@ -1300,7 +1293,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.fraunces.semiBold,
     fontSize: 19,
     marginBottom: 4,
-    letterSpacing: 0.3,
   },
   tipSubtitle: {
     fontFamily: Fonts.spaceGrotesk.regular,
@@ -1347,7 +1339,6 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 15,
-    letterSpacing: 0.1,
   },
   infoBody: {
     fontFamily: Fonts.spaceGrotesk.regular,
@@ -1374,7 +1365,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 28,
     fontStyle: "italic",
-    letterSpacing: 0.2,
   },
   quoteAttribution: {
     flexDirection: "row",
@@ -1391,7 +1381,6 @@ const styles = StyleSheet.create({
   quoteAuthor: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 13,
-    letterSpacing: 0.3,
   },
 
 });

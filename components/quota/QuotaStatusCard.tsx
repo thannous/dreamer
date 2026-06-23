@@ -10,7 +10,8 @@ import { getGuestDreamRecordingLimit } from '@/lib/guestLimits';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { router } from 'expo-router';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { Fonts, GlassCardTokens } from '@/constants/theme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { Fonts } from '@/constants/theme';
 import { QUOTAS } from '@/constants/limits';
 import { getLocalDreamRecordingCount } from '@/services/quota/GuestDreamCounter';
 import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
@@ -63,7 +64,8 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const { user } = useAuth();
   const { dreams } = useDreams();
   const { colors, mode } = useTheme();
-  const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const cardBg = noctalia.surface.raised;
   const { t } = useTranslation();
   const { quotaStatus, loading, error, refetch, tier } = useQuota();
   const [guestRecordedTotal, setGuestRecordedTotal] = useState(0);
@@ -164,30 +166,40 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   };
 
   return (
-    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}>
+    <View style={[styles.card, { backgroundColor: cardBg, borderColor: noctalia.surface.border }]}>
       <View style={styles.headerRow}>
         <View style={styles.headerTextContainer}>
-          <Text style={[styles.title, { color: colors.textPrimary }]}>
+          <Text style={[styles.title, { color: noctalia.text.primary }]}>
             {t('settings.quota.title')}
           </Text>
-          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+          <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
             {t('settings.quota.subtitle', { tier: tierLabel })}
           </Text>
         </View>
-        {loading && <ActivityIndicator color={colors.accent} />}
+        {loading && <ActivityIndicator color={noctalia.accent.base} />}
       </View>
 
       {error && (
-        <Pressable accessibilityRole="button" onPress={refetch} style={styles.errorBanner}>
-          <Text style={[styles.errorText, { color: colors.textPrimary }]}>
+        <Pressable
+          accessibilityRole="button"
+          onPress={refetch}
+          style={[
+            styles.errorBanner,
+            {
+              backgroundColor: noctalia.status.danger.background,
+              borderColor: noctalia.status.danger.border,
+            },
+          ]}
+        >
+          <Text style={[styles.errorText, { color: noctalia.status.danger.text }]}>
             {t('settings.quota.error')}
           </Text>
         </Pressable>
       )}
 
       {isGuest && isUpgradedGuest && (
-        <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
-          <Text style={[styles.noticeText, { color: colors.textSecondary }]}>
+        <View style={[styles.notice, { backgroundColor: noctalia.surface.soft }]}>
+          <Text style={[styles.noticeText, { color: noctalia.text.secondary }]}>
             {localizedQuotaReason
               ? localizedQuotaReason
               : t('settings.quota.upgraded_message')}
@@ -196,8 +208,8 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
       )}
 
       {isGuest && !isUpgradedGuest && (
-        <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
-          <Text style={[styles.noticeText, { color: colors.textSecondary }]}>
+        <View style={[styles.notice, { backgroundColor: noctalia.surface.soft }]}>
+          <Text style={[styles.noticeText, { color: noctalia.text.secondary }]}>
             {isDegradedGuest && localizedQuotaReason
               ? localizedQuotaReason
               : t('settings.quota.guest_message', {
@@ -214,11 +226,11 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
         return (
           <View key={row.key} style={styles.row}>
             <View style={styles.rowHeader}>
-              <Text style={[styles.rowLabel, { color: colors.textSecondary }]}>
+              <Text style={[styles.rowLabel, { color: noctalia.text.secondary }]}>
                 {row.label}
               </Text>
               <Text
-                style={[styles.rowValue, { color: colors.textPrimary }]}
+                style={[styles.rowValue, { color: noctalia.text.primary }]}
                 testID={row.testID}
                 accessibilityLabel={`${row.label}: ${formattedValue}`}
               >
@@ -227,7 +239,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
             </View>
             {row.usage && row.usage.limit !== null && (
               <View
-                style={[styles.progressTrack, { backgroundColor: colors.backgroundSecondary }]}
+                style={[styles.progressTrack, { backgroundColor: noctalia.surface.soft }]}
                 accessibilityRole="progressbar"
                 accessibilityLabel={row.label}
                 accessibilityValue={getProgressAccessibilityValue(row.usage, formattedValue)}
@@ -236,7 +248,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
                   style={[
                     styles.progressFill,
                     {
-                      backgroundColor: colors.accent,
+                      backgroundColor: noctalia.accent.base,
                       width: `${getProgress(row.usage)}%`,
                     },
                   ]}
@@ -248,16 +260,16 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
       })}
 
       {tier === 'plus' && (
-        <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
-          <Text style={[styles.noticeText, { color: colors.textPrimary }]}>
+        <View style={[styles.notice, { backgroundColor: noctalia.surface.soft }]}>
+          <Text style={[styles.noticeText, { color: noctalia.text.primary }]}>
             {t('settings.quota.plus_message')}
           </Text>
         </View>
       )}
 
       {tier === 'free' && freeResetMessage && (
-        <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
-          <Text style={[styles.noticeText, { color: colors.textSecondary }]}>
+        <View style={[styles.notice, { backgroundColor: noctalia.surface.soft }]}>
+          <Text style={[styles.noticeText, { color: noctalia.text.secondary }]}>
             {freeResetMessage}
           </Text>
         </View>
@@ -265,11 +277,17 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
 
       {showCta && (
         <Pressable
-          style={[styles.ctaButton, { backgroundColor: colors.accent }]}
+          style={[
+            styles.ctaButton,
+            {
+              backgroundColor: noctalia.action.primary,
+              borderColor: noctalia.action.primaryBorder,
+            },
+          ]}
           accessibilityRole="button"
           onPress={handleUpgrade}
         >
-          <Text style={[styles.ctaText, { color: colors.textPrimary }]}>{ctaLabel}</Text>
+          <Text style={[styles.ctaText, { color: noctalia.action.primaryText }]}>{ctaLabel}</Text>
         </Pressable>
       )}
     </View>
@@ -304,7 +322,7 @@ const styles = StyleSheet.create({
   errorBanner: {
     padding: 12,
     borderRadius: 12,
-    backgroundColor: '#EF444422',
+    borderWidth: 1,
   },
   errorText: {
     fontFamily: Fonts.spaceGrotesk.medium,
@@ -319,7 +337,6 @@ const styles = StyleSheet.create({
   },
   rowLabel: {
     fontSize: 13,
-    letterSpacing: 0.6,
     textTransform: 'uppercase',
     fontFamily: Fonts.spaceGrotesk.medium,
   },
@@ -345,6 +362,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   ctaButton: {
+    borderWidth: 1,
     alignSelf: 'flex-start',
     paddingHorizontal: 18,
     paddingVertical: 10,
@@ -352,6 +370,5 @@ const styles = StyleSheet.create({
   },
   ctaText: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    letterSpacing: 0.5,
   },
 });

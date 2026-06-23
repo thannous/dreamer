@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Platform } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -21,6 +22,7 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
   const [localEndDate, setLocalEndDate] = useState<Date | null>(endDate);
   const [pickerMode, setPickerMode] = useState<PickerMode>('none');
   const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const { formatDate } = useLocaleFormatting();
 
@@ -88,57 +90,57 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.backgroundCard }]}>
-      <Text style={[styles.title, { color: colors.textPrimary }]}>{t('journal.date_picker.title')}</Text>
+    <View style={[styles.container, { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border }]}>
+      <Text style={[styles.title, { color: noctalia.text.primary }]}>{t('journal.date_picker.title')}</Text>
 
       {/* Quick select buttons */}
       <View style={styles.quickSelectContainer}>
-        <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>{t('journal.date_picker.quick_select')}</Text>
+        <Text style={[styles.sectionLabel, { color: noctalia.text.secondary }]}>{t('journal.date_picker.quick_select')}</Text>
         <View style={styles.quickButtons}>
           <Pressable
-            style={[styles.quickButton, { backgroundColor: colors.backgroundSecondary }]}
+            style={[styles.quickButton, { backgroundColor: noctalia.surface.soft }]}
             onPress={() => handleQuickSelect(0)}
           >
-            <Text style={[styles.quickButtonText, { color: colors.textPrimary }]}>{t('journal.date_picker.quick.today')}</Text>
+            <Text style={[styles.quickButtonText, { color: noctalia.text.primary }]}>{t('journal.date_picker.quick.today')}</Text>
           </Pressable>
           <Pressable
-            style={[styles.quickButton, { backgroundColor: colors.backgroundSecondary }]}
+            style={[styles.quickButton, { backgroundColor: noctalia.surface.soft }]}
             onPress={() => handleQuickSelect(7)}
           >
-            <Text style={[styles.quickButtonText, { color: colors.textPrimary }]}>{t('journal.date_picker.quick.last7')}</Text>
+            <Text style={[styles.quickButtonText, { color: noctalia.text.primary }]}>{t('journal.date_picker.quick.last7')}</Text>
           </Pressable>
           <Pressable
-            style={[styles.quickButton, { backgroundColor: colors.backgroundSecondary }]}
+            style={[styles.quickButton, { backgroundColor: noctalia.surface.soft }]}
             onPress={() => handleQuickSelect(30)}
           >
-            <Text style={[styles.quickButtonText, { color: colors.textPrimary }]}>{t('journal.date_picker.quick.last30')}</Text>
+            <Text style={[styles.quickButtonText, { color: noctalia.text.primary }]}>{t('journal.date_picker.quick.last30')}</Text>
           </Pressable>
         </View>
       </View>
 
       {/* Custom range */}
       <View style={styles.customRangeContainer}>
-        <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>{t('journal.date_picker.custom_range')}</Text>
+        <Text style={[styles.sectionLabel, { color: noctalia.text.secondary }]}>{t('journal.date_picker.custom_range')}</Text>
 
         {/* Start Date */}
         <View style={styles.dateRow}>
-          <Text style={[styles.dateLabel, { color: colors.textSecondary }]}>{t('journal.date_picker.from')}</Text>
+          <Text style={[styles.dateLabel, { color: noctalia.text.secondary }]}>{t('journal.date_picker.from')}</Text>
           <Pressable
-            style={[styles.dateButton, { backgroundColor: colors.backgroundSecondary }]}
+            style={[styles.dateButton, { backgroundColor: noctalia.surface.soft }]}
             onPress={() => setPickerMode('start')}
           >
-            <Text style={[styles.dateButtonText, { color: colors.textPrimary }]}>{formatPickerDate(localStartDate)}</Text>
+            <Text style={[styles.dateButtonText, { color: noctalia.text.primary }]}>{formatPickerDate(localStartDate)}</Text>
           </Pressable>
         </View>
 
         {/* End Date */}
         <View style={styles.dateRow}>
-          <Text style={[styles.dateLabel, { color: colors.textSecondary }]}>{t('journal.date_picker.to')}</Text>
+          <Text style={[styles.dateLabel, { color: noctalia.text.secondary }]}>{t('journal.date_picker.to')}</Text>
           <Pressable
-            style={[styles.dateButton, { backgroundColor: colors.backgroundSecondary }]}
+            style={[styles.dateButton, { backgroundColor: noctalia.surface.soft }]}
             onPress={() => setPickerMode('end')}
           >
-            <Text style={[styles.dateButtonText, { color: colors.textPrimary }]}>{formatPickerDate(localEndDate)}</Text>
+            <Text style={[styles.dateButtonText, { color: noctalia.text.primary }]}>{formatPickerDate(localEndDate)}</Text>
           </Pressable>
         </View>
       </View>
@@ -170,16 +172,16 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
       {/* Action buttons */}
       <View style={styles.actionButtons}>
         <Pressable
-          style={[styles.actionButton, styles.clearButton, { backgroundColor: colors.backgroundSecondary }]}
+          style={[styles.actionButton, styles.clearButton, { backgroundColor: noctalia.surface.soft }]}
           onPress={handleClear}
         >
-          <Text style={[styles.clearButtonText, { color: colors.textPrimary }]}>{t('common.clear')}</Text>
+          <Text style={[styles.clearButtonText, { color: noctalia.text.primary }]}>{t('common.clear')}</Text>
         </Pressable>
         <Pressable
-          style={[styles.actionButton, styles.applyButton, { backgroundColor: colors.accent }]}
+          style={[styles.actionButton, styles.applyButton, { backgroundColor: noctalia.action.primary }]}
           onPress={handleApply}
         >
-          <Text style={[styles.applyButtonText, { color: colors.backgroundCard }]}>{t('common.apply')}</Text>
+          <Text style={[styles.applyButtonText, { color: noctalia.action.primaryText }]}>{t('common.apply')}</Text>
         </Pressable>
       </View>
 
@@ -187,7 +189,7 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
         style={styles.cancelButton}
         onPress={onClose}
       >
-        <Text style={[styles.cancelButtonText, { color: colors.textSecondary }]}>{t('common.cancel')}</Text>
+        <Text style={[styles.cancelButtonText, { color: noctalia.text.secondary }]}>{t('common.cancel')}</Text>
       </Pressable>
     </View>
   );
@@ -199,6 +201,7 @@ const styles = StyleSheet.create({
     padding: ThemeLayout.spacing.lg,
     width: '100%',
     maxWidth: 400,
+    borderWidth: 1,
   },
   title: {
     fontSize: 20,

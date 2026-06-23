@@ -45,6 +45,13 @@ url: "http://localhost:8081"
 - waitForAnimationToEnd
 - tapOn: "(Tell the dream you never forgot.*|Raconte ce r.ve que tu n.as jamais oubli.*|Cuenta ese sue.o que nunca olvidaste.*)"
 - inputText: "I keep returning to my childhood hallway where my grandmother is waiting near a blue door."
+- scrollUntilVisible:
+    element:
+      id: component.recording.activationInsight
+    direction: DOWN
+    visibilityPercentage: 50
+- assertVisible:
+    id: text.recording.activationInsight.summary
 - swipe:
     start: 50%, 84%
     end: 50%, 42%

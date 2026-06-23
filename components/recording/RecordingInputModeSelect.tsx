@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -19,9 +20,16 @@ export function RecordingInputModeSelect({
   disabled = false,
   onChange,
 }: RecordingInputModeSelectProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const surfaceColor = noctalia.surface.base;
+  const borderColor = noctalia.surface.border;
+  const textColor = noctalia.text.primary;
+  const mutedColor = noctalia.text.secondary;
+  const accentColor = noctalia.accent.base;
+  const selectedMetaColor = mode === 'dark' ? noctalia.accent.soft : noctalia.accent.strong;
 
   const options = useMemo(
     () => [
@@ -57,8 +65,8 @@ export function RecordingInputModeSelect({
         style={[
           styles.trigger,
           {
-            backgroundColor: colors.backgroundSecondary,
-            borderColor: colors.divider,
+            backgroundColor: surfaceColor,
+            borderColor,
             opacity: disabled ? 0.65 : 1,
           },
         ]}
@@ -67,7 +75,7 @@ export function RecordingInputModeSelect({
         accessibilityState={{ expanded: isOpen, disabled }}
         testID={TID.Button.InputModeSelect}
       >
-        <IconSymbol name="gear" size={20} color={colors.textPrimary} />
+        <IconSymbol name="gear" size={20} color={accentColor} />
       </Pressable>
 
       {isOpen ? (
@@ -75,14 +83,14 @@ export function RecordingInputModeSelect({
           style={[
             styles.menu,
             {
-              backgroundColor: colors.backgroundSecondary,
-              borderColor: colors.divider,
+              backgroundColor: surfaceColor,
+              borderColor,
             },
           ]}
         >
           <View style={styles.menuHeader}>
-            <IconSymbol name={selected.icon} size={15} color={colors.textSecondary} />
-            <Text style={[styles.label, { color: colors.textSecondary }]}>
+            <IconSymbol name={selected.icon} size={15} color={mutedColor} />
+            <Text style={[styles.label, { color: mutedColor }]}>
               {t('recording.preference.view_title')}
             </Text>
           </View>
@@ -95,8 +103,10 @@ export function RecordingInputModeSelect({
                 style={[
                   styles.option,
                   {
-                    backgroundColor: isSelected ? `${colors.accent}24` : `${colors.textPrimary}08`,
-                    borderColor: isSelected ? colors.accent : `${colors.divider}AA`,
+                    backgroundColor: isSelected
+                      ? `${accentColor}24`
+                      : noctalia.surface.soft,
+                    borderColor: isSelected ? accentColor : borderColor,
                   },
                 ]}
                 accessibilityRole="button"
@@ -107,21 +117,23 @@ export function RecordingInputModeSelect({
                   style={[
                     styles.optionIcon,
                     {
-                      backgroundColor: isSelected ? `${colors.accent}28` : `${colors.textPrimary}10`,
+                      backgroundColor: isSelected
+                        ? `${accentColor}28`
+                        : noctalia.surface.soft,
                     },
                   ]}
                 >
                   <IconSymbol
                     name={option.icon}
                     size={16}
-                    color={isSelected ? colors.accent : colors.textSecondary}
+                    color={isSelected ? accentColor : mutedColor}
                   />
                 </View>
                 <View style={styles.optionCopy}>
                   <Text
                     style={[
                       styles.optionText,
-                      { color: isSelected ? colors.accent : colors.textPrimary },
+                      { color: textColor },
                     ]}
                   >
                     {option.label}
@@ -129,7 +141,7 @@ export function RecordingInputModeSelect({
                   <Text
                     style={[
                       styles.optionMeta,
-                      { color: isSelected ? colors.accent : colors.textSecondary },
+                      { color: isSelected ? selectedMetaColor : mutedColor },
                     ]}
                   >
                     {isSelected
@@ -138,8 +150,12 @@ export function RecordingInputModeSelect({
                   </Text>
                 </View>
                 {isSelected ? (
-                  <View style={[styles.checkBadge, { backgroundColor: colors.accent }]}>
-                    <IconSymbol name="checkmark" size={13} color={colors.backgroundSecondary} />
+                  <View style={[styles.checkBadge, { backgroundColor: accentColor }]}>
+                    <IconSymbol
+                      name="checkmark"
+                      size={13}
+                      color={noctalia.action.primaryText}
+                    />
                   </View>
                 ) : null}
               </Pressable>
@@ -179,7 +195,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: Fonts.spaceGrotesk.medium,
     textTransform: 'uppercase',
-    letterSpacing: 0,
   },
   menu: {
     position: 'absolute',

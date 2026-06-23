@@ -71,6 +71,19 @@ const recordingModeKeys = [
   'recording.mode.voice_resume_detail',
 ] as const;
 
+const recordingActivationInsightKeys = [
+  'recording.activation_insight.eyebrow',
+  'recording.activation_insight.summary.memory',
+  'recording.activation_insight.summary.signals',
+  'recording.activation_insight.summary.fragment',
+  'recording.activation_insight.signal.memory',
+  'recording.activation_insight.signal.emotion',
+  'recording.activation_insight.signal.place',
+  'recording.activation_insight.signal.person',
+  'recording.activation_insight.signal.symbol',
+  'recording.activation_insight.signal.recurrence',
+] as const;
+
 const recordingMicKeys = [
   'recording.mic.start',
   'recording.mic.stop',
@@ -110,10 +123,52 @@ const onboardingTourKeys = [
   'recording.onboarding.preference.title',
   'recording.onboarding.preference.voice_detail',
   'recording.onboarding.preference.text_detail',
+  'recording.onboarding.preference.cta',
   'recording.onboarding.preference.settings_hint',
   'recording.onboarding.skip',
   'recording.onboarding.next',
   'recording.onboarding.done',
+] as const;
+
+const firstRunOnboardingKeys = [
+  'onboarding.skip',
+  'onboarding.intro.title',
+  'onboarding.intro.subtitle',
+  'onboarding.intro.cta',
+  'onboarding.intro.signal.capture.title',
+  'onboarding.intro.signal.capture.body',
+  'onboarding.intro.signal.decode.title',
+  'onboarding.intro.signal.decode.body',
+  'onboarding.intro.signal.profile.title',
+  'onboarding.intro.signal.profile.body',
+  'onboarding.title',
+  'onboarding.subtitle',
+  'onboarding.fresh_cta',
+  'onboarding.path.analyze.title',
+  'onboarding.path.analyze.body',
+  'onboarding.path.analyze.kicker',
+  'onboarding.path.analyze.detail_title',
+  'onboarding.path.analyze.cta',
+  'onboarding.path.memory.title',
+  'onboarding.path.memory.body',
+  'onboarding.path.memory.kicker',
+  'onboarding.path.memory.detail_title',
+  'onboarding.path.memory.outcome_1',
+  'onboarding.path.memory.outcome_2',
+  'onboarding.path.memory.outcome_3',
+  'onboarding.path.memory.cta',
+  'onboarding.path.library.title',
+  'onboarding.path.library.body',
+  'onboarding.path.library.kicker',
+  'onboarding.path.library.detail_title',
+  'onboarding.path.library.cta',
+  'onboarding.capture.title',
+  'onboarding.capture.mode.text.title',
+  'onboarding.capture.mode.text.body',
+  'onboarding.capture.mode.voice.title',
+  'onboarding.capture.mode.voice.body',
+  'onboarding.capture.hint',
+  'onboarding.capture.cta',
 ] as const;
 
 const rememberedDreamPromptKeys = [
@@ -235,6 +290,21 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
+  it('has translations for first activation insight in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of recordingActivationInsightKeys) {
+        const value = t(key, { signals: 'Emotion, Place' });
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
   it('has translations for microphone controls in all supported languages', async () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
@@ -288,6 +358,21 @@ describe('Recording i18n - bottom sheets', () => {
 
       for (const key of onboardingTourKeys) {
         const value = t(key, { current: 1, total: 3 });
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('has translations for first-run onboarding paths in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of firstRunOnboardingKeys) {
+        const value = t(key);
         expect(value).not.toBe(key);
         expect(typeof value).toBe('string');
         expect(value.length).toBeGreaterThan(0);

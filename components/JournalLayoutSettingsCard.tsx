@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { Fonts, GlassCardTokens } from '@/constants/theme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useJournalLayoutPreference } from '@/hooks/useJournalLayoutPreference';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -37,6 +38,7 @@ const JOURNAL_LAYOUT_OPTIONS: {
 
 export default function JournalLayoutSettingsCard() {
   const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const { preference, setPreference } = useJournalLayoutPreference();
 
@@ -55,18 +57,17 @@ export default function JournalLayoutSettingsCard() {
       style={[
         styles.card,
         {
-          backgroundColor: GlassCardTokens.getBackground(colors.backgroundCard, mode),
-          borderColor: colors.divider,
-          borderWidth: GlassCardTokens.borderWidth,
+          backgroundColor: noctalia.surface.raised,
+          borderColor: noctalia.surface.border,
         },
       ]}
       accessibilityRole="radiogroup"
       accessibilityLabel={t('settings.journal_layout.title')}
     >
-      <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
+      <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>
         {t('settings.journal_layout.title')}
       </Text>
-      <Text style={[styles.description, { color: colors.textSecondary }]}>
+      <Text style={[styles.description, { color: noctalia.text.secondary }]}>
         {t('settings.journal_layout.description')}
       </Text>
 
@@ -75,18 +76,18 @@ export default function JournalLayoutSettingsCard() {
         const optionLabel = t(option.labelKey);
         const optionDescription = t(option.descriptionKey);
         const iconColor = isSelected
-          ? colors.textOnAccentSurface
+          ? noctalia.action.primaryText
           : mode === 'dark'
-            ? colors.textOnAccentSurface
-            : colors.accent;
+            ? noctalia.accent.soft
+            : noctalia.accent.base;
 
         return (
           <View key={option.value}>
-            {index > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
+            {index > 0 && <View style={[styles.divider, { backgroundColor: noctalia.surface.border }]} />}
             <Pressable
               style={({ pressed }) => [
                 styles.optionButton,
-                { backgroundColor: isSelected ? colors.backgroundSecondary : 'transparent' },
+                { backgroundColor: isSelected ? noctalia.surface.active : 'transparent' },
                 pressed && styles.optionPressed,
               ]}
               onPress={() => handleSelectLayout(option.value)}
@@ -101,17 +102,17 @@ export default function JournalLayoutSettingsCard() {
                   style={[
                     styles.iconContainer,
                     {
-                      backgroundColor: isSelected ? colors.accent : colors.backgroundSecondary,
+                      backgroundColor: isSelected ? noctalia.action.primary : noctalia.surface.soft,
                     },
                   ]}
                 >
                   <IconSymbol name={option.icon} size={20} color={iconColor} />
                 </View>
                 <View style={styles.optionInfo}>
-                  <Text style={[styles.optionLabel, { color: colors.textPrimary }]}>
+                  <Text style={[styles.optionLabel, { color: noctalia.text.primary }]}>
                     {optionLabel}
                   </Text>
-                  <Text style={[styles.optionDescription, { color: colors.textSecondary }]}>
+                  <Text style={[styles.optionDescription, { color: noctalia.text.secondary }]}>
                     {optionDescription}
                   </Text>
                 </View>
@@ -121,7 +122,7 @@ export default function JournalLayoutSettingsCard() {
                 style={[
                   styles.radio,
                   {
-                    borderColor: isSelected ? colors.accent : colors.textTertiary,
+                    borderColor: isSelected ? noctalia.accent.base : noctalia.text.tertiary,
                   },
                 ]}
               >
@@ -130,7 +131,7 @@ export default function JournalLayoutSettingsCard() {
                     style={[
                       styles.radioInner,
                       {
-                        backgroundColor: colors.accent,
+                        backgroundColor: noctalia.accent.base,
                       },
                     ]}
                   />
@@ -149,6 +150,7 @@ const styles = StyleSheet.create({
     borderRadius: ThemeLayout.borderRadius.xl,
     padding: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
+    borderWidth: 1,
   },
   cardTitle: {
     fontSize: 18,

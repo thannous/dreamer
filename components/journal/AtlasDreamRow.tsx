@@ -1,5 +1,6 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout, getTagColor } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -31,6 +32,7 @@ export const AtlasDreamRow = memo(function AtlasDreamRow({
   testID,
 }: AtlasDreamRowProps) {
   const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const isNarrow = width < 520;
@@ -84,8 +86,8 @@ export const AtlasDreamRow = memo(function AtlasDreamRow({
     <View>
       {sectionLabel ? (
         <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionLabel, { color: colors.accentLight }]}>{sectionLabel}</Text>
-          <View style={[styles.sectionRule, { backgroundColor: colors.divider }]} />
+          <Text style={[styles.sectionLabel, { color: noctalia.accent.soft }]}>{sectionLabel}</Text>
+          <View style={[styles.sectionRule, { backgroundColor: noctalia.surface.border }]} />
         </View>
       ) : null}
       <Pressable
@@ -93,7 +95,7 @@ export const AtlasDreamRow = memo(function AtlasDreamRow({
         style={({ pressed }) => [
           styles.row,
           isNarrow && styles.rowNarrow,
-          { borderBottomColor: colors.divider },
+          { borderBottomColor: noctalia.surface.border },
           pressed && styles.rowPressed,
         ]}
         accessibilityRole="button"
@@ -101,11 +103,11 @@ export const AtlasDreamRow = memo(function AtlasDreamRow({
         testID={testID}
       >
         <View style={styles.timelineColumn}>
-          <View style={[styles.timelineLine, { backgroundColor: colors.divider }]} />
-          <View style={[styles.timelineDot, isNarrow && styles.timelineDotNarrow, { backgroundColor: colors.accentLight }]} />
+          <View style={[styles.timelineLine, { backgroundColor: noctalia.surface.border }]} />
+          <View style={[styles.timelineDot, isNarrow && styles.timelineDotNarrow, { backgroundColor: noctalia.accent.soft }]} />
         </View>
 
-        <View style={[styles.thumbnail, isNarrow && styles.thumbnailNarrow, { backgroundColor: mode === 'dark' ? '#211A38' : colors.backgroundSecondary }]}>
+        <View style={[styles.thumbnail, isNarrow && styles.thumbnailNarrow, { backgroundColor: noctalia.surface.soft }]}>
           {hasImage ? (
             <Image
               source={{ uri: imageUri }}
@@ -126,22 +128,22 @@ export const AtlasDreamRow = memo(function AtlasDreamRow({
               }}
             />
           ) : (
-            <IconSymbol name="moon.stars.fill" size={30} color={colors.accentLight} />
+            <IconSymbol name="moon.stars.fill" size={30} color={noctalia.accent.soft} />
           )}
         </View>
 
         <View style={[styles.content, isNarrow && styles.contentNarrow]}>
-          <Text style={[styles.title, isNarrow && styles.titleNarrow, { color: colors.textPrimary }]} numberOfLines={isNarrow ? 2 : 1}>
+          <Text style={[styles.title, isNarrow && styles.titleNarrow, { color: noctalia.text.primary }]} numberOfLines={isNarrow ? 2 : 1}>
             {dream.title}
           </Text>
-          <Text style={[styles.excerpt, isNarrow && styles.excerptNarrow, { color: colors.textSecondary }]} numberOfLines={isNarrow ? 3 : 2}>
+          <Text style={[styles.excerpt, isNarrow && styles.excerptNarrow, { color: noctalia.text.secondary }]} numberOfLines={isNarrow ? 3 : 2}>
             {dream.transcript || dream.shareableQuote}
           </Text>
           <View style={styles.metaRow}>
-            <Text style={[styles.date, { color: colors.textTertiary }]}>{dateLabel}</Text>
+            <Text style={[styles.date, { color: noctalia.text.tertiary }]}>{dateLabel}</Text>
             {dream.theme ? (
               <View style={[styles.themePill, { backgroundColor: getTagColor(dream.theme, colors) }]}>
-                <Text style={[styles.themePillText, { color: colors.textPrimary }]} numberOfLines={1}>
+                <Text style={[styles.themePillText, { color: noctalia.text.primary }]} numberOfLines={1}>
                   {themeLabel}
                 </Text>
               </View>
@@ -150,14 +152,18 @@ export const AtlasDreamRow = memo(function AtlasDreamRow({
               <View
                 style={[
                   styles.statusDot,
-                  { backgroundColor: isExplored ? 'rgba(132, 204, 147, 0.24)' : 'rgba(212, 165, 116, 0.2)' },
+                  {
+                    backgroundColor: isExplored
+                      ? noctalia.status.success.background
+                      : noctalia.action.disabled,
+                  },
                 ]}
                 accessibilityLabel={isExplored ? t('journal.badge.explored') : t('journal.badge.analyzed')}
               >
                 <IconSymbol
                   name={isExplored ? 'bubble.left.and.bubble.right.fill' : 'sparkles'}
                   size={13}
-                  color={isExplored ? '#9BE7A8' : colors.accentLight}
+                  color={isExplored ? noctalia.status.success.icon : noctalia.accent.soft}
                 />
               </View>
             ) : null}
@@ -180,7 +186,6 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 12,
-    letterSpacing: 3,
     textTransform: 'uppercase',
   },
   sectionRule: {
@@ -253,7 +258,6 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: Fonts.lora.bold,
     fontSize: 21,
-    letterSpacing: 0,
   },
   titleNarrow: {
     fontSize: 19,

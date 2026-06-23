@@ -50,6 +50,7 @@ env:
       - extendedWaitUntil:
           notVisible: "Reloading"
           timeout: 60000
+- runFlow: dismiss-first-launch-onboarding.yml
 - runFlow:
     when:
       notVisible:
@@ -104,6 +105,7 @@ env:
             - extendedWaitUntil:
                 notVisible: "Reloading"
                 timeout: 60000
+      - runFlow: dismiss-first-launch-onboarding.yml
 - runFlow:
     when:
       visible: "Continue"
@@ -130,6 +132,7 @@ env:
       - tapOn:
           text: "Minimize"
           retryTapIfNoChange: true
+- runFlow: dismiss-first-launch-onboarding.yml
 - extendedWaitUntil:
     visible:
       id: screen.recording

@@ -1,0 +1,71 @@
+url: "http://localhost:8081"
+---
+- launchApp
+- openLink: http://localhost:8081/onboarding
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 30000
+- assertVisible:
+    id: component.onboarding.intro
+- assertVisible:
+    id: component.onboarding.introSignals
+- tapOn:
+    id: btn.onboarding.intro.next
+- waitForAnimationToEnd
+- assertVisible:
+    id: btn.onboarding.path.analyze
+- assertVisible:
+    id: btn.onboarding.path.memory
+- assertVisible:
+    id: btn.onboarding.path.library
+- assertVisible:
+    id: btn.onboarding.primary
+
+# Default analyze path: a current dream opens fresh capture.
+- tapOn:
+    id: btn.onboarding.primary
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 30000
+- assertNotVisible:
+    id: component.recording.rememberedProfileChips
+
+# Memory path: an already-lived dream should open remembered capture.
+- openLink: http://localhost:8081/onboarding
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 30000
+- tapOn:
+    id: btn.onboarding.intro.next
+- waitForAnimationToEnd
+- tapOn:
+    id: btn.onboarding.path.memory
+- tapOn:
+    id: btn.onboarding.primary
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 30000
+- assertVisible:
+    id: component.recording.rememberedProfileChips
+
+# Library path: opens symbol dictionary and dream guides.
+- openLink: http://localhost:8081/onboarding
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 30000
+- tapOn:
+    id: btn.onboarding.intro.next
+- waitForAnimationToEnd
+- tapOn:
+    id: btn.onboarding.path.library
+- tapOn:
+    id: btn.onboarding.primary
+- extendedWaitUntil:
+    visible:
+      id: symbol-list
+    timeout: 30000

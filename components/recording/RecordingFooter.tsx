@@ -1,7 +1,8 @@
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { TID } from '@/lib/testIDs';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
 interface RecordingFooterProps {
@@ -17,7 +18,8 @@ export function RecordingFooter({
   saveButtonLabel,
   saveButtonAccessibilityLabel,
 }: RecordingFooterProps) {
-  const { colors, shadows } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   return (
     <View style={styles.footerActions}>
@@ -28,8 +30,15 @@ export function RecordingFooter({
             disabled={isSaveDisabled}
             style={[
               styles.submitButton,
-              shadows.lg,
-              { backgroundColor: isSaveDisabled ? colors.textSecondary : colors.accent },
+              {
+                backgroundColor: isSaveDisabled
+                  ? noctalia.action.disabled
+                  : noctalia.action.primary,
+                borderColor: isSaveDisabled
+                  ? noctalia.action.disabledBorder
+                  : noctalia.action.primaryBorder,
+                shadowColor: noctalia.action.primary,
+              },
               isSaveDisabled && styles.submitButtonDisabled,
             ]}
             testID={TID.Button.SaveDream}
@@ -40,8 +49,9 @@ export function RecordingFooter({
               style={[
                 styles.submitButtonText,
                 {
-                  color: isSaveDisabled ? colors.textPrimary : colors.textOnAccentSurface,
-                  opacity: isSaveDisabled ? 0.9 : 1,
+                  color: isSaveDisabled
+                    ? noctalia.action.disabledText
+                    : noctalia.action.primaryText,
                 },
               ]}
             >
@@ -65,25 +75,28 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   submitButtonWrapperDisabled: {
-    opacity: 0.65,
+    opacity: 1,
   },
   submitButton: {
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
+    minWidth: 260,
+    paddingVertical: 17,
+    paddingHorizontal: 34,
+    borderRadius: 22,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.18,
+    shadowRadius: 24,
+    elevation: 8,
   },
   submitButtonDisabled: {
-    opacity: 0.5,
     ...(Platform.OS === 'web'
       ? { boxShadow: 'none' }
       : { shadowOpacity: 0, elevation: 0 }),
   } as ViewStyle,
   submitButtonText: {
-    color: '#fff',
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
-    letterSpacing: 0.5,
   },
 });

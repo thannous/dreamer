@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -93,11 +94,9 @@ export function StandardBottomSheet({
 }: StandardBottomSheetProps) {
   const { colors, mode, shadows } = useTheme();
   const insets = useSafeAreaInsets();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
-  // Consistent backdrop color based on theme
-  const backdropColor = mode === 'dark'
-    ? 'rgba(2, 0, 12, 0.75)'
-    : 'rgba(0, 0, 0, 0.25)';
+  const backdropColor = noctalia.surface.overlay;
 
   const primaryState: BottomSheetActionState = actions.primaryLoading
     ? 'loading'
@@ -117,8 +116,9 @@ export function StandardBottomSheet({
       style={[
         styles.sheet,
         {
-          backgroundColor: colors.backgroundCard,
+          backgroundColor: noctalia.surface.raised,
           paddingBottom: insets.bottom + ThemeLayout.spacing.md,
+          borderColor: noctalia.surface.border,
         },
         shadows.xl,
         style,
@@ -126,11 +126,11 @@ export function StandardBottomSheet({
       testID={testID}
     >
       {/* Handle indicator */}
-      <View style={[styles.handle, { backgroundColor: colors.divider }]} />
+      <View style={[styles.handle, { backgroundColor: noctalia.surface.border }]} />
 
       {/* Title */}
       <Text
-        style={[styles.title, { color: colors.textPrimary }]}
+        style={[styles.title, { color: noctalia.text.primary }]}
         testID={titleTestID}
       >
         {title}
@@ -138,7 +138,7 @@ export function StandardBottomSheet({
 
       {/* Subtitle */}
       {subtitle ? (
-        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+        <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
           {subtitle}
         </Text>
       ) : null}
@@ -179,6 +179,7 @@ const styles = StyleSheet.create({
   sheet: {
     borderTopLeftRadius: ThemeLayout.borderRadius.xl,
     borderTopRightRadius: ThemeLayout.borderRadius.xl,
+    borderTopWidth: 1,
     paddingTop: ThemeLayout.spacing.xs,
     paddingHorizontal: ThemeLayout.spacing.lg,
   },

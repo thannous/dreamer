@@ -1,7 +1,7 @@
 import { Composer } from '@/components/chat/Composer';
 import { Exploration360Panel } from '@/components/chat/Exploration360Panel';
 import { LoadingIndicator, MessagesList } from '@/components/chat/MessagesList';
-import { GradientColors } from '@/constants/gradients';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { ChatProvider, useKeyboardStateContext } from '@/context/ChatContext';
@@ -29,6 +29,7 @@ import { incrementLocalExplorationCount } from '@/services/quota/GuestAnalysisCo
 import { markMockExploration } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
 import { createDreamInSupabase } from '@/services/supabaseDreamService';
+import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DecoLines } from '@/constants/journalTheme';
@@ -66,12 +67,6 @@ const QUICK_CATEGORIES = [
   { id: 'emotions', labelKey: 'dream_chat.quick.emotions', icon: 'heart.fill' as const },
   { id: 'growth', labelKey: 'dream_chat.quick.growth', icon: 'leaf.fill' as const },
 ];
-
-const CATEGORIES_COLORS: Record<string, string> = {
-  symbols: '#8C9EFF',
-  emotions: '#FF6B9D',
-  growth: '#4CAF50',
-};
 
 const QUOTA_CHECK_TIMEOUT_MS = 12000; // Fail gracefully if quota check hangs
 
@@ -127,6 +122,7 @@ export default function DreamChatScreen() {
   const { id, category, mode: routeMode } = useLocalSearchParams<{ id: string; category?: string; mode?: string }>();
   const { dreams, updateDream } = useDreams();
   const { colors, mode, shadows } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { user } = useAuth();
   const { language } = useLanguage();
   const isMockMode = isMockModeEnabled();
@@ -875,13 +871,23 @@ export default function DreamChatScreen() {
     }
   };
 
-  const gradientColors = mode === 'dark'
-    ? GradientColors.darkBase
-    : ([colors.backgroundDark, colors.backgroundDark] as const);
+  const gradientColors = noctalia.screen.gradient;
 
-  const imageGradientColors = mode === 'dark'
-    ? (['transparent', 'rgba(19, 16, 34, 0.9)', '#131022'] as const)
-    : (['transparent', colors.backgroundDark + 'E6', colors.backgroundDark] as const);
+  const imageGradientColors = ([
+    'transparent',
+    `${noctalia.screen.background}E6`,
+    noctalia.screen.background,
+  ] as const);
+  const backButtonSurface = {
+    backgroundColor: noctalia.surface.raised,
+    borderWidth: 1,
+    borderColor: noctalia.surface.border,
+  };
+  const getQuickCategoryColor = (categoryId: string) => {
+    if (categoryId === 'emotions') return colors.tags.mystical;
+    if (categoryId === 'growth') return colors.tags.calm;
+    return noctalia.accent.base;
+  };
 
   const dreamImageUri = dream?.imageUrl?.trim();
 
@@ -896,12 +902,13 @@ export default function DreamChatScreen() {
   if (!dream) {
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
-        <Text style={[styles.errorText, { color: colors.textPrimary }]}>{t('dream_chat.not_found.title')}</Text>
+        <AtmosphericBackground />
+        <Text style={[styles.errorText, { color: noctalia.text.primary }]}>{t('dream_chat.not_found.title')}</Text>
         <Pressable
           onPress={handleBackPress}
-          style={[styles.missingDreamBackButton, { backgroundColor: colors.accent }]}
+          style={[styles.missingDreamBackButton, { backgroundColor: noctalia.action.primary }]}
         >
-          <Text style={[styles.missingDreamBackButtonText, { color: colors.textPrimary }]}>{t('dream_chat.not_found.back')}</Text>
+          <Text style={[styles.missingDreamBackButtonText, { color: noctalia.action.primaryText }]}>{t('dream_chat.not_found.back')}</Text>
         </Pressable>
       </LinearGradient>
     );
@@ -911,36 +918,33 @@ export default function DreamChatScreen() {
   if (isQuotaGateBlocked) {
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
+        <AtmosphericBackground />
         <Pressable
           onPress={handleBackPress}
-          style={[styles.floatingBackButton, shadows.lg, {
-            backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
-            borderWidth: 1,
-            borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
-          }]}
+          style={[styles.floatingBackButton, shadows.lg, backButtonSurface]}
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
+          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.base} />
         </Pressable>
 
         <View style={[styles.blockedContainer]} testID={TID.Chat.ScreenBlocked}>
-          <IconSymbol name="lock.fill" size={64} color={colors.accent} />
-          <Text style={[styles.blockedTitle, { color: colors.textPrimary }]}>
+          <IconSymbol name="lock.fill" size={64} color={noctalia.accent.base} />
+          <Text style={[styles.blockedTitle, { color: noctalia.text.primary }]}>
             {t('dream_chat.exploration_limit.title')}
           </Text>
-          <Text style={[styles.blockedMessage, { color: colors.textSecondary }]}>
+          <Text style={[styles.blockedMessage, { color: noctalia.text.secondary }]}>
             {tier === 'guest'
               ? t('dream_chat.exploration_limit.message_guest')
               : t('dream_chat.exploration_limit.message_free')}
           </Text>
           <Pressable
-            style={[styles.upgradeButton, shadows.lg, { backgroundColor: colors.accent }]}
+            style={[styles.upgradeButton, shadows.lg, { backgroundColor: noctalia.action.primary }]}
             onPress={() => router.push(buildPaywallHref('exploration_limit'))}
           >
-            <IconSymbol name="arrow.up.circle" size={24} color={colors.textPrimary} />
-            <Text style={[styles.upgradeButtonText, { color: colors.textPrimary }]}>
+            <IconSymbol name="arrow.up.circle" size={24} color={noctalia.action.primaryText} />
+            <Text style={[styles.upgradeButtonText, { color: noctalia.action.primaryText }]}>
               {tier === 'guest' ? t('dream_chat.exploration_limit.cta_guest') : t('dream_chat.exploration_limit.cta_free')}
             </Text>
           </Pressable>
@@ -953,40 +957,37 @@ export default function DreamChatScreen() {
   if (shouldGateOnQuotaCheck && (!quotaCheckComplete || quotaCheckError)) {
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
+        <AtmosphericBackground />
         <Pressable
           onPress={handleBackPress}
-          style={[styles.floatingBackButton, shadows.lg, {
-            backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
-            borderWidth: 1,
-            borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
-          }]}
+          style={[styles.floatingBackButton, shadows.lg, backButtonSurface]}
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
+          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.base} />
         </Pressable>
 
         <View style={styles.quotaCheckContainer}>
           {quotaCheckError ? (
             <>
-              <IconSymbol name="exclamationmark.triangle.fill" size={48} color="#FF5252" />
-              <Text style={[styles.errorText, { color: colors.textPrimary, marginTop: 16 }]}>
+              <IconSymbol name="exclamationmark.triangle.fill" size={48} color={noctalia.status.danger.icon} />
+              <Text style={[styles.errorText, { color: noctalia.text.primary, marginTop: 16 }]}>
                 {quotaCheckError}
               </Text>
               <Pressable
-                style={[styles.retryButton, { backgroundColor: colors.accent }]}
+                style={[styles.retryButton, { backgroundColor: noctalia.action.primary }]}
                 onPress={runQuotaCheck}
               >
-                <Text style={[styles.retryButtonText, { color: colors.textPrimary }]}>
+                <Text style={[styles.retryButtonText, { color: noctalia.action.primaryText }]}>
                   {t('analysis.retry')}
                 </Text>
               </Pressable>
             </>
           ) : (
             <>
-              <ActivityIndicator size="large" color={colors.accent} />
-              <Text style={[styles.errorText, { color: colors.textSecondary, marginTop: 16 }]}>
+              <ActivityIndicator size="large" color={noctalia.accent.base} />
+              <Text style={[styles.errorText, { color: noctalia.text.secondary, marginTop: 16 }]}>
                 {t('dream_chat.checking_access')}
               </Text>
             </>
@@ -1014,7 +1015,7 @@ export default function DreamChatScreen() {
             style={[
               styles.dreamImage,
               styles.imagePlaceholder,
-              { backgroundColor: colors.backgroundSecondary },
+              { backgroundColor: noctalia.surface.soft },
             ]}
           />
         )}
@@ -1022,11 +1023,11 @@ export default function DreamChatScreen() {
           colors={imageGradientColors}
           style={styles.imageGradient}
         >
-          <Text style={[styles.dreamTitle, { color: colors.textPrimary }]} numberOfLines={2}>
+          <Text style={[styles.dreamTitle, { color: noctalia.text.primary }]} numberOfLines={2}>
             {dream.title}
           </Text>
           {dream.shareableQuote ? (
-            <Text style={[styles.dreamQuotePreview, { color: colors.textSecondary }]}>
+            <Text style={[styles.dreamQuotePreview, { color: noctalia.text.secondary }]}>
               &quot;{dream.shareableQuote}&quot;
             </Text>
           ) : null}
@@ -1034,7 +1035,7 @@ export default function DreamChatScreen() {
       </View>
       {/* Decorative rule between header and content */}
       <View style={styles.decoRuleContainer}>
-        <View style={[DecoLines.rule, { backgroundColor: colors.accent }]} />
+        <View style={[DecoLines.rule, { backgroundColor: noctalia.accent.base }]} />
       </View>
       <Exploration360Panel
         progress={exploration360Status.progress}
@@ -1046,10 +1047,10 @@ export default function DreamChatScreen() {
       />
       {messages.length <= 2 && (
         <View style={styles.quickCategoriesContainer}>
-          <Text style={[styles.quickCategoriesLabel, { color: colors.textSecondary }]}>{t('dream_chat.quick_topics')}</Text>
+          <Text style={[styles.quickCategoriesLabel, { color: noctalia.text.secondary }]}>{t('dream_chat.quick_topics')}</Text>
           <View style={styles.quickCategories}>
             {QUICK_CATEGORIES.map((cat, index) => {
-              const catColor = CATEGORIES_COLORS[cat.id] ?? colors.accent;
+              const catColor = getQuickCategoryColor(cat.id);
               const isQuickDisabled = isLoading || !hasQuotaCheckClearance || isQuotaGateBlocked || messageLimitReached;
               return (
                 <MotiView
@@ -1066,8 +1067,8 @@ export default function DreamChatScreen() {
                   >
                     <View style={[styles.quickCategoryAccent, { backgroundColor: catColor }]} />
                     <View style={styles.quickCategoryInner}>
-                      <IconSymbol name={cat.icon} size={16} color={colors.textPrimary} />
-                      <Text style={[styles.quickCategoryText, { color: colors.textPrimary }]}>
+                      <IconSymbol name={cat.icon} size={16} color={noctalia.text.primary} />
+                      <Text style={[styles.quickCategoryText, { color: noctalia.text.primary }]}>
                         {t(cat.labelKey)}
                       </Text>
                     </View>
@@ -1112,18 +1113,15 @@ export default function DreamChatScreen() {
     <ChatProvider isStreaming={isLoading}>
       <ScrollPerfProvider isScrolling={isScrolling}>
         <LinearGradient colors={gradientColors} style={styles.gradient}>
+          <AtmosphericBackground />
           <Pressable
             onPress={handleBackPress}
-            style={[styles.floatingBackButton, shadows.lg, {
-              backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
-              borderWidth: 1,
-              borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
-            }]}
+            style={[styles.floatingBackButton, shadows.lg, backButtonSurface]}
             accessibilityRole="button"
             accessibilityLabel={t('journal.back_button')}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
+            <IconSymbol name="chevron.left" size={22} color={noctalia.accent.base} />
           </Pressable>
 
           <MessagesList
@@ -1131,7 +1129,7 @@ export default function DreamChatScreen() {
             isLoading={isLoading}
             loadingText={t('dream_chat.thinking')}
             ListHeaderComponent={headerComponent}
-            style={[styles.messagesContainer, { backgroundColor: colors.backgroundDark }]}
+            style={[styles.messagesContainer, { backgroundColor: noctalia.screen.background }]}
             contentContainerStyle={styles.messagesContent}
             onRetryMessage={handleRetryMessage}
             retryA11yLabel={t('analysis.retry')}
@@ -1193,6 +1191,7 @@ function ComposerFooter({
   visible = true,
 }: ComposerFooterProps) {
   const { isKeyboardVisible } = useKeyboardStateContext();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   const footerAnimatedStyle = useAnimatedStyle(() => {
     // Hide when keyboard is visible OR when not visible
@@ -1204,10 +1203,9 @@ function ComposerFooter({
   }, [isKeyboardVisible, visible]);
 
   const isLowRemaining = messagesRemaining <= 5;
-  const pillBackground = mode === 'dark' ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.9)';
-  const pillBorder = mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
-  const counterColor = isLowRemaining ? '#EF4444' : colors.textPrimary;
-  const limitBannerBackground = mode === 'dark' ? '#3A1212' : '#FEE2E2';
+  const pillBackground = noctalia.surface.raised;
+  const pillBorder = noctalia.surface.border;
+  const counterColor = isLowRemaining ? noctalia.status.danger.text : noctalia.text.primary;
 
   return (
     <Animated.View
@@ -1237,20 +1235,29 @@ function ComposerFooter({
       {messageLimitReached && (
         <View
           testID={TID.Text.ChatLimitBanner}
-          style={[styles.limitWarningBanner, { backgroundColor: limitBannerBackground }]}
+          style={[
+            styles.limitWarningBanner,
+            {
+              backgroundColor: noctalia.status.danger.background,
+              borderColor: noctalia.status.danger.border,
+            },
+          ]}
         >
           <View style={styles.limitWarningContent}>
-            <IconSymbol name="exclamationmark.circle.fill" size={16} color="#EF4444" />
-            <Text style={[styles.limitWarningText, { color: '#EF4444' }]}>
+            <IconSymbol name="exclamationmark.circle.fill" size={16} color={noctalia.status.danger.icon} />
+            <Text style={[styles.limitWarningText, { color: noctalia.status.danger.text }]}>
               {t('dream_chat.limit_warning')}
             </Text>
           </View>
           <View>
             <GesturePressable
               onPress={() => router.push('/(tabs)/settings')}
-              style={styles.limitCtaButton}
+              style={[
+                styles.limitCtaButton,
+                { backgroundColor: noctalia.status.danger.icon },
+              ]}
             >
-              <Text style={styles.limitCtaText}>
+              <Text style={[styles.limitCtaText, { color: noctalia.action.primaryText }]}>
                 {tier === 'guest'
                   ? t('dream_chat.limit_cta_guest')
                   : t('dream_chat.limit_cta_free')}
@@ -1266,6 +1273,8 @@ function ComposerFooter({
 const styles = StyleSheet.create({
   gradient: {
     flex: 1,
+    overflow: 'hidden',
+    position: 'relative',
   },
   floatingBackButton: {
     position: 'absolute',
@@ -1282,6 +1291,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
+    position: 'relative',
   },
   errorText: {
     // color: set dynamically
@@ -1438,7 +1449,6 @@ const styles = StyleSheet.create({
   upgradeButtonText: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 16,
-    letterSpacing: 0.5,
   },
   // Message counter
   messageCounterContainer: {
@@ -1454,7 +1464,6 @@ const styles = StyleSheet.create({
   messageCounter: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
-    letterSpacing: 0.3,
   },
   limitWarningBanner: {
     width: '100%',
@@ -1464,6 +1473,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 8,
     borderRadius: 8,
+    borderWidth: 1,
   },
   limitWarningContent: {
     flexDirection: 'row',
@@ -1480,11 +1490,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
-    backgroundColor: '#EF4444',
     alignSelf: 'flex-end',
   },
   limitCtaText: {
-    color: '#FFFFFF',
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
     fontWeight: '600',

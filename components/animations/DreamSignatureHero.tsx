@@ -3,6 +3,8 @@ import { StyleSheet, View } from 'react-native';
 
 import { useDynamicAnimation } from 'moti';
 
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useTheme } from '@/context/ThemeContext';
 import { MotiView } from '@/lib/moti';
 
 type DreamSignatureHeroProps = {
@@ -10,6 +12,8 @@ type DreamSignatureHeroProps = {
 };
 
 export function DreamSignatureHero({ children }: DreamSignatureHeroProps) {
+  const { colors, mode } = useTheme();
+  const noctalia = getNoctaliaDesignTokens(colors, mode);
   const backgroundAnimation = useDynamicAnimation(() => ({
     opacity: 0,
     translateY: 16,
@@ -27,7 +31,13 @@ export function DreamSignatureHero({ children }: DreamSignatureHeroProps) {
           duration: 900,
           delay: 220,
         }}
-        style={styles.glassCard}
+        style={[
+          styles.glassCard,
+          {
+            backgroundColor: noctalia.surface.raised,
+            borderColor: noctalia.surface.borderStrong,
+          },
+        ]}
       >
         <MotiView
           from={{ opacity: 0.15, translateX: -40 }}
@@ -38,7 +48,7 @@ export function DreamSignatureHero({ children }: DreamSignatureHeroProps) {
             loop: true,
             repeatReverse: true,
           }}
-          style={styles.auroraStripe}
+          style={[styles.auroraStripe, { backgroundColor: noctalia.atmosphere.veil }]}
         />
 
         <MotiView
@@ -50,7 +60,7 @@ export function DreamSignatureHero({ children }: DreamSignatureHeroProps) {
             loop: true,
             repeatReverse: true,
           }}
-          style={styles.orbTop}
+          style={[styles.orbTop, { backgroundColor: noctalia.surface.soft }]}
         />
 
         <MotiView
@@ -62,7 +72,7 @@ export function DreamSignatureHero({ children }: DreamSignatureHeroProps) {
             loop: true,
             repeatReverse: true,
           }}
-          style={styles.orbBottom}
+          style={[styles.orbBottom, { backgroundColor: noctalia.atmosphere.horizon }]}
         />
 
         <View style={styles.content}>{children}</View>
@@ -80,9 +90,7 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     padding: 24,
     overflow: 'hidden',
-    backgroundColor: 'rgba(11, 6, 31, 0.92)',
     borderWidth: 1,
-    borderColor: 'rgba(209, 196, 255, 0.18)',
   },
   content: {
     position: 'relative',
@@ -95,7 +103,6 @@ const styles = StyleSheet.create({
     width: 220,
     height: 220,
     borderRadius: 120,
-    backgroundColor: 'rgba(149, 129, 255, 0.35)',
     transform: [{ rotate: '-22deg' }],
     zIndex: 1,
   },
@@ -106,7 +113,6 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: 'rgba(236, 227, 255, 0.45)',
     zIndex: 1,
   },
   orbBottom: {
@@ -116,7 +122,6 @@ const styles = StyleSheet.create({
     width: 160,
     height: 160,
     borderRadius: 80,
-    backgroundColor: 'rgba(85, 63, 154, 0.6)',
     zIndex: 1,
   },
 });

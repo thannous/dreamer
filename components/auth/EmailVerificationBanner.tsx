@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { resendVerificationEmail } from '@/lib/auth';
 import { TID } from '@/lib/testIDs';
@@ -15,7 +16,8 @@ type Props = {
 
 const EmailVerificationBanner: React.FC<Props> = ({ isCompact = false }) => {
   const { user } = useAuth();
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
@@ -31,7 +33,7 @@ const EmailVerificationBanner: React.FC<Props> = ({ isCompact = false }) => {
     return null;
   }, [status, t]);
 
-  const statusColor = status === 'error' ? colors.accent : colors.textSecondary;
+  const statusColor = status === 'error' ? noctalia.status.danger.text : noctalia.text.secondary;
 
   const handleResend = useCallback(async () => {
     if (!user?.email || status === 'sending') {
@@ -59,13 +61,13 @@ const EmailVerificationBanner: React.FC<Props> = ({ isCompact = false }) => {
       style={[
         styles.banner,
         isCompact && styles.bannerCompact,
-        { backgroundColor: colors.backgroundSecondary, borderColor: colors.divider },
+        { backgroundColor: noctalia.surface.active, borderColor: noctalia.surface.border },
       ]}
     >
-      <Text style={[styles.title, { color: colors.textPrimary }]}>
+      <Text style={[styles.title, { color: noctalia.text.primary }]}>
         {t('settings.account.banner.unverified.title')}
       </Text>
-      <Text style={[styles.message, { color: colors.textSecondary }]}>
+      <Text style={[styles.message, { color: noctalia.text.secondary }]}>
         {t('settings.account.banner.unverified.message')}
       </Text>
       <Pressable
@@ -74,8 +76,8 @@ const EmailVerificationBanner: React.FC<Props> = ({ isCompact = false }) => {
           pressed && styles.actionPressed,
           status === 'sending' && styles.actionDisabled,
           {
-            borderColor: colors.accent,
-            backgroundColor: colors.backgroundCard,
+            borderColor: noctalia.action.primaryBorder,
+            backgroundColor: noctalia.surface.raised,
           },
         ]}
         onPress={handleResend}
@@ -83,9 +85,9 @@ const EmailVerificationBanner: React.FC<Props> = ({ isCompact = false }) => {
         testID={TID.Button.AuthResendVerification}
       >
         {status === 'sending' ? (
-          <ActivityIndicator color={colors.textPrimary} />
+          <ActivityIndicator color={noctalia.text.primary} />
         ) : (
-          <Text style={[styles.actionText, { color: colors.textPrimary }]}>
+          <Text style={[styles.actionText, { color: noctalia.text.primary }]}>
             {t('settings.account.banner.unverified.action')}
           </Text>
         )}

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Fonts } from '@/constants/theme';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -23,34 +24,35 @@ export function SubjectProposition({
   onDismiss,
 }: SubjectPropositionProps) {
   const { t } = useTranslation();
-  const { colors, shadows } = useTheme();
+  const { colors, mode, shadows } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   const iconName = subjectType === 'person' ? 'person.fill' : 'pawprint.fill';
   const title = t(`subject_proposition.title_${subjectType}`);
   const message = t(`subject_proposition.message_${subjectType}`);
 
   return (
-    <View style={[styles.container, shadows.md, { backgroundColor: colors.backgroundCard, borderColor: colors.divider }]}>
-      <View style={[styles.iconBadge, { backgroundColor: colors.accent }]}>
-        <IconSymbol name={iconName} size={20} color={colors.textPrimary} />
+    <View style={[styles.container, shadows.md, { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border }]}>
+      <View style={[styles.iconBadge, { backgroundColor: noctalia.action.primary }]}>
+        <IconSymbol name={iconName} size={20} color={noctalia.action.primaryText} />
       </View>
 
       <View style={styles.content}>
-        <Text style={[styles.title, { color: colors.textPrimary }]}>{title}</Text>
-        <Text style={[styles.message, { color: colors.textSecondary }]}>{message}</Text>
+        <Text style={[styles.title, { color: noctalia.text.primary }]}>{title}</Text>
+        <Text style={[styles.message, { color: noctalia.text.secondary }]}>{message}</Text>
 
         <View style={styles.actions}>
           <Pressable
             onPress={onAccept}
-            style={[styles.acceptButton, { backgroundColor: colors.accent }]}
+            style={[styles.acceptButton, { backgroundColor: noctalia.action.primary, borderColor: noctalia.action.primaryBorder }]}
           >
-            <Text style={[styles.acceptButtonText, { color: colors.textPrimary }]}>
+            <Text style={[styles.acceptButtonText, { color: noctalia.action.primaryText }]}>
               {t('subject_proposition.accept')}
             </Text>
           </Pressable>
 
           <Pressable onPress={onDismiss} style={styles.skipButton} hitSlop={8}>
-            <Text style={[styles.skipButtonText, { color: colors.textSecondary }]}>
+            <Text style={[styles.skipButtonText, { color: noctalia.text.secondary }]}>
               {t('subject_proposition.skip')}
             </Text>
           </Pressable>
@@ -99,6 +101,7 @@ const styles = StyleSheet.create({
     paddingVertical: ThemeLayout.spacing.sm,
     paddingHorizontal: ThemeLayout.spacing.md,
     borderRadius: ThemeLayout.borderRadius.md,
+    borderWidth: 1,
   },
   acceptButtonText: {
     fontFamily: Fonts.spaceGrotesk.bold,

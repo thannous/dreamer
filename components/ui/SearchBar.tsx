@@ -3,6 +3,7 @@ import { Platform, Pressable, StyleSheet, TextInput, View, type TextStyle } from
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -34,6 +35,7 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
   inputTestID,
 }: SearchBarProps, forwardedRef) {
   const { colors, mode } = useTheme();
+  const noctalia = getNoctaliaDesignTokens(colors, mode);
   const inputRef = useRef<TextInput>(null);
   const [isFocused, setIsFocused] = useState(false);
   const setInputRef = useCallback((node: TextInput | null) => {
@@ -47,12 +49,9 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
     }
   }, [forwardedRef]);
 
-  const glassBackground =
-    mode === 'dark' ? 'rgba(35, 26, 63, 0.4)' : `${colors.backgroundCard}A6`;
-  const focusBorderColor = mode === 'dark' ? colors.accentLight : colors.accentDark;
-  const focusBackgroundColor = mode === 'dark'
-    ? 'rgba(45, 33, 80, 0.72)'
-    : 'rgba(255, 253, 248, 0.94)';
+  const glassBackground = noctalia.surface.raised;
+  const focusBorderColor = noctalia.accent.base;
+  const focusBackgroundColor = noctalia.surface.active;
 
   return (
     <View
@@ -61,7 +60,7 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
         {
           backgroundColor: isFocused ? focusBackgroundColor : glassBackground,
           borderWidth: isFocused ? 1.5 : 1,
-          borderColor: isFocused ? focusBorderColor : colors.divider,
+          borderColor: isFocused ? focusBorderColor : noctalia.surface.border,
         },
       ]}
       testID={testID}
@@ -69,18 +68,18 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
       <IconSymbol
         name="magnifyingglass"
         size={18}
-        color={colors.textTertiary}
+        color={noctalia.text.tertiary}
       />
       <TextInput
         ref={setInputRef}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor={colors.textTertiary}
+        placeholderTextColor={noctalia.text.tertiary}
         style={[
           styles.input,
           webInputFocusResetStyle,
-          { color: colors.textPrimary },
+          { color: noctalia.text.primary },
         ]}
         testID={inputTestID}
         accessibilityLabel={placeholder}
@@ -103,7 +102,7 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
           <IconSymbol
             name="xmark.circle.fill"
             size={18}
-            color={colors.textTertiary}
+            color={noctalia.text.tertiary}
           />
         </Pressable>
       )}

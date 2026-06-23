@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { GradientText } from '@/components/inspiration/GradientText';
 import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -45,6 +46,7 @@ export function PageHeaderContent({
   animationSeed,
 }: PageHeaderProps) {
   const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
@@ -82,7 +84,7 @@ export function PageHeaderContent({
         animate={{ opacity: 1, scaleX: 1 }}
         transition={{ type: 'timing', duration: 600, delay: 350 }}
       >
-        <View style={[styles.headerRule, { backgroundColor: colors.accent }]} />
+        <View style={[styles.headerRule, { backgroundColor: noctalia.accent.base }]} />
       </MotiView>
     </View>
   );
@@ -98,7 +100,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontFamily: Fonts.fraunces.semiBold,
-    letterSpacing: 0,
   },
   headerRule: {
     ...DecoLines.rule,

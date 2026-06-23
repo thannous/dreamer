@@ -1,14 +1,17 @@
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { MicButton, type MicButtonStatus } from '@/components/recording/MicButton';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { RecordingActivationInsightCard } from '@/components/recording/RecordingActivationInsightCard';
 import { RecordingDraftProgress } from '@/components/recording/RecordingDraftProgress';
 import type { RecordingOnboardingTarget } from '@/components/recording/RecordingOnboardingTour';
+import type { RecordingActivationInsight } from '@/lib/recordingActivationInsight';
 import type { RecordingSpotlightRect } from './RecordingOnboardingSpotlightOverlay';
 
 export interface RecordingTextInputProps {
@@ -29,6 +32,7 @@ export interface RecordingTextInputProps {
   spotlightMeasureKey?: number;
   placeholder?: string;
   autoFocus?: boolean;
+  activationInsight?: RecordingActivationInsight | null;
   onSwitchToVoice: () => void;
   onClear?: () => void;
 }
@@ -53,13 +57,15 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       spotlightMeasureKey = 0,
       placeholder,
       autoFocus = true,
+      activationInsight,
       onSwitchToVoice,
       onClear,
     },
     ref
   ) {
-    const { colors, shadows } = useTheme();
+    const { colors, mode } = useTheme();
     const { t } = useTranslation();
+    const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
     const hasValue = value.trim().length > 0;
     const [isFocused, setIsFocused] = useState(false);
     const textSpotlightRef = useRef<View | null>(null);
@@ -102,7 +108,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     return (
       <>
         <View style={styles.recordingSection}>
-          <Text style={[styles.instructionText, { color: colors.textSecondary }]}>
+          <Text style={[styles.instructionText, { color: noctalia.text.secondary }]}>
             {instructionText}
           </Text>
         </View>
@@ -113,13 +119,13 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               style={[
                 styles.fallbackNotice,
                 {
-                  backgroundColor: colors.backgroundSecondary,
-                  borderColor: colors.divider,
+                  backgroundColor: noctalia.surface.base,
+                  borderColor: noctalia.surface.border,
                 },
               ]}
             >
               <Text
-                style={[styles.fallbackNoticeText, { color: colors.textSecondary }]}
+                style={[styles.fallbackNoticeText, { color: noctalia.text.secondary }]}
                 testID={TID.Text.RecordingFallbackNotice}
               >
                 {fallbackNotice}
@@ -152,19 +158,19 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
                   testID={TID.Button.SwitchToVoice}
                 >
                   <View style={styles.voiceHeroTitleRow}>
-                    <Text style={[styles.voiceHeroTitle, { color: colors.textPrimary }]}>
+                    <Text style={[styles.voiceHeroTitle, { color: noctalia.text.primary }]}>
                       {voiceLabel}
                     </Text>
                     {recordingDurationLabel ? (
                       <Text
-                        style={[styles.voiceCaptureDuration, { color: colors.accent }]}
+                        style={[styles.voiceCaptureDuration, { color: noctalia.accent.base }]}
                         testID={TID.Text.RecordingVoiceStatusDuration}
                       >
                         {recordingDurationLabel}
                       </Text>
                     ) : null}
                   </View>
-                  <Text style={[styles.voiceHeroDetail, { color: colors.textSecondary }]}>
+                  <Text style={[styles.voiceHeroDetail, { color: noctalia.text.secondary }]}>
                     {voiceDetail}
                   </Text>
                 </Pressable>
@@ -175,10 +181,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           <View
             ref={textSpotlightRef}
             collapsable={false}
-            style={[
-              shadows.md,
-              styles.spotlightTarget,
-            ]}
+            style={styles.spotlightTarget}
           >
             {!hasValue ? (
               <View
@@ -186,7 +189,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
                 accessibilityElementsHidden={true}
                 importantForAccessibility="no-hide-descendants"
               >
-                <IconSymbol name="pencil" size={18} color={colors.textSecondary} />
+                <IconSymbol name="pencil" size={18} color={noctalia.text.secondary} />
               </View>
             ) : null}
             <TextInput
@@ -196,15 +199,15 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               style={[
                 styles.textInput,
                 {
-                  backgroundColor: colors.backgroundSecondary,
-                  borderColor: isFocused ? colors.accent : colors.divider,
-                  color: colors.textPrimary,
+                  backgroundColor: noctalia.surface.base,
+                  borderColor: isFocused ? noctalia.accent.base : noctalia.surface.border,
+                  color: noctalia.text.primary,
                 },
               ]}
               multiline
               editable={!disabled}
               placeholder={placeholder || t('recording.placeholder')}
-              placeholderTextColor={colors.textSecondary}
+              placeholderTextColor={noctalia.text.secondary}
               testID={TID.Input.DreamTranscript}
               accessibilityLabel={t('recording.placeholder.accessibility')}
               autoFocus={autoFocus}
@@ -215,8 +218,10 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
 
           <RecordingDraftProgress value={value} />
 
+          <RecordingActivationInsightCard insight={activationInsight} />
+
           {lengthWarning ? (
-            <Text style={[styles.lengthWarning, { color: colors.accent }]}>
+            <Text style={[styles.lengthWarning, { color: noctalia.accent.base }]}>
               {lengthWarning}
             </Text>
           ) : null}
@@ -229,8 +234,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
                 styles.voiceCaptureCard,
                 isVoiceActive && styles.voiceCaptureCardActive,
                 {
-                  backgroundColor: colors.backgroundSecondary,
-                  borderColor: isVoiceActive ? colors.accent : colors.divider,
+                  backgroundColor: isVoiceActive ? noctalia.surface.active : noctalia.surface.base,
+                  borderColor: isVoiceActive ? noctalia.accent.base : noctalia.surface.border,
                 },
               ]}
             >
@@ -247,22 +252,22 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
                   <IconSymbol
                     name={voiceIconName}
                     size={16}
-                    color={isVoiceActive ? colors.accent : colors.textPrimary}
+                    color={isVoiceActive ? noctalia.accent.base : noctalia.text.primary}
                     style={styles.modeSwitchIcon}
                   />
-                  <Text style={[styles.voiceCaptureTitle, { color: colors.textPrimary }]}>
+                  <Text style={[styles.voiceCaptureTitle, { color: noctalia.text.primary }]}>
                     {voiceLabel}
                   </Text>
                   {recordingDurationLabel ? (
                     <Text
-                      style={[styles.voiceCaptureDuration, { color: colors.accent }]}
+                      style={[styles.voiceCaptureDuration, { color: noctalia.accent.base }]}
                       testID={TID.Text.RecordingVoiceStatusDuration}
                     >
                       {recordingDurationLabel}
                     </Text>
                   ) : null}
                 </View>
-                <Text style={[styles.voiceCaptureDetail, { color: colors.textSecondary }]}>
+                <Text style={[styles.voiceCaptureDetail, { color: noctalia.text.secondary }]}>
                   {voiceDetail}
                 </Text>
               </Pressable>
@@ -293,10 +298,10 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               <IconSymbol
                 name="trash"
                 size={16}
-                color={colors.textSecondary}
+                color={noctalia.text.secondary}
                 style={styles.modeSwitchIcon}
               />
-              <Text style={[styles.modeSwitchText, { color: colors.textSecondary }]}>
+              <Text style={[styles.modeSwitchText, { color: noctalia.text.secondary }]}>
                 {t('recording.mode.clear_dream') || 'Effacer le rêve'}
               </Text>
             </Pressable>
@@ -311,11 +316,11 @@ const styles = StyleSheet.create({
   recordingSection: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 16,
+    marginTop: 18,
   },
   instructionText: {
-    fontSize: 24,
-    lineHeight: 34,
+    fontSize: 23,
+    lineHeight: 32,
     fontFamily: Fonts.lora.regularItalic,
     textAlign: 'center',
   },
@@ -328,13 +333,12 @@ const styles = StyleSheet.create({
   spotlightTarget: {
     borderWidth: 1,
     borderColor: 'transparent',
-    borderRadius: 18,
+    borderRadius: 24,
     borderCurve: 'continuous',
-    padding: 3,
   },
   fallbackNotice: {
     borderWidth: 1,
-    borderRadius: 14,
+    borderRadius: 18,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
@@ -344,10 +348,10 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.regular,
   },
   textInput: {
-    minHeight: 160,
+    minHeight: 176,
     maxHeight: 240,
     borderWidth: 1,
-    borderRadius: 16,
+    borderRadius: 22,
     paddingTop: 20,
     paddingRight: 20,
     paddingBottom: 20,
@@ -415,9 +419,9 @@ const styles = StyleSheet.create({
   voiceCaptureCard: {
     minHeight: 94,
     borderWidth: 1,
-    borderRadius: 18,
+    borderRadius: 22,
     borderCurve: 'continuous',
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     paddingVertical: 12,
     flexDirection: 'row',
     alignItems: 'center',

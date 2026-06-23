@@ -1,6 +1,7 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { getDreamIcon, DreamIconType } from '@/constants/dreamIcons';
 import {
@@ -32,14 +33,15 @@ const ICON_COMPONENTS: Record<DreamIconType, React.ComponentType<{ size?: number
 };
 
 export const TimelineIndicator = memo(function TimelineIndicator({ dreamType }: TimelineIndicatorProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const iconType = getDreamIcon(dreamType);
   const IconComponent = ICON_COMPONENTS[iconType];
 
   return (
     <View style={styles.container}>
-      <View style={[styles.iconCircle, { backgroundColor: colors.accent }]}>
-        <IconComponent size={18} color={colors.backgroundCard} />
+      <View style={[styles.iconCircle, { backgroundColor: noctalia.action.primary }]}>
+        <IconComponent size={18} color={noctalia.action.primaryText} />
       </View>
     </View>
   );

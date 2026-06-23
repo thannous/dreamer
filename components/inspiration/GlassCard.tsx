@@ -3,6 +3,7 @@ import React, { type ReactNode } from 'react';
 import { Platform, Pressable, StyleSheet, type PressableProps, type ViewStyle } from 'react-native';
 
 import { GlassCardTokens } from '@/constants/theme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useScrollPerf } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
@@ -54,6 +55,7 @@ function GlassCardFrame({
   shadows,
   reduceEffects,
 }: GlassCardFrameProps) {
+  const noctalia = getNoctaliaDesignTokens(colors, mode);
   // Blur intensity mapping - very light for light mode to preserve colors
   const blurIntensity = mode === 'dark'
     ? {
@@ -86,7 +88,9 @@ function GlassCardFrame({
   // Theme-aware glass background color using system colors
   // Convert hex opacity to hex alpha for consistency
   const opacityHex = Math.round(backgroundOpacity * 255).toString(16).padStart(2, '0');
-  const glassBackgroundColor = `${colors.backgroundCard}${opacityHex}`;
+  const glassBackgroundColor = mode === 'dark'
+    ? (intensity === 'strong' ? noctalia.surface.active : noctalia.surface.raised)
+    : `${colors.backgroundCard}${opacityHex}`;
 
   // Glass styling
   const glassStyle: ViewStyle = {
@@ -94,7 +98,7 @@ function GlassCardFrame({
       ? 'transparent'
       : glassBackgroundColor,
     borderWidth: GlassCardTokens.borderWidth,
-    borderColor: colors.divider,
+    borderColor: intensity === 'strong' ? noctalia.surface.borderStrong : noctalia.surface.border,
     borderRadius: GlassCardTokens.borderRadius,
     overflow: 'hidden',
     ...(shadow === 'on' && !reduceEffects ? shadows.lg : undefined),

@@ -1,11 +1,12 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT, TAB_BAR_HEIGHT } from '@/constants/layout';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import { router } from 'expo-router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -28,6 +29,7 @@ type NoctaliaBottomNavProps = {
 
 export function NoctaliaBottomNav({ activeKey, addDreamIcon = 'pencil' }: NoctaliaBottomNavProps) {
   const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
@@ -37,7 +39,13 @@ export function NoctaliaBottomNav({ activeKey, addDreamIcon = 'pencil' }: Noctal
   }
 
   const floatingBottomInset = Math.max(insets.bottom, 14);
-  const barBackground = mode === 'dark' ? 'rgba(31, 22, 54, 0.97)' : colors.navbarBg;
+  const barBackground = noctalia.nav.background;
+  const barBorder = noctalia.nav.border;
+  const navActiveColor = noctalia.nav.active;
+  const navInactiveColor = noctalia.nav.inactive;
+  const addBackground = noctalia.action.primary;
+  const addBorder = noctalia.action.primaryBorder;
+  const addTextColor = noctalia.action.primaryText;
   const isDreamCaptureActive = activeKey === 'addDream';
   const items: BottomNavItem[] = [
     {
@@ -92,7 +100,7 @@ export function NoctaliaBottomNav({ activeKey, addDreamIcon = 'pencil' }: Noctal
           {
             bottom: floatingBottomInset,
             backgroundColor: barBackground,
-            borderColor: colors.navbarBorder,
+            borderColor: barBorder,
           },
         ]}
       >
@@ -118,18 +126,18 @@ export function NoctaliaBottomNav({ activeKey, addDreamIcon = 'pencil' }: Noctal
                   style={[
                     styles.addItem,
                     {
-                      backgroundColor: colors.accent,
-                      borderColor: colors.accentLight,
+                      backgroundColor: addBackground,
+                      borderColor: addBorder,
                     },
                   ]}
                 >
                   <IconSymbol
                     size={24}
                     name={item.icon}
-                    color={colors.textOnAccentSurface}
+                    color={addTextColor}
                   />
                   <Text
-                    style={[styles.addLabel, { color: colors.navbarTextActive }]}
+                    style={[styles.addLabel, { color: addTextColor }]}
                     numberOfLines={1}
                   >
                     {item.label}
@@ -140,12 +148,12 @@ export function NoctaliaBottomNav({ activeKey, addDreamIcon = 'pencil' }: Noctal
                   <IconSymbol
                     size={24}
                     name={item.icon}
-                    color={isActive ? colors.navbarTextActive : colors.navbarTextInactive}
+                    color={isActive ? navActiveColor : navInactiveColor}
                   />
                   <Text
                     style={[
                       styles.label,
-                      { color: isActive ? colors.navbarTextActive : colors.navbarTextInactive },
+                      { color: isActive ? navActiveColor : navInactiveColor },
                     ]}
                     numberOfLines={1}
                     ellipsizeMode="tail"
@@ -203,7 +211,6 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
-    letterSpacing: 0,
   },
   addItem: {
     width: 72,
@@ -223,7 +230,6 @@ const styles = StyleSheet.create({
   addLabel: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 12,
-    letterSpacing: 0,
   },
   pressed: {
     opacity: 0.72,

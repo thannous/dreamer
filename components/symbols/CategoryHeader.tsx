@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import type { SymbolCategory, SymbolLanguage } from '@/lib/symbolTypes';
@@ -15,7 +16,8 @@ interface CategoryHeaderProps {
 }
 
 export function CategoryHeader({ category, count, language }: CategoryHeaderProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const icon = getCategoryIcon(category);
   const name = getCategoryName(category, language);
 
@@ -33,15 +35,14 @@ export function CategoryHeader({ category, count, language }: CategoryHeaderProp
           alignItems: 'center',
           gap: ThemeLayout.spacing.sm,
         }}>
-        <IconSymbol name={icon} size={18} color={colors.accent} />
+        <IconSymbol name={icon} size={18} color={noctalia.accent.base} />
         <Text
           style={{
             flex: 1,
             fontFamily: Fonts.fraunces.medium,
             fontSize: 16,
-            color: colors.textPrimary,
+            color: noctalia.text.primary,
             textTransform: 'uppercase',
-            letterSpacing: 0.5,
           }}>
           {name}
         </Text>
@@ -49,7 +50,7 @@ export function CategoryHeader({ category, count, language }: CategoryHeaderProp
           style={{
             fontFamily: Fonts.spaceGrotesk.regular,
             fontSize: 13,
-            color: colors.textTertiary,
+            color: noctalia.text.tertiary,
             fontVariant: ['tabular-nums'],
           }}>
           {count}
@@ -58,7 +59,7 @@ export function CategoryHeader({ category, count, language }: CategoryHeaderProp
       <View
         style={{
           height: 1,
-          backgroundColor: colors.accent,
+          backgroundColor: noctalia.accent.base,
           opacity: 0.3,
         }}
       />

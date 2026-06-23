@@ -3,9 +3,9 @@
  */
 
 export const GradientColors = {
-  dreamJournal: ['#131022', '#4A3B5F'] as const,
-  darkBase: ['#131022', '#131022'] as const,
-  surreal: ['#1a0f2b', '#3b2a50'] as const,
+  dreamJournal: ['#03040D', '#120D23'] as const,
+  darkBase: ['#03040D', '#03040D'] as const,
+  surreal: ['#03040D', '#192344'] as const,
 } as const;
 
 export type GradientColorKey = keyof typeof GradientColors;

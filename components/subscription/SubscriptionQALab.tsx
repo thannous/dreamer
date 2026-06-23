@@ -2,7 +2,8 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
-import { Fonts, GlassCardTokens } from '@/constants/theme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useQuota } from '@/hooks/useQuota';
@@ -92,6 +93,7 @@ function actionStatusDetail(status: SubscriptionStatus, appUserId?: string | nul
 
 export function SubscriptionQALab() {
   const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { user, setUserTierLocally, refreshUser } = useAuth();
   const {
     status,
@@ -114,7 +116,6 @@ export function SubscriptionQALab() {
   const isMockMode = isMockModeEnabled();
   const androidKey = getExpoPublicEnvValue('EXPO_PUBLIC_REVENUECAT_ANDROID_KEY');
   const qaLabEnabled = getExpoPublicEnvValue('EXPO_PUBLIC_SUBSCRIPTION_QA_LAB') === 'true';
-  const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
   const sortedPackages = useMemo(() => sortPackages(packages), [packages]);
   const monthlyPackage = sortedPackages.find((pkg) => pkg.interval === 'monthly');
   const annualPackage = sortedPackages.find((pkg) => pkg.interval === 'annual');
@@ -312,25 +313,28 @@ export function SubscriptionQALab() {
 
   const actionColor =
     action.kind === 'error'
-      ? colors.accentLight
+      ? noctalia.status.danger.text
       : action.kind === 'warning'
-        ? colors.accentDark
-        : colors.accent;
+        ? noctalia.status.warning.text
+        : noctalia.accent.base;
 
   return (
     <View
-      style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider }]}
+      style={[
+        styles.card,
+        { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
+      ]}
       testID={TID.Screen.SubscriptionQALab}
     >
       <View style={styles.headerRow}>
         <View style={styles.headerText}>
-          <Text style={[styles.eyebrow, { color: colors.accent }]}>RevenueCat QA</Text>
-          <Text style={[styles.title, { color: colors.textPrimary }]}>Subscription QA Lab</Text>
-          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+          <Text style={[styles.eyebrow, { color: noctalia.accent.base }]}>RevenueCat QA</Text>
+          <Text style={[styles.title, { color: noctalia.text.primary }]}>Subscription QA Lab</Text>
+          <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
             Visualize identity, package loading, RevenueCat state and quota convergence in one place.
           </Text>
         </View>
-        {isBusy ? <ActivityIndicator color={colors.accent} /> : null}
+        {isBusy ? <ActivityIndicator color={noctalia.accent.base} /> : null}
       </View>
 
       <View style={styles.statusGrid} testID={qaStateId} collapsable={false}>
@@ -361,12 +365,27 @@ export function SubscriptionQALab() {
       </View>
 
       {error ? (
-        <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
-          <Text style={[styles.noticeText, { color: colors.accentLight }]}>{error.message}</Text>
+        <View
+          style={[
+            styles.notice,
+            {
+              backgroundColor: noctalia.status.danger.background,
+              borderColor: noctalia.status.danger.border,
+            },
+          ]}
+        >
+          <Text style={[styles.noticeText, { color: noctalia.status.danger.text }]}>
+            {error.message}
+          </Text>
         </View>
       ) : null}
 
-      <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
+      <View
+        style={[
+          styles.notice,
+          { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border },
+        ]}
+      >
         <Text
           style={[styles.noticeTitle, { color: actionColor }]}
           testID={TID.Text.SubscriptionQaActionLabel}
@@ -375,7 +394,7 @@ export function SubscriptionQALab() {
         </Text>
         {action.detail ? (
           <Text
-            style={[styles.noticeText, { color: colors.textSecondary }]}
+            style={[styles.noticeText, { color: noctalia.text.secondary }]}
             testID={TID.Text.SubscriptionQaAction}
           >
             {action.detail}
@@ -470,20 +489,26 @@ export function SubscriptionQALab() {
         />
       </ActionGroup>
 
-      <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
-        <Text style={[styles.noticeTitle, { color: colors.accent }]}>Snapshot</Text>
-        <Text style={[styles.noticeText, { color: colors.textSecondary }]}>{snapshotValue}</Text>
+      <View
+        style={[
+          styles.notice,
+          { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border },
+        ]}
+      >
+        <Text style={[styles.noticeTitle, { color: noctalia.accent.base }]}>Snapshot</Text>
+        <Text style={[styles.noticeText, { color: noctalia.text.secondary }]}>{snapshotValue}</Text>
       </View>
     </View>
   );
 }
 
 function StatusCell({ label, value, testID }: { label: string; value: string; testID?: string }) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   return (
-    <View style={[styles.statusCell, { backgroundColor: colors.backgroundSecondary }]}>
-      <Text style={[styles.statusLabel, { color: colors.textSecondary }]}>{label}</Text>
-      <Text style={[styles.statusValue, { color: colors.textPrimary }]} testID={testID} numberOfLines={2}>
+    <View style={[styles.statusCell, { backgroundColor: noctalia.surface.soft }]}>
+      <Text style={[styles.statusLabel, { color: noctalia.text.secondary }]}>{label}</Text>
+      <Text style={[styles.statusValue, { color: noctalia.text.primary }]} testID={testID} numberOfLines={2}>
         {value}
       </Text>
     </View>
@@ -491,10 +516,11 @@ function StatusCell({ label, value, testID }: { label: string; value: string; te
 }
 
 function ActionGroup({ title, children }: React.PropsWithChildren<{ title: string }>) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   return (
     <View style={styles.actionGroup}>
-      <Text style={[styles.actionGroupTitle, { color: colors.textSecondary }]}>{title}</Text>
+      <Text style={[styles.actionGroupTitle, { color: noctalia.text.secondary }]}>{title}</Text>
       <View style={styles.actionGrid}>{children}</View>
     </View>
   );
@@ -513,7 +539,8 @@ function QaButton({
   onPress: () => void;
   testID?: string;
 }) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   return (
     <Pressable
       accessibilityRole="button"
@@ -522,13 +549,13 @@ function QaButton({
       testID={testID}
       style={({ pressed }) => [
         styles.qaButton,
-        { backgroundColor: colors.backgroundSecondary, borderColor: colors.divider },
+        { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border },
         pressed && !disabled && styles.qaButtonPressed,
         disabled && styles.qaButtonDisabled,
       ]}
     >
-      <Text style={[styles.qaButtonLabel, { color: colors.textPrimary }]}>{label}</Text>
-      {hint ? <Text style={[styles.qaButtonHint, { color: colors.textSecondary }]}>{hint}</Text> : null}
+      <Text style={[styles.qaButtonLabel, { color: noctalia.text.primary }]}>{label}</Text>
+      {hint ? <Text style={[styles.qaButtonHint, { color: noctalia.text.secondary }]}>{hint}</Text> : null}
     </Pressable>
   );
 }
@@ -536,7 +563,7 @@ function QaButton({
 const styles = StyleSheet.create({
   card: {
     borderRadius: ThemeLayout.borderRadius.xl,
-    borderWidth: GlassCardTokens.borderWidth,
+    borderWidth: 1,
     gap: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
     padding: ThemeLayout.spacing.md,
@@ -554,7 +581,6 @@ const styles = StyleSheet.create({
   eyebrow: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 11,
-    letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
   title: {
@@ -592,6 +618,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   notice: {
+    borderWidth: 1,
     borderRadius: ThemeLayout.borderRadius.md,
     gap: 2,
     padding: ThemeLayout.spacing.sm,

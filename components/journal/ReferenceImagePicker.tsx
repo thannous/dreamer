@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
   Modal,
@@ -18,6 +18,7 @@ import { REFERENCE_IMAGES } from '@/constants/appConfig';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { ReferenceImage } from '@/lib/types';
@@ -98,7 +99,8 @@ export function ReferenceImagePicker({
   maxImages = REFERENCE_IMAGES.MAX_UPLOADS,
 }: ReferenceImagePickerProps) {
   const { t } = useTranslation();
-  const { colors, shadows } = useTheme();
+  const { colors, mode, shadows } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const pendingHandledRef = useRef(false);
   const cameraRef = useRef<ExpoCameraView | null>(null);
   const [expoCamera, setExpoCamera] = useState<ExpoCameraModule | null>(null);
@@ -462,10 +464,10 @@ export function ReferenceImagePicker({
         </Modal>
       )}
 
-      <Text style={[styles.title, { color: colors.textPrimary }]}>
+      <Text style={[styles.title, { color: noctalia.text.primary }]}>
         {t(`reference_image.title_${subjectType}`)}
       </Text>
-      <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+      <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
         {t('reference_image.subtitle')}
       </Text>
 
@@ -474,18 +476,18 @@ export function ReferenceImagePicker({
           <View key={`${image.uri}-${index}`} style={styles.imageWrapper}>
             <Image
               source={{ uri: image.uri }}
-              style={[styles.preview, { borderColor: colors.divider }]}
+              style={[styles.preview, { borderColor: noctalia.surface.border }]}
               contentFit="cover"
             />
             <Pressable
               onPress={() => handleRemoveImage(index)}
-              style={[styles.removeButton, shadows.sm, { backgroundColor: colors.backgroundCard }]}
+              style={[styles.removeButton, shadows.sm, { backgroundColor: noctalia.surface.raised }]}
               hitSlop={8}
               accessibilityRole="button"
               accessibilityLabel={t('reference_image.remove_photo', { index: index + 1 })}
               accessibilityHint={t('reference_image.remove_photo_hint')}
             >
-              <IconSymbol name="xmark" size={16} color={colors.textPrimary} />
+              <IconSymbol name="xmark" size={16} color={noctalia.text.primary} />
             </Pressable>
           </View>
         ))}
@@ -500,14 +502,14 @@ export function ReferenceImagePicker({
               accessibilityRole="button"
                 style={[
                   styles.addButton,
-                  { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
+                  { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.soft },
                   isLoading && styles.addButtonDisabled,
                 ]}
               >
                 {isLoading ? (
-                  <ActivityIndicator color={colors.textSecondary} />
+                  <ActivityIndicator color={noctalia.text.secondary} />
                 ) : (
-                  <IconSymbol name="camera" size={28} color={colors.textSecondary} />
+                  <IconSymbol name="camera" size={28} color={noctalia.text.secondary} />
                 )}
               </Pressable>
             )}
@@ -518,14 +520,14 @@ export function ReferenceImagePicker({
               accessibilityRole="button"
               style={[
                 styles.addButton,
-                { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
+                { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.soft },
                 isLoading && styles.addButtonDisabled,
               ]}
             >
               {isLoading ? (
-                <ActivityIndicator color={colors.textSecondary} />
+                <ActivityIndicator color={noctalia.text.secondary} />
               ) : (
-                <IconSymbol name="photo.on.rectangle" size={28} color={colors.textSecondary} />
+                <IconSymbol name="photo.on.rectangle" size={28} color={noctalia.text.secondary} />
               )}
             </Pressable>
           </>
@@ -533,7 +535,7 @@ export function ReferenceImagePicker({
       </View>
 
       {selectedImages.length > 0 && (
-        <Text style={[styles.hint, { color: colors.textSecondary }]}>
+        <Text style={[styles.hint, { color: noctalia.text.secondary }]}>
           {t('reference_image.selected_count', { count: selectedImages.length, max: maxImages })}
         </Text>
       )}

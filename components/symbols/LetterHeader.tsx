@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Text, View } from "react-native";
 
 import { ThemeLayout } from "@/constants/journalTheme";
+import { getNoctaliaDesignTokens } from "@/constants/noctaliaDesign";
 import { Fonts } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -11,7 +12,8 @@ interface LetterHeaderProps {
 }
 
 export function LetterHeader({ letter, count }: LetterHeaderProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   return (
     <View
@@ -34,8 +36,7 @@ export function LetterHeader({ letter, count }: LetterHeaderProps) {
           style={{
             fontFamily: Fonts.fraunces.bold,
             fontSize: 18,
-            color: colors.textPrimary,
-            letterSpacing: 1.2,
+            color: noctalia.text.primary,
           }}
         >
           {letter}
@@ -44,7 +45,7 @@ export function LetterHeader({ letter, count }: LetterHeaderProps) {
           style={{
             flex: 1,
             height: 1,
-            backgroundColor: colors.divider,
+            backgroundColor: noctalia.surface.border,
             opacity: 0.4,
           }}
         />
@@ -53,7 +54,7 @@ export function LetterHeader({ letter, count }: LetterHeaderProps) {
           style={{
             fontFamily: Fonts.spaceGrotesk.regular,
             fontSize: 13,
-            color: colors.textTertiary,
+            color: noctalia.text.tertiary,
             fontVariant: ["tabular-nums"],
           }}
         >

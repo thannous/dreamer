@@ -69,6 +69,7 @@
     "test:e2e:smoke:fast": "node ./scripts/run-maestro-android.js --suite smoke --retries 0 --no-restart-metro",
     "test:e2e:canary": "node ./scripts/run-maestro-android.js --suite canary",
     "test:e2e:canary:fast": "node ./scripts/run-maestro-android.js --suite canary --retries 0 --no-restart-metro",
+    "test:e2e:onboarding": "node ./scripts/run-maestro-android.js --suite onboarding",
     "test:e2e:mock": "node ./scripts/run-maestro-android.js --suite mock",
     "test:e2e:mock:fast": "node ./scripts/run-maestro-android.js --suite mock --retries 0 --no-restart-metro",
     "test:e2e:subscription-qa": "node ./scripts/run-maestro-android.js --flow maestro/subscription-qa-lab.yml",

@@ -1,8 +1,9 @@
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ErrorType } from '@/lib/errors';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -15,7 +16,8 @@ interface ImageRetryProps {
 
 export function ImageRetry({ onRetry, isRetrying = false, errorType }: ImageRetryProps) {
   const { t } = useTranslation();
-  const { colors, shadows } = useTheme();
+  const { colors, mode, shadows } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   // Determine if error is transient (can retry) or blocked (cannot retry)
   const isBlocked = errorType === ErrorType.IMAGE_BLOCKED;
@@ -38,38 +40,46 @@ export function ImageRetry({ onRetry, isRetrying = false, errorType }: ImageRetr
   const canRetry = !isBlocked;
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.backgroundSecondary, borderColor: colors.divider }]}>
+    <View style={[styles.container, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }]}>
       <View style={styles.iconContainer}>
-        <IconSymbol name="photo" size={64} color={colors.textSecondary} />
+        <IconSymbol name="photo" size={64} color={noctalia.text.secondary} />
         {!isRetrying && (
-          <View style={[styles.errorBadge, { backgroundColor: colors.backgroundSecondary }]}>
+          <View style={[styles.errorBadge, { backgroundColor: noctalia.surface.raised }]}>
             <IconSymbol
               name={isBlocked ? 'xmark.circle.fill' : 'exclamationmark.circle.fill'}
               size={24}
-              color={isBlocked ? '#9CA3AF' : '#EF4444'}
+              color={isBlocked ? noctalia.text.secondary : noctalia.status.danger.icon}
             />
           </View>
         )}
       </View>
 
-      <Text style={[styles.title, { color: colors.textPrimary }]}>{getTitle()}</Text>
-      <Text style={[styles.message, { color: colors.textSecondary }]}>{getMessage()}</Text>
+      <Text style={[styles.title, { color: noctalia.text.primary }]}>{getTitle()}</Text>
+      <Text style={[styles.message, { color: noctalia.text.secondary }]}>{getMessage()}</Text>
 
       {canRetry && (
         <Pressable
-          style={[styles.retryButton, shadows.lg, { backgroundColor: colors.accent }, isRetrying && styles.retryButtonDisabled]}
+          style={[
+            styles.retryButton,
+            shadows.lg,
+            {
+              backgroundColor: noctalia.action.primary,
+              borderColor: noctalia.action.primaryBorder,
+            },
+            isRetrying && styles.retryButtonDisabled,
+          ]}
           onPress={onRetry}
           disabled={isRetrying}
         >
           {isRetrying ? (
             <View style={styles.buttonContent}>
-              <ActivityIndicator size="small" color={colors.textPrimary} />
-              <Text style={[styles.retryButtonText, { color: colors.textPrimary }]}>{t('image_retry.generating')}</Text>
+              <ActivityIndicator size="small" color={noctalia.action.primaryText} />
+              <Text style={[styles.retryButtonText, { color: noctalia.action.primaryText }]}>{t('image_retry.generating')}</Text>
             </View>
           ) : (
             <View style={styles.buttonContent}>
-              <IconSymbol name="arrow.clockwise" size={20} color={colors.textPrimary} />
-              <Text style={[styles.retryButtonText, { color: colors.textPrimary }]}>{t('image_retry.retry_generation')}</Text>
+              <IconSymbol name="arrow.clockwise" size={20} color={noctalia.action.primaryText} />
+              <Text style={[styles.retryButtonText, { color: noctalia.action.primaryText }]}>{t('image_retry.retry_generation')}</Text>
             </View>
           )}
         </Pressable>
@@ -127,6 +137,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 12,
+    borderWidth: 1,
     // shadow: applied via theme shadows.lg
   },
   retryButtonDisabled: {
@@ -141,6 +152,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.bold,
     // color: set dynamically
-    letterSpacing: 0.3,
   },
 });

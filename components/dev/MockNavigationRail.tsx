@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
 import { Fonts } from '@/constants/theme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { isMockModeEnabled } from '@/lib/env';
 import { TID } from '@/lib/testIDs';
@@ -19,7 +20,8 @@ const ITEMS = [
 ];
 
 export function MockNavigationRail() {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const insets = useSafeAreaInsets();
 
   if (!shouldShowMockRail) {
@@ -29,21 +31,21 @@ export function MockNavigationRail() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]} collapsable={false}>
       <View
-        style={[styles.rail, { backgroundColor: colors.backgroundCard, borderColor: colors.divider }]}
+        style={[styles.rail, { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border }]}
         collapsable={false}
       >
         {ITEMS.map((item) => (
           <Pressable
             key={item.testID}
             onPress={() => router.push(item.href)}
-            style={[styles.button, { borderColor: colors.divider }]}
+            style={[styles.button, { borderColor: noctalia.surface.border }]}
             testID={item.testID}
             collapsable={false}
             accessible
             accessibilityRole="button"
             accessibilityLabel={item.testID}
           >
-            <Text style={[styles.label, { color: colors.textSecondary }]}>{item.label}</Text>
+            <Text style={[styles.label, { color: noctalia.text.secondary }]}>{item.label}</Text>
           </Pressable>
         ))}
       </View>
@@ -76,6 +78,5 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 12,
-    letterSpacing: 0.4,
   },
 });

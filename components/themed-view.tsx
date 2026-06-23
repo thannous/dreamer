@@ -1,6 +1,7 @@
 import { View, type ViewProps } from 'react-native';
 
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useTheme } from '@/context/ThemeContext';
 
 export type ThemedViewProps = ViewProps & {
   lightColor?: string;
@@ -8,7 +9,10 @@ export type ThemedViewProps = ViewProps & {
 };
 
 export function ThemedView({ style, lightColor, darkColor, ...otherProps }: ThemedViewProps) {
-  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
+  const { colors, mode } = useTheme();
+  const noctalia = getNoctaliaDesignTokens(colors, mode);
+  const overrideColor = mode === 'dark' ? darkColor : lightColor;
+  const backgroundColor = overrideColor ?? noctalia.screen.background;
 
   return <View style={[{ backgroundColor }, style]} {...otherProps} />;
 }

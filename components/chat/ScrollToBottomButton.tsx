@@ -4,10 +4,11 @@
  */
 
 import { Fonts } from '@/constants/theme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useScrollToBottomButton } from '@/hooks/useChatList';
 import { isChatDebugEnabled } from '@/lib/env';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Pressable } from 'react-native-gesture-handler';
 import Animated, {
@@ -23,6 +24,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export function ScrollToBottomButton() {
   const { shouldShowButton, scrollToBottom } = useScrollToBottomButton();
   const { colors, mode, shadows } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const debugChat = __DEV__ && isChatDebugEnabled();
 
   // Keep this view mounted to avoid Android crashes when Reanimated removes views mid-draw.
@@ -34,10 +36,6 @@ export function ScrollToBottomButton() {
       console.debug('[ScrollToBottomButton] visibility updated', { shouldShowButton, ts: Date.now() });
     }
   }, [debugChat, shouldShowButton, visibility]);
-
-  const backgroundColor = mode === 'dark'
-    ? 'rgba(99, 102, 241, 0.95)'
-    : colors.accent;
 
   const buttonStyle = useAnimatedStyle(() => {
     const scale = interpolate(visibility.value, [0, 1], [0.96, 1]);
@@ -62,7 +60,10 @@ export function ScrollToBottomButton() {
         styles.button,
         shadows.lg,
         buttonStyle,
-        { backgroundColor },
+        {
+          backgroundColor: noctalia.action.primary,
+          borderColor: noctalia.action.primaryBorder,
+        },
       ]}
       onPress={handlePress}
       hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
@@ -71,8 +72,8 @@ export function ScrollToBottomButton() {
       importantForAccessibility={shouldShowButton ? 'auto' : 'no-hide-descendants'}
     >
       <View style={styles.content}>
-        <IconSymbol name="arrow.down" size={16} color="#FFFFFF" />
-        <Text style={styles.text}>Jump to latest</Text>
+        <IconSymbol name="arrow.down" size={16} color={noctalia.action.primaryText} />
+        <Text style={[styles.text, { color: noctalia.action.primaryText }]}>Jump to latest</Text>
       </View>
     </AnimatedPressable>
   );
@@ -87,6 +88,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     zIndex: 100,
+    borderWidth: 1,
   },
   content: {
     flexDirection: 'row',
@@ -94,7 +96,6 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   text: {
-    color: '#FFFFFF',
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 13,
   },

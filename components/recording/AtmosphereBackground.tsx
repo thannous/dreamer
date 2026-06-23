@@ -1,14 +1,13 @@
 import { useFocusEffect } from 'expo-router';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { MotiView } from '@/lib/moti';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Dimensions, Platform, StyleSheet, View, type ViewStyle } from 'react-native';
-import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
+import React, { memo, useCallback, useMemo, useState } from 'react';
+import { Platform, StyleSheet, View, type ViewStyle } from 'react-native';
+import Svg, { Circle, Defs, Ellipse, G, Line, Path, RadialGradient, Stop } from 'react-native-svg';
 
-const DEFAULT_HEIGHT = 640;
-const PARTICLE_COUNT = 3; // Reduced 20% to lower GPU load
-const STAR_COUNT = 5;
+const STAR_COUNT = 2;
 
 const seededRandom = (seed: number) => {
   const x = Math.sin(seed) * 10000;
@@ -16,11 +15,10 @@ const seededRandom = (seed: number) => {
 };
 
 function AtmosphereBackgroundComponent() {
-  const { mode, colors } = useTheme();
+  const { colors, mode } = useTheme();
   const prefersReducedMotion = usePrefersReducedMotion();
   const [isFocused, setIsFocused] = useState(true);
-  const [viewportHeight, setViewportHeight] = useState(DEFAULT_HEIGHT);
-  const isDark = mode === 'dark';
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   useFocusEffect(
     useCallback(() => {
@@ -29,30 +27,15 @@ function AtmosphereBackgroundComponent() {
     }, [])
   );
 
-  useEffect(() => {
-    const { height } = Dimensions.get('window');
-    setViewportHeight(height || DEFAULT_HEIGHT);
-  }, []);
-
   const shouldAnimate = isFocused && !prefersReducedMotion;
 
-  // Particle configuration
-  const particles = useMemo(() => Array.from({ length: PARTICLE_COUNT }).map((_, i) => ({
-    id: i,
-    x: seededRandom(i + 1) * 100,
-    size: seededRandom(i + 11) * 4 + 2,
-    duration: seededRandom(i + 21) * 8000 + 3200,
-    delay: seededRandom(i + 31) * 2000,
-  })), []);
-
-  // Star configuration
   const stars = useMemo(() => Array.from({ length: STAR_COUNT }).map((_, i) => ({
     id: i,
-    x: seededRandom(i + 101) * 100,
-    y: seededRandom(i + 111) * 100,
-    size: seededRandom(i + 121) * 2 + 1,
-    delay: seededRandom(i + 131) * 1000,
-    blinkDuration: 800 + seededRandom(i + 141) * 800,
+    x: 12 + seededRandom(i + 101) * 76,
+    y: 10 + seededRandom(i + 111) * 46,
+    size: seededRandom(i + 121) * 1.1 + 0.9,
+    delay: seededRandom(i + 131) * 1400,
+    blinkDuration: 3400 + seededRandom(i + 141) * 1800,
   })), []);
 
   return (
@@ -62,15 +45,65 @@ function AtmosphereBackgroundComponent() {
         Platform.OS === 'web' ? styles.nonInteractive : styles.nativeNonInteractive,
       ]}
     >
-      {/* Animated Gradient Background Overlay - subtle movement */}
+      <Svg height="100%" width="100%" viewBox="0 0 100 100" preserveAspectRatio="none" style={StyleSheet.absoluteFill}>
+        <Defs>
+          <RadialGradient id="captureTopGlow" cx="76%" cy="7%" rx="58%" ry="40%" fx="76%" fy="7%">
+            <Stop offset="0%" stopColor={noctalia.atmosphere.veil} stopOpacity={mode === 'dark' ? 0.58 : 0.48} />
+            <Stop offset="100%" stopColor="transparent" stopOpacity="0" />
+          </RadialGradient>
+          <RadialGradient id="captureLowerGlow" cx="50%" cy="78%" rx="72%" ry="36%" fx="50%" fy="78%">
+            <Stop offset="0%" stopColor={noctalia.atmosphere.glow} stopOpacity={mode === 'dark' ? 0.045 : 0.07} />
+            <Stop offset="100%" stopColor="transparent" stopOpacity="0" />
+          </RadialGradient>
+        </Defs>
+        <Ellipse cx="76" cy="8" rx="58" ry="40" fill="url(#captureTopGlow)" />
+        <Ellipse cx="50" cy="80" rx="72" ry="36" fill="url(#captureLowerGlow)" />
+        <G opacity={mode === 'dark' ? 0.42 : 0.3}>
+          <Circle cx="86" cy="13" r="18" fill="none" stroke={noctalia.atmosphere.orbit} strokeWidth="0.12" />
+          <Circle cx="86" cy="13" r="28" fill="none" stroke={noctalia.atmosphere.orbit} strokeWidth="0.08" strokeDasharray="0.7 2.8" />
+          <Path
+            d="M59 11 C71 6 86 7 97 18"
+            fill="none"
+            stroke={noctalia.atmosphere.orbit}
+            strokeLinecap="round"
+            strokeWidth="0.1"
+          />
+          <Path
+            d="M2 73 C20 68 37 70 54 76 C69 82 83 82 98 76"
+            fill="none"
+            stroke={noctalia.atmosphere.horizon}
+            strokeLinecap="round"
+            strokeWidth="0.14"
+          />
+          <Path
+            d="M7 80 C28 77 45 81 63 84 C77 87 88 86 98 82"
+            fill="none"
+            stroke={noctalia.atmosphere.horizon}
+            strokeLinecap="round"
+            strokeWidth="0.08"
+            strokeDasharray="0.6 2"
+          />
+          <Line
+            x1="80"
+            x2="90"
+            y1="22"
+            y2="11"
+            stroke={noctalia.atmosphere.orbit}
+            strokeLinecap="round"
+            strokeWidth="0.08"
+          />
+        </G>
+      </Svg>
+
+      {/* Slow capture glow: a quiet pulse that keeps the capture screen alive without distracting from writing. */}
       <MotiView
-        from={{ opacity: 0.3 }}
-        animate={shouldAnimate ? { opacity: 0.6 } : { opacity: 0.45 }}
+        from={{ opacity: 0.035 }}
+        animate={shouldAnimate ? { opacity: 0.075 } : { opacity: 0.05 }}
         transition={
           shouldAnimate
             ? {
                 type: 'timing',
-                duration: 3200,
+                duration: 8600,
                 loop: true,
                 repeatReverse: true,
               }
@@ -83,67 +116,24 @@ function AtmosphereBackgroundComponent() {
             <RadialGradient id="grad" cx="50%" cy="50%" rx="50%" ry="50%" fx="50%" fy="50%" gradientUnits="userSpaceOnUse">
               <Stop
                 offset="0%"
-                stopColor={isDark ? '#4c3f6d' : colors.accent}
-                stopOpacity={isDark ? 0.4 : 0.25}
+                stopColor={noctalia.atmosphere.glow}
+                stopOpacity={noctalia.atmosphere.glowOpacity * 0.42}
               />
               <Stop offset="100%" stopColor="transparent" stopOpacity="0" />
             </RadialGradient>
           </Defs>
-          <Ellipse cx="50%" cy="60%" rx="45%" ry="40%" fill="url(#grad)" />
+          <Ellipse cx="50%" cy="66%" rx="48%" ry="28%" fill="url(#grad)" />
         </Svg>
       </MotiView>
 
-      {/* Floating Particles */}
-      {particles.map((p) => (
-        <MotiView
-          key={`particle-${p.id}`}
-          from={{
-            translateY: viewportHeight,
-            opacity: 0,
-          }}
-          animate={
-            shouldAnimate
-              ? {
-                  translateY: -50,
-                  opacity: [0, 0.8, 0],
-                }
-              : {
-                  translateY: viewportHeight * 0.2,
-                  opacity: 0.35,
-                }
-          }
-          transition={
-            shouldAnimate
-              ? {
-                  type: 'timing',
-                  duration: p.duration,
-                  loop: true,
-                  delay: p.delay,
-                  repeatReverse: false,
-                }
-              : undefined
-          }
-          style={[
-            styles.particle,
-            {
-              left: `${p.x}%`,
-              width: p.size,
-              height: p.size,
-              backgroundColor: isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(212, 165, 116, 0.4)',
-            }
-          ]}
-        />
-      ))}
-
-      {/* Twinkling Stars */}
       {stars.map((s) => (
         <MotiView
           key={`star-${s.id}`}
-          from={{ opacity: 0.2, scale: 0.85 }}
+          from={{ opacity: 0.08, scale: 0.96 }}
           animate={
             shouldAnimate
-              ? { opacity: 1, scale: 1.2 }
-              : { opacity: 0.8, scale: 1 }
+              ? { opacity: 0.18, scale: 1.03 }
+              : { opacity: 0.12, scale: 1 }
           }
           transition={
             shouldAnimate
@@ -163,7 +153,7 @@ function AtmosphereBackgroundComponent() {
               top: `${s.y}%`,
               width: s.size,
               height: s.size,
-              backgroundColor: isDark ? '#FFF' : 'rgba(212, 165, 116, 0.6)',
+              backgroundColor: noctalia.atmosphere.star,
             }
           ]}
         />
@@ -173,25 +163,15 @@ function AtmosphereBackgroundComponent() {
 }
 
 const styles = StyleSheet.create({
-  cloud: {
-    position: 'absolute',
-    // Note: blurRadius is an Image prop, for Views we can't easily blur without Expo Blur.
-    // We rely on opacity and soft shapes.
-  },
   nonInteractive: {
     pointerEvents: 'none',
   } as ViewStyle,
   nativeNonInteractive: {
     pointerEvents: 'none',
   } as ViewStyle,
-  particle: {
-    position: 'absolute',
-    borderRadius: 999,
-  },
   star: {
     position: 'absolute',
     borderRadius: 999,
-    backgroundColor: '#FFF',
   },
 });
 

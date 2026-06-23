@@ -1,6 +1,8 @@
 import { FlatGlassCard } from '@/components/inspiration/GlassCard';
+import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -24,6 +26,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 export default function SymbolDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { colors, shadows, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, currentLang } = useTranslation();
   const lang = (currentLang ?? 'en') as SymbolLanguage;
   const scrollPerf = useScrollIdle();
@@ -32,20 +35,17 @@ export default function SymbolDetailScreen() {
   const extended = useMemo(() => (id ? getExtendedContent(id, lang) : undefined), [id, lang]);
   const relatedSymbols = useMemo(() => (symbol ? getRelatedSymbols(symbol) : []), [symbol]);
 
-  const gradientColors = mode === 'dark'
-    ? (['#131022', '#4A3B5F'] as const)
-    : ([colors.backgroundSecondary, colors.backgroundDark] as const);
+  const gradientColors = noctalia.screen.gradient;
 
-  const glassBackground = mode === 'dark'
-    ? 'rgba(35, 26, 63, 0.4)'
-    : `${colors.backgroundCard}A6`;
+  const glassBackground = noctalia.surface.raised;
 
   if (!symbol) {
     return (
       <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
         <LinearGradient colors={gradientColors} style={styles.emptyState}>
+          <AtmosphericBackground />
           <Text
-            style={[styles.emptyText, { color: colors.textSecondary }]}
+            style={[styles.emptyText, { color: noctalia.text.secondary }]}
           >
             {t('symbols.not_found')}
           </Text>
@@ -64,19 +64,20 @@ export default function SymbolDetailScreen() {
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <LinearGradient colors={gradientColors} style={styles.gradient}>
+        <AtmosphericBackground />
         {/* Floating Back Button */}
         <Pressable
           onPress={() => router.back()}
           style={[styles.floatingBackButton, shadows.lg, {
-            backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
+            backgroundColor: noctalia.surface.raised,
             borderWidth: 1,
-            borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
+            borderColor: noctalia.surface.border,
           }]}
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
+          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.base} />
         </Pressable>
 
         <ScrollView
@@ -97,19 +98,19 @@ export default function SymbolDetailScreen() {
           <FlatGlassCard style={styles.headerCard} animationDelay={0}>
             {/* Category badge */}
             <View style={styles.categoryRow}>
-              <IconSymbol name={categoryIcon} size={16} color={colors.accent} />
-              <Text style={[styles.categoryText, { color: colors.accent }]}>
+              <IconSymbol name={categoryIcon} size={16} color={noctalia.accent.base} />
+              <Text style={[styles.categoryText, { color: noctalia.accent.base }]}>
                 {categoryName}
               </Text>
             </View>
 
             {/* Decorative rule */}
-            <View style={[DecoLines.rule, styles.headerRule, { backgroundColor: colors.accent }]} />
+            <View style={[DecoLines.rule, styles.headerRule, { backgroundColor: noctalia.accent.base }]} />
 
             {/* Title */}
             <Text
               selectable
-              style={[styles.title, { color: colors.textPrimary }]}
+              style={[styles.title, { color: noctalia.text.primary }]}
             >
               {content.name}
             </Text>
@@ -117,7 +118,7 @@ export default function SymbolDetailScreen() {
             {/* Short description */}
             <Text
               selectable
-              style={[styles.description, { color: colors.textSecondary }]}
+              style={[styles.description, { color: noctalia.text.secondary }]}
             >
               {content.shortDescription}
             </Text>
@@ -132,13 +133,13 @@ export default function SymbolDetailScreen() {
             transition={{ type: 'timing', duration: 600, delay: 200 }}
             style={styles.sectionBlock}
           >
-            <SectionTitle text={t('symbols.interpretation')} colors={colors} />
+            <SectionTitle text={t('symbols.interpretation')} noctalia={noctalia} />
             <FlatGlassCard style={styles.contentCard} animationDelay={0}>
               {paragraphs.map((p, i) => (
                 <Text
                   key={`${p}-${i}`}
                   selectable
-                  style={[styles.paragraphText, { color: colors.textPrimary }]}
+                  style={[styles.paragraphText, { color: noctalia.text.primary }]}
                 >
                   {p}
                 </Text>
@@ -155,14 +156,13 @@ export default function SymbolDetailScreen() {
             transition={{ type: 'timing', duration: 600, delay: 300 }}
             style={styles.sectionBlock}
           >
-            <SectionTitle text={t('symbols.variations')} colors={colors} />
+            <SectionTitle text={t('symbols.variations')} noctalia={noctalia} />
             <View style={styles.variationsList}>
               {extended.variations.map((v, index) => (
                 <VariationCard
                   key={`${v.context}-${v.meaning}`}
                   variation={v}
-                  colors={colors}
-                  mode={mode}
+                  noctalia={noctalia}
                   index={index}
                 />
               ))}
@@ -178,14 +178,14 @@ export default function SymbolDetailScreen() {
             transition={{ type: 'timing', duration: 600, delay: 400 }}
             style={styles.sectionBlock}
           >
-            <SectionTitle text={t('symbols.ask_yourself')} colors={colors} />
+            <SectionTitle text={t('symbols.ask_yourself')} noctalia={noctalia} />
             <FlatGlassCard style={styles.contentCard} animationDelay={0}>
               {content.askYourself.map((q, i) => (
                 <View key={`${q}-${i}`} style={styles.askRow}>
-                  <IconSymbol name="questionmark.circle.fill" size={18} color={colors.accent} />
+                  <IconSymbol name="questionmark.circle.fill" size={18} color={noctalia.accent.base} />
                   <Text
                     selectable
-                    style={[styles.askText, { color: colors.textPrimary }]}
+                    style={[styles.askText, { color: noctalia.text.primary }]}
                   >
                     {q}
                   </Text>
@@ -203,7 +203,7 @@ export default function SymbolDetailScreen() {
             transition={{ type: 'timing', duration: 600, delay: 500 }}
             style={styles.sectionBlock}
           >
-            <SectionTitle text={t('symbols.related')} colors={colors} />
+            <SectionTitle text={t('symbols.related')} noctalia={noctalia} />
             <View style={styles.relatedList}>
               {relatedSymbols.map((related) => {
                 const relId = related.id;
@@ -219,7 +219,7 @@ export default function SymbolDetailScreen() {
                       {
                         backgroundColor: glassBackground,
                         borderWidth: 1,
-                        borderColor: colors.divider,
+                        borderColor: noctalia.surface.border,
                         opacity: pressed ? 0.7 : 1,
                         transform: [{ scale: pressed ? 0.96 : 1 }],
                       },
@@ -228,14 +228,14 @@ export default function SymbolDetailScreen() {
                     <IconSymbol
                       name={getCategoryIcon(related.category)}
                       size={14}
-                      color={colors.accent}
+                      color={noctalia.accent.base}
                     />
                     <Text
-                      style={[styles.relatedName, { color: colors.textPrimary }]}
+                      style={[styles.relatedName, { color: noctalia.text.primary }]}
                     >
                       {relContent.name}
                     </Text>
-                    <IconSymbol name="arrow.right" size={12} color={colors.textTertiary} />
+                    <IconSymbol name="arrow.right" size={12} color={noctalia.text.tertiary} />
                   </Pressable>
                 );
               })}
@@ -248,34 +248,34 @@ export default function SymbolDetailScreen() {
   );
 }
 
-function SectionTitle({ text, colors }: { text: string; colors: any }) {
+function SectionTitle({
+  text,
+  noctalia,
+}: {
+  text: string;
+  noctalia: ReturnType<typeof getNoctaliaDesignTokens>;
+}) {
   return (
     <View style={styles.sectionHeader}>
       <Text
-        style={[styles.sectionTitle, { color: colors.textSecondary }]}
+        style={[styles.sectionTitle, { color: noctalia.text.secondary }]}
       >
         {text}
       </Text>
-      <View style={[styles.sectionTitleRule, { backgroundColor: colors.accent }]} />
+      <View style={[styles.sectionTitleRule, { backgroundColor: noctalia.accent.base }]} />
     </View>
   );
 }
 
 function VariationCard({
   variation,
-  colors,
-  mode,
+  noctalia,
   index,
 }: {
   variation: SymbolVariation;
-  colors: any;
-  mode: string;
+  noctalia: ReturnType<typeof getNoctaliaDesignTokens>;
   index: number;
 }) {
-  const glassBackground = mode === 'dark'
-    ? 'rgba(35, 26, 63, 0.4)'
-    : `${colors.backgroundCard}A6`;
-
   return (
     <MotiView
       from={{ opacity: 0, translateY: 12 }}
@@ -284,21 +284,21 @@ function VariationCard({
     >
       <View
         style={[styles.variationCard, {
-          backgroundColor: glassBackground,
+          backgroundColor: noctalia.surface.raised,
           borderWidth: 1,
-          borderColor: colors.divider,
+          borderColor: noctalia.surface.border,
         }]}
       >
         <Text
           selectable
-          style={[styles.variationContext, { color: colors.accent }]}
+          style={[styles.variationContext, { color: noctalia.accent.base }]}
         >
           {variation.context}
         </Text>
-        <View style={[styles.variationDivider, { backgroundColor: colors.accent }]} />
+        <View style={[styles.variationDivider, { backgroundColor: noctalia.accent.base }]} />
         <Text
           selectable
-          style={[styles.variationMeaning, { color: colors.textPrimary }]}
+          style={[styles.variationMeaning, { color: noctalia.text.primary }]}
         >
           {variation.meaning}
         </Text>
@@ -310,6 +310,8 @@ function VariationCard({
 const styles = StyleSheet.create({
   gradient: {
     flex: 1,
+    overflow: 'hidden',
+    position: 'relative',
   },
   scrollView: {
     flex: 1,
@@ -322,6 +324,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: ThemeLayout.spacing.md,
+    overflow: 'hidden',
+    position: 'relative',
   },
   emptyText: {
     fontFamily: Fonts.spaceGrotesk.medium,
@@ -354,7 +358,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
     textTransform: 'uppercase',
-    letterSpacing: 0.8,
   },
   headerRule: {
     marginTop: 14,
@@ -386,7 +389,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.fraunces.medium,
     fontSize: 13,
     textTransform: 'uppercase',
-    letterSpacing: 1.5,
   },
   sectionTitleRule: {
     flex: 1,

@@ -15,7 +15,8 @@ import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { Fonts, GlassCardTokens } from '@/constants/theme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { Fonts } from '@/constants/theme';
 import { EmailVerificationPendingDialog, EmailVerificationSuccessDialog } from '@/components/auth/EmailVerificationDialog';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
@@ -76,7 +77,8 @@ type Props = {
 
 export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const { colors, mode } = useTheme();
-  const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const cardBg = noctalia.surface.raised;
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const { language } = useLanguage();
@@ -395,12 +397,12 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     }
   }, [clearPendingVerification, user]);
 
-  const resendStatusColor = resendStatus === 'error' ? colors.accent : colors.textSecondary;
+  const resendStatusColor = resendStatus === 'error' ? noctalia.status.danger.text : noctalia.text.secondary;
   const verificationEmail = pendingVerification?.email ?? unverifiedEmail ?? trimmedEmail;
   const verificationVisible = Boolean(pendingVerification?.visible && !user);
   const resendButtonLabel = t('settings.account.banner.unverified.action');
   const passwordToggleLabel = passwordVisible ? t('auth.password.hide') : t('auth.password.show');
-  const passwordToggleColor = passwordVisible ? colors.textPrimary : colors.textSecondary;
+  const passwordToggleColor = passwordVisible ? noctalia.text.primary : noctalia.text.secondary;
   const handleCloseVerificationDialog = useCallback(() => {
     setPendingVerification((current) => (current ? { ...current, visible: false } : null));
   }, []);
@@ -409,9 +411,9 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     <>
       <TextInput
         testID={TID.Input.AuthEmail}
-        style={[styles.input, { backgroundColor: colors.backgroundSecondary, color: colors.textPrimary }]}
+        style={[styles.input, { backgroundColor: noctalia.surface.active, color: noctalia.text.primary }]}
         placeholder={t('settings.account.placeholder.email')}
-        placeholderTextColor={colors.textSecondary}
+        placeholderTextColor={noctalia.text.secondary}
         value={email}
         onChangeText={(value) => {
           setEmail(value);
@@ -426,7 +428,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
         textContentType="emailAddress"
       />
       {showEmailError && (
-        <Text style={[styles.errorText, { color: colors.textSecondary }]}>
+        <Text style={[styles.errorText, { color: noctalia.status.danger.text }]}>
           {t('auth.email.invalid')}
         </Text>
       )}
@@ -437,10 +439,10 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
           style={[
             styles.input,
             styles.inputWithToggleField,
-            { backgroundColor: colors.backgroundSecondary, color: colors.textPrimary },
+            { backgroundColor: noctalia.surface.active, color: noctalia.text.primary },
           ]}
           placeholder={t('settings.account.placeholder.password')}
-          placeholderTextColor={colors.textSecondary}
+          placeholderTextColor={noctalia.text.secondary}
           value={password}
           onChangeText={(value) => {
             setPassword(value);
@@ -464,12 +466,12 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
           {passwordVisible ? (
             <EyeIcon size={18} color={passwordToggleColor} />
           ) : (
-            <EyeOffIcon size={18} color={passwordToggleColor} slashColor={colors.backgroundSecondary} />
+            <EyeOffIcon size={18} color={passwordToggleColor} slashColor={noctalia.surface.active} />
           )}
         </Pressable>
       </View>
       {showPasswordError && (
-        <Text style={[styles.errorText, { color: colors.textSecondary }]}>
+        <Text style={[styles.errorText, { color: noctalia.status.danger.text }]}>
           {t('auth.password.too_short', { count: PASSWORD_MIN_LENGTH })}
         </Text>
       )}
@@ -477,15 +479,27 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
       <View style={[styles.row, isCompact && styles.rowCompact]}>
         <Pressable
           testID={TID.Button.AuthSignIn}
-          style={[styles.btn, isCompact && styles.btnCompact, { backgroundColor: colors.accent }, (emailActionsDisabled || submitting === 'signup') && styles.btnDisabled]}
+          style={[
+            styles.btn,
+            isCompact && styles.btnCompact,
+            {
+              backgroundColor: emailActionsDisabled || submitting === 'signup'
+                ? noctalia.action.disabled
+                : noctalia.action.primary,
+              borderColor: emailActionsDisabled || submitting === 'signup'
+                ? noctalia.action.disabledBorder
+                : noctalia.action.primaryBorder,
+            },
+            (emailActionsDisabled || submitting === 'signup') && styles.btnDisabled,
+          ]}
           onPress={attemptSignIn}
           disabled={emailActionsDisabled}
         >
           {submitting === 'signin' ? (
-            <ActivityIndicator color={colors.backgroundCard} />
+            <ActivityIndicator color={noctalia.action.primaryText} />
           ) : (
             <Text
-              style={[styles.btnText, isCompact && styles.btnTextCompact, { color: colors.backgroundCard }]}
+              style={[styles.btnText, isCompact && styles.btnTextCompact, { color: noctalia.action.primaryText }]}
               numberOfLines={1}
             >
               {t('settings.account.button.sign_in')}
@@ -495,15 +509,23 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
 
         <Pressable
           testID={TID.Button.AuthSignUp}
-          style={[styles.btn, isCompact && styles.btnCompact, { backgroundColor: colors.backgroundSecondary }, (emailActionsDisabled || submitting === 'signin') && styles.btnDisabled]}
+          style={[
+            styles.btn,
+            isCompact && styles.btnCompact,
+            {
+              backgroundColor: noctalia.surface.active,
+              borderColor: noctalia.surface.border,
+            },
+            (emailActionsDisabled || submitting === 'signin') && styles.btnDisabled,
+          ]}
           onPress={attemptSignUp}
           disabled={emailActionsDisabled}
         >
           {submitting === 'signup' ? (
-            <ActivityIndicator color={colors.textPrimary} />
+            <ActivityIndicator color={noctalia.text.primary} />
           ) : (
             <Text
-              style={[styles.btnTextSecondary, isCompact && styles.btnTextCompact, { color: colors.textPrimary }]}
+              style={[styles.btnTextSecondary, isCompact && styles.btnTextCompact, { color: noctalia.text.primary }]}
               numberOfLines={1}
             >
               {t('settings.account.button.sign_up')}
@@ -513,7 +535,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
       </View>
 
       {showSupabaseConfigHint && (
-        <Text style={[styles.hint, { color: colors.textSecondary }]}>
+        <Text style={[styles.hint, { color: noctalia.text.secondary }]}>
           {t('settings.account.hint.configure_supabase')}
         </Text>
       )}
@@ -530,42 +552,51 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
 
   const cardContent = user ? (
     <View
-      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}
+      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: cardBg, borderColor: noctalia.surface.border }]}
     >
-      <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
+      <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>
         {t('settings.account.title')}
       </Text>
-      <Text style={[styles.cardDescription, { color: colors.textSecondary }]}>
+      <Text style={[styles.cardDescription, { color: noctalia.text.secondary }]}>
         {t('settings.account.description_signed_in')}
       </Text>
 
       <EmailVerificationBanner isCompact={isCompact} />
 
       <View
-        style={[styles.userInfo, isCompact && styles.userInfoCompact, { backgroundColor: colors.backgroundSecondary }]}
+        style={[styles.userInfo, isCompact && styles.userInfoCompact, { backgroundColor: noctalia.surface.active }]}
       >
-        <Text style={[styles.userLabel, { color: colors.textSecondary }]}>
+        <Text style={[styles.userLabel, { color: noctalia.text.secondary }]}>
           {t('settings.account.label.email')}
         </Text>
         <Text
           testID={TID.Text.AuthEmail}
-          style={[styles.userEmail, { color: colors.textPrimary }]}
+          style={[styles.userEmail, { color: noctalia.text.primary }]}
         >
           {user.email}
         </Text>
       </View>
 
       <Pressable
-        style={[styles.btn, styles.danger, isCompact && styles.btnCompact, isBusy && styles.btnDisabled]}
+        style={[
+          styles.btn,
+          styles.danger,
+          {
+            backgroundColor: noctalia.status.danger.icon,
+            borderColor: noctalia.status.danger.border,
+          },
+          isCompact && styles.btnCompact,
+          isBusy && styles.btnDisabled,
+        ]}
         onPress={attemptSignOut}
         disabled={isBusy}
         testID={TID.Button.AuthSignOut}
       >
         {submitting === 'signout' ? (
-          <ActivityIndicator color={colors.backgroundCard} />
+          <ActivityIndicator color={noctalia.action.primaryText} />
         ) : (
           <Text
-            style={[styles.btnText, isCompact && styles.btnTextCompact, { color: colors.backgroundCard }]}
+            style={[styles.btnText, isCompact && styles.btnTextCompact, { color: noctalia.action.primaryText }]}
             numberOfLines={1}
           >
             {t('settings.account.button.sign_out')}
@@ -575,12 +606,12 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     </View>
   ) : (
     <View
-      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}
+      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: cardBg, borderColor: noctalia.surface.border }]}
     >
-      <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
+      <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>
         {t('settings.account.title')}
       </Text>
-      <Text style={[styles.cardDescription, { color: colors.textSecondary }]}>
+      <Text style={[styles.cardDescription, { color: noctalia.text.secondary }]}>
         {t('settings.account.description_signed_out')}
       </Text>
 
@@ -589,13 +620,13 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
           style={[
             styles.unverifiedBanner,
             isCompact && styles.unverifiedBannerCompact,
-            { backgroundColor: colors.backgroundSecondary, borderColor: colors.divider },
+            { backgroundColor: noctalia.surface.active, borderColor: noctalia.surface.border },
           ]}
         >
-          <Text style={[styles.unverifiedTitle, { color: colors.textPrimary }]}>
+          <Text style={[styles.unverifiedTitle, { color: noctalia.text.primary }]}>
             {t('settings.account.banner.unverified.title')}
           </Text>
-          <Text style={[styles.unverifiedMessage, { color: colors.textSecondary }]}>
+          <Text style={[styles.unverifiedMessage, { color: noctalia.text.secondary }]}>
             {t('settings.account.banner.unverified.message')}
           </Text>
           <Pressable
@@ -604,8 +635,8 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
               pressed && styles.unverifiedActionPressed,
               resendDisabled && styles.unverifiedActionDisabled,
               {
-                borderColor: colors.accent,
-                backgroundColor: colors.backgroundCard,
+                borderColor: noctalia.action.primaryBorder,
+                backgroundColor: noctalia.surface.raised,
               },
             ]}
             onPress={handleResendVerification}
@@ -613,9 +644,9 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
             testID={TID.Button.AuthResendVerification}
           >
             {resendStatus === 'sending' ? (
-              <ActivityIndicator color={colors.textPrimary} />
+              <ActivityIndicator color={noctalia.text.primary} />
             ) : (
-              <Text style={[styles.unverifiedActionText, { color: colors.textPrimary }]}>
+              <Text style={[styles.unverifiedActionText, { color: noctalia.text.primary }]}>
                 {resendButtonLabel}
               </Text>
             )}
@@ -626,7 +657,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
             </Text>
           ) : null}
           {resendCooldownMessage ? (
-            <Text style={[styles.unverifiedStatus, { color: colors.textSecondary }]}>
+            <Text style={[styles.unverifiedStatus, { color: noctalia.text.secondary }]}>
               {resendCooldownMessage}
             </Text>
           ) : null}
@@ -635,11 +666,11 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
 
       {isMockModeEnabled ? (
         <>
-          <View style={[styles.mockSection, { backgroundColor: colors.backgroundSecondary }]}>
-            <Text style={[styles.mockSectionTitle, { color: colors.textPrimary }]}>
+          <View style={[styles.mockSection, { backgroundColor: noctalia.surface.active }]}>
+            <Text style={[styles.mockSectionTitle, { color: noctalia.text.primary }]}>
               {t('settings.account.mock.quick_title')}
             </Text>
-            <Text style={[styles.mockSectionSubtitle, { color: colors.textSecondary }]}>
+            <Text style={[styles.mockSectionSubtitle, { color: noctalia.text.secondary }]}>
               {t('settings.account.mock.quick_description')}
             </Text>
             <View style={styles.mockButtonsColumn}>
@@ -651,7 +682,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
                     testID={TID.Button.MockProfile(profile)}
                     style={({ pressed }) => [
                       styles.mockButton,
-                      { borderColor: colors.divider, backgroundColor: colors.backgroundCard },
+                      { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.raised },
                       pressed && styles.mockButtonPressed,
                       (loading || isBusy) && styles.mockButtonDisabled,
                     ]}
@@ -659,13 +690,13 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
                     disabled={loading || isBusy}
                   >
                     {loading ? (
-                      <ActivityIndicator color={colors.textPrimary} size="small" />
+                      <ActivityIndicator color={noctalia.text.primary} size="small" />
                     ) : (
                       <>
-                        <Text style={[styles.mockButtonTitle, { color: colors.textPrimary }]}>
+                        <Text style={[styles.mockButtonTitle, { color: noctalia.text.primary }]}>
                           {t(titleKey)}
                         </Text>
-                        <Text style={[styles.mockButtonSubtitle, { color: colors.textSecondary }]}>
+                        <Text style={[styles.mockButtonSubtitle, { color: noctalia.text.secondary }]}>
                           {t(subtitleKey)}
                         </Text>
                       </>
@@ -677,7 +708,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
                 testID={TID.Button.MockResetState}
                 style={({ pressed }) => [
                   styles.mockButton,
-                  { borderColor: colors.divider, backgroundColor: colors.backgroundCard },
+                  { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.raised },
                   pressed && styles.mockButtonPressed,
                   isBusy && styles.mockButtonDisabled,
                 ]}
@@ -685,13 +716,13 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
                 disabled={isBusy}
               >
                 {submitting === 'signout' ? (
-                  <ActivityIndicator color={colors.textPrimary} size="small" />
+                  <ActivityIndicator color={noctalia.text.primary} size="small" />
                 ) : (
                   <>
-                    <Text style={[styles.mockButtonTitle, { color: colors.textPrimary }]}>
+                    <Text style={[styles.mockButtonTitle, { color: noctalia.text.primary }]}>
                       {t('settings.account.mock.reset')}
                     </Text>
-                    <Text style={[styles.mockButtonSubtitle, { color: colors.textSecondary }]}>
+                    <Text style={[styles.mockButtonSubtitle, { color: noctalia.text.secondary }]}>
                       {t('settings.account.mock.reset_hint')}
                     </Text>
                   </>
@@ -701,9 +732,9 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
           </View>
 
           <View style={styles.divider}>
-            <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
-            <Text style={[styles.dividerText, { color: colors.textSecondary }]}>{t('common.or')}</Text>
-            <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
+            <View style={[styles.dividerLine, { backgroundColor: noctalia.surface.border }]} />
+            <Text style={[styles.dividerText, { color: noctalia.text.secondary }]}>{t('common.or')}</Text>
+            <View style={[styles.dividerLine, { backgroundColor: noctalia.surface.border }]} />
           </View>
         </>
       ) : (
@@ -711,9 +742,9 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
           <GoogleSignInButton />
 
           <View style={styles.divider}>
-            <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
-            <Text style={[styles.dividerText, { color: colors.textSecondary }]}>{t('common.or')}</Text>
-            <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
+            <View style={[styles.dividerLine, { backgroundColor: noctalia.surface.border }]} />
+            <Text style={[styles.dividerText, { color: noctalia.text.secondary }]}>{t('common.or')}</Text>
+            <View style={[styles.dividerLine, { backgroundColor: noctalia.surface.border }]} />
           </View>
         </>
       )}
@@ -767,6 +798,7 @@ const styles = StyleSheet.create({
     borderRadius: ThemeLayout.borderRadius.xl,
     padding: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
+    borderWidth: 1,
   },
   cardCompact: {
     padding: ThemeLayout.spacing.sm,
@@ -825,6 +857,7 @@ const styles = StyleSheet.create({
     borderRadius: ThemeLayout.borderRadius.sm,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
   },
   btnCompact: {
     paddingHorizontal: ThemeLayout.spacing.sm,
@@ -863,7 +896,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.medium,
     marginBottom: 4,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
   },
   userEmail: {
     fontSize: 16,
@@ -883,10 +915,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: Fonts.spaceGrotesk.medium,
     textTransform: 'uppercase',
-    letterSpacing: 1,
   },
   danger: {
-    backgroundColor: '#f58c8c',
     marginTop: ThemeLayout.spacing.md,
   },
   errorText: {

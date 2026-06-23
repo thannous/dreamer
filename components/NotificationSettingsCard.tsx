@@ -1,9 +1,10 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { Alert, AppState, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
-import { Fonts, GlassCardTokens } from '@/constants/theme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { NotificationSettings } from '@/lib/types';
@@ -40,7 +41,7 @@ function NotificationSettingsCardComponent(
   const [isLoading, setIsLoading] = useState(true);
   const optionsContainerRef = useRef<View>(null);
   const { colors, mode } = useTheme();
-  const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
 
   // Expose scrollIntoView method to parent
@@ -351,18 +352,18 @@ function NotificationSettingsCardComponent(
 
   if (isLoading) {
     return (
-      <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}>
-        <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>{t('notifications.title')}</Text>
-        <Text style={[styles.description, { color: colors.textSecondary }]}>{t('notifications.loading')}</Text>
+      <View style={[styles.card, { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border }]}>
+        <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>{t('notifications.title')}</Text>
+        <Text style={[styles.description, { color: noctalia.text.secondary }]}>{t('notifications.loading')}</Text>
       </View>
     );
   }
 
   if (Platform.OS === 'web') {
     return (
-      <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}>
-        <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>{t('notifications.title')}</Text>
-        <Text style={[styles.description, { color: colors.textSecondary }]}>{t('notifications.unsupported')}</Text>
+      <View style={[styles.card, { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border }]}>
+        <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>{t('notifications.title')}</Text>
+        <Text style={[styles.description, { color: noctalia.text.secondary }]}>{t('notifications.unsupported')}</Text>
       </View>
     );
   }
@@ -370,13 +371,13 @@ function NotificationSettingsCardComponent(
   const notificationsEnabled = settings.weekdayEnabled || settings.weekendEnabled;
 
   return (
-    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}>
-      <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>{t('notifications.card.title')}</Text>
-      <Text style={[styles.description, { color: colors.textSecondary }]}>{t('notifications.card.description')}</Text>
+    <View style={[styles.card, { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border }]}>
+      <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>{t('notifications.card.title')}</Text>
+      <Text style={[styles.description, { color: noctalia.text.secondary }]}>{t('notifications.card.description')}</Text>
 
       {/* Weekday checkbox and time picker */}
       <View style={styles.settingRow}>
-        <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>
+        <Text style={[styles.settingLabel, { color: noctalia.text.primary }]}>
           🌅 {t('notifications.setting.weekday')}
         </Text>
         <View style={styles.controlGroup}>
@@ -386,21 +387,21 @@ function NotificationSettingsCardComponent(
             style={[
               styles.timeButton,
               {
-                backgroundColor: colors.accent,
-                borderColor: colors.accentDark,
+                backgroundColor: settings.weekdayEnabled ? noctalia.action.primary : noctalia.action.disabled,
+                borderColor: settings.weekdayEnabled ? noctalia.action.primaryBorder : noctalia.action.disabledBorder,
                 opacity: settings.weekdayEnabled ? 1 : 0.5,
               },
             ]}
           >
-            <Text style={[styles.timeButtonText, { color: colors.textOnAccentSurface }]}>
+            <Text style={[styles.timeButtonText, { color: settings.weekdayEnabled ? noctalia.action.primaryText : noctalia.action.disabledText }]}>
               {settings.weekdayTime}
             </Text>
           </Pressable>
           <Switch
             value={settings.weekdayEnabled}
             onValueChange={handleWeekdayToggle}
-            trackColor={{ false: colors.backgroundSecondary, true: colors.accentLight }}
-            thumbColor={settings.weekdayEnabled ? colors.accent : '#f4f3f4'}
+            trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.soft }}
+            thumbColor={settings.weekdayEnabled ? noctalia.accent.base : noctalia.text.secondary}
             style={styles.checkboxMargin}
           />
         </View>
@@ -418,16 +419,16 @@ function NotificationSettingsCardComponent(
 
       {Platform.OS === 'ios' && showWeekdayPicker && (
         <Pressable
-          style={[styles.doneButton, { backgroundColor: colors.accent }]}
+          style={[styles.doneButton, { backgroundColor: noctalia.action.primary }]}
           onPress={() => setShowWeekdayPicker(false)}
         >
-          <Text style={[styles.doneButtonText, { color: colors.backgroundCard }]}>{t('notifications.button.done')}</Text>
+          <Text style={[styles.doneButtonText, { color: noctalia.action.primaryText }]}>{t('notifications.button.done')}</Text>
         </Pressable>
       )}
 
       {/* Weekend checkbox and time picker */}
       <View style={[styles.settingRow, styles.marginTop12]}>
-        <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>
+        <Text style={[styles.settingLabel, { color: noctalia.text.primary }]}>
           🌙 {t('notifications.setting.weekend')}
         </Text>
         <View style={styles.controlGroup}>
@@ -437,21 +438,21 @@ function NotificationSettingsCardComponent(
             style={[
               styles.timeButton,
               {
-                backgroundColor: colors.accent,
-                borderColor: colors.accentDark,
+                backgroundColor: settings.weekendEnabled ? noctalia.action.primary : noctalia.action.disabled,
+                borderColor: settings.weekendEnabled ? noctalia.action.primaryBorder : noctalia.action.disabledBorder,
                 opacity: settings.weekendEnabled ? 1 : 0.5,
               },
             ]}
           >
-            <Text style={[styles.timeButtonText, { color: colors.textOnAccentSurface }]}>
+            <Text style={[styles.timeButtonText, { color: settings.weekendEnabled ? noctalia.action.primaryText : noctalia.action.disabledText }]}>
               {settings.weekendTime}
             </Text>
           </Pressable>
           <Switch
             value={settings.weekendEnabled}
             onValueChange={handleWeekendToggle}
-            trackColor={{ false: colors.backgroundSecondary, true: colors.accentLight }}
-            thumbColor={settings.weekendEnabled ? colors.accent : '#f4f3f4'}
+            trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.soft }}
+            thumbColor={settings.weekendEnabled ? noctalia.accent.base : noctalia.text.secondary}
             style={styles.checkboxMargin}
           />
         </View>
@@ -469,19 +470,19 @@ function NotificationSettingsCardComponent(
 
       {Platform.OS === 'ios' && showWeekendPicker && (
         <Pressable
-          style={[styles.doneButton, { backgroundColor: colors.accent }]}
+          style={[styles.doneButton, { backgroundColor: noctalia.action.primary }]}
           onPress={() => setShowWeekendPicker(false)}
         >
-          <Text style={[styles.doneButtonText, { color: colors.backgroundCard }]}>{t('notifications.button.done')}</Text>
+          <Text style={[styles.doneButtonText, { color: noctalia.action.primaryText }]}>{t('notifications.button.done')}</Text>
         </Pressable>
       )}
 
       {/* Next reminder and test button */}
       {notificationsEnabled && (
         <View ref={optionsContainerRef}>
-          <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+          <View style={[styles.divider, { backgroundColor: noctalia.surface.border }]} />
 
-          <Text style={[styles.settingHint, { color: colors.textSecondary, marginBottom: ThemeLayout.spacing.md }]}>
+          <Text style={[styles.settingHint, { color: noctalia.text.secondary, marginBottom: ThemeLayout.spacing.md }]}>
             {getNextReminderText()}
           </Text>
 
@@ -489,11 +490,11 @@ function NotificationSettingsCardComponent(
             <Pressable
               style={[
                 styles.testButton,
-                { backgroundColor: colors.accent, borderColor: colors.accentDark },
+                { backgroundColor: noctalia.action.primary, borderColor: noctalia.action.primaryBorder },
               ]}
               onPress={handleTestNotification}
             >
-              <Text style={[styles.testButtonText, { color: colors.textOnAccentSurface }]}>
+              <Text style={[styles.testButtonText, { color: noctalia.action.primaryText }]}>
                 {t('notifications.button.test')}
               </Text>
             </Pressable>
@@ -502,8 +503,8 @@ function NotificationSettingsCardComponent(
       )}
 
       {!hasPermissions && (
-        <View style={[styles.warningBox, { backgroundColor: '#000000', borderColor: '#FF6B35', borderWidth: 2 }]}>
-          <Text style={[styles.warningText, { color: '#FFFFFF', fontWeight: 'bold' }]}>{t('notifications.warning.permissions')}</Text>
+        <View style={[styles.warningBox, { backgroundColor: noctalia.status.warning.background, borderColor: noctalia.status.warning.border }]}>
+          <Text style={[styles.warningText, { color: noctalia.status.warning.text }]}>{t('notifications.warning.permissions')}</Text>
         </View>
       )}
     </View>
@@ -515,6 +516,7 @@ const styles = StyleSheet.create({
     borderRadius: ThemeLayout.borderRadius.xl,
     padding: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
+    borderWidth: 1,
   },
   cardTitle: {
     fontSize: 18,

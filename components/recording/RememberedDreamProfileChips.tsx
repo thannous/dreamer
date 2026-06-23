@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -61,7 +62,8 @@ export function RememberedDreamProfileChips({
   onApproximatePeriodChange,
   onStrongestFragmentChange,
 }: RememberedDreamProfileChipsProps) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
 
   const renderChip = <T extends string>({
@@ -84,8 +86,8 @@ export function RememberedDreamProfileChips({
       style={({ pressed }) => [
         styles.chip,
         {
-          backgroundColor: selected ? `${colors.accent}28` : `${colors.textPrimary}08`,
-          borderColor: selected ? colors.accent : `${colors.divider}AA`,
+          backgroundColor: selected ? noctalia.action.primary : noctalia.surface.soft,
+          borderColor: selected ? noctalia.action.primaryBorder : noctalia.surface.border,
           opacity: disabled ? 0.62 : pressed ? 0.78 : 1,
         },
       ]}
@@ -94,7 +96,7 @@ export function RememberedDreamProfileChips({
       <Text
         style={[
           styles.chipText,
-          { color: selected ? colors.accent : colors.textSecondary },
+          { color: selected ? noctalia.action.primaryText : noctalia.text.secondary },
         ]}
       >
         {t(option.labelKey)}
@@ -107,17 +109,17 @@ export function RememberedDreamProfileChips({
       style={[
         styles.card,
         {
-          backgroundColor: `${colors.backgroundCard}CC`,
-          borderColor: `${colors.accentLight}44`,
+          backgroundColor: noctalia.surface.raised,
+          borderColor: noctalia.surface.border,
         },
       ]}
       testID={TID.Component.RememberedDreamProfileChips}
     >
       <View style={styles.header}>
-        <Text style={[styles.eyebrow, { color: colors.textSecondary }]}>
+        <Text style={[styles.eyebrow, { color: noctalia.text.secondary }]}>
           {t('recording.remembered_profile.eyebrow')}
         </Text>
-        <Text style={[styles.title, { color: colors.textPrimary }]}>
+        <Text style={[styles.title, { color: noctalia.text.primary }]}>
           {t('recording.remembered_profile.title')}
         </Text>
       </View>
@@ -159,10 +161,11 @@ export function RememberedDreamProfileChips({
 }
 
 function ChipGroup({ label, children }: { label: string; children: React.ReactNode }) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   return (
     <View style={styles.group}>
-      <Text style={[styles.groupLabel, { color: colors.textSecondary }]}>{label}</Text>
+      <Text style={[styles.groupLabel, { color: noctalia.text.secondary }]}>{label}</Text>
       <View style={styles.chipRow}>{children}</View>
     </View>
   );
@@ -186,7 +189,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
     textTransform: 'uppercase',
-    letterSpacing: 0,
   },
   title: {
     fontFamily: Fonts.spaceGrotesk.bold,

@@ -105,6 +105,7 @@ jest.mock('@/components/ui/icon-symbol', () => ({
 jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({
     colors: {
+      backgroundCard: '#171322',
       backgroundSecondary: '#111',
       divider: '#333',
       accent: '#c5a46d',
@@ -112,6 +113,7 @@ jest.mock('@/context/ThemeContext', () => ({
       textPrimary: '#fff',
       textSecondary: '#aaa',
     },
+    mode: 'dark',
     shadows: {
       md: {},
     },
@@ -131,7 +133,7 @@ jest.mock('@/constants/theme', () => ({
 
 jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
-    t: (key: string) => {
+    t: (key: string, params?: Record<string, string | number>) => {
       const values: Record<string, string> = {
         'recording.placeholder': 'Tell your dream...',
         'recording.placeholder.accessibility': 'Dream transcript input',
@@ -142,8 +144,24 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.mode.clear_dream': 'Clear dream',
         'recording.mic.pause': 'Pause dictation',
         'recording.mic.pause_hint': 'Double tap to pause dictation',
+        'recording.activation_insight.eyebrow': 'First read',
+        'recording.activation_insight.summary.memory': 'This memory becomes your first personal anchor.',
+        'recording.activation_insight.summary.signals': 'Noctalia already notices: {signals}.',
+        'recording.activation_insight.summary.fragment': 'This fragment is enough to start your profile.',
+        'recording.activation_insight.signal.memory': 'Memory',
+        'recording.activation_insight.signal.emotion': 'Emotion',
+        'recording.activation_insight.signal.place': 'Place',
+        'recording.activation_insight.signal.person': 'Person',
+        'recording.activation_insight.signal.symbol': 'Symbol',
+        'recording.activation_insight.signal.recurrence': 'Pattern',
       };
-      return values[key] ?? key;
+      let value = values[key] ?? key;
+      if (params) {
+        for (const [paramKey, paramValue] of Object.entries(params)) {
+          value = value.replace(`{${paramKey}}`, String(paramValue));
+        }
+      }
+      return value;
     },
   }),
 }));
@@ -201,6 +219,33 @@ describe('RecordingTextInput', () => {
     expect(screen.getByText('Good start')).toBeTruthy();
     expect(onChange).toHaveBeenCalledWith('A blue room with rain');
     expect(onClear).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows the first activation insight without taking over the composer', () => {
+    render(
+      <RecordingTextInput
+        value="A blue room with my mother"
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Write what you remember"
+        activationInsight={{
+          tone: 'signals',
+          signalIds: ['emotion', 'place'],
+          charCount: 42,
+        }}
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    expect(screen.getByTestId(TID.Component.RecordingActivationInsight)).toBeTruthy();
+    expect(screen.getByText('First read')).toBeTruthy();
+    expect(screen.getByTestId(TID.Text.RecordingActivationInsightSummary).textContent).toBe(
+      'Noctalia already notices: Emotion, Place.'
+    );
+    expect(screen.getByText('Emotion')).toBeTruthy();
+    expect(screen.getByText('Place')).toBeTruthy();
+    expect(screen.getByTestId(TID.Input.DreamTranscript)).toBeTruthy();
   });
 
   it('keeps the same composer available while dictation is active', () => {

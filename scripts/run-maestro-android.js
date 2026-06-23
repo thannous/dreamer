@@ -35,6 +35,9 @@ const SUITES = {
     'maestro/journal-badges-filters.yml',
     'maestro/subscription-mock-paywall.yml',
   ],
+  onboarding: [
+    'maestro/onboarding-persona-paths.yml',
+  ],
   mock: [
     'maestro/mock-existing-user.yml',
     'maestro/mock-existing-quotas.yml',
@@ -67,6 +70,7 @@ const SUITES = {
     'maestro/guest-exploration-limit.yml',
     'maestro/guest-quota-flow.yml',
     'maestro/inspiration-rituals.yml',
+    'maestro/onboarding-persona-paths.yml',
     'maestro/journal-badges-filters.yml',
     'maestro/journal-dream-cta-labels.yml',
     'maestro/edit-dream-metadata.yml',
