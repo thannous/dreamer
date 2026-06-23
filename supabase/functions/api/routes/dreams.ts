@@ -13,24 +13,221 @@ import { createStorageHelpers } from '../services/storage.ts';
 import { requireGuestSession, requireUser } from '../lib/guards.ts';
 import type { ApiContext } from '../types.ts';
 
-type GuestQuotaStatus = {
-  analysis_count?: number;
-  exploration_count?: number;
-  image_count?: number;
-  is_upgraded?: boolean;
-};
-
 const toCount = (value: unknown): number => {
   if (typeof value !== 'number') return 0;
   if (!Number.isFinite(value)) return 0;
   return Math.max(0, Math.floor(value));
 };
 
+const serviceUnavailable = (message = 'Service unavailable') =>
+  new Response(JSON.stringify({ error: message }), {
+    status: 503,
+    headers: { 'Content-Type': 'application/json', ...corsHeaders },
+  });
+
+type AnalyzeDreamBody = {
+  transcript?: string;
+  lang?: string;
+  fingerprint?: string;
+  remoteDreamId?: number | string | null;
+  dreamId?: number | string | null;
+  analysisRequestId?: string | null;
+  requestId?: string | null;
+};
+
+type AuthenticatedAnalysisQuotaClaim = {
+  allowed?: boolean;
+  code?: string;
+  tier?: string;
+  limit?: number | null;
+  new_count?: number;
+  claimed?: boolean;
+  claim_id?: string;
+};
+
+const uuidPattern =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+const toPositiveInteger = (value: unknown): number | null => {
+  if (typeof value === 'number' && Number.isSafeInteger(value) && value > 0) {
+    return value;
+  }
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  if (!/^\d+$/.test(trimmed)) return null;
+  const parsed = Number(trimmed);
+  return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : null;
+};
+
+const toUuid = (value: unknown): string | null => {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return uuidPattern.test(trimmed) ? trimmed : null;
+};
+
+const quotaBlockedResponse = (claim: AuthenticatedAnalysisQuotaClaim): Response => {
+  const used = toCount(claim.new_count);
+  const limit = typeof claim.limit === 'number' ? claim.limit : null;
+
+  if (claim.code === 'QUOTA_EXCEEDED') {
+    return new Response(
+      JSON.stringify({
+        error: 'Analysis limit reached',
+        code: 'QUOTA_EXCEEDED',
+        usage: { analysis: { used, limit } },
+      }),
+      { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  }
+
+  if (claim.code === 'ANALYSIS_ALREADY_CLAIMED') {
+    return new Response(
+      JSON.stringify({
+        error: 'Analysis request is already in progress',
+        code: 'ANALYSIS_ALREADY_CLAIMED',
+      }),
+      { status: 409, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  }
+
+  return new Response(
+    JSON.stringify({
+      error: 'Analysis request must be synced before AI analysis',
+      code: claim.code ?? 'ANALYSIS_CLAIM_REQUIRED',
+    }),
+    { status: 409, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+  );
+};
+
+async function resolvePendingAnalysisDream(
+  adminClient: any,
+  userId: string,
+  transcript: string,
+  analysisRequestId: string | null
+): Promise<{ dreamId: number; analysisRequestId: string } | Response | null> {
+  const select = 'id, analysis_request_id';
+
+  if (analysisRequestId) {
+    const { data, error } = await adminClient
+      .from('dreams')
+      .select(select)
+      .eq('user_id', userId)
+      .eq('analysis_request_id', analysisRequestId)
+      .eq('analysis_status', 'pending')
+      .eq('is_analyzed', false)
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.error('[api] authenticated analysis quota resolver failed', error);
+      return serviceUnavailable('Authenticated quota unavailable');
+    }
+
+    const dreamId = toPositiveInteger((data as any)?.id);
+    const resolvedRequestId = toUuid((data as any)?.analysis_request_id);
+    if (dreamId && resolvedRequestId) {
+      return { dreamId, analysisRequestId: resolvedRequestId };
+    }
+  }
+
+  const { data, error } = await adminClient
+    .from('dreams')
+    .select(select)
+    .eq('user_id', userId)
+    .eq('transcript', transcript)
+    .eq('analysis_status', 'pending')
+    .eq('is_analyzed', false)
+    .order('client_updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error('[api] authenticated analysis quota transcript resolver failed', error);
+    return serviceUnavailable('Authenticated quota unavailable');
+  }
+
+  const dreamId = toPositiveInteger((data as any)?.id);
+  const resolvedRequestId = toUuid((data as any)?.analysis_request_id);
+  if (!dreamId || !resolvedRequestId) return null;
+
+  return { dreamId, analysisRequestId: resolvedRequestId };
+}
+
+async function claimAuthenticatedAnalysisQuota({
+  body,
+  route,
+  supabaseUrl,
+  supabaseServiceRoleKey,
+  transcript,
+  userId,
+}: {
+  body: AnalyzeDreamBody;
+  route: string;
+  supabaseUrl: string;
+  supabaseServiceRoleKey?: string | null;
+  transcript: string;
+  userId: string;
+}): Promise<{ response?: Response; quotaUsed?: { analysis: number } }> {
+  if (!supabaseServiceRoleKey) {
+    console.error(`[api] ${route}: authenticated quota unavailable before provider work`, {
+      hasServiceRoleKey: false,
+    });
+    return { response: serviceUnavailable('Authenticated quota unavailable') };
+  }
+
+  const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+
+  let dreamId = toPositiveInteger(body.remoteDreamId) ?? toPositiveInteger(body.dreamId);
+  let analysisRequestId = toUuid(body.analysisRequestId) ?? toUuid(body.requestId);
+
+  if (!dreamId || !analysisRequestId) {
+    const resolved = await resolvePendingAnalysisDream(adminClient, userId, transcript, analysisRequestId);
+    if (resolved instanceof Response) {
+      return { response: resolved };
+    }
+    if (resolved) {
+      dreamId ??= resolved.dreamId;
+      analysisRequestId ??= resolved.analysisRequestId;
+    }
+  }
+
+  const { data: quotaResult, error: quotaError } = await adminClient.rpc(
+    'claim_authenticated_analysis_quota',
+    {
+      p_user_id: userId,
+      p_dream_id: dreamId,
+      p_analysis_request_id: analysisRequestId,
+    }
+  );
+
+  if (quotaError) {
+    console.error(`[api] ${route}: authenticated quota claim failed before provider work`, quotaError);
+    return { response: serviceUnavailable('Authenticated quota unavailable') };
+  }
+
+  const claim = (quotaResult ?? {}) as AuthenticatedAnalysisQuotaClaim;
+  if (!claim.allowed) {
+    console.log(`[api] ${route}: authenticated quota blocked before provider work`, {
+      userId,
+      code: claim.code ?? 'UNKNOWN',
+      dreamId: dreamId ?? null,
+      hasAnalysisRequestId: !!analysisRequestId,
+    });
+    return { response: quotaBlockedResponse(claim) };
+  }
+
+  return {
+    quotaUsed: claim.new_count === undefined ? undefined : { analysis: toCount(claim.new_count) },
+  };
+}
+
 export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
   const { req, user, supabaseUrl, supabaseServiceRoleKey } = ctx;
 
   try {
-    const body = (await req.json()) as { transcript?: string; lang?: string; fingerprint?: string };
+    const body = (await req.json()) as AnalyzeDreamBody;
     const transcript = String(body?.transcript ?? '').trim();
     const lang = String(body?.lang ?? 'en');
     const guestCheck = await requireGuestSession(req, body, user);
@@ -48,54 +245,77 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       transcriptLength: transcript.length,
       lang,
       hasFingerprint: !!fingerprint,
+      hasRemoteDreamId: body.remoteDreamId != null || body.dreamId != null,
+      hasAnalysisRequestId: body.analysisRequestId != null || body.requestId != null,
     });
 
     const guestAnalysisLimit = GUEST_LIMITS.analysis;
-    const adminClient =
-      !user && supabaseServiceRoleKey && fingerprint
-        ? createClient(supabaseUrl, supabaseServiceRoleKey, {
-            auth: { autoRefreshToken: false, persistSession: false },
-          })
-        : null;
+    let quotaUsed: { analysis: number } | undefined;
+    if (user) {
+      const quotaClaim = await claimAuthenticatedAnalysisQuota({
+        body,
+        route: '/analyzeDream',
+        supabaseUrl,
+        supabaseServiceRoleKey,
+        transcript,
+        userId: user.id,
+      });
+      if (quotaClaim.response) {
+        return quotaClaim.response;
+      }
+      quotaUsed = quotaClaim.quotaUsed;
+    } else {
+      if (!supabaseServiceRoleKey || !fingerprint) {
+        console.error('[api] /analyzeDream: guest quota unavailable before provider work', {
+          hasServiceRoleKey: !!supabaseServiceRoleKey,
+          hasFingerprint: !!fingerprint,
+        });
+        return serviceUnavailable('Guest quota unavailable');
+      }
 
-    if (adminClient && fingerprint) {
-      const { data: status, error: statusError } = await adminClient.rpc('get_guest_quota_status', {
+      const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
+      const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
         p_fingerprint: fingerprint,
+        p_quota_type: 'analysis',
+        p_limit: guestAnalysisLimit,
       });
 
-      if (statusError) {
-        console.error('[api] /analyzeDream: quota status check failed', statusError);
-      } else {
-        const parsed = (status ?? {}) as GuestQuotaStatus;
-        const used = toCount(parsed.analysis_count);
-        const isUpgraded = !!parsed.is_upgraded;
-        if (isUpgraded) {
-          return new Response(
-            JSON.stringify({
+      if (quotaError) {
+        console.error('[api] /analyzeDream: quota claim failed before provider work', quotaError);
+        return serviceUnavailable('Guest quota unavailable');
+      }
+
+      if (!quotaResult?.allowed) {
+        const used = toCount((quotaResult as any)?.new_count);
+        const isUpgraded = Boolean((quotaResult as any)?.is_upgraded);
+        const payload = isUpgraded
+          ? {
               error: 'Login required',
               code: 'GUEST_DEVICE_UPGRADED',
               isUpgraded: true,
               usage: { analysis: { used, limit: guestAnalysisLimit } },
-            }),
-            { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-          );
-        }
-
-        if (used >= guestAnalysisLimit) {
-          console.log('[api] /analyzeDream: guest quota exceeded', { fingerprint: '[redacted]', used });
-          return new Response(
-            JSON.stringify({
+            }
+          : {
               error: 'Guest analysis limit reached',
               code: 'QUOTA_EXCEEDED',
               usage: { analysis: { used, limit: guestAnalysisLimit } },
-            }),
-            { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-          );
-        }
-      }
-    }
+            };
 
-    let quotaUsed: { analysis: number } | undefined;
+        console.log('[api] /analyzeDream: guest quota blocked before provider work', {
+          fingerprint: '[redacted]',
+          used,
+          isUpgraded,
+        });
+        return new Response(JSON.stringify(payload), {
+          status: isUpgraded ? 403 : 429,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+
+      quotaUsed = { analysis: toCount((quotaResult as any)?.new_count) };
+    }
 
     const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
     const systemInstruction = lang === 'fr'
@@ -138,31 +358,6 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       ? analysis.theme
       : 'surreal';
 
-    if (adminClient && fingerprint) {
-      const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
-        p_fingerprint: fingerprint,
-        p_quota_type: 'analysis',
-        p_limit: guestAnalysisLimit,
-      });
-
-      if (quotaError) {
-        console.error('[api] /analyzeDream: quota increment failed', quotaError);
-      } else if (!quotaResult?.allowed) {
-        const used = toCount((quotaResult as any)?.new_count);
-        console.log('[api] /analyzeDream: guest quota exceeded at commit', { fingerprint: '[redacted]', used });
-        return new Response(
-          JSON.stringify({
-            error: 'Guest analysis limit reached',
-            code: 'QUOTA_EXCEEDED',
-            usage: { analysis: { used, limit: guestAnalysisLimit } },
-          }),
-          { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-        );
-      } else {
-        quotaUsed = { analysis: toCount((quotaResult as any)?.new_count) };
-      }
-    }
-
     console.log('[api] /analyzeDream success', {
       userId: user?.id ?? null,
       theme,
@@ -200,7 +395,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
     if (authCheck) {
       return authCheck;
     }
-    const body = (await req.json()) as { transcript?: string; lang?: string; fingerprint?: string };
+    const body = (await req.json()) as AnalyzeDreamBody;
     const transcript = String(body?.transcript ?? '').trim();
     const lang = String(body?.lang ?? 'en');
     const fingerprint = body?.fingerprint;
@@ -214,7 +409,22 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
       transcriptLength: transcript.length,
       lang,
       hasFingerprint: !!fingerprint,
+      hasRemoteDreamId: body.remoteDreamId != null || body.dreamId != null,
+      hasAnalysisRequestId: body.analysisRequestId != null || body.requestId != null,
     });
+
+    const quotaClaim = await claimAuthenticatedAnalysisQuota({
+      body,
+      route: '/analyzeDreamFull',
+      supabaseUrl,
+      supabaseServiceRoleKey,
+      transcript,
+      userId: user!.id,
+    });
+    if (quotaClaim.response) {
+      return quotaClaim.response;
+    }
+    const quotaUsed = quotaClaim.quotaUsed;
 
     const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
     const systemInstruction = lang === 'fr'
@@ -305,6 +515,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
         imagePrompt,
         imageUrl,
         imageBytes: optimized.base64,
+        ...(quotaUsed && { quotaUsed }),
       }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );

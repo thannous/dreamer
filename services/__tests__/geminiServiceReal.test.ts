@@ -144,6 +144,29 @@ describe('geminiServiceReal', () => {
       );
     });
 
+    it('includes authenticated analysis claim context when provided', async () => {
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
+        mockFetchResponse(buildAnalysisResult())
+      );
+
+      await analyzeDream('Test dream', 'en', undefined, {
+        remoteDreamId: 123,
+        analysisRequestId: '11111111-1111-4111-8111-111111111111',
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          body: JSON.stringify({
+            transcript: 'Test dream',
+            lang: 'en',
+            remoteDreamId: 123,
+            analysisRequestId: '11111111-1111-4111-8111-111111111111',
+          }),
+        })
+      );
+    });
+
     it('uses bearer auth for signed-in requests without requiring guest headers', async () => {
       mockGetAccessToken.mockResolvedValue('user-token');
       (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
@@ -244,6 +267,29 @@ describe('geminiServiceReal', () => {
         expect.any(String),
         expect.objectContaining({
           body: JSON.stringify({ transcript: 'Dream', lang: 'en', fingerprint: 'fp-456' }),
+        })
+      );
+    });
+
+    it('includes authenticated analysis claim context when provided', async () => {
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
+        mockFetchResponse({ ...buildAnalysisResult(), imageUrl: 'https://img.test.com' })
+      );
+
+      await analyzeDreamWithImage('Dream', 'en', undefined, {
+        remoteDreamId: 456,
+        analysisRequestId: '22222222-2222-4222-8222-222222222222',
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          body: JSON.stringify({
+            transcript: 'Dream',
+            lang: 'en',
+            remoteDreamId: 456,
+            analysisRequestId: '22222222-2222-4222-8222-222222222222',
+          }),
         })
       );
     });
