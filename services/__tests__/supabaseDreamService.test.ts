@@ -6,6 +6,10 @@ const mocks = ((factory: any) => factory())(() => {
   const storageGetPublicUrl = jest.fn((path: string) => ({
     data: { publicUrl: `https://cdn.example.com/${path}` },
   }));
+  const storageCreateSignedUrl = jest.fn(async (path: string) => ({
+    data: { signedUrl: `https://signed.example.com/${path}?token=owner` },
+    error: null,
+  }));
 
   return {
     from: jest.fn(),
@@ -13,10 +17,12 @@ const mocks = ((factory: any) => factory())(() => {
     storageUpload,
     storageRemove,
     storageGetPublicUrl,
+    storageCreateSignedUrl,
     storageFrom: jest.fn(() => ({
       upload: storageUpload,
       remove: storageRemove,
       getPublicUrl: storageGetPublicUrl,
+      createSignedUrl: storageCreateSignedUrl,
     })),
     authGetUser: jest.fn(async () => ({ data: { user: { id: 'user-1' } } })),
   };
@@ -85,6 +91,10 @@ describe('supabaseDreamService', () => {
     jest.resetModules();
     jest.clearAllMocks();
     mocks.rpc = undefined;
+    mocks.storageCreateSignedUrl.mockImplementation(async (path: string) => ({
+      data: { signedUrl: `https://signed.example.com/${path}?token=owner` },
+      error: null,
+    }));
     process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://example.com';
     process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = 'anon-key';
   });
@@ -572,6 +582,34 @@ describe('supabaseDreamService', () => {
     });
   });
 
+  it('fetchDreamsFromSupabase resolves dream-images references to signed URLs', async () => {
+    const orderMock = jest.fn().mockResolvedValue({
+      data: [
+        buildRow({
+          id: 10,
+          image_url: 'supabase-storage://dream-images/user-1/private.webp',
+        }),
+        buildRow({
+          id: 11,
+          image_url: 'https://example.com/storage/v1/object/public/dream-images/user-1/legacy.webp',
+        }),
+      ],
+      error: null,
+    });
+
+    mocks.from.mockReturnValue({
+      select: jest.fn(() => ({ order: orderMock })),
+    });
+
+    const { fetchDreamsFromSupabase } = require('../supabaseDreamService');
+    const dreams = await fetchDreamsFromSupabase();
+
+    expect(dreams[0]?.imageUrl).toBe('https://signed.example.com/user-1/private.webp?token=owner');
+    expect(dreams[1]?.imageUrl).toBe('https://signed.example.com/user-1/legacy.webp?token=owner');
+    expect(mocks.storageCreateSignedUrl).toHaveBeenCalledWith('user-1/private.webp', 86400);
+    expect(mocks.storageCreateSignedUrl).toHaveBeenCalledWith('user-1/legacy.webp', 86400);
+  });
+
   it('fetchDreamsFromSupabase throws when supabase returns error', async () => {
     const orderMock = jest.fn().mockResolvedValue({
       data: null,
@@ -601,7 +639,7 @@ describe('supabaseDreamService', () => {
         title: 'x',
         interpretation: '',
         shareable_quote: '',
-        image_url: 'https://cdn.example.com/user-1/dream.webp',
+        image_url: 'supabase-storage://dream-images/user-1/dream.webp',
         chat_history: [],
         theme: null,
         dream_type: 'Symbolic Dream',
@@ -652,10 +690,13 @@ describe('supabaseDreamService', () => {
     ).toBe(true);
 
     const firstRow = (((upsertMock as any).mock.calls[0]?.[0] ?? {}) as unknown) as Record<string, unknown>;
-    expect(String(firstRow.image_url)).toContain('https://cdn.example.com/');
+    expect(String(firstRow.image_url)).toContain('supabase-storage://dream-images/user-1/dream-');
+    expect(String(firstRow.image_url)).not.toContain('/storage/v1/object/public/');
 
-    expect(dream.imageUrl).toContain('https://cdn.example.com/');
-    expect(dream.thumbnailUrl).toContain('https://cdn.example.com/');
+    expect(mocks.storageGetPublicUrl).not.toHaveBeenCalled();
+    expect(mocks.storageCreateSignedUrl).toHaveBeenCalledWith('user-1/dream.webp', 86400);
+    expect(dream.imageUrl).toBe('https://signed.example.com/user-1/dream.webp?token=owner');
+    expect(dream.thumbnailUrl).toBe('https://signed.example.com/user-1/dream.webp?token=owner');
   });
 
   it('updateDreamInSupabase throws NOT_FOUND when no rows are returned', async () => {
