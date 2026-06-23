@@ -8,10 +8,8 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { RecordingActivationInsightCard } from '@/components/recording/RecordingActivationInsightCard';
 import { RecordingDraftProgress } from '@/components/recording/RecordingDraftProgress';
 import type { RecordingOnboardingTarget } from '@/components/recording/RecordingOnboardingTour';
-import type { RecordingActivationInsight } from '@/lib/recordingActivationInsight';
 import type { RecordingSpotlightRect } from './RecordingOnboardingSpotlightOverlay';
 
 export interface RecordingTextInputProps {
@@ -32,7 +30,6 @@ export interface RecordingTextInputProps {
   spotlightMeasureKey?: number;
   placeholder?: string;
   autoFocus?: boolean;
-  activationInsight?: RecordingActivationInsight | null;
   onSwitchToVoice: () => void;
   onClear?: () => void;
 }
@@ -57,7 +54,6 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       spotlightMeasureKey = 0,
       placeholder,
       autoFocus = true,
-      activationInsight,
       onSwitchToVoice,
       onClear,
     },
@@ -217,8 +213,6 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           </View>
 
           <RecordingDraftProgress value={value} />
-
-          <RecordingActivationInsightCard insight={activationInsight} />
 
           {lengthWarning ? (
             <Text style={[styles.lengthWarning, { color: noctalia.accent.base }]}>

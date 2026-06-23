@@ -33,6 +33,8 @@ export function getRecordingActivationPromptState(
     && input.captureIntent === 'fresh';
 
   const showRememberedDreamPrompt = isReadyForFirstRunPrompt
+    && input.recordingOnboardingLoaded
+    && !input.recordingOnboardingDismissed
     && input.rememberedDreamPromptLoaded
     && !input.rememberedDreamPromptDismissed;
 

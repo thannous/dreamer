@@ -11,6 +11,7 @@ describe('TID', () => {
     expect(TID.Chat.Send).toBe('chat.button.send');
     expect(TID.Button.DreamProfileCta).toBe('btn.stats.dreamProfile.cta');
     expect(TID.Button.DreamProfileUpgradeCta).toBe('btn.stats.dreamProfile.upgradeCta');
+    expect(TID.Button.InputModeDismiss).toBe('btn.recording.inputMode.dismiss');
     expect(TID.Component.DreamProfileCard).toBe('component.stats.dreamProfile');
     expect(TID.Component.DreamProfilePlusPreview).toBe('component.stats.dreamProfile.plusPreview');
     expect(TID.Button.Exploration360Synthesis).toBe('btn.exploration360.synthesis');

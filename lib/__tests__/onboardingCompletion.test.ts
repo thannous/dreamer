@@ -19,15 +19,15 @@ describe('getOnboardingCompletionFlags', () => {
     });
   });
 
-  it('marks only the capture education as seen after a fresh dream capture path', () => {
+  it('dismisses first-run capture prompts after a fresh dream capture path', () => {
     expect(getOnboardingCompletionFlags('freshCapture')).toEqual({
       firstLaunchCompleted: true,
       recordingOnboardingCompleted: true,
-      rememberedDreamPromptDismissed: false,
+      rememberedDreamPromptDismissed: true,
     });
   });
 
-  it('dismisses the remembered prompt only after the remembered capture path', () => {
+  it('dismisses first-run capture prompts after the remembered capture path', () => {
     expect(getOnboardingCompletionFlags('rememberedCapture')).toEqual({
       firstLaunchCompleted: true,
       recordingOnboardingCompleted: true,

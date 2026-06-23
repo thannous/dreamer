@@ -34,7 +34,6 @@ jest.mock('../../services/supabaseDreamService', () => ({
   deleteDreamFromSupabase: (...args: unknown[]) => mockDeleteDream(...args),
 }));
 
-// Mock logger
 jest.mock('../../lib/logger', () => ({
   logger: {
     warn: jest.fn(),
@@ -43,6 +42,13 @@ jest.mock('../../lib/logger', () => ({
     debug: jest.fn(),
   },
 }));
+
+const getMockLogger = () => require('../../lib/logger').logger as {
+  warn: jest.Mock;
+  error: jest.Mock;
+  info: jest.Mock;
+  debug: jest.Mock;
+};
 
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
@@ -215,6 +221,37 @@ describe('useOfflineSyncQueue', () => {
       });
 
       expect(defaultOptions.persistRemoteDreams).toHaveBeenCalled();
+    });
+
+    it('does not raise stale pending mutation alerts when remote sync is disabled', async () => {
+      const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(1_000 + 60 * 60 * 1000 + 1);
+      const dream = buildDream({ id: 1 });
+      const { result } = renderHook(() =>
+        useOfflineSyncQueue({
+          ...defaultOptions,
+          canUseRemoteSync: false,
+        })
+      );
+
+      await act(async () => {
+        await result.current.queueOfflineOperation(
+          legacyMutation({
+            id: 'stale-local-only',
+            type: 'update',
+            dream,
+            createdAt: 1_000,
+          }),
+          [dream]
+        );
+      });
+
+      const mockLogger = getMockLogger();
+      expect(mockLogger.error).not.toHaveBeenCalledWith(
+        expect.stringContaining('pending mutation age threshold exceeded'),
+        expect.anything()
+      );
+      expect(mockSavePendingMutations).not.toHaveBeenCalled();
+      nowSpy.mockRestore();
     });
   });
 

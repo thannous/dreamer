@@ -145,7 +145,7 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.mic.pause': 'Pause dictation',
         'recording.mic.pause_hint': 'Double tap to pause dictation',
         'recording.activation_insight.eyebrow': 'First read',
-        'recording.activation_insight.summary.memory': 'This memory becomes your first personal anchor.',
+        'recording.activation_insight.summary.memory': 'This memory is saved as a remembered dream.',
         'recording.activation_insight.summary.signals': 'Noctalia already notices: {signals}.',
         'recording.activation_insight.summary.fragment': 'This fragment is enough to start your profile.',
         'recording.activation_insight.signal.memory': 'Memory',
@@ -219,33 +219,6 @@ describe('RecordingTextInput', () => {
     expect(screen.getByText('Good start')).toBeTruthy();
     expect(onChange).toHaveBeenCalledWith('A blue room with rain');
     expect(onClear).toHaveBeenCalledTimes(1);
-  });
-
-  it('shows the first activation insight without taking over the composer', () => {
-    render(
-      <RecordingTextInput
-        value="A blue room with my mother"
-        onChange={jest.fn()}
-        disabled={false}
-        lengthWarning=""
-        instructionText="Write what you remember"
-        activationInsight={{
-          tone: 'signals',
-          signalIds: ['emotion', 'place'],
-          charCount: 42,
-        }}
-        onSwitchToVoice={jest.fn()}
-      />
-    );
-
-    expect(screen.getByTestId(TID.Component.RecordingActivationInsight)).toBeTruthy();
-    expect(screen.getByText('First read')).toBeTruthy();
-    expect(screen.getByTestId(TID.Text.RecordingActivationInsightSummary).textContent).toBe(
-      'Noctalia already notices: Emotion, Place.'
-    );
-    expect(screen.getByText('Emotion')).toBeTruthy();
-    expect(screen.getByText('Place')).toBeTruthy();
-    expect(screen.getByTestId(TID.Input.DreamTranscript)).toBeTruthy();
   });
 
   it('keeps the same composer available while dictation is active', () => {

@@ -21,6 +21,30 @@ describe('getRecordingActivationPromptState', () => {
     });
   });
 
+  it('does not show the remembered dream prompt after onboarding already completed capture setup', () => {
+    expect(
+      getRecordingActivationPromptState({
+        ...baseInput,
+        recordingOnboardingDismissed: true,
+      })
+    ).toEqual({
+      showRememberedDreamPrompt: false,
+      showRecordingOnboardingTour: false,
+    });
+  });
+
+  it('waits for onboarding state before showing the remembered dream prompt', () => {
+    expect(
+      getRecordingActivationPromptState({
+        ...baseInput,
+        recordingOnboardingLoaded: false,
+      })
+    ).toEqual({
+      showRememberedDreamPrompt: false,
+      showRecordingOnboardingTour: false,
+    });
+  });
+
   it('shows the onboarding tour after the remembered dream prompt is dismissed', () => {
     expect(
       getRecordingActivationPromptState({

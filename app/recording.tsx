@@ -26,7 +26,7 @@ import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RememberedDreamProfileChips } from '@/components/recording/RememberedDreamProfileChips';
 import { UnforgettableDreamPromptCard } from '@/components/recording/UnforgettableDreamPromptCard';
 import { RECORDING } from '@/constants/appConfig';
-import { TAB_BAR_HEIGHT } from '@/constants/layout';
+import { DESKTOP_BREAKPOINT, TAB_BAR_HEIGHT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
@@ -96,6 +96,7 @@ import {
   StyleSheet,
   TextInput,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -112,6 +113,22 @@ type VoiceFallbackReason =
 
 type CaptureIntent = RecordingCaptureIntent;
 
+const getSavedDreamActivationInsight = (dream: DreamAnalysis | null) => {
+  if (!dream) {
+    return null;
+  }
+
+  const memory = dream.memory;
+
+  return getRecordingActivationInsight({
+    transcript: dream.transcript,
+    captureIntent: memory?.origin === 'remembered' ? 'remembered' : 'fresh',
+    rememberedKind: memory?.rememberedKind,
+    approximatePeriod: memory?.approximatePeriod,
+    strongestFragment: memory?.strongestFragment,
+  });
+};
+
 const formatRecordingDuration = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
@@ -125,6 +142,7 @@ export default function RecordingScreen() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
+  const { width: viewportWidth } = useWindowDimensions();
   const referenceImagesEnabled = isReferenceImagesEnabled();
   const recordingParams = useLocalSearchParams<{ intent?: string; source?: string }>();
 
@@ -1156,15 +1174,28 @@ export default function RecordingScreen() {
 
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const gradientColors = noctalia.screen.gradient;
+  const bottomNavOffset = viewportWidth >= DESKTOP_BREAKPOINT
+    ? Math.max(insets.bottom, 24)
+    : TAB_BAR_HEIGHT + Math.max(insets.bottom, 14);
+  const fixedFooterBottomOffset = bottomNavOffset + 16;
   const mainContentStyle = useMemo(
     () => [
       styles.mainContent,
       {
         paddingTop: 24 + insets.top,
-        paddingBottom: TAB_BAR_HEIGHT + 44 + insets.bottom,
+        paddingBottom: fixedFooterBottomOffset + 92,
       },
     ],
-    [insets.bottom, insets.top]
+    [fixedFooterBottomOffset, insets.top]
+  );
+  const fixedFooterStyle = useMemo(
+    () => [
+      styles.fixedFooter,
+      {
+        bottom: fixedFooterBottomOffset,
+      },
+    ],
+    [fixedFooterBottomOffset]
   );
   const subjectPropositionMarginBottom = useMemo(
     () => 100 + insets.bottom,
@@ -1351,21 +1382,13 @@ export default function RecordingScreen() {
 
     return t(fallbackKeyByReason[voiceFallbackReason]);
   }, [t, voiceFallbackReason]);
-  const activationInsight = useMemo(
-    () => getRecordingActivationInsight({
-      transcript,
-      captureIntent,
-      rememberedKind,
-      approximatePeriod: rememberedApproximatePeriod,
-      strongestFragment: rememberedStrongestFragment,
-    }),
-    [
-      captureIntent,
-      rememberedApproximatePeriod,
-      rememberedKind,
-      rememberedStrongestFragment,
-      transcript,
-    ]
+  const firstDreamActivationInsight = useMemo(
+    () => getSavedDreamActivationInsight(firstDreamPrompt),
+    [firstDreamPrompt]
+  );
+  const analyzePromptActivationInsight = useMemo(
+    () => getSavedDreamActivationInsight(analyzePromptDream),
+    [analyzePromptDream]
   );
 
   const switchToTextMode = useCallback(async () => {
@@ -1709,7 +1732,6 @@ export default function RecordingScreen() {
                       : t('recording.placeholder')
                   }
                   autoFocus={false}
-                  activationInsight={activationInsight}
                   onSwitchToVoice={switchToVoiceMode}
                   onClear={handleClearTranscript}
                 />
@@ -1725,22 +1747,24 @@ export default function RecordingScreen() {
                 ) : null}
               </View>
 
-              <RecordingFooter
-                onSave={handleSaveDream}
-                isSaveDisabled={isSaveDisabled}
-                saveButtonLabel={
-                  captureIntent === 'remembered'
-                    ? t('recording.remembered.save_button')
-                    : t('recording.button.save_dream')
-                }
-                saveButtonAccessibilityLabel={
-                  captureIntent === 'remembered'
-                    ? t('recording.remembered.save_button_accessibility')
-                    : t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })
-                }
-              />
             </View>
           </ScrollView>
+          <View pointerEvents="box-none" style={fixedFooterStyle}>
+            <RecordingFooter
+              onSave={handleSaveDream}
+              isSaveDisabled={isSaveDisabled}
+              saveButtonLabel={
+                captureIntent === 'remembered'
+                  ? t('recording.remembered.save_button')
+                  : t('recording.button.save_dream')
+              }
+              saveButtonAccessibilityLabel={
+                captureIntent === 'remembered'
+                  ? t('recording.remembered.save_button_accessibility')
+                  : t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })
+              }
+            />
+          </View>
         </KeyboardAvoidingView>
         {showRecordingOnboardingTour ? (
           <RecordingOnboardingSpotlightOverlay
@@ -1764,10 +1788,12 @@ export default function RecordingScreen() {
 
       <RecordingOverlays
         firstDreamVisible={Boolean(firstDreamPrompt)}
+        firstDreamActivationInsight={firstDreamActivationInsight}
         onFirstDreamDismiss={handleFirstDreamDismiss}
         onFirstDreamAnalyze={handleFirstDreamAnalyze}
         onFirstDreamJournal={handleFirstDreamJournal}
         analyzePromptVisible={Boolean(analyzePromptDream)}
+        analyzePromptActivationInsight={analyzePromptActivationInsight}
         onAnalyzePromptDismiss={handleAnalyzePromptDismiss}
         onAnalyzePromptAnalyze={handleFirstDreamAnalyze}
         onAnalyzePromptJournal={handleAnalyzePromptJournal}
@@ -1811,10 +1837,12 @@ export default function RecordingScreen() {
 
 function RecordingOverlays({
   firstDreamVisible,
+  firstDreamActivationInsight,
   onFirstDreamDismiss,
   onFirstDreamAnalyze,
   onFirstDreamJournal,
   analyzePromptVisible,
+  analyzePromptActivationInsight,
   onAnalyzePromptDismiss,
   onAnalyzePromptAnalyze,
   onAnalyzePromptJournal,
@@ -1853,10 +1881,12 @@ function RecordingOverlays({
   onOfflineModelDownloadComplete,
 }: {
   firstDreamVisible: boolean;
+  firstDreamActivationInsight?: ReturnType<typeof getSavedDreamActivationInsight>;
   onFirstDreamDismiss: () => void;
   onFirstDreamAnalyze: () => void;
   onFirstDreamJournal: () => void;
   analyzePromptVisible: boolean;
+  analyzePromptActivationInsight?: ReturnType<typeof getSavedDreamActivationInsight>;
   onAnalyzePromptDismiss: () => void;
   onAnalyzePromptAnalyze: () => void;
   onAnalyzePromptJournal: () => void;
@@ -1901,6 +1931,7 @@ function RecordingOverlays({
     <>
       <FirstDreamSheet
         visible={firstDreamVisible}
+        activationInsight={firstDreamActivationInsight}
         onDismiss={onFirstDreamDismiss}
         onAnalyze={onFirstDreamAnalyze}
         onJournal={onFirstDreamJournal}
@@ -1909,6 +1940,7 @@ function RecordingOverlays({
 
       <AnalyzePromptSheet
         visible={analyzePromptVisible}
+        activationInsight={analyzePromptActivationInsight}
         onDismiss={onAnalyzePromptDismiss}
         onAnalyze={onAnalyzePromptAnalyze}
         onJournal={onAnalyzePromptJournal}
@@ -1998,6 +2030,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     gap: 24,
+  },
+  fixedFooter: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
+    zIndex: 40,
   },
   subjectPropositionOverlay: {
     ...StyleSheet.absoluteFill,

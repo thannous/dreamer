@@ -98,6 +98,30 @@ describe('syncObservability', () => {
     );
   });
 
+  it('keeps stale pending age metrics quiet when stale alerts are disabled', () => {
+    const { reportSyncQueueMetrics, SYNC_PENDING_AGE_ALERT_MS } = require('@/lib/syncObservability');
+
+    reportSyncQueueMetrics({
+      alertOnStalePending: false,
+      mutations: [
+        buildMutation({
+          id: 'stale-local-only',
+          createdAt: 1_000,
+          clientUpdatedAt: 1_000,
+          status: 'pending',
+        }),
+      ],
+      now: 1_000 + SYNC_PENDING_AGE_ALERT_MS + 1,
+      reason: 'test_local_only_pending_age',
+      userScope: 'user:mock-existing',
+    });
+
+    expect(mockLogger.error).not.toHaveBeenCalledWith(
+      expect.stringContaining('pending mutation age threshold exceeded'),
+      expect.anything()
+    );
+  });
+
   it('alerts when aggregate replay success rate drops below threshold', () => {
     const { recordSyncReplayMetrics, resetSyncObservabilityState } = require('@/lib/syncObservability');
     resetSyncObservabilityState();

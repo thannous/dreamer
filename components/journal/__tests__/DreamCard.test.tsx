@@ -6,6 +6,12 @@ import { afterEach, describe, expect, it, jest } from '@jest/globals';
 import { getDreamImageVersion, withCacheBuster } from '@/lib/imageUtils';
 import type { DreamAnalysis } from '@/lib/types';
 
+const mockIsMockModeEnabled = jest.fn(() => false);
+
+jest.mock('@/lib/env', () => ({
+  isMockModeEnabled: () => mockIsMockModeEnabled(),
+}));
+
 jest.mock('react-native', () => {
   const React = require('react');
   return {
@@ -113,6 +119,7 @@ jest.mock('@/components/ui/icon-symbol', () => ({
 describe('DreamCard image fallback', () => {
   afterEach(() => {
     cleanup();
+    mockIsMockModeEnabled.mockReturnValue(false);
   });
 
   it('keeps using the full image after a thumbnail error and remount', async () => {
@@ -165,5 +172,25 @@ describe('DreamCard image fallback', () => {
     render(<DreamCard dream={dream} onPress={jest.fn()} />);
 
     expect(screen.getByText('journal.badge.analyzed')).toBeTruthy();
+  });
+
+  it('hides sync badges in mock mode because mock dreams are local only', () => {
+    mockIsMockModeEnabled.mockReturnValue(true);
+    const { DreamCard } = require('../DreamCard');
+    const dream: DreamAnalysis = {
+      id: 1458,
+      transcript: 'dream transcript',
+      title: 'Dream title',
+      interpretation: 'Dream interpretation',
+      shareableQuote: 'Dream quote',
+      imageUrl: '',
+      chatHistory: [],
+      dreamType: 'Symbolic Dream',
+      syncState: 'pending',
+    };
+
+    render(<DreamCard dream={dream} onPress={jest.fn()} />);
+
+    expect(screen.queryByText('journal.badge.sync_pending')).toBeNull();
   });
 });

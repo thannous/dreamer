@@ -32,7 +32,7 @@ import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamSyncState } from '@/lib/dreamUtils';
 import { getDreamAnalysisState, getDreamDetailAction } from '@/lib/dreamUsage';
-import { isReferenceImagesEnabled } from '@/lib/env';
+import { isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
@@ -88,6 +88,7 @@ const getShareNavigator = (): ShareNavigator | undefined => {
 const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
 const DREAM_THEMES: DreamTheme[] = ['surreal', 'mystical', 'calm', 'noir'];
 const THEME_CATEGORIES: Exclude<DreamChatCategory, 'general'>[] = ['symbols', 'emotions', 'growth'];
+const isMockMode = isMockModeEnabled();
 const IMAGE_FALLBACK_RATIO = 2 / 3;
 const DREAM_IMAGE_ASPECT = 9 / 16;
 const DREAM_IMAGE_CROP_EPSILON = 0.01;
@@ -253,7 +254,10 @@ export default function JournalDetailScreen() {
   const canUseReference = referenceImagesEnabled && Boolean(user);
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
-  const dreamSyncState = useMemo(() => (dream ? getDreamSyncState(dream) : 'clean'), [dream]);
+  const dreamSyncState = useMemo(
+    () => (dream && !isMockMode ? getDreamSyncState(dream) : 'clean'),
+    [dream]
+  );
   const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
   useEffect(() => {
     setImageAspectRatio(null);
