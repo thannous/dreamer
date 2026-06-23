@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* global __dirname, Buffer */
 
 const crypto = require('crypto');
 const fs = require('fs');
@@ -351,9 +352,17 @@ function formatNumber(value, digits = 0) {
   });
 }
 
+function neutralizeCsvFormula(value) {
+  const stringValue = String(value);
+  if (/^[=+\-@\t\r]/.test(stringValue)) {
+    return `'${stringValue}`;
+  }
+  return stringValue;
+}
+
 function csvEscape(value) {
   if (value == null) return '';
-  const stringValue = String(value);
+  const stringValue = neutralizeCsvFormula(value);
   if (!/[",\n\r]/.test(stringValue)) return stringValue;
   return `"${stringValue.replace(/"/g, '""')}"`;
 }
@@ -758,7 +767,14 @@ async function main() {
   console.log(`[search-console] wrote ${path.relative(ROOT_DIR, outputDir)}`);
 }
 
-main().catch((error) => {
-  console.error(`[search-console] ${error.message}`);
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(`[search-console] ${error.message}`);
+    process.exitCode = 1;
+  });
+}
+
+module.exports = {
+  csvEscape,
+  neutralizeCsvFormula,
+};
