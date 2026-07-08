@@ -3,7 +3,7 @@
 Source de verite editoriale: `docs-src/content/blog/`.
 Sortie generee: `docs/`.
 Langues suivies: FR, EN, ES, DE, IT.
-Derniere prod connue: Cloudflare Pages `65a8d2c0ac15`.
+Derniere prod connue: Cloudflare Pages `20260708-130244` via commit `d4f2e2d4e`.
 
 ## Etat editorial au 8 juillet 2026
 
@@ -18,8 +18,9 @@ Derniere prod connue: Cloudflare Pages `65a8d2c0ac15`.
 | 24 juin - Search Console | Fait | Sitemap soumis, 25 URLs prioritaires inspectees; re-check API: `Submitted and indexed` pour les 25. |
 | 6 juillet - Article vacances / vacation sleep dreams | Publie dans les 5 langues | Live en prod `65a8d2c0ac15`, present dans le sitemap live avec `lastmod` `2026-07-06`. |
 | 8 juillet - Search Console vacances | En suivi | Sitemap soumis via API: `204`. Reinspection API 12:44 CEST: EN `Submitted and indexed`; FR/ES/DE/IT `Discovered - currently not indexed`. |
-| 8 juillet - Article bruit nocturne / night noise | Produit en rattrapage | Sources creees dans les 5 langues; index blog et maillage retour mis a jour. |
-| 8 juillet - Article reveil nocturne / night waking | Produit dans la fenetre active | Sources creees dans les 5 langues; index blog et maillage retour mis a jour. |
+| 8 juillet - Article bruit nocturne / night noise | Publie dans les 5 langues | Live en prod `20260708-130244`; 5 URLs 200, presentes dans le sitemap live. |
+| 8 juillet - Article reveil nocturne / night waking | Publie dans les 5 langues | Live en prod `20260708-130244`; 5 URLs 200, presentes dans le sitemap live. |
+| 8 juillet - Search Console rattrapage juillet | En suivi | Sitemap soumis via API: `204`. Rapport local: `marketing/seo/search-console/2026-07-08-july-catchup-url-inspection.md`. |
 
 Les 6 URLs qui avaient demande une indexation manuelle ne sont plus bloquantes. Les verifier seulement en spot-check Search Console si un futur deploy change leur contenu.
 
@@ -70,8 +71,8 @@ Le sitemap live a ete soumis a Search Console le 2026-07-08. EN sert de referenc
 | Priorite | Fenetre cible | Sujet | Statut | Intention SEO | Langues | Maillage interne prevu | Validation |
 |---:|---|---|---|---|---|---|---|
 | 1 | 1-3 juillet, publie le 6 juillet | Reves et sommeil en vacances | Publie/live; GSC en suivi | Saisonnier ete, voyage, changement de lit, reveil nocturne | FR, EN, ES, DE, IT | Heatwave, sleep-day-environment, dream journal, dream recall | Build/check faits dans le sprint; sitemap live OK |
-| 2 | 4-7 juillet, rattrape le 8 juillet | Bruit nocturne, sommeil et reves | Produit en 5 langues; validation/deploy en cours | Requetes pratiques appartement, voisinage, ville, vacances | FR, EN, ES, DE, IT | Sleep-day-environment, vivid dreams, stress dreams, dream journal, vacation | `npm run docs:build`, `npm run docs:check`, `npm run docs:check-crosslinks` |
-| 3 | 8-11 juillet, produit le 8 juillet | Reveil nocturne et rappel des reves | Produit en 5 langues; validation/deploy en cours | Capture rapide, journal vocal, sommeil fragmente | FR, EN, ES, DE, IT | Voice dream journal, how to remember dreams, REM sleep, privacy article | `npm run docs:build`, `npm run docs:check`, `npm run docs:check-crosslinks` |
+| 2 | 4-7 juillet, rattrape le 8 juillet | Bruit nocturne, sommeil et reves | Publie/live; GSC en suivi | Requetes pratiques appartement, voisinage, ville, vacances | FR, EN, ES, DE, IT | Sleep-day-environment, vivid dreams, stress dreams, dream journal, vacation | Build/check/release-check faits; sitemap live OK |
+| 3 | 8-11 juillet, produit le 8 juillet | Reveil nocturne et rappel des reves | Publie/live; GSC en suivi | Capture rapide, journal vocal, sommeil fragmente | FR, EN, ES, DE, IT | Voice dream journal, how to remember dreams, REM sleep, privacy article | Build/check/release-check faits; sitemap live OK |
 | 4 | 12-15 juillet | Cauchemars en periode de chaleur ou stress | A venir | Angle ete + anxiete, utile pour maillage cauchemars/canicule | FR, EN, ES, DE, IT | Nightmares guide, heatwave, anxiety dreams, mental health | `npm run docs:build`, `npm run docs:check`, `npm run docs:check-crosslinks` |
 
 ## Publication realisee - 6 juillet
@@ -99,25 +100,25 @@ Maillage fait:
 
 Dossier source: `docs-src/content/blog/blog.night-noise-sleep-dreams/`.
 
-| Langue | Slug | URL cible |
-|---|---|---|
-| FR | `bruit-nocturne-sommeil-reves` | https://noctalia.app/fr/blog/bruit-nocturne-sommeil-reves |
-| EN | `night-noise-sleep-dreams` | https://noctalia.app/en/blog/night-noise-sleep-dreams |
-| ES | `ruido-nocturno-descanso-suenos` | https://noctalia.app/es/blog/ruido-nocturno-descanso-suenos |
-| DE | `naechtlicher-laerm-schlaf-traeume` | https://noctalia.app/de/blog/naechtlicher-laerm-schlaf-traeume |
-| IT | `rumore-notturno-sonno-sogni` | https://noctalia.app/it/blog/rumore-notturno-sonno-sogni |
+| Langue | Slug | URL live | Search Console au 2026-07-08 |
+|---|---|---|---|
+| FR | `bruit-nocturne-sommeil-reves` | https://noctalia.app/fr/blog/bruit-nocturne-sommeil-reves | URL is unknown to Google |
+| EN | `night-noise-sleep-dreams` | https://noctalia.app/en/blog/night-noise-sleep-dreams | URL is unknown to Google |
+| ES | `ruido-nocturno-descanso-suenos` | https://noctalia.app/es/blog/ruido-nocturno-descanso-suenos | Discovered - currently not indexed |
+| DE | `naechtlicher-laerm-schlaf-traeume` | https://noctalia.app/de/blog/naechtlicher-laerm-schlaf-traeume | Discovered - currently not indexed |
+| IT | `rumore-notturno-sonno-sogni` | https://noctalia.app/it/blog/rumore-notturno-sonno-sogni | Discovered - currently not indexed |
 
 ### Reveil nocturne et rappel des reves
 
 Dossier source: `docs-src/content/blog/blog.night-waking-dream-recall/`.
 
-| Langue | Slug | URL cible |
-|---|---|---|
-| FR | `reveil-nocturne-rappel-reves` | https://noctalia.app/fr/blog/reveil-nocturne-rappel-reves |
-| EN | `night-waking-dream-recall` | https://noctalia.app/en/blog/night-waking-dream-recall |
-| ES | `despertares-nocturnos-recordar-suenos` | https://noctalia.app/es/blog/despertares-nocturnos-recordar-suenos |
-| DE | `naechtliches-erwachen-traumerinnerung` | https://noctalia.app/de/blog/naechtliches-erwachen-traumerinnerung |
-| IT | `risveglio-notturno-ricordo-sogni` | https://noctalia.app/it/blog/risveglio-notturno-ricordo-sogni |
+| Langue | Slug | URL live | Search Console au 2026-07-08 |
+|---|---|---|---|
+| FR | `reveil-nocturne-rappel-reves` | https://noctalia.app/fr/blog/reveil-nocturne-rappel-reves | URL is unknown to Google |
+| EN | `night-waking-dream-recall` | https://noctalia.app/en/blog/night-waking-dream-recall | Discovered - currently not indexed |
+| ES | `despertares-nocturnos-recordar-suenos` | https://noctalia.app/es/blog/despertares-nocturnos-recordar-suenos | URL is unknown to Google |
+| DE | `naechtliches-erwachen-traumerinnerung` | https://noctalia.app/de/blog/naechtliches-erwachen-traumerinnerung | Discovered - currently not indexed |
+| IT | `risveglio-notturno-ricordo-sogni` | https://noctalia.app/it/blog/risveglio-notturno-ricordo-sogni | URL is unknown to Google |
 
 Maillage fait:
 
@@ -126,6 +127,13 @@ Maillage fait:
 - Liens contextuels ajoutes depuis vacances, sleep-day-environment, how-to-remember-dreams et REM sleep vers les nouveaux articles.
 
 Prochaine publication editoriale: cauchemars en periode de chaleur ou stress, fenetre cible 12-15 juillet.
+
+Verification post-deploy 2026-07-08:
+
+- Version live: `20260708-130244`.
+- Les 10 URLs ci-dessus repondent 200.
+- Sitemap live: 1150 URLs, incluant les 10 URLs du rattrapage.
+- Search Console: sitemap soumis via API avec reponse 204; les nouvelles URLs sont en `URL is unknown to Google` ou `Discovered - currently not indexed`, normal juste apres publication. Reinspection a faire dans 24-48h.
 
 ## Ordre d'execution pour chaque nouvel article
 
@@ -139,8 +147,8 @@ Prochaine publication editoriale: cauchemars en periode de chaleur ou stress, fe
 
 ## A surveiller
 
-- La prod connue est `65a8d2c0ac15`; ne plus utiliser `20260623-112558` comme reference courante hors historique.
+- La prod connue est `20260708-130244`; ne plus utiliser `65a8d2c0ac15` ou `20260623-112558` comme reference courante hors historique.
 - Les 25 URLs de juin sont indexees; ne pas les retraiter comme blocantes.
 - Le hub reve lucide doit afficher `lastmod` `2026-06-21` dans le sitemap genere.
-- Les URLs vacances FR/ES/DE/IT doivent etre reinspectees dans Search Console apres la resoumission sitemap du 2026-07-08.
+- Les URLs vacances FR/ES/DE/IT et les 10 URLs du rattrapage 8 juillet doivent etre reinspectees dans Search Console 24-48h apres la resoumission sitemap du 2026-07-08.
 - Les suggestions non bloquantes de liens symboles dans les pages generiques EN/FR/ES peuvent rester hors sprint sauf si un run est dedie au maillage fin.
