@@ -35,6 +35,7 @@
     "docs:check": "node ./scripts/docs-check.js",
     "docs:release-check": "node ./scripts/docs-release-check.js",
     "docs:check-shell": "node ./scripts/check-docs-shell.js",
+    "docs:check-symbol-images": "node ./scripts/check-symbol-illustration-parity.js",
     "docs:preview:cf": "npx wrangler pages dev docs",
     "docs:deploy:preview": "node ./scripts/docs-deploy.js preview",
     "docs:deploy:prod": "node ./scripts/docs-deploy.js prod",

@@ -28,6 +28,20 @@ https://www.noctalia.app/* https://noctalia.app/:splat 301
 /fr/blog/rêves-de-voler /fr/blog/reves-de-voler 301
 /fr/blog/rêves-dents-qui-tombent.html /fr/blog/reves-dents-qui-tombent 301
 /fr/blog/rêves-dents-qui-tombent /fr/blog/reves-dents-qui-tombent 301
+/es/blog/historia-interpretación-suenos.html /es/blog/historia-interpretacion-suenos 301
+/es/blog/historia-interpretación-suenos /es/blog/historia-interpretacion-suenos 301
+/es/blog/alteración-sueno-primavera-suenos.html /es/blog/alteracion-sueno-primavera-suenos 301
+/es/blog/alteración-sueno-primavera-suenos /es/blog/alteracion-sueno-primavera-suenos 301
+/it/blog/significato-dei-sogni-che-cadono-perché-sogni-di-cadere.html /it/blog/significato-dei-sogni-che-cadono-perche-sogni-di-cadere 301
+/it/blog/significato-dei-sogni-che-cadono-perché-sogni-di-cadere /it/blog/significato-dei-sogni-che-cadono-perche-sogni-di-cadere 301
+/it/blog/la-paralisi-del-sonno-spiegata-perché-non-puoi-muoverti-e-come-fermarla.html /it/blog/la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla 301
+/it/blog/la-paralisi-del-sonno-spiegata-perché-non-puoi-muoverti-e-come-fermarla /it/blog/la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla 301
+/it/blog/sogni-stressanti-sul-lavoro-perché-il-tuo-lavoro-ti-segue-nel-sonno.html /it/blog/sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno 301
+/it/blog/sogni-stressanti-sul-lavoro-perché-il-tuo-lavoro-ti-segue-nel-sonno /it/blog/sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno 301
+/it/blog/perché-sogniamo-la-scienza-dietro-le-tue-avventure-notturne.html /it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne 301
+/it/blog/perché-sogniamo-la-scienza-dietro-le-tue-avventure-notturne /it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne 301
+/it/blog/perché-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica.html /it/blog/perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica 301
+/it/blog/perché-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica /it/blog/perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica 301
 
 # Redirect legacy renamed slugs (avoid soft-404 fallback to home)
 /fr/blog/comment-se-souvenir-reves.html /fr/blog/comment-se-souvenir-de-ses-reves 301
@@ -36,6 +50,13 @@ https://www.noctalia.app/* https://noctalia.app/:splat 301
 /fr/blog/reves-poursuite /fr/blog/reves-etre-poursuivi 301
 /fr/blog/reves-recurrents.html /fr/blog/signification-reves-recurrents 301
 /fr/blog/reves-recurrents /fr/blog/signification-reves-recurrents 301
+/es/blog/guia-incubación-suenos.html /es/blog/guia-incubacion-suenos 301
+/es/blog/guia-incubación-suenos /es/blog/guia-incubacion-suenos 301
+/es/blog/suenos-recurrentes.html /es/blog/significado-suenos-recurrentes 301
+/es/blog/suenos-recurrentes /es/blog/significado-suenos-recurrentes 301
+/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-ihren-traeumen-* /de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen 301
+/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-ihren-traeumen-zu-fliegen.html /de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen 301
+/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-ihren-traeumen-zu-fliegen /de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen 301
 /es/blog/como-recordar-tus-suenos.html /es/blog/como-recordar-suenos 301
 /es/blog/como-recordar-tus-suenos /es/blog/como-recordar-suenos 301
 /es/condiciones.html /es/terminos 301

@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Klares Träumen: Anleitungen und Techniken",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-06-21",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"CollectionPage\",\n        \"name\": \"Klares Träumen: Anleitungen und Techniken\",\n        \"description\": \"Themenbereich: Anleitungen, Techniken und Praxis zum klaren Träumen.\",\n        \"inLanguage\": \"de\",\n        \"url\": \"https://noctalia.app/de/blog/klares-traeumen-anleitungen-und-techniken\"\n}",
+    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"CollectionPage\",\n        \"name\": \"Klares Träumen: Anleitungen und Techniken\",\n        \"description\": \"Themenbereich: Anleitungen, Techniken und Praxis zum klaren Träumen.\",\n        \"inLanguage\": \"de\",\n        \"dateModified\": \"2026-06-21\",\n        \"url\": \"https://noctalia.app/de/blog/klares-traeumen-anleitungen-und-techniken\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Klares Träumen\",\n            \"item\": \"https://noctalia.app/de/blog/klares-traeumen-anleitungen-und-techniken\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -74,6 +74,14 @@ Beim <a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeum
     <p>Wenn du neu bist, konzentriere dich eine Woche lang auf eine kleine Gewohnheit. Regelmäßigkeit ist wichtiger als alles auf einmal.</p>
     <p>Beginne mit der Traumerinnerung und füge dann eine Übung hinzu. Notiere kurz, was du gesehen hast, was du gefühlt hast und was sich im Traum verändert hat.</p>
     <ul><li>Wähle eine Anleitung aus der Liste.</li><li>Probiere sie 7 Nächte lang.</li><li>Lies deine Notizen und passe an.</li></ul>
+  </div>
+</section>
+
+<section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/20 bg-white/5">
+  <h2 class="font-serif text-2xl text-dream-cream mb-4">Was der Korpus von 55.000 Träumen verändert</h2>
+  <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
+    <p>Klares Träumen gelingt schneller, wenn Sie Ihre eigenen Traumzeichen erkennen: wiederkehrende Orte, Anomalien, Emotionen oder Figuren. Der Noctalia-Korpus mit 55.000 Träumen dient als Referenz, um Muster zu vergleichen, ohne Ihren Traum auf eine automatische Deutung zu reduzieren.</p>
+    <p>Nutzen Sie ihn als Kompass: Suchen Sie Wiederholungen, behalten Sie Ihren persönlichen Kontext bei und wählen Sie dann eine einzige Klartraum-Übung für eine Woche.</p>
   </div>
 </section>
 

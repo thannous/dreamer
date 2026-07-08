@@ -195,13 +195,13 @@
       "it": {
         "slug": "acqua",
         "name": "Acqua",
-        "shortDescription": "Sognare acqua parla quasi sempre di emozioni: acqua pulita o limpida, acqua torbida o sporca, acqua che scorre, acqua alta o acqua in casa. Il contesto mostra se stai trovando chiarezza o pressione emotiva.",
+        "shortDescription": "Sognare acqua parla quasi sempre di emozioni: acqua pulita o limpida, acqua torbida o sporca, acqua alta, acqua che scorre o acqua in casa. Il contesto mostra se stai trovando chiarezza, pressione emotiva o bisogno di proteggere il tuo spazio privato.",
         "askYourself": [
           "L’acqua era pulita, limpida, torbida, sporca o in movimento?",
           "Stavo nuotando, osservando l’acqua o venivo trascinato?",
           "Quale emozione attuale somiglia allo stato dell’acqua?"
         ],
-        "seoTitle": "acqua pulita, limpida, sporca o in casa",
+        "seoTitle": "acqua pulita, sporca, alta o in casa",
         "faq": [
           {
             "question": "Cosa significa sognare acqua?",
@@ -221,7 +221,7 @@
           },
           {
             "question": "Cosa significa sognare tanta acqua o acqua in casa?",
-            "answer": "Tanta acqua indica emozioni che occupano molto spazio. Se entra in casa, il sogno porta il tema nella sfera privata: sicurezza, famiglia, confini e riposo."
+            "answer": "Tanta acqua indica emozioni che occupano molto spazio. Se entra in casa o sale rapidamente, il sogno porta il tema nella sfera privata: sicurezza, famiglia, confini e riposo."
           }
         ],
         "softCta": {
@@ -231,7 +231,7 @@
           "button": "Prova l'app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-06-18"
+        "modifiedAt": "2026-07-06"
       },
       "relatedSymbols": [
         "flood",
@@ -769,13 +769,13 @@
       "es": {
         "slug": "casa",
         "name": "Casa",
-        "shortDescription": "Soñar con una casa suele hablar de ti, de tu seguridad interior y de tu historia personal. Una casa desconocida puede señalar una parte de ti todavía inexplorada; una casa en ruinas invita a reconstruir o proteger lo importante.",
+        "shortDescription": "Soñar con una casa suele hablar de ti, de tu seguridad interior, familia e historia personal. Una casa desconocida, antigua, inundada o en ruinas muestra qué parte de tu vida íntima necesita más atención, límites o reconstrucción.",
         "askYourself": [
-          "¿La casa era conocida, desconocida, antigua o en ruinas?",
+          "¿La casa era conocida, desconocida, antigua, inundada o en ruinas?",
           "¿En qué habitación estaba y qué emoción dominaba?",
           "¿Qué parte de mi vida interior necesita más atención?"
         ],
-        "seoTitle": "casa desconocida, antigua o en ruinas",
+        "seoTitle": "casa desconocida, inundada o antigua",
         "faq": [
           {
             "question": "¿Qué significa soñar con una casa?",
@@ -790,10 +790,15 @@
             "answer": "Una casa antigua evoca a menudo el pasado, recuerdos familiares o hábitos antiguos que todavía influyen en el presente."
           },
           {
+            "question": "¿Qué significa soñar con una casa inundada?",
+            "answer": "Una casa inundada indica que una emoción, preocupación o conflicto está entrando en tu espacio íntimo. Mira qué habitación se llena de agua y qué límite necesita más cuidado."
+          },
+          {
             "question": "¿Qué significa soñar con una casa en ruinas?",
             "answer": "Una casa en ruinas puede señalar cansancio, pérdida de seguridad o necesidad de reconstruir una base emocional más sólida."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-06"
       },
       "de": {
         "slug": "haus",
@@ -827,13 +832,13 @@
       "it": {
         "slug": "casa",
         "name": "Casa",
-        "shortDescription": "Sognare una casa parla spesso di te, della tua sicurezza interiore e della tua storia personale. Una casa sconosciuta può indicare una parte di te ancora inesplorata; una casa in rovina invita a ricostruire o proteggere ciò che conta.",
+        "shortDescription": "Sognare una casa parla di te, sicurezza interiore, famiglia e storia personale. Una casa sconosciuta, vecchia, allagata o in rovina mostra quale area privata ha bisogno di confini, riposo o ricostruzione.",
         "askYourself": [
-          "La casa era conosciuta, sconosciuta, vecchia o in rovina?",
+          "La casa era conosciuta, sconosciuta, vecchia, allagata o in rovina?",
           "In quale stanza ero e quale emozione dominava?",
           "Quale parte della mia vita interiore ha bisogno di più attenzione?"
         ],
-        "seoTitle": "casa sconosciuta, vecchia o in rovina",
+        "seoTitle": "casa sconosciuta, allagata o vecchia",
         "faq": [
           {
             "question": "Cosa significa sognare una casa?",
@@ -848,10 +853,15 @@
             "answer": "Una casa vecchia richiama spesso il passato, i ricordi familiari o abitudini antiche che influenzano ancora il presente."
           },
           {
+            "question": "Cosa significa sognare una casa allagata?",
+            "answer": "Una casa allagata indica che emozioni, stress o preoccupazioni stanno entrando nello spazio più privato. La stanza coinvolta mostra quale confine richiede attenzione."
+          },
+          {
             "question": "Cosa significa sognare una casa in rovina?",
             "answer": "Una casa in rovina può segnalare stanchezza, perdita di sicurezza o bisogno di ricostruire una base emotiva più solida."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-06"
       },
       "relatedSymbols": [
         "door",
@@ -1051,13 +1061,13 @@
       "es": {
         "slug": "perro",
         "name": "Perro",
-        "shortDescription": "Soñar con un perro suele hablar de confianza, lealtad y protección. Un perro cariñoso sugiere apoyo; un perro que ataca, muerde o gruñe puede indicar conflicto, miedo a la traición o una relación que ya no se siente segura.",
+        "shortDescription": "Soñar con un perro o con perros suele hablar de confianza, lealtad y protección. Si el perro ataca, muerde, gruñe, te persigue o parece herido, el sueño señala una relación que ya no se siente del todo segura.",
         "askYourself": [
           "¿El perro era cariñoso, agresivo, callejero o protector?",
-          "¿Me atacaba, mordía, seguía o defendía a alguien?",
+          "¿Me atacaba, mordía, perseguía, seguía o defendía a alguien?",
           "¿Qué relación de confianza se siente fuerte, frágil o herida ahora?"
         ],
-        "seoTitle": "perro, perros o perro que ataca",
+        "seoTitle": "perro que ataca, muerde o persigue",
         "faq": [
           {
             "question": "¿Qué significa soñar con un perro?",
@@ -1074,8 +1084,13 @@
           {
             "question": "¿Qué significa soñar con un perro que muerde?",
             "answer": "La mordida de un perro señala confianza herida, una palabra agresiva o una relación que pasó de protegerte a doler."
+          },
+          {
+            "question": "¿Qué significa soñar con un perro que te persigue?",
+            "answer": "Un perro que te persigue puede mostrar una tensión relacional que intentas evitar: miedo a una reacción, una conversación pendiente o una lealtad que se volvió presión."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-06"
       },
       "de": {
         "slug": "hund",
@@ -1113,13 +1128,13 @@
       "it": {
         "slug": "cane",
         "name": "Cane",
-        "shortDescription": "Sognare un cane o più cani riguarda fiducia, lealtà e protezione. Il significato cambia se il cane morde, attacca, ringhia, è nero o bianco, appare malato o ti segue con calma.",
+        "shortDescription": "Sognare un cane o più cani riguarda fiducia, lealtà e protezione. Il significato cambia se il cane morde, attacca, ringhia, ti vuole mordere, è nero o bianco, appare malato o ti segue con calma.",
         "askYourself": [
           "Il cane era affettuoso, aggressivo, nero, bianco, malato o smarrito?",
-          "Mordeva, attaccava, ringhiava, seguiva o proteggeva qualcuno?",
+          "Mordeva, voleva mordere, attaccava, ringhiava, seguiva o proteggeva qualcuno?",
           "Quale rapporto di fiducia sembra forte, ferito o fragile adesso?"
         ],
-        "seoTitle": "un cane che morde o attacca",
+        "seoTitle": "cane che morde, attacca o ti segue",
         "faq": [
           {
             "question": "Cosa significa sognare un cane?",
@@ -1132,6 +1147,10 @@
           {
             "question": "Cosa significa sognare un cane che attacca o ringhia?",
             "answer": "Un cane che attacca o ringhia può indicare paura di tradimento, tensione in una relazione o una minaccia percepita da qualcuno che dovrebbe essere affidabile."
+          },
+          {
+            "question": "Cosa significa sognare un cane che ti vuole mordere?",
+            "answer": "Un cane che vuole morderti segnala spesso un conflitto che non è ancora esploso del tutto: una parola trattenuta, una fiducia fragile o una relazione che senti imprevedibile."
           },
           {
             "question": "Cosa significano cane nero, bianco, morto o malato?",
@@ -1149,7 +1168,7 @@
           "button": "Prova l'app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-06-18"
+        "modifiedAt": "2026-07-06"
       },
       "relatedSymbols": [
         "wolf",
@@ -1264,11 +1283,28 @@
       "it": {
         "slug": "ragno",
         "name": "Ragno",
-        "shortDescription": "I ragni simboleggiano creatività, pazienza e il tessere del destino. Possono anche rappresentare paura, sentirsi intrappolati o il potere creativo femminile.",
+        "shortDescription": "Sognare un ragno o tanti ragni può parlare di paura, pazienza, creatività e situazioni in cui ti senti intrappolato. Ragnatela, ragno nero, morso o ragno addosso cambiano il significato del sogno.",
         "askYourself": [
-          "Mi sento intrappolato in qualche situazione?",
-          "Quale rete sto tessendo nella mia vita?"
-        ]
+          "Il ragno era nero, grande, piccolo, addosso a me o nella ragnatela?",
+          "Provavo paura, disgusto, curiosità o calma?",
+          "Quale situazione sembra una rete da cui è difficile uscire?"
+        ],
+        "seoTitle": "ragno nero, ragnatela o ragno addosso",
+        "faq": [
+          {
+            "question": "Cosa significa sognare un ragno?",
+            "answer": "Sognare un ragno può indicare paura, pazienza, creatività o una situazione che sembra intrappolante. Il contesto mostra se il ragno minaccia, osserva o costruisce."
+          },
+          {
+            "question": "Cosa significa sognare un ragno nero?",
+            "answer": "Un ragno nero rende più forte il tema della paura o dell'incertezza. Può indicare qualcosa che senti vicino ma non ancora chiaro."
+          },
+          {
+            "question": "Cosa significa sognare una ragnatela?",
+            "answer": "Una ragnatela parla di legami, pazienza e trappole sottili. Può mostrare una situazione costruita nel tempo, difficile da sciogliere subito."
+          }
+        ],
+        "modifiedAt": "2026-07-06"
       },
       "relatedSymbols": [
         "snake",
@@ -1403,13 +1439,13 @@
       "it": {
         "slug": "fuoco",
         "name": "Fuoco",
-        "shortDescription": "Sognare un incendio o il fuoco parla spesso di passione, rabbia, urgenza o trasformazione. Il significato cambia se vedi un incendio in casa, fiamme, fumo nero o fuoco che divampa.",
+        "shortDescription": "Sognare fuoco, un incendio o fiamme parla spesso di passione, rabbia, urgenza o trasformazione. Il significato cambia se vedi fuoco in casa, fumo nero, un incendio che divampa o un fuoco controllato.",
         "askYourself": [
           "Il fuoco scaldava, illuminava, bruciava o distruggeva?",
           "Era un fuoco controllato, un incendio, fuoco in casa o fumo nero?",
           "Quale emozione nella mia vita sembra accendersi troppo in fretta?"
         ],
-        "seoTitle": "incendio e fuoco in casa",
+        "seoTitle": "fuoco, incendio o fuoco in casa",
         "faq": [
           {
             "question": "Cosa significa sognare fuoco?",
@@ -1422,6 +1458,10 @@
           {
             "question": "Cosa significa sognare fuoco in casa?",
             "answer": "Il fuoco in casa porta il simbolo nella sfera privata: identità, famiglia, sicurezza o tensioni domestiche che chiedono attenzione."
+          },
+          {
+            "question": "Cosa significa sognare un incendio che divampa?",
+            "answer": "Un incendio che divampa indica spesso emozioni o cambiamenti cresciuti troppo in fretta. Il sogno chiede dove recuperare controllo prima che la situazione consumi troppe energie."
           },
           {
             "question": "Cosa significano fiamme, fumo nero o fuoco che divampa?",
@@ -1439,7 +1479,7 @@
           "button": "Prova l'app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-06-18"
+        "modifiedAt": "2026-07-06"
       },
       "relatedSymbols": [
         "house",
@@ -2404,13 +2444,13 @@
       "it": {
         "slug": "pioggia",
         "name": "Pioggia",
-        "shortDescription": "Sognare pioggia parla di rilascio emotivo, purificazione e rinnovamento. Una pioggia leggera può calmare; un temporale o una pioggia forte può indicare emozioni intense che chiedono spazio.",
+        "shortDescription": "Sognare pioggia parla di rilascio emotivo, purificazione e rinnovamento. Pioggia forte, temporale, pioggia in casa o guardata da dentro mostrano quanto sei esposto o protetto mentre un'emozione si scioglie.",
         "askYourself": [
           "La pioggia era leggera, forte, improvvisa o parte di un temporale?",
           "Mi sentivo protetto, esposto, triste o sollevato?",
           "Quale emozione ha bisogno di essere espressa o lasciata andare?"
         ],
-        "seoTitle": "pioggia, pioggia forte o temporale",
+        "seoTitle": "pioggia forte, temporale o pioggia in casa",
         "faq": [
           {
             "question": "Cosa significa sognare pioggia?",
@@ -2423,9 +2463,13 @@
           {
             "question": "Cosa significa guardare la pioggia da dentro?",
             "answer": "Guardare la pioggia da un luogo protetto suggerisce distanza emotiva: osservi qualcosa di difficile senza esserne completamente travolto."
+          },
+          {
+            "question": "Cosa significa sognare pioggia in casa?",
+            "answer": "La pioggia in casa porta il rilascio emotivo nello spazio privato: famiglia, riposo, sicurezza o confini personali che hanno bisogno di attenzione."
           }
         ],
-        "modifiedAt": "2026-06-18"
+        "modifiedAt": "2026-07-06"
       },
       "relatedSymbols": [
         "water",

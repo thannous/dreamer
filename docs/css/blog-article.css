@@ -213,6 +213,7 @@ html.blog-article .glass-panel {
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.24);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+  transition-property: background-color, border-color, box-shadow, opacity, backdrop-filter;
 }
 
 html.blog-article main > article > section[aria-labelledby="quick-answer-title"] {
@@ -397,6 +398,22 @@ html.blog-article main > aside[role="note"] {
 
   html.blog-article .prose h2 {
     font-size: clamp(1.8rem, 9vw, 2.55rem);
+  }
+}
+
+@media (hover: none), (pointer: coarse), (max-width: 767px) {
+  html.blog-article .glass-panel,
+  html.blog-article .glass-button,
+  html.blog-article .dream-card,
+  html.blog-article .toc-link {
+    transition-property: background-color, border-color, color, box-shadow, opacity;
+  }
+
+  html.blog-article .glass-panel:hover,
+  html.blog-article .glass-button:hover,
+  html.blog-article .dream-card:hover,
+  html.blog-article .toc-link:hover {
+    transform: none;
   }
 }
 

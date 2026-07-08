@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Sogni Lucidi: guide e tecniche",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-06-21",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"CollectionPage\",\n        \"name\": \"Sogni lucidi: guide e tecniche\",\n        \"description\": \"Area tematica: guide, tecniche e pratica dei sogni lucidi.\",\n        \"inLanguage\": \"it\",\n        \"url\": \"https://noctalia.app/it/blog/sogni-lucidi-guide-e-tecniche\"\n}",
+    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"CollectionPage\",\n        \"name\": \"Sogni lucidi: guide e tecniche\",\n        \"description\": \"Area tematica: guide, tecniche e pratica dei sogni lucidi.\",\n        \"inLanguage\": \"it\",\n        \"dateModified\": \"2026-06-21\",\n        \"url\": \"https://noctalia.app/it/blog/sogni-lucidi-guide-e-tecniche\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/it/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Risorse\",\n            \"item\": \"https://noctalia.app/it/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sogno lucido\",\n            \"item\": \"https://noctalia.app/it/blog/sogni-lucidi-guide-e-tecniche\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -74,6 +74,14 @@
     <p>Se sei all’inizio, scegli una piccola abitudine per una settimana. La costanza conta più che fare tutto insieme.</p>
     <p>Parti dal ricordo dei sogni e poi aggiungi una pratica. Scrivi l’essenziale: cosa hai visto, cosa hai provato e cosa è cambiato nel sogno.</p>
     <ul><li>Scegli una guida dalla lista.</li><li>Provala per 7 notti.</li><li>Rileggi le note e aggiusta.</li></ul>
+  </div>
+</section>
+
+<section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/20 bg-white/5">
+  <h2 class="font-serif text-2xl text-dream-cream mb-4">Cosa cambia il corpus di 55.000 sogni</h2>
+  <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
+    <p>Il sogno lucido migliora più rapidamente quando riconosci i tuoi segnali onirici: luoghi ricorrenti, anomalie, emozioni o personaggi. Il corpus Noctalia di 55.000 sogni è un riferimento per confrontare schemi senza ridurre il tuo sogno a un'interpretazione automatica.</p>
+    <p>Usalo come bussola: cerca le ripetizioni, conserva il contesto personale e scegli una sola pratica lucida da provare per una settimana.</p>
   </div>
 </section>
 

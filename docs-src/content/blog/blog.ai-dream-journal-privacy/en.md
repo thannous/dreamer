@@ -25,7 +25,7 @@
   "publishedTime": "2026-06-20T00:00:00+02:00",
   "modifiedTime": "2026-06-20T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/en/blog/heatwave-sleep-dreams",
+  "prevPath": "/en/blog/night-waking-dream-recall",
   "nextPath": "/en/blog/dreamlike-wakefulness-sleep",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],
