@@ -22,6 +22,22 @@ if ((globalThis as any).jest) {
 // Keep a single definition here to avoid redefining in each test.
 (globalThis as any).__DEV__ = (globalThis as any).__DEV__ ?? false;
 
+// jest-expo can install a lazy Expo fetch getter that loads native modules when
+// jsdom tests enumerate window globals. Replace it with a writable test double.
+const mockFetch = jest.fn();
+Object.defineProperty(globalThis, 'fetch', {
+  configurable: true,
+  writable: true,
+  value: mockFetch,
+});
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'fetch', {
+    configurable: true,
+    writable: true,
+    value: mockFetch,
+  });
+}
+
 const expoGlobal = (globalThis as any).expo ?? {};
 expoGlobal.EventEmitter =
   expoGlobal.EventEmitter ??

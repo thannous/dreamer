@@ -63,6 +63,7 @@ jest.mock('react-native', () => {
     ScrollView: createElement('div'),
     Text: createElement('span'),
     View: createElement('div'),
+    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
     Platform: {
       OS: 'web',
       select: (values: Record<string, any>) => values?.web ?? values?.default,
@@ -95,6 +96,10 @@ jest.mock('@/context/ThemeContext', () => ({
       textPrimary: '#fff',
       textSecondary: '#c7c2d7',
       textOnAccentSurface: '#fff',
+      tags: {
+        mystical: '#9b8cff',
+        calm: '#6ee7d8',
+      },
     },
     shadows: { xl: {}, lg: {}, md: {}, sm: {} },
   }),

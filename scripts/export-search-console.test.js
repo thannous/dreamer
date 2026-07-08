@@ -1,26 +1,25 @@
-const assert = require('assert/strict');
-
 const { csvEscape, neutralizeCsvFormula } = require('./export-search-console');
 
-assert.equal(
-  neutralizeCsvFormula('=IMPORTXML("https://attacker.test")'),
-  '\'=IMPORTXML("https://attacker.test")'
-);
-assert.equal(neutralizeCsvFormula('+SUM(A1:A2)'), "'+SUM(A1:A2)");
-assert.equal(neutralizeCsvFormula('-10'), "'-10");
-assert.equal(
-  neutralizeCsvFormula('@HYPERLINK("https://attacker.test")'),
-  '\'@HYPERLINK("https://attacker.test")'
-);
-assert.equal(neutralizeCsvFormula('\t=1+1'), "'\t=1+1");
-assert.equal(neutralizeCsvFormula('\r=1+1'), "'\r=1+1");
+describe('Search Console CSV export escaping', () => {
+  it('neutralizes formula-like values before writing CSV', () => {
+    expect(neutralizeCsvFormula('=IMPORTXML("https://attacker.test")')).toBe(
+      '\'=IMPORTXML("https://attacker.test")'
+    );
+    expect(neutralizeCsvFormula('+SUM(A1:A2)')).toBe("'+SUM(A1:A2)");
+    expect(neutralizeCsvFormula('-10')).toBe("'-10");
+    expect(neutralizeCsvFormula('@HYPERLINK("https://attacker.test")')).toBe(
+      '\'@HYPERLINK("https://attacker.test")'
+    );
+    expect(neutralizeCsvFormula('\t=1+1')).toBe("'\t=1+1");
+    expect(neutralizeCsvFormula('\r=1+1')).toBe("'\r=1+1");
+  });
 
-assert.equal(csvEscape('ordinary search query'), 'ordinary search query');
-assert.equal(csvEscape('query, with comma'), '"query, with comma"');
-assert.equal(csvEscape('"quoted query"'), '"""quoted query"""');
-assert.equal(
-  csvEscape('=IMPORTXML("https://attacker.test")'),
-  '"\'=IMPORTXML(""https://attacker.test"")"'
-);
-
-console.log('Search Console CSV escaping checks passed.');
+  it('escapes CSV cells after formula neutralization', () => {
+    expect(csvEscape('ordinary search query')).toBe('ordinary search query');
+    expect(csvEscape('query, with comma')).toBe('"query, with comma"');
+    expect(csvEscape('"quoted query"')).toBe('"""quoted query"""');
+    expect(csvEscape('=IMPORTXML("https://attacker.test")')).toBe(
+      '"\'=IMPORTXML(""https://attacker.test"")"'
+    );
+  });
+});
