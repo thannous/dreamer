@@ -25,7 +25,7 @@
   "publishedTime": "2026-06-20T00:00:00+02:00",
   "modifiedTime": "2026-06-20T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/es/blog/ola-calor-sueno-suenos",
+  "prevPath": "/es/blog/despertares-nocturnos-recordar-suenos",
   "nextPath": "/es/blog/sonar-despierto-estados-oniricos",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],

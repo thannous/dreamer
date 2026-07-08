@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Lucid Dreaming: guides & techniques",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-06-21",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"CollectionPage\",\n            \"name\": \"Lucid Dreaming: guides & techniques\",\n            \"description\": \"Topic hub: lucid dreaming guides, techniques, and practice.\",\n            \"inLanguage\": \"en\",\n            \"url\": \"https://noctalia.app/en/blog/lucid-dreaming\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"CollectionPage\",\n            \"name\": \"Lucid Dreaming: guides & techniques\",\n            \"description\": \"Topic hub: lucid dreaming guides, techniques, and practice.\",\n            \"inLanguage\": \"en\",\n            \"dateModified\": \"2026-06-21\",\n            \"url\": \"https://noctalia.app/en/blog/lucid-dreaming\"\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Resources\",\n            \"item\": \"https://noctalia.app/en/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Lucid dreaming\",\n            \"item\": \"https://noctalia.app/en/blog/lucid-dreaming\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -74,6 +74,14 @@
     <p>If you are new to this topic, focus on one small habit for a week. Consistency matters more than doing everything at once.</p>
     <p>Start with recall, then add one practice. Keep notes simple: what you saw, how you felt, and what changed during the dream.</p>
     <ul><li>Pick one guide from the list below.</li><li>Try it for 7 nights.</li><li>Review your notes and adjust.</li></ul>
+  </div>
+</section>
+
+<section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/20 bg-white/5">
+  <h2 class="font-serif text-2xl text-dream-cream mb-4">What the 55,000-dream corpus changes</h2>
+  <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
+    <p>Lucid dreaming improves faster when you can spot your own dream signs: recurring places, anomalies, emotions, or characters. Noctalia's 55,000-dream corpus is a reference point for comparing patterns without reducing your dream to an automatic interpretation.</p>
+    <p>Use it as a compass: look for repetition, keep your personal context, then choose one lucid practice to test for a week.</p>
   </div>
 </section>
 

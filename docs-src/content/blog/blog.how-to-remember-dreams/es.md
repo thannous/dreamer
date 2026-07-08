@@ -349,6 +349,8 @@
 </details>
 </div>
 </section>
+<!-- July catch-up backlink: remember-to-night-waking -->
+<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Despertar nocturno</h2><p>Para adaptar este método a un despertar en mitad de la noche sin romper el descanso, lee <a class="text-dream-salmon hover:underline" href="despertares-nocturnos-recordar-suenos">despertares nocturnos y recuerdo de sueños</a>.</p></section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Para Ir Más Lejos</h2>

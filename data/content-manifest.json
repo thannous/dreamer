@@ -768,6 +768,62 @@
             }
           }
         },
+        "blog.night-noise-sleep-dreams": {
+          "id": "blog.night-noise-sleep-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "night-noise-sleep-dreams",
+          "locales": {
+            "en": {
+              "slug": "night-noise-sleep-dreams",
+              "path": "/en/blog/night-noise-sleep-dreams"
+            },
+            "fr": {
+              "slug": "bruit-nocturne-sommeil-reves",
+              "path": "/fr/blog/bruit-nocturne-sommeil-reves"
+            },
+            "es": {
+              "slug": "ruido-nocturno-descanso-suenos",
+              "path": "/es/blog/ruido-nocturno-descanso-suenos"
+            },
+            "de": {
+              "slug": "naechtlicher-laerm-schlaf-traeume",
+              "path": "/de/blog/naechtlicher-laerm-schlaf-traeume"
+            },
+            "it": {
+              "slug": "rumore-notturno-sonno-sogni",
+              "path": "/it/blog/rumore-notturno-sonno-sogni"
+            }
+          }
+        },
+        "blog.night-waking-dream-recall": {
+          "id": "blog.night-waking-dream-recall",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "night-waking-dream-recall",
+          "locales": {
+            "en": {
+              "slug": "night-waking-dream-recall",
+              "path": "/en/blog/night-waking-dream-recall"
+            },
+            "fr": {
+              "slug": "reveil-nocturne-rappel-reves",
+              "path": "/fr/blog/reveil-nocturne-rappel-reves"
+            },
+            "es": {
+              "slug": "despertares-nocturnos-recordar-suenos",
+              "path": "/es/blog/despertares-nocturnos-recordar-suenos"
+            },
+            "de": {
+              "slug": "naechtliches-erwachen-traumerinnerung",
+              "path": "/de/blog/naechtliches-erwachen-traumerinnerung"
+            },
+            "it": {
+              "slug": "risveglio-notturno-ricordo-sogni",
+              "path": "/it/blog/risveglio-notturno-ricordo-sogni"
+            }
+          }
+        },
         "blog.precognitive-dreams-science": {
           "id": "blog.precognitive-dreams-science",
           "type": "blogArticle",
@@ -1129,6 +1185,34 @@
             "it": {
               "slug": "sogni-di-denti-che-cadono-significato-e-interpretazione",
               "path": "/it/blog/sogni-di-denti-che-cadono-significato-e-interpretazione"
+            }
+          }
+        },
+        "blog.vacation-sleep-dreams": {
+          "id": "blog.vacation-sleep-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "vacation-sleep-dreams",
+          "locales": {
+            "en": {
+              "slug": "vacation-sleep-dreams",
+              "path": "/en/blog/vacation-sleep-dreams"
+            },
+            "fr": {
+              "slug": "vacances-sommeil-reves",
+              "path": "/fr/blog/vacances-sommeil-reves"
+            },
+            "es": {
+              "slug": "vacaciones-sueno-suenos",
+              "path": "/es/blog/vacaciones-sueno-suenos"
+            },
+            "de": {
+              "slug": "urlaub-schlaf-traeume",
+              "path": "/de/blog/urlaub-schlaf-traeume"
+            },
+            "it": {
+              "slug": "vacanze-sonno-sogni",
+              "path": "/it/blog/vacanze-sonno-sogni"
             }
           }
         },

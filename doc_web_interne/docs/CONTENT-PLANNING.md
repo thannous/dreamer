@@ -1,116 +1,146 @@
-# Content Planning - Blog Noctalia
+# Noctalia Content Planning - fin juin / juillet 2026
 
-## Publication Schedule
+Source de verite editoriale: `docs-src/content/blog/`.
+Sortie generee: `docs/`.
+Langues suivies: FR, EN, ES, DE, IT.
+Derniere prod connue: Cloudflare Pages `65a8d2c0ac15`.
 
-### Batch 1 - Common Dream Interpretations (January 2025)
+## Etat editorial au 8 juillet 2026
 
-| Article | Status | Published | EN | FR | ES |
-|---------|--------|-----------|----|----|-----|
-| Teeth Falling Out Dreams | Published | 2025-01-10 | [EN](/en/blog/teeth-falling-out-dreams.html) | [FR](/fr/blog/reves-dents-qui-tombent.html) | [ES](/es/blog/suenos-dientes-caen.html) |
-| Falling Dreams | Published | 2025-01-10 | [EN](/en/blog/falling-dreams-meaning.html) | [FR](/fr/blog/reves-de-chute.html) | [ES](/es/blog/suenos-de-caer.html) |
-| Flying Dreams | Published | 2025-01-10 | [EN](/en/blog/flying-dreams-meaning.html) | [FR](/fr/blog/reves-de-voler.html) | [ES](/es/blog/suenos-de-volar.html) |
+| Phase | Statut | Notes |
+|---|---|---|
+| 20 juin - Article canicule / heatwave | Publie dans les 5 langues | Present dans le sitemap live et indexe. |
+| 20 juin - Article confidentialite IA | Publie dans les 5 langues | Present dans le sitemap live et indexe. Le DE est maintenant au-dessus de 500 mots cote source. |
+| 21 juin - Refresh reves et creativite | Publie dans les 5 langues | Bloc juin 2026 en ligne apres deploy `20260623-112558`. |
+| 21 juin - Refresh controle des reves / resolution de problemes | Publie dans les 5 langues | Bloc TMR / journalisation en ligne apres deploy `20260623-112558`. |
+| 21 juin - Hub reve lucide | Publie dans les 5 langues | Bloc corpus 55 000 reves en ligne. `lastmod` sitemap corrige cote source pour la prochaine generation. |
+| 23 juin - Deploy production | Fait | Cloudflare Pages version `20260623-112558`. |
+| 24 juin - Search Console | Fait | Sitemap soumis, 25 URLs prioritaires inspectees; re-check API: `Submitted and indexed` pour les 25. |
+| 6 juillet - Article vacances / vacation sleep dreams | Publie dans les 5 langues | Live en prod `65a8d2c0ac15`, present dans le sitemap live avec `lastmod` `2026-07-06`. |
+| 8 juillet - Search Console vacances | En suivi | Sitemap soumis via API: `204`. Reinspection API 12:44 CEST: EN `Submitted and indexed`; FR/ES/DE/IT `Discovered - currently not indexed`. |
+| 8 juillet - Article bruit nocturne / night noise | Produit en rattrapage | Sources creees dans les 5 langues; index blog et maillage retour mis a jour. |
+| 8 juillet - Article reveil nocturne / night waking | Produit dans la fenetre active | Sources creees dans les 5 langues; index blog et maillage retour mis a jour. |
 
-### Batch 2 - Dream Interpretation Series (December 2025)
+Les 6 URLs qui avaient demande une indexation manuelle ne sont plus bloquantes. Les verifier seulement en spot-check Search Console si un futur deploy change leur contenu.
 
-| Article | Status | Published | EN | FR | ES |
-|---------|--------|-----------|----|----|-----|
-| Being Chased Dreams | Published | 2025-12-11 | [EN](/en/blog/being-chased-dreams.html) | [FR](/fr/blog/reves-etre-poursuivi.html) | [ES](/es/blog/suenos-ser-perseguido.html) |
-| Dreams About Death | Published | 2025-12-11 | [EN](/en/blog/death-dreams-meaning.html) | [FR](/fr/blog/reves-de-mort.html) | [ES](/es/blog/suenos-de-muerte.html) |
-| Water Dreams | Published | 2025-12-11 | [EN](/en/blog/water-dreams-meaning.html) | [FR](/fr/blog/reves-eau.html) | [ES](/es/blog/suenos-de-agua.html) |
+## URLs publiees et indexation
 
-### Batch 3 - Relationships, Life & Nightmares (December 2025)
+### Article canicule / heatwave
 
-| Article | Status | Published | EN | FR | ES |
-|---------|--------|-----------|----|----|-----|
-| Dreams About Ex-Partners | Published | 2025-12-11 | [EN](/en/blog/dreams-about-ex.html) | [FR](/fr/blog/reves-ex-partenaire.html) | [ES](/es/blog/suenos-con-ex.html) |
-| Pregnancy Dreams | Published | 2025-12-11 | [EN](/en/blog/pregnancy-dreams-meaning.html) | [FR](/fr/blog/reves-de-grossesse.html) | [ES](/es/blog/suenos-de-embarazo.html) |
-| Nightmares Guide | Published | 2025-12-11 | [EN](/en/blog/stop-nightmares-guide.html) | [FR](/fr/blog/guide-cauchemars.html) | [ES](/es/blog/guia-pesadillas.html) |
+| Langue | URL | Date source | Indexation |
+|---|---|---:|---|
+| FR | https://noctalia.app/fr/blog/canicule-sommeil-reves | 2026-06-20 | Submitted and indexed |
+| EN | https://noctalia.app/en/blog/heatwave-sleep-dreams | 2026-06-20 | Submitted and indexed |
+| ES | https://noctalia.app/es/blog/ola-calor-sueno-suenos | 2026-06-20 | Submitted and indexed |
+| DE | https://noctalia.app/de/blog/hitzewelle-schlaf-traeume | 2026-06-20 | Submitted and indexed |
+| IT | https://noctalia.app/it/blog/ondata-calore-sonno-sogni | 2026-06-20 | Submitted and indexed |
 
-### Batch 4 - Practical Guides & Science (December 2025)
+### Article confidentialite IA / AI dream journal privacy
 
-| Article | Status | Published | EN | FR | ES |
-|---------|--------|-----------|----|----|-----|
-| Sleep Paralysis Explained | Published | 2025-12-11 | [EN](/en/blog/sleep-paralysis-guide.html) | [FR](/fr/blog/guide-paralysie-sommeil.html) | [ES](/es/blog/guia-paralisis-sueno.html) |
-| Dream Journaling Guide | Published | 2025-12-11 | [EN](/en/blog/dream-journal-guide.html) | [FR](/fr/blog/guide-journal-reves.html) | [ES](/es/blog/guia-diario-suenos.html) |
-| Dreams and Mental Health | Published | 2025-12-11 | [EN](/en/blog/dreams-mental-health.html) | [FR](/fr/blog/reves-sante-mentale.html) | [ES](/es/blog/suenos-salud-mental.html) |
-| Why Do We Dream? | Published | 2025-12-11 | [EN](/en/blog/why-we-dream-science.html) | [FR](/fr/blog/pourquoi-nous-revons-science.html) | [ES](/es/blog/por-que-sonamos-ciencia.html) |
-| REM Sleep and Dreams | Published | 2025-12-11 | [EN](/en/blog/rem-sleep-dreams.html) | [FR](/fr/blog/sommeil-paradoxal-reves.html) | [ES](/es/blog/sueno-rem-suenos.html) |
-| Dream Interpretation History | Published | 2025-12-11 | [EN](/en/blog/dream-interpretation-history.html) | [FR](/fr/blog/histoire-interpretation-reves.html) | [ES](/es/blog/historia-interpretacion-suenos.html) |
+| Langue | URL | Date source | Indexation |
+|---|---|---:|---|
+| FR | https://noctalia.app/fr/blog/confidentialite-ia-journal-reves | 2026-06-20 | Submitted and indexed |
+| EN | https://noctalia.app/en/blog/ai-dream-journal-privacy | 2026-06-20 | Submitted and indexed |
+| ES | https://noctalia.app/es/blog/privacidad-ia-diario-suenos | 2026-06-20 | Submitted and indexed |
+| DE | https://noctalia.app/de/blog/ki-traumtagebuch-datenschutz | 2026-06-20 | Submitted and indexed |
+| IT | https://noctalia.app/it/blog/privacy-ia-diario-sogni | 2026-06-20 | Submitted and indexed |
 
-### Batch 5 - New Articles (December 2025)
+### Article vacances / vacation sleep dreams
 
-| Article | Status | Published | EN | FR | ES |
-|---------|--------|-----------|----|----|-----|
-| Snake Dreams | Published | 2025-12-11 | [EN](/en/blog/snake-dreams-meaning.html) | [FR](/fr/blog/reves-de-serpents.html) | [ES](/es/blog/suenos-con-serpientes.html) |
-| Dream Incubation Guide | Published | 2025-12-11 | [EN](/en/blog/dream-incubation-guide.html) | [FR](/fr/blog/guide-incubation-reves.html) | [ES](/es/blog/guia-incubacion-suenos.html) |
-| Precognitive Dreams | Published | 2025-12-11 | [EN](/en/blog/precognitive-dreams-science.html) | [FR](/fr/blog/reves-premonitoires-science.html) | [ES](/es/blog/suenos-premonitorios-ciencia.html) |
+| Langue | URL | Date source | Etat live | Search Console au 2026-07-08 |
+|---|---|---:|---|---|
+| FR | https://noctalia.app/fr/blog/vacances-sommeil-reves | 2026-07-06 | 200 + sitemap live | Discovered - currently not indexed |
+| EN | https://noctalia.app/en/blog/vacation-sleep-dreams | 2026-07-06 | 200 + sitemap live | Submitted and indexed |
+| ES | https://noctalia.app/es/blog/vacaciones-sueno-suenos | 2026-07-06 | 200 + sitemap live | Discovered - currently not indexed |
+| DE | https://noctalia.app/de/blog/urlaub-schlaf-traeume | 2026-07-06 | 200 + sitemap live | Discovered - currently not indexed |
+| IT | https://noctalia.app/it/blog/vacanze-sonno-sogni | 2026-07-06 | 200 + sitemap live | Discovered - currently not indexed |
 
-### Existing Content
+Le sitemap live a ete soumis a Search Console le 2026-07-08. EN sert de reference saine. Pour FR/ES/DE/IT, l'API ne permet pas de demander l'indexation manuelle: si besoin, utiliser l'UI Search Console "Request indexing", puis reinspecter dans 24-48h.
 
-| Article | EN | FR | ES |
-|---------|----|----|-----|
-| How to Remember Dreams | [EN](/en/blog/how-to-remember-dreams.html) | [FR](/fr/blog/comment-se-souvenir-de-ses-reves.html) | [ES](/es/blog/como-recordar-suenos.html) |
-| Lucid Dreaming Guide | [EN](/en/blog/lucid-dreaming-beginners-guide.html) | [FR](/fr/blog/guide-reve-lucide-debutant.html) | [ES](/es/blog/guia-suenos-lucidos-principiantes.html) |
-| Recurring Dreams Meaning | [EN](/en/blog/recurring-dreams-meaning.html) | [FR](/fr/blog/signification-reves-recurrents.html) | [ES](/es/blog/significado-suenos-recurrentes.html) |
-| Dream Symbols Dictionary | [EN](/en/guides/dream-symbols-dictionary.html) | [FR](/fr/guides/dictionnaire-symboles-reves.html) | [ES](/es/guides/diccionario-simbolos-suenos.html) |
+### Refresh creativite, resolution de problemes, reve lucide
 
----
+| Cluster | FR | EN | ES | DE | IT | Indexation |
+|---|---|---|---|---|---|---|
+| Reves et creativite | `/fr/blog/reves-et-creativite` | `/en/blog/dreams-and-creativity` | `/es/blog/suenos-y-creatividad` | `/de/blog/traeume-und-kreativitaet` | `/it/blog/sogni-e-creativita` | Submitted and indexed |
+| Controle des reves / problem solving | `/fr/blog/controler-reves-resolution-problemes` | `/en/blog/dream-control-problem-solving` | `/es/blog/controlar-suenos-resolucion-problemas` | `/de/blog/traumkontrolle-problemloesung` | `/it/blog/controllare-sogni-risoluzione-problemi` | Submitted and indexed |
+| Hub reve lucide | `/fr/blog/reve-lucide` | `/en/blog/lucid-dreaming` | `/es/blog/suenos-lucidos` | `/de/blog/klares-traeumen-anleitungen-und-techniken` | `/it/blog/sogni-lucidi-guide-e-tecniche` | Submitted and indexed |
 
-## Backlog - Future Articles
+## Publications juillet 2026
 
-### Dream Interpretation (High Priority)
-- [x] Being Chased Dreams - `being-chased-dreams.html` ✅ Published 2025-12-11
-- [x] Dreams About Death - `death-dreams-meaning.html` ✅ Published 2025-12-11
-- [x] Water Dreams (ocean, drowning, flood) - `water-dreams-meaning.html` ✅ Published 2025-12-11
-- [x] Dreams About Ex-Partners - `dreams-about-ex.html` ✅ Published 2025-12-11
-- [x] Pregnancy Dreams - `pregnancy-dreams-meaning.html` ✅ Published 2025-12-11
-- [x] Snake Dreams - `snake-dreams-meaning.html` ✅ Published 2025-12-11
+| Priorite | Fenetre cible | Sujet | Statut | Intention SEO | Langues | Maillage interne prevu | Validation |
+|---:|---|---|---|---|---|---|---|
+| 1 | 1-3 juillet, publie le 6 juillet | Reves et sommeil en vacances | Publie/live; GSC en suivi | Saisonnier ete, voyage, changement de lit, reveil nocturne | FR, EN, ES, DE, IT | Heatwave, sleep-day-environment, dream journal, dream recall | Build/check faits dans le sprint; sitemap live OK |
+| 2 | 4-7 juillet, rattrape le 8 juillet | Bruit nocturne, sommeil et reves | Produit en 5 langues; validation/deploy en cours | Requetes pratiques appartement, voisinage, ville, vacances | FR, EN, ES, DE, IT | Sleep-day-environment, vivid dreams, stress dreams, dream journal, vacation | `npm run docs:build`, `npm run docs:check`, `npm run docs:check-crosslinks` |
+| 3 | 8-11 juillet, produit le 8 juillet | Reveil nocturne et rappel des reves | Produit en 5 langues; validation/deploy en cours | Capture rapide, journal vocal, sommeil fragmente | FR, EN, ES, DE, IT | Voice dream journal, how to remember dreams, REM sleep, privacy article | `npm run docs:build`, `npm run docs:check`, `npm run docs:check-crosslinks` |
+| 4 | 12-15 juillet | Cauchemars en periode de chaleur ou stress | A venir | Angle ete + anxiete, utile pour maillage cauchemars/canicule | FR, EN, ES, DE, IT | Nightmares guide, heatwave, anxiety dreams, mental health | `npm run docs:build`, `npm run docs:check`, `npm run docs:check-crosslinks` |
 
-### Practical Guides (Medium Priority)
-- [x] Nightmares: Causes and Solutions - `stop-nightmares-guide.html` ✅ Published 2025-12-11
-- [x] Sleep Paralysis Explained - `sleep-paralysis-guide.html` ✅ Published 2025-12-11
-- [x] Dream Journaling Complete Guide - `dream-journal-guide.html` ✅ Published 2025-12-11
-- [x] Dreams and Mental Health - `dreams-mental-health.html` ✅ Published 2025-12-11
-- [x] Dream Incubation Guide - `dream-incubation-guide.html` ✅ Published 2025-12-11
+## Publication realisee - 6 juillet
 
-### Science & Education (Lower Priority)
-- [x] Why Do We Dream? The Science - `why-we-dream-science.html` ✅ Published 2025-12-11
-- [x] REM Sleep and Dreams - `rem-sleep-dreams.html` ✅ Published 2025-12-11
-- [x] Dream Interpretation History - `dream-interpretation-history.html` ✅ Published 2025-12-11
-- [x] Precognitive Dreams - `precognitive-dreams-science.html` ✅ Published 2025-12-11
+Sujet publie: reves et sommeil en vacances.
+Dossier source: `docs-src/content/blog/blog.vacation-sleep-dreams/`.
 
----
+| Langue | Slug | URL live |
+|---|---|---|
+| FR | `vacances-sommeil-reves` | https://noctalia.app/fr/blog/vacances-sommeil-reves |
+| EN | `vacation-sleep-dreams` | https://noctalia.app/en/blog/vacation-sleep-dreams |
+| ES | `vacaciones-sueno-suenos` | https://noctalia.app/es/blog/vacaciones-sueno-suenos |
+| DE | `urlaub-schlaf-traeume` | https://noctalia.app/de/blog/urlaub-schlaf-traeume |
+| IT | `vacanze-sonno-sogni` | https://noctalia.app/it/blog/vacanze-sonno-sogni |
 
-## SEO Keywords Target
+Maillage fait:
 
-| Topic | EN Keywords | FR Keywords | ES Keywords |
-|-------|-------------|-------------|-------------|
-| Teeth | teeth falling out dream, dream about losing teeth | reve dents qui tombent, rever de perdre ses dents | sonar que se caen los dientes |
-| Falling | falling dream meaning, dream about falling | reve de chute, rever de tomber | sonar que caes, suenos de caer |
-| Flying | flying dream meaning, dream about flying | reve de voler, rever de voler | sonar que vuelas, suenos de volar |
-| Chased | being chased dream, dream about being chased | reve etre poursuivi | sonar que te persiguen |
-| Water | water dreams, drowning dream | reve eau, reve noyade | sonar con agua |
+- Nouvel article vers canicule / heatwave, journee-sommeil-environnement / sleep-day-environment, guide journal de reves, comment se souvenir de ses reves.
+- Articles canicule / heatwave et sleep-day-environment vers le nouvel article, avec contexte ete/voyage.
+- Index blog de chaque langue mis a jour; `ItemList` JSON-LD resynchronise.
 
----
+## Publications realisees - 8 juillet
 
-## Article Template Structure
+### Bruit nocturne, sommeil et reves
 
-Each article should follow this structure (~2500 words, 12 min read):
+Dossier source: `docs-src/content/blog/blog.night-noise-sleep-dreams/`.
 
-1. **Introduction** - Hook + statistics
-2. **Why this dream?** - Psychology/neuroscience
-3. **Common variations** - 5-7 scenarios
-4. **Interpretations** - Context-dependent meanings
-5. **What science says** - Research citations
-6. **What to do** - Actionable advice
-7. **FAQ** - 3 questions for Schema.org
-8. **Conclusion** - CTA to Noctalia
+| Langue | Slug | URL cible |
+|---|---|---|
+| FR | `bruit-nocturne-sommeil-reves` | https://noctalia.app/fr/blog/bruit-nocturne-sommeil-reves |
+| EN | `night-noise-sleep-dreams` | https://noctalia.app/en/blog/night-noise-sleep-dreams |
+| ES | `ruido-nocturno-descanso-suenos` | https://noctalia.app/es/blog/ruido-nocturno-descanso-suenos |
+| DE | `naechtlicher-laerm-schlaf-traeume` | https://noctalia.app/de/blog/naechtlicher-laerm-schlaf-traeume |
+| IT | `rumore-notturno-sonno-sogni` | https://noctalia.app/it/blog/rumore-notturno-sonno-sogni |
 
----
+### Reveil nocturne et rappel des reves
 
-## Notes
+Dossier source: `docs-src/content/blog/blog.night-waking-dream-recall/`.
 
-- All articles must include Schema.org markup (Article, FAQPage, BreadcrumbList)
-- Images: use Unsplash for hero images, reuse `/img/en/` for all languages
-- Publication dates: use actual creation date
-- Read time: calculate based on word count (~300 words/min)
+| Langue | Slug | URL cible |
+|---|---|---|
+| FR | `reveil-nocturne-rappel-reves` | https://noctalia.app/fr/blog/reveil-nocturne-rappel-reves |
+| EN | `night-waking-dream-recall` | https://noctalia.app/en/blog/night-waking-dream-recall |
+| ES | `despertares-nocturnos-recordar-suenos` | https://noctalia.app/es/blog/despertares-nocturnos-recordar-suenos |
+| DE | `naechtliches-erwachen-traumerinnerung` | https://noctalia.app/de/blog/naechtliches-erwachen-traumerinnerung |
+| IT | `risveglio-notturno-ricordo-sogni` | https://noctalia.app/it/blog/risveglio-notturno-ricordo-sogni |
+
+Maillage fait:
+
+- Nouveaux articles visibles dans les index blog FR/EN/ES/DE/IT, avec `ItemList` JSON-LD resynchronise a 44 items par langue.
+- Chaine editoriale mise a jour: vacances -> bruit nocturne -> reveil nocturne -> confidentialite IA.
+- Liens contextuels ajoutes depuis vacances, sleep-day-environment, how-to-remember-dreams et REM sleep vers les nouveaux articles.
+
+Prochaine publication editoriale: cauchemars en periode de chaleur ou stress, fenetre cible 12-15 juillet.
+
+## Ordre d'execution pour chaque nouvel article
+
+1. Creer ou modifier uniquement `docs-src/content/blog/<article>/fr.md`, `en.md`, `es.md`, `de.md`, `it.md`.
+2. Ajouter `publishedTime`, `modifiedTime`, canonical, hreflang, JSON-LD `datePublished` et `dateModified`.
+3. Relier le nouvel article depuis au moins deux articles existants et ajouter un lien retour contextuel dans le nouvel article.
+4. Mettre a jour les index blog par langue si le nouvel article doit etre visible dans la grille.
+5. Lancer `npm run docs:build`, puis `npm run docs:check`, puis `npm run docs:check-crosslinks`.
+6. Verifier `docs/sitemap.xml` pour les 5 URLs.
+7. Apres deploy, soumettre les 5 URLs et le sitemap dans Search Console si elles ne passent pas automatiquement en `Submitted and indexed`.
+
+## A surveiller
+
+- La prod connue est `65a8d2c0ac15`; ne plus utiliser `20260623-112558` comme reference courante hors historique.
+- Les 25 URLs de juin sont indexees; ne pas les retraiter comme blocantes.
+- Le hub reve lucide doit afficher `lastmod` `2026-06-21` dans le sitemap genere.
+- Les URLs vacances FR/ES/DE/IT doivent etre reinspectees dans Search Console apres la resoumission sitemap du 2026-07-08.
+- Les suggestions non bloquantes de liens symboles dans les pages generiques EN/FR/ES peuvent rester hors sprint sauf si un run est dedie au maillage fin.

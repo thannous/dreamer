@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Sueños lúcidos: guías y técnicas",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-06-21",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"CollectionPage\",\n            \"name\": \"Sueños lúcidos: guías y técnicas\",\n            \"description\": \"Hub temático: recursos y guías para progresar en sueños lúcidos.\",\n            \"inLanguage\": \"es\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-lucidos\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"CollectionPage\",\n            \"name\": \"Sueños lúcidos: guías y técnicas\",\n            \"description\": \"Hub temático: recursos y guías para progresar en sueños lúcidos.\",\n            \"inLanguage\": \"es\",\n            \"dateModified\": \"2026-06-21\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-lucidos\"\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños lúcidos\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-lucidos\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -74,6 +74,14 @@
     <p>Si eres principiante, elige un hábito pequeño durante una semana. La constancia importa más que hacerlo todo a la vez.</p>
     <p>Empieza con el recuerdo y luego añade una práctica. Anota lo básico: qué viste, qué sentiste y qué cambió en el sueño.</p>
     <ul><li>Elige una guía de la lista.</li><li>Pruébala durante 7 noches.</li><li>Revisa tus notas y ajusta.</li></ul>
+  </div>
+</section>
+
+<section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/20 bg-white/5">
+  <h2 class="font-serif text-2xl text-dream-cream mb-4">Qué cambia el corpus de 55 000 sueños</h2>
+  <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
+    <p>El sueño lúcido avanza más rápido cuando detectas tus propias señales oníricas: lugares recurrentes, anomalías, emociones o personajes. El corpus de 55 000 sueños de Noctalia sirve como referencia para comparar patrones sin reducir tu sueño a una interpretación automática.</p>
+    <p>Úsalo como brújula: busca repeticiones, conserva tu contexto personal y elige una sola práctica lúcida para probar durante una semana.</p>
   </div>
 </section>
 

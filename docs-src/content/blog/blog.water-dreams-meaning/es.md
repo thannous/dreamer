@@ -4,8 +4,8 @@
   "layout": "blogArticle",
   "lang": "es",
   "slug": "suenos-de-agua",
-  "title": "Qué significa soñar con inundación: agua y casa | Noctalia",
-  "description": "Qué significa soñar con inundación de agua, casa inundada, agua limpia, sucia o de mar, y cómo leer la emoción del sueño.",
+  "title": "Soñar con inundación: agua sucia, casa y mar | Noctalia",
+  "description": "Qué significa soñar con inundación, agua sucia, casa inundada o que el mar se sale e inunda: claves para leer emoción, límites y seguridad.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -13,23 +13,23 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Qué significa soñar con inundación: agua y casa | Noctalia",
-  "ogDescription": "Qué significa soñar con inundación de agua, casa inundada, agua limpia, sucia o de mar, y cómo leer la emoción del sueño.",
+  "ogTitle": "Soñar con inundación: agua sucia, casa y mar | Noctalia",
+  "ogDescription": "Qué significa soñar con inundación, agua sucia, casa inundada o que el mar se sale e inunda: claves para leer emoción, límites y seguridad.",
   "ogImage": "https://noctalia.app/img/blog/water-dreams-meaning.webp",
   "ogImageAlt": "Superficie de agua en calma que refleja las emociones profundas",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Qué significa soñar con inundación: agua y casa | Noctalia",
-  "twitterDescription": "Qué significa soñar con inundación de agua, casa inundada, agua limpia, sucia o de mar, y cómo leer la emoción del sueño.",
+  "twitterTitle": "Soñar con inundación: agua sucia, casa y mar | Noctalia",
+  "twitterDescription": "Qué significa soñar con inundación, agua sucia, casa inundada o que el mar se sale e inunda: claves para leer emoción, límites y seguridad.",
   "twitterImage": "https://noctalia.app/img/blog/water-dreams-meaning.webp",
   "twitterImageAlt": "Superficie de agua en calma que refleja las emociones profundas",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-06-19",
+  "modifiedTime": "2026-07-06",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-de-muerte",
   "nextPath": "/es/blog/suenos-con-ex",
   "preloadImage": "/img/blog/water-dreams-meaning.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Qué significa soñar con inundación: agua y casa\",\n    \"description\": \"Qué significa soñar con inundación de agua, casa inundada, agua limpia, sucia o de mar, y cómo leer la emoción del sueño.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/water-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-06-19\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 809,\n    \"timeRequired\": \"PT3M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Soñar con inundación: agua sucia, casa y mar\",\n    \"description\": \"Qué significa soñar con inundación, agua sucia, casa inundada o que el mar se sale e inunda: claves para leer emoción, límites y seguridad.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/water-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-07-06\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1280,\n    \"timeRequired\": \"PT5M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con una inundación?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Soñar con una inundación suele indicar emociones, estrés o cambios que se sienten difíciles de contener. La lectura cambia según si el agua está limpia, sucia, viene del mar o entra en casa.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con inundaciones de agua sucia?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"El agua sucia en una inundación apunta a confusión, cansancio emocional o una situación que te supera y todavía no puedes ordenar con claridad.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con inundaciones de agua de mar?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"El agua de mar añade profundidad emocional e incertidumbre. Puede mostrar que emociones antiguas o intensas están entrando en tu vida consciente.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con una casa inundada?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La casa representa tu mundo íntimo. Una casa inundada sugiere que preocupaciones, conflictos o emociones intensas están invadiendo tu espacio de seguridad.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con agua limpia que inunda?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Una inundación de agua limpia puede hablar de liberación emocional, claridad o una limpieza necesaria, aunque la cantidad de agua indique que el proceso se siente grande.\"\n      }\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Recursos\",\n      \"item\": \"https://noctalia.app/es/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sueños de Agua\",\n      \"item\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n    }\n  ]\n}"
   ],
@@ -61,7 +61,7 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significado-de-suenos">Tema: Significado de sueños</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 11 de diciembre de 2025</span>
-<span class="text-sm text-purple-300/60">3 min de lectura</span>
+<span class="text-sm text-purple-300/60">5 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Qué significa soñar con inundación de agua, casa o mar
@@ -172,6 +172,11 @@
 <div class="glass-panel rounded-xl p-5 border border-white/10">
 <h3 class="font-serif text-lg text-dream-cream mb-2">¿Qué significa soñar con agua limpia que inunda?</h3>
 <p class="text-sm text-gray-300 leading-relaxed">Una inundación de agua limpia puede hablar de liberación emocional, claridad o una limpieza necesaria, aunque la cantidad de agua indique que el proceso se siente grande.</p>
+</div>
+
+<div class="glass-panel rounded-xl p-5 border border-white/10">
+<h3 class="font-serif text-lg text-dream-cream mb-2">¿Qué significa soñar que el mar se sale e inunda?</h3>
+<p class="text-sm text-gray-300 leading-relaxed">Cuando el mar se sale e inunda, el sueño suele mostrar una emoción profunda que rompe un límite. Mira qué zona queda cubierta: casa, calle o cuerpo cambian el matiz.</p>
 </div>
 </div>
 </section>
@@ -459,6 +464,15 @@
                             La casa en los sueños representa tu identidad y seguridad personal. Una casa inundada simboliza que emociones intensas están invadiendo tu espacio más íntimo: puedes sentir que el estrés, la ansiedad o conflictos no resueltos amenazan tu estabilidad emocional y tu sensación de refugio.
                         </p>
 </details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Qué significa soñar que el mar se sale e inunda?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Soñar que el mar se sale e inunda suele indicar que una emoción profunda rompe un límite que parecía contenerla. Si el agua llega a tu casa, el tema toca seguridad e intimidad; si cubre una calle, puede hablar de dirección, cambio o presión externa.
+                        </p>
+</details>
 </div>
 </section>
 <!-- Sources / Trust -->
@@ -470,7 +484,7 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/29316455/" rel="nofollow noopener noreferrer" target="_blank">Schredl (2018): Dream Content Analysis</a></li>
 <li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Stages of sleep</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 6 de enero de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 6 de julio de 2026</p>
 </section>
 <section class="mt-16">
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Articulos Relacionados</h2>

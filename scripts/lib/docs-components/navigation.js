@@ -82,7 +82,7 @@ function renderNavigation(context) {
   const storeHref = getAndroidStoreUrl(lang);
 
   const navClasses = [
-    'fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav',
+    'fixed w-full z-50 top-0 left-0 transition-colors duration-300 py-4 noctalia-premium-nav',
     isBlogPremium ? 'blog-premium-nav' : '',
   ].filter(Boolean).join(' ');
   return [

@@ -500,6 +500,8 @@
 </details>
 </div>
 </section>
+<!-- July catch-up backlink: rem-to-night-waking -->
+<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Réveil nocturne</h2><p>Pour adapter cette méthode à un réveil en pleine nuit sans casser le sommeil, consultez <a class="text-dream-salmon hover:underline" href="reveil-nocturne-rappel-reves">réveil nocturne et rappel des rêves</a>.</p></section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>

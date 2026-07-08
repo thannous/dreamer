@@ -482,6 +482,8 @@
 </details>
 </div>
 </section>
+<!-- July catch-up backlink: rem-to-night-waking -->
+<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Nächtliches Erwachen</h2><p>Wie Sie diese Methode nachts nutzen, ohne den Schlaf ganz zu unterbrechen, erklärt <a class="text-dream-salmon hover:underline" href="naechtliches-erwachen-traumerinnerung">nächtliches Erwachen und Traumerinnerung</a>.</p></section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen / Weiterführende Literatur</h2>

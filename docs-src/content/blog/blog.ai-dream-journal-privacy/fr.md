@@ -25,7 +25,7 @@
   "publishedTime": "2026-06-20T00:00:00+02:00",
   "modifiedTime": "2026-06-20T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/fr/blog/canicule-sommeil-reves",
+  "prevPath": "/fr/blog/reveil-nocturne-rappel-reves",
   "nextPath": "/fr/blog/rever-eveille-etats-oniriques",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],

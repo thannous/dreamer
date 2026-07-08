@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Rêve lucide : guides et techniques",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-06-21",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"CollectionPage\",\n            \"name\": \"Rêve lucide : guides et techniques\",\n            \"description\": \"Hub thématique : ressources et guides pour progresser en rêve lucide.\",\n            \"inLanguage\": \"fr\",\n            \"url\": \"https://noctalia.app/fr/blog/reve-lucide\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"CollectionPage\",\n            \"name\": \"Rêve lucide : guides et techniques\",\n            \"description\": \"Hub thématique : ressources et guides pour progresser en rêve lucide.\",\n            \"inLanguage\": \"fr\",\n            \"dateModified\": \"2026-06-21\",\n            \"url\": \"https://noctalia.app/fr/blog/reve-lucide\"\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêve lucide\",\n            \"item\": \"https://noctalia.app/fr/blog/reve-lucide\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -74,6 +74,14 @@
     <p>Si vous débutez, choisissez une seule habitude pendant une semaine. La régularité compte plus que tout faire d'un coup.</p>
     <p>Commencez par le rappel des rêves, puis ajoutez une seule pratique. Notez simplement ce que vous avez vu, ce que vous avez ressenti et ce qui a changé dans le rêve.</p>
     <ul><li>Choisissez un guide ci-dessous.</li><li>Testez pendant 7 nuits.</li><li>Relisez vos notes et ajustez.</li></ul>
+  </div>
+</section>
+
+<section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/20 bg-white/5">
+  <h2 class="font-serif text-2xl text-dream-cream mb-4">Ce que change le corpus de 55 000 rêves</h2>
+  <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
+    <p>Le rêve lucide progresse plus vite quand vous repérez vos propres “dream signs” : lieux récurrents, anomalies, émotions ou personnages qui reviennent. Le corpus Noctalia de 55 000 rêves sert de repère pour comparer ces motifs sans réduire votre rêve à une interprétation automatique.</p>
+    <p>Utilisez-le comme boussole : cherchez les répétitions, gardez le contexte personnel, puis choisissez une seule pratique lucide à tester pendant une semaine.</p>
   </div>
 </section>
 

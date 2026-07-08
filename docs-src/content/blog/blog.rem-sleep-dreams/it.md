@@ -482,6 +482,8 @@
 </details>
 </div>
 </section>
+<!-- July catch-up backlink: rem-to-night-waking -->
+<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Risveglio notturno</h2><p>Per adattare questo metodo a un risveglio nel cuore della notte senza spezzare il sonno, leggi <a class="text-dream-salmon hover:underline" href="risveglio-notturno-ricordo-sogni">risveglio notturno e ricordo dei sogni</a>.</p></section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti/Approfondimenti</h2>

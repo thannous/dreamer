@@ -371,6 +371,7 @@ function main() {
   runNodeScript(path.join('scripts', 'build-content-manifest.js'), ['--check']);
   runNodeScript(path.join('scripts', 'build-site-manifest.js'), ['--check']);
   runNodeScript(path.join('scripts', 'validate-i18n-seo.js'));
+  runNodeScript(path.join('scripts', 'check-symbol-illustration-parity.js'));
   runNodeScript(path.join('scripts', 'check-docs-links.js'));
   runNodeScript(path.join('scripts', 'check-docs-shell.js'));
   runNodeScript(path.join('docs', 'scripts', 'check-site.js'));

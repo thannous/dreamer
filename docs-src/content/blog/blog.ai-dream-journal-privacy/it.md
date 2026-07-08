@@ -25,7 +25,7 @@
   "publishedTime": "2026-06-20T00:00:00+02:00",
   "modifiedTime": "2026-06-20T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/it/blog/ondata-calore-sonno-sogni",
+  "prevPath": "/it/blog/risveglio-notturno-ricordo-sogni",
   "nextPath": "/it/blog/sognare-da-svegli-stati-onirici",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],

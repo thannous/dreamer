@@ -23,9 +23,9 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Geschützte Traumerinnerungen in nächtlichem Licht",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-06-20T00:00:00+02:00",
+  "modifiedTime": "2026-07-08T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/de/blog/hitzewelle-schlaf-traeume",
+  "prevPath": "/de/blog/naechtliches-erwachen-traumerinnerung",
   "nextPath": "/de/blog/wachtraeumen-onirische-zustaende",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],
@@ -57,6 +57,7 @@
 <p>Der EU AI Act führt schrittweise stärkere Transparenzpflichten für bestimmte KI-Akteure ein. Für Nutzer eines Traumtagebuchs bleibt der praktische Reflex einfach: Bevorzugen Sie Produkte, die Anbieter, Datennutzung und Grenzen klar beschreiben, statt KI-Magie ohne Kontext zu verkaufen.</p>
 <h2>Gute Analyse bleibt korrigierbar</h2>
 <p>Ein KI-Tagebuch sollte helfen, Träume neu zu lesen, nicht eine endgültige Deutung festschreiben. Achten Sie auf Funktionen, die die Originalnotiz erhalten, Traum und Analyse trennen und wiederkehrende Motive korrigierbar machen. Träume funktionieren besser als persönliche Hypothesen, nicht als Diagnosen.</p>
+<p>Unterscheiden Sie außerdem drei Ebenen: die Rohaufnahme, die Transkription und die Analyse. Eine App kann sehr privat wirken, aber trotzdem Metadaten wie Zeit, Sprache, Gerät oder Fehlversuche speichern. Je sensibler der Traum, desto wichtiger ist eine klare, einfache Löschlogik.</p>
 <p>Noctalia folgt diesem Prinzip: schnell erfassen, Kontext bewahren, vorsichtig erneut lesen. Die <a class="text-dream-salmon hover:underline" href="/de/datenschutz">Datenschutzerklärung</a> sollte vor der Nutzung lesbar sein, und Leitfäden wie das <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a> stellen Ihre Erfahrung vor Automatisierung.</p>
 <h2>Quellen und Orientierung</h2>
 <ul>
