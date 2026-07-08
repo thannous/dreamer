@@ -4,6 +4,9 @@ import type { SubscriptionTier } from '@/lib/types';
 
 const log = createScopedLogger('[Analytics]');
 
+export type TranscriptLengthBucket = '0_100' | '101_500' | '501_1500' | '1501_plus';
+export type RecordingDurationBucket = '0_15s' | '16_60s' | '61_180s' | '181s_plus' | 'unknown';
+
 export type AnalyticsEventMap = {
   recording_started: {
     input_mode: 'voice' | 'text';
@@ -14,8 +17,18 @@ export type AnalyticsEventMap = {
   recording_saved: {
     input_mode: 'voice' | 'text';
     capture_context: 'fresh' | 'remembered';
-    duration_bucket: '0_15s' | '16_60s' | '61_180s' | '181s_plus' | 'unknown';
-    transcript_length_bucket: '0_100' | '101_500' | '501_1500' | '1501_plus';
+    duration_bucket: RecordingDurationBucket;
+    transcript_length_bucket: TranscriptLengthBucket;
+  };
+  recording_activation_insight_shown: {
+    surface: 'draft' | 'first_dream_sheet' | 'analyze_prompt_sheet';
+    capture_context: 'fresh' | 'remembered';
+    tone: 'memory' | 'signals' | 'fragment';
+    primary_signal_id: 'memory' | 'emotion' | 'place' | 'person' | 'symbol' | 'recurrence' | 'none';
+    signal_ids: string;
+    signal_count: number;
+    transcript_length_bucket: TranscriptLengthBucket;
+    language: string;
   };
   analysis_started: {
     source: 'recording_flow' | 'journal_detail' | 'retry' | 'unknown';
@@ -35,6 +48,11 @@ export type AnalyticsEventMap = {
   };
   empty_journal_remembered_cta_clicked: {
     source: 'journal_empty_state';
+  };
+  onboarding_choice_selected: {
+    surface: 'app_onboarding' | 'recording_onboarding';
+    step: 'intro' | 'path' | 'capture_mode' | 'tour';
+    choice: 'continue' | 'skip' | 'analyze' | 'memory' | 'library' | 'text' | 'voice';
   };
 };
 
@@ -106,14 +124,15 @@ export function configureAnalyticsProvider() {
   }
 }
 
-export function getTranscriptLengthBucket(
-  text: string
-): AnalyticsEventMap['recording_saved']['transcript_length_bucket'] {
-  const length = text.trim().length;
+export function getTranscriptLengthBucketFromLength(length: number): TranscriptLengthBucket {
   if (length <= 100) return '0_100';
   if (length <= 500) return '101_500';
   if (length <= 1500) return '501_1500';
   return '1501_plus';
+}
+
+export function getTranscriptLengthBucket(text: string): TranscriptLengthBucket {
+  return getTranscriptLengthBucketFromLength(text.trim().length);
 }
 
 export function getDurationMsBucket(
@@ -127,7 +146,7 @@ export function getDurationMsBucket(
 
 export function getRecordingDurationBucket(
   durationMs: number | null | undefined
-): AnalyticsEventMap['recording_saved']['duration_bucket'] {
+): RecordingDurationBucket {
   if (durationMs == null || !Number.isFinite(durationMs) || durationMs < 0) return 'unknown';
   if (durationMs <= 15000) return '0_15s';
   if (durationMs <= 60000) return '16_60s';

@@ -875,6 +875,32 @@ const createMissingRemoteIdResult = (mutation: DreamMutation): SyncMutationResul
       : 'Missing remote id for delete',
 });
 
+const preserveAckDreamMemory = (
+  result: SyncMutationResult,
+  sourceMutation: DreamMutation | undefined
+): SyncMutationResult => {
+  if (result.status !== 'ack' || !result.dream || !sourceMutation?.payload.dream) {
+    return result;
+  }
+
+  if (normalizeDreamMemoryMetadata(result.dream.memory)) {
+    return result;
+  }
+
+  const localMemory = normalizeDreamMemoryMetadata(sourceMutation.payload.dream.memory);
+  if (!localMemory) {
+    return result;
+  }
+
+  return {
+    ...result,
+    dream: {
+      ...result.dream,
+      memory: localMemory,
+    },
+  };
+};
+
 const mapDreamToSyncPayload = (dream: DreamAnalysis, userId?: string, includeImageColumns = true) => ({
   ...mapDreamToRow(dream, userId, includeImageColumns, true, memoryColumnAvailable),
   remote_id: dream.remoteId ?? null,
@@ -1105,10 +1131,12 @@ const syncDreamMutationsWithResolvedRemoteIds = async (
     const currentBatch = batch;
     batch = [];
 
-    const batchResults = await executeBatch(currentBatch);
+    const mutationsById = new Map(currentBatch.map((mutation) => [mutation.id, mutation]));
+    const batchResults = (await executeBatch(currentBatch)).map((result) =>
+      preserveAckDreamMemory(result, mutationsById.get(result.mutationId))
+    );
     results.push(...batchResults);
 
-    const mutationsById = new Map(currentBatch.map((mutation) => [mutation.id, mutation]));
     batchResults.forEach((result) => {
       const sourceMutation = mutationsById.get(result.mutationId);
       if (!sourceMutation || result.status !== 'ack') {

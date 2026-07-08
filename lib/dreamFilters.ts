@@ -1,8 +1,13 @@
 import { isDreamAnalyzed, isDreamExplored } from './dreamUsage';
+import { normalizeDreamMemoryMetadata } from './dreamUtils';
 import type { DreamAnalysis, DreamTheme, DreamType } from './types';
 
 export interface FilterBySearchOptions {
   dreamTypeLabelResolver?: (dreamType: DreamType | null | undefined) => string | undefined;
+  dreamMemoryLabelResolver?: (
+    field: 'kind' | 'period' | 'fragment' | 'origin',
+    value: string,
+  ) => string | undefined;
 }
 
 /**
@@ -51,6 +56,11 @@ function matchesSearch(
   // Check localized dream type label
   if (dreamTypeLabel && dreamTypeLabel.toLowerCase().includes(normalizedQuery)) return true;
 
+  const memorySearchFields = getDreamMemorySearchFields(dream, options);
+  if (memorySearchFields.some((value) => value.toLowerCase().includes(normalizedQuery))) {
+    return true;
+  }
+
   // Perf: Cross-field matching only matters when the query contains whitespace because we join fields
   // with a single space. For single-token queries, the per-field checks above are sufficient and we
   // can skip allocating a large concatenated string + `.toLowerCase()` per dream.
@@ -64,12 +74,54 @@ function matchesSearch(
     dream.interpretation,
     dream.dreamType,
     dreamTypeLabel,
+    ...memorySearchFields,
   ]
     .filter((value): value is string => Boolean(value))
     .join(' ')
     .toLowerCase();
 
   return searchableText.includes(normalizedQuery);
+}
+
+export function isRememberedDream(dream: Pick<DreamAnalysis, 'memory'>): boolean {
+  const memory = normalizeDreamMemoryMetadata(dream.memory);
+  return Boolean(memory);
+}
+
+function getDreamMemorySearchFields(
+  dream: DreamAnalysis,
+  options: FilterBySearchOptions,
+): string[] {
+  const memory = normalizeDreamMemoryMetadata(dream.memory);
+  if (!memory) return [];
+
+  const fields: string[] = ['memory', 'remembered', 'souvenir', 'souvenirs'];
+  const pushValue = (
+    field: 'kind' | 'period' | 'fragment' | 'origin',
+    value: string | undefined,
+  ) => {
+    if (!value) return;
+    fields.push(value, value.replace(/_/g, ' '));
+    const label = options.dreamMemoryLabelResolver?.(field, value);
+    if (label) {
+      fields.push(label);
+    }
+  };
+
+  if (memory.origin === 'remembered' || memory.dejaVu === true) {
+    pushValue('origin', 'remembered');
+  }
+  pushValue('kind', memory.rememberedKind);
+  pushValue('period', memory.approximatePeriod);
+  pushValue('fragment', memory.strongestFragment);
+  if (memory.lingeringEmotion) {
+    fields.push(memory.lingeringEmotion);
+  }
+  if (memory.recurrenceNote) {
+    fields.push(memory.recurrenceNote);
+  }
+
+  return fields;
 }
 
 /**
@@ -142,6 +194,7 @@ export interface DreamFilters {
   favoritesOnly?: boolean;
   analyzedOnly?: boolean;
   exploredOnly?: boolean;
+  rememberedOnly?: boolean;
 }
 
 export interface ApplyFiltersOptions {
@@ -162,6 +215,7 @@ export function applyFilters(
     favoritesOnly,
     analyzedOnly,
     exploredOnly,
+    rememberedOnly,
     theme,
     dreamType,
     startDate,
@@ -175,6 +229,7 @@ export function applyFilters(
     !favoritesOnly &&
     !analyzedOnly &&
     !exploredOnly &&
+    !rememberedOnly &&
     !theme &&
     !dreamType &&
     !startDate &&
@@ -202,6 +257,10 @@ export function applyFilters(
     }
 
     if (analyzedOnly && !isDreamAnalyzed(dream)) {
+      return false;
+    }
+
+    if (rememberedOnly && !isRememberedDream(dream)) {
       return false;
     }
 

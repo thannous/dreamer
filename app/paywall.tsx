@@ -353,6 +353,22 @@ export default function PaywallScreen() {
             status={processing ? 'loading' : 'idle'}
           />
 
+          {!isActive ? (
+            <View
+              style={[
+                styles.freeContext,
+                {
+                  backgroundColor: noctalia.surface.soft,
+                  borderColor: noctalia.surface.border,
+                },
+              ]}
+            >
+              <Text style={[styles.freeContextText, { color: noctalia.text.secondary }]}>
+                {t('subscription.paywall.free_context')}
+              </Text>
+            </View>
+          ) : null}
+
           {packageOptions.map((pkg) => (
             <PricingOption
               key={pkg.id}
@@ -435,6 +451,9 @@ export default function PaywallScreen() {
               >
                 <Text style={[styles.secondaryLabel, { color: noctalia.text.secondary }]}>
                   {t('subscription.paywall.button.continue_free')}
+                </Text>
+                <Text style={[styles.secondaryHint, { color: noctalia.text.secondary }]}>
+                  {t('subscription.paywall.button.continue_free_hint')}
                 </Text>
               </Pressable>
             ) : null}
@@ -560,6 +579,20 @@ const styles = StyleSheet.create({
     marginTop: ThemeLayout.spacing.lg,
     gap: ThemeLayout.spacing.sm,
   },
+  freeContext: {
+    borderRadius: ThemeLayout.borderRadius.lg,
+    borderWidth: 1,
+    paddingVertical: ThemeLayout.spacing.sm,
+    paddingHorizontal: ThemeLayout.spacing.md,
+    marginTop: ThemeLayout.spacing.sm,
+    marginBottom: ThemeLayout.spacing.md,
+  },
+  freeContextText: {
+    fontSize: 13,
+    lineHeight: 19,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    textAlign: 'center',
+  },
   primaryButton: {
     borderRadius: ThemeLayout.borderRadius.full,
     paddingVertical: 14,
@@ -577,6 +610,7 @@ const styles = StyleSheet.create({
   secondaryButton: {
     alignItems: 'center',
     paddingVertical: 10,
+    gap: 3,
   },
   secondaryButtonPressed: {
     opacity: 0.8,
@@ -584,6 +618,12 @@ const styles = StyleSheet.create({
   secondaryLabel: {
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.medium,
+  },
+  secondaryHint: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    textAlign: 'center',
   },
   notice: {
     marginTop: 8,

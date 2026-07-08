@@ -9,6 +9,10 @@ const firstDreamSheetKeys = [
   'guest.first_dream.sheet.subtitle',
   'guest.first_dream.sheet.analyze',
   'guest.first_dream.sheet.journal',
+  'guest.first_dream.sheet.remembered_title',
+  'guest.first_dream.sheet.remembered_subtitle',
+  'guest.first_dream.sheet.remembered_primary',
+  'guest.first_dream.sheet.remembered_analyze',
   'guest.first_dream.sheet.dismiss',
 ] as const;
 
@@ -20,6 +24,15 @@ const analyzePromptSheetKeys = [
   'recording.analyze_prompt.sheet.dismiss',
 ] as const;
 
+const guestLimitSheetKeys = [
+  'recording.guest_limit_sheet.title',
+  'recording.guest_limit_sheet.message',
+  'recording.guest_limit_sheet.draft_title',
+  'recording.guest_limit_sheet.draft_message',
+  'recording.guest_limit_sheet.cta',
+  'recording.guest_limit_sheet.back_to_text',
+] as const;
+
 const analysisLimitSheetKeys = [
   'recording.alert.analysis_limit.message_free',
   'recording.analysis_limit.title_guest',
@@ -28,6 +41,8 @@ const analysisLimitSheetKeys = [
   'recording.analysis_limit.message_guest',
   'recording.analysis_limit.message_free',
   'recording.analysis_limit.message_login',
+  'recording.analysis_limit.assurance_guest',
+  'recording.analysis_limit.assurance_free',
   'recording.analysis_limit.feature_analyses',
   'recording.analysis_limit.feature_explorations',
   'recording.analysis_limit.feature_priority',
@@ -74,6 +89,7 @@ const recordingModeKeys = [
 const recordingActivationInsightKeys = [
   'recording.activation_insight.eyebrow',
   'recording.activation_insight.summary.memory',
+  'recording.activation_insight.summary.memory_draft',
   'recording.activation_insight.summary.signals',
   'recording.activation_insight.summary.fragment',
   'recording.activation_insight.signal.memory',
@@ -185,6 +201,7 @@ const rememberedDreamPromptKeys = [
   'recording.remembered_prompt.tonight',
   'recording.remembered_prompt.skip',
   'recording.remembered_profile.eyebrow',
+  'recording.remembered_profile.optional_badge',
   'recording.remembered_profile.title',
   'recording.remembered_profile.kind_label',
   'recording.remembered_profile.kind.old',
@@ -239,6 +256,21 @@ describe('Recording i18n - bottom sheets', () => {
 
       for (const key of analyzePromptSheetKeys) {
         const value = t(key);
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('has translations for guest-limit sheet in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of guestLimitSheetKeys) {
+        const value = t(key, { limit: 2 });
         expect(value).not.toBe(key);
         expect(typeof value).toBe('string');
         expect(value.length).toBeGreaterThan(0);

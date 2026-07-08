@@ -11,6 +11,9 @@ module.exports = {
       : entry
   ),
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  transformIgnorePatterns: (preset.transformIgnorePatterns ?? []).map((pattern) =>
+    pattern.replace('(.pnpm|react-native', '(.pnpm|.deno|react-native')
+  ),
   moduleNameMapper: {
     ...(preset.moduleNameMapper ?? {}),
     '^@/(.*)$': '<rootDir>/$1',

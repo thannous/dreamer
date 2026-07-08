@@ -24,6 +24,7 @@ export function FirstDreamSheet({
   onJournal,
   isPersisting,
   activationInsight,
+  isRememberedDream = false,
 }: {
   visible: boolean;
   onDismiss: () => void;
@@ -31,26 +32,44 @@ export function FirstDreamSheet({
   onJournal: () => void;
   isPersisting: boolean;
   activationInsight?: RecordingActivationInsight | null;
+  isRememberedDream?: boolean;
 }) {
   const { t } = useTranslation();
+  const usesRememberedCopy = isRememberedDream || activationInsight?.tone === 'memory';
 
   return (
     <StandardBottomSheet
       visible={visible}
       onClose={onDismiss}
-      title={t('guest.first_dream.sheet.title')}
-      subtitle={t('guest.first_dream.sheet.subtitle')}
+      title={
+        usesRememberedCopy
+          ? t('guest.first_dream.sheet.remembered_title')
+          : t('guest.first_dream.sheet.title')
+      }
+      subtitle={
+        usesRememberedCopy
+          ? t('guest.first_dream.sheet.remembered_subtitle')
+          : t('guest.first_dream.sheet.subtitle')
+      }
       titleTestID={TID.Text.FirstDreamSheetTitle}
       actions={{
-        primaryLabel: t('guest.first_dream.sheet.analyze'),
-        onPrimary: onAnalyze,
+        primaryLabel: usesRememberedCopy
+          ? t('guest.first_dream.sheet.remembered_primary')
+          : t('guest.first_dream.sheet.analyze'),
+        onPrimary: usesRememberedCopy ? onJournal : onAnalyze,
         primaryDisabled: isPersisting,
         primaryLoading: isPersisting,
-        primaryTestID: TID.Button.FirstDreamAnalyze,
-        secondaryLabel: t('guest.first_dream.sheet.journal'),
-        onSecondary: onJournal,
+        primaryTestID: usesRememberedCopy
+          ? TID.Button.FirstDreamJournal
+          : TID.Button.FirstDreamAnalyze,
+        secondaryLabel: usesRememberedCopy
+          ? t('guest.first_dream.sheet.remembered_analyze')
+          : t('guest.first_dream.sheet.journal'),
+        onSecondary: usesRememberedCopy ? onAnalyze : onJournal,
         secondaryDisabled: isPersisting,
-        secondaryTestID: TID.Button.FirstDreamJournal,
+        secondaryTestID: usesRememberedCopy
+          ? TID.Button.FirstDreamAnalyze
+          : TID.Button.FirstDreamJournal,
         linkLabel: t('guest.first_dream.sheet.dismiss'),
         onLink: onDismiss,
         linkTestID: TID.Button.FirstDreamDismiss,
@@ -69,6 +88,7 @@ export function AnalyzePromptSheet({
   transcript,
   isPersisting,
   activationInsight,
+  isRememberedDream = false,
 }: {
   visible: boolean;
   onDismiss: () => void;
@@ -77,6 +97,7 @@ export function AnalyzePromptSheet({
   transcript?: string | null;
   isPersisting: boolean;
   activationInsight?: RecordingActivationInsight | null;
+  isRememberedDream?: boolean;
 }) {
   const { t } = useTranslation();
   const { colors, mode: themeMode } = useTheme();
@@ -86,7 +107,11 @@ export function AnalyzePromptSheet({
     <StandardBottomSheet
       visible={visible}
       onClose={onDismiss}
-      title={t('recording.analyze_prompt.sheet.title')}
+      title={
+        isRememberedDream
+          ? t('recording.remembered.default_title')
+          : t('recording.analyze_prompt.sheet.title')
+      }
       titleTestID={TID.Text.AnalyzePromptTitle}
       actions={{
         primaryLabel: t('recording.analyze_prompt.sheet.analyze'),
@@ -130,6 +155,8 @@ export function GuestLimitSheet({
   onCta: () => void;
 }) {
   const { t } = useTranslation();
+  const { colors, mode: themeMode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, themeMode), [colors, themeMode]);
 
   return (
     <StandardBottomSheet
@@ -141,8 +168,28 @@ export function GuestLimitSheet({
         primaryLabel: t('recording.guest_limit_sheet.cta'),
         onPrimary: onCta,
         primaryTestID: TID.Button.GuestLimitCta,
+        secondaryLabel: t('recording.guest_limit_sheet.back_to_text'),
+        onSecondary: onClose,
+        secondaryTestID: TID.Button.GuestLimitBackToText,
       }}
-    />
+    >
+      <View
+        style={[
+          styles.guestLimitAssurance,
+          {
+            backgroundColor: noctalia.surface.soft,
+            borderColor: noctalia.surface.border,
+          },
+        ]}
+      >
+        <Text style={[styles.guestLimitAssuranceTitle, { color: noctalia.text.primary }]}>
+          {t('recording.guest_limit_sheet.draft_title')}
+        </Text>
+        <Text style={[styles.guestLimitAssuranceText, { color: noctalia.text.secondary }]}>
+          {t('recording.guest_limit_sheet.draft_message')}
+        </Text>
+      </View>
+    </StandardBottomSheet>
   );
 }
 
@@ -228,6 +275,12 @@ export function QuotaLimitSheet({
         : t('recording.analysis_limit.message_free', { limit: resolvedLimit })
       : message ?? '';
 
+  const assurance = mode === 'limit'
+    ? tier === 'guest'
+      ? t('recording.analysis_limit.assurance_guest', { limit: resolvedLimit })
+      : t('recording.analysis_limit.assurance_free')
+    : null;
+
   const primaryLabel = mode === 'login'
     ? t('recording.analysis_limit.cta_login')
     : mode === 'limit'
@@ -263,6 +316,21 @@ export function QuotaLimitSheet({
         onLink: mode === 'limit' ? onLink : undefined,
       }}
     >
+      {assurance ? (
+        <View
+          style={[
+            styles.quotaAssurance,
+            {
+              backgroundColor: noctalia.surface.soft,
+              borderColor: noctalia.surface.border,
+            },
+          ]}
+        >
+          <Text style={[styles.quotaAssuranceText, { color: noctalia.text.secondary }]}>
+            {assurance}
+          </Text>
+        </View>
+      ) : null}
       {mode === 'limit' && tier === 'free' && (
         <View style={styles.quotaFeaturesList}>
           <Text style={[styles.quotaFeature, { color: noctalia.text.primary }]}>
@@ -347,6 +415,39 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.lora.regular,
     fontSize: 15,
     lineHeight: 22,
+    textAlign: 'center',
+  },
+  guestLimitAssurance: {
+    width: '100%',
+    borderRadius: ThemeLayout.borderRadius.lg,
+    borderWidth: 1,
+    padding: ThemeLayout.spacing.md,
+    gap: 6,
+    marginBottom: ThemeLayout.spacing.md,
+  },
+  guestLimitAssuranceTitle: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  guestLimitAssuranceText: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 13,
+    lineHeight: 19,
+    textAlign: 'center',
+  },
+  quotaAssurance: {
+    width: '100%',
+    borderRadius: ThemeLayout.borderRadius.lg,
+    borderWidth: 1,
+    paddingVertical: ThemeLayout.spacing.sm,
+    paddingHorizontal: ThemeLayout.spacing.md,
+    marginBottom: ThemeLayout.spacing.md,
+  },
+  quotaAssuranceText: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 13,
+    lineHeight: 19,
     textAlign: 'center',
   },
   quotaFeaturesList: {

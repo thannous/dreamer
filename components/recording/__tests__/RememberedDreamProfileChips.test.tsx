@@ -10,6 +10,10 @@ jest.mock('react-native', () => {
   const React = require('react');
 
   return {
+    Platform: {
+      OS: 'web',
+      select: (options: Record<string, unknown>) => options.web ?? options.default,
+    },
     Pressable: ({
       accessibilityState,
       children,
@@ -70,6 +74,7 @@ jest.mock('@/hooks/useTranslation', () => ({
     t: (key: string) => {
       const values: Record<string, string> = {
         'recording.remembered_profile.eyebrow': 'Repères du souvenir',
+        'recording.remembered_profile.optional_badge': 'Facultatif',
         'recording.remembered_profile.title': 'Aide Noctalia à comprendre ce rêve',
         'recording.remembered_profile.kind_label': 'Ce rêve ressemble surtout à',
         'recording.remembered_profile.kind.recurring': 'Récurrent',
@@ -91,7 +96,6 @@ describe('RememberedDreamProfileChips', () => {
 
     render(
       <RememberedDreamProfileChips
-        rememberedKind="old"
         onRememberedKindChange={onRememberedKindChange}
         onApproximatePeriodChange={onApproximatePeriodChange}
         onStrongestFragmentChange={onStrongestFragmentChange}
@@ -100,6 +104,7 @@ describe('RememberedDreamProfileChips', () => {
 
     expect(screen.getByTestId(TID.Component.RememberedDreamProfileChips)).toBeTruthy();
     expect(screen.getByText('Aide Noctalia à comprendre ce rêve')).toBeTruthy();
+    expect(screen.getByText('Facultatif')).toBeTruthy();
 
     fireEvent.click(screen.getByTestId(TID.Button.RememberedDreamKind('recurring')));
     fireEvent.click(screen.getByTestId(TID.Button.RememberedDreamPeriod('childhood')));

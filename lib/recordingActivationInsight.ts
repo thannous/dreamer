@@ -21,7 +21,7 @@ export type RecordingActivationInsight = {
   charCount: number;
 };
 
-type RecordingActivationInsightInput = {
+export type RecordingActivationInsightInput = {
   transcript: string;
   captureIntent?: RecordingCaptureIntent;
   rememberedKind?: RememberedDreamKind;
@@ -30,25 +30,47 @@ type RecordingActivationInsightInput = {
   maxSignals?: number;
 };
 
+export type LiveRecordingActivationInsightInput = RecordingActivationInsightInput & {
+  minFragmentChars?: number;
+};
+
 const MIN_FRAGMENT_CHARS = 18;
 
 const KEYWORDS: Record<Exclude<RecordingActivationInsightSignalId, 'memory'>, string[]> = {
   emotion: [
-    'angoiss',
+    'angoiss*',
     'calme',
     'colere',
-    'heureu',
-    'joy',
+    'heureu*',
+    'joy*',
     'peur',
-    'sad',
+    'sad*',
     'stress',
     'triste',
-    'anx',
+    'anx*',
     'afraid',
     'angry',
     'scared',
     'happy',
     'fear',
+    'miedo',
+    'asustad*',
+    'ansiedad',
+    'feliz',
+    'alegria',
+    'tranquil*',
+    'paura',
+    'ansia',
+    'felice',
+    'gioia',
+    'rabbia',
+    'arrabbiat*',
+    'angst*',
+    'traurig',
+    'glucklich',
+    'ruhig',
+    'wut*',
+    'gestresst',
   ],
   place: [
     'appartement',
@@ -68,6 +90,29 @@ const KEYWORDS: Record<Exclude<RecordingActivationInsightSignalId, 'memory'>, st
     'forest',
     'street',
     'city',
+    'casa',
+    'habitacion',
+    'escuela',
+    'bosque',
+    'calle',
+    'ciudad',
+    'mar',
+    'montana',
+    'stanza',
+    'scuola',
+    'bosco',
+    'strada',
+    'citta',
+    'mare',
+    'montagna',
+    'haus',
+    'zimmer',
+    'schule',
+    'wald',
+    'strasse',
+    'stadt',
+    'meer',
+    'berg',
   ],
   person: [
     'ami',
@@ -88,6 +133,36 @@ const KEYWORDS: Record<Exclude<RecordingActivationInsightSignalId, 'memory'>, st
     'brother',
     'child',
     'face',
+    'madre',
+    'padre',
+    'hermano',
+    'hermana',
+    'nino',
+    'nina',
+    'mujer',
+    'hombre',
+    'rostro',
+    'cara',
+    'fratello',
+    'sorella',
+    'amico',
+    'amica',
+    'bambino',
+    'bambina',
+    'donna',
+    'uomo',
+    'viso',
+    'volto',
+    'mutter',
+    'vater',
+    'bruder',
+    'schwester',
+    'freund',
+    'freundin',
+    'kind',
+    'mann',
+    'frau',
+    'gesicht',
   ],
   symbol: [
     'cle',
@@ -107,12 +182,35 @@ const KEYWORDS: Record<Exclude<RecordingActivationInsightSignalId, 'memory'>, st
     'moon',
     'fire',
     'window',
+    'agua',
+    'fuego',
+    'puerta',
+    'llave',
+    'espejo',
+    'luna',
+    'ventana',
+    'sombra',
+    'acqua',
+    'fuoco',
+    'porta',
+    'chiave',
+    'specchio',
+    'finestra',
+    'ombra',
+    'wasser',
+    'feuer',
+    'tur',
+    'schlussel',
+    'spiegel',
+    'mond',
+    'fenster',
+    'schatten',
   ],
   recurrence: [
     'encore',
     'meme reve',
     'plusieurs fois',
-    'recurrent',
+    'recurrent*',
     'reviens',
     'revient',
     'souvent',
@@ -121,6 +219,22 @@ const KEYWORDS: Record<Exclude<RecordingActivationInsightSignalId, 'memory'>, st
     'always',
     'recurring',
     'same dream',
+    'otra vez',
+    'mismo sueno',
+    'varias veces',
+    'se repite',
+    'di nuovo',
+    'stesso sogno',
+    'piu volte',
+    'si ripete',
+    'ricorrent*',
+    'immer wieder',
+    'derselbe traum',
+    'denselben traum',
+    'gleicher traum',
+    'gleiche traum',
+    'mehrmals',
+    'wiederkehr*',
   ],
 };
 
@@ -148,6 +262,9 @@ const normalizeText = (value: string) =>
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
 
+const getTextTokens = (normalizedText: string) =>
+  normalizedText ? normalizedText.split(/\s+/) : [];
+
 const pushUnique = (
   signals: RecordingActivationInsightSignalId[],
   signal: RecordingActivationInsightSignalId | undefined,
@@ -157,12 +274,32 @@ const pushUnique = (
   }
 };
 
+const keywordMatches = (normalizedText: string, tokens: string[], keyword: string) => {
+  const isPrefix = keyword.endsWith('*');
+  const normalizedKeyword = isPrefix ? keyword.slice(0, -1) : keyword;
+
+  if (!normalizedKeyword) {
+    return false;
+  }
+
+  if (isPrefix) {
+    return tokens.some((token) => token.startsWith(normalizedKeyword));
+  }
+
+  if (normalizedKeyword.includes(' ')) {
+    return ` ${normalizedText} `.includes(` ${normalizedKeyword} `);
+  }
+
+  return tokens.includes(normalizedKeyword);
+};
+
 const hasAnyKeyword = (normalizedText: string, keywords: string[]) => {
   if (!normalizedText) {
     return false;
   }
 
-  return keywords.some((keyword) => normalizedText.includes(keyword));
+  const tokens = getTextTokens(normalizedText);
+  return keywords.some((keyword) => keywordMatches(normalizedText, tokens, keyword));
 };
 
 export function getRecordingActivationInsight({
@@ -210,4 +347,37 @@ export function getRecordingActivationInsight({
     signalIds: limitedSignals,
     charCount: trimmedTranscript.length,
   };
+}
+
+export function getLiveRecordingActivationInsight({
+  minFragmentChars = 80,
+  maxSignals = 3,
+  ...input
+}: LiveRecordingActivationInsightInput): RecordingActivationInsight | null {
+  const isRememberedCapture = input.captureIntent === 'remembered';
+  const hasRememberedSignal = Boolean(
+    input.transcript.trim()
+    || input.approximatePeriod
+    || input.strongestFragment
+    || (input.rememberedKind && input.rememberedKind !== 'old')
+  );
+
+  if (isRememberedCapture && !hasRememberedSignal) {
+    return null;
+  }
+
+  const insight = getRecordingActivationInsight({
+    ...input,
+    maxSignals,
+  });
+
+  if (!insight) {
+    return null;
+  }
+
+  if (insight.tone === 'fragment' && insight.charCount < minFragmentChars) {
+    return null;
+  }
+
+  return insight;
 }

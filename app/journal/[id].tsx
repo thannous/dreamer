@@ -30,7 +30,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
-import { getDreamSyncState } from '@/lib/dreamUtils';
+import { getDreamSyncState, normalizeDreamMemoryMetadata } from '@/lib/dreamUtils';
 import { getDreamAnalysisState, getDreamDetailAction } from '@/lib/dreamUsage';
 import { isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
@@ -92,6 +92,8 @@ const isMockMode = isMockModeEnabled();
 const IMAGE_FALLBACK_RATIO = 2 / 3;
 const DREAM_IMAGE_ASPECT = 9 / 16;
 const DREAM_IMAGE_CROP_EPSILON = 0.01;
+
+const humanizeMemoryValue = (value: string): string => value.replace(/_/g, ' ');
 
 const isTechnicalRevisionConflict = (message?: string | null): boolean =>
   String(message ?? '').toLowerCase().includes('revision conflict');
@@ -270,6 +272,60 @@ export default function JournalDetailScreen() {
     () => (dream ? getDreamThemeLabel(dream.theme, t) ?? dream.theme : undefined),
     [dream, t]
   );
+  const dreamMemory = useMemo(
+    () => (dream ? normalizeDreamMemoryMetadata(dream.memory) : undefined),
+    [dream]
+  );
+  const dreamMemoryItems = useMemo(() => {
+    if (!dreamMemory) return [];
+
+    const translatedMemoryValue = (key: string, fallback: string) => {
+      const label = t(key);
+      return label === key ? humanizeMemoryValue(fallback) : label;
+    };
+
+    const items: { key: string; label: string; value: string }[] = [];
+
+    if (dreamMemory.rememberedKind) {
+      items.push({
+        key: 'kind',
+        label: t('recording.remembered_profile.kind_label'),
+        value: translatedMemoryValue(
+          `recording.remembered_profile.kind.${dreamMemory.rememberedKind}`,
+          dreamMemory.rememberedKind,
+        ),
+      });
+    }
+    if (dreamMemory.approximatePeriod) {
+      items.push({
+        key: 'period',
+        label: t('recording.remembered_profile.period_label'),
+        value: translatedMemoryValue(
+          `recording.remembered_profile.period.${dreamMemory.approximatePeriod}`,
+          dreamMemory.approximatePeriod,
+        ),
+      });
+    }
+    if (dreamMemory.strongestFragment) {
+      items.push({
+        key: 'fragment',
+        label: t('recording.remembered_profile.fragment_label'),
+        value: translatedMemoryValue(
+          `recording.remembered_profile.fragment.${dreamMemory.strongestFragment}`,
+          dreamMemory.strongestFragment,
+        ),
+      });
+    }
+    if (items.length === 0) {
+      items.push({
+        key: 'origin',
+        label: t('journal.detail.zone.memory'),
+        value: t('recording.activation_insight.signal.memory'),
+      });
+    }
+
+    return items;
+  }, [dreamMemory, t]);
   const [editableTitle, setEditableTitle] = useState('');
   const [editableTheme, setEditableTheme] = useState('');
   const [editableDreamType, setEditableDreamType] = useState('');
@@ -1255,6 +1311,27 @@ export default function JournalDetailScreen() {
           </Text>
         )}
       </View>
+
+      {!isEditing && dreamMemoryItems.length > 0 && (
+        <View style={[styles.metadataMemoryBlock, { borderTopColor: noctalia.surface.border }]}>
+          <View style={styles.metadataMemoryHeader}>
+            <IconSymbol name="moon.stars.fill" size={16} color={noctalia.accent.base} />
+            <Text style={[styles.metadataMemoryTitle, { color: noctalia.accent.base }]}>
+              {t('journal.detail.zone.memory')}
+            </Text>
+          </View>
+          {dreamMemoryItems.map((item) => (
+            <View key={item.key} style={styles.metadataMemoryRow}>
+              <Text style={[styles.metadataMemoryLabel, { color: noctalia.text.secondary }]}>
+                {item.label}
+              </Text>
+              <Text style={[styles.metadataMemoryValue, { color: noctalia.text.primary }]}>
+                {item.value}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
 
       <Pressable
         onPress={isEditing ? handleSave : startMetadataEditing}
@@ -2399,6 +2476,35 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.bold,
     // color: set dynamically
     textTransform: 'capitalize',
+  },
+  metadataMemoryBlock: {
+    marginTop: 14,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    gap: 8,
+  },
+  metadataMemoryHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  metadataMemoryTitle: {
+    fontSize: 12,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    textTransform: 'uppercase',
+  },
+  metadataMemoryRow: {
+    gap: 2,
+  },
+  metadataMemoryLabel: {
+    fontSize: 12,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    lineHeight: 16,
+  },
+  metadataMemoryValue: {
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    lineHeight: 18,
   },
   title: {
     fontSize: 28,

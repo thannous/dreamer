@@ -446,6 +446,39 @@ describe('useDreamJournal', () => {
       expect(mockSaveCachedRemoteDreams).toHaveBeenCalled();
     });
 
+    it('preserves remembered dream metadata when the remote create response omits memory', async () => {
+      const memory: NonNullable<DreamAnalysis['memory']> = {
+        version: 1,
+        origin: 'remembered',
+        anchorDream: true,
+        dejaVu: true,
+        rememberedKind: 'recurring',
+        approximatePeriod: 'childhood',
+        strongestFragment: 'place',
+        createdFrom: 'onboarding',
+        createdFromOnboarding: true,
+      };
+      const remoteDream = buildDream({ id: 1, remoteId: 101, memory: undefined });
+      mockCreateDreamInSupabase.mockResolvedValue(remoteDream);
+
+      const { result } = renderHook(() => useDreamJournal());
+
+      await waitFor(() => {
+        expect(result.current.loaded).toBe(true);
+      });
+
+      const newDream = buildDream({ id: 1, memory });
+
+      await act(async () => {
+        const saved = await result.current.addDream(newDream);
+        expect(saved.memory).toEqual(memory);
+      });
+
+      await waitFor(() => {
+        expect(result.current.dreams[0].memory).toEqual(memory);
+      });
+    });
+
     it('queues dream when Supabase create fails', async () => {
       mockCreateDreamInSupabase.mockRejectedValue(new Error('Network error'));
 

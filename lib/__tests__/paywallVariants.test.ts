@@ -20,7 +20,9 @@ const variantKeys = [
   'subscription.paywall.variant.returning_device.title',
   'subscription.paywall.card.title',
   'subscription.paywall.card.subtitle',
+  'subscription.paywall.free_context',
   'subscription.paywall.button.continue_free',
+  'subscription.paywall.button.continue_free_hint',
   ...PLUS_PAYWALL_FEATURE_KEYS,
 ] as const;
 

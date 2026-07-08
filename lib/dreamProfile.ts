@@ -67,19 +67,19 @@ function getRememberedSignals(memory: DreamMemoryMetadata | undefined) {
   };
 }
 
-function getReadiness(totalDreams: number, anchorDreams: number): DreamProfileReadiness {
+function getReadiness(totalDreams: number, profileSeedDreams: number): DreamProfileReadiness {
   if (totalDreams === 0) return 'empty';
-  if (totalDreams < MIN_DREAMS_FOR_PATTERNS) return anchorDreams > 0 ? 'seeded' : 'forming';
+  if (totalDreams < MIN_DREAMS_FOR_PATTERNS) return profileSeedDreams > 0 ? 'seeded' : 'forming';
   return 'living';
 }
 
 function getNextAction(params: {
   totalDreams: number;
-  anchorDreams: number;
+  profileSeedDreams: number;
   analyzedDreams: number;
   exploredDreams: number;
 }): DreamProfile['nextAction'] {
-  if (params.totalDreams === 0 || params.anchorDreams === 0) {
+  if (params.totalDreams === 0 || params.profileSeedDreams === 0) {
     return 'add_anchor';
   }
   if (params.totalDreams < MIN_DREAMS_FOR_PATTERNS) {
@@ -137,8 +137,10 @@ export function buildDreamProfile(dreams: DreamAnalysis[]): DreamProfile {
   }
 
   const totalDreams = dreams.length;
+  const profileSeedDreams = Math.max(anchorDreams, rememberedDreams);
+
   return {
-    readiness: getReadiness(totalDreams, anchorDreams),
+    readiness: getReadiness(totalDreams, profileSeedDreams),
     totalDreams,
     rememberedDreams,
     anchorDreams,
@@ -153,7 +155,7 @@ export function buildDreamProfile(dreams: DreamAnalysis[]): DreamProfile {
     hasEnoughForPatterns: totalDreams >= MIN_DREAMS_FOR_PATTERNS,
     nextAction: getNextAction({
       totalDreams,
-      anchorDreams,
+      profileSeedDreams,
       analyzedDreams,
       exploredDreams,
     }),

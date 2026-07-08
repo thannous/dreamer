@@ -106,6 +106,7 @@ export default function JournalListScreen() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showAnalyzedOnly, setShowAnalyzedOnly] = useState(false);
   const [showExploredOnly, setShowExploredOnly] = useState(false);
+  const [showRememberedOnly, setShowRememberedOnly] = useState(false);
   const [showNeedsExplorationOnly, setShowNeedsExplorationOnly] = useState(false);
   const [showAtlasSearch, setShowAtlasSearch] = useState(false);
 
@@ -195,6 +196,17 @@ export default function JournalListScreen() {
 
   // Apply filters. `useDreamPersistence` stores dreams newest-first and filtering preserves order,
   // so avoid a redundant sort/copy in this hot path.
+  const resolveDreamMemorySearchLabel = useCallback(
+    (field: 'kind' | 'period' | 'fragment' | 'origin', value: string) => {
+      const key = field === 'origin'
+        ? 'recording.activation_insight.signal.memory'
+        : `recording.remembered_profile.${field}.${value}`;
+      const label = t(key);
+      return label === key ? undefined : label;
+    },
+    [t]
+  );
+
   const filteredDreams = useMemo(() => {
     const baseDreams = applyFilters(dreams, {
       searchQuery: deferredSearchQuery,
@@ -205,9 +217,11 @@ export default function JournalListScreen() {
       favoritesOnly: showFavoritesOnly,
       analyzedOnly: showAnalyzedOnly,
       exploredOnly: showExploredOnly,
+      rememberedOnly: showRememberedOnly,
     }, {
       searchOptions: {
         dreamTypeLabelResolver: (dreamType) => getDreamTypeLabel(dreamType, t),
+        dreamMemoryLabelResolver: resolveDreamMemorySearchLabel,
       },
     });
 
@@ -225,7 +239,9 @@ export default function JournalListScreen() {
     showFavoritesOnly,
     showAnalyzedOnly,
     showExploredOnly,
+    showRememberedOnly,
     showNeedsExplorationOnly,
+    resolveDreamMemorySearchLabel,
     t,
   ]);
 
@@ -274,6 +290,7 @@ export default function JournalListScreen() {
     showFavoritesOnly,
     showAnalyzedOnly,
     showExploredOnly,
+    showRememberedOnly,
     showNeedsExplorationOnly,
   ]);
 
@@ -291,6 +308,7 @@ export default function JournalListScreen() {
     setShowFavoritesOnly(false);
     setShowAnalyzedOnly(false);
     setShowExploredOnly(false);
+    setShowRememberedOnly(false);
     setShowNeedsExplorationOnly(false);
   }, []);
 
@@ -326,6 +344,10 @@ export default function JournalListScreen() {
 
   const handleExploredToggle = useCallback(() => {
     setShowExploredOnly((prev) => !prev);
+  }, []);
+
+  const handleRememberedToggle = useCallback(() => {
+    setShowRememberedOnly((prev) => !prev);
   }, []);
 
   const handleNeedsExplorationToggle = useCallback(() => {
@@ -585,6 +607,7 @@ export default function JournalListScreen() {
     showFavoritesOnly ||
     showAnalyzedOnly ||
     showExploredOnly ||
+    showRememberedOnly ||
     showNeedsExplorationOnly
   );
   const hasActiveNonSearchFilter = !!(
@@ -595,6 +618,7 @@ export default function JournalListScreen() {
     showFavoritesOnly ||
     showAnalyzedOnly ||
     showExploredOnly ||
+    showRememberedOnly ||
     showNeedsExplorationOnly
   );
   const advancedFilterCount = Number(Boolean(selectedTheme)) + Number(Boolean(selectedDreamType)) + Number(Boolean(dateRange.start || dateRange.end));
@@ -710,6 +734,14 @@ export default function JournalListScreen() {
       testID: TID.Button.FilterFavorites,
     },
     {
+      id: 'remembered',
+      label: t('recording.activation_insight.signal.memory'),
+      icon: 'moon.stars.fill',
+      active: showRememberedOnly,
+      onPress: handleRememberedToggle,
+      accessibilityLabel: t('recording.activation_insight.signal.memory'),
+    },
+    {
       id: 'to-explore',
       label: t('journal.atlas.filter.to_explore'),
       icon: 'sparkles',
@@ -745,12 +777,14 @@ export default function JournalListScreen() {
   ], [
     handleAnalyzedToggle,
     handleFavoritesToggle,
+    handleRememberedToggle,
     handleNeedsExplorationToggle,
     handleNightmareToggle,
     handleRecurringToggle,
     selectedDreamType,
     showAnalyzedOnly,
     showFavoritesOnly,
+    showRememberedOnly,
     showNeedsExplorationOnly,
     t,
   ]);
@@ -855,6 +889,37 @@ export default function JournalListScreen() {
                 selectedDreamType={selectedDreamType}
                 clearTestID={TID.Button.ClearFilters}
               />
+              <Pressable
+                onPress={handleRememberedToggle}
+                accessibilityRole="button"
+                accessibilityState={{ selected: showRememberedOnly }}
+                accessibilityLabel={t('recording.activation_insight.signal.memory')}
+                style={({ pressed }) => [
+                  styles.rememberedFilterButton,
+                  {
+                    backgroundColor: showRememberedOnly ? noctalia.action.primary : noctalia.surface.soft,
+                    borderColor: showRememberedOnly ? noctalia.action.primaryBorder : noctalia.surface.border,
+                    opacity: pressed ? 0.82 : 1,
+                  },
+                ]}
+              >
+                <IconSymbol
+                  name="moon.stars.fill"
+                  size={16}
+                  color={showRememberedOnly ? noctalia.action.primaryText : noctalia.text.primary}
+                />
+                <Text
+                  style={[
+                    styles.rememberedFilterText,
+                    { color: showRememberedOnly ? noctalia.action.primaryText : noctalia.text.primary },
+                  ]}
+                >
+                  {t('recording.activation_insight.signal.memory')}
+                </Text>
+                {showRememberedOnly ? (
+                  <IconSymbol name="checkmark" size={12} color={noctalia.action.primaryText} />
+                ) : null}
+              </Pressable>
             </View>
           </>
         )}
@@ -1069,6 +1134,21 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '100%',
     maxWidth: LAYOUT_MAX_WIDTH,
+  },
+  rememberedFilterButton: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: ThemeLayout.borderRadius.full,
+    borderCurve: 'continuous',
+    borderWidth: 1,
+  },
+  rememberedFilterText: {
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
   upsellContainer: {
     paddingHorizontal: ThemeLayout.spacing.md,

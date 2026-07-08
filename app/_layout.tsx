@@ -50,7 +50,7 @@ import type { LanguagePreference } from '@/lib/types';
 import { configureNotificationHandler } from '@/services/notificationService';
 import { migrateExistingGuestQuota } from '@/services/quota/GuestAnalysisCounter';
 import { migrateExistingGuestDreamRecording } from '@/services/quota/GuestDreamCounter';
-import { getFirstLaunchCompleted, getLanguagePreference, saveFirstLaunchCompleted } from '@/services/storageService';
+import { getFirstLaunchCompleted, getLanguagePreference } from '@/services/storageService';
 
 // Expo devtools keeps the screen awake in development, which can throw when the native activity
 // isn't ready (seen as "Unable to activate keep awake"). Swallow the failure to avoid red screens
@@ -159,7 +159,11 @@ function useNavigationIsReady(): boolean {
  * - Redirects to `/recording` on initial launch and on foreground
  * - Handles notification deep links (native only)
  */
-function RootLayoutNav() {
+function RootLayoutNav({
+  allowInitialRecordingRedirect,
+}: {
+  allowInitialRecordingRedirect: boolean;
+}) {
   const { mode } = useTheme();
   const { user, returningGuestBlocked } = useAuth();
   const pathname = usePathname();
@@ -303,7 +307,7 @@ function RootLayoutNav() {
   useAppState(handleForeground);
 
   useEffect(() => {
-    if (!isNavigationReady || hasInitialNavigated.current) {
+    if (!isNavigationReady || !allowInitialRecordingRedirect || hasInitialNavigated.current) {
       return;
     }
 
@@ -311,7 +315,7 @@ function RootLayoutNav() {
     // isNavigationReady changes (e.g., language change causing navigation state reset)
     hasInitialNavigated.current = true;
     navigateToRecording('initial');
-  }, [isNavigationReady, navigateToRecording]);
+  }, [allowInitialRecordingRedirect, isNavigationReady, navigateToRecording]);
 
   useEffect(() => {
     if (!isNavigationReady) {
@@ -410,6 +414,7 @@ export default function RootLayout() {
   const [languageBootstrapped, setLanguageBootstrapped] = useState(false);
   const [initialLanguagePreference, setInitialLanguagePreference] = useState<LanguagePreference>('auto');
   const [hasHandledFirstLaunch, setHasHandledFirstLaunch] = useState(false);
+  const [allowInitialRecordingRedirect, setAllowInitialRecordingRedirect] = useState(false);
   const isNavigationReady = useNavigationIsReady();
   const locales = useLocales();
   const primaryLocale = locales[0];
@@ -529,21 +534,23 @@ export default function RootLayout() {
     let isMounted = true;
 
     (async () => {
+      let shouldAllowInitialRecordingRedirect = true;
       try {
         const completed = await getFirstLaunchCompleted();
         if (!isMounted) return;
 
         if (!completed) {
-          await saveFirstLaunchCompleted(true);
-          if (!isMounted) return;
+          shouldAllowInitialRecordingRedirect = false;
           runAfterNavigationMount(() => router.replace(ONBOARDING_ROUTE));
         }
       } catch (error) {
+        shouldAllowInitialRecordingRedirect = true;
         if (__DEV__) {
           console.error('[RootLayout] Failed to handle first launch redirect', error);
         }
       } finally {
         if (isMounted) {
+          setAllowInitialRecordingRedirect(shouldAllowInitialRecordingRedirect);
           setHasHandledFirstLaunch(true);
         }
       }
@@ -570,7 +577,7 @@ export default function RootLayout() {
             <ThemeProvider>
               <AuthProvider>
                 <SubscriptionProvider>
-                  <RootLayoutNav />
+                  <RootLayoutNav allowInitialRecordingRedirect={allowInitialRecordingRedirect || Boolean(fontError)} />
                 </SubscriptionProvider>
               </AuthProvider>
             </ThemeProvider>

@@ -197,13 +197,20 @@ export default function OnboardingScreen() {
           params: {
             intent: 'remembered',
             source: 'onboarding',
+            mode: selectedCaptureMode,
           },
         });
         return;
       }
 
       await applyOnboardingCompletion('freshCapture');
-      router.replace('/recording');
+      router.replace({
+        pathname: '/recording',
+        params: {
+          next: 'analyze',
+          mode: selectedCaptureMode,
+        },
+      });
     } finally {
       setIsLeaving(false);
     }

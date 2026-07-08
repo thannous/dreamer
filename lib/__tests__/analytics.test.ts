@@ -5,6 +5,7 @@ import {
   getPaywallTrigger,
   getRecordingDurationBucket,
   getTranscriptLengthBucket,
+  getTranscriptLengthBucketFromLength,
   resetAnalyticsProviderForTesting,
   setAnalyticsProvider,
   trackProductEvent,
@@ -51,6 +52,16 @@ describe('analytics', () => {
       duration_bucket: '16_60s',
       transcript_length_bucket: '101_500',
     });
+    await trackProductEvent('recording_activation_insight_shown', {
+      surface: 'draft',
+      capture_context: 'fresh',
+      tone: 'signals',
+      primary_signal_id: 'emotion',
+      signal_ids: 'emotion,place',
+      signal_count: 2,
+      transcript_length_bucket: '0_100',
+      language: 'fr',
+    });
     await trackProductEvent('analysis_started', {
       source: 'recording_flow',
       tier: 'free',
@@ -70,14 +81,21 @@ describe('analytics', () => {
     await trackProductEvent('empty_journal_remembered_cta_clicked', {
       source: 'journal_empty_state',
     });
+    await trackProductEvent('onboarding_choice_selected', {
+      surface: 'app_onboarding',
+      step: 'path',
+      choice: 'memory',
+    });
 
     expect(events.map((event) => event.name)).toEqual([
       'recording_started',
       'recording_saved',
+      'recording_activation_insight_shown',
       'analysis_started',
       'analysis_completed',
       'paywall_viewed',
       'empty_journal_remembered_cta_clicked',
+      'onboarding_choice_selected',
     ]);
   });
 
@@ -108,6 +126,8 @@ describe('analytics', () => {
     expect(getTranscriptLengthBucket('a'.repeat(101))).toBe('101_500');
     expect(getTranscriptLengthBucket('a'.repeat(501))).toBe('501_1500');
     expect(getTranscriptLengthBucket('a'.repeat(1501))).toBe('1501_plus');
+    expect(getTranscriptLengthBucketFromLength(0)).toBe('0_100');
+    expect(getTranscriptLengthBucketFromLength(1501)).toBe('1501_plus');
 
     expect(getRecordingDurationBucket(null)).toBe('unknown');
     expect(getRecordingDurationBucket(15000)).toBe('0_15s');
