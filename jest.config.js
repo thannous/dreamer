@@ -24,6 +24,8 @@ module.exports = {
     '^@expo/vector-icons/.+$': '<rootDir>/tests/expo-vector-icons-subpath-stub.ts',
     '^@expo/vector-icons$': '<rootDir>/tests/expo-vector-icons-stub.ts',
     '^expo-linear-gradient$': '<rootDir>/tests/expo-linear-gradient-stub.ts',
+    '^expo$': '<rootDir>/tests/expo-stub.ts',
+    '^react-native-svg$': '<rootDir>/tests/react-native-svg-stub.ts',
   },
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',

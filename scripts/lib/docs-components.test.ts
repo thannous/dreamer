@@ -25,7 +25,7 @@ describe('docs shared components', () => {
     expect(html).toContain('Dictionnaire des rêves');
     expect(html).toContain('À propos');
     expect(html).toContain('Télécharger l&#39;app');
-    expect(html).toContain('transition-all duration-300 py-4 noctalia-premium-nav');
+    expect(html).toContain('transition-colors duration-300 py-4 noctalia-premium-nav');
     expect(html).toContain('noctalia-premium-nav-inner px-4 sm:px-8');
     expect(html).toContain('text-dream-salmon');
   });
@@ -46,7 +46,7 @@ describe('docs shared components', () => {
 
     const html = renderNavigation(context);
 
-    expect(html).toContain('transition-all duration-300 py-4 noctalia-premium-nav');
+    expect(html).toContain('transition-colors duration-300 py-4 noctalia-premium-nav');
     expect(html).toContain('data-expanded-class="py-4"');
     expect(html).toContain('data-compact-class="py-2"');
     expect(html).toContain('noctalia-premium-nav-inner px-4 sm:px-8');

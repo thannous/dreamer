@@ -42,6 +42,7 @@ describe('docs shell check', () => {
   <nav id="navbar" class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-5 noctalia-premium-nav"></nav>
   <main></main>
   <footer class="site-footer pb-10 pt-20"></footer>
+  <script src="/js/site-shell.js" defer></script>
   <script src="/js/language-dropdown.js" defer></script>
   <script src="/js/mobile-menu.js" defer></script>
 </body></html>`);
