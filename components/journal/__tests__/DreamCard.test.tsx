@@ -174,6 +174,28 @@ describe('DreamCard image fallback', () => {
     expect(screen.getByText('journal.badge.analyzed')).toBeTruthy();
   });
 
+  it('renders a memory badge for remembered dreams', () => {
+    const { DreamCard } = require('../DreamCard');
+    const dream: DreamAnalysis = {
+      id: 1459,
+      transcript: 'dream transcript',
+      title: 'Dream title',
+      interpretation: 'Dream interpretation',
+      shareableQuote: 'Dream quote',
+      imageUrl: '',
+      chatHistory: [],
+      dreamType: 'Symbolic Dream',
+      memory: {
+        approximatePeriod: 'childhood',
+        strongestFragment: 'person',
+      },
+    };
+
+    render(<DreamCard dream={dream} onPress={jest.fn()} />);
+
+    expect(screen.getByText('recording.activation_insight.signal.memory')).toBeTruthy();
+  });
+
   it('hides sync badges in mock mode because mock dreams are local only', () => {
     mockIsMockModeEnabled.mockReturnValue(true);
     const { DreamCard } = require('../DreamCard');

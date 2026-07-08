@@ -281,6 +281,60 @@ describe('supabaseDreamService', () => {
     expect(dream.memory).toEqual(memory);
   });
 
+  it('createDreamInSupabase preserves remembered memory when retrying without the memory column', async () => {
+    const memory = {
+      version: 1,
+      origin: 'remembered',
+      anchorDream: true,
+      dejaVu: true,
+      rememberedKind: 'recurring',
+      approximatePeriod: 'childhood',
+      strongestFragment: 'place',
+      createdFrom: 'onboarding',
+      createdFromOnboarding: true,
+    };
+    const expectedMemory = {
+      ...memory,
+      recurring: true,
+    };
+    const singleMock = jest.fn()
+      .mockResolvedValueOnce({
+        data: null,
+        error: {
+          code: 'PGRST204',
+          message: "Could not find the 'memory' column of 'dreams' in the schema cache",
+        },
+      })
+      .mockResolvedValueOnce({
+        data: buildRow({ memory: undefined }),
+        error: null,
+      });
+
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({
+        single: singleMock,
+      })),
+    }));
+
+    mocks.from.mockReturnValue({
+      upsert: upsertMock,
+    });
+
+    const { createDreamInSupabase } = require('../supabaseDreamService');
+
+    const dream = await createDreamInSupabase(
+      buildDream({ memory }) as any,
+      'user-1',
+    );
+
+    const firstRow = (((upsertMock as any).mock.calls[0]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+    const secondRow = (((upsertMock as any).mock.calls[1]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+
+    expect(firstRow.memory).toEqual(expectedMemory);
+    expect(secondRow).not.toHaveProperty('memory');
+    expect(dream.memory).toEqual(expectedMemory);
+  });
+
   it('mapRowToDream forces imageGenerationFailed=false when image_url is present', async () => {
     const singleMock = jest.fn().mockResolvedValueOnce({
       data: {
@@ -787,6 +841,64 @@ describe('supabaseDreamService', () => {
     expect(secondRow).not.toHaveProperty('client_updated_at');
     expect(dream.remoteId).toBe(123);
     expect(dream.isAnalyzed).toBe(true);
+  });
+
+  it('updateDreamInSupabase preserves remembered memory when retrying without the memory column', async () => {
+    const memory = {
+      version: 1,
+      origin: 'remembered',
+      anchorDream: true,
+      dejaVu: true,
+      rememberedKind: 'nightmare',
+      approximatePeriod: 'years_ago',
+      strongestFragment: 'fear',
+      createdFrom: 'profile',
+    };
+    const singleMock = jest.fn()
+      .mockResolvedValueOnce({
+        data: null,
+        error: {
+          code: 'PGRST204',
+          message: "Could not find the 'memory' column of 'dreams' in the schema cache",
+        },
+      })
+      .mockResolvedValueOnce({
+        data: buildRow({
+          id: 123,
+          title: 'Updated remembered dream',
+          memory: undefined,
+        }),
+        error: null,
+      });
+
+    const updateMock = jest.fn((_row: any) => ({
+      eq: jest.fn(() => ({
+        select: jest.fn(() => ({
+          single: singleMock,
+        })),
+      })),
+    }));
+
+    mocks.from.mockReturnValue({
+      update: updateMock,
+    });
+
+    const { updateDreamInSupabase } = require('../supabaseDreamService');
+
+    const dream = await updateDreamInSupabase({
+      ...buildDream({
+        remoteId: 123,
+        title: 'Updated remembered dream',
+        memory,
+      }),
+    } as any);
+
+    const firstRow = (((updateMock as any).mock.calls[0]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+    const secondRow = (((updateMock as any).mock.calls[1]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+
+    expect(firstRow.memory).toEqual(memory);
+    expect(secondRow).not.toHaveProperty('memory');
+    expect(dream.memory).toEqual(memory);
   });
 
   it('deleteDreamFromSupabase throws on error', async () => {

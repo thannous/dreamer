@@ -744,6 +744,7 @@ export default function StatisticsScreen() {
   const dreamProfile = useMemo(() => buildDreamProfile(dreams), [dreams]);
   const statsInsight = useMemo(() => getDreamStatsInsight(stats), [stats]);
   const hasAtLeastOneAnalysis = useMemo(() => dreams.some(isDreamAnalyzed), [dreams]);
+  const hasDreamProfileSeed = dreamProfile.hasAnchorDream || dreamProfile.rememberedDreams > 0;
   const canShowDreamProfileSignals = isPlusActive;
   const handleAddDreamPress = useCallback(() => {
     router.push(DREAM_PROFILE_NEXT_ROUTE.add_anchor);
@@ -1077,7 +1078,7 @@ export default function StatisticsScreen() {
               </SectionGlass>
             </View>
 
-            {hasAtLeastOneAnalysis ? (
+            {hasAtLeastOneAnalysis || hasDreamProfileSeed ? (
               <>
                 <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
                   <DreamProfileCard
@@ -1091,15 +1092,17 @@ export default function StatisticsScreen() {
                   />
                 </View>
 
-                <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
-                  <StatsInsightCard
-                    noctalia={noctalia}
-                    insight={statsInsight}
-                    t={t}
-                    formatPercent={formatPercent}
-                    onPress={handleStatsInsightPress}
-                  />
-                </View>
+                {hasAtLeastOneAnalysis ? (
+                  <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
+                    <StatsInsightCard
+                      noctalia={noctalia}
+                      insight={statsInsight}
+                      t={t}
+                      formatPercent={formatPercent}
+                      onPress={handleStatsInsightPress}
+                    />
+                  </View>
+                ) : null}
               </>
             ) : null}
 

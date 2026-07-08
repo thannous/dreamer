@@ -18,6 +18,6 @@ export function getOnboardingCompletionFlags(
   return {
     firstLaunchCompleted: true,
     recordingOnboardingCompleted: entersCapture,
-    rememberedDreamPromptDismissed: entersCapture,
+    rememberedDreamPromptDismissed: intent === 'rememberedCapture',
   };
 }

@@ -24,6 +24,48 @@ describe('dreamProfile', () => {
     expect(profile.nextAction).toBe('add_anchor');
   });
 
+  it('seeds the profile from a remembered dream before analysis', () => {
+    const profile = buildDreamProfile([
+      buildDream({
+        analysisStatus: 'none',
+        isAnalyzed: false,
+        interpretation: '',
+        memory: {
+          origin: 'remembered',
+          approximatePeriod: 'years_ago',
+          strongestFragment: 'place',
+        },
+      }),
+    ]);
+
+    expect(profile.readiness).toBe('seeded');
+    expect(profile.rememberedDreams).toBe(1);
+    expect(profile.anchorDreams).toBe(0);
+    expect(profile.analyzedDreams).toBe(0);
+    expect(profile.nextAction).toBe('capture_more');
+    expect(profile.topFragments.map((facet) => facet.value)).toEqual(['place']);
+    expect(profile.topPeriods.map((facet) => facet.value)).toEqual(['years_ago']);
+  });
+
+  it('seeds the profile from an anchor dream before analysis', () => {
+    const profile = buildDreamProfile([
+      buildDream({
+        analysisStatus: 'none',
+        isAnalyzed: false,
+        interpretation: '',
+        memory: {
+          anchorDream: true,
+        },
+      }),
+    ]);
+
+    expect(profile.readiness).toBe('seeded');
+    expect(profile.hasAnchorDream).toBe(true);
+    expect(profile.anchorDreams).toBe(1);
+    expect(profile.analyzedDreams).toBe(0);
+    expect(profile.nextAction).toBe('capture_more');
+  });
+
   it('counts remembered anchor dreams and strongest fragments', () => {
     const profile = buildDreamProfile([
       buildDream({

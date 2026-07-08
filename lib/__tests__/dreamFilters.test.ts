@@ -12,6 +12,7 @@ import {
     filterByTheme,
     getUniqueDreamTypes,
     getUniqueThemes,
+    isRememberedDream,
     sortDreamsByDate,
     type DreamFilters,
 } from '../dreamFilters';
@@ -177,6 +178,40 @@ describe('dreamFilters', () => {
 
       // Then
       expect(result).toHaveLength(0);
+    });
+
+    it('given memory metadata when filtering then searches remembered fields and labels', () => {
+      // Given
+      const dreams: DreamAnalysis[] = [
+        buildDream({
+          title: 'Anchor memory',
+          memory: {
+            origin: 'remembered',
+            rememberedKind: 'old',
+            approximatePeriod: 'childhood',
+            strongestFragment: 'person',
+          },
+        }),
+        buildDream({
+          title: 'Fresh dream',
+          memory: undefined,
+        }),
+      ];
+
+      // When
+      const rawResult = filterBySearch(dreams, 'childhood');
+      const localizedResult = filterBySearch(dreams, 'personne', {
+        dreamMemoryLabelResolver: (field, value) => {
+          if (field === 'fragment' && value === 'person') return 'Une personne';
+          return undefined;
+        },
+      });
+
+      // Then
+      expect(rawResult).toHaveLength(1);
+      expect(rawResult[0].title).toBe('Anchor memory');
+      expect(localizedResult).toHaveLength(1);
+      expect(localizedResult[0].title).toBe('Anchor memory');
     });
 
     it('given multi-word query spanning fields when filtering then matches via joined text', () => {
@@ -483,6 +518,29 @@ describe('dreamFilters', () => {
       // Then
       expect(result).toHaveLength(1);
       expect(result[0].explorationStartedAt).toBeDefined();
+    });
+
+    it('given remembered only filter when applying then returns dreams with memory metadata', () => {
+      // Given
+      const rememberedDream = buildDream({
+        title: 'Old house memory',
+        memory: {
+          strongestFragment: 'place',
+        },
+      });
+      const freshDream = buildDream({
+        title: 'Fresh dream',
+        memory: undefined,
+      });
+      const filters: DreamFilters = { rememberedOnly: true };
+
+      // When
+      const result = applyFilters([rememberedDream, freshDream], filters);
+
+      // Then
+      expect(result).toEqual([rememberedDream]);
+      expect(isRememberedDream(rememberedDream)).toBe(true);
+      expect(isRememberedDream(freshDream)).toBe(false);
     });
 
     it('given date range filter when applying then returns filtered dreams', () => {

@@ -13,6 +13,7 @@ import {
   type RecordingSpotlightRect,
 } from '@/components/recording/RecordingOnboardingSpotlightOverlay';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
+import { RecordingActivationInsightCard } from '@/components/recording/RecordingActivationInsightCard';
 import {
   AnalyzePromptSheet,
   FirstDreamSheet,
@@ -40,7 +41,9 @@ import { blurActiveElement } from '@/lib/accessibility';
 import {
   getRecordingDurationBucket,
   getTranscriptLengthBucket,
+  getTranscriptLengthBucketFromLength,
   trackProductEvent,
+  type AnalyticsEventMap,
 } from '@/lib/analytics';
 import {
   buildDraftDream as buildDraftDreamPure,
@@ -58,7 +61,11 @@ import {
   resolveRememberedCaptureSource,
   type RememberedCaptureSource,
 } from '@/lib/recordingActivation';
-import { getRecordingActivationInsight } from '@/lib/recordingActivationInsight';
+import {
+  getLiveRecordingActivationInsight,
+  getRecordingActivationInsight,
+  type RecordingActivationInsight,
+} from '@/lib/recordingActivationInsight';
 import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
 import { TID } from '@/lib/testIDs';
 import type {
@@ -112,6 +119,17 @@ type VoiceFallbackReason =
   | null;
 
 type CaptureIntent = RecordingCaptureIntent;
+type ActivationInsightSurface = AnalyticsEventMap['recording_activation_insight_shown']['surface'];
+type ActivationInsightCaptureContext =
+  AnalyticsEventMap['recording_activation_insight_shown']['capture_context'];
+
+const getDreamActivationInsightCaptureContext = (
+  dream: DreamAnalysis | null
+): ActivationInsightCaptureContext =>
+  dream?.memory?.origin === 'remembered' ? 'remembered' : 'fresh';
+
+const getActivationInsightSignalIds = (insight: RecordingActivationInsight) =>
+  insight.signalIds.length > 0 ? insight.signalIds.join(',') : 'none';
 
 const getSavedDreamActivationInsight = (dream: DreamAnalysis | null) => {
   if (!dream) {
@@ -122,7 +140,7 @@ const getSavedDreamActivationInsight = (dream: DreamAnalysis | null) => {
 
   return getRecordingActivationInsight({
     transcript: dream.transcript,
-    captureIntent: memory?.origin === 'remembered' ? 'remembered' : 'fresh',
+    captureIntent: getDreamActivationInsightCaptureContext(dream),
     rememberedKind: memory?.rememberedKind,
     approximatePeriod: memory?.approximatePeriod,
     strongestFragment: memory?.strongestFragment,
@@ -172,6 +190,7 @@ export default function RecordingScreen() {
   const offlineModelSheetVisibleRef = useRef(false);
   const hasSeenMicRationaleRef = useRef(false);
   const recordingStartedAtRef = useRef<number | null>(null);
+  const activationInsightTrackedSurfacesRef = useRef<Set<ActivationInsightSurface>>(new Set());
   const [recordingDurationSeconds, setRecordingDurationSeconds] = useState(0);
   const [voiceFallbackReason, setVoiceFallbackReason] = useState<VoiceFallbackReason>(null);
   const [recordingOnboardingStage, setRecordingOnboardingStage] =
@@ -184,7 +203,7 @@ export default function RecordingScreen() {
   const [captureIntent, setCaptureIntent] = useState<CaptureIntent>('fresh');
   const [rememberedCaptureSource, setRememberedCaptureSource] =
     useState<RememberedCaptureSource>('journal');
-  const [rememberedKind, setRememberedKind] = useState<RememberedDreamKind>('old');
+  const [rememberedKind, setRememberedKind] = useState<RememberedDreamKind | undefined>();
   const [rememberedApproximatePeriod, setRememberedApproximatePeriod] =
     useState<DreamApproximatePeriod | undefined>();
   const [rememberedStrongestFragment, setRememberedStrongestFragment] =
@@ -464,7 +483,7 @@ export default function RecordingScreen() {
       if (captureIntent === 'remembered') {
         return buildRememberedDream(text, {
           defaultTitle: t('recording.remembered.default_title'),
-          rememberedKind,
+          rememberedKind: rememberedKind ?? 'old',
           approximatePeriod: rememberedApproximatePeriod,
           strongestFragment: rememberedStrongestFragment,
           createdFrom: rememberedCaptureSource,
@@ -494,10 +513,11 @@ export default function RecordingScreen() {
     setVoiceFallbackReason(null);
     setCaptureIntent('fresh');
     setRememberedCaptureSource('journal');
-    setRememberedKind('old');
+    setRememberedKind(undefined);
     setRememberedApproximatePeriod(undefined);
     setRememberedStrongestFragment(undefined);
     baseTranscriptRef.current = '';
+    activationInsightTrackedSurfacesRef.current.clear();
   }, [analysisProgress]);
 
   const handleClearTranscript = useCallback(() => {
@@ -505,6 +525,7 @@ export default function RecordingScreen() {
     setLengthWarning('');
     setVoiceFallbackReason(null);
     baseTranscriptRef.current = '';
+    activationInsightTrackedSurfacesRef.current.clear();
   }, []);
 
   const navigateToJournalDetail = useCallback((dreamId: string | number) => {
@@ -895,8 +916,8 @@ export default function RecordingScreen() {
     setFirstDreamPrompt(null);
     setPendingAnalysisDream(null);
     blurActiveElement();
-    router.push('/(tabs)/journal');
-  }, [firstDreamPrompt]);
+    navigateToJournalDetail(firstDreamPrompt.id);
+  }, [firstDreamPrompt, navigateToJournalDetail]);
 
   const handleAnalyzePromptDismiss = useCallback(() => {
     if (!analyzePromptDream) {
@@ -1239,7 +1260,7 @@ export default function RecordingScreen() {
 
     setCaptureIntent('remembered');
     setRememberedCaptureSource('onboarding');
-    setRememberedKind('old');
+    setRememberedKind(undefined);
     setRememberedApproximatePeriod(undefined);
     setRememberedStrongestFragment(undefined);
     dismissRememberedDreamPrompt();
@@ -1272,7 +1293,7 @@ export default function RecordingScreen() {
 
       setCaptureIntent('remembered');
       setRememberedCaptureSource(resolveRememberedCaptureSource(recordingParams.source));
-      setRememberedKind('old');
+      setRememberedKind(undefined);
       setRememberedApproximatePeriod(undefined);
       setRememberedStrongestFragment(undefined);
       setRememberedDreamPromptDismissed(true);
@@ -1386,10 +1407,12 @@ export default function RecordingScreen() {
     () => getSavedDreamActivationInsight(firstDreamPrompt),
     [firstDreamPrompt]
   );
+  const firstDreamIsRemembered = firstDreamPrompt?.memory?.origin === 'remembered';
   const analyzePromptActivationInsight = useMemo(
     () => getSavedDreamActivationInsight(analyzePromptDream),
     [analyzePromptDream]
   );
+  const analyzePromptIsRemembered = analyzePromptDream?.memory?.origin === 'remembered';
 
   const switchToTextMode = useCallback(async () => {
     if (isRecordingRef.current) {
@@ -1468,6 +1491,74 @@ export default function RecordingScreen() {
     rememberedDreamPromptDismissed,
     captureIntent,
   });
+  const draftActivationInsight = useMemo(() => {
+    if (
+      interactionDisabled
+      || showRecordingOnboardingTour
+      || showRememberedDreamPrompt
+    ) {
+      return null;
+    }
+
+    return getLiveRecordingActivationInsight({
+      transcript: trimmedTranscript,
+      captureIntent,
+      rememberedKind,
+      approximatePeriod: rememberedApproximatePeriod,
+      strongestFragment: rememberedStrongestFragment,
+      maxSignals: 3,
+    });
+  }, [
+    captureIntent,
+    interactionDisabled,
+    rememberedApproximatePeriod,
+    rememberedKind,
+    rememberedStrongestFragment,
+    showRecordingOnboardingTour,
+    showRememberedDreamPrompt,
+    trimmedTranscript,
+  ]);
+  const trackActivationInsightShown = useCallback((
+    surface: ActivationInsightSurface,
+    insight: RecordingActivationInsight | null | undefined,
+    captureContext: ActivationInsightCaptureContext,
+  ) => {
+    if (!insight || activationInsightTrackedSurfacesRef.current.has(surface)) {
+      return;
+    }
+
+    activationInsightTrackedSurfacesRef.current.add(surface);
+    void trackProductEvent('recording_activation_insight_shown', {
+      surface,
+      capture_context: captureContext,
+      tone: insight.tone,
+      primary_signal_id: insight.signalIds[0] ?? 'none',
+      signal_ids: getActivationInsightSignalIds(insight),
+      signal_count: insight.signalIds.length,
+      transcript_length_bucket: getTranscriptLengthBucketFromLength(insight.charCount),
+      language,
+    });
+  }, [language]);
+
+  useEffect(() => {
+    trackActivationInsightShown('draft', draftActivationInsight, captureIntent);
+  }, [captureIntent, draftActivationInsight, trackActivationInsightShown]);
+
+  useEffect(() => {
+    trackActivationInsightShown(
+      'first_dream_sheet',
+      firstDreamActivationInsight,
+      getDreamActivationInsightCaptureContext(firstDreamPrompt)
+    );
+  }, [firstDreamActivationInsight, firstDreamPrompt, trackActivationInsightShown]);
+
+  useEffect(() => {
+    trackActivationInsightShown(
+      'analyze_prompt_sheet',
+      analyzePromptActivationInsight,
+      getDreamActivationInsightCaptureContext(analyzePromptDream)
+    );
+  }, [analyzePromptActivationInsight, analyzePromptDream, trackActivationInsightShown]);
   const recordingOnboardingTargets = useMemo<RecordingOnboardingTarget[]>(
     () => (inputMode === 'voice' ? ['voice', 'text'] : ['text', 'voice']),
     [inputMode]
@@ -1699,6 +1790,13 @@ export default function RecordingScreen() {
                   />
                 ) : null}
 
+                {draftActivationInsight ? (
+                  <RecordingActivationInsightCard
+                    context="draft"
+                    insight={draftActivationInsight}
+                  />
+                ) : null}
+
                 <RecordingTextInput
                   layout={inputMode === 'voice' ? 'voiceFirst' : 'textFirst'}
                   ref={textInputRef}
@@ -1789,11 +1887,13 @@ export default function RecordingScreen() {
       <RecordingOverlays
         firstDreamVisible={Boolean(firstDreamPrompt)}
         firstDreamActivationInsight={firstDreamActivationInsight}
+        firstDreamIsRemembered={firstDreamIsRemembered}
         onFirstDreamDismiss={handleFirstDreamDismiss}
         onFirstDreamAnalyze={handleFirstDreamAnalyze}
         onFirstDreamJournal={handleFirstDreamJournal}
         analyzePromptVisible={Boolean(analyzePromptDream)}
         analyzePromptActivationInsight={analyzePromptActivationInsight}
+        analyzePromptIsRemembered={analyzePromptIsRemembered}
         onAnalyzePromptDismiss={handleAnalyzePromptDismiss}
         onAnalyzePromptAnalyze={handleFirstDreamAnalyze}
         onAnalyzePromptJournal={handleAnalyzePromptJournal}
@@ -1838,11 +1938,13 @@ export default function RecordingScreen() {
 function RecordingOverlays({
   firstDreamVisible,
   firstDreamActivationInsight,
+  firstDreamIsRemembered,
   onFirstDreamDismiss,
   onFirstDreamAnalyze,
   onFirstDreamJournal,
   analyzePromptVisible,
   analyzePromptActivationInsight,
+  analyzePromptIsRemembered,
   onAnalyzePromptDismiss,
   onAnalyzePromptAnalyze,
   onAnalyzePromptJournal,
@@ -1882,11 +1984,13 @@ function RecordingOverlays({
 }: {
   firstDreamVisible: boolean;
   firstDreamActivationInsight?: ReturnType<typeof getSavedDreamActivationInsight>;
+  firstDreamIsRemembered: boolean;
   onFirstDreamDismiss: () => void;
   onFirstDreamAnalyze: () => void;
   onFirstDreamJournal: () => void;
   analyzePromptVisible: boolean;
   analyzePromptActivationInsight?: ReturnType<typeof getSavedDreamActivationInsight>;
+  analyzePromptIsRemembered: boolean;
   onAnalyzePromptDismiss: () => void;
   onAnalyzePromptAnalyze: () => void;
   onAnalyzePromptJournal: () => void;
@@ -1932,6 +2036,7 @@ function RecordingOverlays({
       <FirstDreamSheet
         visible={firstDreamVisible}
         activationInsight={firstDreamActivationInsight}
+        isRememberedDream={firstDreamIsRemembered}
         onDismiss={onFirstDreamDismiss}
         onAnalyze={onFirstDreamAnalyze}
         onJournal={onFirstDreamJournal}
@@ -1941,6 +2046,7 @@ function RecordingOverlays({
       <AnalyzePromptSheet
         visible={analyzePromptVisible}
         activationInsight={analyzePromptActivationInsight}
+        isRememberedDream={analyzePromptIsRemembered}
         onDismiss={onAnalyzePromptDismiss}
         onAnalyze={onAnalyzePromptAnalyze}
         onJournal={onAnalyzePromptJournal}

@@ -24,6 +24,7 @@ function makeDream(partial: Partial<DreamAnalysis> & { id: number }): DreamAnaly
     analysisStatus: partial.analysisStatus,
     analysisRequestId: partial.analysisRequestId,
     explorationStartedAt: partial.explorationStartedAt,
+    memory: partial.memory,
   };
 }
 
@@ -71,5 +72,56 @@ describe('Journal filters - analyzedOnly / exploredOnly', () => {
   it('keeps all dreams when flags are not set', () => {
     const result = applyFilters(dreams, {});
     expect(result.map((d) => d.id)).toEqual([1, 2, 3]);
+  });
+
+  it('returns only remembered dreams when rememberedOnly is true', () => {
+    const result = applyFilters([
+      makeDream({
+        id: 1,
+        title: 'Anchor memory',
+        memory: {
+          origin: 'remembered',
+          rememberedKind: 'recurring',
+        },
+      }),
+      makeDream({
+        id: 2,
+        title: 'Fresh dream',
+      }),
+    ], { rememberedOnly: true });
+
+    expect(result.map((d) => d.id)).toEqual([1]);
+  });
+
+  it('searches remembered dream metadata through localized labels', () => {
+    const result = applyFilters([
+      makeDream({
+        id: 1,
+        title: 'Old room',
+        memory: {
+          origin: 'remembered',
+          rememberedKind: 'nightmare',
+          approximatePeriod: 'childhood',
+          strongestFragment: 'fear',
+        },
+      }),
+      makeDream({
+        id: 2,
+        title: 'Beach',
+      }),
+    ], { searchQuery: 'enfance' }, {
+      searchOptions: {
+        dreamMemoryLabelResolver: (_field, value) => {
+          const labels: Record<string, string> = {
+            childhood: 'Enfance',
+            fear: 'La peur',
+            nightmare: 'Cauchemar',
+          };
+          return labels[value];
+        },
+      },
+    });
+
+    expect(result.map((d) => d.id)).toEqual([1]);
   });
 });

@@ -13,6 +13,7 @@ import {
 import { TID } from '@/lib/testIDs';
 
 type RecordingActivationInsightCardProps = {
+  context?: 'draft' | 'saved';
   insight?: RecordingActivationInsight | null;
 };
 
@@ -28,7 +29,10 @@ const signalIconById: Record<
   symbol: 'sparkles',
 };
 
-export function RecordingActivationInsightCard({ insight }: RecordingActivationInsightCardProps) {
+export function RecordingActivationInsightCard({
+  context = 'saved',
+  insight,
+}: RecordingActivationInsightCardProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -43,7 +47,9 @@ export function RecordingActivationInsightCard({ insight }: RecordingActivationI
   }
 
   const summary = insight.tone === 'memory'
-    ? t('recording.activation_insight.summary.memory')
+    ? context === 'draft'
+      ? t('recording.activation_insight.summary.memory_draft')
+      : t('recording.activation_insight.summary.memory')
     : insight.tone === 'signals'
       ? t('recording.activation_insight.summary.signals', { signals: signalLabels.join(', ') })
       : t('recording.activation_insight.summary.fragment');

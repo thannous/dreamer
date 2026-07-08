@@ -85,6 +85,7 @@ const mergeRemoteDreamWithClientState = (
     {
       ...remoteDream,
       id: localDream.id,
+      memory: remoteDream.memory ?? localDream.memory,
       imageUpdatedAt: localDream.imageUpdatedAt ?? remoteDream.imageUpdatedAt,
       imageSource: localDream.imageSource ?? remoteDream.imageSource,
       imageJobId: localDream.imageJobId,

@@ -183,6 +183,12 @@ jest.doMock('@/context/ThemeContext', () => ({
       textPrimary: '#fff',
       textSecondary: '#c7c2d7',
       textTertiary: '#9a93b4',
+      tags: {
+        calm: '#8bd3c7',
+        mystical: '#b6a8ff',
+        noir: '#77819a',
+        surreal: '#f0a868',
+      },
     },
   }),
 }));
@@ -230,6 +236,35 @@ jest.doMock('@/constants/theme', () => ({
 const { default: StatisticsScreen } = require('@/app/(tabs)/statistics');
 
 describe('Statistics screen dream profile Plus boundary', () => {
+  it('[B] Given an unanalyzed anchor dream When viewing Stats Then the profile seed is visible', () => {
+    mockUseDreams.mockReturnValue({
+      dreams: [
+        buildDream({
+          id: 4,
+          interpretation: '',
+          isAnalyzed: false,
+          analysisStatus: 'none',
+          analyzedAt: undefined,
+          memory: {
+            origin: 'remembered',
+            anchorDream: true,
+            strongestFragment: 'place',
+          },
+        }),
+      ],
+      loaded: true,
+    });
+    mockUseSubscription.mockReturnValue({ isActive: false, loading: false });
+
+    render(<StatisticsScreen />);
+
+    expect(screen.getByTestId(TID.Component.DreamProfileCard)).toBeTruthy();
+    expect(screen.queryByTestId(TID.Component.StatsInsight)).toBeNull();
+    expect(screen.getByText('stats.profile.readiness.seeded.label')).toBeTruthy();
+    expect(screen.getByText('stats.profile.next_action.capture_more.cta')).toBeTruthy();
+    expect(screen.getByTestId(TID.Component.DreamProfilePlusPreview)).toBeTruthy();
+  });
+
   it('[B] Given a free user When viewing Stats Then recurring profile signals are a Plus preview', () => {
     mockUseDreams.mockReturnValue({ dreams: profileDreams, loaded: true });
     mockUseSubscription.mockReturnValue({ isActive: false, loading: false });
@@ -238,7 +273,7 @@ describe('Statistics screen dream profile Plus boundary', () => {
 
     expect(screen.getByTestId(TID.Component.DreamProfilePlusPreview)).toBeTruthy();
     expect(screen.getByText('stats.profile.plus_preview.title')).toBeTruthy();
-    expect(screen.getAllByText('stats.profile.plus_preview.locked_value')).toHaveLength(3);
+    expect(screen.getAllByText('stats.profile.plus_preview.locked_value')).toHaveLength(4);
     expect(screen.queryByText('dream.type.symbolic')).toBeNull();
 
     fireEvent.click(screen.getByTestId(TID.Button.DreamProfileUpgradeCta));

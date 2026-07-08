@@ -5,7 +5,8 @@ import { useTheme } from '@/context/ThemeContext';
 import { useScalePress } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
-import { getDreamSyncState } from '@/lib/dreamUtils';
+import { areDreamMemoryMetadataEqual, getDreamSyncState } from '@/lib/dreamUtils';
+import { isRememberedDream } from '@/lib/dreamFilters';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { isMockModeEnabled } from '@/lib/env';
 import { getDreamImageVersion, getDreamThumbnailUri, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
@@ -103,6 +104,7 @@ export const DreamCard = memo(function DreamCard({
 
   const isExplored = isDreamExplored(dream);
   const isAnalyzed = isDreamAnalyzed(dream);
+  const isRemembered = isRememberedDream(dream);
   const isFavorite = !!dream.isFavorite;
   const syncState = isMockModeEnabled() ? 'clean' : getDreamSyncState(dream);
 
@@ -112,6 +114,13 @@ export const DreamCard = memo(function DreamCard({
       icon?: Parameters<typeof IconSymbol>[0]['name'];
       variant: 'accent' | 'secondary' | 'warning' | 'danger';
     }[] = [];
+    if (isRemembered) {
+      list.push({
+        label: t('recording.activation_insight.signal.memory'),
+        icon: 'moon.stars.fill',
+        variant: 'secondary',
+      });
+    }
     if (isExplored) {
       list.push({
         label: t('journal.badge.explored'),
@@ -154,7 +163,7 @@ export const DreamCard = memo(function DreamCard({
       });
     }
     return list;
-  }, [hasImage, isAnalyzed, isExplored, isFavorite, syncState, t]);
+  }, [hasImage, isAnalyzed, isExplored, isFavorite, isRemembered, syncState, t]);
 
   const imageHeight = isFeatured ? 200 : 160;
   const getBadgeBackgroundColor = useCallback(
@@ -404,6 +413,7 @@ export const DreamCard = memo(function DreamCard({
     && prevDream.isAnalyzed === nextDream.isAnalyzed
     && prevDream.explorationStartedAt === nextDream.explorationStartedAt
     && prevDream.shareableQuote === nextDream.shareableQuote
+    && areDreamMemoryMetadataEqual(prevDream.memory, nextDream.memory)
     && prevDream.syncState === nextDream.syncState
     && prevDream.lastSyncError === nextDream.lastSyncError
     && prevHasModelMessage === nextHasModelMessage

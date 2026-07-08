@@ -44,7 +44,7 @@ const FRAGMENT_OPTIONS: RememberedOption<DreamStrongestFragment>[] = [
 ];
 
 type RememberedDreamProfileChipsProps = {
-  rememberedKind: RememberedDreamKind;
+  rememberedKind?: RememberedDreamKind;
   approximatePeriod?: DreamApproximatePeriod;
   strongestFragment?: DreamStrongestFragment;
   disabled?: boolean;
@@ -116,9 +116,24 @@ export function RememberedDreamProfileChips({
       testID={TID.Component.RememberedDreamProfileChips}
     >
       <View style={styles.header}>
-        <Text style={[styles.eyebrow, { color: noctalia.text.secondary }]}>
-          {t('recording.remembered_profile.eyebrow')}
-        </Text>
+        <View style={styles.eyebrowRow}>
+          <Text style={[styles.eyebrow, { color: noctalia.text.secondary }]}>
+            {t('recording.remembered_profile.eyebrow')}
+          </Text>
+          <View
+            style={[
+              styles.optionalBadge,
+              {
+                backgroundColor: noctalia.status.warning.background,
+                borderColor: noctalia.status.warning.border,
+              },
+            ]}
+          >
+            <Text style={[styles.optionalText, { color: noctalia.status.warning.text }]}>
+              {t('recording.remembered_profile.optional_badge')}
+            </Text>
+          </View>
+        </View>
         <Text style={[styles.title, { color: noctalia.text.primary }]}>
           {t('recording.remembered_profile.title')}
         </Text>
@@ -185,9 +200,29 @@ const styles = StyleSheet.create({
   header: {
     gap: 4,
   },
+  eyebrowRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
   eyebrow: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
+    textTransform: 'uppercase',
+  },
+  optionalBadge: {
+    minHeight: 22,
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  optionalText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 11,
+    lineHeight: 14,
     textTransform: 'uppercase',
   },
   title: {

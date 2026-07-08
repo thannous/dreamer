@@ -71,11 +71,24 @@ export function RecordingInputModeSelect({
           },
         ]}
         accessibilityRole="button"
-        accessibilityLabel={t('recording.preference.accessibility')}
+        accessibilityLabel={`${t('recording.preference.label')}: ${selected.label}`}
+        accessibilityHint={t('recording.preference.accessibility')}
         accessibilityState={{ expanded: isOpen, disabled }}
+        accessibilityValue={{ text: selected.label }}
         testID={TID.Button.InputModeSelect}
       >
-        <IconSymbol name="gear" size={20} color={accentColor} />
+        <View style={[styles.triggerIcon, { backgroundColor: `${accentColor}24` }]}>
+          <IconSymbol name={selected.icon} size={18} color={accentColor} />
+        </View>
+        <View style={styles.triggerCopy}>
+          <Text style={[styles.triggerLabel, { color: mutedColor }]}>
+            {t('recording.preference.label')}
+          </Text>
+          <Text style={[styles.triggerValue, { color: textColor }]}>
+            {selected.label}
+          </Text>
+        </View>
+        <IconSymbol name="slider.horizontal.3" size={18} color={mutedColor} />
       </Pressable>
 
       {isOpen ? (
@@ -185,13 +198,38 @@ const styles = StyleSheet.create({
     zIndex: 20,
   },
   trigger: {
-    width: 42,
-    height: 42,
+    minHeight: 46,
     borderWidth: 1,
     borderRadius: 999,
     borderCurve: 'continuous',
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 9,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+  },
+  triggerIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  triggerCopy: {
+    minWidth: 58,
+    gap: 1,
+  },
+  triggerLabel: {
+    fontSize: 10,
+    lineHeight: 12,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    textTransform: 'uppercase',
+  },
+  triggerValue: {
+    fontSize: 14,
+    lineHeight: 17,
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   dismissLayer: {
     position: 'absolute',
