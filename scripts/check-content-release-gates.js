@@ -598,6 +598,10 @@ function baselineSymbolIds(currentPayload) {
   const relativePath = 'data/dream-symbols.json';
   const headPayload = readGitJson('HEAD', relativePath);
   const currentIds = new Set((currentPayload.symbols || []).map((symbol) => symbol.id));
+  // A release-check archive intentionally has no .git metadata. Treat the
+  // archived catalog as its own baseline there; the same run checks the local
+  // Git worktree afterwards, where new-symbol requirements remain enforced.
+  if (!headPayload) return currentIds;
   const headIds = new Set((headPayload?.symbols || []).map((symbol) => symbol.id));
   const workingTreeExpandsHead = [...currentIds].some((id) => !headIds.has(id));
   const baselinePayload = workingTreeExpandsHead ? headPayload : readGitJson('HEAD^', relativePath);
