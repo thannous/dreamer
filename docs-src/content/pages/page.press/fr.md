@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Application de journal de reves IA Noctalia",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-05-09T00:00:00+02:00",
+  "modifiedTime": "2026-07-09T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
@@ -35,6 +35,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Kit presse Noctalia</h1>
+<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 9 juillet 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia est un journal de rêves Android pensé pour enregistrer ses rêves par la voix, les transformer en entrées structurées, puis explorer symboles, images, motifs récurrents et questions de suivi guidées.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -44,7 +45,7 @@
       <div><dt class="text-sm text-purple-200/70">Produit</dt><dd class="text-white">Noctalia</dd></div>
       <div><dt class="text-sm text-purple-200/70">Catégorie</dt><dd class="text-white">Journal de rêves IA, bien-être sommeil, lifestyle</dd></div>
       <div><dt class="text-sm text-purple-200/70">Plateforme</dt><dd class="text-white">Android</dd></div>
-      <div><dt class="text-sm text-purple-200/70">Tarif</dt><dd class="text-white">Freemium, avec Noctalia Plus à 2,99 EUR/mois ou 19 EUR/an</dd></div>
+      <div><dt class="text-sm text-purple-200/70">Tarif</dt><dd class="text-white">Freemium; Google Play affiche le tarif Noctalia Plus applicable avant l’achat</dd></div>
       <div><dt class="text-sm text-purple-200/70">Langues</dt><dd class="text-white">Français, anglais, espagnol, allemand, italien</dd></div>
       <div><dt class="text-sm text-purple-200/70">Fondateur</dt><dd class="text-white">Thanh Chau</dd></div>
     </dl>
@@ -65,6 +66,7 @@
       <li><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Fiche Google Play</a></li>
       <li><a href="/logo512.png" class="text-dream-salmon hover:underline">Icône de l'app</a></li>
       <li><a href="/fr/a-propos" class="text-dream-salmon hover:underline">À propos de Noctalia</a></li>
+      <li><a href="/fr/methodologie-contenus-reves" class="text-dream-salmon hover:underline">Méthodologie des contenus et des données</a></li>
     </ul>
   </section>
 

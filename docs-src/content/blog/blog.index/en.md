@@ -493,13 +493,13 @@
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Reference</span>
-<span class="text-xs text-purple-300/60">50+ symbols</span>
+<span class="text-xs text-purple-300/60">150 symbols</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
                                 Dream Symbols Dictionary: Interpretation from A to Z
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explore the meaning of over 50 common dream symbols to better understand your dreams.
+                                Explore 150 common dream symbols as contextual starting points for reflection.
                             </p>
 </div>
 </a>

@@ -23,15 +23,15 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-05-20T00:00:00+02:00",
+  "modifiedTime": "2026-07-09T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Oniri Alternative for Dream Journaling\",\n    \"description\": \"Compare Oniri and Noctalia for lucid dreaming, dream analysis, voice capture, AI images, Android use and privacy.\",\n    \"url\": \"https://noctalia.app/en/oniri-alternative\",\n    \"inLanguage\": \"en\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Oniri Alternative for Dream Journaling\",\n            \"item\": \"https://noctalia.app/en/oniri-alternative\"\n        }\n    ]\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Choose Oniri if\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Choose Oniri if lucid dreaming training, PDF export, advanced statistics and mature iOS support are your priority.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Choose Noctalia if\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Choose Noctalia if you mostly want to remember dreams fast on Android, turn them into visual cards, follow recurring symbols, and talk through one dream at a time.\"\n            }\n        }\n    ]\n}"
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Oniri Alternative for Dream Journaling\",\n  \"description\": \"Compare Oniri and Noctalia for lucid dreaming, dream analysis, voice capture, AI images, Android use and privacy.\",\n  \"url\": \"https://noctalia.app/en/oniri-alternative\",\n  \"inLanguage\": \"en\",\n  \"dateModified\": \"2026-07-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Oniri Alternative for Dream Journaling\",\n      \"item\": \"https://noctalia.app/en/oniri-alternative\"\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Choose Oniri if\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Choose Oniri if lucid dreaming training, PDF export, advanced statistics and mature iOS support are your priority.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Choose Noctalia if\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Choose Noctalia if you mostly want to remember dreams fast on Android, turn them into visual cards, follow recurring symbols, and talk through one dream at a time.\"\n      }\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -58,7 +58,7 @@
           <tr><td class="py-4 pr-4 text-white font-medium">Interpretation</td><td class="py-4 pr-4 ">AI interpretation, questions, and hundreds of meanings are advertised.</td><td class="py-4 pr-4 ">AI dream card, recurring symbols, and guided reflection follow-up.</td><td class="py-4 pr-4 ">Both interpret; Noctalia is narrower and more conversational.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Images and memory</td><td class="py-4 pr-4 ">Generated images and up to 5 images per dream are listed in premium copy.</td><td class="py-4 pr-4 ">Generated dream image is a central visual memory feature.</td><td class="py-4 pr-4 ">Tie on image direction; choose based on broader workflow.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Export and stats</td><td class="py-4 pr-4 ">PDF export, filters and advanced statistics are public strengths.</td><td class="py-4 pr-4 ">Stats and symbol tracking are part of the product, but export is not the strongest claim here.</td><td class="py-4 pr-4 ">Oniri remains stronger for export-heavy users.</td></tr>
-          <tr><td class="py-4 pr-4 text-white font-medium">Pricing evidence</td><td class="py-4 pr-4 ">App Store lists several Oniri IAP items in the US listing, including premium and full-version options; prices may vary by location.</td><td class="py-4 pr-4 ">Owned Noctalia page advertises Free plus Onironaut at EUR 2.99/month or EUR 19/year.</td><td class="py-4 pr-4 ">Use country/date context; avoid universal pricing claims.</td></tr>
+          <tr><td class="py-4 pr-4 text-white font-medium">Pricing evidence</td><td class="py-4 pr-4 ">App Store lists several Oniri IAP items in the US listing, including premium and full-version options; prices may vary by location.</td><td class="py-4 pr-4 ">Free tier plus Noctalia Plus; Google Play shows the applicable subscription price before purchase.</td><td class="py-4 pr-4 ">Use country/date context; avoid universal pricing claims.</td></tr>
         </tbody>
       </table>
     </div>
@@ -67,7 +67,7 @@
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">Pricing evidence</h2>
-      <p><strong>Pricing note:</strong> Oniri App Store publicly lists Oniri Premium and full-version in-app purchases in the US listing and warns that pricing may vary by location. Noctalia owned pricing copy shows Free plus Onironaut at EUR 2.99/month or EUR 19/year. Present these as sourced signals, not as a universal cheapest-product claim.</p>
+      <p><strong>Pricing note:</strong> Oniri App Store publicly lists premium and full-version in-app purchases in the US listing and warns that pricing may vary by location. Noctalia offers a free tier plus Noctalia Plus; Google Play shows the applicable price, billing period and eligibility before purchase. Present these as sourced signals, not as a universal cheapest-product claim.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">Social proof and caveat</h2>

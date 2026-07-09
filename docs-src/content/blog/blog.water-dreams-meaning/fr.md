@@ -242,7 +242,7 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Décodez vos rêves d'eau</h4>
 <p class="text-sm text-gray-400 mb-4">Noctalia analyse les détails spécifiques de votre rêve d'eau - le type d'eau, son état, vos actions et émotions - pour fournir des insights personnalises sur ce que votre inconscient communique.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/application-interpretation-reves-ia">
                                 Essayer Noctalia Gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>

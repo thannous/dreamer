@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Signification des rêves : interprétation et symboles",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -69,6 +69,9 @@
                 </p>
 <p class="text-sm text-purple-200/70 leading-relaxed mt-4">
                     Vous ne savez pas par où commencer ? Parcourez le <a class="text-dream-salmon hover:underline" href="../guides/dictionnaire-symboles-reves">dictionnaire des symboles de rêves</a>, ou explorez des symboles fréquents comme <a class="text-dream-salmon hover:underline" href="../symboles/eau">l'eau</a>, <a class="text-dream-salmon hover:underline" href="../symboles/dents">les dents</a> et les <a class="text-dream-salmon hover:underline" href="../symboles/serpent">serpents</a>.
+                </p>
+<p class="text-sm text-purple-200/70 leading-relaxed mt-3">
+                    Utilisez le guide pour une recherche rapide sur le Web. Choisissez l'<a class="text-dream-salmon hover:underline" href="/fr/dictionnaire-de-reves-application">application de dictionnaire des rêves</a> pour enregistrer un rêve sur Android et retrouver ses symboles dans votre journal.
                 </p>
 </header>
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">

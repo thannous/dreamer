@@ -6,6 +6,10 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const {
+  createDeployStaging,
+  summarizeDeployStaging,
+} = require('./lib/docs-deploy-staging');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const CONFIG_PATH = path.join('docs-src', 'config', 'cloudflare-pages.json');
@@ -30,13 +34,13 @@ function loadCloudflarePagesConfig(rootDir = ROOT_DIR) {
   };
 }
 
-function buildWranglerDeployArgs(config, target) {
+function buildWranglerDeployArgs(config, target, deployDir = 'docs') {
   const branch = target === 'prod' ? config.productionBranch : config.previewBranch;
   return [
     'wrangler',
     'pages',
     'deploy',
-    'docs',
+    deployDir,
     '--project-name',
     config.projectName,
     '--branch',
@@ -60,7 +64,8 @@ function run(command, args, options = {}) {
 function printHelp() {
   console.log(`Usage: node scripts/docs-deploy.js <preview|prod>
 
-Runs the docs checks and uploads the generated docs/ directory to Cloudflare Pages.
+Runs the docs checks, creates a clean allowlisted staging directory, and uploads
+that runtime-only directory to Cloudflare Pages.
 Configuration lives in ${CONFIG_PATH}.`);
 }
 
@@ -87,8 +92,17 @@ function main() {
     run('npm', ['run', 'docs:release-check']);
   }
 
-  const wranglerArgs = buildWranglerDeployArgs(config, target);
-  run('npx', wranglerArgs);
+  const staging = createDeployStaging();
+  try {
+    const summary = summarizeDeployStaging(staging.deployDir);
+    console.log(
+      `[docs-deploy] Clean staging: ${summary.files} runtime files, ${summary.bytes} bytes.`
+    );
+    const wranglerArgs = buildWranglerDeployArgs(config, target, staging.deployDir);
+    run('npx', wranglerArgs);
+  } finally {
+    staging.cleanup();
+  }
 }
 
 if (require.main === module) {

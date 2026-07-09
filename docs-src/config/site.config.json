@@ -48,8 +48,16 @@
   ],
   "organization": {
     "name": "Noctalia",
+    "legalName": "Thanh Chau, entrepreneur individuel (TiMax)",
+    "taxID": "SIREN 995316981",
     "url": "https://noctalia.app",
     "logoUrl": "https://noctalia.app/logo/logo_noctalia.png",
+    "address": {
+      "streetAddress": "70 rue la Barrière Saint-Marc",
+      "postalCode": "45000",
+      "addressLocality": "Orléans",
+      "addressCountry": "FR"
+    },
     "twitterHandle": "@NoctaliaDreams"
   },
   "seoLinking": {

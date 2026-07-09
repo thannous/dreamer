@@ -23,14 +23,14 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Recursos | Noctalia - Consejos y Guías sobre Sueños",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Blog\",\n  \"name\": \"Recursos de Noctalia\",\n  \"description\": \"Artículos y guías sobre sueños, interpretación y sueños lúcidos\",\n  \"url\": \"https://noctalia.app/es/blog/\",\n  \"inLanguage\": \"es\",\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  }\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"ItemList\",\n  \"numberOfItems\": 44,\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"url\": \"https://noctalia.app/es/blog/sonar-con-examen-significado\",\n      \"name\": \"Soñar con un examen: significado si no estudiaste, apruebas o repruebas\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"url\": \"https://noctalia.app/es/blog/como-recordar-suenos\",\n      \"name\": \"Cómo Recordar Tus Sueños: 10 Técnicas Efectivas\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"url\": \"https://noctalia.app/es/blog/por-que-olvidamos-suenos\",\n      \"name\": \"¿Por qué olvidamos los sueños al despertar? La ciencia lo explica\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 4,\n      \"url\": \"https://noctalia.app/es/blog/significado-suenos-recurrentes\",\n      \"name\": \"Significado de los Sueños Recurrentes: Comprende sus Mensajes Ocultos\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 5,\n      \"url\": \"https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes\",\n      \"name\": \"Guía de Sueños Lúcidos para Principiantes: Controla Tus Noches\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 6,\n      \"url\": \"https://noctalia.app/es/blog/guia-diario-suenos\",\n      \"name\": \"Diario de sueños: método simple para empezar esta noche\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 7,\n      \"url\": \"https://noctalia.app/es/blog/ola-calor-sueno-suenos\",\n      \"name\": \"Ola de calor, sueño y sueños: por qué las noches calurosas alteran el recuerdo\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 8,\n      \"url\": \"https://noctalia.app/es/blog/vacaciones-sueno-suenos\",\n      \"name\": \"Vacaciones, sueño y sueños: por qué dormir fuera cambia tus noches\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 9,\n      \"url\": \"https://noctalia.app/es/blog/ruido-nocturno-descanso-suenos\",\n      \"name\": \"Ruido nocturno, descanso y sueños: por qué una noche ruidosa deja más recuerdo\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 10,\n      \"url\": \"https://noctalia.app/es/blog/despertares-nocturnos-recordar-suenos\",\n      \"name\": \"Despertares nocturnos y recuerdo de sueños: convertir una pausa en memoria útil\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 11,\n      \"url\": \"https://noctalia.app/es/blog/privacidad-ia-diario-suenos\",\n      \"name\": \"Privacidad, IA y diario de sueños: preguntas antes de escribir\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 12,\n      \"url\": \"https://noctalia.app/es/blog/sonar-despierto-estados-oniricos\",\n      \"name\": \"Soñar despierto: los estados oníricos no son solo del sueño\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 13,\n      \"url\": \"https://noctalia.app/es/blog/suenos-demasiado-reales-modelo-mobius\",\n      \"name\": \"Cuando los sueños parecen demasiado reales: qué propone el modelo MÖBIUS\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 14,\n      \"url\": \"https://noctalia.app/es/blog/suenos-no-son-aleatorios-estudio-ia\",\n      \"name\": \"Tus sueños no son aleatorios: lo que revela un estudio con IA de 2026\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 15,\n      \"url\": \"https://noctalia.app/es/blog/suenos-vividos-sueno-reparador\",\n      \"name\": \"Sueños vívidos y sueño reparador: lo que revela el estudio de PLOS Biology\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 16,\n      \"url\": \"https://noctalia.app/es/blog/suenos-dientes-caen\",\n      \"name\": \"Sueños con Dientes que se Caen: Significado e Interpretación\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 17,\n      \"url\": \"https://noctalia.app/es/blog/suenos-de-caer\",\n      \"name\": \"Significado de ¿Soñar con Caer: Por Qué Sueñas que Caes\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 18,\n      \"url\": \"https://noctalia.app/es/blog/suenos-de-volar\",\n      \"name\": \"Soñar que vuelas o te elevas en el aire\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 19,\n      \"url\": \"https://noctalia.app/es/blog/suenos-con-serpientes\",\n      \"name\": \"¿Soñar con Serpientes: Lo ¿Qué Tu Subconsciente Realmente Intenta Advertirte\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 20,\n      \"url\": \"https://noctalia.app/es/blog/guia-incubacion-suenos\",\n      \"name\": \"Incubación de Sueños: Cómo Soñar Exactamente con lo que Quieras Esta Noche\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 21,\n      \"url\": \"https://noctalia.app/es/blog/suenos-premonitorios-ciencia\",\n      \"name\": \"¿Pueden los sueños predecir el futuro? La sorprendente ciencia de los sueños premonitorios\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 22,\n      \"url\": \"https://noctalia.app/es/blog/suenos-ser-perseguido\",\n      \"name\": \"Sueños de Ser Perseguido: Significado e Interpretación\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 23,\n      \"url\": \"https://noctalia.app/es/blog/suenos-de-muerte\",\n      \"name\": \"Soñar con muerte: significado emocional, cambio y duelo\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 24,\n      \"url\": \"https://noctalia.app/es/blog/suenos-de-agua\",\n      \"name\": \"Qué significa soñar con inundación de agua, casa o mar\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 25,\n      \"url\": \"https://noctalia.app/es/blog/suenos-con-ex\",\n      \"name\": \"Sueños con Tu Ex: Lo ¿Qué Realmente Significan\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 26,\n      \"url\": \"https://noctalia.app/es/blog/suenos-de-embarazo\",\n      \"name\": \"Sueños de Embarazo: Lo ¿Qué Significan (Aunque No Estes Embarazada)\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 27,\n      \"url\": \"https://noctalia.app/es/blog/guia-pesadillas\",\n      \"name\": \"Pesadillas: Causas, Significado y Cómo Detenerlas\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 28,\n      \"url\": \"https://noctalia.app/es/blog/guia-paralisis-sueno\",\n      \"name\": \"Paralisis del sueño: por que no puedes moverte y como detenerla\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 29,\n      \"url\": \"https://noctalia.app/es/blog/suenos-salud-mental\",\n      \"name\": \"Sueños y Salud Mental: Cómo Tu Sueño Revela Tu Mente\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 30,\n      \"url\": \"https://noctalia.app/es/blog/por-que-sonamos-ciencia\",\n      \"name\": \"¿Por qué soñamos? La ciencia detrás de tus aventuras nocturnas\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 31,\n      \"url\": \"https://noctalia.app/es/blog/sueno-rem-suenos\",\n      \"name\": \"Sueño REM y Sueños: Entendiendo el Reinicio Nocturno de tu Cerebro\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 32,\n      \"url\": \"https://noctalia.app/es/blog/historia-interpretacion-suenos\",\n      \"name\": \"La Historia de la Interpretación de Sueños: De los Templos Antiguos a la Ciencia Moderna\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 33,\n      \"url\": \"https://noctalia.app/es/blog/suenos-estres-trabajo\",\n      \"name\": \"Sueños de estrés laboral: por qué tu trabajo te sigue al dormir\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 34,\n      \"url\": \"https://noctalia.app/es/blog/suenos-y-creatividad\",\n      \"name\": \"Sueños y creatividad: cómo tu cerebro dormido resuelve problemas\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 35,\n      \"url\": \"https://noctalia.app/es/blog/suenos-de-ansiedad-significado\",\n      \"name\": \"Sueños de ansiedad: por qué los tienes y cómo detenerlos\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 36,\n      \"url\": \"https://noctalia.app/es/blog/guia-suenos-ninos\",\n      \"name\": \"Sueños de los niños: de qué sueñan y cómo ayudarlos\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 37,\n      \"url\": \"https://noctalia.app/es/blog/dia-sueno-medio-ambiente-suenos\",\n      \"name\": \"Día del Sueño 2026: cómo tu entorno transforma tus sueños\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 38,\n      \"url\": \"https://noctalia.app/es/blog/ia-analisis-sueno-suenos\",\n      \"name\": \"La IA que analiza tu sueño: la revolución SleepFM de Stanford\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 39,\n      \"url\": \"https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas\",\n      \"name\": \"Controlar tus sueños para resolver problemas: el estudio que lo cambia todo\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 40,\n      \"url\": \"https://noctalia.app/es/blog/horario-verano-sueno-suenos\",\n      \"name\": \"Cambio de hora y sueño: cómo el horario de verano altera tus sueños\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 41,\n      \"url\": \"https://noctalia.app/es/blog/deuda-sueno-salud-suenos\",\n      \"name\": \"Deuda de sueño y privación crónica: cómo afectan tu salud y tus sueños\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 42,\n      \"url\": \"https://noctalia.app/es/blog/alteracion-sueno-primavera-suenos\",\n      \"name\": \"Alteración del sueño en primavera: cómo los días más largos cambian tu descanso y tus sueños\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 43,\n      \"url\": \"https://noctalia.app/es/blog/sueno-salud-prioridad\",\n      \"name\": \"El sueño, tu principal palanca de salud: el estudio OHSU que lo cambia todo\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 44,\n      \"url\": \"https://noctalia.app/es/blog/rastreadores-sueno-wearables-suenos\",\n      \"name\": \"Rastreadores de sueño wearables y sueños: qué miden y qué se les escapa\"\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"ItemList\",\n  \"numberOfItems\": 44,\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"url\": \"https://noctalia.app/es/blog/sonar-con-examen-significado\",\n      \"name\": \"Soñar con un examen: significado si no estudiaste, apruebas o repruebas\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"url\": \"https://noctalia.app/es/blog/como-recordar-suenos\",\n      \"name\": \"Cómo Recordar Tus Sueños: 10 Técnicas Efectivas\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"url\": \"https://noctalia.app/es/blog/por-que-olvidamos-suenos\",\n      \"name\": \"¿Por qué olvidamos los sueños al despertar? La ciencia lo explica\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 4,\n      \"url\": \"https://noctalia.app/es/blog/significado-suenos-recurrentes\",\n      \"name\": \"Significado de los Sueños Recurrentes: Comprende sus Mensajes Ocultos\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 5,\n      \"url\": \"https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes\",\n      \"name\": \"Guía de Sueños Lúcidos para Principiantes: Controla Tus Noches\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 6,\n      \"url\": \"https://noctalia.app/es/blog/guia-diario-suenos\",\n      \"name\": \"Diario de sueños: método simple para empezar esta noche\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 7,\n      \"url\": \"https://noctalia.app/es/blog/ola-calor-sueno-suenos\",\n      \"name\": \"Ola de calor, sueño y sueños: por qué las noches calurosas alteran el recuerdo\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 8,\n      \"url\": \"https://noctalia.app/es/blog/vacaciones-sueno-suenos\",\n      \"name\": \"Vacaciones, sueño y sueños: por qué dormir fuera cambia tus noches\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 9,\n      \"url\": \"https://noctalia.app/es/blog/ruido-nocturno-descanso-suenos\",\n      \"name\": \"Ruido nocturno, descanso y sueños: por qué una noche ruidosa deja más recuerdo\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 10,\n      \"url\": \"https://noctalia.app/es/blog/despertares-nocturnos-recordar-suenos\",\n      \"name\": \"Despertares nocturnos y recuerdo de sueños: convertir una pausa en memoria útil\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 11,\n      \"url\": \"https://noctalia.app/es/blog/privacidad-ia-diario-suenos\",\n      \"name\": \"Privacidad, IA y diario de sueños: preguntas antes de escribir\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 12,\n      \"url\": \"https://noctalia.app/es/blog/sonar-despierto-estados-oniricos\",\n      \"name\": \"Soñar despierto: los estados oníricos no son solo del sueño\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 13,\n      \"url\": \"https://noctalia.app/es/blog/suenos-demasiado-reales-modelo-mobius\",\n      \"name\": \"Cuando los sueños parecen demasiado reales: qué propone el modelo MÖBIUS\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 14,\n      \"url\": \"https://noctalia.app/es/blog/suenos-no-son-aleatorios-estudio-ia\",\n      \"name\": \"Tus sueños no son aleatorios: lo que revela un estudio con IA de 2026\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 15,\n      \"url\": \"https://noctalia.app/es/blog/suenos-vividos-sueno-reparador\",\n      \"name\": \"Sueños vívidos y sueño reparador: lo que revela el estudio de PLOS Biology\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 16,\n      \"url\": \"https://noctalia.app/es/blog/suenos-dientes-caen\",\n      \"name\": \"Sueños con Dientes que se Caen: Significado e Interpretación\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 17,\n      \"url\": \"https://noctalia.app/es/blog/suenos-de-caer\",\n      \"name\": \"Soñar con caer: por qué sueñas que caes\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 18,\n      \"url\": \"https://noctalia.app/es/blog/suenos-de-volar\",\n      \"name\": \"Soñar que vuelas o te elevas en el aire\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 19,\n      \"url\": \"https://noctalia.app/es/blog/suenos-con-serpientes\",\n      \"name\": \"Soñar con serpientes: lo que tu subconsciente intenta advertirte\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 20,\n      \"url\": \"https://noctalia.app/es/blog/guia-incubacion-suenos\",\n      \"name\": \"Incubación de Sueños: Cómo Soñar Exactamente con lo que Quieras Esta Noche\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 21,\n      \"url\": \"https://noctalia.app/es/blog/suenos-premonitorios-ciencia\",\n      \"name\": \"¿Pueden los sueños predecir el futuro? La sorprendente ciencia de los sueños premonitorios\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 22,\n      \"url\": \"https://noctalia.app/es/blog/suenos-ser-perseguido\",\n      \"name\": \"Sueños de Ser Perseguido: Significado e Interpretación\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 23,\n      \"url\": \"https://noctalia.app/es/blog/suenos-de-muerte\",\n      \"name\": \"Soñar con muerte: significado emocional, cambio y duelo\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 24,\n      \"url\": \"https://noctalia.app/es/blog/suenos-de-agua\",\n      \"name\": \"Qué significa soñar con inundación de agua, casa o mar\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 25,\n      \"url\": \"https://noctalia.app/es/blog/suenos-con-ex\",\n      \"name\": \"Sueños con tu ex: lo que realmente significan\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 26,\n      \"url\": \"https://noctalia.app/es/blog/suenos-de-embarazo\",\n      \"name\": \"Sueños de embarazo: lo que significan (aunque no estés embarazada)\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 27,\n      \"url\": \"https://noctalia.app/es/blog/guia-pesadillas\",\n      \"name\": \"Pesadillas: Causas, Significado y Cómo Detenerlas\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 28,\n      \"url\": \"https://noctalia.app/es/blog/guia-paralisis-sueno\",\n      \"name\": \"Parálisis del sueño: por qué no puedes moverte y cómo detenerla\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 29,\n      \"url\": \"https://noctalia.app/es/blog/suenos-salud-mental\",\n      \"name\": \"Sueños y Salud Mental: Cómo Tu Sueño Revela Tu Mente\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 30,\n      \"url\": \"https://noctalia.app/es/blog/por-que-sonamos-ciencia\",\n      \"name\": \"¿Por qué soñamos? La ciencia detrás de tus aventuras nocturnas\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 31,\n      \"url\": \"https://noctalia.app/es/blog/sueno-rem-suenos\",\n      \"name\": \"Sueño REM y Sueños: Entendiendo el Reinicio Nocturno de tu Cerebro\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 32,\n      \"url\": \"https://noctalia.app/es/blog/historia-interpretacion-suenos\",\n      \"name\": \"La Historia de la Interpretación de Sueños: De los Templos Antiguos a la Ciencia Moderna\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 33,\n      \"url\": \"https://noctalia.app/es/blog/suenos-estres-trabajo\",\n      \"name\": \"Sueños de estrés laboral: por qué tu trabajo te sigue al dormir\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 34,\n      \"url\": \"https://noctalia.app/es/blog/suenos-y-creatividad\",\n      \"name\": \"Sueños y creatividad: cómo tu cerebro dormido resuelve problemas\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 35,\n      \"url\": \"https://noctalia.app/es/blog/suenos-de-ansiedad-significado\",\n      \"name\": \"Sueños de ansiedad: por qué los tienes y cómo detenerlos\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 36,\n      \"url\": \"https://noctalia.app/es/blog/guia-suenos-ninos\",\n      \"name\": \"Sueños de los niños: de qué sueñan y cómo ayudarlos\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 37,\n      \"url\": \"https://noctalia.app/es/blog/dia-sueno-medio-ambiente-suenos\",\n      \"name\": \"Día del Sueño 2026: cómo tu entorno transforma tus sueños\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 38,\n      \"url\": \"https://noctalia.app/es/blog/ia-analisis-sueno-suenos\",\n      \"name\": \"La IA que analiza tu sueño: la revolución SleepFM de Stanford\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 39,\n      \"url\": \"https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas\",\n      \"name\": \"Controlar tus sueños para resolver problemas: el estudio que lo cambia todo\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 40,\n      \"url\": \"https://noctalia.app/es/blog/horario-verano-sueno-suenos\",\n      \"name\": \"Cambio de hora y sueño: cómo el horario de verano altera tus sueños\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 41,\n      \"url\": \"https://noctalia.app/es/blog/deuda-sueno-salud-suenos\",\n      \"name\": \"Deuda de sueño y privación crónica: cómo afectan tu salud y tus sueños\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 42,\n      \"url\": \"https://noctalia.app/es/blog/alteracion-sueno-primavera-suenos\",\n      \"name\": \"Alteración del sueño en primavera: cómo los días más largos cambian tu descanso y tus sueños\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 43,\n      \"url\": \"https://noctalia.app/es/blog/sueno-salud-prioridad\",\n      \"name\": \"El sueño, tu principal palanca de salud: el estudio OHSU que lo cambia todo\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 44,\n      \"url\": \"https://noctalia.app/es/blog/rastreadores-sueno-wearables-suenos\",\n      \"name\": \"Rastreadores de sueño wearables y sueños: qué miden y qué se les escapa\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Recursos\",\n      \"item\": \"https://noctalia.app/es/blog/\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -447,13 +447,13 @@
                                 Soñar que se caen los dientes: significado e interpretación
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Por qué suenas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.
+                                ¿Por qué sueñas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.
                             </p>
 </div>
 </a>
 </article>
 <!-- Article 5 - Sueños de caer -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretación" data-reading-time="4" data-title="Sueños de caer: por que suenas que caes al vacio">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretación" data-reading-time="4" data-title="Sueños de caer: por qué sueñas que caes al vacío">
 <a class="block" href="suenos-de-caer">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Sueños de caer" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/falling-dreams-meaning.webp" srcset="../../img/blog/falling-dreams-meaning-480w.webp 480w, ../../img/blog/falling-dreams-meaning-800w.webp 800w, ../../img/blog/falling-dreams-meaning-1200w.webp 1200w" width="800">
@@ -464,16 +464,16 @@
 <span class="text-xs text-purple-300/60">4 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sueños de caer: por que suenas que caes al vacio
+                                Sueños de caer: por qué sueñas que caes al vacío
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Por qué suenas con caer al vacio? Descubre el significado psicológico.
+                                ¿Por qué sueñas con caer al vacío? Descubre el significado psicológico.
                             </p>
 </div>
 </a>
 </article>
 <!-- Article 6 - Sueños de volar -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretación" data-reading-time="4" data-title="Sueños de volar: que significa volar en sueños">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretación" data-reading-time="4" data-title="Sueños de volar: qué significa volar en sueños">
 <a class="block" href="suenos-de-volar">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Sueños de volar" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/flying-dreams-meaning.webp" srcset="../../img/blog/flying-dreams-meaning-480w.webp 480w, ../../img/blog/flying-dreams-meaning-800w.webp 800w, ../../img/blog/flying-dreams-meaning-1200w.webp 1200w" width="800">
@@ -484,10 +484,10 @@
 <span class="text-xs text-purple-300/60">4 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sueños de volar: que significa volar en sueños
+                                Sueños de volar: qué significa volar en sueños
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Por qué suenas con volar? Descubre lo que los sueños de volar revelan sobre la libertad
+                                ¿Por qué sueñas con volar? Descubre lo que los sueños de volar revelan sobre la libertad
                                 y la ambición.
                             </p>
 </div>
@@ -502,14 +502,13 @@
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Referencia</span>
-<span class="text-xs text-purple-300/60">50+ símbolos</span>
+<span class="text-xs text-purple-300/60">150 símbolos</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
                                 Diccionario de Símbolos de Sueños: Interpretación de la A a la Z
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explora el significado de más de 50 símbolos comunes de sueños para comprender mejor tus
-                                sueños.
+                                Explora 150 símbolos oníricos como puntos de partida contextuales para la reflexión.
                             </p>
 </div>
 </a>
@@ -539,11 +538,11 @@
 <article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guia" data-reading-time="4" data-title="Incubación de sueños: como soñar exactamente lo que quieres esta noche">
 <a class="block" href="guia-incubacion-suenos">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
-<img alt="Tecnica de incubación de sueños" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-incubation-guide.webp" srcset="../../img/blog/dream-incubation-guide-480w.webp 480w, ../../img/blog/dream-incubation-guide-800w.webp 800w, ../../img/blog/dream-incubation-guide-1200w.webp 1200w" width="800">
+<img alt="Técnica de incubación de sueños" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-incubation-guide.webp" srcset="../../img/blog/dream-incubation-guide-480w.webp 480w, ../../img/blog/dream-incubation-guide-800w.webp 800w, ../../img/blog/dream-incubation-guide-1200w.webp 1200w" width="800">
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
-<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guia</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guía</span>
 <span class="text-xs text-purple-300/60">4 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
@@ -557,7 +556,7 @@
 </a>
 </article>
 <!-- Article 10 - Sueños premonitorios -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="ciencia" data-reading-time="4" data-title="Pueden los sueños predecir el futuro? La ciencia de los sueños premonitorios">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="ciencia" data-reading-time="4" data-title="¿Pueden los sueños predecir el futuro? La ciencia de los sueños premonitorios">
 <a class="block" href="suenos-premonitorios-ciencia">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Ciencia de los sueños premonitorios" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/precognitive-dreams-science.webp" srcset="../../img/blog/precognitive-dreams-science-480w.webp 480w, ../../img/blog/precognitive-dreams-science-800w.webp 800w, ../../img/blog/precognitive-dreams-science-1200w.webp 1200w" width="800">
@@ -592,7 +591,7 @@
                                 Sueños de Ser Perseguido: Significado e Interpretación
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Por qué suenas que te persiguen? Descubre los significados psicologicos detras de los sueños de persecución y lo que tu subconsciente intenta decirte sobre el miedo y la evitación.
+                                ¿Por qué sueñas que te persiguen? Descubre los significados psicológicos detrás de los sueños de persecución y lo que tu subconsciente intenta decirte sobre el miedo y la evitación.
                             </p>
 </div>
 </a>
@@ -612,13 +611,13 @@
                                 Sueños de Muerte: Significado e Interpretación
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Qué significa soñar con la muerte? Descubre los significados simbolicos detras de los sueños de muerte - raramente predicen la muerte real y a menudo representan transformación y cambio.
+                                ¿Qué significa soñar con la muerte? Descubre los significados simbólicos detrás de los sueños de muerte - raramente predicen la muerte real y a menudo representan transformación y cambio.
                             </p>
 </div>
 </a>
 </article>
-<!-- Article 13 - Sueños de Agua: Significado de Sueños de Ahogarse, Oceano e Inundación -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretación" data-reading-time="3" data-title="Sueños de Agua: Significado de Sueños de Ahogarse, Oceano e Inundación">
+<!-- Article 13 - Sueños de agua: significado de sueños de ahogarse, océano e inundación -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretación" data-reading-time="3" data-title="Sueños de agua: significado de sueños de ahogarse, océano e inundación">
 <a class="block" href="suenos-de-agua">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Superficie de agua en calma que refleja las emociones profundas" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/water-dreams-meaning.webp" srcset="../../img/blog/water-dreams-meaning-480w.webp 480w, ../../img/blog/water-dreams-meaning-800w.webp 800w, ../../img/blog/water-dreams-meaning-1200w.webp 1200w" width="800">
@@ -629,16 +628,16 @@
 <span class="text-xs text-purple-300/60">3 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sueños de Agua: Significado de Sueños de Ahogarse, Oceano e Inundación
+                                Sueños de agua: significado de sueños de ahogarse, océano e inundación
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Qué significan los sueños de agua? Descubre las interpretaciones simbolicas de los sueños de ahogarse, oceano e inundación. El agua representa las emociones - aprende lo que tu subconsciente te esta diciendo.
+                                ¿Qué significan los sueños de agua? Descubre las interpretaciones simbólicas de los sueños de ahogarse, océano e inundación. El agua representa las emociones - aprende lo que tu subconsciente te está diciendo.
                             </p>
 </div>
 </a>
 </article>
-<!-- Article 14 - Sueños con Tu Ex: Lo ¿Qué Realmente Significan -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretación" data-reading-time="3" data-title="Sueños con Tu Ex: Lo Que Realmente Significan">
+<!-- Article 14 - Sueños con tu ex: lo que realmente significan -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretación" data-reading-time="3" data-title="Sueños con tu ex: lo que realmente significan">
 <a class="block" href="suenos-con-ex">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Silueta reflexiva que evoca recuerdos de relaciones pasadas" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dreams-about-ex.webp" srcset="../../img/blog/dreams-about-ex-480w.webp 480w, ../../img/blog/dreams-about-ex-800w.webp 800w, ../../img/blog/dreams-about-ex-1200w.webp 1200w" width="800">
@@ -649,16 +648,16 @@
 <span class="text-xs text-purple-300/60">3 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sueños con Tu Ex: Lo ¿Qué Realmente Significan
+                                Sueños con tu ex: lo que realmente significan
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Por qué sigues sonando con tu ex? Descubre los significados psicologicos de los sueños con exparejas y lo que tu subconsciente esta procesando.
+                                ¿Por qué sigues soñando con tu ex? Descubre los significados psicológicos de los sueños con exparejas y lo que tu subconsciente está procesando.
                             </p>
 </div>
 </a>
 </article>
-<!-- Article 15 - Sueños de Embarazo: Lo ¿Qué Significan (Aunque No Estes Embarazada) -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretación" data-reading-time="3" data-title="Sueños de Embarazo: Lo Que Significan (Aunque No Estes Embarazada)">
+<!-- Article 15 - Sueños de embarazo: lo que significan (aunque no estés embarazada) -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretación" data-reading-time="3" data-title="Sueños de embarazo: lo que significan (aunque no estés embarazada)">
 <a class="block" href="suenos-de-embarazo">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Luz suave que simboliza crecimiento y nuevos comienzos" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/pregnancy-dreams-meaning.webp" srcset="../../img/blog/pregnancy-dreams-meaning-480w.webp 480w, ../../img/blog/pregnancy-dreams-meaning-800w.webp 800w, ../../img/blog/pregnancy-dreams-meaning-1200w.webp 1200w" width="800">
@@ -669,10 +668,10 @@
 <span class="text-xs text-purple-300/60">3 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sueños de Embarazo: Lo ¿Qué Significan (Aunque No Estes Embarazada)
+                                Sueños de embarazo: lo que significan (aunque no estés embarazada)
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Qué significan los sueños de embarazo? Descubre por que suenas con estar embarazada, dar a luz o bebes - incluso si no estas esperando. Significados simbolicos explicados.
+                                ¿Qué significan los sueños de embarazo? Descubre por qué sueñas con estar embarazada, dar a luz o bebés - incluso si no estás esperando. Significados simbólicos explicados.
                             </p>
 </div>
 </a>
@@ -685,7 +684,7 @@
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
-<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guia</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guía</span>
 <span class="text-xs text-purple-300/60">3 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
@@ -697,42 +696,42 @@
 </div>
 </a>
 </article>
-<!-- Article 17 - Paralisis del sueño: por que no puedes moverte y como detenerla -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guia" data-reading-time="5" data-title="Paralisis del sueño: por que no puedes moverte y como detenerla">
+<!-- Article 17 - Parálisis del sueño: por qué no puedes moverte y cómo detenerla -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guia" data-reading-time="5" data-title="Parálisis del sueño: por qué no puedes moverte y cómo detenerla">
 <a class="block" href="guia-paralisis-sueno">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Habitación en penumbra que evoca la experiencia de parálisis del sueño" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-paralysis-guide.webp" srcset="../../img/blog/sleep-paralysis-guide-480w.webp 480w, ../../img/blog/sleep-paralysis-guide-800w.webp 800w, ../../img/blog/sleep-paralysis-guide-1200w.webp 1200w" width="800">
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
-<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guia</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guía</span>
 <span class="text-xs text-purple-300/60">5 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Paralisis del sueño: por que no puedes moverte y como detenerla
+                                Parálisis del sueño: por qué no puedes moverte y cómo detenerla
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Guia completa para entender la paralisis del sueño. Descubre que la causa, por que ocurren las alucinaciones, y tecnicas probadas para prevenir y detener los episodios.
+                                Guía completa para entender la parálisis del sueño. Descubre qué la causa, por qué ocurren las alucinaciones y qué técnicas ayudan para prevenir y detener los episodios.
                             </p>
 </div>
 </a>
 </article>
-<!-- Article 18 - Diario de sueños: la guia completa para registrar tus aventuras nocturnas -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guia" data-reading-time="5" data-title="Diario de sueños: la guia completa para registrar tus aventuras nocturnas">
+<!-- Article 18 - Diario de sueños: la guía completa para registrar tus aventuras nocturnas -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guia" data-reading-time="5" data-title="Diario de sueños: la guía completa para registrar tus aventuras nocturnas">
 <a class="block" href="guia-diario-suenos">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Diario de sueños abierto con una pluma sobre una mesa de noche" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-journal-guide.webp" srcset="../../img/blog/dream-journal-guide-480w.webp 480w, ../../img/blog/dream-journal-guide-800w.webp 800w, ../../img/blog/dream-journal-guide-1200w.webp 1200w" width="800">
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
-<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guia</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guía</span>
 <span class="text-xs text-purple-300/60">5 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Diario de sueños: la guia completa para registrar tus aventuras nocturnas
+                                Diario de sueños: la guía completa para registrar tus aventuras nocturnas
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Aprende a llevar un diario de sueños efectivo. Descubre tecnicas probadas para mejorar tu memoria onírica, que escribir, y como el journaling transforma tu sueño.
+                                Aprende a llevar un diario de sueños efectivo. Descubre técnicas probadas para mejorar tu memoria onírica, qué escribir y cómo el diario transforma tu sueño.
                             </p>
 </div>
 </a>
@@ -826,7 +825,7 @@
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
 <span class="text-xs font-mono bg-dream-salmon/20 text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Nuevo</span>
-<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guia</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guía</span>
 <span class="text-xs text-purple-300/60">5 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">

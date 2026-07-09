@@ -258,7 +258,7 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Decode Your Water Dreams</h4>
 <p class="text-sm text-gray-400 mb-4">Noctalia analyzes the specific details of your water dream - the type of water, its state, your actions, and emotions - to provide personalized insights into what your unconscious is communicating.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/ai-dream-interpretation-app">
                                 Try Noctalia Free <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>

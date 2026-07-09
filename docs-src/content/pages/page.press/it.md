@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "App diario dei sogni con IA Noctalia",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-05-09T00:00:00+02:00",
+  "modifiedTime": "2026-07-09T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
@@ -35,6 +35,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Press kit Noctalia</h1>
+<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 9 luglio 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia è un diario dei sogni per Android che aiuta a registrare i sogni con la voce, trasformarli in voci strutturate ed esplorare simboli, immagini, schemi e domande successive in riflessione guidata.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -44,7 +45,7 @@
       <div><dt class="text-sm text-purple-200/70">Prodotto</dt><dd class="text-white">Noctalia</dd></div>
       <div><dt class="text-sm text-purple-200/70">Categoria</dt><dd class="text-white">Diario dei sogni con IA, benessere del sonno, lifestyle</dd></div>
       <div><dt class="text-sm text-purple-200/70">Piattaforma</dt><dd class="text-white">Android</dd></div>
-      <div><dt class="text-sm text-purple-200/70">Prezzo</dt><dd class="text-white">Freemium, con Noctalia Plus a 2,99 EUR/mese o 19 EUR/anno</dd></div>
+      <div><dt class="text-sm text-purple-200/70">Prezzo</dt><dd class="text-white">Freemium; Google Play mostra il prezzo applicabile di Noctalia Plus prima dell’acquisto</dd></div>
       <div><dt class="text-sm text-purple-200/70">Lingue</dt><dd class="text-white">Italiano, inglese, francese, spagnolo, tedesco</dd></div>
       <div><dt class="text-sm text-purple-200/70">Fondatore</dt><dd class="text-white">Thanh Chau</dd></div>
     </dl>
@@ -65,6 +66,7 @@
       <li><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Scheda Google Play</a></li>
       <li><a href="/logo512.png" class="text-dream-salmon hover:underline">Icona app</a></li>
       <li><a href="/it/chi-siamo" class="text-dream-salmon hover:underline">Chi siamo</a></li>
+      <li><a href="/it/metodologia-contenuti-sogni" class="text-dream-salmon hover:underline">Metodologia dei contenuti e dei dati</a></li>
     </ul>
   </section>
 

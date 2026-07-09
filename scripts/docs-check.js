@@ -206,6 +206,66 @@ function assertNoDuplicateCriticalMeta() {
   }
 }
 
+function assertCanonicalOrganizationIdentity() {
+  const files = walkFiles(DOCS_DIR, (filePath) => filePath.endsWith('.html'));
+  const organizationId = `${DOMAIN}/#organization`;
+  const expected = siteConfig.organization;
+  const errors = [];
+  let organizationCount = 0;
+
+  function visit(node, relativePath) {
+    if (Array.isArray(node)) {
+      for (const child of node) visit(child, relativePath);
+      return;
+    }
+    if (!node || typeof node !== 'object') return;
+
+    const types = Array.isArray(node['@type']) ? node['@type'] : [node['@type']];
+    if (
+      types.includes('Organization') &&
+      (node['@id'] === organizationId || node.name === expected.name)
+    ) {
+      organizationCount += 1;
+      const address = node.address || {};
+      if (
+        node['@id'] !== organizationId ||
+        node.name !== expected.name ||
+        node.legalName !== expected.legalName ||
+        node.taxID !== expected.taxID ||
+        node.url !== expected.url ||
+        node.brand?.name !== expected.name ||
+        address.streetAddress !== expected.address?.streetAddress ||
+        address.postalCode !== expected.address?.postalCode ||
+        address.addressLocality !== expected.address?.addressLocality ||
+        address.addressCountry !== expected.address?.addressCountry
+      ) {
+        errors.push(`[canonical organization] ${relativePath}: incomplete or conflicting Noctalia identity`);
+      }
+    }
+
+    for (const value of Object.values(node)) visit(value, relativePath);
+  }
+
+  for (const filePath of files) {
+    const html = fs.readFileSync(filePath, 'utf8');
+    const relativePath = path.relative(ROOT_DIR, filePath);
+    for (const match of html.matchAll(
+      /<script\b[^>]*type=(['"])application\/ld\+json\1[^>]*>([\s\S]*?)<\/script>/gi
+    )) {
+      try {
+        visit(JSON.parse(match[2]), relativePath);
+      } catch (error) {
+        errors.push(`[canonical organization] ${relativePath}: invalid JSON-LD (${error.message})`);
+      }
+    }
+  }
+
+  if (organizationCount === 0) {
+    errors.push('[canonical organization] no Noctalia Organization nodes found');
+  }
+  if (errors.length > 0) throw new Error(errors.join('\n'));
+}
+
 function loadExactRedirectSources() {
   const redirectsPath = path.join(DOCS_DIR, '_redirects');
   if (!fs.existsSync(redirectsPath)) return new Set();
@@ -368,16 +428,21 @@ function assertSitemapCoverage(manifest) {
 
 function main() {
   assertDocsBuildReady(ROOT_DIR);
+  runNodeScript(path.join('scripts', 'check-content-release-gates.js'));
   runNodeScript(path.join('scripts', 'build-content-manifest.js'), ['--check']);
   runNodeScript(path.join('scripts', 'build-site-manifest.js'), ['--check']);
   runNodeScript(path.join('scripts', 'validate-i18n-seo.js'));
   runNodeScript(path.join('scripts', 'check-symbol-illustration-parity.js'));
   runNodeScript(path.join('scripts', 'check-docs-links.js'));
   runNodeScript(path.join('scripts', 'check-docs-shell.js'));
+  runNodeScript(path.join('scripts', 'check-article-date-contract.js'));
+  runNodeScript(path.join('scripts', 'check-intent-ownership.js'));
+  runNodeScript(path.join('scripts', 'check-web-performance-contract.js'));
   runNodeScript(path.join('docs', 'scripts', 'check-site.js'));
 
   const manifest = readJson(SITE_MANIFEST_PATH);
   assertNoDuplicateCriticalMeta();
+  assertCanonicalOrganizationIdentity();
   assertNoLinksToExactRedirects();
   assertReferencedBlogImagesOptimized();
   assertManifestParity(manifest);

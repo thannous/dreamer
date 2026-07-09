@@ -15,6 +15,7 @@ const {
 const { renderManagedPage } = require('./lib/docs-renderer');
 const {
   copyDir,
+  copyFile,
   ensureDir,
   readJson,
   readSourceDocument,
@@ -44,8 +45,8 @@ function generateBuildVersion(date = new Date()) {
 function hashAssetFiles() {
   const hash = crypto.createHash('sha256');
   const assetDirs = [
-    path.join(DOCS_DIR, 'css'),
-    path.join(DOCS_DIR, 'js'),
+    path.join(DOCS_SRC_DIR, 'static', 'css'),
+    path.join(DOCS_SRC_DIR, 'static', 'js'),
   ];
   for (const dir of assetDirs) {
     if (!fs.existsSync(dir)) continue;
@@ -207,11 +208,20 @@ function writeManagedPages(manifest) {
 
 function copyStaticFiles() {
   copyDir(path.join(DOCS_SRC_DIR, 'static'), DOCS_DIR);
+  // The editorial symbol catalog has one canonical source. Copy it after the
+  // static assets so a stale generated snapshot can never drive symbol pages.
+  copyFile(
+    path.join(DATA_DIR, 'dream-symbols.json'),
+    path.join(DOCS_DIR, 'data', 'dream-symbols.json')
+  );
 }
 
 function main() {
   markDocsBuildStarted(ROOT_DIR);
 
+  // Content quality is a hard prerequisite for generating or expanding the
+  // programmatic symbol inventory.
+  runNodeScript(path.join('scripts', 'check-content-release-gates.js'));
   runNodeScript(path.join('scripts', 'build-content-manifest.js'));
   runNodeScript(path.join('scripts', 'build-site-manifest.js'));
 

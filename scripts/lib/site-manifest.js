@@ -1,5 +1,10 @@
 const path = require('path');
-const { DATA_DIR, DOCS_DIR, siteConfig, staticPagesConfig } = require('./docs-site-config');
+const {
+  DATA_DIR,
+  STATIC_DATA_DIR,
+  siteConfig,
+  staticPagesConfig,
+} = require('./docs-site-config');
 const { readJson } = require('./docs-source-utils');
 
 function getStaticPageLocalePath(page, lang) {
@@ -47,8 +52,8 @@ function buildBlogCollection() {
 }
 
 function buildGuideCollection() {
-  const symbolI18n = readJson(path.join(DOCS_DIR, 'data', 'symbol-i18n.json'));
-  const curation = readJson(path.join(DOCS_DIR, 'data', 'curation-pages.json'));
+  const symbolI18n = readJson(path.join(STATIC_DATA_DIR, 'symbol-i18n.json'));
+  const curation = readJson(path.join(STATIC_DATA_DIR, 'curation-pages.json'));
   const entries = {};
 
   entries['guide.index'] = {
@@ -108,8 +113,8 @@ function buildGuideCollection() {
 }
 
 function buildSymbolCollection() {
-  const symbolsData = readJson(path.join(DOCS_DIR, 'data', 'dream-symbols.json'));
-  const symbolI18n = readJson(path.join(DOCS_DIR, 'data', 'symbol-i18n.json'));
+  const symbolsData = readJson(path.join(DATA_DIR, 'dream-symbols.json'));
+  const symbolI18n = readJson(path.join(STATIC_DATA_DIR, 'symbol-i18n.json'));
   const entries = {};
 
   for (const symbol of symbolsData.symbols || []) {

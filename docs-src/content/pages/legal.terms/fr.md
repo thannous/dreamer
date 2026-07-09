@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Conditions générales d'utilisation",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Conditions générales d'utilisation (CGU)</h1>
-    <p class="text-lg text-purple-200/80 mb-10">En vigueur au 22 novembre 2025</p>
+    <p class="text-lg text-purple-200/80 mb-10">En vigueur au 9 juillet 2026</p>
 
     <div class="space-y-8 text-gray-300 leading-relaxed">
 
@@ -80,8 +80,8 @@
           <li><strong>«&nbsp;Compte&nbsp;»</strong>&nbsp;: l'espace personnel créé par l'Utilisateur au sein de Noctalia.</li>
           <li><strong>«&nbsp;Contenus Utilisateur&nbsp;»</strong>&nbsp;: les contenus saisis ou générés via le Compte,
             notamment vos rêves, notes, transcriptions vocales, analyses, images générées, titres, tags et favoris.</li>
-          <li><strong>«&nbsp;Abonnement Premium&nbsp;»</strong> ou <strong>«&nbsp;Onironaute&nbsp;»</strong>&nbsp;: l'offre payante donnant accès
-            à des fonctionnalités supplémentaires, souscrite via les stores Apple App Store et Google Play Store.</li>
+          <li><strong>«&nbsp;Abonnement Noctalia Plus&nbsp;»</strong>&nbsp;: l'offre payante donnant accès
+            à des fonctionnalités supplémentaires, actuellement souscrite via Google Play.</li>
         </ul>
       </section>
 
@@ -89,7 +89,7 @@
       <section>
         <h2 class="text-2xl font-serif text-white mb-4 mt-8">3. Accès au Service et compte</h2>
         <p>
-          Noctalia est accessible via l'application mobile compatible iOS et Android, et, le cas échéant, via une interface web.
+          Noctalia est actuellement distribuée sous forme d'application Android via Google Play. Les pages web publiques présentent le produit et des ressources éditoriales&nbsp;; elles ne constituent pas l'application mobile. Une autre plateforme ne sera considérée comme disponible qu'après une annonce explicite de Noctalia.
           Les coûts de connexion et d'équipement (matériel, logiciels, accès Internet) restent à la charge de l'Utilisateur.
         </p>
         <p class="mt-3">
@@ -140,17 +140,17 @@
       <section>
         <h2 class="text-2xl font-serif text-white mb-4 mt-8">6. Abonnements et paiement</h2>
         <p>
-          Certaines fonctionnalités sont réservées aux Utilisateurs titulaires d'un Abonnement Premium («&nbsp;Onironaute&nbsp;»).
-          L'abonnement est géré via les stores <strong>Apple App Store</strong> et <strong>Google Play Store</strong> et est soumis
-          aux conditions de vente, aux règles de facturation et à la politique de remboursement propres à ces plateformes.
+          Certaines fonctionnalités sont réservées aux Utilisateurs titulaires d'un abonnement Noctalia Plus.
+          L'abonnement Noctalia Plus est actuellement géré via <strong>Google Play</strong> et est soumis
+          aux conditions de vente, aux règles de facturation, d'annulation et de remboursement de Google Play.
         </p>
         <p class="mt-3">
           Les prix, la durée de l'abonnement, les modalités de renouvellement, la présence éventuelle d'une période d'essai ainsi que les
           conditions d'exercice du droit de rétractation éventuel sont détaillés sur la page de l'offre dans le store concerné.
-          Noctalia ne perçoit pas directement les paiements et ne peut pas modifier les conditions contractuelles des stores.
+          Noctalia ne perçoit pas directement les paiements et ne peut pas modifier les conditions contractuelles de Google Play.
         </p>
         <p class="mt-3">
-          Vous pouvez gérer et résilier votre abonnement à tout moment depuis les paramètres de votre compte App Store ou Google Play.
+          Vous pouvez gérer et résilier votre abonnement à tout moment depuis les paramètres de vos abonnements Google Play.
         </p>
       </section>
 

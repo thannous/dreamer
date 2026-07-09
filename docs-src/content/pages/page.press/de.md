@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Noctalia KI-Traumtagebuch App",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-05-09T00:00:00+02:00",
+  "modifiedTime": "2026-07-09T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
@@ -35,6 +35,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Noctalia Pressekit</h1>
+<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 9. Juli 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia ist ein Android-orientiertes Traumtagebuch, mit dem Menschen Träume per Sprache festhalten, in strukturierte Einträge verwandeln und Symbole, Bilder, Muster und geführte Nachfragen erkunden.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -44,7 +45,7 @@
       <div><dt class="text-sm text-purple-200/70">Produkt</dt><dd class="text-white">Noctalia</dd></div>
       <div><dt class="text-sm text-purple-200/70">Kategorie</dt><dd class="text-white">KI-Traumtagebuch, Schlaf-Wellness, Lifestyle</dd></div>
       <div><dt class="text-sm text-purple-200/70">Plattform</dt><dd class="text-white">Android</dd></div>
-      <div><dt class="text-sm text-purple-200/70">Preis</dt><dd class="text-white">Freemium, mit Noctalia Plus fur 2,99 EUR/Monat oder 19 EUR/Jahr</dd></div>
+      <div><dt class="text-sm text-purple-200/70">Preis</dt><dd class="text-white">Freemium; Google Play zeigt den geltenden Noctalia-Plus-Preis vor dem Kauf</dd></div>
       <div><dt class="text-sm text-purple-200/70">Sprachen</dt><dd class="text-white">Deutsch, Englisch, Franzosisch, Spanisch, Italienisch</dd></div>
       <div><dt class="text-sm text-purple-200/70">Grunder</dt><dd class="text-white">Thanh Chau</dd></div>
     </dl>
@@ -65,6 +66,7 @@
       <li><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Google Play Eintrag</a></li>
       <li><a href="/logo512.png" class="text-dream-salmon hover:underline">App-Icon</a></li>
       <li><a href="/de/ueber-uns" class="text-dream-salmon hover:underline">Uber Noctalia</a></li>
+      <li><a href="/de/methodik-trauminhalte" class="text-dream-salmon hover:underline">Methodik der Trauminhalte und Daten</a></li>
     </ul>
   </section>
 

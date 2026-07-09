@@ -490,13 +490,13 @@
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Riferimento</span>
-<span class="text-xs text-purple-300/60">50+ simboli</span>
+<span class="text-xs text-purple-300/60">150 simboli</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
                                 Dizionario dei simboli onirici: interpretazione dalla A alla Z
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Esplora il significato di oltre 50 simboli onirici comuni per comprendere meglio i tuoi sogni.
+                                Esplora 150 simboli onirici come punti di partenza contestuali per la riflessione.
                             </p>
 </div>
 </a>

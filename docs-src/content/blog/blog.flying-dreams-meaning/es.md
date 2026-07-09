@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/blog/flying-dreams-meaning.webp",
   "twitterImageAlt": "Vista aérea que captura la libertad de volar en los sueños",
   "publishedTime": "2025-01-10",
-  "modifiedTime": "2026-06-04",
+  "modifiedTime": "2026-07-09",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-de-caer",
   "nextPath": "/es/blog/suenos-con-serpientes",
   "preloadImage": "/img/blog/flying-dreams-meaning.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Soñar que vuelas o te elevas en el aire\",\n  \"description\": \"Qué significa soñar que vuelas, soñar con volar o elevarte en el aire: libertad, escape, miedo, control y caída.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/flying-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-01-10\",\n  \"dateModified\": \"2026-06-04\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/suenos-de-volar\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1076,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/es/blog/suenos-de-volar\"\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Soñar que vuelas o te elevas en el aire\",\n  \"description\": \"Qué significa soñar que vuelas, soñar con volar o elevarte en el aire: libertad, escape, miedo, control y caída.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/flying-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-01-10\",\n  \"dateModified\": \"2026-07-09\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/suenos-de-volar\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1076,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/es/blog/suenos-de-volar\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar que vuelas?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Suele simbolizar libertad, perspectiva, ambición o deseo de superar límites. El tono emocional del vuelo cambia la interpretación.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar que vuelas alto?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Volar alto indica confianza, visión amplia o sensación de avance. También puede señalar aspiraciones elevadas.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar que vuelas con miedo?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Volar con miedo mezcla deseo de libertad con ansiedad, falta de control o presión por una decisión importante.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar que vuelas y caes?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Puede mostrar miedo a perder control después de avanzar, inseguridad o temor a que una oportunidad no se sostenga.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar que te elevas en el aire?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Elevarte en el aire suele hablar de distancia frente a un problema, deseo de escapar o necesidad de mirar tu vida desde otra perspectiva.\"\n      }\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Recursos\",\n      \"item\": \"https://noctalia.app/es/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sueños de Volar\",\n      \"item\": \"https://noctalia.app/es/blog/suenos-de-volar\"\n    }\n  ]\n}"
   ],
@@ -159,7 +159,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="why">Sueños de volar: ¿por qué soñamos con volar?</h2>
 <p>
-                    ¿Los sueños de <a class="text-dream-salmon hover:underline" href="../simbolos/volar">volar</a> ocurren aproximadamente en el <strong>33% de los soñadores</strong> y son uno de los temas oníricos más reportados en todas las culturas y períodos de tiempo. Las civilizaciones antiguas desde Grecia hasta China documentaron sueños de volar, atribuyéndolos a menudo a mensajes divinos o viajes espirituales.
+                    Los sueños de <a class="text-dream-salmon hover:underline" href="../simbolos/volar">volar</a> ocurren aproximadamente en el <strong>33% de los soñadores</strong> y son uno de los temas oníricos más reportados en todas las culturas y períodos de tiempo. Las civilizaciones antiguas desde Grecia hasta China documentaron sueños de volar, atribuyéndolos a menudo a mensajes divinos o viajes espirituales.
                 </p>
 <p>
                     Desde una perspectiva neurológica, los sueños de volar típicamente ocurren durante el <strong><a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a></strong> cuando la corteza motora del cerebro está activa pero el cuerpo está paralizado. Esta desconexión entre la actividad mental y la quietud física puede crear la sensación de ingravidez y movimiento.
@@ -247,7 +247,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="meanings">Las 6 Interpretaciones Principales</h2>
 <p>
-                    ¿Los sueños de volar pueden tener múltiples significados dependiendo de tu contexto vital:
+                    Los sueños de volar pueden tener múltiples significados dependiendo de tu contexto vital:
                 </p>
 <h3>1. Libertad y Liberación</h3>
 <p>
@@ -259,7 +259,7 @@
                 </p>
 <h3>3. Ganar Nueva Perspectiva</h3>
 <p>
-                    Desde arriba, todo se ve diferente. ¿Los sueños de volar pueden indicar una necesidad de <strong>dar un paso atrás y ver el panorama general</strong>. Quizás estás demasiado atrapado en los detalles y necesitas una vista de <a class="text-dream-salmon hover:underline" href="../simbolos/pajaro">pájaro</a> de tu situación.
+                    Desde arriba, todo se ve diferente. Los sueños de volar pueden indicar una necesidad de <strong>dar un paso atrás y ver el panorama general</strong>. Quizás estás demasiado atrapado en los detalles y necesitas una vista de <a class="text-dream-salmon hover:underline" href="../simbolos/pajaro">pájaro</a> de tu situación.
                 </p>
 <h3>4. Control y Poder</h3>
 <p>
@@ -271,7 +271,7 @@
                 </p>
 <h3>6. Escapismo</h3>
 <p>
-                    No todas las interpretaciones son puramente positivas. ¿Los sueños de volar a veces indican un <strong>deseo de escapar de la realidad</strong>. Si la vida consciente se siente abrumadora, tu subconsciente crea una salida, literalmente elevándote lejos de tus problemas.
+                    No todas las interpretaciones son puramente positivas. Los sueños de volar a veces indican un <strong>deseo de escapar de la realidad</strong>. Si la vida consciente se siente abrumadora, tu subconsciente crea una salida, literalmente elevándote lejos de tus problemas.
                 </p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -282,7 +282,7 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Registra Tus Sueños de Volar</h4>
 <p class="text-sm text-gray-400 mb-4">Noctalia te ayuda a capturar la magia de los sueños de volar y comprender lo que revelan sobre tus aspiraciones y estado emocional.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/diario-de-suenos-por-voz">
                                 Prueba Noctalia Gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
@@ -310,11 +310,11 @@
                 </p>
 <h2 id="lucid">Sueños de Volar y Sueños Lúcidos</h2>
 <p>
-                    ¿Los sueños de volar tienen una relación especial con los <strong><a class="text-dream-salmon hover:underline" href="guia-suenos-lucidos-principiantes">sueños lúcidos</a></strong>, el estado de ser consciente de que estás soñando mientras aún estás en el sueño. He aquí por qué:
+                    Los sueños de volar tienen una relación especial con los <strong><a class="text-dream-salmon hover:underline" href="guia-suenos-lucidos-principiantes">sueños lúcidos</a></strong>, el estado de ser consciente de que estás soñando mientras aún estás en el sueño. He aquí por qué:
                 </p>
 <h3>Volar como Detonante de Lucidez</h3>
 <p>
-                    Volar es sencillamente imposible en la realidad, lo que lo convierte en una excelente <strong>comprobación de realidad</strong>. ¿Cuándo te encuentras volando, algo en tu cerebro puede reconocer "esto no es posible", desencadenando la lucidez.
+                    Volar es sencillamente imposible en la realidad, lo que lo convierte en una excelente <strong>comprobación de realidad</strong>. Cuando te encuentras volando, algo en tu cerebro puede reconocer "esto no es posible", desencadenando la lucidez.
                 </p>
 <h3>Volar como Objetivo en Sueños Lúcidos</h3>
 <p>
@@ -353,7 +353,7 @@
                 </p>
 <h3>6. Aborda las Limitaciones de la Vida Consciente</h3>
 <p>
-                    ¿Los sueños de volar a menudo surgen cuando nos sentimos libres y empoderados. <strong>Trabaja en áreas</strong> donde te sientes atrapado o limitado: a medida que ganas libertad en la vida, los sueños de volar pueden aumentar naturalmente.
+                    Los sueños de volar a menudo surgen cuando nos sentimos libres y empoderados. <strong>Trabaja en áreas</strong> donde te sientes atrapado o limitado: a medida que ganas libertad en la vida, los sueños de volar pueden aumentar naturalmente.
                 </p>
 </div>
 <!-- Related Symbols Start -->
@@ -364,10 +364,10 @@
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">Explora los símbolos mencionados en este artículo:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/volar">¿Soñar con volar</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/avion">¿Soñar con avión</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/pajaro">¿Soñar con pájaro</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/caida">¿Soñar con caer</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/volar">Soñar con volar</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/avion">Soñar con avión</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/pajaro">Soñar con pájaro</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/caida">Soñar con caer</a>
 </div>
 </section>
 <!-- Related Symbols End -->
@@ -380,7 +380,7 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     No dejes que la magia de los sueños de volar se desvanezca con la mañana. Regístralos en Noctalia y descubre patrones sobre cuándo y por qué tu mente levanta vuelo.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/diario-de-suenos-por-voz">
                     Comienza Tu Diario de Sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
@@ -409,7 +409,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            ¿Los sueños de volar típicamente simbolizan libertad, liberación, ambición y superación de desafíos. A menudo ocurren cuando te sientes seguro, superando obstáculos o buscando escapar de limitaciones en tu vida diaria.
+                            Los sueños de volar típicamente simbolizan libertad, liberación, ambición y superación de desafíos. A menudo ocurren cuando te sientes seguro, superando obstáculos o buscando escapar de limitaciones en tu vida diaria.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -418,7 +418,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            ¿Los sueños de volar generalmente se consideran positivos, representando libertad, confianza y trascendencia. Sin embargo, el significado depende de la calidad del vuelo: planear sin esfuerzo sugiere confianza, mientras que luchar para volar puede indicar obstáculos o dudas sobre uno mismo.
+                            Los sueños de volar generalmente se consideran positivos, representando libertad, confianza y trascendencia. Sin embargo, el significado depende de la calidad del vuelo: planear sin esfuerzo sugiere confianza, mientras que luchar para volar puede indicar obstáculos o dudas sobre uno mismo.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -451,13 +451,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sueños de caer: por que suenas que caes al vacio</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sueños de caer: por qué sueñas que caes al vacío</div>
       </div>
     </a>
     <a href="suenos-con-serpientes" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">¿Soñar con serpientes: lo que tu subconsciente te esta advirtiendo</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Soñar con serpientes: lo que tu subconsciente te está advirtiendo</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -480,12 +480,12 @@
         <a href="suenos-dientes-caen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que se caen los dientes: significado e interpretación</h3>
-            <p class="text-sm text-gray-400">¿Por qué suenas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.</p>
+            <p class="text-sm text-gray-400">¿Por qué sueñas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.</p>
         </a>
         <a href="suenos-de-caer" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de caer: por que suenas que caes al vacio</h3>
-            <p class="text-sm text-gray-400">¿Por qué suenas con caer al vacio? Descubre el significado psicológico.</p>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de caer: por qué sueñas que caes al vacío</h3>
+            <p class="text-sm text-gray-400">¿Por qué sueñas con caer al vacío? Descubre el significado psicológico.</p>
         </a>
   </div>
 </section>

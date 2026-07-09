@@ -491,14 +491,13 @@
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Référence</span>
-<span class="text-xs text-purple-300/60">50+ symboles</span>
+<span class="text-xs text-purple-300/60">150 symboles</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
                                 Dictionnaire des symboles de rêves : interprétation de A a Z
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explorez la signification de plus de 50 symboles oniriques courants pour mieux
-                                comprendre vos rêves.
+                                Explorez 150 symboles oniriques comme points de départ contextuels pour votre réflexion.
                             </p>
 </div>
 </a>

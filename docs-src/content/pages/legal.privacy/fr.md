@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Politique de Confidentialité",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Politique de Confidentialité</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Dernière mise à jour : 22 Novembre 2025</p>
+        <p class="text-lg text-purple-200/80 mb-10">Dernière mise à jour : 9 juillet 2026</p>
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
                 <p class="text-dream-salmon font-medium flex gap-2 items-start">
@@ -137,7 +137,7 @@
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Prestataires techniques&nbsp;:</strong> notamment Supabase (hébergement, base de données, authentification) et les prestataires d'infrastructure cloud nécessaires au fonctionnement de l'application.</li>
                     <li><strong>Fournisseurs d'IA et de reconnaissance vocale&nbsp;:</strong> Google (Gemini, Google Cloud Speech-to-Text), et le cas échéant d'autres fournisseurs d'IA de premier plan (Anthropic, OpenAI, Perplexity, Mistral, ou services équivalents) pour la transcription, l'analyse de vos rêves et la génération d'images ou de contenus.</li>
-                    <li><strong>Gestion des abonnements&nbsp;:</strong> RevenueCat (USA) pour la gestion des abonnements in-app. RevenueCat reçoit un identifiant utilisateur anonyme et les informations d'achat fournies par Apple/Google. Vos informations de paiement complètes ne transitent jamais par Noctalia.</li>
+                    <li><strong>Gestion des abonnements&nbsp;:</strong> RevenueCat (USA) gère les abonnements intégrés. RevenueCat reçoit un identifiant utilisateur anonyme et les informations d'achat fournies par la boutique applicable, actuellement Google Play. Vos informations de paiement complètes ne transitent jamais par Noctalia.</li>
                     <li><strong>Conseils externes et autorités&nbsp;:</strong> cabinets juridiques, comptables ou autorités administratives et judiciaires lorsque la loi nous y oblige ou pour la défense de nos droits.</li>
                 </ul>
                 <p class="mt-4">Dans tous les cas, nous exigeons de nos sous-traitants qu'ils offrent des garanties suffisantes en matière de sécurité et de confidentialité, et qu'ils n'utilisent pas vos données pour leurs propres finalités marketing.</p>

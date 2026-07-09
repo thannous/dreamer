@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia AI dream journal app",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-05-09T00:00:00+02:00",
+  "modifiedTime": "2026-07-09T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
@@ -36,6 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Noctalia Press Kit</h1>
+<p class="text-sm text-purple-300/70 mb-6">Updated July 9, 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an Android-first dream journal that helps people record dreams by voice, turn them into structured entries, and explore symbols, images, patterns, and guided follow-up questions.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -45,7 +46,7 @@
       <div><dt class="text-sm text-purple-200/70">Product</dt><dd class="text-white">Noctalia</dd></div>
       <div><dt class="text-sm text-purple-200/70">Category</dt><dd class="text-white">AI dream journal, sleep wellness, lifestyle</dd></div>
       <div><dt class="text-sm text-purple-200/70">Platform</dt><dd class="text-white">Android</dd></div>
-      <div><dt class="text-sm text-purple-200/70">Pricing</dt><dd class="text-white">Freemium, with Noctalia Plus at EUR 2.99/month or EUR 19/year</dd></div>
+      <div><dt class="text-sm text-purple-200/70">Pricing</dt><dd class="text-white">Freemium; Google Play shows the applicable Noctalia Plus price before purchase</dd></div>
       <div><dt class="text-sm text-purple-200/70">Languages</dt><dd class="text-white">English, French, Spanish, German, Italian</dd></div>
       <div><dt class="text-sm text-purple-200/70">Founder</dt><dd class="text-white">Thanh Chau</dd></div>
     </dl>
@@ -66,6 +67,7 @@
       <li><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Google Play listing</a></li>
       <li><a href="/logo512.png" class="text-dream-salmon hover:underline">App icon</a></li>
       <li><a href="/en/about" class="text-dream-salmon hover:underline">About Noctalia</a></li>
+      <li><a href="/en/dream-content-methodology" class="text-dream-salmon hover:underline">Dream content and data methodology</a></li>
     </ul>
   </section>
 

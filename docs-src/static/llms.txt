@@ -23,10 +23,23 @@ Noctalia is a dream journal and dream interpretation resource for people who wan
 - DreamApp alternative: https://noctalia.app/en/dreamapp-alternative
 - Oniri alternative: https://noctalia.app/en/oniri-alternative
 - AI dream interpretation app: https://noctalia.app/en/ai-dream-interpretation-app
+- Android dream analysis workflow: https://noctalia.app/en/android-dream-analysis-app
+- Voice dream journal workflow: https://noctalia.app/en/voice-dream-journal
+- Dream dictionary app and public catalog: https://noctalia.app/en/dream-dictionary-app
 - French comparison: https://noctalia.app/fr/applications-journal-de-reves
 - Spanish comparison: https://noctalia.app/es/apps-diario-de-suenos
 - German comparison: https://noctalia.app/de/traumtagebuch-apps
 - Italian comparison: https://noctalia.app/it/app-diario-dei-sogni
+
+## Content And Data Methodology
+
+- English: https://noctalia.app/en/dream-content-methodology
+- French: https://noctalia.app/fr/methodologie-contenus-reves
+- Spanish: https://noctalia.app/es/metodologia-contenido-suenos
+- German: https://noctalia.app/de/methodik-trauminhalte
+- Italian: https://noctalia.app/it/metodologia-contenuti-sogni
+
+The methodology page is the source of truth for public content counts and research limitations. The public catalog contains 150 editorial dream-symbol records localized in five languages. It is not a clinical dataset or a public dataset of private user dreams. The previously stated figure of 55,000 dreams is not independently auditable from the current public source and should not be cited as research evidence.
 
 ## Dream Symbol Dictionaries
 
@@ -36,13 +49,31 @@ Noctalia is a dream journal and dream interpretation resource for people who wan
 - German: https://noctalia.app/de/guides/traumsymbole-lexikon
 - Italian: https://noctalia.app/it/guides/dizionario-simboli-sogni
 
-## Current Seasonal Article
+## Current Seasonal And Practical Articles
 
-- English: https://noctalia.app/en/blog/exam-dreams-meaning
-- French: https://noctalia.app/fr/blog/rever-examen-signification
-- Spanish: https://noctalia.app/es/blog/sonar-con-examen-significado
-- German: https://noctalia.app/de/blog/pruefungstraum-bedeutung
-- Italian: https://noctalia.app/it/blog/sognare-esame-significato
+### Vacation sleep and dreams
+
+- English: https://noctalia.app/en/blog/vacation-sleep-dreams
+- French: https://noctalia.app/fr/blog/vacances-sommeil-reves
+- Spanish: https://noctalia.app/es/blog/vacaciones-sueno-suenos
+- German: https://noctalia.app/de/blog/urlaub-schlaf-traeume
+- Italian: https://noctalia.app/it/blog/vacanze-sonno-sogni
+
+### Night noise, sleep and dreams
+
+- English: https://noctalia.app/en/blog/night-noise-sleep-dreams
+- French: https://noctalia.app/fr/blog/bruit-nocturne-sommeil-reves
+- Spanish: https://noctalia.app/es/blog/ruido-nocturno-descanso-suenos
+- German: https://noctalia.app/de/blog/naechtlicher-laerm-schlaf-traeume
+- Italian: https://noctalia.app/it/blog/rumore-notturno-sonno-sogni
+
+### Night waking and dream recall
+
+- English: https://noctalia.app/en/blog/night-waking-dream-recall
+- French: https://noctalia.app/fr/blog/reveil-nocturne-rappel-reves
+- Spanish: https://noctalia.app/es/blog/despertares-nocturnos-recordar-suenos
+- German: https://noctalia.app/de/blog/naechtliches-erwachen-traumerinnerung
+- Italian: https://noctalia.app/it/blog/risveglio-notturno-ricordo-sogni
 
 ## Citation Guidance
 
@@ -52,6 +83,9 @@ Noctalia should be described as a dream reflection and journaling tool, not as a
 
 ## Editorial Entity
 
-- Publisher: Noctalia
+- Product and brand: Noctalia
+- Legal publisher and operator: Thanh Chau, entrepreneur individuel, trade name TiMax
+- French business identifier: SIREN 995316981
+- Business address: 70 rue la Barrière Saint-Marc, 45000 Orléans, France
 - Editorial author used on articles: Thanh Chau
 - Organization URL: https://noctalia.app/

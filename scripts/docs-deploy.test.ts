@@ -6,6 +6,9 @@ const {
   buildWranglerDeployArgs,
   loadCloudflarePagesConfig,
 } = require('./docs-deploy');
+const {
+  createDeployStaging,
+} = require('./lib/docs-deploy-staging');
 
 describe('docs-deploy helpers', () => {
   let tmpRoot: string;
@@ -64,6 +67,56 @@ describe('docs-deploy helpers', () => {
       '--branch',
       'main',
     ]);
+  });
+
+  it('deploys an explicitly supplied clean staging directory', () => {
+    const config = loadCloudflarePagesConfig(tmpRoot);
+
+    expect(buildWranglerDeployArgs(config, 'prod', '/tmp/noctalia-pages/public')).toEqual([
+      'wrangler',
+      'pages',
+      'deploy',
+      '/tmp/noctalia-pages/public',
+      '--project-name',
+      'noctalia',
+      '--branch',
+      'main',
+    ]);
+  });
+
+  it('stages runtime files while excluding source and audit artifacts', () => {
+    const docsDir = path.join(tmpRoot, 'docs');
+    for (const directory of ['css', 'js', 'en', 'fr', 'es', 'de', 'it', 'scripts', 'data']) {
+      fs.mkdirSync(path.join(docsDir, directory), { recursive: true });
+    }
+    for (const fileName of [
+      'index.html',
+      'sitemap.xml',
+      'robots.txt',
+      '_headers',
+      '_redirects',
+      'llms.txt',
+    ]) {
+      fs.writeFileSync(path.join(docsDir, fileName), fileName, 'utf8');
+    }
+    fs.writeFileSync(path.join(docsDir, 'css', 'site.css'), 'body{}', 'utf8');
+    fs.writeFileSync(path.join(docsDir, 'js', 'site.js'), 'void 0;', 'utf8');
+    for (const lang of ['en', 'fr', 'es', 'de', 'it']) {
+      fs.writeFileSync(path.join(docsDir, lang, 'index.html'), `<h1>${lang}</h1>`, 'utf8');
+    }
+    fs.writeFileSync(path.join(docsDir, 'en', 'about.html'), '<h1>About</h1>', 'utf8');
+    fs.writeFileSync(path.join(docsDir, 'AGENTS.md'), 'internal', 'utf8');
+    fs.writeFileSync(path.join(docsDir, 'scripts', 'build.js'), 'internal', 'utf8');
+    fs.writeFileSync(path.join(docsDir, 'data', 'symbols.json'), '{}', 'utf8');
+
+    const stageRoot = path.join(tmpRoot, 'stage');
+    const staging = createDeployStaging({ docsDir, tempRoot: stageRoot });
+
+    expect(fs.existsSync(path.join(staging.deployDir, 'index.html'))).toBe(true);
+    expect(fs.existsSync(path.join(staging.deployDir, 'css', 'site.css'))).toBe(true);
+    expect(fs.existsSync(path.join(staging.deployDir, 'AGENTS.md'))).toBe(false);
+    expect(fs.existsSync(path.join(staging.deployDir, 'scripts'))).toBe(false);
+    expect(fs.existsSync(path.join(staging.deployDir, 'data'))).toBe(false);
   });
 
   it('rejects incomplete Cloudflare Pages config', () => {

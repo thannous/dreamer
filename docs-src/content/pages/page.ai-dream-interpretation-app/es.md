@@ -23,15 +23,15 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-05-20T00:00:00+02:00",
+  "modifiedTime": "2026-07-09T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"App de interpretación de sueños con IA\",\n    \"description\": \"Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con reflexión guiada.\",\n    \"url\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\",\n    \"inLanguage\": \"es\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"App de interpretación de sueños con IA\",\n            \"item\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\"\n        }\n    ]\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Qué buscar\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Captura rápida, privacidad clara, límites transparentes, borrado o exportación, contexto de símbolos, preguntas y disclaimer.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Por qué Noctalia encaja\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Noctalia es Android, vocal, visual, multilingüe y conectado a un diccionario público de símbolos en crecimiento.\"\n            }\n        }\n    ]\n}"
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"App de interpretación de sueños con IA\",\n  \"description\": \"Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con reflexión guiada.\",\n  \"url\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\",\n  \"inLanguage\": \"es\",\n  \"dateModified\": \"2026-07-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"App de interpretación de sueños con IA\",\n      \"item\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\"\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Qué buscar\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Captura rápida, privacidad clara, límites transparentes, borrado o exportación, contexto de símbolos, preguntas y disclaimer.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Por qué Noctalia encaja\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Noctalia es Android, vocal, visual, multilingüe y conectado a un diccionario público de símbolos en crecimiento.\"\n      }\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -63,7 +63,7 @@
       <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-2">
         <h3 class="text-white font-medium">Noctalia</h3>
         <p><span class="text-purple-200">Mejor para:</span> captura por voz en Android, reflexión IA, símbolos e imágenes generadas.</p>
-        <p><span class="text-purple-200">Precio:</span> la página pública de Noctalia indica 2,99 €/mes o 19 €/año.</p>
+        <p><span class="text-purple-200">Precio:</span> freemium; Google Play muestra el precio actual de Noctalia Plus antes de comprar.</p>
         <p><span class="text-purple-200">Prueba:</span> producto joven con Google Play público y recursos web.</p>
         <p><span class="text-purple-200">Migración:</span> útil si capturar rápido al despertar pesa más que tener iOS hoy.</p>
       </article>
