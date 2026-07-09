@@ -41,14 +41,16 @@
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Preload the homepage LCP background -->
+    <link rel="preload" href="/img/hero/noctalia-observatory-bg.webp" as="image" type="image/webp" fetchpriority="high">
     <script
       src="https://analytics.ahrefs.com/analytics.js"
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=20260708-130244">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=20260708-130244">
-    <link rel="stylesheet" href="/css/observatory.css?v=20260708-130244">
+    <link rel="stylesheet" href="/css/styles.min.css?v=20260710-005026">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=20260710-005026">
+    <link rel="stylesheet" href="/css/observatory.css?v=20260710-005026">
     <style>
       .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
       .noctalia-premium-nav.py-2 { background: rgba(10, 5, 20, 0.78); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24); }
@@ -101,7 +103,7 @@
           "name": "I miei sogni sono privati?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Le tue registrazioni e note sono crittografate in transito e archiviate in modo sicuro. Noctalia non vende dati personali né usa pubblicità mirata; l'accesso è limitato a te e ai fornitori necessari per erogare l'app."
+            "text": "Sì. Le tue trascrizioni e note sono crittografate in transito e archiviate in modo sicuro. L’audio vocale viene usato solo per la trascrizione e non viene conservato in modo permanente da Noctalia. Noctalia non vende dati personali né usa pubblicità mirata; l’accesso è limitato a te e ai fornitori necessari per il servizio."
           }
         },
         {
@@ -141,7 +143,20 @@
       ],
       "alternateName": [
         "Noctalia Dream Journal"
-      ]
+      ],
+      "legalName": "Thanh Chau, entrepreneur individuel (TiMax)",
+      "taxID": "SIREN 995316981",
+      "brand": {
+        "@type": "Brand",
+        "name": "Noctalia"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "70 rue la Barrière Saint-Marc",
+        "postalCode": "45000",
+        "addressLocality": "Orléans",
+        "addressCountry": "FR"
+      }
     },
     {
       "@type": "WebSite",
@@ -189,8 +204,12 @@
       "offers": {
         "@type": "Offer",
         "price": "0",
-        "priceCurrency": "EUR"
-      }
+        "priceCurrency": "EUR",
+        "url": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
+        "description": "Installazione gratuita; gli acquisti facoltativi di Noctalia Plus sono mostrati in Google Play."
+      },
+      "@id": "https://noctalia.app/#mobile-application",
+      "url": "https://noctalia.app/"
     }
   ]
 }
@@ -636,35 +655,22 @@
 
                     <ul class="space-y-4 text-left mb-8 px-4">
                         <li class="flex items-center gap-3 text-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-gray-400" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg> Registrazioni illimitate</li>
-                        <li class="flex items-center gap-3 text-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-white" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg> 2 esplorazioni guidate complete</li>
+                        <li class="flex items-center gap-3 text-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-white" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg> 3 analisi dei sogni al mese</li>
+                        <li class="flex items-center gap-3 text-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-white" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg> 2 esplorazioni guidate al mese</li>
                         <li class="flex items-center gap-3 text-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-gray-400" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg> Diario base</li>
                     </ul>
 
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Scarica l'app</a>
                 </div>
 
-                <!-- Premium Plan (prelaunch) -->
-                <div data-subscription="prelaunch" class="glass-panel p-8 rounded-3xl border border-white/10 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.05)]">
-                    <div class="absolute inset-0 bg-purple-900/10 pointer-events-none"></div>
-                    <h3 class="text-2xl font-serif mb-3 text-dream-cream">Premium in arrivo</h3>
-                    <p class="text-purple-200/70 text-sm mb-6">Sii tra i primi ad accedere ad analisi illimitate, immagini HD e statistiche avanzate al lancio.</p>
-                    <ul class="space-y-3 text-left mb-8 px-4 text-sm text-gray-300">
-                        <li class="flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sparkles" class="lucide lucide-sparkles w-4 h-4 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg> Esplorazioni guidate illimitate</li>
-                        <li class="flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="image" class="lucide lucide-image w-4 h-4 text-dream-salmon" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg> Immagini HD dei sogni</li>
-                        <li class="flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="bar-chart-3" class="lucide lucide-bar-chart-3 w-4 h-4 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg> Statistiche e insight avanzati</li>
-                    </ul>
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Scarica l'app</a>
-                    <p class="text-[10px] text-gray-500 mt-3">App Android su Google Play · Strumento di riflessione, non diagnosi.</p>
-                </div>
-
-                <!-- Premium Plan (live) -->
-                <div data-subscription="live" class="glass-panel p-8 rounded-3xl border-dream-salmon/50 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.1)]">
+                <!-- Piano Noctalia Plus -->
+                <div class="glass-panel p-8 rounded-3xl border-dream-salmon/50 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.1)]">
                     <div class="absolute top-0 right-0 bg-dream-salmon text-dream-dark text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">Consigliato</div>
                     <div class="absolute inset-0 bg-purple-900/10 pointer-events-none"></div>
 
-                    <h3 class="text-2xl font-serif mb-2 text-dream-salmon">Onironauta (Premium)</h3>
-                    <div class="text-4xl font-bold mb-2">2,99 EUR<span class="text-sm font-normal text-gray-400">/mese</span></div>
-                    <p class="text-purple-200/60 text-xs mb-6">Oppure 19 EUR/anno (2 mesi gratis)</p>
+                    <h3 class="text-2xl font-serif mb-2 text-dream-salmon">Noctalia Plus</h3>
+                    <div class="text-3xl font-bold mb-2">Prezzo attuale su Google Play</div>
+                    <p class="text-purple-200/60 text-xs mb-6">Le opzioni mensile e annuale possono variare per paese e idoneità.</p>
 
                     <ul class="space-y-4 text-left mb-8 px-4">
                         <li class="flex items-center gap-3 text-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg> Esplorazioni guidate illimitate</li>
@@ -673,8 +679,8 @@
                         <li class="flex items-center gap-3 text-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg> Riflessione guidata sul sogno</li>
                     </ul>
 
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it" class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">Provalo gratis</a>
-                    <p class="text-[10px] text-gray-500 mt-3">7 giorni di prova inclusi, cancellazione facile.</p>
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it" class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">Vedi Noctalia Plus</a>
+                    <p class="text-[10px] text-gray-500 mt-3">Google Play mostra prima dell'acquisto il prezzo applicabile, il periodo di fatturazione e l'eventuale idoneità.</p>
                 </div>
             </div>
         </div>
@@ -701,7 +707,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" class="lucide lucide-chevron-down w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    Sì. Le tue registrazioni e note sono crittografate in transito e archiviate in modo sicuro. Noctalia non vende dati personali né usa pubblicità mirata; l'accesso è limitato a te e ai fornitori necessari per erogare l'app.
+                    Sì. Le tue trascrizioni e note sono crittografate in transito e archiviate in modo sicuro. L’audio vocale viene usato solo per la trascrizione e non viene conservato in modo permanente da Noctalia. Noctalia non vende dati personali né usa pubblicità mirata; l’accesso è limitato a te e ai fornitori necessari per il servizio.
                 </p>
             </details>
 
@@ -736,7 +742,7 @@
                     RISORSA GRATUITA
                 </div>
                 <h2 class="font-serif text-3xl md:text-4xl text-white mb-4">Dizionario dei Simboli dei Sogni</h2>
-                <p class="text-purple-200/60 max-w-xl mx-auto">Esplora il significato di oltre 50 simboli onirici comuni. Comprendi cosa il tuo subconscio sta cercando di dirti.</p>
+                <p class="text-purple-200/60 max-w-xl mx-auto">Esplora 150 simboli onirici con significati contestuali e domande di riflessione. Sono punti di partenza, non messaggi fissi del subconscio.</p>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 reveal">
@@ -826,7 +832,7 @@
             <div class="text-center reveal">
                 <a href="guides/dizionario-simboli-sogni" class="inline-flex items-center gap-2 px-8 py-4 glass-button rounded-full font-sans text-white hover:text-dream-salmon transition-colors group">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="book-open" class="lucide lucide-book-open w-5 h-5" aria-hidden="true" focusable="false"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>
-                    Esplora tutti i 50+ simboli
+                    Esplora tutti i 150 simboli
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-4 h-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" focusable="false"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </a>
             </div>
@@ -919,20 +925,20 @@
             </div>
         </div>
         <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
-            <span>© 2025 Noctalia Inc.</span>
+            <span>© 2026 TiMax. Noctalia è pubblicata da TiMax.</span>
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Fatto con <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="heart" class="lucide lucide-heart w-3 h-3 text-dream-salmon fill-current" aria-hidden="true" focusable="false"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg> per i sognatori</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=20260708-130244" defer></script>
-    <script src="/js/language-dropdown.js?v=20260708-130244" defer></script>
-    <script src="/js/mobile-menu.js?v=20260708-130244" defer></script>
-    <script src="/js/landing-page.js?v=20260708-130244" defer></script>
+    <script src="/js/site-shell.js?v=20260710-005026" defer></script>
+    <script src="/js/language-dropdown.js?v=20260710-005026" defer></script>
+    <script src="/js/mobile-menu.js?v=20260710-005026" defer></script>
+    <script src="/js/landing-page.js?v=20260710-005026" defer></script>
     <script
       type="module"
-      src="/js/landing-animations.js?v=20260708-130244"
+      src="/js/landing-animations.js?v=20260710-005026"
       data-animation-module="landing"
-      data-gsap-src="/js/gsap.min.js?v=20260708-130244"
-      data-scroll-trigger-src="/js/ScrollTrigger.min.js?v=20260708-130244"
+      data-gsap-src="/js/gsap.min.js?v=20260710-005026"
+      data-scroll-trigger-src="/js/ScrollTrigger.min.js?v=20260710-005026"
     ></script>
 </body>
 </html>
