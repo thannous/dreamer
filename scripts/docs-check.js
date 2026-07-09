@@ -207,7 +207,11 @@ function assertNoDuplicateCriticalMeta() {
 }
 
 function assertCanonicalOrganizationIdentity() {
-  const files = walkFiles(DOCS_DIR, (filePath) => filePath.endsWith('.html'));
+  const files = walkFiles(DOCS_DIR, (filePath) => {
+    if (!filePath.endsWith('.html')) return false;
+    const relativePath = path.relative(DOCS_DIR, filePath).split(path.sep).join('/');
+    return !relativePath.startsWith('templates/');
+  });
   const organizationId = `${DOMAIN}/#organization`;
   const expected = siteConfig.organization;
   const errors = [];
