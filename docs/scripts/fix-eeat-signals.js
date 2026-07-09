@@ -179,7 +179,6 @@ const stats = {
   blogEditorialReviewAdded: 0,
   blogAuthorSchemaUpdated: 0,
   blogArticleAuthorUpdated: 0,
-  blogReviewSchemaAdded: 0,
   aboutEditorialExpanded: 0,
   aboutFounderAdded: 0,
   aboutSchemaUpdated: 0,
@@ -220,18 +219,6 @@ function extractMetaDescription(html) {
   if (nameFirst) return nameFirst[1];
   const contentFirst = html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']description["'][^>]*>/i);
   return contentFirst ? contentFirst[1] : null;
-}
-
-function extractCanonicalUrl(html) {
-  const relFirst = html.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["'][^>]*>/i);
-  if (relFirst) return relFirst[1];
-  const hrefFirst = html.match(/<link[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["'][^>]*>/i);
-  return hrefFirst ? hrefFirst[1] : null;
-}
-
-function extractPageTitle(html) {
-  const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
-  return titleMatch ? titleMatch[1].trim() : null;
 }
 
 function isSensitiveArticle(filePath, lang) {
@@ -280,25 +267,6 @@ function buildAuthorJsonLd(lang) {
   return `"author": [\n    {\n        "@type": "Person",\n        "@id": "${aboutUrl}#person",\n        "name": "Thanh Chau",\n        "jobTitle": "${t.bylineRole}",\n        "url": "${aboutUrl}",\n        "worksFor": {\n            "@type": "Organization",\n            "@id": "https://noctalia.app/#organization",\n            "name": "Noctalia",\n            "url": "https://noctalia.app"\n        }\n    },\n    {\n        "@type": "Organization",\n        "@id": "https://noctalia.app/#organization",\n        "name": "Noctalia",\n        "url": "https://noctalia.app",\n        "logo": {\n            "@type": "ImageObject",\n            "url": "https://noctalia.app/logo/logo_noctalia.png"\n        }\n    }\n]`;
 }
 
-function buildReviewSchemaScript(lang, canonicalUrl, title) {
-  const reviewedPage = {
-    '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    '@id': canonicalUrl,
-    url: canonicalUrl,
-    name: title,
-    inLanguage: lang,
-    reviewedBy: {
-      '@type': 'Organization',
-      '@id': 'https://noctalia.app/#organization',
-      name: 'Noctalia',
-      url: 'https://noctalia.app',
-    },
-  };
-
-  return `<script type="application/ld+json">\n${JSON.stringify(reviewedPage, null, 4)}\n</script>`;
-}
-
 // ─── Blog: Fix a single blog article ───
 
 function fixBlogArticle(filePath, lang) {
@@ -309,8 +277,6 @@ function fixBlogArticle(filePath, lang) {
 
   let modified = false;
   const description = extractMetaDescription(html);
-  const canonicalUrl = extractCanonicalUrl(html);
-  const pageTitle = extractPageTitle(html);
   const sensitiveArticle = isSensitiveArticle(filePath, lang);
   const articleContentMarkers = ['<!-- Featured Image -->', '<!-- Table of Contents -->', '<!-- Article Content -->'];
 
@@ -365,17 +331,6 @@ function fixBlogArticle(filePath, lang) {
     );
     modified = true;
     stats.blogArticleAuthorUpdated++;
-  }
-
-  // 6. Add WebPage.reviewedBy markup for health-adjacent pages.
-  if (sensitiveArticle && html.includes('Editorial Review (E-E-A-T)') && canonicalUrl && pageTitle && !html.includes('"reviewedBy"')) {
-    const blogSchemaPattern = /(<script type="application\/ld\+json">\s*\{[\s\S]*?"@type": "BlogPosting"[\s\S]*?<\/script>)/;
-    if (blogSchemaPattern.test(html)) {
-      const reviewSchema = buildReviewSchemaScript(lang, canonicalUrl, pageTitle);
-      html = html.replace(blogSchemaPattern, `$1\n${reviewSchema}`);
-      modified = true;
-      stats.blogReviewSchemaAdded++;
-    }
   }
 
   if (modified && !DRY_RUN) {
@@ -608,7 +563,6 @@ console.log(`  Quick answers added:        ${stats.blogQuickAnswerAdded}`);
 console.log(`  Editorial reviews added:    ${stats.blogEditorialReviewAdded}`);
 console.log(`  JSON-LD author updated:     ${stats.blogAuthorSchemaUpdated}`);
 console.log(`  article:author updated:     ${stats.blogArticleAuthorUpdated}`);
-console.log(`  review schema added:        ${stats.blogReviewSchemaAdded}`);
 console.log(`About pages modified:          ${aboutModified}`);
 console.log(`  Editorial section expanded:  ${stats.aboutEditorialExpanded}`);
 console.log(`  Founder bio added:           ${stats.aboutFounderAdded}`);

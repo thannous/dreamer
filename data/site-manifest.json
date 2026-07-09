@@ -96,6 +96,34 @@
             }
           }
         },
+        "page.dream-content-methodology": {
+          "id": "page.dream-content-methodology",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-content-methodology",
+          "locales": {
+            "en": {
+              "slug": "dream-content-methodology",
+              "path": "/en/dream-content-methodology"
+            },
+            "fr": {
+              "slug": "methodologie-contenus-reves",
+              "path": "/fr/methodologie-contenus-reves"
+            },
+            "es": {
+              "slug": "metodologia-contenido-suenos",
+              "path": "/es/metodologia-contenido-suenos"
+            },
+            "de": {
+              "slug": "methodik-trauminhalte",
+              "path": "/de/methodik-trauminhalte"
+            },
+            "it": {
+              "slug": "metodologia-contenuti-sogni",
+              "path": "/it/metodologia-contenuti-sogni"
+            }
+          }
+        },
         "page.alternatives": {
           "id": "page.alternatives",
           "type": "content",

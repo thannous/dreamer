@@ -22,6 +22,7 @@ const { renderFooter: renderSharedFooter } = require('../../scripts/lib/docs-com
 const { renderNavigation } = require('../../scripts/lib/docs-components/navigation');
 const { renderSharedComponentStyles } = require('../../scripts/lib/docs-components/styles');
 const { inlineLucideIcons } = require('../../scripts/lib/lucide-inline');
+const { canonicalOrganization } = require('../../scripts/lib/canonical-organization');
 
 function readDocsAssetVersionOrExit() {
   const versionPath = path.join(__dirname, '..', 'version.txt');
@@ -39,37 +40,21 @@ function readDocsAssetVersionOrExit() {
   return version;
 }
 
-function isoDateFromDocsVersion(version) {
-  const match = version.match(/^(\d{4})(\d{2})(\d{2})/);
-  if (match) {
-    const [, year, month, day] = match;
-    return `${year}-${month}-${day}`;
-  }
-  return new Date().toISOString().slice(0, 10);
-}
-
-/**
- * Returns the ISO date of the last git commit that touched any of the given files.
- * Falls back to fallbackDate if git is unavailable or the files have no history.
- */
-function gitLastModifiedDate(filePaths, fallbackDate) {
-  const { execSync } = require('child_process');
-  try {
-    const result = execSync(
-      `git log -1 --format=%aI -- ${filePaths.map(f => `"${f}"`).join(' ')}`,
-      { cwd: path.join(__dirname, '..'), encoding: 'utf8', timeout: 5000 }
-    ).trim();
-    return result ? result.slice(0, 10) : fallbackDate;
-  } catch {
-    return fallbackDate;
-  }
-}
-
 const DOCS_ASSET_VERSION = readDocsAssetVersionOrExit();
 const ROOT_DIR = path.join(__dirname, '..', '..');
 const DOCS_SRC_DIR = path.join(ROOT_DIR, 'docs-src');
 const ROOT_DATA_DIR = path.join(ROOT_DIR, 'data');
 const SITE_MANIFEST_PATH = path.join(ROOT_DATA_DIR, 'site-manifest.json');
+
+function readCatalogModifiedDate(fallbackDate) {
+  const catalogPath = path.join(ROOT_DATA_DIR, 'dream-symbols.json');
+  try {
+    const payload = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+    return normalizeIsoDate(payload?.meta?.lastUpdated) || fallbackDate;
+  } catch {
+    return fallbackDate;
+  }
+}
 
 function finalizeGeneratedHtml(html) {
   return inlineLucideIcons(html);
@@ -156,13 +141,9 @@ const CONFIG = {
     it: 'simboli'
   },
   datePublished: '2025-01-21',
-  // Automatically set to the last git commit date that touched symbol data files.
-  dateModified: gitLastModifiedDate([
-    'data/dream-symbols.json',
-    'data/symbol-i18n.json',
-    'data/dream-symbols-extended.json',
-    'data/dream-symbols-extended-tier3.json',
-  ], '2025-01-21'),
+  // Explicit editorial source date; release gates require this to move with
+  // substantive catalog changes instead of inferring freshness from Git.
+  dateModified: readCatalogModifiedDate('2025-01-21'),
   cssVersion: DOCS_ASSET_VERSION
 };
 
@@ -202,6 +183,14 @@ const SYMBOL_SHEET_LABELS = {
     variations: 'Varianti',
     questions: 'Domande'
   }
+};
+
+const QUICK_REFERENCE_LABELS = {
+  de: 'Kurzdeutung des Symbols',
+  en: 'Quick symbol reference',
+  es: 'Ficha rápida del símbolo',
+  fr: 'Fiche rapide du symbole',
+  it: 'Scheda rapida del simbolo',
 };
 
 function getSymbolSheetLabels(lang) {
@@ -690,7 +679,7 @@ function renderLegacyPseoFooter(lang, t, allSymbols, curationPages = OPTIONAL_CU
             </div>
         </div>
         <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
-            <span>&copy; 2025 Noctalia Inc.</span>
+            <span>&copy; 2026 TiMax. Noctalia is published by TiMax.</span>
             <span class="mt-2 md:mt-0 flex gap-2 items-center">${t.footer_made_with} <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> ${t.footer_for_dreamers}</span>
         </div>
     </footer>`;
@@ -944,12 +933,8 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     headline: visibleHeadline,
     description: metaDescription,
     image: `https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg`,
-    author: { '@type': 'Organization', name: 'Noctalia' },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Noctalia',
-      logo: { '@type': 'ImageObject', url: 'https://noctalia.app/logo/logo_noctalia.png' }
-    },
+    author: canonicalOrganization(),
+    publisher: canonicalOrganization(),
     datePublished: CONFIG.datePublished,
     dateModified: modifiedDate,
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}` },
@@ -1355,9 +1340,9 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
                 <div class="symbol-hero-top">
                     <div>
                         <div class="symbol-hero-chips flex flex-wrap gap-3 mb-6">
-                            <span class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-4 py-2">
+                            <span data-page-intent="quick-symbol-reference" class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-4 py-2">
                                 <i data-lucide="sparkles" class="w-4 h-4"></i>
-                                ${t.dream_symbol}
+                                ${QUICK_REFERENCE_LABELS[lang] || QUICK_REFERENCE_LABELS.en}
                             </span>
                             <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${t.category_slugs[symbol.category]}"
                                class="symbol-category-chip inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 hover:text-white hover:border-dream-salmon/30 transition-colors">
@@ -1854,11 +1839,7 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
       '@type': 'Thing',
       name: categorySchemaName
     },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Noctalia',
-      logo: { '@type': 'ImageObject', url: 'https://noctalia.app/logo/logo_noctalia.png' }
-    },
+    publisher: canonicalOrganization(),
     datePublished: CONFIG.datePublished,
     dateModified: CONFIG.dateModified
   };
@@ -2355,12 +2336,8 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
     headline: pageData.title,
     description: pageData.metaDescription,
     image: `https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg`,
-    author: { '@type': 'Organization', name: 'Noctalia' },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Noctalia',
-      logo: { '@type': 'ImageObject', url: 'https://noctalia.app/logo/logo_noctalia.png' }
-    },
+    author: canonicalOrganization(),
+    publisher: canonicalOrganization(),
     datePublished: CONFIG.datePublished,
     dateModified: CONFIG.dateModified,
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://noctalia.app/${lang}/guides/${slug}` },

@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-05-20",
+    "lastUpdated": "2026-07-10",
     "totalSymbols": 150,
     "languages": [
       "en",
@@ -78,7 +78,7 @@
       "en": {
         "slug": "water",
         "name": "Water",
-        "shortDescription": "Dreaming of water almost always speaks about emotions. Clear water suggests clarity, calm or release; dirty water points to confusion; rising or turbulent water can signal stress that is building.",
+        "shortDescription": "This quick symbol reference summarizes water as an emotional cue: clear, dirty, rising or turbulent. Use the linked water-dream guide for complete flood, ocean and drowning scenarios.",
         "askYourself": [
           "Was the water clear, dirty, calm or turbulent?",
           "Did I feel safe, pulled under or in control?",
@@ -107,7 +107,7 @@
       "fr": {
         "slug": "eau",
         "name": "Eau",
-        "shortDescription": "Rêver d’eau parle presque toujours des émotions. Une eau claire suggère la lucidité, le calme ou la libération; une eau trouble indique la confusion; une eau haute ou agitée peut signaler un stress qui monte.",
+        "shortDescription": "Cette fiche rapide résume l’eau comme repère émotionnel : claire, trouble, haute ou agitée. Consultez le guide lié pour les scénarios complets d’inondation, d’océan ou de noyade.",
         "askYourself": [
           "L’eau était-elle claire, trouble, calme ou agitée ?",
           "Me sentais-je en sécurité, emporté ou en difficulté ?",
@@ -136,7 +136,7 @@
       "es": {
         "slug": "agua",
         "name": "Agua",
-        "shortDescription": "Soñar con agua casi siempre habla de emociones. El agua limpia sugiere claridad, calma o liberación; el agua sucia indica confusión; el agua profunda o agitada puede señalar estrés que está creciendo.",
+        "shortDescription": "Esta ficha rápida resume el agua como señal emocional: limpia, sucia, profunda o agitada. Consulta la guía enlazada para escenas completas de inundación, mar o ahogamiento.",
         "askYourself": [
           "¿El agua era limpia, sucia, tranquila o agitada?",
           "¿Me sentía seguro, arrastrado o en dificultad?",
@@ -165,7 +165,7 @@
       "de": {
         "slug": "wasser",
         "name": "Wasser",
-        "shortDescription": "Von Wasser zu träumen spricht fast immer über Emotionen. Klares Wasser deutet auf Klarheit, Ruhe oder Erleichterung hin; schmutziges Wasser auf Verwirrung; hohes oder unruhiges Wasser auf wachsenden Stress.",
+        "shortDescription": "Diese Kurzdeutung fasst Wasser als emotionales Signal zusammen: klar, schmutzig, hoch oder unruhig. Der verlinkte Ratgeber behandelt vollständige Szenarien zu Flut, Meer und Ertrinken.",
         "askYourself": [
           "War das Wasser klar, schmutzig, ruhig oder aufgewühlt?",
           "Fühlte ich mich sicher, mitgerissen oder überfordert?",
@@ -190,18 +190,18 @@
             "answer": "Tiefes, hohes oder aufgewühltes Wasser zeigt oft intensive Gefühle, Stress oder Verantwortung, die schwer zu halten ist."
           }
         ],
-        "modifiedAt": "2026-06-18"
+        "modifiedAt": "2026-07-10"
       },
       "it": {
         "slug": "acqua",
         "name": "Acqua",
-        "shortDescription": "Sognare acqua parla quasi sempre di emozioni: acqua pulita o limpida, acqua torbida o sporca, acqua alta, acqua che scorre o acqua in casa. Il contesto mostra se stai trovando chiarezza, pressione emotiva o bisogno di proteggere il tuo spazio privato.",
+        "shortDescription": "Questa scheda rapida riassume il simbolo acqua: limpida, torbida, alta, corrente o dentro casa. Per confrontare alluvioni, mare, annegamento e altri scenari completi, usa la guida ai sogni d’acqua collegata in fondo alla pagina.",
         "askYourself": [
           "L’acqua era pulita, limpida, torbida, sporca o in movimento?",
           "Stavo nuotando, osservando l’acqua o venivo trascinato?",
           "Quale emozione attuale somiglia allo stato dell’acqua?"
         ],
-        "seoTitle": "acqua pulita, sporca, alta o in casa",
+        "seoTitle": "acqua: scheda rapida del simbolo",
         "faq": [
           {
             "question": "Cosa significa sognare acqua?",
@@ -231,7 +231,7 @@
           "button": "Prova l'app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-07-06"
+        "modifiedAt": "2026-07-10"
       },
       "relatedSymbols": [
         "flood",
@@ -245,9 +245,10 @@
         "en": "water-dreams-meaning",
         "fr": "reves-eau",
         "es": "suenos-de-agua#interpretaciones",
-        "de": "",
-        "it": ""
-      }
+        "de": "wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen",
+        "it": "sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione"
+      },
+      "modifiedAt": "2026-07-10"
     },
     {
       "id": "teeth",
@@ -271,7 +272,7 @@
           "Suis-je anxieux à propos de mon apparence ?",
           "Ai-je peur de perdre quelque chose d'important ?"
         ],
-        "modifiedAt": "2026-06-18"
+        "modifiedAt": "2026-07-10"
       },
       "es": {
         "slug": "dientes",
@@ -332,9 +333,10 @@
         "en": "teeth-falling-out-dreams",
         "fr": "reves-dents-qui-tombent",
         "es": "suenos-dientes-caen",
-        "de": "",
-        "it": ""
-      }
+        "de": "traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation",
+        "it": "sogni-di-denti-che-cadono-significato-e-interpretazione"
+      },
+      "modifiedAt": "2026-07-10"
     },
     {
       "id": "falling",
@@ -399,7 +401,7 @@
             "answer": "Notiere, wo du gefallen bist, ob jemand anwesend war, ob du aufgewacht bist und welcher Lebensbereich sich gerade unsicher anfühlt."
           }
         ],
-        "modifiedAt": "2026-06-18"
+        "modifiedAt": "2026-07-10"
       },
       "it": {
         "slug": "cadere",
@@ -419,9 +421,10 @@
         "en": "falling-dreams-meaning",
         "fr": "reves-de-chute",
         "es": "suenos-de-caer",
-        "de": "",
-        "it": ""
-      }
+        "de": "bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen",
+        "it": "significato-dei-sogni-che-cadono-perche-sogni-di-cadere"
+      },
+      "modifiedAt": "2026-07-10"
     },
     {
       "id": "flying",
@@ -430,7 +433,7 @@
       "en": {
         "slug": "flying",
         "name": "Flying",
-        "shortDescription": "Flying through the air is an euphoric dream symbolizing freedom, transcendence, and overcoming limits. Difficulty flying can indicate perceived obstacles.",
+        "shortDescription": "This quick symbol reference reads flying as freedom, perspective or difficulty overcoming an obstacle. Use the linked article for full scenarios, emotions and lucid-dream context.",
         "askYourself": [
           "What do I need to free myself from?",
           "What limits am I ready to transcend?"
@@ -439,8 +442,9 @@
       "fr": {
         "slug": "voler",
         "name": "Voler",
-        "shortDescription": "Voler dans les airs est un rêve euphorique symbolisant la liberté, la transcendance et le dépassement des limites. Difficulté à voler peut indiquer des obstacles perçus.",
-        "askYourself": [
+        "shortDescription": "Cette fiche rapide résume le symbole du vol : liberté, prise de hauteur ou difficulté à dépasser un obstacle. Pour comparer les scénarios, les émotions et le lien avec le rêve lucide, consultez l’article complet associé.",
+      "seoTitle": "voler : fiche rapide du symbole",
+      "askYourself": [
           "De quoi ai-je besoin de me libérer ?",
           "Quelles limites suis-je prêt à dépasser ?"
         ]
@@ -448,7 +452,7 @@
       "es": {
         "slug": "volar",
         "name": "Volar",
-        "shortDescription": "Volar por el aire es un sueño eufórico que simboliza libertad, trascendencia y superación de límites. La dificultad para volar puede indicar obstáculos percibidos.",
+        "shortDescription": "Esta ficha rápida resume volar como libertad, perspectiva o dificultad para superar un obstáculo. Consulta el artículo enlazado para escenas completas, emociones y contexto de sueño lúcido.",
         "askYourself": [
           "¿De qué necesito liberarme?",
           "¿Qué límites estoy listo para trascender?"
@@ -457,7 +461,7 @@
       "de": {
         "slug": "fliegen",
         "name": "Fliegen",
-        "shortDescription": "Fliegen symbolisiert Freiheit, das Überwinden von Grenzen und die Fähigkeit, sich über Probleme zu erheben. Es kann auch den Wunsch nach Flucht oder Befreiung darstellen.",
+        "shortDescription": "Diese Kurzdeutung liest Fliegen als Freiheit, Perspektivwechsel oder Schwierigkeit, ein Hindernis zu überwinden. Der verlinkte Artikel behandelt vollständige Szenarien und luziden Kontext.",
         "askYourself": [
           "Von welcher Situation möchte ich mich befreien?",
           "Wo fühle ich mich eingeschränkt?"
@@ -466,7 +470,7 @@
       "it": {
         "slug": "volare",
         "name": "Volare",
-        "shortDescription": "Volare simboleggia libertà, superamento dei limiti e la capacità di elevarsi al di sopra dei problemi. Può anche rappresentare il desiderio di fuga o liberazione.",
+        "shortDescription": "Questa scheda rapida riassume il volo come libertà, prospettiva o difficoltà nel superare un ostacolo. L’articolo collegato tratta scenari completi, emozioni e sogno lucido.",
         "askYourself": [
           "Da quale situazione vorrei liberarmi?",
           "Dove mi sento limitato?"
@@ -481,9 +485,10 @@
         "en": "flying-dreams-meaning",
         "fr": "reves-de-voler",
         "es": "suenos-de-volar",
-        "de": "",
-        "it": ""
-      }
+        "de": "bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen",
+        "it": "significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni"
+      },
+      "modifiedAt": "2026-07-10"
     },
     {
       "id": "snake",
@@ -543,9 +548,10 @@
         "en": "snake-dreams-meaning",
         "fr": "reves-de-serpents",
         "es": "suenos-con-serpientes",
-        "de": "",
-        "it": ""
-      }
+        "de": "traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt",
+        "it": "sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo"
+      },
+      "modifiedAt": "2026-07-10"
     },
     {
       "id": "death",
@@ -603,9 +609,10 @@
         "en": "death-dreams-meaning",
         "fr": "reves-de-mort",
         "es": "suenos-de-muerte",
-        "de": "",
-        "it": ""
-      }
+        "de": "traeume-vom-tod-bedeutung-und-interpretation",
+        "it": "sogni-sulla-morte-significato-e-interpretazione"
+      },
+      "modifiedAt": "2026-07-10"
     },
     {
       "id": "chase",
@@ -692,9 +699,10 @@
         "en": "being-chased-dreams",
         "fr": "reves-etre-poursuivi",
         "es": "suenos-ser-perseguido",
-        "de": "",
-        "it": ""
-      }
+        "de": "traeume-verfolgt-werden-bedeutung-und-interpretation",
+        "it": "sogni-inseguiti-significato-e-interpretazione"
+      },
+      "modifiedAt": "2026-07-10"
     },
     {
       "id": "house",
@@ -992,9 +1000,10 @@
         "en": "pregnancy-dreams-meaning",
         "fr": "reves-de-grossesse",
         "es": "suenos-de-embarazo",
-        "de": "",
-        "it": ""
-      }
+        "de": "schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind",
+        "it": "sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta"
+      },
+      "modifiedAt": "2026-07-10"
     },
     {
       "id": "dog",
@@ -1501,7 +1510,7 @@
       "en": {
         "slug": "flood",
         "name": "Flood",
-        "shortDescription": "A flood dream points to emotions, stress or change that feels hard to contain. If water enters a house, rises quickly or looks dirty, the dream shows which area of life feels invaded.",
+        "shortDescription": "This quick symbol reference summarizes a flood as emotional overflow, stress or invaded boundaries. Use the linked water-dream guide for full house, dirty-water, sea and escape scenarios.",
         "askYourself": [
           "Was the flood clear, dirty, rainwater or seawater?",
           "Was water entering my house, carrying me away or letting me escape?",
@@ -1530,7 +1539,7 @@
       "fr": {
         "slug": "inondation",
         "name": "Inondation",
-        "shortDescription": "Rêver d’inondation indique des émotions, un stress ou des changements difficiles à contenir. Si l’eau entre dans la maison, monte vite ou paraît trouble, le rêve montre quelle zone de vie se sent envahie.",
+        "shortDescription": "Cette fiche rapide résume l’inondation comme débordement émotionnel, stress ou limites envahies. Consultez le guide lié pour les scénarios complets de maison, d’eau trouble, de mer et de fuite.",
         "askYourself": [
           "L’inondation était-elle d’eau claire, trouble, de pluie ou de mer ?",
           "L’eau entrait-elle dans ma maison, m’emportait-elle ou me laissait-elle sortir ?",
@@ -1559,13 +1568,13 @@
       "es": {
         "slug": "inundacion",
         "name": "Inundación",
-        "shortDescription": "Soñar con inundación indica emociones que se desbordan, estrés acumulado o cambios difíciles de contener. Si el agua entra en casa, es sucia o sube rápido, el sueño señala qué área se siente invadida y qué límite necesita atención.",
+        "shortDescription": "Esta ficha rápida resume el símbolo de la inundación: desborde emocional, estrés o límites invadidos. Para interpretar escenas completas —casa inundada, agua limpia o sucia, mar y escape— consulta la guía de sueños con agua enlazada al final.",
         "askYourself": [
           "¿La inundación era de agua limpia, sucia, de lluvia o de mar?",
           "¿El agua entraba en mi casa, me arrastraba o yo lograba salir?",
           "¿Qué situación se está desbordando en mi vida despierta?"
         ],
-        "seoTitle": "inundación, casa inundada, agua sucia",
+        "seoTitle": "inundación: ficha rápida del símbolo",
         "faq": [
           {
             "question": "¿Qué significa soñar con inundación?",
@@ -1588,12 +1597,12 @@
             "answer": "Escapar de una inundación sugiere que estás buscando salida, límites o ayuda ante una situación que se siente desbordada."
           }
         ],
-        "modifiedAt": "2026-06-18"
+        "modifiedAt": "2026-07-10"
       },
       "de": {
         "slug": "ueberschwemmung",
         "name": "Überschwemmung",
-        "shortDescription": "Eine Überschwemmung im Traum zeigt Emotionen, Stress oder Veränderungen, die schwer zu halten sind. Dringt Wasser ins Haus ein, steigt schnell oder wirkt schmutzig, zeigt der Traum, welcher Lebensbereich überflutet wird.",
+        "shortDescription": "Diese Kurzdeutung fasst die Überschwemmung als emotionales Überlaufen, Stress oder verletzte Grenzen zusammen. Der verlinkte Ratgeber behandelt Haus, schmutziges Wasser, Meer und Flucht ausführlich.",
         "askYourself": [
           "War die Überschwemmung klares, schmutziges, Regen- oder Meerwasser?",
           "Drang Wasser ins Haus ein, riss es mich mit oder konnte ich entkommen?",
@@ -1622,7 +1631,7 @@
       "it": {
         "slug": "alluvione",
         "name": "Alluvione",
-        "shortDescription": "Sognare un’alluvione indica emozioni, stress o cambiamenti difficili da contenere. Se l’acqua entra in casa, sale rapidamente o è sporca, il sogno mostra quale area della vita si sente invasa.",
+        "shortDescription": "Questa scheda rapida riassume l’alluvione come trabocco emotivo, stress o confini invasi. La guida collegata tratta per intero casa, acqua sporca, mare e fuga.",
         "askYourself": [
           "L’alluvione era di acqua pulita, sporca, pioggia o mare?",
           "L’acqua entrava in casa, mi trascinava o riuscivo a uscire?",
@@ -1661,7 +1670,8 @@
         "es": "suenos-de-agua#interpretaciones",
         "de": "wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen",
         "it": "sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione"
-      }
+      },
+      "modifiedAt": "2026-07-10"
     },
     {
       "id": "car",
@@ -2251,11 +2261,39 @@
       "es": {
         "slug": "escaleras",
         "name": "Escaleras",
-        "shortDescription": "Las escaleras simbolizan progresión, ascenso social o espiritual. Subir indica crecimiento; bajar puede sugerir exploración del subconsciente.",
+        "shortDescription": "Soñar con escaleras suele representar avance, retroceso y cambios de etapa: subir con facilidad, bajar, caer, encontrar escalones rotos o no llegar al final puede reflejar cómo vives una meta, una transición o una pérdida de control.",
         "askYourself": [
-          "¿Estoy progresando en mi vida?",
-          "¿Qué dirección estoy tomando?"
-        ]
+          "¿Subía, bajaba, caía o no lograba llegar al final?",
+          "¿Las escaleras eran firmes, estrechas, interminables o tenían escalones rotos?",
+          "¿Qué meta o cambio de etapa se siente así en mi vida despierta?"
+        ],
+        "seoTitle": "subir escaleras, bajarlas o caer",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con escaleras?",
+            "answer": "Soñar con escaleras suele relacionarse con progreso, retroceso o un cambio de nivel en tu vida. La dirección, el estado de los escalones y la emoción del sueño ayudan a distinguir entre ambición, duda, esfuerzo y pérdida de control."
+          },
+          {
+            "question": "¿Qué significa soñar con subir escaleras?",
+            "answer": "Subir escaleras puede reflejar esfuerzo hacia una meta, aprendizaje o una transición que percibes como ascendente. Subir con facilidad sugiere confianza; hacerlo con cansancio o miedo puede señalar presión o dudas sobre el camino."
+          },
+          {
+            "question": "¿Qué significa soñar con bajar o caer por unas escaleras?",
+            "answer": "Bajar puede indicar que revisas recuerdos, emociones o una situación que requiere mirar hacia dentro. Caer por las escaleras suele expresar inseguridad, un revés o temor a perder el control; no predice un accidente."
+          },
+          {
+            "question": "¿Qué significan unas escaleras rotas o interminables?",
+            "answer": "Unos escalones rotos pueden representar obstáculos o una ruta que ya no parece segura. Unas escaleras interminables suelen aparecer cuando una meta exige mucho esfuerzo y el final todavía se siente lejano."
+          }
+        ],
+        "softCta": {
+          "kicker": "Diccionario de sueños Noctalia",
+          "title": "Devuelve las escaleras a la escena completa",
+          "text": "Explora cómo usar una ficha de símbolo y compárala con la dirección, el estado de los escalones y la emoción del sueño antes de elegir una interpretación.",
+          "button": "Explorar el diccionario",
+          "href": "/es/diccionario-de-suenos-app"
+        },
+        "modifiedAt": "2026-07-10"
       },
       "de": {
         "slug": "treppe",
@@ -2580,11 +2618,43 @@
       "es": {
         "slug": "arbol",
         "name": "Árbol",
-        "shortDescription": "Un árbol simboliza el crecimiento personal, las raíces familiares y el ciclo de la vida. Un árbol muerto puede representar el fin de una fase o necesidad de renovación.",
+        "shortDescription": "Soñar con un árbol suele relacionarse con crecimiento, estabilidad, raíces y ciclos vitales: un árbol grande, sus ramas o raíces, un árbol seco o uno que cae pueden reflejar apoyo, cambio, desgaste o la necesidad de renovar una base importante.",
         "askYourself": [
-          "¿Estoy bien enraizado en mi vida?",
-          "¿Qué parte de mí necesita crecer?"
-        ]
+          "¿El árbol estaba vivo, seco, caído, cortado o lleno de frutos?",
+          "¿Me fijaba en las raíces, el tronco, las ramas o lo que ocurría alrededor?",
+          "¿Qué relación, proyecto o parte de mi identidad necesita más apoyo o renovación?"
+        ],
+        "seoTitle": "árbol, raíces, ramas o árbol caído",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un árbol?",
+            "answer": "Soñar con un árbol suele hablar de crecimiento, estabilidad, identidad y vínculos con el pasado. Su tamaño, estado, raíces y entorno muestran si el sueño enfatiza fortaleza, expansión, desgaste o cambio."
+          },
+          {
+            "question": "¿Qué significa soñar con un árbol grande y frondoso?",
+            "answer": "Un árbol grande y frondoso puede representar apoyo, vitalidad o un proyecto que está madurando. Si te protegía con su sombra, también puede señalar refugio; si te intimidaba, quizá refleja una influencia que ocupa demasiado espacio."
+          },
+          {
+            "question": "¿Qué significan las raíces o las ramas de un árbol en sueños?",
+            "answer": "Las raíces suelen dirigir la atención hacia la familia, el origen, la seguridad y las bases personales. Las ramas pueden representar relaciones, opciones o aspiraciones que crecen en distintas direcciones."
+          },
+          {
+            "question": "¿Qué significa soñar con un árbol seco, cortado o caído?",
+            "answer": "Un árbol seco o cortado puede expresar agotamiento, una etapa terminada o pérdida de apoyo. Un árbol caído puede reflejar un cambio brusco en algo que parecía estable; no anuncia un suceso literal."
+          },
+          {
+            "question": "¿Qué significa soñar con un árbol lleno de frutos?",
+            "answer": "Un árbol con frutos suele asociarse con resultados, abundancia o algo que por fin puede aprovecharse. Observa si recogías los frutos, los compartías o no podías alcanzarlos, porque esa acción cambia el matiz."
+          }
+        ],
+        "softCta": {
+          "kicker": "Noctalia en Android",
+          "title": "Conserva el árbol dentro del sueño",
+          "text": "Descubre cómo Noctalia organiza el relato, las emociones y los símbolos de un sueño guardado para explorarlos en conjunto, sin imponer un significado definitivo.",
+          "button": "Ver el análisis en Android",
+          "href": "/es/app-analisis-suenos-android"
+        },
+        "modifiedAt": "2026-07-10"
       },
       "de": {
         "slug": "baum",
@@ -3402,11 +3472,39 @@
       "es": {
         "slug": "boca",
         "name": "Boca",
-        "shortDescription": "La boca representa comunicación, expresión personal y necesidades. Una boca cerrada puede indicar dificultad para expresarse o secretos guardados.",
+        "shortDescription": "Soñar con la boca suele hablar de comunicación, límites y necesidades: no poder hablar, tener la boca cerrada, herida o llena de algo puede reflejar palabras contenidas, incomodidad o miedo a expresarte.",
         "askYourself": [
-          "¿Hay algo que necesito decir?",
-          "¿Me estoy conteniendo de expresarme?"
-        ]
+          "¿Podía hablar o sentía la boca bloqueada, herida o llena?",
+          "¿Qué intentaba decir, quitar o esconder en el sueño?",
+          "¿En qué situación me cuesta expresar una necesidad o poner un límite?"
+        ],
+        "seoTitle": "boca cerrada, herida o llena de algo",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con la boca?",
+            "answer": "Soñar con la boca suele relacionarse con comunicación, expresión, necesidades y límites. El significado cambia según si podías hablar, la boca estaba cerrada, herida o contenía algo."
+          },
+          {
+            "question": "¿Qué significa soñar que no puedes abrir la boca o hablar?",
+            "answer": "No poder abrir la boca o hablar puede reflejar palabras contenidas, miedo a ser juzgado o una situación en la que no sientes espacio para expresarte."
+          },
+          {
+            "question": "¿Qué significa soñar con una herida o sangre en la boca?",
+            "answer": "Una boca herida o con sangre puede representar una conversación dolorosa, culpa por algo dicho o temor a que expresarte tenga consecuencias. No predice un problema médico."
+          },
+          {
+            "question": "¿Qué significa soñar con algo dentro de la boca?",
+            "answer": "Tener objetos, comida, pelo u otra cosa en la boca suele señalar incomodidad, dificultad para decir lo que piensas o la necesidad de retirar algo que bloquea tu expresión."
+          }
+        ],
+        "softCta": {
+          "kicker": "Noctalia en Android",
+          "title": "Recuerda qué intentabas decir",
+          "text": "Registra la escena por voz al despertar y vuelve después a las palabras, sensaciones y personas que rodeaban el símbolo. El contexto cambia la lectura.",
+          "button": "Probar la app",
+          "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
+        },
+        "modifiedAt": "2026-07-10"
       },
       "de": {
         "slug": "mund",
@@ -3843,9 +3941,10 @@
         "en": "pregnancy-dreams-meaning",
         "fr": "reves-de-grossesse",
         "es": "suenos-de-embarazo",
-        "de": "",
-        "it": ""
-      }
+        "de": "schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind",
+        "it": "sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta"
+      },
+      "modifiedAt": "2026-07-10"
     },
     {
       "id": "swimming",
