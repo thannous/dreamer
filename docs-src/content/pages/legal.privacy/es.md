@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Política de privacidad",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Política de privacidad</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Última actualización: 22 de noviembre de 2025</p>
+        <p class="text-lg text-purple-200/80 mb-10">Última actualización: 9 de julio de 2026</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -138,7 +138,7 @@
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Proveedores técnicos:</strong> principalmente Supabase (alojamiento, base de datos, autenticación) y proveedores de infraestructura cloud necesarios para el funcionamiento de la aplicación.</li>
                     <li><strong>Proveedores de IA y reconocimiento de voz:</strong> Google (Gemini, Google Cloud Speech-to-Text), y cuando corresponda otros proveedores de IA líderes (Anthropic, OpenAI, Perplexity, Mistral, o servicios equivalentes) para transcripción, análisis de tus sueños y generación de imágenes o contenido.</li>
-                    <li><strong>Gestión de suscripciones:</strong> RevenueCat (USA) para la gestión de suscripciones in-app. RevenueCat recibe un identificador de usuario anónimo y la información de compra proporcionada por Apple/Google. Tu información de pago completa nunca pasa por Noctalia.</li>
+                    <li><strong>Gestión de suscripciones:</strong> RevenueCat (EE. UU.) gestiona las suscripciones integradas. RevenueCat recibe un identificador de usuario anónimo y la información de compra proporcionada por la tienda aplicable, actualmente Google Play. Tu información de pago completa nunca pasa por Noctalia.</li>
                     <li><strong>Asesores externos y autoridades:</strong> bufetes de abogados, contables o autoridades administrativas y judiciales cuando lo exija la ley o para defender nuestros derechos.</li>
                 </ul>
                 <p class="mt-4">En todos los casos, exigimos a nuestros proveedores de servicios que ofrezcan garantías suficientes en cuanto a seguridad y confidencialidad, y que no utilicen tus datos para sus propios fines de marketing.</p>

@@ -23,15 +23,15 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-05-20T00:00:00+02:00",
+  "modifiedTime": "2026-07-09T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Alternativa a Oniri per diario dei sogni\",\n    \"description\": \"Confronta Oniri e Noctalia: sogno lucido, analisi IA, voce, immagini, Android e informativa privacy.\",\n    \"url\": \"https://noctalia.app/it/alternativa-oniri\",\n    \"inLanguage\": \"it\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/it/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Alternativa a Oniri per diario dei sogni\",\n            \"item\": \"https://noctalia.app/it/alternativa-oniri\"\n        }\n    ]\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Scegli Oniri se\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Scegli Oniri se sogno lucido, PDF, statistiche e iOS maturo sono priorità.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Scegli Noctalia se\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Scegli Noctalia se vuoi ricordare rapidamente su Android, creare schede visuali, seguire simboli e parlare di un sogno.\"\n            }\n        }\n    ]\n}"
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Alternativa a Oniri per diario dei sogni\",\n  \"description\": \"Confronta Oniri e Noctalia: sogno lucido, analisi IA, voce, immagini, Android e informativa privacy.\",\n  \"url\": \"https://noctalia.app/it/alternativa-oniri\",\n  \"inLanguage\": \"it\",\n  \"dateModified\": \"2026-07-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/it/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Alternativa a Oniri per diario dei sogni\",\n      \"item\": \"https://noctalia.app/it/alternativa-oniri\"\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Scegli Oniri se\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Scegli Oniri se sogno lucido, PDF, statistiche e iOS maturo sono priorità.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Scegli Noctalia se\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Scegli Noctalia se vuoi ricordare rapidamente su Android, creare schede visuali, seguire simboli e parlare di un sogno.\"\n      }\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -58,7 +58,7 @@
           <tr><td class="py-4 pr-4 text-white font-medium">Interpretazione</td><td class="py-4 pr-4 ">IA, domande e centinaia di significati.</td><td class="py-4 pr-4 ">Scheda IA, simboli ricorrenti e riflessione guidata.</td><td class="py-4 pr-4 ">Noctalia è più focalizzata e conversazionale.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Immagini</td><td class="py-4 pr-4 ">Immagini generate e fino a 5 immagini per sogno in premium.</td><td class="py-4 pr-4 ">Immagine generata come memoria visuale centrale.</td><td class="py-4 pr-4 ">Decidere sul flusso completo.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Export e statistiche</td><td class="py-4 pr-4 ">PDF, filtri e statistiche sono punti forti pubblici.</td><td class="py-4 pr-4 ">Stats e simboli, ma export non è il claim principale.</td><td class="py-4 pr-4 ">Oniri per utenti orientati all’export.</td></tr>
-          <tr><td class="py-4 pr-4 text-white font-medium">Prezzo con fonte</td><td class="py-4 pr-4 ">App Store US lista vari acquisti in-app e avvisa che variano per località.</td><td class="py-4 pr-4 ">Noctalia mostra Gratis più Onironauta a 2,99 €/mese o 19 €/anno.</td><td class="py-4 pr-4 ">Mantenere paese e data.</td></tr>
+          <tr><td class="py-4 pr-4 text-white font-medium">Prezzo con fonte</td><td class="py-4 pr-4 ">App Store US lista vari acquisti in-app e avvisa che variano per località.</td><td class="py-4 pr-4 ">Piano gratuito più Noctalia Plus; Google Play mostra il prezzo applicabile prima dell’acquisto.</td><td class="py-4 pr-4 ">Mantenere paese e data.</td></tr>
         </tbody>
       </table>
     </div>
@@ -67,7 +67,7 @@
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">Prezzo con fonte</h2>
-      <p><strong>Nota prezzo:</strong> App Store lista acquisti in-app Oniri nella scheda US e avvisa che i prezzi variano. Noctalia mostra Gratis più Onironauta a 2,99 €/mese o 19 €/anno. Sono segnali con fonte, non una promessa universale.</p>
+      <p><strong>Nota prezzo:</strong> App Store lista acquisti in-app Oniri nella scheda US e avvisa che i prezzi variano. Noctalia offre un piano gratuito e Noctalia Plus; Google Play mostra prima dell’acquisto il prezzo, il periodo di fatturazione e l’idoneità applicabili. Sono segnali con fonte, non una promessa universale.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">Prova sociale e cautela</h2>

@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Rêve lucide : guides et techniques",
   "publishedTime": "",
-  "modifiedTime": "2026-06-21",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"CollectionPage\",\n            \"name\": \"Rêve lucide : guides et techniques\",\n            \"description\": \"Hub thématique : ressources et guides pour progresser en rêve lucide.\",\n            \"inLanguage\": \"fr\",\n            \"dateModified\": \"2026-06-21\",\n            \"url\": \"https://noctalia.app/fr/blog/reve-lucide\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"CollectionPage\",\n            \"name\": \"Rêve lucide : guides et techniques\",\n            \"description\": \"Hub thématique : ressources et guides pour progresser en rêve lucide.\",\n            \"inLanguage\": \"fr\",\n            \"dateModified\": \"2026-07-09\",\n            \"url\": \"https://noctalia.app/fr/blog/reve-lucide\"\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêve lucide\",\n            \"item\": \"https://noctalia.app/fr/blog/reve-lucide\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -78,10 +78,10 @@
 </section>
 
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/20 bg-white/5">
-  <h2 class="font-serif text-2xl text-dream-cream mb-4">Ce que change le corpus de 55 000 rêves</h2>
+  <h2 class="font-serif text-2xl text-dream-cream mb-4">Comment repérer vos propres signes oniriques</h2>
   <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
-    <p>Le rêve lucide progresse plus vite quand vous repérez vos propres “dream signs” : lieux récurrents, anomalies, émotions ou personnages qui reviennent. Le corpus Noctalia de 55 000 rêves sert de repère pour comparer ces motifs sans réduire votre rêve à une interprétation automatique.</p>
-    <p>Utilisez-le comme boussole : cherchez les répétitions, gardez le contexte personnel, puis choisissez une seule pratique lucide à tester pendant une semaine.</p>
+    <p>Des statistiques générales ne peuvent pas déterminer vos repères personnels. Après chaque entrée, relevez un lieu, un personnage, une émotion ou un détail impossible qui revient. Comparez sept à dix entrées, puis utilisez le motif le plus fréquent comme signal pour votre prochain test de réalité. C'est une invitation à observer, pas la preuve qu'un rêve possède un sens unique.</p>
+    <p>Le catalogue public de Noctalia est un contenu éditorial, pas un corpus de rêves privés d'utilisateurs ; son périmètre vérifiable est décrit dans la <a class="text-dream-salmon hover:underline" href="/fr/methodologie-contenus-reves">méthodologie des contenus sur les rêves</a>. Pour constituer votre propre historique avant que les détails ne s'effacent, utilisez le <a class="text-dream-salmon hover:underline" href="/fr/journal-de-reves-vocal">journal de rêves vocal sur Android</a>.</p>
   </div>
 </section>
 

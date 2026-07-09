@@ -34,6 +34,17 @@
       }
     },
     {
+      "pageId": "page.dream-content-methodology",
+      "layout": "content",
+      "slugs": {
+        "en": "dream-content-methodology",
+        "fr": "methodologie-contenus-reves",
+        "es": "metodologia-contenido-suenos",
+        "de": "methodik-trauminhalte",
+        "it": "metodologia-contenuti-sogni"
+      }
+    },
+    {
       "pageId": "page.alternatives",
       "layout": "content",
       "slugs": {

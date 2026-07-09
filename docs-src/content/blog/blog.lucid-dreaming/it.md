@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Sogni Lucidi: guide e tecniche",
   "publishedTime": "",
-  "modifiedTime": "2026-06-21",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"CollectionPage\",\n        \"name\": \"Sogni lucidi: guide e tecniche\",\n        \"description\": \"Area tematica: guide, tecniche e pratica dei sogni lucidi.\",\n        \"inLanguage\": \"it\",\n        \"dateModified\": \"2026-06-21\",\n        \"url\": \"https://noctalia.app/it/blog/sogni-lucidi-guide-e-tecniche\"\n}",
+    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"CollectionPage\",\n        \"name\": \"Sogni lucidi: guide e tecniche\",\n        \"description\": \"Area tematica: guide, tecniche e pratica dei sogni lucidi.\",\n        \"inLanguage\": \"it\",\n        \"dateModified\": \"2026-07-09\",\n        \"url\": \"https://noctalia.app/it/blog/sogni-lucidi-guide-e-tecniche\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/it/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Risorse\",\n            \"item\": \"https://noctalia.app/it/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sogno lucido\",\n            \"item\": \"https://noctalia.app/it/blog/sogni-lucidi-guide-e-tecniche\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -78,10 +78,10 @@
 </section>
 
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/20 bg-white/5">
-  <h2 class="font-serif text-2xl text-dream-cream mb-4">Cosa cambia il corpus di 55.000 sogni</h2>
+  <h2 class="font-serif text-2xl text-dream-cream mb-4">Come riconoscere i tuoi segnali onirici</h2>
   <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
-    <p>Il sogno lucido migliora più rapidamente quando riconosci i tuoi segnali onirici: luoghi ricorrenti, anomalie, emozioni o personaggi. Il corpus Noctalia di 55.000 sogni è un riferimento per confrontare schemi senza ridurre il tuo sogno a un'interpretazione automatica.</p>
-    <p>Usalo come bussola: cerca le ripetizioni, conserva il contesto personale e scegli una sola pratica lucida da provare per una settimana.</p>
+    <p>Le statistiche generali non possono stabilire i tuoi segnali personali. Dopo ogni voce, annota un luogo, un personaggio, un'emozione o un dettaglio impossibile che si ripete. Confronta da sette a dieci voci e usa lo schema più frequente come segnale per il prossimo test di realtà. È uno spunto per osservare, non la prova che un sogno abbia un significato fisso.</p>
+    <p>Il catalogo pubblico dei simboli di Noctalia è materiale editoriale, non un corpus di sogni privati degli utenti; il suo perimetro verificabile è descritto nella <a class="text-dream-salmon hover:underline" href="/it/metodologia-contenuti-sogni">metodologia dei contenuti sui sogni</a>. Per creare il tuo storico prima che i dettagli svaniscano, usa il <a class="text-dream-salmon hover:underline" href="/it/diario-dei-sogni-vocale">diario dei sogni vocale su Android</a>.</p>
   </div>
 </section>
 

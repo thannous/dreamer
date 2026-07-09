@@ -23,14 +23,14 @@
   "twitterImage": "https://noctalia.app/img/blog/dreams-about-ex.webp",
   "twitterImageAlt": "Silueta reflexiva que evoca recuerdos de relaciones pasadas",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-03-06",
+  "modifiedTime": "2026-07-10",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-de-agua",
   "nextPath": "/es/blog/suenos-de-embarazo",
   "preloadImage": "/img/blog/dreams-about-ex.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"¿Qué significa soñar con tu ex? 7 explicaciones\",\n            \"description\": \"Entiende por qué sueñas con tu ex, qué emociones no resueltas puede reflejar y cómo cambia el significado según el tipo de sueño.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dreams-about-ex.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/suenos-con-ex\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 916,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-con-ex\"\n        }",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Por que sigo sonando con mi ex?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Soñar con tu ex no significa necesariamente que quieras volver con el/ella. Estos sueños a menudo representan emociones no resueltas, lecciones aprendidas o aspectos de ti mismo asociados con esa relación. Tu cerebro procesa experiencias pasadas durante el sueño.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Soñar con mi ex significa que todavia lo/la amo?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"No necesariamente. Los sueños con ex pueden reflejar muchas cosas: procesar el duelo, trabajar en problemas no resueltos, extranar ciertas cualidades (no la persona), o tu subconsciente usando una cara familiar para representar otra cosa. La emoción en el sueño importa más que la aparición de tu ex.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Por que sueño con un ex en quien no he pensado en anos?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Los sueños repentinos con un ex olvidado a menudo ocurren cuando algo en tu vida actual activa recuerdos o emociones asociadas. Puedes estar enfrentando dinamicas de relación similares o desafios emocionales. Tu cerebro usa experiencias pasadas como puntos de referencia.\" }\n                }\n            ]\n        }",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"¿Qué significa soñar con tu ex? 7 explicaciones\",\n    \"description\": \"Entiende por qué sueñas con tu ex, qué emociones no resueltas puede reflejar y cómo cambia el significado según el tipo de sueño.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dreams-about-ex.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-07-10\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-con-ex\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 916,\n    \"timeRequired\": \"PT4M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-con-ex\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Por qué sigo soñando con mi ex?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Soñar con tu ex no significa necesariamente que quieras volver con esa persona. Estos sueños a menudo representan emociones no resueltas, lecciones aprendidas o aspectos de ti mismo asociados con esa relación. Tu cerebro procesa experiencias pasadas durante el sueño.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Soñar con mi ex significa que todavía amo a esa persona?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No necesariamente. Los sueños con ex pueden reflejar muchas cosas: procesar el duelo, trabajar en problemas no resueltos, extrañar ciertas cualidades (no la persona), o tu subconsciente usando una cara familiar para representar otra cosa. La emoción en el sueño importa más que la aparición de tu ex.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Por qué sueño con un ex en quien no he pensado en años?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Los sueños repentinos con un ex olvidado a menudo ocurren cuando algo en tu vida actual activa recuerdos o emociones asociadas. Puedes estar enfrentando dinámicas de relación similares o desafíos emocionales. Tu cerebro usa experiencias pasadas como puntos de referencia.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños con Ex\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-con-ex\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -64,10 +64,10 @@
 <span class="text-sm text-purple-300/60">3 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Sueños con Tu Ex: Lo ¿Qué Realmente Significan
+                    Sueños con Tu Ex: Lo Que Realmente Significan
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Te despiertas confundido, con el corazón acelerado. Tu ex estaba ahi - quizás habian vuelto, estaban discutiendo, o simplemente existiendo en el mismo espacio. Las emociones se sienten reales, incluso horas despues. Los sueños con exparejas son sorprendentemente comunes y a menudo nos dejan cuestionando lo que nuestro subconsciente intenta decir. Decodifiquemos lo que estos sueños realmente significan.
+                    Te despiertas confundido, con el corazón acelerado. Tu ex estaba ahí - quizás habían vuelto, estaban discutiendo, o simplemente existiendo en el mismo espacio. Las emociones se sienten reales, incluso horas después. Los <a class="text-dream-salmon hover:underline" href="../simbolos/ex-pareja">sueños con exparejas</a> son sorprendentemente comunes y a menudo nos dejan cuestionando lo que nuestro subconsciente intenta decir. Decodifiquemos lo que estos sueños realmente significan.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -93,21 +93,21 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Tabla de Contenidos
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#porque">1. ¿Por qué sonamos con nuestros ex</a></li>
+<li><a class="toc-link block" href="#porque">1. Por qué sonamos con nuestros ex</a></li>
 <li><a class="toc-link block" href="#escenarios">2. Escenarios comunes de sueños con ex</a></li>
 <li><a class="toc-link block" href="#significados">3. Lo que estos sueños significan</a></li>
 <li><a class="toc-link block" href="#psicología">4. La psicología explicada</a></li>
-<li><a class="toc-link block" href="#actual">5. ¿Cuándo estas en una nueva relación</a></li>
-<li><a class="toc-link block" href="#seguir">6. ¿Cómo procesar estos sueños</a></li>
+<li><a class="toc-link block" href="#actual">5. Cuando estás en una nueva relación</a></li>
+<li><a class="toc-link block" href="#seguir">6. Como procesar estos sueños</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
 <h2 id="porque">Sueños con tu ex: por qué sonamos con exparejas</h2>
 <p>
-                    Primero, abordemos el tema directamente: <strong>soñar con tu ex no significa que quieras volver con el/ella</strong>. De hecho, la mayoría de los sueños con ex no tienen nada que ver con querer reavivar la relación.
+                    Primero, abordemos el tema directamente: <strong>soñar con tu ex no significa que quieras volver con esa persona</strong>. De hecho, la mayoría de los sueños con ex no tienen nada que ver con querer reavivar la relación.
                 </p>
 <p>
-                    Nuestros cerebros son maquinas de reconocimiento de patrones. Las relaciones romanticas crean vias neuronales profundas - pasamos tiempo significativo con estas personas, compartimos emociones intensas y formamos recuerdos duraderos. ¿Cuándo dormimos, nuestro cerebro <strong>consolida recuerdos y procesa emociones</strong>, a menudo recurriendo a nuestras experiencias más significativas.
+                    Nuestros cerebros son máquinas de reconocimiento de patrones. Las relaciones románticas crean vías neuronales profundas - pasamos tiempo significativo con estas personas, compartimos emociones intensas y formamos recuerdos duraderos. Cuando dormimos, nuestro cerebro <strong>consolida recuerdos y procesa emociones</strong>, a menudo recurriendo a nuestras experiencias más significativas.
                 </p>
 <p>
                     Esos recuerdos pueden aparecer en escenarios familiares como una <a class="text-dream-salmon hover:underline" href="../simbolos/casa">casa</a> cargada de significado.
@@ -116,7 +116,7 @@
                     La investigación muestra que somos más propensos a soñar con personas que tuvieron un fuerte impacto emocional en nosotros, independientemente de si esas emociones fueron positivas o negativas. Tu ex representa un capítulo clave de tu vida, y tu cerebro usa ese punto de referencia cuando procesa temas similares.
                 </p>
 <blockquote>
-                    "Los sueños con ex rara vez tratan sobre la persona real. Usualmente tratan sobre lo que esa persona representa - un momento de tu vida, un sentimiento o un aspecto de ti mismo." - Dra. Wendy Walsh, Psicologa Relacional
+                    "Los sueños con ex rara vez tratan sobre la persona real. Usualmente tratan sobre lo que esa persona representa - un momento de tu vida, un sentimiento o un aspecto de ti mismo." - Dra. Wendy Walsh, Psicóloga Relacional
                 </blockquote>
 <h2 id="escenarios">Escenarios comunes de sueños con ex y su significado</h2>
 <p>
@@ -132,7 +132,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Volver a estar juntos</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        ¿Los sueños de reconciliación a menudo reflejan <strong>procesar el fin de la relación</strong> o extranar ciertas cualidades - comodidad, seguridad o intimidad - en lugar de la persona misma.
+                        Los sueños de reconciliación a menudo reflejan <strong>procesar el fin de la relación</strong> o extrañar ciertas cualidades - comodidad, seguridad o intimidad - en lugar de la persona misma.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -154,7 +154,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Sueños intimos</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Los sueños sexuales con un ex son comunes y no significan que lo/la quieras. A menudo representan <strong>extranar la intimidad en general</strong> o reconectarte con tu propia sensualidad.
+                        Los sueños sexuales con un ex son comunes y no significan que lo/la quieras. A menudo representan <strong>extrañar la intimidad en general</strong> o reconectarte con tu propia sensualidad.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -176,7 +176,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Interacción amistosa</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        ¿Los sueños de ex neutrales o amistosos a menudo indican <strong>sanación emocional y aceptación</strong>. Has procesado la relación y puedes recordarla sin dolor intenso.
+                        Los sueños de ex neutrales o amistosos a menudo indican <strong>sanación emocional y aceptación</strong>. Has procesado la relación y puedes recordarla sin dolor intenso.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -203,15 +203,15 @@
                 </p>
 <h3>3. Lecciones siendo integradas</h3>
 <p>
-                    Las relaciones nos ensenan cosas sobre nosotros mismos. Los sueños pueden aparecer cuando estas <strong>integrando inconscientemente lecciones de esa relación</strong> - reconociendo patrones, entendiendo tus necesidades o procesando como has crecido.
+                    Las relaciones nos enseñan cosas sobre nosotros mismos. Los sueños pueden aparecer cuando estás <strong>integrando inconscientemente lecciones de esa relación</strong> - reconociendo patrones, entendiendo tus necesidades o procesando cómo has crecido.
                 </p>
 <h3>4. Paralelos con la vida actual</h3>
 <p>
-                    Algo en tu vida actual puede desencadenar sueños con ex. Quizas estas enfrentando situaciones similares - <strong>problemas de confianza, desafios de comunicación o dinamicas de relación</strong> - que tu cerebro asocia con esa relación pasada.
+                    Algo en tu vida actual puede desencadenar sueños con ex. Quizás estás enfrentando situaciones similares - <strong>problemas de confianza, desafíos de comunicación o dinámicas de relación</strong> - que tu cerebro asocia con esa relación pasada.
                 </p>
 <h3>5. Extranar partes de ti mismo</h3>
 <p>
-                    A veces perdemos partes de nosotros mismos en las relaciones o sus secuelas. Los sueños con un ex pueden representar <strong>aspectos de ti mismo de esa epoca</strong> - pasatiempos abandonados, confianza pérdida o una versión de ti que extranas.
+                    A veces perdemos partes de nosotros mismos en las relaciones o sus secuelas. Los sueños con un ex pueden representar <strong>aspectos de ti mismo de esa época</strong> - pasatiempos abandonados, confianza perdida o una versión de ti que extrañas.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -220,53 +220,53 @@
 </div>
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Decodifica tus sueños de relaciones</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analiza los detalles específicos de tus sueños con ex - el escenario, emociones y contexto - para ayudarte a entender lo que tu subconsciente esta procesando.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
+<p class="text-sm text-gray-400 mb-4">Noctalia analiza los detalles específicos de tus sueños con ex - el escenario, emociones y contexto - para ayudarte a entender lo que tu subconsciente está procesando.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/app-analisis-suenos-android">
                                 Prueba Noctalia Gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 <h2 id="psicología">La psicología explicada</h2>
-<h3>Teoria del apego</h3>
+<h3>Teoría del apego</h3>
 <p>
-                    Nuestro estilo de apego afecta como procesamos las rupturas. Los <strong>individuos ansiosamente apegados</strong> tienden a tener sueños con ex más frecuentes y tardan más en dejar de tenerlos. Las <strong>personas evitativas</strong> pueden suprimir pensamientos despiertos solo para que resurjan en sueños.
+                    Nuestro estilo de apego afecta cómo procesamos las rupturas. Los <strong>individuos ansiosamente apegados</strong> tienden a tener sueños con ex más frecuentes y tardan más en dejar de tenerlos. Las <strong>personas evitativas</strong> pueden suprimir pensamientos despiertos solo para que resurjan en sueños.
                 </p>
 <h3>Consolidación de memoria</h3>
 <p>
-                    Durante el sueño REM, tu cerebro consolida memorias emocionales. Las relaciones significativas crean <strong>redes densas de recuerdos</strong> que se activan durante este proceso. ¿Cuánto mayor sea la significancia emocional, más probable es que estas memorias aparezcan en sueños.
+                    Durante el sueño REM, tu cerebro consolida memorias emocionales. Las relaciones significativas crean <strong>redes densas de recuerdos</strong> que se activan durante este proceso. Cuanto mayor sea la importancia emocional, más probable es que estas memorias aparezcan en sueños.
                 </p>
 <h3>El efecto Zeigarnik</h3>
 <p>
-                    Recordamos mejor las tareas incompletas que las completadas. Las relaciones que terminaron sin cierre, abruptamente o con problemas no resueltos son <strong>psicologicamente "incompletas"</strong>, haciendolas más propensas a recurrir en sueños.
+                    Recordamos mejor las tareas incompletas que las completadas. Las relaciones que terminaron sin cierre, abruptamente o con problemas no resueltos son <strong>psicológicamente "incompletas"</strong>, haciéndolas más propensas a recurrir en sueños.
                 </p>
 <blockquote>
-                    "El ex en tu sueño a menudo no se trata realmente de tu ex. Se trata de lo que representa - una epoca cuando sentias ciertas cosas, desafios que enfrentaste o necesidades no satisfechas." - Dr. Ian Wallace, Psicologo de Sueños
+                    "El ex en tu sueño a menudo no se trata realmente de tu ex. Se trata de lo que representa - una época en la que sentías ciertas cosas, desafíos que enfrentaste o necesidades no satisfechas." - Dr. Ian Wallace, Psicólogo de Sueños
                 </blockquote>
-<h2 id="actual">¿Cuándo estas en una nueva relación</h2>
+<h2 id="actual">Cuando estás en una nueva relación</h2>
 <p>
-                    ¿Soñar con un ex mientras estas felizmente en pareja puede sentirse alarmante o culpabilizante. Esto es lo que debes saber:
+                    Soñar con un ex mientras estás felizmente en pareja puede sentirse alarmante o culpabilizante. Esto es lo que debes saber:
                 </p>
-<h3>¿Es normal y comun</h3>
+<h3>Es normal y común</h3>
 <p>
-                    Los estudios muestran que <strong>hasta el 35% de las personas en relaciones suenan con sus ex</strong>. No significa que seas infeliz o infiel. Tu cerebro no borra recuerdos significativos solo porque has seguido adelante.
+                    Los estudios muestran que <strong>hasta el 35% de las personas en relaciones sueñan con sus ex</strong>. No significa que seas infeliz o infiel. Tu cerebro no borra recuerdos significativos solo porque has seguido adelante.
                 </p>
 <h3>Procesamiento de comparación</h3>
 <p>
-                    Tu subconsciente puede estar <strong>comparando dinamicas</strong> - no para preferir una sobre otra, sino para entender tu relación actual a traves del lente de la experiencia pasada.
+                    Tu subconsciente puede estar <strong>comparando dinámicas</strong> - no para preferir una sobre otra, sino para entender tu relación actual a través de la lente de la experiencia pasada.
                 </p>
 <h3>¿Deberías contarle a tu pareja?</h3>
 <p>
                     No hay obligación de compartir sueños. Considera el contexto: ¿Ayudaría a tu relación o causaria preocupación innecesaria? Si los sueños con ex son frecuentes y angustiantes, <strong>discutir patrones (no detalles)</strong> con un terapeuta puede ser más apropiado.
                 </p>
-<h2 id="seguir">¿Cómo procesar estos sueños</h2>
+<h2 id="seguir">Como procesar estos sueños</h2>
 <h3>1. Escribe sobre ello</h3>
 <p>
-                    Anota el sueño inmediatamente al despertar. Registra <strong>el escenario, emociones y cualquier símbolo</strong> (como una <a class="text-dream-salmon hover:underline" href="../simbolos/casa">casa</a>, una <a class="text-dream-salmon hover:underline" href="../simbolos/puerta">puerta</a>, un <a class="text-dream-salmon hover:underline" href="../simbolos/telefono">telefono</a> o un <a class="text-dream-salmon hover:underline" href="../simbolos/espejo">espejo</a>). Con el tiempo, emergen patrones que revelan en que esta trabajando tu subconsciente.
+                    Anota el sueño inmediatamente al despertar. Registra <strong>el escenario, emociones y cualquier símbolo</strong> (como una <a class="text-dream-salmon hover:underline" href="../simbolos/casa">casa</a>, una <a class="text-dream-salmon hover:underline" href="../simbolos/puerta">puerta</a>, un <a class="text-dream-salmon hover:underline" href="../simbolos/telefono">teléfono</a> o un <a class="text-dream-salmon hover:underline" href="../simbolos/espejo">espejo</a>). Con el tiempo, emergen patrones que revelan en qué está trabajando tu subconsciente.
                 </p>
 <h3>2. Identifica desencadenantes actuales</h3>
 <p>
-                    Preguntate: ¿Qué esta pasando en mi vida ahora? <strong>Eventos recientes, estres o situaciones</strong> pueden haber desencadenado el sueño. La conexión no siempre es obvia pero explorar ayuda.
+                    Pregúntate: ¿Qué está pasando en mi vida ahora? <strong>Eventos recientes, estrés o situaciones</strong> pueden haber desencadenado el sueño. La conexión no siempre es obvia pero explorar ayuda.
                 </p>
 <h3>3. Date tu propio cierre</h3>
 <p>
@@ -274,11 +274,11 @@
                 </p>
 <h3>4. Enfocate en el crecimiento</h3>
 <p>
-                    En lugar de ver los sueños con ex como retrocesos, velos como <strong>evidencia de procesamiento emocional continuo</strong>. Tu cerebro esta haciendo trabajo importante integrando experiencias pasadas.
+                    En lugar de ver los sueños con ex como retrocesos, velos como <strong>evidencia de procesamiento emocional continuo</strong>. Tu cerebro está haciendo trabajo importante integrando experiencias pasadas.
                 </p>
 <h3>5. Aborda la repetición de patrones</h3>
 <p>
-                    Si estas repitiendo patrones de relación, los sueños con ex pueden estar resaltando esto. Considera lo que el sueño esta tratando de mostrarte sobre <strong>elecciones, limites o necesidades</strong> que deberias examinar.
+                    Si estás repitiendo patrones de relación, los sueños con ex pueden estar resaltando esto. Considera lo que el sueño está tratando de mostrarte sobre <strong>elecciones, límites o necesidades</strong> que deberías examinar.
                 </p>
 </div>
 <!-- Related Symbols Start -->
@@ -290,16 +290,16 @@
 <p class="text-sm text-purple-300/60 mb-4">Explora los símbolos mencionados en este artículo:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/casa">
-                        ¿Soñar con casa
+                        Soñar con casa
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/puerta">
-                        ¿Soñar con puerta
+                        Soñar con puerta
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/telefono">
-                        ¿Soñar con telefono
+                        Soñar con teléfono
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/espejo">
-                        ¿Soñar con espejo
+                        Soñar con espejo
                     </a>
 </div>
 </section>
@@ -308,11 +308,11 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="heart-handshake"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Entiende tu corazón a traves de los sueños</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Entiende tu corazón a través de los sueños</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Los sueños sobre relaciones pasadas revelan lo que tu corazón esta procesando. Registralos en Noctalia y deja que el analisis de Noctalia te ayude a entender los patrones más profundos.
+                    Los sueños sobre relaciones pasadas revelan lo que tu corazón está procesando. Regístralos en Noctalia y deja que el análisis de Noctalia te ayude a entender los patrones más profundos.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/app-analisis-suenos-android">
                     Comienza a Explorar Tus Sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
@@ -321,29 +321,29 @@
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Por qué sigo sonando con mi ex?
+                            ¿Por qué sigo soñando con mi ex?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            ¿Soñar con tu ex no significa necesariamente que quieras volver con el/ella. Estos sueños a menudo representan emociones no resueltas, lecciones aprendidas o aspectos de ti mismo asociados con esa relación. Tu cerebro procesa experiencias pasadas durante el sueño.
+                            Soñar con tu ex no significa necesariamente que quieras volver con esa persona. Estos sueños a menudo representan emociones no resueltas, lecciones aprendidas o aspectos de ti mismo asociados con esa relación. Tu cerebro procesa experiencias pasadas durante el sueño.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Soñar con mi ex significa que todavia lo/la amo?
+                            ¿Soñar con mi ex significa que todavía amo a esa persona?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            No necesariamente. Los sueños con ex pueden reflejar muchas cosas: procesar el duelo, trabajar en problemas no resueltos, extranar ciertas cualidades (no la persona), o tu subconsciente usando una cara familiar para representar otra cosa. La emoción en el sueño importa más que la aparición de tu ex.
+                            No necesariamente. Los sueños con ex pueden reflejar muchas cosas: procesar el duelo, trabajar en problemas no resueltos, extrañar ciertas cualidades (no la persona), o tu subconsciente usando una cara familiar para representar otra cosa. La emoción en el sueño importa más que la aparición de tu ex.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Por qué sueño con un ex en quien no he pensado en anos?
+                            ¿Por qué sueño con un ex en quien no he pensado en años?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Los sueños repentinos con un ex olvidado a menudo ocurren cuando algo en tu vida actual activa recuerdos o emociones asociadas. Puedes estar enfrentando dinamicas de relación similares o desafios emocionales. Tu cerebro usa experiencias pasadas como puntos de referencia.
+                            Los sueños repentinos con un ex olvidado a menudo ocurren cuando algo en tu vida actual activa recuerdos o emociones asociadas. Puedes estar enfrentando dinámicas de relación similares o desafíos emocionales. Tu cerebro usa experiencias pasadas como puntos de referencia.
                         </p>
 </details>
 </div>
@@ -387,7 +387,7 @@
     <a href="suenos-de-embarazo" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sueños de Embarazo: Lo ¿Qué Significan (Aunque No Estes Embarazada)</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sueños de embarazo: lo que significan (aunque no estés embarazada)</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -410,12 +410,12 @@
         <a href="suenos-dientes-caen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que se caen los dientes: significado e interpretación</h3>
-            <p class="text-sm text-gray-400">¿Por qué suenas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.</p>
+            <p class="text-sm text-gray-400">¿Por qué sueñas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.</p>
         </a>
         <a href="suenos-de-caer" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de caer: por que suenas que caes al vacio</h3>
-            <p class="text-sm text-gray-400">¿Por qué suenas con caer al vacio? Descubre el significado psicológico.</p>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de caer: por qué sueñas que caes al vacío</h3>
+            <p class="text-sm text-gray-400">¿Por qué sueñas con caer al vacío? Descubre el significado psicológico.</p>
         </a>
   </div>
 </section>

@@ -13,6 +13,11 @@ const { renderPageHero } = require('./docs-components/hero');
 const { renderNavigation } = require('./docs-components/navigation');
 const { renderSharedComponentStyles } = require('./docs-components/styles');
 const { inlineLucideIcons } = require('./lucide-inline');
+const {
+  synchronizeJsonLdDates,
+  synchronizeVisibleArticleDate,
+} = require('./article-date-contract');
+const { normalizeCanonicalOrganization } = require('./canonical-organization');
 
 const shellTemplate = fs.readFileSync(path.join(DOCS_SRC_DIR, 'templates', 'base.html'), 'utf8');
 const AHREFS_ANALYTICS_KEY = 'qDwc7i0RM0aLBY/cZLkOxA';
@@ -208,12 +213,6 @@ function buildFallbackBlogJsonLd(meta, entry, bodyHtml) {
       name: meta.title,
       description,
       inLanguage: lang,
-      reviewedBy: {
-        '@type': 'Organization',
-        '@id': `${siteConfig.domain}/#organization`,
-        name: siteConfig.organization.name,
-        url: siteConfig.organization.url,
-      },
     },
     {
       '@context': 'https://schema.org',
@@ -254,9 +253,11 @@ function buildFallbackBlogJsonLd(meta, entry, bodyHtml) {
 
 function renderJsonLd(meta, entry, bodyHtml) {
   const blocks = Array.isArray(meta.jsonLd) ? meta.jsonLd : [];
-  const normalizedBlocks = blocks.length > 0 ? blocks : buildFallbackBlogJsonLd(meta, entry, bodyHtml);
+  const sourceBlocks = blocks.length > 0 ? blocks : buildFallbackBlogJsonLd(meta, entry, bodyHtml);
+  const normalizedBlocks = normalizeCanonicalOrganization(sourceBlocks);
+  const synchronizedBlocks = synchronizeJsonLdDates(normalizedBlocks, meta);
 
-  return normalizedBlocks
+  return synchronizedBlocks
     .map((block) => {
       const payload = typeof block === 'string' ? block.trim() : JSON.stringify(block, null, 2);
       return `    <script type="application/ld+json">\n${payload.replace(/</g, '\\u003c')}\n    </script>`;
@@ -338,6 +339,12 @@ function renderCommonHead(meta, entry, assetVersion, bodyHtml) {
     preloadLines.push('    <!-- Preload featured image -->');
     preloadLines.push(
       `    <link rel="preload" href="${meta.preloadImage}" as="image" type="${mime}">`
+    );
+  }
+  if (meta.layout === 'landing') {
+    preloadLines.push('    <!-- Preload the homepage LCP background -->');
+    preloadLines.push(
+      '    <link rel="preload" href="/img/hero/noctalia-observatory-bg.webp" as="image" type="image/webp" fetchpriority="high">'
     );
   }
 
@@ -483,19 +490,79 @@ function renderScripts(meta, assetVersion) {
   return lines.join('\n');
 }
 
+function upsertHtmlAttribute(tag, name, value) {
+  const escaped = escapeHtml(value);
+  const pattern = new RegExp(`\\b${name}=(['"])[\\s\\S]*?\\1`, 'i');
+  if (pattern.test(tag)) return tag.replace(pattern, `${name}="${escaped}"`);
+  return tag.replace(/>$/, ` ${name}="${escaped}">`);
+}
+
+function removeHtmlAttribute(tag, name) {
+  return tag.replace(new RegExp(`\\s+${name}=(['"])[\\s\\S]*?\\1`, 'i'), '');
+}
+
+function responsiveBlogImageSrcset(src) {
+  if (!/\/img\/blog\/[^"']+\.webp$/i.test(src)) return null;
+  const fileName = path.basename(src).replace(/-(?:480|600|800|1200)w(?=\.webp$)/i, '');
+  const stem = fileName.replace(/\.webp$/i, '');
+  const variants = [480, 800, 1200].map((width) => ({
+    width,
+    sourcePath: path.join(DOCS_SRC_DIR, 'static', 'img', 'blog', `${stem}-${width}w.webp`),
+    url: src.replace(/[^/]+$/, `${stem}-${width}w.webp`),
+  }));
+  if (!variants.every((variant) => fs.existsSync(variant.sourcePath))) return null;
+  return variants.map((variant) => `${variant.url} ${variant.width}w`).join(', ');
+}
+
+function optimizeBlogIndexImages(bodyHtml) {
+  let localBlogImageIndex = 0;
+  return String(bodyHtml || '').replace(/<img\b[^>]*>/gi, (tag) => {
+    const src = tag.match(/\bsrc=(['"])([^"']+)\1/i)?.[2];
+    if (!src || !/\/img\/blog\//i.test(src) || /^https?:/i.test(src)) return tag;
+
+    const isPriorityImage = localBlogImageIndex === 0;
+    localBlogImageIndex += 1;
+
+    let next = tag;
+    next = upsertHtmlAttribute(next, 'loading', isPriorityImage ? 'eager' : 'lazy');
+    next = upsertHtmlAttribute(next, 'decoding', 'async');
+    next = upsertHtmlAttribute(next, 'width', '800');
+    next = upsertHtmlAttribute(next, 'height', '450');
+    next = upsertHtmlAttribute(
+      next,
+      'sizes',
+      '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw'
+    );
+
+    const srcset = responsiveBlogImageSrcset(src);
+    if (srcset) next = upsertHtmlAttribute(next, 'srcset', srcset);
+
+    if (isPriorityImage) {
+      next = upsertHtmlAttribute(next, 'fetchpriority', 'high');
+    } else {
+      next = removeHtmlAttribute(next, 'fetchpriority');
+    }
+    return next;
+  });
+}
+
 function renderManagedPage({ manifest, entryId, meta, bodyHtml, entryOverride = null }) {
   const assetVersion = readAssetVersion();
   const context = createRenderContext({ manifest, entryId, meta, entryOverride });
   const entry = context.entry;
   const navHtml = renderNavigation(context);
+  let renderedBodyHtml = synchronizeVisibleArticleDate(bodyHtml, meta);
+  if (meta.layout === 'blogIndex') {
+    renderedBodyHtml = optimizeBlogIndexImages(renderedBodyHtml);
+  }
 
   const html = renderTemplate({
     HTML_ATTRS: htmlAttributes(meta),
     BODY_ATTRS: bodyAttributes(meta),
-    HEAD_HTML: renderCommonHead(meta, entry, assetVersion, bodyHtml),
+    HEAD_HTML: renderCommonHead(meta, entry, assetVersion, renderedBodyHtml),
     BEFORE_BODY_HTML: renderBeforeBody(meta),
     NAV_HTML: navHtml,
-    CONTENT_HTML: renderContent(meta, bodyHtml, renderPageHero(context)),
+    CONTENT_HTML: renderContent(meta, renderedBodyHtml, renderPageHero(context)),
     FOOTER_HTML: renderSharedFooter(context),
     SCRIPTS_HTML: renderScripts(meta, assetVersion),
   });
@@ -504,5 +571,9 @@ function renderManagedPage({ manifest, entryId, meta, bodyHtml, entryOverride = 
 }
 
 module.exports = {
+  normalizeCanonicalOrganization,
+  optimizeBlogIndexImages,
   renderManagedPage,
+  renderJsonLd,
+  responsiveBlogImageSrcset,
 };

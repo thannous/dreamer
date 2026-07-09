@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/blog/how-to-remember-dreams.webp",
   "twitterImageAlt": "Persona anotando sus sueños en un diario al despertar",
   "publishedTime": "2025-01-06",
-  "modifiedTime": "2026-03-06",
+  "modifiedTime": "2026-07-09",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "/es/blog/por-que-olvidamos-suenos",
   "preloadImage": "/img/blog/how-to-remember-dreams.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Cómo recordar tus sueños al despertar: 10 técnicas\",\n            \"description\": \"Mejora tu recuerdo onírico con 10 técnicas prácticas: diario de sueños, despertar suave, intención antes de dormir y más.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/how-to-remember-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-06\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/como-recordar-suenos\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1149,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/es/blog/como-recordar-suenos\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Cómo recordar tus sueños al despertar: 10 técnicas\",\n            \"description\": \"Mejora tu recuerdo onírico con 10 técnicas prácticas: diario de sueños, despertar suave, intención antes de dormir y más.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/how-to-remember-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-06\",\n            \"dateModified\": \"2026-07-09\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/como-recordar-suenos\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1149,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/es/blog/como-recordar-suenos\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Por qué olvidamos nuestros sueños?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"El olvido de sueños está ligado a la química cerebral. Durante el sueño REM, la norepinefrina (importante para la memoria) está en su nivel más bajo. Además, el hipocampo, responsable de la consolidación de la memoria, funciona de manera diferente durante el sueño.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Cuánto tiempo se tarda en mejorar el recuerdo de sueños?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"La mayoría de las personas notan una mejora significativa después de 1-2 semanas de práctica consistente de llevar un diario de sueños. La clave es la consistencia: registrar tus sueños cada mañana, incluso los fragmentos más pequeños.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Debería escribir o grabar mis sueños?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Ambos métodos son efectivos. La grabación de voz suele ser más rápida al despertar y captura más detalles antes de que se desvanezcan. Escribir fomenta una reflexión más profunda. Aplicaciones como Noctalia combinan ambos enfoques.\"\n                    }\n                }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Recordar sueños\",\n            \"item\": \"https://noctalia.app/es/blog/como-recordar-suenos\"\n        }\n    ]\n}"
   ],
@@ -174,11 +174,11 @@
 <p>
                     Esos primeros segundos son preciosos. Dales la atención que merecen.
                 </p>
-<h2 id="technique-4">4. Tecnica MILD para recordar sueños</h2>
+<h2 id="technique-4">4. Técnica MILD para recordar sueños</h2>
 <p>
                     Desarrollada por el psicólogo Stephen LaBerge, la técnica MILD está diseñada inicialmente para sueños lúcidos, pero también es altamente efectiva para el recuerdo de sueños.
                 </p>
-<h3>Pasos de la tecnica MILD para memoria onírica</h3>
+<h3>Pasos de la técnica MILD para memoria onírica</h3>
 <ol>
 <li>Despierta después de 5 horas de sueño (naturalmente o con alarma)</li>
 <li>Permanece despierto durante 10-20 minutos pensando en sueños</li>
@@ -189,7 +189,7 @@
 <p>
                     La calidad del sueño influye directamente en la cantidad e intensidad de los sueños. <strong>El sueño fragmentado o insuficiente</strong> reduce las fases REM, donde ocurren los sueños más vívidos.
                 </p>
-<h3>Habitos de sueño para mejor memoria onírica</h3>
+<h3>Hábitos de sueño para mejorar la memoria onírica</h3>
 <ul>
 <li>Duerme suficiente (7-9 horas para adultos)</li>
 <li>Mantén horarios regulares de sueño/vigilia</li>
@@ -213,7 +213,7 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Captura tus sueños por voz</h4>
 <p class="text-sm text-gray-400 mb-4">Noctalia transcribe y analiza automáticamente tus narrativas de sueños. Más simple que un cuaderno, más rico que una nota de voz.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/diario-de-suenos-por-voz">
                                 Descubre Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
@@ -246,11 +246,11 @@
 <p>
                     Estos suplementos no son soluciones milagrosas y pueden tener efectos secundarios. Siempre comienza con técnicas conductuales.
                 </p>
-<h2 id="technique-9">9. Metodo WBTB para recordar sueños</h2>
+<h2 id="technique-9">9. Método WBTB para recordar sueños</h2>
 <p>
                     Esta técnica explota la estructura natural del sueño. <strong>Las fases REM son más largas en la última parte de la noche</strong>, haciendo que los sueños sean más vívidos y memorables.
                 </p>
-<h3>¿Cómo aplicar el metodo WBTB paso a paso</h3>
+<h3>¿Cómo aplicar el método WBTB paso a paso?</h3>
 <ol>
 <li>Programa una alarma para despertarte 5-6 horas después de dormirte</li>
 <li>Permanece despierto durante 20-60 minutos (lee sobre sueños, medita)</li>
@@ -264,7 +264,7 @@
 <p>
                     Esta técnica usa un estímulo específico para <strong>crear una asociación entre el mundo de vigilia y el mundo de los sueños</strong>.
                 </p>
-<h3>¿Cómo usar aromas para recordar sueños</h3>
+<h3>¿Cómo usar aromas para recordar sueños?</h3>
 <ul>
 <li>Elige un aroma específico (aceite esencial de lavanda, por ejemplo)</li>
 <li>Huele este aroma cada noche antes de dormir mientras repites tu intención</li>
@@ -408,7 +408,7 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="guia-incubacion-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubación de sueños: como soñar exactamente lo que quieres esta noche</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubación de sueños: cómo soñar exactamente lo que quieres esta noche</h3>
             <p class="text-sm text-gray-400">Aprende el arte antiguo de la incubación onírica para resolver problemas y estimular tu creatividad.</p>
         </a>
         <a href="guia-pesadillas" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -418,8 +418,8 @@
         </a>
         <a href="guia-paralisis-sueno" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Paralisis del sueño: por que no puedes moverte y como detenerla</h3>
-            <p class="text-sm text-gray-400">Guia completa para entender la paralisis del sueño. Descubre que la causa, por que ocurren las alucinaciones, y tecnicas probadas para prevenir y detener los episodios.</p>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Parálisis del sueño: por qué no puedes moverte y cómo detenerla</h3>
+            <p class="text-sm text-gray-400">Guía completa para entender la parálisis del sueño. Descubre qué la causa, por qué ocurren las alucinaciones y técnicas probadas para prevenir y detener los episodios.</p>
         </a>
   </div>
 </section>

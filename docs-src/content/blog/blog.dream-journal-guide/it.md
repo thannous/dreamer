@@ -206,7 +206,7 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Il modo più semplice per tenere un diario</h4>
 <p class="text-sm text-gray-400 mb-4">Noctalia ti consente di catturare i sogni con la tua voce nel momento in cui ti svegli. Non armeggiare con le penne o scrivere: basta parlare e lasciare che Noctalia ti aiuti a comprendere i tuoi sogni.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/diario-dei-sogni-vocale">
                                 Prova Noctalia gratuitamente <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>

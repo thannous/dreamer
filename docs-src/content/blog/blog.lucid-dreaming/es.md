@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Sueños lúcidos: guías y técnicas",
   "publishedTime": "",
-  "modifiedTime": "2026-06-21",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"CollectionPage\",\n            \"name\": \"Sueños lúcidos: guías y técnicas\",\n            \"description\": \"Hub temático: recursos y guías para progresar en sueños lúcidos.\",\n            \"inLanguage\": \"es\",\n            \"dateModified\": \"2026-06-21\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-lucidos\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"CollectionPage\",\n            \"name\": \"Sueños lúcidos: guías y técnicas\",\n            \"description\": \"Hub temático: recursos y guías para progresar en sueños lúcidos.\",\n            \"inLanguage\": \"es\",\n            \"dateModified\": \"2026-07-09\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-lucidos\"\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños lúcidos\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-lucidos\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -78,10 +78,11 @@
 </section>
 
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/20 bg-white/5">
-  <h2 class="font-serif text-2xl text-dream-cream mb-4">Qué cambia el corpus de 55 000 sueños</h2>
+  <h2 class="font-serif text-2xl text-dream-cream mb-4">Cómo detectar tus propias señales oníricas</h2>
   <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
-    <p>El sueño lúcido avanza más rápido cuando detectas tus propias señales oníricas: lugares recurrentes, anomalías, emociones o personajes. El corpus de 55 000 sueños de Noctalia sirve como referencia para comparar patrones sin reducir tu sueño a una interpretación automática.</p>
-    <p>Úsalo como brújula: busca repeticiones, conserva tu contexto personal y elige una sola práctica lúcida para probar durante una semana.</p>
+    <p>Revisa entre 7 y 10 entradas de tu propio diario y subraya lugares, personajes, emociones, acciones o anomalías que se repitan. Una repetición puede servir como señal de observación para hacer una comprobación de realidad; no demuestra una interpretación ni predice que el mismo motivo volverá a aparecer.</p>
+    <p>El catálogo público de Noctalia es contenido editorial para orientar la reflexión, no un corpus de sueños privados. Consulta nuestra <a class="text-dream-salmon hover:underline" href="/es/metodologia-contenido-suenos">metodología de contenido</a> para entender cómo se prepara y usa el <a class="text-dream-salmon hover:underline" href="/es/diario-de-suenos-por-voz">diario de sueños por voz</a> para revisar únicamente tus propias entradas.</p>
+    <p>Después, elige una sola señal personal y practícala durante una semana antes de cambiar de técnica.</p>
   </div>
 </section>
 

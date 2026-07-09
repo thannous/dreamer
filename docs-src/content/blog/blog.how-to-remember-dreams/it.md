@@ -213,7 +213,7 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Cattura i tuoi sogni con la voce</h4>
 <p class="text-sm text-gray-400 mb-4">Noctalia trascrive e analizza automaticamente le narrazioni dei tuoi sogni. Più semplice di un taccuino, più ricco di un memo vocale.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/diario-dei-sogni-vocale">
                                 Scopri Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>

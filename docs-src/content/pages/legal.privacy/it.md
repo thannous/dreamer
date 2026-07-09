@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Informativa sulla privacy",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Informativa sulla privacy</h1>
-<p class="text-lg text-purple-200/80 mb-10">In vigore dal 22 novembre 2025</p>
+<p class="text-lg text-purple-200/80 mb-10">In vigore dal 9 luglio 2026</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -133,7 +133,7 @@
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Fornitori tecnici:</strong> in particolare Supabase e infrastrutture cloud.</li>
       <li><strong>Provider IA e voce:</strong> Google Gemini, Google Cloud Speech-to-Text e, se necessario, servizi equivalenti.</li>
-      <li><strong>Gestione abbonamenti:</strong> RevenueCat tratta identificatori anonimi e informazioni di acquisto fornite da Apple o Google. I dati completi di pagamento non passano da Noctalia.</li>
+      <li><strong>Gestione abbonamenti:</strong> RevenueCat tratta identificatori anonimi e informazioni di acquisto fornite dallo store applicabile, attualmente Google Play. I dati completi di pagamento non passano da Noctalia.</li>
       <li><strong>Autorità e consulenti:</strong> quando richiesto dalla legge o per tutelare i nostri diritti.</li>
     </ul>
   </section>

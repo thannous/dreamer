@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Significati dei sogni: interpretazione e simboli",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -68,7 +68,10 @@
                     Nessun simbolo ha un significato universale: tutto cambia con il contesto, le emozioni e la tua storia personale. Esplora qui temi ricorrenti e simboli onirici comuni con guide chiare e concrete.
                 </p>
 <p class="text-sm text-purple-200/70 leading-relaxed mt-4">
-                    Non sai da dove iniziare? Sfoglia i <a class="text-dream-salmon hover:underline" href="../guides/dizionario-simboli-sogni">Dizionario dei simboli dei sogni</a> o esplora simboli comuni come <a class="text-dream-salmon hover:underline" href="../simboli/acqua">acqua</a>, <a class="text-dream-salmon hover:underline" href="../simboli/denti">denti</a> e <a class="text-dream-salmon hover:underline" href="../simboli/serpente">serpenti</a>.
+                    Non sai da dove iniziare? Sfoglia il <a class="text-dream-salmon hover:underline" href="../guides/dizionario-simboli-sogni">dizionario dei simboli dei sogni</a> o esplora simboli comuni come <a class="text-dream-salmon hover:underline" href="../simboli/acqua">acqua</a>, <a class="text-dream-salmon hover:underline" href="../simboli/denti">denti</a> e <a class="text-dream-salmon hover:underline" href="../simboli/serpente">serpenti</a>.
+                </p>
+<p class="text-sm text-purple-200/70 leading-relaxed mt-3">
+                    Usa il dizionario per una consultazione rapida sul Web. Scegli l'<a class="text-dream-salmon hover:underline" href="/it/dizionario-dei-sogni-app">app dizionario dei sogni</a> per registrare un sogno su Android e ritrovare in seguito i suoi simboli nel diario.
                 </p>
 </header>
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">

@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Klares Träumen: Anleitungen und Techniken",
   "publishedTime": "",
-  "modifiedTime": "2026-06-21",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"CollectionPage\",\n        \"name\": \"Klares Träumen: Anleitungen und Techniken\",\n        \"description\": \"Themenbereich: Anleitungen, Techniken und Praxis zum klaren Träumen.\",\n        \"inLanguage\": \"de\",\n        \"dateModified\": \"2026-06-21\",\n        \"url\": \"https://noctalia.app/de/blog/klares-traeumen-anleitungen-und-techniken\"\n}",
+    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"CollectionPage\",\n        \"name\": \"Klares Träumen: Anleitungen und Techniken\",\n        \"description\": \"Themenbereich: Anleitungen, Techniken und Praxis zum klaren Träumen.\",\n        \"inLanguage\": \"de\",\n        \"dateModified\": \"2026-07-09\",\n        \"url\": \"https://noctalia.app/de/blog/klares-traeumen-anleitungen-und-techniken\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Klares Träumen\",\n            \"item\": \"https://noctalia.app/de/blog/klares-traeumen-anleitungen-und-techniken\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -71,17 +71,17 @@ Beim <a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeum
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">
   <h2 class="font-serif text-2xl text-dream-cream mb-4">Schnellstart</h2>
   <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
-    <p>Wenn du neu bist, konzentriere dich eine Woche lang auf eine kleine Gewohnheit. Regelmäßigkeit ist wichtiger als alles auf einmal.</p>
-    <p>Beginne mit der Traumerinnerung und füge dann eine Übung hinzu. Notiere kurz, was du gesehen hast, was du gefühlt hast und was sich im Traum verändert hat.</p>
-    <ul><li>Wähle eine Anleitung aus der Liste.</li><li>Probiere sie 7 Nächte lang.</li><li>Lies deine Notizen und passe an.</li></ul>
+    <p>Wenn Sie neu in diesem Thema sind, konzentrieren Sie sich eine Woche lang auf eine kleine Gewohnheit. Regelmäßigkeit ist wichtiger, als alles auf einmal zu versuchen.</p>
+    <p>Beginnen Sie mit der Traumerinnerung und fügen Sie dann eine Übung hinzu. Notieren Sie kurz, was Sie gesehen und gefühlt haben und was sich im Traum verändert hat.</p>
+    <ul><li>Wählen Sie eine Anleitung aus der Liste.</li><li>Probieren Sie sie sieben Nächte lang aus.</li><li>Lesen Sie Ihre Notizen und passen Sie die Übung an.</li></ul>
   </div>
 </section>
 
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/20 bg-white/5">
-  <h2 class="font-serif text-2xl text-dream-cream mb-4">Was der Korpus von 55.000 Träumen verändert</h2>
+  <h2 class="font-serif text-2xl text-dream-cream mb-4">So erkennen Sie Ihre eigenen Traumzeichen</h2>
   <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
-    <p>Klares Träumen gelingt schneller, wenn Sie Ihre eigenen Traumzeichen erkennen: wiederkehrende Orte, Anomalien, Emotionen oder Figuren. Der Noctalia-Korpus mit 55.000 Träumen dient als Referenz, um Muster zu vergleichen, ohne Ihren Traum auf eine automatische Deutung zu reduzieren.</p>
-    <p>Nutzen Sie ihn als Kompass: Suchen Sie Wiederholungen, behalten Sie Ihren persönlichen Kontext bei und wählen Sie dann eine einzige Klartraum-Übung für eine Woche.</p>
+    <p>Allgemeine Statistiken können Ihre persönlichen Hinweise nicht bestimmen. Markieren Sie nach jedem Eintrag einen wiederkehrenden Ort, eine Figur, ein Gefühl oder ein unmögliches Detail. Vergleichen Sie sieben bis zehn Einträge und nutzen Sie das häufigste Muster als Hinweis für Ihren nächsten Realitätscheck. Es ist eine Aufforderung zum Beobachten, kein Beweis für eine feste Traumbedeutung.</p>
+    <p>Der öffentliche Symbolkatalog von Noctalia ist redaktioneller Inhalt und kein Korpus privater Nutzerträume; der überprüfbare Umfang steht in der <a class="text-dream-salmon hover:underline" href="/de/methodik-trauminhalte">Methodik für Trauminhalte</a>. Mit dem <a class="text-dream-salmon hover:underline" href="/de/traumtagebuch-spracheingabe">Sprach-Traumtagebuch für Android</a> halten Sie Ihre eigenen Erinnerungen fest, bevor Details verblassen.</p>
   </div>
 </section>
 

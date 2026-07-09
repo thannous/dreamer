@@ -5,6 +5,7 @@ const { readJson } = require('./docs-source-utils');
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const DOCS_DIR = path.join(ROOT_DIR, 'docs');
 const DOCS_SRC_DIR = path.join(ROOT_DIR, 'docs-src');
+const STATIC_DATA_DIR = path.join(DOCS_SRC_DIR, 'static', 'data');
 const DATA_DIR = path.join(ROOT_DIR, 'data');
 
 const siteConfig = readJson(path.join(DOCS_SRC_DIR, 'config', 'site.config.json'));
@@ -58,6 +59,7 @@ module.exports = {
   DOCS_DIR,
   DOCS_SRC_DIR,
   ROOT_DIR,
+  STATIC_DATA_DIR,
   getAndroidStoreUrl,
   getStaticPageConfig,
   getStaticPagePath,

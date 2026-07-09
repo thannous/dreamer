@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Traumbedeutungen: Interpretation & Symbole",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -68,15 +68,18 @@
                     Kein Symbol hat eine feste Bedeutung: Alles verändert sich je nach Kontext, Emotionen und Lebensgeschichte. Erkunden Sie hier wiederkehrende Themen und gängige Traumsymbole mit klaren, fundierten Anleitungen.
                 </p>
 <p class="text-sm text-purple-200/70 leading-relaxed mt-4">
-                    Sie wissen nicht, wo Sie anfangen sollen? Durchsuchen Sie die <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Wörterbuch der Traumsymbole</a> oder erkunden Sie gängige Symbole wie <a class="text-dream-salmon hover:underline" href="../traumsymbole/wasser">Wasser</a>, <a class="text-dream-salmon hover:underline" href="../traumsymbole/zaehne">Zähne</a> und <a class="text-dream-salmon hover:underline" href="../traumsymbole/schlange">Schlangen</a>.
+                    Sie wissen nicht, wo Sie anfangen sollen? Durchsuchen Sie das <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Wörterbuch der Traumsymbole</a> oder erkunden Sie gängige Symbole wie <a class="text-dream-salmon hover:underline" href="../traumsymbole/wasser">Wasser</a>, <a class="text-dream-salmon hover:underline" href="../traumsymbole/zaehne">Zähne</a> und <a class="text-dream-salmon hover:underline" href="../traumsymbole/schlange">Schlangen</a>.
+                </p>
+<p class="text-sm text-purple-200/70 leading-relaxed mt-3">
+                    Nutzen Sie das Lexikon für eine schnelle Websuche. Mit der <a class="text-dream-salmon hover:underline" href="/de/traumlexikon-app">Traumlexikon-App</a> können Sie einen Traum auf Android festhalten und seine Symbole später im Tagebuch erneut ansehen.
                 </p>
 </header>
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">
   <h2 class="font-serif text-2xl text-dream-cream mb-4">Schnellstart</h2>
   <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
-    <p>Wenn du neu bist, konzentriere dich eine Woche lang auf eine kleine Gewohnheit. Regelmäßigkeit ist wichtiger als alles auf einmal.</p>
-    <p>Beginne mit der Traumerinnerung und füge dann eine Übung hinzu. Notiere kurz, was du gesehen hast, was du gefühlt hast und was sich im Traum verändert hat.</p>
-    <ul><li>Wähle eine Anleitung aus der Liste.</li><li>Probiere sie 7 Nächte lang.</li><li>Lies deine Notizen und passe an.</li></ul>
+    <p>Wenn Sie neu in diesem Thema sind, konzentrieren Sie sich eine Woche lang auf eine kleine Gewohnheit. Regelmäßigkeit ist wichtiger, als alles auf einmal zu versuchen.</p>
+    <p>Beginnen Sie mit der Traumerinnerung und fügen Sie dann eine Übung hinzu. Notieren Sie kurz, was Sie gesehen und gefühlt haben und was sich im Traum verändert hat.</p>
+    <ul><li>Wählen Sie eine Anleitung aus der Liste.</li><li>Probieren Sie sie sieben Nächte lang aus.</li><li>Lesen Sie Ihre Notizen und passen Sie die Übung an.</li></ul>
   </div>
 </section>
 

@@ -206,7 +206,7 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Der einfachste Weg, ein Tagebuch zu führen</h4>
 <p class="text-sm text-gray-400 mb-4">Mit Noctalia können Sie Träume mit Ihrer Stimme festhalten, sobald Sie aufwachen. Kein Hantieren mit Stiften oder Tippen – sprechen Sie einfach und lassen Sie sich von Noctalia dabei helfen, Ihre Träume zu verstehen.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
                                 Testen Sie Noctalia kostenlos <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>

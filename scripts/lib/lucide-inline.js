@@ -1,6 +1,7 @@
 const path = require('path');
+const { DOCS_SRC_DIR } = require('./docs-site-config');
 
-const lucide = require(path.join(__dirname, '..', '..', 'docs', 'js', 'lucide.min.js'));
+const lucide = require(path.join(DOCS_SRC_DIR, 'static', 'js', 'lucide.min.js'));
 
 const ICONS = lucide.icons || {};
 

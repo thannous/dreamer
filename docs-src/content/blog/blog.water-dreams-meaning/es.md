@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/blog/water-dreams-meaning.webp",
   "twitterImageAlt": "Superficie de agua en calma que refleja las emociones profundas",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-06",
+  "modifiedTime": "2026-07-09",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-de-muerte",
   "nextPath": "/es/blog/suenos-con-ex",
   "preloadImage": "/img/blog/water-dreams-meaning.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Soñar con inundación: agua sucia, casa y mar\",\n    \"description\": \"Qué significa soñar con inundación, agua sucia, casa inundada o que el mar se sale e inunda: claves para leer emoción, límites y seguridad.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/water-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-07-06\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1280,\n    \"timeRequired\": \"PT5M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Soñar con inundación: agua sucia, casa y mar\",\n    \"description\": \"Qué significa soñar con inundación, agua sucia, casa inundada o que el mar se sale e inunda: claves para leer emoción, límites y seguridad.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/water-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-07-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1280,\n    \"timeRequired\": \"PT5M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con una inundación?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Soñar con una inundación suele indicar emociones, estrés o cambios que se sienten difíciles de contener. La lectura cambia según si el agua está limpia, sucia, viene del mar o entra en casa.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con inundaciones de agua sucia?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"El agua sucia en una inundación apunta a confusión, cansancio emocional o una situación que te supera y todavía no puedes ordenar con claridad.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con inundaciones de agua de mar?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"El agua de mar añade profundidad emocional e incertidumbre. Puede mostrar que emociones antiguas o intensas están entrando en tu vida consciente.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con una casa inundada?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La casa representa tu mundo íntimo. Una casa inundada sugiere que preocupaciones, conflictos o emociones intensas están invadiendo tu espacio de seguridad.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con agua limpia que inunda?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Una inundación de agua limpia puede hablar de liberación emocional, claridad o una limpieza necesaria, aunque la cantidad de agua indique que el proceso se siente grande.\"\n      }\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Recursos\",\n      \"item\": \"https://noctalia.app/es/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sueños de Agua\",\n      \"item\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n    }\n  ]\n}"
   ],
@@ -194,24 +194,24 @@
 <li><a class="toc-link block" href="#tipos">2. Tipos de sueños de agua</a></li>
 <li><a class="toc-link block" href="#estado">3. El estado del agua importa</a></li>
 <li><a class="toc-link block" href="#interpretaciones">4. Interpretaciones comunes</a></li>
-<li><a class="toc-link block" href="#psicología">5. Perspectivas psicologicas</a></li>
+<li><a class="toc-link block" href="#psicología">5. Perspectivas psicológicas</a></li>
 <li><a class="toc-link block" href="#accion">6. Trabajando con sueños de agua</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
 <h2 id="simbolismo">Sueños de agua: el simbolismo universal del agua</h2>
 <p>
-                    En la interpretación de sueños, <a class="text-dream-salmon hover:underline" href="../simbolos/agua">el agua</a> es quizás el <strong>símbolo más universal de las emociones</strong>. Asi como el agua puede ser tranquila o turbulenta, profunda o superficial, clara o turbia, también pueden serlo nuestros estados emocionales. Este simbolismo aparece en practicamente todas las culturas y tradiciones psicologicas.
+                    En la interpretación de sueños, <a class="text-dream-salmon hover:underline" href="../simbolos/agua">el agua</a> es quizás el <strong>símbolo más universal de las emociones</strong>. Así como el agua puede ser tranquila o turbulenta, profunda o superficial, clara o turbia, también pueden serlo nuestros estados emocionales. Este simbolismo aparece en prácticamente todas las culturas y tradiciones psicológicas.
                 </p>
 <p>
-                    Más alla de las emociones, el agua representa el <strong>inconsciente</strong> - las vastas profundidades a menudo ocultas de nuestra psique que yacen debajo de la conciencia superficial. ¿Cuándo suenas con sumergirte en agua profunda, puedes estar explorando las profundidades de tu inconsciente. ¿Cuándo el agua sube sin invitación, las emociones o material inconsciente pueden estar exigiendo tu atención.
+                    Más allá de las emociones, el agua representa el <strong>inconsciente</strong> - las vastas profundidades a menudo ocultas de nuestra psique que yacen debajo de la conciencia superficial. Cuando sueñas con sumergirte en agua profunda, puedes estar explorando las profundidades de tu inconsciente. Cuando el agua sube sin invitación, las emociones o el material inconsciente pueden estar exigiendo tu atención.
                 </p>
 <blockquote>
-                    "El agua es el símbolo más comun del inconsciente. El lago en el valle es el inconsciente yaciendo, por asi decirlo, debajo de la conciencia." - Carl Jung
+                    "El agua es el símbolo más común del inconsciente. El lago en el valle es el inconsciente yaciendo, por así decirlo, debajo de la conciencia." - Carl Jung
                 </blockquote>
 <h2 id="tipos">Tipos de sueños de agua y su significado</h2>
 <p>
-                    El tipo especifico de agua en tu sueño tiene un significado distinto:
+                    El tipo específico de agua en tu sueño tiene un significado distinto:
                 </p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -220,10 +220,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="waves"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream"><a class="text-dream-cream hover:text-dream-salmon transition-colors" href="../simbolos/oceano">Sueños de oceano</a></h3>
+<h3 class="font-serif text-lg text-dream-cream"><a class="text-dream-cream hover:text-dream-salmon transition-colors" href="../simbolos/oceano">Sueños de océano</a></h3>
 </div>
 <p class="text-sm text-gray-300">
-                        El <a class="text-dream-salmon hover:underline" href="../simbolos/oceano">oceano</a> representa el <strong>vasto inconsciente, emociones colectivas o posibilidades infinitas de la vida</strong>. Su tamano puede sentirse tanto inspirador como abrumador, reflejando como puedes sentirte ante la profundidad y misterio de la vida.
+                        El <a class="text-dream-salmon hover:underline" href="../simbolos/oceano">océano</a> representa el <strong>vasto inconsciente, emociones colectivas o posibilidades infinitas de la vida</strong>. Su tamaño puede sentirse tanto inspirador como abrumador, reflejando cómo puedes sentirte ante la profundidad y el misterio de la vida.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -234,7 +234,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Sueños de ahogarse</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Ahogarse típicamente simboliza <strong>sentirse abrumado por las emociones o circunstancias</strong>. Puedes sentir que tienes "la cabeza bajo el agua" o que no puedes hacer frente a lo que la vida te esta enviando.
+                        Ahogarse típicamente simboliza <strong>sentirse abrumado por las emociones o circunstancias</strong>. Puedes sentir que tienes "la cabeza bajo el agua" o que no puedes hacer frente a lo que la vida te está enviando.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -256,7 +256,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Sueños de nadar</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        <a class="text-dream-salmon hover:underline" href="../simbolos/nadar">Nadar</a> sugiere que estas <strong>navegando tu vida emocional</strong>. Nadar facilmente indica competencia emocional; luchar por nadar sugiere dificultad para manejar sentimientos o situaciones.
+                        <a class="text-dream-salmon hover:underline" href="../simbolos/nadar">Nadar</a> sugiere que estás <strong>navegando tu vida emocional</strong>. Nadar fácilmente indica competencia emocional; luchar por nadar sugiere dificultad para manejar sentimientos o situaciones.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -275,17 +275,17 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="arrow-right"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Sueños de rio</h3>
+<h3 class="font-serif text-lg text-dream-cream">Sueños de río</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Los rios simbolizan el <strong>flujo de la vida, el tiempo y el viaje emocional</strong>. Dejarse llevar por la corriente sugiere aceptación; nadar contra ella puede indicar resistencia al cambio o a la dirección de la vida.
+                        Los ríos simbolizan el <strong>flujo de la vida, el tiempo y el viaje emocional</strong>. Dejarse llevar por la corriente sugiere aceptación; nadar contra ella puede indicar resistencia al cambio o a la dirección de la vida.
                     </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
 <h2 id="estado">El estado del agua importa</h2>
 <p>
-                    Más alla del tipo de agua, su estado proporciona información crucial sobre tu estado emocional:
+                    Más allá del tipo de agua, su estado proporciona información crucial sobre tu estado emocional:
                 </p>
 <h3>Agua clara</h3>
 <p>
@@ -297,28 +297,28 @@
                 </p>
 <h3>Agua tranquila</h3>
 <p>
-                    El agua quieta y pacifica refleja <strong>paz interior, tranquilidad emocional y equilibrio</strong>. Puedes estar en un buen lugar emocional, o tu sueño te esta mostrando lo que es posible cuando encuentras la calma.
+                    El agua quieta y pacífica refleja <strong>paz interior, tranquilidad emocional y equilibrio</strong>. Puedes estar en un buen lugar emocional, o tu sueño te está mostrando lo que es posible cuando encuentras la calma.
                 </p>
 <h3>Agua turbulenta</h3>
 <p>
-                    Mares agitados, rapidos o agua agitada indican <strong>turbulencia emocional, conflicto interno o circunstancias de vida que se sienten caoticas</strong>. Puedes estar pasando por momentos emocionalmente dificiles.
+                    Mares agitados, rápidos o agua agitada indican <strong>turbulencia emocional, conflicto interno o circunstancias de vida que se sienten caóticas</strong>. Puedes estar pasando por momentos emocionalmente difíciles.
                 </p>
 <h2 id="interpretaciones">Interpretaciones comunes</h2>
 <h3>1. Desbordamiento emocional</h3>
 <p>
-                    La interpretación más comun de los sueños de agua - especialmente ahogarse, inundaciones o tsunamis - es <strong>sentirse emocionalmente abrumado</strong>. La vida puede estar enviandote más de lo que sientes capaz de manejar.
+                    La interpretación más común de los sueños de agua - especialmente ahogarse, inundaciones o tsunamis - es <strong>sentirse emocionalmente abrumado</strong>. La vida puede estar enviándote más de lo que sientes capaz de manejar.
                 </p>
 <h3>2. Procesos inconscientes</h3>
 <p>
-                    ¿Los sueños de agua a menudo senalan que <strong>algo de tu inconsciente esta buscando atención</strong>. Esto puede ser recuerdos reprimidos, sentimientos no reconocidos o conocimiento intuitivo que intenta salir a la superficie.
+                    Los sueños de agua a menudo señalan que <strong>algo de tu inconsciente está buscando atención</strong>. Esto puede ser recuerdos reprimidos, sentimientos no reconocidos o conocimiento intuitivo que intenta salir a la superficie.
                 </p>
 <h3>3. Limpieza emocional</h3>
 <p>
-                    ¿Los sueños de agua positivos - banarse, nadar en agua clara o la <a class="text-dream-salmon hover:underline" href="../simbolos/lluvia">lluvia</a> - pueden representar <strong>limpieza emocional, sanación o lavarse la negatividad</strong>. Puedes estar liberando viejo equipaje emocional.
+                    Los sueños de agua positivos - bañarse, nadar en agua clara o la <a class="text-dream-salmon hover:underline" href="../simbolos/lluvia">lluvia</a> - pueden representar <strong>limpieza emocional, sanación o lavarse la negatividad</strong>. Puedes estar liberando viejo equipaje emocional.
                 </p>
 <h3>4. Transiciones de vida</h3>
 <p>
-                    Cruzar agua, rios o ser llevado por corrientes a menudo simboliza <strong>transiciones en la vida</strong>. Puedes estar pasando de una fase emocional a otra o enfrentando un cambio de vida importante.
+                    Cruzar agua, ríos o ser llevado por corrientes a menudo simboliza <strong>transiciones en la vida</strong>. Puedes estar pasando de una fase emocional a otra o enfrentando un cambio de vida importante.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -327,32 +327,32 @@
 </div>
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Decodifica tus sueños de agua</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analiza los detalles específicos de tu sueño de agua - el tipo de agua, su estado, tus acciones y emociones - para proporcionar perspectivas personalizadas sobre lo que tu inconsciente esta comunicando.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
+<p class="text-sm text-gray-400 mb-4">Noctalia analiza los detalles específicos de tu sueño de agua - el tipo de agua, su estado, tus acciones y emociones - para proporcionar perspectivas personalizadas sobre lo que tu inconsciente está comunicando.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/app-interpretacion-suenos-ia">
                                 Prueba Noctalia Gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="psicología">Perspectivas psicologicas</h2>
+<h2 id="psicología">Perspectivas psicológicas</h2>
 <h3>Visión junguiana</h3>
 <p>
-                    Carl Jung veía el agua como el <strong>símbolo principal del inconsciente</strong>. Creia que sumergirse en el agua en los sueños representaba explorar el inconsciente, mientras que el agua que sube podria indicar contenido inconsciente exigiendo atención de la mente consciente.
+                    Carl Jung veía el agua como el <strong>símbolo principal del inconsciente</strong>. Creía que sumergirse en el agua en los sueños representaba explorar el inconsciente, mientras que el agua que sube podría indicar contenido inconsciente exigiendo atención de la mente consciente.
                 </p>
 <h3>Interpretación freudiana</h3>
 <p>
-                    Freud asociaba el agua con el <strong>nacimiento, el utero y la sexualidad</strong>. Entrar en el agua podria simbolizar el regreso al utero o memorias del nacimiento, mientras que el agua en los sueños podria representar impulsos y deseos primitivos.
+                    Freud asociaba el agua con el <strong>nacimiento, el útero y la sexualidad</strong>. Entrar en el agua podría simbolizar el regreso al útero o memorias del nacimiento, mientras que el agua en los sueños podría representar impulsos y deseos primitivos.
                 </p>
 <h3>Psicología moderna</h3>
 <p>
-                    La investigación contemporanea de los sueños conecta los sueños de agua con el <strong>procesamiento emocional y la regulación del estres</strong>. Tu cerebro puede usar imagenes de agua para procesar experiencias emocionales, con el estado del agua reflejando tus estados emocionales actuales.
+                    La investigación contemporánea de los sueños conecta los sueños de agua con el <strong>procesamiento emocional y la regulación del estrés</strong>. Tu cerebro puede usar imágenes de agua para procesar experiencias emocionales, con el estado del agua reflejando tus estados emocionales actuales.
                 </p>
 <blockquote>
-                    "Los sueños de agua son la forma en que la psique nos muestra nuestro paisaje emocional. Presta atención a como se comporta el agua - te esta diciendo como fluyen tus emociones." - Dr. Kelly Bulkeley, Investigador de sueños
+                    "Los sueños de agua son la forma en que la psique nos muestra nuestro paisaje emocional. Presta atención a cómo se comporta el agua - te está diciendo cómo fluyen tus emociones." - Dr. Kelly Bulkeley, Investigador de sueños
                 </blockquote>
 <h2 id="accion">Trabajando con sueños de agua</h2>
 <p>
-                    Aqui te mostramos como obtener perspectivas de tus sueños de agua:
+                    Aquí te mostramos cómo obtener perspectivas de tus sueños de agua:
                 </p>
 <h3>1. Nota el estado del agua</h3>
 <p>
@@ -360,19 +360,19 @@
                 </p>
 <h3>2. Considera tus acciones</h3>
 <p>
-                    ¿Estabas nadando, ahogandote, flotando, buceando? Tu <strong>relación con el agua</strong> revela como estas manejando tus emociones. Nadar activamente sugiere compromiso; ahogarse sugiere estar abrumado.
+                    ¿Estabas nadando, ahogándote, flotando, buceando? Tu <strong>relación con el agua</strong> revela cómo estás manejando tus emociones. Nadar activamente sugiere compromiso; ahogarse sugiere estar abrumado.
                 </p>
 <h3>3. Identifica las emociones</h3>
 <p>
-                    ¿Cómo te sentias en el sueño? <strong>Miedo, paz, emoción, pánico?</strong> El tono emocional a menudo importa más que el contenido literal.
+                    ¿Cómo te sentías en el sueño? <strong>¿Miedo, paz, emoción, pánico?</strong> El tono emocional a menudo importa más que el contenido literal.
                 </p>
 <h3>4. Busca paralelos con la vida</h3>
 <p>
-                    Preguntate: <strong>¿Dónde en mi vida despierta me siento asi?</strong> Abrumado? Con la cabeza bajo el agua? Emocionalmente confundido? Dejandome llevar? El sueño puede estar destacando areas especificas de la vida.
+                    Pregúntate: <strong>¿Dónde en mi vida despierta me siento así?</strong> ¿Abrumado? ¿Con la cabeza bajo el agua? ¿Emocionalmente confundido? ¿Dejándome llevar? El sueño puede estar destacando áreas específicas de la vida.
                 </p>
 <h3>5. Aborda los sueños de agua recurrentes</h3>
 <p>
-                    Si los sueños de agua se repiten, especialmente los perturbadores, <strong>tu psique esta destacando algo que necesita atención</strong>. Considera que emociones puedes estar reprimiendo o que situaciones se sienten abrumadoras.
+                    Si los sueños de agua se repiten, especialmente los perturbadores, <strong>tu psique está destacando algo que necesita atención</strong>. Considera qué emociones puedes estar reprimiendo o qué situaciones se sienten abrumadoras.
                 </p>
 </div>
 <!-- Symbol Guide CTA -->
@@ -399,16 +399,16 @@
 <p class="text-sm text-purple-300/60 mb-4">Explora los símbolos mencionados en este artículo:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/agua">
-                        ¿Soñar con agua
+                        Soñar con agua
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/oceano">
-                        ¿Soñar con el océano
+                        Soñar con el océano
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/lluvia">
-                        ¿Soñar con lluvia
+                        Soñar con lluvia
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/puente">
-                        ¿Soñar con un puente
+                        Soñar con un puente
                     </a>
 </div>
 </section>
@@ -419,7 +419,7 @@
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Navega tus profundidades emocionales</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    ¿Los sueños de agua revelan el paisaje de tus emociones. Registra los tuyos en Noctalia y deja que el analisis de Noctalia te ayude a entender lo que tu inconsciente esta tratando de sacar a la superficie.
+                    Los sueños de agua revelan el paisaje de tus emociones. Registra los tuyos en Noctalia y deja que el análisis de Noctalia te ayude a entender lo que tu inconsciente está tratando de sacar a la superficie.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
                     Comienza a Explorar Tus Sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -443,7 +443,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            ¿Los sueños de ahogarse típicamente simbolizan sentirse abrumado por las emociones o circunstancias de la vida. Puedes sentir que tienes "la cabeza bajo el agua" con responsabilidades, relaciones o sentimientos. También puede indicar emociones reprimidas que amenazan con salir a la superficie.
+                            Los sueños de ahogarse típicamente simbolizan sentirse abrumado por las emociones o circunstancias de la vida. Puedes sentir que tienes "la cabeza bajo el agua" con responsabilidades, relaciones o sentimientos. También puede indicar emociones reprimidas que amenazan con salir a la superficie.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -452,7 +452,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            ¿Los sueños de inundación a menudo representan emociones desbordantes, cambios importantes en la vida, o la sensación de perder el control. ¿Pueden simbolizar liberación emocional, purificación, o situaciones en tu vida que se sienten incontenibles.
+                            Los sueños de inundación a menudo representan emociones desbordantes, cambios importantes en la vida, o la sensación de perder el control. Pueden simbolizar liberación emocional, purificación, o situaciones en tu vida que se sienten incontenibles.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -492,7 +492,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="suenos-de-caer">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Significado de los Sueños de Caer</h3>
-<p class="text-sm text-gray-400">¿Qué significa soñar con caer al vacio?</p>
+<p class="text-sm text-gray-400">¿Qué significa soñar con caer al vacío?</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="significado-suenos-recurrentes">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
@@ -514,7 +514,7 @@
     <a href="suenos-con-ex" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sueños con Tu Ex: Lo ¿Qué Realmente Significan</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sueños con Tu Ex: Lo Que Realmente Significan</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -537,12 +537,12 @@
         <a href="suenos-dientes-caen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que se caen los dientes: significado e interpretación</h3>
-            <p class="text-sm text-gray-400">¿Por qué suenas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.</p>
+            <p class="text-sm text-gray-400">¿Por qué sueñas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.</p>
         </a>
         <a href="suenos-de-caer" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de caer: por que suenas que caes al vacio</h3>
-            <p class="text-sm text-gray-400">¿Por qué suenas con caer al vacio? Descubre el significado psicológico.</p>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de caer: por qué sueñas que caes al vacío</h3>
+            <p class="text-sm text-gray-400">¿Por qué sueñas con caer al vacío? Descubre el significado psicológico.</p>
         </a>
   </div>
 </section>

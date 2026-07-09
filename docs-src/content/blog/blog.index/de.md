@@ -497,13 +497,13 @@
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Nachschlagewerk</span>
-<span class="text-xs text-purple-300/60">50+ Symbole</span>
+<span class="text-xs text-purple-300/60">150 Symbole</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
                                 Traumsymbole-Lexikon: Deutung von A bis Z
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Entdecken Sie die Bedeutung von über 50 häufigen Traumsymbolen, um Ihre Träume besser zu verstehen.
+                                Entdecken Sie 150 Traumsymbole als kontextbezogene Ausgangspunkte für Ihre Reflexion.
                             </p>
 </div>
 </a>

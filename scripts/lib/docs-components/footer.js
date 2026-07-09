@@ -1,15 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 const {
-  DOCS_DIR,
   DOCS_SRC_DIR,
+  DATA_DIR,
+  STATIC_DATA_DIR,
   getAndroidStoreUrl,
   siteConfig,
 } = require('../docs-site-config');
 const { escapeHtml, readJson, readSourceDocument } = require('../docs-source-utils');
 
-const dreamSymbolsData = readJson(path.join(DOCS_DIR, 'data', 'dream-symbols.json'));
-const curationPagesData = readJson(path.join(DOCS_DIR, 'data', 'curation-pages.json'));
+const dreamSymbolsData = readJson(path.join(DATA_DIR, 'dream-symbols.json'));
+const curationPagesData = readJson(path.join(STATIC_DATA_DIR, 'curation-pages.json'));
 
 function stripSiteSuffix(title) {
   return String(title || '').replace(/\s*\|\s*Noctalia\s*$/i, '').trim();

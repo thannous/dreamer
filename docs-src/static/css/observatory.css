@@ -54,7 +54,7 @@
   pointer-events: none;
   background:
     linear-gradient(180deg, rgba(10, 5, 20, 0.26), rgba(10, 5, 20, 0.62) 58%, rgba(10, 5, 20, 0.94)),
-    url('/img/hero/noctalia-observatory-bg.png') center center / cover no-repeat;
+    url('/img/hero/noctalia-observatory-bg.webp') center center / cover no-repeat;
   opacity: 0.52;
   filter: saturate(1.08) contrast(1.04);
   transform: scale(1.01);

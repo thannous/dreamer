@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Significado de sueños: interpretación y símbolos",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -68,7 +68,10 @@
                     Ningún símbolo tiene un significado fijo: todo cambia según tu contexto, emociones y biografía. Explora aquí patrones recurrentes y símbolos frecuentes con guías claras.
                 </p>
 <p class="text-sm text-purple-200/70 leading-relaxed mt-4">
-                    No sabes por donde empezar? Explora el <a class="text-dream-salmon hover:underline" href="../guides/diccionario-simbolos-suenos">diccionario de símbolos de sueños</a>, o revisa símbolos comunes como <a class="text-dream-salmon hover:underline" href="../simbolos/agua">agua</a>, <a class="text-dream-salmon hover:underline" href="../simbolos/dientes">dientes</a> y <a class="text-dream-salmon hover:underline" href="../simbolos/serpiente">serpientes</a>.
+                    ¿No sabes por dónde empezar? Explora el <a class="text-dream-salmon hover:underline" href="../guides/diccionario-simbolos-suenos">diccionario de símbolos de sueños</a>, o revisa símbolos comunes como <a class="text-dream-salmon hover:underline" href="../simbolos/agua">agua</a>, <a class="text-dream-salmon hover:underline" href="../simbolos/dientes">dientes</a> y <a class="text-dream-salmon hover:underline" href="../simbolos/serpiente">serpientes</a>.
+                </p>
+<p class="text-sm text-purple-200/70 leading-relaxed mt-3">
+                    Esta guía sirve para una consulta rápida en la web; si quieres registrar un sueño y volver a revisar sus símbolos más tarde, la <a class="text-dream-salmon hover:underline" href="/es/diccionario-de-suenos-app">app Android de diccionario de sueños</a> te permite conservarlos en tu diario.
                 </p>
 </header>
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">

@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Legal Notice",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -38,19 +38,15 @@
 <h1 class="font-serif text-4xl md:text-5xl mb-10 text-dream-cream">Legal notice</h1>
         
         <div class="space-y-8 text-gray-300 leading-relaxed">
-<section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-white/5">
-                <h2 class="text-2xl font-serif text-white mb-4">Looking for Noctalia?</h2>
-                <p>Noctalia is a dream journal app with voice capture, AI interpretation, symbols, images and guided reflection. This page contains legal information; to discover the product, start with the <a href="/" class="text-dream-salmon hover:underline">Noctalia homepage</a>, <a href="/en/about" class="text-dream-salmon hover:underline">the project story</a> or the <a href="/en/privacy-policy" class="text-dream-salmon hover:underline">privacy policy</a>.</p>
-            </section>
-
                         <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
                 <h2 class="text-2xl font-serif text-white mb-4">1. Publisher</h2>
                 <p>The site and app <strong>Noctalia</strong> are published by:</p>
                 <ul class="list-disc pl-5 mt-2 space-y-1">
-                    <li><strong>Publisher:</strong> TiMax</li>
+                    <li><strong>Publisher:</strong> Thanh Chau, sole proprietor (trade name: TiMax)</li>
                     <li><strong>Legal status:</strong> Sole proprietorship established in France</li>
-                    <li><strong>Address:</strong> Orleans, France</li>
-                    <li><strong>SIREN / SIRET:</strong> 99531698100019</li>
+                    <li><strong>Business address:</strong> 70 rue la Barrière Saint-Marc, 45000 Orléans, France</li>
+                    <li><strong>SIREN:</strong> 995 316 981</li>
+                    <li><strong>Establishment SIRET:</strong> 995 316 981 00019</li>
                     <li><strong>Publication director:</strong> Thanh Chau</li>
                     <li><strong>Contact:</strong> <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a></li>
                 </ul>
@@ -60,9 +56,9 @@
                 <h2 class="text-2xl font-serif text-white mb-4">2. Hosting</h2>
                 <p>The website is hosted by:</p>
                 <ul class="list-disc pl-5 mt-2 space-y-1">
-                    <li><strong>Host:</strong> Vercel Inc.</li>
-                    <li><strong>Address:</strong> 340 S Lemon Ave #4133, Walnut, CA 91789, United States</li>
-                    <li><strong>Website:</strong> <a href="https://vercel.com" class="text-dream-salmon hover:underline">https://vercel.com</a></li>
+                    <li><strong>Host:</strong> Cloudflare, Inc. (Cloudflare Pages)</li>
+                    <li><strong>Address:</strong> 101 Townsend St., San Francisco, CA 94107, United States</li>
+                    <li><strong>Website:</strong> <a href="https://www.cloudflare.com" class="text-dream-salmon hover:underline">https://www.cloudflare.com</a></li>
                 </ul>
                 <p class="mt-4">App data (accounts and <a href="blog/dream-journal-guide" class="text-dream-salmon hover:underline">dream journal</a>) is stored securely in a <strong>Supabase</strong> database located in <strong>Western Europe (European Union)</strong> on GDPR-compliant servers. For details about data processing, see our <a href="privacy-policy" class="text-dream-salmon hover:underline">Privacy policy</a>.</p>
             </section>

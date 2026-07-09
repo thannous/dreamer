@@ -2,6 +2,54 @@
 
 Goal: create free SEO backlinks for Noctalia by submitting the site/app to relevant directories and marketplaces.
 
+## Live verification update — 2026-07-09
+
+This section supersedes older status notes below when they conflict. A listing is only counted as independent authority when its public URL resolves, is indexable, and describes the dream-journal product rather than the unrelated Linux desktop project with the same name.
+
+Public pricing correction: older submission records below preserve the amounts entered at the time, but those figures are no longer approved public copy. The site now describes Free + Noctalia Plus and defers the applicable price, billing period and eligibility to Google Play at purchase time. Future submissions must not reuse the older `2.99 / 19` or seven-day-trial claims without a fresh store verification.
+
+| Platform | Current evidence | SEO treatment | Next action |
+| --- | --- | --- | --- |
+| PeerPush | **Live and indexable** at `https://peerpush.com/p/noctalia` (the former `.net` URL serves the same page). The page has `robots: index, follow`, a self-canonical, and a link to `https://noctalia.app/?utm_source=peerpush&ref=peerpush` with `rel="noopener"` only. | Count as a live independent referring page and discovery surface. | Keep the listing factual and re-check quarterly. |
+| JunkStartups | **Live and indexable** at `https://junkstartups.com/startups/noctalia`. The public page links to `https://noctalia.app` with `rel="noopener noreferrer"` and no `nofollow`. | Count as a live independent referring page and entity mention. | Add logo/screenshots when account file upload is available; do not invent reviews. |
+| Good AI Tools | **Live** at `https://goodaitools.com/ai/noctalia`, but the outbound link is `nofollow`. The third-party copy currently overstates the product by saying analysis works offline and by presenting interpretation as insight into the subconscious or emotional health. | Count for discovery/entity corroboration, not followed link equity. Do not quote its unsupported claims. | Request a factual correction: offline capture is supported, while analysis and sync require reconnection; frame interpretation as reflection, not diagnosis or subconscious decoding. |
+| SaaSHub | The correct app URL `https://www.saashub.com/noctalia-app` resolves, but currently emits `noindex, follow`; its official-site CTA is `nofollow`. SaaSHub also has a separate indexed `/noctalia` page for an unrelated Linux desktop project. | Do **not** count the app page as an indexed or followed backlink today. Preserve the `Noctalia.app` naming to reduce entity collision. | Re-verify after the next quarterly product verification and ask SaaSHub to keep the app category/name distinct from the Linux project. |
+| Chrome-Stats | **Live and recently refreshed** at `https://chrome-stats.com/d/com.tanuki75.noctalia`, sourced from the official Google Play package and publisher. | Count as an independent store-data/entity citation, not an editorial review. | Let Google Play remain the source of truth; monitor for stale or incorrect app copy. |
+| Launch Llama | The former product URL `https://tools.launchllama.co/products/noctalia` now serves the generic Launch Llama homepage with a homepage canonical. | No live product backlink remains. | Mark removed; do not report it as active. |
+| SpotFreeAI | No Noctalia URL appears in the public sitemap or current directory results. | Submission remains unconfirmed; do not count it. | One factual follow-up only, then close as rejected if no reply. |
+| FutureTools, OpenAIToolsHub, The Next AI, Crunchbase | No public Noctalia result was found in a fresh exact-name/domain search. | Pending or rejected; no backlink credit. | Do not resubmit repeatedly. Follow up only where an account or editorial reply exists. |
+
+### Authority work that can be claimed today
+
+- Two current, indexable independent listing pages: PeerPush and JunkStartups.
+- One independent Play-derived app profile: Chrome-Stats.
+- One live AI-directory mention with a nofollow link: Good AI Tools, pending factual correction.
+- Google Play remains the authoritative distribution record, not an independent review.
+
+### Authority work that must stay external
+
+- A qualified health or sleep professional has not reviewed the health-sensitive articles. Do not add a `reviewedBy` person or a “medically reviewed” label until a named reviewer has accepted the scope and approved a dated version.
+- Real customer reviews must come from actual users after a meaningful product interaction. Do not seed, simulate, or paraphrase reviews on review platforms.
+- Independent editorial coverage cannot be manufactured on-site. Outreach may offer product access and source material, but the outlet must retain editorial control.
+
+### Directory readiness gate — 2026-07-09
+
+Do not start another undifferentiated bulk directory wave. The destination-page, legal foundation and reusable source media kit are now ready for a small non-review batch; video-first launch surfaces and review platforms still have separate evidence requirements.
+
+| Readiness item | Status | Evidence / blocker |
+| --- | --- | --- |
+| Public product and store listing | Ready | `https://noctalia.app` and the official Android Google Play package are public. |
+| Pricing, privacy and terms | Ready | Public Free + Noctalia Plus facts, privacy policy and terms are available in five languages. |
+| Structured landing pages | Ready | Commercial pages now have one H1, visible FAQ content and WebPage/Breadcrumb/FAQ structured data. |
+| Destination pages | Ready for a narrow batch | DreamApp and Oniri alternatives plus Android voice, analysis and dictionary pages are live destinations. |
+| Press and factual methodology | Ready | Five-language press kit and content-methodology pages provide sourceable product and editorial facts. |
+| Real screenshots | Ready | The canonical kit now lives under `docs-src/static/screenshot/`: seven reusable product screens, a landing capture, responsive demo variants and four 1270x760 Product Hunt gallery assets. Homepage flow screenshots also live under `docs-src/static/img/en/`. |
+| Square logo set | Ready for PNG-based directories | `docs-src/static/logo512.png`, `logo192.png` and `logo/logo_noctalia.png` provide durable square PNG sources. A dedicated brand SVG remains an optional improvement, not a blocker for platforms accepting PNG. |
+| 60–90 second demo video | **Blocking for video-first/flagship submissions** | No reusable demo video asset or public video URL is present. Record the real Android flow before flagship submissions that depend on video. |
+| Review-platform cohort | **Blocking for review sites** | No verified cohort of 20 users who completed a meaningful product action has been documented. Do not open an empty G2/Capterra review drive. |
+
+A small, differentiated non-review batch can now use the source media kit: Android voice-capture outcome for startup directories, reflection-first AI workflow for AI directories, and honest DreamApp/Oniri alternative positioning for software directories. Defer video-first flagship launches until a real demo exists, and defer G2/Capterra outreach until a genuine qualified cohort exists.
+
 ## Source profile
 
 - Website: https://noctalia.app
@@ -11,19 +59,19 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - Contact: contact@noctalia.app
 - Maker: Thanh Chau
 - Product: AI-powered dream journal and dream interpretation app.
-- Pricing: Freemium — Free plan + Noctalia Plus (€2.99/month or €19/year)
+- Pricing: Freemium — Free plan + Noctalia Plus; current price and eligibility shown in Google Play before purchase
 - Languages: English, French, Spanish, German, Italian
-- Primary logo: `docs/logo512.png`
+- Primary logo: `docs-src/static/logo512.png`
 - Product Hunt gallery assets:
-  - `docs/screenshot/product-hunt/noctalia-product-hunt-01-voice-capture.png`
-  - `docs/screenshot/product-hunt/noctalia-product-hunt-02-ai-interpretation.png`
-  - `docs/screenshot/product-hunt/noctalia-product-hunt-03-guided-reflection.png`
-  - `docs/screenshot/product-hunt/noctalia-product-hunt-04-dream-journal.png`
+  - `docs-src/static/screenshot/product-hunt/noctalia-product-hunt-01-voice-capture.png`
+  - `docs-src/static/screenshot/product-hunt/noctalia-product-hunt-02-ai-interpretation.png`
+  - `docs-src/static/screenshot/product-hunt/noctalia-product-hunt-03-guided-reflection.png`
+  - `docs-src/static/screenshot/product-hunt/noctalia-product-hunt-04-dream-journal.png`
 - Preferred screenshots:
-  - `docs/screenshot/noctalia-landing-saashub-2026-05-21.png`
-  - `docs/screenshot/s_conversationIA.jpg`
-  - `docs/screenshot/s_fiche_reve.jpg`
-  - `docs/screenshot/s_journal.jpg`
+  - `docs-src/static/screenshot/noctalia-landing-saashub-2026-05-21.png`
+  - `docs-src/static/screenshot/s_conversationIA.jpg`
+  - `docs-src/static/screenshot/s_fiche_reve.jpg`
+  - `docs-src/static/screenshot/s_journal.jpg`
 
 ## Submission tracker
 

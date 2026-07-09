@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Journal de rêves illustré et interprété",
   "publishedTime": "",
-  "modifiedTime": "2026-05-04",
+  "modifiedTime": "2026-07-10",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"FAQPage\",\n      \"mainEntity\": [\n        {\n          \"@type\": \"Question\",\n          \"name\": \"Comment fonctionne l'analyse des rêves ?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Noctalia utilise des modèles de langage avancés inspirés de la psychologie analytique et de la symbolique des rêves pour identifier motifs et archétypes et vous proposer des pistes de réflexion.\"\n          }\n        },\n        {\n          \"@type\": \"Question\",\n          \"name\": \"Mes rêves sont-ils privés ?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Vos enregistrements et textes sont chiffrés en transit et stockés de manière sécurisée. Noctalia ne revend pas vos données et n'utilise pas de publicité ciblée; l'accès est limité à vous et aux prestataires nécessaires au service.\"\n          }\n        },\n        {\n          \"@type\": \"Question\",\n          \"name\": \"Puis-je écrire mes rêves au lieu de parler ?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Oui, un éditeur de texte complet est disponible si vous préférez écrire vos rêves plutôt que les enregistrer à la voix.\"\n          }\n        },\n        {\n          \"@type\": \"Question\",\n          \"name\": \"L'application fonctionne-t-elle hors ligne ?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Vous pouvez enregistrer vos rêves hors ligne. L'analyse et la synchronisation se font automatiquement lorsque vous retrouvez une connexion.\"\n          }\n        }\n      ]\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\",\n        \"width\": 512,\n        \"height\": 512\n      },\n      \"description\": \"Application de journal de rêves intelligent pour capturer et explorer vos rêves.\",\n      \"sameAs\": [\n        \"https://www.instagram.com/noctaliadreams/\",\n        \"https://x.com/NoctaliaDreams\",\n        \"https://www.tiktok.com/@noctaliadreams\"\n      ],\n      \"alternateName\": [\n        \"Noctalia Dream Journal\"\n      ]\n    },\n    {\n      \"@type\": \"WebSite\",\n      \"@id\": \"https://noctalia.app/#website\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n      },\n      \"inLanguage\": [\n        \"fr\",\n        \"en\",\n        \"es\",\n        \"de\",\n        \"it\"\n      ],\n      \"alternateName\": [\n        \"Noctalia dream journal\",\n        \"Noctalia app\"\n      ]\n    },\n    {\n      \"@type\": \"MobileApplication\",\n      \"name\": \"Noctalia\",\n      \"description\": \"Application de journal de rêves Noctalia. Capturez vos rêves à la voix, explorez-les avec une analyse personnalisée et comprenez mieux vos nuits.\",\n      \"operatingSystem\": \"Android\",\n      \"applicationCategory\": \"LifestyleApplication\",\n      \"inLanguage\": \"fr\",\n      \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n      },\n      \"downloadUrl\": \"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\n      \"screenshot\": [\n        \"https://noctalia.app/img/en/recording-800w.jpg\",\n        \"https://noctalia.app/img/en/analizing-800w.jpg\",\n        \"https://noctalia.app/img/en/exploring-800w.jpg\"\n      ],\n      \"featureList\": [\n        \"Enregistrement vocal des rêves\",\n        \"Analyse des rêves Noctalia\",\n        \"Génération d'images de rêves\",\n        \"Journal de rêves\",\n        \"Suivi émotionnel\"\n      ],\n      \"offers\": {\n        \"@type\": \"Offer\",\n        \"price\": \"0\",\n        \"priceCurrency\": \"EUR\"\n      }\n    }\n  ]\n}"
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"FAQPage\",\n      \"mainEntity\": [\n        {\n          \"@type\": \"Question\",\n          \"name\": \"Comment fonctionne l'analyse des rêves ?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Noctalia utilise des modèles de langage avancés inspirés de la psychologie analytique et de la symbolique des rêves pour identifier motifs et archétypes et vous proposer des pistes de réflexion.\"\n          }\n        },\n        {\n          \"@type\": \"Question\",\n          \"name\": \"Mes rêves sont-ils privés ?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Oui. Vos transcriptions et textes sont chiffrés en transit et stockés de manière sécurisée. L’audio vocal sert uniquement à la transcription et n’est pas conservé durablement par Noctalia. Noctalia ne revend pas vos données et n’utilise pas de publicité ciblée ; l’accès est limité à vous et aux prestataires nécessaires au service.\"\n          }\n        },\n        {\n          \"@type\": \"Question\",\n          \"name\": \"Puis-je écrire mes rêves au lieu de parler ?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Oui, un éditeur de texte complet est disponible si vous préférez écrire vos rêves plutôt que les enregistrer à la voix.\"\n          }\n        },\n        {\n          \"@type\": \"Question\",\n          \"name\": \"L'application fonctionne-t-elle hors ligne ?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Vous pouvez enregistrer vos rêves hors ligne. L'analyse et la synchronisation se font automatiquement lorsque vous retrouvez une connexion.\"\n          }\n        }\n      ]\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\",\n        \"width\": 512,\n        \"height\": 512\n      },\n      \"description\": \"Application de journal de rêves intelligent pour capturer et explorer vos rêves.\",\n      \"sameAs\": [\n        \"https://www.instagram.com/noctaliadreams/\",\n        \"https://x.com/NoctaliaDreams\",\n        \"https://www.tiktok.com/@noctaliadreams\"\n      ],\n      \"alternateName\": [\n        \"Noctalia Dream Journal\"\n      ]\n    },\n    {\n      \"@type\": \"WebSite\",\n      \"@id\": \"https://noctalia.app/#website\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n      },\n      \"inLanguage\": [\n        \"fr\",\n        \"en\",\n        \"es\",\n        \"de\",\n        \"it\"\n      ],\n      \"alternateName\": [\n        \"Noctalia dream journal\",\n        \"Noctalia app\"\n      ]\n    },\n    {\n      \"@type\": \"MobileApplication\",\n      \"name\": \"Noctalia\",\n      \"description\": \"Application de journal de rêves Noctalia. Capturez vos rêves à la voix, explorez-les avec une analyse personnalisée et comprenez mieux vos nuits.\",\n      \"operatingSystem\": \"Android\",\n      \"applicationCategory\": \"LifestyleApplication\",\n      \"inLanguage\": \"fr\",\n      \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n      },\n      \"downloadUrl\": \"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\n      \"screenshot\": [\n        \"https://noctalia.app/img/en/recording-800w.jpg\",\n        \"https://noctalia.app/img/en/analizing-800w.jpg\",\n        \"https://noctalia.app/img/en/exploring-800w.jpg\"\n      ],\n      \"featureList\": [\n        \"Enregistrement vocal des rêves\",\n        \"Analyse des rêves Noctalia\",\n        \"Génération d'images de rêves\",\n        \"Journal de rêves\",\n        \"Suivi émotionnel\"\n      ],\n      \"offers\": {\n        \"@type\": \"Offer\",\n        \"price\": \"0\",\n        \"priceCurrency\": \"EUR\",\n        \"url\": \"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\n        \"description\": \"Installation gratuite ; les achats facultatifs Noctalia Plus sont affichés dans Google Play.\"\n      },\n      \"@id\": \"https://noctalia.app/#mobile-application\",\n      \"url\": \"https://noctalia.app/\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -425,35 +425,23 @@
 
                     <ul class="space-y-4 text-left mb-8 px-4">
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Enregistrements illimités</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 explorations guidées complètes</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 3 analyses de rêves par mois</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 explorations guidées par mois</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Journal de base</li>
                     </ul>
 
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Téléchargez l'application</a>
                 </div>
 
-                <!-- Premium Plan (live only) -->
-                <div data-subscription="prelaunch" class="glass-panel p-8 rounded-3xl border border-white/10 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.05)]">
-                    <div class="absolute inset-0 bg-purple-900/10 pointer-events-none"></div>
-                    <h3 class="text-2xl font-serif mb-3 text-dream-cream">Premium arrive bientôt</h3>
-                    <p class="text-purple-200/70 text-sm mb-6">Soyez parmi les premiers à profiter des analyses illimitées, images HD et stats avancées dès le lancement.</p>
-                    <ul class="space-y-3 text-left mb-8 px-4 text-sm text-gray-300">
-                        <li class="flex items-center gap-3"><i data-lucide="sparkles" class="w-4 h-4 text-dream-salmon"></i> Explorations guidées illimitées</li>
-                        <li class="flex items-center gap-3"><i data-lucide="image" class="w-4 h-4 text-dream-salmon"></i> Visuels HD de vos rêves</li>
-                        <li class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-4 h-4 text-dream-salmon"></i> Statistiques et insights avancés</li>
-                    </ul>
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Téléchargez l'application</a>
-                    <p class="text-[10px] text-gray-500 mt-3">Application Android sur Google Play · Outil de réflexion, pas de diagnostic.</p>
-                </div>
-
-                <div data-subscription="live" class="glass-panel p-8 rounded-3xl border-dream-salmon/50 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.1)]">
+                <!-- Offre Noctalia Plus -->
+                <div class="glass-panel p-8 rounded-3xl border-dream-salmon/50 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.1)]">
                     <div class="absolute top-0 right-0 bg-dream-salmon text-dream-dark text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
                         Recommandé</div>
                     <div class="absolute inset-0 bg-purple-900/10 pointer-events-none"></div>
 
-                    <h3 class="text-2xl font-serif mb-2 text-dream-salmon">Onironaute</h3>
-                    <div class="text-4xl font-bold mb-2">2,99 €<span class="text-sm font-normal text-gray-400">/mois</span></div>
-                    <p class="text-purple-200/60 text-xs mb-6">Ou 19 €/an (2 mois offerts)</p>
+                    <h3 class="text-2xl font-serif mb-2 text-dream-salmon">Noctalia Plus</h3>
+                    <div class="text-3xl font-bold mb-2">Tarif actuel sur Google Play</div>
+                    <p class="text-purple-200/60 text-xs mb-6">Les options mensuelle et annuelle peuvent varier selon le pays et l'éligibilité.</p>
 
                     <ul class="space-y-4 text-left mb-8 px-4">
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Explorations guidées illimitées
@@ -463,9 +451,8 @@
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Exploration guidée du rêve</li>
                     </ul>
 
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">Essayer
-                        Gratuitement</a>
-                    <p class="text-[10px] text-gray-500 mt-3">7 jours d'essai offerts, annulation facile.</p>
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">Voir Noctalia Plus</a>
+                    <p class="text-[10px] text-gray-500 mt-3">Google Play affiche le prix applicable, la période de facturation et toute éligibilité avant l'achat.</p>
                 </div>
             </div>
         </div>
@@ -494,7 +481,7 @@
                     <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    Oui. Vos enregistrements et textes sont chiffrés en transit et stockés de manière sécurisée. Noctalia ne revend pas vos données et n'utilise pas de publicité ciblée; l'accès est limité à vous et aux prestataires nécessaires au service.
+                    Oui. Vos transcriptions et textes sont chiffrés en transit et stockés de manière sécurisée. L’audio vocal sert uniquement à la transcription et n’est pas conservé durablement par Noctalia. Noctalia ne revend pas vos données et n’utilise pas de publicité ciblée ; l’accès est limité à vous et aux prestataires nécessaires au service.
                 </p>
             </details>
 
@@ -531,7 +518,7 @@
                     RESSOURCE GRATUITE
                 </div>
                 <h2 class="font-serif text-3xl md:text-4xl text-white mb-4">Dictionnaire des Symboles</h2>
-                <p class="text-purple-200/60 max-w-xl mx-auto">Explorez la signification de plus de 50 symboles oniriques courants. Comprenez ce que votre subconscient essaie de vous dire.</p>
+                <p class="text-purple-200/60 max-w-xl mx-auto">Explorez 150 symboles oniriques avec des pistes contextuelles et des questions de réflexion. Ce sont des points de départ, pas des messages fixes de votre subconscient.</p>
             </div>
 
             <!-- Popular Symbols Grid - Expanded to 16 symbols for better crawl signals -->
@@ -626,7 +613,7 @@
             <div class="text-center reveal">
                 <a href="guides/dictionnaire-symboles-reves" class="inline-flex items-center gap-2 px-8 py-4 glass-button rounded-full font-sans text-white hover:text-dream-salmon transition-colors group">
                     <i data-lucide="book-open" class="w-5 h-5"></i>
-                    Explorer les 50+ symboles
+                    Explorer les 150 symboles
                     <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
                 </a>
             </div>

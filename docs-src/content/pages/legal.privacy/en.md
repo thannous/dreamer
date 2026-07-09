@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Privacy Policy",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Privacy Policy</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Effective November 22, 2025</p>
+        <p class="text-lg text-purple-200/80 mb-10">Effective July 9, 2026</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -138,7 +138,7 @@
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Technical providers:</strong> notably Supabase (hosting, database, authentication) and cloud infrastructure providers necessary for the app's operation.</li>
                     <li><strong>AI and speech recognition providers:</strong> Google (Gemini, Google Cloud Speech-to-Text), and where applicable other leading AI providers (Anthropic, OpenAI, Perplexity, Mistral, or equivalent services) for transcription, analysis of your dreams and generation of images or content.</li>
-                    <li><strong>Subscription management:</strong> RevenueCat (USA) for managing in-app subscriptions. RevenueCat receives an anonymous user identifier and purchase information provided by Apple/Google. Your complete payment information never passes through Noctalia.</li>
+                    <li><strong>Subscription management:</strong> RevenueCat (USA) manages in-app subscriptions. RevenueCat receives an anonymous user identifier and purchase information provided by the applicable app store, currently Google Play. Your complete payment information never passes through Noctalia.</li>
                     <li><strong>External advisors and authorities:</strong> legal firms, accountants or administrative and judicial authorities when required by law or to defend our rights.</li>
                 </ul>
                 <p class="mt-4">In all cases, we require our service providers to offer sufficient guarantees regarding security and confidentiality, and not to use your data for their own marketing purposes.</p>

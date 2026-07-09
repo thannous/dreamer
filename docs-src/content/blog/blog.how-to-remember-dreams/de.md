@@ -213,7 +213,7 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Erfassen Sie Ihre Träume per Stimme</h4>
 <p class="text-sm text-gray-400 mb-4">Noctalia transkribiert und analysiert Ihre Traumerzählungen automatisch. Einfacher als ein Notizbuch, umfangreicher als eine Sprachnotiz.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
                                 Entdecken Sie Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>

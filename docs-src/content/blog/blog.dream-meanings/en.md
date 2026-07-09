@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Dream Meanings: interpretation & symbols",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -69,6 +69,9 @@
                 </p>
 <p class="text-sm text-purple-200/70 leading-relaxed mt-4">
                     Not sure where to start? Browse the <a class="text-dream-salmon hover:underline" href="../guides/dream-symbols-dictionary">dream symbols dictionary</a>, or explore common symbols like <a class="text-dream-salmon hover:underline" href="../symbols/water">water</a>, <a class="text-dream-salmon hover:underline" href="../symbols/teeth">teeth</a>, and <a class="text-dream-salmon hover:underline" href="../symbols/snake">snakes</a>.
+                </p>
+<p class="text-sm text-purple-200/70 leading-relaxed mt-3">
+                    Use the guide for a quick web lookup. Use the <a class="text-dream-salmon hover:underline" href="/en/dream-dictionary-app">dream dictionary app</a> when you want to record a dream on Android and revisit its symbols in your journal.
                 </p>
 </header>
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">

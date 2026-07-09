@@ -97,7 +97,7 @@
     <ol class="grid md:grid-cols-3 gap-4 text-sm text-gray-300">
         <li class="glass-panel rounded-xl p-4"><strong class="text-dream-cream block mb-2">0 à 30 secondes</strong>Restez dans la même position. Laissez revenir les lieux, visages, phrases ou sensations sans ouvrir une autre application.</li>
         <li class="glass-panel rounded-xl p-4"><strong class="text-dream-cream block mb-2">30 à 90 secondes</strong>Remontez le rêve à rebours : dernière scène, émotion dominante, détail étrange, puis début possible.</li>
-        <li class="glass-panel rounded-xl p-4"><strong class="text-dream-cream block mb-2">90 à 180 secondes</strong>Dictez ou notez les fragments. Vous pourrez utiliser le <a class="text-dream-salmon hover:underline" href="/fr/blog/guide-journal-reves">journal de rêves</a> et l’<a class="text-dream-salmon hover:underline" href="/fr/application-interpretation-reves-ia">application d’interprétation IA</a> plus tard, une fois bien réveillé.</li>
+        <li class="glass-panel rounded-xl p-4"><strong class="text-dream-cream block mb-2">90 à 180 secondes</strong>Dictez ou notez les fragments dans un <a class="text-dream-salmon hover:underline" href="/fr/journal-de-reves-vocal">journal de rêves vocal</a>. Vous pourrez utiliser le <a class="text-dream-salmon hover:underline" href="/fr/blog/guide-journal-reves">guide du journal de rêves</a> et l’<a class="text-dream-salmon hover:underline" href="/fr/application-interpretation-reves-ia">application d’interprétation IA</a> plus tard, une fois bien réveillé.</li>
     </ol>
 </section>
 <!-- Featured Image -->

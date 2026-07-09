@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Mentions légales",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -38,19 +38,15 @@
 <h1 class="font-serif text-4xl md:text-5xl mb-10 text-dream-cream">Mentions légales</h1>
         
         <div class="space-y-8 text-gray-300 leading-relaxed">
-            <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-white/5">
-                <h2 class="text-2xl font-serif text-white mb-4">Vous cherchez Noctalia ?</h2>
-                <p>Noctalia est une application de journal de rêves avec capture vocale, interprétation IA, symboles, images et exploration guidée. Cette page détaille les informations légales; pour découvrir le produit, commencez par <a href="/fr/" class="text-dream-salmon hover:underline">l'accueil Noctalia</a>, <a href="/fr/a-propos" class="text-dream-salmon hover:underline">l'histoire du projet</a> ou la <a href="/fr/politique-confidentialite" class="text-dream-salmon hover:underline">politique de confidentialité</a>.</p>
-            </section>
-
             <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
                 <h2 class="text-2xl font-serif text-white mb-4">1. Éditeur du site et de l'application</h2>
                 <p>Le site et l'application <strong>Noctalia</strong> sont édités par :</p>
                 <ul class="list-disc pl-5 mt-2 space-y-1">
-                    <li><strong>Éditeur :</strong> TiMax</li>
+                    <li><strong>Éditeur :</strong> Thanh Chau, entrepreneur individuel (nom commercial : TiMax)</li>
                     <li><strong>Statut juridique :</strong> entreprise individuelle établie en France</li>
-                    <li><strong>Adresse :</strong> Orléans, France</li>
-                    <li><strong>Numéro SIREN / SIRET :</strong> 99531698100019</li>
+                    <li><strong>Adresse professionnelle :</strong> 70 rue la Barrière Saint-Marc, 45000 Orléans, France</li>
+                    <li><strong>SIREN :</strong> 995 316 981</li>
+                    <li><strong>SIRET de l'établissement :</strong> 995 316 981 00019</li>
                     <li><strong>Directeur de la publication :</strong> Thanh Chau</li>
                     <li><strong>Contact :</strong> <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a></li>
                 </ul>
@@ -60,9 +56,9 @@
                 <h2 class="text-2xl font-serif text-white mb-4">2. Hébergement</h2>
                 <p>Le site est hébergé par :</p>
                 <ul class="list-disc pl-5 mt-2 space-y-1">
-                    <li><strong>Hébergeur :</strong> Vercel Inc.</li>
-                    <li><strong>Adresse :</strong> 340 S Lemon Avé #4133, Walnut, ÇA 91789, États‑Unis</li>
-                    <li><strong>Site web :</strong> <a href="https://vercel.com" class="text-dream-salmon hover:underline">https://vercel.com</a></li>
+                    <li><strong>Hébergeur :</strong> Cloudflare, Inc. (Cloudflare Pages)</li>
+                    <li><strong>Adresse :</strong> 101 Townsend St., San Francisco, CA 94107, États-Unis</li>
+                    <li><strong>Site web :</strong> <a href="https://www.cloudflare.com" class="text-dream-salmon hover:underline">https://www.cloudflare.com</a></li>
                 </ul>
                 <p class="mt-4">Les données de l'application (comptes et journal de rêves) sont hébergées de manière sécurisée dans une base de données <strong>Supabase</strong> située en <strong>Europe de l'Ouest (Union européenne)</strong>, sur des serveurs soumis au RGPD. Pour plus d'informations sur la manière dont vos données sont traitées, veuillez consulter notre <a href="politique-confidentialite" class="text-dream-salmon hover:underline">Politique de confidentialité</a>.</p>
             </section>

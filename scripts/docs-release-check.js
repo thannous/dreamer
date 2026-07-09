@@ -155,6 +155,9 @@ function runChecksInDirectory(targetDir, releaseVersion, options, label) {
   console.log(`\n[docs-release-check] ${label}: structural checks`);
   run('npm', ['run', 'docs:check'], { cwd: targetDir, env });
 
+  console.log(`\n[docs-release-check] ${label}: clean deploy surface`);
+  run('node', ['scripts/check-docs-deploy-surface.js'], { cwd: targetDir, env });
+
   if (!options.skipExternal) {
     console.log(`\n[docs-release-check] ${label}: external links`);
     run('node', ['scripts/check-docs-links.js', '--external'], { cwd: targetDir, env });

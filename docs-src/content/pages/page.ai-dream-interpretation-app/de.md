@@ -23,15 +23,15 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-05-20T00:00:00+02:00",
+  "modifiedTime": "2026-07-09T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"KI-Traumdeutung-App für Android\",\n    \"description\": \"Noctalia erfasst Träume per Sprache, erklärt Symbole, erzeugt Bilder und vertieft die Reflexion mit geführten Fragen.\",\n    \"url\": \"https://noctalia.app/de/ki-traumdeutung-app\",\n    \"inLanguage\": \"de\",\n    \"dateModified\": \"2026-05-20\",\n    \"reviewedBy\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    },\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"KI-Traumdeutung-App für Android\",\n            \"item\": \"https://noctalia.app/de/ki-traumdeutung-app\"\n        }\n    ]\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Worauf achten\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Schnelle Erfassung, klare Privacy, sichtbare Grenzen, Löschung oder Export, Symbolkontext, Reflexionsfragen und Disclaimer.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Warum Noctalia passt\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Noctalia ist Android, sprachfreundlich, visuell, mehrsprachig und mit einem wachsenden öffentlichen Symbollexikon verbunden.\"\n            }\n        }\n    ]\n}"
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"KI-Traumdeutung-App für Android\",\n  \"description\": \"Noctalia erfasst Träume per Sprache, erklärt Symbole, erzeugt Bilder und vertieft die Reflexion mit geführten Fragen.\",\n  \"url\": \"https://noctalia.app/de/ki-traumdeutung-app\",\n  \"inLanguage\": \"de\",\n  \"dateModified\": \"2026-07-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"KI-Traumdeutung-App für Android\",\n      \"item\": \"https://noctalia.app/de/ki-traumdeutung-app\"\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Worauf achten\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Schnelle Erfassung, klare Privacy, sichtbare Grenzen, Löschung oder Export, Symbolkontext, Reflexionsfragen und Disclaimer.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Warum Noctalia passt\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Noctalia ist Android, sprachfreundlich, visuell, mehrsprachig und mit einem wachsenden öffentlichen Symbollexikon verbunden.\"\n      }\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -63,7 +63,7 @@
       <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-2">
         <h3 class="text-white font-medium">Noctalia</h3>
         <p><span class="text-purple-200">Am besten für:</span> Android-Spracheingabe, KI-Reflexion, Symbole und generierte Bilder.</p>
-        <p><span class="text-purple-200">Preis:</span> die öffentliche Noctalia-Seite nennt 2,99 €/Monat oder 19 €/Jahr.</p>
+        <p><span class="text-purple-200">Preis:</span> Freemium; Google Play zeigt den aktuellen Noctalia-Plus-Preis vor dem Kauf.</p>
         <p><span class="text-purple-200">Proof:</span> junges Produkt mit öffentlichem Google Play und Web-Ressourcen.</p>
         <p><span class="text-purple-200">Wechsel:</span> gut, wenn schnelles Erfassen wichtiger ist als iOS heute.</p>
       </article>

@@ -258,7 +258,7 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Entschlüsseln Sie Ihre Wasserträume</h4>
 <p class="text-sm text-gray-400 mb-4">Noctalia analysiert die spezifischen Details Ihres Wassertraums – die Art des Wassers, seinen Zustand, Ihre Handlungen und Emotionen – um personalisierte Einblicke in die Kommunikation Ihres Unterbewusstseins zu liefern.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/ki-traumdeutung-app">
                                 Probieren Sie Noctalia kostenlos aus <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>

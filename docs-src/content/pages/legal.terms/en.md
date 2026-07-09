@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Terms of Use",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-07-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Terms of Use (ToU)</h1>
-    <p class="text-lg text-purple-200/80 mb-10">Effective 22 November 2025</p>
+    <p class="text-lg text-purple-200/80 mb-10">Effective 9 July 2026</p>
 
     <div class="space-y-8 text-gray-300 leading-relaxed">
 
@@ -72,13 +72,13 @@
           <li><strong>User</strong>: any person accessing the Service, with or without an account.</li>
           <li><strong>Account</strong>: the personal space created within Noctalia.</li>
           <li><strong>User Content</strong>: dreams, notes, voice transcripts, AI analyses, generated images, titles, tags, favorites.</li>
-          <li><strong>Premium subscription</strong>: paid offer providing additional features, billed via the Apple App Store or Google Play Store.</li>
+          <li><strong>Noctalia Plus subscription</strong>: paid offer providing additional features, currently billed through Google Play.</li>
         </ul>
       </section>
 
       <section>
         <h2 class="text-2xl font-serif text-white mb-4 mt-8">3. Access and account</h2>
-        <p>Noctalia is available on iOS and Android (and, where applicable, via web). Connection and device costs are yours.</p>
+        <p>Noctalia is currently distributed as an Android app through Google Play. Public web pages provide product information and editorial resources; they are not the mobile app. Other platforms will apply only when Noctalia explicitly announces their availability.</p>
         <p class="mt-3">Some features require an Account with a valid email and secure password. Provide accurate information and keep it updated.</p>
         <p class="mt-3">You are solely responsible for your credentials and activity. If you suspect unauthorized access, contact us at
           <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a> immediately.</p>
@@ -104,9 +104,9 @@
 
       <section>
         <h2 class="text-2xl font-serif text-white mb-4 mt-8">6. Subscriptions and payment</h2>
-        <p>Premium features are billed through the Apple App Store or Google Play Store and are subject to their pricing, billing, and refund rules.</p>
-        <p class="mt-3">Prices, duration, renewal, trials, and withdrawal rights (if applicable) are detailed on the relevant store page. Noctalia does not directly collect payments.</p>
-        <p class="mt-3">You can manage or cancel your subscription in your App Store or Google Play settings at any time.</p>
+        <p>Noctalia Plus features are currently billed through Google Play and are subject to Google Play pricing, billing, cancellation, and refund rules.</p>
+        <p class="mt-3">Prices, duration, renewal, trials, and withdrawal rights (if applicable) are displayed in the Android app and on the relevant Google Play purchase screen. Noctalia does not directly collect store payments.</p>
+        <p class="mt-3">You can manage or cancel your subscription in your Google Play subscription settings at any time.</p>
       </section>
 
       <section>
