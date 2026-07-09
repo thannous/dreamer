@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "App diario dei sogni con IA Noctalia",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-07-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
@@ -35,7 +35,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Press kit Noctalia</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 9 luglio 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 10 luglio 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia è un diario dei sogni per Android che aiuta a registrare i sogni con la voce, trasformarli in voci strutturate ed esplorare simboli, immagini, schemi e domande successive in riflessione guidata.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -60,6 +60,24 @@
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Biografia del fondatore</h2>
+    <p>Thanh Chau è un ingegnere del software e tiene da tempo un diario dei sogni. Ha creato Noctalia per rendere accessibili su Android la registrazione vocale dei sogni e la riflessione strutturata.</p>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Risorse scaricabili</h2>
+    <ul class="list-disc pl-5 space-y-2">
+      <li><a href="/logo512.png" class="text-dream-salmon hover:underline">Icona quadrata dell'app (PNG 512 × 512)</a></li>
+      <li><a href="/logo/logo_noctalia.png" class="text-dream-salmon hover:underline">Logo Noctalia (PNG)</a></li>
+      <li><a href="/screenshot/product-hunt/noctalia-product-hunt-01-voice-capture.png" class="text-dream-salmon hover:underline">Registrazione vocale (PNG 1270 × 760)</a></li>
+      <li><a href="/screenshot/product-hunt/noctalia-product-hunt-02-ai-interpretation.png" class="text-dream-salmon hover:underline">Riflessione IA (PNG 1270 × 760)</a></li>
+      <li><a href="/screenshot/product-hunt/noctalia-product-hunt-03-guided-reflection.png" class="text-dream-salmon hover:underline">Riflessione guidata (PNG 1270 × 760)</a></li>
+      <li><a href="/screenshot/product-hunt/noctalia-product-hunt-04-dream-journal.png" class="text-dream-salmon hover:underline">Diario dei sogni (PNG 1270 × 760)</a></li>
+    </ul>
+    <p class="mt-4 text-sm text-purple-200/70">Queste risorse possono essere utilizzate per una copertura editoriale fattuale di Noctalia. Attribuisci il materiale a Noctalia e non modificare le schermate in modo da rappresentare l'app in modo fuorviante.</p>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Link utili</h2>
     <ul class="list-disc pl-5 space-y-2">
       <li><a href="https://noctalia.app" class="text-dream-salmon hover:underline">Sito ufficiale</a></li>
@@ -72,7 +90,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Nota editoriale</h2>
-    <p>Noctalia e pensata per journaling, riflessione e benessere. Non e un dispositivo medico e non sostituisce il parere di un professionista sanitario.</p>
+    <p>Noctalia è pensata per journaling, riflessione e benessere. Non è un dispositivo medico e non sostituisce il parere di un professionista sanitario.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
