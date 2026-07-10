@@ -656,6 +656,34 @@
             }
           }
         },
+        "blog.heat-stress-nightmares": {
+          "id": "blog.heat-stress-nightmares",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "heat-stress-nightmares",
+          "locales": {
+            "en": {
+              "slug": "heat-stress-nightmares",
+              "path": "/en/blog/heat-stress-nightmares"
+            },
+            "fr": {
+              "slug": "cauchemars-chaleur-stress",
+              "path": "/fr/blog/cauchemars-chaleur-stress"
+            },
+            "es": {
+              "slug": "pesadillas-calor-estres",
+              "path": "/es/blog/pesadillas-calor-estres"
+            },
+            "de": {
+              "slug": "albtraeume-hitze-stress",
+              "path": "/de/blog/albtraeume-hitze-stress"
+            },
+            "it": {
+              "slug": "incubi-caldo-stress",
+              "path": "/it/blog/incubi-caldo-stress"
+            }
+          }
+        },
         "blog.heatwave-sleep-dreams": {
           "id": "blog.heatwave-sleep-dreams",
           "type": "blogArticle",

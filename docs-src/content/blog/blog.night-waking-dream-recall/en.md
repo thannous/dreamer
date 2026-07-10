@@ -23,10 +23,10 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Dream journal lit beside the bed after waking at night",
   "publishedTime": "2026-07-08T00:00:00+02:00",
-  "modifiedTime": "2026-07-08T00:00:00+02:00",
+  "modifiedTime": "2026-07-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/night-noise-sleep-dreams",
-  "nextPath": "/en/blog/ai-dream-journal-privacy",
+  "nextPath": "/en/blog/heat-stress-nightmares",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],
   "activeNav": "resources"
