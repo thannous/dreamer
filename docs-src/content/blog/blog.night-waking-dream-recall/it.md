@@ -23,10 +23,10 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Diario dei sogni illuminato vicino al letto dopo un risveglio notturno",
   "publishedTime": "2026-07-08T00:00:00+02:00",
-  "modifiedTime": "2026-07-08T00:00:00+02:00",
+  "modifiedTime": "2026-07-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/rumore-notturno-sonno-sogni",
-  "nextPath": "/it/blog/privacy-ia-diario-sogni",
+  "nextPath": "/it/blog/incubi-caldo-stress",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],
   "activeNav": "resources"

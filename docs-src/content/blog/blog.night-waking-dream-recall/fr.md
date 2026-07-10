@@ -23,10 +23,10 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Carnet de rêve éclairé près du lit après un réveil nocturne",
   "publishedTime": "2026-07-08T00:00:00+02:00",
-  "modifiedTime": "2026-07-08T00:00:00+02:00",
+  "modifiedTime": "2026-07-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/bruit-nocturne-sommeil-reves",
-  "nextPath": "/fr/blog/confidentialite-ia-journal-reves",
+  "nextPath": "/fr/blog/cauchemars-chaleur-stress",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],
   "activeNav": "resources"

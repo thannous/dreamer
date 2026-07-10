@@ -23,10 +23,10 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Traumtagebuch im Licht neben dem Bett nach nächtlichem Erwachen",
   "publishedTime": "2026-07-08T00:00:00+02:00",
-  "modifiedTime": "2026-07-08T00:00:00+02:00",
+  "modifiedTime": "2026-07-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/naechtlicher-laerm-schlaf-traeume",
-  "nextPath": "/de/blog/ki-traumtagebuch-datenschutz",
+  "nextPath": "/de/blog/albtraeume-hitze-stress",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],
   "activeNav": "resources"
