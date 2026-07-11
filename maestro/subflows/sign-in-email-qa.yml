@@ -1,0 +1,28 @@
+appId: com.tanuki75.noctalia
+---
+- runFlow: fill-email-qa-credentials.yml
+- extendedWaitUntil:
+    visible: "Save password to Google Password Manager.*|Sign Out|Se déconnecter|Cerrar sesión|Esci|Abmelden|Sign in failed|Échec de la connexion|Fallo al iniciar sesión|Accesso non riuscito|Anmeldung fehlgeschlagen"
+    timeout: 45000
+- runFlow:
+    when:
+      visible: "Sign in failed|Échec de la connexion|Fallo al iniciar sesión|Accesso non riuscito|Anmeldung fehlgeschlagen"
+    commands:
+      - tapOn:
+          text: "OK|D’accord|Aceptar|Va bene"
+      - runFlow: fill-email-qa-credentials.yml
+      - extendedWaitUntil:
+          visible: "Save password to Google Password Manager.*|Sign Out|Se déconnecter|Cerrar sesión|Esci|Abmelden"
+          timeout: 45000
+- runFlow:
+    when:
+      visible: "Save password to Google Password Manager.*"
+    commands:
+      - tapOn:
+          text: "Never|Not now"
+- extendedWaitUntil:
+    visible:
+      id: text.auth.email
+    timeout: 45000
+- assertVisible:
+    id: btn.auth.signOut

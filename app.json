@@ -2,7 +2,7 @@
   "expo": {
     "name": "Noctalia",
     "slug": "noctalia",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "icon": "./assets/images/icon.png",
     "scheme": "noctalia",
     "userInterfaceStyle": "automatic",
@@ -24,6 +24,7 @@
       }
     },
     "android": {
+      "versionCode": 34,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -53,6 +54,11 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
       ],
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ],
       "package": "com.tanuki75.noctalia"
     },
     "web": {
@@ -80,7 +86,8 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "Allow Noctalia to access your microphone to record your dreams."
+          "microphonePermission": "Allow Noctalia to access your microphone to record your dreams.",
+          "enableBackgroundPlayback": false
         }
       ],
       "./plugins/withOptionalAndroidHardwareFeatures",
@@ -130,7 +137,7 @@
       }
     },
     "owner": "tanuki75",
-    "runtimeVersion": "2.0.1",
+    "runtimeVersion": "2.0.2",
     "updates": {
       "url": "https://u.expo.dev/cfd1b275-9dad-40d7-9d9a-147c7bb38415"
     }

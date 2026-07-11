@@ -618,24 +618,6 @@ export async function startNativeSpeechSession(
       resolveEnd?.();
     });
 
-    speechModule.start({
-      lang: languageCode,
-      interimResults: true,
-      addsPunctuation: true,
-      // On web keep the session alive longer; native ignores/handles as supported.
-      // This prevents premature stop before the user speaks.
-      continuous: Platform.OS === 'web',
-      requiresOnDeviceRecognition,
-      androidRecognitionServicePackage,
-      recordingOptions: supportsRecording
-        ? {
-            persist: true,
-            outputSampleRate: 16000,
-            outputEncoding: 'pcmFormatInt16',
-          }
-        : undefined,
-    });
-
     const cleanup = () => {
       resolveEnd = null;
 
@@ -650,6 +632,29 @@ export async function startNativeSpeechSession(
       }
     };
 
+    try {
+      speechModule.start({
+        lang: languageCode,
+        interimResults: true,
+        addsPunctuation: true,
+        // On web keep the session alive longer; native ignores/handles as supported.
+        // This prevents premature stop before the user speaks.
+        continuous: Platform.OS === 'web',
+        requiresOnDeviceRecognition,
+        androidRecognitionServicePackage,
+        recordingOptions: supportsRecording
+          ? {
+              persist: true,
+              outputSampleRate: 16000,
+              outputEncoding: 'pcmFormatInt16',
+            }
+          : undefined,
+      });
+    } catch (error) {
+      cleanup();
+      throw error;
+    }
+
     const stop = async () => {
       if (!ended) {
         try {
@@ -657,7 +662,19 @@ export async function startNativeSpeechSession(
         } catch {
           /* no-op */
         }
-        await Promise.race([endPromise, new Promise((resolve) => setTimeout(resolve, END_TIMEOUT_MS))]);
+        let endTimeout: ReturnType<typeof setTimeout> | undefined;
+        try {
+          await Promise.race([
+            endPromise,
+            new Promise<void>((resolve) => {
+              endTimeout = setTimeout(resolve, END_TIMEOUT_MS);
+            }),
+          ]);
+        } finally {
+          if (endTimeout) {
+            clearTimeout(endTimeout);
+          }
+        }
       }
 
       cleanup();

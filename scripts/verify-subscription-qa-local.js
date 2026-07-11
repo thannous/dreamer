@@ -2,145 +2,94 @@
 'use strict';
 
 const { spawnSync } = require('child_process');
+const fs = require('fs');
+const Module = require('module');
 const os = require('os');
 const path = require('path');
+const vm = require('vm');
 
-const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const { generateSubscriptionQaReport } = require('./subscription-qa-report');
+
+const JEST_BIN = path.join('node_modules', 'jest', 'bin', 'jest.js');
+
+const syntaxFiles = [
+  'scripts/subscription-qa-report.js',
+  'scripts/update-subscription-qa-evidence.js',
+  'scripts/update-revenuecat-play-store-state.js',
+  'scripts/update-revenuecat-subscriber-expiry-state.js',
+  'scripts/update-google-play-subscription-state.js',
+  'scripts/update-google-play-track-state.js',
+  'scripts/update-google-cloud-project-state.js',
+  'scripts/update-google-oauth-android-client-state.js',
+  'scripts/update-google-play-payments-profile-state.js',
+  'scripts/update-supabase-play-integrity-secrets-state.js',
+  'scripts/android-tooling.js',
+  'scripts/check-android-release-gates.js',
+  'scripts/run-subscription-teststore-purchase.js',
+  'scripts/run-subscription-teststore-restore.js',
+  'scripts/run-subscription-account-switch.js',
+  'scripts/check-android-adb-device.js',
+  'scripts/check-play-install-source.js',
+  'scripts/check-play-qa-device.js',
+  'scripts/wait-for-play-qa-device.js',
+  'scripts/extract-revenuecat-app-user-id.js',
+];
+
+const unitTestFiles = [
+  'scripts/subscription-qa-report.test.js',
+  'scripts/update-subscription-qa-evidence.test.js',
+  'scripts/update-revenuecat-play-store-state.test.js',
+  'scripts/update-revenuecat-subscriber-expiry-state.test.js',
+  'scripts/update-google-play-subscription-state.test.js',
+  'scripts/update-google-play-track-state.test.js',
+  'scripts/update-google-cloud-project-state.test.js',
+  'scripts/update-google-oauth-android-client-state.test.js',
+  'scripts/update-google-play-payments-profile-state.test.js',
+  'scripts/update-supabase-play-integrity-secrets-state.test.js',
+  'scripts/run-subscription-teststore-purchase.test.js',
+  'scripts/run-subscription-teststore-restore.test.js',
+  'scripts/run-subscription-account-switch.test.js',
+  'scripts/verify-subscription-qa-local.test.js',
+  'scripts/check-android-release-gates.test.js',
+  'scripts/check-android-adb-device.test.js',
+  'scripts/check-play-install-source.test.js',
+  'scripts/check-play-qa-device.test.js',
+  'scripts/wait-for-play-qa-device.test.js',
+  'scripts/extract-revenuecat-app-user-id.test.js',
+];
 
 const commands = [
   {
-    label: 'syntax: subscription QA report',
-    command: process.execPath,
-    args: ['--check', 'scripts/subscription-qa-report.js'],
-  },
-  {
-    label: 'syntax: evidence updater',
-    command: process.execPath,
-    args: ['--check', 'scripts/update-subscription-qa-evidence.js'],
-  },
-  {
-    label: 'syntax: Play store state updater',
-    command: process.execPath,
-    args: ['--check', 'scripts/update-revenuecat-play-store-state.js'],
-  },
-  {
-    label: 'syntax: RevenueCat subscriber expiry state updater',
-    command: process.execPath,
-    args: ['--check', 'scripts/update-revenuecat-subscriber-expiry-state.js'],
-  },
-  {
-    label: 'syntax: Google Play subscription state updater',
-    command: process.execPath,
-    args: ['--check', 'scripts/update-google-play-subscription-state.js'],
-  },
-  {
-    label: 'syntax: Google Play track state updater',
-    command: process.execPath,
-    args: ['--check', 'scripts/update-google-play-track-state.js'],
-  },
-  {
-    label: 'syntax: Google Cloud project state updater',
-    command: process.execPath,
-    args: ['--check', 'scripts/update-google-cloud-project-state.js'],
-  },
-  {
-    label: 'syntax: Google OAuth Android client state updater',
-    command: process.execPath,
-    args: ['--check', 'scripts/update-google-oauth-android-client-state.js'],
-  },
-  {
-    label: 'syntax: Google Play payments profile state updater',
-    command: process.execPath,
-    args: ['--check', 'scripts/update-google-play-payments-profile-state.js'],
-  },
-  {
-    label: 'syntax: Supabase Play Integrity secrets state updater',
-    command: process.execPath,
-    args: ['--check', 'scripts/update-supabase-play-integrity-secrets-state.js'],
-  },
-  {
-    label: 'syntax: Android tooling resolver',
-    command: process.execPath,
-    args: ['--check', 'scripts/android-tooling.js'],
-  },
-  {
-    label: 'syntax: Android release gates',
-    command: process.execPath,
-    args: ['--check', 'scripts/check-android-release-gates.js'],
-  },
-  {
-    label: 'syntax: guarded purchase runner',
-    command: process.execPath,
-    args: ['--check', 'scripts/run-subscription-teststore-purchase.js'],
-  },
-  {
-    label: 'syntax: account switch runner',
-    command: process.execPath,
-    args: ['--check', 'scripts/run-subscription-account-switch.js'],
-  },
-  {
-    label: 'syntax: Android ADB device diagnostic',
-    command: process.execPath,
-    args: ['--check', 'scripts/check-android-adb-device.js'],
-  },
-  {
-    label: 'syntax: Play install source diagnostic',
-    command: process.execPath,
-    args: ['--check', 'scripts/check-play-install-source.js'],
-  },
-  {
-    label: 'syntax: Play QA device preflight',
-    command: process.execPath,
-    args: ['--check', 'scripts/check-play-qa-device.js'],
-  },
-  {
-    label: 'syntax: Play QA device wait helper',
-    command: process.execPath,
-    args: ['--check', 'scripts/wait-for-play-qa-device.js'],
-  },
-  {
-    label: 'syntax: RevenueCat device app user id extractor',
-    command: process.execPath,
-    args: ['--check', 'scripts/extract-revenuecat-app-user-id.js'],
+    type: 'syntax-batch',
+    label: 'syntax: subscription QA scripts',
+    files: syntaxFiles,
   },
   {
     label: 'unit: subscription QA scripts',
-    command: npmCommand,
+    command: process.execPath,
     args: [
-      'test',
-      '--',
-      'scripts/subscription-qa-report.test.js',
-      'scripts/update-subscription-qa-evidence.test.js',
-      'scripts/update-revenuecat-play-store-state.test.js',
-      'scripts/update-revenuecat-subscriber-expiry-state.test.js',
-      'scripts/update-google-play-subscription-state.test.js',
-      'scripts/update-google-play-track-state.test.js',
-      'scripts/update-google-cloud-project-state.test.js',
-      'scripts/update-google-oauth-android-client-state.test.js',
-      'scripts/update-google-play-payments-profile-state.test.js',
-      'scripts/update-supabase-play-integrity-secrets-state.test.js',
-      'scripts/run-subscription-teststore-purchase.test.js',
-      'scripts/run-subscription-account-switch.test.js',
-      'scripts/verify-subscription-qa-local.test.js',
-      'scripts/check-android-release-gates.test.js',
-      'scripts/check-android-adb-device.test.js',
-      'scripts/check-play-install-source.test.js',
-      'scripts/check-play-qa-device.test.js',
-      'scripts/wait-for-play-qa-device.test.js',
-      'scripts/extract-revenuecat-app-user-id.test.js',
+      JEST_BIN,
+      '--runTestsByPath',
+      ...unitTestFiles,
       '--runInBand',
       '--watchman=false',
+      '--selectProjects',
+      'node',
     ],
   },
   {
+    type: 'report',
     label: 'report: subscription QA coverage',
-    command: npmCommand,
-    args: ['run', 'subscription:qa:report'],
+    command: process.execPath,
+    args: ['scripts/subscription-qa-report.js'],
     env: {
       REVENUECAT_QA_EVIDENCE_PATH: path.join(os.tmpdir(), 'missing-revenuecat-qa-evidence.local.json'),
+      REVENUECAT_PLAY_STORE_STATE_PATH: 'doc_web_interne/docs/revenuecat-play-store-state.example.json',
     },
     expectedStdoutIncludes: [
       '## Evidence Commands',
+      'OK | Authenticated Test Store paywall flow exists',
+      'Authenticated Test Store paywall',
       'npm run subscription:qa:evidence -- --gate play_monthly',
       '--installer-package-name com.android.vending',
       '## Current Session Readiness',
@@ -179,14 +128,15 @@ const commands = [
       'Supabase Play Integrity secrets snapshot parses',
       'Supabase Play Integrity secrets state updater exists',
       'Supabase Play Integrity secrets snapshot',
-      'expected P1M',
-      'expected P1Y',
+      'STALE',
+      'refresh with npm run subscription:qa:play-state',
     ],
   },
   {
+    type: 'report',
     label: 'guard: release gate blocks missing manual evidence',
-    command: npmCommand,
-    args: ['run', 'subscription:qa:release-gate'],
+    command: process.execPath,
+    args: ['scripts/subscription-qa-report.js', '--require-full'],
     env: {
       REVENUECAT_QA_EVIDENCE_PATH: path.join(os.tmpdir(), 'missing-revenuecat-qa-evidence.local.json'),
     },
@@ -199,8 +149,8 @@ const commands = [
   },
   {
     label: 'preflight: guarded Test Store monthly purchase CLI',
-    command: npmCommand,
-    args: ['run', 'test:e2e:subscription-teststore:purchase:preflight', '--', '--plan', 'monthly'],
+    command: process.execPath,
+    args: ['scripts/run-subscription-teststore-purchase.js', '--preflight', '--plan', 'monthly', '--device', 'emulator-5554'],
     env: {
       REVENUECAT_QA_EMAIL: 'tester@example.com',
       REVENUECAT_QA_PASSWORD: 'password',
@@ -208,23 +158,79 @@ const commands = [
   },
   {
     label: 'preflight: guarded Test Store annual purchase CLI',
-    command: npmCommand,
-    args: ['run', 'test:e2e:subscription-teststore:purchase:preflight', '--', '--plan', 'annual'],
+    command: process.execPath,
+    args: ['scripts/run-subscription-teststore-purchase.js', '--preflight', '--plan', 'annual', '--device', 'emulator-5554'],
     env: {
       REVENUECAT_QA_EMAIL: 'tester@example.com',
       REVENUECAT_QA_PASSWORD: 'password',
     },
   },
   {
-    label: 'preflight: account switch CLI',
-    command: npmCommand,
-    args: ['run', 'test:e2e:subscription-teststore:account-switch:preflight', '--', '--device', 'emulator-5554'],
+    label: 'preflight: guarded Test Store restore CLI',
+    command: process.execPath,
+    args: ['scripts/run-subscription-teststore-restore.js', '--preflight', '--device', 'emulator-5554'],
     env: {
+      REVENUECAT_QA_EMAIL: 'tester@example.com',
+    },
+  },
+  {
+    label: 'preflight: account switch CLI',
+    command: process.execPath,
+    args: ['scripts/run-subscription-account-switch.js', '--preflight', '--device', 'emulator-5554'],
+    env: {
+      REVENUECAT_QA_EMAIL: 'paid@example.com',
       REVENUECAT_QA_SWITCH_FREE_EMAIL: 'free@example.com',
       REVENUECAT_QA_SWITCH_FREE_PASSWORD: 'password',
     },
   },
 ];
+
+function stripNodePreamble(source) {
+  return String(source)
+    .replace(/^\uFEFF/, '')
+    .replace(/^#![^\r\n]*(?:\r?\n|$)/, '');
+}
+
+function checkNodeSyntaxFiles(files, options = {}) {
+  const {
+    cwd = process.cwd(),
+    readFile = fs.readFileSync,
+    compile = (source, filename) => new vm.Script(Module.wrap(source), { filename }),
+  } = options;
+
+  try {
+    for (const file of files) {
+      const filename = path.resolve(cwd, file);
+      const source = stripNodePreamble(readFile(filename, 'utf8'));
+      compile(source, filename);
+    }
+    return { status: 0, stdout: '', stderr: '' };
+  } catch (error) {
+    return {
+      status: 1,
+      stdout: '',
+      stderr: `${error instanceof Error ? error.message : String(error)}\n`,
+    };
+  }
+}
+
+function runReportCommand(item, options = {}) {
+  const {
+    cwd = process.cwd(),
+    env = process.env,
+    generateReport = generateSubscriptionQaReport,
+  } = options;
+  const result = generateReport({
+    root: cwd,
+    args: item.args.slice(1),
+    env,
+  });
+  return {
+    status: result.exitCode,
+    stdout: result.stdout,
+    stderr: result.stderr,
+  };
+}
 
 function exitCodeForUnexpectedStatus(result) {
   return result.status && result.status !== 0 ? result.status : 1;
@@ -271,21 +277,33 @@ function runCommands(commandList = commands, options = {}) {
     cwd = process.cwd(),
     baseEnv = process.env,
     spawn = spawnSync,
+    syntaxCheck = checkNodeSyntaxFiles,
+    generateReport = generateSubscriptionQaReport,
     stdout = process.stdout,
     stderr = process.stderr,
   } = options;
 
   for (const item of commandList) {
     stdout.write(`\n> ${item.label}\n`);
-    stdout.write(`$ ${[item.command, ...item.args].join(' ')}\n`);
-    const result = spawn(item.command, item.args, {
-      cwd,
-      env: {
-        ...baseEnv,
-        ...(item.env ?? {}),
-      },
-      encoding: 'utf8',
-    });
+    const itemEnv = {
+      ...baseEnv,
+      ...(item.env ?? {}),
+    };
+    let result;
+    if (item.type === 'syntax-batch') {
+      stdout.write(`$ syntax-check ${item.files.length} CommonJS files\n`);
+      result = syntaxCheck(item.files, { cwd });
+    } else if (item.type === 'report') {
+      stdout.write(`$ ${[item.command, ...item.args].join(' ')}\n`);
+      result = runReportCommand(item, { cwd, env: itemEnv, generateReport });
+    } else {
+      stdout.write(`$ ${[item.command, ...item.args].join(' ')}\n`);
+      result = spawn(item.command, item.args, {
+        cwd,
+        env: itemEnv,
+        encoding: 'utf8',
+      });
+    }
     if (result.stdout) stdout.write(result.stdout);
     if (result.stderr) stderr.write(result.stderr);
 
@@ -305,8 +323,12 @@ if (require.main === module) {
 }
 
 module.exports = {
+  checkNodeSyntaxFiles,
   commands,
   exitCodeForUnexpectedStatus,
   getResultError,
+  runReportCommand,
   runCommands,
+  syntaxFiles,
+  unitTestFiles,
 };

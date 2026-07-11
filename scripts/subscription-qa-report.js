@@ -1,9 +1,47 @@
 #!/usr/bin/env node
+/* global __dirname, __filename, Buffer */
 
-const fs = require('fs');
+const nodeFs = require('fs');
 const path = require('path');
 
-const ROOT = path.resolve(__dirname, '..');
+const nodeProcess = process;
+const DEFAULT_ROOT = path.resolve(__dirname, '..');
+
+function createOverlayFileSystem(files = {}, fallback = nodeFs) {
+  const entries = new Map(
+    Object.entries(files).map(([filePath, contents]) => [path.resolve(filePath), String(contents)])
+  );
+
+  return {
+    existsSync(filePath) {
+      return entries.has(path.resolve(filePath)) || fallback.existsSync(filePath);
+    },
+    readFileSync(filePath, encoding) {
+      const contents = entries.get(path.resolve(filePath));
+      if (contents !== undefined) {
+        return encoding ? contents : Buffer.from(contents);
+      }
+      return fallback.readFileSync(filePath, encoding);
+    },
+  };
+}
+
+function generateSubscriptionQaReport(options = {}) {
+const ROOT = options.root ?? DEFAULT_ROOT;
+const fs = options.fs ?? nodeFs;
+const lines = [];
+const console = {
+  log(...values) {
+    lines.push(values.map(String).join(' '));
+  },
+};
+const process = {
+  argv: [nodeProcess.execPath, __filename, ...(options.args ?? [])],
+  env: options.env ?? nodeProcess.env,
+  exitCode: 0,
+};
+const reportNow = options.now ? options.now() : new Date();
+const PLAY_STORE_STATE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 const args = new Set(process.argv.slice(2));
 const requireFullCoverage = args.has('--require-full');
 const evidencePath = process.env.REVENUECAT_QA_EVIDENCE_PATH
@@ -39,7 +77,7 @@ Usage:
 Options:
   --require-full  Exit non-zero while Test Store purchase or Play Internal Testing gates remain manual.
 `.trim());
-  process.exit(0);
+  return { stdout: `${lines.join('\n')}\n`, stderr: '', exitCode: 0 };
 }
 
 const unknownArgs = [...args].filter((arg) => arg !== '--require-full');
@@ -69,6 +107,12 @@ const EXPECTED = {
     'play_cancellation_and_expiry',
   ],
 };
+
+const appConfig = readJson('app.json');
+const androidCandidateVersionCode = String(appConfig?.expo?.android?.versionCode ?? '').trim();
+if (!/^[1-9]\d*$/.test(androidCandidateVersionCode)) {
+  throw new Error('app.json expo.android.versionCode must be a positive integer.');
+}
 
 function read(file) {
   return fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -157,6 +201,23 @@ function readPlayStoreStateResult() {
       error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
     };
   }
+}
+
+function getPlayStoreStateFreshnessIssue(snapshot) {
+  const checkedAt = snapshot?.checked_at ?? snapshot?.checkedAt;
+  const checkedAtMs = Date.parse(String(checkedAt ?? ''));
+  if (!Number.isFinite(checkedAtMs)) {
+    return 'checked_at is missing or invalid';
+  }
+  const ageMs = reportNow.getTime() - checkedAtMs;
+  if (ageMs < 0) {
+    return `checked_at ${checkedAt} is in the future`;
+  }
+  if (ageMs > PLAY_STORE_STATE_MAX_AGE_MS) {
+    const ageHours = Math.floor(ageMs / (60 * 60 * 1000));
+    return `checked_at ${checkedAt} is ${ageHours}h old; maximum age is 24h`;
+  }
+  return null;
 }
 
 function readRevenueCatSubscriberExpiryStateResult() {
@@ -454,21 +515,22 @@ function getGooglePlayTrackReadinessRow() {
     return [
       'CHECK LIVE',
       'Google Play internal track snapshot',
-      'Run npm run android:google-play-track-state with edits.tracks.get JSON to confirm internal/versionCode=24/completed',
+      `Run npm run android:google-play-track-state with edits.tracks.get JSON to confirm internal/versionCode=${androidCandidateVersionCode}/completed`,
     ];
   }
   if (googlePlayTrackStateResult.error) {
     return ['BLOCKED', 'Google Play internal track snapshot', googlePlayTrackStateResult.error];
   }
   const snapshot = googlePlayTrackStateResult.snapshot;
-  const expectedVersionCode = String(snapshot?.expected_version_code || '24');
   const expectedStatus = String(snapshot?.expected_status || 'completed').toLowerCase();
   const release = (snapshot?.releases ?? []).find((item) =>
-    (item?.version_codes ?? []).map((versionCode) => String(versionCode)).includes(expectedVersionCode)
+    (item?.version_codes ?? [])
+      .map((versionCode) => String(versionCode))
+      .includes(androidCandidateVersionCode)
   );
   const summary = release
-    ? `${snapshot.track}/${release.name || 'unnamed'}/${release.status}/versionCode=${expectedVersionCode}`
-    : `${snapshot?.track || 'internal'}/missing/${expectedVersionCode}`;
+    ? `${snapshot.track}/${release.name || 'unnamed'}/${release.status}/versionCode=${androidCandidateVersionCode}`
+    : `${snapshot?.track || 'internal'}/missing/${androidCandidateVersionCode}`;
   return [
     release?.status === expectedStatus ? 'READY' : 'BLOCKED',
     'Google Play internal track snapshot',
@@ -512,6 +574,13 @@ function getPlayBasePlanReadinessRow({ productId, expectedDuration, label, follo
   if (playStoreStateResult.error) {
     return ['BLOCKED', label, playStoreStateResult.error];
   }
+  if (playStoreStateFreshnessIssue) {
+    return [
+      'STALE',
+      label,
+      `${playStoreStateFreshnessIssue}; refresh with npm run subscription:qa:play-state`,
+    ];
+  }
 
   const productState = getSnapshotProductState(playStoreStateResult.snapshot, productId);
   if (!productState) {
@@ -547,6 +616,20 @@ function getPlayAnnualReadinessRow() {
     followup: `RevenueCat product ${EXPECTED.playProductIds.annual} must expose billing period P1Y before play_annual evidence`,
     googlePlayReady: isGooglePlayAnnualReady(),
   });
+}
+
+function getCandidateVersionCodeIssue(gate) {
+  const versionCodeText =
+    typeof gate?.versionCode === 'number' || typeof gate?.versionCode === 'string'
+      ? String(gate.versionCode).trim()
+      : '';
+  if (!/^[1-9]\d*$/.test(versionCodeText)) {
+    return `versionCode is required for Android release candidate ${androidCandidateVersionCode}`;
+  }
+  if (versionCodeText !== androidCandidateVersionCode) {
+    return `versionCode ${versionCodeText} does not match Android release candidate ${androidCandidateVersionCode} from app.json`;
+  }
+  return null;
 }
 
 function getGateEvidenceIssue(evidence, scenario) {
@@ -598,6 +681,10 @@ function getGateEvidenceIssue(evidence, scenario) {
   }
   if (requiresEasBuild && !/^[1-9]\d*$/.test(versionCodeText)) {
     return 'versionCode is required for Play evidence';
+  }
+  if (requireFullCoverage) {
+    const candidateVersionIssue = getCandidateVersionCodeIssue(gate);
+    if (candidateVersionIssue) return candidateVersionIssue;
   }
   if (
     requiresEasBuild &&
@@ -652,6 +739,7 @@ function getEvidenceCommand(scenario) {
     `--gate ${gate}`,
     '--tester <tester-email>',
     '--app-user-id <revenuecat-app-user-uuid>',
+    `--version-code ${androidCandidateVersionCode}`,
   ];
 
   if (gate === 'account_switch') {
@@ -667,7 +755,6 @@ function getEvidenceCommand(scenario) {
       '--eas-build-id <eas-build-uuid>',
       '--device-id <physical-adb-id>',
       '--installer-package-name com.android.vending',
-      '--version-code <installed-version-code>',
       '--evidence "Play monthly purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"',
     ].join(' ');
   }
@@ -678,7 +765,6 @@ function getEvidenceCommand(scenario) {
       '--eas-build-id <eas-build-uuid>',
       '--device-id <physical-adb-id>',
       '--installer-package-name com.android.vending',
-      '--version-code <installed-version-code>',
       '--evidence "Play annual purchase completed after installed from Play (com.android.vending), product noctalia_plus:annual, base plan P1Y confirmed, backend converged"',
     ].join(' ');
   }
@@ -689,7 +775,6 @@ function getEvidenceCommand(scenario) {
       '--eas-build-id <eas-build-uuid>',
       '--device-id <physical-adb-id>',
       '--installer-package-name com.android.vending',
-      '--version-code <installed-version-code>',
       '--evidence "Play cancellation or expiry observed after installed from Play (com.android.vending), RevenueCat webhook and backend state converged"',
     ].join(' ');
   }
@@ -704,14 +789,28 @@ const testStoreEnv = readEnv('.env.teststore');
 const playStoreEnv = fs.existsSync(path.join(ROOT, '.env.playstore')) ? readEnv('.env.playstore') : {};
 const subscriptionConstants = read('constants/subscription.ts');
 const purchaseRunner = read('scripts/run-subscription-teststore-purchase.js');
+const restoreRunner = fs.existsSync(path.join(ROOT, 'scripts/run-subscription-teststore-restore.js'))
+  ? read('scripts/run-subscription-teststore-restore.js')
+  : '';
 const accountSwitchRunner = fs.existsSync(path.join(ROOT, 'scripts/run-subscription-account-switch.js'))
   ? read('scripts/run-subscription-account-switch.js')
   : '';
+const authenticatedTestStorePaywallFlowPath =
+  'maestro/subscription-teststore-paywall-auth.yml';
+const authenticatedTestStorePaywallFlow = fs.existsSync(
+  path.join(ROOT, authenticatedTestStorePaywallFlowPath)
+)
+  ? read(authenticatedTestStorePaywallFlowPath)
+  : '';
+const maestroRunner = read('scripts/run-maestro-android.js');
 const evidenceExample = readJson('doc_web_interne/docs/revenuecat-qa-evidence.example.json');
 const gitignore = read('.gitignore');
 const evidenceResult = readEvidenceResult();
 const evidence = evidenceResult.evidence;
 const playStoreStateResult = readPlayStoreStateResult();
+const playStoreStateFreshnessIssue = playStoreStateResult.snapshot
+  ? getPlayStoreStateFreshnessIssue(playStoreStateResult.snapshot)
+  : null;
 const revenueCatSubscriberExpiryStateResult = readRevenueCatSubscriberExpiryStateResult();
 const googlePlaySubscriptionStateResult = readGooglePlaySubscriptionStateResult();
 const googlePlayTrackStateResult = readGooglePlayTrackStateResult();
@@ -776,22 +875,48 @@ const checks = [
     'maestro/subscription-teststore-readiness.yml'
   ),
   check(
+    'Authenticated Test Store paywall flow exists',
+    Boolean(authenticatedTestStorePaywallFlow) &&
+      pkg.scripts['test:e2e:release:teststore:paywall:local'] ===
+        'node ./scripts/run-maestro-android.js --suite release-teststore-paywall --retries 0 --no-start-metro' &&
+      maestroRunner.includes("'release-teststore-paywall':") &&
+      maestroRunner.includes(authenticatedTestStorePaywallFlowPath) &&
+      authenticatedTestStorePaywallFlow.includes('text.subscription.qa.mode') &&
+      authenticatedTestStorePaywallFlow.includes('packages 2.*') &&
+      authenticatedTestStorePaywallFlow.includes('btn.paywall.selectMonthly') &&
+      authenticatedTestStorePaywallFlow.includes('btn.paywall.selectAnnual') &&
+      authenticatedTestStorePaywallFlow.includes('btn.paywall.purchase') &&
+      authenticatedTestStorePaywallFlow.includes('btn.paywall.restore') &&
+      !/- tapOn:\s*\n\s+id: btn\.paywall\.(?:purchase|restore)/.test(
+        authenticatedTestStorePaywallFlow
+      ),
+    `${authenticatedTestStorePaywallFlowPath} verifies Test Store mode, two packages and the real paywall without a transaction`
+  ),
+  check(
     'Guarded Test Store purchase flow exists',
     fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-purchase-manual.yml')) &&
-      fs.existsSync(path.join(ROOT, 'scripts/run-subscription-teststore-purchase.js')),
+      fs.existsSync(path.join(ROOT, 'scripts/run-subscription-teststore-purchase.js')) &&
+      purchaseRunner.includes('test:e2e:release:teststore:local') &&
+      purchaseRunner.includes('A specific QA target is required'),
     'maestro/subscription-teststore-purchase-manual.yml via scripts/run-subscription-teststore-purchase.js'
   ),
   check(
     'Google Test Store purchase flow exists',
     fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-purchase-google-manual.yml')) &&
       purchaseRunner.includes('REVENUECAT_QA_AUTH') &&
-      purchaseRunner.includes('subscription-teststore-purchase-google-manual.yml'),
+      purchaseRunner.includes('subscription-teststore-purchase-google-manual.yml') &&
+      read('maestro/subscription-teststore-purchase-google-manual.yml').includes('QA_EMAIL_REGEX') &&
+      !read('maestro/subscription-teststore-purchase-google-manual.yml').includes('QA_EMAIL}.*'),
     'REVENUECAT_QA_AUTH=google -> maestro/subscription-teststore-purchase-google-manual.yml'
   ),
   check(
     'Test Store restore flow exists',
-    fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-restore-google-manual.yml')),
-    'maestro/subscription-teststore-restore-google-manual.yml'
+    fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-restore-google-manual.yml')) &&
+      fs.existsSync(path.join(ROOT, 'scripts/run-subscription-teststore-restore.js')) &&
+      restoreRunner.includes('I_APPROVE_TEST_STORE_RESTORE') &&
+      restoreRunner.includes('test:e2e:release:teststore:local') &&
+      pkg.scripts['test:e2e:subscription-teststore:restore:preflight']?.includes('--preflight'),
+    'maestro/subscription-teststore-restore-google-manual.yml via guarded standalone Release restore runner'
   ),
   check(
     'Test Store signout guard exists',
@@ -803,8 +928,26 @@ const checks = [
     fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-account-switch-free-email-manual.yml')) &&
       fs.existsSync(path.join(ROOT, 'scripts/run-subscription-account-switch.js')) &&
       accountSwitchRunner.includes('REVENUECAT_QA_SWITCH_FREE_EMAIL') &&
+      accountSwitchRunner.includes('REVENUECAT_QA_EMAIL') &&
+      accountSwitchRunner.includes('test:e2e:release:teststore:local') &&
       pkg.scripts['test:e2e:subscription-teststore:account-switch:preflight']?.includes('--preflight'),
     'REVENUECAT_QA_SWITCH_FREE_EMAIL -> maestro/subscription-teststore-account-switch-free-email-manual.yml'
+  ),
+  check(
+    'Transactional Test Store flows use standalone Release',
+    [
+      'maestro/subscription-teststore-purchase-manual.yml',
+      'maestro/subscription-teststore-purchase-google-manual.yml',
+      'maestro/subscription-teststore-restore-google-manual.yml',
+      'maestro/subscription-teststore-account-switch-free-email-manual.yml',
+    ].every((flow) => {
+      const source = read(flow);
+      return !source.includes('open-mock-app.yml') &&
+        !source.includes('expo-development-client') &&
+        !source.includes('10.0.2.2') &&
+        source.includes('open-release-app-');
+    }),
+    'purchase, restore and account-switch run from an installed Release bundle with Metro disabled'
   ),
   check(
     'Test Store purchase preflight exists',
@@ -820,10 +963,23 @@ const checks = [
     'npm run subscription:qa:verify-local'
   ),
   check(
+    'Subscription QA report CLIs are wired',
+    pkg.scripts['subscription:qa:report'] === 'node ./scripts/subscription-qa-report.js' &&
+      pkg.scripts['subscription:qa:release-gate'] ===
+        'node ./scripts/subscription-qa-report.js --require-full',
+    'npm run subscription:qa:report and npm run subscription:qa:release-gate'
+  ),
+  check(
     'Production APK build is gated by subscription QA',
+    pkg.scripts['android:gates:prebuild'] ===
+      'node ./scripts/check-android-release-gates.js --prebuild' &&
     typeof pkg.scripts['build:apk:prod'] === 'string' &&
-      pkg.scripts['build:apk:prod'].startsWith('npm run android:gates:strict &&'),
-    'build:apk:prod must run android:gates:strict before eas build'
+      pkg.scripts['build:apk:prod'].startsWith('npm run android:gates:prebuild &&') &&
+      pkg.scripts['build:apk:prod'].includes('EXPO_NO_DOTENV=1') &&
+      !pkg.scripts['build:apk:prod'].includes('rm -f .env.local') &&
+      pkg.scripts['android:gates:strict'] ===
+        'node ./scripts/check-android-release-gates.js',
+    'build:apk:prod preserves .env.local, disables dotenv, and runs android:gates:prebuild; android:gates:strict qualifies the candidate after Play upload'
   ),
   check(
     'RevenueCat device app user id extractor exists',
@@ -1049,6 +1205,13 @@ const scenarios = [
     'maestro/subscription-teststore-readiness.yml',
   ],
   [
+    'Automated',
+    'Authenticated Test Store paywall',
+    'RevenueCat Test Store',
+    'Test Store mode, two packages, monthly/annual and purchase/restore controls without a transaction',
+    authenticatedTestStorePaywallFlowPath,
+  ],
+  [
     'Manual purchase gate',
     'Test Store monthly',
     'RevenueCat Test Store',
@@ -1101,7 +1264,7 @@ const scenarios = [
 
 console.log('# Subscription QA Report');
 console.log('');
-console.log(`Generated: ${new Date().toISOString()}`);
+console.log(`Generated: ${reportNow.toISOString()}`);
 console.log('');
 console.log('## RevenueCat Wiring');
 console.log('');
@@ -1154,7 +1317,18 @@ console.log('| Coverage | Scenario | Layer | Expected proof | Evidence / next ga
 console.log('| --- | --- | --- | --- | --- |');
 const scenarioRows = scenarios.map(([coverage, scenario, layer, proof, nextGate]) => {
   if (coverage !== 'Automated' && hasGateEvidence(evidence, scenario)) {
-    return ['Verified', scenario, layer, proof, evidence.gates[slugify(scenario)].evidence];
+    const gate = evidence.gates[slugify(scenario)];
+    const candidateVersionIssue = getCandidateVersionCodeIssue(gate);
+    if (candidateVersionIssue) {
+      return [
+        'Historical',
+        scenario,
+        layer,
+        proof,
+        `${gate.evidence} (${candidateVersionIssue})`,
+      ];
+    }
+    return ['Verified', scenario, layer, proof, gate.evidence];
   }
   return [coverage, scenario, layer, proof, nextGate];
 });
@@ -1166,6 +1340,7 @@ const manualGates = scenarioRows.filter(([coverage]) => coverage !== 'Automated'
 console.log('');
 console.log(`Automated scenarios: ${scenarioRows.filter(([coverage]) => coverage === 'Automated').length}`);
 console.log(`Verified manual/external scenarios: ${scenarioRows.filter(([coverage]) => coverage === 'Verified').length}`);
+console.log(`Historical manual/external scenarios: ${scenarioRows.filter(([coverage]) => coverage === 'Historical').length}`);
 console.log(`Manual or external gates remaining: ${manualGates.length}`);
 if (manualGates.length > 0) {
   console.log('');
@@ -1198,12 +1373,17 @@ if (evidenceIssues.length > 0) {
 }
 
 const failed = checks.filter((item) => !item.ok);
+const testStoreAuthMode = process.env.REVENUECAT_QA_AUTH || 'email';
+const testStoreAccountEnvReady = Boolean(
+  process.env.REVENUECAT_QA_EMAIL &&
+    (testStoreAuthMode === 'google' || process.env.REVENUECAT_QA_PASSWORD)
+);
 
 const runtimeReadiness = [
   [
-    process.env.REVENUECAT_QA_EMAIL && process.env.REVENUECAT_QA_PASSWORD ? 'READY' : 'MISSING',
+    testStoreAccountEnvReady ? 'READY' : 'MISSING',
     'Test Store signed-in account env',
-    `REVENUECAT_QA_EMAIL=${envState('REVENUECAT_QA_EMAIL')}, REVENUECAT_QA_PASSWORD=${envState(
+    `REVENUECAT_QA_AUTH=${testStoreAuthMode}, REVENUECAT_QA_EMAIL=${envState('REVENUECAT_QA_EMAIL')}, REVENUECAT_QA_PASSWORD=${envState(
       'REVENUECAT_QA_PASSWORD'
     )}`,
   ],
@@ -1268,4 +1448,26 @@ if (requireFullCoverage && manualGates.length > 0) {
     `Full RevenueCat workflow is not complete: ${manualGates.length} manual or external gate(s) still require evidence.`
   );
   process.exitCode = 1;
+}
+
+return {
+  stdout: lines.length > 0 ? `${lines.join('\n')}\n` : '',
+  stderr: '',
+  exitCode: process.exitCode,
+};
+}
+
+module.exports = {
+  createOverlayFileSystem,
+  generateSubscriptionQaReport,
+};
+
+if (require.main === module) {
+  const result = generateSubscriptionQaReport({
+    args: nodeProcess.argv.slice(2),
+    env: nodeProcess.env,
+  });
+  nodeProcess.stdout.write(result.stdout);
+  if (result.stderr) nodeProcess.stderr.write(result.stderr);
+  nodeProcess.exitCode = result.exitCode;
 }

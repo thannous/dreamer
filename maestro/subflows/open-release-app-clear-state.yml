@@ -1,0 +1,15 @@
+# Open an installed standalone Release bundle without Expo Dev Client or Metro.
+appId: com.tanuki75.noctalia
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: "screen.onboarding|screen.recording"
+    timeout: 30000
+- runFlow:
+    when:
+      visible:
+        id: screen.onboarding
+    commands:
+      - runFlow: dismiss-first-launch-onboarding.yml

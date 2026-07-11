@@ -148,6 +148,19 @@ export async function requestNotificationPermissions(): Promise<boolean> {
     return false;
   }
 
+  // Android 13+ only shows the notification permission prompt after at least
+  // one notification channel exists. Create it before reading or requesting
+  // permissions so first-run users can actually receive the system prompt.
+  if (Platform.OS === 'android') {
+    const t = getTranslator();
+    await Notifications.setNotificationChannelAsync(NOTIFICATION_CHANNEL_ID, {
+      name: t('notifications.channel_name'),
+      importance: Notifications.AndroidImportance.HIGH,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF6B6B',
+    });
+  }
+
   const existingPermissions = await Notifications.getPermissionsAsync();
   let permissionResult = existingPermissions;
 
@@ -162,18 +175,6 @@ export async function requestNotificationPermissions(): Promise<boolean> {
   }
 
   const isGranted = allowsNotifications(permissionResult);
-
-  // Android: Create notification channel
-  if (isGranted && Platform.OS === 'android') {
-    // Get system language for channel name (can't be changed after creation)
-    const t = getTranslator();
-    await Notifications.setNotificationChannelAsync(NOTIFICATION_CHANNEL_ID, {
-      name: t('notifications.channel_name'),
-      importance: Notifications.AndroidImportance.HIGH,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF6B6B',
-    });
-  }
 
   return isGranted;
 }

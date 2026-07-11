@@ -1,0 +1,57 @@
+name: Android Release Smoke
+
+on:
+  workflow_dispatch: {}
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  cancel_in_progress: true
+  group: ${{ workflow.filename }}-${{ github.ref }}
+
+jobs:
+  validate_android_release_ref:
+    name: Validate Android release identity
+    env:
+      RELEASE_REF_NAME: ${{ github.ref_name }}
+      RELEASE_REF_TYPE: ${{ github.ref_type }}
+    steps:
+      - uses: eas/checkout
+      - name: Match tag and app versions
+        run: node ./scripts/check-android-release-ref.js
+
+  build_android_release_smoke:
+    name: Build Android release-smoke APK
+    needs: [validate_android_release_ref]
+    type: build
+    params:
+      platform: android
+      profile: release-smoke
+
+  validate_android_release_build:
+    name: Validate built Android versionCode
+    needs: [build_android_release_smoke]
+    env:
+      BUILT_ANDROID_VERSION_CODE: ${{ needs.build_android_release_smoke.outputs.app_build_version }}
+    steps:
+      - uses: eas/checkout
+      - name: Match EAS build and app versionCode
+        run: node ./scripts/check-android-release-ref.js
+
+  maestro_android_release_smoke:
+    name: Run Android release smoke flows
+    needs: [build_android_release_smoke, validate_android_release_build]
+    type: maestro
+    params:
+      build_id: ${{ needs.build_android_release_smoke.outputs.build_id }}
+      flow_path:
+        - maestro/release-smoke.yml
+        - maestro/release-lifecycle.yml
+        - maestro/release-permissions.yml
+        - maestro/release-offline-local.yml
+      android_system_image_package: system-images;android-35;google_apis;x86_64
+      device_identifier:
+        android: pixel_6
+      record_screen: true
+      retries: 0

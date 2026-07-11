@@ -1,3 +1,4 @@
+/* global __dirname, describe, it, expect */
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -5,7 +6,11 @@ const { spawnSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 const SCRIPT = path.join(ROOT, 'scripts/update-subscription-qa-evidence.js');
-const REPORT_SCRIPT = path.join(ROOT, 'scripts/subscription-qa-report.js');
+const ANDROID_CANDIDATE_VERSION_CODE = JSON.parse(
+  fs.readFileSync(path.join(ROOT, 'app.json'), 'utf8')
+).expo.android.versionCode;
+const { generateSubscriptionQaReport } = require('./subscription-qa-report');
+const { parseArgs, updateEvidence } = require('./update-subscription-qa-evidence');
 const EXAMPLE = JSON.parse(
   fs.readFileSync(path.join(ROOT, 'doc_web_interne/docs/revenuecat-qa-evidence.example.json'), 'utf8')
 );
@@ -14,19 +19,46 @@ function tempFile() {
   return path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'subscription-evidence-update-')), 'evidence.json');
 }
 
+function candidateVersionArgs() {
+  return ['--version-code', String(ANDROID_CANDIDATE_VERSION_CODE)];
+}
+
 function runUpdate(args = []) {
-  return spawnSync(process.execPath, [SCRIPT, ...args], {
-    cwd: ROOT,
-    encoding: 'utf8',
-  });
+  // Keep one subprocess assertion for the public help/CLI contract. The
+  // remaining cases exercise the exported implementation directly so this
+  // suite does not pay a Node startup cost for every validation branch.
+  if (args.includes('--help') || args.includes('-h')) {
+    return spawnSync(process.execPath, [SCRIPT, ...args], {
+      cwd: ROOT,
+      encoding: 'utf8',
+    });
+  }
+
+  try {
+    const gate = updateEvidence(parseArgs(args));
+    return {
+      status: 0,
+      stdout: `Updated: ${gate.status} at ${gate.testedAt}\n`,
+      stderr: '',
+    };
+  } catch (error) {
+    return {
+      status: 1,
+      stdout: '',
+      stderr: `${error instanceof Error ? error.message : String(error)}\n`,
+    };
+  }
 }
 
 function runReport(evidencePath) {
-  return spawnSync(process.execPath, [REPORT_SCRIPT], {
-    cwd: ROOT,
+  const result = generateSubscriptionQaReport({
     env: { ...process.env, REVENUECAT_QA_EVIDENCE_PATH: evidencePath },
-    encoding: 'utf8',
   });
+  return {
+    status: result.exitCode,
+    stdout: result.stdout,
+    stderr: result.stderr,
+  };
 }
 
 describe('subscription QA evidence updater', () => {
@@ -38,6 +70,9 @@ describe('subscription QA evidence updater', () => {
     expect(result.stdout).toContain('npm run android:play-qa-device:wait -- --device <adb-id>');
     expect(result.stdout).toContain('npm run android:play-qa-device -- --device <adb-id>');
     expect(result.stdout).toContain('--version-code <n>');
+    expect(result.stdout).toContain(
+      `must match app.json Android candidate ${ANDROID_CANDIDATE_VERSION_CODE}`
+    );
     expect(result.stdout).toContain('play_annual evidence must also confirm base plan P1Y');
     expect(result.stdout).toContain('play_cancellation_and_expiry evidence must confirm cancellation/expiry');
   });
@@ -55,6 +90,7 @@ describe('subscription QA evidence updater', () => {
       '00000000-0000-4000-8000-000000000000',
       '--evidence',
       'monthly purchase completed in Test Store',
+      ...candidateVersionArgs(),
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
@@ -66,9 +102,59 @@ describe('subscription QA evidence updater', () => {
       testedAt: '2026-05-09T12:00:00.000Z',
       tester: 'tester@example.com',
       appUserId: '00000000-0000-4000-8000-000000000000',
+      versionCode: ANDROID_CANDIDATE_VERSION_CODE,
       evidence: 'monthly purchase completed in Test Store',
     });
     expect(evidence.gates.test_store_annual.status).toBe('pending');
+  });
+
+  it('requires every manual gate to record the tested Android versionCode', () => {
+    const file = tempFile();
+    const result = runUpdate([
+      '--file',
+      file,
+      '--gate',
+      'test_store_monthly',
+      '--tester',
+      'tester@example.com',
+      '--app-user-id',
+      '00000000-0000-4000-8000-000000000000',
+      '--evidence',
+      'monthly purchase completed in Test Store',
+      '--tested-at',
+      '2026-05-09T12:00:00.000Z',
+    ]);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('Missing --version-code');
+    expect(fs.existsSync(file)).toBe(false);
+  });
+
+  it('rejects manual evidence for a different Android candidate', () => {
+    const file = tempFile();
+    const staleVersionCode = ANDROID_CANDIDATE_VERSION_CODE - 1;
+    const result = runUpdate([
+      '--file',
+      file,
+      '--gate',
+      'test_store_monthly',
+      '--tester',
+      'tester@example.com',
+      '--app-user-id',
+      '00000000-0000-4000-8000-000000000000',
+      '--evidence',
+      'monthly purchase completed in Test Store',
+      '--version-code',
+      String(staleVersionCode),
+      '--tested-at',
+      '2026-05-09T12:00:00.000Z',
+    ]);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain(
+      `versionCode ${staleVersionCode} does not match Android release candidate ${ANDROID_CANDIDATE_VERSION_CODE}`
+    );
+    expect(fs.existsSync(file)).toBe(false);
   });
 
   it('rejects incomplete evidence before writing the file', () => {
@@ -102,6 +188,7 @@ describe('subscription QA evidence updater', () => {
       '00000000-0000-4000-8000-000000000000',
       '--evidence',
       'monthly purchase completed in Test Store',
+      ...candidateVersionArgs(),
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
@@ -217,6 +304,7 @@ describe('subscription QA evidence updater', () => {
       '00000000-0000-4000-8000-000000000000',
       '--evidence',
       'monthly purchase completed in Test Store',
+      ...candidateVersionArgs(),
     ];
 
     const firstResult = runUpdate([...args, '--tested-at', '2026-05-09T12:00:00.000Z']);
@@ -248,7 +336,7 @@ describe('subscription QA evidence updater', () => {
       '--installer-package-name',
       'com.android.vending',
       '--version-code',
-      '24',
+      String(ANDROID_CANDIDATE_VERSION_CODE),
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
@@ -260,7 +348,7 @@ describe('subscription QA evidence updater', () => {
       easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9',
       deviceId: '57275d36',
       installerPackageName: 'com.android.vending',
-      versionCode: 24,
+      versionCode: ANDROID_CANDIDATE_VERSION_CODE,
       evidence:
         'monthly purchase completed through Play Internal Testing after installed from Play (com.android.vending) with base plan P1M confirmed',
     });
@@ -368,7 +456,7 @@ describe('subscription QA evidence updater', () => {
       '--installer-package-name',
       'com.android.vending',
       '--version-code',
-      '24',
+      String(ANDROID_CANDIDATE_VERSION_CODE),
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
@@ -398,7 +486,7 @@ describe('subscription QA evidence updater', () => {
       '--installer-package-name',
       'com.android.vending',
       '--version-code',
-      '24',
+      String(ANDROID_CANDIDATE_VERSION_CODE),
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
@@ -475,6 +563,7 @@ describe('subscription QA evidence updater', () => {
       '00000000-0000-4000-8000-000000000000',
       '--evidence',
       'paid account remains plus while second account remains free / inactive after logout and login',
+      ...candidateVersionArgs(),
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
@@ -483,6 +572,7 @@ describe('subscription QA evidence updater', () => {
     const evidence = JSON.parse(fs.readFileSync(file, 'utf8'));
     expect(evidence.gates.account_switch).toMatchObject({
       status: 'passed',
+      versionCode: ANDROID_CANDIDATE_VERSION_CODE,
       evidence: 'paid account remains plus while second account remains free / inactive after logout and login',
     });
   });
@@ -500,6 +590,7 @@ describe('subscription QA evidence updater', () => {
       '00000000-0000-4000-8000-000000000000',
       '--evidence',
       'paid account logout and login verified by manual QA',
+      ...candidateVersionArgs(),
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
@@ -553,7 +644,7 @@ describe('subscription QA evidence updater', () => {
       '--installer-package-name',
       'com.android.vending',
       '--version-code',
-      '24',
+      String(ANDROID_CANDIDATE_VERSION_CODE),
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
@@ -583,7 +674,7 @@ describe('subscription QA evidence updater', () => {
       '--installer-package-name',
       'com.android.vending',
       '--version-code',
-      '24',
+      String(ANDROID_CANDIDATE_VERSION_CODE),
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);

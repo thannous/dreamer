@@ -1,7 +1,9 @@
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { GUEST_LIMITS, corsHeaders } from '../api/lib/constants.ts';
 import { ensureImagePrompt, generateAndStoreImage } from '../api/services/imagePipeline.ts';
+import { resolveImageModel, type ImageGenerationTier } from '../api/services/geminiImages.ts';
 import {
+  IMAGE_JOB_WORKER_AUTH_HEADER,
   createAdminClient,
   serializeImageJobError,
   type ImageJobRow,
@@ -24,12 +26,32 @@ const getRequiredEnv = (name: string): string => {
 const isAuthorized = (req: Request, serviceRoleKey: string): boolean => {
   const authorization = req.headers.get('authorization')?.trim();
   const apikey = req.headers.get('apikey')?.trim();
-  return authorization === `Bearer ${serviceRoleKey}` || apikey === serviceRoleKey;
+  const workerSecret = req.headers.get(IMAGE_JOB_WORKER_AUTH_HEADER)?.trim();
+  return (
+    authorization === `Bearer ${serviceRoleKey}` ||
+    apikey === serviceRoleKey ||
+    workerSecret === serviceRoleKey
+  );
 };
 
-type JobGateDecision =
+type JobGateFailure = {
+  allowed: false;
+  errorCode: string;
+  errorMessage: string;
+  retryable: boolean;
+};
+
+type ImageTierDecision =
+  | { allowed: true; tier: ImageGenerationTier }
+  | JobGateFailure;
+
+type GuestQuotaDecision =
   | { allowed: true; claimed?: boolean }
-  | { allowed: false; errorCode: string; errorMessage: string; retryable: boolean };
+  | JobGateFailure;
+
+type FreeAnalysisClaimDecision =
+  | { allowed: true }
+  | JobGateFailure;
 
 type RpcClient = {
   rpc: (
@@ -44,12 +66,12 @@ const asRpcClient = (adminClient: ReturnType<typeof createAdminClient>): RpcClie
 const normalizeEffectiveSubscriptionTier = (tier: unknown): 'free' | 'plus' =>
   tier === 'plus' ? 'plus' : 'free';
 
-const requireAuthenticatedImageEntitlement = async (
+const resolveImageGenerationTier = async (
   adminClient: ReturnType<typeof createAdminClient>,
   userId: string | null
-): Promise<JobGateDecision> => {
+): Promise<ImageTierDecision> => {
   if (!userId) {
-    return { allowed: true };
+    return { allowed: true, tier: 'free' };
   }
 
   try {
@@ -58,7 +80,7 @@ const requireAuthenticatedImageEntitlement = async (
     });
 
     if (error) {
-      console.warn('[image-job-worker] Failed to resolve subscription tier for image gate', {
+      console.warn('[image-job-worker] Failed to resolve subscription tier for image routing', {
         userId,
         message: error?.message ?? String(error),
       });
@@ -70,21 +92,7 @@ const requireAuthenticatedImageEntitlement = async (
       };
     }
 
-    const effectiveTier = normalizeEffectiveSubscriptionTier(data);
-    if (effectiveTier !== 'plus') {
-      console.log('[image-job-worker] Blocked non-plus image job', {
-        userId,
-        effectiveTier,
-      });
-      return {
-        allowed: false,
-        errorCode: 'IMAGE_GENERATION_PLUS_REQUIRED',
-        errorMessage: 'Image generation requires Noctalia Plus',
-        retryable: false,
-      };
-    }
-
-    return { allowed: true };
+    return { allowed: true, tier: normalizeEffectiveSubscriptionTier(data) };
   } catch (error) {
     console.warn('[image-job-worker] Subscription tier check threw', {
       userId,
@@ -94,6 +102,73 @@ const requireAuthenticatedImageEntitlement = async (
       allowed: false,
       errorCode: 'SUBSCRIPTION_STATUS_UNAVAILABLE',
       errorMessage: 'Subscription status unavailable',
+      retryable: true,
+    };
+  }
+};
+
+const requireFreeAnalysisClaim = async (
+  adminClient: ReturnType<typeof createAdminClient>,
+  job: ImageJobRow
+): Promise<FreeAnalysisClaimDecision> => {
+  if (!job.user_id) {
+    return { allowed: true };
+  }
+
+  if (job.dream_id == null) {
+    return {
+      allowed: false,
+      errorCode: 'FREE_IMAGE_ANALYSIS_REQUIRED',
+      errorMessage: 'Free image generation must be linked to a dream analysis',
+      retryable: false,
+    };
+  }
+
+  try {
+    const { data, error } = await adminClient
+      .from('quota_usage')
+      .select('id')
+      .eq('user_id', job.user_id)
+      .eq('dream_id', job.dream_id)
+      .eq('quota_type', 'analysis')
+      .contains('metadata', { analysis_request_id: job.client_request_id })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.warn('[image-job-worker] Failed to verify free analysis claim', {
+        jobId: job.id,
+        userId: job.user_id,
+        message: error?.message ?? String(error),
+      });
+      return {
+        allowed: false,
+        errorCode: 'FREE_IMAGE_ANALYSIS_CLAIM_UNAVAILABLE',
+        errorMessage: 'Analysis authorization unavailable',
+        retryable: true,
+      };
+    }
+
+    if (!data) {
+      return {
+        allowed: false,
+        errorCode: 'FREE_IMAGE_ANALYSIS_CLAIM_PENDING',
+        errorMessage: 'Waiting for the authorized analysis claim',
+        retryable: true,
+      };
+    }
+
+    return { allowed: true };
+  } catch (error) {
+    console.warn('[image-job-worker] Free analysis claim check threw', {
+      jobId: job.id,
+      userId: job.user_id,
+      message: error instanceof Error ? error.message : String(error),
+    });
+    return {
+      allowed: false,
+      errorCode: 'FREE_IMAGE_ANALYSIS_CLAIM_UNAVAILABLE',
+      errorMessage: 'Analysis authorization unavailable',
       retryable: true,
     };
   }
@@ -253,7 +328,7 @@ const requeueJob = async (
 const claimGuestImageQuota = async (
   adminClient: ReturnType<typeof createAdminClient>,
   job: ImageJobRow
-): Promise<JobGateDecision> => {
+): Promise<GuestQuotaDecision> => {
   if (!job.guest_fingerprint || job.quota_claimed) {
     return { allowed: true, claimed: false };
   }
@@ -337,14 +412,14 @@ const processImageJob = async (input: {
       previousImageUrl?: string | null;
     };
 
-    const entitlementDecision = await requireAuthenticatedImageEntitlement(adminClient, job.user_id);
-    if (!entitlementDecision.allowed) {
-      if (entitlementDecision.retryable && job.attempt_count < job.max_attempts) {
+    const imageTierDecision = await resolveImageGenerationTier(adminClient, job.user_id);
+    if (!imageTierDecision.allowed) {
+      if (imageTierDecision.retryable && job.attempt_count < job.max_attempts) {
         await requeueJob(
           adminClient,
           job,
-          entitlementDecision.errorCode,
-          entitlementDecision.errorMessage
+          imageTierDecision.errorCode,
+          imageTierDecision.errorMessage
         );
         return;
       }
@@ -352,10 +427,33 @@ const processImageJob = async (input: {
       await markTerminalFailure(
         adminClient,
         job,
-        entitlementDecision.errorCode,
-        entitlementDecision.errorMessage
+        imageTierDecision.errorCode,
+        imageTierDecision.errorMessage
       );
       return;
+    }
+
+    if (imageTierDecision.tier === 'free' && job.user_id) {
+      const analysisClaimDecision = await requireFreeAnalysisClaim(adminClient, job);
+      if (!analysisClaimDecision.allowed) {
+        if (analysisClaimDecision.retryable && job.attempt_count < job.max_attempts) {
+          await requeueJob(
+            adminClient,
+            job,
+            analysisClaimDecision.errorCode,
+            analysisClaimDecision.errorMessage
+          );
+          return;
+        }
+
+        await markTerminalFailure(
+          adminClient,
+          job,
+          analysisClaimDecision.errorCode,
+          analysisClaimDecision.errorMessage
+        );
+        return;
+      }
     }
 
     const apiKey = getRequiredEnv('GEMINI_API_KEY');
@@ -389,6 +487,7 @@ const processImageJob = async (input: {
       const ownerId = job.user_id ?? `guest_${job.guest_fingerprint ?? 'guest'}`;
       const result = await generateAndStoreImage({
         apiKey,
+        model: resolveImageModel(imageTierDecision.tier),
         prompt,
         previousImageUrl: requestPayload.previousImageUrl,
         supabaseUrl: input.supabaseUrl,

@@ -5,7 +5,7 @@ import {
   classifyGeminiError,
   GEMINI_FLASH_LITE_MODEL,
 } from '../services/gemini.ts';
-import { generateImageWithReferences } from '../services/geminiImages.ts';
+import { generateImageWithReferences, resolveImageModel } from '../services/geminiImages.ts';
 import { optimizeImage } from '../services/image.ts';
 import { createStorageHelpers } from '../services/storage.ts';
 import { ensureImagePrompt, generateAndStoreImage } from '../services/imagePipeline.ts';
@@ -211,8 +211,10 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
 
     prompt = await ensureImagePrompt({ apiKey, prompt, transcript });
     const ownerId = user?.id ?? (fingerprint ? `guest_${fingerprint}` : 'guest');
+    const imageModel = resolveImageModel(user ? 'plus' : 'free');
     const { imageUrl, imageBytes } = await generateAndStoreImage({
       apiKey,
+      model: imageModel,
       prompt,
       previousImageUrl,
       supabaseUrl,
@@ -376,6 +378,7 @@ export async function handleGenerateImageWithReference(ctx: ApiContext): Promise
     const { imageBase64, mimeType, raw: imgJson } = await generateImageWithReferences({
       prompt,
       apiKey,
+      model: resolveImageModel('plus'),
       referenceImages,
       aspectRatio: '9:16',
     });

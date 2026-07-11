@@ -9,6 +9,9 @@ appId: com.tanuki75.noctalia
     commands:
       - tapOn:
           id: btn.recording.switchToText
-      - waitForAnimationToEnd
+      - extendedWaitUntil:
+          visible:
+            id: input.dreamTranscript
+          timeout: 10000
 - assertVisible:
     id: input.dreamTranscript

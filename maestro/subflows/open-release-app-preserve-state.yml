@@ -1,0 +1,4 @@
+# Preserve the current authenticated/data state for logout and account-switch checks.
+appId: com.tanuki75.noctalia
+---
+- launchApp

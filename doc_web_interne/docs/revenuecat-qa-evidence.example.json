@@ -6,6 +6,7 @@
       "testedAt": "",
       "tester": "",
       "appUserId": "",
+      "versionCode": "",
       "evidence": "QA Lab shows monthly purchase completed, product monthly, plus / active, quotas unlimited"
     },
     "test_store_annual": {
@@ -13,6 +14,7 @@
       "testedAt": "",
       "tester": "",
       "appUserId": "",
+      "versionCode": "",
       "evidence": "QA Lab shows annual purchase completed, product yearly, plus / active, quotas unlimited"
     },
     "restore_after_reinstall": {
@@ -20,6 +22,7 @@
       "testedAt": "",
       "tester": "",
       "appUserId": "",
+      "versionCode": "",
       "evidence": "Restore completed with the same app user id and plus / active state"
     },
     "account_switch": {
@@ -27,6 +30,7 @@
       "testedAt": "",
       "tester": "",
       "appUserId": "",
+      "versionCode": "",
       "evidence": "Paid account remains plus while second account remains free / inactive"
     },
     "play_monthly": {

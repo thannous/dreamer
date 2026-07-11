@@ -1,0 +1,180 @@
+# Release permissions gate: exercise deterministic denied/allowed states without OS-dialog races.
+appId: com.tanuki75.noctalia
+name: Release microphone and notification permissions
+tags:
+  - release
+  - permissions
+onFlowComplete:
+  - setAirplaneMode: disabled
+  - setPermissions:
+      permissions:
+        all: allow
+---
+- setAirplaneMode: disabled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+      microphone: deny
+      notifications: deny
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+
+# Reach recording regardless of the responsive startup route chosen after onboarding.
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+- runFlow:
+    when:
+      visible:
+        id: tab.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+- runFlow:
+    when:
+      visible:
+        id: screen.journal
+    commands:
+      - runFlow:
+          when:
+            visible:
+              id: btn.addDream
+          commands:
+            - tapOn:
+                id: btn.addDream
+      - runFlow:
+          when:
+            visible:
+              id: tab.addDream
+          commands:
+            - tapOn:
+                id: tab.addDream
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+
+# A denied microphone must offer the explicit text fallback, never block capture.
+- scrollUntilVisible:
+    element:
+      id: btn.recordToggle
+    direction: DOWN
+- tapOn:
+    id: btn.recordToggle
+- extendedWaitUntil:
+    visible:
+      id: sheet.recording.micRationale
+    timeout: 10000
+- tapOn:
+    id: btn.recording.micRationale.useText
+- extendedWaitUntil:
+    visible:
+      id: input.dreamTranscript
+    timeout: 10000
+
+# The settings surface must reflect denied notifications.
+- tapOn:
+    id: tab.settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 20000
+- scrollUntilVisible:
+    element:
+      id: text.settings.notificationsPermissionWarning
+    direction: DOWN
+    timeout: 20000
+    visibilityPercentage: 60
+- assertVisible:
+    id: text.settings.notificationsPermissionWarning
+
+# Grant both permissions out of band, then resume so AppState refreshes native status.
+- setPermissions:
+    permissions:
+      microphone: allow
+      notifications: allow
+- pressKey: Home
+- launchApp:
+    stopApp: false
+- extendedWaitUntil:
+    notVisible:
+      id: text.settings.notificationsPermissionWarning
+    timeout: 10000
+
+# Remount recording and verify the granted microphone bypasses the rationale sheet.
+- tapOn:
+    id: tab.addDream
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- scrollUntilVisible:
+    element:
+      id: btn.recordToggle
+    direction: DOWN
+- tapOn:
+    id: btn.recordToggle
+- assertNotVisible:
+    id: sheet.recording.micRationale
+
+# A clean CI image may not have its offline speech pack yet. Require an explicit,
+# observable outcome: active dictation, or the product's safe text fallback.
+- extendedWaitUntil:
+    visible: "[0-9]+:[0-9]{2}|Language Pack for Voice Recording|Pack de langue pour la reconnaissance vocale|Paquete de idioma para grabación de voz|Pacchetto lingua per la registrazione vocale|Sprachpaket für die Aufnahme"
+    timeout: 20000
+- evalScript: ${output.microphoneOutcome = 0}
+- runFlow:
+    when:
+      visible:
+        id: text.recording.voiceStatusDuration
+    commands:
+      - assertVisible:
+          id: text.recording.voiceStatusDuration
+      - tapOn:
+          id: btn.recordToggle
+      - evalScript: ${output.microphoneOutcome = 1}
+- runFlow:
+    when:
+      visible: "Language Pack for Voice Recording|Pack de langue pour la reconnaissance vocale|Paquete de idioma para grabación de voz|Pacchetto lingua per la registrazione vocale|Sprachpaket für die Aufnahme"
+    commands:
+      - tapOn: "Cancel|Annuler|Cancelar|Annulla|Abbrechen"
+      - runFlow: subflows/ensure-recording-text.yml
+      - assertVisible:
+          id: btn.recording.switchToVoice
+      - evalScript: ${output.microphoneOutcome = 2}
+- assertTrue: ${output.microphoneOutcome > 0}
+
+# Revoke notifications once more and prove the settings refresh handles the denial.
+- setPermissions:
+    permissions:
+      notifications: deny
+- pressKey: Home
+- launchApp:
+    permissions:
+      all: allow
+      microphone: allow
+      notifications: deny
+- extendedWaitUntil:
+    visible:
+      id: tab.settings
+    timeout: 20000
+- tapOn:
+    id: tab.settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 20000
+- scrollUntilVisible:
+    element:
+      id: text.settings.notificationsPermissionWarning
+    direction: DOWN
+    timeout: 20000
+    visibilityPercentage: 60
+- assertVisible:
+    id: text.settings.notificationsPermissionWarning

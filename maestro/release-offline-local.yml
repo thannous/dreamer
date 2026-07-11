@@ -1,0 +1,146 @@
+# Release offline gate: a guest dream is durable while offline and after network restoration.
+appId: com.tanuki75.noctalia
+name: Release offline local persistence
+tags:
+  - release
+  - offline
+onFlowComplete:
+  - setAirplaneMode: disabled
+  - setPermissions:
+      permissions:
+        all: allow
+---
+- setAirplaneMode: disabled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+
+# Reach recording regardless of the responsive startup route chosen after onboarding.
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+- runFlow:
+    when:
+      visible:
+        id: tab.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+- runFlow:
+    when:
+      visible:
+        id: screen.journal
+    commands:
+      - runFlow:
+          when:
+            visible:
+              id: btn.addDream
+          commands:
+            - tapOn:
+                id: btn.addDream
+      - runFlow:
+          when:
+            visible:
+              id: tab.addDream
+          commands:
+            - tapOn:
+                id: tab.addDream
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- runFlow: subflows/ensure-recording-text.yml
+
+- setAirplaneMode: enabled
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Release offline local sentinel"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: "text.firstDream.title|text.analyzePromptTitle"
+    timeout: 90000
+- runFlow:
+    when:
+      visible:
+        id: text.firstDream.title
+    commands:
+      - tapOn:
+          id: btn.firstDream.journal
+- runFlow:
+    when:
+      visible:
+        id: text.analyzePromptTitle
+    commands:
+      - tapOn:
+          id: btn.analyzePrompt.journal
+- extendedWaitUntil:
+    visible: "Release offline local sentinel"
+    timeout: 20000
+
+# Force process death while still offline and recover the locally stored record.
+- pressKey: Home
+- killApp
+- launchApp:
+    stopApp: false
+- runFlow:
+    when:
+      notVisible: "Release offline local sentinel"
+    commands:
+      - runFlow:
+          when:
+            visible:
+              id: btn.navigateJournal
+          commands:
+            - tapOn:
+                id: btn.navigateJournal
+      - runFlow:
+          when:
+            visible:
+              id: tab.journal
+          commands:
+            - tapOn:
+                id: tab.journal
+      - extendedWaitUntil:
+          visible:
+            id: screen.journal
+          timeout: 20000
+      - runFlow: subflows/ensure-journal-search-visible.yml
+      - tapOn:
+          id: input.searchDreams
+      - inputText: "Release offline local sentinel"
+      - extendedWaitUntil:
+          visible:
+            id: "dream.item.*"
+          timeout: 20000
+      - tapOn:
+          id: "dream.item.*"
+          index: 0
+- extendedWaitUntil:
+    visible: "Release offline local sentinel"
+    timeout: 20000
+
+# Restore connectivity explicitly, resume the app, and verify the local record remains.
+- setAirplaneMode: disabled
+- pressKey: Home
+- launchApp:
+    stopApp: false
+- extendedWaitUntil:
+    visible: "Release offline local sentinel"
+    timeout: 10000

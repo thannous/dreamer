@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 'use strict';
+/* global __dirname */
 
 const fs = require('fs');
 const path = require('path');
@@ -95,11 +96,36 @@ function getProductState(snapshot, productId) {
 
 function normalizeBasePlans(productState) {
   if (!productState) return [];
-  if (Array.isArray(productState.base_plans)) {
-    return productState.base_plans.map((plan) => ({
+  const basePlans =
+    productState.base_plans ??
+    productState.basePlans ??
+    productState.store_state?.base_plans ??
+    productState.storeState?.basePlans;
+  if (Array.isArray(basePlans)) {
+    return basePlans.map((plan) => ({
       base_plan_id: plan?.base_plan_id ?? plan?.basePlanId ?? 'unknown',
       billing_period_duration: plan?.billing_period_duration ?? plan?.billingPeriodDuration ?? 'unknown',
     }));
+  }
+  if (basePlans && typeof basePlans === 'object') {
+    return Object.entries(basePlans).map(([basePlanId, plan]) => {
+      const planType =
+        plan?.auto_renewing_base_plan_type ??
+        plan?.autoRenewingBasePlanType ??
+        plan?.prepaid_base_plan_type ??
+        plan?.prepaidBasePlanType ??
+        plan?.installments_base_plan_type ??
+        plan?.installmentsBasePlanType;
+      return {
+        base_plan_id: plan?.base_plan_id ?? plan?.basePlanId ?? basePlanId,
+        billing_period_duration:
+          plan?.billing_period_duration ??
+          plan?.billingPeriodDuration ??
+          planType?.billing_period_duration ??
+          planType?.billingPeriodDuration ??
+          'unknown',
+      };
+    });
   }
   const ids = productState.base_plan_ids ?? productState.basePlanIds ?? [];
   const durations = productState.billing_period_duration_values ?? productState.billingPeriodDurationValues ?? [];
@@ -120,7 +146,7 @@ function normalizeProductState(snapshot, productId) {
   }
   return {
     store: productState.store ?? 'play_store',
-    status: productState.status ?? 'unknown',
+    status: productState.status ?? productState.store_status?.status ?? productState.storeStatus?.status ?? 'unknown',
     base_plans: basePlans,
   };
 }

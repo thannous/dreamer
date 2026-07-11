@@ -1,13 +1,25 @@
+/* global __dirname, describe, it, expect */
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const {
+  createOverlayFileSystem,
+  generateSubscriptionQaReport,
+} = require('./subscription-qa-report');
 
 const ROOT = path.resolve(__dirname, '..');
 const SCRIPT = path.join(ROOT, 'scripts/subscription-qa-report.js');
+const ANDROID_CANDIDATE_VERSION_CODE = JSON.parse(
+  fs.readFileSync(path.join(ROOT, 'app.json'), 'utf8')
+).expo.android.versionCode;
 const EXAMPLE = JSON.parse(
   fs.readFileSync(path.join(ROOT, 'doc_web_interne/docs/revenuecat-qa-evidence.example.json'), 'utf8')
 );
+const ISOLATED_QA_ENV = {
+  REVENUECAT_QA_SWITCH_FREE_EMAIL: '',
+  REVENUECAT_QA_SWITCH_FREE_PASSWORD: '',
+};
 
 const MANUAL_GATE_KEYS = [
   'test_store_monthly',
@@ -19,12 +31,15 @@ const MANUAL_GATE_KEYS = [
   'play_cancellation_and_expiry',
 ];
 
+const virtualFiles = {};
+let virtualFileIndex = 0;
+
 function playEvidenceFields(overrides = {}) {
   return {
     easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9',
     deviceId: '57275d36',
     installerPackageName: 'com.android.vending',
-    versionCode: 24,
+    versionCode: ANDROID_CANDIDATE_VERSION_CODE,
     ...overrides,
   };
 }
@@ -46,62 +61,86 @@ function evidenceForKey(key) {
 }
 
 function runReport(args = [], env = {}) {
+  const result = generateSubscriptionQaReport({
+    args,
+    root: ROOT,
+    env: {
+      ...process.env,
+      ...ISOLATED_QA_ENV,
+      REVENUECAT_PLAY_STORE_STATE_PATH: path.join(os.tmpdir(), 'missing-revenuecat-play-store-state.local.json'),
+      GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH: path.join(os.tmpdir(), 'missing-google-play-subscription-state.local.json'),
+      GOOGLE_PLAY_TRACK_STATE_PATH: path.join(os.tmpdir(), 'missing-google-play-track-state.local.json'),
+      ...env,
+    },
+    fs: createOverlayFileSystem(virtualFiles),
+    now: () => new Date('2026-01-01T00:00:00.000Z'),
+  });
+  return { status: result.exitCode, stdout: result.stdout, stderr: result.stderr };
+}
+
+function runCliReport(args = [], env = {}) {
   return spawnSync(process.execPath, [SCRIPT, ...args], {
     cwd: ROOT,
     env: {
       ...process.env,
+      ...ISOLATED_QA_ENV,
       REVENUECAT_PLAY_STORE_STATE_PATH: path.join(os.tmpdir(), 'missing-revenuecat-play-store-state.local.json'),
       GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH: path.join(os.tmpdir(), 'missing-google-play-subscription-state.local.json'),
+      GOOGLE_PLAY_TRACK_STATE_PATH: path.join(os.tmpdir(), 'missing-google-play-track-state.local.json'),
       ...env,
     },
     encoding: 'utf8',
   });
 }
 
-function writeEvidenceFile(gates) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'subscription-qa-evidence-'));
-  const filePath = path.join(dir, 'evidence.json');
-  fs.writeFileSync(filePath, JSON.stringify({ gates }, null, 2), 'utf8');
+function writeVirtualFile(prefix, contents) {
+  const filePath = path.join(os.tmpdir(), `${prefix}-${virtualFileIndex}.json`);
+  virtualFileIndex += 1;
+  virtualFiles[filePath] = contents;
   return filePath;
+}
+
+function writeEvidenceFile(gates) {
+  const candidateBoundGates = Object.fromEntries(
+    Object.entries(gates).map(([key, gate]) => [
+      key,
+      gate.status === 'passed' && !Object.prototype.hasOwnProperty.call(gate, 'versionCode')
+        ? { ...gate, versionCode: ANDROID_CANDIDATE_VERSION_CODE }
+        : gate,
+    ])
+  );
+  return writeVirtualFile(
+    'subscription-qa-evidence',
+    JSON.stringify({ gates: candidateBoundGates }, null, 2)
+  );
 }
 
 function writeInvalidEvidenceFile() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'subscription-qa-evidence-invalid-'));
-  const filePath = path.join(dir, 'evidence.json');
-  fs.writeFileSync(filePath, '{ invalid json', 'utf8');
-  return filePath;
+  return writeVirtualFile('subscription-qa-evidence-invalid', '{ invalid json');
 }
 
-function writePlayStoreStateSnapshot(storeState) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'revenuecat-play-store-state-'));
-  const filePath = path.join(dir, 'snapshot.json');
-  fs.writeFileSync(
-    filePath,
+function writePlayStoreStateSnapshot(storeState, checkedAt = '2026-01-01T00:00:00.000Z') {
+  return writeVirtualFile(
+    'revenuecat-play-store-state',
     JSON.stringify(
       {
         project_id: 'proje6db7596',
         store_state: storeState,
+        checked_at: checkedAt,
       },
       null,
       2
-    ),
-    'utf8'
+    )
   );
-  return filePath;
 }
 
 function writeInvalidPlayStoreStateSnapshot() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'revenuecat-play-store-state-invalid-'));
-  const filePath = path.join(dir, 'snapshot.json');
-  fs.writeFileSync(filePath, '{ invalid json', 'utf8');
-  return filePath;
+  return writeVirtualFile('revenuecat-play-store-state-invalid', '{ invalid json');
 }
 
 function writeGooglePlaySubscriptionStateSnapshot(monthlyPlan = {}, annualPlan = {}) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'google-play-subscription-state-'));
-  const filePath = path.join(dir, 'snapshot.json');
-  fs.writeFileSync(
-    filePath,
+  return writeVirtualFile(
+    'google-play-subscription-state',
     JSON.stringify(
       {
         package_name: 'com.tanuki75.noctalia',
@@ -123,22 +162,40 @@ function writeGooglePlaySubscriptionStateSnapshot(monthlyPlan = {}, annualPlan =
       },
       null,
       2
-    ),
-    'utf8'
+    )
   );
-  return filePath;
 }
 
 function writeInvalidGooglePlaySubscriptionStateSnapshot() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'google-play-subscription-state-invalid-'));
-  const filePath = path.join(dir, 'snapshot.json');
-  fs.writeFileSync(filePath, '{ invalid json', 'utf8');
-  return filePath;
+  return writeVirtualFile('google-play-subscription-state-invalid', '{ invalid json');
+}
+
+function writeGooglePlayTrackStateSnapshot(versionCode, status = 'completed') {
+  return writeVirtualFile(
+    'google-play-track-state',
+    JSON.stringify(
+      {
+        package_name: 'com.tanuki75.noctalia',
+        track: 'internal',
+        expected_version_code: String(versionCode),
+        expected_status: 'completed',
+        releases: [
+          {
+            name: `candidate-${versionCode}`,
+            status,
+            version_codes: [String(versionCode)],
+          },
+        ],
+      },
+      null,
+      2
+    )
+  );
 }
 
 describe('subscription QA report release gate', () => {
   it('keeps the full release gate blocked when manual evidence is missing', () => {
-    const result = runReport(['--require-full'], {
+    const result = runCliReport(['--require-full'], {
       REVENUECAT_QA_EVIDENCE_PATH: path.join(os.tmpdir(), 'missing-revenuecat-evidence.json'),
       REVENUECAT_QA_EMAIL: '',
       REVENUECAT_QA_PASSWORD: '',
@@ -149,18 +206,26 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('preview:goog_B...sanw');
     expect(result.stdout).toContain('OK | Test Store purchase preflight exists');
     expect(result.stdout).toContain('npm run test:e2e:subscription-teststore:purchase:preflight');
+    expect(result.stdout).toContain('OK | Authenticated Test Store paywall flow exists');
+    expect(result.stdout).toContain('maestro/subscription-teststore-paywall-auth.yml');
+    expect(result.stdout).toContain('| Automated | Authenticated Test Store paywall |');
+    expect(result.stdout).toContain('without a transaction');
     expect(result.stdout).toContain('OK | Google Test Store purchase flow exists');
     expect(result.stdout).toContain('REVENUECAT_QA_AUTH=google -> maestro/subscription-teststore-purchase-google-manual.yml');
     expect(result.stdout).toContain('OK | Test Store restore flow exists');
-    expect(result.stdout).toContain('maestro/subscription-teststore-restore-google-manual.yml');
+    expect(result.stdout).toContain('guarded standalone Release restore runner');
     expect(result.stdout).toContain('OK | Test Store signout guard exists');
     expect(result.stdout).toContain('maestro/subscription-teststore-signout-guard.yml');
     expect(result.stdout).toContain('OK | Account switch email flow exists');
     expect(result.stdout).toContain('REVENUECAT_QA_SWITCH_FREE_EMAIL -> maestro/subscription-teststore-account-switch-free-email-manual.yml');
+    expect(result.stdout).toContain('OK | Transactional Test Store flows use standalone Release');
+    expect(result.stdout).toContain('purchase, restore and account-switch run from an installed Release bundle with Metro disabled');
     expect(result.stdout).toContain('OK | Local subscription QA verifier exists');
     expect(result.stdout).toContain('npm run subscription:qa:verify-local');
     expect(result.stdout).toContain('OK | Production APK build is gated by subscription QA');
-    expect(result.stdout).toContain('build:apk:prod must run android:gates:strict before eas build');
+    expect(result.stdout).toContain(
+      'build:apk:prod preserves .env.local, disables dotenv, and runs android:gates:prebuild; android:gates:strict qualifies the candidate after Play upload'
+    );
     expect(result.stdout).toContain('OK | RevenueCat device app user id extractor exists');
     expect(result.stdout).toContain('npm run subscription:qa:device-app-user-id');
     expect(result.stdout).toContain('OK | Android device diagnostic exists');
@@ -216,18 +281,68 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('run test:e2e:subscription-teststore:account-switch with a second real email account');
     expect(result.stdout).toContain('## Evidence Commands');
     expect(result.stdout).toContain(
-      'npm run subscription:qa:evidence -- --gate account_switch --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --evidence "paid account remains plus while second account remains free / inactive after logout and login"'
+      `npm run subscription:qa:evidence -- --gate account_switch --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --version-code ${ANDROID_CANDIDATE_VERSION_CODE} --evidence "paid account remains plus while second account remains free / inactive after logout and login"`
     );
     expect(result.stdout).toContain(
-      'npm run subscription:qa:evidence -- --gate play_monthly --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --version-code <installed-version-code> --evidence "Play monthly purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"'
+      `npm run subscription:qa:evidence -- --gate play_monthly --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --version-code ${ANDROID_CANDIDATE_VERSION_CODE} --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --evidence "Play monthly purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"`
     );
     expect(result.stdout).toContain(
-      'npm run subscription:qa:evidence -- --gate play_annual --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --version-code <installed-version-code> --evidence "Play annual purchase completed after installed from Play (com.android.vending), product noctalia_plus:annual, base plan P1Y confirmed, backend converged"'
+      `npm run subscription:qa:evidence -- --gate play_annual --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --version-code ${ANDROID_CANDIDATE_VERSION_CODE} --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --evidence "Play annual purchase completed after installed from Play (com.android.vending), product noctalia_plus:annual, base plan P1Y confirmed, backend converged"`
     );
     expect(result.stdout).toContain(
-      'npm run subscription:qa:evidence -- --gate play_cancellation_and_expiry --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --version-code <installed-version-code> --evidence "Play cancellation or expiry observed after installed from Play (com.android.vending), RevenueCat webhook and backend state converged"'
+      `npm run subscription:qa:evidence -- --gate play_cancellation_and_expiry --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --version-code ${ANDROID_CANDIDATE_VERSION_CODE} --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --evidence "Play cancellation or expiry observed after installed from Play (com.android.vending), RevenueCat webhook and backend state converged"`
     );
     expect(result.stdout).toContain('Full RevenueCat workflow is not complete');
+    expect(result.stderr).toBe('');
+  });
+
+  it('keeps the non-strict CLI contract successful while manual gates remain', () => {
+    const result = runCliReport([], {
+      REVENUECAT_QA_EVIDENCE_PATH: path.join(os.tmpdir(), 'missing-revenuecat-evidence.json'),
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('# Subscription QA Report');
+    expect(result.stdout).toContain(
+      '| OK | Subscription QA report CLIs are wired | npm run subscription:qa:report and npm run subscription:qa:release-gate |'
+    );
+    expect(result.stdout).toContain('Manual or external gates remaining: 7');
+    expect(result.stdout).toContain('## Current Session Readiness');
+    expect(result.stderr).toBe('');
+  });
+
+  it('marks Google auth ready with an email and no password', () => {
+    const result = runReport([], {
+      REVENUECAT_QA_AUTH: 'google',
+      REVENUECAT_QA_EMAIL: 'tester@example.com',
+      REVENUECAT_QA_PASSWORD: '',
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain(
+      '| READY | Test Store signed-in account env | REVENUECAT_QA_AUTH=google, REVENUECAT_QA_EMAIL=set, REVENUECAT_QA_PASSWORD=missing |'
+    );
+  });
+
+  it('keeps email auth missing until both email and password are present', () => {
+    const missingPassword = runReport([], {
+      REVENUECAT_QA_AUTH: 'email',
+      REVENUECAT_QA_EMAIL: 'tester@example.com',
+      REVENUECAT_QA_PASSWORD: '',
+    });
+    const completeCredentials = runReport([], {
+      REVENUECAT_QA_AUTH: 'email',
+      REVENUECAT_QA_EMAIL: 'tester@example.com',
+      REVENUECAT_QA_PASSWORD: 'password',
+    });
+
+    expect(missingPassword.status).toBe(0);
+    expect(missingPassword.stdout).toContain(
+      '| MISSING | Test Store signed-in account env | REVENUECAT_QA_AUTH=email, REVENUECAT_QA_EMAIL=set, REVENUECAT_QA_PASSWORD=missing |'
+    );
+    expect(completeCredentials.stdout).toContain(
+      '| READY | Test Store signed-in account env | REVENUECAT_QA_AUTH=email, REVENUECAT_QA_EMAIL=set, REVENUECAT_QA_PASSWORD=set |'
+    );
   });
 
   it('keeps the full release gate blocked when the local evidence file is invalid JSON', () => {
@@ -388,6 +503,100 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Verified manual/external scenarios: 7');
     expect(result.stdout).toContain('Manual or external gates remaining: 0');
     expect(result.stdout).not.toContain('Full RevenueCat workflow is not complete');
+  });
+
+  it('does not reuse Play evidence recorded for an older Android versionCode', () => {
+    const staleVersionCode = ANDROID_CANDIDATE_VERSION_CODE - 1;
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: evidenceForKey(key),
+          ...(key.startsWith('play_')
+            ? playEvidenceFields({ versionCode: staleVersionCode })
+            : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 4');
+    expect(result.stdout).toContain('Manual or external gates remaining: 3');
+    expect(result.stdout).toContain(
+      `Play monthly: versionCode ${staleVersionCode} does not match Android release candidate ${ANDROID_CANDIDATE_VERSION_CODE} from app.json`
+    );
+  });
+
+  it('shows older manual evidence as historical but rejects it for strict qualification', () => {
+    const staleVersionCode = ANDROID_CANDIDATE_VERSION_CODE - 1;
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: evidenceForKey(key),
+          versionCode: staleVersionCode,
+          ...(key.startsWith('play_') ? playEvidenceFields({ versionCode: staleVersionCode }) : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const historicalReport = runReport([], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+    const strictReport = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(historicalReport.status).toBe(0);
+    expect(historicalReport.stdout).toContain('Historical manual/external scenarios: 7');
+    expect(historicalReport.stdout).toContain('| Historical | Test Store monthly |');
+    expect(strictReport.status).toBe(1);
+    expect(strictReport.stdout).toContain('Verified manual/external scenarios: 0');
+    expect(strictReport.stdout).toContain('Manual or external gates remaining: 7');
+    expect(strictReport.stdout).toContain(
+      `Test Store monthly: versionCode ${staleVersionCode} does not match Android release candidate ${ANDROID_CANDIDATE_VERSION_CODE} from app.json`
+    );
+  });
+
+  it('requires the app.json Android candidate in Google Play track readiness', () => {
+    const staleVersionCode = ANDROID_CANDIDATE_VERSION_CODE - 1;
+    const trackStatePath = writeGooglePlayTrackStateSnapshot(staleVersionCode);
+
+    const result = runReport([], {
+      GOOGLE_PLAY_TRACK_STATE_PATH: trackStatePath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('BLOCKED | Google Play internal track snapshot');
+    expect(result.stdout).toContain(`internal/missing/${ANDROID_CANDIDATE_VERSION_CODE}`);
+  });
+
+  it('marks the Google Play track ready when it contains the app.json Android candidate', () => {
+    const trackStatePath = writeGooglePlayTrackStateSnapshot(ANDROID_CANDIDATE_VERSION_CODE);
+
+    const result = runReport([], {
+      GOOGLE_PLAY_TRACK_STATE_PATH: trackStatePath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('READY | Google Play internal track snapshot');
+    expect(result.stdout).toContain(
+      `internal/candidate-${ANDROID_CANDIDATE_VERSION_CODE}/completed/versionCode=${ANDROID_CANDIDATE_VERSION_CODE}`
+    );
   });
 
   it('keeps the full release gate blocked when identity evidence is incomplete', () => {
@@ -901,6 +1110,32 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('LAGGING | Play monthly base plan snapshot');
     expect(result.stdout).toContain('Google Play direct snapshot is ready');
     expect(result.stdout).not.toContain('Play monthly: live snapshot still reports base plans annual/P1Y; expected P1M');
+  });
+
+  it('reports an expired RevenueCat Play snapshot as stale instead of lagging', () => {
+    const revenueCatSnapshotPath = writePlayStoreStateSnapshot(
+      {
+        prodfce10ef2a8: {
+          store: 'play_store',
+          status: 'ok',
+          base_plans: [{ base_plan_id: 'annual', billing_period_duration: 'P1Y' }],
+        },
+      },
+      '2025-12-29T00:00:00.000Z'
+    );
+    const googlePlaySnapshotPath = writeGooglePlaySubscriptionStateSnapshot();
+
+    const result = runReport([], {
+      REVENUECAT_PLAY_STORE_STATE_PATH: revenueCatSnapshotPath,
+      GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH: googlePlaySnapshotPath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('STALE | Play monthly base plan snapshot');
+    expect(result.stdout).toContain(
+      'checked_at 2025-12-29T00:00:00.000Z is 72h old; maximum age is 24h'
+    );
+    expect(result.stdout).not.toContain('LAGGING | Play monthly base plan snapshot');
   });
 
   it('keeps gates blocked when evidence text is still the example placeholder', () => {

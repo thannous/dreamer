@@ -1,10 +1,13 @@
 /**
  * @jest-environment jsdom
  */
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor as testingWaitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { QuotaStatus } from '../../lib/types';
+
+const waitFor = <T,>(callback: () => T | Promise<T>) =>
+  testingWaitFor(callback, { interval: 1 });
 
 // Hoist mock functions
 const {
@@ -77,6 +80,15 @@ jest.mock('../../lib/guestSession', () => ({
 // Import after mocks
 const { useQuota } = require('../useQuota');
 
+const settleQuotaStatus = async (result: { current: { loading: boolean } }) => {
+  await act(async () => {
+    await Promise.allSettled(
+      mockGetQuotaStatus.mock.results.map(({ value }: { value: unknown }) => value)
+    );
+  });
+  expect(result.current.loading).toBe(false);
+};
+
 const buildQuotaStatus = (overrides: Partial<QuotaStatus> = {}): QuotaStatus => ({
   tier: 'guest',
   canAnalyze: true,
@@ -113,10 +125,9 @@ describe('useQuota', () => {
 
       expect(result.current.loading).toBe(true);
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
+      expect(mockGetQuotaStatus).toHaveBeenCalledTimes(2);
       expect(mockGetQuotaStatus).toHaveBeenCalledWith(null, 'guest', undefined);
       expect(result.current.quotaStatus).toBeDefined();
     });
@@ -127,9 +138,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       // Guest users are marked as guest tier (no subscription), but quotaStatus shows guest limits
       expect(result.current.tier).toBe('guest');
@@ -142,9 +151,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       expect(result.current.tier).toBe('free');
       expect(mockGetQuotaStatus).toHaveBeenCalledWith(mockUser, 'free', undefined);
@@ -152,16 +159,20 @@ describe('useQuota', () => {
 
     it('handles errors gracefully', async () => {
       const testError = new Error('Quota service error');
+      const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
       mockGetQuotaStatus.mockRejectedValue(testError);
 
-      const { result } = renderHook(() => useQuota());
+      try {
+        const { result } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+        await settleQuotaStatus(result);
 
-      expect(result.current.error).toBe(testError);
-      expect(result.current.quotaStatus).toBeNull();
+        expect(result.current.error).toBe(testError);
+        expect(result.current.quotaStatus).toBeNull();
+        expect(consoleError).toHaveBeenCalledWith('Error fetching quota status:', testError);
+      } finally {
+        consoleError.mockRestore();
+      }
     });
 
     it('treats Supabase plus users as paid while RevenueCat loads', async () => {
@@ -171,9 +182,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       expect(result.current.tier).toBe('plus');
       expect(mockGetQuotaStatus).not.toHaveBeenCalled();
@@ -198,9 +207,7 @@ describe('useQuota', () => {
     it('fetches quota status with dreamId target', async () => {
       const { result } = renderHook(() => useQuota({ dreamId: 123 }));
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       expect(mockGetQuotaStatus).toHaveBeenCalledWith(
         null,
@@ -213,9 +220,7 @@ describe('useQuota', () => {
       const dream = { id: 456, transcript: 'Test dream' } as any;
       const { result } = renderHook(() => useQuota({ dream }));
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       expect(mockGetQuotaStatus).toHaveBeenCalledWith(
         null,
@@ -228,9 +233,7 @@ describe('useQuota', () => {
       const dream = { id: 789, transcript: 'Test dream' } as any;
       const { result } = renderHook(() => useQuota({ dreamId: 123, dream }));
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       // Should use dream.id when both provided
       expect(mockGetQuotaStatus).toHaveBeenCalledWith(
@@ -251,9 +254,7 @@ describe('useQuota', () => {
       expect(result.current.canAnalyzeNow).toBe(true);
       expect(result.current.canExploreNow).toBe(true);
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       expect(result.current.canAnalyzeNow).toBe(false);
       expect(result.current.canExploreNow).toBe(false);
@@ -271,10 +272,7 @@ describe('useQuota', () => {
       expect(result.current.canAnalyzeNow).toBe(false);
       expect(result.current.canExploreNow).toBe(false);
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
+      await settleQuotaStatus(result);
       expect(result.current.guestBootstrapStatus).toBe('degraded');
     });
 
@@ -283,9 +281,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       expect(result.current.canAnalyzeNow).toBe(true);
     });
@@ -295,9 +291,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       expect(result.current.canExploreNow).toBe(false);
     });
@@ -312,9 +306,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       expect(result.current.usage).toEqual(usage);
     });
@@ -325,9 +317,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       expect(result.current.reasons).toEqual(reasons);
     });
@@ -337,9 +327,7 @@ describe('useQuota', () => {
     it('refetches quota status on demand', async () => {
       const { result } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       const initialCallCount = mockGetQuotaStatus.mock.calls.length;
 
@@ -353,9 +341,7 @@ describe('useQuota', () => {
     it('invalidates cache and refetches', async () => {
       const { result } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       const initialCallCount = mockGetQuotaStatus.mock.calls.length;
       await act(async () => {
@@ -369,15 +355,15 @@ describe('useQuota', () => {
     });
 
     it('invalidates all caches when user changes', async () => {
-      const { rerender } = renderHook(() => useQuota());
+      const { result, rerender } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(mockGetQuotaStatus.mock.calls.length).toBeGreaterThan(0);
-      });
+      await settleQuotaStatus(result);
+      expect(mockGetQuotaStatus.mock.calls.length).toBeGreaterThan(0);
 
       // Change user
       mockUser = { id: 'user-1' };
       rerender();
+      await settleQuotaStatus(result);
 
       expect(mockInvalidateAll).toHaveBeenCalled();
     });
@@ -393,9 +379,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       const initialCallCount = mockGetQuotaStatus.mock.calls.length;
 
@@ -416,9 +400,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       const canAnalyze = await result.current.canAnalyze();
 
@@ -431,9 +413,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota({ dreamId: 123 }));
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       const canExplore = await result.current.canExplore();
 
@@ -450,9 +430,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota({ dreamId: 123 }));
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       // Override with different dreamId
       const canExplore = await result.current.canExplore({ dreamId: 456 });
@@ -470,9 +448,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota({ dreamId: 123 }));
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       const canChat = await result.current.canChat();
 
@@ -493,9 +469,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota({ dreamId: 123 }));
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       const counts = await result.current.getUsageCounts();
 
@@ -518,9 +492,7 @@ describe('useQuota', () => {
 
       const { result } = renderHook(() => useQuota());
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       const counts = await result.current.getUsageCounts();
 
@@ -535,21 +507,19 @@ describe('useQuota', () => {
 
   describe('user authentication changes', () => {
     it('refetches quota when user signs in', async () => {
-      const { rerender } = renderHook(() => useQuota());
+      const { result, rerender } = renderHook(() => useQuota());
 
+      await settleQuotaStatus(result);
       const initialCallCount = mockGetQuotaStatus.mock.calls.length;
-      await waitFor(() => {
-        expect(initialCallCount).toBeGreaterThan(0);
-      });
+      expect(initialCallCount).toBeGreaterThan(0);
 
       // User signs in
       mockUser = { id: 'user-1' };
       mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ tier: 'free' }));
       rerender();
 
-      await waitFor(() => {
-        expect(mockGetQuotaStatus.mock.calls.length).toBeGreaterThanOrEqual(initialCallCount + 1);
-      });
+      await settleQuotaStatus(result);
+      expect(mockGetQuotaStatus).toHaveBeenCalledTimes(initialCallCount + 1);
 
       expect(mockGetQuotaStatus).toHaveBeenLastCalledWith(mockUser, 'free', undefined);
     });
@@ -559,18 +529,15 @@ describe('useQuota', () => {
       const { result, rerender } = renderHook(() => useQuota());
 
       const initialCallCount = mockGetQuotaStatus.mock.calls.length;
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
+      await settleQuotaStatus(result);
 
       // User signs out
       mockUser = null;
       mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ tier: 'guest' }));
       rerender();
 
-      await waitFor(() => {
-        expect(mockGetQuotaStatus.mock.calls.length).toBeGreaterThanOrEqual(initialCallCount + 1);
-      });
+      await settleQuotaStatus(result);
+      expect(mockGetQuotaStatus).toHaveBeenCalledTimes(initialCallCount + 2);
 
       expect(mockGetQuotaStatus).toHaveBeenLastCalledWith(null, 'guest', undefined);
     });

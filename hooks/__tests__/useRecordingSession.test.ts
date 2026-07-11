@@ -2,11 +2,13 @@
 
 import { act, renderHook } from '@testing-library/react';
 import { AudioModule, setAudioModeAsync, useAudioRecorder } from 'expo-audio';
+import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 import { Alert, AppState } from 'react-native';
 
 import { ensureOfflineSttModel, startNativeSpeechSession } from '../../services/nativeSpeechRecognition';
-import { useRecordingSession } from '../useRecordingSession';
+import { transcribeAudio } from '../../services/speechToText';
+import { useRecordingSession, type RecordingSessionResult } from '../useRecordingSession';
 
 function mockCreateMockRecorder(overrides?: Record<string, unknown>) {
   let isRecording = false;
@@ -51,6 +53,10 @@ jest.mock('expo-audio', () => ({
   useAudioRecorder: jest.fn().mockReturnValue(mockCreateMockRecorder()),
 }));
 
+jest.mock('expo-file-system/legacy', () => ({
+  deleteAsync: jest.fn().mockResolvedValue(undefined),
+}));
+
 jest.mock('expo-router', () => ({
   useFocusEffect: jest.fn((cb) => cb()),
 }));
@@ -62,6 +68,10 @@ jest.mock('../../services/nativeSpeechRecognition', () => ({
   }),
   ensureOfflineSttModel: jest.fn().mockResolvedValue(false),
   startNativeSpeechSession: jest.fn().mockResolvedValue(null),
+}));
+
+jest.mock('../../services/speechToText', () => ({
+  transcribeAudio: jest.fn().mockResolvedValue(''),
 }));
 
 jest.mock('react-native', () => ({
@@ -98,6 +108,8 @@ describe('useRecordingSession', () => {
     jest.mocked(useAudioRecorder).mockReturnValue(mockCreateMockRecorder() as never);
     jest.mocked(ensureOfflineSttModel).mockResolvedValue(false as never);
     jest.mocked(startNativeSpeechSession).mockResolvedValue(null);
+    jest.mocked(transcribeAudio).mockResolvedValue('');
+    jest.mocked(FileSystemLegacy.deleteAsync).mockResolvedValue(undefined);
     jest.mocked(setAudioModeAsync).mockResolvedValue(undefined);
   });
 
@@ -278,6 +290,9 @@ describe('useRecordingSession', () => {
 
       expect(response?.transcript).toBe('native transcript');
       expect(response?.recordedUri).toBe('/path/to/audio.caf');
+      expect(FileSystemLegacy.deleteAsync).toHaveBeenCalledWith('/path/to/audio.caf', {
+        idempotent: true,
+      });
     });
 
     it('should return no_speech when native session exists but transcript is empty', async () => {
@@ -322,6 +337,44 @@ describe('useRecordingSession', () => {
       expect(response?.transcript).toBe('');
       expect(response?.recordedUri).toBe('/path/to/recorded.caf');
       expect(response?.error).toBe('stt_unavailable');
+      expect(transcribeAudio).toHaveBeenCalledWith({
+        uri: '/path/to/recorded.caf',
+        languageCode: 'en-US',
+      });
+      expect(FileSystemLegacy.deleteAsync).toHaveBeenCalledWith('/path/to/recorded.caf', {
+        idempotent: true,
+      });
+    });
+
+    it('should fall back to server transcription when native speech is unavailable', async () => {
+      const recorder = mockCreateMockRecorder({ uri: '/path/to/server-fallback.amr' });
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce(null);
+      jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+      jest.mocked(transcribeAudio).mockResolvedValueOnce('server transcript');
+
+      const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+      await act(async () => {
+        await result.current.startRecording('');
+      });
+
+      let response: RecordingSessionResult | undefined;
+      await act(async () => {
+        response = await result.current.stopRecording();
+      });
+
+      expect(response).toMatchObject({
+        transcript: 'server transcript',
+        recordedUri: '/path/to/server-fallback.amr',
+        error: undefined,
+      });
+      expect(transcribeAudio).toHaveBeenCalledWith({
+        uri: '/path/to/server-fallback.amr',
+        languageCode: 'en-US',
+      });
+      expect(FileSystemLegacy.deleteAsync).toHaveBeenCalledWith('/path/to/server-fallback.amr', {
+        idempotent: true,
+      });
     });
 
     it('should return no_speech when native error is "no speech"', async () => {
@@ -610,6 +663,24 @@ describe('useRecordingSession', () => {
 
       expect(response?.success).toBe(false);
       expect(response?.error).toBe('Audio mode failed');
+    });
+
+    it('should reset audio mode when native speech startup fails', async () => {
+      jest.mocked(startNativeSpeechSession).mockRejectedValueOnce(new Error('Speech start failed'));
+
+      const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+      let response: { success: boolean; error?: string } | undefined;
+      await act(async () => {
+        response = await result.current.startRecording('');
+      });
+
+      expect(response).toEqual({ success: false, error: 'Speech start failed' });
+      expect(setAudioModeAsync).toHaveBeenNthCalledWith(1, {
+        allowsRecording: true,
+        playsInSilentMode: true,
+      });
+      expect(setAudioModeAsync).toHaveBeenNthCalledWith(2, { allowsRecording: false });
     });
   });
 

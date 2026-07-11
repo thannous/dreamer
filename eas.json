@@ -78,6 +78,16 @@
         "buildType": "app-bundle",
         "credentialsSource": "remote"
       }
+    },
+    "release-smoke": {
+      "extends": "production",
+      "channel": "release-smoke",
+      "distribution": "internal",
+      "autoIncrement": false,
+      "android": {
+        "buildType": "apk",
+        "credentialsSource": "remote"
+      }
     }
   },
   "submit": {

@@ -1,75 +1,174 @@
-import { corsHeaders } from '../lib/constants.ts';
-import type { ApiContext } from '../types.ts';
+import { corsHeaders } from "../lib/constants.ts";
+import { requireGuestSession } from "../lib/guards.ts";
+import type { ApiContext } from "../types.ts";
 
-export async function handleTranscribe(ctx: ApiContext): Promise<Response> {
+const ALLOWED_ENCODINGS = new Set(["LINEAR16", "AMR_WB", "WEBM_OPUS"]);
+const LANGUAGE_CODE_PATTERN =
+  /^[A-Za-z]{2,3}(?:-[A-Za-z]{4})?(?:-(?:[A-Za-z]{2}|\d{3}))?$/;
+const BASE64_PATTERN =
+  /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+const MIN_SAMPLE_RATE_HERTZ = 8000;
+const MAX_SAMPLE_RATE_HERTZ = 48000;
+
+export const MAX_TRANSCRIPTION_BASE64_CHARS = 8 * 1024 * 1024;
+
+type TranscribeBody = {
+  contentBase64?: unknown;
+  encoding?: unknown;
+  languageCode?: unknown;
+  sampleRateHertz?: unknown;
+};
+
+type SpeechProviderResponse = {
+  results?: Array<{
+    alternatives?: Array<{ transcript?: unknown }>;
+  }>;
+};
+
+type TranscribeDependencies = {
+  apiKey?: string;
+  fetch?: typeof fetch;
+};
+
+const jsonResponse = (
+  body: Record<string, unknown>,
+  status: number,
+): Response =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json", ...corsHeaders },
+  });
+
+const invalidRequest = (error: string): Response =>
+  jsonResponse({ error }, 400);
+const providerUnavailable = (status = 502): Response =>
+  jsonResponse({ error: "Transcription service unavailable" }, status);
+
+const readTranscribeBody = async (
+  req: Request,
+): Promise<TranscribeBody | Response> => {
+  let parsed: unknown;
+  try {
+    parsed = await req.json();
+  } catch {
+    return invalidRequest("Invalid request body");
+  }
+
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return invalidRequest("Invalid request body");
+  }
+
+  return parsed as TranscribeBody;
+};
+
+export async function handleTranscribe(
+  ctx: ApiContext,
+  dependencies: TranscribeDependencies = {},
+): Promise<Response> {
   const { req, user } = ctx;
 
-  try {
-    const body = (await req.json()) as {
-      contentBase64?: string;
-      encoding?: string;
-      languageCode?: string;
-      sampleRateHertz?: number;
-    };
-
-    const contentBase64 = String(body?.contentBase64 ?? '');
-    if (!contentBase64) throw new Error('Missing contentBase64');
-
-    const encoding = String(body?.encoding ?? 'LINEAR16');
-    const languageCode = String(body?.languageCode ?? 'fr-FR');
-    const sampleRateHertz = body?.sampleRateHertz;
-
-    console.log('[api] /transcribe request', {
-      userId: user?.id ?? null,
-      encoding,
-      languageCode,
-      sampleRateHertz,
-      contentLength: contentBase64.length,
-    });
-
-    const apiKey = Deno.env.get('GOOGLE_CLOUD_STT_API_KEY') || Deno.env.get('GOOGLE_API_KEY');
-    if (!apiKey) throw new Error('GOOGLE_CLOUD_STT_API_KEY not set');
-
-    const config: Record<string, unknown> = {
-      encoding,
-      languageCode,
-      enableAutomaticPunctuation: true,
-    };
-    if (typeof sampleRateHertz === 'number' && sampleRateHertz > 0) {
-      config.sampleRateHertz = sampleRateHertz;
-    }
-
-    const sttRes = await fetch(
-      `https://speech.googleapis.com/v1/speech:recognize?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ config, audio: { content: contentBase64 } }),
-      }
-    );
-    if (!sttRes.ok) {
-      const t = await sttRes.text();
-      console.error('[api] /transcribe google error', sttRes.status, t);
-      throw new Error(`Google STT error ${sttRes.status}: ${t}`);
-    }
-    const sttJson = (await sttRes.json()) as any;
-    const transcript: string = sttJson?.results?.[0]?.alternatives?.[0]?.transcript ?? '';
-
-    console.log('[api] /transcribe success', {
-      userId: user?.id ?? null,
-      transcriptLength: transcript.length,
-      hasResults: Boolean(sttJson?.results?.length),
-    });
-
-    return new Response(JSON.stringify({ transcript }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
-  } catch (e) {
-    console.error('[api] /transcribe error', e);
-    return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
+  const sessionCheck = await requireGuestSession(req, null, user);
+  if (sessionCheck instanceof Response) {
+    return sessionCheck;
   }
+
+  const body = await readTranscribeBody(req);
+  if (body instanceof Response) {
+    return body;
+  }
+
+  if (typeof body.contentBase64 !== "string" || !body.contentBase64) {
+    return invalidRequest("Invalid audio content");
+  }
+  if (body.contentBase64.length > MAX_TRANSCRIPTION_BASE64_CHARS) {
+    return jsonResponse({ error: "Audio payload too large" }, 413);
+  }
+  if (
+    body.contentBase64.length % 4 !== 0 ||
+    !BASE64_PATTERN.test(body.contentBase64)
+  ) {
+    return invalidRequest("Invalid audio content");
+  }
+
+  const encoding = typeof body.encoding === "undefined"
+    ? "LINEAR16"
+    : typeof body.encoding === "string"
+    ? body.encoding.trim().toUpperCase()
+    : "";
+  if (!ALLOWED_ENCODINGS.has(encoding)) {
+    return invalidRequest("Unsupported audio encoding");
+  }
+
+  const languageCode = typeof body.languageCode === "undefined"
+    ? "fr-FR"
+    : typeof body.languageCode === "string"
+    ? body.languageCode.trim()
+    : "";
+  if (!LANGUAGE_CODE_PATTERN.test(languageCode)) {
+    return invalidRequest("Invalid language code");
+  }
+
+  const sampleRateHertz = body.sampleRateHertz;
+  if (
+    typeof sampleRateHertz !== "undefined" &&
+    (typeof sampleRateHertz !== "number" ||
+      !Number.isInteger(sampleRateHertz) ||
+      sampleRateHertz < MIN_SAMPLE_RATE_HERTZ ||
+      sampleRateHertz > MAX_SAMPLE_RATE_HERTZ)
+  ) {
+    return invalidRequest("Invalid sample rate");
+  }
+
+  const apiKey = dependencies.apiKey?.trim() ||
+    Deno.env.get("GOOGLE_CLOUD_STT_API_KEY")?.trim() ||
+    Deno.env.get("GOOGLE_API_KEY")?.trim();
+  if (!apiKey) {
+    console.error("[api] /transcribe provider configuration unavailable");
+    return providerUnavailable(503);
+  }
+
+  const config: Record<string, unknown> = {
+    encoding,
+    languageCode,
+    enableAutomaticPunctuation: true,
+  };
+  if (typeof sampleRateHertz === "number") {
+    config.sampleRateHertz = sampleRateHertz;
+  }
+
+  const providerUrl = new URL(
+    "https://speech.googleapis.com/v1/speech:recognize",
+  );
+  providerUrl.searchParams.set("key", apiKey);
+
+  let providerResponse: Response;
+  try {
+    providerResponse = await (dependencies.fetch ?? fetch)(providerUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ config, audio: { content: body.contentBase64 } }),
+    });
+  } catch {
+    console.error("[api] /transcribe provider request failed");
+    return providerUnavailable();
+  }
+
+  if (!providerResponse.ok) {
+    console.error("[api] /transcribe provider rejected request", {
+      status: providerResponse.status,
+    });
+    return providerUnavailable();
+  }
+
+  let providerBody: SpeechProviderResponse;
+  try {
+    providerBody = (await providerResponse.json()) as SpeechProviderResponse;
+  } catch {
+    console.error("[api] /transcribe provider returned invalid response");
+    return providerUnavailable();
+  }
+
+  const candidate = providerBody.results?.[0]?.alternatives?.[0]?.transcript;
+  const transcript = typeof candidate === "string" ? candidate : "";
+  return jsonResponse({ transcript }, 200);
 }

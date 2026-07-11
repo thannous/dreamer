@@ -7,18 +7,14 @@
 // - POST /tts { text } -> { audioBase64: string }
 
 import { getApiBaseUrl } from '@/lib/config';
-import { fetchJSON, HttpError, type HttpOptions } from '@/lib/http';
+import { fetchJSONWithSession } from '@/lib/apiSession';
+import { HttpError, type HttpOptions } from '@/lib/http';
 import {
   classifyImageError,
-  GuestSessionError,
-  GuestSessionErrorCode,
-  isGuestSessionError,
   type ImageGenerationErrorResponse,
 } from '@/lib/errors';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationRequest } from '@/lib/types';
-import { getAccessToken } from '@/lib/auth';
-import { getGuestHeaders, invalidateGuestSession } from '@/lib/guestSession';
 
 export type AnalysisResult = {
   title: string;
@@ -64,45 +60,10 @@ export type ImageJobStatusResponse = {
 
 async function fetchWithSessionHeaders<T>(
   path: string,
-  options: HttpOptions & { signal?: AbortSignal },
-  retryGuestSession = true
+  options: HttpOptions & { signal?: AbortSignal }
 ): Promise<T> {
   const base = getApiBaseUrl();
-  const accessToken = await getAccessToken();
-  if (accessToken) {
-    return fetchJSON<T>(`${base}${path}`, {
-      ...options,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        ...options.headers,
-      },
-    });
-  }
-
-  const requestWithHeaders = (headers: Record<string, string>) =>
-    fetchJSON<T>(`${base}${path}`, { ...options, headers: { ...headers, ...options.headers } });
-
-  const headers = await getGuestHeaders({ requireSession: true });
-  try {
-    return await requestWithHeaders(headers);
-  } catch (error) {
-    if (retryGuestSession && error instanceof Error && isGuestSessionError(error)) {
-      await invalidateGuestSession();
-      const freshHeaders = await getGuestHeaders({ requireSession: true });
-      try {
-        return await requestWithHeaders(freshHeaders);
-      } catch (retryError) {
-        if (retryError instanceof Error && isGuestSessionError(retryError)) {
-          throw new GuestSessionError(
-            GuestSessionErrorCode.EXPIRED,
-            'guest_session_expired'
-          );
-        }
-        throw retryError;
-      }
-    }
-    throw error;
-  }
+  return fetchJSONWithSession<T>(`${base}${path}`, options);
 }
 
 function buildAnalysisRequestBody(

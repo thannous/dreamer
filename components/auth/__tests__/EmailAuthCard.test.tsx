@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { cleanup, render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { act, cleanup, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Alert } from 'react-native';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
@@ -191,8 +191,15 @@ const { AuthApiError } = require('@supabase/auth-js');
 const { EmailAuthCard } = require('../EmailAuthCard');
 
 describe('EmailAuthCard', () => {
+  let usingFakeTimers = false;
+
   afterEach(() => {
     cleanup();
+    if (usingFakeTimers) {
+      jest.clearAllTimers();
+      jest.useRealTimers();
+      usingFakeTimers = false;
+    }
   });
 
   beforeEach(() => {
@@ -209,6 +216,7 @@ describe('EmailAuthCard', () => {
   it('shows unverified prompt and allows resending verification email when sign-in fails for confirmation', async () => {
     // Use fake timers to control time-based cooldowns
     jest.useFakeTimers({ advanceTimers: true });
+    usingFakeTimers = true;
 
     mockSignInWithEmailPassword.mockRejectedValue(
       new AuthApiError('Email not confirmed', 400, 'email_not_confirmed')
@@ -230,7 +238,9 @@ describe('EmailAuthCard', () => {
     });
 
     // Advance past the 60-second cooldown period (60000ms)
-    await jest.advanceTimersByTimeAsync(61000);
+    await act(async () => {
+      await jest.advanceTimersByTimeAsync(61000);
+    });
 
     fireEvent.click(screen.getByTestId(TID.Button.AuthResendVerification));
 
@@ -241,7 +251,6 @@ describe('EmailAuthCard', () => {
     expect(mockAlert).not.toHaveBeenCalled();
     expect(mockRequestStayOnSettingsIntent).toHaveBeenCalled();
 
-    jest.useRealTimers();
   });
 
   it('signs in with valid credentials and clears the password', async () => {

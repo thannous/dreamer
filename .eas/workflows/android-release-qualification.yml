@@ -1,0 +1,36 @@
+name: Android Release qualification
+
+on:
+  workflow_dispatch: {}
+  push:
+    tags:
+      - v*
+
+concurrency:
+  cancel_in_progress: true
+  group: ${{ workflow.filename }}-${{ github.ref }}
+
+jobs:
+  build_android:
+    name: Build Android Release APK
+    type: build
+    environment: production
+    params:
+      platform: android
+      profile: production-apk
+      message: Android Release qualification
+
+  smoke_android:
+    name: Run Android Release smoke
+    needs:
+      - build_android
+    type: maestro
+    environment: production
+    params:
+      build_id: ${{ needs.build_android.outputs.build_id }}
+      flow_path: maestro/release-smoke.yml
+      retries: 0
+      record_screen: false
+      android_system_image_package: system-images;android-35-ext15;google_apis_playstore;x86_64
+      device_identifier: pixel_6
+      output_format: junit

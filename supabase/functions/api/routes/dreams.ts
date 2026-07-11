@@ -7,7 +7,7 @@ import {
   GEMINI_FLASH_LITE_MODEL,
   GEMINI_FLASH_MODEL,
 } from '../services/gemini.ts';
-import { generateImageFromPrompt } from '../services/geminiImages.ts';
+import { generateImageFromPrompt, resolveImageModel } from '../services/geminiImages.ts';
 import { optimizeImage } from '../services/image.ts';
 import { createStorageHelpers } from '../services/storage.ts';
 import { requireGuestSession, requireUser } from '../lib/guards.ts';
@@ -167,7 +167,7 @@ async function claimAuthenticatedAnalysisQuota({
   supabaseServiceRoleKey?: string | null;
   transcript: string;
   userId: string;
-}): Promise<{ response?: Response; quotaUsed?: { analysis: number } }> {
+}): Promise<{ response?: Response; quotaUsed?: { analysis: number }; tier?: string }> {
   if (!supabaseServiceRoleKey) {
     console.error(`[api] ${route}: authenticated quota unavailable before provider work`, {
       hasServiceRoleKey: false,
@@ -220,6 +220,7 @@ async function claimAuthenticatedAnalysisQuota({
 
   return {
     quotaUsed: claim.new_count === undefined ? undefined : { analysis: toCount(claim.new_count) },
+    tier: claim.tier,
   };
 }
 
@@ -425,6 +426,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
       return quotaClaim.response;
     }
     const quotaUsed = quotaClaim.quotaUsed;
+    const imageModel = resolveImageModel(quotaClaim.tier);
 
     const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
     const systemInstruction = lang === 'fr'
@@ -471,6 +473,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
     const { imageBase64, mimeType, raw: imgJson } = await generateImageFromPrompt({
       prompt: imagePrompt,
       apiKey,
+      model: imageModel,
       aspectRatio: '9:16',
     });
 

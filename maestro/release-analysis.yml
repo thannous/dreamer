@@ -1,0 +1,97 @@
+# Manual Release integration probe: save a guest dream and complete a real
+# backend analysis. Kept outside the repeatable smoke workflow because guest
+# analysis quota is intentionally persistent for a device fingerprint.
+appId: com.tanuki75.noctalia
+name: Release guest analysis
+tags:
+  - release
+  - analysis
+onFlowComplete:
+  - setAirplaneMode: disabled
+  - setPermissions:
+      permissions:
+        all: allow
+---
+- setAirplaneMode: disabled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+- runFlow:
+    when:
+      visible:
+        id: tab.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+- runFlow:
+    when:
+      visible:
+        id: screen.journal
+    commands:
+      - runFlow:
+          when:
+            visible:
+              id: btn.addDream
+          commands:
+            - tapOn:
+                id: btn.addDream
+      - runFlow:
+          when:
+            visible:
+              id: tab.addDream
+          commands:
+            - tapOn:
+                id: tab.addDream
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- runFlow: subflows/ensure-recording-text.yml
+
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Release analysis sentinel moonlit forest"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.firstDream.title
+    timeout: 90000
+- tapOn:
+    id: btn.firstDream.analyze
+
+# The interpretation section exists only after the real analysis response has
+# populated the saved dream. Waiting on that content avoids transient CTA races.
+- scrollUntilVisible:
+    element:
+      text: "Interpretation|Interprétation|Interpretación|Interpretazione|Deutung"
+    direction: DOWN
+    timeout: 180000
+- assertVisible: "Interpretation|Interprétation|Interpretación|Interpretazione|Deutung"
+- scrollUntilVisible:
+    element:
+      id: component.transcriptCard
+    direction: DOWN
+    timeout: 30000
+    visibilityPercentage: 60
+- assertVisible:
+    id: component.transcriptCard

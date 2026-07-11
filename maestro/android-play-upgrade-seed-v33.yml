@@ -1,0 +1,153 @@
+# Seed durable state in the Play-installed v33 app. Never clear app state here:
+# this flow establishes the baseline that the v34 verification must recover.
+appId: com.tanuki75.noctalia
+name: Android Play upgrade seed v33
+tags:
+  - release
+  - play-upgrade
+  - upgrade-seed
+onFlowComplete:
+  - setAirplaneMode: disabled
+---
+- setAirplaneMode: disabled
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: "screen.onboarding|screen.recording|screen.journal|tab.addDream"
+    timeout: 30000
+- runFlow:
+    when:
+      visible:
+        id: screen.onboarding
+    commands:
+      - runFlow: subflows/dismiss-first-launch-onboarding.yml
+
+- runFlow:
+    when:
+      visible:
+        id: tab.addDream
+    commands:
+      - tapOn:
+          id: tab.addDream
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- runFlow:
+    when:
+      visible:
+        id: component.recording.onboardingTour
+    commands:
+      - tapOn:
+          id: btn.recording.onboarding.skip
+      - extendedWaitUntil:
+          notVisible:
+            id: component.recording.onboardingTour
+          timeout: 10000
+- runFlow: subflows/ensure-recording-text.yml
+- tapOn:
+    id: input.dreamTranscript
+- inputText: ${UPGRADE_SENTINEL}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: "text.firstDream.title|text.analyzePromptTitle"
+    timeout: 90000
+- runFlow:
+    when:
+      visible:
+        id: text.firstDream.title
+    commands:
+      - tapOn:
+          id: btn.firstDream.journal
+- runFlow:
+    when:
+      visible:
+        id: text.analyzePromptTitle
+    commands:
+      - tapOn:
+          id: btn.analyzePrompt.journal
+- extendedWaitUntil:
+    visible: "${UPGRADE_SENTINEL}"
+    timeout: 20000
+
+# Persist one stable user preference alongside the seeded dream.
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- tapOn:
+    id: tab.settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 20000
+- runFlow: subflows/ensure-settings-journal-layout-visible.yml
+- tapOn:
+    id: btn.settings.journalLayout.compact
+    retryTapIfNoChange: true
+- assertVisible:
+    id: btn.settings.journalLayout.compact
+    checked: true
+
+# Prove the v33 baseline itself survives process death before recording it.
+- killApp
+- launchApp
+- runFlow:
+    when:
+      visible:
+        id: tab.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+          retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- runFlow: subflows/ensure-journal-search-visible.yml
+- tapOn:
+    id: input.searchDreams
+- inputText: ${UPGRADE_SENTINEL}
+- extendedWaitUntil:
+    visible:
+      id: "dream.item.*"
+    timeout: 20000
+- tapOn:
+    id: "dream.item.*"
+    index: 0
+- extendedWaitUntil:
+    visible: "${UPGRADE_SENTINEL}"
+    timeout: 20000
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- tapOn:
+    id: tab.settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 20000
+- runFlow: subflows/ensure-settings-journal-layout-visible.yml
+- assertVisible:
+    id: btn.settings.journalLayout.compact
+    checked: true

@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 'use strict';
+/* global __dirname */
 
 const fs = require('fs');
 const path = require('path');
+const { readAppVersionCode } = require('./update-google-play-track-state');
 
 const ROOT = path.resolve(__dirname, '..');
+const ANDROID_CANDIDATE_VERSION_CODE = readAppVersionCode(ROOT);
 const DEFAULT_EXAMPLE = path.join(ROOT, 'doc_web_interne/docs/revenuecat-qa-evidence.example.json');
 const DEFAULT_TARGET = path.join(ROOT, 'doc_web_interne/docs/revenuecat-qa-evidence.local.json');
 
@@ -90,7 +93,8 @@ Options:
   --device-id <id>     Required for play_* gates; ADB serial of the physical tester device.
   --installer-package-name <name>
                        Required for play_* gates; must be com.android.vending.
-  --version-code <n>   Required for play_* gates; installed Android versionCode from Play.
+  --version-code <n>   Required for every gate; must match app.json Android candidate ${ANDROID_CANDIDATE_VERSION_CODE}.
+                       For play_* gates, this is the installed versionCode from Play.
                        play_monthly evidence must also confirm base plan P1M.
                        play_annual evidence must also confirm base plan P1Y.
                        play_cancellation_and_expiry evidence must confirm cancellation/expiry,
@@ -186,12 +190,16 @@ function requirePlayInstallerPackageName(options) {
   }
 }
 
-function requirePlayVersionCode(options) {
-  if (!options.gate?.startsWith('play_')) return;
+function requireCandidateVersionCode(options) {
   requireValue(options, 'versionCode', '--version-code');
   const value = String(options.versionCode).trim();
   if (!/^[1-9]\d*$/.test(value)) {
-    throw new Error('Play evidence versionCode must be a positive integer.');
+    throw new Error('Evidence versionCode must be a positive integer.');
+  }
+  if (value !== ANDROID_CANDIDATE_VERSION_CODE) {
+    throw new Error(
+      `Evidence versionCode ${value} does not match Android release candidate ${ANDROID_CANDIDATE_VERSION_CODE} from app.json.`
+    );
   }
 }
 
@@ -248,7 +256,7 @@ function updateEvidence(options) {
   requirePlayInstalledEvidence(options);
   requirePlayDeviceId(options);
   requirePlayInstallerPackageName(options);
-  requirePlayVersionCode(options);
+  requireCandidateVersionCode(options);
   requirePlayAnnualBasePlanEvidence(options);
   requirePlayCancellationConvergenceEvidence(options);
   requireAccountSwitchEvidence(options);

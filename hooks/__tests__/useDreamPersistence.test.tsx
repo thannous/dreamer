@@ -1,11 +1,21 @@
 /**
  * @jest-environment jsdom
  */
-import { act, renderHook, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { act, renderHook, waitFor as testingWaitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { DreamAnalysis, DreamMutation } from '../../lib/types';
 import { useDreamPersistence } from '../useDreamPersistence';
+
+const flushEffects = () => act(async () => {});
+
+const waitFor = async <T,>(callback: () => T | Promise<T>) => {
+  // The hook's storage work is promise-driven. Flush those effects first so the
+  // assertion normally succeeds immediately, while retaining polling for the
+  // genuinely background migration path.
+  await flushEffects();
+  return testingWaitFor(callback, { interval: 1 });
+};
 
 type AnyFunction = (...args: any[]) => any;
 const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
@@ -90,7 +100,7 @@ const legacyMutation = (mutation: {
 
 describe('useDreamPersistence', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
     mockUser.current = { id: 'user-123' };
     mockSessionReady.current = true;
     mockGetSavedDreams.mockResolvedValue([]);
@@ -105,10 +115,6 @@ describe('useDreamPersistence', () => {
     mockGetAccessToken.mockResolvedValue('access-token');
   });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
   describe('guest mode (no remote sync)', () => {
     it('loads dreams from local storage', async () => {
       const localDreams = [buildDream({ id: 1 }), buildDream({ id: 2 })];
@@ -118,9 +124,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: false })
       );
 
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       expect(result.current.dreams).toHaveLength(2);
       expect(mockGetSavedDreams).toHaveBeenCalled();
@@ -132,7 +137,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: false })
       );
 
-      await waitFor(() => expect(result.current.loaded).toBe(true));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       const newDreams = [buildDream({ id: 1 })];
       await act(async () => {
@@ -149,7 +155,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: false })
       );
 
-      await waitFor(() => expect(result.current.loaded).toBe(true));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       await act(async () => {
         await result.current.persistRemoteDreams([buildDream({ id: 1 })]);
@@ -169,9 +176,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: true })
       );
 
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       expect(mockGetAccessToken).toHaveBeenCalled();
       expect(mockFetchFromSupabase).toHaveBeenCalled();
@@ -186,9 +192,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: true })
       );
 
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       expect(result.current.dreams).toHaveLength(1);
       expect(mockFetchFromSupabase).toHaveBeenCalled();
@@ -202,7 +207,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: true })
       );
 
-      await waitFor(() => expect(result.current.loaded).toBe(true));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       expect(mockSaveCachedRemoteDreams).toHaveBeenCalled();
     });
@@ -219,7 +225,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: true })
       );
 
-      await waitFor(() => expect(result.current.loaded).toBe(true));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       expect(result.current.pendingMutations).toHaveLength(1);
     });
@@ -237,7 +244,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: true })
       );
 
-      await waitFor(() => expect(result.current.loaded).toBe(true));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       // Dream should have mutation applied
       expect(result.current.dreams[0].title).toBe('Updated');
@@ -252,7 +260,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: true })
       );
 
-      await waitFor(() => expect(result.current.loaded).toBe(true));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       expect(result.current.dreams).toHaveLength(1);
     });
@@ -262,7 +271,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: true })
       );
 
-      await waitFor(() => expect(result.current.loaded).toBe(true));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       const newDreams = [buildDream({ id: 1 })];
       await act(async () => {
@@ -280,7 +290,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: true })
       );
 
-      await waitFor(() => expect(result.current.loaded).toBe(true));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       const newDream = buildDream({ id: 2 });
       await act(async () => {
@@ -316,7 +327,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: true })
       );
 
-      await waitFor(() => expect(result.current.loaded).toBe(true));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       expect(mockCreateInSupabase).not.toHaveBeenCalled();
     });
@@ -330,7 +342,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: true })
       );
 
-      await waitFor(() => expect(result.current.loaded).toBe(true));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       expect(mockSaveDreams).toHaveBeenCalledWith([]);
     });
@@ -344,7 +357,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: false })
       );
 
-      await waitFor(() => expect(result.current.loaded).toBe(true));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       const newDreams = [buildDream({ id: 1 })];
       mockGetSavedDreams.mockResolvedValue(newDreams);
@@ -366,7 +380,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: false })
       );
 
-      await waitFor(() => expect(result.current.loaded).toBe(true));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       expect(result.current.dreamsRef.current).toHaveLength(1);
     });
@@ -380,7 +395,8 @@ describe('useDreamPersistence', () => {
         useDreamPersistence({ canUseRemoteSync: false })
       );
 
-      await waitFor(() => expect(result.current.loaded).toBe(true));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
 
       expect(result.current.dreams).toEqual([]);
     });

@@ -39,6 +39,7 @@ import { LanguageProvider } from '@/context/LanguageContext';
 import { SubscriptionProvider } from '@/context/SubscriptionContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useAppState } from '@/hooks/useAppState';
+import { useSplashFailsafe } from '@/hooks/useSplashFailsafe';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 // useSubscriptionMonitor est maintenant intégré dans useSubscription
 import { initializeGoogleSignIn } from '@/lib/auth';
@@ -80,8 +81,12 @@ if (__DEV__) {
   })();
 }
 
-// Prevent the splash screen from auto-hiding before fonts are loaded
-SplashScreen.preventAutoHideAsync();
+// Prevent the splash screen from auto-hiding before fonts are loaded.
+void SplashScreen.preventAutoHideAsync().catch((error) => {
+  if (__DEV__) {
+    console.warn('[RootLayout] Unable to keep the native splash visible', error);
+  }
+});
 
 const ROOT_VIEW_STYLE = { flex: 1 } as const;
 const ONBOARDING_ROUTE = '/onboarding' as Href;
@@ -415,6 +420,9 @@ export default function RootLayout() {
   const [initialLanguagePreference, setInitialLanguagePreference] = useState<LanguagePreference>('auto');
   const [hasHandledFirstLaunch, setHasHandledFirstLaunch] = useState(false);
   const [allowInitialRecordingRedirect, setAllowInitialRecordingRedirect] = useState(false);
+  const splashTimedOut = useSplashFailsafe(showCustomSplash);
+  const shouldShowCustomSplash = showCustomSplash && !splashTimedOut;
+  const fontsSettled = fontsLoaded || Boolean(fontError) || splashTimedOut;
   const isNavigationReady = useNavigationIsReady();
   const locales = useLocales();
   const primaryLocale = locales[0];
@@ -470,7 +478,7 @@ export default function RootLayout() {
   }, [systemLanguage]);
 
   useEffect(() => {
-    if (!fontsLoaded && !fontError) {
+    if (!fontsSettled) {
       return;
     }
 
@@ -494,7 +502,7 @@ export default function RootLayout() {
         clearTimeout(outroTimer);
       }
     };
-  }, [fontError, fontsLoaded]);
+  }, [fontsSettled]);
 
   useEffect(() => {
     if (!minimumSplashElapsed || shouldFadeSplash) {
@@ -565,7 +573,7 @@ export default function RootLayout() {
     setShowCustomSplash(false);
   }, []);
 
-  if (!fontsLoaded && !fontError) {
+  if (!fontsSettled) {
     return null;
   }
 
@@ -577,14 +585,18 @@ export default function RootLayout() {
             <ThemeProvider>
               <AuthProvider>
                 <SubscriptionProvider>
-                  <RootLayoutNav allowInitialRecordingRedirect={allowInitialRecordingRedirect || Boolean(fontError)} />
+                  <RootLayoutNav
+                    allowInitialRecordingRedirect={
+                      allowInitialRecordingRedirect || Boolean(fontError) || splashTimedOut
+                    }
+                  />
                 </SubscriptionProvider>
               </AuthProvider>
             </ThemeProvider>
           </LanguageProvider>
         ) : null}
       </ErrorBoundary>
-      {showCustomSplash && (
+      {shouldShowCustomSplash && (
         <AnimatedSplashScreen status={shouldFadeSplash ? 'outro' : 'intro'} onAnimationEnd={handleSplashFinished} />
       )}
     </GestureHandlerRootView>

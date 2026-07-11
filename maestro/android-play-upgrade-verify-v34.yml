@@ -1,0 +1,69 @@
+# Verify the Play update without clearing state or reinstalling the application.
+# Airplane mode ensures the seeded dream is recovered from on-device state/cache.
+appId: com.tanuki75.noctalia
+name: Android Play upgrade verify v34
+tags:
+  - release
+  - play-upgrade
+  - upgrade-verify
+onFlowComplete:
+  - setAirplaneMode: disabled
+---
+- setAirplaneMode: enabled
+- killApp
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: "screen.recording|screen.journal|tab.journal|tab.addDream"
+    timeout: 30000
+- assertNotVisible:
+    id: screen.onboarding
+
+- runFlow:
+    when:
+      visible:
+        id: tab.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+          retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- runFlow: subflows/ensure-journal-search-visible.yml
+- tapOn:
+    id: input.searchDreams
+- inputText: ${UPGRADE_SENTINEL}
+- extendedWaitUntil:
+    visible:
+      id: "dream.item.*"
+    timeout: 20000
+- tapOn:
+    id: "dream.item.*"
+    index: 0
+- extendedWaitUntil:
+    visible: "${UPGRADE_SENTINEL}"
+    timeout: 20000
+
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- tapOn:
+    id: tab.settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 20000
+- runFlow: subflows/ensure-settings-journal-layout-visible.yml
+- assertVisible:
+    id: btn.settings.journalLayout.compact
+    checked: true
+- setAirplaneMode: disabled

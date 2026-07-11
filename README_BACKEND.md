@@ -37,9 +37,12 @@ Expected endpoints
   - Env required: `GEMINI_API_KEY`
   - Optional env overrides:
     - `GEMINI_MODEL` (default `gemini-3-flash-preview`)
-    - `GEMINI_FALLBACK_MODEL` (default `gemini-3.1-flash-lite-preview`)
-    - `GEMINI_LITE_MODEL` (default `gemini-3.1-flash-lite-preview`)
-    - `IMAGEN_MODEL` (default `gemini-3.1-flash-image-preview`)
+    - `GEMINI_FALLBACK_MODEL` (default `gemini-3.1-flash-lite`)
+    - `GEMINI_LITE_MODEL` (default `gemini-3.1-flash-lite`)
+    - `IMAGEN_PLUS_MODEL` (subscriber default `gemini-3.1-flash-image`)
+    - `IMAGEN_FREE_MODEL` (free/guest default `gemini-3.1-flash-lite-image`)
+    - `IMAGEN_MODEL` (legacy subscriber-only alias for `IMAGEN_PLUS_MODEL`)
+    - Retired image preview IDs are ignored and fall back to the stable defaults above.
 
 - POST `/generateImage`
   - Request JSON: `{ "prompt": string }`

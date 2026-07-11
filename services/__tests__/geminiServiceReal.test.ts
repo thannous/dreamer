@@ -31,6 +31,28 @@ jest.mock('expo-constants', () => ({
   },
 }));
 
+// Retry timing is covered by lib/__tests__/http.test.ts. Keep this service
+// suite focused on request/fallback behavior without waiting for real backoff.
+jest.mock('../../lib/networkPolicy', () => {
+  const actual = jest.requireActual('../../lib/networkPolicy') as typeof import('../../lib/networkPolicy');
+  const policies = actual.NETWORK_REQUEST_POLICIES;
+  const withoutRetries = <T extends { retries: number; retryDelay: number }>(policy: T) => ({
+    ...policy,
+    retries: 0,
+    retryDelay: 0,
+  });
+
+  return {
+    ...actual,
+    NETWORK_REQUEST_POLICIES: {
+      ...policies,
+      analyzeDream: withoutRetries(policies.analyzeDream),
+      analyzeDreamFull: withoutRetries(policies.analyzeDreamFull),
+      generateImage: withoutRetries(policies.generateImage),
+    },
+  };
+});
+
 const {
   analyzeDream,
   analyzeDreamWithImage,
