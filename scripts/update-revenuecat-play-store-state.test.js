@@ -1,3 +1,4 @@
+/* global describe, expect, it */
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -40,6 +41,45 @@ describe('RevenueCat Play store state updater', () => {
       { base_plan_id: 'monthly', billing_period_duration: 'P1M' },
     ]);
     expect(getMonthlyStatus(document)).toEqual({ ready: true, summary: 'monthly/P1M' });
+  });
+
+  it('normalizes the current MCP store_state.base_plans object shape', () => {
+    const liveStoreState = {
+      store: 'play_store',
+      store_status: { status: 'ok' },
+      store_state: {
+        base_plans: {
+          annual: {
+            state: 'ACTIVE',
+            auto_renewing_base_plan_type: { billing_period_duration: 'P1Y' },
+          },
+          monthly: {
+            state: 'ACTIVE',
+            auto_renewing_base_plan_type: { billing_period_duration: 'P1M' },
+          },
+        },
+      },
+    };
+    const document = normalizeSnapshot(
+      JSON.stringify([
+        { product_id: EXPECTED.monthlyProductId, ...liveStoreState },
+        { product_id: EXPECTED.annualProductId, ...liveStoreState },
+      ]),
+      { checkedAt: '2026-07-10T06:00:00.000Z', source: 'live MCP shape' }
+    );
+
+    expect(document.store_state[EXPECTED.monthlyProductId]).toEqual({
+      store: 'play_store',
+      status: 'ok',
+      base_plans: [
+        { base_plan_id: 'annual', billing_period_duration: 'P1Y' },
+        { base_plan_id: 'monthly', billing_period_duration: 'P1M' },
+      ],
+    });
+    expect(getMonthlyStatus(document)).toEqual({
+      ready: true,
+      summary: 'annual/P1Y, monthly/P1M',
+    });
   });
 
   it('preserves blocked annual snapshots for the monthly product', () => {

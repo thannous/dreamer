@@ -5,10 +5,16 @@ appId: com.tanuki75.noctalia
 # The flow signs out, signs into a second real email/password account, refreshes RevenueCat,
 # and verifies the Plus entitlement does not leak to that second account.
 
-- runFlow: subflows/open-mock-app.yml
+- runFlow: subflows/open-release-app-preserve-state.yml
 - openLink: noctalia://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes"
+    timeout: 30000
+
+- extendedWaitUntil:
+    visible:
+      id: text.auth.email
+      text: "${QA_PAID_EMAIL_REGEX}"
     timeout: 30000
 
 - scrollUntilVisible:
@@ -17,6 +23,9 @@ appId: com.tanuki75.noctalia
     direction: DOWN
     visibilityPercentage: 40
     timeout: 30000
+- assertVisible:
+    id: text.subscription.qa.mode
+    text: "RevenueCat Test Store"
 - scrollUntilVisible:
     element:
       id: text.subscription.qa.status
@@ -25,16 +34,16 @@ appId: com.tanuki75.noctalia
     timeout: 30000
 - assertVisible:
     id: text.subscription.qa.status
-- assertVisible: ".*plus / active.*"
+    text: ".*plus / active.*"
 
 - scrollUntilVisible:
     element:
-      text: "Sign Out|Se déconnecter|Cerrar sesión|Abmelden|Disconnetti"
+      id: btn.auth.signOut
     direction: UP
     visibilityPercentage: 70
     timeout: 30000
 - tapOn:
-    text: "Sign Out|Se déconnecter|Cerrar sesión|Abmelden|Disconnetti"
+    id: btn.auth.signOut
 - extendedWaitUntil:
     visible: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
     timeout: 60000
@@ -91,6 +100,7 @@ appId: com.tanuki75.noctalia
 - extendedWaitUntil:
     visible:
       id: text.auth.email
+      text: "${QA_SWITCH_FREE_EMAIL_REGEX}"
     timeout: 45000
 
 - scrollUntilVisible:
@@ -99,16 +109,21 @@ appId: com.tanuki75.noctalia
     direction: DOWN
     visibilityPercentage: 40
     timeout: 30000
-- assertVisible: "RevenueCat Test Store"
+- assertVisible:
+    id: text.subscription.qa.mode
+    text: "RevenueCat Test Store"
 - scrollUntilVisible:
     element:
-      text: "Refresh"
+      id: btn.subscription.qa.refresh
     direction: DOWN
     visibilityPercentage: 60
     timeout: 30000
-- tapOn: "Refresh"
+- tapOn:
+    id: btn.subscription.qa.refresh
 - extendedWaitUntil:
-    visible: "Refresh completed"
+    visible:
+      id: text.subscription.qa.actionLabel
+      text: "Refresh completed"
     timeout: 60000
 - scrollUntilVisible:
     element:
@@ -118,6 +133,8 @@ appId: com.tanuki75.noctalia
     timeout: 30000
 - assertVisible:
     id: text.subscription.qa.status
-- assertVisible: ".*free / inactive.*"
+- assertVisible:
+    id: text.subscription.qa.status
+    text: ".*free / inactive.*"
 - assertNotVisible: "Noctalia Plus is active"
 - assertNotVisible: "plus / active"

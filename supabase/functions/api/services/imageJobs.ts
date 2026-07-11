@@ -42,6 +42,7 @@ type Actor = {
 };
 
 const WORKER_FUNCTION_NAME = 'image-job-worker';
+export const IMAGE_JOB_WORKER_AUTH_HEADER = 'x-image-job-worker-secret';
 
 export const createAdminClient = (supabaseUrl: string, serviceRoleKey: string) =>
   createClient(supabaseUrl, serviceRoleKey, {
@@ -128,6 +129,7 @@ export const triggerImageJobWorker = async (options: {
         // work for PostgREST, but are not valid bearer JWTs at the gateway.
         Authorization: `Bearer ${gatewayJwt}`,
         apikey: options.serviceRoleKey,
+        [IMAGE_JOB_WORKER_AUTH_HEADER]: options.serviceRoleKey,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ jobId: options.jobId }),

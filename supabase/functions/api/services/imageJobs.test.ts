@@ -1,8 +1,8 @@
 import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
-import { triggerImageJobWorker } from './imageJobs.ts';
+import { IMAGE_JOB_WORKER_AUTH_HEADER, triggerImageJobWorker } from './imageJobs.ts';
 
-Deno.test('triggerImageJobWorker uses the anon JWT for the Functions gateway', async () => {
+Deno.test('triggerImageJobWorker sends gateway auth and worker secret separately', async () => {
   const originalFetch = globalThis.fetch;
   const originalAnon = Deno.env.get('SUPABASE_ANON_KEY');
   const requests: Request[] = [];
@@ -25,6 +25,7 @@ Deno.test('triggerImageJobWorker uses the anon JWT for the Functions gateway', a
     assertEquals(requests.length, 1);
     assertEquals(requests[0].headers.get('authorization'), 'Bearer anon-jwt');
     assertEquals(requests[0].headers.get('apikey'), 'sb_secret_worker_key');
+    assertEquals(requests[0].headers.get(IMAGE_JOB_WORKER_AUTH_HEADER), 'sb_secret_worker_key');
   } finally {
     globalThis.fetch = originalFetch;
     if (originalAnon == null) {

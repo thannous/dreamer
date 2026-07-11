@@ -460,6 +460,19 @@ describe('auth helpers', () => {
     expect(mockSupabaseAuth.signOut).toHaveBeenCalled();
   });
 
+  it('still signs out from Supabase when Google logout fails', async () => {
+    const googleError = new Error('Google Play Services unavailable');
+    defaultGoogleModule.GoogleSignin.signOut.mockRejectedValueOnce(googleError);
+    const auth = await loadAuth();
+
+    await expect(auth.signOut()).resolves.toBeUndefined();
+
+    expect(mockSubscriptionService.logOutSubscriptionUser).toHaveBeenCalled();
+    expect(defaultGoogleModule.GoogleSignin.signOut).toHaveBeenCalled();
+    expect(mockSupabaseAuth.signOut).toHaveBeenCalled();
+    expect(mockLogger.warn).toHaveBeenCalledWith('Google logout failed', googleError);
+  });
+
   it('propagates sign-out errors', async () => {
     mockSupabaseAuth.signOut.mockResolvedValueOnce({ error: new Error('fail') });
     const auth = await loadAuth();

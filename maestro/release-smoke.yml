@@ -1,0 +1,43 @@
+# Smoke-test an installed Release APK without opening the Expo development client.
+appId: com.tanuki75.noctalia
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- runFlow: subflows/go-to-journal-phone.yml
+- assertVisible:
+    id: screen.journal
+- runFlow: subflows/ensure-journal-search-visible.yml
+- tapOn:
+    id: input.searchDreams
+- inputText: Lucide
+- eraseText
+- pressKey: back
+- runFlow:
+    when:
+      visible:
+        id: btn.addDream
+    commands:
+      - tapOn:
+          id: btn.addDream
+- runFlow:
+    when:
+      visible:
+        id: tab.addDream
+    commands:
+      - tapOn:
+          id: tab.addDream
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- assertVisible:
+    id: screen.recording

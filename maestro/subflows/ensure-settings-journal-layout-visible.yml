@@ -1,0 +1,73 @@
+appId: com.tanuki75.noctalia
+---
+# The account and subscription cards above this preference have variable
+# heights. Use bounded, conditional swipes instead of scrollUntilVisible, which
+# can report a false negative on the v33 React Native accessibility tree.
+- runFlow:
+    when:
+      notVisible:
+        id: btn.settings.journalLayout.compact
+    commands:
+      - swipe:
+          start: 50%, 75%
+          end: 50%, 50%
+          duration: 500
+- runFlow:
+    when:
+      notVisible:
+        id: btn.settings.journalLayout.compact
+    commands:
+      - swipe:
+          start: 50%, 75%
+          end: 50%, 50%
+          duration: 500
+- runFlow:
+    when:
+      notVisible:
+        id: btn.settings.journalLayout.compact
+    commands:
+      - swipe:
+          start: 50%, 75%
+          end: 50%, 50%
+          duration: 500
+- runFlow:
+    when:
+      notVisible:
+        id: btn.settings.journalLayout.compact
+    commands:
+      - swipe:
+          start: 50%, 75%
+          end: 50%, 50%
+          duration: 500
+- runFlow:
+    when:
+      notVisible:
+        id: btn.settings.journalLayout.compact
+    commands:
+      - swipe:
+          start: 50%, 75%
+          end: 50%, 50%
+          duration: 500
+- runFlow:
+    when:
+      notVisible:
+        id: btn.settings.journalLayout.compact
+    commands:
+      - swipe:
+          start: 50%, 75%
+          end: 50%, 50%
+          duration: 500
+- extendedWaitUntil:
+    visible:
+      id: btn.settings.journalLayout.compact
+    timeout: 10000
+# React Native may expose the option while its centre is still behind the
+# persistent bottom tab bar. Move it into the tappable viewport before use.
+- swipe:
+    start: 50%, 75%
+    end: 50%, 60%
+    duration: 400
+- extendedWaitUntil:
+    visible:
+      id: btn.settings.journalLayout.compact
+    timeout: 10000

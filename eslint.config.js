@@ -22,6 +22,19 @@ module.exports = defineConfig([
     },
   },
   {
+    files: ['scripts/**/*.{js,cjs,mjs}'],
+    languageOptions: {
+      globals: {
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        Buffer: 'readonly',
+      },
+    },
+    rules: {
+      'no-redeclare': ['warn', { builtinGlobals: false }],
+    },
+  },
+  {
     files: ['supabase/functions/**/*.{ts,tsx}'],
     languageOptions: {
       globals: {
@@ -46,6 +59,25 @@ module.exports = defineConfig([
       '**/*.test.{js,jsx,ts,tsx}',
       '**/*.spec.{js,jsx,ts,tsx}',
     ],
+    languageOptions: {
+      globals: {
+        afterAll: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        beforeEach: 'readonly',
+        describe: 'readonly',
+        expect: 'readonly',
+        fdescribe: 'readonly',
+        fit: 'readonly',
+        it: 'readonly',
+        jest: 'readonly',
+        pit: 'readonly',
+        test: 'readonly',
+        xdescribe: 'readonly',
+        xit: 'readonly',
+        xtest: 'readonly',
+      },
+    },
     rules: {
       'expo/no-dynamic-env-var': 'off',
       // Tests intentionally use require() for module isolation and Jest resetModules flows.

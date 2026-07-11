@@ -278,12 +278,14 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
         const token = await getAccessToken();
         if (token) headers.Authorization = `Bearer ${token}`;
       }
-      // Fallback to anon/legacy function key so public Supabase functions work for guests (prevents 401)
+      // Fallback to anon/legacy function key so public Supabase functions work for guests.
+      // Do not synthesize Authorization for Supabase Auth/REST URLs: anon JWTs do not
+      // identify a user and can trigger "missing sub claim" failures on /auth/v1/user.
       if (canAttachSupabaseAuth) {
         const anonKey = isFunctionRequest ? getSupabaseFunctionJwt() : getSupabaseAnonKey();
         if (anonKey) {
           // Edge Functions expect an Authorization header even for guests.
-          if (!headers.Authorization && (isFunctionRequest || isLikelyJWT(anonKey))) {
+          if (!headers.Authorization && isFunctionRequest) {
             headers.Authorization = `Bearer ${anonKey}`;
             if (__DEV__ && isFunctionRequest && !isLikelyJWT(anonKey)) {
               console.warn(

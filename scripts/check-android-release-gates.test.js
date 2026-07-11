@@ -1,12 +1,20 @@
+/* global __dirname, describe, it, expect */
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 const {
   checkAndroidReleaseGates,
   formatReport,
   parseDotEnv,
 } = require('./check-android-release-gates');
+const {
+  VOICE_ANALYSIS_FLOW,
+  writeVoiceAnalysisEvidence,
+} = require('./android-voice-analysis-evidence');
+
+const SCRIPT = path.join(__dirname, 'check-android-release-gates.js');
 
 function writeJson(root, relativePath, value) {
   const filePath = path.join(root, relativePath);
@@ -56,17 +64,104 @@ function validEnv() {
   ].join('\n');
 }
 
-function setupFixture() {
+function setupFixture({ versionCode = 33 } = {}) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'android-gates-'));
+  writeJson(root, 'app.json', {
+    expo: {
+      version: '2.0.2',
+      android: {
+        package: 'com.tanuki75.noctalia',
+        versionCode,
+      },
+    },
+  });
   writeJson(root, 'eas.json', validEasJson());
   writeFile(root, '.env.teststore', validEnv());
   writeFile(root, 'maestro/recording-text-fallback.yml', 'appId: com.tanuki75.noctalia\n');
   writeFile(
     root,
     'scripts/run-maestro-android.js',
-    "const flows = ['maestro/recording-text-fallback.yml'];\n"
+    [
+      `const flows = ['maestro/recording-text-fallback.yml', '${VOICE_ANALYSIS_FLOW}'];`,
+      "const suites = { 'release-voice-analysis': ['maestro/release-auth-voice-analysis.yml'] };",
+      'invalidateVoiceAnalysisEvidence();',
+      'writeVoiceAnalysisEvidence();',
+      '',
+    ].join('\n')
   );
+  writeFile(
+    root,
+    VOICE_ANALYSIS_FLOW,
+    [
+      'appId: com.tanuki75.noctalia',
+      '---',
+      '- tapOn:',
+      '    id: btn.recordToggle',
+      '- assertVisible: forest|moon',
+      '- assertVisible: fox|door',
+      '- tapOn:',
+      '    id: btn.saveDream',
+      '- assertVisible:',
+      '    id: component.transcriptCard',
+      '- assertVisible: Interpretation|Interprétation',
+      '- tapOn:',
+      '    id: btn.auth.signOut',
+      '',
+    ].join('\n')
+  );
+  writeJson(root, 'package.json', {
+    scripts: {
+      'test:e2e:release:voice-analysis:local':
+        'node scripts/run-maestro-android.js --suite release-voice-analysis --no-start-metro',
+    },
+  });
+  writeFile(
+    root,
+    '.eas/workflows/android-release-qualification.yml',
+    [
+      'on:',
+      '  push:',
+      '    tags:',
+      '      - v*',
+      'jobs:',
+      '  build_android:',
+      '    type: build',
+      '    params:',
+      '      profile: production-apk',
+      '  smoke_android:',
+      '    type: maestro',
+      '    params:',
+      '      build_id: ${{ needs.build_android.outputs.build_id }}',
+      '      flow_path: maestro/release-smoke.yml',
+      '',
+    ].join('\n')
+  );
+  writeVoiceAnalysisEvidence({
+    rootDir: root,
+    buildIdentity: {
+      packageName: 'com.tanuki75.noctalia',
+      versionName: '2.0.2',
+      versionCode,
+    },
+    targetKind: 'emulator',
+  });
   return root;
+}
+
+function writeGooglePlayTrackSnapshot(root, versionCode, status = 'completed') {
+  writeJson(root, 'doc_web_interne/docs/google-play-track-state.local.json', {
+    package_name: 'com.tanuki75.noctalia',
+    track: 'internal',
+    expected_version_code: String(versionCode),
+    expected_status: 'completed',
+    releases: [
+      {
+        name: `candidate-${versionCode}`,
+        status,
+        version_codes: [String(versionCode)],
+      },
+    ],
+  });
 }
 
 function writeGoogleCloudProjectSnapshot(root, overrides = {}) {
@@ -120,6 +215,7 @@ function writeSupabasePlayIntegritySecretsSnapshot(root, overrides = {}) {
 describe('android release gate preflight', () => {
   function spawnWithTools({
     subscriptionGateStatus = 0,
+    subscriptionReportStatus = 0,
     adbDevices = true,
     adbMdnsStdout = 'List of discovered mdns services\n',
     adbUsbStdout = '',
@@ -151,6 +247,16 @@ describe('android release gate preflight', () => {
           stderr: '',
         };
       }
+      if (/^npm(\.cmd)?$/.test(command) && args.join(' ') === 'run subscription:qa:report') {
+        return {
+          status: subscriptionReportStatus,
+          stdout:
+            subscriptionReportStatus === 0
+              ? 'Subscription local/config checks passed.\n'
+              : 'Blocked checks: 1\n',
+          stderr: '',
+        };
+      }
       return { status: 1, stdout: '', stderr: '' };
     };
   }
@@ -163,11 +269,96 @@ describe('android release gate preflight', () => {
     });
   });
 
-  it('passes local config checks without requiring Play-installed purchase evidence', () => {
+  it('documents the two-phase prebuild and qualification modes', () => {
+    const result = spawnSync(process.execPath, [SCRIPT, '--help'], {
+      encoding: 'utf8',
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('--prebuild');
+    expect(result.stdout).toContain('defer candidate Play evidence and track readiness');
+  });
+
+  it('lets prebuild create a candidate before Play evidence exists', () => {
+    const root = setupFixture({ versionCode: 41 });
+    writeGooglePlayTrackSnapshot(root, 40);
+    const calls = [];
+    const baseSpawn = spawnWithTools({
+      subscriptionGateStatus: 1,
+      subscriptionReportStatus: 0,
+    });
+    const spawn = (command, args, options) => {
+      calls.push([command, ...args]);
+      return baseSpawn(command, args, options);
+    };
+
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn,
+      phase: 'prebuild',
+    });
+
+    expect(report.ok).toBe(true);
+    expect(report.phase).toBe('prebuild');
+    expect(calls.some((call) => call.slice(1).join(' ') === 'run subscription:qa:report')).toBe(true);
+    expect(
+      calls.some((call) => call.slice(1).join(' ') === 'run subscription:qa:release-gate')
+    ).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'manual' &&
+          check.title === 'Google Play internal track release' &&
+          check.details.includes('versionCode 41')
+      )
+    ).toBe(true);
+    expect(formatReport(report)).toContain('Android release prebuild gate');
+  });
+
+  it('keeps prebuild fail-closed when subscription wiring checks fail', () => {
+    const root = setupFixture();
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn: spawnWithTools({ subscriptionReportStatus: 1 }),
+      phase: 'prebuild',
+    });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'fail' &&
+          check.title === 'RevenueCat subscription QA prebuild wiring gate'
+      )
+    ).toBe(true);
+  });
+
+  it('fails prebuild when the Release build-to-smoke workflow is missing', () => {
+    const root = setupFixture();
+    fs.rmSync(path.join(root, '.eas/workflows/android-release-qualification.yml'));
+
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn: spawnWithTools(),
+      phase: 'prebuild',
+    });
+
+    expect(report.ok).toBe(false);
+    expect(report.checks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          status: 'fail',
+          title: 'EAS Android Release build and smoke workflow',
+        }),
+      ])
+    );
+  });
+
+  it('passes prebuild local config checks without requiring Play-installed purchase evidence', () => {
     const root = setupFixture();
     const spawn = spawnWithTools();
 
-    const report = checkAndroidReleaseGates({ rootDir: root, spawn });
+    const report = checkAndroidReleaseGates({ rootDir: root, spawn, phase: 'prebuild' });
 
     expect(report.ok).toBe(true);
     expect(report.counts.fail || 0).toBe(0);
@@ -197,6 +388,55 @@ describe('android release gate preflight', () => {
           check.status === 'pass' &&
           check.title === 'Google Cloud project number confirmation' &&
           check.details.includes('359653779023 -> gen-lang-client-0336445544/ACTIVE')
+      )
+    ).toBe(true);
+  });
+
+  it('blocks a completed Play track snapshot for an older version than the app.json candidate', () => {
+    const root = setupFixture({ versionCode: 41 });
+    writeGooglePlayTrackSnapshot(root, 40);
+
+    const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'blocked' &&
+          check.title === 'Google Play internal track release' &&
+          check.details.includes('internal/missing/41')
+      )
+    ).toBe(true);
+  });
+
+  it('keeps strict qualification blocked when the candidate Play track snapshot is missing', () => {
+    const root = setupFixture({ versionCode: 41 });
+
+    const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'blocked' &&
+          check.title === 'Google Play internal track release' &&
+          check.details.includes('has not been recorded for candidate versionCode 41')
+      )
+    ).toBe(true);
+  });
+
+  it('passes Play track readiness for the app.json candidate versionCode', () => {
+    const root = setupFixture({ versionCode: 41 });
+    writeGooglePlayTrackSnapshot(root, 41);
+
+    const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'pass' &&
+          check.title === 'Google Play internal track release' &&
+          check.details.includes('internal/candidate-41/completed/versionCode=41')
       )
     ).toBe(true);
   });
@@ -437,6 +677,7 @@ describe('android release gate preflight', () => {
 
   it('uses adb from the standard macOS Android SDK location when PATH misses it', () => {
     const root = setupFixture();
+    writeGooglePlayTrackSnapshot(root, 33);
     const fakeHome = path.join(root, 'home');
     const adbPath = path.join(fakeHome, 'Library/Android/sdk/platform-tools/adb');
     writeFile(root, 'home/Library/Android/sdk/platform-tools/adb', '');
@@ -471,6 +712,7 @@ describe('android release gate preflight', () => {
 
   it('uses Maestro from an explicit CLI path when PATH misses it', () => {
     const root = setupFixture();
+    writeGooglePlayTrackSnapshot(root, 33);
     const maestroPath = path.join(root, 'maestro', 'bin', 'maestro');
     writeFile(root, 'maestro/bin/maestro', '');
     const spawn = (command, args) => {

@@ -5,8 +5,32 @@ appId: com.tanuki75.noctalia
       notVisible:
         id: input.searchDreams
     commands:
-      - tapOn:
-          id: btn.filterSearch
+      # v33 can expose the inactive Journal tree while Settings is still on
+      # top. Retry the actual tab action before trusting journal selectors.
+      - runFlow:
+          when:
+            visible:
+              id: tab.journal
+          commands:
+            - tapOn:
+                id: tab.journal
+                retryTapIfNoChange: true
+      - runFlow:
+          when:
+            visible:
+              id: btn.filterSearch
+          commands:
+            - tapOn:
+                id: btn.filterSearch
+                retryTapIfNoChange: true
+      - runFlow:
+          when:
+            notVisible:
+              id: input.searchDreams
+          commands:
+            - tapOn:
+                text: "Search the journal|Rechercher dans le journal|Buscar en el diario|Cerca nel diario|Journal durchsuchen"
+                retryTapIfNoChange: true
       - extendedWaitUntil:
           visible:
             id: input.searchDreams

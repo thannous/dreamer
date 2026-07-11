@@ -1,3 +1,4 @@
+/* global __dirname, describe, expect, it */
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -25,9 +26,10 @@ const fs = require('fs');
 const payload = {
   args: process.argv.slice(2),
   qaEmail: process.env.QA_EMAIL,
+  qaEmailRegex: process.env.QA_EMAIL_REGEX,
   qaPassword: process.env.QA_PASSWORD,
-  qaAuth: process.env.QA_AUTH,
   qaPlan: process.env.QA_PLAN,
+  sensitiveGuard: process.env.NOCTALIA_INTERNAL_SENSITIVE_FLOW_GUARD,
 };
 fs.writeFileSync(process.env.CAPTURE_PATH, JSON.stringify(payload, null, 2), 'utf8');
 process.exit(Number(process.env.FAKE_NPM_STATUS || 0));
@@ -41,7 +43,7 @@ process.exit(Number(process.env.FAKE_NPM_STATUS || 0));
 describe('guarded Test Store purchase runner', () => {
   it('refuses to launch the purchase flow without explicit approval', () => {
     const capturePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'purchase-capture-')), 'capture.json');
-    const result = runWrapper(['--plan', 'monthly'], {
+    const result = runWrapper(['--plan', 'monthly', '--device', 'emulator-5554'], {
       REVENUECAT_QA_EMAIL: 'tester@example.com',
       REVENUECAT_QA_PASSWORD: 'password',
       CAPTURE_PATH: capturePath,
@@ -73,7 +75,7 @@ describe('guarded Test Store purchase runner', () => {
   it('passes approval, credentials, plan and Maestro args to the guarded flow', () => {
     const fakeNpmDir = createFakeNpm();
     const capturePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'purchase-capture-')), 'capture.json');
-    const result = runWrapper(['--plan', 'annual', '--device', 'emulator-5554', '--no-restart-metro'], {
+    const result = runWrapper(['--plan', 'annual', '--device', 'emulator-5554'], {
       PATH: `${fakeNpmDir}${path.delimiter}${process.env.PATH}`,
       REVENUECAT_QA_APPROVAL: APPROVAL,
       REVENUECAT_QA_EMAIL: 'tester@example.com',
@@ -85,21 +87,21 @@ describe('guarded Test Store purchase runner', () => {
     const payload = JSON.parse(fs.readFileSync(capturePath, 'utf8'));
     expect(payload).toMatchObject({
       qaEmail: 'tester@example.com',
+      qaEmailRegex: '^tester@example\\.com$',
       qaPassword: 'password',
-      qaAuth: 'email',
       qaPlan: 'annual',
+      sensitiveGuard: 'purchase-email:v1',
     });
     expect(payload.args).toEqual([
       'run',
-      'test:e2e:subscription-teststore',
+      'test:e2e:release:teststore:local',
       '--',
       '--flow',
+      'maestro/subscription-teststore-release-readiness.yml',
+      '--flow',
       'maestro/subscription-teststore-purchase-manual.yml',
-      '--retries',
-      '0',
       '--device',
       'emulator-5554',
-      '--no-restart-metro',
     ]);
   });
 
@@ -111,27 +113,60 @@ describe('guarded Test Store purchase runner', () => {
       REVENUECAT_QA_APPROVAL: APPROVAL,
       REVENUECAT_QA_AUTH: 'google',
       REVENUECAT_QA_EMAIL: 'tester@example.com',
+      REVENUECAT_QA_PASSWORD: 'must-not-forward',
       CAPTURE_PATH: capturePath,
     });
 
     expect(result.status).toBe(0);
     const payload = JSON.parse(fs.readFileSync(capturePath, 'utf8'));
     expect(payload).toMatchObject({
-      qaEmail: 'tester@example.com',
-      qaAuth: 'google',
+      qaEmailRegex: '^tester@example\\.com$',
       qaPlan: 'monthly',
+      sensitiveGuard: 'purchase-google:v1',
     });
+    expect(payload.qaEmail).toBeUndefined();
     expect(payload.qaPassword).toBeUndefined();
     expect(payload.args).toEqual([
       'run',
-      'test:e2e:subscription-teststore',
+      'test:e2e:release:teststore:local',
       '--',
       '--flow',
+      'maestro/subscription-teststore-release-readiness.yml',
+      '--flow',
       'maestro/subscription-teststore-purchase-google-manual.yml',
-      '--retries',
-      '0',
       '--device',
       'emulator-5554',
     ]);
+  });
+
+  it('rejects arguments that could bypass the Release Test Store suite', () => {
+    const result = runWrapper(['--plan', 'monthly', '--device', 'emulator-5554', '--suite', 'core'], {
+      REVENUECAT_QA_EMAIL: 'tester@example.com',
+      REVENUECAT_QA_PASSWORD: 'password',
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('Unsupported Maestro argument for guarded purchase: --suite');
+  });
+
+  it('rejects ambiguous multi-device targets', () => {
+    const result = runWrapper(['--plan', 'monthly', '--device', 'emulator-5554,device-1'], {
+      REVENUECAT_QA_EMAIL: 'tester@example.com',
+      REVENUECAT_QA_PASSWORD: 'password',
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('exactly one QA target');
+  });
+
+  it('preserves app state before both purchase flows', () => {
+    for (const flow of [
+      'maestro/subscription-teststore-purchase-manual.yml',
+      'maestro/subscription-teststore-purchase-google-manual.yml',
+    ]) {
+      const source = fs.readFileSync(path.join(ROOT, flow), 'utf8');
+      expect(source).toContain('subflows/open-release-app-preserve-state.yml');
+      expect(source).not.toContain('subflows/open-release-app-clear-state.yml');
+    }
   });
 });

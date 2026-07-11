@@ -1,0 +1,171 @@
+# Production Release integration: create while authenticated and offline,
+# replay the durable queue, clear all local state, then prove remote recovery.
+appId: com.tanuki75.noctalia
+name: Release authenticated offline synchronization
+tags:
+  - release
+  - auth
+  - offline
+  - sync
+onFlowComplete:
+  - setAirplaneMode: disabled
+  - setPermissions:
+      permissions:
+        all: allow
+---
+- setAirplaneMode: disabled
+- pressKey: back
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+- openLink: noctalia://settings
+- runFlow:
+    when:
+      notVisible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    commands:
+      - tapOn:
+          id: tab.settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 30000
+- runFlow: subflows/sign-in-email-qa.yml
+
+# Create the mutation with no network so the journal must expose pending sync.
+- tapOn:
+    id: tab.addDream
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- runFlow: subflows/ensure-recording-text.yml
+- setAirplaneMode: enabled
+- tapOn:
+    id: input.dreamTranscript
+- inputText: ${QA_SYNC_SENTINEL}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: "text.firstDream.title|text.analyzePromptTitle"
+    timeout: 90000
+- runFlow:
+    when:
+      visible:
+        id: text.firstDream.title
+    commands:
+      - tapOn:
+          id: btn.firstDream.journal
+- runFlow:
+    when:
+      visible:
+        id: text.analyzePromptTitle
+    commands:
+      - tapOn:
+          id: btn.analyzePrompt.journal
+- openLink: noctalia://journal
+- runFlow:
+    when:
+      notVisible:
+        id: screen.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 30000
+- runFlow: subflows/ensure-journal-search-visible.yml
+- tapOn:
+    id: input.searchDreams
+- inputText: ${QA_SYNC_SENTINEL}
+- extendedWaitUntil:
+    visible:
+      id: "dream.item.*"
+    timeout: 30000
+- assertVisible: "Syncing|Synchronisation|Sincronizando|Sincronizzazione|Synchronisierung läuft"
+
+# Reconnect and require the pending badge to disappear after queue replay.
+- setAirplaneMode: disabled
+- extendedWaitUntil:
+    notVisible: "Syncing|Synchronisation|Sincronizando|Sincronizzazione|Synchronisierung läuft"
+    timeout: 90000
+
+# Erase the local database/session, authenticate again, and recover the dream
+# from Supabase. This distinguishes real remote sync from local persistence.
+- pressKey: back
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+- openLink: noctalia://settings
+- runFlow:
+    when:
+      notVisible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    commands:
+      - tapOn:
+          id: tab.settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 30000
+- runFlow: subflows/sign-in-email-qa.yml
+- openLink: noctalia://journal
+- runFlow:
+    when:
+      notVisible:
+        id: screen.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 30000
+- runFlow: subflows/ensure-journal-search-visible.yml
+- tapOn:
+    id: input.searchDreams
+- inputText: ${QA_SYNC_SENTINEL}
+- extendedWaitUntil:
+    visible:
+      id: "dream.item.*"
+    timeout: 45000
+- assertNotVisible: "Syncing|Synchronisation|Sincronizando|Sincronizzazione|Synchronisierung läuft"
+
+# Leave the shared QA account signed out.
+- openLink: noctalia://settings
+- runFlow:
+    when:
+      notVisible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    commands:
+      - tapOn:
+          id: tab.settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: btn.auth.signOut
+    direction: DOWN
+    visibilityPercentage: 70
+    timeout: 30000
+- tapOn:
+    id: btn.auth.signOut
+- extendedWaitUntil:
+    visible:
+      id: btn.auth.google
+    timeout: 60000

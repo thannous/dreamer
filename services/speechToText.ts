@@ -1,5 +1,5 @@
 import { getApiBaseUrl } from '@/lib/config';
-import { fetchJSON } from '@/lib/http';
+import { fetchJSONWithSession } from '@/lib/apiSession';
 import { logger } from '@/lib/logger';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import * as FileSystem from 'expo-file-system';
@@ -7,6 +7,9 @@ import { File } from 'expo-file-system';
 import { Platform } from 'react-native';
 
 export const TRANSCRIPTION_TIMEOUT_MS = NETWORK_REQUEST_POLICIES.transcribeAudio.timeoutMs;
+// Google synchronous STT accepts short inline audio. Keep enough room for one
+// minute of 16 kHz mono PCM while rejecting accidental multi-minute uploads.
+export const MAX_TRANSCRIPTION_BASE64_LENGTH = 4_000_000;
 
 type TranscribeParams = {
   uri: string;
@@ -94,6 +97,10 @@ export async function transcribeAudio({
 
   logger.debug('[speechToText] file size (base64 chars)', contentBase64.length);
 
+  if (contentBase64.length > MAX_TRANSCRIPTION_BASE64_LENGTH) {
+    throw new Error('Recording is too long to transcribe. Please use text or record a shorter segment.');
+  }
+
   // Pick encoding/sample hints based on the recorded file type, with platform defaults as fallback.
   const { encoding, sampleRateHertz } = inferEncodingHint(uri);
 
@@ -102,7 +109,7 @@ export async function transcribeAudio({
   logger.debug('[speechToText] POST', `${base}/transcribe`, { encoding, languageCode, sampleRateHertz });
 
   try {
-    const res = await fetchJSON<{ transcript?: string }>(`${base}/transcribe`, {
+    const res = await fetchJSONWithSession<{ transcript?: string }>(`${base}/transcribe`, {
       method: 'POST',
       body: {
         contentBase64,

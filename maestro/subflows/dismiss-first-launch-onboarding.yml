@@ -5,10 +5,32 @@ appId: com.tanuki75.noctalia
       visible:
         id: screen.onboarding
     commands:
-      - tapOn:
-          id: btn.onboarding.skip
-      - waitForAnimationToEnd
-      - extendedWaitUntil:
-          visible:
-            id: screen.recording
-          timeout: 30000
+      - runFlow:
+          when:
+            visible:
+              id: component.onboarding.intro
+          commands:
+            - tapOn:
+                id: btn.onboarding.intro.next
+            - extendedWaitUntil:
+                visible:
+                  id: btn.onboarding.path.analyze
+                timeout: 10000
+      - runFlow:
+          when:
+            visible:
+              id: btn.onboarding.path.analyze
+          commands:
+            - tapOn:
+                id: btn.onboarding.primary
+            - extendedWaitUntil:
+                visible:
+                  id: component.onboarding.capture
+                timeout: 10000
+      - runFlow:
+          when:
+            visible:
+              id: component.onboarding.capture
+          commands:
+            - tapOn:
+                id: btn.onboarding.primary

@@ -37,16 +37,16 @@ jest.mock('../lib/config', () => ({
   getApiBaseUrl: () => 'https://api.dreamer.test',
 }));
 
-const { mockFetchJSON } = ((factory: any) => factory())(() => ({
-  mockFetchJSON: jest.fn(),
+const { mockFetchJSONWithSession } = ((factory: any) => factory())(() => ({
+  mockFetchJSONWithSession: jest.fn(),
 }));
 
-jest.mock('../lib/http', () => ({
-  fetchJSON: mockFetchJSON,
+jest.mock('../lib/apiSession', () => ({
+  fetchJSONWithSession: mockFetchJSONWithSession,
 }));
 
 const { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } = require('./speechToText');
-const fetchJSON = mockFetchJSON;
+const fetchJSONWithSession = mockFetchJSONWithSession;
 
 describe('speechToText Service', () => {
   const mockAudioUri = 'file://test-audio.wav';
@@ -57,7 +57,7 @@ describe('speechToText Service', () => {
     jest.clearAllMocks();
     (globalThis as any).__DEV__ = false;
     (mockPlatform as any).OS = 'ios';
-    (fetchJSON as any).mockResolvedValue({ transcript: mockTranscript });
+    (fetchJSONWithSession as any).mockResolvedValue({ transcript: mockTranscript });
     mockFileBase64.mockReturnValue('native-base64');
     mockReadAsStringAsync.mockResolvedValue(mockBase64Content);
     jest.spyOn(console, 'log').mockImplementation(() => {});
@@ -68,14 +68,14 @@ describe('speechToText Service', () => {
   describe('transcribeAudio', () => {
     it('given audio file and language when transcribing then calls API with correct parameters', async () => {
       // Given
-      (fetchJSON as any).mockResolvedValue({ transcript: mockTranscript });
+      (fetchJSONWithSession as any).mockResolvedValue({ transcript: mockTranscript });
       (mockPlatform as any).OS = 'ios';
 
       // When
       const result = await transcribeAudio({ uri: mockAudioUri, languageCode: 'fr-FR' });
 
       // Then
-      expect(fetchJSON).toHaveBeenCalledWith(
+      expect(fetchJSONWithSession).toHaveBeenCalledWith(
         'https://api.dreamer.test/transcribe',
         expect.objectContaining({
           method: 'POST',
@@ -93,7 +93,7 @@ describe('speechToText Service', () => {
 
     it('given API returns no transcript when transcribing then returns empty string', async () => {
       // Given
-      (fetchJSON as any).mockResolvedValue({});
+      (fetchJSONWithSession as any).mockResolvedValue({});
       (mockPlatform as any).OS = 'ios';
 
       // When
@@ -105,7 +105,7 @@ describe('speechToText Service', () => {
 
     it('given API request fails when transcribing then throws user-friendly error', async () => {
       // Given
-      (fetchJSON as any).mockRejectedValue(new Error('Network error'));
+      (fetchJSONWithSession as any).mockRejectedValue(new Error('Network error'));
       (mockPlatform as any).OS = 'ios';
 
       // When & Then
@@ -116,14 +116,14 @@ describe('speechToText Service', () => {
 
     it('given custom language code when transcribing then passes it to API', async () => {
       // Given
-      (fetchJSON as any).mockResolvedValue({ transcript: mockTranscript });
+      (fetchJSONWithSession as any).mockResolvedValue({ transcript: mockTranscript });
       (mockPlatform as any).OS = 'ios';
 
       // When
       await transcribeAudio({ uri: mockAudioUri, languageCode: 'de-DE' });
 
       // Then
-      expect(fetchJSON).toHaveBeenCalledWith(
+      expect(fetchJSONWithSession).toHaveBeenCalledWith(
         'https://api.dreamer.test/transcribe',
         expect.objectContaining({
           body: expect.objectContaining({
@@ -137,14 +137,14 @@ describe('speechToText Service', () => {
 
     it('given no language code when transcribing then defaults to fr-FR', async () => {
       // Given
-      (fetchJSON as any).mockResolvedValue({ transcript: mockTranscript });
+      (fetchJSONWithSession as any).mockResolvedValue({ transcript: mockTranscript });
       (mockPlatform as any).OS = 'ios';
 
       // When
       await transcribeAudio({ uri: mockAudioUri });
 
       // Then
-      expect(fetchJSON).toHaveBeenCalledWith(
+      expect(fetchJSONWithSession).toHaveBeenCalledWith(
         'https://api.dreamer.test/transcribe',
         expect.objectContaining({
           body: expect.objectContaining({
@@ -159,7 +159,7 @@ describe('speechToText Service', () => {
     it('given development mode when transcribing then logs debug information', async () => {
       // Given
       (global as any).__DEV__ = true;
-      (fetchJSON as any).mockResolvedValue({ transcript: mockTranscript });
+      (fetchJSONWithSession as any).mockResolvedValue({ transcript: mockTranscript });
       (globalThis as any).Platform = { OS: 'ios' };
 
       // When

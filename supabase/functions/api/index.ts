@@ -6,6 +6,7 @@
 // - POST /api/generateImageWithReference { prompt|transcript, referenceImages } -> { imageUrl }
 // - POST /api/analyzeDreamFull { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt, imageBytes }
 // - POST /api/chat { history, message, lang } -> { text }
+// - POST /api/transcribe { contentBase64, encoding, languageCode, sampleRateHertz? } -> { transcript }
 // - POST /api/subscription/refresh { source? } -> { ok, tier, version, updated }
 // - POST /api/subscription/sync { source? } -> { ok, tier, version, updated }
 // - POST /api/subscription/reconcile { batchSize?, maxTotal?, minAgeHours? } -> { ok, processed, updated, changed }
@@ -20,6 +21,8 @@ import { handleGenerateImage, handleGenerateImageWithReference } from './routes/
 import { handleGuestSession } from './routes/guestSession.ts';
 import { handleAuthMarkUpgrade, handleQuotaStatus } from './routes/quota.ts';
 import { handleSubscriptionRefresh, handleSubscriptionReconcile, handleSubscriptionSync } from './routes/subscription.ts';
+import { handleTranscribe } from './routes/transcribe.ts';
+import { buildSupabaseUserAuthHeaders, resolveSupabaseUserBearer } from './lib/authHeader.ts';
 import type { ApiContext } from './types.ts';
 
 type RouteHandler = (ctx: ApiContext) => Promise<Response>;
@@ -32,6 +35,7 @@ const routes = new Map<string, RouteHandler>([
   ['POST /quota/status', handleQuotaStatus],
   ['POST /auth/mark-upgrade', handleAuthMarkUpgrade],
   ['POST /chat', handleChat],
+  ['POST /transcribe', handleTranscribe],
   ['POST /analyzeDream', handleAnalyzeDream],
   ['POST /analyzeDreamFull', handleAnalyzeDreamFull],
   ['POST /categorizeDream', handleCategorizeDream],
@@ -50,11 +54,14 @@ serve(async (req: Request) => {
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
   const supabaseAnon = Deno.env.get('SUPABASE_ANON_KEY')!;
+  const userBearer = resolveSupabaseUserBearer(req.headers.get('Authorization'));
   const supabase = createClient(supabaseUrl, supabaseAnon, {
-    global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } },
+    global: { headers: buildSupabaseUserAuthHeaders(req.headers.get('Authorization')) },
   });
 
-  const { data: authData } = await supabase.auth.getUser().catch(() => ({ data: null }));
+  const { data: authData } = userBearer
+    ? await supabase.auth.getUser(userBearer).catch(() => ({ data: null }))
+    : { data: null };
   const user = authData?.user ?? null;
 
   const storageBucket = Deno.env.get('SUPABASE_STORAGE_BUCKET') ?? 'dream-images';

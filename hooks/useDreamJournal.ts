@@ -985,6 +985,7 @@ export const useDreamJournal = () => {
         });
       const imagePromise = shouldReplaceImage
         ? submitImageJobForDream(syncedDream, {
+            clientRequestId: requestId,
             transcript,
             previousImageUrl: syncedDream.imageUrl || undefined,
           })

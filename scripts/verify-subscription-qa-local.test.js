@@ -1,8 +1,12 @@
 const {
+  checkNodeSyntaxFiles,
   commands,
   exitCodeForUnexpectedStatus,
   getResultError,
+  runReportCommand,
   runCommands,
+  syntaxFiles,
+  unitTestFiles,
 } = require('./verify-subscription-qa-local');
 
 function memoryStream() {
@@ -21,9 +25,15 @@ describe('subscription QA local verifier', () => {
   it('requires the QA report to surface current session readiness blockers', () => {
     const reportCommand = commands.find((command) => command.label === 'report: subscription QA coverage');
 
+    expect(reportCommand.env).toMatchObject({
+      REVENUECAT_PLAY_STORE_STATE_PATH: 'doc_web_interne/docs/revenuecat-play-store-state.example.json',
+    });
+
     expect(reportCommand.expectedStdoutIncludes).toEqual(
       expect.arrayContaining([
         '## Evidence Commands',
+        'OK | Authenticated Test Store paywall flow exists',
+        'Authenticated Test Store paywall',
         'npm run subscription:qa:evidence -- --gate play_monthly',
         '--installer-package-name com.android.vending',
         '## Current Session Readiness',
@@ -56,8 +66,8 @@ describe('subscription QA local verifier', () => {
         'Play annual base plan snapshot',
         'Google OAuth Android client snapshot parses',
         'Google OAuth Android client state updater exists',
-        'expected P1M',
-        'expected P1Y',
+        'STALE',
+        'refresh with npm run subscription:qa:play-state',
       ])
     );
   });
@@ -65,31 +75,66 @@ describe('subscription QA local verifier', () => {
   it('includes the Play store state updater in local verification', () => {
     expect(commands.map((command) => command.label)).toEqual(
       expect.arrayContaining([
-        'syntax: Play store state updater',
-        'syntax: RevenueCat subscriber expiry state updater',
-        'syntax: Google Play subscription state updater',
-        'syntax: Google Play track state updater',
-        'syntax: Google Cloud project state updater',
-        'syntax: Google OAuth Android client state updater',
-        'syntax: Android tooling resolver',
-        'syntax: Android release gates',
-        'syntax: Play install source diagnostic',
-        'syntax: Play QA device preflight',
-        'syntax: Play QA device wait helper',
+        'syntax: subscription QA scripts',
         'unit: subscription QA scripts',
       ])
     );
+    expect(syntaxFiles).toEqual(
+      expect.arrayContaining([
+        'scripts/update-revenuecat-play-store-state.js',
+        'scripts/update-revenuecat-subscriber-expiry-state.js',
+        'scripts/update-google-play-subscription-state.js',
+        'scripts/update-google-play-track-state.js',
+        'scripts/update-google-cloud-project-state.js',
+        'scripts/update-google-oauth-android-client-state.js',
+        'scripts/android-tooling.js',
+        'scripts/check-android-release-gates.js',
+        'scripts/check-play-install-source.js',
+        'scripts/check-play-qa-device.js',
+        'scripts/wait-for-play-qa-device.js',
+      ])
+    );
     const unitCommand = commands.find((command) => command.label === 'unit: subscription QA scripts');
-    expect(unitCommand.args).toContain('scripts/update-revenuecat-play-store-state.test.js');
-    expect(unitCommand.args).toContain('scripts/update-revenuecat-subscriber-expiry-state.test.js');
-    expect(unitCommand.args).toContain('scripts/update-google-play-subscription-state.test.js');
-    expect(unitCommand.args).toContain('scripts/update-google-play-track-state.test.js');
-    expect(unitCommand.args).toContain('scripts/update-google-cloud-project-state.test.js');
-    expect(unitCommand.args).toContain('scripts/update-google-oauth-android-client-state.test.js');
-    expect(unitCommand.args).toContain('scripts/check-android-release-gates.test.js');
-    expect(unitCommand.args).toContain('scripts/check-play-install-source.test.js');
-    expect(unitCommand.args).toContain('scripts/check-play-qa-device.test.js');
-    expect(unitCommand.args).toContain('scripts/wait-for-play-qa-device.test.js');
+    expect(unitCommand.args).toEqual(expect.arrayContaining(unitTestFiles));
+    expect(unitCommand.args).toEqual(
+      expect.arrayContaining(['--runTestsByPath', '--selectProjects', 'node'])
+    );
+  });
+
+  it('parses every CommonJS source in one process and reports syntax errors', () => {
+    const valid = checkNodeSyntaxFiles(['valid.js'], {
+      cwd: '/tmp',
+      readFile: () => '#!/usr/bin/env node\n\'use strict\';\nconst value = 1;\n',
+    });
+    const invalid = checkNodeSyntaxFiles(['invalid.js'], {
+      cwd: '/tmp',
+      readFile: () => 'const value = ;',
+    });
+
+    expect(valid).toEqual({ status: 0, stdout: '', stderr: '' });
+    expect(invalid.status).toBe(1);
+    expect(invalid.stderr).toContain('Unexpected token');
+  });
+
+  it('runs report commands through the exported generator with the same args and env', () => {
+    const generateReport = jest.fn(() => ({ exitCode: 1, stdout: 'strict report', stderr: '' }));
+    const result = runReportCommand(
+      {
+        args: ['scripts/subscription-qa-report.js', '--require-full'],
+      },
+      {
+        cwd: '/repo',
+        env: { QA: 'isolated' },
+        generateReport,
+      }
+    );
+
+    expect(generateReport).toHaveBeenCalledWith({
+      root: '/repo',
+      args: ['--require-full'],
+      env: { QA: 'isolated' },
+    });
+    expect(result).toEqual({ status: 1, stdout: 'strict report', stderr: '' });
   });
 
   it('returns a non-zero exit when a command expected to fail exits successfully', () => {
@@ -152,6 +197,35 @@ describe('subscription QA local verifier', () => {
 
     expect(status).toBe(0);
     expect(stdout.value()).toContain('Subscription QA local verification passed.');
+    expect(stderr.value()).toBe('');
+  });
+
+  it('runs batched syntax and report checks without spawning subprocesses', () => {
+    const stdout = memoryStream();
+    const stderr = memoryStream();
+    const spawn = jest.fn(() => {
+      throw new Error('unexpected subprocess');
+    });
+    const syntaxCheck = jest.fn(() => ({ status: 0, stdout: '', stderr: '' }));
+    const generateReport = jest.fn(() => ({ exitCode: 0, stdout: 'report ok', stderr: '' }));
+    const status = runCommands(
+      [
+        { type: 'syntax-batch', label: 'syntax', files: ['one.js'] },
+        {
+          type: 'report',
+          label: 'report',
+          command: process.execPath,
+          args: ['scripts/subscription-qa-report.js'],
+          expectedStdoutIncludes: ['report ok'],
+        },
+      ],
+      { cwd: '/repo', baseEnv: {}, spawn, syntaxCheck, generateReport, stdout, stderr }
+    );
+
+    expect(status).toBe(0);
+    expect(syntaxCheck).toHaveBeenCalledWith(['one.js'], { cwd: '/repo' });
+    expect(generateReport).toHaveBeenCalledTimes(1);
+    expect(spawn).not.toHaveBeenCalled();
     expect(stderr.value()).toBe('');
   });
 });

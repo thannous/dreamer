@@ -1,0 +1,145 @@
+# Release lifecycle gate: foreground resume and Android process death keep user data intact.
+appId: com.tanuki75.noctalia
+name: Release lifecycle persistence
+tags:
+  - release
+  - lifecycle
+onFlowComplete:
+  - setAirplaneMode: disabled
+---
+- setAirplaneMode: disabled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+
+# Reach recording regardless of the responsive startup route chosen after onboarding.
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+- runFlow:
+    when:
+      visible:
+        id: tab.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+- runFlow:
+    when:
+      visible:
+        id: screen.journal
+    commands:
+      - runFlow:
+          when:
+            visible:
+              id: btn.addDream
+          commands:
+            - tapOn:
+                id: btn.addDream
+      - runFlow:
+          when:
+            visible:
+              id: tab.addDream
+          commands:
+            - tapOn:
+                id: tab.addDream
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- runFlow: subflows/ensure-recording-text.yml
+
+# Background/foreground must preserve the active draft in the same process.
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Release lifecycle sentinel"
+- pressKey: Home
+- launchApp:
+    stopApp: false
+- extendedWaitUntil:
+    visible: "Release lifecycle sentinel"
+    timeout: 10000
+- assertVisible:
+    id: input.dreamTranscript
+
+# Persist the draft before simulating Android process death.
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: "text.firstDream.title|text.analyzePromptTitle"
+    timeout: 30000
+- runFlow:
+    when:
+      visible:
+        id: text.firstDream.title
+    commands:
+      - tapOn:
+          id: btn.firstDream.journal
+- runFlow:
+    when:
+      visible:
+        id: text.analyzePromptTitle
+    commands:
+      - tapOn:
+          id: btn.analyzePrompt.journal
+- extendedWaitUntil:
+    visible: "Release lifecycle sentinel"
+    timeout: 20000
+
+- pressKey: Home
+- killApp
+- launchApp:
+    stopApp: false
+
+# Expo Router may restore the detail route or restart at a tab; both must expose the saved dream.
+- runFlow:
+    when:
+      notVisible: "Release lifecycle sentinel"
+    commands:
+      - runFlow:
+          when:
+            visible:
+              id: btn.navigateJournal
+          commands:
+            - tapOn:
+                id: btn.navigateJournal
+      - runFlow:
+          when:
+            visible:
+              id: tab.journal
+          commands:
+            - tapOn:
+                id: tab.journal
+      - extendedWaitUntil:
+          visible:
+            id: screen.journal
+          timeout: 20000
+      - runFlow: subflows/ensure-journal-search-visible.yml
+      - tapOn:
+          id: input.searchDreams
+      - inputText: "Release lifecycle sentinel"
+      - extendedWaitUntil:
+          visible:
+            id: "dream.item.*"
+          timeout: 20000
+      - tapOn:
+          id: "dream.item.*"
+          index: 0
+- extendedWaitUntil:
+    visible: "Release lifecycle sentinel"
+    timeout: 20000

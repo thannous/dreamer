@@ -504,7 +504,12 @@ function NotificationSettingsCardComponent(
 
       {!hasPermissions && (
         <View style={[styles.warningBox, { backgroundColor: noctalia.status.warning.background, borderColor: noctalia.status.warning.border }]}>
-          <Text style={[styles.warningText, { color: noctalia.status.warning.text }]}>{t('notifications.warning.permissions')}</Text>
+          <Text
+            testID="text.settings.notificationsPermissionWarning"
+            style={[styles.warningText, { color: noctalia.status.warning.text }]}
+          >
+            {t('notifications.warning.permissions')}
+          </Text>
         </View>
       )}
     </View>

@@ -3,6 +3,7 @@ import {
     setAudioModeAsync,
     useAudioRecorder,
 } from 'expo-audio';
+import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, AppState, Platform } from 'react-native';
 
@@ -15,8 +16,19 @@ import {
   startNativeSpeechSession,
   type NativeSpeechSession,
 } from '@/services/nativeSpeechRecognition';
+import { transcribeAudio } from '@/services/speechToText';
 
 const log = createScopedLogger('[useRecordingSession]');
+
+async function deleteRecordedAudio(uri: string | undefined): Promise<void> {
+  if (!uri || Platform.OS === 'web') return;
+
+  try {
+    await FileSystemLegacy.deleteAsync(uri, { idempotent: true });
+  } catch (error) {
+    log.warn('Failed to remove temporary recording', error);
+  }
+}
 
 export type RecordingPermissionState = 'unknown' | 'granted' | 'denied';
 
@@ -102,6 +114,7 @@ export function useRecordingSession({
 
   const forceStopRecording = useCallback(
     async (reason: 'blur' | 'unmount') => {
+      let cleanupUri: string | undefined;
       const hasNativeSession = Boolean(nativeSessionRef.current);
       const recorderIsRecording = getRecorderIsRecording();
       const shouldStopRecorder = !skipRecorderRef.current && recorderIsRecording;
@@ -128,6 +141,7 @@ export function useRecordingSession({
           if (status.isRecording) {
             await audioRecorder.stop();
           }
+          cleanupUri = audioRecorder.uri ?? undefined;
         } catch (error) {
           if (!handleRecorderError(`forceStopRecording:${reason}`, error)) {
             log.warn('failed to stop audio recorder during cleanup', error);
@@ -140,6 +154,7 @@ export function useRecordingSession({
       } catch (error) {
         log.warn('failed to reset audio mode during', reason, error);
       } finally {
+        await deleteRecordedAudio(cleanupUri);
         skipRecorderRef.current = false;
         hasAutoStoppedRecordingRef.current = false;
       }
@@ -165,6 +180,7 @@ export function useRecordingSession({
       let nativeError: string | undefined;
       let isLanguagePackMissing = false;
       let isRateLimited = false;
+      let cleanupUri: string | undefined;
 
       try {
         setIsRecording(false);
@@ -189,6 +205,7 @@ export function useRecordingSession({
 
         const uri =
           usedRecorder && !recorderReleasedRef.current ? audioRecorder.uri ?? undefined : undefined;
+        cleanupUri = uri;
 
         let transcriptText = '';
         let recordedUri: string | undefined;
@@ -199,6 +216,7 @@ export function useRecordingSession({
             log.debug('native result', nativeResult);
             transcriptText = nativeResult.transcript?.trim() ?? '';
             recordedUri = nativeResult.recordedUri ?? undefined;
+            cleanupUri = recordedUri ?? uri;
             if (!transcriptText && nativeResult.error) {
               log.warn('Native STT returned empty result', nativeResult.error);
             }
@@ -221,6 +239,24 @@ export function useRecordingSession({
         }
 
         const hasNativeSession = Boolean(nativeResultPromise);
+        if (!transcriptText && cleanupUri) {
+          try {
+            transcriptText = (await transcribeAudio({
+              uri: cleanupUri,
+              languageCode: transcriptionLocale,
+            })).trim();
+            if (transcriptText) {
+              nativeError = undefined;
+              nativeErrorCode = undefined;
+              isLanguagePackMissing = false;
+              isRateLimited = false;
+              log.debug('server STT fallback succeeded', { transcriptLength: transcriptText.length });
+            }
+          } catch (error) {
+            log.warn('Server STT fallback failed', error);
+          }
+        }
+
         if (!hasNativeSession && !transcriptText) {
           return {
             transcript: '',
@@ -277,6 +313,7 @@ export function useRecordingSession({
         } catch (err) {
           log.warn('Failed to reset audio mode after recording', err);
         }
+        await deleteRecordedAudio(cleanupUri);
         hasAutoStoppedRecordingRef.current = false;
         skipRecorderRef.current = false;
       }
@@ -294,6 +331,8 @@ export function useRecordingSession({
 
   const startRecording = useCallback(
     async (currentTranscript: string): Promise<{ success: boolean; error?: string }> => {
+      let audioModeEnabled = false;
+
       try {
         if (Platform.OS === 'web') {
           const hasSecureContext = typeof window !== 'undefined' ? window.isSecureContext : false;
@@ -356,6 +395,7 @@ export function useRecordingSession({
           allowsRecording: true,
           playsInSilentMode: true,
         });
+        audioModeEnabled = true;
 
         recorderReleasedRef.current = false;
         nativeSessionRef.current?.abort();
@@ -402,10 +442,21 @@ export function useRecordingSession({
         isRecordingRef.current = true;
         return { success: true };
       } catch (err) {
-        nativeSessionRef.current?.abort();
+        try {
+          nativeSessionRef.current?.abort();
+        } catch (abortError) {
+          log.warn('Failed to abort native session after start failure', abortError);
+        }
         nativeSessionRef.current = null;
         skipRecorderRef.current = false;
         isRecordingRef.current = false;
+        if (audioModeEnabled) {
+          try {
+            await setAudioModeAsync({ allowsRecording: false });
+          } catch (resetError) {
+            log.warn('Failed to reset audio mode after start failure', resetError);
+          }
+        }
         handleRecorderError('startRecording', err);
         log.error('Failed to start recording', err);
         return { success: false, error: err instanceof Error ? err.message : 'start_failed' };

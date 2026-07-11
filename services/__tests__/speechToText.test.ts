@@ -35,8 +35,8 @@ jest.mock('expo-file-system', () => ({
   readAsStringAsync: mockReadAsStringAsyncInner,
 }));
 
-const { mockFetchJSON, mockGetApiBaseUrl } = ((factory: any) => factory())(() => ({
-  mockFetchJSON: jest.fn(),
+const { mockFetchJSONWithSession, mockGetApiBaseUrl } = ((factory: any) => factory())(() => ({
+  mockFetchJSONWithSession: jest.fn(),
   mockGetApiBaseUrl: jest.fn(),
 }));
 
@@ -45,13 +45,17 @@ jest.mock('../../lib/config', () => ({
   getApiBaseUrl: mockGetApiBaseUrl,
 }));
 
-jest.mock('../../lib/http', () => ({
-  fetchJSON: mockFetchJSON,
+jest.mock('../../lib/apiSession', () => ({
+  fetchJSONWithSession: mockFetchJSONWithSession,
 }));
 
 const mockReadAsStringAsync = mockReadAsStringAsyncInner;
 const mockFileBase64 = mockFileBase64Inner;
-const { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } = require('../speechToText');
+const {
+  MAX_TRANSCRIPTION_BASE64_LENGTH,
+  transcribeAudio,
+  TRANSCRIPTION_TIMEOUT_MS,
+} = require('../speechToText');
 
 const setPlatform = (os: PlatformOSType) => {
   mockPlatform.OS = os;
@@ -62,7 +66,7 @@ describe('transcribeAudio', () => {
     jest.clearAllMocks();
     (globalThis as typeof globalThis & { __DEV__: boolean }).__DEV__ = false;
     mockGetApiBaseUrl.mockReturnValue('https://api.example');
-    mockFetchJSON.mockResolvedValue({ transcript: 'mock transcript' });
+    mockFetchJSONWithSession.mockResolvedValue({ transcript: 'mock transcript' });
     mockFileBase64.mockReturnValue('native-base64');
     mockReadAsStringAsync.mockResolvedValue('fallback-base64');
   });
@@ -80,7 +84,7 @@ describe('transcribeAudio', () => {
       languageCode: 'en-US',
     });
 
-    expect(mockFetchJSON).toHaveBeenCalledWith(
+    expect(mockFetchJSONWithSession).toHaveBeenCalledWith(
       'https://api.example/transcribe',
       expect.objectContaining({
         method: 'POST',
@@ -101,7 +105,7 @@ describe('transcribeAudio', () => {
 
     await transcribeAudio({ uri: 'file:///tmp/audio.3gp' });
 
-    expect(mockFetchJSON).toHaveBeenCalledWith(
+    expect(mockFetchJSONWithSession).toHaveBeenCalledWith(
       'https://api.example/transcribe',
       expect.objectContaining({
         body: expect.objectContaining({
@@ -119,7 +123,7 @@ describe('transcribeAudio', () => {
 
     await transcribeAudio({ uri: 'file:///tmp/native-recording.wav' });
 
-    expect(mockFetchJSON).toHaveBeenCalledWith(
+    expect(mockFetchJSONWithSession).toHaveBeenCalledWith(
       'https://api.example/transcribe',
       expect.objectContaining({
         body: expect.objectContaining({
@@ -140,7 +144,7 @@ describe('transcribeAudio', () => {
     await transcribeAudio({ uri: 'file:///tmp/audio.wav' });
 
     expect(mockReadAsStringAsync).toHaveBeenCalledWith('file:///tmp/audio.wav', { encoding: 'base64' });
-    expect(mockFetchJSON).toHaveBeenCalledWith(
+    expect(mockFetchJSONWithSession).toHaveBeenCalledWith(
       'https://api.example/transcribe',
       expect.objectContaining({
         body: expect.objectContaining({
@@ -176,7 +180,7 @@ describe('transcribeAudio', () => {
     await transcribeAudio({ uri: 'https://example.com/audio.webm' });
 
     expect(fetchMock).toHaveBeenCalledWith('https://example.com/audio.webm');
-    expect(mockFetchJSON).toHaveBeenCalledWith(
+    expect(mockFetchJSONWithSession).toHaveBeenCalledWith(
       'https://api.example/transcribe',
       expect.objectContaining({
         body: {
@@ -188,5 +192,16 @@ describe('transcribeAudio', () => {
         timeoutMs: TRANSCRIPTION_TIMEOUT_MS,
       }),
     );
+  });
+
+  it('rejects oversized inline audio before making a network request', async () => {
+    setPlatform('android');
+    mockFileBase64.mockReturnValueOnce('a'.repeat(MAX_TRANSCRIPTION_BASE64_LENGTH + 1));
+
+    await expect(transcribeAudio({ uri: 'file:///tmp/too-long.amr' })).rejects.toThrow(
+      'Recording is too long to transcribe'
+    );
+
+    expect(mockFetchJSONWithSession).not.toHaveBeenCalled();
   });
 });

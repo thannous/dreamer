@@ -244,6 +244,18 @@ const setMockUser = (user: { id: string; app_metadata?: Record<string, unknown> 
   mockUseAuth.mockReturnValue({ user, sessionReady: Boolean(user) });
 };
 
+const FAST_WAIT_OPTIONS = { interval: 1 } as const;
+
+const renderLoadedDreamJournal = async () => {
+  const hook = renderHook(() => useDreamJournal());
+
+  await waitFor(() => {
+    expect(hook.result.current.loaded).toBe(true);
+  }, FAST_WAIT_OPTIONS);
+
+  return hook;
+};
+
 describe('useDreamJournal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -282,11 +294,7 @@ describe('useDreamJournal', () => {
       const localDreams = [buildDream({ id: 1 }), buildDream({ id: 2 })];
       mockGetSavedDreams.mockResolvedValue(localDreams);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       expect(result.current.dreams).toHaveLength(2);
       expect(mockGetSavedDreams).toHaveBeenCalled();
@@ -298,11 +306,7 @@ describe('useDreamJournal', () => {
       const remoteDreams = [buildDream({ id: 1, remoteId: 101 })];
       mockFetchDreamsFromSupabase.mockResolvedValue(remoteDreams);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       expect(result.current.dreams).toHaveLength(1);
       expect(mockFetchDreamsFromSupabase).toHaveBeenCalled();
@@ -318,11 +322,7 @@ describe('useDreamJournal', () => {
       mockFetchDreamsFromSupabase.mockRejectedValue(new Error('Network error'));
       mockGetCachedRemoteDreams.mockResolvedValue(cachedDreams);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       expect(result.current.dreams).toHaveLength(1);
       expect(mockGetCachedRemoteDreams).toHaveBeenCalled();
@@ -343,11 +343,7 @@ describe('useDreamJournal', () => {
       mockFetchDreamsFromSupabase.mockResolvedValue(remoteDreams);
       mockGetPendingDreamMutations.mockResolvedValue(pendingMutations);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       expect(result.current.dreams).toHaveLength(2);
       expect(result.current.dreams.some((d: DreamAnalysis) => d.id === 2)).toBe(true);
@@ -361,11 +357,7 @@ describe('useDreamJournal', () => {
       });
       mockGetSavedDreams.mockResolvedValue([dreamWithImage]);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       const dream = result.current.dreams[0];
       expect(dream.thumbnailUrl).toBe('https://example.com/image.jpg-thumb');
@@ -375,11 +367,7 @@ describe('useDreamJournal', () => {
 
   describe('addDream - local mode', () => {
     it('adds dream to local storage when not authenticated', async () => {
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       const newDream = buildDream({ id: 1 });
 
@@ -395,11 +383,7 @@ describe('useDreamJournal', () => {
     });
 
     it('sorts dreams by id descending', async () => {
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
         await result.current.addDream(buildDream({ id: 1 }));
@@ -426,11 +410,7 @@ describe('useDreamJournal', () => {
       const remoteDream = buildDream({ id: 1, remoteId: 101 });
       mockCreateDreamInSupabase.mockResolvedValue(remoteDream);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       const newDream = buildDream({ id: 1 });
 
@@ -461,11 +441,7 @@ describe('useDreamJournal', () => {
       const remoteDream = buildDream({ id: 1, remoteId: 101, memory: undefined });
       mockCreateDreamInSupabase.mockResolvedValue(remoteDream);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       const newDream = buildDream({ id: 1, memory });
 
@@ -476,17 +452,13 @@ describe('useDreamJournal', () => {
 
       await waitFor(() => {
         expect(result.current.dreams[0].memory).toEqual(memory);
-      });
+      }, FAST_WAIT_OPTIONS);
     });
 
     it('queues dream when Supabase create fails', async () => {
       mockCreateDreamInSupabase.mockRejectedValue(new Error('Network error'));
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       const newDream = buildDream({ id: 1 });
 
@@ -512,11 +484,7 @@ describe('useDreamJournal', () => {
       const existingDream = buildDream({ id: 1, title: 'Original' });
       mockGetSavedDreams.mockResolvedValue([existingDream]);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       const updatedDream = { ...existingDream, title: 'Updated' };
 
@@ -536,11 +504,7 @@ describe('useDreamJournal', () => {
       mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
       mockUpdateDreamInSupabase.mockResolvedValue({ ...existingDream, title: 'Updated' });
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       const updatedDream = { ...existingDream, title: 'Updated' };
 
@@ -558,11 +522,7 @@ describe('useDreamJournal', () => {
       const existingDream = buildDream({ id: 1, remoteId: 101 });
       mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
         await result.current.updateDream({ ...existingDream });
@@ -577,11 +537,7 @@ describe('useDreamJournal', () => {
       mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
       mockUpdateDreamInSupabase.mockRejectedValue(new Error('Network error'));
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
         await result.current.updateDream({ ...existingDream, title: 'Updated' });
@@ -604,11 +560,7 @@ describe('useDreamJournal', () => {
       const existingDream = buildDream({ id: 1 });
       mockGetSavedDreams.mockResolvedValue([existingDream]);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
         await result.current.deleteDream(1);
@@ -624,11 +576,7 @@ describe('useDreamJournal', () => {
       mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
       mockDeleteDreamFromSupabase.mockResolvedValue(undefined);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
         await result.current.deleteDream(1);
@@ -644,11 +592,7 @@ describe('useDreamJournal', () => {
       mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
       mockDeleteDreamFromSupabase.mockRejectedValue(new Error('Network error'));
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
         await result.current.deleteDream(1);
@@ -673,11 +617,7 @@ describe('useDreamJournal', () => {
       const existingDream = buildDream({ id: 1, isFavorite: false });
       mockGetSavedDreams.mockResolvedValue([existingDream]);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
         await result.current.toggleFavorite(1);
@@ -698,11 +638,7 @@ describe('useDreamJournal', () => {
       mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
       mockUpdateDreamInSupabase.mockResolvedValue({ ...existingDream, isFavorite: true });
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
         await result.current.toggleFavorite(1);
@@ -715,11 +651,7 @@ describe('useDreamJournal', () => {
     });
 
     it('does nothing when dream not found', async () => {
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
         await result.current.toggleFavorite(999);
@@ -752,11 +684,7 @@ describe('useDreamJournal', () => {
       const existingDream = buildDream({ id: 1, isAnalyzed: false, analysisStatus: 'none' });
       mockGetSavedDreams.mockResolvedValue([existingDream]);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await expect(async () => {
         await act(async () => {
@@ -775,11 +703,7 @@ describe('useDreamJournal', () => {
       const existingDream = buildDream({ id: 1, isAnalyzed: false, analysisStatus: 'none' });
       mockGetSavedDreams.mockResolvedValue([existingDream]);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await expect(async () => {
         await act(async () => {
@@ -802,11 +726,7 @@ describe('useDreamJournal', () => {
       });
       mockGetSavedDreams.mockResolvedValue([existingDream]);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
         await result.current.analyzeDream(1, 'My dream transcript');
@@ -816,8 +736,10 @@ describe('useDreamJournal', () => {
         remoteDreamId: undefined,
         analysisRequestId: expect.any(String),
       });
+      const analysisRequestId = mockAnalyzeDreamText.mock.calls[0]?.[3]?.analysisRequestId;
       expect(mockSubmitImageGenerationJob).toHaveBeenCalledWith(
         expect.objectContaining({
+          clientRequestId: analysisRequestId,
           transcript: 'My dream transcript',
           previousImageUrl: undefined,
         })
@@ -864,11 +786,7 @@ describe('useDreamJournal', () => {
       mockCreateDreamInSupabase.mockResolvedValue(syncedDream);
       mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream }));
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
         await result.current.analyzeDream(1, 'My dream transcript');
@@ -905,11 +823,7 @@ describe('useDreamJournal', () => {
       mockGetSavedDreams.mockResolvedValue([existingDream]);
       mockSubmitImageGenerationJob.mockRejectedValue(new Error('Image generation failed'));
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
         await result.current.analyzeDream(1, 'My dream transcript');
@@ -930,11 +844,7 @@ describe('useDreamJournal', () => {
       mockGetSavedDreams.mockResolvedValue([existingDream]);
       mockAnalyzeDreamText.mockRejectedValue(new Error('Analysis failed'));
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       let thrownError: Error | undefined;
       await act(async () => {
@@ -951,7 +861,7 @@ describe('useDreamJournal', () => {
       // client state even when the text analysis request fails.
       await waitFor(() => {
         expect(result.current.dreams[0]?.analysisStatus).toBeDefined();
-      });
+      }, FAST_WAIT_OPTIONS);
 
       const failedDream = result.current.dreams[0];
       expect(['failed', 'pending']).toContain(failedDream.analysisStatus);
@@ -966,11 +876,7 @@ describe('useDreamJournal', () => {
       });
       mockGetSavedDreams.mockResolvedValue([existingDream]);
 
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
         await result.current.analyzeDream(1, 'Mon rêve', { lang: 'fr' });
@@ -983,11 +889,7 @@ describe('useDreamJournal', () => {
     });
 
     it('throws error when dream not found', async () => {
-      const { result } = renderHook(() => useDreamJournal());
-
-      await waitFor(() => {
-        expect(result.current.loaded).toBe(true);
-      });
+      const { result } = await renderLoadedDreamJournal();
 
       await expect(async () => {
         await act(async () => {

@@ -1,0 +1,145 @@
+name: Quality
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: quality-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  edge-functions:
+    name: Edge Functions check and tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.7.x
+          cache: true
+
+      - name: Check API Edge Function
+        run: deno check --frozen supabase/functions/api/index.ts
+
+      - name: Test API Edge Function
+        run: deno test --frozen --allow-env supabase/functions/api
+
+  pr-quality:
+    name: PR typecheck, lint and changed tests
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck application
+        run: npm run typecheck:app
+
+      - name: Typecheck tests
+        run: npm run typecheck:tests
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test files changed since the PR base
+        env:
+          JEST_CHANGED_SINCE: ${{ github.event.pull_request.base.sha }}
+        run: npm run test:changed
+
+  test-fast:
+    name: Full fast test suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Jest and capture timing JSON
+        run: |
+          mkdir -p artifacts
+          npm run test:fast -- --json --outputFile=artifacts/jest-results.json
+
+      - name: Download latest successful master baseline
+        if: ${{ always() && github.event_name == 'pull_request' && hashFiles('artifacts/jest-results.json') != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          mapfile -t run_ids < <(
+            gh run list \
+              --repo "$GITHUB_REPOSITORY" \
+              --workflow quality.yml \
+              --branch master \
+              --event push \
+              --status success \
+              --limit 20 \
+              --json databaseId \
+              --jq '.[].databaseId' 2>/dev/null || true
+          )
+
+          for run_id in "${run_ids[@]}"; do
+            rm -rf artifacts/baseline
+            mkdir -p artifacts/baseline
+            if gh run download "$run_id" \
+              --repo "$GITHUB_REPOSITORY" \
+              --name jest-timing \
+              --dir artifacts/baseline 2>/dev/null; then
+              echo "Downloaded Jest baseline from master run ${run_id}."
+              exit 0
+            fi
+          done
+
+          echo "No unexpired Jest baseline artifact was found on master."
+
+      - name: Enforce the 20% duration budget
+        if: ${{ always() && hashFiles('artifacts/jest-results.json') != '' }}
+        shell: bash
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            node ./scripts/check-jest-duration-regression.js --allow-missing-baseline
+          else
+            node ./scripts/check-jest-duration-regression.js
+          fi
+
+      - name: Upload Jest JSON timing
+        if: ${{ always() && hashFiles('artifacts/jest-results.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: jest-timing
+          path: artifacts/jest-results.json
+          if-no-files-found: error
+          retention-days: 90

@@ -1,0 +1,123 @@
+# Validate the real paywall against RevenueCat Test Store without starting a
+# transaction. The readiness flow must run first in the enclosing suite.
+appId: com.tanuki75.noctalia
+name: Release Test Store authenticated paywall
+tags:
+  - release
+  - teststore
+  - paywall
+  - auth
+---
+- runFlow: subflows/open-release-app-clear-state.yml
+- openLink: noctalia://settings
+- runFlow:
+    when:
+      notVisible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    commands:
+      - tapOn:
+          id: tab.settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 30000
+- runFlow: subflows/sign-in-email-qa.yml
+
+# Prove that this installed Release really uses RevenueCat Test Store before
+# inspecting the paywall. This avoids trusting only the APK filename/profile.
+- scrollUntilVisible:
+    element:
+      id: screen.subscription.qaLab
+    direction: DOWN
+    visibilityPercentage: 30
+    timeout: 30000
+- assertVisible:
+    id: text.subscription.qa.mode
+    text: "RevenueCat Test Store"
+- scrollUntilVisible:
+    element:
+      id: btn.subscription.qa.probe
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- tapOn:
+    id: btn.subscription.qa.probe
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.actionLabel
+    direction: UP
+    visibilityPercentage: 60
+    timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: text.subscription.qa.actionLabel
+      text: "SDK probe completed"
+    timeout: 60000
+- assertVisible:
+    id: text.subscription.qa.action
+    text: "packages 2.*"
+
+- scrollUntilVisible:
+    element:
+      id: btn.subscription.settingsCta
+    direction: DOWN
+    visibilityPercentage: 60
+    centerElement: true
+    timeout: 30000
+- tapOn:
+    id: btn.subscription.settingsCta
+- extendedWaitUntil:
+    visible:
+      id: screen.paywall
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: btn.paywall.selectMonthly
+    direction: DOWN
+    visibilityPercentage: 50
+    timeout: 60000
+- assertVisible:
+    id: btn.paywall.selectMonthly
+- scrollUntilVisible:
+    element:
+      id: btn.paywall.selectAnnual
+    direction: DOWN
+    visibilityPercentage: 50
+    timeout: 30000
+- assertVisible:
+    id: btn.paywall.selectAnnual
+- scrollUntilVisible:
+    element:
+      id: btn.paywall.purchase
+    direction: DOWN
+    visibilityPercentage: 50
+    timeout: 30000
+- assertVisible:
+    id: btn.paywall.purchase
+- scrollUntilVisible:
+    element:
+      id: btn.paywall.restore
+    direction: DOWN
+    visibilityPercentage: 50
+    timeout: 30000
+- assertVisible:
+    id: btn.paywall.restore
+- assertNotVisible:
+    id: bottomSheet.paywall.error
+
+# Never tap purchase or restore. Close the paywall and leave the shared account
+# signed out for the next QA run.
+- pressKey: back
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: btn.auth.signOut
+    direction: UP
+    visibilityPercentage: 70
+    timeout: 30000
+- tapOn:
+    id: btn.auth.signOut
+- extendedWaitUntil:
+    visible:
+      id: btn.auth.google
+    timeout: 60000

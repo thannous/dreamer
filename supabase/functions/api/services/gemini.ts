@@ -36,8 +36,9 @@ export type GeminiGenerationConfig = {
 };
 
 export const GEMINI_FLASH_MODEL = 'gemini-3-flash-preview';
-export const GEMINI_FLASH_LITE_MODEL = 'gemini-3.1-flash-lite-preview';
-export const GEMINI_FLASH_IMAGE_MODEL = 'gemini-3.1-flash-image-preview';
+export const GEMINI_FLASH_LITE_MODEL = 'gemini-3.1-flash-lite';
+export const GEMINI_FLASH_IMAGE_MODEL = 'gemini-3.1-flash-image';
+export const GEMINI_FLASH_LITE_IMAGE_MODEL = 'gemini-3.1-flash-lite-image';
 
 export class ApiError extends Error {
   public readonly status: number;

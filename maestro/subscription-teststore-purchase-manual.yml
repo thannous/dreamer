@@ -3,45 +3,51 @@ appId: com.tanuki75.noctalia
 # Manual guarded Test Store purchase flow.
 # Run only through scripts/run-subscription-teststore-purchase.js with explicit approval env.
 
-- runFlow: subflows/open-mock-app.yml
+- runFlow: subflows/open-release-app-preserve-state.yml
 - openLink: noctalia://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes"
     timeout: 30000
 
-- scrollUntilVisible:
-    element:
-      id: input.auth.email
-    direction: DOWN
-    visibilityPercentage: 70
-    timeout: 30000
-- tapOn:
-    id: input.auth.email
-- eraseText
-- inputText: ${QA_EMAIL}
-- tapOn:
-    id: input.auth.password
-- eraseText
-- inputText: ${QA_PASSWORD}
 - runFlow:
     when:
-      visible: "Use your saved password.*"
+      notVisible:
+        id: text.auth.email
     commands:
+      - scrollUntilVisible:
+          element:
+            id: input.auth.email
+          direction: DOWN
+          visibilityPercentage: 70
+          timeout: 30000
       - tapOn:
-          text: "No thanks"
-          optional: true
-- pressKey: back
-- scrollUntilVisible:
-    element:
-      id: btn.auth.signIn
-    direction: DOWN
-    visibilityPercentage: 70
-    timeout: 30000
-- tapOn:
-    id: btn.auth.signIn
+          id: input.auth.email
+      - eraseText
+      - inputText: ${QA_EMAIL}
+      - tapOn:
+          id: input.auth.password
+      - eraseText
+      - inputText: ${QA_PASSWORD}
+      - runFlow:
+          when:
+            visible: "Use your saved password.*"
+          commands:
+            - tapOn:
+                text: "No thanks"
+                optional: true
+      - pressKey: back
+      - scrollUntilVisible:
+          element:
+            id: btn.auth.signIn
+          direction: DOWN
+          visibilityPercentage: 70
+          timeout: 30000
+      - tapOn:
+          id: btn.auth.signIn
 - extendedWaitUntil:
     visible:
       id: text.auth.email
+      text: "${QA_EMAIL_REGEX}"
     timeout: 45000
 - scrollUntilVisible:
     element:
@@ -49,32 +55,56 @@ appId: com.tanuki75.noctalia
     direction: DOWN
     visibilityPercentage: 40
     timeout: 30000
-- assertVisible: "RevenueCat Test Store"
+- assertVisible:
+    id: text.subscription.qa.mode
+    text: "RevenueCat Test Store"
 
 - scrollUntilVisible:
     element:
-      text: "Buy ${QA_PLAN}"
+      id: "btn.subscription.qa.scenario.${QA_PLAN}"
     direction: DOWN
     visibilityPercentage: 60
     timeout: 30000
-- tapOn: "Buy ${QA_PLAN}"
+- tapOn:
+    id: "btn.subscription.qa.scenario.${QA_PLAN}"
 - extendedWaitUntil:
     visible: "TEST VALID PURCHASE"
     timeout: 30000
 - tapOn: "TEST VALID PURCHASE"
 - extendedWaitUntil:
-    visible: ".*${QA_PLAN} purchase completed.*"
+    visible:
+      id: text.subscription.qa.actionLabel
+      text: ".*${QA_PLAN} purchase completed.*"
     timeout: 120000
-- assertVisible: ".*plus / active.*"
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.status
+    direction: UP
+    visibilityPercentage: 60
+    timeout: 30000
+- assertVisible:
+    id: text.subscription.qa.status
+    text: ".*plus / active.*"
 
 - scrollUntilVisible:
     element:
-      text: "Refresh"
+      id: btn.subscription.qa.refresh
     direction: DOWN
     visibilityPercentage: 60
     timeout: 30000
-- tapOn: "Refresh"
+- tapOn:
+    id: btn.subscription.qa.refresh
 - extendedWaitUntil:
-    visible: "Refresh completed"
+    visible:
+      id: text.subscription.qa.actionLabel
+      text: "Refresh completed"
     timeout: 60000
-- assertVisible: ".*plus / active.*"
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.status
+    direction: UP
+    visibilityPercentage: 60
+    timeout: 30000
+- assertVisible:
+    id: text.subscription.qa.status
+    text: ".*plus / active.*"

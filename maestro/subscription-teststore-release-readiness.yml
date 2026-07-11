@@ -1,0 +1,53 @@
+# Validate the RevenueCat Test Store SDK from an installed standalone Release APK.
+# This flow is deliberately non-destructive and non-transactional: it preserves
+# app data, never signs in, and never starts a purchase.
+appId: com.tanuki75.noctalia
+name: Release Test Store readiness
+---
+- runFlow: subflows/open-release-app-preserve-state.yml
+- extendedWaitUntil:
+    visible:
+      id: "screen.onboarding|screen.recording|text.auth.email|btn.auth.google"
+    timeout: 30000
+- runFlow:
+    when:
+      visible:
+        id: screen.onboarding
+    commands:
+      - runFlow: subflows/dismiss-first-launch-onboarding.yml
+- openLink: noctalia://settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: screen.subscription.qaLab
+    direction: DOWN
+    visibilityPercentage: 30
+    timeout: 30000
+- assertVisible:
+    id: text.subscription.qa.mode
+    text: "RevenueCat Test Store"
+- scrollUntilVisible:
+    element:
+      id: btn.subscription.qa.probe
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- tapOn:
+    id: btn.subscription.qa.probe
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.actionLabel
+    direction: UP
+    visibilityPercentage: 60
+    timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: text.subscription.qa.actionLabel
+      text: "SDK probe completed"
+    timeout: 60000
+- assertVisible:
+    id: text.subscription.qa.action
+    text: "packages 2.*"
+- assertNotVisible: "SDK probe failed"

@@ -6,6 +6,8 @@ const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunctio
 
 const mockGetAccessToken = typedJestFn<() => Promise<string | null>>();
 const mockClassifyError = jest.fn();
+const LEGACY_ANON_JWT =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlc3QiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc2MDg0NDUxMCwiZXhwIjoyMDc2NDIwNTEwfQ.signature';
 
 jest.mock('../auth', () => ({
   getAccessToken: () => mockGetAccessToken(),
@@ -24,7 +26,7 @@ jest.mock('../errors', () => ({
 }));
 
 process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://test.supabase.co';
-process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test';
+process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = LEGACY_ANON_JWT;
 
 let fetchJSON: typeof import('../http').fetchJSON;
 
@@ -41,13 +43,13 @@ describe('http', () => {
         expoConfig: {
           extra: {
             supabaseUrl: 'https://test.supabase.co',
-            supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test',
+            supabaseAnonKey: LEGACY_ANON_JWT,
           },
         },
       },
     }));
     process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://test.supabase.co';
-    process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test';
+    process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = LEGACY_ANON_JWT;
     mockGetAccessToken.mockResolvedValue(null);
     mockClassifyError.mockReturnValue({ type: 'unknown', canRetry: true });
     ({ fetchJSON } = require('../http'));
@@ -184,7 +186,7 @@ describe('http', () => {
 
       const request = (global.fetch as any).mock.calls[0][1];
       expect(request.headers.Authorization).toBe('Bearer user-access-token');
-      expect(request.headers.apikey).toBe('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test');
+      expect(request.headers.apikey).toBe(LEGACY_ANON_JWT);
     });
 
     it('given insecure Supabase URL when fetching then skips auth headers', async () => {
@@ -212,7 +214,38 @@ describe('http', () => {
 
       const request = (global.fetch as any).mock.calls[0][1];
       expect(request.headers.Authorization).toBeUndefined();
-      expect(request.headers.apikey).toBe('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test');
+      expect(request.headers.apikey).toBe(LEGACY_ANON_JWT);
+    });
+
+    it('given Supabase auth URL without user auth token when fetching then does not send anon bearer', async () => {
+      mockGetAccessToken.mockResolvedValue(null);
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({}),
+      });
+
+      await fetchJSON('https://test.supabase.co/auth/v1/user');
+
+      const request = (global.fetch as any).mock.calls[0][1];
+      expect(request.headers.Authorization).toBeUndefined();
+      expect(request.headers.apikey).toBe(LEGACY_ANON_JWT);
+    });
+
+    it('given Supabase function URL without user auth token when fetching then sends function bearer', async () => {
+      mockGetAccessToken.mockResolvedValue(null);
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({}),
+      });
+
+      await fetchJSON('https://test.functions.supabase.co/api/quota/status', {
+        method: 'POST',
+        body: {},
+      });
+
+      const request = (global.fetch as any).mock.calls[0][1];
+      expect(request.headers.Authorization).toBe(`Bearer ${LEGACY_ANON_JWT}`);
+      expect(request.headers.apikey).toBe(LEGACY_ANON_JWT);
     });
 
     it('given non-Supabase URL when fetching then does not attach Supabase auth', async () => {

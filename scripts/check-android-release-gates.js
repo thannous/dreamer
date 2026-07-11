@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* global __dirname */
 
 const fs = require('fs');
 const path = require('path');
@@ -13,8 +14,14 @@ const {
   detectAdbMdnsServices,
   detectUsbAndroidDevice,
 } = require('./check-android-adb-device');
+const {
+  evaluateVoiceAnalysisEvidence,
+} = require('./android-voice-analysis-evidence');
 const { getOpenPaymentProfileRequirements } = require('./update-google-play-payments-profile-state');
-const { getTrackStatus } = require('./update-google-play-track-state');
+const {
+  getTrackStatus,
+  readAppVersionCode,
+} = require('./update-google-play-track-state');
 const {
   getSupabasePlayIntegritySecretIssues,
 } = require('./update-supabase-play-integrity-secrets-state');
@@ -26,6 +33,8 @@ const EXPECTED_GOOGLE_CLOUD_PROJECT_ID = 'gen-lang-client-0336445544';
 const EXPECTED_GOOGLE_OAUTH_ANDROID_CLIENT_ID = '359653779023-5dhs012rh7l3cjf0leoknn7j0dlgq0ok.apps.googleusercontent.com';
 const EXPECTED_GOOGLE_OAUTH_ANDROID_SHA1 = 'BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59';
 const EXPECTED_ANDROID_PACKAGE_NAME = 'com.tanuki75.noctalia';
+const RELEASE_QUALIFICATION_WORKFLOW =
+  '.eas/workflows/android-release-qualification.yml';
 const REQUIRED_EAS_PROFILES = ['preview', 'release', 'production-apk', 'production'];
 const REQUIRED_TESTSTORE_PUBLIC_ENV = [
   'EXPO_PUBLIC_API_URL',
@@ -396,7 +405,14 @@ function getPlayPaymentsProfileCheck(paymentsProfileStateResult) {
   };
 }
 
-function getGooglePlayInternalTrackCheck(trackStateResult) {
+function getGooglePlayInternalTrackCheck(trackStateResult, candidateVersionCode) {
+  if (!/^[1-9]\d*$/.test(String(candidateVersionCode ?? ''))) {
+    return {
+      status: 'blocked',
+      details: 'Android release candidate versionCode could not be read from app.json.',
+      remediation: 'Set expo.android.versionCode to a positive integer in app.json.',
+    };
+  }
   const snapshot = trackStateResult.snapshot;
   if (trackStateResult.error) {
     return {
@@ -407,15 +423,15 @@ function getGooglePlayInternalTrackCheck(trackStateResult) {
   }
   if (!snapshot) {
     return {
-      status: 'manual',
+      status: 'blocked',
       details:
-        'Google Play internal track release state has not been recorded in a local snapshot.',
+        `Google Play internal track release state has not been recorded for candidate versionCode ${candidateVersionCode}.`,
       remediation:
         'Read the internal track with Google Play Developer API edits.tracks.get, then run npm run android:google-play-track-state with the JSON output.',
     };
   }
 
-  const status = getTrackStatus(snapshot);
+  const status = getTrackStatus(snapshot, candidateVersionCode);
   if (!status.ready) {
     return {
       status: 'blocked',
@@ -476,8 +492,13 @@ function getSupabasePlayIntegritySecretsCheck(secretsStateResult) {
   };
 }
 
-function checkSubscriptionQaReleaseGate(rootDir, spawn = spawnSync, env = process.env) {
-  const result = spawn(npmCommand, ['run', 'subscription:qa:release-gate'], {
+function checkSubscriptionQaGate(
+  rootDir,
+  scriptName,
+  spawn = spawnSync,
+  env = process.env
+) {
+  const result = spawn(npmCommand, ['run', scriptName], {
     cwd: rootDir,
     env,
     encoding: 'utf8',
@@ -487,13 +508,13 @@ function checkSubscriptionQaReleaseGate(rootDir, spawn = spawnSync, env = proces
   if (result.status === 0) {
     return {
       ok: true,
-      details: 'subscription:qa:release-gate passed.',
+      details: `${scriptName} passed.`,
     };
   }
   const summary = summarizeCommandOutput(`${result.stdout || ''}\n${result.stderr || ''}`);
   return {
     ok: false,
-    details: summary || `subscription:qa:release-gate exited with status ${result.status ?? 'unknown'}.`,
+    details: summary || `${scriptName} exited with status ${result.status ?? 'unknown'}.`,
   };
 }
 
@@ -504,9 +525,30 @@ function checkAndroidReleaseGates({
   readFileSync = fs.readFileSync,
   env = process.env,
   platform = process.platform,
+  phase = 'qualification',
 } = {}) {
   const checks = [];
+  const prebuild = phase === 'prebuild';
   const easJson = readJson(rootDir, 'eas.json');
+  let androidCandidateVersionCode = null;
+  try {
+    androidCandidateVersionCode = readAppVersionCode(rootDir, readFileSync);
+    addCheck(
+      checks,
+      'pass',
+      'Android release candidate versionCode',
+      `app.json expo.android.versionCode=${androidCandidateVersionCode}.`,
+      'Increment expo.android.versionCode for every Android store candidate.'
+    );
+  } catch (error) {
+    addCheck(
+      checks,
+      'fail',
+      'Android release candidate versionCode',
+      error instanceof Error ? error.message : String(error),
+      'Set expo.android.versionCode to a positive integer in app.json.'
+    );
+  }
   const envPath = path.join(rootDir, '.env.teststore');
   const envValues = existsSync(envPath) ? parseDotEnv(readFileSync(envPath, 'utf8')) : {};
   const projectStateResult = readGoogleCloudProjectState({ rootDir, existsSync, readFileSync, env });
@@ -566,13 +608,47 @@ function checkAndroidReleaseGates({
     'Set submit.internal.android.track to internal in eas.json.'
   );
 
-  const subscriptionGate = checkSubscriptionQaReleaseGate(rootDir, spawn, env);
+  const releaseWorkflowPath = path.join(rootDir, RELEASE_QUALIFICATION_WORKFLOW);
+  const releaseWorkflow = existsSync(releaseWorkflowPath)
+    ? readFileSync(releaseWorkflowPath, 'utf8')
+    : '';
+  const releaseWorkflowReady =
+    releaseWorkflow.includes('type: build') &&
+    releaseWorkflow.includes('profile: production-apk') &&
+    releaseWorkflow.includes('type: maestro') &&
+    releaseWorkflow.includes('build_id: ${{ needs.build_android.outputs.build_id }}') &&
+    releaseWorkflow.includes('flow_path: maestro/release-smoke.yml') &&
+    releaseWorkflow.includes('tags:') &&
+    releaseWorkflow.includes('- v*');
+  addCheck(
+    checks,
+    releaseWorkflowReady ? 'pass' : 'fail',
+    'EAS Android Release build and smoke workflow',
+    releaseWorkflowReady
+      ? `${RELEASE_QUALIFICATION_WORKFLOW} builds production-apk and runs release-smoke.yml.`
+      : `${RELEASE_QUALIFICATION_WORKFLOW} is missing or does not chain production-apk to the Release smoke flow.`,
+    'Add a validated EAS workflow that builds production-apk and passes its build_id to maestro/release-smoke.yml.'
+  );
+
+  const subscriptionScript = prebuild
+    ? 'subscription:qa:report'
+    : 'subscription:qa:release-gate';
+  const subscriptionGate = checkSubscriptionQaGate(
+    rootDir,
+    subscriptionScript,
+    spawn,
+    env
+  );
   addCheck(
     checks,
     subscriptionGate.ok ? 'pass' : 'fail',
-    'RevenueCat subscription QA release gate',
+    prebuild
+      ? 'RevenueCat subscription QA prebuild wiring gate'
+      : 'RevenueCat subscription QA release gate',
     subscriptionGate.details,
-    'Run npm run subscription:qa:release-gate and close the remaining evidence gates listed in the report before Android production release.'
+    prebuild
+      ? 'Run npm run subscription:qa:report and fix its blocked local/config checks before building the Android candidate.'
+      : 'Run npm run subscription:qa:release-gate and close the remaining evidence gates listed in the report before Android production release.'
   );
 
   const fallbackFlowPath = path.join(rootDir, 'maestro/recording-text-fallback.yml');
@@ -588,6 +664,20 @@ function checkAndroidReleaseGates({
       ? 'maestro/recording-text-fallback.yml exists and is listed in the Android suites.'
       : 'Fallback flow file or suite registration is missing.',
     'Add the flow file and include it in scripts/run-maestro-android.js.'
+  );
+
+  const voiceEvidenceCheck = evaluateVoiceAnalysisEvidence({
+    rootDir,
+    phase,
+    existsSync,
+    readFileSync,
+  });
+  addCheck(
+    checks,
+    voiceEvidenceCheck.status,
+    'Release voice transcription, save and analysis evidence',
+    voiceEvidenceCheck.details,
+    voiceEvidenceCheck.remediation
   );
 
   const adbCommand = resolveCommand('adb', { spawn, existsSync, env });
@@ -641,7 +731,17 @@ function checkAndroidReleaseGates({
   addCheck(checks, projectCheck.status, 'Google Cloud project number confirmation', projectCheck.details, projectCheck.remediation);
   const oauthCheck = getGoogleOAuthAndroidClientCheck(oauthStateResult);
   addCheck(checks, oauthCheck.status, 'Play App Signing SHA-1 for Google OAuth', oauthCheck.details, oauthCheck.remediation);
-  const googlePlayTrackCheck = getGooglePlayInternalTrackCheck(googlePlayTrackStateResult);
+  const googlePlayTrackCheck = prebuild
+    ? {
+        status: 'manual',
+        details: `Deferred until candidate versionCode ${androidCandidateVersionCode || 'missing'} has been uploaded to Google Play Internal Testing.`,
+        remediation:
+          'After upload, regenerate the Play track snapshot and run npm run android:gates:strict for release qualification.',
+      }
+    : getGooglePlayInternalTrackCheck(
+        googlePlayTrackStateResult,
+        androidCandidateVersionCode
+      );
   addCheck(
     checks,
     googlePlayTrackCheck.status,
@@ -667,6 +767,7 @@ function checkAndroidReleaseGates({
   );
 
   return {
+    phase,
     ok: checks.every((check) => check.status === 'pass' || check.status === 'manual'),
     counts: checks.reduce((acc, check) => {
       acc[check.status] = (acc[check.status] || 0) + 1;
@@ -677,7 +778,11 @@ function checkAndroidReleaseGates({
 }
 
 function formatReport(report) {
-  const lines = ['[android-gates] Android release gate preflight'];
+  const lines = [
+    report.phase === 'prebuild'
+      ? '[android-gates] Android release prebuild gate'
+      : '[android-gates] Android release qualification gate',
+  ];
   for (const check of report.checks) {
     const label = check.status.toUpperCase().padEnd(7);
     lines.push(`[android-gates] ${label} ${check.title}`);
@@ -693,11 +798,27 @@ function formatReport(report) {
   return lines.join('\n');
 }
 
+function printHelp() {
+  process.stdout.write(
+    `Usage: node ./scripts/check-android-release-gates.js [--prebuild] [--report-only] [--json]\n\n` +
+      `Options:\n` +
+      `  --prebuild     Enforce local/config gates before building; defer candidate Play evidence and track readiness.\n` +
+      `  --report-only  Always exit zero after printing the report.\n` +
+      `  --json         Print machine-readable JSON.\n` +
+      `  --help, -h     Show this help.\n`
+  );
+}
+
 function main() {
   const args = process.argv.slice(2);
+  if (args.includes('--help') || args.includes('-h')) {
+    printHelp();
+    return;
+  }
   const reportOnly = args.includes('--report-only');
   const json = args.includes('--json');
-  const report = checkAndroidReleaseGates();
+  const phase = args.includes('--prebuild') ? 'prebuild' : 'qualification';
+  const report = checkAndroidReleaseGates({ phase });
   if (json) {
     process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
   } else {

@@ -22,18 +22,43 @@ const toCount = (value: unknown): number => {
 const normalizeEffectiveSubscriptionTier = (tier: unknown): 'free' | 'plus' =>
   tier === 'plus' ? 'plus' : 'free';
 
+type DreamImageAuthorizationContext = {
+  id: number;
+  analysis_request_id?: string | null;
+  analysis_status?: string | null;
+  is_analyzed?: boolean | null;
+};
+
+export const canCreateImageJobForTier = (input: {
+  tier: 'free' | 'plus';
+  userId?: string | null;
+  dream?: DreamImageAuthorizationContext | null;
+  clientRequestId: string;
+}): boolean => {
+  if (!input.userId || input.tier === 'plus') {
+    return true;
+  }
+
+  return Boolean(
+    input.dream &&
+      input.dream.analysis_request_id === input.clientRequestId &&
+      input.dream.analysis_status === 'pending' &&
+      input.dream.is_analyzed !== true
+  );
+};
+
 const serviceUnavailable = (message = 'Service unavailable') =>
   new Response(JSON.stringify({ error: message }), {
     status: 503,
     headers: { 'Content-Type': 'application/json', ...corsHeaders },
   });
 
-const imageGenerationPlusRequiredResponse = () =>
+const freeImageAnalysisRequiredResponse = () =>
   new Response(
     JSON.stringify({
-      error: 'Image generation requires Noctalia Plus',
-      code: 'IMAGE_GENERATION_PLUS_REQUIRED',
-      userMessage: 'Upgrade to Noctalia Plus to generate dream images.',
+      error: 'Free image generation must be linked to an authorized analysis',
+      code: 'FREE_IMAGE_ANALYSIS_REQUIRED',
+      userMessage: 'Start a new dream analysis to generate its image.',
     }),
     {
       status: 402,
@@ -41,13 +66,13 @@ const imageGenerationPlusRequiredResponse = () =>
     }
   );
 
-const requireImageGenerationEntitlement = async (
+const resolveImageGenerationTier = async (
   supabase: ApiContext['supabase'],
   userId: string | null | undefined,
   route: string
-): Promise<Response | null> => {
+): Promise<{ tier: 'free' | 'plus' } | { response: Response }> => {
   if (!userId) {
-    return null;
+    return { tier: 'free' };
   }
 
   const { data, error } = await supabase.rpc('get_effective_subscription_tier', {
@@ -55,23 +80,14 @@ const requireImageGenerationEntitlement = async (
   });
 
   if (error) {
-    console.warn(`[api] ${route}: failed to resolve subscription tier for image gate`, {
+    console.warn(`[api] ${route}: failed to resolve subscription tier for image routing`, {
       userId,
       message: error?.message ?? String(error),
     });
-    return serviceUnavailable('Subscription status unavailable');
+    return { response: serviceUnavailable('Subscription status unavailable') };
   }
 
-  const effectiveTier = normalizeEffectiveSubscriptionTier(data);
-  if (effectiveTier !== 'plus') {
-    console.log(`[api] ${route}: blocked non-plus image generation job`, {
-      userId,
-      effectiveTier,
-    });
-    return imageGenerationPlusRequiredResponse();
-  }
-
-  return null;
+  return { tier: normalizeEffectiveSubscriptionTier(data) };
 };
 
 const triggerWorkerAndLog = async (options: {
@@ -130,10 +146,11 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
     }
 
     let dreamId: number | null = null;
+    let dreamAuthorizationContext: DreamImageAuthorizationContext | null = null;
     if (requestedDreamId != null && user) {
       const { data: dream, error: dreamError } = await supabase
         .from('dreams')
-        .select('id')
+        .select('id, analysis_request_id, analysis_status, is_analyzed')
         .eq('id', requestedDreamId)
         .single();
 
@@ -145,15 +162,29 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
       }
 
       dreamId = dream.id;
+      dreamAuthorizationContext = dream as DreamImageAuthorizationContext;
     }
 
-    const entitlementCheck = await requireImageGenerationEntitlement(
+    const tierResolution = await resolveImageGenerationTier(
       supabase,
       user?.id ?? null,
       '/image-jobs'
     );
-    if (entitlementCheck) {
-      return entitlementCheck;
+    if ('response' in tierResolution) {
+      return tierResolution.response;
+    }
+
+    if (!canCreateImageJobForTier({
+      tier: tierResolution.tier,
+      userId: user?.id ?? null,
+      dream: dreamAuthorizationContext,
+      clientRequestId,
+    })) {
+      console.log('[api] /image-jobs: blocked unlinked free image generation', {
+        userId: user?.id ?? null,
+        dreamId,
+      });
+      return freeImageAnalysisRequiredResponse();
     }
 
     const actor = {

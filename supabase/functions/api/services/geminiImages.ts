@@ -1,11 +1,45 @@
-import { ApiError, GEMINI_FLASH_IMAGE_MODEL, requestGeminiGenerateContent } from './gemini.ts';
+import {
+  ApiError,
+  GEMINI_FLASH_IMAGE_MODEL,
+  GEMINI_FLASH_LITE_IMAGE_MODEL,
+  requestGeminiGenerateContent,
+} from './gemini.ts';
+
+export type ImageGenerationTier = 'free' | 'plus';
+
+type EnvReader = (name: string) => string | undefined;
+
+const readDenoEnv: EnvReader = (name) => Deno.env.get(name);
+
+const RETIRED_IMAGE_MODELS = new Set([
+  'gemini-2.5-flash-image-preview',
+  'gemini-3.1-flash-image-preview',
+  'gemini-3-pro-image-preview',
+]);
+
+const readModelOverride = (readEnv: EnvReader, name: string): string | null => {
+  const value = readEnv(name)?.trim();
+  return value && !RETIRED_IMAGE_MODELS.has(value) ? value : null;
+};
 
 /**
- * Normalize the image model to a supported Gemini image model. Avoids using Imagen
- * models that are not available on the Gemini API endpoints.
+ * Resolve the image model from the server-authoritative subscription tier.
+ * Unknown tiers intentionally use the economy model to avoid accidental premium cost.
+ * `IMAGEN_MODEL` remains the legacy override for subscribers only.
  */
-export const resolveImageModel = (): string => {
-  return Deno.env.get('IMAGEN_MODEL') ?? GEMINI_FLASH_IMAGE_MODEL;
+export const resolveImageModel = (
+  tier: unknown = 'free',
+  readEnv: EnvReader = readDenoEnv
+): string => {
+  if (tier === 'plus') {
+    return (
+      readModelOverride(readEnv, 'IMAGEN_PLUS_MODEL') ??
+      readModelOverride(readEnv, 'IMAGEN_MODEL') ??
+      GEMINI_FLASH_IMAGE_MODEL
+    );
+  }
+
+  return readModelOverride(readEnv, 'IMAGEN_FREE_MODEL') ?? GEMINI_FLASH_LITE_IMAGE_MODEL;
 };
 
 export async function generateImageFromPrompt(options: {
@@ -14,7 +48,7 @@ export async function generateImageFromPrompt(options: {
   aspectRatio?: string;
   model?: string;
 }): Promise<{ imageBase64?: string; mimeType?: string; raw: any; retryAttempts?: number }> {
-  const { prompt, apiKey, aspectRatio = '9:16', model = resolveImageModel() } = options;
+  const { prompt, apiKey, aspectRatio = '9:16', model = resolveImageModel('free') } = options;
 
   const extractInlineData = (
     response: any
@@ -149,7 +183,7 @@ export async function generateImageWithReferences(options: {
   aspectRatio?: string;
   model?: string;
 }): Promise<{ imageBase64?: string; mimeType?: string; raw: any; retryAttempts?: number }> {
-  const { prompt, apiKey, referenceImages, aspectRatio = '9:16', model = resolveImageModel() } = options;
+  const { prompt, apiKey, referenceImages, aspectRatio = '9:16', model = resolveImageModel('free') } = options;
 
   const extractInlineData = (
     response: any

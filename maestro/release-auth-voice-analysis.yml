@@ -1,0 +1,148 @@
+# Production Release integration: real email login, microphone-driven transcript,
+# authenticated save and analysis, then logout. A QA tester or a validated audio
+# input route must speak the documented English sentinel once dictation starts.
+appId: com.tanuki75.noctalia
+name: Release authenticated voice transcription and analysis
+tags:
+  - release
+  - auth
+  - voice
+  - analysis
+onFlowComplete:
+  - runFlow:
+      when:
+        visible:
+          id: text.recording.voiceStatusDuration
+      commands:
+        - tapOn:
+            id: btn.recordToggle
+  - setAirplaneMode: disabled
+  - setPermissions:
+      permissions:
+        all: allow
+---
+- setAirplaneMode: disabled
+- pressKey: back
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+
+# Prove the flow starts as a guest, then authenticate with the local QA account.
+- openLink: noctalia://settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: btn.auth.google
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- assertNotVisible:
+    id: btn.auth.signOut
+- runFlow: subflows/sign-in-email-qa.yml
+
+# Opening the native recognizer starts the manual audio window.
+- tapOn:
+    id: tab.addDream
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- scrollUntilVisible:
+    element:
+      id: btn.recordToggle
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    id: btn.recordToggle
+- extendedWaitUntil:
+    visible:
+      id: text.recording.voiceStatusDuration
+    timeout: 20000
+
+# Require two ordered semantic anchors from the English QA sentence (the clean
+# Release starts in English). This prevents a microphone timer or a stale text
+# field from being accepted as transcription.
+- extendedWaitUntil:
+    visible: "(?i).*(forest|moon).*(fox|door).*"
+    timeout: 45000
+- tapOn:
+    id: btn.recordToggle
+- extendedWaitUntil:
+    visible: "(?i).*(forest|moon).*(fox|door).*"
+    timeout: 15000
+
+# Save and analyze only after the microphone-derived transcript is visible.
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: "text.firstDream.title|text.analyzePromptTitle"
+    timeout: 90000
+- runFlow:
+    when:
+      visible:
+        id: text.firstDream.title
+    commands:
+      - tapOn:
+          id: btn.firstDream.analyze
+          retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible:
+        id: text.analyzePromptTitle
+    commands:
+      - tapOn:
+          id: btn.analyzePrompt.analyze
+          retryTapIfNoChange: true
+- extendedWaitUntil:
+    notVisible:
+      id: screen.recording
+    timeout: 180000
+- scrollUntilVisible:
+    element:
+      text: "Interpretation|Interprétation|Interpretación|Interpretazione|Deutung"
+    direction: DOWN
+    timeout: 30000
+    visibilityPercentage: 60
+- assertVisible: "Interpretation|Interprétation|Interpretación|Interpretazione|Deutung"
+- scrollUntilVisible:
+    element:
+      id: component.transcriptCard
+    direction: DOWN
+    timeout: 30000
+    visibilityPercentage: 60
+- assertVisible:
+    id: component.transcriptCard
+- assertVisible: "(?i).*(forest|moon).*(fox|door).*"
+
+# End in a clean guest state.
+- openLink: noctalia://settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: btn.auth.signOut
+    direction: DOWN
+    visibilityPercentage: 70
+    timeout: 30000
+- tapOn:
+    id: btn.auth.signOut
+- extendedWaitUntil:
+    visible:
+      id: btn.auth.google
+    timeout: 60000
+- assertNotVisible:
+    id: btn.auth.signOut

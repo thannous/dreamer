@@ -117,6 +117,7 @@ describe('native speech module integration', () => {
     delete (Platform as any).Version;
     __setCachedSpeechModuleForTests(undefined);
     registerOfflineModelPromptHandler(null);
+    jest.restoreAllMocks();
   });
 
   it('returns null locale availability when module is missing', async () => {
@@ -257,6 +258,37 @@ describe('native speech module integration', () => {
     expect(session).toBeNull();
   });
 
+  it('removes every listener when starting recognition throws', async () => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'ios';
+    (Platform as any).Version = 17;
+
+    const removeListeners = Array.from({ length: 4 }, () => jest.fn());
+    let listenerIndex = 0;
+    const start = jest.fn(() => {
+      throw new Error('Speech start failed');
+    });
+    const speechModule = {
+      isRecognitionAvailable: () => true,
+      requestPermissionsAsync: async () => ({ granted: true }),
+      supportsOnDeviceRecognition: () => false,
+      supportsRecording: () => false,
+      getStateAsync: async () => 'inactive',
+      start,
+      addListener: jest.fn((_event: string, _cb: (payload?: any) => void) => ({
+        remove: removeListeners[listenerIndex++],
+      })),
+    } as any;
+
+    __setCachedSpeechModuleForTests(speechModule);
+
+    await expect(startNativeSpeechSession('en-US')).resolves.toBeNull();
+
+    expect(start).toHaveBeenCalledTimes(1);
+    expect(speechModule.addListener).toHaveBeenCalledTimes(4);
+    removeListeners.forEach((remove) => expect(remove).toHaveBeenCalledTimes(1));
+  });
+
   it('starts a speech session and captures results', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'ios';
@@ -285,6 +317,7 @@ describe('native speech module integration', () => {
 
     __setCachedSpeechModuleForTests(speechModule);
 
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
     const onPartial = jest.fn();
     const session = await startNativeSpeechSession('en-US', { onPartial });
 
@@ -300,6 +333,7 @@ describe('native speech module integration', () => {
     expect(result.transcript).toBe('hello world');
     expect(result.recordedUri).toBe('file://audio.pcm');
     expect(result.hasRecording).toBe(true);
+    expect(clearTimeoutSpy).toHaveBeenCalled();
   });
 
   it('captures error events during a session', async () => {

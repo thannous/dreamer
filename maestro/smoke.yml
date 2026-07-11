@@ -7,9 +7,20 @@ appId: com.tanuki75.noctalia
           visible:
               id: screen.journal
       commands:
-          - tapOn:
-                id: btn.addDream
-          - waitForAnimationToEnd
+          - runFlow:
+                when:
+                    visible:
+                        id: btn.addDream
+                commands:
+                    - tapOn:
+                          id: btn.addDream
+          - runFlow:
+                when:
+                    visible:
+                        id: tab.addDream
+                commands:
+                    - tapOn:
+                          id: tab.addDream
 - assertVisible:
       id: screen.recording
 - runFlow: subflows/go-to-journal-phone.yml
@@ -21,7 +32,23 @@ appId: com.tanuki75.noctalia
 - inputText: Lucide
 - eraseText
 - pressKey: back
-- tapOn:
-      id: btn.addDream
+- runFlow:
+      when:
+          visible:
+              id: btn.addDream
+      commands:
+          - tapOn:
+                id: btn.addDream
+- runFlow:
+      when:
+          visible:
+              id: tab.addDream
+      commands:
+          - tapOn:
+                id: tab.addDream
+- extendedWaitUntil:
+      visible:
+          id: screen.recording
+      timeout: 20000
 - assertVisible:
       id: screen.recording

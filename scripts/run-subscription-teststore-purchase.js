@@ -1,8 +1,14 @@
 #!/usr/bin/env node
 'use strict';
+/* global __dirname */
 
 const { spawnSync } = require('child_process');
 const path = require('path');
+const {
+  getSensitiveFlowGuardToken,
+  SENSITIVE_FLOW_GUARD_ENV,
+  TESTSTORE_READINESS_FLOW,
+} = require('./run-maestro-android');
 
 const ROOT = path.resolve(__dirname, '..');
 const APPROVAL = 'I_APPROVE_TEST_STORE_PURCHASE';
@@ -25,6 +31,10 @@ function maskIdentity(value) {
   return `${value.slice(0, 3)}...${value.slice(-2)}`;
 }
 
+function exactRegex(value) {
+  return `^${value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`;
+}
+
 function readPlan(argv) {
   const index = argv.indexOf('--plan');
   const plan = index === -1 ? 'monthly' : argv[index + 1];
@@ -44,6 +54,7 @@ function readAuthMode() {
 
 function passthroughArgs(argv) {
   const out = [];
+  let hasDevice = false;
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--plan') {
       i += 1;
@@ -52,7 +63,23 @@ function passthroughArgs(argv) {
     if (argv[i] === '--preflight') {
       continue;
     }
-    out.push(argv[i]);
+    if (argv[i] === '--device') {
+      const device = argv[i + 1];
+      if (!device || device.startsWith('--')) {
+        fail('Missing value for --device.');
+      }
+      if (hasDevice || device.includes(',')) {
+        fail('Pass exactly one QA target with --device <adb-id>.');
+      }
+      out.push('--device', device);
+      hasDevice = true;
+      i += 1;
+      continue;
+    }
+    fail(`Unsupported Maestro argument for guarded purchase: ${argv[i]}`);
+  }
+  if (!hasDevice) {
+    fail('A specific QA target is required. Pass --device <adb-id>.');
   }
   return out;
 }
@@ -93,12 +120,12 @@ if (approval !== APPROVAL) {
 
 const args = [
   'run',
-  'test:e2e:subscription-teststore',
+  'test:e2e:release:teststore:local',
   '--',
   '--flow',
+  TESTSTORE_READINESS_FLOW,
+  '--flow',
   flow,
-  '--retries',
-  '0',
   ...maestroArgs,
 ];
 
@@ -106,10 +133,12 @@ const result = spawnSync('npm', args, {
   cwd: ROOT,
   env: {
     ...process.env,
-    QA_EMAIL: qaEmail,
-    QA_PASSWORD: qaPassword,
-    QA_AUTH: authMode,
+    [SENSITIVE_FLOW_GUARD_ENV]: getSensitiveFlowGuardToken(flow),
+    QA_EMAIL_REGEX: exactRegex(qaEmail),
     QA_PLAN: plan,
+    ...(authMode === 'email'
+      ? { QA_EMAIL: qaEmail, QA_PASSWORD: qaPassword }
+      : {}),
   },
   stdio: 'inherit',
 });

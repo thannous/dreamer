@@ -1,0 +1,120 @@
+# Resume an interrupted v33 preparation from an already-saved sentinel. This
+# flow never creates data or clears state; it must find the exact existing token.
+appId: com.tanuki75.noctalia
+name: Android Play upgrade resume v33
+tags:
+  - release
+  - play-upgrade
+  - upgrade-resume
+onFlowComplete:
+  - setAirplaneMode: disabled
+---
+- setAirplaneMode: disabled
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: "screen.onboarding|screen.recording|screen.journal|tab.journal"
+    timeout: 30000
+- assertNotVisible:
+    id: screen.onboarding
+- runFlow:
+    when:
+      visible:
+        id: tab.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+          retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- runFlow: subflows/ensure-journal-search-visible.yml
+- tapOn:
+    id: input.searchDreams
+- eraseText
+- inputText: ${UPGRADE_SENTINEL}
+- extendedWaitUntil:
+    visible:
+      id: "dream.item.*"
+    timeout: 20000
+- tapOn:
+    id: "dream.item.*"
+    index: 0
+- extendedWaitUntil:
+    visible: "${UPGRADE_SENTINEL}"
+    timeout: 20000
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- tapOn:
+    id: tab.settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 20000
+- runFlow: subflows/ensure-settings-journal-layout-visible.yml
+- tapOn:
+    id: btn.settings.journalLayout.compact
+    retryTapIfNoChange: true
+- assertVisible:
+    id: btn.settings.journalLayout.compact
+    checked: true
+
+# Verify both pieces of state after process death before recording evidence.
+- killApp
+- launchApp
+- runFlow:
+    when:
+      visible:
+        id: tab.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+          retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- runFlow: subflows/ensure-journal-search-visible.yml
+- tapOn:
+    id: input.searchDreams
+- eraseText
+- inputText: ${UPGRADE_SENTINEL}
+- extendedWaitUntil:
+    visible:
+      id: "dream.item.*"
+    timeout: 20000
+- tapOn:
+    id: "dream.item.*"
+    index: 0
+- extendedWaitUntil:
+    visible: "${UPGRADE_SENTINEL}"
+    timeout: 20000
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- tapOn:
+    id: tab.settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 20000
+- runFlow: subflows/ensure-settings-journal-layout-visible.yml
+- assertVisible:
+    id: btn.settings.journalLayout.compact
+    checked: true

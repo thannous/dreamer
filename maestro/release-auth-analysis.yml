@@ -1,0 +1,125 @@
+# Production Release integration: explicit guest state, real email login,
+# authenticated analysis, logout, and return to the guest auth surface.
+appId: com.tanuki75.noctalia
+name: Release authenticated analysis and logout
+tags:
+  - release
+  - auth
+  - analysis
+onFlowComplete:
+  - setAirplaneMode: disabled
+  - setPermissions:
+      permissions:
+        all: allow
+---
+- setAirplaneMode: disabled
+# Dismiss a password-manager surface left by an interrupted previous auth run.
+- pressKey: back
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+
+# A clean install starts as a guest and exposes the sign-in controls.
+- openLink: noctalia://settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: btn.auth.google
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- assertVisible:
+    id: btn.auth.google
+- assertNotVisible:
+    id: btn.auth.signOut
+
+# Sign in with the local-only QA account supplied by .env.qa.local.
+- runFlow: subflows/sign-in-email-qa.yml
+
+# Save and analyze a real authenticated dream through the production backend.
+- tapOn:
+    id: tab.addDream
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- runFlow: subflows/ensure-recording-text.yml
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Release authenticated analysis sentinel moonlit forest"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: "text.firstDream.title|text.analyzePromptTitle"
+    timeout: 90000
+- runFlow:
+    when:
+      visible:
+        id: text.firstDream.title
+    commands:
+      - tapOn:
+          id: btn.firstDream.analyze
+          retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible:
+        id: text.analyzePromptTitle
+    commands:
+      - tapOn:
+          id: btn.analyzePrompt.analyze
+          retryTapIfNoChange: true
+
+# Recording remains mounted during analysis; navigation away proves completion.
+- extendedWaitUntil:
+    notVisible:
+      id: screen.recording
+    timeout: 180000
+- scrollUntilVisible:
+    element:
+      text: "Interpretation|Interprétation|Interpretación|Interpretazione|Deutung"
+    direction: DOWN
+    timeout: 30000
+    visibilityPercentage: 60
+- assertVisible: "Interpretation|Interprétation|Interpretación|Interpretazione|Deutung"
+- scrollUntilVisible:
+    element:
+      id: component.transcriptCard
+    direction: DOWN
+    timeout: 30000
+    visibilityPercentage: 60
+- assertVisible:
+    id: component.transcriptCard
+
+# Logout must return to the guest authentication surface without leaking session state.
+- openLink: noctalia://settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: btn.auth.signOut
+    direction: DOWN
+    visibilityPercentage: 70
+    timeout: 30000
+- tapOn:
+    id: btn.auth.signOut
+- extendedWaitUntil:
+    visible:
+      id: btn.auth.google
+    timeout: 60000
+- assertNotVisible:
+    id: btn.auth.signOut

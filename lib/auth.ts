@@ -530,8 +530,14 @@ export async function signOut() {
 
     // Sign out from Google if signed in
     if (Platform.OS !== 'web') {
-      const { GoogleSignin } = await getGoogleSignInModule();
-      await GoogleSignin.signOut();
+      try {
+        const { GoogleSignin } = await getGoogleSignInModule();
+        await GoogleSignin.signOut();
+      } catch (error) {
+        // Supabase owns the app session. A Google/Play Services failure must not
+        // prevent the local session from being invalidated.
+        log.warn('Google logout failed', error);
+      }
     }
 
     // Sign out from Supabase

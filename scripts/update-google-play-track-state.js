@@ -1,15 +1,39 @@
 #!/usr/bin/env node
 'use strict';
+/* global __dirname */
 
 const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_TARGET = path.join(ROOT, 'doc_web_interne/docs/google-play-track-state.local.json');
+
+function readAppVersionCode(rootDir = ROOT, readFileSync = fs.readFileSync) {
+  const appJsonPath = path.join(rootDir, 'app.json');
+  let appConfig;
+  try {
+    appConfig = JSON.parse(readFileSync(appJsonPath, 'utf8'));
+  } catch (error) {
+    throw new Error(
+      `Unable to read app.json for the Android release candidate: ${
+        error instanceof Error ? error.message : error
+      }`
+    );
+  }
+
+  const versionCode = String(appConfig?.expo?.android?.versionCode ?? '').trim();
+  if (!/^[1-9]\d*$/.test(versionCode)) {
+    throw new Error('app.json expo.android.versionCode must be a positive integer.');
+  }
+  return versionCode;
+}
+
 const EXPECTED = {
   packageName: 'com.tanuki75.noctalia',
   track: 'internal',
-  versionCode: '24',
+  get versionCode() {
+    return readAppVersionCode();
+  },
   status: 'completed',
 };
 
@@ -91,7 +115,7 @@ Options:
   --source <label>                Snapshot source label.
   --package-name <name>           Package name recorded in the snapshot.
   --track <name>                  Expected track. Defaults to internal.
-  --expected-version-code <code>  Expected versionCode. Defaults to 24.
+  --expected-version-code <code>  Expected versionCode. Defaults to app.json expo.android.versionCode (${EXPECTED.versionCode}).
   --expected-status <status>      Expected release status. Defaults to completed.
 `.trim());
 }
@@ -152,25 +176,26 @@ function normalizeSnapshot(input, options) {
   };
 }
 
-function getExpectedRelease(document) {
+function getExpectedRelease(document, expectedVersionCode = document?.expected_version_code) {
   return (
     document?.releases?.find((release) =>
-      (release.version_codes ?? []).includes(String(document.expected_version_code))
+      (release.version_codes ?? []).includes(String(expectedVersionCode))
     ) ?? null
   );
 }
 
-function getTrackStatus(document) {
-  const release = getExpectedRelease(document);
+function getTrackStatus(document, expectedVersionCode = document?.expected_version_code) {
+  const versionCode = String(expectedVersionCode ?? '').trim();
+  const release = getExpectedRelease(document, versionCode);
   if (!release) {
     return {
       ready: false,
-      summary: `${document.track || 'unknown'}/missing/${document.expected_version_code || 'missing'}`,
+      summary: `${document.track || 'unknown'}/missing/${versionCode || 'missing'}`,
     };
   }
   return {
     ready: release.status === document.expected_status,
-    summary: `${document.track}/${release.name || 'unnamed'}/${release.status}/versionCode=${document.expected_version_code}`,
+    summary: `${document.track}/${release.name || 'unnamed'}/${release.status}/versionCode=${versionCode}`,
   };
 }
 
@@ -207,5 +232,6 @@ module.exports = {
   getTrackStatus,
   normalizeSnapshot,
   parseArgs,
+  readAppVersionCode,
   updateGooglePlayTrackState,
 };

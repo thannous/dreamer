@@ -28,6 +28,9 @@ expo-env.d.ts
 **/.windsurf/
 **/.gemini/
 **/.github/
+!/.github/
+!/.github/workflows/
+!/.github/workflows/*.yml
 
 # Native
 .kotlin/
@@ -97,6 +100,8 @@ doc_web_interne/docs/revenuecat-play-store-state.local.json
 doc_web_interne/docs/revenuecat-subscriber-expiry-state.local.json
 doc_web_interne/docs/google-play-subscription-state.local.json
 doc_web_interne/docs/google-play-track-state.local.json
+doc_web_interne/docs/android-play-upgrade-33-to-34.local.json
+doc_web_interne/docs/android-voice-analysis-evidence.local.json
 doc_web_interne/docs/google-cloud-project-state.local.json
 doc_web_interne/docs/google-oauth-android-client-state.local.json
 doc_web_interne/docs/google-play-payments-profile-state.local.json

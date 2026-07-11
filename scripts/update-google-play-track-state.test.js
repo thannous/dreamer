@@ -1,3 +1,4 @@
+/* global __dirname, describe, it, expect */
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -6,6 +7,7 @@ const {
   getTrackStatus,
   normalizeSnapshot,
   parseArgs,
+  readAppVersionCode,
   updateGooglePlayTrackState,
 } = require('./update-google-play-track-state');
 
@@ -43,11 +45,11 @@ describe('Google Play track state updater', () => {
     expect(document.releases[0]).toEqual({
       name: '1.2.0',
       status: 'completed',
-      version_codes: ['24'],
+      version_codes: [EXPECTED.versionCode],
     });
     expect(getTrackStatus(document)).toEqual({
       ready: true,
-      summary: 'internal/1.2.0/completed/versionCode=24',
+      summary: `internal/1.2.0/completed/versionCode=${EXPECTED.versionCode}`,
     });
   });
 
@@ -63,13 +65,17 @@ describe('Google Play track state updater', () => {
 
     expect(getTrackStatus(document)).toEqual({
       ready: false,
-      summary: 'internal/missing/24',
+      summary: `internal/missing/${EXPECTED.versionCode}`,
     });
   });
 
   it('keeps draft releases blocked', () => {
     const document = normalizeSnapshot(
-      JSON.stringify(apiSnapshot({ releases: [{ name: '1.2.0', versionCodes: ['24'], status: 'draft' }] })),
+      JSON.stringify(
+        apiSnapshot({
+          releases: [{ name: '1.2.0', versionCodes: [EXPECTED.versionCode], status: 'draft' }],
+        })
+      ),
       {
         checkedAt: '2026-05-15T00:00:00.000Z',
         source: 'test',
@@ -82,7 +88,7 @@ describe('Google Play track state updater', () => {
 
     expect(getTrackStatus(document)).toEqual({
       ready: false,
-      summary: 'internal/1.2.0/draft/versionCode=24',
+      summary: `internal/1.2.0/draft/versionCode=${EXPECTED.versionCode}`,
     });
   });
 
@@ -103,7 +109,7 @@ describe('Google Play track state updater', () => {
 
     const written = JSON.parse(fs.readFileSync(file, 'utf8'));
     expect(written.checked_at).toBe('2026-05-15T00:00:00.000Z');
-    expect(written.releases[0].version_codes).toEqual(['24']);
+    expect(written.releases[0].version_codes).toEqual([EXPECTED.versionCode]);
   });
 
   it('rejects unexpected tracks', () => {
@@ -144,14 +150,38 @@ describe('Google Play track state updater', () => {
         '--track',
         'internal',
         '--expected-version-code',
-        '24',
+        '41',
       ])
     ).toMatchObject({
       input: expect.stringContaining('in.json'),
       file: expect.stringContaining('out.json'),
       checkedAt: '2026-05-15T00:00:00Z',
       track: 'internal',
-      expectedVersionCode: '24',
+      expectedVersionCode: '41',
+    });
+  });
+
+  it('defaults the expected versionCode to the Android candidate in app.json', () => {
+    const appConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'app.json'), 'utf8'));
+
+    expect(readAppVersionCode()).toBe(String(appConfig.expo.android.versionCode));
+    expect(parseArgs([]).expectedVersionCode).toBe(String(appConfig.expo.android.versionCode));
+  });
+
+  it('can evaluate track readiness against a newer candidate than the stored snapshot expectation', () => {
+    const document = normalizeSnapshot(JSON.stringify(apiSnapshot()), {
+      checkedAt: '2026-05-15T00:00:00.000Z',
+      source: 'test',
+      packageName: EXPECTED.packageName,
+      track: EXPECTED.track,
+      expectedVersionCode: EXPECTED.versionCode,
+      expectedStatus: EXPECTED.status,
+    });
+    const nextVersionCode = String(Number(EXPECTED.versionCode) + 1);
+
+    expect(getTrackStatus(document, nextVersionCode)).toEqual({
+      ready: false,
+      summary: `internal/missing/${nextVersionCode}`,
     });
   });
 });

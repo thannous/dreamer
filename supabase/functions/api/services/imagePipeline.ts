@@ -11,6 +11,7 @@ type ImagePromptOptions = {
 
 type StoredImageOptions = {
   apiKey: string;
+  model: string;
   prompt: string;
   previousImageUrl?: string | null;
   supabaseUrl: string;
@@ -57,6 +58,7 @@ export async function generateAndStoreImage(
   const { imageBase64, mimeType, raw: imgJson } = await generateImageFromPrompt({
     prompt: options.prompt,
     apiKey: options.apiKey,
+    model: options.model,
     aspectRatio: '9:16',
   });
 
