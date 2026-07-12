@@ -7,7 +7,8 @@ Propriete: `sc-domain:noctalia.app`.
 
 - Sitemap live cache-buste: HTTP 200, `application/xml`, 1160 URLs.
 - Les 20 URLs publiees en juillet sont presentes dans le sitemap live et repondent 200.
-- `version.txt` live: `20260711-194440`.
+- Deploy Cloudflare automatique: `13c70708`, source `863c4ba`.
+- `version.txt` live apres ce deploy: `2866f3066c1f`.
 
 ## Vague initiale de 15 URLs
 
