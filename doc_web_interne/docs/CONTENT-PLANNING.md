@@ -3,10 +3,10 @@
 Source de verite editoriale: `docs-src/content/blog/`.
 Sortie generee: `docs/`.
 Langues suivies: FR, EN, ES, DE, IT.
-Derniere publication SEO connue: Cloudflare Pages `20260710-171822` via commit `5afeeb4f1`.
-Controle live du 2026-07-10 apres publication anticipee: `version.txt` renvoie `20260710-171822`, le sitemap live contient 1160 URLs et les 5 nouvelles URLs repondent 200.
+Derniere version live observee: `20260711-194440`.
+Controle live du 2026-07-12: le sitemap live contient 1160 URLs et les 20 URLs de juillet repondent 200.
 
-## Etat editorial au 10 juillet 2026
+## Etat editorial au 12 juillet 2026
 
 | Phase | Statut | Notes |
 |---|---|---|
@@ -27,8 +27,10 @@ Controle live du 2026-07-10 apres publication anticipee: `version.txt` renvoie `
 | 10 juillet - Controle live | Fait | Les 15 URLs juillet repondent 200 et sont presentes dans le sitemap live, qui contient 1155 URLs. `version.txt` renvoie `20260710-010011`. |
 | 10 juillet - Cauchemars chaleur/stress | Publie par anticipation dans les 5 langues | Commit `5afeeb4f1`, prod `20260710-171822`, 5 URLs 200 et sitemap live a 1160 URLs. |
 | 10 juillet - Search Console cauchemars | En suivi | Sitemap resoumis avec reponse 204. Reinspection finale: FR exploree non indexee, EN/ES/DE detectees, IT inconnue. FR placee en file prioritaire, puis quota quotidien atteint sur EN. EN/ES/DE/IT a redemander le 11 juillet si elles ne progressent pas. |
+| 12 juillet - Search Console vague juillet | En suivi leger | Les 15 URLs de la vague initiale sont maintenant `Submitted and indexed`. Pour les cauchemars, FR/EN sont indexees; ES/IT restent inconnues et DE exploree non indexee. Les demandes manuelles ES/DE/IT ont ete confirmees dans l'UI. |
+| 12 juillet - Controle live | Fait | Les 20 URLs juillet repondent 200 et sont presentes dans le sitemap live, qui contient 1160 URLs. `version.txt` renvoie `20260711-194440`. |
 
-Les 6 URLs de juin qui avaient demande une indexation manuelle ne sont plus bloquantes. Pour juillet, les 10 demandes envoyees le 9 juillet ont abouti; reinspecter uniquement l'URL ES deja exploree avant la prochaine publication.
+Les 6 URLs de juin qui avaient demande une indexation manuelle ne sont plus bloquantes. Les 15 URLs de la vague initiale de juillet sont maintenant indexees. Pour l'article cauchemars, reinspecter uniquement ES/DE/IT apres les demandes manuelles confirmees le 12 juillet.
 
 ## URLs publiees et indexation
 
@@ -78,8 +80,8 @@ Le sitemap live a ete soumis a Search Console le 2026-07-08. Les cinq URLs vacan
 |---:|---|---|---|---|---|---|---|
 | 1 | 1-3 juillet, publie le 6 juillet | Reves et sommeil en vacances | Publie/live; 5/5 indexees | Saisonnier ete, voyage, changement de lit, reveil nocturne | FR, EN, ES, DE, IT | Heatwave, sleep-day-environment, dream journal, dream recall | Build/check faits dans le sprint; sitemap live OK |
 | 2 | 4-7 juillet, rattrape le 8 juillet | Bruit nocturne, sommeil et reves | Publie/live; 5/5 indexees | Requetes pratiques appartement, voisinage, ville, vacances | FR, EN, ES, DE, IT | Sleep-day-environment, vivid dreams, stress dreams, dream journal, vacation | Build/check/release-check faits; sitemap live OK |
-| 3 | 8-11 juillet, produit le 8 juillet | Reveil nocturne et rappel des reves | Publie/live; 4/5 indexees, 1 recheck ES | Capture rapide, journal vocal, sommeil fragmente | FR, EN, ES, DE, IT | Voice dream journal, how to remember dreams, REM sleep, privacy article | Build/check/release-check faits; sitemap live OK |
-| 4 | 12-15 juillet, anticipe le 10 juillet | Cauchemars en periode de chaleur ou stress | Publie/live; sitemap soumis, FR en file prioritaire, 4 demandes en suivi | Angle ete + anxiete, utile pour maillage cauchemars/canicule | FR, EN, ES, DE, IT | Nightmares guide, heatwave, anxiety dreams, mental health | Build/check/release-check/crosslinks passes; sitemap live 1160 URLs |
+| 3 | 8-11 juillet, produit le 8 juillet | Reveil nocturne et rappel des reves | Publie/live; 5/5 indexees | Capture rapide, journal vocal, sommeil fragmente | FR, EN, ES, DE, IT | Voice dream journal, how to remember dreams, REM sleep, privacy article | Build/check/release-check faits; sitemap live OK |
+| 4 | 12-15 juillet, anticipe le 10 juillet | Cauchemars en periode de chaleur ou stress | Publie/live; 2/5 indexees, ES/DE/IT en file prioritaire | Angle ete + anxiete, utile pour maillage cauchemars/canicule | FR, EN, ES, DE, IT | Nightmares guide, heatwave, anxiety dreams, mental health | Build/check/release-check/crosslinks passes; sitemap live 1160 URLs |
 
 ## Publication realisee - 6 juillet
 
@@ -122,7 +124,7 @@ Dossier source: `docs-src/content/blog/blog.night-waking-dream-recall/`.
 |---|---|---|---|
 | FR | `reveil-nocturne-rappel-reves` | https://noctalia.app/fr/blog/reveil-nocturne-rappel-reves | Submitted and indexed |
 | EN | `night-waking-dream-recall` | https://noctalia.app/en/blog/night-waking-dream-recall | Submitted and indexed |
-| ES | `despertares-nocturnos-recordar-suenos` | https://noctalia.app/es/blog/despertares-nocturnos-recordar-suenos | Crawled - currently not indexed; derniere exploration 2026-07-09 11:47 UTC |
+| ES | `despertares-nocturnos-recordar-suenos` | https://noctalia.app/es/blog/despertares-nocturnos-recordar-suenos | Submitted and indexed; derniere exploration 2026-07-11 12:33 UTC |
 | DE | `naechtliches-erwachen-traumerinnerung` | https://noctalia.app/de/blog/naechtliches-erwachen-traumerinnerung | Submitted and indexed |
 | IT | `risveglio-notturno-ricordo-sogni` | https://noctalia.app/it/blog/risveglio-notturno-ricordo-sogni | Submitted and indexed |
 
@@ -159,6 +161,15 @@ Reinspection live et Search Console 2026-07-10 a 16:08 CEST:
 - `version.txt` live renvoie `20260710-010011`. Aucun deploy n'a ete declenche par ce run.
 - Aucun nouvel article produit: la fenetre `Cauchemars en periode de chaleur ou stress` ouvre le 12 juillet.
 
+Reinspection live et Search Console 2026-07-12:
+
+- Les 20 URLs juillet repondent 200 et sont toutes presentes dans le sitemap live.
+- Sitemap live: 1160 URLs, HTTP 200, `application/xml`; `version.txt` renvoie `20260711-194440`.
+- Les 15 URLs de la vague initiale sont maintenant `Submitted and indexed`, y compris l'URL ES du reveil nocturne, exploree le 2026-07-11 a 12:33 UTC.
+- Pour l'article cauchemars, FR/EN sont `Submitted and indexed`; ES/IT sont `URL is unknown to Google` et DE reste `Crawled - currently not indexed`, avec fetch reussi et robots autorise.
+- Les demandes manuelles ES/DE/IT ont toutes ete confirmees dans l'UI Search Console et ajoutees a la file d'exploration prioritaire.
+- Aucun nouvel article produit: l'article de la fenetre 12-15 juillet est deja live et le planning ne definit pas encore de priorite 5.
+
 Preparation editoriale anticipee le 2026-07-10:
 
 - Worktree propre: `/private/tmp/dreamer-noctalia-nightmares-20260712`, branche `codex/noctalia-nightmares-20260712`, base `origin/master` `27d78bd71`.
@@ -172,11 +183,11 @@ Publication anticipee le 2026-07-10:
 
 | Langue | URL live | Search Console juste apres publication |
 |---|---|---|
-| FR | https://noctalia.app/fr/blog/cauchemars-chaleur-stress | Exploree, actuellement non indexee; derniere exploration 2026-07-10 15:25:52 UTC; demande manuelle confirmee |
-| EN | https://noctalia.app/en/blog/heat-stress-nightmares | Detectee, actuellement non indexee; demande manuelle bloquee par le quota quotidien |
-| ES | https://noctalia.app/es/blog/pesadillas-calor-estres | Detectee, actuellement non indexee; demande manuelle a retenter le 11 juillet si necessaire |
-| DE | https://noctalia.app/de/blog/albtraeume-hitze-stress | Detectee, actuellement non indexee; demande manuelle a retenter le 11 juillet si necessaire |
-| IT | https://noctalia.app/it/blog/incubi-caldo-stress | URL inconnue dans l'API; demande manuelle a retenter le 11 juillet si necessaire |
+| FR | https://noctalia.app/fr/blog/cauchemars-chaleur-stress | Submitted and indexed; derniere exploration 2026-07-10 15:25:52 UTC |
+| EN | https://noctalia.app/en/blog/heat-stress-nightmares | Submitted and indexed; derniere exploration 2026-07-10 16:59:27 UTC |
+| ES | https://noctalia.app/es/blog/pesadillas-calor-estres | URL is unknown to Google; demande manuelle confirmee le 12 juillet |
+| DE | https://noctalia.app/de/blog/albtraeume-hitze-stress | Crawled - currently not indexed; derniere exploration 2026-07-11 00:00:06 UTC; demande manuelle confirmee le 12 juillet |
+| IT | https://noctalia.app/it/blog/incubi-caldo-stress | URL is unknown to Google; demande manuelle confirmee le 12 juillet |
 
 - Commit publie sur `master`: `5afeeb4f1`.
 - Version Cloudflare Pages: `20260710-171822`.
@@ -196,9 +207,9 @@ Publication anticipee le 2026-07-10:
 
 ## A surveiller
 
-- Le marqueur live est passe a `20260710-171822` et le sitemap a 1160 URLs. Ne pas deployer depuis le worktree principal actuellement tres charge; isoler explicitement les prochains changements editoriaux.
+- Le marqueur live observe est `20260711-194440` et le sitemap reste a 1160 URLs. Ne pas deployer depuis le worktree principal actuellement tres charge; isoler explicitement les prochains changements editoriaux.
 - Les 25 URLs de juin sont indexees; ne pas les retraiter comme blocantes.
 - Le hub reve lucide doit afficher `lastmod` `2026-06-21` dans le sitemap genere.
-- Reinspecter l'URL ES `/es/blog/despertares-nocturnos-recordar-suenos`, actuellement `Crawled - currently not indexed`, le 11 juillet ou avant la publication suivante.
-- Reinspecter les 5 URLs cauchemars le 11 juillet. Si EN/ES/DE/IT ne progressent pas, retenter leur demande manuelle apres reinitialisation du quota Search Console; ne pas redemander FR, deja en file prioritaire.
+- Les 15 URLs de la vague initiale de juillet sont indexees; ne plus les retraiter comme bloquantes.
+- Reinspecter uniquement ES/DE/IT de l'article cauchemars apres les demandes manuelles confirmees le 12 juillet; ne pas redemander FR/EN, deja indexees.
 - Les suggestions non bloquantes de liens symboles dans les pages generiques EN/FR/ES peuvent rester hors sprint sauf si un run est dedie au maillage fin.
