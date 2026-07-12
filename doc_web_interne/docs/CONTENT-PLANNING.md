@@ -3,7 +3,7 @@
 Source de verite editoriale: `docs-src/content/blog/`.
 Sortie generee: `docs/`.
 Langues suivies: FR, EN, ES, DE, IT.
-Derniere version live observee: `20260711-194440`.
+Derniere version live observee: `2866f3066c1f` apres le deploy Cloudflare `13c70708` de la source `863c4ba`.
 Controle live du 2026-07-12: le sitemap live contient 1160 URLs et les 20 URLs de juillet repondent 200.
 
 ## Etat editorial au 12 juillet 2026
@@ -28,7 +28,7 @@ Controle live du 2026-07-12: le sitemap live contient 1160 URLs et les 20 URLs d
 | 10 juillet - Cauchemars chaleur/stress | Publie par anticipation dans les 5 langues | Commit `5afeeb4f1`, prod `20260710-171822`, 5 URLs 200 et sitemap live a 1160 URLs. |
 | 10 juillet - Search Console cauchemars | En suivi | Sitemap resoumis avec reponse 204. Reinspection finale: FR exploree non indexee, EN/ES/DE detectees, IT inconnue. FR placee en file prioritaire, puis quota quotidien atteint sur EN. EN/ES/DE/IT a redemander le 11 juillet si elles ne progressent pas. |
 | 12 juillet - Search Console vague juillet | En suivi leger | Les 15 URLs de la vague initiale sont maintenant `Submitted and indexed`. Pour les cauchemars, FR/EN sont indexees; ES/IT restent inconnues et DE exploree non indexee. Les demandes manuelles ES/DE/IT ont ete confirmees dans l'UI. |
-| 12 juillet - Controle live | Fait | Les 20 URLs juillet repondent 200 et sont presentes dans le sitemap live, qui contient 1160 URLs. `version.txt` renvoie `20260711-194440`. |
+| 12 juillet - Controle live | Fait | Les 20 URLs juillet repondent 200 et sont presentes dans le sitemap live, qui contient 1160 URLs. Apres le deploy `13c70708`, `version.txt` renvoie `2866f3066c1f`. |
 
 Les 6 URLs de juin qui avaient demande une indexation manuelle ne sont plus bloquantes. Les 15 URLs de la vague initiale de juillet sont maintenant indexees. Pour l'article cauchemars, reinspecter uniquement ES/DE/IT apres les demandes manuelles confirmees le 12 juillet.
 
@@ -164,7 +164,7 @@ Reinspection live et Search Console 2026-07-10 a 16:08 CEST:
 Reinspection live et Search Console 2026-07-12:
 
 - Les 20 URLs juillet repondent 200 et sont toutes presentes dans le sitemap live.
-- Sitemap live: 1160 URLs, HTTP 200, `application/xml`; `version.txt` renvoie `20260711-194440`.
+- Sitemap live: 1160 URLs, HTTP 200, `application/xml`; apres le deploy Cloudflare `13c70708` de la source `863c4ba`, `version.txt` renvoie `2866f3066c1f`.
 - Les 15 URLs de la vague initiale sont maintenant `Submitted and indexed`, y compris l'URL ES du reveil nocturne, exploree le 2026-07-11 a 12:33 UTC.
 - Pour l'article cauchemars, FR/EN sont `Submitted and indexed`; ES/IT sont `URL is unknown to Google` et DE reste `Crawled - currently not indexed`, avec fetch reussi et robots autorise.
 - Les demandes manuelles ES/DE/IT ont toutes ete confirmees dans l'UI Search Console et ajoutees a la file d'exploration prioritaire.
@@ -207,7 +207,7 @@ Publication anticipee le 2026-07-10:
 
 ## A surveiller
 
-- Le marqueur live observe est `20260711-194440` et le sitemap reste a 1160 URLs. Ne pas deployer depuis le worktree principal actuellement tres charge; isoler explicitement les prochains changements editoriaux.
+- Le marqueur live observe est `2866f3066c1f` apres le deploy automatique `13c70708`; le sitemap reste a 1160 URLs. Ne pas deployer depuis le worktree principal actuellement tres charge; isoler explicitement les prochains changements editoriaux.
 - Les 25 URLs de juin sont indexees; ne pas les retraiter comme blocantes.
 - Le hub reve lucide doit afficher `lastmod` `2026-06-21` dans le sitemap genere.
 - Les 15 URLs de la vague initiale de juillet sont indexees; ne plus les retraiter comme bloquantes.
