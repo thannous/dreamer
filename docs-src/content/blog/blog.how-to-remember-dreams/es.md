@@ -4,8 +4,8 @@
   "layout": "blogArticle",
   "lang": "es",
   "slug": "como-recordar-suenos",
-  "title": "Cómo recordar tus sueños al despertar: 10 técnicas | Noctalia",
-  "description": "Mejora tu recuerdo onírico con 10 técnicas prácticas: diario de sueños, despertar suave, intención antes de dormir y más.",
+  "title": "Cómo recordar tus sueños: 10 técnicas prácticas | Noctalia",
+  "description": "Diez hábitos para el recuerdo onírico: despertar despacio, registrar fragmentos, fijar una intención y cuidar el descanso.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -13,24 +13,24 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Cómo recordar tus sueños al despertar: 10 técnicas | Noctalia",
-  "ogDescription": "Mejora tu recuerdo onírico con 10 técnicas prácticas: diario de sueños, despertar suave, intención antes de dormir y más.",
+  "ogTitle": "Cómo recordar tus sueños: 10 técnicas prácticas | Noctalia",
+  "ogDescription": "Diez hábitos para el recuerdo onírico: despertar despacio, registrar fragmentos, fijar una intención y cuidar el descanso.",
   "ogImage": "https://noctalia.app/img/blog/how-to-remember-dreams.webp",
   "ogImageAlt": "Persona anotando sus sueños en un diario al despertar",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Cómo recordar tus sueños al despertar: 10 técnicas | Noctalia",
-  "twitterDescription": "Mejora tu recuerdo onírico con 10 técnicas prácticas: diario de sueños, despertar suave, intención antes de dormir y más.",
+  "twitterTitle": "Cómo recordar tus sueños: 10 técnicas prácticas | Noctalia",
+  "twitterDescription": "Diez hábitos para el recuerdo onírico: despertar despacio, registrar fragmentos, fijar una intención y cuidar el descanso.",
   "twitterImage": "https://noctalia.app/img/blog/how-to-remember-dreams.webp",
   "twitterImageAlt": "Persona anotando sus sueños en un diario al despertar",
   "publishedTime": "2025-01-06",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-07-12",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "/es/blog/por-que-olvidamos-suenos",
   "preloadImage": "/img/blog/how-to-remember-dreams.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Cómo recordar tus sueños al despertar: 10 técnicas\",\n            \"description\": \"Mejora tu recuerdo onírico con 10 técnicas prácticas: diario de sueños, despertar suave, intención antes de dormir y más.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/how-to-remember-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-06\",\n            \"dateModified\": \"2026-07-09\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/como-recordar-suenos\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1149,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/es/blog/como-recordar-suenos\"\n        }",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Por qué olvidamos nuestros sueños?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"El olvido de sueños está ligado a la química cerebral. Durante el sueño REM, la norepinefrina (importante para la memoria) está en su nivel más bajo. Además, el hipocampo, responsable de la consolidación de la memoria, funciona de manera diferente durante el sueño.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Cuánto tiempo se tarda en mejorar el recuerdo de sueños?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"La mayoría de las personas notan una mejora significativa después de 1-2 semanas de práctica consistente de llevar un diario de sueños. La clave es la consistencia: registrar tus sueños cada mañana, incluso los fragmentos más pequeños.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Debería escribir o grabar mis sueños?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Ambos métodos son efectivos. La grabación de voz suele ser más rápida al despertar y captura más detalles antes de que se desvanezcan. Escribir fomenta una reflexión más profunda. Aplicaciones como Noctalia combinan ambos enfoques.\"\n                    }\n                }\n            ]\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Cómo recordar tus sueños: 10 técnicas prácticas\",\n            \"description\": \"Diez hábitos para el recuerdo onírico: despertar despacio, registrar fragmentos, fijar una intención y cuidar el descanso.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/how-to-remember-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-06\",\n            \"dateModified\": \"2026-07-12\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/como-recordar-suenos\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1149,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/es/blog/como-recordar-suenos\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Por qué olvidamos nuestros sueños?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"El olvido de sueños está ligado a la química cerebral. Durante el sueño REM, la norepinefrina (importante para la memoria) está en su nivel más bajo. Además, el hipocampo, responsable de la consolidación de la memoria, funciona de manera diferente durante el sueño.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Cuánto tiempo se tarda en mejorar el recuerdo de sueños?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"No hay un plazo fijo. El recuerdo varía de una persona a otra; céntrate en registrar tus sueños cada mañana, incluso si solo recuerdas un fragmento.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Debería escribir o grabar mis sueños?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Ambos métodos son efectivos. La grabación de voz suele ser más rápida al despertar y captura más detalles antes de que se desvanezcan. Escribir fomenta una reflexión más profunda. Aplicaciones como Noctalia combinan ambos enfoques.\"\n                    }\n                }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Recordar sueños\",\n            \"item\": \"https://noctalia.app/es/blog/como-recordar-suenos\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -70,10 +70,10 @@
 <span class="text-sm text-purple-300/60">4 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Cómo Recordar Tus Sueños: 10 Técnicas Efectivas
+                    Cómo recordar tus sueños: 10 técnicas prácticas
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Te despiertas con la sensación de haber experimentado un sueño intenso, pero segundos después, se ha evaporado por completo. Este es un fenómeno universal. Descubre cómo revertir esta tendencia con técnicas probadas por la ciencia y practicantes de <a class="text-dream-salmon hover:underline" href="guia-suenos-lucidos-principiantes">sueños lúcidos</a>.
+                    Los recuerdos de un sueño pueden desvanecerse poco después de despertar. Esta guía reúne diez hábitos sencillos para capturar fragmentos, observar el contexto y crear una rutina sin forzar una historia completa.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -90,7 +90,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rápida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Domina 10 técnicas científicas para recordar tus sueños al despertar. Mejora tu memoria onírica desde esta noche.</p>
+    <p class="text-purple-100/80 leading-relaxed">Al despertar, quédate quieto unos segundos, recupera la última emoción o imagen y anota los fragmentos que vuelvan. Un diario y una intención sencilla antes de dormir pueden apoyar la rutina, aunque el recuerdo varía cada mañana.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -103,17 +103,17 @@
                     Tabla de contenidos
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#why-forget">1. ¿Por qué olvidamos nuestros sueños?</a></li>
-<li><a class="toc-link block" href="#technique-1">2. Lleva un diario de sueños</a></li>
-<li><a class="toc-link block" href="#technique-2">3. Establece tu intención antes de dormir</a></li>
-<li><a class="toc-link block" href="#technique-3">4. Despierta suavemente</a></li>
-<li><a class="toc-link block" href="#technique-4">5. La técnica MILD</a></li>
-<li><a class="toc-link block" href="#technique-5">6. Optimiza tu sueño</a></li>
-<li><a class="toc-link block" href="#technique-6">7. Grabación de voz</a></li>
-<li><a class="toc-link block" href="#technique-7">8. Meditación y atención plena</a></li>
-<li><a class="toc-link block" href="#technique-8">9. Suplementos naturales</a></li>
-<li><a class="toc-link block" href="#technique-9">10. El método WBTB</a></li>
-<li><a class="toc-link block" href="#technique-10">11. Anclaje sensorial</a></li>
+<li><a class="toc-link block" href="#why-forget">¿Por qué olvidamos nuestros sueños?</a></li>
+<li><a class="toc-link block" href="#technique-1">1. Lleva un diario de sueños</a></li>
+<li><a class="toc-link block" href="#technique-2">2. Establece tu intención antes de dormir</a></li>
+<li><a class="toc-link block" href="#technique-3">3. Despierta suavemente</a></li>
+<li><a class="toc-link block" href="#technique-4">4. La técnica MILD</a></li>
+<li><a class="toc-link block" href="#technique-5">5. Optimiza tu sueño</a></li>
+<li><a class="toc-link block" href="#technique-6">6. Grabación de voz</a></li>
+<li><a class="toc-link block" href="#technique-7">7. Meditación y atención plena</a></li>
+<li><a class="toc-link block" href="#technique-8">8. Reconstruye el sueño hacia atrás</a></li>
+<li><a class="toc-link block" href="#technique-9">9. El método WBTB</a></li>
+<li><a class="toc-link block" href="#technique-10">10. Anclaje sensorial</a></li>
 <li><a class="toc-link block" href="#conclusion">Conclusión</a></li>
 </ol>
 </nav>
@@ -130,11 +130,11 @@
                     "Soñamos aproximadamente 4-6 veces por noche, sumando casi 2 horas. Sin embargo, solo recordamos una pequeña fracción de esta actividad onírica."
                 </blockquote>
 <p>
-                    ¿La buena noticia? La capacidad de recordar sueños se puede entrenar. Aquí están las 10 técnicas más efectivas, ordenadas por simplicidad.
+                    El recuerdo varía de una persona y de una noche a otra. Aquí tienes 10 técnicas prácticas, ordenadas por sencillez.
                 </p>
 <h2 id="technique-1">1. Lleva un diario de sueños para recordarlos</h2>
 <p>
-                    Esta es la técnica fundamental, recomendada por todos los investigadores y practicantes. Simplemente <strong>registrar tus sueños al despertar</strong> envía una señal clara a tu cerebro: estas experiencias nocturnas son importantes.
+                    Es un buen punto de partida. <strong>Registrar el sueño al despertar</strong> conserva detalles antes de que nuevas sensaciones y tareas ocupen tu atención.
                 </p>
 <h3>Cómo escribir un diario de sueños efectivo</h3>
 <ul>
@@ -144,11 +144,11 @@
 <li>No intentes interpretar todavía, solo captura</li>
 </ul>
 <p>
-                    Después de 1-2 semanas de práctica constante, la mayoría de las personas notan una mejora significativa en su recuerdo de sueños.
+                    No hay un plazo fijo: el recuerdo varía de una persona a otra. La práctica regular te ayuda a descubrir qué hábitos te funcionan, aunque al principio solo recuperes fragmentos.
                 </p>
 <h2 id="technique-2">2. Programa tu mente para recordar sueños</h2>
 <p>
-                    Tu último pensamiento antes de quedarte dormido tiene un impacto medible en tus sueños. Esta técnica, validada por estudios de <a class="text-dream-salmon hover:underline" href="guia-suenos-lucidos-principiantes">sueños lúcidos</a>, implica <strong>programar tu mente</strong> para retener experiencias nocturnas.
+                    Una intención antes de dormir te ofrece una señal sencilla para retomar al despertar. No garantiza el recuerdo: solo te prepara para observar y registrar lo que permanezca.
                 </p>
 <h3>Protocolo para fijar la intención de recordar</h3>
 <ol>
@@ -158,11 +158,11 @@
 <li>Repite esta intención hasta que te duermas</li>
 </ol>
 <p>
-                    Este método aumenta tus posibilidades de recordar sueños, especialmente cuando se combina con llevar un <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">diario de sueños</a>.
+                    Combina la intención con un <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">diario de sueños</a> para tener un paso claro si reaparece un fragmento.
                 </p>
 <h2 id="technique-3">3. Despierta suavemente para no olvidar sueños</h2>
 <p>
-                    Cómo te despiertas es crucial. Un despertar brusco - alarma estridente, saltar de la cama - <strong>borra los recuerdos de sueños casi instantáneamente</strong>.
+                    La forma de despertar puede influir en lo que queda disponible para recordar. Una alarma brusca o levantarte de inmediato puede desviar la atención de fragmentos todavía frágiles.
                 </p>
 <h3>Consejos para despertar sin perder el sueño</h3>
 <ul>
@@ -176,14 +176,14 @@
                 </p>
 <h2 id="technique-4">4. Técnica MILD para recordar sueños</h2>
 <p>
-                    Desarrollada por el psicólogo Stephen LaBerge, la técnica MILD está diseñada inicialmente para sueños lúcidos, pero también es altamente efectiva para el recuerdo de sueños.
+                    Desarrollada por el psicólogo Stephen LaBerge, MILD combina intención y visualización en la práctica del sueño lúcido. Aquí se adapta al momento de acostarse, sin alarma ni despertar programado.
                 </p>
-<h3>Pasos de la técnica MILD para memoria onírica</h3>
+<h3>Rutina MILD al acostarte</h3>
 <ol>
-<li>Despierta después de 5 horas de sueño (naturalmente o con alarma)</li>
-<li>Permanece despierto durante 10-20 minutos pensando en sueños</li>
-<li>Vuelve a dormir repitiendo: "En mi próximo sueño, recordaré que estoy soñando"</li>
-<li>Visualiza un sueño reciente e imagínate tomando consciencia dentro de él</li>
+<li>Al acostarte, recuerda un sueño reciente o un escenario onírico habitual</li>
+<li>Elige un detalle que podría ayudarte a reconocer que estás soñando</li>
+<li>Repite una intención sencilla: «La próxima vez que sueñe, notaré que estoy soñando»</li>
+<li>Visualiza que reconoces esa señal y que, al despertar de forma natural, anotas lo que recuerdas</li>
 </ol>
 <h2 id="technique-5">5. Optimiza tu sueño para recordar más</h2>
 <p>
@@ -233,18 +233,19 @@
 <li>Observa tus pensamientos sin apego</li>
 <li>Termina con tu intención de recordar tus sueños</li>
 </ul>
-<h2 id="technique-8">8. Suplementos naturales para sueños vívidos</h2>
+<h2 id="technique-8">8. Reconstruye el sueño hacia atrás</h2>
 <p>
-                    Ciertas sustancias naturales son conocidas por intensificar los sueños y facilitar el recuerdo. <strong>Precaución: consulta a un profesional de la salud</strong> antes de usar estos suplementos.
+                    Si solo queda una emoción o la escena final, utiliza ese fragmento como pista sin forzar una historia completa. Este ejercicio se realiza después de despertar, por lo que puede apoyar el recuerdo sin interrumpir el sueño de forma deliberada.
                 </p>
-<ul>
-<li><strong>Vitamina B6</strong>: Varios estudios sugieren que intensifica los sueños</li>
-<li><strong>Artemisa (Artemisia vulgaris)</strong>: Tradicionalmente usada como hierba de los sueños</li>
-<li><strong>Galantamina</strong>: Usada por practicantes de sueños lúcidos (con precaución)</li>
-<li><strong>Melatonina</strong>: Puede intensificar los sueños en algunas personas</li>
-</ul>
+<h3>Pasos para recordar al despertar</h3>
+<ol>
+<li>Quédate quieto y observa la última imagen, emoción, persona o lugar que recuerdes</li>
+<li>Pregúntate qué ocurrió justo antes de ese fragmento</li>
+<li>Recorre la secuencia hacia atrás, escena por escena</li>
+<li>Anota los detalles sueltos cuando aparezcan; podrás ordenarlos más tarde</li>
+</ol>
 <p>
-                    Estos suplementos no son soluciones milagrosas y pueden tener efectos secundarios. Siempre comienza con técnicas conductuales.
+                    Si no vuelve nada después de uno o dos minutos, déjalo y prueba de nuevo a la mañana siguiente. Proteger el descanso y mantener una rutina sin presión importa más que forzar el recuerdo.
                 </p>
 <h2 id="technique-9">9. Método WBTB para recordar sueños</h2>
 <p>
@@ -252,13 +253,13 @@
                 </p>
 <h3>¿Cómo aplicar el método WBTB paso a paso?</h3>
 <ol>
+<li>Pruébalo solo una noche en la que un despertar programado no reduzca el sueño que necesitas</li>
 <li>Programa una alarma para despertarte 5-6 horas después de dormirte</li>
-<li>Permanece despierto durante 20-60 minutos (lee sobre sueños, medita)</li>
+<li>Permanece despierto brevemente, entre 5 y 20 minutos, con luz tenue y sin actividades estimulantes</li>
 <li>Vuelve a dormir con la intención de recordar tus sueños</li>
-<li>Los sueños durante este período suelen ser más vívidos</li>
 </ol>
 <p>
-                    Este método es particularmente efectivo los fines de semana cuando puedes permitirte un despertar a mitad de la noche.
+                    WBTB fragmenta el sueño de forma deliberada. Evítalo si ya duermes poco, tienes insomnio o somnolencia diurna, o necesitas estar plenamente alerta temprano al día siguiente. Detente si empeora tu descanso o tu funcionamiento durante el día; el diario y el despertar suave no requieren programar una interrupción.
                 </p>
 <h2 id="technique-10">10. Anclaje sensorial para recordar sueños</h2>
 <p>
@@ -335,7 +336,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La mayoría de las personas notan una mejora significativa después de 1-2 semanas de práctica consistente de llevar un diario de sueños. La clave es la consistencia: registrar tus sueños cada mañana, incluso los fragmentos más pequeños.
+                            No hay un plazo fijo. El recuerdo varía de una persona a otra; céntrate en registrar tus sueños cada mañana, incluso si solo recuerdas un fragmento.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -361,7 +362,7 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Mecanismos del recuerdo de sueños (revisión, PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Etapas del sueño</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 26 de diciembre de 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 12 de julio de 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Símbolos de sueños relacionados" class="mt-12 mb-8">

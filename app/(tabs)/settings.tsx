@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
+import AnalyticsPrivacySettingsCard from '@/components/AnalyticsPrivacySettingsCard';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
@@ -245,6 +246,16 @@ export default function SettingsScreen() {
                   <LanguageSettingsCard />
                 </View>
               </MotiView>
+
+              <MotiView
+                from={{ opacity: 1, translateY: 16 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                transition={{ type: 'timing', duration: 500, delay: 360 }}
+              >
+                <View style={styles.settingsSectionCards}>
+                  <AnalyticsPrivacySettingsCard />
+                </View>
+              </MotiView>
             </ScreenContainer>
           </ScrollView>
         </KeyboardAvoidingView>
@@ -414,6 +425,15 @@ export default function SettingsScreen() {
                   >
                     <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
                       <RecordingOnboardingSettingsCard />
+                    </View>
+                  </MotiView>
+                  <MotiView
+                    from={{ opacity: 1, translateY: 16 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{ type: 'timing', duration: 500, delay: 980 }}
+                  >
+                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+                      <AnalyticsPrivacySettingsCard />
                     </View>
                   </MotiView>
                 </View>

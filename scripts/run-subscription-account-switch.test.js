@@ -66,9 +66,10 @@ describe('account switch runner', () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('Account switch preflight passed');
     expect(result.stdout).toContain('Precondition: app is currently signed in as the paid Plus account.');
-    expect(result.stdout).toContain('Paid account: pa...@example.com');
-    expect(result.stdout).toContain('Second account: fr...@example.com');
+    expect(result.stdout).toContain('Paid account: configured');
+    expect(result.stdout).toContain('Second account: configured and distinct');
     expect(result.stdout).not.toContain('free@example.com');
+    expect(result.stdout).not.toContain('@example.com');
     expect(result.stdout).toContain('Approval present: no');
     expect(fs.existsSync(capturePath)).toBe(false);
   });
@@ -148,6 +149,32 @@ describe('account switch runner', () => {
     });
     expect(multipleDevices.status).toBe(1);
     expect(multipleDevices.stderr).toContain('exactly one QA target');
+  });
+
+  it('rejects a physical device before account-switch preflight', () => {
+    const result = runWrapper(['--preflight', '--device', 'physical-device'], {
+      REVENUECAT_QA_EMAIL: 'paid@example.com',
+      REVENUECAT_QA_SWITCH_FREE_EMAIL: 'free@example.com',
+      REVENUECAT_QA_SWITCH_FREE_PASSWORD: 'password',
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('emulator-only');
+  });
+
+  it('rejects an approved account switch on a physical device without launching Maestro', () => {
+    const capturePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'account-switch-capture-')), 'capture.json');
+    const result = runWrapper(['--device', 'physical-device'], {
+      REVENUECAT_QA_SWITCH_APPROVAL: APPROVAL,
+      REVENUECAT_QA_EMAIL: 'paid@example.com',
+      REVENUECAT_QA_SWITCH_FREE_EMAIL: 'free@example.com',
+      REVENUECAT_QA_SWITCH_FREE_PASSWORD: 'password',
+      CAPTURE_PATH: capturePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('emulator-only');
+    expect(fs.existsSync(capturePath)).toBe(false);
   });
 
   it('scopes Test Store mode and paid status before logout', () => {

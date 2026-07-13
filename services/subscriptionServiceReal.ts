@@ -7,6 +7,7 @@ import {
   mapStatus as mapStatusPure,
   type CustomerInfoLike,
 } from '@/lib/revenuecat';
+import { getExpoPublicEnvValue } from '@/lib/env';
 import { createScopedLogger } from '@/lib/logger';
 
 import type { PurchasePackage, SubscriptionStatus } from '@/lib/types';
@@ -49,13 +50,12 @@ function resetCachedState(): void {
 }
 
 function resolveApiKey(): string | null {
-  const env = process.env;
   const extra = (Constants?.expoConfig as any)?.extra ?? {};
 
   if (Platform.OS === 'android') {
+    const key = getExpoPublicEnvValue('EXPO_PUBLIC_REVENUECAT_ANDROID_KEY') ?? null;
     if (__DEV__) {
       // En dev on ne veut pas retomber sur la clé extra (qui est celle du Play Store) si l'env est chargé.
-      const key = env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? null;
       const masked = key ? `${key.slice(0, 6)}…${key.slice(-4)}` : null;
       log.debug('env android key', masked);
       if (!key) {
@@ -66,12 +66,22 @@ function resolveApiKey(): string | null {
       }
       return key ?? extra.revenuecatAndroidKey ?? null;
     }
-    return env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? extra.revenuecatAndroidKey ?? null;
+    return key ?? extra.revenuecatAndroidKey ?? null;
   }
   if (Platform.OS === 'ios') {
-    return env.EXPO_PUBLIC_REVENUECAT_IOS_KEY ?? extra.revenuecatIosKey ?? null;
+    return getExpoPublicEnvValue('EXPO_PUBLIC_REVENUECAT_IOS_KEY') ?? extra.revenuecatIosKey ?? null;
   }
-  return env.EXPO_PUBLIC_REVENUECAT_WEB_KEY ?? extra.revenuecatWebKey ?? null;
+  return getExpoPublicEnvValue('EXPO_PUBLIC_REVENUECAT_WEB_KEY') ?? extra.revenuecatWebKey ?? null;
+}
+
+export function getStoreMode(): string {
+  const apiKey = resolveApiKey();
+  if (!apiKey) return 'No store key';
+  if (apiKey.startsWith('test_')) return 'RevenueCat Test Store';
+  if (apiKey.startsWith('goog_')) return 'Google Play';
+  if (apiKey.startsWith('appl_')) return 'Apple App Store';
+  if (apiKey.startsWith('rcb_')) return 'RevenueCat Web Billing';
+  return 'Custom store';
 }
 
 async function ensureConfigured(userId?: string | null): Promise<void> {

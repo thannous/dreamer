@@ -505,6 +505,43 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).not.toContain('Full RevenueCat workflow is not complete');
   });
 
+  it('redacts identities and device endpoints from rendered evidence', () => {
+    const tester = 'tester@example.com';
+    const appUserId = '00000000-0000-4000-8000-000000000000';
+    const easBuildId = '310244ed-027b-4028-8522-70c0f676a0e9';
+    const deviceId = `${['192', '168', '1', '10'].join('.')}:43210`;
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester,
+          appUserId,
+          evidence: key === 'play_monthly'
+            ? `${evidenceForKey(key)}; ${tester}; ${appUserId}; ${easBuildId}; ${deviceId}`
+            : evidenceForKey(key),
+          ...(key.startsWith('play_')
+            ? playEvidenceFields({ deviceId, easBuildId })
+            : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport([], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).not.toContain(tester);
+    expect(result.stdout).not.toContain(appUserId);
+    expect(result.stdout).not.toContain(easBuildId);
+    expect(result.stdout).not.toContain(deviceId);
+    expect(result.stdout).toContain('<redacted:tester>');
+    expect(result.stdout).toContain('<redacted:device>');
+  });
+
   it('does not reuse Play evidence recorded for an older Android versionCode', () => {
     const staleVersionCode = ANDROID_CANDIDATE_VERSION_CODE - 1;
     const gates = Object.fromEntries(

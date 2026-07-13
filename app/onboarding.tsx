@@ -1,912 +1,710 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DarkTheme } from '@/constants/journalTheme';
+import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { trackProductEvent } from '@/lib/analytics';
+import type { OnboardingPath, OnboardingStep } from '@/lib/onboardingState';
 import {
-  getOnboardingCompletionFlags,
-  type OnboardingCompletionIntent,
-} from '@/lib/onboardingCompletion';
+  getProductAnalyticsPreference,
+  isProductAnalyticsAvailable,
+  setProductAnalyticsEnabled,
+} from '@/lib/productAnalytics';
 import { TID } from '@/lib/testIDs';
-import type { RecordingInputModePreference } from '@/lib/types';
-import {
-  saveFirstLaunchCompleted,
-  saveRecordingInputModePreference,
-  saveRecordingOnboardingCompleted,
-  saveRememberedDreamPromptDismissed,
-} from '@/services/storageService';
 import { Asset } from 'expo-asset';
 import { router } from 'expo-router';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  AccessibilityInfo,
   ActivityIndicator,
   Image,
   Platform,
   Pressable,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   View,
-  useWindowDimensions,
+  findNodeHandle,
   type ColorValue,
+  type LayoutChangeEvent,
   type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-type OnboardingPathId = 'analyze' | 'memory' | 'library';
-type OnboardingStep = 'intro' | 'paths' | 'capture';
-type IntroSignalId = 'capture' | 'decode' | 'profile';
-
-type OnboardingPath = {
-  id: OnboardingPathId;
+type PathDefinition = {
+  id: OnboardingPath;
   icon: React.ComponentProps<typeof IconSymbol>['name'];
-  action: 'fresh' | 'remembered' | 'library';
 };
 
-const ONBOARDING_PATHS: OnboardingPath[] = [
-  {
-    id: 'analyze',
-    icon: 'moon.stars.fill',
-    action: 'fresh',
-  },
-  {
-    id: 'memory',
-    icon: 'clock',
-    action: 'remembered',
-  },
-  {
-    id: 'library',
-    icon: 'book.closed.fill',
-    action: 'library',
-  },
+type FailedAction =
+  | { type: 'start' }
+  | { type: 'step'; step: OnboardingStep }
+  | { type: 'select'; path: OnboardingPath }
+  | { type: 'skip' }
+  | { type: 'complete'; path: OnboardingPath };
+
+const PATHS: PathDefinition[] = [
+  { id: 'analyze', icon: 'moon.stars.fill' },
+  { id: 'memory', icon: 'clock' },
+  { id: 'dictionary', icon: 'book.closed.fill' },
 ];
 
-const INTRO_SIGNALS: {
-  id: IntroSignalId;
-  icon: React.ComponentProps<typeof IconSymbol>['name'];
-}[] = [
-  {
-    id: 'capture',
-    icon: 'pencil',
-  },
-  {
-    id: 'decode',
-    icon: 'eye.fill',
-  },
-  {
-    id: 'profile',
-    icon: 'sparkles',
-  },
+const SIGNALS = [
+  { id: 'capture', icon: 'pencil' as const },
+  { id: 'decode', icon: 'eye.fill' as const },
+  { id: 'profile', icon: 'sparkles' as const },
 ];
 
 const INTRO_BACKGROUND_IMAGE = require('@/assets/images/onboarding-astral-background.png');
 const PATH_BACKGROUND_IMAGE = require('@/assets/images/onboarding-path-background.png');
-const CAPTURE_BACKGROUND_IMAGE = require('@/assets/images/onboarding-capture-background.png');
-
-const CAPTURE_MODES: {
-  id: RecordingInputModePreference;
-  icon: React.ComponentProps<typeof IconSymbol>['name'];
-}[] = [
-  {
-    id: 'text',
-    icon: 'pencil',
-  },
-  {
-    id: 'voice',
-    icon: 'mic',
-  },
-];
 
 export default function OnboardingScreen() {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width: viewportWidth } = useWindowDimensions();
-  const [step, setStep] = useState<OnboardingStep>('intro');
-  const [selectedPathId, setSelectedPathId] = useState<OnboardingPathId>('analyze');
-  const [selectedCaptureMode, setSelectedCaptureMode] =
-    useState<RecordingInputModePreference>('text');
+  const {
+    state,
+    loading,
+    error: contextError,
+    transition,
+    continueForSession,
+    reload,
+  } = useOnboarding();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const [selectedPathOverride, setSelectedPathOverride] = useState<OnboardingPath | null>(null);
   const [isLeaving, setIsLeaving] = useState(false);
+  const [failedAction, setFailedAction] = useState<FailedAction | null>(null);
+  const [showPrivacySheet, setShowPrivacySheet] = useState(false);
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
+  const [analyticsPreferenceLoading, setAnalyticsPreferenceLoading] = useState(false);
+  const [analyticsPreferenceError, setAnalyticsPreferenceError] = useState(false);
+  const [footerHeight, setFooterHeight] = useState(0);
+  const titleRef = useRef<Text | null>(null);
+  const startedRef = useRef(false);
+  const viewedStepsRef = useRef<Set<OnboardingStep>>(new Set());
 
-  const selectedPath = useMemo(
-    () => ONBOARDING_PATHS.find((path) => path.id === selectedPathId) ?? ONBOARDING_PATHS[0],
-    [selectedPathId]
+  const step: OnboardingStep = state.step === 'path' ? 'path' : 'intro';
+  const titleAccent = noctalia.accent.strong;
+  const background = noctalia.screen.background;
+  const introUri = Asset.fromModule(INTRO_BACKGROUND_IMAGE).uri;
+  const pathUri = Asset.fromModule(PATH_BACKGROUND_IMAGE).uri;
+  const introBackgroundWebStyle = useMemo(
+    () => ({
+      backgroundImage: `url("${introUri}")`,
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'contain',
+    }) as unknown as ViewStyle,
+    [introUri]
+  );
+  const pathBackgroundWebStyle = useMemo(
+    () => ({
+      backgroundImage: `url("${pathUri}")`,
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+    }) as unknown as ViewStyle,
+    [pathUri]
   );
 
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const immersiveNoctalia = useMemo(() => getNoctaliaDesignTokens(DarkTheme, 'dark'), []);
-  const screenBackground = noctalia.screen.background;
-  const introWheat = noctalia.accent.base;
-  const introWheatSoft = noctalia.accent.soft;
-  const introOnWheat = noctalia.text.onAccent;
-  const introPrimaryText = noctalia.text.primary;
-  const introMutedText = noctalia.text.secondary;
-  const heroOverlayPrimary = step === 'intro' ? introPrimaryText : immersiveNoctalia.text.primary;
-  const heroOverlayAccent = step === 'intro' ? introWheatSoft : immersiveNoctalia.accent.soft;
-  const introSceneHeight = Math.max(320, Math.min(370, viewportWidth * 0.88));
-  const introBackgroundUri = Asset.fromModule(INTRO_BACKGROUND_IMAGE).uri;
-  const pathBackgroundUri = Asset.fromModule(PATH_BACKGROUND_IMAGE).uri;
-  const captureBackgroundUri = Asset.fromModule(CAPTURE_BACKGROUND_IMAGE).uri;
-  const introBackgroundWebStyle = useMemo(() => ({
-    backgroundImage: `url("${introBackgroundUri}")`,
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'contain',
-  }) as unknown as ViewStyle, [introBackgroundUri]);
-  const pathBackgroundWebStyle = useMemo(() => ({
-    backgroundImage: `url("${pathBackgroundUri}")`,
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-  }) as unknown as ViewStyle, [pathBackgroundUri]);
-  const captureBackgroundWebStyle = useMemo(() => ({
-    backgroundImage: `url("${captureBackgroundUri}")`,
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-  }) as unknown as ViewStyle, [captureBackgroundUri]);
-  const stickyFooterPaddingBottom = Math.max(insets.bottom + 10, 18);
-  const scrollBottomPadding = stickyFooterPaddingBottom + (step === 'intro' ? 114 : 106);
+  useEffect(() => {
+    if (loading || startedRef.current || state.status !== 'not_started') return;
+    startedRef.current = true;
+    void transition({ type: 'START' })
+      .then(() => trackProductEvent('onboarding_started', { experience_version: 2 }))
+      .catch(() => {
+        startedRef.current = false;
+        setFailedAction({ type: 'start' });
+      });
+  }, [loading, state.status, transition]);
 
-  const applyOnboardingCompletion = useCallback(async (intent: OnboardingCompletionIntent) => {
-    const flags = getOnboardingCompletionFlags(intent);
-    const saves: Promise<void>[] = [saveFirstLaunchCompleted(flags.firstLaunchCompleted)];
+  useEffect(() => {
+    if (loading) return;
+    const timeout = setTimeout(() => {
+      const node = findNodeHandle(titleRef.current);
+      if (node) AccessibilityInfo.setAccessibilityFocus(node);
+      AccessibilityInfo.announceForAccessibility(
+        t('onboarding.progress', { current: step === 'intro' ? 1 : 2, total: 2 })
+      );
+    }, 120);
 
-    if (flags.recordingOnboardingCompleted) {
-      saves.push(saveRecordingOnboardingCompleted(true));
+    if (!viewedStepsRef.current.has(step)) {
+      viewedStepsRef.current.add(step);
+      void trackProductEvent('onboarding_step_viewed', { step });
     }
+    return () => clearTimeout(timeout);
+  }, [loading, step, t]);
 
-    if (flags.rememberedDreamPromptDismissed) {
-      saves.push(saveRememberedDreamPromptDismissed(true));
-    }
-
-    await Promise.all(saves);
-  }, []);
-
-  const openDreamLibrary = useCallback(async () => {
-    if (isLeaving) return;
-    setIsLeaving(true);
-    try {
-      await applyOnboardingCompletion('library');
-      router.replace('/symbol-dictionary');
-    } finally {
-      setIsLeaving(false);
-    }
-  }, [applyOnboardingCompletion, isLeaving]);
-
-  const continueSelectedPath = useCallback(() => {
-    if (selectedPath.action === 'library') {
-      void openDreamLibrary();
+  const openRecording = useCallback((nextState: typeof state, path: 'analyze' | 'memory') => {
+    const pending = nextState.pendingRecordingIntent;
+    if (!pending) {
+      router.replace('/recording');
       return;
     }
+    router.replace({
+      pathname: '/recording',
+      params: {
+        entryId: pending.entryId,
+        intent: pending.intent,
+        source: pending.source,
+        postSave: path === 'analyze' ? 'analyze' : 'journal',
+      },
+    });
+  }, []);
 
-    setStep('capture');
-  }, [openDreamLibrary, selectedPath.action]);
-
-  const continueCaptureMode = useCallback(async () => {
-    if (isLeaving) return;
-    setIsLeaving(true);
+  const runStepTransition = useCallback(async (nextStep: OnboardingStep) => {
+    setFailedAction(null);
     try {
-      await saveRecordingInputModePreference(selectedCaptureMode);
-
-      if (selectedPath.action === 'remembered') {
-        await applyOnboardingCompletion('rememberedCapture');
-        router.replace({
-          pathname: '/recording',
-          params: {
-            intent: 'remembered',
-            source: 'onboarding',
-            mode: selectedCaptureMode,
-          },
-        });
-        return;
-      }
-
-      await applyOnboardingCompletion('freshCapture');
-      router.replace({
-        pathname: '/recording',
-        params: {
-          next: 'analyze',
-          mode: selectedCaptureMode,
-        },
+      await transition({ type: 'GO_TO_STEP', step: nextStep });
+      void trackProductEvent('onboarding_choice_selected', {
+        surface: 'app_onboarding',
+        step: 'intro',
+        choice: 'continue',
       });
-    } finally {
-      setIsLeaving(false);
+    } catch {
+      setFailedAction({ type: 'step', step: nextStep });
     }
-  }, [applyOnboardingCompletion, isLeaving, selectedCaptureMode, selectedPath.action]);
+  }, [transition]);
 
-  const skipOnboarding = useCallback(async () => {
+  const completePath = useCallback(async (path: OnboardingPath) => {
     if (isLeaving) return;
     setIsLeaving(true);
+    setFailedAction(null);
     try {
-      await applyOnboardingCompletion('skip');
-      router.replace('/recording');
+      const next = await transition({ type: 'COMPLETE', path });
+      void trackProductEvent('onboarding_completed', {
+        reason: path,
+        experience_version: 2,
+      });
+      if (path === 'dictionary') {
+        router.replace({ pathname: '/symbol-dictionary', params: { source: 'onboarding' } });
+      } else {
+        openRecording(next, path);
+      }
+    } catch {
+      setFailedAction({ type: 'complete', path });
     } finally {
       setIsLeaving(false);
     }
-  }, [applyOnboardingCompletion, isLeaving]);
+  }, [isLeaving, openRecording, transition]);
+
+  const skip = useCallback(async () => {
+    if (isLeaving) return;
+    setIsLeaving(true);
+    setFailedAction(null);
+    try {
+      await transition({ type: 'SKIP' });
+      void trackProductEvent('onboarding_choice_selected', {
+        surface: 'app_onboarding',
+        step,
+        choice: 'skip',
+      });
+      void trackProductEvent('onboarding_completed', { reason: 'skip', experience_version: 2 });
+      router.replace('/recording');
+    } catch {
+      setFailedAction({ type: 'skip' });
+    } finally {
+      setIsLeaving(false);
+    }
+  }, [isLeaving, step, transition]);
+
+  const selectPath = useCallback((path: OnboardingPath) => {
+    setSelectedPathOverride(path);
+    setFailedAction(null);
+    void trackProductEvent('onboarding_choice_selected', {
+      surface: 'app_onboarding',
+      step: 'path',
+      choice: path,
+    });
+    void transition({ type: 'SELECT_PATH', path }).catch(() => {
+      setFailedAction({ type: 'select', path });
+    });
+  }, [transition]);
+
+  const retry = useCallback(async () => {
+    const action = failedAction;
+    if (!action) {
+      await reload().catch(() => undefined);
+      return;
+    }
+    if (action.type === 'start') {
+      startedRef.current = false;
+      await reload().catch(() => undefined);
+      return;
+    }
+    if (action.type === 'step') {
+      await runStepTransition(action.step);
+      return;
+    }
+    if (action.type === 'select') {
+      setFailedAction(null);
+      await transition({ type: 'SELECT_PATH', path: action.path }).catch(() => {
+        setFailedAction(action);
+      });
+      return;
+    }
+    if (action.type === 'skip') {
+      await skip();
+      return;
+    }
+    await completePath(action.path);
+  }, [completePath, failedAction, reload, runStepTransition, skip, transition]);
+
+  const continueWithoutSaving = useCallback(() => {
+    const action = failedAction;
+    if (!action || (action.type !== 'skip' && action.type !== 'complete')) return;
+    const reason = action.type === 'skip' ? 'skip' : action.path;
+    continueForSession(reason);
+    setFailedAction(null);
+    void trackProductEvent('onboarding_completed', { reason, experience_version: 2 });
+    if (action.type === 'skip') {
+      router.replace('/recording');
+      return;
+    }
+    if (action.path === 'dictionary') {
+      router.replace({ pathname: '/symbol-dictionary', params: { source: 'onboarding' } });
+      return;
+    }
+    router.replace({
+      pathname: '/recording',
+      params: {
+        entryId: `session-${Date.now().toString(36)}`,
+        intent: action.path === 'memory' ? 'remembered' : 'fresh',
+        source: 'onboarding',
+        postSave: action.path === 'memory' ? 'journal' : 'analyze',
+      },
+    });
+  }, [continueForSession, failedAction]);
+
+  const openPrivacy = useCallback(() => {
+    setShowPrivacySheet(true);
+    setAnalyticsPreferenceError(false);
+    setAnalyticsPreferenceLoading(true);
+    void getProductAnalyticsPreference()
+      .then((preference) => setAnalyticsEnabled(preference === 'enabled'))
+      .catch(() => setAnalyticsPreferenceError(true))
+      .finally(() => setAnalyticsPreferenceLoading(false));
+  }, []);
+
+  const toggleAnalytics = useCallback(async (enabled: boolean) => {
+    setAnalyticsEnabled(enabled);
+    setAnalyticsPreferenceLoading(true);
+    setAnalyticsPreferenceError(false);
+    try {
+      await setProductAnalyticsEnabled(enabled);
+    } catch {
+      setAnalyticsEnabled((current) => !current);
+      setAnalyticsPreferenceError(true);
+    } finally {
+      setAnalyticsPreferenceLoading(false);
+    }
+  }, []);
+  const handleFooterLayout = useCallback((event: LayoutChangeEvent) => {
+    const nextHeight = Math.ceil(event.nativeEvent.layout.height);
+    setFooterHeight((current) => current === nextHeight ? current : nextHeight);
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={[styles.loading, { backgroundColor: background }]} testID={TID.Screen.Onboarding}>
+        <ActivityIndicator color={noctalia.accent.base} />
+      </View>
+    );
+  }
+
+  const visibleError = Boolean(contextError || failedAction);
+  const canContinueForSession = failedAction?.type === 'skip' || failedAction?.type === 'complete';
+  const selectedPath = selectedPathOverride ?? state.selectedPath ?? 'analyze';
+  const selectedDefinition = PATHS.find((path) => path.id === selectedPath) ?? PATHS[0];
+  const analyticsAvailable = isProductAnalyticsAvailable();
 
   return (
-    <View style={[styles.screen, { backgroundColor: screenBackground }]} testID={TID.Screen.Onboarding}>
+    <View style={[styles.screen, { backgroundColor: background }]} testID={TID.Screen.Onboarding}>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={[
-          step === 'intro' ? styles.introContent : styles.content,
+          styles.content,
           {
-            paddingTop: Math.max(insets.top + 18, 34),
-            paddingBottom: scrollBottomPadding,
+            paddingTop: Math.max(insets.top + 12, 28),
+            paddingBottom: footerHeight,
           },
         ]}
       >
-        <View style={[styles.topBar, step === 'intro' && styles.introTopBar, styles.pathTopBar]}>
-          <Text style={[styles.brand, step === 'intro' && styles.introBrand, step !== 'intro' && styles.pathBrand, { color: heroOverlayPrimary }]}>Noctalia</Text>
-          {step === 'intro' ? null : (
+        <View style={styles.topBar}>
+          {step === 'path' ? (
             <Pressable
               accessibilityRole="button"
-              onPress={skipOnboarding}
-              disabled={isLeaving}
-              hitSlop={10}
-              style={styles.skipButton}
-              testID={TID.Button.OnboardingSkip}
+              accessibilityLabel={t('onboarding.back')}
+              onPress={() => void runStepTransition('intro')}
+              style={styles.iconButton}
+              testID={TID.Button.OnboardingBack}
             >
-              <Text style={[styles.skipText, { color: heroOverlayAccent }]}>
-                {t('onboarding.skip')}
-              </Text>
+              <IconSymbol name="chevron.left" size={22} color={noctalia.text.primary} />
             </Pressable>
+          ) : (
+            <Text style={[styles.brand, { color: noctalia.text.primary }]}>Noctalia</Text>
           )}
+          <Text
+            style={[styles.progress, { color: titleAccent }]}
+            testID={TID.Text.OnboardingProgress}
+          >
+            {t('onboarding.progress', { current: step === 'intro' ? 1 : 2, total: 2 })}
+          </Text>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => void skip()}
+            disabled={isLeaving}
+            style={styles.skipButton}
+            testID={TID.Button.OnboardingSkip}
+          >
+            <Text style={[styles.skipText, { color: titleAccent }]}>{t('onboarding.skip')}</Text>
+          </Pressable>
         </View>
 
         {step === 'intro' ? (
           <View style={styles.intro} testID={TID.Component.OnboardingIntro}>
-            <View style={[styles.introScene, { height: introSceneHeight }]}>
+            <View style={styles.heroImageWrap} accessible={false} importantForAccessibility="no-hide-descendants">
               {Platform.OS === 'web' ? (
-                <View style={[styles.introSceneImage, introBackgroundWebStyle]} />
+                <View style={[styles.heroImage, introBackgroundWebStyle]} />
               ) : (
                 <Image
+                  accessible={false}
                   source={INTRO_BACKGROUND_IMAGE}
                   resizeMode="contain"
-                  style={styles.introSceneImage}
+                  style={styles.heroImage}
                 />
               )}
-              <View style={styles.introSceneFade} />
             </View>
-
-            <View style={styles.introCopy}>
-              <Text style={[styles.title, styles.introTitle, { color: introPrimaryText }]}>
-                {t('onboarding.intro.title')}
-              </Text>
-              <Text style={[styles.subtitle, styles.introSubtitle, { color: introMutedText }]}>
-                {t('onboarding.intro.subtitle')}
-              </Text>
-            </View>
-
-            <View
-              style={styles.introSignals}
-              testID={TID.Component.OnboardingIntroSignals}
+            <Text
+              ref={titleRef}
+              accessible
+              accessibilityRole="header"
+              style={[styles.title, { color: noctalia.text.primary }]}
             >
-              {INTRO_SIGNALS.map((signal, index) => (
-                <React.Fragment key={signal.id}>
-                  <View style={styles.signalColumn}>
-                    <View
-                      style={[
-                        styles.signalIcon,
-                        {
-                          backgroundColor: noctalia.surface.soft,
-                          borderColor: noctalia.surface.borderStrong,
-                          shadowColor: introWheat,
-                        },
-                      ]}
-                    >
-                      <IconSymbol name={signal.icon} size={28} color={introWheat as ColorValue} />
-                    </View>
-                    <Text style={[styles.signalTitle, { color: introWheat }]}>
+              {t('onboarding.intro.title_lead')}{' '}
+              <Text style={{ color: titleAccent }}>{t('onboarding.intro.title_accent')}</Text>
+            </Text>
+            <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
+              {t('onboarding.intro.subtitle')}
+            </Text>
+            <View style={styles.signalList} testID={TID.Component.OnboardingIntroSignals}>
+              {SIGNALS.map((signal) => (
+                <View key={signal.id} style={styles.signalRow}>
+                  <View style={[styles.signalIcon, { backgroundColor: noctalia.surface.soft }]}>
+                    <IconSymbol name={signal.icon} size={21} color={titleAccent as ColorValue} />
+                  </View>
+                  <View style={styles.signalCopy}>
+                    <Text style={[styles.signalTitle, { color: noctalia.text.primary }]}>
                       {t(`onboarding.intro.signal.${signal.id}.title`)}
                     </Text>
-                    <Text style={[styles.signalBody, { color: introMutedText }]}>
+                    <Text style={[styles.signalBody, { color: noctalia.text.secondary }]}>
                       {t(`onboarding.intro.signal.${signal.id}.body`)}
                     </Text>
                   </View>
-                  {index < INTRO_SIGNALS.length - 1 ? (
-                    <View style={[styles.signalDivider, { backgroundColor: `${introWheatSoft}2E` }]} />
-                  ) : null}
-                </React.Fragment>
+                </View>
               ))}
             </View>
-          </View>
-        ) : step === 'paths' ? (
-          <>
-            <View style={styles.pathHero}>
-              <View style={[styles.pathScene, { backgroundColor: screenBackground }]}>
-                {Platform.OS === 'web' ? (
-                  <View style={[styles.pathSceneImage, pathBackgroundWebStyle]} />
-                ) : (
-                  <Image
-                    source={PATH_BACKGROUND_IMAGE}
-                    resizeMode="cover"
-                    style={styles.pathSceneImage}
-                  />
-                )}
-              </View>
-              <Text style={[styles.pathTitleHero, { color: introPrimaryText }]}>
-                {t('onboarding.title') === 'Choisis ton point de départ' ? (
-                  <>
-                    Choisis ton{'\n'}
-                    <Text style={[styles.pathTitleHeroAccent, { color: introWheat }]}>point de départ</Text>
-                  </>
-                ) : (
-                  t('onboarding.title')
-                )}
+            <Pressable
+              accessibilityRole="button"
+              onPress={openPrivacy}
+              style={styles.privacyLink}
+              testID={TID.Button.OnboardingPrivacy}
+            >
+              <Text style={[styles.privacyLinkText, { color: titleAccent }]}>
+                {t('onboarding.privacy.link')}
               </Text>
+            </Pressable>
+          </View>
+        ) : (
+          <View style={styles.paths}>
+            <View style={styles.pathHeroImageWrap} accessible={false} importantForAccessibility="no-hide-descendants">
+              {Platform.OS === 'web' ? (
+                <View style={[styles.pathHeroImage, pathBackgroundWebStyle]} />
+              ) : (
+                <Image
+                  accessible={false}
+                  source={PATH_BACKGROUND_IMAGE}
+                  resizeMode="cover"
+                  style={styles.pathHeroImage}
+                />
+              )}
             </View>
-
+            <Text
+              ref={titleRef}
+              accessible
+              accessibilityRole="header"
+              style={[styles.pathHeading, { color: noctalia.text.primary }]}
+            >
+              {t('onboarding.path.title_lead')}{' '}
+              <Text style={{ color: titleAccent }}>{t('onboarding.path.title_accent')}</Text>
+            </Text>
+            <Text style={[styles.pathSubtitle, { color: noctalia.text.secondary }]}>
+              {t('onboarding.subtitle')}
+            </Text>
             <View
               style={[
-                styles.paths,
-                {
-                  backgroundColor: noctalia.surface.raised,
-                  borderColor: noctalia.surface.borderStrong,
-                },
+                styles.pathCard,
+                { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.borderStrong },
               ]}
             >
-              {ONBOARDING_PATHS.map((path) => {
-                const isSelected = path.id === selectedPathId;
-                const isLast = path.id === ONBOARDING_PATHS[ONBOARDING_PATHS.length - 1].id;
-                const pathAccent = path.id === 'memory' ? introWheatSoft : introWheat;
-
+              {PATHS.map((path, index) => {
+                const selected = path.id === selectedPath;
                 return (
                   <Pressable
                     key={path.id}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: isSelected }}
-                    onPress={() => setSelectedPathId(path.id)}
+                    accessibilityRole="radio"
+                    accessibilityState={{ checked: selected }}
+                    onPress={() => selectPath(path.id)}
                     style={[
                       styles.pathRow,
-                      {
-                        borderBottomColor: isLast ? 'transparent' : noctalia.surface.border,
+                      index < PATHS.length - 1 && {
+                        borderBottomColor: noctalia.surface.border,
+                        borderBottomWidth: StyleSheet.hairlineWidth,
                       },
                     ]}
                     testID={TID.Button.OnboardingPath(path.id)}
                   >
-                    <View
-                      style={[
-                        styles.pathIcon,
-                        {
-                          backgroundColor: noctalia.surface.soft,
-                          borderColor: noctalia.surface.border,
-                        },
-                      ]}
-                    >
-                      <IconSymbol
-                        name={path.icon}
-                        size={28}
-                        color={pathAccent as ColorValue}
-                      />
+                    <View style={[styles.pathIcon, { backgroundColor: noctalia.surface.soft }]}>
+                      <IconSymbol name={path.icon} size={25} color={titleAccent as ColorValue} />
                     </View>
                     <View style={styles.pathCopy}>
-                      <Text style={[styles.pathTitle, { color: introPrimaryText }]}>
+                      <Text style={[styles.pathTitle, { color: noctalia.text.primary }]}>
                         {t(`onboarding.path.${path.id}.title`)}
                       </Text>
-                      <Text style={[styles.pathBody, { color: introMutedText }]}>
+                      <Text style={[styles.pathBody, { color: noctalia.text.secondary }]}>
                         {t(`onboarding.path.${path.id}.body`)}
                       </Text>
                     </View>
-                    {isSelected ? (
-                      <View style={[styles.pathCheck, { backgroundColor: pathAccent }]}>
-                        <IconSymbol name="checkmark" size={14} color={introOnWheat} />
-                      </View>
-                    ) : (
-                      <View style={[styles.pathRadio, { borderColor: `${introMutedText}8A` }]} />
-                    )}
-                  </Pressable>
-                );
-              })}
-            </View>
-          </>
-        ) : (
-          <View style={styles.capture} testID={TID.Component.OnboardingCapture}>
-            <View style={styles.captureHero}>
-              <View style={[styles.captureScene, { backgroundColor: screenBackground }]}>
-                {Platform.OS === 'web' ? (
-                  <View style={[styles.captureSceneImage, captureBackgroundWebStyle]} />
-                ) : (
-                  <Image
-                    source={CAPTURE_BACKGROUND_IMAGE}
-                    resizeMode="cover"
-                    style={styles.captureSceneImage}
-                  />
-                )}
-              </View>
-              <Text style={[styles.captureTitle, { color: introPrimaryText }]}>
-                {t('onboarding.capture.title') === 'Comment veux-tu raconter ?' ? (
-                  <>
-                    Comment veux-tu{'\n'}
-                    <Text style={[styles.captureTitleAccent, { color: introWheat }]}>raconter</Text>
-                    {' ?'}
-                  </>
-                ) : (
-                  t('onboarding.capture.title')
-                )}
-              </Text>
-            </View>
-
-            <View
-              style={[
-                styles.paths,
-                {
-                  backgroundColor: noctalia.surface.raised,
-                  borderColor: noctalia.surface.borderStrong,
-                },
-              ]}
-            >
-              {CAPTURE_MODES.map((mode) => {
-                const isSelected = mode.id === selectedCaptureMode;
-                const isLast = mode.id === CAPTURE_MODES[CAPTURE_MODES.length - 1].id;
-
-                return (
-                  <Pressable
-                    key={mode.id}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: isSelected }}
-                    onPress={() => setSelectedCaptureMode(mode.id)}
-                    style={[
-                      styles.pathRow,
-                      styles.captureModeRow,
-                      {
-                        borderBottomColor: isLast ? 'transparent' : noctalia.surface.border,
-                      },
-                    ]}
-                    testID={TID.Button.OnboardingCaptureMode(mode.id)}
-                  >
                     <View
                       style={[
-                        styles.pathIcon,
+                        styles.radio,
                         {
-                          backgroundColor: noctalia.surface.soft,
-                          borderColor: noctalia.surface.border,
+                          backgroundColor: selected ? titleAccent : 'transparent',
+                          borderColor: selected ? titleAccent : noctalia.text.tertiary,
                         },
                       ]}
                     >
-                      <IconSymbol
-                        name={mode.icon}
-                        size={28}
-                        color={introWheat as ColorValue}
-                      />
+                      {selected ? <IconSymbol name="checkmark" size={13} color={noctalia.text.onAccent} /> : null}
                     </View>
-                    <View style={styles.pathCopy}>
-                      <Text style={[styles.pathTitle, { color: introPrimaryText }]}>
-                        {t(`onboarding.capture.mode.${mode.id}.title`)}
-                      </Text>
-                      <Text style={[styles.pathBody, { color: introMutedText }]}>
-                        {t(`onboarding.capture.mode.${mode.id}.body`)}
-                      </Text>
-                    </View>
-                    {isSelected ? (
-                      <View style={[styles.pathCheck, { backgroundColor: introWheat }]}>
-                        <IconSymbol name="checkmark" size={14} color={introOnWheat} />
-                      </View>
-                    ) : (
-                      <View style={[styles.pathRadio, { borderColor: `${introMutedText}8A` }]} />
-                    )}
                   </Pressable>
                 );
               })}
             </View>
-
-            <Text style={[styles.captureHint, { color: introMutedText }]}>
-              {t('onboarding.capture.hint')}
-            </Text>
           </View>
         )}
+
+        {visibleError ? (
+          <View
+            accessibilityLiveRegion="assertive"
+            style={[
+              styles.errorCard,
+              { backgroundColor: noctalia.status.danger.background, borderColor: noctalia.status.danger.border },
+            ]}
+            testID={TID.Component.OnboardingError}
+          >
+            <Text style={[styles.errorText, { color: noctalia.status.danger.text }]}>
+              {t('onboarding.persistence_error')}
+            </Text>
+            <View style={styles.errorActions}>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => void retry()}
+                style={[styles.errorButton, { borderColor: noctalia.status.danger.border }]}
+                testID={TID.Button.OnboardingRetry}
+              >
+                <Text style={[styles.errorButtonText, { color: noctalia.status.danger.text }]}>
+                  {t('onboarding.retry')}
+                </Text>
+              </Pressable>
+              {canContinueForSession ? (
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={continueWithoutSaving}
+                  style={styles.errorButton}
+                  testID={TID.Button.OnboardingContinueSession}
+                >
+                  <Text style={[styles.errorButtonText, { color: noctalia.status.danger.text }]}>
+                    {t('onboarding.continue_session')}
+                  </Text>
+                </Pressable>
+              ) : null}
+            </View>
+          </View>
+        ) : null}
       </ScrollView>
 
       <View
+        onLayout={handleFooterLayout}
         style={[
-          styles.stickyFooter,
+          styles.footer,
           {
-            paddingHorizontal: step === 'intro' ? 32 : 20,
-            paddingBottom: stickyFooterPaddingBottom,
-            backgroundColor: screenBackground,
+            paddingBottom: Math.max(insets.bottom + 10, 18),
+            backgroundColor: background,
           },
         ]}
       >
-        {step === 'intro' ? (
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => setStep('paths')}
-            style={({ pressed }) => [
-              styles.primaryButton,
-              styles.introPrimaryButton,
-              styles.stickyIntroPrimaryButton,
-              {
-                shadowColor: introWheat,
-                opacity: pressed ? 0.86 : 1,
-              },
-            ]}
-            testID={TID.Button.OnboardingIntroNext}
-          >
-            <View
-              style={[
-                styles.introPrimarySurface,
-                {
-                  backgroundColor: introWheat,
-                  borderColor: introWheatSoft,
-                },
-              ]}
-            >
-              <Text style={[styles.primaryText, styles.introPrimaryText, { color: introOnWheat }]}>
-                {t('onboarding.intro.cta')}
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => step === 'intro'
+            ? void runStepTransition('path')
+            : void completePath(selectedDefinition.id)}
+          disabled={isLeaving}
+          style={({ pressed }) => [
+            styles.primaryButton,
+            {
+              backgroundColor: noctalia.action.primary,
+              borderColor: noctalia.action.primaryBorder,
+              opacity: pressed || isLeaving ? 0.78 : 1,
+            },
+          ]}
+          testID={step === 'intro' ? TID.Button.OnboardingIntroNext : TID.Button.OnboardingPrimary}
+        >
+          {isLeaving ? (
+            <ActivityIndicator color={noctalia.action.primaryText} />
+          ) : (
+            <>
+              <Text style={[styles.primaryText, { color: noctalia.action.primaryText }]}>
+                {step === 'intro'
+                  ? t('onboarding.intro.cta')
+                  : t(`onboarding.path.${selectedDefinition.id}.cta`)}
               </Text>
-              <IconSymbol name="arrow.right" size={24} color={introOnWheat} />
-            </View>
-          </Pressable>
-        ) : (
-          <Pressable
-            accessibilityRole="button"
-            onPress={step === 'paths' ? continueSelectedPath : continueCaptureMode}
-            disabled={isLeaving}
-            style={({ pressed }) => [
-              styles.primaryButton,
-              styles.pathPrimaryButton,
-              {
-                backgroundColor: introWheat,
-                shadowColor: introWheat,
-                opacity: pressed || isLeaving ? 0.82 : 1,
-              },
-            ]}
-            testID={TID.Button.OnboardingPrimary}
-          >
-            {isLeaving ? (
-              <ActivityIndicator color={introOnWheat} />
-            ) : (
-              <>
-                <Text style={[styles.primaryText, styles.pathPrimaryText, { color: introOnWheat }]}>
-                  {step === 'paths'
-                    ? t(`onboarding.path.${selectedPath.id}.cta`)
-                    : t('onboarding.capture.cta')}
-                </Text>
-                <IconSymbol name="arrow.right" size={25} color={introOnWheat} />
-              </>
-            )}
-          </Pressable>
-        )}
+              <IconSymbol name="arrow.right" size={22} color={noctalia.action.primaryText} />
+            </>
+          )}
+        </Pressable>
       </View>
+
+      <StandardBottomSheet
+        visible={showPrivacySheet}
+        onClose={() => setShowPrivacySheet(false)}
+        title={t('onboarding.privacy.title')}
+        subtitle={t('onboarding.privacy.body')}
+        testID={TID.Sheet.OnboardingPrivacy}
+        actions={{
+          primaryLabel: t('common.done'),
+          onPrimary: () => setShowPrivacySheet(false),
+        }}
+      >
+        <View
+          style={[
+            styles.privacyAssurance,
+            { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border },
+          ]}
+        >
+          <IconSymbol name="lock.fill" size={19} color={titleAccent} />
+          <Text style={[styles.privacyAssuranceText, { color: noctalia.text.secondary }]}>
+            {t('onboarding.privacy.no_content')}
+          </Text>
+        </View>
+        <View style={styles.privacyToggleRow}>
+          <View style={styles.privacyToggleCopy}>
+            <Text style={[styles.privacyToggleLabel, { color: noctalia.text.primary }]}>
+              {t('onboarding.privacy.toggle_label')}
+            </Text>
+            <Text style={[styles.privacyToggleHint, { color: noctalia.text.secondary }]}>
+              {t('onboarding.privacy.toggle_hint')}
+            </Text>
+            <Text
+              accessibilityLiveRegion="polite"
+              style={[styles.privacyStatus, { color: analyticsPreferenceError ? noctalia.status.danger.text : titleAccent }]}
+            >
+              {analyticsPreferenceError
+                ? t('onboarding.privacy.error')
+                : !analyticsAvailable
+                  ? t('analytics.privacy.unavailable')
+                  : t(analyticsEnabled ? 'onboarding.privacy.enabled' : 'onboarding.privacy.disabled')}
+            </Text>
+          </View>
+          {analyticsPreferenceLoading ? (
+            <ActivityIndicator color={titleAccent} />
+          ) : (
+            <Switch
+              value={analyticsEnabled}
+              onValueChange={(value) => void toggleAnalytics(value)}
+              accessibilityLabel={t('onboarding.privacy.toggle_label')}
+              accessibilityHint={t('onboarding.privacy.toggle_hint')}
+            />
+          )}
+        </View>
+      </StandardBottomSheet>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
-  content: {
-    flexGrow: 1,
-    paddingHorizontal: 20,
-    gap: 20,
-  },
-  introContent: {
-    flexGrow: 1,
-    paddingHorizontal: 0,
-  },
+  screen: { flex: 1 },
+  loading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  content: { flexGrow: 1, paddingHorizontal: 20, gap: 18 },
   topBar: {
-    minHeight: 40,
+    minHeight: 44,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 16,
-    zIndex: 2,
-  },
-  introTopBar: {
-    paddingHorizontal: 20,
-  },
-  pathTopBar: {
-    paddingTop: 4,
-  },
-  brand: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 24,
-    lineHeight: 30,
-  },
-  introBrand: {
-    fontFamily: Fonts.fraunces.regular,
-    fontSize: 30,
-    lineHeight: 36,
-  },
-  pathBrand: {
-    fontFamily: Fonts.fraunces.regular,
-    fontSize: 30,
-    lineHeight: 36,
-  },
-  skipButton: {
-    minHeight: 40,
-    justifyContent: 'center',
-    paddingHorizontal: 4,
-  },
-  skipText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 14,
-  },
-  intro: {
-    flex: 1,
-  },
-  introScene: {
-    marginTop: -8,
-    marginHorizontal: -12,
-    overflow: 'hidden',
-  },
-  introSceneImage: {
-    width: '100%',
-    height: '100%',
-    opacity: 0.98,
-  },
-  introSceneFade: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 128,
-    width: '100%',
-  },
-  introCopy: {
     gap: 10,
-    marginTop: -18,
-    paddingHorizontal: 24,
   },
-  introTitle: {
+  brand: { fontFamily: Fonts.fraunces.regular, fontSize: 26, lineHeight: 32, minWidth: 80 },
+  progress: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 12,
+    lineHeight: 16,
+    textTransform: 'uppercase',
+    fontVariant: ['tabular-nums'],
+  },
+  iconButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
+  skipButton: { minWidth: 72, minHeight: 44, alignItems: 'flex-end', justifyContent: 'center' },
+  skipText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15 },
+  intro: { alignItems: 'center', gap: 13 },
+  heroImageWrap: { height: 245, width: '100%', overflow: 'hidden' },
+  heroImage: { width: '100%', height: '100%' },
+  title: {
     fontFamily: Fonts.fraunces.regular,
-    fontSize: 34,
-    lineHeight: 39,
+    fontSize: 36,
+    lineHeight: 42,
     textAlign: 'center',
   },
-  introSubtitle: {
+  subtitle: {
+    maxWidth: 520,
+    fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 15,
     lineHeight: 22,
     textAlign: 'center',
   },
-  introSignals: {
-    marginTop: 16,
-    marginHorizontal: 22,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  signalColumn: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 6,
-    minWidth: 0,
-  },
-  signalIcon: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    borderWidth: StyleSheet.hairlineWidth,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowOpacity: 0.16,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 8 },
-  },
-  signalTitle: {
-    fontFamily: Fonts.fraunces.medium,
-    fontSize: 16,
-    lineHeight: 20,
-    textAlign: 'center',
-  },
-  signalBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
-    lineHeight: 15,
-    textAlign: 'center',
-  },
-  signalDivider: {
-    width: StyleSheet.hairlineWidth,
-    height: 82,
-    marginHorizontal: 12,
-    marginTop: 18,
-  },
-  pathHero: {
-    gap: 10,
-    marginTop: -68,
-  },
-  pathScene: {
-    height: 268,
-    marginHorizontal: -20,
-    marginBottom: 2,
-    overflow: 'hidden',
-  },
-  pathSceneImage: {
-    width: '100%',
-    height: '100%',
-    opacity: 1,
-  },
-  capture: {
-    gap: 20,
-  },
-  captureHero: {
-    gap: 18,
-    marginTop: -68,
-  },
-  captureScene: {
-    height: 292,
-    marginHorizontal: -20,
-    marginBottom: 0,
-    overflow: 'hidden',
-  },
-  captureSceneImage: {
-    width: '100%',
-    height: '100%',
-    opacity: 1,
-  },
-  pathTitleHero: {
-    fontFamily: Fonts.fraunces.regular,
-    fontSize: 42,
-    lineHeight: 48,
-  },
-  pathTitleHeroAccent: {
-  },
-  captureTitle: {
-    fontFamily: Fonts.fraunces.regular,
-    fontSize: 40,
-    lineHeight: 47,
-  },
-  captureTitleAccent: {
-  },
-  pathSubtitle: {
-    fontSize: 17,
-    lineHeight: 24,
-  },
-  title: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 31,
-    lineHeight: 37,
-  },
-  subtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 21,
-  },
-  paths: {
-    borderRadius: 28,
-    borderCurve: 'continuous',
-    borderWidth: 1,
-    overflow: 'hidden',
-    marginTop: 0,
-  },
-  pathRow: {
-    minHeight: 96,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 18,
-  },
-  captureModeRow: {
-    minHeight: 104,
-    paddingVertical: 14,
-  },
-  captureHint: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 14,
-    lineHeight: 19,
-    marginTop: -4,
-    marginHorizontal: 24,
-    textAlign: 'center',
-  },
-  pathIcon: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
-    borderWidth: StyleSheet.hairlineWidth,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  pathCopy: {
-    flex: 1,
-    gap: 8,
-  },
-  pathTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 21,
-    lineHeight: 26,
-  },
-  pathBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 20,
-  },
-  pathCheck: {
-    width: 31,
-    height: 31,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  pathRadio: {
-    width: 31,
-    height: 31,
-    borderRadius: 16,
-    borderWidth: 1.5,
-  },
-  primaryActions: {
-    gap: 8,
-  },
-  stickyFooter: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    paddingTop: 10,
-    zIndex: 8,
-  },
-  primaryButton: {
-    minHeight: 66,
-    borderRadius: 22,
-    borderCurve: 'continuous',
-    paddingHorizontal: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 18,
-  },
-  primaryText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  pathPrimaryButton: {
-    minHeight: 64,
-    borderRadius: 22,
-    shadowOpacity: 0.18,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 10 },
-  },
-  pathPrimaryText: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 25,
-    lineHeight: 31,
-  },
-  introPrimaryButton: {
-    minHeight: 66,
-    marginHorizontal: 32,
-    marginTop: 22,
-    borderRadius: 22,
-    borderCurve: 'continuous',
-    overflow: 'hidden',
-    paddingHorizontal: 0,
-    shadowOpacity: 0.28,
-    shadowRadius: 22,
-    shadowOffset: { width: 0, height: 10 },
-  },
-  stickyIntroPrimaryButton: {
-    marginHorizontal: 0,
-    marginTop: 0,
-  },
-  introPrimarySurface: {
-    minHeight: 66,
-    width: '100%',
-    paddingHorizontal: 18,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 18,
-    borderWidth: 1,
-  },
-  introPrimaryText: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 20,
-    lineHeight: 26,
-  },
-  freshButton: {
-    minHeight: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-  },
-  freshText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 14,
-    textAlign: 'center',
-  },
+  signalList: { width: '100%', maxWidth: 520, gap: 8, paddingTop: 4 },
+  signalRow: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  signalIcon: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  signalCopy: { flex: 1, gap: 1 },
+  signalTitle: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15, lineHeight: 20 },
+  signalBody: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 18 },
+  privacyLink: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 8 },
+  privacyLinkText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, textDecorationLine: 'underline' },
+  paths: { gap: 12 },
+  pathHeroImageWrap: { height: 168, marginHorizontal: -20, overflow: 'hidden' },
+  pathHeroImage: { width: '100%', height: '100%' },
+  pathHeading: { fontFamily: Fonts.fraunces.regular, fontSize: 34, lineHeight: 40, textAlign: 'center' },
+  pathSubtitle: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 21, textAlign: 'center' },
+  pathCard: { borderWidth: 1, borderRadius: 24, borderCurve: 'continuous', overflow: 'hidden' },
+  pathRow: { minHeight: 94, paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', gap: 13 },
+  pathIcon: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
+  pathCopy: { flex: 1, gap: 4 },
+  pathTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 19, lineHeight: 24 },
+  pathBody: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 18 },
+  radio: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
+  errorCard: { borderWidth: 1, borderRadius: 16, padding: 14, gap: 10 },
+  errorText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 20 },
+  errorActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  errorButton: { minHeight: 44, justifyContent: 'center', borderWidth: 1, borderColor: 'transparent', borderRadius: 12, paddingHorizontal: 12 },
+  errorButtonText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 13 },
+  footer: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 20, paddingTop: 10 },
+  primaryButton: { minHeight: 60, borderRadius: 20, borderCurve: 'continuous', borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 18 },
+  primaryText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 17, lineHeight: 22, textAlign: 'center' },
+  privacyAssurance: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, borderWidth: 1, borderRadius: 14, padding: 12, marginBottom: 14 },
+  privacyAssuranceText: { flex: 1, fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 19 },
+  privacyToggleRow: { minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 16 },
+  privacyToggleCopy: { flex: 1, gap: 3 },
+  privacyToggleLabel: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15, lineHeight: 20 },
+  privacyToggleHint: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 18 },
+  privacyStatus: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 16 },
 });

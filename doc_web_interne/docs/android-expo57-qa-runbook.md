@@ -4,6 +4,31 @@ Ce document décrit la qualification Android reproductible de Noctalia après la
 migration Expo 57. Il sépare strictement le téléphone Google Play du device
 Test Store.
 
+## État de qualification au 12 juillet 2026
+
+- Le backend Noctalia expose désormais `/transcribe`. Les probes
+  d'authentification, de requête invalide et d'audio synthétique sont verts ;
+  le fournisseur de transcription répond correctement.
+- L'APK Test Store standalone en versionCode 34 est construit avec le profil
+  débogable isolé exigé par RevenueCat et s'exécute sans Metro. Les gates
+  mensuelle, annuelle, restore après effacement contrôlé et changement de
+  compte sont toutes vérifiées sur v34. Le compte QA demandé est remis en fin
+  de parcours avec l'entitlement `plus / active`.
+- La gate voix réelle de bout en bout reste ouverte : l'injection audio gRPC
+  fait quitter l'émulateur utilisé, et aucun téléphone physique v34 n'est
+  actuellement reconnecté pour prononcer la phrase témoin.
+- La preuve d'upgrade Play `33 -> 34` reste préparée mais non vérifiée. Elle est
+  bloquée jusqu'à la publication du versionCode 34 sur le track Play Internal,
+  puis la reconnexion du même téléphone et sa mise à jour depuis Google Play.
+- L'audit des dépendances ne contient plus d'alerte haute ou critique, en
+  production comme sur l'arbre complet. Les alertes modérées restantes sont
+  transitives à la chaîne Expo native et ne doivent pas être « corrigées » par
+  un downgrade forcé hors Expo 57.
+
+Ces résultats intermédiaires ne constituent pas encore un GO Play : les preuves
+Play v34 sur téléphone physique, l'upgrade physique et la voix réelle restent
+à fermer.
+
 ## 1. Invariants de sécurité
 
 - Le téléphone de qualification Play ne reçoit **jamais** un APK local : pas de
@@ -259,13 +284,17 @@ microphone seul ne constitue jamais une preuve de reconnaissance vocale.
 
 Sur l'émulateur Android 36.5.11 testé, l'injection audio gRPC fait quitter le
 processus de l'émulateur et l'audio hôte n'est pas capturé de manière fiable.
-Utiliser un téléphone v34 qualifié ou une route d'injection audio préalablement
-validée ; ne pas remplacer cette gate par le flow de permissions.
+Ne pas réessayer cette injection sur l'émulateur QA qui conserve les états de
+transaction. Utiliser un téléphone v34 qualifié ou une route d'injection audio
+préalablement validée ; ne pas remplacer cette gate par le flow de permissions.
 
-Le fallback serveur `/transcribe` est couvert par les tests client et Deno, mais
-sa preuve runtime exige à la fois le déploiement de la fonction Edge `api` et un
-nouvel APK qui contient le client mis à jour. Le fichier audio temporaire est
-supprimé dans le `finally` du parcours normal, succès ou échec du fallback.
+Le fallback serveur `/transcribe` est déployé sur le backend Noctalia et sa
+preuve runtime est verte : authentification acceptée, requête invalide rejetée
+proprement et audio synthétique transcrit. L'APK versionCode 34 reconstruit
+contient le client mis à jour. Cela qualifie le fallback serveur, mais pas la
+gate voix réelle microphone -> transcription -> sauvegarde -> analyse. Le
+fichier audio temporaire est supprimé dans le `finally` du parcours normal,
+succès ou échec du fallback.
 
 `maestro/release-analysis.yml` reste un probe invité manuel : il peut être
 bloqué par un quota déjà consommé sur l'empreinte de l'émulateur. Pour la gate
@@ -296,8 +325,21 @@ la même adresse, puis exécuter les preflights. Le compte `qa-free` reste une
 identité email/mot de passe distincte et ne doit pas être ajouté comme compte
 Google de l'émulateur.
 
-Un build standalone attendu est `release`, non débogable, sans Metro, avec le
-mode Test Store et les packages mensuel/annuel visibles.
+Le profil `revenuecat-teststore` produit un APK standalone avec bundle embarqué,
+sans Metro, mais **débogable** : RevenueCat refuse volontairement une clé
+`test_` dans un binaire non débogable. Ce profil QA est isolé et ne doit jamais
+être publié. Les profils Play/production restent, eux, strictement non
+débogables et utilisent la clé Android plateforme.
+
+La ligne `RevenueCat Test Store` du QA Lab provient du moteur effectivement
+résolu par le service d'achat, pas seulement de la variable affichée par l'UI.
+Une divergence de clé ou un repli vers Google Play fait donc échouer la
+readiness avant toute transaction.
+
+Pour le snapshot actuel, l'APK Test Store versionCode 34 est construit et les
+preuves qualifiantes mensuelle, annuelle, restore et changement de compte sont
+enregistrées. Le parcours final remet le compte QA payant et confirme que son
+entitlement reste `plus / active` après un nouveau lancement.
 
 Le flow paywall authentifié vérifie dans la même exécution le mode
 `RevenueCat Test Store`, un probe SDK réussi avec deux packages, les sélecteurs
@@ -401,13 +443,16 @@ npm run subscription:qa:evidence -- \
 Ne jamais inscrire l'email ou le mot de passe du testeur dans le texte de
 preuve.
 
-Pour les flows auxquels des clés `EMAIL` ou `PASSWORD` sont transmises, le
-runner expurge stdout/stderr et les artefacts texte après chaque tentative. Il
-supprime toutes les captures de ce flow, car un masquage fiable des pixels
-n'est pas garantie. Les valeurs restent brièvement présentes dans les arguments
-du processus Maestro, qui impose encore `-e` : exécuter ces flows uniquement sur
-un poste QA de confiance. Un rejeu nettoie aussi les traces historiques du même
-répertoire de flow avec les identifiants courants.
+Pour toute la suite `release-teststore`, le runner expurge les emails de
+stdout/stderr et des artefacts texte, y compris lorsqu'aucune identité n'a été
+fournie explicitement au flow. Il nettoie le répertoire avant le lancement,
+recommence dans un `finally` après chaque tentative et supprime toutes les
+captures, car un masquage fiable des pixels n'est pas garanti. Les valeurs
+transmises avec `-e` restent brièvement présentes dans les arguments du
+processus Maestro : exécuter ces flows uniquement sur un poste QA de confiance.
+Le rapport `subscription:qa:report` conserve les preuves brutes uniquement dans
+le fichier local ignoré et masque dans sa sortie les testeurs, app user IDs,
+build IDs, identifiants d'appareil et adresses réseau.
 
 ## 9. Gates GO / NO-GO
 
@@ -422,7 +467,16 @@ npm run typecheck:app
 npm run typecheck:tests
 npm run lint
 npm run test:fast
+npm audit --omit=dev --audit-level=high
+npm audit --audit-level=high
 ```
+
+Les deux audits doivent rester à zéro alerte haute/critique. Ne jamais utiliser
+`npm audit fix --force` sur cette migration : il peut proposer un downgrade
+incompatible avec Expo 57. Le rendu Markdown utilise un moteur corrigé, désactive
+explicitement la linkification floue et la typographie intelligente, puis passe
+en texte brut au-delà de la limite de sécurité. L'override build de `tmp` doit
+rester couvert par `npm run build:web`, Workbox compris.
 
 Sur les PR, `test:fast` publie sa durée et la compare au dernier artefact réussi
 de `master`. Une régression supérieure à 20 % ou une baseline absente bloque la
@@ -454,6 +508,10 @@ Le GO Play exige :
 - toutes les gates ci-dessus avec un code de sortie 0.
 
 Sinon, verdict **NO-GO** avec la gate exacte et le chemin de preuve manquant.
+
+État courant : **NO-GO**. Les blocages actifs sont la publication de la v34 sur
+Play Internal suivie de l'upgrade et des transactions physiques, puis la gate
+voix réelle sur un téléphone v34. Les gates Test Store v34 sont fermées.
 
 ## 10. Dépannage rapide
 

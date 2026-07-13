@@ -8,20 +8,33 @@ appId: com.tanuki75.noctalia
 - runFlow: subflows/open-release-app-preserve-state.yml
 - openLink: noctalia://settings
 - extendedWaitUntil:
-    visible: "Settings|Paramètres|Configuración|Ajustes"
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000
 
-- extendedWaitUntil:
-    visible:
+# Reset to the account card before checking the paid identity. Readiness flows
+# can otherwise leave settings scrolled near the bottom of the QA Lab.
+- scrollUntilVisible:
+    element:
+      text: "Account|Compte|Cuenta|Konto"
+    direction: UP
+    visibilityPercentage: 40
+    timeout: 30000
+- scrollUntilVisible:
+    element:
       id: text.auth.email
       text: "${QA_PAID_EMAIL_REGEX}"
+    direction: DOWN
+    visibilityPercentage: 60
     timeout: 30000
+- assertVisible:
+    id: text.auth.email
+    text: "${QA_PAID_EMAIL_REGEX}"
 
 - scrollUntilVisible:
     element:
-      text: "Subscription QA Lab"
+      id: screen.subscription.qaLab
     direction: DOWN
-    visibilityPercentage: 40
+    visibilityPercentage: 30
     timeout: 30000
 - assertVisible:
     id: text.subscription.qa.mode
@@ -32,6 +45,7 @@ appId: com.tanuki75.noctalia
     direction: DOWN
     visibilityPercentage: 60
     timeout: 30000
+    centerElement: true
 - assertVisible:
     id: text.subscription.qa.status
     text: ".*plus / active.*"
@@ -40,20 +54,36 @@ appId: com.tanuki75.noctalia
     element:
       id: btn.auth.signOut
     direction: UP
-    visibilityPercentage: 70
+    visibilityPercentage: 60
+    timeout: 30000
+    centerElement: true
+- extendedWaitUntil:
+    visible:
+      id: btn.auth.signOut
+      enabled: true
     timeout: 30000
 - tapOn:
     id: btn.auth.signOut
 - extendedWaitUntil:
-    visible: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
-    timeout: 60000
+    visible:
+      id: btn.auth.google
+      enabled: true
+    timeout: 120000
+
+- scrollUntilVisible:
+    element:
+      text: "Account|Compte|Cuenta|Konto"
+    direction: UP
+    visibilityPercentage: 40
+    timeout: 30000
 
 - scrollUntilVisible:
     element:
       id: input.auth.email
     direction: DOWN
-    visibilityPercentage: 70
+    visibilityPercentage: 60
     timeout: 30000
+    centerElement: true
 - tapOn:
     id: input.auth.email
 - eraseText
@@ -75,8 +105,9 @@ appId: com.tanuki75.noctalia
     element:
       id: input.auth.password
     direction: DOWN
-    visibilityPercentage: 70
+    visibilityPercentage: 60
     timeout: 30000
+    centerElement: true
 - tapOn:
     id: input.auth.password
 - eraseText
@@ -93,44 +124,69 @@ appId: com.tanuki75.noctalia
     element:
       id: btn.auth.signIn
     direction: DOWN
-    visibilityPercentage: 70
+    visibilityPercentage: 60
+    timeout: 30000
+    centerElement: true
+- extendedWaitUntil:
+    visible:
+      id: btn.auth.signIn
+      enabled: true
     timeout: 30000
 - tapOn:
     id: btn.auth.signIn
+- runFlow:
+    when:
+      visible: "Save password to Google Password Manager.*"
+    commands:
+      - tapOn:
+          text: "Not now"
 - extendedWaitUntil:
     visible:
       id: text.auth.email
       text: "${QA_SWITCH_FREE_EMAIL_REGEX}"
-    timeout: 45000
+    timeout: 60000
+
+# Reset the signed-in card and reassert the exact second identity before
+# touching RevenueCat state.
+- scrollUntilVisible:
+    element:
+      text: "Account|Compte|Cuenta|Konto"
+    direction: UP
+    visibilityPercentage: 40
+    timeout: 60000
+- scrollUntilVisible:
+    element:
+      id: text.auth.email
+      text: "${QA_SWITCH_FREE_EMAIL_REGEX}"
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 60000
+    centerElement: true
+- assertVisible:
+    id: text.auth.email
+    text: "${QA_SWITCH_FREE_EMAIL_REGEX}"
 
 - scrollUntilVisible:
     element:
-      text: "Subscription QA Lab"
+      id: screen.subscription.qaLab
     direction: DOWN
-    visibilityPercentage: 40
+    visibilityPercentage: 30
     timeout: 30000
 - assertVisible:
     id: text.subscription.qa.mode
     text: "RevenueCat Test Store"
-- scrollUntilVisible:
-    element:
-      id: btn.subscription.qa.refresh
-    direction: DOWN
-    visibilityPercentage: 60
-    timeout: 30000
-- tapOn:
-    id: btn.subscription.qa.refresh
 - extendedWaitUntil:
     visible:
-      id: text.subscription.qa.actionLabel
-      text: "Refresh completed"
-    timeout: 60000
+      id: text.subscription.qa.status
+      text: ".*free / inactive.*"
+    timeout: 180000
 - scrollUntilVisible:
     element:
       id: text.subscription.qa.status
     direction: UP
     visibilityPercentage: 60
     timeout: 30000
+    centerElement: true
 - assertVisible:
     id: text.subscription.qa.status
 - assertVisible:

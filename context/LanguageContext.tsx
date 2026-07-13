@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useMemo, useCall
 import { useLocales } from 'expo-localization';
 import { getLanguagePreference, saveLanguagePreference } from '@/services/storageService';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
+import { setProductAnalyticsLocale } from '@/lib/productAnalytics';
 import type { AppLanguage, LanguagePreference } from '@/lib/types';
 
 const DEFAULT_LOCALE = {
@@ -94,6 +95,10 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children, in
   const language: AppLanguage = useMemo(() => {
     return resolveEffectiveLanguage(preference, systemLanguage);
   }, [preference, systemLanguage]);
+
+  useEffect(() => {
+    if (loaded) setProductAnalyticsLocale(language);
+  }, [language, loaded]);
 
   // Update preference and save to storage
   const setPreference = useCallback(async (newPreference: LanguagePreference) => {

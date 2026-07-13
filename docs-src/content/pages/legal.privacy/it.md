@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Informativa sulla privacy",
   "publishedTime": "",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-07-12",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -80,7 +80,7 @@
       <li><strong>Dati account:</strong> email, password in forma hash, lingua, preferenze e dati di gestione account.</li>
       <li><strong>Dati dei sogni:</strong> testi, trascrizioni, analisi IA, citazioni, temi, tipo di sogno, preferiti, immagini generate e cronologia della riflessione guidata.</li>
       <li><strong>Audio:</strong> quando usi la voce, l’audio viene trattato per produrre una trascrizione. Noctalia non conserva in modo persistente i file audio sui propri server; viene salvata la trascrizione.</li>
-      <li><strong>Dati tecnici:</strong> log di errore, prestazioni e sicurezza, versione app, sistema operativo e identificatore dispositivo hashato per gestire le quote gratuite. Al momento non usiamo strumenti di marketing analytics di terze parti come Google Analytics o Mixpanel.</li>
+      <li><strong>Dati tecnici:</strong> log di errore, prestazioni e sicurezza, versione app, sistema operativo e identificatore dispositivo hashato usato esclusivamente per gestire le quote gratuite. Su Android, Noctalia può inoltre misurare un insieme limitato di eventi funzionali (passaggio di onboarding visualizzato, scelta effettuata, sogno salvato o risultato consultato) tramite un identificatore casuale del percorso conservato sul dispositivo per non più di sette giorni. Questa misurazione interna non include mai testo, titolo o analisi di un sogno, né indirizzo email, identificatore account, identificatore dispositivo o indirizzo IP persistito. Non usa strumenti di marketing analytics di terze parti e può essere disattivata dall'introduzione o dalle impostazioni.</li>
       <li><strong>Dati di supporto:</strong> messaggi che ci invii e informazioni necessarie a gestire la richiesta.</li>
     </ul>
     <p class="mt-4">I contenuti inseriti possono includere dati sensibili. Li trattiamo solo per fornire il <a href="blog/dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne" class="text-dream-salmon hover:underline">diario dei sogni</a> e il servizio di analisi, sulla base del tuo consenso esplicito e della tua iniziativa.</p>
@@ -124,6 +124,7 @@
       <li>Dopo l’eliminazione dell’account, cancelliamo o anonimizzamo i dati di norma entro 30 giorni, salvo obblighi legali.</li>
       <li>L’audio è trattato solo per il tempo tecnico necessario e non viene conservato a lungo termine da Noctalia.</li>
       <li>I log di sicurezza sono conservati al massimo 12 mesi; gli scambi di supporto di norma fino a 24 mesi.</li>
+      <li>Gli eventi grezzi della misurazione d'uso interna, privi di contenuti dei sogni, vengono eliminati dopo 90 giorni. Le statistiche aggregate e anonime, che non permettono più di isolare un singolo percorso, vengono conservate per non più di 24 mesi.</li>
     </ul>
   </section>
 

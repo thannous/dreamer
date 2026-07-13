@@ -21,12 +21,6 @@ function fail(message) {
   process.exit(1);
 }
 
-function maskIdentity(value) {
-  const at = value.indexOf('@');
-  if (at > 1) return `${value.slice(0, 2)}...${value.slice(at)}`;
-  return value.length <= 6 ? 'provided' : `${value.slice(0, 3)}...${value.slice(-2)}`;
-}
-
 function exactRegex(value) {
   return `^${value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`;
 }
@@ -85,7 +79,7 @@ if (!isEmulator) {
 
 if (preflight) {
   console.log('Test Store restore preflight passed.');
-  console.log(`Test account: ${maskIdentity(qaEmail)}`);
+  console.log('Test account: configured');
   console.log(`Approval present: ${approval === APPROVAL ? 'yes' : 'no'}`);
   console.log(`Clear-state approval present: ${clearStateApproval === CLEAR_STATE_APPROVAL ? 'yes' : 'no'}`);
   console.log(`Target: ${isEmulator ? 'emulator' : 'authorized physical device'} (${target.device})`);

@@ -38,6 +38,7 @@ let mockUser: any = null;
 let mockSubscriptionStatus: any = null;
 let mockSubscriptionLoading = false;
 let mockGuestBootstrapState: any = { status: 'ready', updatedAt: 0 };
+let mockGuestBootstrapListener: (() => void) | undefined;
 
 jest.mock('../../context/AuthContext', () => ({
   useAuth: () => ({
@@ -74,7 +75,12 @@ jest.mock('../../services/quotaService', () => ({
 
 jest.mock('../../lib/guestSession', () => ({
   getGuestBootstrapState: () => mockGuestBootstrapState,
-  subscribeGuestBootstrapState: () => () => {},
+  subscribeGuestBootstrapState: (listener: () => void) => {
+    mockGuestBootstrapListener = listener;
+    return () => {
+      mockGuestBootstrapListener = undefined;
+    };
+  },
 }));
 
 // Import after mocks
@@ -109,6 +115,7 @@ describe('useQuota', () => {
     mockSubscriptionStatus = { tier: 'free' };
     mockSubscriptionLoading = false;
     mockGuestBootstrapState = { status: 'ready', updatedAt: 0 };
+    mockGuestBootstrapListener = undefined;
     mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus());
     mockCanAnalyzeDream.mockResolvedValue(true);
     mockCanExploreDream.mockResolvedValue(true);
@@ -120,16 +127,46 @@ describe('useQuota', () => {
   });
 
   describe('initialization and loading', () => {
-    it('fetches quota status on mount', async () => {
-      const { result } = renderHook(() => useQuota());
+    it('fetches quota status once on mount and once per guest bootstrap change', async () => {
+      let renderCount = 0;
+      const { result } = renderHook(() => {
+        renderCount += 1;
+        return useQuota();
+      });
 
       expect(result.current.loading).toBe(true);
 
       await settleQuotaStatus(result);
 
-      expect(mockGetQuotaStatus).toHaveBeenCalledTimes(2);
+      expect(mockGetQuotaStatus).toHaveBeenCalledTimes(1);
       expect(mockGetQuotaStatus).toHaveBeenCalledWith(null, 'guest', undefined);
       expect(result.current.quotaStatus).toBeDefined();
+
+      mockGuestBootstrapState = {
+        status: 'degraded',
+        reasonCode: 'guest_session_unavailable',
+        updatedAt: Date.now(),
+      };
+      await act(async () => {
+        mockGuestBootstrapListener?.();
+      });
+      await settleQuotaStatus(result);
+
+      expect(mockGetQuotaStatus).toHaveBeenCalledTimes(2);
+      expect(result.current.guestBootstrapStatus).toBe('degraded');
+
+      const degradedRenderCount = renderCount;
+      mockGuestBootstrapState = {
+        status: 'degraded',
+        reasonCode: 'platform_unsupported',
+        updatedAt: Date.now(),
+      };
+      await act(async () => {
+        mockGuestBootstrapListener?.();
+      });
+
+      expect(renderCount).toBe(degradedRenderCount);
+      expect(mockGetQuotaStatus).toHaveBeenCalledTimes(2);
     });
 
     it('provides guest tier by default when not authenticated', async () => {
@@ -537,7 +574,7 @@ describe('useQuota', () => {
       rerender();
 
       await settleQuotaStatus(result);
-      expect(mockGetQuotaStatus).toHaveBeenCalledTimes(initialCallCount + 2);
+      expect(mockGetQuotaStatus).toHaveBeenCalledTimes(initialCallCount + 1);
 
       expect(mockGetQuotaStatus).toHaveBeenLastCalledWith(null, 'guest', undefined);
     });

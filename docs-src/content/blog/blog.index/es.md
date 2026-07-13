@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Recursos | Noctalia - Consejos y Guías sobre Sueños",
   "publishedTime": "",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-12",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -51,6 +51,27 @@
 </div>
 </div>
 </header>
+<!-- Explorar por tema -->
+<section class="glass-panel rounded-2xl p-6 md:p-8 mb-12 border border-dream-salmon/10" aria-labelledby="explorar-por-tema">
+<div class="mb-6">
+<h2 id="explorar-por-tema" class="font-serif text-2xl md:text-3xl text-dream-cream mb-2">Explora por tema</h2>
+<p class="text-sm text-purple-200/70">Sigue un recorrido centrado en el recuerdo de los sueños, sus significados o la práctica de los sueños lúcidos.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<a class="glass-panel rounded-xl p-5 block hover:border-dream-salmon/30 transition-colors" href="/es/blog/diario-de-suenos">
+<h3 class="font-serif text-lg text-dream-cream mb-2">Diario de sueños</h3>
+<p class="text-sm text-gray-400">Recuerdo, rutinas de registro y hábitos útiles para tu diario.</p>
+</a>
+<a class="glass-panel rounded-xl p-5 block hover:border-dream-salmon/30 transition-colors" href="/es/blog/significado-de-suenos">
+<h3 class="font-serif text-lg text-dream-cream mb-2">Significado de sueños</h3>
+<p class="text-sm text-gray-400">Símbolos, temas recurrentes e interpretación basada en el contexto.</p>
+</a>
+<a class="glass-panel rounded-xl p-5 block hover:border-dream-salmon/30 transition-colors" href="/es/blog/suenos-lucidos">
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sueños lúcidos</h3>
+<p class="text-sm text-gray-400">Técnicas para principiantes, práctica y recomendaciones de seguridad.</p>
+</a>
+</div>
+</section>
 <!-- Editorial Carousel -->
 <section class="blog-premium-carousel" aria-label="Leer ahora">
 <div class="blog-premium-carousel-header">

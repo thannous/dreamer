@@ -8,6 +8,7 @@
       "android": { "buildType": "app-bundle" },
       "environment": "production",
       "env": {
+        "NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE": "false",
         "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api",
         "EXPO_PUBLIC_MOCK_MODE": "false",
         "EXPO_PUBLIC_REVENUECAT_ANDROID_KEY": "goog_BFWJqTqAtQUnwYisczZcZrnsanw",
@@ -26,6 +27,7 @@
       "android": { "buildType": "apk" },
       "environment": "preview",
       "env": {
+        "NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE": "false",
         "EXPO_PUBLIC_REVENUECAT_ANDROID_KEY": "goog_BFWJqTqAtQUnwYisczZcZrnsanw",
         "EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER": "359653779023"
       }
@@ -36,6 +38,7 @@
       "android": { "buildType": "apk" },
       "environment": "preview",
       "env": {
+        "NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE": "true",
         "EXPO_PUBLIC_MOCK_MODE": "false",
         "EXPO_PUBLIC_SUBSCRIPTION_QA_LAB": "true",
         "EXPO_PUBLIC_REVENUECAT_ANDROID_KEY": "test_zqltcBoDiTWPWmuyXTXTbYkJPrz",
@@ -47,6 +50,7 @@
       "channel": "production",
       "android": { "buildType": "apk", "credentialsSource": "local" },
       "env": {
+        "NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE": "false",
         "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api",
         "EXPO_PUBLIC_MOCK_MODE": "false",
         "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "359653779023-6hivlgk9tpgq9g8ng5qpoipjjs780m8h.apps.googleusercontent.com",
@@ -68,6 +72,7 @@
       "autoIncrement": true,
       "environment": "production",
       "env": {
+        "NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE": "false",
         "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api",
         "EXPO_PUBLIC_MOCK_MODE": "false",
         "EXPO_PUBLIC_REVENUECAT_ANDROID_KEY": "goog_BFWJqTqAtQUnwYisczZcZrnsanw",

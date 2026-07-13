@@ -218,6 +218,11 @@ jest.doMock('@/components/LanguageSettingsCard', () => ({
   default: () => <div data-testid="language-settings-card" />,
 }));
 
+jest.doMock('@/components/AnalyticsPrivacySettingsCard', () => ({
+  __esModule: true,
+  default: () => <div data-testid="analytics-privacy-settings-card" />,
+}));
+
 jest.doMock('@/components/NotificationSettingsCard', () => ({
   __esModule: true,
   default: () => <div data-testid="notification-settings-card" />,

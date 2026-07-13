@@ -16,6 +16,10 @@ jest.mock('../../services/storageService', () => ({
   saveLanguagePreference: mockSaveLanguagePreference,
 }));
 
+jest.mock('@/lib/productAnalytics', () => ({
+  setProductAnalyticsLocale: jest.fn(),
+}));
+
 const { LanguageProvider, useLanguage } = require('../LanguageContext');
 
 type MockLocale = {

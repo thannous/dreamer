@@ -60,6 +60,10 @@ jest.mock('@/context/ThemeContext', () => ({
   }),
 }));
 
+jest.mock('@/components/ui/icon-symbol', () => ({
+  IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon.${name}`} />,
+}));
+
 jest.mock('@/constants/theme', () => ({
   Fonts: {
     spaceGrotesk: {
@@ -73,6 +77,9 @@ jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const values: Record<string, string> = {
+        'recording.remembered_profile.accordion_title': 'Ajouter des repères · Facultatif',
+        'recording.remembered_profile.expand_hint': 'Afficher les détails facultatifs',
+        'recording.remembered_profile.collapse_hint': 'Masquer les détails facultatifs',
         'recording.remembered_profile.eyebrow': 'Repères du souvenir',
         'recording.remembered_profile.optional_badge': 'Facultatif',
         'recording.remembered_profile.title': 'Aide Noctalia à comprendre ce rêve',
@@ -102,9 +109,13 @@ describe('RememberedDreamProfileChips', () => {
       />
     );
 
-    expect(screen.getByTestId(TID.Component.RememberedDreamProfileChips)).toBeTruthy();
+    expect(screen.getByTestId(TID.Component.RememberedDreamMetadata)).toBeTruthy();
     expect(screen.getByText('Aide Noctalia à comprendre ce rêve')).toBeTruthy();
-    expect(screen.getByText('Facultatif')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Component.RememberedDreamProfileChips)).toBeNull();
+
+    fireEvent.click(screen.getByTestId(TID.Button.RememberedDreamMetadataToggle));
+
+    expect(screen.getByTestId(TID.Component.RememberedDreamProfileChips)).toBeTruthy();
 
     fireEvent.click(screen.getByTestId(TID.Button.RememberedDreamKind('recurring')));
     fireEvent.click(screen.getByTestId(TID.Button.RememberedDreamPeriod('childhood')));
@@ -128,8 +139,9 @@ describe('RememberedDreamProfileChips', () => {
       />
     );
 
-    fireEvent.click(screen.getByTestId(TID.Button.RememberedDreamKind('nightmare')));
+    fireEvent.click(screen.getByTestId(TID.Button.RememberedDreamMetadataToggle));
 
     expect(onRememberedKindChange).not.toHaveBeenCalled();
+    expect(screen.queryByTestId(TID.Button.RememberedDreamKind('nightmare'))).toBeNull();
   });
 });

@@ -2,6 +2,30 @@
 
 Ce runbook sert a valider les parcours d'abonnement Noctalia sans confondre les trois couches de preuve.
 
+Les commandes ci-dessous sont parametrees pour le candidat courant. Ne recopier aucun identifiant
+historique depuis une ancienne preuve locale:
+
+```bash
+export QA_ANDROID_VERSION_CODE=34
+export QA_EMULATOR_DEVICE='<emulator-adb-id>'
+export QA_PHYSICAL_DEVICE='<physical-adb-id>'
+export QA_PRIMARY_EMAIL='<qa-primary-email>'
+export QA_TESTER_LABEL='<qa-tester-label>'
+export QA_APP_USER_ID='<supabase-revenuecat-uuid>'
+export QA_EAS_BUILD_ID='<eas-build-uuid>'
+export QA_ARTIFACT_DIR='<local-artifact-directory>'
+export SUPABASE_PROJECT_REF='<supabase-project-ref>'
+export GOOGLE_CLOUD_QUOTA_PROJECT='<google-cloud-quota-project>'
+export GOOGLE_CLOUD_PROJECT_NUMBER='<google-cloud-project-number>'
+export PLAY_INTERNAL_OPT_IN_URL='<play-internal-opt-in-url>'
+export ANDROID_OAUTH_CLIENT_ID='<android-oauth-client-id>'
+export PLAY_APP_SIGNING_SHA1='<play-app-signing-sha1>'
+```
+
+`QA_ANDROID_VERSION_CODE=34` est la seule valeur qualifiante pour la migration Expo 57 actuelle.
+Toute preuve marquee `passed` avec un autre `versionCode` est historique et doit etre rejouee; elle
+ne doit jamais etre comptee comme preuve de release v34.
+
 ## 1. Mock Lab
 
 Objectif: verifier l'UI, les profils, les quotas et les transitions sans Store externe.
@@ -65,7 +89,7 @@ premier diagnostic a lire avant de reprendre les tests reels: elle indique si le
 est definie, rappelle d'extraire l'app user id device avant d'enregistrer une preuve, rappelle de
 verifier `npm run android:device` jusqu'a `ADB: READY`, puis distingue les snapshots Google Play
 directs des snapshots RevenueCat store-state pour monthly et annual. Si Google Play direct est
-`monthly/P1M/ACTIVE` mais RevenueCat lit encore `prodfce10ef2a8` en `annual/P1Y`, le rapport affiche
+`monthly/P1M/ACTIVE` mais RevenueCat lit encore le produit mensuel en `annual/P1Y`, le rapport affiche
 `LAGGING`; `play_annual` doit de son cote rester `annual/P1Y`. Sans preuve Google Play directe
 prete, une contradiction store-state reste bloquante pour la gate concernee.
 
@@ -94,7 +118,7 @@ Interpretation rapide du diagnostic appareil:
   le debogage USB n'est pas encore autorise: deverrouiller le telephone et accepter l'empreinte RSA.
 - `USB: VISIBLE` avec `Android debug interface signature present` mais `ADB DEVICE: MISSING`
   isole le probleme sur l'autorisation/transport ADB: macOS voit l'interface debug, mais
-  `adb devices -l` ne liste encore aucun transport. Sur le POCO/HyperOS, refaire le cycle cote
+  `adb devices -l` ne liste encore aucun transport. Sur un telephone HyperOS, refaire le cycle cote
   telephone: Developer options -> `Revoke USB debugging authorizations`, desactiver/reactiver
   `USB debugging`, reconnecter en `Transfert de fichiers / Android Auto`, puis accepter la popup
   RSA. Si la popup ne revient pas, utiliser Developer options -> `Wireless debugging` et garder
@@ -113,7 +137,7 @@ lance sans `--device`; ajouter `--device <adb-id>` seulement quand plusieurs dev
 ```bash
 npm run android:play-qa-device:wait
 npm run android:play-qa-device:wait -- --device <adb-id>
-npm run android:play-qa-device:wait -- --device <adb-id> --expected-version-code 24
+npm run android:play-qa-device:wait -- --device "${QA_PHYSICAL_DEVICE}" --expected-version-code "${QA_ANDROID_VERSION_CODE}"
 npm run android:play-qa-device:wait -- --device <adb-id> --require-ui-ready
 npm run android:play-qa-device -- --device <adb-id>
 ```
@@ -132,32 +156,23 @@ flows Maestro pilotes par UI. Avant un achat ou restore pilote par l'agent, pref
 poller tant que l'app est Play-installed mais que le telephone n'est pas encore reveille et
 deverrouille.
 
-Pour attendre une build Play precise avant d'acheter, ajouter `--expected-version-code <n>` au helper
-d'attente. Par exemple, la validation release robuste du build Internal Testing actuel doit preferer
-`npm run android:play-qa-device:wait -- --device <adb-id> --expected-version-code 24 --require-ui-ready`
-avant d'ouvrir la feuille d'achat. Le POCO etait initialement en `versionCode=12`; apres acceptation
-de l'opt-in internal et mise a jour depuis Play, il est passe en `versionCode=24`. La variante
-`--require-ui-ready` peut encore attendre/echouer si le telephone est verrouille.
+Pour attendre la build Play candidate avant d'acheter, toujours fournir le telephone physique et le
+`versionCode` courant:
 
-Si la fiche Play affiche `Ouvrir` sans `Mettre a jour` alors que la piste internal API annonce `24`,
-ne pas conclure que le telephone est sur la piste internal. Le 2026-05-15, `edits.tracks.list` montre
-`production=12`, `beta=11` et `internal=24`; le libelle Play Store `testeur beta` peut donc etre
-insuffisant. Verifier l'inscription du compte dans la liste de testeurs internal ou utiliser le lien
-d'opt-in internal correct avant de forcer une desinstallation/reinstallation.
+```bash
+npm run android:play-qa-device:wait -- \
+  --device "${QA_PHYSICAL_DEVICE}" \
+  --expected-version-code "${QA_ANDROID_VERSION_CODE}" \
+  --require-ui-ready
+```
 
-Le lien d'opt-in internal courant est
-`https://play.google.com/apps/internaltest/4700165416980291595`. Si cette page affiche encore
-`Accept invite`, le compte est eligible mais n'a pas encore rejoint la piste internal; accepter
-l'invitation est l'etape attendue avant de relancer le Play Store sur le POCO et de chercher
-`Mettre a jour` / `Installer` pour `versionCode=24`.
+Si la fiche Play affiche `Ouvrir` sans `Mettre a jour`, ne pas conclure que le telephone est sur la
+bonne piste. Verifier l'inscription du compte testeur avec `${PLAY_INTERNAL_OPT_IN_URL}`, puis relire
+la piste Internal et le `versionCode` installe. Les observations d'anciens appareils ou d'anciens
+builds restent utiles au diagnostic, mais ne qualifient pas le candidat v34.
 
-Le 2026-05-15, l'invitation internal a ete acceptee pour `thannous@gmail.com`; la page affiche
-ensuite `You are a tester`. Apres force-stop du Play Store, la fiche POCO a propose `Mettre a jour`
-et `npm run android:play-qa-device:wait -- --device 192.168.1.116:41183 --expected-version-code 24
---require-ui-ready` a confirme `installerPackageName=com.android.vending`, `versionCode=24` et
-`versionName=1.2.0`. La feuille Play Billing mensuelle affiche `Carte test, toujours approuvee` et
-`Il ne vous sera pas facture`, mais le bouton final `S'abonner` ne doit etre presse qu'apres
-confirmation explicite.
+La feuille Play Billing doit afficher le moyen de paiement de test et le message de non-facturation;
+le bouton final `S'abonner` ne doit etre presse qu'apres confirmation explicite.
 
 Sur une build Play non-debuggable, `adb shell run-as com.tanuki75.noctalia ...` echoue normalement
 avec `package not debuggable`; ne pas utiliser cet echec comme signal RevenueCat. Pour extraire
@@ -176,7 +191,7 @@ utilisee pour l'achat, le restore, la convergence webhook et la preuve `subscrip
 
 Le preflight non destructif de la feuille Google Play peut etre pousse jusqu'a l'ecran de
 confirmation, mais il ne ferme pas les gates `play_*` tant que le bouton final `S'abonner` n'est pas
-appuye. Sur le POCO Play-installe le 2026-05-15, les feuilles mensuelle et annuelle ont confirme:
+appuye. Lors d'un ancien preflight Play-installed, les feuilles mensuelle et annuelle ont confirme:
 
 - app `Noctalia Plus` / package app `Noctalia: Smart Dream Journal`
 - prix mensuel `3,59 EUR/5 min`
@@ -205,12 +220,12 @@ npm run subscription:qa:play-state -- --input revenuecat-store-state.json
 npm run subscription:qa:report
 ```
 
-La commande accepte aussi le JSON en stdin et normalise les deux produits Play attendus
-(`prodfce10ef2a8` et `prod98337b31be`) dans
+La commande accepte aussi le JSON en stdin et normalise les produits Play mensuel et annuel attendus dans
 `doc_web_interne/docs/revenuecat-play-store-state.local.json`.
 
 La route Google Play Developer API directe est exploitable avec l'ADC locale si elle porte le scope
-`https://www.googleapis.com/auth/androidpublisher` et le quota project `gen-lang-client-0336445544`.
+`https://www.googleapis.com/auth/androidpublisher` et le quota project fourni par
+`GOOGLE_CLOUD_QUOTA_PROJECT`.
 Au dernier refresh du 2026-05-14T15:21:48Z, l'endpoint officiel
 `/androidpublisher/v3/applications/com.tanuki75.noctalia/subscriptions/noctalia_plus` confirme
 `monthly/P1M/ACTIVE` et `annual/P1Y/ACTIVE`. Cette preuve confirme Google Play directement, mais ne
@@ -222,10 +237,10 @@ Pour rafraichir le snapshot Google Play local:
 TOKEN=$(gcloud auth application-default print-access-token)
 curl -sS \
   -H "Authorization: Bearer ${TOKEN}" \
-  -H "x-goog-user-project: gen-lang-client-0336445544" \
+  -H "x-goog-user-project: ${GOOGLE_CLOUD_QUOTA_PROJECT}" \
   "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.tanuki75.noctalia/subscriptions/noctalia_plus" \
-  -o /private/tmp/noctalia-google-play-subscription.json
-npm run subscription:qa:google-play-state -- --input /private/tmp/noctalia-google-play-subscription.json
+  -o "${QA_ARTIFACT_DIR}/google-play-subscription.json"
+npm run subscription:qa:google-play-state -- --input "${QA_ARTIFACT_DIR}/google-play-subscription.json"
 ```
 
 Pour rafraichir le snapshot de piste Internal Testing, creer un edit temporaire, lire la piste, puis
@@ -235,21 +250,21 @@ supprimer l'edit sans le commiter:
 TOKEN=$(gcloud auth application-default print-access-token)
 EDIT_ID=$(curl -sS -X POST \
   -H "Authorization: Bearer ${TOKEN}" \
-  -H "x-goog-user-project: gen-lang-client-0336445544" \
+  -H "x-goog-user-project: ${GOOGLE_CLOUD_QUOTA_PROJECT}" \
   -H "content-type: application/json" \
   -d "{}" \
   "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.tanuki75.noctalia/edits" \
   | node -e "process.stdin.on('data', d => console.log(JSON.parse(d).id))")
 curl -sS \
   -H "Authorization: Bearer ${TOKEN}" \
-  -H "x-goog-user-project: gen-lang-client-0336445544" \
+  -H "x-goog-user-project: ${GOOGLE_CLOUD_QUOTA_PROJECT}" \
   "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.tanuki75.noctalia/edits/${EDIT_ID}/tracks/internal" \
-  -o /private/tmp/noctalia-google-play-track-internal.json
+  -o "${QA_ARTIFACT_DIR}/google-play-track-internal.json"
 curl -sS -X DELETE \
   -H "Authorization: Bearer ${TOKEN}" \
-  -H "x-goog-user-project: gen-lang-client-0336445544" \
+  -H "x-goog-user-project: ${GOOGLE_CLOUD_QUOTA_PROJECT}" \
   "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.tanuki75.noctalia/edits/${EDIT_ID}"
-npm run android:google-play-track-state -- --input /private/tmp/noctalia-google-play-track-internal.json
+npm run android:google-play-track-state -- --input "${QA_ARTIFACT_DIR}/google-play-track-internal.json"
 ```
 
 Verification UI Play Console du 2026-05-14: le compte developpeur `TiMax group` ouvre l'app
@@ -258,8 +273,8 @@ Abonnements -> Noctalia Plus` liste `annual` (`Annuel, renouvellement automatiqu
 (`Mensuel, renouvellement automatique`) comme forfaits actifs, tous deux mis a jour le
 `26 nov. 2025`; elle affiche aussi `Probleme concernant votre profil de paiement`. Cette lecture
 confirme que le forfait mensuel existe cote Play Console, mais il faut encore corriger/resynchroniser
-RevenueCat ou relire via MCP/API apres correction, car le snapshot RevenueCat actuel lit toujours
-`prodfce10ef2a8` comme `annual/P1Y`.
+RevenueCat ou relire via MCP/API apres correction si le snapshot RevenueCat lit encore le produit
+mensuel comme `annual/P1Y`.
 
 Verification profil de paiement Play Console du 2026-05-14: le centre de notifications affiche
 `Un probleme urgent requiert votre attention concernant votre compte de paiement`. La page
@@ -293,13 +308,14 @@ npm run android:google-play-payments-profile-state -- \
   --source "Google Play Console payments profile read-only check"
 ```
 
-Le CLI Supabase local n'est pas authentifie actuellement: `npx supabase secrets list --project-ref
-usuyppgsmmowzizhaoqj` repond `Access token not provided`. Apres connexion Supabase ou verification
-dashboard, enregistrer uniquement la presence des secrets attendus, jamais leurs valeurs:
+Si le CLI Supabase local n'est pas authentifie, `npx supabase secrets list --project-ref
+"${SUPABASE_PROJECT_REF}"` repond `Access token not provided`. Apres connexion Supabase ou
+verification dashboard, enregistrer uniquement la presence des secrets attendus, jamais leurs
+valeurs:
 
 ```bash
 npm run android:supabase-play-integrity-secrets-state -- \
-  --project-ref usuyppgsmmowzizhaoqj \
+  --project-ref "${SUPABASE_PROJECT_REF}" \
   --PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64 present \
   --PLAY_INTEGRITY_PACKAGE_NAME present \
   --PLAY_INTEGRITY_PACKAGE_NAME-value com.tanuki75.noctalia \
@@ -323,7 +339,7 @@ de committer des emails, ids testeur ou chemins de captures.
 Helper recommande apres un test manuel:
 
 ```bash
-npm run subscription:qa:device-app-user-id -- --device emulator-5554 --env-file .env.teststore
+npm run subscription:qa:device-app-user-id -- --device "${QA_EMULATOR_DEVICE}" --env-file .env.teststore
 ```
 
 Cette commande lit les preferences RevenueCat du build debug via `adb shell run-as`, masque la cle
@@ -333,8 +349,9 @@ l'app ni RevenueCat.
 ```bash
 npm run subscription:qa:evidence -- \
   --gate test_store_monthly \
-  --tester tester@example.com \
-  --app-user-id 00000000-0000-4000-8000-000000000000 \
+  --tester "${QA_TESTER_LABEL}" \
+  --app-user-id "${QA_APP_USER_ID}" \
+  --version-code "${QA_ANDROID_VERSION_CODE}" \
   --evidence "monthly purchase completed, plus active, quotas unlimited"
 ```
 
@@ -344,43 +361,36 @@ du telephone physique qui a passe `npm run android:device:physical`:
 ```bash
 npm run subscription:qa:evidence -- \
   --gate play_monthly \
-  --tester tester@example.com \
-  --app-user-id 00000000-0000-4000-8000-000000000000 \
-  --eas-build-id 00000000-0000-4000-8000-000000000000 \
-  --device-id 57275d36 \
+  --tester "${QA_TESTER_LABEL}" \
+  --app-user-id "${QA_APP_USER_ID}" \
+  --eas-build-id "${QA_EAS_BUILD_ID}" \
+  --device-id "${QA_PHYSICAL_DEVICE}" \
   --installer-package-name com.android.vending \
-  --version-code 24 \
+  --version-code "${QA_ANDROID_VERSION_CODE}" \
   --evidence "Play purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"
 ```
 
 `--eas-build-id` doit etre l'UUID EAS du build installe, pas seulement le numero de build Android.
 `--version-code` doit etre le `versionCode` Android reel lu sur le telephone Play-installed au moment
-du test; il force la preuve a declarer explicitement si l'achat a ete fait sur le build 12 ou 24.
-Sur le POCO `192.168.1.116:41183`, l'installation Play initiale observee le 2026-05-15 etait
-`versionCode=12`, `versionName=1.1.0`; `eas build:list` la rattache au build EAS
-`9df05e30-0569-4f7c-8af9-62c692fa4c3a` (`appBuildVersion=12`). Apres acceptation de l'opt-in
-Internal Testing (`You are a tester`) et force-stop du Play Store, la fiche Play a propose
-`Mettre a jour`. Le helper
-`npm run android:play-qa-device:wait -- --device 192.168.1.116:41183 --expected-version-code 24 --require-ui-ready`
-confirme maintenant `versionCode=24`, `versionName=1.2.0`, `installerPackageName=com.android.vending`
-sur ce meme telephone. La preuve Play robuste doit donc utiliser le build EAS
-`ddbc756d-8db6-4337-80fa-68cc86f8b62a` (`versionCode=24`, `versionName=1.2.0`).
-La relecture Play Developer API du 2026-05-15 confirme aussi que la piste `internal` sert la release
-`1.2.0` avec `versionCodes=["24"]` et `status=completed`.
-Une verification bundletool locale sur le device spec POCO du 2026-05-15 genere aussi les splits v24
-`base-arm64_v8a`, `base-fr`, `base-master` et `base-xxhdpi`; le binaire v24 est donc techniquement
-splittable pour ce telephone, meme si cette preuve ne remplace pas une installation Google Play.
+du test. Les preuves v12/v24 de l'ancien run restent des traces historiques: elles ne qualifient pas
+le candidat Expo 57 v34. Pour v34, `QA_EAS_BUILD_ID`, `QA_PHYSICAL_DEVICE` et
+`QA_ANDROID_VERSION_CODE` doivent tous provenir du build effectivement installe depuis Play.
+
 Si la fiche Play retombe a `Ouvrir` sans `Mettre a jour` sur un autre appareil, preferer accepter
 l'opt-in internal, force-stop le Play Store, mettre a jour l'app depuis Play si le bouton apparait,
 ou faire une desinstallation/reinstallation Play acceptee par le testeur, puis re-verifier
 `dumpsys package` et l'`easBuildId` correspondant avant d'appuyer sur `S'abonner`.
+Cette option de reinstallation ne s'applique jamais au telephone qui porte le baseline d'upgrade
+`33->34`: sur celui-ci, utiliser uniquement la mise a jour Google Play, sans desinstaller.
 Le preflight peut exiger le build attendu avant de generer les commandes de preuve:
 
 ```bash
-npm run android:play-qa-device -- --device <adb-id> --expected-version-code 24 --report-only
+npm run android:play-qa-device -- \
+  --device "${QA_PHYSICAL_DEVICE}" \
+  --expected-version-code "${QA_ANDROID_VERSION_CODE}" \
+  --report-only
 ```
 
-Sur le POCO actuel, cette commande passe depuis l'update Play vers `versionCode=24`.
 `--device-id` doit etre l'id ADB d'un telephone physique, pas un AVD `emulator-*`.
 La preuve Play doit confirmer la source d'installation Play Internal Testing: le champ structure
 `--installer-package-name` doit valoir `com.android.vending`, et le texte de preuve doit contenir
@@ -393,12 +403,12 @@ refresh, et convergence backend/app observee:
 ```bash
 npm run subscription:qa:evidence -- \
   --gate play_monthly \
-  --tester thannous@gmail.com \
-  --app-user-id 1239729f-7468-48c9-b26a-7aa8b4a82591 \
-  --eas-build-id ddbc756d-8db6-4337-80fa-68cc86f8b62a \
-  --device-id 192.168.1.116:41183 \
+  --tester "${QA_TESTER_LABEL}" \
+  --app-user-id "${QA_APP_USER_ID}" \
+  --eas-build-id "${QA_EAS_BUILD_ID}" \
+  --device-id "${QA_PHYSICAL_DEVICE}" \
   --installer-package-name com.android.vending \
-  --version-code 24 \
+  --version-code "${QA_ANDROID_VERSION_CODE}" \
   --evidence "Play monthly test purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, Google Play test card/no-charge sheet used, app and backend converged"
 ```
 
@@ -426,8 +436,13 @@ Pour passer de mock a Test Store, redemarrer Metro ou lancer le test sans
 
 Configuration attendue:
 
-- `.env.teststore` utilise la cle Test Store `test_zqltcBoDiTWPWmuyXTXTbYkJPrz`
+- `.env.teststore` fournit la cle Test Store via `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`; ne jamais
+  recopier sa valeur dans ce runbook
 - `eas build --profile revenuecat-teststore` active `EXPO_PUBLIC_SUBSCRIPTION_QA_LAB=true`
+  et le drapeau débogable réservé au Test Store. L'APK reste standalone avec
+  bundle embarqué et s'exécute sans Metro.
+- RevenueCat interdit une clé `test_` dans un binaire non débogable. À l'inverse,
+  aucun profil Play/production ne doit activer le drapeau Test Store débogable.
 - entitlement RevenueCat: `Noctalia Plus`
 - offering: `default`
 - packages: `$rc_monthly`, `$rc_annual`
@@ -437,17 +452,25 @@ Couverture automatisee:
 
 - readiness SDK sans achat: `Probe SDK` charge les packages Test Store
 
-Scenarios manuels a valider avec accord explicite d'achat:
+Scenarios manuels a revalider avec accord explicite d'achat pour chaque nouveau candidat:
 
-- achat mensuel Test Store: valide localement le 2026-05-14 sur `Pixel_7_Play_API_36`
-- achat annuel Test Store: valide localement le 2026-05-14 sur `Pixel_7_Play_API_36`
-- restore sur le meme utilisateur: valide localement le 2026-05-14 apres reinstall debug
-- refresh apres changement externe RevenueCat: valide via refresh QA Lab pendant les achats/restores
-- switch compte apres achat: valide localement le 2026-05-14 avec un second compte reel non abonne
+- achat mensuel Test Store
+- achat annuel Test Store
+- restore sur le meme utilisateur apres clear-state controle
+- refresh apres changement externe RevenueCat
+- switch compte apres achat vers un second compte reel non abonne
+
+Il n'existe aucun runner d'annulation Test Store. Le flow `subscription-teststore-signout-guard`
+verifie uniquement l'absence de fuite d'entitlement apres deconnexion. Les etats cancelled/expired
+du Mock Lab sont simules. La preuve reelle d'annulation ou d'expiration appartient exclusivement a
+`play_cancellation_and_expiry`: build Internal Testing installe depuis Play sur telephone physique,
+webhook RevenueCat et convergence backend observes.
 
 Preuve attendue:
 
 - le lab affiche `RevenueCat Test Store`
+- ce libellé correspond au moteur effectivement résolu par le service d'achat,
+  pas uniquement à la variable Expo affichée par l'interface
 - `Probe SDK` affiche `SDK probe completed` et `packages 2`
 - `Tier` passe a `plus / active`
 - `Server version` augmente apres refresh serveur
@@ -455,15 +478,13 @@ Preuve attendue:
 
 Preuve locale actuelle:
 
-- `test_store_monthly`, `test_store_annual`, `restore_after_reinstall` et `account_switch` sont passes dans
-  `doc_web_interne/docs/revenuecat-qa-evidence.local.json`.
-- L'app user id observe sur device est `1239729f-7468-48c9-b26a-7aa8b4a82591`.
-- `subscription:qa:report` affiche maintenant 6 scenarios manuels/externes verifies et 1 gate
-  restante (`play_cancellation_and_expiry`) apres les achats Play test mensuel et annuel.
-- Le 2026-05-14T22:39Z, une relecture RevenueCat MCP fraiche sur
-  `1239729f-7468-48c9-b26a-7aa8b4a82591` confirme `active_entitlements_count=0`,
-  `sandbox_purchase_count=0`, `production_purchase_count=0` et `errors=[]` avant toute validation
-  d'achat Play.
+- Le fichier local contient maintenant des preuves `passed` qualifiantes v34
+  pour `test_store_monthly`, `test_store_annual`, `restore_after_reinstall` et
+  `account_switch`.
+- Les trois gates `play_*` restent historiques sur un ancien candidat et sont
+  donc ouvertes pour v34.
+- Seuls `subscription:qa:report` et `subscription:qa:release-gate` sur le fichier courant font foi;
+  une mention historique dans cette documentation ne ferme jamais une gate.
 
 Checklist d'achat Test Store:
 
@@ -471,19 +492,22 @@ Checklist d'achat Test Store:
 | --- | --- | --- |
 | Compte test connecte | `User` affiche l'id/email du testeur et `Auth` affiche `ready` | manuel |
 | Probe SDK | `SDK probe completed`, `packages 2`, `$rc_monthly`, `$rc_annual` | automatise |
-| Achat mensuel | action `monthly purchase completed`, `Product` mensuel, `Tier plus / active` | valide localement |
-| Refresh serveur | `Server version` augmente et les quotas deviennent illimites | valide localement |
-| Restore | action `Restore completed` avec le meme app user id | valide localement |
-| Switch compte | un second compte reste `free / inactive` apres logout/login | valide localement |
+| Achat mensuel | action `monthly purchase completed`, entitlement persistant `plus / active` | verifie v34 |
+| Achat annuel | action `annual purchase completed`, entitlement `plus / active` | verifie v34 |
+| Convergence serveur | `purchase()` / `restore()` tentent la synchronisation backend; les flows Test Store prouvent seulement le resultat UI `plus / active` | a prouver separement |
+| Restore | action `Restore completed` apres effacement controle et reconnexion exacte | verifie v34 |
+| Switch compte | un second compte reste `free / inactive` apres logout/login | verifie v34 |
 
 Flow d'achat garde par approbation explicite:
 
 Preflight sans achat, utile avant de demander l'approbation:
 
 ```bash
-REVENUECAT_QA_EMAIL=tester@example.com \
-REVENUECAT_QA_PASSWORD='password' \
-npm run test:e2e:subscription-teststore:purchase:preflight -- --plan monthly --device emulator-5554
+REVENUECAT_QA_EMAIL="${QA_PRIMARY_EMAIL}" \
+REVENUECAT_QA_AUTH=google \
+npm run test:e2e:subscription-teststore:purchase:preflight -- \
+  --plan monthly \
+  --device "${QA_EMULATOR_DEVICE}"
 ```
 
 Le preflight valide le plan, les identifiants et les arguments Maestro, affiche le compte test masque,
@@ -491,26 +515,41 @@ puis s'arrete sans lancer Maestro ni ouvrir le Store.
 
 ```bash
 REVENUECAT_QA_APPROVAL=I_APPROVE_TEST_STORE_PURCHASE \
-REVENUECAT_QA_EMAIL=tester@example.com \
-REVENUECAT_QA_PASSWORD='password' \
-npm run test:e2e:subscription-teststore:purchase -- --plan monthly --device emulator-5554
+REVENUECAT_QA_EMAIL="${QA_PRIMARY_EMAIL}" \
+REVENUECAT_QA_AUTH=google \
+npm run test:e2e:subscription-teststore:purchase -- \
+  --plan monthly \
+  --device "${QA_EMULATOR_DEVICE}"
 ```
 
 Changer `--plan monthly` en `--plan annual` pour le second abonnement. Le wrapper refuse de lancer
 le flow si `REVENUECAT_QA_APPROVAL` n'est pas exactement `I_APPROVE_TEST_STORE_PURCHASE`.
 
+Ordre de reprise v34 recommande:
+
+1. `purchase:preflight`, puis achat mensuel et preuve `test_store_monthly` avec
+   `--version-code "${QA_ANDROID_VERSION_CODE}"`.
+2. Meme sequence pour l'annuel et `test_store_annual`.
+3. `restore:preflight`, puis restore avec `REVENUECAT_QA_RESTORE_APPROVAL` et
+   `REVENUECAT_QA_CLEAR_STATE_APPROVAL` sur `QA_EMULATOR_DEVICE`. Ne jamais passer
+   `--allow-physical` dans cette sequence locale.
+4. Depuis le compte Plus confirme, `account-switch:preflight`, puis le flow garde avec
+   `REVENUECAT_QA_SWITCH_APPROVAL`; il doit finir sur le second compte `free / inactive`.
+5. Reconnecter le compte QA principal, puis relancer `subscription:qa:report` et
+   `subscription:qa:release-gate`.
+
 ## 3. Google Play Internal Testing
 
 Objectif: valider le chemin release reel.
 
-Prealable avant build Play: les changements QA RevenueCat doivent etre dans un commit pousse. Le
-dernier build Android Store verifie le 2026-05-10 (`310244ed-027b-4028-8522-70c0f676a0e9`) date du
-2026-05-04 et ne contient pas ce workflow QA.
+Prealable avant build Play: les changements QA RevenueCat doivent etre dans un commit pousse. Ne pas
+reutiliser l'id d'un ancien build: renseigner `QA_EAS_BUILD_ID` avec le build v34 effectivement
+installe depuis la piste Internal Testing.
 
 Scope de commit recommande pour eviter de melanger les changements SEO/docs non lies:
 
-Etat de reprise du 2026-05-15: le gros scope ci-dessous documente le commit d'implementation QA
-historique. Pour le suivi Play v24 courant, le scope actif est seulement:
+Le gros scope ci-dessous documente le commit d'implementation QA historique. Pour le suivi du
+candidat v34, le scope documentaire actif est seulement:
 
 ```bash
 git add \
@@ -518,9 +557,6 @@ git add \
   doc_web_interne/docs/revenuecat-workflow-completion-audit.md
 git commit -m "docs(revenuecat): record Play QA validation status"
 ```
-
-Dans la session courante, ce `git add` echoue avec `Unable to create '.git/index.lock': Operation not
-permitted`; ne pas elargir le scope pour contourner ce blocage.
 
 ```bash
 git add \
@@ -565,14 +601,15 @@ npx eas build -p android --profile preview
 
 `npm run android:gates:strict` est volontairement bloquant avant release Android: il execute
 `subscription:qa:release-gate` et echoue tant que les gates RevenueCat manuelles/externes ne sont
-pas toutes fermees. Au 2026-05-15T00:36Z, il echoue encore sur `RevenueCat subscription QA release gate`
-avec 1 gate RevenueCat/Play restante (`play_cancellation_and_expiry`). Il bloque aussi le profil de paiement Play si
+pas toutes fermees. Pour v34, les quatre preuves Test Store sont requalifiees; les trois preuves
+`play_*` gardent un `versionCode` historique et restent ouvertes jusqu'a requalification. Il bloque
+aussi le profil de paiement Play si
 `doc_web_interne/docs/google-play-payments-profile-state.local.json` contient des exigences ouvertes.
 
 Pour rafraichir la preuve locale du project number Google Cloud utilise par Play Integrity:
 
 ```bash
-gcloud projects list --filter='PROJECT_NUMBER=359653779023' --format=json \
+gcloud projects list --filter="PROJECT_NUMBER=${GOOGLE_CLOUD_PROJECT_NUMBER}" --format=json \
   | npm run android:google-cloud-project-state
 ```
 
@@ -585,10 +622,10 @@ Google Cloud:
 
 ```bash
 npm run android:google-oauth-android-client-state -- \
-  --client-id 359653779023-5dhs012rh7l3cjf0leoknn7j0dlgq0ok.apps.googleusercontent.com \
+  --client-id "${ANDROID_OAUTH_CLIENT_ID}" \
   --name "Noctalia Android Production" \
   --package-name com.tanuki75.noctalia \
-  --sha1 BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59
+  --sha1 "${PLAY_APP_SIGNING_SHA1}"
 ```
 
 Cette commande ecrit `doc_web_interne/docs/google-oauth-android-client-state.local.json`
@@ -617,7 +654,8 @@ build_submit platform=ANDROID track=internal buildId=<new-build-id>
 
 Configuration attendue:
 
-- `.env.playstore` utilise la cle Android `goog_BFWJqTqAtQUnwYisczZcZrnsanw`
+- `.env.playstore` fournit la cle Android via `EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY`; ne jamais
+  recopier sa valeur dans ce runbook
 - les profils EAS `release`, `preview`, `production-apk`, `production` utilisent la cle Google Play
 - produits Google Play RevenueCat:
   - `noctalia_plus:monthly`
@@ -626,9 +664,9 @@ Configuration attendue:
   - monthly: base plan mensuel, periode `P1M`
   - annual: base plan annuel, periode `P1Y`
 
-Le 2026-05-14T15:36Z, un `codex exec` frais a relu RevenueCat MCP en lecture seule:
-`prodfce10ef2a8` (`noctalia_plus:monthly`) renvoie encore `base_plan_id=annual`,
-`billing_period=P1Y`, `state=ACTIVE`, tandis que `prod98337b31be` renvoie aussi `annual/P1Y/ACTIVE`.
+Lors d'une ancienne relecture RevenueCat MCP, le produit `noctalia_plus:monthly` renvoyait encore
+`base_plan_id=annual`, `billing_period=P1Y`, `state=ACTIVE`, tandis que le produit annuel renvoyait
+aussi `annual/P1Y/ACTIVE`.
 Depuis le refresh Google Play direct du 2026-05-14T15:21:48Z, l'API officielle confirme pourtant
 `monthly/P1M/ACTIVE`; le rapport QA signale donc RevenueCat comme `LAGGING` et peut accepter une
 preuve `play_monthly` seulement si elle vient d'une vraie installation Play Internal Testing,
@@ -643,7 +681,7 @@ Correction Play Console a faire avant de reprendre `play_monthly`:
 3. Verifier les `Base plans and offers`.
 4. Le base plan utilise par `noctalia_plus:monthly` doit etre auto-renewing avec billing period mensuel (`P1M` cote API/RevenueCat), pas `annual`/`P1Y`.
 5. Si le base plan active est deja `annual`, creer ou selectionner un base plan mensuel dedie, verifier disponibilite regionale/prix, puis reactiver/sauvegarder.
-6. Relancer une lecture RevenueCat MCP `get_product_store_state` sur `prodfce10ef2a8`; si RevenueCat
+6. Relancer une lecture RevenueCat MCP `get_product_store_state` sur le produit mensuel; si RevenueCat
    reste en retard mais que Google Play direct est toujours `monthly/P1M/ACTIVE`, continuer seulement
    avec une preuve Play-installed + backend convergee.
 
@@ -671,8 +709,12 @@ Sequence recommandee apres validation explicite du bouton `S'abonner` mensuel:
 3. Capturer l'ecran et extraire l'appUserId via logcat:
 
    ```bash
-   adb -s 192.168.1.116:41183 exec-out screencap -p > /private/tmp/noctalia-poco-v24-monthly-after-subscribe.png
-   npm run subscription:qa:device-app-user-id -- --device 192.168.1.116:41183 --source logcat --json
+   adb -s "${QA_PHYSICAL_DEVICE}" exec-out screencap -p \
+     > "${QA_ARTIFACT_DIR}/play-monthly-after-subscribe.png"
+   npm run subscription:qa:device-app-user-id -- \
+     --device "${QA_PHYSICAL_DEVICE}" \
+     --source logcat \
+     --json
    ```
 
 4. Relire RevenueCat MCP ou une source backend equivalente avant d'enregistrer `play_monthly`.
@@ -693,21 +735,18 @@ manuelle Play est utilisee, passer par les controles `Abonnements` de Google Pla
 annule/expire, puis relancer `/subscription/refresh`. La preuve doit contenir l'etat Play, l'evenement
 RevenueCat/webhook ou la relecture backend equivalente, et le retour app `free` ou `expired`.
 
-Etat du run Play v24 du 2026-05-15: les achats test mensuel et annuel ont ete completes depuis le
-POCO Play-installe (`installerPackageName=com.android.vending`, `versionCode=24`) avec la carte test
-Google Play et sans facturation reelle. Google Play Developer API a confirme les deux abonnements en
-`testPurchase: true`, `ACKNOWLEDGED`, puis `EXPIRED` apres annulation developpeur. Le retour app
-`free` apres restore est observe pour le mensuel; pour l'annuel, l'API Play est expiree mais la
-restauration app finale attend le deverrouillage du POCO. La gate reste ouverte tant que la convergence
-webhook/backend RevenueCat n'est pas relue.
+L'ancien run Play v24 reste un historique de comportement seulement. Ses achats, son expiration et
+son restore ne qualifient pas v34. Le candidat actuel doit reproduire l'achat depuis Play, la
+transition annulee/expiree, le retour app `free` apres restore/refresh et la convergence
+webhook/backend RevenueCat sur le meme `QA_APP_USER_ID`.
 
 Pour rendre la relecture RevenueCat directe reproductible sans rouvrir le dashboard, normaliser la
 reponse Subscriber API v1 avec le helper gitignore:
 
 ```bash
 npm run subscription:qa:revenuecat-subscriber-expiry -- \
-  --input /private/tmp/noctalia-revenuecat-subscriber-after-play-expiry.json \
-  --app-user-id 1239729f-7468-48c9-b26a-7aa8b4a82591
+  --input "${QA_ARTIFACT_DIR}/revenuecat-subscriber-after-play-expiry.json" \
+  --app-user-id "${QA_APP_USER_ID}"
 ```
 
 Cette commande ecrit `doc_web_interne/docs/revenuecat-subscriber-expiry-state.local.json` et le
@@ -716,26 +755,25 @@ rapport affiche alors `RevenueCat subscriber expiry snapshot` en `READY` si l'en
 Cette preuve ne remplace pas la gate `play_cancellation_and_expiry`: il faut encore prouver la
 convergence webhook/Supabase ou backend equivalent.
 
-Reprise exacte quand le POCO est deverrouille et Noctalia visible:
+Reprise exacte quand le telephone physique v34 est deverrouille et Noctalia visible:
 
 ```bash
 npm run android:play-qa-device:wait -- \
-  --device 192.168.1.116:41183 \
-  --expected-version-code 24 \
+  --device "${QA_PHYSICAL_DEVICE}" \
+  --expected-version-code "${QA_ANDROID_VERSION_CODE}" \
   --require-ui-ready \
   --timeout-ms 60000
 
-adb -s 192.168.1.116:41183 logcat -c
+adb -s "${QA_PHYSICAL_DEVICE}" logcat -c
 
-# Depuis l'ecran abonnement/paywall, appuyer sur "Restaurer les achats".
-# Ajuster la coordonnee si l'UI a defile; sur le run POCO v24 elle etait en bas de l'ecran.
-adb -s 192.168.1.116:41183 shell input tap 600 2386
-sleep 8
+# Depuis l'ecran abonnement/paywall, utiliser le bouton visible "Restaurer les achats".
+# Ne jamais reutiliser une coordonnee d'un ancien telephone: cibler un testID/UI tree ou agir
+# manuellement, puis attendre le retour explicite de l'app.
 
-adb -s 192.168.1.116:41183 logcat -d | \
+adb -s "${QA_PHYSICAL_DEVICE}" logcat -d | \
   rg -i "restore|restoredTier|isActive|free|expired|subscription_refresh|Subscription convergence|error"
-adb -s 192.168.1.116:41183 exec-out screencap -p \
-  > /private/tmp/noctalia-poco-v24-annual-after-expiry-restore.png
+adb -s "${QA_PHYSICAL_DEVICE}" exec-out screencap -p \
+  > "${QA_ARTIFACT_DIR}/annual-after-expiry-restore.png"
 ```
 
 La preuve app annual post-expiry n'est acceptable que si les logs montrent `restoredTier: 'free'` ou
@@ -768,21 +806,23 @@ Diagnostic local utile si Play Store affiche `Your device isn't compatible with 
 
 ```bash
 bundletool build-apks \
-  --bundle=/private/tmp/noctalia-ddbc756d.aab \
-  --output=/private/tmp/noctalia-ddbc756d-signed.apks \
-  --device-spec=/private/tmp/noctalia-device-spec.json \
-  --ks=/private/tmp/noctalia-debug.keystore \
+  --bundle="${QA_ARTIFACT_DIR}/candidate-v34.aab" \
+  --output="${QA_ARTIFACT_DIR}/candidate-v34-signed.apks" \
+  --device-spec="${QA_ARTIFACT_DIR}/device-spec.json" \
+  --ks="${QA_ARTIFACT_DIR}/debug.keystore" \
   --ks-key-alias=androiddebugkey \
   --ks-pass=pass:android \
   --key-pass=pass:android
-bundletool install-apks --apks=/private/tmp/noctalia-ddbc756d-signed.apks --device-id=emulator-5554
+bundletool install-apks \
+  --apks="${QA_ARTIFACT_DIR}/candidate-v34-signed.apks" \
+  --device-id="${QA_EMULATOR_DEVICE}"
 adb shell dumpsys package com.tanuki75.noctalia | rg -n "versionName|versionCode|installerPackageName"
 adb shell am start -n com.tanuki75.noctalia/.MainActivity
 ```
 
-Le 2026-05-11, ce diagnostic a installe et lance le build 24 sur `Pixel_8_Play_API_36`
-avec `installerPackageName=null`. C'est une preuve que le binaire se lance sur l'emulateur,
-mais pas une preuve Play Billing: les gates Play exigent toujours une installation dont
+Ce diagnostic prouve seulement que le binaire candidat se lance sur l'emulateur lorsqu'il affiche
+`installerPackageName=null`. Il ne qualifie ni un ancien build ni une preuve Play Billing: les
+gates Play exigent toujours une installation dont
 `installerPackageName` vaut `com.android.vending`.
 
 Sources officielles recoupees le 2026-05-14 pour interpreter le blocage emulateur:
@@ -829,12 +869,13 @@ Automatise localement:
 
 - mock lab: profils, monthly, annual, cancelled, expired, paywall
 - Test Store readiness: SDK configure, offering chargee, deux packages visibles
+- Test Store v34: achats mensuel et annuel, restore apres effacement controle,
+  isolation du second compte, puis retour au compte QA payant
 
 Encore manuel ou externe:
 
-- switch de compte apres achat avec un deuxieme compte reel non abonne
 - build installe via Google Play Internal Testing
-- annulation, expiration, grace period et webhook reels
+- achats, restore, annulation, expiration, grace period et webhook Play reels
 
 Commande de garde:
 
@@ -843,4 +884,6 @@ npm run subscription:qa:release-gate
 npm run android:gates:strict
 ```
 
-Ces commandes doivent echouer jusqu'a ce que chaque porte manuelle ou externe ci-dessus ait une preuve de switch compte, achat Play, restore Play et convergence backend/store.
+Ces commandes doivent echouer tant que les trois gates `play_monthly`, `play_annual` et
+`play_cancellation_and_expiry` ne disposent pas de preuves v34 qualifiantes couvrant, selon la gate,
+les achats, le restore ou l'expiration, et la convergence backend/store.

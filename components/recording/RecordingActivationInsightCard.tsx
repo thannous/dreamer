@@ -36,6 +36,7 @@ export function RecordingActivationInsightCard({
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const accessibleAccent = noctalia.accent.strong;
 
   const signalLabels = useMemo(
     () => insight?.signalIds.map((signalId) => t(`recording.activation_insight.signal.${signalId}`)) ?? [],
@@ -63,18 +64,19 @@ export function RecordingActivationInsightCard({
           borderColor: noctalia.surface.border,
         },
       ]}
+      accessibilityLiveRegion="polite"
       testID={TID.Component.RecordingActivationInsight}
     >
       <View style={styles.headerRow}>
         <View
           style={[
             styles.spark,
-            { backgroundColor: `${noctalia.accent.base}24` },
+          { backgroundColor: `${accessibleAccent}24` },
           ]}
         >
-          <IconSymbol name="sparkles" size={16} color={noctalia.accent.base} />
+          <IconSymbol name="sparkles" size={16} color={accessibleAccent} />
         </View>
-        <Text style={[styles.eyebrow, { color: noctalia.accent.base }]}>
+        <Text style={[styles.eyebrow, { color: accessibleAccent }]}>
           {t('recording.activation_insight.eyebrow')}
         </Text>
       </View>
@@ -100,7 +102,7 @@ export function RecordingActivationInsightCard({
               <IconSymbol
                 name={signalIconById[signalId]}
                 size={14}
-                color={noctalia.accent.base}
+                color={accessibleAccent}
               />
               <Text style={[styles.chipText, { color: noctalia.text.secondary }]}>
                 {signalLabels[index]}

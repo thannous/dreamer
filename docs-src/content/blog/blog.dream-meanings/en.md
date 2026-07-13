@@ -79,6 +79,7 @@
   <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
     <p>If you are new to this topic, focus on one small habit for a week. Consistency matters more than doing everything at once.</p>
     <p>Start with recall, then add one practice. Keep notes simple: what you saw, how you felt, and what changed during the dream.</p>
+    <p>If a place dominates the memory, note its atmosphere before assigning meaning. For example, a <a class="text-dream-salmon hover:underline" href="../symbols/forest">forest dream</a> can feel safe, dark, familiar, or disorienting depending on the scene and your response to it.</p>
     <ul><li>Pick one guide from the list below.</li><li>Try it for 7 nights.</li><li>Review your notes and adjust.</li></ul>
   </div>
 </section>

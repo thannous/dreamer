@@ -217,6 +217,10 @@
     "vitest": "^4.0.13",
     "workbox-cli": "^7.0.0"
   },
+  "overrides": {
+    "markdown-it": "14.3.0",
+    "tmp": "0.2.7"
+  },
   "reanimated": {
     "staticFeatureFlags": {
       "DISABLE_COMMIT_PAUSING_MECHANISM": true,

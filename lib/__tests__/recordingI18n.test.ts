@@ -4,6 +4,36 @@ import { getTranslator, loadTranslations } from '../i18n';
 
 const languages: ('en' | 'fr' | 'es' | 'de' | 'it')[] = ['en', 'fr', 'es', 'de', 'it'];
 
+const obsoleteFirstRunOnboardingKeys = [
+  'onboarding.path.library.title',
+  'onboarding.path.library.body',
+  'onboarding.path.library.kicker',
+  'onboarding.path.library.detail_title',
+  'onboarding.path.library.cta',
+  'onboarding.capture.title',
+  'onboarding.capture.mode.text.title',
+  'onboarding.capture.mode.text.body',
+  'onboarding.capture.mode.voice.title',
+  'onboarding.capture.mode.voice.body',
+  'onboarding.capture.hint',
+  'onboarding.capture.cta',
+] as const;
+
+const frenchRecordingTutoiementKeys = [
+  'recording.alert.stt_unavailable.message',
+  'recording.alert.language_pack_missing.message',
+  'recording.alert.offline_model.message',
+  'recording.alert.limit.title',
+  'recording.analysis_limit.assurance_guest',
+  'guest.limit.banner.hint',
+  'guest.limit.banner.reached',
+  'guest.upsell.title',
+  'guest.upsell.subtitle',
+  'guest.upsell.benefit.unlimited',
+  'guest.upsell.after1.message',
+  'guest.first_dream.sheet.subtitle',
+] as const;
+
 const firstDreamSheetKeys = [
   'guest.first_dream.sheet.title',
   'guest.first_dream.sheet.subtitle',
@@ -22,6 +52,21 @@ const analyzePromptSheetKeys = [
   'recording.analyze_prompt.sheet.analyze',
   'recording.analyze_prompt.sheet.journal',
   'recording.analyze_prompt.sheet.dismiss',
+  'recording.analysis_offer.title',
+  'recording.analysis_offer.quota_remaining',
+  'recording.analysis_offer.unlimited',
+  'recording.analysis_offer.unknown',
+  'recording.analysis_offer.exhausted',
+  'recording.analysis_offer.launch',
+  'recording.analysis_offer.view',
+  'recording.analysis_offer.later',
+  'recording.analysis_offer.retry',
+  'recording.analysis_offer.error',
+  'recording.memory_offer.title',
+  'recording.memory_offer.subtitle',
+  'recording.memory_offer.view',
+  'recording.memory_offer.analyze',
+  'recording.memory_offer.later',
 ] as const;
 
 const guestLimitSheetKeys = [
@@ -145,11 +190,24 @@ const onboardingTourKeys = [
   'recording.onboarding.skip',
   'recording.onboarding.next',
   'recording.onboarding.done',
+  'recording.guide.title',
+  'recording.guide.step_mode',
+  'recording.guide.step_control',
+  'recording.guide.next',
+  'recording.guide.done',
+  'recording.guide.dismiss',
 ] as const;
 
 const firstRunOnboardingKeys = [
   'onboarding.skip',
+  'onboarding.back',
+  'onboarding.progress',
+  'onboarding.persistence_error',
+  'onboarding.retry',
+  'onboarding.continue_session',
   'onboarding.intro.title',
+  'onboarding.intro.title_lead',
+  'onboarding.intro.title_accent',
   'onboarding.intro.subtitle',
   'onboarding.intro.cta',
   'onboarding.intro.signal.capture.title',
@@ -158,7 +216,18 @@ const firstRunOnboardingKeys = [
   'onboarding.intro.signal.decode.body',
   'onboarding.intro.signal.profile.title',
   'onboarding.intro.signal.profile.body',
+  'onboarding.privacy.link',
+  'onboarding.privacy.title',
+  'onboarding.privacy.body',
+  'onboarding.privacy.no_content',
+  'onboarding.privacy.toggle_label',
+  'onboarding.privacy.toggle_hint',
+  'onboarding.privacy.enabled',
+  'onboarding.privacy.disabled',
+  'onboarding.privacy.error',
   'onboarding.title',
+  'onboarding.path.title_lead',
+  'onboarding.path.title_accent',
   'onboarding.subtitle',
   'onboarding.fresh_cta',
   'onboarding.path.analyze.title',
@@ -174,18 +243,9 @@ const firstRunOnboardingKeys = [
   'onboarding.path.memory.outcome_2',
   'onboarding.path.memory.outcome_3',
   'onboarding.path.memory.cta',
-  'onboarding.path.library.title',
-  'onboarding.path.library.body',
-  'onboarding.path.library.kicker',
-  'onboarding.path.library.detail_title',
-  'onboarding.path.library.cta',
-  'onboarding.capture.title',
-  'onboarding.capture.mode.text.title',
-  'onboarding.capture.mode.text.body',
-  'onboarding.capture.mode.voice.title',
-  'onboarding.capture.mode.voice.body',
-  'onboarding.capture.hint',
-  'onboarding.capture.cta',
+  'onboarding.path.dictionary.title',
+  'onboarding.path.dictionary.body',
+  'onboarding.path.dictionary.cta',
 ] as const;
 
 const rememberedDreamPromptKeys = [
@@ -201,6 +261,9 @@ const rememberedDreamPromptKeys = [
   'recording.remembered_prompt.tonight',
   'recording.remembered_prompt.skip',
   'recording.remembered_profile.eyebrow',
+  'recording.remembered_profile.accordion_title',
+  'recording.remembered_profile.expand_hint',
+  'recording.remembered_profile.collapse_hint',
   'recording.remembered_profile.optional_badge',
   'recording.remembered_profile.title',
   'recording.remembered_profile.kind_label',
@@ -230,6 +293,13 @@ const settingsOnboardingKeys = [
   'settings.onboarding.description',
   'settings.onboarding.restart',
   'settings.onboarding.restart_hint',
+  'analytics.privacy.title',
+  'analytics.privacy.description',
+  'analytics.privacy.enabled',
+  'analytics.privacy.disabled',
+  'analytics.privacy.toggle_label',
+  'analytics.privacy.unavailable',
+  'analytics.privacy.error',
 ] as const;
 
 describe('Recording i18n - bottom sheets', () => {
@@ -410,6 +480,27 @@ describe('Recording i18n - bottom sheets', () => {
         expect(typeof value).toBe('string');
         expect(value.length).toBeGreaterThan(0);
       }
+    }
+  });
+
+  it('does not retain obsolete library-path or onboarding capture translations', async () => {
+    const packs = await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const pack of packs) {
+      for (const key of obsoleteFirstRunOnboardingKeys) {
+        expect(pack).not.toHaveProperty(key);
+      }
+    }
+  });
+
+  it('keeps the cited French recording journey in tutoiement', async () => {
+    const translations = await loadTranslations('fr');
+
+    for (const key of frenchRecordingTutoiementKeys) {
+      const value = translations[key];
+      expect(value).toBeDefined();
+      expect(value).not.toMatch(/\b(?:vous|votre|vos)\b/i);
+      expect(value).not.toMatch(/\b(?:saisissez|téléchargez|choisissez|créez)\b/i);
     }
   });
 

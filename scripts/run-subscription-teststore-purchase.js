@@ -14,21 +14,14 @@ const ROOT = path.resolve(__dirname, '..');
 const APPROVAL = 'I_APPROVE_TEST_STORE_PURCHASE';
 const EMAIL_FLOW = 'maestro/subscription-teststore-purchase-manual.yml';
 const GOOGLE_FLOW = 'maestro/subscription-teststore-purchase-google-manual.yml';
+const TEST_STORE_PRODUCT_IDS = Object.freeze({
+  monthly: 'monthly',
+  annual: 'yearly',
+});
 
 function fail(message) {
   console.error(message);
   process.exit(1);
-}
-
-function maskIdentity(value) {
-  const at = value.indexOf('@');
-  if (at > 1) {
-    return `${value.slice(0, 2)}...${value.slice(at)}`;
-  }
-  if (value.length <= 6) {
-    return 'provided';
-  }
-  return `${value.slice(0, 3)}...${value.slice(-2)}`;
 }
 
 function exactRegex(value) {
@@ -92,6 +85,7 @@ const qaEmail = process.env.REVENUECAT_QA_EMAIL;
 const qaPassword = process.env.REVENUECAT_QA_PASSWORD;
 const approval = process.env.REVENUECAT_QA_APPROVAL;
 const flow = authMode === 'google' ? GOOGLE_FLOW : EMAIL_FLOW;
+const productId = TEST_STORE_PRODUCT_IDS[plan];
 
 if (!qaEmail) {
   fail('Missing REVENUECAT_QA_EMAIL for the signed-in test account.');
@@ -102,12 +96,16 @@ if (authMode === 'email' && !qaPassword) {
 }
 
 const maestroArgs = passthroughArgs(argv);
+const targetDevice = maestroArgs[maestroArgs.indexOf('--device') + 1];
+if (!/^emulator-\d+$/.test(targetDevice)) {
+  fail('RevenueCat Test Store purchases are emulator-only; refusing a physical Play device.');
+}
 
 if (preflight) {
   console.log('Test Store purchase preflight passed.');
   console.log(`Plan: ${plan}`);
   console.log(`Auth mode: ${authMode}`);
-  console.log(`Test account: ${maskIdentity(qaEmail)}`);
+  console.log('Test account: configured');
   console.log(`Approval present: ${approval === APPROVAL ? 'yes' : 'no'}`);
   console.log(`Flow: ${flow}`);
   console.log(`Maestro args: ${maestroArgs.length > 0 ? maestroArgs.join(' ') : 'none'}`);
@@ -136,6 +134,7 @@ const result = spawnSync('npm', args, {
     [SENSITIVE_FLOW_GUARD_ENV]: getSensitiveFlowGuardToken(flow),
     QA_EMAIL_REGEX: exactRegex(qaEmail),
     QA_PLAN: plan,
+    QA_PRODUCT_ID: productId,
     ...(authMode === 'email'
       ? { QA_EMAIL: qaEmail, QA_PASSWORD: qaPassword }
       : {}),

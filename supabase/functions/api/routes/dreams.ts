@@ -11,6 +11,10 @@ import { generateImageFromPrompt, resolveImageModel } from '../services/geminiIm
 import { optimizeImage } from '../services/image.ts';
 import { createStorageHelpers } from '../services/storage.ts';
 import { requireGuestSession, requireUser } from '../lib/guards.ts';
+import {
+  claimGuestAnalysisQuota,
+  isAuthenticatedAnalysisQuotaRetry,
+} from '../lib/analysisQuota.ts';
 import type { ApiContext } from '../types.ts';
 
 const toCount = (value: unknown): number => {
@@ -80,7 +84,7 @@ const quotaBlockedResponse = (claim: AuthenticatedAnalysisQuotaClaim): Response 
     );
   }
 
-  if (claim.code === 'ANALYSIS_ALREADY_CLAIMED') {
+  if (isAuthenticatedAnalysisQuotaRetry(claim)) {
     return new Response(
       JSON.stringify({
         error: 'Analysis request is already in progress',
@@ -208,6 +212,15 @@ async function claimAuthenticatedAnalysisQuota({
   }
 
   const claim = (quotaResult ?? {}) as AuthenticatedAnalysisQuotaClaim;
+  // The quota row already exists for this exact dream/request pair. Treat it
+  // as an idempotent retry: provider work may be repeated after a lost
+  // response, but quota consumption must not be repeated.
+  if (isAuthenticatedAnalysisQuotaRetry(claim)) {
+    return {
+      quotaUsed: claim.new_count === undefined ? undefined : { analysis: toCount(claim.new_count) },
+      tier: claim.tier,
+    };
+  }
   if (!claim.allowed) {
     console.log(`[api] ${route}: authenticated quota blocked before provider work`, {
       userId,
@@ -277,16 +290,14 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
         auth: { autoRefreshToken: false, persistSession: false },
       });
-      const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
-        p_fingerprint: fingerprint,
-        p_quota_type: 'analysis',
-        p_limit: guestAnalysisLimit,
+      const guestQuota = await claimGuestAnalysisQuota({
+        adminClient,
+        analysisRequestId: toUuid(body.analysisRequestId) ?? toUuid(body.requestId),
+        fingerprint,
+        limit: guestAnalysisLimit,
       });
-
-      if (quotaError) {
-        console.error('[api] /analyzeDream: quota claim failed before provider work', quotaError);
-        return serviceUnavailable('Guest quota unavailable');
-      }
+      if (guestQuota.response) return guestQuota.response;
+      const quotaResult = guestQuota.claim;
 
       if (!quotaResult?.allowed) {
         const used = toCount((quotaResult as any)?.new_count);

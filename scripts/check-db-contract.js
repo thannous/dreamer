@@ -392,6 +392,69 @@ async function runGuestQuotaImageSupportBehaviorCheck(client) {
   }
 }
 
+async function runGuestAnalysisIdempotencyBehaviorCheck(client) {
+  const fingerprint = `db-contract-analysis-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const requestId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
+  const secondRequestId = '0d38885f-52b1-4c20-a95d-fb8fb6078f3d';
+
+  await client.query('BEGIN');
+  try {
+    const firstClaim = await queryFunctionJsonResult(
+      client,
+      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer) as result',
+      [fingerprint, requestId, 1]
+    );
+    if (requireBoolean(firstClaim.allowed, 'first guest analysis claim allowed') !== true) {
+      throw new Error('claim_guest_analysis_quota() must allow the first request');
+    }
+    if (requireFiniteNumber(firstClaim.new_count, 'first guest analysis claim count') !== 1) {
+      throw new Error('first guest analysis claim must increment count to 1');
+    }
+    if (requireBoolean(firstClaim.claimed, 'first guest analysis claim claimed') !== true) {
+      throw new Error('first guest analysis request must be recorded as a new claim');
+    }
+
+    const duplicateClaim = await queryFunctionJsonResult(
+      client,
+      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer) as result',
+      [fingerprint, requestId, 1]
+    );
+    if (requireBoolean(duplicateClaim.allowed, 'duplicate guest analysis claim allowed') !== true) {
+      throw new Error('the same guest analysis request must remain retryable');
+    }
+    if (requireFiniteNumber(duplicateClaim.new_count, 'duplicate guest analysis claim count') !== 1) {
+      throw new Error('the same guest analysis request must not increment quota twice');
+    }
+    if (requireBoolean(duplicateClaim.duplicate, 'duplicate guest analysis claim duplicate') !== true) {
+      throw new Error('the repeated guest analysis request must be identified as duplicate');
+    }
+
+    const secondClaim = await queryFunctionJsonResult(
+      client,
+      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer) as result',
+      [fingerprint, secondRequestId, 1]
+    );
+    if (requireBoolean(secondClaim.allowed, 'second guest analysis claim allowed') !== false) {
+      throw new Error('a different request must still respect the exhausted quota');
+    }
+    if (requireFiniteNumber(secondClaim.new_count, 'second guest analysis claim count') !== 1) {
+      throw new Error('a rejected request must leave guest analysis count unchanged');
+    }
+
+    return {
+      ok: true,
+      details: 'guest analysis quota is claimed exactly once per request UUID',
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      details: formatFailure(error),
+    };
+  } finally {
+    await client.query('ROLLBACK');
+  }
+}
+
 async function runBehaviorChecks(client, requiredBehaviorChecks) {
   const checks = [];
   const failures = [];
@@ -403,6 +466,9 @@ async function runBehaviorChecks(client, requiredBehaviorChecks) {
     switch (behaviorCheck.type) {
       case 'guest_quota_image_support':
         result = await runGuestQuotaImageSupportBehaviorCheck(client);
+        break;
+      case 'guest_analysis_idempotency':
+        result = await runGuestAnalysisIdempotencyBehaviorCheck(client);
         break;
       default:
         result = {
@@ -692,6 +758,7 @@ module.exports = {
   resolveDbUrl,
   runChecks,
   runBehaviorChecks,
+  runGuestAnalysisIdempotencyBehaviorCheck,
   runGuestQuotaImageSupportBehaviorCheck,
   sanitizeDbUrl,
 };

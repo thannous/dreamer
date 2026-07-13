@@ -16,6 +16,7 @@ const {
   buildMaestroFlowSourceEnv,
   createRedactingWriter,
   decodeExactRegexLiteral,
+  getMaestroArtifactPolicy,
   getSensitiveFlowGuardToken,
   normalizeFlow,
   parseInstalledAndroidBuild,
@@ -109,6 +110,30 @@ describe('run-maestro-android Release preflight', () => {
       .toThrow('installed package is DEBUGGABLE and may depend on Metro');
   });
 
+  it('requires the dedicated debuggable binary for RevenueCat Test Store', () => {
+    const debuggable = parseInstalledAndroidBuild(
+      RELEASE_DUMPSYS.replace(
+        'pkgFlags=[ HAS_CODE ALLOW_CLEAR_USER_DATA ]',
+        'pkgFlags=[ HAS_CODE DEBUGGABLE ALLOW_CLEAR_USER_DATA ]'
+      )
+    );
+
+    expect(assertInstalledReleaseBinary(
+      'emulator-5554',
+      EXPECTED,
+      debuggable,
+      { expectedDebuggable: true }
+    )).toMatchObject({ debuggable: true });
+
+    const nonDebuggable = parseInstalledAndroidBuild(RELEASE_DUMPSYS);
+    expect(() => assertInstalledReleaseBinary(
+      'emulator-5554',
+      EXPECTED,
+      nonDebuggable,
+      { expectedDebuggable: true }
+    )).toThrow('RevenueCat Test Store rejects release binaries');
+  });
+
   it('requires Release runs to leave Metro untouched and unused', () => {
     expect(() => assertReleaseSuiteDoesNotStartMetro({
       suite: 'release',
@@ -134,6 +159,9 @@ describe('run-maestro-android Release preflight', () => {
       QA_SWITCH_FREE_PASSWORD: process.env.QA_SWITCH_FREE_PASSWORD,
       REVENUECAT_QA_SWITCH_FREE_EMAIL: process.env.REVENUECAT_QA_SWITCH_FREE_EMAIL,
       REVENUECAT_QA_SWITCH_FREE_PASSWORD: process.env.REVENUECAT_QA_SWITCH_FREE_PASSWORD,
+      REVENUECAT_QA_EMAIL: process.env.REVENUECAT_QA_EMAIL,
+      REVENUECAT_QA_PASSWORD: process.env.REVENUECAT_QA_PASSWORD,
+      REVENUECAT_QA_APPROVAL: process.env.REVENUECAT_QA_APPROVAL,
       UPGRADE_SENTINEL: process.env.UPGRADE_SENTINEL,
       SECRET_NOT_FOR_MAESTRO: process.env.SECRET_NOT_FOR_MAESTRO,
     };
@@ -145,6 +173,9 @@ describe('run-maestro-android Release preflight', () => {
     process.env.QA_SWITCH_FREE_PASSWORD = 'switch-secret';
     process.env.REVENUECAT_QA_SWITCH_FREE_EMAIL = 'release-auth@example.com';
     process.env.REVENUECAT_QA_SWITCH_FREE_PASSWORD = 'release-auth-secret';
+    process.env.REVENUECAT_QA_EMAIL = 'wrapper-only@example.com';
+    process.env.REVENUECAT_QA_PASSWORD = 'wrapper-only-secret';
+    process.env.REVENUECAT_QA_APPROVAL = 'wrapper-only-approval';
     process.env.UPGRADE_SENTINEL = 'UPGRADE_V33_V34_TEST';
     process.env.SECRET_NOT_FOR_MAESTRO = 'do-not-forward';
 
@@ -211,6 +242,9 @@ describe('run-maestro-android Release preflight', () => {
       expect(maestroEnv.QA_SWITCH_FREE_PASSWORD).toBeUndefined();
       expect(maestroEnv.REVENUECAT_QA_SWITCH_FREE_EMAIL).toBeUndefined();
       expect(maestroEnv.REVENUECAT_QA_SWITCH_FREE_PASSWORD).toBeUndefined();
+      expect(maestroEnv.REVENUECAT_QA_EMAIL).toBeUndefined();
+      expect(maestroEnv.REVENUECAT_QA_PASSWORD).toBeUndefined();
+      expect(maestroEnv.REVENUECAT_QA_APPROVAL).toBeUndefined();
       expect(maestroEnv.UPGRADE_SENTINEL).toBeUndefined();
       expect(maestroEnv[SENSITIVE_FLOW_GUARD_ENV]).toBeUndefined();
     } finally {
@@ -334,6 +368,25 @@ describe('run-maestro-android Release preflight', () => {
     expect(stderr).toBe('password=<redacted:qa-secret>\nnon-sensitive stderr\n');
   });
 
+  it('redacts an email from Test Store output without an explicit identity env', async () => {
+    let stdout = '';
+    const result = await runCommand(process.execPath, [
+      '-e',
+      [
+        "process.stdout.write('account=qa+us')",
+        "process.stdout.write('er@example.com\\n')",
+      ].join(';'),
+    ], {
+      redactEmails: true,
+      stdoutWriter: (chunk) => {
+        stdout += chunk;
+      },
+    });
+
+    expect(result).toMatchObject({ ok: true, code: 0 });
+    expect(stdout).toBe('account=<redacted:email>\n');
+  });
+
   it('redacts Maestro text artifacts and removes images only inside a credential flow', () => {
     const outputRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-maestro-redaction-'));
     const nested = path.join(outputRoot, 'nested');
@@ -392,6 +445,45 @@ describe('run-maestro-android Release preflight', () => {
     } finally {
       fs.rmSync(outputRoot, { recursive: true, force: true });
     }
+  });
+
+  it('redacts discovered emails and removes screenshots for a guarded suite without env values', () => {
+    const outputRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-maestro-generic-redaction-'));
+    const logPath = path.join(outputRoot, 'maestro.log');
+    const pngPath = path.join(outputRoot, 'screenshot-failure.png');
+
+    try {
+      fs.writeFileSync(logPath, 'signed in as qa+user@example.com\n', 'utf8');
+      fs.writeFileSync(pngPath, Buffer.from([0x89, 0x50, 0x4e, 0x47]));
+
+      expect(sanitizeMaestroArtifacts(outputRoot, [], { removeScreenshots: true }))
+        .toEqual({
+          textFilesScanned: 1,
+          textFilesRedacted: 1,
+          screenshotsRemoved: 1,
+        });
+      expect(fs.readFileSync(logPath, 'utf8')).toBe('signed in as <redacted:email>\n');
+      expect(fs.existsSync(pngPath)).toBe(false);
+    } finally {
+      fs.rmSync(outputRoot, { recursive: true, force: true });
+    }
+  });
+
+  it('forces private artifacts for every Release Test Store flow', () => {
+    expect(getMaestroArtifactPolicy('release-teststore', [])).toEqual({
+      redactEmails: true,
+      removeScreenshots: true,
+    });
+    expect(getMaestroArtifactPolicy('release', [])).toEqual({
+      redactEmails: false,
+      removeScreenshots: false,
+    });
+    expect(getMaestroArtifactPolicy('release', [
+      { value: 'qa@example.com', replacement: '<redacted:qa-identity>' },
+    ])).toEqual({
+      redactEmails: false,
+      removeScreenshots: true,
+    });
   });
 
   it('requires wrapper authorization and non-destructive readiness before sensitive flows', () => {

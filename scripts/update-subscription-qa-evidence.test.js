@@ -1,4 +1,4 @@
-/* global __dirname, describe, it, expect */
+/* global __dirname, afterAll, describe, it, expect */
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -14,10 +14,17 @@ const { parseArgs, updateEvidence } = require('./update-subscription-qa-evidence
 const EXAMPLE = JSON.parse(
   fs.readFileSync(path.join(ROOT, 'doc_web_interne/docs/revenuecat-qa-evidence.example.json'), 'utf8')
 );
+const TEMP_ROOT = fs.mkdtempSync(path.join(os.tmpdir(), 'subscription-evidence-update-'));
+let tempFileIndex = 0;
 
 function tempFile() {
-  return path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'subscription-evidence-update-')), 'evidence.json');
+  tempFileIndex += 1;
+  return path.join(TEMP_ROOT, `evidence-${tempFileIndex}.json`);
 }
+
+afterAll(() => {
+  fs.rmSync(TEMP_ROOT, { recursive: true, force: true });
+});
 
 function candidateVersionArgs() {
   return ['--version-code', String(ANDROID_CANDIDATE_VERSION_CODE)];

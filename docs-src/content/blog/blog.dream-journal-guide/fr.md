@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "fr",
   "slug": "guide-journal-reves",
-  "title": "Journal de rêves : comment commencer, quoi noter et tenir la routine | Noctalia",
+  "title": "Journal de rêves : commencer et tenir la routine | Noctalia",
   "description": "Comment tenir un journal de rêves : format, modèle d’entrée, routine 7 jours, exemple rempli et pistes d’interprétation avec Noctalia.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
@@ -13,23 +13,23 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Journal de rêves : comment commencer, quoi noter et tenir la routine",
+  "ogTitle": "Journal de rêves : commencer et tenir la routine",
   "ogDescription": "Comment tenir un journal de rêves : format, modèle d’entrée, routine 7 jours, exemple rempli et pistes d’interprétation avec Noctalia.",
   "ogImage": "https://noctalia.app/img/blog/dream-journal-guide.webp",
   "ogImageAlt": "Journal de rêves ouvert sur une table de chevet avec un stylo",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Journal de rêves : comment commencer, quoi noter et tenir la routine",
+  "twitterTitle": "Journal de rêves : commencer et tenir la routine",
   "twitterDescription": "Comment tenir un journal de rêves : format, modèle d’entrée, routine 7 jours, exemple rempli et pistes d’interprétation avec Noctalia.",
   "twitterImage": "https://noctalia.app/img/blog/dream-journal-guide.webp",
   "twitterImageAlt": "Journal de rêves ouvert sur une table de chevet avec un stylo",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-06-04",
+  "modifiedTime": "2026-07-12",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/guide-paralysie-sommeil",
   "nextPath": "/fr/blog/reves-sante-mentale",
   "preloadImage": "/img/blog/dream-journal-guide.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Journal de rêves : comment commencer, quoi noter et tenir la routine\",\n            \"description\": \"Comment tenir un journal de rêves : format, modèle d’entrée, routine 7 jours, exemple rempli et pistes d’interprétation avec Noctalia.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dream-journal-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-06-04\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1800,\n            \"timeRequired\": \"PT6M\",\n            \"url\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Journal de rêves : commencer et tenir la routine\",\n            \"description\": \"Comment tenir un journal de rêves : format, modèle d’entrée, routine 7 jours, exemple rempli et pistes d’interprétation avec Noctalia.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dream-journal-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-07-12\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1800,\n            \"timeRequired\": \"PT6M\",\n            \"url\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"Que noter dans un journal de rêves ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Notez la date, le lieu, les personnages, l’émotion dominante, les symboles, les sensations et une question de réflexion. Même trois mots au réveil valent mieux qu’un récit parfait écrit trop tard.\" } },\n                { \"@type\": \"Question\", \"name\": \"Carnet, note vocale ou application : que choisir ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Choisissez le format que vous utiliserez vraiment au réveil. Un carnet aide à ralentir, la note vocale capture vite les détails, et une application facilite la recherche, les tags et les pistes d’interprétation.\" } },\n                { \"@type\": \"Question\", \"name\": \"Comment tenir la routine du journal de rêves ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Gardez le support près du lit, notez toujours quelque chose pendant sept jours, puis relisez vos entrées pour repérer les lieux, émotions et symboles qui reviennent.\" } },\n                { \"@type\": \"Question\", \"name\": \"Une IA peut-elle interpréter mon journal de rêves ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Une IA peut proposer des pistes d’interprétation à partir du récit, des émotions et des symboles, mais elle ne remplace pas votre contexte personnel. Le meilleur usage consiste à relire, questionner et comparer les motifs dans le temps.\" } }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Guide journal de rêves\",\n            \"item\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n        }\n    ]\n}"
   ],
@@ -66,7 +66,7 @@
 <span class="text-sm text-purple-300/60">5 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Journal de rêves : comment commencer, quoi noter et tenir la routine
+                    Journal de rêves : commencer et tenir la routine
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
                     Tenir un journal de rêves consiste à capturer le souvenir brut au réveil, puis à le relire avec assez de contexte pour faire émerger des pistes d’interprétation. Commencez simple : une note vocale ou un carnet, une date, trois détails, l’émotion dominante et une question. La routine compte plus que la longueur.
@@ -92,7 +92,7 @@
     <h2 class="font-serif text-2xl text-dream-cream mb-4">Le modèle d’entrée idéal en 60 secondes</h2>
     <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-300">
         <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">1. Le décor</h3><p>Où étiez-vous ? Maison, école, route, hôpital, forêt, lieu inconnu.</p></div>
-        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">2. L’émotion</h3><p>Notez le ressenti brut : peur, calme, honte, curiosité, soulagement.</p></div>
+        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">2. L’émotion</h3><p>Notez le ressenti dominant : peur, calme, surprise, tristesse, joie ou confusion.</p></div>
         <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">3. Le symbole</h3><p>Choisissez l’image qui reste : eau, porte, chien, maison, chute, personne.</p></div>
         <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">4. La question</h3><p>Demandez-vous : “À quoi cela ressemble dans ma vie éveillée ?”</p></div>
     </div>
@@ -455,7 +455,7 @@
 <li><a href="https://dictionary.apa.org/memory" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary — Memory</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Mécanismes du rappel des rêves (revue, PubMed)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 4 juin 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 12 juillet 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Symboles de rêves associés" class="mt-12 mb-8">

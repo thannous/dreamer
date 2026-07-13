@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 
@@ -9,32 +9,13 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
-import {
-  saveRecordingOnboardingCompleted,
-  saveRecordingVoiceStatusHidden,
-} from '@/services/storageService';
 
 export default function RecordingOnboardingSettingsCard() {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
-  const [isRestarting, setIsRestarting] = useState(false);
-
-  const handleRestartOnboarding = useCallback(async () => {
-    setIsRestarting(true);
-    try {
-      await Promise.all([
-        saveRecordingOnboardingCompleted(false),
-        saveRecordingVoiceStatusHidden(false),
-      ]);
-      router.push('/recording');
-    } catch (error) {
-      if (__DEV__) {
-        console.error('Failed to restart recording onboarding:', error);
-      }
-    } finally {
-      setIsRestarting(false);
-    }
+  const handleRestartOnboarding = useCallback(() => {
+    router.push({ pathname: '/recording', params: { replayGuide: '1' } });
   }, []);
 
   return (
@@ -59,12 +40,11 @@ export default function RecordingOnboardingSettingsCard() {
           styles.actionButton,
           { backgroundColor: noctalia.surface.active },
           pressed && styles.actionPressed,
-          isRestarting && styles.actionDisabled,
         ]}
         onPress={handleRestartOnboarding}
-        disabled={isRestarting}
         accessibilityRole="button"
         accessibilityLabel={t('settings.onboarding.restart')}
+        accessibilityHint={t('settings.onboarding.restart_hint')}
         testID={TID.Button.RecordingOnboardingRestart}
       >
         <View style={[styles.iconContainer, { backgroundColor: noctalia.action.primary }]}>
@@ -111,9 +91,6 @@ const styles = StyleSheet.create({
   },
   actionPressed: {
     opacity: 0.7,
-  },
-  actionDisabled: {
-    opacity: 0.55,
   },
   iconContainer: {
     width: 40,

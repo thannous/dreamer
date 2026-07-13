@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Significado de sueños: interpretación y símbolos",
   "publishedTime": "",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-07-12",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -79,6 +79,7 @@
   <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
     <p>Si eres principiante, elige un hábito pequeño durante una semana. La constancia importa más que hacerlo todo a la vez.</p>
     <p>Empieza con el recuerdo y luego añade una práctica. Anota lo básico: qué viste, qué sentiste y qué cambió en el sueño.</p>
+    <p>Si un lugar domina tu recuerdo, describe primero su ambiente. Un <a class="text-dream-salmon hover:underline" href="../simbolos/bosque">bosque en un sueño</a> puede sentirse seguro, oscuro, familiar o desconcertante según la escena y tu reacción.</p>
     <ul><li>Elige una guía de la lista.</li><li>Pruébala durante 7 noches.</li><li>Revisa tus notas y ajusta.</li></ul>
   </div>
 </section>

@@ -5,10 +5,14 @@ import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
+import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { MotiView } from '@/lib/moti';
+import { buildFirstValueProperties } from '@/lib/activationAnalytics';
+import { trackProductEvent } from '@/lib/analytics';
+import { TID } from '@/lib/testIDs';
 import type { SymbolLanguage, SymbolVariation } from '@/lib/symbolTypes';
 import {
   getCategoryIcon,
@@ -20,20 +24,40 @@ import {
 } from '@/services/symbolDictionaryService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function SymbolDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, source } = useLocalSearchParams<{ id: string; source?: string }>();
+  const { state: onboardingState } = useOnboarding();
   const { colors, shadows, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, currentLang } = useTranslation();
   const lang = (currentLang ?? 'en') as SymbolLanguage;
   const scrollPerf = useScrollIdle();
+  const trackedSymbolRef = useRef<string | null>(null);
 
   const symbol = useMemo(() => getSymbolById(id!), [id]);
   const extended = useMemo(() => (id ? getExtendedContent(id, lang) : undefined), [id, lang]);
   const relatedSymbols = useMemo(() => (symbol ? getRelatedSymbols(symbol) : []), [symbol]);
+
+  useEffect(() => {
+    if (!symbol || trackedSymbolRef.current === symbol.id) return;
+    trackedSymbolRef.current = symbol.id;
+
+    const analyticsSource =
+      source === 'onboarding' || source === 'dictionary' || source === 'search'
+        ? source
+        : 'unknown';
+    void trackProductEvent('symbol_detail_viewed', { source: analyticsSource });
+
+    if (source === 'onboarding' && onboardingState.completionReason === 'dictionary') {
+      void trackProductEvent(
+        'first_value_viewed',
+        buildFirstValueProperties(onboardingState, 'symbol_detail')
+      );
+    }
+  }, [onboardingState, source, symbol]);
 
   const gradientColors = noctalia.screen.gradient;
 
@@ -63,7 +87,7 @@ export default function SymbolDetailScreen() {
 
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-      <LinearGradient colors={gradientColors} style={styles.gradient}>
+      <LinearGradient colors={gradientColors} style={styles.gradient} testID={TID.Screen.SymbolDetail}>
         <AtmosphericBackground />
         {/* Floating Back Button */}
         <Pressable

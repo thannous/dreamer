@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { Stack, router } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
@@ -14,7 +14,9 @@ import { getNoctaliaDesignTokens } from "@/constants/noctaliaDesign";
 import { Fonts } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
+import { trackProductEvent } from "@/lib/analytics";
 import { MotiView } from "@/lib/moti";
+import { TID } from "@/lib/testIDs";
 import type {
   DreamSymbol,
   SymbolCategory,
@@ -80,14 +82,25 @@ const getSymbolLetter = (name: string) => {
 };
 
 const FULL_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+let trackedOnboardingDictionaryDestination = false;
 
 export default function SymbolDictionaryScreen() {
+  const { source } = useLocalSearchParams<{ source?: string }>();
   const { colors, shadows, mode } = useTheme();
   const { t, currentLang } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const lang = (currentLang ?? "en") as SymbolLanguage;
   const useNativeHeaderSearch =
     process.env.EXPO_OS === "ios" && typeof document === "undefined";
+
+  useEffect(() => {
+    if (source !== "onboarding" || trackedOnboardingDictionaryDestination) return;
+    trackedOnboardingDictionaryDestination = true;
+    void trackProductEvent("onboarding_destination_viewed", {
+      destination: "symbol_dictionary",
+      path: "dictionary",
+    });
+  }, [source]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] =
@@ -231,8 +244,16 @@ export default function SymbolDictionaryScreen() {
   }, [sections]);
 
   const handleSymbolPress = useCallback((id: string) => {
-    router.push(`/symbol-detail/${id}` as any);
-  }, []);
+    const detailSource = source === "onboarding"
+      ? "onboarding"
+      : deferredSearchQuery
+        ? "search"
+        : "dictionary";
+    router.push({
+      pathname: "/symbol-detail/[id]",
+      params: { id, source: detailSource },
+    });
+  }, [deferredSearchQuery, source]);
 
   const renderListRow = useCallback(
     (item: Row) => {
@@ -393,7 +414,8 @@ export default function SymbolDictionaryScreen() {
             return (
               <Pressable
                 key={symbol.id}
-                onPress={() => router.push(`/symbol-detail/${symbol.id}` as any)}
+                onPress={() => handleSymbolPress(symbol.id)}
+                testID={TID.List.SymbolItem(symbol.id)}
                 style={({ pressed }) => [
                   styles.popularCard,
                   {

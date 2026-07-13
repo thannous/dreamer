@@ -114,6 +114,7 @@
           }
         }
       ],
+      "./plugins/withRevenueCatTestStoreBuild",
       "expo-sqlite",
       "react-native-edge-to-edge",
       "@react-native-community/datetimepicker",

@@ -95,6 +95,48 @@
         "first_seen_at",
         "last_seen_at"
       ]
+    },
+    {
+      "schema": "public",
+      "name": "guest_analysis_quota_claims",
+      "requiredColumns": [
+        "fingerprint_hash",
+        "analysis_request_id",
+        "claimed_at"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "product_analytics_events",
+      "requiredColumns": [
+        "id",
+        "event_id",
+        "event_name",
+        "schema_version",
+        "occurred_at",
+        "received_at",
+        "journey_id",
+        "platform",
+        "app_version",
+        "locale",
+        "properties"
+      ]
+    },
+    {
+      "schema": "analytics_private",
+      "name": "product_analytics_daily_aggregates",
+      "requiredColumns": [
+        "id",
+        "event_date",
+        "event_name",
+        "platform",
+        "locale",
+        "app_version",
+        "properties",
+        "journey_count",
+        "event_count",
+        "refreshed_at"
+      ]
     }
   ],
   "requiredFunctions": [
@@ -109,6 +151,12 @@
       "name": "increment_guest_quota",
       "identityArguments": "p_fingerprint text, p_quota_type text, p_limit integer",
       "result": "json"
+    },
+    {
+      "schema": "public",
+      "name": "claim_guest_analysis_quota",
+      "identityArguments": "p_fingerprint text, p_analysis_request_id uuid, p_limit integer",
+      "result": "jsonb"
     },
     {
       "schema": "public",
@@ -145,6 +193,12 @@
       "name": "enforce_quota_for_chat",
       "identityArguments": "",
       "result": "trigger"
+    },
+    {
+      "schema": "analytics_private",
+      "name": "refresh_product_analytics_daily_aggregates",
+      "identityArguments": "",
+      "result": "void"
     }
   ],
   "requiredTriggers": [
@@ -263,6 +317,36 @@
       "unique": true,
       "columns": [
         "fingerprint_hash"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "guest_analysis_quota_claims",
+      "name": "guest_analysis_quota_claims_pkey",
+      "unique": true,
+      "columns": [
+        "fingerprint_hash",
+        "analysis_request_id"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "product_analytics_events",
+      "name": "product_analytics_events_journey_occurred_idx",
+      "unique": false,
+      "columns": [
+        "journey_id",
+        "occurred_at"
+      ]
+    },
+    {
+      "schema": "analytics_private",
+      "table": "product_analytics_daily_aggregates",
+      "name": "product_analytics_daily_aggregates_date_event_idx",
+      "unique": false,
+      "columns": [
+        "event_date",
+        "event_name"
       ]
     }
   ],
@@ -416,6 +500,10 @@
     {
       "type": "guest_quota_image_support",
       "target": "public guest quota RPC image support"
+    },
+    {
+      "type": "guest_analysis_idempotency",
+      "target": "public guest analysis quota idempotency"
     }
   ]
 }

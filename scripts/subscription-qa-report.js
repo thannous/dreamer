@@ -144,6 +144,29 @@ function mask(value) {
   return `${value.slice(0, 6)}...${value.slice(-4)}`;
 }
 
+function redactEvidenceForOutput(gate) {
+  let value = String(gate?.evidence ?? '');
+  const sensitiveFields = [
+    ['tester', gate?.tester],
+    ['device', gate?.deviceId],
+    ['app-user-id', gate?.appUserId],
+    ['build-id', gate?.easBuildId],
+  ];
+
+  for (const [label, raw] of sensitiveFields) {
+    const literal = typeof raw === 'string' ? raw.trim() : '';
+    if (literal) {
+      value = value.split(literal).join(`<redacted:${label}>`);
+    }
+  }
+
+  return value
+    .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, '<redacted:email>')
+    .replace(/\b(?:\d{1,3}\.){3}\d{1,3}(?::\d+)?\b/g, '<redacted:network>')
+    .replace(/\b[0-9a-f]{8}-[0-9a-f-]{27,}\b/gi, '<redacted:id>')
+    .replace(/\|/g, '\\|');
+}
+
 function versionAtLeast(range, minimum) {
   const found = String(range ?? '').match(/\d+\.\d+\.\d+/)?.[0];
   if (!found) return false;
@@ -1318,6 +1341,7 @@ console.log('| --- | --- | --- | --- | --- |');
 const scenarioRows = scenarios.map(([coverage, scenario, layer, proof, nextGate]) => {
   if (coverage !== 'Automated' && hasGateEvidence(evidence, scenario)) {
     const gate = evidence.gates[slugify(scenario)];
+    const safeEvidence = redactEvidenceForOutput(gate);
     const candidateVersionIssue = getCandidateVersionCodeIssue(gate);
     if (candidateVersionIssue) {
       return [
@@ -1325,10 +1349,10 @@ const scenarioRows = scenarios.map(([coverage, scenario, layer, proof, nextGate]
         scenario,
         layer,
         proof,
-        `${gate.evidence} (${candidateVersionIssue})`,
+        `${safeEvidence} (${candidateVersionIssue})`,
       ];
     }
-    return ['Verified', scenario, layer, proof, gate.evidence];
+    return ['Verified', scenario, layer, proof, safeEvidence];
   }
   return [coverage, scenario, layer, proof, nextGate];
 });

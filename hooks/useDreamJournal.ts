@@ -18,6 +18,7 @@ import {
   trackProductEvent,
   type AnalysisSource,
 } from '@/lib/analytics';
+import { isResumableAnalysisRequest } from '@/lib/analysisRequest';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { isMockModeEnabled } from '@/lib/env';
 import { deriveUserTier } from '@/lib/quotaTier';
@@ -72,7 +73,6 @@ import { useDreamPersistence } from './useDreamPersistence';
 import { useOfflineSyncQueue } from './useOfflineSyncQueue';
 
 const IMAGE_JOB_POLL_INTERVAL_MS = 4000;
-
 const isActiveImageJobStatus = (
   status: DreamAnalysis['imageJobStatus'] | 'succeeded' | 'failed' | undefined
 ): status is 'queued' | 'running' => status === 'queued' || status === 'running';
@@ -170,6 +170,11 @@ export const useDreamJournal = () => {
   const pendingImageJobsRef = useRef<PendingImageJob[]>([]);
   const [pendingImageJobsVersion, setPendingImageJobsVersion] = useState(0);
   const analysisStatusOverridesRef = useRef<Map<number, DreamAnalysis['analysisStatus']>>(new Map());
+  const analysisRequestIdsRef = useRef<Map<number, string>>(new Map());
+
+  useEffect(() => {
+    analysisRequestIdsRef.current.clear();
+  }, [userScope]);
 
   const persistPendingImageJobState = useCallback(async (jobs: PendingImageJob[]) => {
     pendingImageJobsRef.current = jobs;
@@ -907,21 +912,45 @@ export const useDreamJournal = () => {
         analyticsSource?: AnalysisSource;
       }
     ): Promise<DreamAnalysis> => {
-      // Check quota before analyzing (need details to distinguish "quota reached" vs "login required")
-      const status = await quotaService.getQuotaStatus(user, tier);
-      if (!status.canAnalyze) {
-        if (!user && status.isUpgraded) {
-          throw new QuotaError(QuotaErrorCode.LOGIN_REQUIRED, 'guest');
-        }
-        throw new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
-      }
-
       const shouldReplaceImage = options?.replaceExistingImage ?? true;
 
       // Find the dream to update
       const dream = dreamsRef.current.find((d) => d.id === dreamId);
       if (!dream) {
+        // Preserve the public quota error contract even while authenticated
+        // dreams are still loading from the server.
+        const status = await quotaService.getQuotaStatus(user, tier);
+        if (!status.canAnalyze) {
+          if (!user && status.isUpgraded) {
+            throw new QuotaError(QuotaErrorCode.LOGIN_REQUIRED, 'guest');
+          }
+          throw new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
+        }
         throw new Error(`Dream with id ${dreamId} not found`);
+      }
+
+      const inMemoryRequestId = analysisRequestIdsRef.current.get(dreamId);
+      const persistedRequestId = isResumableAnalysisRequest(dream)
+        ? dream.analysisRequestId
+        : undefined;
+      const isResumingAnalysis = Boolean(inMemoryRequestId || persistedRequestId);
+      const requestId = inMemoryRequestId ?? persistedRequestId ?? generateUUID();
+      // Reserve synchronously before the first await so rapid duplicate calls
+      // share one server idempotency key.
+      analysisRequestIdsRef.current.set(dreamId, requestId);
+
+      if (!isResumingAnalysis) {
+        // This gate is only for a brand-new attempt. A persisted retry has
+        // already claimed (or attempted to claim) quota; the server verifies
+        // the idempotency key without charging it again.
+        const status = await quotaService.getQuotaStatus(user, tier);
+        if (!status.canAnalyze) {
+          analysisRequestIdsRef.current.delete(dreamId);
+          if (!user && status.isUpgraded) {
+            throw new QuotaError(QuotaErrorCode.LOGIN_REQUIRED, 'guest');
+          }
+          throw new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
+        }
       }
 
       const analysisStartedAt = Date.now();
@@ -930,9 +959,6 @@ export const useDreamJournal = () => {
         tier,
         guest_status: user ? 'signed_in' : 'guest',
       });
-
-      // Generate request ID for idempotence
-      const requestId = generateUUID();
 
       // Initial pending state
       const currentDreamState: DreamAnalysis = {
@@ -1079,6 +1105,7 @@ export const useDreamJournal = () => {
         await updateDream(next);
         await syncPendingMutations();
         analysisStatusOverridesRef.current.delete(dreamId);
+        analysisRequestIdsRef.current.delete(dreamId);
 
         if (isMockMode) {
           await markMockAnalysis({ id: dreamId });

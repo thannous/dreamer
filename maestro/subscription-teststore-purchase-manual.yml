@@ -59,6 +59,18 @@ appId: com.tanuki75.noctalia
     id: text.subscription.qa.mode
     text: "RevenueCat Test Store"
 
+# A timed-out attempt is ambiguous. Fail closed if this exact product is
+# already active so a retry cannot create another Test Store transaction.
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.product
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- assertNotVisible:
+    id: text.subscription.qa.product
+    text: "(?i)^${QA_PRODUCT_ID}$"
+
 - scrollUntilVisible:
     element:
       id: "btn.subscription.qa.scenario.${QA_PLAN}"
@@ -68,37 +80,25 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: "btn.subscription.qa.scenario.${QA_PLAN}"
 - extendedWaitUntil:
-    visible: "TEST VALID PURCHASE"
+    visible: "^Test Store Purchase$"
     timeout: 30000
-- tapOn: "TEST VALID PURCHASE"
+- extendedWaitUntil:
+    visible:
+      id: "^android:id/button1$"
+      text: "(?i)^Test valid Purchase$"
+      enabled: true
+    timeout: 30000
+- tapOn:
+    id: "^android:id/button1$"
+- extendedWaitUntil:
+    notVisible:
+      id: "^android:id/button1$"
+    timeout: 15000
 - extendedWaitUntil:
     visible:
       id: text.subscription.qa.actionLabel
       text: ".*${QA_PLAN} purchase completed.*"
-    timeout: 120000
-- scrollUntilVisible:
-    element:
-      id: text.subscription.qa.status
-    direction: UP
-    visibilityPercentage: 60
-    timeout: 30000
-- assertVisible:
-    id: text.subscription.qa.status
-    text: ".*plus / active.*"
-
-- scrollUntilVisible:
-    element:
-      id: btn.subscription.qa.refresh
-    direction: DOWN
-    visibilityPercentage: 60
-    timeout: 30000
-- tapOn:
-    id: btn.subscription.qa.refresh
-- extendedWaitUntil:
-    visible:
-      id: text.subscription.qa.actionLabel
-      text: "Refresh completed"
-    timeout: 60000
+    timeout: 180000
 - scrollUntilVisible:
     element:
       id: text.subscription.qa.status

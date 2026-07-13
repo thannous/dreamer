@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
@@ -65,6 +66,7 @@ export function RememberedDreamProfileChips({
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
+  const [expanded, setExpanded] = useState(false);
 
   const renderChip = <T extends string>({
     option,
@@ -113,64 +115,72 @@ export function RememberedDreamProfileChips({
           borderColor: noctalia.surface.border,
         },
       ]}
-      testID={TID.Component.RememberedDreamProfileChips}
+      testID={TID.Component.RememberedDreamMetadata}
     >
-      <View style={styles.header}>
-        <View style={styles.eyebrowRow}>
-          <Text style={[styles.eyebrow, { color: noctalia.text.secondary }]}>
-            {t('recording.remembered_profile.eyebrow')}
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ expanded, disabled }}
+        accessibilityHint={t(
+          expanded
+            ? 'recording.remembered_profile.collapse_hint'
+            : 'recording.remembered_profile.expand_hint'
+        )}
+        disabled={disabled}
+        onPress={() => setExpanded((current) => !current)}
+        style={styles.toggle}
+        testID={TID.Button.RememberedDreamMetadataToggle}
+      >
+        <View style={styles.toggleCopy}>
+          <Text style={[styles.title, { color: noctalia.text.primary }]}>
+            {t('recording.remembered_profile.accordion_title')}
           </Text>
-          <View
-            style={[
-              styles.optionalBadge,
-              {
-                backgroundColor: noctalia.status.warning.background,
-                borderColor: noctalia.status.warning.border,
-              },
-            ]}
-          >
-            <Text style={[styles.optionalText, { color: noctalia.status.warning.text }]}>
-              {t('recording.remembered_profile.optional_badge')}
-            </Text>
-          </View>
+          <Text style={[styles.toggleDescription, { color: noctalia.text.secondary }]}>
+            {t('recording.remembered_profile.title')}
+          </Text>
         </View>
-        <Text style={[styles.title, { color: noctalia.text.primary }]}>
-          {t('recording.remembered_profile.title')}
-        </Text>
-      </View>
+        <IconSymbol
+          name={expanded ? 'chevron.up' : 'chevron.down'}
+          size={20}
+          color={noctalia.text.secondary}
+        />
+      </Pressable>
 
-      <ChipGroup label={t('recording.remembered_profile.kind_label')}>
-        {KIND_OPTIONS.map((option) =>
-          renderChip({
-            option,
-            selected: rememberedKind === option.value,
-            onPress: () => onRememberedKindChange(option.value),
-            testID: TID.Button.RememberedDreamKind(option.value),
-          })
-        )}
-      </ChipGroup>
+      {expanded ? (
+        <View style={styles.expandedContent} testID={TID.Component.RememberedDreamProfileChips}>
+          <ChipGroup label={t('recording.remembered_profile.kind_label')}>
+            {KIND_OPTIONS.map((option) =>
+              renderChip({
+                option,
+                selected: rememberedKind === option.value,
+                onPress: () => onRememberedKindChange(option.value),
+                testID: TID.Button.RememberedDreamKind(option.value),
+              })
+            )}
+          </ChipGroup>
 
-      <ChipGroup label={t('recording.remembered_profile.period_label')}>
-        {PERIOD_OPTIONS.map((option) =>
-          renderChip({
-            option,
-            selected: approximatePeriod === option.value,
-            onPress: () => onApproximatePeriodChange(option.value),
-            testID: TID.Button.RememberedDreamPeriod(option.value),
-          })
-        )}
-      </ChipGroup>
+          <ChipGroup label={t('recording.remembered_profile.period_label')}>
+            {PERIOD_OPTIONS.map((option) =>
+              renderChip({
+                option,
+                selected: approximatePeriod === option.value,
+                onPress: () => onApproximatePeriodChange(option.value),
+                testID: TID.Button.RememberedDreamPeriod(option.value),
+              })
+            )}
+          </ChipGroup>
 
-      <ChipGroup label={t('recording.remembered_profile.fragment_label')}>
-        {FRAGMENT_OPTIONS.map((option) =>
-          renderChip({
-            option,
-            selected: strongestFragment === option.value,
-            onPress: () => onStrongestFragmentChange(option.value),
-            testID: TID.Button.RememberedDreamFragment(option.value),
-          })
-        )}
-      </ChipGroup>
+          <ChipGroup label={t('recording.remembered_profile.fragment_label')}>
+            {FRAGMENT_OPTIONS.map((option) =>
+              renderChip({
+                option,
+                selected: strongestFragment === option.value,
+                onPress: () => onStrongestFragmentChange(option.value),
+                testID: TID.Button.RememberedDreamFragment(option.value),
+              })
+            )}
+          </ChipGroup>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -195,35 +205,26 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderCurve: 'continuous',
     padding: 14,
-    gap: 14,
   },
-  header: {
-    gap: 4,
-  },
-  eyebrowRow: {
+  toggle: {
+    minHeight: 52,
     flexDirection: 'row',
     alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: 8,
+    justifyContent: 'space-between',
+    gap: 12,
   },
-  eyebrow: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+  toggleCopy: {
+    flex: 1,
+    gap: 3,
+  },
+  toggleDescription: {
+    fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 12,
-    textTransform: 'uppercase',
+    lineHeight: 17,
   },
-  optionalBadge: {
-    minHeight: 22,
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  optionalText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 11,
-    lineHeight: 14,
-    textTransform: 'uppercase',
+  expandedContent: {
+    gap: 14,
+    paddingTop: 14,
   },
   title: {
     fontFamily: Fonts.spaceGrotesk.bold,
@@ -243,7 +244,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   chip: {
-    minHeight: 36,
+    minHeight: 44,
+    minWidth: 44,
     borderWidth: 1,
     borderRadius: 999,
     alignItems: 'center',

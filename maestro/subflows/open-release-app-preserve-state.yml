@@ -2,3 +2,7 @@
 appId: com.tanuki75.noctalia
 ---
 - launchApp
+- extendedWaitUntil:
+    visible:
+      id: "screen.onboarding|screen.recording"
+    timeout: 60000

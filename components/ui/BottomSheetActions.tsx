@@ -159,8 +159,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   linkButton: {
+    minHeight: 44,
     paddingVertical: ThemeLayout.spacing.xs,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   linkButtonText: {
     fontFamily: Fonts.spaceGrotesk.medium,

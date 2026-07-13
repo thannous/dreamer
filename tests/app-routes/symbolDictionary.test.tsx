@@ -393,7 +393,10 @@ describe('SymbolDictionaryScreen', () => {
 
       fireEvent.click(screen.getByTestId('symbol-card-water'));
 
-      expect(mockPush).toHaveBeenCalledWith('/symbol-detail/water');
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/symbol-detail/[id]',
+        params: { id: 'water', source: 'dictionary' },
+      });
     });
 
     it('navigates back when pressing the back button', () => {

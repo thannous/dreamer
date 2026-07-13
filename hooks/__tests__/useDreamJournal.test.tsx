@@ -197,6 +197,10 @@ jest.mock('../../lib/logger', () => {
   };
 });
 
+jest.mock('../../lib/productAnalytics', () => ({
+  setProductAnalyticsLocale: jest.fn(),
+}));
+
 // Import after mocks
 const { useDreamJournal } = require('../useDreamJournal');
 
@@ -756,6 +760,48 @@ describe('useDreamJournal', () => {
       expect(analyzedDream.imageJobId).toBe('job-queued');
       expect(analyzedDream.imageJobStatus).toBe('queued');
       expect(analyzedDream.analyzedAt).toBeDefined();
+    });
+
+    it('reuses a persisted request id on retry and lets the server reconcile quota', async () => {
+      const persistedRequestId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
+      const existingDream = buildDream({
+        id: 1,
+        isAnalyzed: false,
+        analysisStatus: 'failed',
+        analysisRequestId: persistedRequestId,
+        imageUrl: '',
+      });
+      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      // A previous server claim may make the optimistic quota look exhausted.
+      // Retrying the same request must still reach the idempotent server claim.
+      mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ canAnalyze: false }));
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.analyzeDream(1, 'My dream transcript');
+      });
+
+      expect(mockGetQuotaStatus).not.toHaveBeenCalled();
+      expect(mockAnalyzeDreamText).toHaveBeenCalledWith(
+        'My dream transcript',
+        undefined,
+        'mock-hash-fingerprint',
+        {
+          remoteDreamId: undefined,
+          analysisRequestId: persistedRequestId,
+        }
+      );
+      expect(mockSubmitImageGenerationJob).toHaveBeenCalledWith(
+        expect.objectContaining({ clientRequestId: persistedRequestId })
+      );
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({
+          analysisRequestId: persistedRequestId,
+          analysisStatus: 'done',
+          isAnalyzed: true,
+        })
+      );
     });
 
     it('re-resolves an offline-created dream after sync before submitting the image job', async () => {

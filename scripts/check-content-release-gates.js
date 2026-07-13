@@ -625,7 +625,17 @@ function withoutModifiedAt(value) {
 function sharedSymbolFields(symbol) {
   const clone = withoutModifiedAt(symbol) || {};
   for (const lang of siteConfig.languages) delete clone[lang];
+  // relatedArticles is keyed by locale, so changing one language must not
+  // refresh the publication dates of every translated symbol page.
+  delete clone.relatedArticles;
   return clone;
+}
+
+function localizedSymbolFields(symbol, lang) {
+  return {
+    content: withoutModifiedAt(symbol?.[lang]),
+    relatedArticle: symbol?.relatedArticles?.[lang] || '',
+  };
 }
 
 function checkChangedSymbolDates(payload, errors) {
@@ -661,8 +671,8 @@ function checkChangedSymbolDates(payload, errors) {
     for (const lang of siteConfig.languages) {
       const localeChanged =
         !previous ||
-        JSON.stringify(withoutModifiedAt(symbol?.[lang])) !==
-          JSON.stringify(withoutModifiedAt(previous?.[lang]));
+        JSON.stringify(localizedSymbolFields(symbol, lang)) !==
+          JSON.stringify(localizedSymbolFields(previous, lang));
       if (!localeChanged && !sharedChanged) continue;
       const modified = parseContentDate(symbol?.[lang]?.modifiedAt || symbol?.modifiedAt);
       if (!modified || modified.dateOnly !== catalogDate.dateOnly) {

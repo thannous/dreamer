@@ -7,7 +7,14 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import { router } from 'expo-router';
 import React, { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+  type LayoutChangeEvent,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
@@ -25,9 +32,14 @@ type BottomNavItem = {
 type NoctaliaBottomNavProps = {
   activeKey: BottomNavKey;
   addDreamIcon?: IconName;
+  onBarLayout?: (event: LayoutChangeEvent) => void;
 };
 
-export function NoctaliaBottomNav({ activeKey, addDreamIcon = 'pencil' }: NoctaliaBottomNavProps) {
+export function NoctaliaBottomNav({
+  activeKey,
+  addDreamIcon = 'pencil',
+  onBarLayout,
+}: NoctaliaBottomNavProps) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
@@ -95,6 +107,7 @@ export function NoctaliaBottomNav({ activeKey, addDreamIcon = 'pencil' }: Noctal
   return (
     <View pointerEvents="box-none" style={styles.overlay}>
       <View
+        onLayout={onBarLayout}
         style={[
           styles.bar,
           {

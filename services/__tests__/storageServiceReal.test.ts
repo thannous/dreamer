@@ -22,6 +22,9 @@ const REMEMBERED_DREAM_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_remembered_d
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
+const ONBOARDING_STATE_KEY = 'gemini_dream_journal_onboarding_state_v2';
+const ONBOARDING_GUEST_CLAIMED_BY_KEY = 'gemini_dream_journal_onboarding_guest_claimed_by_v2';
+const PENDING_RECORDING_NOTIFICATION_KEY = 'gemini_dream_journal_pending_recording_notification_v1';
 const DREAMS_MIGRATION_SYNCED_PREFIX = 'gemini_dream_journal_dreams_migration_synced_';
 
 const mockAsyncStorage = {
@@ -367,6 +370,63 @@ describe('storageServiceReal', () => {
       expect(await storage.getRitualStepProgress()).toEqual({ stepIndex: 2, completedAt: 123 });
       expect(await storage.getFirstLaunchCompleted()).toBe(true);
       expect(await storage.getDreamsMigrationSynced('user-1')).toBe(true);
+    } finally {
+      (globalThis as any).indexedDB = originalIndexedDB;
+    }
+  });
+
+  it('stores onboarding state and recording mode per actor while reading legacy mode', async () => {
+    const originalIndexedDB = (globalThis as any).indexedDB;
+    try {
+      delete (globalThis as any).indexedDB;
+      localStorage.setItem(RECORDING_INPUT_MODE_PREFERENCE_KEY, JSON.stringify('text'));
+
+      const storage = require('../storageServiceReal');
+      expect(await storage.getRecordingInputModePreference('guest')).toBe('text');
+      expect(await storage.getRecordingInputModePreference('user:legacy')).toBeNull();
+
+      await storage.saveRecordingInputModePreference('voice', 'guest');
+      await storage.saveRecordingInputModePreference('text', 'user:one');
+      await storage.saveOnboardingStateSnapshot('guest', '{"status":"in_progress"}');
+      await storage.saveOnboardingStateSnapshot('user:one', '{"status":"completed"}');
+      await storage.saveOnboardingGuestClaimedBy('one');
+
+      expect(
+        localStorage.getItem(`${RECORDING_INPUT_MODE_PREFERENCE_KEY}:guest`)
+      ).toBe(JSON.stringify('voice'));
+      expect(await storage.getRecordingInputModePreference('guest')).toBe('voice');
+      expect(await storage.getRecordingInputModePreference('user:one')).toBe('text');
+      expect(await storage.getOnboardingStateSnapshot('guest')).toBe('{"status":"in_progress"}');
+      expect(await storage.getOnboardingStateSnapshot('user:one')).toBe('{"status":"completed"}');
+      expect(await storage.getOnboardingGuestClaimedBy()).toBe('one');
+      expect(localStorage.getItem(ONBOARDING_GUEST_CLAIMED_BY_KEY)).toBe(JSON.stringify('one'));
+      expect(localStorage.getItem(`${ONBOARDING_STATE_KEY}:guest`)).toBe(
+        '{"status":"in_progress"}'
+      );
+    } finally {
+      (globalThis as any).indexedDB = originalIndexedDB;
+    }
+  });
+
+  it('restores and consumes a persisted recording notification across module restarts', async () => {
+    const originalIndexedDB = (globalThis as any).indexedDB;
+    try {
+      delete (globalThis as any).indexedDB;
+      const storage = require('../storageServiceReal');
+
+      await storage.savePendingRecordingNotification('/recording');
+      expect(await storage.getPendingRecordingNotification()).toBe('/recording');
+      expect(localStorage.getItem(PENDING_RECORDING_NOTIFICATION_KEY)).toContain('/recording');
+
+      jest.resetModules();
+      const { Platform } = require('react-native');
+      Platform.OS = 'web';
+      const restoredStorage = require('../storageServiceReal');
+      expect(await restoredStorage.getPendingRecordingNotification()).toBe('/recording');
+
+      await restoredStorage.clearPendingRecordingNotification();
+      expect(await restoredStorage.getPendingRecordingNotification()).toBeNull();
+      expect(localStorage.getItem(PENDING_RECORDING_NOTIFICATION_KEY)).toBeNull();
     } finally {
       (globalThis as any).indexedDB = originalIndexedDB;
     }

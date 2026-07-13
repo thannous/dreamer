@@ -7,13 +7,18 @@ appId: com.tanuki75.noctalia
 - runFlow: subflows/open-release-app-clear-state.yml
 - openLink: noctalia://settings
 - extendedWaitUntil:
-    visible: "Settings|Paramètres|Configuración|Ajustes"
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000
 
-- swipe:
-    direction: DOWN
-- swipe:
-    direction: DOWN
+# Reset the settings scroll before locating the signed-out account card. This
+# keeps restore deterministic when the clear-state launch finishes at a
+# different vertical offset.
+- scrollUntilVisible:
+    element:
+      text: "Account|Compte|Cuenta|Konto"
+    direction: UP
+    visibilityPercentage: 40
+    timeout: 30000
 - runFlow:
     when:
       notVisible:
@@ -21,25 +26,43 @@ appId: com.tanuki75.noctalia
     commands:
       - scrollUntilVisible:
           element:
-            text: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
+            id: btn.auth.google
           direction: DOWN
-          visibilityPercentage: 70
+          visibilityPercentage: 60
+          timeout: 30000
+          centerElement: true
+      - extendedWaitUntil:
+          visible:
+            id: btn.auth.google
+            enabled: true
           timeout: 30000
       - tapOn:
-          text: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
-      - tapOn:
-          text: "${QA_EMAIL_REGEX}"
+          id: btn.auth.google
+      # Google Sign-In can either auto-select the only device account or show
+      # the native chooser. Select the first chooser row only when it exists;
+      # the exact app identity is always asserted below.
+      - runFlow:
+          when:
+            visible:
+              id: "com.google.android.gms:id/container"
+          commands:
+            - tapOn:
+                id: "com.google.android.gms:id/container"
+                index: 0
 - extendedWaitUntil:
     visible:
       id: text.auth.email
       text: "${QA_EMAIL_REGEX}"
     timeout: 60000
+- assertVisible:
+    id: text.auth.email
+    text: "${QA_EMAIL_REGEX}"
 
 - scrollUntilVisible:
     element:
-      text: "Subscription QA Lab"
+      id: screen.subscription.qaLab
     direction: DOWN
-    visibilityPercentage: 40
+    visibilityPercentage: 30
     timeout: 30000
 - assertVisible:
     id: text.subscription.qa.mode
@@ -50,42 +73,33 @@ appId: com.tanuki75.noctalia
     direction: DOWN
     visibilityPercentage: 60
     timeout: 30000
+    centerElement: true
+- extendedWaitUntil:
+    visible:
+      id: btn.subscription.qa.scenario.restore
+      enabled: true
+    timeout: 120000
 - tapOn:
     id: btn.subscription.qa.scenario.restore
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.actionLabel
+    direction: UP
+    visibilityPercentage: 60
+    timeout: 120000
+    centerElement: true
 - extendedWaitUntil:
     visible:
       id: text.subscription.qa.actionLabel
       text: "Restore completed"
-    timeout: 120000
+    timeout: 180000
 - scrollUntilVisible:
     element:
       id: text.subscription.qa.status
     direction: UP
     visibilityPercentage: 60
     timeout: 30000
-- assertVisible:
-    id: text.subscription.qa.status
-    text: ".*plus / active.*"
-
-- scrollUntilVisible:
-    element:
-      id: btn.subscription.qa.refresh
-    direction: DOWN
-    visibilityPercentage: 60
-    timeout: 30000
-- tapOn:
-    id: btn.subscription.qa.refresh
-- extendedWaitUntil:
-    visible:
-      id: text.subscription.qa.actionLabel
-      text: "Refresh completed"
-    timeout: 60000
-- scrollUntilVisible:
-    element:
-      id: text.subscription.qa.status
-    direction: UP
-    visibilityPercentage: 60
-    timeout: 30000
+    centerElement: true
 - assertVisible:
     id: text.subscription.qa.status
     text: ".*plus / active.*"

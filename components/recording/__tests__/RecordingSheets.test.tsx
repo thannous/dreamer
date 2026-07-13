@@ -8,6 +8,7 @@ import {
   AnalyzePromptSheet,
   FirstDreamSheet,
   GuestLimitSheet,
+  PostSaveOfferSheet,
   QuotaLimitSheet,
 } from '@/components/recording/RecordingSheets';
 import { TID } from '@/lib/testIDs';
@@ -44,10 +45,13 @@ jest.mock('@/components/ui/StandardBottomSheet', () => ({
     children?: React.ReactNode;
     actions?: {
       primaryLabel: string;
+      onPrimary: () => void;
       primaryTestID?: string;
       secondaryLabel?: string;
+      onSecondary?: () => void;
       secondaryTestID?: string;
       linkLabel?: string;
+      onLink?: () => void;
       linkTestID?: string;
     };
   }) => (
@@ -58,12 +62,12 @@ jest.mock('@/components/ui/StandardBottomSheet', () => ({
         {children}
         {actions ? (
           <div>
-            <button data-testid={actions.primaryTestID}>{actions.primaryLabel}</button>
+            <button data-testid={actions.primaryTestID} onClick={actions.onPrimary}>{actions.primaryLabel}</button>
             {actions.secondaryLabel ? (
-              <button data-testid={actions.secondaryTestID}>{actions.secondaryLabel}</button>
+              <button data-testid={actions.secondaryTestID} onClick={actions.onSecondary}>{actions.secondaryLabel}</button>
             ) : null}
             {actions.linkLabel ? (
-              <button data-testid={actions.linkTestID}>{actions.linkLabel}</button>
+              <button data-testid={actions.linkTestID} onClick={actions.onLink}>{actions.linkLabel}</button>
             ) : null}
           </div>
         ) : null}
@@ -89,11 +93,14 @@ jest.mock('@/context/ThemeContext', () => ({
 
 jest.mock('@/constants/noctaliaDesign', () => ({
   getNoctaliaDesignTokens: () => ({
-    accent: { base: '#ddb070' },
+    accent: { base: '#ddb070', soft: '#f0d5ae', strong: '#9a6332' },
     surface: {
       raised: '#10101f',
       soft: '#18182a',
       border: '#5a4b3d',
+    },
+    status: {
+      danger: { background: '#300', border: '#f66', text: '#fee' },
     },
     text: {
       primary: '#f7efe4',
@@ -132,6 +139,23 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.analyze_prompt.sheet.analyze': 'Analyze',
         'recording.analyze_prompt.sheet.journal': 'Journal',
         'recording.analyze_prompt.sheet.dismiss': 'Later',
+        'recording.analysis_offer.title': 'Your dream is saved',
+        'recording.analysis_offer.quota_remaining': 'One analysis will be used · {remaining} remaining',
+        'recording.analysis_offer.unlimited': 'Analysis included with Noctalia Plus',
+        'recording.analysis_offer.unknown': 'Your dream is safe. Your quota will be checked before analysis.',
+        'recording.analysis_offer.exhausted': 'Your dream is safe. Sign in or upgrade to analyze it.',
+        'recording.analysis_offer.launch': 'Start analysis',
+        'recording.analysis_offer.view': 'View my dream',
+        'recording.analysis_offer.later': 'Later',
+        'recording.analysis_offer.retry': 'Try again',
+        'recording.analysis_offer.error': 'The analysis could not start. Your dream is still saved.',
+        'recording.memory_offer.title': 'Memory saved',
+        'recording.memory_offer.subtitle': 'Your memory is in the journal.',
+        'recording.memory_offer.view': 'View my memory',
+        'recording.memory_offer.analyze': 'Analyze it',
+        'recording.memory_offer.later': 'Later',
+        'recording.analysis_limit.cta_login': 'Sign in',
+        'recording.analysis_limit.cta_free': 'Upgrade',
         'recording.guest_limit_sheet.title': 'Limit reached',
         'recording.guest_limit_sheet.message': 'Your dream is still here.',
         'recording.guest_limit_sheet.draft_title': 'Your text is not lost',
@@ -239,6 +263,70 @@ describe('RecordingSheets', () => {
     expect(screen.getByTestId(TID.Text.RecordingActivationInsightSummary).textContent).toBe(
       'Noctalia already notices: Place, Emotion.'
     );
+  });
+
+  it('requires an explicit action before spending an analysis', () => {
+    const onPrimary = jest.fn();
+    render(
+      <PostSaveOfferSheet
+        visible
+        kind="analysis"
+        quotaState="known"
+        remaining={2}
+        primaryAction="launch"
+        isPersisting={false}
+        onDismiss={noop}
+        onPrimary={onPrimary}
+        onJournal={noop}
+      />
+    );
+
+    expect(screen.getByText('Your dream is saved')).toBeTruthy();
+    expect(screen.getByText('One analysis will be used · 2 remaining')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.AnalysisOfferPrimary).textContent).toBe('Start analysis');
+    expect(screen.getByTestId(TID.Button.AnalysisOfferJournal).textContent).toBe('View my dream');
+    expect(screen.getByTestId(TID.Button.AnalysisOfferLater).textContent).toBe('Later');
+    expect(onPrimary).not.toHaveBeenCalled();
+    screen.getByTestId(TID.Button.AnalysisOfferPrimary).click();
+    expect(onPrimary).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps a remembered dream journal-first', () => {
+    render(
+      <PostSaveOfferSheet
+        visible
+        kind="memory"
+        quotaState="unknown"
+        primaryAction="launch"
+        isPersisting={false}
+        onDismiss={noop}
+        onPrimary={noop}
+        onJournal={noop}
+      />
+    );
+
+    expect(screen.getByText('Memory saved')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.AnalysisOfferPrimary).textContent).toBe('View my memory');
+    expect(screen.getByTestId(TID.Button.AnalysisOfferJournal).textContent).toBe('Analyze it');
+  });
+
+  it('announces a recoverable analysis error and keeps retry available', () => {
+    render(
+      <PostSaveOfferSheet
+        visible
+        kind="analysis"
+        quotaState="known"
+        remaining={1}
+        primaryAction="retry"
+        isPersisting={false}
+        onDismiss={noop}
+        onPrimary={noop}
+        onJournal={noop}
+      />
+    );
+
+    expect(screen.getByText('The analysis could not start. Your dream is still saved.')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.AnalysisOfferPrimary).textContent).toBe('Try again');
   });
 
   it('uses remembered dream title in the post-save analyze prompt', () => {

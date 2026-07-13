@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useSyncExternalStore } from 'react';
 import type { DreamAnalysis, QuotaStatus } from '@/lib/types';
 import { getGuestBootstrapState, subscribeGuestBootstrapState } from '@/lib/guestSession';
 import { quotaService } from '@/services/quotaService';
@@ -19,6 +19,8 @@ type NormalizedQuotaTarget = {
   dreamId: number;
   dream?: DreamAnalysis;
 };
+
+const getGuestBootstrapStatus = () => getGuestBootstrapState().status;
 
 function normalizeTarget(input?: QuotaTargetInput): NormalizedQuotaTarget | undefined {
   if (!input) return undefined;
@@ -43,7 +45,11 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   const [quotaStatus, setQuotaStatus] = useState<QuotaStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [guestBootstrapState, setGuestBootstrapState] = useState(() => getGuestBootstrapState());
+  const guestBootstrapStatus = useSyncExternalStore(
+    subscribeGuestBootstrapState,
+    getGuestBootstrapStatus,
+    getGuestBootstrapStatus
+  );
 
   const targetDreamId = targetInput?.dream?.id ?? targetInput?.dreamId;
   const normalizedDreamId = Number.isFinite(targetDreamId) ? Number(targetDreamId) : undefined;
@@ -90,9 +96,10 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     const optimisticPaidTier = supabaseTier === 'plus' ? supabaseTier : null;
 
     return subscriptionStatus?.tier ?? optimisticPaidTier ?? 'free';
-  }, [subscriptionStatus?.tier, subscriptionStatus?.expiryDate, subscriptionStatus?.willRenew, supabaseTier, user?.id]);
+  }, [subscriptionStatus, supabaseTier, user?.id]);
   const isPaidTier = tier === 'plus';
-  const isGuestBootstrapReady = user?.id ? true : guestBootstrapState.status === 'ready';
+  const isGuestBootstrapReady = user?.id ? true : guestBootstrapStatus === 'ready';
+  const guestQuotaRefreshKey = user?.id ? undefined : guestBootstrapStatus;
 
   /**
    * Fetch quota status
@@ -196,28 +203,16 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     };
   }, [isPaidTier, user, baseTarget]);
 
-  // Fetch on mount and when user/dreamId changes
+  // Fetch on mount, when user/dreamId changes, and when guest bootstrap changes.
+  // Keeping this in one effect avoids two identical guest requests on mount/sign-out.
   useEffect(() => {
-    fetchQuotaStatus();
-  }, [fetchQuotaStatus]);
+    void fetchQuotaStatus();
+  }, [fetchQuotaStatus, guestQuotaRefreshKey]);
 
   useEffect(() => {
     const unsubscribe = quotaService.subscribe(fetchQuotaStatus);
     return unsubscribe;
   }, [fetchQuotaStatus]);
-
-  useEffect(() => {
-    const unsubscribe = subscribeGuestBootstrapState(() => {
-      setGuestBootstrapState(getGuestBootstrapState());
-    });
-    return unsubscribe;
-  }, []);
-
-  useEffect(() => {
-    if (!user?.id) {
-      void fetchQuotaStatus();
-    }
-  }, [fetchQuotaStatus, guestBootstrapState.status, user?.id]);
 
   // Invalidate cache when user changes (sign in/out)
   useEffect(() => {
@@ -243,6 +238,6 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     canExploreNow: isGuestBootstrapReady ? (quotaStatus?.canExplore ?? true) : false,
     usage: quotaStatus?.usage,
     reasons: quotaStatus?.reasons,
-    guestBootstrapStatus: quotaStatus?.guestBootstrapStatus ?? (!user ? guestBootstrapState.status : undefined),
+    guestBootstrapStatus: quotaStatus?.guestBootstrapStatus ?? (!user ? guestBootstrapStatus : undefined),
   };
 }
