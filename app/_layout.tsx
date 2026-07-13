@@ -36,22 +36,35 @@ import { VercelSpeedInsights } from '@/components/VercelSpeedInsights';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { DreamsProvider } from '@/context/DreamsContext';
 import { LanguageProvider } from '@/context/LanguageContext';
+import { OnboardingProvider, useOnboarding } from '@/context/OnboardingContext';
 import { SubscriptionProvider } from '@/context/SubscriptionContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useAppState } from '@/hooks/useAppState';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useSplashFailsafe } from '@/hooks/useSplashFailsafe';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 // useSubscriptionMonitor est maintenant intégré dans useSubscription
 import { initializeGoogleSignIn } from '@/lib/auth';
-import { configureAnalyticsProvider } from '@/lib/analytics';
+import { configureAnalyticsProvider, trackProductEvent } from '@/lib/analytics';
 import { initGuestSession } from '@/lib/guestSession';
 import { loadTranslations } from '@/lib/i18n';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
+import {
+  isStartupDestinationObserved,
+  resolveStartupDecision,
+  type StartupDestinationDecision,
+} from '@/lib/onboardingState';
+import { setProductAnalyticsLocale } from '@/lib/productAnalytics';
 import type { LanguagePreference } from '@/lib/types';
 import { configureNotificationHandler } from '@/services/notificationService';
 import { migrateExistingGuestQuota } from '@/services/quota/GuestAnalysisCounter';
 import { migrateExistingGuestDreamRecording } from '@/services/quota/GuestDreamCounter';
-import { getFirstLaunchCompleted, getLanguagePreference } from '@/services/storageService';
+import {
+  clearPendingRecordingNotification,
+  getLanguagePreference,
+  getPendingRecordingNotification,
+  savePendingRecordingNotification,
+} from '@/services/storageService';
 
 // Expo devtools keeps the screen awake in development, which can throw when the native activity
 // isn't ready (seen as "Unable to activate keep awake"). Swallow the failure to avoid red screens
@@ -89,8 +102,6 @@ void SplashScreen.preventAutoHideAsync().catch((error) => {
 });
 
 const ROOT_VIEW_STYLE = { flex: 1 } as const;
-const ONBOARDING_ROUTE = '/onboarding' as Href;
-
 function runAfterNavigationMount(callback: () => void) {
   const timeout = setTimeout(callback, 0);
 
@@ -164,17 +175,29 @@ function useNavigationIsReady(): boolean {
  * - Redirects to `/recording` on initial launch and on foreground
  * - Handles notification deep links (native only)
  */
-function RootLayoutNav({
-  allowInitialRecordingRedirect,
-}: {
-  allowInitialRecordingRedirect: boolean;
-}) {
+function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void }) {
   const { mode } = useTheme();
-  const { user, returningGuestBlocked } = useAuth();
+  const { user, returningGuestBlocked, loading: authLoading } = useAuth();
+  const {
+    state: onboardingState,
+    loading: onboardingLoading,
+    scope: onboardingScope,
+  } = useOnboarding();
   const pathname = usePathname();
   const pathnameRef = useRef(pathname);
   const hasInitialNavigated = useRef(false);
+  const hasTrackedColdStart = useRef(false);
+  const previousOnboardingScope = useRef(onboardingScope);
+  const notificationMutationVersion = useRef(0);
+  const [pendingNotificationUrl, setPendingNotificationUrl] = useState<'/recording' | null>(null);
+  const [notificationQueueLoaded, setNotificationQueueLoaded] = useState(false);
+  const [startupDestination, setStartupDestination] = useState<Href | null>(null);
+  const [startupDestinationEngaged, setStartupDestinationEngaged] = useState(false);
+  const [notificationWinningDestination, setNotificationWinningDestination] =
+    useState<Href | null>(null);
+  const [notificationWinningEngaged, setNotificationWinningEngaged] = useState(false);
   const isNavigationReady = useNavigationIsReady();
+  const startupReady = !authLoading && !onboardingLoading && notificationQueueLoaded;
 
   useSubscriptionInitialize();
   // Note: useSubscriptionMonitor est maintenant intégré dans useSubscription
@@ -183,9 +206,142 @@ function RootLayoutNav({
     pathnameRef.current = pathname;
   }, [pathname]);
 
+  useEffect(() => {
+    if (previousOnboardingScope.current === onboardingScope) return;
+    previousOnboardingScope.current = onboardingScope;
+    hasInitialNavigated.current = false;
+    setStartupDestination(null);
+    setStartupDestinationEngaged(false);
+  }, [onboardingScope]);
+
+  const enqueueNotification = useCallback(async (notification: Notifications.Notification) => {
+    if (notification.request.content.data?.url !== '/recording') return;
+
+    const mutationVersion = notificationMutationVersion.current + 1;
+    notificationMutationVersion.current = mutationVersion;
+    try {
+      await savePendingRecordingNotification('/recording');
+      if (notificationMutationVersion.current === mutationVersion) {
+        setPendingNotificationUrl('/recording');
+      }
+      try {
+        Notifications.clearLastNotificationResponse();
+      } catch (error) {
+        if (__DEV__) {
+          console.warn('[RootLayoutNav] Unable to clear notification response', error);
+        }
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.warn('[RootLayoutNav] Unable to persist notification intent', error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    const restore = async () => {
+      const versionAtStart = notificationMutationVersion.current;
+      try {
+        const storedUrl = await getPendingRecordingNotification();
+        if (active && notificationMutationVersion.current === versionAtStart) {
+          setPendingNotificationUrl(storedUrl);
+        }
+
+        if (Platform.OS !== 'web') {
+          const response = Notifications.getLastNotificationResponse();
+          if (response?.notification) {
+            await enqueueNotification(response.notification);
+          }
+        }
+      } catch (error) {
+        if (__DEV__) {
+          console.warn('[RootLayoutNav] Unable to restore notification intent', error);
+        }
+      } finally {
+        if (active) setNotificationQueueLoaded(true);
+      }
+    };
+    void restore();
+
+    return () => {
+      active = false;
+    };
+  }, [enqueueNotification]);
+
+  const consumeWinningNotification = useCallback(async () => {
+    const mutationVersion = notificationMutationVersion.current + 1;
+    notificationMutationVersion.current = mutationVersion;
+    try {
+      await clearPendingRecordingNotification();
+      if (notificationMutationVersion.current === mutationVersion) {
+        setPendingNotificationUrl(null);
+        setNotificationWinningDestination(null);
+        setNotificationWinningEngaged(false);
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.warn('[RootLayoutNav] Unable to consume notification intent', error);
+      }
+    }
+  }, []);
+
+  const engageDecision = useCallback(
+    (decision: StartupDestinationDecision, options?: { startup?: boolean }) => {
+      const isStartup = options?.startup === true;
+      if (isStartup) {
+        setStartupDestination(decision.destination);
+        setStartupDestinationEngaged(false);
+      }
+      if (decision.reason === 'notification') {
+        setNotificationWinningDestination(decision.destination);
+        setNotificationWinningEngaged(false);
+      }
+
+      runAfterNavigationMount(() => {
+        router.replace(decision.destination);
+        if (isStartup) setStartupDestinationEngaged(true);
+        if (decision.reason === 'notification') setNotificationWinningEngaged(true);
+      });
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (
+      !startupDestinationEngaged ||
+      !isStartupDestinationObserved(startupDestination, pathname)
+    ) {
+      return;
+    }
+
+    setStartupDestination(null);
+    setStartupDestinationEngaged(false);
+    onStartupCommitted();
+    if (!hasTrackedColdStart.current) {
+      hasTrackedColdStart.current = true;
+      void trackProductEvent('app_session_started', { source: 'cold_start' });
+    }
+  }, [onStartupCommitted, pathname, startupDestination, startupDestinationEngaged]);
+
+  useEffect(() => {
+    if (
+      !notificationWinningEngaged ||
+      !isStartupDestinationObserved(notificationWinningDestination, pathname)
+    ) {
+      return;
+    }
+    void consumeWinningNotification();
+  }, [
+    consumeWinningNotification,
+    notificationWinningDestination,
+    notificationWinningEngaged,
+    pathname,
+  ]);
+
   // Guard: Redirect returning guests (account created but logged out) to settings
   useEffect(() => {
-    if (!isNavigationReady || !returningGuestBlocked || user) {
+    if (!isNavigationReady || !startupReady || !returningGuestBlocked || user) {
       return;
     }
 
@@ -203,19 +359,22 @@ function RootLayoutNav({
       }
       router.replace('/(tabs)/settings');
     }
-  }, [isNavigationReady, returningGuestBlocked, user, pathname]);
+  }, [isNavigationReady, pathname, returningGuestBlocked, startupReady, user]);
 
-  const navigateToRecording = useCallback(
-    (reason: 'initial' | 'appState') => {
-      if (!isNavigationReady) {
+  const navigateForForeground = useCallback(
+    () => {
+      if (!isNavigationReady || !startupReady) {
         return;
       }
 
-      // Don't navigate to recording if returning guest is blocked
-      if (returningGuestBlocked && !user) {
-        if (__DEV__) {
-          console.log('[RootLayoutNav] skip recording redirect, returning guest blocked');
-        }
+      const decision = resolveStartupDecision({
+        returningGuestBlocked,
+        hasUser: Boolean(user),
+        onboardingState,
+        pendingNotificationUrl,
+      });
+      if (decision.reason !== 'default') {
+        engageDecision(decision);
         return;
       }
 
@@ -241,8 +400,7 @@ function RootLayoutNav({
         currentPath?.startsWith('/ritual/');
 
       if (__DEV__) {
-        console.log('[RootLayoutNav] navigateToRecording', {
-          reason,
+        console.log('[RootLayoutNav] navigateForForeground', {
           currentPath,
         });
       }
@@ -290,10 +448,19 @@ function RootLayoutNav({
       }
 
       if (currentPath !== '/recording') {
-        runAfterNavigationMount(() => router.replace('/recording'));
+        engageDecision(decision);
       }
     },
-    [isNavigationReady, pathname, returningGuestBlocked, user]
+    [
+      engageDecision,
+      isNavigationReady,
+      onboardingState,
+      pathname,
+      pendingNotificationUrl,
+      returningGuestBlocked,
+      startupReady,
+      user,
+    ]
   );
 
   const handleForeground = useCallback(() => {
@@ -301,65 +468,83 @@ function RootLayoutNav({
       return;
     }
 
+    void trackProductEvent('app_session_started', { source: 'foreground' });
+
     if (__DEV__) {
       console.log('[RootLayoutNav] App returned to foreground, checking recording redirect', {
         currentPath: pathnameRef.current,
       });
     }
-    navigateToRecording('appState');
-  }, [isNavigationReady, navigateToRecording]);
+    navigateForForeground();
+  }, [isNavigationReady, navigateForForeground]);
 
   useAppState(handleForeground);
 
   useEffect(() => {
-    if (!isNavigationReady || !allowInitialRecordingRedirect || hasInitialNavigated.current) {
+    if (!isNavigationReady || !startupReady || hasInitialNavigated.current) {
       return;
     }
 
-    // Only navigate to recording on initial app launch, not on subsequent
-    // isNavigationReady changes (e.g., language change causing navigation state reset)
     hasInitialNavigated.current = true;
-    navigateToRecording('initial');
-  }, [allowInitialRecordingRedirect, isNavigationReady, navigateToRecording]);
+    const decision = resolveStartupDecision({
+      returningGuestBlocked,
+      hasUser: Boolean(user),
+      onboardingState,
+      pendingNotificationUrl,
+    });
+    engageDecision(decision, { startup: true });
+  }, [
+    engageDecision,
+    isNavigationReady,
+    onboardingState,
+    pendingNotificationUrl,
+    returningGuestBlocked,
+    startupReady,
+    user,
+  ]);
 
   useEffect(() => {
-    if (!isNavigationReady) {
-      return;
-    }
-
-    function redirect(notification: Notifications.Notification) {
-      // Don't allow deep linking if returning guest is blocked
-      if (returningGuestBlocked && !user) {
-        if (__DEV__) {
-          console.log('[RootLayoutNav] Blocking notification deep link for returning guest');
-        }
-        router.replace('/(tabs)/settings');
-        return;
-      }
-
-      const url = notification.request.content.data?.url;
-
-      // For now we only support deep linking into the recording screen
-      if (url === '/recording') {
-        router.push('/recording');
-      }
-    }
-
     if (Platform.OS !== 'web') {
-      const response = Notifications.getLastNotificationResponse();
-      if (response?.notification) {
-        redirect(response.notification);
-      }
-
       const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
-        redirect(response.notification);
+        void enqueueNotification(response.notification);
       });
 
       return () => {
         subscription.remove();
       };
     }
-  }, [isNavigationReady, returningGuestBlocked, user]);
+  }, [enqueueNotification]);
+
+  useEffect(() => {
+    if (
+      !pendingNotificationUrl ||
+      !isNavigationReady ||
+      !startupReady ||
+      !hasInitialNavigated.current ||
+      notificationWinningDestination
+    ) {
+      return;
+    }
+
+    const decision = resolveStartupDecision({
+      returningGuestBlocked,
+      hasUser: Boolean(user),
+      onboardingState,
+      pendingNotificationUrl,
+    });
+    if (decision.reason === 'notification') {
+      engageDecision(decision);
+    }
+  }, [
+    engageDecision,
+    isNavigationReady,
+    notificationWinningDestination,
+    onboardingState,
+    pendingNotificationUrl,
+    returningGuestBlocked,
+    startupReady,
+    user,
+  ]);
 
   return (
     <NavigationThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>
@@ -417,13 +602,12 @@ export default function RootLayout() {
   const [shouldFadeSplash, setShouldFadeSplash] = useState(false);
   const [minimumSplashElapsed, setMinimumSplashElapsed] = useState(false);
   const [languageBootstrapped, setLanguageBootstrapped] = useState(false);
+  const [startupDestinationCommitted, setStartupDestinationCommitted] = useState(false);
   const [initialLanguagePreference, setInitialLanguagePreference] = useState<LanguagePreference>('auto');
-  const [hasHandledFirstLaunch, setHasHandledFirstLaunch] = useState(false);
-  const [allowInitialRecordingRedirect, setAllowInitialRecordingRedirect] = useState(false);
   const splashTimedOut = useSplashFailsafe(showCustomSplash);
-  const shouldShowCustomSplash = showCustomSplash && !splashTimedOut;
+  const shouldShowCustomSplash = showCustomSplash;
   const fontsSettled = fontsLoaded || Boolean(fontError) || splashTimedOut;
-  const isNavigationReady = useNavigationIsReady();
+  const prefersReducedMotion = usePrefersReducedMotion();
   const locales = useLocales();
   const primaryLocale = locales[0];
   const hasBootstrappedLanguage = useRef(false);
@@ -459,6 +643,7 @@ export default function RootLayout() {
         setInitialLanguagePreference(preference);
 
         const effectiveLanguage = resolveEffectiveLanguage(preference, systemLanguage);
+        setProductAnalyticsLocale(effectiveLanguage);
 
         await Promise.race([loadTranslations(effectiveLanguage).then(() => undefined), sleep(1500)]);
       } catch (error) {
@@ -482,39 +667,44 @@ export default function RootLayout() {
       return;
     }
 
-    let outroTimer: ReturnType<typeof setTimeout> | undefined;
-
     const hideAsync = async () => {
       try {
         await SplashScreen.hideAsync();
       } catch (error) {
         console.warn('Unable to hide native splash screen', error);
-      } finally {
-        // Wait for the new 3s animation to mostly complete (Phase 1+2 = 1.8s, + part of 3)
-        outroTimer = setTimeout(() => setMinimumSplashElapsed(true), 2800);
       }
     };
 
-    hideAsync();
-
-    return () => {
-      if (outroTimer) {
-        clearTimeout(outroTimer);
-      }
-    };
+    void hideAsync();
   }, [fontsSettled]);
+
+  useEffect(() => {
+    if (!fontsSettled) return;
+    if (prefersReducedMotion || splashTimedOut) {
+      setMinimumSplashElapsed(true);
+      return;
+    }
+
+    const timer = setTimeout(() => setMinimumSplashElapsed(true), 2800);
+    return () => clearTimeout(timer);
+  }, [fontsSettled, prefersReducedMotion, splashTimedOut]);
 
   useEffect(() => {
     if (!minimumSplashElapsed || shouldFadeSplash) {
       return;
     }
 
-    if (!languageBootstrapped) {
+    if (!languageBootstrapped || !startupDestinationCommitted) {
       return;
     }
 
     setShouldFadeSplash(true);
-  }, [languageBootstrapped, minimumSplashElapsed, shouldFadeSplash]);
+  }, [
+    languageBootstrapped,
+    minimumSplashElapsed,
+    shouldFadeSplash,
+    startupDestinationCommitted,
+  ]);
 
   useEffect(() => {
     // Migrate existing guest quota counter (runs once, idempotent)
@@ -534,43 +724,12 @@ export default function RootLayout() {
     initializeGoogleSignIn();
   }, []);
 
-  useEffect(() => {
-    if (!isNavigationReady || !fontsLoaded || fontError || hasHandledFirstLaunch) {
-      return;
-    }
-
-    let isMounted = true;
-
-    (async () => {
-      let shouldAllowInitialRecordingRedirect = true;
-      try {
-        const completed = await getFirstLaunchCompleted();
-        if (!isMounted) return;
-
-        if (!completed) {
-          shouldAllowInitialRecordingRedirect = false;
-          runAfterNavigationMount(() => router.replace(ONBOARDING_ROUTE));
-        }
-      } catch (error) {
-        shouldAllowInitialRecordingRedirect = true;
-        if (__DEV__) {
-          console.error('[RootLayout] Failed to handle first launch redirect', error);
-        }
-      } finally {
-        if (isMounted) {
-          setAllowInitialRecordingRedirect(shouldAllowInitialRecordingRedirect);
-          setHasHandledFirstLaunch(true);
-        }
-      }
-    })();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [isNavigationReady, fontsLoaded, fontError, hasHandledFirstLaunch]);
-
   const handleSplashFinished = useCallback(() => {
     setShowCustomSplash(false);
+  }, []);
+
+  const handleStartupCommitted = useCallback(() => {
+    setStartupDestinationCommitted(true);
   }, []);
 
   if (!fontsSettled) {
@@ -584,20 +743,22 @@ export default function RootLayout() {
           <LanguageProvider initialPreference={initialLanguagePreference}>
             <ThemeProvider>
               <AuthProvider>
-                <SubscriptionProvider>
-                  <RootLayoutNav
-                    allowInitialRecordingRedirect={
-                      allowInitialRecordingRedirect || Boolean(fontError) || splashTimedOut
-                    }
-                  />
-                </SubscriptionProvider>
+                <OnboardingProvider>
+                  <SubscriptionProvider>
+                    <RootLayoutNav onStartupCommitted={handleStartupCommitted} />
+                  </SubscriptionProvider>
+                </OnboardingProvider>
               </AuthProvider>
             </ThemeProvider>
           </LanguageProvider>
         ) : null}
       </ErrorBoundary>
       {shouldShowCustomSplash && (
-        <AnimatedSplashScreen status={shouldFadeSplash ? 'outro' : 'intro'} onAnimationEnd={handleSplashFinished} />
+        <AnimatedSplashScreen
+          status={shouldFadeSplash ? 'outro' : 'intro'}
+          forceStatic={splashTimedOut}
+          onAnimationEnd={handleSplashFinished}
+        />
       )}
     </GestureHandlerRootView>
   );

@@ -16,6 +16,7 @@ import { sortPackages } from '@/lib/paywallUtils';
 import { TID } from '@/lib/testIDs';
 import type { SubscriptionStatus } from '@/lib/types';
 import {
+  getSubscriptionStoreMode,
   initializeSubscription,
   loadSubscriptionPackages,
 } from '@/services/subscriptionService';
@@ -51,14 +52,6 @@ function maskKey(value?: string): string {
   if (!value) return 'missing';
   if (value.length <= 12) return value;
   return `${value.slice(0, 6)}...${value.slice(-4)}`;
-}
-
-function resolveStoreMode(androidKey?: string): string {
-  if (!androidKey) return 'No Android key';
-  if (androidKey.startsWith('test_')) return 'RevenueCat Test Store';
-  if (androidKey.startsWith('goog_')) return 'Google Play';
-  if (androidKey.startsWith('mock_')) return 'Mock store';
-  return 'Custom key';
 }
 
 function formatDate(value?: string | null): string {
@@ -180,7 +173,7 @@ export function SubscriptionQALab() {
         kind: 'error',
       });
     }
-  }, [isMockMode, syncLocalStatus, user?.id]);
+  }, [isMockMode, syncLocalStatus, user]);
 
   const handleMockScenario = useCallback(async (scenario: MockSubscriptionScenario) => {
     if (!isMockMode) {
@@ -242,7 +235,7 @@ export function SubscriptionQALab() {
         kind: 'error',
       });
     }
-  }, [annualPackage, monthlyPackage, purchase, user?.id]);
+  }, [annualPackage, monthlyPackage, purchase, user]);
 
   const handleRestore = useCallback(async () => {
     try {
@@ -259,7 +252,7 @@ export function SubscriptionQALab() {
         kind: 'error',
       });
     }
-  }, [restore, user?.id]);
+  }, [restore, user]);
 
   const handleRefresh = useCallback(async () => {
     try {
@@ -277,7 +270,7 @@ export function SubscriptionQALab() {
         kind: 'error',
       });
     }
-  }, [refreshSubscription, refetchQuota, user?.id]);
+  }, [refreshSubscription, refetchQuota, user]);
 
   const handleProbeSdk = useCallback(async () => {
     if (isMockMode) {
@@ -305,7 +298,7 @@ export function SubscriptionQALab() {
         kind: 'error',
       });
     }
-  }, [isMockMode, user?.id]);
+  }, [isMockMode, user]);
 
   const handleOpenPaywall = useCallback(() => {
     router.push(buildPaywallHref('settings'));
@@ -340,7 +333,7 @@ export function SubscriptionQALab() {
       <View style={styles.statusGrid} testID={qaStateId} collapsable={false}>
         <StatusCell
           label="Mode"
-          value={isMockMode ? 'Mock services' : resolveStoreMode(androidKey)}
+          value={getSubscriptionStoreMode()}
           testID={TID.Text.SubscriptionQaMode}
         />
         <StatusCell label="QA flag" value={qaLabEnabled ? 'enabled' : __DEV__ ? 'dev' : 'off'} />

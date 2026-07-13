@@ -1,7 +1,7 @@
 export const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type, x-guest-token, x-guest-fingerprint, x-guest-platform',
+    'authorization, x-client-info, apikey, content-type, x-guest-token, x-guest-fingerprint, x-guest-platform, x-analytics-guest-token',
 };
 
 export const GUEST_LIMITS = { analysis: 2, exploration: 2, image: 2, messagesPerDream: 10 } as const;

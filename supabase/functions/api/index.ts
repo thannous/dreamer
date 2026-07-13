@@ -23,12 +23,17 @@ import { handleAuthMarkUpgrade, handleQuotaStatus } from './routes/quota.ts';
 import { handleSubscriptionRefresh, handleSubscriptionReconcile, handleSubscriptionSync } from './routes/subscription.ts';
 import { handleTranscribe } from './routes/transcribe.ts';
 import { buildSupabaseUserAuthHeaders, resolveSupabaseUserBearer } from './lib/authHeader.ts';
+import { handleProductAnalytics } from './routes/analytics.ts';
+import { handleAnalyticsGuestSession } from './routes/analyticsSession.ts';
 import type { ApiContext } from './types.ts';
 
 type RouteHandler = (ctx: ApiContext) => Promise<Response>;
 
 const routes = new Map<string, RouteHandler>([
   ['POST /guest/session', async (ctx) => handleGuestSession(ctx.req)],
+  ['POST /analytics/session', async (ctx) => handleAnalyticsGuestSession(ctx.req)],
+  ['POST /analytics/events', handleProductAnalytics],
+  ['DELETE /analytics/events', handleProductAnalytics],
   ['POST /subscription/refresh', handleSubscriptionRefresh],
   ['POST /subscription/sync', handleSubscriptionSync],
   ['POST /subscription/reconcile', handleSubscriptionReconcile],

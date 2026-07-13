@@ -27,10 +27,12 @@ const COMMON_RELEASE_ENV_OVERRIDES = Object.freeze({
 });
 const RELEASE_ENV_OVERRIDES = Object.freeze({
   ...COMMON_RELEASE_ENV_OVERRIDES,
+  NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'false',
   EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'false',
 });
 const TESTSTORE_ENV_OVERRIDES = Object.freeze({
   ...COMMON_RELEASE_ENV_OVERRIDES,
+  NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'true',
   EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'true',
 });
 const SUPPORTED_ABIS = new Set([
@@ -326,6 +328,18 @@ function resolveDevice(adbCommand, requestedDevice, env) {
   return devices[0].id;
 }
 
+function assertTestStoreInstallTarget(profileName, install, device) {
+  if (
+    normalizeBuildProfile(profileName) === TESTSTORE_BUILD_PROFILE &&
+    install &&
+    !/^emulator-\d+$/.test(String(device || ''))
+  ) {
+    throw new Error(
+      'RevenueCat Test Store APK installation is emulator-only; refusing to replace a physical Play installation.'
+    );
+  }
+}
+
 function printHelp() {
   process.stdout.write(
     [
@@ -366,6 +380,7 @@ function main() {
   let abi = options.abi;
   if (!abi || options.install || device) {
     device = resolveDevice(adbCommand, device, env);
+    assertTestStoreInstallTarget(options.profile, options.install, device);
     const deviceAbi = normalizeAbi(
       runAdb(adbCommand, ['-s', device, 'shell', 'getprop', 'ro.product.cpu.abi'], env)
     );
@@ -433,6 +448,7 @@ module.exports = {
   SUPPORTED_BUILD_PROFILES,
   TESTSTORE_BUILD_PROFILE,
   TESTSTORE_ENV_OVERRIDES,
+  assertTestStoreInstallTarget,
   copyReleaseApk,
   getApkPath,
   getBuildEnv,

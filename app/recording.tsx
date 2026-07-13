@@ -4,14 +4,7 @@ import { SubjectProposition } from '@/components/journal/SubjectProposition';
 import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
-import {
-  RecordingOnboardingTour,
-  type RecordingOnboardingTarget,
-} from '@/components/recording/RecordingOnboardingTour';
-import {
-  RecordingOnboardingSpotlightOverlay,
-  type RecordingSpotlightRect,
-} from '@/components/recording/RecordingOnboardingSpotlightOverlay';
+import { RecordingOnboardingTour } from '@/components/recording/RecordingOnboardingTour';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { RecordingActivationInsightCard } from '@/components/recording/RecordingActivationInsightCard';
 import {
@@ -19,25 +12,30 @@ import {
   FirstDreamSheet,
   GuestLimitSheet,
   MicPermissionRationaleSheet,
+  PostSaveOfferSheet,
   QuotaLimitSheet,
   ReferenceImageSheet,
+  type AnalysisOfferPrimaryAction,
+  type AnalysisOfferQuotaState,
 } from '@/components/recording/RecordingSheets';
 import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RememberedDreamProfileChips } from '@/components/recording/RememberedDreamProfileChips';
-import { UnforgettableDreamPromptCard } from '@/components/recording/UnforgettableDreamPromptCard';
 import { RECORDING } from '@/constants/appConfig';
-import { DESKTOP_BREAKPOINT, TAB_BAR_HEIGHT } from '@/constants/layout';
+import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AnalysisStep, useAnalysisProgress } from '@/hooks/useAnalysisProgress';
 import { useQuota } from '@/hooks/useQuota';
 import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
+import { buildFirstValueProperties } from '@/lib/activationAnalytics';
+import { isResumableAnalysisRequest } from '@/lib/analysisRequest';
 import {
   getRecordingDurationBucket,
   getTranscriptLengthBucket,
@@ -54,13 +52,22 @@ import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from 
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { createScopedLogger } from '@/lib/logger';
+import {
+  parseRecordingRouteParams,
+  resolvePendingAnalysisRestart,
+  resolveRecordingEntryIntent,
+  type RecordingRouteParams,
+} from '@/lib/onboardingState';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import {
-  getRecordingActivationPromptState,
   type RecordingCaptureIntent,
   resolveRememberedCaptureSource,
   type RememberedCaptureSource,
 } from '@/lib/recordingActivation';
+import {
+  preserveVoiceModeAfterFailure,
+  type VoiceFallbackReason,
+} from '@/lib/recordingVoiceMode';
 import {
   getLiveRecordingActivationInsight,
   getRecordingActivationInsight,
@@ -84,11 +91,7 @@ import {
 import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
 import {
   getRecordingInputModePreference,
-  getRecordingOnboardingCompleted,
-  getRememberedDreamPromptDismissed,
   saveRecordingInputModePreference,
-  saveRecordingOnboardingCompleted,
-  saveRememberedDreamPromptDismissed,
 } from '@/services/storageService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
@@ -96,6 +99,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Alert,
   AppState,
+  Keyboard,
   KeyboardAvoidingView,
   type LayoutChangeEvent,
   Platform,
@@ -109,14 +113,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const log = createScopedLogger('[Recording]');
 const isMockMode = isMockModeEnabled();
-
-type VoiceFallbackReason =
-  | 'permission_denied'
-  | 'stt_unavailable'
-  | 'language_pack_missing'
-  | 'no_speech'
-  | 'start_failed'
-  | null;
+const trackedOnboardingRecordingDestinations = new Set<string>();
 
 type CaptureIntent = RecordingCaptureIntent;
 type ActivationInsightSurface = AnalyticsEventMap['recording_activation_insight_shown']['surface'];
@@ -127,9 +124,6 @@ const getDreamActivationInsightCaptureContext = (
   dream: DreamAnalysis | null
 ): ActivationInsightCaptureContext =>
   dream?.memory?.origin === 'remembered' ? 'remembered' : 'fresh';
-
-const getActivationInsightSignalIds = (insight: RecordingActivationInsight) =>
-  insight.signalIds.length > 0 ? insight.signalIds.join(',') : 'none';
 
 const getSavedDreamActivationInsight = (dream: DreamAnalysis | null) => {
   if (!dream) {
@@ -159,16 +153,35 @@ export default function RecordingScreen() {
   const { language } = useLanguage();
   const { t } = useTranslation();
   const { user } = useAuth();
+  const {
+    state: onboardingState,
+    scope: onboardingScope,
+    transition: transitionOnboarding,
+  } = useOnboarding();
   const insets = useSafeAreaInsets();
-  const { width: viewportWidth } = useWindowDimensions();
+  const { width: viewportWidth, height: viewportHeight } = useWindowDimensions();
   const referenceImagesEnabled = isReferenceImagesEnabled();
-  const recordingParams = useLocalSearchParams<{ intent?: string; source?: string }>();
+  const recordingParams = useLocalSearchParams<RecordingRouteParams>();
+  const parsedRecordingParams = useMemo(
+    () => parseRecordingRouteParams(recordingParams),
+    [recordingParams]
+  );
+  const resolvedRecordingEntryIntent = useMemo(
+    () => resolveRecordingEntryIntent(
+      parsedRecordingParams,
+      onboardingState.pendingRecordingIntent
+    ),
+    [onboardingState.pendingRecordingIntent, parsedRecordingParams]
+  );
 
   const [transcript, setTranscript] = useState('');
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
   const [firstDreamPrompt, setFirstDreamPrompt] = useState<DreamAnalysis | null>(null);
   const [analyzePromptDream, setAnalyzePromptDream] = useState<DreamAnalysis | null>(null);
   const [pendingAnalysisDream, setPendingAnalysisDream] = useState<DreamAnalysis | null>(null);
+  const [onboardingOfferDream, setOnboardingOfferDream] = useState<DreamAnalysis | null>(null);
+  const [onboardingOfferKind, setOnboardingOfferKind] = useState<'analysis' | 'memory'>('analysis');
+  const [analysisOfferError, setAnalysisOfferError] = useState(false);
   const [isPersisting, setIsPersisting] = useState(false);
   const [isPreparingRecording, setIsPreparingRecording] = useState(false);
   const [showGuestLimitSheet, setShowGuestLimitSheet] = useState(false);
@@ -178,7 +191,14 @@ export default function RecordingScreen() {
   const [lengthWarning, setLengthWarning] = useState('');
   const analysisProgress = useAnalysisProgress();
   const hasAutoStoppedRecordingRef = useRef(false);
-  const { canAnalyzeNow, tier, usage, quotaStatus } = useQuota();
+  const {
+    canAnalyzeNow,
+    tier,
+    usage,
+    quotaStatus,
+    loading: quotaLoading,
+    error: quotaError,
+  } = useQuota();
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
   const [quotaSheetMode, setQuotaSheetMode] = useState<'limit' | 'error' | 'login'>('limit');
   const [quotaSheetMessage, setQuotaSheetMessage] = useState('');
@@ -193,13 +213,8 @@ export default function RecordingScreen() {
   const activationInsightTrackedSurfacesRef = useRef<Set<ActivationInsightSurface>>(new Set());
   const [recordingDurationSeconds, setRecordingDurationSeconds] = useState(0);
   const [voiceFallbackReason, setVoiceFallbackReason] = useState<VoiceFallbackReason>(null);
-  const [recordingOnboardingStage, setRecordingOnboardingStage] =
-    useState<'preference' | 'tour'>('preference');
-  const [recordingOnboardingStep, setRecordingOnboardingStep] = useState(0);
-  const [recordingOnboardingDismissed, setRecordingOnboardingDismissed] = useState(false);
-  const [recordingOnboardingLoaded, setRecordingOnboardingLoaded] = useState(false);
-  const [rememberedDreamPromptDismissed, setRememberedDreamPromptDismissed] = useState(false);
-  const [rememberedDreamPromptLoaded, setRememberedDreamPromptLoaded] = useState(false);
+  const [recordingGuideVisible, setRecordingGuideVisible] = useState(false);
+  const [recordingGuideStep, setRecordingGuideStep] = useState<0 | 1>(0);
   const [captureIntent, setCaptureIntent] = useState<CaptureIntent>('fresh');
   const [rememberedCaptureSource, setRememberedCaptureSource] =
     useState<RememberedCaptureSource>('journal');
@@ -209,19 +224,45 @@ export default function RecordingScreen() {
   const [rememberedStrongestFragment, setRememberedStrongestFragment] =
     useState<DreamStrongestFragment | undefined>();
   const [inputMode, setInputMode] = useState<RecordingInputModePreference>('text');
-  const [inputModePreferenceLoaded, setInputModePreferenceLoaded] = useState(false);
-  const recordingOnboardingViewportRef = useRef<View | null>(null);
-  const [recordingOnboardingTargetRect, setRecordingOnboardingTargetRect] =
-    useState<RecordingSpotlightRect | null>(null);
-  const [recordingOnboardingPanelRect, setRecordingOnboardingPanelRect] =
-    useState<RecordingSpotlightRect | null>(null);
-  const [recordingOnboardingMeasureKey, setRecordingOnboardingMeasureKey] = useState(0);
-  const [recordingOnboardingViewport, setRecordingOnboardingViewport] = useState({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  });
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [footerHeight, setFooterHeight] = useState(0);
+  const [bottomNavHeight, setBottomNavHeight] = useState(0);
+  const appliedRouteEntriesRef = useRef<Set<string>>(new Set());
+  const activePostSaveRef = useRef<'confirm_analysis' | 'journal_first' | null>(null);
+  const captureStartedTrackedRef = useRef(false);
+  const analysisLaunchRef = useRef(false);
+  const restoredPendingIntentRef = useRef<string | null>(null);
+  const analysisOfferTrackedRef = useRef<Set<number>>(new Set());
+  const initialRouteModeRef = useRef(parsedRecordingParams.mode);
+  const preferenceScopeRef = useRef(onboardingScope);
+
+  useEffect(() => {
+    const isExplicitOnboardingDestination = resolvedRecordingEntryIntent?.source === 'onboarding';
+    const isSkipDestination = onboardingState.completionReason === 'skip';
+    if (!isExplicitOnboardingDestination && !isSkipDestination) return;
+    if (
+      resolvedRecordingEntryIntent
+      && appliedRouteEntriesRef.current.has(resolvedRecordingEntryIntent.entryId)
+    ) return;
+
+    const path = isExplicitOnboardingDestination
+      ? resolvedRecordingEntryIntent?.postSave === 'journal_first' ? 'memory' : 'analyze'
+      : 'skip';
+    const key = isExplicitOnboardingDestination
+      ? `entry:${resolvedRecordingEntryIntent?.entryId ?? onboardingState.completedAt ?? path}`
+      : `skip:${onboardingState.completedAt ?? 'session'}`;
+    if (trackedOnboardingRecordingDestinations.has(key)) return;
+
+    trackedOnboardingRecordingDestinations.add(key);
+    void trackProductEvent('onboarding_destination_viewed', {
+      destination: 'recording',
+      path,
+    });
+  }, [
+    onboardingState.completedAt,
+    onboardingState.completionReason,
+    resolvedRecordingEntryIntent,
+  ]);
 
   // Subject detection for reference image generation
   const [showSubjectProposition, setShowSubjectProposition] = useState(false);
@@ -239,12 +280,12 @@ export default function RecordingScreen() {
   } | null>(null);
 
   const persistInputModePreference = useCallback((preference: RecordingInputModePreference) => {
-    saveRecordingInputModePreference(preference).catch((error) => {
+    saveRecordingInputModePreference(preference, onboardingScope).catch((error) => {
       if (__DEV__) {
         console.warn('[Recording] Failed to save input mode preference', error);
       }
     });
-  }, []);
+  }, [onboardingScope]);
 
   const resolveOfflineModelPrompt = useCallback(() => {
     const resolve = offlineModelPromptResolveRef.current;
@@ -269,57 +310,35 @@ export default function RecordingScreen() {
 
   useEffect(() => {
     let isActive = true;
+    const scopeChanged = preferenceScopeRef.current !== onboardingScope;
+    preferenceScopeRef.current = onboardingScope;
+    if (scopeChanged || parsedRecordingParams.mode) {
+      initialRouteModeRef.current = parsedRecordingParams.mode;
+    }
 
-    getRecordingInputModePreference()
+    getRecordingInputModePreference(onboardingScope)
       .then((preference) => {
         if (isActive) {
-          setInputMode(preference ?? 'text');
-          setInputModePreferenceLoaded(true);
+          setInputMode(initialRouteModeRef.current ?? preference ?? 'text');
         }
       })
       .catch((error) => {
-        if (isActive) {
-          setInputModePreferenceLoaded(true);
-        }
         if (__DEV__) {
           console.warn('[Recording] Failed to load input mode preference', error);
         }
       });
 
-    getRecordingOnboardingCompleted()
-      .then((completed) => {
-        if (isActive) {
-          setRecordingOnboardingDismissed(completed);
-          setRecordingOnboardingLoaded(true);
-        }
-      })
-      .catch((error) => {
-        if (isActive) {
-          setRecordingOnboardingLoaded(true);
-        }
-        if (__DEV__) {
-          console.warn('[Recording] Failed to load onboarding preference', error);
-        }
-      });
-
-    getRememberedDreamPromptDismissed()
-      .then((dismissed) => {
-        if (isActive) {
-          setRememberedDreamPromptDismissed(dismissed);
-          setRememberedDreamPromptLoaded(true);
-        }
-      })
-      .catch((error) => {
-        if (isActive) {
-          setRememberedDreamPromptLoaded(true);
-        }
-        if (__DEV__) {
-          console.warn('[Recording] Failed to load remembered dream prompt preference', error);
-        }
-      });
-
     return () => {
       isActive = false;
+    };
+  }, [onboardingScope, parsedRecordingParams.mode]);
+
+  useEffect(() => {
+    const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    return () => {
+      show.remove();
+      hide.remove();
     };
   }, []);
 
@@ -390,11 +409,18 @@ export default function RecordingScreen() {
     (text: string) => {
       lastInputSourceRef.current = 'text';
       const { text: clamped, truncated } = clampTranscript(text);
+      if (!captureStartedTrackedRef.current && clamped.trim().length > 0) {
+        captureStartedTrackedRef.current = true;
+        void trackProductEvent('dream_capture_started', {
+          input_mode: 'text',
+          capture_context: captureIntent,
+        });
+      }
       setTranscript(clamped);
       baseTranscriptRef.current = clamped;
       setLengthWarning(truncated ? lengthLimitMessage() : '');
     },
-    [clampTranscript, lengthLimitMessage]
+    [captureIntent, clampTranscript, lengthLimitMessage]
   );
 
   const stopRecordingFromPartialRef = useRef<(() => void) | null>(null);
@@ -517,6 +543,7 @@ export default function RecordingScreen() {
     setRememberedApproximatePeriod(undefined);
     setRememberedStrongestFragment(undefined);
     baseTranscriptRef.current = '';
+    captureStartedTrackedRef.current = false;
     activationInsightTrackedSurfacesRef.current.clear();
   }, [analysisProgress]);
 
@@ -553,6 +580,42 @@ export default function RecordingScreen() {
   );
 
   useEffect(() => {
+    const pending = onboardingState.pendingRecordingIntent;
+    if (
+      !pending?.savedDreamId
+      || pending.phase === 'capture'
+      || restoredPendingIntentRef.current === pending.entryId
+      || analysisLaunchRef.current
+    ) {
+      return;
+    }
+
+    const savedDream = dreams.find((dream) => dream.id === pending.savedDreamId);
+    if (!savedDream) return;
+    restoredPendingIntentRef.current = pending.entryId;
+    const restartAction = resolvePendingAnalysisRestart(pending, savedDream);
+
+    if (restartAction === 'view_result') {
+      navigateToJournalDetail(savedDream.id);
+      // The persisted result is already durable. Clear the request after
+      // navigation so startup cannot loop back to recording.
+      void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => undefined);
+      return;
+    }
+
+    // Restore the persisted external workflow once its saved dream is available.
+    // A pending/failed request is never relaunched automatically: the retry CTA
+    // reuses its persisted analysisRequestId and the server quota claim is
+    // idempotent.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOnboardingOfferKind(
+      pending.postSave === 'journal_first' ? 'memory' : 'analysis'
+    );
+    setOnboardingOfferDream(savedDream);
+    setAnalysisOfferError(restartAction === 'offer_retry');
+  }, [dreams, navigateToJournalDetail, onboardingState.pendingRecordingIntent, transitionOnboarding]);
+
+  useEffect(() => {
     if (!user || !pendingGuestLimitDream) {
       return;
     }
@@ -569,6 +632,33 @@ export default function RecordingScreen() {
         }
         resetComposer();
         setPendingGuestLimitDream(null);
+        const onboardingPostSave = activePostSaveRef.current;
+        if (onboardingPostSave) {
+          activePostSaveRef.current = null;
+          setOnboardingOfferKind(
+            onboardingPostSave === 'confirm_analysis' ? 'analysis' : 'memory'
+          );
+          setOnboardingOfferDream(savedDream);
+          setAnalysisOfferError(false);
+          const pendingEvent = onboardingPostSave === 'confirm_analysis'
+            ? {
+                type: 'SET_PENDING_PHASE' as const,
+                phase: 'analysis_confirmation' as const,
+                savedDreamId: savedDream.id,
+              }
+            : { type: 'CLEAR_PENDING_INTENT' as const };
+          try {
+            await transitionOnboarding(pendingEvent);
+          } catch (error) {
+            if (onboardingPostSave === 'confirm_analysis') {
+              setAnalysisOfferError(true);
+            }
+            if (__DEV__) {
+              console.warn('[Recording] Failed to persist post-save onboarding phase', error);
+            }
+          }
+          return;
+        }
         navigateAfterSave(savedDream, preCount, { skipFirstDreamSheet: true });
       } catch (error) {
         if (cancelled) {
@@ -589,7 +679,16 @@ export default function RecordingScreen() {
     return () => {
       cancelled = true;
     };
-  }, [user, pendingGuestLimitDream, addDream, dreams.length, navigateAfterSave, resetComposer, t]);
+  }, [
+    user,
+    pendingGuestLimitDream,
+    addDream,
+    dreams.length,
+    navigateAfterSave,
+    resetComposer,
+    t,
+    transitionOnboarding,
+  ]);
 
   // Show quota limit sheet (reusable for both guard and catch paths)
   const showQuotaSheet = useCallback((options?: { mode?: 'limit' | 'error' | 'login'; message?: string }) => {
@@ -660,15 +759,17 @@ export default function RecordingScreen() {
           return;
         }
         if (result.error === 'stt_unavailable') {
-          setVoiceFallbackReason('stt_unavailable');
-          setInputMode('text');
-          persistInputModePreference('text');
+          const outcome = preserveVoiceModeAfterFailure('stt_unavailable');
+          setVoiceFallbackReason(outcome.fallbackReason);
+          setInputMode(outcome.inputMode);
+          persistInputModePreference(outcome.preferenceToPersist);
           return;
         }
         if (result.error === 'language_pack_missing') {
-          setVoiceFallbackReason('language_pack_missing');
-          setInputMode('text');
-          persistInputModePreference('text');
+          const outcome = preserveVoiceModeAfterFailure('language_pack_missing');
+          setVoiceFallbackReason(outcome.fallbackReason);
+          setInputMode(outcome.inputMode);
+          persistInputModePreference(outcome.preferenceToPersist);
           return;
         }
         if (result.error === 'no_recording') {
@@ -682,8 +783,10 @@ export default function RecordingScreen() {
           Alert.alert(t('recording.alert.transcription_failed.title'), result.error);
           return;
         }
-        setVoiceFallbackReason('no_speech');
-        setInputMode('text');
+        const outcome = preserveVoiceModeAfterFailure('no_speech');
+        setVoiceFallbackReason(outcome.fallbackReason);
+        setInputMode(outcome.inputMode);
+        persistInputModePreference(outcome.preferenceToPersist);
       }
     } catch (err) {
       log.error('Failed to stop recording:', err);
@@ -719,6 +822,13 @@ export default function RecordingScreen() {
       const response = await startSessionRecording(transcript);
       if (response.success) {
         lastInputSourceRef.current = 'voice';
+        if (!captureStartedTrackedRef.current) {
+          captureStartedTrackedRef.current = true;
+          void trackProductEvent('dream_capture_started', {
+            input_mode: 'voice',
+            capture_context: captureIntent,
+          });
+        }
         setInputMode('voice');
         persistInputModePreference('voice');
         recordingStartedAtRef.current = Date.now();
@@ -739,19 +849,21 @@ export default function RecordingScreen() {
         response.error === 'stt_unavailable' ||
         response.error === 'language_pack_missing'
       ) {
-        setVoiceFallbackReason(response.error);
-        setInputMode('text');
-        persistInputModePreference('text');
+        const outcome = preserveVoiceModeAfterFailure(response.error);
+        setVoiceFallbackReason(outcome.fallbackReason);
+        setInputMode(outcome.inputMode);
+        persistInputModePreference(outcome.preferenceToPersist);
         return;
       }
-      setVoiceFallbackReason('start_failed');
-      setInputMode('text');
-      persistInputModePreference('text');
+      const outcome = preserveVoiceModeAfterFailure('start_failed');
+      setVoiceFallbackReason(outcome.fallbackReason);
+      setInputMode(outcome.inputMode);
+      persistInputModePreference(outcome.preferenceToPersist);
       Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
     } finally {
       setIsPreparingRecording(false);
     }
-  }, [language, persistInputModePreference, startSessionRecording, t, transcript]);
+  }, [captureIntent, language, persistInputModePreference, startSessionRecording, t, transcript]);
 
   const toggleRecording = useCallback(async () => {
     if (recordingTransitionRef.current) {
@@ -868,6 +980,32 @@ export default function RecordingScreen() {
       recordingStartedAtRef.current = null;
 
       resetComposer();
+      const onboardingPostSave = activePostSaveRef.current;
+      if (onboardingPostSave) {
+        const offerKind = onboardingPostSave === 'confirm_analysis' ? 'analysis' : 'memory';
+        activePostSaveRef.current = null;
+        setOnboardingOfferKind(offerKind);
+        setOnboardingOfferDream(savedDream);
+        setAnalysisOfferError(false);
+        try {
+          const pendingEvent = onboardingPostSave === 'confirm_analysis'
+            ? {
+                type: 'SET_PENDING_PHASE' as const,
+                phase: 'analysis_confirmation' as const,
+                savedDreamId: savedDream.id,
+              }
+            : { type: 'CLEAR_PENDING_INTENT' as const };
+          await transitionOnboarding(pendingEvent);
+        } catch (error) {
+          if (onboardingPostSave === 'confirm_analysis') {
+            setAnalysisOfferError(true);
+          }
+          if (__DEV__) {
+            console.warn('[Recording] Failed to persist post-save onboarding phase', error);
+          }
+        }
+        return;
+      }
       navigateAfterSave(savedDream, preCount);
     } catch (error) {
       if (error instanceof QuotaError && error.code === QuotaErrorCode.GUEST_LIMIT_REACHED) {
@@ -896,6 +1034,7 @@ export default function RecordingScreen() {
     resetComposer,
     stopRecording,
     t,
+    transitionOnboarding,
     transcript,
     user,
   ]);
@@ -963,8 +1102,14 @@ export default function RecordingScreen() {
 
   const handleQuotaLimitJournal = useCallback(() => {
     setShowQuotaLimitSheet(false);
-    const dream = analyzePromptDream ?? pendingAnalysisDream;
+    const dream = onboardingOfferDream ?? analyzePromptDream ?? pendingAnalysisDream;
     if (dream) {
+      if (onboardingOfferDream) {
+        setOnboardingOfferDream(null);
+        setAnalysisOfferError(false);
+        restoredPendingIntentRef.current = onboardingState.pendingRecordingIntent?.entryId ?? null;
+        void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => undefined);
+      }
       navigateToJournalDetail(dream.id);
     } else {
       router.push('/(tabs)/journal');
@@ -972,9 +1117,17 @@ export default function RecordingScreen() {
     // Cleanup
     setPendingAnalysisDream(null);
     analysisProgress.reset();
-  }, [analyzePromptDream, pendingAnalysisDream, analysisProgress, navigateToJournalDetail]);
+  }, [
+    analyzePromptDream,
+    pendingAnalysisDream,
+    onboardingOfferDream,
+    onboardingState.pendingRecordingIntent?.entryId,
+    analysisProgress,
+    navigateToJournalDetail,
+    transitionOnboarding,
+  ]);
 
-  const runAnalysis = useCallback(async (dream: DreamAnalysis) => {
+  const runAnalysis = useCallback(async (dream: DreamAnalysis): Promise<boolean> => {
     setPendingAnalysisDream(dream);
 
     setIsPersisting(true);
@@ -998,20 +1151,32 @@ export default function RecordingScreen() {
 
       analysisProgress.setStep(AnalysisStep.COMPLETE);
       setPendingAnalysisDream(null);
+      setOnboardingOfferDream(null);
+      setAnalysisOfferError(false);
       resetComposer();
       await new Promise((resolve) => setTimeout(resolve, 300));
       navigateAfterSave(analyzedDream, preCount, { skipFirstDreamSheet: true });
+      return true;
     } catch (error) {
       if (error instanceof QuotaError) {
+        void trackProductEvent('analysis_failed', { stage: 'request', reason: 'quota' });
         const mode = error.code === QuotaErrorCode.LOGIN_REQUIRED && tier === 'guest' ? 'login' : 'limit';
         showQuotaSheet({ mode });
         analysisProgress.reset();
-        return;
+        return false;
       }
+      void trackProductEvent('analysis_failed', { stage: 'request', reason: 'unknown' });
       const classified = classifyError(error as Error, t);
       analysisProgress.setError(classified);
+      setPendingAnalysisDream(null);
+      if (onboardingOfferDream) {
+        setAnalysisOfferError(true);
+        analysisProgress.reset();
+      }
+      return false;
     } finally {
       setIsPersisting(false);
+      analysisLaunchRef.current = false;
     }
   }, [
     analysisProgress,
@@ -1019,6 +1184,7 @@ export default function RecordingScreen() {
     dreams.length,
     language,
     navigateAfterSave,
+    onboardingOfferDream,
     resetComposer,
     showQuotaSheet,
     t,
@@ -1142,16 +1308,40 @@ export default function RecordingScreen() {
   ]);
 
   const handleFirstDreamAnalyze = useCallback(async () => {
-    const dream = firstDreamPrompt ?? analyzePromptDream ?? pendingAnalysisDream;
+    const dream = onboardingOfferDream ?? firstDreamPrompt ?? analyzePromptDream ?? pendingAnalysisDream;
     if (!dream) {
       return;
     }
-    if (!canAnalyzeNow) {
+    if (analysisLaunchRef.current) return;
+    const isPersistedRetry = isResumableAnalysisRequest(dream);
+    if (!canAnalyzeNow && !isPersistedRetry) {
       // "canAnalyzeNow" is a local/optimistic gate; if we can't show a quota sheet (e.g., paid tier),
       // fall through and let the server-side quota enforcement decide.
       const mode = !user && quotaStatus?.isUpgraded ? 'login' : 'limit';
       const shown = showQuotaSheet({ mode });
       if (shown) return;
+    }
+
+    if (onboardingOfferDream) {
+      analysisLaunchRef.current = true;
+      setIsPersisting(true);
+      setAnalysisOfferError(false);
+      void trackProductEvent('first_dream_next_action_selected', {
+        action: onboardingOfferKind === 'memory' ? 'analyze_memory' : 'launch_analysis',
+      });
+      try {
+        await transitionOnboarding({
+          type: 'SET_PENDING_PHASE',
+          phase: 'analysis_requested',
+          savedDreamId: dream.id,
+        });
+      } catch {
+        analysisLaunchRef.current = false;
+        setIsPersisting(false);
+        setAnalysisOfferError(true);
+        void trackProductEvent('analysis_failed', { stage: 'offer', reason: 'unknown' });
+        return;
+      }
     }
 
     if (firstDreamPrompt) {
@@ -1161,7 +1351,8 @@ export default function RecordingScreen() {
       setAnalyzePromptDream(null);
     }
 
-    const shouldOfferReference = !pendingAnalysisDream
+    const shouldOfferReference = !onboardingOfferDream
+      && !pendingAnalysisDream
       && referenceImagesEnabled
       && Boolean(user)
       && dream.hasPerson === true;
@@ -1185,29 +1376,33 @@ export default function RecordingScreen() {
     analyzePromptDream,
     canAnalyzeNow,
     firstDreamPrompt,
+    onboardingOfferDream,
+    onboardingOfferKind,
     pendingAnalysisDream,
     quotaStatus?.isUpgraded,
     referenceImagesEnabled,
     runAnalysis,
     showQuotaSheet,
+    transitionOnboarding,
     user,
   ]);
 
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const gradientColors = noctalia.screen.gradient;
-  const bottomNavOffset = viewportWidth >= DESKTOP_BREAKPOINT
-    ? Math.max(insets.bottom, 24)
-    : TAB_BAR_HEIGHT + Math.max(insets.bottom, 14);
-  const fixedFooterBottomOffset = bottomNavOffset + 16;
+  const fixedFooterBottomOffset = keyboardVisible
+    ? insets.bottom
+    : viewportWidth < DESKTOP_BREAKPOINT
+      ? Math.max(bottomNavHeight, insets.bottom)
+      : insets.bottom;
   const mainContentStyle = useMemo(
     () => [
       styles.mainContent,
       {
-        paddingTop: 24 + insets.top,
-        paddingBottom: fixedFooterBottomOffset + 92,
+        paddingTop: 16 + insets.top,
+        paddingBottom: fixedFooterBottomOffset + footerHeight,
       },
     ],
-    [fixedFooterBottomOffset, insets.top]
+    [fixedFooterBottomOffset, footerHeight, insets.top]
   );
   const fixedFooterStyle = useMemo(
     () => [
@@ -1219,9 +1414,17 @@ export default function RecordingScreen() {
     [fixedFooterBottomOffset]
   );
   const subjectPropositionMarginBottom = useMemo(
-    () => 100 + insets.bottom,
-    [insets.bottom]
+    () => fixedFooterBottomOffset + footerHeight,
+    [fixedFooterBottomOffset, footerHeight]
   );
+  const handleFooterLayout = useCallback((event: LayoutChangeEvent) => {
+    const nextHeight = Math.ceil(event.nativeEvent.layout.height);
+    setFooterHeight((current) => current === nextHeight ? current : nextHeight);
+  }, []);
+  const handleBottomNavMeasure = useCallback((event: LayoutChangeEvent) => {
+    const nextHeight = Math.ceil(viewportHeight - event.nativeEvent.layout.y);
+    setBottomNavHeight((current) => current === nextHeight ? current : nextHeight);
+  }, [viewportHeight]);
 
   const focusTranscriptEnd = useCallback((value: string) => {
     const len = value.length;
@@ -1240,77 +1443,69 @@ export default function RecordingScreen() {
     setTimeout(focus, 80);
     setTimeout(focus, 240);
   }, []);
-  const dismissRememberedDreamPrompt = useCallback(() => {
-    setRememberedDreamPromptDismissed(true);
-    saveRememberedDreamPromptDismissed(true).catch((error) => {
-      if (__DEV__) {
-        console.warn('[Recording] Failed to save remembered dream prompt preference', error);
-      }
-    });
-  }, []);
-  const handleRememberedDreamStart = useCallback(async () => {
-    if (isRecordingRef.current) {
-      recordingTransitionRef.current = true;
-      try {
-        await stopRecording({ silent: true });
-      } finally {
-        recordingTransitionRef.current = false;
-      }
+
+  useEffect(() => {
+    if (parsedRecordingParams.replayGuide) {
+      // Route params are external navigation state and are consumed exactly once.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setRecordingGuideStep(0);
+      setRecordingGuideVisible(true);
+      router.setParams({ replayGuide: undefined });
     }
 
-    setCaptureIntent('remembered');
-    setRememberedCaptureSource('onboarding');
+    if (!resolvedRecordingEntryIntent) return;
+    const routeEntryKey = resolvedRecordingEntryIntent.entryId;
+    if (appliedRouteEntriesRef.current.has(routeEntryKey) || trimmedTranscript || draftDream) return;
+
+    appliedRouteEntriesRef.current.add(routeEntryKey);
+    activePostSaveRef.current = resolvedRecordingEntryIntent.postSave;
+    if (resolvedRecordingEntryIntent.intent) {
+      setCaptureIntent(resolvedRecordingEntryIntent.intent);
+    }
+    setRememberedCaptureSource(resolveRememberedCaptureSource(resolvedRecordingEntryIntent.source));
     setRememberedKind(undefined);
     setRememberedApproximatePeriod(undefined);
     setRememberedStrongestFragment(undefined);
-    dismissRememberedDreamPrompt();
     setVoiceFallbackReason(null);
-    setInputMode('text');
-    persistInputModePreference('text');
-    focusTranscriptEnd(baseTranscriptRef.current || transcript);
-  }, [
-    dismissRememberedDreamPrompt,
-    focusTranscriptEnd,
-    isRecordingRef,
-    persistInputModePreference,
-    stopRecording,
-    transcript,
-  ]);
-  const handleRememberedDreamTonight = useCallback(() => {
-    setCaptureIntent('fresh');
-    setRememberedCaptureSource('journal');
-    dismissRememberedDreamPrompt();
-  }, [dismissRememberedDreamPrompt]);
-  const handleRememberedDreamDismiss = useCallback(() => {
-    dismissRememberedDreamPrompt();
-  }, [dismissRememberedDreamPrompt]);
+    if (resolvedRecordingEntryIntent.mode) {
+      initialRouteModeRef.current = resolvedRecordingEntryIntent.mode;
+      setInputMode(resolvedRecordingEntryIntent.mode);
+    }
 
-  useFocusEffect(
-    useCallback(() => {
-      if (recordingParams.intent !== 'remembered' || trimmedTranscript || draftDream) {
-        return;
+    if (resolvedRecordingEntryIntent.origin === 'route') {
+      const pendingEntry = onboardingState.pendingRecordingIntent;
+      if (pendingEntry?.phase === 'capture' && pendingEntry.entryId !== routeEntryKey) {
+        // Do not let clearing the explicit URL immediately apply a different
+        // persisted entry in the same mounted composer. It remains resumable
+        // after a remount because this set is intentionally session-local.
+        appliedRouteEntriesRef.current.add(pendingEntry.entryId);
       }
+    }
 
-      setCaptureIntent('remembered');
-      setRememberedCaptureSource(resolveRememberedCaptureSource(recordingParams.source));
-      setRememberedKind(undefined);
-      setRememberedApproximatePeriod(undefined);
-      setRememberedStrongestFragment(undefined);
-      setRememberedDreamPromptDismissed(true);
-      setVoiceFallbackReason(null);
-      setInputMode('text');
-      persistInputModePreference('text');
-      focusTranscriptEnd(baseTranscriptRef.current || transcript);
-    }, [
-      draftDream,
-      focusTranscriptEnd,
-      persistInputModePreference,
-      recordingParams.intent,
-      recordingParams.source,
-      transcript,
-      trimmedTranscript,
-    ])
-  );
+    if (
+      resolvedRecordingEntryIntent.origin === 'route'
+      || parsedRecordingParams.entryId
+      || parsedRecordingParams.mode
+    ) {
+      router.setParams({
+        entryId: undefined,
+        intent: undefined,
+        source: undefined,
+        postSave: undefined,
+        next: undefined,
+        mode: undefined,
+        replayGuide: undefined,
+      });
+    }
+  }, [
+    draftDream,
+    onboardingState.pendingRecordingIntent,
+    parsedRecordingParams.entryId,
+    parsedRecordingParams.mode,
+    parsedRecordingParams.replayGuide,
+    resolvedRecordingEntryIntent,
+    trimmedTranscript,
+  ]);
 
   const analyzePromptTranscript = analyzePromptDream?.transcript?.trim();
   const voiceStatus = useMemo(() => {
@@ -1472,31 +1667,8 @@ export default function RecordingScreen() {
     await toggleRecording();
   }, [inputMode, persistInputModePreference, toggleRecording]);
 
-  const isInitialRecordingState = dreams.length === 0
-    && !trimmedTranscript
-    && !draftDream
-    && !firstDreamPrompt
-    && !analyzePromptDream
-    && !pendingAnalysisDream
-    && !isAnalyzing;
-  const {
-    showRememberedDreamPrompt,
-    showRecordingOnboardingTour,
-  } = getRecordingActivationPromptState({
-    recordingOnboardingLoaded,
-    inputModePreferenceLoaded,
-    isInitialRecordingState,
-    recordingOnboardingDismissed,
-    rememberedDreamPromptLoaded,
-    rememberedDreamPromptDismissed,
-    captureIntent,
-  });
   const draftActivationInsight = useMemo(() => {
-    if (
-      interactionDisabled
-      || showRecordingOnboardingTour
-      || showRememberedDreamPrompt
-    ) {
+    if (interactionDisabled || recordingGuideVisible) {
       return null;
     }
 
@@ -1514,10 +1686,13 @@ export default function RecordingScreen() {
     rememberedApproximatePeriod,
     rememberedKind,
     rememberedStrongestFragment,
-    showRecordingOnboardingTour,
-    showRememberedDreamPrompt,
+    recordingGuideVisible,
     trimmedTranscript,
   ]);
+  const onboardingOfferActivationInsight = useMemo(
+    () => getSavedDreamActivationInsight(onboardingOfferDream),
+    [onboardingOfferDream]
+  );
   const trackActivationInsightShown = useCallback((
     surface: ActivationInsightSurface,
     insight: RecordingActivationInsight | null | undefined,
@@ -1531,10 +1706,6 @@ export default function RecordingScreen() {
     void trackProductEvent('recording_activation_insight_shown', {
       surface,
       capture_context: captureContext,
-      tone: insight.tone,
-      primary_signal_id: insight.signalIds[0] ?? 'none',
-      signal_ids: getActivationInsightSignalIds(insight),
-      signal_count: insight.signalIds.length,
       transcript_length_bucket: getTranscriptLengthBucketFromLength(insight.charCount),
       language,
     });
@@ -1542,7 +1713,13 @@ export default function RecordingScreen() {
 
   useEffect(() => {
     trackActivationInsightShown('draft', draftActivationInsight, captureIntent);
-  }, [captureIntent, draftActivationInsight, trackActivationInsightShown]);
+    if (draftActivationInsight && onboardingState.completionReason === 'skip') {
+      void trackProductEvent(
+        'first_value_viewed',
+        buildFirstValueProperties(onboardingState, 'recording_insight')
+      );
+    }
+  }, [captureIntent, draftActivationInsight, onboardingState, trackActivationInsightShown]);
 
   useEffect(() => {
     trackActivationInsightShown(
@@ -1559,110 +1736,101 @@ export default function RecordingScreen() {
       getDreamActivationInsightCaptureContext(analyzePromptDream)
     );
   }, [analyzePromptActivationInsight, analyzePromptDream, trackActivationInsightShown]);
-  const recordingOnboardingTargets = useMemo<RecordingOnboardingTarget[]>(
-    () => (inputMode === 'voice' ? ['voice', 'text'] : ['text', 'voice']),
-    [inputMode]
-  );
-  const recordingOnboardingTarget =
-    recordingOnboardingTargets[recordingOnboardingStep] ?? recordingOnboardingTargets[0];
+  useEffect(() => {
+    if (!onboardingOfferDream || !onboardingOfferActivationInsight) return;
+    trackActivationInsightShown(
+      'first_dream_sheet',
+      onboardingOfferActivationInsight,
+      getDreamActivationInsightCaptureContext(onboardingOfferDream)
+    );
+    if (onboardingOfferKind === 'memory') {
+      void trackProductEvent(
+        'first_value_viewed',
+        buildFirstValueProperties(onboardingState, 'recording_insight')
+      );
+    }
+  }, [
+    onboardingOfferActivationInsight,
+    onboardingOfferDream,
+    onboardingOfferKind,
+    onboardingState,
+    trackActivationInsightShown,
+  ]);
+
+  const handleRecordingGuideNext = useCallback(() => {
+    if (recordingGuideStep === 1) {
+      setRecordingGuideVisible(false);
+      return;
+    }
+    setRecordingGuideStep(1);
+  }, [recordingGuideStep]);
+
+  const handleRecordingGuideDismiss = useCallback(() => {
+    setRecordingGuideVisible(false);
+  }, []);
+
+  const analysisOfferQuotaState = useMemo<AnalysisOfferQuotaState>(() => {
+    if (tier === 'plus') return 'unlimited';
+    if (quotaLoading || quotaError || !usage) return 'unknown';
+    const remaining = usage.analysis.remaining;
+    if (remaining === null) return 'unlimited';
+    if (remaining <= 0 || !canAnalyzeNow) return 'exhausted';
+    return 'known';
+  }, [canAnalyzeNow, quotaError, quotaLoading, tier, usage]);
+  const analysisOfferPrimaryAction = useMemo<AnalysisOfferPrimaryAction>(() => {
+    if (analysisOfferError) return 'retry';
+    if (analysisOfferQuotaState === 'exhausted') {
+      return tier === 'guest' ? 'login' : 'upgrade';
+    }
+    return 'launch';
+  }, [analysisOfferError, analysisOfferQuotaState, tier]);
 
   useEffect(() => {
-    if (!showRecordingOnboardingTour) {
-      setRecordingOnboardingTargetRect(null);
-      setRecordingOnboardingPanelRect(null);
+    if (
+      !onboardingOfferDream
+      || onboardingOfferKind !== 'analysis'
+      || analysisOfferTrackedRef.current.has(onboardingOfferDream.id)
+    ) {
       return;
     }
+    analysisOfferTrackedRef.current.add(onboardingOfferDream.id);
+    void trackProductEvent('analysis_offer_viewed', { quota_state: analysisOfferQuotaState });
+  }, [analysisOfferQuotaState, onboardingOfferDream, onboardingOfferKind]);
 
-    setRecordingOnboardingTargetRect(null);
-    setRecordingOnboardingPanelRect(null);
+  const clearOnboardingOffer = useCallback(async () => {
+    setOnboardingOfferDream(null);
+    setAnalysisOfferError(false);
+    restoredPendingIntentRef.current = onboardingState.pendingRecordingIntent?.entryId ?? null;
+    await transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => undefined);
+  }, [onboardingState.pendingRecordingIntent?.entryId, transitionOnboarding]);
 
-    const frame = requestAnimationFrame(() => {
-      scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+  const handleOnboardingOfferDismiss = useCallback(async () => {
+    if (!onboardingOfferDream) return;
+    void trackProductEvent('first_dream_next_action_selected', { action: 'later' });
+    await clearOnboardingOffer();
+  }, [clearOnboardingOffer, onboardingOfferDream]);
 
-      requestAnimationFrame(() => {
-        setRecordingOnboardingMeasureKey((current) => current + 1);
-      });
-    });
+  const handleOnboardingOfferJournal = useCallback(async () => {
+    const dream = onboardingOfferDream;
+    if (!dream) return;
+    void trackProductEvent('first_dream_next_action_selected', { action: 'view_dream' });
+    await clearOnboardingOffer();
+    blurActiveElement();
+    navigateToJournalDetail(dream.id);
+  }, [clearOnboardingOffer, navigateToJournalDetail, onboardingOfferDream]);
 
-    return () => cancelAnimationFrame(frame);
-  }, [recordingOnboardingStage, recordingOnboardingTarget, showRecordingOnboardingTour]);
-
-  const handleRecordingOnboardingViewportLayout = useCallback((event: LayoutChangeEvent) => {
-    const { width, height } = event.nativeEvent.layout;
-
-    requestAnimationFrame(() => {
-      recordingOnboardingViewportRef.current?.measureInWindow((x, y) => {
-        setRecordingOnboardingViewport((current) =>
-          current.x === x && current.y === y && current.width === width && current.height === height
-            ? current
-            : { x, y, width, height }
-        );
-      });
-    });
-  }, []);
-
-  const handleRecordingOnboardingPanelLayout = useCallback((rect: RecordingSpotlightRect) => {
-    setRecordingOnboardingPanelRect(rect);
-  }, []);
-
-  const handleRecordingOnboardingTargetLayout = useCallback((rect: RecordingSpotlightRect) => {
-    setRecordingOnboardingTargetRect(rect);
-  }, []);
-
-  const completeRecordingOnboarding = useCallback(() => {
-    setRecordingOnboardingDismissed(true);
-    saveRecordingOnboardingCompleted(true).catch((error) => {
-      if (__DEV__) {
-        console.warn('[Recording] Failed to save onboarding preference', error);
-      }
-    });
-  }, []);
-
-  const handleRecordingOnboardingNext = useCallback(() => {
-    if (recordingOnboardingStep >= recordingOnboardingTargets.length - 1) {
-      completeRecordingOnboarding();
+  const handleOnboardingOfferPrimary = useCallback(async () => {
+    if (!onboardingOfferDream) return;
+    if (analysisOfferPrimaryAction === 'login') {
+      router.push('/(tabs)/settings?section=account');
       return;
     }
-
-    setRecordingOnboardingStep((current) =>
-      Math.min(current + 1, recordingOnboardingTargets.length - 1)
-    );
-  }, [completeRecordingOnboarding, recordingOnboardingStep, recordingOnboardingTargets.length]);
-
-  const handleRecordingOnboardingSkip = useCallback(() => {
-    completeRecordingOnboarding();
-  }, [completeRecordingOnboarding]);
-
-  const handleRecordingOnboardingPreference = useCallback(
-    async (preference: RecordingInputModePreference) => {
-      setVoiceFallbackReason(null);
-
-      if (preference === 'text' && isRecordingRef.current) {
-        recordingTransitionRef.current = true;
-        try {
-          await stopRecording({ silent: true });
-        } finally {
-          recordingTransitionRef.current = false;
-        }
-      }
-
-      setInputMode(preference);
-      persistInputModePreference(preference);
-      setRecordingOnboardingStep(0);
-      setRecordingOnboardingStage('tour');
-
-      if (preference === 'text') {
-        focusTranscriptEnd(baseTranscriptRef.current || transcript);
-      }
-    },
-    [
-      focusTranscriptEnd,
-      isRecordingRef,
-      persistInputModePreference,
-      stopRecording,
-      transcript,
-    ]
-  );
+    if (analysisOfferPrimaryAction === 'upgrade') {
+      router.push(buildPaywallHref('analysis_limit'));
+      return;
+    }
+    await handleFirstDreamAnalyze();
+  }, [analysisOfferPrimaryAction, handleFirstDreamAnalyze, onboardingOfferDream]);
 
   const previousInputModeRef = useRef(inputMode);
   useEffect(() => {
@@ -1715,9 +1883,11 @@ export default function RecordingScreen() {
   return (
     <>
       <View
-        ref={recordingOnboardingViewportRef}
         style={styles.gradient}
-        onLayout={handleRecordingOnboardingViewportLayout}
+        accessibilityElementsHidden={recordingGuideVisible || Boolean(onboardingOfferDream)}
+        importantForAccessibility={
+          recordingGuideVisible || onboardingOfferDream ? 'no-hide-descendants' : 'auto'
+        }
       >
         <LinearGradient
           colors={gradientColors}
@@ -1739,63 +1909,11 @@ export default function RecordingScreen() {
             <MockNavigationRail />
             <View style={mainContentStyle}>
               <View style={styles.bodySection}>
-                {showRecordingOnboardingTour ? (
-                  recordingOnboardingStage === 'preference' ? (
-                    <RecordingOnboardingTour
-                      variant="preference"
-                      value={inputMode}
-                      onSelectPreference={handleRecordingOnboardingPreference}
-                      onSkip={handleRecordingOnboardingSkip}
-                      onSpotlightLayout={handleRecordingOnboardingPanelLayout}
-                      spotlightMeasureKey={recordingOnboardingMeasureKey}
-                    />
-                  ) : (
-                    <RecordingOnboardingTour
-                      variant="step"
-                      target={recordingOnboardingTarget}
-                      index={recordingOnboardingStep}
-                      total={recordingOnboardingTargets.length}
-                      onNext={handleRecordingOnboardingNext}
-                      onSkip={handleRecordingOnboardingSkip}
-                      onSpotlightLayout={handleRecordingOnboardingPanelLayout}
-                      spotlightMeasureKey={recordingOnboardingMeasureKey}
-                    />
-                  )
-                ) : null}
-
-                {showRememberedDreamPrompt ? (
-                  <UnforgettableDreamPromptCard
-                    disabled={interactionDisabled || isPreparingRecording}
-                    onStartRememberedDream={handleRememberedDreamStart}
-                    onStartFreshTonight={handleRememberedDreamTonight}
-                    onDismiss={handleRememberedDreamDismiss}
-                  />
-                ) : null}
-
                 <RecordingInputModeSelect
                   value={inputMode}
                   disabled={interactionDisabled || isPreparingRecording}
                   onChange={handleInputModePreferenceChange}
                 />
-
-                {captureIntent === 'remembered' ? (
-                  <RememberedDreamProfileChips
-                    rememberedKind={rememberedKind}
-                    approximatePeriod={rememberedApproximatePeriod}
-                    strongestFragment={rememberedStrongestFragment}
-                    disabled={interactionDisabled || isPreparingRecording}
-                    onRememberedKindChange={setRememberedKind}
-                    onApproximatePeriodChange={setRememberedApproximatePeriod}
-                    onStrongestFragmentChange={setRememberedStrongestFragment}
-                  />
-                ) : null}
-
-                {draftActivationInsight ? (
-                  <RecordingActivationInsightCard
-                    context="draft"
-                    insight={draftActivationInsight}
-                  />
-                ) : null}
 
                 <RecordingTextInput
                   layout={inputMode === 'voice' ? 'voiceFirst' : 'textFirst'}
@@ -1817,13 +1935,6 @@ export default function RecordingScreen() {
                   voiceStatus={voiceControlStatus}
                   voiceAccessibilityHint={voiceControlHint}
                   recordingDurationLabel={recordingDurationLabel}
-                  spotlightTarget={
-                    showRecordingOnboardingTour && recordingOnboardingStage === 'tour'
-                      ? recordingOnboardingTarget
-                      : undefined
-                  }
-                  onSpotlightLayout={handleRecordingOnboardingTargetLayout}
-                  spotlightMeasureKey={recordingOnboardingMeasureKey}
                   placeholder={
                     captureIntent === 'remembered'
                       ? t('recording.remembered.placeholder')
@@ -1833,6 +1944,25 @@ export default function RecordingScreen() {
                   onSwitchToVoice={switchToVoiceMode}
                   onClear={handleClearTranscript}
                 />
+
+                {draftActivationInsight ? (
+                  <RecordingActivationInsightCard
+                    context="draft"
+                    insight={draftActivationInsight}
+                  />
+                ) : null}
+
+                {captureIntent === 'remembered' ? (
+                  <RememberedDreamProfileChips
+                    rememberedKind={rememberedKind}
+                    approximatePeriod={rememberedApproximatePeriod}
+                    strongestFragment={rememberedStrongestFragment}
+                    disabled={interactionDisabled || isPreparingRecording}
+                    onRememberedKindChange={setRememberedKind}
+                    onApproximatePeriodChange={setRememberedApproximatePeriod}
+                    onStrongestFragmentChange={setRememberedStrongestFragment}
+                  />
+                ) : null}
 
                 {analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE ? (
                   <AnalysisProgress
@@ -1847,7 +1977,7 @@ export default function RecordingScreen() {
 
             </View>
           </ScrollView>
-          <View pointerEvents="box-none" style={fixedFooterStyle}>
+          <View pointerEvents="box-none" style={fixedFooterStyle} onLayout={handleFooterLayout}>
             <RecordingFooter
               onSave={handleSaveDream}
               isSaveDisabled={isSaveDisabled}
@@ -1864,25 +1994,35 @@ export default function RecordingScreen() {
             />
           </View>
         </KeyboardAvoidingView>
-        {showRecordingOnboardingTour ? (
-          <RecordingOnboardingSpotlightOverlay
-            width={recordingOnboardingViewport.width}
-            height={recordingOnboardingViewport.height}
-            originX={recordingOnboardingViewport.x}
-            originY={recordingOnboardingViewport.y}
-            targetRect={
-              recordingOnboardingStage === 'preference'
-                ? recordingOnboardingPanelRect
-                : recordingOnboardingTargetRect
-            }
-            panelRect={recordingOnboardingStage === 'preference' ? null : recordingOnboardingPanelRect}
+        {!keyboardVisible && viewportWidth < DESKTOP_BREAKPOINT ? (
+          <NoctaliaBottomNav
+            activeKey="addDream"
+            addDreamIcon={inputMode === 'voice' ? 'mic' : 'pencil'}
+            onBarLayout={handleBottomNavMeasure}
           />
         ) : null}
-        <NoctaliaBottomNav
-          activeKey="addDream"
-          addDreamIcon={inputMode === 'voice' ? 'mic' : 'pencil'}
-        />
       </View>
+
+      <RecordingOnboardingTour
+        visible={recordingGuideVisible}
+        step={recordingGuideStep}
+        inputMode={inputMode}
+        onNext={handleRecordingGuideNext}
+        onDismiss={handleRecordingGuideDismiss}
+      />
+
+      <PostSaveOfferSheet
+        visible={Boolean(onboardingOfferDream) && !showQuotaLimitSheet}
+        kind={onboardingOfferKind}
+        quotaState={analysisOfferQuotaState}
+        remaining={usage?.analysis.remaining}
+        primaryAction={analysisOfferPrimaryAction}
+        isPersisting={isPersisting}
+        activationInsight={onboardingOfferActivationInsight}
+        onDismiss={() => void handleOnboardingOfferDismiss()}
+        onPrimary={() => void handleOnboardingOfferPrimary()}
+        onJournal={() => void handleOnboardingOfferJournal()}
+      />
 
       <RecordingOverlays
         firstDreamVisible={Boolean(firstDreamPrompt)}

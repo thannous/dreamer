@@ -9,30 +9,22 @@ appId: com.tanuki75.noctalia
     visible: "Settings|Paramètres|Configuración|Ajustes"
     timeout: 30000
 
-- swipe:
-    direction: DOWN
-- swipe:
-    direction: DOWN
-- runFlow:
-    when:
-      notVisible:
-        id: text.auth.email
-    commands:
-      - scrollUntilVisible:
-          element:
-            text: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
-          direction: DOWN
-          visibilityPercentage: 70
-          timeout: 30000
-      - tapOn:
-          text: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
-      - tapOn:
-          text: "${QA_EMAIL_REGEX}"
-- extendedWaitUntil:
-    visible:
-      id: text.auth.email
+# The guarded purchase never changes identity. A separate non-transactional
+# prerequisite selects the Google QA account; this flow fails closed unless
+# that exact account is already visible in the app.
+- scrollUntilVisible:
+    element:
+      text: "Account|Compte|Cuenta|Konto"
+    direction: UP
+    visibilityPercentage: 40
+    timeout: 30000
+- scrollUntilVisible:
+    element:
       text: "${QA_EMAIL_REGEX}"
-    timeout: 60000
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- assertVisible: "${QA_EMAIL_REGEX}"
 - scrollUntilVisible:
     element:
       text: "Subscription QA Lab"
@@ -43,46 +35,52 @@ appId: com.tanuki75.noctalia
     id: text.subscription.qa.mode
     text: "RevenueCat Test Store"
 
+# A timed-out attempt is ambiguous. Fail closed if this exact product is
+# already active so a retry cannot create another Test Store transaction.
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.product
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- assertNotVisible:
+    id: text.subscription.qa.product
+    text: "(?i)^${QA_PRODUCT_ID}$"
+
 - scrollUntilVisible:
     element:
       id: "btn.subscription.qa.scenario.${QA_PLAN}"
     direction: DOWN
     visibilityPercentage: 60
     timeout: 30000
+    centerElement: true
+- extendedWaitUntil:
+    visible:
+      id: "btn.subscription.qa.scenario.${QA_PLAN}"
+      enabled: true
+    timeout: 120000
 - tapOn:
     id: "btn.subscription.qa.scenario.${QA_PLAN}"
 - extendedWaitUntil:
-    visible: "TEST VALID PURCHASE"
+    visible: "^Test Store Purchase$"
     timeout: 30000
-- tapOn: "TEST VALID PURCHASE"
+- extendedWaitUntil:
+    visible:
+      id: "^android:id/button1$"
+      text: "(?i)^Test valid Purchase$"
+      enabled: true
+    timeout: 30000
+- tapOn:
+    id: "^android:id/button1$"
+- extendedWaitUntil:
+    notVisible:
+      id: "^android:id/button1$"
+    timeout: 15000
 - extendedWaitUntil:
     visible:
       id: text.subscription.qa.actionLabel
       text: ".*${QA_PLAN} purchase completed.*"
-    timeout: 120000
-- scrollUntilVisible:
-    element:
-      id: text.subscription.qa.status
-    direction: UP
-    visibilityPercentage: 60
-    timeout: 30000
-- assertVisible:
-    id: text.subscription.qa.status
-    text: ".*plus / active.*"
-
-- scrollUntilVisible:
-    element:
-      id: btn.subscription.qa.refresh
-    direction: DOWN
-    visibilityPercentage: 60
-    timeout: 30000
-- tapOn:
-    id: btn.subscription.qa.refresh
-- extendedWaitUntil:
-    visible:
-      id: text.subscription.qa.actionLabel
-      text: "Refresh completed"
-    timeout: 60000
+    timeout: 180000
 - scrollUntilVisible:
     element:
       id: text.subscription.qa.status

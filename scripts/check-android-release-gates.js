@@ -29,6 +29,8 @@ const {
 const ROOT = path.resolve(__dirname, '..');
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const PLAY_INTEGRITY_PROJECT_NUMBER_KEY = 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER';
+const REVENUECAT_TEST_STORE_DEBUGGABLE_KEY =
+  'NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE';
 const EXPECTED_GOOGLE_CLOUD_PROJECT_ID = 'gen-lang-client-0336445544';
 const EXPECTED_GOOGLE_OAUTH_ANDROID_CLIENT_ID = '359653779023-5dhs012rh7l3cjf0leoknn7j0dlgq0ok.apps.googleusercontent.com';
 const EXPECTED_GOOGLE_OAUTH_ANDROID_SHA1 = 'BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59';
@@ -584,6 +586,36 @@ function checkAndroidReleaseGates({
       ? `Present in ${REQUIRED_EAS_PROFILES.join(', ')}.`
       : `Missing from ${profilesMissingProjectNumber.join(', ')}.`,
     `Add ${PLAY_INTEGRITY_PROJECT_NUMBER_KEY} to each Android release profile env.`
+  );
+
+  const releaseProfilesWithUnsafeTestStoreDebugging = REQUIRED_EAS_PROFILES.filter(
+    (profile) =>
+      easJson.build?.[profile]?.env?.[REVENUECAT_TEST_STORE_DEBUGGABLE_KEY] !== 'false'
+  );
+  const testStoreDebuggingEnabled =
+    easJson.build?.['revenuecat-teststore']?.env?.[
+      REVENUECAT_TEST_STORE_DEBUGGABLE_KEY
+    ] === 'true';
+  const testStoreDebuggingIsolated =
+    releaseProfilesWithUnsafeTestStoreDebugging.length === 0 &&
+    testStoreDebuggingEnabled;
+  addCheck(
+    checks,
+    testStoreDebuggingIsolated ? 'pass' : 'fail',
+    'RevenueCat Test Store debuggability isolated in EAS profiles',
+    testStoreDebuggingIsolated
+      ? `Enabled only in revenuecat-teststore; disabled in ${REQUIRED_EAS_PROFILES.join(', ')}.`
+      : [
+          releaseProfilesWithUnsafeTestStoreDebugging.length > 0
+            ? `Not explicitly disabled in ${releaseProfilesWithUnsafeTestStoreDebugging.join(', ')}.`
+            : null,
+          testStoreDebuggingEnabled
+            ? null
+            : 'Not explicitly enabled in revenuecat-teststore.',
+        ]
+          .filter(Boolean)
+          .join(' '),
+    `Set ${REVENUECAT_TEST_STORE_DEBUGGABLE_KEY}=false in every Play profile and true only in revenuecat-teststore.`
   );
 
   const missingEnvKeys = REQUIRED_TESTSTORE_PUBLIC_ENV.filter((key) => !envValues[key]);

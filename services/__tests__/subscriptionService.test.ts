@@ -5,15 +5,20 @@ const {
   mockSetMockMode,
   mockGetPlatformOS,
   mockSetPlatformOS,
+  mockGetPublicEnv,
+  mockSetPublicEnv,
+  mockClearPublicEnv,
   mockService,
   mockRealService,
 } = ((factory: any) => factory())(() => {
   let mockMode = false;
   let platformOS = 'ios';
+  const publicEnv = new Map<string, string>();
 
   const buildService = () => ({
     initialize: jest.fn(),
     isInitialized: jest.fn(),
+    getStoreMode: jest.fn(() => 'test-mode'),
     getStatus: jest.fn(),
     refreshStatus: jest.fn(),
     loadOfferings: jest.fn(),
@@ -33,12 +38,16 @@ const {
     mockSetPlatformOS: (value: string) => {
       platformOS = value;
     },
+    mockGetPublicEnv: (key: string) => publicEnv.get(key),
+    mockSetPublicEnv: (key: string, value: string) => publicEnv.set(key, value),
+    mockClearPublicEnv: () => publicEnv.clear(),
     mockService: buildService(),
     mockRealService: buildService(),
   };
 });
 
 jest.mock('@/lib/env', () => ({
+  getExpoPublicEnvValue: (key: string) => mockGetPublicEnv(key),
   isMockModeEnabled: () => mockGetMockMode(),
 }));
 
@@ -60,8 +69,7 @@ describe('subscriptionService', () => {
     jest.clearAllMocks();
     mockSetMockMode(false);
     mockSetPlatformOS('ios');
-    delete (process.env as Record<string, string | undefined>).EXPO_PUBLIC_REVENUECAT_WEB_KEY;
-    delete (process.env as Record<string, string | undefined>).EXPO_PUBLIC_REVENUECAT_ANDROID_KEY;
+    mockClearPublicEnv();
     mockService.refreshStatus = jest.fn();
     mockRealService.refreshStatus = jest.fn();
     mockService.syncPurchases = jest.fn();
@@ -94,7 +102,7 @@ describe('subscriptionService', () => {
   it('given web with key__when loading service__then uses real implementation', async () => {
     mockSetMockMode(false);
     mockSetPlatformOS('web');
-    process.env.EXPO_PUBLIC_REVENUECAT_WEB_KEY = 'rc-web-key';
+    mockSetPublicEnv('EXPO_PUBLIC_REVENUECAT_WEB_KEY', 'rc-web-key');
 
     const service = require('../subscriptionService');
     await service.getSubscriptionStatus();
@@ -114,6 +122,17 @@ describe('subscriptionService', () => {
     expect(mockService.getStatus).not.toHaveBeenCalled();
   });
 
+  it('exposes the store mode from the selected implementation', () => {
+    mockSetMockMode(false);
+    mockSetPlatformOS('android');
+    mockSetPublicEnv('EXPO_PUBLIC_REVENUECAT_ANDROID_KEY', 'test_android_key');
+
+    const service = require('../subscriptionService');
+
+    expect(service.getSubscriptionStoreMode()).toBe('test-mode');
+    expect(mockRealService.getStoreMode).toHaveBeenCalledTimes(1);
+  });
+
   it('given android dev without explicit key__when loading service__then uses mock implementation', async () => {
     mockSetMockMode(false);
     mockSetPlatformOS('android');
@@ -128,7 +147,7 @@ describe('subscriptionService', () => {
   it('given android dev with explicit key__when loading service__then uses real implementation', async () => {
     mockSetMockMode(false);
     mockSetPlatformOS('android');
-    process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY = 'goog_test_key';
+    mockSetPublicEnv('EXPO_PUBLIC_REVENUECAT_ANDROID_KEY', 'test_android_key');
 
     const service = require('../subscriptionService');
     await service.getSubscriptionStatus();

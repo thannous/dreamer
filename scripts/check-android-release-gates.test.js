@@ -32,6 +32,7 @@ function validEasJson() {
   const profile = {
     env: {
       EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER: '359653779023',
+      NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'false',
     },
   };
   return {
@@ -40,6 +41,11 @@ function validEasJson() {
       release: profile,
       'production-apk': profile,
       production: profile,
+      'revenuecat-teststore': {
+        env: {
+          NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'true',
+        },
+      },
     },
     submit: {
       internal: {
@@ -757,5 +763,54 @@ describe('android release gate preflight', () => {
 
     expect(report.ok).toBe(false);
     expect(report.checks.some((check) => check.status === 'fail' && check.details.includes('production'))).toBe(true);
+  });
+
+  it('fails when Test Store debuggability is not isolated from Play profiles', () => {
+    const root = setupFixture();
+    const eas = validEasJson();
+    eas.build.preview = {
+      env: {
+        ...eas.build.preview.env,
+        NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'true',
+      },
+    };
+    writeJson(root, 'eas.json', eas);
+
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn: spawnWithTools(),
+    });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'fail' &&
+          check.title === 'RevenueCat Test Store debuggability isolated in EAS profiles' &&
+          check.details.includes('preview')
+      )
+    ).toBe(true);
+  });
+
+  it('fails when the Test Store profile is not explicitly debuggable', () => {
+    const root = setupFixture();
+    const eas = validEasJson();
+    delete eas.build['revenuecat-teststore'].env.NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE;
+    writeJson(root, 'eas.json', eas);
+
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn: spawnWithTools(),
+    });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'fail' &&
+          check.title === 'RevenueCat Test Store debuggability isolated in EAS profiles' &&
+          check.details.includes('revenuecat-teststore')
+      )
+    ).toBe(true);
   });
 });

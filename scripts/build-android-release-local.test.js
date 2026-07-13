@@ -7,6 +7,7 @@ const {
   DEFAULT_GRADLE_JVM_ARGS,
   RELEASE_BUILD_PROFILE,
   TESTSTORE_BUILD_PROFILE,
+  assertTestStoreInstallTarget,
   copyReleaseApk,
   getApkPath,
   getBuildEnv,
@@ -23,6 +24,24 @@ const {
 } = require('./build-android-release-local');
 
 describe('build-android-release-local', () => {
+  it('keeps Test Store installation emulator-only', () => {
+    expect(() => assertTestStoreInstallTarget(
+      TESTSTORE_BUILD_PROFILE,
+      true,
+      'physical-device'
+    )).toThrow('emulator-only');
+    expect(() => assertTestStoreInstallTarget(
+      TESTSTORE_BUILD_PROFILE,
+      true,
+      'emulator-5554'
+    )).not.toThrow();
+    expect(() => assertTestStoreInstallTarget(
+      RELEASE_BUILD_PROFILE,
+      true,
+      'physical-device'
+    )).not.toThrow();
+  });
+
   it('parses an optional device serial', () => {
     expect(parseArgs(['--device', 'emulator-5554'])).toEqual({
       abi: null,
@@ -137,6 +156,7 @@ describe('build-android-release-local', () => {
       EXPO_NO_DOTENV: '1',
       EXPO_PUBLIC_MOCK_MODE: 'false',
       EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'true',
+      NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'true',
     });
   });
 
@@ -158,6 +178,7 @@ describe('build-android-release-local', () => {
       EXPO_PUBLIC_MOCK_MODE: 'false',
       EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'false',
       EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED: 'false',
+      NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'false',
     });
   });
 
@@ -210,6 +231,7 @@ describe('build-android-release-local', () => {
       EXPO_NO_DOTENV: '1',
       EXPO_PUBLIC_MOCK_MODE: 'false',
       EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'true',
+      NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'true',
       EXPO_PUBLIC_REVENUECAT_ANDROID_KEY: 'test_store',
     });
     expect(() =>

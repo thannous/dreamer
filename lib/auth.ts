@@ -542,7 +542,15 @@ export async function signOut() {
 
     // Sign out from Supabase
     const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    if (error) {
+      // A stale/expired remote session must not trap the user in the app. The
+      // global revocation can fail independently of local credential removal,
+      // so clear the local session as a fail-safe and surface an error only if
+      // that local invalidation also fails.
+      log.warn('Remote Supabase logout failed; clearing local session', error);
+      const { error: localError } = await supabase.auth.signOut({ scope: 'local' });
+      if (localError) throw localError;
+    }
   } catch (error) {
     log.error('Error during sign out', error);
     throw error;

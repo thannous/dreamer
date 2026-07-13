@@ -1,5 +1,13 @@
-import React, { useMemo } from 'react';
-import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import React, { useEffect, useMemo, useRef } from 'react';
+import {
+  AccessibilityInfo,
+  findNodeHandle,
+  StyleSheet,
+  Text,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -95,6 +103,16 @@ export function StandardBottomSheet({
   const { colors, mode, shadows } = useTheme();
   const insets = useSafeAreaInsets();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const titleRef = useRef<Text | null>(null);
+
+  useEffect(() => {
+    if (!visible) return;
+    const timer = setTimeout(() => {
+      const titleNode = findNodeHandle(titleRef.current);
+      if (titleNode) AccessibilityInfo.setAccessibilityFocus(titleNode);
+    }, 120);
+    return () => clearTimeout(timer);
+  }, [visible]);
 
   const backdropColor = noctalia.surface.overlay;
 
@@ -130,6 +148,9 @@ export function StandardBottomSheet({
 
       {/* Title */}
       <Text
+        ref={titleRef}
+        accessible
+        accessibilityRole="header"
         style={[styles.title, { color: noctalia.text.primary }]}
         testID={titleTestID}
       >

@@ -28,12 +28,18 @@ name: Release Test Store readiness
 - assertVisible:
     id: text.subscription.qa.mode
     text: "RevenueCat Test Store"
+- extendedWaitUntil:
+    visible:
+      id: text.subscription.qa.packages
+      text: "2"
+    timeout: 120000
 - scrollUntilVisible:
     element:
       id: btn.subscription.qa.probe
     direction: DOWN
     visibilityPercentage: 60
     timeout: 30000
+    centerElement: true
 - tapOn:
     id: btn.subscription.qa.probe
 - scrollUntilVisible:

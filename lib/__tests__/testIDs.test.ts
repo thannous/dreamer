@@ -17,17 +17,13 @@ describe('TID', () => {
     expect(TID.Button.Exploration360Synthesis).toBe('btn.exploration360.synthesis');
     expect(TID.Button.EmptyStartRememberedDream).toBe('btn.empty.startRememberedDream');
     expect(TID.Button.OnboardingIntroNext).toBe('btn.onboarding.intro.next');
-    expect(TID.Button.OnboardingCaptureMode('text')).toBe('btn.onboarding.captureMode.text');
     expect(TID.Button.OnboardingPrimary).toBe('btn.onboarding.primary');
-    expect(TID.Button.OnboardingFresh).toBe('btn.onboarding.fresh');
     expect(TID.Component.Exploration360Panel).toBe('component.exploration360.panel');
     expect(TID.Component.RememberedDreamProfileChips).toBe('component.recording.rememberedProfileChips');
     expect(TID.Component.RecordingActivationInsight).toBe('component.recording.activationInsight');
     expect(TID.Text.RecordingActivationInsightSummary).toBe('text.recording.activationInsight.summary');
     expect(TID.Component.OnboardingIntro).toBe('component.onboarding.intro');
     expect(TID.Component.OnboardingIntroSignals).toBe('component.onboarding.introSignals');
-    expect(TID.Component.OnboardingPathDetail).toBe('component.onboarding.pathDetail');
-    expect(TID.Component.OnboardingCapture).toBe('component.onboarding.capture');
   });
 
   it('builds dynamic IDs', () => {

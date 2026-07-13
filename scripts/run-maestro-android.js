@@ -43,15 +43,26 @@ const MAESTRO_FLOW_ENV_KEYS = Object.freeze({
     'REVENUECAT_QA_SWITCH_FREE_EMAIL',
     'REVENUECAT_QA_SWITCH_FREE_PASSWORD',
   ],
+  'maestro/subscription-teststore-google-login-qa.yml': [
+    'QA_EMAIL_REGEX',
+  ],
+  'maestro/subscription-teststore-entitlement-readiness.yml': [
+    'QA_EMAIL_REGEX',
+  ],
+  'maestro/subscription-teststore-free-account-readiness.yml': [
+    'QA_SWITCH_FREE_EMAIL_REGEX',
+  ],
   'maestro/subscription-teststore-purchase-manual.yml': [
     'QA_EMAIL',
     'QA_EMAIL_REGEX',
     'QA_PASSWORD',
     'QA_PLAN',
+    'QA_PRODUCT_ID',
   ],
   'maestro/subscription-teststore-purchase-google-manual.yml': [
     'QA_EMAIL_REGEX',
     'QA_PLAN',
+    'QA_PRODUCT_ID',
   ],
   'maestro/subscription-teststore-restore-google-manual.yml': [
     'QA_EMAIL_REGEX',
@@ -69,6 +80,7 @@ const ALL_MAESTRO_FLOW_ENV_KEYS = Object.freeze(
   Array.from(new Set(Object.values(MAESTRO_FLOW_ENV_KEYS).flat()))
 );
 const SENSITIVE_MAESTRO_ENV_KEY_PATTERN = /(?:EMAIL|PASSWORD)/;
+const INTERNAL_QA_ENV_KEY_PATTERN = /^(?:QA_|REVENUECAT_QA_|NOCTALIA_INTERNAL_)/;
 const REDACTABLE_MAESTRO_ARTIFACT_EXTENSIONS = new Set([
   '.json',
   '.log',
@@ -83,6 +95,7 @@ const SENSITIVE_MAESTRO_SCREENSHOT_EXTENSIONS = new Set([
   '.png',
   '.webp',
 ]);
+const EMAIL_LITERAL_PATTERN = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi;
 
 const SUITES = {
   smoke: [
@@ -265,7 +278,9 @@ ${suites}
 Fast debug:
   Use --retries 0 for fail-fast runs.
   Use --no-restart-metro when a compatible Metro server is already warm.
-  The release suite requires --no-start-metro and a matching non-debuggable app build.
+  Release suites require --no-start-metro and an embedded standalone bundle.
+  Production Release suites require a non-debuggable build; release-teststore
+  requires the dedicated debuggable Test Store build enforced by RevenueCat.
 
 Examples:
   npm run test:e2e
@@ -535,7 +550,12 @@ function parseInstalledAndroidBuild(output) {
   };
 }
 
-function assertInstalledReleaseBinary(deviceId, expected, installed) {
+function assertInstalledReleaseBinary(
+  deviceId,
+  expected,
+  installed,
+  { expectedDebuggable = false } = {}
+) {
   const mismatches = [];
 
   if (installed.packageName !== expected.packageName) {
@@ -554,8 +574,10 @@ function assertInstalledReleaseBinary(deviceId, expected, installed) {
     );
   }
   if (!installed.packageFlagsAvailable) {
-    mismatches.push('Android package flags unavailable (cannot prove a non-debuggable build)');
-  } else if (installed.debuggable) {
+    mismatches.push('Android package flags unavailable (cannot prove the expected build type)');
+  } else if (expectedDebuggable && !installed.debuggable) {
+    mismatches.push('installed package is not DEBUGGABLE; RevenueCat Test Store rejects release binaries');
+  } else if (!expectedDebuggable && installed.debuggable) {
     mismatches.push('installed package is DEBUGGABLE and may depend on Metro');
   }
 
@@ -573,6 +595,7 @@ function verifyInstalledReleaseBinary(
   expected,
   {
     adbBin = process.env.ADB_BIN || resolveCommand('adb') || (process.platform === 'win32' ? 'adb.exe' : 'adb'),
+    expectedDebuggable = false,
     spawn = spawnSync,
   } = {}
 ) {
@@ -594,10 +617,14 @@ function verifyInstalledReleaseBinary(
   const installed = assertInstalledReleaseBinary(
     deviceId,
     expected,
-    parseInstalledAndroidBuild(result.stdout)
+    parseInstalledAndroidBuild(result.stdout),
+    { expectedDebuggable }
   );
+  const buildKind = expectedDebuggable
+    ? 'debuggable Test Store standalone bundle'
+    : 'non-debuggable production bundle';
   console.log(
-    `[${deviceId}] Release binary verified: ${installed.packageName} ${installed.versionName} (${installed.versionCode}), non-debuggable; Metro will not be started.`
+    `[${deviceId}] Release binary verified: ${installed.packageName} ${installed.versionName} (${installed.versionCode}), ${buildKind}; Metro will not be started.`
   );
   return installed;
 }
@@ -635,6 +662,20 @@ function configureAndroidInput(deviceId) {
     if (result.status !== 0) {
       console.warn(`[${deviceId}] Android input setup warning: ${result.stderr || result.stdout || args.join(' ')}`);
     }
+  }
+}
+
+function configureMetroReverse(deviceId, port = DEFAULT_METRO_PORT) {
+  const adbBin = process.env.ADB_BIN || resolveCommand('adb') || (process.platform === 'win32' ? 'adb.exe' : 'adb');
+  const result = spawnSync(
+    adbBin,
+    ['-s', deviceId, 'reverse', `tcp:${port}`, `tcp:${port}`],
+    { cwd: ROOT, encoding: 'utf8' }
+  );
+  if (result.status !== 0) {
+    throw new Error(
+      `[${deviceId}] Could not expose Metro on localhost:${port}: ${result.stderr || result.stdout || `exit ${result.status}`}`
+    );
   }
 }
 
@@ -781,7 +822,7 @@ function redactSensitiveText(text, redactions) {
   for (const { value, replacement } of normalizeRedactions(redactions)) {
     redacted = redacted.split(value).join(replacement);
   }
-  return redacted;
+  return redacted.replace(EMAIL_LITERAL_PATTERN, '<redacted:email>');
 }
 
 function findNextRedaction(text, startIndex, redactions) {
@@ -801,7 +842,9 @@ function findNextRedaction(text, startIndex, redactions) {
 function createRedactingWriter(destination, redactions) {
   const normalized = normalizeRedactions(redactions);
   const decoder = new StringDecoder('utf8');
-  const maxValueLength = Math.max(1, ...normalized.map(({ value }) => value.length));
+  // Keep enough pending text to catch an email split across process chunks,
+  // even when a flow did not receive an explicit identity environment value.
+  const maxValueLength = Math.max(320, ...normalized.map(({ value }) => value.length));
   const writeDestination = typeof destination === 'function'
     ? destination
     : destination.write.bind(destination);
@@ -826,7 +869,7 @@ function createRedactingWriter(destination, redactions) {
     }
 
     if (output) {
-      writeDestination(output);
+      writeDestination(redactSensitiveText(output, normalized));
     }
     pending = pending.slice(cursor);
   };
@@ -853,15 +896,16 @@ function createRedactingWriter(destination, redactions) {
 function sanitizeMaestroArtifacts(
   outputRoot,
   redactions,
-  { removeScreenshots = true } = {}
+  { removeScreenshots } = {}
 ) {
   const normalized = normalizeRedactions(redactions);
+  const shouldRemoveScreenshots = removeScreenshots ?? normalized.length > 0;
   const report = {
     textFilesScanned: 0,
     textFilesRedacted: 0,
     screenshotsRemoved: 0,
   };
-  if (!normalized.length || !fs.existsSync(outputRoot)) {
+  if (!fs.existsSync(outputRoot)) {
     return report;
   }
 
@@ -879,7 +923,7 @@ function sanitizeMaestroArtifacts(
       }
 
       const extension = path.extname(entry.name).toLowerCase();
-      if (removeScreenshots && SENSITIVE_MAESTRO_SCREENSHOT_EXTENSIONS.has(extension)) {
+      if (shouldRemoveScreenshots && SENSITIVE_MAESTRO_SCREENSHOT_EXTENSIONS.has(extension)) {
         fs.unlinkSync(artifactPath);
         report.screenshotsRemoved += 1;
         continue;
@@ -901,10 +945,18 @@ function sanitizeMaestroArtifacts(
   return report;
 }
 
+function getMaestroArtifactPolicy(suiteName, redactions = []) {
+  const testStoreSuite = suiteName === 'release-teststore';
+  return {
+    redactEmails: testStoreSuite,
+    removeScreenshots: testStoreSuite || normalizeRedactions(redactions).length > 0,
+  };
+}
+
 function runCommand(command, args, options = {}) {
   return new Promise((resolve) => {
     const redactions = normalizeRedactions(options.redactions);
-    const redactOutput = redactions.length > 0;
+    const redactOutput = redactions.length > 0 || options.redactEmails === true;
     const child = spawn(command, args, {
       cwd: options.cwd ?? ROOT,
       env: {
@@ -954,10 +1006,11 @@ function runCommand(command, args, options = {}) {
 
 function buildMaestroEnv(sourceEnv = process.env) {
   const sanitizedEnv = { ...sourceEnv };
-  for (const key of ALL_MAESTRO_FLOW_ENV_KEYS) {
-    delete sanitizedEnv[key];
+  for (const key of Object.keys(sanitizedEnv)) {
+    if (ALL_MAESTRO_FLOW_ENV_KEYS.includes(key) || INTERNAL_QA_ENV_KEY_PATTERN.test(key)) {
+      delete sanitizedEnv[key];
+    }
   }
-  delete sanitizedEnv[SENSITIVE_FLOW_GUARD_ENV];
 
   const maestroHome = sourceEnv.MAESTRO_RUNNER_HOME || path.resolve(ROOT, '.maestro-home');
   fs.mkdirSync(path.join(maestroHome, '.maestro'), { recursive: true });
@@ -1000,6 +1053,7 @@ async function runFlowOnDevice({ deviceId, flow, retries, installDriverFirstRun,
   const sourceEnv = buildMaestroFlowSourceEnv(flow);
   const flowEnvArgs = buildMaestroFlowEnvArgs(flow, sourceEnv);
   const redactions = buildMaestroFlowRedactions(flow, sourceEnv);
+  const artifactPolicy = getMaestroArtifactPolicy(suiteName, redactions);
   fs.mkdirSync(outputRoot, { recursive: true });
 
   for (let attempt = 1; attempt <= retries + 1; attempt += 1) {
@@ -1024,11 +1078,20 @@ async function runFlowOnDevice({ deviceId, flow, retries, installDriverFirstRun,
     }
 
     console.log(`[${deviceId}] ${flow} (attempt ${attempt}/${retries + 1})`);
-    const result = await runCommand(command, args, {
-      env: buildMaestroEnv(sourceEnv),
-      redactions,
-    });
-    const artifactReport = sanitizeMaestroArtifacts(outputRoot, redactions);
+    // Remove stale identity-bearing output before Maestro starts, then always
+    // sanitize the current attempt even if process execution throws.
+    sanitizeMaestroArtifacts(outputRoot, redactions, artifactPolicy);
+    let result;
+    let artifactReport;
+    try {
+      result = await runCommand(command, args, {
+        env: buildMaestroEnv(sourceEnv),
+        redactions,
+        redactEmails: artifactPolicy.redactEmails,
+      });
+    } finally {
+      artifactReport = sanitizeMaestroArtifacts(outputRoot, redactions, artifactPolicy);
+    }
     if (artifactReport.screenshotsRemoved > 0) {
       console.log(
         `[${deviceId}] removed ${artifactReport.screenshotsRemoved} screenshot artifact(s) from credential-bearing flow ${flow}`
@@ -1120,11 +1183,15 @@ async function main() {
   let expectedReleaseBuild = null;
   if (options.suite?.startsWith('release')) {
     expectedReleaseBuild = readExpectedAndroidBuild();
+    const expectedDebuggable = options.suite === 'release-teststore';
     selectedDevices.forEach((deviceId) =>
-      verifyInstalledReleaseBinary(deviceId, expectedReleaseBuild)
+      verifyInstalledReleaseBinary(deviceId, expectedReleaseBuild, { expectedDebuggable })
     );
   }
   selectedDevices.forEach((deviceId) => configureAndroidInput(deviceId));
+  if (!options.suite?.startsWith('release')) {
+    selectedDevices.forEach((deviceId) => configureMetroReverse(deviceId, options.metroPort));
+  }
 
   console.log(`Running suite "${options.suite}" on ${workerCount} Android worker(s)`);
   selectedDevices.forEach((deviceId, index) => {
@@ -1184,6 +1251,7 @@ module.exports = {
   createRedactingWriter,
   decodeExactRegexLiteral,
   getSensitiveFlowGuardToken,
+  getMaestroArtifactPolicy,
   isSensitiveFlow,
   normalizeFlow,
   parseArgs,

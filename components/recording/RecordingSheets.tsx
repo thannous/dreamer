@@ -17,6 +17,106 @@ import type { ReferenceImage, SubscriptionTier } from '@/lib/types';
 
 type ReferenceSubjectType = 'person' | 'animal' | null;
 
+export type AnalysisOfferQuotaState = 'known' | 'unlimited' | 'exhausted' | 'unknown';
+export type AnalysisOfferPrimaryAction = 'launch' | 'login' | 'upgrade' | 'retry';
+
+export function PostSaveOfferSheet({
+  visible,
+  kind,
+  quotaState,
+  remaining,
+  primaryAction,
+  isPersisting,
+  activationInsight,
+  onDismiss,
+  onPrimary,
+  onJournal,
+}: {
+  visible: boolean;
+  kind: 'analysis' | 'memory';
+  quotaState: AnalysisOfferQuotaState;
+  remaining?: number | null;
+  primaryAction: AnalysisOfferPrimaryAction;
+  isPersisting: boolean;
+  activationInsight?: RecordingActivationInsight | null;
+  onDismiss: () => void;
+  onPrimary: () => void;
+  onJournal: () => void;
+}) {
+  const { t } = useTranslation();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const isAnalysisError = kind === 'analysis' && primaryAction === 'retry';
+
+  const analysisSubtitle = primaryAction === 'retry'
+    ? t('recording.analysis_offer.error')
+    : quotaState === 'unlimited'
+      ? t('recording.analysis_offer.unlimited')
+      : quotaState === 'known' && typeof remaining === 'number'
+        ? t('recording.analysis_offer.quota_remaining', { remaining })
+        : quotaState === 'exhausted'
+          ? t('recording.analysis_offer.exhausted')
+          : t('recording.analysis_offer.unknown');
+  const analysisPrimaryLabel = primaryAction === 'retry'
+    ? t('recording.analysis_offer.retry')
+    : primaryAction === 'login'
+      ? t('recording.analysis_limit.cta_login')
+      : primaryAction === 'upgrade'
+        ? t('recording.analysis_limit.cta_free')
+        : t('recording.analysis_offer.launch');
+
+  return (
+    <StandardBottomSheet
+      visible={visible}
+      onClose={onDismiss}
+      title={t(kind === 'memory' ? 'recording.memory_offer.title' : 'recording.analysis_offer.title')}
+      subtitle={kind === 'memory'
+        ? t('recording.memory_offer.subtitle')
+        : isAnalysisError
+          ? undefined
+          : analysisSubtitle}
+      testID={TID.Sheet.AnalysisOffer}
+      titleTestID={TID.Text.AnalyzePromptTitle}
+      actions={{
+        primaryLabel: kind === 'memory'
+          ? t('recording.memory_offer.view')
+          : analysisPrimaryLabel,
+        onPrimary: kind === 'memory' ? onJournal : onPrimary,
+        primaryDisabled: isPersisting,
+        primaryLoading: isPersisting,
+        primaryTestID: TID.Button.AnalysisOfferPrimary,
+        secondaryLabel: kind === 'memory'
+          ? t('recording.memory_offer.analyze')
+          : t('recording.analysis_offer.view'),
+        onSecondary: kind === 'memory' ? onPrimary : onJournal,
+        secondaryDisabled: isPersisting,
+        secondaryTestID: TID.Button.AnalysisOfferJournal,
+        linkLabel: t(kind === 'memory' ? 'recording.memory_offer.later' : 'recording.analysis_offer.later'),
+        onLink: onDismiss,
+        linkTestID: TID.Button.AnalysisOfferLater,
+      }}
+    >
+      {isAnalysisError ? (
+        <View
+          accessibilityLiveRegion="assertive"
+          style={[
+            styles.analysisOfferError,
+            {
+              backgroundColor: noctalia.status.danger.background,
+              borderColor: noctalia.status.danger.border,
+            },
+          ]}
+        >
+          <Text style={[styles.analysisOfferErrorText, { color: noctalia.status.danger.text }]}>
+            {analysisSubtitle}
+          </Text>
+        </View>
+      ) : null}
+      <RecordingActivationInsightCard insight={activationInsight} />
+    </StandardBottomSheet>
+  );
+}
+
 export function FirstDreamSheet({
   visible,
   onDismiss,
@@ -399,6 +499,19 @@ export function ReferenceImageSheet({
 }
 
 const styles = StyleSheet.create({
+  analysisOfferError: {
+    width: '100%',
+    borderWidth: 1,
+    borderRadius: ThemeLayout.borderRadius.md,
+    padding: ThemeLayout.spacing.md,
+    marginBottom: ThemeLayout.spacing.md,
+  },
+  analysisOfferErrorText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: 'center',
+  },
   sheetTranscriptContainer: {
     width: '100%',
     borderRadius: ThemeLayout.borderRadius.lg,

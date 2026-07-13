@@ -4,6 +4,7 @@ import { memo, useEffect, useMemo, useState } from 'react';
 import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   Easing,
+  cancelAnimation,
   interpolate,
   interpolateColor,
   runOnJS,
@@ -19,6 +20,7 @@ import Svg, { Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { DarkTheme } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 const DEFAULT_VIEWPORT = { width: 360, height: 640 };
 const seededRandom = (seed: number) => {
   const x = Math.sin(seed) * 10000;
@@ -36,6 +38,11 @@ const COLORS = {
   moonFill: DarkTheme.backgroundSecondary,
   text: DarkTheme.textPrimary,
 };
+
+export const shouldUseAnimatedSplash = (
+  prefersReducedMotion: boolean,
+  forceStatic = false
+): boolean => !prefersReducedMotion && !forceStatic;
 
 // --- Logo Paths ---
 // Canvas: 280x280
@@ -69,11 +76,18 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 type AnimatedSplashScreenProps = {
   status?: 'intro' | 'outro';
+  forceStatic?: boolean;
   onAnimationEnd?: () => void;
 };
 
-const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSplashScreenProps) => {
+const AnimatedSplashScreen = ({
+  status = 'intro',
+  forceStatic = false,
+  onAnimationEnd,
+}: AnimatedSplashScreenProps) => {
   const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const animateSplash = shouldUseAnimatedSplash(prefersReducedMotion, forceStatic);
 
   useEffect(() => {
     const { width, height } = Dimensions.get('window');
@@ -91,6 +105,12 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
   const containerOpacity = useSharedValue(1);
 
   useEffect(() => {
+    if (!animateSplash) {
+      cancelAnimation(phase);
+      phase.value = 4;
+      return;
+    }
+
     // Start the animation sequence
     phase.value = withSequence(
       // Phase 1: Ether - Wait/Float
@@ -104,32 +124,52 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
     );
 
     // Add haptic feedback for key milestones
-    const triggerHaptics = async () => {
+    const hapticTimers: ReturnType<typeof setTimeout>[] = [];
+    const triggerHaptics = () => {
       if (Platform.OS === 'web') return;
 
       // Phase 2: Moon drawn (approx 1.8s)
-      setTimeout(() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      }, 1800);
+      hapticTimers.push(
+        setTimeout(() => {
+          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }, 1800)
+      );
 
       // Phase 3-4: Star drawn / Ripple / Fill (approx 2.4s-3.4s)
-      setTimeout(() => {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      }, 2400);
+      hapticTimers.push(
+        setTimeout(() => {
+          void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        }, 2400)
+      );
     };
 
     triggerHaptics();
-  }, [phase]);
+    return () => {
+      hapticTimers.forEach(clearTimeout);
+      cancelAnimation(phase);
+    };
+  }, [animateSplash, phase]);
 
   useEffect(() => {
+    if (!animateSplash) {
+      cancelAnimation(floatProgress);
+      floatProgress.value = 0;
+      return;
+    }
     floatProgress.value = withRepeat(
       withTiming(Math.PI * 2, { duration: 2400, easing: Easing.linear }),
       -1
     );
-  }, [floatProgress]);
+    return () => cancelAnimation(floatProgress);
+  }, [animateSplash, floatProgress]);
 
   useEffect(() => {
     if (status === 'outro') {
+      if (!animateSplash) {
+        containerOpacity.value = 0;
+        onAnimationEnd?.();
+        return;
+      }
       // Fade out the whole screen
       containerOpacity.value = withTiming(
         0,
@@ -141,7 +181,7 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
         }
       );
     }
-  }, [status, onAnimationEnd, containerOpacity]);
+  }, [animateSplash, status, onAnimationEnd, containerOpacity]);
 
   // --- Styles & Props ---
 
@@ -218,7 +258,13 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
   });
 
   return (
-    <Animated.View style={[StyleSheet.absoluteFill, styles.container, containerStyle]}>
+    <Animated.View
+      pointerEvents="none"
+      accessible={false}
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+      style={[StyleSheet.absoluteFill, styles.container, containerStyle]}
+    >
       {/* Background */}
       <LinearGradient
         colors={[COLORS.bgStart, COLORS.bgEnd]}
@@ -228,11 +274,13 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
       />
 
       {/* Particles */}
-      <View style={StyleSheet.absoluteFill}>
-        {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
-          <Particle key={i} index={i} phase={phase} float={floatProgress} viewport={viewport} />
-        ))}
-      </View>
+      {animateSplash && (
+        <View style={StyleSheet.absoluteFill}>
+          {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
+            <Particle key={i} index={i} phase={phase} float={floatProgress} viewport={viewport} />
+          ))}
+        </View>
+      )}
 
       {/* Central Content */}
       <View style={styles.content}>

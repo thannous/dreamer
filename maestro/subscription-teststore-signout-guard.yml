@@ -3,25 +3,95 @@ appId: com.tanuki75.noctalia
 # Guard that a Plus Test Store session does not leak entitlement after sign-out.
 # This is a local no-leak check, not a full two-account switch proof.
 
-- launchApp
+- runFlow: subflows/open-release-app-preserve-state.yml
 - openLink: noctalia://settings
 - extendedWaitUntil:
-    visible: "Settings|Paramètres|Configuración|Ajustes|Sign In Required|Connexion requise"
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000
 
-- swipe:
+# Fail closed unless the preserved session is both authenticated and Plus
+# before exercising logout.
+- scrollUntilVisible:
+    element:
+      text: "Account|Compte|Cuenta|Konto"
+    direction: UP
+    visibilityPercentage: 40
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: text.auth.email
     direction: DOWN
-- swipe:
+    visibilityPercentage: 60
+    timeout: 30000
+    centerElement: true
+- assertVisible:
+    id: text.auth.email
+- scrollUntilVisible:
+    element:
+      id: screen.subscription.qaLab
     direction: DOWN
-- runFlow:
-    when:
-      visible: "Sign Out|Se déconnecter|Cerrar sesión|Abmelden|Disconnetti"
-    commands:
-      - tapOn:
-          text: "Sign Out|Se déconnecter|Cerrar sesión|Abmelden|Disconnetti"
+    visibilityPercentage: 30
+    timeout: 30000
+- assertVisible:
+    id: text.subscription.qa.mode
+    text: "RevenueCat Test Store"
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.status
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+    centerElement: true
+- assertVisible:
+    id: text.subscription.qa.status
+    text: ".*plus / active.*"
+
+- scrollUntilVisible:
+    element:
+      id: btn.auth.signOut
+    direction: UP
+    visibilityPercentage: 60
+    timeout: 30000
+    centerElement: true
 - extendedWaitUntil:
-    visible: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
-    timeout: 60000
-- assertVisible: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
+    visible:
+      id: btn.auth.signOut
+      enabled: true
+    timeout: 30000
+- tapOn:
+    id: btn.auth.signOut
+- extendedWaitUntil:
+    visible:
+      id: btn.auth.google
+      enabled: true
+    timeout: 120000
+- assertVisible:
+    id: btn.auth.google
+- assertNotVisible:
+    id: text.auth.email
+
+# Prove the subscription hook itself resets to the unauthenticated free state
+# after logout instead of relying only on Plus copy being off-screen.
+- scrollUntilVisible:
+    element:
+      id: screen.subscription.qaLab
+    direction: DOWN
+    visibilityPercentage: 30
+    timeout: 30000
+- assertVisible:
+    id: text.subscription.qa.mode
+    text: "RevenueCat Test Store"
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.status
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 120000
+    centerElement: true
+- extendedWaitUntil:
+    visible:
+      id: text.subscription.qa.status
+      text: ".*free.*not loaded.*"
+    timeout: 120000
 - assertNotVisible: "Noctalia Plus is active"
 - assertNotVisible: "plus / active"

@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Ressourcen | Noctalia – Traumtipps und Anleitungen",
   "publishedTime": "",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-12",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -51,6 +51,27 @@
 </div>
 </div>
 </header>
+<!-- Nach Thema erkunden -->
+<section class="glass-panel rounded-2xl p-6 md:p-8 mb-12 border border-dream-salmon/10" aria-labelledby="nach-thema-erkunden">
+<div class="mb-6">
+<h2 id="nach-thema-erkunden" class="font-serif text-2xl md:text-3xl text-dream-cream mb-2">Nach Thema erkunden</h2>
+<p class="text-sm text-purple-200/70">Wählen Sie einen Schwerpunkt: Traumerinnerung, Traumbedeutungen oder Klartraumpraxis.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<a class="glass-panel rounded-xl p-5 block hover:border-dream-salmon/30 transition-colors" href="/de/blog/traumtagebuch-erinnerung-methoden-und-routinen">
+<h3 class="font-serif text-lg text-dream-cream mb-2">Traumtagebuch</h3>
+<p class="text-sm text-gray-400">Erinnerung, Aufzeichnungsroutinen und hilfreiche Tagebuchgewohnheiten.</p>
+</a>
+<a class="glass-panel rounded-xl p-5 block hover:border-dream-salmon/30 transition-colors" href="/de/blog/traumbedeutungen-interpretation-symbole">
+<h3 class="font-serif text-lg text-dream-cream mb-2">Traumbedeutungen</h3>
+<p class="text-sm text-gray-400">Symbole, wiederkehrende Themen und kontextbezogene Deutung.</p>
+</a>
+<a class="glass-panel rounded-xl p-5 block hover:border-dream-salmon/30 transition-colors" href="/de/blog/klares-traeumen-anleitungen-und-techniken">
+<h3 class="font-serif text-lg text-dream-cream mb-2">Klarträumen</h3>
+<p class="text-sm text-gray-400">Techniken für Einsteiger, Praxis und Sicherheitshinweise.</p>
+</a>
+</div>
+</section>
 <!-- Editorial Carousel -->
 <section class="blog-premium-carousel" aria-label="Jetzt lesen">
 <div class="blog-premium-carousel-header">

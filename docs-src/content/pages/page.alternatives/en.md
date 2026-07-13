@@ -5,7 +5,7 @@
   "lang": "en",
   "slug": "dream-journal-apps",
   "title": "Best Dream Journal Apps 2026 | Noctalia",
-  "description": "Compare Noctalia with DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud and newer AI dream journals.",
+  "description": "Compare Android dream journal apps by voice capture, AI interpretation, privacy controls and pricing, including Noctalia, DreamApp, Oniri and more.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",
@@ -14,29 +14,30 @@
   "mainClass": "pt-32 pb-20 px-6 max-w-6xl mx-auto",
   "ogType": "article",
   "ogTitle": "Best Dream Journal Apps 2026",
-  "ogDescription": "Compare Noctalia with DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud and newer AI dream journals.",
+  "ogDescription": "Compare Android dream journal apps by voice capture, AI interpretation, privacy controls and pricing, including Noctalia, DreamApp, Oniri and more.",
   "ogImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "ogImageAlt": "Noctalia dream journal app",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Best Dream Journal Apps 2026",
-  "twitterDescription": "Compare Noctalia with DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud and newer AI dream journals.",
+  "twitterDescription": "Compare Android dream journal apps by voice capture, AI interpretation, privacy controls and pricing, including Noctalia, DreamApp, Oniri and more.",
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-07-12T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Best Dream Journal Apps 2026\",\n  \"description\": \"Compare Noctalia with DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud and newer AI dream journals.\",\n  \"url\": \"https://noctalia.app/en/dream-journal-apps\",\n  \"inLanguage\": \"en\",\n  \"dateModified\": \"2026-07-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Best dream journal apps in 2026\",\n      \"item\": \"https://noctalia.app/en/dream-journal-apps\"\n    }\n  ]\n}"
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Best Dream Journal Apps 2026\",\n  \"description\": \"Compare Android dream journal apps by voice capture, AI interpretation, privacy controls and pricing, including Noctalia, DreamApp, Oniri and more.\",\n  \"url\": \"https://noctalia.app/en/dream-journal-apps\",\n  \"inLanguage\": \"en\",\n  \"dateModified\": \"2026-07-12T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Best dream journal apps in 2026\",\n      \"item\": \"https://noctalia.app/en/dream-journal-apps\"\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"ItemList\",\n  \"name\": \"Dream journal apps compared in 2026\",\n  \"itemListOrder\": \"https://schema.org/ItemListUnordered\",\n  \"numberOfItems\": 11,\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"item\": {\n        \"@type\": \"SoftwareApplication\",\n        \"name\": \"Noctalia\"\n      }\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"item\": {\n        \"@type\": \"SoftwareApplication\",\n        \"name\": \"DreamApp\"\n      }\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"item\": {\n        \"@type\": \"SoftwareApplication\",\n        \"name\": \"Oniri\"\n      }\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 4,\n      \"item\": {\n        \"@type\": \"SoftwareApplication\",\n        \"name\": \"Dreamiary\"\n      }\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 5,\n      \"item\": {\n        \"@type\": \"SoftwareApplication\",\n        \"name\": \"Dreamlab\"\n      }\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 6,\n      \"item\": {\n        \"@type\": \"SoftwareApplication\",\n        \"name\": \"DreamKit\"\n      }\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 7,\n      \"item\": {\n        \"@type\": \"SoftwareApplication\",\n        \"name\": \"Rosebud\"\n      }\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 8,\n      \"item\": {\n        \"@type\": \"SoftwareApplication\",\n        \"name\": \"Dreamz Journal\"\n      }\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 9,\n      \"item\": {\n        \"@type\": \"SoftwareApplication\",\n        \"name\": \"DreamMirror\"\n      }\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 10,\n      \"item\": {\n        \"@type\": \"SoftwareApplication\",\n        \"name\": \"DreamStream\"\n      }\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 11,\n      \"item\": {\n        \"@type\": \"SoftwareApplication\",\n        \"name\": \"DreamNotes\"\n      }\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Best dream journal apps in 2026</h1>
-<p class="text-sm text-purple-300/70 mb-6">Updated May 20, 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Updated July 12, 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">The right dream journal depends on your morning capture habit, whether you want AI interpretation, how much lucid dreaming structure you need, and how much privacy clarity matters to you.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">

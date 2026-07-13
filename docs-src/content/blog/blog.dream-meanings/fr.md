@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Signification des rêves : interprétation et symboles",
   "publishedTime": "",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-07-12",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -79,6 +79,7 @@
   <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
     <p>Si vous débutez, choisissez une seule habitude pendant une semaine. La régularité compte plus que tout faire d'un coup.</p>
     <p>Commencez par le rappel des rêves, puis ajoutez une seule pratique. Notez simplement ce que vous avez vu, ce que vous avez ressenti et ce qui a changé dans le rêve.</p>
+    <p>Si un lieu domine votre souvenir, décrivez d'abord son atmosphère. Une <a class="text-dream-salmon hover:underline" href="../symboles/foret">forêt dans un rêve</a> peut sembler rassurante, sombre, familière ou déroutante selon la scène et votre réaction.</p>
     <ul><li>Choisissez un guide ci-dessous.</li><li>Testez pendant 7 nuits.</li><li>Relisez vos notes et ajustez.</li></ul>
   </div>
 </section>

@@ -115,11 +115,6 @@ export function useDreamPersistence({
     []
   );
 
-  // Keep ref in sync with state
-  useEffect(() => {
-    dreamsRef.current = dreams;
-  }, [dreams]);
-
   useEffect(() => {
     if (previousUserIdRef.current && previousUserIdRef.current !== (userId ?? null)) {
       dreamsRef.current = [];
@@ -325,9 +320,10 @@ export function useDreamPersistence({
         });
 
         if (!hasSession) {
-          const fallback = normalizeDreamList(applyPendingMutations(cached, pendingMutations));
+          const nextDreams = normalizeDreamList(
+            applyPendingMutations(cached, pendingMutations)
+          );
           if (mounted.current) {
-            const nextDreams = sortDreams(fallback);
             if (!areDreamListsEqual(dreamsRef.current, nextDreams)) {
               dreamsRef.current = nextDreams;
               setDreams(nextDreams);
@@ -345,9 +341,11 @@ export function useDreamPersistence({
 
         const remoteDreams = await fetchDreamsFromSupabase();
         const normalizedRemote = normalizeDreamList(remoteDreams);
-        await saveCachedRemoteDreams(sortDreams(normalizedRemote), userScope);
-        const hydrated = normalizeDreamList(applyPendingMutations(normalizedRemote, pendingMutations));
-        const nextDreams = sortDreams(hydrated);
+        const sortedRemote = sortDreams(normalizedRemote);
+        await saveCachedRemoteDreams(sortedRemote, userScope);
+        const nextDreams = pendingMutations.length
+          ? normalizeDreamList(applyPendingMutations(sortedRemote, pendingMutations))
+          : sortedRemote;
         if (mounted.current) {
           if (!areDreamListsEqual(dreamsRef.current, nextDreams)) {
             dreamsRef.current = nextDreams;
@@ -357,9 +355,10 @@ export function useDreamPersistence({
       } catch (error) {
         logger.error('Failed to load dreams from remote', error);
         // Use pre-fetched cached dreams instead of sequential read
-        const fallback = normalizeDreamList(applyPendingMutations(cached, pendingMutations));
+        const nextDreams = normalizeDreamList(
+          applyPendingMutations(cached, pendingMutations)
+        );
         if (mounted.current) {
-          const nextDreams = sortDreams(fallback);
           if (!areDreamListsEqual(dreamsRef.current, nextDreams)) {
             dreamsRef.current = nextDreams;
             setDreams(nextDreams);

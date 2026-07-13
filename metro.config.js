@@ -8,6 +8,7 @@ config.resolver.assetExts = Array.from(new Set([...config.resolver.assetExts, 'w
 // Windows can leave transient hidden entries in node_modules/.bin that break Metro's fallback watcher.
 config.resolver.blockList = [
   /node_modules[\\/]\.bin[\\/]\.[^\\/]+$/,
+  /[\\/]\.env(?:\.[^\\/]*)?$/,
 ];
 
 module.exports = config;

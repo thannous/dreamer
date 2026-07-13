@@ -33,6 +33,9 @@ const REMEMBERED_DREAM_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_remembered_d
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
+const ONBOARDING_STATE_KEY = 'gemini_dream_journal_onboarding_state_v2';
+const ONBOARDING_GUEST_CLAIMED_BY_KEY = 'gemini_dream_journal_onboarding_guest_claimed_by_v2';
+const PENDING_RECORDING_NOTIFICATION_KEY = 'gemini_dream_journal_pending_recording_notification_v1';
 const DREAMS_MIGRATION_SYNCED_PREFIX = 'gemini_dream_journal_dreams_migration_synced_';
 const MAX_CHAT_HISTORY_FOR_STORAGE = 50;
 const IMAGE_CACHE_DIR = FileSystemLegacy.cacheDirectory ?? FileSystemLegacy.documentDirectory ?? null;
@@ -951,9 +954,14 @@ export async function saveJournalLayoutPreference(preference: JournalLayoutPrefe
   }
 }
 
-export async function getRecordingInputModePreference(): Promise<RecordingInputModePreference | null> {
+export async function getRecordingInputModePreference(
+  actorScope?: string | null
+): Promise<RecordingInputModePreference | null> {
   try {
-    const savedPreference = await getItem(RECORDING_INPUT_MODE_PREFERENCE_KEY);
+    const scopedKey = scopedStorageKey(RECORDING_INPUT_MODE_PREFERENCE_KEY, actorScope);
+    const savedPreference =
+      (await getItem(scopedKey)) ??
+      (actorScope === 'guest' ? await getItem(RECORDING_INPUT_MODE_PREFERENCE_KEY) : null);
     if (savedPreference) {
       const parsed = JSON.parse(savedPreference);
       if (parsed === 'text' || parsed === 'voice') {
@@ -969,10 +977,14 @@ export async function getRecordingInputModePreference(): Promise<RecordingInputM
 }
 
 export async function saveRecordingInputModePreference(
-  preference: RecordingInputModePreference
+  preference: RecordingInputModePreference,
+  actorScope?: string | null
 ): Promise<void> {
   try {
-    await setItem(RECORDING_INPUT_MODE_PREFERENCE_KEY, JSON.stringify(preference));
+    await setItem(
+      scopedStorageKey(RECORDING_INPUT_MODE_PREFERENCE_KEY, actorScope),
+      JSON.stringify(preference)
+    );
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save recording input mode preference:', error);
@@ -1129,6 +1141,71 @@ export async function saveFirstLaunchCompleted(completed: boolean): Promise<void
     }
     throw new Error('Failed to save first launch flag');
   }
+}
+
+/**
+ * Low-level storage for the versioned onboarding state machine.
+ *
+ * Validation and migration intentionally live in lib/onboardingState so both
+ * real and mock storage follow the exact same state rules.
+ */
+export async function getOnboardingStateSnapshot(actorScope: string): Promise<string | null> {
+  return getItem(scopedStorageKey(ONBOARDING_STATE_KEY, actorScope));
+}
+
+export async function saveOnboardingStateSnapshot(
+  actorScope: string,
+  serializedState: string
+): Promise<void> {
+  await setItem(scopedStorageKey(ONBOARDING_STATE_KEY, actorScope), serializedState);
+}
+
+export async function getOnboardingGuestClaimedBy(): Promise<string | null> {
+  const savedUserId = await getItem(ONBOARDING_GUEST_CLAIMED_BY_KEY);
+  if (!savedUserId) return null;
+
+  try {
+    const parsed = JSON.parse(savedUserId) as unknown;
+    return typeof parsed === 'string' && parsed.length > 0 ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function saveOnboardingGuestClaimedBy(userId: string): Promise<void> {
+  await setItem(ONBOARDING_GUEST_CLAIMED_BY_KEY, JSON.stringify(userId));
+}
+
+export async function getPendingRecordingNotification(): Promise<'/recording' | null> {
+  const serialized = await getItem(PENDING_RECORDING_NOTIFICATION_KEY);
+  if (!serialized) return null;
+
+  try {
+    const parsed = JSON.parse(serialized) as unknown;
+    if (parsed === '/recording') return parsed;
+    if (
+      parsed &&
+      typeof parsed === 'object' &&
+      'url' in parsed &&
+      (parsed as { url?: unknown }).url === '/recording'
+    ) {
+      return '/recording';
+    }
+  } catch {
+    // Corrupted notification intents are ignored and cleaned up by the caller.
+  }
+  return null;
+}
+
+export async function savePendingRecordingNotification(url: '/recording'): Promise<void> {
+  await setItem(
+    PENDING_RECORDING_NOTIFICATION_KEY,
+    JSON.stringify({ url, queuedAt: Date.now() })
+  );
+}
+
+export async function clearPendingRecordingNotification(): Promise<void> {
+  await removeItem(PENDING_RECORDING_NOTIFICATION_KEY);
 }
 
 export async function getDreamsMigrationSynced(userId: string): Promise<boolean> {

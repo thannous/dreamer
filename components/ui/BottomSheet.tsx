@@ -21,6 +21,7 @@ import Animated, {
 
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { blurActiveElement } from '@/lib/accessibility';
 
 type BottomSheetProps = {
@@ -60,13 +61,14 @@ export function BottomSheet({
 }: BottomSheetProps) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const prefersReducedMotion = usePrefersReducedMotion();
   const useNativeIOSSheet = process.env.EXPO_OS === 'ios' && dismissBehavior === 'pan';
   const [isMounted, setIsMounted] = useState(visible);
   const { height: windowHeight } = useWindowDimensions();
   const hiddenTranslateY = Math.max(400, windowHeight);
   const hiddenTranslateYRef = useRef(hiddenTranslateY);
-  hiddenTranslateYRef.current = hiddenTranslateY;
   const prevVisibleRef = useRef(false);
+  const previouslyFocusedElementRef = useRef<{ focus?: () => void } | null>(null);
   const translateY = useSharedValue(0);
   const backdropOpacity = useSharedValue(0);
   const handleUnmount = useCallback(() => setIsMounted(false), []);
@@ -87,8 +89,21 @@ export function BottomSheet({
   );
 
   useEffect(() => {
+    hiddenTranslateYRef.current = hiddenTranslateY;
+  }, [hiddenTranslateY]);
+
+  useEffect(() => {
     const wasVisible = prevVisibleRef.current;
     prevVisibleRef.current = visible;
+
+    if (visible && !wasVisible && typeof document !== 'undefined') {
+      previouslyFocusedElementRef.current = document.activeElement as { focus?: () => void } | null;
+    }
+    if (!visible && wasVisible) {
+      const previous = previouslyFocusedElementRef.current;
+      previouslyFocusedElementRef.current = null;
+      setTimeout(() => previous?.focus?.(), 0);
+    }
 
     if (useNativeIOSSheet) {
       if (visible && !wasVisible) {
@@ -100,6 +115,11 @@ export function BottomSheet({
     if (visible && !wasVisible) {
       blurActiveElement();
       setIsMounted(true);
+      if (prefersReducedMotion) {
+        backdropOpacity.value = 1;
+        translateY.value = 0;
+        return;
+      }
       backdropOpacity.value = 0;
       translateY.value = hiddenTranslateYRef.current;
       translateY.value = withTiming(0, {
@@ -111,6 +131,12 @@ export function BottomSheet({
         easing: Easing.out(Easing.cubic),
       });
     } else if (!visible && wasVisible && isMounted) {
+      if (prefersReducedMotion) {
+        backdropOpacity.value = 0;
+        translateY.value = hiddenTranslateYRef.current;
+        setTimeout(handleUnmount, 0);
+        return;
+      }
       backdropOpacity.value = withTiming(0, {
         duration: 200,
         easing: Easing.in(Easing.cubic),
@@ -128,7 +154,15 @@ export function BottomSheet({
         }
       );
     }
-  }, [backdropOpacity, handleUnmount, isMounted, translateY, useNativeIOSSheet, visible]);
+  }, [
+    backdropOpacity,
+    handleUnmount,
+    isMounted,
+    prefersReducedMotion,
+    translateY,
+    useNativeIOSSheet,
+    visible,
+  ]);
 
   const sheetAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
@@ -148,7 +182,7 @@ export function BottomSheet({
     const closeVelocity = 1200;
 
     return Gesture.Pan()
-      .enabled(dismissBehavior === 'pan')
+      .enabled(dismissBehavior === 'pan' && !prefersReducedMotion)
       .activeOffsetY([-10, 10])
       .failOffsetY([0, 999999])
       .failOffsetX([-15, 15])
@@ -177,7 +211,7 @@ export function BottomSheet({
           easing: Easing.out(Easing.cubic),
         });
       });
-  }, [backdropOpacity, dismissBehavior, hiddenTranslateY, onClose, translateY]);
+  }, [backdropOpacity, dismissBehavior, hiddenTranslateY, onClose, prefersReducedMotion, translateY]);
 
   if (useNativeIOSSheet) {
     if (!visible) {
@@ -186,13 +220,19 @@ export function BottomSheet({
 
     return (
       <Modal
-        animationType="slide"
+        animationType={prefersReducedMotion ? 'none' : 'slide'}
         visible={visible}
         onRequestClose={onClose}
         presentationStyle="pageSheet"
       >
         <View style={[styles.nativeSheetWrapper, { backgroundColor: noctalia.screen.background }]}>
-          <View style={[styles.nativeSheet, defaultSheetStyle, style]} testID={testID}>
+          <View
+            accessibilityViewIsModal
+            aria-modal
+            role="dialog"
+            style={[styles.nativeSheet, defaultSheetStyle, style]}
+            testID={testID}
+          >
             {normalizedChildren}
           </View>
         </View>
@@ -217,7 +257,13 @@ export function BottomSheet({
           <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         </Animated.View>
         <GestureDetector gesture={panGesture}>
-          <Animated.View style={[styles.sheet, defaultSheetStyle, style, sheetAnimatedStyle]} testID={testID}>
+          <Animated.View
+            accessibilityViewIsModal
+            aria-modal
+            role="dialog"
+            style={[styles.sheet, defaultSheetStyle, style, sheetAnimatedStyle]}
+            testID={testID}
+          >
             {normalizedChildren}
           </Animated.View>
         </GestureDetector>

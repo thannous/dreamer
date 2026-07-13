@@ -1,0 +1,48 @@
+# Non-transactional account-state probe. It never opens a purchase or restore
+# dialog; it only refreshes RevenueCat and proves a known free/plus state.
+appId: com.tanuki75.noctalia
+name: Release Test Store subscription status
+---
+- runFlow: subflows/open-release-app-preserve-state.yml
+- openLink: noctalia://settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustos|Ajustes|Impostazioni|Einstellungen"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: screen.subscription.qaLab
+    direction: DOWN
+    visibilityPercentage: 30
+    timeout: 30000
+- assertVisible:
+    id: text.subscription.qa.mode
+    text: "RevenueCat Test Store"
+- scrollUntilVisible:
+    element:
+      id: btn.subscription.qa.refresh
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+    centerElement: true
+- extendedWaitUntil:
+    visible:
+      id: btn.subscription.qa.refresh
+      enabled: true
+    timeout: 120000
+- tapOn:
+    id: btn.subscription.qa.refresh
+- extendedWaitUntil:
+    visible:
+      id: text.subscription.qa.actionLabel
+      text: "Refresh completed"
+    timeout: 180000
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.status
+    direction: UP
+    visibilityPercentage: 60
+    timeout: 30000
+    centerElement: true
+- assertVisible:
+    id: text.subscription.qa.status
+    text: ".*(free / inactive|plus / active).*"

@@ -29,6 +29,7 @@ const payload = {
   qaEmailRegex: process.env.QA_EMAIL_REGEX,
   qaPassword: process.env.QA_PASSWORD,
   qaPlan: process.env.QA_PLAN,
+  qaProductId: process.env.QA_PRODUCT_ID,
   sensitiveGuard: process.env.NOCTALIA_INTERNAL_SENSITIVE_FLOW_GUARD,
 };
 fs.writeFileSync(process.env.CAPTURE_PATH, JSON.stringify(payload, null, 2), 'utf8');
@@ -66,8 +67,9 @@ describe('guarded Test Store purchase runner', () => {
     expect(result.stdout).toContain('Test Store purchase preflight passed');
     expect(result.stdout).toContain('Plan: monthly');
     expect(result.stdout).toContain('Auth mode: email');
-    expect(result.stdout).toContain('Test account: te...@example.com');
+    expect(result.stdout).toContain('Test account: configured');
     expect(result.stdout).not.toContain('tester@example.com');
+    expect(result.stdout).not.toContain('@example.com');
     expect(result.stdout).toContain('Approval present: no');
     expect(fs.existsSync(capturePath)).toBe(false);
   });
@@ -90,6 +92,7 @@ describe('guarded Test Store purchase runner', () => {
       qaEmailRegex: '^tester@example\\.com$',
       qaPassword: 'password',
       qaPlan: 'annual',
+      qaProductId: 'yearly',
       sensitiveGuard: 'purchase-email:v1',
     });
     expect(payload.args).toEqual([
@@ -122,6 +125,7 @@ describe('guarded Test Store purchase runner', () => {
     expect(payload).toMatchObject({
       qaEmailRegex: '^tester@example\\.com$',
       qaPlan: 'monthly',
+      qaProductId: 'monthly',
       sensitiveGuard: 'purchase-google:v1',
     });
     expect(payload.qaEmail).toBeUndefined();
@@ -157,6 +161,30 @@ describe('guarded Test Store purchase runner', () => {
 
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('exactly one QA target');
+  });
+
+  it('rejects a physical device before purchase preflight', () => {
+    const result = runWrapper(['--preflight', '--plan', 'monthly', '--device', 'physical-device'], {
+      REVENUECAT_QA_EMAIL: 'tester@example.com',
+      REVENUECAT_QA_PASSWORD: 'password',
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('emulator-only');
+  });
+
+  it('rejects an approved purchase on a physical device without launching Maestro', () => {
+    const capturePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'purchase-capture-')), 'capture.json');
+    const result = runWrapper(['--plan', 'monthly', '--device', 'physical-device'], {
+      REVENUECAT_QA_APPROVAL: APPROVAL,
+      REVENUECAT_QA_EMAIL: 'tester@example.com',
+      REVENUECAT_QA_PASSWORD: 'password',
+      CAPTURE_PATH: capturePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('emulator-only');
+    expect(fs.existsSync(capturePath)).toBe(false);
   });
 
   it('preserves app state before both purchase flows', () => {

@@ -7,6 +7,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import type { DreamSymbol, SymbolLanguage } from '@/lib/symbolTypes';
+import { TID } from '@/lib/testIDs';
 
 interface SymbolCardProps {
   symbol: DreamSymbol;
@@ -65,6 +66,7 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress }
       onPress={handlePress}
       accessibilityRole="button"
       accessibilityLabel={content.name}
+      testID={TID.List.SymbolItem(symbol.id)}
       style={pressableStyle}>
       <View style={contentStyle}>
         <Text

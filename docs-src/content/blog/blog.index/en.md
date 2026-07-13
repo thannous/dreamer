@@ -51,6 +51,27 @@
 </div>
 </div>
 </header>
+<!-- Topic Hubs -->
+<section class="glass-panel rounded-2xl p-6 md:p-8 mb-12 border border-dream-salmon/10" aria-labelledby="explore-by-topic">
+<div class="mb-6">
+<h2 id="explore-by-topic" class="font-serif text-2xl md:text-3xl text-dream-cream mb-2">Explore by topic</h2>
+<p class="text-sm text-purple-200/70">Follow a focused path through dream recall, meanings, or lucid-dreaming practice.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<a class="glass-panel rounded-xl p-5 block hover:border-dream-salmon/30 transition-colors" href="/en/blog/dream-journal">
+<h3 class="font-serif text-lg text-dream-cream mb-2">Dream journal</h3>
+<p class="text-sm text-gray-400">Recall, recording routines, and useful journal habits.</p>
+</a>
+<a class="glass-panel rounded-xl p-5 block hover:border-dream-salmon/30 transition-colors" href="/en/blog/dream-meanings">
+<h3 class="font-serif text-lg text-dream-cream mb-2">Dream meanings</h3>
+<p class="text-sm text-gray-400">Symbols, recurring themes, and context-led interpretation.</p>
+</a>
+<a class="glass-panel rounded-xl p-5 block hover:border-dream-salmon/30 transition-colors" href="/en/blog/lucid-dreaming">
+<h3 class="font-serif text-lg text-dream-cream mb-2">Lucid dreaming</h3>
+<p class="text-sm text-gray-400">Beginner techniques, practice, and safety guidance.</p>
+</a>
+</div>
+</section>
 <!-- Editorial Carousel -->
 <section class="blog-premium-carousel" aria-label="Read now">
 <div class="blog-premium-carousel-header">

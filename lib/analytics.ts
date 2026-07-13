@@ -8,6 +8,27 @@ export type TranscriptLengthBucket = '0_100' | '101_500' | '501_1500' | '1501_pl
 export type RecordingDurationBucket = '0_15s' | '16_60s' | '61_180s' | '181s_plus' | 'unknown';
 
 export type AnalyticsEventMap = {
+  app_session_started: {
+    source: 'cold_start' | 'foreground';
+  };
+  onboarding_started: {
+    experience_version: 2;
+  };
+  onboarding_step_viewed: {
+    step: 'intro' | 'path';
+  };
+  onboarding_completed: {
+    reason: 'analyze' | 'memory' | 'dictionary' | 'skip';
+    experience_version: 2;
+  };
+  onboarding_destination_viewed: {
+    destination: 'recording' | 'symbol_dictionary';
+    path: 'analyze' | 'memory' | 'dictionary' | 'skip';
+  };
+  dream_capture_started: {
+    input_mode: 'voice' | 'text';
+    capture_context: 'fresh' | 'remembered';
+  };
   recording_started: {
     input_mode: 'voice' | 'text';
     language: string;
@@ -23,10 +44,6 @@ export type AnalyticsEventMap = {
   recording_activation_insight_shown: {
     surface: 'draft' | 'first_dream_sheet' | 'analyze_prompt_sheet';
     capture_context: 'fresh' | 'remembered';
-    tone: 'memory' | 'signals' | 'fragment';
-    primary_signal_id: 'memory' | 'emotion' | 'place' | 'person' | 'symbol' | 'recurrence' | 'none';
-    signal_ids: string;
-    signal_count: number;
     transcript_length_bucket: TranscriptLengthBucket;
     language: string;
   };
@@ -40,6 +57,27 @@ export type AnalyticsEventMap = {
     generated_image: boolean;
     tier: SubscriptionTier;
   };
+  analysis_offer_viewed: {
+    quota_state: 'known' | 'unlimited' | 'exhausted' | 'unknown';
+  };
+  first_dream_next_action_selected: {
+    action: 'launch_analysis' | 'view_dream' | 'later' | 'analyze_memory';
+  };
+  analysis_failed: {
+    stage: 'offer' | 'request' | 'result';
+    reason: 'network' | 'quota' | 'auth' | 'server' | 'unknown';
+  };
+  analysis_result_viewed: {
+    source: 'recording_flow' | 'journal_detail' | 'retry' | 'unknown';
+  };
+  symbol_detail_viewed: {
+    source: 'onboarding' | 'dictionary' | 'search' | 'unknown';
+  };
+  first_value_viewed: {
+    value: 'analysis_result' | 'recording_insight' | 'symbol_detail';
+    onboarding_path: 'analyze' | 'memory' | 'dictionary' | 'skip' | 'unknown';
+    hours_since_onboarding_bucket: '0_1h' | '1_24h' | '24h_plus' | 'unknown';
+  };
   paywall_viewed: {
     trigger: PaywallTrigger;
     tier: SubscriptionTier;
@@ -50,9 +88,9 @@ export type AnalyticsEventMap = {
     source: 'journal_empty_state';
   };
   onboarding_choice_selected: {
-    surface: 'app_onboarding' | 'recording_onboarding';
-    step: 'intro' | 'path' | 'capture_mode' | 'tour';
-    choice: 'continue' | 'skip' | 'analyze' | 'memory' | 'library' | 'text' | 'voice';
+    surface: 'app_onboarding';
+    step: 'intro' | 'path';
+    choice: 'continue' | 'skip' | 'analyze' | 'memory' | 'dictionary';
   };
 };
 
@@ -121,6 +159,21 @@ export function configureAnalyticsProvider() {
 
   if (isAnalyticsDebugEnabled()) {
     provider = createDebugAnalyticsProvider();
+    return;
+  }
+
+  // Keep the production transport out of bundles/tests where the feature is
+  // disabled. The direct env access is intentional so Expo can inline it.
+  if ((process.env.EXPO_PUBLIC_PRODUCT_ANALYTICS_ENABLED ?? '').toLowerCase() === 'true') {
+    provider = {
+      track: async (eventName, properties) => {
+        const { createProductAnalyticsProvider } = await import('@/lib/productAnalytics');
+        await createProductAnalyticsProvider().track(eventName, properties);
+      },
+    };
+    void import('@/lib/productAnalytics').then(({ initializeProductAnalytics }) =>
+      initializeProductAnalytics()
+    );
   }
 }
 

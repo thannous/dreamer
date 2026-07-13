@@ -1,0 +1,66 @@
+# Non-transactional prerequisite for guarded Test Store purchase flows.
+# It replaces any current app session with the exact Google QA identity and
+# proves that the authenticated settings screen exposes RevenueCat Test Store.
+appId: com.tanuki75.noctalia
+name: Test Store exact Google QA login
+---
+- runFlow: subflows/open-release-app-preserve-state.yml
+- openLink: noctalia://settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes"
+    timeout: 30000
+
+# Return to the account card even when a previous readiness flow left the
+# settings scroll position well below the QA Lab.
+- scrollUntilVisible:
+    element:
+      text: "Account|Compte|Cuenta|Konto"
+    direction: UP
+    visibilityPercentage: 40
+    timeout: 30000
+- runFlow:
+    when:
+      visible: "Sign Out|Se déconnecter|Cerrar sesión|Esci|Disconnetti|Abmelden"
+    commands:
+      - tapOn:
+          text: "Sign Out|Se déconnecter|Cerrar sesión|Esci|Disconnetti|Abmelden"
+      - extendedWaitUntil:
+          visible: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
+          timeout: 120000
+
+- scrollUntilVisible:
+    element:
+      text: "Account|Compte|Cuenta|Konto"
+    direction: UP
+    visibilityPercentage: 40
+    timeout: 30000
+
+- scrollUntilVisible:
+    element:
+      text: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
+    direction: DOWN
+    visibilityPercentage: 50
+    timeout: 30000
+- tapOn:
+    text: "Continue with Google|Continuer avec Google|Continuar con Google|Mit Google fortfahren|Continua con Google"
+- runFlow:
+    when:
+      visible:
+        id: "com.google.android.gms:id/container"
+    commands:
+      - tapOn:
+          id: "com.google.android.gms:id/container"
+          index: 0
+- extendedWaitUntil:
+    visible: "${QA_EMAIL_REGEX}"
+    timeout: 60000
+
+- scrollUntilVisible:
+    element:
+      id: screen.subscription.qaLab
+    direction: DOWN
+    visibilityPercentage: 30
+    timeout: 30000
+- assertVisible:
+    id: text.subscription.qa.mode
+    text: "RevenueCat Test Store"

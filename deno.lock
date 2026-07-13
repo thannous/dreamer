@@ -304,7 +304,11 @@
         "npm:vite-tsconfig-paths@^5.1.1",
         "npm:vitest@^4.0.13",
         "npm:workbox-cli@7"
-      ]
+      ],
+      "overrides": {
+        "markdown-it": "14.3.0",
+        "tmp": "0.2.7"
+      }
     }
   }
 }

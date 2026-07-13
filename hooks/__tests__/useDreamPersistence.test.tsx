@@ -185,7 +185,11 @@ describe('useDreamPersistence', () => {
     });
 
     it('loads dreams from Supabase', async () => {
-      const remoteDreams = [buildDream({ id: 1, remoteId: 101 })];
+      const remoteDreams = [
+        buildDream({ id: 1, remoteId: 101 }),
+        buildDream({ id: 3, remoteId: 103 }),
+        buildDream({ id: 2, remoteId: 102 }),
+      ];
       mockFetchFromSupabase.mockResolvedValue(remoteDreams);
 
       const { result } = renderHook(() =>
@@ -195,7 +199,7 @@ describe('useDreamPersistence', () => {
       await flushEffects();
       expect(result.current.loaded).toBe(true);
 
-      expect(result.current.dreams).toHaveLength(1);
+      expect(result.current.dreams.map((dream) => dream.id)).toEqual([3, 2, 1]);
       expect(mockFetchFromSupabase).toHaveBeenCalled();
     });
 

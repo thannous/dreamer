@@ -55,10 +55,6 @@ describe('analytics', () => {
     await trackProductEvent('recording_activation_insight_shown', {
       surface: 'draft',
       capture_context: 'fresh',
-      tone: 'signals',
-      primary_signal_id: 'emotion',
-      signal_ids: 'emotion,place',
-      signal_count: 2,
       transcript_length_bucket: '0_100',
       language: 'fr',
     });

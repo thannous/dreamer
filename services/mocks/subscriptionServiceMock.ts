@@ -97,6 +97,10 @@ export function isInitialized(): boolean {
   return initialized;
 }
 
+export function getStoreMode(): string {
+  return 'Mock services';
+}
+
 export async function getStatus(): Promise<SubscriptionStatus | null> {
   if (!initialized) {
     return null;

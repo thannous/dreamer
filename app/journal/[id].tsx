@@ -17,6 +17,7 @@ import { DecoLines } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
+import { useOnboarding } from '@/context/OnboardingContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -28,6 +29,8 @@ import { useQuota } from '@/hooks/useQuota';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
+import { buildFirstValueProperties } from '@/lib/activationAnalytics';
+import { trackProductEvent } from '@/lib/analytics';
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamSyncState, normalizeDreamMemoryMetadata } from '@/lib/dreamUtils';
@@ -213,6 +216,7 @@ export default function JournalDetailScreen() {
     analyzeDream,
   } = useDreams();
   const { user } = useAuth();
+  const { state: onboardingState, transition: transitionOnboarding } = useOnboarding();
   const { colors, shadows, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { language } = useLanguage();
@@ -241,6 +245,7 @@ export default function JournalDetailScreen() {
   const [referenceImages, setReferenceImages] = useState<ReferenceImage[]>([]);
   const [isGeneratingWithReference, setIsGeneratingWithReference] = useState(false);
   const hasBackfilledSubjectRef = useRef(false);
+  const trackedAnalysisResultRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (isShareModalVisible) {
@@ -424,6 +429,38 @@ export default function JournalDetailScreen() {
   const { shareImageRef, shareComposite } = useDreamShareComposite();
 
   const analysisState = useMemo(() => getDreamAnalysisState(dream), [dream]);
+
+  useEffect(() => {
+    if (
+      !dream ||
+      !analysisState.isAnalyzed ||
+      !dream.interpretation?.trim() ||
+      trackedAnalysisResultRef.current === dream.id
+    ) {
+      return;
+    }
+
+    trackedAnalysisResultRef.current = dream.id;
+    const isOnboardingResult =
+      onboardingState.pendingRecordingIntent?.savedDreamId === dream.id;
+
+    void trackProductEvent('analysis_result_viewed', {
+      source: isOnboardingResult ? 'recording_flow' : 'journal_detail',
+    });
+    if (onboardingState.completionReason === 'analyze') {
+      void trackProductEvent(
+        'first_value_viewed',
+        buildFirstValueProperties(onboardingState, 'analysis_result')
+      );
+    }
+
+    if (isOnboardingResult) {
+      void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => {
+        // The result remains visible and the persisted intent will be retried
+        // safely on the next launch.
+      });
+    }
+  }, [analysisState.isAnalyzed, dream, onboardingState, transitionOnboarding]);
   const primaryAction = useMemo(() => getDreamDetailAction(dream), [dream]);
   const allThemesExplored = useMemo(() => {
     if (!dream) return false;

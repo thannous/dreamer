@@ -19,17 +19,6 @@ function fail(message) {
   process.exit(1);
 }
 
-function maskIdentity(value) {
-  const at = value.indexOf('@');
-  if (at > 1) {
-    return `${value.slice(0, 2)}...${value.slice(at)}`;
-  }
-  if (value.length <= 6) {
-    return 'provided';
-  }
-  return `${value.slice(0, 3)}...${value.slice(-2)}`;
-}
-
 function exactRegex(value) {
   return `^${value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`;
 }
@@ -85,12 +74,16 @@ if (paidEmail.trim().toLowerCase() === freeEmail.trim().toLowerCase()) {
 }
 
 const maestroArgs = passthroughArgs(argv);
+const targetDevice = maestroArgs[maestroArgs.indexOf('--device') + 1];
+if (!/^emulator-\d+$/.test(targetDevice)) {
+  fail('RevenueCat Test Store account switching is emulator-only; refusing a physical Play device.');
+}
 
 if (preflight) {
   console.log('Account switch preflight passed.');
   console.log('Precondition: app is currently signed in as the paid Plus account.');
-  console.log(`Paid account: ${maskIdentity(paidEmail)}`);
-  console.log(`Second account: ${maskIdentity(freeEmail)}`);
+  console.log('Paid account: configured');
+  console.log('Second account: configured and distinct');
   console.log(`Approval present: ${approval === APPROVAL ? 'yes' : 'no'}`);
   console.log(`Flow: ${FLOW}`);
   console.log(`Maestro args: ${maestroArgs.length > 0 ? maestroArgs.join(' ') : 'none'}`);

@@ -811,31 +811,32 @@
       "de": {
         "slug": "haus",
         "name": "Haus",
-        "shortDescription": "Ein Haus im Traum spricht oft über das Selbst, innere Sicherheit und persönliche Geschichte. Ein unbekanntes Haus zeigt einen unerforschten Teil von Ihnen; ein zerstörtes Haus lädt zum Wiederaufbau ein.",
+        "shortDescription": "Ein Haus im Traum kann Themen wie Sicherheit, Privatleben, Familie oder Selbstbild aufnehmen. Ob es vertraut, unbekannt, alt oder beschädigt war und welcher Raum auffiel, verändert die Deutung.",
         "askYourself": [
-          "War das Haus vertraut, unbekannt, alt oder zerstört?",
-          "In welchem Raum war ich, und welche Emotion war am stärksten?",
-          "Welcher Teil meines Innenlebens braucht mehr Aufmerksamkeit?"
+          "War das Haus vertraut, unbekannt, leer, alt oder beschädigt?",
+          "Welcher Raum oder Gegenstand fiel mir besonders auf?",
+          "Welche aktuelle Frage zu Zuhause, Sicherheit oder Privatsphäre passt zu diesem Gefühl?"
         ],
-        "seoTitle": "unbekanntes, altes oder zerstörtes Haus",
+        "seoTitle": "unbekanntes, altes oder kaputtes Haus",
         "faq": [
           {
             "question": "Was bedeutet ein Haus im Traum?",
-            "answer": "Ein Haus verweist oft auf Innenwelt, Sicherheit, Familie oder Identität. Räume, Zustand und Gefühl bestimmen die Deutung."
+            "answer": "Ein Haus kann mit Sicherheit, Privatleben, Familie oder dem eigenen Selbstbild verbunden sein. Entscheidend sind Zustand, Räume, anwesende Personen und Ihr Gefühl im Traum."
           },
           {
             "question": "Was bedeutet ein unbekanntes Haus im Traum?",
-            "answer": "Ein unbekanntes Haus kann einen Teil von Ihnen darstellen, den Sie gerade entdecken, oder eine neue Situation, in der Sie Ihren Platz suchen."
+            "answer": "Ein unbekanntes Haus kann zu einer neuen Lebenssituation oder zu Seiten an Ihnen passen, die Ihnen noch wenig vertraut sind. Neugier, Angst oder Geborgenheit geben jeweils eine andere Richtung."
           },
           {
-            "question": "Was bedeutet ein altes Haus im Traum?",
-            "answer": "Ein altes Haus erinnert oft an Vergangenheit, Familienerinnerungen oder alte Gewohnheiten, die die Gegenwart noch beeinflussen."
+            "question": "Was bedeutet ein altes Haus oder das Elternhaus im Traum?",
+            "answer": "Ein altes Haus oder das Elternhaus kann Erinnerungen, familiäre Rollen und frühere Gewohnheiten aufgreifen. Der Traum zeigt nicht automatisch ein Problem; achten Sie darauf, was sich vertraut oder einengend anfühlte."
           },
           {
-            "question": "Was bedeutet ein zerstörtes Haus im Traum?",
-            "answer": "Ein zerstörtes Haus kann Müdigkeit, verlorene Sicherheit oder den Wunsch nach einer stabileren emotionalen Basis anzeigen."
+            "question": "Was bedeutet ein kaputtes oder einstürzendes Haus im Traum?",
+            "answer": "Ein beschädigtes Haus kann Unsicherheit, Erschöpfung oder den Wunsch nach Veränderung widerspiegeln. Welche Stelle kaputt war und ob Sie reparierten, flohen oder zusahen, liefert den Kontext."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-10"
       },
       "it": {
         "slug": "casa",
@@ -914,20 +915,62 @@
       "de": {
         "slug": "meer",
         "name": "Meer / Ozean",
-        "shortDescription": "Der Ozean repräsentiert das weite Unterbewusstsein und tiefe Emotionen. Seine Tiefe spiegelt unerforschte Gefühle wider, während seine Oberfläche Ihr Bewusstsein darstellt.",
+        "shortDescription": "Ein Meer oder Ozean im Traum kann Weite, starke Gefühle, Freiheit oder Unsicherheit ausdrücken. Ruhige See, Sturm, Tiefe, Ufer und Ihre Nähe zum Wasser bestimmen den möglichen Sinn.",
         "askYourself": [
-          "Welche tiefen Emotionen habe ich nicht erforscht?",
-          "Wie gehe ich mit überwältigenden Gefühlen um?"
-        ]
+          "War das Meer ruhig, stürmisch, klar, dunkel oder außergewöhnlich tief?",
+          "Stand ich am Ufer, schwamm ich, fuhr ich auf dem Wasser oder ging ich unter?",
+          "Welche aktuelle Situation fühlt sich weit, befreiend oder schwer kontrollierbar an?"
+        ],
+        "seoTitle": "Meer, hohe Wellen oder darin schwimmen",
+        "faq": [
+          {
+            "question": "Was bedeutet das Meer im Traum?",
+            "answer": "Das Meer kann mit Weite, Gefühlen, Freiheit oder Unsicherheit verbunden sein. Wetter, Wellen, Wassertiefe, Ihre Position und die Stimmung zeigen, welche Lesart am ehesten passt."
+          },
+          {
+            "question": "Was bedeutet ein ruhiges Meer im Traum?",
+            "answer": "Ein ruhiges Meer kann Erholung, Akzeptanz oder das Bedürfnis nach innerer Ruhe widerspiegeln. Wenn die Weite unangenehm wirkte, kann dieselbe Szene auch Einsamkeit oder Orientierungslosigkeit ausdrücken."
+          },
+          {
+            "question": "Was bedeuten Sturm oder hohe Wellen im Meertraum?",
+            "answer": "Sturm und hohe Wellen können zu Stress, wechselnden Gefühlen oder einer schwer planbaren Situation passen. Ihre Reaktion im Traum zeigt, ob Sie sich überfordert oder handlungsfähig fühlten."
+          },
+          {
+            "question": "Was bedeutet Schwimmen oder Untergehen im Meer?",
+            "answer": "Schwimmen kann den aktiven Umgang mit einer großen Aufgabe oder Gefühlslage spiegeln. Unterzugehen kann sich auf Überforderung beziehen, ist aber keine Diagnose; wichtig ist, ob Hilfe oder ein Ausweg erschien."
+          }
+        ],
+        "modifiedAt": "2026-07-10"
       },
       "it": {
         "slug": "oceano",
         "name": "Oceano / Mare",
-        "shortDescription": "L'oceano rappresenta il vasto subconscio e le emozioni profonde. La sua profondità riflette sentimenti inesplorati, mentre la sua superficie rappresenta la coscienza.",
+        "shortDescription": "Sognare l’oceano o il mare può richiamare libertà, emozioni intense, distanza o incertezza. Acqua calma, onde alte, profondità, riva e modo di muoverti cambiano la lettura.",
         "askYourself": [
-          "Quali emozioni profonde non ho esplorato?",
-          "Come gestisco i sentimenti travolgenti?"
-        ]
+          "Il mare era calmo, agitato, limpido, scuro o molto profondo?",
+          "Ero sulla riva, nuotavo, navigavo oppure rischiavo di affondare?",
+          "Quale situazione attuale mi sembra vasta, liberatoria o difficile da controllare?"
+        ],
+        "seoTitle": "oceano calmo, onde alte o nuotare",
+        "faq": [
+          {
+            "question": "Cosa significa sognare l’oceano o il mare?",
+            "answer": "L’oceano può collegarsi a libertà, emozioni, distanza o incertezza. Il tempo, le onde, la profondità, la tua posizione e l’emozione indicano quale lettura è più adatta."
+          },
+          {
+            "question": "Cosa significa sognare un mare calmo?",
+            "answer": "Un mare calmo può accompagnare serenità, accettazione o bisogno di riposo. Se la distesa d’acqua ti metteva a disagio, la stessa scena può invece riflettere solitudine o mancanza di punti di riferimento."
+          },
+          {
+            "question": "Cosa significa sognare mare agitato o onde alte?",
+            "answer": "Mare agitato e onde alte possono rispecchiare stress, emozioni mutevoli o una situazione poco prevedibile. La tua reazione mostra se ti sentivi sopraffatto oppure capace di adattarti."
+          },
+          {
+            "question": "Cosa significa nuotare o affondare nell’oceano in sogno?",
+            "answer": "Nuotare può riflettere il modo in cui affronti un compito o un’emozione ampia. Affondare può richiamare sovraccarico, senza essere una diagnosi; conta se comparivano aiuto, riva o una via d’uscita."
+          }
+        ],
+        "modifiedAt": "2026-07-10"
       },
       "relatedSymbols": [
         "water",
@@ -1104,35 +1147,32 @@
       "de": {
         "slug": "hund",
         "name": "Hund",
-        "shortDescription": "Traumdeutung Hund: Ein Hund steht meist für Vertrauen, Loyalität und Schutz. Ein aggressiver Hund, der beißt, angreift oder knurrt, zeigt Konflikt; Welpen und freundliche Hunde sprechen eher für Nähe oder neue Bindungen.",
+        "shortDescription": "Ein Hund im Traum kann Vertrauen, Nähe, Schutz oder Anspannung in Beziehungen aufgreifen. Ob er freundlich, verletzt, herrenlos oder aggressiv war und wie Sie reagierten, entscheidet über den Kontext.",
         "askYourself": [
-          "War der Hund freundlich, aggressiv, ein Welpe, herrenlos oder beschützend?",
-          "Hat er gebissen, angegriffen, geknurrt, ist gestorben oder weggelaufen?",
-          "Welche Vertrauensbeziehung wirkt gerade stark, fragil oder verletzt?"
+          "War der Hund vertraut, freundlich, aggressiv, verletzt oder herrenlos?",
+          "Hat er mich begleitet, beschützt, verfolgt, angeknurrt oder gebissen?",
+          "Welche aktuelle Beziehung löst ein ähnliches Gefühl von Vertrauen oder Vorsicht aus?"
         ],
-        "seoTitle": "Hund aggressiv, Hundebiss oder Welpe",
+        "seoTitle": "Hund, Hundebiss oder Welpe",
         "faq": [
           {
             "question": "Was bedeutet ein Hund im Traum?",
-            "answer": "Ein Hund im Traum betrifft oft Vertrauen, Loyalität, Schutz und Beziehungen. Die Bedeutung hängt davon ab, ob der Hund freundlich, aggressiv, herrenlos, verletzt oder dir gefolgt ist."
+            "answer": "Ein Hund kann Vertrauen, Begleitung, Schutz oder Vorsicht in Beziehungen ausdrücken. Sein Verhalten, Ihre Verbindung zu Hunden und das Gefühl der Szene sind wichtiger als eine feste Bedeutung."
           },
           {
-            "question": "Was bedeutet ein Hund, der beißt?",
-            "answer": "Ein Hundebiss deutet auf verletztes Vertrauen, harte Worte oder eine schützende Beziehung hin, die schmerzhaft geworden ist. Wichtig ist, wen der Hund gebissen hat und wie du reagiert hast."
+            "question": "Was bedeutet ein aggressiver oder beißender Hund im Traum?",
+            "answer": "Ein aggressiver Hund oder Hundebiss kann Angst, einen Beziehungskonflikt oder verletztes Vertrauen widerspiegeln. Der Traum sagt keinen realen Angriff voraus; beachten Sie, wer bedroht wurde und wie Sie reagierten."
           },
           {
             "question": "Was bedeuten Welpen oder freundliche Hunde im Traum?",
-            "answer": "Welpen und freundliche Hunde können Nähe, Loyalität, spielerisches Vertrauen oder eine neue Bindung zeigen. Sie fragen oft, welche Beziehung gerade wachsen darf."
+            "answer": "Ein Welpe oder freundlicher Hund kann zu Nähe, Fürsorge, spielerischem Vertrauen oder einer neuen Bindung passen. Wenn die Aufmerksamkeit anstrengend war, kann die Szene auch Verantwortung betonen."
           },
           {
-            "question": "Was bedeutet es, wenn ein Hund stirbt oder wegläuft?",
-            "answer": "Ein sterbender oder weglaufender Hund kann auf Angst vor Verlust, eine vernachlässigte Beziehung oder ein Vertrauen hinweisen, das gerade weniger sicher wirkt."
-          },
-          {
-            "question": "Warum geht es bei Hundeträumen oft um Vertrauen und Loyalität?",
-            "answer": "Hunde sind kulturell stark mit Begleitung, Schutz und Treue verbunden. Im Traum zeigt ihr Verhalten deshalb oft, wie sicher oder angespannt sich eine Bindung anfühlt."
+            "question": "Was bedeutet ein verletzter, verlorener oder sterbender Hund im Traum?",
+            "answer": "Ein verletzter oder verlorener Hund kann Sorge um eine Bindung, Schuldgefühl oder das Bedürfnis nach Fürsorge ausdrücken. Bei einem verstorbenen eigenen Tier kann der Traum auch Erinnerungen und Trauer verarbeiten."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-10"
       },
       "it": {
         "slug": "cane",
@@ -1689,38 +1729,122 @@
       "fr": {
         "slug": "voiture",
         "name": "Voiture",
-        "shortDescription": "La voiture représente le contrôle sur votre vie. Être au volant indique le contrôle, être passager peut suggérer que quelqu'un d'autre dirige votre vie.",
+        "shortDescription": "Rêver d’une voiture peut refléter votre manière d’avancer, de choisir une direction ou de partager le contrôle. Votre place, l’état du véhicule et l’émotion ressentie comptent davantage qu’une signification fixe.",
         "askYourself": [
-          "Est-ce que je suis aux commandes de ma vie ?",
-          "Qui dirige ma trajectoire ?"
-        ]
+          "Étais-je au volant, passager ou à l’extérieur de la voiture ?",
+          "La voiture avançait-elle bien, tombait-elle en panne ou risquait-elle un accident ?",
+          "Quelle décision ou quel changement actuel ressemble au trajet du rêve ?"
+        ],
+        "seoTitle": "voiture, conduite ou panne",
+        "faq": [
+          {
+            "question": "Que signifie rêver d’une voiture ?",
+            "answer": "Une voiture peut évoquer votre autonomie, votre direction ou votre rythme de vie. Pour préciser la lecture, observez qui conduisait, l’état du véhicule, la destination et votre émotion."
+          },
+          {
+            "question": "Que signifie conduire une voiture dans un rêve ?",
+            "answer": "Conduire peut refléter le sentiment de choisir votre route. Une conduite fluide peut accompagner la confiance, tandis qu’une conduite difficile peut faire écho à une décision ou à une responsabilité pesante."
+          },
+          {
+            "question": "Que signifie être passager d’une voiture en rêve ?",
+            "answer": "Être passager peut suggérer que vous faites confiance à quelqu’un, que vous acceptez de ne pas tout diriger ou que vous manquez de marge de manœuvre. L’identité du conducteur apporte le contexte essentiel."
+          },
+          {
+            "question": "Que signifie rêver d’une voiture en panne ou accidentée ?",
+            "answer": "Une panne peut correspondre à un ralentissement, un manque d’énergie ou un plan à revoir. Un accident peut traduire la crainte d’une perte de contrôle ou d’un conflit, sans annoncer un événement réel."
+          }
+        ],
+        "modifiedAt": "2026-07-10"
       },
       "es": {
         "slug": "coche",
         "name": "Coche",
-        "shortDescription": "Un coche representa el control sobre tu vida. Estar al volante indica control; ser pasajero puede sugerir que alguien más dirige tu vida.",
+        "shortDescription": "Soñar con un coche puede reflejar cómo avanzas, tomas decisiones o compartes el control. Quién conduce, el estado del vehículo, el destino y la emoción orientan el significado.",
         "askYourself": [
-          "¿Tengo control de mi vida?",
-          "¿Quién está dirigiendo mi trayectoria?"
-        ]
+          "¿Conducía yo, iba de copiloto o miraba el coche desde fuera?",
+          "¿El coche avanzaba bien, se averiaba, iba sin frenos o sufría un accidente?",
+          "¿Qué decisión o cambio actual se parece a ese trayecto?"
+        ],
+        "seoTitle": "coche, conducir o perder el control",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un coche?",
+            "answer": "Un coche puede relacionarse con autonomía, dirección y ritmo personal. La lectura cambia según quién conduce, adónde vais, cómo funciona el vehículo y qué sentías."
+          },
+          {
+            "question": "¿Qué significa soñar que conduces un coche?",
+            "answer": "Conducir puede reflejar que tomas decisiones o asumes responsabilidad. Si el trayecto era tranquilo puede acompañar confianza; si resultaba difícil, puede señalar dudas o presión ante una elección."
+          },
+          {
+            "question": "¿Qué significa ir de pasajero en un coche?",
+            "answer": "Ir de pasajero puede indicar confianza en otra persona, una decisión compartida o la sensación de tener poco margen. Fíjate en quién conducía y si te sentías seguro."
+          },
+          {
+            "question": "¿Qué significa soñar con un coche averiado o un accidente?",
+            "answer": "Una avería puede reflejar cansancio, retrasos o un plan que necesita ajustes. Un accidente puede expresar miedo a perder el control o a que dos objetivos choquen, pero no predice un accidente real."
+          }
+        ],
+        "modifiedAt": "2026-07-10"
       },
       "de": {
         "slug": "auto",
         "name": "Auto",
-        "shortDescription": "Autos repräsentieren Ihre Lebensrichtung und die Kontrolle über Ihren Lebensweg. Der Zustand des Autos und Ihre Rolle (Fahrer oder Beifahrer) sind wichtige Hinweise.",
+        "shortDescription": "Ein Auto im Traum kann zeigen, wie Sie Entscheidungen, Tempo und Eigenständigkeit erleben. Ob Sie fahren oder mitfahren, der Zustand des Wagens und das Gefühl unterwegs geben den entscheidenden Kontext.",
         "askYourself": [
-          "Habe ich die Kontrolle über meine Lebensrichtung?",
-          "Wohin führt mich mein aktueller Weg?"
-        ]
+          "Saß ich am Steuer, war ich Beifahrer oder stand ich neben dem Auto?",
+          "Fuhr der Wagen sicher, hatte er eine Panne oder geriet er außer Kontrolle?",
+          "Welche aktuelle Entscheidung fühlt sich wie diese Fahrt an?"
+        ],
+        "seoTitle": "Auto fahren, Panne oder Unfall",
+        "faq": [
+          {
+            "question": "Was bedeutet ein Auto im Traum?",
+            "answer": "Ein Auto kann für Selbstständigkeit, Richtung oder persönliches Tempo stehen. Wer fuhr, wohin die Fahrt ging, wie der Wagen aussah und wie Sie sich fühlten, bestimmt die mögliche Deutung."
+          },
+          {
+            "question": "Was bedeutet es, im Traum selbst Auto zu fahren?",
+            "answer": "Selbst zu fahren kann das Gefühl widerspiegeln, Entscheidungen aktiv zu treffen. Eine ruhige Fahrt kann zu Zuversicht passen; schwieriges Fahren eher zu Druck, Zweifel oder hoher Verantwortung."
+          },
+          {
+            "question": "Was bedeutet es, im Traum Beifahrer zu sein?",
+            "answer": "Als Beifahrer vertrauen Sie möglicherweise jemandem, teilen Verantwortung oder erleben wenig Einfluss. Wichtig ist, wer gefahren ist und ob die Situation sicher oder unangenehm wirkte."
+          },
+          {
+            "question": "Was bedeuten Autopanne oder Autounfall im Traum?",
+            "answer": "Eine Panne kann auf Erschöpfung, Verzögerung oder einen Plan mit Reparaturbedarf hinweisen. Ein Unfall kann Angst vor Kontrollverlust oder einem Konflikt ausdrücken, sagt aber kein reales Ereignis voraus."
+          }
+        ],
+        "modifiedAt": "2026-07-10"
       },
       "it": {
         "slug": "automobile",
         "name": "Automobile",
-        "shortDescription": "Le automobili rappresentano la direzione della tua vita e il controllo sul tuo percorso. Le condizioni dell'auto e il tuo ruolo (conducente o passeggero) sono indizi importanti.",
+        "shortDescription": "Sognare un’automobile può riflettere il modo in cui procedi, scegli una direzione o condividi il controllo. Chi guida, le condizioni dell’auto, la destinazione e l’emozione chiariscono il contesto.",
         "askYourself": [
-          "Ho il controllo della direzione della mia vita?",
-          "Dove mi sta portando il mio percorso attuale?"
-        ]
+          "Ero alla guida, passeggero o osservavo l’automobile da fuori?",
+          "L’auto funzionava bene, era guasta, senza freni o coinvolta in un incidente?",
+          "Quale scelta o cambiamento attuale assomiglia a quel viaggio?"
+        ],
+        "seoTitle": "automobile, guida o perdita di controllo",
+        "faq": [
+          {
+            "question": "Cosa significa sognare un’automobile?",
+            "answer": "Un’automobile può richiamare autonomia, direzione e ritmo personale. Il significato cambia in base a chi guidava, alla meta, allo stato del veicolo e a come ti sentivi."
+          },
+          {
+            "question": "Cosa significa sognare di guidare un’automobile?",
+            "answer": "Guidare può riflettere decisioni attive e responsabilità. Una guida tranquilla può accompagnare sicurezza; una guida difficile può rispecchiare dubbi o pressione davanti a una scelta."
+          },
+          {
+            "question": "Cosa significa essere passeggero in auto in un sogno?",
+            "answer": "Essere passeggero può indicare fiducia in qualcuno, responsabilità condivisa o poco margine di scelta. Conta soprattutto chi guidava e se il viaggio ti faceva sentire al sicuro."
+          },
+          {
+            "question": "Cosa significa sognare un’auto guasta o un incidente?",
+            "answer": "Un guasto può riflettere stanchezza, ritardi o un progetto da rivedere. Un incidente può esprimere paura di perdere il controllo o di vedere due obiettivi scontrarsi, senza prevedere eventi reali."
+          }
+        ],
+        "modifiedAt": "2026-07-10"
       },
       "relatedSymbols": [
         "road",
@@ -1870,27 +1994,32 @@
       "it": {
         "slug": "porta",
         "name": "Porta",
-        "shortDescription": "Sognare una porta parla di passaggi, opportunità e confini personali. Una porta aperta indica accesso o cambiamento; una porta chiusa segnala ostacoli o una decisione rimandata.",
+        "shortDescription": "Sognare una porta può riguardare una scelta, un passaggio o un confine personale. Che sia aperta, chiusa, bloccata o la porta di casa cambia il senso insieme alla tua reazione.",
         "askYourself": [
-          "Quale passaggio sto per attraversare?",
-          "Sto cercando di aprire o chiudere una fase della mia vita?",
-          "La porta era di casa, aperta, chiusa o difficile da aprire?"
+          "La porta era aperta, chiusa, bloccata, rotta o apparteneva a casa mia?",
+          "Cercavo di aprirla, chiuderla, attraversarla o proteggerla?",
+          "Quale scelta, opportunità o limite attuale assomiglia a quella soglia?"
         ],
         "faq": [
           {
             "question": "Cosa significa sognare una porta?",
-            "answer": "Sognare una porta indica spesso una transizione, una scelta o un confine personale. Il significato cambia se la porta è aperta, chiusa, bloccata o collegata alla casa."
+            "answer": "Una porta può richiamare una scelta, una transizione, un’opportunità o un confine. Stato della porta, luogo, azione ed emozione aiutano a capire quale tema si avvicina di più al sogno."
           },
           {
             "question": "Cosa significa sognare la porta di casa aperta?",
-            "answer": "La porta di casa aperta può riflettere vulnerabilità, fiducia o qualcosa della vita privata che senti esposto. In alcuni sogni indica anche disponibilità al cambiamento."
+            "answer": "La porta di casa aperta può riflettere fiducia, disponibilità oppure la sensazione che la tua sfera privata sia esposta. Il fatto che ti sentissi tranquillo o in pericolo cambia la lettura."
           },
           {
             "question": "Cosa significa sognare una porta che si apre?",
-            "answer": "Una porta che si apre suggerisce possibilità, accesso a una nuova fase o una soluzione che inizia a diventare disponibile."
+            "answer": "Una porta che si apre può accompagnare una possibilità, un permesso o una soluzione. Se non volevi attraversarla, può invece mettere in luce esitazione davanti al cambiamento."
+          },
+          {
+            "question": "Cosa significa sognare una porta chiusa o bloccata?",
+            "answer": "Una porta chiusa o bloccata può riflettere un limite, un ritardo o una scelta non ancora pronta. Cercare una chiave, forzare la porta o tornare indietro mostra come affronti l’ostacolo."
           }
         ],
-        "seoTitle": "una porta aperta o chiusa"
+        "seoTitle": "porta aperta, chiusa o bloccata",
+        "modifiedAt": "2026-07-10"
       },
       "relatedSymbols": [
         "key",
@@ -2168,33 +2297,29 @@
       "es": {
         "slug": "puente",
         "name": "Puente",
-        "shortDescription": "Soñar con un puente habla de transición y avance: cruzar un puente, verlo roto, pasar por un puente colgante o peligroso, o notar agua debajo mientras intentas llegar al otro lado.",
+        "shortDescription": "Soñar con un puente puede reflejar una transición, una conexión o una decisión en curso. Cruzarlo, verlo roto o sentir vértigo sobre el agua aporta el contexto real del sueño.",
         "askYourself": [
-          "¿Cruzaba el puente o me quedaba antes de pasar?",
-          "¿El puente estaba roto, colgante, de madera, peligroso o sobre agua?",
-          "¿Qué cambio estoy intentando atravesar sin perder estabilidad?"
+          "¿Cruzaba el puente, regresaba o me detenía antes de pasar?",
+          "¿Era estable, colgante, roto o estaba sobre agua agitada?",
+          "¿Qué cambio o relación actual requiere pasar de una etapa a otra?"
         ],
-        "seoTitle": "puente roto, agua o cruzarlo",
+        "seoTitle": "puente roto, con agua o cruzarlo",
         "faq": [
           {
             "question": "¿Qué significa soñar con un puente?",
-            "answer": "Un puente representa paso, conexión y cambio de etapa. Cruzarlo suele hablar de avance; no poder cruzarlo muestra duda, miedo o falta de apoyo."
+            "answer": "Un puente puede relacionarse con una transición, una conexión o una decisión. Su estado, lo que había debajo, si lo cruzabas y cómo te sentías ayudan a interpretar la escena."
           },
           {
             "question": "¿Qué significa soñar con cruzar un puente?",
-            "answer": "Cruzar un puente señala decisión, movimiento y disposición a dejar algo atrás. Si lo cruzas con alguien, observa qué papel tiene esa persona en el cambio."
+            "answer": "Cruzar un puente puede acompañar la decisión de avanzar o dejar una etapa atrás. Si ibas con alguien, esa persona puede dar una pista sobre el apoyo o la tensión presentes en el cambio."
           },
           {
             "question": "¿Qué significa soñar con un puente roto?",
-            "answer": "Un puente roto indica miedo a que una transición falle, una relación dañada o la sensación de que el camino actual no es seguro."
+            "answer": "Un puente roto puede reflejar dudas sobre una transición, una conexión debilitada o la sensación de no contar con una vía segura. No implica que el cambio vaya a fracasar."
           },
           {
             "question": "¿Qué significa soñar con un puente y agua?",
-            "answer": "El agua añade carga emocional. Un puente sobre agua, roto o peligroso puede mostrar que intentas avanzar mientras manejas incertidumbre, miedo o emociones intensas."
-          },
-          {
-            "question": "¿Qué significa un puente colgante, de madera o peligroso?",
-            "answer": "Estos detalles hablan de confianza en el paso. Un puente colgante o débil puede mostrar inseguridad; uno de madera puede indicar una transición sencilla, antigua o menos estable."
+            "answer": "El agua puede añadir una dimensión emocional. Agua tranquila bajo un puente se siente distinta de una corriente fuerte; observa si podías avanzar con calma o temías perder estabilidad."
           }
         ],
         "softCta": {
@@ -2203,7 +2328,8 @@
           "text": "Registra el sueño y compara después si aparecen de nuevo puentes, agua, caminos o puertas. Las repeticiones suelen aclarar el tema.",
           "button": "Probar la app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
-        }
+        },
+        "modifiedAt": "2026-07-10"
       },
       "de": {
         "slug": "bruecke",
@@ -2525,45 +2651,91 @@
       "en": {
         "slug": "forest",
         "name": "Forest",
-        "shortDescription": "The forest represents the subconscious, mystery, and self-exploration. Getting lost in a forest can symbolize confusion or searching for direction in life.",
+        "shortDescription": "A forest in a dream can represent uncertainty, exploration, privacy, growth, or feeling overwhelmed. Its meaning depends on whether the forest felt dark or green, whether you were lost, and what was happening in your waking life.",
         "askYourself": [
-          "Am I ready to explore my subconscious?",
-          "What's hidden within me?"
-        ]
+          "What did the forest look and feel like — dark, green, dense, welcoming, or threatening?",
+          "Was I lost, exploring, hiding, or following a path?",
+          "What situation in my waking life feels uncertain, private, or ready for growth?"
+        ],
+        "faq": [
+          {
+            "question": "What does a forest represent in a dream?",
+            "answer": "A forest can represent uncertainty, exploration, privacy, growth, or a situation that feels complex. There is no universal meaning, so consider the forest's condition, your emotions, and what you were doing in the dream."
+          },
+          {
+            "question": "What does a dark forest mean in a dream?",
+            "answer": "A dark forest can reflect uncertainty, fear, limited information, or difficulty seeing a way forward. If you felt curious rather than afraid, it may instead point to exploring something unfamiliar."
+          },
+          {
+            "question": "What does a green forest mean in a dream?",
+            "answer": "A green forest can suggest growth, vitality, restoration, or a need for space and calm. The meaning changes with the atmosphere: a peaceful green forest feels different from one that is dense or difficult to cross."
+          },
+          {
+            "question": "What does being lost in a forest mean in a dream?",
+            "answer": "Being lost in a forest can mirror confusion, too many choices, or a lack of direction, but it can also accompany exploration and change. Notice whether you found a path, asked for help, or felt safe, because those details add context."
+          }
+        ],
+        "modifiedAt": "2026-07-10"
       },
       "fr": {
         "slug": "foret",
         "name": "Forêt",
-        "shortDescription": "La forêt représente l'inconscient, le mystère et l'exploration de soi. Se perdre en forêt peut symboliser la confusion ou la recherche de direction dans la vie.",
+        "shortDescription": "Rêver d’une forêt peut évoquer l’incertitude, l’exploration, le besoin de calme ou une situation difficile à lire. Une forêt sombre, verte ou sans chemin ne raconte pas la même chose selon votre émotion.",
         "askYourself": [
-          "Suis-je prêt à explorer mon inconscient ?",
-          "Qu'est-ce qui est caché en moi ?"
-        ]
+          "La forêt était-elle sombre, verte, dense, accueillante ou inquiétante ?",
+          "Étais-je perdu, caché, en promenade ou guidé par un chemin ?",
+          "Quelle situation actuelle me demande d’avancer sans tout voir clairement ?"
+        ],
+        "seoTitle": "forêt sombre, verte ou se perdre",
+        "faq": [
+          {
+            "question": "Que signifie rêver d’une forêt ?",
+            "answer": "Une forêt peut correspondre à une période d’exploration, d’incertitude, de retrait ou de croissance. Sa lumière, ses chemins, votre action et votre émotion donnent une lecture plus juste qu’un sens universel."
+          },
+          {
+            "question": "Que signifie rêver d’une forêt sombre ?",
+            "answer": "Une forêt sombre peut faire écho à la peur, au manque d’informations ou à une situation dont l’issue reste floue. Si vous étiez curieux plutôt qu’inquiet, elle peut aussi accompagner une découverte."
+          },
+          {
+            "question": "Que signifie rêver d’une forêt verte ?",
+            "answer": "Une forêt verte peut suggérer vitalité, repos, renouveau ou besoin de nature. Une ambiance paisible oriente vers la récupération; une végétation étouffante peut plutôt évoquer la surcharge."
+          },
+          {
+            "question": "Que signifie se perdre dans une forêt en rêve ?",
+            "answer": "Se perdre peut refléter une hésitation, trop de choix ou l’absence de repères. Le fait de retrouver un chemin, de demander de l’aide ou de rester calme change nettement l’interprétation."
+          }
+        ],
+        "modifiedAt": "2026-07-10"
       },
       "es": {
         "slug": "bosque",
         "name": "Bosque",
-        "shortDescription": "Soñar con un bosque refleja exploración interior, incertidumbre y contacto con lo desconocido. Un bosque oscuro señala miedo o confusión; uno verde puede indicar crecimiento.",
+        "shortDescription": "Soñar con un bosque puede reflejar incertidumbre, exploración, necesidad de refugio o crecimiento. Un bosque oscuro, verde o sin sendero cambia de sentido según lo que hacías y sentías.",
         "askYourself": [
-          "¿Me sentía perdido, curioso o protegido en el bosque?",
-          "¿El bosque era oscuro, verde, grande o de noche?",
-          "¿Qué parte de mi vida se siente incierta ahora?"
+          "¿El bosque era oscuro, verde, denso, acogedor o amenazante?",
+          "¿Estaba perdido, escondido, explorando o siguiendo un sendero?",
+          "¿Qué situación actual me obliga a avanzar sin verlo todo claro?"
         ],
-        "seoTitle": "un bosque oscuro o verde",
+        "seoTitle": "bosque oscuro, verde o perderse",
         "faq": [
           {
             "question": "¿Qué significa soñar con un bosque?",
-            "answer": "Soñar con un bosque suele simbolizar entrar en una zona desconocida de tu vida o de tu mundo interior. Puede hablar de búsqueda, miedo, crecimiento o necesidad de orientación."
+            "answer": "Un bosque puede relacionarse con una etapa de exploración, incertidumbre, refugio o crecimiento. La luz, los caminos, tu acción y la emoción ofrecen más contexto que una interpretación universal."
           },
           {
             "question": "¿Qué significa soñar con un bosque oscuro?",
-            "answer": "Un bosque oscuro refleja incertidumbre, miedo a lo desconocido o una etapa en la que no ves claro el camino. No siempre es negativo: también puede marcar el inicio de una exploración profunda."
+            "answer": "Un bosque oscuro puede reflejar miedo, falta de información o una situación cuyo desenlace no ves claro. Si sentías curiosidad en vez de peligro, también puede acompañar un descubrimiento."
           },
           {
             "question": "¿Qué significa soñar con un bosque verde?",
-            "answer": "Un bosque verde suele asociarse con crecimiento, recuperación y conexión natural. Puede indicar que algo interno está madurando aunque todavía no esté completamente claro."
+            "answer": "Un bosque verde puede sugerir vitalidad, descanso, renovación o necesidad de contacto con la naturaleza. Si la vegetación te agobiaba, en cambio, podría reflejar saturación."
+          },
+          {
+            "question": "¿Qué significa perderse en un bosque en un sueño?",
+            "answer": "Perderse puede reflejar dudas, demasiadas opciones o falta de referencias. Encontrar un sendero, pedir ayuda o mantener la calma cambia la lectura y puede mostrar recursos disponibles."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-10"
       },
       "de": {
         "slug": "wald",
@@ -2589,6 +2761,7 @@
         "path"
       ],
       "relatedArticles": {
+        "en": "dream-meanings",
         "de": "",
         "it": ""
       }
@@ -3021,11 +3194,32 @@
       "it": {
         "slug": "bambino",
         "name": "Bambino",
-        "shortDescription": "I bambini nei sogni rappresentano il tuo bambino interiore, innocenza, giocosità e potenziale non sfruttato. Possono indicare il bisogno di più gioia e spontaneità.",
+        "shortDescription": "Sognare un bambino può riguardare cura, vulnerabilità, ricordi, responsabilità o qualcosa di nuovo che sta crescendo. Età, identità, comportamento ed emozione evitano letture automatiche.",
         "askYourself": [
-          "Quanto sono connesso con il mio bambino interiore?",
-          "Di cosa ho bisogno per provare più gioia?"
-        ]
+          "Conoscevo il bambino oppure era sconosciuto, neonato o più grande?",
+          "Piangeva, giocava, si perdeva o aveva bisogno di protezione?",
+          "Quale responsabilità, ricordo o nuovo progetto suscita oggi la stessa emozione?"
+        ],
+        "seoTitle": "bambino che piange, si perde o gioca",
+        "faq": [
+          {
+            "question": "Cosa significa sognare un bambino?",
+            "answer": "Un bambino può richiamare cura, vulnerabilità, ricordi, responsabilità o un progetto agli inizi. Per interpretarlo conta sapere chi era, cosa faceva e come ti sentivi."
+          },
+          {
+            "question": "Cosa significa sognare un bambino piccolo o sconosciuto?",
+            "answer": "Un bambino piccolo o sconosciuto può rappresentare qualcosa di recente, fragile o ancora poco familiare. Può essere un’idea, un ruolo o una parte della vita che richiede attenzione, non per forza il desiderio di avere figli."
+          },
+          {
+            "question": "Cosa significa sognare un bambino che piange o si perde?",
+            "answer": "Un bambino che piange o si perde può riflettere preoccupazione, impotenza o un bisogno trascurato. Se il sogno riguarda un bambino reale, può anche riprendere semplicemente timori quotidiani."
+          },
+          {
+            "question": "Cosa significa proteggere o tenere in braccio un bambino in sogno?",
+            "answer": "Proteggere o tenere un bambino può accompagnare cura, responsabilità o il desiderio di sostenere qualcosa che sta crescendo. La calma o la fatica provata chiariscono il tono della scena."
+          }
+        ],
+        "modifiedAt": "2026-07-10"
       },
       "relatedSymbols": [
         "baby",
@@ -4314,29 +4508,29 @@
       "es": {
         "slug": "lobo",
         "name": "Lobo",
-        "shortDescription": "Soñar con lobos apunta a instinto, protección, amenaza y pertenencia: un lobo solo, varios lobos, una manada, lobos que atacan o un lobo que observa.",
+        "shortDescription": "Soñar con un lobo puede relacionarse con instinto, cautela, independencia o pertenencia. No significa lo mismo un lobo que observa, protege, huye o ataca; la emoción marca la diferencia.",
         "askYourself": [
-          "¿Era un lobo solo, varios lobos o una manada?",
-          "¿El lobo atacaba, protegía, perseguía o solo me miraba?",
-          "¿Qué instinto, grupo o presión social se parece a esa escena?"
+          "¿Aparecía un lobo solo, una pareja o una manada?",
+          "¿Me observaba, acompañaba, protegía, perseguía o atacaba?",
+          "¿Qué relación, grupo o decisión despierta ahora esa misma cautela?"
         ],
-        "seoTitle": "lobos, un lobo o lobos que atacan",
+        "seoTitle": "lobo, manada o lobos que atacan",
         "faq": [
           {
-            "question": "¿Qué significa soñar con lobos?",
-            "answer": "Soñar con lobos puede hablar de instinto, amenaza, protección o pertenencia a un grupo. El tono cambia si los lobos atacan, acompañan, persiguen o aparecen como manada."
-          },
-          {
             "question": "¿Qué significa soñar con un lobo?",
-            "answer": "Un solo lobo suele representar intuición, independencia o una fuerza instintiva que necesitas escuchar. Si te mira, puede señalar vigilancia o una verdad incómoda."
-          },
-          {
-            "question": "¿Qué significa soñar con lobos que atacan?",
-            "answer": "Lobos que atacan reflejan presión, conflicto, miedo o una emoción instintiva que se siente fuera de control. No predicen un ataque literal."
+            "answer": "Un lobo puede evocar instinto, cautela, independencia, protección o amenaza percibida. Su comportamiento, la distancia y lo que sentías ofrecen más contexto que una lectura fija."
           },
           {
             "question": "¿Qué significa soñar con una manada de lobos?",
-            "answer": "Una manada puede representar pertenencia, lealtad y fuerza colectiva, pero también presión social. La emoción del sueño es la diferencia clave."
+            "answer": "Una manada puede reflejar apoyo, lealtad, normas de grupo o presión social. Sentirte protegido por ella orienta hacia pertenencia; sentirte rodeado puede apuntar a tensión."
+          },
+          {
+            "question": "¿Qué significa soñar con lobos que atacan?",
+            "answer": "Lobos que atacan pueden expresar miedo, conflicto o la sensación de afrontar varias presiones a la vez. El sueño no predice una agresión real; conviene relacionarlo con el contexto reciente."
+          },
+          {
+            "question": "¿Qué significa que un lobo te mire o te siga en un sueño?",
+            "answer": "Un lobo que mira o sigue puede reflejar vigilancia, curiosidad o una preocupación persistente. Si no sentías miedo, también puede acompañar una mayor confianza en tu intuición."
           }
         ],
         "softCta": {
@@ -4345,7 +4539,8 @@
           "text": "Graba la escena completa: si el lobo atacaba, miraba o protegía, Noctalia puede ayudarte a comparar el símbolo con tu emoción real.",
           "button": "Probar la app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
-        }
+        },
+        "modifiedAt": "2026-07-10"
       },
       "de": {
         "slug": "wolf",

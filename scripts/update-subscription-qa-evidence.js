@@ -10,6 +10,10 @@ const ROOT = path.resolve(__dirname, '..');
 const ANDROID_CANDIDATE_VERSION_CODE = readAppVersionCode(ROOT);
 const DEFAULT_EXAMPLE = path.join(ROOT, 'doc_web_interne/docs/revenuecat-qa-evidence.example.json');
 const DEFAULT_TARGET = path.join(ROOT, 'doc_web_interne/docs/revenuecat-qa-evidence.local.json');
+// The example is immutable during one CLI invocation. Keep its raw JSON in
+// memory so validation-heavy callers do not hit the filesystem twice per gate.
+const DEFAULT_EXAMPLE_JSON = fs.readFileSync(DEFAULT_EXAMPLE, 'utf8');
+const DEFAULT_EXAMPLE_DOCUMENT = JSON.parse(DEFAULT_EXAMPLE_JSON);
 
 function parseArgs(argv) {
   const options = {
@@ -130,8 +134,7 @@ function requireUuid(value, label) {
 }
 
 function requireNonTemplateEvidence(options) {
-  const template = readJson(DEFAULT_EXAMPLE);
-  const templateEvidence = template.gates?.[options.gate]?.evidence?.trim();
+  const templateEvidence = DEFAULT_EXAMPLE_DOCUMENT.gates?.[options.gate]?.evidence?.trim();
   if (typeof options.evidence === 'string' && options.evidence.trim() === templateEvidence) {
     throw new Error('Evidence must describe the observed test result, not reuse the template text.');
   }
@@ -230,7 +233,8 @@ function loadEvidence(filePath) {
   if (fs.existsSync(filePath)) {
     return readJson(filePath);
   }
-  return readJson(DEFAULT_EXAMPLE);
+  // Return a fresh document because updateEvidence mutates the selected gate.
+  return JSON.parse(DEFAULT_EXAMPLE_JSON);
 }
 
 function updateEvidence(options) {

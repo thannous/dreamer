@@ -66,7 +66,6 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     const [isFocused, setIsFocused] = useState(false);
     const textSpotlightRef = useRef<View | null>(null);
     const voiceSpotlightRef = useRef<View | null>(null);
-    const isVoiceActive = voiceStatus === 'recording';
     const isVoicePreparing = voiceStatus === 'preparing';
     const isVoiceFirst = layout === 'voiceFirst';
     const voiceLabel = switchToVoiceLabel || t('recording.mode.switch_to_voice') || 'Dicter mon r\u00eave';
@@ -74,11 +73,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       voiceCtaDetail ||
       t('recording.mode.voice_cta_detail') ||
       'Le micro ne demarre qu apres ton accord.';
-    const voiceIconName: React.ComponentProps<typeof IconSymbol>['name'] =
-      isVoiceActive ? 'pause.fill' : 'mic';
     const voiceControlDisabled = disabled || isVoicePreparing;
-    const shouldShowVoiceHeroCopy =
-      !isVoiceFirst || isVoiceActive || isVoicePreparing || hasValue || Boolean(recordingDurationLabel);
 
     useEffect(() => {
       if (!spotlightTarget || !onSpotlightLayout) {
@@ -143,140 +138,103 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
                 testID={TID.Button.RecordToggle}
                 accessibilityLabel={voiceLabel}
               />
-              {shouldShowVoiceHeroCopy ? (
-                <Pressable
-                  onPress={onSwitchToVoice}
-                  style={styles.voiceHeroCopy}
-                  disabled={voiceControlDisabled}
-                  accessibilityRole="button"
-                  accessibilityLabel={voiceLabel}
-                  accessibilityHint={voiceAccessibilityHint}
-                  testID={TID.Button.SwitchToVoice}
-                >
-                  <View style={styles.voiceHeroTitleRow}>
-                    <Text style={[styles.voiceHeroTitle, { color: noctalia.text.primary }]}>
-                      {voiceLabel}
-                    </Text>
-                    {recordingDurationLabel ? (
-                      <Text
-                        style={[styles.voiceCaptureDuration, { color: noctalia.accent.base }]}
-                        testID={TID.Text.RecordingVoiceStatusDuration}
-                      >
-                        {recordingDurationLabel}
-                      </Text>
-                    ) : null}
-                  </View>
-                  <Text style={[styles.voiceHeroDetail, { color: noctalia.text.secondary }]}>
-                    {voiceDetail}
-                  </Text>
-                </Pressable>
-              ) : null}
-            </View>
-          ) : null}
-
-          <View
-            ref={textSpotlightRef}
-            collapsable={false}
-            style={styles.spotlightTarget}
-          >
-            {!hasValue ? (
-              <View
-                style={styles.placeholderIcon}
-                accessibilityElementsHidden={true}
-                importantForAccessibility="no-hide-descendants"
-              >
-                <IconSymbol name="pencil" size={18} color={noctalia.text.secondary} />
-              </View>
-            ) : null}
-            <TextInput
-              ref={ref}
-              value={value}
-              onChangeText={onChange}
-              style={[
-                styles.textInput,
-                {
-                  backgroundColor: noctalia.surface.base,
-                  borderColor: isFocused ? noctalia.accent.base : noctalia.surface.border,
-                  color: noctalia.text.primary,
-                },
-              ]}
-              multiline
-              editable={!disabled}
-              placeholder={placeholder || t('recording.placeholder')}
-              placeholderTextColor={noctalia.text.secondary}
-              testID={TID.Input.DreamTranscript}
-              accessibilityLabel={t('recording.placeholder.accessibility')}
-              autoFocus={autoFocus}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-            />
-          </View>
-
-          <RecordingDraftProgress value={value} />
-
-          {lengthWarning ? (
-            <Text style={[styles.lengthWarning, { color: noctalia.accent.base }]}>
-              {lengthWarning}
-            </Text>
-          ) : null}
-
-          {!isVoiceFirst ? (
-            <View
-              ref={voiceSpotlightRef}
-              collapsable={false}
-              style={[
-                styles.voiceCaptureCard,
-                isVoiceActive && styles.voiceCaptureCardActive,
-                {
-                  backgroundColor: isVoiceActive ? noctalia.surface.active : noctalia.surface.base,
-                  borderColor: isVoiceActive ? noctalia.accent.base : noctalia.surface.border,
-                },
-              ]}
-            >
               <Pressable
                 onPress={onSwitchToVoice}
-                style={styles.voiceCaptureCopy}
-                testID={TID.Button.SwitchToVoice}
+                style={styles.voiceHeroCopy}
                 disabled={voiceControlDisabled}
                 accessibilityRole="button"
                 accessibilityLabel={voiceLabel}
                 accessibilityHint={voiceAccessibilityHint}
+                testID={TID.Button.SwitchToVoice}
               >
-                <View style={styles.voiceCaptureTitleRow}>
-                  <IconSymbol
-                    name={voiceIconName}
-                    size={16}
-                    color={isVoiceActive ? noctalia.accent.base : noctalia.text.primary}
-                    style={styles.modeSwitchIcon}
-                  />
-                  <Text style={[styles.voiceCaptureTitle, { color: noctalia.text.primary }]}>
+                <View style={styles.voiceHeroTitleRow}>
+                  <Text style={[styles.voiceHeroTitle, { color: noctalia.text.primary }]}>
                     {voiceLabel}
                   </Text>
                   {recordingDurationLabel ? (
                     <Text
-                      style={[styles.voiceCaptureDuration, { color: noctalia.accent.base }]}
+                      style={[styles.voiceCaptureDuration, { color: noctalia.accent.strong }]}
                       testID={TID.Text.RecordingVoiceStatusDuration}
                     >
                       {recordingDurationLabel}
                     </Text>
                   ) : null}
                 </View>
-                <Text style={[styles.voiceCaptureDetail, { color: noctalia.text.secondary }]}>
+                <Text style={[styles.voiceHeroDetail, { color: noctalia.text.secondary }]}>
                   {voiceDetail}
                 </Text>
               </Pressable>
-              <MicButton
-                status={voiceStatus}
-                onPress={onSwitchToVoice}
-                interaction={voiceControlDisabled ? 'disabled' : 'enabled'}
-                size="compact"
-                testID={TID.Button.RecordToggle}
-                accessibilityLabel={voiceLabel}
-              />
+              {hasValue ? (
+                <View
+                  accessibilityLiveRegion="polite"
+                  style={[
+                    styles.voiceTranscriptPreview,
+                    {
+                      backgroundColor: noctalia.surface.base,
+                      borderColor: noctalia.surface.border,
+                    },
+                  ]}
+                  testID={TID.Text.RecordingVoiceTranscriptPreview}
+                >
+                  <Text style={[styles.voiceTranscriptPreviewText, { color: noctalia.text.primary }]}>
+                    {value}
+                  </Text>
+                </View>
+              ) : null}
             </View>
           ) : null}
 
-          {onClear ? (
+          {!isVoiceFirst ? (
+            <>
+              <View
+                ref={textSpotlightRef}
+                collapsable={false}
+                style={styles.spotlightTarget}
+              >
+                {!hasValue ? (
+                  <View
+                    style={styles.placeholderIcon}
+                    accessibilityElementsHidden={true}
+                    importantForAccessibility="no-hide-descendants"
+                  >
+                    <IconSymbol name="pencil" size={18} color={noctalia.text.secondary} />
+                  </View>
+                ) : null}
+                <TextInput
+                  ref={ref}
+                  value={value}
+                  onChangeText={onChange}
+                  style={[
+                    styles.textInput,
+                    {
+                      backgroundColor: noctalia.surface.base,
+                      borderColor: isFocused ? noctalia.accent.base : noctalia.surface.border,
+                      color: noctalia.text.primary,
+                    },
+                  ]}
+                  multiline
+                  editable={!disabled}
+                  placeholder={placeholder || t('recording.placeholder')}
+                  placeholderTextColor={noctalia.text.secondary}
+                  testID={TID.Input.DreamTranscript}
+                  accessibilityLabel={t('recording.placeholder.accessibility')}
+                  autoFocus={autoFocus}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                />
+              </View>
+
+              <RecordingDraftProgress value={value} />
+
+              {lengthWarning ? (
+                <Text style={[styles.lengthWarning, { color: noctalia.accent.strong }]}>
+                  {lengthWarning}
+                </Text>
+              ) : null}
+            </>
+          ) : null}
+
+          {!isVoiceFirst && onClear ? (
             <Pressable
               onPress={onClear}
               style={[
@@ -367,7 +325,8 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   modeSwitchButton: {
-    paddingVertical: 6,
+    minHeight: 44,
+    paddingVertical: 10,
     paddingHorizontal: 0,
     alignSelf: 'center',
     marginTop: 8,
@@ -409,6 +368,19 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
+  },
+  voiceTranscriptPreview: {
+    width: '100%',
+    minHeight: 72,
+    borderWidth: 1,
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  voiceTranscriptPreviewText: {
+    fontSize: 16,
+    lineHeight: 23,
+    fontFamily: Fonts.lora.regularItalic,
   },
   voiceCaptureCard: {
     minHeight: 94,

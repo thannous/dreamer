@@ -84,7 +84,10 @@ export function RecordingInputModeSelect({
           <Text style={[styles.triggerLabel, { color: mutedColor }]}>
             {t('recording.preference.label')}
           </Text>
-          <Text style={[styles.triggerValue, { color: textColor }]}>
+          <Text
+            style={[styles.triggerValue, { color: textColor }]}
+            testID={TID.Text.RecordingInputMode(value)}
+          >
             {selected.label}
           </Text>
         </View>
@@ -252,9 +255,8 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   menu: {
-    position: 'absolute',
-    top: 50,
-    right: 0,
+    marginTop: 4,
+    alignSelf: 'flex-end',
     zIndex: 22,
     width: 286,
     borderWidth: 1,

@@ -41,15 +41,16 @@ fs.writeFileSync(process.env.CAPTURE_PATH, JSON.stringify({
 }
 
 describe('guarded Test Store restore runner', () => {
-  it('runs a masked preflight without approval or Maestro', () => {
+  it('runs an identity-free preflight without approval or Maestro', () => {
     const result = runWrapper(['--preflight', '--device', 'emulator-5554'], {
       REVENUECAT_QA_EMAIL: 'tester+restore@example.com',
     });
 
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('Test Store restore preflight passed');
-    expect(result.stdout).toContain('Test account: te...@example.com');
+    expect(result.stdout).toContain('Test account: configured');
     expect(result.stdout).not.toContain('tester+restore@example.com');
+    expect(result.stdout).not.toContain('@example.com');
     expect(result.stdout).toContain('Approval present: no');
     expect(result.stdout).toContain('Clear-state approval present: no');
     expect(result.stdout).toContain('Target: emulator (emulator-5554)');
