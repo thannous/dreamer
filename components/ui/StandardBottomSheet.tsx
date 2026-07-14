@@ -6,6 +6,7 @@ import {
   Text,
   View,
   type StyleProp,
+  type TextStyle,
   type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -25,6 +26,14 @@ import {
   type BottomSheetActionIcon,
   type BottomSheetActionState,
 } from './BottomSheetActions';
+
+const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
+  ? ({
+      outlineColor: 'transparent',
+      outlineStyle: 'none',
+      outlineWidth: 0,
+    } as unknown as TextStyle)
+  : null;
 
 export type StandardBottomSheetActions = {
   primaryLabel: string;
@@ -184,7 +193,7 @@ export function StandardBottomSheet({
         {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
         accessible
         accessibilityRole="header"
-        style={[styles.title, { color: noctalia.text.primary }]}
+        style={[styles.title, webTitleFocusResetStyle, { color: noctalia.text.primary }]}
         testID={titleTestID}
       >
         {title}

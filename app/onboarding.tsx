@@ -30,6 +30,7 @@ import {
   findNodeHandle,
   type ColorValue,
   type LayoutChangeEvent,
+  type TextStyle,
   type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -60,6 +61,15 @@ const SIGNALS = [
 
 const INTRO_BACKGROUND_IMAGE = require('@/assets/images/onboarding-astral-background.png');
 const PATH_BACKGROUND_IMAGE = require('@/assets/images/onboarding-path-background.png');
+const PATH_BACKGROUND_ASPECT_RATIO = 854 / 510;
+
+const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
+  ? ({
+      outlineColor: 'transparent',
+      outlineStyle: 'none',
+      outlineWidth: 0,
+    } as unknown as TextStyle)
+  : null;
 
 export default function OnboardingScreen() {
   const { colors, mode } = useTheme();
@@ -96,7 +106,7 @@ export default function OnboardingScreen() {
       backgroundImage: `url("${introUri}")`,
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
-      backgroundSize: 'contain',
+      backgroundSize: 'cover',
     }) as unknown as ViewStyle,
     [introUri]
   );
@@ -371,7 +381,7 @@ export default function OnboardingScreen() {
                 <Image
                   accessible={false}
                   source={INTRO_BACKGROUND_IMAGE}
-                  resizeMode="contain"
+                  resizeMode="cover"
                   style={styles.heroImage}
                 />
               )}
@@ -381,7 +391,7 @@ export default function OnboardingScreen() {
               {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
               accessible
               accessibilityRole="header"
-              style={[styles.title, { color: noctalia.text.primary }]}
+              style={[styles.title, webTitleFocusResetStyle, { color: noctalia.text.primary }]}
             >
               {t('onboarding.intro.title_lead')}{' '}
               <Text style={{ color: titleAccent }}>{t('onboarding.intro.title_accent')}</Text>
@@ -436,7 +446,7 @@ export default function OnboardingScreen() {
               {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
               accessible
               accessibilityRole="header"
-              style={[styles.pathHeading, { color: noctalia.text.primary }]}
+              style={[styles.pathHeading, webTitleFocusResetStyle, { color: noctalia.text.primary }]}
             >
               {t('onboarding.path.title_lead')}{' '}
               <Text style={{ color: titleAccent }}>{t('onboarding.path.title_accent')}</Text>
@@ -650,7 +660,12 @@ const styles = StyleSheet.create({
   skipButton: { minWidth: 72, minHeight: 44, alignItems: 'flex-end', justifyContent: 'center' },
   skipText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15 },
   intro: { alignItems: 'center', gap: 13 },
-  heroImageWrap: { height: 245, width: '100%', overflow: 'hidden' },
+  heroImageWrap: {
+    alignSelf: 'stretch',
+    height: 280,
+    marginHorizontal: -20,
+    overflow: 'hidden',
+  },
   heroImage: { width: '100%', height: '100%' },
   title: {
     fontFamily: Fonts.fraunces.regular,
@@ -674,7 +689,12 @@ const styles = StyleSheet.create({
   privacyLink: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 8 },
   privacyLinkText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, textDecorationLine: 'underline' },
   paths: { gap: 12 },
-  pathHeroImageWrap: { height: 168, marginHorizontal: -20, overflow: 'hidden' },
+  pathHeroImageWrap: {
+    alignSelf: 'stretch',
+    aspectRatio: PATH_BACKGROUND_ASPECT_RATIO,
+    marginHorizontal: -20,
+    overflow: 'hidden',
+  },
   pathHeroImage: { width: '100%', height: '100%' },
   pathHeading: { fontFamily: Fonts.fraunces.regular, fontSize: 34, lineHeight: 40, textAlign: 'center' },
   pathSubtitle: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 21, textAlign: 'center' },
