@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "pilot-2026-07-v1",
+  "release": "pilot-2026-07-v2",
   "variants": {
     "formats": ["avif", "webp"],
     "fallbackFormat": "webp",
@@ -114,112 +114,122 @@
     },
     "educational.lucid-dreaming.en": {
       "role": "educational",
-      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/lucid-dreaming-method-en.svg",
-      "outputStem": "/img/seo/pilot-2026-07-v1/educational/en/lucid-dreaming-method",
+      "source": "docs-src/image-sources/pilot-2026-07-v2/educational/lucid-dreaming-method-en.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v2/educational/en/lucid-dreaming-method",
       "localized": true,
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
+        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/lucid-dreaming-method-en-mobile.svg" }
       }
     },
     "educational.lucid-dreaming.es": {
       "role": "educational",
-      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/lucid-dreaming-method-es.svg",
-      "outputStem": "/img/seo/pilot-2026-07-v1/educational/es/metodo-suenos-lucidos",
+      "source": "docs-src/image-sources/pilot-2026-07-v2/educational/lucid-dreaming-method-es.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v2/educational/es/metodo-suenos-lucidos",
       "localized": true,
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
+        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/lucid-dreaming-method-es-mobile.svg" }
       }
     },
     "educational.dream-journal.en": {
       "role": "educational",
-      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/dream-journal-fields-en.svg",
-      "outputStem": "/img/seo/pilot-2026-07-v1/educational/en/dream-journal-fields",
+      "source": "docs-src/image-sources/pilot-2026-07-v2/educational/dream-journal-fields-en.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v2/educational/en/dream-journal-fields",
       "localized": true,
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
+        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/dream-journal-fields-en-mobile.svg" }
       }
     },
     "educational.dream-journal.es": {
       "role": "educational",
-      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/dream-journal-fields-es.svg",
-      "outputStem": "/img/seo/pilot-2026-07-v1/educational/es/campos-diario-suenos",
+      "source": "docs-src/image-sources/pilot-2026-07-v2/educational/dream-journal-fields-es.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v2/educational/es/campos-diario-suenos",
       "localized": true,
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
+        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/dream-journal-fields-es-mobile.svg" }
       }
     },
     "educational.dream-interpretation-history.en": {
       "role": "educational",
-      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/dream-interpretation-timeline-en.svg",
-      "outputStem": "/img/seo/pilot-2026-07-v1/educational/en/dream-interpretation-timeline",
+      "source": "docs-src/image-sources/pilot-2026-07-v2/educational/dream-interpretation-timeline-en.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v2/educational/en/dream-interpretation-timeline",
       "localized": true,
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
+        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/dream-interpretation-timeline-en-mobile.svg" }
       }
     },
     "educational.pregnancy-dreams.en": {
       "role": "educational",
-      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/pregnancy-context-map-en.svg",
-      "outputStem": "/img/seo/pilot-2026-07-v1/educational/en/pregnancy-dream-context-map",
+      "source": "docs-src/image-sources/pilot-2026-07-v2/educational/pregnancy-context-map-en.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v2/educational/en/pregnancy-dream-context-map",
       "localized": true,
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
+        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/pregnancy-context-map-en-mobile.svg" }
       }
     },
     "educational.water-dreams.es": {
       "role": "educational",
-      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/water-context-matrix-es.svg",
-      "outputStem": "/img/seo/pilot-2026-07-v1/educational/es/matriz-contexto-agua",
+      "source": "docs-src/image-sources/pilot-2026-07-v2/educational/water-context-matrix-es.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v2/educational/es/matriz-contexto-agua",
       "localized": true,
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
+        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/water-context-matrix-es-mobile.svg" }
       }
     },
     "educational.flying-dreams.en": {
       "role": "educational",
-      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/flying-context-matrix-en.svg",
-      "outputStem": "/img/seo/pilot-2026-07-v1/educational/en/flying-dream-context-matrix",
+      "source": "docs-src/image-sources/pilot-2026-07-v2/educational/flying-context-matrix-en.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v2/educational/en/flying-dream-context-matrix",
       "localized": true,
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
+        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/flying-context-matrix-en-mobile.svg" }
       }
     },
     "educational.flying-dreams.es": {
       "role": "educational",
-      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/flying-context-matrix-es.svg",
-      "outputStem": "/img/seo/pilot-2026-07-v1/educational/es/matriz-contexto-suenos-volar",
+      "source": "docs-src/image-sources/pilot-2026-07-v2/educational/flying-context-matrix-es.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v2/educational/es/matriz-contexto-suenos-volar",
       "localized": true,
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
+        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/flying-context-matrix-es-mobile.svg" }
       }
     },
     "educational.dream-symbols-dictionary.en": {
       "role": "educational",
-      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/symbol-interpretation-flow-en.svg",
-      "outputStem": "/img/seo/pilot-2026-07-v1/educational/en/dream-symbol-interpretation-flow",
+      "source": "docs-src/image-sources/pilot-2026-07-v2/educational/symbol-interpretation-flow-en.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v2/educational/en/dream-symbol-interpretation-flow",
       "localized": true,
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
+        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/symbol-interpretation-flow-en-mobile.svg" }
       }
     },
     "fallback.noctalia-dreamscape-v2": {
