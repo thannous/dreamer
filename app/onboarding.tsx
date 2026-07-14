@@ -124,8 +124,12 @@ export default function OnboardingScreen() {
   useEffect(() => {
     if (loading) return;
     const timeout = setTimeout(() => {
-      const node = findNodeHandle(titleRef.current);
-      if (node) AccessibilityInfo.setAccessibilityFocus(node);
+      if (process.env.EXPO_OS === 'web') {
+        titleRef.current?.focus();
+      } else {
+        const node = findNodeHandle(titleRef.current);
+        if (node) AccessibilityInfo.setAccessibilityFocus(node);
+      }
       AccessibilityInfo.announceForAccessibility(
         t('onboarding.progress', { current: step === 'intro' ? 1 : 2, total: 2 })
       );
@@ -347,12 +351,6 @@ export default function OnboardingScreen() {
           ) : (
             <Text style={[styles.brand, { color: noctalia.text.primary }]}>Noctalia</Text>
           )}
-          <Text
-            style={[styles.progress, { color: titleAccent }]}
-            testID={TID.Text.OnboardingProgress}
-          >
-            {t('onboarding.progress', { current: step === 'intro' ? 1 : 2, total: 2 })}
-          </Text>
           <Pressable
             accessibilityRole="button"
             onPress={() => void skip()}
@@ -380,6 +378,7 @@ export default function OnboardingScreen() {
             </View>
             <Text
               ref={titleRef}
+              {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
               accessible
               accessibilityRole="header"
               style={[styles.title, { color: noctalia.text.primary }]}
@@ -434,6 +433,7 @@ export default function OnboardingScreen() {
             </View>
             <Text
               ref={titleRef}
+              {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
               accessible
               accessibilityRole="header"
               style={[styles.pathHeading, { color: noctalia.text.primary }]}
@@ -646,13 +646,6 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   brand: { fontFamily: Fonts.fraunces.regular, fontSize: 26, lineHeight: 32, minWidth: 80 },
-  progress: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
-    lineHeight: 16,
-    textTransform: 'uppercase',
-    fontVariant: ['tabular-nums'],
-  },
   iconButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   skipButton: { minWidth: 72, minHeight: 44, alignItems: 'flex-end', justifyContent: 'center' },
   skipText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15 },
