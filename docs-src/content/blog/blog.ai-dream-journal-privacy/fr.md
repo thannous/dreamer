@@ -23,9 +23,9 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Fragments de mémoire onirique protégés dans une lumière nocturne",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-15T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/fr/blog/cauchemars-chaleur-stress",
+  "prevPath": "/fr/blog/reves-regulation-emotions-etude-2026",
   "nextPath": "/fr/blog/rever-eveille-etats-oniriques",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],
@@ -44,6 +44,7 @@
 <p class="text-sm text-purple-200/70">Cet article est informatif et ne constitue pas un avis juridique. Pour un produit utilisé dans l'Union européenne, le RGPD reste la base de lecture la plus utile : finalité, minimisation, information claire, droits d'accès et de suppression.</p>
 <h2>Pourquoi les rêves sont des données à part</h2>
 <p>Un rêve n'est pas une simple note de productivité. Même lorsqu'il paraît absurde, il peut mentionner des proches, un lieu de travail, une peur de santé, une rupture ou une émotion que vous n'auriez pas publiée ailleurs. En masse, ces fragments peuvent révéler des motifs personnels.</p>
+<p>Une <a class="text-dream-salmon hover:underline" href="reves-regulation-emotions-etude-2026">étude de 2026 reliant émotions rêvées et humeur matinale</a> en donne un exemple récent : l'analyse devient pertinente grâce à l'accumulation de données sensibles dans le temps.</p>
 <p>C'est précisément ce qui rend les journaux de rêves utiles : ils gardent le contexte. Mais ce contexte doit rester lisible pour vous, pas devenir une boîte noire. Avant d'utiliser une app avec IA, vérifiez si elle explique quelles données sont stockées, lesquelles sont envoyées à des fournisseurs, combien de temps elles restent disponibles et comment les supprimer.</p>
 <h2>Les cinq points à vérifier</h2>
 <ul>

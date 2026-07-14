@@ -87,7 +87,7 @@ Le sitemap live a ete soumis a Search Console le 2026-07-08. Les cinq URLs vacan
 | 2 | 4-7 juillet, rattrape le 8 juillet | Bruit nocturne, sommeil et reves | Publie/live; 5/5 indexees | Requetes pratiques appartement, voisinage, ville, vacances | FR, EN, ES, DE, IT | Sleep-day-environment, vivid dreams, stress dreams, dream journal, vacation | Build/check/release-check faits; sitemap live OK |
 | 3 | 8-11 juillet, produit le 8 juillet | Reveil nocturne et rappel des reves | Publie/live; 5/5 indexees | Capture rapide, journal vocal, sommeil fragmente | FR, EN, ES, DE, IT | Voice dream journal, how to remember dreams, REM sleep, privacy article | Build/check/release-check faits; sitemap live OK |
 | 4 | 12-15 juillet, anticipe le 10 juillet | Cauchemars en periode de chaleur ou stress | Publie/live; 5/5 indexees | Angle ete + anxiete, utile pour maillage cauchemars/canicule | FR, EN, ES, DE, IT | Nightmares guide, heatwave, anxiety dreams, mental health | Build/check/release-check/crosslinks passes; sitemap live 1160 URLs |
-| 5 | 14-17 juillet, publication cible le 15 | Les reves regulent-ils nos emotions ? Ce que montre une etude 2026 | En production - nouvel article scientifique | Actualite scientifique publiee dans `Sleep` en mai 2026; angle distinct des articles IA et MÖBIUS existants | FR, EN, ES, DE, IT | Dreams mental health, anxiety dreams, nightmares, dream journal, AI study | 5 sources, limites explicites, hreflang/canonical/JSON-LD, index blog, build/check/crosslinks/release-check |
+| 5 | 14-17 juillet, publication cible le 15 | Les reves regulent-ils nos emotions ? Ce que montre une etude 2026 | Pret en branche; publication le 15 juillet | Actualite scientifique publiee dans `Sleep` en mai 2026; angle distinct des articles IA et MÖBIUS existants | FR, EN, ES, DE, IT | Cauchemars chaleur/stress, confidentialite IA, sante mentale, anxiete, journal | 5 sources relues, limites explicites, rendu canonical/hreflang/JSON-LD valide en memoire, index a 46, crosslinks OK; build/check/release-check a relancer le 15 |
 | 6 | 18-20 juillet | Refresh `Suenos de agua`: inondation, maison, eau propre/sale | Programme | Quick win SERP: 41 017 impressions, CTR 0,99 %, position 5,3 | ES cible | Symboles eau/inondation/maison/mer + journal de reves | Refaire title/meta, reponse courte, FAQ et ancres; mesurer a J+14 |
 | 7 | 21-23 juillet | Refresh `Flying dreams meaning` | Programme | Reprendre `dream about flying`, `dream of flying` et variantes: 1 948 impressions, position 19,1 | EN cible | Dream meanings, lucid dreaming, falling dreams, dream journal | Recentrer l'intention, enrichir les scenarios utiles et renforcer les liens internes |
 | 8 | 24-25 juillet | Refresh guide debutant des reves lucides | Programme | Requetes `como tener suenos lucidos`: 1 029 impressions, CTR 0,29 %, position 14,5 | ES cible | Hub reve lucide, rappel des reves, journal, controle des reves | Reponse en 5 etapes, FAQ, preuves prudentes et CTA journal naturel |
@@ -251,6 +251,15 @@ Reinspection live et Search Console 2026-07-14:
 - Sitemap live: 1160 URLs, HTTP 200, `application/xml`; `version.txt` renvoie toujours `2866f3066c1f`.
 - Les 20 URLs restent `Submitted and indexed`; pour chaque URL, le fetch Google reussit, les robots sont autorises et le canonical Google correspond au canonical declare.
 - Aucune demande manuelle n'est necessaire. Les priorites 5 a 10 sont maintenant definies ci-dessus; commencer par l'article scientifique reves/emotions, puis le refresh ES eau/inondation.
+
+Preparation editoriale de la priorite 5 le 2026-07-14:
+
+- Worktree propre: `/private/tmp/dreamer-noctalia-dream-emotions-20260715`, branche `codex/noctalia-dream-emotions-20260715`, base `origin/master` `d54ffe2bd`.
+- Cinq sources FR/EN/ES/DE/IT redigees et relues avec les passes `copywriting` et `copy-editing`; 966 a 1 261 mots selon la langue, reponse courte, methode, resultats, limites, journalisation, quatre FAQ, CTA et sources scientifiques.
+- Source primaire: Baber et al., *Sleep* 2026, DOI `10.1093/sleep/zsag046`; l'article distingue continuite et regulation emotionnelles, association et causalite, et reprend les limites de l'editorial scientifique associe.
+- Metadonnees SEO: titres de 52 a 59 caracteres, descriptions de 145 a 158 caracteres; dates synchronisees au 15 juillet. Le rendu en memoire confirme canonical auto-reference, six hreflang, `BlogPosting`, `FAQPage`, `datePublished` et `dateModified` dans les cinq langues.
+- Maillage reciproque ajoute depuis les articles chaleur/stress et confidentialite IA; cartes placees en position 12 dans les cinq index et `ItemList` synchronise a 46 entrees.
+- `npm run docs:check-crosslinks` passe. `npm run docs:build` bloque volontairement le 14 juillet car le gate refuse `publishedTime` et `modifiedTime` futurs; ne pas avancer les dates. Relancer build, check, crosslinks et release-check le 15 juillet avant publication.
 
 Preparation editoriale anticipee le 2026-07-10:
 

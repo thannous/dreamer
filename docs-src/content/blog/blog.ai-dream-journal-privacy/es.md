@@ -23,9 +23,9 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Fragmentos de memoria onírica protegidos en una luz nocturna",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-15T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/es/blog/pesadillas-calor-estres",
+  "prevPath": "/es/blog/suenos-regulacion-emociones-estudio-2026",
   "nextPath": "/es/blog/sonar-despierto-estados-oniricos",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],
@@ -44,6 +44,7 @@
 <p class="text-sm text-purple-200/70">Este artículo es informativo y no es asesoramiento legal. En la Unión Europea, el RGPD sigue siendo la base práctica: finalidad clara, minimización de datos, información legible, acceso y eliminación.</p>
 <h2>Por qué los sueños son datos especiales</h2>
 <p>Un sueño no es una nota cualquiera. Aunque parezca absurdo, puede mencionar personas cercanas, trabajo, ansiedad de salud, una ruptura o una emoción que no publicarías en otro lugar. Con el tiempo, esos fragmentos revelan patrones personales.</p>
+<p>Un ejemplo reciente es el <a class="text-dream-salmon hover:underline" href="suenos-regulacion-emociones-estudio-2026">estudio de 2026 que relaciona emociones oníricas y ánimo matinal</a>: el análisis cobra sentido al acumular datos sensibles en el tiempo.</p>
 <p>Eso hace útil el diario de sueños: conserva contexto. Pero ese contexto debe seguir siendo comprensible para ti, no desaparecer en una caja negra. Antes de usar una app con IA, revisa qué almacena, qué envía a proveedores, durante cuánto tiempo y cómo se borra.</p>
 <h2>Cinco puntos para revisar</h2>
 <ul>

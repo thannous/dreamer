@@ -23,10 +23,10 @@
   "twitterImage": "https://noctalia.app/img/blog/heatwave-sleep-dreams.webp",
   "twitterImageAlt": "Person nach einem belastenden Traum wach in einem heißen Schlafzimmer",
   "publishedTime": "2026-07-10T00:00:00+02:00",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-15T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/naechtliches-erwachen-traumerinnerung",
-  "nextPath": "/de/blog/ki-traumtagebuch-datenschutz",
+  "nextPath": "/de/blog/traeume-emotionsregulation-studie-2026",
   "preloadImage": "/img/blog/heatwave-sleep-dreams.webp",
   "jsonLd": [],
   "activeNav": "resources"
@@ -54,6 +54,7 @@
 <p>Stress und Albträume hängen zusammen, aber nicht nur in eine Richtung. Schlaftagebücher deuten darauf hin, dass belastendere Tage intensiveren Albträumen vorausgehen können. Zugleich kann ein Albtraum den Stress am nächsten Tag erhöhen. Langzeitstudien zeigen außerdem, dass frühere Albtraumhäufigkeit ein wichtiger Faktor bleibt.</p>
 <p>Ein Albtraum ist keine Diagnose und kein Beweis für etwas Verdrängtes. Er kann emotionale Belastung, Veränderung, Trauma, Medikamente, Erschöpfung oder unterbrochenen Schlaf begleiten. Der Artikel über <a class="text-dream-salmon hover:underline" href="angsttraeume-bedeutung">Angstträume</a> hilft, diffuse Sorge von einer Angst zu unterscheiden, die zum Erwachen führt.</p>
 <p>Treffen Hitze und Stress zusammen, können sie die Erfahrung verstärken, ohne dieselbe Ursache zu haben: Der Körper versucht abzukühlen, der Geist bleibt wachsam und Wachmomente machen die Geschichte zugänglicher. Notieren Sie körperlichen und emotionalen Kontext getrennt.</p>
+<p>Wie Traumgefühl und Morgenstimmung zusammenhängen, zeigt eine <a class="text-dream-salmon hover:underline" href="traeume-emotionsregulation-studie-2026">Studie von 2026 zu Träumen und Emotionsregulation</a> anhand von 4.715 täglichen Berichten.</p>
 <h2>Was heute Abend hilft</h2>
 <ol>
 <li><strong>Verringern Sie die Wärmebelastung.</strong> Schließen Sie tagsüber Fenster und Rollläden, wenn es draußen wärmer ist, lüften Sie nach Einbruch der Dunkelheit, sofern es sicher ist, nutzen Sie leichte Bettwäsche und den kühlsten Raum. Folgen Sie örtlichen Gesundheitshinweisen statt einer universellen „perfekten“ Schlaftemperatur.</li>

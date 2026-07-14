@@ -23,10 +23,10 @@
   "twitterImage": "https://noctalia.app/img/blog/heatwave-sleep-dreams.webp",
   "twitterImageAlt": "Persona sveglia in una camera calda dopo un sogno angosciante",
   "publishedTime": "2026-07-10T00:00:00+02:00",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-15T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/risveglio-notturno-ricordo-sogni",
-  "nextPath": "/it/blog/privacy-ia-diario-sogni",
+  "nextPath": "/it/blog/sogni-regolazione-emozioni-studio-2026",
   "preloadImage": "/img/blog/heatwave-sleep-dreams.webp",
   "jsonLd": [],
   "activeNav": "resources"
@@ -54,6 +54,7 @@
 <p>Stress e incubi sono associati, ma la relazione non va in una sola direzione. I diari del sonno suggeriscono che giornate più stressanti possono precedere incubi più intensi, mentre un incubo può aumentare lo stress il giorno dopo. Gli studi longitudinali mostrano inoltre che la frequenza precedente degli incubi resta un fattore importante.</p>
 <p>Un incubo non è una diagnosi né la prova che qualcosa sia nascosto. Può accompagnare tensione emotiva, cambiamenti, trauma, farmaci, stanchezza o sonno interrotto. Per distinguere la preoccupazione diffusa dalla paura che sveglia, consulta la guida sui <a class="text-dream-salmon hover:underline" href="sogni-ansia-significato">sogni d'ansia</a>.</p>
 <p>Quando caldo e stress si sommano, possono rafforzare l'esperienza senza avere un'unica causa: il corpo cerca di raffreddarsi, la mente resta vigile e i risvegli rendono la storia più accessibile. Annota separatamente il contesto fisico e quello emotivo.</p>
+<p>Per confrontare l'emozione del sogno con l'umore al risveglio, leggi che cosa ha osservato uno <a class="text-dream-salmon hover:underline" href="sogni-regolazione-emozioni-studio-2026">studio del 2026 su sogni e regolazione emotiva</a> in 4.715 resoconti quotidiani.</p>
 <h2>Che cosa fare stasera</h2>
 <ol>
 <li><strong>Riduci il carico di calore.</strong> Chiudi finestre e persiane nelle ore calde se fuori è più caldo, arieggia dopo il tramonto quando è sicuro, usa biancheria leggera e scegli la stanza più fresca. Segui le raccomandazioni sanitarie locali invece di inseguire una temperatura “perfetta” universale.</li>
