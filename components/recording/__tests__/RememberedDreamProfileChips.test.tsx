@@ -77,12 +77,12 @@ jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const values: Record<string, string> = {
-        'recording.remembered_profile.accordion_title': 'Ajouter des repères · Facultatif',
+        'recording.remembered_profile.accordion_title': 'Préciser ce souvenir',
         'recording.remembered_profile.expand_hint': 'Afficher les détails facultatifs',
         'recording.remembered_profile.collapse_hint': 'Masquer les détails facultatifs',
         'recording.remembered_profile.eyebrow': 'Repères du souvenir',
         'recording.remembered_profile.optional_badge': 'Facultatif',
-        'recording.remembered_profile.title': 'Aide Noctalia à comprendre ce rêve',
+        'recording.remembered_profile.title': 'Type de rêve, époque et détail marquant',
         'recording.remembered_profile.kind_label': 'Ce rêve ressemble surtout à',
         'recording.remembered_profile.kind.recurring': 'Récurrent',
         'recording.remembered_profile.period_label': 'Il remonte plutôt à',
@@ -110,12 +110,16 @@ describe('RememberedDreamProfileChips', () => {
     );
 
     expect(screen.getByTestId(TID.Component.RememberedDreamMetadata)).toBeTruthy();
-    expect(screen.getByText('Aide Noctalia à comprendre ce rêve')).toBeTruthy();
+    expect(screen.getByText('Préciser ce souvenir')).toBeTruthy();
+    expect(screen.getByText('Facultatif')).toBeTruthy();
+    expect(screen.getByText('Type de rêve, époque et détail marquant')).toBeTruthy();
+    expect(screen.getByTestId('icon.chevron.down')).toBeTruthy();
     expect(screen.queryByTestId(TID.Component.RememberedDreamProfileChips)).toBeNull();
 
     fireEvent.click(screen.getByTestId(TID.Button.RememberedDreamMetadataToggle));
 
     expect(screen.getByTestId(TID.Component.RememberedDreamProfileChips)).toBeTruthy();
+    expect(screen.getByTestId('icon.chevron.up')).toBeTruthy();
 
     fireEvent.click(screen.getByTestId(TID.Button.RememberedDreamKind('recurring')));
     fireEvent.click(screen.getByTestId(TID.Button.RememberedDreamPeriod('childhood')));
@@ -143,5 +147,22 @@ describe('RememberedDreamProfileChips', () => {
 
     expect(onRememberedKindChange).not.toHaveBeenCalled();
     expect(screen.queryByTestId(TID.Button.RememberedDreamKind('nightmare'))).toBeNull();
+  });
+
+  it('renders the complete form directly when presented in a dialog', () => {
+    render(
+      <RememberedDreamProfileChips
+        presentation="form"
+        onRememberedKindChange={jest.fn()}
+        onApproximatePeriodChange={jest.fn()}
+        onStrongestFragmentChange={jest.fn()}
+      />
+    );
+
+    expect(screen.getByTestId(TID.Component.RememberedDreamProfileChips)).toBeTruthy();
+    expect(screen.getByText('Ce rêve ressemble surtout à')).toBeTruthy();
+    expect(screen.getByText('Il remonte plutôt à')).toBeTruthy();
+    expect(screen.getByText('Ce qui reste le plus fort')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Component.RememberedDreamMetadata)).toBeNull();
   });
 });

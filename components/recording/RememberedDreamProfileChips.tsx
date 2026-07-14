@@ -45,6 +45,7 @@ const FRAGMENT_OPTIONS: RememberedOption<DreamStrongestFragment>[] = [
 ];
 
 type RememberedDreamProfileChipsProps = {
+  presentation?: 'accordion' | 'form';
   rememberedKind?: RememberedDreamKind;
   approximatePeriod?: DreamApproximatePeriod;
   strongestFragment?: DreamStrongestFragment;
@@ -55,6 +56,7 @@ type RememberedDreamProfileChipsProps = {
 };
 
 export function RememberedDreamProfileChips({
+  presentation = 'accordion',
   rememberedKind,
   approximatePeriod,
   strongestFragment,
@@ -106,12 +108,53 @@ export function RememberedDreamProfileChips({
     </Pressable>
   );
 
+  const profileFields = (
+    <View style={styles.expandedContent} testID={TID.Component.RememberedDreamProfileChips}>
+      <ChipGroup label={t('recording.remembered_profile.kind_label')}>
+        {KIND_OPTIONS.map((option) =>
+          renderChip({
+            option,
+            selected: rememberedKind === option.value,
+            onPress: () => onRememberedKindChange(option.value),
+            testID: TID.Button.RememberedDreamKind(option.value),
+          })
+        )}
+      </ChipGroup>
+
+      <ChipGroup label={t('recording.remembered_profile.period_label')}>
+        {PERIOD_OPTIONS.map((option) =>
+          renderChip({
+            option,
+            selected: approximatePeriod === option.value,
+            onPress: () => onApproximatePeriodChange(option.value),
+            testID: TID.Button.RememberedDreamPeriod(option.value),
+          })
+        )}
+      </ChipGroup>
+
+      <ChipGroup label={t('recording.remembered_profile.fragment_label')}>
+        {FRAGMENT_OPTIONS.map((option) =>
+          renderChip({
+            option,
+            selected: strongestFragment === option.value,
+            onPress: () => onStrongestFragmentChange(option.value),
+            testID: TID.Button.RememberedDreamFragment(option.value),
+          })
+        )}
+      </ChipGroup>
+    </View>
+  );
+
+  if (presentation === 'form') {
+    return profileFields;
+  }
+
   return (
     <View
       style={[
         styles.card,
         {
-          backgroundColor: noctalia.surface.raised,
+          backgroundColor: noctalia.surface.soft,
           borderColor: noctalia.surface.border,
         },
       ]}
@@ -131,56 +174,36 @@ export function RememberedDreamProfileChips({
         testID={TID.Button.RememberedDreamMetadataToggle}
       >
         <View style={styles.toggleCopy}>
-          <Text style={[styles.title, { color: noctalia.text.primary }]}>
-            {t('recording.remembered_profile.accordion_title')}
-          </Text>
-          <Text style={[styles.toggleDescription, { color: noctalia.text.secondary }]}>
+          <View style={styles.titleRow}>
+            <Text style={[styles.title, { color: noctalia.text.secondary }]}>
+              {t('recording.remembered_profile.accordion_title')}
+            </Text>
+            <View
+              style={[
+                styles.optionalBadge,
+                {
+                  backgroundColor: 'transparent',
+                  borderColor: noctalia.surface.border,
+                },
+              ]}
+            >
+              <Text style={[styles.optionalBadgeText, { color: noctalia.text.tertiary }]}>
+                {t('recording.remembered_profile.optional_badge')}
+              </Text>
+            </View>
+          </View>
+          <Text style={[styles.toggleDescription, { color: noctalia.text.tertiary }]}>
             {t('recording.remembered_profile.title')}
           </Text>
         </View>
         <IconSymbol
           name={expanded ? 'chevron.up' : 'chevron.down'}
-          size={20}
-          color={noctalia.text.secondary}
+          size={18}
+          color={noctalia.text.tertiary}
         />
       </Pressable>
 
-      {expanded ? (
-        <View style={styles.expandedContent} testID={TID.Component.RememberedDreamProfileChips}>
-          <ChipGroup label={t('recording.remembered_profile.kind_label')}>
-            {KIND_OPTIONS.map((option) =>
-              renderChip({
-                option,
-                selected: rememberedKind === option.value,
-                onPress: () => onRememberedKindChange(option.value),
-                testID: TID.Button.RememberedDreamKind(option.value),
-              })
-            )}
-          </ChipGroup>
-
-          <ChipGroup label={t('recording.remembered_profile.period_label')}>
-            {PERIOD_OPTIONS.map((option) =>
-              renderChip({
-                option,
-                selected: approximatePeriod === option.value,
-                onPress: () => onApproximatePeriodChange(option.value),
-                testID: TID.Button.RememberedDreamPeriod(option.value),
-              })
-            )}
-          </ChipGroup>
-
-          <ChipGroup label={t('recording.remembered_profile.fragment_label')}>
-            {FRAGMENT_OPTIONS.map((option) =>
-              renderChip({
-                option,
-                selected: strongestFragment === option.value,
-                onPress: () => onStrongestFragmentChange(option.value),
-                testID: TID.Button.RememberedDreamFragment(option.value),
-              })
-            )}
-          </ChipGroup>
-        </View>
-      ) : null}
+      {expanded ? profileFields : null}
     </View>
   );
 }
@@ -204,10 +227,11 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 12,
     borderCurve: 'continuous',
-    padding: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
   },
   toggle: {
-    minHeight: 52,
+    minHeight: 48,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -215,7 +239,24 @@ const styles = StyleSheet.create({
   },
   toggleCopy: {
     flex: 1,
-    gap: 3,
+    gap: 5,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  optionalBadge: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  optionalBadgeText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 10,
+    lineHeight: 14,
   },
   toggleDescription: {
     fontFamily: Fonts.spaceGrotesk.regular,
@@ -227,9 +268,9 @@ const styles = StyleSheet.create({
     paddingTop: 14,
   },
   title: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
-    lineHeight: 21,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 14,
+    lineHeight: 19,
   },
   group: {
     gap: 8,

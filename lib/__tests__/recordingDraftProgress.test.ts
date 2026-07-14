@@ -20,6 +20,11 @@ describe('getRecordingDraftProgress', () => {
     expect(result.ratio).toBeCloseTo(0.11);
   });
 
+  it('becomes ready at the minimum fragment length', () => {
+    expect(getRecordingDraftProgress('A short fragment!!', 100).state).toBe('ready');
+    expect(getRecordingDraftProgress('A short fragment!', 100).state).toBe('short');
+  });
+
   it('returns ready state after enough detail is captured', () => {
     const text = 'I was walking through a station with gold windows and someone was calling my name.';
 

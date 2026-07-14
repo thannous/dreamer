@@ -77,6 +77,7 @@ export const TID = {
     OnboardingRetry: 'btn.onboarding.retry',
     OnboardingContinueSession: 'btn.onboarding.continueSession',
     RememberedDreamMetadataToggle: 'btn.recording.remembered.metadata.toggle',
+    RememberedDreamDetailsDone: 'btn.recording.remembered.details.done',
     AnalysisOfferPrimary: 'btn.recording.analysisOffer.primary',
     AnalysisOfferJournal: 'btn.recording.analysisOffer.journal',
     AnalysisOfferLater: 'btn.recording.analysisOffer.later',
@@ -213,6 +214,7 @@ export const TID = {
     MicRationale: 'sheet.recording.micRationale',
     OnboardingPrivacy: 'sheet.onboarding.privacy',
     AnalysisOffer: 'sheet.recording.analysisOffer',
+    RememberedDreamDetails: 'sheet.recording.remembered.details',
   },
   BottomSheet: {
     PaywallError: 'bottomSheet.paywall.error',

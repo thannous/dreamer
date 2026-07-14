@@ -92,9 +92,9 @@ jest.mock('@/components/recording/MicButton', () => ({
   ),
 }));
 
-jest.mock('@/components/recording/RecordingDraftProgress', () => ({
-  RecordingDraftProgress: ({ value }: { value: string }) => (
-    <div data-testid="draft">{value ? 'Good start' : '0/600'}</div>
+jest.mock('expo-linear-gradient', () => ({
+  LinearGradient: ({ children }: { children?: React.ReactNode }) => (
+    <div data-testid="inline-action-fade">{children}</div>
   ),
 }));
 
@@ -167,7 +167,9 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 describe('RecordingTextInput', () => {
-  it('shows only the text control when text mode is selected', () => {
+  it('prioritizes the editable transcript while keeping voice available in text mode', () => {
+    const onSwitchToVoice = jest.fn();
+
     render(
       <RecordingTextInput
         value=""
@@ -175,7 +177,7 @@ describe('RecordingTextInput', () => {
         disabled={false}
         lengthWarning=""
         instructionText="Write what you remember"
-        onSwitchToVoice={jest.fn()}
+        onSwitchToVoice={onSwitchToVoice}
       />
     );
 
@@ -183,8 +185,11 @@ describe('RecordingTextInput', () => {
     expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
     expect(screen.getByTestId('icon.pencil')).toBeTruthy();
     expect(screen.queryByText('Dictate the dream')).toBeNull();
-    expect(screen.queryByTestId('compact-mic')).toBeNull();
-    expect(screen.getByText('0/600')).toBeTruthy();
+    expect(screen.getByTestId('compact-mic').getAttribute('data-size')).toBe('inline');
+
+    fireEvent.click(screen.getByTestId('compact-mic'));
+
+    expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
   });
 
   it('keeps typed text editable and surfaces clear when there is content', () => {
@@ -209,24 +214,62 @@ describe('RecordingTextInput', () => {
     fireEvent.click(screen.getByTestId(TID.Button.ClearDream));
 
     expect(screen.queryByTestId('icon.pencil')).toBeNull();
-    expect(screen.getByText('Good start')).toBeTruthy();
+    expect(screen.getByTestId('icon.trash')).toBeTruthy();
     expect(onChange).toHaveBeenCalledWith('A blue room with rain');
     expect(onClear).toHaveBeenCalledTimes(1);
   });
 
-  it('shows only the microphone control and a non-editable transcript preview in voice mode', () => {
+  it('reveals remembered-dream details only after the dream has started', () => {
+    const onOpenDetails = jest.fn();
+
+    const { rerender } = render(
+      <RecordingTextInput
+        layout="voiceFirst"
+        value=""
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Tell a remembered dream"
+        onSwitchToVoice={jest.fn()}
+        onOpenDetails={onOpenDetails}
+      />
+    );
+
+    expect(screen.queryByTestId('icon.plus')).toBeNull();
+
+    rerender(
+      <RecordingTextInput
+        layout="voiceFirst"
+        value="A room under the sea"
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Tell a remembered dream"
+        onSwitchToVoice={jest.fn()}
+        onOpenDetails={onOpenDetails}
+      />
+    );
+
+    expect(screen.getByTestId('icon.plus')).toBeTruthy();
+
+    fireEvent.click(screen.getByTestId(TID.Button.RememberedDreamMetadataToggle));
+
+    expect(onOpenDetails).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the transcript editable while dictating in voice mode', () => {
     const onSwitchToVoice = jest.fn();
+    const onChange = jest.fn();
 
     render(
       <RecordingTextInput
         layout="voiceFirst"
         value="A blue room"
-        onChange={jest.fn()}
+        onChange={onChange}
         disabled={false}
         lengthWarning=""
         instructionText="Write what you remember"
         switchToVoiceLabel="Pause dictation"
-        voiceCtaDetail="Dictation is running. Edit the text, pause, or save."
         voiceStatus="recording"
         recordingDurationLabel="0:38"
         onSwitchToVoice={onSwitchToVoice}
@@ -234,21 +277,24 @@ describe('RecordingTextInput', () => {
       />
     );
 
-    expect(screen.queryByTestId(TID.Input.DreamTranscript)).toBeNull();
-    expect(screen.getByTestId(TID.Text.RecordingVoiceTranscriptPreview).textContent).toContain(
-      'A blue room'
-    );
-    expect(screen.getByText('Pause dictation')).toBeTruthy();
-    expect(screen.getByText('Dictation is running. Edit the text, pause, or save.')).toBeTruthy();
+    expect(screen.getByTestId(TID.Input.DreamTranscript)).toBeTruthy();
+    expect(screen.getByDisplayValue('A blue room')).toBeTruthy();
+    expect(screen.queryByText('Pause dictation')).toBeNull();
     expect(screen.getByTestId(TID.Text.RecordingVoiceStatusDuration).textContent).toBe('0:38');
+    expect(screen.getByTestId('compact-mic').getAttribute('data-size')).toBe('expressive');
     expect(screen.getByTestId('compact-mic').getAttribute('data-status')).toBe('recording');
 
-    fireEvent.click(screen.getByTestId(TID.Button.SwitchToVoice));
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'A blue room with rain' },
+    });
 
+    fireEvent.click(screen.getByTestId('compact-mic'));
+
+    expect(onChange).toHaveBeenCalledWith('A blue room with rain');
     expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
   });
 
-  it('can prioritize the expressive microphone above the text box', () => {
+  it('can prioritize the expressive microphone above the editable text box', () => {
     const onSwitchToVoice = jest.fn();
 
     render(
@@ -260,16 +306,37 @@ describe('RecordingTextInput', () => {
         lengthWarning=""
         instructionText="Dictate your dream"
         switchToVoiceLabel="Dictate the dream"
-        voiceCtaDetail="The text stays editable below."
         onSwitchToVoice={onSwitchToVoice}
       />
     );
 
     expect(screen.getByText('Dictate your dream')).toBeTruthy();
     expect(screen.getByTestId('compact-mic').getAttribute('data-size')).toBe('expressive');
-    expect(screen.queryByPlaceholderText('Tell your dream...')).toBeNull();
-    expect(screen.getByText('Dictate the dream')).toBeTruthy();
-    expect(screen.getByText('The text stays editable below.')).toBeTruthy();
+    expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
+    expect(screen.queryByText('Dictate the dream')).toBeNull();
+
+    fireEvent.click(screen.getByTestId('compact-mic'));
+
+    expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps retry on the microphone without duplicating the retry label', () => {
+    const onSwitchToVoice = jest.fn();
+
+    render(
+      <RecordingTextInput
+        layout="voiceFirst"
+        value=""
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Dictate your dream"
+        switchToVoiceLabel="Retry voice"
+        onSwitchToVoice={onSwitchToVoice}
+      />
+    );
+
+    expect(screen.queryByText('Retry voice')).toBeNull();
 
     fireEvent.click(screen.getByTestId('compact-mic'));
 

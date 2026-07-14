@@ -151,11 +151,17 @@ export function FirstDreamSheet({
           ? t('guest.first_dream.sheet.remembered_subtitle')
           : t('guest.first_dream.sheet.subtitle')
       }
+      headerIcon={usesRememberedCopy ? undefined : 'checkmark.circle.fill'}
       titleTestID={TID.Text.FirstDreamSheetTitle}
       actions={{
         primaryLabel: usesRememberedCopy
           ? t('guest.first_dream.sheet.remembered_primary')
           : t('guest.first_dream.sheet.analyze'),
+        primaryDetail: usesRememberedCopy
+          ? undefined
+          : t('guest.first_dream.sheet.analyze_detail'),
+        primaryIcon: usesRememberedCopy ? undefined : 'moon.stars.fill',
+        primaryTrailingIcon: usesRememberedCopy ? undefined : 'chevron.right',
         onPrimary: usesRememberedCopy ? onJournal : onAnalyze,
         primaryDisabled: isPersisting,
         primaryLoading: isPersisting,
@@ -165,6 +171,11 @@ export function FirstDreamSheet({
         secondaryLabel: usesRememberedCopy
           ? t('guest.first_dream.sheet.remembered_analyze')
           : t('guest.first_dream.sheet.journal'),
+        secondaryDetail: usesRememberedCopy
+          ? undefined
+          : t('guest.first_dream.sheet.journal_detail'),
+        secondaryIcon: usesRememberedCopy ? undefined : 'book.closed.fill',
+        secondaryTrailingIcon: usesRememberedCopy ? undefined : 'chevron.right',
         onSecondary: usesRememberedCopy ? onAnalyze : onJournal,
         secondaryDisabled: isPersisting,
         secondaryTestID: usesRememberedCopy
@@ -173,9 +184,17 @@ export function FirstDreamSheet({
         linkLabel: t('guest.first_dream.sheet.dismiss'),
         onLink: onDismiss,
         linkTestID: TID.Button.FirstDreamDismiss,
+        supportingContent: usesRememberedCopy ? undefined : (
+          <RecordingActivationInsightCard
+            insight={activationInsight}
+            presentation="inline"
+          />
+        ),
       }}
     >
-      <RecordingActivationInsightCard insight={activationInsight} />
+      {usesRememberedCopy ? (
+        <RecordingActivationInsightCard insight={activationInsight} />
+      ) : null}
     </StandardBottomSheet>
   );
 }

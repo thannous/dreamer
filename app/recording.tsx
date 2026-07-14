@@ -6,7 +6,6 @@ import { AtmosphereBackground } from '@/components/recording/AtmosphereBackgroun
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { RecordingOnboardingTour } from '@/components/recording/RecordingOnboardingTour';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
-import { RecordingActivationInsightCard } from '@/components/recording/RecordingActivationInsightCard';
 import {
   AnalyzePromptSheet,
   FirstDreamSheet,
@@ -21,6 +20,8 @@ import {
 import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RememberedDreamProfileChips } from '@/components/recording/RememberedDreamProfileChips';
+import { Toast } from '@/components/Toast';
+import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { RECORDING } from '@/constants/appConfig';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -68,8 +69,8 @@ import {
   preserveVoiceModeAfterFailure,
   type VoiceFallbackReason,
 } from '@/lib/recordingVoiceMode';
+import { getRecordingDraftProgress } from '@/lib/recordingDraftProgress';
 import {
-  getLiveRecordingActivationInsight,
   getRecordingActivationInsight,
   type RecordingActivationInsight,
 } from '@/lib/recordingActivationInsight';
@@ -213,6 +214,7 @@ export default function RecordingScreen() {
   const activationInsightTrackedSurfacesRef = useRef<Set<ActivationInsightSurface>>(new Set());
   const [recordingDurationSeconds, setRecordingDurationSeconds] = useState(0);
   const [voiceFallbackReason, setVoiceFallbackReason] = useState<VoiceFallbackReason>(null);
+  const [isVoiceFallbackToastVisible, setIsVoiceFallbackToastVisible] = useState(false);
   const [recordingGuideVisible, setRecordingGuideVisible] = useState(false);
   const [recordingGuideStep, setRecordingGuideStep] = useState<0 | 1>(0);
   const [captureIntent, setCaptureIntent] = useState<CaptureIntent>('fresh');
@@ -223,6 +225,7 @@ export default function RecordingScreen() {
     useState<DreamApproximatePeriod | undefined>();
   const [rememberedStrongestFragment, setRememberedStrongestFragment] =
     useState<DreamStrongestFragment | undefined>();
+  const [showRememberedDetailsSheet, setShowRememberedDetailsSheet] = useState(false);
   const [inputMode, setInputMode] = useState<RecordingInputModePreference>('text');
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [footerHeight, setFooterHeight] = useState(0);
@@ -366,7 +369,9 @@ export default function RecordingScreen() {
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
   const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
   const interactionDisabled = isPersisting || isAnalyzing;
-  const isSaveDisabled = !trimmedTranscript || interactionDisabled;
+  const draftProgress = getRecordingDraftProgress(trimmedTranscript);
+  const hasSaveableContent = draftProgress.state === 'ready' || draftProgress.state === 'full';
+  const isSaveDisabled = !hasSaveableContent || interactionDisabled;
   const textInputRef = useRef<TextInput | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
   const lastInputSourceRef = useRef<RecordingInputModePreference>('text');
@@ -1399,10 +1404,10 @@ export default function RecordingScreen() {
       styles.mainContent,
       {
         paddingTop: 16 + insets.top,
-        paddingBottom: fixedFooterBottomOffset + footerHeight,
+        paddingBottom: fixedFooterBottomOffset + (hasSaveableContent ? footerHeight : 0),
       },
     ],
-    [fixedFooterBottomOffset, footerHeight, insets.top]
+    [fixedFooterBottomOffset, footerHeight, hasSaveableContent, insets.top]
   );
   const fixedFooterStyle = useMemo(
     () => [
@@ -1414,8 +1419,8 @@ export default function RecordingScreen() {
     [fixedFooterBottomOffset]
   );
   const subjectPropositionMarginBottom = useMemo(
-    () => fixedFooterBottomOffset + footerHeight,
-    [fixedFooterBottomOffset, footerHeight]
+    () => fixedFooterBottomOffset + (hasSaveableContent ? footerHeight : 0),
+    [fixedFooterBottomOffset, footerHeight, hasSaveableContent]
   );
   const handleFooterLayout = useCallback((event: LayoutChangeEvent) => {
     const nextHeight = Math.ceil(event.nativeEvent.layout.height);
@@ -1508,45 +1513,6 @@ export default function RecordingScreen() {
   ]);
 
   const analyzePromptTranscript = analyzePromptDream?.transcript?.trim();
-  const voiceStatus = useMemo(() => {
-    if (isRecording) {
-      return {
-        title: t('recording.status.recording.title'),
-        detail: t('recording.status.recording.detail'),
-        tone: 'active' as const,
-      };
-    }
-
-    if (isPreparingRecording) {
-      return {
-        title: t('recording.status.preparing.title'),
-        detail: t('recording.status.preparing.detail'),
-        tone: 'neutral' as const,
-      };
-    }
-
-    if (interactionDisabled) {
-      return {
-        title: t('recording.status.busy.title'),
-        detail: t('recording.status.busy.detail'),
-        tone: 'neutral' as const,
-      };
-    }
-
-    return {
-      title: t(
-        recordingPermissionState === 'granted'
-          ? 'recording.status.ready.title'
-          : 'recording.status.permission_prompt.title'
-      ),
-      detail: t(
-        recordingPermissionState === 'granted'
-          ? 'recording.status.ready.detail'
-          : 'recording.status.permission_prompt.detail'
-      ),
-      tone: 'neutral' as const,
-    };
-  }, [interactionDisabled, isPreparingRecording, isRecording, recordingPermissionState, t]);
   const recordingDurationLabel = isRecording
     ? t('recording.status.duration', { duration: formatRecordingDuration(recordingDurationSeconds) })
     : undefined;
@@ -1566,23 +1532,6 @@ export default function RecordingScreen() {
     }
     return t('recording.mode.switch_to_voice');
   }, [isPreparingRecording, isRecording, t, trimmedTranscript, voiceFallbackReason]);
-  const voiceControlDetail = useMemo(() => {
-    if (isRecording) {
-      return t('recording.mode.voice_pause_detail');
-    }
-    if (isPreparingRecording) {
-      return voiceStatus.detail;
-    }
-    if (trimmedTranscript) {
-      return t('recording.mode.voice_resume_detail');
-    }
-    return t('recording.mode.voice_cta_detail');
-  }, [isPreparingRecording, isRecording, t, trimmedTranscript, voiceStatus.detail]);
-  const voiceControlHint = isRecording
-    ? t('recording.mic.pause_hint')
-    : trimmedTranscript
-      ? t('recording.mic.resume_hint')
-      : t('recording.mic.start_hint');
   const textFallbackNotice = useMemo(() => {
     if (!voiceFallbackReason) {
       return '';
@@ -1598,6 +1547,14 @@ export default function RecordingScreen() {
 
     return t(fallbackKeyByReason[voiceFallbackReason]);
   }, [t, voiceFallbackReason]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsVoiceFallbackToastVisible(Boolean(textFallbackNotice));
+    }, 0);
+
+    return () => clearTimeout(timeout);
+  }, [textFallbackNotice]);
   const firstDreamActivationInsight = useMemo(
     () => getSavedDreamActivationInsight(firstDreamPrompt),
     [firstDreamPrompt]
@@ -1667,28 +1624,6 @@ export default function RecordingScreen() {
     await toggleRecording();
   }, [inputMode, persistInputModePreference, toggleRecording]);
 
-  const draftActivationInsight = useMemo(() => {
-    if (interactionDisabled || recordingGuideVisible) {
-      return null;
-    }
-
-    return getLiveRecordingActivationInsight({
-      transcript: trimmedTranscript,
-      captureIntent,
-      rememberedKind,
-      approximatePeriod: rememberedApproximatePeriod,
-      strongestFragment: rememberedStrongestFragment,
-      maxSignals: 3,
-    });
-  }, [
-    captureIntent,
-    interactionDisabled,
-    rememberedApproximatePeriod,
-    rememberedKind,
-    rememberedStrongestFragment,
-    recordingGuideVisible,
-    trimmedTranscript,
-  ]);
   const onboardingOfferActivationInsight = useMemo(
     () => getSavedDreamActivationInsight(onboardingOfferDream),
     [onboardingOfferDream]
@@ -1710,16 +1645,6 @@ export default function RecordingScreen() {
       language,
     });
   }, [language]);
-
-  useEffect(() => {
-    trackActivationInsightShown('draft', draftActivationInsight, captureIntent);
-    if (draftActivationInsight && onboardingState.completionReason === 'skip') {
-      void trackProductEvent(
-        'first_value_viewed',
-        buildFirstValueProperties(onboardingState, 'recording_insight')
-      );
-    }
-  }, [captureIntent, draftActivationInsight, onboardingState, trackActivationInsightShown]);
 
   useEffect(() => {
     trackActivationInsightShown(
@@ -1929,11 +1854,8 @@ export default function RecordingScreen() {
                       ? t('recording.instructions')
                       : t('recording.instructions.text') || "Ou transcris ici les murmures de ton subconscient..."
                   }
-                  fallbackNotice={textFallbackNotice}
                   switchToVoiceLabel={voiceControlLabel}
-                  voiceCtaDetail={voiceControlDetail}
                   voiceStatus={voiceControlStatus}
-                  voiceAccessibilityHint={voiceControlHint}
                   recordingDurationLabel={recordingDurationLabel}
                   placeholder={
                     captureIntent === 'remembered'
@@ -1942,27 +1864,13 @@ export default function RecordingScreen() {
                   }
                   autoFocus={false}
                   onSwitchToVoice={switchToVoiceMode}
+                  onOpenDetails={
+                    captureIntent === 'remembered'
+                      ? () => setShowRememberedDetailsSheet(true)
+                      : undefined
+                  }
                   onClear={handleClearTranscript}
                 />
-
-                {draftActivationInsight ? (
-                  <RecordingActivationInsightCard
-                    context="draft"
-                    insight={draftActivationInsight}
-                  />
-                ) : null}
-
-                {captureIntent === 'remembered' ? (
-                  <RememberedDreamProfileChips
-                    rememberedKind={rememberedKind}
-                    approximatePeriod={rememberedApproximatePeriod}
-                    strongestFragment={rememberedStrongestFragment}
-                    disabled={interactionDisabled || isPreparingRecording}
-                    onRememberedKindChange={setRememberedKind}
-                    onApproximatePeriodChange={setRememberedApproximatePeriod}
-                    onStrongestFragmentChange={setRememberedStrongestFragment}
-                  />
-                ) : null}
 
                 {analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE ? (
                   <AnalysisProgress
@@ -1977,28 +1885,40 @@ export default function RecordingScreen() {
 
             </View>
           </ScrollView>
-          <View pointerEvents="box-none" style={fixedFooterStyle} onLayout={handleFooterLayout}>
-            <RecordingFooter
-              onSave={handleSaveDream}
-              isSaveDisabled={isSaveDisabled}
-              saveButtonLabel={
-                captureIntent === 'remembered'
-                  ? t('recording.remembered.save_button')
-                  : t('recording.button.save_dream')
-              }
-              saveButtonAccessibilityLabel={
-                captureIntent === 'remembered'
-                  ? t('recording.remembered.save_button_accessibility')
-                  : t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })
-              }
-            />
-          </View>
+          {hasSaveableContent ? (
+            <View pointerEvents="box-none" style={fixedFooterStyle} onLayout={handleFooterLayout}>
+              <RecordingFooter
+                onSave={handleSaveDream}
+                isSaveDisabled={isSaveDisabled}
+                saveButtonLabel={
+                  captureIntent === 'remembered'
+                    ? t('recording.remembered.save_button')
+                    : t('recording.button.save_dream')
+                }
+                saveButtonAccessibilityLabel={
+                  captureIntent === 'remembered'
+                    ? t('recording.remembered.save_button_accessibility')
+                    : t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })
+                }
+              />
+            </View>
+          ) : null}
         </KeyboardAvoidingView>
         {!keyboardVisible && viewportWidth < DESKTOP_BREAKPOINT ? (
           <NoctaliaBottomNav
             activeKey="addDream"
             addDreamIcon={inputMode === 'voice' ? 'mic' : 'pencil'}
             onBarLayout={handleBottomNavMeasure}
+          />
+        ) : null}
+        {textFallbackNotice && isVoiceFallbackToastVisible ? (
+          <Toast
+            compact
+            message={textFallbackNotice}
+            mode="error"
+            onHide={() => setIsVoiceFallbackToastVisible(false)}
+            style={styles.voiceFallbackToast}
+            testID={TID.Text.RecordingFallbackNotice}
           />
         ) : null}
       </View>
@@ -2023,6 +1943,39 @@ export default function RecordingScreen() {
         onPrimary={() => void handleOnboardingOfferPrimary()}
         onJournal={() => void handleOnboardingOfferJournal()}
       />
+
+      <StandardBottomSheet
+        visible={captureIntent === 'remembered' && showRememberedDetailsSheet}
+        onClose={() => setShowRememberedDetailsSheet(false)}
+        title={t('recording.remembered_profile.accordion_title')}
+        subtitle={t('recording.remembered_profile.title')}
+        actions={{
+          primaryLabel: t('common.done'),
+          onPrimary: () => setShowRememberedDetailsSheet(false),
+          primaryDisabled: interactionDisabled || isPreparingRecording,
+          primaryTestID: TID.Button.RememberedDreamDetailsDone,
+        }}
+        style={styles.rememberedDetailsSheet}
+        testID={TID.Sheet.RememberedDreamDetails}
+      >
+        <ScrollView
+          style={styles.rememberedDetailsScroll}
+          contentContainerStyle={styles.rememberedDetailsContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <RememberedDreamProfileChips
+            presentation="form"
+            rememberedKind={rememberedKind}
+            approximatePeriod={rememberedApproximatePeriod}
+            strongestFragment={rememberedStrongestFragment}
+            disabled={interactionDisabled || isPreparingRecording}
+            onRememberedKindChange={setRememberedKind}
+            onApproximatePeriodChange={setRememberedApproximatePeriod}
+            onStrongestFragmentChange={setRememberedStrongestFragment}
+          />
+        </ScrollView>
+      </StandardBottomSheet>
 
       <RecordingOverlays
         firstDreamVisible={Boolean(firstDreamPrompt)}
@@ -2260,6 +2213,21 @@ const styles = StyleSheet.create({
   },
   keyboardView: {
     flex: 1,
+  },
+  voiceFallbackToast: {
+    top: 16,
+    left: 16,
+    zIndex: 120,
+  },
+  rememberedDetailsSheet: {
+    maxHeight: '92%',
+  },
+  rememberedDetailsScroll: {
+    flexShrink: 1,
+    maxHeight: 500,
+  },
+  rememberedDetailsContent: {
+    paddingBottom: 8,
   },
   scrollContent: {
     flexGrow: 1,

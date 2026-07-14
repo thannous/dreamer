@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -21,11 +22,15 @@ import {
   BottomSheetLinkAction,
   BottomSheetPrimaryAction,
   BottomSheetSecondaryAction,
+  type BottomSheetActionIcon,
   type BottomSheetActionState,
 } from './BottomSheetActions';
 
 export type StandardBottomSheetActions = {
   primaryLabel: string;
+  primaryDetail?: string;
+  primaryIcon?: BottomSheetActionIcon;
+  primaryTrailingIcon?: BottomSheetActionIcon;
   onPrimary: () => void;
   primaryDisabled?: boolean;
   primaryLoading?: boolean;
@@ -33,6 +38,9 @@ export type StandardBottomSheetActions = {
   primaryVariant?: 'accent' | 'danger';
 
   secondaryLabel?: string;
+  secondaryDetail?: string;
+  secondaryIcon?: BottomSheetActionIcon;
+  secondaryTrailingIcon?: BottomSheetActionIcon;
   onSecondary?: () => void;
   secondaryDisabled?: boolean;
   secondaryTestID?: string;
@@ -40,6 +48,7 @@ export type StandardBottomSheetActions = {
   linkLabel?: string;
   onLink?: () => void;
   linkTestID?: string;
+  supportingContent?: React.ReactNode;
 };
 
 export type StandardBottomSheetProps = {
@@ -49,6 +58,8 @@ export type StandardBottomSheetProps = {
   onClose: () => void;
   /** Main title text */
   title: string;
+  /** Optional decorative icon above the title */
+  headerIcon?: BottomSheetActionIcon;
   /** Optional subtitle text below title */
   subtitle?: string;
   /** Optional custom body content between subtitle and actions */
@@ -93,6 +104,7 @@ export function StandardBottomSheet({
   visible,
   onClose,
   title,
+  headerIcon,
   subtitle,
   children,
   actions,
@@ -152,6 +164,21 @@ export function StandardBottomSheet({
       <View style={[styles.handle, { backgroundColor: noctalia.surface.border }]} />
 
       {/* Title */}
+      {headerIcon ? (
+        <View
+          accessible={false}
+          style={[
+            styles.headerIcon,
+            {
+              backgroundColor: noctalia.surface.soft,
+              borderColor: noctalia.accent.soft,
+            },
+          ]}
+        >
+          <IconSymbol name={headerIcon} size={32} color={noctalia.accent.soft} />
+        </View>
+      ) : null}
+
       <Text
         ref={titleRef}
         {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
@@ -177,6 +204,9 @@ export function StandardBottomSheet({
       <BottomSheetActions>
         <BottomSheetPrimaryAction
           label={actions.primaryLabel}
+          detail={actions.primaryDetail}
+          leadingIcon={actions.primaryIcon}
+          trailingIcon={actions.primaryTrailingIcon}
           onPress={actions.onPrimary}
           state={primaryState}
           testID={actions.primaryTestID}
@@ -185,11 +215,15 @@ export function StandardBottomSheet({
         {actions.secondaryLabel && actions.onSecondary ? (
           <BottomSheetSecondaryAction
             label={actions.secondaryLabel}
+            detail={actions.secondaryDetail}
+            leadingIcon={actions.secondaryIcon}
+            trailingIcon={actions.secondaryTrailingIcon}
             onPress={actions.onSecondary}
             state={secondaryState}
             testID={actions.secondaryTestID}
           />
         ) : null}
+        {actions.supportingContent}
         {actions.linkLabel && actions.onLink ? (
           <BottomSheetLinkAction
             label={actions.linkLabel}
@@ -222,6 +256,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     marginBottom: ThemeLayout.spacing.sm,
+  },
+  headerIcon: {
+    width: 56,
+    height: 56,
+    borderWidth: 2,
+    borderRadius: 28,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: ThemeLayout.spacing.md,
   },
   subtitle: {
     fontFamily: Fonts.spaceGrotesk.regular,
