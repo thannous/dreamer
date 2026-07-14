@@ -80,7 +80,7 @@ const translations: Record<string, string> = {
     'analytics.privacy.enabled': 'Attiva',
     'analytics.privacy.disabled': 'Disattivata',
     'analytics.privacy.toggle_label': 'Consenti la misurazione dell’uso',
-    'analytics.privacy.unavailable': 'Non disponibile in questa versione',
+    'analytics.privacy.unavailable': 'Raccolta inattiva in questa versione',
     'analytics.privacy.error': 'Non è stato possibile salvare questa scelta.',
     'inspiration.title': 'Ispirazione onirica',
     'header.home.dictionary': 'Apri il dizionario dei simboli',

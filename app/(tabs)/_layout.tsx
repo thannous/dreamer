@@ -133,8 +133,10 @@ export default function TabLayout() {
     overflow: 'visible',
   };
 
-  // On desktop web with sidebar, hide the tab bar
-  const tabBarStyle: ViewStyle | { display: 'none' } = isDesktopWeb
+  // The blocked returning-guest state is a standalone authentication surface.
+  // Keeping a single Settings tab visible adds no navigation value and can
+  // cover the privacy controls at the bottom of the screen.
+  const tabBarStyle: ViewStyle | { display: 'none' } = isDesktopWeb || returningGuestBlocked
     ? { display: 'none' }
     : baseTabBarStyle;
 

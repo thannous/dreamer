@@ -220,7 +220,7 @@ jest.doMock('@/components/LanguageSettingsCard', () => ({
 
 jest.doMock('@/components/AnalyticsPrivacySettingsCard', () => ({
   __esModule: true,
-  default: () => <div data-testid="analytics-privacy-settings-card" />,
+  AnalyticsPrivacySettingsCard: () => <div data-testid="analytics-privacy-settings-card" />,
 }));
 
 jest.doMock('@/components/NotificationSettingsCard', () => ({
@@ -281,6 +281,7 @@ describe('Settings screen', () => {
     expect(screen.getByText('auth.returning_guest.title')).toBeTruthy();
     expect(screen.getByTestId('email-auth-card')).toBeTruthy();
     expect(screen.getByTestId('language-settings-card')).toBeTruthy();
+    expect(screen.getByTestId('analytics-privacy-settings-card')).toBeTruthy();
     expect(screen.queryByTestId('subscription-card')).toBeNull();
     expect(screen.queryByTestId(TID.Button.SubscriptionSettingsCta)).toBeNull();
     expect(capturedSubscriptionProps).toBeNull();

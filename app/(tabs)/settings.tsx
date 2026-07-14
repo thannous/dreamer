@@ -1,4 +1,5 @@
 import { router, useFocusEffect } from 'expo-router';
+import { useBottomTabBarHeight } from 'expo-router/js-tabs';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   InteractionManager,
@@ -11,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
-import AnalyticsPrivacySettingsCard from '@/components/AnalyticsPrivacySettingsCard';
+import { AnalyticsPrivacySettingsCard } from '@/components/AnalyticsPrivacySettingsCard';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
@@ -71,6 +72,7 @@ function SectionDivider({
 export default function SettingsScreen() {
   const { colors, mode } = useTheme();
   const { returningGuestBlocked } = useAuth();
+  const bottomTabBarHeight = useBottomTabBarHeight();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { width } = useWindowDimensions();
@@ -163,10 +165,12 @@ export default function SettingsScreen() {
   const isDesktopLayout = Platform.OS === 'web' && width >= 1024;
   const showSubscriptionQaLab = isSubscriptionQaLabEnabled();
   const keyboardBehavior = Platform.OS === 'ios' ? 'padding' : undefined;
-  const scrollContentStyle = useMemo(
-    () => [styles.scrollContent, { paddingBottom: ThemeLayout.spacing.xl }],
-    [],
-  );
+  const scrollContentStyle = useMemo(() => {
+    const paddingBottom = isDesktopLayout || returningGuestBlocked
+      ? ThemeLayout.spacing.xl
+      : bottomTabBarHeight + ThemeLayout.spacing.md;
+    return [styles.scrollContent, { paddingBottom }];
+  }, [bottomTabBarHeight, isDesktopLayout, returningGuestBlocked]);
   const sectionsContainerStyle = useMemo(
     () => [styles.sectionsContainer, isDesktopLayout && styles.sectionsContainerDesktop],
     [isDesktopLayout],
