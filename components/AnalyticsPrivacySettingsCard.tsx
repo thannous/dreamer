@@ -74,7 +74,15 @@ export function AnalyticsPrivacySettingsCard() {
       </Text>
       <View style={styles.controlRow}>
         <View style={styles.statusContainer}>
-          <Text style={[styles.status, { color: noctalia.text.primary }]}>{status}</Text>
+          <Text style={[styles.controlLabel, { color: noctalia.text.primary }]}>
+            {t('analytics.privacy.toggle_label')}
+          </Text>
+          <Text
+            accessibilityLiveRegion="polite"
+            style={[styles.status, { color: noctalia.text.secondary }]}
+          >
+            {status}
+          </Text>
           {error ? (
             <Text accessibilityLiveRegion="assertive" style={[styles.error, { color: noctalia.status.danger.text }]}>
               {t('analytics.privacy.error')}
@@ -89,6 +97,7 @@ export function AnalyticsPrivacySettingsCard() {
             onValueChange={handleToggle}
             disabled={saving}
             accessibilityLabel={t('analytics.privacy.toggle_label')}
+            accessibilityHint={t('onboarding.privacy.toggle_hint')}
             accessibilityState={{ disabled: saving, checked: enabled }}
             testID="settings-analytics-privacy-toggle"
           />
@@ -128,9 +137,16 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: ThemeLayout.spacing.sm,
   },
-  status: {
+  controlLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 15,
+    lineHeight: 20,
+  },
+  status: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 2,
   },
   error: {
     fontFamily: Fonts.spaceGrotesk.regular,
