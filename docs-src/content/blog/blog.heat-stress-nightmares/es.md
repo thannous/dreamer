@@ -23,10 +23,10 @@
   "twitterImage": "https://noctalia.app/img/blog/heatwave-sleep-dreams.webp",
   "twitterImageAlt": "Persona despierta en una habitación calurosa tras un sueño angustioso",
   "publishedTime": "2026-07-10T00:00:00+02:00",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-15T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/despertares-nocturnos-recordar-suenos",
-  "nextPath": "/es/blog/privacidad-ia-diario-suenos",
+  "nextPath": "/es/blog/suenos-regulacion-emociones-estudio-2026",
   "preloadImage": "/img/blog/heatwave-sleep-dreams.webp",
   "jsonLd": [],
   "activeNav": "resources"
@@ -54,6 +54,7 @@
 <p>El estrés y las pesadillas están asociados, pero la relación no va en una sola dirección. Los diarios de sueño sugieren que los días más estresantes pueden preceder pesadillas más intensas, mientras que una pesadilla también puede aumentar el estrés al día siguiente. Los estudios longitudinales muestran además que la frecuencia anterior de pesadillas sigue siendo un factor importante.</p>
 <p>Una pesadilla no es un diagnóstico ni prueba que haya algo oculto. Puede acompañar una carga emocional, un cambio, un trauma, un medicamento, cansancio o sueño interrumpido. Para distinguir la preocupación difusa del miedo que te despierta, consulta la guía de <a class="text-dream-salmon hover:underline" href="suenos-de-ansiedad-significado">sueños de ansiedad</a>.</p>
 <p>Cuando calor y estrés coinciden, pueden reforzar la experiencia sin compartir una sola causa: el cuerpo intenta enfriarse, la mente sigue alerta y los despertares hacen que el relato sea más accesible. Anota por separado el contexto físico y el emocional.</p>
+<p>Para comparar la emoción del sueño con el ánimo al despertar, consulta lo que halló un <a class="text-dream-salmon hover:underline" href="suenos-regulacion-emociones-estudio-2026">estudio de 2026 sobre sueños y regulación emocional</a> en 4.715 registros diarios.</p>
 <h2>Qué hacer esta noche</h2>
 <ol>
 <li><strong>Reduce la carga de calor.</strong> Cierra persianas y ventanas durante las horas cálidas si el aire exterior está más caliente, ventila al anochecer cuando sea seguro, usa ropa de cama ligera y elige la habitación más fresca. Sigue las recomendaciones sanitarias locales en lugar de buscar una temperatura “perfecta” universal.</li>

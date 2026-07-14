@@ -23,9 +23,9 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Protected dream memory fragments in nocturnal light",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-15T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/en/blog/heat-stress-nightmares",
+  "prevPath": "/en/blog/dreams-emotion-regulation-study-2026",
   "nextPath": "/en/blog/dreamlike-wakefulness-sleep",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],
@@ -44,6 +44,7 @@
 <p class="text-sm text-purple-200/70">This article is informational and is not legal advice. In the European Union, GDPR remains the practical baseline: clear purpose, data minimisation, readable notice, access rights and deletion rights.</p>
 <h2>Why dreams are different from ordinary notes</h2>
 <p>A dream is not just a productivity note. Even when it feels absurd, it can mention loved ones, work, health anxiety, a breakup or an emotion you would not post elsewhere. Over time, those fragments can reveal personal patterns.</p>
+<p>A recent example is the <a class="text-dream-salmon hover:underline" href="dreams-emotion-regulation-study-2026">2026 study linking dream emotions with morning mood</a>: meaningful analysis depends on sensitive records accumulated over time.</p>
 <p>That is what makes dream journaling valuable: it keeps context. But that context should stay understandable to you, not disappear into a black box. Before using an AI app, check what it stores, what it sends to providers, how long data is retained and how deletion works.</p>
 <h2>Five checks before choosing an AI journal</h2>
 <ul>

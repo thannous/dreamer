@@ -23,9 +23,9 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Geschützte Traumerinnerungen in nächtlichem Licht",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-15T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/de/blog/albtraeume-hitze-stress",
+  "prevPath": "/de/blog/traeume-emotionsregulation-studie-2026",
   "nextPath": "/de/blog/wachtraeumen-onirische-zustaende",
   "preloadImage": "/img/blog/dream-memory-hero.webp",
   "jsonLd": [],
@@ -44,6 +44,7 @@
 <p class="text-sm text-purple-200/70">Dieser Artikel ist informativ und keine Rechtsberatung. In der Europäischen Union bleibt die DSGVO die praktische Grundlage: klarer Zweck, Datenminimierung, verständliche Information, Auskunft und Löschung.</p>
 <h2>Warum Träume besondere Daten sind</h2>
 <p>Ein Traum ist keine gewöhnliche Notiz. Selbst wenn er absurd wirkt, kann er nahestehende Personen, Arbeit, Gesundheitsangst, eine Trennung oder Gefühle enthalten, die Sie nirgendwo öffentlich teilen würden. Über Zeit können diese Fragmente persönliche Muster zeigen.</p>
+<p>Ein aktuelles Beispiel ist die <a class="text-dream-salmon hover:underline" href="traeume-emotionsregulation-studie-2026">Studie von 2026 zu Traumgefühlen und Morgenstimmung</a>: Aussagekraft entsteht durch sensible Aufzeichnungen über längere Zeit.</p>
 <p>Genau deshalb ist ein Traumtagebuch hilfreich: Es bewahrt Kontext. Dieser Kontext sollte aber für Sie verständlich bleiben und nicht in einer Blackbox verschwinden. Prüfen Sie vor einer KI-App, was gespeichert wird, was an Anbieter geht, wie lange Daten bleiben und wie Löschung funktioniert.</p>
 <h2>Fünf Punkte vor der Auswahl</h2>
 <ul>

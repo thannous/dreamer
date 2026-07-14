@@ -23,10 +23,10 @@
   "twitterImage": "https://noctalia.app/img/blog/heatwave-sleep-dreams.webp",
   "twitterImageAlt": "Personne réveillée dans une chambre chaude après un rêve pénible",
   "publishedTime": "2026-07-10T00:00:00+02:00",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-15T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reveil-nocturne-rappel-reves",
-  "nextPath": "/fr/blog/confidentialite-ia-journal-reves",
+  "nextPath": "/fr/blog/reves-regulation-emotions-etude-2026",
   "preloadImage": "/img/blog/heatwave-sleep-dreams.webp",
   "jsonLd": [],
   "activeNav": "resources"
@@ -54,6 +54,7 @@
 <p>Le stress et les cauchemars sont associés, mais la relation n'est pas une ligne droite. Des journaux de sommeil montrent que les journées plus stressantes peuvent précéder des cauchemars plus pénibles, tandis qu'un cauchemar peut aussi augmenter le stress le lendemain. D'autres travaux longitudinaux soulignent que la fréquence passée des cauchemars reste un facteur important.</p>
 <p>Un cauchemar n'est donc ni un diagnostic ni la preuve que quelque chose est « enfoui ». Il peut refléter une charge émotionnelle, une période de changement, un traumatisme, un médicament, de la fatigue ou un sommeil perturbé. Pour distinguer inquiétude diffuse et peur qui réveille, consultez le guide des <a class="text-dream-salmon hover:underline" href="reves-anxiete-signification">rêves d'anxiété</a>.</p>
 <p>Quand chaleur et stress se cumulent, les deux effets peuvent se renforcer sans avoir la même origine : le corps lutte pour se refroidir, l'esprit reste en alerte et les réveils rendent le récit plus accessible. Notez les deux dimensions séparément.</p>
+<p>Pour comparer l'émotion du rêve à l'humeur du réveil, découvrez ce qu'une <a class="text-dream-salmon hover:underline" href="reves-regulation-emotions-etude-2026">étude de 2026 sur les rêves et la régulation émotionnelle</a> a observé dans 4 715 journaux quotidiens.</p>
 <h2>Que faire ce soir</h2>
 <ol>
 <li><strong>Réduisez la charge thermique.</strong> Fermez volets et fenêtres pendant les heures chaudes si l'air extérieur est plus chaud, aérez après la tombée de la nuit lorsque c'est sûr, choisissez du linge léger et utilisez la pièce la plus fraîche. Suivez les recommandations sanitaires locales plutôt qu'une température « parfaite » universelle.</li>

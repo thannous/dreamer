@@ -23,10 +23,10 @@
   "twitterImage": "https://noctalia.app/img/blog/heatwave-sleep-dreams.webp",
   "twitterImageAlt": "Person awake in a hot bedroom after a distressing dream",
   "publishedTime": "2026-07-10T00:00:00+02:00",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-15T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/night-waking-dream-recall",
-  "nextPath": "/en/blog/ai-dream-journal-privacy",
+  "nextPath": "/en/blog/dreams-emotion-regulation-study-2026",
   "preloadImage": "/img/blog/heatwave-sleep-dreams.webp",
   "jsonLd": [],
   "activeNav": "resources"
@@ -54,6 +54,7 @@
 <p>Stress and nightmares are associated, but the relationship is not one-way. Sleep diaries suggest that more stressful days can precede more distressing nightmares, while a nightmare can also increase stress the next day. Longitudinal work also shows that a person's earlier nightmare frequency remains an important predictor.</p>
 <p>A nightmare is not a diagnosis or proof that something is hidden. It may accompany emotional strain, change, trauma, medication, fatigue or disrupted sleep. To separate diffuse worry from fear that wakes you, read the guide to <a class="text-dream-salmon hover:underline" href="anxiety-dreams-meaning">anxiety dreams</a>.</p>
 <p>When heat and stress overlap, they can reinforce the experience without sharing one cause: the body is trying to cool down, the mind stays alert and awakenings make the story more accessible. Record the physical and emotional contexts separately.</p>
+<p>To compare dream emotion with morning mood, see what a <a class="text-dream-salmon hover:underline" href="dreams-emotion-regulation-study-2026">2026 study on dreams and emotion regulation</a> found across 4,715 daily reports.</p>
 <h2>What to do tonight</h2>
 <ol>
 <li><strong>Lower the heat load.</strong> Close blinds and windows during hot hours when outdoor air is warmer, ventilate after dark when safe, use light bedding and move to the coolest room. Follow local health guidance rather than chasing one universal “perfect” sleep temperature.</li>
