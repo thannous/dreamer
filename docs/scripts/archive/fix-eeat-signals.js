@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * fix-eeat-signals.js — Improve E-E-A-T signals across the Noctalia docs site
+ * Archived migration — E-E-A-T signals now live in canonical docs sources.
  *
  * Fixes:
  * 1. Add author byline to all blog articles (130 files)

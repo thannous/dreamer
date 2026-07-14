@@ -156,7 +156,7 @@ function main() {
   });
 
   server.listen(port, () => {
-    // eslint-disable-next-line no-console
+
     console.log(`✅ Serving docs at http://localhost:${port} (pretty URLs enabled)`);
   });
 }

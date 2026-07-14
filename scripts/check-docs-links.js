@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+
 
 /**
  * Checks `docs/` for broken internal links (and optionally external links).
@@ -291,7 +291,7 @@ async function checkExternalUrl(url, { timeoutMs }) {
       return { ok: isOkStatus(res2.status), status: res2.status };
     }
     return { ok: isOkStatus(res.status), status: res.status };
-  } catch (error) {
+  } catch {
     try {
       const res = await request('GET');
       return { ok: isOkStatus(res.status), status: res.status };

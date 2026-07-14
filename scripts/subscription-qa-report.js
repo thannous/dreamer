@@ -812,6 +812,7 @@ const testStoreEnv = readEnv('.env.teststore');
 const playStoreEnv = fs.existsSync(path.join(ROOT, '.env.playstore')) ? readEnv('.env.playstore') : {};
 const subscriptionConstants = read('constants/subscription.ts');
 const purchaseRunner = read('scripts/run-subscription-teststore-purchase.js');
+const apkBuildRunner = read('scripts/build-android-apk.js');
 const restoreRunner = fs.existsSync(path.join(ROOT, 'scripts/run-subscription-teststore-restore.js'))
   ? read('scripts/run-subscription-teststore-restore.js')
   : '';
@@ -996,13 +997,16 @@ const checks = [
     'Production APK build is gated by subscription QA',
     pkg.scripts['android:gates:prebuild'] ===
       'node ./scripts/check-android-release-gates.js --prebuild' &&
-    typeof pkg.scripts['build:apk:prod'] === 'string' &&
-      pkg.scripts['build:apk:prod'].startsWith('npm run android:gates:prebuild &&') &&
-      pkg.scripts['build:apk:prod'].includes('EXPO_NO_DOTENV=1') &&
-      !pkg.scripts['build:apk:prod'].includes('rm -f .env.local') &&
+      pkg.scripts['build:apk:prod'] === 'node ./scripts/build-android-apk.js prod' &&
+      apkBuildRunner.includes("'check-android-release-gates.js'") &&
+      apkBuildRunner.includes("'--prebuild'") &&
+      apkBuildRunner.includes("EXPO_NO_DOTENV: '1'") &&
+      apkBuildRunner.includes("const EAS_CLI_SPEC = 'eas-cli@21.0.0'") &&
+      apkBuildRunner.includes("platform === 'win32' ? 'npx.cmd' : 'npx'") &&
+      !apkBuildRunner.includes('rmSync') &&
       pkg.scripts['android:gates:strict'] ===
         'node ./scripts/check-android-release-gates.js',
-    'build:apk:prod preserves .env.local, disables dotenv, and runs android:gates:prebuild; android:gates:strict qualifies the candidate after Play upload'
+    'build:apk:prod uses exact EAS CLI 21.0.0 via npx, preserves .env.local, disables dotenv, and runs the prebuild release gates; android:gates:strict qualifies the candidate after Play upload'
   ),
   check(
     'RevenueCat device app user id extractor exists',

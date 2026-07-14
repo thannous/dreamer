@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* Archived migration: canonical SEO changes now live in docs-src/. */
 
 /**
  * Enhances blog index pages SEO for the static docs site:
@@ -257,4 +257,3 @@ function main() {
 if (require.main === module) {
   main();
 }
-

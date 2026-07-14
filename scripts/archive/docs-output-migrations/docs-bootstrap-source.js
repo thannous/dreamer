@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* Archived bootstrap: docs-src/ is now the established source of truth. */
 
 const fs = require('fs');
 const path = require('path');

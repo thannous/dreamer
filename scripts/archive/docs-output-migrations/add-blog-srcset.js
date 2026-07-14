@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* Archived migration: responsive image markup now lives in docs-src/. */
 
 /**
  * Adds responsive `srcset`/`sizes` for local blog images (`/img/blog/*.webp`)

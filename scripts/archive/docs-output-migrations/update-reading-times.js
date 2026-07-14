@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* Archived migration: reading-time values now live in canonical docs sources. */
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');

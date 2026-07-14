@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+
 
 /**
  * Builds a unified content manifest for blog resources.

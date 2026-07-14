@@ -4,7 +4,10 @@ Historical docs-site migration scripts. The active docs scripts remain one level
 
 - `check-site.js`
 - `generate-symbol-pages.js`
-- `fix-eeat-signals.js`
-- `fix-title-lengths.js`
 
-Prefer adding new reusable tooling to `scripts/` or `docs/scripts/` only when it is expected to run again.
+`fix-eeat-signals.js` and `fix-title-lengths.js` are retained here only for
+historical reference. Their results were absorbed into `docs-src/`, shared
+data, and the maintained generators.
+
+Prefer adding new reusable tooling to root `scripts/`. Never add a command
+that mutates generated `docs/` output directly.

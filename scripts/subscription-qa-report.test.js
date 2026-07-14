@@ -224,7 +224,7 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('npm run subscription:qa:verify-local');
     expect(result.stdout).toContain('OK | Production APK build is gated by subscription QA');
     expect(result.stdout).toContain(
-      'build:apk:prod preserves .env.local, disables dotenv, and runs android:gates:prebuild; android:gates:strict qualifies the candidate after Play upload'
+      'build:apk:prod uses exact EAS CLI 21.0.0 via npx, preserves .env.local, disables dotenv, and runs the prebuild release gates; android:gates:strict qualifies the candidate after Play upload'
     );
     expect(result.stdout).toContain('OK | RevenueCat device app user id extractor exists');
     expect(result.stdout).toContain('npm run subscription:qa:device-app-user-id');
