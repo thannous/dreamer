@@ -10,6 +10,7 @@ const { MAX_OUTPUT_BYTES } = require('./optimize-homepage-hero');
 
 const HERO_PATH = path.join(DOCS_DIR, 'img', 'hero', 'noctalia-observatory-bg.webp');
 const OBSERVATORY_CSS_PATH = path.join(DOCS_DIR, 'css', 'observatory.css');
+const BLOG_ARTICLE_CSS_PATH = path.join(DOCS_DIR, 'css', 'blog-article.css');
 
 function parseAttributes(tag) {
   const attributes = {};
@@ -39,6 +40,15 @@ function checkWebPerformanceContract() {
     }
     if (css.includes("url('/img/hero/noctalia-observatory-bg.png')")) {
       errors.push('[homepage LCP] observatory.css still requests the 1.8 MB PNG hero');
+    }
+  }
+
+  if (!fs.existsSync(BLOG_ARTICLE_CSS_PATH)) {
+    errors.push('[article LCP] missing blog-article.css');
+  } else {
+    const css = fs.readFileSync(BLOG_ARTICLE_CSS_PATH, 'utf8');
+    if (css.includes('--article-bg-image') || css.includes("noctalia-observatory-bg.png")) {
+      errors.push('[article LCP] article CSS must not request a competing background hero');
     }
   }
 
@@ -89,6 +99,33 @@ function checkWebPerformanceContract() {
       if (attrs.loading !== 'eager' && attrs.loading !== 'lazy') {
         errors.push(`[blog index images] ${path.relative(ROOT_DIR, indexPath)} has no loading policy`);
         break;
+      }
+    }
+  }
+
+
+  for (const lang of siteConfig.languages) {
+    const blogDir = path.join(DOCS_DIR, lang, 'blog');
+    if (!fs.existsSync(blogDir)) continue;
+    for (const entry of fs.readdirSync(blogDir, { withFileTypes: true })) {
+      if (!entry.isFile() || !entry.name.endsWith('.html') || entry.name === 'index.html') continue;
+      const filePath = path.join(blogDir, entry.name);
+      const html = fs.readFileSync(filePath, 'utf8');
+      if (!/<html\b[^>]*class=(['"])[^"']*\bblog-article\b[^"']*\1/i.test(html)) continue;
+      if (!/<meta\b[^>]*property=(['"])og:type\1[^>]*content=(['"])article\2/i.test(html)) continue;
+
+      const editorialFigures = html.match(/<figure\b[^>]*data-image-seo-role=(['"])editorial\1[^>]*>/gi) || [];
+      const highPriorityImages = html.match(/<img\b[^>]*fetchpriority=(['"])high\1[^>]*>/gi) || [];
+      if (editorialFigures.length !== 1 || highPriorityImages.length !== 1) {
+        errors.push(
+          `[article LCP] ${path.relative(ROOT_DIR, filePath)} must expose one visible editorial figure and one high-priority image`
+        );
+      }
+      if (/<link\b[^>]*rel=(['"])preload\1[^>]*as=(['"])image\2/i.test(html)) {
+        errors.push(`[article LCP] ${path.relative(ROOT_DIR, filePath)} duplicates the hero with an image preload`);
+      }
+      if (html.includes('--article-bg-image')) {
+        errors.push(`[article LCP] ${path.relative(ROOT_DIR, filePath)} still declares a CSS hero image`);
       }
     }
   }

@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-07-14T18:09:23.436Z",
+  "site": "sc-domain:noctalia.app",
+  "startDate": "2026-04-15",
+  "endDate": "2026-07-12",
+  "searchType": "image",
+  "datasets": {
+    "summary": {
+      "rows": 1
+    },
+    "daily": {
+      "rows": 89
+    },
+    "queries": {
+      "rows": 1269
+    },
+    "pages": {
+      "rows": 146
+    },
+    "page-query": {
+      "rows": 1345
+    },
+    "countries": {
+      "rows": 181
+    },
+    "devices": {
+      "rows": 3
+    }
+  },
+  "totals": {
+    "clicks": 9,
+    "impressions": 25044,
+    "ctr": 0.0003593675131768088,
+    "position": 38.65979875419262
+  },
+  "notes": [
+    "Search Analytics rows are returned by Google Search Console API and can be limited by Google internal constraints.",
+    "Output files are intended for SEO planning and should usually remain uncommitted."
+  ]
+}

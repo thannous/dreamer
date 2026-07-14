@@ -10,7 +10,6 @@
   --article-muted: rgba(231, 220, 255, 0.76);
   --article-soft: rgba(231, 220, 255, 0.58);
   --article-salmon: #ffa07d;
-  --article-bg-image: url('/img/hero/noctalia-observatory-bg.png');
 }
 
 html.blog-article {
@@ -49,10 +48,9 @@ html.blog-article main::before {
     linear-gradient(90deg, rgba(7, 3, 15, 0.92) 0%, rgba(7, 3, 15, 0.36) 46%, rgba(7, 3, 15, 0.86) 100%),
     radial-gradient(circle at 14% 20%, rgba(253, 164, 129, 0.18), transparent 24rem),
     radial-gradient(circle at 82% 8%, rgba(167, 139, 250, 0.2), transparent 28rem),
-    var(--article-bg-image),
     linear-gradient(135deg, #12051d 0%, #0a0514 48%, #140824 100%);
-  background-position: center, center, 14% 20%, 82% 8%, center top, center;
-  background-size: cover, cover, auto, auto, cover, cover;
+  background-position: center, center, 14% 20%, 82% 8%, center;
+  background-size: cover, cover, auto, auto, cover;
   background-repeat: no-repeat;
 }
 
@@ -95,7 +93,7 @@ html.blog-article main > aside[role="note"] {
   margin-right: auto;
 }
 
-html.blog-article main > article > figure,
+html.blog-article main > article > figure[data-image-seo-role="editorial"],
 html.blog-article main > article > div.grid,
 html.blog-article main > article > div.glass-panel,
 html.blog-article main > article > section[aria-label="Related dream symbols"],
@@ -174,13 +172,13 @@ html.blog-article main > article > .flex.items-center.gap-3 {
   color: var(--article-soft);
 }
 
-html.blog-article main > article > figure {
+html.blog-article main > article > figure[data-image-seo-role="editorial"] {
   position: relative;
-  display: none;
+  display: block;
   width: 100% !important;
   max-width: none;
-  height: 0;
-  margin: 0 !important;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto clamp(2rem, 5vw, 4rem) !important;
   overflow: hidden;
   border-top: 1px solid var(--article-border);
   border-bottom: 1px solid var(--article-border);
@@ -188,7 +186,7 @@ html.blog-article main > article > figure {
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
 }
 
-html.blog-article main > article > figure::after {
+html.blog-article main > article > figure[data-image-seo-role="editorial"]::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -198,10 +196,43 @@ html.blog-article main > article > figure::after {
     linear-gradient(180deg, rgba(7, 3, 15, 0.1) 0%, rgba(7, 3, 15, 0.42) 100%);
 }
 
-html.blog-article main > article > figure img {
+html.blog-article main > article > figure[data-image-seo-role="editorial"] picture,
+html.blog-article main > article > figure[data-image-seo-role="editorial"] img {
+  display: block;
   width: 100%;
   height: 100%;
+}
+
+html.blog-article main > article > figure[data-image-seo-role="editorial"] img {
   object-fit: cover;
+}
+
+html.blog-article main > article > figure[data-image-seo-role="educational"] {
+  width: min(calc(100% - (var(--article-edge) * 2)), 920px);
+  margin: clamp(2rem, 5vw, 4rem) auto;
+  padding: clamp(0.7rem, 2vw, 1rem);
+  border: 1px solid var(--article-border);
+  border-radius: 16px;
+  background: rgba(22, 12, 39, 0.84);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
+}
+
+html.blog-article main > article > figure[data-image-seo-role="educational"] picture,
+html.blog-article main > article > figure[data-image-seo-role="educational"] img {
+  display: block;
+  width: 100%;
+}
+
+html.blog-article main > article > figure[data-image-seo-role="educational"] img {
+  height: auto;
+  border-radius: 10px;
+}
+
+html.blog-article main > article > figure[data-image-seo-role="educational"] figcaption {
+  margin: 0.85rem 0.35rem 0.2rem;
+  color: var(--article-muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
 }
 
 html.blog-article .glass-panel {
@@ -381,9 +412,8 @@ html.blog-article main > aside[role="note"] {
     padding-top: 0.5rem;
   }
 
-  html.blog-article main > article > figure {
-    display: block;
-    height: clamp(11rem, 48vw, 15rem);
+  html.blog-article main > article > figure[data-image-seo-role="editorial"] {
+    aspect-ratio: 16 / 9;
     margin-bottom: 1.5rem !important;
   }
 

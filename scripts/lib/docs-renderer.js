@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { imageSize } = require('image-size');
 const {
   DOCS_SRC_DIR,
   readAssetVersion,
@@ -18,9 +19,42 @@ const {
   synchronizeVisibleArticleDate,
 } = require('./article-date-contract');
 const { normalizeCanonicalOrganization } = require('./canonical-organization');
+const {
+  getPageImageSet,
+  getPageResponsiveImages,
+  readImageAssetRegistry,
+  renderResponsivePicture,
+} = require('./image-seo-assets');
 
 const shellTemplate = fs.readFileSync(path.join(DOCS_SRC_DIR, 'templates', 'base.html'), 'utf8');
 const AHREFS_ANALYTICS_KEY = 'qDwc7i0RM0aLBY/cZLkOxA';
+const DEFAULT_SOCIAL_IMAGE = `${siteConfig.domain}/img/og/noctalia-dreamscape-v2-1200x630.jpg`;
+const LEGACY_SOCIAL_IMAGE_PATTERN = /\/img\/og\/noctalia-(?:en|fr|es|de|it)-1200x630\.jpg(?:[?#].*)?$/i;
+let imageSeoRegistryCache;
+
+function loadImageSeoRegistry() {
+  if (imageSeoRegistryCache !== undefined) return imageSeoRegistryCache;
+  try {
+    imageSeoRegistryCache = readImageAssetRegistry();
+  } catch (error) {
+    if (error?.code !== 'ENOENT') throw error;
+    imageSeoRegistryCache = null;
+  }
+  return imageSeoRegistryCache;
+}
+
+function resolvePageImageContext(entry, meta) {
+  const registry = loadImageSeoRegistry();
+  if (!registry) return null;
+  const canonicalPath = entry?.locales?.[meta.lang]?.path || meta.currentPath || '';
+  const page = getPageImageSet(registry, canonicalPath);
+  if (!page) return null;
+  return {
+    registry,
+    page,
+    images: getPageResponsiveImages(registry, canonicalPath),
+  };
+}
 
 function renderTemplate(tokens) {
   return Object.entries(tokens).reduce(
@@ -31,6 +65,36 @@ function renderTemplate(tokens) {
 
 function absoluteUrl(pagePath) {
   return `${siteConfig.domain}${pagePath}`;
+}
+
+function normalizePreferredImageUrl(value) {
+  const url = String(value || '').trim();
+  if (!url || LEGACY_SOCIAL_IMAGE_PATTERN.test(url)) return DEFAULT_SOCIAL_IMAGE;
+  return url.startsWith('/') ? absoluteUrl(url) : url;
+}
+
+function localImagePathFromUrl(value) {
+  try {
+    const url = new URL(normalizePreferredImageUrl(value), siteConfig.domain);
+    if (url.origin !== siteConfig.domain) return null;
+    const pathname = decodeURIComponent(url.pathname).replace(/^\/+/, '');
+    return path.join(DOCS_SRC_DIR, 'static', pathname);
+  } catch {
+    return null;
+  }
+}
+
+function resolveImageDimensions(value, fallback = { width: 1200, height: 630 }) {
+  const filePath = localImagePathFromUrl(value);
+  if (!filePath || !fs.existsSync(filePath)) return fallback;
+
+  try {
+    const dimensions = imageSize(fs.readFileSync(filePath));
+    if (!dimensions.width || !dimensions.height) return fallback;
+    return { width: dimensions.width, height: dimensions.height };
+  } catch {
+    return fallback;
+  }
 }
 
 function htmlAttributes(meta) {
@@ -162,7 +226,8 @@ function buildFallbackBlogJsonLd(meta, entry, bodyHtml) {
   const title = stripSiteSuffix(meta.title);
   const description = meta.description || meta.ogDescription || title;
   const wordCount = estimateWordCount(bodyHtml);
-  const imageUrl = meta.ogImage || meta.twitterImage || `${siteConfig.domain}/img/og/noctalia-${lang}-1200x630.jpg`;
+  const imageUrl = normalizePreferredImageUrl(meta.ogImage || meta.twitterImage);
+  const imageDimensions = resolveImageDimensions(imageUrl);
   const faqEntities = extractFaqEntities(bodyHtml);
 
   const blocks = [
@@ -174,8 +239,8 @@ function buildFallbackBlogJsonLd(meta, entry, bodyHtml) {
       image: {
         '@type': 'ImageObject',
         url: imageUrl,
-        width: 1200,
-        height: 630,
+        width: imageDimensions.width,
+        height: imageDimensions.height,
       },
       author: {
         '@type': 'Person',
@@ -251,11 +316,47 @@ function buildFallbackBlogJsonLd(meta, entry, bodyHtml) {
   return blocks;
 }
 
-function renderJsonLd(meta, entry, bodyHtml) {
+function synchronizePreferredImage(blocks, preferredImage) {
+  const imageObject = {
+    '@type': 'ImageObject',
+    url: preferredImage.url,
+    width: preferredImage.width,
+    height: preferredImage.height,
+  };
+
+  function visit(node) {
+    if (Array.isArray(node)) {
+      for (const child of node) visit(child);
+      return;
+    }
+    if (!node || typeof node !== 'object') return;
+
+    const types = Array.isArray(node['@type']) ? node['@type'] : [node['@type']];
+    if (types.some((type) => ['Article', 'BlogPosting', 'NewsArticle'].includes(type))) {
+      node.image = { ...imageObject };
+    }
+    if (
+      !preferredImage.generic &&
+      types.some((type) => ['WebPage', 'CollectionPage'].includes(type))
+    ) {
+      node.primaryImageOfPage = { ...imageObject };
+    }
+
+    for (const value of Object.values(node)) visit(value);
+  }
+
+  for (const block of blocks) visit(block);
+  return blocks;
+}
+
+function renderJsonLd(meta, entry, bodyHtml, preferredImage = null) {
   const blocks = Array.isArray(meta.jsonLd) ? meta.jsonLd : [];
   const sourceBlocks = blocks.length > 0 ? blocks : buildFallbackBlogJsonLd(meta, entry, bodyHtml);
   const normalizedBlocks = normalizeCanonicalOrganization(sourceBlocks);
-  const synchronizedBlocks = synchronizeJsonLdDates(normalizedBlocks, meta);
+  const datedBlocks = synchronizeJsonLdDates(normalizedBlocks, meta);
+  const synchronizedBlocks = preferredImage
+    ? synchronizePreferredImage(datedBlocks, preferredImage)
+    : datedBlocks;
 
   return synchronizedBlocks
     .map((block) => {
@@ -313,11 +414,12 @@ function renderCommonHead(meta, entry, assetVersion, bodyHtml) {
   const canonicalUrl = absoluteUrl(pagePath);
   const ogTitle = meta.ogTitle || meta.title;
   const ogDescription = meta.ogDescription || meta.description;
-  const ogImage = meta.ogImage || `${siteConfig.domain}/img/og/noctalia-${lang}-1200x630.jpg`;
+  const ogImage = normalizePreferredImageUrl(meta.ogImage);
+  const ogImageDimensions = resolveImageDimensions(ogImage);
   const ogImageAlt = meta.ogImageAlt || ogTitle;
   const twitterTitle = meta.twitterTitle || ogTitle;
   const twitterDescription = meta.twitterDescription || meta.description;
-  const twitterImage = meta.twitterImage || ogImage;
+  const twitterImage = normalizePreferredImageUrl(meta.twitterImage || ogImage);
   const twitterImageAlt = meta.twitterImageAlt || ogImageAlt;
   const themeColor = meta.themeColor || '#0a0514';
   const defaultRobots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
@@ -333,7 +435,7 @@ function renderCommonHead(meta, entry, assetVersion, bodyHtml) {
   }
 
   const preloadLines = [];
-  if (meta.preloadImage) {
+  if (meta.preloadImage && meta.layout !== 'blogArticle') {
     const ext = path.extname(meta.preloadImage).toLowerCase();
     const mime = ext === '.webp' ? 'image/webp' : ext === '.png' ? 'image/png' : 'image/jpeg';
     preloadLines.push('    <!-- Preload featured image -->');
@@ -384,8 +486,8 @@ function renderCommonHead(meta, entry, assetVersion, bodyHtml) {
     `    <meta property="og:description" content="${escapeHtml(ogDescription)}">`,
     `    <meta property="og:url" content="${canonicalUrl}">`,
     `    <meta property="og:image" content="${escapeHtml(ogImage)}">`,
-    '    <meta property="og:image:width" content="1200">',
-    '    <meta property="og:image:height" content="630">',
+    `    <meta property="og:image:width" content="${ogImageDimensions.width}">`,
+    `    <meta property="og:image:height" content="${ogImageDimensions.height}">`,
     `    <meta property="og:image:alt" content="${escapeHtml(ogImageAlt)}">`,
     `    <meta property="og:locale" content="${siteConfig.localeCodes[lang]}">`,
     renderLocaleAlternates(lang),
@@ -405,7 +507,12 @@ function renderCommonHead(meta, entry, assetVersion, bodyHtml) {
     renderStyles(meta, assetVersion),
     renderViewTransitionHeadStyles(),
     renderHeadScripts(meta, assetVersion),
-    renderJsonLd(meta, entry, bodyHtml),
+    renderJsonLd(meta, entry, bodyHtml, {
+      url: ogImage,
+      width: ogImageDimensions.width,
+      height: ogImageDimensions.height,
+      generic: ogImage === DEFAULT_SOCIAL_IMAGE,
+    }),
   ]
     .filter(Boolean)
     .join('\n');
@@ -438,12 +545,8 @@ function renderContent(meta, bodyHtml, heroHtml = '') {
   }
 
   const classAttr = meta.mainClass ? ` class="${escapeHtml(meta.mainClass)}"` : '';
-  const styleAttr =
-    meta.layout === 'blogArticle' && meta.preloadImage
-      ? ` style="--article-bg-image: url('${escapeHtml(meta.preloadImage)}');"`
-      : '';
   const sections = [heroHtml, bodyHtml].filter(Boolean).join('\n');
-  return `    <main${classAttr}${styleAttr}>\n${sections}\n    </main>`;
+  return `    <main${classAttr}>\n${sections}\n    </main>`;
 }
 
 function renderScripts(meta, assetVersion) {
@@ -514,6 +617,131 @@ function responsiveBlogImageSrcset(src) {
   return variants.map((variant) => `${variant.url} ${variant.width}w`).join(', ');
 }
 
+function imageStem(value) {
+  const pathname = String(value || '').split(/[?#]/, 1)[0];
+  return path
+    .basename(pathname)
+    .replace(/-(?:480|600|800|1200)w(?=\.(?:avif|webp|png|jpe?g)$)/i, '')
+    .replace(/\.(?:avif|webp|png|jpe?g)$/i, '');
+}
+
+function imageAltFromTag(tag, fallback) {
+  return tag.match(/\balt=(['"])([\s\S]*?)\1/i)?.[2] || fallback || '';
+}
+
+function addFigureRole(figureTag, role) {
+  return upsertHtmlAttribute(figureTag, 'data-image-seo-role', role);
+}
+
+function renderArticlePicture({ src, srcset, alt, width, height, role = 'editorial' }) {
+  const sizes = role === 'editorial'
+    ? '100vw'
+    : '(max-width: 768px) 100vw, 920px';
+  const loading = role === 'editorial' ? '' : ' loading="lazy"';
+  const priority = role === 'editorial' ? ' fetchpriority="high"' : '';
+  const source = srcset
+    ? `\n                        <source type="image/webp" srcset="${escapeHtml(srcset)}" sizes="${sizes}">`
+    : '';
+  const imgSrcset = srcset ? ` srcset="${escapeHtml(srcset)}"` : '';
+
+  return `<picture>${source}
+                        <img src="${escapeHtml(src)}"${imgSrcset} sizes="${sizes}" width="${width}" height="${height}" alt="${escapeHtml(alt)}"${loading}${priority} decoding="async">
+                    </picture>`;
+}
+
+function educationalFigureMarkup(imageContext) {
+  const imageRef = imageContext.page.images.educational;
+  const image = imageContext.images.educational;
+  const picture = renderResponsivePicture(imageContext.registry, imageRef, {
+    figure: false,
+    priority: false,
+    sizes: '(max-width: 768px) 100vw, 920px',
+  });
+  return `<figure class="seo-image seo-image--educational" data-image-seo-role="educational" data-image-asset-id="${escapeHtml(image.assetId)}">
+                    ${picture}
+                    <figcaption>${escapeHtml(image.caption)}</figcaption>
+                </figure>`;
+}
+
+function insertEducationalImage(bodyHtml, imageContext) {
+  if (!imageContext?.images?.educational) return bodyHtml;
+  const figure = educationalFigureMarkup(imageContext);
+  const targetId = imageContext.page.insertBefore;
+  const headingPattern = new RegExp(`(<h2\\b[^>]*\\bid=(['"])${targetId}\\2[^>]*>)`, 'i');
+  if (headingPattern.test(bodyHtml)) {
+    return bodyHtml.replace(headingPattern, `${figure}\n$1`);
+  }
+
+  const articleEnd = bodyHtml.lastIndexOf('</article>');
+  if (articleEnd >= 0) {
+    return `${bodyHtml.slice(0, articleEnd)}${figure}\n${bodyHtml.slice(articleEnd)}`;
+  }
+  return `${bodyHtml}\n${figure}`;
+}
+
+function visibleArticleImageUrl(bodyHtml) {
+  const source = String(bodyHtml || '')
+    .match(/<figure\b[^>]*>[\s\S]*?<img\b[^>]*\bsrc=(['"])([^"']+)\1/i)?.[2] || '';
+  if (!source) return '';
+  try {
+    const url = new URL(source, siteConfig.domain);
+    return url.origin === siteConfig.domain ? `${siteConfig.domain}${url.pathname}` : url.href;
+  } catch {
+    return '';
+  }
+}
+
+function optimizeBlogArticleImages(bodyHtml, meta, imageContext = null) {
+  const visibleFigureImage = visibleArticleImageUrl(bodyHtml);
+  const sourceImage = meta.preloadImage || meta.ogImage || visibleFigureImage;
+  const normalizedSource = (() => {
+    try {
+      return new URL(sourceImage, siteConfig.domain).pathname;
+    } catch {
+      return sourceImage;
+    }
+  })();
+  const sourceStem = imageStem(normalizedSource);
+  if (!sourceStem) return bodyHtml;
+
+  const dimensions = resolveImageDimensions(normalizedSource, { width: 1200, height: 675 });
+  const srcset = responsiveBlogImageSrcset(normalizedSource);
+  let transformed = false;
+
+  return String(bodyHtml || '').replace(/(<figure\b[^>]*>)([\s\S]*?)(<\/figure>)/gi, (block, open, inner, close) => {
+    if (transformed) return block;
+    const imgTag = inner.match(/<img\b[^>]*>/i)?.[0];
+    const imageSrc = imgTag?.match(/\bsrc=(['"])([^"']+)\1/i)?.[2];
+    if (!imgTag || imageStem(imageSrc) !== sourceStem) return block;
+
+    transformed = true;
+    const caption = inner.match(/<figcaption\b[\s\S]*?<\/figcaption>/i)?.[0] || '';
+    const editorial = imageContext?.images?.editorial;
+    const editorialRef = imageContext?.page?.images?.editorial;
+    const picture = editorial
+      ? renderResponsivePicture(imageContext.registry, editorialRef, {
+          figure: false,
+          priority: true,
+          sizes: '100vw',
+        })
+      : renderArticlePicture({
+          src: normalizedSource,
+          srcset,
+          alt: imageAltFromTag(imgTag, meta.ogImageAlt || meta.title),
+          width: dimensions.width,
+          height: dimensions.height,
+          role: 'editorial',
+        });
+    const editorialCaption = editorial?.caption
+      ? `<figcaption>${escapeHtml(editorial.caption)}</figcaption>`
+      : caption;
+    const assetId = editorial?.assetId
+      ? ` data-image-asset-id="${escapeHtml(editorial.assetId)}"`
+      : '';
+    return `${addFigureRole(open, 'editorial').replace(/>$/, `${assetId}>`)}\n                    ${picture}${editorialCaption ? `\n                    ${editorialCaption}` : ''}\n                ${close}`;
+  });
+}
+
 function protectMailtoLinksFromCloudflareObfuscation(bodyHtml) {
   const source = String(bodyHtml || '');
   return source.replace(
@@ -565,32 +793,60 @@ function renderManagedPage({ manifest, entryId, meta, bodyHtml, entryOverride = 
   const assetVersion = readAssetVersion();
   const context = createRenderContext({ manifest, entryId, meta, entryOverride });
   const entry = context.entry;
+  const imageContext = resolvePageImageContext(entry, meta);
+  const editorial = imageContext?.images?.editorial;
+  const visibleEditorialUrl = meta.layout === 'blogArticle' && meta.ogType === 'article'
+    ? visibleArticleImageUrl(bodyHtml)
+    : '';
+  const renderMeta = editorial
+    ? {
+        ...meta,
+        ogImage: absoluteUrl(editorial.src),
+        ogImageAlt: editorial.alt,
+        twitterImage: absoluteUrl(editorial.src),
+        twitterImageAlt: editorial.alt,
+      }
+    : visibleEditorialUrl
+      ? {
+          ...meta,
+          ogImage: visibleEditorialUrl,
+          twitterImage: visibleEditorialUrl,
+        }
+      : meta;
   const navHtml = renderNavigation(context);
-  let renderedBodyHtml = synchronizeVisibleArticleDate(bodyHtml, meta);
+  let renderedBodyHtml = synchronizeVisibleArticleDate(bodyHtml, renderMeta);
   renderedBodyHtml = protectMailtoLinksFromCloudflareObfuscation(renderedBodyHtml);
-  if (meta.layout === 'blogIndex') {
+  if (renderMeta.layout === 'blogIndex') {
     renderedBodyHtml = optimizeBlogIndexImages(renderedBodyHtml);
+  }
+  if (renderMeta.layout === 'blogArticle') {
+    renderedBodyHtml = optimizeBlogArticleImages(renderedBodyHtml, renderMeta, imageContext);
+    renderedBodyHtml = insertEducationalImage(renderedBodyHtml, imageContext);
   }
 
   const html = renderTemplate({
-    HTML_ATTRS: htmlAttributes(meta),
-    BODY_ATTRS: bodyAttributes(meta),
-    HEAD_HTML: renderCommonHead(meta, entry, assetVersion, renderedBodyHtml),
-    BEFORE_BODY_HTML: renderBeforeBody(meta),
+    HTML_ATTRS: htmlAttributes(renderMeta),
+    BODY_ATTRS: bodyAttributes(renderMeta),
+    HEAD_HTML: renderCommonHead(renderMeta, entry, assetVersion, renderedBodyHtml),
+    BEFORE_BODY_HTML: renderBeforeBody(renderMeta),
     NAV_HTML: navHtml,
-    CONTENT_HTML: renderContent(meta, renderedBodyHtml, renderPageHero(context)),
+    CONTENT_HTML: renderContent(renderMeta, renderedBodyHtml, renderPageHero(context)),
     FOOTER_HTML: renderSharedFooter(context),
-    SCRIPTS_HTML: renderScripts(meta, assetVersion),
+    SCRIPTS_HTML: renderScripts(renderMeta, assetVersion),
   });
 
   return inlineLucideIcons(html);
 }
 
 module.exports = {
+  insertEducationalImage,
   normalizeCanonicalOrganization,
   optimizeBlogIndexImages,
+  optimizeBlogArticleImages,
   protectMailtoLinksFromCloudflareObfuscation,
   renderManagedPage,
   renderJsonLd,
+  resolvePageImageContext,
   responsiveBlogImageSrcset,
+  synchronizePreferredImage,
 };

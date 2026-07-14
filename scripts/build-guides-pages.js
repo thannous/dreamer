@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { imageSize } = require('image-size');
 const { SUPPORTED_LANGS } = require('./lib/docs-seo-utils');
 const { createRenderContext } = require('./lib/docs-components/context');
 const { renderFooter: renderSharedFooter } = require('./lib/docs-components/footer');
@@ -15,6 +16,12 @@ const {
   prepareDictionarySymbols,
 } = require('./lib/guide-dictionary-model');
 const { inlineLucideIcons } = require('./lib/lucide-inline');
+const {
+  getPageImageSet,
+  getPageResponsiveImages,
+  readImageAssetRegistry,
+  renderResponsivePicture,
+} = require('./lib/image-seo-assets');
 
 const ROOT = path.join(__dirname, '..');
 const DOCS_DIR = path.join(ROOT, 'docs');
@@ -22,7 +29,69 @@ const DATA_DIR = path.join(DOCS_DIR, 'data');
 const ROOT_DATA_DIR = path.join(ROOT, 'data');
 const DOCS_SRC_DIR = path.join(ROOT, 'docs-src');
 const DOMAIN = 'https://noctalia.app';
+const DEFAULT_SOCIAL_IMAGE = `${DOMAIN}/img/og/noctalia-dreamscape-v2-1200x630.jpg`;
 const DRY_RUN = process.argv.includes('--dry-run');
+const SYMBOL_CARD_IMAGE_OVERRIDES = {
+  bridge: 'plan-a/bridge-dream.jpg',
+  dog: 'plan-a/dog-dream-it.jpg',
+  door: 'plan-a/door-dream.jpg',
+  fire: 'plan-a/fire-dream-it.jpg',
+  hospital: 'plan-a/hospital-dream.jpg',
+  water: 'plan-a/water-dream-it.jpg',
+  wolf: 'plan-a/wolf-dream.jpg',
+};
+const SYMBOL_IMAGE_ALT_SUFFIX = {
+  de: 'Traumillustration',
+  en: 'dream symbol illustration',
+  es: 'ilustración de símbolo onírico',
+  fr: 'illustration de symbole onirique',
+  it: 'illustrazione di simbolo onirico',
+};
+const DICTIONARY_IMAGE_COPY = {
+  de: {
+    alt: 'Ein aufgeschlagenes Traumlexikon mit Schlüssel, Auge, Baum, Welle und Tür',
+    caption: 'Traumsymbole werden hilfreicher, wenn sie mit Gefühlen, Kontext und persönlichen Assoziationen verbunden werden.',
+  },
+  en: {
+    alt: 'An open dream dictionary surrounded by a key, eye, tree, wave and doorway',
+    caption: 'Dream symbols become more useful when connected to emotion, context and personal associations.',
+  },
+  es: {
+    alt: 'Un diccionario de sueños abierto rodeado de una llave, un ojo, un árbol, una ola y una puerta',
+    caption: 'Los símbolos oníricos son más útiles cuando se relacionan con la emoción, el contexto y las asociaciones personales.',
+  },
+  fr: {
+    alt: 'Un dictionnaire des rêves ouvert entouré d’une clé, d’un œil, d’un arbre, d’une vague et d’une porte',
+    caption: 'Les symboles deviennent plus utiles lorsqu’ils sont reliés aux émotions, au contexte et aux associations personnelles.',
+  },
+  it: {
+    alt: 'Un dizionario dei sogni aperto circondato da una chiave, un occhio, un albero, un’onda e una porta',
+    caption: 'I simboli onirici diventano più utili quando sono collegati a emozioni, contesto e associazioni personali.',
+  },
+};
+let IMAGE_SEO_REGISTRY = null;
+try {
+  IMAGE_SEO_REGISTRY = readImageAssetRegistry();
+} catch (error) {
+  if (error?.code !== 'ENOENT') throw error;
+}
+
+function resolveSymbolCardImage(symbolId) {
+  const relativePath = SYMBOL_CARD_IMAGE_OVERRIDES[symbolId] || `generated/${symbolId}.webp`;
+  const filePath = path.join(DOCS_SRC_DIR, 'static', 'img', 'symbols', relativePath);
+  if (!fs.existsSync(filePath)) return null;
+
+  try {
+    const dimensions = imageSize(fs.readFileSync(filePath));
+    return {
+      src: `/img/symbols/${relativePath}`,
+      width: dimensions.width || 192,
+      height: dimensions.height || 192,
+    };
+  } catch {
+    return null;
+  }
+}
 
 const SITE_CONFIG = fs.existsSync(path.join(DOCS_SRC_DIR, 'config', 'site.config.json'))
   ? JSON.parse(fs.readFileSync(path.join(DOCS_SRC_DIR, 'config', 'site.config.json'), 'utf8'))
@@ -940,7 +1009,7 @@ function generateHubPage(lang, t, pages, version) {
   const currentPaths = Object.fromEntries(SUPPORTED_LANGS.map((candidate) => [candidate, `/${candidate}/guides/`]));
   const socialTitle = copy.title;
   const socialDescription = copy.desc;
-  const socialImage = `${DOMAIN}/img/og/noctalia-${lang}-1200x630.jpg`;
+  const socialImage = DEFAULT_SOCIAL_IMAGE;
   const cards = (GUIDE_HUB_BENTO_COPY[lang] || GUIDE_HUB_BENTO_COPY.en).map((card) => renderHubBentoCard(lang, t, pages, card)).join('\n');
   const itemList = {
     '@context': 'https://schema.org',
@@ -1081,7 +1150,6 @@ function renderLayoutCss() {
             linear-gradient(180deg, rgba(5, 2, 12, 0.7) 0%, rgba(8, 3, 17, 0.48) 34%, #090413 88%),
             linear-gradient(90deg, rgba(5, 2, 12, 0.76) 0%, rgba(5, 2, 12, 0.2) 48%, rgba(5, 2, 12, 0.62) 100%),
             radial-gradient(ellipse at 76% 28%, rgba(253, 164, 129, 0.14), transparent 24rem),
-            url('/img/blog/dream-symbols-dictionary.webp') center top / cover no-repeat,
             linear-gradient(135deg, #12051d 0%, #0a0514 45%, #130822 100%);
         }
         .dictionary-page .aurora-bg,
@@ -1105,14 +1173,58 @@ function renderLayoutCss() {
         }
         .dictionary-header {
           display: grid;
-          grid-template-columns: minmax(0, 1fr);
-          align-items: end;
+          grid-template-columns: minmax(0, 0.9fr) minmax(24rem, 1.1fr);
+          align-items: center;
           gap: clamp(1.5rem, 4vw, 5rem);
           min-height: 29.5rem;
           margin-bottom: 0;
           padding: 7.2rem clamp(1rem, 4vw, 4.75rem) 2.1rem;
           text-align: left;
           background: transparent;
+        }
+        .dictionary-hero-image {
+          position: relative;
+          overflow: hidden;
+          margin: 0;
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 1.5rem;
+          background: rgba(18,10,34,0.75);
+          box-shadow: 0 2rem 6rem rgba(0,0,0,0.32);
+        }
+        .dictionary-hero-image picture,
+        .dictionary-hero-image img {
+          display: block;
+          width: 100%;
+        }
+        .dictionary-hero-image img {
+          height: auto;
+          aspect-ratio: 16 / 9;
+          object-fit: cover;
+        }
+        .dictionary-hero-image figcaption,
+        .dictionary-educational-image figcaption {
+          padding: 0.8rem 1rem 0.95rem;
+          color: rgba(231,220,255,0.76);
+          font-size: 0.86rem;
+          line-height: 1.5;
+        }
+        .dictionary-educational-image {
+          width: min(calc(100% - (var(--dictionary-edge) * 2)), 800px);
+          margin: 2.5rem auto;
+          padding: 0.8rem;
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 1.25rem;
+          background: rgba(18,10,34,0.86);
+          box-shadow: 0 1.5rem 4rem rgba(0,0,0,0.24);
+        }
+        .dictionary-educational-image picture,
+        .dictionary-educational-image img {
+          display: block;
+          width: 100%;
+        }
+        .dictionary-educational-image img {
+          height: auto;
+          border-radius: 0.8rem;
         }
         .dictionary-hero-copy {
           display: flex;
@@ -1400,6 +1512,11 @@ function renderLayoutCss() {
           filter: saturate(1.06) contrast(1.03);
           transition: transform 0.28s ease, opacity 0.28s ease, filter 0.28s ease;
         }
+        img.symbol-card-image {
+          object-fit: cover;
+          object-position: center;
+          background-image: none;
+        }
         .symbol-card:hover .symbol-card-image {
           opacity: 0.68;
           transform: scale(1.12);
@@ -1568,6 +1685,7 @@ function renderLayoutCss() {
             min-height: auto;
             padding-top: 6.6rem;
           }
+          .dictionary-hero-image { width: 100%; }
           .category-browse-card {
             flex-basis: 8.8rem;
             min-width: 8.8rem;
@@ -1883,7 +2001,47 @@ function generateDictionaryPage(lang, t) {
 
   const canonical = `${DOMAIN}/${lang}/guides/${t.dictionary_slug}`;
   const guidesUrl = `${DOMAIN}/${lang}/guides/`;
-  const ogImage = `${DOMAIN}/img/og/noctalia-${lang}-1200x630.jpg`;
+  const canonicalPath = `/${lang}/guides/${t.dictionary_slug}`;
+  const pageImageSet = IMAGE_SEO_REGISTRY
+    ? getPageImageSet(IMAGE_SEO_REGISTRY, canonicalPath)
+    : null;
+  const pageImages = pageImageSet
+    ? getPageResponsiveImages(IMAGE_SEO_REGISTRY, canonicalPath)
+    : null;
+  const dictionaryCopy = DICTIONARY_IMAGE_COPY[lang] || DICTIONARY_IMAGE_COPY.en;
+  const editorialPicture = pageImageSet
+    ? renderResponsivePicture(IMAGE_SEO_REGISTRY, pageImageSet.images.editorial, {
+        figure: false,
+        priority: true,
+        sizes: '(max-width: 1180px) 100vw, 52vw',
+      })
+    : `<picture>
+                        <source type="image/webp" srcset="/img/blog/dream-symbols-dictionary-480w.webp 480w, /img/blog/dream-symbols-dictionary-800w.webp 800w, /img/blog/dream-symbols-dictionary-1200w.webp 1200w" sizes="(max-width: 1180px) 100vw, 52vw">
+                        <img src="/img/blog/dream-symbols-dictionary.webp" srcset="/img/blog/dream-symbols-dictionary-480w.webp 480w, /img/blog/dream-symbols-dictionary-800w.webp 800w, /img/blog/dream-symbols-dictionary-1200w.webp 1200w" sizes="(max-width: 1180px) 100vw, 52vw" width="1200" height="675" fetchpriority="high" decoding="async" alt="${escapeHtml(dictionaryCopy.alt)}">
+                    </picture>`;
+  const editorialCaption = pageImages?.editorial?.caption || dictionaryCopy.caption;
+  const editorialAssetAttribute = pageImages?.editorial?.assetId
+    ? ` data-image-asset-id="${escapeHtml(pageImages.editorial.assetId)}"`
+    : '';
+  const dictionaryHeroFigure = `<figure class="dictionary-hero-image" data-image-seo-role="editorial"${editorialAssetAttribute}>
+                    ${editorialPicture}
+                    <figcaption>${escapeHtml(editorialCaption)}</figcaption>
+                </figure>`;
+  const educationalFigure = pageImageSet
+    ? `<figure class="dictionary-educational-image" data-image-seo-role="educational" data-image-asset-id="${escapeHtml(pageImages.educational.assetId)}">
+                    ${renderResponsivePicture(IMAGE_SEO_REGISTRY, pageImageSet.images.educational, {
+                      figure: false,
+                      priority: false,
+                      sizes: '(max-width: 768px) 100vw, 800px',
+                    })}
+                    <figcaption>${escapeHtml(pageImages.educational.caption)}</figcaption>
+                </figure>`
+    : '';
+  const ogImage = pageImages?.editorial?.src
+    ? `${DOMAIN}${pageImages.editorial.src}`
+    : `${DOMAIN}/img/blog/dream-symbols-dictionary.webp`;
+  const ogImageWidth = pageImages?.editorial?.width || 1200;
+  const ogImageHeight = pageImages?.editorial?.height || 675;
   const pageTitle = normalizePageTitle(dc.page_title);
 
   // ── Build current paths for language switcher ────────────────────────
@@ -1934,6 +2092,10 @@ function generateDictionaryPage(lang, t) {
       const catName = (t.category_names || {})[sym.category] || sym.category;
       const catColor = CATEGORY_COLORS[sym.category] || '#c084fc';
       const atlasPosition = symbolAtlasPositions.get(sym.id) || getSymbolAtlasPosition(0);
+      const cardImage = resolveSymbolCardImage(sym.id);
+      const cardImageHtml = cardImage
+        ? `<img class="symbol-card-image" src="${cardImage.src}" width="${cardImage.width}" height="${cardImage.height}" loading="lazy" decoding="async" alt="${escapeHtml(`${s.name} — ${SYMBOL_IMAGE_ALT_SUFFIX[lang] || SYMBOL_IMAGE_ALT_SUFFIX.en}`)}">`
+        : '<span class="symbol-card-image" aria-hidden="true"></span>';
       const relatedArticle = sym.relatedArticles?.[lang];
       const relatedArticleHtml = relatedArticle ? `
                             <a href="/${lang}/blog/${relatedArticle}" class="mt-3 inline-flex items-center gap-2 text-xs text-dream-salmon hover:text-dream-salmonLight transition-colors">
@@ -1942,8 +2104,8 @@ function generateDictionaryPage(lang, t) {
                             </a>` : '';
       return `
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="${dataSymbol}" style="--cat-color:${catColor};--symbol-x:${atlasPosition.x};--symbol-y:${atlasPosition.y};--symbol-atlas-columns:${SYMBOL_ATLAS_COLUMNS};--symbol-atlas-rows:${symbolAtlasRows}">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                ${cardImageHtml}
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2033,7 +2195,18 @@ ${priorityLinks.map((item) => `                    <a href="${escapeHtml(item.hr
     headline: pageTitle,
     description: dc.meta_description,
     url: canonical,
-    image: ogImage,
+    image: {
+      '@type': 'ImageObject',
+      url: ogImage,
+      width: ogImageWidth,
+      height: ogImageHeight,
+    },
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      url: ogImage,
+      width: ogImageWidth,
+      height: ogImageHeight,
+    },
     inLanguage: lang,
     isPartOf: { '@type': 'CollectionPage', name: copy.label, url: guidesUrl },
   };
@@ -2092,8 +2265,9 @@ ${hreflangLinks}
     <meta property="og:url" content="${canonical}">
     <meta property="og:image" content="${ogImage}">
     <meta property="og:site_name" content="Noctalia">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <meta property="og:image:width" content="${ogImageWidth}">
+    <meta property="og:image:height" content="${ogImageHeight}">
+    <meta property="og:image:alt" content="${escapeHtml(dictionaryCopy.alt)}">
     <meta property="og:locale" content="${OG_LOCALES[lang]}">
 ${ogLocaleAlts}
     <meta property="article:published_time" content="2025-01-06">
@@ -2104,7 +2278,7 @@ ${ogLocaleAlts}
     <meta name="twitter:title" content="${escapeHtml(dc.twitter_title)}">
     <meta name="twitter:description" content="${escapeHtml(dc.twitter_description)}">
     <meta name="twitter:image" content="${ogImage}">
-    <meta name="twitter:image:alt" content="${escapeHtml(dc.og_title)}">
+    <meta name="twitter:image:alt" content="${escapeHtml(dictionaryCopy.alt)}">
     <!-- Preload critical fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
@@ -2341,6 +2515,7 @@ ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
                         </button>
                     </div>
                 </div>
+${dictionaryHeroFigure}
             </header>
 
             <!-- dict-no-results -->
@@ -2412,6 +2587,9 @@ ${priorityLinksHtml}
             </div>
 
             <!-- Symbols Dictionary -->
+            <div id="dictionary-grid">
+${educationalFigure}
+            </div>
             <div id="symbolsList">
 ${symbolSectionsHtml}
 

@@ -11,6 +11,10 @@
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const {
+  getResponsiveImageData,
+  readImageAssetRegistry,
+} = require('./lib/image-seo-assets');
 
 const REPO_ROOT = path.join(__dirname, '..');
 const DOCS_DIR = path.join(__dirname, '../docs');
@@ -19,6 +23,7 @@ const SITEMAP_PATH = path.join(DOCS_DIR, 'sitemap.xml');
 const CONTENT_MANIFEST_PATH = path.join(REPO_ROOT, 'data', 'content-manifest.json');
 const SITE_MANIFEST_PATH = path.join(REPO_ROOT, 'data', 'site-manifest.json');
 const SYMBOL_I18N_PATH = path.join(DOCS_DIR, 'data', 'symbol-i18n.json');
+const IMAGE_ASSET_REGISTRY_PATH = path.join(DOCS_SRC_DIR, 'config', 'image-assets.json');
 const DOMAIN = 'https://noctalia.app';
 
 // Directories to exclude from sitemap
@@ -137,6 +142,96 @@ function normalizeManifestPathToUrl(manifestPath) {
   if (typeof manifestPath !== 'string' || manifestPath.trim() === '') return null;
   const normalizedPath = manifestPath.startsWith('/') ? manifestPath : `/${manifestPath}`;
   return normalizeUrl(`${DOMAIN}${normalizedPath}`);
+}
+
+function normalizeImageUrl(value) {
+  if (typeof value !== 'string' || value.trim() === '') return null;
+  const imageUrl = value.trim();
+  if (/^https:\/\//i.test(imageUrl)) return imageUrl;
+  if (/^http:\/\//i.test(imageUrl)) return imageUrl;
+  if (imageUrl.startsWith('//')) return `https:${imageUrl}`;
+  return `${DOMAIN}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+}
+
+function isGenericFallbackAsset(assetId, asset) {
+  if (!asset || typeof asset !== 'object') return true;
+  if (asset.genericFallback === true || asset.isFallback === true) return true;
+  if (asset.purpose === 'fallback' || asset.role === 'fallback') return true;
+  return /(?:^|[._-])(fallback|generic|default-og)(?:$|[._-])/i.test(assetId);
+}
+
+function getSitemapImageSource(registry, assetId, imageRef) {
+  if (!registry || !assetId || !imageRef?.aspect) return null;
+  const image = getResponsiveImageData(registry, assetId, imageRef.aspect);
+  return normalizeImageUrl(image.src);
+}
+
+/**
+ * Load the source image registry used by the HTML generators. Only assets that
+ * are explicitly visible and eligible for sitemap submission are associated
+ * with their canonical page URL. Missing registries keep the historical
+ * sitemap behavior unchanged.
+ */
+function loadImageSitemapEntries(registryPath = IMAGE_ASSET_REGISTRY_PATH) {
+  const result = {
+    loaded: false,
+    map: new Map(),
+    pageCount: 0,
+    imageCount: 0,
+    error: null,
+  };
+
+  if (!fs.existsSync(registryPath)) return result;
+
+  try {
+    const registry = readImageAssetRegistry(registryPath);
+    const assets = registry?.assets;
+    const pages = registry?.pages;
+    if (!assets || typeof assets !== 'object' || !pages || typeof pages !== 'object') {
+      throw new Error('invalid assets or pages map');
+    }
+
+    for (const [pagePath, page] of Object.entries(pages)) {
+      if (!page || typeof page !== 'object' || !page.images || typeof page.images !== 'object') {
+        continue;
+      }
+
+      const pageUrl = normalizeManifestPathToUrl(pagePath);
+      if (!pageUrl) continue;
+
+      const imageUrls = new Set();
+      for (const imageRef of Object.values(page.images)) {
+        const assetId = typeof imageRef === 'string' ? imageRef : imageRef?.assetId;
+        if (!assetId || (typeof imageRef === 'object' && imageRef?.visible === false)) continue;
+
+        const asset = assets[assetId];
+        if (
+          !asset ||
+          asset.visible !== true ||
+          asset.sitemap !== true ||
+          isGenericFallbackAsset(assetId, asset)
+        ) {
+          continue;
+        }
+
+        const imageUrl = getSitemapImageSource(registry, assetId, imageRef);
+        if (imageUrl) imageUrls.add(imageUrl);
+      }
+
+      if (imageUrls.size > 0) {
+        const images = Array.from(imageUrls);
+        result.map.set(pageUrl, images);
+        result.pageCount += 1;
+        result.imageCount += images.length;
+      }
+    }
+
+    result.loaded = true;
+    return result;
+  } catch (error) {
+    result.error = error instanceof Error ? error.message : String(error);
+    return result;
+  }
 }
 
 function loadBlogManifestHreflangs() {
@@ -449,7 +544,7 @@ function getPriority(url) {
 /**
  * Generate XML for a URL entry with its hreflangs
  */
-function generateUrlEntry(url, hreflangs, lastmod) {
+function generateUrlEntry(url, hreflangs, lastmod, images = []) {
   let xml = '  <url>\n';
   xml += `    <loc>${escapeXml(url)}</loc>\n`;
   if (lastmod) {
@@ -468,6 +563,13 @@ function generateUrlEntry(url, hreflangs, lastmod) {
         xml += `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${escapeXml(href)}"/>\n`;
       }
     }
+  }
+
+  for (const imageUrl of new Set(Array.isArray(images) ? images : [])) {
+    if (typeof imageUrl !== 'string' || !/^https?:\/\//i.test(imageUrl)) continue;
+    xml += '    <image:image>\n';
+    xml += `      <image:loc>${escapeXml(imageUrl)}</image:loc>\n`;
+    xml += '    </image:image>\n';
   }
 
   xml += '  </url>\n';
@@ -493,14 +595,18 @@ function escapeXml(str) {
  */
 function generateSitemap(urlToMeta) {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-  xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n';
+  const hasImages = Array.from(urlToMeta.values()).some(
+    (meta) => Array.isArray(meta?.images) && meta.images.length > 0,
+  );
+  const imageNamespace = hasImages ? ' xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"' : '';
+  xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml"${imageNamespace}>\n`;
 
   // Sort URLs for consistent output
   const sortedUrls = Array.from(urlToMeta.keys()).sort();
 
   for (const url of sortedUrls) {
     const meta = urlToMeta.get(url);
-    xml += generateUrlEntry(url, meta?.hreflangs, meta?.lastmod);
+    xml += generateUrlEntry(url, meta?.hreflangs, meta?.lastmod, meta?.images);
   }
 
   xml += '</urlset>\n';
@@ -555,6 +661,24 @@ function main() {
     console.log('ℹ️  content-manifest.json not found, keeping HTML-derived hreflangs only');
   }
 
+  const imageEntries = loadImageSitemapEntries();
+  if (imageEntries.error) {
+    console.warn(`⚠️  Could not load image asset registry: ${imageEntries.error}`);
+  } else if (imageEntries.loaded) {
+    let appliedPages = 0;
+    let appliedImages = 0;
+    for (const [pageUrl, images] of imageEntries.map.entries()) {
+      const meta = urlToMeta.get(pageUrl);
+      if (!meta) continue;
+      meta.images = images;
+      appliedPages += 1;
+      appliedImages += images.length;
+    }
+    console.log(
+      `✅ Applied ${appliedImages} sitemap images to ${appliedPages} canonical URLs from image-assets.json`,
+    );
+  }
+
   // Generate sitemap
   const sitemap = generateSitemap(urlToMeta);
 
@@ -595,5 +719,16 @@ function main() {
   });
 }
 
-// Run the script
-main();
+const legacyEntrypoint = path.join(__dirname, 'generate-sitemap.js');
+if (require.main === module || require.main?.filename === legacyEntrypoint) {
+  main();
+}
+
+module.exports = {
+  generateSitemap,
+  generateUrlEntry,
+  getSitemapImageSource,
+  isGenericFallbackAsset,
+  loadImageSitemapEntries,
+  normalizeImageUrl,
+};

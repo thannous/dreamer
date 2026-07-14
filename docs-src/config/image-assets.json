@@ -1,0 +1,481 @@
+{
+  "schemaVersion": 1,
+  "release": "pilot-2026-07-v1",
+  "variants": {
+    "formats": ["avif", "webp"],
+    "fallbackFormat": "webp",
+    "widths": [480, 800, 1200]
+  },
+  "measurement": {
+    "property": "sc-domain:noctalia.app",
+    "searchType": "image",
+    "period": {
+      "startDate": "2026-04-15",
+      "endDate": "2026-07-12"
+    },
+    "totals": {
+      "impressions": 25044,
+      "clicks": 9,
+      "ctr": 0.0003593675,
+      "position": 38.6598
+    }
+  },
+  "assets": {
+    "editorial.lucid-dreaming": {
+      "role": "editorial",
+      "source": "docs-src/static/img/blog/lucid-dreaming-beginners-guide.webp",
+      "outputStem": "/img/seo/pilot-2026-07-v1/editorial/lucid-dreaming",
+      "localized": false,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
+        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+      }
+    },
+    "editorial.dream-journal": {
+      "role": "editorial",
+      "source": "docs-src/static/img/blog/dream-journal-guide.webp",
+      "outputStem": "/img/seo/pilot-2026-07-v1/editorial/dream-journal",
+      "localized": false,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
+        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+      }
+    },
+    "editorial.dream-interpretation-history": {
+      "role": "editorial",
+      "source": "docs-src/static/img/blog/dream-interpretation-history.webp",
+      "outputStem": "/img/seo/pilot-2026-07-v1/editorial/dream-interpretation-history",
+      "localized": false,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
+        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+      }
+    },
+    "editorial.pregnancy-dreams": {
+      "role": "editorial",
+      "source": "docs-src/static/img/blog/pregnancy-dreams-meaning.webp",
+      "outputStem": "/img/seo/pilot-2026-07-v1/editorial/pregnancy-dreams",
+      "localized": false,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
+        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+      }
+    },
+    "editorial.water-dreams": {
+      "role": "editorial",
+      "source": "docs-src/static/img/blog/water-dreams-meaning.webp",
+      "outputStem": "/img/seo/pilot-2026-07-v1/editorial/water-dreams",
+      "localized": false,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
+        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+      }
+    },
+    "editorial.flying-dreams": {
+      "role": "editorial",
+      "source": "docs-src/static/img/blog/flying-dreams-meaning.webp",
+      "outputStem": "/img/seo/pilot-2026-07-v1/editorial/flying-dreams",
+      "localized": false,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
+        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+      }
+    },
+    "editorial.dream-symbols-dictionary": {
+      "role": "editorial",
+      "source": "docs-src/static/img/blog/dream-symbols-dictionary.webp",
+      "outputStem": "/img/seo/pilot-2026-07-v1/editorial/dream-symbols-dictionary",
+      "localized": false,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
+        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+      }
+    },
+    "educational.lucid-dreaming.en": {
+      "role": "educational",
+      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/lucid-dreaming-method-en.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v1/educational/en/lucid-dreaming-method",
+      "localized": true,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+      }
+    },
+    "educational.lucid-dreaming.es": {
+      "role": "educational",
+      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/lucid-dreaming-method-es.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v1/educational/es/metodo-suenos-lucidos",
+      "localized": true,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+      }
+    },
+    "educational.dream-journal.en": {
+      "role": "educational",
+      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/dream-journal-fields-en.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v1/educational/en/dream-journal-fields",
+      "localized": true,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+      }
+    },
+    "educational.dream-journal.es": {
+      "role": "educational",
+      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/dream-journal-fields-es.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v1/educational/es/campos-diario-suenos",
+      "localized": true,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+      }
+    },
+    "educational.dream-interpretation-history.en": {
+      "role": "educational",
+      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/dream-interpretation-timeline-en.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v1/educational/en/dream-interpretation-timeline",
+      "localized": true,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+      }
+    },
+    "educational.pregnancy-dreams.en": {
+      "role": "educational",
+      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/pregnancy-context-map-en.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v1/educational/en/pregnancy-dream-context-map",
+      "localized": true,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+      }
+    },
+    "educational.water-dreams.es": {
+      "role": "educational",
+      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/water-context-matrix-es.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v1/educational/es/matriz-contexto-agua",
+      "localized": true,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+      }
+    },
+    "educational.flying-dreams.en": {
+      "role": "educational",
+      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/flying-context-matrix-en.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v1/educational/en/flying-dream-context-matrix",
+      "localized": true,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+      }
+    },
+    "educational.flying-dreams.es": {
+      "role": "educational",
+      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/flying-context-matrix-es.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v1/educational/es/matriz-contexto-suenos-volar",
+      "localized": true,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+      }
+    },
+    "educational.dream-symbols-dictionary.en": {
+      "role": "educational",
+      "source": "docs-src/image-sources/pilot-2026-07-v1/educational/symbol-interpretation-flow-en.svg",
+      "outputStem": "/img/seo/pilot-2026-07-v1/educational/en/dream-symbol-interpretation-flow",
+      "localized": true,
+      "visible": true,
+      "sitemap": true,
+      "aspects": {
+        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" }
+      }
+    },
+    "fallback.noctalia-dreamscape-v2": {
+      "role": "fallback",
+      "source": "docs-src/image-sources/pilot-2026-07-v1/fallback/noctalia-dreamscape-v2.svg",
+      "outputPattern": "/img/og/noctalia-dreamscape-v2-{width}x{height}.{format}",
+      "formats": ["webp", "jpg"],
+      "fallbackFormat": "jpg",
+      "localized": false,
+      "visible": false,
+      "sitemap": false,
+      "aspects": {
+        "social": { "width": 1200, "height": 630, "widths": [1200], "mode": "contain" }
+      }
+    }
+  },
+  "pages": {
+    "/en/blog/lucid-dreaming-beginners-guide": {
+      "pageId": "blog.lucid-dreaming-beginners-guide",
+      "locale": "en",
+      "kind": "article",
+      "priority": "gsc-image-pilot",
+      "impressions": 3692,
+      "insertBefore": "reality-checks",
+      "images": {
+        "editorial": {
+          "assetId": "editorial.lucid-dreaming",
+          "aspect": "16x9",
+          "alt": "A dreamer floating from bed into a luminous surreal landscape",
+          "caption": "Lucid dreaming begins when a familiar dream scene becomes a cue for awareness.",
+          "sizes": "(max-width: 768px) 100vw, 1200px"
+        },
+        "educational": {
+          "assetId": "educational.lucid-dreaming.en",
+          "aspect": "4x3",
+          "alt": "Four-step lucid dreaming routine using reality checks, a dream journal, MILD and WBTB",
+          "caption": "A beginner routine: build daytime awareness, record dreams, rehearse lucidity and use WBTB selectively.",
+          "sizes": "(max-width: 768px) 100vw, 800px"
+        }
+      }
+    },
+    "/en/blog/dream-journal-guide": {
+      "pageId": "blog.dream-journal-guide",
+      "locale": "en",
+      "kind": "article",
+      "priority": "gsc-image-pilot",
+      "impressions": 2614,
+      "insertBefore": "what-to-record",
+      "images": {
+        "editorial": {
+          "assetId": "editorial.dream-journal",
+          "aspect": "16x9",
+          "alt": "An open dream journal glowing softly on a bedside table",
+          "caption": "Keeping a notebook within reach makes fragile dream details easier to capture on waking.",
+          "sizes": "(max-width: 768px) 100vw, 1200px"
+        },
+        "educational": {
+          "assetId": "educational.dream-journal.en",
+          "aspect": "4x3",
+          "alt": "Five useful fields for a dream journal: scene, people, emotions, senses and waking context",
+          "caption": "Record the scene, people, emotions, sensory details and waking context before interpreting the dream.",
+          "sizes": "(max-width: 768px) 100vw, 800px"
+        }
+      }
+    },
+    "/en/blog/dream-interpretation-history": {
+      "pageId": "blog.dream-interpretation-history",
+      "locale": "en",
+      "kind": "article",
+      "priority": "gsc-image-pilot",
+      "impressions": 2565,
+      "insertBefore": "modern-neuroscience",
+      "images": {
+        "editorial": {
+          "assetId": "editorial.dream-interpretation-history",
+          "aspect": "16x9",
+          "alt": "An ancient temple, illuminated book and celestial symbols under a night sky",
+          "caption": "Dream interpretation has moved through sacred, psychological and scientific frameworks.",
+          "sizes": "(max-width: 768px) 100vw, 1200px"
+        },
+        "educational": {
+          "assetId": "educational.dream-interpretation-history.en",
+          "aspect": "4x3",
+          "alt": "Timeline from ancient dream traditions through Freud and Jung to modern neuroscience",
+          "caption": "A simplified timeline of influential approaches, not a claim that one tradition replaced every other.",
+          "sizes": "(max-width: 768px) 100vw, 800px"
+        }
+      }
+    },
+    "/en/blog/pregnancy-dreams-meaning": {
+      "pageId": "blog.pregnancy-dreams-meaning",
+      "locale": "en",
+      "kind": "article",
+      "priority": "gsc-image-pilot",
+      "impressions": 1783,
+      "insertBefore": "scenarios",
+      "images": {
+        "editorial": {
+          "assetId": "editorial.pregnancy-dreams",
+          "aspect": "16x9",
+          "alt": "A woman beside a moonlit tree with symbols of growth and new beginnings",
+          "caption": "Pregnancy imagery in dreams can reflect change, anticipation or lived experience depending on context.",
+          "sizes": "(max-width: 768px) 100vw, 1200px"
+        },
+        "educational": {
+          "assetId": "educational.pregnancy-dreams.en",
+          "aspect": "4x3",
+          "alt": "Context map for reflecting on pregnancy dreams through situation, emotion, scene and recent events",
+          "caption": "Use personal context and emotions as reflection prompts; a dream is not a medical diagnosis or prediction.",
+          "sizes": "(max-width: 768px) 100vw, 800px"
+        }
+      }
+    },
+    "/es/blog/suenos-de-agua": {
+      "pageId": "blog.water-dreams-meaning",
+      "locale": "es",
+      "kind": "article",
+      "priority": "gsc-image-pilot",
+      "impressions": 1378,
+      "insertBefore": "estado",
+      "images": {
+        "editorial": {
+          "assetId": "editorial.water-dreams",
+          "aspect": "16x9",
+          "alt": "Una habitación onírica sumergida en agua azul y violeta",
+          "caption": "El estado, el movimiento y el lugar del agua ayudan a contextualizar el sueño.",
+          "sizes": "(max-width: 768px) 100vw, 1200px"
+        },
+        "educational": {
+          "assetId": "educational.water-dreams.es",
+          "aspect": "4x3",
+          "alt": "Matriz para comparar agua clara, turbia, tranquila o desbordada con el contexto emocional",
+          "caption": "Compara el estado del agua con tus emociones y circunstancias, sin asignar un significado fijo.",
+          "sizes": "(max-width: 768px) 100vw, 800px"
+        }
+      }
+    },
+    "/en/blog/flying-dreams-meaning": {
+      "pageId": "blog.flying-dreams-meaning",
+      "locale": "en",
+      "kind": "article",
+      "priority": "gsc-image-pilot",
+      "impressions": 1312,
+      "insertBefore": "emotions",
+      "images": {
+        "editorial": {
+          "assetId": "editorial.flying-dreams",
+          "aspect": "16x9",
+          "alt": "A person flying freely across a luminous purple night sky",
+          "caption": "The feeling and degree of control in a flying dream can change how the experience is understood.",
+          "sizes": "(max-width: 768px) 100vw, 1200px"
+        },
+        "educational": {
+          "assetId": "educational.flying-dreams.en",
+          "aspect": "4x3",
+          "alt": "Reflection matrix for flying dreams using freedom, control, escape and fear of falling",
+          "caption": "Start with how the flight felt, how much control you had and what was happening in waking life.",
+          "sizes": "(max-width: 768px) 100vw, 800px"
+        }
+      }
+    },
+    "/es/blog/guia-diario-suenos": {
+      "pageId": "blog.dream-journal-guide",
+      "locale": "es",
+      "kind": "article",
+      "priority": "gsc-image-pilot",
+      "impressions": 850,
+      "insertBefore": "que-registrar",
+      "images": {
+        "editorial": {
+          "assetId": "editorial.dream-journal",
+          "aspect": "16x9",
+          "alt": "Un diario de sueños abierto e iluminado sobre una mesita de noche",
+          "caption": "Tener el diario al alcance ayuda a conservar los detalles frágiles al despertar.",
+          "sizes": "(max-width: 768px) 100vw, 1200px"
+        },
+        "educational": {
+          "assetId": "educational.dream-journal.es",
+          "aspect": "4x3",
+          "alt": "Cinco campos útiles del diario de sueños: escena, personas, emociones, sentidos y contexto",
+          "caption": "Anota la escena, las personas, las emociones, los detalles sensoriales y el contexto antes de interpretar.",
+          "sizes": "(max-width: 768px) 100vw, 800px"
+        }
+      }
+    },
+    "/en/guides/dream-symbols-dictionary": {
+      "pageId": "guide.dream-symbols-dictionary",
+      "locale": "en",
+      "kind": "guide",
+      "priority": "gsc-image-pilot",
+      "impressions": 813,
+      "insertBefore": "dictionary-grid",
+      "images": {
+        "editorial": {
+          "assetId": "editorial.dream-symbols-dictionary",
+          "aspect": "16x9",
+          "alt": "An open dream dictionary surrounded by a key, eye, tree, wave and doorway",
+          "caption": "Dream symbols become more useful when connected to emotion, context and personal associations.",
+          "sizes": "(max-width: 768px) 100vw, 1200px"
+        },
+        "educational": {
+          "assetId": "educational.dream-symbols-dictionary.en",
+          "aspect": "4x3",
+          "alt": "Four-step process for exploring a dream symbol through image, emotion, context and recurring patterns",
+          "caption": "Treat a dictionary entry as a prompt: identify the image, feeling, personal context and recurring pattern.",
+          "sizes": "(max-width: 768px) 100vw, 800px"
+        }
+      }
+    },
+    "/es/blog/guia-suenos-lucidos-principiantes": {
+      "pageId": "blog.lucid-dreaming-beginners-guide",
+      "locale": "es",
+      "kind": "article",
+      "priority": "gsc-image-pilot",
+      "impressions": 674,
+      "insertBefore": "reality-checks",
+      "images": {
+        "editorial": {
+          "assetId": "editorial.lucid-dreaming",
+          "aspect": "16x9",
+          "alt": "Una persona flota desde su cama hacia un paisaje onírico luminoso",
+          "caption": "La lucidez empieza cuando una escena habitual del sueño se convierte en señal de conciencia.",
+          "sizes": "(max-width: 768px) 100vw, 1200px"
+        },
+        "educational": {
+          "assetId": "educational.lucid-dreaming.es",
+          "aspect": "4x3",
+          "alt": "Rutina de cuatro pasos con tests de realidad, diario, técnica MILD y WBTB",
+          "caption": "Rutina inicial: atención durante el día, registro de sueños, ensayo de lucidez y WBTB selectivo.",
+          "sizes": "(max-width: 768px) 100vw, 800px"
+        }
+      }
+    },
+    "/es/blog/suenos-de-volar": {
+      "pageId": "blog.flying-dreams-meaning",
+      "locale": "es",
+      "kind": "article",
+      "priority": "gsc-image-pilot",
+      "impressions": 609,
+      "insertBefore": "emotions",
+      "images": {
+        "editorial": {
+          "assetId": "editorial.flying-dreams",
+          "aspect": "16x9",
+          "alt": "Una persona vuela libremente por un cielo nocturno violeta y luminoso",
+          "caption": "La sensación y el grado de control cambian la manera de comprender un sueño de volar.",
+          "sizes": "(max-width: 768px) 100vw, 1200px"
+        },
+        "educational": {
+          "assetId": "educational.flying-dreams.es",
+          "aspect": "4x3",
+          "alt": "Matriz de reflexión sobre libertad, control, huida y miedo a caer en los sueños de volar",
+          "caption": "Empieza por la emoción del vuelo, el control que tenías y lo que ocurre en tu vida despierta.",
+          "sizes": "(max-width: 768px) 100vw, 800px"
+        }
+      }
+    }
+  }
+}

@@ -442,6 +442,9 @@ function main() {
   runNodeScript(path.join('scripts', 'check-article-date-contract.js'));
   runNodeScript(path.join('scripts', 'check-intent-ownership.js'));
   runNodeScript(path.join('scripts', 'check-web-performance-contract.js'));
+  runNodeScript(path.join('scripts', 'generate-image-seo-assets.js'), ['--check']);
+  runNodeScript(path.join('scripts', 'generate-symbol-responsive-images.js'), ['--check']);
+  runNodeScript(path.join('scripts', 'check-image-seo-contract.js'));
   runNodeScript(path.join('docs', 'scripts', 'check-site.js'));
 
   const manifest = readJson(SITE_MANIFEST_PATH);

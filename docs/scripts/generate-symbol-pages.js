@@ -45,6 +45,38 @@ const ROOT_DIR = path.join(__dirname, '..', '..');
 const DOCS_SRC_DIR = path.join(ROOT_DIR, 'docs-src');
 const ROOT_DATA_DIR = path.join(ROOT_DIR, 'data');
 const SITE_MANIFEST_PATH = path.join(ROOT_DATA_DIR, 'site-manifest.json');
+const DEFAULT_SOCIAL_IMAGE = 'https://noctalia.app/img/og/noctalia-dreamscape-v2-1200x630.jpg';
+
+function resolveResponsiveSymbolIllustration(illustration) {
+  if (!illustration?.src) return null;
+
+  const originalWidth = Number(illustration.width) || 1200;
+  const originalHeight = Number(illustration.height) || 675;
+  const stem = path.basename(illustration.src, path.extname(illustration.src));
+  const widths = [480, 800, 1200];
+  const variants = widths.map((width) => ({
+    width,
+    url: `/img/seo/symbols-v1/${stem}-${width}w.webp`,
+    filePath: path.join(__dirname, '..', 'img', 'seo', 'symbols-v1', `${stem}-${width}w.webp`),
+  }));
+  const hasVariants = variants.every((variant) => fs.existsSync(variant.filePath));
+
+  if (!hasVariants) {
+    return {
+      src: illustration.src,
+      srcset: '',
+      width: originalWidth,
+      height: originalHeight,
+    };
+  }
+
+  return {
+    src: variants[variants.length - 1].url,
+    srcset: variants.map((variant) => `${variant.url} ${variant.width}w`).join(', '),
+    width: 1200,
+    height: Math.round((originalHeight / originalWidth) * 1200),
+  };
+}
 
 function readCatalogModifiedDate(fallbackDate) {
   const catalogPath = path.join(ROOT_DATA_DIR, 'dream-symbols.json');
@@ -712,6 +744,12 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const illustration = extendedContent.illustration && extendedContent.illustration.src
     ? extendedContent.illustration
     : null;
+  const responsiveIllustration = resolveResponsiveSymbolIllustration(illustration);
+  const preferredImageUrl = responsiveIllustration
+    ? `https://noctalia.app${responsiveIllustration.src}`
+    : DEFAULT_SOCIAL_IMAGE;
+  const preferredImageWidth = responsiveIllustration?.width || 1200;
+  const preferredImageHeight = responsiveIllustration?.height || 630;
   const softCta = symbolData.softCta && symbolData.softCta.href
     ? symbolData.softCta
     : null;
@@ -744,14 +782,18 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                 </div>
             </section>` : '';
 
-  const illustrationHtml = illustration ? `
+  const illustrationHtml = illustration && responsiveIllustration ? `
                 <figure class="symbol-illustration">
-                    <img src="${escapeHtml(illustration.src)}"
-                         alt="${escapeHtml(illustration.alt || symbolData.name)}"
-                         loading="lazy"
-                         decoding="async"
-                         ${illustration.width ? `width="${escapeHtml(String(illustration.width))}"` : ''}
-                         ${illustration.height ? `height="${escapeHtml(String(illustration.height))}"` : ''}>
+                    <picture>
+                        <img src="${escapeHtml(responsiveIllustration.src)}"
+                             ${responsiveIllustration.srcset ? `srcset="${escapeHtml(responsiveIllustration.srcset)}"` : ''}
+                             sizes="(max-width: 768px) 100vw, 760px"
+                             alt="${escapeHtml(illustration.alt || symbolData.name)}"
+                             fetchpriority="high"
+                             decoding="async"
+                             width="${escapeHtml(String(responsiveIllustration.width))}"
+                             height="${escapeHtml(String(responsiveIllustration.height))}">
+                    </picture>
                     ${illustration.caption ? `<figcaption>${escapeHtml(illustration.caption)}</figcaption>` : ''}
                 </figure>` : '';
 
@@ -932,7 +974,12 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     '@type': 'Article',
     headline: visibleHeadline,
     description: metaDescription,
-    image: `https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg`,
+    image: {
+      '@type': 'ImageObject',
+      url: preferredImageUrl,
+      width: preferredImageWidth,
+      height: preferredImageHeight,
+    },
     author: canonicalOrganization(),
     publisher: canonicalOrganization(),
     datePublished: CONFIG.datePublished,
@@ -1029,10 +1076,10 @@ ${hreflangLinks}
     <meta property="og:title" content="${escapeHtml(metaTitle)}">
     <meta property="og:description" content="${escapeHtml(symbolData.shortDescription)}">
     <meta property="og:url" content="https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}">
-    <meta property="og:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta property="og:image" content="${preferredImageUrl}">
     <meta property="og:site_name" content="Noctalia">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <meta property="og:image:width" content="${preferredImageWidth}">
+    <meta property="og:image:height" content="${preferredImageHeight}">
     <meta property="og:image:alt" content="${escapeHtml(metaTitle)}">
     <meta property="og:locale" content="${t.locale}">
 ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${{ en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' }[l]}">`).join('\n')}
@@ -1045,7 +1092,7 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(metaTitle)}">
     <meta name="twitter:description" content="${escapeHtml(symbolData.shortDescription)}">
-    <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta name="twitter:image" content="${preferredImageUrl}">
     <meta name="twitter:site" content="@NoctaliaDreams">
     <meta name="twitter:image:alt" content="${escapeHtml(metaTitle)}">
 
@@ -1893,7 +1940,7 @@ ${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" 
     <meta property="og:title" content="${escapeHtml(metaTitle)}">
     <meta property="og:description" content="${escapeHtml(metaDescription)}">
     <meta property="og:url" content="https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${categorySlug}">
-    <meta property="og:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta property="og:image" content="${DEFAULT_SOCIAL_IMAGE}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="${escapeHtml(metaTitle)}">
@@ -1905,7 +1952,7 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(metaTitle)}">
     <meta name="twitter:description" content="${escapeHtml(metaDescription)}">
-    <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta name="twitter:image" content="${DEFAULT_SOCIAL_IMAGE}">
     <meta name="twitter:site" content="@NoctaliaDreams">
     <meta name="twitter:image:alt" content="${escapeHtml(metaTitle)}">
 
@@ -2366,7 +2413,7 @@ ${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" 
     <meta property="og:title" content="${escapeHtml(metaTitle)}">
     <meta property="og:description" content="${escapeHtml(pageData.metaDescription)}">
     <meta property="og:url" content="https://noctalia.app/${lang}/guides/${slug}">
-    <meta property="og:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta property="og:image" content="${DEFAULT_SOCIAL_IMAGE}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="${escapeHtml(metaTitle)}">
@@ -2380,7 +2427,7 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(metaTitle)}">
     <meta name="twitter:description" content="${escapeHtml(pageData.metaDescription)}">
-    <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta name="twitter:image" content="${DEFAULT_SOCIAL_IMAGE}">
     <meta name="twitter:site" content="@NoctaliaDreams">
     <meta name="twitter:image:alt" content="${escapeHtml(metaTitle)}">
 
