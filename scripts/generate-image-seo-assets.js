@@ -1,0 +1,211 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const path = require('path');
+const sharp = require('sharp');
+const {
+  buildVariantUrl,
+  getResponsiveImageData,
+  readImageAssetRegistry,
+  resolveRepoPath,
+} = require('./lib/image-seo-assets');
+
+const MAX_1200_BYTES = 250 * 1024;
+const WARN_1200_BYTES = 180 * 1024;
+
+function outputPathForUrl(url) {
+  if (!url.startsWith('/img/')) throw new Error(`Refusing non-image output URL: ${url}`);
+  return resolveRepoPath(path.join('docs-src', 'static', url.slice(1)));
+}
+
+function variantHeight(aspect, width) {
+  return Math.round((width * aspect.height) / aspect.width);
+}
+
+async function sourcePipeline(asset, aspect, width) {
+  const sourcePath = resolveRepoPath(asset.source);
+  const height = variantHeight(aspect, width);
+  const metadata = await sharp(sourcePath).metadata();
+
+  if (asset.role === 'editorial' && aspect.mode === 'ambient') {
+    const background = await sharp(sourcePath)
+      .rotate()
+      .resize(width, height, { fit: 'cover', position: 'attention' })
+      .blur(Math.max(10, Math.round(width / 35)))
+      .modulate({ brightness: 0.52, saturation: 0.82 })
+      .toBuffer();
+    const foreground = await sharp(sourcePath)
+      .rotate()
+      .resize(width, height, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .png()
+      .toBuffer();
+    return sharp({ create: { width, height, channels: 3, background: '#130d2d' } })
+      .composite([{ input: background }, { input: foreground, gravity: 'center' }]);
+  }
+
+  const fit = aspect.mode === 'cover' ? 'cover' : 'contain';
+  const background = asset.role === 'fallback' ? '#140d31' : '#130d2d';
+  const density = metadata.format === 'svg' ? 144 : undefined;
+  return sharp(sourcePath, density ? { density } : undefined)
+    .rotate()
+    .resize(width, height, {
+      fit,
+      position: 'attention',
+      background,
+    });
+}
+
+function encode(pipeline, format) {
+  if (format === 'avif') {
+    return pipeline.avif({ quality: 52, effort: 5, chromaSubsampling: '4:4:4' });
+  }
+  if (format === 'webp') {
+    return pipeline.webp({ quality: 82, effort: 5, smartSubsample: true });
+  }
+  if (format === 'jpg') {
+    return pipeline.jpeg({ quality: 88, progressive: true, mozjpeg: true });
+  }
+  throw new Error(`Unsupported output format: ${format}`);
+}
+
+function expectedVariants(registry) {
+  const variants = [];
+  for (const [assetId, asset] of Object.entries(registry.assets)) {
+    const formats = asset.formats || registry.variants.formats;
+    for (const [aspectName, aspect] of Object.entries(asset.aspects)) {
+      for (const width of aspect.widths) {
+        for (const format of formats) {
+          const url = buildVariantUrl(asset, aspectName, width, format);
+          variants.push({
+            assetId,
+            asset,
+            aspectName,
+            aspect,
+            width,
+            height: variantHeight(aspect, width),
+            format,
+            url,
+            outputPath: outputPathForUrl(url),
+          });
+        }
+      }
+    }
+  }
+  return variants;
+}
+
+async function validateSources(registry) {
+  const errors = [];
+  for (const [assetId, asset] of Object.entries(registry.assets)) {
+    const sourcePath = resolveRepoPath(asset.source);
+    if (!fs.existsSync(sourcePath)) {
+      errors.push(`${assetId}: missing source ${asset.source}`);
+      continue;
+    }
+    const metadata = await sharp(sourcePath).metadata();
+    if (!metadata.width || !metadata.height) {
+      errors.push(`${assetId}: source has no readable dimensions`);
+    }
+    if (asset.role === 'editorial' && (metadata.width < 1200 || metadata.height < 675)) {
+      errors.push(`${assetId}: editorial source must be at least 1200x675`);
+    }
+    if (asset.role === 'educational' && (metadata.width !== 1200 || metadata.height !== 900)) {
+      errors.push(`${assetId}: educational SVG must be exactly 1200x900`);
+    }
+    if (asset.role === 'fallback' && (metadata.width !== 1200 || metadata.height !== 630)) {
+      errors.push(`${assetId}: fallback SVG must be exactly 1200x630`);
+    }
+  }
+  if (errors.length) throw new Error(`Invalid image sources:\n- ${errors.join('\n- ')}`);
+}
+
+async function generateAssets(registry) {
+  const variants = expectedVariants(registry);
+  for (const variant of variants) {
+    fs.mkdirSync(path.dirname(variant.outputPath), { recursive: true });
+    const pipeline = await sourcePipeline(variant.asset, variant.aspect, variant.width);
+    await encode(pipeline, variant.format).toFile(variant.outputPath);
+  }
+  return variants;
+}
+
+async function validateOutputs(registry) {
+  const variants = expectedVariants(registry);
+  const errors = [];
+  const warnings = [];
+  let totalBytes = 0;
+  for (const variant of variants) {
+    if (!fs.existsSync(variant.outputPath)) {
+      errors.push(`${variant.assetId}: missing ${variant.url}`);
+      continue;
+    }
+    const stats = fs.statSync(variant.outputPath);
+    const metadata = await sharp(variant.outputPath).metadata();
+    totalBytes += stats.size;
+    if (metadata.width !== variant.width || metadata.height !== variant.height) {
+      errors.push(
+        `${variant.url}: expected ${variant.width}x${variant.height}, got ${metadata.width}x${metadata.height}`
+      );
+    }
+    const expectedFormat = variant.format === 'jpg' ? 'jpeg' : variant.format === 'avif' ? 'heif' : variant.format;
+    if (metadata.format !== expectedFormat) {
+      errors.push(`${variant.url}: expected ${expectedFormat}, got ${metadata.format}`);
+    }
+    if (variant.width === 1200 && stats.size > MAX_1200_BYTES) {
+      errors.push(`${variant.url}: ${Math.round(stats.size / 1024)} KiB exceeds 250 KiB`);
+    } else if (variant.width === 1200 && stats.size > WARN_1200_BYTES) {
+      warnings.push(`${variant.url}: ${Math.round(stats.size / 1024)} KiB exceeds 180 KiB`);
+    }
+  }
+  if (errors.length) throw new Error(`Invalid generated image assets:\n- ${errors.join('\n- ')}`);
+  return { variants, warnings, totalBytes };
+}
+
+function validatePageImageResolution(registry) {
+  for (const [canonicalPath, page] of Object.entries(registry.pages)) {
+    for (const imageRef of Object.values(page.images)) {
+      const image = getResponsiveImageData(registry, imageRef.assetId, imageRef.aspect);
+      if (!image.src.startsWith('/img/seo/')) {
+        throw new Error(`${canonicalPath}: pilot image URL is not versioned under /img/seo/`);
+      }
+    }
+  }
+}
+
+async function main() {
+  const checkOnly = process.argv.includes('--check');
+  const registry = readImageAssetRegistry();
+  await validateSources(registry);
+  validatePageImageResolution(registry);
+  if (!checkOnly) await generateAssets(registry);
+  const report = await validateOutputs(registry);
+  const roleCounts = Object.values(registry.assets).reduce((counts, asset) => {
+    counts[asset.role] = (counts[asset.role] || 0) + 1;
+    return counts;
+  }, {});
+  console.log(
+    `Image SEO assets ${checkOnly ? 'checked' : 'generated'}: ` +
+      `${Object.keys(registry.pages).length} pages, ` +
+      `${roleCounts.editorial} editorial masters, ` +
+      `${roleCounts.educational} localized diagrams, ` +
+      `${roleCounts.fallback} fallback, ` +
+      `${report.variants.length} variants, ` +
+      `${(report.totalBytes / 1024 / 1024).toFixed(2)} MiB total.`
+  );
+  for (const warning of report.warnings) console.warn(`WARN ${warning}`);
+}
+
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(error.stack || error.message || String(error));
+    process.exitCode = 1;
+  });
+}
+
+module.exports = {
+  expectedVariants,
+  generateAssets,
+  outputPathForUrl,
+  validateOutputs,
+  validateSources,
+};

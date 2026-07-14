@@ -28,20 +28,27 @@ const {
 
 function hashAssetFiles() {
   const hash = crypto.createHash('sha256');
-  const assetDirs = [
+  const assetInputs = [
     path.join(DOCS_SRC_DIR, 'static', 'css'),
     path.join(DOCS_SRC_DIR, 'static', 'js'),
+    path.join(DOCS_SRC_DIR, 'static', 'img', 'seo'),
+    path.join(DOCS_SRC_DIR, 'static', 'img', 'og', 'noctalia-dreamscape-v2-1200x630.jpg'),
+    path.join(DOCS_SRC_DIR, 'config', 'image-assets.json'),
   ];
-  for (const dir of assetDirs) {
-    if (!fs.existsSync(dir)) continue;
-    const files = fs.readdirSync(dir).sort();
-    for (const file of files) {
-      const filePath = path.join(dir, file);
-      if (fs.statSync(filePath).isFile()) {
-        hash.update(fs.readFileSync(filePath));
-      }
+
+  function hashInput(inputPath) {
+    if (!fs.existsSync(inputPath)) return;
+    if (fs.statSync(inputPath).isFile()) {
+      hash.update(path.relative(DOCS_SRC_DIR, inputPath));
+      hash.update(fs.readFileSync(inputPath));
+      return;
+    }
+    for (const entry of fs.readdirSync(inputPath).sort()) {
+      hashInput(path.join(inputPath, entry));
     }
   }
+
+  for (const inputPath of assetInputs) hashInput(inputPath);
   return hash.digest('hex').slice(0, 12);
 }
 
@@ -211,6 +218,8 @@ function main() {
   runNodeScript(path.join('scripts', 'check-content-release-gates.js'));
   runNodeScript(path.join('scripts', 'build-content-manifest.js'));
   runNodeScript(path.join('scripts', 'build-site-manifest.js'));
+  runNodeScript(path.join('scripts', 'generate-image-seo-assets.js'));
+  runNodeScript(path.join('scripts', 'generate-symbol-responsive-images.js'));
 
   const version = bumpAssetVersion();
   cleanManagedOutputs();

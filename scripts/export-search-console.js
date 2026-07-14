@@ -14,6 +14,7 @@ const SEARCH_CONSOLE_SCOPE = 'https://www.googleapis.com/auth/webmasters.readonl
 const TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const API_ROOT = 'https://www.googleapis.com/webmasters/v3';
 const MAX_ROW_LIMIT = 25000;
+const SEARCH_TYPES = ['web', 'image', 'discover'];
 
 const DATASETS = [
   { id: 'summary', label: 'Synthese globale', dimensions: [], rowLimit: 1 },
@@ -29,12 +30,14 @@ function printHelp() {
   console.log(`
 Usage:
   npm run seo:gsc:export -- --start 2026-02-03 --end 2026-05-02
+  npm run seo:gsc:export -- --type image --start 2026-04-15 --end 2026-07-12
 
 Options:
   --site <siteUrl>       Search Console site URL. Default: ${DEFAULT_SITE}
   --start <YYYY-MM-DD>   Start date. Default: 89 days before --end
   --end <YYYY-MM-DD>     End date. Default: 2 days ago
-  --out <dir>            Output directory. Default: marketing/seo/search-console
+  --type <type>          Search type: ${SEARCH_TYPES.join(', ')}. Default: web
+  --out <dir>            Output base directory. Default: marketing/seo/search-console
   --row-limit <number>   API page size, capped at ${MAX_ROW_LIMIT}. Default: ${MAX_ROW_LIMIT}
   --help                 Show this help
 
@@ -55,6 +58,7 @@ function parseArgs(argv) {
     site: process.env.GSC_SITE_URL || DEFAULT_SITE,
     out: process.env.GSC_OUTPUT_DIR || DEFAULT_OUT_DIR,
     rowLimit: Number(process.env.GSC_ROW_LIMIT || MAX_ROW_LIMIT),
+    type: process.env.GSC_SEARCH_TYPE || 'web',
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -73,12 +77,17 @@ function parseArgs(argv) {
     if (key === 'site') args.site = value;
     else if (key === 'start') args.start = value;
     else if (key === 'end') args.end = value;
+    else if (key === 'type') args.type = value;
     else if (key === 'out') args.out = path.resolve(ROOT_DIR, value);
     else if (key === 'row-limit') args.rowLimit = Number(value);
     else throw new Error(`Unknown option: ${arg}`);
   }
 
   args.rowLimit = Math.min(MAX_ROW_LIMIT, Math.max(1, Number(args.rowLimit || MAX_ROW_LIMIT)));
+  args.type = String(args.type).toLowerCase();
+  if (!SEARCH_TYPES.includes(args.type)) {
+    throw new Error(`--type must be one of: ${SEARCH_TYPES.join(', ')}; got: ${args.type}`);
+  }
   args.end = args.end || dateToIso(addDays(new Date(), -2));
   args.start = args.start || dateToIso(addDays(parseIsoDate(args.end), -89));
 
@@ -112,6 +121,20 @@ function addDays(date, days) {
 
 function ensureDir(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
+}
+
+function resolveOutputDir({ out, type, start, end }, existsSync = fs.existsSync) {
+  const typeDir = path.join(out, type);
+  const runId = `${start}_to_${end}`;
+  let outputDir = path.join(typeDir, runId);
+  let suffix = 2;
+
+  while (existsSync(outputDir)) {
+    outputDir = path.join(typeDir, `${runId}-${suffix}`);
+    suffix += 1;
+  }
+
+  return outputDir;
 }
 
 function toUrlSafeBase64(payload) {
@@ -282,6 +305,7 @@ async function querySearchAnalytics({
   endDate,
   dimensions,
   rowLimit,
+  searchType,
 }) {
   const rows = [];
   let startRow = 0;
@@ -293,6 +317,7 @@ async function querySearchAnalytics({
       dimensions,
       rowLimit,
       startRow,
+      type: searchType,
     };
 
     const response = await fetch(
@@ -578,6 +603,7 @@ function buildReport({ args, data, outputDir, generatedAt }) {
 Generation: ${generatedAt}
 Propriete: \`${args.site}\`
 Periode: ${args.start} -> ${args.end}
+Type de recherche: \`${args.type}\`
 
 ## Synthese
 
@@ -659,8 +685,7 @@ async function main() {
   }
 
   const generatedAt = new Date().toISOString();
-  const runId = `${args.start}_to_${args.end}`;
-  const outputDir = path.join(args.out, runId);
+  const outputDir = resolveOutputDir(args);
   const { token, quotaProjectId } = await getAccessToken();
   ensureDir(outputDir);
   const siteIndex = loadSiteIndex();
@@ -678,6 +703,7 @@ async function main() {
       endDate: args.end,
       dimensions: dataset.dimensions,
       rowLimit: dataset.rowLimit || args.rowLimit,
+      searchType: args.type,
     });
   }
 
@@ -689,6 +715,7 @@ async function main() {
     site: args.site,
     startDate: args.start,
     endDate: args.end,
+    searchType: args.type,
     datasets: Object.fromEntries(
       Object.entries(data).map(([id, rows]) => [id, { rows: rows.length }])
     ),
@@ -777,4 +804,7 @@ if (require.main === module) {
 module.exports = {
   csvEscape,
   neutralizeCsvFormula,
+  parseArgs,
+  querySearchAnalytics,
+  resolveOutputDir,
 };

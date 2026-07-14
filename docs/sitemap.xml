@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://noctalia.app/</loc>
     <lastmod>2026-07-13</lastmod>
@@ -2727,6 +2727,12 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-interpretation-history"/>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/editorial/dream-interpretation-history-16x9-1200.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/educational/en/dream-interpretation-timeline-4x3-1200.webp</image:loc>
+    </image:image>
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/dream-journal</loc>
@@ -2749,6 +2755,12 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-journal-guide"/>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/editorial/dream-journal-16x9-1200.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/educational/en/dream-journal-fields-4x3-1200.webp</image:loc>
+    </image:image>
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/dream-meanings</loc>
@@ -2859,6 +2871,12 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/flying-dreams-meaning"/>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/editorial/flying-dreams-16x9-1200.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/educational/en/flying-dream-context-matrix-4x3-1200.webp</image:loc>
+    </image:image>
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/heat-stress-nightmares</loc>
@@ -2914,6 +2932,12 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide"/>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/editorial/lucid-dreaming-16x9-1200.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/educational/en/lucid-dreaming-method-4x3-1200.webp</image:loc>
+    </image:image>
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/night-noise-sleep-dreams</loc>
@@ -2958,6 +2982,12 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning"/>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/editorial/pregnancy-dreams-16x9-1200.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/educational/en/pregnancy-dream-context-map-4x3-1200.webp</image:loc>
+    </image:image>
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/recurring-dreams-meaning</loc>
@@ -3244,6 +3274,12 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/guides/traumsymbole-lexikon"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/guides/dizionario-simboli-sogni"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/guides/dream-symbols-dictionary"/>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/editorial/dream-symbols-dictionary-16x9-1200.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/educational/en/dream-symbol-interpretation-flow-4x3-1200.webp</image:loc>
+    </image:image>
   </url>
   <url>
     <loc>https://noctalia.app/en/guides/most-common-dream-symbols</loc>
@@ -5279,6 +5315,12 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-journal-guide"/>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/editorial/dream-journal-16x9-1200.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/educational/es/campos-diario-suenos-4x3-1200.webp</image:loc>
+    </image:image>
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/guia-incubacion-suenos</loc>
@@ -5323,6 +5365,12 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide"/>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/editorial/lucid-dreaming-16x9-1200.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/educational/es/metodo-suenos-lucidos-4x3-1200.webp</image:loc>
+    </image:image>
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/guia-suenos-ninos</loc>
@@ -5543,6 +5591,12 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/water-dreams-meaning"/>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/editorial/water-dreams-16x9-1200.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/educational/es/matriz-contexto-agua-4x3-1200.webp</image:loc>
+    </image:image>
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/suenos-de-ansiedad-significado</loc>
@@ -5598,6 +5652,12 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/flying-dreams-meaning"/>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/editorial/flying-dreams-16x9-1200.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://noctalia.app/img/seo/pilot-2026-07-v1/educational/es/matriz-contexto-suenos-volar-4x3-1200.webp</image:loc>
+    </image:image>
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/suenos-demasiado-reales-modelo-mobius</loc>

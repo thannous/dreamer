@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <title>Noctalia nocturnal dreamscape</title>
+  <desc>Text-free moonlit landscape with violet clouds, stars and a reflective lake.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0922"/>
+      <stop offset="0.55" stop-color="#35205f"/>
+      <stop offset="1" stop-color="#8e4d82"/>
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop offset="0" stop-color="#fff4d6" stop-opacity=".95"/>
+      <stop offset=".4" stop-color="#ffd8c8" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#ffd8c8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#6e467b"/>
+      <stop offset="1" stop-color="#17102f"/>
+    </linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="28"/></filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#sky)"/>
+  <circle cx="860" cy="175" r="145" fill="url(#glow)"/>
+  <circle cx="860" cy="175" r="60" fill="#fff4dc"/>
+  <g fill="#fff4dc" opacity=".8">
+    <circle cx="115" cy="115" r="3"/><circle cx="210" cy="72" r="2"/><circle cx="340" cy="144" r="4"/>
+    <circle cx="480" cy="82" r="2"/><circle cx="620" cy="162" r="3"/><circle cx="1030" cy="95" r="3"/>
+    <circle cx="1090" cy="210" r="2"/><circle cx="710" cy="55" r="2"/><circle cx="970" cy="285" r="3"/>
+  </g>
+  <ellipse cx="360" cy="260" rx="250" ry="65" fill="#d692bd" opacity=".16" filter="url(#blur)"/>
+  <path d="M0 420L150 300 270 390 430 245 590 400 735 285 910 405 1060 295 1200 390V520H0Z" fill="#24163f"/>
+  <path d="M0 455L190 370 315 450 500 330 680 445 835 350 1010 450 1200 350V540H0Z" fill="#362050"/>
+  <path d="M0 478C225 445 390 505 610 470S980 445 1200 485V630H0Z" fill="url(#lake)"/>
+  <path d="M710 500C800 480 900 480 1010 500C930 520 800 520 710 500Z" fill="#ffd8c8" opacity=".24"/>
+  <g fill="none" stroke="#e7b7d3" stroke-opacity=".22" stroke-width="3">
+    <path d="M80 545C260 525 390 565 560 545"/><path d="M620 570C800 545 955 585 1120 555"/>
+  </g>
+</svg>

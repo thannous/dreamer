@@ -24,10 +24,11 @@
     <meta property="og:title" content="Dictionnaire des symboles de rêves : 150 significations">
     <meta property="og:description" content="Trouvez des significations claires, des questions de réflexion et des symboles liés.">
     <meta property="og:url" content="https://noctalia.app/fr/guides/dictionnaire-symboles-reves">
-    <meta property="og:image" content="https://noctalia.app/img/og/noctalia-fr-1200x630.jpg">
+    <meta property="og:image" content="https://noctalia.app/img/blog/dream-symbols-dictionary.webp">
     <meta property="og:site_name" content="Noctalia">
     <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <meta property="og:image:height" content="675">
+    <meta property="og:image:alt" content="Un dictionnaire des rêves ouvert entouré d’une clé, d’un œil, d’un arbre, d’une vague et d’une porte">
     <meta property="og:locale" content="fr_FR">
     <meta property="og:locale:alternate" content="en_US">
     <meta property="og:locale:alternate" content="es_ES">
@@ -40,15 +41,15 @@
     <meta name="twitter:site" content="@NoctaliaDreams">
     <meta name="twitter:title" content="Dictionnaire des symboles de rêves A-Z">
     <meta name="twitter:description" content="150 symboles de rêves avec significations, exemples et questions personnelles.">
-    <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-fr-1200x630.jpg">
-    <meta name="twitter:image:alt" content="Dictionnaire des symboles de rêves : 150 significations">
+    <meta name="twitter:image" content="https://noctalia.app/img/blog/dream-symbols-dictionary.webp">
+    <meta name="twitter:image:alt" content="Un dictionnaire des rêves ouvert entouré d’une clé, d’un œil, d’un arbre, d’une vague et d’une porte">
     <!-- Preload critical fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Compiled Tailwind CSS -->
-    <link rel="stylesheet" href="/css/styles.min.css?v=2866f3066c1f">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=2866f3066c1f">
+    <link rel="stylesheet" href="/css/styles.min.css?v=20260714-201204">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=20260714-201204">
     <style>
       /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
@@ -265,7 +266,6 @@
             linear-gradient(180deg, rgba(5, 2, 12, 0.7) 0%, rgba(8, 3, 17, 0.48) 34%, #090413 88%),
             linear-gradient(90deg, rgba(5, 2, 12, 0.76) 0%, rgba(5, 2, 12, 0.2) 48%, rgba(5, 2, 12, 0.62) 100%),
             radial-gradient(ellipse at 76% 28%, rgba(253, 164, 129, 0.14), transparent 24rem),
-            url('/img/blog/dream-symbols-dictionary.webp') center top / cover no-repeat,
             linear-gradient(135deg, #12051d 0%, #0a0514 45%, #130822 100%);
         }
         .dictionary-page .aurora-bg,
@@ -289,14 +289,58 @@
         }
         .dictionary-header {
           display: grid;
-          grid-template-columns: minmax(0, 1fr);
-          align-items: end;
+          grid-template-columns: minmax(0, 0.9fr) minmax(24rem, 1.1fr);
+          align-items: center;
           gap: clamp(1.5rem, 4vw, 5rem);
           min-height: 29.5rem;
           margin-bottom: 0;
           padding: 7.2rem clamp(1rem, 4vw, 4.75rem) 2.1rem;
           text-align: left;
           background: transparent;
+        }
+        .dictionary-hero-image {
+          position: relative;
+          overflow: hidden;
+          margin: 0;
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 1.5rem;
+          background: rgba(18,10,34,0.75);
+          box-shadow: 0 2rem 6rem rgba(0,0,0,0.32);
+        }
+        .dictionary-hero-image picture,
+        .dictionary-hero-image img {
+          display: block;
+          width: 100%;
+        }
+        .dictionary-hero-image img {
+          height: auto;
+          aspect-ratio: 16 / 9;
+          object-fit: cover;
+        }
+        .dictionary-hero-image figcaption,
+        .dictionary-educational-image figcaption {
+          padding: 0.8rem 1rem 0.95rem;
+          color: rgba(231,220,255,0.76);
+          font-size: 0.86rem;
+          line-height: 1.5;
+        }
+        .dictionary-educational-image {
+          width: min(calc(100% - (var(--dictionary-edge) * 2)), 800px);
+          margin: 2.5rem auto;
+          padding: 0.8rem;
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 1.25rem;
+          background: rgba(18,10,34,0.86);
+          box-shadow: 0 1.5rem 4rem rgba(0,0,0,0.24);
+        }
+        .dictionary-educational-image picture,
+        .dictionary-educational-image img {
+          display: block;
+          width: 100%;
+        }
+        .dictionary-educational-image img {
+          height: auto;
+          border-radius: 0.8rem;
         }
         .dictionary-hero-copy {
           display: flex;
@@ -584,6 +628,11 @@
           filter: saturate(1.06) contrast(1.03);
           transition: transform 0.28s ease, opacity 0.28s ease, filter 0.28s ease;
         }
+        img.symbol-card-image {
+          object-fit: cover;
+          object-position: center;
+          background-image: none;
+        }
         .symbol-card:hover .symbol-card-image {
           opacity: 0.68;
           transform: scale(1.12);
@@ -752,6 +801,7 @@
             min-height: auto;
             padding-top: 6.6rem;
           }
+          .dictionary-hero-image { width: 100%; }
           .category-browse-card {
             flex-basis: 8.8rem;
             min-width: 8.8rem;
@@ -987,7 +1037,18 @@
             "headline": "Dictionnaire des symboles de rêves : 150 significations A-Z",
             "description": "Cherchez 150 symboles de rêves A-Z : eau, dents, chute, animaux, mort, maison, hôpital, loup et thèmes récurrents.",
             "url": "https://noctalia.app/fr/guides/dictionnaire-symboles-reves",
-            "image": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
+            "image": {
+                "@type": "ImageObject",
+                "url": "https://noctalia.app/img/blog/dream-symbols-dictionary.webp",
+                "width": 1200,
+                "height": 675
+            },
+            "primaryImageOfPage": {
+                "@type": "ImageObject",
+                "url": "https://noctalia.app/img/blog/dream-symbols-dictionary.webp",
+                "width": 1200,
+                "height": 675
+            },
             "inLanguage": "fr",
             "isPartOf": {
                 "@type": "CollectionPage",
@@ -1167,6 +1228,13 @@
                         </button>
                     </div>
                 </div>
+<figure class="dictionary-hero-image" data-image-seo-role="editorial">
+                    <picture>
+                        <source type="image/webp" srcset="/img/blog/dream-symbols-dictionary-480w.webp 480w, /img/blog/dream-symbols-dictionary-800w.webp 800w, /img/blog/dream-symbols-dictionary-1200w.webp 1200w" sizes="(max-width: 1180px) 100vw, 52vw">
+                        <img src="/img/blog/dream-symbols-dictionary.webp" srcset="/img/blog/dream-symbols-dictionary-480w.webp 480w, /img/blog/dream-symbols-dictionary-800w.webp 800w, /img/blog/dream-symbols-dictionary-1200w.webp 1200w" sizes="(max-width: 1180px) 100vw, 52vw" width="1200" height="675" fetchpriority="high" decoding="async" alt="Un dictionnaire des rêves ouvert entouré d’une clé, d’un œil, d’un arbre, d’une vague et d’une porte">
+                    </picture>
+                    <figcaption>Les symboles deviennent plus utiles lorsqu’ils sont reliés aux émotions, au contexte et aux associations personnelles.</figcaption>
+                </figure>
             </header>
 
             <!-- dict-no-results -->
@@ -1504,6 +1572,9 @@
             </div>
 
             <!-- Symbols Dictionary -->
+            <div id="dictionary-grid">
+
+            </div>
             <div id="symbolsList">
                 <section id="A" class="mb-12">
                     <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
@@ -1512,7 +1583,7 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="abandon abandon abandon" style="--cat-color:#fb923c;--symbol-x:14.286%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -1531,8 +1602,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="abeille abeille abeille" style="--cat-color:#fbbf24;--symbol-x:100.000%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bee.webp" width="192" height="192" loading="lazy" decoding="async" alt="Abeille — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1554,7 +1625,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="accident accident accident" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -1573,8 +1644,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="aeroport aeroport aeroport" style="--cat-color:#60a5fa;--symbol-x:71.429%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/airport.webp" width="192" height="192" loading="lazy" decoding="async" alt="Aéroport — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1596,8 +1667,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="aigle aigle aigle" style="--cat-color:#fbbf24;--symbol-x:28.571%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/eagle.webp" width="192" height="192" loading="lazy" decoding="async" alt="Aigle — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1619,8 +1690,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ami ami ami" style="--cat-color:#f472b6;--symbol-x:28.571%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/friend.webp" width="192" height="192" loading="lazy" decoding="async" alt="Ami — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1642,7 +1713,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ange ange ange" style="--cat-color:#818cf8;--symbol-x:42.857%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -1661,7 +1732,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="apocalypse apocalypse apocalypse" style="--cat-color:#4ade80;--symbol-x:71.429%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -1680,8 +1751,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="araignee araignee araignee" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/spider.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Araignée — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1699,8 +1770,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="arbre arbre arbre" style="--cat-color:#4ade80;--symbol-x:42.857%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/tree.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Arbre — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1718,7 +1789,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="arc-en-ciel arc-en-ciel arc-en-ciel" style="--cat-color:#818cf8;--symbol-x:100.000%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -1737,7 +1808,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="argent argent argent" style="--cat-color:#c084fc;--symbol-x:100.000%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -1756,8 +1827,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ascenseur ascenseur ascenseur" style="--cat-color:#60a5fa;--symbol-x:14.286%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/elevator.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Ascenseur — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1779,7 +1850,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="avion avion avion" style="--cat-color:#c084fc;--symbol-x:71.429%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -1810,8 +1881,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bague bague bague" style="--cat-color:#c084fc;--symbol-x:0.000%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/ring.webp" width="192" height="192" loading="lazy" decoding="async" alt="Bague — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1833,8 +1904,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="baleine baleine baleine" style="--cat-color:#fbbf24;--symbol-x:42.857%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/whale.webp" width="192" height="192" loading="lazy" decoding="async" alt="Baleine — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1856,8 +1927,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bateau bateau bateau" style="--cat-color:#c084fc;--symbol-x:57.143%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/boat.webp" width="192" height="192" loading="lazy" decoding="async" alt="Bateau — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1879,7 +1950,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bebe bebe bebe" style="--cat-color:#f472b6;--symbol-x:14.286%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -1902,8 +1973,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bouche bouche bouche" style="--cat-color:#f87171;--symbol-x:14.286%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/mouth.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Bouche — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1921,8 +1992,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bus bus bus" style="--cat-color:#c084fc;--symbol-x:28.571%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bus.webp" width="192" height="192" loading="lazy" decoding="async" alt="Bus — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1952,8 +2023,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cascade cascade cascade" style="--cat-color:#4ade80;--symbol-x:42.857%;--symbol-y:100.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/waterfall.webp" width="192" height="192" loading="lazy" decoding="async" alt="Cascade — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1975,8 +2046,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="centre-commercial centre-commercial centre-commercial" style="--cat-color:#60a5fa;--symbol-x:28.571%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/mall.webp" width="192" height="192" loading="lazy" decoding="async" alt="Centre commercial — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1998,8 +2069,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chambre chambre chambre" style="--cat-color:#60a5fa;--symbol-x:85.714%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bedroom.webp" width="192" height="192" loading="lazy" decoding="async" alt="Chambre — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2021,8 +2092,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chat chat chat" style="--cat-color:#fbbf24;--symbol-x:42.857%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/cat.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Chat — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2040,7 +2111,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chemin chemin chemin" style="--cat-color:#60a5fa;--symbol-x:42.857%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -2059,7 +2130,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cheval cheval cheval" style="--cat-color:#fbbf24;--symbol-x:71.429%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -2078,8 +2149,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cheveux cheveux cheveux" style="--cat-color:#f87171;--symbol-x:57.143%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/hair.webp" width="192" height="192" loading="lazy" decoding="async" alt="Cheveux — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2101,8 +2172,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chien chien chien" style="--cat-color:#fbbf24;--symbol-x:28.571%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/dog-dream-it.jpg" width="1400" height="933" loading="lazy" decoding="async" alt="Chien — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2120,8 +2191,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chirurgie chirurgie chirurgie" style="--cat-color:#fb923c;--symbol-x:57.143%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/surgery.webp" width="192" height="192" loading="lazy" decoding="async" alt="Chirurgie — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2143,8 +2214,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chute chute chute" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/falling.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Chute — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2166,8 +2237,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cle cle cle" style="--cat-color:#c084fc;--symbol-x:0.000%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/key.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Clé — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2185,8 +2256,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="coeur coeur coeur" style="--cat-color:#f87171;--symbol-x:0.000%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/heart.webp" width="192" height="192" loading="lazy" decoding="async" alt="Cœur — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2208,8 +2279,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="collegue collegue collegue" style="--cat-color:#f472b6;--symbol-x:100.000%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/coworker.webp" width="192" height="192" loading="lazy" decoding="async" alt="Collègue — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2231,8 +2302,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="corbeau corbeau corbeau" style="--cat-color:#fbbf24;--symbol-x:42.857%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/crow.webp" width="192" height="192" loading="lazy" decoding="async" alt="Corbeau — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2254,8 +2325,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="courir courir courir" style="--cat-color:#fb923c;--symbol-x:57.143%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/running.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Courir — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2273,8 +2344,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cri cri cri" style="--cat-color:#fb923c;--symbol-x:71.429%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/screaming.webp" width="192" height="192" loading="lazy" decoding="async" alt="Cri — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2296,8 +2367,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cuisine cuisine cuisine" style="--cat-color:#60a5fa;--symbol-x:100.000%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/kitchen.webp" width="192" height="192" loading="lazy" decoding="async" alt="Cuisine — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2327,8 +2398,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dauphin dauphin dauphin" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/dolphin.webp" width="192" height="192" loading="lazy" decoding="async" alt="Dauphin — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2350,7 +2421,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="defunt defunt defunt" style="--cat-color:#f472b6;--symbol-x:42.857%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -2373,8 +2444,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="demon demon demon" style="--cat-color:#f472b6;--symbol-x:14.286%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/demon.webp" width="192" height="192" loading="lazy" decoding="async" alt="Démon — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2396,8 +2467,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dents dents dents" style="--cat-color:#f87171;--symbol-x:14.286%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/teeth.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Dents (perdre ses dents) — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2419,8 +2490,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="desert desert desert" style="--cat-color:#60a5fa;--symbol-x:85.714%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/desert.webp" width="192" height="192" loading="lazy" decoding="async" alt="Désert — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2442,7 +2513,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dispute dispute dispute" style="--cat-color:#fb923c;--symbol-x:57.143%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -2469,8 +2540,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="eau eau eau" style="--cat-color:#4ade80;--symbol-x:0.000%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/water-dream-it.jpg" width="1400" height="895" loading="lazy" decoding="async" alt="Eau — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2492,8 +2563,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="enfant enfant enfant" style="--cat-color:#f472b6;--symbol-x:14.286%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/child.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Enfant — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2511,8 +2582,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="enterrement enterrement enterrement" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/funeral.webp" width="192" height="192" loading="lazy" decoding="async" alt="Enterrement — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2534,8 +2605,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="escalier escalier escalier" style="--cat-color:#60a5fa;--symbol-x:85.714%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/stairs.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Escalier — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2553,8 +2624,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ex-partenaire ex-partenaire ex-partenaire" style="--cat-color:#f472b6;--symbol-x:85.714%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/ex-partner.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Ex-Partenaire — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2576,8 +2647,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="examen examen examen" style="--cat-color:#fb923c;--symbol-x:14.286%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/exam.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Examen / Test — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2603,8 +2674,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="eclair eclair eclair" style="--cat-color:#4ade80;--symbol-x:0.000%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/lightning.webp" width="192" height="192" loading="lazy" decoding="async" alt="Éclair — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2626,8 +2697,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ecole ecole ecole" style="--cat-color:#60a5fa;--symbol-x:71.429%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/school.webp" width="1400" height="768" loading="lazy" decoding="async" alt="École — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2645,8 +2716,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="elephant elephant elephant" style="--cat-color:#fbbf24;--symbol-x:0.000%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/elephant.webp" width="192" height="192" loading="lazy" decoding="async" alt="Éléphant — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2676,8 +2747,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="etre-en-retard etre-en-retard etre-en-retard" style="--cat-color:#fb923c;--symbol-x:14.286%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/late.webp" width="192" height="192" loading="lazy" decoding="async" alt="Être en retard — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2699,7 +2770,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="perdu perdu perdu" style="--cat-color:#fb923c;--symbol-x:42.857%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -2726,8 +2797,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="falaise falaise falaise" style="--cat-color:#60a5fa;--symbol-x:28.571%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/cliff.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Falaise — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2749,8 +2820,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="fantome fantome fantome" style="--cat-color:#f472b6;--symbol-x:0.000%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/ghost.webp" width="192" height="192" loading="lazy" decoding="async" alt="Fantôme — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2772,8 +2843,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="feu feu feu" style="--cat-color:#4ade80;--symbol-x:71.429%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/fire-dream-it.jpg" width="1400" height="768" loading="lazy" decoding="async" alt="Feu — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2791,8 +2862,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="foret foret foret" style="--cat-color:#4ade80;--symbol-x:28.571%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/forest.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Forêt — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2810,8 +2881,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="fourmi fourmi fourmi" style="--cat-color:#fbbf24;--symbol-x:0.000%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/ant.webp" width="192" height="192" loading="lazy" decoding="async" alt="Fourmi — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2833,8 +2904,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="frere-ou-soeur frere-ou-soeur frere-ou-soeur" style="--cat-color:#f472b6;--symbol-x:0.000%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/sibling.webp" width="192" height="192" loading="lazy" decoding="async" alt="Frère ou sœur — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2864,8 +2935,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="grand-mere grand-mere grand-mere" style="--cat-color:#f472b6;--symbol-x:0.000%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/grandmother.webp" width="192" height="192" loading="lazy" decoding="async" alt="Grand-mère — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2887,8 +2958,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="grand-pere grand-pere grand-pere" style="--cat-color:#f472b6;--symbol-x:42.857%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/grandfather.webp" width="192" height="192" loading="lazy" decoding="async" alt="Grand-père — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2910,8 +2981,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="grenier grenier grenier" style="--cat-color:#60a5fa;--symbol-x:0.000%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/attic.webp" width="192" height="192" loading="lazy" decoding="async" alt="Grenier — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2933,8 +3004,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="grenouille grenouille grenouille" style="--cat-color:#fbbf24;--symbol-x:71.429%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/frog.webp" width="192" height="192" loading="lazy" decoding="async" alt="Grenouille — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2956,7 +3027,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="grossesse grossesse grossesse" style="--cat-color:#f87171;--symbol-x:85.714%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -2979,8 +3050,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="grotte grotte grotte" style="--cat-color:#60a5fa;--symbol-x:0.000%;--symbol-y:100.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/cave.webp" width="192" height="192" loading="lazy" decoding="async" alt="Grotte — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3010,8 +3081,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hibou hibou hibou" style="--cat-color:#fbbf24;--symbol-x:14.286%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/owl.webp" width="192" height="192" loading="lazy" decoding="async" alt="Hibou — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3033,8 +3104,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hopital hopital hopital" style="--cat-color:#60a5fa;--symbol-x:42.857%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/hospital-dream.jpg" width="1400" height="933" loading="lazy" decoding="async" alt="Hôpital — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3052,8 +3123,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hotel hotel hotel" style="--cat-color:#60a5fa;--symbol-x:100.000%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/hotel.webp" width="192" height="192" loading="lazy" decoding="async" alt="Hôtel — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3083,8 +3154,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="incapable-de-parler incapable-de-parler incapable-de-parler" style="--cat-color:#fb923c;--symbol-x:42.857%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/unable-to-speak.webp" width="192" height="192" loading="lazy" decoding="async" alt="Incapable de parler — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3106,8 +3177,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="inconnu inconnu inconnu" style="--cat-color:#f472b6;--symbol-x:42.857%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/stranger.webp" width="192" height="192" loading="lazy" decoding="async" alt="Inconnu — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3129,8 +3200,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="inondation inondation inondation" style="--cat-color:#4ade80;--symbol-x:85.714%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/flood.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Inondation — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3160,8 +3231,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ile ile ile" style="--cat-color:#60a5fa;--symbol-x:100.000%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/island.webp" width="192" height="192" loading="lazy" decoding="async" alt="Île — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3191,8 +3262,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="jardin jardin jardin" style="--cat-color:#60a5fa;--symbol-x:71.429%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/garden.webp" width="192" height="192" loading="lazy" decoding="async" alt="Jardin — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3222,8 +3293,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lac lac lac" style="--cat-color:#4ade80;--symbol-x:28.571%;--symbol-y:100.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/lake.webp" width="192" height="192" loading="lazy" decoding="async" alt="Lac — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3245,8 +3316,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lapin lapin lapin" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/rabbit.webp" width="192" height="192" loading="lazy" decoding="async" alt="Lapin — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3268,8 +3339,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lettre lettre lettre" style="--cat-color:#c084fc;--symbol-x:42.857%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/letter.webp" width="192" height="192" loading="lazy" decoding="async" alt="Lettre — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3291,8 +3362,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lieu-de-travail lieu-de-travail lieu-de-travail" style="--cat-color:#60a5fa;--symbol-x:0.000%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/workplace.webp" width="192" height="192" loading="lazy" decoding="async" alt="Lieu de travail — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3314,7 +3385,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lion lion lion" style="--cat-color:#fbbf24;--symbol-x:71.429%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -3333,8 +3404,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="livre livre livre" style="--cat-color:#c084fc;--symbol-x:28.571%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/book.webp" width="192" height="192" loading="lazy" decoding="async" alt="Livre — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3356,8 +3427,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="loup loup loup" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/wolf-dream.jpg" width="1400" height="768" loading="lazy" decoding="async" alt="Loup — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3375,8 +3446,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lune lune lune" style="--cat-color:#818cf8;--symbol-x:100.000%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/moon.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Lune — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3402,8 +3473,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mains mains mains" style="--cat-color:#f87171;--symbol-x:85.714%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/hands.webp" width="192" height="192" loading="lazy" decoding="async" alt="Mains — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3425,8 +3496,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="maison maison maison" style="--cat-color:#60a5fa;--symbol-x:100.000%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/house.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Maison — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3444,8 +3515,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="maladie maladie maladie" style="--cat-color:#f87171;--symbol-x:28.571%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/illness.webp" width="192" height="192" loading="lazy" decoding="async" alt="Maladie — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3467,7 +3538,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mariage mariage mariage" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -3486,8 +3557,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="masque masque masque" style="--cat-color:#c084fc;--symbol-x:71.429%;--symbol-y:100.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/mask.webp" width="192" height="192" loading="lazy" decoding="async" alt="Masque — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3509,8 +3580,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="medecin medecin medecin" style="--cat-color:#f472b6;--symbol-x:85.714%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/doctor.webp" width="192" height="192" loading="lazy" decoding="async" alt="Médecin — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3532,8 +3603,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mer mer mer" style="--cat-color:#4ade80;--symbol-x:0.000%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/ocean.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Mer / Océan — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3555,8 +3626,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mere mere mere" style="--cat-color:#f472b6;--symbol-x:85.714%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/mother.webp" width="192" height="192" loading="lazy" decoding="async" alt="Mère — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3578,8 +3649,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="miroir miroir miroir" style="--cat-color:#c084fc;--symbol-x:85.714%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/mirror.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Miroir — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3597,8 +3668,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="monstre monstre monstre" style="--cat-color:#f472b6;--symbol-x:28.571%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/monster.webp" width="192" height="192" loading="lazy" decoding="async" alt="Monstre — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3620,7 +3691,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="montagne montagne montagne" style="--cat-color:#4ade80;--symbol-x:57.143%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -3639,8 +3710,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="montre montre montre" style="--cat-color:#c084fc;--symbol-x:14.286%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/watch.webp" width="192" height="192" loading="lazy" decoding="async" alt="Montre — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3662,8 +3733,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mort mort mort" style="--cat-color:#fb923c;--symbol-x:71.429%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/death.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Mort — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3693,7 +3764,7 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nager nager nager" style="--cat-color:#fb923c;--symbol-x:100.000%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -3716,8 +3787,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="naissance naissance naissance" style="--cat-color:#fb923c;--symbol-x:14.286%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/birth.webp" width="192" height="192" loading="lazy" decoding="async" alt="Naissance — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3739,8 +3810,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="neige neige neige" style="--cat-color:#4ade80;--symbol-x:14.286%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/snow.webp" width="192" height="192" loading="lazy" decoding="async" alt="Neige — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3762,8 +3833,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="noyade noyade noyade" style="--cat-color:#fb923c;--symbol-x:85.714%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/drowning.webp" width="192" height="192" loading="lazy" decoding="async" alt="Noyade — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3785,7 +3856,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nudite nudite nudite" style="--cat-color:#f87171;--symbol-x:28.571%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -3804,7 +3875,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nuit nuit nuit" style="--cat-color:#818cf8;--symbol-x:100.000%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -3831,7 +3902,7 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="oiseau oiseau oiseau" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -3854,8 +3925,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ombre ombre ombre" style="--cat-color:#f472b6;--symbol-x:100.000%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/shadow.webp" width="192" height="192" loading="lazy" decoding="async" alt="Ombre — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3877,8 +3948,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="orage orage orage" style="--cat-color:#4ade80;--symbol-x:0.000%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/storm.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Orage — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3896,8 +3967,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ours ours ours" style="--cat-color:#fbbf24;--symbol-x:100.000%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bear.webp" width="192" height="192" loading="lazy" decoding="async" alt="Ours — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3927,8 +3998,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="papillon papillon papillon" style="--cat-color:#fbbf24;--symbol-x:85.714%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/butterfly.webp" width="192" height="192" loading="lazy" decoding="async" alt="Papillon — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3950,8 +4021,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="paralysie paralysie paralysie" style="--cat-color:#fb923c;--symbol-x:57.143%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/paralysis.webp" width="192" height="192" loading="lazy" decoding="async" alt="Paralysie — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3973,8 +4044,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="partenaire partenaire partenaire" style="--cat-color:#f472b6;--symbol-x:14.286%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/partner.webp" width="192" height="192" loading="lazy" decoding="async" alt="Partenaire — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3996,8 +4067,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="passeport passeport passeport" style="--cat-color:#c084fc;--symbol-x:100.000%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/passport.webp" width="192" height="192" loading="lazy" decoding="async" alt="Passeport — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4019,8 +4090,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pere pere pere" style="--cat-color:#f472b6;--symbol-x:100.000%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/father.webp" width="192" height="192" loading="lazy" decoding="async" alt="Père — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4042,8 +4113,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pieds pieds pieds" style="--cat-color:#f87171;--symbol-x:100.000%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/feet.webp" width="192" height="192" loading="lazy" decoding="async" alt="Pieds — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4065,8 +4136,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="piege piege piege" style="--cat-color:#fb923c;--symbol-x:100.000%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/trapped.webp" width="192" height="192" loading="lazy" decoding="async" alt="Piégé — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4088,7 +4159,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pleurer pleurer pleurer" style="--cat-color:#fb923c;--symbol-x:0.000%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4107,8 +4178,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pluie pluie pluie" style="--cat-color:#4ade80;--symbol-x:14.286%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/rain.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Pluie — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4126,8 +4197,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="poisson poisson poisson" style="--cat-color:#fbbf24;--symbol-x:14.286%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/fish.webp" width="192" height="192" loading="lazy" decoding="async" alt="Poisson — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4149,8 +4220,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="police police police" style="--cat-color:#f472b6;--symbol-x:71.429%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/police.webp" width="192" height="192" loading="lazy" decoding="async" alt="Police — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4172,8 +4243,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pont pont pont" style="--cat-color:#60a5fa;--symbol-x:71.429%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/bridge-dream.jpg" width="1400" height="747" loading="lazy" decoding="async" alt="Pont — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4191,8 +4262,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="porte porte porte" style="--cat-color:#c084fc;--symbol-x:0.000%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/door-dream.jpg" width="1400" height="768" loading="lazy" decoding="async" alt="Porte — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4210,8 +4281,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="poursuite poursuite poursuite" style="--cat-color:#fb923c;--symbol-x:85.714%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/chase.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Poursuite / Être poursuivi — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4233,8 +4304,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="prison prison prison" style="--cat-color:#60a5fa;--symbol-x:57.143%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/prison.webp" width="192" height="192" loading="lazy" decoding="async" alt="Prison — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4256,8 +4327,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="professeur professeur professeur" style="--cat-color:#f472b6;--symbol-x:57.143%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/teacher.webp" width="192" height="192" loading="lazy" decoding="async" alt="Professeur — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4287,8 +4358,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="rat rat rat" style="--cat-color:#fbbf24;--symbol-x:85.714%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/rat.webp" width="192" height="192" loading="lazy" decoding="async" alt="Rat — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4310,8 +4381,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="rater-un-train rater-un-train rater-un-train" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/missing-train.webp" width="192" height="192" loading="lazy" decoding="async" alt="Rater un train — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4333,8 +4404,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="requin requin requin" style="--cat-color:#fbbf24;--symbol-x:28.571%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/shark.webp" width="192" height="192" loading="lazy" decoding="async" alt="Requin — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4356,8 +4427,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="riviere riviere riviere" style="--cat-color:#4ade80;--symbol-x:14.286%;--symbol-y:100.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/river.webp" width="192" height="192" loading="lazy" decoding="async" alt="Rivière — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4379,8 +4450,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="rose rose rose" style="--cat-color:#4ade80;--symbol-x:57.143%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/rose.webp" width="192" height="192" loading="lazy" decoding="async" alt="Rose — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4402,8 +4473,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="route route route" style="--cat-color:#60a5fa;--symbol-x:14.286%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/road.webp" width="192" height="192" loading="lazy" decoding="async" alt="Route — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4433,8 +4504,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="saignement saignement saignement" style="--cat-color:#fb923c;--symbol-x:71.429%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bleeding.webp" width="192" height="192" loading="lazy" decoding="async" alt="Saignement — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4456,8 +4527,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="salle-de-bain salle-de-bain salle-de-bain" style="--cat-color:#60a5fa;--symbol-x:71.429%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bathroom.webp" width="192" height="192" loading="lazy" decoding="async" alt="Salle de bain — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4479,8 +4550,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="salle-de-classe salle-de-classe salle-de-classe" style="--cat-color:#60a5fa;--symbol-x:57.143%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/classroom.webp" width="192" height="192" loading="lazy" decoding="async" alt="Salle de classe — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4502,7 +4573,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="sang sang sang" style="--cat-color:#f87171;--symbol-x:0.000%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4521,8 +4592,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="se-cacher se-cacher se-cacher" style="--cat-color:#fb923c;--symbol-x:85.714%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/hiding.webp" width="192" height="192" loading="lazy" decoding="async" alt="Se cacher — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4544,8 +4615,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="serpent serpent serpent" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/snake.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Serpent — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4567,7 +4638,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="soleil soleil soleil" style="--cat-color:#818cf8;--symbol-x:0.000%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4586,8 +4657,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="souris souris souris" style="--cat-color:#fbbf24;--symbol-x:71.429%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/mouse.webp" width="192" height="192" loading="lazy" decoding="async" alt="Souris — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4609,8 +4680,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="sous-sol sous-sol sous-sol" style="--cat-color:#60a5fa;--symbol-x:42.857%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/basement.webp" width="192" height="192" loading="lazy" decoding="async" alt="Sous-sol — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4640,7 +4711,7 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="telephone telephone telephone" style="--cat-color:#c084fc;--symbol-x:57.143%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4659,8 +4730,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="test-de-grossesse test-de-grossesse test-de-grossesse" style="--cat-color:#c084fc;--symbol-x:14.286%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/pregnancy-test.webp" width="192" height="192" loading="lazy" decoding="async" alt="Test de grossesse — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4682,8 +4753,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="tornade tornade tornade" style="--cat-color:#4ade80;--symbol-x:85.714%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/tornado.webp" width="192" height="192" loading="lazy" decoding="async" alt="Tornade — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4705,7 +4776,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="train train train" style="--cat-color:#c084fc;--symbol-x:85.714%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4724,8 +4795,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="tremblement-de-terre tremblement-de-terre tremblement-de-terre" style="--cat-color:#4ade80;--symbol-x:71.429%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/earthquake.webp" width="192" height="192" loading="lazy" decoding="async" alt="Tremblement de terre — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4755,8 +4826,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="vache vache vache" style="--cat-color:#fbbf24;--symbol-x:42.857%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/cow.webp" width="192" height="192" loading="lazy" decoding="async" alt="Vache — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4778,8 +4849,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="valise valise valise" style="--cat-color:#c084fc;--symbol-x:85.714%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/suitcase.webp" width="192" height="192" loading="lazy" decoding="async" alt="Valise — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4801,8 +4872,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="velo velo velo" style="--cat-color:#c084fc;--symbol-x:42.857%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bicycle.webp" width="192" height="192" loading="lazy" decoding="async" alt="Vélo — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4824,7 +4895,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="vetements vetements vetements" style="--cat-color:#c084fc;--symbol-x:28.571%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4843,8 +4914,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="voiture voiture voiture" style="--cat-color:#c084fc;--symbol-x:100.000%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/car.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Voiture — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4862,8 +4933,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="volcan volcan volcan" style="--cat-color:#4ade80;--symbol-x:57.143%;--symbol-y:100.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/volcano.webp" width="192" height="192" loading="lazy" decoding="async" alt="Volcan — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4885,8 +4956,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="voler voler voler" style="--cat-color:#fb923c;--symbol-x:42.857%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/flying.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Voler — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4916,8 +4987,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="yeux yeux yeux" style="--cat-color:#f87171;--symbol-x:71.429%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/eyes.webp" width="192" height="192" loading="lazy" decoding="async" alt="Yeux — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4947,8 +5018,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="zombie zombie zombie" style="--cat-color:#f472b6;--symbol-x:42.857%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/zombie.webp" width="192" height="192" loading="lazy" decoding="async" alt="Zombie — illustration de symbole onirique">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -5566,8 +5637,8 @@
             });
         });
     </script>
-    <script src="/js/site-shell.js?v=2866f3066c1f" defer></script>
-    <script src="/js/language-dropdown.js?v=2866f3066c1f" defer></script>
-    <script src="/js/mobile-menu.js?v=2866f3066c1f" defer></script>
+    <script src="/js/site-shell.js?v=20260714-201204" defer></script>
+    <script src="/js/language-dropdown.js?v=20260714-201204" defer></script>
+    <script src="/js/mobile-menu.js?v=20260714-201204" defer></script>
 </body>
 </html>

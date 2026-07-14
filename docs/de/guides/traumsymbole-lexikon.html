@@ -24,10 +24,11 @@
     <meta property="og:title" content="Traumdeutung Lexikon A-Z: 150 Traumsymbole">
     <meta property="og:description" content="Nutze das Noctalia Traumsymbole-Lexikon für schnelle Deutungen, häufig gesuchte Symbole und persönliche Fragen.">
     <meta property="og:url" content="https://noctalia.app/de/guides/traumsymbole-lexikon">
-    <meta property="og:image" content="https://noctalia.app/img/og/noctalia-de-1200x630.jpg">
+    <meta property="og:image" content="https://noctalia.app/img/blog/dream-symbols-dictionary.webp">
     <meta property="og:site_name" content="Noctalia">
     <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <meta property="og:image:height" content="675">
+    <meta property="og:image:alt" content="Ein aufgeschlagenes Traumlexikon mit Schlüssel, Auge, Baum, Welle und Tür">
     <meta property="og:locale" content="de_DE">
     <meta property="og:locale:alternate" content="en_US">
     <meta property="og:locale:alternate" content="fr_FR">
@@ -40,15 +41,15 @@
     <meta name="twitter:site" content="@NoctaliaDreams">
     <meta name="twitter:title" content="Traumdeutung Lexikon A-Z">
     <meta name="twitter:description" content="150 Traumsymbole mit Bedeutungen, Beispielen und persönlichen Fragen.">
-    <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-de-1200x630.jpg">
-    <meta name="twitter:image:alt" content="Traumdeutung Lexikon A-Z: 150 Traumsymbole">
+    <meta name="twitter:image" content="https://noctalia.app/img/blog/dream-symbols-dictionary.webp">
+    <meta name="twitter:image:alt" content="Ein aufgeschlagenes Traumlexikon mit Schlüssel, Auge, Baum, Welle und Tür">
     <!-- Preload critical fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Compiled Tailwind CSS -->
-    <link rel="stylesheet" href="/css/styles.min.css?v=2866f3066c1f">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=2866f3066c1f">
+    <link rel="stylesheet" href="/css/styles.min.css?v=20260714-201204">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=20260714-201204">
     <style>
       /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
@@ -265,7 +266,6 @@
             linear-gradient(180deg, rgba(5, 2, 12, 0.7) 0%, rgba(8, 3, 17, 0.48) 34%, #090413 88%),
             linear-gradient(90deg, rgba(5, 2, 12, 0.76) 0%, rgba(5, 2, 12, 0.2) 48%, rgba(5, 2, 12, 0.62) 100%),
             radial-gradient(ellipse at 76% 28%, rgba(253, 164, 129, 0.14), transparent 24rem),
-            url('/img/blog/dream-symbols-dictionary.webp') center top / cover no-repeat,
             linear-gradient(135deg, #12051d 0%, #0a0514 45%, #130822 100%);
         }
         .dictionary-page .aurora-bg,
@@ -289,14 +289,58 @@
         }
         .dictionary-header {
           display: grid;
-          grid-template-columns: minmax(0, 1fr);
-          align-items: end;
+          grid-template-columns: minmax(0, 0.9fr) minmax(24rem, 1.1fr);
+          align-items: center;
           gap: clamp(1.5rem, 4vw, 5rem);
           min-height: 29.5rem;
           margin-bottom: 0;
           padding: 7.2rem clamp(1rem, 4vw, 4.75rem) 2.1rem;
           text-align: left;
           background: transparent;
+        }
+        .dictionary-hero-image {
+          position: relative;
+          overflow: hidden;
+          margin: 0;
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 1.5rem;
+          background: rgba(18,10,34,0.75);
+          box-shadow: 0 2rem 6rem rgba(0,0,0,0.32);
+        }
+        .dictionary-hero-image picture,
+        .dictionary-hero-image img {
+          display: block;
+          width: 100%;
+        }
+        .dictionary-hero-image img {
+          height: auto;
+          aspect-ratio: 16 / 9;
+          object-fit: cover;
+        }
+        .dictionary-hero-image figcaption,
+        .dictionary-educational-image figcaption {
+          padding: 0.8rem 1rem 0.95rem;
+          color: rgba(231,220,255,0.76);
+          font-size: 0.86rem;
+          line-height: 1.5;
+        }
+        .dictionary-educational-image {
+          width: min(calc(100% - (var(--dictionary-edge) * 2)), 800px);
+          margin: 2.5rem auto;
+          padding: 0.8rem;
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 1.25rem;
+          background: rgba(18,10,34,0.86);
+          box-shadow: 0 1.5rem 4rem rgba(0,0,0,0.24);
+        }
+        .dictionary-educational-image picture,
+        .dictionary-educational-image img {
+          display: block;
+          width: 100%;
+        }
+        .dictionary-educational-image img {
+          height: auto;
+          border-radius: 0.8rem;
         }
         .dictionary-hero-copy {
           display: flex;
@@ -584,6 +628,11 @@
           filter: saturate(1.06) contrast(1.03);
           transition: transform 0.28s ease, opacity 0.28s ease, filter 0.28s ease;
         }
+        img.symbol-card-image {
+          object-fit: cover;
+          object-position: center;
+          background-image: none;
+        }
         .symbol-card:hover .symbol-card-image {
           opacity: 0.68;
           transform: scale(1.12);
@@ -752,6 +801,7 @@
             min-height: auto;
             padding-top: 6.6rem;
           }
+          .dictionary-hero-image { width: 100%; }
           .category-browse-card {
             flex-basis: 8.8rem;
             min-width: 8.8rem;
@@ -987,7 +1037,18 @@
             "headline": "Traumdeutung Lexikon A-Z: 150 Traumsymbole",
             "description": "Traumdeutung Lexikon A-Z: finde 150 Traumsymbole wie Wasser, Tür, Hund, Fallen, Haus und Tod mit kurzen Bedeutungen.",
             "url": "https://noctalia.app/de/guides/traumsymbole-lexikon",
-            "image": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
+            "image": {
+                "@type": "ImageObject",
+                "url": "https://noctalia.app/img/blog/dream-symbols-dictionary.webp",
+                "width": 1200,
+                "height": 675
+            },
+            "primaryImageOfPage": {
+                "@type": "ImageObject",
+                "url": "https://noctalia.app/img/blog/dream-symbols-dictionary.webp",
+                "width": 1200,
+                "height": 675
+            },
             "inLanguage": "de",
             "isPartOf": {
                 "@type": "CollectionPage",
@@ -1167,6 +1228,13 @@
                         </button>
                     </div>
                 </div>
+<figure class="dictionary-hero-image" data-image-seo-role="editorial">
+                    <picture>
+                        <source type="image/webp" srcset="/img/blog/dream-symbols-dictionary-480w.webp 480w, /img/blog/dream-symbols-dictionary-800w.webp 800w, /img/blog/dream-symbols-dictionary-1200w.webp 1200w" sizes="(max-width: 1180px) 100vw, 52vw">
+                        <img src="/img/blog/dream-symbols-dictionary.webp" srcset="/img/blog/dream-symbols-dictionary-480w.webp 480w, /img/blog/dream-symbols-dictionary-800w.webp 800w, /img/blog/dream-symbols-dictionary-1200w.webp 1200w" sizes="(max-width: 1180px) 100vw, 52vw" width="1200" height="675" fetchpriority="high" decoding="async" alt="Ein aufgeschlagenes Traumlexikon mit Schlüssel, Auge, Baum, Welle und Tür">
+                    </picture>
+                    <figcaption>Traumsymbole werden hilfreicher, wenn sie mit Gefühlen, Kontext und persönlichen Assoziationen verbunden werden.</figcaption>
+                </figure>
             </header>
 
             <!-- dict-no-results -->
@@ -1521,6 +1589,9 @@
             </div>
 
             <!-- Symbols Dictionary -->
+            <div id="dictionary-grid">
+
+            </div>
             <div id="symbolsList">
                 <section id="A" class="mb-12">
                     <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
@@ -1529,8 +1600,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="adler adler adler" style="--cat-color:#fbbf24;--symbol-x:28.571%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/eagle.webp" width="192" height="192" loading="lazy" decoding="async" alt="Adler — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1552,8 +1623,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ameise ameise ameise" style="--cat-color:#fbbf24;--symbol-x:0.000%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/ant.webp" width="192" height="192" loading="lazy" decoding="async" alt="Ameise — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1575,7 +1646,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="apokalypse apokalypse apokalypse" style="--cat-color:#4ade80;--symbol-x:71.429%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -1594,8 +1665,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="arbeitsplatz arbeitsplatz arbeitsplatz" style="--cat-color:#60a5fa;--symbol-x:0.000%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/workplace.webp" width="192" height="192" loading="lazy" decoding="async" alt="Arbeitsplatz — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1617,8 +1688,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="arzt arzt arzt" style="--cat-color:#f472b6;--symbol-x:85.714%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/doctor.webp" width="192" height="192" loading="lazy" decoding="async" alt="Arzt — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1640,8 +1711,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="aufzug aufzug aufzug" style="--cat-color:#60a5fa;--symbol-x:14.286%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/elevator.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Aufzug — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1663,8 +1734,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="augen augen augen" style="--cat-color:#f87171;--symbol-x:71.429%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/eyes.webp" width="192" height="192" loading="lazy" decoding="async" alt="Augen — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1686,8 +1757,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="auto auto auto" style="--cat-color:#c084fc;--symbol-x:100.000%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/car.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Auto — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1713,7 +1784,7 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="baby baby baby" style="--cat-color:#f472b6;--symbol-x:14.286%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -1736,8 +1807,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="badezimmer badezimmer badezimmer" style="--cat-color:#60a5fa;--symbol-x:71.429%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bathroom.webp" width="192" height="192" loading="lazy" decoding="async" alt="Badezimmer — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1759,8 +1830,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="baer baer baer" style="--cat-color:#fbbf24;--symbol-x:100.000%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bear.webp" width="192" height="192" loading="lazy" decoding="async" alt="Bär — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1782,8 +1853,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="baum baum baum" style="--cat-color:#4ade80;--symbol-x:42.857%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/tree.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Baum — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1801,8 +1872,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="beerdigung beerdigung beerdigung" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/funeral.webp" width="192" height="192" loading="lazy" decoding="async" alt="Beerdigung — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1824,7 +1895,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="berg berg berg" style="--cat-color:#4ade80;--symbol-x:57.143%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -1843,8 +1914,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="biene biene biene" style="--cat-color:#fbbf24;--symbol-x:100.000%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bee.webp" width="192" height="192" loading="lazy" decoding="async" alt="Biene — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1866,8 +1937,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="blitz blitz blitz" style="--cat-color:#4ade80;--symbol-x:0.000%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/lightning.webp" width="192" height="192" loading="lazy" decoding="async" alt="Blitz — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1889,7 +1960,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="blut blut blut" style="--cat-color:#f87171;--symbol-x:0.000%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -1908,8 +1979,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bluten bluten bluten" style="--cat-color:#fb923c;--symbol-x:71.429%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bleeding.webp" width="192" height="192" loading="lazy" decoding="async" alt="Bluten — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1931,8 +2002,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="boot boot boot" style="--cat-color:#c084fc;--symbol-x:57.143%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/boat.webp" width="192" height="192" loading="lazy" decoding="async" alt="Boot — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1954,8 +2025,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="brief brief brief" style="--cat-color:#c084fc;--symbol-x:42.857%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/letter.webp" width="192" height="192" loading="lazy" decoding="async" alt="Brief — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1977,8 +2048,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bruecke bruecke bruecke" style="--cat-color:#60a5fa;--symbol-x:71.429%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/bridge-dream.jpg" width="1400" height="747" loading="lazy" decoding="async" alt="Brücke — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -1996,8 +2067,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="buch buch buch" style="--cat-color:#c084fc;--symbol-x:28.571%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/book.webp" width="192" height="192" loading="lazy" decoding="async" alt="Buch — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2019,8 +2090,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bus bus bus" style="--cat-color:#c084fc;--symbol-x:28.571%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bus.webp" width="192" height="192" loading="lazy" decoding="async" alt="Bus — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2050,8 +2121,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dachboden dachboden dachboden" style="--cat-color:#60a5fa;--symbol-x:0.000%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/attic.webp" width="192" height="192" loading="lazy" decoding="async" alt="Dachboden — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2073,8 +2144,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="damon damon damon" style="--cat-color:#f472b6;--symbol-x:14.286%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/demon.webp" width="192" height="192" loading="lazy" decoding="async" alt="Dämon — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2096,8 +2167,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="delfin delfin delfin" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/dolphin.webp" width="192" height="192" loading="lazy" decoding="async" alt="Delfin — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2127,8 +2198,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="einen-zug-verpassen einen-zug-verpassen einen-zug-verpassen" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/missing-train.webp" width="192" height="192" loading="lazy" decoding="async" alt="Einen Zug verpassen — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2150,8 +2221,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="einkaufszentrum einkaufszentrum einkaufszentrum" style="--cat-color:#60a5fa;--symbol-x:28.571%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/mall.webp" width="192" height="192" loading="lazy" decoding="async" alt="Einkaufszentrum — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2173,8 +2244,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="elefant elefant elefant" style="--cat-color:#fbbf24;--symbol-x:0.000%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/elephant.webp" width="192" height="192" loading="lazy" decoding="async" alt="Elefant — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2196,7 +2267,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="engel engel engel" style="--cat-color:#818cf8;--symbol-x:42.857%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -2215,8 +2286,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="erdbeben erdbeben erdbeben" style="--cat-color:#4ade80;--symbol-x:71.429%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/earthquake.webp" width="192" height="192" loading="lazy" decoding="async" alt="Erdbeben — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2238,8 +2309,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ertrinken ertrinken ertrinken" style="--cat-color:#fb923c;--symbol-x:85.714%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/drowning.webp" width="192" height="192" loading="lazy" decoding="async" alt="Ertrinken — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2261,8 +2332,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="eule eule eule" style="--cat-color:#fbbf24;--symbol-x:14.286%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/owl.webp" width="192" height="192" loading="lazy" decoding="async" alt="Eule — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2284,8 +2355,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ex-partner ex-partner ex-partner" style="--cat-color:#f472b6;--symbol-x:85.714%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/ex-partner.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Ex-Partner/in — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2315,8 +2386,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="fahrrad fahrrad fahrrad" style="--cat-color:#c084fc;--symbol-x:42.857%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bicycle.webp" width="192" height="192" loading="lazy" decoding="async" alt="Fahrrad — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2338,8 +2409,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="fallen fallen fallen" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/falling.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Fallen im Traum — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2361,8 +2432,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="feuer feuer feuer" style="--cat-color:#4ade80;--symbol-x:71.429%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/fire-dream-it.jpg" width="1400" height="768" loading="lazy" decoding="async" alt="Feuer — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2380,8 +2451,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="fisch fisch fisch" style="--cat-color:#fbbf24;--symbol-x:14.286%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/fish.webp" width="192" height="192" loading="lazy" decoding="async" alt="Fisch — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2403,8 +2474,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="fliegen fliegen fliegen" style="--cat-color:#fb923c;--symbol-x:42.857%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/flying.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Fliegen — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2426,8 +2497,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="flughafen flughafen flughafen" style="--cat-color:#60a5fa;--symbol-x:71.429%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/airport.webp" width="192" height="192" loading="lazy" decoding="async" alt="Flughafen — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2449,7 +2520,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="flugzeug flugzeug flugzeug" style="--cat-color:#c084fc;--symbol-x:71.429%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -2472,8 +2543,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="fluss fluss fluss" style="--cat-color:#4ade80;--symbol-x:14.286%;--symbol-y:100.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/river.webp" width="192" height="192" loading="lazy" decoding="async" alt="Fluss — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2495,8 +2566,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="fremder fremder fremder" style="--cat-color:#f472b6;--symbol-x:42.857%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/stranger.webp" width="192" height="192" loading="lazy" decoding="async" alt="Fremder — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2518,8 +2589,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="freund freund freund" style="--cat-color:#f472b6;--symbol-x:28.571%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/friend.webp" width="192" height="192" loading="lazy" decoding="async" alt="Freund — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2541,8 +2612,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="frosch frosch frosch" style="--cat-color:#fbbf24;--symbol-x:71.429%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/frog.webp" width="192" height="192" loading="lazy" decoding="async" alt="Frosch — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2564,8 +2635,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="fusse fusse fusse" style="--cat-color:#f87171;--symbol-x:100.000%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/feet.webp" width="192" height="192" loading="lazy" decoding="async" alt="Füße — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2595,8 +2666,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="garten garten garten" style="--cat-color:#60a5fa;--symbol-x:71.429%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/garden.webp" width="192" height="192" loading="lazy" decoding="async" alt="Garten — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2618,8 +2689,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="geburt geburt geburt" style="--cat-color:#fb923c;--symbol-x:14.286%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/birth.webp" width="192" height="192" loading="lazy" decoding="async" alt="Geburt — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2641,8 +2712,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="gefangen gefangen gefangen" style="--cat-color:#fb923c;--symbol-x:100.000%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/trapped.webp" width="192" height="192" loading="lazy" decoding="async" alt="Gefangen — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2664,8 +2735,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="gefangnis gefangnis gefangnis" style="--cat-color:#60a5fa;--symbol-x:57.143%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/prison.webp" width="192" height="192" loading="lazy" decoding="async" alt="Gefängnis — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2687,8 +2758,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="geist geist geist" style="--cat-color:#f472b6;--symbol-x:0.000%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/ghost.webp" width="192" height="192" loading="lazy" decoding="async" alt="Geist — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2710,7 +2781,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="geld geld geld" style="--cat-color:#c084fc;--symbol-x:100.000%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -2729,8 +2800,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="geschwister geschwister geschwister" style="--cat-color:#f472b6;--symbol-x:0.000%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/sibling.webp" width="192" height="192" loading="lazy" decoding="async" alt="Geschwister — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2752,8 +2823,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="grossmutter grossmutter grossmutter" style="--cat-color:#f472b6;--symbol-x:0.000%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/grandmother.webp" width="192" height="192" loading="lazy" decoding="async" alt="Großmutter — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2775,8 +2846,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="grossvater grossvater grossvater" style="--cat-color:#f472b6;--symbol-x:42.857%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/grandfather.webp" width="192" height="192" loading="lazy" decoding="async" alt="Großvater — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2806,8 +2877,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="haare haare haare" style="--cat-color:#f87171;--symbol-x:57.143%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/hair.webp" width="192" height="192" loading="lazy" decoding="async" alt="Haare — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2829,8 +2900,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hai hai hai" style="--cat-color:#fbbf24;--symbol-x:28.571%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/shark.webp" width="192" height="192" loading="lazy" decoding="async" alt="Hai — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2852,8 +2923,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hande hande hande" style="--cat-color:#f87171;--symbol-x:85.714%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/hands.webp" width="192" height="192" loading="lazy" decoding="async" alt="Hände — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2875,8 +2946,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="haus haus haus" style="--cat-color:#60a5fa;--symbol-x:100.000%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/house.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Haus — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2894,8 +2965,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="herz herz herz" style="--cat-color:#f87171;--symbol-x:0.000%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/heart.webp" width="192" height="192" loading="lazy" decoding="async" alt="Herz — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2917,7 +2988,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hochzeit hochzeit hochzeit" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -2936,8 +3007,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hohle hohle hohle" style="--cat-color:#60a5fa;--symbol-x:0.000%;--symbol-y:100.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/cave.webp" width="192" height="192" loading="lazy" decoding="async" alt="Höhle — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2959,8 +3030,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hotel hotel hotel" style="--cat-color:#60a5fa;--symbol-x:100.000%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/hotel.webp" width="192" height="192" loading="lazy" decoding="async" alt="Hotel — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -2982,8 +3053,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hund hund hund" style="--cat-color:#fbbf24;--symbol-x:28.571%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/dog-dream-it.jpg" width="1400" height="933" loading="lazy" decoding="async" alt="Hund — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3009,8 +3080,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="insel insel insel" style="--cat-color:#60a5fa;--symbol-x:100.000%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/island.webp" width="192" height="192" loading="lazy" decoding="async" alt="Insel — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3040,8 +3111,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="kaninchen kaninchen kaninchen" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/rabbit.webp" width="192" height="192" loading="lazy" decoding="async" alt="Kaninchen — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3063,8 +3134,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="katze katze katze" style="--cat-color:#fbbf24;--symbol-x:42.857%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/cat.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Katze — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3082,8 +3153,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="keller keller keller" style="--cat-color:#60a5fa;--symbol-x:42.857%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/basement.webp" width="192" height="192" loading="lazy" decoding="async" alt="Keller — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3105,8 +3176,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="kind kind kind" style="--cat-color:#f472b6;--symbol-x:14.286%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/child.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Kind — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3124,8 +3195,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="klassenzimmer klassenzimmer klassenzimmer" style="--cat-color:#60a5fa;--symbol-x:57.143%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/classroom.webp" width="192" height="192" loading="lazy" decoding="async" alt="Klassenzimmer — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3147,7 +3218,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="kleidung kleidung kleidung" style="--cat-color:#c084fc;--symbol-x:28.571%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -3166,8 +3237,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="klippe klippe klippe" style="--cat-color:#60a5fa;--symbol-x:28.571%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/cliff.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Klippe — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3189,8 +3260,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="koffer koffer koffer" style="--cat-color:#c084fc;--symbol-x:85.714%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/suitcase.webp" width="192" height="192" loading="lazy" decoding="async" alt="Koffer — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3212,8 +3283,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="kollege kollege kollege" style="--cat-color:#f472b6;--symbol-x:100.000%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/coworker.webp" width="192" height="192" loading="lazy" decoding="async" alt="Kollege — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3235,8 +3306,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="krahe krahe krahe" style="--cat-color:#fbbf24;--symbol-x:42.857%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/crow.webp" width="192" height="192" loading="lazy" decoding="async" alt="Krähe — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3258,8 +3329,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="krankenhaus krankenhaus krankenhaus" style="--cat-color:#60a5fa;--symbol-x:42.857%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/hospital-dream.jpg" width="1400" height="933" loading="lazy" decoding="async" alt="Krankenhaus — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3277,8 +3348,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="krankheit krankheit krankheit" style="--cat-color:#f87171;--symbol-x:28.571%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/illness.webp" width="192" height="192" loading="lazy" decoding="async" alt="Krankheit — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3300,8 +3371,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="kuche kuche kuche" style="--cat-color:#60a5fa;--symbol-x:100.000%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/kitchen.webp" width="192" height="192" loading="lazy" decoding="async" alt="Küche — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3323,8 +3394,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="kuh kuh kuh" style="--cat-color:#fbbf24;--symbol-x:42.857%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/cow.webp" width="192" height="192" loading="lazy" decoding="async" alt="Kuh — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3354,8 +3425,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lahmung lahmung lahmung" style="--cat-color:#fb923c;--symbol-x:57.143%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/paralysis.webp" width="192" height="192" loading="lazy" decoding="async" alt="Lähmung — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3377,8 +3448,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lehrer lehrer lehrer" style="--cat-color:#f472b6;--symbol-x:57.143%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/teacher.webp" width="192" height="192" loading="lazy" decoding="async" alt="Lehrer — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3400,7 +3471,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="loewe loewe loewe" style="--cat-color:#fbbf24;--symbol-x:71.429%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -3427,8 +3498,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="maske maske maske" style="--cat-color:#c084fc;--symbol-x:71.429%;--symbol-y:100.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/mask.webp" width="192" height="192" loading="lazy" decoding="async" alt="Maske — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3450,8 +3521,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="maus maus maus" style="--cat-color:#fbbf24;--symbol-x:71.429%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/mouse.webp" width="192" height="192" loading="lazy" decoding="async" alt="Maus — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3473,8 +3544,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="meer meer meer" style="--cat-color:#4ade80;--symbol-x:0.000%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/ocean.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Meer / Ozean — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3492,8 +3563,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mond mond mond" style="--cat-color:#818cf8;--symbol-x:100.000%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/moon.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Mond — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3511,8 +3582,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="monster monster monster" style="--cat-color:#f472b6;--symbol-x:28.571%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/monster.webp" width="192" height="192" loading="lazy" decoding="async" alt="Monster — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3534,8 +3605,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mund mund mund" style="--cat-color:#f87171;--symbol-x:14.286%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/mouth.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Mund — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3553,8 +3624,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mutter mutter mutter" style="--cat-color:#f472b6;--symbol-x:85.714%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/mother.webp" width="192" height="192" loading="lazy" decoding="async" alt="Mutter — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3584,7 +3655,7 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nacht nacht nacht" style="--cat-color:#818cf8;--symbol-x:100.000%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -3603,7 +3674,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nacktheit nacktheit nacktheit" style="--cat-color:#f87171;--symbol-x:28.571%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -3622,8 +3693,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nicht-sprechen-konnen nicht-sprechen-konnen nicht-sprechen-konnen" style="--cat-color:#fb923c;--symbol-x:42.857%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/unable-to-speak.webp" width="192" height="192" loading="lazy" decoding="async" alt="Nicht sprechen können — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3653,8 +3724,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="operation operation operation" style="--cat-color:#fb923c;--symbol-x:57.143%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/surgery.webp" width="192" height="192" loading="lazy" decoding="async" alt="Operation — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3684,8 +3755,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="partner partner partner" style="--cat-color:#f472b6;--symbol-x:14.286%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/partner.webp" width="192" height="192" loading="lazy" decoding="async" alt="Partner — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3707,7 +3778,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pferd pferd pferd" style="--cat-color:#fbbf24;--symbol-x:71.429%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -3726,8 +3797,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="polizei polizei polizei" style="--cat-color:#f472b6;--symbol-x:71.429%;--symbol-y:44.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/police.webp" width="192" height="192" loading="lazy" decoding="async" alt="Polizei — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3749,8 +3820,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pruefung pruefung pruefung" style="--cat-color:#fb923c;--symbol-x:14.286%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/exam.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Prüfung / Test — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3776,8 +3847,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ratte ratte ratte" style="--cat-color:#fbbf24;--symbol-x:85.714%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/rat.webp" width="192" height="192" loading="lazy" decoding="async" alt="Ratte — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3799,8 +3870,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="regen regen regen" style="--cat-color:#4ade80;--symbol-x:14.286%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/rain.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Regen — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3818,7 +3889,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="regenbogen regenbogen regenbogen" style="--cat-color:#818cf8;--symbol-x:100.000%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -3837,8 +3908,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="reisepass reisepass reisepass" style="--cat-color:#c084fc;--symbol-x:100.000%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/passport.webp" width="192" height="192" loading="lazy" decoding="async" alt="Reisepass — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3860,8 +3931,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="rennen rennen rennen" style="--cat-color:#fb923c;--symbol-x:57.143%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/running.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Rennen — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3879,8 +3950,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ring ring ring" style="--cat-color:#c084fc;--symbol-x:0.000%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/ring.webp" width="192" height="192" loading="lazy" decoding="async" alt="Ring — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3902,8 +3973,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="rose rose rose" style="--cat-color:#4ade80;--symbol-x:57.143%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/rose.webp" width="192" height="192" loading="lazy" decoding="async" alt="Rose — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3933,8 +4004,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="schatten schatten schatten" style="--cat-color:#f472b6;--symbol-x:100.000%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/shadow.webp" width="192" height="192" loading="lazy" decoding="async" alt="Schatten — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3956,8 +4027,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="schlafzimmer schlafzimmer schlafzimmer" style="--cat-color:#60a5fa;--symbol-x:85.714%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/bedroom.webp" width="192" height="192" loading="lazy" decoding="async" alt="Schlafzimmer — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -3979,8 +4050,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="schlange schlange schlange" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/snake.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Schlange — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4002,8 +4073,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="schluessel schluessel schluessel" style="--cat-color:#c084fc;--symbol-x:0.000%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/key.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Schlüssel — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4021,8 +4092,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="schmetterling schmetterling schmetterling" style="--cat-color:#fbbf24;--symbol-x:85.714%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/butterfly.webp" width="192" height="192" loading="lazy" decoding="async" alt="Schmetterling — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4044,8 +4115,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="schnee schnee schnee" style="--cat-color:#4ade80;--symbol-x:14.286%;--symbol-y:83.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/snow.webp" width="192" height="192" loading="lazy" decoding="async" alt="Schnee — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4067,8 +4138,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="schreien schreien schreien" style="--cat-color:#fb923c;--symbol-x:71.429%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/screaming.webp" width="192" height="192" loading="lazy" decoding="async" alt="Schreien — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4090,8 +4161,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="schule schule schule" style="--cat-color:#60a5fa;--symbol-x:71.429%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/school.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Schule — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4109,7 +4180,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="schwangerschaft schwangerschaft schwangerschaft" style="--cat-color:#f87171;--symbol-x:85.714%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4132,8 +4203,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="schwangerschaftstest schwangerschaftstest schwangerschaftstest" style="--cat-color:#c084fc;--symbol-x:14.286%;--symbol-y:66.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/pregnancy-test.webp" width="192" height="192" loading="lazy" decoding="async" alt="Schwangerschaftstest — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4155,7 +4226,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="schwimmen schwimmen schwimmen" style="--cat-color:#fb923c;--symbol-x:100.000%;--symbol-y:27.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4178,8 +4249,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="see see see" style="--cat-color:#4ade80;--symbol-x:28.571%;--symbol-y:100.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/lake.webp" width="192" height="192" loading="lazy" decoding="async" alt="See — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4201,7 +4272,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="verirrt verirrt verirrt" style="--cat-color:#fb923c;--symbol-x:42.857%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4220,8 +4291,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="sich-verstecken sich-verstecken sich-verstecken" style="--cat-color:#fb923c;--symbol-x:85.714%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/hiding.webp" width="192" height="192" loading="lazy" decoding="async" alt="Sich verstecken — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4243,7 +4314,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="sonne sonne sonne" style="--cat-color:#818cf8;--symbol-x:0.000%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4262,8 +4333,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="spiegel spiegel spiegel" style="--cat-color:#c084fc;--symbol-x:85.714%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/mirror.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Spiegel — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4281,8 +4352,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="spinne spinne spinne" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/spider.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Spinne — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4300,8 +4371,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="strasse strasse strasse" style="--cat-color:#60a5fa;--symbol-x:14.286%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/road.webp" width="192" height="192" loading="lazy" decoding="async" alt="Straße — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4323,7 +4394,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="streit streit streit" style="--cat-color:#fb923c;--symbol-x:57.143%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4342,8 +4413,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="sturm sturm sturm" style="--cat-color:#4ade80;--symbol-x:0.000%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/storm.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Sturm — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4369,7 +4440,7 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="telefon telefon telefon" style="--cat-color:#c084fc;--symbol-x:57.143%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4388,8 +4459,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="tod tod tod" style="--cat-color:#fb923c;--symbol-x:71.429%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/death.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Tod — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4411,8 +4482,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="tornado tornado tornado" style="--cat-color:#4ade80;--symbol-x:85.714%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/tornado.webp" width="192" height="192" loading="lazy" decoding="async" alt="Tornado — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4434,8 +4505,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="treppe treppe treppe" style="--cat-color:#60a5fa;--symbol-x:85.714%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/stairs.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Treppe — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4453,8 +4524,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="tuer tuer tuer" style="--cat-color:#c084fc;--symbol-x:0.000%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/door-dream.jpg" width="1400" height="768" loading="lazy" decoding="async" alt="Tür — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4480,8 +4551,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="uhr uhr uhr" style="--cat-color:#c084fc;--symbol-x:14.286%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/watch.webp" width="192" height="192" loading="lazy" decoding="async" alt="Uhr — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4503,7 +4574,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="unfall unfall unfall" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4530,8 +4601,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ueberschwemmung ueberschwemmung ueberschwemmung" style="--cat-color:#4ade80;--symbol-x:85.714%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/flood.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Überschwemmung — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4561,8 +4632,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="vater vater vater" style="--cat-color:#f472b6;--symbol-x:100.000%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/father.webp" width="192" height="192" loading="lazy" decoding="async" alt="Vater — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4584,8 +4655,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="verfolgung verfolgung verfolgung" style="--cat-color:#fb923c;--symbol-x:85.714%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/chase.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Verfolgung / Verfolgt werden — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4607,7 +4678,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="verlassenwerden verlassenwerden verlassenwerden" style="--cat-color:#fb923c;--symbol-x:14.286%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4626,7 +4697,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="verstorbene-person verstorbene-person verstorbene-person" style="--cat-color:#f472b6;--symbol-x:42.857%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4649,7 +4720,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="vogel vogel vogel" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4672,8 +4743,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="vulkan vulkan vulkan" style="--cat-color:#4ade80;--symbol-x:57.143%;--symbol-y:100.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/volcano.webp" width="192" height="192" loading="lazy" decoding="async" alt="Vulkan — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4703,8 +4774,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="wal wal wal" style="--cat-color:#fbbf24;--symbol-x:42.857%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/whale.webp" width="192" height="192" loading="lazy" decoding="async" alt="Wal — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4726,8 +4797,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="wald wald wald" style="--cat-color:#4ade80;--symbol-x:28.571%;--symbol-y:16.667%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/forest.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Wald — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4745,8 +4816,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="wasser wasser wasser" style="--cat-color:#4ade80;--symbol-x:0.000%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/water-dream-it.jpg" width="1400" height="895" loading="lazy" decoding="async" alt="Wasser — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4768,8 +4839,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="wasserfall wasserfall wasserfall" style="--cat-color:#4ade80;--symbol-x:42.857%;--symbol-y:100.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/waterfall.webp" width="192" height="192" loading="lazy" decoding="async" alt="Wasserfall — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4791,7 +4862,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="weg weg weg" style="--cat-color:#60a5fa;--symbol-x:42.857%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4810,7 +4881,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="weinen weinen weinen" style="--cat-color:#fb923c;--symbol-x:0.000%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -4829,8 +4900,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="wolf wolf wolf" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:33.333%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/plan-a/wolf-dream.jpg" width="1400" height="768" loading="lazy" decoding="async" alt="Wolf — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4848,8 +4919,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="wuste wuste wuste" style="--cat-color:#60a5fa;--symbol-x:85.714%;--symbol-y:94.444%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/desert.webp" width="192" height="192" loading="lazy" decoding="async" alt="Wüste — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4879,8 +4950,8 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="zaehne zaehne zaehne" style="--cat-color:#f87171;--symbol-x:14.286%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/teeth.webp" width="1400" height="768" loading="lazy" decoding="async" alt="Zähne fallen aus — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4902,8 +4973,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="zombie zombie zombie" style="--cat-color:#f472b6;--symbol-x:42.857%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/zombie.webp" width="192" height="192" loading="lazy" decoding="async" alt="Zombie — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4925,8 +4996,8 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="zu-spat-kommen zu-spat-kommen zu-spat-kommen" style="--cat-color:#fb923c;--symbol-x:14.286%;--symbol-y:72.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
-                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            <div class="symbol-card-image-layer">
+                                <img class="symbol-card-image" src="/img/symbols/generated/late.webp" width="192" height="192" loading="lazy" decoding="async" alt="Zu spät kommen — Traumillustration">
                             </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
@@ -4948,7 +5019,7 @@
                         </div>
 
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="zug zug zug" style="--cat-color:#c084fc;--symbol-x:85.714%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
-                            <div class="symbol-card-image-layer" aria-hidden="true">
+                            <div class="symbol-card-image-layer">
                                 <span class="symbol-card-image" aria-hidden="true"></span>
                             </div>
                             <div class="symbol-card-top">
@@ -5563,8 +5634,8 @@
             });
         });
     </script>
-    <script src="/js/site-shell.js?v=2866f3066c1f" defer></script>
-    <script src="/js/language-dropdown.js?v=2866f3066c1f" defer></script>
-    <script src="/js/mobile-menu.js?v=2866f3066c1f" defer></script>
+    <script src="/js/site-shell.js?v=20260714-201204" defer></script>
+    <script src="/js/language-dropdown.js?v=20260714-201204" defer></script>
+    <script src="/js/mobile-menu.js?v=20260714-201204" defer></script>
 </body>
 </html>
