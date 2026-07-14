@@ -108,6 +108,11 @@ export function StandardBottomSheet({
   useEffect(() => {
     if (!visible) return;
     const timer = setTimeout(() => {
+      if (process.env.EXPO_OS === 'web') {
+        titleRef.current?.focus();
+        return;
+      }
+
       const titleNode = findNodeHandle(titleRef.current);
       if (titleNode) AccessibilityInfo.setAccessibilityFocus(titleNode);
     }, 120);
@@ -149,6 +154,7 @@ export function StandardBottomSheet({
       {/* Title */}
       <Text
         ref={titleRef}
+        {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
         accessible
         accessibilityRole="header"
         style={[styles.title, { color: noctalia.text.primary }]}
