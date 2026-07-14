@@ -143,7 +143,7 @@ function normalizeSnapshot(options) {
 
 function getSupabasePlayIntegritySecretIssues(snapshot) {
   const issues = [];
-  for (const [name, config] of Object.entries(REQUIRED_SECRETS)) {
+  for (const name of Object.keys(REQUIRED_SECRETS)) {
     const secret = snapshot?.secrets?.[name];
     const status = normalizeStatus(secret?.status);
     if (status !== 'present') {

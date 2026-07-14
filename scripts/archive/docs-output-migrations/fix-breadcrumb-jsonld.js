@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* Archived migration: canonical structured data now comes from docs-src/. */
 
 const fs = require('fs');
 const path = require('path');

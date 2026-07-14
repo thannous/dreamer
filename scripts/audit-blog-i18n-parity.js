@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+
 
 /**
  * Audits blog i18n parity using hreflang links in `docs/{lang}/blog/*.html`.

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * add-blog-inline-symbol-links.js
+ * Archived migration: canonical inline links now live in docs-src/.
  *
  * Scans blog article body text for mentions of dream symbols and wraps the
  * first unlinked occurrence with a contextual link to the symbol page.

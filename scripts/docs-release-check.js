@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+
 
 'use strict';
 
@@ -108,7 +108,7 @@ function createTempWorkspace() {
       cwd: ROOT_DIR,
       stdio: 'pipe',
     });
-  } catch (error) {
+  } catch {
     mode = 'archive';
     console.log('[docs-release-check] git worktree unavailable, falling back to git archive export.');
     fs.mkdirSync(worktreeDir, { recursive: true });

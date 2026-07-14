@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+
 
 const fs = require('fs');
 const path = require('path');
-const { DOCS_DIR, ROOT_DIR } = require('./lib/docs-site-config');
+const { DOCS_DIR } = require('./lib/docs-site-config');
 
 const LEGACY_NAV_CLASS =
   'fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300';

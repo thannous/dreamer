@@ -6,9 +6,13 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 cd "$ROOT_DIR"
 
+if [[ $# -gt 0 ]]; then
+  shift
+fi
+
 show_usage() {
   cat <<'USAGE'
-usage: ./script/build_and_run.sh [mode]
+usage: ./script/build_and_run.sh [mode] [Expo options]
 
 Modes:
   start, run        Start the Expo dev server
@@ -23,26 +27,11 @@ Modes:
                    Export the web build locally
   --doctor, doctor Run Expo diagnostics
   --help, help     Show this help
+
+Environment profiles:
+  Add --profile <path> after a start mode to load exactly that profile
+  without copying it to .env.local.
 USAGE
-}
-
-resolve_expo_cmd() {
-  if [[ -n "${EXPO_CLI:-}" ]]; then
-    # Optional escape hatch for projects that need a wrapper command.
-    # shellcheck disable=SC2206
-    EXPO_CMD=(${EXPO_CLI})
-    return
-  fi
-
-  if [[ -f pnpm-lock.yaml ]] && command -v pnpm >/dev/null 2>&1; then
-    EXPO_CMD=(pnpm exec expo)
-  elif [[ -f yarn.lock ]] && command -v yarn >/dev/null 2>&1; then
-    EXPO_CMD=(yarn expo)
-  elif { [[ -f bun.lock ]] || [[ -f bun.lockb ]]; } && command -v bun >/dev/null 2>&1; then
-    EXPO_CMD=(bunx expo)
-  else
-    EXPO_CMD=(npx expo)
-  fi
 }
 
 run_doctor() {
@@ -57,32 +46,32 @@ run_doctor() {
   fi
 }
 
-resolve_expo_cmd
+EXPO_RUNNER=(node ./scripts/expo-safe-runner.js)
 
 case "$MODE" in
   start|run)
-    exec "${EXPO_CMD[@]}" start
+    exec "${EXPO_RUNNER[@]}" start "$@"
     ;;
   --ios|ios)
-    exec "${EXPO_CMD[@]}" start --ios
+    exec "${EXPO_RUNNER[@]}" start --ios "$@"
     ;;
   --android|android)
-    exec "${EXPO_CMD[@]}" start --android
+    exec "${EXPO_RUNNER[@]}" start --android "$@"
     ;;
   --web|web)
-    exec "${EXPO_CMD[@]}" start --web
+    exec "${EXPO_RUNNER[@]}" start --web "$@"
     ;;
   --dev-client|dev-client)
-    exec "${EXPO_CMD[@]}" start --dev-client
+    exec "${EXPO_RUNNER[@]}" start --dev-client "$@"
     ;;
   --tunnel|tunnel)
-    exec "${EXPO_CMD[@]}" start --tunnel
+    exec "${EXPO_RUNNER[@]}" start --tunnel "$@"
     ;;
   --export-web|export-web)
-    exec "${EXPO_CMD[@]}" export --platform web
+    exec "${EXPO_RUNNER[@]}" export --platform web "$@"
     ;;
   --doctor|doctor)
-    run_doctor
+    run_doctor "$@"
     ;;
   --help|help)
     show_usage

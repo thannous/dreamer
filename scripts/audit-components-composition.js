@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+
 
 /**
  * Audits `components/` for prop-shape "composition smells", focused on:
@@ -48,10 +48,6 @@ function toPosix(p) {
 
 function isPascalCase(name) {
   return /^[A-Z][A-Za-z0-9_]*$/.test(name);
-}
-
-function getNodeText(sourceFile, node) {
-  return sourceFile.text.slice(node.getStart(sourceFile), node.getEnd());
 }
 
 function getIdentifierName(node) {

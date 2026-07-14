@@ -1,3 +1,4 @@
+// Archived migration: canonical site changes now belong in docs-src/ or generators.
 const fs = require('fs');
 const path = require('path');
 

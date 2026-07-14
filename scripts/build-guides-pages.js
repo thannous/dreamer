@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
 
 const fs = require('fs');
 const path = require('path');
@@ -8,6 +7,13 @@ const { createRenderContext } = require('./lib/docs-components/context');
 const { renderFooter: renderSharedFooter } = require('./lib/docs-components/footer');
 const { renderNavigation } = require('./lib/docs-components/navigation');
 const { renderViewTransitionHeadStyles } = require('./lib/docs-view-transitions');
+const { materializeGeneratedPage } = require('./lib/generated-page-writer');
+const {
+  SYMBOL_ATLAS_COLUMNS,
+  getSymbolAtlasPosition,
+  normalizePageTitle,
+  prepareDictionarySymbols,
+} = require('./lib/guide-dictionary-model');
 const { inlineLucideIcons } = require('./lib/lucide-inline');
 
 const ROOT = path.join(__dirname, '..');
@@ -28,13 +34,6 @@ const SITE_MANIFEST = fs.existsSync(path.join(ROOT_DATA_DIR, 'site-manifest.json
 function finalizeGeneratedHtml(html) {
   return inlineLucideIcons(html);
 }
-
-const LOCALES = Object.fromEntries(
-  SUPPORTED_LANGS.map((lang) => {
-    const localePath = path.join(DOCS_SRC_DIR, 'locales', `${lang}.json`);
-    return [lang, fs.existsSync(localePath) ? JSON.parse(fs.readFileSync(localePath, 'utf8')) : {}];
-  })
-);
 
 function createGuidesShellContext(lang, currentPaths, activeNav) {
   const locales = Object.fromEntries(
@@ -302,17 +301,6 @@ const GUIDE_HUB_DEPTH_COPY = {
   }
 };
 
-const GUIDE_CARD_META = {
-  'most-common-dream-symbols': { icon: 'sparkles', tone: 'salmon' },
-  'scary-dream-symbols': { icon: 'moon', tone: 'violet' },
-  'positive-dream-symbols': { icon: 'sun', tone: 'gold' },
-  'animal-dream-symbols': { icon: 'paw-print', tone: 'green' },
-  'water-dream-symbols': { icon: 'waves', tone: 'cyan' },
-  'death-transformation-dreams': { icon: 'refresh-cw', tone: 'rose' },
-  'people-in-dreams': { icon: 'users', tone: 'pink' },
-  'dream-locations': { icon: 'map', tone: 'blue' }
-};
-
 const CATEGORY_ORDER = ['nature', 'animals', 'body', 'places', 'objects', 'actions', 'people', 'celestial'];
 const CATEGORY_COLORS = { nature: '#4ade80', animals: '#fbbf24', body: '#f87171', places: '#60a5fa', objects: '#c084fc', actions: '#fb923c', people: '#f472b6', celestial: '#818cf8' };
 const SYMBOL_PATHS = { en: 'symbols', fr: 'symboles', es: 'simbolos', de: 'traumsymbole', it: 'simboli' };
@@ -323,15 +311,6 @@ const DICTIONARY_UI_COPY = {
   de: { categoriesShort: 'Kategorien', quickBrowseHelp: 'Wähle eine Kategorie oder nutze A-Z, um direkt zum richtigen Symbol zu springen.', clearSearch: 'Suche löschen', activeSearchLabel: 'Aktive Suche' },
   it: { categoriesShort: 'categorie', quickBrowseHelp: 'Scegli una categoria oppure usa A-Z per arrivare subito al simbolo giusto.', clearSearch: 'Cancella ricerca', activeSearchLabel: 'Ricerca attiva' },
 };
-
-function formatSearchStatus(lang, uiCopy, count, query) {
-  const quoted = `«${query}»`;
-  if (lang === 'fr') return `${uiCopy.activeSearchLabel} ${quoted} · ${count} résultat(s)`;
-  if (lang === 'es') return `${uiCopy.activeSearchLabel} ${quoted} · ${count} resultado(s)`;
-  if (lang === 'de') return `${uiCopy.activeSearchLabel} ${quoted} · ${count} Treffer`;
-  if (lang === 'it') return `${uiCopy.activeSearchLabel} ${quoted} · ${count} risultato/i`;
-  return `${uiCopy.activeSearchLabel} ${quoted} · ${count} result(s)`;
-}
 
 function readJson(fileName) {
   return JSON.parse(fs.readFileSync(path.join(DATA_DIR, fileName), 'utf8'));
@@ -350,14 +329,6 @@ function escapeHtml(value) {
     .replace(/'/g, '&#039;');
 }
 
-function normalizeTitle(title) {
-  return String(title || '').replace(/\s*\|\s*Noctalia\s*$/i, '').trim();
-}
-
-function stripSiteSuffix(title) {
-  return normalizeTitle(title);
-}
-
 function renderJsonLd(data) {
   return `    <script type="application/ld+json">\n${JSON.stringify(data, null, 4)
     .replace(/</g, '\\u003c')
@@ -374,26 +345,9 @@ function homePath(lang) {
   return lang === 'en' ? '/' : `/${lang}/`;
 }
 
-function parseSourceDocument(raw) {
-  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
-  if (!match) return { meta: {}, body: raw };
-  return { meta: JSON.parse(match[1]), body: match[2] };
-}
-
 function getAndroidStoreUrl(lang) {
   const base = SITE_CONFIG.storeLinks?.androidBase || 'https://play.google.com/store/apps/details?id=com.tanuki75.noctalia';
   return `${base}&hl=${lang}`;
-}
-
-function renderFooterLinkList(links, { highlightFirst = false } = {}) {
-  return links
-    .map((link, index) => {
-      const className = highlightFirst && index === 0
-        ? 'text-dream-salmon'
-        : 'hover:text-dream-salmon transition-colors';
-      return `<li><a href="${link.href}" class="${className}">${escapeHtml(link.label)}</a></li>`;
-    })
-    .join('');
 }
 
 const RELATED_ARTICLE_IDS = {
@@ -413,93 +367,12 @@ function resolveLocalizedRelatedArticleHref(lang, href) {
   return localizedPath || href;
 }
 
-function buildSeoLinkData(lang, t, pages) {
-  const blogManifest = JSON.parse(fs.readFileSync(path.join(ROOT_DATA_DIR, 'content-manifest.json'), 'utf8'));
-  const blogEntries = blogManifest?.collections?.blog?.entries || {};
-  const featuredResources = [
-    { href: `/${lang}/blog/`, label: LOCALES[lang].resources || 'Resources' },
-    ...((SITE_CONFIG.seoLinking?.featuredBlogEntries || []).map((entryId) => {
-      const entry = blogEntries[entryId];
-      const sourcePath = path.join(DOCS_SRC_DIR, 'content', 'blog', entryId, `${lang}.md`);
-      if (!entry?.locales?.[lang] || !fs.existsSync(sourcePath)) return null;
-      const { meta } = parseSourceDocument(fs.readFileSync(sourcePath, 'utf8'));
-      return { href: entry.locales[lang].path, label: stripSiteSuffix(meta.title) };
-    }).filter(Boolean))
-  ];
-
-  const featuredGuides = [
-    { href: `/${lang}/guides/${t.dictionary_slug}`, label: LOCALES[lang].dreamDictionary || COPY[lang].dictionary },
-    { href: `/${lang}/guides/`, label: COPY[lang].label },
-    ...((SITE_CONFIG.seoLinking?.featuredGuideEntries || [])
-      .map((entryId) => entryId.replace(/^guide\./, ''))
-      .map((pageId) => pages.find((page) => page.id === pageId))
-      .filter(Boolean)
-      .map((page) => ({ href: `/${lang}/guides/${page.slugs[lang]}`, label: page[lang].title })))
-  ];
-
-  const symbolsData = readJson('dream-symbols.json');
-  const popularSymbols = (SITE_CONFIG.seoLinking?.featuredSymbols || [])
-    .map((symbolId) => (symbolsData.symbols || []).find((symbol) => symbol.id === symbolId))
-    .filter(Boolean)
-    .map((symbol) => ({ href: `/${lang}/${{ en: 'symbols', fr: 'symboles', es: 'simbolos', de: 'traumsymbole', it: 'simboli' }[lang]}/${symbol[lang].slug}`, label: symbol[lang].name }));
-
-  return { featuredResources, featuredGuides, popularSymbols };
-}
-
-function renderLanguageDropdown(lang, currentPaths) {
-  const labels = {
-    en: { flag: '🇺🇸', name: 'English' },
-    fr: { flag: '🇫🇷', name: 'Français' },
-    es: { flag: '🇪🇸', name: 'Español' },
-    de: { flag: '🇩🇪', name: 'Deutsch' },
-    it: { flag: '🇮🇹', name: 'Italiano' }
-  };
-
-  return SUPPORTED_LANGS.map((candidate) => {
-    const isActive = candidate === lang;
-    const activeClass = isActive ? 'text-dream-salmon bg-dream-salmon/10' : 'text-purple-100/80 hover:text-white hover:bg-white/5';
-    return `                        <a href="${currentPaths[candidate]}" hreflang="${candidate}" class="flex items-center gap-3 px-4 py-2 text-sm ${activeClass} transition-colors" role="menuitem">
-                            <span class="w-5 text-center">${labels[candidate].flag}</span> ${labels[candidate].name}
-                        </a>`;
-  }).join('\n');
-}
-
-function renderGuidesMobilePanel(lang, t, currentPaths) {
-  const locale = LOCALES[lang];
-  const linkClass = 'block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors';
-  const langLabels = { en: 'English', fr: 'Français', es: 'Español', de: 'Deutsch', it: 'Italiano' };
-  const langLinks = SUPPORTED_LANGS.map((candidate) => {
-    const activeClass = candidate === lang ? ' text-dream-salmon' : '';
-    return `                    <a href="${currentPaths[candidate]}" hreflang="${candidate}" class="${linkClass}${activeClass}">${langLabels[candidate]}</a>`;
-  }).join('\n');
-
-  return `        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
-            <div class="glass-panel rounded-2xl py-2">
-                <a href="/${lang}/blog/" class="${linkClass}">${escapeHtml(locale.resources)}</a>
-                <a href="/${lang}/guides/" class="${linkClass}">${escapeHtml(locale.dreamGuides)}</a>
-                <a href="/${lang}/guides/${t.dictionary_slug}" class="${linkClass}">${escapeHtml(locale.dreamDictionary || COPY[lang].dictionary)}</a>
-                <div class="border-t border-white/10 mt-2 pt-2">
-${langLinks}
-                </div>
-            </div>
-        </div>`;
-}
-
 function renderGuidesNav(lang, t, currentPaths, activeLabel) {
   return renderNavigation(createGuidesShellContext(lang, currentPaths, activeLabel));
 }
 
 function renderGuidesFooter(lang, t, pages, currentPaths, activeNav = 'guides') {
   return renderSharedFooter(createGuidesShellContext(lang, currentPaths, activeNav));
-}
-
-function guideCardMeta(pageId) {
-  return GUIDE_CARD_META[pageId] || { icon: 'book-open', tone: 'salmon' };
-}
-
-function formatGuideSymbolCount(lang, count) {
-  const ui = GUIDE_HUB_UI[lang] || GUIDE_HUB_UI.en;
-  return `${count} ${ui.symbolCount}`;
 }
 
 function renderGuideHubStyles() {
@@ -1011,22 +884,6 @@ function renderGuideHubStyles() {
     </style>`;
 }
 
-function renderGuideCard(lang, copy, page) {
-  const meta = guideCardMeta(page.id);
-  return `            <a href="/${lang}/guides/${page.slugs[lang]}" class="guides-card" data-tone="${meta.tone}">
-                <span>
-                    <span class="guides-card-icon"><i data-lucide="${meta.icon}" class="w-6 h-6"></i></span>
-                    <span class="guides-card-kicker">${escapeHtml(formatGuideSymbolCount(lang, page.symbols?.length || 0))}</span>
-                    <h3 class="guides-card-title">${escapeHtml(page[lang].title)}</h3>
-                    <span class="guides-card-desc">${escapeHtml(page[lang].metaDescription)}</span>
-                </span>
-                <span class="guides-card-meta">
-                    <span>${escapeHtml(copy.openGuide)}</span>
-                    <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
-                </span>
-            </a>`;
-}
-
 function resolveGuideHubCardHref(lang, t, pages, card) {
   if (card.key === 'science') return `/${lang}/blog/${GUIDE_HUB_BLOG_SLUGS.sleepScience[lang]}`;
   if (card.key === 'journal') return `/${lang}/blog/${GUIDE_HUB_BLOG_SLUGS.journal[lang]}`;
@@ -1190,13 +1047,6 @@ ${renderGuidesFooter(lang, t, pages, currentPaths, 'guides')}
     <script src="/js/mobile-menu.js?v=${version}" defer></script>
 </body>
 </html>`;
-}
-
-function computeCategoryCounts() {
-  const data = readJson('dream-symbols.json');
-  const counts = {};
-  (data.symbols || []).forEach(s => { counts[s.category] = (counts[s.category] || 0) + 1; });
-  return counts;
 }
 
 function renderLayoutCss() {
@@ -2019,20 +1869,6 @@ ${links}
 
 const OG_LOCALES = { en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' };
 const CATEGORY_ICONS = { nature: 'leaf', animals: 'paw-print', body: 'user', places: 'home', objects: 'package', actions: 'zap', people: 'users', celestial: 'star' };
-const SYMBOL_ATLAS_COLUMNS = 8;
-
-function getSymbolAtlasPosition(index, totalSymbols = SYMBOL_ATLAS_COLUMNS * SYMBOL_ATLAS_COLUMNS) {
-  const safeIndex = Math.max(0, Number(index) || 0);
-  const col = safeIndex % SYMBOL_ATLAS_COLUMNS;
-  const row = Math.floor(safeIndex / SYMBOL_ATLAS_COLUMNS);
-  const totalRows = Math.max(1, Math.ceil(totalSymbols / SYMBOL_ATLAS_COLUMNS));
-  const maxColumnStep = SYMBOL_ATLAS_COLUMNS - 1;
-  const maxRowStep = Math.max(1, totalRows - 1);
-  return {
-    x: `${((col / maxColumnStep) * 100).toFixed(3)}%`,
-    y: `${((row / maxRowStep) * 100).toFixed(3)}%`,
-  };
-}
 
 function generateDictionaryPage(lang, t) {
   const copy = COPY[lang];
@@ -2043,13 +1879,12 @@ function generateDictionaryPage(lang, t) {
   const symbolsData = readJson('dream-symbols.json');
   const i18n = readJson('symbol-i18n.json');
   const pages = readJson('curation-pages.json').pages || [];
-  const counts = computeCategoryCounts();
   const symbolPath = SYMBOL_PATHS[lang];
 
   const canonical = `${DOMAIN}/${lang}/guides/${t.dictionary_slug}`;
   const guidesUrl = `${DOMAIN}/${lang}/guides/`;
   const ogImage = `${DOMAIN}/img/og/noctalia-${lang}-1200x630.jpg`;
-  const pageTitle = normalizeTitle(dc.page_title);
+  const pageTitle = normalizePageTitle(dc.page_title);
 
   // ── Build current paths for language switcher ────────────────────────
   const currentPaths = Object.fromEntries(
@@ -2058,16 +1893,13 @@ function generateDictionaryPage(lang, t) {
 
   // ── Build symbols grouped by first letter ────────────────────────────
   const allSymbols = symbolsData.symbols || [];
-  const symbolAtlasRows = Math.max(1, Math.ceil(allSymbols.length / SYMBOL_ATLAS_COLUMNS));
-  const symbolAtlasPositions = new Map(allSymbols.map((sym, index) => [sym.id, getSymbolAtlasPosition(index, allSymbols.length)]));
-  const sorted = [...allSymbols].sort((a, b) => (a[lang].name).localeCompare(b[lang].name, lang));
-  const groups = {};
-  sorted.forEach((sym) => {
-    const firstChar = sym[lang].name[0].toUpperCase();
-    if (!groups[firstChar]) groups[firstChar] = [];
-    groups[firstChar].push(sym);
-  });
-  const letters = Object.keys(groups).sort((a, b) => a.localeCompare(b, lang));
+  const {
+    categoryCounts: counts,
+    groups,
+    letters,
+    symbolAtlasPositions,
+    symbolAtlasRows,
+  } = prepareDictionarySymbols(allSymbols, lang);
 
   // ── Build symbol categories map for JS ───────────────────────────────
   const symbolCatEntries = allSymbols
@@ -2925,19 +2757,25 @@ function main() {
   let dictionaries = 0;
   for (const lang of SUPPORTED_LANGS) {
     const hubPath = path.join(DOCS_DIR, lang, 'guides', 'index.html');
-    const hubHtml = generateHubPage(lang, i18n[lang], pages, version);
-    const currentHub = fs.existsSync(hubPath) ? fs.readFileSync(hubPath, 'utf8') : null;
-    if (currentHub !== hubHtml) {
+    const hubResult = materializeGeneratedPage({
+      filePath: hubPath,
+      renderedHtml: generateHubPage(lang, i18n[lang], pages, version),
+      finalizeHtml: finalizeGeneratedHtml,
+      dryRun: DRY_RUN,
+    });
+    if (hubResult.changed) {
       hubs += 1;
-      if (!DRY_RUN) fs.writeFileSync(hubPath, finalizeGeneratedHtml(hubHtml), 'utf8');
       console.log(`${DRY_RUN ? 'Would generate' : 'Generated'} docs/${lang}/guides/index.html`);
     }
     const dictPath = path.join(DOCS_DIR, lang, 'guides', `${i18n[lang].dictionary_slug}.html`);
-    const dictHtml = generateDictionaryPage(lang, i18n[lang]);
-    const currentDict = fs.existsSync(dictPath) ? fs.readFileSync(dictPath, 'utf8') : null;
-    if (currentDict !== dictHtml) {
+    const dictionaryResult = materializeGeneratedPage({
+      filePath: dictPath,
+      renderedHtml: generateDictionaryPage(lang, i18n[lang]),
+      finalizeHtml: finalizeGeneratedHtml,
+      dryRun: DRY_RUN,
+    });
+    if (dictionaryResult.changed) {
       dictionaries += 1;
-      if (!DRY_RUN) fs.writeFileSync(dictPath, finalizeGeneratedHtml(dictHtml), 'utf8');
       console.log(`${DRY_RUN ? 'Would generate' : 'Generated'} docs/${lang}/guides/${i18n[lang].dictionary_slug}.html`);
     }
   }

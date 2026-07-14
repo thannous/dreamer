@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* Archived migration: canonical images live under docs-src/static/img/. */
 
 /**
  * Generates responsive WebP variants for blog images in `docs/img/blog/`.
@@ -108,4 +108,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

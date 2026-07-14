@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* Archived migration: related navigation now lives in docs-src/. */
 
 /**
  * Adds a real internal linking block to blog articles:

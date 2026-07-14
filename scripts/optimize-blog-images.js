@@ -1,12 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { execSync } = require('child_process');
 
 let sharp;
 try {
   sharp = require('sharp');
-} catch (e) {
+} catch {
   console.error('Sharp is not installed. Please run: npm install -D sharp');
   process.exit(1);
 }

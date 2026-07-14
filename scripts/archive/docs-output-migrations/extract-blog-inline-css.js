@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* Archived migration: canonical CSS lives under docs-src/static/css/. */
 
 /**
  * Extracts duplicated inline <style> blocks from blog pages in `docs/` into
@@ -342,4 +342,3 @@ function main() {
 }
 
 main();
-

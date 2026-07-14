@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+// Archived migration: title rules now live in canonical data and generators.
 const fs = require('fs');
 const path = require('path');
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* Archived migration: canonical SEO changes now live in docs-src/. */
 
 /**
  * Enhances blog article SEO for the static docs site:

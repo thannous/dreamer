@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+
 
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
 const {

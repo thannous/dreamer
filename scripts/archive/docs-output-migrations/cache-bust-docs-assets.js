@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* Archived migration: asset versioning is handled by scripts/docs-build.js. */
 
 /**
  * Adds/updates a `?v=` cache-busting query param for CSS/JS assets in `docs/`.
@@ -83,4 +83,3 @@ function main() {
 }
 
 main();
-

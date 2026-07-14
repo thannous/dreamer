@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+
 
 const fs = require('fs');
 const path = require('path');
@@ -25,22 +25,6 @@ const {
   markDocsBuildStarted,
   markDocsBuildSucceeded,
 } = require('./lib/docs-check-helpers');
-
-function pad(number) {
-  return String(number).padStart(2, '0');
-}
-
-function generateBuildVersion(date = new Date()) {
-  return [
-    date.getFullYear(),
-    pad(date.getMonth() + 1),
-    pad(date.getDate()),
-    '-',
-    pad(date.getHours()),
-    pad(date.getMinutes()),
-    pad(date.getSeconds()),
-  ].join('');
-}
 
 function hashAssetFiles() {
   const hash = crypto.createHash('sha256');
@@ -207,6 +191,9 @@ function writeManagedPages(manifest) {
 }
 
 function copyStaticFiles() {
+  // `docs/scripts` is generated from `docs-src/static/scripts`. Recreate it so
+  // archived or removed maintenance tools cannot survive as stale output.
+  fs.rmSync(path.join(DOCS_DIR, 'scripts'), { recursive: true, force: true });
   copyDir(path.join(DOCS_SRC_DIR, 'static'), DOCS_DIR);
   // The editorial symbol catalog has one canonical source. Copy it after the
   // static assets so a stale generated snapshot can never drive symbol pages.

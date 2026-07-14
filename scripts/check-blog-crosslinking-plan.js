@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+
 
 /**
  * Cross-linking plan verifier for blog -> symbol + dictionary hub links.
