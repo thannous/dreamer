@@ -33,6 +33,7 @@ Controle live du 2026-07-14: le sitemap live contient 1160 URLs et les 20 URLs d
 | 13 juillet - Controle live | Fait | Les 20 URLs juillet repondent 200 et sont presentes dans le sitemap live, qui contient 1160 URLs. `version.txt` renvoie toujours `2866f3066c1f`. |
 | 14 juillet - Search Console vague juillet | Fait | Les 20 URLs juillet restent `Submitted and indexed`; fetch Google reussi, robots autorise et canonical Google conforme pour chaque URL. Aucune demande manuelle n'est necessaire. |
 | 14 juillet - Controle live | Fait | Les 20 URLs juillet repondent 200 et sont presentes dans le sitemap live, qui contient 1160 URLs. `version.txt` renvoie toujours `2866f3066c1f`. |
+| 14 juillet - Programmation fin juillet | Fait | Priorites 5 a 10 definies a partir de l'export GSC du 15 juin au 12 juillet et d'une veille scientifique primaire: deux nouvelles vagues multilingues, trois refreshs cibles et une cloture mesure/maillage. |
 
 Les 6 URLs de juin qui avaient demande une indexation manuelle ne sont plus bloquantes. Les 20 URLs publiees en juillet sont maintenant indexees; aucune demande manuelle ne reste en attente.
 
@@ -86,6 +87,68 @@ Le sitemap live a ete soumis a Search Console le 2026-07-08. Les cinq URLs vacan
 | 2 | 4-7 juillet, rattrape le 8 juillet | Bruit nocturne, sommeil et reves | Publie/live; 5/5 indexees | Requetes pratiques appartement, voisinage, ville, vacances | FR, EN, ES, DE, IT | Sleep-day-environment, vivid dreams, stress dreams, dream journal, vacation | Build/check/release-check faits; sitemap live OK |
 | 3 | 8-11 juillet, produit le 8 juillet | Reveil nocturne et rappel des reves | Publie/live; 5/5 indexees | Capture rapide, journal vocal, sommeil fragmente | FR, EN, ES, DE, IT | Voice dream journal, how to remember dreams, REM sleep, privacy article | Build/check/release-check faits; sitemap live OK |
 | 4 | 12-15 juillet, anticipe le 10 juillet | Cauchemars en periode de chaleur ou stress | Publie/live; 5/5 indexees | Angle ete + anxiete, utile pour maillage cauchemars/canicule | FR, EN, ES, DE, IT | Nightmares guide, heatwave, anxiety dreams, mental health | Build/check/release-check/crosslinks passes; sitemap live 1160 URLs |
+| 5 | 14-17 juillet, publication cible le 15 | Les reves regulent-ils nos emotions ? Ce que montre une etude 2026 | En production - nouvel article scientifique | Actualite scientifique publiee dans `Sleep` en mai 2026; angle distinct des articles IA et MÖBIUS existants | FR, EN, ES, DE, IT | Dreams mental health, anxiety dreams, nightmares, dream journal, AI study | 5 sources, limites explicites, hreflang/canonical/JSON-LD, index blog, build/check/crosslinks/release-check |
+| 6 | 18-20 juillet | Refresh `Suenos de agua`: inondation, maison, eau propre/sale | Programme | Quick win SERP: 41 017 impressions, CTR 0,99 %, position 5,3 | ES cible | Symboles eau/inondation/maison/mer + journal de reves | Refaire title/meta, reponse courte, FAQ et ancres; mesurer a J+14 |
+| 7 | 21-23 juillet | Refresh `Flying dreams meaning` | Programme | Reprendre `dream about flying`, `dream of flying` et variantes: 1 948 impressions, position 19,1 | EN cible | Dream meanings, lucid dreaming, falling dreams, dream journal | Recentrer l'intention, enrichir les scenarios utiles et renforcer les liens internes |
+| 8 | 24-25 juillet | Refresh guide debutant des reves lucides | Programme | Requetes `como tener suenos lucidos`: 1 029 impressions, CTR 0,29 %, position 14,5 | ES cible | Hub reve lucide, rappel des reves, journal, controle des reves | Reponse en 5 etapes, FAQ, preuves prudentes et CTA journal naturel |
+| 9 | 26-29 juillet, publication cible le 29 | Jet lag, sommeil et reves | Programme - nouvel article | Saisonnier voyage + forte adequation produit; combler un angle seulement mentionne dans les contenus existants | FR, EN, ES, DE, IT | Vacation, REM sleep, sleep environment, dream recall, dream journal | 5 sources, hreflang/canonical/JSON-LD, index blog, build/check/crosslinks/release-check |
+| 10 | 30-31 juillet | Cloture SEO, maillage et mesure | Programme | Eviter la surpublication; verifier indexation, deltas CTR/position et liens internes avant aout | Toutes | Priorites 5 a 9 + hubs concernes | Export GSC, inspection des 10 nouvelles URLs, controle live et decision aout |
+
+### Direction editoriale du 15 au 31 juillet
+
+Le programme combine trois leviers: gagner des clics sur des pages deja visibles, rapprocher les contenus du produit Noctalia et publier deux clusters multilingues reellement distincts: une actualite scientifique a duree de vie longue et un guide saisonnier. Les refreshs sont volontairement limites a la langue ou le signal GSC est etabli; les nouvelles publications restent multilingues pour conserver le contrat editorial du site.
+
+| Priorite | Impact audience (40 %) | Adequation produit (30 %) | Potentiel recherche (20 %) | Faisabilite (10 %) | Score |
+|---:|---:|---:|---:|---:|---:|
+| 5 - Etude reves/emotions, 5 langues | 8 | 9 | 7 | 7 | 8,1 |
+| 6 - Eau / inondation ES | 9 | 8 | 10 | 9 | 8,9 |
+| 7 - Reves de vol EN | 7 | 8 | 7 | 8 | 7,4 |
+| 8 - Reve lucide debutant ES | 8 | 9 | 7 | 8 | 8,1 |
+| 9 - Jet lag et reves, 5 langues | 7 | 9 | 6 | 6 | 7,3 |
+
+Objectifs de mesure, a evaluer sans promettre un classement:
+
+- Priorite 5: obtenir 5/5 URLs indexees et les premieres impressions sur les requetes liees aux reves, aux emotions et a l'humeur matinale, sans surinterpreter l'etude.
+- Priorite 6: faire progresser le CTR global de `https://noctalia.app/es/blog/suenos-de-agua` au-dessus de 1,2 % ou consolider une position moyenne sous 5 a J+14/J+28.
+- Priorite 7: rapprocher `https://noctalia.app/en/blog/flying-dreams-meaning` du top 15 et obtenir un premier CTR superieur a 0,4 % sur une fenetre comparable.
+- Priorite 8: rapprocher `https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes` du top 12 et doubler le CTR actuel sans titre sensationnaliste.
+- Priorite 9: obtenir 5/5 URLs indexees, leurs premieres impressions et un maillage reciproque complet avant d'evaluer le ranking.
+
+### Brief de la vague scientifique reves et emotions
+
+Dossier source: `docs-src/content/blog/blog.dream-emotion-regulation-study/`.
+
+| Langue | Angle/titre de travail | Slug cible |
+|---|---|---|
+| FR | Les reves regulent-ils nos emotions ? Ce que montre une etude 2026 | `reves-regulation-emotions-etude-2026` |
+| EN | Do dreams regulate emotions? What a 2026 study found | `dreams-emotion-regulation-study-2026` |
+| ES | Los suenos regulan las emociones? Lo que hallo un estudio de 2026 | `suenos-regulacion-emociones-estudio-2026` |
+| DE | Regulieren Traeume unsere Gefuehle? Was eine Studie von 2026 zeigt | `traeume-emotionsregulation-studie-2026` |
+| IT | I sogni regolano le emozioni? Cosa mostra uno studio del 2026 | `sogni-regolazione-emozioni-studio-2026` |
+
+Source primaire: Baber et al., `Testing affect regulation theories of dreaming`, *Sleep*, volume 49, mai 2026, DOI `10.1093/sleep/zsag046`. L'article doit rapporter les 536 participants et 4 715 journees, distinguer continuite emotionnelle et regulation, expliquer les resultats peur/joie sans causalite, et exposer les limites: donnees observationnelles auto-rapportees, echantillon a 85,6 % feminin, contexte COVID et absence de mesures objectives du sommeil.
+
+### Brief de la nouvelle vague jet lag
+
+Dossier source prevu: `docs-src/content/blog/blog.jet-lag-sleep-dreams/`.
+
+| Langue | Angle/titre de travail | Slug cible |
+|---|---|---|
+| FR | Decalage horaire, sommeil et reves: retrouver son rythme | `decalage-horaire-sommeil-reves` |
+| EN | Jet lag, sleep and dreams: reset your rhythm | `jet-lag-sleep-dreams` |
+| ES | Desfase horario, sueno y suenos: recuperar el ritmo | `desfase-horario-sueno-suenos` |
+| DE | Jetlag, Schlaf und Traeume: den Rhythmus wiederfinden | `jetlag-schlaf-traeume` |
+| IT | Jet lag, sonno e sogni: ritrovare il ritmo | `jet-lag-sonno-sogni` |
+
+Structure minimale: reponse courte, mecanisme circadien explique sans surpromesse medicale, effet possible des reveils et du REM sur le rappel, routine avant/pendant/apres le voyage, methode de journalisation rapide, FAQ et sources primaires recentes. Chaque version doit etre adaptee a la langue et non traduite litteralement.
+
+Regles de qualite pour toute la fin du mois:
+
+- Ne pas allonger un article uniquement pour ajouter des mots; supprimer les repetitions et repondre d'abord a l'intention.
+- Conserver un ton prudent sur la sante, distinguer association et causalite, et privilegier les sources primaires ou institutionnelles.
+- Pour les refreshs, modifier seulement la langue justifiee par GSC et mesurer avant de generaliser aux cinq langues.
+- Pour les nouvelles vagues, synchroniser `publishedTime`, `modifiedTime`, canonical, hreflang, JSON-LD, index blog et maillage reciproque.
+- Ne pas lancer une troisieme nouvelle vague en juillet: la priorite 10 est reservee a la mesure et au choix du programme d'aout.
 
 ## Publication realisee - 6 juillet
 
@@ -138,7 +201,7 @@ Maillage fait:
 - Chaine editoriale mise a jour: vacances -> bruit nocturne -> reveil nocturne -> confidentialite IA.
 - Liens contextuels ajoutes depuis vacances, sleep-day-environment, how-to-remember-dreams et REM sleep vers les nouveaux articles.
 
-Prochaine publication editoriale: aucune priorite 5 n'est encore definie; ne pas publier de nouvelle vague avant mise a jour du planning.
+Prochaine action editoriale: priorite 5, production de `docs-src/content/blog/blog.dream-emotion-regulation-study/` avec publication cible le 15 juillet. Le refresh ES eau/inondation devient la priorite 6 et la vague `Jet lag, sommeil et reves` la priorite 9, ciblee pour le 29 juillet.
 
 Verification post-deploy 2026-07-08:
 
@@ -187,7 +250,7 @@ Reinspection live et Search Console 2026-07-14:
 - Les 20 URLs juillet repondent 200 et sont toutes presentes dans le sitemap live.
 - Sitemap live: 1160 URLs, HTTP 200, `application/xml`; `version.txt` renvoie toujours `2866f3066c1f`.
 - Les 20 URLs restent `Submitted and indexed`; pour chaque URL, le fetch Google reussit, les robots sont autorises et le canonical Google correspond au canonical declare.
-- Aucune demande manuelle n'est necessaire. Aucun nouvel article n'est produit tant qu'une priorite 5 n'est pas definie.
+- Aucune demande manuelle n'est necessaire. Les priorites 5 a 10 sont maintenant definies ci-dessus; commencer par l'article scientifique reves/emotions, puis le refresh ES eau/inondation.
 
 Preparation editoriale anticipee le 2026-07-10:
 
@@ -230,5 +293,5 @@ Publication anticipee le 2026-07-10:
 - Les 25 URLs de juin sont indexees; ne pas les retraiter comme blocantes.
 - Le hub reve lucide doit afficher `lastmod` `2026-06-21` dans le sitemap genere.
 - Les 20 URLs de juillet sont indexees; ne plus les retraiter comme bloquantes et ne pas envoyer de nouvelle demande manuelle sans regression constatee.
-- Aucune priorite editoriale 5 n'est definie: attendre une mise a jour explicite du planning avant de produire une nouvelle vague.
+- Les priorites 5 a 10 couvrent desormais le 14 au 31 juillet. Respecter les fenetres, publier la vague scientifique le 15 juillet, la vague jet lag le 29 juillet et reserver les 30-31 juillet a la mesure plutot qu'a une nouvelle vague.
 - Les suggestions non bloquantes de liens symboles dans les pages generiques EN/FR/ES peuvent rester hors sprint sauf si un run est dedie au maillage fin.
