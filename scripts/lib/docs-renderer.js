@@ -514,6 +514,21 @@ function responsiveBlogImageSrcset(src) {
   return variants.map((variant) => `${variant.url} ${variant.width}w`).join(', ');
 }
 
+function protectMailtoLinksFromCloudflareObfuscation(bodyHtml) {
+  const source = String(bodyHtml || '');
+  return source.replace(
+    /<a\b[^>]*\bhref=(['"])mailto:[^"']+\1[^>]*>[\s\S]*?<\/a>/gi,
+    (anchor, _quote, offset) => {
+      const before = source.slice(0, offset).trimEnd();
+      const after = source.slice(offset + anchor.length).trimStart();
+      if (before.endsWith('<!--email_off-->') && after.startsWith('<!--/email_off-->')) {
+        return anchor;
+      }
+      return `<!--email_off-->${anchor}<!--/email_off-->`;
+    }
+  );
+}
+
 function optimizeBlogIndexImages(bodyHtml) {
   let localBlogImageIndex = 0;
   return String(bodyHtml || '').replace(/<img\b[^>]*>/gi, (tag) => {
@@ -552,6 +567,7 @@ function renderManagedPage({ manifest, entryId, meta, bodyHtml, entryOverride = 
   const entry = context.entry;
   const navHtml = renderNavigation(context);
   let renderedBodyHtml = synchronizeVisibleArticleDate(bodyHtml, meta);
+  renderedBodyHtml = protectMailtoLinksFromCloudflareObfuscation(renderedBodyHtml);
   if (meta.layout === 'blogIndex') {
     renderedBodyHtml = optimizeBlogIndexImages(renderedBodyHtml);
   }
@@ -573,6 +589,7 @@ function renderManagedPage({ manifest, entryId, meta, bodyHtml, entryOverride = 
 module.exports = {
   normalizeCanonicalOrganization,
   optimizeBlogIndexImages,
+  protectMailtoLinksFromCloudflareObfuscation,
   renderManagedPage,
   renderJsonLd,
   responsiveBlogImageSrcset,

@@ -11,6 +11,7 @@ const {
 const {
   normalizeCanonicalOrganization,
   optimizeBlogIndexImages,
+  protectMailtoLinksFromCloudflareObfuscation,
   renderJsonLd,
 } = require('./docs-renderer');
 const {
@@ -206,6 +207,15 @@ describe('article date and content release contracts', () => {
     expect(images[0]).toContain('srcset=');
     expect(images[1]).toContain('loading="lazy"');
     expect(images[1]).not.toContain('fetchpriority=');
+  });
+
+  it('keeps public mailto links out of Cloudflare email obfuscation', () => {
+    const link =
+      '<a href="mailto:contact@noctalia.app" class="contact">contact@noctalia.app</a>';
+    const html = protectMailtoLinksFromCloudflareObfuscation(`<p>${link}</p>`);
+
+    expect(html).toContain(`<!--email_off-->${link}<!--/email_off-->`);
+    expect(protectMailtoLinksFromCloudflareObfuscation(html)).toBe(html);
   });
 
   it('flags an unclosed declarative inverted question but permits a real question', () => {
