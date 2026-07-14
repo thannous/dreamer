@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-07-10",
+    "lastUpdated": "2026-07-14",
     "totalSymbols": 150,
     "languages": [
       "en",
@@ -1637,7 +1637,7 @@
             "answer": "Escapar de una inundación sugiere que estás buscando salida, límites o ayuda ante una situación que se siente desbordada."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-07-14"
       },
       "de": {
         "slug": "ueberschwemmung",
@@ -1699,6 +1699,7 @@
       },
       "relatedSymbols": [
         "water",
+        "house",
         "rain",
         "ocean",
         "drowning",
@@ -1711,7 +1712,7 @@
         "de": "wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen",
         "it": "sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione"
       },
-      "modifiedAt": "2026-07-10"
+      "modifiedAt": "2026-07-14"
     },
     {
       "id": "car",
