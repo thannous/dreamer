@@ -15,6 +15,7 @@ import { TID } from '@/lib/testIDs';
 type RecordingActivationInsightCardProps = {
   context?: 'draft' | 'saved';
   insight?: RecordingActivationInsight | null;
+  presentation?: 'card' | 'inline';
 };
 
 const signalIconById: Record<
@@ -32,6 +33,7 @@ const signalIconById: Record<
 export function RecordingActivationInsightCard({
   context = 'saved',
   insight,
+  presentation = 'card',
 }: RecordingActivationInsightCardProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
@@ -54,6 +56,26 @@ export function RecordingActivationInsightCard({
     : insight.tone === 'signals'
       ? t('recording.activation_insight.summary.signals', { signals: signalLabels.join(', ') })
       : t('recording.activation_insight.summary.fragment');
+
+  if (presentation === 'inline') {
+    return (
+      <View
+        style={styles.inline}
+        accessibilityLiveRegion="polite"
+        testID={TID.Component.RecordingActivationInsight}
+      >
+        <View style={[styles.inlineSpark, { backgroundColor: `${accessibleAccent}24` }]}>
+          <IconSymbol name="sparkles" size={16} color={accessibleAccent} />
+        </View>
+        <Text
+          style={[styles.inlineSummary, { color: noctalia.text.secondary }]}
+          testID={TID.Text.RecordingActivationInsightSummary}
+        >
+          {summary}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View
@@ -165,5 +187,27 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
     lineHeight: 15,
+  },
+  inline: {
+    minHeight: 44,
+    paddingHorizontal: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
+  inlineSpark: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inlineSummary: {
+    flexShrink: 1,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 13,
+    lineHeight: 18,
+    textAlign: 'center',
   },
 });

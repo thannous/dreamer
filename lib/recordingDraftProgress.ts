@@ -10,7 +10,9 @@ export type RecordingDraftProgress = {
   state: RecordingDraftProgressState;
 };
 
-const READY_THRESHOLD_CHARS = 80;
+// A remembered dream can be fragmentary: once there is a meaningful fragment,
+// the save action should become available without an invisible long-form quota.
+const READY_THRESHOLD_CHARS = 18;
 
 export function getRecordingDraftProgress(
   value: string,

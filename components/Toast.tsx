@@ -1,5 +1,11 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { Platform, StyleSheet, Text, type ViewStyle } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import Animated, {
   Easing,
   runOnJS,
@@ -17,16 +23,20 @@ import { useTheme } from '@/context/ThemeContext';
 type ToastProps = {
   message: string;
   mode?: 'success' | 'error' | 'info';
+  compact?: boolean;
   durationMs?: number;
   onHide?: () => void;
+  style?: StyleProp<ViewStyle>;
   testID?: string;
 };
 
 export const Toast: React.FC<ToastProps> = ({
   message,
   mode: toastMode = 'info',
+  compact = false,
   durationMs = 2200,
   onHide,
+  style,
   testID,
 }) => {
   const { colors, mode: themeMode } = useTheme();
@@ -97,13 +107,18 @@ export const Toast: React.FC<ToastProps> = ({
     <Animated.View
       style={[
         styles.container,
+        !compact && styles.defaultPosition,
         animatedStyle,
         { backgroundColor, borderColor },
+        compact && styles.compactContainer,
         pointerEventsStyle,
+        style,
       ]}
       testID={testID}
     >
-      <Text style={[styles.text, { color: textColor }]}>{message}</Text>
+      <Text style={[styles.text, compact && styles.compactText, { color: textColor }]}>
+        {message}
+      </Text>
     </Animated.View>
   );
 };
@@ -111,18 +126,32 @@ export const Toast: React.FC<ToastProps> = ({
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: ThemeLayout.spacing.lg,
-    left: ThemeLayout.spacing.lg,
-    right: ThemeLayout.spacing.lg,
     borderRadius: ThemeLayout.borderRadius.md,
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: ThemeLayout.spacing.sm,
     borderWidth: 1,
   },
+  defaultPosition: {
+    bottom: ThemeLayout.spacing.lg,
+    left: ThemeLayout.spacing.lg,
+    right: ThemeLayout.spacing.lg,
+  },
   text: {
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.medium,
     textAlign: 'center',
+  },
+  compactContainer: {
+    alignSelf: 'flex-start',
+    maxWidth: 248,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    borderRadius: 12,
+  },
+  compactText: {
+    fontSize: 12,
+    lineHeight: 16,
+    textAlign: 'left',
   },
   pointerNone: {
     pointerEvents: 'none',

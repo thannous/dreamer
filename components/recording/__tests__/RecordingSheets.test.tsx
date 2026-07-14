@@ -34,6 +34,7 @@ jest.mock('@/components/ui/StandardBottomSheet', () => ({
     visible,
     title,
     subtitle,
+    headerIcon,
     titleTestID,
     children,
     actions,
@@ -41,31 +42,45 @@ jest.mock('@/components/ui/StandardBottomSheet', () => ({
     visible: boolean;
     title: string;
     subtitle?: string;
+    headerIcon?: string;
     titleTestID?: string;
     children?: React.ReactNode;
     actions?: {
       primaryLabel: string;
+      primaryDetail?: string;
+      primaryIcon?: string;
       onPrimary: () => void;
       primaryTestID?: string;
       secondaryLabel?: string;
+      secondaryDetail?: string;
+      secondaryIcon?: string;
       onSecondary?: () => void;
       secondaryTestID?: string;
       linkLabel?: string;
       onLink?: () => void;
       linkTestID?: string;
+      supportingContent?: React.ReactNode;
     };
   }) => (
     visible ? (
       <section>
         <h1 data-testid={titleTestID}>{title}</h1>
+        {headerIcon ? <span data-testid={`header-icon.${headerIcon}`} /> : null}
         {subtitle ? <p>{subtitle}</p> : null}
         {children}
         {actions ? (
           <div>
             <button data-testid={actions.primaryTestID} onClick={actions.onPrimary}>{actions.primaryLabel}</button>
+            {actions.primaryDetail ? <span>{actions.primaryDetail}</span> : null}
+            {actions.primaryIcon ? <span data-testid={`action-icon.${actions.primaryIcon}`} /> : null}
             {actions.secondaryLabel ? (
-              <button data-testid={actions.secondaryTestID} onClick={actions.onSecondary}>{actions.secondaryLabel}</button>
+              <>
+                <button data-testid={actions.secondaryTestID} onClick={actions.onSecondary}>{actions.secondaryLabel}</button>
+                {actions.secondaryDetail ? <span>{actions.secondaryDetail}</span> : null}
+                {actions.secondaryIcon ? <span data-testid={`action-icon.${actions.secondaryIcon}`} /> : null}
+              </>
             ) : null}
+            {actions.supportingContent}
             {actions.linkLabel ? (
               <button data-testid={actions.linkTestID} onClick={actions.onLink}>{actions.linkLabel}</button>
             ) : null}
@@ -127,9 +142,11 @@ jest.mock('@/hooks/useTranslation', () => ({
     t: (key: string, params?: Record<string, string | number>) => {
       const values: Record<string, string> = {
         'guest.first_dream.sheet.title': 'Great start!',
-        'guest.first_dream.sheet.subtitle': 'Your first dream is saved.',
+        'guest.first_dream.sheet.subtitle': 'Your first dream is safely in your journal.',
         'guest.first_dream.sheet.analyze': 'Analyze this dream',
-        'guest.first_dream.sheet.journal': 'See journal',
+        'guest.first_dream.sheet.analyze_detail': 'Discover its first patterns and emotions',
+        'guest.first_dream.sheet.journal': 'View my dream',
+        'guest.first_dream.sheet.journal_detail': 'Review or add to what you recorded',
         'guest.first_dream.sheet.remembered_title': 'Memory saved',
         'guest.first_dream.sheet.remembered_subtitle': 'This remembered dream is in your journal.',
         'guest.first_dream.sheet.remembered_primary': 'View this memory',
@@ -216,6 +233,35 @@ describe('RecordingSheets', () => {
       'This memory is saved as a remembered dream.'
     );
     expect(screen.getByText('Memory')).toBeTruthy();
+  });
+
+  it('explains the two next-step paths for a first recorded dream', () => {
+    render(
+      <FirstDreamSheet
+        visible
+        onDismiss={noop}
+        onAnalyze={noop}
+        onJournal={noop}
+        isPersisting={false}
+        activationInsight={{
+          tone: 'fragment',
+          signalIds: [],
+          charCount: 24,
+        }}
+      />
+    );
+
+    expect(screen.getByText('Your first dream is safely in your journal.')).toBeTruthy();
+    expect(screen.getByTestId('header-icon.checkmark.circle.fill')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.FirstDreamAnalyze).textContent).toBe('Analyze this dream');
+    expect(screen.getByText('Discover its first patterns and emotions')).toBeTruthy();
+    expect(screen.getByTestId('action-icon.moon.stars.fill')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.FirstDreamJournal).textContent).toBe('View my dream');
+    expect(screen.getByText('Review or add to what you recorded')).toBeTruthy();
+    expect(screen.getByTestId('action-icon.book.closed.fill')).toBeTruthy();
+    expect(screen.getByTestId(TID.Text.RecordingActivationInsightSummary).textContent).toBe(
+      'This fragment is enough to start your profile.'
+    );
   });
 
   it('uses remembered dream copy and journal-first actions in the first-dream sheet', () => {

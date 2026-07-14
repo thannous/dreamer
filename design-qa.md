@@ -97,3 +97,350 @@ Result:
 - Passed: Mobile journal now keeps the new Atlas-style header in both layouts and hides the web mock debug rail.
 
 final result: passed
+
+## Recording editor action scale and height - 2026-07-13
+
+Source visual truth paths:
+- `browser:/recording#comment-smaller-footer-actions`
+- `browser:/recording#comment-two-more-lines`
+
+Implementation screenshot path:
+- `/tmp/noctalia-recording-smaller-actions-taller-textarea-363x837.png`
+
+State and viewport:
+- Route: `http://localhost:8081/recording`.
+- Viewport: `363x837`, remembered-dream voice mode, dark theme, long populated transcript.
+
+Full-view and focused comparison evidence:
+- The annotated source and implementation use the same route, viewport, mode, theme, and long transcript.
+- The textarea, its line wrapping, the footer fade, and both utility controls are readable in the full-view comparison, so no additional crop was needed.
+
+Comparison history:
+- P2 source finding: the `+` and clear controls occupied too much of the editor footer. Fix: reduced the visible utility circles from `46px` to `40px`, reduced their icons proportionally, and kept a `4px` hit slop so the native touch target remains `48px`.
+- P2 source finding: the populated textarea needed roughly two more visible lines. Fix: increased its minimum and maximum heights by `46px` with a `23px` line height, while preserving its width and horizontal insets.
+- Consistency fix: the compact inline microphone now uses the same `40px` visible action size; the expressive microphone remains unchanged.
+- Post-fix evidence: the implementation capture shows a taller transcript region, smaller balanced actions, and a clean fade before the opaque footer with no text behind the buttons.
+
+Required fidelity surfaces:
+- Fonts and typography: Lora family, weight, wrapping, and antialiasing are unchanged; the explicit `23px` line height makes the two-line height increase deterministic.
+- Spacing and layout rhythm: the textarea gains exactly `46px`; the footer height drops from `68px` to `60px` and its controls from `46px` to `40px` without changing the outer width.
+- Colors and visual tokens: editor, gradient, borders, icons, and button surfaces retain the existing Noctalia tokens.
+- Image quality and asset fidelity: no raster or vector assets changed; existing mapped icons are preserved.
+- Copy and content: the transcript, labels, and accessible action names remain unchanged.
+
+Primary interactions and console:
+- Passed: textarea, optional-details action, clear action, save action, and navigation remain present and semantically exposed.
+- Passed: the long transcript remains visually separated from the action footer and the expressive microphone remains unchanged.
+- Passed: no browser console errors.
+- Passed: 6 focused tests, ESLint, app typecheck, tests typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the fixes above.
+
+final result: passed
+
+## Remembered-dream progressive actions - 2026-07-13
+
+Source visual truth path:
+- `browser:/recording#comment-details-plus-dialog`
+- `browser:/recording#comment-save-only-when-ready`
+
+Implementation screenshot path:
+- `/tmp/noctalia-recording-details-dialog-329x837.png`
+- `/tmp/noctalia-recording-save-threshold-329x837.png`
+
+State and viewport:
+- Route: `http://localhost:8081/recording`.
+- Viewport: `329x837`, remembered-dream voice mode, dark theme.
+- States checked: empty editor, short draft, ready draft, and optional-details dialog.
+
+Comparison history:
+- P2 source finding: the optional details block stayed visible and competed with capture. Fix: replaced it with a `+` action inside the editor and moved the three groups into the existing standard bottom sheet.
+- P2 source finding: editor actions appeared before the user started. Fix: the `+` action appears only after the transcript contains non-whitespace content.
+- P2 source finding: the disabled save action occupied a large fixed area before it was useful. Fix: the footer is not mounted until the existing `ready` draft threshold is reached.
+
+Required fidelity surfaces:
+- Fonts and typography: existing Lora editor and Space Grotesk sheet/button hierarchy preserved.
+- Spacing and layout rhythm: empty and short states reclaim the footer space; editor actions stay inside the lower-right corner without covering text.
+- Colors and visual tokens: plus action, chips, sheet, and primary save reuse existing Noctalia tokens.
+- Image quality and asset fidelity: no raster assets changed; the plus uses the existing native/web icon system.
+- Copy and content: the dialog keeps the existing remembered-dream labels and selections.
+
+Primary interactions:
+- Passed: empty editor shows neither `+` nor save.
+- Passed: a short draft shows `+` and clear, but no save action.
+- Passed: the standard `ready` threshold reveals the save action.
+- Passed: `+` opens the dialog with all three groups and `Terminé` closes it without clearing the transcript.
+- Passed: the QA transcript was cleared and the initial voice state restored.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the fixes above.
+
+final result: passed
+
+## Remembered-dream copy and optional details - 2026-07-13
+
+Source visual truth path:
+- `browser:/recording#comment-1` — annotated remembered-dream instruction at `329x837`.
+- `browser:/recording#comment-2` — annotated optional-details accordion at `329x837`.
+
+Implementation screenshot path:
+- `/tmp/noctalia-recording-remembered-collapsed-329x837.png`
+- `/tmp/noctalia-recording-remembered-expanded-329x837.png`
+
+State and viewport:
+- Route: `http://localhost:8081/recording`.
+- Viewport: `329x837`, remembered-dream voice mode, dark theme.
+- States checked: optional details collapsed and expanded.
+
+Comparison history:
+- P2 source finding: the instruction wrapped across three lines with unnecessary qualifying copy. Fix: shortened the French instruction to `Raconte un rêve déjà vécu.` Post-fix evidence: collapsed and expanded captures show a single-line instruction.
+- P2 source finding: the optional section used abstract copy and the missing web icon mapping displayed a help glyph instead of an accordion affordance. Fix: changed the title to `Préciser ce souvenir`, added a separate `Facultatif` badge, described the requested data, and mapped `chevron.down`/`chevron.up` to Material Icons. Post-fix evidence: both captures show the correct chevron; browser interaction opens and closes the three chip groups.
+
+Required fidelity surfaces:
+- Fonts and typography: existing Fraunces/Lora and Space Grotesk hierarchy preserved; shorter heading no longer wraps.
+- Spacing and layout rhythm: existing card dimensions and vertical spacing preserved; badge wraps safely with the title.
+- Colors and visual tokens: existing Noctalia surface, border, text, and muted badge tokens reused.
+- Image quality and asset fidelity: no raster assets changed; the accordion uses the existing icon system with a valid native/web mapping.
+- Copy and content: the purpose and optional nature of the section are explicit before expansion.
+
+Primary interactions and console:
+- Passed: accordion opens, exposes all three chip groups, changes to an up chevron, and closes again.
+- Passed: no browser console errors.
+- Passed: 7 focused tests, ESLint, app typecheck, tests typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the fixes above.
+
+final result: passed
+
+## Recording composer annotation pass - 2026-07-13
+
+Source visual truth:
+- User browser annotations on `/recording` at `329x837` for the no-speech fallback, retry label, and disabled save button transparency.
+- User reference screenshot for the text composer with an inline microphone.
+
+Implementation QA:
+- Browser: Codex in-app browser on `http://localhost:8081/recording`.
+- Viewport: `329x837`, remembered-dream voice mode after a no-speech fallback.
+- Passed: the no-speech message is no longer an inline card and does not reserve vertical space; it is rendered as the existing auto-dismiss toast.
+- Passed: the visible `Réessayer la voix` copy is removed after a voice fallback; the expressive microphone remains the single retry action with the same accessible label.
+- Passed: the transcript editor remains visible and editable below the expressive microphone.
+- Passed: the disabled save control uses the solid `#0D0B1C` theme surface at opacity `1`; underlying content no longer shows through it.
+- Passed: the live screenshot shows no collision between the expressive microphone and transcript editor.
+- Passed: focused Jest coverage, ESLint, app typecheck, tests typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none in the annotated scope.
+
+final result: passed
+
+## Recording controls density pass - 2026-07-13
+
+Source visual truth path:
+- `browser:/recording#comment-mode-selector`
+- `browser:/recording#comment-inline-clear`
+- `browser:/recording#comment-remove-voice-label`
+
+Implementation screenshot path:
+- `/tmp/noctalia-recording-voice-clean-329x837.png`
+- `/tmp/noctalia-recording-mode-menu-329x837.png`
+- `/tmp/noctalia-recording-inline-actions-329x837.png`
+
+State and viewport:
+- Route: `http://localhost:8081/recording`.
+- Viewport: `329x837`, remembered-dream capture, dark theme.
+- States checked: voice mode, mode menu open, text mode with transcript and inline actions.
+
+Comparison history:
+- P2 source finding: the mode control repeated the current mode in a large pill. Fix: reduced the closed control to a `44x44` menu button and kept mode names, hints, and selected state inside the dropdown.
+- P2 source finding: the visible `Dicter le rêve` action duplicated the expressive microphone. Fix: removed the visible copy while preserving the microphone accessibility label and recording duration state.
+- P2 source finding: the clear action lived below the editor. Fix: moved the clear icon inside the editor; it sits beside the inline microphone in text mode and remains the only inline action in voice mode.
+
+Required fidelity surfaces:
+- Fonts and typography: existing display and utility typography preserved; duplicate voice copy removed.
+- Spacing and layout rhythm: closed mode control is compact; editor reserves bottom padding for inline actions without covering text.
+- Colors and visual tokens: menu, microphone, and clear action reuse existing Noctalia tokens.
+- Image quality and asset fidelity: no raster assets changed; the menu uses the mapped native/web menu icon.
+- Copy and content: capture modes and current selection remain explicit inside the dropdown.
+
+Primary interactions and console:
+- Passed: menu opens, shows `Écrit` and `Vocal`, marks `Vocal` as the current view, and changes modes.
+- Passed: test transcript shows microphone and clear action side by side inside the editor; clear removes the test value.
+- Passed: test state was cleaned and voice mode restored after verification.
+- Passed: no browser console errors.
+- Passed: 9 focused tests, ESLint with no new warnings, app typecheck, tests typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the fixes above.
+
+final result: passed
+
+## Remembered-details visual hierarchy - 2026-07-13
+
+Source visual truth path:
+- `browser:/recording#comment-secondary-details`
+
+Implementation screenshot path:
+- `/tmp/noctalia-recording-secondary-details-329x837.png`
+
+State and viewport:
+- Route: `http://localhost:8081/recording`.
+- Viewport: `329x837`, remembered-dream voice mode, dark theme, accordion collapsed.
+
+Comparison history:
+- P2 source finding: the optional details card visually competed with the transcript editor and primary capture controls. Fix: moved the card to the soft secondary surface, reduced padding and height, changed the title from bold primary text to medium secondary text, and muted the badge, description, and chevron.
+- Post-fix evidence: the capture shows the block reading as optional supporting content while remaining legible and interactive.
+
+Required fidelity surfaces:
+- Fonts and typography: utility title reduced to `14/19` medium; descriptive text remains readable at `12/17`.
+- Spacing and layout rhythm: card padding reduced to `12x10` and toggle minimum height to `48`.
+- Colors and visual tokens: only existing secondary/tertiary Noctalia tokens are used.
+- Image quality and asset fidelity: no assets changed; existing chevron mapping retained.
+- Copy and content: all optional-detail guidance remains unchanged.
+
+Primary interactions and console:
+- Passed: accordion opens and closes with the full chip content intact.
+- Passed: no browser console errors.
+- Passed: focused Jest, ESLint, app typecheck, tests typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the fix.
+
+final result: passed
+
+## Recording editor left inset - 2026-07-13
+
+Source visual truth path:
+- `browser:/recording#comment-text-left-space`
+
+Implementation screenshot path:
+- `/tmp/noctalia-recording-text-left-padding-329x837.png`
+
+State and viewport:
+- Route: `http://localhost:8081/recording`.
+- Viewport: `329x837`, remembered-dream voice mode, dark theme, populated transcript.
+
+Full-view and focused comparison evidence:
+- The annotated source and implementation use the same route, viewport, mode, theme, and transcript.
+- The editor is the only affected region, so the readable full-view capture is also the focused comparison; no additional crop was needed.
+
+Comparison history:
+- P2 source finding: the populated editor retained the empty-state pencil inset, leaving excessive unused space before the text.
+- Fix: keep the `48px` left inset only for the empty placeholder state and reduce populated-editor left padding to `20px`.
+- Post-fix evidence: the text aligns with the editor’s right-side padding while the empty-state pencil layout remains unchanged.
+
+Required fidelity surfaces:
+- Fonts and typography: Lora size, weight, line height, wrapping, and antialiasing are unchanged.
+- Spacing and layout rhythm: populated text now uses balanced `20px` horizontal insets; bottom action clearance is unchanged.
+- Colors and visual tokens: no token or state color changed.
+- Image quality and asset fidelity: no raster or icon assets changed.
+- Copy and content: the user’s transcript and all interface copy remain unchanged.
+
+Primary interactions and console:
+- Passed: transcript remains editable and the plus/clear actions stay inside the editor without overlap.
+- Passed: no browser console errors.
+- Passed: focused Jest, ESLint, app typecheck, tests typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the fix.
+
+final result: passed
+
+## Recording editor gradient action footer - 2026-07-13
+
+Source visual truth path:
+- `browser:/recording#comment-editor-action-overlap`
+
+Implementation screenshot path:
+- `/tmp/noctalia-recording-editor-gradient-footer-final-363x837.png`
+
+State and viewport:
+- Route: `http://localhost:8081/recording`.
+- Viewport: `363x837`, remembered-dream text mode, dark theme, long populated transcript.
+
+Full-view and focused comparison evidence:
+- The annotated source and implementation use the same route, viewport, mode, theme, and long repeated transcript.
+- The editor and its lower action area are clearly readable in the full-view comparison, so no separate crop was needed.
+
+Comparison history:
+- P2 source finding: the plus, microphone, and clear buttons floated directly over the final transcript lines.
+- First fix: grouped the actions into a footer with a `30px` top fade and reserved `98px` of editor bottom padding.
+- P2 follow-up finding: the existing translucent surface token still allowed text to show beneath the solid part of the footer.
+- Final fix: changed the footer and gradient endpoint to the opaque theme card surface while keeping the translucent editor body.
+- Post-fix evidence: transcript lines fade before the buttons and no text remains visible behind the controls.
+
+Required fidelity surfaces:
+- Fonts and typography: Lora family, size, weight, line height, and wrapping remain unchanged.
+- Spacing and layout rhythm: the footer reserves a stable action zone inside the existing rounded editor without increasing its external footprint.
+- Colors and visual tokens: the fade ends on the opaque Noctalia card token; button and border tokens remain unchanged.
+- Image quality and asset fidelity: no raster or icon assets changed.
+- Copy and content: transcript and action labels remain unchanged.
+
+Primary interactions and console:
+- Passed: plus, microphone, and clear remain individually accessible and clickable.
+- Passed: the long transcript remains editable and scrollable with its final lines separated from the footer.
+- Passed: no browser console errors.
+- Passed: focused Jest, ESLint, app typecheck, tests typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the two fixes above.
+
+final result: passed
+
+## Remembered-dream save visibility - 2026-07-13
+
+Source visual truth path:
+- `browser:/recording#comment-save-button-missing`
+
+Implementation screenshot path:
+- `/tmp/noctalia-recording-save-button-fragment-358x837.png`
+
+State and viewport:
+- Route: `http://localhost:8081/recording`.
+- Viewport: `358x837`, remembered-dream voice mode, dark theme, populated fragment matching the annotated source.
+
+Full-view and focused comparison evidence:
+- The annotated source and implementation use the same route, viewport, mode, theme, and transcript.
+- The save action and transcript are both legible in the full-view comparison, so a separate crop was not needed.
+
+Comparison history:
+- P1 source finding: the editor contained a substantial fragment but the save action was absent because an invisible `80`-character threshold controlled whether the footer mounted.
+- Fix: aligned save visibility with the app's existing minimum meaningful-fragment rule by reducing the readiness threshold to `18` characters.
+- Post-fix evidence: the same transcript now displays the active `Enregistrer ce souvenir` action above the persistent navigation without moving or restyling nearby controls.
+
+Required fidelity surfaces:
+- Fonts and typography: all display, editor, button, and navigation typography remains unchanged.
+- Spacing and layout rhythm: the existing footer occupies its intended reserved space only when the fragment is saveable; no new spacing was introduced.
+- Colors and visual tokens: the active save action retains the existing Noctalia primary action tokens.
+- Image quality and asset fidelity: no images or icons changed.
+- Copy and content: the user's transcript and all interface labels remain unchanged; the behavior now matches the promise that an old dream may be fragmentary.
+
+Primary interactions and console:
+- Passed: the populated transcript exposes the enabled save action with its complete accessible label.
+- Passed: empty and under-`18`-character drafts remain below the readiness threshold.
+- Passed: no browser console errors.
+- Passed: 5 focused unit tests, ESLint, app typecheck, tests typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none after the threshold fix.
+- P2: none.
+
+final result: passed

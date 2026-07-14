@@ -11,7 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export type MicButtonStatus = 'idle' | 'preparing' | 'recording';
 export type MicButtonInteraction = 'enabled' | 'disabled';
-export type MicButtonSize = 'compact' | 'expressive';
+export type MicButtonSize = 'inline' | 'compact' | 'expressive';
 
 interface MicButtonProps {
   status: MicButtonStatus;
@@ -51,24 +51,34 @@ export function MicButton({
   const isPreparing = status === 'preparing';
   const disabled = interaction === 'disabled';
   const showPulses = isRecording && shouldAnimate;
-  const isCompact = size === 'compact';
-  const dimensions = isCompact
+  const isInline = size === 'inline';
+  const isCompact = size === 'compact' || isInline;
+  const dimensions = isInline
     ? {
-        container: 76,
-        button: 62,
-        glow: 68,
-        icon: 28,
+        container: 48,
+        button: 40,
+        glow: 44,
+        icon: 18,
         border: 1,
-        pulseScale: 1.2,
+        pulseScale: 1.16,
       }
-    : {
-        container: 240,
-        button: 206,
-        glow: 216,
-        icon: 104,
-        border: 2,
-        pulseScale: 1.4,
-      };
+    : isCompact
+      ? {
+          container: 76,
+          button: 62,
+          glow: 68,
+          icon: 28,
+          border: 1,
+          pulseScale: 1.2,
+        }
+      : {
+          container: 240,
+          button: 206,
+          glow: 216,
+          icon: 104,
+          border: 2,
+          pulseScale: 1.4,
+        };
 
   return (
     <Pressable

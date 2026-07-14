@@ -77,21 +77,7 @@ export function RecordingInputModeSelect({
         accessibilityValue={{ text: selected.label }}
         testID={TID.Button.InputModeSelect}
       >
-        <View style={[styles.triggerIcon, { backgroundColor: `${accentColor}24` }]}>
-          <IconSymbol name={selected.icon} size={18} color={accentColor} />
-        </View>
-        <View style={styles.triggerCopy}>
-          <Text style={[styles.triggerLabel, { color: mutedColor }]}>
-            {t('recording.preference.label')}
-          </Text>
-          <Text
-            style={[styles.triggerValue, { color: textColor }]}
-            testID={TID.Text.RecordingInputMode(value)}
-          >
-            {selected.label}
-          </Text>
-        </View>
-        <IconSymbol name="slider.horizontal.3" size={18} color={mutedColor} />
+        <IconSymbol name="line.3.horizontal" size={22} color={mutedColor} />
       </Pressable>
 
       {isOpen ? (
@@ -159,6 +145,9 @@ export function RecordingInputModeSelect({
                         styles.optionText,
                         { color: textColor },
                       ]}
+                      testID={
+                        isSelected ? TID.Text.RecordingInputMode(option.value) : undefined
+                      }
                     >
                       {option.label}
                     </Text>
@@ -201,38 +190,13 @@ const styles = StyleSheet.create({
     zIndex: 20,
   },
   trigger: {
-    minHeight: 46,
+    width: 44,
+    height: 44,
     borderWidth: 1,
     borderRadius: 999,
     borderCurve: 'continuous',
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
-    gap: 9,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-  },
-  triggerIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 999,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  triggerCopy: {
-    minWidth: 58,
-    gap: 1,
-  },
-  triggerLabel: {
-    fontSize: 10,
-    lineHeight: 12,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textTransform: 'uppercase',
-  },
-  triggerValue: {
-    fontSize: 14,
-    lineHeight: 17,
-    fontFamily: Fonts.spaceGrotesk.bold,
   },
   dismissLayer: {
     position: 'absolute',

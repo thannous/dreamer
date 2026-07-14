@@ -32,10 +32,10 @@ export function RecordingFooter({
               styles.submitButton,
               {
                 backgroundColor: isSaveDisabled
-                  ? noctalia.action.disabled
+                  ? colors.backgroundCard
                   : noctalia.action.primary,
                 borderColor: isSaveDisabled
-                  ? noctalia.action.disabledBorder
+                  ? noctalia.surface.borderStrong
                   : noctalia.action.primaryBorder,
                 shadowColor: noctalia.action.primary,
               },
@@ -50,7 +50,7 @@ export function RecordingFooter({
                 styles.submitButtonText,
                 {
                   color: isSaveDisabled
-                    ? noctalia.action.disabledText
+                    ? colors.textTertiary
                     : noctalia.action.primaryText,
                 },
               ]}

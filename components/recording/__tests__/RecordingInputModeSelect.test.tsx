@@ -91,12 +91,13 @@ describe('RecordingInputModeSelect', () => {
     );
 
     expect(screen.queryByText('Vue de capture')).toBeNull();
-    expect(screen.getByText('Mode')).toBeTruthy();
-    expect(screen.getByText('Écrit')).toBeTruthy();
+    expect(screen.queryByText('Mode')).toBeNull();
+    expect(screen.queryByText('Écrit')).toBeNull();
+    expect(screen.getByTestId('icon.line.3.horizontal')).toBeTruthy();
 
     fireEvent.click(screen.getByTestId(TID.Button.InputModeSelect));
     expect(screen.getByText('Vue de capture')).toBeTruthy();
-    expect(screen.getAllByText('Écrit')).toHaveLength(2);
+    expect(screen.getByText('Écrit')).toBeTruthy();
     expect(screen.getByText('Vue actuelle')).toBeTruthy();
     expect(screen.getByText('Micro en premier')).toBeTruthy();
     fireEvent.click(screen.getByTestId(TID.Button.InputModeVoice));
