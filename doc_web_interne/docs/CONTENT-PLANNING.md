@@ -4,9 +4,9 @@ Source de verite editoriale: `docs-src/content/blog/`.
 Sortie generee: `docs/`.
 Langues suivies: FR, EN, ES, DE, IT.
 Derniere version live observee: `2866f3066c1f` apres le deploy Cloudflare `13c70708` de la source `863c4ba`.
-Controle live du 2026-07-13: le sitemap live contient 1160 URLs et les 20 URLs de juillet repondent 200.
+Controle live du 2026-07-14: le sitemap live contient 1160 URLs et les 20 URLs de juillet repondent 200.
 
-## Etat editorial au 13 juillet 2026
+## Etat editorial au 14 juillet 2026
 
 | Phase | Statut | Notes |
 |---|---|---|
@@ -31,6 +31,8 @@ Controle live du 2026-07-13: le sitemap live contient 1160 URLs et les 20 URLs d
 | 12 juillet - Controle live | Fait | Les 20 URLs juillet repondent 200 et sont presentes dans le sitemap live, qui contient 1160 URLs. Apres le deploy `13c70708`, `version.txt` renvoie `2866f3066c1f`. |
 | 13 juillet - Search Console vague juillet | Fait | Les 20 URLs juillet sont `Submitted and indexed`. ES/DE/IT de l'article cauchemars ont ete explorees le 12 juillet apres les demandes manuelles; aucune nouvelle demande n'est necessaire. |
 | 13 juillet - Controle live | Fait | Les 20 URLs juillet repondent 200 et sont presentes dans le sitemap live, qui contient 1160 URLs. `version.txt` renvoie toujours `2866f3066c1f`. |
+| 14 juillet - Search Console vague juillet | Fait | Les 20 URLs juillet restent `Submitted and indexed`; fetch Google reussi, robots autorise et canonical Google conforme pour chaque URL. Aucune demande manuelle n'est necessaire. |
+| 14 juillet - Controle live | Fait | Les 20 URLs juillet repondent 200 et sont presentes dans le sitemap live, qui contient 1160 URLs. `version.txt` renvoie toujours `2866f3066c1f`. |
 
 Les 6 URLs de juin qui avaient demande une indexation manuelle ne sont plus bloquantes. Les 20 URLs publiees en juillet sont maintenant indexees; aucune demande manuelle ne reste en attente.
 
@@ -178,6 +180,13 @@ Reinspection live et Search Console 2026-07-13:
 - Sitemap live: 1160 URLs, HTTP 200, `application/xml`; `version.txt` renvoie toujours `2866f3066c1f`.
 - Les 15 URLs de la vague initiale restent `Submitted and indexed`.
 - Les cinq URLs de l'article cauchemars sont maintenant `Submitted and indexed`: ES et DE ont ete explorees le 2026-07-12 a 07:07:24 UTC, IT a 07:09:25 UTC.
+- Aucune demande manuelle n'est necessaire. Aucun nouvel article n'est produit tant qu'une priorite 5 n'est pas definie.
+
+Reinspection live et Search Console 2026-07-14:
+
+- Les 20 URLs juillet repondent 200 et sont toutes presentes dans le sitemap live.
+- Sitemap live: 1160 URLs, HTTP 200, `application/xml`; `version.txt` renvoie toujours `2866f3066c1f`.
+- Les 20 URLs restent `Submitted and indexed`; pour chaque URL, le fetch Google reussit, les robots sont autorises et le canonical Google correspond au canonical declare.
 - Aucune demande manuelle n'est necessaire. Aucun nouvel article n'est produit tant qu'une priorite 5 n'est pas definie.
 
 Preparation editoriale anticipee le 2026-07-10:
