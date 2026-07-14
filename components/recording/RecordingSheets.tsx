@@ -157,9 +157,6 @@ export function FirstDreamSheet({
         primaryLabel: usesRememberedCopy
           ? t('guest.first_dream.sheet.remembered_primary')
           : t('guest.first_dream.sheet.analyze'),
-        primaryDetail: usesRememberedCopy
-          ? undefined
-          : t('guest.first_dream.sheet.analyze_detail'),
         primaryIcon: usesRememberedCopy ? undefined : 'moon.stars.fill',
         primaryTrailingIcon: usesRememberedCopy ? undefined : 'chevron.right',
         onPrimary: usesRememberedCopy ? onJournal : onAnalyze,
@@ -171,9 +168,6 @@ export function FirstDreamSheet({
         secondaryLabel: usesRememberedCopy
           ? t('guest.first_dream.sheet.remembered_analyze')
           : t('guest.first_dream.sheet.journal'),
-        secondaryDetail: usesRememberedCopy
-          ? undefined
-          : t('guest.first_dream.sheet.journal_detail'),
         secondaryIcon: usesRememberedCopy ? undefined : 'book.closed.fill',
         secondaryTrailingIcon: usesRememberedCopy ? undefined : 'chevron.right',
         onSecondary: usesRememberedCopy ? onAnalyze : onJournal,

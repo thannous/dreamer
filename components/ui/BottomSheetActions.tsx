@@ -54,6 +54,7 @@ export function BottomSheetPrimaryAction({
       style={({ pressed }) => [
         styles.primaryButton,
         usesRichLayout && styles.richButton,
+        detail && styles.richButtonWithDetail,
         {
           backgroundColor,
           borderColor,
@@ -123,6 +124,7 @@ export function BottomSheetSecondaryAction({
       style={({ pressed }) => [
         styles.secondaryButton,
         usesRichLayout && styles.richButton,
+        detail && styles.richButtonWithDetail,
         {
           borderColor: noctalia.surface.border,
           backgroundColor: noctalia.surface.soft,
@@ -231,10 +233,13 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   richButton: {
-    minHeight: 88,
+    minHeight: 72,
     paddingHorizontal: 14,
     paddingVertical: 12,
     alignItems: 'stretch',
+  },
+  richButtonWithDetail: {
+    minHeight: 88,
   },
   actionContent: {
     width: '100%',

@@ -144,9 +144,7 @@ jest.mock('@/hooks/useTranslation', () => ({
         'guest.first_dream.sheet.title': 'Great start!',
         'guest.first_dream.sheet.subtitle': 'Your first dream is safely in your journal.',
         'guest.first_dream.sheet.analyze': 'Analyze this dream',
-        'guest.first_dream.sheet.analyze_detail': 'Discover its first patterns and emotions',
-        'guest.first_dream.sheet.journal': 'View my dream',
-        'guest.first_dream.sheet.journal_detail': 'Review or add to what you recorded',
+        'guest.first_dream.sheet.journal': 'Return to your dream journal',
         'guest.first_dream.sheet.remembered_title': 'Memory saved',
         'guest.first_dream.sheet.remembered_subtitle': 'This remembered dream is in your journal.',
         'guest.first_dream.sheet.remembered_primary': 'View this memory',
@@ -235,13 +233,17 @@ describe('RecordingSheets', () => {
     expect(screen.getByText('Memory')).toBeTruthy();
   });
 
-  it('explains the two next-step paths for a first recorded dream', () => {
+  it('shows two concise next-step actions for a first recorded dream', () => {
+    const onAnalyze = jest.fn();
+    const onJournal = jest.fn();
+    const onDismiss = jest.fn();
+
     render(
       <FirstDreamSheet
         visible
-        onDismiss={noop}
-        onAnalyze={noop}
-        onJournal={noop}
+        onDismiss={onDismiss}
+        onAnalyze={onAnalyze}
+        onJournal={onJournal}
         isPersisting={false}
         activationInsight={{
           tone: 'fragment',
@@ -254,14 +256,21 @@ describe('RecordingSheets', () => {
     expect(screen.getByText('Your first dream is safely in your journal.')).toBeTruthy();
     expect(screen.getByTestId('header-icon.checkmark.circle.fill')).toBeTruthy();
     expect(screen.getByTestId(TID.Button.FirstDreamAnalyze).textContent).toBe('Analyze this dream');
-    expect(screen.getByText('Discover its first patterns and emotions')).toBeTruthy();
+    expect(screen.queryByText('Discover its first patterns and emotions')).toBeNull();
     expect(screen.getByTestId('action-icon.moon.stars.fill')).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.FirstDreamJournal).textContent).toBe('View my dream');
-    expect(screen.getByText('Review or add to what you recorded')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.FirstDreamJournal).textContent).toBe('Return to your dream journal');
+    expect(screen.queryByText('Review or add to what you recorded')).toBeNull();
     expect(screen.getByTestId('action-icon.book.closed.fill')).toBeTruthy();
     expect(screen.getByTestId(TID.Text.RecordingActivationInsightSummary).textContent).toBe(
       'This fragment is enough to start your profile.'
     );
+
+    screen.getByTestId(TID.Button.FirstDreamAnalyze).click();
+    screen.getByTestId(TID.Button.FirstDreamJournal).click();
+    screen.getByTestId(TID.Button.FirstDreamDismiss).click();
+    expect(onAnalyze).toHaveBeenCalledTimes(1);
+    expect(onJournal).toHaveBeenCalledTimes(1);
+    expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
   it('uses remembered dream copy and journal-first actions in the first-dream sheet', () => {

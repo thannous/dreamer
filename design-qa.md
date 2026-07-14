@@ -98,6 +98,98 @@ Result:
 
 final result: passed
 
+## First-dream next-step sheet - 2026-07-14
+
+Source visual truth path:
+- `/Users/tanuki/.codex/generated_images/019f6090-abba-7503-b811-040714f13cc4/exec-77e4008d-a6df-45a5-8855-16c14e4eda86.png`
+- Browser annotations on `/recording` requesting concise actions and the journal-return copy.
+
+Implementation screenshot path:
+- `/private/tmp/noctalia-first-dream-final-latest-390x844.png`
+- Side-by-side source comparison: `/private/tmp/noctalia-first-dream-comparison.png`
+
+State and viewport:
+- Route: `http://localhost:8082/recording`.
+- Viewport: `390x844`, dark theme, fresh free profile, first saved dream containing place and symbol keywords.
+
+Full-view and focused comparison evidence:
+- The generated direction and implementation were combined in one side-by-side image at the same `390x844` frame.
+- The full viewport includes the recording context, complete sheet, both CTAs, saved-dream signal, dismissal link, and persistent navigation.
+
+Comparison history:
+- Initial direction: icon-led primary and secondary rows with explanatory subtitles.
+- User refinement: removed both action subtitles and renamed the journal action to `Retourner à ton journal de rêves`.
+- P2 follow-up finding: the programmatically focused web heading showed a visible focus rectangle despite a zero-width transparent outline.
+- Final fix: applied the web-only `outline-style: none` reset while retaining programmatic heading focus and native accessibility focus behavior.
+
+Required fidelity surfaces:
+- Fonts and typography: existing Fraunces/Lora and Space Grotesk families, weights, and scale are reused.
+- Spacing and layout rhythm: icon-led rows use a compact `72px` minimum height when no detail is present; the sheet remains fully visible at the annotated viewport.
+- Colors and visual tokens: existing Noctalia action, surface, border, accent, and text tokens are reused.
+- Image quality and asset fidelity: no new raster or vector assets were introduced; the existing icon system is reused.
+- Copy and content: action copy matches the browser annotations; the `Lieu, Symbole` signal is generated deterministically from the saved transcript.
+
+Primary interactions and console:
+- Passed: analyze, journal, and dismiss callbacks are covered by the focused sheet test.
+- Passed: the live mock save flow renders the expected dialog and concise accessible button names.
+- Passed: no new browser console errors; only existing React Native Web and notification deprecation warnings were observed.
+- Passed: focused tests, scoped lint, app typecheck, tests typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the copy-density and web-focus fixes.
+
+final result: passed
+
+## Full-bleed onboarding heroes - 2026-07-14
+
+Source visual truth path:
+- `/Users/tanuki/Documents/dreamer/screenshots/audit-c-intro-late.png`
+- `/Users/tanuki/Documents/dreamer/assets/images/onboarding-astral-background.png`
+- `/Users/tanuki/Documents/dreamer/assets/images/onboarding-path-background.png`
+- Browser annotation requesting a premium full-width background treatment across onboarding paths.
+
+Implementation screenshot path:
+- Intro: `/private/tmp/noctalia-onboarding-intro-final-stable-425x837.png`
+- Path selection: `/private/tmp/noctalia-onboarding-path-final-stable-425x837.png`
+- Side-by-side source comparison: `/private/tmp/noctalia-onboarding-intro-final-comparison.png`
+
+State and viewport:
+- Route: `http://localhost:8082/onboarding`.
+- Primary comparison viewport: `425x837`, dark theme, intro and path steps.
+- Responsive inspection: `320x568`, `390x844`, and `425x837`.
+
+Full-view and focused comparison evidence:
+- The repository reference and final intro were combined into one side-by-side `425x837` comparison.
+- Separate full-view evidence covers the shared path-selection hero and all three radio choices.
+
+Comparison history:
+- Source issue: the intro asset used `contain` inside the padded content column, leaving visible side gutters.
+- First fix: made intro and path assets edge-to-edge and used `cover`; the natural intro ratio made lower guidance partially hidden behind the pinned CTA at `425x837`.
+- P2 fix: constrained the intro hero to `280px`, preserving the full-width background treatment while keeping all three guidance rows, the privacy link, and the primary CTA visible.
+- Post-fix evidence: both steps are full bleed; all analyze, remembered-dream, and symbol paths share the same path hero without navigation or state changes.
+
+Required fidelity surfaces:
+- Fonts and typography: existing Fraunces and Space Grotesk styles and localized copy are unchanged.
+- Spacing and layout rhythm: full-bleed heroes use the existing `20px` content inset as a negative edge offset; text and cards remain on the established content grid.
+- Colors and visual tokens: existing Noctalia background, accent, surface, and border tokens are unchanged.
+- Image quality and asset fidelity: original high-resolution onboarding assets are rendered with centered `cover`; no stretching or generated replacement is used.
+- Copy and content: onboarding copy, privacy language, path labels, and CTA labels are unchanged.
+
+Primary interactions and console:
+- Passed: intro-to-path transition, all three radio selections, per-path CTA labels, and dictionary navigation.
+- Passed: hero width equals viewport width at `320px` and `425px`; no horizontal overflow was detected.
+- Passed: no new browser console errors; only existing development deprecation warnings were observed.
+- Passed: onboarding state/completion tests, focused UI/i18n tests, scoped lint, app typecheck, tests typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the `280px` intro-height adjustment.
+
+final result: passed
+
 ## Recording editor action scale and height - 2026-07-13
 
 Source visual truth paths:
