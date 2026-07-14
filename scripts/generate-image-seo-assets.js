@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
+const { generateEducationalDiagramSources } = require('./lib/educational-diagram-v2');
 const {
   buildVariantUrl,
   getResponsiveImageData,
@@ -23,7 +24,7 @@ function variantHeight(aspect, width) {
 }
 
 async function sourcePipeline(asset, aspect, width) {
-  const sourcePath = resolveRepoPath(asset.source);
+  const sourcePath = resolveRepoPath(aspect.source || asset.source);
   const height = variantHeight(aspect, width);
   const metadata = await sharp(sourcePath).metadata();
 
@@ -97,23 +98,28 @@ function expectedVariants(registry) {
 async function validateSources(registry) {
   const errors = [];
   for (const [assetId, asset] of Object.entries(registry.assets)) {
-    const sourcePath = resolveRepoPath(asset.source);
-    if (!fs.existsSync(sourcePath)) {
-      errors.push(`${assetId}: missing source ${asset.source}`);
-      continue;
-    }
-    const metadata = await sharp(sourcePath).metadata();
-    if (!metadata.width || !metadata.height) {
-      errors.push(`${assetId}: source has no readable dimensions`);
-    }
-    if (asset.role === 'editorial' && (metadata.width < 1200 || metadata.height < 675)) {
-      errors.push(`${assetId}: editorial source must be at least 1200x675`);
-    }
-    if (asset.role === 'educational' && (metadata.width !== 1200 || metadata.height !== 900)) {
-      errors.push(`${assetId}: educational SVG must be exactly 1200x900`);
-    }
-    if (asset.role === 'fallback' && (metadata.width !== 1200 || metadata.height !== 630)) {
-      errors.push(`${assetId}: fallback SVG must be exactly 1200x630`);
+    for (const [aspectName, aspect] of Object.entries(asset.aspects)) {
+      const source = aspect.source || asset.source;
+      const sourcePath = resolveRepoPath(source);
+      if (!fs.existsSync(sourcePath)) {
+        errors.push(`${assetId}/${aspectName}: missing source ${source}`);
+        continue;
+      }
+      const metadata = await sharp(sourcePath).metadata();
+      if (!metadata.width || !metadata.height) {
+        errors.push(`${assetId}/${aspectName}: source has no readable dimensions`);
+      }
+      if (asset.role === 'editorial' && (metadata.width < 1200 || metadata.height < 675)) {
+        errors.push(`${assetId}/${aspectName}: editorial source must be at least 1200x675`);
+      }
+      if (
+        (asset.role === 'educational' || asset.role === 'fallback') &&
+        (metadata.width !== aspect.width || metadata.height !== aspect.height)
+      ) {
+        errors.push(
+          `${assetId}/${aspectName}: source must be exactly ${aspect.width}x${aspect.height}`
+        );
+      }
     }
   }
   if (errors.length) throw new Error(`Invalid image sources:\n- ${errors.join('\n- ')}`);
@@ -174,6 +180,7 @@ function validatePageImageResolution(registry) {
 
 async function main() {
   const checkOnly = process.argv.includes('--check');
+  generateEducationalDiagramSources({ checkOnly });
   const registry = readImageAssetRegistry();
   await validateSources(registry);
   validatePageImageResolution(registry);

@@ -60,7 +60,9 @@ function validateImageAssetRegistry(registry) {
     if (!SUPPORTED_ROLES.has(asset.role)) {
       errors.push(`${assetId}: unsupported role ${asset.role}`);
     }
-    if (!asset.source) errors.push(`${assetId}: source is required`);
+    if (!asset.source && !Object.values(asset.aspects || {}).every((aspect) => aspect.source)) {
+      errors.push(`${assetId}: source is required unless every aspect defines one`);
+    }
     if (
       !asset.outputStem?.startsWith('/img/seo/') &&
       !asset.outputPattern?.startsWith('/img/')
@@ -79,6 +81,9 @@ function validateImageAssetRegistry(registry) {
       }
       if (!Array.isArray(aspect.widths) || aspect.widths.some((width) => !Number.isInteger(width))) {
         errors.push(`${assetId}/${aspectName}: widths must contain integers`);
+      }
+      if (aspect.source && typeof aspect.source !== 'string') {
+        errors.push(`${assetId}/${aspectName}: source must be a repository-relative path`);
       }
     }
   }
@@ -206,7 +211,7 @@ function renderResponsivePicture(registry, imageRef, options = {}) {
   const priority = options.priority === true;
   const asset = registry.assets[imageRef.assetId];
   const formats = asset.formats || registry.variants.formats;
-  const sources = formats
+  const desktopSources = formats
     .filter((format) => format !== 'jpg')
     .map((format) => {
       const srcset = image.sources[format]
@@ -215,12 +220,35 @@ function renderResponsivePicture(registry, imageRef, options = {}) {
       return `    <source type="image/${format}" srcset="${srcset}" sizes="${escapeHtml(sizes)}">`;
     })
     .join('\n');
+  const mobileAspect = imageRef.mobileAspect || (
+    asset.role === 'educational' && asset.aspects['3x4'] ? '3x4' : null
+  );
+  const mobileImage = mobileAspect
+    ? getResponsiveImageData(registry, imageRef.assetId, mobileAspect)
+    : null;
+  const mobileBreakpoint = imageRef.mobileBreakpoint || '640px';
+  const mobileSizes = options.mobileSizes || imageRef.mobileSizes || '(max-width: 640px) calc(100vw - 2.5rem), 640px';
+  const mobileSources = mobileImage
+    ? formats
+        .filter((format) => format !== 'jpg')
+        .map((format) => {
+          const srcset = mobileImage.sources[format]
+            .map((variant) => `${variant.src} ${variant.width}w`)
+            .join(', ');
+          return `    <source media="(max-width: ${escapeHtml(mobileBreakpoint)})" type="image/${format}" srcset="${srcset}" sizes="${escapeHtml(mobileSizes)}" width="${mobileImage.width}" height="${mobileImage.height}">`;
+        })
+        .join('\n')
+    : '';
   const webpSrcset = image.sources.webp
     .map((variant) => `${variant.src} ${variant.width}w`)
     .join(', ');
   const loading = priority ? 'eager' : 'lazy';
   const priorityAttribute = priority ? ' fetchpriority="high"' : ' fetchpriority="low"';
-  const img = `    <img src="${image.src}" srcset="${webpSrcset}" sizes="${escapeHtml(sizes)}" width="${image.width}" height="${image.height}" loading="${loading}" decoding="async"${priorityAttribute} alt="${escapeHtml(imageRef.alt)}">`;
+  const describedBy = options.describedBy
+    ? ` aria-describedby="${escapeHtml(options.describedBy)}"`
+    : '';
+  const img = `    <img src="${image.src}" srcset="${webpSrcset}" sizes="${escapeHtml(sizes)}" width="${image.width}" height="${image.height}" loading="${loading}" decoding="async"${priorityAttribute}${describedBy} alt="${escapeHtml(imageRef.alt)}">`;
+  const sources = [mobileSources, desktopSources].filter(Boolean).join('\n');
   const picture = `<picture>\n${sources}\n${img}\n  </picture>`;
   if (options.figure === false) return picture;
   const caption = imageRef.caption

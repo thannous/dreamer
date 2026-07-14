@@ -55,6 +55,20 @@ describe('image SEO asset registry', () => {
     expect(html).toContain('fetchpriority="high"');
   });
 
+  it('art-directs educational diagrams with a dedicated mobile composition', () => {
+    const page = getPageImageSet(registry, '/en/blog/lucid-dreaming-beginners-guide');
+    const html = renderResponsivePicture(registry, page.images.educational, {
+      priority: false,
+      figure: false,
+    });
+
+    expect(html).toContain('media="(max-width: 640px)"');
+    expect(html).toContain('lucid-dreaming-method-3x4-480.avif');
+    expect(html).toContain('width="800" height="1067"');
+    expect(html).toContain('lucid-dreaming-method-4x3-1200.webp');
+    expect(html).toContain('loading="lazy"');
+  });
+
   it('keeps the generic fallback out of image sitemaps', () => {
     const fallback = registry.assets['fallback.noctalia-dreamscape-v2'];
     expect(fallback).toMatchObject({ role: 'fallback', visible: false, sitemap: false });

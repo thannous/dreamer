@@ -1172,49 +1172,82 @@ function renderLayoutCss() {
           display: none;
         }
         .dictionary-header {
+          position: relative;
+          isolation: isolate;
           display: grid;
-          grid-template-columns: minmax(0, 0.9fr) minmax(24rem, 1.1fr);
-          align-items: center;
-          gap: clamp(1.5rem, 4vw, 5rem);
+          grid-template-columns: minmax(0, 1fr);
+          align-items: end;
+          overflow: hidden;
           min-height: 29.5rem;
           margin-bottom: 0;
           padding: 7.2rem clamp(1rem, 4vw, 4.75rem) 2.1rem;
           text-align: left;
-          background: transparent;
+          background: #0a0514;
+        }
+        .dictionary-header::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          pointer-events: none;
+          background:
+            linear-gradient(90deg, rgba(5,2,12,0.94) 0%, rgba(5,2,12,0.78) 34%, rgba(5,2,12,0.34) 68%, rgba(5,2,12,0.5) 100%),
+            linear-gradient(180deg, rgba(5,2,12,0.38) 0%, rgba(8,3,17,0.12) 48%, #090413 100%);
         }
         .dictionary-hero-image {
-          position: relative;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
           overflow: hidden;
           margin: 0;
-          border: 1px solid rgba(255,255,255,0.12);
-          border-radius: 1.5rem;
-          background: rgba(18,10,34,0.75);
-          box-shadow: 0 2rem 6rem rgba(0,0,0,0.32);
+          border: 0;
+          border-radius: 0;
+          background: #0a0514;
+          box-shadow: none;
         }
-        .dictionary-hero-image picture,
+        .dictionary-hero-image picture {
+          position: absolute;
+          inset: 0;
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
         .dictionary-hero-image img {
           display: block;
           width: 100%;
-        }
-        .dictionary-hero-image img {
-          height: auto;
-          aspect-ratio: 16 / 9;
+          height: 100%;
           object-fit: cover;
+          object-position: center;
         }
-        .dictionary-hero-image figcaption,
+        .dictionary-hero-image figcaption {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          clip-path: inset(50%);
+          white-space: nowrap;
+          border: 0;
+        }
         .dictionary-educational-image figcaption {
-          padding: 0.8rem 1rem 0.95rem;
+          margin: 0;
+          padding: 0.9rem 1rem 1rem;
           color: rgba(231,220,255,0.76);
-          font-size: 0.86rem;
-          line-height: 1.5;
+          border-top: 1px solid rgba(255,255,255,0.1);
+          background: #100a1a;
+          font-size: 0.875rem;
+          line-height: 1.55;
         }
         .dictionary-educational-image {
-          width: min(calc(100% - (var(--dictionary-edge) * 2)), 800px);
+          width: min(calc(100% - (var(--dictionary-edge) * 2)), 920px);
           margin: 2.5rem auto;
-          padding: 0.8rem;
+          padding: 0;
+          overflow: hidden;
           border: 1px solid rgba(255,255,255,0.12);
           border-radius: 1.25rem;
-          background: rgba(18,10,34,0.86);
+          background: radial-gradient(circle at 82% 12%, rgba(185,164,255,0.14), transparent 34%), #0a0612;
           box-shadow: 0 1.5rem 4rem rgba(0,0,0,0.24);
         }
         .dictionary-educational-image picture,
@@ -1224,12 +1257,22 @@ function renderLayoutCss() {
         }
         .dictionary-educational-image img {
           height: auto;
-          border-radius: 0.8rem;
+        }
+        .dictionary-educational-image picture {
+          aspect-ratio: 4 / 3;
+        }
+        @media (max-width: 640px) {
+          .dictionary-educational-image picture {
+            aspect-ratio: 3 / 4;
+          }
         }
         .dictionary-hero-copy {
+          position: relative;
+          z-index: 2;
           display: flex;
           flex-direction: column;
           gap: 1.1rem;
+          width: min(100%, 48rem);
           min-width: 0;
         }
         .dictionary-hero-kicker {
@@ -1681,11 +1724,10 @@ function renderLayoutCss() {
         @media (max-width: 1180px) {
           .dictionary-header {
             grid-template-columns: 1fr;
-            align-items: start;
+            align-items: end;
             min-height: auto;
             padding-top: 6.6rem;
           }
-          .dictionary-hero-image { width: 100%; }
           .category-browse-card {
             flex-basis: 8.8rem;
             min-width: 8.8rem;
@@ -2013,11 +2055,11 @@ function generateDictionaryPage(lang, t) {
     ? renderResponsivePicture(IMAGE_SEO_REGISTRY, pageImageSet.images.editorial, {
         figure: false,
         priority: true,
-        sizes: '(max-width: 1180px) 100vw, 52vw',
+        sizes: '100vw',
       })
     : `<picture>
-                        <source type="image/webp" srcset="/img/blog/dream-symbols-dictionary-480w.webp 480w, /img/blog/dream-symbols-dictionary-800w.webp 800w, /img/blog/dream-symbols-dictionary-1200w.webp 1200w" sizes="(max-width: 1180px) 100vw, 52vw">
-                        <img src="/img/blog/dream-symbols-dictionary.webp" srcset="/img/blog/dream-symbols-dictionary-480w.webp 480w, /img/blog/dream-symbols-dictionary-800w.webp 800w, /img/blog/dream-symbols-dictionary-1200w.webp 1200w" sizes="(max-width: 1180px) 100vw, 52vw" width="1200" height="675" fetchpriority="high" decoding="async" alt="${escapeHtml(dictionaryCopy.alt)}">
+                        <source type="image/webp" srcset="/img/blog/dream-symbols-dictionary-480w.webp 480w, /img/blog/dream-symbols-dictionary-800w.webp 800w, /img/blog/dream-symbols-dictionary-1200w.webp 1200w" sizes="100vw">
+                        <img src="/img/blog/dream-symbols-dictionary.webp" srcset="/img/blog/dream-symbols-dictionary-480w.webp 480w, /img/blog/dream-symbols-dictionary-800w.webp 800w, /img/blog/dream-symbols-dictionary-1200w.webp 1200w" sizes="100vw" width="1200" height="675" fetchpriority="high" decoding="async" alt="${escapeHtml(dictionaryCopy.alt)}">
                     </picture>`;
   const editorialCaption = pageImages?.editorial?.caption || dictionaryCopy.caption;
   const editorialAssetAttribute = pageImages?.editorial?.assetId
@@ -2028,13 +2070,15 @@ function generateDictionaryPage(lang, t) {
                     <figcaption>${escapeHtml(editorialCaption)}</figcaption>
                 </figure>`;
   const educationalFigure = pageImageSet
-    ? `<figure class="dictionary-educational-image" data-image-seo-role="educational" data-image-asset-id="${escapeHtml(pageImages.educational.assetId)}">
+    ? `<figure class="seo-image seo-image--educational dictionary-educational-image" data-image-seo-role="educational" data-image-asset-id="${escapeHtml(pageImages.educational.assetId)}">
                     ${renderResponsivePicture(IMAGE_SEO_REGISTRY, pageImageSet.images.educational, {
                       figure: false,
                       priority: false,
-                      sizes: '(max-width: 768px) 100vw, 800px',
+                      sizes: '(max-width: 640px) calc(100vw - 2.5rem), 920px',
+                      mobileSizes: '(max-width: 640px) calc(100vw - 2.5rem), 640px',
+                      describedBy: `image-caption-${String(pageImages.educational.assetId).replace(/[^a-z0-9]+/gi, '-')}`,
                     })}
-                    <figcaption>${escapeHtml(pageImages.educational.caption)}</figcaption>
+                    <figcaption id="image-caption-${String(pageImages.educational.assetId).replace(/[^a-z0-9]+/gi, '-')}">${escapeHtml(pageImages.educational.caption)}</figcaption>
                 </figure>`
     : '';
   const ogImage = pageImages?.editorial?.src

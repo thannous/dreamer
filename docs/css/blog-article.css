@@ -127,10 +127,73 @@ html.blog-article main > article > header {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+html.blog-article main > article > header[data-image-seo-hero="true"] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+html.blog-article main > article > header[data-image-seo-hero="true"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(7, 3, 15, 0.95) 0%, rgba(7, 3, 15, 0.8) 36%, rgba(7, 3, 15, 0.34) 70%, rgba(7, 3, 15, 0.56) 100%),
+    linear-gradient(180deg, rgba(7, 3, 15, 0.4) 0%, rgba(7, 3, 15, 0.14) 46%, #090413 100%);
+}
+
 html.blog-article main > article > header > * {
   max-width: min(100%, 92rem);
   margin-left: 0;
   margin-right: auto;
+}
+
+html.blog-article main > article > header[data-image-seo-hero="true"] > *:not(figure[data-image-seo-role="editorial"]) {
+  position: relative;
+  z-index: 2;
+}
+
+html.blog-article main > article > header > figure[data-image-seo-role="editorial"][data-image-asset-id] {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100% !important;
+  max-width: none;
+  height: 100%;
+  margin: 0 !important;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0 !important;
+  background: #0a0514;
+  box-shadow: none;
+}
+
+html.blog-article main > article > header > figure[data-image-seo-role="editorial"][data-image-asset-id] picture,
+html.blog-article main > article > header > figure[data-image-seo-role="editorial"][data-image-asset-id] img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+html.blog-article main > article > header > figure[data-image-seo-role="editorial"][data-image-asset-id] img {
+  object-fit: cover;
+  object-position: center;
+}
+
+html.blog-article main > article > header > figure[data-image-seo-role="editorial"][data-image-asset-id] figcaption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 html.blog-article main > article > header .flex {
@@ -177,7 +240,6 @@ html.blog-article main > article > figure[data-image-seo-role="editorial"] {
   display: block;
   width: 100% !important;
   max-width: none;
-  aspect-ratio: 16 / 9;
   margin: 0 auto clamp(2rem, 5vw, 4rem) !important;
   overflow: hidden;
   border-top: 1px solid var(--article-border);
@@ -200,38 +262,70 @@ html.blog-article main > article > figure[data-image-seo-role="editorial"] pictu
 html.blog-article main > article > figure[data-image-seo-role="editorial"] img {
   display: block;
   width: 100%;
-  height: 100%;
+}
+
+html.blog-article main > article > figure[data-image-seo-role="editorial"] picture {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
 }
 
 html.blog-article main > article > figure[data-image-seo-role="editorial"] img {
+  height: 100%;
   object-fit: cover;
 }
 
+html.blog-article main > article > figure[data-image-seo-role="editorial"] figcaption {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0.8rem var(--article-edge) 0.95rem;
+  color: var(--article-muted);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0d0718;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+html.blog-article main > article > .prose > figure[data-image-seo-role="educational"],
 html.blog-article main > article > figure[data-image-seo-role="educational"] {
-  width: min(calc(100% - (var(--article-edge) * 2)), 920px);
+  width: min(100%, 920px);
   margin: clamp(2rem, 5vw, 4rem) auto;
-  padding: clamp(0.7rem, 2vw, 1rem);
+  padding: 0;
+  overflow: hidden;
   border: 1px solid var(--article-border);
-  border-radius: 16px;
-  background: rgba(22, 12, 39, 0.84);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 82% 12%, rgba(185, 164, 255, 0.14), transparent 34%),
+    #0a0612;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
 }
 
+html.blog-article main > article > .prose > figure[data-image-seo-role="educational"] picture,
+html.blog-article main > article > .prose > figure[data-image-seo-role="educational"] img,
 html.blog-article main > article > figure[data-image-seo-role="educational"] picture,
 html.blog-article main > article > figure[data-image-seo-role="educational"] img {
   display: block;
   width: 100%;
 }
 
-html.blog-article main > article > figure[data-image-seo-role="educational"] img {
-  height: auto;
-  border-radius: 10px;
+html.blog-article main > article > .prose > figure[data-image-seo-role="educational"] picture,
+html.blog-article main > article > figure[data-image-seo-role="educational"] picture {
+  aspect-ratio: 4 / 3;
 }
 
+html.blog-article main > article > .prose > figure[data-image-seo-role="educational"] img,
+html.blog-article main > article > figure[data-image-seo-role="educational"] img {
+  height: auto;
+}
+
+html.blog-article main > article > .prose > figure[data-image-seo-role="educational"] figcaption,
 html.blog-article main > article > figure[data-image-seo-role="educational"] figcaption {
-  margin: 0.85rem 0.35rem 0.2rem;
+  margin: 0;
+  padding: 0.9rem 1rem 1rem;
   color: var(--article-muted);
-  font-size: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: #100a1a;
+  font-size: 0.875rem;
   line-height: 1.55;
 }
 
@@ -413,8 +507,12 @@ html.blog-article main > aside[role="note"] {
   }
 
   html.blog-article main > article > figure[data-image-seo-role="editorial"] {
-    aspect-ratio: 16 / 9;
     margin-bottom: 1.5rem !important;
+  }
+
+  html.blog-article main > article > .prose > figure[data-image-seo-role="educational"] picture,
+  html.blog-article main > article > figure[data-image-seo-role="educational"] picture {
+    aspect-ratio: 3 / 4;
   }
 
   html.blog-article main > article > section[aria-labelledby="quick-answer-title"] {

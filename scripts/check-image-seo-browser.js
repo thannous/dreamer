@@ -22,7 +22,10 @@ async function inspectPage(browser, baseUrl, pathname, viewport) {
   });
 
   try {
-    const response = await page.goto(`${baseUrl}${pathname}`, { waitUntil: 'domcontentloaded' });
+    let response = await page.goto(`${baseUrl}${pathname}`, { waitUntil: 'domcontentloaded' });
+    if (response?.status() === 404 && !pathname.endsWith('/')) {
+      response = await page.goto(`${baseUrl}${pathname}.html`, { waitUntil: 'domcontentloaded' });
+    }
     if (!response?.ok()) throw new Error(`HTTP ${response?.status() || 'unknown'}`);
 
     const educational = page.locator('[data-image-seo-role="educational"]');
@@ -49,6 +52,8 @@ async function inspectPage(browser, baseUrl, pathname, viewport) {
           visible: visible(figure) && visible(image),
           loaded: Boolean(image?.complete && image.naturalWidth > 0 && image.naturalHeight > 0),
           currentSrc: image?.currentSrc || '',
+          naturalWidth: image?.naturalWidth || 0,
+          naturalHeight: image?.naturalHeight || 0,
           width: image?.width || 0,
           height: image?.height || 0,
           loading: image?.loading || '',
@@ -98,6 +103,12 @@ async function main() {
         }
         if (result.educational.loading !== 'lazy' || result.educational.fetchPriority === 'high') {
           errors.push(`${pathname} (${label}): educational image has the wrong loading policy`);
+        }
+        const expectedEducationalAspect = label === 'mobile' ? '-3x4-' : '-4x3-';
+        if (!result.educational.currentSrc.includes(expectedEducationalAspect)) {
+          errors.push(
+            `${pathname} (${label}): educational image did not select the ${expectedEducationalAspect.slice(1, -1)} composition`
+          );
         }
         if (result.cls > 0.1) {
           errors.push(`${pathname} (${label}): CLS ${result.cls.toFixed(4)} exceeds 0.1`);
