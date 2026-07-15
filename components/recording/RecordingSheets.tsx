@@ -79,18 +79,18 @@ export function PostSaveOfferSheet({
       titleTestID={TID.Text.AnalyzePromptTitle}
       actions={{
         primaryLabel: kind === 'memory'
-          ? t('recording.memory_offer.view')
+          ? t('recording.memory_offer.analyze')
           : analysisPrimaryLabel,
-        onPrimary: kind === 'memory' ? onJournal : onPrimary,
+        onPrimary,
         primaryDisabled: isPersisting,
         primaryLoading: isPersisting,
         primaryTestID: TID.Button.AnalysisOfferPrimary,
         secondaryLabel: kind === 'memory'
-          ? t('recording.memory_offer.analyze')
+          ? undefined
           : t('recording.analysis_offer.view'),
-        onSecondary: kind === 'memory' ? onPrimary : onJournal,
+        onSecondary: kind === 'memory' ? undefined : onJournal,
         secondaryDisabled: isPersisting,
-        secondaryTestID: TID.Button.AnalysisOfferJournal,
+        secondaryTestID: kind === 'memory' ? undefined : TID.Button.AnalysisOfferJournal,
         linkLabel: t(kind === 'memory' ? 'recording.memory_offer.later' : 'recording.analysis_offer.later'),
         onLink: onDismiss,
         linkTestID: TID.Button.AnalysisOfferLater,
@@ -112,7 +112,9 @@ export function PostSaveOfferSheet({
           </Text>
         </View>
       ) : null}
-      <RecordingActivationInsightCard insight={activationInsight} />
+      {kind === 'analysis' ? (
+        <RecordingActivationInsightCard insight={activationInsight} />
+      ) : null}
     </StandardBottomSheet>
   );
 }
@@ -346,21 +348,25 @@ export function QuotaLimitSheet({
   onClose,
   onPrimary,
   onSecondary,
+  onReset,
   onLink,
   mode,
   tier,
   usageLimit,
   message,
+  resetDisabled = false,
 }: {
   visible: boolean;
   onClose: () => void;
   onPrimary: () => void;
   onSecondary?: () => void;
+  onReset?: () => void;
   onLink?: () => void;
   mode: 'limit' | 'error' | 'login';
   tier: SubscriptionTier;
   usageLimit?: number | null;
   message?: string;
+  resetDisabled?: boolean;
 }) {
   const { t } = useTranslation();
   const { colors, mode: themeMode } = useTheme();
@@ -409,6 +415,7 @@ export function QuotaLimitSheet({
     : mode === 'login'
       ? TID.Button.QuotaLimitCtaGuest
       : TID.Button.QuotaLimitCtaFree;
+  const resetAvailable = mode === 'limit' && Boolean(onReset);
 
   return (
     <StandardBottomSheet
@@ -422,9 +429,18 @@ export function QuotaLimitSheet({
         primaryLabel,
         onPrimary,
         primaryTestID,
-        secondaryLabel: mode === 'limit' ? t('recording.analysis_limit.journal') : undefined,
-        onSecondary: mode === 'limit' ? onSecondary : undefined,
-        secondaryTestID: mode === 'limit' ? TID.Button.QuotaLimitJournal : undefined,
+        secondaryLabel: resetAvailable
+          ? t('settings.account.mock.reset')
+          : mode === 'limit'
+            ? t('recording.analysis_limit.journal')
+            : undefined,
+        onSecondary: resetAvailable ? onReset : mode === 'limit' ? onSecondary : undefined,
+        secondaryDisabled: resetAvailable ? resetDisabled : false,
+        secondaryTestID: resetAvailable
+          ? TID.Button.QuotaLimitResetMock
+          : mode === 'limit'
+            ? TID.Button.QuotaLimitJournal
+            : undefined,
         linkLabel: mode === 'limit' ? t('recording.analysis_limit.dismiss') : undefined,
         onLink: mode === 'limit' ? onLink : undefined,
       }}

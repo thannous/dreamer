@@ -35,6 +35,7 @@ import { useQuota } from '@/hooks/useQuota';
 import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
+import { signOut } from '@/lib/auth';
 import { buildFirstValueProperties } from '@/lib/activationAnalytics';
 import { isResumableAnalysisRequest } from '@/lib/analysisRequest';
 import {
@@ -149,7 +150,7 @@ const formatRecordingDuration = (seconds: number) => {
 };
 
 export default function RecordingScreen() {
-  const { addDream, updateDream, dreams, analyzeDream } = useDreams();
+  const { addDream, updateDream, dreams, analyzeDream, reloadDreams } = useDreams();
   const { colors, mode } = useTheme();
   const { language } = useLanguage();
   const { t } = useTranslation();
@@ -1092,6 +1093,24 @@ export default function RecordingScreen() {
     }
   }, [pendingAnalysisDream, analysisProgress]);
 
+  const handleMockQuotaReset = useCallback(async () => {
+    if (!isMockMode || isPersisting) return;
+
+    setIsPersisting(true);
+    try {
+      await signOut();
+      await reloadDreams();
+      handleQuotaLimitDismiss();
+    } catch (error) {
+      if (__DEV__) {
+        console.warn('[Recording] Failed to reset mock quota state', error);
+      }
+      Alert.alert(t('common.error_title'), t('settings.account.alert.signout_failed.title'));
+    } finally {
+      setIsPersisting(false);
+    }
+  }, [handleQuotaLimitDismiss, isPersisting, reloadDreams, t]);
+
   const handleQuotaLimitPrimary = useCallback(() => {
     setShowQuotaLimitSheet(false);
     if (quotaSheetMode === 'login') {
@@ -2002,6 +2021,7 @@ export default function RecordingScreen() {
         onQuotaLimitClose={handleQuotaLimitDismiss}
         onQuotaLimitPrimary={quotaSheetMode === 'error' ? handleQuotaLimitDismiss : handleQuotaLimitPrimary}
         onQuotaLimitSecondary={quotaSheetMode === 'limit' ? handleQuotaLimitJournal : undefined}
+        onQuotaLimitReset={isMockMode && quotaSheetMode === 'limit' ? handleMockQuotaReset : undefined}
         onQuotaLimitLink={quotaSheetMode === 'limit' ? handleQuotaLimitDismiss : undefined}
         quotaSheetMode={quotaSheetMode}
         tier={tier}
@@ -2053,6 +2073,7 @@ function RecordingOverlays({
   onQuotaLimitClose,
   onQuotaLimitPrimary,
   onQuotaLimitSecondary,
+  onQuotaLimitReset,
   onQuotaLimitLink,
   quotaSheetMode,
   tier,
@@ -2099,6 +2120,7 @@ function RecordingOverlays({
   onQuotaLimitClose: () => void;
   onQuotaLimitPrimary: () => void;
   onQuotaLimitSecondary?: () => void;
+  onQuotaLimitReset?: () => void;
   onQuotaLimitLink?: () => void;
   quotaSheetMode: 'limit' | 'error' | 'login';
   tier: 'guest' | 'free' | 'plus';
@@ -2165,11 +2187,13 @@ function RecordingOverlays({
         onClose={onQuotaLimitClose}
         onPrimary={onQuotaLimitPrimary}
         onSecondary={onQuotaLimitSecondary}
+        onReset={onQuotaLimitReset}
         onLink={onQuotaLimitLink}
         mode={quotaSheetMode}
         tier={tier}
         usageLimit={usageLimit}
         message={quotaSheetMessage}
+        resetDisabled={isPersisting}
       />
 
       {referenceImagesEnabled && showSubjectProposition && detectedSubjectType ? (

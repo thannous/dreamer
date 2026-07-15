@@ -533,7 +533,7 @@ const translations: Record<string, string> = {
     'recording.analysis_offer.view': 'View my dream',
     'recording.analysis_offer.later': 'Later',
     'recording.memory_offer.title': 'Memory saved',
-    'recording.memory_offer.subtitle': 'Your memory is in the journal. You can read or analyze it now.',
+    'recording.memory_offer.subtitle': 'Your memory is in the journal. You can analyze it now.',
     'recording.memory_offer.view': 'View my memory',
     'recording.memory_offer.analyze': 'Analyze it',
     'recording.memory_offer.later': 'Later',

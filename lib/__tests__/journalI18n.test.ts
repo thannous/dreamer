@@ -135,6 +135,14 @@ describe('Journal i18n - badges & filter accessibility', () => {
       }
     }
   });
+
+  it('promises lifetime access in the French journal backup prompt', async () => {
+    await loadTranslations('fr');
+
+    expect(getTranslator('fr')('journal.detail.backup_prompt.message')).toBe(
+      'Créez un compte gratuit après votre première analyse pour sauvegarder votre journal et y accéder à vie.',
+    );
+  });
 });
 
 describe('getTranslator replacement functionality', () => {

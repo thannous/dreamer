@@ -1240,12 +1240,12 @@ export default function JournalDetailScreen() {
       >
       <View style={styles.metadataHeader}>
         <View style={styles.dateContainer}>
-          <IconSymbol name="calendar" size={16} color={noctalia.text.onAccent} />
-          <Text style={[styles.dateText, { color: noctalia.text.onAccent }]}>{formatDreamDate(dream.id)}</Text>
+          <IconSymbol name="calendar" size={16} color={noctalia.text.primary} />
+          <Text style={[styles.dateText, { color: noctalia.text.primary }]}>{formatDreamDate(dream.id)}</Text>
         </View>
         <View style={styles.timeContainer}>
-          <IconSymbol name="clock" size={16} color={noctalia.text.onAccent} />
-          <Text style={[styles.timeText, { color: noctalia.text.onAccent }]}>{formatDreamTime(dream.id)}</Text>
+          <IconSymbol name="clock" size={16} color={noctalia.text.primary} />
+          <Text style={[styles.timeText, { color: noctalia.text.primary }]}>{formatDreamTime(dream.id)}</Text>
         </View>
       </View>
       <View style={[styles.divider, { backgroundColor: noctalia.surface.border }]} />
@@ -2457,8 +2457,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   dateText: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.bold,
     // color: set dynamically
   },
   timeContainer: {
@@ -2467,8 +2467,8 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   timeText: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.bold,
     // color: set dynamically
   },
   divider: {

@@ -8,7 +8,13 @@ import type { DreamTheme, DreamType } from '@/lib/types';
 import * as Haptics from 'expo-haptics';
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -177,9 +183,10 @@ function FilterPill({
 
   // Bounce on active state change
   useEffect(() => {
-    scale.value = withSpring(1.05, { damping: 12, stiffness: 200 }, () => {
-      scale.value = withSpring(1, { damping: 15, stiffness: 150 });
-    });
+    scale.value = withSequence(
+      withSpring(1.05, { damping: 12, stiffness: 200 }),
+      withSpring(1, { damping: 15, stiffness: 150 })
+    );
   }, [isActive, scale]);
 
   const animatedStyle = useAnimatedStyle(() => ({

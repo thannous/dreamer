@@ -7,7 +7,10 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { GUEST_DREAM_LIMIT } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
-import { getLocalDreamRecordingCount } from '@/services/quota/GuestDreamCounter';
+import {
+  getLocalDreamRecordingCount,
+  subscribeGuestDreamRecordingCount,
+} from '@/services/quota/GuestDreamCounter';
 import { router } from 'expo-router';
 
 export const GuestLimitBanner: React.FC = () => {
@@ -17,8 +20,13 @@ export const GuestLimitBanner: React.FC = () => {
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const [guestRecordedTotal, setGuestRecordedTotal] = useState(0);
+  const [guestRecordingRefreshKey, setGuestRecordingRefreshKey] = useState(0);
 
   const isGuest = !user;
+  useEffect(() => subscribeGuestDreamRecordingCount?.(() => {
+    setGuestRecordingRefreshKey((current) => current + 1);
+  }), []);
+
   useEffect(() => {
     if (!isGuest) {
       setGuestRecordedTotal(0);
@@ -35,7 +43,7 @@ export const GuestLimitBanner: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [isGuest, dreams.length]);
+  }, [isGuest, dreams.length, guestRecordingRefreshKey]);
 
   const used = useMemo(
     () => (isGuest ? Math.min(Math.max(dreams.length, guestRecordedTotal), GUEST_DREAM_LIMIT) : 0),

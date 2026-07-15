@@ -111,6 +111,7 @@ export const TID = {
     QuotaLimitCtaGuest: 'btn.quotaLimit.ctaGuest',
     QuotaLimitCtaFree: 'btn.quotaLimit.ctaFree',
     QuotaLimitJournal: 'btn.quotaLimit.journal',
+    QuotaLimitResetMock: 'btn.quotaLimit.resetMock',
     PaywallSelectMonthly: 'btn.paywall.selectMonthly',
     PaywallSelectAnnual: 'btn.paywall.selectAnnual',
     PaywallPurchase: 'btn.paywall.purchase',
