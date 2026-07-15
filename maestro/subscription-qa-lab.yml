@@ -9,14 +9,16 @@ appId: com.tanuki75.noctalia
     visible: "Settings|Paramètres|Configuración|Ajustes"
     timeout: 30000
 
-- swipe:
-    start: 50%, 78%
-    end: 50%, 28%
-- assertVisible: "Subscription QA Lab"
-- swipe:
-    start: 50%, 78%
-    end: 50%, 28%
-- assertVisible: "Guest"
+- scrollUntilVisible:
+    element:
+      id: screen.subscription.qaLab.toggle
+    direction: DOWN
+    visibilityPercentage: 70
+    timeout: 15000
+- tapOn:
+    id: screen.subscription.qaLab.toggle
+- assertVisible:
+    id: btn.subscription.qa.profile.guest
 
 # Profile switching should isolate guest and free identities.
 - tapOn:

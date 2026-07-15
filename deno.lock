@@ -218,12 +218,11 @@
         "npm:@expo-google-fonts/lora@~0.4.2",
         "npm:@expo-google-fonts/space-grotesk@~0.4.1",
         "npm:@expo/app-integrity@57.0",
+        "npm:@expo/ui@~57.0.4",
         "npm:@expo/vector-icons@^15.0.3",
         "npm:@legendapp/list@^2.0.16",
         "npm:@react-native-async-storage/async-storage@2.2.0",
-        "npm:@react-native-community/datetimepicker@9.1.0",
         "npm:@react-native-google-signin/google-signin@^16.1.2",
-        "npm:@react-native-masked-view/masked-view@~0.3.2",
         "npm:@react-native/jest-preset@0.86",
         "npm:@shopify/flash-list@2.0.2",
         "npm:@supabase/supabase-js@^2.45.4",
@@ -303,7 +302,8 @@
         "npm:typescript@~6.0.3",
         "npm:vite-tsconfig-paths@^5.1.1",
         "npm:vitest@^4.0.13",
-        "npm:workbox-cli@7"
+        "npm:workbox-cli@7",
+        "npm:wrangler@4.110.0"
       ],
       "overrides": {
         "markdown-it": "14.3.0",

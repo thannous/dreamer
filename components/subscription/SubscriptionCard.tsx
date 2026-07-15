@@ -18,6 +18,7 @@ export type SubscriptionCardProps = {
   ctaState?: 'enabled' | 'disabled';
   testID?: string;
   ctaTestID?: string;
+  presentation?: 'card' | 'embedded';
 };
 
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = function SubscriptionCard({
@@ -32,6 +33,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = function Subscr
   ctaState = 'enabled',
   testID,
   ctaTestID,
+  presentation = 'card',
 }) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -44,10 +46,12 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = function Subscr
     <View
       style={[
         styles.card,
-        {
-          backgroundColor: noctalia.surface.raised,
-          borderColor: noctalia.surface.border,
-        },
+        presentation === 'embedded'
+          ? styles.embedded
+          : {
+              backgroundColor: noctalia.surface.raised,
+              borderColor: noctalia.surface.border,
+            },
       ]}
       testID={testID}
     >
@@ -114,6 +118,13 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.md,
     gap: ThemeLayout.spacing.sm,
     borderWidth: 1,
+  },
+  embedded: {
+    backgroundColor: 'transparent',
+    borderRadius: 0,
+    borderWidth: 0,
+    marginBottom: 0,
+    padding: 0,
   },
   headerRow: {
     flexDirection: 'row',
