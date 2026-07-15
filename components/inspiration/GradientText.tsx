@@ -1,5 +1,5 @@
+import MaskedView from '@expo/ui/community/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
-import MaskedView from '@react-native-masked-view/masked-view';
 import React, { type ReactNode } from 'react';
 import { Platform, Text, type TextProps, type TextStyle } from 'react-native';
 

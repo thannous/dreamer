@@ -3,8 +3,6 @@ import React from 'react';
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
-import { TID } from '@/lib/testIDs';
-
 afterEach(() => {
   cleanup();
   jest.clearAllMocks();
@@ -13,8 +11,10 @@ afterEach(() => {
 const mockPush = jest.fn();
 const mockUseAuth = jest.fn();
 const mockUseSubscription = jest.fn();
+let mockWindowWidth = 390;
+let mockPlatformOS = 'web';
 
-let capturedSubscriptionProps: any = null;
+let capturedSettingsProps: any = null;
 
 jest.doMock('expo-router', () => ({
   router: { push: mockPush },
@@ -37,10 +37,18 @@ jest.doMock('react-native', () => {
       keyboardShouldPersistTaps,
       showsVerticalScrollIndicator,
       contentInsetAdjustmentBehavior,
+      style,
       ...rest
     } = props;
+    const normalizedStyle = Object.assign(
+      {},
+      ...(Array.isArray(style) ? style : [style]).filter(
+        (entry): entry is Record<string, unknown> => Boolean(entry) && typeof entry === 'object'
+      )
+    );
     return {
       ...rest,
+      ...(style ? { style: normalizedStyle } : {}),
       ...(testID ? { 'data-testid': testID } : {}),
       ...(onPress ? { onClick: onPress } : {}),
       ...(accessibilityRole ? { role: accessibilityRole } : {}),
@@ -73,7 +81,9 @@ jest.doMock('react-native', () => {
     Text: createElement('span'),
     View: createElement('div'),
     Platform: {
-      OS: 'web',
+      get OS() {
+        return mockPlatformOS;
+      },
       select: (values: Record<string, any>) => values?.web ?? values?.default,
     },
     StyleSheet: {
@@ -82,7 +92,12 @@ jest.doMock('react-native', () => {
       absoluteFillObject: {},
       hairlineWidth: 1,
     },
-    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
+    useWindowDimensions: () => ({
+      width: mockWindowWidth,
+      height: 844,
+      scale: 1,
+      fontScale: 1,
+    }),
   };
 });
 
@@ -138,6 +153,10 @@ jest.doMock('@/components/inspiration/PageHeader', () => ({
   PageHeader: ({ titleKey }: { titleKey: string }) => <div>{titleKey}</div>,
 }));
 
+jest.doMock('@/components/NoctaliaScreenHeader', () => ({
+  NoctaliaScreenHeader: ({ titleKey }: { titleKey: string }) => <div>{titleKey}</div>,
+}));
+
 jest.doMock('@/components/inspiration/SectionHeading', () => ({
   SectionHeading: () => <div data-testid="section-heading" />,
 }));
@@ -149,12 +168,16 @@ jest.doMock('@/components/inspiration/GlassCard', () => ({
 
 jest.doMock('@/context/ThemeContext', () => ({
   useTheme: () => ({
+    mode: 'light',
     colors: {
       accent: '#6f62b5',
+      accentDark: '#55479c',
+      accentLight: '#988de0',
       backgroundCard: '#221b3b',
       backgroundSecondary: '#2f274f',
       backgroundDark: '#0b0a12',
       divider: '#3a3357',
+      overlay: 'rgba(0,0,0,.4)',
       textPrimary: '#fff',
       textSecondary: '#c7c2d7',
       textTertiary: '#9a93b4',
@@ -193,39 +216,25 @@ jest.doMock('@/components/auth/EmailAuthCard', () => ({
   EmailAuthCard: () => <div data-testid="email-auth-card" />,
 }));
 
-jest.doMock('@/components/subscription/SubscriptionCard', () => ({
-  SubscriptionCard: function MockSubscriptionCard(props: any) {
-    capturedSubscriptionProps = props;
-    return <div data-testid="subscription-card" />;
-  },
-}));
-
 jest.doMock('@/components/quota/QuotaStatusCard', () => ({
   QuotaStatusCard: () => <div data-testid="quota-status-card" />,
 }));
 
-jest.doMock('@/components/subscription/SubscriptionQALab', () => ({
-  SubscriptionQALab: () => <div data-testid="subscription-qa-lab" />,
-}));
-
-jest.doMock('@/components/ThemeSettingsCard', () => ({
-  __esModule: true,
-  default: () => <div data-testid="theme-settings-card" />,
-}));
-
-jest.doMock('@/components/LanguageSettingsCard', () => ({
-  __esModule: true,
-  default: () => <div data-testid="language-settings-card" />,
-}));
-
-jest.doMock('@/components/AnalyticsPrivacySettingsCard', () => ({
-  __esModule: true,
-  AnalyticsPrivacySettingsCard: () => <div data-testid="analytics-privacy-settings-card" />,
-}));
-
-jest.doMock('@/components/NotificationSettingsCard', () => ({
-  __esModule: true,
-  default: () => <div data-testid="notification-settings-card" />,
+jest.doMock('@/components/settings/SettingsFieldGroup', () => ({
+  SettingsFieldGroup: function MockSettingsFieldGroup(props: any) {
+    capturedSettingsProps = props;
+    return (
+      <div data-testid="settings-field-group">
+        {props.account}
+        {props.quota}
+        {!props.returningGuestBlocked ? (
+          <button data-testid="settings-plus-card" onClick={props.onOpenSubscription}>
+            {props.subscriptionTitle}
+          </button>
+        ) : null}
+      </div>
+    );
+  },
 }));
 
 jest.doMock('@/components/ui/icon-symbol', () => ({
@@ -264,9 +273,63 @@ jest.doMock('react-native-reanimated', () => {
 const { default: SettingsScreen } = require('@/app/(tabs)/settings');
 
 describe('Settings screen', () => {
+  afterEach(() => {
+    mockWindowWidth = 390;
+    mockPlatformOS = 'web';
+  });
+
+  it('[B] lets the account card fill the mock-aligned editorial column', () => {
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+    mockUseSubscription.mockReturnValue({
+      isActive: false,
+      loading: false,
+      status: null,
+    });
+
+    render(<SettingsScreen />);
+
+    expect(screen.getByTestId('settings-account-rn-content').style.width).toBe('100%');
+    expect(screen.getByTestId('settings-quota-rn-content')).toBeTruthy();
+    expect(screen.getByTestId('quota-status-card')).toBeTruthy();
+    expect(capturedSettingsProps).toMatchObject({
+      subscriptionTitle: 'subscription.settings.title.plus',
+      subscriptionSubtitle: 'settings.plus.subtitle',
+    });
+  });
+
+  it('[B] caps hosted React Native content to the centered desktop field group', () => {
+    mockWindowWidth = 1440;
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+    mockUseSubscription.mockReturnValue({
+      isActive: false,
+      loading: false,
+      status: null,
+    });
+
+    render(<SettingsScreen />);
+
+    expect(screen.getByTestId('settings-account-rn-content').style.width).toBe('100%');
+  });
+
+  it('[B] keeps the Android clipping guard while using the full card width', () => {
+    mockPlatformOS = 'android';
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+    mockUseSubscription.mockReturnValue({
+      isActive: false,
+      loading: false,
+      status: null,
+    });
+
+    render(<SettingsScreen />);
+
+    const accountContent = screen.getByTestId('settings-account-rn-content');
+    expect(accountContent.style.width).toBe('100%');
+    expect(accountContent.style.paddingBottom).toBe('24px');
+  });
+
   it('[B] Given a returning guest is blocked When rendering Then it hides subscription features', () => {
     // Given
-    capturedSubscriptionProps = null;
+    capturedSettingsProps = null;
     mockUseAuth.mockReturnValue({ returningGuestBlocked: true });
     mockUseSubscription.mockReturnValue({
       isActive: false,
@@ -280,16 +343,13 @@ describe('Settings screen', () => {
     // Then
     expect(screen.getByText('auth.returning_guest.title')).toBeTruthy();
     expect(screen.getByTestId('email-auth-card')).toBeTruthy();
-    expect(screen.getByTestId('language-settings-card')).toBeTruthy();
-    expect(screen.getByTestId('analytics-privacy-settings-card')).toBeTruthy();
-    expect(screen.queryByTestId('subscription-card')).toBeNull();
-    expect(screen.queryByTestId(TID.Button.SubscriptionSettingsCta)).toBeNull();
-    expect(capturedSubscriptionProps).toBeNull();
+    expect(capturedSettingsProps?.returningGuestBlocked).toBe(true);
+    expect(screen.queryByTestId('settings-plus-card')).toBeNull();
   });
 
-  it('[B] Given a free user When rendering Then the subscription card sells living profile benefits', () => {
+  it('[B] Given a free user When rendering Then the compact Plus card opens the paywall', () => {
     // Given
-    capturedSubscriptionProps = null;
+    capturedSettingsProps = null;
     mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
     mockUseSubscription.mockReturnValue({
       isActive: false,
@@ -301,23 +361,18 @@ describe('Settings screen', () => {
     render(<SettingsScreen />);
 
     // Then
-    expect(screen.getByTestId('subscription-card')).toBeTruthy();
-    expect(capturedSubscriptionProps).toMatchObject({
-      title: 'subscription.settings.title.free',
-      subtitle: 'subscription.settings.subtitle.free',
-      features: [
-        'subscription.paywall.card.feature.living_profile',
-        'subscription.paywall.card.feature.exploration_360',
-        'subscription.paywall.card.feature.final_synthesis',
-      ],
-      ctaLabel: 'subscription.settings.cta.free',
-      ctaTestID: TID.Button.SubscriptionSettingsCta,
+    expect(screen.getByTestId('settings-plus-card')).toBeTruthy();
+    expect(capturedSettingsProps).toMatchObject({
+      subscriptionTitle: 'subscription.settings.title.plus',
+      subscriptionSubtitle: 'settings.plus.subtitle',
     });
+    screen.getByTestId('settings-plus-card').click();
+    expect(mockPush).toHaveBeenCalledTimes(1);
   });
 
-  it('[E] Given an invalid expiry date When rendering Then it does not show an expiry label', () => {
+  it('[E] keeps the mock copy stable for active subscriptions', () => {
     // Given
-    capturedSubscriptionProps = null;
+    capturedSettingsProps = null;
     mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
     mockUseSubscription.mockReturnValue({
       isActive: true,
@@ -329,7 +384,8 @@ describe('Settings screen', () => {
     render(<SettingsScreen />);
 
     // Then
-    expect(screen.getByTestId('subscription-card')).toBeTruthy();
-    expect(capturedSubscriptionProps?.expiryLabel).toBeUndefined();
+    expect(screen.getByTestId('settings-plus-card').textContent).toBe(
+      'subscription.settings.title.plus'
+    );
   });
 });

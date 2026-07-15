@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Platform } from 'react-native';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+
+import { DateTimePicker } from '@/components/ui/DateTimePicker';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -26,35 +27,31 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
   const { t } = useTranslation();
   const { formatDate } = useLocaleFormatting();
 
-  const handleStartDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+  const handleStartDateChange = (_event: unknown, selectedDate: Date) => {
     if (Platform.OS === 'android') {
       setPickerMode('none');
     }
 
-    if (event.type === 'set' && selectedDate) {
-      // Set to start of day
-      const startOfDay = new Date(selectedDate);
-      startOfDay.setHours(0, 0, 0, 0);
-      setLocalStartDate(startOfDay);
+    // Set to start of day
+    const startOfDay = new Date(selectedDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    setLocalStartDate(startOfDay);
 
-      // If end date is before start date, clear it
-      if (localEndDate && localEndDate < startOfDay) {
-        setLocalEndDate(null);
-      }
+    // If end date is before start date, clear it
+    if (localEndDate && localEndDate < startOfDay) {
+      setLocalEndDate(null);
     }
   };
 
-  const handleEndDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+  const handleEndDateChange = (_event: unknown, selectedDate: Date) => {
     if (Platform.OS === 'android') {
       setPickerMode('none');
     }
 
-    if (event.type === 'set' && selectedDate) {
-      // Set to end of day
-      const endOfDay = new Date(selectedDate);
-      endOfDay.setHours(23, 59, 59, 999);
-      setLocalEndDate(endOfDay);
-    }
+    // Set to end of day
+    const endOfDay = new Date(selectedDate);
+    endOfDay.setHours(23, 59, 59, 999);
+    setLocalEndDate(endOfDay);
   };
 
   const handleQuickSelect = (days: number) => {
@@ -126,6 +123,7 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
         <View style={styles.dateRow}>
           <Text style={[styles.dateLabel, { color: noctalia.text.secondary }]}>{t('journal.date_picker.from')}</Text>
           <Pressable
+            testID="journal-date-range-start-button"
             style={[styles.dateButton, { backgroundColor: noctalia.surface.soft }]}
             onPress={() => setPickerMode('start')}
           >
@@ -137,6 +135,7 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
         <View style={styles.dateRow}>
           <Text style={[styles.dateLabel, { color: noctalia.text.secondary }]}>{t('journal.date_picker.to')}</Text>
           <Pressable
+            testID="journal-date-range-end-button"
             style={[styles.dateButton, { backgroundColor: noctalia.surface.soft }]}
             onPress={() => setPickerMode('end')}
           >
@@ -151,9 +150,11 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
           value={localStartDate || new Date()}
           mode="date"
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleStartDateChange}
+          onValueChange={handleStartDateChange}
+          onDismiss={() => setPickerMode('none')}
           maximumDate={new Date()}
           themeVariant={mode}
+          testID="journal-date-range-start-input"
         />
       )}
 
@@ -162,10 +163,12 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
           value={localEndDate || new Date()}
           mode="date"
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleEndDateChange}
+          onValueChange={handleEndDateChange}
+          onDismiss={() => setPickerMode('none')}
           minimumDate={localStartDate || undefined}
           maximumDate={new Date()}
           themeVariant={mode}
+          testID="journal-date-range-end-input"
         />
       )}
 

@@ -169,11 +169,11 @@ const styles = StyleSheet.create({
   },
   brand: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 47,
+    fontSize: 36,
   },
   subtitle: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 24,
+    fontSize: 20,
     opacity: 0.92,
   },
   headerActions: {

@@ -1,73 +1,35 @@
-import { router, useFocusEffect } from 'expo-router';
+import { Host } from '@expo/ui';
+import { router } from 'expo-router';
 import { useBottomTabBarHeight } from 'expo-router/js-tabs';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
-  InteractionManager,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   StyleSheet,
   Text,
+  type ViewStyle,
   useWindowDimensions,
   View,
 } from 'react-native';
+
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
-import { AnalyticsPrivacySettingsCard } from '@/components/AnalyticsPrivacySettingsCard';
-import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeader } from '@/components/inspiration/PageHeader';
-import { SectionHeading } from '@/components/inspiration/SectionHeading';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import JournalLayoutSettingsCard from '@/components/JournalLayoutSettingsCard';
-import LanguageSettingsCard from '@/components/LanguageSettingsCard';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
-import NotificationSettingsCard from '@/components/NotificationSettingsCard';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
-import RecordingOnboardingSettingsCard from '@/components/RecordingOnboardingSettingsCard';
-import { ScreenContainer } from '@/components/ScreenContainer';
-import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
-import { SubscriptionQALab } from '@/components/subscription/SubscriptionQALab';
-import ThemeSettingsCard from '@/components/ThemeSettingsCard';
-import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
+import { SettingsFieldGroup } from '@/components/settings/SettingsFieldGroup';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
-import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
-import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
-import { useScrollIdle } from '@/hooks/useScrollIdle';
-import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
-import { getAppVersionString } from '@/lib/appVersion';
-import { isSubscriptionQaLabEnabled } from '@/lib/env';
-import { MotiView } from '@/lib/moti';
-import { PLUS_PAYWALL_FEATURE_KEYS } from '@/lib/paywallVariants';
 import { buildPaywallHref } from '@/lib/paywallRoute';
-import { TID } from '@/lib/testIDs';
 
-// ─── Section Divider ──────────────────────────────────────────────────────────
-
-function SectionDivider({
-  color,
-  delay = 0,
-}: {
-  color: string;
-  delay?: number;
-}) {
-  return (
-    <MotiView
-      from={{ opacity: 1, scaleX: 0 }}
-      animate={{ opacity: 1, scaleX: 1 }}
-      transition={{ type: 'timing', duration: 500, delay }}
-    >
-      <View style={[styles.sectionDivider, { backgroundColor: color }]} />
-    </MotiView>
-  );
-}
-
-// ─── Main Screen ──────────────────────────────────────────────────────────────
+const SETTINGS_DESKTOP_MAX_WIDTH = 760;
 
 export default function SettingsScreen() {
   const { colors, mode } = useTheme();
@@ -76,423 +38,121 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { width } = useWindowDimensions();
-  const appVersion = getAppVersionString();
-  const scrollPerf = useScrollIdle();
-  const { formatDate, formatTime } = useLocaleFormatting();
   useClearWebFocus();
-
-  const [showAnimations, setShowAnimations] = useState(false);
-  const [showDeferredSections, setShowDeferredSections] = useState(false);
-
-  useFocusEffect(
-    useCallback(() => {
-      setShowAnimations(true);
-      return () => setShowAnimations(false);
-    }, []),
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      setShowDeferredSections(false);
-
-      const task = InteractionManager.runAfterInteractions(() => {
-        setShowDeferredSections(true);
-      });
-
-      return () => {
-        task.cancel?.();
-        setShowDeferredSections(false);
-      };
-    }, []),
-  );
-
-  const {
-    isActive,
-    loading: subscriptionLoading,
-    status: subscriptionStatus,
-  } = useSubscription();
-
-  const subscriptionCopy = useMemo(() => {
-    if (isActive) {
-      const activeTierKey = 'plus';
-      return {
-        title: t(`subscription.settings.title.${activeTierKey}` as const),
-        subtitle: t(`subscription.settings.subtitle.${activeTierKey}` as const),
-        badge: t(`subscription.paywall.card.badge.${activeTierKey}` as const),
-        cta: t(`subscription.settings.cta.${activeTierKey}` as const),
-      };
-    }
-    return {
-      title: t('subscription.settings.title.free'),
-      subtitle: t('subscription.settings.subtitle.free'),
-      badge: undefined,
-      cta: t('subscription.settings.cta.free'),
-    };
-  }, [isActive, t]);
-
-  const formattedExpiryDate = useMemo(() => {
-    const expiryDate = subscriptionStatus?.expiryDate;
-    if (!expiryDate) return null;
-    try {
-      const date = new Date(expiryDate);
-      if (Number.isNaN(date.getTime())) return null;
-      const dateStr = formatDate(date, {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      });
-      const timeStr = formatTime(date, {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-      return `${dateStr} à ${timeStr}`;
-    } catch {
-      return null;
-    }
-  }, [formatDate, formatTime, subscriptionStatus?.expiryDate]);
-
-  const subscriptionExpiryLabel = useMemo(() => {
-    if (!isActive || !formattedExpiryDate) return undefined;
-    return t('subscription.paywall.expiry_date', { date: formattedExpiryDate });
-  }, [formattedExpiryDate, isActive, t]);
-
-  const subscriptionFeatures = useMemo(
-    () => PLUS_PAYWALL_FEATURE_KEYS.slice(0, 3).map((key) => t(key)),
-    [t],
-  );
 
   const isCompactLayout = width <= 375;
   const isDesktopLayout = Platform.OS === 'web' && width >= 1024;
-  const showSubscriptionQaLab = isSubscriptionQaLabEnabled();
-  const keyboardBehavior = Platform.OS === 'ios' ? 'padding' : undefined;
-  const scrollContentStyle = useMemo(() => {
-    const paddingBottom = isDesktopLayout || returningGuestBlocked
-      ? ThemeLayout.spacing.xl
-      : bottomTabBarHeight + ThemeLayout.spacing.md;
-    return [styles.scrollContent, { paddingBottom }];
-  }, [bottomTabBarHeight, isDesktopLayout, returningGuestBlocked]);
-  const sectionsContainerStyle = useMemo(
-    () => [styles.sectionsContainer, isDesktopLayout && styles.sectionsContainerDesktop],
-    [isDesktopLayout],
-  );
+  const bottomPadding = isDesktopLayout || returningGuestBlocked
+    ? ThemeLayout.spacing.xl
+    : bottomTabBarHeight + ThemeLayout.spacing.md;
+  const hostStyle = Platform.OS === 'web'
+    ? [
+        styles.host,
+        {
+          '--expo-ui-background': noctalia.surface.base,
+          '--expo-ui-foreground': noctalia.text.primary,
+          '--expo-ui-gray-50': noctalia.screen.background,
+          '--expo-ui-gray-100': noctalia.surface.border,
+          '--expo-ui-gray-150': noctalia.surface.borderStrong,
+          '--expo-ui-gray-200': noctalia.surface.soft,
+          '--expo-ui-gray-300': noctalia.surface.borderStrong,
+          '--expo-ui-gray-400': noctalia.text.tertiary,
+          '--expo-ui-gray-500': noctalia.text.tertiary,
+          '--expo-ui-gray-600': noctalia.text.secondary,
+          '--expo-ui-gray-700': noctalia.text.secondary,
+          '--expo-ui-gray-800': noctalia.text.primary,
+          '--expo-ui-gray-900': noctalia.text.primary,
+        // React Native Web forwards CSS custom properties to the Host element.
+        } as unknown as ViewStyle,
+      ]
+    : styles.host;
 
   const handleOpenPaywall = useCallback(() => {
     router.push(buildPaywallHref('settings'));
   }, []);
 
-  // When returning guest is blocked, show only the auth hub
-  if (returningGuestBlocked) {
-    return (
-          <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-        <KeyboardAvoidingView
-          behavior={keyboardBehavior}
-          style={[styles.container, { backgroundColor: noctalia.screen.background }]}
+  const account = (
+    <View
+      style={[
+        styles.rnSlot,
+        Platform.OS === 'android' && styles.accountRnSlot,
+      ]}
+      testID="settings-account-rn-content"
+    >
+      {returningGuestBlocked ? (
+        <StaticFlatGlassCard
+          intensity="moderate"
+          animationDelay={100}
+          style={styles.returningGuestGlassCard}
         >
-          <AtmosphericBackground variant="subtle" />
-          {isDesktopLayout ? (
-            <PageHeader titleKey="auth.returning_guest.title" animationSeed={showAnimations ? 1 : 0} />
-          ) : (
-            <NoctaliaScreenHeader titleKey="auth.returning_guest.title" />
-          )}
+          <View
+            style={[
+              styles.returningGuestAccentStripe,
+              { backgroundColor: noctalia.accent.base },
+            ]}
+          />
+          <View style={styles.returningGuestInner}>
+            <IconSymbol
+              name="person.crop.circle.badge.exclamationmark"
+              size={48}
+              color={noctalia.accent.base}
+            />
+            <Text style={[styles.returningGuestTitle, { color: noctalia.text.primary }]}>
+              {t('auth.returning_guest.banner_title')}
+            </Text>
+            <Text style={[styles.returningGuestMessage, { color: noctalia.text.secondary }]}>
+              {t('auth.returning_guest.message')}
+            </Text>
+          </View>
+        </StaticFlatGlassCard>
+      ) : null}
+      <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" />
+    </View>
+  );
 
-          <ScrollView
-            style={styles.scrollView}
-            contentInsetAdjustmentBehavior="automatic"
-            contentContainerStyle={scrollContentStyle}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-            onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
-            onScrollEndDrag={scrollPerf.onScrollEndDrag}
-            onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
-            onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
-          >
-            <ScreenContainer>
-              {/* Welcome back banner */}
-              <StaticFlatGlassCard
-                intensity="moderate"
-                animationDelay={100}
-                style={styles.returningGuestGlassCard}
-              >
-                <View style={[styles.returningGuestAccentStripe, { backgroundColor: noctalia.accent.base }]} />
-                <View style={styles.returningGuestInner}>
-                  <IconSymbol
-                    name="person.crop.circle.badge.exclamationmark"
-                    size={48}
-                    color={noctalia.accent.base}
-                  />
-                  <Text style={[styles.returningGuestTitle, { color: noctalia.text.primary }]}>
-                    {t('auth.returning_guest.banner_title')}
-                  </Text>
-                  <Text style={[styles.returningGuestMessage, { color: noctalia.text.secondary }]}>
-                    {t('auth.returning_guest.message')}
-                  </Text>
-                </View>
-              </StaticFlatGlassCard>
-
-              {/* Auth card */}
-              <MotiView
-                from={{ opacity: 1, translateY: 16 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ type: 'timing', duration: 500, delay: 200 }}
-              >
-                <View style={styles.settingsSectionCards}>
-                  <EmailAuthCard isCompact={isCompactLayout} />
-                </View>
-              </MotiView>
-
-              {/* Language settings */}
-              <MotiView
-                from={{ opacity: 1, translateY: 16 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ type: 'timing', duration: 500, delay: 300 }}
-              >
-                <View style={styles.settingsSectionCards}>
-                  <LanguageSettingsCard />
-                </View>
-              </MotiView>
-
-              <MotiView
-                from={{ opacity: 1, translateY: 16 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ type: 'timing', duration: 500, delay: 360 }}
-              >
-                <View style={styles.settingsSectionCards}>
-                  <AnalyticsPrivacySettingsCard />
-                </View>
-              </MotiView>
-            </ScreenContainer>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </ScrollPerfProvider>
-    );
-  }
+  const quota = (
+    <View style={styles.rnSlot} testID="settings-quota-rn-content">
+      <QuotaStatusCard onUpgradePress={handleOpenPaywall} presentation="embedded" />
+    </View>
+  );
 
   return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-      <KeyboardAvoidingView
-        behavior={keyboardBehavior}
-        style={[styles.container, { backgroundColor: noctalia.screen.background }]}
-      >
-        <AtmosphericBackground variant="subtle" />
-        {isDesktopLayout ? (
-          <PageHeader titleKey="settings.title" animationSeed={showAnimations ? 1 : 0} />
-        ) : (
-          <NoctaliaScreenHeader titleKey="settings.title" />
-        )}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={[styles.container, { backgroundColor: noctalia.screen.background }]}
+      testID="screen.settings"
+    >
+      <AtmosphericBackground variant="subtle" />
+      {isDesktopLayout ? (
+        <PageHeader
+          titleKey={returningGuestBlocked ? 'auth.returning_guest.title' : 'settings.title'}
+          animationSeed={0}
+        />
+      ) : (
+        <NoctaliaScreenHeader
+          titleKey={returningGuestBlocked ? 'auth.returning_guest.title' : 'settings.title'}
+        />
+      )}
 
-        <ScrollView
-          style={styles.scrollView}
-          contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={scrollContentStyle}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
-          onScrollEndDrag={scrollPerf.onScrollEndDrag}
-          onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
-          onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
+      <View style={[styles.fieldGroupFrame, isDesktopLayout && styles.fieldGroupFrameDesktop]}>
+        <Host
+          colorScheme={mode}
+          ignoreSafeArea="all"
+          seedColor={noctalia.accent.base}
+          style={hostStyle}
         >
-          <ScreenContainer>
-            <MockNavigationRail />
-            <View style={sectionsContainerStyle}>
-
-            {/* ─── Account Section ─── */}
-            <View style={styles.settingsSection}>
-              <MotiView
-                from={{ opacity: 1, translateY: 16 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ type: 'timing', duration: 500, delay: 100 }}
-              >
-                <SectionHeading
-                  title={t('settings.section.account')}
-                  icon="person.fill"
-                  colors={colors}
-                />
-              </MotiView>
-              <MotiView
-                from={{ opacity: 1, translateY: 16 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ type: 'timing', duration: 500, delay: 200 }}
-              >
-                <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                  <EmailAuthCard isCompact={isCompactLayout} />
-                </View>
-              </MotiView>
-            </View>
-
-            <SectionDivider color={noctalia.surface.borderStrong} delay={250} />
-
-            {/* ─── Subscription Section ─── */}
-            <View style={styles.settingsSection}>
-              <MotiView
-                from={{ opacity: 1, translateY: 16 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ type: 'timing', duration: 500, delay: 300 }}
-              >
-                <SectionHeading
-                  title={t('settings.section.subscription')}
-                  icon="crown.fill"
-                  colors={colors}
-                />
-              </MotiView>
-              <View style={styles.settingsSectionCards}>
-                {showSubscriptionQaLab ? (
-                  <MotiView
-                    from={{ opacity: 1, translateY: 16 }}
-                    animate={{ opacity: 1, translateY: 0 }}
-                    transition={{ type: 'timing', duration: 500, delay: 360 }}
-                  >
-                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                      <SubscriptionQALab />
-                    </View>
-                  </MotiView>
-                ) : null}
-                <MotiView
-                  from={{ opacity: 1, translateY: 16 }}
-                  animate={{ opacity: 1, translateY: 0 }}
-                  transition={{ type: 'timing', duration: 500, delay: 400 }}
-                >
-                  <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                    <SubscriptionCard
-                      title={subscriptionCopy.title}
-                      subtitle={subscriptionCopy.subtitle}
-                      expiryLabel={subscriptionExpiryLabel}
-                      badge={subscriptionCopy.badge}
-                      features={subscriptionFeatures}
-                      status={subscriptionLoading ? 'loading' : 'idle'}
-                      ctaLabel={subscriptionCopy.cta}
-                      onPress={handleOpenPaywall}
-                      ctaState={subscriptionLoading ? 'disabled' : 'enabled'}
-                      ctaTestID={TID.Button.SubscriptionSettingsCta}
-                    />
-                  </View>
-                </MotiView>
-                <MotiView
-                  from={{ opacity: 1, translateY: 16 }}
-                  animate={{ opacity: 1, translateY: 0 }}
-                  transition={{ type: 'timing', duration: 500, delay: 500 }}
-                >
-                  <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                    <QuotaStatusCard />
-                  </View>
-                </MotiView>
-              </View>
-            </View>
-
-            <SectionDivider color={noctalia.surface.borderStrong} delay={550} />
-
-            {/* ─── Preferences Section ─── */}
-            {showDeferredSections && (
-              <View style={styles.settingsSection}>
-                <MotiView
-                  from={{ opacity: 1, translateY: 16 }}
-                  animate={{ opacity: 1, translateY: 0 }}
-                  transition={{ type: 'timing', duration: 500, delay: 600 }}
-                >
-                  <SectionHeading
-                    title={t('settings.section.preferences')}
-                    icon="slider.horizontal.3"
-                    colors={colors}
-                  />
-                </MotiView>
-                <View style={styles.settingsSectionCards}>
-                  <MotiView
-                    from={{ opacity: 1, translateY: 16 }}
-                    animate={{ opacity: 1, translateY: 0 }}
-                    transition={{ type: 'timing', duration: 500, delay: 700 }}
-                  >
-                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                      <JournalLayoutSettingsCard />
-                    </View>
-                  </MotiView>
-                  <MotiView
-                    from={{ opacity: 1, translateY: 16 }}
-                    animate={{ opacity: 1, translateY: 0 }}
-                    transition={{ type: 'timing', duration: 500, delay: 760 }}
-                  >
-                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                      <ThemeSettingsCard />
-                    </View>
-                  </MotiView>
-                  <MotiView
-                    from={{ opacity: 1, translateY: 16 }}
-                    animate={{ opacity: 1, translateY: 0 }}
-                    transition={{ type: 'timing', duration: 500, delay: 840 }}
-                  >
-                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                      <LanguageSettingsCard />
-                    </View>
-                  </MotiView>
-                  <MotiView
-                    from={{ opacity: 1, translateY: 16 }}
-                    animate={{ opacity: 1, translateY: 0 }}
-                    transition={{ type: 'timing', duration: 500, delay: 920 }}
-                  >
-                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                      <RecordingOnboardingSettingsCard />
-                    </View>
-                  </MotiView>
-                  <MotiView
-                    from={{ opacity: 1, translateY: 16 }}
-                    animate={{ opacity: 1, translateY: 0 }}
-                    transition={{ type: 'timing', duration: 500, delay: 980 }}
-                  >
-                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                      <AnalyticsPrivacySettingsCard />
-                    </View>
-                  </MotiView>
-                </View>
-              </View>
-            )}
-
-            {/* ─── Notifications Section (native only) ─── */}
-            {showDeferredSections && Platform.OS !== 'web' && (
-              <>
-                <SectionDivider color={noctalia.surface.borderStrong} delay={850} />
-                <View style={styles.settingsSection}>
-                  <MotiView
-                    from={{ opacity: 1, translateY: 16 }}
-                    animate={{ opacity: 1, translateY: 0 }}
-                    transition={{ type: 'timing', duration: 500, delay: 900 }}
-                  >
-                    <SectionHeading
-                      title={t('settings.section.notifications')}
-                      icon="bell.fill"
-                      colors={colors}
-                    />
-                  </MotiView>
-                  <MotiView
-                    from={{ opacity: 1, translateY: 16 }}
-                    animate={{ opacity: 1, translateY: 0 }}
-                    transition={{ type: 'timing', duration: 500, delay: 1000 }}
-                  >
-                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                      <NotificationSettingsCard />
-                    </View>
-                  </MotiView>
-                </View>
-              </>
-            )}
-          </View>
-
-          {/* ─── Version Footer ─── */}
-          {showDeferredSections && appVersion ? (
-            <MotiView
-              from={{ opacity: 1 }}
-              animate={{ opacity: 1 }}
-              transition={{ type: 'timing', duration: 600, delay: 1100 }}
-            >
-              <View style={styles.versionContainer}>
-                <View style={[styles.versionDecoLine, { backgroundColor: noctalia.surface.borderStrong }]} />
-                <Text style={[styles.versionText, { color: noctalia.text.secondary }]}>
-                  {t('settings.app_version', { version: appVersion })}
-                </Text>
-              </View>
-            </MotiView>
-          ) : null}
-          </ScreenContainer>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </ScrollPerfProvider>
+          <SettingsFieldGroup
+            account={account}
+            bottomPadding={bottomPadding}
+            onOpenSubscription={handleOpenPaywall}
+            quota={quota}
+            returningGuestBlocked={returningGuestBlocked}
+            subscriptionSubtitle={t('settings.plus.subtitle')}
+            subscriptionTitle={t('subscription.settings.title.plus')}
+          />
+        </Host>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -500,86 +160,52 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollView: {
+  fieldGroupFrame: {
     flex: 1,
+    width: '100%',
   },
-  scrollContent: {
-    padding: ThemeLayout.spacing.md,
+  fieldGroupFrameDesktop: {
+    alignSelf: 'center',
+    maxWidth: SETTINGS_DESKTOP_MAX_WIDTH,
   },
-  sectionsContainer: {
-    flexDirection: 'column',
+  host: {
+    flex: 1,
+    width: '100%',
   },
-  sectionsContainerDesktop: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginHorizontal: -ThemeLayout.spacing.sm,
+  rnSlot: {
+    alignSelf: 'center',
+    width: '100%',
   },
-  sectionItemDesktop: {
-    width: '50%',
-    minWidth: 320,
-    paddingHorizontal: ThemeLayout.spacing.sm,
+  accountRnSlot: {
+    // Compose's matchContents measurement otherwise clips the last auth row.
+    paddingBottom: ThemeLayout.spacing.lg,
   },
-
-  // Settings sections
-  settingsSection: {
-    marginBottom: 36,
-  },
-  settingsSectionCards: {
-    gap: 12,
-  },
-
-  // Section divider
-  sectionDivider: {
-    ...DecoLines.rule,
-    opacity: 0.3,
-    marginBottom: 28,
-  },
-
-  // Returning guest
   returningGuestGlassCard: {
     borderRadius: 24,
+    marginBottom: ThemeLayout.spacing.md,
     overflow: 'hidden',
     padding: 0,
-    marginBottom: ThemeLayout.spacing.md,
   },
   returningGuestAccentStripe: {
     height: 3,
-    width: '100%',
     opacity: 0.85,
+    width: '100%',
   },
   returningGuestInner: {
     alignItems: 'center',
-    padding: ThemeLayout.spacing.lg,
     gap: ThemeLayout.spacing.sm,
+    padding: ThemeLayout.spacing.lg,
   },
   returningGuestTitle: {
-    fontSize: 20,
     fontFamily: Fonts.fraunces.semiBold,
-    textAlign: 'center',
+    fontSize: 20,
     marginTop: ThemeLayout.spacing.sm,
+    textAlign: 'center',
   },
   returningGuestMessage: {
-    fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.regular,
-    textAlign: 'center',
+    fontSize: 14,
     lineHeight: 20,
-  },
-
-  // Version footer
-  versionContainer: {
-    marginTop: 48,
-    alignItems: 'center',
-    gap: 12,
-  },
-  versionDecoLine: {
-    width: 36,
-    height: 2,
-    borderRadius: 1,
-  },
-  versionText: {
-    fontSize: 11,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textTransform: 'uppercase',
-    opacity: 0.5,
+    textAlign: 'center',
   },
 });

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useSyncExternalStore } from 'react';
 import type { DreamAnalysis, QuotaStatus } from '@/lib/types';
+import { isMockModeEnabled } from '@/lib/env';
 import { getGuestBootstrapState, subscribeGuestBootstrapState } from '@/lib/guestSession';
 import { quotaService } from '@/services/quotaService';
 import { useAuth } from '@/context/AuthContext';
@@ -40,6 +41,7 @@ function normalizeTarget(input?: QuotaTargetInput): NormalizedQuotaTarget | unde
 }
 
 export function useQuota(targetInput?: QuotaTargetInput) {
+  const isMockMode = isMockModeEnabled();
   const { user } = useAuth();
   const { status: subscriptionStatus, loading: subscriptionLoading } = useSubscription();
   const [quotaStatus, setQuotaStatus] = useState<QuotaStatus | null>(null);
@@ -98,8 +100,8 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     return subscriptionStatus?.tier ?? optimisticPaidTier ?? 'free';
   }, [subscriptionStatus, supabaseTier, user?.id]);
   const isPaidTier = tier === 'plus';
-  const isGuestBootstrapReady = user?.id ? true : guestBootstrapStatus === 'ready';
-  const guestQuotaRefreshKey = user?.id ? undefined : guestBootstrapStatus;
+  const isGuestBootstrapReady = isMockMode || Boolean(user?.id) || guestBootstrapStatus === 'ready';
+  const guestQuotaRefreshKey = user?.id || isMockMode ? undefined : guestBootstrapStatus;
 
   /**
    * Fetch quota status

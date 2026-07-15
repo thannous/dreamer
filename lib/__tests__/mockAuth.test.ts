@@ -1,9 +1,18 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // Use jest.hoisted to ensure mocks are created before module loading
-const { mockResetMockQuotaEvents, mockResetMockStorage, mockSetPreloadDreamsEnabled, mockPreloadDreamsNow } = ((factory: any) => factory())(() => ({
+const {
+  mockPreloadDreamsNow,
+  mockResetGuestDreamRecordingCount,
+  mockResetMockQuotaEvents,
+  mockResetMockStorage,
+  mockQuotaInvalidate,
+  mockSetPreloadDreamsEnabled,
+} = ((factory: any) => factory())(() => ({
+  mockResetGuestDreamRecordingCount: jest.fn().mockResolvedValue(undefined),
   mockResetMockQuotaEvents: jest.fn().mockResolvedValue(undefined),
   mockResetMockStorage: jest.fn(),
+  mockQuotaInvalidate: jest.fn(),
   mockSetPreloadDreamsEnabled: jest.fn(),
   mockPreloadDreamsNow: jest.fn(),
 }));
@@ -16,6 +25,12 @@ jest.mock('../../services/mocks/storageServiceMock', () => ({
 }));
 jest.mock('../../services/quota/MockQuotaEventStore', () => ({
   resetMockQuotaEvents: mockResetMockQuotaEvents,
+}));
+jest.mock('../../services/quota/GuestDreamCounter', () => ({
+  resetGuestDreamRecordingCount: mockResetGuestDreamRecordingCount,
+}));
+jest.mock('../../services/quotaService', () => ({
+  quotaService: { invalidate: mockQuotaInvalidate },
 }));
 
 const {
@@ -66,6 +81,14 @@ describe('mockAuth', () => {
   });
 
   describe('signInWithProfile', () => {
+    it('given exhausted guest recordings when selecting a profile then resets the recording counter', async () => {
+      mockResetGuestDreamRecordingCount.mockClear();
+
+      await signInWithProfile('new');
+
+      expect(mockResetGuestDreamRecordingCount).toHaveBeenCalledTimes(1);
+    });
+
     it('given new profile when signing in then returns new user with unverified email', async () => {
       // Given
       const profile = 'new';
@@ -221,6 +244,24 @@ describe('mockAuth', () => {
 
       // Then
       expect(token).toBeNull();
+    });
+  });
+
+  describe('signOut', () => {
+    it('given exhausted guest quotas when resetting the mock session then clears and refreshes quota state', async () => {
+      mockResetGuestDreamRecordingCount.mockClear();
+      mockResetMockQuotaEvents.mockClear();
+      mockQuotaInvalidate.mockClear();
+
+      await signOut();
+
+      expect(mockResetGuestDreamRecordingCount).toHaveBeenCalledTimes(1);
+      expect(mockResetMockQuotaEvents).toHaveBeenCalledTimes(1);
+      expect(mockSetPreloadDreamsEnabled).toHaveBeenCalledWith(false);
+      expect(mockQuotaInvalidate).toHaveBeenCalledWith(null);
+      expect(mockSetPreloadDreamsEnabled.mock.invocationCallOrder.at(-1)).toBeLessThan(
+        mockQuotaInvalidate.mock.invocationCallOrder.at(-1) ?? Number.MAX_SAFE_INTEGER
+      );
     });
   });
 
