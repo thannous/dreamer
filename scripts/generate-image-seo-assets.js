@@ -23,6 +23,32 @@ function variantHeight(aspect, width) {
   return Math.round((width * aspect.height) / aspect.width);
 }
 
+function coverExtractForPosition(metadata, aspect) {
+  const sourceWidth = metadata.width;
+  const sourceHeight = metadata.height;
+  const targetRatio = aspect.width / aspect.height;
+  const sourceRatio = sourceWidth / sourceHeight;
+  const position = aspect.position || { x: 50, y: 50 };
+
+  if (sourceRatio > targetRatio) {
+    const width = Math.max(1, Math.round(sourceHeight * targetRatio));
+    return {
+      left: Math.round((sourceWidth - width) * (position.x / 100)),
+      top: 0,
+      width,
+      height: sourceHeight,
+    };
+  }
+
+  const height = Math.max(1, Math.round(sourceWidth / targetRatio));
+  return {
+    left: 0,
+    top: Math.round((sourceHeight - height) * (position.y / 100)),
+    width: sourceWidth,
+    height,
+  };
+}
+
 async function sourcePipeline(asset, aspect, width) {
   const sourcePath = resolveRepoPath(aspect.source || asset.source);
   const height = variantHeight(aspect, width);
@@ -47,13 +73,17 @@ async function sourcePipeline(asset, aspect, width) {
   const fit = aspect.mode === 'cover' ? 'cover' : 'contain';
   const background = asset.role === 'fallback' ? '#140d31' : '#130d2d';
   const density = metadata.format === 'svg' ? 144 : undefined;
-  return sharp(sourcePath, density ? { density } : undefined)
-    .rotate()
-    .resize(width, height, {
-      fit,
-      position: 'attention',
-      background,
-    });
+  const pipeline = sharp(sourcePath, density ? { density } : undefined).rotate();
+  if (fit === 'cover' && aspect.position && metadata.width && metadata.height) {
+    return pipeline
+      .extract(coverExtractForPosition(metadata, aspect))
+      .resize(width, height, { fit: 'fill' });
+  }
+  return pipeline.resize(width, height, {
+    fit,
+    position: 'attention',
+    background,
+  });
 }
 
 function encode(pipeline, format) {
@@ -170,9 +200,12 @@ async function validateOutputs(registry) {
 function validatePageImageResolution(registry) {
   for (const [canonicalPath, page] of Object.entries(registry.pages)) {
     for (const imageRef of Object.values(page.images)) {
-      const image = getResponsiveImageData(registry, imageRef.assetId, imageRef.aspect);
-      if (!image.src.startsWith('/img/seo/')) {
-        throw new Error(`${canonicalPath}: pilot image URL is not versioned under /img/seo/`);
+      const aspects = [imageRef.aspect, imageRef.mobileAspect].filter(Boolean);
+      for (const aspect of new Set(aspects)) {
+        const image = getResponsiveImageData(registry, imageRef.assetId, aspect);
+        if (!image.src.startsWith('/img/seo/')) {
+          throw new Error(`${canonicalPath}: pilot image URL is not versioned under /img/seo/`);
+        }
       }
     }
   }

@@ -610,6 +610,12 @@ function upsertHtmlAttribute(tag, name, value) {
   return tag.replace(/>$/, ` ${name}="${escaped}">`);
 }
 
+function appendStyleProperty(tag, name, value) {
+  const current = tag.match(/\bstyle=(['"])([\s\S]*?)\1/i)?.[2]?.trim() || '';
+  const prefix = current ? `${current.replace(/;?$/, ';')} ` : '';
+  return upsertHtmlAttribute(tag, 'style', `${prefix}${name}: ${value};`);
+}
+
 function removeHtmlAttribute(tag, name) {
   return tag.replace(new RegExp(`\\s+${name}=(['"])[\\s\\S]*?\\1`, 'i'), '');
 }
@@ -704,6 +710,39 @@ function visibleArticleImageUrl(bodyHtml) {
   }
 }
 
+function appendHtmlClass(openTag, className) {
+  return String(openTag || '').replace(
+    /\bclass=(['"])([^"']*)\1/i,
+    (_match, quote, classes) => `class=${quote}${classes} ${className}${quote}`
+  );
+}
+
+function renderArticleHeroCopy(inner) {
+  const structured = String(inner || '').replace(
+    /(<div\b[^>]*\bclass=(['"])[^"']*\bflex\b[^"']*\2[^>]*>)([\s\S]*?)(<span\b[^>]*\baria-hidden=(['"])true\5[^>]*>[\s\S]*?<\/span>\s*)([\s\S]*?)(<\/div>\s*)(<h1\b[^>]*>[\s\S]*?<\/h1>)/i,
+    (_block, metaOpen, _metaQuote, taxonomy, _break, _breakQuote, details, _metaClose, heading) => {
+      const taxonomyOpen = appendHtmlClass(metaOpen, 'article-hero-taxonomy');
+      const conciseTaxonomy = taxonomy.replace(
+        /(<a\b[^>]*>\s*)(?:Topic|Tema):\s*/i,
+        '$1'
+      );
+      return [
+        '<div class="article-hero-copy">',
+        `${taxonomyOpen}${conciseTaxonomy}</div>`,
+        heading,
+        `<div class="article-hero-details">${details.trim()}</div>`,
+        '</div>',
+      ].join('\n');
+    }
+  );
+
+  if (structured !== inner) return structured;
+  return String(inner || '').replace(
+    /(<div\b[^>]*\bclass=(['"])[^"']*\bflex\b[^"']*\2[^>]*>[\s\S]*?<\/div>\s*)(<h1\b[^>]*>[\s\S]*?<\/h1>)/i,
+    '<div class="article-hero-copy">\n$1$3\n</div>'
+  );
+}
+
 function moveEditorialFigureIntoArticleHeader(bodyHtml) {
   const source = String(bodyHtml || '');
   const figurePattern = /<figure\b[^>]*\bdata-image-seo-role=(['"])editorial\1[^>]*>[\s\S]*?<\/figure>/i;
@@ -715,7 +754,15 @@ function moveEditorialFigureIntoArticleHeader(bodyHtml) {
 
   const withoutFigure = source.replace(figurePattern, '');
   const promotedHeader = upsertHtmlAttribute(headerOpen, 'data-image-seo-hero', 'true');
-  return withoutFigure.replace(headerOpen, `${promotedHeader}\n${figure}`);
+  const moved = withoutFigure.replace(headerOpen, `${promotedHeader}\n${figure}`);
+  return moved.replace(
+    /(<header\b[^>]*\bdata-image-seo-hero=(['"])true\2[^>]*>)([\s\S]*?)(<\/header>)/i,
+    (block, open, _quote, inner, close) => {
+      if (/\bclass=(['"])[^"']*\barticle-hero-copy\b/i.test(inner)) return block;
+      const wrapped = renderArticleHeroCopy(inner);
+      return `${open}${wrapped}${close}`;
+    }
+  );
 }
 
 function optimizeBlogArticleImages(bodyHtml, meta, imageContext = null) {
@@ -765,7 +812,18 @@ function optimizeBlogArticleImages(bodyHtml, meta, imageContext = null) {
     const assetId = editorial?.assetId
       ? ` data-image-asset-id="${escapeHtml(editorial.assetId)}"`
       : '';
-    return `${addFigureRole(open, 'editorial').replace(/>$/, `${assetId}>`)}\n                    ${picture}${editorialCaption ? `\n                    ${editorialCaption}` : ''}\n                ${close}`;
+    let figureOpen = addFigureRole(open, 'editorial').replace(/>$/, `${assetId}>`);
+    const mobilePosition = editorialRef?.mobileAspect
+      ? imageContext.registry.assets[editorialRef.assetId]?.aspects?.[editorialRef.mobileAspect]?.position
+      : null;
+    if (mobilePosition) {
+      figureOpen = appendStyleProperty(
+        figureOpen,
+        '--article-hero-mobile-position',
+        `${mobilePosition.x}% ${mobilePosition.y}%`
+      );
+    }
+    return `${figureOpen}\n                    ${picture}${editorialCaption ? `\n                    ${editorialCaption}` : ''}\n                ${close}`;
   });
 
   return imageContext?.page?.kind === 'article' && imageContext?.images?.editorial

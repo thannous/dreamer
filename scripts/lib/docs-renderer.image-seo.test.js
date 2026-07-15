@@ -34,7 +34,7 @@ describe('docs renderer image SEO', () => {
     const context = resolvePageImageContext(entry, { lang: 'en' });
     const source = [
       '<article>',
-      '<header class="mb-12"><h1>Lucid dreaming</h1><p>Beginner guide</p></header>',
+      '<header class="mb-12"><div class="flex flex-wrap"><span>Guide</span><a href="lucid-dreaming">Topic: Lucid dreaming</a><span aria-hidden="true" class="w-full"></span><span>Published January 6, 2025</span><span>4 min read</span></div><h1>Lucid dreaming</h1><p>Beginner guide</p></header>',
       '<section>Quick answer</section>',
       '<figure class="mb-12"><img src="../../img/blog/lucid-dreaming-beginners-guide.webp" alt="Lucid dream landscape" width="1200" height="630"></figure>',
       '</article>',
@@ -51,6 +51,16 @@ describe('docs renderer image SEO', () => {
     expect(figureStart).toBeLessThan(headerEnd);
     expect(html.indexOf('<section>Quick answer</section>')).toBeGreaterThan(headerEnd);
     expect(html).toContain('data-image-seo-hero="true"');
+    expect(html).toContain('class="article-hero-copy"');
+    expect(html).toContain('article-hero-taxonomy');
+    expect(html).toContain('>Lucid dreaming</a>');
+    expect(html).not.toContain('>Topic: Lucid dreaming</a>');
+    expect(html).toContain('class="article-hero-details"');
+    expect(html.indexOf('<h1>Lucid dreaming</h1>')).toBeLessThan(html.indexOf('class="article-hero-details"'));
+    expect(html.indexOf('class="article-hero-copy"')).toBeLessThan(html.indexOf('<p>Beginner guide</p>'));
+    expect(html).toContain('--article-hero-mobile-position: 42% 42%;');
+    expect(html).toContain('media="(max-width: 768px)"');
+    expect(html).toContain('lucid-dreaming-4x5-1200.webp');
     expect(html).toContain('<picture>');
     expect(html).toContain('fetchpriority="high"');
     expect(html).toContain('data-image-asset-id="editorial.lucid-dreaming"');

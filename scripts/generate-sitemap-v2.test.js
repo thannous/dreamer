@@ -53,6 +53,12 @@ describe('generate-sitemap-v2 image sitemap support', () => {
           sitemap: true,
           aspects: {
             '16x9': { width: 1200, height: 675, widths: [480, 800, 1200] },
+            '4x5': {
+              width: 1200,
+              height: 1500,
+              widths: [480, 800, 1200],
+              outputStem: '/img/seo/editorial-mobile/lucid-dreaming',
+            },
           },
         },
         'lucid-educational-en': {
@@ -76,6 +82,9 @@ describe('generate-sitemap-v2 image sitemap support', () => {
             editorial: {
               assetId: 'lucid-editorial',
               aspect: '16x9',
+              mobileAspect: '4x5',
+              mobileBreakpoint: '768px',
+              mobileSizes: '100vw',
               alt: 'A lucid dream scene',
               caption: 'Lucid dreaming guide',
             },
@@ -99,6 +108,9 @@ describe('generate-sitemap-v2 image sitemap support', () => {
       'https://noctalia.app/img/seo/lucid-dreaming-v2-16x9-1200.webp',
       'https://noctalia.app/img/seo/lucid-steps-en-4x3-1200.webp',
     ]);
+    expect(
+      result.map.get('https://noctalia.app/en/blog/lucid-dreaming-beginners-guide').join(' ')
+    ).not.toContain('4x5');
   });
 
   it('deduplicates image URLs and excludes hidden, disabled, and fallback assets', () => {
