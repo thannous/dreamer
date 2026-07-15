@@ -85,6 +85,22 @@ function validateImageAssetRegistry(registry) {
       if (aspect.source && typeof aspect.source !== 'string') {
         errors.push(`${assetId}/${aspectName}: source must be a repository-relative path`);
       }
+      if (aspect.outputStem && !aspect.outputStem.startsWith('/img/seo/')) {
+        errors.push(`${assetId}/${aspectName}: outputStem must use a root-relative /img/seo/ path`);
+      }
+      if (aspect.position) {
+        const { x, y } = aspect.position;
+        if (
+          !Number.isFinite(x) ||
+          !Number.isFinite(y) ||
+          x < 0 ||
+          x > 100 ||
+          y < 0 ||
+          y > 100
+        ) {
+          errors.push(`${assetId}/${aspectName}: position x and y must be between 0 and 100`);
+        }
+      }
     }
   }
 
@@ -108,6 +124,9 @@ function validateImageAssetRegistry(registry) {
         errors.push(`${pagePath}: ${image.assetId} is not ${role}`);
       } else if (!asset.aspects?.[image.aspect]) {
         errors.push(`${pagePath}: ${image.assetId} has no ${image.aspect} aspect`);
+      }
+      if (image.mobileAspect && !asset?.aspects?.[image.mobileAspect]) {
+        errors.push(`${pagePath}: ${image.assetId} has no ${image.mobileAspect} mobile aspect`);
       }
       if (!image.alt?.trim()) errors.push(`${pagePath}: ${role} alt is required`);
       if (!image.caption?.trim()) errors.push(`${pagePath}: ${role} caption is required`);
@@ -158,7 +177,8 @@ function buildVariantUrl(asset, aspectName, width, format) {
       .replaceAll('{height}', String(height))
       .replaceAll('{format}', format);
   }
-  return `${asset.outputStem}-${aspectName}-${width}.${format}`;
+  const outputStem = asset.aspects[aspectName].outputStem || asset.outputStem;
+  return `${outputStem}-${aspectName}-${width}.${format}`;
 }
 
 function getResponsiveImageData(registry, assetId, aspectName) {

@@ -55,6 +55,41 @@ describe('image SEO asset registry', () => {
     expect(html).toContain('fetchpriority="high"');
   });
 
+  it('art-directs article heroes on mobile without changing the preferred fallback', () => {
+    const articlePages = Object.values(registry.pages).filter((page) => page.kind === 'article');
+    expect(articlePages).toHaveLength(9);
+
+    for (const page of articlePages) {
+      expect(page.images.editorial).toMatchObject({
+        aspect: '16x9',
+        mobileAspect: '4x5',
+        mobileBreakpoint: '768px',
+        mobileSizes: '100vw',
+      });
+      expect(registry.assets[page.images.editorial.assetId].aspects['4x5']).toMatchObject({
+        width: 1200,
+        height: 1500,
+        widths: [480, 800, 1200],
+      });
+    }
+
+    const page = getPageImageSet(registry, '/en/blog/pregnancy-dreams-meaning');
+    const html = renderResponsivePicture(registry, page.images.editorial, {
+      priority: true,
+      figure: false,
+    });
+    expect(html.match(/<img\b/g)).toHaveLength(1);
+    expect(html.match(/media="\(max-width: 768px\)"/g)).toHaveLength(2);
+    expect(html).toContain('editorial-mobile/pregnancy-dreams-4x5-480.avif');
+    expect(html).toContain('editorial-mobile/pregnancy-dreams-4x5-1200.webp');
+    expect(html).toContain('sizes="100vw" width="1200" height="1500"');
+    expect(html).toContain(
+      'src="/img/seo/pilot-2026-07-v1/editorial/pregnancy-dreams-16x9-1200.webp"'
+    );
+    expect(html).toContain('width="1200" height="675" loading="eager"');
+    expect(html).toContain('fetchpriority="high"');
+  });
+
   it('art-directs educational diagrams with a dedicated mobile composition', () => {
     const page = getPageImageSet(registry, '/en/blog/lucid-dreaming-beginners-guide');
     const html = renderResponsivePicture(registry, page.images.educational, {
