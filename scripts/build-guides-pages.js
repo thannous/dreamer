@@ -374,11 +374,92 @@ const CATEGORY_ORDER = ['nature', 'animals', 'body', 'places', 'objects', 'actio
 const CATEGORY_COLORS = { nature: '#4ade80', animals: '#fbbf24', body: '#f87171', places: '#60a5fa', objects: '#c084fc', actions: '#fb923c', people: '#f472b6', celestial: '#818cf8' };
 const SYMBOL_PATHS = { en: 'symbols', fr: 'symboles', es: 'simbolos', de: 'traumsymbole', it: 'simboli' };
 const DICTIONARY_UI_COPY = {
-  en: { categoriesShort: 'categories', quickBrowseHelp: 'Choose a category or use A-Z to jump straight to the right symbol.', clearSearch: 'Clear search', activeSearchLabel: 'Active search' },
-  fr: { categoriesShort: 'catégories', quickBrowseHelp: 'Choisissez une catégorie ou utilisez A-Z pour aller droit au bon symbole.', clearSearch: 'Vider la recherche', activeSearchLabel: 'Recherche active' },
-  es: { categoriesShort: 'categorías', quickBrowseHelp: 'Elige una categoría o usa A-Z para ir directamente al símbolo adecuado.', clearSearch: 'Borrar búsqueda', activeSearchLabel: 'Búsqueda activa' },
-  de: { categoriesShort: 'Kategorien', quickBrowseHelp: 'Wähle eine Kategorie oder nutze A-Z, um direkt zum richtigen Symbol zu springen.', clearSearch: 'Suche löschen', activeSearchLabel: 'Aktive Suche' },
-  it: { categoriesShort: 'categorie', quickBrowseHelp: 'Scegli una categoria oppure usa A-Z per arrivare subito al simbolo giusto.', clearSearch: 'Cancella ricerca', activeSearchLabel: 'Ricerca attiva' },
+  en: {
+    categoriesShort: 'categories',
+    quickBrowseHelp: 'Choose a category or use A-Z to jump straight to the right symbol.',
+    clearSearch: 'Clear search',
+    activeSearchLabel: 'Active search',
+    backToTop: 'Back to top',
+    methodologyLink: 'How this catalog is maintained',
+    storeCta: 'Get Noctalia on Google Play',
+    detailsCta: 'See how Noctalia adds your context',
+    platformNote: 'Android 13+ · Free account · Optional in-app purchases',
+    proofItems: [
+      { icon: 'infinity', title: 'Unlimited saved dreams', text: 'With a free account.' },
+      { icon: 'mic-2', title: 'Voice or text', text: 'Capture a dream in seconds.' },
+      { icon: 'sparkles', title: 'Personal reading', text: 'Symbols, emotions and context together.' },
+    ],
+    privacyLink: 'Read the privacy policy',
+  },
+  fr: {
+    categoriesShort: 'catégories',
+    quickBrowseHelp: 'Choisissez une catégorie ou utilisez A-Z pour aller droit au bon symbole.',
+    clearSearch: 'Vider la recherche',
+    activeSearchLabel: 'Recherche active',
+    backToTop: 'Revenir en haut',
+    methodologyLink: 'Comment ce catalogue est maintenu',
+    storeCta: 'Télécharger Noctalia sur Google Play',
+    detailsCta: 'Voir comment Noctalia relie votre contexte',
+    platformNote: 'Android 13+ · Compte gratuit · Achats intégrés facultatifs',
+    proofItems: [
+      { icon: 'infinity', title: 'Rêves sans limite', text: 'Avec un compte gratuit.' },
+      { icon: 'mic-2', title: 'Enregistrement par voix ou texte', text: 'Capturez un rêve en quelques secondes.' },
+      { icon: 'sparkles', title: 'Analyse approfondie des rêves', text: 'Symboles, émotions et contexte réunis.' },
+    ],
+    secondaryBenefit: { icon: 'book-open', title: 'Dictionnaire de symboles et guides' },
+    privacyLink: 'Lire la politique de confidentialité',
+  },
+  es: {
+    categoriesShort: 'categorías',
+    quickBrowseHelp: 'Elige una categoría o usa A-Z para ir directamente al símbolo adecuado.',
+    clearSearch: 'Borrar búsqueda',
+    activeSearchLabel: 'Búsqueda activa',
+    backToTop: 'Volver arriba',
+    methodologyLink: 'Cómo se mantiene este catálogo',
+    storeCta: 'Descargar Noctalia en Google Play',
+    detailsCta: 'Ver cómo Noctalia añade tu contexto',
+    platformNote: 'Android 13+ · Cuenta gratuita · Compras opcionales en la app',
+    proofItems: [
+      { icon: 'infinity', title: 'Sueños sin límite', text: 'Con una cuenta gratuita.' },
+      { icon: 'mic-2', title: 'Voz o texto', text: 'Captura un sueño en segundos.' },
+      { icon: 'sparkles', title: 'Interpretación personal', text: 'Símbolos, emociones y contexto unidos.' },
+    ],
+    privacyLink: 'Leer la política de privacidad',
+  },
+  de: {
+    categoriesShort: 'Kategorien',
+    quickBrowseHelp: 'Wähle eine Kategorie oder nutze A-Z, um direkt zum richtigen Symbol zu springen.',
+    clearSearch: 'Suche löschen',
+    activeSearchLabel: 'Aktive Suche',
+    backToTop: 'Nach oben',
+    methodologyLink: 'So wird dieser Katalog gepflegt',
+    storeCta: 'Noctalia bei Google Play herunterladen',
+    detailsCta: 'So bezieht Noctalia deinen Kontext ein',
+    platformNote: 'Android 13+ · Kostenloses Konto · Optionale In-App-Käufe',
+    proofItems: [
+      { icon: 'infinity', title: 'Unbegrenzt viele Träume', text: 'Mit einem kostenlosen Konto.' },
+      { icon: 'mic-2', title: 'Sprache oder Text', text: 'Erfasse einen Traum in Sekunden.' },
+      { icon: 'sparkles', title: 'Persönliche Deutung', text: 'Symbole, Gefühle und Kontext zusammen.' },
+    ],
+    privacyLink: 'Datenschutzerklärung lesen',
+  },
+  it: {
+    categoriesShort: 'categorie',
+    quickBrowseHelp: 'Scegli una categoria oppure usa A-Z per arrivare subito al simbolo giusto.',
+    clearSearch: 'Cancella ricerca',
+    activeSearchLabel: 'Ricerca attiva',
+    backToTop: 'Torna su',
+    methodologyLink: 'Come viene mantenuto questo catalogo',
+    storeCta: 'Scarica Noctalia su Google Play',
+    detailsCta: 'Scopri come Noctalia usa il tuo contesto',
+    platformNote: 'Android 13+ · Account gratuito · Acquisti in-app facoltativi',
+    proofItems: [
+      { icon: 'infinity', title: 'Sogni senza limiti', text: 'Con un account gratuito.' },
+      { icon: 'mic-2', title: 'Voce o testo', text: 'Cattura un sogno in pochi secondi.' },
+      { icon: 'sparkles', title: 'Lettura personale', text: 'Simboli, emozioni e contesto insieme.' },
+    ],
+    privacyLink: 'Leggi l’informativa sulla privacy',
+  },
 };
 
 function readJson(fileName) {
@@ -417,6 +498,10 @@ function homePath(lang) {
 function getAndroidStoreUrl(lang) {
   const base = SITE_CONFIG.storeLinks?.androidBase || 'https://play.google.com/store/apps/details?id=com.tanuki75.noctalia';
   return `${base}&hl=${lang}`;
+}
+
+function getManagedPagePath(entryId, lang, fallback = homePath(lang)) {
+  return SITE_MANIFEST.collections?.pages?.entries?.[entryId]?.locales?.[lang]?.path || fallback;
 }
 
 const RELATED_ARTICLE_IDS = {
@@ -1336,6 +1421,149 @@ function renderLayoutCss() {
           border: 1px solid rgba(255,255,255,0.12);
           background: rgba(12,7,25,0.74);
         }
+        .dictionary-conversion-links a {
+          color: #fda481;
+          text-decoration: underline;
+          text-decoration-color: rgba(253,164,129,0.35);
+          text-underline-offset: 0.2em;
+        }
+        .dictionary-conversion-links a:hover {
+          color: #fff7f0;
+          text-decoration-color: rgba(255,247,240,0.65);
+        }
+        .dictionary-discovery-only[hidden],
+        #dictionary-grid[hidden] {
+          display: none !important;
+        }
+        .dictionary-conversion {
+          box-sizing: border-box;
+          width: calc(100% - (var(--dictionary-edge) * 2));
+          margin: 1.15rem var(--dictionary-edge) 1.8rem;
+          padding: clamp(1.25rem, 2.4vw, 2rem);
+          display: grid;
+          grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
+          gap: 1.4rem clamp(1.2rem, 3vw, 2.8rem);
+          border: 1px solid rgba(253,164,129,0.22);
+          border-radius: 1.35rem;
+          background:
+            radial-gradient(circle at 88% 12%, rgba(253,164,129,0.12), transparent 28rem),
+            linear-gradient(145deg, rgba(27,13,43,0.96), rgba(12,7,25,0.9));
+          box-shadow: 0 1.4rem 3.5rem rgba(0,0,0,0.2);
+        }
+        .dictionary-conversion-copy h2 {
+          margin: 0.45rem 0 0.75rem;
+          max-width: 17ch;
+          color: #fff7f0;
+          font-family: Georgia, 'Times New Roman', serif;
+          font-size: clamp(1.7rem, 2.4vw, 2.45rem);
+          line-height: 1.02;
+        }
+        .dictionary-conversion-copy > p:not(.dictionary-platform-note) {
+          max-width: 35rem;
+          margin: 0;
+          color: rgba(226,218,255,0.8);
+          line-height: 1.55;
+        }
+        .dictionary-conversion-kicker {
+          color: #fda481;
+          font-size: 0.72rem;
+          font-weight: 800;
+          letter-spacing: 0.11em;
+          text-transform: uppercase;
+        }
+        .dictionary-conversion-actions {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 0.65rem;
+          margin-top: 1.2rem;
+        }
+        .dictionary-store-cta,
+        .dictionary-details-cta {
+          min-height: 2.75rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding: 0.72rem 1rem;
+          border-radius: 9999px;
+          font-size: 0.9rem;
+          font-weight: 800;
+          line-height: 1.2;
+          text-decoration: none;
+        }
+        .dictionary-store-cta {
+          color: #0a0514;
+          background: #fda481;
+        }
+        .dictionary-store-cta:hover { background: #ffb89b; }
+        .dictionary-details-cta {
+          color: #fff7f0;
+          border: 1px solid rgba(255,255,255,0.16);
+          background: rgba(255,255,255,0.05);
+        }
+        .dictionary-details-cta:hover {
+          border-color: rgba(253,164,129,0.42);
+          background: rgba(253,164,129,0.08);
+        }
+        .dictionary-platform-note {
+          margin: 0.75rem 0 0 !important;
+          color: rgba(196,181,253,0.72) !important;
+          font-size: 0.76rem;
+          line-height: 1.4;
+        }
+        .dictionary-primary-benefit { display: none; }
+        .dictionary-proof-list {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 0.7rem;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+        .dictionary-proof-item {
+          min-width: 0;
+          display: flex;
+          align-items: flex-start;
+          gap: 0.7rem;
+          padding: 0.85rem;
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 0.9rem;
+          background: rgba(255,255,255,0.035);
+        }
+        .dictionary-proof-icon {
+          width: 2.3rem;
+          height: 2.3rem;
+          flex: 0 0 2.3rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 9999px;
+          color: #fda481;
+          background: rgba(253,164,129,0.1);
+        }
+        .dictionary-proof-item strong {
+          display: block;
+          color: #fff7f0;
+          font-size: 0.88rem;
+          line-height: 1.25;
+        }
+        .dictionary-proof-item strong + span {
+          display: block;
+          margin-top: 0.3rem;
+          color: rgba(226,218,255,0.7);
+          font-size: 0.76rem;
+          line-height: 1.45;
+        }
+        .dictionary-conversion-links {
+          grid-column: 1 / -1;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.65rem 1.2rem;
+          padding-top: 0.9rem;
+          border-top: 1px solid rgba(255,255,255,0.08);
+          font-size: 0.8rem;
+        }
         .quick-browse-panel {
           position: relative;
           width: calc(100% - (var(--dictionary-edge) * 2));
@@ -1817,6 +2045,89 @@ function renderLayoutCss() {
             height: 3.35rem;
             flex-basis: 3.35rem;
           }
+          .dictionary-conversion {
+            grid-template-columns: 1fr;
+            gap: 0.55rem;
+            margin-top: 1rem;
+            padding: 0.9rem;
+          }
+          .dictionary-conversion-kicker { display: none; }
+          .dictionary-conversion-copy h2 {
+            margin-top: 0;
+            max-width: none;
+            font-size: 1.55rem;
+            line-height: 1.08;
+          }
+          .dictionary-conversion-copy > p:not(.dictionary-platform-note):not(.dictionary-primary-benefit) {
+            font-size: 0.88rem;
+            line-height: 1.45;
+          }
+          .dictionary-primary-benefit {
+            min-height: 2.75rem;
+            margin: 0.75rem 0 0 !important;
+            padding: 0.55rem 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border: 1px solid rgba(253,164,129,0.2);
+            border-radius: 0.85rem;
+            color: #fff7f0 !important;
+            background: rgba(253,164,129,0.07);
+          }
+          .dictionary-primary-benefit > span:last-child {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.1rem 0.35rem;
+            align-items: baseline;
+          }
+          .dictionary-primary-benefit strong {
+            font-size: 0.82rem;
+            line-height: 1.2;
+          }
+          .dictionary-primary-benefit strong + span {
+            color: rgba(226,218,255,0.72);
+            font-size: 0.72rem;
+            line-height: 1.2;
+          }
+          .dictionary-conversion-actions {
+            align-items: stretch;
+            margin-top: 0.75rem;
+          }
+          .dictionary-store-cta,
+          .dictionary-details-cta {
+            width: 100%;
+          }
+          .dictionary-details-cta { display: none; }
+          .dictionary-platform-note {
+            margin-top: 0.55rem !important;
+            font-size: 0.7rem;
+          }
+          .dictionary-proof-list {
+            grid-template-columns: 1fr;
+            gap: 0.35rem;
+          }
+          .dictionary-proof-list > :first-child { display: none; }
+          .dictionary-proof-item {
+            min-height: 2.75rem;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 0.65rem;
+          }
+          .dictionary-proof-icon {
+            width: 2rem;
+            height: 2rem;
+            flex-basis: 2rem;
+          }
+          .dictionary-proof-item strong + span {
+            display: none;
+          }
+          .dictionary-conversion-links {
+            grid-column: 1;
+            padding-top: 0.65rem;
+          }
+          .dictionary-conversion-links > :first-child {
+            display: none;
+          }
           .quick-browse-alpha {
             gap: 0.28rem;
           }
@@ -1838,25 +2149,43 @@ function renderLayoutCss() {
             margin-left: 1rem;
             margin-right: 1rem;
           }
-          #symbolsList > section > .grid { grid-template-columns: 1fr; }
-          .quick-browse-panel {
-            padding: 1rem;
+          #categoryGridSection {
+            width: 100%;
+            margin: 0.35rem 0 0.75rem;
+            padding: 0.35rem 1rem 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
           }
+          #symbolsList > section > .grid { grid-template-columns: 1fr; }
+          #symbolsList {
+            padding-left: 0;
+            padding-right: 0;
+          }
+          #symbolsList > section > h2 {
+            margin-left: var(--dictionary-edge);
+            margin-right: var(--dictionary-edge);
+          }
+          .quick-browse-panel { padding: 0.75rem; }
+          #categoryGridSection { padding: 0.35rem 1rem 0; }
           .quick-browse-alpha {
             display: none;
           }
           .quick-browse-copy {
-            margin-bottom: 0.85rem;
+            margin-bottom: 0.55rem;
           }
           .quick-browse-copy h2 {
-            font-size: 1.35rem;
+            gap: 0.5rem;
+            font-size: 1.1rem;
           }
           .quick-browse-copy p {
             display: none;
           }
           .category-browse-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.4rem;
             margin-left: 0;
             margin-right: 0;
             padding: 0;
@@ -1872,61 +2201,147 @@ function renderLayoutCss() {
           .category-browse-card {
             flex-basis: auto;
             min-width: 0;
-            min-height: 3.1rem;
-            padding: 0.52rem 0.64rem;
+            min-height: 2.75rem;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.12rem;
+            padding: 0.18rem 0.12rem;
+            text-align: center;
           }
           .category-browse-icon {
-            width: 2.8rem;
-            height: 2.8rem;
+            position: static;
+            display: inline-flex;
+            width: 0.9rem;
+            height: 0.9rem;
+            flex: 0 0 0.9rem;
+            border-radius: 0;
+            background: transparent;
+            opacity: 0.86;
+            transform: none;
           }
           .category-browse-icon .w-5 {
-            width: 1.15rem;
-            height: 1.15rem;
+            width: 0.78rem;
+            height: 0.78rem;
+          }
+          .category-browse-count { display: none; }
+          .category-browse-meta {
+            width: 100%;
+            align-items: center;
           }
           .category-browse-title {
-            font-size: 0.95rem;
+            font-family: inherit;
+            max-width: 100%;
+            overflow: hidden;
+            font-size: 0.72rem;
+            line-height: 1;
+            white-space: nowrap;
+            text-overflow: ellipsis;
           }
-          .category-browse-count {
-            font-size: 0.66rem;
+          #mobileAlpha {
+            box-sizing: border-box;
+            display: flex !important;
+            width: calc(100% - 2rem);
+            margin: 0.1rem 1rem 0.75rem;
+            padding: 0.25rem;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            gap: 0.2rem;
+            overflow-x: auto;
+            overscroll-behavior-inline: contain;
+            scroll-snap-type: x proximity;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
           }
-          #mobileAlpha { display: none !important; }
+          #mobileAlpha::-webkit-scrollbar { display: none; }
+          .mobile-alpha-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 2.75rem;
+            min-width: 2.75rem;
+            min-height: 2.75rem;
+            padding: 0;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.045);
+            scroll-snap-align: start;
+          }
           #searchFeedback:not([hidden]) { display: flex !important; }
-          body.dictionary-search-active #stickyBar,
           body.dictionary-search-active #mobileAlpha {
             display: none !important;
           }
+          body.dictionary-search-active #navbar,
+          body.dictionary-search-active .dictionary-shell > nav[aria-label="Breadcrumb"],
+          body.dictionary-search-active .dictionary-header {
+            display: none !important;
+          }
+          body.dictionary-search-active #stickyBar {
+            display: block !important;
+            opacity: 1;
+            transform: translate(-50%, 0);
+          }
+          body.dictionary-search-active .dictionary-main {
+            padding-top: calc(var(--dictionary-scroll-offset, 9rem) + 0.5rem) !important;
+          }
           .symbol-card {
+            display: flow-root;
             min-height: 0;
-            display: flex;
-            flex-direction: column;
+            padding: 1rem;
+          }
+          .symbol-card-top {
+            display: none;
+          }
+          .symbol-card-image-layer {
+            position: relative;
+            inset: auto;
+            float: left;
+            width: min(50%, 9.5rem);
+            height: auto;
+            aspect-ratio: 1 / 1;
+            margin: -0.2rem 0.8rem 0.3rem -0.35rem;
+            overflow: visible;
+            shape-outside: inset(0 5% 0 0 round 8%);
+            z-index: 0;
           }
           .symbol-card-image {
-            width: min(48%, 11rem);
-            opacity: 0.5;
-            background-image:
-              linear-gradient(90deg, rgba(5,2,10,0), rgba(5,2,10,0.52)),
-              url('/img/symbols/dream-symbol-atlas-v2-mobile.webp');
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 1 / 1;
+            opacity: 0.7;
+            transform: scale(1.06);
+            transform-origin: center;
+            filter: saturate(1.08) contrast(1.02) brightness(1.14);
+            -webkit-mask-image: radial-gradient(circle at 45% 45%, #000 0 42%, rgba(0,0,0,0.9) 56%, transparent 78%);
+            mask-image: radial-gradient(circle at 45% 45%, #000 0 42%, rgba(0,0,0,0.9) 56%, transparent 78%);
+          }
+          .symbol-card:hover .symbol-card-image {
+            opacity: 0.74;
+            transform: scale(1.1);
+            filter: saturate(1.12) contrast(1.02) brightness(1.18);
           }
           .symbol-card-title-link,
           .symbol-card-desc,
           .symbol-card-question {
-            padding-left: clamp(4.8rem, 24vw, 6.7rem);
-          }
-          .symbol-card-top {
-            margin-bottom: 0.72rem;
+            padding-left: 0;
           }
           .symbol-card-title-link h3 {
             font-size: 1.28rem;
-            margin-bottom: 0.72rem;
+            line-height: 1.05;
+            margin: 0 0 0.45rem;
           }
           .symbol-card-desc {
-            font-size: 0.95rem;
-          }
-          .symbol-card-desc {
+            font-size: 0.92rem;
+            line-height: 1.48;
             display: block;
             -webkit-line-clamp: unset;
             overflow: visible;
             min-height: 0;
+          }
+          .symbol-card-question {
+            clear: both;
+            margin-top: 0.7rem;
+            padding-top: 0.65rem;
           }
           .search-feedback {
             align-items: flex-start;
@@ -1935,6 +2350,11 @@ function renderLayoutCss() {
           .search-feedback-clear {
             width: 100%;
             justify-content: center;
+          }
+        }
+        @media (max-width: 359px) {
+          .category-browse-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
           }
         }
         .sidebar-section { margin-bottom: 1.5rem; }
@@ -2021,7 +2441,7 @@ function renderMobileAlphaHtml(letters) {
     `                    <a href="#${l}" class="mobile-alpha-link" data-letter="${l}">${l}</a>`
   ).join('\n');
   return `            <!-- dict-alpha-mobile -->
-                <div id="mobileAlpha">
+                <div id="mobileAlpha" role="navigation" aria-label="A – Z">
 ${links}
                 </div>
             <!-- /dict-alpha-mobile -->`;
@@ -2167,9 +2587,8 @@ function generateDictionaryPage(lang, t) {
                         </div>`;
     }).join('\n');
     return `                <section id="${letter}" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">${letter}</span>
-                        ${escapeHtml(dc.section_heading)} ${letter}
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="${escapeHtml(`${dc.section_heading} ${letter}`)}">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">${letter}</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">${cards}
                     </div>
@@ -2213,7 +2632,7 @@ function generateDictionaryPage(lang, t) {
 
   const priorityLinks = Array.isArray(dc.priority_links) ? dc.priority_links : [];
   const priorityLinksHtml = priorityLinks.length ? `
-            <section class="quick-browse-panel glass-panel rounded-3xl mt-4" aria-label="${escapeHtml(dc.priority_links_heading || 'Priority symbols')}">
+            <section id="priorityLinksSection" class="quick-browse-panel dictionary-discovery-only glass-panel rounded-3xl mt-4" aria-label="${escapeHtml(dc.priority_links_heading || 'Priority symbols')}">
                 <div class="quick-browse-copy">
                     <div>
                         <h2 class="font-serif text-xl md:text-2xl text-dream-cream flex items-center gap-3">
@@ -2230,6 +2649,46 @@ ${priorityLinks.map((item) => `                    <a href="${escapeHtml(item.hr
                     </a>`).join('\n')}
                 </div>
             </section>` : '';
+
+  const productDetailsPath = getManagedPagePath('page.ai-dream-interpretation-app', lang);
+  const methodologyPath = getManagedPagePath('page.dream-content-methodology', lang);
+  const privacyPath = getManagedPagePath('legal.privacy', lang);
+  const conversionProofsHtml = (uiCopy.proofItems || []).map((item) => `
+                    <li class="dictionary-proof-item">
+                        <span class="dictionary-proof-icon" aria-hidden="true"><i data-lucide="${escapeHtml(item.icon)}" class="w-5 h-5"></i></span>
+                        <span><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.text)}</span></span>
+                    </li>`).join('');
+  const primaryBenefits = [uiCopy.proofItems?.[0], uiCopy.secondaryBenefit].filter(Boolean);
+  const conversionPrimaryBenefitHtml = primaryBenefits.map((item) => `
+                    <p class="dictionary-primary-benefit">
+                        <span class="dictionary-proof-icon" aria-hidden="true"><i data-lucide="${escapeHtml(item.icon)}" class="w-5 h-5"></i></span>
+                        <span><strong>${escapeHtml(item.title)}</strong>${item.text ? `<span>${escapeHtml(item.text)}</span>` : ''}</span>
+                    </p>`).join('');
+  const conversionPanelHtml = `
+            <section id="dictionaryConversion" class="dictionary-conversion dictionary-discovery-only" aria-labelledby="dictionaryConversionTitle">
+                <div class="dictionary-conversion-copy">
+                    <span class="dictionary-conversion-kicker">Noctalia · Android</span>
+                    <h2 id="dictionaryConversionTitle">${escapeHtml(dc.cta_title || dc.analyze_heading)}</h2>
+                    <p>${escapeHtml(dc.cta_subtitle || dc.analyze_text)}</p>
+${conversionPrimaryBenefitHtml}
+                    <div class="dictionary-conversion-actions">
+                        <a href="${getAndroidStoreUrl(lang)}" class="dictionary-store-cta" rel="nofollow noopener noreferrer" target="_blank">
+                            ${escapeHtml(uiCopy.storeCta)} <i data-lucide="external-link" class="w-4 h-4"></i>
+                        </a>
+                        <a href="${escapeHtml(productDetailsPath)}" class="dictionary-details-cta">
+                            ${escapeHtml(uiCopy.detailsCta)} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                    <p class="dictionary-platform-note">${escapeHtml(uiCopy.platformNote)}</p>
+                </div>
+                <ul class="dictionary-proof-list">
+${conversionProofsHtml}
+                </ul>
+                <div class="dictionary-conversion-links">
+                    <a href="${escapeHtml(methodologyPath)}">${escapeHtml(uiCopy.methodologyLink)}</a>
+                    <a href="${escapeHtml(privacyPath)}">${escapeHtml(uiCopy.privacyLink)}</a>
+                </div>
+            </section>`;
 
   // ── Build JSON-LD ────────────────────────────────────────────────────
   const collection = {
@@ -2395,7 +2854,7 @@ ${renderViewTransitionHeadStyles()}
             left: 50%;
             transform: translate(-50%, -0.35rem);
             z-index: 45;
-            width: min(calc(100vw - 2rem), 58rem);
+            width: min(calc(100vw - 2rem), 72rem);
             display: none;
             opacity: 0;
             pointer-events: none;
@@ -2418,7 +2877,8 @@ ${renderViewTransitionHeadStyles()}
             touch-action: manipulation;
         }
         #stickyBar .sb-search { position: relative; flex-shrink: 0; width: min(17rem, 34vw); }
-        #stickyBar .sb-alpha { display: flex; flex-wrap: nowrap; gap: 3px; justify-content: center; align-items: center; flex: 1; min-width: 0; overflow: hidden; }
+        #stickyBar .sb-alpha { display: flex; flex-wrap: nowrap; gap: 3px; justify-content: flex-start; align-items: center; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+        #stickyBar .sb-alpha::-webkit-scrollbar { display: none; }
         #stickyBar .letter-link {
           min-width: 1.7rem;
           min-height: 1.7rem;
@@ -2463,29 +2923,80 @@ ${renderViewTransitionHeadStyles()}
           color: #fff;
         }
         .search-clear[hidden] { display: none !important; }
+        #backToTop {
+          min-width: 2.75rem;
+          min-height: 2.75rem;
+          align-items: center;
+          justify-content: center;
+        }
+        body.mobile-menu-lock { overflow: hidden; touch-action: none; }
         /* Hero search */
         .hero-search:focus { outline: none; border-color: #FDA481; }
+        .hero-search:focus-visible,
+        .search-input:focus-visible,
+        .mobile-alpha-link:focus-visible,
+        .letter-link:focus-visible,
+        .category-browse-card:focus-visible,
+        .dictionary-store-cta:focus-visible,
+        .dictionary-details-cta:focus-visible,
+        #backToTop:focus-visible {
+            outline: 2px solid #FDA481;
+            outline-offset: 2px;
+        }
         @media (max-width: 767px) {
             #stickyBar {
                 width: calc(100vw - 1rem);
                 top: var(--sticky-bar-top, 4.8rem);
-                padding: 0.62rem !important;
+                padding: 0.5rem !important;
                 border-radius: 1rem !important;
             }
             #stickyBar .sb-inner {
                 flex-wrap: wrap;
-                gap: 0.75rem;
+                gap: 0.45rem;
             }
             #stickyBar .sb-search {
-                width: 100%;
+                width: auto;
+                min-width: 0;
+                flex: 1 1 12rem;
+            }
+            #stickyBar .search-input {
+                min-height: 2.75rem;
+            }
+            #stickyBar .search-clear {
+                right: 0;
+                width: 2.75rem;
+                height: 2.75rem;
             }
             #stickyBar .sb-alpha {
-                flex-wrap: wrap;
-                overflow: visible;
+                display: flex;
+                order: 4;
+                flex: 1 0 100%;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding: 0.25rem 0 0.15rem;
+                scrollbar-width: none;
+            }
+            #stickyBar .letter-link {
+                min-width: 2.75rem;
+                min-height: 2.75rem;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex: 0 0 2.75rem;
+            }
+            #stickyBar .sb-alpha::-webkit-scrollbar {
+                display: none;
             }
             .sticky-status {
-                width: 100%;
-                order: 3;
+                display: none !important;
+            }
+            #mobileMenuButton,
+            #navMobileGuideLink {
+                min-width: 2.75rem;
+                min-height: 2.75rem;
+                align-items: center;
+                justify-content: center;
             }
         }
         @media (max-width: 1100px) {
@@ -2545,13 +3056,14 @@ ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
                     <h1 class="font-serif text-3xl md:text-5xl lg:text-[3.4rem] mb-0 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/55 leading-tight max-w-4xl">
                         ${escapeHtml(dc.h1_text)}
                     </h1>
-                    <p class="dictionary-hero-intro">${escapeHtml(heroCopy.guide)}</p>
+                    <p class="dictionary-hero-intro">${escapeHtml(dc.intro_paragraph || heroCopy.guide)}</p>
 
                     <!-- Hero search -->
                     <div id="heroSearchShell" class="relative w-full">
                         <div class="dictionary-hero-search-input">
                             <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>
                             <input type="text" id="heroSearch" placeholder="${escapeHtml(dc.hero_search_placeholder)}"
+                                aria-label="${escapeHtml(dc.hero_search_placeholder)}"
                                 class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-14 text-base text-dream-cream placeholder:text-purple-200/55 transition-colors">
                         </div>
                         <button type="button" id="heroSearchClear" class="search-clear" aria-label="${escapeHtml(uiCopy.clearSearch)}" title="${escapeHtml(uiCopy.clearSearch)}" onclick="document.getElementById('heroSearch').value='';document.getElementById('heroSearch').dispatchEvent(new Event('input',{bubbles:true}));" hidden>
@@ -2580,6 +3092,7 @@ ${renderMobileAlphaHtml(letters)}
                     <div class="sb-search">
                         <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-300/50 pointer-events-none"></i>
                         <input type="text" id="stickySearch" placeholder="${escapeHtml(dc.sticky_search_placeholder)}"
+                            aria-label="${escapeHtml(dc.sticky_search_placeholder)}"
                             class="search-input w-full rounded-full py-2 pl-12 pr-14 text-sm text-dream-cream transition-colors"
                             style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);outline:none;">
                         <button type="button" id="stickySearchClear" class="search-clear" aria-label="${escapeHtml(uiCopy.clearSearch)}" title="${escapeHtml(uiCopy.clearSearch)}" onclick="document.getElementById('stickySearch').value='';document.getElementById('stickySearch').dispatchEvent(new Event('input',{bubbles:true}));" hidden>
@@ -2588,14 +3101,14 @@ ${renderMobileAlphaHtml(letters)}
                     </div>
                     <div id="stickySearchStatus" class="sticky-status" hidden>
                         <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                        <span id="stickySearchStatusText"></span>
+                        <span id="stickySearchStatusText" role="status" aria-live="polite" aria-atomic="true"></span>
                     </div>
                     <!-- Alphabet -->
-                    <div class="sb-alpha letter-nav">
+                    <div id="stickyAlphabet" class="sb-alpha letter-nav">
 ${stickyAlphaLinks}
                     </div>
                     <!-- Back to top -->
-                    <button id="backToTop" class="glass-button rounded-full text-purple-300/70 hover:text-white transition-colors" aria-label="Back to top" title="Back to top" style="display:none;flex-shrink:0;padding:6px;">
+                    <button id="backToTop" class="glass-button rounded-full text-purple-300/70 hover:text-white transition-colors" aria-label="${escapeHtml(uiCopy.backToTop)}" title="${escapeHtml(uiCopy.backToTop)}" style="display:none;flex-shrink:0;padding:6px;">
                         <i data-lucide="arrow-up" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -2621,17 +3134,18 @@ ${catGridCards}
                 </div>
             </section>
 ${priorityLinksHtml}
+${conversionPanelHtml}
 
             <div id="searchFeedback" class="search-feedback" hidden>
                 <div class="search-feedback-copy">
                     <span class="search-feedback-label">${escapeHtml(uiCopy.activeSearchLabel)}</span>
-                    <span id="searchFeedbackText" class="search-feedback-text"></span>
+                    <span id="searchFeedbackText" class="search-feedback-text" role="status" aria-live="polite" aria-atomic="true"></span>
                 </div>
                 <button type="button" id="searchFeedbackClear" class="search-feedback-clear" onclick="document.getElementById('heroSearch').value='';document.getElementById('heroSearch').dispatchEvent(new Event('input',{bubbles:true}));">${escapeHtml(uiCopy.clearSearch)}</button>
             </div>
 
             <!-- Symbols Dictionary -->
-            <div id="dictionary-grid">
+            <div id="dictionary-grid" class="dictionary-discovery-only">
 ${educationalFigure}
             </div>
             <div id="symbolsList">
@@ -2660,9 +3174,15 @@ ${faqHtml}
                 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     ${escapeHtml(dc.analyze_text)}
                 </p>
-                <a href="${getAndroidStoreUrl(lang)}" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
-                    ${escapeHtml(dc.cta_button)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                </a>
+                <div class="dictionary-conversion-actions justify-center">
+                    <a href="${getAndroidStoreUrl(lang)}" class="dictionary-store-cta" rel="nofollow noopener noreferrer" target="_blank">
+                        ${escapeHtml(uiCopy.storeCta)} <i data-lucide="external-link" class="w-4 h-4"></i>
+                    </a>
+                    <a href="${escapeHtml(productDetailsPath)}" class="dictionary-details-cta">
+                        ${escapeHtml(uiCopy.detailsCta)} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+                <p class="dictionary-platform-note">${escapeHtml(uiCopy.platformNote)}</p>
             </aside>
 
             <!-- Related Articles -->
@@ -2685,11 +3205,14 @@ ${renderGuidesFooter(lang, t, pages, currentPaths, 'dictionary')}
             const stickyBar = document.getElementById('stickyBar');
             const symbolCards = document.querySelectorAll('.symbol-card');
             const listSections = document.querySelectorAll('#symbolsList > section');
+            let navbarTransitionFrame = 0;
 
             function updateSectionScrollOffset() {
                 if (!stickyBar) return;
-                const navbarHeight = navbar?.getBoundingClientRect().height || 0;
-                const stickyTop = Math.ceil(navbarHeight + 12);
+                const navbarBottom = navbar && getComputedStyle(navbar).display !== 'none'
+                    ? navbar.getBoundingClientRect().bottom
+                    : 0;
+                const stickyTop = Math.ceil(Math.max(0, navbarBottom) + 12);
                 stickyBar.style.setProperty('--sticky-bar-top', \`\${stickyTop}px\`);
                 const stickyHeight = stickyBar.classList.contains('sb-visible') ? stickyBar.getBoundingClientRect().height : 0;
                 const offset = Math.ceil(stickyTop + stickyHeight + 16);
@@ -2698,6 +3221,24 @@ ${renderGuidesFooter(lang, t, pages, currentPaths, 'dictionary')}
 
             updateSectionScrollOffset();
             window.addEventListener('resize', updateSectionScrollOffset);
+            if (navbar) {
+                const trackNavbarTransition = () => {
+                    updateSectionScrollOffset();
+                    navbarTransitionFrame = window.requestAnimationFrame(trackNavbarTransition);
+                };
+                const stopNavbarTransitionTracking = (event) => {
+                    if (event.propertyName !== 'transform') return;
+                    if (navbarTransitionFrame) window.cancelAnimationFrame(navbarTransitionFrame);
+                    navbarTransitionFrame = 0;
+                    updateSectionScrollOffset();
+                };
+                navbar.addEventListener('transitionrun', (event) => {
+                    if (event.propertyName !== 'transform' || navbarTransitionFrame) return;
+                    trackNavbarTransition();
+                });
+                navbar.addEventListener('transitionend', stopNavbarTransitionTracking);
+                navbar.addEventListener('transitioncancel', stopNavbarTransitionTracking);
+            }
 
             // ── Symbol card clickability (keyboard accessible) ────────────
 
@@ -2793,8 +3334,10 @@ ${symbolCatEntries}
             const searchFeedbackClear = document.getElementById('searchFeedbackClear');
             const stickySearchStatus = document.getElementById('stickySearchStatus');
             const stickySearchStatusText = document.getElementById('stickySearchStatusText');
+            const discoveryOnlySections = document.querySelectorAll('.dictionary-discovery-only');
             const symbolsListEl = document.getElementById('symbolsList');
             let revealSearchAreaTimer = null;
+            let letterNavigationTimer = null;
             const searchResultWord = ${JSON.stringify(
               lang === 'fr' ? 'résultat(s)' :
               lang === 'es' ? 'resultado(s)' :
@@ -2822,7 +3365,7 @@ ${symbolCatEntries}
                 if (rect.top > threshold || rect.top < 0) {
                     const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dictionary-scroll-offset')) || 0;
                     const keyboardLift = window.visualViewport ? Math.max(0, window.innerHeight - window.visualViewport.height) : 0;
-                    const nextTop = target.getBoundingClientRect().top + window.scrollY - offset - Math.min(keyboardLift, 220) + 12;
+                    const nextTop = target.getBoundingClientRect().top + window.scrollY - offset - Math.min(keyboardLift, 220);
                     window.scrollTo({ top: Math.max(nextTop, 0), behavior: 'smooth' });
                 }
             }
@@ -2846,6 +3389,9 @@ ${symbolCatEntries}
                 if (categoryGridSection) {
                     categoryGridSection.hidden = hasQuery;
                 }
+                discoveryOnlySections.forEach((section) => {
+                    section.hidden = hasQuery;
+                });
                 if (searchFeedback) {
                     searchFeedback.hidden = !hasQuery;
                 }
@@ -2867,26 +3413,44 @@ ${symbolCatEntries}
                 stickySearch.value = nextValue;
                 const hasValue = nextValue.trim().length > 0;
                 const isMobile = window.matchMedia('(max-width: 767px)').matches;
+                const moveFocusToSticky = hasValue
+                    && isMobile
+                    && source === 'hero'
+                    && document.activeElement === heroSearch;
                 if (heroSearchClear) heroSearchClear.hidden = !hasValue;
                 if (stickySearchClear) stickySearchClear.hidden = !hasValue;
                 const visibleCount = filterSymbols(nextValue);
                 updateSearchUi(nextValue, visibleCount);
-                if (hasValue && isMobile && source !== 'hero') {
+                if (hasValue && isMobile) {
                     stickyBar?.classList.add('sb-visible');
                     updateSectionScrollOffset();
+                    if (moveFocusToSticky) {
+                        stickySearch.focus({ preventScroll: true });
+                        stickySearch.setSelectionRange(nextValue.length, nextValue.length);
+                    }
+                } else if (!hasValue && isMobile) {
+                    syncStickyBarVisibility();
                 }
                 scheduleRevealSearchArea(nextValue, visibleCount);
-                if (source === 'sticky') {
+                if (source === 'sticky' && hasValue) {
                     stickySearch.focus({ preventScroll: true });
                 }
             }
 
             function syncStickyBarVisibility() {
                 if (!heroHeader || !stickyBar) return;
+                if (document.body.classList.contains('dictionary-search-active')
+                    || document.body.classList.contains('dictionary-letter-navigation')) {
+                    stickyBar.classList.add('sb-visible');
+                    updateSectionScrollOffset();
+                    return;
+                }
                 const heroBottom = heroHeader.getBoundingClientRect().bottom;
                 const navbarHeight = navbar?.getBoundingClientRect().height || 0;
+                const symbolsTop = symbolsListEl?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY;
                 const symbolsBottom = symbolsListEl?.getBoundingClientRect().bottom ?? Number.POSITIVE_INFINITY;
-                const shouldShow = heroBottom <= navbarHeight + 24 && symbolsBottom > navbarHeight + 80;
+                const revealBoundary = window.matchMedia('(max-width: 767px)').matches ? symbolsTop : heroBottom;
+                const shouldShow = revealBoundary <= navbarHeight + 24 && symbolsBottom > navbarHeight + 80;
                 stickyBar.classList.toggle('sb-visible', shouldShow);
                 updateSectionScrollOffset();
             }
@@ -2898,11 +3462,6 @@ ${symbolCatEntries}
             heroSearch.addEventListener('input', (e) => {
                 setSearchValue(e.target.value, 'hero');
             });
-            heroSearch.addEventListener('blur', () => {
-                if (window.matchMedia('(max-width: 767px)').matches && heroSearch.value.trim()) {
-                    setSearchValue(heroSearch.value, 'sticky');
-                }
-            });
             stickySearch.addEventListener('input', (e) => {
                 setSearchValue(e.target.value, 'sticky');
             });
@@ -2912,6 +3471,11 @@ ${symbolCatEntries}
             });
             stickySearchClear?.addEventListener('click', () => {
                 setSearchValue('', 'sticky');
+                if (stickyBar?.classList.contains('sb-visible')) {
+                    stickySearch.focus({ preventScroll: true });
+                } else {
+                    heroSearch.focus({ preventScroll: true });
+                }
             });
             searchFeedbackClear?.addEventListener('click', () => {
                 setSearchValue('', 'hero');
@@ -2923,11 +3487,29 @@ ${symbolCatEntries}
             document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
+                    const wasSearchActive = document.body.classList.contains('dictionary-search-active');
+                    if (wasSearchActive) {
+                        setSearchValue('', 'sticky');
+                    }
                     const target = document.querySelector(link.getAttribute('href'));
-                    updateSectionScrollOffset();
-                    if (target) {
+                    const scrollToTarget = () => {
+                        if (!target) return;
+                        document.body.classList.add('dictionary-letter-navigation');
+                        stickyBar?.classList.add('sb-visible');
+                        updateSectionScrollOffset();
                         setActiveAlpha(link.dataset.letter);
                         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        if (letterNavigationTimer) window.clearTimeout(letterNavigationTimer);
+                        letterNavigationTimer = window.setTimeout(() => {
+                            document.body.classList.remove('dictionary-letter-navigation');
+                            syncStickyBarVisibility();
+                            letterNavigationTimer = null;
+                        }, 1200);
+                    };
+                    if (wasSearchActive) {
+                        window.requestAnimationFrame(() => window.requestAnimationFrame(scrollToTarget));
+                    } else {
+                        scrollToTarget();
                     }
                 });
             });
@@ -2935,7 +3517,13 @@ ${symbolCatEntries}
             // ── Active letter tracking (IntersectionObserver) ─────────────
             function setActiveAlpha(letter) {
                 document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(l => {
-                    l.classList.toggle('alpha-active', l.dataset.letter === letter);
+                    const isActive = l.dataset.letter === letter;
+                    l.classList.toggle('alpha-active', isActive);
+                    if (isActive) {
+                        l.setAttribute('aria-current', 'true');
+                    } else {
+                        l.removeAttribute('aria-current');
+                    }
                 });
             }
             function syncActiveAlphaFromScroll() {
