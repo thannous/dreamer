@@ -7,6 +7,7 @@ const {
   siteConfig,
 } = require('./docs-site-config');
 const { escapeHtml } = require('./docs-source-utils');
+const { renderAhrefsAnalyticsScript } = require('./ahrefs-analytics');
 const { renderViewTransitionHeadStyles } = require('./docs-view-transitions');
 const { createRenderContext } = require('./docs-components/context');
 const { renderFooter: renderSharedFooter } = require('./docs-components/footer');
@@ -28,7 +29,6 @@ const {
 } = require('./image-seo-assets');
 
 const shellTemplate = fs.readFileSync(path.join(DOCS_SRC_DIR, 'templates', 'base.html'), 'utf8');
-const AHREFS_ANALYTICS_KEY = 'qDwc7i0RM0aLBY/cZLkOxA';
 const DEFAULT_SOCIAL_IMAGE = `${siteConfig.domain}/img/og/noctalia-dreamscape-v2-1200x630.jpg`;
 const LEGACY_SOCIAL_IMAGE_PATTERN = /\/img\/og\/noctalia-(?:en|fr|es|de|it)-1200x630\.jpg(?:[?#].*)?$/i;
 let imageSeoRegistryCache;
@@ -407,16 +407,6 @@ function renderHeadScripts() {
   return '';
 }
 
-function renderAnalyticsHeadScript() {
-  return [
-    '    <script',
-    '      src="https://analytics.ahrefs.com/analytics.js"',
-    `      data-key="${AHREFS_ANALYTICS_KEY}"`,
-    '      async',
-    '    ></script>',
-  ].join('\n');
-}
-
 function renderCommonHead(meta, entry, assetVersion, bodyHtml) {
   const lang = meta.lang;
   const pagePath = entry?.locales?.[lang]?.path || meta.currentPath || '/';
@@ -512,7 +502,7 @@ function renderCommonHead(meta, entry, assetVersion, bodyHtml) {
     '    <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>',
     '    <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>',
     preloadLines.join('\n'),
-    renderAnalyticsHeadScript(),
+    renderAhrefsAnalyticsScript(),
     renderStyles(meta, assetVersion),
     renderViewTransitionHeadStyles(),
     renderHeadScripts(meta, assetVersion),
