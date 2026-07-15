@@ -1,0 +1,490 @@
+{
+  "meta": {
+    "title": "Audit persona du paywall Noctalia Plus",
+    "site_name": "Noctalia",
+    "url": "http://localhost:8081/paywall?trigger=settings",
+    "date": "2026-07-15",
+    "primary_conversion": "Choisir un plan puis se connecter pour souscrire à Noctalia Plus",
+    "audience": "Utilisateurs de Noctalia qui évaluent Plus depuis les réglages",
+    "summary": "Le paywall est désormais assez simple pour que deux profils à forte intention avancent: les prix sont visibles avant authentification, la frontière entre le gratuit et Plus est explicite et le contenu reste centré sur grand écran. Mina continue gratuitement car Plus ne répond pas à son besoin immédiat; Eli hésite encore faute d'une preuve IA et confidentialité placée près du CTA; Rae quitte toujours le parcours car export et restauration ne sont pas prouvés.",
+    "method_note": "Cinq personas simulés à partir du rapport public Dream Symbols Dictionary puis rejoués sur le paywall local; ce travail ne remplace ni des entretiens ni des données analytics."
+  },
+  "coverage": {
+    "pages": [
+      {
+        "label": "Source des cinq personas",
+        "url": "file:///Users/tanuki/Documents/Codex/2026-07-15/noctalia-dream-symbols-dictionary-audit/outputs/simulate-customer-personas-report.html",
+        "purpose": "Reprendre les motivations, objections et preuves attendues issues du parcours public"
+      },
+      {
+        "label": "Paywall depuis les réglages",
+        "url": "http://localhost:8081/paywall?trigger=settings",
+        "purpose": "Évaluer la proposition Plus, les prix, le choix du plan, l'authentification et la sortie gratuite"
+      }
+    ],
+    "viewports": [
+      {
+        "name": "Desktop",
+        "size": "1440 × 900",
+        "summary": "Le contenu est limité à 720 px, les deux plans et les deux actions restent regroupés et l'ancienne CTA étirée sur presque toute la fenêtre a disparu."
+      },
+      {
+        "name": "Mobile",
+        "size": "390 × 844",
+        "summary": "Le titre, trois bénéfices, la limite gratuit versus Plus, les prix, l'économie annuelle et les actions tiennent dans un parcours court sans débordement horizontal."
+      }
+    ],
+    "limitations": [
+      "Aucun analytics, entretien, heatmap ou enregistrement de session n'était disponible.",
+      "Le parcours a été testé déconnecté dans Chromium; aucune transaction ni création de compte n'a été déclenchée.",
+      "Les tarifs affichés proviennent des offres locales actuelles et n'ont pas été vérifiés sur un appareil de production.",
+      "L'export, l'import, la restauration et la migration ne sont pas prouvés dans le paywall; aucune promesse correspondante n'a été ajoutée.",
+      "Les lecteurs d'écran natifs Android et iOS n'ont pas été rejoués; la sémantique radio a été contrôlée dans le DOM web."
+    ]
+  },
+  "headline_metrics": {
+    "convert": 2,
+    "hesitate": 1,
+    "leave": 2,
+    "average_scores": {
+      "clarity": 4.2,
+      "trust": 3.4,
+      "relevance": 3.6,
+      "friction": 4.2
+    }
+  },
+  "personas": [
+    {
+      "id": "symbol-searcher",
+      "name": "Noah",
+      "archetype": "Chercheur de symbole à forte intention",
+      "situation": "A déjà obtenu une réponse contextuelle et évalue si Plus apporte une valeur personnelle récurrente.",
+      "job": "Relier ses rêves dans le temps sans perdre la nuance de chaque contexte.",
+      "intent": "Élevée pour l'analyse récurrente",
+      "trigger": "Un symbole vif ou récurrent revient dans plusieurs rêves.",
+      "success_criteria": [
+        "Valeur Plus comprise en quelques secondes",
+        "Prix prévisible avant connexion",
+        "Possibilité de rester sur le journal gratuit"
+      ],
+      "objections": [
+        "Pourquoi payer plutôt que consulter un symbole ponctuellement?",
+        "La connexion va-t-elle révéler le prix trop tard?"
+      ],
+      "required_proof": [
+        "Bénéfices liés à l'historique et aux tendances",
+        "Prix mensuel et annuel visibles",
+        "Sortie gratuite explicite"
+      ],
+      "path": [
+        "Réglages",
+        "Paywall Plus",
+        "Plan annuel",
+        "Se connecter pour continuer"
+      ],
+      "scores": {
+        "clarity": 4,
+        "trust": 4,
+        "relevance": 5,
+        "friction": 4
+      },
+      "decision": "convert",
+      "decision_reason": "Le paywall relie Plus aux analyses, tendances et thèmes récurrents, puis montre le prix avant la connexion; Noah peut décider sans saut commercial caché.",
+      "confidence": 0.88,
+      "helps": [
+        "Trois bénéfices courts remplacent la carte longue et répétitive.",
+        "Les prix mensuel et annuel sont visibles avant authentification.",
+        "Continuer gratuitement réduit le risque d'une décision forcée."
+      ],
+      "blocks": [
+        "Aucun exemple concret de tendance ou de thème récurrent n'est montré.",
+        "La preuve éditoriale détaillée reste hors de cette surface."
+      ],
+      "journey": [
+        {
+          "step": "Qualification",
+          "url": "http://localhost:8081/paywall?trigger=settings",
+          "observation": "Le titre propose de comprendre ce qui revient et trois lignes décrivent analyses, historique et tendances.",
+          "interpretation": "Noah distingue rapidement la valeur récurrente de la consultation ponctuelle.",
+          "device_notes": "Même ordre d'information à 390×844 et 1440×900."
+        },
+        {
+          "step": "Choix du plan",
+          "url": "http://localhost:8081/paywall?trigger=settings",
+          "observation": "Mensuel à $4.99 et annuel à $39.99 avec économie de 33 % sont visibles et sélectionnables.",
+          "interpretation": "Le coût est connu avant l'authentification et le plan annuel paraît pertinent pour un usage récurrent.",
+          "device_notes": "Les deux options restent entièrement visibles sur petit écran."
+        }
+      ]
+    },
+    {
+      "id": "wake-voice-capturer",
+      "name": "Mina",
+      "archetype": "Utilisatrice Android qui capture par la voix au réveil",
+      "situation": "Utilise surtout Noctalia pour enregistrer vite un rêve et ne cherche pas encore une analyse approfondie.",
+      "job": "Capturer immédiatement le rêve sans perdre de détails.",
+      "intent": "Faible pour Plus, élevée pour le produit gratuit",
+      "trigger": "Elle ouvre les réglages après quelques premières captures.",
+      "success_criteria": [
+        "La capture reste disponible gratuitement",
+        "Aucune pression commerciale",
+        "Retour simple au journal"
+      ],
+      "objections": [
+        "Dois-je payer pour continuer à enregistrer mes rêves?",
+        "Le gratuit est-il financé par de la publicité ciblée?"
+      ],
+      "required_proof": [
+        "Frontière gratuit versus Plus",
+        "Absence de publicité ciblée",
+        "Sortie sans perte de contexte"
+      ],
+      "path": [
+        "Réglages",
+        "Paywall Plus",
+        "Continuer gratuitement"
+      ],
+      "scores": {
+        "clarity": 4,
+        "trust": 4,
+        "relevance": 2,
+        "friction": 4
+      },
+      "decision": "leave",
+      "decision_reason": "Mina comprend que la capture et le journal restent gratuits sans publicité ciblée; elle quitte donc le paywall sereinement car Plus n'est pas encore son besoin.",
+      "confidence": 0.86,
+      "helps": [
+        "La phrase de réassurance protège explicitement le cœur gratuit.",
+        "Continuer gratuitement est une action claire et directe.",
+        "Aucune liste exhaustive ne masque la sortie."
+      ],
+      "blocks": [
+        "Les bénéfices Plus ne répondent pas à son besoin immédiat de capture.",
+        "Le paywall ne doit pas considérer cette sortie volontaire comme un échec produit."
+      ],
+      "journey": [
+        {
+          "step": "Contrôle du gratuit",
+          "url": "http://localhost:8081/paywall?trigger=settings",
+          "observation": "Une phrase indique que l'enregistrement et le journal restent gratuits, sans publicité ciblée.",
+          "interpretation": "L'objection principale est levée sans forcer Mina à déduire les limites du plan gratuit.",
+          "device_notes": "Le texte apparaît avant les plans sur les deux viewports."
+        },
+        {
+          "step": "Sortie",
+          "url": "http://localhost:8081/paywall?trigger=settings",
+          "observation": "Continuer gratuitement est placé sous le CTA de connexion.",
+          "interpretation": "Mina peut revenir à son travail principal sans confusion.",
+          "device_notes": "Cible lisible et accessible sur mobile."
+        }
+      ]
+    },
+    {
+      "id": "history-migrant",
+      "name": "Rae",
+      "archetype": "Migrante prudente qui protège des années d'historique",
+      "situation": "Refuse de financer un nouveau journal sans garantie de pouvoir conserver et récupérer ses données.",
+      "job": "S'assurer que l'historique payant restera exportable et restaurable.",
+      "intent": "Élevée mais conditionnelle",
+      "trigger": "Une précédente application a perdu ou enfermé son historique.",
+      "success_criteria": [
+        "Export opérationnel prouvé",
+        "Restauration ou import expliqués",
+        "Aucune promesse non vérifiée"
+      ],
+      "objections": [
+        "Que devient mon historique si je résilie?",
+        "Puis-je restaurer ou migrer toutes mes données?"
+      ],
+      "required_proof": [
+        "Format et procédure d'export",
+        "État de sauvegarde et restauration",
+        "Comportement après résiliation"
+      ],
+      "path": [
+        "Réglages",
+        "Paywall Plus",
+        "Recherche d'une preuve de continuité",
+        "Continuer gratuitement"
+      ],
+      "scores": {
+        "clarity": 4,
+        "trust": 2,
+        "relevance": 3,
+        "friction": 4
+      },
+      "decision": "leave",
+      "decision_reason": "Le prix et les bénéfices sont clairs, mais aucune preuve d'export, de restauration ou de migration ne réduit le risque central de Rae; la simulation s'arrête sans inventer cette capacité.",
+      "confidence": 0.93,
+      "helps": [
+        "Le paywall ne revendique pas une capacité non vérifiée.",
+        "La sortie gratuite reste immédiatement disponible.",
+        "Le prix n'est plus caché derrière la connexion."
+      ],
+      "blocks": [
+        "Aucune preuve de continuité des données n'est présente.",
+        "Le bénéfice historique peut augmenter la peur de lock-in sans export.",
+        "Aucune information après résiliation n'est visible."
+      ],
+      "journey": [
+        {
+          "step": "Évaluation de l'historique",
+          "url": "http://localhost:8081/paywall?trigger=settings",
+          "observation": "Le paywall met en avant un historique enrichi, sans mention d'export ou restauration.",
+          "interpretation": "La valeur promise renforce aussi le coût perçu d'une éventuelle perte de données.",
+          "device_notes": "Le blocage est identique sur desktop et mobile."
+        },
+        {
+          "step": "Décision",
+          "url": "http://localhost:8081/paywall?trigger=settings",
+          "observation": "Aucun lien de continuité n'apparaît avant la connexion.",
+          "interpretation": "Rae utilise Continuer gratuitement et reporte l'achat.",
+          "device_notes": "Aucune transaction n'a été lancée."
+        }
+      ]
+    },
+    {
+      "id": "privacy-skeptic",
+      "name": "Eli",
+      "archetype": "Sceptique de l'interprétation générique et de la collecte",
+      "situation": "Évalue une option payante qui traitera des contenus intimes et attend une explication simple sur l'IA et les données.",
+      "job": "Comprendre ce que Plus analyse et comment les données sont traitées avant de se connecter.",
+      "intent": "Moyenne",
+      "trigger": "Le paywall promet des analyses plus détaillées de rêves personnels.",
+      "success_criteria": [
+        "Absence de publicité ciblée",
+        "Lien de confidentialité proche du CTA",
+        "Traitement IA expliqué en langage simple"
+      ],
+      "objections": [
+        "Mes rêves servent-ils à entraîner des modèles?",
+        "Quels fournisseurs reçoivent le contenu?"
+      ],
+      "required_proof": [
+        "Résumé IA et confidentialité",
+        "Lien direct vers la politique pertinente",
+        "Limites de l'interprétation"
+      ],
+      "path": [
+        "Réglages",
+        "Paywall Plus",
+        "Réassurance publicitaire",
+        "Hésitation avant connexion"
+      ],
+      "scores": {
+        "clarity": 4,
+        "trust": 3,
+        "relevance": 4,
+        "friction": 4
+      },
+      "decision": "hesitate",
+      "decision_reason": "L'absence de publicité ciblée améliore la confiance, mais Eli ne trouve pas près du CTA la preuve sur les fournisseurs IA, l'entraînement ou les limites d'interprétation.",
+      "confidence": 0.9,
+      "helps": [
+        "La promesse commerciale est courte et non diagnostique.",
+        "La réassurance mentionne explicitement l'absence de publicité ciblée.",
+        "La connexion n'est demandée qu'après le choix éclairé du plan."
+      ],
+      "blocks": [
+        "Aucun résumé du traitement IA n'est présent.",
+        "La politique de confidentialité n'est pas liée près du CTA.",
+        "Le mot analyses ne précise pas les limites de l'interprétation."
+      ],
+      "journey": [
+        {
+          "step": "Lecture de la promesse",
+          "url": "http://localhost:8081/paywall?trigger=settings",
+          "observation": "Plus promet des analyses détaillées, un historique enrichi et des tendances.",
+          "interpretation": "La pertinence est claire, mais la sensibilité des données augmente l'exigence de preuve.",
+          "device_notes": "Les bénéfices sont visibles sans défilement excessif."
+        },
+        {
+          "step": "Contrôle de confiance",
+          "url": "http://localhost:8081/paywall?trigger=settings",
+          "observation": "La page précise l'absence de publicité ciblée, sans lien ou résumé IA complémentaire.",
+          "interpretation": "Eli suspend sa décision avant la connexion.",
+          "device_notes": "Même manque de preuve sur les deux viewports."
+        }
+      ]
+    },
+    {
+      "id": "cost-small-screen-evaluator",
+      "name": "Jules",
+      "archetype": "Évaluateur petit écran attentif au coût et aux publicités",
+      "situation": "Compare plusieurs journaux sur un petit Android et refuse de créer un compte avant de connaître le vrai prix.",
+      "job": "Comparer le coût, le plan gratuit et la friction réelle sans téléchargement à l'aveugle.",
+      "intent": "Élevée mais contrainte",
+      "trigger": "Le paywall est ouvert depuis les réglages sur un écran de 390 px.",
+      "success_criteria": [
+        "Prix exact avant connexion",
+        "Économie annuelle calculable",
+        "Plan gratuit et publicité explicités",
+        "Choix tactiles et accessibles"
+      ],
+      "objections": [
+        "Combien cela coûte-t-il réellement?",
+        "Puis-je rester gratuitement sans publicité ciblée?"
+      ],
+      "required_proof": [
+        "Prix mensuel et annuel",
+        "Badge d'économie",
+        "Frontière free versus Plus",
+        "État sélectionné exposé"
+      ],
+      "path": [
+        "Réglages mobile",
+        "Paywall Plus",
+        "Sélection annuelle",
+        "Se connecter pour continuer"
+      ],
+      "scores": {
+        "clarity": 5,
+        "trust": 4,
+        "relevance": 4,
+        "friction": 5
+      },
+      "decision": "convert",
+      "decision_reason": "Jules voit $4.99 par mois, $39.99 par an, l'économie de 33 %, le maintien du journal gratuit et l'absence de publicité ciblée avant toute connexion.",
+      "confidence": 0.95,
+      "helps": [
+        "Les prix sont chargés même lorsque l'utilisateur est déconnecté.",
+        "Le plan sélectionné est visible et exposé comme radio cochée.",
+        "Le paywall tient dans une colonne courte sans débordement horizontal.",
+        "Les CTA ne s'étirent plus sur toute la largeur desktop."
+      ],
+      "blocks": [
+        "La devise locale de production n'a pas été vérifiée.",
+        "Aucune comparaison par mois du plan annuel n'est affichée."
+      ],
+      "journey": [
+        {
+          "step": "Lecture du coût",
+          "url": "http://localhost:8081/paywall?trigger=settings",
+          "observation": "Les deux prix et le badge -33 % apparaissent avant le CTA de connexion.",
+          "interpretation": "Jules peut comparer sans créer de compte ni déduire le coût depuis une mention générique d'achats intégrés.",
+          "device_notes": "Tout le bloc tarifaire est lisible à 390×844."
+        },
+        {
+          "step": "Sélection",
+          "url": "http://localhost:8081/paywall?trigger=settings",
+          "observation": "La sélection annuelle produit aria-checked=true et le plan mensuel aria-checked=false.",
+          "interpretation": "L'état choisi n'est pas uniquement communiqué par la bordure colorée.",
+          "device_notes": "Contrôle vérifié dans le DOM web après interaction."
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "theme": "pricing clarity",
+      "title": "Le prix n'est plus caché derrière l'authentification",
+      "evidence": "Sur http://localhost:8081/paywall?trigger=settings, le visiteur déconnecté voit $4.99 par mois et $39.99 par an avec une économie de 33 % avant le bouton Se connecter pour continuer.",
+      "personas": ["symbol-searcher", "cost-small-screen-evaluator"],
+      "severity": "high"
+    },
+    {
+      "theme": "free boundary",
+      "title": "Le cœur gratuit et la politique publicitaire sont explicités",
+      "evidence": "Le paywall indique que l'enregistrement des rêves et le journal restent gratuits, sans publicité ciblée, puis propose Continuer gratuitement.",
+      "personas": ["wake-voice-capturer", "privacy-skeptic", "cost-small-screen-evaluator"],
+      "severity": "high"
+    },
+    {
+      "theme": "continuity trust",
+      "title": "La continuité de l'historique reste un bloqueur non résolu",
+      "evidence": "Aucun export, import, restauration, état de sauvegarde ou comportement après résiliation n'est prouvé sur le paywall local.",
+      "personas": ["history-migrant"],
+      "severity": "high"
+    },
+    {
+      "theme": "privacy trust",
+      "title": "La réassurance publicitaire ne couvre pas encore l'IA",
+      "evidence": "Le paywall mentionne l'absence de publicité ciblée, mais aucun lien proche du CTA n'explique fournisseurs IA, entraînement, hébergement ou limites de l'interprétation.",
+      "personas": ["privacy-skeptic", "history-migrant"],
+      "severity": "medium"
+    },
+    {
+      "theme": "responsive layout",
+      "title": "La hiérarchie reste compacte sur mobile et maîtrisée sur desktop",
+      "evidence": "Le même contenu tient à 390×844 sans débordement et reste centré dans une colonne de 720 px à 1440×900, au lieu d'étirer les actions sur environ 1 130 px.",
+      "personas": ["symbol-searcher", "wake-voice-capturer", "history-migrant", "privacy-skeptic", "cost-small-screen-evaluator"],
+      "severity": "medium"
+    },
+    {
+      "theme": "accessibility",
+      "title": "Le choix tarifaire n'est plus uniquement visuel",
+      "evidence": "Après sélection du plan annuel, le DOM expose deux radios et aria-checked=true pour Annuel contre false pour Mensuel.",
+      "personas": ["cost-small-screen-evaluator", "privacy-skeptic"],
+      "severity": "medium"
+    }
+  ],
+  "recommendations": [
+    {
+      "rank": 1,
+      "title": "Ajouter une preuve IA et confidentialité près du CTA",
+      "location": "Sous la réassurance du paywall ou dans un lien secondaire immédiatement adjacent",
+      "change": "Résumer en une phrase les données envoyées, la finalité, l'absence d'entraînement si elle est vérifiée et la limite non diagnostique, puis lier la section exacte de la politique.",
+      "rationale": "La confiance progresse sur les publicités, mais l'objection la plus sensible d'Eli reste sans réponse au moment de l'engagement.",
+      "personas": ["privacy-skeptic", "history-migrant", "symbol-searcher", "cost-small-screen-evaluator"],
+      "impact": 5,
+      "effort": 1,
+      "confidence": 0.88,
+      "reach": 4,
+      "priority_score": 17.6,
+      "expected_outcome": "Moins d'hésitation avant connexion chez les utilisateurs sensibles aux données sans alourdir la page.",
+      "validation": "Test de compréhension en cinq secondes et suivi du clic vers la politique puis du taux de continuation vers l'authentification."
+    },
+    {
+      "rank": 2,
+      "title": "Instrumenter le funnel du paywall avant d'optimiser davantage",
+      "location": "Ouverture, sélection de plan, CTA d'authentification, sortie gratuite et retour après authentification",
+      "change": "Émettre des événements dédupliqués avec trigger, plan, état d'authentification et viewport, sans contenu de rêve ni donnée sensible.",
+      "rationale": "La simulation différencie une sortie saine de Mina d'un abandon de Rae; sans instrumentation, les deux événements sont indiscernables.",
+      "personas": ["symbol-searcher", "wake-voice-capturer", "history-migrant", "privacy-skeptic", "cost-small-screen-evaluator"],
+      "impact": 5,
+      "effort": 2,
+      "confidence": 0.9,
+      "reach": 5,
+      "priority_score": 11.25,
+      "expected_outcome": "Une mesure fiable des vues, intentions, sorties volontaires et pertes entre choix du plan, connexion et achat.",
+      "validation": "Vérifier le schéma en mode debug, puis construire le funnel par trigger, plan et taille d'écran sans journaliser de contenu sensible."
+    },
+    {
+      "rank": 3,
+      "title": "Prouver la continuité seulement après validation réelle de la capacité",
+      "location": "Paywall et aide liée aux données",
+      "change": "Vérifier export, restauration, migration, sauvegarde et accès après résiliation; ne surfacer ensuite que les capacités réellement testées avec leur procédure.",
+      "rationale": "Rae ne peut pas accepter une promesse commerciale sur l'historique sans voie de sortie et de récupération vérifiable.",
+      "personas": ["history-migrant", "privacy-skeptic", "symbol-searcher"],
+      "impact": 5,
+      "effort": 2,
+      "confidence": 0.9,
+      "reach": 3,
+      "priority_score": 6.75,
+      "expected_outcome": "Plus de confiance chez les utilisateurs qui migrent et moins de risque de promettre une capacité inexistante.",
+      "validation": "Rejouer export et restauration sur un compte contenant plusieurs rêves, puis tester la compréhension et le sentiment de lock-in avec cinq participants."
+    },
+    {
+      "rank": 4,
+      "title": "Tester le plan sélectionné par défaut avec une hypothèse explicite",
+      "location": "Choix Mensuel versus Annuel",
+      "change": "Comparer le défaut mensuel actuel à un défaut annuel uniquement après instrumentation, en conservant les deux prix visibles et une sélection accessible.",
+      "rationale": "Le badge d'économie est clair, mais changer arbitrairement le défaut pourrait augmenter les sorties ou la méfiance.",
+      "personas": ["symbol-searcher", "wake-voice-capturer", "history-migrant", "privacy-skeptic", "cost-small-screen-evaluator"],
+      "impact": 3,
+      "effort": 2,
+      "confidence": 0.65,
+      "reach": 5,
+      "priority_score": 4.88,
+      "expected_outcome": "Un meilleur mix de plans sans dégrader la confiance ni le taux de continuation.",
+      "validation": "A/B test pré-enregistré sur sélection du plan, continuation vers l'authentification, achat confirmé et remboursement."
+    }
+  ],
+  "next_research": [
+    "Mesurer séparément Continuer gratuitement, fermeture, choix du plan, ouverture de l'authentification et achat confirmé.",
+    "Tester le paywall avec 5 à 8 utilisateurs Android réels, dont au moins deux ayant migré d'un autre journal.",
+    "Vérifier les devises et tarifs RevenueCat sur les stores et régions réellement ciblés.",
+    "Auditer export, restauration, migration et comportement après résiliation avant toute promesse de continuité.",
+    "Rejouer TalkBack et VoiceOver natifs sur le groupe radio et l'ordre de lecture."
+  ]
+}
