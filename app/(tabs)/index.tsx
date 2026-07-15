@@ -38,22 +38,12 @@ import {
   getLocalDateKey,
   shouldResetDailyProgress,
 } from "@/lib/ritualProgressUtils";
-import type { SymbolLanguage } from "@/lib/symbolTypes";
 import { TID } from "@/lib/testIDs";
 import { getRitualPreference, getRitualStepProgress, saveRitualStepProgress } from "@/services/storageService";
-import {
-  getPopularSymbols,
-  getSymbolIcon,
-} from "@/services/symbolDictionaryService";
 
 type IconName = Parameters<typeof IconSymbol>[0]["name"];
 type TranslateFn = ReturnType<typeof useTranslation>["t"];
 type RitualProgressState = Partial<Record<RitualId, Record<string, boolean>>>;
-type SymbolPreview = {
-  id: string;
-  name: string;
-  icon: IconName;
-};
 type ResolvedCopyCard = {
   id: string;
   icon: IconName;
@@ -143,7 +133,7 @@ const MYTH_CARDS: CopyCard[] = [
 export default function InspirationScreen() {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { t, currentLang } = useTranslation();
+  const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const scrollPerf = useScrollIdle();
   useClearWebFocus();
@@ -158,18 +148,6 @@ export default function InspirationScreen() {
   const scrollContentBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
     : TAB_BAR_HEIGHT + ThemeLayout.spacing.lg;
-  const symbolLanguage = (currentLang ?? "en") as SymbolLanguage;
-  const featuredSymbols = useMemo(
-    (): SymbolPreview[] =>
-      getPopularSymbols()
-        .slice(0, 4)
-        .map((symbol) => ({
-          id: symbol.id,
-          name: (symbol[symbolLanguage] ?? symbol.en).name,
-          icon: getSymbolIcon(symbol.id, symbol.category),
-        })),
-    [symbolLanguage],
-  );
   const handleOpenSymbols = useCallback(() => {
     router.push("/symbol-dictionary" as any);
   }, []);
@@ -387,7 +365,6 @@ export default function InspirationScreen() {
                   noctalia={noctalia}
                   mode={mode}
                   t={t}
-                  featuredSymbols={featuredSymbols}
                   isDesktopLayout={isDesktopLayout}
                   onOpenSymbols={handleOpenSymbols}
                 />
@@ -500,7 +477,6 @@ type HomeStudioSectionProps = {
   noctalia: NoctaliaDesignTokens;
   mode: "light" | "dark";
   t: TranslateFn;
-  featuredSymbols: SymbolPreview[];
   isDesktopLayout: boolean;
   onOpenSymbols: () => void;
 };
@@ -511,7 +487,6 @@ type DreamSymbolsHeroProps = {
   mode: "light" | "dark";
   t: TranslateFn;
   isDesktopLayout: boolean;
-  featuredSymbols: SymbolPreview[];
   onOpenSymbols: () => void;
 };
 
@@ -520,7 +495,6 @@ const HomeStudioSection = memo(function HomeStudioSection({
   noctalia,
   mode,
   t,
-  featuredSymbols,
   isDesktopLayout,
   onOpenSymbols,
 }: HomeStudioSectionProps) {
@@ -530,7 +504,6 @@ const HomeStudioSection = memo(function HomeStudioSection({
       noctalia={noctalia}
       mode={mode}
       t={t}
-      featuredSymbols={featuredSymbols}
       isDesktopLayout={isDesktopLayout}
       onOpenSymbols={onOpenSymbols}
     />
@@ -542,7 +515,6 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
   noctalia,
   mode,
   t,
-  featuredSymbols,
   isDesktopLayout,
   onOpenSymbols,
 }: DreamSymbolsHeroProps) {
@@ -631,49 +603,6 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
               →
             </Text>
           </Pressable>
-
-          <View style={styles.symbolHeroQuickGrid}>
-            {featuredSymbols.map((symbol) => (
-              <Pressable
-                key={symbol.id}
-                onPress={() => router.push(`/symbol-detail/${symbol.id}` as any)}
-                accessibilityRole="button"
-                accessibilityLabel={symbol.name}
-                style={({ pressed }) => [
-                  styles.symbolHeroQuickChip,
-                  {
-                    backgroundColor:
-                      mode === "dark" ? noctalia.surface.soft : noctalia.surface.raised,
-                    borderColor: noctalia.surface.border,
-                  },
-                  pressed && styles.pressedButton,
-                ]}
-              >
-                <View
-                  style={[
-                    styles.symbolHeroQuickIcon,
-                    {
-                      backgroundColor:
-                        mode === "dark" ? noctalia.surface.active : noctalia.surface.soft,
-                    },
-                  ]}
-                >
-                  <IconSymbol name={symbol.icon} size={16} color={accent} />
-                </View>
-                <Text
-                  style={[
-                    styles.symbolHeroQuickName,
-                    { color: noctalia.text.primary },
-                  ]}
-                  numberOfLines={1}
-                  adjustsFontSizeToFit
-                  minimumFontScale={0.78}
-                >
-                  {symbol.name}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
 
         </View>
       </FlatGlassCard>
@@ -1169,36 +1098,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     lineHeight: 19,
   },
-  symbolHeroQuickGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  symbolHeroQuickChip: {
-    flexGrow: 1,
-    flexBasis: "47%",
-    minWidth: 0,
-    minHeight: 46,
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  symbolHeroQuickIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 11,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  symbolHeroQuickName: {
-    flex: 1,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 14,
-  },
-
   // Ritual Cards
   popularHeader: {
     paddingHorizontal: 20,
