@@ -1,5 +1,5 @@
-import { callGeminiWithFallback, GEMINI_FLASH_LITE_MODEL } from './gemini.ts';
-import { generateImageFromPrompt } from './geminiImages.ts';
+import { callGeminiWithFallback } from './gemini.ts';
+import { generateImageFromPrompt, resolveImagePromptModel } from './geminiImages.ts';
 import { optimizeImage } from './image.ts';
 import { createStorageHelpers } from './storage.ts';
 
@@ -31,10 +31,11 @@ export async function ensureImagePrompt(options: ImagePromptOptions): Promise<st
     throw new Error('Missing prompt or transcript');
   }
 
+  const promptModel = resolveImagePromptModel();
   const { text: generatedPrompt } = await callGeminiWithFallback(
     options.apiKey,
-    Deno.env.get('GEMINI_LITE_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
-    Deno.env.get('GEMINI_LITE_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
+    promptModel,
+    promptModel,
     [
       {
         role: 'user',

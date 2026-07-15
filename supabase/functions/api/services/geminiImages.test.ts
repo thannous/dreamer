@@ -2,9 +2,10 @@ import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import {
   GEMINI_FLASH_IMAGE_MODEL,
+  GEMINI_FLASH_LITE_MODEL,
   GEMINI_FLASH_LITE_IMAGE_MODEL,
 } from './gemini.ts';
-import { resolveImageModel } from './geminiImages.ts';
+import { resolveImageModel, resolveImagePromptModel } from './geminiImages.ts';
 
 const envReader = (values: Record<string, string | undefined>) => (name: string) => values[name];
 
@@ -60,4 +61,26 @@ Deno.test('resolveImageModel ignores retired preview overrides', () => {
 
   assertEquals(resolveImageModel('plus', readEnv), GEMINI_FLASH_IMAGE_MODEL);
   assertEquals(resolveImageModel('free', readEnv), GEMINI_FLASH_LITE_IMAGE_MODEL);
+});
+
+Deno.test('resolveImagePromptModel uses the stable default when no override is configured', () => {
+  assertEquals(resolveImagePromptModel(envReader({})), GEMINI_FLASH_LITE_MODEL);
+});
+
+Deno.test('resolveImagePromptModel ignores the retired preview previously used by image jobs', () => {
+  assertEquals(
+    resolveImagePromptModel(envReader({ GEMINI_LITE_MODEL: 'gemini-3.1-flash-lite-preview' })),
+    GEMINI_FLASH_LITE_MODEL
+  );
+});
+
+Deno.test('resolveImagePromptModel ignores blank overrides and preserves valid custom models', () => {
+  assertEquals(
+    resolveImagePromptModel(envReader({ GEMINI_LITE_MODEL: '   ' })),
+    GEMINI_FLASH_LITE_MODEL
+  );
+  assertEquals(
+    resolveImagePromptModel(envReader({ GEMINI_LITE_MODEL: ' gemini-3.5-flash ' })),
+    'gemini-3.5-flash'
+  );
 });
