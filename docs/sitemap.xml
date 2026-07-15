@@ -46,7 +46,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/</loc>
-    <lastmod>2026-07-13</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
@@ -57,7 +57,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/albtraeume-hitze-stress</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/heat-stress-nightmares"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/cauchemars-chaleur-stress"/>
@@ -167,7 +167,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/ki-traumtagebuch-datenschutz</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-dream-journal-privacy"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/confidentialite-ia-journal-reves"/>
@@ -362,6 +362,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/stress-dreams-work"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/de/blog/traeume-emotionsregulation-studie-2026</loc>
+    <lastmod>2026-07-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-emotion-regulation-study-2026"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-regulation-emotions-etude-2026"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-regulacion-emociones-estudio-2026"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traeume-emotionsregulation-studie-2026"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-regolazione-emozioni-studio-2026"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-emotion-regulation-study-2026"/>
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/traeume-nicht-zufaellig-ki-studie</loc>
@@ -2609,7 +2620,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/</loc>
-    <lastmod>2026-07-13</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
@@ -2620,7 +2631,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/ai-dream-journal-privacy</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-dream-journal-privacy"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/confidentialite-ia-journal-reves"/>
@@ -2807,6 +2818,17 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-and-creativity"/>
   </url>
   <url>
+    <loc>https://noctalia.app/en/blog/dreams-emotion-regulation-study-2026</loc>
+    <lastmod>2026-07-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-emotion-regulation-study-2026"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-regulation-emotions-etude-2026"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-regulacion-emociones-estudio-2026"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traeume-emotionsregulation-studie-2026"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-regolazione-emozioni-studio-2026"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-emotion-regulation-study-2026"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/en/blog/dreams-feel-real-mobius-model</loc>
     <lastmod>2026-05-16</lastmod>
     <priority>0.6</priority>
@@ -2880,7 +2902,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/heat-stress-nightmares</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/heat-stress-nightmares"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/cauchemars-chaleur-stress"/>
@@ -5219,7 +5241,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/</loc>
-    <lastmod>2026-07-13</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
@@ -5429,7 +5451,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/pesadillas-calor-estres</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/heat-stress-nightmares"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/cauchemars-chaleur-stress"/>
@@ -5462,7 +5484,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/privacidad-ia-diario-suenos</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-dream-journal-privacy"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/confidentialite-ia-journal-reves"/>
@@ -5724,6 +5746,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/precognitive-dreams-science"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/blog/suenos-regulacion-emociones-estudio-2026</loc>
+    <lastmod>2026-07-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-emotion-regulation-study-2026"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-regulation-emotions-etude-2026"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-regulacion-emociones-estudio-2026"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traeume-emotionsregulation-studie-2026"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-regolazione-emozioni-studio-2026"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-emotion-regulation-study-2026"/>
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/suenos-salud-mental</loc>
@@ -7795,7 +7828,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
@@ -7828,7 +7861,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/cauchemars-chaleur-stress</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/heat-stress-nightmares"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/cauchemars-chaleur-stress"/>
@@ -7850,7 +7883,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/confidentialite-ia-journal-reves</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-dream-journal-privacy"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/confidentialite-ia-journal-reves"/>
@@ -8221,6 +8254,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/precognitive-dreams-science"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/blog/reves-regulation-emotions-etude-2026</loc>
+    <lastmod>2026-07-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-emotion-regulation-study-2026"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-regulation-emotions-etude-2026"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-regulacion-emociones-estudio-2026"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traeume-emotionsregulation-studie-2026"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-regolazione-emozioni-studio-2026"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-emotion-regulation-study-2026"/>
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/reves-sante-mentale</loc>
@@ -10336,7 +10380,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/</loc>
-    <lastmod>2026-07-13</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
@@ -10479,7 +10523,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/incubi-caldo-stress</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/heat-stress-nightmares"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/cauchemars-chaleur-stress"/>
@@ -10567,7 +10611,7 @@
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/privacy-ia-diario-sogni</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-dream-journal-privacy"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/confidentialite-ia-journal-reves"/>
@@ -10762,6 +10806,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traeume-nicht-zufaellig-ki-studie"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-non-casuali-studio-ia"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-not-random-ai-study"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/it/blog/sogni-regolazione-emozioni-studio-2026</loc>
+    <lastmod>2026-07-15</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-emotion-regulation-study-2026"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-regulation-emotions-etude-2026"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-regulacion-emociones-estudio-2026"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traeume-emotionsregulation-studie-2026"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-regolazione-emozioni-studio-2026"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-emotion-regulation-study-2026"/>
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno</loc>
