@@ -382,13 +382,13 @@ const DICTIONARY_UI_COPY = {
     activeSearchLabel: 'Active search',
     backToTop: 'Back to top',
     methodologyLink: 'How this catalog is maintained',
-    storeCta: 'Get Noctalia on Google Play',
+    storeCta: 'Install Noctalia free',
     detailsCta: 'See how Noctalia adds your context',
     platformNote: 'Android 13+ · Free account · Optional in-app purchases',
     proofItems: [
-      { icon: 'infinity', title: 'Unlimited saved dreams', text: 'With a free account.' },
       { icon: 'mic-2', title: 'Voice or text', text: 'Capture a dream in seconds.' },
       { icon: 'sparkles', title: 'Personal reading', text: 'Symbols, emotions and context together.' },
+      { icon: 'infinity', title: 'Unlimited saved dreams', text: 'With a free account.' },
     ],
     privacyLink: 'Read the privacy policy',
   },
@@ -399,15 +399,14 @@ const DICTIONARY_UI_COPY = {
     activeSearchLabel: 'Recherche active',
     backToTop: 'Revenir en haut',
     methodologyLink: 'Comment ce catalogue est maintenu',
-    storeCta: 'Télécharger Noctalia sur Google Play',
+    storeCta: 'Installer Noctalia gratuitement',
     detailsCta: 'Voir comment Noctalia relie votre contexte',
     platformNote: 'Android 13+ · Compte gratuit · Achats intégrés facultatifs',
     proofItems: [
-      { icon: 'infinity', title: 'Rêves sans limite', text: 'Avec un compte gratuit.' },
       { icon: 'mic-2', title: 'Enregistrement par voix ou texte', text: 'Capturez un rêve en quelques secondes.' },
-      { icon: 'sparkles', title: 'Analyse approfondie des rêves', text: 'Symboles, émotions et contexte réunis.' },
+      { icon: 'sparkles', title: 'Lecture personnelle', text: 'Symboles, émotions et contexte réunis.' },
+      { icon: 'infinity', title: 'Rêves sans limite', text: 'Avec un compte gratuit.' },
     ],
-    secondaryBenefit: { icon: 'book-open', title: 'Dictionnaire de symboles et guides' },
     privacyLink: 'Lire la politique de confidentialité',
   },
   es: {
@@ -417,13 +416,13 @@ const DICTIONARY_UI_COPY = {
     activeSearchLabel: 'Búsqueda activa',
     backToTop: 'Volver arriba',
     methodologyLink: 'Cómo se mantiene este catálogo',
-    storeCta: 'Descargar Noctalia en Google Play',
+    storeCta: 'Instalar Noctalia gratis',
     detailsCta: 'Ver cómo Noctalia añade tu contexto',
     platformNote: 'Android 13+ · Cuenta gratuita · Compras opcionales en la app',
     proofItems: [
-      { icon: 'infinity', title: 'Sueños sin límite', text: 'Con una cuenta gratuita.' },
       { icon: 'mic-2', title: 'Voz o texto', text: 'Captura un sueño en segundos.' },
       { icon: 'sparkles', title: 'Interpretación personal', text: 'Símbolos, emociones y contexto unidos.' },
+      { icon: 'infinity', title: 'Sueños sin límite', text: 'Con una cuenta gratuita.' },
     ],
     privacyLink: 'Leer la política de privacidad',
   },
@@ -434,13 +433,13 @@ const DICTIONARY_UI_COPY = {
     activeSearchLabel: 'Aktive Suche',
     backToTop: 'Nach oben',
     methodologyLink: 'So wird dieser Katalog gepflegt',
-    storeCta: 'Noctalia bei Google Play herunterladen',
+    storeCta: 'Noctalia kostenlos installieren',
     detailsCta: 'So bezieht Noctalia deinen Kontext ein',
     platformNote: 'Android 13+ · Kostenloses Konto · Optionale In-App-Käufe',
     proofItems: [
-      { icon: 'infinity', title: 'Unbegrenzt viele Träume', text: 'Mit einem kostenlosen Konto.' },
       { icon: 'mic-2', title: 'Sprache oder Text', text: 'Erfasse einen Traum in Sekunden.' },
       { icon: 'sparkles', title: 'Persönliche Deutung', text: 'Symbole, Gefühle und Kontext zusammen.' },
+      { icon: 'infinity', title: 'Unbegrenzt viele Träume', text: 'Mit einem kostenlosen Konto.' },
     ],
     privacyLink: 'Datenschutzerklärung lesen',
   },
@@ -451,13 +450,13 @@ const DICTIONARY_UI_COPY = {
     activeSearchLabel: 'Ricerca attiva',
     backToTop: 'Torna su',
     methodologyLink: 'Come viene mantenuto questo catalogo',
-    storeCta: 'Scarica Noctalia su Google Play',
+    storeCta: 'Installa Noctalia gratis',
     detailsCta: 'Scopri come Noctalia usa il tuo contesto',
     platformNote: 'Android 13+ · Account gratuito · Acquisti in-app facoltativi',
     proofItems: [
-      { icon: 'infinity', title: 'Sogni senza limiti', text: 'Con un account gratuito.' },
       { icon: 'mic-2', title: 'Voce o testo', text: 'Cattura un sogno in pochi secondi.' },
       { icon: 'sparkles', title: 'Lettura personale', text: 'Simboli, emozioni e contesto insieme.' },
+      { icon: 'infinity', title: 'Sogni senza limiti', text: 'Con un account gratuito.' },
     ],
     privacyLink: 'Leggi l’informativa sulla privacy',
   },
@@ -1514,7 +1513,6 @@ function renderLayoutCss() {
           font-size: 0.76rem;
           line-height: 1.4;
         }
-        .dictionary-primary-benefit { display: none; }
         .dictionary-proof-list {
           display: grid;
           grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2053,51 +2051,32 @@ function renderLayoutCss() {
             margin-top: 1rem;
             padding: 0.9rem;
           }
-          .dictionary-conversion-kicker { display: none; }
+          .dictionary-conversion-kicker {
+            display: inline-flex;
+            margin-bottom: 0.35rem;
+          }
           .dictionary-conversion-copy h2 {
-            margin-top: 0;
+            margin: 0 0 0.65rem;
             max-width: none;
-            font-size: 1.55rem;
+            font-size: 1.65rem;
             line-height: 1.08;
           }
-          .dictionary-conversion-copy > p:not(.dictionary-platform-note):not(.dictionary-primary-benefit) {
+          .dictionary-conversion-copy > p:not(.dictionary-platform-note) {
             font-size: 0.88rem;
             line-height: 1.45;
           }
-          .dictionary-primary-benefit {
-            min-height: 2.75rem;
-            margin: 0.75rem 0 0 !important;
-            padding: 0.55rem 0.65rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            border: 1px solid rgba(253,164,129,0.2);
-            border-radius: 0.85rem;
-            color: #fff7f0 !important;
-            background: rgba(253,164,129,0.07);
-          }
-          .dictionary-primary-benefit > span:last-child {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.1rem 0.35rem;
-            align-items: baseline;
-          }
-          .dictionary-primary-benefit strong {
-            font-size: 0.82rem;
-            line-height: 1.2;
-          }
-          .dictionary-primary-benefit strong + span {
-            color: rgba(226,218,255,0.72);
-            font-size: 0.72rem;
-            line-height: 1.2;
-          }
           .dictionary-conversion-actions {
             align-items: stretch;
-            margin-top: 0.75rem;
+            margin-top: 1rem;
           }
           .dictionary-store-cta,
           .dictionary-details-cta {
             width: 100%;
+          }
+          .dictionary-store-cta {
+            min-height: 3.2rem;
+            padding-inline: 1.1rem;
+            font-size: 0.95rem;
           }
           .dictionary-details-cta { display: none; }
           .dictionary-platform-note {
@@ -2106,9 +2085,9 @@ function renderLayoutCss() {
           }
           .dictionary-proof-list {
             grid-template-columns: 1fr;
-            gap: 0.35rem;
+            gap: 0.4rem;
+            margin-top: 0.65rem;
           }
-          .dictionary-proof-list > :first-child { display: none; }
           .dictionary-proof-item {
             min-height: 2.75rem;
             align-items: center;
@@ -2660,19 +2639,12 @@ ${priorityLinks.map((item) => `                    <a href="${escapeHtml(item.hr
                         <span class="dictionary-proof-icon" aria-hidden="true"><i data-lucide="${escapeHtml(item.icon)}" class="w-5 h-5"></i></span>
                         <span><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.text)}</span></span>
                     </li>`).join('');
-  const primaryBenefits = [uiCopy.proofItems?.[0], uiCopy.secondaryBenefit].filter(Boolean);
-  const conversionPrimaryBenefitHtml = primaryBenefits.map((item) => `
-                    <p class="dictionary-primary-benefit">
-                        <span class="dictionary-proof-icon" aria-hidden="true"><i data-lucide="${escapeHtml(item.icon)}" class="w-5 h-5"></i></span>
-                        <span><strong>${escapeHtml(item.title)}</strong>${item.text ? `<span>${escapeHtml(item.text)}</span>` : ''}</span>
-                    </p>`).join('');
   const conversionPanelHtml = `
             <section id="dictionaryConversion" class="dictionary-conversion dictionary-discovery-only" aria-labelledby="dictionaryConversionTitle">
                 <div class="dictionary-conversion-copy">
                     <span class="dictionary-conversion-kicker">Noctalia · Android</span>
                     <h2 id="dictionaryConversionTitle">${escapeHtml(dc.cta_title || dc.analyze_heading)}</h2>
                     <p>${escapeHtml(dc.cta_subtitle || dc.analyze_text)}</p>
-${conversionPrimaryBenefitHtml}
                     <div class="dictionary-conversion-actions">
                         <a href="${getAndroidStoreUrl(lang)}" class="dictionary-store-cta" rel="nofollow noopener noreferrer" target="_blank">
                             ${escapeHtml(uiCopy.storeCta)} <i data-lucide="external-link" class="w-4 h-4"></i>
