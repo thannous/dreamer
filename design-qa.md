@@ -161,6 +161,298 @@ Findings:
 
 final result: passed
 
+## Settings guest local-hint removal - 2026-07-15
+
+Source visual truth path:
+- `/private/tmp/noctalia-settings-account-hint-before-387x837.png`
+
+Implementation screenshot path:
+- `/Users/tanuki/Documents/dreamer/screenshots/noctalia-settings-account-hint-removed-387x837.png`
+
+State and viewport:
+- Route: `http://localhost:8081/settings` reached through the app tab navigation.
+- Viewport: `387x837`, dark theme, guest mock profile.
+
+Full-view comparison evidence:
+- Before and after captures use the same route, viewport, theme, and guest state.
+- The guest-only sentence `Vos rêves restent sur cet appareil` is absent after the change.
+- The `Invité` badge, moon icon, divider, and both account actions remain visible and unchanged.
+
+Required fidelity surfaces:
+- Fonts and typography: no typography tokens changed.
+- Spacing and layout rhythm: removing the copy lets the existing centered summary header contract rebalance the badge without new spacing rules.
+- Colors and visual tokens: no color or surface tokens changed.
+- Image quality and asset fidelity: no images or icons changed.
+- Copy and content: only the annotated guest hint was removed; signed-in account copy remains available.
+
+Primary interactions:
+- Passed: `Créer un compte` remains visible and actionable.
+- Passed: `Se connecter` remains visible and actionable.
+- Passed: focused component tests (8), app typecheck, tests typecheck, scoped ESLint with no errors, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after removing the redundant guest hint.
+
+final result: passed
+
+## Settings reminder-time dark contrast - 2026-07-15
+
+Source visual truth path:
+- `browser:/settings#comment-reminder-time-dark-input`
+
+Implementation screenshot path:
+- `/Users/tanuki/Documents/dreamer/screenshots/noctalia-settings-time-dark-readable-329x837.png`
+
+State and viewport:
+- Route: `http://localhost:8081/settings`.
+- Viewport: `329x837`, dark theme, reminder-time bottom sheet open.
+
+Full-view and focused comparison evidence:
+- The annotated source and the implementation use the same compact viewport, dark theme, `07:00` value, and open reminder-time sheet.
+- The source showed black time text and a black native clock glyph; the implementation shows both in the existing ivory foreground without changing the sheet layout.
+
+Comparison history:
+- P1 source finding: the HTML time input inherited the browser's light control scheme, producing `rgb(0, 0, 0)` text and a dark picker icon on a near-black surface.
+- Fix: applied `noctalia.text.primary` to the input and forwarded the resolved app theme through CSS `color-scheme` so the browser renders its native time control consistently.
+
+Required fidelity surfaces:
+- Fonts and typography: the existing 28px Space Grotesk bold treatment is unchanged.
+- Spacing and layout rhythm: the input frame, sheet dimensions, header, and action button are unchanged.
+- Colors and visual tokens: the fix reuses `noctalia.text.primary`; no new color was introduced.
+- Image quality and asset fidelity: the native browser clock glyph remains native and now follows the dark control scheme.
+- Copy and content: all labels and the selected `07:00` value are unchanged.
+
+Primary interactions and validation:
+- Passed: the reminder-time row opens the sheet and the controlled time input remains editable.
+- Passed: computed input color changed from `rgb(0, 0, 0)` / `color-scheme: normal` to `rgb(255, 249, 239)` / `color-scheme: dark`.
+- Passed: 2 focused suites / 9 tests, scoped ESLint, app typecheck, tests typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none after the contrast fix.
+- P2: none.
+
+final result: passed
+
+## Journal detail metadata contrast and lifetime-access copy - 2026-07-15
+
+Source visual truth path:
+- `browser:/journal/1784079358889#comments-date-time-lifetime-copy`
+
+Implementation screenshot paths:
+- `/Users/tanuki/Documents/dreamer/screenshots/noctalia-journal-detail-readable-meta-384x824.png`
+- `/Users/tanuki/Documents/dreamer/screenshots/noctalia-journal-detail-lifetime-copy-384x824.png`
+
+State and viewport:
+- Route: `http://localhost:8081/journal/1784079853730`, recreated through the mock guest recording and analysis flow.
+- Viewport: `384x824`, dark theme, analyzed guest dream.
+
+Full-view and focused comparison evidence:
+- The annotated source and revised implementation were checked at the same mobile viewport and analyzed-dream state.
+- The first implementation capture verifies the complete metadata header in context; the second verifies the full backup message and surrounding actions.
+
+Comparison history:
+- P1 source finding: the date, time, and their icons used the dark on-accent foreground on a near-black raised surface, making both metadata values unreadable.
+- Fix: moved the complete date/time pair to the existing primary ivory text token and raised the metadata labels from 13px medium to 14px bold.
+- Copy requirement: replaced the cross-device continuation promise with lifetime access in the French backup prompt.
+
+Required fidelity surfaces:
+- Fonts and typography: existing Space Grotesk metadata and Fraunces content hierarchy are preserved.
+- Spacing and layout rhythm: no card geometry, spacing, or content order changed; the complete date and time still fit on one line at 384px.
+- Colors and visual tokens: the fix reuses `noctalia.text.primary`; no new color was introduced.
+- Image quality and asset fidelity: the existing generated dream image and icon set are unchanged.
+- Copy and content: the French message now ends with `y accéder à vie`.
+
+Primary interactions and validation:
+- Passed: the mock quota reset, recording, analysis, and journal-detail route completed end to end.
+- Passed: computed date and time color is `rgb(255, 249, 239)` at `14px`; both values remain fully visible.
+- Passed: the lifetime-access message is present in the rendered accessibility tree and visible in the focused screenshot.
+- Passed: 16 focused tests, scoped ESLint with eight pre-existing route warnings, app typecheck, tests typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none after the contrast fix.
+- P2: none.
+
+final result: passed
+
+## Settings preference sheets, rituals and quotas - 2026-07-15
+
+Source visual truth paths:
+- `browser:/settings#comments-appearance-language-journal-rituals-quotas`
+- `/private/tmp/noctalia-settings-panels-before-464x837.png`
+
+Implementation screenshot paths:
+- `/Users/tanuki/Documents/dreamer/screenshots/noctalia-settings-appearance-sheet-464x837.png`
+- `/Users/tanuki/Documents/dreamer/screenshots/noctalia-settings-interactions-restored-464x837.png`
+- `/Users/tanuki/Documents/dreamer/screenshots/noctalia-settings-quotas-restored-464x837.png`
+
+State and viewport:
+- Route: `http://localhost:8081/settings` in mock guest mode.
+- Viewport: `464x837`, dark theme.
+- Appearance, language, and journal sheets opened; ritual controls enabled; guest quotas visible.
+
+Full-view and focused comparison evidence:
+- The annotated source and revised implementation were checked at the same route, viewport, theme, and guest state.
+- The full settings view verifies the preserved page hierarchy, working ritual controls, and restored quota card.
+- The focused Appearance screenshot verifies the shared visual treatment used by all three preference sheets.
+
+Comparison history:
+- P1 source finding: Expo UI options rendered as oversized blue blocks with weak hierarchy and inconsistent product styling.
+- Fix: replaced the option lists with a branded grouped selection surface using existing type, color, radius, icon, and divider tokens.
+- P1 source finding: web ritual controls were disabled even though preference storage is available.
+- Fix: enabled web editing and local persistence while keeping native push scheduling and permission requests native-only.
+- P1 source finding: the quota status card was absent from the revised settings hierarchy.
+- Fix: restored the existing embedded `QuotaStatusCard` below Noctalia Plus.
+
+Required fidelity surfaces:
+- Fonts and typography: existing Fraunces and Space Grotesk hierarchy reused.
+- Spacing and layout rhythm: compact option rows fit each sheet without clipping; the original settings section order is preserved.
+- Colors and visual tokens: existing Noctalia surfaces, borders, accents, and selected-state tokens reused.
+- Image quality and asset fidelity: existing icon library and moon mark reused; no placeholder assets introduced.
+- Copy and content: existing labels and descriptions preserved.
+
+Primary interactions and console:
+- Passed: Appearance, Language, and Journal sheets open and selections update the page.
+- Passed: ritual toggle is interactive on web and the reminder-time sheet opens with an editable time input.
+- Passed: guest quota values are visible below Noctalia Plus.
+- Passed: no browser console errors.
+- Passed: 4 focused suites / 26 tests, scoped ESLint, app typecheck, tests typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none after the interaction and quota fixes.
+- P2: none.
+
+final result: passed
+
+## Remembered-dream post-save priority - 2026-07-15
+
+Source visual truth path:
+- `/private/tmp/noctalia-recording-memory-offer-before.png`
+
+Implementation screenshot path:
+- `/Users/tanuki/Documents/dreamer/screenshots/noctalia-recording-memory-offer-analysis-primary-1280x720.png`
+
+State and viewport:
+- Route: `http://localhost:8081/recording`, reached through the remembered-dream onboarding path in mock mode.
+- Viewport: `1280x720`, dark theme, saved remembered-dream state.
+
+Full-view and focused comparison evidence:
+- The annotated source and implementation show the same remembered-dream post-save state.
+- The full-view comparison clearly exposes the complete sheet hierarchy, so a separate crop was not needed.
+
+Comparison history:
+- Annotation requirement: remove the `Premiers repères` card and make analysis the clear next step.
+- P1 source finding: `Voir mon souvenir` was visually primary while `L’analyser` was secondary, creating a redundant journal detour immediately after saving.
+- Fix: removed the activation insight and journal-view action from this memory-specific sheet, promoted `L’analyser` to the existing primary action treatment, and retained `Plus tard` as the quiet exit.
+- Post-fix evidence: the sheet contains only the concise saved-state copy, one primary `L’analyser` button, and `Plus tard`.
+
+Required fidelity surfaces:
+- Fonts and typography: existing Noctalia sheet title, body, button, and tertiary-action typography remain unchanged.
+- Spacing and layout rhythm: the sheet compacts naturally around the two remaining actions without adding new spacing tokens.
+- Colors and visual tokens: `L’analyser` reuses the existing primary action colors and border treatment.
+- Image quality and asset fidelity: no images or icons changed.
+- Copy and content: the subtitle now reflects the single immediate action and no longer promises a removed read action.
+
+Primary interactions and console:
+- Passed: the remembered-dream onboarding path saves successfully and opens the corrected offer.
+- Passed: `L’analyser` is the only primary button; `Voir mon souvenir` and `Premiers repères` are absent; `Plus tard` remains available.
+- Passed: no browser console errors; only existing React Native Web and notification support warnings were observed.
+- Passed: 11 focused tests, app typecheck, scoped ESLint, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none after the action-priority fix.
+- P2: none.
+
+final result: passed
+
+## Settings mock fidelity - 2026-07-15
+
+Source visual truth path:
+- `/Users/tanuki/.codex/generated_images/019f6289-aec6-72e1-bd50-05ac1a0a9dbe/exec-33e7ba82-a43a-49b4-b270-ac9d0fc05b25.png`
+
+Implementation screenshot path:
+- `/Users/tanuki/Documents/dreamer/screenshots/noctalia-settings-mock-match-415x837.png`
+
+State and viewport:
+- Route: `http://localhost:8081/settings`.
+- Viewport: `415x837`, dark theme, guest mock profile.
+- The shared Settings header is intentionally excluded from the mock match, per the annotation requirement.
+
+Full-view and focused comparison evidence:
+- The generated mock and the implementation screenshot were opened together after the final sizing pass.
+- The body uses the mock's `20px` side insets and `14px` inter-card rhythm.
+- Measured implementation card heights match the normalized mock: account `161px`, experience `188px`, rituals `126px`, and Plus `66px`.
+
+Required fidelity surfaces:
+- Fonts and typography: Fraunces is used for card titles and Space Grotesk for rows, values, helper copy, and actions.
+- Spacing and layout rhythm: card positions, internal dividers, row heights, action split, and navigation clearance mirror the reference.
+- Colors and visual tokens: all dark surfaces, champagne borders, secondary text, and primary actions reuse Noctalia design tokens.
+- Image quality and asset fidelity: existing mapped platform icons are used; no placeholder or handcrafted assets were introduced.
+- Copy and content: the account summary, three experience rows, two ritual controls, and compact Noctalia Plus promo follow the reference structure.
+
+Primary interactions and console:
+- Passed: account actions still open the authentication sheet.
+- Passed: experience rows still open their preference sheets and persist choices.
+- Passed: native reminder toggle and time picker remain wired; the web preview preserves the mock state.
+- Passed: the Plus card opens the Settings paywall route.
+- Passed: no current browser console errors after the final reload; historical hot-reload diagnostics predate the completed implementation.
+- Passed: 19 focused tests, app typecheck, scoped ESLint with two pre-existing hook warnings, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the full body reconstruction.
+
+final result: passed
+
+## Settings editorial direction - 2026-07-14
+
+Source visual truth path:
+- `/Users/tanuki/.codex/generated_images/019f6289-aec6-72e1-bd50-05ac1a0a9dbe/exec-33e7ba82-a43a-49b4-b270-ac9d0fc05b25.png`
+
+Implementation screenshot path:
+- `/Users/tanuki/Documents/dreamer/screenshots/noctalia-settings-editorial-390x844.png`
+
+State and viewport:
+- Route: `http://localhost:8081/settings` reached through the app tab navigation.
+- Viewport: `390x844`, dark theme, guest mock profile.
+
+Full-view and focused comparison evidence:
+- The selected ImageGen direction and browser-rendered implementation were opened together at the mobile viewport for direct visual comparison.
+- The account summary, experience controls, ritual boundary, and persistent tab bar are legible in the full view, so an additional focused crop was not required.
+
+Comparison history:
+- Initial implementation preserved the existing expanded authentication content above the fold. The chosen direction required a compact guest summary, so the full form and mock profiles were moved into the existing bottom-sheet pattern.
+- P2 finding: subscription and quota content still appeared before the personal settings, making the first screen feel commercial and obscuring the selected hierarchy.
+- Fix: reordered the sections to Account, My experience, Rituals, Subscription, and Privacy; removed preference descriptions from the compact rows.
+- Post-fix evidence: the first viewport now shows the complete account summary, the selected editorial heading hierarchy, all primary experience choices, and the start of Rituals above the persistent navigation.
+
+Required fidelity surfaces:
+- Fonts and typography: existing Fraunces and Space Grotesk families are reused; the title is intentionally smaller than the mock at the user's request to expose more controls above the fold.
+- Spacing and layout rhythm: existing FieldGroup measurements, native fill modifiers, 24px card radius, and tab-bar geometry remain intact. The account summary uses the established spacing scale and minimum touch targets.
+- Colors and visual tokens: the implementation uses the existing Noctalia background, surface, border, champagne accent, cream text, and muted lavender tokens.
+- Image quality and asset fidelity: no new raster assets were required; the crescent and interface symbols reuse the established native/web icon mapping.
+- Copy and content: the selected French title, subtitle, guest state, local-storage reassurance, account actions, experience heading, and ritual heading are implemented and localized across all five supported languages.
+
+Primary interactions and console:
+- Passed: Create account and Sign in both open the detailed account sheet; the full mock profile, email, password, and close controls remain available.
+- Passed: preference controls, account actions, persistent navigation, and the existing subscription/notification behaviors remain wired.
+- Passed: no browser console errors during the settings and account-sheet flow.
+- Passed: 21 focused tests, scoped ESLint with two pre-existing effect warnings, app typecheck, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the hierarchy and density fixes.
+- P3: native FieldGroup controls remain more system-like than the illustrative mock; this preserves the existing cross-platform sizing and interaction contract.
+
+final result: passed
+
 ## First-dream next-step sheet - 2026-07-14
 
 Source visual truth path:
@@ -597,5 +889,47 @@ Findings:
 - P0: none.
 - P1: none after the threshold fix.
 - P2: none.
+
+final result: passed
+
+## Settings shared header annotation - 2026-07-14
+
+Source visual truth path:
+- `/var/folders/43/xbm0tcvd4hx6_0648bm4y5b00000gn/T/codex-clipboard-92b6f25b-39a3-4177-ad31-3b5b7134a0b3.png`
+
+Implementation screenshot path:
+- `/Users/tanuki/Documents/dreamer/screenshots/noctalia-settings-uniform-header-375x667.png`
+
+State and viewport:
+- Route: `http://localhost:8081/settings` reached through the app tab navigation.
+- Viewport: `375x667`, dark theme, guest mock profile.
+
+Full-view and focused comparison evidence:
+- The annotated browser capture and the revised implementation were opened together at the same viewport.
+- The selected settings group and header are both fully readable in the full view, so a separate crop was not required.
+
+Comparison history:
+- Annotation requirement: preserve the settings body exactly while making the header uniform with Accueil, Journal, and Stats.
+- P2 source finding: Settings alone used a custom compact/editorial header variant with a serif page title and additional tagline.
+- Fix: removed the Settings-only compact and description props, removed the unused custom styles and translations, and restored the shared `NoctaliaScreenHeader` contract.
+- Post-fix evidence: Settings now uses the same Noctalia wordmark scale, Space Grotesk page-title hierarchy, top spacing, and vertical rhythm as the other tab screens. Account and experience content are unchanged.
+
+Required fidelity surfaces:
+- Fonts and typography: the shared Fraunces wordmark and Space Grotesk page title now match the other tab screens.
+- Spacing and layout rhythm: the shared header insets and spacing are restored; the annotated body dimensions and navigation remain unchanged.
+- Colors and visual tokens: no color or surface tokens changed.
+- Image quality and asset fidelity: no assets or icons changed.
+- Copy and content: the Settings-only tagline was removed; all body copy and controls remain unchanged.
+
+Primary interactions and console:
+- Passed: tab navigation reaches Settings and keeps the selected tab state.
+- Passed: account, experience, ritual, subscription, and privacy content remain mounted in their existing order.
+- Passed: no browser console errors.
+- Passed: focused route tests, app typecheck, scoped ESLint, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after restoring the shared header.
 
 final result: passed
