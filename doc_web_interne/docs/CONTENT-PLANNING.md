@@ -87,7 +87,7 @@ Le sitemap live a ete soumis a Search Console le 2026-07-08. Les cinq URLs vacan
 | 2 | 4-7 juillet, rattrape le 8 juillet | Bruit nocturne, sommeil et reves | Publie/live; 5/5 indexees | Requetes pratiques appartement, voisinage, ville, vacances | FR, EN, ES, DE, IT | Sleep-day-environment, vivid dreams, stress dreams, dream journal, vacation | Build/check/release-check faits; sitemap live OK |
 | 3 | 8-11 juillet, produit le 8 juillet | Reveil nocturne et rappel des reves | Publie/live; 5/5 indexees | Capture rapide, journal vocal, sommeil fragmente | FR, EN, ES, DE, IT | Voice dream journal, how to remember dreams, REM sleep, privacy article | Build/check/release-check faits; sitemap live OK |
 | 4 | 12-15 juillet, anticipe le 10 juillet | Cauchemars en periode de chaleur ou stress | Publie/live; 5/5 indexees | Angle ete + anxiete, utile pour maillage cauchemars/canicule | FR, EN, ES, DE, IT | Nightmares guide, heatwave, anxiety dreams, mental health | Build/check/release-check/crosslinks passes; sitemap live 1160 URLs |
-| 5 | 14-17 juillet, publication cible le 15 | Les reves regulent-ils nos emotions ? Ce que montre une etude 2026 | Pret en branche; publication le 15 juillet | Actualite scientifique publiee dans `Sleep` en mai 2026; angle distinct des articles IA et MÖBIUS existants | FR, EN, ES, DE, IT | Cauchemars chaleur/stress, confidentialite IA, sante mentale, anxiete, journal | 5 sources relues, limites explicites, rendu canonical/hreflang/JSON-LD valide en memoire, index a 46, crosslinks OK; build/check/release-check a relancer le 15 |
+| 5 | 14-17 juillet, publie le 15 juillet | Les reves regulent-ils nos emotions ? Ce que montre une etude 2026 | Publie/live; indexation initiale 0/5 | Actualite scientifique publiee dans `Sleep` en mai 2026; angle distinct des articles IA et MÖBIUS existants | FR, EN, ES, DE, IT | Cauchemars chaleur/stress, confidentialite IA, sante mentale, anxiete, journal | 5 sources relues, canonical/hreflang/JSON-LD valides, index a 46; build/check/crosslinks/release-check passes; sitemap live 1165 URLs |
 | 6 | 18-20 juillet | Refresh `Suenos de agua`: inondation, maison, eau propre/sale | Programme | Quick win SERP: 41 017 impressions, CTR 0,99 %, position 5,3 | ES cible | Symboles eau/inondation/maison/mer + journal de reves | Refaire title/meta, reponse courte, FAQ et ancres; mesurer a J+14 |
 | 7 | 21-23 juillet | Refresh `Flying dreams meaning` | Programme | Reprendre `dream about flying`, `dream of flying` et variantes: 1 948 impressions, position 19,1 | EN cible | Dream meanings, lucid dreaming, falling dreams, dream journal | Recentrer l'intention, enrichir les scenarios utiles et renforcer les liens internes |
 | 8 | 24-25 juillet | Refresh guide debutant des reves lucides | Programme | Requetes `como tener suenos lucidos`: 1 029 impressions, CTR 0,29 %, position 14,5 | ES cible | Hub reve lucide, rappel des reves, journal, controle des reves | Reponse en 5 etapes, FAQ, preuves prudentes et CTA journal naturel |
@@ -251,6 +251,15 @@ Reinspection live et Search Console 2026-07-14:
 - Sitemap live: 1160 URLs, HTTP 200, `application/xml`; `version.txt` renvoie toujours `2866f3066c1f`.
 - Les 20 URLs restent `Submitted and indexed`; pour chaque URL, le fetch Google reussit, les robots sont autorises et le canonical Google correspond au canonical declare.
 - Aucune demande manuelle n'est necessaire. Les priorites 5 a 10 sont maintenant definies ci-dessus; commencer par l'article scientifique reves/emotions, puis le refresh ES eau/inondation.
+
+Publication et reinspection live/Search Console 2026-07-15:
+
+- Les 20 URLs deja publiees en juillet restent `Submitted and indexed`; fetch Google reussi, robots autorises et canonical Google conforme pour les 20.
+- La priorite 5 est publiee en FR/EN/ES/DE/IT sur `master`; les cinq nouvelles URLs repondent 200 et sont presentes dans le sitemap live.
+- Sitemap live: 1165 URLs, HTTP 200, `application/xml`; `version.txt` renvoie `20260715-100211`. Le sitemap a ete resoumis a Search Console avec une reponse 204.
+- Inspection initiale des cinq nouvelles URLs: FR/EN/ES/DE `URL is unknown to Google`; IT `Discovered - currently not indexed`. Aucune demande manuelle le jour de publication; reinspecter apres 24-48 h, les 16-17 juillet.
+- Validations passees: `docs:build`, `docs:check`, `docs:check-crosslinks` et `docs:release-check`, avec 0 lien casse et 0 avertissement de profondeur.
+- Rapport: `marketing/seo/search-console/2026-07-15-july-url-inspection.md`.
 
 Preparation editoriale de la priorite 5 le 2026-07-14:
 
