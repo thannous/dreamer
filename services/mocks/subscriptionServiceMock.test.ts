@@ -121,14 +121,14 @@ describe('subscriptionServiceMock', () => {
       
       const monthlyPackage = offerings.find((o: PurchasePackage) => o.id === 'mock_monthly');
       expect(monthlyPackage?.interval).toBe('monthly');
-      expect(monthlyPackage?.priceFormatted).toBe('$4.99');
-      expect(monthlyPackage?.currency).toBe('USD');
+      expect(monthlyPackage?.priceFormatted).toBe('3,59 €');
+      expect(monthlyPackage?.currency).toBe('EUR');
       expect(monthlyPackage?.title).toBe('Monthly');
       
       const annualPackage = offerings.find((o: PurchasePackage) => o.id === 'mock_annual');
       expect(annualPackage?.interval).toBe('annual');
-      expect(annualPackage?.priceFormatted).toBe('$39.99');
-      expect(annualPackage?.currency).toBe('USD');
+      expect(annualPackage?.priceFormatted).toBe('22,99 €');
+      expect(annualPackage?.currency).toBe('EUR');
       expect(annualPackage?.title).toBe('Annual');
     });
   });

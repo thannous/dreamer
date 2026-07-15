@@ -21,6 +21,18 @@ const variantKeys = [
   'subscription.paywall.card.title',
   'subscription.paywall.card.subtitle',
   'subscription.paywall.free_context',
+  'subscription.paywall.reassurance',
+  'subscription.paywall.comparison.free',
+  'subscription.paywall.comparison.plus',
+  'subscription.paywall.comparison.analysis',
+  'subscription.paywall.comparison.exploration',
+  'subscription.paywall.comparison.synthesis',
+  'subscription.paywall.comparison.recording',
+  'subscription.paywall.comparison.limited',
+  'subscription.paywall.comparison.unlimited',
+  'subscription.paywall.comparison.unlimited_recording',
+  'subscription.paywall.comparison.essential',
+  'subscription.paywall.comparison.deep',
   'subscription.paywall.button.continue_free',
   'subscription.paywall.button.continue_free_hint',
   ...PLUS_PAYWALL_FEATURE_KEYS,
@@ -50,7 +62,7 @@ describe('paywallVariants', () => {
     });
   });
 
-  it('uses living profile benefits for settings-triggered plan browsing', () => {
+  it('uses concise Plus benefits for settings-triggered plan browsing', () => {
     expect(getPaywallVariant('settings')).toMatchObject({
       trigger: 'settings',
       headerTitleKey: 'subscription.paywall.variant.settings.title',
