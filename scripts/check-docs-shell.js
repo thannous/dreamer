@@ -4,6 +4,10 @@
 const fs = require('fs');
 const path = require('path');
 const { DOCS_DIR } = require('./lib/docs-site-config');
+const {
+  AHREFS_ANALYTICS_KEY,
+  AHREFS_ANALYTICS_SRC,
+} = require('./lib/ahrefs-analytics');
 
 const LEGACY_NAV_CLASS =
   'fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300';
@@ -40,6 +44,13 @@ function isNoIndex(html) {
   return robotsMatch ? /content=["'][^"']*noindex/i.test(robotsMatch[0]) : false;
 }
 
+function findAhrefsAnalyticsTags(html) {
+  return (html.match(/<script\b[^>]*>/gi) || []).filter((tag) =>
+    tag.includes(`src="${AHREFS_ANALYTICS_SRC}"`) ||
+    tag.includes(`src='${AHREFS_ANALYTICS_SRC}'`)
+  );
+}
+
 function auditDocsShell(docsDir = DOCS_DIR) {
   const errors = [];
   let checked = 0;
@@ -71,6 +82,27 @@ function auditDocsShell(docsDir = DOCS_DIR) {
 
     if (!/\/js\/mobile-menu\.js(?:\?|["'])/i.test(html)) {
       pageErrors.push('missing /js/mobile-menu.js');
+    }
+
+    const analyticsTags = findAhrefsAnalyticsTags(html);
+    const headHtml = html.match(/<head\b[^>]*>[\s\S]*?<\/head>/i)?.[0] || '';
+    const headAnalyticsTags = findAhrefsAnalyticsTags(headHtml);
+
+    if (analyticsTags.length === 0) {
+      pageErrors.push('missing Ahrefs Web Analytics');
+    } else if (analyticsTags.length > 1) {
+      pageErrors.push('duplicate Ahrefs Web Analytics');
+    } else if (headAnalyticsTags.length !== 1) {
+      pageErrors.push('Ahrefs Web Analytics must be in <head>');
+    } else {
+      const [analyticsTag] = analyticsTags;
+      const hasExpectedKey =
+        analyticsTag.includes(`data-key="${AHREFS_ANALYTICS_KEY}"`) ||
+        analyticsTag.includes(`data-key='${AHREFS_ANALYTICS_KEY}'`);
+      if (!hasExpectedKey) pageErrors.push('invalid Ahrefs Web Analytics data-key');
+      if (!/\sasync(?:\s|=|>)/i.test(analyticsTag)) {
+        pageErrors.push('Ahrefs Web Analytics must load async');
+      }
     }
 
     if (html.includes(LEGACY_NAV_CLASS)) {

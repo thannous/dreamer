@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { imageSize } = require('image-size');
 const { SUPPORTED_LANGS } = require('./lib/docs-seo-utils');
+const { renderAhrefsAnalyticsScript } = require('./lib/ahrefs-analytics');
 const { createRenderContext } = require('./lib/docs-components/context');
 const { renderFooter: renderSharedFooter } = require('./lib/docs-components/footer');
 const { renderNavigation } = require('./lib/docs-components/navigation');
@@ -1122,6 +1123,7 @@ ${SUPPORTED_LANGS.map((targetLang) => `    <link rel="alternate" hreflang="${tar
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
     <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
     <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
+${renderAhrefsAnalyticsScript()}
     <meta property="og:type" content="website">
     <meta property="og:title" content="${escapeHtml(socialTitle)}">
     <meta property="og:description" content="${escapeHtml(socialDescription)}">
@@ -2762,6 +2764,7 @@ ${hreflangLinks}
     <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
 
     <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
+${renderAhrefsAnalyticsScript()}
     <meta property="og:type" content="article">
     <meta property="og:title" content="${escapeHtml(dc.og_title)}">
     <meta property="og:description" content="${escapeHtml(dc.og_description)}">

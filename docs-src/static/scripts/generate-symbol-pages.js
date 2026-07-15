@@ -23,6 +23,7 @@ const { renderNavigation } = require('../../scripts/lib/docs-components/navigati
 const { renderSharedComponentStyles } = require('../../scripts/lib/docs-components/styles');
 const { inlineLucideIcons } = require('../../scripts/lib/lucide-inline');
 const { canonicalOrganization } = require('../../scripts/lib/canonical-organization');
+const { renderAhrefsAnalyticsScript } = require('../../scripts/lib/ahrefs-analytics');
 
 function readDocsAssetVersionOrExit() {
   const versionPath = path.join(__dirname, '..', 'version.txt');
@@ -1095,6 +1096,7 @@ ${hreflangLinks}
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
     <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
     <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
+${renderAhrefsAnalyticsScript()}
 
     <!-- Open Graph -->
     <meta property="og:type" content="article">
@@ -1957,6 +1959,7 @@ ${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" 
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
     <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
     <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
+${renderAhrefsAnalyticsScript()}
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -2428,6 +2431,7 @@ ${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" 
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
     <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
     <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
+${renderAhrefsAnalyticsScript()}
 
     <!-- Open Graph -->
     <meta property="og:type" content="article">

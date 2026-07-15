@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Politique de Confidentialité",
   "publishedTime": "",
-  "modifiedTime": "2026-07-12",
+  "modifiedTime": "2026-07-15",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Politique de Confidentialité</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Dernière mise à jour : 9 juillet 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Dernière mise à jour : 15 juillet 2026</p>
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
                 <p class="text-dream-salmon font-medium flex gap-2 items-start">
@@ -75,12 +75,13 @@
 
             <section>
                 <h2 class="text-2xl font-serif text-white mb-4 mt-8">2. Données que nous collectons</h2>
-                <p>Dans le cadre de l'utilisation de l'application Noctalia, nous pouvons traiter les catégories de données suivantes&nbsp;:</p>
+                <p>Dans le cadre de l'utilisation de l'application ou du site web Noctalia, nous pouvons traiter les catégories de données suivantes&nbsp;:</p>
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Données de compte&nbsp;:</strong> adresse émail, mot de passe (stocké sous forme hachée), préférences de langue ou d'affichage, informations liées à la création et à la gestion de votre compte.</li>
                     <li><strong>Données de rêves&nbsp;:</strong> transcriptions textuelles de vos rêves, analyses générées par l'IA, citations partageables, thèmes ou catégories, type de rêve, statut de favori, ainsi que les images générées pour illustrer vos rêves et l'historique d’exploration guidée concernant vos rêves.</li>
                     <li><strong>Enregistrements audio&nbsp;:</strong> lorsque vous utilisez la fonction d'enregistrement vocal, votre voix est traitée afin de produire une transcription. Noctalia n'enregistre ni ne stocke vos fichiers audio sur ses propres serveurs&nbsp;: ils sont traités en temps réel uniquement pour produire la transcription, puis supprimés du flux technique. Seul le texte transcrit est enregistré dans votre journal.</li>
                     <li><strong>Données techniques et d'utilisation&nbsp;:</strong> journaux techniques (erreurs, performances, événements de sécurité), informations de base sur l'appareil (système d'exploitation, version de l'application), un identifiant d'appareil hashé utilisé uniquement pour la gestion des quotas d'utilisation gratuite, et identifiants techniques nécessaires à la fourniture du service. Sur Android, Noctalia peut également mesurer des événements fonctionnels limités (étape d'onboarding affichée, choix effectué, sauvegarde ou résultat consulté) au moyen d'un identifiant de parcours aléatoire conservé sur l'appareil pendant sept jours au maximum. Cette mesure interne n'inclut jamais le texte, le titre ou l'analyse d'un rêve, ni l'adresse émail, l'identifiant de compte, l'identifiant d'appareil ou l'adresse IP persistée. Elle n'utilise aucun outil d'analytics marketing tiers et peut être désactivée depuis l'introduction ou les réglages.</li>
+                    <li><strong>Mesure d'audience du site web&nbsp;:</strong> lorsque vous consultez noctalia.app, Ahrefs Web Analytics mesure les pages vues, les sites référents et, le cas échéant, les clics vers des liens externes et les envois de formulaires. Il déduit également le navigateur, l'appareil, le système d'exploitation, la langue, ainsi qu'une localisation approximative au niveau du pays et de la ville. Il n'utilise ni cookie ni identifiant persistant. L'adresse IP brute est utilisée de façon transitoire pour la localisation approximative et une empreinte visiteur quotidienne salée, puis écartée sans être stockée. Aucune donnée de compte ni aucun contenu de rêve n'est transmis à Ahrefs.</li>
                     <li><strong>Données de support&nbsp;:</strong> contenu de vos échanges avec nous (par exemple lorsque vous nous contactez par émail) et informations nécessaires au suivi de vos demandes.</li>
                 </ul>
                 <p class="mt-4">Les contenus que vous enregistrez dans Noctalia peuvent, selon votre choix, contenir des informations sensibles au sens du RGPD (par exemple des éléments relatifs à votre santé, votre vie sexuelle, vos croyances, etc.). Ces informations sont traitées uniquement pour vous fournir le service de journal et d'analyse de rêves, sur la base de votre <strong>consentement explicite</strong> et de l'initiative que vous prenez en les enregistrant.</p>
@@ -93,6 +94,7 @@
                     <li><strong>Fourniture de l'application et de ses fonctionnalités</strong> (journal de rêves, analyses, images générées, création et gestion du compte)&nbsp;: traitement nécessaire à l'<strong>exécution du contrat</strong> (acceptation des CGU) entre vous et Noctalia.</li>
                     <li><strong>Transcription et analyse de vos rêves, y compris lorsqu'ils contiennent des informations sensibles</strong>&nbsp;: traitement fondé sur votre <strong>consentement explicite</strong>, que vous pouvez retirer à tout moment en supprimant les rêves concernés et/ou votre compte.</li>
                     <li><strong>Amélioration de l'application, mesure de la stabilité, prévention des abus et sécurité</strong>&nbsp;: traitement fondé sur notre <strong>intérêt légitime</strong> à assurer le bon fonctionnement, la sécurité et l'évolution du service, sans profilage marketing.</li>
+                    <li><strong>Mesure de la fréquentation du site et amélioration de nos contenus publics</strong>&nbsp;: traitement fondé sur notre <strong>intérêt légitime</strong> à comprendre l'utilisation agrégée de noctalia.app, sans publicité ciblée ni suivi entre sites.</li>
                     <li><strong>Gestion des demandes d'exercice de droits, assistance utilisateur et conformité légale</strong>&nbsp;: traitement nécessaire au respect de nos <strong>obligations légales</strong> et à l'<strong>exercice de nos droits</strong> (preuve, défense en justice, etc.).</li>
                 </ul>
             </section>
@@ -137,6 +139,7 @@
                 <p class="mt-4">Vos données peuvent être partagées uniquement avec les catégories de destinataires suivantes&nbsp;:</p>
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Prestataires techniques&nbsp;:</strong> notamment Supabase (hébergement, base de données, authentification) et les prestataires d'infrastructure cloud nécessaires au fonctionnement de l'application.</li>
+                    <li><strong>Analyse d'audience du site&nbsp;:</strong> Ahrefs Pte Ltd fournit la mesure sans cookie décrite ci-dessus. Les détails figurent dans la <a href="https://ahrefs.com/legal/privacy-policy" class="text-dream-salmon hover:underline">politique de confidentialité d'Ahrefs</a>.</li>
                     <li><strong>Fournisseurs d'IA et de reconnaissance vocale&nbsp;:</strong> Google (Gemini, Google Cloud Speech-to-Text), et le cas échéant d'autres fournisseurs d'IA de premier plan (Anthropic, OpenAI, Perplexity, Mistral, ou services équivalents) pour la transcription, l'analyse de vos rêves et la génération d'images ou de contenus.</li>
                     <li><strong>Gestion des abonnements&nbsp;:</strong> RevenueCat (USA) gère les abonnements intégrés. RevenueCat reçoit un identifiant utilisateur anonyme et les informations d'achat fournies par la boutique applicable, actuellement Google Play. Vos informations de paiement complètes ne transitent jamais par Noctalia.</li>
                     <li><strong>Conseils externes et autorités&nbsp;:</strong> cabinets juridiques, comptables ou autorités administratives et judiciaires lorsque la loi nous y oblige ou pour la défense de nos droits.</li>

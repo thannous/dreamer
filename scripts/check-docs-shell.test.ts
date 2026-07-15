@@ -37,7 +37,9 @@ describe('docs shell check', () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'docs-shell-'));
 
     writeFile(root, 'it/termini.html', `<!doctype html>
-<html><head><title>Terms</title></head>
+<html><head><title>Terms</title>
+  <script src="https://analytics.ahrefs.com/analytics.js" data-key="qDwc7i0RM0aLBY/cZLkOxA" async></script>
+</head>
 <body>
   <nav id="navbar" class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-5 noctalia-premium-nav"></nav>
   <main></main>
@@ -53,5 +55,28 @@ describe('docs shell check', () => {
     const result = auditDocsShell(root);
 
     expect(result).toEqual({ ok: true, checked: 1, errors: [] });
+  });
+
+  it('rejects an Ahrefs tracker with an unexpected site key', () => {
+    const { auditDocsShell } = require('./check-docs-shell');
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'docs-shell-'));
+
+    writeFile(root, 'en/about.html', `<!doctype html>
+<html><head><title>About</title>
+  <script src="https://analytics.ahrefs.com/analytics.js" data-key="wrong" async></script>
+</head>
+<body>
+  <nav id="navbar"></nav>
+  <main></main>
+  <footer class="site-footer"></footer>
+  <script src="/js/site-shell.js" defer></script>
+  <script src="/js/language-dropdown.js" defer></script>
+  <script src="/js/mobile-menu.js" defer></script>
+</body></html>`);
+
+    const result = auditDocsShell(root);
+
+    expect(result.ok).toBe(false);
+    expect(result.errors.join('\n')).toContain('invalid Ahrefs Web Analytics data-key');
   });
 });

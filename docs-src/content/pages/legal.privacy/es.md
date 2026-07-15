@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Política de privacidad",
   "publishedTime": "",
-  "modifiedTime": "2026-07-12",
+  "modifiedTime": "2026-07-15",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Política de privacidad</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Última actualización: 9 de julio de 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Última actualización: 15 de julio de 2026</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -76,12 +76,13 @@
 
             <section>
                 <h2 class="text-2xl font-serif text-white mb-4 mt-8">2. Datos que recopilamos</h2>
-                <p>Al utilizar la aplicación Noctalia, podemos tratar las siguientes categorías de datos:</p>
+                <p>Al utilizar la aplicación o el sitio web de Noctalia, podemos tratar las siguientes categorías de datos:</p>
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Datos de cuenta:</strong> dirección de email, contraseña (almacenada en forma hash), preferencias de idioma o visualización, información relacionada con la creación y gestión de tu cuenta.</li>
                     <li><strong>Datos de sueños:</strong> transcripciones textuales de tus sueños, análisis generados por IA, citas compartibles, temas o categorías, tipo de sueño, estado de favorito, así como las imágenes generadas para ilustrar tus sueños y el historial de conversaciones con el asistente de IA sobre tus sueños.</li>
                     <li><strong>Grabaciones de audio:</strong> cuando utilizas la función de grabación de voz, tu voz se procesa para producir una transcripción. Noctalia no graba ni almacena tus archivos de audio en sus servidores: se procesan en tiempo real únicamente para producir la transcripción y luego se eliminan del flujo técnico. Solo el texto transcrito se guarda en tu diario.</li>
                     <li><strong>Datos técnicos y de uso:</strong> registros técnicos (errores, rendimiento, eventos de seguridad), información básica del dispositivo (sistema operativo, versión de la app), un identificador de dispositivo hasheado utilizado únicamente para la gestión de cuotas gratuitas e identificadores técnicos necesarios para proporcionar el servicio. En Android, Noctalia también puede medir un conjunto limitado de eventos funcionales (paso del onboarding visto, elección realizada, sueño guardado o resultado consultado) mediante un identificador aleatorio de recorrido conservado en el dispositivo durante un máximo de siete días. Esta medición propia nunca incluye el texto, el título ni el análisis de un sueño, ni correo electrónico, identificador de cuenta, identificador de dispositivo o dirección IP persistida. No utiliza herramientas de analítica de marketing de terceros y puede desactivarse desde la introducción o los ajustes.</li>
+                    <li><strong>Medición de audiencia del sitio web:</strong> cuando visitas noctalia.app, Ahrefs Web Analytics mide las páginas vistas, los sitios de referencia y, cuando corresponde, los clics en enlaces externos y los envíos de formularios. También deduce el navegador, el dispositivo, el sistema operativo, el idioma y una ubicación aproximada a nivel de país y ciudad. No utiliza cookies ni identificadores persistentes. La dirección IP sin procesar se usa de forma transitoria para la ubicación aproximada y un hash diario del visitante con sal, y después se descarta sin almacenarse. No se envían a Ahrefs datos de cuenta ni contenido de sueños.</li>
                     <li><strong>Datos de soporte:</strong> contenido de tus comunicaciones con nosotros (por ejemplo, cuando nos contactas por email) e información necesaria para el seguimiento de tus solicitudes.</li>
                 </ul>
                 <p class="mt-4">El contenido que grabas en Noctalia puede, según tu elección, contener información sensible en el sentido del RGPD (por ejemplo, elementos relacionados con tu salud, vida sexual, creencias, etc.). Esta información se procesa únicamente para proporcionarte el servicio de diario y análisis de sueños, basándose en tu <strong>consentimiento explícito</strong> y tu iniciativa al grabarla.</p>
@@ -94,6 +95,7 @@
                     <li><strong>Proporcionar la aplicación y sus funcionalidades</strong> (diario de sueños, análisis, imágenes generadas, creación y gestión de cuenta): tratamiento necesario para la <strong>ejecución del contrato</strong> (aceptación de los Términos de Servicio) entre tú y Noctalia.</li>
                     <li><strong>Transcripción y análisis de tus sueños, incluso cuando contienen información sensible:</strong> tratamiento basado en tu <strong>consentimiento explícito</strong>, que puedes retirar en cualquier momento eliminando los sueños relevantes y/o tu cuenta.</li>
                     <li><strong>Mejora de la aplicación, medición de estabilidad, prevención de abusos y seguridad:</strong> tratamiento basado en nuestro <strong>interés legítimo</strong> en asegurar el correcto funcionamiento, seguridad y desarrollo del servicio, sin perfilado de marketing.</li>
+                    <li><strong>Medición del tráfico del sitio y mejora de nuestros contenidos públicos:</strong> tratamiento basado en nuestro <strong>interés legítimo</strong> en comprender el uso agregado de noctalia.app, sin publicidad dirigida ni seguimiento entre sitios.</li>
                     <li><strong>Gestión de solicitudes de ejercicio de derechos, soporte al usuario y cumplimiento legal:</strong> tratamiento necesario para cumplir con nuestras <strong>obligaciones legales</strong> y para <strong>ejercer nuestros derechos</strong> (evidencia, defensa legal, etc.).</li>
                 </ul>
             </section>
@@ -138,6 +140,7 @@
                 <p class="mt-4">Tus datos solo pueden compartirse con las siguientes categorías de destinatarios:</p>
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Proveedores técnicos:</strong> principalmente Supabase (alojamiento, base de datos, autenticación) y proveedores de infraestructura cloud necesarios para el funcionamiento de la aplicación.</li>
+                    <li><strong>Analítica del sitio web:</strong> Ahrefs Pte Ltd proporciona la medición sin cookies descrita anteriormente. Puedes consultar más detalles en la <a href="https://ahrefs.com/legal/privacy-policy" class="text-dream-salmon hover:underline">Política de privacidad de Ahrefs</a>.</li>
                     <li><strong>Proveedores de IA y reconocimiento de voz:</strong> Google (Gemini, Google Cloud Speech-to-Text), y cuando corresponda otros proveedores de IA líderes (Anthropic, OpenAI, Perplexity, Mistral, o servicios equivalentes) para transcripción, análisis de tus sueños y generación de imágenes o contenido.</li>
                     <li><strong>Gestión de suscripciones:</strong> RevenueCat (EE. UU.) gestiona las suscripciones integradas. RevenueCat recibe un identificador de usuario anónimo y la información de compra proporcionada por la tienda aplicable, actualmente Google Play. Tu información de pago completa nunca pasa por Noctalia.</li>
                     <li><strong>Asesores externos y autoridades:</strong> bufetes de abogados, contables o autoridades administrativas y judiciales cuando lo exija la ley o para defender nuestros derechos.</li>
