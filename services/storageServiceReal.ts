@@ -29,6 +29,7 @@ const JOURNAL_LAYOUT_PREFERENCE_KEY = 'gemini_dream_journal_layout_preference';
 const RECORDING_INPUT_MODE_PREFERENCE_KEY = 'gemini_dream_journal_recording_input_mode_preference';
 const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
 const RECORDING_ONBOARDING_COMPLETED_KEY = 'gemini_dream_journal_recording_onboarding_completed';
+const RECORDING_VOICE_HINT_COMPLETED_KEY = 'gemini_dream_journal_recording_voice_hint_completed_v1';
 const REMEMBERED_DREAM_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_remembered_dream_prompt_dismissed';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
@@ -1040,6 +1041,37 @@ export async function saveRecordingOnboardingCompleted(completed: boolean): Prom
       console.error('Failed to save recording onboarding flag:', error);
     }
     throw new Error('Failed to save recording onboarding flag');
+  }
+}
+
+export async function getRecordingVoiceHintCompleted(actorScope?: string | null): Promise<boolean> {
+  try {
+    const savedFlag = await getItem(scopedStorageKey(RECORDING_VOICE_HINT_COMPLETED_KEY, actorScope));
+    if (savedFlag) {
+      return JSON.parse(savedFlag) === true;
+    }
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to retrieve recording voice hint flag:', error);
+    }
+  }
+  return false;
+}
+
+export async function saveRecordingVoiceHintCompleted(
+  completed: boolean,
+  actorScope?: string | null
+): Promise<void> {
+  try {
+    await setItem(
+      scopedStorageKey(RECORDING_VOICE_HINT_COMPLETED_KEY, actorScope),
+      JSON.stringify(completed)
+    );
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to save recording voice hint flag:', error);
+    }
+    throw new Error('Failed to save recording voice hint flag');
   }
 }
 

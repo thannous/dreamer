@@ -4,6 +4,10 @@ import { SubjectProposition } from '@/components/journal/SubjectProposition';
 import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
+import {
+  RecordingOnboardingSpotlightOverlay,
+  type RecordingSpotlightRect,
+} from '@/components/recording/RecordingOnboardingSpotlightOverlay';
 import { RecordingOnboardingTour } from '@/components/recording/RecordingOnboardingTour';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import {
@@ -93,6 +97,8 @@ import {
 import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
 import {
   getRecordingInputModePreference,
+  getRecordingVoiceHintCompleted,
+  saveRecordingVoiceHintCompleted,
   saveRecordingInputModePreference,
 } from '@/services/storageService';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -217,7 +223,15 @@ export default function RecordingScreen() {
   const [voiceFallbackReason, setVoiceFallbackReason] = useState<VoiceFallbackReason>(null);
   const [isVoiceFallbackToastVisible, setIsVoiceFallbackToastVisible] = useState(false);
   const [recordingGuideVisible, setRecordingGuideVisible] = useState(false);
-  const [recordingGuideStep, setRecordingGuideStep] = useState<0 | 1>(0);
+  const [recordingGuideStep, setRecordingGuideStep] = useState<0 | 1 | 2>(0);
+  const [recordingVoiceHintLoadedScope, setRecordingVoiceHintLoadedScope] =
+    useState<string | null>(null);
+  const [recordingVoiceHintDismissed, setRecordingVoiceHintDismissed] = useState(false);
+  const recordingVoiceHintCompletedRef = useRef(false);
+  const [recordingGuideTargetRect, setRecordingGuideTargetRect] =
+    useState<RecordingSpotlightRect | null>(null);
+  const [recordingGuidePanelRect, setRecordingGuidePanelRect] =
+    useState<RecordingSpotlightRect | null>(null);
   const [captureIntent, setCaptureIntent] = useState<CaptureIntent>('fresh');
   const [rememberedCaptureSource, setRememberedCaptureSource] =
     useState<RememberedCaptureSource>('journal');
@@ -336,6 +350,33 @@ export default function RecordingScreen() {
       isActive = false;
     };
   }, [onboardingScope, parsedRecordingParams.mode]);
+
+  useEffect(() => {
+    let isActive = true;
+    recordingVoiceHintCompletedRef.current = false;
+
+    getRecordingVoiceHintCompleted(onboardingScope)
+      .then((completed) => {
+        if (!isActive || recordingVoiceHintCompletedRef.current) {
+          return;
+        }
+        recordingVoiceHintCompletedRef.current = completed;
+        setRecordingVoiceHintDismissed(completed);
+        setRecordingVoiceHintLoadedScope(onboardingScope);
+      })
+      .catch((error) => {
+        if (__DEV__) {
+          console.warn('[Recording] Failed to load voice hint preference', error);
+        }
+        if (isActive) {
+          setRecordingVoiceHintLoadedScope(onboardingScope);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [onboardingScope]);
 
   useEffect(() => {
     const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
@@ -1441,6 +1482,9 @@ export default function RecordingScreen() {
     () => fixedFooterBottomOffset + (hasSaveableContent ? footerHeight : 0),
     [fixedFooterBottomOffset, footerHeight, hasSaveableContent]
   );
+  const recordingGuideMeasureKey = Math.round(
+    viewportWidth * 10000 + viewportHeight * 100 + fixedFooterBottomOffset + recordingGuideStep
+  );
   const handleFooterLayout = useCallback((event: LayoutChangeEvent) => {
     const nextHeight = Math.ceil(event.nativeEvent.layout.height);
     setFooterHeight((current) => current === nextHeight ? current : nextHeight);
@@ -1474,6 +1518,14 @@ export default function RecordingScreen() {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setRecordingGuideStep(0);
       setRecordingGuideVisible(true);
+      recordingVoiceHintCompletedRef.current = false;
+      setRecordingVoiceHintDismissed(false);
+      setRecordingVoiceHintLoadedScope(onboardingScope);
+      saveRecordingVoiceHintCompleted(false, onboardingScope).catch((error) => {
+        if (__DEV__) {
+          console.warn('[Recording] Failed to reset voice hint preference', error);
+        }
+      });
       router.setParams({ replayGuide: undefined });
     }
 
@@ -1524,6 +1576,7 @@ export default function RecordingScreen() {
   }, [
     draftDream,
     onboardingState.pendingRecordingIntent,
+    onboardingScope,
     parsedRecordingParams.entryId,
     parsedRecordingParams.mode,
     parsedRecordingParams.replayGuide,
@@ -1551,6 +1604,14 @@ export default function RecordingScreen() {
     }
     return t('recording.mode.switch_to_voice');
   }, [isPreparingRecording, isRecording, t, trimmedTranscript, voiceFallbackReason]);
+  const showRecordingVoiceHint = recordingVoiceHintLoadedScope === onboardingScope
+    && !recordingVoiceHintDismissed
+    && captureIntent === 'fresh'
+    && inputMode === 'voice'
+    && !isPreparingRecording
+    && !isRecording
+    && !recordingGuideVisible
+    && !onboardingOfferDream;
   const textFallbackNotice = useMemo(() => {
     if (!voiceFallbackReason) {
       return '';
@@ -1634,14 +1695,30 @@ export default function RecordingScreen() {
     ]
   );
 
+  const completeRecordingVoiceHint = useCallback(() => {
+    if (recordingVoiceHintCompletedRef.current) {
+      return;
+    }
+
+    recordingVoiceHintCompletedRef.current = true;
+    setRecordingVoiceHintLoadedScope(onboardingScope);
+    setRecordingVoiceHintDismissed(true);
+    saveRecordingVoiceHintCompleted(true, onboardingScope).catch((error) => {
+      if (__DEV__) {
+        console.warn('[Recording] Failed to save voice hint preference', error);
+      }
+    });
+  }, [onboardingScope]);
+
   const switchToVoiceMode = useCallback(async () => {
+    completeRecordingVoiceHint();
     setVoiceFallbackReason(null);
     if (inputMode !== 'voice') {
       setInputMode('voice');
       persistInputModePreference('voice');
     }
     await toggleRecording();
-  }, [inputMode, persistInputModePreference, toggleRecording]);
+  }, [completeRecordingVoiceHint, inputMode, persistInputModePreference, toggleRecording]);
 
   const onboardingOfferActivationInsight = useMemo(
     () => getSavedDreamActivationInsight(onboardingOfferDream),
@@ -1702,12 +1779,20 @@ export default function RecordingScreen() {
   ]);
 
   const handleRecordingGuideNext = useCallback(() => {
-    if (recordingGuideStep === 1) {
-      setRecordingGuideVisible(false);
-      return;
+    setRecordingGuideVisible(false);
+  }, []);
+
+  const handleRecordingModeOpenChange = useCallback((open: boolean) => {
+    if (open && recordingGuideVisible && recordingGuideStep === 0) {
+      setRecordingGuideStep(1);
     }
-    setRecordingGuideStep(1);
-  }, [recordingGuideStep]);
+  }, [recordingGuideStep, recordingGuideVisible]);
+
+  const handleRecordingModeOptionSelected = useCallback(() => {
+    if (recordingGuideVisible && recordingGuideStep === 1) {
+      setRecordingGuideStep(2);
+    }
+  }, [recordingGuideStep, recordingGuideVisible]);
 
   const handleRecordingGuideDismiss = useCallback(() => {
     setRecordingGuideVisible(false);
@@ -1828,9 +1913,9 @@ export default function RecordingScreen() {
     <>
       <View
         style={styles.gradient}
-        accessibilityElementsHidden={recordingGuideVisible || Boolean(onboardingOfferDream)}
+        accessibilityElementsHidden={Boolean(onboardingOfferDream)}
         importantForAccessibility={
-          recordingGuideVisible || onboardingOfferDream ? 'no-hide-descendants' : 'auto'
+          onboardingOfferDream ? 'no-hide-descendants' : 'auto'
         }
       >
         <LinearGradient
@@ -1856,6 +1941,12 @@ export default function RecordingScreen() {
                 <RecordingInputModeSelect
                   value={inputMode}
                   disabled={interactionDisabled || isPreparingRecording}
+                  highlighted={recordingGuideVisible && recordingGuideStep !== 2}
+                  highlightBadge={recordingGuideStep + 1}
+                  highlightMeasureKey={recordingGuideMeasureKey}
+                  onHighlightLayout={setRecordingGuideTargetRect}
+                  onOpenChange={handleRecordingModeOpenChange}
+                  onOptionSelected={handleRecordingModeOptionSelected}
                   onChange={handleInputModePreferenceChange}
                 />
 
@@ -1876,6 +1967,13 @@ export default function RecordingScreen() {
                   switchToVoiceLabel={voiceControlLabel}
                   voiceStatus={voiceControlStatus}
                   recordingDurationLabel={recordingDurationLabel}
+                  spotlightTarget={
+                    recordingGuideVisible && recordingGuideStep === 2 ? inputMode : undefined
+                  }
+                  spotlightMeasureKey={recordingGuideMeasureKey}
+                  onSpotlightLayout={setRecordingGuideTargetRect}
+                  showVoiceHint={showRecordingVoiceHint}
+                  onVoiceHintDismiss={completeRecordingVoiceHint}
                   placeholder={
                     captureIntent === 'remembered'
                       ? t('recording.remembered.placeholder')
@@ -1940,16 +2038,26 @@ export default function RecordingScreen() {
             testID={TID.Text.RecordingFallbackNotice}
           />
         ) : null}
+        {recordingGuideVisible ? (
+          <RecordingOnboardingSpotlightOverlay
+            width={viewportWidth}
+            height={viewportHeight}
+            targetRect={recordingGuideTargetRect}
+            panelRect={recordingGuidePanelRect}
+          />
+        ) : null}
+        {recordingGuideVisible ? (
+          <RecordingOnboardingTour
+            bottomOffset={fixedFooterBottomOffset}
+            measureKey={recordingGuideMeasureKey}
+            step={recordingGuideStep}
+            inputMode={inputMode}
+            onLayoutMeasured={setRecordingGuidePanelRect}
+            onDone={handleRecordingGuideNext}
+            onDismiss={handleRecordingGuideDismiss}
+          />
+        ) : null}
       </View>
-
-      <RecordingOnboardingTour
-        visible={recordingGuideVisible}
-        step={recordingGuideStep}
-        inputMode={inputMode}
-        onNext={handleRecordingGuideNext}
-        onDismiss={handleRecordingGuideDismiss}
-      />
-
       <PostSaveOfferSheet
         visible={Boolean(onboardingOfferDream) && !showQuotaLimitSheet}
         kind={onboardingOfferKind}

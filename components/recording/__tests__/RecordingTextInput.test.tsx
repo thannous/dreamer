@@ -142,6 +142,9 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.mode.voice_pause_detail': 'Dictation is running. Edit the text, pause, or save.',
         'recording.mode.voice_resume_detail': 'Resume dictation to add a scene, image, or emotion.',
         'recording.mode.clear_dream': 'Clear dream',
+        'recording.onboarding.voice.body': 'Tap the mic to dictate your dream.',
+        'recording.voice_hint.understood': 'Got it',
+        'recording.guide.dismiss': 'Close guide',
         'recording.mic.pause': 'Pause dictation',
         'recording.mic.pause_hint': 'Double tap to pause dictation',
         'recording.activation_insight.eyebrow': 'First read',
@@ -318,6 +321,32 @@ describe('RecordingTextInput', () => {
     fireEvent.click(screen.getByTestId('compact-mic'));
 
     expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
+  });
+
+  it('points first-time voice users to the microphone and can be dismissed', () => {
+    const onVoiceHintDismiss = jest.fn();
+
+    render(
+      <RecordingTextInput
+        layout="voiceFirst"
+        value=""
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Dictate your dream"
+        showVoiceHint
+        onVoiceHintDismiss={onVoiceHintDismiss}
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    expect(screen.getByTestId(TID.Component.RecordingVoiceHint)).toBeTruthy();
+    expect(screen.getByText('Tap the mic to dictate your dream.')).toBeTruthy();
+    expect(screen.getByText('Got it')).toBeTruthy();
+
+    fireEvent.click(screen.getByTestId(TID.Button.RecordingVoiceHintDismiss));
+
+    expect(onVoiceHintDismiss).toHaveBeenCalledTimes(1);
   });
 
   it('keeps retry on the microphone without duplicating the retry label', () => {
