@@ -9,7 +9,7 @@ when another tool needs structured output.
 | --- | --- | --- |
 | Development | `start`, `start:*`, `web`, `android`, `ios` | Runtime only. Environment profiles are loaded in memory and never copied to `.env.local`. |
 | Quality | `lint`, `lint:scripts`, `typecheck:*`, `test:*` | Read-only except normal test caches and artifacts. |
-| Site | `docs:build`, `docs:check`, `docs:release-check`, `docs:deploy:*` | `docs:build` regenerates committed output. Deploy commands publish externally and require explicit intent. |
+| Site | `docs:build`, `docs:check`, `docs:release-check`, `docs:deploy:*` | `docs:build` regenerates ignored local output. Cloudflare rebuilds the same output from sources; deploy commands publish externally and require explicit intent. |
 | Content | `content:*`, `validate-seo`, `generate-sitemap` | Manifest commands without `:check` and sitemap generation write generated files. |
 | Android E2E | `test:e2e:*` | Requires an emulator or device, Maestro, and the matching runtime profile. |
 | Android release | `android:gates:*`, `android:release:local`, `build:apk:*` | May require ADB, a physical device, EAS credentials, or local build tooling. |
@@ -23,6 +23,8 @@ when another tool needs structured output.
 - Shared, testable helpers stay in `scripts/lib/`.
 - `docs-src/` and shared `data/` are the editable site sources. No active tool
   may patch generated `docs/` HTML directly.
+- `docs/` and `docs-src/static/version.txt` are build artifacts ignored by Git.
+  Never force-add them; validate them locally with `docs:build` and `docs:check`.
 - One-time migrations belong in `scripts/archive/` and must not have an npm
   command.
 - New recurring generators use `build-*`, `generate-*`, `check-*`, or

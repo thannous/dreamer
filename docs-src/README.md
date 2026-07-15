@@ -8,7 +8,8 @@
 - `static/`: build-owned static files copied into `docs/`.
 - `templates/`: shared HTML shells used by the renderer.
 
-`docs/` is the generated output and should not be edited manually.
+`docs/` is generated output. It is ignored by Git, should never be edited
+manually, and is rebuilt locally or by Cloudflare Pages from the tracked sources.
 
 ## Daily Maintenance Workflow
 
@@ -64,9 +65,31 @@ The build fails if any blog article is missing one of the configured languages.
 
 ### Preview and publish on Cloudflare Pages
 
-Production is deployed by Cloudflare Pages from the `master` branch. A commit on
-another branch may create a Cloudflare Preview deployment, but it does not update
-`noctalia.app` until the same generated output is on `master`.
+Production is deployed by the Cloudflare Pages Git integration from the `master`
+branch. Cloudflare checks out the tracked sources, rebuilds `docs/`, validates the
+result, then uploads that generated directory. Generated HTML is not stored in Git.
+
+The Pages project must use these build settings:
+
+| Setting | Value |
+| --- | --- |
+| Root directory | Repository root (leave the field empty) |
+| Build command | `npm run docs:build && npm run docs:check` |
+| Build output directory | `docs` |
+| Production branch | `master` |
+
+The Node version comes from the repository's `.nvmrc`. An empty `rootDirectory`
+in `config/cloudflare-pages.json` means the repository root. Keep the Cloudflare
+dashboard aligned with that file whenever the build command, output directory,
+or branch changes.
+
+A commit on another branch may create a Cloudflare Preview deployment, but it does
+not update `noctalia.app`. A commit on `master` triggers the production build.
+
+Commit source changes under `docs-src/`, `data/`, and the relevant generator or
+configuration files. If `docs:build` updates a tracked manifest under `data/`,
+commit that small manifest change too. Never force-add `docs/` or
+`docs-src/static/version.txt`.
 
 Deployment helper settings live in `docs-src/config/cloudflare-pages.json`.
 
@@ -88,9 +111,12 @@ Upload production manually:
 npm run docs:deploy:prod
 ```
 
-`docs:deploy:prod` runs `docs:release-check` before uploading and uses the
-configured production branch name. If the Cloudflare Pages project name or branch
-names change, update only `docs-src/config/cloudflare-pages.json`.
+`docs:deploy:prod` is a manual fallback that runs `docs:release-check` before a
+direct upload. It does not require a Git commit, so use it only with explicit
+publication intent and record the corresponding source change in Git afterward.
+If the Cloudflare Pages project or build settings change, update
+`docs-src/config/cloudflare-pages.json` and mirror the same values in the
+Cloudflare dashboard.
 
 ## Source Templates
 

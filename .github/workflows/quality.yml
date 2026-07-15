@@ -37,8 +37,8 @@ jobs:
       - name: Test API Edge Function
         run: deno test --frozen --allow-env supabase/functions/api
 
-  site-generated-output:
-    name: Site build and generated output
+  site-build:
+    name: Site source build and checks
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -89,29 +89,6 @@ jobs:
       - name: Check site
         if: steps.site-changes.outputs.changed == 'true'
         run: npm run docs:check
-
-      - name: Verify generated output is committed
-        if: steps.site-changes.outputs.changed == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          generated_status="$(git status --porcelain --untracked-files=all -- \
-            data/content-manifest.json \
-            data/site-manifest.json \
-            docs \
-            docs-src/static/version.txt)"
-
-          if [[ -n "$generated_status" ]]; then
-            echo "Generated site output is stale. Run 'npm run docs:build' and commit the result."
-            printf '%s\n' "$generated_status"
-            git diff -- \
-              data/content-manifest.json \
-              data/site-manifest.json \
-              docs \
-              docs-src/static/version.txt
-            exit 1
-          fi
 
   pr-quality:
     name: PR typecheck, lint and changed tests

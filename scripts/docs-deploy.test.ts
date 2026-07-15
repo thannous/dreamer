@@ -22,6 +22,9 @@ describe('docs-deploy helpers', () => {
         projectName: 'noctalia',
         previewBranch: 'preview',
         productionBranch: 'main',
+        rootDirectory: '',
+        buildCommand: 'npm run docs:build && npm run docs:check',
+        buildOutputDirectory: 'docs',
       }),
       'utf8'
     );
@@ -36,6 +39,9 @@ describe('docs-deploy helpers', () => {
       projectName: 'noctalia',
       previewBranch: 'preview',
       productionBranch: 'main',
+      rootDirectory: '',
+      buildCommand: 'npm run docs:build && npm run docs:check',
+      buildOutputDirectory: 'docs',
     });
   });
 
