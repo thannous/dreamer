@@ -276,12 +276,37 @@ function getSymbolCtaUrl(lang) {
   const paths = {
     en: '/en/ai-dream-interpretation-app',
     fr: '/fr/application-interpretation-reves-ia',
-    es: '/es/app-analisis-suenos-android',
-    de: '/de/android-traumanalyse-app',
-    it: '/it/app-analisi-sogni-android',
+    es: '/es/app-interpretacion-suenos-ia',
+    de: '/de/ki-traumdeutung-app',
+    it: '/it/app-interpretazione-sogni-ai',
   };
 
   return paths[lang] || paths.en;
+}
+
+function getAndroidStoreUrl(lang) {
+  const base = SHARED_SITE_CONFIG.storeLinks?.androidBase || 'https://play.google.com/store/apps/details?id=com.tanuki75.noctalia';
+  return `${base}&hl=${lang}`;
+}
+
+const SYMBOL_CONVERSION_COPY = {
+  en: { store: 'Get Noctalia on Google Play', details: 'See how Noctalia adds your context' },
+  fr: { store: 'Télécharger Noctalia sur Google Play', details: 'Voir comment Noctalia relie votre contexte' },
+  es: { store: 'Descargar Noctalia en Google Play', details: 'Ver cómo Noctalia añade tu contexto' },
+  de: { store: 'Noctalia bei Google Play herunterladen', details: 'So bezieht Noctalia deinen Kontext ein' },
+  it: { store: 'Scarica Noctalia su Google Play', details: 'Scopri come Noctalia usa il tuo contesto' },
+};
+
+function renderSymbolConversionActions(lang) {
+  const copy = SYMBOL_CONVERSION_COPY[lang] || SYMBOL_CONVERSION_COPY.en;
+  return `<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+                    <a href="${getAndroidStoreUrl(lang)}" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" rel="nofollow noopener noreferrer" target="_blank">
+                        ${escapeHtml(copy.store)} <i data-lucide="external-link" class="w-5 h-5"></i>
+                    </a>
+                    <a href="${getSymbolCtaUrl(lang)}" class="inline-flex items-center justify-center gap-2 px-8 py-4 glass-button text-dream-cream rounded-full font-bold hover:border-dream-salmon/40 transition-colors">
+                        ${escapeHtml(copy.details)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>`;
 }
 
 function loadSiteManifest() {
@@ -1469,9 +1494,7 @@ ${relatedArticleHtml}
                 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
-                <a href="${getSymbolCtaUrl(lang)}" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
-                    ${t.cta_button} <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                </a>
+                ${renderSymbolConversionActions(lang)}
             </aside>
 
             <!-- Back to Dictionary -->
@@ -2075,9 +2098,7 @@ ${relatedGuidesHtml}
                 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
-                <a href="${homePath}" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
-                    ${t.cta_button} <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                </a>
+                ${renderSymbolConversionActions(lang)}
             </aside>
 
             <!-- Back to Dictionary -->
@@ -2548,9 +2569,7 @@ ${guideHowToHtml}
                 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
-                <a href="${homePath}" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
-                    ${t.cta_button} <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                </a>
+                ${renderSymbolConversionActions(lang)}
             </aside>
 
             <!-- Back to Dictionary -->
