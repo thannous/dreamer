@@ -388,6 +388,14 @@ describe('SymbolDictionaryScreen', () => {
 
   // ── Navigation ────────────────────────────────────────────────────────
   describe('navigation', () => {
+    it('opens the native dream guides from the dictionary', () => {
+      render(<SymbolDictionaryScreen />);
+
+      fireEvent.click(screen.getByTestId('btn.symbolDictionary.guides'));
+
+      expect(mockPush).toHaveBeenCalledWith('/dream-guides');
+    });
+
     it('navigates to symbol detail when pressing a symbol card', () => {
       render(<SymbolDictionaryScreen />);
 

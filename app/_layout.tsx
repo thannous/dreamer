@@ -397,6 +397,8 @@ function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void 
         currentPath?.startsWith('/dream-categories/') ||
         currentPath?.startsWith('/symbol-dictionary') ||
         currentPath?.startsWith('/symbol-detail/') ||
+        currentPath?.startsWith('/dream-guides') ||
+        currentPath?.startsWith('/dream-guide/') ||
         currentPath?.startsWith('/ritual/');
 
       if (__DEV__) {
@@ -559,6 +561,8 @@ function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void 
             <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="symbol-dictionary" options={{ headerShown: false }} />
             <Stack.Screen name="symbol-detail/[id]" options={{ headerShown: false }} />
+            <Stack.Screen name="dream-guides" options={{ headerShown: false }} />
+            <Stack.Screen name="dream-guide/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="ritual/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />

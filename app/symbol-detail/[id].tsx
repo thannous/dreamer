@@ -46,7 +46,10 @@ export default function SymbolDetailScreen() {
     trackedSymbolRef.current = symbol.id;
 
     const analyticsSource =
-      source === 'onboarding' || source === 'dictionary' || source === 'search'
+      source === 'onboarding' ||
+      source === 'dictionary' ||
+      source === 'search' ||
+      source === 'guide'
         ? source
         : 'unknown';
     void trackProductEvent('symbol_detail_viewed', { source: analyticsSource });

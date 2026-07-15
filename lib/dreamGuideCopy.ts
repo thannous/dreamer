@@ -1,0 +1,73 @@
+import type { DreamGuideLanguage, DreamGuideUiCopy } from '@/lib/dreamGuideTypes';
+
+const DREAM_GUIDE_COPY: Record<DreamGuideLanguage, DreamGuideUiCopy> = {
+  en: {
+    screenTitle: 'Dream guides',
+    screenSubtitle: 'Explore the essential themes from Noctalia’s dream library, then open each symbol for a more personal reading.',
+    dictionaryTitle: 'Dream symbols dictionary',
+    dictionaryBody: 'Looking for one precise image? Search all 150 symbols, meanings, variations, and reflection prompts.',
+    dictionaryCta: 'Open the dictionary',
+    guideLabel: 'Dream guide',
+    featuredLabel: 'Essential guides',
+    symbolsHeading: 'Symbols in this guide',
+    conclusionHeading: 'Keep in mind',
+    symbolCount: (count) => `${count} symbols`,
+    notFound: 'Guide not found',
+  },
+  fr: {
+    screenTitle: 'Guides des rêves',
+    screenSubtitle: 'Explorez les thèmes essentiels de la bibliothèque Noctalia, puis ouvrez chaque symbole pour une lecture plus personnelle.',
+    dictionaryTitle: 'Dictionnaire des symboles',
+    dictionaryBody: 'Vous cherchez une image précise ? Parcourez les 150 symboles, leurs sens, variantes et questions de réflexion.',
+    dictionaryCta: 'Ouvrir le dictionnaire',
+    guideLabel: 'Guide des rêves',
+    featuredLabel: 'Guides essentiels',
+    symbolsHeading: 'Symboles de ce guide',
+    conclusionHeading: 'À garder en tête',
+    symbolCount: (count) => `${count} symboles`,
+    notFound: 'Guide introuvable',
+  },
+  es: {
+    screenTitle: 'Guías de sueños',
+    screenSubtitle: 'Explora los temas esenciales de la biblioteca de Noctalia y abre cada símbolo para una lectura más personal.',
+    dictionaryTitle: 'Diccionario de símbolos',
+    dictionaryBody: '¿Buscas una imagen concreta? Explora los 150 símbolos, sus significados, variaciones y preguntas de reflexión.',
+    dictionaryCta: 'Abrir el diccionario',
+    guideLabel: 'Guía de sueños',
+    featuredLabel: 'Guías esenciales',
+    symbolsHeading: 'Símbolos de esta guía',
+    conclusionHeading: 'Ten en cuenta',
+    symbolCount: (count) => `${count} símbolos`,
+    notFound: 'Guía no encontrada',
+  },
+  de: {
+    screenTitle: 'Traumratgeber',
+    screenSubtitle: 'Entdecken Sie die wichtigsten Themen aus Noctalias Traumbibliothek und öffnen Sie einzelne Symbole für eine persönliche Deutung.',
+    dictionaryTitle: 'Traumsymbole-Lexikon',
+    dictionaryBody: 'Suchen Sie ein bestimmtes Bild? Entdecken Sie 150 Symbole mit Bedeutungen, Varianten und Reflexionsfragen.',
+    dictionaryCta: 'Lexikon öffnen',
+    guideLabel: 'Traumratgeber',
+    featuredLabel: 'Wichtige Ratgeber',
+    symbolsHeading: 'Symbole in diesem Ratgeber',
+    conclusionHeading: 'Wichtig',
+    symbolCount: (count) => `${count} Symbole`,
+    notFound: 'Ratgeber nicht gefunden',
+  },
+  it: {
+    screenTitle: 'Guide ai sogni',
+    screenSubtitle: 'Esplora i temi essenziali della biblioteca di Noctalia e apri ogni simbolo per una lettura più personale.',
+    dictionaryTitle: 'Dizionario dei simboli',
+    dictionaryBody: 'Cerchi un’immagine precisa? Esplora 150 simboli con significati, varianti e domande di riflessione.',
+    dictionaryCta: 'Apri il dizionario',
+    guideLabel: 'Guida ai sogni',
+    featuredLabel: 'Guide essenziali',
+    symbolsHeading: 'Simboli in questa guida',
+    conclusionHeading: 'Da ricordare',
+    symbolCount: (count) => `${count} simboli`,
+    notFound: 'Guida non trovata',
+  },
+};
+
+export function getDreamGuideCopy(language: DreamGuideLanguage): DreamGuideUiCopy {
+  return DREAM_GUIDE_COPY[language] ?? DREAM_GUIDE_COPY.en;
+}
