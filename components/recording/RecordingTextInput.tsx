@@ -25,6 +25,8 @@ export interface RecordingTextInputProps {
   spotlightTarget?: RecordingOnboardingTarget;
   onSpotlightLayout?: (rect: RecordingSpotlightRect) => void;
   spotlightMeasureKey?: number;
+  showVoiceHint?: boolean;
+  onVoiceHintDismiss?: () => void;
   placeholder?: string;
   autoFocus?: boolean;
   onSwitchToVoice: () => void;
@@ -47,6 +49,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       spotlightTarget,
       onSpotlightLayout,
       spotlightMeasureKey = 0,
+      showVoiceHint = false,
+      onVoiceHintDismiss,
       placeholder,
       autoFocus = true,
       onSwitchToVoice,
@@ -55,7 +59,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     },
     ref
   ) {
-    const { colors, mode } = useTheme();
+    const { colors, mode, shadows } = useTheme();
     const { t } = useTranslation();
     const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
     const hasValue = value.trim().length > 0;
@@ -94,7 +98,13 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       <View
         ref={textSpotlightRef}
         collapsable={false}
-        style={styles.spotlightTarget}
+        style={[
+          styles.spotlightTarget,
+          spotlightTarget === 'text' && {
+            borderColor: noctalia.accent.base,
+            borderWidth: 2,
+          },
+        ]}
       >
         {!hasValue ? (
           <View
@@ -134,7 +144,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
             style={[styles.inlineActionFooter, { backgroundColor: colors.backgroundCard }]}
           >
             <LinearGradient
-              colors={['transparent', colors.backgroundCard]}
+              colors={[`${colors.backgroundCard}00`, colors.backgroundCard]}
               pointerEvents="none"
               style={styles.inlineActionFade}
             />
@@ -202,7 +212,15 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       <View
         ref={voiceSpotlightRef}
         collapsable={false}
-        style={styles.voiceHero}
+        style={[
+          styles.voiceHero,
+          spotlightTarget === 'voice' && styles.voiceSpotlightTarget,
+          spotlightTarget === 'voice' && {
+            backgroundColor: `${noctalia.accent.base}12`,
+            borderColor: noctalia.accent.base,
+          },
+          spotlightTarget === 'voice' && shadows.xl,
+        ]}
       >
         <MicButton
           status={voiceStatus}
@@ -212,6 +230,52 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           testID={TID.Button.RecordToggle}
           accessibilityLabel={voiceLabel}
         />
+        {showVoiceHint && voiceStatus === 'idle' ? (
+          <View
+            accessibilityLiveRegion="polite"
+            style={[
+              styles.voiceHint,
+              {
+                backgroundColor: noctalia.surface.raised,
+                borderColor: noctalia.surface.borderStrong,
+              },
+            ]}
+            testID={TID.Component.RecordingVoiceHint}
+          >
+            <View
+              pointerEvents="none"
+              style={[
+                styles.voiceHintArrow,
+                {
+                  backgroundColor: noctalia.surface.raised,
+                  borderColor: noctalia.surface.borderStrong,
+                },
+              ]}
+            />
+            <Text style={[styles.voiceHintText, { color: noctalia.text.primary }]}>
+              {t('recording.onboarding.voice.body')}
+            </Text>
+            <Pressable
+              onPress={onVoiceHintDismiss}
+              hitSlop={6}
+              style={({ pressed }) => [
+                styles.voiceHintDismiss,
+                {
+                  backgroundColor: noctalia.surface.soft,
+                  borderColor: noctalia.surface.border,
+                  opacity: pressed ? 0.72 : 1,
+                },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel={t('recording.voice_hint.understood')}
+              testID={TID.Button.RecordingVoiceHintDismiss}
+            >
+              <Text style={[styles.voiceHintDismissText, { color: noctalia.text.primary }]}>
+                {t('recording.voice_hint.understood')}
+              </Text>
+            </Pressable>
+          </View>
+        ) : null}
         {recordingDurationLabel ? (
           <Text
             style={[styles.voiceCaptureDuration, { color: noctalia.accent.strong }]}
@@ -342,6 +406,57 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     paddingVertical: 2,
+  },
+  voiceSpotlightTarget: {
+    borderWidth: 2,
+    borderRadius: 28,
+    borderCurve: 'continuous',
+    paddingVertical: 8,
+  },
+  voiceHint: {
+    width: '100%',
+    maxWidth: 340,
+    minHeight: 52,
+    borderWidth: 1,
+    borderRadius: 16,
+    borderCurve: 'continuous',
+    paddingVertical: 10,
+    paddingLeft: 14,
+    paddingRight: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    position: 'relative',
+  },
+  voiceHintArrow: {
+    position: 'absolute',
+    top: -7,
+    left: '50%',
+    width: 14,
+    height: 14,
+    marginLeft: -7,
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    transform: [{ rotate: '45deg' }],
+  },
+  voiceHintText: {
+    flex: 1,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 14,
+    lineHeight: 19,
+  },
+  voiceHintDismiss: {
+    minHeight: 36,
+    borderRadius: 18,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  voiceHintDismissText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 13,
+    lineHeight: 17,
   },
   voiceCaptureDuration: {
     fontSize: 13,

@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 
 export type RecordingSpotlightRect = {
@@ -120,14 +119,16 @@ export function RecordingOnboardingSpotlightOverlay({
   targetRect: RecordingSpotlightRect | null;
   panelRect: RecordingSpotlightRect | null;
 }) {
-  const { colors, mode } = useTheme();
-  const noctalia = getNoctaliaDesignTokens(colors, mode);
+  const { mode } = useTheme();
+  const dimColor = mode === 'dark'
+    ? 'rgba(3, 4, 13, 0.42)'
+    : 'rgba(251, 250, 247, 0.40)';
 
   if (!targetRect || width <= 0 || height <= 0) {
     return null;
   }
 
-  const target = expandAndClampRect(normalizeRect(targetRect, originX, originY), 10, width, height);
+  const target = expandAndClampRect(normalizeRect(targetRect, originX, originY), 18, width, height);
   const panel = panelRect
     ? expandAndClampRect(normalizeRect(panelRect, originX, originY), 6, width, height)
     : null;
@@ -146,7 +147,7 @@ export function RecordingOnboardingSpotlightOverlay({
               top: rect.y,
               width: rect.width,
               height: rect.height,
-              backgroundColor: noctalia.surface.overlay,
+              backgroundColor: dimColor,
             },
           ]}
         />

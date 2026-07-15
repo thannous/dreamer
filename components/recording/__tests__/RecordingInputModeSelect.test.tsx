@@ -69,8 +69,8 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.preference.text': 'Écrit',
         'recording.preference.voice': 'Vocal',
         'recording.preference.selected': 'Vue actuelle',
-        'recording.preference.text_hint': 'Texte en premier',
-        'recording.preference.voice_hint': 'Micro en premier',
+        'recording.preference.text_hint': 'Si tu préfères écrire ton rêve.',
+        'recording.preference.voice_hint': 'Si tu préfères le dicter à voix haute.',
         'recording.preference.accessibility': 'Ouvrir les réglages de capture',
         'recording.preference.dismiss_accessibility': 'Fermer les réglages de capture',
       };
@@ -82,10 +82,14 @@ jest.mock('@/hooks/useTranslation', () => ({
 describe('RecordingInputModeSelect', () => {
   it('opens the preference menu and selects voice mode', () => {
     const onChange = jest.fn();
+    const onOpenChange = jest.fn();
+    const onOptionSelected = jest.fn();
 
     render(
       <RecordingInputModeSelect
         value="text"
+        onOpenChange={onOpenChange}
+        onOptionSelected={onOptionSelected}
         onChange={onChange}
       />
     );
@@ -96,12 +100,15 @@ describe('RecordingInputModeSelect', () => {
     expect(screen.getByTestId('icon.line.3.horizontal')).toBeTruthy();
 
     fireEvent.click(screen.getByTestId(TID.Button.InputModeSelect));
+    expect(onOpenChange).toHaveBeenCalledWith(true);
     expect(screen.getByText('Vue de capture')).toBeTruthy();
     expect(screen.getByText('Écrit')).toBeTruthy();
-    expect(screen.getByText('Vue actuelle')).toBeTruthy();
-    expect(screen.getByText('Micro en premier')).toBeTruthy();
+    expect(screen.getByText('Si tu préfères écrire ton rêve.')).toBeTruthy();
+    expect(screen.getByText('Si tu préfères le dicter à voix haute.')).toBeTruthy();
     fireEvent.click(screen.getByTestId(TID.Button.InputModeVoice));
 
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+    expect(onOptionSelected).toHaveBeenCalledWith('voice');
     expect(onChange).toHaveBeenCalledWith('voice');
   });
 

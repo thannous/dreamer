@@ -6,39 +6,56 @@ import { describe, expect, it, jest } from '@jest/globals';
 import { RecordingOnboardingTour } from '@/components/recording/RecordingOnboardingTour';
 import { TID } from '@/lib/testIDs';
 
-jest.mock('react-native', () => ({
-  StyleSheet: { create: (styles: Record<string, unknown>) => styles },
-  Text: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
-  View: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
-}));
+jest.mock('react-native', () => {
+  const React = require('react');
+  const View = React.forwardRef(
+    ({ children, testID }: { children?: React.ReactNode; testID?: string }, ref: React.Ref<HTMLDivElement>) => (
+      <div ref={ref} data-testid={testID}>{children}</div>
+    )
+  );
+  View.displayName = 'View';
 
-jest.mock('@/components/ui/StandardBottomSheet', () => ({
-  StandardBottomSheet: ({ visible, title, children, actions, testID }: any) => visible ? (
-    <section data-testid={testID}>
-      <h1>{title}</h1>
-      {children}
-      <button data-testid={actions.primaryTestID} onClick={actions.onPrimary}>
-        {actions.primaryLabel}
+  return {
+    Pressable: ({
+      children,
+      onPress,
+      testID,
+    }: {
+      children?: React.ReactNode | ((state: { pressed: boolean }) => React.ReactNode);
+      onPress?: () => void;
+      testID?: string;
+    }) => (
+      <button data-testid={testID} onClick={onPress}>
+        {typeof children === 'function' ? children({ pressed: false }) : children}
       </button>
-      <button data-testid={actions.linkTestID} onClick={actions.onLink}>
-        {actions.linkLabel}
-      </button>
-    </section>
-  ) : null,
-}));
+    ),
+    StyleSheet: {
+      absoluteFillObject: {},
+      create: (styles: Record<string, unknown>) => styles,
+    },
+    Text: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
+    View,
+  };
+});
 
 jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon.${name}`} />,
 }));
 
 jest.mock('@/context/ThemeContext', () => ({
-  useTheme: () => ({ colors: {}, mode: 'dark' }),
+  useTheme: () => ({ colors: {}, mode: 'dark', shadows: { xl: {} } }),
 }));
 
 jest.mock('@/constants/noctaliaDesign', () => ({
   getNoctaliaDesignTokens: () => ({
-    accent: { base: '#ddb070' },
-    surface: { soft: '#18182a', border: '#5a4b3d' },
+    accent: { base: '#ddb070', soft: '#efd3a8' },
+    action: { primary: '#ddb070', primaryText: '#171322' },
+    surface: {
+      raised: '#1f2847',
+      soft: '#18182a',
+      border: '#5a4b3d',
+      borderStrong: '#886f54',
+    },
     text: { primary: '#fff', secondary: '#ccc' },
   }),
 }));
@@ -50,10 +67,10 @@ jest.mock('@/constants/theme', () => ({
 jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string, params?: Record<string, number>) => ({
-      'recording.guide.title': 'Guide de capture',
-      'recording.guide.step_mode': 'Choisis Écrit ou Vocal avec le sélecteur de mode.',
-      'recording.guide.step_control': 'Utilise ensuite le champ ou le micro.',
-      'recording.guide.next': 'Suivant',
+      'recording.guide.step_mode': 'Appuie sur le sélecteur de mode.',
+      'recording.guide.step_modes': 'Choisis la façon dont tu préfères raconter ton rêve.',
+      'recording.guide.step_control_text': 'Appuie dans le champ mis en évidence.',
+      'recording.guide.step_control_voice': 'Appuie sur le micro mis en évidence.',
       'recording.guide.done': 'Terminer',
       'recording.guide.dismiss': 'Fermer le guide',
       'recording.onboarding.step_count': `Étape ${params?.current}/${params?.total}`,
@@ -61,54 +78,52 @@ jest.mock('@/hooks/useTranslation', () => ({
   }),
 }));
 
+const defaultProps = {
+  bottomOffset: 80,
+  inputMode: 'text' as const,
+  onDone: jest.fn(),
+  onDismiss: jest.fn(),
+};
+
 describe('RecordingOnboardingTour', () => {
-  it('shows only the mode cue first and advances', () => {
-    const onNext = jest.fn();
-    render(
-      <RecordingOnboardingTour
-        visible
-        step={0}
-        inputMode="text"
-        onNext={onNext}
-        onDismiss={jest.fn()}
-      />
-    );
+  it('guides the user to the mode selector first', () => {
+    render(<RecordingOnboardingTour {...defaultProps} step={0} />);
 
     expect(screen.getByTestId(TID.Component.RecordingOnboardingTour)).toBeTruthy();
-    expect(screen.getByText('Étape 1/2')).toBeTruthy();
-    expect(screen.getByText('Choisis Écrit ou Vocal avec le sélecteur de mode.')).toBeTruthy();
-    fireEvent.click(screen.getByTestId(TID.Button.RecordingOnboardingNext));
-    expect(onNext).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('Étape 1/3')).toBeTruthy();
+    expect(screen.getByText('Appuie sur le sélecteur de mode.')).toBeTruthy();
+    expect(screen.queryByText('Terminer')).toBeNull();
   });
 
-  it('uses the active control and done label on the second cue', () => {
+  it('keeps the second step focused on choosing a mode', () => {
+    render(<RecordingOnboardingTour {...defaultProps} step={1} />);
+
+    expect(screen.getByText('Étape 2/3')).toBeTruthy();
+    expect(screen.getByText('Choisis la façon dont tu préfères raconter ton rêve.')).toBeTruthy();
+  });
+
+  it('highlights the active control and finishes from the third step', () => {
+    const onDone = jest.fn();
     render(
       <RecordingOnboardingTour
-        visible
-        step={1}
+        {...defaultProps}
+        step={2}
         inputMode="voice"
-        onNext={jest.fn()}
-        onDismiss={jest.fn()}
+        onDone={onDone}
       />
     );
 
     expect(screen.getByTestId('icon.mic')).toBeTruthy();
-    expect(screen.getByText('Étape 2/2')).toBeTruthy();
-    expect(screen.getByText('Utilise ensuite le champ ou le micro.')).toBeTruthy();
-    expect(screen.getByText('Terminer')).toBeTruthy();
+    expect(screen.getByText('Étape 3/3')).toBeTruthy();
+    expect(screen.getByText('Appuie sur le micro mis en évidence.')).toBeTruthy();
+    fireEvent.click(screen.getByTestId(TID.Button.RecordingOnboardingNext));
+    expect(onDone).toHaveBeenCalledTimes(1);
   });
 
-  it('can be dismissed without changing capture preferences', () => {
+  it('can be dismissed at any step', () => {
     const onDismiss = jest.fn();
-    render(
-      <RecordingOnboardingTour
-        visible
-        step={0}
-        inputMode="text"
-        onNext={jest.fn()}
-        onDismiss={onDismiss}
-      />
-    );
+    render(<RecordingOnboardingTour {...defaultProps} step={2} onDismiss={onDismiss} />);
+
     fireEvent.click(screen.getByTestId(TID.Button.RecordingOnboardingSkip));
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });

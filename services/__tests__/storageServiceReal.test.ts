@@ -18,6 +18,7 @@ const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
 const RECORDING_INPUT_MODE_PREFERENCE_KEY = 'gemini_dream_journal_recording_input_mode_preference';
 const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
 const RECORDING_ONBOARDING_COMPLETED_KEY = 'gemini_dream_journal_recording_onboarding_completed';
+const RECORDING_VOICE_HINT_COMPLETED_KEY = 'gemini_dream_journal_recording_voice_hint_completed_v1';
 const REMEMBERED_DREAM_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_remembered_dream_prompt_dismissed';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
@@ -387,6 +388,8 @@ describe('storageServiceReal', () => {
 
       await storage.saveRecordingInputModePreference('voice', 'guest');
       await storage.saveRecordingInputModePreference('text', 'user:one');
+      await storage.saveRecordingVoiceHintCompleted(true, 'guest');
+      await storage.saveRecordingVoiceHintCompleted(false, 'user:one');
       await storage.saveOnboardingStateSnapshot('guest', '{"status":"in_progress"}');
       await storage.saveOnboardingStateSnapshot('user:one', '{"status":"completed"}');
       await storage.saveOnboardingGuestClaimedBy('one');
@@ -396,6 +399,11 @@ describe('storageServiceReal', () => {
       ).toBe(JSON.stringify('voice'));
       expect(await storage.getRecordingInputModePreference('guest')).toBe('voice');
       expect(await storage.getRecordingInputModePreference('user:one')).toBe('text');
+      expect(await storage.getRecordingVoiceHintCompleted('guest')).toBe(true);
+      expect(await storage.getRecordingVoiceHintCompleted('user:one')).toBe(false);
+      expect(
+        localStorage.getItem(`${RECORDING_VOICE_HINT_COMPLETED_KEY}:guest`)
+      ).toBe(JSON.stringify(true));
       expect(await storage.getOnboardingStateSnapshot('guest')).toBe('{"status":"in_progress"}');
       expect(await storage.getOnboardingStateSnapshot('user:one')).toBe('{"status":"completed"}');
       expect(await storage.getOnboardingGuestClaimedBy()).toBe('one');
