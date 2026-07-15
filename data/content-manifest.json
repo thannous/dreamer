@@ -264,6 +264,34 @@
             }
           }
         },
+        "blog.dream-emotion-regulation-study": {
+          "id": "blog.dream-emotion-regulation-study",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dreams-emotion-regulation-study-2026",
+          "locales": {
+            "en": {
+              "slug": "dreams-emotion-regulation-study-2026",
+              "path": "/en/blog/dreams-emotion-regulation-study-2026"
+            },
+            "fr": {
+              "slug": "reves-regulation-emotions-etude-2026",
+              "path": "/fr/blog/reves-regulation-emotions-etude-2026"
+            },
+            "es": {
+              "slug": "suenos-regulacion-emociones-estudio-2026",
+              "path": "/es/blog/suenos-regulacion-emociones-estudio-2026"
+            },
+            "de": {
+              "slug": "traeume-emotionsregulation-studie-2026",
+              "path": "/de/blog/traeume-emotionsregulation-studie-2026"
+            },
+            "it": {
+              "slug": "sogni-regolazione-emozioni-studio-2026",
+              "path": "/it/blog/sogni-regolazione-emozioni-studio-2026"
+            }
+          }
+        },
         "blog.dream-incubation-guide": {
           "id": "blog.dream-incubation-guide",
           "type": "blogArticle",
