@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -8,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useQuota } from '@/hooks/useQuota';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useTranslation } from '@/hooks/useTranslation';
 import { getExpoPublicEnvValue, isMockModeEnabled } from '@/lib/env';
 import { router } from 'expo-router';
 import { signInMock, signOut, updateUserTier } from '@/lib/auth';
@@ -84,8 +86,13 @@ function actionStatusDetail(status: SubscriptionStatus, appUserId?: string | nul
   return `${statusLabel(status)} | product ${status.productId ?? 'none'} | renews ${renews}${userEvidence}`;
 }
 
-export function SubscriptionQALab() {
+type SubscriptionQALabProps = {
+  presentation?: 'card' | 'embedded';
+};
+
+export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabProps) {
   const { colors, mode } = useTheme();
+  const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { user, setUserTierLocally, refreshUser } = useAuth();
   const {
@@ -105,6 +112,7 @@ export function SubscriptionQALab() {
     label: 'Ready',
     kind: 'idle',
   });
+  const [isExpanded, setIsExpanded] = useState(presentation === 'card');
 
   const isMockMode = isMockModeEnabled();
   const androidKey = getExpoPublicEnvValue('EXPO_PUBLIC_REVENUECAT_ANDROID_KEY');
@@ -113,6 +121,8 @@ export function SubscriptionQALab() {
   const monthlyPackage = sortedPackages.find((pkg) => pkg.interval === 'monthly');
   const annualPackage = sortedPackages.find((pkg) => pkg.interval === 'annual');
   const isBusy = loading || processing || refreshing || quotaLoading;
+  const isEmbedded = presentation === 'embedded';
+  const showsContent = !isEmbedded || isExpanded;
 
   const productValue = status?.productId ?? 'none';
   const expiryValue = formatDate(status?.expiryDate);
@@ -127,6 +137,24 @@ export function SubscriptionQALab() {
   const quotaValue = quotaStatus
     ? `${quotaStatus.usage.analysis.limit === null ? 'unlimited' : quotaStatus.usage.analysis.remaining} analysis left`
     : 'not loaded';
+  const profileFromMetadata = user?.user_metadata?.profile;
+  const selectedProfile: ProfileScenario | undefined = !user
+    ? 'guest'
+    : profileFromMetadata === 'new' || profileFromMetadata === 'existing' || profileFromMetadata === 'plus'
+      ? profileFromMetadata
+      : tier === 'plus'
+        ? 'plus'
+        : undefined;
+  const selectedMockScenario: MockSubscriptionScenario | undefined = useMemo(() => {
+    if (!status) return undefined;
+    if (status.isActive && status.willRenew === false) return 'cancelled';
+    if (!status.isActive && status.productId && status.willRenew === false) return 'expired';
+    if (status.isActive && status.productId === 'mock_annual') return 'annual';
+    if (status.isActive && status.productId === 'mock_monthly') return 'monthly';
+    if (!status.isActive && !status.productId) return 'free';
+    return undefined;
+  }, [status]);
+  const qaTitle = `${t('settings.section.subscription')} · QA`;
 
   const syncLocalStatus = useCallback(async (nextStatus: SubscriptionStatus) => {
     await updateUserTier(nextStatus.tier);
@@ -315,20 +343,52 @@ export function SubscriptionQALab() {
     <View
       style={[
         styles.card,
-        { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
+        presentation === 'embedded'
+          ? styles.embedded
+          : { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
       ]}
       testID={TID.Screen.SubscriptionQALab}
     >
-      <View style={styles.headerRow}>
+      <Pressable
+        accessible={isEmbedded}
+        accessibilityRole={isEmbedded ? 'button' : undefined}
+        accessibilityLabel={isEmbedded ? qaTitle : undefined}
+        accessibilityState={isEmbedded ? { expanded: isExpanded } : undefined}
+        disabled={!isEmbedded}
+        onPress={isEmbedded ? () => setIsExpanded((current) => !current) : undefined}
+        style={({ pressed }) => [
+          styles.headerRow,
+          isEmbedded && styles.embeddedHeader,
+          pressed && isEmbedded && styles.headerPressed,
+        ]}
+        testID={isEmbedded ? `${TID.Screen.SubscriptionQALab}.toggle` : undefined}
+      >
         <View style={styles.headerText}>
           <Text style={[styles.eyebrow, { color: noctalia.accent.base }]}>RevenueCat QA</Text>
-          <Text style={[styles.title, { color: noctalia.text.primary }]}>Subscription QA Lab</Text>
-          <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
-            Visualize identity, package loading, RevenueCat state and quota convergence in one place.
-          </Text>
+          <Text style={[styles.title, { color: noctalia.text.primary }]}>{qaTitle}</Text>
+          {showsContent ? (
+            <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
+              Visualize identity, package loading, RevenueCat state and quota convergence in one place.
+            </Text>
+          ) : null}
         </View>
         {isBusy ? <ActivityIndicator color={noctalia.accent.base} /> : null}
-      </View>
+        {isEmbedded && !isBusy ? (
+          <View
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+          >
+            <IconSymbol
+              color={noctalia.text.secondary}
+              name={isExpanded ? 'chevron.up' : 'chevron.down'}
+              size={24}
+            />
+          </View>
+        ) : null}
+      </Pressable>
+
+      {showsContent ? (
+        <>
 
       <View style={styles.statusGrid} testID={qaStateId} collapsable={false}>
         <StatusCell
@@ -400,9 +460,18 @@ export function SubscriptionQALab() {
           {PROFILE_SCENARIOS.map((item) => (
             <QaButton
               key={item.id}
-              label={item.label}
-              hint={item.hint}
+              label={
+                item.id === 'guest'
+                  ? t('settings.quota.tier.guest')
+                  : t(`settings.account.mock.profile.${item.id}`)
+              }
+              hint={
+                item.id === 'guest'
+                  ? item.hint
+                  : t(`settings.account.mock.profile.${item.id}_hint`)
+              }
               disabled={isBusy}
+              selected={selectedProfile === item.id}
               onPress={() => void handleProfile(item.id)}
               testID={TID.Button.SubscriptionQaProfile(item.id)}
             />
@@ -418,6 +487,7 @@ export function SubscriptionQALab() {
               label={item.label}
               hint={item.hint}
               disabled={isBusy || !user}
+              selected={selectedMockScenario === item.id}
               onPress={() => void handleMockScenario(item.id)}
               testID={TID.Button.SubscriptionQaScenario(item.id)}
             />
@@ -491,6 +561,8 @@ export function SubscriptionQALab() {
         <Text style={[styles.noticeTitle, { color: noctalia.accent.base }]}>Snapshot</Text>
         <Text style={[styles.noticeText, { color: noctalia.text.secondary }]}>{snapshotValue}</Text>
       </View>
+        </>
+      ) : null}
     </View>
   );
 }
@@ -523,12 +595,14 @@ function QaButton({
   label,
   hint,
   disabled,
+  selected,
   onPress,
   testID,
 }: {
   label: string;
   hint?: string;
   disabled?: boolean;
+  selected?: boolean;
   onPress: () => void;
   testID?: string;
 }) {
@@ -537,12 +611,16 @@ function QaButton({
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityHint={hint}
+      accessibilityState={{ disabled: Boolean(disabled), selected: Boolean(selected) }}
       disabled={disabled}
       onPress={onPress}
       testID={testID}
       style={({ pressed }) => [
         styles.qaButton,
         { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border },
+        selected && { backgroundColor: noctalia.surface.active, borderColor: noctalia.accent.base },
         pressed && !disabled && styles.qaButtonPressed,
         disabled && styles.qaButtonDisabled,
       ]}
@@ -560,6 +638,16 @@ const styles = StyleSheet.create({
     gap: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
     padding: ThemeLayout.spacing.md,
+    width: '100%',
+    maxWidth: '100%',
+  },
+  embedded: {
+    backgroundColor: 'transparent',
+    borderRadius: 0,
+    borderWidth: 0,
+    marginBottom: 0,
+    padding: 0,
+    gap: ThemeLayout.spacing.sm,
   },
   headerRow: {
     alignItems: 'flex-start',
@@ -570,6 +658,15 @@ const styles = StyleSheet.create({
   headerText: {
     flex: 1,
     minWidth: 0,
+  },
+  embeddedHeader: {
+    borderRadius: ThemeLayout.borderRadius.md,
+    minHeight: 52,
+    paddingHorizontal: ThemeLayout.spacing.sm,
+    paddingVertical: 8,
+  },
+  headerPressed: {
+    opacity: 0.75,
   },
   eyebrow: {
     fontFamily: Fonts.spaceGrotesk.bold,
@@ -594,11 +691,12 @@ const styles = StyleSheet.create({
   },
   statusCell: {
     borderRadius: ThemeLayout.borderRadius.md,
+    flexBasis: '47%',
+    flexGrow: 1,
     minHeight: 58,
-    minWidth: 132,
+    minWidth: 0,
     paddingHorizontal: 10,
     paddingVertical: 8,
-    width: '48%',
   },
   statusLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
@@ -641,8 +739,10 @@ const styles = StyleSheet.create({
   qaButton: {
     borderRadius: ThemeLayout.borderRadius.md,
     borderWidth: 1,
+    flexBasis: '47%',
+    flexGrow: 1,
     minHeight: 54,
-    minWidth: 112,
+    minWidth: 0,
     paddingHorizontal: 12,
     paddingVertical: 9,
   },
