@@ -1,6 +1,7 @@
 import {
   ApiError,
   GEMINI_FLASH_IMAGE_MODEL,
+  GEMINI_FLASH_LITE_MODEL,
   GEMINI_FLASH_LITE_IMAGE_MODEL,
   requestGeminiGenerateContent,
 } from './gemini.ts';
@@ -17,9 +18,28 @@ const RETIRED_IMAGE_MODELS = new Set([
   'gemini-3-pro-image-preview',
 ]);
 
+const RETIRED_IMAGE_PROMPT_MODELS = new Set([
+  'gemini-3.1-flash-lite-preview',
+  'gemini-2.5-flash-lite-preview-09-2025',
+  'gemini-2.0-flash-lite',
+  'gemini-2.0-flash-lite-001',
+  'gemini-2.0-flash-lite-preview',
+  'gemini-2.0-flash-lite-preview-02-05',
+]);
+
 const readModelOverride = (readEnv: EnvReader, name: string): string | null => {
   const value = readEnv(name)?.trim();
   return value && !RETIRED_IMAGE_MODELS.has(value) ? value : null;
+};
+
+export const resolveImagePromptModel = (
+  readEnv: EnvReader = readDenoEnv
+): string => {
+  const configuredModel = readEnv('GEMINI_LITE_MODEL')?.trim();
+  if (!configuredModel || RETIRED_IMAGE_PROMPT_MODELS.has(configuredModel)) {
+    return GEMINI_FLASH_LITE_MODEL;
+  }
+  return configuredModel;
 };
 
 /**
