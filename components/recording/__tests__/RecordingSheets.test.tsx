@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, jest } from '@jest/globals';
 
 import { RecordingActivationInsightCard } from '@/components/recording/RecordingActivationInsightCard';
@@ -165,7 +165,7 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.analysis_offer.retry': 'Try again',
         'recording.analysis_offer.error': 'The analysis could not start. Your dream is still saved.',
         'recording.memory_offer.title': 'Memory saved',
-        'recording.memory_offer.subtitle': 'Your memory is in the journal.',
+        'recording.memory_offer.subtitle': 'Your memory is in the journal. You can analyze it now.',
         'recording.memory_offer.view': 'View my memory',
         'recording.memory_offer.analyze': 'Analyze it',
         'recording.memory_offer.later': 'Later',
@@ -183,6 +183,7 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.analysis_limit.cta_guest': 'Create free account',
         'recording.analysis_limit.journal': 'Open journal',
         'recording.analysis_limit.dismiss': 'Later',
+        'settings.account.mock.reset': 'Reset test state',
         'recording.remembered.default_title': 'Dream memory',
         'recording.activation_insight.eyebrow': 'First read',
         'recording.activation_insight.summary.memory': 'This memory is saved as a remembered dream.',
@@ -346,7 +347,8 @@ describe('RecordingSheets', () => {
     expect(onPrimary).toHaveBeenCalledTimes(1);
   });
 
-  it('keeps a remembered dream journal-first', () => {
+  it('makes analysis the only primary next step for a saved memory', () => {
+    const onPrimary = jest.fn();
     render(
       <PostSaveOfferSheet
         visible
@@ -355,14 +357,23 @@ describe('RecordingSheets', () => {
         primaryAction="launch"
         isPersisting={false}
         onDismiss={noop}
-        onPrimary={noop}
+        onPrimary={onPrimary}
         onJournal={noop}
+        activationInsight={{
+          tone: 'memory',
+          signalIds: ['memory'],
+          charCount: 24,
+        }}
       />
     );
 
     expect(screen.getByText('Memory saved')).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.AnalysisOfferPrimary).textContent).toBe('View my memory');
-    expect(screen.getByTestId(TID.Button.AnalysisOfferJournal).textContent).toBe('Analyze it');
+    expect(screen.getByText('Your memory is in the journal. You can analyze it now.')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.AnalysisOfferPrimary).textContent).toBe('Analyze it');
+    expect(screen.queryByTestId(TID.Button.AnalysisOfferJournal)).toBeNull();
+    expect(screen.queryByTestId(TID.Component.RecordingActivationInsight)).toBeNull();
+    screen.getByTestId(TID.Button.AnalysisOfferPrimary).click();
+    expect(onPrimary).toHaveBeenCalledTimes(1);
   });
 
   it('announces a recoverable analysis error and keeps retry available', () => {
@@ -455,5 +466,28 @@ describe('RecordingSheets', () => {
     expect(screen.getByText(
       'The 2 guest analyses are free. Your text stays here; the free account simply saves it and lets you continue.'
     )).toBeTruthy();
+  });
+
+  it('offers a direct quota reset action when mock reset is available', () => {
+    const onReset = jest.fn();
+
+    render(
+      <QuotaLimitSheet
+        visible
+        onClose={noop}
+        onPrimary={noop}
+        onSecondary={noop}
+        onReset={onReset}
+        onLink={noop}
+        mode="limit"
+        tier="guest"
+        usageLimit={2}
+      />
+    );
+
+    fireEvent.click(screen.getByTestId(TID.Button.QuotaLimitResetMock));
+
+    expect(onReset).toHaveBeenCalledTimes(1);
+    expect(screen.queryByTestId(TID.Button.QuotaLimitJournal)).toBeNull();
   });
 });
