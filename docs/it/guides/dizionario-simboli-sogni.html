@@ -48,8 +48,8 @@
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Compiled Tailwind CSS -->
-    <link rel="stylesheet" href="/css/styles.min.css?v=20260715-100211">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=20260715-100211">
+    <link rel="stylesheet" href="/css/styles.min.css?v=664dbf68d85d">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=664dbf68d85d">
     <style>
       /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
@@ -125,7 +125,7 @@
             left: 50%;
             transform: translate(-50%, -0.35rem);
             z-index: 45;
-            width: min(calc(100vw - 2rem), 58rem);
+            width: min(calc(100vw - 2rem), 72rem);
             display: none;
             opacity: 0;
             pointer-events: none;
@@ -148,7 +148,8 @@
             touch-action: manipulation;
         }
         #stickyBar .sb-search { position: relative; flex-shrink: 0; width: min(17rem, 34vw); }
-        #stickyBar .sb-alpha { display: flex; flex-wrap: nowrap; gap: 3px; justify-content: center; align-items: center; flex: 1; min-width: 0; overflow: hidden; }
+        #stickyBar .sb-alpha { display: flex; flex-wrap: nowrap; gap: 3px; justify-content: flex-start; align-items: center; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+        #stickyBar .sb-alpha::-webkit-scrollbar { display: none; }
         #stickyBar .letter-link {
           min-width: 1.7rem;
           min-height: 1.7rem;
@@ -193,29 +194,80 @@
           color: #fff;
         }
         .search-clear[hidden] { display: none !important; }
+        #backToTop {
+          min-width: 2.75rem;
+          min-height: 2.75rem;
+          align-items: center;
+          justify-content: center;
+        }
+        body.mobile-menu-lock { overflow: hidden; touch-action: none; }
         /* Hero search */
         .hero-search:focus { outline: none; border-color: #FDA481; }
+        .hero-search:focus-visible,
+        .search-input:focus-visible,
+        .mobile-alpha-link:focus-visible,
+        .letter-link:focus-visible,
+        .category-browse-card:focus-visible,
+        .dictionary-store-cta:focus-visible,
+        .dictionary-details-cta:focus-visible,
+        #backToTop:focus-visible {
+            outline: 2px solid #FDA481;
+            outline-offset: 2px;
+        }
         @media (max-width: 767px) {
             #stickyBar {
                 width: calc(100vw - 1rem);
                 top: var(--sticky-bar-top, 4.8rem);
-                padding: 0.62rem !important;
+                padding: 0.5rem !important;
                 border-radius: 1rem !important;
             }
             #stickyBar .sb-inner {
                 flex-wrap: wrap;
-                gap: 0.75rem;
+                gap: 0.45rem;
             }
             #stickyBar .sb-search {
-                width: 100%;
+                width: auto;
+                min-width: 0;
+                flex: 1 1 12rem;
+            }
+            #stickyBar .search-input {
+                min-height: 2.75rem;
+            }
+            #stickyBar .search-clear {
+                right: 0;
+                width: 2.75rem;
+                height: 2.75rem;
             }
             #stickyBar .sb-alpha {
-                flex-wrap: wrap;
-                overflow: visible;
+                display: flex;
+                order: 4;
+                flex: 1 0 100%;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding: 0.25rem 0 0.15rem;
+                scrollbar-width: none;
+            }
+            #stickyBar .letter-link {
+                min-width: 2.75rem;
+                min-height: 2.75rem;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex: 0 0 2.75rem;
+            }
+            #stickyBar .sb-alpha::-webkit-scrollbar {
+                display: none;
             }
             .sticky-status {
-                width: 100%;
-                order: 3;
+                display: none !important;
+            }
+            #mobileMenuButton,
+            #navMobileGuideLink {
+                min-width: 2.75rem;
+                min-height: 2.75rem;
+                align-items: center;
+                justify-content: center;
             }
         }
         @media (max-width: 1100px) {
@@ -451,6 +503,149 @@
           flex: 0 0 3.7rem;
           border: 1px solid rgba(255,255,255,0.12);
           background: rgba(12,7,25,0.74);
+        }
+        .dictionary-conversion-links a {
+          color: #fda481;
+          text-decoration: underline;
+          text-decoration-color: rgba(253,164,129,0.35);
+          text-underline-offset: 0.2em;
+        }
+        .dictionary-conversion-links a:hover {
+          color: #fff7f0;
+          text-decoration-color: rgba(255,247,240,0.65);
+        }
+        .dictionary-discovery-only[hidden],
+        #dictionary-grid[hidden] {
+          display: none !important;
+        }
+        .dictionary-conversion {
+          box-sizing: border-box;
+          width: calc(100% - (var(--dictionary-edge) * 2));
+          margin: 1.15rem var(--dictionary-edge) 1.8rem;
+          padding: clamp(1.25rem, 2.4vw, 2rem);
+          display: grid;
+          grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
+          gap: 1.4rem clamp(1.2rem, 3vw, 2.8rem);
+          border: 1px solid rgba(253,164,129,0.22);
+          border-radius: 1.35rem;
+          background:
+            radial-gradient(circle at 88% 12%, rgba(253,164,129,0.12), transparent 28rem),
+            linear-gradient(145deg, rgba(27,13,43,0.96), rgba(12,7,25,0.9));
+          box-shadow: 0 1.4rem 3.5rem rgba(0,0,0,0.2);
+        }
+        .dictionary-conversion-copy h2 {
+          margin: 0.45rem 0 0.75rem;
+          max-width: 17ch;
+          color: #fff7f0;
+          font-family: Georgia, 'Times New Roman', serif;
+          font-size: clamp(1.7rem, 2.4vw, 2.45rem);
+          line-height: 1.02;
+        }
+        .dictionary-conversion-copy > p:not(.dictionary-platform-note) {
+          max-width: 35rem;
+          margin: 0;
+          color: rgba(226,218,255,0.8);
+          line-height: 1.55;
+        }
+        .dictionary-conversion-kicker {
+          color: #fda481;
+          font-size: 0.72rem;
+          font-weight: 800;
+          letter-spacing: 0.11em;
+          text-transform: uppercase;
+        }
+        .dictionary-conversion-actions {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 0.65rem;
+          margin-top: 1.2rem;
+        }
+        .dictionary-store-cta,
+        .dictionary-details-cta {
+          min-height: 2.75rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding: 0.72rem 1rem;
+          border-radius: 9999px;
+          font-size: 0.9rem;
+          font-weight: 800;
+          line-height: 1.2;
+          text-decoration: none;
+        }
+        .dictionary-store-cta {
+          color: #0a0514;
+          background: #fda481;
+        }
+        .dictionary-store-cta:hover { background: #ffb89b; }
+        .dictionary-details-cta {
+          color: #fff7f0;
+          border: 1px solid rgba(255,255,255,0.16);
+          background: rgba(255,255,255,0.05);
+        }
+        .dictionary-details-cta:hover {
+          border-color: rgba(253,164,129,0.42);
+          background: rgba(253,164,129,0.08);
+        }
+        .dictionary-platform-note {
+          margin: 0.75rem 0 0 !important;
+          color: rgba(196,181,253,0.72) !important;
+          font-size: 0.76rem;
+          line-height: 1.4;
+        }
+        .dictionary-primary-benefit { display: none; }
+        .dictionary-proof-list {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 0.7rem;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+        .dictionary-proof-item {
+          min-width: 0;
+          display: flex;
+          align-items: flex-start;
+          gap: 0.7rem;
+          padding: 0.85rem;
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 0.9rem;
+          background: rgba(255,255,255,0.035);
+        }
+        .dictionary-proof-icon {
+          width: 2.3rem;
+          height: 2.3rem;
+          flex: 0 0 2.3rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 9999px;
+          color: #fda481;
+          background: rgba(253,164,129,0.1);
+        }
+        .dictionary-proof-item strong {
+          display: block;
+          color: #fff7f0;
+          font-size: 0.88rem;
+          line-height: 1.25;
+        }
+        .dictionary-proof-item strong + span {
+          display: block;
+          margin-top: 0.3rem;
+          color: rgba(226,218,255,0.7);
+          font-size: 0.76rem;
+          line-height: 1.45;
+        }
+        .dictionary-conversion-links {
+          grid-column: 1 / -1;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.65rem 1.2rem;
+          padding-top: 0.9rem;
+          border-top: 1px solid rgba(255,255,255,0.08);
+          font-size: 0.8rem;
         }
         .quick-browse-panel {
           position: relative;
@@ -933,6 +1128,89 @@
             height: 3.35rem;
             flex-basis: 3.35rem;
           }
+          .dictionary-conversion {
+            grid-template-columns: 1fr;
+            gap: 0.55rem;
+            margin-top: 1rem;
+            padding: 0.9rem;
+          }
+          .dictionary-conversion-kicker { display: none; }
+          .dictionary-conversion-copy h2 {
+            margin-top: 0;
+            max-width: none;
+            font-size: 1.55rem;
+            line-height: 1.08;
+          }
+          .dictionary-conversion-copy > p:not(.dictionary-platform-note):not(.dictionary-primary-benefit) {
+            font-size: 0.88rem;
+            line-height: 1.45;
+          }
+          .dictionary-primary-benefit {
+            min-height: 2.75rem;
+            margin: 0.75rem 0 0 !important;
+            padding: 0.55rem 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border: 1px solid rgba(253,164,129,0.2);
+            border-radius: 0.85rem;
+            color: #fff7f0 !important;
+            background: rgba(253,164,129,0.07);
+          }
+          .dictionary-primary-benefit > span:last-child {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.1rem 0.35rem;
+            align-items: baseline;
+          }
+          .dictionary-primary-benefit strong {
+            font-size: 0.82rem;
+            line-height: 1.2;
+          }
+          .dictionary-primary-benefit strong + span {
+            color: rgba(226,218,255,0.72);
+            font-size: 0.72rem;
+            line-height: 1.2;
+          }
+          .dictionary-conversion-actions {
+            align-items: stretch;
+            margin-top: 0.75rem;
+          }
+          .dictionary-store-cta,
+          .dictionary-details-cta {
+            width: 100%;
+          }
+          .dictionary-details-cta { display: none; }
+          .dictionary-platform-note {
+            margin-top: 0.55rem !important;
+            font-size: 0.7rem;
+          }
+          .dictionary-proof-list {
+            grid-template-columns: 1fr;
+            gap: 0.35rem;
+          }
+          .dictionary-proof-list > :first-child { display: none; }
+          .dictionary-proof-item {
+            min-height: 2.75rem;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 0.65rem;
+          }
+          .dictionary-proof-icon {
+            width: 2rem;
+            height: 2rem;
+            flex-basis: 2rem;
+          }
+          .dictionary-proof-item strong + span {
+            display: none;
+          }
+          .dictionary-conversion-links {
+            grid-column: 1;
+            padding-top: 0.65rem;
+          }
+          .dictionary-conversion-links > :first-child {
+            display: none;
+          }
           .quick-browse-alpha {
             gap: 0.28rem;
           }
@@ -954,25 +1232,43 @@
             margin-left: 1rem;
             margin-right: 1rem;
           }
-          #symbolsList > section > .grid { grid-template-columns: 1fr; }
-          .quick-browse-panel {
-            padding: 1rem;
+          #categoryGridSection {
+            width: 100%;
+            margin: 0.35rem 0 0.75rem;
+            padding: 0.35rem 1rem 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
           }
+          #symbolsList > section > .grid { grid-template-columns: 1fr; }
+          #symbolsList {
+            padding-left: 0;
+            padding-right: 0;
+          }
+          #symbolsList > section > h2 {
+            margin-left: var(--dictionary-edge);
+            margin-right: var(--dictionary-edge);
+          }
+          .quick-browse-panel { padding: 0.75rem; }
+          #categoryGridSection { padding: 0.35rem 1rem 0; }
           .quick-browse-alpha {
             display: none;
           }
           .quick-browse-copy {
-            margin-bottom: 0.85rem;
+            margin-bottom: 0.55rem;
           }
           .quick-browse-copy h2 {
-            font-size: 1.35rem;
+            gap: 0.5rem;
+            font-size: 1.1rem;
           }
           .quick-browse-copy p {
             display: none;
           }
           .category-browse-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.4rem;
             margin-left: 0;
             margin-right: 0;
             padding: 0;
@@ -988,61 +1284,147 @@
           .category-browse-card {
             flex-basis: auto;
             min-width: 0;
-            min-height: 3.1rem;
-            padding: 0.52rem 0.64rem;
+            min-height: 2.75rem;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.12rem;
+            padding: 0.18rem 0.12rem;
+            text-align: center;
           }
           .category-browse-icon {
-            width: 2.8rem;
-            height: 2.8rem;
+            position: static;
+            display: inline-flex;
+            width: 0.9rem;
+            height: 0.9rem;
+            flex: 0 0 0.9rem;
+            border-radius: 0;
+            background: transparent;
+            opacity: 0.86;
+            transform: none;
           }
           .category-browse-icon .w-5 {
-            width: 1.15rem;
-            height: 1.15rem;
+            width: 0.78rem;
+            height: 0.78rem;
+          }
+          .category-browse-count { display: none; }
+          .category-browse-meta {
+            width: 100%;
+            align-items: center;
           }
           .category-browse-title {
-            font-size: 0.95rem;
+            font-family: inherit;
+            max-width: 100%;
+            overflow: hidden;
+            font-size: 0.72rem;
+            line-height: 1;
+            white-space: nowrap;
+            text-overflow: ellipsis;
           }
-          .category-browse-count {
-            font-size: 0.66rem;
+          #mobileAlpha {
+            box-sizing: border-box;
+            display: flex !important;
+            width: calc(100% - 2rem);
+            margin: 0.1rem 1rem 0.75rem;
+            padding: 0.25rem;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            gap: 0.2rem;
+            overflow-x: auto;
+            overscroll-behavior-inline: contain;
+            scroll-snap-type: x proximity;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
           }
-          #mobileAlpha { display: none !important; }
+          #mobileAlpha::-webkit-scrollbar { display: none; }
+          .mobile-alpha-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 2.75rem;
+            min-width: 2.75rem;
+            min-height: 2.75rem;
+            padding: 0;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.045);
+            scroll-snap-align: start;
+          }
           #searchFeedback:not([hidden]) { display: flex !important; }
-          body.dictionary-search-active #stickyBar,
           body.dictionary-search-active #mobileAlpha {
             display: none !important;
           }
+          body.dictionary-search-active #navbar,
+          body.dictionary-search-active .dictionary-shell > nav[aria-label="Breadcrumb"],
+          body.dictionary-search-active .dictionary-header {
+            display: none !important;
+          }
+          body.dictionary-search-active #stickyBar {
+            display: block !important;
+            opacity: 1;
+            transform: translate(-50%, 0);
+          }
+          body.dictionary-search-active .dictionary-main {
+            padding-top: calc(var(--dictionary-scroll-offset, 9rem) + 0.5rem) !important;
+          }
           .symbol-card {
+            display: flow-root;
             min-height: 0;
-            display: flex;
-            flex-direction: column;
+            padding: 1rem;
+          }
+          .symbol-card-top {
+            display: none;
+          }
+          .symbol-card-image-layer {
+            position: relative;
+            inset: auto;
+            float: left;
+            width: min(50%, 9.5rem);
+            height: auto;
+            aspect-ratio: 1 / 1;
+            margin: -0.2rem 0.8rem 0.3rem -0.35rem;
+            overflow: visible;
+            shape-outside: inset(0 5% 0 0 round 8%);
+            z-index: 0;
           }
           .symbol-card-image {
-            width: min(48%, 11rem);
-            opacity: 0.5;
-            background-image:
-              linear-gradient(90deg, rgba(5,2,10,0), rgba(5,2,10,0.52)),
-              url('/img/symbols/dream-symbol-atlas-v2-mobile.webp');
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 1 / 1;
+            opacity: 0.7;
+            transform: scale(1.06);
+            transform-origin: center;
+            filter: saturate(1.08) contrast(1.02) brightness(1.14);
+            -webkit-mask-image: radial-gradient(circle at 45% 45%, #000 0 42%, rgba(0,0,0,0.9) 56%, transparent 78%);
+            mask-image: radial-gradient(circle at 45% 45%, #000 0 42%, rgba(0,0,0,0.9) 56%, transparent 78%);
+          }
+          .symbol-card:hover .symbol-card-image {
+            opacity: 0.74;
+            transform: scale(1.1);
+            filter: saturate(1.12) contrast(1.02) brightness(1.18);
           }
           .symbol-card-title-link,
           .symbol-card-desc,
           .symbol-card-question {
-            padding-left: clamp(4.8rem, 24vw, 6.7rem);
-          }
-          .symbol-card-top {
-            margin-bottom: 0.72rem;
+            padding-left: 0;
           }
           .symbol-card-title-link h3 {
             font-size: 1.28rem;
-            margin-bottom: 0.72rem;
+            line-height: 1.05;
+            margin: 0 0 0.45rem;
           }
           .symbol-card-desc {
-            font-size: 0.95rem;
-          }
-          .symbol-card-desc {
+            font-size: 0.92rem;
+            line-height: 1.48;
             display: block;
             -webkit-line-clamp: unset;
             overflow: visible;
             min-height: 0;
+          }
+          .symbol-card-question {
+            clear: both;
+            margin-top: 0.7rem;
+            padding-top: 0.65rem;
           }
           .search-feedback {
             align-items: flex-start;
@@ -1051,6 +1433,11 @@
           .search-feedback-clear {
             width: 100%;
             justify-content: center;
+          }
+        }
+        @media (max-width: 359px) {
+          .category-browse-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
           }
         }
         .sidebar-section { margin-bottom: 1.5rem; }
@@ -1256,13 +1643,14 @@
                     <h1 class="font-serif text-3xl md:text-5xl lg:text-[3.4rem] mb-0 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/55 leading-tight max-w-4xl">
                         Dizionario dei simboli dei sogni A-Z
                     </h1>
-                    <p class="dictionary-hero-intro">Cerca, filtra e apri il simbolo che corrisponde al tuo sogno.</p>
+                    <p class="dictionary-hero-intro">Cerca il simbolo che ti è rimasto al risveglio: acqua, denti, porta, ospedale, lupo, casa o un’azione ripetuta. Questo dizionario A-Z include 150 simboli con significati rapidi, domande di riflessione e temi collegati per passare da una definizione generale al contesto del tuo sogno.</p>
 
                     <!-- Hero search -->
                     <div id="heroSearchShell" class="relative w-full">
                         <div class="dictionary-hero-search-input">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" class="lucide lucide-search absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none" aria-hidden="true" focusable="false"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
                             <input type="text" id="heroSearch" placeholder="Cerca un simbolo (acqua, serpente, caduta…)"
+                                aria-label="Cerca un simbolo (acqua, serpente, caduta…)"
                                 class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-14 text-base text-dream-cream placeholder:text-purple-200/55 transition-colors">
                         </div>
                         <button type="button" id="heroSearchClear" class="search-clear" aria-label="Cancella ricerca" title="Cancella ricerca" onclick="document.getElementById('heroSearch').value='';document.getElementById('heroSearch').dispatchEvent(new Event('input',{bubbles:true}));" hidden>
@@ -1332,7 +1720,7 @@
             <!-- /dict-pills -->
 
             <!-- dict-alpha-mobile -->
-                <div id="mobileAlpha">
+                <div id="mobileAlpha" role="navigation" aria-label="A – Z">
                     <a href="#A" class="mobile-alpha-link" data-letter="A">A</a>
                     <a href="#B" class="mobile-alpha-link" data-letter="B">B</a>
                     <a href="#C" class="mobile-alpha-link" data-letter="C">C</a>
@@ -1363,6 +1751,7 @@
                     <div class="sb-search">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" class="lucide lucide-search absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-300/50 pointer-events-none" aria-hidden="true" focusable="false"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
                         <input type="text" id="stickySearch" placeholder="Cerca i simboli…"
+                            aria-label="Cerca i simboli…"
                             class="search-input w-full rounded-full py-2 pl-12 pr-14 text-sm text-dream-cream transition-colors"
                             style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);outline:none;">
                         <button type="button" id="stickySearchClear" class="search-clear" aria-label="Cancella ricerca" title="Cancella ricerca" onclick="document.getElementById('stickySearch').value='';document.getElementById('stickySearch').dispatchEvent(new Event('input',{bubbles:true}));" hidden>
@@ -1371,10 +1760,10 @@
                     </div>
                     <div id="stickySearchStatus" class="sticky-status" hidden>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sparkles" class="lucide lucide-sparkles w-3.5 h-3.5" aria-hidden="true" focusable="false"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>
-                        <span id="stickySearchStatusText"></span>
+                        <span id="stickySearchStatusText" role="status" aria-live="polite" aria-atomic="true"></span>
                     </div>
                     <!-- Alphabet -->
-                    <div class="sb-alpha letter-nav">
+                    <div id="stickyAlphabet" class="sb-alpha letter-nav">
                         <a href="#A" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="A">A</a>
                         <a href="#B" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="B">B</a>
                         <a href="#C" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="C">C</a>
@@ -1397,7 +1786,7 @@
                         <a href="#Z" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="Z">Z</a>
                     </div>
                     <!-- Back to top -->
-                    <button id="backToTop" class="glass-button rounded-full text-purple-300/70 hover:text-white transition-colors" aria-label="Back to top" title="Back to top" style="display:none;flex-shrink:0;padding:6px;">
+                    <button id="backToTop" class="glass-button rounded-full text-purple-300/70 hover:text-white transition-colors" aria-label="Torna su" title="Torna su" style="display:none;flex-shrink:0;padding:6px;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-up" class="lucide lucide-arrow-up w-4 h-4" aria-hidden="true" focusable="false"><path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path></svg>
                     </button>
                 </div>
@@ -1589,23 +1978,63 @@
             </section>
 
 
+            <section id="dictionaryConversion" class="dictionary-conversion dictionary-discovery-only" aria-labelledby="dictionaryConversionTitle">
+                <div class="dictionary-conversion-copy">
+                    <span class="dictionary-conversion-kicker">Noctalia · Android</span>
+                    <h2 id="dictionaryConversionTitle">Salva ogni sogno. Scopri cosa significa per te.</h2>
+                    <p>Con un account gratuito, detta o scrivi tutti i sogni che vuoi. Noctalia unisce simboli, emozioni e contesto per una lettura personale.</p>
+
+                    <p class="dictionary-primary-benefit">
+                        <span class="dictionary-proof-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="infinity" class="lucide lucide-infinity w-5 h-5" aria-hidden="true" focusable="false"><path d="M6 16c5 0 7-8 12-8a4 4 0 0 1 0 8c-5 0-7-8-12-8a4 4 0 1 0 0 8"></path></svg></span>
+                        <span><strong>Sogni senza limiti</strong><span>Con un account gratuito.</span></span>
+                    </p>
+                    <div class="dictionary-conversion-actions">
+                        <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=it" class="dictionary-store-cta" rel="nofollow noopener noreferrer" target="_blank">
+                            Scarica Noctalia su Google Play <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="external-link" class="lucide lucide-external-link w-4 h-4" aria-hidden="true" focusable="false"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>
+                        </a>
+                        <a href="/it/app-interpretazione-sogni-ai" class="dictionary-details-cta">
+                            Scopri come Noctalia usa il tuo contesto <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-4 h-4" aria-hidden="true" focusable="false"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                        </a>
+                    </div>
+                    <p class="dictionary-platform-note">Android 13+ · Account gratuito · Acquisti in-app facoltativi</p>
+                </div>
+                <ul class="dictionary-proof-list">
+
+                    <li class="dictionary-proof-item">
+                        <span class="dictionary-proof-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="infinity" class="lucide lucide-infinity w-5 h-5" aria-hidden="true" focusable="false"><path d="M6 16c5 0 7-8 12-8a4 4 0 0 1 0 8c-5 0-7-8-12-8a4 4 0 1 0 0 8"></path></svg></span>
+                        <span><strong>Sogni senza limiti</strong><span>Con un account gratuito.</span></span>
+                    </li>
+                    <li class="dictionary-proof-item">
+                        <span class="dictionary-proof-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="mic-2" class="lucide lucide-mic-2 w-5 h-5" aria-hidden="true" focusable="false"><path d="m11 7.601-5.994 8.19a1 1 0 0 0 .1 1.298l.817.818a1 1 0 0 0 1.314.087L15.09 12"></path><path d="M16.5 21.174C15.5 20.5 14.372 20 13 20c-2.058 0-3.928 2.356-6 2-2.072-.356-2.775-3.369-1.5-4.5"></path><circle cx="16" cy="7" r="5"></circle></svg></span>
+                        <span><strong>Voce o testo</strong><span>Cattura un sogno in pochi secondi.</span></span>
+                    </li>
+                    <li class="dictionary-proof-item">
+                        <span class="dictionary-proof-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sparkles" class="lucide lucide-sparkles w-5 h-5" aria-hidden="true" focusable="false"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg></span>
+                        <span><strong>Lettura personale</strong><span>Simboli, emozioni e contesto insieme.</span></span>
+                    </li>
+                </ul>
+                <div class="dictionary-conversion-links">
+                    <a href="/it/metodologia-contenuti-sogni">Come viene mantenuto questo catalogo</a>
+                    <a href="/it/privacy-policy">Leggi l’informativa sulla privacy</a>
+                </div>
+            </section>
+
             <div id="searchFeedback" class="search-feedback" hidden>
                 <div class="search-feedback-copy">
                     <span class="search-feedback-label">Ricerca attiva</span>
-                    <span id="searchFeedbackText" class="search-feedback-text"></span>
+                    <span id="searchFeedbackText" class="search-feedback-text" role="status" aria-live="polite" aria-atomic="true"></span>
                 </div>
                 <button type="button" id="searchFeedbackClear" class="search-feedback-clear" onclick="document.getElementById('heroSearch').value='';document.getElementById('heroSearch').dispatchEvent(new Event('input',{bubbles:true}));">Cancella ricerca</button>
             </div>
 
             <!-- Symbols Dictionary -->
-            <div id="dictionary-grid">
+            <div id="dictionary-grid" class="dictionary-discovery-only">
 
             </div>
             <div id="symbolsList">
                 <section id="A" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">A</span>
-                        Simboli che iniziano con A
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con A">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">A</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="abbandono abbandono abbandono" style="--cat-color:#fb923c;--symbol-x:14.286%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -2001,9 +2430,8 @@
                 </section>
 
                 <section id="B" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">B</span>
-                        Simboli che iniziano con B
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con B">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">B</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bagno bagno bagno" style="--cat-color:#60a5fa;--symbol-x:71.429%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -2162,9 +2590,8 @@
                 </section>
 
                 <section id="C" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">C</span>
-                        Simboli che iniziano con C
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con C">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">C</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cadere cadere cadere" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:0.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -2495,9 +2922,8 @@
                 </section>
 
                 <section id="D" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">D</span>
-                        Simboli che iniziano con D
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con D">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">D</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="delfino delfino delfino" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -2614,9 +3040,8 @@
                 </section>
 
                 <section id="E" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">E</span>
-                        Simboli che iniziano con E
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con E">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">E</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="elefante elefante elefante" style="--cat-color:#fbbf24;--symbol-x:0.000%;--symbol-y:88.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -2710,9 +3135,8 @@
                 </section>
 
                 <section id="F" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">F</span>
-                        Simboli che iniziano con F
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con F">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">F</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="fantasma fantasma fantasma" style="--cat-color:#f472b6;--symbol-x:0.000%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -2917,9 +3341,8 @@
                 </section>
 
                 <section id="G" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">G</span>
-                        Simboli che iniziano con G
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con G">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">G</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="gatto gatto gatto" style="--cat-color:#fbbf24;--symbol-x:42.857%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -3036,9 +3459,8 @@
                 </section>
 
                 <section id="H" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">H</span>
-                        Simboli che iniziano con H
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con H">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">H</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hotel hotel hotel" style="--cat-color:#60a5fa;--symbol-x:100.000%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -3067,9 +3489,8 @@
                 </section>
 
                 <section id="I" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">I</span>
-                        Simboli che iniziano con I
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con I">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">I</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="incidente incidente incidente" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -3209,9 +3630,8 @@
                 </section>
 
                 <section id="L" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">L</span>
-                        Simboli che iniziano con L
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con L">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">L</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lago lago lago" style="--cat-color:#4ade80;--symbol-x:28.571%;--symbol-y:100.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -3385,9 +3805,8 @@
                 </section>
 
                 <section id="M" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">M</span>
-                        Simboli che iniziano con M
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con M">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">M</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="madre madre madre" style="--cat-color:#f472b6;--symbol-x:85.714%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -3615,9 +4034,8 @@
                 </section>
 
                 <section id="N" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">N</span>
-                        Simboli che iniziano con N
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con N">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">N</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nascita nascita nascita" style="--cat-color:#fb923c;--symbol-x:14.286%;--symbol-y:50.000%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -3822,9 +4240,8 @@
                 </section>
 
                 <section id="O" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">O</span>
-                        Simboli che iniziano con O
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con O">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">O</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="occhi occhi occhi" style="--cat-color:#f87171;--symbol-x:71.429%;--symbol-y:61.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -3960,9 +4377,8 @@
                 </section>
 
                 <section id="P" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">P</span>
-                        Simboli che iniziano con P
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con P">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">P</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="padre padre padre" style="--cat-color:#f472b6;--symbol-x:100.000%;--symbol-y:38.889%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -4293,9 +4709,8 @@
                 </section>
 
                 <section id="R" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">R</span>
-                        Simboli che iniziano con R
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con R">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">R</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ragno ragno ragno" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:5.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -4389,9 +4804,8 @@
                 </section>
 
                 <section id="S" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">S</span>
-                        Simboli che iniziano con S
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con S">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">S</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="sangue sangue sangue" style="--cat-color:#f87171;--symbol-x:0.000%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -4695,9 +5109,8 @@
                 </section>
 
                 <section id="T" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">T</span>
-                        Simboli che iniziano con T
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con T">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">T</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="telefono telefono telefono" style="--cat-color:#c084fc;--symbol-x:57.143%;--symbol-y:22.222%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -4852,9 +5265,8 @@
                 </section>
 
                 <section id="U" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">U</span>
-                        Simboli che iniziano con U
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con U">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">U</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="uccello uccello uccello" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:11.111%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -4906,9 +5318,8 @@
                 </section>
 
                 <section id="V" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">V</span>
-                        Simboli che iniziano con V
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con V">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">V</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="valigia valigia valigia" style="--cat-color:#c084fc;--symbol-x:85.714%;--symbol-y:55.556%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -5002,9 +5413,8 @@
                 </section>
 
                 <section id="Z" class="mb-12">
-                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">Z</span>
-                        Simboli che iniziano con Z
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="Simboli che iniziano con Z">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">Z</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="zombie zombie zombie" style="--cat-color:#f472b6;--symbol-x:42.857%;--symbol-y:77.778%;--symbol-atlas-columns:8;--symbol-atlas-rows:19">
@@ -5081,9 +5491,15 @@
                 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Un dizionario risponde a “che cosa può significare questo simbolo?”. Noctalia aiuta con la domanda successiva: perché compare proprio nel tuo sogno, con le tue emozioni, persone e situazioni?
                 </p>
-                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=it" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
-                    Analizza il mio sogno <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-5 h-5" aria-hidden="true" focusable="false"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-                </a>
+                <div class="dictionary-conversion-actions justify-center">
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=it" class="dictionary-store-cta" rel="nofollow noopener noreferrer" target="_blank">
+                        Scarica Noctalia su Google Play <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="external-link" class="lucide lucide-external-link w-4 h-4" aria-hidden="true" focusable="false"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>
+                    </a>
+                    <a href="/it/app-interpretazione-sogni-ai" class="dictionary-details-cta">
+                        Scopri come Noctalia usa il tuo contesto <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-4 h-4" aria-hidden="true" focusable="false"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                    </a>
+                </div>
+                <p class="dictionary-platform-note">Android 13+ · Account gratuito · Acquisti in-app facoltativi</p>
             </aside>
 
             <!-- Related Articles -->
@@ -5205,11 +5621,14 @@
             const stickyBar = document.getElementById('stickyBar');
             const symbolCards = document.querySelectorAll('.symbol-card');
             const listSections = document.querySelectorAll('#symbolsList > section');
+            let navbarTransitionFrame = 0;
 
             function updateSectionScrollOffset() {
                 if (!stickyBar) return;
-                const navbarHeight = navbar?.getBoundingClientRect().height || 0;
-                const stickyTop = Math.ceil(navbarHeight + 12);
+                const navbarBottom = navbar && getComputedStyle(navbar).display !== 'none'
+                    ? navbar.getBoundingClientRect().bottom
+                    : 0;
+                const stickyTop = Math.ceil(Math.max(0, navbarBottom) + 12);
                 stickyBar.style.setProperty('--sticky-bar-top', `${stickyTop}px`);
                 const stickyHeight = stickyBar.classList.contains('sb-visible') ? stickyBar.getBoundingClientRect().height : 0;
                 const offset = Math.ceil(stickyTop + stickyHeight + 16);
@@ -5218,6 +5637,24 @@
 
             updateSectionScrollOffset();
             window.addEventListener('resize', updateSectionScrollOffset);
+            if (navbar) {
+                const trackNavbarTransition = () => {
+                    updateSectionScrollOffset();
+                    navbarTransitionFrame = window.requestAnimationFrame(trackNavbarTransition);
+                };
+                const stopNavbarTransitionTracking = (event) => {
+                    if (event.propertyName !== 'transform') return;
+                    if (navbarTransitionFrame) window.cancelAnimationFrame(navbarTransitionFrame);
+                    navbarTransitionFrame = 0;
+                    updateSectionScrollOffset();
+                };
+                navbar.addEventListener('transitionrun', (event) => {
+                    if (event.propertyName !== 'transform' || navbarTransitionFrame) return;
+                    trackNavbarTransition();
+                });
+                navbar.addEventListener('transitionend', stopNavbarTransitionTracking);
+                navbar.addEventListener('transitioncancel', stopNavbarTransitionTracking);
+            }
 
             // ── Symbol card clickability (keyboard accessible) ────────────
 
@@ -5462,8 +5899,10 @@
             const searchFeedbackClear = document.getElementById('searchFeedbackClear');
             const stickySearchStatus = document.getElementById('stickySearchStatus');
             const stickySearchStatusText = document.getElementById('stickySearchStatusText');
+            const discoveryOnlySections = document.querySelectorAll('.dictionary-discovery-only');
             const symbolsListEl = document.getElementById('symbolsList');
             let revealSearchAreaTimer = null;
+            let letterNavigationTimer = null;
             const searchResultWord = "risultato/i";
 
             function buildSearchStatus(query, count) {
@@ -5485,7 +5924,7 @@
                 if (rect.top > threshold || rect.top < 0) {
                     const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dictionary-scroll-offset')) || 0;
                     const keyboardLift = window.visualViewport ? Math.max(0, window.innerHeight - window.visualViewport.height) : 0;
-                    const nextTop = target.getBoundingClientRect().top + window.scrollY - offset - Math.min(keyboardLift, 220) + 12;
+                    const nextTop = target.getBoundingClientRect().top + window.scrollY - offset - Math.min(keyboardLift, 220);
                     window.scrollTo({ top: Math.max(nextTop, 0), behavior: 'smooth' });
                 }
             }
@@ -5509,6 +5948,9 @@
                 if (categoryGridSection) {
                     categoryGridSection.hidden = hasQuery;
                 }
+                discoveryOnlySections.forEach((section) => {
+                    section.hidden = hasQuery;
+                });
                 if (searchFeedback) {
                     searchFeedback.hidden = !hasQuery;
                 }
@@ -5530,26 +5972,44 @@
                 stickySearch.value = nextValue;
                 const hasValue = nextValue.trim().length > 0;
                 const isMobile = window.matchMedia('(max-width: 767px)').matches;
+                const moveFocusToSticky = hasValue
+                    && isMobile
+                    && source === 'hero'
+                    && document.activeElement === heroSearch;
                 if (heroSearchClear) heroSearchClear.hidden = !hasValue;
                 if (stickySearchClear) stickySearchClear.hidden = !hasValue;
                 const visibleCount = filterSymbols(nextValue);
                 updateSearchUi(nextValue, visibleCount);
-                if (hasValue && isMobile && source !== 'hero') {
+                if (hasValue && isMobile) {
                     stickyBar?.classList.add('sb-visible');
                     updateSectionScrollOffset();
+                    if (moveFocusToSticky) {
+                        stickySearch.focus({ preventScroll: true });
+                        stickySearch.setSelectionRange(nextValue.length, nextValue.length);
+                    }
+                } else if (!hasValue && isMobile) {
+                    syncStickyBarVisibility();
                 }
                 scheduleRevealSearchArea(nextValue, visibleCount);
-                if (source === 'sticky') {
+                if (source === 'sticky' && hasValue) {
                     stickySearch.focus({ preventScroll: true });
                 }
             }
 
             function syncStickyBarVisibility() {
                 if (!heroHeader || !stickyBar) return;
+                if (document.body.classList.contains('dictionary-search-active')
+                    || document.body.classList.contains('dictionary-letter-navigation')) {
+                    stickyBar.classList.add('sb-visible');
+                    updateSectionScrollOffset();
+                    return;
+                }
                 const heroBottom = heroHeader.getBoundingClientRect().bottom;
                 const navbarHeight = navbar?.getBoundingClientRect().height || 0;
+                const symbolsTop = symbolsListEl?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY;
                 const symbolsBottom = symbolsListEl?.getBoundingClientRect().bottom ?? Number.POSITIVE_INFINITY;
-                const shouldShow = heroBottom <= navbarHeight + 24 && symbolsBottom > navbarHeight + 80;
+                const revealBoundary = window.matchMedia('(max-width: 767px)').matches ? symbolsTop : heroBottom;
+                const shouldShow = revealBoundary <= navbarHeight + 24 && symbolsBottom > navbarHeight + 80;
                 stickyBar.classList.toggle('sb-visible', shouldShow);
                 updateSectionScrollOffset();
             }
@@ -5561,11 +6021,6 @@
             heroSearch.addEventListener('input', (e) => {
                 setSearchValue(e.target.value, 'hero');
             });
-            heroSearch.addEventListener('blur', () => {
-                if (window.matchMedia('(max-width: 767px)').matches && heroSearch.value.trim()) {
-                    setSearchValue(heroSearch.value, 'sticky');
-                }
-            });
             stickySearch.addEventListener('input', (e) => {
                 setSearchValue(e.target.value, 'sticky');
             });
@@ -5575,6 +6030,11 @@
             });
             stickySearchClear?.addEventListener('click', () => {
                 setSearchValue('', 'sticky');
+                if (stickyBar?.classList.contains('sb-visible')) {
+                    stickySearch.focus({ preventScroll: true });
+                } else {
+                    heroSearch.focus({ preventScroll: true });
+                }
             });
             searchFeedbackClear?.addEventListener('click', () => {
                 setSearchValue('', 'hero');
@@ -5586,11 +6046,29 @@
             document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
+                    const wasSearchActive = document.body.classList.contains('dictionary-search-active');
+                    if (wasSearchActive) {
+                        setSearchValue('', 'sticky');
+                    }
                     const target = document.querySelector(link.getAttribute('href'));
-                    updateSectionScrollOffset();
-                    if (target) {
+                    const scrollToTarget = () => {
+                        if (!target) return;
+                        document.body.classList.add('dictionary-letter-navigation');
+                        stickyBar?.classList.add('sb-visible');
+                        updateSectionScrollOffset();
                         setActiveAlpha(link.dataset.letter);
                         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        if (letterNavigationTimer) window.clearTimeout(letterNavigationTimer);
+                        letterNavigationTimer = window.setTimeout(() => {
+                            document.body.classList.remove('dictionary-letter-navigation');
+                            syncStickyBarVisibility();
+                            letterNavigationTimer = null;
+                        }, 1200);
+                    };
+                    if (wasSearchActive) {
+                        window.requestAnimationFrame(() => window.requestAnimationFrame(scrollToTarget));
+                    } else {
+                        scrollToTarget();
                     }
                 });
             });
@@ -5598,7 +6076,13 @@
             // ── Active letter tracking (IntersectionObserver) ─────────────
             function setActiveAlpha(letter) {
                 document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(l => {
-                    l.classList.toggle('alpha-active', l.dataset.letter === letter);
+                    const isActive = l.dataset.letter === letter;
+                    l.classList.toggle('alpha-active', isActive);
+                    if (isActive) {
+                        l.setAttribute('aria-current', 'true');
+                    } else {
+                        l.removeAttribute('aria-current');
+                    }
                 });
             }
             function syncActiveAlphaFromScroll() {
@@ -5627,8 +6111,8 @@
             });
         });
     </script>
-    <script src="/js/site-shell.js?v=20260715-100211" defer></script>
-    <script src="/js/language-dropdown.js?v=20260715-100211" defer></script>
-    <script src="/js/mobile-menu.js?v=20260715-100211" defer></script>
+    <script src="/js/site-shell.js?v=664dbf68d85d" defer></script>
+    <script src="/js/language-dropdown.js?v=664dbf68d85d" defer></script>
+    <script src="/js/mobile-menu.js?v=664dbf68d85d" defer></script>
 </body>
 </html>
