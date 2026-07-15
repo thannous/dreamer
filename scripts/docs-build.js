@@ -72,12 +72,11 @@ function runNodeScript(relativeScriptPath, args = []) {
   }
 }
 
-function bumpAssetVersion() {
-  const version = resolveBuildVersion();
-  const versionPath = path.join(DOCS_SRC_DIR, 'static', 'version.txt');
+function writeAssetVersion(version) {
+  const versionPath = path.join(DOCS_DIR, 'version.txt');
+  ensureDir(path.dirname(versionPath));
   fs.writeFileSync(versionPath, `${version}\n`, 'utf8');
   console.log(`[docs-build] version.txt -> ${version}`);
-  return version;
 }
 
 function sourcePath(kind, entryId, lang) {
@@ -221,9 +220,10 @@ function main() {
   runNodeScript(path.join('scripts', 'generate-image-seo-assets.js'));
   runNodeScript(path.join('scripts', 'generate-symbol-responsive-images.js'));
 
-  const version = bumpAssetVersion();
+  const version = resolveBuildVersion();
   cleanManagedOutputs();
   copyStaticFiles();
+  writeAssetVersion(version);
 
   const manifest = readJson(path.join(DATA_DIR, 'site-manifest.json'));
   writeManagedPages(manifest);

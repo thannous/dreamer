@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Allow: /cdn-cgi/speculation
-Disallow: /cdn-cgi/
-
-Sitemap: https://noctalia.app/sitemap.xml

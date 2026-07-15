@@ -8,6 +8,10 @@ node_modules/
 .java-home/
 .gradle-user-home/
 
+# Generated marketing site (rebuilt locally and by Cloudflare Pages)
+/docs/
+/docs-src/static/version.txt
+
 # Expo
 .expo/
 .eas-local-work/
@@ -50,9 +54,6 @@ expo-env.d.ts
 npm-debug.*
 yarn-debug.*
 yarn-error.*
-docs/docs-server.*.log
-docs/*.bak
-docs/**/*.bak
 .docs-build-state.json
 
 # macOS

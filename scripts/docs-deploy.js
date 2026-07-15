@@ -21,16 +21,29 @@ function loadCloudflarePagesConfig(rootDir = ROOT_DIR) {
   }
 
   const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-  for (const key of ['projectName', 'previewBranch', 'productionBranch']) {
+  for (const key of [
+    'projectName',
+    'previewBranch',
+    'productionBranch',
+    'buildCommand',
+    'buildOutputDirectory',
+  ]) {
     if (typeof config[key] !== 'string' || config[key].trim() === '') {
       throw new Error(`Invalid Cloudflare Pages config: "${key}" must be a non-empty string.`);
     }
+  }
+
+  if (typeof config.rootDirectory !== 'string') {
+    throw new Error('Invalid Cloudflare Pages config: "rootDirectory" must be a string.');
   }
 
   return {
     projectName: config.projectName.trim(),
     previewBranch: config.previewBranch.trim(),
     productionBranch: config.productionBranch.trim(),
+    rootDirectory: config.rootDirectory.trim(),
+    buildCommand: config.buildCommand.trim(),
+    buildOutputDirectory: config.buildOutputDirectory.trim(),
   };
 }
 

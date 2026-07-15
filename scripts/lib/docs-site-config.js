@@ -20,12 +20,10 @@ function loadLocales() {
 }
 
 function readAssetVersion() {
-  const docsSrcVersionPath = path.join(DOCS_SRC_DIR, 'static', 'version.txt');
-  const docsVersionPath = path.join(DOCS_DIR, 'version.txt');
-  const versionPath = fs.existsSync(docsSrcVersionPath) ? docsSrcVersionPath : docsVersionPath;
+  const versionPath = path.join(DOCS_DIR, 'version.txt');
 
   if (!fs.existsSync(versionPath)) {
-    throw new Error('Missing docs asset version file.');
+    throw new Error('Missing generated docs asset version file. Run `npm run docs:build`.');
   }
 
   const version = fs.readFileSync(versionPath, 'utf8').trim();

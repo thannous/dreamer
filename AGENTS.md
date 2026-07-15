@@ -9,14 +9,14 @@ Noctalia is an Expo/React Native dream-journal app with a Supabase backend and a
 - `lib/`, `services/`, `constants/`: shared utilities, integrations, and configuration.
 - `supabase/functions/`, `supabase/migrations/`: Edge Functions and database changes.
 - `docs-src/`: editable source for the static marketing site.
-- `docs/`: generated site output. Never edit it manually; rebuild it from `docs-src/`.
+- `docs/`: ignored generated site output. Never edit or commit it; rebuild it from `docs-src/`.
 - `data/`: shared app and site content used by generators.
 - `scripts/`: build, validation, release, and maintenance tooling.
 - `maestro/`: Android E2E flows.
 - `tests/`, colocated `__tests__/`: route, integration, unit, and performance tests.
 - `doc_web_interne/docs/`: internal runbooks, QA evidence, and planning documents.
 
-For site work, follow `docs-src/README.md`. Production site deployments use `master`; verify the current branch and deployment intent before publishing.
+For site work, follow `docs-src/README.md`. Cloudflare Pages builds `docs/` from tracked sources on `master`; verify the current branch and deployment intent before publishing.
 
 ## Working Rules for Agents
 
@@ -77,7 +77,7 @@ Jest has separate Node and Expo projects (`npm run test:node`, `npm run test:exp
 3. Run `npm run docs:check`.
 4. Use `npm run docs:release-check` only for release-ready site work.
 
-Use `npm run docs:dev` for live editing. Deployment commands require explicit publication intent.
+Commit the source inputs and any tracked manifest updates, not `docs/`. Use `npm run docs:dev` for live editing. Deployment commands require explicit publication intent.
 
 ### Backend and Android
 
