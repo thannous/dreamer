@@ -15,6 +15,7 @@ import { Fonts } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import { trackProductEvent } from "@/lib/analytics";
+import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
 import { MotiView } from "@/lib/moti";
 import { TID } from "@/lib/testIDs";
 import type {
@@ -90,6 +91,7 @@ export default function SymbolDictionaryScreen() {
   const { t, currentLang } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const lang = (currentLang ?? "en") as SymbolLanguage;
+  const guideCopy = getDreamGuideCopy(lang);
   const useNativeHeaderSearch =
     process.env.EXPO_OS === "ios" && typeof document === "undefined";
 
@@ -390,6 +392,37 @@ export default function SymbolDictionaryScreen() {
         </>
       ) : null}
 
+      <Pressable
+        onPress={() => router.push('/dream-guides' as any)}
+        accessibilityRole="button"
+        accessibilityLabel={guideCopy.screenTitle}
+        testID="btn.symbolDictionary.guides"
+        style={({ pressed }) => [
+          styles.guidesBanner,
+          {
+            backgroundColor: noctalia.surface.raised,
+            borderColor: noctalia.surface.border,
+          },
+          pressed && styles.chipPressed,
+        ]}
+      >
+        <View style={[styles.guidesBannerIcon, { backgroundColor: noctalia.surface.soft }]}>
+          <IconSymbol name="sparkles" size={20} color={noctalia.accent.base} />
+        </View>
+        <View style={styles.guidesBannerCopy}>
+          <Text style={[styles.guidesBannerTitle, { color: noctalia.text.primary }]}>
+            {guideCopy.screenTitle}
+          </Text>
+          <Text
+            style={[styles.guidesBannerBody, { color: noctalia.text.secondary }]}
+            numberOfLines={1}
+          >
+            {guideCopy.screenSubtitle}
+          </Text>
+        </View>
+        <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
+      </Pressable>
+
       <MotiView
         from={{ opacity: 0, translateY: -8 }}
         animate={{ opacity: 1, translateY: 0 }}
@@ -669,6 +702,40 @@ const styles = StyleSheet.create({
   },
   popularSection: {
     gap: 10,
+  },
+  guidesBanner: {
+    minHeight: 66,
+    marginHorizontal: ThemeLayout.spacing.md,
+    marginBottom: ThemeLayout.spacing.md,
+    borderRadius: 19,
+    borderCurve: "continuous",
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  guidesBannerIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 13,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  guidesBannerCopy: {
+    flex: 1,
+    gap: 2,
+  },
+  guidesBannerTitle: {
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: 16,
+    lineHeight: 20,
+  },
+  guidesBannerBody: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 12,
+    lineHeight: 16,
   },
   popularHeader: {
     paddingHorizontal: ThemeLayout.spacing.md,

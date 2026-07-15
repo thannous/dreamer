@@ -71,7 +71,7 @@ export type AnalyticsEventMap = {
     source: 'recording_flow' | 'journal_detail' | 'retry' | 'unknown';
   };
   symbol_detail_viewed: {
-    source: 'onboarding' | 'dictionary' | 'search' | 'unknown';
+    source: 'onboarding' | 'dictionary' | 'search' | 'guide' | 'unknown';
   };
   first_value_viewed: {
     value: 'analysis_result' | 'recording_insight' | 'symbol_detail';
