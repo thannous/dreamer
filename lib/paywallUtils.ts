@@ -16,6 +16,10 @@ export function calculateAnnualDiscount(packages: PurchasePackage[]): number | n
   }
   const yearlyFromMonthly = monthly.price * 12;
   const savings = ((yearlyFromMonthly - annual.price) / yearlyFromMonthly) * 100;
-  return Math.round(savings);
+  const roundedSavings = Math.round(savings);
+  return roundedSavings > 0 ? roundedSavings : null;
 }
 
+export function calculateMonthlyEquivalent(pkg: PurchasePackage): number {
+  return pkg.interval === 'annual' ? pkg.price / 12 : pkg.price;
+}

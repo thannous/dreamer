@@ -12,10 +12,9 @@ export type PaywallVariant = {
 };
 
 export const PLUS_PAYWALL_FEATURE_KEYS = [
-  'subscription.paywall.card.feature.living_profile',
-  'subscription.paywall.card.feature.exploration_360',
+  'subscription.paywall.card.feature.unlimited_analyses',
+  'subscription.paywall.card.feature.unlimited_explorations',
   'subscription.paywall.card.feature.final_synthesis',
-  'subscription.paywall.card.feature.remembered_dreams',
 ] as const;
 
 const variants: Record<PaywallTrigger, PaywallVariant> = {

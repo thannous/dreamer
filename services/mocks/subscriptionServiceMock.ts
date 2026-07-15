@@ -13,22 +13,23 @@ let currentStatusUserId: string | null = null;
 const DEFAULT_PLUS_PRODUCT_ID = 'mock_plus';
 const listeners = new Set<SubscriptionStatusListener>();
 
+// Development preview only. Production uses the localized price strings returned by each store.
 const mockPackages: PurchasePackage[] = [
   {
     id: 'mock_monthly',
     interval: 'monthly',
-    price: 4.99,
-    priceFormatted: '$4.99',
-    currency: 'USD',
+    price: 3.59,
+    priceFormatted: '3,59 €',
+    currency: 'EUR',
     title: 'Monthly',
     description: 'Unlock Noctalia Plus dream analysis every month.',
   },
   {
     id: 'mock_annual',
     interval: 'annual',
-    price: 39.99,
-    priceFormatted: '$39.99',
-    currency: 'USD',
+    price: 22.99,
+    priceFormatted: '22,99 €',
+    currency: 'EUR',
     title: 'Annual',
     description: 'Best value for dedicated dreamers.',
   },
