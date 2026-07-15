@@ -382,9 +382,12 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
         setLoading(true);
         setError(null);
         if (requiresAuth) {
+          const nextPackages = shouldLoadPackages
+            ? await initializeSubscription(null).then(() => loadSubscriptionPackages())
+            : [];
           if (mounted) {
             setStatus(null);
-            setPackages([]);
+            setPackages(nextPackages);
             // ✅ FIX: Clear transition flag even when logged out
             isUserTransitioningRef.current = false;
           }

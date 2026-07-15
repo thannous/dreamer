@@ -148,6 +148,21 @@ describe('useSubscription', () => {
       expect(result.current.packages).toHaveLength(0);
     });
 
+    it('given unauthenticated user when loading packages then shows prices without enabling purchase', async () => {
+      mockCurrentUser = null;
+      const { initializeSubscription, loadSubscriptionPackages } = require('../services/subscriptionService');
+      const { result } = renderSubscriptionHook({ loadPackages: true });
+
+      await waitFor(() => {
+        expect(result.current.packages).toHaveLength(1);
+      });
+
+      expect(initializeSubscription).toHaveBeenCalledWith(null);
+      expect(loadSubscriptionPackages).toHaveBeenCalledTimes(1);
+      expect(result.current.requiresAuth).toBe(true);
+      await expect(result.current.purchase('mock_monthly')).rejects.toThrow('auth_required');
+    });
+
     it('given unauthenticated user when purchasing then rejects with auth error', async () => {
       // Given
       mockCurrentUser = null;
