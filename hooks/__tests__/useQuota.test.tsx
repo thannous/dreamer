@@ -21,6 +21,7 @@ const {
   mockGetUsedExplorationCount,
   mockGetUsedMessagesCount,
   mockSubscribe,
+  mockEnvState,
 } = ((factory: any) => factory())(() => ({
   mockGetQuotaStatus: jest.fn(),
   mockInvalidate: jest.fn(),
@@ -32,6 +33,7 @@ const {
   mockGetUsedExplorationCount: jest.fn(),
   mockGetUsedMessagesCount: jest.fn(),
   mockSubscribe: jest.fn(),
+  mockEnvState: { mockModeEnabled: false },
 }));
 
 let mockUser: any = null;
@@ -71,6 +73,10 @@ jest.mock('../../services/quotaService', () => ({
     getUsedMessagesCount: mockGetUsedMessagesCount,
     subscribe: mockSubscribe,
   },
+}));
+
+jest.mock('../../lib/env', () => ({
+  isMockModeEnabled: () => mockEnvState.mockModeEnabled,
 }));
 
 jest.mock('../../lib/guestSession', () => ({
@@ -116,6 +122,7 @@ describe('useQuota', () => {
     mockSubscriptionLoading = false;
     mockGuestBootstrapState = { status: 'ready', updatedAt: 0 };
     mockGuestBootstrapListener = undefined;
+    mockEnvState.mockModeEnabled = false;
     mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus());
     mockCanAnalyzeDream.mockResolvedValue(true);
     mockCanExploreDream.mockResolvedValue(true);
@@ -311,6 +318,22 @@ describe('useQuota', () => {
 
       await settleQuotaStatus(result);
       expect(result.current.guestBootstrapStatus).toBe('degraded');
+    });
+
+    it('keeps guest AI available in mock mode when web guest bootstrap is unsupported', async () => {
+      mockEnvState.mockModeEnabled = true;
+      mockGuestBootstrapState = {
+        status: 'degraded',
+        reasonCode: 'guest_platform_unsupported',
+        updatedAt: Date.now(),
+      };
+
+      const { result } = renderHook(() => useQuota());
+
+      await settleQuotaStatus(result);
+
+      expect(result.current.canAnalyzeNow).toBe(true);
+      expect(result.current.canExploreNow).toBe(true);
     });
 
     it('provides canAnalyzeNow flag from quota status', async () => {

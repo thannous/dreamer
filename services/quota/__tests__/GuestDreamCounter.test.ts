@@ -8,6 +8,8 @@ let getGuestRecordedDreamCount: typeof import('../GuestDreamCounter').getGuestRe
 let getLocalDreamRecordingCount: typeof import('../GuestDreamCounter').getLocalDreamRecordingCount;
 let incrementLocalDreamRecordingCount: typeof import('../GuestDreamCounter').incrementLocalDreamRecordingCount;
 let migrateExistingGuestDreamRecording: typeof import('../GuestDreamCounter').migrateExistingGuestDreamRecording;
+let resetGuestDreamRecordingCount: typeof import('../GuestDreamCounter').resetGuestDreamRecordingCount;
+let subscribeGuestDreamRecordingCount: typeof import('../GuestDreamCounter').subscribeGuestDreamRecordingCount;
 
 const { mockStorage, mockGetSavedDreams } = ((factory: any) => factory())(() => {
   const storage = new Map<string, string>();
@@ -27,6 +29,10 @@ const mockAsyncStorage = {
     mockStorage.delete(key);
     return Promise.resolve();
   }),
+  multiRemove: jest.fn((keys: string[]) => {
+    keys.forEach((key) => mockStorage.delete(key));
+    return Promise.resolve();
+  }),
 };
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -35,7 +41,7 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   ...mockAsyncStorage,
 }));
 
-jest.mock('@/services/storageServiceReal', () => ({
+jest.mock('@/services/storageService', () => ({
   getSavedDreams: mockGetSavedDreams,
 }));
 
@@ -54,6 +60,8 @@ describe('GuestDreamCounter', () => {
       getLocalDreamRecordingCount,
       incrementLocalDreamRecordingCount,
       migrateExistingGuestDreamRecording,
+      resetGuestDreamRecordingCount,
+      subscribeGuestDreamRecordingCount,
     } = require('../GuestDreamCounter'));
   });
 
@@ -80,6 +88,21 @@ describe('GuestDreamCounter', () => {
     mockStorage.set(DREAM_RECORDING_KEY, '2');
     await expect(getGuestRecordedDreamCount(1)).resolves.toBe(2);
     await expect(getGuestRecordedDreamCount(5)).resolves.toBe(5);
+  });
+
+  it('resetGuestDreamRecordingCount clears the cumulative count and migration marker', async () => {
+    const listener = jest.fn();
+    const unsubscribe = subscribeGuestDreamRecordingCount(listener);
+    mockStorage.set(DREAM_RECORDING_KEY, '2');
+    mockStorage.set(MIGRATION_KEY, 'true');
+
+    await resetGuestDreamRecordingCount();
+
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(mockStorage.has(DREAM_RECORDING_KEY)).toBe(false);
+    expect(mockStorage.has(MIGRATION_KEY)).toBe(false);
+    await expect(getLocalDreamRecordingCount()).resolves.toBe(0);
+    unsubscribe();
   });
 
   it('migrateExistingGuestDreamRecording is idempotent and seeds from dreams length', async () => {

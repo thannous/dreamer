@@ -62,6 +62,7 @@ const {
   mockSignUpWithEmailPassword,
   mockSignOut,
   mockResendVerificationEmail,
+  mockReloadDreams,
 } = ((factory: any) => factory())(() => ({
   mockAlert: jest.fn(),
   mockRequestStayOnSettingsIntent: jest.fn(),
@@ -69,6 +70,7 @@ const {
   mockSignUpWithEmailPassword: jest.fn(),
   mockSignOut: jest.fn(),
   mockResendVerificationEmail: jest.fn(),
+  mockReloadDreams: jest.fn(),
 }));
 
 ((key: string, value: unknown) => { Object.defineProperty(globalThis, key, { configurable: true, writable: true, value }); })('__DEV__', false);
@@ -96,6 +98,10 @@ jest.mock('@supabase/auth-js', () => {
 
 jest.mock('@/context/AuthContext', () => ({
   useAuth: () => ({ user: mockCurrentUser, loading: mockAuthLoading }),
+}));
+
+jest.mock('@/context/DreamsContext', () => ({
+  useDreamsActions: () => ({ reloadDreams: mockReloadDreams }),
 }));
 
 jest.mock('@/context/ThemeContext', () => ({
@@ -138,6 +144,10 @@ jest.mock('@/components/auth/EmailVerificationBanner', () => ({
 jest.mock('@/components/icons/DreamIcons', () => ({
   EyeIcon: () => <div data-testid="eye-icon" />,
   EyeOffIcon: () => <div data-testid="eye-off-icon" />,
+}));
+
+jest.mock('@/components/ui/icon-symbol', () => ({
+  IconSymbol: () => <div data-testid="account-icon" />,
 }));
 
 jest.mock('@/lib/auth', () => ({
@@ -211,6 +221,7 @@ describe('EmailAuthCard', () => {
     mockSignInWithEmailPassword.mockResolvedValue(undefined);
     mockSignUpWithEmailPassword.mockResolvedValue({ email_confirmed_at: null });
     mockSignOut.mockResolvedValue(undefined);
+    mockReloadDreams.mockResolvedValue(undefined);
   });
 
   it('shows unverified prompt and allows resending verification email when sign-in fails for confirmation', async () => {
@@ -339,6 +350,15 @@ describe('EmailAuthCard', () => {
     render(<EmailAuthCard />);
 
     expect(screen.getByText('settings.account.hint.configure_supabase')).toBeDefined();
+  });
+
+  it('keeps the embedded guest summary concise', () => {
+    render(<EmailAuthCard presentation="embedded" />);
+
+    expect(screen.getByText('settings.account.status.guest')).toBeDefined();
+    expect(screen.queryByText('settings.account.local_hint')).toBeNull();
+    expect(screen.getByTestId('settings-account-open-signup')).toBeDefined();
+    expect(screen.getByTestId('settings-account-open-signin')).toBeDefined();
   });
 
   it('renders signed-in state and allows sign-out', async () => {

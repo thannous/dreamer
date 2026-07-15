@@ -12,6 +12,7 @@ const { mockJournal } = ((factory: any) => factory())(() => {
     updateDream: jest.fn(async () => undefined),
     deleteDream: jest.fn(async () => undefined),
     toggleFavorite: jest.fn(async () => undefined),
+    reloadDreams: jest.fn(async () => undefined),
     generateDreamImage: jest.fn(async () => ({ id: 1 })),
     analyzeDream: jest.fn(async () => ({ id: 1 })),
   };
@@ -50,6 +51,8 @@ describe('DreamsContext', () => {
 
     await result.current.addDream({ id: 2 } as any);
     expect(mockJournal.addDream).toHaveBeenCalledWith({ id: 2 });
+    await result.current.reloadDreams();
+    expect(mockJournal.reloadDreams).toHaveBeenCalledTimes(1);
   });
 
   it('given provider__when using combined hook__then returns data and actions', () => {

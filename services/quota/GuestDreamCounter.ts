@@ -9,12 +9,24 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getSavedDreams } from '@/services/storageServiceReal';
+import { getSavedDreams } from '@/services/storageService';
 
 const DREAM_RECORDING_KEY = 'guest_total_dream_recording_count_v1';
 const MIGRATION_KEY = 'guest_dream_recording_migrated_v1';
 
 let recordingLock: Promise<void> = Promise.resolve();
+const recordingCountListeners = new Set<() => void>();
+
+const emitRecordingCountChange = () => {
+  recordingCountListeners.forEach((listener) => listener());
+};
+
+export function subscribeGuestDreamRecordingCount(listener: () => void): () => void {
+  recordingCountListeners.add(listener);
+  return () => {
+    recordingCountListeners.delete(listener);
+  };
+}
 
 export async function withGuestDreamRecordingLock<T>(fn: () => Promise<T>): Promise<T> {
   const run = recordingLock.then(fn, fn);
@@ -46,11 +58,24 @@ export async function incrementLocalDreamRecordingCount(): Promise<number> {
     const current = await getLocalDreamRecordingCount();
     const next = current + 1;
     await AsyncStorage.setItem(DREAM_RECORDING_KEY, String(next));
+    emitRecordingCountChange();
     return next;
   } catch (error) {
     console.warn('[GuestDreamCounter] Failed to increment recording count:', error);
     throw error;
   }
+}
+
+/**
+ * Clears the cumulative guest recording state for explicit mock/test resets.
+ * The lock ensures a recording already being persisted cannot restore the
+ * counter after the reset completes.
+ */
+export async function resetGuestDreamRecordingCount(): Promise<void> {
+  await withGuestDreamRecordingLock(async () => {
+    await AsyncStorage.multiRemove([DREAM_RECORDING_KEY, MIGRATION_KEY]);
+    emitRecordingCountChange();
+  });
 }
 
 /**
@@ -76,6 +101,7 @@ export async function migrateExistingGuestDreamRecording(): Promise<void> {
 
     if (count > 0) {
       await AsyncStorage.setItem(DREAM_RECORDING_KEY, String(count));
+      emitRecordingCountChange();
       console.log(`[GuestDreamCounter] Migrated recording count: ${count}`);
     }
 

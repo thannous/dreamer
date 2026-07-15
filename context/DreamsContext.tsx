@@ -18,6 +18,7 @@ export type DreamsActionsContextValue = {
   toggleFavorite: (id: number) => Promise<void>;
   retryDreamSync: (id: number) => Promise<void>;
   resolveDreamConflict: (id: number, resolution: 'keep_local' | 'use_server') => Promise<void>;
+  reloadDreams: () => Promise<void>;
   generateDreamImage: (
     dreamId: number,
     options?: {
@@ -67,6 +68,7 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       toggleFavorite: journal.toggleFavorite,
       retryDreamSync: journal.retryDreamSync,
       resolveDreamConflict: journal.resolveDreamConflict,
+      reloadDreams: journal.reloadDreams,
       generateDreamImage: journal.generateDreamImage,
       analyzeDream: journal.analyzeDream,
     }),
@@ -77,6 +79,7 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       journal.toggleFavorite,
       journal.retryDreamSync,
       journal.resolveDreamConflict,
+      journal.reloadDreams,
       journal.generateDreamImage,
       journal.analyzeDream,
     ]

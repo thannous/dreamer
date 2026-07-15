@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -11,6 +12,7 @@ import {
 } from 'react-native';
 
 import { useAuth } from '@/context/AuthContext';
+import { useDreamsActions } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -34,6 +36,7 @@ import { requestStayOnSettingsIntent } from '@/lib/navigationIntents';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { isMockModeEnabled as isMockModeEnabledEnv } from '@/lib/env';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_MIN_LENGTH = 6;
@@ -73,14 +76,20 @@ const isUnverifiedEmailError = (error: unknown): error is AuthApiError => {
 
 type Props = {
   isCompact?: boolean;
+  presentation?: 'card' | 'embedded';
 };
 
-export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
+export const EmailAuthCard: React.FC<Props> = ({
+  isCompact = false,
+  presentation = 'card',
+}) => {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const isEmbedded = presentation === 'embedded';
   const cardBg = noctalia.surface.raised;
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
+  const { reloadDreams } = useDreamsActions();
   const { language } = useLanguage();
 
   const [email, setEmail] = useState('');
@@ -105,6 +114,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     titleKey: string;
     messageKey: string | null;
   }>({ visible: false, titleKey: '', messageKey: null });
+  const [accountSheetVisible, setAccountSheetVisible] = useState(false);
 
   const trimmedEmail = useMemo(() => email.trim(), [email]);
   const emailValid = useMemo(() => EMAIL_REGEX.test(trimmedEmail), [trimmedEmail]);
@@ -264,6 +274,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     setSubmitting('signout');
     try {
       await signOut();
+      await reloadDreams();
       clearPendingVerification();
       requestStayOnSettingsIntent();
     } catch (error) {
@@ -394,6 +405,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   useEffect(() => {
     if (user) {
       clearPendingVerification();
+      setAccountSheetVisible(false);
     }
   }, [clearPendingVerification, user]);
 
@@ -411,7 +423,14 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     <>
       <TextInput
         testID={TID.Input.AuthEmail}
-        style={[styles.input, { backgroundColor: noctalia.surface.active, color: noctalia.text.primary }]}
+        style={[
+          styles.input,
+          {
+            backgroundColor: isEmbedded ? noctalia.surface.soft : noctalia.surface.active,
+            borderColor: noctalia.surface.border,
+            color: noctalia.text.primary,
+          },
+        ]}
         placeholder={t('settings.account.placeholder.email')}
         placeholderTextColor={noctalia.text.secondary}
         value={email}
@@ -439,7 +458,11 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
           style={[
             styles.input,
             styles.inputWithToggleField,
-            { backgroundColor: noctalia.surface.active, color: noctalia.text.primary },
+            {
+              backgroundColor: isEmbedded ? noctalia.surface.soft : noctalia.surface.active,
+              borderColor: noctalia.surface.border,
+              color: noctalia.text.primary,
+            },
           ]}
           placeholder={t('settings.account.placeholder.password')}
           placeholderTextColor={noctalia.text.secondary}
@@ -466,7 +489,11 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
           {passwordVisible ? (
             <EyeIcon size={18} color={passwordToggleColor} />
           ) : (
-            <EyeOffIcon size={18} color={passwordToggleColor} slashColor={noctalia.surface.active} />
+            <EyeOffIcon
+              size={18}
+              color={passwordToggleColor}
+              slashColor={isEmbedded ? noctalia.surface.base : noctalia.surface.active}
+            />
           )}
         </Pressable>
       </View>
@@ -490,7 +517,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
                 ? noctalia.action.disabledBorder
                 : noctalia.action.primaryBorder,
             },
-            (emailActionsDisabled || submitting === 'signup') && styles.btnDisabled,
+            (emailActionsDisabled || submitting === 'signup') && styles.emailBtnDisabled,
           ]}
           onPress={attemptSignIn}
           disabled={emailActionsDisabled}
@@ -499,7 +526,15 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
             <ActivityIndicator color={noctalia.action.primaryText} />
           ) : (
             <Text
-              style={[styles.btnText, isCompact && styles.btnTextCompact, { color: noctalia.action.primaryText }]}
+              style={[
+                styles.btnText,
+                isCompact && styles.btnTextCompact,
+                {
+                  color: emailActionsDisabled || submitting === 'signup'
+                    ? noctalia.action.disabledText
+                    : noctalia.action.primaryText,
+                },
+              ]}
               numberOfLines={1}
             >
               {t('settings.account.button.sign_in')}
@@ -513,10 +548,10 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
             styles.btn,
             isCompact && styles.btnCompact,
             {
-              backgroundColor: noctalia.surface.active,
-              borderColor: noctalia.surface.border,
+              backgroundColor: isEmbedded ? noctalia.surface.soft : noctalia.surface.active,
+              borderColor: isEmbedded ? noctalia.surface.borderStrong : noctalia.surface.border,
             },
-            (emailActionsDisabled || submitting === 'signin') && styles.btnDisabled,
+            (emailActionsDisabled || submitting === 'signin') && styles.emailBtnDisabled,
           ]}
           onPress={attemptSignUp}
           disabled={emailActionsDisabled}
@@ -525,7 +560,15 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
             <ActivityIndicator color={noctalia.text.primary} />
           ) : (
             <Text
-              style={[styles.btnTextSecondary, isCompact && styles.btnTextCompact, { color: noctalia.text.primary }]}
+              style={[
+                styles.btnTextSecondary,
+                isCompact && styles.btnTextCompact,
+                {
+                  color: emailActionsDisabled || submitting === 'signin'
+                    ? noctalia.action.disabledText
+                    : noctalia.text.primary,
+                },
+              ]}
               numberOfLines={1}
             >
               {t('settings.account.button.sign_up')}
@@ -550,14 +593,28 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
       )
     : emailPasswordForm;
 
-  const cardContent = user ? (
+  const expandedCardContent = user ? (
     <View
-      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: cardBg, borderColor: noctalia.surface.border }]}
+      style={[
+        styles.card,
+        isCompact && styles.cardCompact,
+        presentation === 'embedded'
+          ? styles.embedded
+          : { backgroundColor: cardBg, borderColor: noctalia.surface.border },
+      ]}
     >
-      <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>
-        {t('settings.account.title')}
-      </Text>
-      <Text style={[styles.cardDescription, { color: noctalia.text.secondary }]}>
+      {presentation !== 'embedded' ? (
+        <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>
+          {t('settings.account.title')}
+        </Text>
+      ) : null}
+      <Text
+        style={[
+          styles.cardDescription,
+          isEmbedded && styles.embeddedDescription,
+          { color: noctalia.text.secondary },
+        ]}
+      >
         {t('settings.account.description_signed_in')}
       </Text>
 
@@ -606,12 +663,26 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     </View>
   ) : (
     <View
-      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: cardBg, borderColor: noctalia.surface.border }]}
+      style={[
+        styles.card,
+        isCompact && styles.cardCompact,
+        presentation === 'embedded'
+          ? styles.embedded
+          : { backgroundColor: cardBg, borderColor: noctalia.surface.border },
+      ]}
     >
-      <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>
-        {t('settings.account.title')}
-      </Text>
-      <Text style={[styles.cardDescription, { color: noctalia.text.secondary }]}>
+      {presentation !== 'embedded' ? (
+        <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>
+          {t('settings.account.title')}
+        </Text>
+      ) : null}
+      <Text
+        style={[
+          styles.cardDescription,
+          isEmbedded && styles.embeddedDescription,
+          { color: noctalia.text.secondary },
+        ]}
+      >
         {t('settings.account.description_signed_out')}
       </Text>
 
@@ -666,7 +737,12 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
 
       {isMockModeEnabled ? (
         <>
-          <View style={[styles.mockSection, { backgroundColor: noctalia.surface.active }]}>
+          <View
+            style={[
+              styles.mockSection,
+              isEmbedded ? styles.mockSectionEmbedded : { backgroundColor: noctalia.surface.active },
+            ]}
+          >
             <Text style={[styles.mockSectionTitle, { color: noctalia.text.primary }]}>
               {t('settings.account.mock.quick_title')}
             </Text>
@@ -682,7 +758,14 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
                     testID={TID.Button.MockProfile(profile)}
                     style={({ pressed }) => [
                       styles.mockButton,
-                      { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.raised },
+                      {
+                        borderColor: isEmbedded
+                          ? 'transparent'
+                          : noctalia.surface.border,
+                        backgroundColor: isEmbedded
+                          ? noctalia.surface.soft
+                          : noctalia.surface.raised,
+                      },
                       pressed && styles.mockButtonPressed,
                       (loading || isBusy) && styles.mockButtonDisabled,
                     ]}
@@ -708,7 +791,15 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
                 testID={TID.Button.MockResetState}
                 style={({ pressed }) => [
                   styles.mockButton,
-                  { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.raised },
+                  isEmbedded && styles.mockResetButton,
+                  {
+                    borderColor: isEmbedded
+                      ? noctalia.surface.borderStrong
+                      : noctalia.surface.border,
+                    backgroundColor: isEmbedded
+                      ? 'transparent'
+                      : noctalia.surface.raised,
+                  },
                   pressed && styles.mockButtonPressed,
                   isBusy && styles.mockButtonDisabled,
                 ]}
@@ -731,7 +822,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
             </View>
           </View>
 
-          <View style={styles.divider}>
+          <View style={[styles.divider, isEmbedded && styles.dividerEmbedded]}>
             <View style={[styles.dividerLine, { backgroundColor: noctalia.surface.border }]} />
             <Text style={[styles.dividerText, { color: noctalia.text.secondary }]}>{t('common.or')}</Text>
             <View style={[styles.dividerLine, { backgroundColor: noctalia.surface.border }]} />
@@ -741,7 +832,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
         <>
           <GoogleSignInButton />
 
-          <View style={styles.divider}>
+          <View style={[styles.divider, isEmbedded && styles.dividerEmbedded]}>
             <View style={[styles.dividerLine, { backgroundColor: noctalia.surface.border }]} />
             <Text style={[styles.dividerText, { color: noctalia.text.secondary }]}>{t('common.or')}</Text>
             <View style={[styles.dividerLine, { backgroundColor: noctalia.surface.border }]} />
@@ -753,9 +844,125 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     </View>
   );
 
+  const embeddedSummary = (
+    <View style={styles.embeddedSummary} testID="settings-account-summary">
+      <View style={styles.summaryHeader}>
+        <View
+          style={[
+            styles.summaryIcon,
+            {
+              backgroundColor: noctalia.surface.soft,
+              borderColor: noctalia.accent.base,
+            },
+          ]}
+        >
+          <IconSymbol name="moon.stars.fill" size={30} color={noctalia.accent.soft} />
+        </View>
+        <View style={styles.summaryCopy}>
+          <View
+            style={[
+              styles.statusPill,
+              {
+                backgroundColor: noctalia.surface.soft,
+                borderColor: noctalia.surface.border,
+              },
+            ]}
+          >
+            <Text style={[styles.statusPillText, { color: noctalia.text.secondary }]}>
+              {user
+                ? t('settings.account.status.signed_in')
+                : t('settings.account.status.guest')}
+            </Text>
+          </View>
+          {user ? (
+            <Text style={[styles.summaryDescription, { color: noctalia.text.secondary }]}>
+              {t('settings.account.description_signed_in')}
+            </Text>
+          ) : null}
+          {user?.email ? (
+            <Text
+              numberOfLines={1}
+              style={[styles.summaryEmail, { color: noctalia.text.primary }]}
+              testID={TID.Text.AuthEmail}
+            >
+              {user.email}
+            </Text>
+          ) : null}
+        </View>
+      </View>
+
+      <View
+        style={[styles.summaryDivider, { backgroundColor: noctalia.surface.border }]}
+      />
+
+      {user ? (
+        <Pressable
+          accessibilityRole="button"
+          disabled={isBusy}
+          onPress={attemptSignOut}
+          style={({ pressed }) => [
+            styles.summarySingleAction,
+            {
+              backgroundColor: noctalia.status.danger.background,
+              borderColor: noctalia.status.danger.border,
+            },
+            pressed && styles.summaryActionPressed,
+            isBusy && styles.btnDisabled,
+          ]}
+          testID={TID.Button.AuthSignOut}
+        >
+          {submitting === 'signout' ? (
+            <ActivityIndicator color={noctalia.status.danger.text} />
+          ) : (
+            <Text style={[styles.summarySecondaryLabel, { color: noctalia.status.danger.text }]}>
+              {t('settings.account.button.sign_out')}
+            </Text>
+          )}
+        </Pressable>
+      ) : (
+        <View style={styles.summaryActions}>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => setAccountSheetVisible(true)}
+            style={({ pressed }) => [
+              styles.summaryPrimaryAction,
+              {
+                backgroundColor: noctalia.action.primary,
+                borderColor: noctalia.action.primaryBorder,
+              },
+              pressed && styles.summaryActionPressed,
+            ]}
+            testID="settings-account-open-signup"
+          >
+            <Text style={[styles.summaryPrimaryLabel, { color: noctalia.action.primaryText }]}>
+              {t('settings.account.button.sign_up')}
+            </Text>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => setAccountSheetVisible(true)}
+            style={({ pressed }) => [
+              styles.summarySecondaryAction,
+              {
+                backgroundColor: 'transparent',
+                borderColor: 'transparent',
+              },
+              pressed && styles.summaryActionPressed,
+            ]}
+            testID="settings-account-open-signin"
+          >
+            <Text style={[styles.summarySecondaryLabel, { color: noctalia.text.primary }]}>
+              {t('settings.account.button.sign_in')}
+            </Text>
+          </Pressable>
+        </View>
+      )}
+    </View>
+  );
+
   return (
     <>
-      {cardContent}
+      {isEmbedded ? embeddedSummary : expandedCardContent}
       {verificationSuccess ? (
         <EmailVerificationSuccessDialog
           visible={verificationVisible}
@@ -789,6 +996,25 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
           onPrimary: closeAuthErrorSheet,
         }}
       />
+      <StandardBottomSheet
+        visible={isEmbedded && accountSheetVisible}
+        onClose={() => setAccountSheetVisible(false)}
+        title={t('settings.account.title')}
+        actions={{
+          primaryLabel: t('common.done'),
+          onPrimary: () => setAccountSheetVisible(false),
+        }}
+        testID="settings-account-sheet"
+      >
+        <ScrollView
+          contentContainerStyle={styles.accountSheetContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          style={styles.accountSheetScroll}
+        >
+          {expandedCardContent}
+        </ScrollView>
+      </StandardBottomSheet>
     </>
   );
 };
@@ -803,6 +1029,114 @@ const styles = StyleSheet.create({
   cardCompact: {
     padding: ThemeLayout.spacing.sm,
   },
+  embedded: {
+    backgroundColor: 'transparent',
+    borderRadius: 0,
+    borderWidth: 0,
+    marginBottom: 0,
+    padding: 0,
+  },
+  embeddedSummary: {
+    gap: ThemeLayout.spacing.sm,
+    paddingVertical: ThemeLayout.spacing.sm,
+  },
+  summaryHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: ThemeLayout.spacing.md,
+  },
+  summaryIcon: {
+    alignItems: 'center',
+    borderRadius: 32,
+    borderWidth: 1,
+    height: 64,
+    justifyContent: 'center',
+    width: 64,
+  },
+  summaryCopy: {
+    flex: 1,
+    gap: 4,
+  },
+  statusPill: {
+    alignSelf: 'flex-start',
+    borderRadius: ThemeLayout.borderRadius.full,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  statusPillText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  summaryDescription: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  summaryEmail: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 13,
+    lineHeight: 17,
+  },
+  summaryDivider: {
+    height: 1,
+    opacity: 0.85,
+    width: '100%',
+  },
+  summaryActions: {
+    flexDirection: 'row',
+    gap: ThemeLayout.spacing.sm,
+  },
+  summaryPrimaryAction: {
+    alignItems: 'center',
+    borderRadius: ThemeLayout.borderRadius.sm,
+    borderWidth: 1,
+    flex: 1.4,
+    justifyContent: 'center',
+    minHeight: 54,
+    paddingHorizontal: ThemeLayout.spacing.sm,
+  },
+  summarySecondaryAction: {
+    alignItems: 'center',
+    borderRadius: ThemeLayout.borderRadius.sm,
+    borderWidth: 0,
+    flex: 1,
+    justifyContent: 'center',
+    minHeight: 54,
+    paddingHorizontal: ThemeLayout.spacing.sm,
+  },
+  summarySingleAction: {
+    alignItems: 'center',
+    borderRadius: ThemeLayout.borderRadius.sm,
+    borderWidth: 1,
+    justifyContent: 'center',
+    minHeight: 54,
+    paddingHorizontal: ThemeLayout.spacing.md,
+  },
+  summaryActionPressed: {
+    opacity: 0.86,
+    transform: [{ scale: 0.99 }],
+  },
+  summaryPrimaryLabel: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 16,
+    lineHeight: 20,
+    textAlign: 'center',
+  },
+  summarySecondaryLabel: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 16,
+    lineHeight: 20,
+    textAlign: 'center',
+  },
+  accountSheetScroll: {
+    marginTop: ThemeLayout.spacing.md,
+    maxHeight: 520,
+  },
+  accountSheetContent: {
+    paddingBottom: ThemeLayout.spacing.sm,
+  },
   cardTitle: {
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
@@ -814,11 +1148,15 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.md,
     lineHeight: 20,
   },
+  embeddedDescription: {
+    marginBottom: 18,
+  },
   input: {
+    borderWidth: 1,
     borderRadius: ThemeLayout.borderRadius.sm,
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: 12,
-    marginBottom: ThemeLayout.spacing.xs,
+    marginBottom: 10,
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.regular,
     width: '100%',
@@ -826,7 +1164,7 @@ const styles = StyleSheet.create({
   inputWithToggle: {
     position: 'relative',
     width: '100%',
-    marginBottom: ThemeLayout.spacing.xs,
+    marginBottom: 10,
   },
   inputWithToggleField: {
     marginBottom: 0,
@@ -865,6 +1203,9 @@ const styles = StyleSheet.create({
   },
   btnDisabled: {
     opacity: 0.5,
+  },
+  emailBtnDisabled: {
+    opacity: 1,
   },
   btnText: {
     fontFamily: Fonts.spaceGrotesk.bold,
@@ -907,6 +1248,9 @@ const styles = StyleSheet.create({
     marginVertical: ThemeLayout.spacing.md,
     gap: ThemeLayout.spacing.sm,
   },
+  dividerEmbedded: {
+    marginVertical: 18,
+  },
   dividerLine: {
     flex: 1,
     height: 1,
@@ -917,6 +1261,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   danger: {
+    flex: 0,
     marginTop: ThemeLayout.spacing.md,
   },
   errorText: {
@@ -928,23 +1273,33 @@ const styles = StyleSheet.create({
     borderRadius: ThemeLayout.borderRadius.md,
     padding: ThemeLayout.spacing.md,
   },
+  mockSectionEmbedded: {
+    backgroundColor: 'transparent',
+    padding: 0,
+  },
   mockSectionTitle: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontSize: 18,
+    lineHeight: 22,
   },
   mockSectionSubtitle: {
     fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 13,
     marginTop: 4,
+    lineHeight: 18,
   },
   mockButtonsColumn: {
-    marginTop: ThemeLayout.spacing.sm,
-    gap: ThemeLayout.spacing.xs,
+    marginTop: 14,
+    gap: 10,
   },
   mockButton: {
     borderRadius: ThemeLayout.borderRadius.sm,
     borderWidth: 1,
-    padding: ThemeLayout.spacing.sm,
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+  },
+  mockResetButton: {
+    marginTop: 2,
   },
   mockButtonPressed: {
     opacity: 0.9,
@@ -955,10 +1310,12 @@ const styles = StyleSheet.create({
   mockButtonTitle: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 15,
+    lineHeight: 18,
   },
   mockButtonSubtitle: {
     fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 13,
+    lineHeight: 16,
     marginTop: 2,
   },
   unverifiedBanner: {

@@ -1,7 +1,9 @@
 import type { Session, User } from '@supabase/supabase-js';
 
 import type { UserTier } from '@/constants/limits';
+import { resetGuestDreamRecordingCount } from '@/services/quota/GuestDreamCounter';
 import { resetMockQuotaEvents } from '@/services/quota/MockQuotaEventStore';
+import { quotaService } from '@/services/quotaService';
 import { preloadDreamsNow, resetMockStorage, setPreloadDreamsEnabled } from '@/services/mocks/storageServiceMock';
 
 export type MockProfile = 'new' | 'existing' | 'plus';
@@ -80,12 +82,20 @@ type ApplyProfileOptions = {
 };
 
 async function applyProfile(profile: MockProfile, emailOverride?: string, options?: ApplyProfileOptions): Promise<User> {
-  if (!options?.preserveStorage) {
+  const config = PROFILE_CONFIG[profile];
+  const shouldResetState = !options?.preserveStorage;
+
+  if (shouldResetState) {
+    // Disable the previous profile before clearing storage so an eager quota
+    // refresh cannot repopulate its predefined dreams during the reset.
+    setPreloadDreamsEnabled(false);
     resetMockStorage();
-    await resetMockQuotaEvents();
+    await Promise.all([
+      resetMockQuotaEvents(),
+      resetGuestDreamRecordingCount(),
+    ]);
   }
 
-  const config = PROFILE_CONFIG[profile];
   setPreloadDreamsEnabled(config.preloadDreams);
   if (config.preloadDreams) {
     preloadDreamsNow();
@@ -99,6 +109,9 @@ async function applyProfile(profile: MockProfile, emailOverride?: string, option
     emailConfirmed: config.emailConfirmed,
   });
 
+  if (shouldResetState) {
+    quotaService.invalidate(null);
+  }
   emitAuthChange();
   return currentUser;
 }
@@ -125,9 +138,13 @@ export async function signInWithGoogleWeb(): Promise<User> {
 
 export async function signOut(): Promise<void> {
   currentUser = null;
-  resetMockStorage();
-  await resetMockQuotaEvents();
   setPreloadDreamsEnabled(false);
+  resetMockStorage();
+  await Promise.all([
+    resetMockQuotaEvents(),
+    resetGuestDreamRecordingCount(),
+  ]);
+  quotaService.invalidate(null);
   emitAuthChange();
 }
 

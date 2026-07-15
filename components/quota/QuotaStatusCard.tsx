@@ -13,7 +13,10 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { QUOTAS } from '@/constants/limits';
-import { getLocalDreamRecordingCount } from '@/services/quota/GuestDreamCounter';
+import {
+  getLocalDreamRecordingCount,
+  subscribeGuestDreamRecordingCount,
+} from '@/services/quota/GuestDreamCounter';
 import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
 
 type UsageEntry = {
@@ -24,6 +27,7 @@ type UsageEntry = {
 
 type Props = {
   onUpgradePress?: () => void;
+  presentation?: 'card' | 'embedded';
 };
 
 const formatUsage = (usage?: UsageEntry, unlimitedLabel?: string) => {
@@ -60,7 +64,10 @@ const QUOTA_REASON_KEYS: Record<string, string> = {
     'settings.quota.reason.guest_quota_unavailable',
 };
 
-export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
+export const QuotaStatusCard: React.FC<Props> = ({
+  onUpgradePress,
+  presentation = 'card',
+}) => {
   const { user } = useAuth();
   const { dreams } = useDreams();
   const { colors, mode } = useTheme();
@@ -69,8 +76,13 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const { t } = useTranslation();
   const { quotaStatus, loading, error, refetch, tier } = useQuota();
   const [guestRecordedTotal, setGuestRecordedTotal] = useState(0);
+  const [guestRecordingRefreshKey, setGuestRecordingRefreshKey] = useState(0);
   const isUpgradedGuest = !user && Boolean(quotaStatus?.isUpgraded);
   const isDegradedGuest = !user && quotaStatus?.guestBootstrapStatus === 'degraded';
+
+  useEffect(() => subscribeGuestDreamRecordingCount?.(() => {
+    setGuestRecordingRefreshKey((current) => current + 1);
+  }), []);
 
   useEffect(() => {
     if (user) {
@@ -88,7 +100,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
     return () => {
       cancelled = true;
     };
-  }, [user, dreams.length]);
+  }, [user, dreams.length, guestRecordingRefreshKey]);
 
   const recordingUsage: UsageEntry = useMemo(() => {
     const guestRecordingLimit = getGuestDreamRecordingLimit();
@@ -166,7 +178,14 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   };
 
   return (
-    <View style={[styles.card, { backgroundColor: cardBg, borderColor: noctalia.surface.border }]}>
+    <View
+      style={[
+        styles.card,
+        presentation === 'embedded'
+          ? styles.embedded
+          : { backgroundColor: cardBg, borderColor: noctalia.surface.border },
+      ]}
+    >
       <View style={styles.headerRow}>
         <View style={styles.headerTextContainer}>
           <Text style={[styles.title, { color: noctalia.text.primary }]}>
@@ -299,6 +318,13 @@ const styles = StyleSheet.create({
     borderRadius: ThemeLayout.borderRadius.xl,
     padding: ThemeLayout.spacing.lg20,
     gap: 16,
+  },
+  embedded: {
+    backgroundColor: 'transparent',
+    borderRadius: 0,
+    borderWidth: 0,
+    marginBottom: 0,
+    padding: 0,
   },
   headerRow: {
     flexDirection: 'row',

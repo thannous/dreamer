@@ -58,6 +58,7 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   'line.3.horizontal': 'menu',
   'lock.shield': 'enhanced-encryption',
   clock: 'schedule',
+  bell: 'notifications-none',
   'info.circle': 'info',
   iphone: 'phone-iphone',
   mic: 'mic',
