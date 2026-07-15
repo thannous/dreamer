@@ -98,6 +98,69 @@ Result:
 
 final result: passed
 
+## Noctalia Plus comparison paywall - 2026-07-15
+
+Source visual truth path:
+- `/Users/tanuki/.codex/generated_images/019f63ac-d34c-7382-bf60-ea9478189c81/exec-45de5824-57c0-4947-b491-1a1a3f667b94.png`
+- Browser annotation on the annual offer: `mettre le pourcentage de reduction en badge sur la bordulre`.
+- Pre-annotation implementation: `/Users/tanuki/Documents/dreamer/screenshots/paywall-simplification/09-questionne-tes-reves-390x844.png`.
+- Pre-alignment RevenueCat Test Store state: `/Users/tanuki/Documents/dreamer/screenshots/paywall-simplification/13-test-store-price-before.jpg`.
+
+Implementation screenshot path:
+- `/Users/tanuki/Documents/dreamer/screenshots/paywall-simplification/10-annual-discount-border-badge-373x837.png`
+- `/Users/tanuki/Documents/dreamer/screenshots/paywall-simplification/14-test-store-price-aligned.jpg`
+- `/Users/tanuki/Documents/dreamer/screenshots/paywall-simplification/17-price-comparable-monthly.jpg`
+
+State and viewport:
+- Route: `http://localhost:8083/paywall?trigger=settings`, reached from the real Settings flow.
+- Viewport: `373x837`, matching the browser annotation, French, dark theme, guest/free state, annual package selected.
+
+Full-view and focused comparison evidence:
+- Full comparison for the annotation: `/Users/tanuki/Documents/dreamer/screenshots/paywall-simplification/11-discount-badge-before-after.png`.
+- Focused pricing comparison: `/Users/tanuki/Documents/dreamer/screenshots/paywall-simplification/12-discount-badge-before-after-detail.png`.
+- Full price-source comparison: `/Users/tanuki/Documents/dreamer/screenshots/paywall-simplification/15-price-before-after-comparison.jpg`.
+- Focused price-source comparison: `/Users/tanuki/Documents/dreamer/screenshots/paywall-simplification/16-price-before-after-detail.jpg`.
+- Same-period price comparison: `/Users/tanuki/Documents/dreamer/screenshots/paywall-simplification/18-price-period-before-after.jpg`.
+- The framed source concept and the unframed browser viewport differ only in presentation chrome; the screen content is compared at equivalent mobile scale.
+
+Comparison history:
+- Source goal: replace the verbose benefit stack with an immediately scannable Free/Plus comparison centered on unlimited dream analyses and the ability to keep asking questions about a dream.
+- P2 source-to-code finding: the existing implementation did not expose a Free/Plus hierarchy and defaulted to whichever package sorted first.
+- Fix: added a four-row comparison table, moved annual ahead of monthly, selected annual by default, and retained the existing dynamic RevenueCat price string.
+- Follow-up: moved `Enregistrement des rêves` to the first row as a shared benefit with `∞ Illimités` aligned in both Free and Plus columns, making it explicit that upgrading never gates dream capture or the journal.
+- Copy follow-up: replaced the internal label `Explorations 360°` with `Questionne tes rêves`, and changed the subtitle to `Pose tes questions. Obtiens des explications.` so the conversational value is understandable without knowing the product vocabulary and the French register stays consistent.
+- Pricing annotation follow-up: replaced the generic `Meilleure offre` pill inside the annual card with a dynamically calculated savings badge positioned across its top border.
+- P1 price-source finding: the RevenueCat Test Store products were still attached at `9.99 USD/month` and `79.99 USD/year`, while the live Google Play base plans were `3.59 EUR/month` and `22.99 EUR/year` in France (`3.49 USD` and `21.99 USD` in the US).
+- Fix: created aligned Test Store monthly and yearly products with matching EUR/USD price points, replaced only the Test Store product attached to each existing package, and preserved the Google Play package associations.
+- Post-fix evidence: the browser receives RevenueCat's localized `3,59 €` monthly and `22,99 €` annual prices and calculates the annual savings badge as `−47%`; the app still renders the store-provided `priceString` without hard-coded production prices.
+- P2 price-comparison finding: presenting `22,99 € par an` beside `3,59 € par mois` forced the user to calculate the comparable monthly cost mentally.
+- Fix: both cards now lead with a monthly amount. The annual card derives `1,92 € par mois` from the localized store price and keeps `Facturé 22,99 € par an` directly below for billing transparency; the monthly card says `Facturé chaque mois`.
+- Post-fix evidence: all comparison content, both packages, the primary CTA, and the continue-free action fit without scrolling at `390x844`.
+
+Required fidelity surfaces:
+- Fonts and typography: the existing Noctalia sans-serif hierarchy is retained while matching the source's centered title, compact kicker, and stronger pricing hierarchy.
+- Spacing and layout rhythm: the top bar, comparison table, two-column pricing grid, CTA, and secondary action fit within one mobile viewport.
+- Colors and visual tokens: all surfaces, gold accents, borders, and selected states use existing Noctalia design tokens.
+- Image quality and asset fidelity: no raster assets were added; all visible symbols use the project's existing icon component and library.
+- Copy and content: the table prioritizes unlimited analyses, unlimited follow-up questions and explanations, and deeper syntheses while showing unlimited dream recording as a shared Free/Plus benefit.
+
+Primary interactions and console:
+- Passed: annual is selected by default.
+- Passed: monthly selection updates both radio states, and annual can be restored.
+- Passed: the annual savings badge remains visible when monthly is selected and follows the actual package prices.
+- Passed: RevenueCat offering lookup returns both aligned Test Store packages in USD and EUR while retaining both Google Play products.
+- Passed: the browser renders annual `1,92 € par mois`, `Facturé 22,99 € par an`, monthly `3,59 € par mois`, and `−47%` after reopening the paywall from Settings.
+- Passed: the Settings entry opens the paywall through the real app navigation.
+- Passed: no browser console errors; only existing Expo/web development warnings remain.
+- Passed: focused paywall tests, app typecheck, scoped ESLint with zero errors, and `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the comparison and annual-default fixes.
+
+final result: passed
+
 ## First-dream next-step sheet - 2026-07-14
 
 Source visual truth path:
