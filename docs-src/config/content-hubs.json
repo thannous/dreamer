@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "hubs": [
+    {
+      "id": "dream-meanings",
+      "kind": "hubAndSpoke",
+      "directoryPageId": "blog.index",
+      "hubPageId": "blog.dream-meanings",
+      "spokePageIds": [
+        "blog.anxiety-dreams-meaning",
+        "blog.being-chased-dreams",
+        "blog.children-dreams-guide",
+        "blog.death-dreams-meaning",
+        "blog.dream-interpretation-history",
+        "blog.dreams-about-ex",
+        "blog.dreams-and-creativity",
+        "blog.dreams-mental-health",
+        "blog.exam-dreams-meaning",
+        "blog.falling-dreams-meaning",
+        "blog.flying-dreams-meaning",
+        "blog.precognitive-dreams-science",
+        "blog.pregnancy-dreams-meaning",
+        "blog.recurring-dreams-meaning",
+        "blog.snake-dreams-meaning",
+        "blog.stop-nightmares-guide",
+        "blog.stress-dreams-work",
+        "blog.teeth-falling-out-dreams",
+        "blog.water-dreams-meaning"
+      ],
+      "relatedByPageId": {
+        "blog.anxiety-dreams-meaning": [
+          "blog.stress-dreams-work",
+          "blog.exam-dreams-meaning",
+          "blog.stop-nightmares-guide"
+        ],
+        "blog.being-chased-dreams": [
+          "blog.anxiety-dreams-meaning",
+          "blog.recurring-dreams-meaning",
+          "blog.stop-nightmares-guide"
+        ],
+        "blog.children-dreams-guide": [
+          "blog.stop-nightmares-guide",
+          "blog.anxiety-dreams-meaning",
+          "blog.recurring-dreams-meaning"
+        ],
+        "blog.death-dreams-meaning": [
+          "blog.dreams-about-ex",
+          "blog.recurring-dreams-meaning",
+          "blog.pregnancy-dreams-meaning"
+        ],
+        "blog.dream-interpretation-history": [
+          "blog.precognitive-dreams-science",
+          "blog.dreams-mental-health",
+          "blog.dreams-and-creativity"
+        ],
+        "blog.dreams-about-ex": [
+          "blog.death-dreams-meaning",
+          "blog.recurring-dreams-meaning",
+          "blog.anxiety-dreams-meaning"
+        ],
+        "blog.dreams-and-creativity": [
+          "blog.dream-interpretation-history",
+          "blog.dreams-mental-health"
+        ],
+        "blog.dreams-mental-health": [
+          "blog.anxiety-dreams-meaning",
+          "blog.stress-dreams-work",
+          "blog.stop-nightmares-guide"
+        ],
+        "blog.exam-dreams-meaning": [
+          "blog.anxiety-dreams-meaning",
+          "blog.stress-dreams-work",
+          "blog.recurring-dreams-meaning"
+        ],
+        "blog.falling-dreams-meaning": [
+          "blog.flying-dreams-meaning",
+          "blog.anxiety-dreams-meaning",
+          "blog.being-chased-dreams"
+        ],
+        "blog.flying-dreams-meaning": [
+          "blog.falling-dreams-meaning",
+          "blog.dreams-and-creativity"
+        ],
+        "blog.precognitive-dreams-science": [
+          "blog.dream-interpretation-history",
+          "blog.dreams-mental-health",
+          "blog.recurring-dreams-meaning"
+        ],
+        "blog.pregnancy-dreams-meaning": [
+          "blog.death-dreams-meaning",
+          "blog.anxiety-dreams-meaning"
+        ],
+        "blog.recurring-dreams-meaning": [
+          "blog.anxiety-dreams-meaning",
+          "blog.being-chased-dreams",
+          "blog.stop-nightmares-guide"
+        ],
+        "blog.snake-dreams-meaning": [
+          "blog.being-chased-dreams",
+          "blog.water-dreams-meaning",
+          "blog.recurring-dreams-meaning"
+        ],
+        "blog.stop-nightmares-guide": [
+          "blog.anxiety-dreams-meaning",
+          "blog.children-dreams-guide",
+          "blog.recurring-dreams-meaning"
+        ],
+        "blog.stress-dreams-work": [
+          "blog.anxiety-dreams-meaning",
+          "blog.exam-dreams-meaning",
+          "blog.stop-nightmares-guide"
+        ],
+        "blog.teeth-falling-out-dreams": [
+          "blog.anxiety-dreams-meaning",
+          "blog.stress-dreams-work",
+          "blog.recurring-dreams-meaning"
+        ],
+        "blog.water-dreams-meaning": [
+          "blog.recurring-dreams-meaning",
+          "blog.dreams-mental-health",
+          "blog.anxiety-dreams-meaning"
+        ]
+      },
+      "render": {
+        "hubMissingSpokes": true,
+        "spokeMissingLinks": true
+      }
+    },
+    {
+      "id": "dream-journal",
+      "kind": "hubAndSpoke",
+      "directoryPageId": "blog.index",
+      "hubPageId": "blog.dream-journal",
+      "spokePageIds": [
+        "blog.dream-journal-guide",
+        "blog.how-to-remember-dreams",
+        "blog.rem-sleep-dreams",
+        "blog.why-we-dream-science",
+        "blog.why-we-forget-dreams"
+      ],
+      "relatedByPageId": {
+        "blog.dream-journal-guide": [
+          "blog.how-to-remember-dreams",
+          "blog.why-we-forget-dreams",
+          "blog.why-we-dream-science"
+        ],
+        "blog.how-to-remember-dreams": [
+          "blog.why-we-forget-dreams",
+          "blog.dream-journal-guide",
+          "blog.rem-sleep-dreams"
+        ],
+        "blog.rem-sleep-dreams": [
+          "blog.why-we-dream-science",
+          "blog.why-we-forget-dreams",
+          "blog.how-to-remember-dreams"
+        ],
+        "blog.why-we-dream-science": [
+          "blog.rem-sleep-dreams",
+          "blog.why-we-forget-dreams",
+          "blog.dream-journal-guide"
+        ],
+        "blog.why-we-forget-dreams": [
+          "blog.how-to-remember-dreams",
+          "blog.rem-sleep-dreams",
+          "blog.dream-journal-guide"
+        ]
+      },
+      "render": {
+        "hubMissingSpokes": true,
+        "spokeMissingLinks": true
+      }
+    },
+    {
+      "id": "lucid-dreaming",
+      "kind": "hubAndSpoke",
+      "directoryPageId": "blog.index",
+      "hubPageId": "blog.lucid-dreaming",
+      "spokePageIds": [
+        "blog.dream-incubation-guide",
+        "blog.lucid-dreaming-beginners-guide",
+        "blog.sleep-paralysis-guide"
+      ],
+      "relatedByPageId": {
+        "blog.dream-incubation-guide": [
+          "blog.lucid-dreaming-beginners-guide"
+        ],
+        "blog.lucid-dreaming-beginners-guide": [
+          "blog.dream-incubation-guide",
+          "blog.sleep-paralysis-guide"
+        ],
+        "blog.sleep-paralysis-guide": [
+          "blog.lucid-dreaming-beginners-guide"
+        ]
+      },
+      "render": {
+        "hubMissingSpokes": true,
+        "spokeMissingLinks": true
+      }
+    },
+    {
+      "id": "dream-symbols",
+      "kind": "contentDatabase",
+      "directoryPageId": "guide.index",
+      "hubPageId": "guide.dictionary",
+      "memberSelectors": [
+        {
+          "collection": "symbols",
+          "types": [
+            "symbolCategory",
+            "symbol"
+          ]
+        }
+      ],
+      "renderMode": "validateOnly"
+    }
+  ]
+}

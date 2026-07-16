@@ -436,6 +436,8 @@ function main() {
   runNodeScript(path.join('scripts', 'build-content-manifest.js'), ['--check']);
   runNodeScript(path.join('scripts', 'build-site-manifest.js'), ['--check']);
   runNodeScript(path.join('scripts', 'validate-i18n-seo.js'));
+  runNodeScript(path.join('scripts', 'check-public-url-stability.js'));
+  runNodeScript(path.join('scripts', 'check-content-hub-contract.js'));
   runNodeScript(path.join('scripts', 'check-symbol-illustration-parity.js'));
   runNodeScript(path.join('scripts', 'generate-symbol-hero-posters.js'), ['--check']);
   runNodeScript(path.join('scripts', 'check-docs-links.js'));

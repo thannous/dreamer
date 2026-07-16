@@ -14,6 +14,8 @@ const { renderFooter: renderSharedFooter } = require('./docs-components/footer')
 const { renderPageHero } = require('./docs-components/hero');
 const { renderNavigation } = require('./docs-components/navigation');
 const { renderSharedComponentStyles } = require('./docs-components/styles');
+const { renderContentHubModule } = require('./docs-components/content-hubs');
+const { loadContentHubRegistry } = require('./content-hub-registry');
 const { inlineLucideIcons } = require('./lucide-inline');
 const {
   synchronizeJsonLdDates,
@@ -32,6 +34,17 @@ const shellTemplate = fs.readFileSync(path.join(DOCS_SRC_DIR, 'templates', 'base
 const DEFAULT_SOCIAL_IMAGE = `${siteConfig.domain}/img/og/noctalia-dreamscape-v2-1200x630.jpg`;
 const LEGACY_SOCIAL_IMAGE_PATTERN = /\/img\/og\/noctalia-(?:en|fr|es|de|it)-1200x630\.jpg(?:[?#].*)?$/i;
 let imageSeoRegistryCache;
+const contentHubRegistryCache = new WeakMap();
+
+function getContentHubRegistry(manifest) {
+  if (!manifest || typeof manifest !== 'object') {
+    return loadContentHubRegistry({ manifest });
+  }
+  if (!contentHubRegistryCache.has(manifest)) {
+    contentHubRegistryCache.set(manifest, loadContentHubRegistry({ manifest }));
+  }
+  return contentHubRegistryCache.get(manifest);
+}
 
 function loadImageSeoRegistry() {
   if (imageSeoRegistryCache !== undefined) return imageSeoRegistryCache;
@@ -868,7 +881,14 @@ function optimizeBlogIndexImages(bodyHtml) {
   });
 }
 
-function renderManagedPage({ manifest, entryId, meta, bodyHtml, entryOverride = null }) {
+function renderManagedPage({
+  manifest,
+  entryId,
+  meta,
+  bodyHtml,
+  entryOverride = null,
+  contentHubRegistry = null,
+}) {
   const assetVersion = readAssetVersion();
   const context = createRenderContext({ manifest, entryId, meta, entryOverride });
   const entry = context.entry;
@@ -914,13 +934,23 @@ function renderManagedPage({ manifest, entryId, meta, bodyHtml, entryOverride = 
     renderedBodyHtml = insertEducationalImage(renderedBodyHtml, imageContext);
   }
 
+  const headHtml = renderCommonHead(renderMeta, entry, assetVersion, renderedBodyHtml);
+  const renderedContentBodyHtml = renderContentHubModule({
+    bodyHtml: renderedBodyHtml,
+    pageId: entryId,
+    lang: context.lang,
+    locale: context.locale,
+    registry: contentHubRegistry || getContentHubRegistry(manifest),
+    currentPath: entry?.locales?.[context.lang]?.path || renderMeta.currentPath,
+  });
+
   const html = renderTemplate({
     HTML_ATTRS: htmlAttributes(renderMeta),
     BODY_ATTRS: bodyAttributes(renderMeta),
-    HEAD_HTML: renderCommonHead(renderMeta, entry, assetVersion, renderedBodyHtml),
+    HEAD_HTML: headHtml,
     BEFORE_BODY_HTML: renderBeforeBody(renderMeta),
     NAV_HTML: navHtml,
-    CONTENT_HTML: renderContent(renderMeta, renderedBodyHtml, renderPageHero(context)),
+    CONTENT_HTML: renderContent(renderMeta, renderedContentBodyHtml, renderPageHero(context)),
     FOOTER_HTML: renderSharedFooter(context),
     SCRIPTS_HTML: renderScripts(renderMeta, assetVersion),
   });

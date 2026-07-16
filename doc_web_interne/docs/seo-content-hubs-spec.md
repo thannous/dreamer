@@ -1,7 +1,7 @@
 # Content hubs SEO Noctalia — spécification d’implémentation
 
 Date : 16 juillet 2026  
-Statut : **proposée, prête pour revue ; aucune implémentation ni publication lancée**  
+Statut : **implémentée et validée localement ; aucune publication lancée**
 Base inspectée : `master` à `f8bdfdc6e`  
 Périmètre : site marketing multilingue FR, EN, ES, DE et IT
 
