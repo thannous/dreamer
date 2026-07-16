@@ -20,7 +20,6 @@ const mockSupabaseAuth = {
 };
 
 const mockSupabase = { auth: mockSupabaseAuth };
-const mockCreateWebOAuthState = jest.fn(() => 'oauth-state');
 
 const mockMockAuth = {
   getAccessToken: jest.fn(),
@@ -103,7 +102,6 @@ const loadAuth = async (options?: {
 
   jest.doMock('../supabase', () => ({
     supabase: mockSupabase,
-    createWebOAuthState: mockCreateWebOAuthState,
   }));
 
   jest.doMock('../mockAuth', () => mockMockAuth);
@@ -133,6 +131,7 @@ describe('auth helpers', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = '';
+    process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID = 'ios-client-id';
 
     const unsubscribe = jest.fn();
     mockSupabaseAuth.onAuthStateChange.mockReturnValue({
@@ -172,12 +171,12 @@ describe('auth helpers', () => {
 
     mockSupabaseAuth.signOut.mockResolvedValue({ error: null });
     mockSupabaseAuth.signInWithOAuth.mockResolvedValue({ error: null });
-    mockCreateWebOAuthState.mockReturnValue('oauth-state');
     mockFetchJSON.mockResolvedValue({ ok: true });
   });
 
   it('initializes Google Sign-In when configured', async () => {
     process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = 'client-id';
+    process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID = 'ios-client-id';
     const auth = await loadAuth();
     const { Platform } = require('react-native');
     expect(Platform.OS).toBe('ios');
@@ -187,6 +186,7 @@ describe('auth helpers', () => {
       expect(defaultGoogleModule.GoogleSignin.configure).toHaveBeenCalledWith(
         expect.objectContaining({
           webClientId: 'client-id',
+          iosClientId: 'ios-client-id',
           scopes: ['openid', 'email', 'profile'],
           offlineAccess: false,
         })
@@ -203,6 +203,20 @@ describe('auth helpers', () => {
     expect(mockLogger.warn).toHaveBeenCalledWith('Failed to initialize Google Sign-In', expect.any(Error));
     const error = mockLogger.warn.mock.calls[0]?.[1] as Error | undefined;
     expect(error?.message).toContain('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID not configured');
+  });
+
+  it('warns when the iOS Google Sign-In client id is missing', async () => {
+    process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = 'client-id';
+    process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID = '';
+    const auth = await loadAuth();
+
+    auth.initializeGoogleSignIn();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(mockLogger.warn).toHaveBeenCalledWith('Failed to initialize Google Sign-In', expect.any(Error));
+    const error = mockLogger.warn.mock.calls[0]?.[1] as Error | undefined;
+    expect(error?.message).toContain('EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID not configured');
+    expect(defaultGoogleModule.GoogleSignin.configure).not.toHaveBeenCalled();
   });
 
   it('returns access token when available', async () => {
@@ -445,7 +459,6 @@ describe('auth helpers', () => {
       options: {
         scopes: 'openid email profile',
         redirectTo: globalThis.location?.origin ?? 'https://dream.noctalia.app',
-        queryParams: { state: 'oauth-state' },
       },
     });
   });

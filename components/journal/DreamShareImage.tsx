@@ -10,7 +10,6 @@ import { Image as RNImage, StyleSheet, Text, View } from 'react-native';
 
 interface DreamShareImageProps {
   dream: DreamAnalysis;
-  isPlus: boolean;
   t: (key: string, params?: any) => string;
 }
 
@@ -20,7 +19,7 @@ interface DreamShareImageProps {
  * Instagram 4:5 ratio: 1080x1350px
  */
 export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function DreamShareImage(
-  { dream, isPlus, t },
+  { dream, t },
   ref
 ) {
   const [imageError, setImageError] = useState(false);
@@ -83,16 +82,13 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
           </Text>
         )}
 
-        {/* Footer - Only for users without Noctalia Plus */}
-        {!isPlus && (
-          <View style={styles.footerContainer}>
-            <Text style={[styles.footer, { color: noctalia.text.secondary }]}>{t('journal.detail.share_image.footer')}</Text>
-            <RNImage
-              source={require('@/assets/images/icon-transparent.png')}
-              style={styles.footerLogo}
-            />
-          </View>
-        )}
+        <View style={styles.footerContainer}>
+          <Text style={[styles.footer, { color: noctalia.text.secondary }]}>{t('journal.detail.share_image.footer')}</Text>
+          <RNImage
+            source={require('@/assets/images/icon-transparent.png')}
+            style={styles.footerLogo}
+          />
+        </View>
       </View>
     </View>
   );

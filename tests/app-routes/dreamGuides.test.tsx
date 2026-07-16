@@ -6,14 +6,16 @@ import { afterEach, describe, expect, it, jest } from '@jest/globals';
 afterEach(() => {
   cleanup();
   jest.clearAllMocks();
+  mockGuideId = 'most-common-dream-symbols';
 });
 
 const mockPush = jest.fn();
 const mockBack = jest.fn();
+let mockGuideId = 'most-common-dream-symbols';
 
 jest.mock('expo-router', () => ({
   router: { push: mockPush, back: mockBack },
-  useLocalSearchParams: () => ({ id: 'most-common-dream-symbols' }),
+  useLocalSearchParams: () => ({ id: mockGuideId }),
 }));
 
 jest.mock('react-native', () => jest.requireActual('../react-native-stub'));
@@ -74,18 +76,28 @@ const { default: DreamGuidesScreen } = require('@/app/dream-guides');
 const { default: DreamGuideDetailScreen } = require('@/app/dream-guide/[id]');
 
 describe('dream guide routes', () => {
-  it('lists the important website guides and opens a guide', () => {
+  it('lists the general and symbol guides and opens a general guide', () => {
     render(<DreamGuidesScreen />);
 
     expect(screen.getByText('Dream guides')).toBeTruthy();
-    expect(screen.getByText('Essential guides')).toBeTruthy();
+    expect(screen.getByText('Practical guides')).toBeTruthy();
+    expect(screen.getByText('Symbol guides')).toBeTruthy();
 
-    fireEvent.click(screen.getByTestId('dream-guide-most-common-dream-symbols'));
+    fireEvent.click(screen.getByTestId('dream-guide-understand-dreams'));
 
     expect(mockPush).toHaveBeenCalledWith({
       pathname: '/dream-guide/[id]',
-      params: { id: 'most-common-dream-symbols' },
+      params: { id: 'understand-dreams' },
     });
+  });
+
+  it('renders a general guide as native practical steps', () => {
+    mockGuideId = 'remember-dreams';
+    render(<DreamGuideDetailScreen />);
+
+    expect(screen.getByText('How to remember your dreams')).toBeTruthy();
+    expect(screen.getByText('What to remember')).toBeTruthy();
+    expect(screen.getAllByTestId(/dream-guide-point-/)).toHaveLength(4);
   });
 
   it('opens the existing symbol detail from a guide with the guide analytics source', () => {

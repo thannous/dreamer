@@ -132,7 +132,7 @@ const normalizeMutation = (mutation: DreamMutation, userScope?: string | null): 
 };
 
 const isRetryableMutation = (mutation: DreamMutation): boolean =>
-  mutation.status === 'pending' || mutation.status === 'failed';
+  mutation.status === 'pending' || mutation.status === 'sending' || mutation.status === 'failed';
 
 const applyAckedMutation = (
   list: DreamAnalysis[],
@@ -292,13 +292,16 @@ export function useOfflineSyncQueue({
 
   const retryDreamMutations = useCallback(
     async (dreamId: number): Promise<boolean> => {
-      let changed = false;
+      let matched = false;
       const nextQueue: DreamMutation[] = pendingMutationsRef.current.map((mutation) => {
-        if (getMutationDreamId(mutation) !== dreamId || mutation.status !== 'failed') {
+        if (
+          getMutationDreamId(mutation) !== dreamId ||
+          !['pending', 'sending', 'failed'].includes(mutation.status)
+        ) {
           return mutation;
         }
 
-        changed = true;
+        matched = true;
         return {
           ...mutation,
           status: 'pending',
@@ -306,7 +309,7 @@ export function useOfflineSyncQueue({
         };
       });
 
-      if (!changed) {
+      if (!matched) {
         return false;
       }
 

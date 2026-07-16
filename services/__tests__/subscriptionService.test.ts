@@ -111,9 +111,21 @@ describe('subscriptionService', () => {
     expect(mockService.getStatus).not.toHaveBeenCalled();
   });
 
-  it('given native without mock__when loading service__then uses real implementation', async () => {
+  it('given ios dev without explicit key__when loading service__then uses mock implementation', async () => {
     mockSetMockMode(false);
     mockSetPlatformOS('ios');
+
+    const service = require('../subscriptionService');
+    await service.getSubscriptionStatus();
+
+    expect(mockService.getStatus).toHaveBeenCalled();
+    expect(mockRealService.getStatus).not.toHaveBeenCalled();
+  });
+
+  it('given ios dev with explicit key__when loading service__then uses real implementation', async () => {
+    mockSetMockMode(false);
+    mockSetPlatformOS('ios');
+    mockSetPublicEnv('EXPO_PUBLIC_REVENUECAT_IOS_KEY', 'test_ios_key');
 
     const service = require('../subscriptionService');
     await service.getSubscriptionStatus();
@@ -159,6 +171,7 @@ describe('subscriptionService', () => {
   it('given missing refreshStatus__when refreshing__then falls back to getStatus', async () => {
     mockSetMockMode(false);
     mockSetPlatformOS('ios');
+    mockSetPublicEnv('EXPO_PUBLIC_REVENUECAT_IOS_KEY', 'test_ios_key');
     mockRealService.refreshStatus = undefined as unknown as typeof mockRealService.refreshStatus;
 
     const service = require('../subscriptionService');

@@ -72,6 +72,7 @@ import {
 } from '@/lib/recordingActivation';
 import {
   preserveVoiceModeAfterFailure,
+  type VoiceCaptureFailure,
   type VoiceFallbackReason,
 } from '@/lib/recordingVoiceMode';
 import { getRecordingDraftProgress } from '@/lib/recordingDraftProgress';
@@ -110,7 +111,6 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   type LayoutChangeEvent,
-  Platform,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -243,6 +243,7 @@ export default function RecordingScreen() {
   const [showRememberedDetailsSheet, setShowRememberedDetailsSheet] = useState(false);
   const [inputMode, setInputMode] = useState<RecordingInputModePreference>('text');
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [footerHeight, setFooterHeight] = useState(0);
   const [bottomNavHeight, setBottomNavHeight] = useState(0);
   const appliedRouteEntriesRef = useRef<Set<string>>(new Set());
@@ -379,8 +380,14 @@ export default function RecordingScreen() {
   }, [onboardingScope]);
 
   useEffect(() => {
-    const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
-    const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    const show = Keyboard.addListener('keyboardDidShow', (event) => {
+      setKeyboardVisible(true);
+      setKeyboardHeight(event.endCoordinates.height);
+    });
+    const hide = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+      setKeyboardHeight(0);
+    });
     return () => {
       show.remove();
       hide.remove();
@@ -755,6 +762,17 @@ export default function RecordingScreen() {
     return true;
   }, [tier, firstDreamPrompt, analyzePromptDream]);
 
+  const handleVoiceCaptureFailure = useCallback((failure: VoiceCaptureFailure) => {
+    setVoiceFallbackReason(failure);
+    if (inputMode !== 'voice') {
+      return;
+    }
+
+    const outcome = preserveVoiceModeAfterFailure(failure);
+    setInputMode(outcome.inputMode);
+    persistInputModePreference(outcome.preferenceToPersist);
+  }, [inputMode, persistInputModePreference]);
+
   const stopRecording = useCallback(async (options?: { silent?: boolean }) => {
     const silent = options?.silent ?? false;
     try {
@@ -806,17 +824,11 @@ export default function RecordingScreen() {
           return;
         }
         if (result.error === 'stt_unavailable') {
-          const outcome = preserveVoiceModeAfterFailure('stt_unavailable');
-          setVoiceFallbackReason(outcome.fallbackReason);
-          setInputMode(outcome.inputMode);
-          persistInputModePreference(outcome.preferenceToPersist);
+          handleVoiceCaptureFailure('stt_unavailable');
           return;
         }
         if (result.error === 'language_pack_missing') {
-          const outcome = preserveVoiceModeAfterFailure('language_pack_missing');
-          setVoiceFallbackReason(outcome.fallbackReason);
-          setInputMode(outcome.inputMode);
-          persistInputModePreference(outcome.preferenceToPersist);
+          handleVoiceCaptureFailure('language_pack_missing');
           return;
         }
         if (result.error === 'no_recording') {
@@ -830,10 +842,7 @@ export default function RecordingScreen() {
           Alert.alert(t('recording.alert.transcription_failed.title'), result.error);
           return;
         }
-        const outcome = preserveVoiceModeAfterFailure('no_speech');
-        setVoiceFallbackReason(outcome.fallbackReason);
-        setInputMode(outcome.inputMode);
-        persistInputModePreference(outcome.preferenceToPersist);
+        handleVoiceCaptureFailure('no_speech');
       }
     } catch (err) {
       log.error('Failed to stop recording:', err);
@@ -846,7 +855,7 @@ export default function RecordingScreen() {
     combineTranscript,
     lengthLimitMessage,
     normalizeForComparison,
-    persistInputModePreference,
+    handleVoiceCaptureFailure,
     showQuotaSheet,
     stopSessionRecording,
   ]);
@@ -876,8 +885,6 @@ export default function RecordingScreen() {
             capture_context: captureIntent,
           });
         }
-        setInputMode('voice');
-        persistInputModePreference('voice');
         recordingStartedAtRef.current = Date.now();
         void trackProductEvent('recording_started', {
           input_mode: 'voice',
@@ -896,21 +903,21 @@ export default function RecordingScreen() {
         response.error === 'stt_unavailable' ||
         response.error === 'language_pack_missing'
       ) {
-        const outcome = preserveVoiceModeAfterFailure(response.error);
-        setVoiceFallbackReason(outcome.fallbackReason);
-        setInputMode(outcome.inputMode);
-        persistInputModePreference(outcome.preferenceToPersist);
+        handleVoiceCaptureFailure(response.error);
+        if (response.error === 'stt_unavailable' && process.env.EXPO_OS === 'ios') {
+          Alert.alert(
+            t('recording.alert.stt_unavailable.title'),
+            t('recording.alert.stt_unavailable.message')
+          );
+        }
         return;
       }
-      const outcome = preserveVoiceModeAfterFailure('start_failed');
-      setVoiceFallbackReason(outcome.fallbackReason);
-      setInputMode(outcome.inputMode);
-      persistInputModePreference(outcome.preferenceToPersist);
+      handleVoiceCaptureFailure('start_failed');
       Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
     } finally {
       setIsPreparingRecording(false);
     }
-  }, [captureIntent, language, persistInputModePreference, startSessionRecording, t, transcript]);
+  }, [captureIntent, handleVoiceCaptureFailure, language, startSessionRecording, t, transcript]);
 
   const toggleRecording = useCallback(async () => {
     if (recordingTransitionRef.current) {
@@ -1459,6 +1466,9 @@ export default function RecordingScreen() {
     : viewportWidth < DESKTOP_BREAKPOINT
       ? Math.max(bottomNavHeight, insets.bottom)
       : insets.bottom;
+  const recordingGuideBottomOffset = keyboardVisible
+    ? Math.max(keyboardHeight, insets.bottom)
+    : fixedFooterBottomOffset;
   const mainContentStyle = useMemo(
     () => [
       styles.mainContent,
@@ -1470,13 +1480,15 @@ export default function RecordingScreen() {
     [fixedFooterBottomOffset, footerHeight, hasSaveableContent, insets.top]
   );
   const fixedFooterStyle = useMemo(
-    () => [
-      styles.fixedFooter,
-      {
-        bottom: fixedFooterBottomOffset,
-      },
-    ],
-    [fixedFooterBottomOffset]
+    () => keyboardVisible
+      ? styles.keyboardFooter
+      : [
+          styles.fixedFooter,
+          {
+            bottom: fixedFooterBottomOffset,
+          },
+        ],
+    [fixedFooterBottomOffset, keyboardVisible]
   );
   const subjectPropositionMarginBottom = useMemo(
     () => fixedFooterBottomOffset + (hasSaveableContent ? footerHeight : 0),
@@ -1493,6 +1505,18 @@ export default function RecordingScreen() {
     const nextHeight = Math.ceil(viewportHeight - event.nativeEvent.layout.y);
     setBottomNavHeight((current) => current === nextHeight ? current : nextHeight);
   }, [viewportHeight]);
+
+  useEffect(() => {
+    if (!keyboardVisible || !hasSaveableContent || footerHeight === 0) {
+      return;
+    }
+
+    const frame = requestAnimationFrame(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [footerHeight, hasSaveableContent, keyboardVisible]);
 
   const focusTranscriptEnd = useCallback((value: string) => {
     const len = value.length;
@@ -1663,6 +1687,10 @@ export default function RecordingScreen() {
 
   const handleInputModePreferenceChange = useCallback(
     async (preference: RecordingInputModePreference) => {
+      if (recordingGuideVisible && recordingGuideStep === 2) {
+        return;
+      }
+
       if (preference === inputMode) {
         return;
       }
@@ -1690,6 +1718,8 @@ export default function RecordingScreen() {
       inputMode,
       isRecordingRef,
       persistInputModePreference,
+      recordingGuideStep,
+      recordingGuideVisible,
       stopRecording,
       transcript,
     ]
@@ -1710,15 +1740,11 @@ export default function RecordingScreen() {
     });
   }, [onboardingScope]);
 
-  const switchToVoiceMode = useCallback(async () => {
+  const handleVoiceCapturePress = useCallback(async () => {
     completeRecordingVoiceHint();
     setVoiceFallbackReason(null);
-    if (inputMode !== 'voice') {
-      setInputMode('voice');
-      persistInputModePreference('voice');
-    }
     await toggleRecording();
-  }, [completeRecordingVoiceHint, inputMode, persistInputModePreference, toggleRecording]);
+  }, [completeRecordingVoiceHint, toggleRecording]);
 
   const onboardingOfferActivationInsight = useMemo(
     () => getSavedDreamActivationInsight(onboardingOfferDream),
@@ -1926,11 +1952,12 @@ export default function RecordingScreen() {
         />
         <AtmosphereBackground />
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior="height"
           style={styles.keyboardView}
         >
           <ScrollView
             ref={scrollViewRef}
+            style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
             testID={TID.Screen.Recording}
@@ -1940,7 +1967,11 @@ export default function RecordingScreen() {
               <View style={styles.bodySection}>
                 <RecordingInputModeSelect
                   value={inputMode}
-                  disabled={interactionDisabled || isPreparingRecording}
+                  disabled={
+                    interactionDisabled
+                    || isPreparingRecording
+                    || (recordingGuideVisible && recordingGuideStep === 2)
+                  }
                   highlighted={recordingGuideVisible && recordingGuideStep !== 2}
                   highlightBadge={recordingGuideStep + 1}
                   highlightMeasureKey={recordingGuideMeasureKey}
@@ -1980,7 +2011,7 @@ export default function RecordingScreen() {
                       : t('recording.placeholder')
                   }
                   autoFocus={false}
-                  onSwitchToVoice={switchToVoiceMode}
+                  onSwitchToVoice={handleVoiceCapturePress}
                   onOpenDetails={
                     captureIntent === 'remembered'
                       ? () => setShowRememberedDetailsSheet(true)
@@ -2048,7 +2079,7 @@ export default function RecordingScreen() {
         ) : null}
         {recordingGuideVisible ? (
           <RecordingOnboardingTour
-            bottomOffset={fixedFooterBottomOffset}
+            bottomOffset={recordingGuideBottomOffset}
             measureKey={recordingGuideMeasureKey}
             step={recordingGuideStep}
             inputMode={inputMode}
@@ -2364,6 +2395,9 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
   },
+  scrollView: {
+    flex: 1,
+  },
   mainContent: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -2381,6 +2415,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
+    paddingHorizontal: 16,
+    zIndex: 40,
+  },
+  keyboardFooter: {
+    flexShrink: 0,
     paddingHorizontal: 16,
     zIndex: 40,
   },

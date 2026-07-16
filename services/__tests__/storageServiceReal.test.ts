@@ -23,6 +23,7 @@ const REMEMBERED_DREAM_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_remembered_d
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
+const LAST_SEEN_RELEASE_NOTES_VERSION_KEY = 'gemini_dream_journal_last_seen_release_notes_version';
 const ONBOARDING_STATE_KEY = 'gemini_dream_journal_onboarding_state_v2';
 const ONBOARDING_GUEST_CLAIMED_BY_KEY = 'gemini_dream_journal_onboarding_guest_claimed_by_v2';
 const PENDING_RECORDING_NOTIFICATION_KEY = 'gemini_dream_journal_pending_recording_notification_v1';
@@ -348,6 +349,7 @@ describe('storageServiceReal', () => {
       await storage.saveRitualPreference('focus');
       await storage.saveRitualStepProgress({ stepIndex: 2, completedAt: 123 } as any);
       await storage.saveFirstLaunchCompleted(true);
+      await storage.saveLastSeenReleaseNotesVersion('2.0.3');
       await storage.setDreamsMigrationSynced('user-1', true);
 
       expect(localStorage.getItem(THEME_PREFERENCE_KEY)).toBe(JSON.stringify('dark'));
@@ -359,6 +361,9 @@ describe('storageServiceReal', () => {
       expect(localStorage.getItem(RITUAL_PREFERENCE_KEY)).toBe(JSON.stringify('focus'));
       expect(localStorage.getItem(RITUAL_PROGRESS_KEY)).toContain('"stepIndex":2');
       expect(localStorage.getItem(FIRST_LAUNCH_COMPLETED_KEY)).toBe(JSON.stringify(true));
+      expect(localStorage.getItem(LAST_SEEN_RELEASE_NOTES_VERSION_KEY)).toBe(
+        JSON.stringify('2.0.3')
+      );
       expect(localStorage.getItem(`${DREAMS_MIGRATION_SYNCED_PREFIX}user-1`)).toBe('true');
 
       expect(await storage.getThemePreference()).toBe('dark');
@@ -370,6 +375,7 @@ describe('storageServiceReal', () => {
       expect(await storage.getRitualPreference()).toBe('focus');
       expect(await storage.getRitualStepProgress()).toEqual({ stepIndex: 2, completedAt: 123 });
       expect(await storage.getFirstLaunchCompleted()).toBe(true);
+      expect(await storage.getLastSeenReleaseNotesVersion()).toBe('2.0.3');
       expect(await storage.getDreamsMigrationSynced('user-1')).toBe(true);
     } finally {
       (globalThis as any).indexedDB = originalIndexedDB;

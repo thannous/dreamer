@@ -17,6 +17,8 @@ import {
   RITUALS,
   type RitualId,
 } from '@/lib/inspirationRituals';
+import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
+import { isSleepSoundsAvailable } from '@/lib/sleepSoundsFeature';
 import {
   getLocalDateKey,
 } from '@/lib/ritualProgressUtils';
@@ -39,7 +41,9 @@ export default function RitualDetailScreen() {
   const ritualId = id as RitualId;
   const { colors, mode, shadows } = useTheme();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
+  const sleepSoundCopy = useMemo(() => getSleepSoundCopy(currentLang), [currentLang]);
+  const sleepSoundsAvailable = isSleepSoundsAvailable();
   const insets = useSafeAreaInsets();
   const scrollPerf = useScrollIdle();
 
@@ -117,6 +121,10 @@ export default function RitualDetailScreen() {
     },
     [progressDate, ritualId],
   );
+
+  const handleOpenSleepSounds = useCallback(() => {
+    router.push('/sleep-sounds' as any);
+  }, []);
 
   const completedSteps = ritualProgress[ritualId] ?? {};
   const completedCount = Object.values(completedSteps).filter(Boolean).length;
@@ -206,6 +214,44 @@ export default function RitualDetailScreen() {
                 .replace('{total}', String(totalSteps))}
             </Text>
           </View>
+
+          {sleepSoundsAvailable ? (
+            <GlassCard intensity="moderate" style={styles.sleepSoundCard} animationDelay={100}>
+              <Pressable
+                onPress={handleOpenSleepSounds}
+                testID="ritual-sleep-sounds"
+                accessibilityRole="button"
+                accessibilityLabel={sleepSoundCopy.entryTitle}
+                accessibilityHint={sleepSoundCopy.entryBody}
+                style={({ pressed }) => [
+                  styles.sleepSoundButton,
+                  { opacity: pressed ? 0.8 : 1 },
+                ]}
+              >
+                <View
+                  style={[
+                    styles.sleepSoundIcon,
+                    { backgroundColor: noctalia.surface.soft },
+                  ]}
+                >
+                  <IconSymbol
+                    name="speaker.wave.2.fill"
+                    size={24}
+                    color={noctalia.accent.base}
+                  />
+                </View>
+                <View style={styles.sleepSoundCopy}>
+                  <Text style={[styles.sleepSoundTitle, { color: noctalia.text.primary }]}>
+                    {sleepSoundCopy.entryTitle}
+                  </Text>
+                  <Text style={[styles.sleepSoundBody, { color: noctalia.text.secondary }]}>
+                    {sleepSoundCopy.entryBody}
+                  </Text>
+                </View>
+                <IconSymbol name="chevron.right" size={20} color={noctalia.accent.base} />
+              </Pressable>
+            </GlassCard>
+          ) : null}
 
           {/* Steps checklist */}
           <GlassCard
@@ -347,6 +393,38 @@ const styles = StyleSheet.create({
   progressText: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 13,
+  },
+  sleepSoundCard: {
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  sleepSoundButton: {
+    minHeight: 94,
+    padding: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  sleepSoundIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sleepSoundCopy: {
+    flex: 1,
+    gap: 4,
+  },
+  sleepSoundTitle: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 16,
+    lineHeight: 21,
+  },
+  sleepSoundBody: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 13,
+    lineHeight: 18,
   },
   stepsCard: {
     borderRadius: 24,

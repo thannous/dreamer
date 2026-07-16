@@ -239,7 +239,7 @@ export function useRecordingSession({
         }
 
         const hasNativeSession = Boolean(nativeResultPromise);
-        if (!transcriptText && cleanupUri) {
+        if (!transcriptText && cleanupUri && Platform.OS !== 'ios') {
           try {
             transcriptText = (await transcribeAudio({
               uri: cleanupUri,
@@ -407,6 +407,12 @@ export function useRecordingSession({
           },
         });
 
+        if (Platform.OS === 'ios' && !nativeSessionRef.current) {
+          await setAudioModeAsync({ allowsRecording: false });
+          audioModeEnabled = false;
+          return { success: false, error: 'stt_unavailable' };
+        }
+
         if (Platform.OS === 'web' && !nativeSessionRef.current) {
           Alert.alert(
             t('recording.alert.stt_unavailable.title'),
@@ -417,7 +423,8 @@ export function useRecordingSession({
         }
 
         const canPersistAudio = nativeSessionRef.current?.hasRecording === true;
-        skipRecorderRef.current = Platform.OS === 'web' ? true : canPersistAudio;
+        const usesNativeIosRecognition = Platform.OS === 'ios' && Boolean(nativeSessionRef.current);
+        skipRecorderRef.current = Platform.OS === 'web' || canPersistAudio || usesNativeIosRecognition;
 
         if (__DEV__) {
           if (!nativeSessionRef.current) {

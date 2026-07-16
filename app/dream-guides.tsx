@@ -14,7 +14,10 @@ import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamGuideCopy } from '@/lib/dreamGuideCopy';
 import type { DreamGuideLanguage } from '@/lib/dreamGuideTypes';
-import { getImportantDreamGuides } from '@/services/dreamGuideService';
+import {
+  getGeneralDreamGuides,
+  getImportantDreamGuides,
+} from '@/services/dreamGuideService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 
@@ -24,7 +27,8 @@ export default function DreamGuidesScreen() {
   const { currentLang } = useTranslation();
   const language = (currentLang ?? 'en') as DreamGuideLanguage;
   const copy = getDreamGuideCopy(language);
-  const guides = getImportantDreamGuides();
+  const generalGuides = getGeneralDreamGuides();
+  const symbolGuides = getImportantDreamGuides();
   const scrollPerf = useScrollIdle();
 
   const handleGuidePress = useCallback((id: string) => {
@@ -74,6 +78,21 @@ export default function DreamGuidesScreen() {
             {copy.screenSubtitle}
           </Text>
 
+          <Text style={[styles.sectionLabel, { color: noctalia.accent.base }]}>
+            {copy.practicalLabel}
+          </Text>
+          <View style={styles.guideList}>
+            {generalGuides.map((guide) => (
+              <DreamGuideCard
+                key={guide.id}
+                guide={guide}
+                language={language}
+                metaLabel={copy.readingTime(guide.readingMinutes)}
+                onPress={handleGuidePress}
+              />
+            ))}
+          </View>
+
           <FlatGlassCard intensity="strong" style={styles.dictionaryCard}>
             <View style={[styles.dictionaryIcon, { backgroundColor: noctalia.surface.soft }]}>
               <IconSymbol name="book.closed.fill" size={24} color={noctalia.accent.base} />
@@ -107,15 +126,15 @@ export default function DreamGuidesScreen() {
           </FlatGlassCard>
 
           <Text style={[styles.sectionLabel, { color: noctalia.accent.base }]}>
-            {copy.featuredLabel}
+            {copy.symbolGuidesLabel}
           </Text>
           <View style={styles.guideList}>
-            {guides.map((guide) => (
+            {symbolGuides.map((guide) => (
               <DreamGuideCard
                 key={guide.id}
                 guide={guide}
                 language={language}
-                symbolCountLabel={copy.symbolCount(guide.symbols.length)}
+                metaLabel={copy.symbolCount(guide.symbols.length)}
                 onPress={handleGuidePress}
               />
             ))}

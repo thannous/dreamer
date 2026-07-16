@@ -2,6 +2,7 @@ import {
   getDreamGuideById,
   getDreamGuideContent,
   getDreamGuideSymbols,
+  getGeneralDreamGuides,
   getImportantDreamGuides,
 } from '@/services/dreamGuideService';
 
@@ -20,6 +21,21 @@ describe('dreamGuideService', () => {
 
     expect(guide).toBeDefined();
     expect(getDreamGuideContent(guide!, 'fr').title).toBe('Eau en rêve : signification');
+  });
+
+  it('exposes four general guides before the symbol collections', () => {
+    expect(getGeneralDreamGuides().map((guide) => guide.id)).toEqual([
+      'understand-dreams',
+      'remember-dreams',
+      'dream-journal',
+      'lucid-dreaming',
+    ]);
+
+    const guide = getDreamGuideById('dream-journal');
+    expect(guide?.kind).toBe('practical');
+    expect(guide && getDreamGuideContent(guide, 'fr').title).toBe(
+      'Commencer un journal de rêves',
+    );
   });
 
   it('resolves every referenced symbol to the existing app dictionary', () => {

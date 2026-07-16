@@ -12,14 +12,14 @@ import { getDreamGuideContent, getDreamGuideIcon } from '@/services/dreamGuideSe
 interface DreamGuideCardProps {
   guide: DreamGuide;
   language: DreamGuideLanguage;
-  symbolCountLabel: string;
+  metaLabel: string;
   onPress: (id: string) => void;
 }
 
 export const DreamGuideCard = memo(function DreamGuideCard({
   guide,
   language,
-  symbolCountLabel,
+  metaLabel,
   onPress,
 }: DreamGuideCardProps) {
   const { colors, mode } = useTheme();
@@ -56,7 +56,7 @@ export const DreamGuideCard = memo(function DreamGuideCard({
         <Text style={[styles.description, { color: noctalia.text.secondary }]} numberOfLines={2}>
           {content.metaDescription}
         </Text>
-        <Text style={[styles.count, { color: noctalia.accent.base }]}>{symbolCountLabel}</Text>
+        <Text style={[styles.count, { color: noctalia.accent.base }]}>{metaLabel}</Text>
       </View>
       <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
     </Pressable>

@@ -31,6 +31,7 @@ import { SystemBars } from 'react-native-edge-to-edge';
 import AnimatedSplashScreen from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
+import { WhatsNewModalHost } from '@/components/releases/WhatsNewModal';
 import { VercelAnalytics } from '@/components/VercelAnalytics';
 import { VercelSpeedInsights } from '@/components/VercelSpeedInsights';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
@@ -399,7 +400,8 @@ function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void 
         currentPath?.startsWith('/symbol-detail/') ||
         currentPath?.startsWith('/dream-guides') ||
         currentPath?.startsWith('/dream-guide/') ||
-        currentPath?.startsWith('/ritual/');
+        currentPath?.startsWith('/ritual/') ||
+        currentPath?.startsWith('/sleep-sounds');
 
       if (__DEV__) {
         console.log('[RootLayoutNav] navigateForForeground', {
@@ -564,6 +566,7 @@ function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void 
             <Stack.Screen name="dream-guides" options={{ headerShown: false }} />
             <Stack.Screen name="dream-guide/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="ritual/[id]" options={{ headerShown: false }} />
+            <Stack.Screen name="sleep-sounds" options={{ headerShown: false }} />
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
           </Stack>
@@ -750,6 +753,7 @@ export default function RootLayout() {
                 <OnboardingProvider>
                   <SubscriptionProvider>
                     <RootLayoutNav onStartupCommitted={handleStartupCommitted} />
+                    <WhatsNewModalHost ready={!shouldShowCustomSplash} />
                   </SubscriptionProvider>
                 </OnboardingProvider>
               </AuthProvider>

@@ -4,6 +4,40 @@ function normalizePageTitle(title) {
   return String(title || '').replace(/\s*\|\s*Noctalia\s*$/i, '').trim();
 }
 
+function normalizeDictionarySearchText(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase()
+    .trim();
+}
+
+function scoreDictionarySearchMatch({ query, title, slug, content }) {
+  const normalizedQuery = normalizeDictionarySearchText(query);
+  if (!normalizedQuery) return 0;
+
+  const toWords = (value) => normalizeDictionarySearchText(value)
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean);
+  const queryWords = toWords(normalizedQuery);
+  const normalizedTitle = normalizeDictionarySearchText(title);
+  const normalizedSlug = normalizeDictionarySearchText(slug);
+  const titleWords = toWords(title);
+  const slugWords = toWords(slug);
+  const contentWords = toWords(content);
+  const matchesAllWords = (words) => queryWords.every(
+    (queryWord) => words.some((word) => word.startsWith(queryWord))
+  );
+
+  if (normalizedTitle === normalizedQuery) return 0;
+  if (normalizedSlug === normalizedQuery) return 1;
+  if (normalizedTitle.startsWith(normalizedQuery)) return 2;
+  if (matchesAllWords(titleWords)) return 3;
+  if (matchesAllWords(slugWords)) return 4;
+  if (matchesAllWords([...titleWords, ...slugWords, ...contentWords])) return 5;
+  return Number.POSITIVE_INFINITY;
+}
+
 function getSymbolAtlasPosition(
   index,
   totalSymbols = SYMBOL_ATLAS_COLUMNS * SYMBOL_ATLAS_COLUMNS,
@@ -57,6 +91,8 @@ function prepareDictionarySymbols(symbols, lang, columns = SYMBOL_ATLAS_COLUMNS)
 module.exports = {
   SYMBOL_ATLAS_COLUMNS,
   getSymbolAtlasPosition,
+  normalizeDictionarySearchText,
   normalizePageTitle,
   prepareDictionarySymbols,
+  scoreDictionarySearchMatch,
 };

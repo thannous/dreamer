@@ -72,6 +72,7 @@ jest.doMock('react-native', () => {
       />
     ),
     Text: createElement('span'),
+    useWindowDimensions: () => ({ width: 402, height: 874, scale: 3, fontScale: 1 }),
     View: createElement('div'),
   };
 });

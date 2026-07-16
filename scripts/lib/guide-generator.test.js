@@ -5,8 +5,10 @@ const path = require('path');
 const {
   SYMBOL_ATLAS_COLUMNS,
   getSymbolAtlasPosition,
+  normalizeDictionarySearchText,
   normalizePageTitle,
   prepareDictionarySymbols,
+  scoreDictionarySearchMatch,
 } = require('./guide-dictionary-model');
 const { materializeGeneratedPage } = require('./generated-page-writer');
 
@@ -44,6 +46,32 @@ describe('guide generator contracts', () => {
     expect(getSymbolAtlasPosition(-1, 64)).toEqual({ x: '0.000%', y: '0.000%' });
     expect(normalizePageTitle('  Dream Symbols | Noctalia  ')).toBe('Dream Symbols');
     expect(normalizePageTitle('Dream Symbols')).toBe('Dream Symbols');
+  });
+
+  it('ranks exact symbol searches before broader word matches', () => {
+    const score = (candidate) => scoreDictionarySearchMatch({ query: 'eau', ...candidate });
+
+    expect(normalizeDictionarySearchText('Éau')).toBe('eau');
+    expect(score({ title: 'Eau', slug: 'eau', content: 'Les émotions.' })).toBe(0);
+    expect(score({ title: 'Océan', slug: 'ocean', content: "Une grande étendue d'eau." })).toBe(5);
+    expect(score({ title: 'Arbre', slug: 'arbre', content: 'Un besoin de renouveau.' })).toBe(
+      Number.POSITIVE_INFINITY
+    );
+  });
+
+  it('supports accent-insensitive and multi-word symbol queries', () => {
+    expect(scoreDictionarySearchMatch({
+      query: 'arc ciel',
+      title: 'Arc-en-ciel',
+      slug: 'arc-en-ciel',
+      content: 'Un symbole de transformation.',
+    })).toBe(3);
+    expect(scoreDictionarySearchMatch({
+      query: 'reve',
+      title: 'Rêve lucide',
+      slug: 'reve-lucide',
+      content: '',
+    })).toBe(2);
   });
 
   it('compares finalized HTML so an unchanged dry run stays clean', () => {

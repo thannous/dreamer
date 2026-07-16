@@ -13,8 +13,10 @@ const { materializeGeneratedPage } = require('./lib/generated-page-writer');
 const {
   SYMBOL_ATLAS_COLUMNS,
   getSymbolAtlasPosition,
+  normalizeDictionarySearchText,
   normalizePageTitle,
   prepareDictionarySymbols,
+  scoreDictionarySearchMatch,
 } = require('./lib/guide-dictionary-model');
 const { inlineLucideIcons } = require('./lib/lucide-inline');
 const {
@@ -1867,6 +1869,10 @@ function renderLayoutCss() {
           padding-left: var(--dictionary-edge);
           padding-right: var(--dictionary-edge);
         }
+        #symbolsList {
+          display: flex;
+          flex-direction: column;
+        }
         #symbolsList > section {
           padding-left: 0;
           padding-right: 0;
@@ -2532,7 +2538,7 @@ function generateDictionaryPage(lang, t) {
     const syms = groups[letter];
     const cards = syms.map((sym) => {
       const s = sym[lang];
-      const dataSymbol = escapeHtml(s.slug + ' ' + s.slug + ' ' + s.slug);
+      const dataSymbol = escapeHtml(s.slug);
       const askText = s.askYourself?.[0] || '';
       const catName = (t.category_names || {})[sym.category] || sym.category;
       const catColor = CATEGORY_COLORS[sym.category] || '#c084fc';
@@ -3263,32 +3269,57 @@ ${symbolCatEntries}
             });
 
             // ── Shared search filter ──────────────────────────────────────
+            ${normalizeDictionarySearchText.toString()}
+            ${scoreDictionarySearchMatch.toString()}
+
             function filterSymbols(query) {
                 const noResults = document.getElementById('noResults');
                 const noResultsQuery = document.getElementById('noResultsQuery');
-                const q = query.toLowerCase().trim();
+                const q = normalizeDictionarySearchText(query);
                 let visibleCount = 0;
                 if (q === '') {
-                    symbolCards.forEach(card => card.style.display = '');
-                    listSections.forEach(section => section.style.display = '');
+                    symbolCards.forEach(card => {
+                        card.style.display = '';
+                        card.style.order = '';
+                        delete card.dataset.searchScore;
+                    });
+                    listSections.forEach(section => {
+                        section.style.display = '';
+                        section.style.order = '';
+                    });
                     if (noResults) noResults.style.display = 'none';
                     visibleCount = symbolCards.length;
                 } else {
-                    listSections.forEach(section => {
+                    listSections.forEach((section, sectionIndex) => {
                         const cards = section.querySelectorAll('.symbol-card');
                         let hasVisible = false;
-                        cards.forEach(card => {
+                        let bestSectionScore = Number.POSITIVE_INFINITY;
+                        cards.forEach((card, cardIndex) => {
                             const symbolData = card.dataset.symbol || '';
-                            const title = card.querySelector('h3')?.textContent?.toLowerCase() || '';
-                            const content = card.querySelector('p')?.textContent?.toLowerCase() || '';
-                            const visible = symbolData.includes(q) || title.includes(q) || content.includes(q);
+                            const title = card.querySelector('h3')?.textContent || '';
+                            const content = card.querySelector('p')?.textContent || '';
+                            const score = scoreDictionarySearchMatch({
+                                query: q,
+                                title,
+                                slug: symbolData,
+                                content,
+                            });
+                            const visible = Number.isFinite(score);
                             card.style.display = visible ? '' : 'none';
+                            card.style.order = visible ? String((score * 1000) + cardIndex) : '';
                             if (visible) {
+                                card.dataset.searchScore = String(score);
                                 hasVisible = true;
                                 visibleCount += 1;
+                                bestSectionScore = Math.min(bestSectionScore, score);
+                            } else {
+                                delete card.dataset.searchScore;
                             }
                         });
                         section.style.display = hasVisible ? '' : 'none';
+                        section.style.order = hasVisible
+                            ? String((bestSectionScore * 1000) + sectionIndex)
+                            : '';
                     });
                     const anyVisible = [...listSections].some(s => s.style.display !== 'none');
                     if (noResults) { noResults.style.display = anyVisible ? 'none' : 'block'; }

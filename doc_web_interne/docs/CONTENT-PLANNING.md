@@ -3,10 +3,10 @@
 Source de verite editoriale: `docs-src/content/blog/`.
 Sortie generee: `docs/`.
 Langues suivies: FR, EN, ES, DE, IT.
-Derniere version live observee: `2866f3066c1f` apres le deploy Cloudflare `13c70708` de la source `863c4ba`.
-Controle live du 2026-07-14: le sitemap live contient 1160 URLs et les 20 URLs de juillet repondent 200.
+Derniere version live observee: `86f0ad3eb034`.
+Controle live du 2026-07-16: le sitemap live contient 1165 URLs et les 25 URLs de juillet repondent 200.
 
-## Etat editorial au 14 juillet 2026
+## Etat editorial au 16 juillet 2026
 
 | Phase | Statut | Notes |
 |---|---|---|
@@ -34,8 +34,12 @@ Controle live du 2026-07-14: le sitemap live contient 1160 URLs et les 20 URLs d
 | 14 juillet - Search Console vague juillet | Fait | Les 20 URLs juillet restent `Submitted and indexed`; fetch Google reussi, robots autorise et canonical Google conforme pour chaque URL. Aucune demande manuelle n'est necessaire. |
 | 14 juillet - Controle live | Fait | Les 20 URLs juillet repondent 200 et sont presentes dans le sitemap live, qui contient 1160 URLs. `version.txt` renvoie toujours `2866f3066c1f`. |
 | 14 juillet - Programmation fin juillet | Fait | Priorites 5 a 10 definies a partir de l'export GSC du 15 juin au 12 juillet et d'une veille scientifique primaire: deux nouvelles vagues multilingues, trois refreshs cibles et une cloture mesure/maillage. |
+| 15 juillet - Etude reves/emotions | Publie dans les 5 langues | Prod `20260715-100211`, sitemap live porte a 1165 URLs et resoumis a Search Console avec reponse 204. |
+| 16 juillet - Search Console vague initiale | Fait | Les 15 URLs vacances/bruit nocturne/reveil nocturne restent `Submitted and indexed`; fetch reussi, robots autorises et canonical Google conforme pour les 15. |
+| 16 juillet - Search Console etude reves/emotions | En suivi | 0/5 indexee: FR inconnue, EN exploree non indexee, ES/DE/IT detectees non indexees. Les cinq demandes manuelles ont ete confirmees dans la file d'exploration prioritaire. |
+| 16 juillet - Controle live | Fait | Les 25 URLs juillet repondent 200 et sont presentes dans le sitemap live, qui contient 1165 URLs. `version.txt` renvoie `86f0ad3eb034`. |
 
-Les 6 URLs de juin qui avaient demande une indexation manuelle ne sont plus bloquantes. Les 20 URLs publiees en juillet sont maintenant indexees; aucune demande manuelle ne reste en attente.
+Les 6 URLs de juin qui avaient demande une indexation manuelle ne sont plus bloquantes. Les 20 URLs des priorites 1 a 4 restent indexees. Les cinq URLs de l'etude reves/emotions sont en file d'exploration prioritaire; aucune nouvelle demande ne doit etre envoyee avant une nouvelle reinspection.
 
 ## URLs publiees et indexation
 
@@ -87,7 +91,7 @@ Le sitemap live a ete soumis a Search Console le 2026-07-08. Les cinq URLs vacan
 | 2 | 4-7 juillet, rattrape le 8 juillet | Bruit nocturne, sommeil et reves | Publie/live; 5/5 indexees | Requetes pratiques appartement, voisinage, ville, vacances | FR, EN, ES, DE, IT | Sleep-day-environment, vivid dreams, stress dreams, dream journal, vacation | Build/check/release-check faits; sitemap live OK |
 | 3 | 8-11 juillet, produit le 8 juillet | Reveil nocturne et rappel des reves | Publie/live; 5/5 indexees | Capture rapide, journal vocal, sommeil fragmente | FR, EN, ES, DE, IT | Voice dream journal, how to remember dreams, REM sleep, privacy article | Build/check/release-check faits; sitemap live OK |
 | 4 | 12-15 juillet, anticipe le 10 juillet | Cauchemars en periode de chaleur ou stress | Publie/live; 5/5 indexees | Angle ete + anxiete, utile pour maillage cauchemars/canicule | FR, EN, ES, DE, IT | Nightmares guide, heatwave, anxiety dreams, mental health | Build/check/release-check/crosslinks passes; sitemap live 1160 URLs |
-| 5 | 14-17 juillet, publie le 15 juillet | Les reves regulent-ils nos emotions ? Ce que montre une etude 2026 | Publie/live; indexation initiale 0/5 | Actualite scientifique publiee dans `Sleep` en mai 2026; angle distinct des articles IA et MÖBIUS existants | FR, EN, ES, DE, IT | Cauchemars chaleur/stress, confidentialite IA, sante mentale, anxiete, journal | 5 sources relues, canonical/hreflang/JSON-LD valides, index a 46; build/check/crosslinks/release-check passes; sitemap live 1165 URLs |
+| 5 | 14-17 juillet, publie le 15 juillet | Les reves regulent-ils nos emotions ? Ce que montre une etude 2026 | Publie/live; 0/5 indexee, demandes manuelles 5/5 confirmees le 16 juillet | Actualite scientifique publiee dans `Sleep` en mai 2026; angle distinct des articles IA et MÖBIUS existants | FR, EN, ES, DE, IT | Cauchemars chaleur/stress, confidentialite IA, sante mentale, anxiete, journal | 5 sources relues, canonical/hreflang/JSON-LD valides, index a 46; build/check/crosslinks/release-check passes; sitemap live 1165 URLs |
 | 6 | 18-20 juillet | Refresh `Suenos de agua`: inondation, maison, eau propre/sale | Programme | Quick win SERP: 41 017 impressions, CTR 0,99 %, position 5,3 | ES cible | Symboles eau/inondation/maison/mer + journal de reves | Refaire title/meta, reponse courte, FAQ et ancres; mesurer a J+14 |
 | 7 | 21-23 juillet | Refresh `Flying dreams meaning` | Programme | Reprendre `dream about flying`, `dream of flying` et variantes: 1 948 impressions, position 19,1 | EN cible | Dream meanings, lucid dreaming, falling dreams, dream journal | Recentrer l'intention, enrichir les scenarios utiles et renforcer les liens internes |
 | 8 | 24-25 juillet | Refresh guide debutant des reves lucides | Programme | Requetes `como tener suenos lucidos`: 1 029 impressions, CTR 0,29 %, position 14,5 | ES cible | Hub reve lucide, rappel des reves, journal, controle des reves | Reponse en 5 etapes, FAQ, preuves prudentes et CTA journal naturel |
@@ -201,7 +205,7 @@ Maillage fait:
 - Chaine editoriale mise a jour: vacances -> bruit nocturne -> reveil nocturne -> confidentialite IA.
 - Liens contextuels ajoutes depuis vacances, sleep-day-environment, how-to-remember-dreams et REM sleep vers les nouveaux articles.
 
-Prochaine action editoriale: priorite 5, production de `docs-src/content/blog/blog.dream-emotion-regulation-study/` avec publication cible le 15 juillet. Le refresh ES eau/inondation devient la priorite 6 et la vague `Jet lag, sommeil et reves` la priorite 9, ciblee pour le 29 juillet.
+Prochaine action editoriale: reinspecter l'etude reves/emotions le 17 juillet sans renvoyer de demande manuelle, puis ouvrir la priorite 6, refresh ES eau/inondation, le 18 juillet. La vague `Jet lag, sommeil et reves` reste ciblee pour le 29 juillet.
 
 Verification post-deploy 2026-07-08:
 
@@ -261,6 +265,15 @@ Publication et reinspection live/Search Console 2026-07-15:
 - Validations passees: `docs:build`, `docs:check`, `docs:check-crosslinks` et `docs:release-check`, avec 0 lien casse et 0 avertissement de profondeur.
 - Rapport: `marketing/seo/search-console/2026-07-15-july-url-inspection.md`.
 
+Reinspection live et Search Console 2026-07-16:
+
+- Les 15 URLs de la vague vacances/bruit nocturne/reveil nocturne restent `Submitted and indexed`; pour chacune, le fetch Google reussit, les robots sont autorises et le canonical Google correspond au canonical declare.
+- Les cinq URLs de l'etude reves/emotions ne sont pas encore indexees: FR `URL is unknown to Google`, EN `Crawled - currently not indexed`, ES/DE/IT `Discovered - currently not indexed`.
+- Les demandes manuelles FR/EN/ES/DE/IT ont toutes ete confirmees dans l'UI Search Console et ajoutees a la file d'exploration prioritaire.
+- Les 25 URLs juillet repondent 200 et sont toutes presentes dans le sitemap live.
+- Sitemap live: 1165 URLs, HTTP 200, `application/xml`; `version.txt` renvoie `86f0ad3eb034`.
+- Aucun article produit: la priorite 6, refresh ES `Suenos de agua`, ouvre le 18 juillet.
+
 Preparation editoriale de la priorite 5 le 2026-07-14:
 
 - Worktree propre: `/private/tmp/dreamer-noctalia-dream-emotions-20260715`, branche `codex/noctalia-dream-emotions-20260715`, base `origin/master` `d54ffe2bd`.
@@ -307,9 +320,10 @@ Publication anticipee le 2026-07-10:
 
 ## A surveiller
 
-- Le marqueur live observe est `2866f3066c1f` apres le deploy automatique `13c70708`; le sitemap reste a 1160 URLs. Ne pas deployer depuis le worktree principal actuellement tres charge; isoler explicitement les prochains changements editoriaux.
+- Le marqueur live observe est `86f0ad3eb034`; le sitemap contient 1165 URLs. Ne pas deployer depuis le worktree principal actuellement tres charge; isoler explicitement les prochains changements editoriaux.
 - Les 25 URLs de juin sont indexees; ne pas les retraiter comme blocantes.
 - Le hub reve lucide doit afficher `lastmod` `2026-06-21` dans le sitemap genere.
-- Les 20 URLs de juillet sont indexees; ne plus les retraiter comme bloquantes et ne pas envoyer de nouvelle demande manuelle sans regression constatee.
-- Les priorites 5 a 10 couvrent desormais le 14 au 31 juillet. Respecter les fenetres, publier la vague scientifique le 15 juillet, la vague jet lag le 29 juillet et reserver les 30-31 juillet a la mesure plutot qu'a une nouvelle vague.
+- Les 20 URLs des priorites 1 a 4 sont indexees; ne plus les retraiter comme bloquantes et ne pas envoyer de nouvelle demande manuelle sans regression constatee.
+- Les cinq URLs de la priorite 5 ont ete demandees manuellement le 16 juillet; reinspecter leur progression sans les resoumettre.
+- Les priorites 5 a 10 couvrent desormais le 14 au 31 juillet. Respecter les fenetres, ouvrir le refresh ES eau/inondation le 18 juillet, publier la vague jet lag le 29 juillet et reserver les 30-31 juillet a la mesure plutot qu'a une nouvelle vague.
 - Les suggestions non bloquantes de liens symboles dans les pages generiques EN/FR/ES peuvent rester hors sprint sauf si un run est dedie au maillage fin.

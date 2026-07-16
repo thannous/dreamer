@@ -97,7 +97,6 @@ Result:
 - Passed: Mobile journal now keeps the new Atlas-style header in both layouts and hides the web mock debug rail.
 
 final result: passed
-
 ## Noctalia Plus comparison paywall - 2026-07-15
 
 Source visual truth path:
@@ -931,5 +930,33 @@ Findings:
 - P0: none.
 - P1: none.
 - P2: none after restoring the shared header.
+
+final result: passed
+
+## Nouveautés 3.0.0 — 2026-07-16
+
+Source visual:
+- `/Users/tanuki/.codex/generated_images/019f69d3-235c-7713-bc8c-7809141255c8/exec-774bf992-4baf-433c-9415-cbf93181bc78.png`
+
+Implementation evidence:
+- Dark: `screenshots/whats-new-3.0.0-dark.png`
+- Light: `screenshots/whats-new-3.0.0-light.png`
+- Focused comparison: `screenshots/whats-new-3.0.0-comparison.png`
+- Dark viewport: `390x844`.
+- Light state: explicit light-system preview, restored to automatic after capture.
+- Full-view evidence: the complete modal, backdrop, four release items, both actions, and close control are visible in both theme captures.
+
+Comparison history:
+- Initial dark capture exposed a visible browser focus outline around the programmatically focused title.
+- Added the established web focus-reset style used elsewhere in the app.
+- Recaptured dark and light states and compared the dark implementation side-by-side with the source visual.
+
+Findings:
+- Hierarchy, typography, warm accent, rounded container, icon rows, separators, primary CTA, and secondary dismissal match the selected direction.
+- Version intentionally updated from 2.0.2 in the reference to 3.0.0 in the implementation.
+- The compact mobile layout keeps all content readable without clipping; the card scrolls on shorter viewports.
+- The light variant preserves the hierarchy with an ivory surface, dark copy, a softer backdrop, and accessible contrast.
+- Primary CTA dismisses the modal and opens `/dream-guides`.
+- No `findNodeHandle` web error. Remaining warnings are pre-existing Expo/require-cycle/deprecation warnings outside this feature.
 
 final result: passed

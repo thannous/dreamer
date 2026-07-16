@@ -44,6 +44,8 @@ const {
     'saveRitualStepProgress',
     'getFirstLaunchCompleted',
     'saveFirstLaunchCompleted',
+    'getLastSeenReleaseNotesVersion',
+    'saveLastSeenReleaseNotesVersion',
     'getDreamsMigrationSynced',
     'setDreamsMigrationSynced',
   ];

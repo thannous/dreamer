@@ -19,6 +19,7 @@ import {
   getDreamGuideContent,
   getDreamGuideIcon,
   getDreamGuideSymbols,
+  getPracticalDreamGuideContent,
 } from '@/services/dreamGuideService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -33,7 +34,10 @@ export default function DreamGuideDetailScreen() {
   const copy = getDreamGuideCopy(language);
   const scrollPerf = useScrollIdle();
   const guide = useMemo(() => (guideId ? getDreamGuideById(guideId) : undefined), [guideId]);
-  const symbols = useMemo(() => (guide ? getDreamGuideSymbols(guide) : []), [guide]);
+  const symbols = useMemo(
+    () => (guide?.kind === 'symbols' ? getDreamGuideSymbols(guide) : []),
+    [guide],
+  );
 
   const handleSymbolPress = useCallback((symbolId: string) => {
     router.push({
@@ -64,6 +68,8 @@ export default function DreamGuideDetailScreen() {
   }
 
   const content = getDreamGuideContent(guide, language);
+  const practicalContent =
+    guide.kind === 'practical' ? getPracticalDreamGuideContent(guide, language) : undefined;
 
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
@@ -122,26 +128,61 @@ export default function DreamGuideDetailScreen() {
             </Text>
           </FlatGlassCard>
 
-          <View style={styles.sectionHeadingRow}>
-            <IconSymbol name="book.closed.fill" size={19} color={noctalia.accent.base} />
-            <Text style={[styles.sectionHeading, { color: noctalia.text.primary }]}>
-              {copy.symbolsHeading}
-            </Text>
-            <Text style={[styles.symbolCount, { color: noctalia.text.tertiary }]}>
-              {copy.symbolCount(symbols.length)}
-            </Text>
-          </View>
+          {practicalContent ? (
+            <View style={styles.practicalSection}>
+              <View style={styles.sectionHeadingRow}>
+                <IconSymbol name="checkmark.circle.fill" size={19} color={noctalia.accent.base} />
+                <Text style={[styles.sectionHeading, { color: noctalia.text.primary }]}>
+                  {copy.essentialsHeading}
+                </Text>
+              </View>
+              <View style={styles.practicalList}>
+                {practicalContent.essentialPoints.map((point, index) => (
+                  <FlatGlassCard
+                    key={point}
+                    intensity="subtle"
+                    style={styles.practicalPointCard}
+                  >
+                    <View style={[styles.pointIndex, { backgroundColor: noctalia.surface.soft }]}>
+                      <Text style={[styles.pointIndexText, { color: noctalia.accent.base }]}>
+                        {index + 1}
+                      </Text>
+                    </View>
+                    <Text
+                      selectable
+                      testID={`dream-guide-point-${index}`}
+                      style={[styles.practicalPointText, { color: noctalia.text.secondary }]}
+                    >
+                      {point}
+                    </Text>
+                  </FlatGlassCard>
+                ))}
+              </View>
+            </View>
+          ) : (
+            <>
+              <View style={styles.sectionHeadingRow}>
+                <IconSymbol name="book.closed.fill" size={19} color={noctalia.accent.base} />
+                <Text style={[styles.sectionHeading, { color: noctalia.text.primary }]}>
+                  {copy.symbolsHeading}
+                </Text>
+                <Text style={[styles.symbolCount, { color: noctalia.text.tertiary }]}>
+                  {copy.symbolCount(symbols.length)}
+                </Text>
+              </View>
 
-          <View style={styles.symbolList}>
-            {symbols.map((symbol) => (
-              <SymbolCard
-                key={symbol.id}
-                symbol={symbol}
-                language={language}
-                onPress={handleSymbolPress}
-              />
-            ))}
-          </View>
+              <View style={styles.symbolList}>
+                {symbols.map((symbol) => (
+                  <SymbolCard
+                    key={symbol.id}
+                    symbol={symbol}
+                    language={language}
+                    onPress={handleSymbolPress}
+                  />
+                ))}
+              </View>
+            </>
+          )}
 
           <View style={styles.conclusionSection}>
             <View style={styles.sectionHeadingRow}>
@@ -238,6 +279,37 @@ const styles = StyleSheet.create({
   },
   symbolList: {
     marginHorizontal: -ThemeLayout.spacing.md,
+  },
+  practicalSection: {
+    gap: 12,
+  },
+  practicalList: {
+    gap: 10,
+  },
+  practicalPointCard: {
+    borderRadius: 20,
+    borderCurve: 'continuous',
+    padding: ThemeLayout.spacing.md,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  pointIndex: {
+    width: 28,
+    height: 28,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pointIndexText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 12,
+  },
+  practicalPointText: {
+    flex: 1,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 14,
+    lineHeight: 21,
   },
   conclusionSection: {
     gap: 12,

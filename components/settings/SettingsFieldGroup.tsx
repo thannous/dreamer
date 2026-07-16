@@ -11,11 +11,15 @@ import {
   StyleSheet,
   Switch,
   Text,
+  useWindowDimensions,
   View,
 } from 'react-native';
 
 import { DateTimePicker } from '@/components/ui/DateTimePicker';
-import { BottomSheet } from '@/components/ui/BottomSheet';
+import {
+  BottomSheet,
+  getNativeBottomSheetContentWidth,
+} from '@/components/ui/BottomSheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -305,6 +309,7 @@ export function SettingsFieldGroup({
 }: SettingsFieldGroupProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
+  const { width: viewportWidth } = useWindowDimensions();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const { theme, language, journalLayout, recording } = useSettingsPreferences();
   const notifications = useNotificationSettingsController();
@@ -546,12 +551,21 @@ export function SettingsFieldGroup({
           testID="settings-notifications-weekday-sheet"
         >
           <RNHostView matchContents>
-            <View style={[styles.iosTimePicker, { backgroundColor: noctalia.surface.raised }]}>
+            <View
+              style={[
+                styles.iosTimePicker,
+                {
+                  backgroundColor: noctalia.surface.raised,
+                  width: getNativeBottomSheetContentWidth(viewportWidth, 'ios'),
+                },
+              ]}
+            >
               <DateTimePicker
                 display="spinner"
                 mode="time"
                 onValueChange={(_event, date) => void notifications.setWeekdayTime(date)}
                 testID="settings-notifications-weekday-picker"
+                themeVariant={mode}
                 value={getDateFromTime(notifications.settings.weekdayTime)}
               />
               <Pressable
