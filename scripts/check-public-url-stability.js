@@ -705,6 +705,38 @@ function runGit(rootDir, args) {
   return spawnSync('git', args, { cwd: rootDir, encoding: 'utf8' });
 }
 
+function assertGitAncestor(rootDir, revision, options = {}, gitRunner = runGit) {
+  const result = gitRunner(rootDir, ['merge-base', '--is-ancestor', revision, 'HEAD']);
+  if (result.status === 0) return { verified: true, shallow: false };
+
+  if (options.allowShallowCheck) {
+    const shallowResult = gitRunner(rootDir, ['rev-parse', '--is-shallow-repository']);
+    if (
+      shallowResult.status === 0 &&
+      String(shallowResult.stdout || '').trim() === 'true'
+    ) {
+      const revisionResult = gitRunner(rootDir, [
+        'rev-parse',
+        '--verify',
+        '--quiet',
+        `${revision}^{commit}`,
+      ]);
+      if (revisionResult.status === 1) return { verified: false, shallow: true };
+      if (revisionResult.status !== 0) {
+        throw new Error(
+          `[git rev-parse failed while checking URL baseline provenance] ${String(
+            revisionResult.stderr || ''
+          ).trim()}`
+        );
+      }
+    }
+  }
+
+  throw new Error(
+    `[URL baseline provenance mismatch] sourceRevision=${revision} is not an ancestor of HEAD`
+  );
+}
+
 function runDocsBuild(rootDir) {
   const startedAt = Date.now();
   const result = spawnSync(process.execPath, [path.join(rootDir, 'scripts', 'docs-build.js')], {
@@ -731,12 +763,7 @@ const defaultGit = {
     if (result.status !== 0) throw new Error(`[git rev-parse failed] ${String(result.stderr || '').trim()}`);
     return result.stdout.trim();
   },
-  assertAncestor(rootDir, revision) {
-    const result = runGit(rootDir, ['merge-base', '--is-ancestor', revision, 'HEAD']);
-    if (result.status !== 0) {
-      throw new Error(`[URL baseline provenance mismatch] sourceRevision=${revision} is not an ancestor of HEAD`);
-    }
-  },
+  assertAncestor: assertGitAncestor,
   assertTrackedClean(rootDir) {
     const result = runGit(rootDir, ['status', '--porcelain', '--untracked-files=all']);
     if (result.status !== 0) throw new Error(`[git status failed] ${String(result.stderr || '').trim()}`);
@@ -807,7 +834,9 @@ function run(options = {}) {
   }
   const baseline = readJson(baselinePath);
   validateSnapshotShape(baseline);
-  git.assertAncestor(rootDir, baseline.sourceRevision);
+  const provenance = git.assertAncestor(rootDir, baseline.sourceRevision, {
+    allowShallowCheck: mode === 'check',
+  });
 
   if (mode === 'extend') {
     git.assertTrackedClean(rootDir);
@@ -818,18 +847,23 @@ function run(options = {}) {
     const candidate = buildSnapshot(rootDir, { sourceRevision: head });
     compareSnapshots(baseline, candidate, { allowAdditions: true });
     writeBaseline(baselinePath, candidate, { overwrite: true });
-    return { mode, snapshot: candidate };
+    return { mode, provenance, snapshot: candidate };
   }
 
   const candidate = buildSnapshot(rootDir, { sourceRevision: baseline.sourceRevision });
   compareSnapshots(baseline, candidate);
-  return { mode, snapshot: candidate };
+  return { mode, provenance, snapshot: candidate };
 }
 
 function main() {
   try {
     const result = run();
     const counts = result.snapshot.counts;
+    if (result.provenance?.shallow) {
+      console.log(
+        '[url-stability] Git ancestry is unavailable in this shallow checkout; exact URL baseline comparison remains enforced.'
+      );
+    }
     if (result.mode === 'write') {
       console.log(
         `[url-stability] Baseline created: ${counts.logicalPages} logical pages, ${counts.manifestPaths} manifest paths, ${counts.canonicalPages} canonical pages, ${counts.sitemapEntries} sitemap entries, ${counts.allHtmlOutputPaths} HTML outputs.`
@@ -856,6 +890,7 @@ module.exports = {
   HTML_CONTRACT_INPUTS,
   INITIAL_COUNTS,
   INITIAL_SOURCE_REVISION,
+  assertGitAncestor,
   buildManifestRoutes,
   buildSnapshot,
   compareSnapshots,

@@ -4,6 +4,7 @@ const path = require('path');
 
 const {
   INITIAL_SOURCE_REVISION,
+  assertGitAncestor,
   buildSnapshot,
   compareSnapshots,
   decodeHtmlEntitiesOnce,
@@ -321,5 +322,60 @@ describe('check-public-url-stability', () => {
     expect(parseMode(['--extend-baseline'])).toBe('extend');
     expect(() => parseMode(['--write-baseline', '--extend-baseline'])).toThrow(/exactly one/);
     expect(() => parseMode(['--force'])).toThrow(/unknown argument/);
+  });
+
+  it('keeps the ancestry check strict when Git history is available', () => {
+    const gitRunner = jest.fn(() => ({ status: 0, stdout: '', stderr: '' }));
+
+    expect(
+      assertGitAncestor('/repo', INITIAL_SOURCE_REVISION, { allowShallowCheck: true }, gitRunner)
+    ).toEqual({ verified: true, shallow: false });
+    expect(gitRunner).toHaveBeenCalledTimes(1);
+  });
+
+  it('defers only the ancestry proof in a read-only shallow checkout', () => {
+    const gitRunner = jest.fn((_rootDir, args) => {
+      if (args[0] === 'merge-base') return { status: 128, stdout: '', stderr: '' };
+      if (args.includes('--is-shallow-repository')) {
+        return { status: 0, stdout: 'true\n', stderr: '' };
+      }
+      return { status: 1, stdout: '', stderr: '' };
+    });
+
+    expect(
+      assertGitAncestor('/repo', INITIAL_SOURCE_REVISION, { allowShallowCheck: true }, gitRunner)
+    ).toEqual({ verified: false, shallow: true });
+  });
+
+  it('rejects a non-ancestor for mutation modes and complete repositories', () => {
+    const shallowGitRunner = jest.fn((_rootDir, args) => {
+      if (args[0] === 'merge-base') return { status: 1, stdout: '', stderr: '' };
+      if (args.includes('--is-shallow-repository')) {
+        return { status: 0, stdout: 'true\n', stderr: '' };
+      }
+      return { status: 0, stdout: `${INITIAL_SOURCE_REVISION}\n`, stderr: '' };
+    });
+    const completeGitRunner = jest.fn((_rootDir, args) => {
+      if (args[0] === 'merge-base') return { status: 1, stdout: '', stderr: '' };
+      return { status: 0, stdout: 'false\n', stderr: '' };
+    });
+
+    expect(() =>
+      assertGitAncestor('/repo', INITIAL_SOURCE_REVISION, {}, shallowGitRunner)
+    ).toThrow(/URL baseline provenance mismatch/);
+    expect(shallowGitRunner).toHaveBeenCalledTimes(1);
+    shallowGitRunner.mockClear();
+    expect(() =>
+      assertGitAncestor(
+        '/repo',
+        INITIAL_SOURCE_REVISION,
+        { allowShallowCheck: true },
+        shallowGitRunner
+      )
+    ).toThrow(/URL baseline provenance mismatch/);
+    expect(shallowGitRunner).toHaveBeenCalledTimes(3);
+    expect(() =>
+      assertGitAncestor('/repo', INITIAL_SOURCE_REVISION, { allowShallowCheck: true }, completeGitRunner)
+    ).toThrow(/URL baseline provenance mismatch/);
   });
 });
