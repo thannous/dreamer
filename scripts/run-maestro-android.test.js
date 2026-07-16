@@ -33,12 +33,12 @@ const {
 const EXPECTED = {
   packageName: 'com.tanuki75.noctalia',
   versionName: '2.0.2',
-  versionCode: '35',
+  versionCode: '36',
 };
 
 const RELEASE_DUMPSYS = `
   Package [com.tanuki75.noctalia] (abc123):
-    versionCode=35 minSdk=33 targetSdk=36
+    versionCode=36 minSdk=33 targetSdk=36
     versionName=2.0.2
     pkgFlags=[ HAS_CODE ALLOW_CLEAR_USER_DATA ]
 `;
@@ -50,7 +50,7 @@ describe('run-maestro-android Release preflight', () => {
         version: '2.0.2',
         android: {
           package: 'com.tanuki75.noctalia',
-          versionCode: 35,
+          versionCode: 36,
         },
       },
     }));
@@ -59,7 +59,7 @@ describe('run-maestro-android Release preflight', () => {
     expect(readFileSync).toHaveBeenCalledWith('/repo/app.json', 'utf8');
   });
 
-  it('binds the current Release preflight to the real app.json v35 candidate', () => {
+  it('binds the current Release preflight to the real app.json v36 candidate', () => {
     expect(readExpectedAndroidBuild()).toEqual(EXPECTED);
   });
 
@@ -90,12 +90,12 @@ describe('run-maestro-android Release preflight', () => {
   it('refuses a stale installed build', () => {
     const installed = parseInstalledAndroidBuild(
       RELEASE_DUMPSYS
-        .replace('versionCode=35', 'versionCode=33')
+        .replace('versionCode=36', 'versionCode=33')
         .replace('versionName=2.0.2', 'versionName=2.0.1')
     );
 
     expect(() => assertInstalledReleaseBinary('emulator-5554', EXPECTED, installed))
-      .toThrow('versionName 2.0.1 (expected 2.0.2); versionCode 33 (expected 35)');
+      .toThrow('versionName 2.0.1 (expected 2.0.2); versionCode 33 (expected 36)');
   });
 
   it('refuses a debuggable build that could use Metro', () => {
