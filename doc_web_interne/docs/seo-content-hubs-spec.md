@@ -1,9 +1,9 @@
 # Content hubs SEO Noctalia — spécification d’implémentation
 
-Date : 16 juillet 2026  
-Statut : **implémentée et validée localement ; aucune publication lancée**
-Base inspectée : `master` à `f8bdfdc6e`  
-Périmètre : site marketing multilingue FR, EN, ES, DE et IT
+- Date : 16 juillet 2026
+- Statut : **implémentée et validée ; publication production sur `master` autorisée le 16 juillet 2026**
+- Base de publication : `origin/master` à `29ddfdca1`
+- Périmètre : site marketing multilingue FR, EN, ES, DE et IT
 
 ## Décision structurante
 
@@ -286,7 +286,7 @@ Il faut donc comparer le candidat à une référence figée avant l’implément
 
 ### Baseline versionnée
 
-Créer `data/seo-url-contract-baseline.json` depuis un build propre de la base `f8bdfdc6e`, avant toute modification liée aux hubs.
+Créer `data/seo-url-contract-baseline.json` depuis un build propre de la base `29ddfdca1`, avant toute modification liée aux hubs.
 
 La baseline contient `sourceRevision`. Cette révision est une métadonnée de provenance et doit être un ancêtre du commit candidat ; elle n’est jamais comparée à `HEAD` par égalité.
 
@@ -462,10 +462,10 @@ La workflow `.github/workflows/quality.yml` exécute déjà `docs:build` puis `d
 
 ### Lot 0 — figer les URLs
 
-1. Créer un worktree propre contenant cette spec et dont `f8bdfdc6e` est l’exacte révision source URL de référence.
+1. Créer un worktree propre contenant cette spec et dont `29ddfdca1` est l’exacte révision source URL de référence.
 2. Avant tout code hub, lancer `npm run docs:build` puis `npm run docs:check` sur cette base.
 3. Ajouter le script de stabilité et ses tests.
-4. Générer `data/seo-url-contract-baseline.json` avec `sourceRevision: "f8bdfdc6e2db6ba7ecab2346fbc0925cf7098ab4"`.
+4. Générer `data/seo-url-contract-baseline.json` avec `sourceRevision: "29ddfdca1963e066b0c7a626c315f7b064051992"`.
 5. Vérifier les 1 165 routes et les 1 170 sorties HTML.
 6. Créer un commit local focalisé, sans publication, et conserver son hash comme `<commit-lot-0>`.
 
