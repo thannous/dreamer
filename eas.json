@@ -77,7 +77,8 @@
         "EXPO_PUBLIC_MOCK_MODE": "false",
         "EXPO_PUBLIC_REVENUECAT_ANDROID_KEY": "goog_BFWJqTqAtQUnwYisczZcZrnsanw",
         "EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER": "359653779023",
-        "EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED": "false"
+        "EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED": "false",
+        "EXPO_PUBLIC_SLEEP_SOUNDS_ENABLED": "true"
       },
       "android": {
         "buildType": "app-bundle",
