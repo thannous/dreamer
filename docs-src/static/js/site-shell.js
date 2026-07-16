@@ -21,54 +21,54 @@
   };
   const translations = {
     de: {
-      accept: 'Analyse erlauben',
+      accept: 'Noctalia verbessern',
       description:
-        'Mit deiner Zustimmung hilft uns Microsoft Clarity mit Heatmaps und Sitzungsaufzeichnungen, die Nutzung der Website zu verstehen – ausschließlich, um Noctalia und diese Website zu verbessern. Texte und Felder werden maskiert. Keine Werbung.',
+        'Mit deiner Zustimmung verwenden wir Cookies zur Reichweitenmessung ausschließlich, um Noctalia und seine Website zu verbessern. Keine Werbung.',
       gpc: 'Das Datenschutzsignal deines Browsers ist aktiv. Die Analyse bleibt deaktiviert.',
       manage: 'Analytics-Einstellungen',
       privacy: 'Mehr erfahren',
       reject: 'Ablehnen',
-      title: 'Reichweitenmessung',
+      title: 'Cookies zur Reichweitenmessung',
     },
     en: {
-      accept: 'Allow analytics',
+      accept: 'Improve Noctalia',
       description:
-        'With your permission, Microsoft Clarity helps us understand website use through heatmaps and session recordings, solely to improve Noctalia and this website. Text and fields are masked. No advertising.',
+        'With your permission, we use audience measurement cookies solely to improve Noctalia and its website. No advertising.',
       gpc: 'Your browser privacy signal is active. Analytics will remain disabled.',
       manage: 'Analytics preferences',
       privacy: 'Learn more',
       reject: 'Decline',
-      title: 'Website analytics',
+      title: 'Audience measurement cookies',
     },
     es: {
-      accept: 'Permitir analítica',
+      accept: 'Mejorar Noctalia',
       description:
-        'Con tu permiso, Microsoft Clarity nos ayuda a entender el uso del sitio mediante mapas de calor y grabaciones de sesión, únicamente para mejorar Noctalia y este sitio. Los textos y campos se ocultan. Sin publicidad.',
+        'Con tu permiso, usamos cookies de medición de audiencia únicamente para mejorar Noctalia y su sitio web. Sin publicidad.',
       gpc: 'La señal de privacidad de tu navegador está activa. La analítica seguirá desactivada.',
       manage: 'Preferencias de analítica',
       privacy: 'Más información',
       reject: 'Rechazar',
-      title: 'Analítica del sitio',
+      title: 'Cookies de medición de audiencia',
     },
     fr: {
-      accept: "Accepter l'analyse",
+      accept: 'Améliorer Noctalia',
       description:
-        "Avec votre accord, Microsoft Clarity nous aide à comprendre l'utilisation du site grâce à des cartes de chaleur et des enregistrements de session, uniquement pour améliorer Noctalia et ce site. Les textes et les champs sont masqués. Aucun usage publicitaire.",
+        "Avec votre accord, nous utilisons des cookies de mesure d'audience uniquement pour améliorer Noctalia et son site. Aucun usage publicitaire.",
       gpc: "Le signal de confidentialité de votre navigateur est actif. L'analyse reste désactivée.",
       manage: 'Préférences analytics',
       privacy: 'En savoir plus',
       reject: 'Refuser',
-      title: "Mesure d'audience",
+      title: "Cookies de mesure d'audience",
     },
     it: {
-      accept: 'Consenti analisi',
+      accept: 'Migliora Noctalia',
       description:
-        "Con il tuo consenso, Microsoft Clarity ci aiuta a capire l'uso del sito tramite mappe di calore e registrazioni di sessione, esclusivamente per migliorare Noctalia e questo sito. Testi e campi sono mascherati. Nessuna pubblicità.",
+        'Con il tuo consenso, utilizziamo cookie di misurazione del pubblico esclusivamente per migliorare Noctalia e il suo sito. Nessuna pubblicità.',
       gpc: 'Il segnale privacy del browser è attivo. Le analisi resteranno disattivate.',
       manage: 'Preferenze analytics',
       privacy: 'Scopri di più',
       reject: 'Rifiuta',
-      title: 'Analisi del sito',
+      title: "Cookie per la misurazione dell'audience",
     },
   };
   let analyticsConsentGranted = false;
