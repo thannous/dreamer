@@ -51,6 +51,12 @@ function findAhrefsAnalyticsTags(html) {
   );
 }
 
+function findSiteShellTags(html) {
+  return (html.match(/<script\b[^>]*>/gi) || []).filter((tag) =>
+    /\bsrc=["'][^"']*\/js\/site-shell\.js(?:\?[^"']*)?["']/i.test(tag)
+  );
+}
+
 function auditDocsShell(docsDir = DOCS_DIR) {
   const errors = [];
   let checked = 0;
@@ -76,8 +82,17 @@ function auditDocsShell(docsDir = DOCS_DIR) {
       pageErrors.push('missing /js/language-dropdown.js');
     }
 
-    if (!/\/js\/site-shell\.js(?:\?|["'])/i.test(html)) {
+    const siteShellTags = findSiteShellTags(html);
+    if (siteShellTags.length === 0) {
       pageErrors.push('missing /js/site-shell.js');
+    } else if (siteShellTags.length > 1) {
+      pageErrors.push('duplicate /js/site-shell.js');
+    } else if (!/\sdefer(?:\s|=|>)/i.test(siteShellTags[0])) {
+      pageErrors.push('/js/site-shell.js must load with defer');
+    }
+
+    if (/https:\/\/www\.clarity\.ms\/tag\//i.test(html)) {
+      pageErrors.push('Clarity must not load before analytics consent');
     }
 
     if (!/\/js\/mobile-menu\.js(?:\?|["'])/i.test(html)) {

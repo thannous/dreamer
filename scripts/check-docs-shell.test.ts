@@ -79,4 +79,32 @@ describe('docs shell check', () => {
     expect(result.ok).toBe(false);
     expect(result.errors.join('\n')).toContain('invalid Ahrefs Web Analytics data-key');
   });
+
+  it('rejects duplicate shell loaders and unconditional Clarity tracking', () => {
+    const { auditDocsShell } = require('./check-docs-shell');
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'docs-shell-'));
+
+    writeFile(root, 'fr/index.html', `<!doctype html>
+<html><head><title>Accueil</title>
+  <script src="https://analytics.ahrefs.com/analytics.js" data-key="qDwc7i0RM0aLBY/cZLkOxA" async></script>
+  <script src="https://www.clarity.ms/tag/xnb1iax99j" async></script>
+</head>
+<body>
+  <nav id="navbar"></nav>
+  <main></main>
+  <footer class="site-footer"></footer>
+  <script src="/js/site-shell.js" defer></script>
+  <script src="/js/site-shell.js?v=123" defer></script>
+  <script src="/js/language-dropdown.js" defer></script>
+  <script src="/js/mobile-menu.js" defer></script>
+</body></html>`);
+
+    const result = auditDocsShell(root);
+
+    expect(result.ok).toBe(false);
+    expect(result.errors.join('\n')).toContain('duplicate /js/site-shell.js');
+    expect(result.errors.join('\n')).toContain(
+      'Clarity must not load before analytics consent'
+    );
+  });
 });

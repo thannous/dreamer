@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Privacy Policy",
   "publishedTime": "",
-  "modifiedTime": "2026-07-15",
+  "modifiedTime": "2026-07-16",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Privacy Policy</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Effective July 15, 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Effective July 16, 2026</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -83,6 +83,7 @@
                     <li><strong>Audio recordings:</strong> when you use the voice recording feature, your voice is processed to produce a transcript. Noctalia does not record or store your audio files on its servers: they are processed in real-time only to produce the transcript, then deleted from the technical flow. Only the transcribed text is saved in your journal.</li>
                     <li><strong>Technical and usage data:</strong> technical logs (errors, performance, security events), basic device information (operating system, app version), a hashed device identifier used solely for free-tier quota management, and technical identifiers necessary to provide the service. On Android, Noctalia may also measure a limited set of functional events (onboarding step viewed, choice made, dream saved or result viewed) using a random journey identifier kept on the device for no more than seven days. This first-party measurement never includes dream text, titles or analyses, nor an email address, account identifier, device identifier or persisted IP address. It uses no third-party marketing analytics tool and can be disabled from the introduction or settings.</li>
                     <li><strong>Website audience measurement:</strong> when you visit noctalia.app, Ahrefs Web Analytics measures page views, referrers and, where applicable, outbound link clicks and form submissions. It also derives browser, device, operating system, language, and approximate country and city information. It uses no cookies or persistent identifiers. The raw IP address is used transiently for approximate location and a salted daily visitor hash, then discarded without being stored. No account data or dream content is sent to Ahrefs.</li>
+                    <li><strong>Consent-based website usage analysis:</strong> solely to improve Noctalia and this website, Microsoft Clarity measures pages viewed, clicks, scrolling and basic technical information, and creates heatmaps and session recordings if you allow analytics. Displayed text, input fields and dropdowns are masked through strict masking. Clarity may set the <code>_clck</code> and <code>_clsk</code> cookies. Advertising storage remains denied, and we do not intentionally send dream content or account data to Clarity.</li>
                     <li><strong>Support data:</strong> content of your exchanges with us (for example when you contact us by email) and information necessary to track your requests.</li>
                 </ul>
                 <p class="mt-4">Content you record in Noctalia may, at your discretion, contain sensitive information within the meaning of the GDPR (for example elements related to your health, sexual life, beliefs, etc.). This information is processed solely to provide you with the <a href="blog/dream-journal-guide" class="text-dream-salmon hover:underline">dream journal</a> and analysis service, based on your <strong>explicit consent</strong> and your initiative in recording it.</p>
@@ -95,7 +96,8 @@
                     <li><strong>Providing the app and its features</strong> (dream journal, analyses, generated images, account creation and management): processing necessary for the <strong>performance of the contract</strong> (acceptance of Terms of Service) between you and Noctalia.</li>
                     <li><strong>Transcription and analysis of your dreams, including when they contain sensitive information:</strong> processing based on your <strong>explicit consent</strong>, which you can withdraw at any time by deleting the relevant dreams and/or your account.</li>
                     <li><strong>Improving the app, measuring stability, preventing abuse and ensuring security:</strong> processing based on our <strong>legitimate interest</strong> in ensuring the proper functioning, security and development of the service, without marketing profiling.</li>
-                    <li><strong>Measuring website traffic and improving our public content:</strong> processing based on our <strong>legitimate interest</strong> in understanding aggregate use of noctalia.app, without targeted advertising or cross-site tracking.</li>
+                    <li><strong>Aggregate, cookie-free traffic measurement with Ahrefs:</strong> processing based on our <strong>legitimate interest</strong> in improving our public content, without targeted advertising or cross-site tracking.</li>
+                    <li><strong>Heatmaps and session recordings with Microsoft Clarity:</strong> processing based solely on your analytics <strong>consent</strong>, which you can refuse or withdraw at any time.</li>
                     <li><strong>Managing rights exercise requests, user support and legal compliance:</strong> processing necessary to comply with our <strong>legal obligations</strong> and to <strong>exercise our rights</strong> (evidence, legal defense, etc.).</li>
                 </ul>
             </section>
@@ -130,6 +132,7 @@
                     <li><strong>Audio recordings:</strong> recordings necessary for voice transcription are retained only for the time strictly necessary for technical processing (generally a few minutes) and are not stored long-term by Noctalia.</li>
                     <li><strong>Technical and security logs:</strong> retained for a maximum period of 12 months, to ensure security, incident detection and evidence in case of dispute.</li>
                     <li><strong>First-party usage measurement:</strong> raw events without dream content are deleted after 90 days. Anonymous aggregated statistics that can no longer isolate an individual journey are retained for no more than 24 months.</li>
+                    <li><strong>Microsoft Clarity:</strong> session recordings are retained for 30 days and heatmaps for up to 9 months. Your analytics preference is stored in your browser for no more than 6 months.</li>
                     <li><strong>Support exchanges:</strong> retained for the duration necessary to handle your request and, where applicable, to defend our rights (generally up to 24 months).</li>
                 </ul>
             </section>
@@ -141,6 +144,7 @@
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Technical providers:</strong> notably Supabase (hosting, database, authentication) and cloud infrastructure providers necessary for the app's operation.</li>
                     <li><strong>Website analytics:</strong> Ahrefs Pte Ltd provides the cookie-free audience measurement described above. Details are available in the <a href="https://ahrefs.com/legal/privacy-policy" class="text-dream-salmon hover:underline">Ahrefs Privacy Policy</a>.</li>
+                    <li><strong>Consent-based usage analysis:</strong> Microsoft provides Clarity only after you agree. Details are available in the <a href="https://privacy.microsoft.com/privacystatement" class="text-dream-salmon hover:underline">Microsoft Privacy Statement</a>.</li>
                     <li><strong>AI and speech recognition providers:</strong> Google (Gemini, Google Cloud Speech-to-Text), and where applicable other leading AI providers (Anthropic, OpenAI, Perplexity, Mistral, or equivalent services) for transcription, analysis of your dreams and generation of images or content.</li>
                     <li><strong>Subscription management:</strong> RevenueCat (USA) manages in-app subscriptions. RevenueCat receives an anonymous user identifier and purchase information provided by the applicable app store, currently Google Play. Your complete payment information never passes through Noctalia.</li>
                     <li><strong>External advisors and authorities:</strong> legal firms, accountants or administrative and judicial authorities when required by law or to defend our rights.</li>
@@ -164,7 +168,7 @@
                     <li><strong>Right to restriction of processing:</strong> request the temporary suspension of certain processing.</li>
                     <li><strong>Right to object:</strong> object to certain processing based on our legitimate interest.</li>
                     <li><strong>Right to data portability:</strong> receive the data you have provided to us in a structured, commonly used and machine-readable format, or request its transmission to another controller where technically feasible.</li>
-                    <li><strong>Right to withdraw consent:</strong> where processing is based on your consent (notably for certain sensitive data), you can withdraw it at any time, without affecting the lawfulness of prior processing.</li>
+                    <li><strong>Right to withdraw consent:</strong> where processing is based on your consent (notably for certain sensitive data), you can withdraw it at any time, without affecting the lawfulness of prior processing. You can change the Clarity choice through “Analytics preferences” in the footer.</li>
                 </ul>
                 <p class="mt-4">You can exercise your rights by contacting us at: <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>, specifying the email address used to create your account. We may need to ask you for additional information to verify your identity.</p>
                 <p class="mt-4">If you reside in the European Economic Area or the United Kingdom, you also have the right to lodge a complaint with your local supervisory authority (in France: the CNIL).</p>
