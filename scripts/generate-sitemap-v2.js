@@ -414,6 +414,15 @@ function extractLastmodFromContent(content) {
   return normalizeContentDate(jsonLdMatch?.[1]);
 }
 
+function extractSymbolHeroImageFromContent(content) {
+  const figureMatch = content.match(
+    /<figure\b[^>]*data-image-seo-role=(['"])symbol-hero\1[^>]*>([\s\S]*?)<\/figure>/i
+  );
+  if (!figureMatch) return null;
+  const imageMatch = figureMatch[2].match(/<img\b[^>]*\bsrc=(['"])([^'"]+)\1/i);
+  return normalizeImageUrl(imageMatch?.[2]);
+}
+
 /**
  * Determine whether a page is indexable (so it can appear in sitemap)
  */
@@ -482,11 +491,13 @@ function groupUrlsByContent(files, sourceLastmodPaths = new Map()) {
     const hreflangs = extractHreflangsFromContent(content);
     if (hreflangs && Object.keys(hreflangs).length > 0) {
       const sourceLastmodPath = sourceLastmodPaths.get(canonical);
+      const symbolHeroImage = extractSymbolHeroImageFromContent(content);
       urlToMeta.set(canonical, {
         hreflangs,
         lastmod:
           extractLastmodFromContent(content) ||
           (sourceLastmodPath ? getLastmodFromFilePath(sourceLastmodPath) : getLastmodFromFilePath(fullPath)),
+        images: symbolHeroImage ? [symbolHeroImage] : undefined,
       });
     }
   }
@@ -632,6 +643,12 @@ function main() {
   // Group URLs by their hreflang relationships
   const urlToMeta = groupUrlsByContent(files, managedSources.map);
   console.log(`✅ Extracted hreflang data from ${urlToMeta.size} URLs`);
+  const renderedSymbolImageCount = [...urlToMeta.values()].filter(
+    (meta) => Array.isArray(meta.images) && meta.images.length > 0
+  ).length;
+  if (renderedSymbolImageCount > 0) {
+    console.log(`✅ Applied ${renderedSymbolImageCount} rendered symbol hero images to the sitemap`);
+  }
 
   // Prefer canonical blog hreflangs from content-manifest when available
   const manifestBlog = loadBlogManifestHreflangs();
@@ -725,6 +742,7 @@ if (require.main === module || require.main?.filename === legacyEntrypoint) {
 }
 
 module.exports = {
+  extractSymbolHeroImageFromContent,
   generateSitemap,
   generateUrlEntry,
   getSitemapImageSource,

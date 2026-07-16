@@ -15,6 +15,7 @@ const SOURCE_DATA_PATH = path.join(
   'dream-symbols-extended.json'
 );
 const STATIC_DIR = path.join(ROOT_DIR, 'docs-src', 'static');
+const POSTER_DIR = path.join(STATIC_DIR, 'img', 'symbols', 'posters-v1');
 const OUTPUT_DIR = path.join(STATIC_DIR, 'img', 'seo', 'symbols-v1');
 const WIDTHS = [480, 800, 1200];
 const MAX_BYTES = 250_000;
@@ -40,6 +41,30 @@ function collectIllustrations(payload) {
     }
   }
   return [...illustrations.values()].sort((a, b) => a.stem.localeCompare(b.stem));
+}
+
+function collectPosterIllustrations(posterDir = POSTER_DIR) {
+  if (!fs.existsSync(posterDir)) return [];
+  return fs.readdirSync(posterDir)
+    .filter((name) => name.endsWith('.webp'))
+    .sort()
+    .map((name) => ({
+      symbolId: path.basename(name, '.webp'),
+      stem: path.basename(name, '.webp'),
+      src: `/img/symbols/posters-v1/${name}`,
+      sourcePath: path.join(posterDir, name),
+    }));
+}
+
+function mergeIllustrations(primary, posters) {
+  const byStem = new Map();
+  for (const illustration of [...primary, ...posters]) {
+    if (byStem.has(illustration.stem)) {
+      throw new Error(`Responsive symbol stem collision: ${illustration.stem}`);
+    }
+    byStem.set(illustration.stem, illustration);
+  }
+  return [...byStem.values()].sort((a, b) => a.stem.localeCompare(b.stem));
 }
 
 function outputPath(illustration, width) {
@@ -100,7 +125,10 @@ async function validateIllustrations(illustrations) {
 async function main() {
   const checkOnly = process.argv.includes('--check');
   const payload = JSON.parse(fs.readFileSync(SOURCE_DATA_PATH, 'utf8'));
-  const illustrations = collectIllustrations(payload);
+  const illustrations = mergeIllustrations(
+    collectIllustrations(payload),
+    collectPosterIllustrations()
+  );
   if (!checkOnly) await generateIllustrations(illustrations);
   const result = await validateIllustrations(illustrations);
   console.log(
@@ -119,6 +147,8 @@ if (require.main === module) {
 
 module.exports = {
   collectIllustrations,
+  collectPosterIllustrations,
+  mergeIllustrations,
   outputPath,
   validateIllustrations,
 };

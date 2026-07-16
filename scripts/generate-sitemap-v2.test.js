@@ -3,6 +3,7 @@ const os = require('os');
 const path = require('path');
 
 const {
+  extractSymbolHeroImageFromContent,
   generateSitemap,
   loadImageSitemapEntries,
 } = require('./generate-sitemap-v2');
@@ -16,6 +17,18 @@ describe('generate-sitemap-v2 image sitemap support', () => {
 
   afterEach(() => {
     fs.rmSync(tmpRoot, { recursive: true, force: true });
+  });
+
+  it('extracts only an explicitly visible symbol hero image', () => {
+    const html = `
+      <figure data-image-asset-id="symbol.water" data-image-seo-role="symbol-hero">
+        <picture><img alt="Water" src="/img/seo/symbols-v1/water-1200w.webp"></picture>
+      </figure>`;
+
+    expect(extractSymbolHeroImageFromContent(html)).toBe(
+      'https://noctalia.app/img/seo/symbols-v1/water-1200w.webp'
+    );
+    expect(extractSymbolHeroImageFromContent('<img src="/img/generic.webp">')).toBeNull();
   });
 
   it('preserves the sitemap shape when the image registry is absent', () => {

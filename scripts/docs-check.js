@@ -437,6 +437,7 @@ function main() {
   runNodeScript(path.join('scripts', 'build-site-manifest.js'), ['--check']);
   runNodeScript(path.join('scripts', 'validate-i18n-seo.js'));
   runNodeScript(path.join('scripts', 'check-symbol-illustration-parity.js'));
+  runNodeScript(path.join('scripts', 'generate-symbol-hero-posters.js'), ['--check']);
   runNodeScript(path.join('scripts', 'check-docs-links.js'));
   runNodeScript(path.join('scripts', 'check-docs-shell.js'));
   runNodeScript(path.join('scripts', 'check-article-date-contract.js'));
@@ -444,6 +445,7 @@ function main() {
   runNodeScript(path.join('scripts', 'check-web-performance-contract.js'));
   runNodeScript(path.join('scripts', 'generate-image-seo-assets.js'), ['--check']);
   runNodeScript(path.join('scripts', 'generate-symbol-responsive-images.js'), ['--check']);
+  runNodeScript(path.join('scripts', 'check-symbol-image-contract.js'));
   runNodeScript(path.join('scripts', 'check-image-seo-contract.js'));
   runNodeScript(path.join('docs', 'scripts', 'check-site.js'));
 

@@ -226,6 +226,41 @@ const QUICK_REFERENCE_LABELS = {
   it: 'Scheda rapida del simbolo',
 };
 
+const SYMBOL_IMAGE_ALT_TEMPLATES = {
+  de: (name) => `Traumhafte Illustration des Symbols ${name}`,
+  en: (name) => `Dreamlike illustration representing the symbol ${name}`,
+  es: (name) => `Ilustración onírica que representa el símbolo ${name}`,
+  fr: (name) => `Illustration onirique représentant le symbole ${name}`,
+  it: (name) => `Illustrazione onirica che rappresenta il simbolo ${name}`,
+};
+
+const SYMBOL_IMAGE_CAPTION_TEMPLATES = {
+  de: (name) => `Visuelle Darstellung des Traumsymbols ${name}.`,
+  en: (name) => `Visual representation of the dream symbol ${name}.`,
+  es: (name) => `Representación visual del símbolo onírico ${name}.`,
+  fr: (name) => `Représentation visuelle du symbole onirique ${name}.`,
+  it: (name) => `Rappresentazione visiva del simbolo onirico ${name}.`,
+};
+
+function resolveSymbolIllustration(symbolId, explicitIllustration, symbolData, lang) {
+  if (explicitIllustration?.src) return explicitIllustration;
+
+  const src = `/img/symbols/posters-v1/${symbolId}.webp`;
+  const filePath = path.join(__dirname, '..', src.replace(/^\/+/, ''));
+  if (!fs.existsSync(filePath)) return null;
+
+  const altTemplate = SYMBOL_IMAGE_ALT_TEMPLATES[lang] || SYMBOL_IMAGE_ALT_TEMPLATES.en;
+  const captionTemplate =
+    SYMBOL_IMAGE_CAPTION_TEMPLATES[lang] || SYMBOL_IMAGE_CAPTION_TEMPLATES.en;
+  return {
+    src,
+    width: 1200,
+    height: 675,
+    alt: altTemplate(symbolData.name),
+    caption: captionTemplate(symbolData.name),
+  };
+}
+
 function getSymbolSheetLabels(lang) {
   return SYMBOL_SHEET_LABELS[lang] || SYMBOL_SHEET_LABELS.en;
 }
@@ -767,15 +802,19 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const variations = Array.isArray(extendedContent.variations) ? extendedContent.variations : [];
   const hasInterpretation = Boolean(fullInterpretation && String(fullInterpretation).trim());
   const hasVariations = variations.length > 0;
-  const illustration = extendedContent.illustration && extendedContent.illustration.src
-    ? extendedContent.illustration
-    : null;
+  const illustration = resolveSymbolIllustration(
+    symbol.id,
+    extendedContent.illustration,
+    symbolData,
+    lang
+  );
   const responsiveIllustration = resolveResponsiveSymbolIllustration(illustration);
   const preferredImageUrl = responsiveIllustration
     ? `https://noctalia.app${responsiveIllustration.src}`
     : DEFAULT_SOCIAL_IMAGE;
   const preferredImageWidth = responsiveIllustration?.width || 1200;
   const preferredImageHeight = responsiveIllustration?.height || 630;
+  const preferredImageAlt = illustration?.alt || metaTitle;
   const softCta = symbolData.softCta && symbolData.softCta.href
     ? symbolData.softCta
     : null;
@@ -808,20 +847,17 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                 </div>
             </section>` : '';
 
-  const illustrationHtml = illustration && responsiveIllustration ? `
-                <figure class="symbol-illustration">
-                    <picture>
+  const heroPictureHtml = illustration && responsiveIllustration ? `
+                    <picture class="symbol-hero-media">
                         <img src="${escapeHtml(responsiveIllustration.src)}"
                              ${responsiveIllustration.srcset ? `srcset="${escapeHtml(responsiveIllustration.srcset)}"` : ''}
-                             sizes="(max-width: 768px) 100vw, 760px"
-                             alt="${escapeHtml(illustration.alt || symbolData.name)}"
+                             sizes="100vw"
+                             alt="${escapeHtml(preferredImageAlt)}"
                              fetchpriority="high"
                              decoding="async"
                              width="${escapeHtml(String(responsiveIllustration.width))}"
                              height="${escapeHtml(String(responsiveIllustration.height))}">
-                    </picture>
-                    ${illustration.caption ? `<figcaption>${escapeHtml(illustration.caption)}</figcaption>` : ''}
-                </figure>` : '';
+                    </picture>` : '';
 
   // Generate ask yourself HTML
   const askYourselfHtml = symbolData.askYourself.map(q => `
@@ -1002,6 +1038,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     description: metaDescription,
     image: {
       '@type': 'ImageObject',
+      contentUrl: preferredImageUrl,
       url: preferredImageUrl,
       width: preferredImageWidth,
       height: preferredImageHeight,
@@ -1107,7 +1144,7 @@ ${renderAhrefsAnalyticsScript()}
     <meta property="og:site_name" content="Noctalia">
     <meta property="og:image:width" content="${preferredImageWidth}">
     <meta property="og:image:height" content="${preferredImageHeight}">
-    <meta property="og:image:alt" content="${escapeHtml(metaTitle)}">
+    <meta property="og:image:alt" content="${escapeHtml(preferredImageAlt)}">
     <meta property="og:locale" content="${t.locale}">
 ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${{ en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' }[l]}">`).join('\n')}
     <meta property="article:published_time" content="${CONFIG.datePublished}">
@@ -1121,7 +1158,7 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
     <meta name="twitter:description" content="${escapeHtml(symbolData.shortDescription)}">
     <meta name="twitter:image" content="${preferredImageUrl}">
     <meta name="twitter:site" content="@NoctaliaDreams">
-    <meta name="twitter:image:alt" content="${escapeHtml(metaTitle)}">
+    <meta name="twitter:image:alt" content="${escapeHtml(preferredImageAlt)}">
 
     <!-- Fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
@@ -1163,27 +1200,108 @@ ${renderSharedComponentStyles()}
             background-size: auto, auto, 5rem 5rem, 5rem 5rem, auto;
             animation: none;
         }
-        .symbol-page-main { position: relative; }
-        .symbol-breadcrumb { letter-spacing: 0.01em; }
-        .symbol-hero { position: relative; }
-        .symbol-hero-top {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            gap: 1.5rem;
-            align-items: start;
+        .symbol-page-main {
+            position: relative;
+            padding-top: 0 !important;
         }
-        .symbol-orbit-mark {
-            width: clamp(6rem, 16vw, 8rem);
-            aspect-ratio: 1;
-            display: grid;
-            place-items: center;
-            color: rgba(216, 180, 254, 0.86);
-            border: 1px solid rgba(253, 164, 129, 0.22);
-            border-radius: 999px;
+        .symbol-breadcrumb {
+            margin-bottom: auto;
+            padding-top: clamp(6.5rem, 9vw, 8rem);
+            letter-spacing: 0.01em;
+            color: rgba(237, 225, 255, 0.68);
+        }
+        .symbol-hero {
+            position: relative;
+            left: 50%;
+            width: 100vw;
+            min-height: max(42rem, 100svh);
+            margin-left: -50vw;
+            isolation: isolate;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: #090413;
+        }
+        .symbol-hero-figure {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+        .symbol-hero-media {
+            position: absolute;
+            inset: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .symbol-hero-media img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            object-position: center;
+        }
+        .symbol-hero-overlay {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            width: min(100%, 52rem);
+            min-height: max(42rem, 100svh);
+            margin: 0 auto;
+            padding: 0 1rem clamp(3rem, 7vh, 5.5rem);
             background:
-                radial-gradient(circle, rgba(216, 180, 254, 0.13), transparent 58%),
-                rgba(255, 255, 255, 0.025);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+                linear-gradient(180deg, rgba(8, 3, 15, 0.04) 18%, rgba(8, 3, 15, 0.16) 40%, rgba(8, 3, 15, 0.88) 87%, #090413 100%);
+        }
+        .symbol-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                linear-gradient(90deg, rgba(8, 3, 15, 0.36), transparent 65%),
+                linear-gradient(180deg, rgba(8, 3, 15, 0.16), transparent 35%, rgba(8, 3, 15, 0.34));
+        }
+        .symbol-hero-copy {
+            width: 100%;
+            min-width: 0;
+            margin-top: auto;
+        }
+        .symbol-hero-chips span,
+        .symbol-hero-chips a {
+            background: rgba(8, 3, 15, 0.72);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .symbol-heading {
+            width: min(100%, 12ch);
+            max-width: 100%;
+            color: #fff7ed;
+            font-size: clamp(3.25rem, 8vw, 6.5rem) !important;
+            line-height: 0.92 !important;
+            overflow-wrap: anywhere;
+            hyphens: auto;
+            text-wrap: balance;
+            text-shadow: 0 3px 28px rgba(8, 3, 15, 0.78);
+        }
+        .symbol-hero-caption {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            clip-path: inset(50%);
+            white-space: nowrap;
+            border: 0;
+        }
+        .symbol-summary {
+            margin-top: clamp(1.75rem, 4vw, 3rem);
+            color: rgba(237, 225, 255, 0.84);
         }
         .symbol-quick-card {
             margin-top: 1.35rem;
@@ -1195,25 +1313,6 @@ ${renderSharedComponentStyles()}
         .symbol-quick-label {
             color: #fda481;
             letter-spacing: 0.01em;
-        }
-        .symbol-illustration {
-            margin-top: 1.5rem;
-            overflow: hidden;
-            border-radius: 1.25rem;
-            border: 1px solid rgba(253, 164, 129, 0.16);
-            background: rgba(255, 255, 255, 0.035);
-            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
-        }
-        .symbol-illustration img {
-            display: block;
-            width: 100%;
-            height: auto;
-        }
-        .symbol-illustration figcaption {
-            padding: 0.85rem 1rem 1rem;
-            color: rgba(196, 181, 253, 0.76);
-            font-size: 0.82rem;
-            line-height: 1.45;
         }
         .symbol-soft-cta a {
             flex-shrink: 0;
@@ -1230,21 +1329,24 @@ ${renderSharedComponentStyles()}
         .symbol-link:hover { transform: translateY(-2px); border-color: rgba(253, 164, 129, 0.3); }
         @media (max-width: 767px) {
             .symbol-page-main {
-                padding-top: 5.4rem !important;
+                padding-top: 0 !important;
                 padding-left: 1rem !important;
                 padding-right: 1rem !important;
                 padding-bottom: 3.5rem !important;
             }
             .symbol-page .orb { display: none; }
             .symbol-breadcrumb {
-                margin-bottom: 1.1rem !important;
-                font-size: 0.8rem !important;
+                display: none;
             }
             .symbol-hero {
-                margin-bottom: 1rem !important;
+                min-height: clamp(30rem, 125vw, 43rem);
+                margin-bottom: 0 !important;
             }
-            .symbol-hero-top {
-                display: block;
+            .symbol-hero-overlay {
+                min-height: clamp(30rem, 125vw, 43rem);
+                padding: 6.5rem 1rem clamp(2rem, 5vw, 3rem);
+                background:
+                    linear-gradient(180deg, rgba(8, 3, 15, 0.03) 18%, rgba(8, 3, 15, 0.12) 40%, rgba(8, 3, 15, 0.78) 75%, #090413 100%);
             }
             .symbol-hero-chips {
                 gap: 0.55rem !important;
@@ -1256,11 +1358,10 @@ ${renderSharedComponentStyles()}
                 font-size: 0.68rem !important;
             }
             .symbol-category-chip { display: none !important; }
-            .symbol-orbit-mark { display: none; }
             .symbol-heading {
-                margin-bottom: 0.8rem !important;
-                font-size: clamp(2.65rem, 13vw, 3.45rem) !important;
-                line-height: 0.95 !important;
+                margin-bottom: 0 !important;
+                font-size: clamp(2.15rem, 9.4vw, 3.1rem) !important;
+                line-height: 0.97 !important;
                 letter-spacing: 0 !important;
             }
             .symbol-h1-prefix { display: none; }
@@ -1278,10 +1379,6 @@ ${renderSharedComponentStyles()}
                 margin-top: 0.55rem;
                 font-size: 1rem;
                 line-height: 1.55;
-            }
-            .symbol-illustration {
-                margin-top: 1rem;
-                border-radius: 1.05rem;
             }
             .symbol-soft-cta a {
                 width: 100%;
@@ -1392,27 +1489,23 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
     <main class="symbol-page-main pt-32 pb-20 px-4">
         <article class="max-w-3xl mx-auto">
 
-            <!-- Breadcrumb -->
-            <nav class="symbol-breadcrumb text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
-                <ol class="flex items-center gap-2 flex-wrap">
-                    <li>
-                        <a href="${homePath}" class="hover:text-dream-salmon transition-colors">${t.home}</a>
-                    </li>
-                    <li class="text-purple-400">/</li>
-                    <li>
-                        <a href="/${lang}/guides/${t.dictionary_slug}" class="hover:text-dream-salmon transition-colors">${t.symbols}</a>
-                    </li>
-                    <li class="text-purple-400">/</li>
-                    <li>
-                        <span class="text-dream-cream">${escapeHtml(symbolData.name)}</span>
-                    </li>
-                </ol>
-            </nav>
-
             <!-- Header -->
-            <header class="symbol-hero mb-12">
-                <div class="symbol-hero-top">
-                    <div>
+            <header class="symbol-hero" data-image-seo-hero="true">
+                <figure class="symbol-hero-figure" data-image-seo-role="symbol-hero" data-image-asset-id="symbol.${escapeHtml(symbol.id)}">
+${heroPictureHtml}
+                    ${illustration?.caption ? `<figcaption class="symbol-hero-caption">${escapeHtml(illustration.caption)}</figcaption>` : ''}
+                </figure>
+                <div class="symbol-hero-overlay">
+                    <nav class="symbol-breadcrumb text-sm" aria-label="Breadcrumb">
+                        <ol class="flex items-center gap-2 flex-wrap">
+                            <li><a href="${homePath}" class="hover:text-dream-salmon transition-colors">${t.home}</a></li>
+                            <li class="text-purple-400">/</li>
+                            <li><a href="/${lang}/guides/${t.dictionary_slug}" class="hover:text-dream-salmon transition-colors">${t.symbols}</a></li>
+                            <li class="text-purple-400">/</li>
+                            <li><span class="text-dream-cream">${escapeHtml(symbolData.name)}</span></li>
+                        </ol>
+                    </nav>
+                    <div class="symbol-hero-copy">
                         <div class="symbol-hero-chips flex flex-wrap gap-3 mb-6">
                             <span data-page-intent="quick-symbol-reference" class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-4 py-2">
                                 <i data-lucide="sparkles" class="w-4 h-4"></i>
@@ -1424,29 +1517,24 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
                             </a>
                         </div>
 
-                        <h1 class="symbol-heading font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
+                        <h1 class="symbol-heading font-serif text-3xl md:text-6xl mb-0 leading-[0.96]">
                             <span class="symbol-h1-prefix">${escapeHtml(t.h1_prefix)}</span> <span>${escapeHtml(symbolData.name)}</span>
                         </h1>
-
-                        <p class="symbol-summary text-lg text-purple-200/80 leading-relaxed">
-                            ${escapeHtml(symbolData.shortDescription)}
-                        </p>
-                    </div>
-
-                    <div class="symbol-orbit-mark" aria-hidden="true">
-                        <i data-lucide="sparkles" class="w-12 h-12"></i>
                     </div>
                 </div>
-
-                <div class="symbol-quick-card p-5">
-                    <div class="symbol-quick-label flex items-center gap-2 text-sm font-bold">
-                        <i data-lucide="eye" class="w-5 h-5"></i>
-                        ${escapeHtml(sheetLabels.quick)}
-                    </div>
-                    <p class="text-dream-cream">${escapeHtml(quickAnswer)}</p>
-                </div>
-${illustrationHtml}
             </header>
+
+            <p class="symbol-summary text-lg leading-relaxed">
+                ${escapeHtml(symbolData.shortDescription)}
+            </p>
+
+            <div class="symbol-quick-card p-5">
+                <div class="symbol-quick-label flex items-center gap-2 text-sm font-bold">
+                    <i data-lucide="eye" class="w-5 h-5"></i>
+                    ${escapeHtml(sheetLabels.quick)}
+                </div>
+                <p class="text-dream-cream">${escapeHtml(quickAnswer)}</p>
+            </div>
 
             <nav class="symbol-jump-nav" aria-label="${escapeHtml(sheetLabels.jumpNav)}" style="grid-template-columns: repeat(${jumpItems.length}, minmax(0, 1fr));">${jumpNavHtml}
             </nav>
@@ -1543,10 +1631,10 @@ ${renderPseoFooter(lang, currentPaths, 'dictionary')}
                     link.classList.toggle('is-active', link.getAttribute('href') === normalized);
                 });
             };
-            const getScrollSpyOffset = () => window.innerWidth < 768 ? 176 : 112;
+            const getJumpOffset = () => window.innerWidth < 768 ? 188 : 96;
             const updateActiveJumpLink = () => {
                 if (!jumpTargets.length) return;
-                const probeY = getScrollSpyOffset();
+                const probeY = getJumpOffset() + 1;
                 let activeHash = jumpTargets[0].hash;
                 for (const target of jumpTargets) {
                     const rect = target.section.getBoundingClientRect();
@@ -1567,7 +1655,7 @@ ${renderPseoFooter(lang, currentPaths, 'dictionary')}
                     }
                     event.preventDefault();
                     setActiveJumpLink(hash);
-                    const offset = window.innerWidth < 768 ? 188 : 96;
+                    const offset = getJumpOffset();
                     const top = target.getBoundingClientRect().top + window.scrollY - offset;
                     window.history.pushState(null, '', hash);
                     window.scrollTo({ top, behavior: 'smooth' });
