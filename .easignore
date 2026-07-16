@@ -87,6 +87,12 @@ maestro-results/
 tmp-stage/
 tmp-stage-index/
 
-# Exclude web-only docs from mobile EAS uploads
+# Exclude web-only docs from mobile EAS uploads, except the curated guide data
+# consumed by services/dreamGuideService.ts.
 docs/
-docs-src/
+docs-src/*
+!docs-src/static
+docs-src/static/*
+!docs-src/static/data
+docs-src/static/data/*
+!docs-src/static/data/curation-pages.json
