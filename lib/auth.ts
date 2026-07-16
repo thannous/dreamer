@@ -1,7 +1,7 @@
 import type { Session, User } from '@supabase/supabase-js';
 import { Platform } from 'react-native';
 
-import { createWebOAuthState, supabase } from './supabase';
+import { supabase } from './supabase';
 import * as mockAuth from './mockAuth';
 import { getExpoPublicEnvValue, isMockModeEnabled } from './env';
 import { createScopedLogger } from './logger';
@@ -85,6 +85,10 @@ function getGoogleWebClientId(): string | undefined {
   return getExpoPublicEnvValue('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID');
 }
 
+function getGoogleIosClientId(): string | undefined {
+  return getExpoPublicEnvValue('EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID');
+}
+
 function getErrorCode(error: unknown): string | undefined {
   const code = (error as { code?: unknown })?.code;
   return typeof code === 'string' ? code : undefined;
@@ -121,10 +125,16 @@ async function ensureGoogleSignInConfigured(): Promise<void> {
     throw new Error('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID not configured. Google Sign-In cannot be initialized.');
   }
 
+  const iosClientId = Platform.OS === 'ios' ? getGoogleIosClientId() : undefined;
+  if (Platform.OS === 'ios' && !iosClientId) {
+    throw new Error('EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID not configured. Google Sign-In cannot be initialized.');
+  }
+
   googleSignInConfigurePromise = getGoogleSignInModule()
     .then(({ GoogleSignin }) =>
       GoogleSignin.configure({
         webClientId,
+        ...(iosClientId ? { iosClientId } : {}),
         scopes: ['openid', 'email', 'profile'],
         offlineAccess: false,
       })
@@ -490,13 +500,11 @@ export async function signInWithGoogleWeb(): Promise<void> {
   }
 
   if (Platform.OS !== 'web') return;
-  const state = createWebOAuthState();
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
       scopes: 'openid email profile',
       redirectTo: getWebRedirectTo(),
-      ...(state ? { queryParams: { state } } : {}),
     },
   });
   if (error) throw error;

@@ -318,6 +318,37 @@ describe('useOfflineSyncQueue', () => {
     });
   });
 
+  describe('retryDreamMutations', () => {
+    it('makes pending and interrupted sending mutations retryable', async () => {
+      const { result } = renderHook(() => useOfflineSyncQueue(defaultOptions));
+      const dream = buildDream({ id: 1, remoteId: 1001 });
+
+      act(() => {
+        result.current.setPendingMutations([
+          {
+            ...legacyMutation({ id: 'mut-pending', type: 'update', dream, createdAt: Date.now() }),
+            status: 'pending',
+          },
+          {
+            ...legacyMutation({ id: 'mut-sending', type: 'update', dream, createdAt: Date.now() }),
+            status: 'sending',
+          },
+        ]);
+      });
+
+      let retried = false;
+      await act(async () => {
+        retried = await result.current.retryDreamMutations(1);
+      });
+
+      expect(retried).toBe(true);
+      expect(result.current.pendingMutationsRef.current.map((mutation) => mutation.status)).toEqual([
+        'pending',
+        'pending',
+      ]);
+    });
+  });
+
   describe('syncPendingMutations', () => {
     it('does not sync when remote sync is disabled', async () => {
       const options = { ...defaultOptions, canUseRemoteSync: false };
@@ -418,6 +449,28 @@ describe('useOfflineSyncQueue', () => {
       act(() => {
         result.current.setPendingMutations([
           legacyMutation({ id: 'mut-1', type: 'update', dream, createdAt: Date.now() }),
+        ]);
+      });
+
+      await act(async () => {
+        await result.current.syncPendingMutations();
+      });
+
+      expect(mockUpdateDream).toHaveBeenCalledWith(expect.objectContaining({ remoteId: 1001 }));
+    });
+
+    it('replays an update left sending by an interrupted sync', async () => {
+      const dream = buildDream({ id: 1, remoteId: 1001 });
+      mockUpdateDream.mockResolvedValue({ ...dream, title: 'Recovered' });
+
+      const { result } = renderHook(() => useOfflineSyncQueue(defaultOptions));
+
+      act(() => {
+        result.current.setPendingMutations([
+          {
+            ...legacyMutation({ id: 'mut-sending', type: 'update', dream, createdAt: Date.now() }),
+            status: 'sending',
+          },
         ]);
       });
 

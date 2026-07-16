@@ -32,14 +32,14 @@ const {
 
 const EXPECTED = {
   packageName: 'com.tanuki75.noctalia',
-  versionName: '2.0.2',
-  versionCode: '36',
+  versionName: '3.0.0',
+  versionCode: '37',
 };
 
 const RELEASE_DUMPSYS = `
   Package [com.tanuki75.noctalia] (abc123):
-    versionCode=36 minSdk=33 targetSdk=36
-    versionName=2.0.2
+    versionCode=37 minSdk=33 targetSdk=36
+    versionName=3.0.0
     pkgFlags=[ HAS_CODE ALLOW_CLEAR_USER_DATA ]
 `;
 
@@ -47,10 +47,10 @@ describe('run-maestro-android Release preflight', () => {
   it('reads the expected Android package and versions from app.json', () => {
     const readFileSync = jest.fn(() => JSON.stringify({
       expo: {
-        version: '2.0.2',
+        version: '3.0.0',
         android: {
           package: 'com.tanuki75.noctalia',
-          versionCode: 36,
+          versionCode: 37,
         },
       },
     }));
@@ -90,12 +90,12 @@ describe('run-maestro-android Release preflight', () => {
   it('refuses a stale installed build', () => {
     const installed = parseInstalledAndroidBuild(
       RELEASE_DUMPSYS
-        .replace('versionCode=36', 'versionCode=33')
-        .replace('versionName=2.0.2', 'versionName=2.0.1')
+        .replace('versionCode=37', 'versionCode=36')
+        .replace('versionName=3.0.0', 'versionName=2.0.3')
     );
 
     expect(() => assertInstalledReleaseBinary('emulator-5554', EXPECTED, installed))
-      .toThrow('versionName 2.0.1 (expected 2.0.2); versionCode 33 (expected 36)');
+      .toThrow('versionName 2.0.3 (expected 3.0.0); versionCode 36 (expected 37)');
   });
 
   it('refuses a debuggable build that could use Metro', () => {

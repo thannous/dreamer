@@ -2,12 +2,10 @@ import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import { IMAGE_JOB_WORKER_AUTH_HEADER, triggerImageJobWorker } from './imageJobs.ts';
 
-Deno.test('triggerImageJobWorker sends gateway auth and worker secret separately', async () => {
+Deno.test('triggerImageJobWorker sends API key and worker secret without a bearer', async () => {
   const originalFetch = globalThis.fetch;
-  const originalAnon = Deno.env.get('SUPABASE_ANON_KEY');
   const requests: Request[] = [];
 
-  Deno.env.set('SUPABASE_ANON_KEY', 'anon-jwt');
   globalThis.fetch = ((input: RequestInfo | URL, init?: RequestInit) => {
     const request = new Request(input, init);
     requests.push(request);
@@ -23,15 +21,10 @@ Deno.test('triggerImageJobWorker sends gateway auth and worker secret separately
 
     assertEquals(triggered, true);
     assertEquals(requests.length, 1);
-    assertEquals(requests[0].headers.get('authorization'), 'Bearer anon-jwt');
+    assertEquals(requests[0].headers.get('authorization'), null);
     assertEquals(requests[0].headers.get('apikey'), 'sb_secret_worker_key');
     assertEquals(requests[0].headers.get(IMAGE_JOB_WORKER_AUTH_HEADER), 'sb_secret_worker_key');
   } finally {
     globalThis.fetch = originalFetch;
-    if (originalAnon == null) {
-      Deno.env.delete('SUPABASE_ANON_KEY');
-    } else {
-      Deno.env.set('SUPABASE_ANON_KEY', originalAnon);
-    }
   }
 });

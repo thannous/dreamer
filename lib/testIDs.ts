@@ -132,6 +132,9 @@ export const TID = {
     DreamDetailPrimaryCta: 'btn.dream.primaryCta',
     ShareCopy: 'btn.share.copy',
     ShareClose: 'btn.share.close',
+    WhatsNewClose: 'btn.whatsNew.close',
+    WhatsNewPrimary: 'btn.whatsNew.primary',
+    WhatsNewLater: 'btn.whatsNew.later',
   },
   Tab: {
     Home: 'tab.home',
@@ -150,6 +153,7 @@ export const TID = {
     DateRange: 'modal.dateRange',
     AdvancedFilters: 'modal.advancedFilters',
     StatsPeriod: 'modal.statsPeriod',
+    WhatsNew: 'modal.whatsNew',
   },
   Component: {
     SearchBar: 'component.searchBar',
@@ -174,6 +178,7 @@ export const TID = {
     TranscriptCard: 'component.transcriptCard',
     DreamDetailActionCard: 'component.dreamDetail.actionCard',
     FirstValueBackupCard: 'component.firstValueBackup.card',
+    WhatsNewCard: 'component.whatsNew.card',
     RememberedDreamMetadata: 'component.recording.remembered.metadata',
   },
   Toast: {

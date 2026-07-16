@@ -114,102 +114,6 @@ const SUPABASE_ANON_KEY = envAnon || extraAnon;
 
 export const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 
-type WebSessionStorage = {
-  getItem: (key: string) => string | null;
-  setItem: (key: string, value: string) => void;
-  removeItem: (key: string) => void;
-};
-
-type WebCryptoSource = {
-  getRandomValues?: (array: Uint8Array) => Uint8Array;
-};
-
-type WebOAuthStateRecord = {
-  value: string;
-  expiresAt: number;
-};
-
-const WEB_OAUTH_STATE_STORAGE_KEY = 'noctalia-web-oauth-state-v1';
-const WEB_OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
-
-function getWebSessionStorage(): WebSessionStorage | null {
-  if (Platform.OS !== 'web') return null;
-  try {
-    const storage = (globalThis as typeof globalThis & { sessionStorage?: WebSessionStorage }).sessionStorage;
-    return storage ?? null;
-  } catch {
-    return null;
-  }
-}
-
-function createRandomOAuthState(): string {
-  const bytes = new Uint8Array(24);
-  const cryptoSource = (globalThis as typeof globalThis & { crypto?: WebCryptoSource }).crypto;
-  if (cryptoSource?.getRandomValues) {
-    cryptoSource.getRandomValues(bytes);
-  } else {
-    for (let i = 0; i < bytes.length; i += 1) {
-      bytes[i] = Math.floor(Math.random() * 256);
-    }
-  }
-  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
-}
-
-export function createWebOAuthState(): string | null {
-  const storage = getWebSessionStorage();
-  if (!storage) return null;
-
-  const value = createRandomOAuthState();
-  const record: WebOAuthStateRecord = {
-    value,
-    expiresAt: Date.now() + WEB_OAUTH_STATE_TTL_MS,
-  };
-  try {
-    storage.setItem(WEB_OAUTH_STATE_STORAGE_KEY, JSON.stringify(record));
-    return value;
-  } catch {
-    return null;
-  }
-}
-
-function consumeWebOAuthState(state: string | undefined): boolean {
-  const incoming = state?.trim();
-  const storage = getWebSessionStorage();
-  if (!incoming || !storage) return false;
-
-  let record: WebOAuthStateRecord | null = null;
-  try {
-    const raw = storage.getItem(WEB_OAUTH_STATE_STORAGE_KEY);
-    record = raw ? (JSON.parse(raw) as WebOAuthStateRecord) : null;
-  } catch {
-    record = null;
-  }
-
-  if (!record?.value || !Number.isFinite(record.expiresAt) || record.expiresAt <= Date.now()) {
-    try {
-      storage.removeItem(WEB_OAUTH_STATE_STORAGE_KEY);
-    } catch {
-      // Ignore storage cleanup failures; the session still fails closed.
-    }
-    return false;
-  }
-
-  if (record.value !== incoming) {
-    return false;
-  }
-
-  try {
-    storage.removeItem(WEB_OAUTH_STATE_STORAGE_KEY);
-  } catch {
-    // Ignore storage cleanup failures; the one-time check has already succeeded.
-  }
-  return true;
-}
-
-export function shouldDetectWebAuthSessionInUrl(_url: URL, params: { [parameter: string]: string }): boolean {
-  return consumeWebOAuthState(params.state);
-}
-
 if (!isSupabaseConfigured) {
   console.warn(
     'Missing EXPO_PUBLIC_SUPABASE_URL or EXPO_PUBLIC_SUPABASE_ANON_KEY. Auth will be disabled until configured.'
@@ -225,7 +129,7 @@ export const supabase = createClient(
       storage: Platform.OS === 'web' ? undefined : ExpoSecureStoreAdapter,
       autoRefreshToken: true,
       persistSession: true,
-      detectSessionInUrl: Platform.OS === 'web' ? shouldDetectWebAuthSessionInUrl : false,
+      detectSessionInUrl: Platform.OS === 'web',
     },
   }
 );

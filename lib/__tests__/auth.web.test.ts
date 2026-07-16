@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const mockSignInWithOAuth = jest.fn();
-const mockCreateWebOAuthState = jest.fn(() => 'web-oauth-state');
 
 jest.mock('../env', () => ({
   isMockModeEnabled: () => false,
@@ -16,7 +15,6 @@ jest.mock('../mockAuth', () => ({
 }));
 
 jest.mock('../supabase', () => ({
-  createWebOAuthState: mockCreateWebOAuthState,
   supabase: {
     auth: {
       signInWithOAuth: mockSignInWithOAuth,
@@ -27,7 +25,6 @@ jest.mock('../supabase', () => ({
 describe('web auth helpers', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockCreateWebOAuthState.mockReturnValue('web-oauth-state');
     mockSignInWithOAuth.mockResolvedValue({ error: null });
     Object.defineProperty(globalThis, 'location', {
       configurable: true,
@@ -35,7 +32,7 @@ describe('web auth helpers', () => {
     });
   });
 
-  it('starts Google OAuth with an app-bound state parameter', async () => {
+  it('starts Google OAuth with the production origin as redirect', async () => {
     const auth = require('../auth.web') as typeof import('../auth.web');
 
     await auth.signInWithGoogleWeb();
@@ -45,7 +42,24 @@ describe('web auth helpers', () => {
       options: {
         scopes: 'openid email profile',
         redirectTo: 'https://dream.noctalia.app',
-        queryParams: { state: 'web-oauth-state' },
+      },
+    });
+  });
+
+  it('returns to the current localhost origin after Google OAuth', async () => {
+    Object.defineProperty(globalThis, 'location', {
+      configurable: true,
+      value: { origin: 'http://localhost:8081' },
+    });
+    const auth = require('../auth.web') as typeof import('../auth.web');
+
+    await auth.signInWithGoogleWeb();
+
+    expect(mockSignInWithOAuth).toHaveBeenCalledWith({
+      provider: 'google',
+      options: {
+        scopes: 'openid email profile',
+        redirectTo: 'http://localhost:8081',
       },
     });
   });

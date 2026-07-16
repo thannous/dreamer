@@ -121,13 +121,12 @@ export const triggerImageJobWorker = async (options: {
   }
 
   try {
-    const gatewayJwt = Deno.env.get('SUPABASE_ANON_KEY')?.trim() || options.serviceRoleKey;
     const response = await fetch(`${options.supabaseUrl}/functions/v1/${WORKER_FUNCTION_NAME}`, {
       method: 'POST',
       headers: {
-        // The Functions gateway expects a JWT. New Supabase secret keys still
-        // work for PostgREST, but are not valid bearer JWTs at the gateway.
-        Authorization: `Bearer ${gatewayJwt}`,
+        // This internal function has verify_jwt=false and authenticates the
+        // dedicated worker header itself. Opaque sb_secret keys must not be
+        // sent as bearer tokens because the gateway tries to parse them as JWTs.
         apikey: options.serviceRoleKey,
         [IMAGE_JOB_WORKER_AUTH_HEADER]: options.serviceRoleKey,
         'Content-Type': 'application/json',

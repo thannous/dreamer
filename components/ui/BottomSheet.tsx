@@ -1,6 +1,14 @@
 import { BottomSheet as ExpoBottomSheet, RNHostView } from '@expo/ui';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
@@ -22,6 +30,21 @@ export type BottomSheetProps = {
   dismissBehavior?: 'pan' | 'none';
 };
 
+const NATIVE_SHEET_HORIZONTAL_INSET = 16;
+const IOS_SHEET_MAX_WIDTH = 540;
+const ANDROID_SHEET_MAX_WIDTH = 640;
+
+export function getNativeBottomSheetContentWidth(
+  viewportWidth: number,
+  platform: 'android' | 'ios'
+) {
+  const sheetMaxWidth = platform === 'ios' ? IOS_SHEET_MAX_WIDTH : ANDROID_SHEET_MAX_WIDTH;
+  return Math.max(
+    0,
+    Math.min(viewportWidth, sheetMaxWidth) - NATIVE_SHEET_HORIZONTAL_INSET * 2
+  );
+}
+
 /**
  * Universal Expo UI sheet that hosts the existing branded React Native content.
  *
@@ -38,6 +61,7 @@ export function BottomSheet({
   dismissBehavior = 'pan',
 }: BottomSheetProps) {
   const { colors, mode } = useTheme();
+  const { width: viewportWidth } = useWindowDimensions();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const previouslyFocusedElementRef = useRef<{ focus?: () => void } | null>(null);
   const wasVisibleRef = useRef(false);
@@ -90,6 +114,13 @@ export function BottomSheet({
     setPresentationEpoch((epoch) => epoch + 1);
   };
 
+  const nativeContentWidth = Platform.OS === 'web'
+    ? undefined
+    : getNativeBottomSheetContentWidth(
+        viewportWidth,
+        Platform.OS === 'ios' ? 'ios' : 'android'
+      );
+
   return (
     <ExpoBottomSheet
       key={`${testID ?? 'bottom-sheet'}-${presentationEpoch}`}
@@ -108,6 +139,7 @@ export function BottomSheet({
               borderColor: noctalia.surface.border,
             },
             style,
+            nativeContentWidth != null && { width: nativeContentWidth },
           ]}
         >
           {normalizedChildren}

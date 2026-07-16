@@ -29,6 +29,8 @@ import { useAppState } from "@/hooks/useAppState";
 import { useClearWebFocus } from "@/hooks/useClearWebFocus";
 import { useScrollIdle } from "@/hooks/useScrollIdle";
 import { useTranslation } from "@/hooks/useTranslation";
+import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
+import type { DreamGuideLanguage } from "@/lib/dreamGuideTypes";
 import {
   RITUALS,
   type RitualConfig,
@@ -133,7 +135,11 @@ const MYTH_CARDS: CopyCard[] = [
 export default function InspirationScreen() {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
+  const guideCopy = useMemo(
+    () => getDreamGuideCopy((currentLang ?? "en") as DreamGuideLanguage),
+    [currentLang],
+  );
   const { width } = useWindowDimensions();
   const scrollPerf = useScrollIdle();
   useClearWebFocus();
@@ -150,6 +156,9 @@ export default function InspirationScreen() {
     : TAB_BAR_HEIGHT + ThemeLayout.spacing.lg;
   const handleOpenSymbols = useCallback(() => {
     router.push("/symbol-dictionary" as any);
+  }, []);
+  const handleOpenGuides = useCallback(() => {
+    router.push("/dream-guides" as any);
   }, []);
   const homeHeaderActions = useMemo(
     () => [
@@ -367,6 +376,21 @@ export default function InspirationScreen() {
                   t={t}
                   isDesktopLayout={isDesktopLayout}
                   onOpenSymbols={handleOpenSymbols}
+                />
+              </View>
+
+              <View
+                style={[
+                  styles.homeSectionSpacing,
+                  isDesktopLayout && styles.desktopFullSection,
+                ]}
+              >
+                <DreamGuidesHomeCard
+                  noctalia={noctalia}
+                  kicker={guideCopy.practicalLabel}
+                  title={guideCopy.screenTitle}
+                  body={guideCopy.screenSubtitle}
+                  onPress={handleOpenGuides}
                 />
               </View>
 
@@ -605,6 +629,63 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
           </Pressable>
 
         </View>
+      </FlatGlassCard>
+    </View>
+  );
+});
+
+type DreamGuidesHomeCardProps = {
+  noctalia: NoctaliaDesignTokens;
+  kicker: string;
+  title: string;
+  body: string;
+  onPress: () => void;
+};
+
+const DreamGuidesHomeCard = memo(function DreamGuidesHomeCard({
+  noctalia,
+  kicker,
+  title,
+  body,
+  onPress,
+}: DreamGuidesHomeCardProps) {
+  return (
+    <View style={styles.dreamGuidesHomeContainer}>
+      <FlatGlassCard intensity="strong" style={styles.dreamGuidesHomeCard}>
+        <Pressable
+          onPress={onPress}
+          accessibilityRole="button"
+          accessibilityLabel={title}
+          testID="btn.home.dreamGuides"
+          style={({ pressed }) => [
+            styles.dreamGuidesHomeButton,
+            pressed && styles.pressedButton,
+          ]}
+        >
+          <View
+            style={[
+              styles.dreamGuidesHomeIcon,
+              { backgroundColor: noctalia.surface.soft },
+            ]}
+          >
+            <IconSymbol name="sparkles" size={23} color={noctalia.accent.base} />
+          </View>
+          <View style={styles.dreamGuidesHomeCopy}>
+            <Text style={[styles.dreamGuidesHomeKicker, { color: noctalia.accent.base }]}>
+              {kicker}
+            </Text>
+            <Text style={[styles.dreamGuidesHomeTitle, { color: noctalia.text.primary }]}>
+              {title}
+            </Text>
+            <Text
+              style={[styles.dreamGuidesHomeBody, { color: noctalia.text.secondary }]}
+              numberOfLines={2}
+            >
+              {body}
+            </Text>
+          </View>
+          <IconSymbol name="chevron.right" size={20} color={noctalia.accent.base} />
+        </Pressable>
       </FlatGlassCard>
     </View>
   );
@@ -1096,6 +1177,48 @@ const styles = StyleSheet.create({
   symbolHeroExploreArrow: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 17,
+    lineHeight: 19,
+  },
+  dreamGuidesHomeContainer: {
+    paddingHorizontal: 20,
+  },
+  dreamGuidesHomeCard: {
+    borderRadius: 24,
+    borderCurve: "continuous",
+    overflow: "hidden",
+  },
+  dreamGuidesHomeButton: {
+    minHeight: 126,
+    padding: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
+  dreamGuidesHomeIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 17,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dreamGuidesHomeCopy: {
+    flex: 1,
+    gap: 4,
+  },
+  dreamGuidesHomeKicker: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 11,
+    lineHeight: 15,
+    textTransform: "uppercase",
+  },
+  dreamGuidesHomeTitle: {
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: 21,
+    lineHeight: 26,
+  },
+  dreamGuidesHomeBody: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 13,
     lineHeight: 19,
   },
   // Ritual Cards

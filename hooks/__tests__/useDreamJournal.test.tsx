@@ -665,6 +665,184 @@ describe('useDreamJournal', () => {
     });
   });
 
+  describe('retryDreamSync', () => {
+    it('rebuilds a missing update mutation for a failed remote sync', async () => {
+      setMockUser({ id: 'user-1' });
+      const failedSyncDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'revision-1',
+        syncState: 'failed',
+        lastSyncError: 'Network error',
+      });
+      mockFetchDreamsFromSupabase.mockResolvedValue([failedSyncDream]);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({
+        ...dream,
+        syncState: 'clean',
+      }));
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.retryDreamSync(1);
+      });
+
+      expect(mockUpdateDreamInSupabase).toHaveBeenCalledWith(
+        expect.objectContaining({ remoteId: 101 })
+      );
+    });
+  });
+
+  describe('resolveDreamConflict', () => {
+    it('rebases the local version on the latest server revision before syncing it', async () => {
+      setMockUser({ id: 'user-1' });
+      const staleServerDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'server-revision-old',
+        title: 'Old server title',
+      });
+      const conflictedDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'local-revision-stale',
+        title: 'Successful local analysis',
+        syncState: 'conflict',
+        lastSyncError: 'Dream revision conflict',
+        conflictRemoteDream: staleServerDream,
+      });
+      const latestServerDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'server-revision-latest',
+        title: 'Latest server title',
+      });
+      mockFetchDreamsFromSupabase
+        .mockResolvedValueOnce([conflictedDream])
+        .mockResolvedValueOnce([latestServerDream]);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({
+        ...dream,
+        revisionId: 'server-revision-acked',
+        syncState: 'clean',
+      }));
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.resolveDreamConflict(1, 'keep_local');
+      });
+
+      expect(mockFetchDreamsFromSupabase).toHaveBeenCalledTimes(2);
+      expect(mockUpdateDreamInSupabase).toHaveBeenCalledWith(
+        expect.objectContaining({
+          remoteId: 101,
+          revisionId: 'server-revision-latest',
+          title: 'Successful local analysis',
+        })
+      );
+    });
+
+    it('loads the latest server version instead of a stale conflict snapshot', async () => {
+      setMockUser({ id: 'user-1' });
+      const conflictedDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        title: 'Successful local analysis',
+        syncState: 'conflict',
+        conflictRemoteDream: buildDream({
+          id: 1,
+          remoteId: 101,
+          revisionId: 'server-revision-old',
+          title: 'Old server title',
+        }),
+      });
+      const latestServerDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'server-revision-latest',
+        title: 'Latest server title',
+      });
+      mockFetchDreamsFromSupabase
+        .mockResolvedValueOnce([conflictedDream])
+        .mockResolvedValueOnce([latestServerDream]);
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.resolveDreamConflict(1, 'use_server');
+      });
+
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({
+          revisionId: 'server-revision-latest',
+          title: 'Latest server title',
+          syncState: 'clean',
+        })
+      );
+      expect(mockUpdateDreamInSupabase).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('image job reconciliation', () => {
+    it('refreshes the worker-owned server revision without sending a redundant image update', async () => {
+      setMockUser({ id: 'user-1' });
+      const dreamBeforeImageCompletion = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'revision-before-image',
+        imageUrl: '',
+        imageJobId: 'job-succeeded',
+        imageJobStatus: 'running',
+        imageJobRequestId: 'image-request-1',
+      });
+      const dreamAfterWorkerUpdate = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'revision-after-image',
+        imageUrl: 'https://example.com/generated-image.jpg',
+        imageGenerationFailed: false,
+      });
+      mockFetchDreamsFromSupabase
+        .mockResolvedValueOnce([dreamBeforeImageCompletion])
+        .mockResolvedValue([dreamAfterWorkerUpdate]);
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          remoteDreamId: 101,
+          jobId: 'job-succeeded',
+          clientRequestId: 'image-request-1',
+          status: 'running',
+          requestedAt: Date.now(),
+        },
+      ]);
+      mockGetImageGenerationJobStatus.mockResolvedValue({
+        jobId: 'job-succeeded',
+        status: 'succeeded',
+        clientRequestId: 'image-request-1',
+        resultPayload: {
+          imageUrl: 'https://example.com/generated-image.jpg',
+        },
+      });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await waitFor(() => {
+        expect(result.current.dreams[0]).toEqual(
+          expect.objectContaining({
+            revisionId: 'revision-after-image',
+            imageUrl: 'https://example.com/generated-image.jpg',
+            syncState: 'clean',
+            imageJobId: undefined,
+            imageJobStatus: undefined,
+          })
+        );
+      }, FAST_WAIT_OPTIONS);
+
+      expect(mockFetchDreamsFromSupabase).toHaveBeenCalledTimes(2);
+      expect(mockUpdateDreamInSupabase).not.toHaveBeenCalled();
+    });
+  });
+
   describe('analyzeDream', () => {
     beforeEach(() => {
       mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ canAnalyze: true }));
@@ -760,6 +938,7 @@ describe('useDreamJournal', () => {
       expect(analyzedDream.imageJobId).toBe('job-queued');
       expect(analyzedDream.imageJobStatus).toBe('queued');
       expect(analyzedDream.analyzedAt).toBeDefined();
+      expect(analyzedDream.clientUpdatedAt).toEqual(expect.any(Number));
     });
 
     it('reuses a persisted request id on retry and lets the server reconcile quota', async () => {
@@ -794,6 +973,40 @@ describe('useDreamJournal', () => {
       );
       expect(mockSubmitImageGenerationJob).toHaveBeenCalledWith(
         expect.objectContaining({ clientRequestId: persistedRequestId })
+      );
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({
+          analysisRequestId: persistedRequestId,
+          analysisStatus: 'done',
+          isAnalyzed: true,
+        })
+      );
+    });
+
+    it('resumes a persisted pending request without blocking on optimistic quota', async () => {
+      const persistedRequestId = '9ae2bca5-975f-4f22-8d50-238aa6f67817';
+      const existingDream = buildDream({
+        id: 1,
+        isAnalyzed: false,
+        analysisStatus: 'pending',
+        analysisRequestId: persistedRequestId,
+        imageUrl: '',
+      });
+      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ canAnalyze: false }));
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.analyzeDream(1, 'My dream transcript');
+      });
+
+      expect(mockGetQuotaStatus).not.toHaveBeenCalled();
+      expect(mockAnalyzeDreamText).toHaveBeenCalledWith(
+        'My dream transcript',
+        undefined,
+        'mock-hash-fingerprint',
+        expect.objectContaining({ analysisRequestId: persistedRequestId })
       );
       expect(result.current.dreams[0]).toEqual(
         expect.objectContaining({
@@ -903,14 +1116,12 @@ describe('useDreamJournal', () => {
 
       expect(thrownError?.message).toBe('Analysis failed');
 
-      // Image job submission runs in parallel and may leave the dream in a pending
-      // client state even when the text analysis request fails.
       await waitFor(() => {
-        expect(result.current.dreams[0]?.analysisStatus).toBeDefined();
+        expect(result.current.dreams[0]?.analysisStatus).toBe('failed');
       }, FAST_WAIT_OPTIONS);
 
       const failedDream = result.current.dreams[0];
-      expect(['failed', 'pending']).toContain(failedDream.analysisStatus);
+      expect(failedDream.analysisStatus).toBe('failed');
       expect(failedDream.isAnalyzed).toBe(false);
     });
 

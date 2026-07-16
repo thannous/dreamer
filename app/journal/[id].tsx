@@ -31,6 +31,10 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildFirstValueProperties } from '@/lib/activationAnalytics';
 import { trackProductEvent } from '@/lib/analytics';
+import {
+  isRecoverablePendingAnalysis,
+  isResumableAnalysisRequest,
+} from '@/lib/analysisRequest';
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamSyncState, normalizeDreamMemoryMetadata } from '@/lib/dreamUtils';
@@ -223,7 +227,9 @@ export default function JournalDetailScreen() {
   const scrollPerf = useScrollIdle();
   useClearWebFocus();
   const [isRetryingImage, setIsRetryingImage] = useState(false);
+  const [isRetryingSync, setIsRetryingSync] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisRecoveryClock, setAnalysisRecoveryClock] = useState(() => Date.now());
   const [showReplaceImageSheet, setShowReplaceImageSheet] = useState(false);
   const [showReanalyzeSheet, setShowReanalyzeSheet] = useState(false);
   const [showDeleteSheet, setShowDeleteSheet] = useState(false);
@@ -261,6 +267,12 @@ export default function JournalDetailScreen() {
   const canUseReference = referenceImagesEnabled && Boolean(user);
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
+  useEffect(() => {
+    if (dream?.analysisStatus !== 'pending' || isAnalyzing) return undefined;
+
+    const timer = setInterval(() => setAnalysisRecoveryClock(Date.now()), 15_000);
+    return () => clearInterval(timer);
+  }, [dream?.analysisStatus, dream?.clientUpdatedAt, dream?.updatedAt, isAnalyzing]);
   const dreamSyncState = useMemo(
     () => (dream && !isMockMode ? getDreamSyncState(dream) : 'clean'),
     [dream]
@@ -462,17 +474,22 @@ export default function JournalDetailScreen() {
     }
   }, [analysisState.isAnalyzed, dream, onboardingState, transitionOnboarding]);
   const primaryAction = useMemo(() => getDreamDetailAction(dream), [dream]);
+  const canRecoverPendingAnalysis = useMemo(
+    () => !isAnalyzing && isRecoverablePendingAnalysis(dream, analysisRecoveryClock),
+    [analysisRecoveryClock, dream, isAnalyzing]
+  );
+  const isAnalysisPending = dream?.analysisStatus === 'pending' && !canRecoverPendingAnalysis;
   const allThemesExplored = useMemo(() => {
     if (!dream) return false;
     return THEME_CATEGORIES.every((category) => isCategoryExplored(dream.chatHistory, category));
   }, [dream]);
-  const isPrimaryActionBusy = primaryAction === 'analyze' && (isAnalyzing || dream?.analysisStatus === 'pending');
+  const isPrimaryActionBusy = primaryAction === 'analyze' && (isAnalyzing || isAnalysisPending);
   const detailActionCard = useMemo(() => {
     if (!dream) {
       return null;
     }
 
-    if (dream.analysisStatus === 'pending') {
+    if (isAnalysisPending) {
       return {
         icon: 'sparkles' as const,
         title: t('journal.detail.action.pending.title'),
@@ -484,7 +501,7 @@ export default function JournalDetailScreen() {
     }
 
     if (primaryAction === 'analyze') {
-      const failed = dream.analysisStatus === 'failed';
+      const failed = dream.analysisStatus === 'failed' || canRecoverPendingAnalysis;
       return {
         icon: failed ? 'arrow.clockwise' as const : 'sparkles' as const,
         title: failed
@@ -520,9 +537,8 @@ export default function JournalDetailScreen() {
       cta: t('journal.detail.explore_button.new'),
       disabled: false,
     };
-  }, [dream, primaryAction, t]);
-  const isAnalysisLocked = !!dream && (dream.analysisStatus === 'pending' || isAnalyzing);
-  const isAnalysisPending = dream?.analysisStatus === 'pending';
+  }, [canRecoverPendingAnalysis, dream, isAnalysisPending, primaryAction, t]);
+  const isAnalysisLocked = !!dream && (isAnalysisPending || isAnalyzing);
   const isImageJobPending = dream?.imageJobStatus === 'queued' || dream?.imageJobStatus === 'running';
   const isSyncPending = dreamSyncState === 'pending';
   const isSyncFailed = dreamSyncState === 'failed';
@@ -827,11 +843,14 @@ export default function JournalDetailScreen() {
   const handleRetrySync = useCallback(async () => {
     if (!dream) return;
     try {
+      setIsRetryingSync(true);
       await retryDreamSync(dream.id);
     } catch (error) {
       if (__DEV__) {
         console.warn('[JournalDetail] Failed to retry sync', error);
       }
+    } finally {
+      setIsRetryingSync(false);
     }
   }, [dream, retryDreamSync]);
 
@@ -990,7 +1009,7 @@ export default function JournalDetailScreen() {
     async (replaceImage: boolean, skipAllowanceCheck = false) => {
       if (!dream) return;
 
-      if (!skipAllowanceCheck) {
+      if (!skipAllowanceCheck && !isResumableAnalysisRequest(dream)) {
         const allowed = await ensureAnalyzeAllowed();
         if (!allowed) return;
       }
@@ -1037,8 +1056,10 @@ export default function JournalDetailScreen() {
   const handleAnalyze = useCallback(async () => {
     if (!dream) return;
 
-    const allowed = await ensureAnalyzeAllowed();
-    if (!allowed) return;
+    if (!isResumableAnalysisRequest(dream)) {
+      const allowed = await ensureAnalyzeAllowed();
+      if (!allowed) return;
+    }
 
     if (hasExistingImage) {
       setShowReplaceImageSheet(true);
@@ -1469,12 +1490,18 @@ export default function JournalDetailScreen() {
         {isSyncPending ? (
           <ActivityIndicator size="small" color={noctalia.accent.base} />
         ) : null}
-        {isSyncFailed ? (
+        {isSyncPending || isSyncFailed ? (
           <Pressable
             style={[styles.analyzeButton, { backgroundColor: noctalia.action.primary }]}
             onPress={handleRetrySync}
+            disabled={isRetryingSync}
+            accessibilityState={{ disabled: isRetryingSync }}
           >
-            <IconSymbol name="arrow.clockwise" size={18} color={noctalia.action.primaryText} />
+            {isRetryingSync ? (
+              <ActivityIndicator size="small" color={noctalia.action.primaryText} />
+            ) : (
+              <IconSymbol name="arrow.clockwise" size={18} color={noctalia.action.primaryText} />
+            )}
             <Text style={[styles.analyzeButtonText, { color: noctalia.action.primaryText }]}>
               {t('journal.detail.sync.retry')}
             </Text>
@@ -1753,7 +1780,7 @@ export default function JournalDetailScreen() {
                       </Text>
                     </View>
                   )
-                ) : dream.analysisStatus === 'pending' || isImageJobPending ? (
+                ) : isAnalysisPending || isImageJobPending ? (
                   <View
                     style={[
                       styles.dreamImage,
@@ -2219,7 +2246,7 @@ export default function JournalDetailScreen() {
         {/* Hidden composite image generator for sharing */}
         {dream && shareImage && (
           <View style={{ position: 'absolute', left: -10000, top: 0, width: 1080, height: 1350 }}>
-            <DreamShareImage ref={shareImageRef} dream={dream} isPlus={isPlus} t={t} />
+            <DreamShareImage ref={shareImageRef} dream={dream} t={t} />
           </View>
         )}
         </KeyboardAvoidingView>

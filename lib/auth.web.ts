@@ -3,7 +3,7 @@ import type { Session, User } from '@supabase/supabase-js';
 import * as mockAuth from './mockAuth';
 import { isMockModeEnabled } from './env';
 import { createScopedLogger } from './logger';
-import { createWebOAuthState, supabase } from './supabase';
+import { supabase } from './supabase';
 import type { SubscriptionTier } from './types';
 
 export type { MockProfile } from './mockAuth';
@@ -58,22 +58,14 @@ export async function wasAccountCreatedOnDevice(): Promise<boolean> {
   }
 }
 
-function getWebRedirectTo(): string | undefined {
+function getWebRedirectTo(): string {
   try {
     const location = (
       globalThis as typeof globalThis & { location?: { origin?: string } }
     ).location;
-    if (!location?.origin) return undefined;
-
-    const fallbackOrigin = new URL(WEB_REDIRECT_FALLBACK).origin;
-    if (location.origin !== fallbackOrigin) {
-      return undefined;
-    }
-
-    // Use origin to keep the Supabase redirect allow-list minimal.
-    return location.origin;
+    return location?.origin ?? WEB_REDIRECT_FALLBACK;
   } catch {
-    return undefined;
+    return WEB_REDIRECT_FALLBACK;
   }
 }
 
@@ -184,14 +176,11 @@ export async function signInWithGoogleWeb(): Promise<void> {
     return;
   }
 
-  const redirectTo = getWebRedirectTo();
-  const state = createWebOAuthState();
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
       scopes: 'openid email profile',
-      ...(redirectTo ? { redirectTo } : {}),
-      ...(state ? { queryParams: { state } } : {}),
+      redirectTo: getWebRedirectTo(),
     },
   });
   if (error) throw error;

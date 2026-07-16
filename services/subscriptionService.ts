@@ -7,13 +7,15 @@ import { getExpoPublicEnvValue, isMockModeEnabled } from '@/lib/env';
 const isMockMode = isMockModeEnabled();
 const hasWebKey = !!getExpoPublicEnvValue('EXPO_PUBLIC_REVENUECAT_WEB_KEY');
 const hasAndroidKey = !!getExpoPublicEnvValue('EXPO_PUBLIC_REVENUECAT_ANDROID_KEY');
+const hasIosKey = !!getExpoPublicEnvValue('EXPO_PUBLIC_REVENUECAT_IOS_KEY');
 // Sur web, on n'active le réel que si une clé web est fournie. Sinon, on mock.
-// Sur Android dev local, ne pas retomber sur la clé Play Store de app.json :
-// les émulateurs standards n'ont pas Play Billing et affichent une RedBox RevenueCat.
+// En dev local natif, utiliser le mock si la plateforme n'a pas de clé explicite :
+// les simulateurs/émulateurs ne doivent pas afficher une RedBox RevenueCat.
 const shouldMock =
   isMockMode ||
   (Platform.OS === 'web' && !hasWebKey) ||
-  (__DEV__ && Platform.OS === 'android' && !hasAndroidKey);
+  (__DEV__ && Platform.OS === 'android' && !hasAndroidKey) ||
+  (__DEV__ && Platform.OS === 'ios' && !hasIosKey);
 const service = shouldMock ? mockService : realService;
 
 export const initializeSubscription = service.initialize;

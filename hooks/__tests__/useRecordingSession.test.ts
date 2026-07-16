@@ -4,7 +4,7 @@ import { act, renderHook } from '@testing-library/react';
 import { AudioModule, setAudioModeAsync, useAudioRecorder } from 'expo-audio';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
-import { Alert, AppState } from 'react-native';
+import { Alert, AppState, Platform } from 'react-native';
 
 import { ensureOfflineSttModel, startNativeSpeechSession } from '../../services/nativeSpeechRecognition';
 import { transcribeAudio } from '../../services/speechToText';
@@ -102,6 +102,7 @@ describe('useRecordingSession', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (Platform as { OS: string }).OS = 'android';
     // Reset default mock implementations
     jest.mocked(AudioModule.getRecordingPermissionsAsync).mockResolvedValue({ granted: false } as never);
     jest.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValue({ granted: true } as never);
@@ -315,6 +316,49 @@ describe('useRecordingSession', () => {
 
       expect(response?.transcript).toBe('');
       expect(response?.error).toBe('no_speech');
+    });
+
+    it('should use native recognition only on iOS', async () => {
+      (Platform as { OS: string }).OS = 'ios';
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
+        stop: jest.fn().mockResolvedValue({ transcript: '', recordedUri: '/path/to/audio.caf' }),
+        abort: jest.fn(),
+        hasRecording: true,
+      });
+
+      const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+      await act(async () => {
+        await result.current.startRecording('');
+      });
+
+      let response: RecordingSessionResult | undefined;
+      await act(async () => {
+        response = await result.current.stopRecording();
+      });
+
+      expect(response).toMatchObject({ transcript: '', error: 'no_speech' });
+      expect(transcribeAudio).not.toHaveBeenCalled();
+    });
+
+    it('should report native recognition as unavailable on iOS instead of recording for server STT', async () => {
+      (Platform as { OS: string }).OS = 'ios';
+      const recorder = mockCreateMockRecorder({ uri: '/path/to/recorded.caf' });
+      jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce(null);
+
+      const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+      let response: { success: boolean; error?: string } | undefined;
+      await act(async () => {
+        response = await result.current.startRecording('');
+      });
+
+      expect(response).toEqual({ success: false, error: 'stt_unavailable' });
+      expect(recorder.prepareToRecordAsync).not.toHaveBeenCalled();
+      expect(recorder.record).not.toHaveBeenCalled();
+      expect(transcribeAudio).not.toHaveBeenCalled();
+      expect(setAudioModeAsync).toHaveBeenLastCalledWith({ allowsRecording: false });
     });
 
     it('should return stt_unavailable when native session is unavailable', async () => {

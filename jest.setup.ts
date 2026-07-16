@@ -55,8 +55,20 @@ expoGlobal.EventEmitter =
 const mockSourceCodeModule = {
   getConstants: () => ({ scriptURL: 'http://localhost/index.bundle?platform=ios' }),
 };
+const mockDeviceInfoModule = {
+  getConstants: () => ({
+    Dimensions: {
+      window: { width: 375, height: 812, scale: 2, fontScale: 1 },
+      screen: { width: 375, height: 812, scale: 2, fontScale: 1 },
+    },
+  }),
+};
 const mockTurboModuleGet = jest.fn((moduleName: string) =>
-  moduleName === 'SourceCode' ? mockSourceCodeModule : null
+  moduleName === 'SourceCode'
+    ? mockSourceCodeModule
+    : moduleName === 'DeviceInfo'
+      ? mockDeviceInfoModule
+      : null
 );
 const mockTurboModuleGetEnforcing = jest.fn((moduleName: string) =>
   mockTurboModuleGet(moduleName) ?? {}

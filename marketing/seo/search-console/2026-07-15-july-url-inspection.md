@@ -30,3 +30,13 @@ Propriete: `sc-domain:noctalia.app`.
 ## Conclusion
 
 La nouvelle vague est techniquement live et decouvrable, mais son inspection GSC est encore celle du jour de publication. Ne pas consommer le quota d'indexation manuelle immediatement. Reinspecter apres 24-48 heures et demander l'indexation uniquement pour les URLs encore `unknown` ou `discovered`.
+
+## Reinspection du 16 juillet
+
+- Les 15 URLs de la vague vacances/bruit nocturne/reveil nocturne restent `Submitted and indexed`; fetch reussi, robots autorises et canonical Google conforme pour les 15.
+- Etat de l'etude reves/emotions: FR `URL is unknown to Google`, EN `Crawled - currently not indexed`, ES/DE/IT `Discovered - currently not indexed`.
+- Les cinq demandes manuelles ont ete confirmees dans l'UI Search Console et ajoutees a la file d'exploration prioritaire.
+- Sitemap live: HTTP 200, `application/xml`, 1165 URLs.
+- Les 25 URLs publiees en juillet sont presentes dans le sitemap live et repondent 200.
+- Version live observee: `86f0ad3eb034`.
+- Prochaine reinspection: 17 juillet, sans nouvelle demande manuelle. La priorite 6 editoriale ne s'ouvre que le 18 juillet.

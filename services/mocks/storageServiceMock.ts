@@ -49,6 +49,7 @@ const REMEMBERED_DREAM_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_remembered_d
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
+const LAST_SEEN_RELEASE_NOTES_VERSION_KEY = 'gemini_dream_journal_last_seen_release_notes_version';
 const ONBOARDING_STATE_KEY = 'gemini_dream_journal_onboarding_state_v2';
 const ONBOARDING_GUEST_CLAIMED_BY_KEY = 'gemini_dream_journal_onboarding_guest_claimed_by_v2';
 const PENDING_RECORDING_NOTIFICATION_KEY = 'gemini_dream_journal_pending_recording_notification_v1';
@@ -510,6 +511,21 @@ export async function saveFirstLaunchCompleted(completed: boolean): Promise<void
     console.error('[MOCK STORAGE] Failed to save first launch flag:', error);
     throw new Error('Failed to save first launch flag');
   }
+}
+
+export async function getLastSeenReleaseNotesVersion(): Promise<string | null> {
+  const savedVersion = mockStorage[LAST_SEEN_RELEASE_NOTES_VERSION_KEY];
+  if (!savedVersion) return null;
+  try {
+    const parsed = JSON.parse(savedVersion) as unknown;
+    return typeof parsed === 'string' && parsed.length > 0 ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function saveLastSeenReleaseNotesVersion(version: string): Promise<void> {
+  mockStorage[LAST_SEEN_RELEASE_NOTES_VERSION_KEY] = JSON.stringify(version);
 }
 
 export async function getOnboardingStateSnapshot(actorScope: string): Promise<string | null> {
