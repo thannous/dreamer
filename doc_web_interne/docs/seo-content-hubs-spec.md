@@ -290,6 +290,8 @@ Créer `data/seo-url-contract-baseline.json` depuis un build propre de la base `
 
 La baseline contient `sourceRevision`. Cette révision est une métadonnée de provenance et doit être un ancêtre du commit candidat ; elle n’est jamais comparée à `HEAD` par égalité.
 
+En mode de vérification uniquement, si Git confirme que le checkout est superficiel et que `sourceRevision` est absente du clone, le contrôle de provenance peut être différé. La comparaison exhaustive de la baseline reste obligatoire et inchangée. Les modes qui créent ou étendent la baseline exigent toujours un historique complet et une ascendance vérifiée.
+
 Le snapshot doit contenir :
 
 1. pour chaque `collection + pageId + langue` : type, langue canonique, slug canonique, slug localisé et path ;
@@ -418,6 +420,7 @@ Les liens contextuels supplémentaires restent autorisés. Le contrôle ne doit 
 - `scripts/lib/content-hub-registry.js`
 - `scripts/lib/content-hub-registry.test.js`
 - `scripts/lib/docs-components/content-hubs.js`
+- `scripts/lib/docs-components/content-hubs.test.js`
 - `scripts/check-content-hub-contract.js`
 - `scripts/check-content-hub-contract.test.js`
 - `scripts/check-public-url-stability.js`
@@ -517,6 +520,7 @@ Ce lot ne nécessite pas d’abonnement Semrush.
 ```bash
 npm run test:file -- \
   scripts/lib/content-hub-registry.test.js \
+  scripts/lib/docs-components/content-hubs.test.js \
   scripts/check-content-hub-contract.test.js \
   scripts/check-public-url-stability.test.js
 ```
