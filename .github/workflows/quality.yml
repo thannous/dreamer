@@ -32,10 +32,12 @@ jobs:
           cache: true
 
       - name: Check API Edge Function
-        run: deno check --frozen supabase/functions/api/index.ts
+        working-directory: supabase/functions
+        run: deno check --frozen api/index.ts
 
       - name: Test API Edge Function
-        run: deno test --frozen --allow-env supabase/functions/api
+        working-directory: supabase/functions
+        run: deno test --frozen --allow-env api
 
   site-build:
     name: Site source build and checks
