@@ -9,7 +9,7 @@ const { assertDocsBuildReady, readDocsBuildState } = require('./lib/docs-check-h
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const BASELINE_RELATIVE_PATH = 'data/seo-url-contract-baseline.json';
-const INITIAL_SOURCE_REVISION = 'f8bdfdc6e2db6ba7ecab2346fbc0925cf7098ab4';
+const INITIAL_SOURCE_REVISION = '29ddfdca1963e066b0c7a626c315f7b064051992';
 const INITIAL_COUNTS = Object.freeze({
   logicalPages: 233,
   manifestPaths: 1165,
