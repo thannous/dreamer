@@ -218,6 +218,7 @@ function main() {
   runNodeScript(path.join('scripts', 'build-content-manifest.js'));
   runNodeScript(path.join('scripts', 'build-site-manifest.js'));
   runNodeScript(path.join('scripts', 'generate-image-seo-assets.js'));
+  runNodeScript(path.join('scripts', 'generate-symbol-hero-posters.js'));
   runNodeScript(path.join('scripts', 'generate-symbol-responsive-images.js'));
 
   const version = resolveBuildVersion();
