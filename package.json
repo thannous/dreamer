@@ -39,6 +39,8 @@
     "docs:build": "node ./scripts/docs-build.js",
     "docs:dev": "node ./scripts/docs-dev.js",
     "docs:check": "node ./scripts/docs-check.js",
+    "docs:check-url-stability": "node ./scripts/check-public-url-stability.js",
+    "docs:check-content-hubs": "node ./scripts/check-content-hub-contract.js",
     "docs:release-check": "node ./scripts/docs-release-check.js",
     "docs:check-shell": "node ./scripts/check-docs-shell.js",
     "docs:check-symbol-images": "node ./scripts/check-symbol-illustration-parity.js",
