@@ -123,3 +123,22 @@ Cloudflare dashboard.
 - `templates/blog-article.example.md`: starting point for a localized blog article.
 - `templates/page.example.md`: starting point for a managed static page.
 - `templates/front-matter.example.json`: copyable front matter shape for new content.
+
+## Consent-gated analytics
+
+`static/js/site-shell.js` contains the shared Microsoft Clarity consent control.
+It is inert by default and never loads Clarity until the visitor explicitly allows
+analytics. The localized control stores a granted or denied choice in local storage
+for at most 180 days, respects Global Privacy Control, and remains available from
+the footer so the visitor can change the choice. Advertising storage is always
+denied. A separate consent UI or CMP can use the same bridge with:
+
+```js
+window.NoctaliaAnalyticsConsent.update(true);
+```
+
+or by dispatching `noctalia:analytics-consent` with
+`detail: { analytics: true }`. Pass `false` when consent is refused or withdrawn.
+The bridge loads Clarity asynchronously once and removes a blocked loader so a
+later opt-in can retry. The caller is responsible for persisting any choice made
+outside the built-in control before calling `update(true)` or `update(false)`.

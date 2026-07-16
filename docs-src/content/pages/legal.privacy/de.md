@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Datenschutzerklärung",
   "publishedTime": "",
-  "modifiedTime": "2026-07-15",
+  "modifiedTime": "2026-07-16",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Datenschutzerklärung</h1>
-<p class="text-lg text-purple-200/80 mb-10">Gültig ab 15. Juli 2026</p>
+<p class="text-lg text-purple-200/80 mb-10">Gültig ab 16. Juli 2026</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -82,6 +82,7 @@
       <li><strong>Audio:</strong> Wenn du die Sprachfunktion nutzt, wird deine Stimme zur Erstellung eines Transkripts verarbeitet. Noctalia speichert Audiodateien nicht dauerhaft auf seinen Servern; sie werden nur im technischen Ablauf verarbeitet. Gespeichert wird das Transkript.</li>
       <li><strong>Technische Daten:</strong> Fehler-, Leistungs- und Sicherheitsprotokolle, App-Version, Betriebssystem und ein gehashter Geräteindikator ausschließlich zur Verwaltung kostenloser Kontingente. Auf Android kann Noctalia zusätzlich eine begrenzte Zahl funktionaler Ereignisse messen (angezeigter Onboarding-Schritt, getroffene Auswahl, gespeicherter Traum oder aufgerufenes Ergebnis). Dafür wird eine zufällige Journey-Kennung höchstens sieben Tage auf dem Gerät gespeichert. Diese interne Messung enthält niemals Traumtext, Titel oder Analyse und weder E-Mail-Adresse, Konto- oder Gerätekennung noch eine dauerhaft gespeicherte IP-Adresse. Sie verwendet keine Drittanbieter-Marketing-Analytics und kann in der Einführung oder den Einstellungen deaktiviert werden.</li>
       <li><strong>Reichweitenmessung der Website:</strong> Beim Besuch von noctalia.app misst Ahrefs Web Analytics Seitenaufrufe, Referrer und gegebenenfalls Klicks auf externe Links sowie Formularübermittlungen. Außerdem werden Browser, Gerät, Betriebssystem, Sprache und ein ungefährer Standort auf Landes- und Stadtebene abgeleitet. Dabei werden weder Cookies noch dauerhafte Kennungen verwendet. Die rohe IP-Adresse wird nur vorübergehend für den ungefähren Standort und einen täglich gesalzenen Besucher-Hash genutzt und anschließend verworfen, ohne gespeichert zu werden. Konto- oder Trauminhalte werden nicht an Ahrefs übermittelt.</li>
+      <li><strong>Nutzungsanalyse der Website mit deiner Einwilligung:</strong> Ausschließlich um Noctalia und diese Website zu verbessern, misst Microsoft Clarity besuchte Seiten, Klicks, Scrollvorgänge und grundlegende technische Informationen und erstellt Heatmaps sowie Sitzungsaufzeichnungen, wenn du Analytics erlaubst. Angezeigte Texte, Eingabefelder und Auswahllisten werden durch strikte Maskierung verborgen. Clarity kann die Cookies <code>_clck</code> und <code>_clsk</code> setzen. Werbespeicherung bleibt abgelehnt; Traum- oder Kontodaten senden wir nicht absichtlich an Clarity.</li>
       <li><strong>Supportdaten:</strong> Inhalte deiner Nachrichten an uns und Informationen zur Bearbeitung deiner Anfrage.</li>
     </ul>
     <p class="mt-4">Deine Einträge können sensible Informationen enthalten. Wir verarbeiten sie nur, um das <a href="blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer" class="text-dream-salmon hover:underline">Traumtagebuch</a> und die Analyse bereitzustellen, auf Grundlage deiner ausdrücklichen Einwilligung und deiner eigenen Eingabe.</p>
@@ -93,7 +94,8 @@
       <li><strong>Bereitstellung der App:</strong> Konto, Traumtagebuch, Analysen, Bilder und Kernfunktionen auf Grundlage der Vertragserfüllung.</li>
       <li><strong>Transkription und Analyse:</strong> Verarbeitung auf Grundlage deiner ausdrücklichen Einwilligung, insbesondere wenn deine Einträge sensible Informationen enthalten.</li>
       <li><strong>Sicherheit, Stabilität und Verbesserung:</strong> berechtigtes Interesse an einem sicheren und zuverlässigen Dienst ohne Marketingprofiling.</li>
-      <li><strong>Reichweitenmessung und Verbesserung öffentlicher Inhalte:</strong> berechtigtes Interesse, die aggregierte Nutzung von noctalia.app zu verstehen, ohne zielgerichtete Werbung oder websiteübergreifendes Tracking.</li>
+      <li><strong>Aggregierte, cookiefreie Reichweitenmessung mit Ahrefs:</strong> berechtigtes Interesse an der Verbesserung öffentlicher Inhalte, ohne zielgerichtete Werbung oder websiteübergreifendes Tracking.</li>
+      <li><strong>Heatmaps und Sitzungsaufzeichnungen mit Microsoft Clarity:</strong> ausschließlich auf Grundlage deiner <strong>Einwilligung</strong> in Analytics, die du jederzeit ablehnen oder widerrufen kannst.</li>
       <li><strong>Support, Rechteanfragen und Rechtspflichten:</strong> Erfüllung gesetzlicher Pflichten und Wahrung unserer Rechte.</li>
     </ul>
   </section>
@@ -127,6 +129,7 @@
       <li>Audio wird nur für die technische Verarbeitung benötigt und nicht langfristig durch Noctalia gespeichert.</li>
       <li>Sicherheitsprotokolle werden maximal 12 Monate aufbewahrt; Supportaustausch in der Regel bis zu 24 Monate.</li>
       <li>Rohe Ereignisse der internen Nutzungsmessung ohne Trauminhalte werden nach 90 Tagen gelöscht. Anonyme aggregierte Statistiken, aus denen kein einzelner Verlauf mehr hervorgeht, werden höchstens 24 Monate aufbewahrt.</li>
+      <li>Microsoft-Clarity-Sitzungsaufzeichnungen werden 30 Tage und Heatmaps bis zu 9 Monate aufbewahrt. Deine Analytics-Einstellung bleibt höchstens 6 Monate im Browser gespeichert.</li>
     </ul>
   </section>
 
@@ -136,6 +139,7 @@
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Technische Anbieter:</strong> insbesondere Supabase und Infrastrukturprovider.</li>
       <li><strong>Website-Analyse:</strong> Ahrefs Pte Ltd stellt die oben beschriebene cookiefreie Reichweitenmessung bereit. Einzelheiten findest du in der <a href="https://ahrefs.com/legal/privacy-policy" class="text-dream-salmon hover:underline">Datenschutzerklärung von Ahrefs</a>.</li>
+      <li><strong>Nutzungsanalyse mit Einwilligung:</strong> Microsoft stellt Clarity erst nach deiner Zustimmung bereit. Einzelheiten findest du in der <a href="https://privacy.microsoft.com/privacystatement" class="text-dream-salmon hover:underline">Datenschutzerklärung von Microsoft</a>.</li>
       <li><strong>KI- und Sprachanbieter:</strong> Google Gemini, Google Cloud Speech-to-Text und gegebenenfalls vergleichbare Anbieter.</li>
       <li><strong>Abonnementverwaltung:</strong> RevenueCat verarbeitet anonyme Nutzerkennungen und Kaufdaten des jeweils genutzten App-Stores, derzeit Google Play. Vollständige Zahlungsdaten laufen nicht über Noctalia.</li>
       <li><strong>Behörden und Berater:</strong> soweit gesetzlich erforderlich oder zur Wahrung unserer Rechte.</li>
@@ -149,7 +153,7 @@
 
   <section>
     <h2 class="text-2xl font-serif text-white mb-4 mt-8">9. Deine Rechte</h2>
-    <p>Nach DSGVO kannst du Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch, Datenübertragbarkeit und den Widerruf einer Einwilligung verlangen.</p>
+    <p>Nach DSGVO kannst du Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch, Datenübertragbarkeit und den Widerruf einer Einwilligung verlangen. Die Clarity-Auswahl kannst du über „Analytics-Einstellungen“ im Footer ändern.</p>
     <p class="mt-4">Schreibe dazu an <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a> und nenne die E-Mail-Adresse deines Kontos. Im EWR oder Vereinigten Königreich kannst du dich außerdem bei deiner Datenschutzaufsichtsbehörde beschweren.</p>
   </section>
 
