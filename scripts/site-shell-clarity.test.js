@@ -135,7 +135,16 @@ describe('site shell Clarity consent control', () => {
   it('uses localized copy and the matching privacy policy', () => {
     renderConsent({ language: 'fr' });
 
+    expect(document.getElementById('noctalia-analytics-consent-title').textContent).toBe(
+      "Cookies de mesure d'audience"
+    );
+    expect(document.querySelector('[data-consent="granted"]').textContent).toBe(
+      'Améliorer Noctalia'
+    );
     expect(document.querySelector('[data-consent="denied"]').textContent).toBe('Refuser');
+    expect(document.getElementById('noctalia-analytics-consent-description').textContent).not.toContain(
+      'Microsoft Clarity'
+    );
     expect(document.querySelector('#noctalia-analytics-consent a').getAttribute('href')).toBe(
       '/fr/politique-confidentialite'
     );
