@@ -4,8 +4,8 @@
   "layout": "landing",
   "lang": "en",
   "slug": "",
-  "title": "Noctalia: Dream Journal with AI Interpretation",
-  "description": "Noctalia is a private dream journal app for recording dreams, exploring symbols, generating dream images and understanding nightly patterns.",
+  "title": "Noctalia Dream Journal with AI-Guided Reflection",
+  "description": "Record dreams by voice or text, review possible symbols and emotions, generate an optional image, and compare saved entries in the Noctalia Android app.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth",
@@ -13,23 +13,23 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "",
   "ogType": "website",
-  "ogTitle": "Noctalia: Dream Journal with AI Interpretation",
-  "ogDescription": "Noctalia is a private dream journal app for recording dreams, exploring symbols, generating dream images and understanding nightly patterns.",
+  "ogTitle": "Noctalia Dream Journal with AI-Guided Reflection",
+  "ogDescription": "Record dreams by voice or text, review possible symbols and emotions, generate an optional image, and compare saved entries.",
   "ogImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
-  "ogImageAlt": "",
+  "ogImageAlt": "Noctalia dream journal app with voice recording and guided reflection screens",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Noctalia: Dream Journal with AI Interpretation",
-  "twitterDescription": "Noctalia is a private dream journal app for recording dreams, exploring symbols, generating dream images and understanding nightly patterns.",
+  "twitterTitle": "Noctalia Dream Journal with AI-Guided Reflection",
+  "twitterDescription": "Record dreams by voice or text, review possible symbols and emotions, generate an optional image, and compare saved entries.",
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
-  "twitterImageAlt": "Dream Journal with Dream Illustrations & Interpretation",
+  "twitterImageAlt": "Noctalia dream journal app with voice recording and guided reflection screens",
   "publishedTime": "",
-  "modifiedTime": "2026-07-12",
+  "modifiedTime": "2026-07-17",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"FAQPage\",\n      \"mainEntity\": [\n        {\n          \"@type\": \"Question\",\n          \"name\": \"How does dream analysis work?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Noctalia uses advanced language models inspired by analytical psychology (Jung) and dream symbolism. The analysis engine spots recurring motifs and archetypes to give you lines of inquiry without pretending there is one single truth.\"\n          }\n        },\n        {\n          \"@type\": \"Question\",\n          \"name\": \"Are my dreams private?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Yes. Your transcripts and notes are encrypted in transit and stored securely. Voice audio is used only for transcription and is not persistently stored by Noctalia. Noctalia does not sell personal data or use targeted advertising; access is limited to you and the service providers needed to deliver the app.\"\n          }\n        },\n        {\n          \"@type\": \"Question\",\n          \"name\": \"Can I type my dreams instead of speaking?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Yes. If you prefer not to wake your partner or simply enjoy writing, a full text editor is available alongside voice capture.\"\n          }\n        },\n        {\n          \"@type\": \"Question\",\n          \"name\": \"Does the app work offline?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"You can record dreams offline. Analysis and sync run automatically as soon as you reconnect.\"\n          }\n        }\n      ]\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\",\n        \"width\": 512,\n        \"height\": 512\n      },\n      \"description\": \"Dream journal app for capturing and exploring your dreams.\",\n      \"sameAs\": [\n        \"https://www.instagram.com/noctaliadreams/\",\n        \"https://x.com/NoctaliaDreams\",\n        \"https://www.tiktok.com/@noctaliadreams\"\n      ],\n      \"alternateName\": [\n        \"Noctalia Dream Journal\"\n      ]\n    },\n    {\n      \"@type\": \"WebSite\",\n      \"@id\": \"https://noctalia.app/#website\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n      },\n      \"inLanguage\": [\n        \"en\",\n        \"fr\",\n        \"es\",\n        \"de\",\n        \"it\"\n      ],\n      \"alternateName\": [\n        \"Noctalia dream journal\",\n        \"Noctalia app\"\n      ]\n    },\n    {\n      \"@type\": \"MobileApplication\",\n      \"name\": \"Noctalia\",\n      \"description\": \"Dream journal app. Capture dreams by voice, explore them with Noctalia insights, and understand your nights better.\",\n      \"operatingSystem\": \"Android\",\n      \"applicationCategory\": \"LifestyleApplication\",\n      \"inLanguage\": \"en\",\n      \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n      },\n      \"downloadUrl\": \"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\n      \"screenshot\": [\n        \"https://noctalia.app/img/en/recording-800w.jpg\",\n        \"https://noctalia.app/img/en/analizing-800w.jpg\",\n        \"https://noctalia.app/img/en/exploring-800w.jpg\"\n      ],\n      \"featureList\": [\n        \"Voice dream recording\",\n        \"Dream insights\",\n        \"Dream image generation\",\n        \"Dream journal\",\n        \"Emotional tracking\"\n      ],\n      \"offers\": {\n        \"@type\": \"Offer\",\n        \"price\": \"0\",\n        \"priceCurrency\": \"EUR\",\n        \"url\": \"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\n        \"description\": \"Free installation; optional Noctalia Plus purchases are shown in Google Play.\"\n      },\n      \"@id\": \"https://noctalia.app/#mobile-application\",\n      \"url\": \"https://noctalia.app/\"\n    }\n  ]\n}"
+    "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"How does dream analysis work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia reads the dream account and suggests themes, symbols, and questions to consider. These are prompts for reflection, not a diagnosis or a single correct meaning.\"}},{\"@type\":\"Question\",\"name\":\"Are my dreams private?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. Your transcripts and notes are encrypted in transit and stored securely. Voice audio is used only for transcription and is not persistently stored by Noctalia. Noctalia does not sell personal data or use targeted advertising; access is limited to you and the service providers needed to deliver the app.\"}},{\"@type\":\"Question\",\"name\":\"Can I type my dreams instead of speaking?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. If you prefer not to wake your partner or simply enjoy writing, a full text editor is available alongside voice capture.\"}},{\"@type\":\"Question\",\"name\":\"Does the app work offline?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"You can type and save a dream without a connection. Voice transcription works offline on Android 13 or later when a compatible speech model is installed. Analysis, image generation, and server sync require a connection and resume after you reconnect.\"}}]},{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\",\"name\":\"Noctalia\",\"url\":\"https://noctalia.app\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://noctalia.app/logo/logo_noctalia.png\",\"width\":512,\"height\":512},\"description\":\"Noctalia develops an Android dream journal for voice or text capture and guided reflection.\",\"sameAs\":[\"https://www.instagram.com/noctaliadreams/\",\"https://x.com/NoctaliaDreams\",\"https://www.tiktok.com/@noctaliadreams\"],\"alternateName\":[\"Noctalia Dream Journal\"]},{\"@type\":\"WebSite\",\"@id\":\"https://noctalia.app/#website\",\"name\":\"Noctalia\",\"url\":\"https://noctalia.app\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"},\"inLanguage\":[\"en\",\"fr\",\"es\",\"de\",\"it\"],\"alternateName\":[\"Noctalia dream journal\",\"Noctalia app\"]},{\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"description\":\"Record dreams by voice or text, review possible symbols and emotions, generate an optional image, and compare saved entries.\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"},\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"screenshot\":[\"https://noctalia.app/img/en/recording-800w.jpg\",\"https://noctalia.app/img/en/analizing-800w.jpg\",\"https://noctalia.app/img/en/exploring-800w.jpg\"],\"featureList\":[\"Voice dream recording\",\"Text dream entry\",\"Guided reflection questions\",\"Optional dream image generation\",\"Saved-entry comparison\"],\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"EUR\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"The Android app is free to install. Google Play shows optional Noctalia Plus monthly or annual purchases available for the user's country and account.\"},\"@id\":\"https://noctalia.app/#mobile-application\",\"url\":\"https://noctalia.app/\"}]}"
   ],
   "activeNav": "resources"
 }
@@ -57,7 +57,7 @@
             
             <!-- Subtitle/Baseline -->
             <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed opacity-0 hero-anim">
-                Wake up, speak the dream, and let Noctalia turn it into a private journal entry with symbols, images, reflection questions, and follow-up prompts.
+                When you wake up, speak what you remember. Noctalia keeps the original account alongside symbols, an optional image, and questions you can return to later.
             </p>
 
             <!-- CTA & Reassurance -->
@@ -82,7 +82,7 @@
                 <picture>
                     <source type="image/webp" srcset="/screenshot/demo1_cropped-400w.webp 400w, /screenshot/demo1_cropped-800w.webp 800w, /screenshot/demo1_cropped-1600w.webp 1600w" sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 95vw">
                     <source type="image/jpeg" srcset="/screenshot/demo1_cropped-400w.jpg 400w, /screenshot/demo1_cropped-800w.jpg 800w, /screenshot/demo1_cropped-1600w.jpg 1600w" sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 95vw">
-                    <img src="/screenshot/demo1_cropped-1600w.jpg" alt="Noctalia app interface - demo" class="w-full" width="1600" height="678" decoding="async" fetchpriority="high">
+                    <img src="/screenshot/demo1_cropped-1600w.jpg" alt="Noctalia dream journal showing a saved dream and reflection prompts" class="w-full" width="1600" height="678" decoding="async" fetchpriority="high">
                 </picture>
             </div>
         </div>
@@ -92,8 +92,8 @@
     <section id="how-it-works" class="py-24 px-4 relative border-t border-white/5">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 reveal">
-                <h2 class="font-serif text-3xl md:text-5xl mb-4 text-dream-cream">From half-awake memory to a dream you can revisit</h2>
-                <p class="text-purple-200/60 max-w-lg mx-auto">Capture the scene, see the patterns, then return to the dream when you are ready to think about it.</p>
+                <h2 class="font-serif text-3xl md:text-5xl mb-4 text-dream-cream">Keep the details you remember on waking</h2>
+                <p class="text-purple-200/60 max-w-lg mx-auto">Start with the scene in your own words. Add context or explore possible patterns once you are fully awake.</p>
             </div>
 
             <div id="how-it-works-steps" class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
@@ -108,7 +108,7 @@
                     </div>
                     <h3 class="text-xl font-serif mb-3">Record</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        On wake-up, simply narrate your dream aloud. The app captures every detail before it fades.
+                        Narrate what you remember, even if it is only a place, a person, or a feeling. You can edit the transcript later.
                     </p>
                               <!-- 1. Recording screen -->
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="record">
@@ -130,7 +130,7 @@
                     </div>
                     <h3 class="text-xl font-serif mb-3">Analyze</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Noctalia instantly transcribes your dream and surfaces symbols, emotions, and recurring patterns in your story.
+                        Noctalia transcribes the recording and highlights possible symbols, emotions, and repeated themes in the account.
                     </p>
                              <!-- 2. Analyzing screen -->
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="analyze">
@@ -150,7 +150,7 @@
                     </div>
                     <h3 class="text-xl font-serif mb-3">Explore</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Visualize your dream with a generated image and use guided follow-up questions to deepen the personal meaning.
+                        Generate an optional image, then use follow-up questions to test which associations fit your own context.
                     </p>
                     <!-- 3. Exploring screen -->
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="explore">
@@ -177,8 +177,8 @@
         <div class="max-w-7xl mx-auto">
             <div class="mb-16 md:flex md:justify-between md:items-end">
                 <div>
-                    <h2 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Your dream lab</h2>
-                    <p class="text-purple-200/60 max-w-xl">A suite of focused tools to turn your nights into self-knowledge.</p>
+                    <h2 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">What stays with each dream entry</h2>
+                    <p class="text-purple-200/60 max-w-xl">Keep the original account, then add only the tools that are useful for that particular dream.</p>
                 </div>
                 <div class="hidden md:block">
                     <i data-lucide="stars" class="w-12 h-12 text-dream-salmon/50"></i>
@@ -199,10 +199,10 @@
                                 <div class="p-3 bg-white/5 rounded-xl border border-white/10">
                                     <i data-lucide="mic" class="text-dream-salmon w-6 h-6"></i>
                                 </div>
-                                <span class="text-[10px] font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">STT tech</span>
+                                <span class="text-[10px] font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Voice to text</span>
                             </div>
                             <h3 class="font-serif text-3xl mb-3">Voice capture &amp; transcription</h3>
-                            <p class="text-gray-400 text-sm max-w-md">Stop typing in the dark. Noctalia turns your sleepy whispers into clean, structured text.</p>
+                            <p class="text-gray-400 text-sm max-w-md">Record a short voice note on waking. Noctalia transcribes it so you can correct names, places, and details later.</p>
                         </div>
                          <div class="mt-6 flex gap-2 items-center opacity-60">
                             <div class="w-1 h-8 bg-dream-salmon rounded-full animate-pulse"></div>
@@ -211,35 +211,18 @@
                             <div class="w-1 h-10 bg-dream-salmonLight rounded-full animate-pulse" style="animation-delay: 0.3s"></div>
                         </div>
                     </div>
-
-                    <!-- Screenshot Integration (Phone crop) -->
-                    <div class="relative w-full md:w-1/2 h-64 md:h-auto overflow-hidden flex items-end justify-center md:justify-end bg-black/20">
-                        <div class="phone-frame w-48 transform translate-y-10 md:translate-y-16 md:translate-x-8 rotate-[-5deg] shadow-2xl border-gray-800">
-                             <picture>
-                            <source type="image/webp" srcset="/img/settings_menu-720w.webp 720w" sizes="(min-width: 1024px) 240px, 70vw">
-                            <source type="image/jpeg" srcset="/img/settings_menu-720w.jpg 720w" sizes="(min-width: 1024px) 240px, 70vw">
-                            <img src="/img/settings_menu-720w.jpg" alt="Recording screen" class="w-full h-full object-cover" width="720" height="1487" loading="lazy" decoding="async">
-                             </picture>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Feature 2: Visuals (Medium) -->
-                <div class="col-span-1 md:col-span-2 md:row-span-2 glass-panel rounded-3xl p-0 relative overflow-hidden group">
-                     <!-- Screenshot Integration (Full Background) -->
-                    <picture>
-                            <source type="image/webp" srcset="/img/dream_detail-700w.webp 700w, /img/dream_detail-1000w.webp 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
-                            <source type="image/jpeg" srcset="/img/dream_detail-1000w.jpg 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
-                            <img src="/img/dream_detail-1000w.jpg" alt="Dream list" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-60" width="1000" height="2078" loading="lazy" decoding="async">
-                    </picture>
+                <div class="col-span-1 md:col-span-2 md:row-span-2 glass-panel rounded-3xl p-6 relative overflow-hidden group bg-dream-purple/20 flex items-end min-h-64">
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
                     
-                    <div class="absolute bottom-0 left-0 p-6 w-full z-10">
+                    <div class="relative w-full z-10">
                         <div class="flex items-center gap-2 mb-2">
                             <i data-lucide="image" class="w-5 h-5 text-dream-salmon"></i>
                             <h3 class="font-serif text-xl">Visual journal</h3>
                         </div>
-                        <p class="text-xs text-gray-300">Every dream journey illustrated automatically in Noctalia.</p>
+                        <p class="text-xs text-gray-300">Generate an image for an entry when a visual reminder would help.</p>
                     </div>
                 </div>
 
@@ -249,16 +232,16 @@
                          <div class="p-2 bg-purple-500/20 rounded-lg">
                             <i data-lucide="brain-circuit" class="text-dream-salmon w-5 h-5"></i>
                          </div>
-                        <h3 class="font-serif text-2xl">Guided analysis</h3>
+                        <h3 class="font-serif text-2xl">Guided reflection</h3>
                     </div>
                     <ul class="space-y-4">
                         <li class="flex items-start gap-3 text-sm text-gray-300">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
-                            <span><strong>Interpretation:</strong> A concise summary of the deeper meaning.</span>
+                            <span><strong>Overview:</strong> A concise summary of the dream account.</span>
                         </li>
                         <li class="flex items-start gap-3 text-sm text-gray-300">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
-                            <span><strong>Symbols:</strong> Archetype decoding (Jung/Freud inspired).</span>
+                            <span><strong>Symbols:</strong> Possible associations to compare with your own context.</span>
                         </li>
                         <li class="flex items-start gap-3 text-sm text-gray-300">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
@@ -274,9 +257,9 @@
                             <div class="p-2 bg-blue-500/20 rounded-lg">
                                <i data-lucide="bar-chart-2" class="text-blue-300 w-5 h-5"></i>
                             </div>
-                           <h3 class="font-serif text-2xl">Emotional tracking</h3>
+                           <h3 class="font-serif text-2xl">Compare emotions over time</h3>
                        </div>
-                       <p class="text-sm text-gray-400 mt-2">Spot recurring themes and track how your nightly mood evolves over time.</p>
+                       <p class="text-sm text-gray-400 mt-2">Compare the emotions and themes you recorded across saved entries.</p>
                     </div>
 
                     <!-- Mock Chart -->
@@ -327,7 +310,7 @@
     <section class="py-24 px-4 relative">
          <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16 reveal">
-                <h2 class="font-serif text-3xl md:text-4xl text-white mb-4">Is it for you?</h2>
+                <h2 class="font-serif text-3xl md:text-4xl text-white mb-4">When Noctalia may be useful</h2>
                 <div class="h-1 w-20 bg-dream-salmon mx-auto rounded-full"></div>
             </div>
             
@@ -337,8 +320,8 @@
                     <div class="mx-auto w-16 h-16 bg-purple-900/50 rounded-full flex items-center justify-center mb-6">
                         <i data-lucide="search" class="text-dream-salmon w-8 h-8"></i>
                     </div>
-                    <h3 class="font-serif text-xl mb-3">The Curious</h3>
-                    <p class="text-sm text-gray-400">You wonder why you dream of losing teeth or flying. You are looking for meaning.</p>
+                    <h3 class="font-serif text-xl mb-3">You forget dreams quickly</h3>
+                    <p class="text-sm text-gray-400">A short voice note is easier than writing a polished entry while you are still half asleep.</p>
                 </div>
 
                 <!-- Profile 2 -->
@@ -346,8 +329,8 @@
                     <div class="mx-auto w-16 h-16 bg-pink-900/30 rounded-full flex items-center justify-center mb-6">
                         <i data-lucide="feather" class="text-pink-300 w-8 h-8"></i>
                     </div>
-                    <h3 class="font-serif text-xl mb-3">The Introspective</h3>
-                    <p class="text-sm text-gray-400">You use journaling and personal development to understand yourself better.</p>
+                    <h3 class="font-serif text-xl mb-3">You already keep a journal</h3>
+                    <p class="text-sm text-gray-400">Dream entries can sit alongside the questions, people, and emotions you want to revisit.</p>
                 </div>
 
                 <!-- Profile 3 -->
@@ -355,96 +338,30 @@
                     <div class="mx-auto w-16 h-16 bg-indigo-900/50 rounded-full flex items-center justify-center mb-6">
                         <i data-lucide="moon" class="text-indigo-300 w-8 h-8"></i>
                     </div>
-                    <h3 class="font-serif text-xl mb-3">The Explorer</h3>
-                    <p class="text-sm text-gray-400">You practice or want to learn lucid dreaming to guide your subconscious.</p>
+                    <h3 class="font-serif text-xl mb-3">One image keeps returning</h3>
+                    <p class="text-sm text-gray-400">Saved entries make it easier to compare the scene and your reaction each time it appears.</p>
                 </div>
             </div>
          </div>
     </section>
 
-    <!-- 6. Testimonials (hidden pre-launch) -->
-    <section id="testimonials" class="py-24 px-4 bg-black/20 hidden">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="font-serif text-3xl md:text-4xl text-center mb-16 reveal">Shared dreams</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Review 1 -->
-                <div class="glass-panel p-8 rounded-2xl reveal">
-                    <div class="flex gap-1 text-dream-salmon mb-4">
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                    </div>
-                    <p class="text-gray-300 text-sm mb-6 italic">"Amazing to unpack my recurring nightmares. The analysis helped me link them to work stress. Soothing."</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-blue-500"></div>
-                        <div>
-                            <div class="text-sm font-bold">Sophie L.</div>
-                            <div class="text-xs text-gray-500">User for 2 months</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Review 2 -->
-                <div class="glass-panel p-8 rounded-2xl reveal" style="transition-delay: 100ms;">
-                    <div class="flex gap-1 text-dream-salmon mb-4">
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                    </div>
-                    <p class="text-gray-300 text-sm mb-6 italic">"I hated writing as soon as I woke up and kept forgetting. With voice capture, it became a natural reflex."</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-teal-500"></div>
-                        <div>
-                            <div class="text-sm font-bold">Marc D.</div>
-                            <div class="text-xs text-gray-500">Lucid dreamer</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Review 3 -->
-                <div class="glass-panel p-8 rounded-2xl reveal" style="transition-delay: 200ms;">
-                    <div class="flex gap-1 text-dream-salmon mb-4">
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                    </div>
-                    <p class="text-gray-300 text-sm mb-6 italic">"The generated images are stunning. Seeing my dream take visual form feels magical. My journal looks gorgeous."</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-red-500"></div>
-                        <div>
-                            <div class="text-sm font-bold">Elodie M.</div>
-                            <div class="text-xs text-gray-500">Artist</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- 7. Pricing / Plans -->
     <section class="py-24 px-4 relative">
         <div class="max-w-5xl mx-auto text-center">
-            <h2 class="font-serif text-3xl md:text-4xl mb-16 reveal">Start your journey</h2>
+            <h2 class="font-serif text-3xl md:text-4xl mb-16 reveal">Choose a plan</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <!-- Free Plan -->
                 <div class="glass-panel p-8 rounded-3xl reveal hover:border-dream-salmon/30">
                     <h3 class="text-2xl font-serif mb-2">Dreamer</h3>
                     <div class="text-4xl font-bold mb-6">Free</div>
-                    <p class="text-gray-400 text-sm mb-8">Discover the magic of your nights with no commitment.</p>
+                    <p class="text-gray-400 text-sm mb-8">Record dreams and try the reflection tools before deciding whether you need more.</p>
                     
                     <ul class="space-y-4 text-left mb-8 px-4">
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Unlimited recordings</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 3 dream analyses per month</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 guided explorations per month</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Basic journal</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Saved dream journal</li>
                     </ul>
                     
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Download the app</a>
@@ -452,18 +369,17 @@
 
                 <!-- Noctalia Plus Plan -->
                 <div class="glass-panel p-8 rounded-3xl border-dream-salmon/50 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.1)]">
-                    <div class="absolute top-0 right-0 bg-dream-salmon text-dream-dark text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">Recommended</div>
+                    <div class="absolute top-0 right-0 bg-dream-salmon text-dream-dark text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">Paid plan</div>
                     <div class="absolute inset-0 bg-purple-900/10 pointer-events-none"></div>
                     
                     <h3 class="text-2xl font-serif mb-2 text-dream-salmon">Noctalia Plus</h3>
-                    <div class="text-3xl font-bold mb-2">Current price in Google Play</div>
-                    <p class="text-purple-200/60 text-xs mb-6">Monthly and annual options may vary by country and eligibility.</p>
+                    <div class="text-3xl font-bold mb-2">Price shown in Google Play</div>
+                    <p class="text-purple-200/60 text-xs mb-6">Google Play shows the monthly or annual option available for your country and account.</p>
                     
                     <ul class="space-y-4 text-left mb-8 px-4">
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Unlimited guided reflection sessions</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> HD image generation</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Advanced stats</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Guided dream reflection</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Unlimited dream analyses</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Unlimited guided explorations</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Unlimited follow-up messages per dream</li>
                     </ul>
                     
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">View Noctalia Plus</a>
@@ -484,7 +400,7 @@
                     <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    Noctalia uses advanced language models inspired by analytical psychology (Jung) and dream symbolism. The analysis engine spots recurring motifs and archetypes to give you lines of inquiry without pretending there is one single truth.
+                    Noctalia reads the dream account and suggests themes, symbols, and questions to consider. These are prompts for reflection, not a diagnosis or a single correct meaning.
                 </p>
             </details>
 
@@ -514,7 +430,7 @@
                     <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    You can record dreams offline. Analysis and sync run automatically as soon as you reconnect.
+                    You can type and save a dream without a connection. Voice transcription works offline on Android 13 or later when a compatible speech model is installed. Analysis, image generation, and server sync require a connection and resume after you reconnect.
                 </p>
             </details>
         </div>
@@ -529,7 +445,7 @@
                     FREE RESOURCE
                 </div>
                 <h2 class="font-serif text-3xl md:text-4xl text-white mb-4">Dream Symbols Dictionary</h2>
-                <p class="text-purple-200/60 max-w-xl mx-auto">Explore 150 common dream symbols with contextual meanings and reflection prompts. Use them as starting points, not fixed messages from your subconscious.</p>
+                <p class="text-purple-200/60 max-w-xl mx-auto">Browse 150 common dream symbols with context questions and possible associations. The scene and your own reaction matter more than a fixed definition.</p>
             </div>
 
             <!-- Popular Symbols Grid - Expanded to 16 symbols for better crawl signals -->
@@ -538,85 +454,85 @@
                 <a href="/en/symbols/water" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">💧</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Water</h3>
-                    <p class="text-xs text-gray-400 mt-1">Emotions &amp; subconscious</p>
+                    <p class="text-xs text-gray-400 mt-1">Calm water, flood, or depth?</p>
                 </a>
                 <a href="/en/symbols/falling" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🌀</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Falling</h3>
-                    <p class="text-xs text-gray-400 mt-1">Loss of control</p>
+                    <p class="text-xs text-gray-400 mt-1">Fear, release, or a body sensation?</p>
                 </a>
                 <a href="/en/symbols/flying" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🕊️</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Flying</h3>
-                    <p class="text-xs text-gray-400 mt-1">Freedom &amp; transcendence</p>
+                    <p class="text-xs text-gray-400 mt-1">Were you steering or drifting?</p>
                 </a>
                 <a href="/en/symbols/teeth" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🦷</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Teeth</h3>
-                    <p class="text-xs text-gray-400 mt-1">Anxiety &amp; self-image</p>
+                    <p class="text-xs text-gray-400 mt-1">Pain, appearance, or loss?</p>
                 </a>
                 <!-- Animals & Nature -->
                 <a href="/en/symbols/snake" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🐍</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Snake</h3>
-                    <p class="text-xs text-gray-400 mt-1">Transformation</p>
+                    <p class="text-xs text-gray-400 mt-1">Threat, curiosity, or familiarity?</p>
                 </a>
                 <a href="/en/symbols/spider" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🕷️</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Spider</h3>
-                    <p class="text-xs text-gray-400 mt-1">Creativity &amp; fear</p>
+                    <p class="text-xs text-gray-400 mt-1">Web, bite, or quiet observer?</p>
                 </a>
                 <a href="/en/symbols/dog" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🐕</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Dog</h3>
-                    <p class="text-xs text-gray-400 mt-1">Loyalty &amp; protection</p>
+                    <p class="text-xs text-gray-400 mt-1">Known companion or unknown dog?</p>
                 </a>
                 <a href="/en/symbols/cat" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🐈</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Cat</h3>
-                    <p class="text-xs text-gray-400 mt-1">Independence &amp; intuition</p>
+                    <p class="text-xs text-gray-400 mt-1">Affectionate, distant, or aggressive?</p>
                 </a>
                 <!-- Places & Objects -->
                 <a href="/en/symbols/house" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🏠</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">House</h3>
-                    <p class="text-xs text-gray-400 mt-1">The self &amp; psyche</p>
+                    <p class="text-xs text-gray-400 mt-1">Which room did you enter?</p>
                 </a>
                 <a href="/en/symbols/car" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🚗</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Car</h3>
-                    <p class="text-xs text-gray-400 mt-1">Life direction</p>
+                    <p class="text-xs text-gray-400 mt-1">Who was driving, and where?</p>
                 </a>
                 <a href="/en/symbols/door" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🚪</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Door</h3>
-                    <p class="text-xs text-gray-400 mt-1">Opportunities</p>
+                    <p class="text-xs text-gray-400 mt-1">Open, locked, or unfamiliar?</p>
                 </a>
                 <a href="/en/symbols/fire" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🔥</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Fire</h3>
-                    <p class="text-xs text-gray-400 mt-1">Passion &amp; destruction</p>
+                    <p class="text-xs text-gray-400 mt-1">Warmth, danger, or aftermath?</p>
                 </a>
                 <!-- Life Themes -->
                 <a href="/en/symbols/death" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">💀</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Death</h3>
-                    <p class="text-xs text-gray-400 mt-1">Endings &amp; rebirth</p>
+                    <p class="text-xs text-gray-400 mt-1">Who or what had ended?</p>
                 </a>
                 <a href="/en/symbols/being-chased" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🏃</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Being Chased</h3>
-                    <p class="text-xs text-gray-400 mt-1">Avoidance &amp; fear</p>
+                    <p class="text-xs text-gray-400 mt-1">Who chased you, and where?</p>
                 </a>
                 <a href="/en/symbols/ocean" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🌊</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Ocean</h3>
-                    <p class="text-xs text-gray-400 mt-1">Deep emotions</p>
+                    <p class="text-xs text-gray-400 mt-1">Shore, open water, or storm?</p>
                 </a>
                 <a href="/en/symbols/forest" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🌲</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Forest</h3>
-                    <p class="text-xs text-gray-400 mt-1">The unknown</p>
+                    <p class="text-xs text-gray-400 mt-1">Lost, sheltered, or exploring?</p>
                 </a>
             </div>
 
