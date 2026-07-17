@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-07-16",
+    "lastUpdated": "2026-07-17",
     "totalSymbols": 150,
     "languages": [
       "en",
@@ -1177,13 +1177,13 @@
       "it": {
         "slug": "cane",
         "name": "Cane",
-        "shortDescription": "Sognare un cane o più cani riguarda fiducia, lealtà e protezione. Il significato cambia se il cane morde, attacca, ringhia, ti vuole mordere, è nero o bianco, appare malato o ti segue con calma.",
+        "shortDescription": "Sognare un cane può richiamare fiducia, protezione, conflitto o una relazione che ti mette in allerta. Osserva se era noto o sconosciuto, se mordeva, seguiva o proteggeva e quale emozione provavi.",
         "askYourself": [
           "Il cane era affettuoso, aggressivo, nero, bianco, malato o smarrito?",
           "Mordeva, voleva mordere, attaccava, ringhiava, seguiva o proteggeva qualcuno?",
           "Quale rapporto di fiducia sembra forte, ferito o fragile adesso?"
         ],
-        "seoTitle": "cane che morde, attacca o ti segue",
+        "seoTitle": "cane che morde o attacca",
         "faq": [
           {
             "question": "Cosa significa sognare un cane?",
@@ -1191,19 +1191,15 @@
           },
           {
             "question": "Cosa significa sognare un cane che morde mano, braccio o gamba?",
-            "answer": "Un cane che morde parla di fiducia ferita o conflitto. La mano riguarda azione e contatto, il braccio forza e sostegno, la gamba stabilità e capacità di andare avanti."
+            "answer": "Un morso può riflettere un conflitto, una fiducia ferita o la paura di essere attaccato. La parte del corpo non ha un significato fisso: conta soprattutto ciò che ti ha impedito di fare e l’emozione provata."
           },
           {
-            "question": "Cosa significa sognare un cane che attacca o ringhia?",
-            "answer": "Un cane che attacca o ringhia può indicare paura di tradimento, tensione in una relazione o una minaccia percepita da qualcuno che dovrebbe essere affidabile."
+            "question": "Cosa significa sognare un cane che attacca, ringhia o vuole mordere?",
+            "answer": "Questa scena può accompagnare una tensione, una paura di tradimento o una relazione diventata imprevedibile. Non annuncia un’aggressione reale: confrontala con i conflitti o le preoccupazioni recenti."
           },
           {
-            "question": "Cosa significa sognare un cane che ti vuole mordere?",
-            "answer": "Un cane che vuole morderti segnala spesso un conflitto che non è ancora esploso del tutto: una parola trattenuta, una fiducia fragile o una relazione che senti imprevedibile."
-          },
-          {
-            "question": "Cosa significano cane nero, bianco, morto o malato?",
-            "answer": "Un cane nero può rendere più visibile una paura o diffidenza; un cane bianco può parlare di fiducia e protezione. Un cane morto o malato indica spesso un legame ferito o trascurato."
+            "question": "Cosa significa sognare un cane nero, bianco, morto o malato?",
+            "answer": "Colore e condizioni del cane possono orientare le tue associazioni, ma non formano un codice universale. Un cane morto o malato può anche riprendere un ricordo, una preoccupazione concreta o un legame che senti fragile."
           },
           {
             "question": "Ci sono numeri della smorfia per il cane?",
@@ -1217,7 +1213,7 @@
           "button": "Prova l'app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-07-06"
+        "modifiedAt": "2026-07-17"
       },
       "relatedSymbols": [
         "wolf",
@@ -1488,33 +1484,29 @@
       "it": {
         "slug": "fuoco",
         "name": "Fuoco",
-        "shortDescription": "Sognare fuoco, un incendio o fiamme parla spesso di passione, rabbia, urgenza o trasformazione. Il significato cambia se vedi fuoco in casa, fumo nero, un incendio che divampa o un fuoco controllato.",
+        "shortDescription": "Sognare il fuoco può accompagnare rabbia, energia, urgenza o un cambiamento vissuto con intensità. Distingui un fuoco utile da un incendio fuori controllo e considera luogo, fumo, persone presenti ed emozione.",
         "askYourself": [
           "Il fuoco scaldava, illuminava, bruciava o distruggeva?",
-          "Era un fuoco controllato, un incendio, fuoco in casa o fumo nero?",
+          "Era un fuoco controllato, un incendio, un fuoco in casa o c’era del fumo nero?",
           "Quale emozione nella mia vita sembra accendersi troppo in fretta?"
         ],
-        "seoTitle": "fuoco, incendio o fuoco in casa",
+        "seoTitle": "fuoco o incendio in casa",
         "faq": [
           {
-            "question": "Cosa significa sognare fuoco?",
-            "answer": "Sognare fuoco può rappresentare energia, desiderio, rabbia, trasformazione o bisogno di purificare qualcosa. Il senso dipende da quanto il fuoco era controllato o minaccioso."
+            "question": "Cosa significa sognare il fuoco?",
+            "answer": "Il fuoco può richiamare energia, desiderio, rabbia, urgenza o cambiamento. Non ha un significato unico: un camino che scalda, una fiamma controllata e un incendio vissuto con paura raccontano scene diverse."
           },
           {
             "question": "Che differenza c’è tra fuoco controllato e incendio?",
-            "answer": "Un fuoco controllato può indicare energia creativa, calore o motivazione. Un incendio mostra invece intensità emotiva, conflitto o una situazione che rischia di consumare troppe energie."
+            "answer": "Un fuoco controllato può indicare energia creativa, calore o motivazione. Un incendio può invece richiamare intensità emotiva, conflitto o una situazione che rischia di consumare troppe energie."
           },
           {
-            "question": "Cosa significa sognare fuoco in casa?",
+            "question": "Cosa significa sognare il fuoco in casa?",
             "answer": "Il fuoco in casa porta il simbolo nella sfera privata: identità, famiglia, sicurezza o tensioni domestiche che chiedono attenzione."
           },
           {
-            "question": "Cosa significa sognare un incendio che divampa?",
-            "answer": "Un incendio che divampa indica spesso emozioni o cambiamenti cresciuti troppo in fretta. Il sogno chiede dove recuperare controllo prima che la situazione consumi troppe energie."
-          },
-          {
-            "question": "Cosa significano fiamme, fumo nero o fuoco che divampa?",
-            "answer": "Le fiamme mostrano intensità; il fumo nero può indicare confusione o qualcosa di poco chiaro; il fuoco che divampa parla di emozioni o cambiamenti che crescono in fretta."
+            "question": "Cosa significano le fiamme, il fumo nero o un fuoco che divampa?",
+            "answer": "Fiamme alte, fumo scuro o un incendio che cresce possono riflettere una situazione percepita come intensa o poco chiara. Considera anche spiegazioni letterali, come notizie, odori o esperienze recenti legate al fuoco."
           },
           {
             "question": "Ci sono numeri della smorfia per il fuoco?",
@@ -1528,7 +1520,7 @@
           "button": "Prova l'app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-07-06"
+        "modifiedAt": "2026-07-17"
       },
       "relatedSymbols": [
         "house",
@@ -1920,8 +1912,8 @@
       },
       "es": {
         "slug": "puerta",
-        "name": "Puertas",
-        "shortDescription": "Soñar con puertas habla de decisiones, oportunidades y límites: abrir una puerta cerrada, ver puertas abiertas, encontrar la puerta de casa abierta o una puerta rota que no deja pasar.",
+        "name": "Puerta",
+        "shortDescription": "Soñar con una puerta puede acompañar una decisión, un cambio o una preocupación por los límites personales. Su estado, el lugar, lo que intentabas hacer y la emoción sentida ayudan a situar la escena.",
         "askYourself": [
           "¿La puerta estaba abierta, cerrada, bloqueada, rota o era la puerta de mi casa?",
           "¿Yo la abría, la cerraba, intentaba cruzarla o solo la veía?",
@@ -1931,23 +1923,23 @@
         "faq": [
           {
             "question": "¿Qué significa soñar con puertas?",
-            "answer": "Soñar con puertas suele relacionarse con oportunidades, decisiones, límites y cambios de etapa. La interpretación depende de si estaban abiertas, cerradas, bloqueadas, rotas o conectadas con tu casa."
+            "answer": "Soñar con puertas puede acompañar oportunidades, decisiones, límites o cambios de etapa. La interpretación depende de si estaban abiertas, cerradas, bloqueadas, rotas o conectadas con tu casa."
           },
           {
             "question": "¿Qué significa soñar con abrir una puerta cerrada?",
-            "answer": "Abrir una puerta cerrada indica que intentas superar un bloqueo, entrar en una nueva etapa o resolver algo que antes parecía inaccesible."
+            "answer": "Abrir una puerta cerrada puede acompañar el intento de superar un bloqueo, entrar en una nueva etapa o resolver algo que antes parecía inaccesible."
           },
           {
             "question": "¿Qué significa soñar con puertas abiertas?",
             "answer": "Las puertas abiertas pueden señalar acceso, permiso, confianza o exposición. Si sueñas con la puerta abierta de tu casa, mira primero privacidad, seguridad y límites personales."
           },
           {
-            "question": "¿Qué significa soñar con muchas puertas?",
-            "answer": "Muchas puertas suelen mostrar varias opciones, caminos posibles o dificultad para decidir. El sueño pide observar cuál puerta te atraía, cuál evitabas y qué emoción aparecía."
+            "question": "¿Qué significa soñar con una puerta rota o en mal estado?",
+            "answer": "Una puerta rota puede acompañar una sensación de inseguridad, un límite difícil de mantener o una transición poco clara. También puede retomar una puerta real que viste o una preocupación reciente por la vivienda."
           },
           {
-            "question": "¿Qué significa soñar con una puerta rota o en mal estado?",
-            "answer": "Una puerta rota puede sugerir límites frágiles, una transición que se siente insegura o una oportunidad que necesita reparación antes de cruzarla."
+            "question": "¿Qué significa soñar con muchas puertas?",
+            "answer": "Muchas puertas pueden reflejar varias opciones o dificultad para decidir. Observa cuál te atraía, cuál evitabas y si la escena te producía curiosidad, prisa o miedo."
           }
         ],
         "softCta": {
@@ -1957,7 +1949,7 @@
           "button": "Probar la app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-06-18"
+        "modifiedAt": "2026-07-17"
       },
       "de": {
         "slug": "tuer",
@@ -1995,7 +1987,7 @@
       "it": {
         "slug": "porta",
         "name": "Porta",
-        "shortDescription": "Sognare una porta può riguardare una scelta, un passaggio o un confine personale. Che sia aperta, chiusa, bloccata o la porta di casa cambia il senso insieme alla tua reazione.",
+        "shortDescription": "Sognare una porta può riguardare una scelta, un passaggio o un confine personale. Il fatto che sia aperta, chiusa, bloccata o che appartenga a casa tua cambia il senso della scena insieme alla tua reazione.",
         "askYourself": [
           "La porta era aperta, chiusa, bloccata, rotta o apparteneva a casa mia?",
           "Cercavo di aprirla, chiuderla, attraversarla o proteggerla?",
@@ -2004,7 +1996,7 @@
         "faq": [
           {
             "question": "Cosa significa sognare una porta?",
-            "answer": "Una porta può richiamare una scelta, una transizione, un’opportunità o un confine. Stato della porta, luogo, azione ed emozione aiutano a capire quale tema si avvicina di più al sogno."
+            "answer": "Una porta può richiamare una scelta, una transizione, un’opportunità o un confine. Lo stato della porta, il luogo, l’azione e l’emozione aiutano a capire quale lettura si adatta meglio alla scena."
           },
           {
             "question": "Cosa significa sognare la porta di casa aperta?",
@@ -2016,11 +2008,11 @@
           },
           {
             "question": "Cosa significa sognare una porta chiusa o bloccata?",
-            "answer": "Una porta chiusa o bloccata può riflettere un limite, un ritardo o una scelta non ancora pronta. Cercare una chiave, forzare la porta o tornare indietro mostra come affronti l’ostacolo."
+            "answer": "Una porta chiusa o bloccata può riflettere un limite, un ritardo o una decisione ancora irrisolta. Cercare una chiave, forzare la porta o tornare indietro mostra come affronti l’ostacolo."
           }
         ],
-        "seoTitle": "porta aperta, chiusa o bloccata",
-        "modifiedAt": "2026-07-10"
+        "seoTitle": "porta aperta o chiusa",
+        "modifiedAt": "2026-07-17"
       },
       "relatedSymbols": [
         "key",
@@ -2298,7 +2290,7 @@
       "es": {
         "slug": "puente",
         "name": "Puente",
-        "shortDescription": "Soñar con un puente puede reflejar una transición, una conexión o una decisión en curso. Cruzarlo, verlo roto o sentir vértigo sobre el agua aporta el contexto real del sueño.",
+        "shortDescription": "Soñar con un puente puede reflejar una transición, una conexión o una decisión en curso. Cruzarlo, verlo roto o sentir vértigo sobre el agua cambia la lectura y evita asignarle un sentido fijo.",
         "askYourself": [
           "¿Cruzaba el puente, regresaba o me detenía antes de pasar?",
           "¿Era estable, colgante, roto o estaba sobre agua agitada?",
@@ -2330,7 +2322,7 @@
           "button": "Probar la app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-07-17"
       },
       "de": {
         "slug": "bruecke",
@@ -3195,13 +3187,13 @@
       "it": {
         "slug": "bambino",
         "name": "Bambino",
-        "shortDescription": "Sognare un bambino può riguardare cura, vulnerabilità, ricordi, responsabilità o qualcosa di nuovo che sta crescendo. Età, identità, comportamento ed emozione evitano letture automatiche.",
+        "shortDescription": "Sognare un bambino può riguardare cura, vulnerabilità, ricordi, responsabilità o qualcosa di nuovo che sta crescendo. Età, identità, comportamento ed emozione aiutano a evitare letture automatiche.",
         "askYourself": [
           "Conoscevo il bambino oppure era sconosciuto, neonato o più grande?",
           "Piangeva, giocava, si perdeva o aveva bisogno di protezione?",
           "Quale responsabilità, ricordo o nuovo progetto suscita oggi la stessa emozione?"
         ],
-        "seoTitle": "bambino che piange, si perde o gioca",
+        "seoTitle": "bambino che piange o si perde",
         "faq": [
           {
             "question": "Cosa significa sognare un bambino?",
@@ -3220,7 +3212,7 @@
             "answer": "Proteggere o tenere un bambino può accompagnare cura, responsabilità o il desiderio di sostenere qualcosa che sta crescendo. La calma o la fatica provata chiariscono il tono della scena."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-07-17"
       },
       "relatedSymbols": [
         "baby",
@@ -3852,33 +3844,33 @@
       "es": {
         "slug": "hospital",
         "name": "Hospital",
-        "shortDescription": "Soñar con hospital suele hablar de cuidado, descanso y apoyo: estar allí, verlo lleno de gente, encontrar doctores o acompañar a enfermos. No predice una enfermedad; invita a mirar qué necesita atención.",
+        "shortDescription": "Soñar con un hospital puede acompañar una necesidad de cuidado, descanso o apoyo. También puede retomar una visita, una noticia o una preocupación reciente; por sí solo no predice una enfermedad.",
         "askYourself": [
           "¿Estaba en el hospital, visitaba a alguien o esperaba noticias?",
-          "¿Aparecían doctores, enfermeras, enfermos o mucha gente?",
+          "¿Aparecían médicos, enfermeras, pacientes o mucha gente?",
           "¿Qué parte de mi vida necesita cuidado, descanso o apoyo ahora?"
         ],
         "seoTitle": "hospital o estar allí",
         "faq": [
           {
             "question": "¿Qué significa soñar con hospital?",
-            "answer": "Soñar con hospital suele indicar que algo necesita cuidado, sanación o apoyo. Puede hablar de cansancio, preocupación por alguien, una etapa vulnerable o la necesidad de pedir ayuda, no de una predicción médica."
+            "answer": "Un hospital puede acompañar cansancio, preocupación por alguien, una etapa vulnerable o la necesidad de pedir ayuda. También puede retomar una experiencia reciente; no constituye una predicción médica."
           },
           {
             "question": "¿Qué significa estar en un hospital en sueños?",
-            "answer": "Estar en un hospital suele reflejar vulnerabilidad, recuperación o necesidad de descanso. Observa si eras paciente, visitante o esperabas un diagnóstico, porque ese papel cambia el matiz del sueño."
+            "answer": "Estar en un hospital puede acompañar vulnerabilidad, recuperación o necesidad de descanso. Observa si eras paciente, visitante o esperabas un diagnóstico, porque ese papel cambia el matiz del sueño."
           },
           {
             "question": "¿Qué significa soñar con un hospital lleno de gente?",
             "answer": "Un hospital lleno de gente puede reflejar sobrecarga, preocupación por varias personas o la sensación de que demasiados asuntos piden atención al mismo tiempo."
           },
           {
-            "question": "¿Qué significan doctores, enfermeras o enfermos en el sueño?",
-            "answer": "Doctores y enfermeras suelen simbolizar guía, reparación o apoyo. Las personas enfermas pueden representar una preocupación por otros o una parte de tu bienestar que pide más cuidado."
+            "question": "¿Soñar con hospital predice una enfermedad?",
+            "answer": "No. Un sueño no permite diagnosticar ni predecir una enfermedad y puede retomar una visita, una noticia o una preocupación reciente. Si tienes síntomas o inquietud real por tu salud, consulta a un profesional."
           },
           {
-            "question": "¿Soñar con hospital predice una enfermedad?",
-            "answer": "No. En Noctalia lo leemos como una pista simbólica sobre cuidado, estrés, descanso o apoyo. Si tienes síntomas o preocupación real por tu salud, lo adecuado es consultar a un profesional."
+            "question": "¿Qué significan médicos, enfermeras o pacientes en el sueño?",
+            "answer": "Estas figuras pueden acompañar una búsqueda de ayuda, una preocupación por alguien o recuerdos concretos del ámbito médico. Tu relación con ellas y lo ocurrido recientemente aportan más contexto que una equivalencia fija."
           }
         ],
         "softCta": {
@@ -3888,7 +3880,7 @@
           "button": "Probar la app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-06-18"
+        "modifiedAt": "2026-07-17"
       },
       "de": {
         "slug": "krankenhaus",
@@ -4541,7 +4533,7 @@
           "button": "Probar la app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-07-17"
       },
       "de": {
         "slug": "wolf",
@@ -5213,17 +5205,19 @@
       "de": {
         "slug": "mutter",
         "name": "Mutter",
-        "shortDescription": "Wenn Mutter im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben.",
+        "shortDescription": "Erscheint im Traum eine Mutterfigur, können deine eigene Mutter, Fürsorge oder eine vertraute Beziehung anklingen. Entscheidend ist, wie sie sich verhielt und ob du Nähe, Druck oder Distanz erlebt hast.",
         "askYourself": [
-          "Was hat Mutter in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War es deine Mutter oder eine andere Mutterfigur?",
+          "Was tat oder sagte sie, und wie hast du darauf reagiert?",
+          "Wo erlebst du gerade eine ähnliche Mischung aus Fürsorge, Erwartung oder Abgrenzung?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Mutter zu träumen?",
             "answer": "Das hängt von der Szene ab. Mutter verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "madre",
@@ -5305,17 +5299,19 @@
       "de": {
         "slug": "vater",
         "name": "Vater",
-        "shortDescription": "Ein Traum von Vater verdient meist eine ruhige Deutung. Er kann Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Bei einer Vaterfigur im Traum können persönliche Erinnerungen ebenso eine Rolle spielen wie Unterstützung, Autorität oder Erwartungen. Achte darauf, welche Rolle sie in der Szene einnahm und wie du dich ihr gegenüber gefühlt hast.",
         "askYourself": [
-          "Was hat Vater in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War die Vaterfigur dir vertraut, abwesend oder verändert?",
+          "Gab sie dir Rückhalt, setzte sie dich unter Druck oder hielt sie sich zurück?",
+          "Welche aktuelle Beziehung erinnert dich an diese Dynamik?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Vater zu träumen?",
             "answer": "Das hängt von der Szene ab. Vater verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "padre",
@@ -5397,17 +5393,19 @@
       "de": {
         "slug": "geschwister",
         "name": "Geschwister",
-        "shortDescription": "Geschwister im Traum hat selten nur eine Bedeutung. Das Symbol kann Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Taucht ein Geschwisterteil im Traum auf, können gemeinsame Geschichte, Verbundenheit, Konkurrenz oder alte Familienrollen eine Rolle spielen. Welche Lesart passt, hängt von eurer Handlung und der Stimmung zwischen euch ab.",
         "askYourself": [
-          "Was hat Geschwister in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welches Geschwister war zu sehen, und wie alt wart ihr im Traum?",
+          "Habt ihr zusammengehalten, gestritten oder euch voneinander entfernt?",
+          "Welche frühere oder heutige Familiendynamik klingt darin an?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Geschwister zu träumen?",
             "answer": "Das hängt von der Szene ab. Geschwister verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "fratello-o-sorella",
@@ -5489,17 +5487,19 @@
       "de": {
         "slug": "partner",
         "name": "Partner",
-        "shortDescription": "Wenn Partner im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben.",
+        "shortDescription": "Träume mit einem Partner oder einer Partnerin können Nähe, Konflikte, Wünsche oder Grenzen innerhalb einer Beziehung spiegeln. Wichtiger als eine allgemeine Deutung sind die konkrete Person, eure Handlung und dein Gefühl dabei.",
         "askYourself": [
-          "Was hat Partner in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War es dein aktueller Partner, eine frühere Beziehung oder eine erfundene Person?",
+          "Was geschah zwischen euch, das im Traum besonders wichtig wirkte?",
+          "Wo wünschst du dir derzeit mehr Nähe, Klarheit oder Freiraum?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Partner zu träumen?",
             "answer": "Das hängt von der Szene ab. Partner verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "partner",
@@ -5581,17 +5581,19 @@
       "de": {
         "slug": "freund",
         "name": "Freund",
-        "shortDescription": "Ein Traum von Freund verdient meist eine ruhige Deutung. Er kann Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Erscheint ein Freund oder eine Freundin im Traum, stehen möglicherweise die reale Beziehung, eine gemeinsame Erinnerung oder eine auffällige Eigenschaft im Vordergrund. Betrachte deshalb, was diese Person tat und welche Stimmung zwischen euch herrschte.",
         "askYourself": [
-          "Was hat Freund in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welche konkrete Person erschien, und was verbindest du gerade mit ihr?",
+          "War euer Kontakt vertraut, angespannt oder überraschend?",
+          "Gab es zuletzt ein Gespräch oder Ereignis, das die Szene erklären könnte?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Freund zu träumen?",
             "answer": "Das hängt von der Szene ab. Freund verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "amico",
@@ -5673,17 +5675,19 @@
       "de": {
         "slug": "fremder",
         "name": "Fremder",
-        "shortDescription": "Fremder im Traum hat selten nur eine Bedeutung. Das Symbol kann Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Begegnest du im Traum einer fremden Person, können eine unbekannte Situation, eine neue Begegnung oder Unsicherheit gegenüber anderen in den Blick rücken. Ihr Aussehen, Verhalten und deine Reaktion geben der Szene ihren persönlichen Kontext.",
         "askYourself": [
-          "Was hat Fremder in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welche Details machten die Person fremd oder auffällig?",
+          "Bist du auf sie zugegangen, vor ihr geflohen oder hast du sie beobachtet?",
+          "Welche neue oder schwer einschätzbare Situation beschäftigt dich derzeit?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Fremder zu träumen?",
             "answer": "Das hängt von der Szene ab. Fremder verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "sconosciuto",
@@ -5765,17 +5769,19 @@
       "de": {
         "slug": "lehrer",
         "name": "Lehrer",
-        "shortDescription": "Wenn Lehrer im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben.",
+        "shortDescription": "Bei einer Lehrkraft im Traum können Erfahrungen mit Lernen, Bewertung, Anleitung oder Autorität wieder lebendig werden. Ob die Szene ermutigend oder belastend wirkt, zeigt sich an der Aufgabe und deinem Verhältnis zur Person.",
         "askYourself": [
-          "Was hat Lehrer in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Kanntest du die Lehrkraft, und aus welcher Lebensphase stammte sie?",
+          "Solltest du etwas lernen, beweisen oder erklären?",
+          "Wo fühlst du dich aktuell angeleitet oder beurteilt?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Lehrer zu träumen?",
             "answer": "Das hängt von der Szene ab. Lehrer verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "insegnante",
@@ -5857,17 +5863,19 @@
       "de": {
         "slug": "polizei",
         "name": "Polizei",
-        "shortDescription": "Ein Traum von Polizei verdient meist eine ruhige Deutung. Er kann Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Polizei im Traum kann Regeln, Schutz, Kontrolle oder einen Konflikt mit Grenzen zum Thema machen. Entscheidend ist, ob du Hilfe gesucht hast, verfolgt wurdest oder selbst Verantwortung übernehmen solltest.",
         "askYourself": [
-          "Was hat Polizei in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Warum war die Polizei in der Szene anwesend?",
+          "Hast du dich geschützt, kontrolliert oder beschuldigt gefühlt?",
+          "Welche Regel oder Grenze spielt in deinem Alltag gerade eine wichtige Rolle?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Polizei zu träumen?",
             "answer": "Das hängt von der Szene ab. Polizei verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "polizia",
@@ -5949,17 +5957,19 @@
       "de": {
         "slug": "arzt",
         "name": "Arzt",
-        "shortDescription": "Arzt im Traum hat selten nur eine Bedeutung. Das Symbol kann Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Begegnungen mit einer Arztfigur können Sorge, Fürsorge, Vertrauen oder den Wunsch nach Unterstützung berühren, ohne eine medizinische Aussage zu liefern. Beachte, wer untersucht oder behandelt wurde und ob du dich ernst genommen gefühlt hast.",
         "askYourself": [
-          "Was hat Arzt in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Warst du Patient, Begleitung oder selbst in der behandelnden Rolle?",
+          "Welche Worte, Untersuchung oder Entscheidung standen im Mittelpunkt?",
+          "Bei welchem Thema wünschst du dir gerade verlässliche Hilfe oder Klarheit?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Arzt zu träumen?",
             "answer": "Das hängt von der Szene ab. Arzt verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "medico",
@@ -6041,17 +6051,19 @@
       "de": {
         "slug": "kollege",
         "name": "Kollege",
-        "shortDescription": "Wenn Kollege im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben.",
+        "shortDescription": "Taucht im Traum ein Kollege oder eine Kollegin auf, können Zusammenarbeit, Konkurrenz, Anerkennung oder Belastungen aus dem Arbeitsalltag die Szene prägen. Die konkrete Aufgabe und eure Beziehung sind dabei aussagekräftiger als die Berufsrolle allein.",
         "askYourself": [
-          "Was hat Kollege in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welcher Kollege erschien, und woran habt ihr im Traum gearbeitet?",
+          "Habt ihr kooperiert, konkurriert oder aneinander vorbeigeredet?",
+          "Welche aktuelle Situation am Arbeitsplatz ähnelt dieser Dynamik?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Kollege zu träumen?",
             "answer": "Das hängt von der Szene ab. Kollege verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "collega",
@@ -6133,17 +6145,19 @@
       "de": {
         "slug": "grossmutter",
         "name": "Großmutter",
-        "shortDescription": "Ein Traum von Großmutter verdient meist eine ruhige Deutung. Er kann Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Erscheint deine Großmutter oder eine andere Großmutterfigur, können persönliche Erinnerungen, familiäre Prägungen, Fürsorge oder überlieferte Gewohnheiten anklingen. Ihre Haltung und dein Gefühl in ihrer Nähe helfen, die Szene einzuordnen.",
         "askYourself": [
-          "Was hat Großmutter in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Erschien deine eigene Großmutter oder eine unbekannte ältere Frau?",
+          "Was sagte, gab oder erwartete sie von dir?",
+          "Welche Erinnerung oder Familientradition wurde dadurch wach?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Großmutter zu träumen?",
             "answer": "Das hängt von der Szene ab. Großmutter verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "nonna",
@@ -6225,17 +6239,19 @@
       "de": {
         "slug": "geburt",
         "name": "Geburt",
-        "shortDescription": "Geburt im Traum hat selten nur eine Bedeutung. Das Symbol kann Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Träumst du von einer Geburt, können ein Anfang, eine wachsende Verantwortung oder ein anstrengender Veränderungsprozess in den Mittelpunkt rücken. Sie ist keine Vorhersage, daher zählen vor allem die beteiligten Personen und der Verlauf der Szene.",
         "askYourself": [
-          "Was hat Geburt in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wer brachte im Traum ein Kind zur Welt, und welche Rolle hattest du dabei?",
+          "Verlief die Geburt leicht, chaotisch oder unterbrochen?",
+          "Welches neue Vorhaben verlangt gerade Geduld und Verantwortung von dir?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Geburt zu träumen?",
             "answer": "Das hängt von der Szene ab. Geburt verweist oft auf Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "nascita",
@@ -6317,17 +6333,19 @@
       "de": {
         "slug": "beerdigung",
         "name": "Beerdigung",
-        "shortDescription": "Wenn Beerdigung im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt.",
+        "shortDescription": "In einer Beerdigungsszene können Abschied, Erinnerung, Trauer oder der Abschluss einer Lebensphase die Stimmung prägen. Sie kündigt keinen Todesfall an; für deine Einordnung zählen die betrauerte Person und deine Reaktion.",
         "askYourself": [
-          "Was hat Beerdigung in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wessen Beerdigung war es, und war die Person dir bekannt?",
+          "Wer nahm teil, und welche Stimmung herrschte unter den Anwesenden?",
+          "Von welcher Beziehung, Rolle oder Gewohnheit nimmst du gerade Abschied?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Beerdigung zu träumen?",
             "answer": "Das hängt von der Szene ab. Beerdigung verweist oft auf Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "funerale",
@@ -6409,17 +6427,19 @@
       "de": {
         "slug": "grossvater",
         "name": "Großvater",
-        "shortDescription": "Ein Traum von Großvater verdient meist eine ruhige Deutung. Er kann Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Wenn ein Großvater im Traum erscheint, können gemeinsame Erinnerungen, familiäre Werte, Rat oder Autorität in den Vordergrund rücken. Entscheidend ist, ob seine Gegenwart dir Halt gab, Distanz schuf oder eine alte Frage neu öffnete.",
         "askYourself": [
-          "Was hat Großvater in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wie alt und in welchem Zustand erschien dein Großvater?",
+          "Welchen Rat oder Gegenstand gab er dir, und wie sah er dich an?",
+          "Welche Haltung aus deiner Familie beeinflusst dich heute noch?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Großvater zu träumen?",
             "answer": "Das hängt von der Szene ab. Großvater verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "nonno",
@@ -6501,17 +6521,19 @@
       "de": {
         "slug": "klassenzimmer",
         "name": "Klassenzimmer",
-        "shortDescription": "Klassenzimmer im Traum hat selten nur eine Bedeutung. Das Symbol kann den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Im Klassenzimmer können Erfahrungen mit Lernen, Leistung, Zugehörigkeit oder Bewertung wieder aufleben. Ob du Schüler, Lehrkraft oder Beobachter warst, verändert den persönlichen Bezug der Szene.",
         "askYourself": [
-          "Was hat Klassenzimmer in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War das Klassenzimmer aus deiner Vergangenheit oder völlig unbekannt?",
+          "Welche Aufgabe, Prüfung oder Unterrichtssituation fand dort statt?",
+          "Wo musst du gerade etwas lernen oder deine Fähigkeiten zeigen?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Klassenzimmer zu träumen?",
             "answer": "Das hängt von der Szene ab. Klassenzimmer verweist oft auf den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "aula",
@@ -6593,17 +6615,19 @@
       "de": {
         "slug": "badezimmer",
         "name": "Badezimmer",
-        "shortDescription": "Wenn Badezimmer im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen.",
+        "shortDescription": "Im Badezimmer können Privatsphäre, Körperpflege, Erleichterung oder Verletzlichkeit zum Thema werden. Zustand, Zugänglichkeit und anwesende Personen zeigen, ob du dich geschützt oder bloßgestellt gefühlt hast.",
         "askYourself": [
-          "Was hat Badezimmer in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War das Badezimmer sauber, überflutet, beschädigt oder ohne Tür?",
+          "Konntest du es ungestört benutzen, oder wurdest du unterbrochen?",
+          "Wo fehlt dir im Alltag gerade Privatsphäre oder Gelegenheit zum Durchatmen?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Badezimmer zu träumen?",
             "answer": "Das hängt von der Szene ab. Badezimmer verweist oft auf den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "bagno",
@@ -6685,17 +6709,19 @@
       "de": {
         "slug": "schlafzimmer",
         "name": "Schlafzimmer",
-        "shortDescription": "Ein Traum von Schlafzimmer verdient meist eine ruhige Deutung. Er kann den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Im Schlafzimmer können Ruhe, Intimität, Rückzug oder persönliche Grenzen in den Mittelpunkt rücken. Ob der Raum vertraut, verändert oder von anderen betreten war, prägt die Deutung stärker als der Ort allein.",
         "askYourself": [
-          "Was hat Schlafzimmer in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War es dein eigenes Schlafzimmer oder ein fremder Raum?",
+          "Wer befand sich dort, und hattest du Kontrolle über Tür und Licht?",
+          "Wie gut kannst du dir derzeit Ruhe und privaten Raum sichern?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Schlafzimmer zu träumen?",
             "answer": "Das hängt von der Szene ab. Schlafzimmer verweist oft auf den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "camera-da-letto",
@@ -6776,17 +6802,19 @@
       "de": {
         "slug": "kuche",
         "name": "Küche",
-        "shortDescription": "Küche im Traum hat selten nur eine Bedeutung. Das Symbol kann den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Spielt der Traum in einer Küche, können Versorgung, gemeinsames Arbeiten, Kreativität oder familiäre Routinen greifbar werden. Was zubereitet wurde und mit wem du den Raum geteilt hast, gibt der Szene ihren konkreten Sinn.",
         "askYourself": [
-          "Was hat Küche in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Hast du gekocht, gegessen, aufgeräumt oder nach etwas gesucht?",
+          "Welche Menschen waren in der Küche, und wie habt ihr zusammengewirkt?",
+          "Welche alltägliche Aufgabe oder Form der Fürsorge beschäftigt dich gerade?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Küche zu träumen?",
             "answer": "Das hängt von der Szene ab. Küche verweist oft auf den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "cucina",
@@ -6868,17 +6896,19 @@
       "de": {
         "slug": "arbeitsplatz",
         "name": "Arbeitsplatz",
-        "shortDescription": "Wenn Arbeitsplatz im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen.",
+        "shortDescription": "Der Arbeitsplatz im Traum kann aktuelle Aufgaben, Leistungsdruck, Anerkennung oder Grenzen zwischen Beruf und Privatleben aufgreifen. Achte darauf, was dem realen Ort entsprach und was im Traum auffällig verändert war.",
         "askYourself": [
-          "Was hat Arbeitsplatz in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welche Aufgabe solltest du erledigen, und konntest du sie abschließen?",
+          "Wer beobachtete, unterstützte oder störte dich dabei?",
+          "Welcher Teil deiner Arbeit beansprucht momentan besonders viel Aufmerksamkeit?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Arbeitsplatz zu träumen?",
             "answer": "Das hängt von der Szene ab. Arbeitsplatz verweist oft auf den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "luogo-di-lavoro",
@@ -6960,17 +6990,19 @@
       "de": {
         "slug": "strasse",
         "name": "Straße",
-        "shortDescription": "Ein Traum von Straße verdient meist eine ruhige Deutung. Er kann den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Auf einer Straße im Traum können dein aktueller Weg, eine Entscheidung oder Hindernisse beim Vorankommen sichtbar werden. Verlauf, Zustand und Fortbewegungsart helfen, den Bezug zu deiner Situation zu erkennen.",
         "askYourself": [
-          "Was hat Straße in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War die Straße gerade, kurvig, blockiert oder ohne erkennbares Ende?",
+          "Bist du gegangen, gefahren oder am Rand stehen geblieben?",
+          "Bei welcher Entscheidung suchst du derzeit nach Richtung oder Fortschritt?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Straße zu träumen?",
             "answer": "Das hängt von der Szene ab. Straße verweist oft auf den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "strada",
@@ -7052,17 +7084,19 @@
       "de": {
         "slug": "bus",
         "name": "Bus",
-        "shortDescription": "Bus im Traum hat selten nur eine Bedeutung. Das Symbol kann Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Bei einer Busfahrt können eine gemeinsame Route, feste Zeitpläne oder deine Abhängigkeit von Entscheidungen anderer hervortreten. Ob du eingestiegen, ausgestiegen oder zurückgeblieben bist, bestimmt den Ton der Szene.",
         "askYourself": [
-          "Was hat Bus in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Hast du den Bus erreicht, verpasst oder die falsche Linie genommen?",
+          "Wer saß neben dir, und kanntest du das Ziel?",
+          "Wo musst du dich derzeit an den Rhythmus einer Gruppe oder eines Plans anpassen?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Bus zu träumen?",
             "answer": "Das hängt von der Szene ab. Bus verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "autobus",
@@ -7144,17 +7178,19 @@
       "de": {
         "slug": "fahrrad",
         "name": "Fahrrad",
-        "shortDescription": "Wenn Fahrrad im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags.",
+        "shortDescription": "Beim Fahrradfahren im Traum können Eigenständigkeit, Gleichgewicht, Anstrengung oder dein persönliches Tempo sichtbar werden. Gelände, Zustand des Rads und deine Kontrolle darüber liefern den passenden Kontext.",
         "askYourself": [
-          "Was hat Fahrrad in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Konntest du sicher lenken und das Gleichgewicht halten?",
+          "War die Strecke steil, schnell, holprig oder leicht zu fahren?",
+          "Bei welchem Vorhaben bestimmst du gerade selbst Tempo und Richtung?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Fahrrad zu träumen?",
             "answer": "Das hängt von der Szene ab. Fahrrad verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "bicicletta",
@@ -7236,17 +7272,19 @@
       "de": {
         "slug": "boot",
         "name": "Boot",
-        "shortDescription": "Ein Traum von Boot verdient meist eine ruhige Deutung. Er kann Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Wie du dich mit einem Boot durch die Szene bewegst, kann deinen Umgang mit einer Übergangsphase oder unsicheren Lage beleuchten. Wasser, Wetter, Mitreisende und deine Kontrolle über das Boot geben der Szene ihre persönliche Bedeutung.",
         "askYourself": [
-          "Was hat Boot in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War das Boot stabil, beschädigt, festgemacht oder in Bewegung?",
+          "Wer steuerte, und wie verhielten sich Wasser und Wetter?",
+          "Welche Situation verlangt gerade Vertrauen, Anpassung oder einen Kurswechsel von dir?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Boot zu träumen?",
             "answer": "Das hängt von der Szene ab. Boot verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "barca",
@@ -7328,17 +7366,19 @@
       "de": {
         "slug": "flughafen",
         "name": "Flughafen",
-        "shortDescription": "Flughafen im Traum hat selten nur eine Bedeutung. Das Symbol kann den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Am Flughafen können Erwartung, Abschied, Übergang oder die Vorbereitung auf einen größeren Wechsel in den Vordergrund rücken. Ziel, Zeitdruck und mögliche Hindernisse zeigen, was an dieser Veränderung für dich wichtig ist.",
         "askYourself": [
-          "Was hat Flughafen in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wohin solltest du fliegen, und hattest du ein gültiges Ticket?",
+          "Hast du Gate, Gepäck oder eine Begleitperson gesucht?",
+          "Welche bevorstehende Veränderung löst gerade Vorfreude oder Zeitdruck aus?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Flughafen zu träumen?",
             "answer": "Das hängt von der Szene ab. Flughafen verweist oft auf den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "aeroporto",
@@ -7420,17 +7460,19 @@
       "de": {
         "slug": "koffer",
         "name": "Koffer",
-        "shortDescription": "Wenn Koffer im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags.",
+        "shortDescription": "Was mit einem Koffer im Traum geschieht, kann Vorbereitung, mitgebrachte Erfahrungen oder Verantwortung im Zusammenhang mit einer Veränderung berühren. Inhalt, Gewicht und die Frage, ob du ihn gepackt oder verloren hast, machen den Bezug konkret.",
         "askYourself": [
-          "Was hat Koffer in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Was befand sich im Koffer, und hattest du ihn selbst gepackt?",
+          "War er zu schwer, leer, vertauscht oder verschwunden?",
+          "Was möchtest du in eine neue Phase mitnehmen oder bewusst zurücklassen?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Koffer zu träumen?",
             "answer": "Das hängt von der Szene ab. Koffer verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "valigia",
@@ -7512,17 +7554,19 @@
       "de": {
         "slug": "reisepass",
         "name": "Reisepass",
-        "shortDescription": "Ein Traum von Reisepass verdient meist eine ruhige Deutung. Er kann Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Wird ein Reisepass im Traum wichtig, stellen sich möglicherweise Fragen nach Identität, Zugehörigkeit, Zugang oder Bewegungsfreiheit. Ob das Dokument gültig, verloren oder kontrolliert wurde, prägt die Szene.",
         "askYourself": [
-          "Was hat Reisepass in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War es dein Reisepass, und stimmten Name und Foto?",
+          "Wurde er akzeptiert, abgelehnt, gestohlen oder nicht gefunden?",
+          "Wo musst du derzeit Zugehörigkeit oder Berechtigung nachweisen?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Reisepass zu träumen?",
             "answer": "Das hängt von der Szene ab. Reisepass verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "passaporto",
@@ -7604,17 +7648,19 @@
       "de": {
         "slug": "ring",
         "name": "Ring",
-        "shortDescription": "Ring im Traum hat selten nur eine Bedeutung. Das Symbol kann Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Der Ring in deiner Traumszene kann eine Beziehung, ein Versprechen, eine Verpflichtung oder einen persönlichen Wert in den Mittelpunkt rücken. Wer ihn trug und was mit ihm geschah, ist wichtiger als eine pauschale Symbolbedeutung.",
         "askYourself": [
-          "Was hat Ring in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wer besaß oder überreichte den Ring?",
+          "Passte er, ging er verloren oder wurde er zurückgegeben?",
+          "Welche Bindung oder Zusage fühlt sich derzeit besonders bedeutsam an?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Ring zu träumen?",
             "answer": "Das hängt von der Szene ab. Ring verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "anello",
@@ -7696,17 +7742,19 @@
       "de": {
         "slug": "uhr",
         "name": "Uhr",
-        "shortDescription": "Wenn Uhr im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags.",
+        "shortDescription": "Rückt eine Uhr im Traum in den Mittelpunkt, können Zeitdruck, Warten, Planung oder der Wunsch nach einem passenden Rhythmus spürbar werden. Angezeigte Zeit, Funktion und deine Reaktion darauf liefern den konkreten Zusammenhang.",
         "askYourself": [
-          "Was hat Uhr in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welche Zeit zeigte die Uhr, und lief sie normal?",
+          "Musstest du dich beeilen, warten oder einen Termin einhalten?",
+          "Wo empfindest du gerade Zeitdruck oder den Wunsch nach mehr Geduld?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Uhr zu träumen?",
             "answer": "Das hängt von der Szene ab. Uhr verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "orologio",
@@ -7788,17 +7836,19 @@
       "de": {
         "slug": "buch",
         "name": "Buch",
-        "shortDescription": "Ein Traum von Buch verdient meist eine ruhige Deutung. Er kann Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Bei einem Buch im Traum können Wissen, Erinnerungen, eine unerzählte Geschichte oder die Suche nach einer Antwort im Zentrum stehen. Titel, Inhalt und die Frage, ob du darin lesen konntest, geben der Szene ihren Kontext.",
         "askYourself": [
-          "Was hat Buch in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War das Buch geöffnet, verschlossen, leer oder in einer bekannten Sprache geschrieben?",
+          "Konntest du Titel oder eine bestimmte Passage lesen?",
+          "Über welches Thema möchtest du gerade mehr erfahren oder Klarheit gewinnen?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Buch zu träumen?",
             "answer": "Das hängt von der Szene ab. Buch verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "libro",
@@ -7880,17 +7930,19 @@
       "de": {
         "slug": "brief",
         "name": "Brief",
-        "shortDescription": "Brief im Traum hat selten nur eine Bedeutung. Das Symbol kann Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Taucht ein Brief im Traum auf, rücken möglicherweise eine ausstehende Mitteilung, eine Erinnerung oder der Wunsch nach einem klaren Austausch in den Mittelpunkt. Absender, Lesbarkeit und deine Reaktion auf den Inhalt geben den persönlichen Kontext.",
         "askYourself": [
-          "Was hat Brief in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Von wem kam der Brief, und war er an dich adressiert?",
+          "Konntest du ihn öffnen und den Inhalt lesen?",
+          "Welches Gespräch oder welche Nachricht steht in deinem Alltag noch aus?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Brief zu träumen?",
             "answer": "Das hängt von der Szene ab. Brief verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
-        ]
+        ],
+        "modifiedAt": "2026-07-17"
       },
       "it": {
         "slug": "lettera",
@@ -7972,11 +8024,13 @@
       "de": {
         "slug": "haare",
         "name": "Haare",
-        "shortDescription": "Wenn Haare im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie wie Gefühle im Körper ankommen, was Sie zeigen, verbergen oder beachten sollten.",
+        "shortDescription": "Haare fallen im Traum besonders auf, wenn sie geschnitten, verloren, verändert oder gezeigt werden. Entscheidend ist, ob die Veränderung sich befreiend, beschämend, kontrolliert oder fremd anfühlte.",
         "askYourself": [
-          "Was hat Haare in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wie sahen deine Haare aus, und wer veränderte oder betrachtete sie?",
+          "Hast du dich damit attraktiv, geschützt oder bloßgestellt gefühlt?",
+          "Welche Veränderung an deinem Auftreten beschäftigt dich gerade?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Haare zu träumen?",
@@ -8063,11 +8117,13 @@
       "de": {
         "slug": "augen",
         "name": "Augen",
-        "shortDescription": "Ein Traum von Augen verdient meist eine ruhige Deutung. Er kann wie Gefühle im Körper ankommen, was Sie zeigen, verbergen oder beachten sollten berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Augen lenken einen Traum auf Blicke: Wer beobachtet wen, und was bleibt ungesehen? Ob der Blick vertraut, prüfend oder bedrohlich wirkt, prägt die Szene stärker als das Symbol allein.",
         "askYourself": [
-          "Was hat Augen in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wessen Augen oder Blick standen im Mittelpunkt?",
+          "Konntest du zurückblicken, wegsehen oder etwas nicht erkennen?",
+          "Wo fühlst du dich derzeit beobachtet, beurteilt oder übersehen?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Augen zu träumen?",
@@ -8155,11 +8211,13 @@
       "de": {
         "slug": "hande",
         "name": "Hände",
-        "shortDescription": "Hände im Traum hat selten nur eine Bedeutung. Das Symbol kann wie Gefühle im Körper ankommen, was Sie zeigen, verbergen oder beachten sollten anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Hände können im Traum handeln, halten, berühren oder etwas nicht festhalten. Was sie tun und ob du sie kontrollieren kannst, rückt Handlungsspielraum, Nähe oder Hilflosigkeit in den Vordergrund.",
         "askYourself": [
-          "Was hat Hände in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Was taten deine Hände, und gelang dir die Handlung?",
+          "Wen oder was hast du gehalten, berührt oder verloren?",
+          "Bei welcher aktuellen Aufgabe wünschst du dir mehr Einfluss oder Unterstützung?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Hände zu träumen?",
@@ -8247,11 +8305,13 @@
       "de": {
         "slug": "fusse",
         "name": "Füße",
-        "shortDescription": "Wenn Füße im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie wie Gefühle im Körper ankommen, was Sie zeigen, verbergen oder beachten sollten.",
+        "shortDescription": "Füße verbinden dich im Traum mit dem Untergrund und der eingeschlagenen Richtung. Ob sie sicher tragen, verletzt sind oder nicht vorankommen, verändert die Stimmung der Szene.",
         "askYourself": [
-          "Was hat Füße in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Auf welchem Untergrund standest oder liefst du?",
+          "Waren deine Füße frei, verletzt, nackt oder schwer?",
+          "Welcher nächste Schritt fühlt sich in deinem Alltag gerade sicher oder unsicher an?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Füße zu träumen?",
@@ -8339,11 +8399,13 @@
       "de": {
         "slug": "herz",
         "name": "Herz",
-        "shortDescription": "Ein Traum von Herz verdient meist eine ruhige Deutung. Er kann wie Gefühle im Körper ankommen, was Sie zeigen, verbergen oder beachten sollten berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Ein sichtbares, verletztes oder stark schlagendes Herz rückt Gefühle und Körperempfinden in den Mittelpunkt der Szene. Was unmittelbar davor geschah und wer dabei war, hilft dir, den Traum ohne feste Zuschreibung einzuordnen.",
         "askYourself": [
-          "Was hat Herz in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War das Herz in deinem Körper, sichtbar vor dir oder bei jemand anderem?",
+          "Wie fühlte sich sein Schlagen oder seine Verletzung im Traum an?",
+          "Welche Beziehung oder Sorge berührt dich im Moment besonders stark?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Herz zu träumen?",
@@ -8431,11 +8493,13 @@
       "de": {
         "slug": "schwangerschaftstest",
         "name": "Schwangerschaftstest",
-        "shortDescription": "Schwangerschaftstest im Traum hat selten nur eine Bedeutung. Das Symbol kann Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Bei einem Schwangerschaftstest bündeln sich Warten und Unsicherheit in einem sichtbaren Ergebnis. Entscheidend kann sein, wer darauf wartet und welche Folgen du dir in diesem Moment ausmalst.",
         "askYourself": [
-          "Was hat Schwangerschaftstest in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welches Ergebnis zeigte der Test, und war es eindeutig?",
+          "Wer war bei dir, als du auf das Ergebnis gewartet oder den Test betrachtet hast?",
+          "Welche bevorstehende Nachricht oder Entscheidung löst gerade ähnliche Spannung aus?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Schwangerschaftstest zu träumen?",
@@ -8523,11 +8587,13 @@
       "de": {
         "slug": "krankheit",
         "name": "Krankheit",
-        "shortDescription": "Wenn Krankheit im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie wie Gefühle im Körper ankommen, was Sie zeigen, verbergen oder beachten sollten.",
+        "shortDescription": "Krankheit im Traum kann eine Szene von Sorge, Abhängigkeit, Erschöpfung oder Fürsorge prägen, ohne etwas über deine Gesundheit vorherzusagen. Wer krank war, welche Hilfe verfügbar war und was dir Angst machte, geben dem Bild seinen persönlichen Kontext.",
         "askYourself": [
-          "Was hat Krankheit in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wer war krank, und welche Beschwerden waren im Traum sichtbar?",
+          "Gab es Hilfe, Pflege oder eine Person, die dich alleinließ?",
+          "Gibt es in deinem Alltag eine Sorge rund um Belastung oder Fürsorge, die zur Szene passen könnte?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Krankheit zu träumen?",
@@ -8615,11 +8681,13 @@
       "de": {
         "slug": "keller",
         "name": "Keller",
-        "shortDescription": "Ein Traum von Keller verdient meist eine ruhige Deutung. Er kann den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Ein Keller führt die Traumhandlung in einen abgelegenen Teil des Hauses. Licht, Geruch, Ordnung und der mögliche Ausgang prägen, ob du dort Neugier, Vertrautheit oder Beklemmung erlebt hast.",
         "askYourself": [
-          "Was hat Keller in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wie hell, eng, ordentlich oder zugänglich war der Keller?",
+          "Was hast du dort gefunden, und wolltest du es mitnehmen, verstecken oder zurücklassen?",
+          "Welcher wenig beachtete Bereich deines Lebens fühlt sich ähnlich an?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Keller zu träumen?",
@@ -8707,11 +8775,13 @@
       "de": {
         "slug": "operation",
         "name": "Operation",
-        "shortDescription": "Operation im Traum hat selten nur eine Bedeutung. Das Symbol kann Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Eine Operation stellt Körper, Vertrauen und einen Eingriff in den Mittelpunkt des Traums. Ob du selbst operiert hast, behandelt wurdest oder nur zugesehen hast, verändert deine Rolle in der Szene.",
         "askYourself": [
-          "Was hat Operation in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welche Körperstelle wurde behandelt, und wusstest du warum?",
+          "Wer führte den Eingriff durch, und konntest du dieser Person vertrauen?",
+          "Wo erlebst du gerade eine Veränderung, bei der du Kontrolle abgeben musst?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Operation zu träumen?",
@@ -8799,11 +8869,13 @@
       "de": {
         "slug": "bluten",
         "name": "Bluten",
-        "shortDescription": "Wenn Bluten im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt.",
+        "shortDescription": "Eine Blutung macht eine Verletzung oder einen Verlust in der Szene unmittelbar sichtbar. Menge, Schmerz, Ursache und die Reaktion anderer bestimmen, ob du Alarm, Hilflosigkeit oder Versorgung erlebt hast.",
         "askYourself": [
-          "Was hat Bluten in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Woher kam das Blut, und wodurch begann die Blutung?",
+          "Hast du versucht, sie zu stoppen, und wer hat dir dabei geholfen?",
+          "Welche Situation kostet dich im Alltag gerade spürbar Kraft oder Aufmerksamkeit?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Bluten zu träumen?",
@@ -8891,11 +8963,13 @@
       "de": {
         "slug": "ertrinken",
         "name": "Ertrinken",
-        "shortDescription": "Ein Traum von Ertrinken verdient meist eine ruhige Deutung. Er kann Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Beim Ertrinken werden im Traum Atem, Kraft und Zeit knapp. Die Art des Wassers, erreichbare Hilfe und dein Versuch aufzutauchen bestimmen die Spannung der Szene.",
         "askYourself": [
-          "Was hat Ertrinken in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "In welchem Wasser bist du untergeraten, und wie kam es dazu?",
+          "War jemand in der Nähe, und konntest du um Hilfe rufen?",
+          "Welche aktuelle Situation fühlt sich für dich ähnlich überwältigend an?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Ertrinken zu träumen?",
@@ -8983,11 +9057,13 @@
       "de": {
         "slug": "gefangen",
         "name": "Gefangen",
-        "shortDescription": "Gefangen im Traum hat selten nur eine Bedeutung. Das Symbol kann Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Gefangensein beginnt im Traum oft mit einer konkreten Grenze: einer verschlossenen Tür, einem engen Raum oder einer Person, die den Weg versperrt. Ob du nach einem Ausgang suchst, Hilfe bekommst oder aufgibst, prägt die emotionale Wirkung.",
         "askYourself": [
-          "Was hat Gefangen in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wo warst du eingeschlossen, und was versperrte den Ausgang?",
+          "Welche Fluchtmöglichkeit hast du versucht, und warum scheiterte sie?",
+          "Bei welcher Verpflichtung oder Beziehung wünschst du dir derzeit mehr Spielraum?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Gefangen zu träumen?",
@@ -9075,11 +9151,13 @@
       "de": {
         "slug": "dachboden",
         "name": "Dachboden",
-        "shortDescription": "Wenn Dachboden im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen.",
+        "shortDescription": "Ein Dachboden bringt dich an einen selten genutzten Ort des Hauses, an dem Dinge lagern, die nicht täglich gebraucht werden. Was du dort findest und ob du freiwillig hinaufgehst, gibt der Szene ihren persönlichen Kontext.",
         "askYourself": [
-          "Was hat Dachboden in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wie bist du auf den Dachboden gelangt, und war der Zugang leicht?",
+          "Welche Gegenstände, Geräusche oder Personen erwarteten dich dort?",
+          "Was aus deiner Vergangenheit bewahrst du auf, obwohl du es selten betrachtest?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Dachboden zu träumen?",
@@ -9167,11 +9245,13 @@
       "de": {
         "slug": "zu-spat-kommen",
         "name": "Zu spät kommen",
-        "shortDescription": "Ein Traum von Zu spät kommen verdient meist eine ruhige Deutung. Er kann Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Zu spät zu kommen erzeugt im Traum Zeitdruck, noch bevor das Ziel erreicht ist. Wohin du musst, wer auf dich wartet und welche Folgen du erwartest, bestimmen, ob Scham, Ärger oder Erleichterung überwiegt.",
         "askYourself": [
-          "Was hat Zu spät kommen in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Zu welchem Termin oder Ereignis kamst du zu spät?",
+          "Was hielt dich auf, und konntest du jemanden informieren?",
+          "Welche Frist oder Erwartung setzt dich im Alltag gerade unter Druck?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Zu spät kommen zu träumen?",
@@ -9259,11 +9339,13 @@
       "de": {
         "slug": "einen-zug-verpassen",
         "name": "Einen Zug verpassen",
-        "shortDescription": "Einen Zug verpassen im Traum hat selten nur eine Bedeutung. Das Symbol kann Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Ein verpasster Zug verbindet einen festen Fahrplan mit einer plötzlich verschwundenen Reisemöglichkeit. Ob du selbst zu spät kamst, ein Hindernis auftauchte oder du am falschen Bahnsteig standest, verändert den Schwerpunkt des Traums.",
         "askYourself": [
-          "Was hat Einen Zug verpassen in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wohin sollte der Zug fahren, und warum war diese Reise wichtig?",
+          "Hast du ihn abfahren sehen oder erst später bemerkt, dass du ihn verpasst hattest?",
+          "Welche Gelegenheit befürchtest du gerade nicht rechtzeitig zu nutzen?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Einen Zug verpassen zu träumen?",
@@ -9351,11 +9433,13 @@
       "de": {
         "slug": "nicht-sprechen-konnen",
         "name": "Nicht sprechen können",
-        "shortDescription": "Wenn Nicht sprechen können im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt.",
+        "shortDescription": "Wenn du im Traum nicht sprechen kannst, wird der fehlende Zugang zu Worten oder zur eigenen Stimme zum Mittelpunkt der Szene. Wem du etwas sagen wolltest und wie diese Person auf dein Schweigen reagierte, prägt das Erlebnis.",
         "askYourself": [
-          "Was hat Nicht sprechen können in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welche Worte wolltest du sagen, und an wen waren sie gerichtet?",
+          "War deine Stimme leise, blockiert oder völlig verschwunden?",
+          "In welchem aktuellen Gespräch hältst du dich zurück oder wirst nicht gehört?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Nicht sprechen können zu träumen?",
@@ -9443,11 +9527,13 @@
       "de": {
         "slug": "lahmung",
         "name": "Lähmung",
-        "shortDescription": "Ein Traum von Lähmung verdient meist eine ruhige Deutung. Er kann Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Eine Lähmung macht Bewegung unmöglich, während die Traumhandlung um dich herum weitergeht. Körperhaltung, drohende Gefahr und die Reaktion anderer prägen, ob du Hilflosigkeit, Ruhe oder Widerstand erlebt hast.",
         "askYourself": [
-          "Was hat Lähmung in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welche Körperteile konntest du nicht bewegen, und wo befandest du dich?",
+          "Was wolltest du dringend tun, während dein Körper nicht reagierte?",
+          "Wo fühlst du dich momentan handlungsunfähig, obwohl etwas von dir erwartet wird?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Lähmung zu träumen?",
@@ -9534,11 +9620,13 @@
       "de": {
         "slug": "schreien",
         "name": "Schreien",
-        "shortDescription": "Schreien im Traum hat selten nur eine Bedeutung. Das Symbol kann Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Schreien kann im Traum laut den Raum füllen oder trotz aller Anstrengung ungehört bleiben. Was den Schrei auslöst, wie er klingt und wer darauf reagiert, macht den Unterschied.",
         "askYourself": [
-          "Was hat Schreien in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Hast du selbst geschrien oder die Stimme einer anderen Person gehört?",
+          "Wodurch begann das Schreien, und wurde es von jemandem bemerkt?",
+          "Welches starke Gefühl kannst du im Wachleben nur schwer ausdrücken?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Schreien zu träumen?",
@@ -9625,11 +9713,13 @@
       "de": {
         "slug": "sich-verstecken",
         "name": "Sich verstecken",
-        "shortDescription": "Wenn Sich verstecken im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt.",
+        "shortDescription": "Beim Verstecken kommt es darauf an, vor wem oder was du dich verbirgst und ob du das Versteck selbst gewählt hast. Der Schutz des Ortes und die Gefahr, entdeckt zu werden, bestimmen die Anspannung der Szene.",
         "askYourself": [
-          "Was hat Sich verstecken in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Vor wem hast du dich versteckt, und was hätte beim Entdecken passieren können?",
+          "Wie sicher war dein Versteck, und konntest du es wieder verlassen?",
+          "Wo zeigst du dich derzeit nicht offen, weil du eine Reaktion fürchtest?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Sich verstecken zu träumen?",
@@ -9716,11 +9806,13 @@
       "de": {
         "slug": "schatten",
         "name": "Schatten",
-        "shortDescription": "Ein Traum von Schatten verdient meist eine ruhige Deutung. Er kann Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Im Traum kann ein Schatten zu dir gehören, von jemand anderem geworfen werden oder sich ohne erkennbare Quelle bewegen. Form, Abstand und Verhalten entscheiden, ob er beiläufig, schützend oder bedrohlich wirkt.",
         "askYourself": [
-          "Was hat Schatten in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wozu gehörte der Schatten, und passte seine Form zur sichtbaren Gestalt?",
+          "Folgte er dir, blieb er stehen oder verdeckte er etwas?",
+          "Welche unklare Person oder Situation beschäftigt dich gerade besonders?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Schatten zu träumen?",
@@ -9808,11 +9900,13 @@
       "de": {
         "slug": "geist",
         "name": "Geist",
-        "shortDescription": "Geist im Traum hat selten nur eine Bedeutung. Das Symbol kann Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Ein Geist bringt eine Person oder Präsenz in die Szene, die zugleich anwesend und nicht greifbar ist. Ob du sie erkannt hast, mit ihr sprechen konntest oder dich vor ihr gefürchtet hast, gibt dem Traum seinen Kontext.",
         "askYourself": [
-          "Was hat Geist in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "An wen erinnerte dich der Geist durch Gesicht, Stimme oder Kleidung?",
+          "Was tat diese Gestalt, und konntest du mit ihr in Kontakt treten?",
+          "Welche Erinnerung oder Beziehung fühlt sich für dich noch nah oder ungeklärt an?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Geist zu träumen?",
@@ -9900,11 +9994,13 @@
       "de": {
         "slug": "damon",
         "name": "Dämon",
-        "shortDescription": "Wenn Dämon im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben.",
+        "shortDescription": "Ein Dämon erscheint im Traum als einschüchternde Gestalt, deren Aussehen oft von persönlichen, religiösen oder kulturellen Bildern geprägt ist. Welche Macht sie hatte und ob du geflohen bist, mit ihr verhandelt oder Widerstand geleistet hast, bestimmt die Szene.",
         "askYourself": [
-          "Was hat Dämon in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wie sah der Dämon aus, und woran erinnerte dich seine Gestalt?",
+          "Was verlangte oder bedrohte er, und wie hast du darauf reagiert?",
+          "Gibt es in deinem Alltag einen Konflikt, der größer wirkt, als du ihn bewältigen kannst?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Dämon zu träumen?",
@@ -9992,11 +10088,13 @@
       "de": {
         "slug": "monster",
         "name": "Monster",
-        "shortDescription": "Ein Traum von Monster verdient meist eine ruhige Deutung. Er kann Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Monster verbinden im Traum manchmal vertraute Merkmale zu einer unbekannten Bedrohung. Größe, Verhalten, Umgebung und deine Reaktion zeigen, was diese konkrete Traumgestalt so beängstigend oder faszinierend machte.",
         "askYourself": [
-          "Was hat Monster in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Aus welchen bekannten Tieren, Menschen oder Gegenständen schien das Monster zusammengesetzt?",
+          "Hat es dich verfolgt, beobachtet oder beschützt?",
+          "Welche reale Herausforderung wirkt auf dich gerade schwer einschätzbar?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Monster zu träumen?",
@@ -10082,11 +10180,13 @@
       "de": {
         "slug": "zombie",
         "name": "Zombie",
-        "shortDescription": "Zombie im Traum hat selten nur eine Bedeutung. Das Symbol kann Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Zombies zeigen im Traum Menschen oder Körper, die sich bewegen und zugleich verändert oder unerreichbar wirken. Ob eine einzelne bekannte Person oder eine ganze Menge auftauchte, prägt die Bedrohung und deine Reaktion darauf.",
         "askYourself": [
-          "Was hat Zombie in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Hast du jemanden unter den Zombies erkannt, und wie hatte sich diese Person verändert?",
+          "Hast du versucht zu fliehen, dich zu verstecken oder jemanden zu retten?",
+          "Welche wiederkehrende Routine oder Gruppendynamik empfindest du derzeit als zermürbend?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Zombie zu träumen?",
@@ -10173,11 +10273,13 @@
       "de": {
         "slug": "gefangnis",
         "name": "Gefängnis",
-        "shortDescription": "Wenn Gefängnis im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen.",
+        "shortDescription": "Ein Gefängnis macht Regeln, verschlossene Türen, Überwachung und eingeschränkte Bewegung sichtbar. Ob du Häftling, Besucher oder Aufsichtsperson warst, verändert deine Rolle und den emotionalen Schwerpunkt des Traums.",
         "askYourself": [
-          "Was hat Gefängnis in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Warum warst du im Gefängnis, und kanntest du die geltenden Regeln?",
+          "Gab es einen Schlüssel, einen offenen Ausgang oder jemanden außerhalb deiner Zelle?",
+          "Welche Grenze in deinem Alltag ist notwendig, und welche fühlt sich unnötig eng an?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Gefängnis zu träumen?",
@@ -10265,11 +10367,13 @@
       "de": {
         "slug": "erdbeben",
         "name": "Erdbeben",
-        "shortDescription": "Ein Traum von Erdbeben verdient meist eine ruhige Deutung. Er kann innere Wetterlagen, Veränderung, größere Kräfte und das Tempo von Erneuerung oder Störung berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Ein Erdbeben nimmt dir im Traum den verlässlichen Boden und verändert eine vertraute Umgebung in Sekunden. Was einstürzt, was stehen bleibt und wen du schützen willst, prägt die persönliche Bedeutung der Szene.",
         "askYourself": [
-          "Was hat Erdbeben in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wo begann das Beben, und welche Gebäude oder Wege wurden beschädigt?",
+          "Hast du Schutz für dich selbst gesucht oder einer anderen Person geholfen?",
+          "Welche jüngste Veränderung hat dein Gefühl von Stabilität erschüttert?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Erdbeben zu träumen?",
@@ -10357,11 +10461,13 @@
       "de": {
         "slug": "tornado",
         "name": "Tornado",
-        "shortDescription": "Tornado im Traum hat selten nur eine Bedeutung. Das Symbol kann innere Wetterlagen, Veränderung, größere Kräfte und das Tempo von Erneuerung oder Störung anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Ein Tornado nähert sich schnell, wechselt seine Richtung und kann Gegenstände oder Menschen mitreißen. Entfernung, Fluchtweg und vorhandener Schutz bestimmen, wie viel Kontrolle du in der Szene erlebt hast.",
         "askYourself": [
-          "Was hat Tornado in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wie nah war der Tornado, und bewegte er sich auf dich zu oder an dir vorbei?",
+          "Welchen Schutzraum hast du gesucht, und wer war dort bei dir?",
+          "Welche unberechenbare Entwicklung versuchst du gerade im Blick zu behalten?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Tornado zu träumen?",
@@ -10448,11 +10554,13 @@
       "de": {
         "slug": "hotel",
         "name": "Hotel",
-        "shortDescription": "Wenn Hotel im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen.",
+        "shortDescription": "Ein Hotel ist im Traum ein vorübergehender Ort, den du mit fremden Gästen und festen Abläufen teilst. Zimmer, Gepäck, Zugang und der Grund deines Aufenthalts zeigen, ob sich die Zwischenstation angenehm oder orientierungslos anfühlte.",
         "askYourself": [
-          "Was hat Hotel in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Kanntest du deine Zimmernummer, und hast du den Weg dorthin gefunden?",
+          "Welches Gepäck hattest du dabei, und wer wohnte noch im Hotel?",
+          "In welchem Lebensbereich befindest du dich gerade in einer Übergangsphase?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Hotel zu träumen?",
@@ -10540,11 +10648,13 @@
       "de": {
         "slug": "blitz",
         "name": "Blitz",
-        "shortDescription": "Ein Traum von Blitz verdient meist eine ruhige Deutung. Er kann innere Wetterlagen, Veränderung, größere Kräfte und das Tempo von Erneuerung oder Störung berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Ein Blitz unterbricht die Traumhandlung mit plötzlichem Licht, Donner oder einem Einschlag. Was dadurch sichtbar oder getroffen wird und ob du erschrickst oder fasziniert bist, gibt dem Moment seinen Kontext.",
         "askYourself": [
-          "Was hat Blitz in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wo schlug der Blitz ein, und was war im kurzen Licht zu erkennen?",
+          "Kam der Donner gleichzeitig oder erst später?",
+          "Welche plötzliche Nachricht oder Einsicht beschäftigt dich derzeit?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Blitz zu träumen?",
@@ -10632,11 +10742,13 @@
       "de": {
         "slug": "schnee",
         "name": "Schnee",
-        "shortDescription": "Schnee im Traum hat selten nur eine Bedeutung. Das Symbol kann innere Wetterlagen, Veränderung, größere Kräfte und das Tempo von Erneuerung oder Störung anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Schnee verändert im Traum vertraute Wege, Geräusche und jede Bewegung. Ob er frisch, schmutzig, schmelzend oder vom Sturm getrieben war, prägt, ob die Landschaft ruhig, fremd oder gefährlich wirkte.",
         "askYourself": [
-          "Was hat Schnee in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wie tief war der Schnee, und konntest du dich darin fortbewegen?",
+          "War dir kalt, oder empfandest du die verschneite Umgebung als angenehm?",
+          "Welche Situation erscheint dir im Moment stillgelegt, verlangsamt oder schwer zugänglich?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Schnee zu träumen?",
@@ -10724,11 +10836,13 @@
       "de": {
         "slug": "einkaufszentrum",
         "name": "Einkaufszentrum",
-        "shortDescription": "Wenn Einkaufszentrum im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen.",
+        "shortDescription": "Im Einkaufszentrum können Auswahl, Konsum oder das Gefühl, sich zwischen vielen Möglichkeiten zu bewegen, in den Vordergrund rücken. Entscheidend ist, ob du neugierig gebummelt, etwas Bestimmtes gesucht oder dich in der Menge verloren hast.",
         "askYourself": [
-          "Was hat Einkaufszentrum in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welche Geschäfte oder Produkte haben deine Aufmerksamkeit angezogen?",
+          "Warst du allein, mit jemandem unterwegs oder von einer Menschenmenge umgeben?",
+          "Hast du etwas gefunden und gekauft oder hast du erfolglos weitergesucht?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Einkaufszentrum zu träumen?",
@@ -10816,11 +10930,13 @@
       "de": {
         "slug": "kuh",
         "name": "Kuh",
-        "shortDescription": "Ein Traum von Kuh verdient meist eine ruhige Deutung. Er kann Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Taucht eine Kuh im Traum auf, können Ruhe, Versorgung, Geduld oder auch körperliche Wucht in den Vordergrund rücken. Achte darauf, ob sie friedlich graste, dich beschützte oder dir bedrohlich nahekam.",
         "askYourself": [
-          "Was hat Kuh in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War die Kuh allein, in einer Herde oder zusammen mit einem Kalb?",
+          "Wie hat sie sich dir gegenüber verhalten?",
+          "Hast du sie gefüttert, gemolken, gemieden oder nur beobachtet?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Kuh zu träumen?",
@@ -10907,11 +11023,13 @@
       "de": {
         "slug": "kaninchen",
         "name": "Kaninchen",
-        "shortDescription": "Kaninchen im Traum hat selten nur eine Bedeutung. Das Symbol kann Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Bei einem Kaninchen im Traum können Scheu, Wachsamkeit, Schnelligkeit oder Fürsorge hervortreten. Ob es flieht, sich versteckt oder dir vertraut nähert, verändert den persönlichen Bezug der Szene.",
         "askYourself": [
-          "Was hat Kaninchen in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welche Farbe und Größe hatte das Kaninchen?",
+          "Ist es vor dir weggelaufen, in einen Bau verschwunden oder bei dir geblieben?",
+          "Wolltest du es schützen, fangen oder in Ruhe lassen?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Kaninchen zu träumen?",
@@ -10999,11 +11117,13 @@
       "de": {
         "slug": "maus",
         "name": "Maus",
-        "shortDescription": "Wenn Maus im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit.",
+        "shortDescription": "Huscht eine Maus durch die Traumszene, kann sie etwas Kleines, Unauffälliges oder Beharrliches in den Mittelpunkt rücken. Wichtig ist, ob sie frei herumhuschte, sich versteckte oder in deinem Raum Unbehagen auslöste.",
         "askYourself": [
-          "Was hat Maus in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wo genau ist die Maus aufgetaucht?",
+          "Hat sie Nahrung gesammelt, etwas angenagt oder sich vor dir versteckt?",
+          "Hast du versucht, sie zu fangen, zu vertreiben oder zu schützen?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Maus zu träumen?",
@@ -11090,11 +11210,13 @@
       "de": {
         "slug": "ratte",
         "name": "Ratte",
-        "shortDescription": "Ein Traum von Ratte verdient meist eine ruhige Deutung. Er kann Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Begegnest du im Traum einer Ratte, prägen Ekel, Misstrauen, Anpassungsfähigkeit oder Überlebenswillen möglicherweise die Stimmung. Ob sie dich bedrohte, vor dir floh oder ruhig ihren Weg suchte, gibt der Szene ihren eigenen Ton.",
         "askYourself": [
-          "Was hat Ratte in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War es eine einzelne Ratte oder eine ganze Gruppe?",
+          "Wirkte der Ort sauber und vertraut oder dunkel und verwahrlost?",
+          "Hat die Ratte dich verfolgt, gebissen oder aus der Entfernung beobachtet?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Ratte zu träumen?",
@@ -11182,11 +11304,13 @@
       "de": {
         "slug": "baer",
         "name": "Bär",
-        "shortDescription": "Bär im Traum hat selten nur eine Bedeutung. Das Symbol kann Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Beim Anblick eines Bären können im Traum Stärke, Schutz, Rückzug oder eine unmittelbare Gefahr spürbar werden. Sein Verhalten und dein Abstand zu ihm sind meist aufschlussreicher als eine feste Zuordnung.",
         "askYourself": [
-          "Was hat Bär in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War der Bär wach, schlafend, verletzt oder mit Jungen unterwegs?",
+          "Wie nah ist er dir gekommen und wie hast du reagiert?",
+          "Hast du dich von ihm beschützt, verfolgt oder beobachtet gefühlt?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Bär zu träumen?",
@@ -11274,11 +11398,13 @@
       "de": {
         "slug": "elefant",
         "name": "Elefant",
-        "shortDescription": "Wenn Elefant im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit.",
+        "shortDescription": "Die Größe eines Elefanten kann im Traum Erinnerung, Verbundenheit oder ruhige Kraft betonen. Ob er den Weg versperrt, eine Herde anführt oder sanft Kontakt sucht, prägt die Bedeutung für dich.",
         "askYourself": [
-          "Was hat Elefant in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War der Elefant allein oder Teil einer Herde?",
+          "Hat er dich geführt, berührt, getragen oder deinen Weg blockiert?",
+          "Welche Reaktion lösten seine Größe und Nähe bei dir aus?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Elefant zu träumen?",
@@ -11365,11 +11491,13 @@
       "de": {
         "slug": "fisch",
         "name": "Fisch",
-        "shortDescription": "Ein Traum von Fisch verdient meist eine ruhige Deutung. Er kann Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Rückt ein Fisch im Traum in den Mittelpunkt, können Bewegungsfreiheit, Anpassung oder das Gefühl des Eingefangenseins eine Rolle spielen. Ob er lebendig schwamm, gefangen war oder außerhalb des Wassers lag, verändert die Szene grundlegend.",
         "askYourself": [
-          "Was hat Fisch in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War das Wasser klar, trüb, ruhig oder stark bewegt?",
+          "Hast du einen einzelnen Fisch oder einen ganzen Schwarm gesehen?",
+          "Hast du den Fisch gefangen, freigelassen, gefüttert oder nur beobachtet?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Fisch zu träumen?",
@@ -11457,11 +11585,13 @@
       "de": {
         "slug": "hai",
         "name": "Hai",
-        "shortDescription": "Hai im Traum hat selten nur eine Bedeutung. Das Symbol kann Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Bei einem Hai im Wasser können eine wahrgenommene Bedrohung, starker Druck oder eine dominante Präsenz spürbar werden. Entscheidend ist, ob er angriff, ruhig vorbeizog oder nur in der Tiefe zu erkennen war.",
         "askYourself": [
-          "Was hat Hai in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wie gut konntest du den Hai im Wasser sehen?",
+          "Hat er dich verfolgt, umkreist oder völlig ignoriert?",
+          "Konntest du entkommen, dich verteidigen oder ruhig weiterbeobachten?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Hai zu träumen?",
@@ -11548,11 +11678,13 @@
       "de": {
         "slug": "wal",
         "name": "Wal",
-        "shortDescription": "Wenn Wal im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit.",
+        "shortDescription": "Die Begegnung mit einem Wal kann im Traum große Tiefe, Ruhe oder ein Gefühl des Überwältigtseins auslösen. Ob er auftaucht, singt, dich begleitet oder gestrandet ist, bestimmt die emotionale Richtung der Szene.",
         "askYourself": [
-          "Was hat Wal in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wie nah war der Wal dir, deinem Boot oder dem Ufer?",
+          "Hast du seinen Gesang, seinen Atem oder nur seine Bewegung wahrgenommen?",
+          "Wirkte seine Größe auf dich beruhigend, ehrfurchtgebietend oder bedrohlich?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Wal zu träumen?",
@@ -11640,11 +11772,13 @@
       "de": {
         "slug": "delfin",
         "name": "Delfin",
-        "shortDescription": "Ein Traum von Delfin verdient meist eine ruhige Deutung. Er kann Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Schwimmst du im Traum mit einem Delfin, können Spiel, Kontakt, Orientierung oder gegenseitige Hilfe in den Vordergrund rücken. Achte darauf, ob er freundlich mit dir schwamm, dich rettete oder sich unerwartet aggressiv verhielt.",
         "askYourself": [
-          "Was hat Delfin in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War der Delfin allein oder mit weiteren Tieren unterwegs?",
+          "Wie klar, tief oder unruhig war das Wasser um euch herum?",
+          "Hast du mit ihm gespielt, ihn berührt oder bist du ihm gefolgt?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Delfin zu träumen?",
@@ -11732,11 +11866,13 @@
       "de": {
         "slug": "frosch",
         "name": "Frosch",
-        "shortDescription": "Frosch im Traum hat selten nur eine Bedeutung. Das Symbol kann Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Der Frosch bewegt sich zwischen Wasser und Land und kann im Traum Veränderung oder körperliches Unbehagen anstoßen. Sein Sprung, sein Ruf und der Ort seines Auftauchens helfen dir, die Szene persönlich einzuordnen.",
         "askYourself": [
-          "Was hat Frosch in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Saß der Frosch still, sprang er davon oder quakte er laut?",
+          "Befand er sich im Wasser, im Gras oder an einem unerwarteten Ort?",
+          "Wolltest du ihn berühren, retten, meiden oder vertreiben?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Frosch zu träumen?",
@@ -11824,11 +11960,13 @@
       "de": {
         "slug": "schmetterling",
         "name": "Schmetterling",
-        "shortDescription": "Wenn Schmetterling im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit.",
+        "shortDescription": "Fliegt ein Schmetterling durch die Szene, können eine zarte Veränderung, Freiheit oder ein flüchtiger Moment spürbar werden. Ob er auf dir landet, davonfliegt, gefangen ist oder verletzte Flügel hat, verändert den Ton deutlich.",
         "askYourself": [
-          "Was hat Schmetterling in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welche Farben und Muster hatten seine Flügel?",
+          "Hast du den Schmetterling verfolgt, festgehalten oder frei fliegen lassen?",
+          "Wo ist er erschienen und welche Stimmung herrschte dort?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Schmetterling zu träumen?",
@@ -11916,11 +12054,13 @@
       "de": {
         "slug": "biene",
         "name": "Biene",
-        "shortDescription": "Ein Traum von Biene verdient meist eine ruhige Deutung. Er kann Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Bei einer Biene im Traum stehen möglicherweise Arbeit, Zusammenarbeit, klare Grenzen oder die Angst vor einem Stich im Raum. Ob sie Blüten besuchte, Honig sammelte oder dich umschwirrte, bestimmt, ob die Szene ruhig oder bedrohlich wirkte.",
         "askYourself": [
-          "Was hat Biene in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Hast du eine einzelne Biene oder einen ganzen Schwarm gesehen?",
+          "Gab es in der Szene Blüten, Honig oder einen Bienenstock?",
+          "Wurdest du gestochen oder konntest du ruhig in ihrer Nähe bleiben?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Biene zu träumen?",
@@ -12007,11 +12147,13 @@
       "de": {
         "slug": "ameise",
         "name": "Ameise",
-        "shortDescription": "Ameise im Traum hat selten nur eine Bedeutung. Das Symbol kann Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Ameisen können im Traum Ausdauer, Zusammenarbeit oder das Gefühl einer lästigen Überzahl ansprechen. Die Spur, das Ziel und deine Reaktion zeigen, ob die Szene geordnet oder überwältigend wirkte.",
         "askYourself": [
-          "Was hat Ameise in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wohin führte die Ameisenstraße und was trugen die Tiere?",
+          "Hast du eine einzelne Ameise oder eine große Kolonie bemerkt?",
+          "Hast du die Ameisen beobachtet, beseitigt oder versehentlich zerdrückt?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Ameise zu träumen?",
@@ -12099,11 +12241,13 @@
       "de": {
         "slug": "eule",
         "name": "Eule",
-        "shortDescription": "Wenn Eule im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit.",
+        "shortDescription": "Der Blick einer Eule kann im Traum stille Beobachtung, Aufmerksamkeit in der Dunkelheit oder ein Gefühl des Beobachtetwerdens hervorheben. Ob sie dich ansieht, ruft oder lautlos davonfliegt, prägt den Eindruck.",
         "askYourself": [
-          "Was hat Eule in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Was fiel dir an den Augen oder am Ruf der Eule besonders auf?",
+          "Saß sie in einem Baum, in einem Gebäude oder direkt neben dir?",
+          "Hast du ihren Blick gesucht, gemieden oder als beruhigend empfunden?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Eule zu träumen?",
@@ -12191,11 +12335,13 @@
       "de": {
         "slug": "adler",
         "name": "Adler",
-        "shortDescription": "Ein Traum von Adler verdient meist eine ruhige Deutung. Er kann Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Taucht ein Adler im Traum auf, rücken Überblick, Distanz, Ehrgeiz oder eine Gefahr aus der Höhe in den Blick. Ob er frei kreist, Beute greift oder selbst gefangen ist, verändert den persönlichen Bezug.",
         "askYourself": [
-          "Was hat Adler in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wie hoch flog der Adler und was lag unter ihm?",
+          "Hat er etwas getragen, gejagt oder vor dir verteidigt?",
+          "Hast du beim Anblick eher Freiheit, Bewunderung oder Angst gespürt?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Adler zu träumen?",
@@ -12283,11 +12429,13 @@
       "de": {
         "slug": "krahe",
         "name": "Krähe",
-        "shortDescription": "Krähe im Traum hat selten nur eine Bedeutung. Das Symbol kann Instinkt, Verlangen, Vorsicht, Schutz, Angst und die ungezähmteren Seiten Ihrer Persönlichkeit anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Rufe, Flug und Verhalten einer Krähe können im Traum Neugier, Wachsamkeit oder Unruhe hervorheben. Entscheidend ist, ob sie dir folgte, etwas brachte oder nur laut auf sich aufmerksam machte.",
         "askYourself": [
-          "Was hat Krähe in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War die Krähe allein oder Teil eines Schwarms?",
+          "Hat sie gerufen, einen Gegenstand getragen oder etwas bewacht?",
+          "Bist du auf sie zugegangen, vor ihr zurückgewichen oder ihr gefolgt?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Krähe zu träumen?",
@@ -12375,11 +12523,13 @@
       "de": {
         "slug": "rose",
         "name": "Rose",
-        "shortDescription": "Wenn Rose im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie innere Wetterlagen, Veränderung, größere Kräfte und das Tempo von Erneuerung oder Störung.",
+        "shortDescription": "Bei einer Rose im Traum können Schönheit, Nähe, Zuneigung oder Verletzlichkeit die Stimmung prägen. Farbe, Zustand und der Umgang mit den Dornen geben der Szene ihren persönlichen Sinn.",
         "askYourself": [
-          "Was hat Rose in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Welche Farbe hatte die Rose und konntest du ihren Duft wahrnehmen?",
+          "War sie frisch, verwelkt, abgeschnitten oder noch am Strauch?",
+          "Hast du sie verschenkt, erhalten oder dich an ihren Dornen verletzt?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Rose zu träumen?",
@@ -12467,11 +12617,13 @@
       "de": {
         "slug": "garten",
         "name": "Garten",
-        "shortDescription": "Ein Traum von Garten verdient meist eine ruhige Deutung. Er kann den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Wie ein Garten aussieht und was du darin tust, kann Pflege, Wachstum, Ordnung oder Vernachlässigung sichtbar machen. Ob du darin arbeitest, dich ausruhst oder keinen Zugang findest, verbindet den Ort mit deiner aktuellen Erfahrung.",
         "askYourself": [
-          "Was hat Garten in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War der Garten gepflegt, verwildert, trocken oder voller Blüten?",
+          "Welche Pflanzen, Wege oder abgegrenzten Bereiche sind dir aufgefallen?",
+          "Hast du etwas gepflanzt, gesucht oder vor einem verschlossenen Tor gestanden?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Garten zu träumen?",
@@ -12559,11 +12711,13 @@
       "de": {
         "slug": "wuste",
         "name": "Wüste",
-        "shortDescription": "Wüste im Traum hat selten nur eine Bedeutung. Das Symbol kann den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "In einer Wüstenlandschaft können Leere, Weite, Ausdauer oder Orientierungslosigkeit spürbar werden. Wetter, Vorräte und mögliche Begleiter zeigen, ob die Landschaft Freiheit oder Belastung bedeutete.",
         "askYourself": [
-          "Was hat Wüste in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Spielte die Szene an einem heißen Tag, in einer kalten Nacht oder während eines Sandsturms?",
+          "Hattest du Wasser, Schatten oder ein sichtbares Ziel?",
+          "Wusstest du, wohin du gingst, und war jemand bei dir?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Wüste zu träumen?",
@@ -12651,11 +12805,13 @@
       "de": {
         "slug": "insel",
         "name": "Insel",
-        "shortDescription": "Wenn Insel im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen.",
+        "shortDescription": "Auf einer Insel können im Traum Abstand, Schutz, Selbstständigkeit oder Isolation in den Vordergrund rücken. Ob du bleiben willst oder einen Weg zurück suchst, macht den emotionalen Unterschied.",
         "askYourself": [
-          "Was hat Insel in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War die Insel bewohnt, verlassen, üppig oder karg?",
+          "Gab es ein Boot, eine Brücke oder einen anderen Weg zum Festland?",
+          "Hast du dich dort sicher, frei, einsam oder gefangen gefühlt?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Insel zu träumen?",
@@ -12743,11 +12899,13 @@
       "de": {
         "slug": "hohle",
         "name": "Höhle",
-        "shortDescription": "Ein Traum von Höhle verdient meist eine ruhige Deutung. Er kann den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Beim Betreten oder Betrachten einer Höhle können Schutz, Rückzug, Entdeckung oder Unsicherheit vor dem Unbekannten eine Rolle spielen. Eingang, Tiefe und Lichtverhältnisse zeigen, wie zugänglich oder bedrohlich der Ort für dich wirkte.",
         "askYourself": [
-          "Was hat Höhle in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Bist du freiwillig hineingegangen oder hast du einen Ausgang gesucht?",
+          "Was hast du im Inneren gefunden, gehört oder ertastet?",
+          "Warst du allein und wie weit konntest du sehen?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Höhle zu träumen?",
@@ -12835,11 +12993,13 @@
       "de": {
         "slug": "fluss",
         "name": "Fluss",
-        "shortDescription": "Fluss im Traum hat selten nur eine Bedeutung. Das Symbol kann innere Wetterlagen, Veränderung, größere Kräfte und das Tempo von Erneuerung oder Störung anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Die Strömung eines Flusses kann im Traum Bewegung, Übergang oder den Umgang mit einer laufenden Entwicklung darstellen. Richtung und deine Position zum Wasser bestimmen, ob du mitgehst oder Widerstand spürst.",
         "askYourself": [
-          "Was hat Fluss in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War der Fluss langsam, reißend, klar oder schlammig?",
+          "Standest du am Ufer, hast du ihn überquert oder wurdest du mitgerissen?",
+          "Wohin floss das Wasser und konntest du sein Ziel erkennen?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Fluss zu träumen?",
@@ -12927,11 +13087,13 @@
       "de": {
         "slug": "see",
         "name": "See",
-        "shortDescription": "Wenn See im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie innere Wetterlagen, Veränderung, größere Kräfte und das Tempo von Erneuerung oder Störung.",
+        "shortDescription": "An einem See können im Traum Ruhe, Tiefe, Abgrenzung oder eine schwer erkennbare Gefühlslage spürbar werden. Oberfläche, Ufer und das, was darunter sichtbar war, geben der Szene ihren eigenen Charakter.",
         "askYourself": [
-          "Was hat See in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War der See klar, dunkel, spiegelglatt, stürmisch oder zugefroren?",
+          "Bist du geschwommen, am Ufer geblieben oder mit einem Boot hinausgefahren?",
+          "Was konntest du unter der Oberfläche oder am gegenüberliegenden Ufer erkennen?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von See zu träumen?",
@@ -13019,11 +13181,13 @@
       "de": {
         "slug": "wasserfall",
         "name": "Wasserfall",
-        "shortDescription": "Ein Traum von Wasserfall verdient meist eine ruhige Deutung. Er kann innere Wetterlagen, Veränderung, größere Kräfte und das Tempo von Erneuerung oder Störung berühren; der wichtigste Hinweis ist oft das Gefühl nach dem Aufwachen.",
+        "shortDescription": "Am Wasserfall können im Traum kraftvolle Bewegung, Entlastung oder Überforderung spürbar werden. Ob du oberhalb, unterhalb oder hinter dem fallenden Wasser stehst, verändert deine Rolle in der Szene.",
         "askYourself": [
-          "Was hat Wasserfall in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wie hoch, laut und mächtig war der Wasserfall?",
+          "Standest du am Rand, im Becken oder hinter dem Wasservorhang?",
+          "Bist du gesprungen, weggetreten oder hast du das Wasser ruhig betrachtet?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Wasserfall zu träumen?",
@@ -13111,11 +13275,13 @@
       "de": {
         "slug": "vulkan",
         "name": "Vulkan",
-        "shortDescription": "Vulkan im Traum hat selten nur eine Bedeutung. Das Symbol kann innere Wetterlagen, Veränderung, größere Kräfte und das Tempo von Erneuerung oder Störung anstoßen, besonders wenn die Szene ungewöhnlich deutlich bleibt.",
+        "shortDescription": "Bei einem Vulkan im Traum können zunehmender Druck, intensive Veränderung oder eine schwer kontrollierbare Kraft hervortreten. Ob er ruht, raucht oder ausbricht, zeigt, wie unmittelbar die Spannung in der Szene war.",
         "askYourself": [
-          "Was hat Vulkan in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "War der Vulkan still, rauchte er oder trat bereits Lava aus?",
+          "Wie weit warst du entfernt und hattest du einen Fluchtweg?",
+          "Welche Menschen, Orte oder Dinge schienen durch den Ausbruch bedroht?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Vulkan zu träumen?",
@@ -13203,11 +13369,13 @@
       "de": {
         "slug": "maske",
         "name": "Maske",
-        "shortDescription": "Wenn Maske im Traum auffällt, achten Sie zuerst auf die Stimmung der Szene. Oft führt sie zu Themen wie Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags.",
+        "shortDescription": "Trägt jemand im Traum eine Maske, stehen möglicherweise eine verborgene Seite, eine gespielte Rolle oder Unsicherheit über eine Person im Raum. Wer sie trägt und ob sie abgenommen werden kann, ist für den persönlichen Zusammenhang entscheidend.",
         "askYourself": [
-          "Was hat Maske in der Szene verändert?",
-          "Welches Gefühl blieb nach dem Aufwachen?"
+          "Wer trug die Maske: du selbst, eine vertraute Person oder jemand Unbekanntes?",
+          "Welchen Ausdruck, welches Material oder welche Farbe hatte sie?",
+          "Konntest du die Maske abnehmen oder blieb das Gesicht darunter verborgen?"
         ],
+        "modifiedAt": "2026-07-17",
         "faq": [
           {
             "question": "Was bedeutet es, von Maske zu träumen?",
