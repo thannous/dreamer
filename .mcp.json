@@ -4,10 +4,6 @@
       "type": "http",
       "url": "https://mcp.supabase.com/mcp?project_ref=usuyppgsmmowzizhaoqj"
     },
-    "maestro": {
-      "command": "maestro",
-      "args": ["mcp"]
-    }, 
     "context7": {
       "type": "sse",
       "url": "https://mcp.context7.com/mcp",
