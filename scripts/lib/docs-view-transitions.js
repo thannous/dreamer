@@ -3,8 +3,10 @@ const VIEW_TRANSITION_MARKER = '@view-transition';
 function renderViewTransitionHeadStyles() {
   return [
     '    <style>',
-    '      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */',
-    '',
+    '      /* @view-transition: cross-document transitions stay disabled. When a',
+    '         transition aborts (fast navigation, reload race), Chrome can leave the',
+    '         old/new snapshots stuck in plus-lighter blending, washing the whole',
+    '         page out to white. Re-enable only when that behavior is fixed. */',
     '      @media (prefers-reduced-motion: reduce) {',
     '        ::view-transition-group(*),',
     '        ::view-transition-old(*),',

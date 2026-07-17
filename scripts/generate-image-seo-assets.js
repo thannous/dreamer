@@ -7,9 +7,9 @@ const { generateEducationalDiagramSources } = require('./lib/educational-diagram
 const {
   buildVariantUrl,
   getResponsiveImageData,
-  readImageAssetRegistry,
   resolveRepoPath,
 } = require('./lib/image-seo-assets');
+const { readCompleteImageAssetRegistry } = require('./lib/page-illustrations');
 
 const MAX_1200_BYTES = 250 * 1024;
 const WARN_1200_BYTES = 180 * 1024;
@@ -214,7 +214,7 @@ function validatePageImageResolution(registry) {
 async function main() {
   const checkOnly = process.argv.includes('--check');
   generateEducationalDiagramSources({ checkOnly });
-  const registry = readImageAssetRegistry();
+  const registry = readCompleteImageAssetRegistry();
   await validateSources(registry);
   validatePageImageResolution(registry);
   if (!checkOnly) await generateAssets(registry);

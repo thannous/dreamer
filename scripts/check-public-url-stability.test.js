@@ -87,6 +87,11 @@ function createFixtureRoot() {
     },
   }));
   writeFile(root, 'docs/index.html', indexableHtml({ canonical: 'https://noctalia.app/' }));
+  writeFile(
+    root,
+    'docs/templates/category-page.html',
+    '<!doctype html><meta name="robots" content="noindex"><script type="application/ld+json">{"name": {{title}}}</script>'
+  );
   writeFile(root, 'docs/sitemap.xml', `<?xml version="1.0"?>
 <urlset xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
@@ -223,6 +228,27 @@ describe('check-public-url-stability', () => {
 
     expect(() => compareSnapshots(baseline, candidate)).toThrow(
       /canonical page changed.*pageId=page\.home language=en.*expected="https:\/\/noctalia\.app\/" actual="https:\/\/noctalia\.app"/
+    );
+  });
+
+  it('allows an additive canonical WebPage identity used only to carry image metadata', () => {
+    const root = createFixtureRoot();
+    roots.push(root);
+    const baseline = buildSnapshot(root, { sourceRevision: INITIAL_SOURCE_REVISION });
+    const candidate = clone(baseline);
+    const page = candidate.canonicalPages[0];
+    page.jsonLdIdentities.push({
+      type: 'WebPage',
+      url: page.canonical,
+      id: page.canonical,
+      mainEntityOfPageId: null,
+    });
+
+    expect(() => compareSnapshots(baseline, candidate)).not.toThrow();
+
+    page.jsonLdIdentities.at(-1).url = 'https://noctalia.app/unrelated';
+    expect(() => compareSnapshots(baseline, candidate)).toThrow(
+      /canonical page changed.*field=jsonLdIdentities/
     );
   });
 

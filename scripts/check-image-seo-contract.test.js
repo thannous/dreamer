@@ -2,6 +2,7 @@ const {
   collectSchemaImageUrls,
   parseAttributes,
   validateAltText,
+  validateEditorialHero,
 } = require('./check-image-seo-contract');
 
 describe('image SEO contract helpers', () => {
@@ -38,5 +39,24 @@ describe('image SEO contract helpers', () => {
       },
     ]);
     expect([...urls]).toEqual(['https://noctalia.app/img/article.webp']);
+  });
+
+  it('accepts a crawlable priority image inside the shared article hero', () => {
+    const html = `<!doctype html><html class="blog-article"><body><header data-image-seo-hero="true">
+      <figure data-image-seo-role="editorial"><picture><img src="/img/dream.webp" sizes="100vw" width="1200" height="675" alt="A dream scene" loading="eager" fetchpriority="high"></picture></figure>
+      <div class="article-hero-copy"><h1>Dream</h1></div>
+    </header></body></html>`;
+
+    expect(validateEditorialHero(html, 'article')).toEqual({ eligible: true, errors: [] });
+  });
+
+  it('rejects an illustrated article that does not use the shared hero', () => {
+    const html = `<!doctype html><html class="blog-article"><body>
+      <figure data-image-seo-role="editorial"><img src="/img/dream.webp" alt="A dream scene"></figure>
+    </body></html>`;
+
+    expect(validateEditorialHero(html, 'article').errors).toContain(
+      'article: illustrated page is missing its immersive hero'
+    );
   });
 });

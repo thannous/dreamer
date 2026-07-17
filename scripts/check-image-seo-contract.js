@@ -8,8 +8,13 @@ const { imageSize } = require('image-size');
 const { DOCS_DIR, ROOT_DIR, siteConfig } = require('./lib/docs-site-config');
 const {
   getPageResponsiveImages,
+  getResponsiveImageData,
   readImageAssetRegistry,
 } = require('./lib/image-seo-assets');
+const {
+  listPageIllustrationRoutes,
+  readCompleteImageAssetRegistry,
+} = require('./lib/page-illustrations');
 const { walkFiles } = require('./lib/docs-source-utils');
 
 const WARNING_BYTES = 180_000;
@@ -114,6 +119,157 @@ function validateAltText(alt) {
   return errors;
 }
 
+function validateEditorialHero(html, label = 'page') {
+  const errors = [];
+  const source = String(html || '');
+  const isArticle = /<html\b[^>]*\bclass=(['"])[^"']*\bblog-article\b/i.test(source);
+  const isDictionary = /<body\b[^>]*\bclass=(['"])[^"']*\bdictionary-page\b/i.test(source);
+  const figureTags = source.match(/<figure\b[^>]*>/gi) || [];
+  const editorialTags = figureTags.filter((tag) => (
+    parseAttributes(tag)['data-image-seo-role'] === 'editorial'
+  ));
+
+  if (!isArticle && !isDictionary) return { eligible: false, errors };
+  if (figureTags.length === 0) return { eligible: false, errors };
+  if (editorialTags.length !== 1) {
+    errors.push(`${label}: expected one editorial hero image, found ${editorialTags.length}`);
+    return { eligible: true, errors };
+  }
+
+  const hero = source.match(
+    /<header\b[^>]*\bdata-image-seo-hero=(['"])true\1[^>]*>[\s\S]*?<\/header>/i
+  )?.[0] || '';
+  if (!hero) {
+    errors.push(`${label}: illustrated page is missing its immersive hero`);
+    return { eligible: true, errors };
+  }
+
+  const heroEditorialTags = (hero.match(/<figure\b[^>]*>/gi) || []).filter((tag) => (
+    parseAttributes(tag)['data-image-seo-role'] === 'editorial'
+  ));
+  if (heroEditorialTags.length !== 1) {
+    errors.push(`${label}: editorial image is not contained once inside the hero`);
+  }
+  if (!/<picture\b/i.test(hero)) errors.push(`${label}: editorial hero is missing its picture element`);
+
+  const imageTag = hero.match(/<figure\b[^>]*data-image-seo-role=(['"])editorial\1[^>]*>[\s\S]*?<img\b[^>]*>/i)?.[0]
+    .match(/<img\b[^>]*>/i)?.[0] || '';
+  const imageAttrs = parseAttributes(imageTag);
+  if (!imageAttrs.src || !imageAttrs.sizes || !imageAttrs.width || !imageAttrs.height) {
+    errors.push(`${label}: editorial hero is missing responsive dimensions or fallback src`);
+  }
+  if (!imageAttrs.alt) errors.push(`${label}: editorial hero is missing alt text`);
+  if (imageAttrs.loading === 'lazy' || imageAttrs.fetchpriority !== 'high') {
+    errors.push(`${label}: editorial hero must be eager and high priority`);
+  }
+
+  const priorityImages = source.match(/<img\b[^>]*fetchpriority=(['"])high\1[^>]*>/gi) || [];
+  if (priorityImages.length !== 1) {
+    errors.push(`${label}: expected exactly one high-priority image, found ${priorityImages.length}`);
+  }
+  if (isArticle && !/\bclass=(['"])[^"']*\barticle-hero-copy\b/i.test(hero)) {
+    errors.push(`${label}: article hero copy is not using the shared layout`);
+  }
+  if (isDictionary && !/\bclass=(['"])[^"']*\bdictionary-hero-copy\b/i.test(hero)) {
+    errors.push(`${label}: dictionary hero copy is not using the shared layout`);
+  }
+
+  return { eligible: true, errors };
+}
+
+function validateSitewidePageIllustrations({ pageMap, sitemap, errors, warnings }) {
+  const registry = readCompleteImageAssetRegistry();
+  const routes = listPageIllustrationRoutes();
+  let placementCount = 0;
+
+  for (const route of routes) {
+    const canonicalPath = route.path.replace(/\/$/, '') || '/';
+    const rendered = pageMap.get(canonicalPath);
+    const assetId = `sitewide.${route.pageId}`;
+    if (!rendered) {
+      errors.push(`${canonicalPath}: sitewide illustration page not found`);
+      continue;
+    }
+
+    const image = getResponsiveImageData(registry, assetId, '16x9');
+    const imageUrl = `${siteConfig.domain}${image.src}`;
+    const match = findImageTagForAsset(rendered.html, assetId);
+    if (!match.img) {
+      errors.push(`${canonicalPath}: missing visible sitewide illustration ${assetId}`);
+      continue;
+    }
+    placementCount += 1;
+
+    if (!/data-image-seo-hero=(['"])true\1/i.test(rendered.html)) {
+      errors.push(`${canonicalPath}: sitewide illustration is not promoted into a hero`);
+    }
+    if (match.figureAttrs['data-image-seo-role'] !== 'editorial') {
+      errors.push(`${canonicalPath}: ${assetId} is missing its editorial role`);
+    }
+    if (match.imgAttrs.src !== image.src) {
+      errors.push(`${canonicalPath}: ${assetId} fallback src mismatch`);
+    }
+    if (!match.imgAttrs.srcset || !match.imgAttrs.sizes) {
+      errors.push(`${canonicalPath}: ${assetId} is not responsive`);
+    }
+    if (Number(match.imgAttrs.width) !== image.width || Number(match.imgAttrs.height) !== image.height) {
+      errors.push(`${canonicalPath}: ${assetId} intrinsic dimensions mismatch`);
+    }
+    for (const issue of validateAltText(match.imgAttrs.alt)) {
+      errors.push(`${canonicalPath}: ${assetId} ${issue}`);
+    }
+    if (match.imgAttrs.loading === 'lazy' || match.imgAttrs.fetchpriority !== 'high') {
+      errors.push(`${canonicalPath}: ${assetId} must be eager and high priority`);
+    }
+    const caption = decodeHtml(
+      match.figure.match(/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/i)?.[1] || ''
+    );
+    if (!caption.trim()) errors.push(`${canonicalPath}: ${assetId} is missing its localized caption`);
+
+    const priorityImages = rendered.html.match(/<img\b[^>]*fetchpriority=(['"])high\1[^>]*>/gi) || [];
+    if (priorityImages.length !== 1) {
+      errors.push(`${canonicalPath}: expected exactly one high-priority image, found ${priorityImages.length}`);
+    }
+
+    const ogImage = findMeta(rendered.html, 'property', 'og:image');
+    const twitterImage = findMeta(rendered.html, 'name', 'twitter:image');
+    const ogWidth = Number(findMeta(rendered.html, 'property', 'og:image:width'));
+    const ogHeight = Number(findMeta(rendered.html, 'property', 'og:image:height'));
+    if (ogImage !== imageUrl) errors.push(`${canonicalPath}: og:image does not match ${assetId}`);
+    if (twitterImage !== imageUrl) errors.push(`${canonicalPath}: twitter:image does not match ${assetId}`);
+    if (ogWidth !== image.width || ogHeight !== image.height) {
+      errors.push(`${canonicalPath}: Open Graph dimensions do not match ${assetId}`);
+    }
+
+    const schemaImages = collectSchemaImageUrls(jsonLdBlocks(rendered.html, errors, canonicalPath));
+    if (!schemaImages.has(imageUrl)) {
+      errors.push(`${canonicalPath}: ${assetId} missing from JSON-LD`);
+    }
+    if (!sitemap.includes(`<image:loc>${imageUrl}</image:loc>`)) {
+      errors.push(`${canonicalPath}: ${assetId} missing from image sitemap`);
+    }
+
+    const localPath = path.join(DOCS_DIR, image.src.replace(/^\/+/, ''));
+    if (!fs.existsSync(localPath)) {
+      errors.push(`${canonicalPath}: missing generated image ${image.src}`);
+      continue;
+    }
+    const dimensions = imageSize(fs.readFileSync(localPath));
+    if (dimensions.width !== image.width || dimensions.height !== image.height) {
+      errors.push(`${canonicalPath}: generated dimensions mismatch for ${image.src}`);
+    }
+    const bytes = fs.statSync(localPath).size;
+    if (bytes > MAX_BYTES) errors.push(`${canonicalPath}: ${image.src} is ${bytes} bytes (max ${MAX_BYTES})`);
+    else if (bytes > WARNING_BYTES) warnings.push(`${canonicalPath}: ${image.src} is ${bytes} bytes (review above ${WARNING_BYTES})`);
+  }
+
+  if (routes.length !== 170) errors.push(`expected 170 sitewide illustration routes, found ${routes.length}`);
+  if (placementCount !== routes.length) {
+    errors.push(`expected ${routes.length} visible sitewide illustrations, found ${placementCount}`);
+  }
+  return placementCount;
+}
+
 function checkImageSeoContract(options = {}) {
   const registry = options.registry || readImageAssetRegistry();
   const pageMap = options.pageMap || canonicalToHtmlMap();
@@ -122,6 +278,7 @@ function checkImageSeoContract(options = {}) {
   const errors = [];
   const warnings = [];
   let placementCount = 0;
+  let sitewidePlacementCount = 0;
 
   if (!sitemap.includes('xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"')) {
     errors.push('sitemap.xml is missing the image namespace');
@@ -224,16 +381,35 @@ function checkImageSeoContract(options = {}) {
     errors.push(`expected ${Object.keys(registry.pages).length * 2} pilot placements, found ${placementCount}`);
   }
 
+  const includeSitewide = options.includeSitewide ?? (!options.registry && !options.pageMap);
+  if (includeSitewide) {
+    sitewidePlacementCount = validateSitewidePageIllustrations({
+      pageMap,
+      sitemap,
+      errors,
+      warnings,
+    });
+  }
+
   const allHtmlFiles = walkFiles(DOCS_DIR, (candidate) => candidate.endsWith('.html'));
+  let editorialHeroCount = 0;
   for (const filePath of allHtmlFiles) {
     const html = fs.readFileSync(filePath, 'utf8');
+    const label = path.relative(ROOT_DIR, filePath);
     const robots = findMeta(html, 'name', 'robots').toLowerCase();
     if (!robots.includes('noindex') && LEGACY_SOCIAL_IMAGE.test(findMeta(html, 'property', 'og:image'))) {
-      errors.push(`${path.relative(ROOT_DIR, filePath)}: legacy social image remains on an indexable page`);
+      errors.push(`${label}: legacy social image remains on an indexable page`);
+    }
+    const heroContract = validateEditorialHero(html, label);
+    if (heroContract.eligible) {
+      editorialHeroCount += 1;
+      errors.push(...heroContract.errors);
     }
   }
 
-  return { errors, warnings, placementCount };
+  if (editorialHeroCount === 0) errors.push('no illustrated editorial heroes were found');
+
+  return { errors, warnings, placementCount, editorialHeroCount, sitewidePlacementCount };
 }
 
 function main() {
@@ -244,7 +420,11 @@ function main() {
     for (const error of result.errors) console.error(`- ${error}`);
     process.exit(1);
   }
-  console.log(`[image-seo-contract] Passed: ${result.placementCount} pilot placements, responsive metadata and sitemap entries validated.`);
+  console.log(
+    `[image-seo-contract] Passed: ${result.editorialHeroCount} illustrated pages share the immersive hero; ` +
+    `${result.placementCount} pilot placements and ${result.sitewidePlacementCount} sitewide illustrations ` +
+    `keep responsive metadata and sitemap entries.`
+  );
 }
 
 if (require.main === module) main();
@@ -254,4 +434,6 @@ module.exports = {
   collectSchemaImageUrls,
   parseAttributes,
   validateAltText,
+  validateEditorialHero,
+  validateSitewidePageIllustrations,
 };

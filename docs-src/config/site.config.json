@@ -93,7 +93,8 @@
     "scrollTriggerJs": "/js/ScrollTrigger.min.js",
     "languageDropdownJs": "/js/language-dropdown.js",
     "siteShellJs": "/js/site-shell.js",
-    "landingPageJs": "/js/landing-page.js",
+    "experienceJs": "/js/experience/experience.js",
+    "experienceCss": "/css/experience.css",
     "blogArticleJs": "/js/blog-article.js",
     "mobileMenuJs": "/js/mobile-menu.js"
   }

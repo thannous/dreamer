@@ -110,6 +110,16 @@ html.blog-article main > article > nav:first-child:not(.glass-panel) {
   color: rgba(231, 220, 255, 0.58);
 }
 
+html.blog-article main > article > nav:first-child:not(.glass-panel):has(+ header[data-image-seo-hero="true"]) {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 3;
+  width: min(calc(100% - (var(--article-edge) * 2)), var(--article-wide));
+  margin: 0 !important;
+  transform: translateX(-50%);
+}
+
 html.blog-article main > article > nav:first-child:not(.glass-panel) ol {
   gap: 0.55rem;
   font-size: 0.74rem;
@@ -171,7 +181,7 @@ html.blog-article main > article > header[data-image-seo-hero="true"] .article-h
   color: rgba(251, 146, 120, 0.72);
 }
 
-html.blog-article main > article > header > figure[data-image-seo-role="editorial"][data-image-asset-id] {
+html.blog-article main > article > header > figure[data-image-seo-role="editorial"] {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -187,19 +197,19 @@ html.blog-article main > article > header > figure[data-image-seo-role="editoria
   box-shadow: none;
 }
 
-html.blog-article main > article > header > figure[data-image-seo-role="editorial"][data-image-asset-id] picture,
-html.blog-article main > article > header > figure[data-image-seo-role="editorial"][data-image-asset-id] img {
+html.blog-article main > article > header > figure[data-image-seo-role="editorial"] picture,
+html.blog-article main > article > header > figure[data-image-seo-role="editorial"] img {
   display: block;
   width: 100%;
   height: 100%;
 }
 
-html.blog-article main > article > header > figure[data-image-seo-role="editorial"][data-image-asset-id] img {
+html.blog-article main > article > header > figure[data-image-seo-role="editorial"] img {
   object-fit: cover;
   object-position: center;
 }
 
-html.blog-article main > article > header > figure[data-image-seo-role="editorial"][data-image-asset-id] figcaption {
+html.blog-article main > article > header > figure[data-image-seo-role="editorial"] figcaption {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -691,7 +701,7 @@ html.blog-article main > aside[role="note"] {
       );
   }
 
-  html.blog-article main > article > header[data-image-seo-hero="true"] > figure[data-image-seo-role="editorial"][data-image-asset-id] {
+  html.blog-article main > article > header[data-image-seo-hero="true"] > figure[data-image-seo-role="editorial"] {
     position: relative !important;
     inset: auto !important;
     grid-area: 1 / 1;
@@ -774,5 +784,141 @@ html.blog-article main > aside[role="note"] {
     font-size: 1rem !important;
     line-height: 1.62;
     background: #090413;
+  }
+}
+
+@media (min-width: 521px) and (max-width: 768px) {
+  html.blog-article main > article > header[data-image-seo-hero="true"]:has(.article-hero-copy) {
+    --article-hero-media-height: clamp(38rem, 82svh, 52rem);
+    grid-template-rows: var(--article-hero-media-height) auto;
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"]:has(.article-hero-copy)::after,
+  html.blog-article main > article > header[data-image-seo-hero="true"] > figure[data-image-seo-role="editorial"] {
+    height: var(--article-hero-media-height) !important;
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy {
+    width: min(calc(100% - (var(--article-edge) * 2)), var(--article-wide));
+    margin: 0 auto;
+    padding: 0 0 clamp(2.25rem, 6svh, 4rem);
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"] > p {
+    width: min(calc(100% - (var(--article-edge) * 2)), var(--article-reading));
+    margin: 0 auto !important;
+    padding: clamp(1.5rem, 3vw, 2rem) 0 0;
+  }
+}
+
+@media (min-width: 769px) {
+  html.blog-article main > article > header[data-image-seo-hero="true"]:has(.article-hero-copy) {
+    --article-hero-media-height: clamp(40rem, 78svh, 68rem);
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: var(--article-hero-media-height) auto;
+    width: 100%;
+    min-height: 0 !important;
+    margin: 0 0 clamp(1.75rem, 3vw, 2.75rem) !important;
+    padding: 0 0 clamp(1.75rem, 3vw, 2.75rem) !important;
+    overflow: hidden;
+    border: 0;
+    background: #090413;
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"]:has(.article-hero-copy)::after {
+    inset: 0 0 auto !important;
+    width: 100%;
+    height: var(--article-hero-media-height);
+    z-index: 1;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(7, 3, 15, 0.08) 0%,
+        rgba(7, 3, 15, 0.12) 38%,
+        rgba(7, 3, 15, 0.54) 70%,
+        rgba(7, 3, 15, 0.94) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(7, 3, 15, 0.72) 0%,
+        rgba(7, 3, 15, 0.28) 42%,
+        rgba(7, 3, 15, 0.06) 70%,
+        rgba(7, 3, 15, 0.22) 100%
+      );
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"] > figure[data-image-seo-role="editorial"] {
+    position: relative !important;
+    inset: auto !important;
+    grid-area: 1 / 1;
+    width: 100% !important;
+    height: var(--article-hero-media-height) !important;
+    margin: 0 !important;
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"] > figure[data-image-seo-role="editorial"] picture,
+  html.blog-article main > article > header[data-image-seo-hero="true"] > figure[data-image-seo-role="editorial"] img {
+    position: absolute;
+    inset: 0;
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy {
+    position: relative;
+    z-index: 2;
+    grid-area: 1 / 1;
+    align-self: end;
+    width: min(calc(100% - (var(--article-edge) * 2)), var(--article-wide));
+    max-width: none;
+    margin: 0 auto;
+    padding: 0 0 clamp(2.5rem, 7svh, 5rem);
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy .article-hero-taxonomy {
+    margin: 0 0 1.1rem !important;
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy .article-hero-taxonomy > span,
+  html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy .article-hero-taxonomy > a {
+    border-color: rgba(255, 255, 255, 0.24) !important;
+    background: rgba(10, 5, 20, 0.72);
+    box-shadow: 0 8px 24px rgba(4, 2, 10, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy .article-hero-taxonomy > span {
+    color: #fda481 !important;
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy .article-hero-taxonomy > a {
+    color: rgba(255, 255, 255, 0.92) !important;
+    text-shadow: 0 1px 8px rgba(4, 2, 10, 0.72);
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy h1 {
+    margin: 0 !important;
+    text-shadow: 0 2px 28px rgba(5, 2, 12, 0.38);
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy .article-hero-details {
+    margin: 1rem 0 0;
+    color: rgba(220, 207, 255, 0.8);
+  }
+
+  html.blog-article main > article > header[data-image-seo-hero="true"] > p {
+    grid-area: 2 / 1;
+    width: min(calc(100% - (var(--article-edge) * 2)), var(--article-reading));
+    max-width: none;
+    margin: 0 auto !important;
+    padding: clamp(1.75rem, 3vw, 2.5rem) 0 0;
+    color: rgba(231, 220, 255, 0.8) !important;
+    background: #090413;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  html.blog-article main > article > header[data-image-seo-hero="true"] > figure[data-image-seo-role="editorial"] img {
+    object-position: var(--article-hero-mobile-position, 50% 50%);
   }
 }

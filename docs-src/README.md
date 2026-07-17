@@ -124,6 +124,43 @@ Cloudflare dashboard.
 - `templates/page.example.md`: starting point for a managed static page.
 - `templates/front-matter.example.json`: copyable front matter shape for new content.
 
+## Landing experience layer
+
+The landing pages (`layout: "landing"`) ship an adaptive visual layer on top of
+the static HTML. Content, SEO, and conversion markup are identical for every
+visitor; only the visual layer changes.
+
+Three tiers, decided by a synchronous inline `<script>` in the `<head>`
+(source: `scripts/lib/experience-tier.js`, unit-tested) and exposed as
+`html[data-exp-tier]`:
+
+- `full` (recent desktops): WebGL sky (three.js stars/nebula/moon + bloom),
+  Lenis + GSAP/ScrollTrigger scenes, magnetic buttons.
+- `light` (mobiles, older laptops): simplified WebGL sky (fewer particles, no
+  bloom, pixel ratio <= 1.5), Lenis, IntersectionObserver reveals.
+- `static` (`prefers-reduced-motion`, save-data, very weak hardware): no
+  libraries at all; CSS fallbacks in `static/css/experience.css` keep content
+  visible and add scroll-driven effects where supported.
+
+Runtime guards: the three.js chunk is a dynamic import that only loads after
+the LCP; the render loop pauses when the hero leaves the viewport or the tab
+is hidden; an FPS watchdog degrades particles, then bloom, then kills WebGL
+and falls back to CSS. Cross-document view transitions stay disabled on
+purpose (`scripts/lib/docs-view-transitions.js`): an aborted transition can
+leave Chrome stuck in a washed-out composited state.
+
+The layer is bundled from `docs-src/experience/` into
+`static/js/experience/` by esbuild (tree-shaken three.js, code-split chunks):
+
+```bash
+npm run docs:build:experience
+```
+
+`docs:build` runs this step automatically before computing the asset version
+hash. Edit sources in `docs-src/experience/`, never the bundled output. The
+hero LCP image and `observatory.css` remain the static baseline: the WebGL
+canvas is an additive layer above them and must never replace them.
+
 ## Consent-gated analytics
 
 `static/js/site-shell.js` contains the shared Microsoft Clarity consent control.
