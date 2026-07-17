@@ -24,6 +24,8 @@ const { renderSharedComponentStyles } = require('../../scripts/lib/docs-componen
 const { inlineLucideIcons } = require('../../scripts/lib/lucide-inline');
 const { canonicalOrganization } = require('../../scripts/lib/canonical-organization');
 const { renderAhrefsAnalyticsScript } = require('../../scripts/lib/ahrefs-analytics');
+const { renderResponsivePicture } = require('../../scripts/lib/image-seo-assets');
+const { getPageIllustration } = require('../../scripts/lib/page-illustrations');
 
 function readDocsAssetVersionOrExit() {
   const versionPath = path.join(__dirname, '..', 'version.txt');
@@ -47,6 +49,20 @@ const DOCS_SRC_DIR = path.join(ROOT_DIR, 'docs-src');
 const ROOT_DATA_DIR = path.join(ROOT_DIR, 'data');
 const SITE_MANIFEST_PATH = path.join(ROOT_DATA_DIR, 'site-manifest.json');
 const DEFAULT_SOCIAL_IMAGE = 'https://noctalia.app/img/og/noctalia-dreamscape-v2-1200x630.jpg';
+
+function renderPseoHeroIllustration(illustration) {
+  if (!illustration) return '';
+  const picture = renderResponsivePicture(illustration.registry, illustration.ref, {
+    figure: false,
+    priority: true,
+    sizes: '100vw',
+    mobileSizes: '100vw',
+  });
+  return `<figure class="pseo-hero-illustration" data-image-seo-role="editorial" data-image-asset-id="${escapeHtml(illustration.image.assetId)}">
+                ${picture}
+                <figcaption>${escapeHtml(illustration.ref.caption)}</figcaption>
+            </figure>`;
+}
 
 function resolveResponsiveSymbolIllustration(illustration) {
   if (!illustration?.src) return null;
@@ -1860,6 +1876,16 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
   const categoryIntro = t.category_intros?.[categoryId] || t.category_intro_template.replace(/{category_lower}/g, categoryName.toLowerCase());
   const categoryIcon = CATEGORY_ICONS[categoryId] || 'sparkles';
   const symbolsCount = symbolsInCategory.length;
+  const pageIllustration = getPageIllustration(
+    `symbolCategory.${categoryId}`,
+    lang,
+    categorySchemaName
+  );
+  const preferredImageUrl = pageIllustration
+    ? `https://noctalia.app${pageIllustration.image.src}`
+    : DEFAULT_SOCIAL_IMAGE;
+  const preferredImageWidth = pageIllustration?.image.width || 1200;
+  const preferredImageHeight = pageIllustration?.image.height || 630;
 
   const howToTitles = {
     en: 'How to use this category',
@@ -2001,7 +2027,15 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
     },
     publisher: canonicalOrganization(),
     datePublished: CONFIG.datePublished,
-    dateModified: CONFIG.dateModified
+    dateModified: CONFIG.dateModified,
+    ...(pageIllustration ? {
+      primaryImageOfPage: {
+        '@type': 'ImageObject',
+        url: preferredImageUrl,
+        width: preferredImageWidth,
+        height: preferredImageHeight
+      }
+    } : {})
   };
 
   // Schema.org ItemList
@@ -2054,10 +2088,10 @@ ${renderAhrefsAnalyticsScript()}
     <meta property="og:title" content="${escapeHtml(metaTitle)}">
     <meta property="og:description" content="${escapeHtml(metaDescription)}">
     <meta property="og:url" content="https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${categorySlug}">
-    <meta property="og:image" content="${DEFAULT_SOCIAL_IMAGE}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="${escapeHtml(metaTitle)}">
+    <meta property="og:image" content="${preferredImageUrl}">
+    <meta property="og:image:width" content="${preferredImageWidth}">
+    <meta property="og:image:height" content="${preferredImageHeight}">
+    <meta property="og:image:alt" content="${escapeHtml(pageIllustration?.ref.alt || metaTitle)}">
     <meta property="og:locale" content="${t.locale}">
 ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${{ en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' }[l]}">`).join('\n')}
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -2066,9 +2100,9 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(metaTitle)}">
     <meta name="twitter:description" content="${escapeHtml(metaDescription)}">
-    <meta name="twitter:image" content="${DEFAULT_SOCIAL_IMAGE}">
+    <meta name="twitter:image" content="${preferredImageUrl}">
     <meta name="twitter:site" content="@NoctaliaDreams">
-    <meta name="twitter:image:alt" content="${escapeHtml(metaTitle)}">
+    <meta name="twitter:image:alt" content="${escapeHtml(pageIllustration?.ref.alt || metaTitle)}">
 
     <!-- Fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
@@ -2146,7 +2180,9 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
             </nav>
 
             <!-- Header -->
-            <header class="mb-12 text-center">
+            <header class="pseo-illustrated-hero mb-12 text-center" data-image-seo-hero="true">
+${renderPseoHeroIllustration(pageIllustration)}
+                <div class="pseo-hero-copy">
                 <div class="flex justify-center gap-3 mb-6">
                     <span class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-4 py-2">
                         <i data-lucide="${categoryIcon}" class="w-4 h-4"></i>
@@ -2161,6 +2197,7 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
                 <p class="text-lg text-purple-200/80 leading-relaxed max-w-2xl mx-auto">
                     ${escapeHtml(sanitizeEmDashes(categoryIntro))}
                 </p>
+                </div>
             </header>
 
 ${categoryHowToHtml}
@@ -2346,6 +2383,12 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
   const slug = page.slugs[lang];
   const hreflang = generateCurationHreflangUrls(page);
   const symbolsCount = page.symbols.length;
+  const pageIllustration = getPageIllustration(`guide.${page.id}`, lang, pageData.title);
+  const preferredImageUrl = pageIllustration
+    ? `https://noctalia.app${pageIllustration.image.src}`
+    : DEFAULT_SOCIAL_IMAGE;
+  const preferredImageWidth = pageIllustration?.image.width || 1200;
+  const preferredImageHeight = pageIllustration?.image.height || 630;
 
   // Resolve symbols
   const resolvedSymbols = page.symbols
@@ -2494,7 +2537,12 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
     '@type': 'Article',
     headline: pageData.title,
     description: pageData.metaDescription,
-    image: `https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg`,
+    image: {
+      '@type': 'ImageObject',
+      url: preferredImageUrl,
+      width: preferredImageWidth,
+      height: preferredImageHeight
+    },
     author: canonicalOrganization(),
     publisher: canonicalOrganization(),
     datePublished: CONFIG.datePublished,
@@ -2526,10 +2574,10 @@ ${renderAhrefsAnalyticsScript()}
     <meta property="og:title" content="${escapeHtml(metaTitle)}">
     <meta property="og:description" content="${escapeHtml(pageData.metaDescription)}">
     <meta property="og:url" content="https://noctalia.app/${lang}/guides/${slug}">
-    <meta property="og:image" content="${DEFAULT_SOCIAL_IMAGE}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="${escapeHtml(metaTitle)}">
+    <meta property="og:image" content="${preferredImageUrl}">
+    <meta property="og:image:width" content="${preferredImageWidth}">
+    <meta property="og:image:height" content="${preferredImageHeight}">
+    <meta property="og:image:alt" content="${escapeHtml(pageIllustration?.ref.alt || metaTitle)}">
     <meta property="og:locale" content="${t.locale}">
 ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${{ en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' }[l]}">`).join('\n')}
     <meta property="article:published_time" content="${CONFIG.datePublished}">
@@ -2540,9 +2588,9 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(metaTitle)}">
     <meta name="twitter:description" content="${escapeHtml(pageData.metaDescription)}">
-    <meta name="twitter:image" content="${DEFAULT_SOCIAL_IMAGE}">
+    <meta name="twitter:image" content="${preferredImageUrl}">
     <meta name="twitter:site" content="@NoctaliaDreams">
-    <meta name="twitter:image:alt" content="${escapeHtml(metaTitle)}">
+    <meta name="twitter:image:alt" content="${escapeHtml(pageIllustration?.ref.alt || metaTitle)}">
 
     <!-- Fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
@@ -2618,7 +2666,9 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
             </nav>
 
             <!-- Header -->
-            <header class="mb-12 text-center">
+            <header class="pseo-illustrated-hero mb-12 text-center" data-image-seo-hero="true">
+${renderPseoHeroIllustration(pageIllustration)}
+                <div class="pseo-hero-copy">
                 <div class="flex justify-center gap-3 mb-6">
                     <span class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-4 py-2">
                         <i data-lucide="list" class="w-4 h-4"></i>
@@ -2636,6 +2686,7 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
                 <p class="text-lg text-purple-200/80 leading-relaxed max-w-3xl mx-auto">
                     ${escapeHtml(sanitizeEmDashes(pageData.intro))}
                 </p>
+                </div>
             </header>
 
 ${guideHowToHtml}

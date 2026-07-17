@@ -1,11 +1,29 @@
-/* Noctalia observatory landing layer. */
+/* Noctalia observatory landing layer.
+ *
+ * Editorial night-journal design: one warm accent (salmon) on a deep plum
+ * base, cream ink, hairline separators instead of glass cards, Fraunces
+ * display type. Custom `oh-*` classes own the layout so the page does not
+ * depend on Tailwind utilities being recompiled.
+ *
+ * Contract: the hero LCP background below must keep referencing
+ * /img/hero/noctalia-observatory-bg.webp (see check-web-performance-contract).
+ */
 
 .noctalia-observatory {
+  --oh-ink: #fff7ed;
+  --oh-ink-70: rgba(255, 247, 237, 0.72);
+  --oh-ink-45: rgba(255, 247, 237, 0.48);
+  --oh-line: rgba(255, 247, 237, 0.1);
+  --oh-accent: #fda481;
+  --oh-accent-55: rgba(253, 164, 129, 0.55);
+  --oh-card: rgba(255, 247, 237, 0.028);
+
   position: relative;
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
   isolation: isolate;
+  color: var(--oh-ink);
 }
 
 .noctalia-observatory::before {
@@ -15,9 +33,8 @@
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 0%, rgba(253, 164, 129, 0.12), transparent 34rem),
-    radial-gradient(circle at 18% 22%, rgba(168, 85, 247, 0.22), transparent 32rem),
-    radial-gradient(circle at 82% 18%, rgba(46, 16, 101, 0.38), transparent 34rem),
+    radial-gradient(circle at 72% -6%, rgba(253, 164, 129, 0.07), transparent 30rem),
+    radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.12), transparent 32rem),
     #0a0514;
 }
 
@@ -27,23 +44,158 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.14;
+  opacity: 0.1;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: radial-gradient(circle at 50% 10%, black, transparent 68%);
-  -webkit-mask-image: radial-gradient(circle at 50% 10%, black, transparent 68%);
+    linear-gradient(rgba(255, 247, 237, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 247, 237, 0.05) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: radial-gradient(circle at 50% 8%, black, transparent 62%);
+  -webkit-mask-image: radial-gradient(circle at 50% 8%, black, transparent 62%);
 }
 
+/* ---------------------------------------------------------------- */
+/* Shared primitives                                                 */
+/* ---------------------------------------------------------------- */
+
+.noctalia-observatory .glass-panel {
+  background: var(--oh-card);
+  border: 1px solid var(--oh-line);
+  border-radius: 14px;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: border-color 0.3s ease, transform 0.3s ease, background 0.3s ease;
+}
+
+.noctalia-observatory .glass-panel:hover {
+  border-color: rgba(255, 247, 237, 0.22);
+  background: rgba(255, 247, 237, 0.045);
+}
+
+.noctalia-observatory .glass-button {
+  background: transparent;
+  border: 1px solid rgba(255, 247, 237, 0.22);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.noctalia-observatory .glass-button:hover {
+  background: transparent;
+  border-color: var(--oh-accent);
+  color: var(--oh-accent);
+}
+
+.noctalia-observatory section {
+  width: 100%;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* Decorative section index ("01", "02", …) — pure layout device. */
+.oh-index {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  color: var(--oh-accent-55);
+  margin-bottom: 1.1rem;
+}
+
+.oh-h2 {
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 144;
+  font-weight: 340;
+  font-size: clamp(2.05rem, 4.2vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--oh-ink);
+  text-wrap: balance;
+}
+
+.oh-lede {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--oh-ink-45);
+  max-width: 38rem;
+}
+
+.oh-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto 4.5rem;
+}
+
+.oh-section-head .oh-lede {
+  max-width: 30rem;
+}
+
+/* Primary CTA — solid salmon pill, motion limited to transform/shadow. */
+.oh-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem 2.1rem;
+  border-radius: 999px;
+  background: var(--oh-accent);
+  color: #0a0514;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.02rem;
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.oh-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 44px rgba(253, 164, 129, 0.28);
+  background: #ffb795;
+}
+
+.oh-btn-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Secondary CTA — quiet text link with sliding underline. */
+.oh-btn-quiet {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 1rem 0.25rem;
+  color: var(--oh-ink-70);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 1.02rem;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.35s ease, color 0.3s ease;
+}
+
+.oh-btn-quiet:hover {
+  color: var(--oh-accent);
+  background-size: 100% 1px;
+}
+
+/* ---------------------------------------------------------------- */
+/* 1. Hero                                                           */
+/* ---------------------------------------------------------------- */
+
 .noctalia-observatory > header {
+  position: relative;
   min-height: 100svh;
   width: 100%;
-  padding: 8rem 1.25rem 4rem;
+  padding: 9rem 1.5rem 5rem;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(10, 5, 20, 0.14), rgba(10, 5, 20, 0.94) 78%, #0a0514),
-    radial-gradient(circle at 50% 24%, rgba(253, 164, 129, 0.18), transparent 24rem);
 }
 
 .noctalia-observatory > header::before {
@@ -53,147 +205,798 @@
   min-height: 100%;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(10, 5, 20, 0.26), rgba(10, 5, 20, 0.62) 58%, rgba(10, 5, 20, 0.94)),
+    linear-gradient(180deg, rgba(10, 5, 20, 0.3), rgba(10, 5, 20, 0.6) 58%, rgba(10, 5, 20, 0.94)),
     url('/img/hero/noctalia-observatory-bg.webp') center center / cover no-repeat;
-  opacity: 0.52;
-  filter: saturate(1.08) contrast(1.04);
+  opacity: 0.5;
+  filter: saturate(1.05) contrast(1.03);
   transform: scale(1.01);
 }
 
 .noctalia-observatory > header > div {
-  width: min(100%, 1480px);
+  width: min(100%, 1240px);
   max-width: none;
 }
 
-.noctalia-observatory > header h1 {
-  width: min(100%, 1200px);
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  font-size: 3.2rem;
-  line-height: 1.04;
-  letter-spacing: 0;
+.oh-hero-title {
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 144;
+  font-weight: 315;
+  font-size: clamp(2.9rem, 7.6vw, 6.9rem);
+  line-height: 1.03;
+  letter-spacing: -0.02em;
+  color: var(--oh-ink);
+  text-wrap: balance;
+  margin: 0 auto 1.8rem;
+  max-width: 62rem;
 }
 
-.noctalia-observatory > header p {
-  max-width: 760px;
+.oh-hero-title .oh-accent-line {
+  display: block;
+  font-weight: 380;
+  color: var(--oh-accent);
 }
 
-.noctalia-observatory .hero-cta a {
-  min-height: 3.5rem;
+.oh-hero-lede {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  line-height: 1.65;
+  color: var(--oh-ink-70);
+  max-width: 40rem;
+  margin: 0 auto 2.8rem;
+  text-wrap: pretty;
 }
 
-.noctalia-observatory .hero-visual,
-.noctalia-observatory > header .hero-anim:last-child {
-  width: min(100vw, 1480px);
-  max-width: none;
-  margin-top: 4.25rem;
-  margin-left: calc(50% - min(50vw, 740px));
-  margin-right: calc(50% - min(50vw, 740px));
+.oh-hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem 2rem;
+  margin-bottom: 1.1rem;
 }
 
-.noctalia-observatory .hero-visual picture,
-.noctalia-observatory > header .hero-anim:last-child picture {
+.oh-hero-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--oh-ink-45);
+}
+
+.oh-hero-note svg {
+  color: var(--oh-accent);
+}
+
+.oh-hero-inner {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.oh-hero-visual {
+  width: min(100%, 1080px);
+  margin: 4.5rem auto 0;
+}
+
+.oh-hero-visual picture {
   display: block;
   position: relative;
   overflow: hidden;
-  border-radius: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 42px 120px rgba(0, 0, 0, 0.58), 0 0 80px rgba(253, 164, 129, 0.1);
-  background: rgba(255, 255, 255, 0.03);
+  border-radius: 20px;
+  border: 1px solid var(--oh-line);
+  box-shadow: 0 42px 120px rgba(0, 0, 0, 0.55), 0 0 90px rgba(253, 164, 129, 0.07);
+  background: rgba(255, 247, 237, 0.03);
 }
 
-.noctalia-observatory .hero-visual img,
-.noctalia-observatory > header .hero-anim:last-child img {
+.oh-hero-visual img {
   display: block;
   width: 100%;
   transform-origin: center;
 }
 
-.noctalia-observatory section {
-  width: 100%;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+/* Sections without a locale id share this rhythm. */
+.oh-section {
+  padding-top: 8rem;
+  padding-bottom: 2rem;
 }
+
+/* Centered heads (pricing, FAQ). */
+.oh-pricing-head {
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto 4rem;
+}
+
+/* Icon sizing (lucide svgs are inlined at build time). */
+.oh-step-icon svg,
+.oh-feature-icon svg,
+.oh-profile-icon svg {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.oh-hero-note svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.oh-btn-primary svg,
+.oh-btn-quiet svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.oh-tool-arrow svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.oh-symbol svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.oh-symbols-badge svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.oh-symbols-cta {
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------- */
+/* 2. Steps (how it works)                                           */
+/* ---------------------------------------------------------------- */
 
 .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) {
   padding-top: 8rem;
-  padding-bottom: 8rem;
-  border-top-color: rgba(255, 255, 255, 0.08);
+  padding-bottom: 2rem;
 }
 
-.noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) > .max-w-7xl {
+.oh-steps {
   display: grid;
-  width: min(100%, 1680px);
-  max-width: none;
-  gap: 3rem;
+  grid-template-columns: 1fr;
+  gap: 4.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) .text-center.mb-16 {
-  margin-bottom: 0;
+.oh-step {
+  position: relative;
+  border-top: 1px solid var(--oh-line);
+  padding-top: 2rem;
 }
 
-.noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) .text-center.mb-16 h2 {
-  font-size: 2.85rem;
-  line-height: 1.04;
-  letter-spacing: 0;
+.oh-step-num {
+  display: block;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 144;
+  font-weight: 300;
+  font-size: 4.2rem;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--oh-accent-55);
+  margin-bottom: 1.4rem;
 }
 
-.noctalia-observatory :is(#how-it-works-steps, #etapes-reves, #como-funciona-pasos, #schritte-traeume, #passi-sogni) {
-  align-items: start;
+.oh-step-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--oh-accent);
+  margin-bottom: 1.1rem;
 }
 
-.noctalia-observatory :is(#how-it-works-steps, #etapes-reves, #como-funciona-pasos, #schritte-traeume, #passi-sogni) > div:not(.step-line) {
-  min-width: 0;
+.oh-step h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 380;
+  font-size: 1.55rem;
+  line-height: 1.2;
+  color: var(--oh-ink);
+  margin-bottom: 0.8rem;
 }
+
+.oh-step p {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--oh-ink-45);
+  max-width: 26rem;
+}
+
+.oh-step .phone-frame {
+  margin-top: 2.75rem;
+  width: min(100%, 300px);
+}
+
+/* Editorial phone frame (overrides the compiled 4px border). */
+.noctalia-observatory .phone-frame {
+  border: 1px solid var(--oh-line);
+  border-radius: 24px;
+  background: #0a0514;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.55), 0 0 64px rgba(253, 164, 129, 0.05);
+}
+
+@media (max-width: 899px) {
+  .oh-step .phone-frame {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (min-width: 900px) {
+  .oh-steps {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.75rem;
+  }
+
+  .oh-step:nth-child(2) {
+    margin-top: 4.5rem;
+  }
+
+  .oh-step:nth-child(3) {
+    margin-top: 9rem;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* 3. Features                                                       */
+/* ---------------------------------------------------------------- */
 
 .noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita) {
-  padding-top: 9rem;
-  padding-bottom: 9rem;
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.22), rgba(46, 16, 101, 0.1), rgba(0, 0, 0, 0.2));
+  padding-top: 8rem;
+  padding-bottom: 2rem;
 }
 
-.noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita) > .max-w-7xl {
-  width: min(100%, 1680px);
-  max-width: none;
+.oh-features {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita) .md\:flex {
-  max-width: 1320px;
+.oh-feature {
+  position: relative;
+  padding: 2.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2.5rem;
+  overflow: hidden;
 }
 
-.noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita) .grid.md\:grid-cols-6 {
-  grid-auto-flow: dense;
+.oh-feature-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 1rem;
 }
 
-.noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita) .glass-panel {
-  border-radius: 20px;
+.oh-feature-num {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  color: var(--oh-accent-55);
 }
 
-.noctalia-observatory .glass-panel {
-  transform: translateY(0);
+.oh-feature-icon {
+  color: var(--oh-accent);
+  display: flex;
 }
 
-.noctalia-observatory .glass-panel:hover {
-  transform: translateY(-4px);
+.oh-feature h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 360;
+  font-size: 1.65rem;
+  line-height: 1.2;
+  color: var(--oh-ink);
+  margin-bottom: 0.85rem;
 }
 
-.noctalia-observatory [data-subscription],
-.noctalia-observatory details,
-.noctalia-observatory #temoignages .glass-panel {
-  border-radius: 18px;
+.oh-feature p {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--oh-ink-45);
+  max-width: 30rem;
 }
+
+.oh-feature ul {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1.4rem;
+}
+
+.oh-feature ul li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--oh-ink-70);
+}
+
+.oh-feature ul li::before {
+  content: '—';
+  flex-shrink: 0;
+  color: var(--oh-accent-55);
+}
+
+.oh-feature ul li strong {
+  font-weight: 500;
+  color: var(--oh-ink);
+}
+
+.oh-feature-media {
+  margin-top: 0.5rem;
+  color: var(--oh-accent);
+}
+
+@media (min-width: 900px) {
+  .oh-features {
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  .oh-feature--a {
+    grid-column: span 7;
+  }
+
+  .oh-feature--b {
+    grid-column: span 5;
+  }
+
+  .oh-feature--c {
+    grid-column: span 5;
+  }
+
+  .oh-feature--d {
+    grid-column: span 7;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* 4. Tool links (explore Noctalia tools)                            */
+/* ---------------------------------------------------------------- */
+
+.oh-tools {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.oh-tool {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1.8rem;
+  min-height: 12rem;
+}
+
+.oh-tool h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 380;
+  font-size: 1.3rem;
+  line-height: 1.25;
+  color: var(--oh-ink);
+  margin-bottom: 0.7rem;
+}
+
+.oh-tool p {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--oh-ink-45);
+}
+
+.oh-tool .oh-tool-arrow {
+  align-self: flex-end;
+  color: var(--oh-ink-45);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.oh-tool:hover .oh-tool-arrow {
+  color: var(--oh-accent);
+  transform: translate(3px, -3px);
+}
+
+@media (min-width: 700px) {
+  .oh-tools {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1100px) {
+  .oh-tools {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* 5. Profiles (who is it for)                                       */
+/* ---------------------------------------------------------------- */
+
+.oh-profiles {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.oh-profile {
+  border-top: 1px solid var(--oh-line);
+  padding-top: 1.9rem;
+}
+
+.oh-profile-icon {
+  color: var(--oh-accent);
+  display: flex;
+  margin-bottom: 1.2rem;
+}
+
+.oh-profile h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 380;
+  font-size: 1.4rem;
+  line-height: 1.25;
+  color: var(--oh-ink);
+  margin-bottom: 0.75rem;
+}
+
+.oh-profile p {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--oh-ink-45);
+  max-width: 24rem;
+}
+
+@media (min-width: 900px) {
+  .oh-profiles {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.75rem;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* 6. Pricing                                                        */
+/* ---------------------------------------------------------------- */
+
+.oh-pricing {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: 980px;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+.oh-plan {
+  display: flex;
+  flex-direction: column;
+  padding: 2.4rem;
+}
+
+.oh-plan-head {
+  min-height: 15.5rem;
+}
+
+.oh-plan-tag {
+  display: inline-block;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--oh-accent-55);
+  margin-bottom: 1.2rem;
+}
+
+.oh-plan h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 380;
+  font-size: 1.75rem;
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+}
+
+.oh-plan-price {
+  font-family: 'Fraunces', serif;
+  font-weight: 340;
+  font-size: 2.4rem;
+  line-height: 1.1;
+  margin-bottom: 0.9rem;
+}
+
+.oh-plan-desc {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.oh-plan ul {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0 0 2.4rem;
+}
+
+.oh-plan ul li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+.oh-plan ul li::before {
+  content: '—';
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.oh-plan .oh-plan-cta {
+  margin-top: auto;
+}
+
+/* Free plan: quiet hairline block. */
+.oh-plan--free {
+  border: 1px solid var(--oh-line);
+  border-radius: 14px;
+  color: var(--oh-ink);
+}
+
+.oh-plan--free .oh-plan-desc,
+.oh-plan--free ul li {
+  color: var(--oh-ink-45);
+}
+
+.oh-plan--free .oh-plan-cta {
+  display: block;
+  text-align: center;
+  padding: 0.95rem 1.5rem;
+  border: 1px solid rgba(255, 247, 237, 0.25);
+  border-radius: 999px;
+  color: var(--oh-ink);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.oh-plan--free .oh-plan-cta:hover {
+  border-color: var(--oh-accent);
+  color: var(--oh-accent);
+}
+
+/* Plus plan: inverted cream card — the single light surface of the page. */
+.oh-plan--plus {
+  position: relative;
+  border-radius: 14px;
+  background: var(--oh-ink);
+  color: #0a0514;
+  box-shadow: 0 30px 80px rgba(253, 164, 129, 0.12);
+}
+
+.oh-plan--plus .oh-plan-tag {
+  color: #b85c30;
+}
+
+.oh-plan--plus .oh-plan-desc,
+.oh-plan--plus ul li {
+  color: rgba(10, 5, 20, 0.62);
+}
+
+.oh-plan--plus .oh-plan-cta {
+  display: block;
+  text-align: center;
+  padding: 0.95rem 1.5rem;
+  border-radius: 999px;
+  background: #0a0514;
+  color: var(--oh-ink);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.oh-plan--plus .oh-plan-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(10, 5, 20, 0.35);
+}
+
+.oh-plan-note {
+  margin-top: 0.9rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: rgba(10, 5, 20, 0.5);
+}
+
+@media (min-width: 860px) {
+  .oh-pricing {
+    grid-template-columns: 1fr 1.15fr;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* 7. FAQ                                                            */
+/* ---------------------------------------------------------------- */
+
+.oh-faq {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.oh-faq details {
+  border-top: 1px solid var(--oh-line);
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+}
+
+.oh-faq details:last-child {
+  border-bottom: 1px solid var(--oh-line);
+}
+
+.oh-faq summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.6rem 0.25rem;
+  cursor: pointer;
+  list-style: none;
+  font-family: 'Fraunces', serif;
+  font-weight: 360;
+  font-size: 1.25rem;
+  line-height: 1.35;
+  color: var(--oh-ink);
+  transition: color 0.3s ease;
+}
+
+.oh-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.oh-faq summary::after {
+  content: '+';
+  flex-shrink: 0;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--oh-accent-55);
+  transition: transform 0.3s ease;
+}
+
+.oh-faq details[open] summary::after {
+  content: '–';
+}
+
+.oh-faq summary:hover {
+  color: var(--oh-accent);
+}
+
+.oh-faq details p {
+  padding: 0 0.25rem 1.8rem;
+  max-width: 40rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--oh-ink-45);
+}
+
+/* ---------------------------------------------------------------- */
+/* 8. Symbols dictionary                                             */
+/* ---------------------------------------------------------------- */
 
 .noctalia-observatory :is(#symboles, #symbols, #simbolos, #traumsymbole, #simboli) {
   padding-top: 8rem;
-  padding-bottom: 8rem;
+  padding-bottom: 2rem;
 }
 
-.noctalia-observatory :is(#symboles, #symbols, #simbolos, #traumsymbole, #simboli) .text-xs.font-mono {
-  display: none;
+.oh-symbols-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--oh-accent-55);
+  border: 1px solid rgba(253, 164, 129, 0.28);
+  padding: 0.5rem 0.9rem;
+  margin-bottom: 1.6rem;
 }
+
+.oh-symbols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  max-width: 1200px;
+  margin: 0 auto 3.5rem;
+  border-top: 1px solid var(--oh-line);
+}
+
+.oh-symbol {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.35rem 0.5rem;
+  border-bottom: 1px solid var(--oh-line);
+}
+
+.oh-symbol-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 380;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  color: var(--oh-ink);
+  transition: color 0.3s ease;
+}
+
+.oh-symbol-q {
+  display: block;
+  margin-top: 0.35rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--oh-ink-45);
+}
+
+.oh-symbol svg {
+  flex-shrink: 0;
+  color: var(--oh-ink-45);
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease;
+}
+
+.oh-symbol:hover .oh-symbol-name {
+  color: var(--oh-accent);
+}
+
+.oh-symbol:hover svg {
+  opacity: 1;
+  transform: translate(0, 0);
+  color: var(--oh-accent);
+}
+
+@media (min-width: 700px) {
+  .oh-symbols {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Footer (shared renderer component, landing variant)               */
+/* ---------------------------------------------------------------- */
 
 .landing-footer {
   position: relative;
@@ -201,15 +1004,14 @@
   width: 100%;
   padding: 4.5rem clamp(1.25rem, 3vw, 3rem) 2.5rem;
   background:
-    radial-gradient(circle at 16% 0%, rgba(253, 164, 129, 0.11), transparent 28rem),
-    radial-gradient(circle at 76% 10%, rgba(124, 58, 237, 0.16), transparent 32rem),
+    radial-gradient(circle at 16% 0%, rgba(253, 164, 129, 0.08), transparent 28rem),
     linear-gradient(180deg, #0a0514 0%, #080310 100%);
   color: #fff7ed;
 }
 
 .landing-footer > .grid {
   display: grid !important;
-  width: min(100%, 1480px);
+  width: min(100%, 1200px);
   max-width: none;
   grid-template-columns: minmax(240px, 1.25fr) repeat(4, minmax(150px, 1fr));
   gap: clamp(1.5rem, 2.5vw, 2.75rem);
@@ -236,7 +1038,7 @@
 .landing-footer li a,
 .landing-footer .text-gray-500,
 .landing-footer .text-gray-600 {
-  color: rgba(233, 213, 255, 0.72);
+  color: rgba(255, 247, 237, 0.6);
 }
 
 .landing-footer li a:hover,
@@ -245,99 +1047,45 @@
 }
 
 .landing-footer .glass-button {
-  border-color: rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 247, 237, 0.18);
+  background: transparent;
 }
 
 .landing-footer > .border-t:last-child {
-  width: min(100%, 1480px);
+  width: min(100%, 1200px);
   max-width: none;
   margin-left: auto;
   margin-right: auto;
-  color: rgba(233, 213, 255, 0.52);
+  color: rgba(255, 247, 237, 0.45);
 }
 
-@media (min-width: 640px) {
-  .noctalia-observatory > header h1 {
-    font-size: 4.6rem;
-  }
-}
+/* ---------------------------------------------------------------- */
+/* Responsive                                                        */
+/* ---------------------------------------------------------------- */
 
-@media (min-width: 768px) {
-  .noctalia-observatory > header {
-    padding-top: 9rem;
-  }
-
-  .noctalia-observatory > header h1 {
-    font-size: 6rem;
-  }
-
-  .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) > .max-w-7xl {
-    grid-template-columns: minmax(260px, 0.68fr) minmax(0, 1.32fr);
-    align-items: start;
-  }
-
-  .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) .text-center.mb-16 {
-    text-align: left;
-  }
-
-  .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) .text-center.mb-16 p {
-    margin-left: 0;
-  }
-}
-
-@media (min-width: 1024px) {
-  .noctalia-observatory > header h1 {
-    font-size: 7.25rem;
-  }
-
-  .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona),
-  .noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita),
-  .noctalia-observatory :is(#symboles, #symbols, #simbolos, #traumsymbole, #simboli) {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-}
-
-@media (min-width: 1280px) {
-  .noctalia-observatory > header h1 {
-    font-size: 7.8rem;
-  }
-}
-
-@media (max-width: 767px) {
+@media (max-width: 899px) {
   .noctalia-observatory > header {
     min-height: auto;
-    padding-top: 7rem;
-    padding-bottom: 3rem;
+    padding-top: 7.5rem;
+    padding-bottom: 3.5rem;
   }
 
-  .noctalia-observatory > header h1 {
-    max-width: 100%;
-    font-size: 2.6rem;
-    line-height: 1.08;
-  }
-
-  .noctalia-observatory .hero-visual,
+  .oh-hero-visual,
   .noctalia-observatory > header .hero-anim:last-child {
-    width: 100%;
-    margin: 3rem auto 0;
+    margin-top: 3.5rem;
   }
 
-  .noctalia-observatory .hero-visual picture,
-  .noctalia-observatory > header .hero-anim:last-child picture {
-    border-radius: 18px;
+  .oh-section-head {
+    margin-bottom: 3rem;
   }
 
-  .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona),
-  .noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita),
-  .noctalia-observatory :is(#symboles, #symbols, #simbolos, #traumsymbole, #simboli) {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
+  .oh-feature {
+    padding: 1.8rem;
   }
 
-  .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) .text-center.mb-16 h2 {
-    font-size: 2.35rem;
+  .oh-plan-head {
+    min-height: 0;
+    margin-bottom: 2rem;
   }
 
   .landing-footer {
@@ -350,7 +1098,7 @@
   }
 }
 
-@media (min-width: 768px) and (max-width: 1279px) {
+@media (min-width: 900px) and (max-width: 1279px) {
   .landing-footer > .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

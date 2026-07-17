@@ -25,6 +25,7 @@ const {
   readImageAssetRegistry,
   renderResponsivePicture,
 } = require('./lib/image-seo-assets');
+const { getPageIllustration } = require('./lib/page-illustrations');
 
 const ROOT = path.join(__dirname, '..');
 const DOCS_DIR = path.join(ROOT, 'docs');
@@ -665,8 +666,35 @@ function renderGuideHubStyles() {
         }
         .guides-actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 1.65rem; }
         .guides-hero > div {
+          position: relative;
+          z-index: 2;
           max-width: 58rem;
         }
+        .guides-hero[data-image-seo-hero="true"] {
+          min-height: max(40rem, 78svh);
+          align-items: end;
+          isolation: isolate;
+        }
+        .guides-hero[data-image-seo-hero="true"]::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          pointer-events: none;
+          background: linear-gradient(180deg, rgba(7,3,15,0.16) 0%, rgba(7,3,15,0.26) 42%, rgba(7,3,15,0.95) 100%), linear-gradient(90deg, rgba(7,3,15,0.56), rgba(7,3,15,0.08) 58%, rgba(7,3,15,0.4));
+        }
+        .guides-hero-illustration {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          overflow: hidden;
+        }
+        .guides-hero-illustration picture, .guides-hero-illustration img { display: block; width: 100%; height: 100%; }
+        .guides-hero-illustration img { object-fit: cover; object-position: center; }
+        .guides-hero-illustration figcaption { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); clip-path: inset(50%); white-space: nowrap; border: 0; }
         .guides-button {
           min-height: 3.25rem;
           display: inline-flex;
@@ -970,8 +998,8 @@ function renderGuideHubStyles() {
           }
           .guides-page { background-position: center top; }
           .guides-hero {
-            min-height: 0;
-            padding: 5.35rem 1rem 0.9rem;
+            min-height: clamp(34rem, 132vw, 46rem);
+            padding: 5.35rem 1rem 2.25rem;
           }
           .guides-title { font-size: clamp(2.85rem, 15vw, 4.2rem); max-width: 9ch; }
           .guides-lede {
@@ -1096,7 +1124,20 @@ function generateHubPage(lang, t, pages, version) {
   const currentPaths = Object.fromEntries(SUPPORTED_LANGS.map((candidate) => [candidate, `/${candidate}/guides/`]));
   const socialTitle = copy.title;
   const socialDescription = copy.desc;
-  const socialImage = DEFAULT_SOCIAL_IMAGE;
+  const pageIllustration = getPageIllustration('guide.index', lang, copy.label);
+  const socialImage = pageIllustration
+    ? `${DOMAIN}${pageIllustration.image.src}`
+    : DEFAULT_SOCIAL_IMAGE;
+  const socialImageWidth = pageIllustration?.image.width || 1200;
+  const socialImageHeight = pageIllustration?.image.height || 630;
+  const heroPicture = pageIllustration
+    ? renderResponsivePicture(pageIllustration.registry, pageIllustration.ref, {
+        figure: false,
+        priority: true,
+        sizes: '100vw',
+        mobileSizes: '100vw',
+      })
+    : '';
   const cards = (GUIDE_HUB_BENTO_COPY[lang] || GUIDE_HUB_BENTO_COPY.en).map((card) => renderHubBentoCard(lang, t, pages, card)).join('\n');
   const itemList = {
     '@context': 'https://schema.org',
@@ -1107,7 +1148,7 @@ function generateHubPage(lang, t, pages, version) {
       ...pages.map((page, index) => ({ '@type': 'ListItem', position: index + 2, url: `${DOMAIN}/${lang}/guides/${page.slugs[lang]}`, name: page[lang].title })),
     ],
   };
-  const collection = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: copy.label, headline: copy.label, description: copy.desc, url: `${DOMAIN}/${lang}/guides/`, inLanguage: lang };
+  const collection = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: copy.label, headline: copy.label, description: copy.desc, url: `${DOMAIN}/${lang}/guides/`, inLanguage: lang, ...(pageIllustration ? { primaryImageOfPage: { '@type': 'ImageObject', url: socialImage, width: socialImageWidth, height: socialImageHeight } } : {}) };
   const breadcrumb = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: t.home, item: homeUrl(lang) }, { '@type': 'ListItem', position: 2, name: copy.label, item: `${DOMAIN}/${lang}/guides/` }] };
   return `<!DOCTYPE html>
 <html lang="${lang}" class="scroll-smooth">
@@ -1130,16 +1171,16 @@ ${renderAhrefsAnalyticsScript()}
     <meta property="og:description" content="${escapeHtml(socialDescription)}">
     <meta property="og:url" content="${DOMAIN}/${lang}/guides/">
     <meta property="og:image" content="${socialImage}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="${escapeHtml(copy.label)}">
+    <meta property="og:image:width" content="${socialImageWidth}">
+    <meta property="og:image:height" content="${socialImageHeight}">
+    <meta property="og:image:alt" content="${escapeHtml(pageIllustration?.ref.alt || copy.label)}">
     <meta property="og:site_name" content="Noctalia">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@NoctaliaDreams">
     <meta name="twitter:title" content="${escapeHtml(socialTitle)}">
     <meta name="twitter:description" content="${escapeHtml(socialDescription)}">
     <meta name="twitter:image" content="${socialImage}">
-    <meta name="twitter:image:alt" content="${escapeHtml(copy.label)}">
+    <meta name="twitter:image:alt" content="${escapeHtml(pageIllustration?.ref.alt || copy.label)}">
     <link rel="stylesheet" href="/css/styles.min.css?v=${version}">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=${version}">
 ${renderViewTransitionHeadStyles()}
@@ -1152,7 +1193,11 @@ ${renderJsonLd(breadcrumb)}
     <div class="guides-page">
 ${renderGuidesNav(lang, t, currentPaths, 'guides')}
     <main class="guides-shell">
-        <section class="guides-hero" aria-labelledby="guidesTitle">
+        <section class="guides-hero" aria-labelledby="guidesTitle"${pageIllustration ? ' data-image-seo-hero="true"' : ''}>
+${pageIllustration ? `            <figure class="guides-hero-illustration" data-image-seo-role="editorial" data-image-asset-id="${escapeHtml(pageIllustration.image.assetId)}">
+                ${heroPicture}
+                <figcaption>${escapeHtml(pageIllustration.ref.caption)}</figcaption>
+            </figure>` : ''}
             <div>
                 <h1 id="guidesTitle" class="guides-title">${escapeHtml(copy.label)}</h1>
                 <p class="guides-lede">${escapeHtml(ui.heroIntro)}</p>
@@ -1260,13 +1305,14 @@ function renderLayoutCss() {
           display: none;
         }
         .dictionary-header {
+          --dictionary-hero-media-height: clamp(40rem, 78svh, 68rem);
           position: relative;
           isolation: isolate;
           display: grid;
           grid-template-columns: minmax(0, 1fr);
           align-items: end;
           overflow: hidden;
-          min-height: 29.5rem;
+          min-height: var(--dictionary-hero-media-height);
           margin-bottom: 0;
           padding: 7.2rem clamp(1rem, 4vw, 4.75rem) 2.1rem;
           text-align: left;
@@ -1959,7 +2005,7 @@ function renderLayoutCss() {
           .dictionary-header {
             grid-template-columns: 1fr;
             align-items: end;
-            min-height: auto;
+            min-height: var(--dictionary-hero-media-height);
             padding-top: 6.6rem;
           }
           .category-browse-card {
@@ -2024,8 +2070,9 @@ function renderLayoutCss() {
             padding-top: 1rem;
           }
           .dictionary-header {
+            --dictionary-hero-media-height: clamp(34rem, 145vw, 48rem);
             grid-template-columns: 1fr;
-            min-height: auto;
+            min-height: var(--dictionary-hero-media-height);
             gap: 0.85rem;
             padding: 5.1rem 1rem 0.85rem;
           }
@@ -3031,7 +3078,7 @@ ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
             </nav>
 
             <!-- Header -->
-            <header class="dictionary-header">
+            <header class="dictionary-header" data-image-seo-hero="true">
                 <div class="dictionary-hero-copy">
                     <span class="dictionary-hero-kicker">${escapeHtml(heroCopy.atlas)}</span>
                     <h1 class="font-serif text-3xl md:text-5xl lg:text-[3.4rem] mb-0 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/55 leading-tight max-w-4xl">

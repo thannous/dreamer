@@ -1,4 +1,5 @@
 const { escapeHtml } = require('../docs-source-utils');
+const { renderResponsivePicture } = require('../image-seo-assets');
 
 function renderHeroActions(actions = []) {
   return actions
@@ -15,7 +16,7 @@ function renderHeroActions(actions = []) {
     .join('\n');
 }
 
-function renderPageHero(context) {
+function renderPageHero(context, imageContext = null) {
   const { meta } = context;
   const hero = meta.hero;
 
@@ -35,10 +36,32 @@ function renderPageHero(context) {
     ].join('\n')
     : '';
   const extraClass = hero.variant ? ` page-hero-${escapeHtml(hero.variant)}` : '';
+  const illustration = imageContext?.sitewide && imageContext?.images?.editorial
+    ? imageContext.images.editorial
+    : null;
+  const imageRef = imageContext?.page?.images?.editorial;
+  const picture = illustration
+    ? renderResponsivePicture(imageContext.registry, imageRef, {
+        figure: false,
+        priority: true,
+        sizes: '100vw',
+        mobileSizes: '100vw',
+      })
+    : '';
+  const imageHtml = illustration
+    ? [
+      `        <figure class="page-hero-illustration" data-image-seo-role="editorial" data-image-asset-id="${escapeHtml(illustration.assetId)}">`,
+      `            ${picture}`,
+      `            <figcaption>${escapeHtml(illustration.caption)}</figcaption>`,
+      '        </figure>',
+    ].join('\n')
+    : '';
+  const imageClass = illustration ? ' page-hero-illustrated' : '';
 
   return [
-    `    <section class="page-hero${extraClass} px-6 pb-16 pt-32 text-center">`,
-    '        <div class="mx-auto max-w-5xl">',
+    `    <section class="page-hero${extraClass}${imageClass} px-6 pb-16 pt-32 text-center"${illustration ? ' data-image-seo-hero="true"' : ''}>`,
+    imageHtml,
+    '        <div class="page-hero-copy mx-auto max-w-5xl">',
     eyebrow,
     `            <h1 class="font-serif text-4xl font-light leading-tight text-dream-cream md:text-6xl">${escapeHtml(hero.title || meta.title)}</h1>`,
     subtitle,

@@ -59,12 +59,57 @@ describe('docs renderer image SEO', () => {
     expect(html.indexOf('<h1>Lucid dreaming</h1>')).toBeLessThan(html.indexOf('class="article-hero-details"'));
     expect(html.indexOf('class="article-hero-copy"')).toBeLessThan(html.indexOf('<p>Beginner guide</p>'));
     expect(html).toContain('--article-hero-mobile-position: 42% 42%;');
-    expect(html).toContain('media="(max-width: 768px)"');
+    expect(html).toContain('media="(max-width: 1024px)"');
     expect(html).toContain('lucid-dreaming-4x5-1200.webp');
     expect(html).toContain('<picture>');
     expect(html).toContain('fetchpriority="high"');
     expect(html).toContain('data-image-asset-id="editorial.lucid-dreaming"');
     expect(html.match(/data-image-seo-role="editorial"/g)).toHaveLength(1);
+  });
+
+  it('uses the same hero layout for an illustrated article outside the SEO pilot', () => {
+    const source = [
+      '<article>',
+      '<header class="mb-12"><div class="flex flex-wrap items-center gap-3 mb-6"><span class="text-xs font-mono uppercase">Science</span><span class="text-sm text-purple-300/60">Published May 16, 2026</span><span class="text-sm text-purple-300/60">5 min read</span></div><h1>Dreaming while awake</h1><p>Research summary</p></header>',
+      '<figure class="mb-12"><img src="../../img/blog/dream-memory-hero.webp" alt="Dream fragments in the night" width="1200" height="675"></figure>',
+      '</article>',
+    ].join('\n');
+    const html = optimizeBlogArticleImages(source, {
+      title: 'Dreaming while awake',
+      ogImageAlt: 'Dream fragments in the night',
+      preloadImage: '/img/blog/dream-memory-hero.webp',
+    });
+
+    expect(html).toContain('data-image-seo-hero="true"');
+    expect(html).toContain('data-image-seo-role="editorial"');
+    expect(html).toContain('class="article-hero-copy"');
+    expect(html).toContain('article-hero-taxonomy');
+    expect(html).toContain('class="article-hero-details"');
+    expect(html.indexOf('Published May 16, 2026')).toBeGreaterThan(
+      html.indexOf('class="article-hero-details"')
+    );
+    expect(html).toContain('fetchpriority="high"');
+    expect(html).not.toContain('data-image-asset-id=');
+  });
+
+  it.each([
+    ['Thématique : Signification des rêves', 'Signification des rêves'],
+    ['Thema: Traumtagebuch', 'Traumtagebuch'],
+    ['Argomento: Significati dei sogni', 'Significati dei sogni'],
+  ])('shortens localized taxonomy label %s inside the hero', (label, conciseLabel) => {
+    const source = [
+      '<article>',
+      `<header><div class="flex flex-wrap"><span>Guide</span><a href="hub">${label}</a><span aria-hidden="true"></span><span>4 min read</span></div><h1>Title</h1><p>Intro</p></header>`,
+      '<figure><img src="../../img/blog/dream-memory-hero.webp" alt="Dream fragments"></figure>',
+      '</article>',
+    ].join('\n');
+    const html = optimizeBlogArticleImages(source, {
+      title: 'Title',
+      preloadImage: '/img/blog/dream-memory-hero.webp',
+    });
+
+    expect(html).toContain(`>${conciseLabel}</a>`);
+    expect(html).not.toContain(`>${label}</a>`);
   });
 
   it('inserts the localized educational image before the configured heading', () => {

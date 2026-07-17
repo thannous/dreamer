@@ -34,52 +34,33 @@
   "activeNav": "resources"
 }
 ---
-<!-- Ambient Background -->
-    
-    
-
-    <!-- Floating Orbs -->
-    
-    
-
-    <!-- Navbar -->
-    
 
 <main class="noctalia-observatory overflow-x-hidden w-full max-w-full">
 
     <!-- 1. Hero Section -->
-    <header class="relative min-h-screen flex items-center justify-center pt-28 pb-10 px-4 overflow-visible">
-        <div class="max-w-5xl mx-auto text-center z-10 flex flex-col items-center">
-
-            <!-- H1 Title -->
-            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.2] md:leading-[1.12] lg:leading-[1.08] pb-4 mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 drop-shadow-2xl opacity-0 hero-anim hero-title">
-                Capturez vos rêves<br>avant qu’ils s’effacent
+    <header>
+        <div class="oh-hero-inner">
+            <h1 class="oh-hero-title hero-anim">
+                Capturez vos rêves<span class="oh-accent-line">avant qu’ils s’effacent</span>
             </h1>
 
-            <!-- Subtitle/Baseline -->
-            <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed opacity-0 hero-anim hero-subtitle">
+            <p class="oh-hero-lede hero-anim">
                 Au réveil, racontez votre rêve à voix haute. Noctalia le transforme en journal privé avec symboles, image, questions de réflexion et pistes de suivi.
             </p>
 
-            <!-- CTA & Reassurance -->
-            <div class="flex flex-col items-center gap-6 opacity-0 hero-anim hero-cta">
-                <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] text-center">
-                        <span class="relative z-10 flex items-center justify-center gap-2">
-                            Enregistrer mon premier rêve <i data-lucide="play" class="w-4 h-4"></i>
-                        </span>
-                    </a>
-                    <a href="/fr/guides/dictionnaire-symboles-reves" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group border border-dream-salmon/30 hover:border-dream-salmon hover:text-dream-salmonLight transition-colors" aria-label="Explorer le dictionnaire des symboles de rêves">
-                        <i data-lucide="book-open" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Explorer les symboles
-                    </a>
-                </div>
-                <p class="text-xs text-purple-300/60 font-sans flex items-center gap-2">
-                    <i data-lucide="shield-check" class="w-3 h-3 text-dream-salmon"></i> Application Android sur Google Play · Outil de réflexion, pas de diagnostic
-                </p>
+            <div class="oh-hero-cta hero-anim hero-cta">
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="oh-btn-primary">
+                    Enregistrer mon premier rêve <i data-lucide="play"></i>
+                </a>
+                <a href="/fr/guides/dictionnaire-symboles-reves" class="oh-btn-quiet" aria-label="Explorer le dictionnaire des symboles de rêves">
+                    <i data-lucide="book-open"></i> Explorer les symboles
+                </a>
             </div>
+            <p class="oh-hero-note hero-anim">
+                <i data-lucide="shield-check"></i> Application Android sur Google Play · Outil de réflexion, pas de diagnostic
+            </p>
 
-            <!-- App Visual Placeholder -->
-            <div class="mt-16 relative w-full max-w-5xl mx-auto opacity-0 hero-anim hero-visual">
+            <div class="oh-hero-visual hero-anim">
                 <picture>
                     <source type="image/webp" srcset="/screenshot/demo1_cropped-400w.webp 400w, /screenshot/demo1_cropped-800w.webp 800w, /screenshot/demo1_cropped-1600w.webp 1600w" sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 95vw">
                     <source type="image/jpeg" srcset="/screenshot/demo1_cropped-400w.jpg 400w, /screenshot/demo1_cropped-800w.jpg 800w, /screenshot/demo1_cropped-1600w.jpg 1600w" sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 95vw">
@@ -90,282 +71,219 @@
     </header>
 
     <!-- 2. Comment ça marche (3 étapes) -->
-    <section id="comment-ca-marche" class="py-24 px-4 relative border-t border-white/5">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16 reveal">
-                <h2 class="font-serif text-3xl md:text-5xl mb-4 text-dream-cream">Du souvenir fragile au rêve que vous pouvez relire</h2>
-                <p class="text-purple-200/60 max-w-lg mx-auto">Capturez la scène, repérez les motifs, puis revenez-y quand vous êtes prêt à y réfléchir.</p>
+    <section id="comment-ca-marche">
+        <div class="oh-section-head reveal" data-steps-heading>
+            <div>
+                <span class="oh-index" aria-hidden="true">01</span>
+                <h2 class="oh-h2">Du souvenir fragile au rêve que vous pouvez relire</h2>
             </div>
+            <p class="oh-lede">Capturez la scène, repérez les motifs, puis revenez-y quand vous êtes prêt à y réfléchir.</p>
+        </div>
 
-            <div id="etapes-reves" class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-                <!-- Connecting line (desktop only) -->
-                <div class="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-dream-salmon/30 to-transparent z-0 step-line">
+        <div id="etapes-reves" class="oh-steps">
+            <article class="oh-step reveal" data-step="record">
+                <span class="oh-step-num" aria-hidden="true">1</span>
+                <span class="oh-step-icon"><i data-lucide="mic"></i></span>
+                <h3>Enregistrez</h3>
+                <p>Au réveil, racontez simplement votre rêve à voix haute. L'application capture chaque détail avant qu'il ne s'efface.</p>
+                <div class="phone-frame" data-phone="record">
+                    <picture>
+                        <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <img src="../img/en/recording-800w.jpg" alt="Enregistrement vocal de votre rêve" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
+                    </picture>
                 </div>
+            </article>
 
-                <!-- Step 1 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" data-step="record" style="transition-delay: 100ms;">
-                    <span class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">1</span>
-                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
-                        <i data-lucide="mic" class="w-10 h-10 text-dream-salmon"></i>
-                    </div>
-                    <h3 class="text-xl font-serif mb-3">Enregistrez</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Au réveil, racontez simplement votre rêve à voix haute. L'application capture chaque détail
-                        avant qu'il ne s'efface.
-                    </p>
-                    <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="record">
-                        <picture>
-                            <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                            <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                            <img src="../img/en/recording-800w.jpg" alt="Enregistrement vocal de votre rêve" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
-                        </picture>
-                    </div>
+            <article class="oh-step reveal" data-step="analyze">
+                <span class="oh-step-num" aria-hidden="true">2</span>
+                <span class="oh-step-icon"><i data-lucide="sparkles"></i></span>
+                <h3>Analysez</h3>
+                <p>Noctalia transcrit votre rêve et fait émerger les symboles, les émotions et les motifs récurrents dans votre récit.</p>
+                <div class="phone-frame" data-phone="analyze">
+                    <picture>
+                        <source type="image/webp" srcset="../img/en/analizing-480w.webp 480w, ../img/en/analizing-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <source type="image/jpeg" srcset="../img/en/analizing-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <img src="../img/en/analizing-800w.jpg" alt="Analyse instantanée de votre rêve" class="w-full h-full object-cover" width="800" height="1615" loading="lazy" decoding="async">
+                    </picture>
                 </div>
+            </article>
 
-                <!-- Step 2 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" data-step="analyze" style="transition-delay: 200ms;">
-                    <span class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">2</span>
-                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
-                        <i data-lucide="sparkles" class="w-10 h-10 text-dream-salmon"></i>
-                    </div>
-                    <h3 class="text-xl font-serif mb-3">Analysez</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Noctalia transcrit votre rêve et fait émerger les symboles, les émotions et les motifs récurrents
-                        dans votre récit.
-                    </p>
-                    <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="analyze">
-                        <picture>
-                            <source type="image/webp" srcset="../img/en/analizing-480w.webp 480w, ../img/en/analizing-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                            <source type="image/jpeg" srcset="../img/en/analizing-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                            <img src="../img/en/analizing-800w.jpg" alt="Analyse instantanée de votre rêve" class="w-full h-full object-cover" width="800" height="1615" loading="lazy" decoding="async">
-                        </picture>
-                    </div>
+            <article class="oh-step reveal" data-step="explore">
+                <span class="oh-step-num" aria-hidden="true">3</span>
+                <span class="oh-step-icon"><i data-lucide="compass"></i></span>
+                <h3>Explorez</h3>
+                <p>Visualisez votre rêve grâce à une image générée et utilisez des questions de suivi guidées pour approfondir le sens personnel du message.</p>
+                <div class="phone-frame" data-phone="explore">
+                    <picture>
+                        <source type="image/webp" srcset="../img/en/exploring-480w.webp 480w, ../img/en/exploring-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <source type="image/jpeg" srcset="../img/en/exploring-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <img src="../img/en/exploring-800w.jpg" alt="Exploration et visualisation de votre rêve" class="w-full h-full object-cover" width="800" height="1659" loading="lazy" decoding="async">
+                    </picture>
                 </div>
-
-                <!-- Step 3 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" data-step="explore" style="transition-delay: 300ms;">
-                    <span class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">3</span>
-                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
-                        <i data-lucide="compass" class="w-10 h-10 text-dream-salmon"></i>
-                    </div>
-                    <h3 class="text-xl font-serif mb-3">Explorez</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Visualisez votre rêve grâce à une image générée et utilisez des questions de suivi guidées pour
-                        approfondir le sens personnel du message.
-                    </p>
-                    <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="explore">
-                        <picture>
-                            <source type="image/webp" srcset="../img/en/exploring-480w.webp 480w, ../img/en/exploring-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                            <source type="image/jpeg" srcset="../img/en/exploring-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                            <img src="../img/en/exploring-800w.jpg" alt="Exploration et visualisation de votre rêve" class="w-full h-full object-cover" width="800" height="1659" loading="lazy" decoding="async">
-                        </picture>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-16 text-center reveal">
-                <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
-                </div>
-            </div>
+            </article>
         </div>
     </section>
 
-    <!-- 3. Pourquoi Noctalia (Bénéfices) & 4. Fonctionnalités (Bento Grid) -->
-    <section id="fonctionnalites" class="py-32 px-4 relative bg-black/20">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-16 md:flex md:justify-between md:items-end">
-                <div>
-                    <h2 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Votre laboratoire onirique</h2>
-                    <p class="text-purple-200/60 max-w-xl">Une suite d'outils puissants pour transformer vos nuits en
-                        connaissance de soi.</p>
-                </div>
-                <div class="hidden md:block">
-                    <i data-lucide="stars" class="w-12 h-12 text-dream-salmon/50"></i>
-                </div>
+    <!-- 3. Fonctionnalités -->
+    <section id="fonctionnalites">
+        <div class="oh-section-head reveal">
+            <div>
+                <span class="oh-index" aria-hidden="true">02</span>
+                <h2 class="oh-h2">Votre laboratoire onirique</h2>
             </div>
+            <p class="oh-lede">Une suite d'outils puissants pour transformer vos nuits en connaissance de soi.</p>
+        </div>
 
-            <!-- Bento Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-6 md:grid-rows-4 gap-6 h-auto md:h-[900px]">
-
-                <!-- Feature 1: Voice & Insights (Large) -->
-                <div class="col-span-1 md:col-span-4 md:row-span-2 glass-panel rounded-3xl p-0 flex flex-col md:flex-row justify-between group relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-dream-salmon/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0">
-                    </div>
-
-                    <!-- Text Content -->
-                    <div class="relative z-10 p-8 flex-1 flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-start justify-between mb-6">
-                                <div class="p-3 bg-white/5 rounded-xl border border-white/10">
-                                    <i data-lucide="mic" class="text-dream-salmon w-6 h-6"></i>
-                                </div>
-                                <span class="text-[10px] font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Technologie
-                                    STT</span>
-                            </div>
-                            <h3 class="font-serif text-3xl mb-3">Capture vocale &amp; Transcription</h3>
-                            <p class="text-gray-400 text-sm max-w-md">Ne perdez plus une seconde à écrire dans le noir.
-                                Noctalia transcrit vos murmures matinaux en texte clair.</p>
-                        </div>
-                        <div class="mt-6 flex gap-2 items-center opacity-60">
-                            <div class="w-1 h-8 bg-dream-salmon rounded-full animate-pulse"></div>
-                            <div class="w-1 h-12 bg-dream-salmonLight rounded-full animate-pulse" style="animation-delay: 0.1s"></div>
-                            <div class="w-1 h-6 bg-dream-salmon rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
-                            <div class="w-1 h-10 bg-dream-salmonLight rounded-full animate-pulse" style="animation-delay: 0.3s"></div>
-                        </div>
-                    </div>
-
-                    <!-- Screenshot Integration (Phone crop) -->
-                    <div class="relative w-full md:w-1/2 h-64 md:h-auto overflow-hidden flex items-end justify-center md:justify-end bg-black/20">
-                        <div class="phone-frame w-48 transform translate-y-10 md:translate-y-16 md:translate-x-8 rotate-[-5deg] shadow-2xl border-gray-800">
-                            <picture>
-                                <source type="image/webp" srcset="../img/settings_menu-720w.webp 720w" sizes="(min-width: 1024px) 240px, 70vw">
-                                <source type="image/jpeg" srcset="../img/settings_menu-720w.jpg 720w" sizes="(min-width: 1024px) 240px, 70vw">
-                                <img src="../img/settings_menu-720w.jpg" alt="Écran d'enregistrement" class="w-full h-full object-cover" width="720" height="1487" loading="lazy" decoding="async">
-                            </picture>
-                        </div>
+        <div class="oh-features">
+            <article class="oh-feature oh-feature--a glass-panel reveal">
+                <div class="oh-feature-top">
+                    <span class="oh-feature-num">01 · Technologie STT</span>
+                    <span class="oh-feature-icon"><i data-lucide="mic"></i></span>
+                </div>
+                <div>
+                    <h3>Capture vocale &amp; Transcription</h3>
+                    <p>Ne perdez plus une seconde à écrire dans le noir. Noctalia transcrit vos murmures matinaux en texte clair.</p>
+                    <div class="oh-feature-media" aria-hidden="true">
+                        <svg width="180" height="36" viewBox="0 0 180 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0" y="12" width="3" height="12" rx="1.5" fill="currentColor" opacity="0.45"/>
+                            <rect x="9" y="8" width="3" height="20" rx="1.5" fill="currentColor" opacity="0.7"/>
+                            <rect x="18" y="14" width="3" height="8" rx="1.5" fill="currentColor" opacity="0.4"/>
+                            <rect x="27" y="4" width="3" height="28" rx="1.5" fill="currentColor" opacity="0.85"/>
+                            <rect x="36" y="10" width="3" height="16" rx="1.5" fill="currentColor" opacity="0.6"/>
+                            <rect x="45" y="16" width="3" height="6" rx="1.5" fill="currentColor" opacity="0.35"/>
+                            <rect x="54" y="6" width="3" height="24" rx="1.5" fill="currentColor" opacity="0.75"/>
+                            <rect x="63" y="12" width="3" height="12" rx="1.5" fill="currentColor" opacity="0.5"/>
+                            <rect x="72" y="2" width="3" height="32" rx="1.5" fill="currentColor" opacity="0.9"/>
+                            <rect x="81" y="9" width="3" height="18" rx="1.5" fill="currentColor" opacity="0.6"/>
+                            <rect x="90" y="15" width="3" height="7" rx="1.5" fill="currentColor" opacity="0.4"/>
+                            <rect x="99" y="7" width="3" height="22" rx="1.5" fill="currentColor" opacity="0.7"/>
+                            <rect x="108" y="13" width="3" height="10" rx="1.5" fill="currentColor" opacity="0.45"/>
+                            <rect x="117" y="5" width="3" height="26" rx="1.5" fill="currentColor" opacity="0.8"/>
+                            <rect x="126" y="11" width="3" height="14" rx="1.5" fill="currentColor" opacity="0.55"/>
+                            <rect x="135" y="16" width="3" height="5" rx="1.5" fill="currentColor" opacity="0.35"/>
+                            <rect x="144" y="8" width="3" height="20" rx="1.5" fill="currentColor" opacity="0.65"/>
+                            <rect x="153" y="13" width="3" height="10" rx="1.5" fill="currentColor" opacity="0.45"/>
+                            <rect x="162" y="10" width="3" height="16" rx="1.5" fill="currentColor" opacity="0.55"/>
+                            <rect x="171" y="15" width="3" height="6" rx="1.5" fill="currentColor" opacity="0.35"/>
+                        </svg>
                     </div>
                 </div>
+            </article>
 
-                <!-- Feature 2: Visuals (Medium) -->
-                <div class="col-span-1 md:col-span-2 md:row-span-2 glass-panel rounded-3xl p-0 relative overflow-hidden group">
-                    <!-- Screenshot Integration (Full Background) -->
-                    <picture>
-                        <source type="image/webp" srcset="../img/dream_detail-700w.webp 700w, ../img/dream_detail-1000w.webp 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
-                        <source type="image/jpeg" srcset="../img/dream_detail-1000w.jpg 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
-                        <img src="../img/dream_detail-1000w.jpg" alt="Liste des rêves" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-60" width="1000" height="2078" loading="lazy" decoding="async">
-                    </picture>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-
-                    <div class="absolute bottom-0 left-0 p-6 w-full z-10">
-                        <div class="flex items-center gap-2 mb-2">
-                            <i data-lucide="image" class="w-5 h-5 text-dream-salmon"></i>
-                            <h3 class="font-serif text-xl">Journal Visuel</h3>
-                        </div>
-                        <p class="text-xs text-gray-300">Retrouvez tous vos voyages oniriques illustrés automatiquement
-                            avec Noctalia.</p>
-                    </div>
+            <article class="oh-feature oh-feature--b glass-panel reveal">
+                <div class="oh-feature-top">
+                    <span class="oh-feature-num">02</span>
+                    <span class="oh-feature-icon"><i data-lucide="image"></i></span>
                 </div>
+                <div>
+                    <h3>Journal Visuel</h3>
+                    <p>Retrouvez tous vos voyages oniriques illustrés automatiquement avec Noctalia.</p>
+                </div>
+            </article>
 
-                <!-- Feature 3: Guided Analysis (Medium) -->
-                <div class="col-span-1 md:col-span-3 md:row-span-2 glass-panel rounded-3xl p-8 relative reveal">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="p-2 bg-purple-500/20 rounded-lg">
-                            <i data-lucide="brain-circuit" class="text-dream-salmon w-5 h-5"></i>
-                        </div>
-                        <h3 class="font-serif text-2xl">Analyse Guidée</h3>
-                    </div>
-                    <ul class="space-y-4">
-                        <li class="flex items-start gap-3 text-sm text-gray-300">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
-                            <span><strong>Interprétation :</strong> Un résumé du sens profond.</span>
-                        </li>
-                        <li class="flex items-start gap-3 text-sm text-gray-300">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
-                            <span><strong>Symboles :</strong> Décodage des archétypes (Jung/Freud).</span>
-                        </li>
-                        <li class="flex items-start gap-3 text-sm text-gray-300">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
-                            <span><strong>Exploration guidée :</strong> Posez des questions de suivi autour de votre rêve.</span>
-                        </li>
+            <article class="oh-feature oh-feature--c glass-panel reveal">
+                <div class="oh-feature-top">
+                    <span class="oh-feature-num">03</span>
+                    <span class="oh-feature-icon"><i data-lucide="brain-circuit"></i></span>
+                </div>
+                <div>
+                    <h3>Analyse Guidée</h3>
+                    <ul>
+                        <li><span><strong>Interprétation :</strong> Un résumé du sens profond.</span></li>
+                        <li><span><strong>Symboles :</strong> Décodage des archétypes (Jung/Freud).</span></li>
+                        <li><span><strong>Exploration guidée :</strong> Posez des questions de suivi autour de votre rêve.</span></li>
                     </ul>
                 </div>
+            </article>
 
-                <!-- Feature 4: Longitudinal Stats (Medium) -->
-                <div class="col-span-1 md:col-span-3 md:row-span-2 glass-panel rounded-3xl p-8 relative reveal flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="p-2 bg-blue-500/20 rounded-lg">
-                                <i data-lucide="bar-chart-2" class="text-blue-300 w-5 h-5"></i>
-                            </div>
-                            <h3 class="font-serif text-2xl">Suivi Émotionnel</h3>
-                        </div>
-                        <p class="text-sm text-gray-400 mt-2">Détectez les récurrences et suivez l'évolution de votre
-                            humeur nocturne.</p>
-                    </div>
-
-                    <!-- Mock Chart -->
-                    <div class="h-32 flex items-end gap-2 mt-6">
-                        <div class="w-full bg-dream-salmon/10 h-[40%] rounded-t"></div>
-                        <div class="w-full bg-dream-salmon/30 h-[60%] rounded-t relative group">
-                            <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                                Lucide</div>
-                        </div>
-                        <div class="w-full bg-dream-salmon/50 h-[80%] rounded-t"></div>
-                        <div class="w-full bg-dream-salmon/20 h-[50%] rounded-t"></div>
-                        <div class="w-full bg-dream-salmon/40 h-[70%] rounded-t"></div>
+            <article class="oh-feature oh-feature--d glass-panel reveal">
+                <div class="oh-feature-top">
+                    <span class="oh-feature-num">04</span>
+                    <span class="oh-feature-icon"><i data-lucide="bar-chart-2"></i></span>
+                </div>
+                <div>
+                    <h3>Suivi Émotionnel</h3>
+                    <p>Détectez les récurrences et suivez l'évolution de votre humeur nocturne.</p>
+                    <div class="oh-feature-media" aria-hidden="true">
+                        <svg width="200" height="72" viewBox="0 0 200 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0" y="44" width="24" height="28" rx="2" fill="currentColor" opacity="0.25"/>
+                            <rect x="34" y="30" width="24" height="42" rx="2" fill="currentColor" opacity="0.45"/>
+                            <rect x="68" y="12" width="24" height="60" rx="2" fill="currentColor" opacity="0.7"/>
+                            <rect x="102" y="38" width="24" height="34" rx="2" fill="currentColor" opacity="0.35"/>
+                            <rect x="136" y="22" width="24" height="50" rx="2" fill="currentColor" opacity="0.55"/>
+                            <rect x="170" y="48" width="24" height="24" rx="2" fill="currentColor" opacity="0.25"/>
+                        </svg>
                     </div>
                 </div>
-
-            </div>
+            </article>
         </div>
     </section>
 
-    <!-- Explorer les outils Noctalia -->
-    <section aria-labelledby="explorer-outils-noctalia" class="py-20 px-4 relative border-t border-white/5">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-10 reveal">
-                <h2 id="explorer-outils-noctalia" class="font-serif text-3xl md:text-4xl text-dream-cream mb-4">Choisissez la bonne façon d'explorer vos rêves</h2>
-                <p class="text-purple-200/60 max-w-2xl mx-auto">Commencez par ce dont vous avez besoin maintenant : une saisie plus rapide, une réflexion guidée, la recherche d'un symbole ou un comparatif d'applications.</p>
+    <!-- 4. Explorer les outils Noctalia -->
+    <section aria-labelledby="explorer-outils-noctalia" class="oh-section">
+        <div class="oh-section-head reveal">
+            <div>
+                <span class="oh-index" aria-hidden="true">03</span>
+                <h2 id="explorer-outils-noctalia" class="oh-h2">Choisissez la bonne façon d'explorer vos rêves</h2>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 reveal">
-                <a href="/fr/journal-de-reves-vocal" class="glass-panel rounded-2xl p-6 block hover:border-dream-salmon/30 transition-colors">
-                    <h3 class="font-serif text-lg text-dream-cream mb-2">Journal de rêves vocal</h3>
-                    <p class="text-sm text-gray-400">Découvrez comment enregistrer un rêve à la voix dans les premiers instants après le réveil.</p>
-                </a>
-                <a href="/fr/application-interpretation-reves-ia" class="glass-panel rounded-2xl p-6 block hover:border-dream-salmon/30 transition-colors">
-                    <h3 class="font-serif text-lg text-dream-cream mb-2">Interprétation des rêves par IA</h3>
-                    <p class="text-sm text-gray-400">Découvrez comment une réflexion guidée relie symboles, émotions, images et questions de suivi.</p>
-                </a>
-                <a href="/fr/dictionnaire-de-reves-application" class="glass-panel rounded-2xl p-6 block hover:border-dream-salmon/30 transition-colors">
-                    <h3 class="font-serif text-lg text-dream-cream mb-2">Application dictionnaire des rêves</h3>
-                    <p class="text-sm text-gray-400">Parcourez des symboles fréquents, puis reliez-les au contexte de votre rêve enregistré.</p>
-                </a>
-                <a href="/fr/applications-journal-de-reves" class="glass-panel rounded-2xl p-6 block hover:border-dream-salmon/30 transition-colors">
-                    <h3 class="font-serif text-lg text-dream-cream mb-2">Meilleures applications de journal de rêves</h3>
-                    <p class="text-sm text-gray-400">Comparez les méthodes de saisie, la confidentialité, les fonctions d'IA et les prix.</p>
-                </a>
-            </div>
+            <p class="oh-lede">Commencez par ce dont vous avez besoin maintenant : une saisie plus rapide, une réflexion guidée, la recherche d'un symbole ou un comparatif d'applications.</p>
+        </div>
+        <div class="oh-tools">
+            <a href="/fr/journal-de-reves-vocal" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Journal de rêves vocal</h3>
+                    <p>Découvrez comment enregistrer un rêve à la voix dans les premiers instants après le réveil.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+            <a href="/fr/application-interpretation-reves-ia" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Interprétation des rêves par IA</h3>
+                    <p>Découvrez comment une réflexion guidée relie symboles, émotions, images et questions de suivi.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+            <a href="/fr/dictionnaire-de-reves-application" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Application dictionnaire des rêves</h3>
+                    <p>Parcourez des symboles fréquents, puis reliez-les au contexte de votre rêve enregistré.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+            <a href="/fr/applications-journal-de-reves" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Meilleures applications de journal de rêves</h3>
+                    <p>Comparez les méthodes de saisie, la confidentialité, les fonctions d'IA et les prix.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
         </div>
     </section>
 
     <!-- 5. Pour qui ? (Profils) -->
-    <section class="py-24 px-4 relative">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16 reveal">
-                <h2 class="font-serif text-3xl md:text-4xl text-white mb-4">Est-ce pour vous ?</h2>
-                <div class="h-1 w-20 bg-dream-salmon mx-auto rounded-full"></div>
+    <section class="oh-section">
+        <div class="oh-section-head reveal">
+            <div>
+                <span class="oh-index" aria-hidden="true">04</span>
+                <h2 class="oh-h2">Est-ce pour vous ?</h2>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Profile 1 -->
-                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-dream-salmon">
-                    <div class="mx-auto w-16 h-16 bg-purple-900/50 rounded-full flex items-center justify-center mb-6">
-                        <i data-lucide="search" class="text-dream-salmon w-8 h-8"></i>
-                    </div>
-                    <h3 class="font-serif text-xl mb-3">Le Curieux</h3>
-                    <p class="text-sm text-gray-400">Vous vous demandez pourquoi vous rêvez de perdre vos dents ou de
-                        voler. Vous cherchez du sens.</p>
-                </div>
-
-                <!-- Profile 2 -->
-                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-pink-400" style="transition-delay: 100ms;">
-                    <div class="mx-auto w-16 h-16 bg-pink-900/30 rounded-full flex items-center justify-center mb-6">
-                        <i data-lucide="feather" class="text-pink-300 w-8 h-8"></i>
-                    </div>
-                    <h3 class="font-serif text-xl mb-3">L'Introspectif</h3>
-                    <p class="text-sm text-gray-400">Vous utilisez le journal intime et le développement personnel pour
-                        mieux vous connaître.</p>
-                </div>
-
-                <!-- Profile 3 -->
-                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-indigo-400" style="transition-delay: 200ms;">
-                    <div class="mx-auto w-16 h-16 bg-indigo-900/50 rounded-full flex items-center justify-center mb-6">
-                        <i data-lucide="moon" class="text-indigo-300 w-8 h-8"></i>
-                    </div>
-                    <h3 class="font-serif text-xl mb-3">L'Explorateur</h3>
-                    <p class="text-sm text-gray-400">Vous pratiquez ou souhaitez apprendre le rêve lucide pour contrôler
-                        votre inconscient.</p>
-                </div>
+        </div>
+        <div class="oh-profiles">
+            <div class="oh-profile reveal">
+                <span class="oh-profile-icon"><i data-lucide="search"></i></span>
+                <h3>Le Curieux</h3>
+                <p>Vous vous demandez pourquoi vous rêvez de perdre vos dents ou de voler. Vous cherchez du sens.</p>
+            </div>
+            <div class="oh-profile reveal">
+                <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
+                <h3>L'Introspectif</h3>
+                <p>Vous utilisez le journal intime et le développement personnel pour mieux vous connaître.</p>
+            </div>
+            <div class="oh-profile reveal">
+                <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
+                <h3>L'Explorateur</h3>
+                <p>Vous pratiquez ou souhaitez apprendre le rêve lucide pour contrôler votre inconscient.</p>
             </div>
         </div>
     </section>
@@ -440,214 +358,154 @@
     </section>
 
     <!-- 7. Prix / Plans -->
-    <section class="py-24 px-4 relative">
-        <div class="max-w-5xl mx-auto text-center">
-            <h2 class="font-serif text-3xl md:text-4xl mb-16 reveal">Commencez votre voyage</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <!-- Free Plan -->
-                <div class="glass-panel p-8 rounded-3xl reveal hover:border-dream-salmon/30">
-                    <h3 class="text-2xl font-serif mb-2">Rêveur</h3>
-                    <div class="text-4xl font-bold mb-6">Gratuit</div>
-                    <p class="text-gray-400 text-sm mb-8">Pour découvrir la magie de vos nuits sans engagement.</p>
-
-                    <ul class="space-y-4 text-left mb-8 px-4">
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Enregistrements illimités</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 3 analyses de rêves par mois</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 explorations guidées par mois</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Journal de base</li>
-                    </ul>
-
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Téléchargez l'application</a>
+    <section class="oh-section">
+        <div class="oh-pricing-head reveal">
+            <span class="oh-index" aria-hidden="true">05</span>
+            <h2 class="oh-h2">Commencez votre voyage</h2>
+        </div>
+        <div class="oh-pricing">
+            <div class="oh-plan oh-plan--free reveal">
+                <div class="oh-plan-head">
+                    <h3>Rêveur</h3>
+                    <div class="oh-plan-price">Gratuit</div>
+                    <p class="oh-plan-desc">Pour découvrir la magie de vos nuits sans engagement.</p>
                 </div>
+                <ul>
+                    <li>Enregistrements illimités</li>
+                    <li>3 analyses de rêves par mois</li>
+                    <li>2 explorations guidées par mois</li>
+                    <li>Journal de base</li>
+                </ul>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="oh-plan-cta">Téléchargez l'application</a>
+            </div>
 
-                <!-- Offre Noctalia Plus -->
-                <div class="glass-panel p-8 rounded-3xl border-dream-salmon/50 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.1)]">
-                    <div class="absolute top-0 right-0 bg-dream-salmon text-dream-dark text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-                        Recommandé</div>
-                    <div class="absolute inset-0 bg-purple-900/10 pointer-events-none"></div>
-
-                    <h3 class="text-2xl font-serif mb-2 text-dream-salmon">Noctalia Plus</h3>
-                    <div class="text-3xl font-bold mb-2">Tarif actuel sur Google Play</div>
-                    <p class="text-purple-200/60 text-xs mb-6">Les options mensuelle et annuelle peuvent varier selon le pays et l'éligibilité.</p>
-
-                    <ul class="space-y-4 text-left mb-8 px-4">
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Explorations guidées illimitées
-                        </li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Génération d'images HD</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Statistiques avancées</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Exploration guidée du rêve</li>
-                    </ul>
-
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">Voir Noctalia Plus</a>
-                    <p class="text-[10px] text-gray-500 mt-3">Google Play affiche le prix applicable, la période de facturation et toute éligibilité avant l'achat.</p>
+            <div class="oh-plan oh-plan--plus reveal">
+                <div class="oh-plan-head">
+                    <span class="oh-plan-tag">Recommandé</span>
+                    <h3>Noctalia Plus</h3>
+                    <div class="oh-plan-price">Tarif actuel sur Google Play</div>
+                    <p class="oh-plan-desc">Les options mensuelle et annuelle peuvent varier selon le pays et l'éligibilité.</p>
                 </div>
+                <ul>
+                    <li>Explorations guidées illimitées</li>
+                    <li>Génération d'images HD</li>
+                    <li>Statistiques avancées</li>
+                    <li>Exploration guidée du rêve</li>
+                </ul>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="oh-plan-cta">Voir Noctalia Plus</a>
+                <p class="oh-plan-note">Google Play affiche le prix applicable, la période de facturation et toute éligibilité avant l'achat.</p>
             </div>
         </div>
     </section>
 
     <!-- 8. FAQ -->
-    <section class="py-20 px-4 max-w-5xl mx-auto">
-        <h2 class="font-serif text-3xl text-center mb-12 reveal">Questions fréquentes</h2>
-
-        <div class="space-y-4 reveal">
-            <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-                <summary class="font-medium flex justify-between items-center">
-                    Comment fonctionne l'analyse des rêves ?
-                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
-                </summary>
-                <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    Noctalia utilise des modèles de langage avancés entraînés sur la psychologie analytique (Jung) et la
-                    symbolique des rêves. Le moteur d'analyse identifie les motifs récurrents et les archétypes pour
-                    vous proposer des pistes de réflexion, sans jamais imposer une vérité absolue.
-                </p>
+    <section class="oh-section">
+        <div class="oh-pricing-head reveal">
+            <span class="oh-index" aria-hidden="true">06</span>
+            <h2 class="oh-h2">Questions fréquentes</h2>
+        </div>
+        <div class="oh-faq reveal">
+            <details>
+                <summary>Comment fonctionne l'analyse des rêves ?</summary>
+                <p>Noctalia utilise des modèles de langage avancés entraînés sur la psychologie analytique (Jung) et la symbolique des rêves. Le moteur d'analyse identifie les motifs récurrents et les archétypes pour vous proposer des pistes de réflexion, sans jamais imposer une vérité absolue.</p>
             </details>
-
-            <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-                <summary class="font-medium flex justify-between items-center">
-                    Mes rêves sont-ils privés ?
-                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
-                </summary>
-                <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    Oui. Vos transcriptions et textes sont chiffrés en transit et stockés de manière sécurisée. L’audio vocal sert uniquement à la transcription et n’est pas conservé durablement par Noctalia. Noctalia ne revend pas vos données et n’utilise pas de publicité ciblée ; l’accès est limité à vous et aux prestataires nécessaires au service.
-                </p>
+            <details>
+                <summary>Mes rêves sont-ils privés ?</summary>
+                <p>Oui. Vos transcriptions et textes sont chiffrés en transit et stockés de manière sécurisée. L’audio vocal sert uniquement à la transcription et n’est pas conservé durablement par Noctalia. Noctalia ne revend pas vos données et n’utilise pas de publicité ciblée ; l’accès est limité à vous et aux prestataires nécessaires au service.</p>
             </details>
-
-            <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-                <summary class="font-medium flex justify-between items-center">
-                    Puis-je écrire mes rêves au lieu de parler ?
-                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
-                </summary>
-                <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    Oui, tout à fait. Si vous préférez ne pas réveiller votre partenaire ou si vous êtes plus à l'aise à
-                    l'écrit, un éditeur de texte complet est disponible.
-                </p>
+            <details>
+                <summary>Puis-je écrire mes rêves au lieu de parler ?</summary>
+                <p>Oui, tout à fait. Si vous préférez ne pas réveiller votre partenaire ou si vous êtes plus à l'aise à l'écrit, un éditeur de texte complet est disponible.</p>
             </details>
-
-            <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-                <summary class="font-medium flex justify-between items-center">
-                    L'application fonctionne-t-elle hors ligne ?
-                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
-                </summary>
-                <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    Vous pouvez enregistrer vos rêves hors ligne. L'analyse et la synchronisation se feront
-                    automatiquement dès que vous retrouverez une connexion.
-                </p>
+            <details>
+                <summary>L'application fonctionne-t-elle hors ligne ?</summary>
+                <p>Vous pouvez enregistrer vos rêves hors ligne. L'analyse et la synchronisation se feront automatiquement dès que vous retrouverez une connexion.</p>
             </details>
         </div>
     </section>
 
     <!-- 9. Dictionnaire des Symboles -->
-    <section id="symboles" class="py-24 px-4 relative bg-black/20">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-12 reveal">
-                <div class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-4 py-2 mb-6">
-                    <i data-lucide="book-open" class="w-4 h-4"></i>
-                    RESSOURCE GRATUITE
-                </div>
-                <h2 class="font-serif text-3xl md:text-4xl text-white mb-4">Dictionnaire des Symboles</h2>
-                <p class="text-purple-200/60 max-w-xl mx-auto">Explorez 150 symboles oniriques avec des pistes contextuelles et des questions de réflexion. Ce sont des points de départ, pas des messages fixes de votre subconscient.</p>
+    <section id="symboles">
+        <div class="oh-section-head reveal">
+            <div>
+                <span class="oh-symbols-badge"><i data-lucide="book-open"></i> RESSOURCE GRATUITE</span>
+                <h2 class="oh-h2">Dictionnaire des Symboles</h2>
             </div>
+            <p class="oh-lede">Explorez 150 symboles oniriques avec des pistes contextuelles et des questions de réflexion. Ce sont des points de départ, pas des messages fixes de votre subconscient.</p>
+        </div>
 
-            <!-- Popular Symbols Grid - Expanded to 16 symbols for better crawl signals -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 reveal">
-                <!-- Rêves courants -->
-                <a href="symboles/eau" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">💧</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Eau</h3>
-                    <p class="text-xs text-gray-400 mt-1">Émotions &amp; subconscient</p>
-                </a>
-                <a href="symboles/chute" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🌀</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Chute</h3>
-                    <p class="text-xs text-gray-400 mt-1">Perte de contrôle</p>
-                </a>
-                <a href="symboles/voler" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🕊️</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Voler</h3>
-                    <p class="text-xs text-gray-400 mt-1">Liberté &amp; transcendance</p>
-                </a>
-                <a href="symboles/dents" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🦷</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Dents</h3>
-                    <p class="text-xs text-gray-400 mt-1">Anxiété &amp; image de soi</p>
-                </a>
-                <!-- Animaux & Nature -->
-                <a href="symboles/serpent" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🐍</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Serpent</h3>
-                    <p class="text-xs text-gray-400 mt-1">Transformation</p>
-                </a>
-                <a href="symboles/araignee" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🕷️</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Araignée</h3>
-                    <p class="text-xs text-gray-400 mt-1">Créativité &amp; peur</p>
-                </a>
-                <a href="symboles/chien" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🐕</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Chien</h3>
-                    <p class="text-xs text-gray-400 mt-1">Loyauté &amp; protection</p>
-                </a>
-                <a href="symboles/chat" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🐈</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Chat</h3>
-                    <p class="text-xs text-gray-400 mt-1">Indépendance &amp; intuition</p>
-                </a>
-                <!-- Lieux & Objets -->
-                <a href="symboles/maison" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🏠</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Maison</h3>
-                    <p class="text-xs text-gray-400 mt-1">Le soi &amp; la psyché</p>
-                </a>
-                <a href="symboles/voiture" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🚗</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Voiture</h3>
-                    <p class="text-xs text-gray-400 mt-1">Direction de vie</p>
-                </a>
-                <a href="symboles/porte" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🚪</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Porte</h3>
-                    <p class="text-xs text-gray-400 mt-1">Opportunités</p>
-                </a>
-                <a href="symboles/feu" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🔥</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Feu</h3>
-                    <p class="text-xs text-gray-400 mt-1">Passion &amp; destruction</p>
-                </a>
-                <!-- Thèmes de vie -->
-                <a href="symboles/mort" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">💀</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Mort</h3>
-                    <p class="text-xs text-gray-400 mt-1">Fin &amp; renaissance</p>
-                </a>
-                <a href="symboles/poursuite" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🏃</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Poursuite</h3>
-                    <p class="text-xs text-gray-400 mt-1">Évitement &amp; peur</p>
-                </a>
-                <a href="symboles/mer" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🌊</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Mer</h3>
-                    <p class="text-xs text-gray-400 mt-1">Émotions profondes</p>
-                </a>
-                <a href="symboles/foret" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
-                    <div class="text-3xl mb-3">🌲</div>
-                    <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Forêt</h3>
-                    <p class="text-xs text-gray-400 mt-1">L'inconnu</p>
-                </a>
-            </div>
+        <div class="oh-symbols reveal">
+            <a href="symboles/eau" class="oh-symbol">
+                <span><span class="oh-symbol-name">Eau</span><span class="oh-symbol-q">Émotions &amp; subconscient</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/chute" class="oh-symbol">
+                <span><span class="oh-symbol-name">Chute</span><span class="oh-symbol-q">Perte de contrôle</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/voler" class="oh-symbol">
+                <span><span class="oh-symbol-name">Voler</span><span class="oh-symbol-q">Liberté &amp; transcendance</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/dents" class="oh-symbol">
+                <span><span class="oh-symbol-name">Dents</span><span class="oh-symbol-q">Anxiété &amp; image de soi</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/serpent" class="oh-symbol">
+                <span><span class="oh-symbol-name">Serpent</span><span class="oh-symbol-q">Transformation</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/araignee" class="oh-symbol">
+                <span><span class="oh-symbol-name">Araignée</span><span class="oh-symbol-q">Créativité &amp; peur</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/chien" class="oh-symbol">
+                <span><span class="oh-symbol-name">Chien</span><span class="oh-symbol-q">Loyauté &amp; protection</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/chat" class="oh-symbol">
+                <span><span class="oh-symbol-name">Chat</span><span class="oh-symbol-q">Indépendance &amp; intuition</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/maison" class="oh-symbol">
+                <span><span class="oh-symbol-name">Maison</span><span class="oh-symbol-q">Le soi &amp; la psyché</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/voiture" class="oh-symbol">
+                <span><span class="oh-symbol-name">Voiture</span><span class="oh-symbol-q">Direction de vie</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/porte" class="oh-symbol">
+                <span><span class="oh-symbol-name">Porte</span><span class="oh-symbol-q">Opportunités</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/feu" class="oh-symbol">
+                <span><span class="oh-symbol-name">Feu</span><span class="oh-symbol-q">Passion &amp; destruction</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/mort" class="oh-symbol">
+                <span><span class="oh-symbol-name">Mort</span><span class="oh-symbol-q">Fin &amp; renaissance</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/poursuite" class="oh-symbol">
+                <span><span class="oh-symbol-name">Poursuite</span><span class="oh-symbol-q">Évitement &amp; peur</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/mer" class="oh-symbol">
+                <span><span class="oh-symbol-name">Mer</span><span class="oh-symbol-q">Émotions profondes</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="symboles/foret" class="oh-symbol">
+                <span><span class="oh-symbol-name">Forêt</span><span class="oh-symbol-q">L'inconnu</span></span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+        </div>
 
-            <!-- CTA to full dictionary -->
-            <div class="text-center reveal">
-                <a href="guides/dictionnaire-symboles-reves" class="inline-flex items-center gap-2 px-8 py-4 glass-button rounded-full font-sans text-white hover:text-dream-salmon transition-colors group">
-                    <i data-lucide="book-open" class="w-5 h-5"></i>
-                    Explorer les 150 symboles
-                    <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-                </a>
-            </div>
+        <div class="oh-symbols-cta reveal">
+            <a href="guides/dictionnaire-symboles-reves" class="oh-btn-quiet">
+                <i data-lucide="book-open"></i> Explorer les 150 symboles <i data-lucide="arrow-right"></i>
+            </a>
         </div>
     </section>
 
 </main>
-
-    <!-- 10. Footer -->

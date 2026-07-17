@@ -114,6 +114,7 @@
       "sitemap": true,
       "aspects": {
         "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
+        "4x5": { "width": 1200, "height": 1500, "widths": [480, 800, 1200], "mode": "cover", "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/dream-symbols-dictionary", "position": { "x": 50, "y": 45 } },
         "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
         "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
       }
@@ -265,11 +266,11 @@
           "assetId": "editorial.lucid-dreaming",
           "aspect": "16x9",
           "mobileAspect": "4x5",
-          "mobileBreakpoint": "768px",
+          "mobileBreakpoint": "1024px",
           "mobileSizes": "100vw",
           "alt": "A dreamer floating from bed into a luminous surreal landscape",
           "caption": "Lucid dreaming begins when a familiar dream scene becomes a cue for awareness.",
-          "sizes": "(max-width: 768px) 100vw, 1200px"
+          "sizes": "(max-width: 1024px) 100vw, 1200px"
         },
         "educational": {
           "assetId": "educational.lucid-dreaming.en",
@@ -292,11 +293,11 @@
           "assetId": "editorial.dream-journal",
           "aspect": "16x9",
           "mobileAspect": "4x5",
-          "mobileBreakpoint": "768px",
+          "mobileBreakpoint": "1024px",
           "mobileSizes": "100vw",
           "alt": "An open dream journal glowing softly on a bedside table",
           "caption": "Keeping a notebook within reach makes fragile dream details easier to capture on waking.",
-          "sizes": "(max-width: 768px) 100vw, 1200px"
+          "sizes": "(max-width: 1024px) 100vw, 1200px"
         },
         "educational": {
           "assetId": "educational.dream-journal.en",
@@ -319,11 +320,11 @@
           "assetId": "editorial.dream-interpretation-history",
           "aspect": "16x9",
           "mobileAspect": "4x5",
-          "mobileBreakpoint": "768px",
+          "mobileBreakpoint": "1024px",
           "mobileSizes": "100vw",
           "alt": "An ancient temple, illuminated book and celestial symbols under a night sky",
           "caption": "Dream interpretation has moved through sacred, psychological and scientific frameworks.",
-          "sizes": "(max-width: 768px) 100vw, 1200px"
+          "sizes": "(max-width: 1024px) 100vw, 1200px"
         },
         "educational": {
           "assetId": "educational.dream-interpretation-history.en",
@@ -346,11 +347,11 @@
           "assetId": "editorial.pregnancy-dreams",
           "aspect": "16x9",
           "mobileAspect": "4x5",
-          "mobileBreakpoint": "768px",
+          "mobileBreakpoint": "1024px",
           "mobileSizes": "100vw",
           "alt": "A woman beside a moonlit tree with symbols of growth and new beginnings",
           "caption": "Pregnancy imagery in dreams can reflect change, anticipation or lived experience depending on context.",
-          "sizes": "(max-width: 768px) 100vw, 1200px"
+          "sizes": "(max-width: 1024px) 100vw, 1200px"
         },
         "educational": {
           "assetId": "educational.pregnancy-dreams.en",
@@ -373,11 +374,11 @@
           "assetId": "editorial.water-dreams",
           "aspect": "16x9",
           "mobileAspect": "4x5",
-          "mobileBreakpoint": "768px",
+          "mobileBreakpoint": "1024px",
           "mobileSizes": "100vw",
           "alt": "Una habitación onírica sumergida en agua azul y violeta",
           "caption": "El estado, el movimiento y el lugar del agua ayudan a contextualizar el sueño.",
-          "sizes": "(max-width: 768px) 100vw, 1200px"
+          "sizes": "(max-width: 1024px) 100vw, 1200px"
         },
         "educational": {
           "assetId": "educational.water-dreams.es",
@@ -400,11 +401,11 @@
           "assetId": "editorial.flying-dreams",
           "aspect": "16x9",
           "mobileAspect": "4x5",
-          "mobileBreakpoint": "768px",
+          "mobileBreakpoint": "1024px",
           "mobileSizes": "100vw",
           "alt": "A person flying freely across a luminous purple night sky",
           "caption": "The feeling and degree of control in a flying dream can change how the experience is understood.",
-          "sizes": "(max-width: 768px) 100vw, 1200px"
+          "sizes": "(max-width: 1024px) 100vw, 1200px"
         },
         "educational": {
           "assetId": "educational.flying-dreams.en",
@@ -427,11 +428,11 @@
           "assetId": "editorial.dream-journal",
           "aspect": "16x9",
           "mobileAspect": "4x5",
-          "mobileBreakpoint": "768px",
+          "mobileBreakpoint": "1024px",
           "mobileSizes": "100vw",
           "alt": "Un diario de sueños abierto e iluminado sobre una mesita de noche",
           "caption": "Tener el diario al alcance ayuda a conservar los detalles frágiles al despertar.",
-          "sizes": "(max-width: 768px) 100vw, 1200px"
+          "sizes": "(max-width: 1024px) 100vw, 1200px"
         },
         "educational": {
           "assetId": "educational.dream-journal.es",
@@ -453,9 +454,12 @@
         "editorial": {
           "assetId": "editorial.dream-symbols-dictionary",
           "aspect": "16x9",
+          "mobileAspect": "4x5",
+          "mobileBreakpoint": "1024px",
+          "mobileSizes": "100vw",
           "alt": "An open dream dictionary surrounded by a key, eye, tree, wave and doorway",
           "caption": "Dream symbols become more useful when connected to emotion, context and personal associations.",
-          "sizes": "(max-width: 768px) 100vw, 1200px"
+          "sizes": "(max-width: 1024px) 100vw, 1200px"
         },
         "educational": {
           "assetId": "educational.dream-symbols-dictionary.en",
@@ -478,11 +482,11 @@
           "assetId": "editorial.lucid-dreaming",
           "aspect": "16x9",
           "mobileAspect": "4x5",
-          "mobileBreakpoint": "768px",
+          "mobileBreakpoint": "1024px",
           "mobileSizes": "100vw",
           "alt": "Una persona flota desde su cama hacia un paisaje onírico luminoso",
           "caption": "La lucidez empieza cuando una escena habitual del sueño se convierte en señal de conciencia.",
-          "sizes": "(max-width: 768px) 100vw, 1200px"
+          "sizes": "(max-width: 1024px) 100vw, 1200px"
         },
         "educational": {
           "assetId": "educational.lucid-dreaming.es",
@@ -505,11 +509,11 @@
           "assetId": "editorial.flying-dreams",
           "aspect": "16x9",
           "mobileAspect": "4x5",
-          "mobileBreakpoint": "768px",
+          "mobileBreakpoint": "1024px",
           "mobileSizes": "100vw",
           "alt": "Una persona vuela libremente por un cielo nocturno violeta y luminoso",
           "caption": "La sensación y el grado de control cambian la manera de comprender un sueño de volar.",
-          "sizes": "(max-width: 768px) 100vw, 1200px"
+          "sizes": "(max-width: 1024px) 100vw, 1200px"
         },
         "educational": {
           "assetId": "educational.flying-dreams.es",

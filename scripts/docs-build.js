@@ -220,6 +220,9 @@ function main() {
   runNodeScript(path.join('scripts', 'generate-image-seo-assets.js'));
   runNodeScript(path.join('scripts', 'generate-symbol-hero-posters.js'));
   runNodeScript(path.join('scripts', 'generate-symbol-responsive-images.js'));
+  // Bundles docs-src/experience into docs-src/static/js/experience so the
+  // output is covered by the asset version hash computed just after.
+  runNodeScript(path.join('scripts', 'build-experience.js'));
 
   const version = resolveBuildVersion();
   cleanManagedOutputs();

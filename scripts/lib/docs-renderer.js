@@ -29,6 +29,8 @@ const {
   readImageAssetRegistry,
   renderResponsivePicture,
 } = require('./image-seo-assets');
+const { getPageIllustration } = require('./page-illustrations');
+const { renderTierInlineScript } = require('./experience-tier');
 
 const shellTemplate = fs.readFileSync(path.join(DOCS_SRC_DIR, 'templates', 'base.html'), 'utf8');
 const DEFAULT_SOCIAL_IMAGE = `${siteConfig.domain}/img/og/noctalia-dreamscape-v2-1200x630.jpg`;
@@ -59,14 +61,35 @@ function loadImageSeoRegistry() {
 
 function resolvePageImageContext(entry, meta) {
   const registry = loadImageSeoRegistry();
-  if (!registry) return null;
   const canonicalPath = entry?.locales?.[meta.lang]?.path || meta.currentPath || '';
-  const page = getPageImageSet(registry, canonicalPath);
-  if (!page) return null;
+  if (registry) {
+    const page = getPageImageSet(registry, canonicalPath);
+    if (page) {
+      return {
+        registry,
+        page,
+        images: getPageResponsiveImages(registry, canonicalPath),
+        sitewide: false,
+      };
+    }
+  }
+
+  const illustration = getPageIllustration(
+    entry?.id,
+    meta.lang,
+    meta.hero?.title || meta.title
+  );
+  if (!illustration) return null;
   return {
-    registry,
-    page,
-    images: getPageResponsiveImages(registry, canonicalPath),
+    registry: illustration.registry,
+    page: {
+      pageId: entry.id,
+      locale: illustration.locale,
+      kind: entry.type === 'blogArticle' ? 'article' : 'page',
+      images: { editorial: illustration.ref },
+    },
+    images: { editorial: illustration.image },
+    sitewide: true,
   };
 }
 
@@ -359,7 +382,7 @@ function synchronizePreferredImage(blocks, preferredImage) {
     }
     if (
       !preferredImage.generic &&
-      types.some((type) => ['WebPage', 'CollectionPage'].includes(type))
+      types.some((type) => ['WebPage', 'CollectionPage', 'AboutPage', 'ProfilePage'].includes(type))
     ) {
       node.primaryImageOfPage = { ...imageObject };
     }
@@ -376,9 +399,42 @@ function renderJsonLd(meta, entry, bodyHtml, preferredImage = null) {
   const sourceBlocks = blocks.length > 0 ? blocks : buildFallbackBlogJsonLd(meta, entry, bodyHtml);
   const normalizedBlocks = normalizeCanonicalOrganization(sourceBlocks);
   const datedBlocks = synchronizeJsonLdDates(normalizedBlocks, meta);
-  const synchronizedBlocks = preferredImage
+  let synchronizedBlocks = preferredImage
     ? synchronizePreferredImage(datedBlocks, preferredImage)
     : datedBlocks;
+
+  if (preferredImage && !preferredImage.generic) {
+    let hasPageImage = false;
+    const inspect = (node) => {
+      if (Array.isArray(node)) return node.forEach(inspect);
+      if (!node || typeof node !== 'object') return;
+      if (node.primaryImageOfPage) hasPageImage = true;
+      Object.values(node).forEach(inspect);
+    };
+    inspect(synchronizedBlocks);
+    if (!hasPageImage) {
+      const lang = meta.lang || siteConfig.defaultLanguage;
+      const pagePath = entry?.locales?.[lang]?.path || meta.currentPath || '/';
+      synchronizedBlocks = [
+        ...synchronizedBlocks,
+        {
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          '@id': absoluteUrl(pagePath),
+          url: absoluteUrl(pagePath),
+          name: meta.title,
+          description: meta.description,
+          inLanguage: lang,
+          primaryImageOfPage: {
+            '@type': 'ImageObject',
+            url: preferredImage.url,
+            width: preferredImage.width,
+            height: preferredImage.height,
+          },
+        },
+      ];
+    }
+  }
 
   return synchronizedBlocks
     .map((block) => {
@@ -409,6 +465,7 @@ function renderStyles(meta, assetVersion) {
 
   if (meta.layout === 'landing') {
     lines.push(`    <link rel="stylesheet" href="/css/observatory.css?v=${assetVersion}">`);
+    lines.push(`    <link rel="stylesheet" href="${assets.experienceCss}?v=${assetVersion}">`);
   }
 
   lines.push(renderSharedComponentStyles());
@@ -416,7 +473,12 @@ function renderStyles(meta, assetVersion) {
   return lines.join('\n');
 }
 
-function renderHeadScripts() {
+function renderHeadScripts(meta) {
+  // Landing pages get the synchronous experience-tier detection: it must run
+  // before first paint so CSS can gate the animated layers without a flash.
+  if (meta.layout === 'landing') {
+    return renderTierInlineScript();
+  }
   return '';
 }
 
@@ -571,13 +633,12 @@ function renderScripts(meta, assetVersion) {
   ];
 
   if (meta.layout === 'landing') {
-    lines.push(`    <script src="${assets.landingPageJs}?v=${assetVersion}" defer></script>`);
     lines.push(
       [
         '    <script',
         '      type="module"',
-        `      src="/js/landing-animations.js?v=${assetVersion}"`,
-        '      data-animation-module="landing"',
+        `      src="${assets.experienceJs}?v=${assetVersion}"`,
+        '      data-animation-module="experience"',
         `      data-gsap-src="${assets.gsapJs}?v=${assetVersion}"`,
         `      data-scroll-trigger-src="${assets.scrollTriggerJs}?v=${assetVersion}"`,
         '    ></script>',
@@ -721,29 +782,39 @@ function appendHtmlClass(openTag, className) {
 }
 
 function renderArticleHeroCopy(inner) {
-  const structured = String(inner || '').replace(
-    /(<div\b[^>]*\bclass=(['"])[^"']*\bflex\b[^"']*\2[^>]*>)([\s\S]*?)(<span\b[^>]*\baria-hidden=(['"])true\5[^>]*>[\s\S]*?<\/span>\s*)([\s\S]*?)(<\/div>\s*)(<h1\b[^>]*>[\s\S]*?<\/h1>)/i,
-    (_block, metaOpen, _metaQuote, taxonomy, _break, _breakQuote, details, _metaClose, heading) => {
-      const taxonomyOpen = appendHtmlClass(metaOpen, 'article-hero-taxonomy');
-      const conciseTaxonomy = taxonomy.replace(
-        /(<a\b[^>]*>\s*)(?:Topic|Tema):\s*/i,
-        '$1'
-      );
-      return [
-        '<div class="article-hero-copy">',
-        `${taxonomyOpen}${conciseTaxonomy}</div>`,
-        heading,
-        `<div class="article-hero-details">${details.trim()}</div>`,
-        '</div>',
-      ].join('\n');
-    }
+  const source = String(inner || '');
+  const metaAndHeading = source.match(
+    /(<div\b[^>]*\bclass=(['"])[^"']*\bflex\b[^"']*\2[^>]*>)([\s\S]*?)(<\/div>\s*)(<h1\b[^>]*>[\s\S]*?<\/h1>)/i
   );
+  if (!metaAndHeading) return source;
 
-  if (structured !== inner) return structured;
-  return String(inner || '').replace(
-    /(<div\b[^>]*\bclass=(['"])[^"']*\bflex\b[^"']*\2[^>]*>[\s\S]*?<\/div>\s*)(<h1\b[^>]*>[\s\S]*?<\/h1>)/i,
-    '<div class="article-hero-copy">\n$1$3\n</div>'
-  );
+  const [block, metaOpen, , metaContent, , heading] = metaAndHeading;
+  const items = [...metaContent.matchAll(/<(span|a)\b[^>]*>[\s\S]*?<\/\1>/gi)]
+    .map((match) => match[0]);
+  const separatorIndex = items.findIndex((item) => /\baria-hidden=(['"])true\1/i.test(item));
+  const detailIndex = separatorIndex >= 0
+    ? separatorIndex + 1
+    : items.findIndex((item) => /\bclass=(['"])[^"']*\btext-sm\b/i.test(item));
+  if (items.length === 0 || detailIndex < 0) {
+    return source.replace(block, `<div class="article-hero-copy">\n${block}\n</div>`);
+  }
+
+  const taxonomyItems = items
+    .slice(0, separatorIndex >= 0 ? separatorIndex : detailIndex)
+    .map((item) => item.replace(
+      /(<a\b[^>]*>\s*)(?:Topic|Tema|Thema|Thématique|Sujet|Argomento)\s*:\s*/i,
+      '$1'
+    ));
+  const detailItems = items.slice(detailIndex);
+  const taxonomyOpen = appendHtmlClass(metaOpen, 'article-hero-taxonomy');
+  const replacement = [
+    '<div class="article-hero-copy">',
+    `${taxonomyOpen}${taxonomyItems.join('')}</div>`,
+    heading,
+    `<div class="article-hero-details">${detailItems.join('')}</div>`,
+    '</div>',
+  ].join('\n');
+  return source.replace(block, replacement);
 }
 
 function moveEditorialFigureIntoArticleHeader(bodyHtml) {
@@ -766,6 +837,62 @@ function moveEditorialFigureIntoArticleHeader(bodyHtml) {
       return `${open}${wrapped}${close}`;
     }
   );
+}
+
+function editorialHeroFigureMarkup(imageContext) {
+  const imageRef = imageContext?.page?.images?.editorial;
+  const image = imageContext?.images?.editorial;
+  if (!imageRef || !image) return '';
+  const picture = renderResponsivePicture(imageContext.registry, imageRef, {
+    figure: false,
+    priority: true,
+    sizes: '100vw',
+    mobileSizes: '100vw',
+  });
+  const mobilePosition = imageRef.mobileAspect
+    ? imageContext.registry.assets[imageRef.assetId]?.aspects?.[imageRef.mobileAspect]?.position
+    : null;
+  const style = mobilePosition
+    ? ` style="--article-hero-mobile-position: ${mobilePosition.x}% ${mobilePosition.y}%;"`
+    : '';
+  return `<figure class="seo-image seo-image--editorial" data-image-seo-role="editorial" data-image-asset-id="${escapeHtml(image.assetId)}"${style}>
+                    ${picture}
+                    <figcaption>${escapeHtml(image.caption)}</figcaption>
+                </figure>`;
+}
+
+function ensureEditorialArticleHero(bodyHtml, imageContext) {
+  if (!imageContext?.sitewide || !imageContext?.images?.editorial) return bodyHtml;
+  if (/data-image-seo-role=(['"])editorial\1/i.test(bodyHtml)) return bodyHtml;
+  const figure = editorialHeroFigureMarkup(imageContext);
+  if (!figure) return bodyHtml;
+  return moveEditorialFigureIntoArticleHeader(`${figure}\n${bodyHtml}`);
+}
+
+function promoteManagedContentHero(bodyHtml, meta, imageContext) {
+  if (!imageContext?.sitewide || meta.hero || meta.layout === 'blogArticle') return bodyHtml;
+  const source = String(bodyHtml || '');
+  const leadPattern = /^\s*(<h1\b[^>]*>[\s\S]*?<\/h1>)(\s*<p\b[^>]*>[\s\S]*?<\/p>)?(\s*<p\b[^>]*>[\s\S]*?<\/p>)?/i;
+  const lead = source.match(leadPattern)?.[0];
+  if (!lead) return source;
+  const imageRef = imageContext.page.images.editorial;
+  const image = imageContext.images.editorial;
+  const picture = renderResponsivePicture(imageContext.registry, imageRef, {
+    figure: false,
+    priority: true,
+    sizes: '100vw',
+    mobileSizes: '100vw',
+  });
+  const hero = `<section class="page-hero page-hero-illustrated px-6 pb-16 pt-32 text-center" data-image-seo-hero="true">
+        <figure class="page-hero-illustration" data-image-seo-role="editorial" data-image-asset-id="${escapeHtml(image.assetId)}">
+            ${picture}
+            <figcaption>${escapeHtml(image.caption)}</figcaption>
+        </figure>
+        <div class="page-hero-copy mx-auto max-w-5xl">
+${lead.trim()}
+        </div>
+    </section>`;
+  return `${hero}\n${source.slice(lead.length)}`;
 }
 
 function optimizeBlogArticleImages(bodyHtml, meta, imageContext = null) {
@@ -829,7 +956,7 @@ function optimizeBlogArticleImages(bodyHtml, meta, imageContext = null) {
     return `${figureOpen}\n                    ${picture}${editorialCaption ? `\n                    ${editorialCaption}` : ''}\n                ${close}`;
   });
 
-  return imageContext?.page?.kind === 'article' && imageContext?.images?.editorial
+  return transformed
     ? moveEditorialFigureIntoArticleHeader(optimizedBody)
     : optimizedBody;
 }
@@ -895,7 +1022,11 @@ function renderManagedPage({
   const imageContext = resolvePageImageContext(entry, meta);
   const editorial = imageContext?.images?.editorial;
   const structuredArticleImages = editorial && imageContext.page.kind === 'article'
-    ? ['1x1', '4x3', '16x9'].map((aspect) => {
+    ? ['1x1', '4x3', '16x9']
+      .filter((aspect) => imageContext.registry.assets[
+        imageContext.page.images.editorial.assetId
+      ]?.aspects?.[aspect])
+      .map((aspect) => {
         const image = getResponsiveImageData(
           imageContext.registry,
           imageContext.page.images.editorial.assetId,
@@ -931,7 +1062,10 @@ function renderManagedPage({
   }
   if (renderMeta.layout === 'blogArticle') {
     renderedBodyHtml = optimizeBlogArticleImages(renderedBodyHtml, renderMeta, imageContext);
+    renderedBodyHtml = ensureEditorialArticleHero(renderedBodyHtml, imageContext);
     renderedBodyHtml = insertEducationalImage(renderedBodyHtml, imageContext);
+  } else {
+    renderedBodyHtml = promoteManagedContentHero(renderedBodyHtml, renderMeta, imageContext);
   }
 
   const headHtml = renderCommonHead(renderMeta, entry, assetVersion, renderedBodyHtml);
@@ -950,7 +1084,11 @@ function renderManagedPage({
     HEAD_HTML: headHtml,
     BEFORE_BODY_HTML: renderBeforeBody(renderMeta),
     NAV_HTML: navHtml,
-    CONTENT_HTML: renderContent(renderMeta, renderedContentBodyHtml, renderPageHero(context)),
+    CONTENT_HTML: renderContent(
+      renderMeta,
+      renderedContentBodyHtml,
+      renderPageHero(context, imageContext)
+    ),
     FOOTER_HTML: renderSharedFooter(context),
     SCRIPTS_HTML: renderScripts(renderMeta, assetVersion),
   });

@@ -345,6 +345,12 @@ function walkFiles(dir, predicate) {
   return files.sort((left, right) => toPosix(left).localeCompare(toPosix(right)));
 }
 
+function isPublicDocsHtml(filePath, docsDir) {
+  if (!filePath.endsWith('.html')) return false;
+  const relativePath = toPosix(path.relative(docsDir, filePath));
+  return !relativePath.startsWith('templates/');
+}
+
 function manifestRouteKey(route) {
   return `${route.collection}\u0000${route.pageId}\u0000${route.lang}`;
 }
@@ -445,7 +451,7 @@ function buildSnapshot(rootDir, options = {}) {
   }
 
   const docsDir = path.join(rootDir, 'docs');
-  const docsHtmlFiles = walkFiles(docsDir, (filePath) => filePath.endsWith('.html'));
+  const docsHtmlFiles = walkFiles(docsDir, (filePath) => isPublicDocsHtml(filePath, docsDir));
   const docsHtmlPaths = docsHtmlFiles.map((filePath) => toPosix(path.relative(rootDir, filePath)));
   for (const relativePath of HTML_CONTRACT_INPUTS) {
     if (!fs.existsSync(path.join(rootDir, relativePath))) {
@@ -625,6 +631,7 @@ function formatValue(value) {
 function compareKeyedRecords(expectedItems, actualItems, label, options = {}) {
   const keyFor = options.keyFor || manifestRouteKey;
   const allowAdditions = options.allowAdditions === true;
+  const normalizePair = options.normalizePair || ((expected, actual) => ({ expected, actual }));
   const expectedByKey = new Map(expectedItems.map((item) => [keyFor(item), item]));
   const actualByKey = new Map(actualItems.map((item) => [keyFor(item), item]));
   const errors = [];
@@ -635,7 +642,8 @@ function compareKeyedRecords(expectedItems, actualItems, label, options = {}) {
       errors.push(`[${label} removed] ${describeRoute(expected)} expected=${formatValue(expected)} actual="<missing>"`);
       continue;
     }
-    const difference = firstDifference(expected, actual);
+    const normalized = normalizePair(expected, actual);
+    const difference = firstDifference(normalized.expected, normalized.actual);
     if (difference) {
       errors.push(
         `[${label} changed] ${describeRoute(expected)} field=${difference.field} expected=${formatValue(difference.expected)} actual=${formatValue(difference.actual)}`
@@ -652,6 +660,33 @@ function compareKeyedRecords(expectedItems, actualItems, label, options = {}) {
   }
 
   return errors;
+}
+
+function normalizeCanonicalImageCarrier(expected, actual) {
+  const expectedIdentities = expected.jsonLdIdentities || [];
+  const actualIdentities = actual.jsonLdIdentities || [];
+  const expectedKeys = new Set(expectedIdentities.map((identity) => JSON.stringify(jsonStableValue(identity))));
+  const additions = actualIdentities.filter(
+    (identity) => !expectedKeys.has(JSON.stringify(jsonStableValue(identity)))
+  );
+  const allowed = additions.every(
+    (identity) =>
+      identity.type === 'WebPage' &&
+      identity.url === actual.canonical &&
+      identity.id === actual.canonical &&
+      identity.mainEntityOfPageId == null
+  );
+
+  if (!allowed) return { expected, actual };
+  return {
+    expected,
+    actual: {
+      ...actual,
+      jsonLdIdentities: actualIdentities.filter((identity) =>
+        expectedKeys.has(JSON.stringify(jsonStableValue(identity)))
+      ),
+    },
+  };
 }
 
 function compareOutputPaths(expected, actual, allowAdditions) {
@@ -681,7 +716,12 @@ function compareSnapshots(expected, actual, options = {}) {
 
   errors.push(...compareKeyedRecords(expected.manifestRoutes, actual.manifestRoutes, 'manifest route', { allowAdditions }));
   errors.push(...compareOutputPaths(expected.allHtmlOutputPaths, actual.allHtmlOutputPaths, allowAdditions));
-  errors.push(...compareKeyedRecords(expected.canonicalPages, actual.canonicalPages, 'canonical page', { allowAdditions }));
+  errors.push(
+    ...compareKeyedRecords(expected.canonicalPages, actual.canonicalPages, 'canonical page', {
+      allowAdditions,
+      normalizePair: normalizeCanonicalImageCarrier,
+    })
+  );
   errors.push(...compareKeyedRecords(expected.sitemap, actual.sitemap, 'sitemap route', { allowAdditions }));
 
   if (!compareStableValues(expected.redirects, actual.redirects)) {

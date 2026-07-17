@@ -15,6 +15,10 @@ const {
   getResponsiveImageData,
   readImageAssetRegistry,
 } = require('./lib/image-seo-assets');
+const {
+  listPageIllustrationRoutes,
+  readCompleteImageAssetRegistry,
+} = require('./lib/page-illustrations');
 
 const REPO_ROOT = path.join(__dirname, '..');
 const DOCS_DIR = path.join(__dirname, '../docs');
@@ -184,7 +188,10 @@ function loadImageSitemapEntries(registryPath = IMAGE_ASSET_REGISTRY_PATH) {
   if (!fs.existsSync(registryPath)) return result;
 
   try {
-    const registry = readImageAssetRegistry(registryPath);
+    const usesDefaultRegistry = path.resolve(registryPath) === path.resolve(IMAGE_ASSET_REGISTRY_PATH);
+    const registry = usesDefaultRegistry
+      ? readCompleteImageAssetRegistry()
+      : readImageAssetRegistry(registryPath);
     const assets = registry?.assets;
     const pages = registry?.pages;
     if (!assets || typeof assets !== 'object' || !pages || typeof pages !== 'object') {
@@ -224,6 +231,25 @@ function loadImageSitemapEntries(registryPath = IMAGE_ASSET_REGISTRY_PATH) {
         result.pageCount += 1;
         result.imageCount += images.length;
       }
+    }
+
+    if (usesDefaultRegistry) {
+      for (const route of listPageIllustrationRoutes()) {
+        const pageUrl = normalizeManifestPathToUrl(route.path);
+        const assetId = `sitewide.${route.pageId}`;
+        const asset = assets[assetId];
+        if (!pageUrl || !asset || asset.visible !== true || asset.sitemap !== true) continue;
+        const imageUrl = normalizeImageUrl(
+          getResponsiveImageData(registry, assetId, '16x9').src
+        );
+        if (!imageUrl) continue;
+        const existing = result.map.get(pageUrl) || [];
+        if (!existing.includes(imageUrl)) existing.push(imageUrl);
+        result.map.set(pageUrl, existing);
+      }
+      result.pageCount = result.map.size;
+      result.imageCount = Array.from(result.map.values())
+        .reduce((count, images) => count + images.length, 0);
     }
 
     result.loaded = true;
