@@ -95,18 +95,6 @@ const INLINE_CITATIONS = [
     replacement: '<a href="https://pubmed.ncbi.nlm.nih.gov/26256788/" target="_blank" rel="nofollow noopener noreferrer">$1</a>',
   },
   {
-    name: 'University of Montreal (2022)',
-    pattern: /(?<!<a[^>]*>)(University of Montreal\s*\(2022\))(?![^<]*<\/a>)/gi,
-    url: 'https://pubmed.ncbi.nlm.nih.gov/35366719/',
-    replacement: '<a href="https://pubmed.ncbi.nlm.nih.gov/35366719/" target="_blank" rel="nofollow noopener noreferrer">$1</a>',
-  },
-  {
-    name: 'Université de Montréal (2022)',
-    pattern: /(?<!<a[^>]*>)(Université de Montréal\s*\(2022\))(?![^<]*<\/a>)/gi,
-    url: 'https://pubmed.ncbi.nlm.nih.gov/35366719/',
-    replacement: '<a href="https://pubmed.ncbi.nlm.nih.gov/35366719/" target="_blank" rel="nofollow noopener noreferrer">$1</a>',
-  },
-  {
     name: 'Heidelberg (2021)',
     pattern: /(?<!<a[^>]*>)((?:University of\s+)?Heidelberg\s*\(2021\))(?![^<]*<\/a>)/gi,
     url: 'https://pubmed.ncbi.nlm.nih.gov/34225282/',

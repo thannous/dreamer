@@ -403,10 +403,7 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen / Weiterführende Literatur</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology – Traum</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20416888/" rel="nofollow noopener noreferrer" target="_blank">Nielsen (2010) – Traum Analyse und Klassifizierung (Rezension, PubMed)</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net – G. William Domhoff (Überblick über die Traumforschung)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20620045/" rel="nofollow noopener noreferrer" target="_blank">Schredl (2010) – Häufigkeit typischer Traumthemen (PubMed)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/12927121/" rel="nofollow noopener noreferrer" target="_blank">Nielsen et al. (2003) – Typische Träume und gemeinsame Themen (PubMed)</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Letzte Aktualisierung: 26. Dezember 2025</p>
 </section>

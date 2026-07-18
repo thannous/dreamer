@@ -91,24 +91,11 @@ const SOURCES = {
   dreamResearchBasics: [
     { title: 'APA Dictionary of Psychology — Dream', url: 'https://dictionary.apa.org/dream' },
     {
-      title: 'Nielsen (2010) — Dream analysis and classification (review, PubMed)',
-      url: 'https://pubmed.ncbi.nlm.nih.gov/20416888/',
-    },
-    {
       title: 'DreamResearch.net — G. William Domhoff (dream research overview)',
       url: 'https://dreamresearch.net/',
     },
   ],
-  typicalDreamThemes: [
-    {
-      title: 'Schredl (2010) — Frequency of typical dream themes (PubMed)',
-      url: 'https://pubmed.ncbi.nlm.nih.gov/20620045/',
-    },
-    {
-      title: 'Nielsen et al. (2003) — Typical dreams and common themes (PubMed)',
-      url: 'https://pubmed.ncbi.nlm.nih.gov/12927121/',
-    },
-  ],
+  typicalDreamThemes: [],
   remSleep: [
     {
       title:

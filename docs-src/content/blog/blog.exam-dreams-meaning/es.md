@@ -68,6 +68,10 @@
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Soñar con un examen: significado si no estudiaste, apruebas o repruebas" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/anxiety-dreams-meaning.webp" srcset="../../img/blog/anxiety-dreams-meaning-480w.webp 480w, ../../img/blog/anxiety-dreams-meaning-800w.webp 800w, ../../img/blog/anxiety-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
+<section class="glass-panel rounded-2xl p-6 my-10 border border-dream-salmon/15">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Antes de interpretar la escena</h2>
+<p class="text-purple-100/80 leading-relaxed">Comprueba primero tres datos: si tienes una fecha límite real, qué consigna parecía imposible y quién te evaluaba. Esos detalles ayudan a distinguir estrés reciente, miedo al juicio y un simple recuerdo escolar.</p>
+</section>
 <div class="grid md:grid-cols-2 gap-6 my-12">
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <h3 class="font-serif text-lg text-dream-cream mb-3">Por qué sueñas con exámenes</h3>
@@ -90,8 +94,8 @@
 </div>
 
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<h3 class="font-serif text-lg text-dream-cream mb-3">Soñar con examen final</h3>
-<p class="text-sm text-gray-300 leading-relaxed">A comienzos de mayo, los sueños de examen final pueden intensificarse por calendarios, estudio, comparación y presión académica. El sueño es una señal de estrés, no una sentencia.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-3">Cuando se acerca una prueba real</h3>
+<p class="text-sm text-gray-300 leading-relaxed">Los calendarios académicos varían según el país. Si tienes un examen, oposición, entrevista o entrega próxima, esa presión reciente es la primera hipótesis que conviene comprobar.</p>
 </div>
 </div>
 <section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
@@ -122,7 +126,7 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes</h2>
 <p class="text-sm text-purple-200/70 mb-4">Estas referencias apoyan la relación entre preocupaciones diurnas, ansiedad ante los exámenes, calidad del sueño y emociones oníricas.</p>
 <ul class="space-y-2 text-sm text-gray-300"><li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1177/00332941211025268" rel="nofollow noopener noreferrer" target="_blank">Adams, Mushkat & Minkel (2022), test anxiety, sleep quality and mood</a></li>
-<li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1016/S1053-8100(02)00072-7" rel="nofollow noopener noreferrer" target="_blank">Schredl (2003), continuity between waking activities and dream activities</a></li>
+<li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1016/S1053-8100(02)00072-7" rel="nofollow noopener noreferrer" target="_blank">Schredl &amp; Hofmann (2003), continuity between waking activities and dream activities</a></li>
 <li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.2190/IC.29.3.f" rel="nofollow noopener noreferrer" target="_blank">Schredl & Reinhard (2010), waking mood and dream emotions</a></li>
 <li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1177/02762366241254818" rel="nofollow noopener noreferrer" target="_blank">Schredl (2024), continuity between waking life and dreaming</a></li>
 </ul>

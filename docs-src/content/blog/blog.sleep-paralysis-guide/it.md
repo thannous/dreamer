@@ -362,7 +362,6 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti/Approfondimenti</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">Dizionario APA di psicologia - Sogno</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20416888/" rel="nofollow noopener noreferrer" target="_blank">Nielsen (2010) - Analisi e classificazione dei sogni (recensione, PubMed)</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (panoramica sulla ricerca sui sogni)</a></li>
 <li><a href="https://www.mayoclinic.org/diseases-conditions/sleep-paralysis/symptoms-causes/syc-20352606" rel="nofollow noopener noreferrer" target="_blank">Mayo Clinic - Paralisi del sonno (sintomi e cause)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/21411265/" rel="nofollow noopener noreferrer" target="_blank">Sharpless eamp; Barber (2011) — Prevalenza della paralisi del sonno (PubMed)</a></li>

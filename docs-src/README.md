@@ -11,6 +11,12 @@
 `docs/` is generated output. It is ignored by Git, should never be edited
 manually, and is rebuilt locally or by Cloudflare Pages from the tracked sources.
 
+The canonical symbol catalogs shared by the app and the site are
+`data/dream-symbols.json`, `data/dream-symbols-extended.json`, and
+`data/dream-symbols-extended-tier3.json`. Edit those files only. The docs build
+copies all three into `docs/data/` after static assets, and `docs:check` verifies
+that the published copies are byte-for-byte identical to the canonical data.
+
 ## Daily Maintenance Workflow
 
 ### Preview changes live

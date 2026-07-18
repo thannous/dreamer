@@ -198,35 +198,30 @@ const CONFIG = {
 
 const SYMBOL_SHEET_LABELS = {
   en: {
-    quick: 'In one sentence',
     jumpNav: 'Symbol sections',
     meaning: 'Meaning',
     variations: 'Variations',
     questions: 'Questions'
   },
   fr: {
-    quick: 'En une phrase',
     jumpNav: 'Sections du symbole',
     meaning: 'Sens',
     variations: 'Variantes',
     questions: 'Questions'
   },
   es: {
-    quick: 'En breve',
     jumpNav: 'Secciones del símbolo',
     meaning: 'Sentido',
     variations: 'Variantes',
     questions: 'Preguntas'
   },
   de: {
-    quick: 'Kurz gesagt',
     jumpNav: 'Symbolabschnitte',
     meaning: 'Bedeutung',
     variations: 'Varianten',
     questions: 'Fragen'
   },
   it: {
-    quick: 'In breve',
     jumpNav: 'Sezioni del simbolo',
     meaning: 'Significato',
     variations: 'Varianti',
@@ -291,13 +286,6 @@ function getSymbolModifiedDate(symbol, lang) {
 
 function hasExplicitSymbolModifiedDate(symbol, lang) {
   return Boolean(normalizeIsoDate(symbol?.[lang]?.modifiedAt) || normalizeIsoDate(symbol?.modifiedAt));
-}
-
-function firstSentence(value) {
-  const text = String(value || '').trim();
-  if (!text) return '';
-  const match = text.match(/^(.+?[.!?])(\s|$)/);
-  return match ? match[1].trim() : text;
 }
 
 function loadSharedSiteConfig() {
@@ -911,72 +899,6 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
 
   const symbolFaq = Array.isArray(symbolData.faq) ? symbolData.faq.slice(0, 4) : [];
 
-  // Generate FAQ answer for variations
-  const faqVariationsAnswer = hasVariations
-    ? sanitizeEmDashes(variations.slice(0, 3).map(v => `${v.context}: ${v.meaning}`).join(' '))
-    : symbolData.shortDescription;
-
-  const reflectionTitles = {
-    en: 'Make it personal',
-    fr: 'Pour vous',
-    es: 'Para ti',
-    de: 'Für dich',
-    it: 'Per te'
-  };
-
-  const reflectionLead1 = {
-    en: `Dream symbols are personal. Two people can dream about ${symbolData.name} and wake up with different feelings. Use this page as a guide, then compare it with your current life.`,
-    fr: `Les symboles de rêve sont personnels. Deux personnes peuvent rêver de ${symbolData.name} et se réveiller avec des sensations différentes. Utilisez cette page comme repère, puis reliez-la à votre vie actuelle.`,
-    es: `Los símbolos de los sueños son personales. Dos personas pueden soñar con ${symbolData.name} y despertar con sensaciones distintas. Usa esta página como guía y compárala con tu vida actual.`,
-    de: `Traumsymbole sind persönlich. Zwei Menschen können von ${symbolData.name} träumen und mit unterschiedlichen Gefühlen aufwachen. Nutze diese Seite als Orientierung und verknüpfe sie mit deinem aktuellen Leben.`,
-    it: `I simboli nei sogni sono personali. Due persone possono sognare ${symbolData.name} e svegliarsi con sensazioni diverse. Usa questa pagina come guida e collegala alla tua vita di adesso.`
-  };
-
-  const reflectionLead2 = {
-    en: `A practical way to interpret this dream is to pick one recent moment that felt similar. It could be pressure, curiosity, conflict, or relief. Details from the dream usually point to the right theme.`,
-    fr: `Une manière simple d'interpréter ce rêve est de choisir un moment récent qui vous a fait ressentir quelque chose de similaire. Cela peut être de la pression, de la curiosité, un conflit ou un soulagement. Les détails du rêve indiquent souvent le bon thème.`,
-    es: `Una forma práctica de interpretar este sueño es pensar en un momento reciente que se sintiera parecido. Puede ser presión, curiosidad, conflicto o alivio. Los detalles del sueño suelen señalar el tema correcto.`,
-    de: `Eine praktische Methode ist, an einen aktuellen Moment zu denken, der sich ähnlich angefühlt hat. Das kann Druck, Neugier, Konflikt oder Erleichterung sein. Die Details aus dem Traum weisen oft auf das passende Thema hin.`,
-    it: `Un modo pratico per interpretare questo sogno è pensare a un momento recente che ti ha dato sensazioni simili. Può essere pressione, curiosità, conflitto o sollievo. I dettagli del sogno di solito indicano il tema giusto.`
-  };
-
-  const promptLead = {
-    en: 'Try writing down answers to:',
-    fr: 'Essayez d’écrire vos réponses à :',
-    es: 'Prueba a escribir tus respuestas a:',
-    de: 'Notiere dir Antworten auf:',
-    it: 'Prova a scrivere le risposte a:'
-  };
-
-  const extraPrompts = {
-    en: [
-      'What was happening right before the symbol appeared?',
-      'What emotion stayed with you after waking?'
-    ],
-    fr: [
-      'Que se passait-il juste avant que le symbole apparaisse ?',
-      "Quelle émotion est restée après le réveil ?"
-    ],
-    es: [
-      '¿Qué pasó justo antes de que apareciera el símbolo?',
-      '¿Qué emoción quedó al despertar?'
-    ],
-    de: [
-      'Was geschah kurz bevor das Symbol auftauchte?',
-      'Welche Emotion blieb nach dem Aufwachen?'
-    ],
-    it: [
-      'Cosa è successo subito prima che apparisse il simbolo?',
-      "Quale emozione è rimasta al risveglio?"
-    ]
-  };
-
-  const reflectionPrompts = [
-    ...(Array.isArray(symbolData.askYourself) ? symbolData.askYourself.slice(0, 2) : []),
-    ...(extraPrompts[lang] || extraPrompts.en)
-  ].slice(0, 4);
-
-  const reflectionPromptsHtml = reflectionPrompts.map(p => `<li>${escapeHtml(p)}</li>`).join('');
   const softCtaHtml = softCta ? `
             <!-- Soft App CTA -->
             <aside class="symbol-soft-cta glass-panel rounded-2xl p-6 md:p-8 mb-10 border border-dream-salmon/15">
@@ -993,7 +915,6 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
             </aside>` : '';
   const visibleHeadline = `${t.h1_prefix} ${symbolData.name}`.trim();
   const sheetLabels = getSymbolSheetLabels(lang);
-  const quickAnswer = firstSentence(symbolData.shortDescription);
   const jumpItems = [
     {
       href: 'meaning',
@@ -1019,21 +940,6 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                         <i data-lucide="${item.icon}" class="w-5 h-5"></i>
                         <span>${escapeHtml(item.label)}</span>
                     </a>`).join('');
-  const reflectionSectionHtml = `
-            <!-- Reflection -->
-            <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10 border border-dream-salmon/10">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-4 flex items-center gap-3">
-                    <i data-lucide="pen-line" class="w-6 h-6 text-dream-salmon"></i>
-                    ${escapeHtml(reflectionTitles[lang] || reflectionTitles.en)}
-                </h2>
-                <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
-                    <p>${escapeHtml(reflectionLead1[lang] || reflectionLead1.en)}</p>
-                    <p>${escapeHtml(reflectionLead2[lang] || reflectionLead2.en)}</p>
-                    <p><strong>${escapeHtml(promptLead[lang] || promptLead.en)}</strong></p>
-                    <ul>${reflectionPromptsHtml}</ul>
-                </div>
-            </section>`;
-
   const definedTermJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'DefinedTerm',
@@ -1077,24 +983,14 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     ]
   };
 
-  const defaultFaqItems = [
-    {
-      question: `${t.faq_what_means} ${symbolData.name}?`,
-      answer: symbolData.shortDescription
-    },
-    {
-      question: t.faq_common_interpretations,
-      answer: faqVariationsAnswer
-    }
-  ];
-  const faqItems = symbolFaq.length > 0 ? symbolFaq : defaultFaqItems;
+  const faqItems = symbolFaq;
   const faqCardsHtml = faqItems.map(item => `
                     <div class="glass-panel rounded-2xl p-6 border border-transparent">
                         <h3 class="font-medium text-dream-cream mb-2">${escapeHtml(sanitizeEmDashes(item.question))}</h3>
                         <p class="text-sm text-gray-300 leading-relaxed">${escapeHtml(sanitizeEmDashes(item.answer))}</p>
                     </div>`).join('\n');
 
-  const faqPageJsonLd = {
+  const faqPageJsonLd = faqItems.length > 0 ? {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: faqItems.map(item => ({
@@ -1102,7 +998,16 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
       name: sanitizeEmDashes(item.question),
       acceptedAnswer: { '@type': 'Answer', text: sanitizeEmDashes(item.answer) }
     }))
-  };
+  } : null;
+  const faqSectionHtml = faqItems.length > 0 ? `
+            <section class="mb-10">
+                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
+                    <i data-lucide="help-circle" class="w-6 h-6 text-dream-salmon"></i>
+                    ${t.section_faq}
+                </h2>
+                <div class="grid gap-4">${faqCardsHtml}
+                </div>
+            </section>` : '';
 
   // Language dropdown items
   const langItems = {
@@ -1319,17 +1224,6 @@ ${renderSharedComponentStyles()}
             margin-top: clamp(1.75rem, 4vw, 3rem);
             color: rgba(237, 225, 255, 0.84);
         }
-        .symbol-quick-card {
-            margin-top: 1.35rem;
-            border: 1px solid rgba(253, 164, 129, 0.16);
-            border-radius: 1.25rem;
-            background: linear-gradient(145deg, rgba(20, 10, 40, 0.72), rgba(9, 4, 18, 0.76));
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035), 0 18px 48px rgba(0, 0, 0, 0.16);
-        }
-        .symbol-quick-label {
-            color: #fda481;
-            letter-spacing: 0.01em;
-        }
         .symbol-soft-cta a {
             flex-shrink: 0;
         }
@@ -1385,16 +1279,6 @@ ${renderSharedComponentStyles()}
                 font-size: 1rem !important;
                 line-height: 1.6 !important;
                 max-width: 30rem;
-            }
-            .symbol-quick-card {
-                margin-top: 1rem;
-                padding: 1.05rem 1.1rem !important;
-                border-radius: 1.05rem;
-            }
-            .symbol-quick-card p {
-                margin-top: 0.55rem;
-                font-size: 1rem;
-                line-height: 1.55;
             }
             .symbol-soft-cta a {
                 width: 100%;
@@ -1491,7 +1375,7 @@ ${renderJsonLd(articleJsonLd)}
 ${renderJsonLd(breadcrumbListJsonLd)}
 
     <!-- Schema.org FAQPage -->
-${renderJsonLd(faqPageJsonLd)}
+${faqPageJsonLd ? renderJsonLd(faqPageJsonLd) : ''}
 </head>
 
 <body class="symbol-page bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
@@ -1544,14 +1428,6 @@ ${heroPictureHtml}
                 ${escapeHtml(symbolData.shortDescription)}
             </p>
 
-            <div class="symbol-quick-card p-5">
-                <div class="symbol-quick-label flex items-center gap-2 text-sm font-bold">
-                    <i data-lucide="eye" class="w-5 h-5"></i>
-                    ${escapeHtml(sheetLabels.quick)}
-                </div>
-                <p class="text-dream-cream">${escapeHtml(quickAnswer)}</p>
-            </div>
-
             <nav class="symbol-jump-nav" aria-label="${escapeHtml(sheetLabels.jumpNav)}" style="grid-template-columns: repeat(${jumpItems.length}, minmax(0, 1fr));">${jumpNavHtml}
             </nav>
 
@@ -1569,17 +1445,8 @@ ${variationsSectionHtml}
                 </ul>
             </section>
 
-${reflectionSectionHtml}
 ${softCtaHtml}
-            <!-- FAQ -->
-            <section class="mb-10">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="help-circle" class="w-6 h-6 text-dream-salmon"></i>
-                    ${t.section_faq}
-                </h2>
-                <div class="grid gap-4">${faqCardsHtml}
-                </div>
-            </section>
+${faqSectionHtml}
 
             <!-- Related Symbols -->
             ${relatedSymbols.length > 0 ? `<section class="mb-10">
@@ -1796,7 +1663,7 @@ function main() {
   }
 
   generateCategoryPages(symbols, i18n, languages);
-  generateCurationPages(symbols, i18n, extended, languages);
+  generateCurationPages(symbols, i18n, languages);
 }
 
 // =====================================================
@@ -2374,7 +2241,7 @@ function generateCurationHreflangUrls(page) {
 }
 
 // Generate a single curation page HTML
-function generateCurationPage(page, allSymbols, i18n, extended, lang) {
+function generateCurationPage(page, allSymbols, i18n, lang) {
   const t = i18n[lang];
   const homePath = localizedHomePath(lang);
   const homeUrl = localizedHomeUrl(lang);
@@ -2428,8 +2295,6 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
   const symbolCardsHtml = resolvedSymbols.map((s, i) => {
     const symbolData = s[lang];
     if (!symbolData) return '';
-    const extContent = getExtendedContent(s.id, extended, lang);
-    const firstVariation = extContent.variations.length > 0 ? extContent.variations[0] : null;
     const symbolHref = `/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}`;
     const relatedArticle = s.relatedArticles?.[lang];
     const relatedArticleHtml = relatedArticle ? `
@@ -2443,7 +2308,6 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
                             <h2 class="font-serif text-xl text-dream-cream group-hover:text-dream-salmon transition-colors">${i + 1}. ${escapeHtml(symbolData.name)}</h2>
                         </div>
                         <p class="text-sm text-gray-400 leading-relaxed mb-3 line-clamp-3">${escapeHtml(symbolData.shortDescription)}</p>
-                        ${firstVariation ? `<p class="text-xs text-purple-300/60 italic mb-3"><strong>${escapeHtml(firstVariation.context)}:</strong> ${escapeHtml(firstVariation.meaning.substring(0, 120))}${firstVariation.meaning.length > 120 ? '...' : ''}</p>` : ''}
                         <span class="inline-flex items-center gap-2 text-xs text-dream-salmon opacity-0 group-hover:opacity-100 transition-opacity">
                             ${t.curation_read_full} <i data-lucide="arrow-right" class="w-3 h-3"></i>
                         </span>
@@ -2466,59 +2330,6 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
       url: `https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${s[lang]?.slug || s.id}`
     }))
   };
-
-  const guideHowToTitles = {
-    en: 'How to use this guide',
-    fr: 'Comment utiliser ce guide',
-    es: 'Cómo usar esta guía',
-    de: 'So nutzt du diese Anleitung',
-    it: 'Come usare questa guida'
-  };
-
-  const guideHowToParagraphs = {
-    en: [
-      'Use this list as a starting point. The symbol meaning depends on your context, your emotions, and what is happening in your life right now.',
-      'A simple approach is to pick one symbol that stood out, then compare it to a recent situation. Write one or two sentences about what feels similar.'
-    ],
-    fr: [
-      "Utilisez cette liste comme point de départ. La signification d'un symbole dépend de votre contexte, de vos émotions et de ce qui se passe dans votre vie en ce moment.",
-      "Une approche simple consiste à choisir un symbole marquant, puis à le relier à une situation récente. Écrivez une ou deux phrases sur ce qui vous semble similaire."
-    ],
-    es: [
-      'Usa esta lista como punto de partida. El significado de un símbolo depende de tu contexto, tus emociones y lo que ocurre en tu vida ahora.',
-      'Una forma sencilla es elegir un símbolo que destaque y compararlo con una situación reciente. Escribe una o dos frases sobre lo que se siente parecido.'
-    ],
-    de: [
-      'Nutze diese Liste als Ausgangspunkt. Die Bedeutung eines Symbols hängt von deinem Kontext, deinen Emotionen und dem ab, was gerade in deinem Leben passiert.',
-      'Eine einfache Methode ist, ein Symbol auszuwählen, das heraussticht, und es mit einer aktuellen Situation zu verbinden. Schreibe ein oder zwei Sätze dazu.'
-    ],
-    it: [
-      'Usa questa lista come punto di partenza. Il significato di un simbolo dipende dal tuo contesto, dalle tue emozioni e da ciò che sta succedendo nella tua vita in questo periodo.',
-      'Un modo semplice è scegliere un simbolo che ti è rimasto impresso e confrontarlo con una situazione recente. Scrivi una o due frasi su cosa ti sembra simile.'
-    ]
-  };
-
-  const guideHowToBullets = {
-    en: ['Note the strongest emotion in the dream.', 'Look for one real-life trigger from the last few days.', 'Use the questions on each symbol page to go deeper.'],
-    fr: ["Notez l'émotion la plus forte du rêve.", 'Cherchez un déclencheur récent dans les derniers jours.', 'Utilisez les questions sur chaque page de symbole pour aller plus loin.'],
-    es: ['Anota la emoción más fuerte del sueño.', 'Busca un desencadenante reciente de los últimos días.', 'Usa las preguntas de cada símbolo para profundizar.'],
-    de: ['Notiere die stärkste Emotion im Traum.', 'Suche nach einem Auslöser aus den letzten Tagen.', 'Nutze die Fragen auf jeder Symbolseite, um tiefer zu gehen.'],
-    it: ["Annota l'emozione più forte del sogno.", 'Cerca un possibile trigger degli ultimi giorni.', 'Usa le domande nelle pagine dei simboli per andare più a fondo.']
-  };
-
-  const guideHowToHtml = `
-            <!-- How to use -->
-            <section class="glass-panel rounded-2xl p-6 md:p-8 mb-12 border border-dream-salmon/10">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-4 flex items-center gap-3">
-                    <i data-lucide="map" class="w-6 h-6 text-dream-salmon"></i>
-                    ${escapeHtml(guideHowToTitles[lang] || guideHowToTitles.en)}
-                </h2>
-                <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
-                    <p>${escapeHtml(guideHowToParagraphs[lang]?.[0] || guideHowToParagraphs.en[0])}</p>
-                    <p>${escapeHtml(guideHowToParagraphs[lang]?.[1] || guideHowToParagraphs.en[1])}</p>
-                    <ul>${(guideHowToBullets[lang] || guideHowToBullets.en).map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
-                </div>
-            </section>`;
 
   // Schema.org BreadcrumbList
   const breadcrumbListJsonLd = {
@@ -2689,7 +2500,6 @@ ${renderPseoHeroIllustration(pageIllustration)}
                 </div>
             </header>
 
-${guideHowToHtml}
             <!-- Symbol Grid -->
             <section class="mb-16">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">${symbolCardsHtml}
@@ -2736,7 +2546,7 @@ ${renderPseoFooter(lang, currentPaths, 'dictionary')}
 }
 
 // Generate all curation pages
-function generateCurationPages(symbols, i18n, extended, languages) {
+function generateCurationPages(symbols, i18n, languages) {
   console.log('\n📋 Generating curation pages...\n');
 
   const curationData = loadCurationData();
@@ -2763,7 +2573,7 @@ function generateCurationPages(symbols, i18n, extended, languages) {
       const filepath = path.join(langDir, filename);
 
       try {
-        const html = generateCurationPage(page, symbols.symbols, i18n, extended, lang);
+        const html = generateCurationPage(page, symbols.symbols, i18n, lang);
 
         if (args['dry-run']) {
           console.log(`  [DRY RUN] Would create: ${filepath}`);
@@ -2802,12 +2612,12 @@ const CATEGORY_TO_CURATION = {
 // Run
 if (args.curation) {
   // Generate only curation pages
-  const { symbols, i18n, extended } = loadData();
+  const { symbols, i18n } = loadData();
   let languages = CONFIG.languages;
   if (args.lang) {
     languages = [args.lang];
   }
-  generateCurationPages(symbols, i18n, extended, languages);
+  generateCurationPages(symbols, i18n, languages);
 } else if (args.categories) {
   // Generate only category pages
   const { symbols, i18n } = loadData();
