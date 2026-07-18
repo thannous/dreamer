@@ -350,7 +350,6 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen / Weiterführende Literatur</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology – Traum</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20416888/" rel="nofollow noopener noreferrer" target="_blank">Nielsen (2010) – Traumanalyse und -klassifizierung (Rezension, PubMed)</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net – G. William Domhoff (Überblick über die Traumforschung)</a></li>
 <li><a href="https://dictionary.apa.org/memory" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary – Gedächtnis</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) – Gehirnmechanismen der Traumerinnerung (Rezension, PubMed)</a></li>

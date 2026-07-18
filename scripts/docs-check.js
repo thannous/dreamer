@@ -11,6 +11,11 @@ const { normalizePrettyPath, readJson, walkFiles } = require('./lib/docs-source-
 const SITE_MANIFEST_PATH = path.join(ROOT_DIR, 'data', 'site-manifest.json');
 const DOMAIN = siteConfig.domain;
 const BLOG_IMAGE_MAX_BYTES = 250_000;
+const CANONICAL_SYMBOL_CATALOGS = [
+  'dream-symbols.json',
+  'dream-symbols-extended.json',
+  'dream-symbols-extended-tier3.json',
+];
 
 function runNodeScript(relativeScriptPath, args = []) {
   const scriptPath = path.join(ROOT_DIR, relativeScriptPath);
@@ -198,6 +203,28 @@ function assertNoDuplicateCriticalMeta() {
       if (count > 1) {
         errors.push(`[duplicate critical meta] ${path.relative(ROOT_DIR, filePath)} selector=${selector.label} count=${count}`);
       }
+    }
+  }
+
+  if (errors.length > 0) {
+    throw new Error(errors.join('\n'));
+  }
+}
+
+function assertCanonicalSymbolCatalogsPublished() {
+  const errors = [];
+
+  for (const fileName of CANONICAL_SYMBOL_CATALOGS) {
+    const sourcePath = path.join(ROOT_DIR, 'data', fileName);
+    const publishedPath = path.join(DOCS_DIR, 'data', fileName);
+    if (!fs.existsSync(publishedPath)) {
+      errors.push(`[canonical symbol catalog] missing docs/data/${fileName}`);
+      continue;
+    }
+    if (fs.readFileSync(sourcePath, 'utf8') !== fs.readFileSync(publishedPath, 'utf8')) {
+      errors.push(
+        `[canonical symbol catalog] docs/data/${fileName} differs from data/${fileName}`
+      );
     }
   }
 
@@ -452,6 +479,7 @@ function main() {
   runNodeScript(path.join('docs', 'scripts', 'check-site.js'));
 
   const manifest = readJson(SITE_MANIFEST_PATH);
+  assertCanonicalSymbolCatalogsPublished();
   assertNoDuplicateCriticalMeta();
   assertCanonicalOrganizationIdentity();
   assertNoLinksToExactRedirects();

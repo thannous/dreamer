@@ -68,6 +68,10 @@
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Rêver d’examen : signification si vous échouez, réussissez ou n’avez pas révisé" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/anxiety-dreams-meaning.webp" srcset="../../img/blog/anxiety-dreams-meaning-480w.webp 480w, ../../img/blog/anxiety-dreams-meaning-800w.webp 800w, ../../img/blog/anxiety-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
+<section class="glass-panel rounded-2xl p-6 my-10 border border-dream-salmon/15">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Avant d’interpréter la scène</h2>
+<p class="text-purple-100/80 leading-relaxed">Vérifiez d’abord trois éléments concrets : avez-vous une échéance réelle, quelle consigne semblait impossible et qui vous évaluait ? Ces détails aident à distinguer le stress récent, la peur du jugement et un simple souvenir scolaire.</p>
+</section>
 <div class="grid md:grid-cols-2 gap-6 my-12">
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <h3 class="font-serif text-lg text-dream-cream mb-3">Pourquoi rêve-t-on d’examen ?</h3>
@@ -90,8 +94,8 @@
 </div>
 
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<h3 class="font-serif text-lg text-dream-cream mb-3">Rêves d’examen en mai</h3>
-<p class="text-sm text-gray-300 leading-relaxed">Début mai, ces rêves peuvent augmenter avec les examens, les révisions et la comparaison aux autres. Le rêve sert souvent de signal de stress.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-3">À l’approche d’une épreuve réelle</h3>
+<p class="text-sm text-gray-300 leading-relaxed">Partiels, concours, soutenance ou entretien peuvent fournir une explication immédiate au rêve. Comparez la scène avec l’échéance récente avant de chercher une lecture symbolique.</p>
 </div>
 </div>
 <section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
@@ -122,7 +126,7 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources</h2>
 <p class="text-sm text-purple-200/70 mb-4">Ces références appuient le lien entre préoccupations éveillées, anxiété d’examen, qualité du sommeil et émotions des rêves.</p>
 <ul class="space-y-2 text-sm text-gray-300"><li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1177/00332941211025268" rel="nofollow noopener noreferrer" target="_blank">Adams, Mushkat & Minkel (2022), test anxiety, sleep quality and mood</a></li>
-<li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1016/S1053-8100(02)00072-7" rel="nofollow noopener noreferrer" target="_blank">Schredl (2003), continuity between waking activities and dream activities</a></li>
+<li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1016/S1053-8100(02)00072-7" rel="nofollow noopener noreferrer" target="_blank">Schredl &amp; Hofmann (2003), continuity between waking activities and dream activities</a></li>
 <li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.2190/IC.29.3.f" rel="nofollow noopener noreferrer" target="_blank">Schredl & Reinhard (2010), waking mood and dream emotions</a></li>
 <li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1177/02762366241254818" rel="nofollow noopener noreferrer" target="_blank">Schredl (2024), continuity between waking life and dreaming</a></li>
 </ul>

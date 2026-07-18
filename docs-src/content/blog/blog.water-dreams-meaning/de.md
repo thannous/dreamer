@@ -435,7 +435,6 @@
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream (Traum)</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net: G. William Domhoff (Überblick zur Traumforschung)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/29316455/" rel="nofollow noopener noreferrer" target="_blank">Schredl (2018): Dream Content Analysis (Analyse von Trauminhalten)</a></li>
 <li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Stages of sleep (Schlafphasen)</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Zuletzt aktualisiert: 6. Januar 2026</p>

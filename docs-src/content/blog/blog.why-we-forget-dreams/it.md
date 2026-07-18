@@ -436,7 +436,6 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti/Approfondimenti</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank">Izawa et al. (2019) — Neuroni MCH attivi nel sonno REM e dimenticanza (Neuron, PubMed)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20416888/" rel="nofollow noopener noreferrer" target="_blank">Nielsen (2010) - Analisi e classificazione dei sogni (recensione, PubMed)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Meccanismi cerebrali del ricordo dei sogni (recensione, PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Fondamenti sul sonno: fasi del sonno</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net - G. William Domhoff (panoramica sulla ricerca sui sogni)</a></li>

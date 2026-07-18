@@ -41,6 +41,14 @@ const MIN_COMMERCIAL_WORDS = 300;
 const MIN_NEW_SYMBOL_DESCRIPTION_CHARS = 120;
 const MIN_NEW_SYMBOL_PROMPT_CHARS = 12;
 const MIN_NEW_SYMBOL_FAQ_ANSWER_CHARS = 50;
+const GIT_JSON_MAX_BUFFER_BYTES = 16 * 1024 * 1024;
+const RETIRED_MISATTRIBUTED_PMIDS = [
+  '29316455',
+  '20416888',
+  '20620045',
+  '12927121',
+  '35366719',
+];
 const REQUIRED_COMMERCIAL_SCHEMA_TYPES = ['WebPage', 'BreadcrumbList', 'FAQPage'];
 const COMMERCIAL_PAGES_WITHOUT_FAQ = new Set(['page.alternatives']);
 const COMMERCIAL_FAQ_MINIMUMS = new Map([
@@ -347,6 +355,33 @@ function checkSpanishOrthography(errors) {
   return { fileCount: files.length, findingCount };
 }
 
+function checkMisattributedResearchLinks(errors) {
+  const roots = [
+    BLOG_SOURCE_DIR,
+    path.join(ROOT_DIR, 'scripts', 'archive', 'seo-one-shots'),
+  ];
+  let fileCount = 0;
+
+  for (const root of roots) {
+    if (!fs.existsSync(root)) continue;
+    for (const filePath of walkFiles(root, (candidate) => /\.(?:js|md)$/u.test(candidate))) {
+      fileCount += 1;
+      const source = fs.readFileSync(filePath, 'utf8');
+      for (const pmid of RETIRED_MISATTRIBUTED_PMIDS) {
+        // Match the stable identifier itself so alternate PubMed URL forms or
+        // plain-text citations cannot silently reintroduce a retired source.
+        if (source.includes(pmid)) {
+          errors.push(
+            `[misattributed research link] ${path.relative(ROOT_DIR, filePath)}: retired PMID ${pmid}`
+          );
+        }
+      }
+    }
+  }
+
+  return fileCount;
+}
+
 function checkCommercialPage(meta, body, pageId, lang, filePath, errors) {
   const wordCount = countVisibleWords(body);
   if (wordCount < MIN_COMMERCIAL_WORDS) {
@@ -584,13 +619,21 @@ function readGitJson(revision, relativePath) {
   const result = spawnSync('git', ['show', `${revision}:${relativePath}`], {
     cwd: ROOT_DIR,
     encoding: 'utf8',
+    maxBuffer: GIT_JSON_MAX_BUFFER_BYTES,
     stdio: ['ignore', 'pipe', 'ignore'],
   });
+  if (result.error?.code === 'ENOBUFS') {
+    throw new Error(
+      `[git JSON baseline] ${relativePath} exceeds ${GIT_JSON_MAX_BUFFER_BYTES} bytes`
+    );
+  }
   if (result.status !== 0 || !result.stdout) return null;
   try {
     return JSON.parse(result.stdout);
-  } catch {
-    return null;
+  } catch (error) {
+    throw new Error(
+      `[git JSON baseline] ${relativePath} at ${revision} is invalid JSON: ${error.message}`
+    );
   }
 }
 
@@ -609,10 +652,78 @@ function baselineSymbolIds(currentPayload) {
 }
 
 function previousCatalogPayload(currentPayload) {
-  const headPayload = readGitJson('HEAD', 'data/dream-symbols.json');
+  return previousJsonPayload('data/dream-symbols.json', currentPayload);
+}
+
+function previousJsonPayload(relativePath, currentPayload) {
+  const headPayload = readGitJson('HEAD', relativePath);
   if (!headPayload) return null;
   if (JSON.stringify(headPayload) !== JSON.stringify(currentPayload)) return headPayload;
-  return readGitJson('HEAD^', 'data/dream-symbols.json') || headPayload;
+  return readGitJson('HEAD^', relativePath) || headPayload;
+}
+
+function checkChangedExtendedSymbolContent(errors) {
+  const catalogs = [
+    {
+      relativePath: 'data/dream-symbols-extended.json',
+      symbols: (payload) => payload?.symbols || {},
+    },
+    {
+      relativePath: 'data/dream-symbols-extended-tier3.json',
+      symbols: (payload) => payload || {},
+    },
+  ];
+  let localeCount = 0;
+
+  for (const catalog of catalogs) {
+    const absolutePath = path.join(ROOT_DIR, catalog.relativePath);
+    const payload = JSON.parse(fs.readFileSync(absolutePath, 'utf8'));
+    const symbols = catalog.symbols(payload);
+    for (const locales of Object.values(symbols)) {
+      for (const lang of siteConfig.languages) {
+        if (locales?.[lang]) localeCount += 1;
+      }
+    }
+
+    const previousPayload = previousJsonPayload(catalog.relativePath, payload);
+    if (!previousPayload) continue;
+    const previousSymbols = catalog.symbols(previousPayload);
+    const interpretations = new Map();
+    for (const [symbolId, locales] of Object.entries(symbols)) {
+      for (const lang of siteConfig.languages) {
+        const normalized = normalizeText(locales?.[lang]?.fullInterpretation);
+        if (!normalized) continue;
+        const key = `${lang}\u0000${normalized}`;
+        if (!interpretations.has(key)) interpretations.set(key, []);
+        interpretations.get(key).push(symbolId);
+      }
+    }
+
+    for (const [symbolId, locales] of Object.entries(symbols)) {
+      for (const lang of siteConfig.languages) {
+        const currentLocale = locales?.[lang];
+        if (!currentLocale) continue;
+        const previousLocale = previousSymbols?.[symbolId]?.[lang];
+        const normalized = normalizeText(currentLocale.fullInterpretation);
+        const previousNormalized = normalizeText(previousLocale?.fullInterpretation);
+        if (normalized === previousNormalized) continue;
+        if (!normalized) {
+          errors.push(
+            `[extended symbol interpretation] ${symbolId}.${lang} in ${catalog.relativePath} requires fullInterpretation`
+          );
+          continue;
+        }
+        const duplicates = interpretations.get(`${lang}\u0000${normalized}`) || [];
+        if (duplicates.length > 1) {
+          errors.push(
+            `[extended symbol duplication] ${symbolId}.${lang} in ${catalog.relativePath} duplicates ${duplicates.filter((id) => id !== symbolId).join(', ')}`
+          );
+        }
+      }
+    }
+  }
+
+  return localeCount;
 }
 
 function withoutModifiedAt(value) {
@@ -764,19 +875,23 @@ function runReleaseGates() {
   const structuredDataDates = checkStructuredDataDateSources(errors);
   const spanish = checkSpanishEditorialPunctuation(errors);
   const spanishOrthography = checkSpanishOrthography(errors);
+  const researchLinkFileCount = checkMisattributedResearchLinks(errors);
   const commercialPageCount = checkCommercialContent(errors);
   const homePageCount = checkHomeProductFacts(errors);
   const metadataFileCount = checkMetadataIntegrity(errors);
   const reviewers = checkReviewerIntegrity(errors);
   const symbolCount = checkSymbolLocalization(errors);
+  const extendedSymbolLocaleCount = checkChangedExtendedSymbolContent(errors);
 
   return {
     articleCount,
     commercialPageCount,
     errors,
+    extendedSymbolLocaleCount,
     homePageCount,
     metadataFileCount,
     reviewers,
+    researchLinkFileCount,
     spanish,
     spanishOrthography,
     structuredDataDates,
@@ -798,7 +913,9 @@ function main() {
       `${result.structuredDataDates.datedPageSchemaCount} dated page schemas, ` +
       `${result.spanish.fileCount} Spanish articles, ${result.commercialPageCount} commercial pages, ` +
       `${result.homePageCount} home product-fact pages, ${result.metadataFileCount} metadata sources, ` +
-      `${result.symbolCount} fully localized symbols.`
+      `${result.researchLinkFileCount} research-link sources, ` +
+      `${result.symbolCount} fully localized symbols, ` +
+      `${result.extendedSymbolLocaleCount} extended symbol locales.`
   );
   console.log('[content-release-gates] Symbol inventory generation is unlocked by all quality gates.');
 }
@@ -820,6 +937,8 @@ module.exports = {
   checkStructuredDataDateSources,
   findMalformedSpanishInvertedQuestions,
   findSpanishOrthographyIssues,
+  checkMisattributedResearchLinks,
+  checkChangedExtendedSymbolContent,
   hasTruncatedConnectorClause,
   htmlToVisibleText,
   terminalMetadataWord,

@@ -16,20 +16,20 @@
   "ogTitle": "Soñar con inundación: agua sucia, casa o mar | Noctalia",
   "ogDescription": "Qué significa soñar con inundación, agua sucia, casa inundada o que el mar se sale e inunda: claves para leer emoción, límites y seguridad.",
   "ogImage": "https://noctalia.app/img/blog/water-dreams-meaning.webp",
-  "ogImageAlt": "Superficie de agua en calma que refleja las emociones profundas",
+  "ogImageAlt": "Superficie de agua en calma vista de cerca",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Soñar con inundación: agua sucia, casa o mar | Noctalia",
   "twitterDescription": "Qué significa soñar con inundación, agua sucia, casa inundada o que el mar se sale e inunda: claves para leer emoción, límites y seguridad.",
   "twitterImage": "https://noctalia.app/img/blog/water-dreams-meaning.webp",
-  "twitterImageAlt": "Superficie de agua en calma que refleja las emociones profundas",
+  "twitterImageAlt": "Superficie de agua en calma vista de cerca",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-17",
+  "modifiedTime": "2026-07-18",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-de-muerte",
   "nextPath": "/es/blog/suenos-con-ex",
   "preloadImage": "/img/blog/water-dreams-meaning.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Qué significa soñar con una inundación: agua sucia, casa o mar\",\n  \"description\": \"Qué significa soñar con inundación, agua sucia, casa inundada o que el mar se sale e inunda: claves para leer emoción, límites y seguridad.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/water-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-17\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1814,\n  \"timeRequired\": \"PT9M\",\n  \"url\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Qué significa soñar con una inundación: agua sucia, casa o mar\",\n  \"description\": \"Qué significa soñar con inundación, agua sucia, casa inundada o que el mar se sale e inunda: claves para leer emoción, límites y seguridad.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/water-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-18\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1814,\n  \"timeRequired\": \"PT9M\",\n  \"url\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con una inundación?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Soñar con una inundación puede acompañar estrés, cambios o emociones difíciles de contener. La lectura cambia según si el agua está limpia o sucia, viene del mar o entra en casa y según cómo actuabas.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con inundaciones de agua sucia?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"El agua sucia puede encajar con confusión, rechazo o cansancio ante una situación difícil de evaluar. Comprueba también si una imagen o experiencia reciente pudo incorporarse al sueño.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con inundaciones de agua de mar?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"El mar añade escala, movimiento e incertidumbre. Observa si lo mirabas desde un lugar seguro, si la marea te alcanzaba o si intentabas volver a tierra.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con una casa inundada?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Una casa inundada orienta la reflexión hacia intimidad, familia, privacidad o seguridad. La habitación afectada y tu reacción ayudan a relacionar la escena con algo concreto.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con inundación y escapar?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Escapar puede reflejar una búsqueda de salida, límites o apoyo. Fíjate en si huías solo, ayudabas a alguien o llegabas a un lugar seguro; cada acción cambia el matiz.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con agua limpia que inunda?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"El agua limpia puede evocar claridad, alivio o renovación, pero una crecida transparente también puede dar miedo. La emoción del sueño evita una lectura automática.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar que el mar se sale e inunda?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Cuando el mar se sale, la escena combina gran escala y ruptura de un límite. Mira qué zona queda cubierta y si podías actuar, pedir ayuda o solo observar.\"\n      }\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Recursos\",\n      \"item\": \"https://noctalia.app/es/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sueños de Agua\",\n      \"item\": \"https://noctalia.app/es/blog/suenos-de-agua\"\n    }\n  ]\n}"
   ],
@@ -87,32 +87,10 @@
     <p class="text-sm text-purple-200/70 mt-3">Para ir directo al matiz, revisa los <a class="text-dream-salmon hover:underline" href="#tipos">tipos de sueños de agua</a>, el <a class="text-dream-salmon hover:underline" href="#estado">estado del agua</a> y las <a class="text-dream-salmon hover:underline" href="#interpretaciones">interpretaciones comunes de inundación</a>.</p>
 </section>
 
-<!-- GSC SEO Update: water and flood intent -->
-<section class="glass-panel rounded-2xl p-6 my-10 border border-dream-salmon/15 bg-white/5">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Qué significa soñar con inundación de agua</h2>
-<p class="text-purple-100/80 leading-relaxed mb-4">Si llegaste buscando <strong>qué significa soñar con inundación</strong>, prueba dos hipótesis en paralelo. La escena puede parecerse a una emoción, responsabilidad o cambio que ocupa demasiado espacio; también puede incorporar una noticia, una tormenta reciente o una preocupación concreta relacionada con el agua.</p>
-<div class="grid md:grid-cols-2 gap-4 text-sm text-gray-300">
-<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Inundación en casa</h3><p>Puede llevar la lectura hacia la familia, la intimidad, la privacidad o la sensación de seguridad.</p></div>
-<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Inundación de agua de mar</h3><p>La escala del mar puede acentuar incertidumbre, intensidad o falta de control.</p></div>
-<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Agua limpia</h3><p>Puede evocar alivio o claridad, aunque una gran crecida siga resultando amenazante.</p></div>
-<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Agua sucia</h3><p>Puede encajar con confusión, cansancio o una situación difícil de comprender.</p></div>
-</div>
-<p class="text-sm text-purple-200/70 mt-4">Para separar el símbolo breve de la escena completa, revisa también <a class="text-dream-salmon hover:underline" href="../simbolos/inundacion">el símbolo inundación</a> y <a class="text-dream-salmon hover:underline" href="../simbolos/agua">el símbolo agua</a>.</p>
-</section>
-
-<section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Cómo leer una casa inundada o agua sucia en sueños</h2>
-<p class="text-purple-100/80 leading-relaxed mb-4">Si la <strong>casa inundada</strong> ocupa el centro del sueño, revisa qué habitación aparece y qué representa para ti en la vida diaria: descanso, convivencia, privacidad o seguridad. Pregúntate también si hubo una fuga, una mudanza o una preocupación doméstica reciente.</p>
-<p class="text-purple-100/80 leading-relaxed mb-4">El <strong>agua sucia</strong> puede despertar asco, confusión o cansancio; el agua limpia puede producir alivio, fascinación o el mismo miedo que una crecida oscura. Describe primero tu reacción y evita convertir el color en un código universal.</p>
-<p class="text-sm text-purple-200/70">Para registrar la escena completa, guarda el sueño en el <a class="text-dream-salmon hover:underline" href="/es/diario-de-suenos-por-voz">diario de sueños por voz</a> y compáralo después con el <a class="text-dream-salmon hover:underline" href="/es/guides/diccionario-simbolos-suenos">diccionario de símbolos</a>.</p>
-</section>
-
-
-
 <!-- Plan A image: water flood dream -->
 <figure class="my-10 rounded-2xl overflow-hidden border border-dream-salmon/15 bg-white/5">
-<img alt="Casa onírica con agua entrando suavemente, símbolo de emociones que se desbordan" class="w-full h-auto" height="933" loading="lazy" decoding="async" src="../../img/blog/plan-a/water-flood-dream-es.jpg" width="1400">
-<figcaption class="px-5 py-4 text-sm text-purple-200/70">Una casa inundada orienta la reflexión hacia lo íntimo: familia, descanso, seguridad o límites. La emoción del sueño ayuda a distinguir preocupación, cambio o alivio.</figcaption>
+<img alt="Casa en un sueño con agua entrando por el suelo" class="w-full h-auto" height="933" loading="lazy" decoding="async" src="../../img/blog/plan-a/water-flood-dream-es.jpg" width="1400">
+<figcaption class="px-5 py-4 text-sm text-purple-200/70">En una casa inundada, anota primero la habitación, las personas presentes, el nivel del agua y lo que intentabas proteger.</figcaption>
 </figure>
 
 <!-- Plan A GSC variants: water flood intent -->
@@ -161,7 +139,7 @@
 
 <div class="glass-panel rounded-xl p-5 border border-white/10">
 <h3 class="font-serif text-lg text-dream-cream mb-2">¿Qué significa soñar con una casa inundada?</h3>
-<p class="text-sm text-gray-300 leading-relaxed">Una casa inundada orienta la reflexión hacia intimidad, familia, privacidad o seguridad. La habitación afectada y tu reacción ayudan a relacionar la escena con algo concreto.</p>
+<p class="text-sm text-gray-300 leading-relaxed">Una casa inundada puede llevarte a pensar en intimidad, familia, privacidad o seguridad. Comprueba si la habitación afectada, tu reacción o una preocupación doméstica reciente aportan contexto.</p>
 </div>
 
 <div class="glass-panel rounded-xl p-5 border border-white/10">
@@ -183,7 +161,7 @@
 
 
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Superficie de agua en calma que refleja las emociones profundas" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/water-dreams-meaning.webp" srcset="../../img/blog/water-dreams-meaning-480w.webp 480w, ../../img/blog/water-dreams-meaning-800w.webp 800w, ../../img/blog/water-dreams-meaning-1200w.webp 1200w" width="1200">
+<img alt="Superficie de agua en calma vista de cerca" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/water-dreams-meaning.webp" srcset="../../img/blog/water-dreams-meaning-480w.webp 480w, ../../img/blog/water-dreams-meaning-800w.webp 800w, ../../img/blog/water-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
@@ -327,10 +305,9 @@
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net: G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/29316455/" rel="nofollow noopener noreferrer" target="_blank">Schredl (2018): Dream Content Analysis</a></li>
 <li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Stages of sleep</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 17 de julio de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 18 de julio de 2026</p>
 </section>
 <section class="mt-16">
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Artículos relacionados</h2>

@@ -201,12 +201,19 @@ function copyStaticFiles() {
   // archived or removed maintenance tools cannot survive as stale output.
   fs.rmSync(path.join(DOCS_DIR, 'scripts'), { recursive: true, force: true });
   copyDir(path.join(DOCS_SRC_DIR, 'static'), DOCS_DIR);
-  // The editorial symbol catalog has one canonical source. Copy it after the
-  // static assets so a stale generated snapshot can never drive symbol pages.
-  copyFile(
-    path.join(DATA_DIR, 'dream-symbols.json'),
-    path.join(DOCS_DIR, 'data', 'dream-symbols.json')
-  );
+  // The app and the site share the same three canonical symbol catalogs.
+  // Copy them after static assets so stale snapshots under docs-src/static/data
+  // can never drive generated symbol or guide pages.
+  for (const fileName of [
+    'dream-symbols.json',
+    'dream-symbols-extended.json',
+    'dream-symbols-extended-tier3.json',
+  ]) {
+    copyFile(
+      path.join(DATA_DIR, fileName),
+      path.join(DOCS_DIR, 'data', fileName)
+    );
+  }
 }
 
 function main() {

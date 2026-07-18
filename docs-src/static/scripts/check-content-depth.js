@@ -37,10 +37,12 @@ const SYMBOLS_PATH_SEGMENT = {
 };
 
 const THRESHOLDS = {
-  // Calibrated on current output distribution (symbol_page median ~550 words).
-  symbol_page: 450,
+  // Shared explanatory padding was removed from symbol and curation templates.
+  // Keep this check focused on genuinely thin pages; source-level release gates
+  // separately validate localization and reject duplicated changed interpretations.
+  symbol_page: 420,
   category_page: 300,
-  guide_page: 500,
+  guide_page: 450,
   blog_page: 500,
   blog_hub: 250,
   blog_index: 250
