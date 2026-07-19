@@ -26,6 +26,10 @@ const { canonicalOrganization } = require('../../scripts/lib/canonical-organizat
 const { renderAhrefsAnalyticsScript } = require('../../scripts/lib/ahrefs-analytics');
 const { renderResponsivePicture } = require('../../scripts/lib/image-seo-assets');
 const { getPageIllustration } = require('../../scripts/lib/page-illustrations');
+const {
+  getGeneratedSymbolImage,
+  loadSymbolImageRegistry,
+} = require('../../scripts/lib/symbol-image-assets');
 
 function readDocsAssetVersionOrExit() {
   const versionPath = path.join(__dirname, '..', 'version.txt');
@@ -49,6 +53,7 @@ const DOCS_SRC_DIR = path.join(ROOT_DIR, 'docs-src');
 const ROOT_DATA_DIR = path.join(ROOT_DIR, 'data');
 const SITE_MANIFEST_PATH = path.join(ROOT_DATA_DIR, 'site-manifest.json');
 const DEFAULT_SOCIAL_IMAGE = 'https://noctalia.app/img/og/noctalia-dreamscape-v2-1200x630.jpg';
+const SYMBOL_IMAGE_REGISTRY = loadSymbolImageRegistry();
 
 function renderPseoHeroIllustration(illustration) {
   if (!illustration) return '';
@@ -70,11 +75,12 @@ function resolveResponsiveSymbolIllustration(illustration) {
   const originalWidth = Number(illustration.width) || 1200;
   const originalHeight = Number(illustration.height) || 675;
   const stem = path.basename(illustration.src, path.extname(illustration.src));
+  const responsiveBase = SYMBOL_IMAGE_REGISTRY.responsiveBase || '/img/seo/symbols-v2';
   const widths = [480, 800, 1200];
   const variants = widths.map((width) => ({
     width,
-    url: `/img/seo/symbols-v1/${stem}-${width}w.webp`,
-    filePath: path.join(__dirname, '..', 'img', 'seo', 'symbols-v1', `${stem}-${width}w.webp`),
+    url: `${responsiveBase}/${stem}-${width}w.webp`,
+    filePath: path.join(__dirname, '..', responsiveBase.replace(/^\/+/, ''), `${stem}-${width}w.webp`),
   }));
   const hasVariants = variants.every((variant) => fs.existsSync(variant.filePath));
 
@@ -256,7 +262,8 @@ const SYMBOL_IMAGE_CAPTION_TEMPLATES = {
 function resolveSymbolIllustration(symbolId, explicitIllustration, symbolData, lang) {
   if (explicitIllustration?.src) return explicitIllustration;
 
-  const src = `/img/symbols/posters-v1/${symbolId}.webp`;
+  const generatedAsset = getGeneratedSymbolImage(symbolId, SYMBOL_IMAGE_REGISTRY);
+  const src = generatedAsset?.src || `/img/symbols/posters-v1/${symbolId}.webp`;
   const filePath = path.join(__dirname, '..', src.replace(/^\/+/, ''));
   if (!fs.existsSync(filePath)) return null;
 
@@ -265,8 +272,8 @@ function resolveSymbolIllustration(symbolId, explicitIllustration, symbolData, l
     SYMBOL_IMAGE_CAPTION_TEMPLATES[lang] || SYMBOL_IMAGE_CAPTION_TEMPLATES.en;
   return {
     src,
-    width: 1200,
-    height: 675,
+    width: Number(generatedAsset?.width) || 1200,
+    height: Number(generatedAsset?.height) || 675,
     alt: altTemplate(symbolData.name),
     caption: captionTemplate(symbolData.name),
   };

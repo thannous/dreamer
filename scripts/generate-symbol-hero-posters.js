@@ -8,6 +8,11 @@ const path = require('path');
 const sharp = require('sharp');
 const { ROOT_DIR } = require('./lib/docs-site-config');
 const { inlineLucideIcons } = require('./lib/lucide-inline');
+const {
+  generatedSymbolImagePath,
+  getGeneratedSymbolImage,
+  loadSymbolImageRegistry,
+} = require('./lib/symbol-image-assets');
 
 const CATALOG_PATH = path.join(ROOT_DIR, 'data', 'dream-symbols.json');
 const PRIMARY_EXTENDED_PATH = path.join(
@@ -261,16 +266,40 @@ async function generatePosters({ checkOnly = false } = {}) {
   const catalog = readJson(CATALOG_PATH);
   const primary = readJson(PRIMARY_EXTENDED_PATH);
   const tier3 = readJson(TIER3_EXTENDED_PATH);
+  const registry = loadSymbolImageRegistry();
   const expected = [];
   const errors = [];
 
   if (!checkOnly) {
-    fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }
 
   for (const symbol of catalog.symbols || []) {
     if (hasEditorialIllustration(symbol.id, primary, tier3)) continue;
+    const generatedAsset = getGeneratedSymbolImage(symbol.id, registry);
+    if (generatedAsset) {
+      const generatedPath = generatedSymbolImagePath(generatedAsset);
+      if (!generatedPath || !fs.existsSync(generatedPath)) {
+        errors.push(`${symbol.id}: missing generated source ${generatedAsset.src || '(empty)'}`);
+      } else {
+        const metadata = await sharp(generatedPath).metadata();
+        if (
+          metadata.width !== Number(generatedAsset.width) ||
+          metadata.height !== Number(generatedAsset.height) ||
+          metadata.format !== 'webp'
+        ) {
+          errors.push(
+            `${symbol.id}: generated source metadata does not match registry ` +
+              `(${metadata.width}x${metadata.height} ${metadata.format})`
+          );
+        }
+      }
+      continue;
+    }
+    if (registry.version) {
+      errors.push(`${symbol.id}: missing dedicated image in symbol-image-assets.json`);
+      continue;
+    }
     const outputPath = path.join(OUTPUT_DIR, `${symbol.id}.webp`);
     const source = resolvePosterSource(symbol.id);
     expected.push({ symbol, outputPath, source });

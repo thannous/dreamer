@@ -6,11 +6,11 @@ const {
 } = require('./check-symbol-image-contract');
 
 describe('rendered symbol image contract parsing', () => {
-  const imageUrl = 'https://noctalia.app/img/seo/symbols-v1/abandonment-1200w.webp';
+  const imageUrl = 'https://noctalia.app/img/seo/symbols-v2/abandonment-v2-1200w.webp';
   const html = `
     <meta property="og:image" content="${imageUrl}">
     <figure data-image-seo-role="symbol-hero">
-      <picture><img src="/img/seo/symbols-v1/abandonment-1200w.webp"
+      <picture><img src="/img/seo/symbols-v2/abandonment-v2-1200w.webp"
         srcset="/img/abandonment-480w.webp 480w, /img/abandonment-800w.webp 800w, /img/abandonment-1200w.webp 1200w"
         alt="Abandonment" fetchpriority="high" width="1200" height="675"></picture>
     </figure>
@@ -18,7 +18,7 @@ describe('rendered symbol image contract parsing', () => {
 
   it('extracts marked hero, social metadata and Article image data', () => {
     expect(extractHeroImage(html)).toEqual(
-      expect.objectContaining({ src: '/img/seo/symbols-v1/abandonment-1200w.webp' })
+      expect.objectContaining({ src: '/img/seo/symbols-v2/abandonment-v2-1200w.webp' })
     );
     expect(readMeta(html, 'property', 'og:image')).toBe(imageUrl);
     expect(extractArticleImage(html)).toBe(imageUrl);

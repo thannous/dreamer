@@ -1,0 +1,806 @@
+{
+  "version": "2026-07-v2",
+  "promptVersion": "noctalia-symbol-editorial-v2",
+  "generatedWith": "OpenAI image_gen built-in tool",
+  "responsiveBase": "/img/seo/symbols-v2",
+  "assets": {
+    "abandonment": {
+      "src": "/img/symbols/editorial-2026-07-v2/abandonment-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Abandonment"
+    },
+    "accident": {
+      "src": "/img/symbols/editorial-2026-07-v2/accident-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Accident"
+    },
+    "airport": {
+      "src": "/img/symbols/editorial-2026-07-v2/airport-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Airport"
+    },
+    "angel": {
+      "src": "/img/symbols/editorial-2026-07-v2/angel-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "celestial",
+      "subject": "Angel"
+    },
+    "ant": {
+      "src": "/img/symbols/editorial-2026-07-v2/ant-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Ant"
+    },
+    "apocalypse": {
+      "src": "/img/symbols/editorial-2026-07-v2/apocalypse-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "nature",
+      "subject": "Apocalypse"
+    },
+    "arguing": {
+      "src": "/img/symbols/editorial-2026-07-v2/arguing-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Arguing"
+    },
+    "attic": {
+      "src": "/img/symbols/editorial-2026-07-v2/attic-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Attic"
+    },
+    "baby": {
+      "src": "/img/symbols/editorial-2026-07-v2/baby-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Baby"
+    },
+    "basement": {
+      "src": "/img/symbols/editorial-2026-07-v2/basement-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Basement"
+    },
+    "bathroom": {
+      "src": "/img/symbols/editorial-2026-07-v2/bathroom-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Bathroom"
+    },
+    "bear": {
+      "src": "/img/symbols/editorial-2026-07-v2/bear-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Bear"
+    },
+    "bedroom": {
+      "src": "/img/symbols/editorial-2026-07-v2/bedroom-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Bedroom"
+    },
+    "bee": {
+      "src": "/img/symbols/editorial-2026-07-v2/bee-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Bee"
+    },
+    "bicycle": {
+      "src": "/img/symbols/editorial-2026-07-v2/bicycle-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Bicycle"
+    },
+    "bird": {
+      "src": "/img/symbols/editorial-2026-07-v2/bird-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Bird"
+    },
+    "birth": {
+      "src": "/img/symbols/editorial-2026-07-v2/birth-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Birth"
+    },
+    "bleeding": {
+      "src": "/img/symbols/editorial-2026-07-v2/bleeding-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Bleeding"
+    },
+    "blood": {
+      "src": "/img/symbols/editorial-2026-07-v2/blood-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "body",
+      "subject": "Blood"
+    },
+    "boat": {
+      "src": "/img/symbols/editorial-2026-07-v2/boat-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Boat"
+    },
+    "book": {
+      "src": "/img/symbols/editorial-2026-07-v2/book-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Book"
+    },
+    "bus": {
+      "src": "/img/symbols/editorial-2026-07-v2/bus-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Bus"
+    },
+    "butterfly": {
+      "src": "/img/symbols/editorial-2026-07-v2/butterfly-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Butterfly"
+    },
+    "cave": {
+      "src": "/img/symbols/editorial-2026-07-v2/cave-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Cave"
+    },
+    "classroom": {
+      "src": "/img/symbols/editorial-2026-07-v2/classroom-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Classroom"
+    },
+    "clothes": {
+      "src": "/img/symbols/editorial-2026-07-v2/clothes-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Clothes"
+    },
+    "cow": {
+      "src": "/img/symbols/editorial-2026-07-v2/cow-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Cow"
+    },
+    "coworker": {
+      "src": "/img/symbols/editorial-2026-07-v2/coworker-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Coworker"
+    },
+    "crow": {
+      "src": "/img/symbols/editorial-2026-07-v2/crow-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Crow"
+    },
+    "crying": {
+      "src": "/img/symbols/editorial-2026-07-v2/crying-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Crying"
+    },
+    "deceased-person": {
+      "src": "/img/symbols/editorial-2026-07-v2/deceased-person-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Deceased Person"
+    },
+    "demon": {
+      "src": "/img/symbols/editorial-2026-07-v2/demon-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Demon"
+    },
+    "desert": {
+      "src": "/img/symbols/editorial-2026-07-v2/desert-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Desert"
+    },
+    "doctor": {
+      "src": "/img/symbols/editorial-2026-07-v2/doctor-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Doctor"
+    },
+    "dolphin": {
+      "src": "/img/symbols/editorial-2026-07-v2/dolphin-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Dolphin"
+    },
+    "drowning": {
+      "src": "/img/symbols/editorial-2026-07-v2/drowning-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Drowning"
+    },
+    "eagle": {
+      "src": "/img/symbols/editorial-2026-07-v2/eagle-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Eagle"
+    },
+    "earthquake": {
+      "src": "/img/symbols/editorial-2026-07-v2/earthquake-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "nature",
+      "subject": "Earthquake"
+    },
+    "elephant": {
+      "src": "/img/symbols/editorial-2026-07-v2/elephant-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Elephant"
+    },
+    "eyes": {
+      "src": "/img/symbols/editorial-2026-07-v2/eyes-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "body",
+      "subject": "Eyes"
+    },
+    "father": {
+      "src": "/img/symbols/editorial-2026-07-v2/father-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Father"
+    },
+    "feet": {
+      "src": "/img/symbols/editorial-2026-07-v2/feet-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "body",
+      "subject": "Feet"
+    },
+    "fish": {
+      "src": "/img/symbols/editorial-2026-07-v2/fish-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Fish"
+    },
+    "friend": {
+      "src": "/img/symbols/editorial-2026-07-v2/friend-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Friend"
+    },
+    "frog": {
+      "src": "/img/symbols/editorial-2026-07-v2/frog-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Frog"
+    },
+    "funeral": {
+      "src": "/img/symbols/editorial-2026-07-v2/funeral-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Funeral"
+    },
+    "garden": {
+      "src": "/img/symbols/editorial-2026-07-v2/garden-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Garden"
+    },
+    "ghost": {
+      "src": "/img/symbols/editorial-2026-07-v2/ghost-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Ghost"
+    },
+    "grandfather": {
+      "src": "/img/symbols/editorial-2026-07-v2/grandfather-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Grandfather"
+    },
+    "grandmother": {
+      "src": "/img/symbols/editorial-2026-07-v2/grandmother-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Grandmother"
+    },
+    "hair": {
+      "src": "/img/symbols/editorial-2026-07-v2/hair-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "body",
+      "subject": "Hair"
+    },
+    "hands": {
+      "src": "/img/symbols/editorial-2026-07-v2/hands-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "body",
+      "subject": "Hands"
+    },
+    "heart": {
+      "src": "/img/symbols/editorial-2026-07-v2/heart-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "body",
+      "subject": "Heart"
+    },
+    "hiding": {
+      "src": "/img/symbols/editorial-2026-07-v2/hiding-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Hiding"
+    },
+    "horse": {
+      "src": "/img/symbols/editorial-2026-07-v2/horse-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Horse"
+    },
+    "hotel": {
+      "src": "/img/symbols/editorial-2026-07-v2/hotel-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Hotel"
+    },
+    "illness": {
+      "src": "/img/symbols/editorial-2026-07-v2/illness-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "body",
+      "subject": "Illness"
+    },
+    "island": {
+      "src": "/img/symbols/editorial-2026-07-v2/island-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Island"
+    },
+    "kitchen": {
+      "src": "/img/symbols/editorial-2026-07-v2/kitchen-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Kitchen"
+    },
+    "lake": {
+      "src": "/img/symbols/editorial-2026-07-v2/lake-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "nature",
+      "subject": "Lake"
+    },
+    "late": {
+      "src": "/img/symbols/editorial-2026-07-v2/late-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Being late"
+    },
+    "letter": {
+      "src": "/img/symbols/editorial-2026-07-v2/letter-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Letter"
+    },
+    "lightning": {
+      "src": "/img/symbols/editorial-2026-07-v2/lightning-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "nature",
+      "subject": "Lightning"
+    },
+    "lion": {
+      "src": "/img/symbols/editorial-2026-07-v2/lion-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Lion"
+    },
+    "lost": {
+      "src": "/img/symbols/editorial-2026-07-v2/lost-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Being Lost"
+    },
+    "mall": {
+      "src": "/img/symbols/editorial-2026-07-v2/mall-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Mall"
+    },
+    "mask": {
+      "src": "/img/symbols/editorial-2026-07-v2/mask-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Mask"
+    },
+    "missing-train": {
+      "src": "/img/symbols/editorial-2026-07-v2/missing-train-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Missing a train"
+    },
+    "money": {
+      "src": "/img/symbols/editorial-2026-07-v2/money-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Money"
+    },
+    "monster": {
+      "src": "/img/symbols/editorial-2026-07-v2/monster-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Monster"
+    },
+    "mother": {
+      "src": "/img/symbols/editorial-2026-07-v2/mother-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Mother"
+    },
+    "mountain": {
+      "src": "/img/symbols/editorial-2026-07-v2/mountain-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "nature",
+      "subject": "Mountain"
+    },
+    "mouse": {
+      "src": "/img/symbols/editorial-2026-07-v2/mouse-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Mouse"
+    },
+    "night": {
+      "src": "/img/symbols/editorial-2026-07-v2/night-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "celestial",
+      "subject": "Night / Darkness"
+    },
+    "nudity": {
+      "src": "/img/symbols/editorial-2026-07-v2/nudity-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "body",
+      "subject": "Nudity"
+    },
+    "owl": {
+      "src": "/img/symbols/editorial-2026-07-v2/owl-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Owl"
+    },
+    "paralysis": {
+      "src": "/img/symbols/editorial-2026-07-v2/paralysis-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Paralysis"
+    },
+    "partner": {
+      "src": "/img/symbols/editorial-2026-07-v2/partner-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Partner"
+    },
+    "path": {
+      "src": "/img/symbols/editorial-2026-07-v2/path-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Path / Road"
+    },
+    "phone": {
+      "src": "/img/symbols/editorial-2026-07-v2/phone-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Phone"
+    },
+    "plane": {
+      "src": "/img/symbols/editorial-2026-07-v2/plane-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Plane"
+    },
+    "police": {
+      "src": "/img/symbols/editorial-2026-07-v2/police-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Police"
+    },
+    "pregnancy": {
+      "src": "/img/symbols/editorial-2026-07-v2/pregnancy-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "body",
+      "subject": "Pregnancy"
+    },
+    "pregnancy-test": {
+      "src": "/img/symbols/editorial-2026-07-v2/pregnancy-test-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Pregnancy test"
+    },
+    "prison": {
+      "src": "/img/symbols/editorial-2026-07-v2/prison-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Prison"
+    },
+    "rabbit": {
+      "src": "/img/symbols/editorial-2026-07-v2/rabbit-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Rabbit"
+    },
+    "rainbow": {
+      "src": "/img/symbols/editorial-2026-07-v2/rainbow-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "celestial",
+      "subject": "Rainbow"
+    },
+    "rat": {
+      "src": "/img/symbols/editorial-2026-07-v2/rat-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Rat"
+    },
+    "ring": {
+      "src": "/img/symbols/editorial-2026-07-v2/ring-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Ring"
+    },
+    "river": {
+      "src": "/img/symbols/editorial-2026-07-v2/river-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "nature",
+      "subject": "River"
+    },
+    "road": {
+      "src": "/img/symbols/editorial-2026-07-v2/road-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Road"
+    },
+    "rose": {
+      "src": "/img/symbols/editorial-2026-07-v2/rose-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "nature",
+      "subject": "Rose"
+    },
+    "screaming": {
+      "src": "/img/symbols/editorial-2026-07-v2/screaming-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Screaming"
+    },
+    "shadow": {
+      "src": "/img/symbols/editorial-2026-07-v2/shadow-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Shadow"
+    },
+    "shark": {
+      "src": "/img/symbols/editorial-2026-07-v2/shark-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Shark"
+    },
+    "sibling": {
+      "src": "/img/symbols/editorial-2026-07-v2/sibling-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Sibling"
+    },
+    "snow": {
+      "src": "/img/symbols/editorial-2026-07-v2/snow-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "nature",
+      "subject": "Snow"
+    },
+    "stranger": {
+      "src": "/img/symbols/editorial-2026-07-v2/stranger-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Stranger"
+    },
+    "suitcase": {
+      "src": "/img/symbols/editorial-2026-07-v2/suitcase-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Suitcase"
+    },
+    "sun": {
+      "src": "/img/symbols/editorial-2026-07-v2/sun-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "celestial",
+      "subject": "Sun"
+    },
+    "surgery": {
+      "src": "/img/symbols/editorial-2026-07-v2/surgery-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Surgery"
+    },
+    "swimming": {
+      "src": "/img/symbols/editorial-2026-07-v2/swimming-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Swimming"
+    },
+    "teacher": {
+      "src": "/img/symbols/editorial-2026-07-v2/teacher-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Teacher"
+    },
+    "tornado": {
+      "src": "/img/symbols/editorial-2026-07-v2/tornado-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "nature",
+      "subject": "Tornado"
+    },
+    "train": {
+      "src": "/img/symbols/editorial-2026-07-v2/train-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Train"
+    },
+    "trapped": {
+      "src": "/img/symbols/editorial-2026-07-v2/trapped-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Trapped"
+    },
+    "unable-to-speak": {
+      "src": "/img/symbols/editorial-2026-07-v2/unable-to-speak-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Unable to speak"
+    },
+    "volcano": {
+      "src": "/img/symbols/editorial-2026-07-v2/volcano-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "nature",
+      "subject": "Volcano"
+    },
+    "watch": {
+      "src": "/img/symbols/editorial-2026-07-v2/watch-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Watch"
+    },
+    "waterfall": {
+      "src": "/img/symbols/editorial-2026-07-v2/waterfall-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "nature",
+      "subject": "Waterfall"
+    },
+    "wedding": {
+      "src": "/img/symbols/editorial-2026-07-v2/wedding-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Wedding"
+    },
+    "whale": {
+      "src": "/img/symbols/editorial-2026-07-v2/whale-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Whale"
+    },
+    "workplace": {
+      "src": "/img/symbols/editorial-2026-07-v2/workplace-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Workplace"
+    },
+    "zombie": {
+      "src": "/img/symbols/editorial-2026-07-v2/zombie-v2.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Zombie"
+    }
+  }
+}
