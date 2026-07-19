@@ -3,6 +3,8 @@ const os = require('os');
 const path = require('path');
 
 const {
+  assertCompleteSymbolCoverage,
+  collectGeneratedIllustrations,
   collectIllustrations,
   collectPosterIllustrations,
   mergeIllustrations,
@@ -66,5 +68,35 @@ describe('responsive symbol image inventory', () => {
         [{ symbolId: 'second', stem: 'shared', src: '/img/shared.webp' }]
       )
     ).toThrow('Responsive symbol stem collision: shared');
+  });
+
+  it('collects versioned generated masters from the symbol image registry', () => {
+    expect(
+      collectGeneratedIllustrations({
+        assets: {
+          abandonment: {
+            src: '/img/symbols/editorial-2026-07-v2/abandonment-v2.webp',
+          },
+        },
+      })
+    ).toEqual([
+      expect.objectContaining({
+        symbolId: 'abandonment',
+        stem: 'abandonment-v2',
+        src: '/img/symbols/editorial-2026-07-v2/abandonment-v2.webp',
+      }),
+    ]);
+  });
+
+  it('requires one unique illustration source for every catalog symbol', () => {
+    expect(() =>
+      assertCompleteSymbolCoverage(
+        [
+          { symbolId: 'first', src: '/img/shared.webp' },
+          { symbolId: 'second', src: '/img/shared.webp' },
+        ],
+        { symbols: [{ id: 'first' }, { id: 'second' }, { id: 'third' }] }
+      )
+    ).toThrow('shares /img/shared.webp with first');
   });
 });

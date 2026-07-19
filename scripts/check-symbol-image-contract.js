@@ -62,6 +62,8 @@ function validateSymbolImageContract() {
   const catalog = JSON.parse(fs.readFileSync(CATALOG_PATH, 'utf8'));
   const sitemap = fs.readFileSync(SITEMAP_PATH, 'utf8');
   const errors = [];
+  const imageBySymbol = new Map();
+  const symbolByImage = new Map();
   let pagesChecked = 0;
 
   for (const symbol of catalog.symbols || []) {
@@ -92,6 +94,22 @@ function validateSymbolImageContract() {
       const expectedImageUrl = image.src?.startsWith('http')
         ? image.src
         : `${SITE_ORIGIN}${image.src || ''}`;
+      if (!image.src?.includes('/img/seo/symbols-v2/')) {
+        errors.push(`${symbol.id}/${lang}: hero does not use the symbols-v2 image family`);
+      }
+      const existingImage = imageBySymbol.get(symbol.id);
+      if (existingImage && existingImage !== expectedImageUrl) {
+        errors.push(`${symbol.id}/${lang}: localized pages do not share one stable image`);
+      }
+      imageBySymbol.set(symbol.id, expectedImageUrl);
+
+      const existingSymbol = symbolByImage.get(expectedImageUrl);
+      if (existingSymbol && existingSymbol !== symbol.id) {
+        errors.push(
+          `${symbol.id}/${lang}: shares its hero image with symbol ${existingSymbol}`
+        );
+      }
+      symbolByImage.set(expectedImageUrl, symbol.id);
       if (!image.alt?.trim()) errors.push(`${symbol.id}/${lang}: empty hero alt text`);
       if (image.width !== '1200' || !Number(image.height)) {
         errors.push(`${symbol.id}/${lang}: missing 1200px intrinsic hero dimensions`);

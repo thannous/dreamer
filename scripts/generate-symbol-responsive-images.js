@@ -6,24 +6,26 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 const { ROOT_DIR } = require('./lib/docs-site-config');
+const {
+  generatedSymbolImagePath,
+  loadSymbolImageRegistry,
+} = require('./lib/symbol-image-assets');
 
-const SOURCE_DATA_PATH = path.join(
-  ROOT_DIR,
-  'docs-src',
-  'static',
-  'data',
-  'dream-symbols-extended.json'
-);
+const SOURCE_DATA_PATHS = [
+  path.join(ROOT_DIR, 'docs-src', 'static', 'data', 'dream-symbols-extended.json'),
+  path.join(ROOT_DIR, 'docs-src', 'static', 'data', 'dream-symbols-extended-tier3.json'),
+];
 const STATIC_DIR = path.join(ROOT_DIR, 'docs-src', 'static');
+const CATALOG_PATH = path.join(ROOT_DIR, 'data', 'dream-symbols.json');
 const POSTER_DIR = path.join(STATIC_DIR, 'img', 'symbols', 'posters-v1');
-const OUTPUT_DIR = path.join(STATIC_DIR, 'img', 'seo', 'symbols-v1');
+const OUTPUT_DIR = path.join(STATIC_DIR, 'img', 'seo', 'symbols-v2');
 const WIDTHS = [480, 800, 1200];
 const MAX_BYTES = 250_000;
 const WARN_BYTES = 180_000;
 
 function collectIllustrations(payload) {
   const illustrations = new Map();
-  for (const [symbolId, localized] of Object.entries(payload?.symbols || {})) {
+  for (const [symbolId, localized] of Object.entries(payload?.symbols || payload || {})) {
     for (const value of Object.values(localized || {})) {
       const illustration = value?.illustration;
       if (!illustration?.src) continue;
@@ -56,10 +58,32 @@ function collectPosterIllustrations(posterDir = POSTER_DIR) {
     }));
 }
 
+function collectGeneratedIllustrations(registry) {
+  return Object.entries(registry?.assets || {})
+    .map(([symbolId, asset]) => {
+      const stem = path.basename(asset.src, path.extname(asset.src));
+      return {
+        symbolId,
+        stem,
+        src: asset.src,
+        sourcePath: generatedSymbolImagePath(asset),
+      };
+    })
+    .sort((a, b) => a.stem.localeCompare(b.stem));
+}
+
 function mergeIllustrations(primary, posters) {
   const byStem = new Map();
   for (const illustration of [...primary, ...posters]) {
-    if (byStem.has(illustration.stem)) {
+    const existing = byStem.get(illustration.stem);
+    if (
+      existing &&
+      existing.symbolId === illustration.symbolId &&
+      existing.src === illustration.src
+    ) {
+      continue;
+    }
+    if (existing) {
       throw new Error(`Responsive symbol stem collision: ${illustration.stem}`);
     }
     byStem.set(illustration.stem, illustration);
@@ -69,6 +93,41 @@ function mergeIllustrations(primary, posters) {
 
 function outputPath(illustration, width) {
   return path.join(OUTPUT_DIR, `${illustration.stem}-${width}w.webp`);
+}
+
+function assertCompleteSymbolCoverage(illustrations, catalog) {
+  const errors = [];
+  const catalogIds = new Set((catalog?.symbols || []).map((symbol) => symbol.id));
+  const bySymbol = new Map();
+  const bySource = new Map();
+
+  for (const illustration of illustrations) {
+    if (!catalogIds.has(illustration.symbolId)) {
+      errors.push(`${illustration.symbolId}: illustration is not present in the symbol catalog`);
+    }
+    if (bySymbol.has(illustration.symbolId)) {
+      errors.push(`${illustration.symbolId}: more than one dedicated illustration source`);
+    }
+    bySymbol.set(illustration.symbolId, illustration);
+
+    const existingSymbol = bySource.get(illustration.src);
+    if (existingSymbol && existingSymbol !== illustration.symbolId) {
+      errors.push(
+        `${illustration.symbolId}: shares ${illustration.src} with ${existingSymbol}`
+      );
+    }
+    bySource.set(illustration.src, illustration.symbolId);
+  }
+
+  for (const symbol of catalog?.symbols || []) {
+    if (!bySymbol.has(symbol.id)) {
+      errors.push(`${symbol.id}: missing dedicated illustration source`);
+    }
+  }
+
+  if (errors.length > 0) {
+    throw new Error(`Invalid symbol image coverage:\n- ${errors.join('\n- ')}`);
+  }
 }
 
 async function generateIllustrations(illustrations) {
@@ -124,10 +183,17 @@ async function validateIllustrations(illustrations) {
 
 async function main() {
   const checkOnly = process.argv.includes('--check');
-  const payload = JSON.parse(fs.readFileSync(SOURCE_DATA_PATH, 'utf8'));
+  const registry = loadSymbolImageRegistry();
+  const editorial = SOURCE_DATA_PATHS
+    .filter((sourcePath) => fs.existsSync(sourcePath))
+    .flatMap((sourcePath) => collectIllustrations(JSON.parse(fs.readFileSync(sourcePath, 'utf8'))));
   const illustrations = mergeIllustrations(
-    collectIllustrations(payload),
-    collectPosterIllustrations()
+    editorial,
+    collectGeneratedIllustrations(registry)
+  );
+  assertCompleteSymbolCoverage(
+    illustrations,
+    JSON.parse(fs.readFileSync(CATALOG_PATH, 'utf8'))
   );
   if (!checkOnly) await generateIllustrations(illustrations);
   const result = await validateIllustrations(illustrations);
@@ -146,7 +212,9 @@ if (require.main === module) {
 }
 
 module.exports = {
+  assertCompleteSymbolCoverage,
   collectIllustrations,
+  collectGeneratedIllustrations,
   collectPosterIllustrations,
   mergeIllustrations,
   outputPath,
