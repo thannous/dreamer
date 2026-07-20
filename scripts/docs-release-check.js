@@ -7,6 +7,10 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const {
+  DOCS_BUILD_STATE_FILE,
+  readDocsBuildState,
+} = require('./lib/docs-check-helpers');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 
@@ -41,8 +45,7 @@ function printHelp() {
 
 Runs a release-grade docs validation locally:
 1. validates the current commit in a temporary clean git worktree
-2. rebuilds the local docs/ with the exact same build version
-3. reruns the same checks locally so docs/ is ready to deploy
+2. promotes that exact validated docs/ artifact to the local workspace
 
 Options:
   --skip-external   Skip external link validation
@@ -174,6 +177,52 @@ function runChecksInDirectory(targetDir, releaseVersion, options, label) {
   );
 }
 
+function promoteValidatedDocs(sourceRoot, destinationRoot = ROOT_DIR) {
+  const sourceDocs = path.join(sourceRoot, 'docs');
+  const destinationDocs = path.join(destinationRoot, 'docs');
+  const sourceState = path.join(sourceRoot, DOCS_BUILD_STATE_FILE);
+  const destinationState = path.join(destinationRoot, DOCS_BUILD_STATE_FILE);
+  const sourceBuildState = readDocsBuildState(sourceRoot);
+
+  if (!fs.existsSync(sourceDocs)) {
+    throw new Error(`Validated docs artifact is missing: ${sourceDocs}`);
+  }
+  if (sourceBuildState?.status !== 'ready') {
+    throw new Error(
+      `Validated docs artifact is not ready: ${sourceBuildState?.status || 'missing build state'}`
+    );
+  }
+
+  const promotionRoot = fs.mkdtempSync(
+    path.join(destinationRoot, '.docs-release-promotion-')
+  );
+  const stagedDocs = path.join(promotionRoot, 'docs');
+  const previousDocs = path.join(promotionRoot, 'previous-docs');
+  let movedPreviousDocs = false;
+
+  try {
+    fs.cpSync(sourceDocs, stagedDocs, { recursive: true });
+    if (fs.existsSync(destinationDocs)) {
+      fs.renameSync(destinationDocs, previousDocs);
+      movedPreviousDocs = true;
+    }
+
+    try {
+      fs.renameSync(stagedDocs, destinationDocs);
+      fs.copyFileSync(sourceState, destinationState);
+    } catch (error) {
+      fs.rmSync(destinationDocs, { recursive: true, force: true });
+      if (movedPreviousDocs && fs.existsSync(previousDocs)) {
+        fs.renameSync(previousDocs, destinationDocs);
+        movedPreviousDocs = false;
+      }
+      throw error;
+    }
+  } finally {
+    fs.rmSync(promotionRoot, { recursive: true, force: true });
+  }
+}
+
 function main() {
   const options = parseArgs(process.argv.slice(2));
   if (options.help) {
@@ -191,10 +240,10 @@ function main() {
   try {
     tempWorkspace = createTempWorkspace();
     runChecksInDirectory(tempWorkspace.worktreeDir, releaseVersion, options, 'clean worktree');
-    runChecksInDirectory(ROOT_DIR, releaseVersion, options, 'local workspace');
+    promoteValidatedDocs(tempWorkspace.worktreeDir);
 
     console.log('\n[docs-release-check] Success.');
-    console.log('[docs-release-check] docs/ has been rebuilt locally with the validated release version.');
+    console.log('[docs-release-check] The validated clean-worktree docs/ artifact is ready locally.');
     if (options.skipExternal) {
       console.log('[docs-release-check] External links were skipped.');
     }
@@ -226,9 +275,17 @@ function exportHeadToDirectory(targetDir) {
   }
 }
 
-try {
-  main();
-} catch (error) {
-  console.error(`\n[docs-release-check] Failed: ${error.message || error}`);
-  process.exit(1);
+if (require.main === module) {
+  try {
+    main();
+  } catch (error) {
+    console.error(`\n[docs-release-check] Failed: ${error.message || error}`);
+    process.exit(1);
+  }
 }
+
+module.exports = {
+  generateReleaseVersion,
+  parseArgs,
+  promoteValidatedDocs,
+};
