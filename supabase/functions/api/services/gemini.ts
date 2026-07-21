@@ -1,9 +1,7 @@
 import {
   ApiError as GoogleGenAiApiError,
   GoogleGenAI,
-  Modality,
-  ThinkingLevel,
-} from 'https://esm.sh/@google/genai@1.34.0?target=deno';
+} from 'https://esm.sh/@google/genai@2.12.0?target=deno';
 
 export type GeminiInlineData = {
   data: string;
@@ -25,7 +23,6 @@ export type GeminiContent = {
 type GeminiThinkingLevel = 'minimal' | 'low' | 'medium' | 'high';
 
 export type GeminiGenerationConfig = {
-  temperature?: number;
   responseMimeType?: string;
   responseJsonSchema?: unknown;
   responseModalities?: ('TEXT' | 'IMAGE' | 'AUDIO')[];
@@ -35,8 +32,8 @@ export type GeminiGenerationConfig = {
   thinkingLevel?: GeminiThinkingLevel;
 };
 
-export const GEMINI_FLASH_MODEL = 'gemini-3-flash-preview';
-export const GEMINI_FLASH_LITE_MODEL = 'gemini-3.1-flash-lite';
+export const GEMINI_FLASH_MODEL = 'gemini-3.6-flash';
+export const GEMINI_FLASH_LITE_MODEL = 'gemini-3.5-flash-lite';
 export const GEMINI_FLASH_IMAGE_MODEL = 'gemini-3.1-flash-image';
 export const GEMINI_FLASH_LITE_IMAGE_MODEL = 'gemini-3.1-flash-lite-image';
 
@@ -61,67 +58,180 @@ const getClient = (apiKey: string): GoogleGenAI => {
   const cached = clients.get(apiKey);
   if (cached) return cached;
 
-  const client = new GoogleGenAI({ apiKey, apiVersion: 'v1beta' });
+  const client = new GoogleGenAI({ apiKey });
   clients.set(apiKey, client);
   return client;
 };
 
-const normalizeContents = (contents: GeminiContent[] | string): GeminiContent[] | string => {
-  if (Array.isArray(contents)) return contents;
-  return String(contents);
+type InteractionContentBlock =
+  | { type: 'text'; text: string }
+  | { type: 'image'; data: string; mime_type: string };
+
+type InteractionInputStep = {
+  type: 'user_input' | 'model_output';
+  content: InteractionContentBlock[];
 };
 
-const normalizeSystemInstruction = (
+// Thought parts are dropped on input: stateless Interactions turns carry plain
+// content blocks, and this API has no tool calls that would need signatures.
+const toContentBlocks = (parts: GeminiPart[]): InteractionContentBlock[] => {
+  const blocks: InteractionContentBlock[] = [];
+  for (const part of parts) {
+    if (part?.inlineData?.data) {
+      blocks.push({
+        type: 'image',
+        data: part.inlineData.data,
+        mime_type: part.inlineData.mimeType || 'image/png',
+      });
+      continue;
+    }
+    if (part?.thought === true) continue;
+    if (typeof part?.text === 'string' && part.text.length > 0) {
+      blocks.push({ type: 'text', text: part.text });
+    }
+  }
+  return blocks;
+};
+
+// The steps-based Interactions API rejects `{role, content}` turn lists
+// ("use step_list input format instead of turn_list").
+const toInteractionInput = (
+  contents: GeminiContent[] | string
+): string | InteractionInputStep[] => {
+  if (!Array.isArray(contents)) return String(contents);
+
+  const steps: InteractionInputStep[] = [];
+  for (const content of contents) {
+    const blocks = toContentBlocks(content?.parts ?? []);
+    if (blocks.length === 0) continue;
+    steps.push({
+      type: content.role === 'model' ? 'model_output' : 'user_input',
+      content: blocks,
+    });
+  }
+  return steps;
+};
+
+const toSystemInstruction = (
   systemInstruction?: string | GeminiContent
-): string | GeminiContent | undefined => {
+): string | undefined => {
   if (!systemInstruction) return undefined;
   if (typeof systemInstruction === 'string') return systemInstruction;
   if (typeof systemInstruction === 'object' && Array.isArray(systemInstruction.parts)) {
-    return systemInstruction;
+    const text = systemInstruction.parts
+      .map((part) => (typeof part?.text === 'string' ? part.text : ''))
+      .filter(Boolean)
+      .join('\n');
+    return text || undefined;
   }
   return String(systemInstruction);
 };
 
-const toSdkModality = (modality: 'TEXT' | 'IMAGE' | 'AUDIO'): Modality => {
-  switch (modality) {
-    case 'IMAGE':
-      return Modality.IMAGE;
-    case 'AUDIO':
-      return Modality.AUDIO;
-    case 'TEXT':
-    default:
-      return Modality.TEXT;
-  }
+// gemini-3.5-flash-lite rejects 'minimal' ("Allowed values are: low, high"),
+// so the lowest level callers can request is normalized to 'low'.
+const toThinkingLevel = (
+  thinkingLevel?: GeminiThinkingLevel
+): 'low' | 'medium' | 'high' | undefined => {
+  if (!thinkingLevel) return undefined;
+  return thinkingLevel === 'minimal' ? 'low' : thinkingLevel;
 };
 
-const toSdkThinkingLevel = (thinkingLevel?: GeminiThinkingLevel): ThinkingLevel | undefined => {
-  switch (thinkingLevel) {
-    case 'minimal':
-      return ThinkingLevel.MINIMAL;
-    case 'low':
-      return ThinkingLevel.LOW;
-    case 'medium':
-      return ThinkingLevel.MEDIUM;
-    case 'high':
-      return ThinkingLevel.HIGH;
-    default:
-      return undefined;
+const toResponseFormat = (
+  config?: GeminiGenerationConfig
+): Record<string, unknown> | undefined => {
+  if (config?.responseModalities?.includes('IMAGE')) {
+    return {
+      type: 'image',
+      ...(config.imageConfig?.aspectRatio
+        ? { aspect_ratio: config.imageConfig.aspectRatio }
+        : {}),
+    };
   }
+  if (config?.responseJsonSchema) {
+    return {
+      type: 'text',
+      mime_type: config.responseMimeType ?? 'application/json',
+      schema: config.responseJsonSchema,
+    };
+  }
+  if (config?.responseMimeType) {
+    return { type: 'text', mime_type: config.responseMimeType };
+  }
+  return undefined;
 };
 
-const extractText = (response: any): string => {
-  if (typeof response?.text === 'string' && response.text.trim()) {
-    return response.text;
+const extractText = (interaction: any): string => {
+  if (typeof interaction?.output_text === 'string' && interaction.output_text.trim()) {
+    return interaction.output_text;
   }
 
-  const parts = response?.candidates?.[0]?.content?.parts;
-  if (!Array.isArray(parts)) return '';
-  return parts
-    .map((part: any) => {
-      if (part?.thought === true) return '';
-      return typeof part?.text === 'string' ? part.text : '';
-    })
-    .join('');
+  const steps = interaction?.steps;
+  if (!Array.isArray(steps)) return '';
+  for (let i = steps.length - 1; i >= 0; i--) {
+    const step = steps[i];
+    if (step?.type !== 'model_output' || !Array.isArray(step.content)) continue;
+    const text = step.content
+      .map((block: any) =>
+        block?.type === 'text' && typeof block.text === 'string' ? block.text : ''
+      )
+      .join('');
+    if (text) return text;
+  }
+  return '';
+};
+
+export const extractInteractionImage = (
+  interaction: any
+): { data?: string; mimeType?: string } => {
+  const direct = interaction?.output_image;
+  if (typeof direct?.data === 'string' && direct.data) {
+    return { data: direct.data, mimeType: direct.mime_type };
+  }
+
+  const steps = interaction?.steps;
+  if (!Array.isArray(steps)) return {};
+  for (let i = steps.length - 1; i >= 0; i--) {
+    const step = steps[i];
+    if (step?.type !== 'model_output' || !Array.isArray(step.content)) continue;
+    const image = step.content.find(
+      (block: any) => block?.type === 'image' && typeof block?.data === 'string' && block.data
+    );
+    if (image) return { data: image.data, mimeType: image.mime_type };
+  }
+  return {};
+};
+
+/**
+ * Convert an interaction's model steps back to the legacy `GeminiPart[]` shape
+ * persisted in chat history (`chat_history` rows predate the Interactions API).
+ */
+export const extractModelParts = (interaction: any): GeminiPart[] => {
+  const steps = interaction?.steps;
+  if (!Array.isArray(steps)) return [];
+
+  const parts: GeminiPart[] = [];
+  for (const step of steps) {
+    if (step?.type === 'thought') {
+      parts.push({
+        thought: true,
+        ...(typeof step.signature === 'string' && step.signature
+          ? { thoughtSignature: step.signature }
+          : {}),
+      });
+      continue;
+    }
+    if (step?.type !== 'model_output' || !Array.isArray(step.content)) continue;
+    for (const block of step.content) {
+      if (block?.type === 'text' && typeof block.text === 'string' && block.text) {
+        parts.push({ text: block.text });
+      } else if (block?.type === 'image' && typeof block?.data === 'string' && block.data) {
+        parts.push({
+          inlineData: { data: block.data, mimeType: block.mime_type ?? 'image/png' },
+        });
+      }
+    }
+  }
+  return parts;
 };
 
 export const requestGeminiGenerateContent = async (options: {
@@ -133,24 +243,20 @@ export const requestGeminiGenerateContent = async (options: {
 }): Promise<any> => {
   const { apiKey, model, contents, systemInstruction, config } = options;
   const client = getClient(apiKey);
-  const normalizedSystem = normalizeSystemInstruction(systemInstruction);
-  const sdkThinkingLevel = toSdkThinkingLevel(config?.thinkingLevel);
+  const system = toSystemInstruction(systemInstruction);
+  const responseFormat = toResponseFormat(config);
 
   try {
-    return await client.models.generateContent({
+    return await client.interactions.create({
       model,
-      contents: normalizeContents(contents),
-      config: {
-        ...(normalizedSystem ? { systemInstruction: normalizedSystem } : {}),
-        ...(typeof config?.temperature === 'number' ? { temperature: config.temperature } : {}),
-        ...(config?.responseMimeType ? { responseMimeType: config.responseMimeType } : {}),
-        ...(config?.responseJsonSchema ? { responseJsonSchema: config.responseJsonSchema } : {}),
-        ...(config?.responseModalities?.length
-          ? { responseModalities: config.responseModalities.map(toSdkModality) }
-          : {}),
-        ...(config?.imageConfig ? { imageConfig: config.imageConfig } : {}),
-        ...(sdkThinkingLevel ? { thinkingConfig: { thinkingLevel: sdkThinkingLevel } } : {}),
-      },
+      input: toInteractionInput(contents),
+      // Dream content is sensitive user data — never retain it server-side.
+      store: false,
+      ...(system ? { system_instruction: system } : {}),
+      ...(responseFormat ? { response_format: responseFormat } : {}),
+      ...(toThinkingLevel(config?.thinkingLevel)
+        ? { generation_config: { thinking_level: toThinkingLevel(config?.thinkingLevel) } }
+        : {}),
     });
   } catch (error) {
     if (error instanceof GoogleGenAiApiError) {
@@ -246,6 +352,13 @@ export const callGeminiWithFallback = async (
       config,
     });
     const text = extractText(raw);
+    if (!text && raw?.status === 'failed') {
+      throw new ApiError({
+        message: String((raw?.error as { message?: unknown })?.message ?? 'Interaction failed'),
+        status: 502,
+        body: raw?.error,
+      });
+    }
     return { text, raw };
   };
 
