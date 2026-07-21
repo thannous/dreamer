@@ -504,7 +504,16 @@ function validateDefinitions() {
 function writeSources(outputs) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   for (const output of outputs) {
-    fs.writeFileSync(path.join(OUTPUT_DIR, output.fileName), output.contents);
+    const outputPath = path.join(OUTPUT_DIR, output.fileName);
+    // Skip identical content: rewriting would bump the mtime and force the
+    // incremental variant generation downstream to re-encode every diagram.
+    if (
+      fs.existsSync(outputPath) &&
+      fs.readFileSync(outputPath, 'utf8') === output.contents
+    ) {
+      continue;
+    }
+    fs.writeFileSync(outputPath, output.contents);
   }
 }
 
