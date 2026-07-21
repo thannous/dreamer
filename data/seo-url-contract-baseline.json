@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "29ddfdca1963e066b0c7a626c315f7b064051992",
+  "sourceRevision": "cb1cddd858653b30017c4629924271e77ae83137",
   "counts": {
-    "logicalPages": 233,
-    "manifestPaths": 1165,
-    "uniqueManifestPaths": 1165,
-    "canonicalPages": 1165,
-    "sitemapEntries": 1165,
-    "allHtmlOutputPaths": 1170
+    "logicalPages": 234,
+    "manifestPaths": 1170,
+    "uniqueManifestPaths": 1170,
+    "canonicalPages": 1170,
+    "sitemapEntries": 1170,
+    "allHtmlOutputPaths": 1175
   },
   "manifestRoutes": [
     {
@@ -259,6 +259,56 @@
       "lang": "it",
       "slug": "guida-sogni-bambini",
       "path": "/it/blog/guida-sogni-bambini"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "climate-dreams-eco-anxiety",
+      "lang": "de",
+      "slug": "klimatraeume-klimaangst",
+      "path": "/de/blog/klimatraeume-klimaangst"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "climate-dreams-eco-anxiety",
+      "lang": "en",
+      "slug": "climate-dreams-eco-anxiety",
+      "path": "/en/blog/climate-dreams-eco-anxiety"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "climate-dreams-eco-anxiety",
+      "lang": "es",
+      "slug": "suenos-climaticos-ecoansiedad",
+      "path": "/es/blog/suenos-climaticos-ecoansiedad"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "climate-dreams-eco-anxiety",
+      "lang": "fr",
+      "slug": "reves-climatiques-eco-anxiete",
+      "path": "/fr/blog/reves-climatiques-eco-anxiete"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "climate-dreams-eco-anxiety",
+      "lang": "it",
+      "slug": "sogni-climatici-eco-ansia",
+      "path": "/it/blog/sogni-climatici-eco-ansia"
     },
     {
       "collection": "blog",
@@ -11682,6 +11732,7 @@
     "docs/de/blog/ki-traumtagebuch-datenschutz.html",
     "docs/de/blog/kindertraeume-ratgeber.html",
     "docs/de/blog/klares-traeumen-anleitungen-und-techniken.html",
+    "docs/de/blog/klimatraeume-klimaangst.html",
     "docs/de/blog/koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume.html",
     "docs/de/blog/lebendige-traeume-erholsamer-schlaf.html",
     "docs/de/blog/leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte.html",
@@ -11908,6 +11959,7 @@
     "docs/en/blog/anxiety-dreams-meaning.html",
     "docs/en/blog/being-chased-dreams.html",
     "docs/en/blog/children-dreams-guide.html",
+    "docs/en/blog/climate-dreams-eco-anxiety.html",
     "docs/en/blog/daylight-saving-time-sleep.html",
     "docs/en/blog/death-dreams-meaning.html",
     "docs/en/blog/dream-control-problem-solving.html",
@@ -12168,6 +12220,7 @@
     "docs/es/blog/sonar-despierto-estados-oniricos.html",
     "docs/es/blog/sueno-rem-suenos.html",
     "docs/es/blog/sueno-salud-prioridad.html",
+    "docs/es/blog/suenos-climaticos-ecoansiedad.html",
     "docs/es/blog/suenos-con-ex.html",
     "docs/es/blog/suenos-con-serpientes.html",
     "docs/es/blog/suenos-de-agua.html",
@@ -12398,6 +12451,7 @@
     "docs/fr/blog/rever-eveille-etats-oniriques.html",
     "docs/fr/blog/rever-examen-signification.html",
     "docs/fr/blog/reves-anxiete-signification.html",
+    "docs/fr/blog/reves-climatiques-eco-anxiete.html",
     "docs/fr/blog/reves-de-chute.html",
     "docs/fr/blog/reves-de-grossesse.html",
     "docs/fr/blog/reves-de-mort.html",
@@ -12636,6 +12690,7 @@
     "docs/it/blog/sognare-esame-significato.html",
     "docs/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione.html",
     "docs/it/blog/sogni-ansia-significato.html",
+    "docs/it/blog/sogni-climatici-eco-ansia.html",
     "docs/it/blog/sogni-di-denti-che-cadono-significato-e-interpretazione.html",
     "docs/it/blog/sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta.html",
     "docs/it/blog/sogni-e-creativita.html",
@@ -14634,6 +14689,301 @@
           }
         ]
       ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/it/",
+        "https://noctalia.app/it/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "lang": "de",
+      "outputPath": "docs/de/blog/klimatraeume-klimaangst.html",
+      "canonical": "https://noctalia.app/de/blog/klimatraeume-klimaangst",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/klimatraeume-klimaangst"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/blog/klimatraeume-klimaangst",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/de/blog/klimatraeume-klimaangst",
+          "id": "https://noctalia.app/de/blog/klimatraeume-klimaangst",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/de/blog/klimatraeume-klimaangst",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/de/blog/klimatraeume-klimaangst",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/de/blog/klimatraeume-klimaangst"
+        }
+      ],
+      "jsonLdBreadcrumbs": [],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/de/",
+        "https://noctalia.app/de/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "lang": "en",
+      "outputPath": "docs/en/blog/climate-dreams-eco-anxiety.html",
+      "canonical": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/klimatraeume-klimaangst"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety",
+          "id": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        }
+      ],
+      "jsonLdBreadcrumbs": [],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/",
+        "https://noctalia.app/en/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "lang": "es",
+      "outputPath": "docs/es/blog/suenos-climaticos-ecoansiedad.html",
+      "canonical": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/klimatraeume-klimaangst"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad",
+          "id": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad"
+        }
+      ],
+      "jsonLdBreadcrumbs": [],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/es/",
+        "https://noctalia.app/es/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "lang": "fr",
+      "outputPath": "docs/fr/blog/reves-climatiques-eco-anxiete.html",
+      "canonical": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/klimatraeume-klimaangst"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete",
+          "id": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete"
+        }
+      ],
+      "jsonLdBreadcrumbs": [],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/fr/",
+        "https://noctalia.app/fr/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "lang": "it",
+      "outputPath": "docs/it/blog/sogni-climatici-eco-ansia.html",
+      "canonical": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/klimatraeume-klimaangst"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia",
+          "id": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia"
+        }
+      ],
+      "jsonLdBreadcrumbs": [],
       "visibleBreadcrumbs": [
         "https://noctalia.app/it/",
         "https://noctalia.app/it/blog/"
@@ -33176,7 +33526,14 @@
         }
       ],
       "ogUrl": "https://noctalia.app/de/konto-loeschen",
-      "jsonLdIdentities": [],
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/de/konto-loeschen",
+          "id": "https://noctalia.app/de/konto-loeschen",
+          "mainEntityOfPageId": null
+        }
+      ],
       "jsonLdBreadcrumbs": [
         [
           {
@@ -33224,7 +33581,14 @@
         }
       ],
       "ogUrl": "https://noctalia.app/en/account-deletion",
-      "jsonLdIdentities": [],
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/en/account-deletion",
+          "id": "https://noctalia.app/en/account-deletion",
+          "mainEntityOfPageId": null
+        }
+      ],
       "jsonLdBreadcrumbs": [
         [
           {
@@ -33272,7 +33636,14 @@
         }
       ],
       "ogUrl": "https://noctalia.app/es/eliminacion-cuenta",
-      "jsonLdIdentities": [],
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/es/eliminacion-cuenta",
+          "id": "https://noctalia.app/es/eliminacion-cuenta",
+          "mainEntityOfPageId": null
+        }
+      ],
       "jsonLdBreadcrumbs": [
         [
           {
@@ -33320,7 +33691,14 @@
         }
       ],
       "ogUrl": "https://noctalia.app/fr/suppression-compte",
-      "jsonLdIdentities": [],
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/fr/suppression-compte",
+          "id": "https://noctalia.app/fr/suppression-compte",
+          "mainEntityOfPageId": null
+        }
+      ],
       "jsonLdBreadcrumbs": [
         [
           {
@@ -33368,7 +33746,14 @@
         }
       ],
       "ogUrl": "https://noctalia.app/it/eliminazione-account",
-      "jsonLdIdentities": [],
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/it/eliminazione-account",
+          "id": "https://noctalia.app/it/eliminazione-account",
+          "mainEntityOfPageId": null
+        }
+      ],
       "jsonLdBreadcrumbs": [
         [
           {
@@ -84473,6 +84858,166 @@
         {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/blog/children-dreams-guide"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/blog/klimatraeume-klimaangst",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/klimatraeume-klimaangst"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/klimatraeume-klimaangst"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/klimatraeume-klimaangst"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/klimatraeume-klimaangst"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.climate-dreams-eco-anxiety",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/klimatraeume-klimaangst"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/suenos-climaticos-ecoansiedad"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/reves-climatiques-eco-anxiete"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sogni-climatici-eco-ansia"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/climate-dreams-eco-anxiety"
         }
       ]
     },
