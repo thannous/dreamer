@@ -534,6 +534,41 @@ type SupabaseDreamRow = {
   has_person?: boolean | null;
   has_animal?: boolean | null;
   memory?: DreamMemoryMetadata | Record<string, unknown> | null;
+  analysis_details?: Record<string, unknown> | null;
+};
+
+type AnalysisDetailFields = Pick<DreamAnalysis, 'symbols' | 'emotions' | 'reflectionQuestions'>;
+
+const normalizeAnalysisDetails = (value: unknown): AnalysisDetailFields => {
+  const source = (value ?? {}) as Record<string, unknown>;
+  const symbols = Array.isArray(source.symbols)
+    ? source.symbols.filter(
+        (entry: any) => entry && typeof entry.name === 'string' && typeof entry.meaning === 'string'
+      )
+    : [];
+  const emotions = Array.isArray(source.emotions)
+    ? source.emotions.filter(
+        (entry: any) => entry && typeof entry.name === 'string' && typeof entry.insight === 'string'
+      )
+    : [];
+  const reflectionQuestions = Array.isArray(source.reflectionQuestions)
+    ? source.reflectionQuestions.filter((question: unknown): question is string => typeof question === 'string')
+    : [];
+
+  return {
+    ...(symbols.length > 0 ? { symbols } : {}),
+    ...(emotions.length > 0 ? { emotions } : {}),
+    ...(reflectionQuestions.length > 0 ? { reflectionQuestions } : {}),
+  };
+};
+
+const toAnalysisDetailsColumn = (dream: DreamAnalysis): Record<string, unknown> | null => {
+  const details = normalizeAnalysisDetails({
+    symbols: dream.symbols,
+    emotions: dream.emotions,
+    reflectionQuestions: dream.reflectionQuestions,
+  });
+  return Object.keys(details).length > 0 ? details : null;
 };
 
 const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
@@ -568,6 +603,7 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
     hasPerson: row.has_person === null ? undefined : row.has_person,
     hasAnimal: row.has_animal === null ? undefined : row.has_animal,
     memory: normalizeDreamMemoryMetadata(row.memory),
+    ...normalizeAnalysisDetails(row.analysis_details),
   };
 };
 
@@ -610,6 +646,8 @@ const mapDreamToRow = (
     // Only include subject detection when explicitly set (undefined = not checked, omit to preserve DB)
     ...(dream.hasPerson !== undefined ? { has_person: dream.hasPerson } : {}),
     ...(dream.hasAnimal !== undefined ? { has_animal: dream.hasAnimal } : {}),
+    // Omit when locally absent so updates preserve any server-side details.
+    ...(toAnalysisDetailsColumn(dream) ? { analysis_details: toAnalysisDetailsColumn(dream) } : {}),
   };
 
   if (!includeImageColumns) return { ...base, ...quotaFields };

@@ -1938,6 +1938,66 @@ export default function JournalDetailScreen() {
                     />
                   </>
                 ) : null}
+
+                {!isAnalysisPending && dream.symbols && dream.symbols.length > 0 ? (
+                  <>
+                    <View style={styles.sectionHeader}>
+                      <Text style={[styles.sectionHeaderText, { color: noctalia.accent.base }]}>
+                        {t('journal.detail.symbols_header')}
+                      </Text>
+                      <View style={[DecoLines.rule, { backgroundColor: noctalia.accent.base, marginTop: 8 }]} />
+                    </View>
+                    {dream.symbols.map((symbol, index) => (
+                      <View key={`symbol-${index}`} style={styles.analysisDetailItem}>
+                        <Text style={[styles.analysisDetailName, { color: noctalia.text.primary }]}>
+                          {symbol.name}
+                        </Text>
+                        <Text style={[styles.analysisDetailText, { color: noctalia.text.secondary }]}>
+                          {symbol.meaning}
+                        </Text>
+                      </View>
+                    ))}
+                  </>
+                ) : null}
+
+                {!isAnalysisPending && dream.emotions && dream.emotions.length > 0 ? (
+                  <>
+                    <View style={styles.sectionHeader}>
+                      <Text style={[styles.sectionHeaderText, { color: noctalia.accent.base }]}>
+                        {t('journal.detail.emotions_header')}
+                      </Text>
+                      <View style={[DecoLines.rule, { backgroundColor: noctalia.accent.base, marginTop: 8 }]} />
+                    </View>
+                    {dream.emotions.map((emotion, index) => (
+                      <View key={`emotion-${index}`} style={styles.analysisDetailItem}>
+                        <Text style={[styles.analysisDetailName, { color: noctalia.text.primary }]}>
+                          {emotion.name}
+                        </Text>
+                        <Text style={[styles.analysisDetailText, { color: noctalia.text.secondary }]}>
+                          {emotion.insight}
+                        </Text>
+                      </View>
+                    ))}
+                  </>
+                ) : null}
+
+                {!isAnalysisPending && dream.reflectionQuestions && dream.reflectionQuestions.length > 0 ? (
+                  <>
+                    <View style={styles.sectionHeader}>
+                      <Text style={[styles.sectionHeaderText, { color: noctalia.accent.base }]}>
+                        {t('journal.detail.reflection_header')}
+                      </Text>
+                      <View style={[DecoLines.rule, { backgroundColor: noctalia.accent.base, marginTop: 8 }]} />
+                    </View>
+                    {dream.reflectionQuestions.map((question, index) => (
+                      <View key={`reflection-${index}`} style={styles.analysisDetailItem}>
+                        <Text style={[styles.analysisDetailText, { color: noctalia.text.secondary }]}>
+                          {question}
+                        </Text>
+                      </View>
+                    ))}
+                  </>
+                ) : null}
               </>
             )}
 
@@ -2583,6 +2643,22 @@ const styles = StyleSheet.create({
     // color: set dynamically
     lineHeight: 24,
     marginBottom: 16,
+  },
+  analysisDetailItem: {
+    marginBottom: 12,
+  },
+  analysisDetailName: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    // color: set dynamically
+    lineHeight: 22,
+    marginBottom: 2,
+  },
+  analysisDetailText: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    // color: set dynamically
+    lineHeight: 22,
   },
   quoteBox: {
     borderLeftWidth: 4,

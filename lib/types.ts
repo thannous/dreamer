@@ -95,6 +95,16 @@ export interface DreamMemoryMetadata {
   createdFromOnboarding?: boolean;
 }
 
+export interface DreamSymbolInsight {
+  name: string;
+  meaning: string;
+}
+
+export interface DreamEmotionInsight {
+  name: string;
+  insight: string;
+}
+
 export interface DreamAnalysis {
   id: number; // timestamp for unique ID and sorting
   remoteId?: number; // Supabase row id when persisted online
@@ -106,6 +116,11 @@ export interface DreamAnalysis {
   title: string;
   interpretation: string;
   shareableQuote: string;
+  // Structured analysis details from the enriched analysis output.
+  // Absent on dreams analyzed before the feature shipped.
+  symbols?: DreamSymbolInsight[];
+  emotions?: DreamEmotionInsight[];
+  reflectionQuestions?: string[];
   imageUrl: string; // Full-resolution image for detail views
   thumbnailUrl?: string; // Smaller thumbnail for list views (optional for backward compatibility)
   imageUpdatedAt?: number; // Timestamp bump to force image refresh when replaced

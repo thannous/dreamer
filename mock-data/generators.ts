@@ -118,5 +118,18 @@ export function generateAnalysisResult(transcript: string) {
     theme,
     dreamType: DREAM_TYPES[Math.floor(Math.random() * DREAM_TYPES.length)],
     imagePrompt: `A ${theme} dream scene: ${transcript.slice(0, 50)}`,
+    symbols: [
+      { name: 'Water', meaning: 'Emotional currents moving beneath the surface of this dream.' },
+      { name: 'Light', meaning: 'A guiding awareness drawing your attention toward change.' },
+      { name: 'Doorway', meaning: 'A threshold between what is familiar and what is still forming.' },
+    ],
+    emotions: [
+      { name: 'Wonder', insight: 'An openness to what this dream is showing you.' },
+      { name: 'Longing', insight: 'A quiet pull toward something not yet named.' },
+    ],
+    reflectionQuestions: [
+      'What part of this dream felt most alive to you?',
+      'Where in your waking life do you feel a similar pull?',
+    ],
   };
 }

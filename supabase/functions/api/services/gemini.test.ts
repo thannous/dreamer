@@ -5,6 +5,8 @@ import {
   extractModelParts,
   GEMINI_FLASH_LITE_MODEL,
   GEMINI_FLASH_MODEL,
+  isRetiredTextModel,
+  resolveTextModel,
 } from './gemini.ts';
 
 Deno.test('text model constants point at current Interactions-era models', () => {
@@ -75,6 +77,50 @@ Deno.test('extractModelParts converts steps to legacy chat-history parts', () =>
     { text: 'dreamer.' },
     { inlineData: { data: 'img', mimeType: 'image/jpeg' } },
   ]);
+});
+
+Deno.test('isRetiredTextModel flags deprecated generations and dead previews', () => {
+  assertEquals(isRetiredTextModel('gemini-1.5-pro'), true);
+  assertEquals(isRetiredTextModel('gemini-2.0-flash-lite'), true);
+  assertEquals(isRetiredTextModel('gemini-2.5-flash'), true);
+  assertEquals(isRetiredTextModel('gemini-3-flash-preview'), true);
+  assertEquals(isRetiredTextModel('gemini-3.1-flash-lite-preview'), true);
+  assertEquals(isRetiredTextModel('gemini-3.6-flash'), false);
+  assertEquals(isRetiredTextModel('gemini-3.5-flash-lite'), false);
+  assertEquals(isRetiredTextModel('gemini-3.1-flash-lite'), false);
+});
+
+Deno.test('resolveTextModel ignores retired or blank overrides and falls back', () => {
+  const env = (values: Record<string, string | undefined>) => (name: string) => values[name];
+
+  assertEquals(resolveTextModel('GEMINI_MODEL', GEMINI_FLASH_MODEL, env({})), GEMINI_FLASH_MODEL);
+  assertEquals(
+    resolveTextModel('GEMINI_MODEL', GEMINI_FLASH_MODEL, env({ GEMINI_MODEL: 'gemini-3-flash-preview' })),
+    GEMINI_FLASH_MODEL
+  );
+  assertEquals(
+    resolveTextModel('GEMINI_MODEL', GEMINI_FLASH_MODEL, env({ GEMINI_MODEL: '  ' })),
+    GEMINI_FLASH_MODEL
+  );
+  assertEquals(
+    resolveTextModel('GEMINI_MODEL', GEMINI_FLASH_MODEL, env({ GEMINI_MODEL: ' gemini-3.5-flash ' })),
+    'gemini-3.5-flash'
+  );
+});
+
+Deno.test('resolveTextModel walks the env name list in priority order', () => {
+  const env = (values: Record<string, string | undefined>) => (name: string) => values[name];
+  const names = ['GEMINI_CHAT_MODEL', 'GEMINI_LITE_MODEL'];
+
+  assertEquals(
+    resolveTextModel(names, GEMINI_FLASH_LITE_MODEL, env({ GEMINI_CHAT_MODEL: 'gemini-3.6-flash', GEMINI_LITE_MODEL: 'custom-lite' })),
+    'gemini-3.6-flash'
+  );
+  assertEquals(
+    resolveTextModel(names, GEMINI_FLASH_LITE_MODEL, env({ GEMINI_CHAT_MODEL: 'gemini-2.5-flash-lite', GEMINI_LITE_MODEL: 'custom-lite' })),
+    'custom-lite'
+  );
+  assertEquals(resolveTextModel(names, GEMINI_FLASH_LITE_MODEL, env({})), GEMINI_FLASH_LITE_MODEL);
 });
 
 Deno.test('extractModelParts tolerates missing or malformed steps', () => {
