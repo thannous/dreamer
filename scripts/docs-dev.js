@@ -120,6 +120,26 @@ function isWatchableDocsPath(filePath, rootDir = ROOT_DIR) {
   if (relativePath.startsWith('tmp/')) return false;
   if (relativePath.startsWith('%TEMP%/')) return false;
 
+  // Build outputs living under watched roots: docs:build rewrites them on
+  // every run, so watching them would make each build queue the next one
+  // forever. Match the directories themselves too — build-experience removes
+  // and recreates its output directory, which fires an event on the parent
+  // with the bare directory path.
+  const generatedOutputs = [
+    'docs-src/static/js/experience',
+    'docs-src/static/img/seo',
+    'docs-src/static/img/symbols/posters-v1',
+  ];
+  if (
+    generatedOutputs.some(
+      (prefix) => relativePath === prefix || relativePath.startsWith(`${prefix}/`)
+    )
+  ) {
+    return false;
+  }
+  if (relativePath === 'data/content-manifest.json') return false;
+  if (relativePath === 'data/site-manifest.json') return false;
+
   if (relativePath.startsWith('docs-src/')) return true;
   if (relativePath.startsWith('data/')) return true;
   if (relativePath.startsWith('scripts/lib/')) return true;
