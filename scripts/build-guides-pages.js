@@ -1001,7 +1001,7 @@ function renderGuideHubStyles() {
             min-height: clamp(34rem, 132vw, 46rem);
             padding: 5.35rem 1rem 2.25rem;
           }
-          .guides-title { font-size: clamp(2.85rem, 15vw, 4.2rem); max-width: 9ch; }
+          .guides-title { font-size: clamp(1.25rem, 5.6vw, 1.85rem); max-width: none; }
           .guides-lede {
             max-width: 20rem;
             margin-top: 0.85rem;
@@ -1025,7 +1025,7 @@ function renderGuideHubStyles() {
             white-space: nowrap;
             border: 0;
           }
-          .guides-section h2 { font-size: clamp(2rem, 10vw, 3.2rem); max-width: 10ch; }
+          .guides-section h2 { font-size: clamp(1.15rem, 4.8vw, 1.45rem); max-width: none; }
           .guides-bento {
             display: flex;
             flex-direction: column;
@@ -1039,7 +1039,7 @@ function renderGuideHubStyles() {
           }
           .guides-dictionary-title {
             margin-top: 0.7rem;
-            font-size: clamp(1.65rem, 10vw, 2.35rem);
+            font-size: clamp(1.2rem, 5vw, 1.5rem);
           }
           .guides-dictionary-desc {
             display: -webkit-box;
@@ -1054,7 +1054,7 @@ function renderGuideHubStyles() {
             padding: 1rem;
             justify-content: space-between;
           }
-          .guides-card-title { font-size: clamp(1.35rem, 8vw, 2rem); }
+          .guides-card-title { font-size: clamp(1.05rem, 4.6vw, 1.35rem); }
           .guides-card-desc {
             max-width: 18rem;
             font-size: 0.94rem;
@@ -2085,9 +2085,9 @@ function renderLayoutCss() {
           }
           .dictionary-header h1 {
             width: 100%;
-            max-width: 10.4ch;
-            font-size: clamp(2.55rem, 12.2vw, 3.65rem);
-            line-height: 0.98;
+            max-width: none;
+            font-size: clamp(1.25rem, 5.6vw, 1.85rem);
+            line-height: 1.04;
           }
           #heroSearchShell .hero-search {
             min-height: 3.35rem;

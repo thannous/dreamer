@@ -1277,8 +1277,8 @@ ${renderSharedComponentStyles()}
             .symbol-category-chip { display: none !important; }
             .symbol-heading {
                 margin-bottom: 0 !important;
-                font-size: clamp(2.15rem, 9.4vw, 3.1rem) !important;
-                line-height: 0.97 !important;
+                font-size: clamp(1.25rem, 5.6vw, 1.85rem) !important;
+                line-height: 1.04 !important;
                 letter-spacing: 0 !important;
             }
             .symbol-h1-prefix { display: none; }
