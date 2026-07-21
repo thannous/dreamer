@@ -25,7 +25,7 @@
   "publishedTime": "2026-07-06T00:00:00+02:00",
   "modifiedTime": "2026-07-06T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/en/blog/heatwave-sleep-dreams",
+  "prevPath": "/en/blog/climate-dreams-eco-anxiety",
   "nextPath": "/en/blog/night-noise-sleep-dreams",
   "preloadImage": "/img/blog/sleep-day-environment-dreams.webp",
   "jsonLd": [],

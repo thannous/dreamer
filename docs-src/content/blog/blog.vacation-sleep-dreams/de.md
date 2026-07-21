@@ -25,7 +25,7 @@
   "publishedTime": "2026-07-06T00:00:00+02:00",
   "modifiedTime": "2026-07-06T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/de/blog/hitzewelle-schlaf-traeume",
+  "prevPath": "/de/blog/klimatraeume-klimaangst",
   "nextPath": "/de/blog/naechtlicher-laerm-schlaf-traeume",
   "preloadImage": "/img/blog/sleep-day-environment-dreams.webp",
   "jsonLd": [],

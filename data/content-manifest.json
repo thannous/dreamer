@@ -180,6 +180,34 @@
             }
           }
         },
+        "blog.climate-dreams-eco-anxiety": {
+          "id": "blog.climate-dreams-eco-anxiety",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "climate-dreams-eco-anxiety",
+          "locales": {
+            "en": {
+              "slug": "climate-dreams-eco-anxiety",
+              "path": "/en/blog/climate-dreams-eco-anxiety"
+            },
+            "fr": {
+              "slug": "reves-climatiques-eco-anxiete",
+              "path": "/fr/blog/reves-climatiques-eco-anxiete"
+            },
+            "es": {
+              "slug": "suenos-climaticos-ecoansiedad",
+              "path": "/es/blog/suenos-climaticos-ecoansiedad"
+            },
+            "de": {
+              "slug": "klimatraeume-klimaangst",
+              "path": "/de/blog/klimatraeume-klimaangst"
+            },
+            "it": {
+              "slug": "sogni-climatici-eco-ansia",
+              "path": "/it/blog/sogni-climatici-eco-ansia"
+            }
+          }
+        },
         "blog.daylight-saving-time-sleep": {
           "id": "blog.daylight-saving-time-sleep",
           "type": "blogArticle",
