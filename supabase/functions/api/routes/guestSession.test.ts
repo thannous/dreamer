@@ -12,26 +12,15 @@ async function requestGuestSession(body: Record<string, unknown>): Promise<Respo
   );
 }
 
-Deno.test('/guest/session refuses non-Android even when insecure env is enabled', async () => {
-  const previous = Deno.env.get('ALLOW_INSECURE_GUEST_SESSION');
-  Deno.env.set('ALLOW_INSECURE_GUEST_SESSION', 'true');
+Deno.test('/guest/session refuses non-Android platforms', async () => {
+  const response = await requestGuestSession({
+    fingerprint: 'attacker-controlled-fingerprint',
+    platform: 'ios',
+  });
+  const body = await response.json();
 
-  try {
-    const response = await requestGuestSession({
-      fingerprint: 'attacker-controlled-fingerprint',
-      platform: 'ios',
-    });
-    const body = await response.json();
-
-    assertEquals(response.status, 401);
-    assertEquals(body.error, 'Guest sessions disabled for this platform');
-  } finally {
-    if (previous == null) {
-      Deno.env.delete('ALLOW_INSECURE_GUEST_SESSION');
-    } else {
-      Deno.env.set('ALLOW_INSECURE_GUEST_SESSION', previous);
-    }
-  }
+  assertEquals(response.status, 401);
+  assertEquals(body.error, 'Guest sessions disabled for this platform');
 });
 
 Deno.test('/guest/session keeps Android gated on Play Integrity inputs', async () => {

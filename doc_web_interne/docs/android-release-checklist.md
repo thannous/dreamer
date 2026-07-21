@@ -31,7 +31,6 @@ du bundle JavaScript. Référence: Expo EAS Environment Variables
 - [ ] `PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64`
 - [ ] `PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia`
 - [ ] `GUEST_SESSION_SECRET`
-- [ ] `ALLOW_INSECURE_GUEST_SESSION=true` seulement pour la v1 si iOS reste sans App Attest.
 
 ## 3. Build et upload
 
