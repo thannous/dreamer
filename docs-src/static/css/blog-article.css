@@ -518,9 +518,9 @@ html.blog-article main > aside[role="note"] {
   }
 
   html.blog-article main > article > header h1 {
-    width: min(100%, 12ch);
-    font-size: clamp(2.45rem, 10.8vw, 3.65rem) !important;
-    line-height: 0.96 !important;
+    width: 100%;
+    font-size: clamp(1.25rem, 5.6vw, 1.85rem) !important;
+    line-height: 1.04 !important;
   }
 
   html.blog-article main > article > header p {
@@ -551,7 +551,7 @@ html.blog-article main > aside[role="note"] {
   }
 
   html.blog-article .prose h2 {
-    font-size: clamp(1.8rem, 9vw, 2.55rem);
+    font-size: clamp(1.15rem, 4.8vw, 1.45rem);
   }
 }
 
@@ -754,10 +754,10 @@ html.blog-article main > aside[role="note"] {
   }
 
   html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy h1 {
-    width: min(100%, 12ch);
+    width: 100%;
     margin: 0 !important;
-    font-size: clamp(2.15rem, 9.4vw, 3.1rem) !important;
-    line-height: 0.97 !important;
+    font-size: clamp(1.25rem, 5.6vw, 1.85rem) !important;
+    line-height: 1.04 !important;
     text-wrap: balance;
     text-shadow: 0 2px 24px rgba(5, 2, 12, 0.34);
   }
