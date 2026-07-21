@@ -6,15 +6,24 @@
 // - POST /chat { dreamId, message, lang } -> { text: string }  [✅ UPDATED: now requires dreamId, enforces quotas]
 // - POST /tts { text } -> { audioBase64: string }
 
+import { fetch as streamingFetch } from 'expo/fetch';
+
 import { getApiBaseUrl } from '@/lib/config';
-import { fetchJSONWithSession } from '@/lib/apiSession';
+import { fetchJSONWithSession, getSessionAuthHeaders } from '@/lib/apiSession';
 import { HttpError, type HttpOptions } from '@/lib/http';
 import {
   classifyImageError,
   type ImageGenerationErrorResponse,
 } from '@/lib/errors';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
-import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationRequest } from '@/lib/types';
+import type {
+  ChatMessage,
+  DreamEmotionInsight,
+  DreamSymbolInsight,
+  DreamTheme,
+  DreamType,
+  ReferenceImageGenerationRequest,
+} from '@/lib/types';
 
 export type AnalysisResult = {
   title: string;
@@ -23,6 +32,9 @@ export type AnalysisResult = {
   theme: DreamTheme;
   dreamType: DreamType;
   imagePrompt: string;
+  symbols?: DreamSymbolInsight[];
+  emotions?: DreamEmotionInsight[];
+  reflectionQuestions?: string[];
   quotaUsed?: { analysis: number };
 };
 
@@ -296,22 +308,169 @@ export async function startOrContinueChat(
     chatHistory?: ChatMessage[];
   },
   fingerprint?: string,
-  options?: { signal?: AbortSignal; messageMeta?: ChatMessage['meta'] }
+  options?: {
+    signal?: AbortSignal;
+    messageMeta?: ChatMessage['meta'];
+    /**
+     * When provided, the reply is streamed: called for each text delta with
+     * the accumulated text so far. The returned promise still resolves with
+     * the complete reply.
+     */
+    onDelta?: (accumulated: string) => void;
+  }
 ): Promise<{ text: string; message?: Partial<ChatMessage> }> {
+  const body = {
+    dreamId,
+    message,
+    lang,
+    ...(options?.messageMeta && { messageMeta: options.messageMeta }),
+    ...(dreamContext && { dreamContext }),
+    ...(fingerprint && { fingerprint }),
+  };
+
+  if (options?.onDelta) {
+    return streamChatRequest(body, options.onDelta, options.signal);
+  }
+
   const res = await fetchWithSessionHeaders<{ text: string; message?: Partial<ChatMessage> }>('/chat', {
     method: 'POST',
-    body: {
-      dreamId,
-      message,
-      lang,
-      ...(options?.messageMeta && { messageMeta: options.messageMeta }),
-      ...(dreamContext && { dreamContext }),
-      ...(fingerprint && { fingerprint }),
-    },
+    body,
     ...NETWORK_REQUEST_POLICIES.chat,
     signal: options?.signal,
   });
   return res;
+}
+
+/**
+ * Streaming /chat transport: POSTs with stream=true and consumes the SSE
+ * response incrementally. No auto-retry — the server persists the user
+ * message per call, so a resend would duplicate it (same as the JSON path).
+ */
+async function streamChatRequest(
+  body: Record<string, unknown>,
+  onDelta: (accumulated: string) => void,
+  signal?: AbortSignal
+): Promise<{ text: string; message?: Partial<ChatMessage> }> {
+  const url = `${getApiBaseUrl()}/chat`;
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'text/event-stream',
+    ...(await getSessionAuthHeaders()),
+  };
+
+  const res = await streamingFetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ ...body, stream: true }),
+    signal,
+  });
+
+  if (!res.ok || !res.body) {
+    const bodyText = await res.text().catch(() => '');
+    let parsed: unknown;
+    try {
+      parsed = bodyText ? JSON.parse(bodyText) : undefined;
+    } catch {
+      parsed = undefined;
+    }
+    throw new HttpError({
+      status: res.status,
+      statusText: res.statusText ?? '',
+      url,
+      bodyText,
+      body: parsed,
+    });
+  }
+
+  const decoder = new TextDecoder();
+  const reader = res.body.getReader();
+  let buffer = '';
+  let accumulated = '';
+  let final: { text: string; message?: Partial<ChatMessage> } | null = null;
+  let streamError: { error?: string; status?: number } | null = null;
+
+  const handleEvent = (payload: unknown) => {
+    const event = payload as {
+      delta?: string;
+      done?: boolean;
+      text?: string;
+      message?: Partial<ChatMessage>;
+      error?: string;
+      status?: number;
+    };
+    if (typeof event?.delta === 'string' && event.delta) {
+      accumulated += event.delta;
+      onDelta(accumulated);
+    } else if (event?.done && typeof event.text === 'string') {
+      final = { text: event.text, message: event.message };
+    } else if (typeof event?.error === 'string') {
+      streamError = event;
+    }
+  };
+
+  const drainBuffer = (flush = false) => {
+    let separatorIndex = buffer.indexOf('\n\n');
+    while (separatorIndex >= 0) {
+      const rawEvent = buffer.slice(0, separatorIndex);
+      buffer = buffer.slice(separatorIndex + 2);
+      const data = rawEvent
+        .split('\n')
+        .filter((line) => line.startsWith('data: '))
+        .map((line) => line.slice(6))
+        .join('');
+      if (data) {
+        try {
+          handleEvent(JSON.parse(data));
+        } catch {
+          // Ignore malformed frames; the done/error frame governs the outcome.
+        }
+      }
+      separatorIndex = buffer.indexOf('\n\n');
+    }
+    if (flush && buffer.startsWith('data: ')) {
+      try {
+        handleEvent(JSON.parse(buffer.slice(6)));
+      } catch {
+        // Ignore a trailing partial frame.
+      }
+      buffer = '';
+    }
+  };
+
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (value) {
+        buffer += decoder.decode(value, { stream: true });
+        drainBuffer();
+      }
+      if (done) break;
+    }
+  } finally {
+    reader.releaseLock?.();
+  }
+  buffer += decoder.decode();
+  drainBuffer(true);
+
+  if (streamError) {
+    const failure: { error?: string; status?: number } = streamError;
+    throw new HttpError({
+      status: failure.status ?? 500,
+      statusText: 'Stream error',
+      url,
+      bodyText: JSON.stringify(failure),
+      body: failure,
+    });
+  }
+  if (!final) {
+    throw new HttpError({
+      status: 502,
+      statusText: 'Incomplete stream',
+      url,
+      bodyText: 'Chat stream ended without a final message',
+    });
+  }
+  return final;
 }
 
 export function resetChat() {

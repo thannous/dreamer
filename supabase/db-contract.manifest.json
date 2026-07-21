@@ -30,7 +30,8 @@
         "client_request_id",
         "has_person",
         "has_animal",
-        "memory"
+        "memory",
+        "analysis_details"
       ]
     },
     {

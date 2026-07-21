@@ -244,7 +244,11 @@ export async function startOrContinueChat(
     chatHistory?: ChatMessage[];
   },
   _fingerprint?: string,
-  _options?: { signal?: AbortSignal; messageMeta?: ChatMessage['meta'] },
+  _options?: {
+    signal?: AbortSignal;
+    messageMeta?: ChatMessage['meta'];
+    onDelta?: (accumulated: string) => void;
+  },
 ): Promise<{ text: string; message: { role: 'model'; text: string; parts: { text: string }[] } }> {
   console.log('[MOCK] startOrContinueChat called with dreamId:', dreamId, 'message:', message);
   await delay(1000 + Math.random() * 1000); // 1-2 seconds
@@ -252,6 +256,17 @@ export async function startOrContinueChat(
   // In mock mode, generate response based on message
   // Server-side quota tracking is handled by quota service
   const response = generateChatResponse(message, 'your dream');
+
+  if (_options?.onDelta) {
+    // Simulate streaming: reveal the reply a few words at a time.
+    const words = response.split(' ');
+    let accumulated = '';
+    for (let i = 0; i < words.length; i += 3) {
+      accumulated += (accumulated ? ' ' : '') + words.slice(i, i + 3).join(' ');
+      _options.onDelta(accumulated);
+      await delay(60);
+    }
+  }
 
   console.log('[MOCK] startOrContinueChat returning response');
   return {

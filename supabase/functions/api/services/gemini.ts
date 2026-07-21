@@ -30,12 +30,42 @@ export type GeminiGenerationConfig = {
     aspectRatio?: string;
   };
   thinkingLevel?: GeminiThinkingLevel;
+  maxOutputTokens?: number;
 };
 
 export const GEMINI_FLASH_MODEL = 'gemini-3.6-flash';
 export const GEMINI_FLASH_LITE_MODEL = 'gemini-3.5-flash-lite';
 export const GEMINI_FLASH_IMAGE_MODEL = 'gemini-3.1-flash-image';
 export const GEMINI_FLASH_LITE_IMAGE_MODEL = 'gemini-3.1-flash-lite-image';
+
+const RETIRED_TEXT_PREVIEW_MODELS = new Set([
+  'gemini-3-flash-preview',
+  'gemini-3.1-flash-lite-preview',
+]);
+
+// Every 1.x/2.x text model is deprecated on the Interactions API; requesting
+// one 404s, so stale env overrides silently fall back to current defaults.
+export const isRetiredTextModel = (model: string): boolean =>
+  model.startsWith('gemini-1.') ||
+  model.startsWith('gemini-2.') ||
+  RETIRED_TEXT_PREVIEW_MODELS.has(model);
+
+export const resolveTextModel = (
+  envNames: string | string[],
+  fallbackModel: string,
+  readEnv: (name: string) => string | undefined = (name) => Deno.env.get(name)
+): string => {
+  for (const envName of Array.isArray(envNames) ? envNames : [envNames]) {
+    const value = readEnv(envName)?.trim();
+    if (!value) continue;
+    if (isRetiredTextModel(value)) {
+      console.warn('[api] Ignoring retired model override', { envName, model: value });
+      continue;
+    }
+    return value;
+  }
+  return fallbackModel;
+};
 
 export class ApiError extends Error {
   public readonly status: number;
@@ -234,39 +264,76 @@ export const extractModelParts = (interaction: any): GeminiPart[] => {
   return parts;
 };
 
-export const requestGeminiGenerateContent = async (options: {
+type GeminiRequestOptions = {
   apiKey: string;
   model: string;
   contents: GeminiContent[] | string;
   systemInstruction?: string | GeminiContent;
   config?: GeminiGenerationConfig;
-}): Promise<any> => {
-  const { apiKey, model, contents, systemInstruction, config } = options;
-  const client = getClient(apiKey);
+};
+
+const buildInteractionParams = (options: GeminiRequestOptions) => {
+  const { model, contents, systemInstruction, config } = options;
   const system = toSystemInstruction(systemInstruction);
   const responseFormat = toResponseFormat(config);
+  const thinkingLevel = toThinkingLevel(config?.thinkingLevel);
+  const generationConfig = {
+    ...(thinkingLevel ? { thinking_level: thinkingLevel } : {}),
+    ...(typeof config?.maxOutputTokens === 'number'
+      ? { max_output_tokens: config.maxOutputTokens }
+      : {}),
+  };
 
-  try {
-    return await client.interactions.create({
-      model,
-      input: toInteractionInput(contents),
-      // Dream content is sensitive user data — never retain it server-side.
-      store: false,
-      ...(system ? { system_instruction: system } : {}),
-      ...(responseFormat ? { response_format: responseFormat } : {}),
-      ...(toThinkingLevel(config?.thinkingLevel)
-        ? { generation_config: { thinking_level: toThinkingLevel(config?.thinkingLevel) } }
-        : {}),
+  return {
+    model,
+    input: toInteractionInput(contents),
+    // Dream content is sensitive user data — never retain it server-side.
+    store: false,
+    ...(system ? { system_instruction: system } : {}),
+    ...(responseFormat ? { response_format: responseFormat } : {}),
+    ...(Object.keys(generationConfig).length > 0
+      ? { generation_config: generationConfig }
+      : {}),
+  };
+};
+
+const toApiError = (error: unknown): unknown => {
+  if (error instanceof GoogleGenAiApiError) {
+    return new ApiError({
+      message: error.message ?? 'Gemini API error',
+      status: error.status ?? 500,
+      body: (error as { error?: unknown }).error,
     });
+  }
+  return error;
+};
+
+export const requestGeminiGenerateContent = async (
+  options: GeminiRequestOptions
+): Promise<any> => {
+  const client = getClient(options.apiKey);
+  try {
+    return await client.interactions.create(buildInteractionParams(options));
   } catch (error) {
-    if (error instanceof GoogleGenAiApiError) {
-      throw new ApiError({
-        message: error.message ?? 'Gemini API error',
-        status: error.status ?? 500,
-        body: (error as { error?: unknown }).error,
-      });
-    }
-    throw error;
+    throw toApiError(error);
+  }
+};
+
+/**
+ * Streaming variant: returns the SDK's async iterable of interaction SSE
+ * events (step.delta text chunks, interaction.completed, ...).
+ */
+export const requestGeminiStream = async (
+  options: GeminiRequestOptions
+): Promise<AsyncIterable<any>> => {
+  const client = getClient(options.apiKey);
+  try {
+    return (await client.interactions.create({
+      ...buildInteractionParams(options),
+      stream: true,
+    })) as AsyncIterable<any>;
+  } catch (error) {
+    throw toApiError(error);
   }
 };
 

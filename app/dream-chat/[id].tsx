@@ -52,6 +52,8 @@ type SendMessageOptions = {
 
 const LEGACY_DRAFT_PREFIXES = ['Here is my dream:'];
 
+const STREAMING_MESSAGE_ID = 'streaming-reply';
+
 const getCategoryQuestion = (category: CategoryType, t: (key: string) => string): string => {
   const categoryQuestions: Record<CategoryType, string> = {
     symbols: t('dream_chat.prompt.symbols'),
@@ -145,6 +147,24 @@ export default function DreamChatScreen() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  // Partial model reply while the response streams in; null when idle.
+  const [streamingReply, setStreamingReply] = useState<string | null>(null);
+
+  // While a reply streams in, render it as a virtual trailing model message
+  // and drop the "thinking" indicator as soon as the first tokens arrive.
+  const displayMessages = useMemo(() => {
+    if (!streamingReply) return messages;
+    return [
+      ...messages,
+      {
+        id: STREAMING_MESSAGE_ID,
+        role: 'model' as const,
+        text: streamingReply,
+        createdAt: (messages[messages.length - 1]?.createdAt ?? 0) + 1,
+      },
+    ];
+  }, [messages, streamingReply]);
+  const showThinkingIndicator = isLoading && !streamingReply;
   const [isScrolling, setIsScrolling] = useState(false);
   const [explorationBlocked, setExplorationBlocked] = useState(false);
   const [quotaCheckComplete, setQuotaCheckComplete] = useState(false);
@@ -543,6 +563,7 @@ export default function DreamChatScreen() {
             const aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
               signal: controller.signal,
               messageMeta,
+              onDelta: setStreamingReply,
             });
 
             // Add user message
@@ -596,6 +617,7 @@ export default function DreamChatScreen() {
             return;
           } finally {
             setIsLoading(false);
+            setStreamingReply(null);
             if (requestAbortRef.current) {
               requestAbortRef.current = null;
             }
@@ -659,7 +681,7 @@ export default function DreamChatScreen() {
             language,
             dreamContext,
             guestFingerprint,
-            { signal: controller.signal, messageMeta }
+            { signal: controller.signal, messageMeta, onDelta: setStreamingReply }
           );
         } else {
           // Authenticated mode: send dreamId (current flow)
@@ -667,6 +689,7 @@ export default function DreamChatScreen() {
           aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
             signal: controller.signal,
             messageMeta,
+            onDelta: setStreamingReply,
           });
         }
 
@@ -742,6 +765,7 @@ export default function DreamChatScreen() {
         setMessages([...updatedMessages, enrichedErrorMessage]);
       } finally {
         setIsLoading(false);
+        setStreamingReply(null);
         if (requestAbortRef.current) {
           requestAbortRef.current = null;
         }
@@ -1106,7 +1130,7 @@ export default function DreamChatScreen() {
   );
 
   const composerHeader = (
-    <LoadingIndicator text={t('dream_chat.thinking')} visible={isLoading} />
+    <LoadingIndicator text={t('dream_chat.thinking')} visible={showThinkingIndicator} />
   );
 
   return (
@@ -1125,8 +1149,8 @@ export default function DreamChatScreen() {
           </Pressable>
 
           <MessagesList
-            messages={messages}
-            isLoading={isLoading}
+            messages={displayMessages}
+            isLoading={showThinkingIndicator}
             loadingText={t('dream_chat.thinking')}
             ListHeaderComponent={headerComponent}
             style={[styles.messagesContainer, { backgroundColor: noctalia.screen.background }]}

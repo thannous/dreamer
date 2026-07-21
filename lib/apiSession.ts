@@ -11,6 +11,19 @@ import { fetchJSON, type HttpOptions } from '@/lib/http';
  * Call an application API route as the current Supabase user, or with a
  * short-lived verified guest session when no user is signed in.
  */
+/**
+ * Resolve the auth headers fetchJSONWithSession would send: a user bearer
+ * token when signed in, otherwise verified guest-session headers. For callers
+ * that need a raw (e.g. streaming) fetch instead of fetchJSON.
+ */
+export async function getSessionAuthHeaders(): Promise<Record<string, string>> {
+  const accessToken = await getAccessToken();
+  if (accessToken) {
+    return { Authorization: `Bearer ${accessToken}` };
+  }
+  return getGuestHeaders({ requireSession: true });
+}
+
 export async function fetchJSONWithSession<T>(
   url: string,
   options: HttpOptions & { signal?: AbortSignal },

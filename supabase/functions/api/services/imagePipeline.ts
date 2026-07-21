@@ -47,7 +47,7 @@ export async function ensureImagePrompt(options: ImagePromptOptions): Promise<st
       },
     ],
     'You are a creative image prompt generator. Output ONLY the prompt, nothing else.',
-    { thinkingLevel: 'minimal' }
+    { thinkingLevel: 'minimal', maxOutputTokens: 1024 }
   );
 
   return generatedPrompt.trim();

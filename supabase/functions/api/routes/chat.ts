@@ -6,10 +6,15 @@ import {
   classifyGeminiError,
   extractModelParts,
   GEMINI_FLASH_LITE_MODEL,
+  type GeminiGenerationConfig,
   type GeminiPart,
+  requestGeminiStream,
+  resolveTextModel,
 } from '../services/gemini.ts';
 import { requireGuestSession } from '../lib/guards.ts';
 import type { ApiContext } from '../types.ts';
+
+const MAX_HISTORY_TURNS = 20;
 
 type StoredChatMessage = {
   role: string;
@@ -467,7 +472,11 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
         ? 'Tu es un assistant empathique qui aide à interpréter les rêves. Sois clair, bienveillant et évite les affirmations médicales. Réponds en français.'
         : lang === 'es'
           ? 'Eres un asistente empático que ayuda a interpretar sueños. Sé claro y amable, evita afirmaciones médicas. Responde en español.'
-          : 'You are an empathetic assistant helping interpret dreams. Be clear and kind, avoid medical claims. Reply in English.';
+          : lang === 'de'
+            ? 'Du bist ein einfühlsamer Assistent, der bei der Traumdeutung hilft. Sei klar und freundlich, vermeide medizinische Aussagen. Antworte auf Deutsch.'
+            : lang === 'it'
+              ? 'Sei un assistente empatico che aiuta a interpretare i sogni. Sii chiaro e gentile, evita affermazioni mediche. Rispondi in italiano.'
+              : 'You are an empathetic assistant helping interpret dreams. Be clear and kind, avoid medical claims. Reply in English.';
 
     const contents: { role: 'user' | 'model'; parts: GeminiPart[] }[] = [];
     const { prompt: dreamContextPrompt, debug: contextDebug } = buildDreamContextPrompt(dream, lang);
@@ -483,38 +492,34 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       historyLength: historyWithUserMsg.length,
     });
 
-    for (const turn of historyWithUserMsg) {
+    // Cap resent history: stateless calls resend every turn, so long chats
+    // grow token cost linearly. The dream context plus recent turns is enough.
+    for (const turn of historyWithUserMsg.slice(-MAX_HISTORY_TURNS)) {
       const r = turn.role === 'model' ? 'model' : 'user';
       const parts = toContentParts(turn);
       if (parts.length > 0) contents.push({ role: r, parts });
     }
 
-    const primaryModel =
-      Deno.env.get('GEMINI_CHAT_MODEL')
-      ?? Deno.env.get('GEMINI_LITE_MODEL')
-      ?? GEMINI_FLASH_LITE_MODEL;
-    const { text: reply, raw } = await callGeminiWithFallback(
-      apiKey,
-      primaryModel,
-      Deno.env.get('GEMINI_LITE_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
-      contents,
-      systemPreamble,
-      { thinkingLevel: 'minimal' }
+    const primaryModel = resolveTextModel(
+      ['GEMINI_CHAT_MODEL', 'GEMINI_LITE_MODEL'],
+      GEMINI_FLASH_LITE_MODEL
     );
+    const fallbackModel = resolveTextModel('GEMINI_LITE_MODEL', GEMINI_FLASH_LITE_MODEL);
+    const chatConfig: GeminiGenerationConfig = { thinkingLevel: 'minimal', maxOutputTokens: 4096 };
+    const wantsStream = (body as { stream?: unknown })?.stream === true;
 
-    if (typeof reply !== 'string' || !reply.trim()) {
-      throw new Error('Empty model response');
-    }
-
-    const modelParts = sanitizeParts(extractModelParts(raw));
-    const modelMessage: StoredChatMessage = {
-      role: 'model',
-      text: reply.trim(),
-      ...(modelParts ? { parts: modelParts } : {}),
+    const buildModelMessage = (reply: string, rawParts: GeminiPart[] | null): StoredChatMessage => {
+      const modelParts = sanitizeParts(rawParts);
+      return {
+        role: 'model',
+        text: reply,
+        ...(modelParts ? { parts: modelParts } : {}),
+      };
     };
-    const finalHistory = [...historyWithUserMsg, modelMessage];
 
-    if (shouldPersist) {
+    const persistModelMessage = async (modelMessage: StoredChatMessage) => {
+      if (!shouldPersist) return;
+      const finalHistory = [...historyWithUserMsg, modelMessage];
       const persistWithClient = async (client: typeof supabase) => {
         const { error: persistError } = await client
           .from('dreams')
@@ -538,7 +543,95 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
           message: (persistError as any)?.message ?? String(persistError ?? ''),
         });
       }
+    };
+
+    if (wantsStream) {
+      // Stream setup errors (including a one-shot model fallback) happen before
+      // the response starts, so they still surface as normal JSON errors.
+      let events: AsyncIterable<any>;
+      const streamOptions = (model: string) => ({
+        apiKey,
+        model,
+        contents,
+        systemInstruction: systemPreamble,
+        config: chatConfig,
+      });
+      try {
+        events = await requestGeminiStream(streamOptions(primaryModel));
+      } catch (streamError) {
+        if (primaryModel === fallbackModel) throw streamError;
+        console.warn('[api] /chat: primary stream failed, retrying with fallback', {
+          primaryModel,
+        });
+        events = await requestGeminiStream(streamOptions(fallbackModel));
+      }
+
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream<Uint8Array>({
+        async start(controller) {
+          const send = (payload: unknown) =>
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
+          let accumulated = '';
+          let finalInteraction: any = null;
+          try {
+            for await (const event of events) {
+              if (
+                event?.event_type === 'step.delta'
+                && event?.delta?.type === 'text'
+                && typeof event.delta.text === 'string'
+              ) {
+                accumulated += event.delta.text;
+                send({ delta: event.delta.text });
+              } else if (event?.event_type === 'interaction.completed') {
+                finalInteraction = event?.interaction ?? null;
+              }
+            }
+
+            const reply = accumulated.trim();
+            if (!reply) throw new Error('Empty model response');
+
+            const rawParts = finalInteraction ? extractModelParts(finalInteraction) : null;
+            const modelMessage = buildModelMessage(
+              reply,
+              rawParts && rawParts.length > 0 ? rawParts : [{ text: reply }]
+            );
+            await persistModelMessage(modelMessage);
+            send({ done: true, text: reply, message: modelMessage });
+          } catch (streamError) {
+            console.error('[api] /chat stream error', streamError);
+            const errorInfo = classifyGeminiError(streamError);
+            send({ error: errorInfo.userMessage, status: errorInfo.status });
+          } finally {
+            controller.close();
+          }
+        },
+      });
+
+      return new Response(stream, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          ...corsHeaders,
+        },
+      });
     }
+
+    const { text: reply, raw } = await callGeminiWithFallback(
+      apiKey,
+      primaryModel,
+      fallbackModel,
+      contents,
+      systemPreamble,
+      chatConfig
+    );
+
+    if (typeof reply !== 'string' || !reply.trim()) {
+      throw new Error('Empty model response');
+    }
+
+    const modelMessage = buildModelMessage(reply.trim(), extractModelParts(raw));
+    await persistModelMessage(modelMessage);
 
     return new Response(JSON.stringify({ text: reply.trim(), message: modelMessage }), {
       status: 200,
