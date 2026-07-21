@@ -3,14 +3,14 @@
  * Tier hooks (set by the inline detection script + experience.js):
  * - `html[data-exp-tier="static"]`: no JS motion at all, content always
  *   visible, CSS scroll-driven effects where supported.
- * - `html.exp-webgl-on`: the WebGL sky is rendering inside the hero.
+ * - `html.exp-sky-on`: the canvas sky is rendering inside the hero.
  * - `html.exp-static`: JS-level static fallback (same rules as the tier).
  *
  * Only transform/opacity are animated here.
  */
 
 /* ---------------------------------------------------------------- */
-/* WebGL sky (full & light tiers).                                   */
+/* Canvas sky (full & light tiers).                                  */
 /* ---------------------------------------------------------------- */
 
 /* Inserted by experience.js as first child of the hero header, between the
@@ -24,7 +24,16 @@
   transition: opacity 1.4s ease;
 }
 
-html.exp-webgl-on .sky-stage {
+/* The observatory sizes direct-child divs of the hero header to the content
+ * column (`width: min(100%, 1240px)`), which used to pin the stage — and the
+ * canvas — narrower than the hero on wide screens. Specificity (0,2,1) beats
+ * that (0,1,2) rule so `inset: 0` alone drives the stage box. */
+.noctalia-observatory > header > .sky-stage {
+  width: auto;
+  max-width: none;
+}
+
+html.exp-sky-on .sky-stage {
   opacity: 1;
 }
 

@@ -6,10 +6,10 @@
  * - "static": do nothing. CSS makes the content visible and provides
  *   scroll-driven reveals where supported. Zero libraries downloaded.
  * - "light": Lenis smooth scroll, IntersectionObserver reveals, simplified
- *   WebGL sky (few particles, no bloom).
+ *   canvas sky (fewer stars, pixel ratio 1).
  * - "full": everything above plus GSAP/ScrollTrigger scenes (vendored,
  *   loaded on demand), Lenis driven by the GSAP ticker, magnetic buttons,
- *   orb pointer parallax, and the full WebGL sky with bloom.
+ *   orb pointer parallax, and the full canvas sky.
  *
  * Hard rules enforced here:
  * - nothing heavy loads before the LCP (load event + idle callback);
@@ -368,7 +368,7 @@ const initOrbParallax = () => {
 };
 
 /* ------------------------------------------------------------------ */
-/* WebGL sky (dynamic import, guarded).                                */
+/* Canvas sky (dynamic import, guarded).                               */
 /* ------------------------------------------------------------------ */
 
 const initSky = async (quality) => {
@@ -381,13 +381,13 @@ const initSky = async (quality) => {
 
   let sky = null;
   try {
-    const { createSky } = await import('./webgl-sky.js');
+    const { createSky } = await import('./sky.js');
     sky = createSky({
       container: stage,
       quality,
       onKill: () => {
-        html.classList.remove('exp-webgl-on');
-        html.classList.add('exp-webgl-off');
+        html.classList.remove('exp-sky-on');
+        html.classList.add('exp-sky-off');
         stage.remove();
       },
     });
@@ -404,7 +404,7 @@ const initSky = async (quality) => {
   // The stage was detached when the sky measured it: measure again now that
   // it fills the hero.
   sky.resize();
-  html.classList.add('exp-webgl-on');
+  html.classList.add('exp-sky-on');
 
   // Pause when the hero leaves the viewport or the tab is hidden.
   if ('IntersectionObserver' in window) {

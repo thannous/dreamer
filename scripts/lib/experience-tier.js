@@ -9,8 +9,8 @@
  * Tiers:
  * - "static": reduced motion, save-data, or very weak hardware. No JS
  *   experience layer at all, CSS fallbacks only.
- * - "light": mobile / older laptops. Simplified WebGL, simple reveals.
- * - "full": recent desktops. Full WebGL sky, Lenis + GSAP scenes.
+ * - "light": mobile / older laptops. Simplified canvas sky, simple reveals.
+ * - "full": recent desktops. Full canvas sky, Lenis + GSAP scenes.
  */
 /* eslint-disable no-var -- serialized verbatim into an inline <script> that
    must run on the oldest browsers we still serve (static tier). */
