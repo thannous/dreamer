@@ -140,23 +140,24 @@ Three tiers, decided by a synchronous inline `<script>` in the `<head>`
 (source: `scripts/lib/experience-tier.js`, unit-tested) and exposed as
 `html[data-exp-tier]`:
 
-- `full` (recent desktops): WebGL sky (three.js stars/nebula/moon + bloom),
-  Lenis + GSAP/ScrollTrigger scenes, magnetic buttons.
-- `light` (mobiles, older laptops): simplified WebGL sky (fewer particles, no
-  bloom, pixel ratio <= 1.5), Lenis, IntersectionObserver reveals.
+- `full` (recent desktops): canvas sky (2D canvas stars/nebula/moon plus an
+  occasional shooting star, pixel ratio <= 1.5), Lenis + GSAP/ScrollTrigger
+  scenes, magnetic buttons.
+- `light` (mobiles, older laptops): simplified canvas sky (fewer stars, pixel
+  ratio 1), Lenis, IntersectionObserver reveals.
 - `static` (`prefers-reduced-motion`, save-data, very weak hardware): no
   libraries at all; CSS fallbacks in `static/css/experience.css` keep content
   visible and add scroll-driven effects where supported.
 
-Runtime guards: the three.js chunk is a dynamic import that only loads after
-the LCP; the render loop pauses when the hero leaves the viewport or the tab
-is hidden; an FPS watchdog degrades particles, then bloom, then kills WebGL
-and falls back to CSS. Cross-document view transitions stay disabled on
+Runtime guards: the sky chunk is a dynamic import that only loads after the
+LCP; rendering is capped at 30 fps and pauses when the hero leaves the
+viewport or the tab is hidden; an FPS watchdog halves the stars and pins the
+pixel ratio, then kills the sky and falls back to CSS. Cross-document view transitions stay disabled on
 purpose (`scripts/lib/docs-view-transitions.js`): an aborted transition can
 leave Chrome stuck in a washed-out composited state.
 
 The layer is bundled from `docs-src/experience/` into
-`static/js/experience/` by esbuild (tree-shaken three.js, code-split chunks):
+`static/js/experience/` by esbuild (code-split chunks):
 
 ```bash
 npm run docs:build:experience
@@ -164,7 +165,7 @@ npm run docs:build:experience
 
 `docs:build` runs this step automatically before computing the asset version
 hash. Edit sources in `docs-src/experience/`, never the bundled output. The
-hero LCP image and `observatory.css` remain the static baseline: the WebGL
+hero LCP image and `observatory.css` remain the static baseline: the sky
 canvas is an additive layer above them and must never replace them.
 
 ## Consent-gated analytics

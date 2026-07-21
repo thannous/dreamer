@@ -77,7 +77,7 @@ Jest has separate Node and Expo projects (`npm run test:node`, `npm run test:exp
 3. Run `npm run docs:check`.
 4. Use `npm run docs:release-check` only for release-ready site work.
 
-The landing experience layer (WebGL sky, Lenis/GSAP, adaptive tiers) lives in
+The landing experience layer (canvas sky, Lenis/GSAP, adaptive tiers) lives in
 `docs-src/experience/` and is bundled by `npm run docs:build:experience`, which
 `docs:build` runs automatically; see `docs-src/README.md`.
 
