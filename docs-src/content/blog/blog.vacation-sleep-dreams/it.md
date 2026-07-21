@@ -25,7 +25,7 @@
   "publishedTime": "2026-07-06T00:00:00+02:00",
   "modifiedTime": "2026-07-06T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/it/blog/ondata-calore-sonno-sogni",
+  "prevPath": "/it/blog/sogni-climatici-eco-ansia",
   "nextPath": "/it/blog/rumore-notturno-sonno-sogni",
   "preloadImage": "/img/blog/sleep-day-environment-dreams.webp",
   "jsonLd": [],

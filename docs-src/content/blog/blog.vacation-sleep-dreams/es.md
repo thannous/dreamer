@@ -25,7 +25,7 @@
   "publishedTime": "2026-07-06T00:00:00+02:00",
   "modifiedTime": "2026-07-06T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/es/blog/ola-calor-sueno-suenos",
+  "prevPath": "/es/blog/suenos-climaticos-ecoansiedad",
   "nextPath": "/es/blog/ruido-nocturno-descanso-suenos",
   "preloadImage": "/img/blog/sleep-day-environment-dreams.webp",
   "jsonLd": [],

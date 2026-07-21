@@ -25,7 +25,7 @@
   "publishedTime": "2026-07-06T00:00:00+02:00",
   "modifiedTime": "2026-07-06T00:00:00+02:00",
   "author": "Thanh Chau",
-  "prevPath": "/fr/blog/canicule-sommeil-reves",
+  "prevPath": "/fr/blog/reves-climatiques-eco-anxiete",
   "nextPath": "/fr/blog/bruit-nocturne-sommeil-reves",
   "preloadImage": "/img/blog/sleep-day-environment-dreams.webp",
   "jsonLd": [],
