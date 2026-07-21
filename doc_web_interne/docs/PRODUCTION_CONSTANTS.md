@@ -50,11 +50,6 @@ restent bloquantes pour un build production fiable, sauf waiver explicite.
 - [ ] `GUEST_SESSION_SECRET`  
   - Pourquoi : signer les tokens `x-guest-token`.  
   - Où placer : secret Supabase Functions (plaintext, long random).
-- [ ] `ALLOW_INSECURE_GUEST_SESSION=true`  
-  - Pourquoi : autoriser iOS sans App Attest en v1.  
-  - Où placer : secret Supabase Functions (plaintext).  
-  - Note : à désactiver quand App Attest est prêt.
-
 ## Google OAuth (auth)
 - [x] `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`  
   - Pourquoi : OAuth web + échange d’ID token pour Supabase.  
