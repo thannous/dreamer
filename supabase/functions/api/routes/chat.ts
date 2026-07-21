@@ -4,6 +4,7 @@ import { buildDreamContextPrompt } from '../lib/prompts.ts';
 import {
   callGeminiWithFallback,
   classifyGeminiError,
+  extractModelParts,
   GEMINI_FLASH_LITE_MODEL,
   type GeminiPart,
 } from '../services/gemini.ts';
@@ -505,7 +506,7 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       throw new Error('Empty model response');
     }
 
-    const modelParts = sanitizeParts(raw?.candidates?.[0]?.content?.parts);
+    const modelParts = sanitizeParts(extractModelParts(raw));
     const modelMessage: StoredChatMessage = {
       role: 'model',
       text: reply.trim(),

@@ -1,5 +1,6 @@
 import {
   ApiError,
+  extractInteractionImage,
   GEMINI_FLASH_IMAGE_MODEL,
   GEMINI_FLASH_LITE_MODEL,
   GEMINI_FLASH_LITE_IMAGE_MODEL,
@@ -26,6 +27,25 @@ const RETIRED_IMAGE_PROMPT_MODELS = new Set([
   'gemini-2.0-flash-lite-preview',
   'gemini-2.0-flash-lite-preview-02-05',
 ]);
+
+const extractInlineData = (
+  interaction: any
+): { data?: string; mimeType?: string; finishReason?: string | null; promptFeedback?: any } => {
+  const image = extractInteractionImage(interaction);
+  return {
+    data: image.data,
+    mimeType: image.mimeType,
+    finishReason: interaction?.status ?? null,
+    promptFeedback: interaction?.error ?? null,
+  };
+};
+
+// The Interactions API has no promptFeedback.blockReason; a definitive block
+// surfaces as a failed interaction, which must not be retried.
+const readBlockReason = (interaction: any): string | null =>
+  interaction?.status === 'failed'
+    ? String((interaction?.error as { message?: unknown })?.message ?? 'failed')
+    : null;
 
 const readModelOverride = (readEnv: EnvReader, name: string): string | null => {
   const value = readEnv(name)?.trim();
@@ -69,19 +89,6 @@ export async function generateImageFromPrompt(options: {
   model?: string;
 }): Promise<{ imageBase64?: string; mimeType?: string; raw: any; retryAttempts?: number }> {
   const { prompt, apiKey, aspectRatio = '9:16', model = resolveImageModel('free') } = options;
-
-  const extractInlineData = (
-    response: any
-  ): { data?: string; mimeType?: string; finishReason?: string | null; promptFeedback?: any } => {
-    const parts = response?.candidates?.[0]?.content?.parts;
-    const inlinePart = Array.isArray(parts) ? parts.find((p: any) => p?.inlineData?.data) : undefined;
-    return {
-      data: inlinePart?.inlineData?.data as string | undefined,
-      mimeType: inlinePart?.inlineData?.mimeType as string | undefined,
-      finishReason: response?.candidates?.[0]?.finishReason ?? null,
-      promptFeedback: response?.promptFeedback ?? null,
-    };
-  };
 
   // Retry configuration with exponential backoff
   const MAX_RETRIES = 3;
@@ -146,8 +153,7 @@ export async function generateImageFromPrompt(options: {
       };
     }
 
-    const blockReason =
-      (response?.promptFeedback?.blockReason ?? response?.promptFeedback?.block_reason ?? null) as string | null;
+    const blockReason = readBlockReason(response);
     const finishReason = extracted.finishReason ?? null;
     const promptFeedback = extracted.promptFeedback ?? null;
 
@@ -204,19 +210,6 @@ export async function generateImageWithReferences(options: {
   model?: string;
 }): Promise<{ imageBase64?: string; mimeType?: string; raw: any; retryAttempts?: number }> {
   const { prompt, apiKey, referenceImages, aspectRatio = '9:16', model = resolveImageModel('free') } = options;
-
-  const extractInlineData = (
-    response: any
-  ): { data?: string; mimeType?: string; finishReason?: string | null; promptFeedback?: any } => {
-    const parts = response?.candidates?.[0]?.content?.parts;
-    const inlinePart = Array.isArray(parts) ? parts.find((p: any) => p?.inlineData?.data) : undefined;
-    return {
-      data: inlinePart?.inlineData?.data as string | undefined,
-      mimeType: inlinePart?.inlineData?.mimeType as string | undefined,
-      finishReason: response?.candidates?.[0]?.finishReason ?? null,
-      promptFeedback: response?.promptFeedback ?? null,
-    };
-  };
 
   // Build content parts with text + inline_data for each reference image
   const parts: any[] = [{ text: prompt }];
@@ -292,8 +285,7 @@ export async function generateImageWithReferences(options: {
       };
     }
 
-    const blockReason =
-      (response?.promptFeedback?.blockReason ?? response?.promptFeedback?.block_reason ?? null) as string | null;
+    const blockReason = readBlockReason(response);
     const finishReason = extracted.finishReason ?? null;
     const promptFeedback = extracted.promptFeedback ?? null;
 

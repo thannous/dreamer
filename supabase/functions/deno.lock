@@ -80,6 +80,11 @@
       "integrity": "sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg=="
     }
   },
+  "redirects": {
+    "https://esm.sh/@types/retry@~0.12.5/index.d.ts": "https://esm.sh/@types/retry@0.12.5/index.d.ts",
+    "https://esm.sh/p-retry@^4.6.2?target=deno": "https://esm.sh/p-retry@4.6.2?target=deno",
+    "https://esm.sh/retry@^0.13.1?target=deno": "https://esm.sh/retry@0.13.1?target=deno"
+  },
   "remote": {
     "https://deno.land/std@0.177.1/_util/asserts.ts": "178dfc49a464aee693a7e285567b3d0b555dc805ff490505a8aae34f9cfb1462",
     "https://deno.land/std@0.177.1/_util/os.ts": "d932f56d41e4f6a6093d56044e29ce637f8dcc43c5a90af43504a889cf1775e3",
@@ -269,11 +274,19 @@
     "https://deno.land/x/imagescript@1.3.0/v2/util/mem.mjs": "4968d400dae069b4bf0ef4767c1802fd2cc7d15d90eda4cfadf5b4cd19b96c6d",
     "https://esm.sh/@google/genai@1.34.0/deno/genai.mjs": "d9b5433b25b1e3397f97a8f341357a4a5edb16f046a52146d7e2756b4486e6b1",
     "https://esm.sh/@google/genai@1.34.0?target=deno": "a57e60866c9ef3763a39b844feca05d6165d4cb4520ac296c043eaec9bccd83a",
+    "https://esm.sh/@google/genai@2.12.0/deno/genai.mjs": "8fa6385c83346822db5595e11a00ff01a945fc09113003f60160d82bd5cac3b1",
+    "https://esm.sh/@google/genai@2.12.0?target=deno": "2c58895715d6594ed4849493ef3f9463eb034b242bf8f26672837e5de7dc5efd",
+    "https://esm.sh/p-retry@4.6.2/deno/p-retry.mjs": "f7811a61ca2000f6dda5553fa5378afcea62220ad91027db45df8895d39337e1",
+    "https://esm.sh/p-retry@4.6.2?target=deno": "d55c2afbe11e0c7438b2541db982ef046c299e4fbacb0fd1b7af9cdd27ab5a80",
+    "https://esm.sh/retry@0.13.1/deno/retry.mjs": "5c13e3bef93acedbd39ce3721c8721730dcfc03f241849463a81f00ad5e67819",
+    "https://esm.sh/retry@0.13.1?target=deno": "98db7313c12b92468688d335c4d96fec2b892fe421748cbc4e61a871e0491775",
     "https://esm.sh/undici-types@7.10.0/handlers": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457",
     "https://esm.sh/undici-types@7.10.0/retry-handler": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457",
     "https://esm.sh/undici-types@7.16.0/handlers": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457",
     "https://esm.sh/undici-types@7.16.0/retry-handler": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457",
     "https://esm.sh/undici-types@7.24.0/handlers": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457",
-    "https://esm.sh/undici-types@7.24.0/retry-handler": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457"
+    "https://esm.sh/undici-types@7.24.0/retry-handler": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457",
+    "https://esm.sh/undici-types@8.4.0/handlers": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457",
+    "https://esm.sh/undici-types@8.4.0/retry-handler": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457"
   }
 }
