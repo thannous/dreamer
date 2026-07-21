@@ -353,7 +353,7 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti / Letture consigliate</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://psycnet.apa.org/record/1982-22836-000" rel="nofollow noopener noreferrer" target="_blank">Foulkes, D. (1982): Children's Dreams - Academic Press</a></li>
-<li><a href="https://shop.lww.com/A-Clinical-Guide-to-Pediatric-Sleep/p/9781451193008" rel="nofollow noopener noreferrer" target="_blank">Mindell & Owens (2015): A Clinical Guide to Pediatric Sleep - Lippincott</a></li>
+<li><a href="https://books.google.com/books?vid=ISBN9781451193008" rel="nofollow noopener noreferrer" target="_blank">Mindell & Owens (2015): A Clinical Guide to Pediatric Sleep - Lippincott</a></li>
 <li><a href="https://www.aap.org/en/patient-care/sleep-issues/" rel="nofollow noopener noreferrer" target="_blank">AAP (American Academy of Pediatrics): Sleep and Children</a></li>
 <li><a href="https://www.sleepfoundation.org/children-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Children and Sleep</a></li>
 <li><a href="https://www.nimh.nih.gov/health/topics/child-and-adolescent-mental-health" rel="nofollow noopener noreferrer" target="_blank">NIMH: Children's Mental Health</a></li>
