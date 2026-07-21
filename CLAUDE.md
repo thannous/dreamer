@@ -4,350 +4,124 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a React Native Expo app for dream journaling and analysis. Users can record dreams via voice, which are analyzed via a backend API (using Gemini AI), and view them in a journal with generated imagery and interpretations.
+Noctalia is an AI-powered dream journal app: users record dreams by voice or text, a Supabase Edge Function backend (Gemini AI) produces interpretations, imagery, and categorization, and dreams are explored through a journal, statistics, chat, a symbol dictionary, and lucid-dreaming rituals. The app supports guest mode with quotas, Supabase auth (including Google Sign-In), RevenueCat subscriptions, and five languages (en, fr, es, de, it). The repo also contains a generated multilingual marketing site.
 
-**Key Features:**
-- Voice recording with real-time waveform visualization
-- AI-powered dream analysis (title, interpretation, themes, categorization)
-- AI-generated dream imagery
-- Conversational AI chat for follow-up questions
-- Comprehensive statistics and analytics with charts
-- Daily reminder notifications
-- Multi-language localization
-- Light/dark theme support
-- Resilient error handling with automatic retries
-- Graceful degradation (dreams saved even if image generation fails)
+**Tech stack:** Expo SDK 57 (Expo Router), React Native 0.86, React 19, TypeScript strict, Supabase (auth, Postgres, Deno Edge Functions), RevenueCat, Jest (unit), Vitest (perf only), Maestro (Android E2E). Requires Node >= 22.23.1.
 
-**Tech Stack:**
-- React Native (0.81.5) with new architecture enabled
-- Expo SDK 54 with file-based routing (Expo Router v6)
-- React 19 with compiler optimizations
-- Supabase for authentication and backend integration
-- AsyncStorage for local persistence
+`package.json` is the command source of truth — do not invent parallel wrappers. `AGENTS.md` is the companion repository guide and is kept current.
 
-## Development Commands
+## Commands
 
-### Starting the App
+### Running the App
 ```bash
-# Start development server
-npm start
-# or
-expo start
-
-# Start with Supabase local development (if using local backend)
-npm run start:supabase
-
-# Run on specific platforms
-npm run android    # Android emulator/device (standard Expo flow, no Windows-specific wrapper)
-npm run ios        # iOS simulator
-npm run web        # Web browser
+npm ci                    # Reproducible install
+npm run start             # Dev server (via scripts/expo-safe-runner.js)
+npm run start:mock        # Mock mode (.env.mock profile) — no network/backend needed
+npm run start:real        # Real services (.env.real profile)
+npm run start:supabase    # Supabase-backed local development
+npm run start:teststore   # Test-store subscription profile
+npm run android           # Native Android build+run
+npm run ios               # Native iOS build+run
+npm run web               # Web development
 ```
 
 ### Code Quality
 ```bash
-npm run lint           # Run ESLint using expo lint
-npm run typecheck:app  # TypeScript type checking for app code
-npm run typecheck:tests # TypeScript type checking for test files
+npm run lint              # Full ESLint (expo lint over app, components, hooks, lib, context, constants, services, tests, supabase/functions, scripts)
+npx expo lint <paths>     # Scoped lint for touched paths
+npm run typecheck:app     # TypeScript for app code
+npm run typecheck:tests   # TypeScript for test files (tsconfig.test.json)
 ```
 
-### Mock Mode (Development/Testing)
-
-The app includes a comprehensive mock mode for development and testing without real network calls or backend dependencies.
-
-**Starting in Mock Mode:**
+### Unit Tests (Jest — runs once, not watch mode)
 ```bash
-npm run start:mock    # Copies .env.mock to .env.local and starts app
+npm test                                  # Full suite (both projects)
+npm run test:file -- path/to/x.test.tsx   # Run specific test file(s)
+npm run test:related -- <source-files>    # Tests related to given source files
+npm run test:changed                      # Tests for changed files
+npm run test:node                         # Node project only (scripts/**/*.test.js)
+npm run test:expo                         # Expo project only (app code tests)
+npm run test:perf                         # Performance tests (Vitest, *.perf.test.ts)
 ```
 
-**Returning to Real Mode:**
+Prefer the narrowest check first (`test:related`/`test:file`), then broaden. If Watchman fails in a sandbox, add `--watchman=false` (jest.config.js already defaults to `watchman: false`).
+
+Jest is a two-project setup (`jest.config.node.js` for plain-JS script tests, `jest.config.expo.js` with the jest-expo preset for everything else). The Expo project maps `react-native`, `reanimated`, `expo-*` etc. to stubs in `tests/` and loads `jest.setup.ts`. Supabase function tests (`supabase/functions/**/*.test.ts`) are Deno tests and are excluded from Jest.
+
+### E2E Tests (Maestro, Android)
 ```bash
-npm run start:real    # Removes .env.local and starts app with real services
+npm run test:e2e                # core suite
+npm run test:e2e:smoke          # smoke suite
+npm run test:e2e:mock           # mock-mode suite
 ```
+All flows live in `maestro/*.yml`, orchestrated by `scripts/run-maestro-android.js`. Many targeted `test:e2e:*` scripts exist (quotas, guest limits, subscriptions, onboarding, recording) — pick the smallest matching one; `test:e2e:android:all` is not the default validation path. Requires Maestro CLI and an emulator/device.
 
-**What Mock Mode Provides:**
-- **No Network Calls**: All API requests are simulated locally with realistic delays
-- **Pre-loaded Data**: 8 predefined realistic dreams with images, interpretations, and chat histories
-- **In-Memory Storage**: Changes persist during the app session but reset on restart
-- **Mock Notifications**: Notification scheduling is simulated via console logs
-- **Placeholder Images**: Uses picsum.photos for dream imagery
-- **Full Functionality**: All app features work exactly as in production
-- **Console Logging**: All service calls are logged for debugging
-
-**Mock Timings (simulates real API behavior):**
-- Dream analysis: 1-3 seconds
-- Image generation: 2-4 seconds
-- Combined analysis: 3-5 seconds
-- Chat responses: 1-2 seconds
-- Text-to-speech: 2-3 seconds
-
-**Mock Data Location:**
-- `mock-data/predefinedDreams.ts` - 8 curated realistic dreams
-- `mock-data/generators.ts` - Random dream/chat generators
-- `mock-data/assets.ts` - Placeholder image URLs
-
-**Mock Services:**
-- `services/mocks/geminiServiceMock.ts` - Mocked API calls
-- `services/mocks/storageServiceMock.ts` - In-memory storage
-- `services/mocks/notificationServiceMock.ts` - Notification logging
-
-**Use Cases:**
-- Develop UI/UX without backend dependency
-- Test app flows without API quota limits
-- Demo the app without internet connection
-- Rapid iteration without network latency
-- Onboard new developers quickly
-
-
-### Building
+### Marketing Site
 ```bash
-npm run build:web              # Build for web with PWA support
-npm run build:apk:mock         # Build local APK with mock mode enabled
-npm run build:apk:prod         # Build local production APK
+npm run docs:dev            # Live editing
+npm run docs:build          # Build site (includes docs:build:experience bundle)
+npm run docs:check          # Validate output
+npm run docs:release-check  # Only for release-ready site work
 ```
+Edit `docs-src/` and generator inputs in `data/` — **never edit `docs/`**, it is generated output. Cloudflare Pages builds from tracked sources on `master`. See `docs-src/README.md` for the site workflow.
 
-## Testing
-
-### Unit Tests (Vitest)
+### Backend, Release & Audits
 ```bash
-npm test                       # Run all unit tests in watch mode
-npm test -- --run              # Run all tests once (CI mode)
-npm test -- hooks/             # Run tests in a specific directory
-npm test -- useDreamJournal    # Run tests matching a pattern
-npm test -- --coverage         # Run tests with coverage report
+npm run db:contract:check         # Validate DB contract (:local variant for local stack)
+npm run android:gates             # Android release readiness (report-only)
+npm run security:audit:mobile     # Mobile security audit
+npm run build:web                 # Web export + PWA service worker
+npm run build:apk:mock            # Local APK, mock mode
+npm run build:apk:prod            # Local production APK
 ```
 
-Unit tests are located in `__tests__` directories next to the code they test (e.g., `hooks/__tests__/*.test.tsx`).
-
-**Test Environment:**
-- Vitest with `happy-dom` for React hook tests
-- `vitest.setup.ts` contains mocks for Expo modules and React Native
-- `tests/react-native-stub.ts` provides React Native platform stubs
-
-### E2E Tests (Maestro)
-```bash
-npm run test:e2e               # Run mock-existing-user flow
-npm run test:e2e:mock-quotas   # Run mock quota flow
-npm run test:e2e:quotas        # Run guest quota flow
-npm run test:e2e:guest-limit   # Run guest dream limit flow
-```
-
-E2E tests are in `maestro/*.yml`. Requires Maestro CLI installed and an emulator/device running the dev build.
+Do not run `expo prebuild`, EAS builds, store submissions, production deploys, or destructive database commands unless explicitly requested.
 
 ## Architecture
 
-### Routing Structure
-- Uses **Expo Router** with file-based routing
-- Root layout: `app/_layout.tsx` wraps the app with `ErrorBoundary`, `DreamsProvider` context, and `ThemeProvider`
-- Tab navigation: `app/(tabs)/_layout.tsx` defines bottom tabs (Home, Journal, Statistics, Settings)
-- Stack screens: recording screen, individual dream detail screen, dream chat, dream categories, and modal
-- Error boundary catches and displays runtime errors gracefully
+### Mock/Real Service Switch
+Core services have three files: a conditional export (e.g. `services/geminiService.ts`), a real implementation (`geminiServiceReal.ts`), and a mock (`services/mocks/geminiServiceMock.ts`). The conditional export picks the implementation at bundle time from `EXPO_PUBLIC_MOCK_MODE` (via `isMockModeEnabled()` in `lib/env.ts`). This pattern applies to `geminiService`, `storageService`, `notificationService`, and `subscriptionService`. Always import the conditional module, never the `*Real`/`*Mock` file directly. Mock data lives in `mock-data/`.
 
-### State Management
-- **Context API**: `DreamsContext` (context/DreamsContext.tsx) provides global access to dream journal state
-- **Custom Hook**: `useDreamJournal` (hooks/useDreamJournal.ts) manages dream CRUD operations with AsyncStorage persistence
-- All dream data is persisted locally using `storageService.ts`
+### Environment Variables
+`EXPO_PUBLIC_*` values are injected at bundle time only when accessed statically — dynamic `process.env[key]` access breaks in production. All access goes through `lib/env.ts`: to add a variable, extend the `ExpoPublicEnvKey` union and the switch in `getExpoPublicEnvValue()`. Every `EXPO_PUBLIC_*` value is visible to clients — never put secrets there. Runtime profiles (`.env.mock`, `.env.real`, `.env.teststore`, `.env.playstore`, `.env.supabase`) are applied by `scripts/expo-safe-runner.js` via the `start:*` scripts.
 
-### Backend Integration
-The app expects a backend API with the following endpoints (configured via `EXPO_PUBLIC_API_URL` or `app.json` extra.apiUrl):
-- `POST /analyzeDream` - Analyzes dream transcript, returns title, interpretation, theme, etc.
-- `POST /analyzeDreamFull` - **Combined endpoint** that analyzes dream and generates image in one request (preferred)
-- `POST /generateImage` - Generates dream imagery from prompt (fallback for separate image generation)
-- `POST /chat` - Conversational AI for dream interpretation follow-ups
-- `POST /tts` - Text-to-speech for dream interpretations
+### Backend (Supabase Edge Functions)
+The backend is Deno Edge Functions in `supabase/functions/`:
+- **`api`** — main router (`api/index.ts` maps `METHOD /path` to handlers in `api/routes/`): dream analysis (`/analyzeDream`, `/analyzeDreamFull`, `/categorizeDream`), images (`/generateImage`, async `/image-jobs` + `/image-jobs/status`), `/chat`, `/transcribe`, guest sessions (`/guest/session`), quotas (`/quota/status`, `/auth/mark-upgrade`), subscription sync (`/subscription/*`), and product analytics (`/analytics/*`). Shared logic (auth headers, quota enforcement, Play Integrity, prompts, schemas) is in `api/lib/`.
+- **`image-job-worker`** — background image generation jobs.
+- **`revenuecat-webhook`** — RevenueCat entitlement events.
 
-Backend integration is centralized in `services/geminiService.ts`.
+Database migrations are in `supabase/migrations/`; `supabase/db-contract.manifest.json` is validated by `npm run db:contract:check`.
 
-**Key Features:**
-- **Resilient Analysis**: `analyzeDreamWithImageResilient()` automatically falls back to analysis-only if image generation fails
-- **Automatic Retry**: HTTP client (`lib/http.ts`) includes exponential backoff retry logic for network/timeout/server errors
-- **Error Classification**: `lib/errors.ts` provides user-friendly error messages and retry recommendations
+The client resolves the API base URL via `lib/config.ts` (`EXPO_PUBLIC_API_URL` → `app.json` `extra.apiUrl` → `http://localhost:3000`). All client HTTP goes through `lib/http.ts` (timeouts, auth headers, exponential-backoff retry) and errors are classified by `lib/errors.ts` (user message + `canRetry`). A circuit breaker lives in `lib/circuitBreaker.ts`.
 
-### Data Flow
-1. User records dream in `/recording` screen (with real-time waveform visualization)
-2. Transcript sent to backend via `analyzeDreamWithImageResilient()` with progress tracking
-3. Analysis includes title, interpretation, theme, dream type, and image (if successful)
-4. If image generation fails, dream is saved with `imageGenerationFailed: true` flag
-5. New dream object saved via `addDream()` from DreamsContext
-6. User redirected to dream detail screen at `/journal/[id]`
-7. Failed images can be retried later using the `ImageRetry` component
+### Routing & Provider Stack
+Expo Router file-based routing in `app/`: tabs in `app/(tabs)/` (index/home, journal, statistics, settings, add-dream) plus stack screens for recording, `journal/[id]`, dream-chat, dream-categories, dream-guide(s), onboarding, paywall, auth, ritual, sleep-sounds, symbol-dictionary, and symbol-detail. New screens need a `Stack.Screen` entry in `app/_layout.tsx`.
 
-**Progress Tracking:**
-- `useAnalysisProgress` hook tracks analysis steps (analyzing, generating image, finalizing)
-- `AnalysisProgress` component displays progress bar and user-friendly messages
+Provider nesting in `app/_layout.tsx` (outermost first): `LanguageProvider` → `ThemeProvider` → `AuthProvider` → `OnboardingProvider` → `SubscriptionProvider` → navigation/keyboard providers → `DreamsProvider`. Consume via hooks: `useDreams()`, `useAuth()`, `useSubscription()`, `useTranslation()`, `useTheme()`.
 
-### Storage
-- Uses `@react-native-async-storage/async-storage` (with in-memory fallback)
-- All storage operations in `services/storageService.ts`
-- Keys: dreams, recording transcript, notification settings
+### Dream Data Flow
+1. Recording screen captures voice (`expo-audio` + `expo-speech-recognition`, with text fallback) — see `useRecordingSession`.
+2. Transcript goes through `analyzeDreamWithImageResilient()` (`services/geminiService.ts`), which falls back to analysis-only if image generation fails (`imageGenerationFailed: true`); images may also complete asynchronously via image jobs (`PendingImageJob`).
+3. `useAnalysisProgress` tracks multi-step progress for the `AnalysisProgress` component.
+4. The dream is saved through `DreamsContext`/`useDreamJournal` to local storage (AsyncStorage via `storageService.ts`), and synced to Supabase through `services/supabaseDreamService.ts` with an offline mutation queue (`useOfflineSyncQueue`, sync states in `lib/types.ts`: `DreamSyncState`, `SyncMutationStatus`).
 
-### Type System
-Core types in `lib/types.ts`:
-- **`DreamAnalysis`**: Main dream object with:
-  - `id` (timestamp), `transcript`, `title`, `interpretation`, `shareableQuote`
-  - `imageUrl` (full resolution), `thumbnailUrl` (optional, optimized for lists)
-  - `chatHistory` (array of ChatMessage)
-  - `theme` (visual theme), `dreamType` (categorization)
-  - `isFavorite` (boolean), `imageGenerationFailed` (boolean)
-- **`ChatMessage`**: User/model conversation for follow-up questions
-- **`NotificationSettings`**: Notification preferences with weekday/weekend times
-- **`ClassifiedError`** (`lib/errors.ts`): Error with type, user message, and retry capability
+Core types are in `lib/types.ts` (`DreamAnalysis`, `ChatMessage`, `DreamType`, `DreamTheme`, `AppLanguage`, notification/ritual/preference types).
 
-### Path Aliases
-- `@/*` maps to project root (configured in tsconfig.json)
-- Use for imports: `import { useDreams } from '@/context/DreamsContext'`
+### Monetization & Quotas
+- **Guest mode:** server-issued guest sessions with device fingerprinting (`lib/guestSession.ts`, `lib/deviceFingerprint.ts`) and limits (`lib/guestLimits.ts`); quota tiers in `lib/quotaTier.ts`, checked via `useQuota` and `services/quotaService.ts`. The backend enforces quotas in `api/lib/analysisQuota.ts`.
+- **Subscriptions:** RevenueCat SDK config in `lib/revenuecat.ts`, client service in `services/subscriptionService*.ts`, state in `SubscriptionContext` with `useSubscription*` hooks, server reconciliation via `services/subscriptionSyncService.ts` + `/subscription/*` routes + the webhook. Paywall screens/variants: `app/paywall.tsx`, `lib/paywallVariants.ts`. A subscription QA lab and extensive `subscription:qa:*` scripts exist for release verification.
 
-## Key Implementation Details
+### Internationalization & Theming
+i18n in `lib/i18n.ts` + `lib/i18n/` with `useTranslation()`; language preference in `LanguageContext` (`AppLanguage = en|fr|es|de|it`). Marketing-site locales are separate, under `docs-src/locales/`. Theming via `ThemeContext` (light/dark/auto) with constants in `constants/theme.ts` and `ThemedView`/`ThemedText` components.
 
-### Expo Features Enabled
-- `newArchEnabled: true` - Uses React Native new architecture
-- `typedRoutes: true` - Type-safe routing with Expo Router
-- `reactCompiler: true` - React 19 compiler optimizations
-- Edge-to-edge Android UI with predictive back gesture disabled
+### Path Alias
+`@/*` maps to the project root (e.g. `import { useDreams } from '@/context/DreamsContext'`).
 
-### Theme System
-- Light/dark mode support via `useColorScheme` hook
-- Color constants in `constants/theme.ts`
-- Themed components: `ThemedView`, `ThemedText` (components/)
+## Conventions
 
-### Internationalization
-- i18n setup in `lib/i18n.ts`
-- `useTranslation` hook provides `t()` function for translations
-- Language detection based on device locale
-
-### API Configuration
-Backend URL resolution priority:
-1. `process.env.EXPO_PUBLIC_API_URL`
-2. `app.json` extra.apiUrl
-3. Default: `http://localhost:3000`
-
-### Statistics & Analytics
-New statistics screen (`app/(tabs)/statistics.tsx`) displays comprehensive dream analytics:
-- **Overview**: Total dreams, favorites, weekly/monthly counts
-- **Streaks**: Current and longest dream journaling streaks
-- **Time Analysis**: Dreams by day of week (bar chart), dreams over time (line chart)
-- **Content Analysis**: Dream type distribution (pie chart), top themes
-- **Engagement**: Chat activity, most discussed dreams
-
-Uses `useDreamStatistics` hook (`hooks/useDreamStatistics.ts`) for data processing and `react-native-gifted-charts` for visualizations.
-
-### Error Handling & Resilience
-- **Error Classification** (`lib/errors.ts`): Categorizes errors (network, timeout, rate limit, server, client) with user-friendly messages
-- **HTTP Retry Logic** (`lib/http.ts`): Automatic exponential backoff for transient failures
-- **Progress Tracking** (`hooks/useAnalysisProgress.ts`): Tracks multi-step operations with animated progress
-- **Graceful Degradation**: Dreams can be saved without images if generation fails
-
-### Notifications
-- **Service**: `services/notificationService.ts` handles daily dream journaling reminders
-- **Settings**: Users can configure separate weekday/weekend reminder times
-- **Integration**: Configured in root layout via `configureNotificationHandler()`
-
-## Common Patterns
-
-### Adding a New Screen
-1. Create file in `app/` directory (e.g., `app/new-screen.tsx`)
-2. Add Stack.Screen entry in `app/_layout.tsx`
-3. Navigate using `router.push('/new-screen')` from expo-router
-
-### Working with Dreams
-```typescript
-import { useDreams } from '@/context/DreamsContext';
-
-const { dreams, addDream, updateDream, deleteDream, toggleFavorite } = useDreams();
-```
-
-### Making API Calls
-All backend communication goes through `services/geminiService.ts`. Use the exported functions rather than direct fetch calls.
-
-**Preferred approach for dream analysis:**
-```typescript
-import { analyzeDreamWithImageResilient } from '@/services/geminiService';
-
-// Automatically handles image generation fallback
-const result = await analyzeDreamWithImageResilient(transcript);
-// result.imageUrl will be string or null
-// result.imageGenerationFailed indicates if image failed
-```
-
-### Tracking Progress
-```typescript
-import { useAnalysisProgress, AnalysisStep } from '@/hooks/useAnalysisProgress';
-
-const progress = useAnalysisProgress();
-
-// Set current step
-progress.setStep(AnalysisStep.ANALYZING);
-progress.setStep(AnalysisStep.GENERATING_IMAGE);
-
-// Handle errors
-progress.setError(classifiedError);
-
-// Display progress
-<AnalysisProgress {...progress} onRetry={handleRetry} />
-```
-
-### Error Handling
-```typescript
-import { classifyError, getUserErrorMessage } from '@/lib/errors';
-
-try {
-  await someApiCall();
-} catch (error) {
-  const classified = classifyError(error as Error);
-  Alert.alert('Error', classified.userMessage);
-
-  if (classified.canRetry) {
-    // Offer retry option
-  }
-}
-```
-
-## Key Dependencies
-
-### UI & Visualization
-- `react-native-gifted-charts` (v1.4.64) - Bar, line, and pie charts for statistics
-- `react-native-svg` (v15.12.1) - Required for chart rendering
-- `expo-linear-gradient` - Gradient backgrounds and visual effects
-- `@expo-google-fonts/space-grotesk` & `@expo-google-fonts/lora` - Typography
-
-### Audio & Media
-- `expo-audio` - Voice recording with waveform metering
-- `expo-speech` - Text-to-speech for dream interpretations
-- `expo-image` - Optimized image loading with thumbnails
-
-### Backend & Storage
-- `@supabase/supabase-js` - Authentication and backend integration
-- `@react-native-async-storage/async-storage` - Local data persistence
-
-### Notifications & Scheduling
-- `expo-notifications` - Daily dream journaling reminders
-
-### Navigation
-- `expo-router` (v6) - File-based routing with type safety
-- `@react-navigation/native` - Navigation primitives
-
-## Key Components & Hooks
-
-### Hooks
-- `useDreams` - Access and modify dream journal data
-- `useDreamStatistics` - Calculate comprehensive dream analytics
-- `useAnalysisProgress` - Track multi-step analysis progress
-- `useColorScheme` - Light/dark theme detection
-
-### Components
-- `AnalysisProgress` (`components/analysis/`) - Progress bar with error handling
-- `ImageRetry` (`components/journal/`) - Retry failed image generation
-- `MicButton` (`components/recording/`) - Recording button with haptic feedback
-- `Waveform` (`components/recording/`) - Real-time audio visualization
-- `ErrorBoundary` - App-wide error catching
-
-## Writing Tests
-
-When writing new tests for hooks:
-1. Place test files in `hooks/__tests__/` with `.test.tsx` extension
-2. Wrap hooks in `renderHook` from `@testing-library/react`
-3. For hooks using DreamsContext, wrap with `DreamsProvider` in the test
-4. Use `act()` for state updates and `waitFor()` for async operations
-5. Mock external services (storage, API) as needed
-
-## Verify you assumptions with mcp tools
-Use your tools to verify assumptions
+- Start from `git status --short`; preserve unrelated or pre-existing changes. Separate failures caused by your patch from known baseline/environment/Watchman/emulator failures.
+- Prefer the smallest cohesive change that reuses existing patterns: established components, theme constants, service boundaries, and i18n patterns before new abstractions.
+- Function components and hooks only; PascalCase components, `useX` hooks; 2-space indentation.
+- Tests are named `*.test.ts(x)`, colocated or under `__tests__/`; UI behavior via `@testing-library/react-native`; add `testID` only where automation needs stable targeting (see `lib/testIDs.ts`).
+- Do not commit secrets, temporary logs, or generated `docs/` output.
