@@ -93,7 +93,20 @@ function copyDir(sourceDir, targetDir) {
   const files = walkFiles(sourceDir);
   for (const filePath of files) {
     const relativePath = path.relative(sourceDir, filePath);
-    copyFile(filePath, path.join(targetDir, relativePath));
+    const targetPath = path.join(targetDir, relativePath);
+    // rsync-style freshness check: docs-src/static weighs hundreds of MiB,
+    // so unconditional copies dominate repeated builds for no benefit.
+    if (fs.existsSync(targetPath)) {
+      const sourceStat = fs.statSync(filePath);
+      const targetStat = fs.statSync(targetPath);
+      if (
+        targetStat.size === sourceStat.size &&
+        targetStat.mtimeMs >= sourceStat.mtimeMs
+      ) {
+        continue;
+      }
+    }
+    copyFile(filePath, targetPath);
   }
 }
 

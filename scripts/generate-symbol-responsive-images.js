@@ -130,16 +130,37 @@ function assertCompleteSymbolCoverage(illustrations, catalog) {
   }
 }
 
-async function generateIllustrations(illustrations) {
+async function generateIllustrations(illustrations, { force = false } = {}) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  let generated = 0;
+  let total = 0;
   for (const illustration of illustrations) {
+    const sourceMtimeMs = fs.statSync(illustration.sourcePath).mtimeMs;
     for (const width of WIDTHS) {
+      total += 1;
+      const target = outputPath(illustration, width);
+      // Only re-encode when the source changed: repeated builds (docs:dev,
+      // CI reruns) must not pay for hundreds of sharp encodes for nothing.
+      if (
+        !force &&
+        fs.existsSync(target) &&
+        fs.statSync(target).mtimeMs >= sourceMtimeMs
+      ) {
+        continue;
+      }
       await sharp(illustration.sourcePath)
         .rotate()
         .resize({ width, withoutEnlargement: true })
         .webp({ quality: 82, effort: 5, smartSubsample: true })
-        .toFile(outputPath(illustration, width));
+        .toFile(target);
+      generated += 1;
     }
+  }
+  if (generated < total) {
+    console.log(
+      `[generate-symbol-responsive-images] ${generated} variants regenerated, ` +
+        `${total - generated} up to date.`
+    );
   }
 }
 
@@ -183,6 +204,7 @@ async function validateIllustrations(illustrations) {
 
 async function main() {
   const checkOnly = process.argv.includes('--check');
+  const force = process.argv.includes('--force');
   const registry = loadSymbolImageRegistry();
   const editorial = SOURCE_DATA_PATHS
     .filter((sourcePath) => fs.existsSync(sourcePath))
@@ -195,7 +217,7 @@ async function main() {
     illustrations,
     JSON.parse(fs.readFileSync(CATALOG_PATH, 'utf8'))
   );
-  if (!checkOnly) await generateIllustrations(illustrations);
+  if (!checkOnly) await generateIllustrations(illustrations, { force });
   const result = await validateIllustrations(illustrations);
   console.log(
     `Responsive symbol images ${checkOnly ? 'checked' : 'generated'}: ` +

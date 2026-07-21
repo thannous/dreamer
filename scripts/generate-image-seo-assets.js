@@ -155,12 +155,49 @@ async function validateSources(registry) {
   if (errors.length) throw new Error(`Invalid image sources:\n- ${errors.join('\n- ')}`);
 }
 
-async function generateAssets(registry) {
+/* Regenerating a variant is only needed when one of its inputs changed:
+ * the source image, or the registry configs that drive crops and widths.
+ * Everything else is skipped so repeated builds (docs:dev, CI reruns) do
+ * not re-encode 600+ sharp variants for nothing. `--force` bypasses this. */
+const REGISTRY_CONFIG_PATHS = [
+  resolveRepoPath(path.join('docs-src', 'config', 'image-assets.json')),
+  resolveRepoPath(path.join('docs-src', 'config', 'page-illustrations.json')),
+];
+
+function newestMtimeMs(paths) {
+  let newest = 0;
+  for (const filePath of paths) {
+    if (fs.existsSync(filePath)) {
+      newest = Math.max(newest, fs.statSync(filePath).mtimeMs);
+    }
+  }
+  return newest;
+}
+
+function isVariantFresh(variant, configStampMs) {
+  if (!fs.existsSync(variant.outputPath)) return false;
+  const outputMtimeMs = fs.statSync(variant.outputPath).mtimeMs;
+  if (outputMtimeMs < configStampMs) return false;
+  const sourcePath = resolveRepoPath(variant.aspect.source || variant.asset.source);
+  return fs.existsSync(sourcePath) && outputMtimeMs >= fs.statSync(sourcePath).mtimeMs;
+}
+
+async function generateAssets(registry, { force = false } = {}) {
   const variants = expectedVariants(registry);
+  const configStampMs = newestMtimeMs(REGISTRY_CONFIG_PATHS);
+  let generated = 0;
   for (const variant of variants) {
+    if (!force && isVariantFresh(variant, configStampMs)) continue;
     fs.mkdirSync(path.dirname(variant.outputPath), { recursive: true });
     const pipeline = await sourcePipeline(variant.asset, variant.aspect, variant.width);
     await encode(pipeline, variant.format).toFile(variant.outputPath);
+    generated += 1;
+  }
+  if (generated < variants.length) {
+    console.log(
+      `[generate-image-seo-assets] ${generated} variants regenerated, ` +
+        `${variants.length - generated} up to date.`
+    );
   }
   return variants;
 }
@@ -213,11 +250,12 @@ function validatePageImageResolution(registry) {
 
 async function main() {
   const checkOnly = process.argv.includes('--check');
+  const force = process.argv.includes('--force');
   generateEducationalDiagramSources({ checkOnly });
   const registry = readCompleteImageAssetRegistry();
   await validateSources(registry);
   validatePageImageResolution(registry);
-  if (!checkOnly) await generateAssets(registry);
+  if (!checkOnly) await generateAssets(registry, { force });
   const report = await validateOutputs(registry);
   const roleCounts = Object.values(registry.assets).reduce((counts, asset) => {
     counts[asset.role] = (counts[asset.role] || 0) + 1;
