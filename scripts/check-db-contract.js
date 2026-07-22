@@ -193,7 +193,7 @@ async function fetchIndexes(client, requiredIndexes) {
         index_meta.indisunique as is_unique,
         pg_get_indexdef(index_meta.indexrelid) as index_definition,
         coalesce(
-          array_agg(att.attname order by ord.ordinality)
+          array_agg(att.attname::text order by ord.ordinality)
             filter (where att.attname is not null),
           '{}'::text[]
         ) as index_columns
@@ -282,6 +282,13 @@ function matchesExpectedSeedRow(actualRow, expectedRow) {
 
 function normalizeArray(values) {
   return Array.isArray(values) ? values : [];
+}
+
+function normalizeTriggerDefinition(definition) {
+  return String(definition).replace(
+    /(\bexecute\s+function\s+)(?:"[^"]+"|[A-Za-z_][A-Za-z0-9_$]*)\./gi,
+    '$1'
+  );
 }
 
 function normalizeObject(value) {
@@ -593,8 +600,9 @@ async function runChecks(options) {
       }
 
       const definition = actual.definition ?? '';
+      const normalizedDefinition = normalizeTriggerDefinition(definition);
       const missingDefinitionParts = normalizeArray(trigger.definitionIncludes).filter(
-        (part) => !definition.includes(part)
+        (part) => !normalizedDefinition.includes(normalizeTriggerDefinition(part))
       );
 
       if (missingDefinitionParts.length > 0) {
