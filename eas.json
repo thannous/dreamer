@@ -85,6 +85,14 @@
         "credentialsSource": "remote"
       }
     },
+    "ai-internal": {
+      "extends": "production",
+      "channel": "ai-internal",
+      "environment": "production",
+      "env": {
+        "EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED": "true"
+      }
+    },
     "release-smoke": {
       "extends": "production",
       "channel": "release-smoke",
