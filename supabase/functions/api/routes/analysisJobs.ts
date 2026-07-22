@@ -66,7 +66,7 @@ export const resolveAnalysisJobAdmissionPolicy = (tier: 'free' | 'plus') => ({
 const normalizeTier = (value: unknown): 'free' | 'plus' =>
   value === 'plus' || value === 'premium' ? 'plus' : 'free';
 
-const blockedAdmissionResponse = (admission: AnalysisJobAdmission): Response => {
+export const blockedAdmissionResponse = (admission: AnalysisJobAdmission): Response => {
   if (admission.code === 'QUOTA_EXCEEDED') {
     const used = typeof admission.new_count === 'number' ? Math.max(0, admission.new_count) : 0;
     const limit = typeof admission.limit === 'number' ? admission.limit : null;
@@ -74,6 +74,7 @@ const blockedAdmissionResponse = (admission: AnalysisJobAdmission): Response => 
       {
         error: 'Analysis limit reached',
         code: 'QUOTA_EXCEEDED',
+        tier: admission.tier,
         usage: { analysis: { used, limit } },
       },
       429

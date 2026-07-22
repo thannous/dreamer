@@ -9,6 +9,7 @@ import {
     isGuestSessionError,
     QuotaError,
     QuotaErrorCode,
+    coerceQuotaError,
     SubscriptionError,
     SubscriptionErrorCode,
 } from '../errors';
@@ -274,6 +275,23 @@ describe('canRetryError', () => {
 });
 
 describe('QuotaError', () => {
+  it('coerces a typed analysis quota response even when HTTP status is 429', () => {
+    const error = Object.assign(new Error('HTTP 429 Too Many Requests'), {
+      status: 429,
+      body: {
+        code: 'QUOTA_EXCEEDED',
+        tier: 'free',
+        usage: { analysis: { used: 6, limit: 3 } },
+      },
+    });
+
+    expect(coerceQuotaError(error, 'plus')).toEqual(expect.objectContaining({
+      code: QuotaErrorCode.ANALYSIS_LIMIT_REACHED,
+      tier: 'free',
+      canUpgrade: true,
+    }));
+  });
+
   it('should create error with correct code and tier', () => {
     const error = new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, 'guest');
     

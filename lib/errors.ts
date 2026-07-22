@@ -581,23 +581,43 @@ export const coerceQuotaError = (
   tier: SubscriptionTier
 ): QuotaError | null => {
   const message = getErrorMessage(error);
+  const httpDetails = getHttpErrorDetails(error);
+  const apiError = httpDetails?.body ? extractApiErrorInfo(httpDetails.body) : null;
+  const responseTier = httpDetails?.body?.tier;
+  const effectiveTier: SubscriptionTier =
+    responseTier === 'guest' || responseTier === 'free' || responseTier === 'plus'
+      ? responseTier
+      : tier;
+  const usage = httpDetails?.body?.usage;
+  const usageRecord = usage && typeof usage === 'object'
+    ? (usage as Record<string, unknown>)
+    : null;
+
+  if (apiError?.code === 'QUOTA_EXCEEDED') {
+    if (usageRecord?.analysis && typeof usageRecord.analysis === 'object') {
+      return new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, effectiveTier);
+    }
+    if (usageRecord?.exploration && typeof usageRecord.exploration === 'object') {
+      return new QuotaError(QuotaErrorCode.EXPLORATION_LIMIT_REACHED, effectiveTier);
+    }
+  }
 
   if (message.includes('QUOTA_EXPLORATION_LIMIT_REACHED')) {
-    return new QuotaError(QuotaErrorCode.EXPLORATION_LIMIT_REACHED, tier);
+    return new QuotaError(QuotaErrorCode.EXPLORATION_LIMIT_REACHED, effectiveTier);
   }
 
   if (message.includes('QUOTA_ANALYSIS_LIMIT_REACHED')) {
-    return new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
+    return new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, effectiveTier);
   }
 
   // Fallback: some backends may only expose a generic Postgres error code.
   const coded = error as CodedError | null;
   if (coded?.code === 'P0001' && /quota/i.test(message)) {
     if (/analysis/i.test(message)) {
-      return new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
+      return new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, effectiveTier);
     }
     if (/exploration/i.test(message)) {
-      return new QuotaError(QuotaErrorCode.EXPLORATION_LIMIT_REACHED, tier);
+      return new QuotaError(QuotaErrorCode.EXPLORATION_LIMIT_REACHED, effectiveTier);
     }
   }
 

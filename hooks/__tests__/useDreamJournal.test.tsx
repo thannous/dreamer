@@ -1136,6 +1136,50 @@ describe('useDreamJournal', () => {
       expect(mockAnalyzeDreamText).not.toHaveBeenCalled();
     });
 
+    it('surfaces a durable analysis quota denial as an upgrade error', async () => {
+      mockEnvState.analysisJobsEnabled = true;
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        isAnalyzed: false,
+        analysisStatus: 'failed',
+      });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream }));
+      mockSubmitDreamAnalysisJob.mockRejectedValueOnce(Object.assign(
+        new Error('HTTP 429 Too Many Requests'),
+        {
+          status: 429,
+          body: {
+            code: 'QUOTA_EXCEEDED',
+            tier: 'free',
+            usage: { analysis: { used: 6, limit: 3 } },
+          },
+        }
+      ));
+
+      const { result } = await renderLoadedDreamJournal();
+      let observedError: unknown;
+      await act(async () => {
+        try {
+          await result.current.analyzeDream(1, existingDream.transcript, { lang: 'fr' });
+        } catch (error) {
+          observedError = error;
+        }
+      });
+
+      expect(observedError).toEqual(expect.objectContaining({
+        code: QuotaErrorCode.ANALYSIS_LIMIT_REACHED,
+        tier: 'free',
+        canUpgrade: true,
+      }));
+      expect(mockGetDreamAnalysisJobStatus).not.toHaveBeenCalled();
+      expect(result.current.dreams[0]).toEqual(expect.objectContaining({
+        analysisStatus: 'failed',
+      }));
+    });
+
     it('marks a durable analysis failed only after the server reports a terminal failure', async () => {
       mockEnvState.analysisJobsEnabled = true;
       setMockUser({ id: 'user-1' });
