@@ -18,6 +18,48 @@ import {
 import { transcribeAudio } from '@/services/speechToText';
 
 const log = createScopedLogger('[useRecordingSession]');
+const PERMISSION_ACTIVITY_SETTLE_MS = 300;
+
+type RecordingPermissionResult = {
+  granted: boolean;
+  prompted: boolean;
+};
+
+async function getOrRequestRecordingPermission(): Promise<RecordingPermissionResult> {
+  try {
+    const current = await AudioModule.getRecordingPermissionsAsync();
+    if (current.granted) {
+      return { granted: true, prompted: false };
+    }
+  } catch (error) {
+    log.warn('Failed to read recording permission before requesting it', error);
+  }
+
+  const requested = await AudioModule.requestRecordingPermissionsAsync();
+  return { granted: requested.granted, prompted: true };
+}
+
+async function waitForPermissionActivityToSettle(): Promise<void> {
+  if (Platform.OS === 'web') return;
+
+  // AppState.currentState is undefined in some test and SSR environments. On a
+  // device it is populated, so wait for Android's permission activity to hand
+  // focus back before starting the recognizer and registering lifecycle cleanup.
+  if (AppState.currentState && AppState.currentState !== 'active') {
+    await new Promise<void>((resolve) => {
+      const subscription = AppState.addEventListener('change', (state) => {
+        if (state === 'active') {
+          subscription.remove();
+          resolve();
+        }
+      });
+    });
+  }
+
+  if (AppState.currentState) {
+    await new Promise((resolve) => setTimeout(resolve, PERMISSION_ACTIVITY_SETTLE_MS));
+  }
+}
 
 async function deleteRecordedAudio(uri: string | undefined): Promise<void> {
   if (!uri || Platform.OS === 'web') return;
@@ -350,7 +392,7 @@ export function useRecordingSession({
             return { success: false, error: 'stt_unavailable' };
           }
         } else {
-          const { granted } = await AudioModule.requestRecordingPermissionsAsync();
+          const { granted, prompted } = await getOrRequestRecordingPermission();
           setRecordingPermissionState(granted ? 'granted' : 'denied');
           if (!granted) {
             Alert.alert(
@@ -358,6 +400,9 @@ export function useRecordingSession({
               t('recording.alert.permission_required.message')
             );
             return { success: false, error: 'permission_denied' };
+          }
+          if (prompted) {
+            await waitForPermissionActivityToSettle();
           }
         }
 
@@ -464,9 +509,9 @@ export function useRecordingSession({
 
   // Request microphone permissions on mount
   const requestPermissions = useCallback(async () => {
-    const status = await AudioModule.requestRecordingPermissionsAsync();
-    setRecordingPermissionState(status.granted ? 'granted' : 'denied');
-    if (!status.granted) {
+    const permission = await getOrRequestRecordingPermission();
+    setRecordingPermissionState(permission.granted ? 'granted' : 'denied');
+    if (!permission.granted) {
       Alert.alert(
         t('recording.alert.permission_required.title'),
         t('recording.alert.permission_required.message')
