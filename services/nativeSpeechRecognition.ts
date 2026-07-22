@@ -424,7 +424,7 @@ async function shouldRequireOnDeviceRecognition(
   }
 
   try {
-    // Check if the user has ensured the offline model is available via ensureOfflineSttModel()
+    // Prefer on-device recognition only when the requested locale is already installed.
     const supported = await speechModule.getSupportedLocales?.({ androidRecognitionServicePackage });
     const installedLocales = supported?.installedLocales ?? [];
     const normalizedLanguage = normalizeLocale(languageCode);
@@ -439,7 +439,7 @@ async function shouldRequireOnDeviceRecognition(
       });
     }
 
-    // Only use on-device if the model is actually installed (after ensureOfflineSttModel)
+    // Returning false lets the recognition service use its online path.
     return isInstalled;
   } catch (error) {
     if (__DEV__) {

@@ -6,7 +6,11 @@ import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 import { Alert, AppState, Platform } from 'react-native';
 
-import { ensureOfflineSttModel, startNativeSpeechSession } from '../../services/nativeSpeechRecognition';
+import {
+  ensureOfflineSttModel,
+  getSpeechLocaleAvailability,
+  startNativeSpeechSession,
+} from '../../services/nativeSpeechRecognition';
 import { transcribeAudio } from '../../services/speechToText';
 import { useRecordingSession, type RecordingSessionResult } from '../useRecordingSession';
 
@@ -107,6 +111,10 @@ describe('useRecordingSession', () => {
     jest.mocked(AudioModule.getRecordingPermissionsAsync).mockResolvedValue({ granted: false } as never);
     jest.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValue({ granted: true } as never);
     jest.mocked(useAudioRecorder).mockReturnValue(mockCreateMockRecorder() as never);
+    jest.mocked(getSpeechLocaleAvailability).mockResolvedValue({
+      isInstalled: true,
+      installedLocales: [],
+    } as never);
     jest.mocked(ensureOfflineSttModel).mockResolvedValue(false as never);
     jest.mocked(startNativeSpeechSession).mockResolvedValue(null);
     jest.mocked(transcribeAudio).mockResolvedValue('');
@@ -176,6 +184,29 @@ describe('useRecordingSession', () => {
 
     expect(response?.success).toBe(true);
     expect(result.current.recordingPermissionState).toBe('granted');
+  });
+
+  it('starts immediately after the first permission grant without requiring an offline language pack', async () => {
+    jest.mocked(getSpeechLocaleAvailability).mockResolvedValueOnce({
+      isInstalled: false,
+      installedLocales: ['en-US'],
+    } as never);
+
+    const { result } = renderHook(() => useRecordingSession({
+      ...defaultOptions,
+      transcriptionLocale: 'fr-FR',
+    }));
+
+    let response: { success: boolean; error?: string } | undefined;
+    await act(async () => {
+      response = await result.current.startRecording('');
+    });
+
+    expect(response).toEqual({ success: true });
+    expect(result.current.recordingPermissionState).toBe('granted');
+    expect(ensureOfflineSttModel).not.toHaveBeenCalled();
+    expect(getSpeechLocaleAvailability).not.toHaveBeenCalled();
+    expect(startNativeSpeechSession).toHaveBeenCalledWith('fr-FR', expect.any(Object));
   });
 
   it('stopRecording should return transcript result', async () => {
