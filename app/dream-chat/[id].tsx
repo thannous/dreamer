@@ -9,6 +9,7 @@ import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useChatSendLock } from '@/hooks/useChatSendLock';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
@@ -149,6 +150,13 @@ export default function DreamChatScreen() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    activeCategory: activeSendCategory,
+    isLocked: isSendStarting,
+    tryAcquire: tryAcquireSendLock,
+    release: releaseSendLock,
+  } = useChatSendLock();
+  const isInteractionLocked = isLoading || isSendStarting;
   // Partial model reply while the response streams in; null when idle.
   const [streamingReply, setStreamingReply] = useState<string | null>(null);
 
@@ -166,7 +174,7 @@ export default function DreamChatScreen() {
       },
     ];
   }, [messages, streamingReply]);
-  const showThinkingIndicator = isLoading && !streamingReply;
+  const showThinkingIndicator = isInteractionLocked && !streamingReply;
   const [isScrolling, setIsScrolling] = useState(false);
   const [explorationBlocked, setExplorationBlocked] = useState(false);
   const [quotaCheckComplete, setQuotaCheckComplete] = useState(false);
@@ -176,7 +184,6 @@ export default function DreamChatScreen() {
   const lastCategorySentKeyRef = useRef<string | null>(null);
   const lastSynthesisSentKeyRef = useRef<string | null>(null);
   const requestAbortRef = useRef<AbortController | null>(null);
-  const sendInFlightRef = useRef(false);
 
   useEffect(() => {
     return () => {
@@ -456,10 +463,9 @@ export default function DreamChatScreen() {
       const chatRequestId = options?.clientRequestId ?? generateUUID();
 
       // Guard against concurrent sends (double taps, quick topics during streaming, etc.)
-      if (isLoading || sendInFlightRef.current) {
+      if (isLoading || !tryAcquireSendLock(options?.category ?? 'general')) {
         return;
       }
-      sendInFlightRef.current = true;
 
       try {
       if (debugChat) {
@@ -792,7 +798,7 @@ export default function DreamChatScreen() {
         }
       }
       } finally {
-        sendInFlightRef.current = false;
+        releaseSendLock();
       }
     },
     [
@@ -812,9 +818,11 @@ export default function DreamChatScreen() {
       messageLimit,
       messages,
       messagesRemaining,
+      releaseSendLock,
       showMessageLimitAlert,
       shouldGateOnQuotaCheck,
       t,
+      tryAcquireSendLock,
       applyServerDreamState,
       updateDream,
       user,
@@ -823,7 +831,7 @@ export default function DreamChatScreen() {
 
   const handleRetryMessage = useCallback(
     (message: ChatMessage) => {
-      if (isLoading) return;
+      if (isInteractionLocked) return;
       const retry = message.meta?.retry;
       if (!retry) return;
       const baseMessages = messages.filter(
@@ -835,12 +843,12 @@ export default function DreamChatScreen() {
         clientRequestId: retry.clientRequestId,
       });
     },
-    [isLoading, messages, sendMessage]
+    [isInteractionLocked, messages, sendMessage]
   );
 
   const sendSynthesisRequest = useCallback(
     (baseMessages?: ChatMessage[]) => {
-      if (!dream || !exploration360Status.canGenerateSynthesis || isLoading) {
+      if (!dream || !exploration360Status.canGenerateSynthesis || isInteractionLocked) {
         return;
       }
 
@@ -858,7 +866,7 @@ export default function DreamChatScreen() {
         },
       );
     },
-    [dream, exploration360Status.canGenerateSynthesis, isLoading, sendMessage, t, tier],
+    [dream, exploration360Status.canGenerateSynthesis, isInteractionLocked, sendMessage, t, tier],
   );
 
   const handleSynthesisPress = useCallback(() => {
@@ -869,7 +877,7 @@ export default function DreamChatScreen() {
     if (routeMode !== 'synthesis' || !dream || !exploration360Status.canGenerateSynthesis) {
       return;
     }
-    if (!hasQuotaCheckClearance || isQuotaGateBlocked || isLoading) {
+    if (!hasQuotaCheckClearance || isQuotaGateBlocked || isInteractionLocked) {
       return;
     }
 
@@ -897,7 +905,7 @@ export default function DreamChatScreen() {
     dream,
     exploration360Status.canGenerateSynthesis,
     hasQuotaCheckClearance,
-    isLoading,
+    isInteractionLocked,
     isQuotaGateBlocked,
     messages,
     routeMode,
@@ -905,7 +913,7 @@ export default function DreamChatScreen() {
   ]);
 
   const handleQuickCategory = (categoryId: string) => {
-    if (isLoading) return;
+    if (isInteractionLocked) return;
     // Block if quota check not complete or exploration blocked
     if (!hasQuotaCheckClearance || isQuotaGateBlocked) return;
     if (messageLimitReached) {
@@ -1092,22 +1100,30 @@ export default function DreamChatScreen() {
         progress={exploration360Status.progress}
         hasSynthesis={exploration360Status.hasSynthesis}
         onSynthesisPress={handleSynthesisPress}
-        synthesisDisabled={isLoading || !hasQuotaCheckClearance || isQuotaGateBlocked}
+        synthesisDisabled={isInteractionLocked || !hasQuotaCheckClearance || isQuotaGateBlocked}
         animationDelay={160}
         style={styles.exploration360Panel}
       />
       {messages.length <= 2 && (
         <View style={styles.quickCategoriesContainer}>
-          <Text style={[styles.quickCategoriesLabel, { color: noctalia.text.secondary }]}>{t('dream_chat.quick_topics')}</Text>
+          <Text
+            accessibilityLiveRegion="polite"
+            style={[styles.quickCategoriesLabel, { color: noctalia.text.secondary }]}
+          >
+            {activeSendCategory && activeSendCategory !== 'general'
+              ? t('dream_chat.quick_topics_loading')
+              : t('dream_chat.quick_topics')}
+          </Text>
           <View style={styles.quickCategories}>
             {QUICK_CATEGORIES.map((cat, index) => {
               const catColor = getQuickCategoryColor(cat.id);
-              const isQuickDisabled = isLoading || !hasQuotaCheckClearance || isQuotaGateBlocked || messageLimitReached;
+              const isActiveQuickCategory = activeSendCategory === cat.id;
+              const isQuickDisabled = isInteractionLocked || !hasQuotaCheckClearance || isQuotaGateBlocked || messageLimitReached;
               return (
                 <MotiView
                   key={cat.id}
                   from={{ opacity: 0, translateY: 12 }}
-                  animate={{ opacity: isQuickDisabled ? 0.5 : 1, translateY: 0 }}
+                  animate={{ opacity: isActiveQuickCategory ? 1 : isQuickDisabled ? 0.5 : 1, translateY: 0 }}
                   transition={{ type: 'timing', duration: 500, delay: 200 + index * 80 }}
                 >
                   <FlatGlassCard
@@ -1115,10 +1131,16 @@ export default function DreamChatScreen() {
                     style={styles.quickCategoryGlass}
                     testID={`quick-category-${cat.id}`}
                     animationDelay={0}
+                    accessibilityRole="button"
+                    accessibilityLabel={t(cat.labelKey)}
                   >
                     <View style={[styles.quickCategoryAccent, { backgroundColor: catColor }]} />
                     <View style={styles.quickCategoryInner}>
-                      <IconSymbol name={cat.icon} size={16} color={noctalia.text.primary} />
+                      {isActiveQuickCategory ? (
+                        <ActivityIndicator size="small" color={noctalia.text.primary} />
+                      ) : (
+                        <IconSymbol name={cat.icon} size={16} color={noctalia.text.primary} />
+                      )}
                       <Text style={[styles.quickCategoryText, { color: noctalia.text.primary }]}>
                         {t(cat.labelKey)}
                       </Text>
@@ -1161,7 +1183,7 @@ export default function DreamChatScreen() {
   );
 
   return (
-    <ChatProvider isStreaming={isLoading}>
+    <ChatProvider isStreaming={isInteractionLocked}>
       <ScrollPerfProvider isScrolling={isScrolling}>
         <LinearGradient colors={gradientColors} style={styles.gradient}>
           <AtmosphericBackground />
@@ -1192,7 +1214,7 @@ export default function DreamChatScreen() {
             onChangeText={setInputText}
             onSend={(text) => sendMessage(text)}
             placeholder={composerPlaceholder}
-            isLoading={isLoading}
+            isLoading={isInteractionLocked}
             isDisabled={messageLimitReached}
             transcriptionLocale={transcriptionLocale}
             testID={TID.Chat.Input}

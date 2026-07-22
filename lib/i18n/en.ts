@@ -1043,6 +1043,7 @@ const translations: Record<string, string> = {
     'dream_chat.not_found.back': 'Go Back',
     'dream_chat.thinking': 'Thinking...',
     'dream_chat.quick_topics': 'Quick Topics:',
+    'dream_chat.quick_topics_loading': 'Response in progress…',
     'dream_chat.draft_prefix': 'Here is my dream:',
     'dream_chat.message_limit.title': 'Message limit reached',
     'dream_chat.exploration_limit.title': 'Exploration Limit Reached',
