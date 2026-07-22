@@ -199,6 +199,7 @@ const { SettingsFieldGroup } = require('../SettingsFieldGroup');
 
 const baseProps = {
   account: <div data-testid="slot-account" />,
+  appVersionLabel: 'Version 3.0.1 (42)',
   bottomPadding: 72,
   onOpenSubscription: openSubscription,
   quota: <div data-testid="slot-quota" />,
@@ -228,6 +229,7 @@ describe('SettingsFieldGroup', () => {
     expect(screen.getByText('settings.section.experience')).toBeTruthy();
     expect(screen.getByText('settings.section.rituals')).toBeTruthy();
     expect(screen.getByText('Noctalia Plus')).toBeTruthy();
+    expect(screen.getByTestId('settings-app-version').textContent).toBe('Version 3.0.1 (42)');
   });
 
   it('keeps the returning guest barrier to account and language', () => {
@@ -241,6 +243,7 @@ describe('SettingsFieldGroup', () => {
     expect(screen.queryByTestId('settings-section-notifications')).toBeNull();
     expect(screen.queryByTestId('settings-section-subscription')).toBeNull();
     expect(screen.queryByTestId('settings-section-quota')).toBeNull();
+    expect(screen.getByTestId('settings-app-version')).toBeTruthy();
   });
 
   it('opens the theme sheet and persists the selected option', () => {

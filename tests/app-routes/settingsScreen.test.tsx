@@ -122,7 +122,12 @@ jest.doMock('@/hooks/useLocaleFormatting', () => ({
 }));
 
 jest.doMock('@/hooks/useTranslation', () => ({
-  useTranslation: () => ({ t: (key: string, _repl?: any) => key }),
+  useTranslation: () => ({
+    t: (key: string, replacements?: Record<string, string>) =>
+      key === 'settings.app_version'
+        ? `Version ${replacements?.version}`
+        : key,
+  }),
 }));
 
 jest.doMock('@/constants/theme', () => ({
@@ -137,7 +142,7 @@ jest.doMock('@/constants/theme', () => ({
 }));
 
 jest.doMock('@/lib/appVersion', () => ({
-  getAppVersionString: () => null,
+  getAppVersionString: () => '3.0.1 (42)',
 }));
 
 jest.doMock('@/lib/moti', () => ({
@@ -292,6 +297,7 @@ describe('Settings screen', () => {
     expect(screen.getByTestId('settings-quota-rn-content')).toBeTruthy();
     expect(screen.getByTestId('quota-status-card')).toBeTruthy();
     expect(capturedSettingsProps).toMatchObject({
+      appVersionLabel: 'Version 3.0.1 (42)',
       subscriptionTitle: 'subscription.settings.title.plus',
       subscriptionSubtitle: 'settings.plus.subtitle',
     });

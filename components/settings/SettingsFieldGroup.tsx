@@ -37,6 +37,7 @@ import {
 } from './useSettingsPreferences';
 type SettingsFieldGroupProps = {
   account: ReactElement;
+  appVersionLabel?: string;
   bottomPadding: number;
   onOpenSubscription: () => void;
   quota: ReactElement;
@@ -300,6 +301,7 @@ function PreferenceRow({
 
 export function SettingsFieldGroup({
   account,
+  appVersionLabel,
   bottomPadding,
   onOpenSubscription,
   quota,
@@ -517,6 +519,17 @@ export function SettingsFieldGroup({
                 {quota}
               </View>
             </>
+          ) : null}
+
+          {appVersionLabel ? (
+            <View style={styles.versionFooter} testID="settings-app-version">
+              <Text
+                selectable
+                style={[styles.versionText, { color: noctalia.text.tertiary }]}
+              >
+                {appVersionLabel}
+              </Text>
+            </View>
           ) : null}
         </ScrollView>
       </RNHostView>
@@ -854,6 +867,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 16,
     width: '100%',
+  },
+  versionFooter: {
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  versionText: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 12,
+    fontVariant: ['tabular-nums'],
+    letterSpacing: 0.2,
+    lineHeight: 16,
+    textAlign: 'center',
   },
   plusIcon: {
     alignItems: 'center',

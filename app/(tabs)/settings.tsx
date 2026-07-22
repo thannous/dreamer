@@ -28,6 +28,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getAppVersionString } from '@/lib/appVersion';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 
 const SETTINGS_DESKTOP_MAX_WIDTH = 760;
@@ -39,6 +40,7 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { width } = useWindowDimensions();
+  const appVersion = getAppVersionString();
   useClearWebFocus();
 
   const isCompactLayout = width <= 375;
@@ -145,6 +147,9 @@ export default function SettingsScreen() {
         >
           <SettingsFieldGroup
             account={account}
+            appVersionLabel={appVersion
+              ? t('settings.app_version', { version: appVersion })
+              : undefined}
             bottomPadding={bottomPadding}
             onOpenSubscription={handleOpenPaywall}
             quota={quota}
