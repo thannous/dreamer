@@ -1354,6 +1354,7 @@ export const useDreamJournal = () => {
         emitProgress(AnalysisStep.COMPLETE);
         return next;
       } catch (error) {
+        const quotaError = coerceQuotaError(error, tier);
         if (serverJobAccepted) {
           if (serverJobTerminalFailure) {
             analysisStatusOverridesRef.current.set(dreamId, 'failed');
@@ -1365,7 +1366,7 @@ export const useDreamJournal = () => {
           }
           // A timeout or network error is not a server failure. Keep the
           // durable request pending so a later retry observes the same job.
-          throw error;
+          throw quotaError ?? error;
         }
 
         analysisStatusOverridesRef.current.set(dreamId, 'failed');
@@ -1387,7 +1388,7 @@ export const useDreamJournal = () => {
             await persistLocalDreams(newDreams);
           }
         }
-        throw error;
+        throw quotaError ?? error;
       }
     },
     [

@@ -2,10 +2,29 @@ import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import type { ApiContext } from '../types.ts';
 import {
+  blockedAdmissionResponse,
   handleCreateAnalysisJob,
   handleGetAnalysisJobStatus,
   resolveAnalysisJobAdmissionPolicy,
 } from './analysisJobs.ts';
+
+Deno.test('analysis quota admission returns a typed upgrade response', async () => {
+  const response = blockedAdmissionResponse({
+    allowed: false,
+    code: 'QUOTA_EXCEEDED',
+    tier: 'free',
+    limit: 3,
+    new_count: 6,
+  });
+
+  assertEquals(response.status, 429);
+  assertEquals(await response.json(), {
+    error: 'Analysis limit reached',
+    code: 'QUOTA_EXCEEDED',
+    tier: 'free',
+    usage: { analysis: { used: 6, limit: 3 } },
+  });
+});
 
 const buildContext = (body: Record<string, unknown>, userId: string | null = 'user-1') => ({
   req: new Request('https://example.test/functions/v1/api/analysis-jobs', {
