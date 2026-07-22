@@ -1,4 +1,5 @@
 import { corsHeaders } from '../lib/constants.ts';
+import { resolveGuestQaPassport } from '../lib/guestQa.ts';
 import { createGuestToken } from '../lib/guestToken.ts';
 import { verifyAndroidIntegrity } from '../lib/playIntegrity.ts';
 
@@ -9,7 +10,15 @@ type GuestSessionBody = {
   platform?: string;
 };
 
-export async function handleGuestSession(req: Request): Promise<Response> {
+type GuestSessionDependencies = {
+  resolveQaPassport?: typeof resolveGuestQaPassport;
+  verifyIntegrity?: typeof verifyAndroidIntegrity;
+};
+
+export async function handleGuestSession(
+  req: Request,
+  dependencies: GuestSessionDependencies = {}
+): Promise<Response> {
   try {
     const body = (await req.json().catch(() => ({}))) as GuestSessionBody;
     const fingerprint = String(body?.fingerprint ?? '').trim();
@@ -41,7 +50,10 @@ export async function handleGuestSession(req: Request): Promise<Response> {
 
       let verdict: { ok: boolean; reason?: string };
       try {
-        verdict = await verifyAndroidIntegrity({ integrityToken, requestHash });
+        verdict = await (dependencies.verifyIntegrity ?? verifyAndroidIntegrity)({
+          integrityToken,
+          requestHash,
+        });
       } catch (error) {
         console.error('[api] /guest/session integrity error', {
           message: error instanceof Error ? error.message : String(error),
@@ -62,7 +74,20 @@ export async function handleGuestSession(req: Request): Promise<Response> {
       });
     }
 
-    const token = await createGuestToken(fingerprint, platform);
+    // QA lookup is deliberately best-effort. If its private state is missing or
+    // unavailable, the device receives a normal guest token and all production
+    // anti-abuse rules remain in force.
+    const qaPassport = await (dependencies.resolveQaPassport ?? resolveGuestQaPassport)(fingerprint);
+    const token = await createGuestToken(
+      fingerprint,
+      platform,
+      qaPassport?.active
+        ? {
+            quotaSubject: qaPassport.quotaSubject,
+            validUntil: qaPassport.validUntil,
+          }
+        : undefined
+    );
     return new Response(JSON.stringify(token), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },

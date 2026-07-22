@@ -11,6 +11,7 @@ export type ExpoPublicEnvKey =
   | 'EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID'
   | 'EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID'
   | 'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID'
+  | 'EXPO_PUBLIC_GUEST_QA_LAB'
   | 'EXPO_PUBLIC_MOCK_MODE'
   | 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER'
   | 'EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED'
@@ -39,6 +40,8 @@ export function getExpoPublicEnvValue(key: ExpoPublicEnvKey): string | undefined
       return process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
     case 'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID':
       return process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
+    case 'EXPO_PUBLIC_GUEST_QA_LAB':
+      return process.env.EXPO_PUBLIC_GUEST_QA_LAB;
     case 'EXPO_PUBLIC_MOCK_MODE':
       return process.env.EXPO_PUBLIC_MOCK_MODE;
     case 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER':
@@ -82,6 +85,10 @@ export function isAnalyticsDebugEnabled(): boolean {
 
 export function isAnalysisJobsEnabled(): boolean {
   return (getExpoPublicEnvValue('EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED') ?? '').toLowerCase() === 'true';
+}
+
+export function isGuestQaLabEnabled(): boolean {
+  return (getExpoPublicEnvValue('EXPO_PUBLIC_GUEST_QA_LAB') ?? '').toLowerCase() === 'true';
 }
 
 export function isReferenceImagesEnabled(): boolean {

@@ -154,3 +154,8 @@ export async function migrateExistingGuestQuota(): Promise<void> {
     // Don't throw - we don't want to block app startup
   }
 }
+
+/** Clears local compatibility counters before a server-authorized QA guest run. */
+export async function resetGuestAnalysisQuotaForQa(): Promise<void> {
+  await AsyncStorage.multiRemove([ANALYSIS_KEY, EXPLORATION_KEY, MIGRATION_KEY]);
+}
