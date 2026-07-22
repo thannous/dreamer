@@ -315,7 +315,7 @@ describe('SupabaseQuotaProvider', () => {
       const count = await p.getMonthlyExplorationCount(user);
 
       // Then
-      expect(count).toBe(QUOTA_CONFIG.free.monthly.exploration);
+      expect(count).toBe(0);
     });
   });
 
@@ -458,15 +458,15 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.tier).toBe('free');
       expect(status.usage.analysis.limit).toBe(3);
       expect(status.usage.analysis.used).toBe(1);
-      expect(status.usage.exploration.limit).toBe(2);
+      expect(status.usage.exploration.limit).toBeNull();
       expect(status.usage.exploration.used).toBe(0);
-      expect(status.usage.messages.limit).toBe(20);
+      expect(status.usage.messages.limit).toBe(10);
       expect(status.usage.messages.used).toBe(2);
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
     });
 
-    it('given plus tier when getting status then shows unlimited limits', async () => {
+    it('given plus tier when getting status then shows unlimited interpretations and the chat safety limit', async () => {
       // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(100);
@@ -480,7 +480,7 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.tier).toBe('plus');
       expect(status.usage.analysis.limit).toBeNull();
       expect(status.usage.exploration.limit).toBeNull();
-      expect(status.usage.messages.limit).toBeNull(); // Plus has unlimited messages
+      expect(status.usage.messages.limit).toBe(20);
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
     });
@@ -658,7 +658,7 @@ describe('SupabaseQuotaProvider', () => {
       expect(result).toBe(true);
     });
 
-    it('given explorations at limit when checking then denies exploration', async () => {
+    it('given legacy explorations at the old limit when checking then still allows exploration', async () => {
       // Given
       const p = provider as any;
       p.resolveDream = jest.fn().mockResolvedValue(undefined);
@@ -669,7 +669,7 @@ describe('SupabaseQuotaProvider', () => {
       const result = await provider.canExploreDream({ dreamId: 1 }, freeUser);
 
       // Then
-      expect(result).toBe(false);
+      expect(result).toBe(true);
     });
 
     it('given already explored dream when checking then always allows exploration', async () => {
@@ -830,15 +830,15 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.tier).toBe('free');
       expect(status.usage.analysis.limit).toBe(3);
       expect(status.usage.analysis.used).toBe(1);
-      expect(status.usage.exploration.limit).toBe(2);
+      expect(status.usage.exploration.limit).toBeNull();
       expect(status.usage.exploration.used).toBe(0);
-      expect(status.usage.messages.limit).toBe(20);
+      expect(status.usage.messages.limit).toBe(10);
       expect(status.usage.messages.used).toBe(2);
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
     });
 
-    it('given plus tier when getting status then shows unlimited limits', async () => {
+    it('given plus tier when getting status then shows unlimited interpretations and the chat safety limit', async () => {
       // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(100);
@@ -852,7 +852,7 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.tier).toBe('plus');
       expect(status.usage.analysis.limit).toBeNull();
       expect(status.usage.exploration.limit).toBeNull();
-      expect(status.usage.messages.limit).toBeNull(); // Plus has unlimited messages
+      expect(status.usage.messages.limit).toBe(20);
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
     });

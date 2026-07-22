@@ -279,7 +279,10 @@ export interface QuotaStatus {
   canAnalyze: boolean;
   canExplore: boolean;
   reasons?: string[]; // Reasons why an action is blocked
-  isUpgraded?: boolean; // Whether this device fingerprint has already created an account
+  /** @deprecated Kept only for compatibility with old quota payloads. */
+  isUpgraded?: boolean;
+  riskScore?: number;
+  riskLevel?: 'low' | 'elevated' | 'high';
   guestBootstrapStatus?: 'ready' | 'degraded' | 'disabled';
   guestBootstrapReasonCode?:
     | 'guest_session_unavailable'

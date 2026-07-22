@@ -576,14 +576,15 @@ export async function handleChat(
         auth: { autoRefreshToken: false, persistSession: false },
       });
 
-      const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+      const { data: quotaResult, error: quotaError } = await adminClient.rpc('claim_guest_chat_message', {
         p_fingerprint: fingerprint,
-        p_quota_type: 'exploration',
-        p_limit: GUEST_LIMITS.exploration,
+        p_dream_key: dreamId,
+        p_request_id: clientRequestId,
+        p_limit: GUEST_LIMITS.messagesPerDream,
       });
 
       if (quotaError) {
-        console.error('[api] /chat: guest exploration quota claim failed before provider work', {
+        console.error('[api] /chat: guest message safety claim failed before provider work', {
           code: quotaError?.code ?? null,
         });
         return serviceUnavailable('Guest quota unavailable');
@@ -591,27 +592,21 @@ export async function handleChat(
 
       if (!quotaResult?.allowed) {
         const used = toCount((quotaResult as any)?.new_count);
-        const isUpgraded = Boolean((quotaResult as any)?.is_upgraded);
-        const payload = isUpgraded
-          ? {
-              error: 'Login required',
-              code: 'GUEST_DEVICE_UPGRADED',
-              isUpgraded: true,
-              usage: { exploration: { used, limit: GUEST_LIMITS.exploration } },
-            }
-          : {
-              error: 'Guest exploration limit reached',
-              code: 'QUOTA_EXCEEDED',
-              usage: { exploration: { used, limit: GUEST_LIMITS.exploration } },
-            };
+        const effectiveLimit = toCount((quotaResult as any)?.limit);
+        const payload = {
+          error: 'QUOTA_MESSAGE_LIMIT_REACHED',
+          code: 'QUOTA_MESSAGE_LIMIT_REACHED',
+          userMessage: 'You have reached the safety limit for this dream.',
+          usage: { messages: { used, limit: effectiveLimit } },
+        };
 
-        console.log('[api] /chat: guest exploration quota blocked before provider work', {
+        console.log('[api] /chat: guest message safety limit reached before provider work', {
           fingerprint: '[redacted]',
           used,
-          isUpgraded,
+          riskLevel: (quotaResult as any)?.risk_level ?? 'unknown',
         });
         return new Response(JSON.stringify(payload), {
-          status: isUpgraded ? 403 : 429,
+          status: 429,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
       }

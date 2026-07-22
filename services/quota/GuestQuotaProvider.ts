@@ -7,7 +7,6 @@ import {
   getAnalyzedDreamCount,
   getExploredDreamCount,
   getUserChatMessageCount,
-  isDreamExplored,
 } from '@/lib/dreamUsage';
 import { getSavedDreams } from '@/services/storageServiceReal';
 import { getLocalAnalysisCount, getLocalExplorationCount } from './GuestAnalysisCounter';
@@ -94,25 +93,7 @@ export class GuestQuotaProvider implements QuotaProvider {
 
   async canExploreDream(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier = 'guest'): Promise<boolean> {
     if (user) return true; // Not a guest
-
-    const dreamId = this.resolveDreamId(target);
-    if (!dreamId) return true;
-
-    const dreams = await this.getGuestDreams();
-    const dream = dreams.find((d) => d.id === dreamId);
-
-    // If this dream is already explored, allow continued exploration
-    if (dream && isDreamExplored(dream)) {
-      return true;
-    }
-
-    // Check if user can start exploring a new dream
-    // Always use 'guest' tier for guests, ignore tier parameter
-    const used = await this.getUsedExplorationCount(null);
-    const limit = QUOTAS.guest.exploration;
-
-    if (limit === null) return true;
-    return used < limit;
+    return true;
   }
 
   async canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier = 'guest'): Promise<boolean> {
@@ -146,18 +127,15 @@ export class GuestQuotaProvider implements QuotaProvider {
     const messagesUsed = target ? await this.getUsedMessagesCount(target, null) : 0;
 
     const analysisLimit = QUOTAS.guest.analysis!;
-    const explorationLimit = QUOTAS.guest.exploration!;
+    const explorationLimit = QUOTAS.guest.exploration;
     const messagesLimit = QUOTAS.guest.messagesPerDream!;
 
     const canAnalyze = await this.canAnalyzeDream(null);
-    const canExplore = target ? await this.canExploreDream(target, null) : explorationUsed < explorationLimit;
+    const canExplore = true;
 
     const reasons: string[] = [];
     if (!canAnalyze) {
       reasons.push(`Guest analysis limit reached (${analysisUsed}/${analysisLimit}). Create a free account to continue!`);
-    }
-    if (!canExplore && target) {
-      reasons.push(`Guest exploration limit reached (${explorationUsed}/${explorationLimit}). Create a free account to continue!`);
     }
 
     return {
@@ -171,7 +149,7 @@ export class GuestQuotaProvider implements QuotaProvider {
         exploration: {
           used: explorationUsed,
           limit: explorationLimit,
-          remaining: explorationLimit - explorationUsed,
+          remaining: null,
         },
         messages: {
           used: messagesUsed,

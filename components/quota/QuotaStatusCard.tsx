@@ -1,22 +1,16 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
-import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useQuota } from '@/hooks/useQuota';
 import { TID } from '@/lib/testIDs';
-import { getGuestDreamRecordingLimit } from '@/lib/guestLimits';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { router } from 'expo-router';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { QUOTAS } from '@/constants/limits';
-import {
-  getLocalDreamRecordingCount,
-  subscribeGuestDreamRecordingCount,
-} from '@/services/quota/GuestDreamCounter';
 import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
 
 type UsageEntry = {
@@ -69,83 +63,29 @@ export const QuotaStatusCard: React.FC<Props> = ({
   presentation = 'card',
 }) => {
   const { user } = useAuth();
-  const { dreams } = useDreams();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const cardBg = noctalia.surface.raised;
   const { t } = useTranslation();
   const { quotaStatus, loading, error, refetch, tier } = useQuota();
-  const [guestRecordedTotal, setGuestRecordedTotal] = useState(0);
-  const [guestRecordingRefreshKey, setGuestRecordingRefreshKey] = useState(0);
-  const isUpgradedGuest = !user && Boolean(quotaStatus?.isUpgraded);
   const isDegradedGuest = !user && quotaStatus?.guestBootstrapStatus === 'degraded';
 
-  useEffect(() => subscribeGuestDreamRecordingCount?.(() => {
-    setGuestRecordingRefreshKey((current) => current + 1);
-  }), []);
-
-  useEffect(() => {
-    if (user) {
-      setGuestRecordedTotal(0);
-      return;
-    }
-    let cancelled = false;
-    getLocalDreamRecordingCount()
-      .then((count) => {
-        if (!cancelled) setGuestRecordedTotal(count);
-      })
-      .catch(() => {
-        // Best-effort, keep UI responsive
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [user, dreams.length, guestRecordingRefreshKey]);
-
-  const recordingUsage: UsageEntry = useMemo(() => {
-    const guestRecordingLimit = getGuestDreamRecordingLimit();
-    const hasAccount = Boolean(user);
-
-    return {
-      used: hasAccount ? dreams.length : Math.max(dreams.length, guestRecordedTotal),
-      limit: hasAccount ? null : guestRecordingLimit,
-      remaining: hasAccount ? null : Math.max(guestRecordingLimit - Math.max(dreams.length, guestRecordedTotal), 0),
-    };
-  }, [dreams.length, guestRecordedTotal, user]);
-
-  const recordingLabel = useMemo(() => {
-    return user ? t('settings.quota.recording_label') : t('settings.quota.recording_label_total');
-  }, [t, user]);
-
   const rows = useMemo(() => ([
-    {
-      key: 'recordings',
-      label: recordingLabel,
-      usage: recordingUsage,
-      testID: TID.Quota.RecordingsValue,
-    },
     {
       key: 'analysis',
       label: t('settings.quota.analysis_label'),
       usage: quotaStatus?.usage.analysis,
       testID: TID.Quota.AnalysisValue,
     },
-    {
-      key: 'exploration',
-      label: t('settings.quota.exploration_label'),
-      usage: quotaStatus?.usage.exploration,
-      testID: TID.Quota.ExplorationValue,
-    },
-  ]), [quotaStatus?.usage.analysis, quotaStatus?.usage.exploration, recordingLabel, recordingUsage, t]);
+  ]), [quotaStatus?.usage.analysis, t]);
 
   const isPaidTier = tier === 'plus';
   const showCta = Boolean(quotaStatus) && !isPaidTier;
   const ctaLabel = tier === 'guest'
-    ? (isUpgradedGuest ? t('settings.quota.cta_login') : t('settings.quota.cta_guest'))
+    ? t('settings.quota.cta_guest')
     : t('settings.quota.cta_upgrade');
   const tierLabel = t(`settings.quota.tier.${tier}` as const);
   const isGuest = tier === 'guest';
-  const guestRecordingLimit = recordingUsage.limit ?? getGuestDreamRecordingLimit();
   const firstQuotaReason = quotaStatus?.reasons?.[0];
   const localizedQuotaReason = firstQuotaReason
     ? t(QUOTA_REASON_KEYS[firstQuotaReason] ?? firstQuotaReason)
@@ -216,25 +156,13 @@ export const QuotaStatusCard: React.FC<Props> = ({
         </Pressable>
       )}
 
-      {isGuest && isUpgradedGuest && (
-        <View style={[styles.notice, { backgroundColor: noctalia.surface.soft }]}>
-          <Text style={[styles.noticeText, { color: noctalia.text.secondary }]}>
-            {localizedQuotaReason
-              ? localizedQuotaReason
-              : t('settings.quota.upgraded_message')}
-          </Text>
-        </View>
-      )}
-
-      {isGuest && !isUpgradedGuest && (
+      {isGuest && (
         <View style={[styles.notice, { backgroundColor: noctalia.surface.soft }]}>
           <Text style={[styles.noticeText, { color: noctalia.text.secondary }]}>
             {isDegradedGuest && localizedQuotaReason
               ? localizedQuotaReason
               : t('settings.quota.guest_message', {
-                recordLimit: guestRecordingLimit,
                 analysisLimit: QUOTAS.guest.analysis ?? 0,
-                explorationLimit: QUOTAS.guest.exploration ?? 0,
               })}
           </Text>
         </View>

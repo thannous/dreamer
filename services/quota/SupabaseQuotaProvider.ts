@@ -128,10 +128,6 @@ export class SupabaseQuotaProvider implements QuotaProvider {
   }
 
   private async getMonthlyLimitsFromDb(tier: UserTier): Promise<TierMonthlyLimits> {
-    if (tier === 'plus') {
-      return { analysis: null, exploration: null, messagesPerDream: null };
-    }
-
     const cacheKey = `quota_limits_monthly_${tier}`;
 
     return this.getOrCache(cacheKey, async () => {

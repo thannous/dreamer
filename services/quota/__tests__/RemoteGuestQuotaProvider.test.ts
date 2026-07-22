@@ -165,14 +165,14 @@ describe('RemoteGuestQuotaProvider', () => {
     expect(fallback.invalidate).toHaveBeenCalled();
   }, 10_000);
 
-  it('blocks guest access when remote marks fingerprint as upgraded', async () => {
+  it('ignores a legacy device-upgraded flag as a standalone block', async () => {
     const fallback = createFallback(0);
     mockFetchJSON.mockResolvedValue({
       tier: 'guest',
       isUpgraded: true,
       usage: {
         analysis: { used: 1, limit: 2 },
-        exploration: { used: 1, limit: 2 },
+        exploration: { used: 1, limit: null },
         messages: { used: 1, limit: 5 },
       },
     });
@@ -181,10 +181,10 @@ describe('RemoteGuestQuotaProvider', () => {
     const provider = new RemoteGuestQuotaProvider(fallback as any);
     const status = await provider.getQuotaStatus(null, 'guest');
 
-    expect(status.isUpgraded).toBe(true);
-    expect(status.canAnalyze).toBe(false);
-    expect(status.canExplore).toBe(false);
-    expect(status.reasons?.length).toBeGreaterThan(0);
+    expect(status.isUpgraded).toBe(false);
+    expect(status.canAnalyze).toBe(true);
+    expect(status.canExplore).toBe(true);
+    expect(status.reasons).toBeUndefined();
   });
 
   it('respects remote flags and usage limits', async () => {

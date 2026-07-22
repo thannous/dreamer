@@ -1,6 +1,7 @@
 /* global describe, expect, it */
 const {
   runGuestAnalysisIdempotencyBehaviorCheck,
+  runGuestChatIdempotencyBehaviorCheck,
   runGuestQuotaImageSupportBehaviorCheck,
 } = require('./check-db-contract');
 
@@ -128,6 +129,31 @@ describe('check-db-contract guest analysis idempotency behavior', () => {
 
     expect(result.ok).toBe(false);
     expect(result.details).toMatch(/must not increment quota twice/i);
+    expect(client.calls.at(-1)).toMatchObject({ sql: 'ROLLBACK' });
+  });
+});
+
+describe('check-db-contract guest chat idempotency behavior', () => {
+  it('passes when the same per-dream request does not consume chat safety quota twice', async () => {
+    const client = createMockClient([
+      { rows: [] },
+      { rows: [{ result: { allowed: true, new_count: 1, claimed: true, duplicate: false } }] },
+      { rows: [{ result: { allowed: true, new_count: 1, claimed: false, duplicate: true } }] },
+      { rows: [{ result: { allowed: false, new_count: 1, claimed: false, duplicate: false } }] },
+      { rows: [] },
+    ]);
+
+    const result = await runGuestChatIdempotencyBehaviorCheck(client);
+
+    expect(result).toEqual({
+      ok: true,
+      details: 'guest chat quota is claimed exactly once per dream and request UUID',
+    });
+    expect(client.calls[1]).toMatchObject({
+      sql: 'select public.claim_guest_chat_message($1::text, $2::text, $3::uuid, $4::integer) as result',
+      params: [expect.any(String), 'local-dream-42', '3f73ab45-9a14-4db9-94a3-d24724457d9e', 1],
+    });
+    expect(client.calls[2].params).toEqual(client.calls[1].params);
     expect(client.calls.at(-1)).toMatchObject({ sql: 'ROLLBACK' });
   });
 });

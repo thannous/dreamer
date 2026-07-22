@@ -108,6 +108,29 @@
     },
     {
       "schema": "public",
+      "name": "guest_chat_quota_claims",
+      "requiredColumns": [
+        "fingerprint_hash",
+        "dream_key",
+        "request_id",
+        "claimed_at"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "device_account_links",
+      "requiredColumns": [
+        "fingerprint_hash",
+        "user_id",
+        "integrity_provider",
+        "integrity_verified",
+        "account_created_at",
+        "first_linked_at",
+        "last_seen_at"
+      ]
+    },
+    {
+      "schema": "public",
       "name": "product_analytics_events",
       "requiredColumns": [
         "id",
@@ -157,6 +180,30 @@
       "schema": "public",
       "name": "claim_guest_analysis_quota",
       "identityArguments": "p_fingerprint text, p_analysis_request_id uuid, p_limit integer",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "claim_guest_chat_message",
+      "identityArguments": "p_fingerprint text, p_dream_key text, p_request_id uuid, p_limit integer",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "get_guest_chat_message_count",
+      "identityArguments": "p_fingerprint text, p_dream_key text",
+      "result": "integer"
+    },
+    {
+      "schema": "public",
+      "name": "get_guest_abuse_risk",
+      "identityArguments": "p_fingerprint text",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "register_device_account_link",
+      "identityArguments": "p_fingerprint text, p_user_id uuid, p_integrity_provider text, p_integrity_verified boolean",
       "result": "jsonb"
     },
     {
@@ -332,6 +379,27 @@
     },
     {
       "schema": "public",
+      "table": "guest_chat_quota_claims",
+      "name": "guest_chat_quota_claims_pkey",
+      "unique": true,
+      "columns": [
+        "fingerprint_hash",
+        "dream_key",
+        "request_id"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "device_account_links",
+      "name": "device_account_links_pkey",
+      "unique": true,
+      "columns": [
+        "fingerprint_hash",
+        "user_id"
+      ]
+    },
+    {
+      "schema": "public",
       "table": "product_analytics_events",
       "name": "product_analytics_events_journey_occurred_idx",
       "unique": false,
@@ -373,7 +441,7 @@
         "quota_type": "exploration"
       },
       "expect": {
-        "quota_limit": 2
+        "quota_limit": null
       }
     },
     {
@@ -409,7 +477,7 @@
         "quota_type": "exploration"
       },
       "expect": {
-        "quota_limit": 2
+        "quota_limit": null
       }
     },
     {
@@ -421,6 +489,42 @@
         "quota_type": "messages_per_dream"
       },
       "expect": {
+        "quota_limit": 10
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "plus",
+        "period": "monthly",
+        "quota_type": "analysis"
+      },
+      "expect": {
+        "quota_limit": null
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "plus",
+        "period": "monthly",
+        "quota_type": "exploration"
+      },
+      "expect": {
+        "quota_limit": null
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "plus",
+        "period": "monthly",
+        "quota_type": "messages_per_dream"
+      },
+      "expect": {
         "quota_limit": 20
       }
     },
@@ -428,42 +532,6 @@
       "schema": "public",
       "table": "quota_limits",
       "match": {
-        "tier": "plus",
-        "period": "monthly",
-        "quota_type": "analysis"
-      },
-      "expect": {
-        "quota_limit": null
-      }
-    },
-    {
-      "schema": "public",
-      "table": "quota_limits",
-      "match": {
-        "tier": "plus",
-        "period": "monthly",
-        "quota_type": "exploration"
-      },
-      "expect": {
-        "quota_limit": null
-      }
-    },
-    {
-      "schema": "public",
-      "table": "quota_limits",
-      "match": {
-        "tier": "plus",
-        "period": "monthly",
-        "quota_type": "messages_per_dream"
-      },
-      "expect": {
-        "quota_limit": null
-      }
-    },
-    {
-      "schema": "public",
-      "table": "quota_limits",
-      "match": {
         "tier": "premium",
         "period": "monthly",
         "quota_type": "analysis"
@@ -493,7 +561,7 @@
         "quota_type": "messages_per_dream"
       },
       "expect": {
-        "quota_limit": null
+        "quota_limit": 20
       }
     }
   ],
@@ -505,6 +573,10 @@
     {
       "type": "guest_analysis_idempotency",
       "target": "public guest analysis quota idempotency"
+    },
+    {
+      "type": "guest_chat_idempotency",
+      "target": "public guest per-dream chat safety idempotency"
     }
   ]
 }

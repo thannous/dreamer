@@ -3,7 +3,7 @@ import type { User } from '@supabase/supabase-js';
 import { router } from 'expo-router';
 
 import { isMockModeEnabled } from '@/lib/env';
-import { getCurrentUser, onAuthChange, wasAccountCreatedOnDevice } from '@/lib/auth';
+import { getCurrentUser, onAuthChange } from '@/lib/auth';
 import { createCircuitBreaker } from '@/lib/circuitBreaker';
 import { consumeStayOnSettingsIntent } from '@/lib/navigationIntents';
 import { normalizeSubscriptionTier } from '@/lib/quotaTier';
@@ -67,7 +67,9 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [sessionReady, setSessionReady] = useState(false);
-  const [returningGuestBlocked, setReturningGuestBlocked] = useState(false);
+  // A device is only one signal in server-side abuse scoring. Logging out must
+  // never hard-block guest mode on a shared or refurbished phone.
+  const returningGuestBlocked = false;
   const userRef = useRef<User | null>(null);
   const sessionReadyRef = useRef(false);
   const previousUserIdRef = useRef<string | null>(null);
@@ -121,19 +123,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
             setSessionReady(Boolean(mockUser));
             previousUserIdRef.current = mockUser?.id ?? null;
 
-            // Check if returning guest should be blocked
-            if (!mockUser) {
-              const accountCreated = await wasAccountCreatedOnDevice();
-              if (accountCreated) {
-                setReturningGuestBlocked(true);
-                if (__DEV__) {
-                  console.log('[AuthContext] Returning guest blocked (mock mode)');
-                }
-              }
-            } else {
-              setReturningGuestBlocked(false);
-            }
-
             setLoading(false);
             ensureSettingsTab(mockUser);
           }
@@ -155,19 +144,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
           setUser(sessionUser);
           setSessionReady(Boolean(data.session?.access_token));
           previousUserIdRef.current = sessionUser?.id ?? null;
-
-          // Check if returning guest should be blocked
-          if (!sessionUser) {
-            const accountCreated = await wasAccountCreatedOnDevice();
-            if (accountCreated) {
-              setReturningGuestBlocked(true);
-              if (__DEV__) {
-                console.log('[AuthContext] Returning guest blocked');
-              }
-            }
-          } else {
-            setReturningGuestBlocked(false);
-          }
 
           setLoading(false);
           ensureSettingsTab(sessionUser);
@@ -227,19 +203,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         const ready = await waitForSessionReady();
         if (mounted) {
           setSessionReady(ready);
-        }
-      }
-
-      // Update returning guest blocked state
-      if (nextUser) {
-        // User is logged in, so they're not a blocked returning guest
-        setReturningGuestBlocked(false);
-      } else {
-        // User logged out, check if they had created an account before
-        const accountCreated = await wasAccountCreatedOnDevice();
-        setReturningGuestBlocked(accountCreated);
-        if (__DEV__ && accountCreated) {
-          console.log('[AuthContext] Returning guest blocked after logout');
         }
       }
 
