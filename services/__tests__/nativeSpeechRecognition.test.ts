@@ -258,6 +258,35 @@ describe('native speech module integration', () => {
     expect(session).toBeNull();
   });
 
+  it('does not reopen Android permissions when the caller already granted microphone access', async () => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'android';
+    (Platform as any).Version = 36;
+
+    const requestPermissionsAsync = jest.fn(async () => ({ granted: true }));
+    const speechModule = {
+      isRecognitionAvailable: () => true,
+      requestPermissionsAsync,
+      supportsOnDeviceRecognition: () => false,
+      supportsRecording: () => true,
+      getStateAsync: async () => 'inactive',
+      start: jest.fn(),
+      abort: jest.fn(),
+      addListener: jest.fn(() => ({ remove: jest.fn() })),
+    } as any;
+
+    __setCachedSpeechModuleForTests(speechModule);
+
+    const session = await startNativeSpeechSession('fr-FR', {
+      permissionAlreadyGranted: true,
+    });
+
+    expect(session).not.toBeNull();
+    expect(requestPermissionsAsync).not.toHaveBeenCalled();
+    expect(speechModule.start).toHaveBeenCalledTimes(1);
+    session?.abort();
+  });
+
   it('removes every listener when starting recognition throws', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'ios';
