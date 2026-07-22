@@ -186,6 +186,33 @@ describe('useRecordingSession', () => {
     expect(result.current.recordingPermissionState).toBe('granted');
   });
 
+  it('does not reopen the Android permission activity when microphone access is already granted', async () => {
+    jest.mocked(AudioModule.getRecordingPermissionsAsync).mockResolvedValue({ granted: true } as never);
+
+    const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+    await act(async () => {
+      await result.current.startRecording('');
+    });
+
+    expect(AudioModule.getRecordingPermissionsAsync).toHaveBeenCalled();
+    expect(AudioModule.requestRecordingPermissionsAsync).not.toHaveBeenCalled();
+    expect(result.current.isRecording).toBe(true);
+  });
+
+  it('requests Android microphone access when it is not already granted', async () => {
+    jest.mocked(AudioModule.getRecordingPermissionsAsync).mockResolvedValue({ granted: false } as never);
+
+    const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+    await act(async () => {
+      await result.current.startRecording('');
+    });
+
+    expect(AudioModule.requestRecordingPermissionsAsync).toHaveBeenCalledTimes(1);
+    expect(result.current.isRecording).toBe(true);
+  });
+
   it('starts immediately after the first permission grant without requiring an offline language pack', async () => {
     jest.mocked(getSpeechLocaleAvailability).mockResolvedValueOnce({
       isInstalled: false,
@@ -652,6 +679,21 @@ describe('useRecordingSession', () => {
   });
 
   describe('requestPermissions', () => {
+    it('does not reopen the system prompt when permissions are already granted', async () => {
+      jest.mocked(AudioModule.getRecordingPermissionsAsync).mockResolvedValue({
+        granted: true,
+      } as never);
+
+      const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+      await act(async () => {
+        await result.current.requestPermissions();
+      });
+
+      expect(AudioModule.requestRecordingPermissionsAsync).not.toHaveBeenCalled();
+      expect(result.current.recordingPermissionState).toBe('granted');
+    });
+
     it('should show alert when permissions denied', async () => {
       jest.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValueOnce({
         granted: false,
