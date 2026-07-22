@@ -372,6 +372,7 @@ export function useRecordingSession({
         baseTranscriptRef.current = currentTranscript;
 
         nativeSessionRef.current = await startNativeSpeechSession(transcriptionLocale, {
+          permissionAlreadyGranted: Platform.OS !== 'web',
           onPartial: (text) => {
             onPartialTranscript?.(text, { baseTranscript: baseTranscriptRef.current });
           },

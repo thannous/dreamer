@@ -4,6 +4,8 @@ import type { ExpoSpeechRecognitionModuleType } from 'expo-speech-recognition/bu
 
 type NativeSpeechOptions = {
   onPartial?: (text: string) => void;
+  /** The caller already completed the native microphone permission flow. */
+  permissionAlreadyGranted?: boolean;
 };
 
 export type NativeSpeechSession = {
@@ -481,7 +483,9 @@ export async function startNativeSpeechSession(
     // Web doesn't need (or support) permission requests; avoid noisy warnings
     const permissions = Platform.OS === 'web'
       ? { granted: hasWebSpeechAPI() }
-      : await speechModule.requestPermissionsAsync();
+      : options?.permissionAlreadyGranted
+        ? { granted: true }
+        : await speechModule.requestPermissionsAsync();
     if (!permissions.granted) {
       if (__DEV__) {
         console.warn('[nativeSpeech] permissions not granted', permissions);

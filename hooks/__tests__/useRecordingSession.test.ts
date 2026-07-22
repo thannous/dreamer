@@ -206,7 +206,13 @@ describe('useRecordingSession', () => {
     expect(result.current.recordingPermissionState).toBe('granted');
     expect(ensureOfflineSttModel).not.toHaveBeenCalled();
     expect(getSpeechLocaleAvailability).not.toHaveBeenCalled();
-    expect(startNativeSpeechSession).toHaveBeenCalledWith('fr-FR', expect.any(Object));
+    expect(startNativeSpeechSession).toHaveBeenCalledWith(
+      'fr-FR',
+      expect.objectContaining({
+        onPartial: expect.any(Function),
+        permissionAlreadyGranted: true,
+      })
+    );
   });
 
   it('stopRecording should return transcript result', async () => {
