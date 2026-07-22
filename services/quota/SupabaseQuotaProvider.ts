@@ -13,6 +13,13 @@ type TierMonthlyLimits = {
   messagesPerDream: number | null;
 };
 
+type QuotaSnapshotPayload = {
+  tier?: unknown;
+  usage?: unknown;
+  canAnalyze?: unknown;
+  canExplore?: unknown;
+};
+
 /**
  * Supabase quota provider - counts quotas from Supabase database
  * Used for authenticated users with optimized COUNT queries
@@ -27,6 +34,87 @@ export class SupabaseQuotaProvider implements QuotaProvider {
     if (!target.dreamId) return undefined;
     const cached = await getCachedRemoteDreams();
     return cached.find((dream) => dream.id === target.dreamId);
+  }
+
+  private normalizeQuotaSnapshot(payload: QuotaSnapshotPayload): QuotaStatus | null {
+    const tier = payload?.tier === 'plus' ? 'plus' : payload?.tier === 'free' ? 'free' : null;
+    if (!tier || !payload.usage || typeof payload.usage !== 'object') return null;
+
+    const normalizeUsage = (value: unknown) => {
+      if (!value || typeof value !== 'object') return null;
+      const metric = value as { used?: unknown; limit?: unknown; remaining?: unknown };
+      if (typeof metric.used !== 'number' || !Number.isFinite(metric.used) || metric.used < 0) {
+        return null;
+      }
+      if (metric.limit !== null && (typeof metric.limit !== 'number' || !Number.isFinite(metric.limit) || metric.limit < 0)) {
+        return null;
+      }
+      const used = Math.floor(metric.used);
+      const limit = metric.limit === null ? null : Math.floor(metric.limit as number);
+      return {
+        used,
+        limit,
+        remaining: limit === null ? null : Math.max(0, limit - used),
+      };
+    };
+
+    const usage = payload.usage as Record<string, unknown>;
+    const analysis = normalizeUsage(usage.analysis);
+    const exploration = normalizeUsage(usage.exploration);
+    const messages = normalizeUsage(usage.messages);
+    if (!analysis || !exploration || !messages) return null;
+    if (typeof payload.canAnalyze !== 'boolean' || typeof payload.canExplore !== 'boolean') {
+      return null;
+    }
+
+    const reasons: string[] = [];
+    if (!payload.canAnalyze && tier === 'free') {
+      reasons.push('You have reached your free monthly analysis limit. Upgrade to Noctalia Plus for unlimited analyses!');
+    }
+    if (!payload.canExplore && tier === 'free') {
+      reasons.push('You have reached your free monthly exploration limit. Upgrade to Noctalia Plus for unlimited exploration!');
+    }
+
+    return {
+      tier,
+      usage: { analysis, exploration, messages },
+      canAnalyze: payload.canAnalyze,
+      canExplore: payload.canExplore,
+      reasons: reasons.length > 0 ? reasons : undefined,
+    };
+  }
+
+  private async getAuthenticatedQuotaSnapshot(
+    user: User,
+    target?: QuotaDreamTarget
+  ): Promise<QuotaStatus | null> {
+    if (typeof (supabase as any).rpc !== 'function') return null;
+
+    const dream = await this.resolveDream(target);
+    const remoteDreamId = dream?.remoteId ?? null;
+    const cacheKey = this.getMonthlyCacheKey(
+      `quota_snapshot_${remoteDreamId ?? 'none'}`,
+      user
+    );
+
+    return this.getOrCache(cacheKey, async () => {
+      const { data, error } = await supabase.rpc('get_authenticated_quota_snapshot', {
+        p_target_dream_id: remoteDreamId,
+      });
+
+      if (error) {
+        if (__DEV__) {
+          console.warn('[SupabaseQuotaProvider] Snapshot RPC unavailable, using compatibility reads', error);
+        }
+        return null;
+      }
+
+      const snapshot = this.normalizeQuotaSnapshot((data ?? {}) as QuotaSnapshotPayload);
+      if (!snapshot && __DEV__) {
+        console.warn('[SupabaseQuotaProvider] Invalid snapshot payload, using compatibility reads');
+      }
+      return snapshot;
+    });
   }
 
 
@@ -373,6 +461,9 @@ export class SupabaseQuotaProvider implements QuotaProvider {
         canExplore: false,
       };
     }
+
+    const snapshot = await this.getAuthenticatedQuotaSnapshot(user, target);
+    if (snapshot) return snapshot;
 
     const messagesUsed = target ? await this.getUsedMessagesCount(target, user) : 0;
 

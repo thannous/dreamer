@@ -12,6 +12,9 @@ import { isMockModeEnabled } from '@/lib/env';
 // Export types that are shared between both implementations
 export type {
   AnalysisResult,
+  AnalysisJobCommandRequest,
+  AnalysisJobCommandResponse,
+  AnalysisJobStatusResponse,
   CategorizeDreamResult,
   ImageJobCommandRequest,
   ImageJobCommandResponse,
@@ -39,6 +42,8 @@ export const generateImageForDream = service.generateImageForDream;
 export const generateImageFromTranscript = service.generateImageFromTranscript;
 export const submitImageGenerationJob = service.submitImageGenerationJob;
 export const getImageGenerationJobStatus = service.getImageGenerationJobStatus;
+export const submitDreamAnalysisJob = service.submitDreamAnalysisJob;
+export const getDreamAnalysisJobStatus = service.getDreamAnalysisJobStatus;
 export const generateImageWithReference = service.generateImageWithReference;
 export const startOrContinueChat = service.startOrContinueChat;
 export const resetChat = service.resetChat;

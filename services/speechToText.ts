@@ -51,8 +51,8 @@ async function readAudioAsBase64(uri: string): Promise<string> {
       return base64;
     }
     return await base64; // handle potential promise
-  } catch (error) {
-    logger.warn('[speechToText] File API failed, falling back to readAsStringAsync', error);
+  } catch {
+    logger.warn('[speechToText] File API failed, falling back to readAsStringAsync');
     return FileSystem.readAsStringAsync(uri, {
       encoding: 'base64',
     });
@@ -91,7 +91,7 @@ export async function transcribeAudio({
   uri,
   languageCode = 'fr-FR',
 }: TranscribeParams): Promise<string> {
-  logger.debug('[speechToText] reading file', uri);
+  logger.debug('[speechToText] reading fallback recording');
 
   const contentBase64 = await readAudioAsBase64(uri);
 
@@ -120,11 +120,13 @@ export async function transcribeAudio({
       ...NETWORK_REQUEST_POLICIES.transcribeAudio,
     });
 
-    logger.debug('[speechToText] response', res);
+    logger.debug('[speechToText] fallback response received', {
+      transcriptLength: res.transcript?.length ?? 0,
+    });
 
     return res.transcript ?? '';
-  } catch (error) {
-    logger.error('[speechToText] fetch failed', error);
+  } catch {
+    logger.error('[speechToText] fallback request failed');
     throw new Error('Failed to transcribe audio. Please try again.');
   }
 }

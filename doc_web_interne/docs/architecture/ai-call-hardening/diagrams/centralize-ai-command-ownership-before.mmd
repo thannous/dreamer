@@ -1,0 +1,14 @@
+flowchart LR
+  U["User input"] --> C["Mobile client"]
+  C -->|"await categorizeDream"| API["api Edge Function"]
+  API --> G["Gemini"]
+  C -->|"save and sync"| D[("dreams")]
+  C -->|"quota preflight"| Q[("quota tables")]
+  C -->|"set pending"| D
+  C -->|"analyzeDream"| API
+  C -->|"image job with transcript"| J[("ai_jobs")]
+  J --> W["image-job-worker"]
+  W --> G
+  W --> D
+  C -->|"poll every 4s"| API
+  C -->|"reload all dreams"| D

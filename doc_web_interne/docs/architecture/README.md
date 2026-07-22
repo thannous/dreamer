@@ -9,6 +9,7 @@ This folder contains implementation specs for the top architecture failure modes
 - [03-subscription-entitlement-convergence.md](./03-subscription-entitlement-convergence.md)
 - [04-database-contract-and-schema-drift.md](./04-database-contract-and-schema-drift.md)
 - [05-guest-session-and-quota-hardening.md](./05-guest-session-and-quota-hardening.md)
+- [AI call ownership and abuse hardening](./ai-call-hardening/hardening.md)
 
 ## Scope
 

@@ -1268,6 +1268,27 @@ export async function fetchDreamsFromSupabase(): Promise<DreamAnalysis[]> {
   return Promise.all((data ?? []).map((row) => hydrateDreamImageUrls(mapRowToDream(row))));
 }
 
+export async function fetchDreamFromSupabase(remoteId: number): Promise<DreamAnalysis> {
+  if (!Number.isSafeInteger(remoteId) || remoteId <= 0) {
+    throw new Error('Invalid remote dream id');
+  }
+
+  const { data, error } = await supabase
+    .from(DREAMS_TABLE)
+    .select('*')
+    .eq('id', remoteId)
+    .single();
+
+  if (error) {
+    throw formatError(error, 'Failed to load dream from Supabase');
+  }
+  if (!data) {
+    throw new Error('Failed to load dream from Supabase: Dream not found');
+  }
+
+  return hydrateDreamImageUrls(mapRowToDream(data));
+}
+
 export async function createDreamInSupabase(dream: DreamAnalysis, userId: string): Promise<DreamAnalysis> {
   const withRequestId = dream.clientRequestId
     ? dream

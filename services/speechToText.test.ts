@@ -166,13 +166,16 @@ describe('speechToText Service', () => {
       await transcribeAudio({ uri: mockAudioUri, languageCode: 'fr-FR' });
 
       // Then
-      expect(console.log).toHaveBeenCalledWith('[speechToText] reading file', mockAudioUri);
+      expect(console.log).toHaveBeenCalledWith('[speechToText] reading fallback recording');
+      expect(console.log).toHaveBeenCalledWith('[speechToText] file size (base64 chars)', 13);
       expect(console.log).toHaveBeenCalledWith('[speechToText] POST', 'https://api.dreamer.test/transcribe', {
         encoding: 'LINEAR16',
         languageCode: 'fr-FR',
         sampleRateHertz: 16000,
       });
-      expect(console.log).toHaveBeenCalledWith('[speechToText] response', { transcript: mockTranscript });
+      expect(console.log).toHaveBeenCalledWith('[speechToText] fallback response received', {
+        transcriptLength: mockTranscript.length,
+      });
     });
   });
 });

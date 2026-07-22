@@ -1,6 +1,6 @@
 import { useDreamJournal } from '@/hooks/useDreamJournal';
 import type { AnalysisSource } from '@/lib/analytics';
-import type { DreamAnalysis } from '@/lib/types';
+import type { DreamAnalysis, DreamCategorization } from '@/lib/types';
 import { AnalysisStep } from '@/hooks/useAnalysisProgress';
 import React, { createContext, useContext, useMemo } from 'react';
 
@@ -14,6 +14,11 @@ export type DreamsDataContextValue = {
 export type DreamsActionsContextValue = {
   addDream: (dream: DreamAnalysis) => Promise<DreamAnalysis>;
   updateDream: (dream: DreamAnalysis) => Promise<void>;
+  applyServerDreamState: (dream: DreamAnalysis) => Promise<void>;
+  applyDreamCategorization: (
+    dreamId: number,
+    categorization: DreamCategorization
+  ) => Promise<DreamAnalysis | null>;
   deleteDream: (id: number) => Promise<void>;
   toggleFavorite: (id: number) => Promise<void>;
   retryDreamSync: (id: number) => Promise<void>;
@@ -64,6 +69,8 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     () => ({
       addDream: journal.addDream,
       updateDream: journal.updateDream,
+      applyServerDreamState: journal.applyServerDreamState,
+      applyDreamCategorization: journal.applyDreamCategorization,
       deleteDream: journal.deleteDream,
       toggleFavorite: journal.toggleFavorite,
       retryDreamSync: journal.retryDreamSync,
@@ -75,6 +82,8 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     [
       journal.addDream,
       journal.updateDream,
+      journal.applyServerDreamState,
+      journal.applyDreamCategorization,
       journal.deleteDream,
       journal.toggleFavorite,
       journal.retryDreamSync,

@@ -10,6 +10,7 @@ const { mockJournal } = ((factory: any) => factory())(() => {
     loaded: true,
     addDream: jest.fn(async (dream: DreamAnalysis) => dream),
     updateDream: jest.fn(async () => undefined),
+    applyDreamCategorization: jest.fn(async () => null),
     deleteDream: jest.fn(async () => undefined),
     toggleFavorite: jest.fn(async () => undefined),
     reloadDreams: jest.fn(async () => undefined),

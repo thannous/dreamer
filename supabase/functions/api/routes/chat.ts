@@ -12,15 +12,51 @@ import {
   resolveTextModel,
 } from '../services/gemini.ts';
 import { requireGuestSession } from '../lib/guards.ts';
+import {
+  AI_REQUEST_LIMITS,
+  aiInputErrorResponse,
+  isValidUuid,
+  normalizeAiLanguage,
+  validateBoundedText,
+} from '../lib/aiRequestPolicy.ts';
+import { admitSynchronousAiRequest } from '../services/aiAdmission.ts';
 import type { ApiContext } from '../types.ts';
 
 const MAX_HISTORY_TURNS = 20;
 
+type ChatDependencies = {
+  admitRequest?: typeof admitSynchronousAiRequest;
+};
+
 type StoredChatMessage = {
+  id?: string;
   role: string;
   text?: string;
   parts?: GeminiPart[];
+  createdAt?: number;
   meta?: StoredChatMessageMeta;
+};
+
+type AuthenticatedChatTurnAdmission = {
+  allowed?: boolean;
+  duplicate?: boolean;
+  completed?: boolean;
+  code?: string;
+  retry_after_seconds?: number;
+  attemptCount?: number;
+  used?: number;
+  limit?: number;
+  modelMessage?: StoredChatMessage | null;
+  history?: StoredChatMessage[];
+  dream?: {
+    id: string | number;
+    transcript?: string;
+    title?: string;
+    interpretation?: string;
+    shareable_quote?: string;
+    dream_type?: string;
+    theme?: string | null;
+  };
 };
 
 type StoredChatMessageMeta = {
@@ -30,6 +66,7 @@ type StoredChatMessageMeta = {
   retry?: {
     messageText: string;
     displayText?: string;
+    clientRequestId?: string;
   };
 };
 
@@ -92,12 +129,23 @@ const sanitizeMessageMeta = (meta: unknown): StoredChatMessageMeta | undefined =
 
   if (candidate.retry && typeof candidate.retry === 'object') {
     const retry = candidate.retry as Record<string, unknown>;
-    if (typeof retry.messageText === 'string' && retry.messageText.trim()) {
+    const retryMessageText = trimToLimit(
+      retry.messageText,
+      AI_REQUEST_LIMITS.chatMessageChars
+    );
+    if (retryMessageText) {
+      const retryDisplayText = trimToLimit(
+        retry.displayText,
+        AI_REQUEST_LIMITS.chatMessageChars
+      );
+      const retryClientRequestId = typeof retry.clientRequestId === 'string'
+        && isValidUuid(retry.clientRequestId.trim())
+        ? retry.clientRequestId.trim()
+        : undefined;
       sanitized.retry = {
-        messageText: retry.messageText,
-        ...(typeof retry.displayText === 'string' && retry.displayText.trim()
-          ? { displayText: retry.displayText }
-          : {}),
+        messageText: retryMessageText,
+        ...(retryDisplayText ? { displayText: retryDisplayText } : {}),
+        ...(retryClientRequestId ? { clientRequestId: retryClientRequestId } : {}),
       };
     }
   }
@@ -157,8 +205,7 @@ const getEffectiveSubscriptionTier = async (
 
   if (error) {
     console.warn('[api] /chat: failed to resolve subscription tier for synthesis gate', {
-      userId,
-      message: error?.message ?? String(error),
+      code: error?.code ?? null,
     });
     return 'free';
   }
@@ -252,8 +299,35 @@ const normalizeGuestDreamContext = (
   theme: dreamContext.theme == null ? null : trimToLimit(dreamContext.theme, GUEST_CONTEXT_LIMITS.theme),
 });
 
-export async function handleChat(ctx: ApiContext): Promise<Response> {
+const markAuthenticatedTurnFailed = async (
+  supabase: ApiContext['supabase'],
+  turn: { dreamId: number; requestId: string; attemptCount: number } | null,
+  errorCode: string
+) => {
+  if (!turn) return;
+  const { error } = await supabase.rpc('fail_authenticated_chat_turn', {
+    p_dream_id: turn.dreamId,
+    p_request_id: turn.requestId,
+    p_attempt_count: turn.attemptCount,
+    p_error_code: errorCode,
+  });
+  if (error) {
+    console.warn('[api] /chat: failed to release chat turn', {
+      code: error?.code ?? null,
+    });
+  }
+};
+
+export async function handleChat(
+  ctx: ApiContext,
+  dependencies: ChatDependencies = {}
+): Promise<Response> {
   const { req, supabase, user, supabaseUrl, supabaseServiceRoleKey } = ctx;
+  let authenticatedTurn: {
+    dreamId: number;
+    requestId: string;
+    attemptCount: number;
+  } | null = null;
 
   try {
     const body = (await req.json()) as {
@@ -263,34 +337,69 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       fingerprint?: string;
       messageMeta?: unknown;
       dreamContext?: unknown;
+      clientRequestId?: unknown;
+      stream?: unknown;
     };
 
-    const dreamId = String(body?.dreamId ?? '').trim();
-    const userMessage = String(body?.message ?? '').trim();
     const guestCheck = await requireGuestSession(req, body, user);
     if (guestCheck instanceof Response) {
       return guestCheck;
     }
     const fingerprint = guestCheck.fingerprint;
-
-    if (!dreamId) {
-      return new Response(JSON.stringify({ error: 'dreamId is required' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    const dreamIdInput = validateBoundedText(body?.dreamId, {
+      field: 'dreamId',
+      maxChars: AI_REQUEST_LIMITS.dreamIdChars,
+    });
+    if (!dreamIdInput.ok) return aiInputErrorResponse(dreamIdInput);
+    const messageInput = validateBoundedText(body?.message, {
+      field: 'message',
+      maxChars: AI_REQUEST_LIMITS.chatMessageChars,
+    });
+    if (!messageInput.ok) return aiInputErrorResponse(messageInput);
+    const languageInput = validateBoundedText(body?.lang, {
+      field: 'lang',
+      maxChars: AI_REQUEST_LIMITS.languageChars,
+      required: false,
+    });
+    if (!languageInput.ok) return aiInputErrorResponse(languageInput);
+    const dreamId = dreamIdInput.value;
+    const userMessage = messageInput.value;
+    const lang = normalizeAiLanguage(languageInput.value || 'en');
+    const requestIdInput = validateBoundedText(body.clientRequestId, {
+      field: 'clientRequestId',
+      maxChars: AI_REQUEST_LIMITS.clientRequestIdChars,
+      required: false,
+    });
+    if (!requestIdInput.ok) return aiInputErrorResponse(requestIdInput);
+    if (requestIdInput.value && !isValidUuid(requestIdInput.value)) {
+      return aiInputErrorResponse({
+        ok: false,
+        code: 'INVALID_INPUT',
+        field: 'clientRequestId',
       });
     }
+    const clientRequestId = requestIdInput.value || crypto.randomUUID();
+    const wantsStream = body.stream === true;
 
-    if (!userMessage) {
-      return new Response(JSON.stringify({ error: 'message is required' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
-    }
-
-    const apiKey = Deno.env.get('GEMINI_API_KEY');
-    if (!apiKey) throw new Error('GEMINI_API_KEY not set');
+    const admission = await (dependencies.admitRequest ?? admitSynchronousAiRequest)({
+      ctx,
+      capability: 'chat',
+      guestFingerprint: fingerprint,
+    });
+    if (admission instanceof Response) return admission;
 
     const currentUserId = user?.id ?? null;
+    const messageMeta = sanitizeMessageMeta(body?.messageMeta);
+    if (messageMeta?.exploration360Synthesis) {
+      const effectiveTier = await getEffectiveSubscriptionTier(supabase, currentUserId);
+      if (effectiveTier !== 'plus') {
+        console.log('[api] /chat: blocked non-plus Exploration 360 synthesis', {
+          effectiveTier,
+        });
+        return createSynthesisUpgradeRequiredResponse();
+      }
+    }
+
     const clientDreamContext = body.dreamContext
       && typeof body.dreamContext === 'object'
       && !Array.isArray(body.dreamContext)
@@ -315,56 +424,142 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       theme: string | null;
     };
     let shouldPersist = true;
+    let historyWithUserMsg: StoredChatMessage[] = [];
+    let cachedModelMessage: StoredChatMessage | null = null;
+    const newUserMessage: StoredChatMessage = {
+      id: clientRequestId,
+      role: 'user',
+      text: userMessage,
+      parts: [{ text: userMessage }],
+      createdAt: Date.now(),
+      ...(messageMeta ? { meta: messageMeta } : {}),
+    };
 
     if (clientDreamContext && !user) {
-      console.log('[api] /chat: guest mode with dreamContext', { dreamId });
+      console.log('[api] /chat: guest mode with bounded dream context');
       shouldPersist = false;
       dream = normalizeGuestDreamContext(dreamId, clientDreamContext, userMessage);
+      const existingHistory = Array.isArray(dream.chat_history)
+        ? (dream.chat_history as StoredChatMessage[])
+        : [];
+      historyWithUserMsg = [...existingHistory, newUserMessage];
     } else {
       if (clientDreamContext && user) {
-        console.warn('[api] /chat: ignoring client dreamContext for authenticated request', {
-          dreamId,
-          userId: currentUserId,
-        });
+        console.warn('[api] /chat: ignoring client dreamContext for authenticated request');
       }
-
-      const { data: dbDream, error: dreamError } = await supabase
-        .from('dreams')
-        .select('id, chat_history, user_id, transcript, title, interpretation, shareable_quote, dream_type, theme')
-        .eq('id', dreamId)
-        .single();
-
-      if (dreamError || !dbDream) {
-        return new Response(JSON.stringify({ error: 'Dream not found' }), {
-          status: 404,
+      if (!user) {
+        return new Response(JSON.stringify({ error: 'Guest dreamContext is required' }), {
+          status: 400,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
       }
 
-      if (dbDream.user_id !== currentUserId) {
-        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-          status: 403,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders },
-        });
+      const remoteDreamId = Number(dreamId);
+      if (!Number.isSafeInteger(remoteDreamId) || remoteDreamId <= 0) {
+        return aiInputErrorResponse({ ok: false, code: 'INVALID_INPUT', field: 'dreamId' });
       }
 
-      dream = dbDream;
-    }
-
-    const existingHistory = Array.isArray(dream.chat_history)
-      ? (dream.chat_history as StoredChatMessage[])
-      : [];
-    const messageMeta = sanitizeMessageMeta(body?.messageMeta);
-
-    if (messageMeta?.exploration360Synthesis) {
-      const effectiveTier = await getEffectiveSubscriptionTier(supabase, currentUserId);
-      if (effectiveTier !== 'plus') {
-        console.log('[api] /chat: blocked non-plus Exploration 360 synthesis', {
-          dreamId,
-          userId: currentUserId,
-          effectiveTier,
+      const { data: turnData, error: turnError } = await supabase.rpc(
+        'begin_authenticated_chat_turn',
+        {
+          p_dream_id: remoteDreamId,
+          p_request_id: clientRequestId,
+          p_user_message: newUserMessage,
+        }
+      );
+      if (turnError) {
+        console.warn('[api] /chat: atomic turn admission failed', {
+          code: turnError?.code ?? null,
         });
-        return createSynthesisUpgradeRequiredResponse();
+        return serviceUnavailable('Chat state unavailable');
+      }
+
+      const turn = (turnData ?? {}) as AuthenticatedChatTurnAdmission;
+      if (!turn.allowed) {
+        if (turn.code === 'DREAM_NOT_FOUND') {
+          return new Response(JSON.stringify({ error: 'Dream not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
+        if (
+          turn.code === 'CHAT_TURN_IN_PROGRESS'
+          || turn.code === 'CHAT_DREAM_BUSY'
+          || turn.code === 'CHAT_ACTOR_CONCURRENCY_LIMIT'
+        ) {
+          const retryAfter = Math.max(1, Math.floor(turn.retry_after_seconds ?? 5));
+          return new Response(JSON.stringify({
+            error: turn.code === 'CHAT_ACTOR_CONCURRENCY_LIMIT'
+              ? 'Too many chat turns are already in progress'
+              : 'Chat turn is already in progress',
+            code: turn.code,
+            retryAfter,
+          }), {
+            status: 409,
+            headers: {
+              'Content-Type': 'application/json',
+              'Retry-After': String(retryAfter),
+              ...corsHeaders,
+            },
+          });
+        }
+        if (turn.code === 'CHAT_TURN_ATTEMPTS_EXHAUSTED') {
+          return new Response(JSON.stringify({
+            error: 'This chat turn can no longer be retried',
+            code: turn.code,
+          }), {
+            status: 409,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
+        if (turn.code === 'QUOTA_MESSAGE_LIMIT_REACHED') {
+          return new Response(JSON.stringify({
+            error: 'QUOTA_MESSAGE_LIMIT_REACHED',
+            userMessage: 'You have reached your message limit for this dream.',
+            usage: { messages: { used: toCount(turn.used), limit: turn.limit ?? null } },
+          }), {
+            status: 429,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
+        if (turn.code === 'QUOTA_EXPLORATION_LIMIT_REACHED') {
+          return new Response(JSON.stringify({
+            error: 'Exploration limit reached',
+            code: turn.code,
+            usage: { exploration: { used: toCount(turn.used), limit: turn.limit ?? null } },
+          }), {
+            status: 429,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
+        return serviceUnavailable('Chat admission unavailable');
+      }
+
+      const admittedDream = turn.dream;
+      if (!admittedDream) return serviceUnavailable('Chat context unavailable');
+      dream = {
+        id: String(admittedDream.id),
+        user_id: currentUserId,
+        chat_history: Array.isArray(turn.history) ? turn.history : [],
+        transcript: String(admittedDream.transcript ?? ''),
+        title: String(admittedDream.title ?? ''),
+        interpretation: String(admittedDream.interpretation ?? ''),
+        shareable_quote: String(admittedDream.shareable_quote ?? ''),
+        dream_type: String(admittedDream.dream_type ?? 'Dream'),
+        theme: admittedDream.theme == null ? null : String(admittedDream.theme),
+      };
+      historyWithUserMsg = dream.chat_history;
+      cachedModelMessage = turn.completed ? turn.modelMessage ?? null : null;
+      if (!turn.completed) {
+        const attemptCount = Number(turn.attemptCount);
+        if (!Number.isSafeInteger(attemptCount) || attemptCount < 1 || attemptCount > 10) {
+          return serviceUnavailable('Chat attempt unavailable');
+        }
+        authenticatedTurn = {
+          dreamId: remoteDreamId,
+          requestId: clientRequestId,
+          attemptCount,
+        };
       }
     }
 
@@ -388,7 +583,9 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       });
 
       if (quotaError) {
-        console.error('[api] /chat: guest exploration quota claim failed before provider work', quotaError);
+        console.error('[api] /chat: guest exploration quota claim failed before provider work', {
+          code: quotaError?.code ?? null,
+        });
         return serviceUnavailable('Guest quota unavailable');
       }
 
@@ -420,52 +617,36 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       }
     }
 
-    const newUserMessage: StoredChatMessage = {
-      role: 'user',
-      text: userMessage,
-      parts: [{ text: userMessage }],
-      ...(messageMeta ? { meta: messageMeta } : {}),
-    };
-    const historyWithUserMsg = [...existingHistory, newUserMessage];
-
-    let userMessagePersisted = false;
-    if (shouldPersist) {
-      try {
-        const { error: updateError } = await supabase
-          .from('dreams')
-          .update({ chat_history: historyWithUserMsg })
-          .eq('id', dreamId);
-
-        if (updateError) throw updateError;
-        userMessagePersisted = true;
-      } catch (updateError) {
-        const pgMessage = (updateError as any)?.message ?? '';
-
-        if (typeof pgMessage === 'string' && pgMessage.includes('QUOTA_MESSAGE_LIMIT_REACHED')) {
-          console.log('[api] /chat: quota exceeded for dream', dreamId, 'user', currentUserId);
-          return new Response(
-            JSON.stringify({
-              error: 'QUOTA_MESSAGE_LIMIT_REACHED',
-              userMessage: 'You have reached your message limit for this dream.',
-            }),
-            {
-              status: 429,
-              headers: { 'Content-Type': 'application/json', ...corsHeaders },
-            }
-          );
-        }
-
-        console.warn('[api] /chat: failed to append user message', {
-          code: (updateError as any)?.code ?? null,
-          message: pgMessage,
+    if (cachedModelMessage) {
+      const cachedReply = getMessageText(cachedModelMessage);
+      if (!cachedReply) return serviceUnavailable('Cached chat response unavailable');
+      if (!wantsStream) {
+        return new Response(JSON.stringify({ text: cachedReply, message: cachedModelMessage }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
-        throw updateError;
       }
+
+      const encoder = new TextEncoder();
+      return new Response(new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(encoder.encode(
+            `data: ${JSON.stringify({ done: true, text: cachedReply, message: cachedModelMessage })}\n\n`
+          ));
+          controller.close();
+        },
+      }), {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          ...corsHeaders,
+        },
+      });
     }
 
-    const lang = String(body?.lang ?? 'en')
-      .toLowerCase()
-      .split(/[-_]/)[0];
+    const apiKey = Deno.env.get('GEMINI_API_KEY');
+    if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
     const systemPreamble =
       lang === 'fr'
@@ -483,7 +664,6 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
     contents.push({ role: 'user', parts: [{ text: dreamContextPrompt }] });
 
     console.log('[api] /chat: injected dream context', {
-      dreamId,
       lang,
       transcriptLength: String(dream.transcript ?? '').length,
       interpretationLength: String(dream.interpretation ?? '').length,
@@ -505,43 +685,32 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       GEMINI_FLASH_LITE_MODEL
     );
     const fallbackModel = resolveTextModel('GEMINI_LITE_MODEL', GEMINI_FLASH_LITE_MODEL);
-    const chatConfig: GeminiGenerationConfig = { thinkingLevel: 'minimal', maxOutputTokens: 4096 };
-    const wantsStream = (body as { stream?: unknown })?.stream === true;
+    const chatConfig: GeminiGenerationConfig = { thinkingLevel: 'minimal', maxOutputTokens: 2048 };
 
     const buildModelMessage = (reply: string, rawParts: GeminiPart[] | null): StoredChatMessage => {
       const modelParts = sanitizeParts(rawParts);
       return {
+        id: crypto.randomUUID(),
         role: 'model',
         text: reply,
+        createdAt: Date.now(),
         ...(modelParts ? { parts: modelParts } : {}),
       };
     };
 
     const persistModelMessage = async (modelMessage: StoredChatMessage) => {
-      if (!shouldPersist) return;
-      const finalHistory = [...historyWithUserMsg, modelMessage];
-      const persistWithClient = async (client: typeof supabase) => {
-        const { error: persistError } = await client
-          .from('dreams')
-          .update({ chat_history: finalHistory })
-          .eq('id', dreamId);
-        if (persistError) throw persistError;
-      };
-
-      try {
-        if (userMessagePersisted) {
-          await persistWithClient(supabase);
-        } else if (supabaseServiceRoleKey) {
-          const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
-            auth: { autoRefreshToken: false, persistSession: false },
-          });
-          await persistWithClient(adminClient);
-        }
-      } catch (persistError) {
-        console.warn('[api] /chat: failed to persist model message', {
-          code: (persistError as any)?.code ?? null,
-          message: (persistError as any)?.message ?? String(persistError ?? ''),
+      if (!shouldPersist || !authenticatedTurn) return;
+      const { data, error } = await supabase.rpc('complete_authenticated_chat_turn', {
+        p_dream_id: authenticatedTurn.dreamId,
+        p_request_id: authenticatedTurn.requestId,
+        p_attempt_count: authenticatedTurn.attemptCount,
+        p_model_message: modelMessage,
+      });
+      if (error || (data as { completed?: boolean } | null)?.completed !== true) {
+        console.warn('[api] /chat: failed to commit atomic chat turn', {
+          code: error?.code ?? (data as { code?: string } | null)?.code ?? null,
         });
+        throw new Error('Failed to persist chat response');
       }
     };
 
@@ -598,7 +767,8 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
             await persistModelMessage(modelMessage);
             send({ done: true, text: reply, message: modelMessage });
           } catch (streamError) {
-            console.error('[api] /chat stream error', streamError);
+            console.error('[api] /chat stream failed');
+            await markAuthenticatedTurnFailed(supabase, authenticatedTurn, 'CHAT_STREAM_FAILED');
             const errorInfo = classifyGeminiError(streamError);
             send({ error: errorInfo.userMessage, status: errorInfo.status });
           } finally {
@@ -638,7 +808,8 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   } catch (e) {
-    console.error('[api] /chat error', e);
+    await markAuthenticatedTurnFailed(supabase, authenticatedTurn, 'CHAT_REQUEST_FAILED');
+    console.error('[api] /chat request failed');
     const errorInfo = classifyGeminiError(e);
     return new Response(JSON.stringify({ error: errorInfo.userMessage }), {
       status: errorInfo.status,

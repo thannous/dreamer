@@ -57,7 +57,7 @@ type RpcClient = {
   rpc: (
     fn: string,
     args?: Record<string, unknown>
-  ) => Promise<{ data: any; error: { message?: string } | null }>;
+  ) => Promise<{ data: any; error: { code?: string; message?: string } | null }>;
 };
 
 const asRpcClient = (adminClient: ReturnType<typeof createAdminClient>): RpcClient =>
@@ -81,8 +81,7 @@ const resolveImageGenerationTier = async (
 
     if (error) {
       console.warn('[image-job-worker] Failed to resolve subscription tier for image routing', {
-        userId,
-        message: error?.message ?? String(error),
+        code: error?.code ?? null,
       });
       return {
         allowed: false,
@@ -93,10 +92,9 @@ const resolveImageGenerationTier = async (
     }
 
     return { allowed: true, tier: normalizeEffectiveSubscriptionTier(data) };
-  } catch (error) {
+  } catch {
     console.warn('[image-job-worker] Subscription tier check threw', {
-      userId,
-      message: error instanceof Error ? error.message : String(error),
+      reason: 'unexpected_error',
     });
     return {
       allowed: false,
@@ -138,8 +136,7 @@ const requireFreeAnalysisClaim = async (
     if (error) {
       console.warn('[image-job-worker] Failed to verify free analysis claim', {
         jobId: job.id,
-        userId: job.user_id,
-        message: error?.message ?? String(error),
+        code: error?.code ?? null,
       });
       return {
         allowed: false,
@@ -159,11 +156,10 @@ const requireFreeAnalysisClaim = async (
     }
 
     return { allowed: true };
-  } catch (error) {
+  } catch {
     console.warn('[image-job-worker] Free analysis claim check threw', {
       jobId: job.id,
-      userId: job.user_id,
-      message: error instanceof Error ? error.message : String(error),
+      reason: 'unexpected_error',
     });
     return {
       allowed: false,
@@ -186,14 +182,14 @@ const releaseImageClaim = async (
     });
     if (error) {
       console.warn('[image-job-worker] Failed to release guest image claim', {
-        error: error?.message ?? String(error),
+        code: error?.code ?? null,
       });
       return false;
     }
     return true;
-  } catch (error) {
+  } catch {
     console.warn('[image-job-worker] Failed to release guest image claim', {
-      error: error instanceof Error ? error.message : String(error),
+      reason: 'unexpected_error',
     });
     return false;
   }
@@ -223,6 +219,7 @@ const claimSpecificJob = async (
     .from('ai_jobs')
     .select('*')
     .eq('id', jobId)
+    .eq('job_type', 'generate_image')
     .limit(1)
     .maybeSingle();
 
@@ -251,6 +248,7 @@ const claimSpecificJob = async (
       attempt_count: normalizedCurrentJob.attempt_count + 1,
     })
     .eq('id', normalizedCurrentJob.id)
+    .eq('job_type', 'generate_image')
     .eq('status', 'queued')
     .eq('attempt_count', normalizedCurrentJob.attempt_count)
     .select('*')
@@ -274,6 +272,15 @@ const updateJob = async (
     throw error;
   }
 };
+
+const redactedRequestPayload = (job: ImageJobRow) => ({
+  redacted: true,
+  hadPrompt: typeof job.request_payload?.prompt === 'string' && job.request_payload.prompt.length > 0,
+  hadTranscript:
+    typeof job.request_payload?.transcript === 'string'
+    && job.request_payload.transcript.length > 0,
+  hadPreviousImage: Boolean(job.request_payload?.previousImageUrl),
+});
 
 const persistDreamImageResult = async (
   adminClient: ReturnType<typeof createAdminClient>,
@@ -305,6 +312,7 @@ const markTerminalFailure = async (
 ) => {
   await updateJob(adminClient, job.id, {
     status: 'failed',
+    request_payload: redactedRequestPayload(job),
     error_code: errorCode,
     error_message: errorMessage,
     finished_at: new Date().toISOString(),
@@ -345,7 +353,7 @@ const claimGuestImageQuota = async (
   if (quotaError) {
     console.warn('[image-job-worker] Guest image quota claim failed', {
       jobId: job.id,
-      message: quotaError?.message ?? String(quotaError),
+      code: quotaError?.code ?? null,
     });
     return {
       allowed: false,
@@ -499,10 +507,9 @@ const processImageJob = async (input: {
       await persistDreamImageResult(adminClient, job, result.imageUrl);
       await updateJob(adminClient, job.id, {
         status: 'succeeded',
+        request_payload: redactedRequestPayload(job),
         result_payload: {
           imageUrl: result.imageUrl,
-          imageBytes: result.imageBytes,
-          prompt: result.prompt,
         },
         error_code: null,
         error_message: null,
@@ -526,8 +533,8 @@ const processImageJob = async (input: {
 
       await markTerminalFailure(adminClient, job, serialized.errorCode, serialized.errorMessage);
     }
-  } catch (error) {
-    console.error('[image-job-worker] Unhandled background error', error);
+  } catch {
+    console.error('[image-job-worker] Unhandled background failure');
   }
 };
 
@@ -573,8 +580,8 @@ serve(async (req: Request) => {
 
     await task;
     return json({ ok: true, jobId, status: 'processed' });
-  } catch (error) {
-    console.error('[image-job-worker] Unhandled error', error);
+  } catch {
+    console.error('[image-job-worker] Unhandled request failure');
     return json({ error: 'Internal server error' }, 500);
   }
 });

@@ -26,7 +26,12 @@ export const requireGuestSession = async (
   }
 
   const headerFingerprint = req.headers.get('x-guest-fingerprint')?.trim() ?? '';
-  const bodyFingerprint = body?.fingerprint?.trim() ?? '';
+  if (body?.fingerprint != null && typeof body.fingerprint !== 'string') {
+    return unauthorized('Invalid guest session');
+  }
+  const bodyFingerprint = typeof body?.fingerprint === 'string'
+    ? body.fingerprint.trim()
+    : '';
   const fingerprint = headerFingerprint || bodyFingerprint;
 
   if (!fingerprint) {

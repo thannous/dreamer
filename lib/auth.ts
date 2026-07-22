@@ -239,7 +239,21 @@ export async function wasAccountCreatedOnDevice(): Promise<boolean> {
  * Mark the device fingerprint as upgraded after successful signup
  * This prevents the device from getting fresh guest quotas after creating an account
  */
-async function markFingerprintUpgraded(): Promise<void> {
+const captureGuestUpgradeProof = async (): Promise<Record<string, string>> => {
+  try {
+    const { getGuestHeaders } = await loadModuleWithJestRequire(
+      () => import('./guestSession'),
+      () => require('./guestSession') as typeof import('./guestSession')
+    );
+    return await getGuestHeaders();
+  } catch {
+    return {};
+  }
+};
+
+async function markFingerprintUpgraded(
+  guestHeaders: Record<string, string> = {}
+): Promise<void> {
   if (isMockMode) {
     // No-op in mock mode
     return;
@@ -258,7 +272,6 @@ async function markFingerprintUpgraded(): Promise<void> {
       () => import('./http'),
       () => require('./http') as typeof import('./http')
     );
-
     const fingerprint = await getDeviceFingerprint();
     const token = await waitForAccessToken();
 
@@ -267,9 +280,15 @@ async function markFingerprintUpgraded(): Promise<void> {
       return;
     }
 
+    if (!guestHeaders['x-guest-token']) {
+      log.debug('No signed guest proof available to mark fingerprint');
+      return;
+    }
+
     await fetchJSON(`${getApiBaseUrl()}/auth/mark-upgrade`, {
       method: 'POST',
       headers: {
+        ...guestHeaders,
         'Authorization': `Bearer ${token}`,
       },
       body: { fingerprint },
@@ -277,9 +296,9 @@ async function markFingerprintUpgraded(): Promise<void> {
     });
 
     log.debug('Successfully marked fingerprint as upgraded');
-  } catch (error) {
+  } catch {
     // Fail silently: the quota will still be enforced server-side
-    log.warn('Failed to mark fingerprint as upgraded', error);
+    log.warn('Failed to mark fingerprint as upgraded');
   }
 }
 
@@ -328,9 +347,13 @@ export async function signInWithEmailPassword(email: string, password: string) {
     return mockAuth.signInWithEmailPassword(email);
   }
 
+  const guestUpgradeProof = await captureGuestUpgradeProof();
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
   await ensureSessionPersistence(data.session ?? null, 'signInWithEmailPassword');
+  await markFingerprintUpgraded(guestUpgradeProof).catch(() => {
+    // Fail silently if marking fails
+  });
 
   return data.user;
 }
@@ -344,6 +367,7 @@ export async function signUpWithEmailPassword(email: string, password: string, u
     return mockAuth.signUpWithEmailPassword(email, userLang);
   }
 
+  const guestUpgradeProof = await captureGuestUpgradeProof();
   const signUpOptions = {
     emailRedirectTo: EMAIL_REDIRECT_NATIVE,
     data: userLang ? { lang: userLang } : undefined,
@@ -360,7 +384,7 @@ export async function signUpWithEmailPassword(email: string, password: string, u
   }
 
   // Mark fingerprint as upgraded to prevent quota bypass
-  await markFingerprintUpgraded().catch(() => {
+  await markFingerprintUpgraded(guestUpgradeProof).catch(() => {
     // Fail silently if marking fails
   });
 
@@ -395,6 +419,8 @@ export async function signInWithGoogle(): Promise<User> {
   if (Platform.OS === 'web') {
     throw new Error('Google Sign-In on web should use the web-specific implementation');
   }
+
+  const guestUpgradeProof = await captureGuestUpgradeProof();
 
   const { GoogleSignin, statusCodes } = await getGoogleSignInModule();
 
@@ -459,7 +485,7 @@ export async function signInWithGoogle(): Promise<User> {
     });
 
     // Mark fingerprint as upgraded to prevent quota bypass
-    await markFingerprintUpgraded().catch(() => {
+    await markFingerprintUpgraded(guestUpgradeProof).catch(() => {
       // Fail silently if marking fails
     });
 

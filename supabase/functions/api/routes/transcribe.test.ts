@@ -1,10 +1,10 @@
 import {
-  assert,
   assertEquals,
   assertFalse,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
 
 import type { ApiContext } from "../types.ts";
+import { AI_REQUEST_LIMITS } from "../lib/aiRequestPolicy.ts";
 import {
   handleTranscribe,
   MAX_TRANSCRIPTION_BASE64_CHARS,
@@ -12,6 +12,8 @@ import {
 
 const TEST_API_KEY = "test-provider-key";
 const VALID_AUDIO_BASE64 = "YXVkaW8=";
+const allowAdmission = async () =>
+  ({ tier: "free", actorClass: "FREE" } as const);
 
 const createContext = (
   body: Record<string, unknown>,
@@ -89,12 +91,32 @@ Deno.test("/transcribe accepts an authenticated request and returns the transcri
     {
       apiKey: TEST_API_KEY,
       fetch: providerFetch,
+      admitRequest: allowAdmission,
     },
   );
 
   assertEquals(response.status, 200);
   assertEquals(await response.json(), { transcript: "une forêt sous la lune" });
   assertEquals(providerCalls, 1);
+});
+
+Deno.test("/transcribe bounds provider output to the app transcript limit", async () => {
+  const response = await handleTranscribe(
+    createContext(validBody(), { id: "user-1" }),
+    {
+      apiKey: TEST_API_KEY,
+      fetch: () => Promise.resolve(Response.json({
+        results: [{ alternatives: [{
+          transcript: `  ${"x".repeat(AI_REQUEST_LIMITS.transcriptChars + 50)}  `,
+        }] }],
+      })),
+      admitRequest: allowAdmission,
+    },
+  );
+
+  assertEquals(response.status, 200);
+  const body = await response.json();
+  assertEquals(body.transcript.length, AI_REQUEST_LIMITS.transcriptChars);
 });
 
 Deno.test("/transcribe rejects an oversized audio payload with 413", async () => {
@@ -152,6 +174,7 @@ Deno.test("/transcribe hides provider failure details", async () => {
     {
       apiKey: TEST_API_KEY,
       fetch: providerFetch,
+      admitRequest: allowAdmission,
     },
   );
   const body = await response.json();
@@ -159,4 +182,25 @@ Deno.test("/transcribe hides provider failure details", async () => {
   assertEquals(response.status, 502);
   assertEquals(body, { error: "Transcription service unavailable" });
   assertFalse(JSON.stringify(body).includes("provider-secret-diagnostic"));
+});
+
+Deno.test("/transcribe stops before provider work when AI admission is blocked", async () => {
+  let providerCalls = 0;
+  const response = await handleTranscribe(
+    createContext(validBody(), { id: "user-1" }),
+    {
+      apiKey: TEST_API_KEY,
+      fetch: () => {
+        providerCalls += 1;
+        return Promise.resolve(Response.json({ results: [] }));
+      },
+      admitRequest: async () =>
+        new Response(JSON.stringify({ code: "AI_ACTOR_RATE_LIMIT" }), {
+          status: 429,
+        }),
+    },
+  );
+
+  assertEquals(response.status, 429);
+  assertEquals(providerCalls, 0);
 });

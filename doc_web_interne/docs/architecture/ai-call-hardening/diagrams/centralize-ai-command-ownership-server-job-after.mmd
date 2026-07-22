@@ -1,0 +1,11 @@
+flowchart LR
+  U["User input"] --> C["Mobile client"]
+  C -->|"save immediately"| D[("dreams or local store")]
+  C -->|"analysis command + request id"| API["AI command boundary"]
+  API -->|"atomic quota + pending + insert"| Q[("quota and ai_jobs")]
+  Q --> AW["analysis worker"]
+  AW --> G["Gemini"]
+  AW -->|"persist analysis"| D
+  AW -->|"enqueue existing imagePrompt"| IW["image worker"]
+  IW --> D
+  D -->|"private event or backoff status"| C

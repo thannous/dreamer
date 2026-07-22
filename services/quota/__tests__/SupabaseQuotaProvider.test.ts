@@ -879,9 +879,9 @@ describe('SupabaseQuotaProvider', () => {
     });
   });
 
-  describe('critical non-regression: tier parameter usage (RevenueCat SSOT)', () => {
+  describe('compatibility fallback: caller tier while snapshot RPC is unavailable', () => {
     it('should use tier parameter instead of user.app_metadata.tier', async () => {
-      // CRITICAL TEST: Verifies that tier comes from parameter (RevenueCat), not from user metadata
+      // Compatibility path still uses the caller tier, never mutable user metadata.
       // Given: User has 'plus' in app_metadata, but we pass 'free' as tier parameter
       const userWithPlusMetadata = { id: 'user-123', app_metadata: { tier: 'plus' } } as any;
       const p = provider as any;
@@ -920,6 +920,39 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.usage.analysis.limit).toBeNull();
       // Can analyze should always be true for plus
       expect(status.canAnalyze).toBe(true);
+    });
+  });
+
+  describe('consolidated authenticated snapshot', () => {
+    it('uses one server-authoritative RPC without quota table fan-out', async () => {
+      const from = jest.fn();
+      const rpc = jest.fn().mockResolvedValue({
+        data: {
+          tier: 'plus',
+          usage: {
+            analysis: { used: 4, limit: null, remaining: null },
+            exploration: { used: 2, limit: null, remaining: null },
+            messages: { used: 3, limit: null, remaining: null },
+          },
+          canAnalyze: true,
+          canExplore: true,
+        },
+        error: null,
+      });
+      (supabase as any).from = from;
+      (supabase as any).rpc = rpc;
+
+      const status = await provider.getQuotaStatus(freeUser, 'free', {
+        dream: { id: 7, remoteId: 77 } as DreamAnalysis,
+      });
+
+      expect(status.tier).toBe('plus');
+      expect(status.usage.analysis).toEqual({ used: 4, limit: null, remaining: null });
+      expect(rpc).toHaveBeenCalledTimes(1);
+      expect(rpc).toHaveBeenCalledWith('get_authenticated_quota_snapshot', {
+        p_target_dream_id: 77,
+      });
+      expect(from).not.toHaveBeenCalled();
     });
   });
 });

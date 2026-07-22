@@ -9,6 +9,9 @@ import { generateAnalysisResult, generateChatResponse } from '@/mock-data/genera
 import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationRequest } from '@/lib/types';
 
 import type {
+  AnalysisJobCommandRequest,
+  AnalysisJobCommandResponse,
+  AnalysisJobStatusResponse,
   AnalysisResult,
   AnalysisRequestContext,
   CategorizeDreamResult,
@@ -26,6 +29,11 @@ const mockImageJobs = new Map<
     clientRequestId: string;
     imageUrl: string;
   }
+>();
+
+const mockAnalysisJobs = new Map<
+  string,
+  { createdAt: number; clientRequestId: string; dreamId: number }
 >();
 
 /**
@@ -224,6 +232,39 @@ export async function getImageGenerationJobStatus(jobId: string): Promise<ImageJ
   };
 }
 
+export async function submitDreamAnalysisJob(
+  request: AnalysisJobCommandRequest
+): Promise<AnalysisJobCommandResponse> {
+  await delay(150);
+  const jobId = `mock-analysis-job-${request.analysisRequestId}`;
+  mockAnalysisJobs.set(jobId, {
+    createdAt: Date.now(),
+    clientRequestId: request.analysisRequestId,
+    dreamId: request.dreamId,
+  });
+  return {
+    jobId,
+    status: 'queued',
+    clientRequestId: request.analysisRequestId,
+  };
+}
+
+export async function getDreamAnalysisJobStatus(
+  jobId: string
+): Promise<AnalysisJobStatusResponse> {
+  await delay(120);
+  const job = mockAnalysisJobs.get(jobId);
+  if (!job) throw Object.assign(new Error('Job not found'), { status: 404 });
+
+  const status = Date.now() - job.createdAt < 600 ? 'running' : 'succeeded';
+  return {
+    jobId,
+    status,
+    clientRequestId: job.clientRequestId,
+    ...(status === 'succeeded' ? { resultPayload: { dreamId: job.dreamId } } : {}),
+  };
+}
+
 /**
  * ✅ PHASE 2: Mock chat conversation with quota enforcement (1-2 seconds)
  *
@@ -246,10 +287,11 @@ export async function startOrContinueChat(
   _fingerprint?: string,
   _options?: {
     signal?: AbortSignal;
+    clientRequestId?: string;
     messageMeta?: ChatMessage['meta'];
     onDelta?: (accumulated: string) => void;
   },
-): Promise<{ text: string; message: { role: 'model'; text: string; parts: { text: string }[] } }> {
+): Promise<{ text: string; message: Partial<ChatMessage> }> {
   console.log('[MOCK] startOrContinueChat called with dreamId:', dreamId, 'message:', message);
   await delay(1000 + Math.random() * 1000); // 1-2 seconds
 
@@ -272,6 +314,7 @@ export async function startOrContinueChat(
   return {
     text: response,
     message: {
+      id: `mock-chat-${Date.now()}`,
       role: 'model',
       text: response,
       parts: [{ text: response }],

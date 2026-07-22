@@ -1,23 +1,30 @@
 # Spec 01: Break Up the API Chokepoint and Move AI Work Off the Request Path
 
-## Verification Snapshot (2026-03-15)
+## Verification Snapshot (2026-07-22)
 
 ### Confirmed
 
 - `supabase/functions/api/index.ts` is still a single edge-function router for guest session, quota, subscription sync/reconcile, chat, dream analysis, and image generation.
-- `supabase/functions/api/routes/dreams.ts` and `supabase/functions/api/routes/images.ts` still call Gemini synchronously inside the request lifecycle.
+- `supabase/functions/api/routes/dreams.ts` and the legacy `images.ts` routes still call Gemini synchronously inside the request lifecycle.
 - `supabase/functions/api/routes/subscription.ts` still performs in-band RevenueCat lookups before returning.
-- The mobile client still invokes long-running AI endpoints directly from `hooks/useDreamJournal.ts` through `services/geminiServiceReal.ts`.
+- The synchronous `/analyzeDream` compatibility route remains, while authenticated clients can use durable `analyze_dream` jobs behind `EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED`.
+- Image generation now uses durable `ai_jobs` rows and the dedicated `image-job-worker` Edge Function.
+- Image reconciliation reads one job and one affected dream with foreground-aware backoff.
+- Authenticated chat turns use atomic begin/complete RPCs and append-only message rows; `dreams.chat_history` is retained as a compatibility projection.
+- Quota status uses one authenticated snapshot RPC or a backend-signed guest session; arbitrary client fingerprints no longer authorize quota reads or upgrade marking.
+- New AI job/chat tables are private and are exposed only through narrowly granted RPCs; client-readable Realtime on `ai_jobs` remains intentionally disabled.
+- The recovered historical schema baseline now survives a full `supabase db reset --local --no-seed`: all 43 tracked migrations apply and all 46 database contract checks pass.
 
 ### Inferred
 
-- The operational risk described here is still real because unrelated request classes share the same cold-start, timeout, and saturation domain, even though this repo does not contain production latency telemetry.
+- The remaining operational risk is source-derived rather than measured: unrelated command, quota, subscription, chat, transcription, and synchronous analysis requests still share the `api` function failure domain.
 
-### Wrong / stale
+### Still open / not production-proven
 
-- The target split architecture is not implemented yet. There are no dedicated `guest-session-api`, `quota-api`, `dream-command-api`, `chat-api`, `subscription-api`, or `ai-worker` functions in this repo.
-- There is no `public.ai_jobs` table or queued AI worker flow in `supabase/migrations/*`.
-- The client does not submit analysis/image commands and poll job state yet; it still waits on synchronous `/analyzeDream` and `/generateImage` requests.
+- The target split by failure domain is not implemented yet. There are no dedicated `guest-session-api`, `quota-api`, `dream-command-api`, `chat-api`, or `subscription-api` functions.
+- These changes are source-level candidates only until their additive migrations, API function, worker, and flagged client are deployed in order.
+- The failure-domain split into separate public API functions remains unimplemented; durable analysis ownership does not by itself isolate the monolithic router.
+- The full local migration reset and focused PostgreSQL 17.6 behavior checks pass, but staging and production rollout remain unverified.
 
 ## Problem
 

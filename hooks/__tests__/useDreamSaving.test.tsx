@@ -7,7 +7,12 @@ import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { QuotaError, QuotaErrorCode } from '../../lib/errors';
 // Use jest.hoisted to ensure mock functions are available during module loading
-const { mockCategorizeDream, mockAnalyzeDream, mockAddDream } = ((factory: any) => factory())(() => ({
+const {
+  mockCategorizeDream,
+  mockAnalyzeDream,
+  mockAddDream,
+  mockApplyDreamCategorization,
+} = ((factory: any) => factory())(() => ({
   mockCategorizeDream: jest.fn().mockResolvedValue({
     title: 'Test Dream',
     theme: 'surreal',
@@ -15,6 +20,7 @@ const { mockCategorizeDream, mockAnalyzeDream, mockAddDream } = ((factory: any) 
   }),
   mockAnalyzeDream: jest.fn().mockResolvedValue({ id: 1, isAnalyzed: true }),
   mockAddDream: jest.fn().mockImplementation((dream: unknown) => Promise.resolve({ ...dream as object, id: Date.now() })),
+  mockApplyDreamCategorization: jest.fn().mockResolvedValue(null),
 }));
 
 let mockCurrentUser: any = { id: 'test-user' };
@@ -51,6 +57,7 @@ jest.mock('../../context/AuthContext', () => ({
 jest.mock('../../context/DreamsContext', () => ({
   useDreams: jest.fn().mockReturnValue({
     addDream: mockAddDream,
+    applyDreamCategorization: mockApplyDreamCategorization,
     dreams: [],
     analyzeDream: mockAnalyzeDream,
   }),
@@ -216,6 +223,43 @@ describe('useDreamSaving', () => {
     expect(mockCategorizeDream).toHaveBeenCalledWith('Bonjour le monde', 'fr');
   });
 
+  it('persists before quick categorization resolves', async () => {
+    let resolveCategorization: ((value: {
+      title: string;
+      theme: 'surreal';
+      dreamType: 'Lucid Dream';
+    }) => void) | undefined;
+    mockCategorizeDream.mockImplementationOnce(
+      () => new Promise((resolve) => {
+        resolveCategorization = resolve;
+      })
+    );
+    const { result } = renderHook(() => useDreamSaving());
+
+    let savedDream: any;
+    await act(async () => {
+      savedDream = await result.current.saveDream('Immediate save');
+    });
+
+    expect(savedDream).not.toBeNull();
+    expect(mockAddDream).toHaveBeenCalledTimes(1);
+    expect(mockApplyDreamCategorization).not.toHaveBeenCalled();
+
+    await act(async () => {
+      resolveCategorization?.({
+        title: 'Later title',
+        theme: 'surreal',
+        dreamType: 'Lucid Dream',
+      });
+      await Promise.resolve();
+    });
+
+    expect(mockApplyDreamCategorization).toHaveBeenCalledWith(
+      savedDream.id,
+      expect.objectContaining({ title: 'Later title' })
+    );
+  });
+
   it('passes current language to analyzeAndSaveDream', async () => {
     const { result } = renderHook(() => useDreamSaving());
     const draft = result.current.buildDraftDream('Un rêve');
@@ -287,4 +331,3 @@ describe('useDreamSaving', () => {
     expect(Alert.alert).toHaveBeenCalled();
   });
 });
-

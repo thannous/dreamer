@@ -60,10 +60,12 @@ const {
   categorizeDream,
   generateImageForDream,
   generateImageFromTranscript,
+  getDreamAnalysisJobStatus,
   getImageGenerationJobStatus,
   generateSpeechForText,
   resetChat,
   submitImageGenerationJob,
+  submitDreamAnalysisJob,
   startOrContinueChat,
 } = require('../geminiServiceReal');
 
@@ -619,7 +621,81 @@ describe('geminiServiceReal', () => {
     });
   });
 
+  describe('analysis jobs', () => {
+    it('submits an idempotent authenticated analysis command', async () => {
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
+        mockFetchResponse({
+          jobId: 'analysis-job-1',
+          status: 'queued',
+          clientRequestId: '3f73ab45-9a14-4db9-94a3-d24724457d9e',
+        }, true, 202, 'Accepted')
+      );
+
+      await submitDreamAnalysisJob({
+        dreamId: 42,
+        analysisRequestId: '3f73ab45-9a14-4db9-94a3-d24724457d9e',
+        lang: 'fr',
+        replaceExistingImage: true,
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://api.example.com/analysis-jobs',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({
+            dreamId: 42,
+            analysisRequestId: '3f73ab45-9a14-4db9-94a3-d24724457d9e',
+            lang: 'fr',
+            replaceExistingImage: true,
+          }),
+        })
+      );
+    });
+
+    it('reads one analysis job by id', async () => {
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
+        mockFetchResponse({
+          jobId: 'analysis-job-1',
+          status: 'succeeded',
+          clientRequestId: 'request-1',
+        })
+      );
+
+      await getDreamAnalysisJobStatus('analysis-job-1');
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://api.example.com/analysis-jobs/status',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ jobId: 'analysis-job-1' }),
+        })
+      );
+    });
+  });
+
   describe('startOrContinueChat', () => {
+    it('sends the client request id used to deduplicate an authenticated turn', async () => {
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
+        mockFetchResponse({ text: 'AI response' })
+      );
+
+      await startOrContinueChat('42', 'What does water mean?', 'en', undefined, undefined, {
+        clientRequestId: '3f73ab45-9a14-4db9-94a3-d24724457d9e',
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://api.example.com/chat',
+        expect.objectContaining({
+          body: JSON.stringify({
+            dreamId: '42',
+            message: 'What does water mean?',
+            lang: 'en',
+            clientRequestId: '3f73ab45-9a14-4db9-94a3-d24724457d9e',
+          }),
+        })
+      );
+    });
+
     it('sends POST to /chat with dreamId and message', async () => {
       (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ text: 'AI response' })
