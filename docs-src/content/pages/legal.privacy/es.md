@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Política de privacidad",
   "publishedTime": "",
-  "modifiedTime": "2026-07-16",
+  "modifiedTime": "2026-07-23",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Política de privacidad</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Última actualización: 16 de julio de 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Última actualización: 23 de julio de 2026</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -84,6 +84,7 @@
                     <li><strong>Datos técnicos y de uso:</strong> registros técnicos (errores, rendimiento, eventos de seguridad), información básica del dispositivo (sistema operativo, versión de la app), un identificador de dispositivo hasheado utilizado únicamente para la gestión de cuotas gratuitas e identificadores técnicos necesarios para proporcionar el servicio. En Android, Noctalia también puede medir un conjunto limitado de eventos funcionales (paso del onboarding visto, elección realizada, sueño guardado o resultado consultado) mediante un identificador aleatorio de recorrido conservado en el dispositivo durante un máximo de siete días. Esta medición propia nunca incluye el texto, el título ni el análisis de un sueño, ni correo electrónico, identificador de cuenta, identificador de dispositivo o dirección IP persistida. No utiliza herramientas de analítica de marketing de terceros y puede desactivarse desde la introducción o los ajustes.</li>
                     <li><strong>Medición de audiencia del sitio web:</strong> cuando visitas noctalia.app, Ahrefs Web Analytics mide las páginas vistas, los sitios de referencia y, cuando corresponde, los clics en enlaces externos y los envíos de formularios. También deduce el navegador, el dispositivo, el sistema operativo, el idioma y una ubicación aproximada a nivel de país y ciudad. No utiliza cookies ni identificadores persistentes. La dirección IP sin procesar se usa de forma transitoria para la ubicación aproximada y un hash diario del visitante con sal, y después se descarta sin almacenarse. No se envían a Ahrefs datos de cuenta ni contenido de sueños.</li>
                     <li><strong>Análisis del uso del sitio con tu consentimiento:</strong> únicamente para mejorar Noctalia y este sitio, Microsoft Clarity mide las páginas visitadas, los clics, el desplazamiento e información técnica básica, y crea mapas de calor y grabaciones de sesión si permites la analítica. Los textos mostrados, campos de entrada y listas desplegables se ocultan mediante el enmascaramiento estricto. Clarity puede instalar las cookies <code>_clck</code> y <code>_clsk</code>. El almacenamiento publicitario permanece rechazado y no enviamos intencionadamente contenido de sueños ni datos de cuenta a Clarity.</li>
+                    <li><strong>Medición de audiencia con tu consentimiento:</strong> únicamente para mejorar Noctalia y este sitio, Google Analytics mide las páginas visitadas, las fuentes de tráfico, las interacciones básicas e información técnica (navegador, dispositivo, sistema operativo, idioma, ubicación aproximada a nivel de país) si permites la analítica. Google Analytics puede instalar las cookies <code>_ga</code> y <code>_ga_*</code>. Las funciones publicitarias y el almacenamiento publicitario permanecen desactivados y no enviamos intencionadamente contenido de sueños ni datos de cuenta a Google Analytics.</li>
                     <li><strong>Datos de soporte:</strong> contenido de tus comunicaciones con nosotros (por ejemplo, cuando nos contactas por email) e información necesaria para el seguimiento de tus solicitudes.</li>
                 </ul>
                 <p class="mt-4">El contenido que grabas en Noctalia puede, según tu elección, contener información sensible en el sentido del RGPD (por ejemplo, elementos relacionados con tu salud, vida sexual, creencias, etc.). Esta información se procesa únicamente para proporcionarte el servicio de diario y análisis de sueños, basándose en tu <strong>consentimiento explícito</strong> y tu iniciativa al grabarla.</p>
@@ -98,6 +99,7 @@
                     <li><strong>Mejora de la aplicación, medición de estabilidad, prevención de abusos y seguridad:</strong> tratamiento basado en nuestro <strong>interés legítimo</strong> en asegurar el correcto funcionamiento, seguridad y desarrollo del servicio, sin perfilado de marketing.</li>
                     <li><strong>Medición agregada y sin cookies del tráfico con Ahrefs:</strong> tratamiento basado en nuestro <strong>interés legítimo</strong> en mejorar nuestros contenidos públicos, sin publicidad dirigida ni seguimiento entre sitios.</li>
                     <li><strong>Mapas de calor y grabaciones de sesión con Microsoft Clarity:</strong> tratamiento basado únicamente en tu <strong>consentimiento</strong> para analítica, que puedes rechazar o retirar en cualquier momento.</li>
+                    <li><strong>Medición de audiencia con Google Analytics:</strong> tratamiento basado únicamente en tu <strong>consentimiento</strong> para analítica, que puedes rechazar o retirar en cualquier momento.</li>
                     <li><strong>Gestión de solicitudes de ejercicio de derechos, soporte al usuario y cumplimiento legal:</strong> tratamiento necesario para cumplir con nuestras <strong>obligaciones legales</strong> y para <strong>ejercer nuestros derechos</strong> (evidencia, defensa legal, etc.).</li>
                 </ul>
             </section>
@@ -133,6 +135,7 @@
                     <li><strong>Registros técnicos y de seguridad:</strong> conservados durante un período máximo de 12 meses, para asegurar la seguridad, detección de incidentes y evidencia en caso de disputa.</li>
                     <li><strong>Medición de uso propia:</strong> los eventos brutos sin contenido de sueños se eliminan después de 90 días. Las estadísticas agregadas y anónimas que ya no permiten aislar un recorrido individual se conservan durante un máximo de 24 meses.</li>
                     <li><strong>Microsoft Clarity:</strong> las grabaciones de sesión se conservan durante 30 días y los mapas de calor hasta 9 meses. Tu preferencia de analítica se guarda en el navegador durante un máximo de 6 meses.</li>
+                    <li><strong>Google Analytics:</strong> los datos de medición a nivel de usuario se conservan durante un máximo de 14 meses; las estadísticas agregadas pueden conservarse más tiempo.</li>
                     <li><strong>Comunicaciones de soporte:</strong> conservadas durante el tiempo necesario para gestionar tu solicitud y, cuando corresponda, para defender nuestros derechos (generalmente hasta 24 meses).</li>
                 </ul>
             </section>
@@ -145,6 +148,7 @@
                     <li><strong>Proveedores técnicos:</strong> principalmente Supabase (alojamiento, base de datos, autenticación) y proveedores de infraestructura cloud necesarios para el funcionamiento de la aplicación.</li>
                     <li><strong>Analítica del sitio web:</strong> Ahrefs Pte Ltd proporciona la medición sin cookies descrita anteriormente. Puedes consultar más detalles en la <a href="https://ahrefs.com/legal/privacy-policy" class="text-dream-salmon hover:underline">Política de privacidad de Ahrefs</a>.</li>
                     <li><strong>Análisis de uso con consentimiento:</strong> Microsoft proporciona Clarity solo después de que lo aceptes. Puedes consultar más detalles en la <a href="https://privacy.microsoft.com/privacystatement" class="text-dream-salmon hover:underline">Declaración de privacidad de Microsoft</a>.</li>
+                    <li><strong>Medición de audiencia con consentimiento:</strong> Google proporciona Google Analytics solo después de que lo aceptes. Puedes consultar más detalles en la <a href="https://policies.google.com/privacy" class="text-dream-salmon hover:underline">Política de privacidad de Google</a>.</li>
                     <li><strong>Proveedores de IA y reconocimiento de voz:</strong> Google (Gemini, Google Cloud Speech-to-Text), y cuando corresponda otros proveedores de IA líderes (Anthropic, OpenAI, Perplexity, Mistral, o servicios equivalentes) para transcripción, análisis de tus sueños y generación de imágenes o contenido.</li>
                     <li><strong>Gestión de suscripciones:</strong> RevenueCat (EE. UU.) gestiona las suscripciones integradas. RevenueCat recibe un identificador de usuario anónimo y la información de compra proporcionada por la tienda aplicable, actualmente Google Play. Tu información de pago completa nunca pasa por Noctalia.</li>
                     <li><strong>Asesores externos y autoridades:</strong> bufetes de abogados, contables o autoridades administrativas y judiciales cuando lo exija la ley o para defender nuestros derechos.</li>
@@ -168,7 +172,7 @@
                     <li><strong>Derecho a la limitación del tratamiento:</strong> solicitar la suspensión temporal de ciertos tratamientos.</li>
                     <li><strong>Derecho de oposición:</strong> oponerte a ciertos tratamientos basados en nuestro interés legítimo.</li>
                     <li><strong>Derecho a la portabilidad de datos:</strong> recibir los datos que nos has proporcionado en un formato estructurado, de uso común y lectura mecánica, o solicitar su transmisión a otro responsable cuando sea técnicamente factible.</li>
-                    <li><strong>Derecho a retirar el consentimiento:</strong> cuando el tratamiento se base en tu consentimiento (principalmente para ciertos datos sensibles), puedes retirarlo en cualquier momento, sin afectar la licitud del tratamiento anterior. Puedes cambiar la opción de Clarity desde «Preferencias de analítica» en el pie de página.</li>
+                    <li><strong>Derecho a retirar el consentimiento:</strong> cuando el tratamiento se base en tu consentimiento (principalmente para ciertos datos sensibles), puedes retirarlo en cualquier momento, sin afectar la licitud del tratamiento anterior. Puedes cambiar la opción de Clarity y Google Analytics desde «Preferencias de analítica» en el pie de página.</li>
                 </ul>
                 <p class="mt-4">Puedes ejercer tus derechos contactándonos en: <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>, especificando la dirección de email utilizada para crear tu cuenta. Podemos necesitar pedirte información adicional para verificar tu identidad.</p>
                 <p class="mt-4">Si resides en el Espacio Económico Europeo o el Reino Unido, también tienes derecho a presentar una reclamación ante tu autoridad de control local (en España: la AEPD).</p>
