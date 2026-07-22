@@ -10,7 +10,6 @@ import { Alert, AppState, Platform } from 'react-native';
 import { createScopedLogger } from '@/lib/logger';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import {
-  ensureOfflineSttModel,
   getSpeechLocaleAvailability,
   isWebSpeechRecognitionAvailable,
   startNativeSpeechSession,
@@ -362,35 +361,6 @@ export function useRecordingSession({
           }
         }
 
-        const modelReady = await ensureOfflineSttModel(transcriptionLocale);
-        if (Platform.OS === 'android' && Number(Platform.Version) >= 33 && !modelReady) {
-          if (__DEV__) {
-            console.log('[Recording] offline model not ready, continuing with online recognition');
-          }
-        }
-
-        const localeAvailability = await getSpeechLocaleAvailability(transcriptionLocale);
-        if (localeAvailability?.installedLocales.length && !localeAvailability.isInstalled) {
-          if (onLanguagePackMissing) {
-            onLanguagePackMissing({
-              locale: transcriptionLocale,
-              installedLocales: localeAvailability.installedLocales,
-            });
-          } else {
-            const installedText =
-              localeAvailability.installedLocales.join(', ') ||
-              t('recording.alert.language_pack_missing.none');
-            Alert.alert(
-              t('recording.alert.language_pack_missing.title'),
-              t('recording.alert.language_pack_missing.message', {
-                locale: transcriptionLocale,
-                installed: installedText,
-              })
-            );
-          }
-          return { success: false, error: 'language_pack_missing' };
-        }
-
         await setAudioModeAsync({
           allowsRecording: true,
           playsInSilentMode: true,
@@ -469,7 +439,7 @@ export function useRecordingSession({
         return { success: false, error: err instanceof Error ? err.message : 'start_failed' };
       }
     },
-    [audioRecorder, onLanguagePackMissing, t, transcriptionLocale, onPartialTranscript, handleRecorderError]
+    [audioRecorder, t, transcriptionLocale, onPartialTranscript, handleRecorderError]
   );
 
   const toggleRecording = useCallback(
