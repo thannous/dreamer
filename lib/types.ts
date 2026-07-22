@@ -25,6 +25,7 @@ export interface ChatMessage {
     retry?: {
       messageText: string;
       displayText?: string;
+      clientRequestId?: string;
     };
   };
 }
@@ -48,6 +49,14 @@ export type DreamType = 'Lucid Dream' | 'Recurring Dream' | 'Nightmare' | 'Symbo
  * Canonical dream visual/emotional themes.
  */
 export type DreamTheme = 'surreal' | 'mystical' | 'calm' | 'noir';
+
+export interface DreamCategorization {
+  title: string;
+  theme: DreamTheme;
+  dreamType: DreamType;
+  hasPerson?: boolean | null;
+  hasAnimal?: boolean | null;
+}
 
 /**
  * Metadata for dreams entered from memory rather than freshly captured after waking.

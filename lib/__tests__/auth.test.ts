@@ -41,6 +41,11 @@ const mockSubscriptionService = {
 
 const mockFetchJSON = jest.fn();
 const mockGetDeviceFingerprint = jest.fn(async () => 'device-1');
+const mockGetGuestHeaders = jest.fn(async () => ({
+  'x-guest-token': 'guest-token',
+  'x-guest-fingerprint': 'device-1',
+  'x-guest-platform': 'ios',
+}));
 
 const defaultGoogleModule = {
   GoogleSignin: {
@@ -116,6 +121,10 @@ const loadAuth = async (options?: {
 
   jest.doMock('../http', () => ({
     fetchJSON: mockFetchJSON,
+  }));
+
+  jest.doMock('../guestSession', () => ({
+    getGuestHeaders: mockGetGuestHeaders,
   }));
 
   jest.doMock('@/services/subscriptionService', () => mockSubscriptionService);
@@ -305,7 +314,11 @@ describe('auth helpers', () => {
       'https://api.example.com/auth/mark-upgrade',
       expect.objectContaining({
         method: 'POST',
-        headers: { Authorization: 'Bearer access-token' },
+        headers: expect.objectContaining({
+          Authorization: 'Bearer access-token',
+          'x-guest-token': 'guest-token',
+          'x-guest-fingerprint': 'device-1',
+        }),
         body: { fingerprint: 'device-1' },
       })
     );
@@ -349,7 +362,11 @@ describe('auth helpers', () => {
         'https://api.example.com/auth/mark-upgrade',
         expect.objectContaining({
           method: 'POST',
-          headers: { Authorization: 'Bearer access-token' },
+          headers: expect.objectContaining({
+            Authorization: 'Bearer access-token',
+            'x-guest-token': 'guest-token',
+            'x-guest-fingerprint': 'device-1',
+          }),
           body: { fingerprint: 'device-1' },
         })
       );

@@ -7,6 +7,10 @@ export type ImageJobRequestPayload = {
   prompt?: string | null;
   transcript?: string | null;
   previousImageUrl?: string | null;
+  redacted?: boolean;
+  hadPrompt?: boolean;
+  hadTranscript?: boolean;
+  hadPreviousImage?: boolean;
 };
 
 export type ImageJobResultPayload = {
@@ -135,19 +139,17 @@ export const triggerImageJobWorker = async (options: {
     });
 
     if (!response.ok) {
-      const bodyText = await response.text().catch(() => '');
       console.warn('[api] Failed to trigger image job worker', {
         jobId: options.jobId,
         status: response.status,
-        bodyText: bodyText.slice(0, 200),
       });
     }
 
     return response.ok;
-  } catch (error) {
+  } catch {
     console.warn('[api] Failed to trigger image job worker', {
       jobId: options.jobId,
-      error: error instanceof Error ? error.message : String(error),
+      reason: 'network_error',
     });
     return false;
   }

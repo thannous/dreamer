@@ -442,11 +442,11 @@ export const callGeminiWithFallback = async (
 
     const errMsg = String(error?.message ?? error);
     if (errMsg.includes('401') || errMsg.includes('403') || errMsg.includes('Invalid request')) {
-      console.error('[api] Non-retryable error, not falling back', { error: errMsg });
+      console.error('[api] Non-retryable model request failure; fallback disabled');
       throw err;
     }
     if (primaryModel === fallbackModel) throw err;
-    console.warn('[api] Primary model failed, retrying with fallback', primaryModel, err);
+    console.warn('[api] Primary model failed, retrying with fallback', { primaryModel });
     return await makeCall(fallbackModel);
   }
 };

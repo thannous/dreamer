@@ -679,6 +679,33 @@ describe('supabaseDreamService', () => {
     await expect(fetchDreamsFromSupabase()).rejects.toThrow('query failed');
   });
 
+  it('fetchDreamFromSupabase reads and hydrates only the requested row', async () => {
+    const singleMock = jest.fn().mockResolvedValue({
+      data: buildRow({
+        id: 42,
+        image_url: 'supabase-storage://dream-images/user-1/target.webp',
+      }),
+      error: null,
+    });
+    const eqMock = jest.fn(() => ({ single: singleMock }));
+    const selectMock = jest.fn(() => ({ eq: eqMock }));
+    mocks.from.mockReturnValue({ select: selectMock });
+
+    const { fetchDreamFromSupabase } = require('../supabaseDreamService');
+    const dream = await fetchDreamFromSupabase(42);
+
+    expect(eqMock).toHaveBeenCalledWith('id', 42);
+    expect(dream.remoteId).toBe(42);
+    expect(dream.imageUrl).toBe('https://signed.example.com/user-1/target.webp?token=owner');
+  });
+
+  it('fetchDreamFromSupabase rejects invalid ids before querying', async () => {
+    const { fetchDreamFromSupabase } = require('../supabaseDreamService');
+
+    await expect(fetchDreamFromSupabase(0)).rejects.toThrow('Invalid remote dream id');
+    expect(mocks.from).not.toHaveBeenCalled();
+  });
+
   it('createDreamInSupabase uploads inline images and thumbnails', async () => {
     mocks.storageUpload.mockImplementation(async (path: string) => ({
       data: { path },

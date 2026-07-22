@@ -25,6 +25,10 @@ import { handleTranscribe } from './routes/transcribe.ts';
 import { buildSupabaseUserAuthHeaders, resolveSupabaseUserBearer } from './lib/authHeader.ts';
 import { handleProductAnalytics } from './routes/analytics.ts';
 import { handleAnalyticsGuestSession } from './routes/analyticsSession.ts';
+import {
+  handleCreateAnalysisJob,
+  handleGetAnalysisJobStatus,
+} from './routes/analysisJobs.ts';
 import type { ApiContext } from './types.ts';
 
 type RouteHandler = (ctx: ApiContext) => Promise<Response>;
@@ -44,6 +48,8 @@ const routes = new Map<string, RouteHandler>([
   ['POST /analyzeDream', handleAnalyzeDream],
   ['POST /analyzeDreamFull', handleAnalyzeDreamFull],
   ['POST /categorizeDream', handleCategorizeDream],
+  ['POST /analysis-jobs', handleCreateAnalysisJob],
+  ['POST /analysis-jobs/status', handleGetAnalysisJobStatus],
   ['POST /image-jobs', handleCreateImageJob],
   ['POST /image-jobs/status', handleGetImageJobStatus],
   ['POST /generateImage', handleGenerateImage],

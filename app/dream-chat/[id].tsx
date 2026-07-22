@@ -47,6 +47,7 @@ type CategoryType = DreamChatCategory;
 type SendMessageOptions = {
   baseMessages?: ChatMessage[];
   category?: Exclude<CategoryType, 'general'>;
+  clientRequestId?: string;
   meta?: ChatMessage['meta'];
 };
 
@@ -76,6 +77,7 @@ const createChatMessage = (
   role: 'user' | 'model',
   text: string,
   options?: {
+    id?: string;
     category?: Exclude<CategoryType, 'general'>;
     meta?: ChatMessage['meta'];
     parts?: ChatMessage['parts'];
@@ -83,7 +85,7 @@ const createChatMessage = (
 ): ChatMessage => {
   const meta = resolveChatMessageMeta(options);
   return {
-    id: generateUUID(),
+    id: options?.id ?? generateUUID(),
     role,
     text,
     ...(options?.parts ? { parts: options.parts } : {}),
@@ -122,7 +124,7 @@ const chatHistoryMigrationCompletedByDreamId = new Map<number, number>();
 export default function DreamChatScreen() {
   const { t } = useTranslation();
   const { id, category, mode: routeMode } = useLocalSearchParams<{ id: string; category?: string; mode?: string }>();
-  const { dreams, updateDream } = useDreams();
+  const { dreams, updateDream, applyServerDreamState } = useDreams();
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { user } = useAuth();
@@ -451,6 +453,7 @@ export default function DreamChatScreen() {
         category: options?.category,
         meta: options?.meta,
       });
+      const chatRequestId = options?.clientRequestId ?? generateUUID();
 
       // Guard against concurrent sends (double taps, quick topics during streaming, etc.)
       if (isLoading || sendInFlightRef.current) {
@@ -562,18 +565,21 @@ export default function DreamChatScreen() {
             const dreamIdString = String(synced.remoteId);
             const aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
               signal: controller.signal,
+              clientRequestId: chatRequestId,
               messageMeta,
               onDelta: setStreamingReply,
             });
 
             // Add user message
             const userMessage = createChatMessage('user', resolvedDisplayText, {
+              id: chatRequestId,
               category: options?.category,
               meta: options?.meta,
             });
             const updatedMessages = [...baseMessages, userMessage];
 
             const aiMessage = createChatMessage('model', aiResponse.text, {
+              id: aiResponse.message?.id,
               parts: aiResponse.message?.parts,
             });
             const finalMessages = [...updatedMessages, aiMessage];
@@ -586,7 +592,7 @@ export default function DreamChatScreen() {
               chatHistory: finalMessages,
             };
 
-            await updateDream(dreamUpdate as DreamAnalysis);
+            await applyServerDreamState(dreamUpdate as DreamAnalysis);
 
             // Invalidate quota cache if this was the first message
             if (isFirstUserMessage) {
@@ -636,6 +642,7 @@ export default function DreamChatScreen() {
 
       // Add user message (use displayText if provided, otherwise use textToSend)
       const userMessage = createChatMessage('user', resolvedDisplayText, {
+        id: chatRequestId,
         category: options?.category,
         meta: options?.meta,
       });
@@ -681,19 +688,26 @@ export default function DreamChatScreen() {
             language,
             dreamContext,
             guestFingerprint,
-            { signal: controller.signal, messageMeta, onDelta: setStreamingReply }
+            {
+              signal: controller.signal,
+              clientRequestId: chatRequestId,
+              messageMeta,
+              onDelta: setStreamingReply,
+            }
           );
         } else {
           // Authenticated mode: send dreamId (current flow)
           const dreamIdString = String(dream.remoteId ?? dream.id);
           aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
             signal: controller.signal,
+            clientRequestId: chatRequestId,
             messageMeta,
             onDelta: setStreamingReply,
           });
         }
 
         const aiMessage = createChatMessage('model', aiResponse.text, {
+          id: aiResponse.message?.id,
           parts: aiResponse.message?.parts,
         });
         const finalMessages = [...updatedMessages, aiMessage];
@@ -718,7 +732,13 @@ export default function DreamChatScreen() {
         };
 
         // Persist to dream
-        await updateDream(dreamUpdate as DreamAnalysis);
+        if (user && !isMockMode) {
+          // The atomic chat RPC already committed both messages. Update only
+          // the local cache to avoid a redundant full-dream write and revision race.
+          await applyServerDreamState(dreamUpdate as DreamAnalysis);
+        } else {
+          await updateDream(dreamUpdate as DreamAnalysis);
+        }
 
         // Invalidate quota cache if this was the first message
         if (isFirstUserMessage) {
@@ -755,6 +775,7 @@ export default function DreamChatScreen() {
             retry: {
               messageText: textToSend,
               displayText: resolvedDisplayText,
+              clientRequestId: chatRequestId,
             },
           },
         });
@@ -794,6 +815,7 @@ export default function DreamChatScreen() {
       showMessageLimitAlert,
       shouldGateOnQuotaCheck,
       t,
+      applyServerDreamState,
       updateDream,
       user,
     ]
@@ -804,9 +826,14 @@ export default function DreamChatScreen() {
       if (isLoading) return;
       const retry = message.meta?.retry;
       if (!retry) return;
-      const baseMessages = messages.filter((msg) => msg.id !== message.id);
+      const baseMessages = messages.filter(
+        (msg) => msg.id !== message.id && msg.id !== retry.clientRequestId
+      );
       setMessages(baseMessages);
-      sendMessage(retry.messageText, retry.displayText, { baseMessages });
+      sendMessage(retry.messageText, retry.displayText, {
+        baseMessages,
+        clientRequestId: retry.clientRequestId,
+      });
     },
     [isLoading, messages, sendMessage]
   );

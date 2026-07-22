@@ -55,6 +55,7 @@ const mergeServerDreamWithLocalState = (
     {
       ...serverDream,
       id: localDream?.id ?? serverDream.id,
+      memory: serverDream.memory ?? localDream?.memory,
       imageUpdatedAt: localDream?.imageUpdatedAt ?? serverDream.imageUpdatedAt,
       imageSource: localDream?.imageSource ?? serverDream.imageSource,
       imageJobId: localDream?.imageJobId,

@@ -1,5 +1,7 @@
 import { corsHeaders } from "../lib/constants.ts";
 import { requireGuestSession } from "../lib/guards.ts";
+import { AI_REQUEST_LIMITS } from "../lib/aiRequestPolicy.ts";
+import { admitSynchronousAiRequest } from "../services/aiAdmission.ts";
 import type { ApiContext } from "../types.ts";
 
 const ALLOWED_ENCODINGS = new Set(["LINEAR16", "AMR_WB", "WEBM_OPUS"]);
@@ -20,14 +22,15 @@ type TranscribeBody = {
 };
 
 type SpeechProviderResponse = {
-  results?: Array<{
-    alternatives?: Array<{ transcript?: unknown }>;
-  }>;
+  results?: {
+    alternatives?: { transcript?: unknown }[];
+  }[];
 };
 
 type TranscribeDependencies = {
   apiKey?: string;
   fetch?: typeof fetch;
+  admitRequest?: typeof admitSynchronousAiRequest;
 };
 
 const jsonResponse = (
@@ -119,6 +122,15 @@ export async function handleTranscribe(
     return invalidRequest("Invalid sample rate");
   }
 
+  const admission = await (dependencies.admitRequest ?? admitSynchronousAiRequest)({
+    ctx,
+    capability: "transcribe",
+    guestFingerprint: sessionCheck.fingerprint,
+  });
+  if (admission instanceof Response) {
+    return admission;
+  }
+
   const apiKey = dependencies.apiKey?.trim() ||
     Deno.env.get("GOOGLE_CLOUD_STT_API_KEY")?.trim() ||
     Deno.env.get("GOOGLE_API_KEY")?.trim();
@@ -169,6 +181,8 @@ export async function handleTranscribe(
   }
 
   const candidate = providerBody.results?.[0]?.alternatives?.[0]?.transcript;
-  const transcript = typeof candidate === "string" ? candidate : "";
+  const transcript = typeof candidate === "string"
+    ? candidate.trim().slice(0, AI_REQUEST_LIMITS.transcriptChars)
+    : "";
   return jsonResponse({ transcript }, 200);
 }

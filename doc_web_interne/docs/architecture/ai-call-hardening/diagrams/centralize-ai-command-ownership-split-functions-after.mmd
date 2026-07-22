@@ -1,0 +1,11 @@
+flowchart LR
+  C["Mobile client"] --> DC["dream-command-api"]
+  C --> CH["chat-api"]
+  C --> QS["quota and guest APIs"]
+  DC --> Q[("quota and ai_jobs")]
+  Q --> AW["analysis worker"]
+  AW --> G["Gemini"]
+  AW --> D[("dreams")]
+  AW --> IW["image worker"]
+  IW --> D
+  D -->|"private event or status"| C

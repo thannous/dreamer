@@ -156,7 +156,14 @@ const formatRecordingDuration = (seconds: number) => {
 };
 
 export default function RecordingScreen() {
-  const { addDream, updateDream, dreams, analyzeDream, reloadDreams } = useDreams();
+  const {
+    addDream,
+    updateDream,
+    applyDreamCategorization,
+    dreams,
+    analyzeDream,
+    reloadDreams,
+  } = useDreams();
   const { colors, mode } = useTheme();
   const { language } = useLanguage();
   const { t } = useTranslation();
@@ -994,35 +1001,18 @@ export default function RecordingScreen() {
     try {
       const preCount = dreams.length;
 
-      // Prepare the dream object
-      let dreamToSave = draftDream && draftDream.transcript === latestTranscript
+      // Persist first. Optional AI categorization must never delay durable capture.
+      const dreamToSave = draftDream && draftDream.transcript === latestTranscript
         ? draftDream
         : buildDraftDream(latestTranscript);
 
-      // Attempt quick categorization if we have a transcript
-      let categorizationResult: Awaited<ReturnType<typeof categorizeDream>> | null = null;
-
-      if (latestTranscript) {
-        try {
-          categorizationResult = await categorizeDream(latestTranscript, language);
-          const preserveRememberedDreamType = dreamToSave.memory?.origin === 'remembered';
-          dreamToSave = {
-            ...dreamToSave,
-            title: categorizationResult.title,
-            theme: categorizationResult.theme,
-            dreamType: preserveRememberedDreamType ? dreamToSave.dreamType : categorizationResult.dreamType,
-            hasPerson: categorizationResult.hasPerson,
-            hasAnimal: categorizationResult.hasAnimal,
-          };
-
-        } catch (err) {
-          // Silently fail and proceed with default/derived values
-          log.warn('Quick categorization failed:', err);
-        }
-      }
-
       const savedDream = await addDream(dreamToSave);
       setDraftDream(savedDream);
+      void categorizeDream(latestTranscript, language)
+        .then((categorization) => applyDreamCategorization(savedDream.id, categorization))
+        .catch((error) => {
+          log.warn('Quick categorization failed:', error);
+        });
       void trackProductEvent('recording_saved', {
         input_mode: lastInputSourceRef.current,
         capture_context: captureIntent,
@@ -1078,6 +1068,7 @@ export default function RecordingScreen() {
     }
   }, [
     addDream,
+    applyDreamCategorization,
     buildDraftDream,
     captureIntent,
     dreams.length,

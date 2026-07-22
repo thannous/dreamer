@@ -18,6 +18,7 @@ import {
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import type {
   ChatMessage,
+  DreamCategorization,
   DreamEmotionInsight,
   DreamSymbolInsight,
   DreamTheme,
@@ -70,6 +71,41 @@ export type ImageJobStatusResponse = {
   errorMessage?: string | null;
 };
 
+export type AnalysisJobCommandRequest = {
+  dreamId: number;
+  analysisRequestId: string;
+  lang?: string;
+  replaceExistingImage?: boolean;
+};
+
+export type AnalysisJobCommandResponse = {
+  jobId: string;
+  status: 'queued' | 'running' | 'succeeded' | 'failed';
+  clientRequestId: string;
+  duplicate?: boolean;
+  quotaUsed?: { analysis: number };
+};
+
+export type AnalysisImageJobPayload = {
+  id: string;
+  status: 'queued' | 'running' | 'succeeded' | 'failed';
+  client_request_id: string;
+  dream_id?: number | null;
+};
+
+export type AnalysisJobStatusResponse = {
+  jobId: string;
+  status: 'queued' | 'running' | 'succeeded' | 'failed';
+  clientRequestId: string;
+  resultPayload?: {
+    dreamId?: number;
+    imageJob?: AnalysisImageJobPayload | null;
+    imageJobErrorCode?: string | null;
+  } | null;
+  errorCode?: string | null;
+  errorMessage?: string | null;
+};
+
 async function fetchWithSessionHeaders<T>(
   path: string,
   options: HttpOptions & { signal?: AbortSignal }
@@ -106,10 +142,7 @@ export async function analyzeDream(
   });
 }
 
-export type CategorizeDreamResult = Pick<AnalysisResult, 'title' | 'theme' | 'dreamType'> & {
-  hasPerson?: boolean | null;
-  hasAnimal?: boolean | null;
-};
+export type CategorizeDreamResult = DreamCategorization;
 
 export async function categorizeDream(transcript: string, lang: string = 'en'): Promise<CategorizeDreamResult> {
   return fetchWithSessionHeaders<CategorizeDreamResult>('/categorizeDream', {
@@ -245,6 +278,26 @@ export async function getImageGenerationJobStatus(jobId: string): Promise<ImageJ
   });
 }
 
+export async function submitDreamAnalysisJob(
+  request: AnalysisJobCommandRequest
+): Promise<AnalysisJobCommandResponse> {
+  return fetchWithSessionHeaders<AnalysisJobCommandResponse>('/analysis-jobs', {
+    method: 'POST',
+    body: request,
+    ...NETWORK_REQUEST_POLICIES.analysisJobCommand,
+  });
+}
+
+export async function getDreamAnalysisJobStatus(
+  jobId: string
+): Promise<AnalysisJobStatusResponse> {
+  return fetchWithSessionHeaders<AnalysisJobStatusResponse>('/analysis-jobs/status', {
+    method: 'POST',
+    body: { jobId },
+    ...NETWORK_REQUEST_POLICIES.analysisJobStatus,
+  });
+}
+
 export async function generateImageFromTranscript(transcript: string, previousImageUrl?: string): Promise<string> {
   try {
     const res = await fetchWithSessionHeaders<{ imageUrl?: string; imageBytes?: string; prompt?: string }>(
@@ -310,6 +363,7 @@ export async function startOrContinueChat(
   fingerprint?: string,
   options?: {
     signal?: AbortSignal;
+    clientRequestId?: string;
     messageMeta?: ChatMessage['meta'];
     /**
      * When provided, the reply is streamed: called for each text delta with
@@ -323,6 +377,7 @@ export async function startOrContinueChat(
     dreamId,
     message,
     lang,
+    ...(options?.clientRequestId && { clientRequestId: options.clientRequestId }),
     ...(options?.messageMeta && { messageMeta: options.messageMeta }),
     ...(dreamContext && { dreamContext }),
     ...(fingerprint && { fingerprint }),
@@ -343,8 +398,9 @@ export async function startOrContinueChat(
 
 /**
  * Streaming /chat transport: POSTs with stream=true and consumes the SSE
- * response incrementally. No auto-retry — the server persists the user
- * message per call, so a resend would duplicate it (same as the JSON path).
+ * response incrementally. No automatic transport retry: the UI may retry
+ * explicitly with the same request UUID so the server can replay or resume
+ * the durable turn without duplicating provider work.
  */
 async function streamChatRequest(
   body: Record<string, unknown>,

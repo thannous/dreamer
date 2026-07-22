@@ -1,5 +1,11 @@
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { requireGuestSession } from '../lib/guards.ts';
+import {
+  AI_REQUEST_LIMITS,
+  aiInputErrorResponse,
+  isValidClientRequestId,
+  validateBoundedText,
+} from '../lib/aiRequestPolicy.ts';
 import type { ApiContext } from '../types.ts';
 import {
   buildImageJobActorFilter,
@@ -12,6 +18,83 @@ import {
 type GuestQuotaStatus = {
   image_count?: number;
   is_upgraded?: boolean;
+};
+
+type ImageJobAdmission = {
+  allowed?: boolean;
+  duplicate?: boolean;
+  code?:
+    | 'AI_GLOBAL_BACKLOG_LIMIT'
+    | 'AI_ACTOR_CONCURRENCY_LIMIT'
+    | 'AI_ACTOR_RATE_LIMIT'
+    | 'AI_IDEMPOTENCY_KEY_REUSED';
+  retry_after_seconds?: number;
+  job?: ImageJobRow;
+};
+
+const readPositiveEnv = (name: string, fallback: number, maximum: number): number => {
+  const parsed = Number(Deno.env.get(name));
+  return Number.isSafeInteger(parsed) && parsed > 0
+    ? Math.min(parsed, maximum)
+    : fallback;
+};
+
+export const resolveImageJobAdmissionPolicy = (
+  tier: 'free' | 'plus',
+  isGuest: boolean
+) => {
+  const actorClass = isGuest ? 'GUEST' : tier === 'plus' ? 'PLUS' : 'FREE';
+  const defaults = isGuest
+    ? { maxActive: 1, maxPerWindow: 2 }
+    : tier === 'plus'
+      ? { maxActive: 2, maxPerWindow: 12 }
+      : { maxActive: 1, maxPerWindow: 4 };
+
+  return {
+    maxAttempts: readPositiveEnv('AI_IMAGE_MAX_ATTEMPTS', 3, 5),
+    maxActive: readPositiveEnv(`AI_IMAGE_MAX_ACTIVE_${actorClass}`, defaults.maxActive, 10),
+    windowSeconds: readPositiveEnv('AI_IMAGE_RATE_WINDOW_SECONDS', 600, 86400),
+    maxPerWindow: readPositiveEnv(
+      `AI_IMAGE_MAX_PER_WINDOW_${actorClass}`,
+      defaults.maxPerWindow,
+      1000
+    ),
+    maxGlobalActive: readPositiveEnv('AI_IMAGE_MAX_GLOBAL_ACTIVE', 200, 10000),
+  };
+};
+
+const imageAdmissionBlockedResponse = (admission: ImageJobAdmission): Response => {
+  if (admission.code === 'AI_IDEMPOTENCY_KEY_REUSED') {
+    return new Response(
+      JSON.stringify({
+        error: 'Image request id is already bound to different input',
+        code: admission.code,
+      }),
+      {
+        status: 409,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      }
+    );
+  }
+  const retryAfter = Number.isFinite(admission.retry_after_seconds)
+    ? Math.max(1, Math.floor(admission.retry_after_seconds ?? 1))
+    : 30;
+  const globalBacklog = admission.code === 'AI_GLOBAL_BACKLOG_LIMIT';
+  return new Response(
+    JSON.stringify({
+      error: globalBacklog ? 'AI service is temporarily busy' : 'Too many image requests',
+      code: admission.code ?? 'AI_ADMISSION_DENIED',
+      retryAfter,
+    }),
+    {
+      status: globalBacklog ? 503 : 429,
+      headers: {
+        'Content-Type': 'application/json',
+        'Retry-After': String(retryAfter),
+        ...corsHeaders,
+      },
+    }
+  );
 };
 
 const toCount = (value: unknown): number => {
@@ -81,8 +164,7 @@ const resolveImageGenerationTier = async (
 
   if (error) {
     console.warn(`[api] ${route}: failed to resolve subscription tier for image routing`, {
-      userId,
-      message: error?.message ?? String(error),
+      code: error?.code ?? null,
     });
     return { response: serviceUnavailable('Subscription status unavailable') };
   }
@@ -122,19 +204,54 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
       return guestCheck;
     }
 
-    const prompt = String(body?.prompt ?? '').trim();
-    const transcript = String(body?.transcript ?? '').trim();
-    const previousImageUrl = String(body?.previousImageUrl ?? '').trim();
-    const clientRequestId = String(body?.clientRequestId ?? '').trim();
+    const promptInput = validateBoundedText(body?.prompt, {
+      field: 'prompt',
+      maxChars: AI_REQUEST_LIMITS.imagePromptChars,
+      required: false,
+    });
+    if (!promptInput.ok) return aiInputErrorResponse(promptInput);
+    const transcriptInput = validateBoundedText(body?.transcript, {
+      field: 'transcript',
+      maxChars: AI_REQUEST_LIMITS.transcriptChars,
+      required: false,
+    });
+    if (!transcriptInput.ok) return aiInputErrorResponse(transcriptInput);
+    const previousImageInput = validateBoundedText(body?.previousImageUrl, {
+      field: 'previousImageUrl',
+      maxChars: AI_REQUEST_LIMITS.previousImageUrlChars,
+      required: false,
+    });
+    if (!previousImageInput.ok) return aiInputErrorResponse(previousImageInput);
+    const clientRequestInput = validateBoundedText(body?.clientRequestId, {
+      field: 'clientRequestId',
+      maxChars: AI_REQUEST_LIMITS.clientRequestIdChars,
+    });
+    if (!clientRequestInput.ok) return aiInputErrorResponse(clientRequestInput);
+
+    const prompt = promptInput.value;
+    const transcript = transcriptInput.value;
+    const previousImageUrl = previousImageInput.value;
+    const clientRequestId = clientRequestInput.value;
     const requestedDreamId =
-      typeof body?.dreamId === 'number' && Number.isFinite(body.dreamId)
+      typeof body?.dreamId === 'number'
+        && Number.isSafeInteger(body.dreamId)
+        && body.dreamId > 0
         ? Math.trunc(body.dreamId)
         : null;
 
-    if (!clientRequestId) {
-      return new Response(JSON.stringify({ error: 'Missing clientRequestId' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    if (!isValidClientRequestId(clientRequestId)) {
+      return aiInputErrorResponse({
+        ok: false,
+        code: 'INVALID_INPUT',
+        field: 'clientRequestId',
+      });
+    }
+
+    if (body.dreamId != null && requestedDreamId == null) {
+      return aiInputErrorResponse({
+        ok: false,
+        code: 'INVALID_INPUT',
+        field: 'dreamId',
       });
     }
 
@@ -181,16 +298,10 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
       clientRequestId,
     })) {
       console.log('[api] /image-jobs: blocked unlinked free image generation', {
-        userId: user?.id ?? null,
-        dreamId,
+        hasDream: dreamId != null,
       });
       return freeImageAnalysisRequiredResponse();
     }
-
-    const actor = {
-      userId: user?.id ?? null,
-      guestFingerprint: guestCheck.fingerprint,
-    };
 
     const adminClient = createAdminClient(supabaseUrl, supabaseServiceRoleKey);
 
@@ -200,7 +311,9 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
       });
 
       if (statusError) {
-        console.error('[api] /image-jobs: guest quota status check failed', statusError);
+        console.error('[api] /image-jobs: guest quota status check failed', {
+          code: statusError?.code ?? null,
+        });
         return serviceUnavailable('Guest quota unavailable');
       }
 
@@ -238,118 +351,63 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
       }
     }
 
-    const existingQuery = buildImageJobActorFilter(
-      adminClient
-        .from('ai_jobs')
-        .select('*')
-        .eq('job_type', 'generate_image')
-        .eq('client_request_id', clientRequestId)
-        .limit(1),
-      actor
-    );
-    const { data: existingJobData } = await existingQuery.maybeSingle();
-    const existingJob = (existingJobData ?? null) as ImageJobRow | null;
-
-    if (existingJob) {
-      await triggerWorkerAndLog({
-        supabaseUrl,
-        serviceRoleKey: supabaseServiceRoleKey,
-        jobId: existingJob.id,
-      });
-
-      return new Response(
-        JSON.stringify({
-          jobId: existingJob.id,
-          status: existingJob.status,
-          clientRequestId: existingJob.client_request_id,
-        }),
-        {
-          status: 202,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders },
-        }
-      );
-    }
-
-    const nextJob = {
-      id: crypto.randomUUID(),
-      user_id: user?.id ?? null,
-      guest_fingerprint: user ? null : guestCheck.fingerprint,
-      dream_id: dreamId,
-      job_type: 'generate_image',
-      status: 'queued',
-      request_payload: {
+    const admissionPolicy = resolveImageJobAdmissionPolicy(tierResolution.tier, !user);
+    const { data: admissionData, error: admissionError } = await adminClient.rpc('admit_ai_job', {
+      p_job_id: crypto.randomUUID(),
+      p_user_id: user?.id ?? null,
+      p_guest_fingerprint: user ? null : guestCheck.fingerprint,
+      p_dream_id: dreamId,
+      p_job_type: 'generate_image',
+      p_request_payload: {
         prompt: prompt || null,
         transcript: transcript || null,
         previousImageUrl: previousImageUrl || null,
       },
-      client_request_id: clientRequestId,
-      max_attempts: 3,
-    };
+      p_client_request_id: clientRequestId,
+      p_max_attempts: admissionPolicy.maxAttempts,
+      p_max_active_per_actor: admissionPolicy.maxActive,
+      p_window_seconds: admissionPolicy.windowSeconds,
+      p_max_created_in_window: admissionPolicy.maxPerWindow,
+      p_max_global_active: admissionPolicy.maxGlobalActive,
+    });
 
-    const { data: insertedJob, error: insertError } = await adminClient
-      .from('ai_jobs')
-      .insert(nextJob)
-      .select('*')
-      .single();
+    if (admissionError) {
+      console.error('[api] /image-jobs admission failed', {
+        code: admissionError?.code ?? null,
+      });
+      return serviceUnavailable();
+    }
 
-    const normalizedInsertedJob = (insertedJob ?? null) as ImageJobRow | null;
+    const admission = (admissionData ?? {}) as ImageJobAdmission;
+    if (!admission.allowed) {
+      return imageAdmissionBlockedResponse(admission);
+    }
 
-    if (insertError || !normalizedInsertedJob) {
-      const { data: duplicatedJob } = await buildImageJobActorFilter(
-        adminClient
-          .from('ai_jobs')
-          .select('*')
-          .eq('job_type', 'generate_image')
-          .eq('client_request_id', clientRequestId)
-          .limit(1),
-        actor
-      ).maybeSingle();
-
-      const normalizedDuplicatedJob = (duplicatedJob ?? null) as ImageJobRow | null;
-
-      if (normalizedDuplicatedJob) {
-        await triggerWorkerAndLog({
-          supabaseUrl,
-          serviceRoleKey: supabaseServiceRoleKey,
-          jobId: normalizedDuplicatedJob.id,
-        });
-
-        return new Response(
-          JSON.stringify({
-            jobId: normalizedDuplicatedJob.id,
-            status: normalizedDuplicatedJob.status,
-            clientRequestId: normalizedDuplicatedJob.client_request_id,
-          }),
-          {
-            status: 202,
-            headers: { 'Content-Type': 'application/json', ...corsHeaders },
-          }
-        );
-      }
-
-      console.error('[api] /image-jobs insert failed', insertError);
+    const admittedJob = admission.job;
+    if (!admittedJob?.id || !admittedJob.client_request_id || !admittedJob.status) {
+      console.error('[api] /image-jobs admission returned invalid job payload');
       return serviceUnavailable();
     }
 
     await triggerWorkerAndLog({
       supabaseUrl,
       serviceRoleKey: supabaseServiceRoleKey,
-      jobId: normalizedInsertedJob.id,
+      jobId: admittedJob.id,
     });
 
     return new Response(
       JSON.stringify({
-        jobId: normalizedInsertedJob.id,
-        status: normalizedInsertedJob.status,
-        clientRequestId: normalizedInsertedJob.client_request_id,
+        jobId: admittedJob.id,
+        status: admittedJob.status,
+        clientRequestId: admittedJob.client_request_id,
       }),
       {
         status: 202,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       }
     );
-  } catch (error) {
-    console.error('[api] /image-jobs error', error);
+  } catch {
+    console.error('[api] /image-jobs request failed');
     return new Response(JSON.stringify({ error: 'Invalid request' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -371,11 +429,17 @@ export async function handleGetImageJobStatus(ctx: ApiContext): Promise<Response
       return guestCheck;
     }
 
-    const jobId = String(body?.jobId ?? '').trim();
-    if (!jobId) {
-      return new Response(JSON.stringify({ error: 'Missing jobId' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    const jobIdInput = validateBoundedText(body?.jobId, {
+      field: 'jobId',
+      maxChars: AI_REQUEST_LIMITS.clientRequestIdChars,
+    });
+    if (!jobIdInput.ok) return aiInputErrorResponse(jobIdInput);
+    const jobId = jobIdInput.value;
+    if (!isValidClientRequestId(jobId)) {
+      return aiInputErrorResponse({
+        ok: false,
+        code: 'INVALID_INPUT',
+        field: 'jobId',
       });
     }
 
@@ -411,8 +475,8 @@ export async function handleGetImageJobStatus(ctx: ApiContext): Promise<Response
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
-  } catch (error) {
-    console.error('[api] /image-jobs/status error', error);
+  } catch {
+    console.error('[api] /image-jobs/status request failed');
     return new Response(JSON.stringify({ error: 'Invalid request' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },

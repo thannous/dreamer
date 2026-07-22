@@ -1,0 +1,196 @@
+{
+  "documentType": "codex-security.hardening-analysis",
+  "schemaVersion": "1.0",
+  "analysisId": "hardening_20260722_noctalia_ai_calls",
+  "sourceEvidence": {
+    "kind": "source_tree",
+    "label": "Noctalia AI call, quota, job, and persistence boundaries",
+    "collectionSha256": "b00837e3c7968f3bf46eca3353eecda08aa2db4c5612a153f9bf7dc7028c1c6c",
+    "artifactCount": 13,
+    "targetRevision": "5a675e0d2d6ff164e3b43f6c28216fa602c14c8b",
+    "sourceDrift": "present"
+  },
+  "assessment": {
+    "outcome": "opportunities_identified",
+    "summary": "Existing quota claims and image jobs support one higher-leverage opportunity: centralize paid AI authorization and lifecycle state behind a durable server command."
+  },
+  "constraints": {
+    "profile": "balanced",
+    "changeHorizons": ["incremental", "medium_term", "foundational"],
+    "nonNegotiables": [
+      "Preserve local dream capture and offline mutations.",
+      "Keep native speech recognition as the primary path and server transcription as Android fallback only.",
+      "Do not deploy or mutate production without explicit authorization."
+    ],
+    "assumptions": [
+      "No measured production latency, cost, queue-depth, or abuse-volume budget was supplied.",
+      "Existing user-owned voice-path edits are unrelated source drift and remain untouched."
+    ]
+  },
+  "opportunities": [
+    {
+      "opportunityId": "centralize-ai-command-ownership",
+      "title": "Centralize paid AI command ownership",
+      "summary": "Make one durable server command own actor verification, cost controls, quota, idempotency, state transitions, and worker dispatch.",
+      "diagnosis": "Paid-work controls exist but end at different client and server boundaries, causing redundant calls, ambiguous retries, and state races.",
+      "evidence": [
+        {
+          "claimType": "observed",
+          "sourceKind": "source",
+          "evidenceId": "E-SAVE",
+          "path": "app/recording.tsx",
+          "claim": "Quick categorization is awaited before durable dream creation."
+        },
+        {
+          "claimType": "observed",
+          "sourceKind": "source",
+          "evidenceId": "E-ORCH",
+          "path": "hooks/useDreamJournal.ts",
+          "claim": "The client owns quota preflight, pending persistence, analysis, image enqueue, result merge, and final persistence."
+        },
+        {
+          "claimType": "observed",
+          "sourceKind": "source",
+          "evidenceId": "E-PROMPT",
+          "path": "supabase/functions/api/services/imagePipeline.ts",
+          "claim": "The image worker invokes a prompt model when the client submits the transcript despite analysis already returning imagePrompt."
+        },
+        {
+          "claimType": "observed",
+          "sourceKind": "source",
+          "evidenceId": "E-QUEUE",
+          "path": "supabase/migrations/20260316120000_create_ai_jobs.sql",
+          "claim": "A durable actor-bound idempotent queue exists for generate_image jobs."
+        },
+        {
+          "claimType": "inferred",
+          "sourceKind": "source",
+          "evidenceId": "E-RETRY",
+          "path": "lib/networkPolicy.ts",
+          "claim": "Automatic retries on paid routes without durable result idempotency can repeat provider work after a lost response."
+        }
+      ],
+      "desiredInvariants": [
+        "A valid dream is durable before optional AI enrichment begins.",
+        "Every paid provider invocation is authorized server-side against a verified actor immediately before work.",
+        "Every paid command has one stable idempotency key and one durable lifecycle record.",
+        "Actor burst, concurrency, global backlog, input, and output budgets are enforced before provider work.",
+        "Analysis persistence and initial image enqueue reuse one structured analysis result and image prompt."
+      ],
+      "proposalPath": "proposals/centralize-ai-command-ownership.md",
+      "options": [
+        {
+          "optionId": "local-controls",
+          "title": "Strengthen local controls",
+          "kind": "baseline",
+          "summary": "Keep client orchestration while adding save-first behavior, strict bounds, idempotency, quota snapshots, targeted reads, and polling backoff.",
+          "diagramPaths": {
+            "before": "diagrams/centralize-ai-command-ownership-before.mmd",
+            "after": "diagrams/centralize-ai-command-ownership-local-controls-after.mmd"
+          },
+          "evidenceCoverage": [
+            {
+              "evidenceId": "E-SAVE",
+              "effect": "addresses",
+              "tacticalFixRequired": true,
+              "rationale": "Saving before enrichment directly removes AI from the capture critical path."
+            },
+            {
+              "evidenceId": "E-ORCH",
+              "effect": "mitigates",
+              "tacticalFixRequired": true,
+              "rationale": "Round trips shrink, but the client still owns the analysis lifecycle."
+            }
+          ],
+          "tradeoffs": [
+            { "dimension": "security", "direction": "improves", "confidence": "high", "basis": "source-derived", "assessment": "Known inputs, retries, and bursts gain explicit controls, but future routes can still drift.", "validationPlan": "Exercise every paid route with malformed, oversized, duplicate, burst, and concurrent requests." },
+            { "dimension": "performance", "direction": "improves", "confidence": "medium", "basis": "source-derived", "assessment": "Save latency, polling calls, and completed-image bytes should decrease; synchronous analysis remains.", "validationPlan": "Compare capture latency, polling count, and bytes per image completion on the same fixture journal." },
+            { "dimension": "memory", "direction": "neutral", "confidence": "medium", "basis": "source-derived", "assessment": "No new durable worker or large cache is introduced.", "validationPlan": "Compare client heap during capture and image reconciliation." },
+            { "dimension": "reliability", "direction": "improves", "confidence": "medium", "basis": "source-derived", "assessment": "Capture no longer depends on AI, but a lost synchronous analysis response remains ambiguous.", "validationPlan": "Inject provider timeouts and lost responses before and after provider completion." },
+            { "dimension": "operability", "direction": "neutral", "confidence": "medium", "basis": "source-derived", "assessment": "Existing deployments remain, with additional rejection metrics.", "validationPlan": "Confirm dashboards can segment bounded-request rejections without content logging." },
+            { "dimension": "migration", "direction": "improves", "confidence": "high", "basis": "source-derived", "assessment": "Changes are incremental and become tactical protections for later options.", "validationPlan": "Run supported-client compatibility and focused regression tests." }
+          ],
+          "residualRisks": ["Client-owned analysis persistence and long-request ambiguity remain."],
+          "implementationReadiness": {
+            "affectedComponents": ["app/recording.tsx", "hooks/useDreamJournal.ts", "lib/networkPolicy.ts", "supabase/functions/api/routes"],
+            "workPackages": ["Add shared bounds and save-first behavior.", "Add targeted reconciliation and polling backoff."],
+            "acceptanceCriteria": ["Save does not await AI.", "Completed image refresh reads one dream."],
+            "migrationNotes": ["Keep route contracts stable."],
+            "rollback": "Revert focused client and route changes."
+          }
+        },
+        {
+          "optionId": "server-owned-ai-command",
+          "title": "Server-owned durable AI command",
+          "kind": "structural",
+          "summary": "Extend ai_jobs and claim-before-cost transactions so the server owns analysis authorization, state, persistence, and image dispatch.",
+          "diagramPaths": {
+            "before": "diagrams/centralize-ai-command-ownership-before.mmd",
+            "after": "diagrams/centralize-ai-command-ownership-server-job-after.mmd"
+          },
+          "evidenceCoverage": [
+            { "evidenceId": "E-SAVE", "effect": "addresses", "tacticalFixRequired": true, "rationale": "Capture is committed before the command." },
+            { "evidenceId": "E-ORCH", "effect": "addresses", "tacticalFixRequired": true, "rationale": "Server state replaces client lifecycle authority for migrated analysis." },
+            { "evidenceId": "E-PROMPT", "effect": "addresses", "tacticalFixRequired": false, "rationale": "The analysis worker passes imagePrompt directly to the image job." },
+            { "evidenceId": "E-QUEUE", "effect": "mitigates", "tacticalFixRequired": true, "rationale": "The existing job state machine is extended, while worker claim tests remain required." },
+            { "evidenceId": "E-RETRY", "effect": "addresses", "tacticalFixRequired": true, "rationale": "Duplicate commands return the same durable lifecycle row; legacy routes still require conservative retries during migration." }
+          ],
+          "tradeoffs": [
+            { "dimension": "security", "direction": "improves", "confidence": "high", "basis": "source-derived", "assessment": "One server boundary owns actor, quota, idempotency, concurrency, burst, and backlog checks.", "validationPlan": "Run duplicate and concurrent transaction tests and prove provider mocks remain untouched on rejection." },
+            { "dimension": "performance", "direction": "improves", "confidence": "medium", "basis": "source-derived", "assessment": "Acknowledgement becomes short and one prompt call disappears, while completion gains a queue hop.", "validationPlan": "Measure acknowledgement, queue age, completion, and provider calls per dream against the synchronous baseline." },
+            { "dimension": "memory", "direction": "neutral", "confidence": "medium", "basis": "source-derived", "assessment": "Bounded job rows and worker payloads add storage but no unbounded client cache.", "validationPlan": "Measure row growth and worker memory at configured concurrency." },
+            { "dimension": "reliability", "direction": "improves", "confidence": "high", "basis": "source-derived", "assessment": "Lost responses and restarts reconcile from durable state; stuck jobs become an explicit operational failure mode.", "validationPlan": "Restart client and worker in every job state and verify deterministic reconciliation." },
+            { "dimension": "operability", "direction": "regresses", "confidence": "high", "basis": "source-derived", "assessment": "Analysis queue age, retries, and stuck jobs require dashboards and recovery tooling.", "validationPlan": "Exercise alerts and a manual re-drive in a non-production environment." },
+            { "dimension": "migration", "direction": "regresses", "confidence": "medium", "basis": "source-derived", "assessment": "Schema, worker, route, and client protocol must coexist during rollout.", "validationPlan": "Use an additive migration and client feature flag, then test old and new builds against the same backend." }
+          ],
+          "residualRisks": ["Compromised accounts and distributed guest installations can still consume legitimate-looking capacity.", "Global provider budget exhaustion requires a separate circuit breaker."],
+          "implementationReadiness": {
+            "affectedComponents": ["supabase/migrations", "supabase/functions/api", "supabase/functions/analysis-job-worker", "hooks/useDreamJournal.ts"],
+            "workPackages": ["Add atomic command and job type.", "Add worker and persistence.", "Migrate authenticated client behind a flag.", "Add Realtime after polling recovery is proven."],
+            "acceptanceCriteria": ["One idempotent command owns each analysis.", "Server persists analysis and enqueues imagePrompt.", "Cost controls reject before provider work."],
+            "migrationNotes": ["Migrate authenticated dreams first; keep synchronous guest compatibility."],
+            "rollback": "Disable the client flag and command route, then drain accepted jobs."
+          }
+        },
+        {
+          "optionId": "split-functions-and-push",
+          "title": "Split functions and push completion",
+          "kind": "isolation",
+          "summary": "Add the durable command while separating API failure domains and using private Realtime as the normal completion signal.",
+          "diagramPaths": {
+            "before": "diagrams/centralize-ai-command-ownership-before.mmd",
+            "after": "diagrams/centralize-ai-command-ownership-split-functions-after.mmd"
+          },
+          "evidenceCoverage": [
+            { "evidenceId": "E-ORCH", "effect": "addresses", "tacticalFixRequired": true, "rationale": "Server jobs own lifecycle and private events only notify clients." },
+            { "evidenceId": "E-QUEUE", "effect": "addresses", "tacticalFixRequired": true, "rationale": "Workers and command APIs are isolated by authority and saturation domain." }
+          ],
+          "tradeoffs": [
+            { "dimension": "security", "direction": "improves", "confidence": "medium", "basis": "hypothetical", "assessment": "Scoped functions reduce credential and saturation blast radius if deployment permissions are also scoped.", "validationPlan": "Inventory environment authority and simulate Gemini saturation while testing quota and session endpoints." },
+            { "dimension": "performance", "direction": "unknown", "confidence": "low", "basis": "hypothetical", "assessment": "Isolation can reduce contention but adds independent cold starts and routing paths.", "validationPlan": "Load-test current and split deployments using production-like concurrency." },
+            { "dimension": "memory", "direction": "regresses", "confidence": "medium", "basis": "analogous", "assessment": "More function instances and channel state increase aggregate runtime memory.", "validationPlan": "Compare aggregate billed runtime and peak memory by function." },
+            { "dimension": "reliability", "direction": "improves", "confidence": "medium", "basis": "hypothetical", "assessment": "AI saturation is contained, while more distributed dependencies introduce configuration failures.", "validationPlan": "Run fault injection per function and verify fallback status recovery when Realtime is unavailable." },
+            { "dimension": "operability", "direction": "regresses", "confidence": "high", "basis": "source-derived", "assessment": "Deployments, secrets, dashboards, and rollback coordination multiply.", "validationPlan": "Complete a staged deploy and rollback rehearsal before adoption." },
+            { "dimension": "migration", "direction": "regresses", "confidence": "high", "basis": "source-derived", "assessment": "Stable routing contracts and multi-function rollout are required.", "validationPlan": "Run old and new clients through compatibility routing during a canary window." }
+          ],
+          "residualRisks": ["Realtime delivery can be lost and must not replace durable status.", "Configuration drift across functions can recreate control inconsistencies."],
+          "implementationReadiness": {
+            "affectedComponents": ["supabase/functions", "client API routing", "Realtime policies"],
+            "workPackages": ["Measure shared failure-domain impact.", "Split one boundary at a time.", "Add private Broadcast with polling recovery."],
+            "acceptanceCriteria": ["AI saturation does not degrade guest or quota APIs.", "Cross-user events are impossible under private-channel tests."],
+            "migrationNotes": ["Defer until source-derived risk is supported by runtime evidence."],
+            "rollback": "Restore stable routes to the monolithic API while retaining durable jobs."
+          }
+        }
+      ],
+      "recommendedOptionId": "server-owned-ai-command",
+      "recommendation": "Implement the durable command incrementally, retaining local controls and deferring function splitting until production telemetry justifies its operational cost."
+    }
+  ],
+  "openQuestions": [
+    "What measured Plus workload should set actor burst and concurrency defaults?",
+    "Should automatic categorization remain as a non-blocking job or be removed until explicit analysis?",
+    "Is production guest AI intentionally Android-only?",
+    "What global backlog threshold matches the Supabase and provider budgets?"
+  ]
+}

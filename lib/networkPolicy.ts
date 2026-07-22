@@ -24,16 +24,18 @@ export const NETWORK_REQUEST_POLICIES = {
   subscriptionRefresh: createPolicy(10000, 1, 1000),
 
   // Analysis + chat
-  analyzeDream: createPolicy(45000, 1, 1200),
-  categorizeDream: createPolicy(30000, 1, 1200),
-  analyzeDreamFull: createPolicy(60000, 1, 1200),
+  analyzeDream: createPolicy(45000, 0, 1200),
+  analysisJobCommand: createPolicy(15000, 1, 1000),
+  analysisJobStatus: createPolicy(10000, 1, 1000),
+  categorizeDream: createPolicy(30000, 0, 1200),
+  analyzeDreamFull: createPolicy(60000, 0, 1200),
   chat: createPolicy(45000, 0, 1200), // no auto-retry to avoid duplicate sends
 
   // Media generation
-  generateImage: createPolicy(60000, 2, 1200),
+  generateImage: createPolicy(60000, 0, 1200),
   imageJobCommand: createPolicy(15000, 1, 1000),
   imageJobStatus: createPolicy(10000, 1, 1000),
-  generateImageWithReference: createPolicy(90000, 1, 1500),
-  textToSpeech: createPolicy(60000, 1, 1200),
-  transcribeAudio: createPolicy(60000, 1, 1200),
+  generateImageWithReference: createPolicy(90000, 0, 1500),
+  textToSpeech: createPolicy(60000, 0, 1200),
+  transcribeAudio: createPolicy(60000, 0, 1200),
 } as const;

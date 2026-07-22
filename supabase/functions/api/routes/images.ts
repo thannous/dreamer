@@ -10,11 +10,17 @@ import { optimizeImage } from '../services/image.ts';
 import { createStorageHelpers } from '../services/storage.ts';
 import { ensureImagePrompt, generateAndStoreImage } from '../services/imagePipeline.ts';
 import { requireGuestSession, requireUser } from '../lib/guards.ts';
+import {
+  AI_REQUEST_LIMITS,
+  aiInputErrorResponse,
+  validateBoundedText,
+} from '../lib/aiRequestPolicy.ts';
+import { admitSynchronousAiRequest } from '../services/aiAdmission.ts';
 import type { ApiContext } from '../types.ts';
 
 type RpcResult<T = unknown> = {
   data: T | null;
-  error: { message?: string } | null;
+  error: { code?: string; message?: string } | null;
 };
 
 type AdminClient = {
@@ -64,8 +70,7 @@ const requireImageGenerationEntitlement = async (
 
   if (error) {
     console.warn(`[api] ${route}: failed to resolve subscription tier for image gate`, {
-      userId,
-      message: error?.message ?? String(error),
+      code: error?.code ?? null,
     });
     return serviceUnavailable('Subscription status unavailable');
   }
@@ -73,7 +78,6 @@ const requireImageGenerationEntitlement = async (
   const effectiveTier = normalizeEffectiveSubscriptionTier(data);
   if (effectiveTier !== 'plus') {
     console.log(`[api] ${route}: blocked non-plus image generation`, {
-      userId,
       effectiveTier,
     });
     return imageGenerationPlusRequiredResponse();
@@ -94,7 +98,7 @@ const releaseGuestImageQuotaClaim = async (
 
   if (error) {
     console.warn(`[api] ${route}: failed to release guest image quota claim`, {
-      message: error?.message ?? String(error),
+      code: error?.code ?? null,
     });
   }
 };
@@ -112,7 +116,9 @@ const claimGuestImageQuota = async (
   });
 
   if (quotaError) {
-    console.error(`[api] ${route}: guest image quota claim failed`, quotaError);
+    console.error(`[api] ${route}: guest image quota claim failed`, {
+      code: quotaError?.code ?? null,
+    });
     return serviceUnavailable('Guest quota unavailable');
   }
 
@@ -164,9 +170,28 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
       return guestCheck;
     }
     const fingerprint = guestCheck.fingerprint;
-    let prompt = String(body?.prompt ?? '').trim();
-    const transcript = String(body?.transcript ?? '').trim();
-    const previousImageUrl = String(body?.previousImageUrl ?? '').trim();
+    const promptInput = validateBoundedText(body?.prompt, {
+      field: 'prompt',
+      maxChars: AI_REQUEST_LIMITS.imagePromptChars,
+      required: false,
+    });
+    if (!promptInput.ok) return aiInputErrorResponse(promptInput);
+    const transcriptInput = validateBoundedText(body?.transcript, {
+      field: 'transcript',
+      maxChars: AI_REQUEST_LIMITS.transcriptChars,
+      required: false,
+    });
+    if (!transcriptInput.ok) return aiInputErrorResponse(transcriptInput);
+    const previousImageInput = validateBoundedText(body?.previousImageUrl, {
+      field: 'previousImageUrl',
+      maxChars: AI_REQUEST_LIMITS.previousImageUrlChars,
+      required: false,
+    });
+    if (!previousImageInput.ok) return aiInputErrorResponse(previousImageInput);
+
+    let prompt = promptInput.value;
+    const transcript = transcriptInput.value;
+    const previousImageUrl = previousImageInput.value;
 
     if (!prompt && !transcript) {
       return new Response(JSON.stringify({ error: 'Missing prompt or transcript' }), {
@@ -183,6 +208,13 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
     if (entitlementCheck) {
       return entitlementCheck;
     }
+
+    const admission = await admitSynchronousAiRequest({
+      ctx,
+      capability: 'generate_image_legacy',
+      guestFingerprint: fingerprint,
+    });
+    if (admission instanceof Response) return admission;
 
     const apiKey = Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) throw new Error('GEMINI_API_KEY not set');
@@ -234,7 +266,6 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
       guestQuotaClaim = null;
     }
 
-    console.error('[api] /generateImage error', e);
     const err = e as any;
     const errorInfo = classifyGeminiError(e);
     console.error('[api] /generateImage error details', {
@@ -250,7 +281,6 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
         error: errorInfo.userMessage,
         ...(err?.blockReason != null ? { blockReason: err.blockReason } : {}),
         ...(err?.finishReason != null ? { finishReason: err.finishReason } : {}),
-        ...(err?.promptFeedback != null ? { promptFeedback: err.promptFeedback } : {}),
         ...(err?.retryAttempts != null ? { retryAttempts: err.retryAttempts } : {}),
         ...(err?.isTransient != null ? { isTransient: err.isTransient } : {}),
       }),
@@ -278,10 +308,28 @@ export async function handleGenerateImageWithReference(ctx: ApiContext): Promise
       previousImageUrl?: string;
     };
 
-    let prompt = String(body?.prompt ?? '').trim();
-    const transcript = String(body?.transcript ?? '').trim();
+    const promptInput = validateBoundedText(body?.prompt, {
+      field: 'prompt',
+      maxChars: AI_REQUEST_LIMITS.imagePromptChars,
+      required: false,
+    });
+    if (!promptInput.ok) return aiInputErrorResponse(promptInput);
+    const transcriptInput = validateBoundedText(body?.transcript, {
+      field: 'transcript',
+      maxChars: AI_REQUEST_LIMITS.transcriptChars,
+      required: false,
+    });
+    if (!transcriptInput.ok) return aiInputErrorResponse(transcriptInput);
     const referenceImages = body?.referenceImages ?? [];
-    const previousImageUrl = String(body?.previousImageUrl ?? '').trim();
+    const previousImageInput = validateBoundedText(body?.previousImageUrl, {
+      field: 'previousImageUrl',
+      maxChars: AI_REQUEST_LIMITS.previousImageUrlChars,
+      required: false,
+    });
+    if (!previousImageInput.ok) return aiInputErrorResponse(previousImageInput);
+    let prompt = promptInput.value;
+    const transcript = transcriptInput.value;
+    const previousImageUrl = previousImageInput.value;
 
     if (!prompt && !transcript) {
       return new Response(JSON.stringify({ error: 'Missing prompt or transcript' }), {
@@ -350,11 +398,17 @@ export async function handleGenerateImageWithReference(ctx: ApiContext): Promise
       return entitlementCheck;
     }
 
+    const admission = await admitSynchronousAiRequest({
+      ctx,
+      capability: 'generate_image_legacy',
+      guestFingerprint: null,
+    });
+    if (admission instanceof Response) return admission;
+
     const apiKey = Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
     console.log('[api] /generateImageWithReference request', {
-      userId: user.id,
       hasPrompt: !!prompt,
       hasTranscript: !!transcript,
       referenceCount: referenceImages.length,
@@ -369,13 +423,12 @@ export async function handleGenerateImageWithReference(ctx: ApiContext): Promise
         Deno.env.get('GEMINI_LITE_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
         [{ role: 'user', parts: [{ text: `Generate a short, vivid, artistic image prompt (max 40 words) to visualize this dream. Do not include any other text.\nDream: ${transcript}` }] }],
         'You are a creative image prompt generator. Output ONLY the prompt, nothing else.',
-        { thinkingLevel: 'minimal' }
+        { thinkingLevel: 'minimal', maxOutputTokens: 256 }
       );
       prompt = generatedPrompt.trim();
-      console.log('[api] /generateImageWithReference generated prompt:', prompt);
     }
 
-    const { imageBase64, mimeType, raw: imgJson } = await generateImageWithReferences({
+    const { imageBase64, mimeType } = await generateImageWithReferences({
       prompt,
       apiKey,
       model: resolveImageModel('plus'),
@@ -387,7 +440,6 @@ export async function handleGenerateImageWithReference(ctx: ApiContext): Promise
       return new Response(
         JSON.stringify({
           error: 'No image returned',
-          raw: imgJson,
         }),
         {
           status: 400,
@@ -419,7 +471,6 @@ export async function handleGenerateImageWithReference(ctx: ApiContext): Promise
     }
 
     console.log('[api] /generateImageWithReference success', {
-      userId: user.id,
       imageUploaded: !!storedImageUrl,
       previousImageDeleted: !!previousImageUrl,
     });
@@ -429,7 +480,6 @@ export async function handleGenerateImageWithReference(ctx: ApiContext): Promise
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   } catch (e) {
-    console.error('[api] /generateImageWithReference error', e);
     const err = e as any;
     const errorInfo = classifyGeminiError(e);
     console.error('[api] /generateImageWithReference error details', {
@@ -445,7 +495,6 @@ export async function handleGenerateImageWithReference(ctx: ApiContext): Promise
         error: errorInfo.userMessage,
         ...(err?.blockReason != null ? { blockReason: err.blockReason } : {}),
         ...(err?.finishReason != null ? { finishReason: err.finishReason } : {}),
-        ...(err?.promptFeedback != null ? { promptFeedback: err.promptFeedback } : {}),
         ...(err?.retryAttempts != null ? { retryAttempts: err.retryAttempts } : {}),
         ...(err?.isTransient != null ? { isTransient: err.isTransient } : {}),
       }),

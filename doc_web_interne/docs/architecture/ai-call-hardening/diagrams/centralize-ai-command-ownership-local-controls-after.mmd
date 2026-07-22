@@ -1,0 +1,10 @@
+flowchart LR
+  U["User input"] --> C["Mobile client"]
+  C -->|"save immediately"| D[("dreams or local store")]
+  C -->|"bounded idempotent calls"| API["api Edge Function"]
+  API --> Q[("quota tables")]
+  API --> G["Gemini"]
+  C -->|"image job"| J[("ai_jobs")]
+  J --> W["image-job-worker"]
+  W --> D
+  C -->|"backoff status + one-dream fetch"| API

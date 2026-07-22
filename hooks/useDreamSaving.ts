@@ -24,7 +24,7 @@ export interface UseDreamSavingOptions {
 }
 
 export function useDreamSaving(options: UseDreamSavingOptions = {}) {
-  const { addDream, dreams, analyzeDream } = useDreams();
+  const { addDream, applyDreamCategorization, dreams, analyzeDream } = useDreams();
   const { user } = useAuth();
   const { canAnalyzeNow, tier, quotaStatus } = useQuota();
   const { t, currentLang } = useTranslation();
@@ -64,27 +64,19 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
       try {
         const preCount = dreams.length;
 
-        let dreamToSave = draftDream && draftDream.transcript === trimmedTranscript
+        const dreamToSave = draftDream && draftDream.transcript === trimmedTranscript
           ? draftDream
           : buildDraftDream(trimmedTranscript);
 
-        // Attempt quick categorization if we have a transcript
-        if (trimmedTranscript) {
-          try {
-            const metadata = await categorizeDream(trimmedTranscript, currentLang);
-            dreamToSave = {
-              ...dreamToSave,
-              ...metadata,
-            };
-          } catch (err) {
-            if (__DEV__) {
-              console.warn('[DreamSaving] Quick categorization failed:', err);
-            }
-          }
-        }
-
         const savedDream = await addDream(dreamToSave);
         setDraftDream(savedDream);
+        void categorizeDream(trimmedTranscript, currentLang)
+          .then((categorization) => applyDreamCategorization(savedDream.id, categorization))
+          .catch((error) => {
+            if (__DEV__) {
+              console.warn('[DreamSaving] Quick categorization failed:', error);
+            }
+          });
         options.onSaveComplete?.(savedDream, preCount);
         return savedDream;
       } catch (error) {
@@ -102,7 +94,7 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
         setIsPersisting(false);
       }
     },
-    [addDream, buildDraftDream, currentLang, draftDream, dreams.length, options, t, user]
+    [addDream, applyDreamCategorization, buildDraftDream, currentLang, draftDream, dreams.length, options, t, user]
   );
 
   const analyzeAndSaveDream = useCallback(
