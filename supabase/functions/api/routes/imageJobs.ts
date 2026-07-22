@@ -1,5 +1,6 @@
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { requireGuestSession } from '../lib/guards.ts';
+import { claimGuestQaPaidCall } from '../lib/guestQa.ts';
 import {
   AI_REQUEST_LIMITS,
   aiInputErrorResponse,
@@ -352,6 +353,14 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
     }
 
     const admissionPolicy = resolveImageJobAdmissionPolicy(tierResolution.tier, !user);
+    const qaBudgetResponse = await claimGuestQaPaidCall({
+      adminClient,
+      capability: 'image_job',
+      quotaSubject: user ? null : guestCheck.fingerprint,
+      requestKey: clientRequestId,
+    });
+    if (qaBudgetResponse) return qaBudgetResponse;
+
     const { data: admissionData, error: admissionError } = await adminClient.rpc('admit_ai_job', {
       p_job_id: crypto.randomUUID(),
       p_user_id: user?.id ?? null,

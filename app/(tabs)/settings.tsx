@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
+import { GuestProdQALab } from '@/components/guest/GuestProdQALab';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeader } from '@/components/inspiration/PageHeader';
@@ -107,6 +108,7 @@ export default function SettingsScreen() {
         </StaticFlatGlassCard>
       ) : null}
       <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" />
+      <GuestProdQALab />
     </View>
   );
 

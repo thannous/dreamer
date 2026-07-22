@@ -17,6 +17,7 @@ export const NETWORK_REQUEST_POLICIES = {
 
   // Auth / session
   guestSessionCreate: createPolicy(10000, 1, 750),
+  guestQaCommand: createPolicy(10000, 0, 1000),
   authMarkUpgrade: createPolicy(10000, 2, 1000),
 
   // Quota / subscription

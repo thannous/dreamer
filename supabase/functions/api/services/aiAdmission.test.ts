@@ -106,3 +106,41 @@ Deno.test('authenticated admission resolves server tier and returns a bounded 42
   assertEquals(result.headers.get('Retry-After'), '41');
   assertEquals((await result.json()).code, 'AI_ACTOR_RATE_LIMIT');
 });
+
+Deno.test('QA guest admission claims the daily paid-call budget after rate admission', async () => {
+  const rpcCalls: string[] = [];
+  const fakeClient = {
+    rpc: async (name: string) => {
+      rpcCalls.push(name);
+      if (name === 'claim_ai_request_window') {
+        return { data: { allowed: true }, error: null };
+      }
+      return {
+        data: {
+          qa: true,
+          allowed: false,
+          code: 'QA_DAILY_BUDGET_EXCEEDED',
+          retryAfter: 300,
+        },
+        error: null,
+      };
+    },
+  };
+
+  const result = await admitSynchronousAiRequest(
+    {
+      ctx: buildContext(),
+      capability: 'chat',
+      guestFingerprint: 'qa:11111111-1111-4111-8111-111111111111',
+    },
+    {
+      createAdminClient: (() => fakeClient) as any,
+      readEnv: () => undefined,
+    }
+  );
+
+  if (!(result instanceof Response)) throw new Error('Expected QA budget response');
+  assertEquals(rpcCalls, ['claim_ai_request_window', 'claim_guest_qa_paid_call']);
+  assertEquals(result.status, 429);
+  assertEquals((await result.json()).code, 'QA_DAILY_BUDGET_EXCEEDED');
+});

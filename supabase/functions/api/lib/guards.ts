@@ -51,5 +51,5 @@ export const requireGuestSession = async (
     return unauthorized('Invalid guest session');
   }
 
-  return { fingerprint };
+  return { fingerprint: verified.payload?.quotaSubject ?? fingerprint };
 };

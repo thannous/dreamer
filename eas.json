@@ -90,7 +90,8 @@
       "channel": "ai-internal",
       "environment": "production",
       "env": {
-        "EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED": "true"
+        "EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED": "true",
+        "EXPO_PUBLIC_GUEST_QA_LAB": "true"
       }
     },
     "release-smoke": {

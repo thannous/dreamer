@@ -1,5 +1,6 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders } from '../lib/constants.ts';
+import { claimGuestQaPaidCall } from '../lib/guestQa.ts';
 import type { ApiContext } from '../types.ts';
 
 export type SynchronousAiCapability =
@@ -203,6 +204,13 @@ export const admitSynchronousAiRequest = async (
       retryAfter
     );
   }
+
+  const qaBudgetResponse = await claimGuestQaPaidCall({
+    adminClient,
+    capability,
+    quotaSubject: guestFingerprint,
+  });
+  if (qaBudgetResponse) return qaBudgetResponse;
 
   return { tier, actorClass };
 };

@@ -19,6 +19,11 @@ import { handleAnalyzeDream, handleAnalyzeDreamFull, handleCategorizeDream } fro
 import { handleCreateImageJob, handleGetImageJobStatus } from './routes/imageJobs.ts';
 import { handleGenerateImage, handleGenerateImageWithReference } from './routes/images.ts';
 import { handleGuestSession } from './routes/guestSession.ts';
+import {
+  handleGuestQaEnroll,
+  handleGuestQaRevoke,
+  handleGuestQaStatus,
+} from './routes/guestQa.ts';
 import { handleAuthMarkUpgrade, handleQuotaStatus } from './routes/quota.ts';
 import { handleSubscriptionRefresh, handleSubscriptionReconcile, handleSubscriptionSync } from './routes/subscription.ts';
 import { handleTranscribe } from './routes/transcribe.ts';
@@ -35,6 +40,9 @@ type RouteHandler = (ctx: ApiContext) => Promise<Response>;
 
 const routes = new Map<string, RouteHandler>([
   ['POST /guest/session', async (ctx) => handleGuestSession(ctx.req)],
+  ['POST /qa/guest-device/status', handleGuestQaStatus],
+  ['POST /qa/guest-device/enroll', handleGuestQaEnroll],
+  ['POST /qa/guest-device/revoke', handleGuestQaRevoke],
   ['POST /analytics/session', async (ctx) => handleAnalyticsGuestSession(ctx.req)],
   ['POST /analytics/events', handleProductAnalytics],
   ['DELETE /analytics/events', handleProductAnalytics],

@@ -4,6 +4,7 @@ type GuestTokenPayload = {
   v: number;
   fingerprint: string;
   platform: string;
+  quotaSubject?: string;
   iat: number;
   exp: number;
 };
@@ -61,14 +62,23 @@ const sign = async (data: string, secret: string): Promise<string> => {
   return base64UrlEncode(new Uint8Array(signature));
 };
 
-export const createGuestToken = async (fingerprint: string, platform: string) => {
+export const createGuestToken = async (
+  fingerprint: string,
+  platform: string,
+  options?: { quotaSubject?: string; validUntil?: string }
+) => {
   const now = Date.now();
+  const qaExpiry = options?.validUntil ? Date.parse(options.validUntil) : Number.NaN;
+  const expiresAt = Number.isFinite(qaExpiry)
+    ? Math.min(now + TOKEN_TTL_MS, qaExpiry)
+    : now + TOKEN_TTL_MS;
   const payload: GuestTokenPayload = {
     v: 1,
     fingerprint,
     platform,
+    ...(options?.quotaSubject ? { quotaSubject: options.quotaSubject } : {}),
     iat: Math.floor(now / 1000),
-    exp: Math.floor((now + TOKEN_TTL_MS) / 1000),
+    exp: Math.floor(expiresAt / 1000),
   };
 
   const header = { alg: 'HS256', typ: 'JWT' };
@@ -79,7 +89,7 @@ export const createGuestToken = async (fingerprint: string, platform: string) =>
 
   return {
     token: `${data}.${signature}`,
-    expiresAt: new Date(now + TOKEN_TTL_MS).toISOString(),
+    expiresAt: new Date(expiresAt).toISOString(),
   };
 };
 
@@ -118,6 +128,13 @@ export const verifyGuestToken = async (
 
   if (payload.fingerprint !== fingerprint) {
     return { ok: false, reason: 'fingerprint_mismatch' };
+  }
+
+  if (
+    payload.quotaSubject
+    && !/^qa:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(payload.quotaSubject)
+  ) {
+    return { ok: false, reason: 'bad_quota_subject' };
   }
 
   if (platform && payload.platform !== platform) {

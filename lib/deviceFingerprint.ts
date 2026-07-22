@@ -136,3 +136,19 @@ export async function wasAccountCreatedOnDevice(): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * Clears the local returning-account marker for an approved QA guest session.
+ * This does not bypass the server-side upgraded-device rule by itself.
+ */
+export async function clearAccountCreatedOnDeviceForQa(): Promise<void> {
+  accountCreatedMemoized = false;
+
+  const webStorage = getWebStorage();
+  if (webStorage) {
+    webStorage.removeItem(ACCOUNT_CREATED_KEY);
+    return;
+  }
+
+  await SecureStore.deleteItemAsync(ACCOUNT_CREATED_KEY);
+}
