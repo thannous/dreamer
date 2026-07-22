@@ -35,13 +35,21 @@ describe('image SEO asset registry', () => {
     );
   });
 
-  it('returns two localized images for every pilot page', () => {
+  it('returns a localized editorial image for every pilot page, plus the optional educational diagram', () => {
+    let educationalCount = 0;
     for (const canonicalPath of Object.keys(registry.pages)) {
       const images = getPageResponsiveImages(registry, canonicalPath);
       expect(images.editorial.alt).toBeTruthy();
-      expect(images.educational.alt).toBeTruthy();
-      expect(images.educational.role).toBe('educational');
+      // Educational diagrams are optional per page (some pages render the
+      // same content as real HTML instead of a raster) but must stay
+      // consistent when declared.
+      if (images.educational) {
+        educationalCount += 1;
+        expect(images.educational.alt).toBeTruthy();
+        expect(images.educational.role).toBe('educational');
+      }
     }
+    expect(educationalCount).toBeGreaterThan(0);
   });
 
   it('renders a picture with AVIF, WebP, dimensions and loading policy', () => {

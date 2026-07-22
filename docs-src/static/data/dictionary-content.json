@@ -54,7 +54,35 @@
         "desc": "Build a lasting dream journaling habit tonight.",
         "href": "../blog/dream-journal-guide"
       }
-    ]
+    ],
+    "reflection_guide": {
+      "kicker": "Dream symbols · Reflection guide",
+      "title": "A symbol is a question—not an answer",
+      "deck": "Use dictionaries as prompts, then return to lived experience.",
+      "steps": [
+        {
+          "label": "Image",
+          "question": "What exactly appeared?",
+          "prompt": "Describe before assigning meaning."
+        },
+        {
+          "label": "Emotion",
+          "question": "How did it feel?",
+          "prompt": "Name the feeling and intensity."
+        },
+        {
+          "label": "Context",
+          "question": "What is personal here?",
+          "prompt": "Connect memory, culture and events."
+        },
+        {
+          "label": "Pattern",
+          "question": "Does it recur?",
+          "prompt": "Compare dreams before concluding."
+        }
+      ],
+      "footer": "No dream symbol has one universal meaning."
+    }
   },
   "fr": {
     "page_title": "Dictionnaire des symboles de rêves : 150 significations A-Z | Noctalia",
@@ -111,7 +139,35 @@
         "desc": "Commencez votre journal onirique dès ce soir.",
         "href": "../blog/dream-journal-guide"
       }
-    ]
+    ],
+    "reflection_guide": {
+      "kicker": "Symboles de rêve · Guide de réflexion",
+      "title": "Un symbole est une question — pas une réponse",
+      "deck": "Utilisez les dictionnaires comme des amorces, puis revenez à votre vécu.",
+      "steps": [
+        {
+          "label": "Image",
+          "question": "Qu’est-ce qui est apparu exactement ?",
+          "prompt": "Décrivez avant d’attribuer un sens."
+        },
+        {
+          "label": "Émotion",
+          "question": "Qu’avez-vous ressenti ?",
+          "prompt": "Nommez l’émotion et son intensité."
+        },
+        {
+          "label": "Contexte",
+          "question": "Qu’y a-t-il de personnel ici ?",
+          "prompt": "Reliez mémoire, culture et événements."
+        },
+        {
+          "label": "Récurrence",
+          "question": "Est-ce que cela revient ?",
+          "prompt": "Comparez vos rêves avant de conclure."
+        }
+      ],
+      "footer": "Aucun symbole de rêve n’a une signification universelle unique."
+    }
   },
   "es": {
     "page_title": "50 sueños y su significado: diccionario de 150 símbolos | Noctalia",
@@ -168,7 +224,35 @@
         "desc": "Construye un hábito de registro de sueños desde esta noche.",
         "href": "../blog/dream-journal-guide"
       }
-    ]
+    ],
+    "reflection_guide": {
+      "kicker": "Símbolos oníricos · Guía de reflexión",
+      "title": "Un símbolo es una pregunta, no una respuesta",
+      "deck": "Usa los diccionarios como punto de partida y vuelve a tu experiencia vivida.",
+      "steps": [
+        {
+          "label": "Imagen",
+          "question": "¿Qué apareció exactamente?",
+          "prompt": "Describe antes de asignar un significado."
+        },
+        {
+          "label": "Emoción",
+          "question": "¿Cómo se sintió?",
+          "prompt": "Nombra la emoción y su intensidad."
+        },
+        {
+          "label": "Contexto",
+          "question": "¿Qué hay de personal aquí?",
+          "prompt": "Conecta memoria, cultura y acontecimientos."
+        },
+        {
+          "label": "Patrón",
+          "question": "¿Se repite?",
+          "prompt": "Compara tus sueños antes de concluir."
+        }
+      ],
+      "footer": "Ningún símbolo onírico tiene un único significado universal."
+    }
   },
   "de": {
     "page_title": "Traumdeutung: Lexikon A–Z mit 150 Traumsymbolen | Noctalia",
@@ -244,7 +328,35 @@
         "desc": "Mache das Traumtagebuch ab heute zur Gewohnheit.",
         "href": "../blog/dream-journal-guide"
       }
-    ]
+    ],
+    "reflection_guide": {
+      "kicker": "Traumsymbole · Reflexionsleitfaden",
+      "title": "Ein Symbol ist eine Frage – keine Antwort",
+      "deck": "Nutze Wörterbücher als Anstoß und kehre dann zu deinem Erleben zurück.",
+      "steps": [
+        {
+          "label": "Bild",
+          "question": "Was genau ist erschienen?",
+          "prompt": "Beschreibe, bevor du deutest."
+        },
+        {
+          "label": "Gefühl",
+          "question": "Wie hat es sich angefühlt?",
+          "prompt": "Benenne Gefühl und Intensität."
+        },
+        {
+          "label": "Kontext",
+          "question": "Was ist hier persönlich?",
+          "prompt": "Verbinde Erinnerung, Kultur und Ereignisse."
+        },
+        {
+          "label": "Muster",
+          "question": "Kehrt es wieder?",
+          "prompt": "Vergleiche Träume, bevor du folgerst."
+        }
+      ],
+      "footer": "Kein Traumsymbol hat eine einzige universelle Bedeutung."
+    }
   },
   "it": {
     "page_title": "Dizionario dei simboli dei sogni: 150 significati A-Z | Noctalia",
@@ -301,6 +413,34 @@
         "desc": "Costruisci un'abitudine duratura di diaristica dei sogni.",
         "href": "../blog/dream-journal-guide"
       }
-    ]
+    ],
+    "reflection_guide": {
+      "kicker": "Simboli dei sogni · Guida alla riflessione",
+      "title": "Un simbolo è una domanda, non una risposta",
+      "deck": "Usa i dizionari come spunti, poi torna alla tua esperienza vissuta.",
+      "steps": [
+        {
+          "label": "Immagine",
+          "question": "Che cosa è apparso esattamente?",
+          "prompt": "Descrivi prima di attribuire un significato."
+        },
+        {
+          "label": "Emozione",
+          "question": "Come ti sei sentito?",
+          "prompt": "Dai un nome all’emozione e alla sua intensità."
+        },
+        {
+          "label": "Contesto",
+          "question": "Che cosa c’è di personale qui?",
+          "prompt": "Collega memoria, cultura ed eventi."
+        },
+        {
+          "label": "Schema",
+          "question": "Si ripete?",
+          "prompt": "Confronta i sogni prima di concludere."
+        }
+      ],
+      "footer": "Nessun simbolo dei sogni ha un unico significato universale."
+    }
   }
 }

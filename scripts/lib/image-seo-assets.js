@@ -114,7 +114,10 @@ function validateImageAssetRegistry(registry) {
     for (const role of PAGE_IMAGE_ROLES) {
       const image = page.images?.[role];
       if (!image) {
-        errors.push(`${pagePath}: ${role} image is required`);
+        // Editorial drives og:image and the hero, so it stays mandatory;
+        // educational diagrams are optional (some pages render the same
+        // content as real HTML instead of a raster).
+        if (role === 'editorial') errors.push(`${pagePath}: ${role} image is required`);
         continue;
       }
       const asset = registry.assets?.[image.assetId];

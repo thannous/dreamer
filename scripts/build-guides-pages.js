@@ -19,6 +19,7 @@ const {
   scoreDictionarySearchMatch,
 } = require('./lib/guide-dictionary-model');
 const { inlineLucideIcons } = require('./lib/lucide-inline');
+const { readSourceDocument } = require('./lib/docs-source-utils');
 const {
   getPageImageSet,
   getPageResponsiveImages,
@@ -103,6 +104,31 @@ const SITE_CONFIG = fs.existsSync(path.join(DOCS_SRC_DIR, 'config', 'site.config
 const SITE_MANIFEST = fs.existsSync(path.join(ROOT_DATA_DIR, 'site-manifest.json'))
   ? JSON.parse(fs.readFileSync(path.join(ROOT_DATA_DIR, 'site-manifest.json'), 'utf8'))
   : { collections: { blog: { entries: {} } } };
+
+// Localized blog slug → article title (without the "| Noctalia" suffix), so
+// symbol cards can say which related article they link to.
+const BLOG_TITLES_BY_LANG = new Map();
+function getBlogTitleBySlug(lang, slug) {
+  if (!BLOG_TITLES_BY_LANG.has(lang)) {
+    const map = new Map();
+    const entries = SITE_MANIFEST.collections?.blog?.entries || {};
+    for (const [id, entry] of Object.entries(entries)) {
+      const localeSlug = entry.locales?.[lang]?.slug;
+      if (!localeSlug) continue;
+      const filePath = path.join(DOCS_SRC_DIR, 'content', 'blog', id, `${lang}.md`);
+      if (!fs.existsSync(filePath)) continue;
+      try {
+        const { meta } = readSourceDocument(filePath);
+        const title = normalizePageTitle(meta?.title).replace(/\s*[-–—]\s*Noctalia\s*$/i, '').trim();
+        if (title) map.set(localeSlug, title);
+      } catch {
+        // Unreadable entry: the card falls back to the generic label.
+      }
+    }
+    BLOG_TITLES_BY_LANG.set(lang, map);
+  }
+  return BLOG_TITLES_BY_LANG.get(lang).get(slug) || null;
+}
 
 function finalizeGeneratedHtml(html) {
   return inlineLucideIcons(html);
@@ -394,6 +420,9 @@ const DICTIONARY_UI_COPY = {
       { icon: 'infinity', title: 'Unlimited saved dreams', text: 'With a free account.' },
     ],
     privacyLink: 'Read the privacy policy',
+    viewSymbolCta: 'View symbol',
+    relatedArticleLabel: 'Related article:',
+    relatedGuideLabel: 'Related guide:',
   },
   fr: {
     categoriesShort: 'catégories',
@@ -411,6 +440,9 @@ const DICTIONARY_UI_COPY = {
       { icon: 'infinity', title: 'Rêves sans limite', text: 'Avec un compte gratuit.' },
     ],
     privacyLink: 'Lire la politique de confidentialité',
+    viewSymbolCta: 'Voir le symbole',
+    relatedArticleLabel: 'Article lié :',
+    relatedGuideLabel: 'Guide lié :',
   },
   es: {
     categoriesShort: 'categorías',
@@ -428,6 +460,9 @@ const DICTIONARY_UI_COPY = {
       { icon: 'infinity', title: 'Sueños sin límite', text: 'Con una cuenta gratuita.' },
     ],
     privacyLink: 'Leer la política de privacidad',
+    viewSymbolCta: 'Ver el símbolo',
+    relatedArticleLabel: 'Artículo relacionado:',
+    relatedGuideLabel: 'Guía relacionada:',
   },
   de: {
     categoriesShort: 'Kategorien',
@@ -445,6 +480,9 @@ const DICTIONARY_UI_COPY = {
       { icon: 'infinity', title: 'Unbegrenzt viele Träume', text: 'Mit einem kostenlosen Konto.' },
     ],
     privacyLink: 'Datenschutzerklärung lesen',
+    viewSymbolCta: 'Symbol ansehen',
+    relatedArticleLabel: 'Verwandter Artikel:',
+    relatedGuideLabel: 'Passender Leitfaden:',
   },
   it: {
     categoriesShort: 'categorie',
@@ -462,11 +500,27 @@ const DICTIONARY_UI_COPY = {
       { icon: 'infinity', title: 'Sogni senza limiti', text: 'Con un account gratuito.' },
     ],
     privacyLink: 'Leggi l’informativa sulla privacy',
+    viewSymbolCta: 'Vedi il simbolo',
+    relatedArticleLabel: 'Articolo correlato:',
+    relatedGuideLabel: 'Guida correlata:',
   },
 };
 
 function readJson(fileName) {
   return JSON.parse(fs.readFileSync(path.join(DATA_DIR, fileName), 'utf8'));
+}
+
+// Cached across the 5 language builds — the extended catalog is ~1.6 MB.
+let EXTENDED_SYMBOLS_CACHE = null;
+function readExtendedSymbols() {
+  if (!EXTENDED_SYMBOLS_CACHE) {
+    try {
+      EXTENDED_SYMBOLS_CACHE = readJson('dream-symbols-extended.json').symbols || {};
+    } catch {
+      EXTENDED_SYMBOLS_CACHE = {};
+    }
+  }
+  return EXTENDED_SYMBOLS_CACHE;
 }
 
 function readVersion() {
@@ -1374,6 +1428,84 @@ function renderLayoutCss() {
           font-size: 0.875rem;
           line-height: 1.55;
         }
+        .dictionary-reflection-guide {
+          width: min(calc(100% - (var(--dictionary-edge) * 2)), 920px);
+          margin: 2.5rem auto 0;
+          padding: 1.6rem 1.7rem 1.4rem;
+        }
+        .reflection-kicker {
+          margin: 0 0 0.5rem;
+          font-size: 0.72rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #fda481;
+        }
+        .dictionary-reflection-guide h2 {
+          margin: 0 0 0.45rem;
+          font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+          line-height: 1.15;
+        }
+        .reflection-deck {
+          margin: 0 0 1.2rem;
+          font-size: 0.92rem;
+          color: rgba(226,218,255,0.78);
+        }
+        .reflection-steps {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+          gap: 0.7rem;
+          margin: 0 0 1.1rem;
+          padding: 0;
+          list-style: none;
+        }
+        .reflection-step {
+          display: flex;
+          gap: 0.7rem;
+          padding: 0.85rem 0.95rem;
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 0.9rem;
+          background: rgba(255,255,255,0.035);
+        }
+        .reflection-step-number {
+          flex-shrink: 0;
+          width: 1.7rem;
+          height: 1.7rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 9999px;
+          background: rgba(253,164,129,0.16);
+          color: #fda481;
+          font-size: 0.85rem;
+          font-weight: 600;
+        }
+        .reflection-step-body {
+          display: flex;
+          flex-direction: column;
+          gap: 0.15rem;
+          min-width: 0;
+        }
+        .reflection-step-body strong {
+          color: #f8f5ff;
+          font-size: 0.92rem;
+        }
+        .reflection-step-question {
+          font-size: 0.85rem;
+          color: rgba(226,218,255,0.85);
+        }
+        .reflection-step-prompt {
+          font-size: 0.78rem;
+          color: rgba(196,181,253,0.72);
+        }
+        .reflection-footer {
+          margin: 0;
+          padding: 0.7rem 0.9rem;
+          border-left: 3px solid rgba(253,164,129,0.55);
+          border-radius: 0;
+          background: rgba(253,164,129,0.07);
+          font-size: 0.85rem;
+          color: rgba(248,245,255,0.88);
+        }
         .dictionary-educational-image {
           width: min(calc(100% - (var(--dictionary-edge) * 2)), 920px);
           margin: 2.5rem auto;
@@ -1565,6 +1697,9 @@ function renderLayoutCss() {
           display: grid;
           grid-template-columns: repeat(3, minmax(0, 1fr));
           gap: 0.7rem;
+          /* Size the row to its content instead of stretching to the copy
+             column's height, which left dead space under the card text. */
+          align-content: center;
           margin: 0;
           padding: 0;
           list-style: none;
@@ -1675,34 +1810,16 @@ function renderLayoutCss() {
           font-size: 0.84rem;
         }
         .category-browse-grid {
-          display: flex;
-          flex-wrap: nowrap;
+          /* Wrapping grid: all 8 categories stay visible (no clipped
+             horizontal scroll, which hid the last chip on desktop). */
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
           gap: 0.55rem;
-          margin-left: -0.25rem;
-          margin-right: -0.25rem;
-          padding: 0.05rem 0.25rem 0.35rem;
-          overflow-x: auto;
-          overscroll-behavior-inline: contain;
-          scroll-padding-inline: 0.25rem;
-          scroll-snap-type: x proximity;
-          -webkit-overflow-scrolling: touch;
-        }
-        .category-browse-grid::-webkit-scrollbar {
-          height: 0.35rem;
-        }
-        .category-browse-grid::-webkit-scrollbar-track {
-          background: rgba(255,255,255,0.035);
-          border-radius: 9999px;
-        }
-        .category-browse-grid::-webkit-scrollbar-thumb {
-          background: rgba(196,181,253,0.2);
-          border-radius: 9999px;
         }
         .category-browse-card {
           position: relative;
           display: flex;
-          flex: 0 0 9.4rem;
-          min-width: 9.4rem;
+          min-width: 0;
           align-items: center;
           gap: 0.5rem;
           min-height: 3.25rem;
@@ -1713,7 +1830,6 @@ function renderLayoutCss() {
             linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 12%, transparent), rgba(255,255,255,0.028));
           text-decoration: none;
           overflow: hidden;
-          scroll-snap-align: start;
           transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
         }
         .category-browse-card:hover {
@@ -1893,6 +2009,61 @@ function renderLayoutCss() {
           border-top: 1px solid rgba(255,255,255,0.06);
           color: rgba(196,181,253,0.82);
         }
+        .symbol-card-links {
+          /* Stacked on purpose: side by side, the two arrowed links read as
+             one connected unit ("Voir le symbole → Guide lié…"). */
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.4rem;
+          margin-top: 0.72rem;
+          padding-left: clamp(5.8rem, 14vw, 9.2rem);
+        }
+        .symbol-card-cta {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.3rem;
+          padding: 0.3rem 0.72rem;
+          border: 1px solid rgba(253,164,129,0.32);
+          border-radius: 9999px;
+          background: rgba(253,164,129,0.08);
+          font-size: 0.76rem;
+          font-weight: 600;
+          color: #fda481;
+          text-decoration: none;
+          transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+        .symbol-card:hover .symbol-card-cta,
+        .symbol-card-cta:hover {
+          color: #ffc9b0;
+          border-color: rgba(253,164,129,0.5);
+          background: rgba(253,164,129,0.15);
+        }
+        .symbol-card-cta-icon {
+          width: 0.8rem;
+          height: 0.8rem;
+          flex-shrink: 0;
+        }
+        .symbol-card-related {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4rem;
+          min-width: 0;
+          font-size: 0.74rem;
+          color: rgba(196,181,253,0.78);
+          text-decoration: none;
+          transition: color 0.2s ease;
+        }
+        .symbol-card-related:hover {
+          color: #e2daff;
+          text-decoration: underline;
+        }
+        .symbol-card-related-icon {
+          width: 0.85rem;
+          height: 0.85rem;
+          flex-shrink: 0;
+          opacity: 0.75;
+        }
         #symbolsList > section > h2 {
           margin-bottom: 1rem;
           padding-bottom: 0.72rem;
@@ -1924,7 +2095,10 @@ function renderLayoutCss() {
           padding-right: 0;
         }
         #symbolsList > section > .grid {
-          grid-template-columns: repeat(auto-fit, minmax(min(100%, 27rem), 1fr));
+          /* auto-fill (not auto-fit): keep the empty track so a lone card in a
+             single-symbol section (U, V, Z…) stays at normal card width
+             instead of stretching to ~175 characters per line. */
+          grid-template-columns: repeat(auto-fill, minmax(min(100%, 27rem), 1fr));
           grid-auto-flow: dense;
         }
         #searchFeedback, #noResults {
@@ -2007,10 +2181,6 @@ function renderLayoutCss() {
             align-items: end;
             min-height: var(--dictionary-hero-media-height);
             padding-top: 6.6rem;
-          }
-          .category-browse-card {
-            flex-basis: 8.8rem;
-            min-width: 8.8rem;
           }
         }
         @media (max-width: 767px) {
@@ -2217,24 +2387,12 @@ function renderLayoutCss() {
             display: none;
           }
           .category-browse-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 0.4rem;
-            margin-left: 0;
-            margin-right: 0;
-            padding: 0;
-            overflow: visible;
-            scroll-snap-type: none;
           }
           .quick-browse-panel::after {
             display: none;
           }
-          .category-browse-grid::-webkit-scrollbar {
-            display: none;
-          }
           .category-browse-card {
-            flex-basis: auto;
-            min-width: 0;
             min-height: 2.75rem;
             flex-direction: column;
             justify-content: center;
@@ -2356,7 +2514,8 @@ function renderLayoutCss() {
           }
           .symbol-card-title-link,
           .symbol-card-desc,
-          .symbol-card-question {
+          .symbol-card-question,
+          .symbol-card-links {
             padding-left: 0;
           }
           .symbol-card-title-link h3 {
@@ -2410,6 +2569,8 @@ function renderLayoutCss() {
 }
 
 function renderSidebarHtml(lang, t, counts, letters) {
+  const presentLetters = new Set(letters);
+  const displayLetters = buildDisplayLetters(letters, lang);
   const catNames = t.category_names || {};
   const catSlugs = t.category_slugs || {};
   const heading = t.categories_heading || 'Categories';
@@ -2425,8 +2586,8 @@ function renderSidebarHtml(lang, t, counts, letters) {
                             <span class="sidebar-cat-count">${count}</span>
                         </a>`;
   }).join('\n');
-  const alphaLinks = letters.map(l =>
-    `                            <a href="#${l}" class="sidebar-alpha-link" data-letter="${l}">${l}</a>`
+  const alphaLinks = displayLetters.map(l =>
+    renderAlphaItem(l, presentLetters, 'sidebar-alpha-link', '                            ')
   ).join('\n');
   return `            <!-- dict-layout-open -->
             <div id="dictionaryLayout">
@@ -2470,15 +2631,29 @@ ${pills}
             <!-- /dict-pills -->`;
 }
 
-function renderMobileAlphaHtml(letters) {
-  const links = letters.map(l =>
-    `                    <a href="#${l}" class="mobile-alpha-link" data-letter="${l}">${l}</a>`
+function renderMobileAlphaHtml(letters, lang) {
+  const presentLetters = new Set(letters);
+  const links = buildDisplayLetters(letters, lang).map(l =>
+    renderAlphaItem(l, presentLetters, 'mobile-alpha-link', '                    ')
   ).join('\n');
   return `            <!-- dict-alpha-mobile -->
                 <div id="mobileAlpha" role="navigation" aria-label="A – Z">
 ${links}
                 </div>
             <!-- /dict-alpha-mobile -->`;
+}
+
+// Full A-Z scaffold for the alphabet bars: letters with no symbols render as
+// disabled placeholders so the alphabet keeps a stable, scannable shape.
+// Accented extras (FR É/Ê/Î, ES Á, DE Ü…) only appear when present.
+const BASE_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+function buildDisplayLetters(letters, lang) {
+  return [...new Set([...BASE_ALPHABET, ...letters])].sort((a, b) => a.localeCompare(b, lang));
+}
+function renderAlphaItem(letter, presentLetters, cls, indent, anchorExtra = '') {
+  return presentLetters.has(letter)
+    ? `${indent}<a href="#${letter}" class="${cls}"${anchorExtra} data-letter="${letter}">${letter}</a>`
+    : `${indent}<span class="${cls} is-empty" aria-hidden="true">${letter}</span>`;
 }
 
 const OG_LOCALES = { en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' };
@@ -2523,7 +2698,27 @@ function generateDictionaryPage(lang, t) {
                     ${editorialPicture}
                     <figcaption>${escapeHtml(editorialCaption)}</figcaption>
                 </figure>`;
-  const educationalFigure = pageImageSet
+  // Real-text version of the reflection guide (h2 + steps) for every
+  // language. The EN educational raster below stays as an illustration and
+  // for the image-SEO contract; the text itself now lives in the DOM.
+  const rg = dc.reflection_guide;
+  const reflectionSection = rg ? `<section class="dictionary-reflection-guide glass-panel rounded-3xl" aria-labelledby="reflectionGuideTitle">
+                    <p class="reflection-kicker">${escapeHtml(rg.kicker)}</p>
+                    <h2 id="reflectionGuideTitle" class="font-serif text-dream-cream">${escapeHtml(rg.title)}</h2>
+                    <p class="reflection-deck">${escapeHtml(rg.deck)}</p>
+                    <ol class="reflection-steps">
+${(rg.steps || []).map((step, index) => `                        <li class="reflection-step">
+                            <span class="reflection-step-number" aria-hidden="true">${index + 1}</span>
+                            <div class="reflection-step-body">
+                                <strong>${escapeHtml(step.label)}</strong>
+                                <span class="reflection-step-question">${escapeHtml(step.question)}</span>
+                                <span class="reflection-step-prompt">${escapeHtml(step.prompt)}</span>
+                            </div>
+                        </li>`).join('\n')}
+                    </ol>
+                    <p class="reflection-footer">${escapeHtml(rg.footer)}</p>
+                </section>` : '';
+  const educationalFigure = pageImageSet && pageImages?.educational
     ? `<figure class="seo-image seo-image--educational dictionary-educational-image" data-image-seo-role="educational" data-image-asset-id="${escapeHtml(pageImages.educational.assetId)}">
                     ${renderResponsivePicture(IMAGE_SEO_REGISTRY, pageImageSet.images.educational, {
                       figure: false,
@@ -2581,12 +2776,32 @@ function generateDictionaryPage(lang, t) {
   }).join('\n');
 
   // ── Build symbol sections HTML ───────────────────────────────────────
+  const extendedSymbols = readExtendedSymbols();
+  const symbolsById = new Map(allSymbols.map((sym) => [sym.id, sym]));
   const symbolSectionsHtml = letters.map((letter) => {
     const syms = groups[letter];
     const cards = syms.map((sym) => {
       const s = sym[lang];
       const dataSymbol = escapeHtml(s.slug);
       const askText = s.askYourself?.[0] || '';
+      // Extra search corpus (data-search): related-symbol names, variation
+      // contexts and the reflection question, minus words already visible on
+      // the card — lets queries like "ocean"/"nager" reach the right symbol.
+      const knownWords = new Set(
+        `${s.name} ${s.slug} ${s.shortDescription}`.toLowerCase().split(/[^\p{L}\p{N}]+/u)
+      );
+      const relatedNames = (sym.relatedSymbols || [])
+        .map((id) => symbolsById.get(id)?.[lang]?.name)
+        .filter(Boolean);
+      const variationContexts = (extendedSymbols[sym.id]?.[lang]?.variations || [])
+        .map((variation) => variation?.context)
+        .filter(Boolean);
+      const searchTerms = [...new Set(
+        [...relatedNames, ...variationContexts, askText]
+          .join(' ')
+          .split(/\s+/)
+          .filter((word) => word && !knownWords.has(word.toLowerCase()))
+      )].join(' ');
       const catName = (t.category_names || {})[sym.category] || sym.category;
       const catColor = CATEGORY_COLORS[sym.category] || '#c084fc';
       const atlasPosition = symbolAtlasPositions.get(sym.id) || getSymbolAtlasPosition(0);
@@ -2594,14 +2809,39 @@ function generateDictionaryPage(lang, t) {
       const cardImageHtml = cardImage
         ? `<img class="symbol-card-image" src="${cardImage.src}" width="${cardImage.width}" height="${cardImage.height}" loading="lazy" decoding="async" alt="${escapeHtml(`${s.name} — ${SYMBOL_IMAGE_ALT_SUFFIX[lang] || SYMBOL_IMAGE_ALT_SUFFIX.en}`)}">`
         : '<span class="symbol-card-image" aria-hidden="true"></span>';
+      const relatedGuidePage = sym.relatedGuide
+        ? pages.find((page) => page.id === sym.relatedGuide)
+        : null;
+      const relatedGuideSlug = relatedGuidePage?.slugs?.[lang];
+      const relatedGuideTitle = normalizePageTitle(relatedGuidePage?.[lang]?.title);
       const relatedArticle = sym.relatedArticles?.[lang];
-      const relatedArticleHtml = relatedArticle ? `
-                            <a href="/${lang}/blog/${relatedArticle}" class="mt-3 inline-flex items-center gap-2 text-xs text-dream-salmon hover:text-dream-salmonLight transition-colors">
-                                ${escapeHtml(i18n[lang]?.read_article || 'Read article')}
-                                <span aria-hidden="true">→</span>
-                            </a>` : '';
+      let relatedArticleHtml = '';
+      if (relatedGuideSlug && relatedGuideTitle) {
+        relatedArticleHtml = `
+                                <a href="/${lang}/guides/${relatedGuideSlug}" class="symbol-card-related">
+                                    <i data-lucide="book-open" class="symbol-card-related-icon" aria-hidden="true"></i>
+                                    ${escapeHtml(`${uiCopy.relatedGuideLabel} ${relatedGuideTitle}`)}
+                                </a>`;
+      } else if (relatedArticle) {
+        const relatedTitle = getBlogTitleBySlug(lang, relatedArticle.split('#')[0]);
+        const relatedText = relatedTitle
+          ? `${uiCopy.relatedArticleLabel} ${relatedTitle}`
+          : (i18n[lang]?.read_article || 'Read article');
+        relatedArticleHtml = `
+                                <a href="/${lang}/blog/${relatedArticle}" class="symbol-card-related">
+                                    <i data-lucide="book-open" class="symbol-card-related-icon" aria-hidden="true"></i>
+                                    ${escapeHtml(relatedText)}
+                                </a>`;
+      }
+      const cardLinksHtml = `
+                            <div class="symbol-card-links">
+                                <a href="/${lang}/${symbolPath}/${s.slug}" class="symbol-card-cta" tabindex="-1">
+                                    ${escapeHtml(uiCopy.viewSymbolCta)}
+                                    <i data-lucide="chevron-right" class="symbol-card-cta-icon" aria-hidden="true"></i>
+                                </a>${relatedArticleHtml}
+                            </div>`;
       return `
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="${dataSymbol}" style="--cat-color:${catColor};--symbol-x:${atlasPosition.x};--symbol-y:${atlasPosition.y};--symbol-atlas-columns:${SYMBOL_ATLAS_COLUMNS};--symbol-atlas-rows:${symbolAtlasRows}">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="${dataSymbol}"${searchTerms ? ` data-search="${escapeHtml(searchTerms)}"` : ''} style="--cat-color:${catColor};--symbol-x:${atlasPosition.x};--symbol-y:${atlasPosition.y};--symbol-atlas-columns:${SYMBOL_ATLAS_COLUMNS};--symbol-atlas-rows:${symbolAtlasRows}">
                             <div class="symbol-card-image-layer">
                                 ${cardImageHtml}
                             </div>
@@ -2617,7 +2857,7 @@ function generateDictionaryPage(lang, t) {
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">${escapeHtml(dc.ask_yourself_label)}</strong> ${escapeHtml(askText)}
                             </div>
-                            ${relatedArticleHtml}
+                            ${cardLinksHtml}
                         </div>`;
     }).join('\n');
     return `                <section id="${letter}" class="mb-12">
@@ -2630,8 +2870,10 @@ function generateDictionaryPage(lang, t) {
   }).join('\n\n');
 
   // ── Build sticky bar letter links ────────────────────────────────────
-  const stickyAlphaLinks = letters.map((l) =>
-    `                        <a href="#${l}" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="${l}">${l}</a>`
+  const presentLetters = new Set(letters);
+  const displayLetters = buildDisplayLetters(letters, lang);
+  const stickyAlphaLinks = displayLetters.map((l) =>
+    renderAlphaItem(l, presentLetters, 'letter-link text-sm', '                        ', ' style="color:rgba(196,181,253,0.75);"')
   ).join('\n');
 
   const heroCopy = {
@@ -2876,6 +3118,13 @@ ${renderViewTransitionHeadStyles()}
         .letter-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
         .search-input:focus { outline: none; border-color: #FDA481; }
         /* Sticky search + alpha bar */
+        .letter-link.is-empty,
+        .sidebar-alpha-link.is-empty,
+        .mobile-alpha-link.is-empty {
+          opacity: 0.32;
+          pointer-events: none;
+          cursor: default;
+        }
         #stickyBar {
             position: fixed;
             top: var(--sticky-bar-top, 5.5rem);
@@ -2889,8 +3138,9 @@ ${renderViewTransitionHeadStyles()}
             padding: 0.62rem 0.72rem !important;
             border-radius: 1.2rem !important;
             border-color: rgba(255,255,255,0.12) !important;
-            background: rgba(16, 9, 31, 0.9) !important;
+            background: rgba(16, 9, 31, 0.94) !important;
             box-shadow: 0 1.2rem 3rem rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.08);
+            -webkit-backdrop-filter: blur(18px);
             backdrop-filter: blur(18px);
             transition: opacity 0.2s ease, transform 0.2s ease;
         }
@@ -3111,7 +3361,7 @@ ${dictionaryHeroFigure}
 
 ${renderMobilePillsHtml(lang, t, counts)}
 
-${renderMobileAlphaHtml(letters)}
+${renderMobileAlphaHtml(letters, lang)}
 
 <!-- Sticky Search + Alphabet bar (above categories) -->
             <div id="stickyBar" class="glass-panel rounded-2xl p-4 mb-8">
@@ -3122,7 +3372,7 @@ ${renderMobileAlphaHtml(letters)}
                         <input type="text" id="stickySearch" placeholder="${escapeHtml(dc.sticky_search_placeholder)}"
                             aria-label="${escapeHtml(dc.sticky_search_placeholder)}"
                             class="search-input w-full rounded-full py-2 pl-12 pr-14 text-sm text-dream-cream transition-colors"
-                            style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);outline:none;">
+                            style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);outline:none;">
                         <button type="button" id="stickySearchClear" class="search-clear" aria-label="${escapeHtml(uiCopy.clearSearch)}" title="${escapeHtml(uiCopy.clearSearch)}" onclick="document.getElementById('stickySearch').value='';document.getElementById('stickySearch').dispatchEvent(new Event('input',{bubbles:true}));" hidden>
                             <i data-lucide="x" class="w-4 h-4"></i>
                         </button>
@@ -3174,6 +3424,7 @@ ${conversionPanelHtml}
 
             <!-- Symbols Dictionary -->
             <div id="dictionary-grid" class="dictionary-discovery-only">
+${reflectionSection}
 ${educationalFigure}
             </div>
             <div id="symbolsList">
@@ -3344,7 +3595,7 @@ ${symbolCatEntries}
                         cards.forEach((card, cardIndex) => {
                             const symbolData = card.dataset.symbol || '';
                             const title = card.querySelector('h3')?.textContent || '';
-                            const content = card.querySelector('p')?.textContent || '';
+                            const content = (card.querySelector('p')?.textContent || '') + ' ' + (card.dataset.search || '');
                             const score = scoreDictionarySearchMatch({
                                 query: q,
                                 title,
@@ -3537,7 +3788,7 @@ ${symbolCatEntries}
             setSearchValue(heroSearch.value || '');
 
             // ── Smooth scroll for letter navigation ───────────────────────
-            document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(link => {
+            document.querySelectorAll('.letter-link[href], .sidebar-alpha-link[href], .mobile-alpha-link[href]').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const wasSearchActive = document.body.classList.contains('dictionary-search-active');
