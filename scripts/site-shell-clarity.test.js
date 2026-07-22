@@ -3,10 +3,12 @@
 const fs = require('fs');
 const path = require('path');
 
+// Force the GA measurement ID back to the inert placeholder so these tests
+// exercise Clarity in isolation and the placeholder guard stays covered.
 const SITE_SHELL_SOURCE = fs.readFileSync(
   path.join(__dirname, '..', 'docs-src', 'static', 'js', 'site-shell.js'),
   'utf8'
-);
+).replace(/const GA_MEASUREMENT_ID = '[^']*';/, "const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';");
 const CONSENT_STORAGE_KEY = 'noctalia.analytics-consent.v1';
 
 describe('site shell Clarity consent control', () => {
@@ -97,6 +99,16 @@ describe('site shell Clarity consent control', () => {
     });
 
     Date.now.mockRestore();
+  });
+
+  it('keeps Google Analytics disabled while the measurement ID is a placeholder', () => {
+    renderConsent();
+
+    document.querySelector('[data-consent="granted"]').click();
+    window.NoctaliaAnalyticsConsent.update(true);
+
+    expect(document.querySelector('script[src*="googletagmanager.com/gtag"]')).toBeNull();
+    expect(window.gtag).toBeUndefined();
   });
 
   it('restores a valid opt-in on a later page', () => {

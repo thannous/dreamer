@@ -1,6 +1,9 @@
 (() => {
   const CLARITY_PROJECT_ID = 'xnb1iax99j';
   const CLARITY_SCRIPT_ID = 'noctalia-clarity';
+  // GA4 property "Noctalia" — set to 'G-XXXXXXXXXX' to disable Google Analytics.
+  const GA_MEASUREMENT_ID = 'G-2LEHJTZFLN';
+  const GA_SCRIPT_ID = 'noctalia-ga';
   const CLARITY_CONSENT_EVENT = 'noctalia:analytics-consent';
   const CONSENT_STORAGE_KEY = 'noctalia.analytics-consent.v1';
   const CONSENT_VERSION = 1;
@@ -129,6 +132,64 @@
     });
   };
 
+  const isGaConfigured = () => /^G-[A-Z0-9]{6,}$/.test(GA_MEASUREMENT_ID) && GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX';
+
+  const sendGaConsent = (analyticsStorage) => {
+    if (typeof window.gtag !== 'function') {
+      return;
+    }
+
+    window.gtag('consent', 'update', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: analyticsStorage,
+    });
+  };
+
+  const loadGoogleAnalytics = () => {
+    if (!isGaConfigured()) {
+      return;
+    }
+
+    if (document.getElementById(GA_SCRIPT_ID)) {
+      sendGaConsent('granted');
+      return;
+    }
+
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function gtag() {
+      window.dataLayer.push(arguments);
+    };
+    window.gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'granted',
+    });
+    window.gtag('js', new Date());
+    window.gtag('config', GA_MEASUREMENT_ID);
+
+    const script = document.createElement('script');
+    script.id = GA_SCRIPT_ID;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+    script.async = true;
+    script.addEventListener('error', () => script.remove(), { once: true });
+    document.head.appendChild(script);
+  };
+
+  const removeGaCookies = () => {
+    const expiry = 'expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    document.cookie
+      .split(';')
+      .map((cookie) => cookie.split('=')[0].trim())
+      .filter((name) => name === '_ga' || name.startsWith('_ga_'))
+      .forEach((name) => {
+        document.cookie = `${name}=; ${expiry}; path=/`;
+        document.cookie = `${name}=; ${expiry}; path=/; domain=.${window.location.hostname}`;
+      });
+  };
+
   const loadClarity = () => {
     const existingScript = document.getElementById(CLARITY_SCRIPT_ID);
     if (existingScript) {
@@ -162,11 +223,16 @@
     analyticsConsentGranted = analyticsAllowed === true && !isGpcEnabled();
     if (analyticsConsentGranted) {
       loadClarity();
+      loadGoogleAnalytics();
       return;
     }
 
     if (document.getElementById(CLARITY_SCRIPT_ID)) {
       window.clarity('consentv2', deniedConsent);
+    }
+
+    if (document.getElementById(GA_SCRIPT_ID)) {
+      sendGaConsent('denied');
     }
   };
 
@@ -191,13 +257,18 @@
   };
 
   const applyConsentChoice = (analytics) => {
-    const clarityWasLoaded = Boolean(document.getElementById(CLARITY_SCRIPT_ID));
+    const trackersWereLoaded = Boolean(
+      document.getElementById(CLARITY_SCRIPT_ID) || document.getElementById(GA_SCRIPT_ID)
+    );
     storeConsent(analytics ? 'granted' : 'denied');
     updateAnalyticsConsent(analytics);
     hideConsentPanel();
 
-    if (!analytics && clarityWasLoaded) {
-      window.setTimeout(() => window.location.reload(), 0);
+    if (!analytics) {
+      removeGaCookies();
+      if (trackersWereLoaded) {
+        window.setTimeout(() => window.location.reload(), 0);
+      }
     }
   };
 

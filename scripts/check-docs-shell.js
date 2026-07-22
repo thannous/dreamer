@@ -95,6 +95,10 @@ function auditDocsShell(docsDir = DOCS_DIR) {
       pageErrors.push('Clarity must not load before analytics consent');
     }
 
+    if (/https:\/\/www\.googletagmanager\.com\/gtag\//i.test(html)) {
+      pageErrors.push('Google Analytics must not load before analytics consent');
+    }
+
     if (!/\/js\/mobile-menu\.js(?:\?|["'])/i.test(html)) {
       pageErrors.push('missing /js/mobile-menu.js');
     }
