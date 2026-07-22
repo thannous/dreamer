@@ -1054,6 +1054,54 @@ describe('useDreamJournal', () => {
       }));
     });
 
+    it('keeps the latest server revision when legacy image admission fails', async () => {
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'revision-before-analysis',
+        isAnalyzed: false,
+        analysisStatus: 'none',
+        imageUrl: '',
+      });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockSubmitImageGenerationJob.mockRejectedValueOnce(
+        Object.assign(new Error('Too many image requests'), { status: 429 })
+      );
+      mockUpdateDreamInSupabase
+        .mockImplementationOnce(async (dream: DreamAnalysis) => ({
+          ...dream,
+          revisionId: 'revision-pending-acked',
+        }))
+        .mockImplementationOnce(async (dream: DreamAnalysis) => ({
+          ...dream,
+          revisionId: 'revision-analysis-acked',
+        }));
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.analyzeDream(1, existingDream.transcript, { lang: 'fr' });
+      });
+
+      expect(mockUpdateDreamInSupabase).toHaveBeenCalledTimes(2);
+      expect(mockUpdateDreamInSupabase.mock.calls[1]?.[0]).toEqual(
+        expect.objectContaining({
+          revisionId: 'revision-pending-acked',
+          title: 'Analyzed Title',
+          interpretation: 'Deep meaning',
+          analysisStatus: 'done',
+          isAnalyzed: true,
+        })
+      );
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({
+          revisionId: 'revision-analysis-acked',
+          syncState: 'clean',
+        })
+      );
+    });
+
     it('keeps an accepted durable analysis pending when status observation goes offline', async () => {
       mockEnvState.analysisJobsEnabled = true;
       setMockUser({ id: 'user-1' });
