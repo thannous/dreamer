@@ -796,13 +796,22 @@ export const useDreamJournal = () => {
 
   const reconcileImageJob = useCallback(
     async (job: PendingImageJob) => {
-      const currentDream = dreamsRef.current.find((dream) => dream.id === job.dreamId);
-      if (!currentDream) {
+      const observedDream = dreamsRef.current.find((dream) => dream.id === job.dreamId);
+      if (!observedDream) {
         await removePendingImageJob(job.jobId);
         return;
       }
 
       const status = await getImageGenerationJobStatus(job.jobId);
+      // Analysis and image polling run independently. Never apply the image
+      // response to the snapshot captured before the network request: a fast
+      // image job can otherwise restore `analysisStatus: pending` after the
+      // interpretation has already been persisted.
+      const currentDream = dreamsRef.current.find((dream) => dream.id === job.dreamId);
+      if (!currentDream) {
+        await removePendingImageJob(job.jobId);
+        return;
+      }
 
       if (isActiveImageJobStatus(status.status)) {
         const nextStatus = status.status === 'running' ? 'running' : 'queued';
@@ -1270,29 +1279,54 @@ export const useDreamJournal = () => {
           analysisRequestId: requestId,
         });
 
-        let imageResult: {
-          dream: DreamAnalysis;
-          failed: boolean;
-          error?: unknown;
-        } = { dream: syncedDream, failed: false };
+        const { imagePrompt, quotaUsed, ...analysisFields } = analysis;
+        analysisStatusOverridesRef.current.set(dreamId, 'done');
+
+        // The interpretation is the primary result. Persist it before starting
+        // the independent image job so a fast poll, app backgrounding, or an
+        // image admission failure cannot leave a successful analysis pending.
+        let next: DreamAnalysis = {
+          ...resolveCurrentDream(syncedDream),
+          ...analysisFields,
+          imageGenerationFailed: false,
+          analysisStatus: 'done',
+          analyzedAt: Date.now(),
+          isAnalyzed: true,
+          imageJobId: undefined,
+          imageJobStatus: undefined,
+          imageJobRequestId: undefined,
+          imageJobErrorCode: undefined,
+          imageJobErrorMessage: undefined,
+        };
+        await updateDream(next);
+        await syncPendingMutations();
+        next = resolveCurrentDream(next);
 
         if (shouldReplaceImage) {
           emitProgress(AnalysisStep.GENERATING_IMAGE);
           try {
-            const submittedImage = await submitImageJobForDream(resolveCurrentDream(syncedDream), {
+            const submittedImage = await submitImageJobForDream(next, {
               clientRequestId: requestId,
-              prompt: analysis.imagePrompt,
-              previousImageUrl: syncedDream.imageUrl || undefined,
+              prompt: imagePrompt,
+              previousImageUrl: next.imageUrl || undefined,
             });
-            imageResult = { dream: submittedImage.dream, failed: false };
+            next = resolveCurrentDream(submittedImage.dream);
           } catch (error) {
             logger.warn('Image job submission failed', error);
-            imageResult = { dream: resolveCurrentDream(syncedDream), failed: true, error };
+            const latestDream = resolveCurrentDream(next);
+            next = {
+              ...latestDream,
+              imageGenerationFailed: !latestDream.imageUrl && !dream.imageUrl,
+              imageJobId: undefined,
+              imageJobStatus: undefined,
+              imageJobRequestId: undefined,
+              imageJobErrorCode: 'IMAGE_JOB_SUBMISSION_FAILED',
+              imageJobErrorMessage: error instanceof Error ? error.message : undefined,
+            };
+            await updateDream(next);
           }
         }
         emitProgress(AnalysisStep.FINALIZING);
-
-        const { imagePrompt: _submittedImagePrompt, quotaUsed, ...analysisFields } = analysis;
 
         if (!user) {
           // Persist local quota usage for offline enforcement
@@ -1311,38 +1345,12 @@ export const useDreamJournal = () => {
           }
         }
 
-        const baseDream = imageResult.dream ?? currentDreamState;
-        const imageFailedWithoutImage =
-          shouldReplaceImage && !!imageResult.failed && !baseDream.imageUrl && !dream.imageUrl;
-
-        const next: DreamAnalysis = {
-          ...baseDream,
-          ...analysisFields,
-          imageGenerationFailed: imageFailedWithoutImage,
-          analysisStatus: 'done',
-          analyzedAt: Date.now(),
-          isAnalyzed: true,
-          imageJobId: imageResult.failed ? undefined : baseDream.imageJobId,
-          imageJobStatus: imageResult.failed ? undefined : baseDream.imageJobStatus,
-          imageJobRequestId: imageResult.failed ? undefined : baseDream.imageJobRequestId,
-          imageJobErrorCode: imageResult.failed ? 'IMAGE_JOB_SUBMISSION_FAILED' : undefined,
-          imageJobErrorMessage: imageResult.failed
-            ? imageResult.error instanceof Error
-              ? imageResult.error.message
-              : undefined
-            : undefined,
-        };
-        analysisStatusOverridesRef.current.set(dreamId, 'done');
         void trackProductEvent('analysis_completed', {
           duration_ms_bucket: getDurationMsBucket(Date.now() - analysisStartedAt),
           generated_image: Boolean(next.imageUrl),
           tier,
         });
 
-        // Persist locally and best-effort sync to Supabase. updateDream intentionally falls back
-        // to the offline queue for most errors, so we force a sync attempt right after.
-        await updateDream(next);
-        await syncPendingMutations();
         analysisStatusOverridesRef.current.delete(dreamId);
         analysisRequestIdsRef.current.delete(dreamId);
 

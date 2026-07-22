@@ -971,6 +971,84 @@ describe('useDreamJournal', () => {
       expect(mockFetchDreamFromSupabase).toHaveBeenCalledWith(101);
       expect(mockUpdateDreamInSupabase).not.toHaveBeenCalled();
     });
+
+    it('merges a fast image response into the latest analyzed dream state', async () => {
+      let resolveImageStatus!: (value: {
+        jobId: string;
+        status: 'succeeded';
+        clientRequestId: string;
+        resultPayload: { imageUrl: string };
+      }) => void;
+      const imageStatusPromise = new Promise<{
+        jobId: string;
+        status: 'succeeded';
+        clientRequestId: string;
+        resultPayload: { imageUrl: string };
+      }>((resolve) => {
+        resolveImageStatus = resolve;
+      });
+      const pendingDream = buildDream({
+        id: 1,
+        interpretation: '',
+        shareableQuote: '',
+        imageUrl: '',
+        isAnalyzed: false,
+        analysisStatus: 'pending',
+        imageJobId: 'job-fast',
+        imageJobStatus: 'running',
+        imageJobRequestId: 'image-request-fast',
+      });
+      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          jobId: 'job-fast',
+          clientRequestId: 'image-request-fast',
+          status: 'running',
+          requestedAt: Date.now(),
+        },
+      ]);
+      mockGetImageGenerationJobStatus.mockReturnValue(imageStatusPromise);
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await waitFor(() => {
+        expect(mockGetImageGenerationJobStatus).toHaveBeenCalledWith('job-fast');
+      }, FAST_WAIT_OPTIONS);
+
+      await act(async () => {
+        await result.current.updateDream({
+          ...result.current.dreams[0],
+          title: 'Completed analysis',
+          interpretation: 'The interpretation must survive image completion.',
+          shareableQuote: 'Keep the latest state.',
+          isAnalyzed: true,
+          analysisStatus: 'done',
+        });
+      });
+
+      await act(async () => {
+        resolveImageStatus({
+          jobId: 'job-fast',
+          status: 'succeeded',
+          clientRequestId: 'image-request-fast',
+          resultPayload: { imageUrl: 'https://example.com/fast-image.jpg' },
+        });
+        await imageStatusPromise;
+      });
+
+      await waitFor(() => {
+        expect(result.current.dreams[0]).toEqual(
+          expect.objectContaining({
+            title: 'Completed analysis',
+            interpretation: 'The interpretation must survive image completion.',
+            isAnalyzed: true,
+            analysisStatus: 'done',
+            imageUrl: 'https://example.com/fast-image.jpg',
+          })
+        );
+      }, FAST_WAIT_OPTIONS);
+    });
   });
 
   describe('analyzeDream', () => {
@@ -1076,6 +1154,10 @@ describe('useDreamJournal', () => {
         .mockImplementationOnce(async (dream: DreamAnalysis) => ({
           ...dream,
           revisionId: 'revision-analysis-acked',
+        }))
+        .mockImplementationOnce(async (dream: DreamAnalysis) => ({
+          ...dream,
+          revisionId: 'revision-image-failure-acked',
         }));
 
       const { result } = await renderLoadedDreamJournal();
@@ -1084,7 +1166,7 @@ describe('useDreamJournal', () => {
         await result.current.analyzeDream(1, existingDream.transcript, { lang: 'fr' });
       });
 
-      expect(mockUpdateDreamInSupabase).toHaveBeenCalledTimes(2);
+      expect(mockUpdateDreamInSupabase).toHaveBeenCalledTimes(3);
       expect(mockUpdateDreamInSupabase.mock.calls[1]?.[0]).toEqual(
         expect.objectContaining({
           revisionId: 'revision-pending-acked',
@@ -1094,9 +1176,17 @@ describe('useDreamJournal', () => {
           isAnalyzed: true,
         })
       );
-      expect(result.current.dreams[0]).toEqual(
+      expect(mockUpdateDreamInSupabase.mock.calls[2]?.[0]).toEqual(
         expect.objectContaining({
           revisionId: 'revision-analysis-acked',
+          analysisStatus: 'done',
+          imageGenerationFailed: true,
+          imageJobErrorCode: 'IMAGE_JOB_SUBMISSION_FAILED',
+        })
+      );
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({
+          revisionId: 'revision-image-failure-acked',
           syncState: 'clean',
         })
       );
@@ -1300,6 +1390,59 @@ describe('useDreamJournal', () => {
       expect(analyzedDream.imageJobStatus).toBe('queued');
       expect(analyzedDream.analyzedAt).toBeDefined();
       expect(analyzedDream.clientUpdatedAt).toEqual(expect.any(Number));
+    });
+
+    it('persists the guest interpretation before image admission completes', async () => {
+      let resolveImageAdmission!: (value: {
+        jobId: string;
+        status: 'queued';
+        clientRequestId: string;
+      }) => void;
+      const imageAdmissionPromise = new Promise<{
+        jobId: string;
+        status: 'queued';
+        clientRequestId: string;
+      }>((resolve) => {
+        resolveImageAdmission = resolve;
+      });
+      const existingDream = buildDream({
+        id: 1,
+        interpretation: '',
+        shareableQuote: '',
+        isAnalyzed: false,
+        analysisStatus: 'none',
+        imageUrl: '',
+      });
+      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      mockSubmitImageGenerationJob.mockReturnValue(imageAdmissionPromise);
+
+      const { result } = await renderLoadedDreamJournal();
+      let analysisPromise!: Promise<DreamAnalysis>;
+
+      act(() => {
+        analysisPromise = result.current.analyzeDream(1, existingDream.transcript);
+      });
+
+      await waitFor(() => {
+        expect(mockSubmitImageGenerationJob).toHaveBeenCalled();
+        expect(result.current.dreams[0]).toEqual(
+          expect.objectContaining({
+            title: 'Analyzed Title',
+            interpretation: 'Deep meaning',
+            isAnalyzed: true,
+            analysisStatus: 'done',
+          })
+        );
+      }, FAST_WAIT_OPTIONS);
+
+      await act(async () => {
+        resolveImageAdmission({
+          jobId: 'job-queued',
+          status: 'queued',
+          clientRequestId: 'image-job-request-queued',
+        });
+        await analysisPromise;
+      });
     });
 
     it('reuses a persisted request id on retry and lets the server reconcile quota', async () => {
