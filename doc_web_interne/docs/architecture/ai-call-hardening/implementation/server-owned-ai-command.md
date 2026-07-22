@@ -74,14 +74,14 @@ Database validation now covers both the full repository history and focused beha
 
 - the first tracked migration contains the recovered, idempotent baseline for the Dashboard-created `public.dreams`, `public.quota_usage`, and `public.waitlist_subscribers` tables, so later historical `ALTER TABLE` statements have a reproducible starting point;
 - the historical waitlist `bigint` to UUID conversion now changes the column type before installing its UUID default, and the generated Realtime trigger is conditional because `realtime.subscription` is platform-owned and may not yet exist during application migration replay;
-- `supabase db reset --local --no-seed` recreates the database and applies all 43 tracked migrations through `20260722134500_add_idempotent_chat_turns.sql`;
-- `supabase migration list --local` reports the same 43 versions locally and in the reset database, `npm run db:contract:check:local` passes all 46 checks, and Supabase database lint reports no errors;
+- `supabase db reset --local --no-seed` recreates the database and applies all 44 tracked migrations through `20260722134500_add_idempotent_chat_turns.sql`, including the service-only `ai_jobs` grant correction;
+- `supabase migration list --local` reports the same 44 versions locally and in the reset database, `npm run db:contract:check:local` passes all 46 checks, and Supabase database lint reports no errors;
 - all five new migrations also apply in order on an isolated PostgreSQL 17.6 harness, where behavior assertions cover actor/global rate limits, exact quota consumption, idempotency input binding, job completion with prompt reuse, chat replay/concurrency/attempt leases, normalized quota counts, and absence of direct client grants.
 
 The final source snapshot also passes:
 
 - all 204 Jest suites (1,929 tests), including native speech-recognition and Android fallback coverage;
-- all 73 Deno API tests and `deno check --frozen` for the API, analysis worker, and image worker;
+- all 76 Deno API and webhook tests and `deno check --frozen` for the API, analysis worker, and image worker;
 - application and test TypeScript checks;
 - full lint with zero errors (the repository still reports 57 non-blocking React/lint warnings outside this hardening gate);
 - a full tracked local Supabase reset, migration-history alignment, and all 46 database contract checks (database lint retains one non-blocking unused-variable warning in `complete_authenticated_chat_turn`);
@@ -93,7 +93,7 @@ Record command acknowledgement latency, provider latency, queue age, attempts, t
 
 ## Rollout And Rollback
 
-Roll out the five additive migrations in timestamp order, then the API function, the analysis worker, the updated image worker, and finally a client build with `EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED=true`. Verify RPC grants and worker secrets in a non-production environment before enabling the flag. Disable the client flag to return to synchronous analysis. Keep new rows readable and drain queued jobs before removing worker code. Database rollback is forward-compatible: stop creating the new job type before removing any additive object.
+The backend rollout completed in production on 2026-07-22: the service-only grant correction and five additive migrations were applied, followed by the API function, analysis worker, and updated image worker. The client flag remains disabled, so authenticated analysis continues to use the synchronous compatibility path until a separately validated client build enables `EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED=true`. Disable that flag to return a flagged client to synchronous analysis. Keep new rows readable and drain queued jobs before removing worker code. Database rollback is forward-compatible: stop creating the new job type before removing any additive object.
 
 ## Acceptance Criteria
 
@@ -105,11 +105,14 @@ Roll out the five additive migrations in timestamp order, then the API function,
 - Costly routes reject malformed, oversized, burst, concurrent, duplicate, and backlog-exceeding work before provider invocation.
 - Focused tests, app typecheck, test typecheck, and relevant Deno route/worker tests pass. Database contract validation requires an initialized local or configured validation database; an empty database is not a valid contract target.
 
-## Implemented Defaults And Remaining Production Gates
+## Production Rollout Evidence And Remaining Gates
 
 - Authenticated analysis defaults: one active/free, two active/Plus, four/free and twelve/Plus per ten-minute window, three worker attempts, and a global backlog ceiling of 200. All are bounded environment overrides.
 - Quick categorization remains optional and non-blocking; it never delays durable save and has no automatic transport retry.
 - Guest analysis remains synchronous behind signed guest identity and atomic quotas; the authenticated job flag does not change guest behavior.
+- Production migration history contains the same 44 versions as the tracked repository. The latest deployed versions are `20260722120413`, `20260722123000`, `20260722124500`, `20260722130000`, `20260722133000`, and `20260722134500`.
+- Production Edge Functions are active as `api` v92, `analysis-job-worker` v1, and `image-job-worker` v11. External unauthenticated worker probes return `401`, while the API CORS probe returns `200`.
+- `anon` and `authenticated` have no direct table privileges on `ai_jobs`; `service_role` retains only `SELECT`, `INSERT`, `UPDATE`, and `DELETE`. The authenticated command RPCs are deliberately executable only by `authenticated` and `service_role`, with an empty `search_path`.
+- Post-rollout Supabase advisors add only expected notices for private RLS tables without client policies, authenticated command RPCs, and new/unused indexes. The unindexed `dream_chat_messages.user_id` foreign key remains a non-blocking performance follow-up.
 - Production telemetry must prove supported-client usage before any legacy endpoint is removed.
-- The historical migration baseline is now reproducible locally; staging and production rollout evidence remain separate release gates.
-- No migration, Edge Function, secret, feature flag, or client build from this implementation has been deployed.
+- No feature-flagged mobile build has been produced or deployed; client activation and production telemetry remain separate release gates.
