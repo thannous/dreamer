@@ -18,8 +18,14 @@ alter table "public"."dreams" alter column "transcript" drop default;
 alter table "public"."dreams" alter column "user_id" set not null;
 alter table "public"."waitlist_subscribers" add column "locale" text;
 alter table "public"."waitlist_subscribers" add column "source" text;
+-- The recovered local baseline used a serial identifier, while the remote
+-- schema already used UUIDs when this diff was generated. Drop the serial
+-- default first, generate a UUID for any pre-existing row, then install the
+-- UUID default. Setting the default before changing the type makes a fresh
+-- migration replay fail because PostgreSQL cannot assign UUIDs to bigint.
+alter table "public"."waitlist_subscribers" alter column "id" drop default;
+alter table "public"."waitlist_subscribers" alter column "id" set data type uuid using gen_random_uuid();
 alter table "public"."waitlist_subscribers" alter column "id" set default gen_random_uuid();
-alter table "public"."waitlist_subscribers" alter column "id" set data type uuid using "id"::uuid;
 drop sequence if exists "public"."dreams_id_seq";
 drop sequence if exists "public"."waitlist_subscribers_id_seq";
 CREATE UNIQUE INDEX waitlist_subscribers_email_key ON public.waitlist_subscribers USING btree (email);
@@ -308,7 +314,25 @@ BEGIN
   RETURN NEW;
 END;
 $function$;
-CREATE TRIGGER tr_check_filters BEFORE INSERT OR UPDATE ON realtime.subscription FOR EACH ROW EXECUTE FUNCTION realtime.subscription_check_filters();
+-- realtime.subscription is owned by Supabase and is not guaranteed to exist
+-- while application migrations are replayed. Recreate its historical trigger
+-- only when the local platform version has already provisioned both objects.
+do $$
+begin
+  if to_regclass('realtime.subscription') is not null
+    and to_regprocedure('realtime.subscription_check_filters()') is not null
+    and not exists (
+      select 1
+      from pg_trigger
+      where tgrelid = to_regclass('realtime.subscription')
+        and tgname = 'tr_check_filters'
+        and not tgisinternal
+    )
+  then
+    execute 'create trigger tr_check_filters before insert or update on realtime.subscription for each row execute function realtime.subscription_check_filters()';
+  end if;
+end
+$$;
 create policy "Authenticated delete dream-images"
   on "storage"."objects"
   as permissive
