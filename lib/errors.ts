@@ -15,6 +15,8 @@ const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   'error.network': 'No internet connection. Please check your network and try again.',
   'error.timeout': 'Request timed out. The server is taking too long to respond. Please try again.',
   'error.rate_limit': 'Too many requests. Please wait a moment and try again.',
+  'error.interpretation_limit': 'You have used your included interpretations. Your dream remains saved in the journal.',
+  'error.chat_safety_limit': 'This dream has reached its chat safety limit. Its interpretation remains available in your journal.',
   'error.server': 'Server error. The service is temporarily unavailable. Please try again in a few moments.',
   'error.client': 'Invalid request. Please check your input and try again.',
   'error.owner_agent_limit_reached': 'You have reached the maximum number of saved keys ({limit}). Delete one before adding another.',
@@ -238,6 +240,32 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
         message: error.message,
         originalError: error,
         userMessage: translate('error.login_required'),
+        canRetry: false,
+      };
+    }
+
+    if (status === 429 && code === 'QUOTA_MESSAGE_LIMIT_REACHED') {
+      return {
+        type: ErrorType.CLIENT,
+        message: error.message,
+        originalError: error,
+        userMessage: translate('error.chat_safety_limit'),
+        canRetry: false,
+      };
+    }
+
+    if (
+      status === 429
+      && code === 'QUOTA_EXCEEDED'
+      && body.usage
+      && typeof body.usage === 'object'
+      && 'analysis' in body.usage
+    ) {
+      return {
+        type: ErrorType.CLIENT,
+        message: error.message,
+        originalError: error,
+        userMessage: translate('error.interpretation_limit'),
         canRetry: false,
       };
     }
@@ -527,32 +555,23 @@ export class QuotaError extends Error {
     switch (code) {
       case QuotaErrorCode.ANALYSIS_LIMIT_REACHED:
         if (tier === 'guest') {
-          return `You have reached the limit of ${QUOTAS.guest.analysis ?? 0} analyses in guest mode. Create a free account to get ${QUOTAS.free.analysis ?? 0} analyses per month!`;
+          return `You have used your ${QUOTAS.guest.analysis ?? 0} included guest interpretations. Create a free account to continue.`;
         } else if (tier === 'free') {
-          return `You have used all ${QUOTAS.free.analysis ?? 0} free analyses for this month. Upgrade to Noctalia Plus for unlimited analyses!`;
+          return `You have used your ${QUOTAS.free.analysis ?? 0} included interpretations for this month. Upgrade to Noctalia Plus for unlimited interpretations.`;
         }
-        return 'Analysis limit reached.';
+        return 'Included interpretations used.';
 
       case QuotaErrorCode.EXPLORATION_LIMIT_REACHED:
-        if (tier === 'guest') {
-          return `You have explored ${QUOTAS.guest.exploration ?? 0} dreams in guest mode. Create a free account to continue exploring!`;
-        } else if (tier === 'free') {
-          return `You have used all ${QUOTAS.free.exploration ?? 0} free dream explorations for this month. Upgrade to Noctalia Plus for unlimited dream exploration!`;
-        }
-        return 'Exploration limit reached.';
+        return 'Chat access is temporarily unavailable for this interpretation.';
 
       case QuotaErrorCode.MESSAGE_LIMIT_REACHED:
-        if (tier === 'guest' || tier === 'free') {
-          const limit = tier === 'guest' ? QUOTAS.guest.messagesPerDream : QUOTAS.free.messagesPerDream;
-          return `You have reached the limit of ${limit ?? 0} messages for this dream. Upgrade to Noctalia Plus for unlimited conversations!`;
-        }
-        return 'Message limit reached.';
+        return 'This dream has reached its chat safety limit. Its interpretation remains available.';
 
       case QuotaErrorCode.LOGIN_REQUIRED:
-        return 'This device is already linked to an account. Please sign in to continue.';
+        return 'Please sign in to continue.';
 
       case QuotaErrorCode.GUEST_LIMIT_REACHED:
-        return `You have reached the limit of ${QUOTAS.guest.exploration ?? 0} dreams in guest mode. Create a free account to continue!`;
+        return `You have used your ${QUOTAS.guest.analysis ?? 0} included guest interpretations. Create a free account to continue.`;
 
       default:
         return 'Quota limit reached.';

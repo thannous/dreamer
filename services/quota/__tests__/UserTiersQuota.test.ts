@@ -101,7 +101,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     // (Messages per dream covered in MockQuotaProvider.test.ts)
   });
 
-  it('Free: 3 analyses per month, 2 explorations per month', async () => {
+  it('Free: 3 interpretations per month with exploration included', async () => {
     // Start with 2 analyses used
     mockQuotaEventStore.analysisCount = 2;
 
@@ -133,7 +133,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     mockGetSavedDreams.mockResolvedValueOnce(five);
     await expect(provider2.canAnalyzeDream(userFree, 'free')).resolves.toBe(false);
 
-    // Explorations: two dreams explored already (limit for free tier)
+    // Exploration telemetry does not create another commercial gate.
     mockQuotaEventStore.explorationCount = 2;
     mockQuotaEventStore.exploredDreamIds = [200, 201];
     const now2 = Date.now();
@@ -143,7 +143,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     ];
     const provider3 = new MockQuotaProvider();
     mockGetSavedDreams.mockResolvedValueOnce(threeExplored);
-    await expect(provider3.canExploreDream({ dreamId: 999 }, userFree, 'free')).resolves.toBe(false);
+    await expect(provider3.canExploreDream({ dreamId: 999 }, userFree, 'free')).resolves.toBe(true);
 
     // But for those same explored dreams, allow continuing the chat
     const provider4 = new MockQuotaProvider();
@@ -152,7 +152,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     await expect(provider4.canExploreDream({ dreamId: 200 }, userFree, 'free')).resolves.toBe(true);
   });
 
-  it('Plus: unlimited analyses, explorations, and messages', async () => {
+  it('Plus: unlimited interpretations and exploration with a per-dream chat safety limit', async () => {
     const heavy: DreamAnalysis[] = Array.from({ length: 50 }).map((_, i) =>
       buildDream({
         id: i + 1000,
@@ -171,10 +171,10 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     const provider = new MockQuotaProvider();
     await expect(provider.canAnalyzeDream(userPlus, 'plus')).resolves.toBe(true);
     await expect(provider.canExploreDream({ dreamId: 12345 }, userPlus, 'plus')).resolves.toBe(true);
-    await expect(provider.canSendChatMessage({ dreamId: heavy[0].id }, userPlus, 'plus')).resolves.toBe(true);
+    await expect(provider.canSendChatMessage({ dreamId: heavy[0].id }, userPlus, 'plus')).resolves.toBe(false);
     const status = await provider.getQuotaStatus(userPlus, 'plus');
     expect(status.usage.analysis.limit).toBeNull();
     expect(status.usage.exploration.limit).toBeNull();
-    expect(status.usage.messages.limit).toBeNull();
+    expect(status.usage.messages.limit).toBe(20);
   });
 });

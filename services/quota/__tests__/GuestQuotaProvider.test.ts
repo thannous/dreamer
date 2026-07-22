@@ -121,8 +121,8 @@ describe('GuestQuotaProvider', () => {
       expect(canExplore).toBe(true);
     });
 
-    it('given guest beyond exploration limit when checking new dream then denies', async () => {
-      // Given - persistent counter at limit (2)
+    it('given guest with prior explorations when checking a new interpreted dream then allows chat', async () => {
+      // Given - legacy exploration telemetry is already populated
       mockLocalCounterConfig.explorationCount = 2;
       mockGetDreams.mockResolvedValueOnce([]);
       const provider = new GuestQuotaProvider();
@@ -131,7 +131,7 @@ describe('GuestQuotaProvider', () => {
       const canExplore = await provider.canExploreDream({ dreamId: 999 }, null);
 
       // Then
-      expect(canExplore).toBe(false);
+      expect(canExplore).toBe(true);
     });
 
     it('given authenticated user when checking exploration then allows', async () => {
@@ -338,8 +338,8 @@ describe('GuestQuotaProvider', () => {
       expect(status.reasons).toBeUndefined();
     });
 
-    it('given guest beyond exploration limit when getting status then includes exploration reason', async () => {
-      // Given - persistent counter at limit
+    it('given guest with legacy exploration usage when getting status then does not expose an exploration limit', async () => {
+      // Given - legacy telemetry remains available for analytics
       mockLocalCounterConfig.explorationCount = 2;
       mockGetDreams.mockResolvedValueOnce([]);
 
@@ -349,9 +349,9 @@ describe('GuestQuotaProvider', () => {
       const status = await provider.getQuotaStatus(null, 'guest', { dreamId: 999 });
 
       // Then
-      expect(status.canExplore).toBe(false);
-      expect(status.reasons).toBeDefined();
-      expect(status.reasons!.some(reason => reason.includes('Guest exploration limit reached'))).toBe(true);
+      expect(status.canExplore).toBe(true);
+      expect(status.usage.exploration.limit).toBeNull();
+      expect(status.reasons).toBeUndefined();
     });
   });
 

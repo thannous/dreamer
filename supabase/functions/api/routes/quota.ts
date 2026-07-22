@@ -4,6 +4,11 @@ import { requireGuestSession } from '../lib/guards.ts';
 import { verifyGuestToken } from '../lib/guestToken.ts';
 import type { ApiContext } from '../types.ts';
 
+const toCount = (value: unknown): number => {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return 0;
+  return Math.max(0, Math.floor(value));
+};
+
 export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
   const { req, user, supabase, supabaseUrl, supabaseServiceRoleKey } = ctx;
 
@@ -85,49 +90,50 @@ export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
 
     const analysisUsed = quotaData?.analysis_count ?? 0;
     const explorationUsed = quotaData?.exploration_count ?? 0;
-    const isUpgraded = quotaData?.is_upgraded ?? false;
-
-    // If fingerprint has been upgraded, block guest access
-    if (isUpgraded) {
-      return new Response(
-        JSON.stringify({
-          tier: 'guest',
-          usage: {
-            analysis: { used: analysisUsed, limit: GUEST_LIMITS.analysis },
-            exploration: { used: explorationUsed, limit: GUEST_LIMITS.exploration },
-            messages: { used: 0, limit: GUEST_LIMITS.messagesPerDream },
-          },
-          canAnalyze: false,
-          canExplore: false,
-          isUpgraded: true,
-          reasons: ['Cet appareil est déjà lié à un compte. Connectez-vous pour retrouver vos rêves.'],
-        }),
-        { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    const analysisLimit = quotaData?.effective_analysis_limit ?? GUEST_LIMITS.analysis;
+    const messageLimit = quotaData?.effective_message_limit ?? GUEST_LIMITS.messagesPerDream;
+    let messagesUsed = 0;
+    if (targetDreamId !== null) {
+      const { data: messageCount, error: messageCountError } = await adminClient.rpc(
+        'get_guest_chat_message_count',
+        {
+          p_fingerprint: fingerprint,
+          p_dream_key: String(targetDreamId),
+        }
       );
+      if (messageCountError) {
+        console.warn('[api] /quota/status: failed to get guest dream message count', {
+          code: messageCountError?.code ?? null,
+        });
+        return new Response(
+          JSON.stringify({ error: 'Quota service unavailable' }),
+          { status: 503, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        );
+      }
+      messagesUsed = toCount(messageCount);
     }
 
-    const canAnalyze = analysisUsed < GUEST_LIMITS.analysis;
-    const canExplore = explorationUsed < GUEST_LIMITS.exploration;
+    const canAnalyze = analysisUsed < analysisLimit;
+    const canExplore = true;
 
     const reasons: string[] = [];
     if (!canAnalyze) {
       reasons.push(`Guest analysis limit reached (${analysisUsed}/${GUEST_LIMITS.analysis}). Create a free account to get more!`);
-    }
-    if (!canExplore) {
-      reasons.push(`Guest exploration limit reached (${explorationUsed}/${GUEST_LIMITS.exploration}). Create a free account to continue!`);
     }
 
     return new Response(
       JSON.stringify({
         tier: 'guest',
         usage: {
-          analysis: { used: analysisUsed, limit: GUEST_LIMITS.analysis },
-          exploration: { used: explorationUsed, limit: GUEST_LIMITS.exploration },
-          messages: { used: 0, limit: GUEST_LIMITS.messagesPerDream },
+          analysis: { used: analysisUsed, limit: analysisLimit },
+          exploration: { used: explorationUsed, limit: null },
+          messages: { used: messagesUsed, limit: messageLimit },
         },
         canAnalyze,
         canExplore,
         isUpgraded: false,
+        riskScore: quotaData?.risk_score ?? 0,
+        riskLevel: quotaData?.risk_level ?? 'low',
         reasons,
       }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
@@ -193,9 +199,19 @@ export async function handleAuthMarkUpgrade(ctx: ApiContext): Promise<Response> 
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    const { error } = await adminClient.rpc('mark_fingerprint_upgraded', {
+    const platform = verifiedGuest.payload?.platform;
+    // Guest tokens are currently issued only after a verified Play Integrity
+    // verdict. Keep iOS unverified until the App Attest attestation/assertion
+    // exchange is implemented server-side; the platform string alone is not
+    // an integrity proof.
+    const integrityProvider = platform === 'android' ? 'play_integrity' : 'unknown';
+    const integrityVerified = platform === 'android';
+
+    const { data: risk, error } = await adminClient.rpc('register_device_account_link', {
       p_fingerprint: fingerprint,
       p_user_id: user.id,
+      p_integrity_provider: integrityProvider,
+      p_integrity_verified: integrityVerified,
     });
 
     if (error) {
@@ -208,9 +224,16 @@ export async function handleAuthMarkUpgrade(ctx: ApiContext): Promise<Response> 
       );
     }
 
-    console.log('[api] /auth/mark-upgrade: success');
+    console.log('[api] /auth/mark-upgrade: device account signal registered', {
+      riskLevel: (risk as any)?.risk_level ?? 'unknown',
+      integrityProvider,
+    });
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({
+        success: true,
+        riskScore: (risk as any)?.risk_score ?? 0,
+        riskLevel: (risk as any)?.risk_level ?? 'low',
+      }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   } catch {

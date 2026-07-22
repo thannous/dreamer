@@ -85,6 +85,35 @@ describe('classifyError', () => {
     expect(result.canRetry).toBe(true);
   });
 
+  it('classifies a per-dream chat safety limit separately from burst rate limiting', () => {
+    const error = Object.assign(new Error('HTTP 429 Too Many Requests'), {
+      status: 429,
+      body: { code: 'QUOTA_MESSAGE_LIMIT_REACHED' },
+    });
+
+    const result = classifyError(error);
+
+    expect(result.type).toBe(ErrorType.CLIENT);
+    expect(result.canRetry).toBe(false);
+    expect(result.userMessage).toContain('chat safety limit');
+  });
+
+  it('classifies exhausted interpretations separately from burst rate limiting', () => {
+    const error = Object.assign(new Error('HTTP 429 Too Many Requests'), {
+      status: 429,
+      body: {
+        code: 'QUOTA_EXCEEDED',
+        usage: { analysis: { used: 2, limit: 2 } },
+      },
+    });
+
+    const result = classifyError(error);
+
+    expect(result.type).toBe(ErrorType.CLIENT);
+    expect(result.canRetry).toBe(false);
+    expect(result.userMessage).toContain('included interpretations');
+  });
+
   it('should classify HTTP 503 status as server error', () => {
     const error = Object.assign(new Error('HTTP 503 Service Unavailable'), { status: 503 });
     const result = classifyError(error);
@@ -303,14 +332,13 @@ describe('QuotaError', () => {
   it('should generate default message for guest analysis limit', () => {
     const error = new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, 'guest');
     
-    expect(error.userMessage).toContain('2 analyses');
-    expect(error.userMessage).toContain('guest mode');
+    expect(error.userMessage).toContain('2 included guest interpretations');
   });
 
   it('should generate default message for free analysis limit', () => {
     const error = new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, 'free');
     
-    expect(error.userMessage).toContain('3 free analyses');
+    expect(error.userMessage).toContain('3 included interpretations');
     expect(error.userMessage).toContain('Plus');
   });
 
@@ -336,21 +364,19 @@ describe('QuotaError', () => {
     it('should generate message for guest exploration limit', () => {
       const error = new QuotaError(QuotaErrorCode.EXPLORATION_LIMIT_REACHED, 'guest');
 
-      expect(error.userMessage).toContain('2 dreams');
-      expect(error.userMessage).toContain('guest mode');
+      expect(error.userMessage).toContain('temporarily unavailable');
     });
 
     it('should generate message for free exploration limit', () => {
       const error = new QuotaError(QuotaErrorCode.EXPLORATION_LIMIT_REACHED, 'free');
 
-      expect(error.userMessage).toContain('dream explorations');
-      expect(error.userMessage).toContain('Plus');
+      expect(error.userMessage).toContain('temporarily unavailable');
     });
 
     it('should generate message for Plus exploration limit', () => {
       const error = new QuotaError(QuotaErrorCode.EXPLORATION_LIMIT_REACHED, 'plus');
 
-      expect(error.userMessage).toBe('Exploration limit reached.');
+      expect(error.userMessage).toContain('temporarily unavailable');
     });
   });
 
@@ -358,21 +384,19 @@ describe('QuotaError', () => {
     it('should generate message for guest message limit', () => {
       const error = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, 'guest');
 
-      expect(error.userMessage).toContain('10 messages');
-      expect(error.userMessage).toContain('Plus');
+      expect(error.userMessage).toContain('chat safety limit');
     });
 
     it('should generate message for free message limit', () => {
       const error = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, 'free');
 
-      expect(error.userMessage).toContain('20 messages');
-      expect(error.userMessage).toContain('Plus');
+      expect(error.userMessage).toContain('chat safety limit');
     });
 
     it('should generate message for Plus message limit', () => {
       const error = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, 'plus');
 
-      expect(error.userMessage).toBe('Message limit reached.');
+      expect(error.userMessage).toContain('chat safety limit');
     });
   });
 
@@ -380,8 +404,7 @@ describe('QuotaError', () => {
     it('should generate backward-compatible message', () => {
       const error = new QuotaError(QuotaErrorCode.GUEST_LIMIT_REACHED, 'guest');
 
-      expect(error.userMessage).toContain('2 dreams');
-      expect(error.userMessage).toContain('guest mode');
+      expect(error.userMessage).toContain('2 included guest interpretations');
     });
   });
 });

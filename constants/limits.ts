@@ -8,9 +8,9 @@ export type UserTier = 'guest' | 'free' | 'plus';
  * null = unlimited
  */
 export interface TierQuotas {
-  analysis: number | null; // Number of AI analyses allowed
-  exploration: number | null; // Number of dreams that can be explored (chat started)
-  messagesPerDream: number | null; // Max chat messages per dream
+  analysis: number | null; // Number of interpreted dreams included
+  exploration: number | null; // Compatibility metric; no longer a product entitlement
+  messagesPerDream: number | null; // Safety ceiling for chat within one interpreted dream
 }
 
 export interface TierQuotaConfig {
@@ -23,20 +23,19 @@ export interface TierQuotaConfig {
  */
 export const QUOTAS: Record<UserTier, TierQuotas> = {
   guest: {
-    analysis: 2, // 2 dream analyses
-    exploration: 2, // Can explore 2 dreams
-    messagesPerDream: 10, // 10 messages per dream
+    analysis: 2,
+    exploration: null,
+    messagesPerDream: 10,
   },
   free: {
-    // Quotas for the current month (authenticated users)
     analysis: 3,
-    exploration: 2,
-    messagesPerDream: 20, // 20 messages per dream
+    exploration: null,
+    messagesPerDream: 10,
   },
   plus: {
-    analysis: null, // Unlimited analyses
-    exploration: null, // Unlimited explorations
-    messagesPerDream: null, // Unlimited messages
+    analysis: null,
+    exploration: null,
+    messagesPerDream: 20,
   },
 };
 

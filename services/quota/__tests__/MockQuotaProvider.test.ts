@@ -246,7 +246,7 @@ describe('MockQuotaProvider', () => {
       const canExplore = await provider.canExploreDream({ dreamId: 999 }, null, 'guest');
 
       // Then
-      expect(canExplore).toBe(false); // Usage persists; guest limit reached
+      expect(canExplore).toBe(true); // Exploration is included with interpreted dreams
     });
 
     it('given plus user when checking exploration then always allows', async () => {
@@ -263,7 +263,7 @@ describe('MockQuotaProvider', () => {
       expect(canExplore).toBe(true); // Plus has unlimited exploration
     });
 
-    it('given guest user beyond limits when checking exploration then denies', async () => {
+    it('given guest user with prior explorations when checking exploration then allows', async () => {
       // Given
       const exploredDreams = Array(3).fill(null).map((_, i) =>
         buildDream({ id: i + 1, explorationStartedAt: Date.now() })
@@ -276,7 +276,7 @@ describe('MockQuotaProvider', () => {
       const canExplore = await provider.canExploreDream({ dreamId: 999 }, null, 'guest');
 
       // Then
-      expect(canExplore).toBe(false); // Guest limit exceeded
+      expect(canExplore).toBe(true);
     });
   });
 
@@ -335,7 +335,7 @@ describe('MockQuotaProvider', () => {
       // Given
       const targetDream = buildDream({
         id: 123,
-        chatHistory: Array.from({ length: 10 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
+        chatHistory: Array.from({ length: 9 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
       mockGetSavedDreams.mockResolvedValueOnce([targetDream]);
 
@@ -345,7 +345,7 @@ describe('MockQuotaProvider', () => {
       const canSendMessage = await provider.canSendChatMessage({ dreamId: 123 }, null, 'free');
 
       // Then
-      expect(canSendMessage).toBe(true); // Free user within 20 message limit
+      expect(canSendMessage).toBe(true); // Free user is below the 10-message safety limit
     });
 
     it('given user beyond message limit when checking messages then denies', async () => {
@@ -362,7 +362,7 @@ describe('MockQuotaProvider', () => {
       const canSendMessage = await provider.canSendChatMessage({ dreamId: 123 }, null, 'free');
 
       // Then
-      expect(canSendMessage).toBe(false); // Free user exceeded 20 message limit
+      expect(canSendMessage).toBe(false); // Free user exceeded the 10-message safety limit
     });
   });
 });

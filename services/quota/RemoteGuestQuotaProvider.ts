@@ -24,6 +24,8 @@ type RemoteQuotaResponse = {
   canAnalyze?: boolean;
   canExplore?: boolean;
   isUpgraded?: boolean;
+  riskScore?: number;
+  riskLevel?: 'low' | 'elevated' | 'high';
   reasons?: string[];
 };
 
@@ -94,22 +96,6 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
 
   private mapResponseToStatus(remote: RemoteQuotaResponse, fallback: QuotaStatus): QuotaStatus {
     const usage = this.buildUsage(remote.usage, fallback.usage);
-    const isUpgraded = remote.isUpgraded ?? false;
-
-    // If fingerprint has been upgraded, block guest access completely
-    if (isUpgraded) {
-      return {
-        tier: 'guest',
-        usage,
-        canAnalyze: false,
-        canExplore: false,
-        isUpgraded: true,
-        reasons: remote.reasons ?? [
-          'Vous avez déjà utilisé l\'application ! Connectez-vous pour retrouver vos rêves et analyses illimitées.'
-        ],
-      };
-    }
-
     const canAnalyzeByLimit = usage.analysis.limit === null || usage.analysis.used < usage.analysis.limit;
     const canExploreByLimit =
       usage.exploration.limit === null || usage.exploration.used < usage.exploration.limit;
@@ -125,6 +111,8 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
       canAnalyze,
       canExplore,
       isUpgraded: false,
+      riskScore: remote.riskScore,
+      riskLevel: remote.riskLevel,
       reasons: remote.reasons ?? fallback.reasons,
     };
   }

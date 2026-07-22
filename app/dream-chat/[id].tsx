@@ -259,18 +259,21 @@ export default function DreamChatScreen() {
   const isQuotaGateBlocked = shouldGateOnQuotaCheck && explorationBlocked;
 
   const showMessageLimitAlert = useCallback(() => {
-    Alert.alert(
-      t('dream_chat.message_limit.title'),
-      t('dream_chat.limit_warning'),
-      [
-        { text: t('common.ok') },
-        {
+    const actions = [
+      { text: t('common.ok') },
+      ...(tier === 'plus'
+        ? []
+        : [{
           text: tier === 'guest'
             ? t('dream_chat.limit_cta_guest')
             : t('dream_chat.limit_cta_free'),
-          onPress: () => router.push('/(tabs)/settings'),
-        },
-      ]
+          onPress: () => router.push('/(tabs)/settings' as const),
+        }]),
+    ];
+    Alert.alert(
+      t('dream_chat.message_limit.title'),
+      t('dream_chat.limit_warning'),
+      actions
     );
   }, [t, tier]);
 
@@ -1322,21 +1325,23 @@ function ComposerFooter({
               {t('dream_chat.limit_warning')}
             </Text>
           </View>
-          <View>
-            <GesturePressable
-              onPress={() => router.push('/(tabs)/settings')}
-              style={[
-                styles.limitCtaButton,
-                { backgroundColor: noctalia.status.danger.icon },
-              ]}
-            >
-              <Text style={[styles.limitCtaText, { color: noctalia.action.primaryText }]}>
-                {tier === 'guest'
-                  ? t('dream_chat.limit_cta_guest')
-                  : t('dream_chat.limit_cta_free')}
-              </Text>
-            </GesturePressable>
-          </View>
+          {tier !== 'plus' && (
+            <View>
+              <GesturePressable
+                onPress={() => router.push('/(tabs)/settings')}
+                style={[
+                  styles.limitCtaButton,
+                  { backgroundColor: noctalia.status.danger.icon },
+                ]}
+              >
+                <Text style={[styles.limitCtaText, { color: noctalia.action.primaryText }]}>
+                  {tier === 'guest'
+                    ? t('dream_chat.limit_cta_guest')
+                    : t('dream_chat.limit_cta_free')}
+                </Text>
+              </GesturePressable>
+            </View>
+          )}
         </View>
       )}
     </Animated.View>

@@ -142,7 +142,7 @@ describe('AuthContext', () => {
     expect(mockRouterReplace).not.toHaveBeenCalled();
   });
 
-  it('given mock mode without user and returning guest__when provider mounts__then blocks guest', async () => {
+  it('given mock mode without user on a previously used device__when provider mounts__then keeps guest mode available', async () => {
     mockSetMockMode(true);
     mockSetCurrentUser(null);
     mockSetAccountCreated(true);
@@ -159,7 +159,7 @@ describe('AuthContext', () => {
 
     expect(result.current.user).toBeNull();
     expect(result.current.sessionReady).toBe(false);
-    expect(result.current.returningGuestBlocked).toBe(true);
+    expect(result.current.returningGuestBlocked).toBe(false);
   });
 
   it('given stay-on-settings intent__when user loads__then navigates to settings', async () => {

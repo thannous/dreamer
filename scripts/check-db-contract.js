@@ -462,6 +462,70 @@ async function runGuestAnalysisIdempotencyBehaviorCheck(client) {
   }
 }
 
+async function runGuestChatIdempotencyBehaviorCheck(client) {
+  const fingerprint = `db-contract-chat-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const dreamKey = 'local-dream-42';
+  const requestId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
+  const secondRequestId = '0d38885f-52b1-4c20-a95d-fb8fb6078f3d';
+
+  await client.query('BEGIN');
+  try {
+    const firstClaim = await queryFunctionJsonResult(
+      client,
+      'select public.claim_guest_chat_message($1::text, $2::text, $3::uuid, $4::integer) as result',
+      [fingerprint, dreamKey, requestId, 1]
+    );
+    if (requireBoolean(firstClaim.allowed, 'first guest chat claim allowed') !== true) {
+      throw new Error('claim_guest_chat_message() must allow the first request');
+    }
+    if (requireFiniteNumber(firstClaim.new_count, 'first guest chat claim count') !== 1) {
+      throw new Error('first guest chat request must increment the per-dream count to 1');
+    }
+    if (requireBoolean(firstClaim.claimed, 'first guest chat claim claimed') !== true) {
+      throw new Error('first guest chat request must be recorded as a new claim');
+    }
+
+    const duplicateClaim = await queryFunctionJsonResult(
+      client,
+      'select public.claim_guest_chat_message($1::text, $2::text, $3::uuid, $4::integer) as result',
+      [fingerprint, dreamKey, requestId, 1]
+    );
+    if (requireBoolean(duplicateClaim.allowed, 'duplicate guest chat claim allowed') !== true) {
+      throw new Error('the same guest chat request must remain retryable');
+    }
+    if (requireFiniteNumber(duplicateClaim.new_count, 'duplicate guest chat claim count') !== 1) {
+      throw new Error('the same guest chat request must not increment the per-dream count twice');
+    }
+    if (requireBoolean(duplicateClaim.duplicate, 'duplicate guest chat claim duplicate') !== true) {
+      throw new Error('the repeated guest chat request must be identified as duplicate');
+    }
+
+    const secondClaim = await queryFunctionJsonResult(
+      client,
+      'select public.claim_guest_chat_message($1::text, $2::text, $3::uuid, $4::integer) as result',
+      [fingerprint, dreamKey, secondRequestId, 1]
+    );
+    if (requireBoolean(secondClaim.allowed, 'second guest chat claim allowed') !== false) {
+      throw new Error('a different request must respect the exhausted per-dream safety limit');
+    }
+    if (requireFiniteNumber(secondClaim.new_count, 'second guest chat claim count') !== 1) {
+      throw new Error('a rejected request must leave the per-dream chat count unchanged');
+    }
+
+    return {
+      ok: true,
+      details: 'guest chat quota is claimed exactly once per dream and request UUID',
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      details: formatFailure(error),
+    };
+  } finally {
+    await client.query('ROLLBACK');
+  }
+}
+
 async function runBehaviorChecks(client, requiredBehaviorChecks) {
   const checks = [];
   const failures = [];
@@ -476,6 +540,9 @@ async function runBehaviorChecks(client, requiredBehaviorChecks) {
         break;
       case 'guest_analysis_idempotency':
         result = await runGuestAnalysisIdempotencyBehaviorCheck(client);
+        break;
+      case 'guest_chat_idempotency':
+        result = await runGuestChatIdempotencyBehaviorCheck(client);
         break;
       default:
         result = {
@@ -767,6 +834,7 @@ module.exports = {
   runChecks,
   runBehaviorChecks,
   runGuestAnalysisIdempotencyBehaviorCheck,
+  runGuestChatIdempotencyBehaviorCheck,
   runGuestQuotaImageSupportBehaviorCheck,
   sanitizeDbUrl,
 };

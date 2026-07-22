@@ -359,27 +359,22 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
 
       if (!quotaResult?.allowed) {
         const used = toCount((quotaResult as any)?.new_count);
-        const isUpgraded = Boolean((quotaResult as any)?.is_upgraded);
-        const payload = isUpgraded
-          ? {
-              error: 'Login required',
-              code: 'GUEST_DEVICE_UPGRADED',
-              isUpgraded: true,
-              usage: { analysis: { used, limit: guestAnalysisLimit } },
-            }
-          : {
-              error: 'Guest analysis limit reached',
-              code: 'QUOTA_EXCEEDED',
-              usage: { analysis: { used, limit: guestAnalysisLimit } },
-            };
+        const effectiveLimit = typeof (quotaResult as any)?.limit === 'number'
+          ? toCount((quotaResult as any).limit)
+          : guestAnalysisLimit;
+        const payload = {
+          error: 'Guest interpretation limit reached',
+          code: 'QUOTA_EXCEEDED',
+          usage: { analysis: { used, limit: effectiveLimit } },
+        };
 
         console.log('[api] /analyzeDream: guest quota blocked before provider work', {
           fingerprint: '[redacted]',
           used,
-          isUpgraded,
+          riskLevel: (quotaResult as any)?.risk_level ?? 'unknown',
         });
         return new Response(JSON.stringify(payload), {
-          status: isUpgraded ? 403 : 429,
+          status: 429,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
       }
