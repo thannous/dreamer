@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-07-17",
+    "lastUpdated": "2026-07-23",
     "totalSymbols": 150,
     "languages": [
       "en",
@@ -443,8 +443,8 @@
         "slug": "voler",
         "name": "Voler",
         "shortDescription": "Cette fiche rapide résume le symbole du vol : liberté, prise de hauteur ou difficulté à dépasser un obstacle. Pour comparer les scénarios, les émotions et le lien avec le rêve lucide, consultez l’article complet associé.",
-      "seoTitle": "voler : fiche rapide du symbole",
-      "askYourself": [
+        "seoTitle": "voler : fiche rapide du symbole",
+        "askYourself": [
           "De quoi ai-je besoin de me libérer ?",
           "Quelles limites suis-je prêt à dépasser ?"
         ]
@@ -2668,7 +2668,7 @@
             "answer": "Being lost in a forest can mirror confusion, too many choices, or a lack of direction, but it can also accompany exploration and change. Notice whether you found a path, asked for help, or felt safe, because those details add context."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-07-23"
       },
       "fr": {
         "slug": "foret",
@@ -2698,7 +2698,7 @@
             "answer": "Se perdre peut refléter une hésitation, trop de choix ou l’absence de repères. Le fait de retrouver un chemin, de demander de l’aide ou de rester calme change nettement l’interprétation."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-07-23"
       },
       "es": {
         "slug": "bosque",
@@ -2728,7 +2728,7 @@
             "answer": "Perderse puede reflejar dudas, demasiadas opciones o falta de referencias. Encontrar un sendero, pedir ayuda o mantener la calma cambia la lectura y puede mostrar recursos disponibles."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-07-23"
       },
       "de": {
         "slug": "wald",
@@ -2757,7 +2757,9 @@
         "en": "dream-meanings",
         "de": "",
         "it": ""
-      }
+      },
+      "relatedGuide": "dream-locations",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "tree",
@@ -5405,7 +5407,7 @@
             "answer": "Das hängt von der Szene ab. Geschwister verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
         ],
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-07-23"
       },
       "it": {
         "slug": "fratello-o-sorella",
@@ -5433,7 +5435,9 @@
         "es": "suenos-salud-mental",
         "de": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
         "it": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
-      }
+      },
+      "relatedGuide": "people-in-dreams",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "partner",
@@ -5593,7 +5597,7 @@
             "answer": "Das hängt von der Szene ab. Freund verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
         ],
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-07-23"
       },
       "it": {
         "slug": "amico",
@@ -5621,7 +5625,9 @@
         "es": "suenos-salud-mental",
         "de": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
         "it": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
-      }
+      },
+      "relatedGuide": "people-in-dreams",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "stranger",
@@ -5687,7 +5693,7 @@
             "answer": "Das hängt von der Szene ab. Fremder verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
         ],
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-07-23"
       },
       "it": {
         "slug": "sconosciuto",
@@ -5715,7 +5721,9 @@
         "es": "suenos-de-ansiedad-significado",
         "de": "angsttraeume-bedeutung",
         "it": "sogni-ansia-significato"
-      }
+      },
+      "relatedGuide": "people-in-dreams",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "teacher",
@@ -5969,7 +5977,7 @@
             "answer": "Das hängt von der Szene ab. Arzt verweist oft auf Beziehungen, Rollen, Erinnerungen, Grenzen und die Art, wie Sie sich im Kontakt mit anderen erleben; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
         ],
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-07-23"
       },
       "it": {
         "slug": "medico",
@@ -5997,7 +6005,9 @@
         "es": "suenos-salud-mental",
         "de": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
         "it": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
-      }
+      },
+      "relatedGuide": "people-in-dreams",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "coworker",
@@ -6814,7 +6824,7 @@
             "answer": "Das hängt von der Szene ab. Küche verweist oft auf den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
         ],
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-07-23"
       },
       "it": {
         "slug": "cucina",
@@ -6842,7 +6852,9 @@
         "es": "suenos-salud-mental",
         "de": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
         "it": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
-      }
+      },
+      "relatedGuide": "dream-locations",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "workplace",
@@ -7002,7 +7014,7 @@
             "answer": "Das hängt von der Szene ab. Straße verweist oft auf den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
         ],
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-07-23"
       },
       "it": {
         "slug": "strada",
@@ -7030,7 +7042,9 @@
         "es": "suenos-de-ansiedad-significado",
         "de": "angsttraeume-bedeutung",
         "it": "sogni-ansia-significato"
-      }
+      },
+      "relatedGuide": "dream-locations",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "bus",
@@ -7096,7 +7110,7 @@
             "answer": "Das hängt von der Szene ab. Bus verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
         ],
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-07-23"
       },
       "it": {
         "slug": "autobus",
@@ -7124,7 +7138,9 @@
         "es": "guia-diario-suenos",
         "de": "dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer",
         "it": "dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne"
-      }
+      },
+      "relatedGuide": "dream-locations",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "bicycle",
@@ -7190,7 +7206,7 @@
             "answer": "Das hängt von der Szene ab. Fahrrad verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
         ],
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-07-23"
       },
       "it": {
         "slug": "bicicletta",
@@ -7213,12 +7229,13 @@
         "car"
       ],
       "relatedArticles": {
-        "en": "dreams-mental-health",
-        "fr": "reves-sante-mentale",
-        "es": "suenos-salud-mental",
-        "de": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
-        "it": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
-      }
+        "en": "dream-meanings",
+        "fr": "signification-des-reves",
+        "es": "significado-de-suenos",
+        "de": "traumbedeutungen-interpretation-symbole",
+        "it": "significati-dei-sogni-interpretazione-e-simboli"
+      },
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "boat",
@@ -7378,7 +7395,7 @@
             "answer": "Das hängt von der Szene ab. Flughafen verweist oft auf den Schauplatz einer Lebenssituation: wo Sie sich sicher, sichtbar, festgefahren oder bereit für Bewegung fühlen; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
         ],
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-07-23"
       },
       "it": {
         "slug": "aeroporto",
@@ -7406,7 +7423,9 @@
         "es": "guia-diario-suenos",
         "de": "dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer",
         "it": "dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne"
-      }
+      },
+      "relatedGuide": "dream-locations",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "suitcase",
@@ -7472,7 +7491,7 @@
             "answer": "Das hängt von der Szene ab. Koffer verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
         ],
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-07-23"
       },
       "it": {
         "slug": "valigia",
@@ -7495,12 +7514,13 @@
         "path"
       ],
       "relatedArticles": {
-        "en": "dream-journal-guide",
-        "fr": "guide-journal-reves",
-        "es": "guia-diario-suenos",
-        "de": "dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer",
-        "it": "dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne"
-      }
+        "en": "dream-meanings",
+        "fr": "signification-des-reves",
+        "es": "significado-de-suenos",
+        "de": "traumbedeutungen-interpretation-symbole",
+        "it": "significati-dei-sogni-interpretazione-e-simboli"
+      },
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "passport",
@@ -7566,7 +7586,7 @@
             "answer": "Das hängt von der Szene ab. Reisepass verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
         ],
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-07-23"
       },
       "it": {
         "slug": "passaporto",
@@ -7589,12 +7609,13 @@
         "door"
       ],
       "relatedArticles": {
-        "en": "dream-journal-guide",
-        "fr": "guide-journal-reves",
-        "es": "guia-diario-suenos",
-        "de": "dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer",
-        "it": "dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne"
-      }
+        "en": "dream-meanings",
+        "fr": "signification-des-reves",
+        "es": "significado-de-suenos",
+        "de": "traumbedeutungen-interpretation-symbole",
+        "it": "significati-dei-sogni-interpretazione-e-simboli"
+      },
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "ring",
@@ -7942,7 +7963,7 @@
             "answer": "Das hängt von der Szene ab. Brief verweist oft auf Werkzeuge, Entscheidungen, Bindungen, Zeitgefühl und die kleinen Details des Alltags; wichtiger als eine feste Wörterbuchbedeutung sind jedoch Gefühl, Ort und beteiligte Personen."
           }
         ],
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-07-23"
       },
       "it": {
         "slug": "lettera",
@@ -7965,12 +7986,13 @@
         "door"
       ],
       "relatedArticles": {
-        "en": "dreams-mental-health",
-        "fr": "reves-sante-mentale",
-        "es": "suenos-salud-mental",
-        "de": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
-        "it": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
-      }
+        "en": "dream-meanings",
+        "fr": "signification-des-reves",
+        "es": "significado-de-suenos",
+        "de": "traumbedeutungen-interpretation-symbole",
+        "it": "significati-dei-sogni-interpretazione-e-simboli"
+      },
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "hair",
@@ -8687,7 +8709,7 @@
           "Was hast du dort gefunden, und wolltest du es mitnehmen, verstecken oder zurücklassen?",
           "Welcher wenig beachtete Bereich deines Lebens fühlt sich ähnlich an?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Keller zu träumen?",
@@ -8721,7 +8743,9 @@
         "es": "suenos-de-ansiedad-significado",
         "de": "angsttraeume-bedeutung",
         "it": "sogni-ansia-significato"
-      }
+      },
+      "relatedGuide": "dream-locations",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "surgery",
@@ -9157,7 +9181,7 @@
           "Welche Gegenstände, Geräusche oder Personen erwarteten dich dort?",
           "Was aus deiner Vergangenheit bewahrst du auf, obwohl du es selten betrachtest?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Dachboden zu träumen?",
@@ -9191,7 +9215,9 @@
         "es": "suenos-salud-mental",
         "de": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
         "it": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
-      }
+      },
+      "relatedGuide": "dream-locations",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "late",
@@ -9812,7 +9838,7 @@
           "Folgte er dir, blieb er stehen oder verdeckte er etwas?",
           "Welche unklare Person oder Situation beschäftigt dich gerade besonders?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Schatten zu träumen?",
@@ -9846,7 +9872,9 @@
         "es": "suenos-salud-mental",
         "de": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
         "it": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
-      }
+      },
+      "relatedGuide": "scary-dream-symbols",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "ghost",
@@ -10560,7 +10588,7 @@
           "Welches Gepäck hattest du dabei, und wer wohnte noch im Hotel?",
           "In welchem Lebensbereich befindest du dich gerade in einer Übergangsphase?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Hotel zu träumen?",
@@ -10594,7 +10622,9 @@
         "es": "guia-diario-suenos",
         "de": "dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer",
         "it": "dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne"
-      }
+      },
+      "relatedGuide": "dream-locations",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "lightning",
@@ -10842,7 +10872,7 @@
           "Warst du allein, mit jemandem unterwegs oder von einer Menschenmenge umgeben?",
           "Hast du etwas gefunden und gekauft oder hast du erfolglos weitergesucht?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Einkaufszentrum zu träumen?",
@@ -10876,7 +10906,9 @@
         "es": "suenos-salud-mental",
         "de": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
         "it": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
-      }
+      },
+      "relatedGuide": "dream-locations",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "cow",
@@ -10936,7 +10968,7 @@
           "Wie hat sie sich dir gegenüber verhalten?",
           "Hast du sie gefüttert, gemolken, gemieden oder nur beobachtet?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Kuh zu träumen?",
@@ -10969,7 +11001,9 @@
         "es": "significado-de-suenos",
         "de": "traumbedeutungen-interpretation-symbole",
         "it": "significati-dei-sogni-interpretazione-e-simboli"
-      }
+      },
+      "relatedGuide": "animal-dream-symbols",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "rabbit",
@@ -11029,7 +11063,7 @@
           "Ist es vor dir weggelaufen, in einen Bau verschwunden oder bei dir geblieben?",
           "Wolltest du es schützen, fangen oder in Ruhe lassen?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Kaninchen zu träumen?",
@@ -11063,7 +11097,9 @@
         "es": "significado-de-suenos",
         "de": "traumbedeutungen-interpretation-symbole",
         "it": "significati-dei-sogni-interpretazione-e-simboli"
-      }
+      },
+      "relatedGuide": "animal-dream-symbols",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "mouse",
@@ -11123,7 +11159,7 @@
           "Hat sie Nahrung gesammelt, etwas angenagt oder sich vor dir versteckt?",
           "Hast du versucht, sie zu fangen, zu vertreiben oder zu schützen?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Maus zu träumen?",
@@ -11156,7 +11192,9 @@
         "es": "suenos-de-ansiedad-significado",
         "de": "angsttraeume-bedeutung",
         "it": "sogni-ansia-significato"
-      }
+      },
+      "relatedGuide": "animal-dream-symbols",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "rat",
@@ -11216,7 +11254,7 @@
           "Wirkte der Ort sauber und vertraut oder dunkel und verwahrlost?",
           "Hat die Ratte dich verfolgt, gebissen oder aus der Entfernung beobachtet?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Ratte zu träumen?",
@@ -11250,7 +11288,9 @@
         "es": "suenos-de-ansiedad-significado",
         "de": "angsttraeume-bedeutung",
         "it": "sogni-ansia-significato"
-      }
+      },
+      "relatedGuide": "animal-dream-symbols",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "bear",
@@ -11310,7 +11350,7 @@
           "Wie nah ist er dir gekommen und wie hast du reagiert?",
           "Hast du dich von ihm beschützt, verfolgt oder beobachtet gefühlt?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Bär zu träumen?",
@@ -11344,7 +11384,9 @@
         "es": "significado-de-suenos",
         "de": "traumbedeutungen-interpretation-symbole",
         "it": "significati-dei-sogni-interpretazione-e-simboli"
-      }
+      },
+      "relatedGuide": "animal-dream-symbols",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "elephant",
@@ -11404,7 +11446,7 @@
           "Hat er dich geführt, berührt, getragen oder deinen Weg blockiert?",
           "Welche Reaktion lösten seine Größe und Nähe bei dir aus?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Elefant zu träumen?",
@@ -11437,7 +11479,9 @@
         "es": "significado-de-suenos",
         "de": "traumbedeutungen-interpretation-symbole",
         "it": "significati-dei-sogni-interpretazione-e-simboli"
-      }
+      },
+      "relatedGuide": "animal-dream-symbols",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "fish",
@@ -11872,7 +11916,7 @@
           "Befand er sich im Wasser, im Gras oder an einem unerwarteten Ort?",
           "Wolltest du ihn berühren, retten, meiden oder vertreiben?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Frosch zu träumen?",
@@ -11906,7 +11950,9 @@
         "es": "significado-de-suenos",
         "de": "traumbedeutungen-interpretation-symbole",
         "it": "significati-dei-sogni-interpretazione-e-simboli"
-      }
+      },
+      "relatedGuide": "animal-dream-symbols",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "butterfly",
@@ -11966,7 +12012,7 @@
           "Hast du den Schmetterling verfolgt, festgehalten oder frei fliegen lassen?",
           "Wo ist er erschienen und welche Stimmung herrschte dort?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Schmetterling zu träumen?",
@@ -12000,7 +12046,9 @@
         "es": "significado-de-suenos",
         "de": "traumbedeutungen-interpretation-symbole",
         "it": "significati-dei-sogni-interpretazione-e-simboli"
-      }
+      },
+      "relatedGuide": "animal-dream-symbols",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "bee",
@@ -12060,7 +12108,7 @@
           "Gab es in der Szene Blüten, Honig oder einen Bienenstock?",
           "Wurdest du gestochen oder konntest du ruhig in ihrer Nähe bleiben?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Biene zu träumen?",
@@ -12093,7 +12141,9 @@
         "es": "suenos-estres-trabajo",
         "de": "stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet",
         "it": "sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno"
-      }
+      },
+      "relatedGuide": "animal-dream-symbols",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "ant",
@@ -12153,7 +12203,7 @@
           "Hast du eine einzelne Ameise oder eine große Kolonie bemerkt?",
           "Hast du die Ameisen beobachtet, beseitigt oder versehentlich zerdrückt?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Ameise zu träumen?",
@@ -12187,7 +12237,9 @@
         "es": "suenos-estres-trabajo",
         "de": "stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet",
         "it": "sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno"
-      }
+      },
+      "relatedGuide": "animal-dream-symbols",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "owl",
@@ -12247,7 +12299,7 @@
           "Saß sie in einem Baum, in einem Gebäude oder direkt neben dir?",
           "Hast du ihren Blick gesucht, gemieden oder als beruhigend empfunden?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Eule zu träumen?",
@@ -12281,7 +12333,9 @@
         "es": "significado-de-suenos",
         "de": "traumbedeutungen-interpretation-symbole",
         "it": "significati-dei-sogni-interpretazione-e-simboli"
-      }
+      },
+      "relatedGuide": "animal-dream-symbols",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "eagle",
@@ -12623,7 +12677,7 @@
           "Welche Pflanzen, Wege oder abgegrenzten Bereiche sind dir aufgefallen?",
           "Hast du etwas gepflanzt, gesucht oder vor einem verschlossenen Tor gestanden?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Garten zu träumen?",
@@ -12657,7 +12711,9 @@
         "es": "suenos-salud-mental",
         "de": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
         "it": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
-      }
+      },
+      "relatedGuide": "dream-locations",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "desert",
@@ -12717,7 +12773,7 @@
           "Hattest du Wasser, Schatten oder ein sichtbares Ziel?",
           "Wusstest du, wohin du gingst, und war jemand bei dir?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Wüste zu träumen?",
@@ -12751,7 +12807,9 @@
         "es": "suenos-de-ansiedad-significado",
         "de": "angsttraeume-bedeutung",
         "it": "sogni-ansia-significato"
-      }
+      },
+      "relatedGuide": "dream-locations",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "island",
@@ -12905,7 +12963,7 @@
           "Was hast du im Inneren gefunden, gehört oder ertastet?",
           "Warst du allein und wie weit konntest du sehen?"
         ],
-        "modifiedAt": "2026-07-17",
+        "modifiedAt": "2026-07-23",
         "faq": [
           {
             "question": "Was bedeutet es, von Höhle zu träumen?",
@@ -12939,7 +12997,9 @@
         "es": "suenos-salud-mental",
         "de": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
         "it": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
-      }
+      },
+      "relatedGuide": "dream-locations",
+      "modifiedAt": "2026-07-23"
     },
     {
       "id": "river",

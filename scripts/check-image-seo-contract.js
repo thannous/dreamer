@@ -319,9 +319,12 @@ function checkImageSeoContract(options = {}) {
     }
 
     for (const role of ['editorial', 'educational']) {
-      placementCount += 1;
       const image = images[role];
       const expectedRef = page.images[role];
+      // Educational diagrams are optional per page (some pages carry the
+      // same content as real HTML instead of a raster).
+      if (!expectedRef) continue;
+      placementCount += 1;
       const match = findImageTagForAsset(rendered.html, image.assetId);
       if (!match.img) {
         errors.push(`${canonicalPath}: missing visible ${role} image ${image.assetId}`);
@@ -377,8 +380,12 @@ function checkImageSeoContract(options = {}) {
     }
   }
 
-  if (placementCount !== Object.keys(registry.pages).length * 2) {
-    errors.push(`expected ${Object.keys(registry.pages).length * 2} pilot placements, found ${placementCount}`);
+  const expectedPlacements = Object.values(registry.pages).reduce(
+    (total, page) => total + ['editorial', 'educational'].filter((role) => page.images?.[role]).length,
+    0
+  );
+  if (placementCount !== expectedPlacements) {
+    errors.push(`expected ${expectedPlacements} pilot placements, found ${placementCount}`);
   }
 
   const includeSitewide = options.includeSitewide ?? (!options.registry && !options.pageMap);

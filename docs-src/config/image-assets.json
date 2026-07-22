@@ -2,9 +2,16 @@
   "schemaVersion": 1,
   "release": "pilot-2026-07-v2",
   "variants": {
-    "formats": ["avif", "webp"],
+    "formats": [
+      "avif",
+      "webp"
+    ],
     "fallbackFormat": "webp",
-    "widths": [480, 800, 1200]
+    "widths": [
+      480,
+      800,
+      1200
+    ]
   },
   "measurement": {
     "property": "sc-domain:noctalia.app",
@@ -29,10 +36,51 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
-        "4x5": { "width": 1200, "height": 1500, "widths": [480, 800, 1200], "mode": "cover", "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/lucid-dreaming", "position": { "x": 42, "y": 42 } },
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
-        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+        "16x9": {
+          "width": 1200,
+          "height": 675,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover"
+        },
+        "4x5": {
+          "width": 1200,
+          "height": 1500,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover",
+          "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/lucid-dreaming",
+          "position": {
+            "x": 42,
+            "y": 42
+          }
+        },
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        },
+        "1x1": {
+          "width": 1200,
+          "height": 1200,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        }
       }
     },
     "editorial.dream-journal": {
@@ -43,10 +91,51 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
-        "4x5": { "width": 1200, "height": 1500, "widths": [480, 800, 1200], "mode": "cover", "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/dream-journal", "position": { "x": 64, "y": 56 } },
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
-        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+        "16x9": {
+          "width": 1200,
+          "height": 675,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover"
+        },
+        "4x5": {
+          "width": 1200,
+          "height": 1500,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover",
+          "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/dream-journal",
+          "position": {
+            "x": 64,
+            "y": 56
+          }
+        },
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        },
+        "1x1": {
+          "width": 1200,
+          "height": 1200,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        }
       }
     },
     "editorial.dream-interpretation-history": {
@@ -57,10 +146,51 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
-        "4x5": { "width": 1200, "height": 1500, "widths": [480, 800, 1200], "mode": "cover", "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/dream-interpretation-history", "position": { "x": 44, "y": 54 } },
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
-        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+        "16x9": {
+          "width": 1200,
+          "height": 675,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover"
+        },
+        "4x5": {
+          "width": 1200,
+          "height": 1500,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover",
+          "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/dream-interpretation-history",
+          "position": {
+            "x": 44,
+            "y": 54
+          }
+        },
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        },
+        "1x1": {
+          "width": 1200,
+          "height": 1200,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        }
       }
     },
     "editorial.pregnancy-dreams": {
@@ -71,10 +201,51 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
-        "4x5": { "width": 1200, "height": 1500, "widths": [480, 800, 1200], "mode": "cover", "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/pregnancy-dreams", "position": { "x": 37, "y": 40 } },
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
-        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+        "16x9": {
+          "width": 1200,
+          "height": 675,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover"
+        },
+        "4x5": {
+          "width": 1200,
+          "height": 1500,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover",
+          "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/pregnancy-dreams",
+          "position": {
+            "x": 37,
+            "y": 40
+          }
+        },
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        },
+        "1x1": {
+          "width": 1200,
+          "height": 1200,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        }
       }
     },
     "editorial.water-dreams": {
@@ -85,10 +256,51 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
-        "4x5": { "width": 1200, "height": 1500, "widths": [480, 800, 1200], "mode": "cover", "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/water-dreams", "position": { "x": 35, "y": 44 } },
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
-        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+        "16x9": {
+          "width": 1200,
+          "height": 675,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover"
+        },
+        "4x5": {
+          "width": 1200,
+          "height": 1500,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover",
+          "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/water-dreams",
+          "position": {
+            "x": 35,
+            "y": 44
+          }
+        },
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        },
+        "1x1": {
+          "width": 1200,
+          "height": 1200,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        }
       }
     },
     "editorial.flying-dreams": {
@@ -99,10 +311,51 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
-        "4x5": { "width": 1200, "height": 1500, "widths": [480, 800, 1200], "mode": "cover", "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/flying-dreams", "position": { "x": 50, "y": 43 } },
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
-        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+        "16x9": {
+          "width": 1200,
+          "height": 675,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover"
+        },
+        "4x5": {
+          "width": 1200,
+          "height": 1500,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover",
+          "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/flying-dreams",
+          "position": {
+            "x": 50,
+            "y": 43
+          }
+        },
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        },
+        "1x1": {
+          "width": 1200,
+          "height": 1200,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        }
       }
     },
     "editorial.dream-symbols-dictionary": {
@@ -113,10 +366,51 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "16x9": { "width": 1200, "height": 675, "widths": [480, 800, 1200], "mode": "cover" },
-        "4x5": { "width": 1200, "height": 1500, "widths": [480, 800, 1200], "mode": "cover", "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/dream-symbols-dictionary", "position": { "x": 50, "y": 45 } },
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "ambient" },
-        "1x1": { "width": 1200, "height": 1200, "widths": [480, 800, 1200], "mode": "ambient" }
+        "16x9": {
+          "width": 1200,
+          "height": 675,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover"
+        },
+        "4x5": {
+          "width": 1200,
+          "height": 1500,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "cover",
+          "outputStem": "/img/seo/pilot-2026-07-v2/editorial-mobile/dream-symbols-dictionary",
+          "position": {
+            "x": 50,
+            "y": 45
+          }
+        },
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        },
+        "1x1": {
+          "width": 1200,
+          "height": 1200,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "ambient"
+        }
       }
     },
     "educational.lucid-dreaming.en": {
@@ -127,8 +421,26 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
-        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/lucid-dreaming-method-en-mobile.svg" }
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "contain"
+        },
+        "3x4": {
+          "width": 800,
+          "height": 1067,
+          "widths": [
+            480,
+            800
+          ],
+          "mode": "contain",
+          "source": "docs-src/image-sources/pilot-2026-07-v2/educational/lucid-dreaming-method-en-mobile.svg"
+        }
       }
     },
     "educational.lucid-dreaming.es": {
@@ -139,8 +451,26 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
-        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/lucid-dreaming-method-es-mobile.svg" }
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "contain"
+        },
+        "3x4": {
+          "width": 800,
+          "height": 1067,
+          "widths": [
+            480,
+            800
+          ],
+          "mode": "contain",
+          "source": "docs-src/image-sources/pilot-2026-07-v2/educational/lucid-dreaming-method-es-mobile.svg"
+        }
       }
     },
     "educational.dream-journal.en": {
@@ -151,8 +481,26 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
-        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/dream-journal-fields-en-mobile.svg" }
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "contain"
+        },
+        "3x4": {
+          "width": 800,
+          "height": 1067,
+          "widths": [
+            480,
+            800
+          ],
+          "mode": "contain",
+          "source": "docs-src/image-sources/pilot-2026-07-v2/educational/dream-journal-fields-en-mobile.svg"
+        }
       }
     },
     "educational.dream-journal.es": {
@@ -163,8 +511,26 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
-        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/dream-journal-fields-es-mobile.svg" }
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "contain"
+        },
+        "3x4": {
+          "width": 800,
+          "height": 1067,
+          "widths": [
+            480,
+            800
+          ],
+          "mode": "contain",
+          "source": "docs-src/image-sources/pilot-2026-07-v2/educational/dream-journal-fields-es-mobile.svg"
+        }
       }
     },
     "educational.dream-interpretation-history.en": {
@@ -175,8 +541,26 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
-        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/dream-interpretation-timeline-en-mobile.svg" }
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "contain"
+        },
+        "3x4": {
+          "width": 800,
+          "height": 1067,
+          "widths": [
+            480,
+            800
+          ],
+          "mode": "contain",
+          "source": "docs-src/image-sources/pilot-2026-07-v2/educational/dream-interpretation-timeline-en-mobile.svg"
+        }
       }
     },
     "educational.pregnancy-dreams.en": {
@@ -187,8 +571,26 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
-        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/pregnancy-context-map-en-mobile.svg" }
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "contain"
+        },
+        "3x4": {
+          "width": 800,
+          "height": 1067,
+          "widths": [
+            480,
+            800
+          ],
+          "mode": "contain",
+          "source": "docs-src/image-sources/pilot-2026-07-v2/educational/pregnancy-context-map-en-mobile.svg"
+        }
       }
     },
     "educational.water-dreams.es": {
@@ -199,8 +601,26 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
-        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/water-context-matrix-es-mobile.svg" }
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "contain"
+        },
+        "3x4": {
+          "width": 800,
+          "height": 1067,
+          "widths": [
+            480,
+            800
+          ],
+          "mode": "contain",
+          "source": "docs-src/image-sources/pilot-2026-07-v2/educational/water-context-matrix-es-mobile.svg"
+        }
       }
     },
     "educational.flying-dreams.en": {
@@ -211,8 +631,26 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
-        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/flying-context-matrix-en-mobile.svg" }
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "contain"
+        },
+        "3x4": {
+          "width": 800,
+          "height": 1067,
+          "widths": [
+            480,
+            800
+          ],
+          "mode": "contain",
+          "source": "docs-src/image-sources/pilot-2026-07-v2/educational/flying-context-matrix-en-mobile.svg"
+        }
       }
     },
     "educational.flying-dreams.es": {
@@ -223,8 +661,26 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
-        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/flying-context-matrix-es-mobile.svg" }
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "contain"
+        },
+        "3x4": {
+          "width": 800,
+          "height": 1067,
+          "widths": [
+            480,
+            800
+          ],
+          "mode": "contain",
+          "source": "docs-src/image-sources/pilot-2026-07-v2/educational/flying-context-matrix-es-mobile.svg"
+        }
       }
     },
     "educational.dream-symbols-dictionary.en": {
@@ -235,21 +691,49 @@
       "visible": true,
       "sitemap": true,
       "aspects": {
-        "4x3": { "width": 1200, "height": 900, "widths": [480, 800, 1200], "mode": "contain" },
-        "3x4": { "width": 800, "height": 1067, "widths": [480, 800], "mode": "contain", "source": "docs-src/image-sources/pilot-2026-07-v2/educational/symbol-interpretation-flow-en-mobile.svg" }
+        "4x3": {
+          "width": 1200,
+          "height": 900,
+          "widths": [
+            480,
+            800,
+            1200
+          ],
+          "mode": "contain"
+        },
+        "3x4": {
+          "width": 800,
+          "height": 1067,
+          "widths": [
+            480,
+            800
+          ],
+          "mode": "contain",
+          "source": "docs-src/image-sources/pilot-2026-07-v2/educational/symbol-interpretation-flow-en-mobile.svg"
+        }
       }
     },
     "fallback.noctalia-dreamscape-v2": {
       "role": "fallback",
       "source": "docs-src/image-sources/pilot-2026-07-v1/fallback/noctalia-dreamscape-v2.svg",
       "outputPattern": "/img/og/noctalia-dreamscape-v2-{width}x{height}.{format}",
-      "formats": ["webp", "jpg"],
+      "formats": [
+        "webp",
+        "jpg"
+      ],
       "fallbackFormat": "jpg",
       "localized": false,
       "visible": false,
       "sitemap": false,
       "aspects": {
-        "social": { "width": 1200, "height": 630, "widths": [1200], "mode": "contain" }
+        "social": {
+          "width": 1200,
+          "height": 630,
+          "widths": [
+            1200
+          ],
+          "mode": "contain"
+        }
       }
     }
   },
@@ -460,13 +944,6 @@
           "alt": "An open dream dictionary surrounded by a key, eye, tree, wave and doorway",
           "caption": "Dream symbols become more useful when connected to emotion, context and personal associations.",
           "sizes": "(max-width: 1024px) 100vw, 1200px"
-        },
-        "educational": {
-          "assetId": "educational.dream-symbols-dictionary.en",
-          "aspect": "4x3",
-          "alt": "Four-step process for exploring a dream symbol through image, emotion, context and recurring patterns",
-          "caption": "Treat a dictionary entry as a prompt: identify the image, feeling, personal context and recurring pattern.",
-          "sizes": "(max-width: 768px) 100vw, 800px"
         }
       }
     },
