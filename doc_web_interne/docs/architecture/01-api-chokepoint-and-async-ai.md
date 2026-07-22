@@ -13,7 +13,8 @@
 - Authenticated chat turns use atomic begin/complete RPCs and append-only message rows; `dreams.chat_history` is retained as a compatibility projection.
 - Quota status uses one authenticated snapshot RPC or a backend-signed guest session; arbitrary client fingerprints no longer authorize quota reads or upgrade marking.
 - New AI job/chat tables are private and are exposed only through narrowly granted RPCs; client-readable Realtime on `ai_jobs` remains intentionally disabled.
-- The recovered historical schema baseline now survives a full `supabase db reset --local --no-seed`: all 43 tracked migrations apply and all 46 database contract checks pass.
+- The recovered historical schema baseline now survives a full `supabase db reset --local --no-seed`: all 44 tracked migrations apply and all 46 database contract checks pass.
+- The production backend now contains the same 44 migration versions and active `api` v92, `analysis-job-worker` v1, and `image-job-worker` v11 deployments. The authenticated analysis client flag remains disabled.
 
 ### Inferred
 
@@ -22,9 +23,9 @@
 ### Still open / not production-proven
 
 - The target split by failure domain is not implemented yet. There are no dedicated `guest-session-api`, `quota-api`, `dream-command-api`, `chat-api`, or `subscription-api` functions.
-- These changes are source-level candidates only until their additive migrations, API function, worker, and flagged client are deployed in order.
+- The migrations and backend functions are production-deployed, but the durable authenticated-analysis path is not production-used until a separately validated client build enables its feature flag.
 - The failure-domain split into separate public API functions remains unimplemented; durable analysis ownership does not by itself isolate the monolithic router.
-- The full local migration reset and focused PostgreSQL 17.6 behavior checks pass, but staging and production rollout remain unverified.
+- The full local migration reset and focused PostgreSQL 17.6 behavior checks pass, and the production schema/function rollout is verified. End-to-end production behavior remains gated on the flagged client build and telemetry.
 
 ## Problem
 
