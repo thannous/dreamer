@@ -1,3 +1,4 @@
+import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
@@ -6,6 +7,10 @@ type AppVersionOptions = {
 };
 
 const getBuildNumber = () => {
+  if (Application.nativeBuildVersion) {
+    return Application.nativeBuildVersion;
+  }
+
   const config = Constants?.expoConfig;
   const iosBuild = config?.ios?.buildNumber;
   const androidBuild = config?.android?.versionCode;
@@ -23,7 +28,7 @@ const getBuildNumber = () => {
 
 export const getAppVersionString = (options: AppVersionOptions = {}) => {
   const config = Constants?.expoConfig;
-  const version = config?.version;
+  const version = Application.nativeApplicationVersion ?? config?.version;
   if (!version) {
     return null;
   }
