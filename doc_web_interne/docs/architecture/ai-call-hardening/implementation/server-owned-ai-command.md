@@ -93,7 +93,7 @@ Record command acknowledgement latency, provider latency, queue age, attempts, t
 
 ## Rollout And Rollback
 
-The backend rollout completed in production on 2026-07-22: the service-only grant correction and five additive migrations were applied, followed by the API function, analysis worker, and updated image worker. The client flag remains disabled, so authenticated analysis continues to use the synchronous compatibility path until a separately validated client build enables `EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED=true`. Disable that flag to return a flagged client to synchronous analysis. Keep new rows readable and drain queued jobs before removing worker code. Database rollback is forward-compatible: stop creating the new job type before removing any additive object.
+The backend rollout completed in production on 2026-07-22: the service-only grant correction and five additive migrations were applied, followed by the API function, analysis worker, and updated image worker. Android build 3.0.0 (41) was then built from commit `2b0b8c9de` with the isolated `ai-internal` profile and `EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED=true`, and submitted to Google Play Internal Testing. The public production profile remains unchanged. Disable the flag to return a flagged client to synchronous analysis. Keep new rows readable and drain queued jobs before removing worker code. Database rollback is forward-compatible: stop creating the new job type before removing any additive object.
 
 ## Acceptance Criteria
 
@@ -115,4 +115,4 @@ The backend rollout completed in production on 2026-07-22: the service-only gran
 - `anon` and `authenticated` have no direct table privileges on `ai_jobs`; `service_role` retains only `SELECT`, `INSERT`, `UPDATE`, and `DELETE`. The authenticated command RPCs are deliberately executable only by `authenticated` and `service_role`, with an empty `search_path`.
 - Post-rollout Supabase advisors add only expected notices for private RLS tables without client policies, authenticated command RPCs, and new/unused indexes. The unindexed `dream_chat_messages.user_id` foreign key remains a non-blocking performance follow-up.
 - Production telemetry must prove supported-client usage before any legacy endpoint is removed.
-- No feature-flagged mobile build has been produced or deployed; client activation and production telemetry remain separate release gates.
+- EAS build `d9138dcf-d9a3-4360-bf2c-9e791187fcd8` finished as Android 3.0.0 (41), and submission `ef35c406-fbd8-483b-b35e-0d982fd6bb3c` completed for Google Play Internal Testing. A real authenticated device test and production telemetry remain required before promoting the feature to the public production profile.
