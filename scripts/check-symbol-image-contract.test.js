@@ -1,6 +1,7 @@
 const {
   extractArticleImage,
   extractHeroImage,
+  extractSymbolCardImages,
   readMeta,
   sitemapImageForPage,
 } = require('./check-symbol-image-contract');
@@ -28,5 +29,21 @@ describe('rendered symbol image contract parsing', () => {
     const pageUrl = 'https://noctalia.app/fr/symboles/abandon';
     const sitemap = `<url><loc>${pageUrl}</loc><image:image><image:loc>${imageUrl}</image:loc></image:image></url>`;
     expect(sitemapImageForPage(sitemap, pageUrl)).toBe(imageUrl);
+  });
+
+  it('extracts responsive dictionary card images without mixing in heroes', () => {
+    const dictionaryHtml = `
+      <img class="dictionary-hero" src="/img/hero.webp" alt="Dictionary">
+      <img class="symbol-card-image" src="/img/seo/symbols-v2/water-240w.webp"
+        srcset="/img/seo/symbols-v2/water-240w.webp 240w, /img/seo/symbols-v2/water-480w.webp 480w"
+        sizes="(max-width: 767px) min(50vw, 152px), min(21vw, 240px)"
+        width="240" height="154" loading="lazy" alt="Water">`;
+
+    expect(extractSymbolCardImages(dictionaryHtml)).toEqual([
+      expect.objectContaining({
+        src: '/img/seo/symbols-v2/water-240w.webp',
+        width: '240',
+      }),
+    ]);
   });
 });

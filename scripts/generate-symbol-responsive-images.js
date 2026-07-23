@@ -7,6 +7,7 @@ const path = require('path');
 const sharp = require('sharp');
 const { ROOT_DIR } = require('./lib/docs-site-config');
 const {
+  SYMBOL_RESPONSIVE_WIDTHS,
   generatedSymbolImagePath,
   loadSymbolImageRegistry,
 } = require('./lib/symbol-image-assets');
@@ -19,7 +20,8 @@ const STATIC_DIR = path.join(ROOT_DIR, 'docs-src', 'static');
 const CATALOG_PATH = path.join(ROOT_DIR, 'data', 'dream-symbols.json');
 const POSTER_DIR = path.join(STATIC_DIR, 'img', 'symbols', 'posters-v1');
 const OUTPUT_DIR = path.join(STATIC_DIR, 'img', 'seo', 'symbols-v2');
-const WIDTHS = [480, 800, 1200];
+const WIDTHS = SYMBOL_RESPONSIVE_WIDTHS;
+const CARD_MAX_BYTES = 30_000;
 const MAX_BYTES = 250_000;
 const WARN_BYTES = 180_000;
 
@@ -151,7 +153,11 @@ async function generateIllustrations(illustrations, { force = false } = {}) {
       await sharp(illustration.sourcePath)
         .rotate()
         .resize({ width, withoutEnlargement: true })
-        .webp({ quality: 82, effort: 5, smartSubsample: true })
+        .webp({
+          quality: width === WIDTHS[0] ? 78 : 82,
+          effort: 5,
+          smartSubsample: true,
+        })
         .toFile(target);
       generated += 1;
     }
@@ -167,6 +173,7 @@ async function generateIllustrations(illustrations, { force = false } = {}) {
 async function validateIllustrations(illustrations) {
   const errors = [];
   const warnings = [];
+  const bytesByWidth = Object.fromEntries(WIDTHS.map((width) => [width, 0]));
   for (const illustration of illustrations) {
     if (!fs.existsSync(illustration.sourcePath)) {
       errors.push(`${illustration.symbolId}: missing source ${illustration.src}`);
@@ -191,7 +198,12 @@ async function validateIllustrations(illustrations) {
         );
       }
       const bytes = fs.statSync(target).size;
-      if (width === 1200 && bytes > MAX_BYTES) {
+      bytesByWidth[width] += bytes;
+      if (width === WIDTHS[0] && bytes > CARD_MAX_BYTES) {
+        errors.push(
+          `${illustration.symbolId}: ${width}w card variant is ${bytes} bytes (max ${CARD_MAX_BYTES})`
+        );
+      } else if (width === 1200 && bytes > MAX_BYTES) {
         errors.push(`${illustration.symbolId}: 1200w variant is ${bytes} bytes (max ${MAX_BYTES})`);
       } else if (width === 1200 && bytes > WARN_BYTES) {
         warnings.push(`${illustration.symbolId}: 1200w variant is ${bytes} bytes`);
@@ -199,7 +211,7 @@ async function validateIllustrations(illustrations) {
     }
   }
   if (errors.length > 0) throw new Error(`Invalid responsive symbol images:\n- ${errors.join('\n- ')}`);
-  return { warnings };
+  return { bytesByWidth, warnings };
 }
 
 async function main() {
@@ -221,7 +233,8 @@ async function main() {
   const result = await validateIllustrations(illustrations);
   console.log(
     `Responsive symbol images ${checkOnly ? 'checked' : 'generated'}: ` +
-      `${illustrations.length} illustrations, ${illustrations.length * WIDTHS.length} WebP variants.`
+      `${illustrations.length} illustrations, ${illustrations.length * WIDTHS.length} WebP variants ` +
+      `(${WIDTHS.map((width) => `${width}w=${result.bytesByWidth[width]} bytes`).join(', ')}).`
   );
   for (const warning of result.warnings) console.warn(`WARN ${warning}`);
 }
@@ -241,4 +254,5 @@ module.exports = {
   mergeIllustrations,
   outputPath,
   validateIllustrations,
+  WIDTHS,
 };
