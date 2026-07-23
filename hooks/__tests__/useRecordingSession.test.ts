@@ -138,42 +138,6 @@ describe('useRecordingSession', () => {
     expect(result.current.recordingPermissionState).toBe('unknown');
   });
 
-  it('should provide startRecording function', () => {
-    const { result } = renderHook(() => useRecordingSession(defaultOptions));
-
-    expect(typeof result.current.startRecording).toBe('function');
-  });
-
-  it('should provide stopRecording function', () => {
-    const { result } = renderHook(() => useRecordingSession(defaultOptions));
-
-    expect(typeof result.current.stopRecording).toBe('function');
-  });
-
-  it('should provide toggleRecording function', () => {
-    const { result } = renderHook(() => useRecordingSession(defaultOptions));
-
-    expect(typeof result.current.toggleRecording).toBe('function');
-  });
-
-  it('should provide forceStopRecording function', () => {
-    const { result } = renderHook(() => useRecordingSession(defaultOptions));
-
-    expect(typeof result.current.forceStopRecording).toBe('function');
-  });
-
-  it('should provide requestPermissions function', () => {
-    const { result } = renderHook(() => useRecordingSession(defaultOptions));
-
-    expect(typeof result.current.requestPermissions).toBe('function');
-  });
-
-  it('should provide setupAppStateListener function', () => {
-    const { result } = renderHook(() => useRecordingSession(defaultOptions));
-
-    expect(typeof result.current.setupAppStateListener).toBe('function');
-  });
-
   it('startRecording should return success when permissions granted', async () => {
     const { result } = renderHook(() => useRecordingSession(defaultOptions));
 

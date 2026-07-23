@@ -100,13 +100,13 @@ describe('buildPreview', () => {
     expect(result).toBe('');
   });
 
-  it('prefers partial when it nearly matches finals', () => {
-    const finalChunks = ['alpha beta gamma'];
-    const lastPartial = 'alpha beta gamma delta';
+  it('prefers a corrected partial when most token positions still match', () => {
+    const finalChunks = ['one two three four five six seven eight nine ten'];
+    const lastPartial = 'one two three four five six seven eight nine eleven';
 
     const result = buildPreview(finalChunks, lastPartial);
 
-    expect(result).toBe('alpha beta gamma delta');
+    expect(result).toBe(lastPartial);
   });
 });
 
@@ -197,7 +197,7 @@ describe('native speech module integration', () => {
     expect(result).toBe(false);
   });
 
-  it('uses the offline model prompt handler when available', async () => {
+  it('awaits the offline model prompt before checking installation again', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'android';
     (Platform as any).Version = 34;
@@ -212,16 +212,33 @@ describe('native speech module integration', () => {
 
     __setCachedSpeechModuleForTests(speechModule);
 
+    let resolvePrompt: (() => void) | undefined;
     const promptHandler = {
-      show: jest.fn().mockResolvedValue(undefined),
+      show: jest.fn(
+        () => new Promise<void>((resolve) => {
+          resolvePrompt = resolve;
+        })
+      ),
       isVisible: false,
     };
     registerOfflineModelPromptHandler(promptHandler);
 
-    const result = await ensureOfflineSttModel('en-US');
+    const resultPromise = ensureOfflineSttModel('en-US');
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(promptHandler.show).toHaveBeenCalledWith('en-US');
-    expect(result).toBe(true);
+    expect(getSupportedLocales).toHaveBeenCalledTimes(1);
+
+    const stateBeforePromptCloses = await Promise.race([
+      resultPromise.then(() => 'resolved'),
+      Promise.resolve('pending'),
+    ]);
+    expect(stateBeforePromptCloses).toBe('pending');
+
+    resolvePrompt?.();
+
+    await expect(resultPromise).resolves.toBe(true);
+    expect(getSupportedLocales).toHaveBeenCalledTimes(2);
   });
 
   it('returns null when recognition is unavailable', async () => {

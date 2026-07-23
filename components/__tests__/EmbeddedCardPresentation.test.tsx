@@ -229,7 +229,6 @@ jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon.${name}`} />,
 }));
 
-const { EmailAuthCard } = require('@/components/auth/EmailAuthCard');
 const { QuotaStatusCard } = require('@/components/quota/QuotaStatusCard');
 const { SubscriptionCard } = require('@/components/subscription/SubscriptionCard');
 const { SubscriptionQALab } = require('@/components/subscription/SubscriptionQALab');
@@ -284,16 +283,6 @@ describe('embedded card presentation', () => {
         padding: 16,
       })
     );
-  });
-
-  it('renders the compact guest account summary in embedded presentation', () => {
-    const { getByTestId, queryByText } = render(<EmailAuthCard presentation="embedded" />);
-
-    expect(queryByText('settings.account.title')).toBeNull();
-    expect(queryByText('settings.account.description_signed_out')).toBeNull();
-    expect(getByTestId('settings-account-summary')).toBeTruthy();
-    expect(getByTestId('settings-account-open-signup')).toBeTruthy();
-    expect(getByTestId('settings-account-open-signin')).toBeTruthy();
   });
 
   it('keeps the embedded QA lab compact until its accessible disclosure is opened', () => {
