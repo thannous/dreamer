@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { usePathname, useRouter } from 'expo-router';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -27,16 +27,19 @@ const SIDEBAR_WIDTH = 240;
 function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
   const { colors, mode } = useTheme();
   const router = useRouter();
+  const [isHovered, setIsHovered] = useState(false);
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   return (
     <Pressable
       testID={testID}
       onPress={() => router.push(href as '/(tabs)')}
-      style={({ hovered }) => [
+      onHoverIn={() => setIsHovered(true)}
+      onHoverOut={() => setIsHovered(false)}
+      style={[
         styles.navItem,
         isActive && { backgroundColor: noctalia.surface.active },
-        hovered && !isActive && { backgroundColor: noctalia.surface.soft },
+        isHovered && !isActive && { backgroundColor: noctalia.surface.soft },
       ]}
       accessibilityRole="button"
       accessibilityLabel={label}
