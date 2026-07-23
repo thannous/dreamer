@@ -235,14 +235,6 @@ const SYMBOL_SHEET_LABELS = {
   }
 };
 
-const QUICK_REFERENCE_LABELS = {
-  de: 'Kurzdeutung des Symbols',
-  en: 'Quick symbol reference',
-  es: 'Ficha rápida del símbolo',
-  fr: 'Fiche rapide du symbole',
-  it: 'Scheda rapida del simbolo',
-};
-
 const SYMBOL_IMAGE_ALT_TEMPLATES = {
   de: (name) => `Traumhafte Illustration des Symbols ${name}`,
   en: (name) => `Dreamlike illustration representing the symbol ${name}`,
@@ -866,29 +858,23 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
 
   // Generate variations HTML
   const variationsHtml = variations.map(v => `
-                    <div class="variation-card glass-panel rounded-xl p-5 border border-transparent">
-                        <h3 class="font-medium text-dream-cream mb-2">${escapeHtml(sanitizeEmDashes(v.context))}</h3>
-                        <p class="text-sm text-gray-300">${escapeHtml(sanitizeEmDashes(v.meaning))}</p>
+                    <div class="variation-card">
+                        <h3>${escapeHtml(sanitizeEmDashes(v.context))}</h3>
+                        <p>${escapeHtml(sanitizeEmDashes(v.meaning))}</p>
                     </div>`).join('\n');
 
   const interpretationSectionHtml = hasInterpretation ? `            <!-- Main Interpretation -->
-            <section id="meaning" class="symbol-meaning glass-panel rounded-2xl p-6 md:p-8 mb-10">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-4 flex items-center gap-3">
-                    <i data-lucide="eye" class="w-6 h-6 text-dream-salmon"></i>
-                    ${t.section_interpretation}
-                </h2>
-                <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
+            <section id="meaning" class="symbol-meaning symbol-section">
+                <h2 class="symbol-h2">${t.section_interpretation}</h2>
+                <div class="prose prose-invert prose-purple max-w-none leading-relaxed space-y-4">
                     ${fullInterpretation}
                 </div>
             </section>` : '';
 
   const variationsSectionHtml = hasVariations ? `            <!-- Variations -->
-            <section id="variations" class="symbol-variations mb-10">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="layers" class="w-6 h-6 text-dream-salmon"></i>
-                    ${t.section_variations}
-                </h2>
-                <div class="grid gap-4">${variationsHtml}
+            <section id="variations" class="symbol-variations symbol-section">
+                <h2 class="symbol-h2">${t.section_variations}</h2>
+                <div>${variationsHtml}
                 </div>
             </section>` : '';
 
@@ -906,15 +892,12 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
 
   // Generate ask yourself HTML
   const askYourselfHtml = symbolData.askYourself.map(q => `
-                    <li class="flex items-start gap-3 text-purple-200/80">
-                        <i data-lucide="chevron-right" class="w-5 h-5 text-dream-salmon flex-shrink-0 mt-0.5"></i>
-                        <span>${escapeHtml(q)}</span>
-                    </li>`).join('\n');
+                    <li class="symbol-question-item">${escapeHtml(q)}</li>`).join('\n');
 
   // Generate related symbols HTML
   const relatedSymbolsHtml = relatedSymbols.map(rs => `
-                    <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${rs.slug}" class="symbol-link glass-panel rounded-xl p-4 text-center border border-transparent hover:border-dream-salmon/30 transition-all">
-                        <span class="font-serif text-dream-cream">${escapeHtml(rs.name)}</span>
+                    <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${rs.slug}" class="symbol-link">
+                        <span>${escapeHtml(rs.name)}</span>
                     </a>`).join('\n');
 
   // Related reading: a thematic guide when one is mapped, otherwise the
@@ -926,44 +909,37 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   let relatedReadingCard = '';
   if (relatedGuideSlug && relatedGuideTitle) {
     relatedReadingCard = `
-                <a href="/${lang}/guides/${relatedGuideSlug}" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors border border-transparent">
-                    <span class="text-xs text-dream-salmon uppercase mb-2 block">${t.related_guide_label}</span>
-                    <h3 class="font-serif text-lg text-dream-cream mb-2">${escapeHtml(relatedGuideTitle)}</h3>
-                    <span class="text-sm text-purple-200/60 flex items-center gap-2">
-                        ${t.read_guide} <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </span>
+                <a href="/${lang}/guides/${relatedGuideSlug}" class="symbol-reading-card">
+                    <span class="symbol-reading-label">${t.related_guide_label}</span>
+                    <h3>${escapeHtml(relatedGuideTitle)}</h3>
+                    <span class="symbol-reading-cta">${t.read_guide}</span>
                 </a>`;
   } else if (relatedArticle) {
     const relatedArticleTitle = getBlogTitleBySlug(lang, relatedArticle);
     relatedReadingCard = `
-                <a href="/${lang}/blog/${relatedArticle}" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors border border-transparent">
-                    <span class="text-xs text-dream-salmon uppercase mb-2 block">${t.in_depth_guide}</span>
-                    <h3 class="font-serif text-lg text-dream-cream mb-2">${escapeHtml(relatedArticleTitle || `${symbolData.name} - ${t.in_depth_guide}`)}</h3>
-                    <span class="text-sm text-purple-200/60 flex items-center gap-2">
-                        ${t.read_article} <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </span>
+                <a href="/${lang}/blog/${relatedArticle}" class="symbol-reading-card">
+                    <span class="symbol-reading-label">${t.in_depth_guide}</span>
+                    <h3>${escapeHtml(relatedArticleTitle || `${symbolData.name} - ${t.in_depth_guide}`)}</h3>
+                    <span class="symbol-reading-cta">${t.read_article}</span>
                 </a>`;
   }
 
   const relatedArticleHtml = relatedReadingCard ? `
             <!-- Related Reading -->
-            <section class="mb-10">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="book-open" class="w-6 h-6 text-dream-salmon"></i>
-                    ${t.section_learn_more}
-                </h2>${relatedReadingCard}
+            <section class="symbol-reading symbol-section">
+                <h2 class="symbol-h2">${t.section_learn_more}</h2>${relatedReadingCard}
             </section>` : '';
 
   const symbolFaq = Array.isArray(symbolData.faq) ? symbolData.faq.slice(0, 4) : [];
 
   const softCtaHtml = softCta ? `
             <!-- Soft App CTA -->
-            <aside class="symbol-soft-cta glass-panel rounded-2xl p-6 md:p-8 mb-10 border border-dream-salmon/15">
+            <aside class="symbol-soft-cta">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-5">
                     <div class="flex-1 min-w-0">
                         <p class="text-xs font-bold uppercase tracking-[0.12em] text-dream-salmon mb-2">${escapeHtml(softCta.kicker || 'Noctalia')}</p>
-                        <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-3">${escapeHtml(softCta.title)}</h2>
-                        <p class="text-sm md:text-base text-purple-200/75 leading-relaxed">${escapeHtml(softCta.text)}</p>
+                        <h2 class="text-xl md:text-2xl text-dream-cream mb-3">${escapeHtml(softCta.title)}</h2>
+                        <p class="text-sm md:text-base leading-relaxed">${escapeHtml(softCta.text)}</p>
                     </div>
                     <a href="${escapeHtml(softCta.href)}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors">
                         ${escapeHtml(softCta.button || t.cta_button)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
@@ -1042,9 +1018,9 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
 
   const faqItems = symbolFaq;
   const faqCardsHtml = faqItems.map(item => `
-                    <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                        <h3 class="font-medium text-dream-cream mb-2">${escapeHtml(sanitizeEmDashes(item.question))}</h3>
-                        <p class="text-sm text-gray-300 leading-relaxed">${escapeHtml(sanitizeEmDashes(item.answer))}</p>
+                    <div class="symbol-faq-card">
+                        <h3>${escapeHtml(sanitizeEmDashes(item.question))}</h3>
+                        <p>${escapeHtml(sanitizeEmDashes(item.answer))}</p>
                     </div>`).join('\n');
 
   const faqPageJsonLd = faqItems.length > 0 ? {
@@ -1057,12 +1033,9 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     }))
   } : null;
   const faqSectionHtml = faqItems.length > 0 ? `
-            <section class="mb-10">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="help-circle" class="w-6 h-6 text-dream-salmon"></i>
-                    ${t.section_faq}
-                </h2>
-                <div class="grid gap-4">${faqCardsHtml}
+            <section class="symbol-faq symbol-section">
+                <h2 class="symbol-h2">${t.section_faq}</h2>
+                <div>${faqCardsHtml}
                 </div>
             </section>` : '';
 
@@ -1151,33 +1124,45 @@ ${renderSharedComponentStyles()}
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0514; }
-        ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 4px; }
-        .aurora-bg {
-            background: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
-                radial-gradient(at 50% 0%, hsla(260, 39%, 20%, 1) 0, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(339, 49%, 20%, 1) 0, transparent 50%);
-            background-size: 200% 200%; animation: aurora 20s ease infinite;
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
-        }
-        .orb { position: absolute; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.5; max-width: 100vw; max-height: 100vw; }
-        .glass-panel {
-            background: rgba(20, 10, 40, 0.4); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-        .glass-button { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.3s ease; }
-        .glass-button:hover { background: rgba(255, 255, 255, 0.15); }
-        @keyframes aurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        ::-webkit-scrollbar-thumb { background: #39294f; border-radius: 4px; }
         html, body { overflow-x: hidden; }
-        .symbol-page .aurora-bg {
-            background:
-                radial-gradient(circle at 82% 18%, rgba(253, 164, 129, 0.10), transparent 22rem),
-                radial-gradient(circle at 18% 0%, rgba(167, 139, 250, 0.12), transparent 24rem),
-                linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-                #08030f;
-            background-size: auto, auto, 5rem 5rem, 5rem 5rem, auto;
-            animation: none;
+
+        .symbol-page {
+            --cream: #fff7ed;
+            --cream-88: rgba(255, 247, 237, 0.88);
+            --cream-64: rgba(255, 247, 237, 0.64);
+            --cream-45: rgba(255, 247, 237, 0.45);
+            --cream-35: rgba(255, 247, 237, 0.35);
+            --line: rgba(255, 247, 237, 0.10);
+            --salmon: #fda481;
+            --salmon-dim: rgba(253, 164, 129, 0.72);
         }
+        .symbol-page a:focus-visible {
+            outline: 2px solid var(--salmon);
+            outline-offset: 3px;
+            border-radius: 2px;
+        }
+        /* Static night backdrop + film grain (no animated aurora, no orbs) */
+        .aurora-bg {
+            position: fixed; inset: 0; z-index: -1;
+            background:
+                radial-gradient(58rem 38rem at 88% -12%, rgba(253, 164, 129, 0.07), transparent 62%),
+                radial-gradient(46rem 34rem at -8% -6%, rgba(150, 122, 204, 0.09), transparent 58%),
+                #0a0512;
+        }
+        .symbol-page::after {
+            content: '';
+            position: fixed; inset: 0; z-index: 90;
+            pointer-events: none; opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+        }
+        .glass-button {
+            background: rgba(255, 247, 237, 0.04);
+            border: 1px solid rgba(255, 247, 237, 0.16);
+            transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
+        }
+        .glass-button:hover { background: rgba(255, 247, 237, 0.08); border-color: rgba(253, 164, 129, 0.45); }
+        .glass-button:active { transform: scale(0.98); }
         .symbol-page-main {
             position: relative;
             padding-top: 0 !important;
@@ -1185,9 +1170,14 @@ ${renderSharedComponentStyles()}
         .symbol-breadcrumb {
             margin-bottom: auto;
             padding-top: clamp(6.5rem, 9vw, 8rem);
-            letter-spacing: 0.01em;
-            color: rgba(237, 225, 255, 0.68);
+            font-size: 0.8rem;
+            letter-spacing: 0.03em;
+            color: var(--cream-45);
         }
+        .symbol-breadcrumb a { color: var(--cream-64); transition: color 0.25s ease; }
+        .symbol-breadcrumb a:hover { color: var(--salmon); }
+        .symbol-breadcrumb .text-purple-400 { color: var(--cream-35); }
+        .symbol-breadcrumb .text-dream-cream { color: var(--cream-88); }
         .symbol-hero {
             position: relative;
             left: 50%;
@@ -1196,7 +1186,7 @@ ${renderSharedComponentStyles()}
             margin-left: -50vw;
             isolation: isolate;
             overflow: hidden;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid var(--line);
             background: #090413;
         }
         .symbol-hero-figure {
@@ -1221,49 +1211,72 @@ ${renderSharedComponentStyles()}
             object-fit: cover;
             object-position: center;
         }
-        .symbol-hero-overlay {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            width: min(100%, 52rem);
-            min-height: max(42rem, 100svh);
-            margin: 0 auto;
-            padding: 0 1rem clamp(3rem, 7vh, 5.5rem);
-            background:
-                linear-gradient(180deg, rgba(8, 3, 15, 0.04) 18%, rgba(8, 3, 15, 0.16) 40%, rgba(8, 3, 15, 0.88) 87%, #090413 100%);
-        }
         .symbol-hero::after {
             content: '';
             position: absolute;
             inset: 0;
             z-index: 1;
             pointer-events: none;
-            background:
-                linear-gradient(90deg, rgba(8, 3, 15, 0.36), transparent 65%),
-                linear-gradient(180deg, rgba(8, 3, 15, 0.16), transparent 35%, rgba(8, 3, 15, 0.34));
+            background: linear-gradient(180deg,
+                rgba(8, 3, 15, 0.45) 0%,
+                rgba(8, 3, 15, 0.05) 32%,
+                rgba(8, 3, 15, 0.10) 55%,
+                rgba(9, 4, 19, 0.82) 88%,
+                #0a0512 100%);
+        }
+        .symbol-hero-overlay {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            width: min(100%, 48rem);
+            min-height: max(42rem, 100svh);
+            margin: 0 auto;
+            padding: 0 1rem clamp(3rem, 7vh, 5rem);
         }
         .symbol-hero-copy {
             width: 100%;
             min-width: 0;
             margin-top: auto;
         }
-        .symbol-hero-chips span,
-        .symbol-hero-chips a {
-            background: rgba(8, 3, 15, 0.72);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+        .symbol-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.45rem 0.85rem;
+            border: 1px solid rgba(255, 247, 237, 0.24);
+            border-radius: 3px;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--cream-88);
+            transition: border-color 0.25s ease, color 0.25s ease;
         }
+        .symbol-chip--accent { color: var(--salmon); border-color: rgba(253, 164, 129, 0.45); }
+        a.symbol-chip:hover { border-color: var(--salmon); color: var(--salmon); }
         .symbol-heading {
-            width: min(100%, 12ch);
+            width: min(100%, 14ch);
             max-width: 100%;
-            color: #fff7ed;
-            font-size: clamp(3.25rem, 8vw, 6.5rem) !important;
-            line-height: 0.92 !important;
+            color: var(--cream);
+            font-weight: 560;
+            font-size: clamp(3rem, 7.5vw, 6rem) !important;
+            line-height: 0.94 !important;
+            letter-spacing: -0.015em;
             overflow-wrap: anywhere;
             hyphens: auto;
             text-wrap: balance;
             text-shadow: 0 3px 28px rgba(8, 3, 15, 0.78);
+        }
+        .symbol-h1-prefix {
+            display: block;
+            font-family: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+            font-size: clamp(0.7rem, 1vw, 0.8rem);
+            font-weight: 500;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: var(--salmon);
+            margin-top: 1.1rem;
+            text-shadow: 0 2px 16px rgba(8, 3, 15, 0.8);
         }
         .symbol-hero-caption {
             position: absolute;
@@ -1278,22 +1291,250 @@ ${renderSharedComponentStyles()}
             border: 0;
         }
         .symbol-summary {
-            margin-top: clamp(1.75rem, 4vw, 3rem);
-            color: rgba(237, 225, 255, 0.84);
+            margin-top: clamp(2rem, 4vw, 3rem);
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 340;
+            font-size: clamp(1.25rem, 2vw, 1.5rem) !important;
+            line-height: 1.5 !important;
+            color: var(--cream-88);
+            max-width: 36rem;
+            text-wrap: pretty;
         }
-        .symbol-soft-cta a {
-            flex-shrink: 0;
+
+        /* Content sections: hairline structure, no glass boxes */
+        .symbol-section {
+            border-top: 1px solid var(--line);
+            padding-top: clamp(2.25rem, 4vw, 3rem);
+            margin-bottom: clamp(3rem, 6vw, 4.5rem);
         }
-        .symbol-jump-nav { display: none; }
+        .symbol-h2 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 550;
+            font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            color: var(--cream);
+            margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+        }
+        .symbol-h2::before {
+            content: '';
+            display: block;
+            width: 2rem;
+            height: 2px;
+            background: var(--salmon);
+            margin-bottom: 1rem;
+        }
         .symbol-meaning,
         .symbol-variations,
-        #questions {
+        .symbol-questions {
             scroll-margin-top: 7rem;
         }
-        .variation-card { transition: all 0.3s ease; }
-        .variation-card:hover { transform: translateY(-2px); border-color: rgba(253, 164, 129, 0.3); }
-        .symbol-link { transition: all 0.3s ease; }
-        .symbol-link:hover { transform: translateY(-2px); border-color: rgba(253, 164, 129, 0.3); }
+        .symbol-meaning .prose {
+            color: var(--cream-64);
+            font-size: 1.02rem;
+            line-height: 1.8;
+        }
+        .symbol-meaning .prose p { max-width: 42rem; }
+        .symbol-meaning .prose a {
+            color: var(--salmon);
+            text-decoration: underline;
+            text-decoration-color: rgba(253, 164, 129, 0.35);
+            text-underline-offset: 3px;
+            transition: text-decoration-color 0.25s ease;
+        }
+        .symbol-meaning .prose a:hover { text-decoration-color: var(--salmon); }
+
+        /* Variations: numbered editorial rows */
+        .symbol-variations { counter-reset: variation; }
+        .variation-card {
+            position: relative;
+            padding: 1.35rem 0 1.35rem 3.25rem;
+            border-top: 1px solid var(--line);
+        }
+        .variation-card:last-child { border-bottom: 1px solid var(--line); }
+        .variation-card::before {
+            counter-increment: variation;
+            content: counter(variation, decimal-leading-zero);
+            position: absolute;
+            left: 0;
+            top: 1.55rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            color: var(--salmon-dim);
+        }
+        .variation-card h3 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 550;
+            font-size: 1.08rem;
+            color: var(--cream);
+            margin-bottom: 0.35rem;
+            transition: color 0.25s ease;
+        }
+        .variation-card:hover h3 { color: var(--salmon); }
+        .variation-card p {
+            color: var(--cream-64);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            max-width: 42rem;
+        }
+
+        /* Ask yourself */
+        .symbol-questions ul { margin: 0; padding: 0; list-style: none; }
+        .symbol-question-item {
+            border-top: 1px solid var(--line);
+            padding: 1.05rem 0;
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 400;
+            font-size: 1.12rem;
+            line-height: 1.5;
+            color: var(--cream-88);
+        }
+        .symbol-question-item:last-child { border-bottom: 1px solid var(--line); }
+
+        /* FAQ */
+        .symbol-faq-card { border-top: 1px solid var(--line); padding: 1.35rem 0; }
+        .symbol-faq-card:last-child { border-bottom: 1px solid var(--line); }
+        .symbol-faq-card h3 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 550;
+            font-size: 1.08rem;
+            color: var(--cream);
+            margin-bottom: 0.4rem;
+        }
+        .symbol-faq-card p {
+            color: var(--cream-64);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            max-width: 42rem;
+        }
+
+        /* Related symbols: index list */
+        .symbol-related-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            column-gap: 2.5rem;
+            border-bottom: 1px solid var(--line);
+        }
+        .symbol-link {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.95rem 0;
+            border-top: 1px solid var(--line);
+        }
+        .symbol-link span {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-size: 1.05rem;
+            color: var(--cream-88);
+            transition: color 0.25s ease;
+        }
+        .symbol-link::after {
+            content: '\\2192';
+            font-size: 0.9rem;
+            color: var(--cream-35);
+            transition: transform 0.25s ease, color 0.25s ease;
+        }
+        .symbol-link:hover { border-top-color: rgba(253, 164, 129, 0.55); }
+        .symbol-link:hover span { color: var(--cream); }
+        .symbol-link:hover::after { transform: translateX(4px); color: var(--salmon); }
+
+        /* Related reading */
+        .symbol-reading-card { display: block; padding-top: 0.25rem; }
+        .symbol-reading-label {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--salmon);
+            margin-bottom: 0.6rem;
+        }
+        .symbol-reading-card h3 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 550;
+            font-size: 1.25rem;
+            line-height: 1.3;
+            color: var(--cream);
+            margin-bottom: 0.5rem;
+            transition: color 0.25s ease;
+        }
+        .symbol-reading-card:hover h3 { color: var(--salmon); }
+        .symbol-reading-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--cream-45);
+            transition: color 0.25s ease;
+        }
+        .symbol-reading-cta::after {
+            content: '\\2192';
+            transition: transform 0.25s ease, color 0.25s ease;
+        }
+        .symbol-reading-card:hover .symbol-reading-cta { color: var(--cream-88); }
+        .symbol-reading-card:hover .symbol-reading-cta::after { transform: translateX(4px); color: var(--salmon); }
+
+        /* Soft app CTA */
+        .symbol-soft-cta {
+            border: 1px solid rgba(253, 164, 129, 0.22);
+            border-radius: 0.75rem;
+            background:
+                radial-gradient(30rem 14rem at 12% 0%, rgba(253, 164, 129, 0.09), transparent 65%),
+                rgba(255, 247, 237, 0.02);
+            padding: clamp(1.5rem, 3vw, 2.25rem);
+            margin-bottom: clamp(3rem, 6vw, 4.5rem);
+        }
+        .symbol-soft-cta h2 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 550;
+            letter-spacing: -0.01em;
+        }
+        .symbol-soft-cta p { color: var(--cream-64); }
+        .symbol-soft-cta a { flex-shrink: 0; transition: transform 0.2s ease, background 0.25s ease; }
+        .symbol-soft-cta a:hover { transform: translateY(-1px); }
+        .symbol-soft-cta a:active { transform: translateY(0) scale(0.98); }
+
+        /* Final CTA */
+        .symbol-final-cta {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 1rem;
+            background:
+                radial-gradient(36rem 16rem at 50% -20%, rgba(253, 164, 129, 0.12), transparent 70%),
+                rgba(255, 247, 237, 0.02);
+            padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+            text-align: center;
+        }
+        .symbol-final-cta h3 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 560;
+            font-size: clamp(1.6rem, 3vw, 2.25rem);
+            letter-spacing: -0.015em;
+            color: var(--cream);
+            margin-bottom: 0.85rem;
+            text-wrap: balance;
+        }
+        .symbol-final-cta p { color: var(--cream-64); }
+        .symbol-final-cta a { transition: transform 0.2s ease, background 0.25s ease, border-color 0.25s ease; }
+        .symbol-final-cta a:active { transform: scale(0.98); }
+
+        .symbol-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--cream-45);
+            font-size: 0.9rem;
+            transition: color 0.25s ease;
+        }
+        .symbol-back-link::before { content: '\\2190'; transition: transform 0.25s ease; }
+        .symbol-back-link:hover { color: var(--salmon); }
+        .symbol-back-link:hover::before { transform: translateX(-4px); }
+
+        /* Jump nav (mobile only) */
+        .symbol-jump-nav { display: none; }
         @media (max-width: 767px) {
             .symbol-page-main {
                 padding-top: 0 !important;
@@ -1301,10 +1542,7 @@ ${renderSharedComponentStyles()}
                 padding-right: 1rem !important;
                 padding-bottom: 3.5rem !important;
             }
-            .symbol-page .orb { display: none; }
-            .symbol-breadcrumb {
-                display: none;
-            }
+            .symbol-breadcrumb { display: none; }
             .symbol-hero {
                 min-height: clamp(30rem, 125vw, 43rem);
                 margin-bottom: 0 !important;
@@ -1312,33 +1550,19 @@ ${renderSharedComponentStyles()}
             .symbol-hero-overlay {
                 min-height: clamp(30rem, 125vw, 43rem);
                 padding: 6.5rem 1rem clamp(2rem, 5vw, 3rem);
-                background:
-                    linear-gradient(180deg, rgba(8, 3, 15, 0.03) 18%, rgba(8, 3, 15, 0.12) 40%, rgba(8, 3, 15, 0.78) 75%, #090413 100%);
             }
-            .symbol-hero-chips {
-                gap: 0.55rem !important;
-                margin-bottom: 1rem !important;
-            }
-            .symbol-hero-chips span,
-            .symbol-hero-chips a {
-                padding: 0.48rem 0.74rem !important;
-                font-size: 0.68rem !important;
-            }
+            .symbol-hero-chips { display: none !important; }
             .symbol-category-chip { display: none !important; }
             .symbol-heading {
                 margin-bottom: 0 !important;
-                font-size: clamp(1.25rem, 5.6vw, 1.85rem) !important;
-                line-height: 1.04 !important;
-                letter-spacing: 0 !important;
+                font-size: clamp(2rem, 9.5vw, 2.9rem) !important;
+                line-height: 0.98 !important;
+                letter-spacing: -0.01em !important;
             }
-            .symbol-h1-prefix { display: none; }
+            .symbol-h1-prefix { margin-top: 0.85rem; }
             .symbol-summary {
-                font-size: 1rem !important;
-                line-height: 1.6 !important;
-                max-width: 30rem;
-            }
-            .symbol-soft-cta a {
-                width: 100%;
+                font-size: 1.15rem !important;
+                line-height: 1.55 !important;
             }
             .symbol-jump-nav {
                 position: sticky;
@@ -1347,36 +1571,38 @@ ${renderSharedComponentStyles()}
                 display: grid;
                 grid-template-columns: repeat(3, minmax(0, 1fr));
                 overflow: hidden;
-                margin: 0.95rem -0.1rem 1.45rem;
-                border: 1px solid rgba(255, 255, 255, 0.10);
-                border-radius: 1.15rem;
-                background: rgba(13, 6, 24, 0.94);
+                margin: 1.1rem 0 1.75rem;
+                border: 1px solid var(--line);
+                border-radius: 4px;
+                background: rgba(10, 5, 18, 0.94);
                 backdrop-filter: blur(18px);
                 -webkit-backdrop-filter: blur(18px);
-                box-shadow: 0 16px 38px rgba(0, 0, 0, 0.28);
             }
             .symbol-jump-link {
-                min-height: 4.35rem;
+                min-height: 3.9rem;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                gap: 0.35rem;
-                color: rgba(237, 225, 255, 0.72);
-                font-size: 0.78rem;
-                border-left: 1px solid rgba(255, 255, 255, 0.075);
+                gap: 0.3rem;
+                color: var(--cream-45);
+                font-size: 0.68rem;
+                font-weight: 500;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                border-left: 1px solid var(--line);
             }
             .symbol-jump-link:first-child { border-left: 0; }
             .symbol-jump-link:focus { outline: none; }
             .symbol-jump-link:focus-visible {
-                outline: 2px solid rgba(253, 164, 129, 0.64);
+                outline: 2px solid var(--salmon);
                 outline-offset: -4px;
             }
             .symbol-jump-link.is-active {
-                color: #fff7ed;
-                box-shadow: inset 0 -3px 0 #fda481;
+                color: var(--cream);
+                box-shadow: inset 0 -2px 0 var(--salmon);
             }
-            .symbol-jump-link.is-active svg { color: #fda481; }
+            .symbol-jump-link.is-active svg { color: var(--salmon); }
             body.symbol-jump-fixed .symbol-jump-nav {
                 position: fixed;
                 left: 1rem;
@@ -1385,40 +1611,15 @@ ${renderSharedComponentStyles()}
                 margin: 0;
                 max-width: calc(100vw - 2rem);
             }
-            body.symbol-jump-fixed .symbol-jump-nav + .symbol-meaning {
+            body.symbol-jump-fixed .symbol-jump-nav + section {
                 margin-top: 6rem !important;
             }
-            .symbol-meaning,
-            #questions {
-                padding: 1.25rem !important;
-                border-radius: 1.15rem !important;
-                margin-bottom: 1.75rem !important;
+            .symbol-soft-cta a { width: 100%; }
+            .symbol-related-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                column-gap: 1.5rem;
             }
-            .symbol-meaning h2,
-            .symbol-variations h2,
-            #questions h2 {
-                font-size: 1.25rem !important;
-                margin-bottom: 1rem !important;
-            }
-            .symbol-meaning .prose {
-                font-size: 0.98rem;
-                line-height: 1.68;
-            }
-            .symbol-meaning .prose p + p {
-                margin-top: 1rem;
-                padding-top: 1rem;
-                border-top: 1px solid rgba(255, 255, 255, 0.055);
-            }
-            .symbol-variations {
-                margin-bottom: 1.75rem !important;
-            }
-            .variation-card {
-                padding: 1rem !important;
-                border-radius: 1rem !important;
-            }
-            .variation-card p {
-                line-height: 1.55;
-            }
+            .variation-card { padding-left: 2.5rem; }
         }
     </style>
 
@@ -1437,8 +1638,6 @@ ${faqPageJsonLd ? renderJsonLd(faqPageJsonLd) : ''}
 
 <body class="symbol-page bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
     <div class="aurora-bg"></div>
-    <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
-    <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
 
     <!-- Navbar -->
 ${renderPseoNav(lang, currentPaths, 'dictionary')}
@@ -1464,18 +1663,14 @@ ${heroPictureHtml}
                     </nav>
                     <div class="symbol-hero-copy">
                         <div class="symbol-hero-chips flex flex-wrap gap-3 mb-6">
-                            <span data-page-intent="quick-symbol-reference" class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-4 py-2">
-                                <i data-lucide="sparkles" class="w-4 h-4"></i>
-                                ${QUICK_REFERENCE_LABELS[lang] || QUICK_REFERENCE_LABELS.en}
-                            </span>
                             <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${t.category_slugs[symbol.category]}"
-                               class="symbol-category-chip inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 hover:text-white hover:border-dream-salmon/30 transition-colors">
+                               class="symbol-category-chip symbol-chip">
                                 ${categoryName}
                             </a>
                         </div>
 
                         <h1 class="symbol-heading font-serif text-3xl md:text-6xl mb-0 leading-[0.96]">
-                            <span class="symbol-h1-prefix">${escapeHtml(t.h1_prefix)}</span> <span>${escapeHtml(symbolData.name)}</span>
+                            <span>${escapeHtml(symbolData.name)}</span> <span class="symbol-h1-prefix" data-page-intent="quick-symbol-reference">${escapeHtml(t.h1_prefix)}</span>
                         </h1>
                     </div>
                 </div>
@@ -1493,12 +1688,9 @@ ${interpretationSectionHtml}
 ${variationsSectionHtml}
 
             <!-- Ask Yourself -->
-            <section id="questions" class="glass-panel rounded-2xl p-6 md:p-8 mb-10 border border-dream-salmon/20">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-4 flex items-center gap-3">
-                    <i data-lucide="help-circle" class="w-6 h-6 text-dream-salmon"></i>
-                    ${t.section_ask_yourself}
-                </h2>
-                <ul class="space-y-3">${askYourselfHtml}
+            <section id="questions" class="symbol-questions symbol-section">
+                <h2 class="symbol-h2">${t.section_ask_yourself}</h2>
+                <ul>${askYourselfHtml}
                 </ul>
             </section>
 
@@ -1506,22 +1698,16 @@ ${softCtaHtml}
 ${faqSectionHtml}
 
             <!-- Related Symbols -->
-            ${relatedSymbols.length > 0 ? `<section class="mb-10">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="link" class="w-6 h-6 text-dream-salmon"></i>
-                    ${t.section_related_symbols}
-                </h2>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">${relatedSymbolsHtml}
+            ${relatedSymbols.length > 0 ? `<section class="symbol-related symbol-section">
+                <h2 class="symbol-h2">${t.section_related_symbols}</h2>
+                <div class="symbol-related-grid">${relatedSymbolsHtml}
                 </div>
             </section>` : ''}
 ${relatedArticleHtml}
             <!-- CTA Section -->
-            <aside class="glass-panel rounded-3xl p-8 md:p-10 text-center border border-dream-salmon/20">
-                <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i data-lucide="sparkles" class="w-8 h-8 text-dream-salmon"></i>
-                </div>
-                <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">${t.cta_title}</h3>
-                <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
+            <aside class="symbol-final-cta">
+                <h3>${t.cta_title}</h3>
+                <p class="mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
                 ${renderSymbolConversionActions(lang)}
@@ -1529,10 +1715,7 @@ ${relatedArticleHtml}
 
             <!-- Back to Dictionary -->
             <div class="mt-10 text-center">
-                <a href="/${lang}/guides/${t.dictionary_slug}" class="inline-flex items-center gap-2 text-purple-200/60 hover:text-dream-salmon transition-colors">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                    ${t.back_to_dictionary}
-                </a>
+                <a href="/${lang}/guides/${t.dictionary_slug}" class="symbol-back-link">${t.back_to_dictionary}</a>
             </div>
 
         </article>
