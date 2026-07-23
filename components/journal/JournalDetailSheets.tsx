@@ -482,6 +482,7 @@ export function ReferenceImageSheet({
       }}
     >
       <ReferenceImagePicker
+        active={visible}
         subjectType={subjectType}
         onImagesSelected={onImagesSelected}
         maxImages={REFERENCE_IMAGES.MAX_UPLOADS}

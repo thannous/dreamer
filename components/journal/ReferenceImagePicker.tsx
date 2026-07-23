@@ -1,4 +1,11 @@
-import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   ActivityIndicator,
   Modal,
@@ -21,12 +28,19 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import {
+  loadExpoCameraModule,
+  loadExpoImageManipulatorModule,
+  loadExpoImagePickerModule,
+  type ExpoCameraModule,
+} from '@/lib/referenceImagePlatform';
 import type { ReferenceImage } from '@/lib/types';
 
 interface ReferenceImagePickerProps {
   subjectType: 'person' | 'animal';
   onImagesSelected: (images: ReferenceImage[]) => void;
   maxImages?: number;
+  active?: boolean;
 }
 
 interface SelectedImage {
@@ -38,8 +52,6 @@ type CameraPermission = {
   granted: boolean;
   canAskAgain: boolean;
 };
-
-type ExpoCameraModule = typeof import('expo-camera');
 
 const MAX_COMPRESSED_SIZE_BYTES = 1.5 * 1024 * 1024; // 1.5MB decoded payload
 const MAX_DIMENSION = 512;
@@ -57,7 +69,7 @@ const estimateBase64Bytes = (base64: string): number => {
  */
 async function compressImage(uri: string): Promise<{ uri: string; mimeType: string } | null> {
   try {
-    const manipulator = await import('expo-image-manipulator');
+    const manipulator = await loadExpoImageManipulatorModule();
 
     const actions: ImageManipulatorAction[] = [
       { resize: { width: MAX_DIMENSION, height: MAX_DIMENSION } },
@@ -70,7 +82,13 @@ async function compressImage(uri: string): Promise<{ uri: string; mimeType: stri
     });
 
     // Validate base64 size
-    const base64 = result.base64 ?? '';
+    const base64 = result.base64;
+    if (!base64) {
+      if (__DEV__) {
+        console.warn('[ReferenceImagePicker] Compressed image is missing size data');
+      }
+      return null;
+    }
     const estimatedBytes = estimateBase64Bytes(base64);
     if (estimatedBytes > MAX_COMPRESSED_SIZE_BYTES) {
       if (__DEV__) {
@@ -97,14 +115,42 @@ export function ReferenceImagePicker({
   subjectType,
   onImagesSelected,
   maxImages = REFERENCE_IMAGES.MAX_UPLOADS,
+  active = true,
 }: ReferenceImagePickerProps) {
   const { t } = useTranslation();
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const pendingHandledRef = useRef(false);
   const cameraRef = useRef<ExpoCameraView | null>(null);
+  const mountedRef = useRef(true);
+  const activeRef = useRef(active);
+  const lifecycleEpochRef = useRef(0);
+  const cameraEpochRef = useRef(0);
+  const operationSequenceRef = useRef(0);
+  const operationInFlightRef = useRef<number | null>(null);
+  const captureSequenceRef = useRef(0);
+  const captureInFlightRef = useRef<number | null>(null);
+  const selectedImagesRef = useRef<SelectedImage[]>([]);
+  const onImagesSelectedRef = useRef(onImagesSelected);
+  const subjectTypeRef = useRef(subjectType);
   const [expoCamera, setExpoCamera] = useState<ExpoCameraModule | null>(null);
   const [cameraPermission, setCameraPermission] = useState<CameraPermission | null>(null);
+
+  useEffect(() => {
+    onImagesSelectedRef.current = onImagesSelected;
+    subjectTypeRef.current = subjectType;
+  }, [onImagesSelected, subjectType]);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      lifecycleEpochRef.current += 1;
+      cameraEpochRef.current += 1;
+      operationInFlightRef.current = null;
+      captureInFlightRef.current = null;
+    };
+  }, []);
 
   const showPermissionDeniedAlert = useCallback(
     (titleKey: string, messageKey: string, canAskAgain: boolean) => {
@@ -131,14 +177,62 @@ export function ReferenceImagePicker({
   const cameraFacing: CameraType = subjectType === 'person' ? 'front' : 'back';
   const canAddMore = selectedImages.length < maxImages;
 
+  useLayoutEffect(() => {
+    activeRef.current = active;
+    if (active) {
+      return;
+    }
+
+    lifecycleEpochRef.current += 1;
+    cameraEpochRef.current += 1;
+    operationInFlightRef.current = null;
+    captureInFlightRef.current = null;
+    // Closing the parent sheet invalidates native work even though the picker stays mounted.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsCameraVisible(false);
+    setIsCameraReady(false);
+    setIsCapturing(false);
+    setIsLoading(false);
+  }, [active]);
+
+  const isLifecycleCurrent = useCallback(
+    (epoch: number) =>
+      mountedRef.current
+      && activeRef.current
+      && lifecycleEpochRef.current === epoch,
+    []
+  );
+
+  const commitSelection = useCallback(
+    (update: (current: SelectedImage[]) => SelectedImage[], epoch: number) => {
+      if (!isLifecycleCurrent(epoch)) {
+        return;
+      }
+
+      const nextImages = update(selectedImagesRef.current);
+      selectedImagesRef.current = nextImages;
+      setSelectedImages(nextImages);
+      onImagesSelectedRef.current(
+        nextImages.map((image) => ({
+          uri: image.uri,
+          mimeType: image.mimeType,
+          type: subjectTypeRef.current,
+        }))
+      );
+    },
+    [isLifecycleCurrent]
+  );
+
   const loadExpoCamera = useCallback(async (): Promise<ExpoCameraModule | null> => {
     if (expoCamera) {
       return expoCamera;
     }
 
     try {
-      const camera = await import('expo-camera');
-      setExpoCamera(camera);
+      const camera = await loadExpoCameraModule();
+      if (mountedRef.current && activeRef.current) {
+        setExpoCamera(camera);
+      }
       return camera;
     } catch (error) {
       if (__DEV__) {
@@ -149,31 +243,36 @@ export function ReferenceImagePicker({
   }, [expoCamera]);
 
   const ensureCameraPermission = useCallback(async (camera: ExpoCameraModule) => {
-    try {
-      const existing = await camera.Camera.getCameraPermissionsAsync();
-      if (existing.granted) {
-        const permission = { granted: true, canAskAgain: existing.canAskAgain };
+    const existing = await camera.Camera.getCameraPermissionsAsync();
+    if (existing.granted) {
+      const permission = { granted: true, canAskAgain: existing.canAskAgain };
+      if (mountedRef.current && activeRef.current) {
         setCameraPermission(permission);
-        return permission;
       }
-
-      const requested = await camera.Camera.requestCameraPermissionsAsync();
-      const permission = { granted: requested.granted, canAskAgain: requested.canAskAgain };
-      setCameraPermission(permission);
       return permission;
-    } catch (error) {
-      if (__DEV__) {
-        console.error('[ReferenceImagePicker] Camera permission error:', error);
-      }
-      return null;
     }
+
+    const requested = await camera.Camera.requestCameraPermissionsAsync();
+    const permission = { granted: requested.granted, canAskAgain: requested.canAskAgain };
+    if (mountedRef.current && activeRef.current) {
+      setCameraPermission(permission);
+    }
+    return permission;
   }, []);
 
   const processSelectedAssets = useCallback(
-    async (assets: { uri: string }[]) => {
+    async (assets: { uri: string }[], epoch = lifecycleEpochRef.current) => {
+      if (!isLifecycleCurrent(epoch)) {
+        return;
+      }
+
+      const remainingSlots = Math.max(0, maxImages - selectedImagesRef.current.length);
       const newImages: SelectedImage[] = [];
-      for (const asset of assets) {
+      for (const asset of assets.slice(0, remainingSlots)) {
         const compressed = await compressImage(asset.uri);
+        if (!isLifecycleCurrent(epoch)) {
+          return;
+        }
         if (compressed) {
           newImages.push(compressed);
         } else {
@@ -185,22 +284,17 @@ export function ReferenceImagePicker({
       }
 
       if (newImages.length > 0) {
-        const allImages = [...selectedImages, ...newImages].slice(0, maxImages);
-        setSelectedImages(allImages);
-
-        const referenceImages: ReferenceImage[] = allImages.map((img) => ({
-          uri: img.uri,
-          mimeType: img.mimeType,
-          type: subjectType,
-        }));
-        onImagesSelected(referenceImages);
+        commitSelection(
+          (current) => [...current, ...newImages].slice(0, maxImages),
+          epoch
+        );
       }
     },
-    [maxImages, selectedImages, subjectType, onImagesSelected, t]
+    [commitSelection, isLifecycleCurrent, maxImages, t]
   );
 
   useEffect(() => {
-    if (Platform.OS !== 'android') {
+    if (Platform.OS !== 'android' || !active) {
       return;
     }
     if (pendingHandledRef.current) {
@@ -209,13 +303,19 @@ export function ReferenceImagePicker({
     pendingHandledRef.current = true;
 
     let isMounted = true;
+    const lifecycleEpoch = lifecycleEpochRef.current;
 
     const checkPendingResult = async () => {
       try {
-        const ImagePicker = await import('expo-image-picker');
+        const ImagePicker = await loadExpoImagePickerModule();
         const pendingResult = await ImagePicker.getPendingResultAsync();
 
-        if (!isMounted || !pendingResult || !('canceled' in pendingResult)) {
+        if (
+          !isMounted
+          || !isLifecycleCurrent(lifecycleEpoch)
+          || !pendingResult
+          || !('canceled' in pendingResult)
+        ) {
           return;
         }
 
@@ -224,13 +324,13 @@ export function ReferenceImagePicker({
         }
 
         setIsLoading(true);
-        await processSelectedAssets(pendingResult.assets);
+        await processSelectedAssets(pendingResult.assets, lifecycleEpoch);
       } catch (error) {
-        if (__DEV__) {
+        if (__DEV__ && isMounted && isLifecycleCurrent(lifecycleEpoch)) {
           console.error('[ReferenceImagePicker] Pending result error:', error);
         }
       } finally {
-        if (isMounted) {
+        if (isMounted && isLifecycleCurrent(lifecycleEpoch)) {
           setIsLoading(false);
         }
       }
@@ -241,49 +341,95 @@ export function ReferenceImagePicker({
     return () => {
       isMounted = false;
     };
-  }, [processSelectedAssets]);
+  }, [active, isLifecycleCurrent, processSelectedAssets]);
 
   const closeCamera = useCallback(() => {
+    cameraEpochRef.current += 1;
+    captureInFlightRef.current = null;
     setIsCameraVisible(false);
     setIsCameraReady(false);
+    setIsCapturing(false);
   }, []);
 
   const handleCapture = useCallback(async () => {
-    if (!cameraRef.current || !isCameraReady || isCapturing) {
+    if (
+      !cameraRef.current
+      || !isCameraReady
+      || isCapturing
+      || captureInFlightRef.current !== null
+      || !activeRef.current
+    ) {
       return;
     }
 
+    const captureId = ++captureSequenceRef.current;
+    captureInFlightRef.current = captureId;
+    const lifecycleEpoch = lifecycleEpochRef.current;
+    const cameraEpoch = cameraEpochRef.current;
+    let processingStarted = false;
     setIsCapturing(true);
     try {
       const photo = await cameraRef.current.takePictureAsync({ quality: 0.9 });
+      if (
+        !isLifecycleCurrent(lifecycleEpoch)
+        || cameraEpochRef.current !== cameraEpoch
+        || captureInFlightRef.current !== captureId
+      ) {
+        return;
+      }
       if (!photo?.uri) {
         throw new Error('Missing photo uri');
       }
 
-      closeCamera();
+      setIsCameraVisible(false);
+      setIsCameraReady(false);
       setIsLoading(true);
-      await processSelectedAssets([{ uri: photo.uri }]);
+      processingStarted = true;
+      await processSelectedAssets([{ uri: photo.uri }], lifecycleEpoch);
     } catch (error) {
+      if (
+        !isLifecycleCurrent(lifecycleEpoch)
+        || cameraEpochRef.current !== cameraEpoch
+        || captureInFlightRef.current !== captureId
+      ) {
+        return;
+      }
       if (__DEV__) {
         console.error('[ReferenceImagePicker] Capture error:', error);
       }
       Alert.alert(t('common.error_title'), t('reference_image.pick_error'));
     } finally {
-      setIsCapturing(false);
-      setIsLoading(false);
+      if (captureInFlightRef.current === captureId) {
+        captureInFlightRef.current = null;
+        if (mountedRef.current) {
+          setIsCapturing(false);
+          if (processingStarted) {
+            setIsLoading(false);
+          }
+        }
+      }
     }
-  }, [closeCamera, isCameraReady, isCapturing, processSelectedAssets, t]);
+  }, [isCameraReady, isCapturing, isLifecycleCurrent, processSelectedAssets, t]);
 
   const handlePickImages = useCallback(async () => {
-    if (!canAddMore) {
+    if (!canAddMore || operationInFlightRef.current !== null || !activeRef.current) {
       return;
     }
 
+    const operationId = ++operationSequenceRef.current;
+    operationInFlightRef.current = operationId;
+    const lifecycleEpoch = lifecycleEpochRef.current;
     try {
       setIsLoading(true);
-      const ImagePicker = await import('expo-image-picker');
+      const ImagePicker = await loadExpoImagePickerModule();
+      if (!isLifecycleCurrent(lifecycleEpoch)) {
+        return;
+      }
 
       const { status, canAskAgain } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!isLifecycleCurrent(lifecycleEpoch)) {
+        return;
+      }
       if (status !== 'granted') {
         showPermissionDeniedAlert(
           'reference_image.permission_title',
@@ -301,77 +447,113 @@ export function ReferenceImagePicker({
         quality: 0.9,
       });
 
-      if (result.canceled || !result.assets?.length) {
+      if (
+        !isLifecycleCurrent(lifecycleEpoch)
+        || result.canceled
+        || !result.assets?.length
+      ) {
         return;
       }
 
-      await processSelectedAssets(result.assets);
+      await processSelectedAssets(result.assets, lifecycleEpoch);
     } catch (error) {
+      if (!isLifecycleCurrent(lifecycleEpoch)) {
+        return;
+      }
       if (__DEV__) {
         console.error('[ReferenceImagePicker] Pick error:', error);
       }
       Alert.alert(t('common.error_title'), t('reference_image.pick_error'));
     } finally {
-      setIsLoading(false);
+      if (operationInFlightRef.current === operationId) {
+        operationInFlightRef.current = null;
+        if (isLifecycleCurrent(lifecycleEpoch)) {
+          setIsLoading(false);
+        }
+      }
     }
-  }, [canAddMore, maxImages, selectedImages, t, processSelectedAssets, showPermissionDeniedAlert]);
+  }, [
+    canAddMore,
+    isLifecycleCurrent,
+    maxImages,
+    processSelectedAssets,
+    selectedImages.length,
+    showPermissionDeniedAlert,
+    t,
+  ]);
 
-  const handleTakePhotoWithImagePicker = useCallback(async () => {
-    if (!canAddMore) {
+  const handleTakePhotoWithImagePicker = useCallback(async (lifecycleEpoch: number) => {
+    if (!canAddMore || !isLifecycleCurrent(lifecycleEpoch)) {
       return;
     }
 
-    try {
-      setIsLoading(true);
-      const ImagePicker = await import('expo-image-picker');
-
-      const { status, canAskAgain } = await ImagePicker.requestCameraPermissionsAsync();
-      if (status !== 'granted') {
-        showPermissionDeniedAlert(
-          'reference_image.camera_permission_title',
-          'reference_image.camera_permission_message',
-          canAskAgain
-        );
-        return;
-      }
-
-      const result = await ImagePicker.launchCameraAsync({
-        allowsEditing: false,
-        quality: 0.9,
-        cameraType:
-          subjectType === 'person' ? ImagePicker.CameraType.front : ImagePicker.CameraType.back,
-      });
-
-      if (result.canceled || !result.assets?.length) {
-        return;
-      }
-
-      await processSelectedAssets(result.assets);
-    } catch (error) {
-      if (__DEV__) {
-        console.error('[ReferenceImagePicker] Launch camera error:', error);
-      }
-      Alert.alert(t('common.error_title'), t('reference_image.pick_error'));
-    } finally {
-      setIsLoading(false);
+    const ImagePicker = await loadExpoImagePickerModule();
+    if (!isLifecycleCurrent(lifecycleEpoch)) {
+      return;
     }
-  }, [canAddMore, processSelectedAssets, showPermissionDeniedAlert, subjectType, t]);
+
+    const { status, canAskAgain } = await ImagePicker.requestCameraPermissionsAsync();
+    if (!isLifecycleCurrent(lifecycleEpoch)) {
+      return;
+    }
+    if (status !== 'granted') {
+      showPermissionDeniedAlert(
+        'reference_image.camera_permission_title',
+        'reference_image.camera_permission_message',
+        canAskAgain
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: false,
+      quality: 0.9,
+      cameraType:
+        subjectType === 'person' ? ImagePicker.CameraType.front : ImagePicker.CameraType.back,
+    });
+
+    if (
+      !isLifecycleCurrent(lifecycleEpoch)
+      || result.canceled
+      || !result.assets?.length
+    ) {
+      return;
+    }
+
+    await processSelectedAssets(result.assets, lifecycleEpoch);
+  }, [
+    canAddMore,
+    isLifecycleCurrent,
+    processSelectedAssets,
+    showPermissionDeniedAlert,
+    subjectType,
+  ]);
 
   const handleTakePhoto = useCallback(async () => {
-    if (!canAddMore) {
+    if (!canAddMore || operationInFlightRef.current !== null || !activeRef.current) {
       return;
     }
 
+    const operationId = ++operationSequenceRef.current;
+    operationInFlightRef.current = operationId;
+    const lifecycleEpoch = lifecycleEpochRef.current;
     try {
+      setIsLoading(true);
       const camera = await loadExpoCamera();
+      if (!isLifecycleCurrent(lifecycleEpoch)) {
+        return;
+      }
       if (!camera) {
-        await handleTakePhotoWithImagePicker();
+        await handleTakePhotoWithImagePicker(lifecycleEpoch);
         return;
       }
 
       const permission = cameraPermission?.granted
         ? cameraPermission
         : await ensureCameraPermission(camera);
+      if (!isLifecycleCurrent(lifecycleEpoch)) {
+        return;
+      }
       if (!permission?.granted) {
         showPermissionDeniedAlert(
           'reference_image.camera_permission_title',
@@ -381,19 +563,31 @@ export function ReferenceImagePicker({
         return;
       }
 
+      cameraEpochRef.current += 1;
       setIsCameraReady(false);
       setIsCameraVisible(true);
     } catch (error) {
+      if (!isLifecycleCurrent(lifecycleEpoch)) {
+        return;
+      }
       if (__DEV__) {
         console.error('[ReferenceImagePicker] Camera permission error:', error);
       }
       Alert.alert(t('common.error_title'), t('reference_image.pick_error'));
+    } finally {
+      if (operationInFlightRef.current === operationId) {
+        operationInFlightRef.current = null;
+        if (isLifecycleCurrent(lifecycleEpoch)) {
+          setIsLoading(false);
+        }
+      }
     }
   }, [
     canAddMore,
     cameraPermission,
     ensureCameraPermission,
     handleTakePhotoWithImagePicker,
+    isLifecycleCurrent,
     loadExpoCamera,
     showPermissionDeniedAlert,
     t,
@@ -401,20 +595,29 @@ export function ReferenceImagePicker({
 
   const handleRemoveImage = useCallback(
     (index: number) => {
-      const newImages = selectedImages.filter((_, i) => i !== index);
-      setSelectedImages(newImages);
-
-      const referenceImages: ReferenceImage[] = newImages.map((img) => ({
-        uri: img.uri,
-        mimeType: img.mimeType,
-        type: subjectType,
-      }));
-      onImagesSelected(referenceImages);
+      const lifecycleEpoch = lifecycleEpochRef.current;
+      commitSelection(
+        (current) => current.filter((_, currentIndex) => currentIndex !== index),
+        lifecycleEpoch
+      );
     },
-    [selectedImages, subjectType, onImagesSelected]
+    [commitSelection]
   );
 
   const CameraView = expoCamera?.CameraView;
+
+  const handleCameraMountError = useCallback(
+    (error: { message: string }) => {
+      if (__DEV__) {
+        console.error('[ReferenceImagePicker] Camera mount error:', error);
+      }
+      closeCamera();
+      if (mountedRef.current && activeRef.current) {
+        Alert.alert(t('common.error_title'), t('reference_image.pick_error'));
+      }
+    },
+    [closeCamera, t]
+  );
 
   return (
     <View style={styles.container}>
@@ -430,6 +633,7 @@ export function ReferenceImagePicker({
               style={styles.cameraView}
               facing={cameraFacing}
               onCameraReady={() => setIsCameraReady(true)}
+              onMountError={handleCameraMountError}
             />
             {!isCameraReady && (
               <View style={styles.cameraLoading}>
@@ -452,6 +656,7 @@ export function ReferenceImagePicker({
                 disabled={!isCameraReady || isCapturing}
                 accessibilityRole="button"
                 accessibilityLabel={t('reference_image.take_photo')}
+                testID="reference-image-camera-capture"
                 style={[
                   styles.cameraCaptureButton,
                   (!isCameraReady || isCapturing) && styles.cameraCaptureButtonDisabled,
