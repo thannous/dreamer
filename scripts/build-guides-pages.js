@@ -912,7 +912,7 @@ function renderGuideHubStyles() {
           justify-content: space-between;
           transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
           background:
-            linear-gradient(90deg, rgba(18,8,31,0.96), rgba(18,8,31,0.72), rgba(18,8,31,0.22)),
+            linear-gradient(90deg, rgba(14,7,26,0.97), rgba(14,7,26,0.86), rgba(14,7,26,0.42)),
             var(--guide-image) center right / cover no-repeat;
         }
         .guides-card:hover, .guides-dictionary-card:hover {
@@ -1132,11 +1132,19 @@ function renderGuideHubStyles() {
     </style>`;
 }
 
+const GUIDE_HUB_MEANINGS_SLUGS = {
+  en: 'dream-meanings',
+  fr: 'signification-des-reves',
+  es: 'significado-de-suenos',
+  de: 'traumbedeutungen-interpretation-symbole',
+  it: 'significati-dei-sogni-interpretazione-e-simboli'
+};
+
 function resolveGuideHubCardHref(lang, t, pages, card) {
   if (card.key === 'science') return `/${lang}/blog/${GUIDE_HUB_BLOG_SLUGS.sleepScience[lang]}`;
   if (card.key === 'journal') return `/${lang}/blog/${GUIDE_HUB_BLOG_SLUGS.journal[lang]}`;
   if (card.key === 'emotions') return `/${lang}/blog/${GUIDE_HUB_BLOG_SLUGS.emotions[lang]}`;
-  if (card.key === 'interpretation') return `/${lang}/guides/${t.dictionary_slug}`;
+  if (card.key === 'interpretation') return `/${lang}/blog/${GUIDE_HUB_MEANINGS_SLUGS[lang] || GUIDE_HUB_MEANINGS_SLUGS.en}`;
   if (card.key === 'spirituality') {
     const page = pages.find((candidate) => candidate.id === 'death-transformation-dreams') || pages[5] || pages[0];
     return `/${lang}/guides/${page.slugs[lang]}`;
@@ -1329,9 +1337,9 @@ function renderLayoutCss() {
         .cat-pill .pill-dot { width: 6px; height: 6px; border-radius: 1px; flex-shrink: 0; }
         .cat-pill .pill-count { font-size: 0.7rem; opacity: 0.6; }
         #mobileAlpha { display: none !important; flex-wrap: wrap; gap: 4px; justify-content: center; margin-bottom: 1rem; }
-        .mobile-alpha-link { min-width: 1.75rem; text-align: center; padding: 2px 4px; border-radius: 0.375rem; font-size: 0.8rem; color: rgba(196,181,253,0.75); transition: all 0.2s ease; text-decoration: none; }
-        .mobile-alpha-link:hover { color: #FDA481; transform: scale(1.1); }
-        .mobile-alpha-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
+        .mobile-alpha-link { min-width: 1.75rem; text-align: center; padding: 2px 4px; border-radius: 3px; font-size: 0.8rem; color: rgba(255,247,237,0.64); transition: color 0.2s ease; text-decoration: none; }
+        .mobile-alpha-link:hover { color: #FDA481; }
+        .mobile-alpha-link.alpha-active { color: #fff7ed !important; font-weight: 700; box-shadow: inset 0 -2px 0 #fda481; }
         body.dictionary-page {
           position: relative;
           isolation: isolate;
@@ -1471,16 +1479,14 @@ function renderLayoutCss() {
         }
         .reflection-step-number {
           flex-shrink: 0;
-          width: 1.7rem;
-          height: 1.7rem;
           display: inline-flex;
-          align-items: center;
+          align-items: flex-start;
           justify-content: center;
-          border-radius: 9999px;
-          background: rgba(253,164,129,0.16);
-          color: #fda481;
+          padding-top: 0.1rem;
+          color: var(--salmon-dim, rgba(253,164,129,0.72));
           font-size: 0.85rem;
-          font-weight: 600;
+          font-weight: 500;
+          letter-spacing: 0.1em;
         }
         .reflection-step-body {
           display: flex;
@@ -1585,7 +1591,6 @@ function renderLayoutCss() {
           display: flex;
           align-items: center;
           gap: 0.6rem;
-          filter: drop-shadow(0 1.25rem 2.5rem rgba(0,0,0,0.26));
         }
         .dictionary-hero-search-input {
           position: relative;
@@ -1594,9 +1599,9 @@ function renderLayoutCss() {
         }
         #heroSearchShell .hero-search {
           min-height: 3.7rem;
-          border-color: rgba(255,255,255,0.2) !important;
-          background: rgba(12,7,25,0.74) !important;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px rgba(253,164,129,0.08);
+          border: 1px solid rgba(255,247,237,0.16) !important;
+          border-radius: 6px;
+          background: rgba(255,247,237,0.04) !important;
         }
         #heroSearchShell .search-clear {
           position: static;
@@ -1604,8 +1609,9 @@ function renderLayoutCss() {
           width: 3.7rem;
           height: 3.7rem;
           flex: 0 0 3.7rem;
-          border: 1px solid rgba(255,255,255,0.12);
-          background: rgba(12,7,25,0.74);
+          border-radius: 6px;
+          border: 1px solid rgba(255,247,237,0.16);
+          background: rgba(255,247,237,0.04);
         }
         .dictionary-conversion-links a {
           color: #fda481;
@@ -1638,10 +1644,12 @@ function renderLayoutCss() {
         .dictionary-conversion-copy h2 {
           margin: 0.45rem 0 0.75rem;
           max-width: 17ch;
-          color: #fff7f0;
-          font-family: Georgia, 'Times New Roman', serif;
+          color: #fff7ed;
+          font-family: 'Fraunces', ui-serif, Georgia, serif;
+          font-weight: 550;
           font-size: clamp(1.7rem, 2.4vw, 2.45rem);
           line-height: 1.02;
+          letter-spacing: -0.01em;
         }
         .dictionary-conversion-copy > p:not(.dictionary-platform-note) {
           max-width: 35rem;
@@ -1719,15 +1727,13 @@ function renderLayoutCss() {
           background: rgba(255,255,255,0.035);
         }
         .dictionary-proof-icon {
-          width: 2.3rem;
-          height: 2.3rem;
-          flex: 0 0 2.3rem;
+          width: 1.6rem;
+          height: 1.6rem;
+          flex: 0 0 1.6rem;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          border-radius: 9999px;
           color: #fda481;
-          background: rgba(253,164,129,0.1);
         }
         .dictionary-proof-item strong {
           display: block;
@@ -1759,8 +1765,8 @@ function renderLayoutCss() {
           margin-right: var(--dictionary-edge);
           padding: clamp(0.75rem, 1.35vw, 1rem);
           margin-bottom: 1.15rem;
-          border: 1px solid rgba(255,255,255,0.1);
-          background: rgba(12, 7, 25, 0.72);
+          border: 1px solid rgba(255,247,237,0.10);
+          background: rgba(255,247,237,0.02);
         }
         .quick-browse-panel[hidden] { display: none !important; }
         .quick-browse-alpha {
@@ -1768,33 +1774,29 @@ function renderLayoutCss() {
           flex-wrap: wrap;
           align-items: center;
           gap: 0.35rem;
-          padding: 0.35rem;
+          padding: 0 0 0.85rem;
           margin-bottom: 1rem;
-          border-radius: 1rem;
-          border: 1px solid rgba(255,255,255,0.08);
-          background: rgba(255,255,255,0.04);
+          border-bottom: 1px solid rgba(255,247,237,0.10);
         }
         .quick-browse-alpha .letter-link {
-          min-width: 2.25rem;
+          min-width: 2.1rem;
           min-height: 2.25rem;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          border-radius: 0.7rem;
-          background: rgba(255,255,255,0.045);
-          color: rgba(226,218,255,0.78) !important;
-          font-weight: 700;
+          border-radius: 3px;
+          color: rgba(255,247,237,0.64) !important;
+          font-weight: 500;
           text-decoration: none;
           transform: none;
         }
         .quick-browse-alpha .letter-link:hover {
-          background: rgba(253,164,129,0.14);
-          color: #fff !important;
-          transform: translateY(-1px);
+          color: #fda481 !important;
+          transform: none;
         }
         .quick-browse-alpha .letter-link.alpha-active {
-          background: rgba(255,255,255,0.92);
-          color: #0a0514 !important;
+          color: #fff7ed !important;
+          box-shadow: inset 0 -2px 0 #fda481;
           transform: none;
         }
         .quick-browse-copy {
@@ -1828,39 +1830,35 @@ function renderLayoutCss() {
           gap: 0.5rem;
           min-height: 3.25rem;
           padding: 0.55rem 0.7rem;
-          border-radius: 0.7rem;
-          border: 1px solid color-mix(in srgb, var(--cat-color) 23%, rgba(255,255,255,0.05));
-          background:
-            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 12%, transparent), rgba(255,255,255,0.028));
+          border-radius: 3px;
+          border: 1px solid rgba(255,247,237,0.10);
+          background: rgba(255,247,237,0.02);
           text-decoration: none;
           overflow: hidden;
           transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
         }
         .category-browse-card:hover {
           transform: translateY(-2px);
-          border-color: color-mix(in srgb, var(--cat-color) 45%, rgba(255,255,255,0.08));
-          background:
-            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 18%, transparent), rgba(255,255,255,0.04));
+          border-color: rgba(253,164,129,0.45);
+          background: rgba(255,247,237,0.045);
         }
         .category-browse-icon {
           position: absolute;
-          right: -0.28rem;
+          right: 0.5rem;
           top: 50%;
-          width: 3.2rem;
-          height: 3.2rem;
-          border-radius: 9999px;
+          width: 1.5rem;
+          height: 1.5rem;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background: color-mix(in srgb, var(--cat-color) 16%, transparent);
-          color: color-mix(in srgb, var(--cat-color) 84%, #fff);
+          color: var(--salmon-dim, rgba(253,164,129,0.72));
           flex-shrink: 0;
-          opacity: 0.34;
+          opacity: 0.7;
           transform: translateY(-50%);
         }
         .category-browse-icon .w-5 {
-          width: 1.35rem;
-          height: 1.35rem;
+          width: 1.15rem;
+          height: 1.15rem;
         }
         .category-browse-meta {
           position: relative;
@@ -1871,14 +1869,15 @@ function renderLayoutCss() {
           gap: 0.06rem;
         }
         .category-browse-title {
-          color: #f8f5ff;
-          font-family: Georgia, serif;
-          font-size: 0.88rem;
+          color: #fff7ed;
+          font-family: 'Fraunces', ui-serif, Georgia, serif;
+          font-weight: 550;
+          font-size: 0.92rem;
           line-height: 1.05;
           white-space: nowrap;
         }
         .category-browse-count {
-          color: rgba(196,181,253,0.72);
+          color: rgba(255,247,237,0.45);
           font-size: 0.68rem;
           line-height: 1.1;
           white-space: nowrap;
@@ -1889,10 +1888,8 @@ function renderLayoutCss() {
           min-height: 9.25rem;
           display: flex;
           flex-direction: column;
-          background:
-            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 10%, transparent), transparent 45%),
-            rgba(14, 8, 28, 0.88);
-          border-color: rgba(255,255,255,0.075) !important;
+          background: rgba(255, 247, 237, 0.02);
+          border-color: rgba(255, 247, 237, 0.10) !important;
           transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
         }
         .symbol-card::before {
@@ -1901,9 +1898,7 @@ function renderLayoutCss() {
           inset: 0;
           pointer-events: none;
           background:
-            linear-gradient(90deg, rgba(8,4,18,0.45), rgba(8,4,18,0.94) 34%, rgba(8,4,18,0.98) 100%),
-            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 24%, transparent), transparent 46%),
-            linear-gradient(180deg, rgba(255,255,255,0.05), transparent 44%);
+            linear-gradient(90deg, rgba(8,4,18,0.45), rgba(8,4,18,0.9) 38%, rgba(8,4,18,0.96) 100%);
           opacity: 0.96;
         }
         .symbol-card > * {
@@ -1912,11 +1907,9 @@ function renderLayoutCss() {
         }
         .symbol-card:hover {
           transform: translateY(-3px);
-          border-color: color-mix(in srgb, var(--cat-color) 42%, rgba(255,255,255,0.08)) !important;
-          background:
-            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 14%, transparent), transparent 45%),
-            rgba(18, 10, 34, 0.96);
-          box-shadow: 0 1rem 2.5rem rgba(0,0,0,0.24);
+          border-color: rgba(253,164,129,0.4) !important;
+          background: rgba(255, 247, 237, 0.045);
+          box-shadow: none;
         }
         .symbol-card-top {
           display: flex;
@@ -1978,18 +1971,13 @@ function renderLayoutCss() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          width: 1.85rem;
-          height: 1.85rem;
-          border-radius: 9999px;
-          background: rgba(255,255,255,0.045);
-          color: rgba(196,181,253,0.72);
+          color: rgba(255,247,237,0.35);
           font-size: 0.95rem;
-          transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+          transition: color 0.2s ease, transform 0.2s ease;
         }
         .symbol-card:hover .symbol-card-arrow {
-          background: color-mix(in srgb, var(--cat-color) 20%, rgba(255,255,255,0.04));
-          color: #fff;
-          transform: translate(1px, -1px);
+          color: #fda481;
+          transform: translate(2px, -2px);
         }
         .symbol-card-title-link h3 {
           font-size: clamp(1.12rem, 1.25vw, 1.38rem);
@@ -2167,16 +2155,16 @@ function renderLayoutCss() {
         .search-feedback-clear {
           flex-shrink: 0;
           padding: 0.55rem 0.85rem;
-          border-radius: 9999px;
-          border: 1px solid rgba(255,255,255,0.08);
-          background: rgba(255,255,255,0.05);
-          color: rgba(248,245,255,0.86);
+          border-radius: 3px;
+          border: 1px solid rgba(255,247,237,0.16);
+          background: transparent;
+          color: rgba(255,247,237,0.88);
           font-size: 0.82rem;
           transition: background 0.2s ease, border-color 0.2s ease;
         }
         .search-feedback-clear:hover {
-          background: rgba(253,164,129,0.14);
-          border-color: rgba(253,164,129,0.22);
+          background: rgba(253,164,129,0.08);
+          border-color: rgba(253,164,129,0.45);
         }
         @media (min-width: 768px) {
           .dictionary-header { margin-bottom: 0; }
@@ -2267,7 +2255,7 @@ function renderLayoutCss() {
           }
           #heroSearchShell .hero-search {
             min-height: 3.35rem;
-            font-size: 0.94rem;
+            font-size: 1rem;
           }
           #heroSearchShell .search-clear {
             width: 3.35rem;
@@ -2571,6 +2559,41 @@ function renderLayoutCss() {
           color: #f8f5ff !important;
           caret-color: #f8f5ff;
         }
+        /* == dict-editorial-overrides == */
+        /* Cream text mapping (replaces legacy lavender tints) */
+        .dictionary-hero-intro { color: rgba(255,247,237,0.82); }
+        .symbol-card-desc { color: rgba(255,247,237,0.72); }
+        .symbol-card-question { color: rgba(255,247,237,0.45); }
+        .symbol-card-question strong { color: #fda481; }
+        .symbol-card-related { color: rgba(255,247,237,0.64); }
+        .symbol-card-related:hover { color: #fda481; text-decoration: none; }
+        .quick-browse-copy p { color: rgba(255,247,237,0.64); }
+        .reflection-deck { color: rgba(255,247,237,0.72); }
+        .reflection-step-question { color: rgba(255,247,237,0.88); }
+        .reflection-step-prompt { color: rgba(255,247,237,0.45); }
+        .dictionary-platform-note { color: rgba(255,247,237,0.45) !important; }
+        .dictionary-educational-image figcaption { color: rgba(255,247,237,0.64); }
+        .dictionary-conversion-copy > p:not(.dictionary-platform-note) { color: rgba(255,247,237,0.72); }
+        .dictionary-proof-item strong + span { color: rgba(255,247,237,0.64); }
+        .search-feedback-text { color: rgba(255,247,237,0.88); }
+        /* Radius unification: panels 0.75rem, final CTA 1rem */
+        #categoryGridSection, #priorityLinksSection, .dictionary-reflection-guide { border-radius: 0.75rem !important; }
+        .dictionary-final-cta { border-radius: 1rem !important; }
+        #stickyBar { border-radius: 0.75rem !important; }
+        /* Tap targets (WCAG 2.5.8+) */
+        .symbol-card-related { padding: 0.7rem 0; }
+        .symbol-card-cta { min-height: 2.5rem; }
+        .dictionary-page a:focus-visible,
+        .dictionary-page button:focus-visible,
+        .dictionary-page summary:focus-visible {
+            outline: 2px solid #fda481;
+            outline-offset: 3px;
+            border-radius: 2px;
+        }
+        @media (max-width: 767px) {
+          body.dictionary-search-active #searchFeedback { margin-top: 9rem; }
+        }
+        /* == /dict-editorial-overrides == */
         /* == /dict-layout == */`;
 }
 
@@ -2879,7 +2902,7 @@ ${(rg.steps || []).map((step, index) => `                        <li class="refl
   const presentLetters = new Set(letters);
   const displayLetters = buildDisplayLetters(letters, lang);
   const stickyAlphaLinks = displayLetters.map((l) =>
-    renderAlphaItem(l, presentLetters, 'letter-link text-sm', '                        ', ' style="color:rgba(196,181,253,0.75);"')
+    renderAlphaItem(l, presentLetters, 'letter-link text-sm', '                        ', ' style="color:rgba(255,247,237,0.64);"')
   ).join('\n');
 
   const heroCopy = {
@@ -3146,9 +3169,15 @@ ${renderViewTransitionHeadStyles()}
         .symbol-card:hover { transform: translateY(-2px); border-color: rgba(253, 164, 129, 0.3); }
         .symbol-card:focus { outline: none; border-color: rgba(253, 164, 129, 0.3); box-shadow: 0 0 0 2px rgba(253, 164, 129, 0.25); }
         .letter-nav { scroll-behavior: smooth; }
-        .letter-link { transition: all 0.2s ease; min-width: 1.75rem; text-align: center; border-radius: 0.375rem; padding: 2px 4px; }
-        .letter-link:hover { color: #FDA481; transform: scale(1.1); }
-        .letter-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
+        .letter-link { transition: color 0.2s ease; min-width: 1.75rem; text-align: center; border-radius: 3px; padding: 2px 4px; }
+        .letter-link:hover { color: #FDA481; }
+        .letter-link.alpha-active { color: #fff7ed !important; font-weight: 700; box-shadow: inset 0 -2px 0 #fda481; }
+        body.dictionary-search-active .letter-link.alpha-active,
+        body.dictionary-search-active .mobile-alpha-link.alpha-active {
+            color: rgba(255,247,237,0.64) !important;
+            font-weight: 500;
+            box-shadow: none;
+        }
         .search-input:focus { outline: none; border-color: #FDA481; }
         /* Sticky search + alpha bar */
         .letter-link.is-empty,
@@ -3589,7 +3618,6 @@ ${symbolCatEntries}
                 const slug = link.getAttribute('href').split('/').pop();
                 const cat = symbolCategories[slug];
                 if (cat) {
-                    card.style.borderLeft = '3px solid ' + categoryColors[cat];
                     card.dataset.category = cat;
                 }
             });
@@ -3864,7 +3892,7 @@ ${symbolCatEntries}
                 listSections.forEach((section) => {
                     if (section.style.display === 'none') return;
                     const top = section.getBoundingClientRect().top;
-                    if (top - offset <= 24) {
+                    if (top - offset <= 48) {
                         activeSection = section.id;
                     }
                 });
