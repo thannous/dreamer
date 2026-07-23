@@ -360,6 +360,40 @@ function loadSiteManifest() {
   return JSON.parse(fs.readFileSync(SITE_MANIFEST_PATH, 'utf8'));
 }
 
+// Localized blog slug → article title (minus the "| Noctalia" suffix), so
+// related-article links can name their destination.
+const BLOG_TITLES_BY_LANG = new Map();
+function getBlogTitleBySlug(lang, slug) {
+  if (!BLOG_TITLES_BY_LANG.has(lang)) {
+    const map = new Map();
+    const entries = loadSiteManifest().collections?.blog?.entries || {};
+    for (const [id, entry] of Object.entries(entries)) {
+      const localeSlug = entry.locales?.[lang]?.slug;
+      if (!localeSlug) continue;
+      const filePath = path.join(DOCS_SRC_DIR, 'content', 'blog', id, `${lang}.md`);
+      if (!fs.existsSync(filePath)) continue;
+      const raw = fs.readFileSync(filePath, 'utf8');
+      const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+      if (!match) continue;
+      try {
+        const title = String(JSON.parse(match[1])?.title || '')
+          .replace(/\s*[|\-–—]\s*Noctalia\s*$/i, '')
+          .trim();
+        if (title) map.set(localeSlug, title);
+      } catch {
+        // Unreadable frontmatter: links fall back to the generic label.
+      }
+    }
+    BLOG_TITLES_BY_LANG.set(lang, map);
+  }
+  return BLOG_TITLES_BY_LANG.get(lang).get(String(slug || '').split('#')[0]) || null;
+}
+
+function getRelatedGuidePage(symbol) {
+  if (!symbol?.relatedGuide) return null;
+  return OPTIONAL_CURATION_PAGES.find((page) => page.id === symbol.relatedGuide) || null;
+}
+
 function createGeneratedShellContext(lang, currentPaths, activeNav = 'dictionary') {
   const locales = Object.fromEntries(
     CONFIG.languages.map((candidate) => [
@@ -883,25 +917,41 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                         <span class="font-serif text-dream-cream">${escapeHtml(rs.name)}</span>
                     </a>`).join('\n');
 
-  // Check for related article
+  // Related reading: a thematic guide when one is mapped, otherwise the
+  // related blog article — always naming the actual destination.
+  const relatedGuidePage = getRelatedGuidePage(symbol);
+  const relatedGuideSlug = relatedGuidePage?.slugs?.[lang];
+  const relatedGuideTitle = relatedGuidePage?.[lang]?.title;
   const relatedArticle = symbol.relatedArticles?.[lang];
-  const hasRelatedArticle = !!relatedArticle;
+  let relatedReadingCard = '';
+  if (relatedGuideSlug && relatedGuideTitle) {
+    relatedReadingCard = `
+                <a href="/${lang}/guides/${relatedGuideSlug}" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors border border-transparent">
+                    <span class="text-xs text-dream-salmon uppercase mb-2 block">${t.related_guide_label}</span>
+                    <h3 class="font-serif text-lg text-dream-cream mb-2">${escapeHtml(relatedGuideTitle)}</h3>
+                    <span class="text-sm text-purple-200/60 flex items-center gap-2">
+                        ${t.read_guide} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
+                </a>`;
+  } else if (relatedArticle) {
+    const relatedArticleTitle = getBlogTitleBySlug(lang, relatedArticle);
+    relatedReadingCard = `
+                <a href="/${lang}/blog/${relatedArticle}" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors border border-transparent">
+                    <span class="text-xs text-dream-salmon uppercase mb-2 block">${t.in_depth_guide}</span>
+                    <h3 class="font-serif text-lg text-dream-cream mb-2">${escapeHtml(relatedArticleTitle || `${symbolData.name} - ${t.in_depth_guide}`)}</h3>
+                    <span class="text-sm text-purple-200/60 flex items-center gap-2">
+                        ${t.read_article} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
+                </a>`;
+  }
 
-  // Generate related article section
-  const relatedArticleHtml = hasRelatedArticle ? `
-            <!-- Related Article -->
+  const relatedArticleHtml = relatedReadingCard ? `
+            <!-- Related Reading -->
             <section class="mb-10">
                 <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
                     <i data-lucide="book-open" class="w-6 h-6 text-dream-salmon"></i>
                     ${t.section_learn_more}
-                </h2>
-                <a href="/${lang}/blog/${relatedArticle}" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors border border-transparent">
-                    <span class="text-xs text-dream-salmon uppercase mb-2 block">${t.in_depth_guide}</span>
-                    <h3 class="font-serif text-lg text-dream-cream mb-2">${escapeHtml(symbolData.name)} - ${t.in_depth_guide}</h3>
-                    <span class="text-sm text-purple-200/60 flex items-center gap-2">
-                        ${t.read_article} <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </span>
-                </a>
+                </h2>${relatedReadingCard}
             </section>` : '';
 
   const symbolFaq = Array.isArray(symbolData.faq) ? symbolData.faq.slice(0, 4) : [];
@@ -2303,11 +2353,25 @@ function generateCurationPage(page, allSymbols, i18n, lang) {
     const symbolData = s[lang];
     if (!symbolData) return '';
     const symbolHref = `/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}`;
+    // Prefer the mapped thematic guide (skipping self-links on the guide's
+    // own page), otherwise the related article — naming the destination.
+    const cardGuidePage = s.relatedGuide !== page.id ? getRelatedGuidePage(s) : null;
+    const cardGuideSlug = cardGuidePage?.slugs?.[lang];
+    const cardGuideTitle = cardGuidePage?.[lang]?.title;
     const relatedArticle = s.relatedArticles?.[lang];
-    const relatedArticleHtml = relatedArticle ? `
+    let relatedArticleHtml = '';
+    if (cardGuideSlug && cardGuideTitle) {
+      relatedArticleHtml = `
+                        <a href="/${lang}/guides/${cardGuideSlug}" class="mt-4 inline-flex items-center gap-2 text-xs text-purple-200/70 hover:text-dream-salmon transition-colors">
+                            <i data-lucide="book-open" class="w-3 h-3"></i> ${t.related_guide_label}: ${escapeHtml(cardGuideTitle)}
+                        </a>`;
+    } else if (relatedArticle) {
+      const cardArticleTitle = getBlogTitleBySlug(lang, relatedArticle);
+      relatedArticleHtml = `
                         <a href="/${lang}/blog/${relatedArticle}" class="mt-4 inline-flex items-center gap-2 text-xs text-purple-200/70 hover:text-dream-salmon transition-colors">
-                            ${t.read_article} <i data-lucide="arrow-right" class="w-3 h-3"></i>
-                        </a>` : '';
+                            <i data-lucide="book-open" class="w-3 h-3"></i> ${cardArticleTitle ? `${t.related_article_label}: ${escapeHtml(cardArticleTitle)}` : t.read_article}
+                        </a>`;
+    }
     return `
                     <article class="symbol-card glass-panel rounded-2xl p-6 border border-transparent group">
                         <a href="${symbolHref}" class="block">

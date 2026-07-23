@@ -82,7 +82,10 @@
       "actions": "Actions",
       "people": "People",
       "celestial": "Celestial"
-    }
+    },
+    "related_guide_label": "Related guide",
+    "read_guide": "Read the guide",
+    "related_article_label": "Related article"
   },
   "fr": {
     "locale": "fr_FR",
@@ -167,7 +170,10 @@
       "actions": "Actions",
       "people": "Personnes",
       "celestial": "Céleste"
-    }
+    },
+    "related_guide_label": "Guide lié",
+    "read_guide": "Lire le guide",
+    "related_article_label": "Article lié"
   },
   "es": {
     "locale": "es_ES",
@@ -252,7 +258,10 @@
       "actions": "Acciones",
       "people": "Personas",
       "celestial": "Celestial"
-    }
+    },
+    "related_guide_label": "Guía relacionada",
+    "read_guide": "Leer la guía",
+    "related_article_label": "Artículo relacionado"
   },
   "de": {
     "locale": "de_DE",
@@ -337,7 +346,10 @@
       "actions": "Handlungen",
       "people": "Menschen",
       "celestial": "Himmlisch"
-    }
+    },
+    "related_guide_label": "Passender Leitfaden",
+    "read_guide": "Leitfaden lesen",
+    "related_article_label": "Verwandter Artikel"
   },
   "it": {
     "locale": "it_IT",
@@ -422,6 +434,9 @@
       "actions": "Azioni",
       "people": "Persone",
       "celestial": "Celeste"
-    }
+    },
+    "related_guide_label": "Guida correlata",
+    "read_guide": "Leggi la guida",
+    "related_article_label": "Articolo correlato"
   }
 }
