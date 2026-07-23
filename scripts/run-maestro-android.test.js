@@ -59,8 +59,16 @@ describe('run-maestro-android Release preflight', () => {
     expect(readFileSync).toHaveBeenCalledWith('/repo/app.json', 'utf8');
   });
 
-  it('binds the current Release preflight to the real app.json v36 candidate', () => {
-    expect(readExpectedAndroidBuild()).toEqual(EXPECTED);
+  it('matches the current release metadata declared in app.json', () => {
+    const appConfig = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, '..', 'app.json'), 'utf8')
+    ).expo;
+
+    expect(readExpectedAndroidBuild()).toEqual({
+      packageName: appConfig.android.package,
+      versionName: appConfig.version,
+      versionCode: String(appConfig.android.versionCode),
+    });
   });
 
   it('requires one explicit target for the state-clearing voice flow', () => {

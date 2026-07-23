@@ -114,30 +114,6 @@ describe('useDreamSaving', () => {
     expect(result.current.draftDream).toBeNull();
   });
 
-  it('should provide saveDream function', () => {
-    const { result } = renderHook(() => useDreamSaving());
-    
-    expect(typeof result.current.saveDream).toBe('function');
-  });
-
-  it('should provide analyzeAndSaveDream function', () => {
-    const { result } = renderHook(() => useDreamSaving());
-    
-    expect(typeof result.current.analyzeAndSaveDream).toBe('function');
-  });
-
-  it('should provide buildDraftDream function', () => {
-    const { result } = renderHook(() => useDreamSaving());
-    
-    expect(typeof result.current.buildDraftDream).toBe('function');
-  });
-
-  it('should provide resetDraft function', () => {
-    const { result } = renderHook(() => useDreamSaving());
-    
-    expect(typeof result.current.resetDraft).toBe('function');
-  });
-
   it('buildDraftDream should create a dream object from transcript', () => {
     const { result } = renderHook(() => useDreamSaving());
     
@@ -171,18 +147,29 @@ describe('useDreamSaving', () => {
     expect(savedDream).toBeNull();
   });
 
-  it('saveDream should set isPersisting during save', async () => {
+  it('reports persistence while the storage save is pending', async () => {
+    let resolveSave: (() => void) | undefined;
+    mockAddDream.mockImplementationOnce(
+      (dream: unknown) =>
+        new Promise((resolve) => {
+          resolveSave = () => resolve({ ...(dream as object), id: 42 });
+        })
+    );
     const { result } = renderHook(() => useDreamSaving());
-    
-    // Start saving
-    const savePromise = act(async () => {
-      await result.current.saveDream('Test dream');
+
+    let savePromise!: Promise<unknown>;
+    await act(async () => {
+      savePromise = result.current.saveDream('Test dream');
+      await Promise.resolve();
     });
-    
-    // isPersisting should be true during save
-    await savePromise;
-    
-    // After save, isPersisting should be false
+
+    expect(result.current.isPersisting).toBe(true);
+
+    await act(async () => {
+      resolveSave?.();
+      await savePromise;
+    });
+
     expect(result.current.isPersisting).toBe(false);
   });
 

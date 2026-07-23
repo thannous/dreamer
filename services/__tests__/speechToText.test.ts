@@ -100,6 +100,50 @@ describe('transcribeAudio', () => {
     expect(transcript).toBe('mock transcript');
   });
 
+  it('returns an empty string when the API omits the transcript', async () => {
+    setPlatform('ios');
+    mockFetchJSONWithSession.mockResolvedValueOnce({});
+
+    await expect(transcribeAudio({ uri: 'file:///tmp/audio.wav' })).resolves.toBe('');
+  });
+
+  it('rethrows request failures as a user-facing transcription error', async () => {
+    setPlatform('ios');
+    mockFetchJSONWithSession.mockRejectedValueOnce(new Error('Network error'));
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    await expect(transcribeAudio({ uri: 'file:///tmp/audio.wav' })).rejects.toThrow(
+      'Failed to transcribe audio. Please try again.'
+    );
+    expect(errorSpy).toHaveBeenCalledWith('[speechToText] fallback request failed');
+
+    errorSpy.mockRestore();
+  });
+
+  it('logs fallback request diagnostics in development', async () => {
+    setPlatform('ios');
+    (globalThis as typeof globalThis & { __DEV__: boolean }).__DEV__ = true;
+    const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
+    await transcribeAudio({
+      uri: 'file:///tmp/audio.wav',
+      languageCode: 'fr-FR',
+    });
+
+    expect(logSpy).toHaveBeenCalledWith('[speechToText] reading fallback recording');
+    expect(logSpy).toHaveBeenCalledWith('[speechToText] file size (base64 chars)', 13);
+    expect(logSpy).toHaveBeenCalledWith('[speechToText] POST', 'https://api.example/transcribe', {
+      encoding: 'LINEAR16',
+      languageCode: 'fr-FR',
+      sampleRateHertz: 16000,
+    });
+    expect(logSpy).toHaveBeenCalledWith('[speechToText] fallback response received', {
+      transcriptLength: 'mock transcript'.length,
+    });
+
+    logSpy.mockRestore();
+  });
+
   it('uses AMR_WB encoding hints on Android', async () => {
     setPlatform('android');
 
