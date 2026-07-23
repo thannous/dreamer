@@ -144,23 +144,58 @@ describe('site shell Clarity consent control', () => {
     expect(document.querySelector('.noctalia-consent-gpc')).not.toBeNull();
   });
 
-  it('uses localized copy and the matching privacy policy', () => {
-    renderConsent({ language: 'fr' });
+  it.each([
+    [
+      'de',
+      'Cookies zur Reichweitenmessung',
+      'Noctalia verbessern',
+      'Ablehnen',
+      '/de/datenschutz',
+    ],
+    [
+      'en',
+      'Audience measurement cookies',
+      'Improve Noctalia',
+      'Decline',
+      '/en/privacy-policy',
+    ],
+    [
+      'es',
+      'Cookies de medición de audiencia',
+      'Mejorar Noctalia',
+      'Rechazar',
+      '/es/politica-privacidad',
+    ],
+    [
+      'fr',
+      "Cookies de mesure d'audience",
+      'Améliorer Noctalia',
+      'Refuser',
+      '/fr/politique-confidentialite',
+    ],
+    [
+      'it',
+      "Cookie per la misurazione dell'audience",
+      'Migliora Noctalia',
+      'Rifiuta',
+      '/it/privacy-policy',
+    ],
+  ])(
+    'uses localized %s copy and the matching privacy policy',
+    (language, title, accept, reject, privacyPath) => {
+      renderConsent({ language });
 
-    expect(document.getElementById('noctalia-analytics-consent-title').textContent).toBe(
-      "Cookies de mesure d'audience"
-    );
-    expect(document.querySelector('[data-consent="granted"]').textContent).toBe(
-      'Améliorer Noctalia'
-    );
-    expect(document.querySelector('[data-consent="denied"]').textContent).toBe('Refuser');
-    expect(document.getElementById('noctalia-analytics-consent-description').textContent).not.toContain(
-      'Microsoft Clarity'
-    );
-    expect(document.querySelector('#noctalia-analytics-consent a').getAttribute('href')).toBe(
-      '/fr/politique-confidentialite'
-    );
-  });
+      expect(document.getElementById('noctalia-analytics-consent-title').textContent).toBe(title);
+      expect(document.querySelector('[data-consent="granted"]').textContent).toBe(accept);
+      expect(document.querySelector('[data-consent="denied"]').textContent).toBe(reject);
+      expect(
+        document.getElementById('noctalia-analytics-consent-description').textContent
+      ).not.toContain('Microsoft Clarity');
+      expect(document.querySelector('#noctalia-analytics-consent a').getAttribute('href')).toBe(
+        privacyPath
+      );
+    }
+  );
 
   it('removes a blocked loader so a later opt-in can retry safely', () => {
     renderConsent();
