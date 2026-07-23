@@ -286,15 +286,17 @@
       .noctalia-consent-panel p { margin: 0; color: rgba(255, 247, 240, 0.82); font-size: 0.9rem; line-height: 1.55; }
       .noctalia-consent-panel a { color: #fda481; text-decoration: underline; text-underline-offset: 0.2em; }
       .noctalia-consent-gpc { margin-top: 0.55rem !important; color: #fda481 !important; }
-      .noctalia-consent-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; margin-top: 1rem; }
-      .noctalia-consent-actions button { min-height: 2.75rem; padding: 0.65rem 0.9rem; border: 1px solid rgba(253, 164, 129, 0.75); border-radius: 999px; background: transparent; color: #fff7f0; font: inherit; font-weight: 700; cursor: pointer; }
-      .noctalia-consent-actions button:hover { background: rgba(253, 164, 129, 0.12); }
+      .noctalia-consent-actions { display: flex; flex-direction: column; align-items: center; gap: 0.65rem; margin-top: 1rem; }
+      .noctalia-consent-actions button[data-consent="granted"] { width: 100%; min-height: 2.75rem; padding: 0.65rem 0.9rem; border: 1px solid rgba(253, 164, 129, 0.75); border-radius: 999px; background: transparent; color: #fff7f0; font: inherit; font-weight: 700; cursor: pointer; }
+      .noctalia-consent-actions button[data-consent="granted"]:hover { background: rgba(253, 164, 129, 0.12); }
+      .noctalia-consent-actions button[data-consent="denied"] { border: 0; padding: 0.35rem 0.5rem; background: transparent; color: rgba(255, 247, 240, 0.78); font: inherit; font-size: 0.85rem; text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; }
+      .noctalia-consent-actions button[data-consent="denied"]:hover { color: #fda481; }
       .noctalia-consent-actions button:disabled { cursor: not-allowed; opacity: 0.45; }
       .noctalia-consent-actions button:focus-visible, .noctalia-consent-manage:focus-visible { outline: 3px solid #fff7f0; outline-offset: 3px; }
       .noctalia-consent-manage-wrap { display: flex; justify-content: center; margin-top: 1.25rem; }
       .noctalia-consent-manage { border: 0; padding: 0.35rem; background: transparent; color: rgba(255, 247, 240, 0.72); font: inherit; font-size: 0.8rem; text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; }
       .noctalia-consent-manage:hover { color: #fda481; }
-      @media (max-width: 520px) { .noctalia-consent-panel { bottom: 0; width: 100%; border-right: 0; border-bottom: 0; border-left: 0; border-radius: 1rem 1rem 0 0; padding: 1rem; } .noctalia-consent-actions { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { .noctalia-consent-panel { bottom: 0; width: 100%; border-right: 0; border-bottom: 0; border-left: 0; border-radius: 1rem 1rem 0 0; padding: 1rem; } }
       @media (prefers-reduced-motion: no-preference) { .noctalia-consent-panel { animation: noctalia-consent-in 180ms ease-out; } @keyframes noctalia-consent-in { from { opacity: 0; transform: translate(-50%, 0.75rem); } } }
     `;
     document.head.appendChild(style);
