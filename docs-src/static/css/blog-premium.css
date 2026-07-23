@@ -31,7 +31,7 @@
     linear-gradient(180deg, rgba(7, 4, 16, 0.18) 0%, rgba(7, 4, 16, 0.34) 48%, #090413 92%),
     radial-gradient(circle at 17% 18%, rgba(253, 164, 129, 0.14), transparent 20rem),
     radial-gradient(circle at 78% 8%, rgba(196, 181, 253, 0.13), transparent 24rem),
-    url('/img/hero/noctalia-observatory-bg.png') center top / cover no-repeat,
+    url('/img/hero/noctalia-observatory-bg.webp') center top / cover no-repeat,
     linear-gradient(135deg, #12051d 0%, #0a0514 45%, #130822 100%);
 }
 

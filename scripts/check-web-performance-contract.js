@@ -11,6 +11,26 @@ const { MAX_OUTPUT_BYTES } = require('./optimize-homepage-hero');
 const HERO_PATH = path.join(DOCS_DIR, 'img', 'hero', 'noctalia-observatory-bg.webp');
 const OBSERVATORY_CSS_PATH = path.join(DOCS_DIR, 'css', 'observatory.css');
 const BLOG_ARTICLE_CSS_PATH = path.join(DOCS_DIR, 'css', 'blog-article.css');
+const BLOG_PREMIUM_CSS_PATH = path.join(DOCS_DIR, 'css', 'blog-premium.css');
+
+function checkBlogPremiumHeroCss(cssPath = BLOG_PREMIUM_CSS_PATH) {
+  const errors = [];
+
+  if (!fs.existsSync(cssPath)) {
+    errors.push('[blog index LCP] missing blog-premium.css');
+    return errors;
+  }
+
+  const css = fs.readFileSync(cssPath, 'utf8');
+  if (!css.includes("url('/img/hero/noctalia-observatory-bg.webp')")) {
+    errors.push('[blog index LCP] blog-premium.css must use the optimized WebP hero');
+  }
+  if (css.includes("url('/img/hero/noctalia-observatory-bg.png')")) {
+    errors.push('[blog index LCP] blog-premium.css still requests the 1.8 MB PNG hero');
+  }
+
+  return errors;
+}
 
 function parseAttributes(tag) {
   const attributes = {};
@@ -51,6 +71,8 @@ function checkWebPerformanceContract() {
       errors.push('[article LCP] article CSS must not request a competing background hero');
     }
   }
+
+  errors.push(...checkBlogPremiumHeroCss());
 
   const homePaths = [path.join(DOCS_DIR, 'index.html')];
   for (const lang of siteConfig.languages.filter((candidate) => candidate !== 'en')) {
@@ -140,7 +162,7 @@ function main() {
     for (const error of result.errors) console.error(`- ${error}`);
     process.exit(1);
   }
-  console.log('[web-performance-contract] Passed: optimized homepage hero and one eager responsive blog-index image per locale.');
+  console.log('[web-performance-contract] Passed: optimized homepage/blog heroes and one eager responsive blog-index image per locale.');
 }
 
 if (require.main === module) {
@@ -153,6 +175,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  checkBlogPremiumHeroCss,
   checkWebPerformanceContract,
   parseAttributes,
 };
