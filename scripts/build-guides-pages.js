@@ -27,6 +27,13 @@ const {
   renderResponsivePicture,
 } = require('./lib/image-seo-assets');
 const { getPageIllustration } = require('./lib/page-illustrations');
+const {
+  SYMBOL_CARD_IMAGE_SIZES,
+  SYMBOL_CARD_RESPONSIVE_WIDTHS,
+  buildResponsiveSymbolImage,
+  getGeneratedSymbolImage,
+  loadSymbolImageRegistry,
+} = require('./lib/symbol-image-assets');
 
 const ROOT = path.join(__dirname, '..');
 const DOCS_DIR = path.join(ROOT, 'docs');
@@ -36,15 +43,7 @@ const DOCS_SRC_DIR = path.join(ROOT, 'docs-src');
 const DOMAIN = 'https://noctalia.app';
 const DEFAULT_SOCIAL_IMAGE = `${DOMAIN}/img/og/noctalia-dreamscape-v2-1200x630.jpg`;
 const DRY_RUN = process.argv.includes('--dry-run');
-const SYMBOL_CARD_IMAGE_OVERRIDES = {
-  bridge: 'plan-a/bridge-dream.jpg',
-  dog: 'plan-a/dog-dream-it.jpg',
-  door: 'plan-a/door-dream.jpg',
-  fire: 'plan-a/fire-dream-it.jpg',
-  hospital: 'plan-a/hospital-dream.jpg',
-  water: 'plan-a/water-dream-it.jpg',
-  wolf: 'plan-a/wolf-dream.jpg',
-};
+const SYMBOL_IMAGE_REGISTRY = loadSymbolImageRegistry();
 const SYMBOL_IMAGE_ALT_SUFFIX = {
   de: 'Traumillustration',
   en: 'dream symbol illustration',
@@ -81,15 +80,38 @@ try {
   if (error?.code !== 'ENOENT') throw error;
 }
 
-function resolveSymbolCardImage(symbolId) {
-  const relativePath = SYMBOL_CARD_IMAGE_OVERRIDES[symbolId] || `generated/${symbolId}.webp`;
-  const filePath = path.join(DOCS_SRC_DIR, 'static', 'img', 'symbols', relativePath);
+function resolveSymbolCardImage(symbolId, explicitIllustration) {
+  const illustration =
+    explicitIllustration?.src
+      ? explicitIllustration
+      : getGeneratedSymbolImage(symbolId, SYMBOL_IMAGE_REGISTRY);
+  if (!illustration?.src) return null;
+
+  const responsive = buildResponsiveSymbolImage(illustration, {
+    fallbackWidth: SYMBOL_CARD_RESPONSIVE_WIDTHS[0],
+    registry: SYMBOL_IMAGE_REGISTRY,
+    widths: SYMBOL_CARD_RESPONSIVE_WIDTHS,
+  });
+  if (responsive) {
+    return {
+      ...responsive,
+      sizes: SYMBOL_CARD_IMAGE_SIZES,
+    };
+  }
+
+  const filePath = path.join(
+    DOCS_SRC_DIR,
+    'static',
+    illustration.src.replace(/^\/+/, '')
+  );
   if (!fs.existsSync(filePath)) return null;
 
   try {
     const dimensions = imageSize(fs.readFileSync(filePath));
     return {
-      src: `/img/symbols/${relativePath}`,
+      sizes: '',
+      src: illustration.src,
+      srcset: '',
       width: dimensions.width || 192,
       height: dimensions.height || 192,
     };
@@ -2805,9 +2827,12 @@ ${(rg.steps || []).map((step, index) => `                        <li class="refl
       const catName = (t.category_names || {})[sym.category] || sym.category;
       const catColor = CATEGORY_COLORS[sym.category] || '#c084fc';
       const atlasPosition = symbolAtlasPositions.get(sym.id) || getSymbolAtlasPosition(0);
-      const cardImage = resolveSymbolCardImage(sym.id);
+      const cardImage = resolveSymbolCardImage(
+        sym.id,
+        extendedSymbols[sym.id]?.[lang]?.illustration
+      );
       const cardImageHtml = cardImage
-        ? `<img class="symbol-card-image" src="${cardImage.src}" width="${cardImage.width}" height="${cardImage.height}" loading="lazy" decoding="async" alt="${escapeHtml(`${s.name} — ${SYMBOL_IMAGE_ALT_SUFFIX[lang] || SYMBOL_IMAGE_ALT_SUFFIX.en}`)}">`
+        ? `<img class="symbol-card-image" src="${cardImage.src}"${cardImage.srcset ? ` srcset="${cardImage.srcset}"` : ''}${cardImage.sizes ? ` sizes="${cardImage.sizes}"` : ''} width="${cardImage.width}" height="${cardImage.height}" loading="lazy" decoding="async" alt="${escapeHtml(`${s.name} — ${SYMBOL_IMAGE_ALT_SUFFIX[lang] || SYMBOL_IMAGE_ALT_SUFFIX.en}`)}">`
         : '<span class="symbol-card-image" aria-hidden="true"></span>';
       const relatedGuidePage = sym.relatedGuide
         ? pages.find((page) => page.id === sym.relatedGuide)

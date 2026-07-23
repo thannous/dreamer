@@ -4,7 +4,17 @@
 
 const fs = require('fs');
 const path = require('path');
-const { DATA_DIR, DOCS_DIR, siteConfig } = require('./lib/docs-site-config');
+const {
+  DATA_DIR,
+  DOCS_DIR,
+  STATIC_DATA_DIR,
+  siteConfig,
+} = require('./lib/docs-site-config');
+const {
+  SYMBOL_CARD_IMAGE_SIZES,
+  SYMBOL_CARD_RESPONSIVE_WIDTHS,
+  loadSymbolImageRegistry,
+} = require('./lib/symbol-image-assets');
 
 const SITE_ORIGIN = siteConfig.domain.replace(/\/$/, '');
 const CATALOG_PATH = path.join(DATA_DIR, 'dream-symbols.json');
@@ -35,6 +45,16 @@ function extractHeroImage(html) {
   return imageTag ? parseAttributes(imageTag) : null;
 }
 
+function extractSymbolCardImages(html) {
+  return [...html.matchAll(/<img\b[^>]*>/gi)]
+    .map((match) => parseAttributes(match[0]))
+    .filter((attributes) =>
+      String(attributes.class || '')
+        .split(/\s+/)
+        .includes('symbol-card-image')
+    );
+}
+
 function extractArticleImage(html) {
   const scripts = [...html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
   for (const script of scripts) {
@@ -60,11 +80,18 @@ function sitemapImageForPage(sitemap, pageUrl) {
 
 function validateSymbolImageContract() {
   const catalog = JSON.parse(fs.readFileSync(CATALOG_PATH, 'utf8'));
+  const symbolI18n = JSON.parse(
+    fs.readFileSync(path.join(STATIC_DATA_DIR, 'symbol-i18n.json'), 'utf8')
+  );
+  const responsiveBase =
+    loadSymbolImageRegistry().responsiveBase || '/img/seo/symbols-v2';
   const sitemap = fs.readFileSync(SITEMAP_PATH, 'utf8');
   const errors = [];
   const imageBySymbol = new Map();
   const symbolByImage = new Map();
   let pagesChecked = 0;
+  let dictionaryCardsChecked = 0;
+  let expectedDictionarySources = null;
 
   for (const symbol of catalog.symbols || []) {
     for (const lang of siteConfig.languages) {
@@ -145,12 +172,75 @@ function validateSymbolImageContract() {
     }
   }
 
+  for (const lang of siteConfig.languages) {
+    const dictionarySlug = symbolI18n[lang]?.dictionary_slug;
+    const relativePagePath = path.join(
+      lang,
+      'guides',
+      `${dictionarySlug || 'missing-dictionary-slug'}.html`
+    );
+    const pagePath = path.join(DOCS_DIR, relativePagePath);
+    if (!dictionarySlug || !fs.existsSync(pagePath)) {
+      errors.push(`${lang}: missing dictionary page ${relativePagePath}`);
+      continue;
+    }
+
+    const images = extractSymbolCardImages(fs.readFileSync(pagePath, 'utf8'));
+    if (images.length !== catalog.symbols.length) {
+      errors.push(
+        `${lang}: dictionary has ${images.length} card images (expected ${catalog.symbols.length})`
+      );
+    }
+
+    const sources = new Set();
+    for (const [index, image] of images.entries()) {
+      const label = `${lang}: dictionary card ${index + 1}`;
+      dictionaryCardsChecked += 1;
+      if (!image.src?.startsWith(`${responsiveBase}/`) || !image.src.endsWith('-240w.webp')) {
+        errors.push(`${label}: fallback src is not a 240w responsive symbol image`);
+      }
+      if (image.width !== '240' || !Number(image.height)) {
+        errors.push(`${label}: missing 240px intrinsic fallback dimensions`);
+      }
+      if (image.sizes !== SYMBOL_CARD_IMAGE_SIZES) {
+        errors.push(`${label}: invalid sizes attribute`);
+      }
+      if (image.loading !== 'lazy') {
+        errors.push(`${label}: below-the-fold thumbnail must use loading=lazy`);
+      }
+      if (!image.alt?.trim()) {
+        errors.push(`${label}: empty alt text`);
+      }
+      for (const width of SYMBOL_CARD_RESPONSIVE_WIDTHS) {
+        if (!image.srcset?.includes(`${width}w`)) {
+          errors.push(`${label}: srcset missing ${width}w variant`);
+        }
+      }
+      if (image.src) sources.add(image.src);
+    }
+
+    if (sources.size !== catalog.symbols.length) {
+      errors.push(
+        `${lang}: dictionary has ${sources.size} unique card sources (expected ${catalog.symbols.length})`
+      );
+    }
+    const normalizedSources = [...sources].sort();
+    if (
+      expectedDictionarySources &&
+      JSON.stringify(normalizedSources) !== JSON.stringify(expectedDictionarySources)
+    ) {
+      errors.push(`${lang}: dictionary card sources differ across locales`);
+    }
+    expectedDictionarySources ||= normalizedSources;
+  }
+
   if (errors.length > 0) {
     throw new Error(`Invalid rendered symbol image contract:\n- ${errors.join('\n- ')}`);
   }
 
   console.log(
-    `Rendered symbol image contract checked: ${pagesChecked} pages, visible hero + social + JSON-LD + sitemap.`
+    `Rendered symbol image contract checked: ${pagesChecked} detail pages, ` +
+      `${dictionaryCardsChecked} dictionary cards, visible hero + social + JSON-LD + sitemap.`
   );
 }
 
@@ -161,6 +251,7 @@ if (require.main === module) {
 module.exports = {
   extractArticleImage,
   extractHeroImage,
+  extractSymbolCardImages,
   parseAttributes,
   readMeta,
   sitemapImageForPage,
