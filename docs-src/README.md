@@ -99,19 +99,76 @@ commit that small manifest change too. Never force-add `docs/` or
 
 Deployment helper settings live in `docs-src/config/cloudflare-pages.json`.
 
-Run a Cloudflare-compatible local preview:
+### Choose the right preview level
+
+Use the smallest preview level that answers the current question:
+
+| Command | Environment | External effect | Use |
+| --- | --- | --- | --- |
+| `npm run docs:dev` | Local live server | None | Default while editing. Rebuilds on source changes and resolves the site's clean URLs. |
+| `npm run docs:preview:cf` | Local Wrangler server | None | Final local check of Cloudflare Pages routing, redirects, and headers. |
+| `npm run docs:deploy:preview` | Remote Cloudflare Pages preview | Publishes a public preview | Cross-browser and click-through QA on Cloudflare before publication. |
+| `npm run docs:deploy:prod` | Production Cloudflare Pages deployment | Publishes production | Manual production fallback only, with explicit publication intent. |
+
+`docs:preview:cf` serves the existing generated output, so build and validate it
+first:
 
 ```bash
+npm run docs:build
+npm run docs:check
 npm run docs:preview:cf
 ```
 
-Upload a preview deployment:
+Open the local URL printed by Wrangler. This command does not upload the site and
+does not require a Cloudflare login.
+
+### Remote preview before publication
+
+As verified on 2026-07-23, a remote preview of this static site is covered by the
+Cloudflare Pages Free plan. The generated site contains no Pages Functions, and
+[static asset requests are free and unlimited](https://developers.cloudflare.com/pages/functions/pricing/).
+The Free plan currently documents 500 builds per month, 20,000 files per site,
+a 25 MiB per-file limit, and
+[unlimited active preview deployments](https://developers.cloudflare.com/pages/platform/limits/).
+Recheck those official limits if Pages Functions, Workers, storage, or another
+paid Cloudflare product is added later.
+
+Remote preview URLs are public by default. Never use them for confidential or
+unreleased sensitive content.
+
+With explicit preview-publication intent and an authenticated Wrangler session,
+upload the already-configured preview branch:
 
 ```bash
 npm run docs:deploy:preview
 ```
 
-Upload production manually:
+The helper runs `docs:build` and `docs:check`, copies only allowlisted runtime
+files to a temporary directory, and uploads that directory to the `noctalia`
+Pages project with `--branch preview`. It does not update `noctalia.app` or the
+production `master` deployment. Cloudflare returns:
+
+- an immutable URL such as `<hash>.noctalia.pages.dev`, which should be recorded
+  as QA evidence;
+- the moving branch alias `preview.noctalia.pages.dev`, which points to the
+  latest upload on the `preview` branch.
+
+Cloudflare also adds `X-Robots-Tag: noindex` to preview deployments by default.
+Confirm it on the immutable URL:
+
+```bash
+curl -I https://<hash>.noctalia.pages.dev
+```
+
+Before production, test the immutable preview URL by clicking through the shared
+header, footer, and CTA links in every supported locale. Reload at least one
+nested clean URL directly, verify that localized links stay in the selected
+locale, and confirm that the response includes `x-robots-tag: noindex`. Preview
+deployments do not affect custom domains, as documented in Cloudflare's
+[preview deployment guide](https://developers.cloudflare.com/pages/configuration/preview-deployments/).
+
+Do not use `docs:deploy:prod` for preview QA. Upload production manually only
+when publication is explicitly requested:
 
 ```bash
 npm run docs:deploy:prod

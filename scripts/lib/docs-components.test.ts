@@ -73,10 +73,53 @@ describe('docs shared components', () => {
     expect(html).toContain('<footer class="site-footer landing-footer');
     expect(html).toContain('Noctalia');
     expect(html).toContain('Ressources');
+    expect(html).toContain('>Blog</a>');
+    expect(html).toContain('>Guides</h5>');
     expect(html).toContain('Dictionnaire des rêves');
     expect(html).toContain('Symboles populaires');
     expect(html).toContain('Suppression de compte');
+    expect(html).not.toMatch(/<li><a [^>]*class="text-dream-salmon transition-colors"/);
   });
+
+  it.each([
+    ['en', 'Resources', 'Blog', 'Guides', 'Dream Dictionary'],
+    ['fr', 'Ressources', 'Blog', 'Guides', 'Dictionnaire des rêves'],
+    ['es', 'Recursos', 'Blog', 'Guías', 'Diccionario de sueños'],
+    ['de', 'Ressourcen', 'Blog', 'Ratgeber', 'Traumlexikon'],
+    ['it', 'Risorse', 'Blog', 'Guide', 'Dizionario dei sogni'],
+  ])(
+    'keeps the %s footer column titles distinct from their first links',
+    (lang, resourcesTitle, blogLabel, guidesTitle, dictionaryLabel) => {
+      const { createRenderContext } = require('./docs-components/context');
+      const { renderFooter } = require('./docs-components/footer');
+
+      const context = createRenderContext({
+        manifest,
+        entryId: 'page.home',
+        meta: {
+          lang,
+          layout: 'landing',
+        },
+      });
+
+      const html = renderFooter(context);
+      const columns = Array.from(
+        html.matchAll(
+          /<h5 class="font-bold mb-4 text-white">([^<]+)<\/h5>\s*<ul class="space-y-2 text-sm text-gray-500">\s*<li><a [^>]*>([^<]+)<\/a>/g
+        )
+      );
+
+      expect(columns).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ 1: resourcesTitle, 2: blogLabel }),
+          expect.objectContaining({ 1: guidesTitle, 2: dictionaryLabel }),
+        ])
+      );
+      expect(resourcesTitle).not.toBe(blogLabel);
+      expect(guidesTitle).not.toBe(dictionaryLabel);
+      expect(html).not.toMatch(/<li><a [^>]*class="text-dream-salmon transition-colors"/);
+    }
+  );
 
   it('keeps the landing hero special while supporting managed page heroes', () => {
     const { createRenderContext } = require('./docs-components/context');

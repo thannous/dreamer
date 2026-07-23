@@ -148,6 +148,26 @@ function normalizeText(value) {
   return htmlToVisibleText(value).toLocaleLowerCase().replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
 }
 
+function normalizeSymbolDescriptionTemplate(locale) {
+  const description = normalizeText(locale?.shortDescription);
+  const name = normalizeText(locale?.name);
+  if (!description || !name) return description;
+
+  const nameIndex = description.indexOf(name);
+  if (nameIndex < 0 || nameIndex > 80) return description;
+
+  const before = description.slice(nameIndex - 1, nameIndex);
+  const after = description.slice(nameIndex + name.length, nameIndex + name.length + 1);
+  if (
+    (before && /[\p{L}\p{N}]/u.test(before)) ||
+    (after && /[\p{L}\p{N}]/u.test(after))
+  ) {
+    return description;
+  }
+
+  return `${description.slice(0, nameIndex)}[symbol]${description.slice(nameIndex + name.length)}`;
+}
+
 function validateExpandedSymbolLocale(locale, prefix, errors) {
   if (typeof locale?.seoTitle !== 'string' || locale.seoTitle.trim() === '') {
     errors.push(`${prefix}: new symbols require a localized seoTitle`);
@@ -803,6 +823,9 @@ function checkSymbolLocalization(errors) {
   const symbolIds = new Set(symbols.map((symbol) => symbol?.id).filter(Boolean));
   const seenIds = new Set();
   const seenSlugs = Object.fromEntries(siteConfig.languages.map((lang) => [lang, new Map()]));
+  const seenDescriptionTemplates = Object.fromEntries(
+    siteConfig.languages.map((lang) => [lang, new Map()])
+  );
 
   for (const symbol of symbols) {
     const isExpandedInventory = !previousSymbolIds.has(symbol?.id);
@@ -842,18 +865,19 @@ function checkSymbolLocalization(errors) {
           seenSlugs[lang].set(slug, symbol.id);
         }
       }
+      const descriptionTemplate = normalizeSymbolDescriptionTemplate(locale);
+      if (descriptionTemplate) {
+        const collision = seenDescriptionTemplates[lang].get(descriptionTemplate);
+        if (collision) {
+          errors.push(
+            `${prefix}: shortDescription template duplicates ${collision}.${lang}`
+          );
+        } else {
+          seenDescriptionTemplates[lang].set(descriptionTemplate, symbol.id);
+        }
+      }
       if (isExpandedInventory) {
         validateExpandedSymbolLocale(locale, prefix, errors);
-        const description = normalizeText(locale?.shortDescription);
-        const duplicate = symbols.find(
-          (candidate) =>
-            candidate.id !== symbol.id &&
-            description &&
-            normalizeText(candidate?.[lang]?.shortDescription) === description
-        );
-        if (duplicate) {
-          errors.push(`${prefix}: shortDescription duplicates ${duplicate.id}.${lang}`);
-        }
       }
     }
   }
@@ -941,6 +965,7 @@ module.exports = {
   checkChangedExtendedSymbolContent,
   hasTruncatedConnectorClause,
   htmlToVisibleText,
+  normalizeSymbolDescriptionTemplate,
   terminalMetadataWord,
   validateExpandedSymbolLocale,
   runReleaseGates,

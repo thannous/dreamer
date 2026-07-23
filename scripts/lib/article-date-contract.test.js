@@ -18,6 +18,7 @@ const {
   findMalformedSpanishInvertedQuestions,
   findSpanishOrthographyIssues,
   hasTruncatedConnectorClause,
+  normalizeSymbolDescriptionTemplate,
   terminalMetadataWord,
   validateExpandedSymbolLocale,
 } = require('../check-content-release-gates');
@@ -263,5 +264,35 @@ describe('article date and content release contracts', () => {
         expect.stringContaining('FAQ questions must be distinct'),
       ])
     );
+  });
+
+  it('normalizes symbol names so templated descriptions cannot evade duplicate checks', () => {
+    const birth = normalizeSymbolDescriptionTemplate({
+      name: 'Naissance',
+      shortDescription:
+        'Naissance dans un rêve n’a presque jamais un seul sens. Le contexte précise la lecture.',
+    });
+    const surgery = normalizeSymbolDescriptionTemplate({
+      name: 'Chirurgie',
+      shortDescription:
+        'Chirurgie dans un rêve n’a presque jamais un seul sens. Le contexte précise la lecture.',
+    });
+
+    expect(birth).toBe(surgery);
+    expect(
+      normalizeSymbolDescriptionTemplate({
+        name: 'Naissance',
+        shortDescription:
+          'Quand naissance prend toute la place dans un rêve, le contexte précise la lecture.',
+      })
+    ).toBe(
+      'quand [symbol] prend toute la place dans un rêve, le contexte précise la lecture.'
+    );
+    expect(
+      normalizeSymbolDescriptionTemplate({
+        name: 'Ring',
+        shortDescription: 'During the dream, a broken circle can evoke a fragile commitment.',
+      })
+    ).toBe('during the dream, a broken circle can evoke a fragile commitment.');
   });
 });

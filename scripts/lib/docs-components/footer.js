@@ -104,7 +104,7 @@ function buildSeoFooterLinks(context) {
   const featuredResources = [
     {
       href: routePath('blog.index'),
-      label: locale.resources,
+      label: locale.blog,
     },
     {
       href: routePath('page.alternatives'),
@@ -180,11 +180,11 @@ function buildSeoFooterLinks(context) {
   return { featuredResources, featuredGuides, popularSymbols };
 }
 
-function renderFooterLinks(links, { highlightFirst = false } = {}) {
+function renderFooterLinks(links) {
   return links
     .map(
-      (link, index) =>
-        `                    <li><a href="${link.href}" class="${highlightFirst && index === 0 ? 'text-dream-salmon' : 'hover:text-dream-salmon'} transition-colors">${escapeHtml(link.label)}</a></li>`
+      (link) =>
+        `                    <li><a href="${link.href}" class="hover:text-dream-salmon transition-colors">${escapeHtml(link.label)}</a></li>`
     )
     .join('\n');
 }
@@ -223,13 +223,13 @@ function renderFooter(context) {
     '            <div>',
     `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerResources)}</h5>`,
     '                <ul class="space-y-2 text-sm text-gray-500">',
-    renderFooterLinks(featuredResources, { highlightFirst: true }),
+    renderFooterLinks(featuredResources),
     '                </ul>',
     '            </div>',
     '            <div>',
-    `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.dreamDictionary)}</h5>`,
+    `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerGuides)}</h5>`,
     '                <ul class="space-y-2 text-sm text-gray-500">',
-    renderFooterLinks(featuredGuides, { highlightFirst: true }),
+    renderFooterLinks(featuredGuides),
     '                </ul>',
     '            </div>',
     '            <div>',
