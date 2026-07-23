@@ -1242,7 +1242,7 @@ ${renderSharedComponentStyles()}
         .symbol-chip {
             display: inline-flex;
             align-items: center;
-            padding: 0.45rem 0.85rem;
+            padding: 0.6rem 0.9rem;
             border: 1px solid rgba(255, 247, 237, 0.24);
             border-radius: 3px;
             font-size: 0.68rem;
@@ -1525,6 +1525,7 @@ ${renderSharedComponentStyles()}
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            padding: 0.6rem 0;
             color: var(--cream-45);
             font-size: 0.9rem;
             transition: color 0.25s ease;
@@ -1910,18 +1911,6 @@ function main() {
 // CATEGORY PAGES GENERATION
 // =====================================================
 
-// Category icons mapping (Lucide icon names)
-const CATEGORY_ICONS = {
-  nature: 'leaf',
-  animals: 'paw-print',
-  body: 'user',
-  places: 'home',
-  objects: 'package',
-  actions: 'zap',
-  people: 'users',
-  celestial: 'sun'
-};
-
 // Get category name for a given category ID
 function getCategoryNameById(categoryId, lang) {
   const categories = {
@@ -1981,7 +1970,6 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
   const metaTitle = generateCategoryMetaTitle(categoryId, i18n, lang);
   const metaDescription = generateCategoryMetaDescription(categoryId, i18n, lang);
   const categoryIntro = t.category_intros?.[categoryId] || t.category_intro_template.replace(/{category_lower}/g, categoryName.toLowerCase());
-  const categoryIcon = CATEGORY_ICONS[categoryId] || 'sparkles';
   const symbolsCount = symbolsInCategory.length;
   const pageIllustration = getPageIllustration(
     `symbolCategory.${categoryId}`,
@@ -2035,12 +2023,9 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
 
   const categoryHowToHtml = `
             <!-- How to use -->
-            <section class="glass-panel rounded-2xl p-6 md:p-8 mb-12 border border-dream-salmon/10">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-4 flex items-center gap-3">
-                    <i data-lucide="sparkles" class="w-6 h-6 text-dream-salmon"></i>
-                    ${escapeHtml(howToTitles[lang] || howToTitles.en)}
-                </h2>
-                <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
+            <section class="category-howto symbol-section">
+                <h2 class="symbol-h2">${escapeHtml(howToTitles[lang] || howToTitles.en)}</h2>
+                <div class="prose prose-invert prose-purple max-w-none leading-relaxed space-y-4">
                     <p>${escapeHtml(howToParagraphs[lang]?.[0] || howToParagraphs.en[0])}</p>
                     <p>${escapeHtml(howToParagraphs[lang]?.[1] || howToParagraphs.en[1])}</p>
                     <ul>${(howToBullets[lang] || howToBullets.en).map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
@@ -2071,20 +2056,17 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
 
   // Generate symbols grid HTML
   const symbolsHtml = symbolsInCategory.map(s => `
-                    <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${s[lang].slug}" class="symbol-card glass-panel rounded-2xl p-6 border border-transparent group">
-                        <h2 class="font-serif text-xl text-dream-cream mb-3 group-hover:text-dream-salmon transition-colors">${escapeHtml(s[lang].name)}</h2>
-                        <p class="text-sm text-gray-400 leading-relaxed line-clamp-3">${escapeHtml(s[lang].shortDescription)}</p>
-                        <span class="inline-flex items-center gap-2 text-xs text-dream-salmon mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                            ${t.read_article} <i data-lucide="arrow-right" class="w-3 h-3"></i>
-                        </span>
+                    <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${s[lang].slug}" class="symbol-index-card">
+                        <h2>${escapeHtml(s[lang].name)}</h2>
+                        <p>${escapeHtml(s[lang].shortDescription)}</p>
                     </a>`).join('\n');
 
   // Generate other categories HTML
   const otherCategoriesHtml = allCategories
     .filter(c => c.id !== categoryId)
     .map(c => `
-                    <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${i18n[lang].category_slugs[c.id]}" class="category-chip glass-panel rounded-full px-5 py-3 text-sm text-purple-200/80 border border-transparent hover:text-dream-cream">
-                        ${getCategoryNameById(c.id, lang)} <span class="text-purple-400/60 ml-1">(${c.count})</span>
+                    <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${i18n[lang].category_slugs[c.id]}" class="category-chip symbol-chip">
+                        ${getCategoryNameById(c.id, lang)}<span class="category-chip-count">${c.count}</span>
                     </a>`).join('\n');
 
   // Generate related guides HTML (from curation pages)
@@ -2097,19 +2079,15 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
 
     if (relatedPages.length > 0) {
       const guidesLinksHtml = relatedPages.map(p => `
-                    <a href="/${lang}/guides/${p.slugs[lang]}" class="category-chip glass-panel rounded-xl px-5 py-4 text-sm text-purple-200/80 border border-transparent hover:text-dream-cream hover:border-dream-salmon/30 transition-all flex items-center gap-2">
-                        <i data-lucide="book-open" class="w-4 h-4 text-dream-salmon"></i>
-                        ${escapeHtml(p[lang].title)}
+                    <a href="/${lang}/guides/${p.slugs[lang]}" class="guide-link">
+                        <span>${escapeHtml(p[lang].title)}</span>
                     </a>`).join('\n');
 
       relatedGuidesHtml = `
             <!-- Related Guides -->
-            <section class="mb-16">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="book-marked" class="w-6 h-6 text-dream-salmon"></i>
-                    ${t.curation_related_guides}
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${guidesLinksHtml}
+            <section class="symbol-section">
+                <h2 class="symbol-h2">${t.curation_related_guides}</h2>
+                <div class="guide-link-list">${guidesLinksHtml}
                 </div>
             </section>`;
     }
@@ -2224,28 +2202,250 @@ ${renderSharedComponentStyles()}
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0514; }
-        ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 4px; }
-        .aurora-bg {
-            background: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
-                radial-gradient(at 50% 0%, hsla(260, 39%, 20%, 1) 0, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(339, 49%, 20%, 1) 0, transparent 50%);
-            background-size: 200% 200%; animation: aurora 20s ease infinite;
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
-        }
-        .orb { position: absolute; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.5; max-width: 100vw; max-height: 100vw; }
-        .glass-panel {
-            background: rgba(20, 10, 40, 0.4); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-        .glass-button { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.3s ease; }
-        .glass-button:hover { background: rgba(255, 255, 255, 0.15); }
-        @keyframes aurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        ::-webkit-scrollbar-thumb { background: #39294f; border-radius: 4px; }
         html, body { overflow-x: hidden; }
-        .symbol-card { transition: all 0.3s ease; }
-        .symbol-card:hover { transform: translateY(-4px); border-color: rgba(253, 164, 129, 0.3); }
-        .category-chip { transition: all 0.3s ease; }
-        .category-chip:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(253, 164, 129, 0.3); }
-        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .category-page {
+            --cream: #fff7ed;
+            --cream-88: rgba(255, 247, 237, 0.88);
+            --cream-64: rgba(255, 247, 237, 0.64);
+            --cream-45: rgba(255, 247, 237, 0.45);
+            --cream-35: rgba(255, 247, 237, 0.35);
+            --line: rgba(255, 247, 237, 0.10);
+            --salmon: #fda481;
+            --salmon-dim: rgba(253, 164, 129, 0.72);
+        }
+        .category-page a:focus-visible {
+            outline: 2px solid var(--salmon);
+            outline-offset: 3px;
+            border-radius: 2px;
+        }
+        /* Static night backdrop + film grain (no animated aurora, no orbs) */
+        .aurora-bg {
+            position: fixed; inset: 0; z-index: -1;
+            background:
+                radial-gradient(58rem 38rem at 88% -12%, rgba(253, 164, 129, 0.07), transparent 62%),
+                radial-gradient(46rem 34rem at -8% -6%, rgba(150, 122, 204, 0.09), transparent 58%),
+                #0a0512;
+        }
+        .category-page::after {
+            content: '';
+            position: fixed; inset: 0; z-index: 90;
+            pointer-events: none; opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+        }
+        .glass-button {
+            background: rgba(255, 247, 237, 0.04);
+            border: 1px solid rgba(255, 247, 237, 0.16);
+            transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
+        }
+        .glass-button:hover { background: rgba(255, 247, 237, 0.08); border-color: rgba(253, 164, 129, 0.45); }
+        .glass-button:active { transform: scale(0.98); }
+
+        .symbol-breadcrumb {
+            font-size: 0.8rem;
+            letter-spacing: 0.03em;
+            color: var(--cream-45);
+            margin-bottom: 2rem;
+        }
+        .symbol-breadcrumb a { color: var(--cream-64); transition: color 0.25s ease; }
+        .symbol-breadcrumb a:hover { color: var(--salmon); }
+        .symbol-breadcrumb .text-purple-400 { color: var(--cream-35); }
+        .symbol-breadcrumb .text-dream-cream { color: var(--cream-88); }
+
+        .symbol-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.6rem 0.9rem;
+            border: 1px solid rgba(255, 247, 237, 0.24);
+            border-radius: 3px;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--cream-88);
+            transition: border-color 0.25s ease, color 0.25s ease;
+        }
+        .symbol-chip--accent { color: var(--salmon); border-color: rgba(253, 164, 129, 0.45); }
+        a.symbol-chip:hover { border-color: var(--salmon); color: var(--salmon); }
+
+        /* Hero: left-aligned editorial copy over the contracted illustration */
+        .category-page .pseo-hero-copy { text-align: left; max-width: 52rem; margin: 0; }
+        .category-h1 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 560;
+            font-size: clamp(2.25rem, 5vw, 3.75rem);
+            line-height: 1.02;
+            letter-spacing: -0.015em;
+            color: var(--cream);
+            margin-bottom: 1.25rem;
+            text-wrap: balance;
+        }
+        .category-intro {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 340;
+            font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+            line-height: 1.55;
+            color: var(--cream-88);
+            max-width: 40rem;
+            text-wrap: pretty;
+        }
+
+        .symbol-section {
+            border-top: 1px solid var(--line);
+            padding-top: clamp(2.25rem, 4vw, 3rem);
+            margin-bottom: clamp(3rem, 6vw, 4.5rem);
+        }
+        .symbol-h2 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 550;
+            font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            color: var(--cream);
+            margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+        }
+        .symbol-h2::before {
+            content: '';
+            display: block;
+            width: 2rem;
+            height: 2px;
+            background: var(--salmon);
+            margin-bottom: 1rem;
+        }
+        .category-howto .prose {
+            color: var(--cream-64);
+            font-size: 1.02rem;
+            line-height: 1.8;
+            max-width: 42rem;
+        }
+        .category-howto ul { list-style: none; padding-left: 0; }
+        .category-howto li { position: relative; padding-left: 1.5rem; }
+        .category-howto li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.78em;
+            width: 0.9rem;
+            height: 1px;
+            background: var(--salmon);
+        }
+
+        /* Symbol index: hairline rows, no glass cards */
+        .symbol-index-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            column-gap: 2.5rem;
+        }
+        .symbol-index-card {
+            position: relative;
+            display: block;
+            padding: 1.35rem 2rem 1.35rem 0;
+            border-top: 1px solid var(--line);
+        }
+        .symbol-index-card h2 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 550;
+            font-size: 1.15rem;
+            color: var(--cream);
+            margin-bottom: 0.35rem;
+            transition: color 0.25s ease;
+        }
+        .symbol-index-card p {
+            color: var(--cream-64);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+        .symbol-index-card::after {
+            content: '\\2192';
+            position: absolute;
+            right: 0;
+            top: 1.5rem;
+            font-size: 0.95rem;
+            color: var(--cream-35);
+            transition: transform 0.25s ease, color 0.25s ease;
+        }
+        .symbol-index-card:hover h2 { color: var(--salmon); }
+        .symbol-index-card:hover::after { transform: translateX(4px); color: var(--salmon); }
+
+        /* Other categories */
+        .category-chip .category-chip-count {
+            color: var(--cream-35);
+            margin-left: 0.35rem;
+            letter-spacing: 0.08em;
+        }
+
+        /* Related guides */
+        .guide-link {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-top: 1px solid var(--line);
+        }
+        .guide-link span {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-size: 1.05rem;
+            color: var(--cream-88);
+            transition: color 0.25s ease;
+        }
+        .guide-link::after {
+            content: '\\2192';
+            font-size: 0.9rem;
+            color: var(--cream-35);
+            transition: transform 0.25s ease, color 0.25s ease;
+        }
+        .guide-link:hover { border-top-color: rgba(253, 164, 129, 0.55); }
+        .guide-link:hover span { color: var(--cream); }
+        .guide-link:hover::after { transform: translateX(4px); color: var(--salmon); }
+        .guide-link-list { border-bottom: 1px solid var(--line); }
+
+        /* Final CTA */
+        .symbol-final-cta {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 1rem;
+            background:
+                radial-gradient(36rem 16rem at 50% -20%, rgba(253, 164, 129, 0.12), transparent 70%),
+                rgba(255, 247, 237, 0.02);
+            padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+            text-align: center;
+        }
+        .symbol-final-cta h3 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 560;
+            font-size: clamp(1.6rem, 3vw, 2.25rem);
+            letter-spacing: -0.015em;
+            color: var(--cream);
+            margin-bottom: 0.85rem;
+            text-wrap: balance;
+        }
+        .symbol-final-cta p { color: var(--cream-64); }
+        .symbol-final-cta a { transition: transform 0.2s ease, background 0.25s ease, border-color 0.25s ease; }
+        .symbol-final-cta a:active { transform: scale(0.98); }
+
+        .symbol-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 0;
+            color: var(--cream-45);
+            font-size: 0.9rem;
+            transition: color 0.25s ease;
+        }
+        .symbol-back-link::before { content: '\\2190'; transition: transform 0.25s ease; }
+        .symbol-back-link:hover { color: var(--salmon); }
+        .symbol-back-link:hover::before { transform: translateX(-4px); }
+
+        @media (max-width: 767px) {
+            .category-page main { padding-top: 5.5rem !important; }
+            .symbol-breadcrumb { display: none; }
+            .category-h1 { font-size: clamp(1.9rem, 8vw, 2.6rem); }
+            .category-intro { font-size: 1.05rem; }
+            .symbol-index-grid { grid-template-columns: 1fr; }
+        }
     </style>
 
     <!-- Schema.org CollectionPage -->
@@ -2258,10 +2458,8 @@ ${renderJsonLd(itemListJsonLd)}
 ${renderJsonLd(breadcrumbListJsonLd)}
 </head>
 
-<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
+<body class="category-page bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
     <div class="aurora-bg"></div>
-    <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
-    <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
 
     <!-- Navbar -->
 ${renderPseoNav(lang, currentPaths, 'dictionary')}
@@ -2270,14 +2468,14 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
         <div class="max-w-5xl mx-auto">
 
             <!-- Breadcrumb -->
-            <nav class="text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
+            <nav class="symbol-breadcrumb" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap">
                     <li>
-                        <a href="${homePath}" class="hover:text-dream-salmon transition-colors">${t.home}</a>
+                        <a href="${homePath}">${t.home}</a>
                     </li>
                     <li class="text-purple-400">/</li>
                     <li>
-                        <a href="/${lang}/guides/${t.dictionary_slug}" class="hover:text-dream-salmon transition-colors">${t.symbols}</a>
+                        <a href="/${lang}/guides/${t.dictionary_slug}">${t.symbols}</a>
                     </li>
                     <li class="text-purple-400">/</li>
                     <li>
@@ -2287,21 +2485,20 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
             </nav>
 
             <!-- Header -->
-            <header class="pseo-illustrated-hero mb-12 text-center" data-image-seo-hero="true">
+            <header class="pseo-illustrated-hero mb-12" data-image-seo-hero="true">
 ${renderPseoHeroIllustration(pageIllustration)}
                 <div class="pseo-hero-copy">
-                <div class="flex justify-center gap-3 mb-6">
-                    <span class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-4 py-2">
-                        <i data-lucide="${categoryIcon}" class="w-4 h-4"></i>
+                <div class="flex flex-wrap gap-3 mb-6">
+                    <span class="symbol-chip symbol-chip--accent">
                         ${symbolsCount} ${t.symbols_in_category}
                     </span>
                 </div>
 
-                <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
+                <h1 class="category-h1">
                     ${t.category_h1_template.replace(/{category}/g, categoryName)}
                 </h1>
 
-                <p class="text-lg text-purple-200/80 leading-relaxed max-w-2xl mx-auto">
+                <p class="category-intro">
                     ${escapeHtml(sanitizeEmDashes(categoryIntro))}
                 </p>
                 </div>
@@ -2310,27 +2507,21 @@ ${renderPseoHeroIllustration(pageIllustration)}
 ${categoryHowToHtml}
             <!-- Symbol Grid -->
             <section class="mb-16">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${symbolsHtml}
+                <div class="symbol-index-grid">${symbolsHtml}
                 </div>
             </section>
 
             <!-- Other Categories -->
-            <section class="mb-16">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="grid-3x3" class="w-6 h-6 text-dream-salmon"></i>
-                    ${t.other_categories}
-                </h2>
+            <section class="symbol-section">
+                <h2 class="symbol-h2">${t.other_categories}</h2>
                 <div class="flex flex-wrap gap-3">${otherCategoriesHtml}
                 </div>
             </section>
 ${relatedGuidesHtml}
             <!-- CTA Section -->
-            <aside class="glass-panel rounded-3xl p-8 md:p-10 text-center border border-dream-salmon/20">
-                <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i data-lucide="sparkles" class="w-8 h-8 text-dream-salmon"></i>
-                </div>
-                <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">${t.cta_title}</h3>
-                <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
+            <aside class="symbol-final-cta">
+                <h3>${t.cta_title}</h3>
+                <p class="mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
                 ${renderSymbolConversionActions(lang)}
@@ -2338,10 +2529,7 @@ ${relatedGuidesHtml}
 
             <!-- Back to Dictionary -->
             <div class="mt-10 text-center">
-                <a href="/${lang}/guides/${t.dictionary_slug}" class="inline-flex items-center gap-2 text-purple-200/60 hover:text-dream-salmon transition-colors">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                    ${t.back_to_dictionary}
-                </a>
+                <a href="/${lang}/guides/${t.dictionary_slug}" class="symbol-back-link">${t.back_to_dictionary}</a>
             </div>
 
         </div>
@@ -2545,26 +2733,17 @@ function generateCurationPage(page, allSymbols, i18n, lang) {
     let relatedArticleHtml = '';
     if (cardGuideSlug && cardGuideTitle) {
       relatedArticleHtml = `
-                        <a href="/${lang}/guides/${cardGuideSlug}" class="mt-4 inline-flex items-center gap-2 text-xs text-purple-200/70 hover:text-dream-salmon transition-colors">
-                            <i data-lucide="book-open" class="w-3 h-3"></i> ${t.related_guide_label}: ${escapeHtml(cardGuideTitle)}
-                        </a>`;
+                        <a href="/${lang}/guides/${cardGuideSlug}" class="curation-related">${t.related_guide_label} : ${escapeHtml(cardGuideTitle)}</a>`;
     } else if (relatedArticle) {
       const cardArticleTitle = getBlogTitleBySlug(lang, relatedArticle);
       relatedArticleHtml = `
-                        <a href="/${lang}/blog/${relatedArticle}" class="mt-4 inline-flex items-center gap-2 text-xs text-purple-200/70 hover:text-dream-salmon transition-colors">
-                            <i data-lucide="book-open" class="w-3 h-3"></i> ${cardArticleTitle ? `${t.related_article_label}: ${escapeHtml(cardArticleTitle)}` : t.read_article}
-                        </a>`;
+                        <a href="/${lang}/blog/${relatedArticle}" class="curation-related">${cardArticleTitle ? `${t.related_article_label} : ${escapeHtml(cardArticleTitle)}` : t.read_article}</a>`;
     }
     return `
-                    <article class="symbol-card glass-panel rounded-2xl p-6 border border-transparent group">
-                        <a href="${symbolHref}" class="block">
-                        <div class="flex items-start justify-between mb-3">
-                            <h2 class="font-serif text-xl text-dream-cream group-hover:text-dream-salmon transition-colors">${i + 1}. ${escapeHtml(symbolData.name)}</h2>
-                        </div>
-                        <p class="text-sm text-gray-400 leading-relaxed mb-3 line-clamp-3">${escapeHtml(symbolData.shortDescription)}</p>
-                        <span class="inline-flex items-center gap-2 text-xs text-dream-salmon opacity-0 group-hover:opacity-100 transition-opacity">
-                            ${t.curation_read_full} <i data-lucide="arrow-right" class="w-3 h-3"></i>
-                        </span>
+                    <article class="curation-card">
+                        <a href="${symbolHref}" class="curation-main">
+                        <h2>${escapeHtml(symbolData.name)}</h2>
+                        <p>${escapeHtml(symbolData.shortDescription)}</p>
                         </a>
                         ${relatedArticleHtml}
                     </article>`;
@@ -2670,26 +2849,225 @@ ${renderSharedComponentStyles()}
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0514; }
-        ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 4px; }
-        .aurora-bg {
-            background: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
-                radial-gradient(at 50% 0%, hsla(260, 39%, 20%, 1) 0, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(339, 49%, 20%, 1) 0, transparent 50%);
-            background-size: 200% 200%; animation: aurora 20s ease infinite;
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
-        }
-        .orb { position: absolute; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.5; max-width: 100vw; max-height: 100vw; }
-        .glass-panel {
-            background: rgba(20, 10, 40, 0.4); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-        .glass-button { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.3s ease; }
-        .glass-button:hover { background: rgba(255, 255, 255, 0.15); }
-        @keyframes aurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        ::-webkit-scrollbar-thumb { background: #39294f; border-radius: 4px; }
         html, body { overflow-x: hidden; }
-        .symbol-card { transition: all 0.3s ease; }
-        .symbol-card:hover { transform: translateY(-4px); border-color: rgba(253, 164, 129, 0.3); }
-        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .curation-page {
+            --cream: #fff7ed;
+            --cream-88: rgba(255, 247, 237, 0.88);
+            --cream-64: rgba(255, 247, 237, 0.64);
+            --cream-45: rgba(255, 247, 237, 0.45);
+            --cream-35: rgba(255, 247, 237, 0.35);
+            --line: rgba(255, 247, 237, 0.10);
+            --salmon: #fda481;
+            --salmon-dim: rgba(253, 164, 129, 0.72);
+        }
+        .curation-page a:focus-visible {
+            outline: 2px solid var(--salmon);
+            outline-offset: 3px;
+            border-radius: 2px;
+        }
+        /* Static night backdrop + film grain (no animated aurora, no orbs) */
+        .aurora-bg {
+            position: fixed; inset: 0; z-index: -1;
+            background:
+                radial-gradient(58rem 38rem at 88% -12%, rgba(253, 164, 129, 0.07), transparent 62%),
+                radial-gradient(46rem 34rem at -8% -6%, rgba(150, 122, 204, 0.09), transparent 58%),
+                #0a0512;
+        }
+        .curation-page::after {
+            content: '';
+            position: fixed; inset: 0; z-index: 90;
+            pointer-events: none; opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+        }
+        .glass-button {
+            background: rgba(255, 247, 237, 0.04);
+            border: 1px solid rgba(255, 247, 237, 0.16);
+            transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
+        }
+        .glass-button:hover { background: rgba(255, 247, 237, 0.08); border-color: rgba(253, 164, 129, 0.45); }
+        .glass-button:active { transform: scale(0.98); }
+
+        .symbol-breadcrumb {
+            font-size: 0.8rem;
+            letter-spacing: 0.03em;
+            color: var(--cream-45);
+            margin-bottom: 2rem;
+        }
+        .symbol-breadcrumb a { color: var(--cream-64); transition: color 0.25s ease; }
+        .symbol-breadcrumb a:hover { color: var(--salmon); }
+        .symbol-breadcrumb .text-purple-400 { color: var(--cream-35); }
+        .symbol-breadcrumb .text-dream-cream { color: var(--cream-88); }
+
+        .symbol-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.6rem 0.9rem;
+            border: 1px solid rgba(255, 247, 237, 0.24);
+            border-radius: 3px;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--cream-88);
+            transition: border-color 0.25s ease, color 0.25s ease;
+        }
+        .symbol-chip--accent { color: var(--salmon); border-color: rgba(253, 164, 129, 0.45); }
+        a.symbol-chip:hover { border-color: var(--salmon); color: var(--salmon); }
+
+        /* Hero: left-aligned editorial copy over the contracted illustration */
+        .curation-page .pseo-hero-copy { text-align: left; max-width: 52rem; margin: 0; }
+        .curation-h1 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 560;
+            font-size: clamp(2.25rem, 5vw, 3.75rem);
+            line-height: 1.02;
+            letter-spacing: -0.015em;
+            color: var(--cream);
+            margin-bottom: 1.25rem;
+            text-wrap: balance;
+        }
+        .curation-intro {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 340;
+            font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+            line-height: 1.55;
+            color: var(--cream-88);
+            max-width: 42rem;
+            text-wrap: pretty;
+        }
+
+        .symbol-section {
+            border-top: 1px solid var(--line);
+            padding-top: clamp(2.25rem, 4vw, 3rem);
+            margin-bottom: clamp(3rem, 6vw, 4.5rem);
+        }
+        .symbol-h2 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 550;
+            font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            color: var(--cream);
+            margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+        }
+        .symbol-h2::before {
+            content: '';
+            display: block;
+            width: 2rem;
+            height: 2px;
+            background: var(--salmon);
+            margin-bottom: 1rem;
+        }
+
+        /* Ranked symbol list: numbered editorial rows */
+        .curation-list { counter-reset: rank; }
+        .curation-card {
+            position: relative;
+            padding: 1.35rem 0 1.35rem 3.5rem;
+            border-top: 1px solid var(--line);
+        }
+        .curation-card:last-child { border-bottom: 1px solid var(--line); }
+        .curation-card::before {
+            counter-increment: rank;
+            content: counter(rank, decimal-leading-zero);
+            position: absolute;
+            left: 0;
+            top: 1.55rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            color: var(--salmon);
+        }
+        .curation-card h2 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 550;
+            font-size: 1.15rem;
+            color: var(--cream);
+            margin-bottom: 0.35rem;
+            transition: color 0.25s ease;
+        }
+        .curation-card .curation-main:hover h2 { color: var(--salmon); }
+        .curation-card p {
+            color: var(--cream-64);
+            font-size: 0.92rem;
+            line-height: 1.6;
+            max-width: 44rem;
+        }
+        .curation-main { display: block; }
+        .curation-related {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 0.45rem;
+            margin-top: 0.4rem;
+            padding: 0.5rem 0;
+            font-size: 0.82rem;
+            color: var(--cream-64);
+            transition: color 0.25s ease;
+        }
+        .curation-related::after {
+            content: '\\2192';
+            color: var(--cream-35);
+            transition: transform 0.25s ease, color 0.25s ease;
+        }
+        .curation-related:hover { color: var(--salmon); }
+        .curation-related:hover::after { transform: translateX(4px); color: var(--salmon); }
+
+        /* Outro */
+        .curation-outro.symbol-section { border-top: 0; padding-top: 0; }
+        .curation-outro .prose {
+            color: var(--cream-64);
+            font-size: 1.02rem;
+            line-height: 1.8;
+            max-width: 42rem;
+        }
+
+        /* Final CTA */
+        .symbol-final-cta {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 1rem;
+            background:
+                radial-gradient(36rem 16rem at 50% -20%, rgba(253, 164, 129, 0.12), transparent 70%),
+                rgba(255, 247, 237, 0.02);
+            padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+            text-align: center;
+        }
+        .symbol-final-cta h3 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 560;
+            font-size: clamp(1.6rem, 3vw, 2.25rem);
+            letter-spacing: -0.015em;
+            color: var(--cream);
+            margin-bottom: 0.85rem;
+            text-wrap: balance;
+        }
+        .symbol-final-cta p { color: var(--cream-64); }
+        .symbol-final-cta a { transition: transform 0.2s ease, background 0.25s ease, border-color 0.25s ease; }
+        .symbol-final-cta a:active { transform: scale(0.98); }
+
+        .symbol-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 0;
+            color: var(--cream-45);
+            font-size: 0.9rem;
+            transition: color 0.25s ease;
+        }
+        .symbol-back-link::before { content: '\\2190'; transition: transform 0.25s ease; }
+        .symbol-back-link:hover { color: var(--salmon); }
+        .symbol-back-link:hover::before { transform: translateX(-4px); }
+
+        @media (max-width: 767px) {
+            .curation-page main { padding-top: 5.5rem !important; }
+            .symbol-breadcrumb { display: none; }
+            .curation-h1 { font-size: clamp(1.9rem, 8vw, 2.6rem); }
+            .curation-intro { font-size: 1.05rem; }
+            .curation-card { padding-left: 2.5rem; }
+        }
     </style>
 
     <!-- Schema.org ItemList -->
@@ -2702,10 +3080,8 @@ ${renderJsonLd(articleJsonLd)}
 ${renderJsonLd(breadcrumbListJsonLd)}
 </head>
 
-<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
+<body class="curation-page bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
     <div class="aurora-bg"></div>
-    <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
-    <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
 
     <!-- Navbar -->
 ${renderPseoNav(lang, currentPaths, 'dictionary')}
@@ -2714,14 +3090,14 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
         <div class="max-w-5xl mx-auto">
 
             <!-- Breadcrumb -->
-            <nav class="text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
+            <nav class="symbol-breadcrumb" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap">
                     <li>
-                        <a href="${homePath}" class="hover:text-dream-salmon transition-colors">${t.home}</a>
+                        <a href="${homePath}">${t.home}</a>
                     </li>
                     <li class="text-purple-400">/</li>
                     <li>
-                        <a href="/${lang}/guides/${t.dictionary_slug}" class="hover:text-dream-salmon transition-colors">${t.symbols}</a>
+                        <a href="/${lang}/guides/${t.dictionary_slug}">${t.symbols}</a>
                     </li>
                     <li class="text-purple-400">/</li>
                     <li>
@@ -2731,24 +3107,23 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
             </nav>
 
             <!-- Header -->
-            <header class="pseo-illustrated-hero mb-12 text-center" data-image-seo-hero="true">
+            <header class="pseo-illustrated-hero mb-12" data-image-seo-hero="true">
 ${renderPseoHeroIllustration(pageIllustration)}
                 <div class="pseo-hero-copy">
-                <div class="flex justify-center gap-3 mb-6">
-                    <span class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-4 py-2">
-                        <i data-lucide="list" class="w-4 h-4"></i>
+                <div class="flex flex-wrap gap-3 mb-6">
+                    <span class="symbol-chip symbol-chip--accent">
                         ${t.curation_label}
                     </span>
-                    <span class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2">
+                    <span class="symbol-chip">
                         ${t.curation_symbols_count.replace('{count}', symbolsCount)}
                     </span>
                 </div>
 
-                <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
+                <h1 class="curation-h1">
                     ${escapeHtml(pageData.title)}
                 </h1>
 
-                <p class="text-lg text-purple-200/80 leading-relaxed max-w-3xl mx-auto">
+                <p class="curation-intro">
                     ${escapeHtml(sanitizeEmDashes(pageData.intro))}
                 </p>
                 </div>
@@ -2756,24 +3131,21 @@ ${renderPseoHeroIllustration(pageIllustration)}
 
             <!-- Symbol Grid -->
             <section class="mb-16">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">${symbolCardsHtml}
+                <div class="curation-list">${symbolCardsHtml}
                 </div>
             </section>
 
             <!-- Outro -->
-            <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10">
-                <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed">
+            <section class="curation-outro symbol-section">
+                <div class="prose prose-invert prose-purple max-w-none leading-relaxed">
                     <p>${escapeHtml(sanitizeEmDashes(pageData.outro))}</p>
                 </div>
             </section>
 
             <!-- CTA Section -->
-            <aside class="glass-panel rounded-3xl p-8 md:p-10 text-center border border-dream-salmon/20">
-                <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i data-lucide="sparkles" class="w-8 h-8 text-dream-salmon"></i>
-                </div>
-                <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">${t.cta_title}</h3>
-                <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
+            <aside class="symbol-final-cta">
+                <h3>${t.cta_title}</h3>
+                <p class="mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
                 ${renderSymbolConversionActions(lang)}
@@ -2781,10 +3153,7 @@ ${renderPseoHeroIllustration(pageIllustration)}
 
             <!-- Back to Dictionary -->
             <div class="mt-10 text-center">
-                <a href="/${lang}/guides/${t.dictionary_slug}" class="inline-flex items-center gap-2 text-purple-200/60 hover:text-dream-salmon transition-colors">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                    ${t.back_to_dictionary}
-                </a>
+                <a href="/${lang}/guides/${t.dictionary_slug}" class="symbol-back-link">${t.back_to_dictionary}</a>
             </div>
 
         </div>
