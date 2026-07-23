@@ -27,6 +27,8 @@ const { renderAhrefsAnalyticsScript } = require('../../scripts/lib/ahrefs-analyt
 const { renderResponsivePicture } = require('../../scripts/lib/image-seo-assets');
 const { getPageIllustration } = require('../../scripts/lib/page-illustrations');
 const {
+  SYMBOL_DETAIL_RESPONSIVE_WIDTHS,
+  buildResponsiveSymbolImage,
   getGeneratedSymbolImage,
   loadSymbolImageRegistry,
 } = require('../../scripts/lib/symbol-image-assets');
@@ -74,17 +76,13 @@ function resolveResponsiveSymbolIllustration(illustration) {
 
   const originalWidth = Number(illustration.width) || 1200;
   const originalHeight = Number(illustration.height) || 675;
-  const stem = path.basename(illustration.src, path.extname(illustration.src));
-  const responsiveBase = SYMBOL_IMAGE_REGISTRY.responsiveBase || '/img/seo/symbols-v2';
-  const widths = [480, 800, 1200];
-  const variants = widths.map((width) => ({
-    width,
-    url: `${responsiveBase}/${stem}-${width}w.webp`,
-    filePath: path.join(__dirname, '..', responsiveBase.replace(/^\/+/, ''), `${stem}-${width}w.webp`),
-  }));
-  const hasVariants = variants.every((variant) => fs.existsSync(variant.filePath));
+  const responsive = buildResponsiveSymbolImage(illustration, {
+    fallbackWidth: 1200,
+    registry: SYMBOL_IMAGE_REGISTRY,
+    widths: SYMBOL_DETAIL_RESPONSIVE_WIDTHS,
+  });
 
-  if (!hasVariants) {
+  if (!responsive) {
     return {
       src: illustration.src,
       srcset: '',
@@ -93,12 +91,7 @@ function resolveResponsiveSymbolIllustration(illustration) {
     };
   }
 
-  return {
-    src: variants[variants.length - 1].url,
-    srcset: variants.map((variant) => `${variant.url} ${variant.width}w`).join(', '),
-    width: 1200,
-    height: Math.round((originalHeight / originalWidth) * 1200),
-  };
+  return responsive;
 }
 
 function readCatalogModifiedDate(fallbackDate) {
