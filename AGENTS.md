@@ -27,6 +27,7 @@ For site work, follow `docs-src/README.md`. Cloudflare Pages builds `docs/` from
 5. Do not run `expo prebuild`, EAS builds, store submissions, production deploys, or destructive database commands unless explicitly requested.
 6. Do not commit secrets or temporary logs. Every `EXPO_PUBLIC_*` value is visible to clients.
 7. Separate failures caused by the patch from known baseline, environment, Watchman, emulator, or network failures.
+8. When Codex starts Expo or Metro on macOS, run the canonical package script with the required outside-sandbox approval so React Native DevTools can register with AppKit. Do not patch Expo or React Native middleware to disable the standalone DevTools shell.
 
 ## Install and Run
 
