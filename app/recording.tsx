@@ -80,6 +80,7 @@ import {
   getRecordingActivationInsight,
   type RecordingActivationInsight,
 } from '@/lib/recordingActivationInsight';
+import { resolveReferenceSubjectType } from '@/lib/referenceSubject';
 import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
 import { TID } from '@/lib/testIDs';
 import type {
@@ -1414,11 +1415,12 @@ export default function RecordingScreen() {
       setAnalyzePromptDream(null);
     }
 
+    const referenceSubjectType = resolveReferenceSubjectType(dream);
     const shouldOfferReference = !onboardingOfferDream
       && !pendingAnalysisDream
       && referenceImagesEnabled
       && Boolean(user)
-      && dream.hasPerson === true;
+      && referenceSubjectType !== null;
 
     if (shouldOfferReference) {
       setPendingSubjectDream(dream);
@@ -1429,7 +1431,7 @@ export default function RecordingScreen() {
         hasPerson: dream.hasPerson,
         hasAnimal: dream.hasAnimal,
       });
-      setDetectedSubjectType('person');
+      setDetectedSubjectType(referenceSubjectType);
       setShowSubjectProposition(true);
       return;
     }

@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 'use strict';
 
-const Module = require('node:module');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -109,47 +108,6 @@ function configureCodexWatchman(env = process.env) {
   }
 }
 
-function installSafeDevTools(env = process.env) {
-  if (env.EXPO_USE_STANDALONE_RN_DEVTOOLS === '1') {
-    return;
-  }
-
-  // RN 0.83+ can open DevTools through a downloaded Electron shell. On this
-  // Mac that shell crashes during AppKit registration when launched from Codex,
-  // so keep Expo on the browser-backed DevTools path unless explicitly opted in.
-  const originalLoad = Module._load;
-  let patchedDevMiddleware;
-
-  Module._load = function loadWithSafeDevTools(request, parent, isMain) {
-    const loaded = originalLoad.apply(this, arguments);
-
-    if (request !== '@react-native/dev-middleware') {
-      return loaded;
-    }
-
-    if (!loaded || typeof loaded.createDevMiddleware !== 'function') {
-      return loaded;
-    }
-
-    if (!patchedDevMiddleware) {
-      patchedDevMiddleware = {
-        ...loaded,
-        createDevMiddleware(options = {}) {
-          return loaded.createDevMiddleware({
-            ...options,
-            unstable_experiments: {
-              ...options.unstable_experiments,
-              enableStandaloneFuseboxShell: false,
-            },
-          });
-        },
-      };
-    }
-
-    return patchedDevMiddleware;
-  };
-}
-
 function main(args = process.argv.slice(2)) {
   let parsedArgs;
 
@@ -166,7 +124,6 @@ function main(args = process.argv.slice(2)) {
   }
 
   configureCodexWatchman();
-  installSafeDevTools();
 
   process.argv = [
     process.argv[0],
@@ -182,7 +139,6 @@ if (require.main === module) {
 
 module.exports = {
   configureCodexWatchman,
-  installSafeDevTools,
   loadEnvProfile,
   main,
   parseRunnerArgs,
