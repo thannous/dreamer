@@ -676,11 +676,18 @@ function renderGuideHubStyles() {
           pointer-events: none;
           z-index: 0;
           background:
-            linear-gradient(180deg, rgba(6, 3, 14, 0.42) 0%, rgba(8, 4, 18, 0.28) 45%, #090413 96%),
-            linear-gradient(90deg, rgba(4, 2, 10, 0.48) 0%, rgba(4, 2, 10, 0.12) 44%, rgba(4, 2, 10, 0.32) 100%),
-            radial-gradient(circle at 24% 22%, rgba(253, 164, 129, 0.12), transparent 20rem),
-            url('/img/guides/noctalia-guides-hub-bg.webp') center top / cover no-repeat,
-            linear-gradient(135deg, #10051b 0%, #090412 48%, #160822 100%);
+            radial-gradient(58rem 38rem at 88% -12%, rgba(253, 164, 129, 0.07), transparent 62%),
+            radial-gradient(46rem 34rem at -8% -6%, rgba(150, 122, 204, 0.09), transparent 58%),
+            #0a0512;
+        }
+        .guides-page::after {
+          content: "";
+          position: fixed;
+          inset: 0;
+          pointer-events: none;
+          z-index: 90;
+          opacity: 0.05;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
         }
         .guides-shell {
           position: relative;
@@ -715,30 +722,32 @@ function renderGuideHubStyles() {
           gap: 0.55rem;
           margin-bottom: 1rem;
           color: #fda481;
-          font-size: 0.76rem;
-          letter-spacing: 0.14em;
+          font-size: 0.72rem;
+          letter-spacing: 0.2em;
           text-transform: uppercase;
-          font-weight: 800;
+          font-weight: 500;
         }
         .guides-title {
           max-width: 11ch;
           margin: 0;
-          font-family: Georgia, 'Times New Roman', serif;
-          font-size: clamp(4rem, 5.55vw, 6.7rem);
+          font-family: 'Fraunces', ui-serif, Georgia, serif;
+          font-weight: 560;
+          font-size: clamp(3.25rem, 5.2vw, 5.75rem);
           line-height: 0.94;
-          letter-spacing: 0;
-          color: transparent;
-          background: linear-gradient(180deg, #ffffff 0%, #c9b7ff 58%, rgba(168, 101, 231, 0.72) 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
+          letter-spacing: -0.015em;
+          color: #fff7ed;
+          text-shadow: 0 2px 28px rgba(8, 3, 15, 0.6);
           text-wrap: balance;
         }
         .guides-lede {
           max-width: 45rem;
           margin: 1.15rem 0 0;
-          color: rgba(226,218,255,0.86);
-          font-size: clamp(1.05rem, 1.25vw, 1.25rem);
+          font-family: 'Fraunces', ui-serif, Georgia, serif;
+          font-weight: 340;
+          color: rgba(255,247,237,0.88);
+          font-size: clamp(1.1rem, 1.4vw, 1.3rem);
           line-height: 1.55;
+          text-wrap: pretty;
         }
         .guides-actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 1.65rem; }
         .guides-hero > div {
@@ -785,15 +794,31 @@ function renderGuideHubStyles() {
         }
         .guides-button:hover { transform: translateY(-1px); }
         .guides-button-primary { background: #fda481; color: #0a0514; border-color: rgba(253,164,129,0.9); }
-        .guides-button-secondary { background: rgba(255,255,255,0.055); color: #f8f5ff; backdrop-filter: blur(16px); }
+        .guides-button-secondary { background: rgba(255,247,237,0.05); color: #fff7ed; }
+        .guides-dictionary-cta {
+          position: relative;
+          width: fit-content;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.55rem;
+          padding: 0.6rem 1rem;
+          border-radius: 3px;
+          border: 1px solid rgba(255, 247, 237, 0.24);
+          background: transparent;
+          color: #fff7ed;
+          font-weight: 500;
+          font-size: 0.82rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
         .guides-card, .guides-dictionary-card {
           position: relative;
           overflow: hidden;
-          border-radius: 8px;
-          border: 1px solid rgba(226,218,255,0.16);
+          border-radius: 10px;
+          border: 1px solid rgba(255, 247, 237, 0.10);
           background: rgba(18, 9, 33, 0.68);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 80px rgba(0,0,0,0.28);
-          backdrop-filter: blur(18px);
+          box-shadow: none;
+          backdrop-filter: none;
         }
         .guides-card::before, .guides-dictionary-card::before {
           content: "";
@@ -805,29 +830,27 @@ function renderGuideHubStyles() {
         }
         .guides-card-icon {
           position: relative;
-          width: 3.6rem;
-          height: 3.6rem;
+          width: 2.2rem;
+          height: 2.2rem;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          border-radius: 999px;
           color: #fda481;
-          background: rgba(253,164,129,0.09);
-          border: 1px solid rgba(253,164,129,0.18);
         }
         .guides-card-title, .guides-dictionary-title {
           position: relative;
           margin: 0;
-          font-family: Georgia, 'Times New Roman', serif;
-          color: #fff7f0;
+          font-family: 'Fraunces', ui-serif, Georgia, serif;
+          font-weight: 560;
+          color: #fff7ed;
           line-height: 1.06;
-          letter-spacing: 0;
+          letter-spacing: -0.01em;
           text-wrap: balance;
           overflow-wrap: anywhere;
         }
         .guides-card-desc, .guides-dictionary-desc {
           position: relative;
-          color: rgba(226,218,255,0.78);
+          color: rgba(255, 247, 237, 0.72);
           line-height: 1.5;
         }
         .guides-section {
@@ -839,14 +862,15 @@ function renderGuideHubStyles() {
         .guides-section h2 {
           margin: 0;
           max-width: 18ch;
-          font-family: Georgia, 'Times New Roman', serif;
+          font-family: 'Fraunces', ui-serif, Georgia, serif;
+          font-weight: 550;
           font-size: clamp(1.8rem, 2.2vw, 2.65rem);
-          line-height: 0.96;
-          letter-spacing: 0;
-          color: #fff7f0;
+          line-height: 1;
+          letter-spacing: -0.01em;
+          color: #fff7ed;
           text-shadow: 0 2px 18px rgba(0,0,0,0.55);
         }
-        .guides-section-copy { margin: 0; color: rgba(226,218,255,0.78); font-size: 1rem; line-height: 1.65; }
+        .guides-section-copy { margin: 0; color: rgba(255, 247, 237, 0.72); font-size: 1rem; line-height: 1.65; }
         .guides-section-head {
           text-shadow: 0 2px 16px rgba(0,0,0,0.48);
         }
@@ -886,33 +910,19 @@ function renderGuideHubStyles() {
             linear-gradient(90deg, rgba(18,8,31,0.96), rgba(18,8,31,0.58)),
             url('/img/blog/dream-symbols-dictionary.webp') center right / cover no-repeat;
         }
-        .guides-dictionary-cta {
-          position: relative;
-          width: fit-content;
-          display: inline-flex;
-          align-items: center;
-          gap: 0.55rem;
-          padding: 0.72rem 1rem;
-          border-radius: 999px;
-          border: 1px solid rgba(226,218,255,0.24);
-          background: rgba(255,255,255,0.04);
-          color: #fff7f0;
-          font-weight: 700;
-          font-size: 0.9rem;
-        }
         .guides-feature-label, .guides-card-kicker {
           position: relative;
           display: inline-flex;
           width: fit-content;
-          padding: 0.42rem 0.68rem;
-          border-radius: 999px;
-          border: 1px solid rgba(253,164,129,0.22);
+          padding: 0.42rem 0.75rem;
+          border-radius: 3px;
+          border: 1px solid rgba(253, 164, 129, 0.45);
           color: #fda481;
-          background: rgba(253,164,129,0.08);
-          font-size: 0.72rem;
-          letter-spacing: 0.09em;
+          background: transparent;
+          font-size: 0.68rem;
+          letter-spacing: 0.18em;
           text-transform: uppercase;
-          font-weight: 900;
+          font-weight: 500;
         }
         .guides-dictionary-title { margin-top: 1rem; max-width: 10ch; font-size: clamp(1.85rem, 2.35vw, 2.85rem); line-height: 0.98; }
         .guides-dictionary-desc { display: block; max-width: 21rem; margin: 0.85rem 0 0; }
@@ -941,7 +951,7 @@ function renderGuideHubStyles() {
           margin: 0.55rem 0 0.65rem;
           font-size: 0.82rem;
         }
-        .guides-card-meta { position: relative; display: flex; align-items: center; justify-content: space-between; color: rgba(226,218,255,0.66); font-size: 0.82rem; }
+        .guides-card-meta { position: relative; display: flex; align-items: center; justify-content: space-between; color: rgba(255, 247, 237, 0.45); font-size: 0.82rem; }
         .guides-card[data-tone="violet"] { --guide-tone: rgba(178,129,255,0.33); }
         .guides-card[data-tone="gold"] { --guide-tone: rgba(251,191,36,0.26); }
         .guides-card[data-tone="green"] { --guide-tone: rgba(74,222,128,0.22); }
@@ -957,29 +967,29 @@ function renderGuideHubStyles() {
           margin-top: 1.6rem;
           padding: 1.2rem 1.4rem;
           border-radius: 10px;
-          border: 1px solid rgba(226,218,255,0.17);
-          background: rgba(18, 9, 33, 0.62);
-          backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 247, 237, 0.10);
+          background: rgba(255, 247, 237, 0.02);
         }
-        .guides-trust-item { display: flex; align-items: center; gap: 1rem; padding: 0 1.1rem; border-right: 1px solid rgba(226,218,255,0.16); }
+        .guides-trust-item { display: flex; align-items: center; gap: 1rem; padding: 0 1.1rem; border-right: 1px solid rgba(255, 247, 237, 0.10); }
         .guides-trust-item:last-child { border-right: 0; }
-        .guides-trust-icon { width: 3.1rem; height: 3.1rem; flex: 0 0 auto; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; color: #fda481; border: 1px solid rgba(226,138,255,0.36); background: rgba(253,164,129,0.07); }
-        .guides-trust strong { display: block; color: #fff7f0; font-weight: 600; margin-bottom: 0.25rem; }
-        .guides-trust span { color: rgba(226,218,255,0.7); font-size: 0.86rem; line-height: 1.35; }
+        .guides-trust-icon { width: 2.2rem; height: 2.2rem; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; color: #fda481; }
+        .guides-trust strong { display: block; color: #fff7ed; font-weight: 600; margin-bottom: 0.25rem; }
+        .guides-trust span { color: rgba(255, 247, 237, 0.64); font-size: 0.86rem; line-height: 1.35; }
         .guides-depth {
           margin-top: 1.4rem;
           padding: clamp(1.35rem, 2.4vw, 2rem);
           border-radius: 10px;
-          border: 1px solid rgba(226,218,255,0.14);
-          background: rgba(9, 4, 20, 0.58);
-          backdrop-filter: blur(14px);
+          border: 1px solid rgba(255, 247, 237, 0.10);
+          background: rgba(255, 247, 237, 0.02);
         }
         .guides-depth h2 {
           margin: 0 0 1rem;
-          font-family: Georgia, 'Times New Roman', serif;
+          font-family: 'Fraunces', ui-serif, Georgia, serif;
+          font-weight: 550;
           font-size: clamp(1.65rem, 2vw, 2.35rem);
-          line-height: 1.02;
-          color: #fff7f0;
+          line-height: 1.05;
+          letter-spacing: -0.01em;
+          color: #fff7ed;
         }
         .guides-depth-copy {
           display: grid;
@@ -988,7 +998,7 @@ function renderGuideHubStyles() {
         }
         .guides-depth-copy p {
           margin: 0;
-          color: rgba(226,218,255,0.78);
+          color: rgba(255, 247, 237, 0.72);
           font-size: 0.95rem;
           line-height: 1.65;
         }
@@ -1077,7 +1087,7 @@ function renderGuideHubStyles() {
             min-height: clamp(34rem, 132vw, 46rem);
             padding: 5.35rem 1rem 2.25rem;
           }
-          .guides-title { font-size: clamp(1.25rem, 5.6vw, 1.85rem); max-width: none; }
+          .guides-title { font-size: clamp(2rem, 8.5vw, 2.75rem); max-width: none; }
           .guides-lede {
             max-width: 20rem;
             margin-top: 0.85rem;
@@ -1138,7 +1148,7 @@ function renderGuideHubStyles() {
           }
           .guides-card-meta { margin-top: 1.2rem; }
           .guides-trust { grid-template-columns: 1fr; }
-          .guides-trust-item { border-right: 0; border-bottom: 1px solid rgba(226,218,255,0.14); padding: 1rem 0; }
+          .guides-trust-item { border-right: 0; border-bottom: 1px solid rgba(255, 247, 237, 0.10); padding: 1rem 0; }
           .guides-trust-item:last-child { border-bottom: 0; }
         }
     </style>`;
@@ -1336,9 +1346,9 @@ function renderLayoutCss() {
         #categoryGridSection { display: block; }
         #categoryGridSection[hidden] { display: none !important; }
         #mobilePills, #mobileAlpha { display: none !important; }
-        .cat-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 9999px; font-size: 0.8rem; font-weight: 500; border: 1px solid rgba(255,255,255,0.1); background: rgba(20,10,40,0.5); backdrop-filter: blur(8px); color: #e2daff; transition: all 0.2s ease; text-decoration: none; }
-        .cat-pill:hover { border-color: rgba(253,164,129,0.3); color: #fda481; }
-        .cat-pill .pill-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .cat-pill { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 3px; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.06em; border: 1px solid rgba(255,247,237,0.16); background: transparent; color: rgba(255,247,237,0.88); transition: all 0.2s ease; text-decoration: none; }
+        .cat-pill:hover { border-color: rgba(253,164,129,0.45); color: #fda481; }
+        .cat-pill .pill-dot { width: 6px; height: 6px; border-radius: 1px; flex-shrink: 0; }
         .cat-pill .pill-count { font-size: 0.7rem; opacity: 0.6; }
         #mobileAlpha { display: none !important; flex-wrap: wrap; gap: 4px; justify-content: center; margin-bottom: 1rem; }
         .mobile-alpha-link { min-width: 1.75rem; text-align: center; padding: 2px 4px; border-radius: 0.375rem; font-size: 0.8rem; color: rgba(196,181,253,0.75); transition: all 0.2s ease; text-decoration: none; }
@@ -1356,14 +1366,7 @@ function renderLayoutCss() {
           z-index: 0;
           pointer-events: none;
           background:
-            linear-gradient(180deg, rgba(5, 2, 12, 0.7) 0%, rgba(8, 3, 17, 0.48) 34%, #090413 88%),
-            linear-gradient(90deg, rgba(5, 2, 12, 0.76) 0%, rgba(5, 2, 12, 0.2) 48%, rgba(5, 2, 12, 0.62) 100%),
-            radial-gradient(ellipse at 76% 28%, rgba(253, 164, 129, 0.14), transparent 24rem),
-            linear-gradient(135deg, #12051d 0%, #0a0514 45%, #130822 100%);
-        }
-        .dictionary-page .aurora-bg,
-        .dictionary-page .orb {
-          display: none;
+            linear-gradient(180deg, rgba(5, 2, 12, 0.5) 0%, rgba(8, 3, 17, 0.2) 34%, rgba(9, 4, 19, 0.6) 100%);
         }
         .dictionary-main {
           position: relative;
@@ -1583,13 +1586,15 @@ function renderLayoutCss() {
           width: min(100%, 18ch);
           max-width: none;
           margin: 0;
-          font-size: clamp(3.25rem, 5vw, 5.8rem);
-          line-height: 0.94;
-          letter-spacing: 0;
-          background: linear-gradient(180deg, #fff 0%, #f8f5ff 54%, rgba(226,218,255,0.9) 100%) !important;
-          -webkit-background-clip: text !important;
-          background-clip: text !important;
+          font-family: 'Fraunces', ui-serif, Georgia, serif;
+          font-weight: 560;
+          font-size: clamp(3rem, 5vw, 5.25rem);
+          line-height: 0.96;
+          letter-spacing: -0.015em;
+          color: #fff7ed;
+          background: none !important;
           text-shadow: 0 1.2rem 3rem rgba(0,0,0,0.28);
+          text-wrap: balance;
         }
         .dictionary-hero-intro {
           max-width: 39rem;
@@ -1647,11 +1652,10 @@ function renderLayoutCss() {
           grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
           gap: 1.4rem clamp(1.2rem, 3vw, 2.8rem);
           border: 1px solid rgba(253,164,129,0.22);
-          border-radius: 1.35rem;
+          border-radius: 0.75rem;
           background:
-            radial-gradient(circle at 88% 12%, rgba(253,164,129,0.12), transparent 28rem),
-            linear-gradient(145deg, rgba(27,13,43,0.96), rgba(12,7,25,0.9));
-          box-shadow: 0 1.4rem 3.5rem rgba(0,0,0,0.2);
+            radial-gradient(30rem 14rem at 12% 0%, rgba(253, 164, 129, 0.09), transparent 65%),
+            rgba(255, 247, 237, 0.02);
         }
         .dictionary-conversion-copy h2 {
           margin: 0.45rem 0 0.75rem;
@@ -1984,11 +1988,13 @@ function renderLayoutCss() {
           align-items: center;
           gap: 0.45rem;
           padding: 0.36rem 0.62rem;
-          border-radius: 9999px;
-          background: rgba(255,255,255,0.055);
-          color: rgba(248,245,255,0.78);
-          font-size: 0.72rem;
-          letter-spacing: 0.02em;
+          border-radius: 3px;
+          background: transparent;
+          border: 1px solid rgba(255,247,237,0.14);
+          color: rgba(255,247,237,0.78);
+          font-size: 0.68rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
         }
         .symbol-card-arrow {
           display: inline-flex;
@@ -2047,8 +2053,8 @@ function renderLayoutCss() {
           gap: 0.3rem;
           padding: 0.3rem 0.72rem;
           border: 1px solid rgba(253,164,129,0.32);
-          border-radius: 9999px;
-          background: rgba(253,164,129,0.08);
+          border-radius: 3px;
+          background: transparent;
           font-size: 0.76rem;
           font-weight: 600;
           color: #fda481;
@@ -2278,8 +2284,8 @@ function renderLayoutCss() {
           .dictionary-header h1 {
             width: 100%;
             max-width: none;
-            font-size: clamp(1.25rem, 5.6vw, 1.85rem);
-            line-height: 1.04;
+            font-size: clamp(2rem, 8.5vw, 2.75rem);
+            line-height: 1;
           }
           #heroSearchShell .hero-search {
             min-height: 3.35rem;
@@ -2887,7 +2893,7 @@ ${(rg.steps || []).map((step, index) => `                        <li class="refl
     }).join('\n');
     return `                <section id="${letter}" class="mb-12">
                     <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="${escapeHtml(`${dc.section_heading} ${letter}`)}">
-                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">${letter}</span>
+                        <span class="w-10 h-10 rounded-lg bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">${letter}</span>
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">${cards}
                     </div>
@@ -3089,21 +3095,49 @@ ${renderViewTransitionHeadStyles()}
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0514; }
-        ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #39294f; border-radius: 4px; }
+        .dictionary-page {
+            --cream: #fff7ed;
+            --cream-88: rgba(255, 247, 237, 0.88);
+            --cream-64: rgba(255, 247, 237, 0.64);
+            --cream-45: rgba(255, 247, 237, 0.45);
+            --cream-35: rgba(255, 247, 237, 0.35);
+            --line: rgba(255, 247, 237, 0.10);
+            --salmon: #fda481;
+            --salmon-dim: rgba(253, 164, 129, 0.72);
+        }
         .aurora-bg {
-            background: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
-                radial-gradient(at 50% 0%, hsla(260, 39%, 20%, 1) 0, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(339, 49%, 20%, 1) 0, transparent 50%);
-            background-size: 200% 200%; animation: aurora 20s ease infinite;
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+            position: fixed; inset: 0; z-index: -1;
+            background:
+                radial-gradient(58rem 38rem at 88% -12%, rgba(253, 164, 129, 0.07), transparent 62%),
+                radial-gradient(46rem 34rem at -8% -6%, rgba(150, 122, 204, 0.09), transparent 58%),
+                #0a0512;
         }
-        .orb { position: absolute; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.5; max-width: 100vw; max-height: 100vw; }
+        .dictionary-page::after {
+            content: '';
+            position: fixed; inset: 0; z-index: 90;
+            pointer-events: none; opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+        }
         .glass-panel {
-            background: rgba(20, 10, 40, 0.4); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 247, 237, 0.02);
+            border: 1px solid var(--line, rgba(255, 247, 237, 0.10));
+            box-shadow: none;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
         }
-        .glass-button { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.3s ease; }
-        .glass-button:hover { background: rgba(255, 255, 255, 0.15); }
+        .glass-button {
+            background: rgba(255, 247, 237, 0.04);
+            border: 1px solid rgba(255, 247, 237, 0.16);
+            transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
+        }
+        .glass-button:hover { background: rgba(255, 247, 237, 0.08); border-color: rgba(253, 164, 129, 0.45); }
+        .glass-button:active { transform: scale(0.98); }
+        .dictionary-final-cta {
+            background:
+                radial-gradient(36rem 16rem at 50% -20%, rgba(253, 164, 129, 0.12), transparent 70%),
+                rgba(255, 247, 237, 0.02) !important;
+        }
         .mobile-menu-surface {
             background: #120720 !important;
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -3132,11 +3166,10 @@ ${renderViewTransitionHeadStyles()}
         .noctalia-premium-action { display: inline-flex; }
         .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
         .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
-        @keyframes aurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         html, body { overflow-x: hidden; }
         .symbol-card { transition: all 0.3s ease; }
         .symbol-card:hover { transform: translateY(-2px); border-color: rgba(253, 164, 129, 0.3); }
-        .symbol-card:focus { outline: none; border-color: rgba(253, 164, 129, 0.3); box-shadow: 0 0 0 2px rgba(253, 164, 129, 0.25); }
+        .symbol-card:focus-visible { outline: 2px solid #FDA481; outline-offset: 2px; }
         .letter-nav { scroll-behavior: smooth; }
         .letter-link { transition: all 0.2s ease; min-width: 1.75rem; text-align: center; border-radius: 0.375rem; padding: 2px 4px; }
         .letter-link:hover { color: #FDA481; transform: scale(1.1); }
@@ -3332,8 +3365,6 @@ ${renderJsonLd(breadcrumb)}
 <body class="dictionary-page bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
 
     <div class="aurora-bg"></div>
-    <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
-    <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
 
     <!-- Navbar -->
 ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
@@ -3356,7 +3387,7 @@ ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
             <header class="dictionary-header" data-image-seo-hero="true">
                 <div class="dictionary-hero-copy">
                     <span class="dictionary-hero-kicker">${escapeHtml(heroCopy.atlas)}</span>
-                    <h1 class="font-serif text-3xl md:text-5xl lg:text-[3.4rem] mb-0 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/55 leading-tight max-w-4xl">
+                    <h1 class="mb-0 max-w-4xl">
                         ${escapeHtml(dc.h1_text)}
                     </h1>
                     <p class="dictionary-hero-intro">${escapeHtml(dc.intro_paragraph || heroCopy.guide)}</p>
@@ -3470,10 +3501,7 @@ ${faqHtml}
             </section>
 
             <!-- CTA Section -->
-            <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
-                <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i data-lucide="sparkles" class="w-8 h-8 text-dream-salmon"></i>
-                </div>
+            <aside class="dictionary-final-cta glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center">
                 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">${escapeHtml(dc.analyze_heading)}</h3>
                 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     ${escapeHtml(dc.analyze_text)}
