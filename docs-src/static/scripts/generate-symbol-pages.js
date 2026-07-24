@@ -1626,8 +1626,7 @@ ${renderJsonLd(articleJsonLd)}
     <!-- Schema.org BreadcrumbList -->
 ${renderJsonLd(breadcrumbListJsonLd)}
 
-    <!-- Schema.org FAQPage -->
-${faqPageJsonLd ? renderJsonLd(faqPageJsonLd) : ''}
+${faqPageJsonLd ? `    <!-- Schema.org FAQPage -->\n${renderJsonLd(faqPageJsonLd)}` : ''}
 </head>
 
 <body class="symbol-page bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
