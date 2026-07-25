@@ -209,9 +209,9 @@
 <p>
                     Durante il sonno, il tuo cervello consolida ricordi ed esperienze. <strong>Eventi stressanti vengono riprodotti</strong> mentre la tua mente cerca di elaborarli e archiviarli. Questo è il motivo per cui gli incubi spesso seguono giorni difficili.
                 </p>
-<blockquote>
-                    "Gli incubi sono il modo in cui la psiche attira l'attenzione su qualcosa che deve essere elaborato. Non sono punizioni, sono informazioni." - Dott.ssa Rosalind Cartwright, ricercatrice sui sogni
-                </blockquote>
+<p>
+                    Gli incubi possono richiamare l’attenzione su stress o esperienze che sembrano ancora irrisolte. Non sono una punizione e un singolo sogno non permette di formulare una diagnosi.
+                </p>
 <h2 id="types">Tipi di incubi e loro significato psicologico</h2>
 <h3>Incubi da stress</h3>
 <p>

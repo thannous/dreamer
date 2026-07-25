@@ -170,9 +170,9 @@
 <li><strong>Creative inspiration:</strong> Dreams are an endless source of ideas</li>
 <li><strong>Lucid dreaming foundation:</strong> Essential first step for dream control</li>
 </ul>
-<blockquote>
-                    "The dream journal is the most important tool for anyone serious about understanding their dreams. It's where the unconscious becomes conscious." - Robert Waggoner, lucid dreaming researcher
-                </blockquote>
+<p>
+                    A dream journal can support recall and help a person notice recurring themes over time. Its value comes from consistent observation rather than from revealing a single hidden meaning.
+                </p>
 <h2 id="science">The Science of Dream Memory and Recall</h2>
 <p>
                     Understanding why dreams fade so quickly helps you capture them more effectively. Here's what happens in your brain:

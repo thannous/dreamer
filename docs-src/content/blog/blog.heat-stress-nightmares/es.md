@@ -85,7 +85,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Para saber más</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/40704570/" rel="nofollow noopener noreferrer" target="_blank">Pasquier et al. (2026): efectos de una noche calurosa en la arquitectura del sueño</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/40704570/" rel="nofollow noopener noreferrer" target="_blank">Pasquier et al. (2026): cubrecolchón de alta conductividad térmica durante una noche calurosa</a></li>
 <li><a href="https://www.sciencedirect.com/science/article/pii/S2590332222002093" rel="nofollow noopener noreferrer" target="_blank">Minor et al. (2022): temperatura nocturna y duración del sueño</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/32597973/" rel="nofollow noopener noreferrer" target="_blank">Vallat et al. (2020): despertares nocturnos y recuerdo de sueños</a></li>
 <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11002978/" rel="nofollow noopener noreferrer" target="_blank">Estudio con diarios: relación bidireccional entre estrés y pesadillas</a></li>

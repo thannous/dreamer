@@ -149,9 +149,9 @@
 <li><strong>Inspiración creativa:</strong> Los sueños son una fuente inagotable de ideas</li>
 <li><strong>Base para sueños lucidos:</strong> Primer paso esencial para el control de sueños</li>
 </ul>
-<blockquote>
-                    "El diario de sueños es la herramienta más importante para cualquiera que quiera entender seriamente sus sueños. Es donde el inconsciente se vuelve consciente." - Robert Waggoner, investigador de sueños lucidos
-                </blockquote>
+<p>
+                    Un diario de sueños puede favorecer el recuerdo y ayudar a detectar temas recurrentes con el tiempo. Su valor proviene de la observación constante, no de revelar un único significado oculto.
+                </p>
 <h2 id="ciencia">La ciencia de la memoria onírica y los sueños</h2>
 <p>
                     Entender por que los sueños se desvanecen tan rápido te ayuda a capturarlos más de forma eficaz. Esto es lo que pasa en tu cerebro:

@@ -209,9 +209,9 @@
 <p>
                     During sleep, your brain consolidates memories and experiences. <strong>Stressful events get replayed</strong> as your mind tries to process and file them. This is why nightmares often follow difficult days.
                 </p>
-<blockquote>
-                    "Nightmares are the psyche's way of bringing attention to something that needs to be processed. They're not punishment - they're information." - Dr. Rosalind Cartwright, Dream Researcher
-                </blockquote>
+<p>
+                    Nightmares can draw attention to stress or experiences that still feel unresolved. They are not a punishment, and a single dream does not provide a diagnosis.
+                </p>
 <h2 id="types">Types of Nightmares and Their Psychological Meanings</h2>
 <h3>Stress Nightmares</h3>
 <p>

@@ -119,9 +119,9 @@
 <li><strong>Growing personally</strong> - developing new aspects of yourself</li>
 <li><strong>Manifesting goals</strong> - working toward something that hasn't materialized yet</li>
 </ul>
-<blockquote>
-                    "Pregnancy dreams are about giving birth to yourself - to new ideas, new ways of being, new chapters of your life story." - Dr. Patricia Garfield, Dream Researcher
-                </blockquote>
+<p>
+                    Outside literal pregnancy, this imagery can also accompany a new project, role, or stage of life. The dreamer's context matters more than any fixed symbolic rule.
+                </p>
 <h2 id="scenarios">Common Pregnancy Dream Scenarios and Interpretations</h2>
 <p>
                     The specific pregnancy scenario provides clues to the dream's meaning:
@@ -264,9 +264,9 @@
 <p>
                     Pregnant people commonly dream about: the baby's gender or appearance, <strong>labor and delivery scenarios</strong>, caring for the newborn, and sometimes distressing scenarios that reflect underlying anxieties.
                 </p>
-<blockquote>
-                    "Dreams during pregnancy serve as rehearsals for motherhood, allowing the psyche to prepare for the profound transformation ahead." - Dr. Alan Siegel, Pregnancy Dream Researcher
-                </blockquote>
+<p>
+                    During pregnancy, dreams may reflect practical concerns, expectations, and emotions about birth or caregiving. They do not predict the course of a pregnancy.
+                </p>
 <h2 id="action">Working with Pregnancy Dreams: How to Interpret Them</h2>
 <h3>1. Identify What's Developing in Your Life</h3>
 <p>

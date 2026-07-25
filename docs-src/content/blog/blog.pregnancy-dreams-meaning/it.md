@@ -119,9 +119,9 @@
 <li><strong>Crescere personalmente</strong> - sviluppare nuovi aspetti di te stesso</li>
 <li><strong>Manifestare obiettivi</strong> - lavorare verso qualcosa che non si è ancora materializzato</li>
 </ul>
-<blockquote>
-                    "I sogni di una gravidanza riguardano il dare alla luce te stessa, nuove idee, nuovi modi di essere, nuovi capitoli della tua storia di vita." - Dott.ssa Patricia Garfield, ricercatrice sui sogni
-                </blockquote>
+<p>
+                    Al di fuori di una gravidanza reale, questa immagine può accompagnare anche un nuovo progetto, ruolo o fase della vita. Il contesto della persona conta più di qualsiasi regola simbolica fissa.
+                </p>
 <h2 id="scenarios">Scenari e interpretazioni comuni dei sogni di gravidanza</h2>
 <p>
                     Lo scenario specifico della gravidanza fornisce indizi sul significato del sogno:
@@ -264,9 +264,9 @@
 <p>
                     Le persone incinte sognano comunemente: il sesso o l'aspetto del bambino, <strong>scenari di travaglio e parto</strong>, prendersi cura del neonato e, talvolta, scenari angoscianti che riflettono le condizioni sottostanti. ansie.
                 </p>
-<blockquote>
-                    "I sogni durante la gravidanza servono come prove generali per la maternità, consentendo alla psiche di prepararsi per la profonda trasformazione che ci aspetta." - Dr. Alan Siegel, ricercatore sui sogni in gravidanza
-                </blockquote>
+<p>
+                    Durante la gravidanza, i sogni possono riflettere preoccupazioni pratiche, aspettative ed emozioni legate al parto o alla cura del bambino. Non predicono l'andamento della gravidanza.
+                </p>
 <h2 id="action">Lavorare con i sogni in gravidanza: come interpretarli</h2>
 <h3>1. Identifica cosa si sta sviluppando nella tua vita</h3>
 <p>

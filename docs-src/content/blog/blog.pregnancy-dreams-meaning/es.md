@@ -119,9 +119,9 @@
 <li><strong>Creciendo personalmente</strong> - desarrollando nuevos aspectos de ti misma</li>
 <li><strong>Manifestando metas</strong> - trabajando hacia algo que aún no se ha materializado</li>
 </ul>
-<blockquote>
-                    "Los sueños de embarazo tratan de darte a luz a ti misma - a nuevas ideas, nuevas formas de ser, nuevos capitulos de tu historia de vida." - Dra. Patricia Garfield, Investigadora de Sueños
-                </blockquote>
+<p>
+                    Fuera de un embarazo real, esta imagen también puede acompañar un nuevo proyecto, papel o etapa de la vida. El contexto de la persona importa más que cualquier regla simbólica fija.
+                </p>
 <h2 id="escenarios">Escenarios comunes de sueños de embarazo y su significado</h2>
 <p>
                     El escenario específico de embarazo proporciona pistas sobre el significado del sueño:
@@ -264,9 +264,9 @@
 <p>
                     Las personas embarazadas comúnmente sueñan sobre: el género o apariencia del bebé, <strong>escenarios de parto</strong>, cuidar al recién nacido, y a veces escenarios angustiantes que reflejan ansiedades subyacentes.
                 </p>
-<blockquote>
-                    "Los sueños durante el embarazo sirven como ensayos para la maternidad, permitiendo a la psique prepararse para la profunda transformación que viene." - Dr. Alan Siegel, Investigador de Sueños de Embarazo
-                </blockquote>
+<p>
+                    Durante el embarazo, los sueños pueden reflejar preocupaciones prácticas, expectativas y emociones sobre el parto o el cuidado del bebé. No predicen cómo evolucionará un embarazo.
+                </p>
 <h2 id="accion">Trabajando con sueños de embarazo</h2>
 <h3>1. Identifica qué se está desarrollando</h3>
 <p>
