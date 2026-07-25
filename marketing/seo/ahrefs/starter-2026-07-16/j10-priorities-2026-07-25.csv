@@ -1,0 +1,9 @@
+rank,role,url,source,source_id,impressions_90d,avg_position,missed_clicks,variable,measurement_end,status,notes
+P1,principal,/es/simbolos/escaleras,data/dream-symbols.json,stairs,13910,8.2,385,title + meta description,2026-08-08,retenue,Fiche J11-J14 avant validation
+P2,principal,/es/simbolos/boca,data/dream-symbols.json,mouth,8464,6.3,340,title + meta description,2026-08-08,retenue,Fiche J11-J14 avant validation
+P3,principal,/es/simbolos/arbol,data/dream-symbols.json,tree,8794,8.3,234,title + meta description,2026-08-08,retenue,Fiche J11-J14 avant validation
+P4,principal,/it/simboli/scuola,data/dream-symbols.json,school,3479,7.1,111,title + meta description,2026-08-08,retenue,Fiche J11-J14 avant validation
+P5,principal,/es/simbolos/ascensor,data/dream-symbols.json,elevator,4286,9.7,86,title + meta description,2026-08-08,retenue,Fiche J11-J14 avant validation
+R1,reserve,/es/simbolos/caida,data/dream-symbols.json,falling,4335,3.4,470,à définir,,gelée,Cannibalisation 10.7 % ; arbitrage après le 2026-08-01
+R2,reserve,/it/simboli/pioggia,data/dream-symbols.json,rain,6372,8.3,179,à définir,,attente,Actualiser GSC avant promotion éventuelle
+R3,reserve,/it/simboli/correre,data/dream-symbols.json,running,2022,7.9,62,à définir,,reserve,Conserver en remplacement possible

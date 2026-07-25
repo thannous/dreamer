@@ -209,9 +209,9 @@
 <p>
                     Durante el sueño, tu cerebro consolida recuerdos y experiencias. <strong>Los eventos estresantes se reproducen</strong> mientras tu mente intenta procesarlos y archivarlos. Por eso las pesadillas a menudo siguen a días difíciles.
                 </p>
-<blockquote>
-                    "Las pesadillas son la forma de la psique de llamar la atención sobre algo que necesita ser procesado. No son un castigo - son información." - Dra. Rosalind Cartwright, Investigadora de sueños
-                </blockquote>
+<p>
+                    Las pesadillas pueden llamar la atención sobre estrés o experiencias que todavía se sienten sin resolver. No son un castigo y un solo sueño no permite establecer un diagnóstico.
+                </p>
 <h2 id="tipos">Tipos de pesadillas: desde estrés hasta trauma</h2>
 <h3>Pesadillas causadas por estrés y ansiedad</h3>
 <p>

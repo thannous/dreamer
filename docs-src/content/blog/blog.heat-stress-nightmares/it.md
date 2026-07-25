@@ -85,7 +85,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti / Per approfondire</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/40704570/" rel="nofollow noopener noreferrer" target="_blank">Pasquier et al. (2026): effetti di una notte calda sull'architettura del sonno</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/40704570/" rel="nofollow noopener noreferrer" target="_blank">Pasquier et al. (2026): coprimaterasso ad alta conducibilità termica durante una notte calda</a></li>
 <li><a href="https://www.sciencedirect.com/science/article/pii/S2590332222002093" rel="nofollow noopener noreferrer" target="_blank">Minor et al. (2022): temperatura notturna e durata del sonno</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/32597973/" rel="nofollow noopener noreferrer" target="_blank">Vallat et al. (2020): risvegli notturni e ricordo dei sogni</a></li>
 <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11002978/" rel="nofollow noopener noreferrer" target="_blank">Studio con diari: relazione bidirezionale tra stress e incubi</a></li>

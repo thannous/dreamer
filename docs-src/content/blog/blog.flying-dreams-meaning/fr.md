@@ -116,9 +116,9 @@
 <p>
                     D'un point de vue neurologique, les rêves de vol surviennent généralement pendant le <strong><a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a></strong> lorsque le cortex moteur du cerveau est actif mais que le corps est paralysé. Cette déconnexion entre l'activité mentale et l'immobilité physique peut créer la sensation d'apesanteur et de mouvement.
                 </p>
-<blockquote>
-                    « Les rêves de vol sont la façon dont l'esprit fait l'expérience de la liberté absolue - liberté de la gravité, des limitations, des contraintes auxquelles nous sommes confrontés dans la vie éveillée. » - Dr Kelly Bulkeley, Chercheur sur les Rêves
-                </blockquote>
+<p>
+                    Pour certaines personnes, voler en rêve est associé à la liberté, à la confiance ou au soulagement face aux contraintes de la vie éveillée. Cette interprétation n’est pas universelle et dépend de l’émotion et du contexte du rêve.
+                </p>
 <p>
                     Contrairement à la plupart des rêves courants (chute, <a class="text-dream-salmon hover:underline" href="../symboles/poursuite">poursuite</a>), les rêves de vol sont principalement des <strong>expériences positives</strong>. Des études montrent que les personnes qui ont des rêves de vol rapportent souvent des sentiments de joie, d'exaltation et d'empowerment au réveil.
                 </p>
@@ -276,9 +276,9 @@
 <p>
                     Les rêveurs lucides rapportent souvent que leurs capacités de vol <strong>s'améliorent avec la pratique</strong>. Ce qui commence comme un vol maladroit peut évoluer vers un vol de type Superman au fur et à mesure que vous maîtrisez le contrôle du rêve.
                 </p>
-<blockquote>
-                    « Voler dans un rêve lucide est différent de tout ce que l'on vit éveillé. La sensation de liberté totale, de défier la physique par la seule volonté - c'est transformateur. » - Stephen LaBerge, Lucidity Institute
-                </blockquote>
+<p>
+                    Les rêveurs lucides décrivent souvent le vol comme une expérience vive et libératrice, mais les vécus varient et n’établissent pas une signification psychologique universelle.
+                </p>
 <h2 id="induce">Comment avoir plus de rêves de voler : techniques efficaces</h2>
 <p>
                     Si vous voulez vivre plus de rêves de vol, essayez ces techniques :

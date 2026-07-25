@@ -115,9 +115,9 @@
 <p>
                     Da un punto di vista neurologico, i sogni di volo si verificano tipicamente durante <strong><a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">il sonno REM</a></strong> quando la corteccia motoria del cervello è attiva ma il corpo è paralizzato. Questa disconnessione tra l'attività mentale e l'immobilità fisica può creare la sensazione di assenza di gravità e movimento.
                 </p>
-<blockquote>
-                    "I sogni in volo sono il modo in cui la mente sperimenta la libertà assoluta: libertà dalla gravità, dalle limitazioni, dai vincoli che affrontiamo nella vita da svegli." - Dott.ssa Kelly Bulkeley, ricercatrice sui sogni
-                </blockquote>
+<p>
+                    Per alcune persone, volare in sogno è associato alla libertà, alla fiducia o al sollievo dai vincoli della vita da svegli. Questa interpretazione non è universale e dipende dall’emozione e dal contesto del sogno.
+                </p>
 <p>
                     A differenza dei sogni più comuni (cadere, <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">essere inseguiti</a>), i sogni di volo sono prevalentemente <strong>esperienze positive</strong>. Gli studi dimostrano che le persone che sognano di volare spesso riferiscono sentimenti di gioia, euforia e empowerment al risveglio.
                 </p>
@@ -275,9 +275,9 @@
 <p>
                     I sognatori lucidi spesso riferiscono che le loro capacità di volo <strong>migliorano con la pratica</strong>. Ciò che inizia come un volo librato imbarazzante può evolversi in un volo librato in stile superman man mano che padroneggi il controllo dei sogni.
                 </p>
-<blockquote>
-                    "Volare in un sogno lucido è diverso da qualsiasi cosa nella vita da svegli. La sensazione di completa libertà, di sfidare la fisica solo con la volontà: è trasformativa." - Stephen LaBerge, Lucidity Institute
-                </blockquote>
+<p>
+                    I sognatori lucidi descrivono spesso il volo come un’esperienza vivida e liberatoria, ma le esperienze variano e non dimostrano un significato psicologico universale.
+                </p>
 <h2 id="induce">Come avere più sogni di volo: 6 tecniche comprovate</h2>
 <p>
                     Se vuoi sperimentare più sogni di volo, prova queste tecniche:
