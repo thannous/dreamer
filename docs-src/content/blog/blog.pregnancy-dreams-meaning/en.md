@@ -397,6 +397,7 @@
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
 <li><a href="https://doi.org/10.1093/sleep/30.9.1162" rel="nofollow noopener noreferrer" target="_blank">Nielsen &amp; Paquette (2007) — Dream-associated behaviors affecting pregnant and postpartum women (Sleep)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/24780135/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2014) — Disturbed dreaming during the third trimester of pregnancy (PubMed)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/23986734/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2013) — Maternal representations in the dreams of pregnant women (PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Dreams during pregnancy</a></li>
 </ul>
