@@ -65,8 +65,9 @@ Le signal principal du portefeuille est le déficit de CTR, pas l’absence de r
 | PMID `11476655` | Étude JAMA 2001 sur l’Imagery Rehearsal Therapy chez des survivantes d’agression sexuelle avec PTSD ; référence exacte mais non probante pour un guide sur l’incubation des rêves | Retirée des quatre variantes qui la citaient dans `blog.dream-incubation-guide` |
 | PMID `26375320` | Cho et al. (2015), revue sur les effets de la lumière artificielle nocturne sur la santé | Conservée : titre, auteurs, année et usage sur l’environnement de sommeil sont cohérents |
 | PMID `40704570` | Pasquier et al., publication 2026, étude d’un surmatelas à haute conductivité thermique pendant une nuit chaude | Conservée, mais libellé resserré dans les cinq langues pour ne plus généraliser l’étude à toute l’architecture du sommeil |
+| PMID `24780135` | Lara-Carrasco et al. (2014), étude des rêves perturbants au troisième trimestre de grossesse | Ajoutée aux variantes DE, EN et IT sans retirer la source 2007 déjà valide |
 
-Références primaires vérifiées : [PMID 11476655](https://pubmed.ncbi.nlm.nih.gov/11476655/), [PMID 26375320](https://pubmed.ncbi.nlm.nih.gov/26375320/), [PMID 40704570](https://pubmed.ncbi.nlm.nih.gov/40704570/).
+Références primaires vérifiées : [PMID 11476655](https://pubmed.ncbi.nlm.nih.gov/11476655/), [PMID 26375320](https://pubmed.ncbi.nlm.nih.gov/26375320/), [PMID 40704570](https://pubmed.ncbi.nlm.nih.gov/40704570/), [PMID 24780135](https://pubmed.ncbi.nlm.nih.gov/24780135/).
 
 ## Pages corrigées à la suite de l’audit de qualité
 
