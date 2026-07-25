@@ -124,7 +124,7 @@
                     Antes de sumergirnos en las técnicas, entendamos el mecanismo. <strong>El olvido de sueños no es un fallo</strong>, sino una característica natural de nuestro cerebro. Durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a> (cuando ocurren los sueños más vívidos), la norepinefrina - un neurotransmisor esencial para la formación de memoria - alcanza su nivel más bajo.
                 </p>
 <p>
-                    El hipocampo, la región cerebral responsable de convertir experiencias a corto plazo en recuerdos duraderos, también funciona de manera diferente durante el sueño. Según un estudio publicado en <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Neuron</em> (2019)</a>, la transferencia de información entre el hipocampo y la corteza disminuye durante el sueño REM.
+                    El hipocampo, la región cerebral responsable de convertir experiencias a corto plazo en recuerdos duraderos, también funciona de manera diferente durante el sueño. Según un estudio publicado en <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Science</em> (2019)</a>, la transferencia de información entre el hipocampo y la corteza disminuye durante el sueño REM.
                 </p>
 <blockquote>
                     "Soñamos aproximadamente 4-6 veces por noche, sumando casi 2 horas. Sin embargo, solo recordamos una pequeña fracción de esta actividad onírica."
@@ -224,7 +224,7 @@
                     Los practicantes regulares de meditación a menudo reportan un mejor recuerdo de sueños. ¿La razón? <strong>La meditación entrena la conciencia meta-cognitiva</strong> - la capacidad de observar los propios pensamientos y estados mentales.
                 </p>
 <p>
-                    Un estudio de la <a href="https://pubmed.ncbi.nlm.nih.gov/26256788/" rel="nofollow noopener noreferrer" target="_blank">Universidad de Lincoln (2015)</a> mostró que los meditadores tienen mejor capacidad para recordar sus sueños y lograr lucidez onírica.
+                    Un estudio de la Universidad de Lincoln (2015) mostró que los meditadores tienen mejor capacidad para recordar sus sueños y lograr lucidez onírica.
                 </p>
 <h3>Meditación simple antes de dormir</h3>
 <ul>

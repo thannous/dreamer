@@ -139,7 +139,7 @@
 <li>El soñador retiene su memoria de trabajo y capacidad de reflexión</li>
 </ul>
 <p>
-                    Un estudio de la Universidad de <a href="https://pubmed.ncbi.nlm.nih.gov/34225282/" rel="nofollow noopener noreferrer" target="_blank">Heidelberg (2021)</a> mostró que <strong>el 55% de las personas</strong> ha tenido al menos un sueño lúcido en su vida, y alrededor del 23% los tiene al menos una vez al mes.
+                    Un metaanálisis de <a href="https://pubmed.ncbi.nlm.nih.gov/27337287/" rel="nofollow noopener noreferrer" target="_blank">Saunders et al. (2016)</a> mostró que <strong>el 55% de las personas</strong> ha tenido al menos un sueño lúcido en su vida, y alrededor del 23% los tiene al menos una vez al mes.
                 </p>
 <h2 id="benefits">Beneficios de tener sueños lúcidos para tu vida</h2>
 <p>

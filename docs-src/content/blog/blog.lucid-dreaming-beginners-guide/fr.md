@@ -139,7 +139,7 @@
 <li>Le rêveur conserve sa mémoire de travail et sa capacité de réflexion</li>
 </ul>
 <p>
-                    Une étude de l'Université de <a href="https://pubmed.ncbi.nlm.nih.gov/34225282/" rel="nofollow noopener noreferrer" target="_blank">Heidelberg (2021)</a> à montre que <strong>55% des personnes</strong> ont eu au moins un rêve lucide dans leur vie, et environ 23% en font au moins une fois par mois.
+                    Une méta-analyse de <a href="https://pubmed.ncbi.nlm.nih.gov/27337287/" rel="nofollow noopener noreferrer" target="_blank">Saunders et al. (2016)</a> montre que <strong>55% des personnes</strong> ont eu au moins un rêve lucide dans leur vie, et environ 23% en font au moins une fois par mois.
                 </p>
 <h2 id="bienfaits">Les bienfaits du rêve lucide pour le quotidien</h2>
 <p>

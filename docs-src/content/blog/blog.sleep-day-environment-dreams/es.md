@@ -296,7 +296,7 @@
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://institut-sommeil-vigilance.org/journee-du-sommeil/" rel="nofollow noopener noreferrer" target="_blank">INSV (Instituto Nacional del Sueño y la Vigilancia) — Día del Sueño 2026</a></li>
 <li><a href="https://www.reseau-morphee.fr/" rel="nofollow noopener noreferrer" target="_blank">Red Morphée — Sueño y entorno</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/25644982/" rel="nofollow noopener noreferrer" target="_blank">Cho et al. (2015): Effects of artificial light at night on human health — Sleep Medicine Reviews</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/26375320/" rel="nofollow noopener noreferrer" target="_blank">Cho et al. (2015): Effects of artificial light at night on human health — Chronobiology International</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22738673/" rel="nofollow noopener noreferrer" target="_blank">Okamoto-Mizuno & Mizuno (2012): Effects of thermal environment on sleep and circadian rhythm — Journal of Physiological Anthropology</a></li>
 <li><a href="https://www.sleepfoundation.org/bedroom-environment" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Bedroom Environment</a></li>
 </ul>

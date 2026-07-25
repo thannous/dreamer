@@ -353,9 +353,9 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Lectura adicional</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/18220080/" rel="nofollow noopener noreferrer" target="_blank">McNamara (2008) — Nightmares: The science and solution of those frightening visions (PubMed)</a></li>
+<li>McNamara (2008) — Nightmares: The science and solution of those frightening visions</li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">Domhoff (2003) — Dream research overview</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/16796779/" rel="nofollow noopener noreferrer" target="_blank">Schredl (2006) — Factors affecting the continuity between waking and dreaming (PubMed)</a></li>
+<li>Schredl (2006) — Factors affecting the continuity between waking and dreaming</li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Actualizado el 6 de enero de 2026</p>
 </section>
