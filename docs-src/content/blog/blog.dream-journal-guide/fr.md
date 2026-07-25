@@ -139,9 +139,9 @@
 <li><strong>Inspiration créative :</strong> Les rêves sont une source inépuisable d'idées</li>
 <li><strong>Fondation pour le rêve lucide :</strong> Première étape essentielle pour le contrôle des rêves</li>
 </ul>
-<blockquote>
-                    "Le journal de rêves est l'outil le plus important pour quiconque veut sérieusement comprendre ses rêves. C'est là ou l'inconscient devient conscient." - Robert Waggoner, chercheur en rêve lucide
-                </blockquote>
+<p>
+                    Un journal de rêves peut favoriser le rappel et aider à repérer des thèmes récurrents au fil du temps. Sa valeur vient d’une observation régulière, pas de la révélation d’un sens caché unique.
+                </p>
 <h2 id="science">Pourquoi les rêves s’effacent avant le journal</h2>
 <p>
                     Comprendre pourquoi les rêves s'effacent si vite vous aide à les capturer plus efficacement. Voici ce qui se passe dans votre cerveau :

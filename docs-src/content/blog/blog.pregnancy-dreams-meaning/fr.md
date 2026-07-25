@@ -119,9 +119,9 @@
 <li><strong>Grandissez personnellement</strong> - développant de nouveaux aspects de vous-même</li>
 <li><strong>Manifestez des objectifs</strong> - travaillant vers quelque chose qui ne s'est pas encore matérialise</li>
 </ul>
-<blockquote>
-                    "Les rêves de grossesse concernent le fait de se donner naissance a soi-même - à de nouvelles idées, de nouvelles façons d'être, de nouveaux chapitres de votre histoire de vie." - Dr. Patricia Garfield, Chercheuse sur les rêves
-                </blockquote>
+<p>
+                    En dehors d’une grossesse réelle, cette image peut aussi accompagner un nouveau projet, un nouveau rôle ou une nouvelle étape de vie. Le contexte de la personne compte davantage qu’une règle symbolique figée.
+                </p>
 <h2 id="scénarios">Scénarios courants des rêves de grossesse et leur interprétation</h2>
 <p>
                     Le scénario spécifique de grossesse fournit des indices sur la signification du rêve :
@@ -264,9 +264,9 @@
 <p>
                     Les personnes enceintes rêvent couramment du : genre ou de l'apparence du bébé, de <strong>scénarios de travail et d'accouchement</strong>, de prendre soin du nouveau-ne, et parfois de scénarios angoissants qui reflètent des anxiétés sous-jacentes.
                 </p>
-<blockquote>
-                    "Les rêves pendant la grossesse servent de répétitions pour la maternité, permettant à la psyché de se préparer à la profonde transformation à venir." - Dr. Alan Siegel, Chercheur sur les rêves de grossesse
-                </blockquote>
+<p>
+                    Pendant la grossesse, les rêves peuvent refléter des préoccupations pratiques, des attentes et des émotions liées à l’accouchement ou aux soins du bébé. Ils ne prédisent pas le déroulement de la grossesse.
+                </p>
 <h2 id="action">Comment interpréter et travailler avec les rêves de grossesse</h2>
 <h3>1. Identifiez ce qui se développe dans votre vie</h3>
 <p>

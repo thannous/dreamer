@@ -397,7 +397,6 @@
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">Dizionario APA di psicologia - Sogno</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (panoramica sulla ricerca sui sogni)</a></li>
 <li><a href="https://www.sleepfoundation.org/dreams/lucid-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation - Sogni lucidi (tecniche e sicurezza)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/11476655/" rel="nofollow noopener noreferrer" target="_blank">Cracovia et al. (2001) — Imagery Rehearsal Therapy for Nightmares (PubMed)</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 26 dicembre 2025</p>
 </section>

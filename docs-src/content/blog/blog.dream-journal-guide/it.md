@@ -150,9 +150,9 @@
 <li><strong>Ispirazione creativa:</strong> I sogni sono una fonte inesauribile di idee</li>
 <li><strong>Base per sogni lucidi:</strong> Primo passo essenziale per il controllo dei sogni</li>
 </ul>
-<blockquote>
-                    "Il diario dei sogni è lo strumento più importante per chiunque voglia seriamente comprendere i propri sogni. È il luogo in cui l'inconscio diventa cosciente." - Robert Waggoner, ricercatore sui sogni lucidi
-                </blockquote>
+<p>
+                    Un diario dei sogni può favorire il ricordo e aiutare a individuare temi ricorrenti nel tempo. Il suo valore deriva dall’osservazione costante, non dalla rivelazione di un unico significato nascosto.
+                </p>
 <h2 id="science">La scienza della memoria e del ricordo dei sogni</h2>
 <p>
                     Capire perché i sogni svaniscono così rapidamente ti aiuta a catturarli in modo più efficace. Ecco cosa succede nel tuo cervello:
