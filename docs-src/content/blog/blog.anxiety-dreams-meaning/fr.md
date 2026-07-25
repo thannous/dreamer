@@ -356,7 +356,7 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000) : La réinterprétation des rêves - théorie de la simulation de menace (BBS / PubMed)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/16564189/" rel="nofollow noopener noreferrer" target="_blank">Krakow & Zadra (2006) : Gestion clinique des cauchemars chroniques - Thérapie par répétition d'imagerie (Sleep Medicine Reviews)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/16390284/" rel="nofollow noopener noreferrer" target="_blank">Krakow & Zadra (2006) : Gestion clinique des cauchemars chroniques - Thérapie par répétition d'imagerie (Behavioral Sleep Medicine)</a></li>
 <li><a href="https://www.apa.org/topics/anxiety" rel="nofollow noopener noreferrer" target="_blank">APA : Anxiété - Comprendre et la gérer</a></li>
 <li><a href="https://www.nimh.nih.gov/health/topics/anxiety-disorders" rel="nofollow noopener noreferrer" target="_blank">NIMH : Troubles anxieux</a></li>
 <li><a href="https://www.sleepfoundation.org/mental-health/anxiety-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation : Anxiété et sommeil</a></li>

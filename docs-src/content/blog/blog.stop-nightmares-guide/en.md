@@ -413,8 +413,8 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/nightmare" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Nightmare</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20815183/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010): Best practice guide for the treatment of nightmare disorder in adults</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/29991437/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018): Position paper for the treatment of nightmare disorder in adults</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/20726290/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010): Best practice guide for the treatment of nightmare disorder in adults</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018): Position paper for the treatment of nightmare disorder in adults</a></li>
 <li><a href="https://www.sleepfoundation.org/nightmares" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Nightmares</a></li>
 <li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS: Brain Basics: Understanding Sleep</a></li>
 </ul>

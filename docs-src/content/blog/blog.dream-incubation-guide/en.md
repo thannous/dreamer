@@ -406,7 +406,7 @@
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology:Dream</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net:G. William Domhoff (dream research overview)</a></li>
 <li><a href="https://www.sleepfoundation.org/dreams/lucid-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation:Lucid dreams (techniques &amp; safety)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/11384503/" rel="nofollow noopener noreferrer" target="_blank">Krakow et al. (2001):Imagery Rehearsal Therapy for nightmares (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/11476655/" rel="nofollow noopener noreferrer" target="_blank">Krakow et al. (2001):Imagery Rehearsal Therapy for nightmares (PubMed)</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Last updated: December 26, 2025</p>
 </section>

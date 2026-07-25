@@ -120,7 +120,7 @@
                     Studi di neuroimaging hanno rivelato che <strong>la comunicazione tra l'ippocampo e la corteccia cerebrale è ridotta durante <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">il sonno REM</a></strong>. Questa disconnessione parziale spiega perché anche i sogni più intensi non vengono automaticamente archiviati nella nostra memoria a lungo termine. Il trasferimento delle informazioni necessarie per la memorizzazione viene semplicemente interrotto.
                 </p>
 <p>
-                    Una ricerca pubblicata nel <em>Neuron</em> nel 2019 dal team del Dr. Thomas Kilduff' ha dimostrato che alcuni neuroni nell'ipotalamo, chiamati neuroni MCH (ormone concentratore di melanina), diventano specificamente attivi durante il sonno REM e <strong>sopprimono attivamente la formazione della memoria</strong>.
+                    Una ricerca pubblicata nel <em>Science</em> nel 2019 dal team del Dr. Thomas Kilduff' ha dimostrato che alcuni neuroni nell'ipotalamo, chiamati neuroni MCH (ormone concentratore di melanina), diventano specificamente attivi durante il sonno REM e <strong>sopprimono attivamente la formazione della memoria</strong>.
                 </p>
 <h3>Noradrenalina: il neurotrasmettitore chiave per la memoria dei sogni</h3>
 <p>
@@ -435,7 +435,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti/Approfondimenti</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank">Izawa et al. (2019) — Neuroni MCH attivi nel sonno REM e dimenticanza (Neuron, PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank">Izawa et al. (2019) — Neuroni MCH attivi nel sonno REM e dimenticanza (Science, PubMed)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Meccanismi cerebrali del ricordo dei sogni (recensione, PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Fondamenti sul sonno: fasi del sonno</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net - G. William Domhoff (panoramica sulla ricerca sui sogni)</a></li>

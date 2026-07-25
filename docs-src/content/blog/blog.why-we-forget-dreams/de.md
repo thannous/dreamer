@@ -120,7 +120,7 @@
                     Neuroimaging-Studien haben gezeigt, dass <strong>die Kommunikation zwischen dem Hippocampus und der Großhirnrinde während <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a></strong> reduziert ist. Diese teilweise Trennung erklärt, warum selbst die intensivsten Träume nicht automatisch in unserem Langzeitgedächtnis gespeichert werden. Die zum Auswendiglernen notwendige Informationsübertragung wird einfach unterbrochen.
                 </p>
 <p>
-                    Eine 2019 in <em>Neuron</em> veröffentlichte Studie des Teams um Dr. Thomas Kilduff zeigte, dass bestimmte Neuronen im Hypothalamus, sogenannte MCH-Neuronen (Melanin-konzentrierendes Hormon), während des REM-Schlafs gezielt aktiv werden und <strong>die Gedächtnisbildung aktiv unterdrücken</strong>.
+                    Eine 2019 in <em>Science</em> veröffentlichte Studie des Teams um Dr. Thomas Kilduff zeigte, dass bestimmte Neuronen im Hypothalamus, sogenannte MCH-Neuronen (Melanin-konzentrierendes Hormon), während des REM-Schlafs gezielt aktiv werden und <strong>die Gedächtnisbildung aktiv unterdrücken</strong>.
                 </p>
 <h3>Noradrenalin: Der wichtigste Neurotransmitter für das Traumgedächtnis</h3>
 <p>
@@ -435,7 +435,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen / Weiterführende Literatur</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank">Izawa et al. (2019) – REM-schlafaktive MCH-Neuronen und Vergessen (Neuron, PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank">Izawa et al. (2019) – REM-schlafaktive MCH-Neuronen und Vergessen (Science, PubMed)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) – Gehirnmechanismen der Traumerinnerung (Rezension, PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation – Schlafstadien</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net – G. William Domhoff (Überblick über die Traumforschung)</a></li>

@@ -269,7 +269,7 @@
 <li><a href="https://doi.org/10.1093/sleep/zsz137" rel="nofollow noopener noreferrer" target="_blank">de Zambotti et al. (2019) : Wearable sleep technology in clinical and research settings (Medicine &amp; Science in Sports &amp; Exercise)</a></li>
 <li><a href="https://doi.org/10.3390/s19194066" rel="nofollow noopener noreferrer" target="_blank">Haghayegh et al. (2019) : Accuracy of wristband Fitbit models in assessing sleep (Sensors)</a></li>
 <li><a href="https://doi.org/10.1093/sleep/zsaa170" rel="nofollow noopener noreferrer" target="_blank">Menghini et al. (2021) : A standardized framework for testing the performance of sleep-tracking technology (Sleep)</a></li>
-<li><a href="https://doi.org/10.1093/sleep/zsaa170" rel="nofollow noopener noreferrer" target="_blank">Chinoy et al. (2021) : Performance of seven consumer sleep-tracking devices compared with polysomnography (Sleep)</a></li>
+<li><a href="https://doi.org/10.1093/sleep/zsaa291" rel="nofollow noopener noreferrer" target="_blank">Chinoy et al. (2021) : Performance of seven consumer sleep-tracking devices compared with polysomnography (Sleep)</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Mis &#224; jour le 24 mars 2026</p>
 </section>

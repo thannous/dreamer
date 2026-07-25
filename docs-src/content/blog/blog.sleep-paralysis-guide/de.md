@@ -364,7 +364,7 @@
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology – Traum</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net – G. William Domhoff (Überblick über die Traumforschung)</a></li>
 <li><a href="https://www.mayoclinic.org/diseases-conditions/sleep-paralysis/symptoms-causes/syc-20352606" rel="nofollow noopener noreferrer" target="_blank">Mayo Clinic – Schlaflähmung (Symptome und Ursachen)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/21411265/" rel="nofollow noopener noreferrer" target="_blank">Sharpless &amp; Barber (2011) – Prävalenz von Schlafparalyse (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/21571556/" rel="nofollow noopener noreferrer" target="_blank">Sharpless &amp; Barber (2011) – Prävalenz von Schlafparalyse (PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/parasomnias/sleep-paralysis" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation – Übersicht über Schlafparalyse</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Letzte Aktualisierung: 26. Dezember 2025</p>
