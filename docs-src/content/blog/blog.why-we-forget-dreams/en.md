@@ -120,7 +120,7 @@
                     Neuroimaging studies have revealed that <strong>communication between the hippocampus and the cerebral cortex is reduced during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a></strong>. This partial disconnection explains why even the most intense dreams are not automatically stored in our long-term memory. The information transfer necessary for memorization is simply interrupted.
                 </p>
 <p>
-                    Research published in <em>Neuron</em> in 2019 by Dr. Thomas Kilduff's team demonstrated that certain neurons in the hypothalamus, called MCH neurons (melanin-concentrating hormone), become specifically active during REM sleep and <strong>actively suppress memory formation</strong>.
+                    Research published in <em>Science</em> in 2019 by Dr. Thomas Kilduff's team demonstrated that certain neurons in the hypothalamus, called MCH neurons (melanin-concentrating hormone), become specifically active during REM sleep and <strong>actively suppress memory formation</strong>.
                 </p>
 <h3>Norepinephrine: The Key Neurotransmitter for Dream Memory</h3>
 <p>
@@ -444,7 +444,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank">Izawa et al. (2019) — REM sleep-active MCH neurons and forgetting (Neuron, PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank">Izawa et al. (2019) — REM sleep-active MCH neurons and forgetting (Science, PubMed)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Brain mechanisms of dream recall (review, PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Stages of sleep</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net - G. William Domhoff (dream research overview)</a></li>

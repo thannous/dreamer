@@ -382,7 +382,7 @@
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology — Dream</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (dream research overview)</a></li>
 <li><a href="https://www.mayoclinic.org/diseases-conditions/sleep-paralysis/symptoms-causes/syc-20352606" rel="nofollow noopener noreferrer" target="_blank">Mayo Clinic — Sleep paralysis (symptoms &amp; causes)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/21411265/" rel="nofollow noopener noreferrer" target="_blank">Sharpless &amp; Barber (2011) — Sleep paralysis prévalence (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/21571556/" rel="nofollow noopener noreferrer" target="_blank">Sharpless &amp; Barber (2011) — Sleep paralysis prévalence (PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/parasomnias/sleep-paralysis" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Sleep paralysis overview</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Mis à jour le 26 décembre 2025</p>

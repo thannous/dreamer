@@ -396,8 +396,8 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen / Weiterfuhrende Literatur</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/17689042/" rel="nofollow noopener noreferrer" target="_blank">Nielsen &amp; Paquette (2007) — Traumhaufigkeit und -inhalt bei schwangeren und nicht schwangeren Frauen (PubMed)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/24135556/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2014) — Mutterliche Darstellungen in den Traumen schwangerer Frauen (PubMed)</a></li>
+<li><a href="https://doi.org/10.1093/sleep/30.9.1162" rel="nofollow noopener noreferrer" target="_blank">Nielsen &amp; Paquette (2007) — Traumassoziierte Verhaltensweisen bei schwangeren und postpartalen Frauen (Sleep)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/23986734/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2013) — Mutterliche Darstellungen in den Traumen schwangerer Frauen (PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Traume wahrend der Schwangerschaft</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Zuletzt aktualisiert: 6. Januar 2026</p>

@@ -136,7 +136,7 @@
                     Avant de passer aux techniques, examinons le mécanisme. <strong>L’oubli des rêves n’est pas un défaut</strong>, mais une caractéristique naturelle de notre cerveau. Pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a> (phase REM), la noradrénaline — un neurotransmetteur lié à la formation des souvenirs — atteint son niveau le plus bas.
                 </p>
 <p>
-                    L’hippocampe, cette région cérébrale qui participe à la transformation des expériences à court terme en souvenirs durables, fonctionne aussi différemment pendant le sommeil. Selon une étude publiée dans <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Neuron</em> (2019)</a>, le transfert des informations entre l’hippocampe et le cortex diminue pendant le sommeil paradoxal.
+                    L’hippocampe, cette région cérébrale qui participe à la transformation des expériences à court terme en souvenirs durables, fonctionne aussi différemment pendant le sommeil. Selon une étude publiée dans <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Science</em> (2019)</a>, le transfert des informations entre l’hippocampe et le cortex diminue pendant le sommeil paradoxal.
                 </p>
 <blockquote>
                     « Nous rêvons plusieurs fois par nuit, mais nous ne nous souvenons que d’une partie de cette activité onirique. »
@@ -239,7 +239,7 @@
                     Certaines personnes qui méditent régulièrement rapportent un rappel plus précis. <strong>La méditation entraîne la conscience métacognitive</strong>, c’est-à-dire la capacité à observer ses pensées et ses états mentaux.
                 </p>
 <p>
-                    Une étude de l’<a href="https://pubmed.ncbi.nlm.nih.gov/26256788/" rel="nofollow noopener noreferrer" target="_blank">Université de Lincoln (2015)</a> a observé une association entre méditation, rappel des rêves et lucidité onirique, sans garantir le même effet pour chacun.
+                    Une étude de l’Université de Lincoln (2015) a observé une association entre méditation, rappel des rêves et lucidité onirique, sans garantir le même effet pour chacun.
                 </p>
 <h3>Exercice de méditation avant le sommeil</h3>
 <ul>
