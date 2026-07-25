@@ -119,9 +119,9 @@
 <li><strong>Persönlich wachsen</strong> - neue Aspekte Ihrer selbst entwickeln</li>
 <li><strong>Manifestieren Ziele</strong> - auf etwas hinarbeiten, das noch nicht verwirklicht wurde</li>
 </ul>
-<blockquote>
-                    "In Schwangerschaftsträumen geht es darum, sich selbst zur Welt zu bringen – neue Ideen, neue Lebensweisen, neue Kapitel Ihrer Lebensgeschichte." - Dr. Patricia Garfield, Traumforscherin
-                </blockquote>
+<p>
+                    Außerhalb einer tatsächlichen Schwangerschaft kann dieses Bild auch ein neues Projekt, eine neue Rolle oder einen neuen Lebensabschnitt begleiten. Der persönliche Kontext ist wichtiger als jede feste Symbolregel.
+                </p>
 <h2 id="scenarios">Häufige Schwangerschaftstraumszenarien und Interpretationen</h2>
 <p>
                     Das spezifische Schwangerschaftstraumszenario liefert Hinweise auf die Bedeutung des Traums:
@@ -264,9 +264,9 @@
 <p>
                     Schwangere träumen häufig von: dem Geschlecht oder Aussehen des Babys, <strong>Wehen- und Entbindungsszenarien</strong>, der Pflege des Neugeborenen und manchmal belastenden Szenarien, die die zugrunde liegende Situation widerspiegeln Ängste.
                 </p>
-<blockquote>
-                    "Träume während der Schwangerschaft dienen als Proben für die Mutterschaft und ermöglichen es der Psyche, sich auf die bevorstehende tiefgreifende Transformation vorzubereiten." - Dr. Alan Siegel, Schwangerschaftstraumforscher
-                </blockquote>
+<p>
+                    Während der Schwangerschaft können Träume praktische Sorgen, Erwartungen und Gefühle rund um Geburt oder Fürsorge widerspiegeln. Sie sagen den Verlauf einer Schwangerschaft nicht voraus.
+                </p>
 <h2 id="action">Arbeiten mit Schwangerschaftsträumen: Wie man sie interpretiert</h2>
 <h3>1. Identifizieren Sie, was sich in Ihrem Leben entwickelt.</h3>
 <p>

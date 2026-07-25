@@ -209,9 +209,9 @@
 <p>
                     Pendant le sommeil, votre cerveau consolide les souvenirs et expériences. <strong>Les événements stressants sont rejoués</strong> alors que votre esprit tente de les traiter et les archiver. C'est pourquoi les cauchemars suivent souvent des journées difficiles.
                 </p>
-<blockquote>
-                    « Les cauchemars sont la façon dont la psyché attire l'attention sur quelque chose qui doit être traité. Ce n'est pas une punition - c'est une information. » - Dr. Rosalind Cartwright, Chercheuse sur les rêves
-                </blockquote>
+<p>
+                    Les cauchemars peuvent attirer l’attention sur du stress ou des expériences qui semblent encore non résolues. Ils ne constituent pas une punition, et un rêve isolé ne permet pas d’établir un diagnostic.
+                </p>
 <h2 id="types">Les differents types de cauchemars et mauvais reves</h2>
 <h3>Cauchemars lies au stress et a l'anxiete</h3>
 <p>
