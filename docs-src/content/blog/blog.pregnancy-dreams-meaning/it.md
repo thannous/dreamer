@@ -397,6 +397,7 @@
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
 <li><a href="https://doi.org/10.1093/sleep/30.9.1162" rel="nofollow noopener noreferrer" target="_blank">Nielsen &amp; Paquette (2007) — Comportamenti associati ai sogni nelle donne in gravidanza e nel postpartum (Sleep)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/24780135/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2014) — Sogni disturbati durante il terzo trimestre di gravidanza (PubMed)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/23986734/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2013) — Rappresentazioni materne nei sogni delle donne in gravidanza (PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Sogni durante la gravidanza</a></li>
 </ul>
