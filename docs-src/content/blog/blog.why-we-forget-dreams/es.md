@@ -120,7 +120,7 @@
                     Estudios de neuroimagen han revelado que <strong>la comunicación entre el hipocampo y la corteza cerebral se reduce durante el sueño REM</strong>. Esta desconexión parcial explica por qué los sueños, incluso los más intensos, no se almacenan automáticamente en nuestra memoria a largo plazo. La transferencia de información necesaria para la memorización simplemente se interrumpe.
                 </p>
 <p>
-                    Una investigación publicada en <em>Neuron</em> en 2019 por el equipo del Dr. Thomas Kilduff demostró que ciertas neuronas del hipotálamo, llamadas neuronas MCH (hormona concentradora de melanina), se activan específicamente durante el sueño REM y <strong>suprimen activamente la formación de recuerdos</strong>.
+                    Una investigación publicada en <em>Science</em> en 2019 por el equipo del Dr. Thomas Kilduff demostró que ciertas neuronas del hipotálamo, llamadas neuronas MCH (hormona concentradora de melanina), se activan específicamente durante el sueño REM y <strong>suprimen activamente la formación de recuerdos</strong>.
                 </p>
 <h3>La noradrenalina: el neurotransmisor clave en la memoria de los sueños</h3>
 <p>
@@ -453,7 +453,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Para profundizar</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank">Izawa et al. (2019) — Neuronas MCH y olvido durante el sueño REM (Neuron, PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank">Izawa et al. (2019) — Neuronas MCH y olvido durante el sueño REM (Science, PubMed)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Mecanismos del recuerdo de sueños (revisión, PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Etapas del sueño</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net - G. William Domhoff (dream research overview)</a></li>

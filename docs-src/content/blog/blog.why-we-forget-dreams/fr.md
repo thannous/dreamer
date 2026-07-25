@@ -120,7 +120,7 @@
                     Des études en neuroimagerie ont révélé que <strong>la communication entre l'hippocampe et le cortex cérébral est réduite pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a></strong>. Cette déconnexion partielle explique pourquoi les rêves, même les plus intenses, ne sont pas automatiquement stockés dans notre mémoire à long terme. Le transfert d'informations nécessaire à la mémorisation est tout simplement interrompu.
                 </p>
 <p>
-                    Une recherche publiée dans <em>Neuron</em> en 2019 par l'équipe du Dr Thomas Kilduff a mis en évidence que certains neurones de l'hypothalamus, appelés neurones MCH (hormone de concentration de melanine), s'activent spécifiquement pendant le sommeil paradoxal et <strong>suppriment activement la formation de souvenirs</strong>.
+                    Une recherche publiée dans <em>Science</em> en 2019 par l'équipe du Dr Thomas Kilduff a mis en évidence que certains neurones de l'hypothalamus, appelés neurones MCH (hormone de concentration de melanine), s'activent spécifiquement pendant le sommeil paradoxal et <strong>suppriment activement la formation de souvenirs</strong>.
                 </p>
 <h3>La noradrénaline : le neurotransmetteur clé de la mémoire des rêves</h3>
 <p>
@@ -435,7 +435,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank">Izawa et al. (2019) — Neurones MCH et oubli pendant le sommeil paradoxal (Neuron, PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank">Izawa et al. (2019) — Neurones MCH et oubli pendant le sommeil paradoxal (Science, PubMed)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Mécanismes du rappel des rêves (revue, PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Les stades du sommeil</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net - G. William Domhoff (dream research overview)</a></li>

@@ -141,7 +141,7 @@
                     Before diving into techniques, let's understand the mechanism. <strong>Dream forgetting is not a flaw</strong>, but a natural feature of our brain. During <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> (when most vivid dreams occur), norepinephrine - a neurotransmitter essential for memory formation - reaches its lowest level.
                 </p>
 <p>
-                    The hippocampus, the brain region responsible for turning short-term experiences into lasting memories, also functions differently during sleep. According to a study published in <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Neuron</em> (2019)</a>, information transfer between the hippocampus and cortex drops during REM sleep.
+                    The hippocampus, the brain region responsible for turning short-term experiences into lasting memories, also functions differently during sleep. According to a study published in <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Science</em> (2019)</a>, information transfer between the hippocampus and cortex drops during REM sleep.
                 </p>
 <blockquote>
                     "We dream approximately 4-6 times per night, totaling nearly 2 hours. Yet we only remember a tiny fraction of this dream activity."
@@ -244,7 +244,7 @@
                     Regular meditation practitioners often report better dream recall. The reason? <strong>Meditation <a class="text-dream-salmon hover:underline" href="../symbols/train">trains</a> meta-cognitive awareness</strong> - the ability to observe one's own thoughts and mental states.
                 </p>
 <p>
-                    A study from the <a href="https://pubmed.ncbi.nlm.nih.gov/26256788/" rel="nofollow noopener noreferrer" target="_blank">University of Lincoln (2015)</a> showed that meditators have better ability to remember their dreams and achieve dream lucidity.
+                    A study from the University of Lincoln (2015) showed that meditators have better ability to remember their dreams and achieve dream lucidity.
                 </p>
 <h3>Simple Exercise</h3>
 <ul>

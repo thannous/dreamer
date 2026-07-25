@@ -397,7 +397,7 @@
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology – Traum</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net – G. William Domhoff (Überblick über die Traumforschung)</a></li>
 <li><a href="https://www.sleepfoundation.org/dreams/lucid-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation – Klare Träume (Techniken und Sicherheit)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/11384503/" rel="nofollow noopener noreferrer" target="_blank">Krakow et al. (2001) – Imagery Rehearsal Therapy für Albträume (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/11476655/" rel="nofollow noopener noreferrer" target="_blank">Krakow et al. (2001) – Imagery Rehearsal Therapy für Albträume (PubMed)</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Letzte Aktualisierung: 26. Dezember 2025</p>
 </section>

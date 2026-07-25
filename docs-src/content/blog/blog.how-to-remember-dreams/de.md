@@ -124,7 +124,7 @@
                     Bevor wir uns mit den Techniken befassen, hilft ein Blick auf den Mechanismus. <strong>Traumvergessen ist kein Fehler</strong>, sondern eine natürliche Eigenschaft des Gedächtnisses. Während des <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlafs</a> erreicht der Noradrenalinspiegel einen niedrigen Wert.
                 </p>
 <p>
-                    Der Hippocampus, die Gehirnregion, die kurzfristige Erlebnisse in bleibende Erinnerungen umwandelt, funktioniert im Schlaf ebenfalls anders. Laut einer in <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Neuron</em> (2019)</a> veröffentlichten Studie sinkt die Informationsübertragung zwischen Hippocampus und Kortex während des REM-Schlafs.
+                    Der Hippocampus, die Gehirnregion, die kurzfristige Erlebnisse in bleibende Erinnerungen umwandelt, funktioniert im Schlaf ebenfalls anders. Laut einer in <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Science</em> (2019)</a> veröffentlichten Studie sinkt die Informationsübertragung zwischen Hippocampus und Kortex während des REM-Schlafs.
                 </p>
 <blockquote>
                     "Wir träumen ungefähr 4-6 Mal pro Nacht, insgesamt fast 2 Stunden. Doch wir erinnern uns nur an einen winzigen Bruchteil dieser Traumaktivität."
@@ -224,7 +224,7 @@
                     Manche Menschen, die regelmäßig meditieren, berichten von einer klareren Traumerinnerung. <strong>Meditation übt metakognitive Aufmerksamkeit</strong>, also das Beobachten eigener Gedanken und Zustände.
                 </p>
 <p>
-                    Eine Studie der <a href="https://pubmed.ncbi.nlm.nih.gov/26256788/" rel="nofollow noopener noreferrer" target="_blank">University of Lincoln (2015)</a> fand einen Zusammenhang zwischen Meditation, Traumerinnerung und Klartraumerleben; daraus folgt keine Garantie für den Einzelnen.
+                    Eine Studie der University of Lincoln (2015) fand einen Zusammenhang zwischen Meditation, Traumerinnerung und Klartraumerleben; daraus folgt keine Garantie für den Einzelnen.
                 </p>
 <h3>Einfache Übung</h3>
 <ul>

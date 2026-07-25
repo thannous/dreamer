@@ -124,7 +124,7 @@
                     Prima di immergerci nelle tecniche, comprendiamo il meccanismo. <strong>Dimenticare i sogni non è un difetto</strong>, ma una caratteristica naturale del nostro cervello. Durante <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">il sonno REM</a> (quando si verificano i sogni più vividi), la norepinefrina, un neurotrasmettitore essenziale per la formazione della memoria, raggiunge il suo livello più basso.
                 </p>
 <p>
-                    L'ippocampo, la regione del cervello responsabile della trasformazione delle esperienze a breve termine in ricordi duraturi, funziona anch'esso in modo diverso durante il sonno. Secondo uno studio pubblicato su <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Neuron</em> (2019)</a>, il trasferimento di informazioni tra l'ippocampo e la corteccia diminuisce durante il sonno REM.
+                    L'ippocampo, la regione del cervello responsabile della trasformazione delle esperienze a breve termine in ricordi duraturi, funziona anch'esso in modo diverso durante il sonno. Secondo uno studio pubblicato su <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Science</em> (2019)</a>, il trasferimento di informazioni tra l'ippocampo e la corteccia diminuisce durante il sonno REM.
                 </p>
 <blockquote>
                     "Sogniamo circa 4-6 volte a notte, per un totale di quasi 2 ore. Eppure ricordiamo solo una piccola parte di questa attività onirica."
@@ -224,7 +224,7 @@
                     Alcune persone che meditano regolarmente riferiscono un ricordo più nitido. <strong>La meditazione allena la consapevolezza metacognitiva</strong>, cioè la capacità di osservare pensieri e stati mentali.
                 </p>
 <p>
-                    Uno studio dell’<a href="https://pubmed.ncbi.nlm.nih.gov/26256788/" rel="nofollow noopener noreferrer" target="_blank">Università di Lincoln (2015)</a> ha osservato un’associazione tra meditazione, ricordo e lucidità onirica, senza garantire lo stesso effetto per tutti.
+                    Uno studio dell’Università di Lincoln (2015) ha osservato un’associazione tra meditazione, ricordo e lucidità onirica, senza garantire lo stesso effetto per tutti.
                 </p>
 <h3>Esercizio semplice</h3>
 <ul>
