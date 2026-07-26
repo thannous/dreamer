@@ -9,3 +9,14 @@ export const TAB_BAR_MARGIN_ANDROID = 6;
 export const TAB_BAR_MARGIN_IOS = 12;
 export const TAB_BAR_MARGIN = Platform.OS === 'android' ? TAB_BAR_MARGIN_ANDROID : TAB_BAR_MARGIN_IOS;
 export const TAB_BAR_CONTENT_BOTTOM_PADDING = 12;
+export const TAB_BAR_HORIZONTAL_MARGIN = 22;
+
+export const getTabBarHorizontalLayout = (viewportWidth: number) => {
+  const availableWidth = Math.max(0, viewportWidth - TAB_BAR_HORIZONTAL_MARGIN * 2);
+  const width = Math.min(availableWidth, TAB_BAR_MAX_WIDTH);
+
+  return {
+    left: Math.max(0, (viewportWidth - width) / 2),
+    width,
+  };
+};

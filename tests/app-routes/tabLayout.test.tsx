@@ -5,6 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 const mockUseAuth = jest.fn();
 let capturedTabBarStyle: unknown = null;
+let mockPlatformOS: 'android' | 'ios' | 'web' = 'ios';
+let mockWindowWidth = 390;
 
 afterEach(cleanup);
 
@@ -30,11 +32,20 @@ jest.doMock('expo-router', () => {
 });
 
 jest.doMock('react-native', () => ({
-  Platform: { OS: 'ios' },
+  Platform: {
+    get OS() {
+      return mockPlatformOS;
+    },
+  },
   StyleSheet: { create: <T extends Record<string, unknown>>(styles: T) => styles },
   Text: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
   View: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
-  useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
+  useWindowDimensions: () => ({
+    width: mockWindowWidth,
+    height: 844,
+    scale: 1,
+    fontScale: 1,
+  }),
 }));
 
 jest.doMock('react-native-safe-area-context', () => ({
@@ -93,6 +104,8 @@ const { default: TabLayout } = require('@/app/(tabs)/_layout');
 describe('TabLayout returning guest navigation', () => {
   beforeEach(() => {
     capturedTabBarStyle = null;
+    mockPlatformOS = 'ios';
+    mockWindowWidth = 390;
   });
 
   it('hides the entire bottom navigation while authentication is required', () => {
@@ -112,6 +125,22 @@ describe('TabLayout returning guest navigation', () => {
       bottom: 34,
       height: 86,
       position: 'absolute',
+    }));
+  });
+
+  it('centers and bounds the tab bar on a wide Android window', () => {
+    mockPlatformOS = 'android';
+    mockWindowWidth = 1280;
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+
+    render(<TabLayout />);
+
+    expect(capturedTabBarStyle).toEqual(expect.objectContaining({
+      left: 160,
+      width: 960,
+    }));
+    expect(capturedTabBarStyle).not.toEqual(expect.objectContaining({
+      right: expect.anything(),
     }));
   });
 });
