@@ -111,6 +111,7 @@ import {
   AppState,
   Keyboard,
   KeyboardAvoidingView,
+  Platform,
   type LayoutChangeEvent,
   ScrollView,
   StyleSheet,
@@ -1454,11 +1455,12 @@ export default function RecordingScreen() {
 
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const gradientColors = noctalia.screen.gradient;
+  const isDesktopWeb = Platform.OS === 'web' && viewportWidth >= DESKTOP_BREAKPOINT;
   const fixedFooterBottomOffset = keyboardVisible
     ? insets.bottom
-    : viewportWidth < DESKTOP_BREAKPOINT
-      ? Math.max(bottomNavHeight, insets.bottom)
-      : insets.bottom;
+    : isDesktopWeb
+      ? insets.bottom
+      : Math.max(bottomNavHeight, insets.bottom);
   const recordingGuideBottomOffset = keyboardVisible
     ? Math.max(keyboardHeight, insets.bottom)
     : fixedFooterBottomOffset;
@@ -2045,7 +2047,7 @@ export default function RecordingScreen() {
             </View>
           ) : null}
         </KeyboardAvoidingView>
-        {!keyboardVisible && viewportWidth < DESKTOP_BREAKPOINT ? (
+        {!keyboardVisible && !isDesktopWeb ? (
           <NoctaliaBottomNav
             activeKey="addDream"
             addDreamIcon={inputMode === 'voice' ? 'mic' : 'pencil'}

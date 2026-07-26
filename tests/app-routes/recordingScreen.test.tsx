@@ -20,8 +20,10 @@ const mockStopRecording = jest.fn();
 const mockTrackProductEvent = jest.fn().mockResolvedValue(undefined);
 
 let mockDreams: DreamAnalysis[] = [];
+let mockPlatformOS: 'android' | 'web' = 'web';
 let mockRecordingPermissionState: 'unknown' | 'granted' | 'denied' = 'unknown';
 let mockReferenceImagesEnabled = false;
+let mockViewportWidth = 390;
 
 const buildDream = (transcript: string, id = 42): DreamAnalysis => ({
   id,
@@ -114,8 +116,11 @@ jest.doMock('react-native', () => {
     },
     KeyboardAvoidingView: createElement('div'),
     Platform: {
-      OS: 'web',
-      select: (values: Record<string, any>) => values?.web ?? values?.default,
+      get OS() {
+        return mockPlatformOS;
+      },
+      select: (values: Record<string, any>) =>
+        values?.[mockPlatformOS] ?? values?.default,
     },
     ScrollView: MockScrollView,
     StyleSheet: {
@@ -125,7 +130,12 @@ jest.doMock('react-native', () => {
     },
     TextInput: createElement('textarea'),
     View: createElement('div'),
-    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
+    useWindowDimensions: () => ({
+      width: mockViewportWidth,
+      height: 844,
+      scale: 1,
+      fontScale: 1,
+    }),
   };
 });
 
@@ -152,7 +162,7 @@ jest.doMock('@/components/journal/SubjectProposition', () => ({
 }));
 
 jest.doMock('@/components/navigation/NoctaliaBottomNav', () => ({
-  NoctaliaBottomNav: () => null,
+  NoctaliaBottomNav: () => <div data-testid="recording-bottom-nav" />,
 }));
 
 jest.doMock('@/components/recording/AtmosphereBackground', () => ({
@@ -508,8 +518,10 @@ const { default: RecordingScreen } = require('@/app/recording');
 describe('Recording screen', () => {
   beforeEach(() => {
     mockDreams = [];
+    mockPlatformOS = 'web';
     mockRecordingPermissionState = 'unknown';
     mockReferenceImagesEnabled = false;
+    mockViewportWidth = 390;
     mockAddDream.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream, id: 42 }));
     mockApplyDreamCategorization.mockResolvedValue(null);
     mockCategorizeDream.mockResolvedValue({
@@ -544,6 +556,24 @@ describe('Recording screen', () => {
       expect(mockStartRecording).toHaveBeenCalledTimes(1);
       expect(mockStartRecording).toHaveBeenCalledWith('');
     });
+  });
+
+  it('keeps capture navigation available on a wide Android window', () => {
+    mockPlatformOS = 'android';
+    mockViewportWidth = 1280;
+
+    render(<RecordingScreen />);
+
+    expect(screen.getByTestId('recording-bottom-nav')).toBeTruthy();
+  });
+
+  it('keeps capture navigation hidden on desktop Web', () => {
+    mockPlatformOS = 'web';
+    mockViewportWidth = 1280;
+
+    render(<RecordingScreen />);
+
+    expect(screen.queryByTestId('recording-bottom-nav')).toBeNull();
   });
 
   it('keeps a voice failure visible until the user explicitly switches to text', async () => {

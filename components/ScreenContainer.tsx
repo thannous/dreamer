@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { Platform, StyleSheet, View, type ViewProps, useWindowDimensions } from 'react-native';
 
-import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH } from '@/constants/layout';
+import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TABLET_BREAKPOINT } from '@/constants/layout';
 
 export type ScreenContainerProps = ViewProps & {
   children: ReactNode;
@@ -17,9 +17,11 @@ export function ScreenContainer({
   ...rest
 }: ScreenContainerProps) {
   const { width } = useWindowDimensions();
-  const isDesktopWeb = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
+  const isWideConstrainedLayout =
+    (Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT)
+    || (Platform.OS === 'android' && width >= TABLET_BREAKPOINT);
 
-  if (!isDesktopWeb) {
+  if (!isWideConstrainedLayout) {
     return (
       <View style={style} {...rest}>
         {children}
