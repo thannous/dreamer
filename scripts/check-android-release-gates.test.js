@@ -79,6 +79,17 @@ function setupFixture({ versionCode = 33 } = {}) {
         package: 'com.tanuki75.noctalia',
         versionCode,
       },
+      plugins: [
+        [
+          'expo-build-properties',
+          {
+            android: {
+              enableMinifyInReleaseBuilds: true,
+              enableShrinkResourcesInReleaseBuilds: true,
+            },
+          },
+        ],
+      ],
     },
   });
   writeJson(root, 'eas.json', validEasJson());
@@ -380,6 +391,58 @@ describe('android release gate preflight', () => {
       )
     ).toBe(true);
     expect(report.checks.some((check) => check.title === 'Play-installed RevenueCat purchase and restore')).toBe(false);
+  });
+
+  it('reports the enabled Android Release optimizations', () => {
+    const root = setupFixture();
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn: spawnWithTools(),
+      phase: 'prebuild',
+    });
+
+    expect(report.checks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          status: 'pass',
+          title: 'Android Release R8 minification and resource shrinking',
+          details:
+            'expo-build-properties Android: enableMinifyInReleaseBuilds=true, enableShrinkResourcesInReleaseBuilds=true.',
+        }),
+      ])
+    );
+  });
+
+  it.each([
+    ['minification', 'enableMinifyInReleaseBuilds'],
+    ['resource shrinking', 'enableShrinkResourcesInReleaseBuilds'],
+  ])('fails prebuild when Android Release %s is disabled', (_label, property) => {
+    const root = setupFixture();
+    const appConfig = JSON.parse(
+      fs.readFileSync(path.join(root, 'app.json'), 'utf8')
+    );
+    appConfig.expo.plugins[0][1].android[property] = false;
+    writeJson(root, 'app.json', appConfig);
+
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn: spawnWithTools(),
+      phase: 'prebuild',
+    });
+    const optimizationCheck = report.checks.find(
+      (check) =>
+        check.title ===
+        'Android Release R8 minification and resource shrinking'
+    );
+
+    expect(report.ok).toBe(false);
+    expect(optimizationCheck).toMatchObject({
+      status: 'fail',
+    });
+    expect(optimizationCheck.details).toContain(`${property}=false`);
+    expect(formatReport(report)).toContain(
+      'Next: Set expo-build-properties android.enableMinifyInReleaseBuilds and android.enableShrinkResourcesInReleaseBuilds to true in app.json.'
+    );
   });
 
   it('passes the Google Cloud project number check from a local snapshot', () => {

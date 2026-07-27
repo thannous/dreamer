@@ -1,12 +1,10 @@
 import { memo } from 'react';
-import { Dimensions, StyleSheet } from 'react-native';
+import { StyleSheet, useWindowDimensions } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { MotiView } from '@/lib/moti';
-
-const { width } = Dimensions.get('window');
 
 type FloatingCloudRowProps = {
   top: number;
@@ -17,6 +15,7 @@ type FloatingCloudRowProps = {
 
 function FloatingCloudRowComponent({ top, delay = 0, opacity = 0.4, reverse = false }: FloatingCloudRowProps) {
   const { colors, mode } = useTheme();
+  const { width } = useWindowDimensions();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const travel = width + 220;
 
