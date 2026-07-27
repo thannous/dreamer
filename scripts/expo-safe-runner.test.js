@@ -4,6 +4,7 @@
 const path = require('node:path');
 
 const {
+  isAndroidRun,
   loadEnvProfile,
   parseRunnerArgs,
 } = require('./expo-safe-runner');
@@ -42,6 +43,14 @@ describe('expo-safe-runner', () => {
         '--profile',
         '.env.teststore',
       ])).toThrow('--profile can only be provided once');
+    });
+  });
+
+  describe('isAndroidRun', () => {
+    it('recognizes native Android and Android-opening commands', () => {
+      expect(isAndroidRun(['run:android'])).toBe(true);
+      expect(isAndroidRun(['start', '--android'])).toBe(true);
+      expect(isAndroidRun(['start', '--web'])).toBe(false);
     });
   });
 

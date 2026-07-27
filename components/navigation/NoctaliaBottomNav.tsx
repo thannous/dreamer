@@ -1,5 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DESKTOP_BREAKPOINT, TAB_BAR_HEIGHT } from '@/constants/layout';
+import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
@@ -44,13 +44,14 @@ export function NoctaliaBottomNav({
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
 
   if (width >= DESKTOP_BREAKPOINT) {
     return null;
   }
 
-  const floatingBottomInset = Math.max(insets.bottom, 14);
+  const navigationLayout = getBottomNavigationLayout(width, height);
+  const floatingBottomInset = Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   const barBackground = noctalia.nav.background;
   const barBorder = noctalia.nav.border;
   const navActiveColor = noctalia.nav.active;
@@ -110,8 +111,10 @@ export function NoctaliaBottomNav({
         onLayout={onBarLayout}
         style={[
           styles.bar,
+          navigationLayout.compact && styles.compactBar,
           {
             bottom: floatingBottomInset,
+            height: navigationLayout.barHeight,
             backgroundColor: barBackground,
             borderColor: barBorder,
           },
@@ -138,6 +141,7 @@ export function NoctaliaBottomNav({
                 <View
                   style={[
                     styles.addItem,
+                    navigationLayout.compact && styles.compactAddItem,
                     {
                       backgroundColor: addBackground,
                       borderColor: addBorder,
@@ -157,7 +161,12 @@ export function NoctaliaBottomNav({
                   </Text>
                 </View>
               ) : (
-                <View style={styles.standardItem}>
+                <View
+                  style={[
+                    styles.standardItem,
+                    navigationLayout.compact && styles.compactStandardItem,
+                  ]}
+                >
                   <IconSymbol
                     size={24}
                     name={item.icon}
@@ -166,6 +175,7 @@ export function NoctaliaBottomNav({
                   <Text
                     style={[
                       styles.label,
+                      navigationLayout.compact && styles.compactLabel,
                       { color: isActive ? navActiveColor : navInactiveColor },
                     ]}
                     numberOfLines={1}
@@ -196,7 +206,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 22,
     right: 22,
-    height: TAB_BAR_HEIGHT,
     paddingHorizontal: 8,
     paddingTop: 7,
     paddingBottom: 7,
@@ -208,6 +217,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 24,
     elevation: 14,
+  },
+  compactBar: {
+    borderRadius: 28,
+    paddingTop: 4,
+    paddingBottom: 4,
   },
   item: {
     flex: 1,
@@ -221,9 +235,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 5,
   },
+  compactStandardItem: {
+    gap: 1,
+  },
   label: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
+  },
+  compactLabel: {
+    fontSize: 11,
   },
   addItem: {
     width: 72,
@@ -239,6 +259,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.24,
     shadowRadius: 14,
     elevation: 8,
+  },
+  compactAddItem: {
+    width: 60,
+    height: 56,
+    borderRadius: 22,
+    gap: 1,
+    transform: [{ translateY: -4 }],
   },
   addLabel: {
     fontFamily: Fonts.spaceGrotesk.bold,

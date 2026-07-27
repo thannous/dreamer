@@ -21,6 +21,7 @@ const mockSaveLastSeenReleaseNotesVersion = typedJestFn<
 let mockMode: 'light' | 'dark' = 'dark';
 let mockOnboardingStatus: 'not_started' | 'completed' | 'skipped' = 'completed';
 let mockOnboardingLoading = false;
+let mockOnboardingScope = 'guest:default';
 
 jest.mock('react-native', () => {
   const React = require('react');
@@ -78,6 +79,7 @@ jest.mock('@/components/ui/icon-symbol', () => ({
 jest.mock('@/context/OnboardingContext', () => ({
   useOnboarding: () => ({
     loading: mockOnboardingLoading,
+    scope: mockOnboardingScope,
     state: { status: mockOnboardingStatus },
   }),
 }));
@@ -148,6 +150,7 @@ describe('WhatsNewModal', () => {
     mockMode = 'dark';
     mockOnboardingStatus = 'completed';
     mockOnboardingLoading = false;
+    mockOnboardingScope = 'guest:default';
     mockGetLastSeenReleaseNotesVersion.mockResolvedValue(null);
     mockSaveLastSeenReleaseNotesVersion.mockResolvedValue(undefined);
   });
@@ -207,5 +210,21 @@ describe('WhatsNewModal', () => {
 
     await waitFor(() => expect(mockGetLastSeenReleaseNotesVersion).toHaveBeenCalledTimes(1));
     expect(seenView.queryByTestId(TID.Modal.WhatsNew)).toBeNull();
+  });
+
+  it('marks release notes seen without interrupting a freshly completed onboarding', async () => {
+    mockOnboardingStatus = 'not_started';
+    const view = render(<WhatsNewModalHost ready />);
+
+    expect(view.queryByTestId(TID.Modal.WhatsNew)).toBeNull();
+
+    mockOnboardingStatus = 'completed';
+    view.rerender(<WhatsNewModalHost ready />);
+
+    await waitFor(() =>
+      expect(mockSaveLastSeenReleaseNotesVersion).toHaveBeenCalledWith(RELEASE_NOTES_VERSION)
+    );
+    expect(mockGetLastSeenReleaseNotesVersion).not.toHaveBeenCalled();
+    expect(view.queryByTestId(TID.Modal.WhatsNew)).toBeNull();
   });
 });

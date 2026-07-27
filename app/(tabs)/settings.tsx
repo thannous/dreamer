@@ -39,12 +39,15 @@ export default function SettingsScreen() {
   const bottomTabBarHeight = useBottomTabBarHeight();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const appVersion = getAppVersionString();
   useClearWebFocus();
 
   const isCompactLayout = width <= 375;
   const isDesktopLayout = Platform.OS === 'web' && width >= 1024;
+  const nativeHostKey = Platform.OS === 'android'
+    ? `${Math.round(width)}x${Math.round(height)}`
+    : undefined;
   const bottomPadding = isDesktopLayout || returningGuestBlocked
     ? ThemeLayout.spacing.xl
     : bottomTabBarHeight + ThemeLayout.spacing.md;
@@ -142,6 +145,7 @@ export default function SettingsScreen() {
         <Host
           colorScheme={mode}
           ignoreSafeArea="all"
+          key={nativeHostKey}
           seedColor={noctalia.accent.base}
           style={hostStyle}
         >
