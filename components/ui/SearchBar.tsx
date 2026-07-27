@@ -8,6 +8,7 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
 interface SearchBarProps {
+  autoFocus?: boolean;
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
@@ -28,6 +29,7 @@ const webInputFocusResetStyle: WebTextInputStyle | null = Platform.OS === 'web'
   : null;
 
 export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function SearchBar({
+  autoFocus = false,
   value,
   onChangeText,
   placeholder,
@@ -83,6 +85,7 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
         ]}
         testID={inputTestID}
         accessibilityLabel={placeholder}
+        autoFocus={autoFocus}
         returnKeyType="search"
         showSoftInputOnFocus
         autoCapitalize="none"

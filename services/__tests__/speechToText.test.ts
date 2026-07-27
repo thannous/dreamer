@@ -109,14 +109,18 @@ describe('transcribeAudio', () => {
 
   it('rethrows request failures as a user-facing transcription error', async () => {
     setPlatform('ios');
+    (globalThis as typeof globalThis & { __DEV__: boolean }).__DEV__ = true;
     mockFetchJSONWithSession.mockRejectedValueOnce(new Error('Network error'));
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     await expect(transcribeAudio({ uri: 'file:///tmp/audio.wav' })).rejects.toThrow(
       'Failed to transcribe audio. Please try again.'
     );
-    expect(errorSpy).toHaveBeenCalledWith('[speechToText] fallback request failed');
+    expect(warnSpy).toHaveBeenCalledWith('[speechToText] fallback request failed');
+    expect(errorSpy).not.toHaveBeenCalled();
 
+    warnSpy.mockRestore();
     errorSpy.mockRestore();
   });
 

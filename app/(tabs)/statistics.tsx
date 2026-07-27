@@ -21,7 +21,7 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DESKTOP_BREAKPOINT } from '@/constants/layout';
+import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
 import type { LabelLineConfig, pieDataItem } from 'react-native-gifted-charts';
 import { PieChart } from 'react-native-gifted-charts';
 import { Line, Rect, Svg, Text as SvgText } from 'react-native-svg';
@@ -727,7 +727,7 @@ export default function StatisticsScreen() {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const scrollPerf = useScrollIdle();
   const { isActive: isPlusActive } = useSubscription();
   useClearWebFocus();
@@ -740,6 +740,12 @@ export default function StatisticsScreen() {
   );
   const stats = useDreamStatistics(periodDreams);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
+  const navigationLayout = getBottomNavigationLayout(width, height);
+  const scrollBottomPadding = isDesktopLayout
+    ? ThemeLayout.spacing.xl
+    : navigationLayout.barHeight
+      + navigationLayout.minimumBottomInset
+      + ThemeLayout.spacing.lg;
   const pieMetrics = useMemo(() => getPieMetrics(width), [width]);
   const dreamProfile = useMemo(() => buildDreamProfile(dreams), [dreams]);
   const statsInsight = useMemo(() => getDreamStatsInsight(stats), [stats]);
@@ -990,7 +996,10 @@ export default function StatisticsScreen() {
           <ScrollView
             style={styles.scrollView}
             contentInsetAdjustmentBehavior="automatic"
-            contentContainerStyle={styles.emptyScrollContent}
+            contentContainerStyle={[
+              styles.emptyScrollContent,
+              { paddingBottom: scrollBottomPadding },
+            ]}
             showsVerticalScrollIndicator={false}
           >
             <ScreenContainer>
@@ -1033,9 +1042,7 @@ export default function StatisticsScreen() {
         <ScrollView
           style={styles.scrollView}
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={{
-            paddingBottom: ThemeLayout.spacing.xl,
-          }}
+          contentContainerStyle={{ paddingBottom: scrollBottomPadding }}
           showsVerticalScrollIndicator={false}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}

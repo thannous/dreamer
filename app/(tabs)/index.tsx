@@ -19,7 +19,7 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { DecoLines, ThemeLayout } from "@/constants/journalTheme";
 import {
   DESKTOP_BREAKPOINT,
-  TAB_BAR_HEIGHT,
+  getBottomNavigationLayout,
 } from "@/constants/layout";
 import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from "@/constants/noctaliaDesign";
 import { Fonts } from "@/constants/theme";
@@ -140,7 +140,7 @@ export default function InspirationScreen() {
     () => getDreamGuideCopy((currentLang ?? "en") as DreamGuideLanguage),
     [currentLang],
   );
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const scrollPerf = useScrollIdle();
   useClearWebFocus();
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
@@ -150,10 +150,13 @@ export default function InspirationScreen() {
   const [showAnimations, setShowAnimations] = useState(false);
 
   const isDesktopLayout = Platform.OS === "web" && width >= DESKTOP_BREAKPOINT;
+  const navigationLayout = getBottomNavigationLayout(width, height);
 
   const scrollContentBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
-    : TAB_BAR_HEIGHT + ThemeLayout.spacing.lg;
+    : navigationLayout.barHeight
+      + navigationLayout.minimumBottomInset
+      + ThemeLayout.spacing.lg;
   const handleOpenSymbols = useCallback(() => {
     router.push("/symbol-dictionary" as any);
   }, []);

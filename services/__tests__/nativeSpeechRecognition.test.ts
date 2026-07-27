@@ -382,6 +382,74 @@ describe('native speech module integration', () => {
     expect(clearTimeoutSpy).toHaveBeenCalled();
   });
 
+  it('notifies the caller when recognition ends without an explicit stop', async () => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'android';
+    (Platform as any).Version = 36;
+
+    const listeners = new Map<string, (event?: any) => void>();
+    const speechModule = {
+      isRecognitionAvailable: () => true,
+      requestPermissionsAsync: async () => ({ granted: true }),
+      supportsOnDeviceRecognition: () => false,
+      supportsRecording: () => true,
+      getStateAsync: async () => 'inactive',
+      start: jest.fn(),
+      stop: jest.fn(() => {
+        listeners.get('end')?.();
+      }),
+      abort: jest.fn(),
+      addListener: jest.fn((event: string, cb: (payload?: any) => void) => {
+        listeners.set(event, cb);
+        return { remove: jest.fn() };
+      }),
+    } as any;
+
+    __setCachedSpeechModuleForTests(speechModule);
+
+    const onEnd = jest.fn();
+    const session = await startNativeSpeechSession('en-US', { onEnd });
+
+    listeners.get('end')?.();
+
+    expect(onEnd).toHaveBeenCalledTimes(1);
+    await session!.stop();
+    expect(onEnd).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not report an explicit stop as an unexpected native end', async () => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'android';
+    (Platform as any).Version = 36;
+
+    const listeners = new Map<string, (event?: any) => void>();
+    const speechModule = {
+      isRecognitionAvailable: () => true,
+      requestPermissionsAsync: async () => ({ granted: true }),
+      supportsOnDeviceRecognition: () => false,
+      supportsRecording: () => true,
+      getStateAsync: async () => 'inactive',
+      start: jest.fn(),
+      stop: jest.fn(() => {
+        listeners.get('end')?.();
+      }),
+      abort: jest.fn(),
+      addListener: jest.fn((event: string, cb: (payload?: any) => void) => {
+        listeners.set(event, cb);
+        return { remove: jest.fn() };
+      }),
+    } as any;
+
+    __setCachedSpeechModuleForTests(speechModule);
+
+    const onEnd = jest.fn();
+    const session = await startNativeSpeechSession('en-US', { onEnd });
+
+    await session!.stop();
+
+    expect(onEnd).not.toHaveBeenCalled();
+  });
+
   it('captures error events during a session', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'ios';

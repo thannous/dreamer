@@ -286,14 +286,33 @@ export function WhatsNewModal({ visible, onClose, onPrimary }: WhatsNewModalProp
 }
 
 export function WhatsNewModalHost({ ready }: { ready: boolean }) {
-  const { state, loading } = useOnboarding();
+  const { state, loading, scope } = useOnboarding();
   const [visible, setVisible] = useState(false);
+  const nonTerminalScopesRef = useRef(new Set<string>());
+  const scopeKey = scope ?? 'default';
   const eligible = ready && !loading && isOnboardingTerminal(state);
+
+  useEffect(() => {
+    if (!loading && !isOnboardingTerminal(state)) {
+      nonTerminalScopesRef.current.add(scopeKey);
+    }
+  }, [loading, scopeKey, state]);
 
   useEffect(() => {
     if (!eligible) return;
 
     let active = true;
+    if (nonTerminalScopesRef.current.has(scopeKey)) {
+      void saveLastSeenReleaseNotesVersion(RELEASE_NOTES_VERSION).catch((error) => {
+        if (__DEV__) {
+          console.warn('[WhatsNewModal] Unable to mark release notes seen after onboarding', error);
+        }
+      });
+      return () => {
+        active = false;
+      };
+    }
+
     void getLastSeenReleaseNotesVersion().then((lastSeenVersion) => {
       if (active && lastSeenVersion !== RELEASE_NOTES_VERSION) {
         setVisible(true);
@@ -303,7 +322,7 @@ export function WhatsNewModalHost({ ready }: { ready: boolean }) {
     return () => {
       active = false;
     };
-  }, [eligible]);
+  }, [eligible, scopeKey]);
 
   const persistDismissal = useCallback(() => {
     setVisible(false);

@@ -632,7 +632,8 @@ export default function OnboardingScreen() {
             <ActivityIndicator color={titleAccent} />
           ) : (
             <Switch
-              value={analyticsEnabled}
+              disabled={!analyticsAvailable}
+              value={analyticsAvailable && analyticsEnabled}
               onValueChange={(value) => void toggleAnalytics(value)}
               accessibilityLabel={t('onboarding.privacy.toggle_label')}
               accessibilityHint={t('onboarding.privacy.toggle_hint')}

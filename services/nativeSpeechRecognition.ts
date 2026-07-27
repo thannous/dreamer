@@ -4,6 +4,8 @@ import type { ExpoSpeechRecognitionModuleType } from 'expo-speech-recognition/bu
 
 type NativeSpeechOptions = {
   onPartial?: (text: string) => void;
+  /** Recognition ended without the caller requesting stop/abort. */
+  onEnd?: () => void;
   /** The caller already completed the native microphone permission flow. */
   permissionAlreadyGranted?: boolean;
 };
@@ -516,6 +518,8 @@ export async function startNativeSpeechSession(
     await ensureSpeechModuleInactive(speechModule);
 
     let ended = false;
+    let stopRequested = false;
+    let unexpectedEndNotified = false;
     let lastPartial = '';
     let lastError: { code?: string; message?: string } | null = null;
     let finalChunks: string[] = [];
@@ -528,6 +532,11 @@ export async function startNativeSpeechSession(
         resolve();
       };
     });
+    const notifyUnexpectedEnd = () => {
+      if (stopRequested || unexpectedEndNotified) return;
+      unexpectedEndNotified = true;
+      options?.onEnd?.();
+    };
 
     const resultSub = speechModule.addListener('result', (event) => {
       // Ignore events from old sessions (race condition protection)
@@ -580,6 +589,7 @@ export async function startNativeSpeechSession(
         console.log('[nativeSpeech] end', { sessionId });
       }
       resolveEnd?.();
+      notifyUnexpectedEnd();
     });
 
     const audioEndSub = speechModule.addListener('audioend', (event: { uri?: string | null }) => {
@@ -614,12 +624,14 @@ export async function startNativeSpeechSession(
           console.log('[nativeSpeech] client error ignored after stop/abort', { sessionId });
         }
         resolveEnd?.();
+        notifyUnexpectedEnd();
         return;
       }
 
       console.warn('[nativeSpeech] error', { sessionId, code: event?.error, message: event?.message });
       lastError = { code: event.error, message: event.message };
       resolveEnd?.();
+      notifyUnexpectedEnd();
     });
 
     const cleanup = () => {
@@ -660,6 +672,7 @@ export async function startNativeSpeechSession(
     }
 
     const stop = async () => {
+      stopRequested = true;
       if (!ended) {
         try {
           speechModule.stop();
@@ -703,6 +716,7 @@ export async function startNativeSpeechSession(
     };
 
     const abort = () => {
+      stopRequested = true;
       if (!ended) {
         try {
           speechModule.abort();

@@ -13,6 +13,7 @@ import type { RecordingOnboardingTarget } from '@/components/recording/Recording
 import type { RecordingSpotlightRect } from './RecordingOnboardingSpotlightOverlay';
 
 export interface RecordingTextInputProps {
+  compact?: boolean;
   layout?: 'textFirst' | 'voiceFirst';
   value: string;
   onChange: (text: string) => void;
@@ -37,6 +38,7 @@ export interface RecordingTextInputProps {
 export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>(
   function RecordingTextInput(
     {
+      compact = false,
       value,
       layout = 'textFirst',
       onChange,
@@ -121,8 +123,10 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           onChangeText={onChange}
           style={[
             styles.textInput,
+            compact && styles.textInputCompact,
             hasValue && styles.textInputWithValue,
             showInlineActions && styles.textInputWithInlineActions,
+            compact && showInlineActions && styles.textInputWithInlineActionsCompact,
             {
               backgroundColor: noctalia.surface.base,
               borderColor: isFocused ? noctalia.accent.base : noctalia.surface.border,
@@ -141,7 +145,11 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
         />
         {showInlineActions ? (
           <View
-            style={[styles.inlineActionFooter, { backgroundColor: colors.backgroundCard }]}
+            style={[
+              styles.inlineActionFooter,
+              compact && styles.inlineActionFooterCompact,
+              { backgroundColor: colors.backgroundCard },
+            ]}
           >
             <LinearGradient
               colors={[`${colors.backgroundCard}00`, colors.backgroundCard]}
@@ -289,8 +297,14 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
 
     return (
       <>
-        <View style={styles.recordingSection}>
-          <Text style={[styles.instructionText, { color: noctalia.text.secondary }]}>
+        <View style={[styles.recordingSection, compact && styles.recordingSectionCompact]}>
+          <Text
+            style={[
+              styles.instructionText,
+              compact && styles.instructionTextCompact,
+              { color: noctalia.text.secondary },
+            ]}
+          >
             {instructionText}
           </Text>
         </View>
@@ -317,11 +331,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 18,
   },
+  recordingSectionCompact: {
+    marginTop: 0,
+  },
   instructionText: {
     fontSize: 23,
     lineHeight: 32,
     fontFamily: Fonts.lora.regularItalic,
     textAlign: 'center',
+  },
+  instructionTextCompact: {
+    fontSize: 18,
+    lineHeight: 24,
   },
   textInputSection: {
     width: '100%',
@@ -351,8 +372,16 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.lora.regularItalic,
     textAlignVertical: 'top',
   },
+  textInputCompact: {
+    minHeight: 96,
+    maxHeight: 112,
+    paddingTop: 12,
+  },
   textInputWithInlineActions: {
     paddingBottom: 90,
+  },
+  textInputWithInlineActionsCompact: {
+    paddingBottom: 56,
   },
   textInputWithValue: {
     paddingLeft: 20,
@@ -369,6 +398,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingRight: 9,
     paddingBottom: 6,
+  },
+  inlineActionFooterCompact: {
+    minHeight: 48,
+    paddingBottom: 2,
   },
   inlineActionFade: {
     position: 'absolute',
