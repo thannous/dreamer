@@ -6,7 +6,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HapticTab } from '@/components/haptic-tab';
 import { DesktopSidebar } from '@/components/navigation/DesktopSidebar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
+import {
+  DESKTOP_BREAKPOINT,
+  getBottomNavigationLayout,
+  getTabBarHorizontalLayout,
+} from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
@@ -123,8 +127,7 @@ export default function TabLayout() {
   const baseTabBarStyle: ViewStyle = {
     position: 'absolute',
     bottom: floatingBottomInset,
-    left: 22,
-    right: 22,
+    ...getTabBarHorizontalLayout(width),
     backgroundColor: palette.barBg,
     height: navigationLayout.barHeight,
     paddingHorizontal: 8,

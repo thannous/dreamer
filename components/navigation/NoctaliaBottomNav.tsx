@@ -1,5 +1,9 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
+import {
+  DESKTOP_BREAKPOINT,
+  getBottomNavigationLayout,
+  getTabBarHorizontalLayout,
+} from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
@@ -8,6 +12,7 @@ import { TID } from '@/lib/testIDs';
 import { router } from 'expo-router';
 import React, { useMemo } from 'react';
 import {
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -46,7 +51,7 @@ export function NoctaliaBottomNav({
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
 
-  if (width >= DESKTOP_BREAKPOINT) {
+  if (Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT) {
     return null;
   }
 
@@ -60,6 +65,7 @@ export function NoctaliaBottomNav({
   const addBorder = noctalia.action.primaryBorder;
   const addTextColor = noctalia.action.primaryText;
   const isDreamCaptureActive = activeKey === 'addDream';
+  const horizontalLayout = getTabBarHorizontalLayout(width);
   const items: BottomNavItem[] = [
     {
       key: 'home',
@@ -112,6 +118,7 @@ export function NoctaliaBottomNav({
         style={[
           styles.bar,
           navigationLayout.compact && styles.compactBar,
+          horizontalLayout,
           {
             bottom: floatingBottomInset,
             height: navigationLayout.barHeight,
@@ -204,8 +211,6 @@ const styles = StyleSheet.create({
   },
   bar: {
     position: 'absolute',
-    left: 22,
-    right: 22,
     paddingHorizontal: 8,
     paddingTop: 7,
     paddingBottom: 7,

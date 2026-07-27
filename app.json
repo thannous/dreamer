@@ -113,7 +113,8 @@
         {
           "android": {
             "minSdkVersion": 33,
-            "enableMinifyInReleaseBuilds": true
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
           }
         }
       ],

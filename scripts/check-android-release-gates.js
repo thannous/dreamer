@@ -144,6 +144,39 @@ function addCheck(checks, status, title, details, remediation) {
   checks.push({ status, title, details, remediation });
 }
 
+function getAndroidReleaseOptimizationCheck(appConfig) {
+  const plugins = Array.isArray(appConfig?.expo?.plugins)
+    ? appConfig.expo.plugins
+    : [];
+  const buildPropertiesPlugin = plugins.find(
+    (plugin) =>
+      plugin === 'expo-build-properties' ||
+      (Array.isArray(plugin) && plugin[0] === 'expo-build-properties')
+  );
+  const androidConfig = Array.isArray(buildPropertiesPlugin)
+    ? buildPropertiesPlugin[1]?.android
+    : undefined;
+  const minify = androidConfig?.enableMinifyInReleaseBuilds;
+  const shrinkResources =
+    androidConfig?.enableShrinkResourcesInReleaseBuilds;
+  const enabled = minify === true && shrinkResources === true;
+  const describe = (value) =>
+    value === true ? 'true' : value === false ? 'false' : 'missing';
+
+  return {
+    status: enabled ? 'pass' : 'fail',
+    details: buildPropertiesPlugin
+      ? [
+          'expo-build-properties Android:',
+          `enableMinifyInReleaseBuilds=${describe(minify)},`,
+          `enableShrinkResourcesInReleaseBuilds=${describe(shrinkResources)}.`,
+        ].join(' ')
+      : 'expo-build-properties is not registered in app.json expo.plugins.',
+    remediation:
+      'Set expo-build-properties android.enableMinifyInReleaseBuilds and android.enableShrinkResourcesInReleaseBuilds to true in app.json.',
+  };
+}
+
 function summarizeCommandOutput(output) {
   const lines = String(output || '')
     .split(/\r?\n/)
@@ -532,6 +565,28 @@ function checkAndroidReleaseGates({
   const checks = [];
   const prebuild = phase === 'prebuild';
   const easJson = readJson(rootDir, 'eas.json');
+  try {
+    const optimizationCheck = getAndroidReleaseOptimizationCheck(
+      readJson(rootDir, 'app.json')
+    );
+    addCheck(
+      checks,
+      optimizationCheck.status,
+      'Android Release R8 minification and resource shrinking',
+      optimizationCheck.details,
+      optimizationCheck.remediation
+    );
+  } catch (error) {
+    addCheck(
+      checks,
+      'fail',
+      'Android Release R8 minification and resource shrinking',
+      `Unable to read app.json: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+      'Restore a valid app.json and enable both Android Release optimization properties.'
+    );
+  }
   let androidCandidateVersionCode = null;
   try {
     androidCandidateVersionCode = readAppVersionCode(rootDir, readFileSync);
@@ -871,6 +926,7 @@ module.exports = {
   formatReport,
   getAdbDeviceVisibilityCheck,
   getAdbCandidates,
+  getAndroidReleaseOptimizationCheck,
   getMaestroCandidates,
   listAdbDevices,
   parseDotEnv,

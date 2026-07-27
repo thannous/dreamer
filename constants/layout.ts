@@ -20,3 +20,15 @@ export function getBottomNavigationLayout(width: number, height: number) {
     minimumBottomInset: compact ? COMPACT_TAB_BAR_BOTTOM_INSET : 14,
   };
 }
+
+export const TAB_BAR_HORIZONTAL_MARGIN = 22;
+
+export const getTabBarHorizontalLayout = (viewportWidth: number) => {
+  const availableWidth = Math.max(0, viewportWidth - TAB_BAR_HORIZONTAL_MARGIN * 2);
+  const width = Math.min(availableWidth, TAB_BAR_MAX_WIDTH);
+
+  return {
+    left: Math.max(0, (viewportWidth - width) / 2),
+    width,
+  };
+};
