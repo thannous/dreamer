@@ -4,8 +4,8 @@
   "layout": "blogArticle",
   "lang": "fr",
   "slug": "reves-etre-poursuivi",
-  "title": "Être poursuivi en rêve : pourquoi et que faire ? | Noctalia",
-  "description": "Pourquoi rêvez-vous d'être poursuivi ? Comprenez la psychologie de ces rêves et ce qu'ils révèlent sur vos peurs et évitements.",
+  "title": "Rêver d’être poursuivi : que signifie ce rêve ? | Noctalia",
+  "description": "Rêver d’être poursuivi évoque souvent une pression ou un évitement. Comparez 6 interprétations, les scénarios fréquents et les pistes pour agir.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -13,23 +13,23 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Être poursuivi en rêve : pourquoi et que faire ? | Noctalia",
-  "ogDescription": "La psychologie des rêves de poursuite et vos peurs inconscientes.",
+  "ogTitle": "Rêver d’être poursuivi : que signifie ce rêve ? | Noctalia",
+  "ogDescription": "Six interprétations, les scénarios fréquents et des pistes pour agir après un rêve de poursuite.",
   "ogImage": "https://noctalia.app/img/blog/being-chased-dreams.webp",
   "ogImageAlt": "Couloir sombre illustrant la sensation d'être poursuivi en rêve",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Être poursuivi en rêve : pourquoi et que faire ? | Noctalia",
-  "twitterDescription": "La psychologie des rêves de poursuite.",
+  "twitterTitle": "Rêver d’être poursuivi : que signifie ce rêve ? | Noctalia",
+  "twitterDescription": "Six interprétations et des pistes pour comprendre un rêve de poursuite.",
   "twitterImage": "https://noctalia.app/img/blog/being-chased-dreams.webp",
   "twitterImageAlt": "Couloir sombre illustrant la sensation d'être poursuivi en rêve",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-01-06",
+  "modifiedTime": "2026-07-27",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-premonitoires-science",
   "nextPath": "/fr/blog/reves-de-mort",
   "preloadImage": "/img/blog/being-chased-dreams.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Rêves d'Être Poursuivi : Signification et Interprétation\",\n            \"description\": \"Pourquoi rêvez-vous d'être poursuivi ? Découvrez les significations psychologiques des rêves de poursuite.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/being-chased-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/reves-etre-poursuivi\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1289,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/reves-etre-poursuivi\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Rêver d'être poursuivi : que signifie ce rêve ?\",\n            \"description\": \"Rêver d'être poursuivi évoque souvent une pression ou un évitement. Comparez 6 interprétations, les scénarios fréquents et les pistes pour agir.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/being-chased-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-07-27\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/reves-etre-poursuivi\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1289,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/reves-etre-poursuivi\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Que signifie rêver d'être poursuivi ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les rêves d'être poursuivi symbolisent généralement un comportement d'évitement, de l'anxiété ou la fuite de quelque chose dans votre vie eveillée. Le poursuivant représente souvent un aspect de vous-même, une situation ou une émotion que vous essayez d'éviter.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Pourquoi les rêves de poursuite sont-ils si courants ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les rêves de poursuite font partie des thèmes oniriques les plus universels car ils puisent dans notre réponse primitive de combat ou de fuite. Plus de 80% des personnes rapportent avoir fait des rêves de poursuite, reflétant nos instincts de survie évolutifs.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Comment arrêter de faire des rêves de poursuite ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Pour réduire les rêves de poursuite, abordez l'anxiété ou l'évitement sous-jacent dans votre vie eveillée. Pratiquez la gestion du stress, confrontez les problèmes que vous avez évites et envisagez des techniques de rêve lucide pour changer le récit du rêve.\"\n                    }\n                }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêves d'Être Poursuivi\",\n            \"item\": \"https://noctalia.app/fr/blog/reves-etre-poursuivi\"\n        }\n    ]\n}"
   ],
@@ -66,10 +66,10 @@
 <span class="text-sm text-purple-300/60">5 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Rêves d'Être Poursuivi : Signification et Interprétation
+                    Rêver d'être poursuivi : que signifie ce rêve ?
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Votre coeur bat la chamade alors que des pas résonnent derrière vous. Vous courez plus vite, mais vos jambes semblent lourdes, comme si vous vous déplaciez dans l'<a class="text-dream-salmon hover:underline" href="../symboles/eau">eau</a>. Peu importe vos efforts, votre poursuivant gagne du terrain. Puis vous vous réveillez, le coeur battant, les draps trempes de sueur. Les rêves de poursuite font partie des expériences oniriques les plus intenses et les plus courantes. Explorons ce qu'ils révèlent sur votre monde intérieur.
+                    Rêver d'être poursuivi peut laisser une impression de danger très vive : vous courez, vos jambes deviennent lourdes comme si vous avanciez dans l'<a class="text-dream-salmon hover:underline" href="../symboles/eau">eau</a>, puis vous vous réveillez avant d'échapper au poursuivant. Pour comprendre ce scénario, observez qui vous poursuit, ce que vous ressentez et la façon dont la poursuite se termine.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Réponse rapide</h2>
-    <p class="text-purple-100/80 leading-relaxed">Pourquoi rêvez-vous d'être poursuivi ? Comprenez la psychologie de ces rêves et ce qu'ils révèlent sur vos peurs et évitements.</p>
+    <p class="text-purple-100/80 leading-relaxed"><strong>Rêver d'être poursuivi renvoie souvent à une pression, une peur ou un problème que vous évitez dans la vie éveillée.</strong> Pour l'interpréter, identifiez le poursuivant, l'émotion dominante et la fin de la scène : fuite, blocage, cachette ou confrontation. Un rêve isolé n'annonce rien ; s'il devient fréquent ou perturbe votre sommeil, notez les déclencheurs et envisagez d'en parler à un professionnel.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">

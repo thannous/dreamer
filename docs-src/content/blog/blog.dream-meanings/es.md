@@ -154,8 +154,8 @@
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="guia-pesadillas">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Guía para pesadillas</h3>
-<p class="text-sm text-gray-400">Herramientas para reducir intensidad.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué tengo pesadillas?</h3>
+<p class="text-sm text-gray-400">Causas posibles y estrategias para reducir las recurrentes.</p>
 </a>
 </div>
 </section>
