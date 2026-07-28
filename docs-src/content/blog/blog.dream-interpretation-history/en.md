@@ -4,8 +4,8 @@
   "layout": "blogArticle",
   "lang": "en",
   "slug": "dream-interpretation-history",
-  "title": "Dream Interpretation History: Ancient to Modern Guide | Noctalia",
-  "description": "Explore the history of dream interpretation from Mesopotamia, Egypt and Greece to Freud, Jung and modern neuroscience.",
+  "title": "History of Dream Interpretation: Ancient to Modern | Noctalia",
+  "description": "Trace the history of dream interpretation from Mesopotamia and Egypt to Greek medicine, Freud, Jung and modern neuroscience.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -13,23 +13,23 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Dream Interpretation History: Ancient to Modern Guide | Noctalia",
-  "ogDescription": "Explore the history of dream interpretation from Mesopotamia, Egypt and Greece to Freud, Jung and modern neuroscience.",
+  "ogTitle": "History of Dream Interpretation: Ancient to Modern | Noctalia",
+  "ogDescription": "Trace the history of dream interpretation from Mesopotamia and Egypt to Greek medicine, Freud, Jung and modern neuroscience.",
   "ogImage": "https://noctalia.app/img/blog/dream-interpretation-history.webp",
   "ogImageAlt": "Ancient temple under a starry sky representing dream history",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Dream Interpretation History: Ancient to Modern Guide | Noctalia",
-  "twitterDescription": "Explore the history of dream interpretation from Mesopotamia, Egypt and Greece to Freud, Jung and modern neuroscience.",
+  "twitterTitle": "History of Dream Interpretation: Ancient to Modern | Noctalia",
+  "twitterDescription": "Trace the history of dream interpretation from Mesopotamia and Egypt to Greek medicine, Freud, Jung and modern neuroscience.",
   "twitterImage": "https://noctalia.app/img/blog/dream-interpretation-history.webp",
   "twitterImageAlt": "Ancient temple under a starry sky representing dream history",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-15",
+  "modifiedTime": "2026-07-28",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/rem-sleep-dreams",
   "nextPath": "/en/blog/stress-dreams-work",
   "preloadImage": "/img/blog/dream-interpretation-history.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Dream Interpretation History: Ancient to Modern Guide\",\n  \"description\": \"Explore the history of dream interpretation from Mesopotamia, Egypt and Greece to Freud, Jung and modern neuroscience.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/dream-interpretation-history.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-15\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/dream-interpretation-history\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 2280,\n  \"timeRequired\": \"PT8M\",\n  \"url\": \"https://noctalia.app/en/blog/dream-interpretation-history\"\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"History of Dream Interpretation: Ancient to Modern\",\n  \"description\": \"Trace the history of dream interpretation from Mesopotamia and Egypt to Greek medicine, Freud, Jung and modern neuroscience.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/dream-interpretation-history.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-28\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/dream-interpretation-history\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 2280,\n  \"timeRequired\": \"PT8M\",\n  \"url\": \"https://noctalia.app/en/blog/dream-interpretation-history\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Who first interpreted dreams?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"The earliest recorded dream interpretations come from ancient Mesopotamia around 3100 BCE. The Sumerians believed dreams were messages from the gods and kept detailed dream records on clay tablets. Ancient Egypt also had professional dream interpreters serving in temples as early as 2000 BCE.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Did Freud invent dream interpretation?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"No, Freud did not invent dream interpretation - humans have been interpreting dreams for at least 5,000 years. However, Freud revolutionized the field in 1899 with 'The Interpretation of Dreams,' which was the first systematic, psychological approach to dreams rather than a supernatural or divine one.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How do different cultures interpret dreams differently?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Dream interpretation varies significantly across cultures. Western psychology focuses on individual psychology and unconscious desires. Indigenous cultures often view dreams as spiritual journeys or ancestral communications. East Asian traditions see dreams as reflections of physical health and energy balance. These cultural differences reflect deeper worldviews about the nature of consciousness and reality.\"\n      }\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Dream Interpretation History\",\n      \"item\": \"https://noctalia.app/en/blog/dream-interpretation-history\"\n    }\n  ]\n}"
   ],
@@ -499,7 +499,7 @@
 <li><a href="https://www.sleepfoundation.org/dreams/dream-interpretation" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Dream interpretation (overview)</a></li>
 <li><a href="https://www.gutenberg.org/cache/epub/15489/pg15489-images.html" rel="nofollow noopener noreferrer" target="_blank">Freud (1900) — The Interpretation of Dreams (public domain)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Last updated: July 6, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Last updated: July 28, 2026</p>
 </section>
 <!-- Blog Nav Start -->
 <section class="mt-12" aria-label="Article navigation" data-blog-nav="">

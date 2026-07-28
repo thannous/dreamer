@@ -139,8 +139,8 @@
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="suenos-de-muerte">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Vida</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de muerte</h3>
-<p class="text-sm text-gray-400">Finales, transformación, duelo.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Soñar con la muerte</h3>
+<p class="text-sm text-gray-400">Qué significa según quién muere: finales, transformación y duelo.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="suenos-premonitorios-ciencia">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
