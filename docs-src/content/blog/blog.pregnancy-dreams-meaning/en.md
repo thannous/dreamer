@@ -4,8 +4,8 @@
   "layout": "blogArticle",
   "lang": "en",
   "slug": "pregnancy-dreams-meaning",
-  "title": "Pregnancy Dreams: Hidden Meanings Decoded | Noctalia",
-  "description": "Not pregnant but dreaming of babies? Explore what pregnancy dreams symbolize, from new beginnings to creativity. Understand why these powerful dreams visit you.",
+  "title": "Pregnancy Dream Meaning: 6 Scenarios Explained | Noctalia",
+  "description": "What does a pregnancy dream mean? Interpret being pregnant, giving birth, complications or someone else expecting—and why dreams are not pregnancy tests.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -13,23 +13,23 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Pregnancy Dreams: Hidden Meanings Decoded | Noctalia",
-  "ogDescription": "Not pregnant but dreaming of babies? Explore what pregnancy dreams symbolize, from new beginnings to creativity. Understand why these powerful dreams visit you.",
+  "ogTitle": "Pregnancy Dream Meaning: 6 Scenarios Explained | Noctalia",
+  "ogDescription": "What does a pregnancy dream mean? Interpret being pregnant, giving birth, complications or someone else expecting—and why dreams are not pregnancy tests.",
   "ogImage": "https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp",
   "ogImageAlt": "Soft light and symbols representing growth and new beginnings",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Pregnancy Dreams: Hidden Meanings Decoded | Noctalia",
-  "twitterDescription": "Not pregnant but dreaming of babies? Explore what pregnancy dreams symbolize, from new beginnings to creativity. Understand why these powerful dreams visit you.",
+  "twitterTitle": "Pregnancy Dream Meaning: 6 Scenarios Explained | Noctalia",
+  "twitterDescription": "What does a pregnancy dream mean? Interpret being pregnant, giving birth, complications or someone else expecting—and why dreams are not pregnancy tests.",
   "twitterImage": "https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp",
   "twitterImageAlt": "Soft light and symbols representing growth and new beginnings",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-15",
+  "modifiedTime": "2026-07-28",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/dreams-about-ex",
   "nextPath": "/en/blog/stop-nightmares-guide",
   "preloadImage": "/img/blog/pregnancy-dreams-meaning.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Pregnancy Dreams: What They Mean (Even If You're Not Pregnant)\",\n  \"description\": \"What do pregnancy dreams mean? Discover why you dream about being pregnant, giving birth, or babies.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-15\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/pregnancy-dreams-meaning\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 844,\n  \"timeRequired\": \"PT3M\",\n  \"url\": \"https://noctalia.app/en/blog/pregnancy-dreams-meaning\"\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Pregnancy Dream Meaning: What It Means to Dream You’re Pregnant\",\n  \"description\": \"What does a pregnancy dream mean? Interpret being pregnant, giving birth, complications or someone else expecting—and why dreams are not pregnancy tests.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-28\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/pregnancy-dreams-meaning\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 844,\n  \"timeRequired\": \"PT3M\",\n  \"url\": \"https://noctalia.app/en/blog/pregnancy-dreams-meaning\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"What does it mean to dream about being pregnant?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Pregnancy dreams often symbolize something new developing in your life - a creative project, idea, relationship, or personal growth. They represent gestation of possibilities, not necessarily literal pregnancy. The dream reflects something you're nurturing and preparing to 'birth' into the world.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Why do I dream about pregnancy when I'm not pregnant?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Non-pregnant people commonly dream about pregnancy because these dreams symbolize creation, new beginnings, and transformation. You might be starting a new job, project, or phase of life. Your subconscious uses pregnancy imagery to represent anything you're developing or nurturing.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Do pregnancy dreams predict actual pregnancy?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"While some people report pregnancy dreams before discovering they're pregnant, most pregnancy dreams are symbolic rather than predictive. They typically represent creative projects, new beginnings, or personal development rather than literal pregnancy.\"\n      }\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Pregnancy Dreams\",\n      \"item\": \"https://noctalia.app/en/blog/pregnancy-dreams-meaning\"\n    }\n  ]\n}"
   ],
@@ -64,7 +64,7 @@
 <span class="text-sm text-purple-300/60">3 min read</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Pregnancy Dreams: What They Mean (Even If You're Not Pregnant)
+                    Pregnancy Dream Meaning: What It Means to Dream You’re Pregnant
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
                     You look down and see a swelling belly. Or perhaps you're in labor, holding a newborn, or discovering you're unexpectedly pregnant. These dreams can feel profoundly meaningful - or deeply confusing, especially if <a class="text-dream-salmon hover:underline" href="../symbols/pregnancy">pregnancy</a> isn't on your radar. Pregnancy dreams are among the most symbolically rich dream experiences. Let's explore what your subconscious is truly creating.
@@ -401,7 +401,7 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/23986734/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2013) — Maternal representations in the dreams of pregnant women (PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Dreams during pregnancy</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Last updated: January 6, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Last updated: July 28, 2026</p>
 </section>
 </article>
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->

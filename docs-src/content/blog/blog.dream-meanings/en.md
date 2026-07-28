@@ -89,7 +89,7 @@
 <div class="grid md:grid-cols-2 gap-6">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="dream-interpretation-history">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Foundations</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">A brief history of dream interpretation</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">History of dream interpretation</h3>
 <p class="text-sm text-gray-400">From ancient traditions to modern psychology.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="recurring-dreams-meaning">
@@ -124,8 +124,8 @@
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="flying-dreams-meaning">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Symbol</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Flying</h3>
-<p class="text-sm text-gray-400">Freedom, ambition, confidence.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Flying dream meanings</h3>
+<p class="text-sm text-gray-400">Six scenarios covering freedom, ambition, escape and control.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="dreams-about-ex">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Relationships</span>
@@ -134,8 +134,8 @@
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="pregnancy-dreams-meaning">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Life</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Pregnancy dreams</h3>
-<p class="text-sm text-gray-400">Change, creativity, anticipation.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Pregnancy dream meanings</h3>
+<p class="text-sm text-gray-400">Six scenarios covering change, creativity and anticipation.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="death-dreams-meaning">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Life</span>

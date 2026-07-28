@@ -4,8 +4,8 @@
   "layout": "blogArticle",
   "lang": "es",
   "slug": "suenos-de-muerte",
-  "title": "Soñar con muerte: significado emocional, cambio y duelo | Noctalia",
-  "description": "Soñar con muerte no suele ser una predicción. Lee qué significa soñar con tu muerte, un familiar muerto, un funeral o matar a alguien.",
+  "title": "Soñar con la muerte: significado según quién muere | Noctalia",
+  "description": "Descubre qué significa soñar con la muerte, tu propia muerte, un familiar o un funeral. No es una predicción: suele hablar de cambio, duelo o cierre.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -13,23 +13,23 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Soñar con muerte: significado emocional, cambio y duelo | Noctalia",
-  "ogDescription": "Soñar con muerte no suele ser una predicción. Lee qué significa soñar con tu muerte, un familiar muerto, un funeral o matar a alguien.",
+  "ogTitle": "Soñar con la muerte: significado según quién muere | Noctalia",
+  "ogDescription": "Descubre qué significa soñar con la muerte, tu propia muerte, un familiar o un funeral. No es una predicción: suele hablar de cambio, duelo o cierre.",
   "ogImage": "https://noctalia.app/img/blog/death-dreams-meaning.webp",
   "ogImageAlt": "Bosque con niebla que representa el cambio y el renacimiento",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Soñar con muerte: significado emocional, cambio y duelo | Noctalia",
-  "twitterDescription": "Soñar con muerte no suele ser una predicción. Lee qué significa soñar con tu muerte, un familiar muerto, un funeral o matar a alguien.",
+  "twitterTitle": "Soñar con la muerte: significado según quién muere | Noctalia",
+  "twitterDescription": "Descubre qué significa soñar con la muerte, tu propia muerte, un familiar o un funeral. No es una predicción: suele hablar de cambio, duelo o cierre.",
   "twitterImage": "https://noctalia.app/img/blog/death-dreams-meaning.webp",
   "twitterImageAlt": "Bosque con niebla que representa el cambio y el renacimiento",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-07-28",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-ser-perseguido",
   "nextPath": "/es/blog/suenos-de-agua",
   "preloadImage": "/img/blog/death-dreams-meaning.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Soñar con muerte: significado emocional, cambio y duelo\",\n  \"description\": \"Soñar con muerte no suele ser una predicción. Lee qué significa soñar con tu muerte, un familiar muerto, un funeral o matar a alguien.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/death-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-09\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/suenos-de-muerte\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1024,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/es/blog/suenos-de-muerte\"\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Soñar con la muerte: qué significa según quién muere\",\n  \"description\": \"Descubre qué significa soñar con la muerte, tu propia muerte, un familiar o un funeral. No es una predicción: suele hablar de cambio, duelo o cierre.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/death-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-28\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/suenos-de-muerte\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1024,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/es/blog/suenos-de-muerte\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con muerte?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Soñar con muerte suele simbolizar cambio, final de etapa, duelo o transformación. No debe leerse como una predicción literal.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con la muerte de un familiar?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Puede reflejar miedo a perder a esa persona, cambios en la relación o una preocupación emocional que todavía no has procesado.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con tu propia muerte?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Normalmente habla de una identidad, etapa o hábito que termina. También puede aparecer en momentos de transición intensa.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con un funeral?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Un funeral en sueños suele indicar despedida simbólica, necesidad de cierre o aceptación de un cambio.\"\n      }\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Recursos\",\n      \"item\": \"https://noctalia.app/es/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sueños de Muerte\",\n      \"item\": \"https://noctalia.app/es/blog/suenos-de-muerte\"\n    }\n  ]\n}"
   ],
@@ -64,10 +64,10 @@
 <span class="text-sm text-purple-300/60">4 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Soñar con muerte: significado emocional, cambio y duelo
+                    Soñar con la muerte: qué significa según quién muere
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Te despiertas sobresaltado, con el corazón latiendo. En tu sueño, presenciaste la muerte - quizás la tuya, quizás la de alguien que amas. Las emociones persisten: miedo, dolor, confusión. Pero antes de que la ansiedad te abrume, debes saber esto - los sueños de muerte están entre los más malinterpretados. Lejos de ser presagios, a menudo llevan mensajes profundos sobre transformación, cambio y nuevos comienzos.
+                    Soñar con la muerte puede provocar miedo, pero no suele ser un presagio. El significado cambia según mueras tú, un familiar, una persona desconocida o aparezca un funeral, y suele relacionarse con transformación, duelo o cierre.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -87,8 +87,6 @@
 </section>
 
 <!-- GSC SEO Update: death high-position scenarios -->
-
-<!-- GSC SEO Update: death high-position scenarios -->
 <section class="glass-panel rounded-2xl p-6 my-10 border border-dream-salmon/15 bg-white/5">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Soñar con muerte no suele anunciar una muerte real</h2>
 <p class="text-purple-100/80 leading-relaxed mb-4">La lectura más útil es simbólica: una etapa termina, una relación cambia, una identidad se transforma o una emoción de duelo necesita espacio. Por eso esta página prioriza los escenarios que más busca la gente.</p>
@@ -101,8 +99,6 @@
 <p class="text-sm text-purple-200/70 mt-4">También puedes ampliar con <a class="text-dream-salmon hover:underline" href="../simbolos/muerte">soñar con muerte</a> y <a class="text-dream-salmon hover:underline" href="../simbolos/persona-fallecida">soñar con una persona fallecida</a>.</p>
 </section>
 
-
-<!-- GSC Visible FAQ -->
 
 <!-- GSC Visible FAQ -->
 <section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
@@ -415,7 +411,7 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Brain mechanisms of dream recall (PubMed)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000) — La reinterpretación de los sueños: teoría de la simulación de amenazas (PubMed)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 6 de enero de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 28 de julio de 2026</p>
 </section>
 <section class="mt-16">
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Articulos relacionados</h2>

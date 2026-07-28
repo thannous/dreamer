@@ -91,8 +91,8 @@
 <div class="grid md:grid-cols-2 gap-6">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="guia-suenos-lucidos-principiantes">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Guía de sueños lúcidos para principiantes</h3>
-<p class="text-sm text-gray-400">Pasos seguros y repetibles para empezar.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Cómo tener sueños lúcidos</h3>
+<p class="text-sm text-gray-400">Guía paso a paso para principiantes con técnicas seguras y repetibles.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="guia-incubacion-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Práctica</span>
