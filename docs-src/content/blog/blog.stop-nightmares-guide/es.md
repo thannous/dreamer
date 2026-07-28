@@ -4,8 +4,8 @@
   "layout": "blogArticle",
   "lang": "es",
   "slug": "guia-pesadillas",
-  "title": "Pesadillas: Causas, Significado y Cómo Detenerlas - Noctalia",
-  "description": "¿Por qué tienes pesadillas? Descubre sus causas reales, significado oculto y 5 técnicas probadas para dormir sin miedo.",
+  "title": "¿Por qué tengo pesadillas? Causas y soluciones | Noctalia",
+  "description": "Descubre por qué tienes pesadillas, qué puede desencadenarlas y cómo reducir las recurrentes con hábitos de sueño e IRT, además de cuándo pedir ayuda.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -13,23 +13,23 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Pesadillas: Causas, Significado y Cómo Detenerlas - Noctalia",
-  "ogDescription": "¿Por qué tienes pesadillas? Descubre sus causas reales, significado oculto y 5 técnicas probadas para dormir sin miedo.",
+  "ogTitle": "¿Por qué tengo pesadillas? Causas y soluciones | Noctalia",
+  "ogDescription": "Causas posibles, hábitos de sueño, terapia IRT y señales para pedir ayuda ante pesadillas recurrentes.",
   "ogImage": "https://noctalia.app/img/blog/stop-nightmares-guide.webp",
   "ogImageAlt": "Atmósfera misteriosa que representa el mundo de las pesadillas",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Pesadillas: Causas, Significado y Cómo Detenerlas - Noctalia",
-  "twitterDescription": "¿Por qué tienes pesadillas? Descubre sus causas reales, significado oculto y 5 técnicas probadas para dormir sin miedo.",
+  "twitterTitle": "¿Por qué tengo pesadillas? Causas y soluciones | Noctalia",
+  "twitterDescription": "Causas posibles, hábitos de sueño, terapia IRT y señales para pedir ayuda.",
   "twitterImage": "https://noctalia.app/img/blog/stop-nightmares-guide.webp",
   "twitterImageAlt": "Atmósfera misteriosa que representa el mundo de las pesadillas",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-27T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-de-embarazo",
   "nextPath": "/es/blog/guia-paralisis-sueno",
   "preloadImage": "/img/blog/stop-nightmares-guide.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Pesadillas: Causas, Significado y Cómo Detenerlas\",\n  \"description\": \"¿Por qué tenemos pesadillas? Descubre las causas de los malos sueños, su significado y técnicas probadas para reducirlas.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/stop-nightmares-guide.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-10T00:00:00+02:00\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/guia-pesadillas\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 929,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/es/blog/guia-pesadillas\"\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"¿Por qué tengo pesadillas? Causas y soluciones\",\n  \"description\": \"Descubre por qué tienes pesadillas, qué puede desencadenarlas y cómo reducir las recurrentes con hábitos de sueño e IRT, además de cuándo pedir ayuda.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/stop-nightmares-guide.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-27T00:00:00+02:00\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/guia-pesadillas\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 929,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/es/blog/guia-pesadillas\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Por qué tengo pesadillas?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Las pesadillas pueden ser causadas por el estrés, la ansiedad, un trauma, ciertos medicamentos, la falta de sueño o comer tarde por la noche. A menudo es la forma en que tu cerebro procesa las emociones difíciles. Aproximadamente el 2-8% de los adultos experimentan pesadillas frecuentes.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Cómo puedo dejar de tener pesadillas?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Para reducir las pesadillas: mantén un horario de sueño regular, practica la gestión del estrés, evita las pantallas antes de dormir, crea un ambiente de sueño tranquilo, y prueba la Terapia de Ensayo de Imágenes (IRT) - una técnica donde reescribes los finales de las pesadillas estando despierto.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Las pesadillas tienen significado?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Sí, las pesadillas a menudo reflejan ansiedades subyacentes, emociones no procesadas o fuentes de estrés en tu vida despierta. Pueden ser tu subconsciente destacando problemas que necesitan atención. Los temas comunes se relacionan con el miedo a la pérdida, el fracaso o perder el control.\"\n      }\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Recursos\",\n      \"item\": \"https://noctalia.app/es/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Guía de Pesadillas\",\n      \"item\": \"https://noctalia.app/es/blog/guia-pesadillas\"\n    }\n  ]\n}"
   ],
@@ -64,10 +64,10 @@
 <span class="text-sm text-purple-300/60">3 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Pesadillas: Causas, Significado y Cómo Detenerlas
+                    ¿Por qué tengo pesadillas? Causas y soluciones
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Te despiertas con terror, el corazón latiendo fuerte, las imágenes vívidas aún frescas en tu mente. El miedo persiste mucho después de darte cuenta de que solo era un sueño. Las pesadillas afectan a casi todos ocasionalmente, pero para algunos, son recurrentes e impactan la calidad del sueño. Exploremos por qué tenemos pesadillas y, lo más importante, qué podemos hacer al respecto.
+                    Si te preguntas «¿por qué tengo pesadillas?», empieza por observar cuándo aparecen y qué cambió en tus días o en tu descanso. El estrés, la falta de sueño, algunos medicamentos o una experiencia difícil pueden influir. Esta guía separa las causas posibles, el significado personal y las medidas que pueden reducir las pesadillas recurrentes.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -83,7 +83,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rápida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Las pesadillas son sueños vívidos y angustiantes que te despiertan con fuertes emociones negativas. Afectan regularmente al 2-8 % de los adultos y hasta al 50 % de los niños de 3 a 6 años. A diferencia de los terrores nocturnos (que ocurren durante el sueño profundo sin recuerdo), las pesadillas suceden durante el sueño REM y se recuerdan claramente. El tratamiento más eficaz basado en evidencia es la Terapia de Ensayo de Imágenes (IRT): reescribe el escenario de tu pesadilla estando despierto y luego ensaya mentalmente la nueva versión antes de dormir. La gestión del estrés, los horarios de sueño regulares y el tratamiento del trauma subyacente también reducen significativamente la frecuencia de las pesadillas.</p>
+    <p class="text-purple-100/80 leading-relaxed"><strong>No hay una causa única para las pesadillas.</strong> El estrés, los cambios de horario, la falta de sueño, algunos medicamentos o experiencias difíciles pueden influir. Para reducir las pesadillas recurrentes, empieza por regular el sueño y anotar los posibles desencadenantes. La Terapia de Ensayo de Imágenes (IRT) puede ayudar; consulta a un profesional si se repiten, provocan miedo a dormir o afectan tu vida diaria.</p>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Atmósfera misteriosa que representa el mundo de las pesadillas" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stop-nightmares-guide.webp" srcset="../../img/blog/stop-nightmares-guide-480w.webp 480w, ../../img/blog/stop-nightmares-guide-800w.webp 800w, ../../img/blog/stop-nightmares-guide-1200w.webp 1200w" width="1200">
@@ -93,16 +93,16 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Tabla de Contenidos
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#que-son">1. ¿Qué son las pesadillas?</a></li>
+<li><a class="toc-link block" href="#que-son">1. ¿Por qué tengo pesadillas?</a></li>
 <li><a class="toc-link block" href="#causas">2. Causas comunes de las pesadillas</a></li>
 <li><a class="toc-link block" href="#significado">3. Significado de las pesadillas</a></li>
 <li><a class="toc-link block" href="#tipos">4. Tipos de pesadillas</a></li>
-<li><a class="toc-link block" href="#detener">5. Cómo detener las pesadillas</a></li>
+<li><a class="toc-link block" href="#detener">5. Cómo reducir las pesadillas recurrentes</a></li>
 <li><a class="toc-link block" href="#ayuda">6. Cuándo buscar ayuda</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
-<h2 id="que-son">¿Qué son las pesadillas y por qué las tenemos?</h2>
+<h2 id="que-son">¿Por qué tengo pesadillas?</h2>
 <p>
                     Las pesadillas son <strong>sueños vívidos y perturbadores que causan sentimientos de miedo, terror o ansiedad</strong>. A diferencia de los sueños normales, típicamente te despiertan y dejan un fuerte residuo emocional. La mayoría de las pesadillas ocurren durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a> (Movimiento Rápido de los Ojos), generalmente en la segunda mitad de la noche.
                 </p>
@@ -243,7 +243,7 @@
 </div>
 </div>
 </aside>
-<h2 id="detener">Cómo eliminar las pesadillas: 6 técnicas probadas</h2>
+<h2 id="detener">Cómo reducir las pesadillas recurrentes: 6 estrategias</h2>
 <p>
                     Técnicas probadas para reducir la frecuencia e intensidad de las pesadillas:
                 </p>

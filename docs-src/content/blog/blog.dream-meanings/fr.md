@@ -104,8 +104,8 @@
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="reves-etre-poursuivi">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Symbole</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Être poursuivi</h3>
-<p class="text-sm text-gray-400">Évitement, stress et thèmes non résolus.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Rêver d'être poursuivi</h3>
+<p class="text-sm text-gray-400">Scénarios, évitement, stress et pistes pour agir.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="reves-de-serpents">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Symbole</span>
@@ -130,10 +130,10 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="reves-ex-partenaire">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Relations</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Rêver d’un ex</h3>
-</a>
 <p class="text-sm text-gray-400">
-Ce que l’esprit est en train d’intégrer.
+Signification, scénarios et émotions à comparer.
 </p>
+</a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="reves-de-grossesse">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Vie</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de grossesse</h3>
