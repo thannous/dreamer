@@ -111,3 +111,6 @@ doc_web_interne/docs/supabase-play-integrity-secrets-state.local.json
 
 # Local SEO working document (Ahrefs one-month plan), kept out of the repo
 doc_web_interne/SEO_NOCTALIA_AHREF
+
+# Local generated creative assets (images, videos, storyboards, and QA sheets)
+/output/
