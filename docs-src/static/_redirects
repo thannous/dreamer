@@ -3,10 +3,8 @@
 
 # Root should serve `index.html` (language detection + fallback links) to avoid an extra 301 hop.
 
-# Normalize common host/protocol variants (when supported by the platform)
-http://noctalia.app/* https://noctalia.app/:splat 301
-http://www.noctalia.app/* https://noctalia.app/:splat 301
-https://www.noctalia.app/* https://noctalia.app/:splat 301
+# Host and protocol normalization must be configured in Cloudflare zone/account rules.
+# Cloudflare Pages `_redirects` does not support domain-level redirect sources.
 /en / 301
 /en/ / 301
 

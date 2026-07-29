@@ -7,6 +7,7 @@ const { spawnSync } = require('child_process');
 const { DOCS_DIR, ROOT_DIR, siteConfig } = require('./lib/docs-site-config');
 const { assertDocsBuildReady } = require('./lib/docs-check-helpers');
 const { normalizePrettyPath, readJson, walkFiles } = require('./lib/docs-source-utils');
+const { validateCloudflarePagesRedirects } = require('./lib/pages-redirect-contract');
 
 const SITE_MANIFEST_PATH = path.join(ROOT_DIR, 'data', 'site-manifest.json');
 const DOMAIN = siteConfig.domain;
@@ -341,6 +342,16 @@ function assertNoLinksToExactRedirects() {
   }
 }
 
+function assertSupportedPagesRedirects() {
+  const redirectsPath = path.join(DOCS_DIR, '_redirects');
+  if (!fs.existsSync(redirectsPath)) return;
+
+  const errors = validateCloudflarePagesRedirects(fs.readFileSync(redirectsPath, 'utf8'));
+  if (errors.length > 0) {
+    throw new Error(errors.map((error) => `[Pages redirect] ${error}`).join('\n'));
+  }
+}
+
 function assertReferencedBlogImagesOptimized() {
   const htmlFiles = walkFiles(DOCS_DIR, (filePath) => filePath.endsWith('.html'));
   const errors = [];
@@ -482,6 +493,7 @@ function main() {
   assertCanonicalSymbolCatalogsPublished();
   assertNoDuplicateCriticalMeta();
   assertCanonicalOrganizationIdentity();
+  assertSupportedPagesRedirects();
   assertNoLinksToExactRedirects();
   assertReferencedBlogImagesOptimized();
   assertManifestParity(manifest);

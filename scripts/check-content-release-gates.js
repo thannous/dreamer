@@ -51,6 +51,17 @@ const RETIRED_MISATTRIBUTED_PMIDS = [
 ];
 const REQUIRED_COMMERCIAL_SCHEMA_TYPES = ['WebPage', 'BreadcrumbList', 'FAQPage'];
 const COMMERCIAL_PAGES_WITHOUT_FAQ = new Set(['page.alternatives']);
+const GOOGLE_SOFTWARE_APPLICATION_TYPES = [
+  'SoftwareApplication',
+  'MobileApplication',
+  'WebApplication',
+];
+const GOOGLE_SOFTWARE_APPLICATION_SIGNAL_FIELDS = [
+  'offers.price',
+  'aggregateRating.ratingValue',
+  'applicationCategory',
+  'operatingSystem',
+];
 const COMMERCIAL_FAQ_MINIMUMS = new Map([
   ['page.ai-dream-interpretation-app', 2],
   ['page.dreamapp-alternative', 2],
@@ -257,6 +268,64 @@ function collectSchemaNodes(blocks) {
 function nodeHasType(node, type) {
   const values = Array.isArray(node?.['@type']) ? node['@type'] : [node?.['@type']];
   return values.includes(type);
+}
+
+function hasStructuredValue(value) {
+  if (typeof value === 'string') return value.trim() !== '';
+  if (Array.isArray(value)) return value.length > 0;
+  if (value && typeof value === 'object') return Object.keys(value).length > 0;
+  return value !== null && value !== undefined;
+}
+
+function validateSoftwareApplicationRichResults(nodes) {
+  const errors = [];
+
+  for (const node of Array.isArray(nodes) ? nodes : []) {
+    if (!GOOGLE_SOFTWARE_APPLICATION_TYPES.some((type) => nodeHasType(node, type))) continue;
+
+    const populatedFields = [
+      hasStructuredValue(node?.offers?.price) ? 'offers.price' : null,
+      hasStructuredValue(node?.aggregateRating?.ratingValue)
+        ? 'aggregateRating.ratingValue'
+        : null,
+      hasStructuredValue(node?.applicationCategory) ? 'applicationCategory' : null,
+      hasStructuredValue(node?.operatingSystem) ? 'operatingSystem' : null,
+    ].filter(Boolean);
+
+    if (populatedFields.length < 2) {
+      errors.push(
+        `${node?.name || '<unnamed software application>'}: Google Rich Results requires at least two of ${GOOGLE_SOFTWARE_APPLICATION_SIGNAL_FIELDS.join(', ')}; found ${populatedFields.join(', ') || 'none'}`
+      );
+    }
+  }
+
+  return errors;
+}
+
+function checkStructuredDataRichResultSources(errors) {
+  const files = walkFiles(CONTENT_DIR, (filePath) => filePath.endsWith('.md'));
+  let softwareApplicationCount = 0;
+
+  for (const filePath of files) {
+    const { meta } = readSourceDocument(filePath);
+    try {
+      const nodes = collectSchemaNodes(meta.jsonLd);
+      softwareApplicationCount += nodes.filter((node) =>
+        GOOGLE_SOFTWARE_APPLICATION_TYPES.some((type) => nodeHasType(node, type))
+      ).length;
+      for (const error of validateSoftwareApplicationRichResults(nodes)) {
+        errors.push(
+          `[software app rich result] ${path.relative(ROOT_DIR, filePath)}: ${error}`
+        );
+      }
+    } catch (error) {
+      errors.push(
+        `[software app rich result] ${path.relative(ROOT_DIR, filePath)}: invalid JSON-LD (${error.message})`
+      );
+    }
+  }
+
+  return softwareApplicationCount;
 }
 
 function findMalformedSpanishInvertedQuestions(bodyHtml) {
@@ -897,6 +966,7 @@ function runReleaseGates() {
   const errors = [];
   const articleCount = checkArticleDateSources(errors);
   const structuredDataDates = checkStructuredDataDateSources(errors);
+  const softwareApplicationCount = checkStructuredDataRichResultSources(errors);
   const spanish = checkSpanishEditorialPunctuation(errors);
   const spanishOrthography = checkSpanishOrthography(errors);
   const researchLinkFileCount = checkMisattributedResearchLinks(errors);
@@ -918,6 +988,7 @@ function runReleaseGates() {
     researchLinkFileCount,
     spanish,
     spanishOrthography,
+    softwareApplicationCount,
     structuredDataDates,
     symbolCount,
   };
@@ -935,6 +1006,7 @@ function main() {
     `[content-release-gates] Passed: ${result.articleCount} article dates, ` +
       `${result.structuredDataDates.articleSchemaCount} article schemas, ` +
       `${result.structuredDataDates.datedPageSchemaCount} dated page schemas, ` +
+      `${result.softwareApplicationCount} software application schemas, ` +
       `${result.spanish.fileCount} Spanish articles, ${result.commercialPageCount} commercial pages, ` +
       `${result.homePageCount} home product-fact pages, ${result.metadataFileCount} metadata sources, ` +
       `${result.researchLinkFileCount} research-link sources, ` +
@@ -968,5 +1040,6 @@ module.exports = {
   normalizeSymbolDescriptionTemplate,
   terminalMetadataWord,
   validateExpandedSymbolLocale,
+  validateSoftwareApplicationRichResults,
   runReleaseGates,
 };
