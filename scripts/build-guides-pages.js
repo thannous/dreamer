@@ -716,17 +716,6 @@ function renderGuideHubStyles() {
           display: none;
           background: none;
         }
-        .guides-eyebrow {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.55rem;
-          margin-bottom: 1rem;
-          color: #fda481;
-          font-size: 0.72rem;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          font-weight: 500;
-        }
         .guides-title {
           max-width: 11ch;
           margin: 0;
@@ -749,7 +738,6 @@ function renderGuideHubStyles() {
           line-height: 1.55;
           text-wrap: pretty;
         }
-        .guides-actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 1.65rem; }
         .guides-hero > div {
           position: relative;
           z-index: 2;
@@ -780,21 +768,6 @@ function renderGuideHubStyles() {
         .guides-hero-illustration picture, .guides-hero-illustration img { display: block; width: 100%; height: 100%; }
         .guides-hero-illustration img { object-fit: cover; object-position: center; }
         .guides-hero-illustration figcaption { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); clip-path: inset(50%); white-space: nowrap; border: 0; }
-        .guides-button {
-          min-height: 3.25rem;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.7rem;
-          padding: 0.95rem 1.5rem;
-          border-radius: 999px;
-          font-weight: 800;
-          border: 1px solid rgba(255,255,255,0.13);
-          transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-        }
-        .guides-button:hover { transform: translateY(-1px); }
-        .guides-button-primary { background: #fda481; color: #0a0514; border-color: rgba(253,164,129,0.9); }
-        .guides-button-secondary { background: rgba(255,247,237,0.05); color: #fff7ed; }
         .guides-dictionary-cta {
           position: relative;
           width: fit-content;
@@ -827,15 +800,6 @@ function renderGuideHubStyles() {
           opacity: 0.74;
           pointer-events: none;
           background: radial-gradient(circle at 78% 20%, var(--guide-tone, rgba(253,164,129,0.26)), transparent 52%);
-        }
-        .guides-card-icon {
-          position: relative;
-          width: 2.2rem;
-          height: 2.2rem;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          color: #fda481;
         }
         .guides-card-title, .guides-dictionary-title {
           position: relative;
@@ -1094,8 +1058,6 @@ function renderGuideHubStyles() {
             font-size: 0.96rem;
             line-height: 1.45;
           }
-          .guides-actions { flex-direction: column; }
-          .guides-button { width: 100%; }
           .guides-section {
             margin-top: 0;
             padding-top: 0.5rem;
@@ -2889,7 +2851,7 @@ ${(rg.steps || []).map((step, index) => `                        <li class="refl
       }
       const cardLinksHtml = `
                             <div class="symbol-card-links">
-                                <a href="/${lang}/${symbolPath}/${s.slug}" class="symbol-card-cta" tabindex="-1">
+                                <a href="/${lang}/${symbolPath}/${s.slug}" class="symbol-card-cta">
                                     ${escapeHtml(uiCopy.viewSymbolCta)}
                                     <i data-lucide="chevron-right" class="symbol-card-cta-icon" aria-hidden="true"></i>
                                 </a>${relatedArticleHtml}
@@ -3600,33 +3562,6 @@ ${renderGuidesFooter(lang, t, pages, currentPaths, 'dictionary')}
                 navbar.addEventListener('transitionend', stopNavbarTransitionTracking);
                 navbar.addEventListener('transitioncancel', stopNavbarTransitionTracking);
             }
-
-            // ── Symbol card clickability (keyboard accessible) ────────────
-
-            symbolCards.forEach((card) => {
-                const link = card.querySelector('a[href]');
-                if (!link) return;
-                const href = link.getAttribute('href');
-                if (!href) return;
-                card.style.cursor = 'pointer';
-                card.setAttribute('role', 'link');
-                card.setAttribute('tabindex', '0');
-                const title = card.querySelector('h3')?.textContent?.trim();
-                if (title) card.setAttribute('aria-label', title);
-                link.setAttribute('tabindex', '-1');
-                const navigate = (openInNewTab = false) => {
-                    if (openInNewTab) { window.open(href, '_blank', 'noopener'); return; }
-                    window.location.href = href;
-                };
-                card.addEventListener('click', (e) => {
-                    if (e.target.closest('a')) return;
-                    if (e.metaKey || e.ctrlKey) { navigate(true); return; }
-                    navigate(false);
-                });
-                card.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(e.metaKey || e.ctrlKey); }
-                });
-            });
 
             // ── Category color borders (JS-driven) ───────────────────────
             const symbolCategories = {

@@ -186,6 +186,8 @@ describe('docs shared components', () => {
     expect(html).toContain('.mobile-menu-surface { min-height: calc(100dvh - 5.25rem)');
     expect(html).toContain('justify-content: space-between');
     expect(html).toContain('margin-left: auto');
-    expect(html).toContain('#mobileMenuButton');
+    expect(html).toContain(
+      '#mobileMenuButton { min-width: 2.75rem; min-height: 2.75rem; align-items: center; justify-content: center; }'
+    );
   });
 });

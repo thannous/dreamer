@@ -9,6 +9,7 @@ function renderSharedComponentStyles() {
     '      .noctalia-premium-action { display: inline-flex; }',
     '      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }',
     '      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }',
+    '      #mobileMenuButton { min-width: 2.75rem; min-height: 2.75rem; align-items: center; justify-content: center; }',
     '      body.mobile-menu-lock { overflow: hidden; touch-action: none; }',
     '      main .overflow-x-auto { max-width: 100%; overflow-x: auto !important; overscroll-behavior-inline: contain; }',
     '      .mobile-menu-backdrop { position: fixed; inset: 0; z-index: 48; background: rgba(5, 2, 12, 0.72); opacity: 0; transition: opacity 180ms ease; }',
