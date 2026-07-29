@@ -123,8 +123,14 @@ describe('TabLayout returning guest navigation', () => {
 
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
       bottom: 34,
+      end: 22,
       height: 86,
       position: 'absolute',
+      start: 22,
+    }));
+    expect(capturedTabBarStyle).not.toEqual(expect.objectContaining({
+      left: expect.anything(),
+      width: expect.anything(),
     }));
   });
 
@@ -136,11 +142,12 @@ describe('TabLayout returning guest navigation', () => {
     render(<TabLayout />);
 
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
-      left: 160,
-      width: 960,
+      end: 160,
+      start: 160,
     }));
     expect(capturedTabBarStyle).not.toEqual(expect.objectContaining({
-      right: expect.anything(),
+      left: expect.anything(),
+      width: expect.anything(),
     }));
   });
 });

@@ -106,8 +106,8 @@ describe('NoctaliaBottomNav', () => {
 
     const addDreamTab = screen.getByTestId(TID.Tab.AddDream);
     expect(addDreamTab).toBeTruthy();
-    expect(addDreamTab.parentElement?.getAttribute('data-native-style')).toContain('"left":160');
-    expect(addDreamTab.parentElement?.getAttribute('data-native-style')).toContain('"width":960');
+    expect(addDreamTab.parentElement?.getAttribute('data-native-style')).toContain('"start":160');
+    expect(addDreamTab.parentElement?.getAttribute('data-native-style')).toContain('"end":160');
   });
 
   it('remains hidden on desktop Web', () => {

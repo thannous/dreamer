@@ -26,9 +26,13 @@ export const TAB_BAR_HORIZONTAL_MARGIN = 22;
 export const getTabBarHorizontalLayout = (viewportWidth: number) => {
   const availableWidth = Math.max(0, viewportWidth - TAB_BAR_HORIZONTAL_MARGIN * 2);
   const width = Math.min(availableWidth, TAB_BAR_MAX_WIDTH);
+  const horizontalInset = Math.max(0, (viewportWidth - width) / 2);
 
   return {
-    left: Math.max(0, (viewportWidth - width) / 2),
-    width,
+    // React Navigation anchors its tab bar with logical `start`/`end` edges.
+    // Override those same properties so its `start: 0` cannot win over a
+    // physical `left` value and shift a bounded bar toward the leading edge.
+    start: horizontalInset,
+    end: horizontalInset,
   };
 };
