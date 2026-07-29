@@ -114,9 +114,12 @@ function runAfterNavigationMount(callback: () => void) {
 if (__DEV__) {
   // Expo Router can emit this React 19 development warning while resolving the
   // async initial URL before the navigation container finishes mounting.
-  // It is outside app code and otherwise blocks device QA with a redbox.
+  // Supabase also logs a revoked persisted refresh token once before removing
+  // that stale local session. Both are expected recovery paths; keep every
+  // other warning and auth error visible.
   LogBox.ignoreLogs([
     "Can't perform a React state update on a component that hasn't mounted yet",
+    'Invalid Refresh Token: Refresh Token Not Found',
   ]);
 }
 

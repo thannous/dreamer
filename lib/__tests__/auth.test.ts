@@ -487,7 +487,7 @@ describe('auth helpers', () => {
 
     expect(mockSubscriptionService.logOutSubscriptionUser).toHaveBeenCalled();
     expect(defaultGoogleModule.GoogleSignin.signOut).toHaveBeenCalled();
-    expect(mockSupabaseAuth.signOut).toHaveBeenCalled();
+    expect(mockSupabaseAuth.signOut).toHaveBeenCalledWith({ scope: 'local' });
   });
 
   it('still signs out from Supabase when Google logout fails', async () => {
@@ -499,34 +499,16 @@ describe('auth helpers', () => {
 
     expect(mockSubscriptionService.logOutSubscriptionUser).toHaveBeenCalled();
     expect(defaultGoogleModule.GoogleSignin.signOut).toHaveBeenCalled();
-    expect(mockSupabaseAuth.signOut).toHaveBeenCalled();
+    expect(mockSupabaseAuth.signOut).toHaveBeenCalledWith({ scope: 'local' });
     expect(mockLogger.warn).toHaveBeenCalledWith('Google logout failed', googleError);
   });
 
-  it('clears the local session when remote sign-out fails', async () => {
-    const remoteError = new Error('remote sign-out failed');
-    mockSupabaseAuth.signOut
-      .mockResolvedValueOnce({ error: remoteError })
-      .mockResolvedValueOnce({ error: null });
-    const auth = await loadAuth();
-
-    await expect(auth.signOut()).resolves.toBeUndefined();
-
-    expect(mockSupabaseAuth.signOut).toHaveBeenNthCalledWith(1);
-    expect(mockSupabaseAuth.signOut).toHaveBeenNthCalledWith(2, { scope: 'local' });
-    expect(mockLogger.warn).toHaveBeenCalledWith(
-      'Remote Supabase logout failed; clearing local session',
-      remoteError
-    );
-  });
-
-  it('propagates the local sign-out error when fallback invalidation fails', async () => {
-    mockSupabaseAuth.signOut
-      .mockResolvedValueOnce({ error: new Error('remote sign-out failed') })
-      .mockResolvedValueOnce({ error: new Error('local sign-out failed') });
+  it('propagates a local sign-out error', async () => {
+    mockSupabaseAuth.signOut.mockResolvedValueOnce({ error: new Error('local sign-out failed') });
     const auth = await loadAuth();
 
     await expect(auth.signOut()).rejects.toThrow('local sign-out failed');
+    expect(mockSupabaseAuth.signOut).toHaveBeenCalledWith({ scope: 'local' });
   });
 
   it('returns mock access when mock mode is enabled', async () => {

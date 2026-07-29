@@ -219,7 +219,9 @@ export async function signOut() {
     log.warn('RevenueCat logout failed', error);
   }
 
-  const { error } = await supabase.auth.signOut();
+  // A normal app logout is browser-local. Supabase defaults to `global`,
+  // which would revoke refresh tokens in the user's other sessions.
+  const { error } = await supabase.auth.signOut({ scope: 'local' });
   if (error) throw error;
 }
 
