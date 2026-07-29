@@ -209,9 +209,9 @@
 <p>
                     During sleep, your brain consolidates memories and experiences. <strong>Stressful events get replayed</strong> as your mind tries to process and file them. This is why nightmares often follow difficult days.
                 </p>
-<blockquote>
-                    "Nightmares are the psyche's way of bringing attention to something that needs to be processed. They're not punishment - they're information." - Dr. Rosalind Cartwright, Dream Researcher
-                </blockquote>
+<p>
+                    Nightmares can draw attention to stress or experiences that still feel unresolved. They are not a punishment, and a single dream does not provide a diagnosis.
+                </p>
 <h2 id="types">Types of Nightmares and Their Psychological Meanings</h2>
 <h3>Stress Nightmares</h3>
 <p>
@@ -413,8 +413,8 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/nightmare" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Nightmare</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20815183/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010): Best practice guide for the treatment of nightmare disorder in adults</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/29991437/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018): Position paper for the treatment of nightmare disorder in adults</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/20726290/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010): Best practice guide for the treatment of nightmare disorder in adults</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018): Position paper for the treatment of nightmare disorder in adults</a></li>
 <li><a href="https://www.sleepfoundation.org/nightmares" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Nightmares</a></li>
 <li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS: Brain Basics: Understanding Sleep</a></li>
 </ul>

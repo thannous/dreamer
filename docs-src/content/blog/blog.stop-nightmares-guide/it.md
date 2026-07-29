@@ -209,9 +209,9 @@
 <p>
                     Durante il sonno, il tuo cervello consolida ricordi ed esperienze. <strong>Eventi stressanti vengono riprodotti</strong> mentre la tua mente cerca di elaborarli e archiviarli. Questo è il motivo per cui gli incubi spesso seguono giorni difficili.
                 </p>
-<blockquote>
-                    "Gli incubi sono il modo in cui la psiche attira l'attenzione su qualcosa che deve essere elaborato. Non sono punizioni, sono informazioni." - Dott.ssa Rosalind Cartwright, ricercatrice sui sogni
-                </blockquote>
+<p>
+                    Gli incubi possono richiamare l’attenzione su stress o esperienze che sembrano ancora irrisolte. Non sono una punizione e un singolo sogno non permette di formulare una diagnosi.
+                </p>
 <h2 id="types">Tipi di incubi e loro significato psicologico</h2>
 <h3>Incubi da stress</h3>
 <p>
@@ -413,8 +413,8 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti / Approfondimenti</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/nightmare" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Nightmare (incubo)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20815183/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010): Guida alle migliori pratiche per il trattamento del disturbo da incubi negli adulti</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/29991437/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018): Documento di posizione per il trattamento del disturbo da incubi negli adulti</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/20726290/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010): Guida alle migliori pratiche per il trattamento del disturbo da incubi negli adulti</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018): Documento di posizione per il trattamento del disturbo da incubi negli adulti</a></li>
 <li><a href="https://www.sleepfoundation.org/nightmares" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Nightmares (incubi)</a></li>
 <li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS: Nozioni di base sul cervello: Comprendere il sonno</a></li>
 </ul>

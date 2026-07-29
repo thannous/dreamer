@@ -209,9 +209,9 @@
 <p>
                     Durante el sueño, tu cerebro consolida recuerdos y experiencias. <strong>Los eventos estresantes se reproducen</strong> mientras tu mente intenta procesarlos y archivarlos. Por eso las pesadillas a menudo siguen a días difíciles.
                 </p>
-<blockquote>
-                    "Las pesadillas son la forma de la psique de llamar la atención sobre algo que necesita ser procesado. No son un castigo - son información." - Dra. Rosalind Cartwright, Investigadora de sueños
-                </blockquote>
+<p>
+                    Las pesadillas pueden llamar la atención sobre estrés o experiencias que todavía se sienten sin resolver. No son un castigo y un solo sueño no permite establecer un diagnóstico.
+                </p>
 <h2 id="tipos">Tipos de pesadillas: desde estrés hasta trauma</h2>
 <h3>Pesadillas causadas por estrés y ansiedad</h3>
 <p>
@@ -413,8 +413,8 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Lectura adicional</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/nightmare" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Nightmare (pesadilla)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20815183/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010): Guía de mejores prácticas para el tratamiento del trastorno de pesadillas en adultos</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/29991437/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018): Documento de posición para el tratamiento del trastorno de pesadillas en adultos</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/20726290/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010): Guía de mejores prácticas para el tratamiento del trastorno de pesadillas en adultos</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018): Documento de posición para el tratamiento del trastorno de pesadillas en adultos</a></li>
 <li><a href="https://www.sleepfoundation.org/nightmares" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Nightmares (pesadillas)</a></li>
 <li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS: Conceptos básicos del cerebro: Comprender el sueño</a></li>
 </ul>

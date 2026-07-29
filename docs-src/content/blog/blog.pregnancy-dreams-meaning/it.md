@@ -119,9 +119,9 @@
 <li><strong>Crescere personalmente</strong> - sviluppare nuovi aspetti di te stesso</li>
 <li><strong>Manifestare obiettivi</strong> - lavorare verso qualcosa che non si è ancora materializzato</li>
 </ul>
-<blockquote>
-                    "I sogni di una gravidanza riguardano il dare alla luce te stessa, nuove idee, nuovi modi di essere, nuovi capitoli della tua storia di vita." - Dott.ssa Patricia Garfield, ricercatrice sui sogni
-                </blockquote>
+<p>
+                    Al di fuori di una gravidanza reale, questa immagine può accompagnare anche un nuovo progetto, ruolo o fase della vita. Il contesto della persona conta più di qualsiasi regola simbolica fissa.
+                </p>
 <h2 id="scenarios">Scenari e interpretazioni comuni dei sogni di gravidanza</h2>
 <p>
                     Lo scenario specifico della gravidanza fornisce indizi sul significato del sogno:
@@ -264,9 +264,9 @@
 <p>
                     Le persone incinte sognano comunemente: il sesso o l'aspetto del bambino, <strong>scenari di travaglio e parto</strong>, prendersi cura del neonato e, talvolta, scenari angoscianti che riflettono le condizioni sottostanti. ansie.
                 </p>
-<blockquote>
-                    "I sogni durante la gravidanza servono come prove generali per la maternità, consentendo alla psiche di prepararsi per la profonda trasformazione che ci aspetta." - Dr. Alan Siegel, ricercatore sui sogni in gravidanza
-                </blockquote>
+<p>
+                    Durante la gravidanza, i sogni possono riflettere preoccupazioni pratiche, aspettative ed emozioni legate al parto o alla cura del bambino. Non predicono l'andamento della gravidanza.
+                </p>
 <h2 id="action">Lavorare con i sogni in gravidanza: come interpretarli</h2>
 <h3>1. Identifica cosa si sta sviluppando nella tua vita</h3>
 <p>
@@ -396,8 +396,8 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti / Approfondimenti</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/17689042/" rel="nofollow noopener noreferrer" target="_blank">Nielsen &amp; Paquette (2007) — Frequenza e contenuto dei sogni nelle donne in gravidanza e non (PubMed)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/24135556/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2014) — Rappresentazioni materne nei sogni delle donne in gravidanza (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/24780135/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2014) — Sogni disturbati durante il terzo trimestre di gravidanza (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/23986734/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2013) — Rappresentazioni materne nei sogni delle donne in gravidanza (PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Sogni durante la gravidanza</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 6 gennaio 2026</p>

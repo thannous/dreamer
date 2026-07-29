@@ -125,9 +125,9 @@
 <p>
                     From a neurological perspective, flying dreams typically occur during <strong><a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a></strong> when the brain's motor cortex is active but the body is paralyzed. This disconnect between mental activity and physical stillness may create the sensation of weightlessness and movement.
                 </p>
-<blockquote>
-                    "Flying dreams are the mind's way of experiencing absolute freedom - freedom from gravity, from limitations, from the constraints we face in waking life." - Dr. Kelly Bulkeley, Dream Researcher
-                </blockquote>
+<p>
+                    For some dreamers, flying is associated with freedom, confidence, or relief from waking constraints. That interpretation is not universal and depends on the emotion and context of the dream.
+                </p>
 <p>
                     Unlike most common dreams (falling, <a class="text-dream-salmon hover:underline" href="../symbols/being-chased">being chased</a>), flying dreams are predominantly <strong>positive experiences</strong>. Studies show that people who have flying dreams often report feelings of joy, exhilaration, and empowerment upon waking.
                 </p>
@@ -285,9 +285,9 @@
 <p>
                     Lucid dreamers often report that their flight abilities <strong>improve with practice</strong>. What starts as awkward hovering can evolve into superman-style soaring as you master dream control.
                 </p>
-<blockquote>
-                    "Flying in a lucid dream is unlike anything in waking life. The sensation of complete freedom, of defying physics by will alone - it's transformative." - Stephen LaBerge, Lucidity Institute
-                </blockquote>
+<p>
+                    Lucid dreamers often describe flight as vivid and liberating, but experiences vary and do not establish a universal psychological meaning.
+                </p>
 <h2 id="induce">How to Have More Flying Dreams: 6 Proven Techniques</h2>
 <p>
                     If you want to experience more flying dreams, try these techniques:
