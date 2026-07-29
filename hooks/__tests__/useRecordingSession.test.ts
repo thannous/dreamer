@@ -138,6 +138,36 @@ describe('useRecordingSession', () => {
     expect(result.current.recordingPermissionState).toBe('unknown');
   });
 
+  it('forwards an unexpected native end to the recording screen', async () => {
+    const onNativeEnd = jest.fn();
+    let nativeOnEnd: (() => void) | undefined;
+    jest.mocked(startNativeSpeechSession).mockImplementationOnce(async (_language, options) => {
+      nativeOnEnd = options?.onEnd;
+      return {
+        stop: jest.fn().mockResolvedValue({ transcript: '' }),
+        abort: jest.fn(),
+        hasRecording: true,
+      };
+    });
+
+    const { result } = renderHook(() =>
+      useRecordingSession({
+        ...defaultOptions,
+        onNativeEnd,
+      })
+    );
+
+    await act(async () => {
+      await result.current.startRecording('');
+    });
+
+    act(() => {
+      nativeOnEnd?.();
+    });
+
+    expect(onNativeEnd).toHaveBeenCalledTimes(1);
+  });
+
   it('startRecording should return success when permissions granted', async () => {
     const { result } = renderHook(() => useRecordingSession(defaultOptions));
 

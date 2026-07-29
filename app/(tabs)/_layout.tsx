@@ -6,7 +6,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HapticTab } from '@/components/haptic-tab';
 import { DesktopSidebar } from '@/components/navigation/DesktopSidebar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DESKTOP_BREAKPOINT, TAB_BAR_HEIGHT } from '@/constants/layout';
+import {
+  DESKTOP_BREAKPOINT,
+  getBottomNavigationLayout,
+  getTabBarHorizontalLayout,
+} from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
@@ -26,14 +30,15 @@ type TabPalette = {
   textActive: string;
 };
 
-function TabBarItem({ label, icon, focused, palette }: {
+function TabBarItem({ label, icon, focused, palette, compact }: {
   label: string;
   icon: IconName;
   focused: boolean;
   palette: TabPalette;
+  compact: boolean;
 }) {
   return (
-    <View style={styles.tabItem}>
+    <View style={[styles.tabItem, compact && styles.tabItemCompact]}>
       <IconSymbol
         size={24}
         name={icon}
@@ -42,6 +47,7 @@ function TabBarItem({ label, icon, focused, palette }: {
       <Text
         style={[
           styles.tabLabel,
+          compact && styles.tabLabelCompact,
           { color: focused ? palette.textActive : palette.text },
         ]}
         numberOfLines={1}
@@ -52,14 +58,16 @@ function TabBarItem({ label, icon, focused, palette }: {
   );
 }
 
-function AddDreamTabItem({ label, palette }: {
+function AddDreamTabItem({ label, palette, compact }: {
   label: string;
   palette: TabPalette;
+  compact: boolean;
 }) {
   return (
     <View
       style={[
         styles.addTabItem,
+        compact && styles.addTabItemCompact,
         {
           backgroundColor: palette.accent,
           borderColor: palette.accentLight,
@@ -68,7 +76,7 @@ function AddDreamTabItem({ label, palette }: {
       ]}
     >
       <View
-        style={styles.addTabIconShell}
+        style={[styles.addTabIconShell, compact && styles.addTabIconShellCompact]}
       >
         <IconSymbol
           size={24}
@@ -77,7 +85,11 @@ function AddDreamTabItem({ label, palette }: {
         />
       </View>
       <Text
-        style={[styles.addTabLabel, { color: palette.textOnAccentSurface }]}
+        style={[
+          styles.addTabLabel,
+          compact && styles.addTabLabelCompact,
+          { color: palette.textOnAccentSurface },
+        ]}
         numberOfLines={1}
         ellipsizeMode="tail">
         {label}
@@ -92,9 +104,10 @@ export default function TabLayout() {
   const { returningGuestBlocked } = useAuth();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
 
-  const floatingBottomInset = Math.max(insets.bottom, 14);
+  const navigationLayout = getBottomNavigationLayout(width, height);
+  const floatingBottomInset = Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   const isDesktopWeb = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
   const palette: TabPalette = {
@@ -114,14 +127,13 @@ export default function TabLayout() {
   const baseTabBarStyle: ViewStyle = {
     position: 'absolute',
     bottom: floatingBottomInset,
-    left: 22,
-    right: 22,
+    ...getTabBarHorizontalLayout(width),
     backgroundColor: palette.barBg,
-    height: TAB_BAR_HEIGHT,
+    height: navigationLayout.barHeight,
     paddingHorizontal: 8,
-    paddingTop: 7,
-    paddingBottom: 7,
-    borderRadius: 36,
+    paddingTop: navigationLayout.compact ? 4 : 7,
+    paddingBottom: navigationLayout.compact ? 4 : 7,
+    borderRadius: navigationLayout.compact ? 28 : 36,
     borderWidth: 1,
     borderTopColor: palette.barBorder,
     borderColor: palette.barBorder,
@@ -172,7 +184,7 @@ export default function TabLayout() {
             <HapticTab {...props} testID={TID.Tab.Home} accessibilityLabel={t('nav.home')} />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="house" label={t('nav.home')} focused={focused} palette={palette} />
+            <TabBarItem icon="house" label={t('nav.home')} focused={focused} palette={palette} compact={navigationLayout.compact} />
           ),
         }}
       />
@@ -187,7 +199,7 @@ export default function TabLayout() {
             <HapticTab {...props} testID={TID.Tab.Journal} accessibilityLabel={t('nav.journal')} />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="book" label={t('nav.journal')} focused={focused} palette={palette} />
+            <TabBarItem icon="book" label={t('nav.journal')} focused={focused} palette={palette} compact={navigationLayout.compact} />
           ),
         }}
       />
@@ -207,7 +219,7 @@ export default function TabLayout() {
             />
           ),
           tabBarIcon: () => (
-            <AddDreamTabItem label={t('nav.add_dream')} palette={palette} />
+            <AddDreamTabItem label={t('nav.add_dream')} palette={palette} compact={navigationLayout.compact} />
           ),
         }}
       />
@@ -222,7 +234,7 @@ export default function TabLayout() {
             <HapticTab {...props} testID={TID.Tab.Stats} accessibilityLabel={t('nav.stats')} />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="chart.bar" label={t('nav.stats')} focused={focused} palette={palette} />
+            <TabBarItem icon="chart.bar" label={t('nav.stats')} focused={focused} palette={palette} compact={navigationLayout.compact} />
           ),
         }}
       />
@@ -234,7 +246,7 @@ export default function TabLayout() {
             <HapticTab {...props} testID={TID.Tab.Settings} accessibilityLabel={t('nav.settings')} />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="gear" label={t('nav.settings')} focused={focused} palette={palette} />
+            <TabBarItem icon="gear" label={t('nav.settings')} focused={focused} palette={palette} compact={navigationLayout.compact} />
           ),
         }}
       />
@@ -274,9 +286,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 5,
   },
+  tabItemCompact: {
+    gap: 1,
+  },
   tabLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
+  },
+  tabLabelCompact: {
+    fontSize: 11,
   },
   addTabItem: {
     width: 72,
@@ -292,6 +310,13 @@ const styles = StyleSheet.create({
     shadowRadius: 14,
     elevation: 8,
   },
+  addTabItemCompact: {
+    width: 60,
+    height: 56,
+    borderRadius: 22,
+    gap: 1,
+    transform: [{ translateY: -4 }],
+  },
   addTabIconShell: {
     width: 32,
     height: 30,
@@ -299,8 +324,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  addTabIconShellCompact: {
+    height: 26,
+  },
   addTabLabel: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 12,
+  },
+  addTabLabelCompact: {
+    fontSize: 11,
   },
 });

@@ -64,7 +64,9 @@ export function BottomSheetPrimaryAction({
       ]}
       onPress={onPress}
       disabled={isDisabled}
+      accessibilityLabel={label}
       accessibilityRole="button"
+      accessibilityState={{ busy: isLoading, disabled: isDisabled }}
       testID={testID}
     >
       {isLoading ? (

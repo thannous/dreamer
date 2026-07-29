@@ -126,7 +126,7 @@ export async function transcribeAudio({
 
     return res.transcript ?? '';
   } catch {
-    logger.error('[speechToText] fallback request failed');
+    logger.warn('[speechToText] fallback request failed');
     throw new Error('Failed to transcribe audio. Please try again.');
   }
 }

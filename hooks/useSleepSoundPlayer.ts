@@ -134,7 +134,12 @@ export function useSleepSoundPlayer({
   useFocusEffect(
     useCallback(() => {
       return () => {
-        player.pause();
+        try {
+          player.pause();
+        } catch {
+          // useAudioPlayer may release its native shared object before this
+          // focus cleanup runs during route unmount.
+        }
         clearLockScreen();
       };
     }, [clearLockScreen, player]),

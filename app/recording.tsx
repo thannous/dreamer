@@ -111,6 +111,7 @@ import {
   AppState,
   Keyboard,
   KeyboardAvoidingView,
+  Platform,
   type LayoutChangeEvent,
   ScrollView,
   StyleSheet,
@@ -426,6 +427,7 @@ export default function RecordingScreen() {
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
   const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
   const interactionDisabled = isPersisting || isAnalyzing;
+  const isCompactLandscape = viewportWidth > viewportHeight && viewportHeight < 600;
   const draftProgress = getRecordingDraftProgress(trimmedTranscript);
   const hasSaveableContent = draftProgress.state === 'ready' || draftProgress.state === 'full';
   const isSaveDisabled = !hasSaveableContent || interactionDisabled;
@@ -486,10 +488,14 @@ export default function RecordingScreen() {
   );
 
   const stopRecordingFromPartialRef = useRef<(() => void) | null>(null);
+  const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
 
   const recordingSession = useRecordingSession({
     transcriptionLocale,
     t,
+    onNativeEnd: () => {
+      stopRecordingFromNativeEndRef.current?.();
+    },
     onPartialTranscript: (text) => {
       const { text: combined, truncated } = combineTranscript(baseTranscriptRef.current, text);
       setTranscript(combined);
@@ -874,6 +880,15 @@ export default function RecordingScreen() {
     };
     return () => {
       stopRecordingFromPartialRef.current = null;
+    };
+  }, [stopRecording]);
+
+  useEffect(() => {
+    stopRecordingFromNativeEndRef.current = () => {
+      void stopRecording();
+    };
+    return () => {
+      stopRecordingFromNativeEndRef.current = null;
     };
   }, [stopRecording]);
 
@@ -1454,23 +1469,31 @@ export default function RecordingScreen() {
 
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const gradientColors = noctalia.screen.gradient;
+  const isDesktopWeb = Platform.OS === 'web' && viewportWidth >= DESKTOP_BREAKPOINT;
   const fixedFooterBottomOffset = keyboardVisible
     ? insets.bottom
-    : viewportWidth < DESKTOP_BREAKPOINT
-      ? Math.max(bottomNavHeight, insets.bottom)
-      : insets.bottom;
+    : isDesktopWeb
+      ? insets.bottom
+      : Math.max(bottomNavHeight, insets.bottom);
   const recordingGuideBottomOffset = keyboardVisible
     ? Math.max(keyboardHeight, insets.bottom)
     : fixedFooterBottomOffset;
   const mainContentStyle = useMemo(
     () => [
       styles.mainContent,
+      isCompactLandscape && styles.mainContentCompact,
       {
         paddingTop: 16 + insets.top,
         paddingBottom: fixedFooterBottomOffset + (hasSaveableContent ? footerHeight : 0),
       },
     ],
-    [fixedFooterBottomOffset, footerHeight, hasSaveableContent, insets.top]
+    [
+      fixedFooterBottomOffset,
+      footerHeight,
+      hasSaveableContent,
+      insets.top,
+      isCompactLandscape,
+    ]
   );
   const fixedFooterStyle = useMemo(
     () => keyboardVisible
@@ -1957,7 +1980,7 @@ export default function RecordingScreen() {
           >
             <MockNavigationRail />
             <View style={mainContentStyle}>
-              <View style={styles.bodySection}>
+              <View style={[styles.bodySection, isCompactLandscape && styles.bodySectionCompact]}>
                 <RecordingInputModeSelect
                   value={inputMode}
                   disabled={
@@ -1975,6 +1998,7 @@ export default function RecordingScreen() {
                 />
 
                 <RecordingTextInput
+                  compact={isCompactLandscape}
                   layout={inputMode === 'voice' ? 'voiceFirst' : 'textFirst'}
                   ref={textInputRef}
                   value={transcript}
@@ -2045,7 +2069,7 @@ export default function RecordingScreen() {
             </View>
           ) : null}
         </KeyboardAvoidingView>
-        {!keyboardVisible && viewportWidth < DESKTOP_BREAKPOINT ? (
+        {!keyboardVisible && !isDesktopWeb ? (
           <NoctaliaBottomNav
             activeKey="addDream"
             addDreamIcon={inputMode === 'voice' ? 'mic' : 'pencil'}
@@ -2399,10 +2423,16 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     position: 'relative',
   },
+  mainContentCompact: {
+    paddingVertical: 8,
+  },
   bodySection: {
     flex: 1,
     justifyContent: 'flex-start',
     gap: 24,
+  },
+  bodySectionCompact: {
+    gap: 12,
   },
   fixedFooter: {
     position: 'absolute',

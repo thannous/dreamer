@@ -70,6 +70,7 @@ import {
   type TextStyle,
   type ViewStyle
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 type ShareNavigator = Navigator & {
@@ -222,6 +223,7 @@ export default function JournalDetailScreen() {
   const { user } = useAuth();
   const { state: onboardingState, transition: transitionOnboarding } = useOnboarding();
   const { colors, shadows, mode } = useTheme();
+  const insets = useSafeAreaInsets();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { language } = useLanguage();
   const scrollPerf = useScrollIdle();
@@ -1715,6 +1717,7 @@ export default function JournalDetailScreen() {
             backgroundColor: noctalia.surface.raised,
             borderWidth: 1,
             borderColor: noctalia.surface.border,
+            top: insets.top + 12,
           }]}
           testID={TID.Button.NavigateJournal}
           accessibilityRole="button"
@@ -1725,10 +1728,13 @@ export default function JournalDetailScreen() {
         </Pressable>
         <ScrollView
           ref={scrollViewRef}
-          style={styles.scrollView}
+          style={[styles.scrollView, { marginTop: insets.top }]}
           contentContainerStyle={[
             styles.scrollContent,
-            { paddingBottom: (isEditing || isEditingTranscript) ? 220 : 100 },
+            {
+              paddingBottom:
+                ((isEditing || isEditingTranscript) ? 220 : 100) + insets.bottom,
+            },
           ]}
           keyboardShouldPersistTaps="handled"
           scrollEventThrottle={16}
@@ -2326,7 +2332,6 @@ const styles = StyleSheet.create({
   },
   floatingBackButton: {
     position: 'absolute',
-    top: 50,
     left: 20,
     zIndex: 50,
     width: 44,

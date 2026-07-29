@@ -5,6 +5,9 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { parseEnv } = require('node:util');
+const {
+  syncAndroidNativeVersion,
+} = require('./sync-android-native-version');
 
 function parseRunnerArgs(args) {
   const expoArgs = [];
@@ -108,11 +111,23 @@ function configureCodexWatchman(env = process.env) {
   }
 }
 
+function isAndroidRun(expoArgs) {
+  return expoArgs.includes('run:android') || expoArgs.includes('--android');
+}
+
 function main(args = process.argv.slice(2)) {
   let parsedArgs;
 
   try {
     parsedArgs = parseRunnerArgs(args);
+    if (isAndroidRun(parsedArgs.expoArgs)) {
+      const result = syncAndroidNativeVersion();
+      if (result.status === 'updated') {
+        console.error(
+          `[android] Synced native version ${result.versionName} (${result.versionCode})`,
+        );
+      }
+    }
     if (parsedArgs.envFile) {
       const resolvedPath = loadEnvProfile(parsedArgs.envFile);
       console.error(`[expo] Environment profile: ${path.relative(process.cwd(), resolvedPath)}`);
@@ -139,6 +154,7 @@ if (require.main === module) {
 
 module.exports = {
   configureCodexWatchman,
+  isAndroidRun,
   loadEnvProfile,
   main,
   parseRunnerArgs,

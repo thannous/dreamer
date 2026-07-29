@@ -24,7 +24,7 @@
       }
     },
     "android": {
-      "versionCode": 38,
+      "versionCode": 47,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -113,7 +113,8 @@
         {
           "android": {
             "minSdkVersion": 33,
-            "enableMinifyInReleaseBuilds": true
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
           }
         }
       ],

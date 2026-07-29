@@ -59,9 +59,9 @@ const SIGNALS = [
   { id: 'profile', icon: 'sparkles' as const },
 ];
 
-const INTRO_BACKGROUND_IMAGE = require('@/assets/images/onboarding-astral-background.png');
-const PATH_BACKGROUND_IMAGE = require('@/assets/images/onboarding-path-background.png');
-const PATH_BACKGROUND_ASPECT_RATIO = 854 / 510;
+const INTRO_BACKGROUND_IMAGE = require('@/assets/images/onboarding-astral-background.webp');
+const PATH_BACKGROUND_IMAGE = require('@/assets/images/onboarding-path-background.webp');
+const PATH_BACKGROUND_ASPECT_RATIO = 853 / 510;
 
 const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
   ? ({
@@ -632,7 +632,8 @@ export default function OnboardingScreen() {
             <ActivityIndicator color={titleAccent} />
           ) : (
             <Switch
-              value={analyticsEnabled}
+              disabled={!analyticsAvailable}
+              value={analyticsAvailable && analyticsEnabled}
               onValueChange={(value) => void toggleAnalytics(value)}
               accessibilityLabel={t('onboarding.privacy.toggle_label')}
               accessibilityHint={t('onboarding.privacy.toggle_hint')}

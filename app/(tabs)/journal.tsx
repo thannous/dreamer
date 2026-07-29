@@ -15,7 +15,12 @@ import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
-import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT, TABLET_BREAKPOINT } from '@/constants/layout';
+import {
+  DESKTOP_BREAKPOINT,
+  LAYOUT_MAX_WIDTH,
+  TABLET_BREAKPOINT,
+  getBottomNavigationLayout,
+} from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -84,6 +89,7 @@ export default function JournalListScreen() {
   const isAtlasLayout = journalLayoutPreference === 'compact' && !isDesktopLayout && !isTabletLayout;
   const isCompactJournalFilters = !isDesktopLayout && !isTabletLayout;
   const desktopColumns = width >= 1440 ? 4 : 3;
+  const navigationLayout = getBottomNavigationLayout(width, height);
 
   const [showHeaderAnimations, setShowHeaderAnimations] = useState(false);
 
@@ -164,7 +170,9 @@ export default function JournalListScreen() {
 
   const listBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
-    : TAB_BAR_HEIGHT + ThemeLayout.spacing.lg;
+    : navigationLayout.barHeight
+      + navigationLayout.minimumBottomInset
+      + ThemeLayout.spacing.lg;
   const desktopDateTextStyle = useMemo(
     () => [styles.desktopDate, { color: noctalia.text.secondary }],
     [noctalia.text.secondary]
@@ -849,6 +857,7 @@ export default function JournalListScreen() {
             slot={
               showAtlasSearch || searchQuery.length > 0 ? (
                 <SearchBar
+                  autoFocus
                   ref={searchInputRef}
                   testID={TID.Component.SearchBar}
                   inputTestID={TID.Input.SearchDreams}

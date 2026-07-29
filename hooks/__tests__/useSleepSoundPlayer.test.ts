@@ -151,6 +151,28 @@ describe('useSleepSoundPlayer', () => {
     expect(mockPlayer.clearLockScreenControls).toHaveBeenCalledTimes(1);
   });
 
+  it('ignores a released native player during focus cleanup', () => {
+    mockPlayer.pause.mockImplementationOnce(() => {
+      throw new Error('Cannot use shared object that was already released');
+    });
+
+    renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 45,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+
+    expect(() => {
+      act(() => {
+        focusCleanup?.();
+      });
+    }).not.toThrow();
+    expect(mockPlayer.clearLockScreenControls).toHaveBeenCalledTimes(1);
+  });
+
   it('surfaces a playback error without starting the player', async () => {
     jest.mocked(setAudioModeAsync).mockRejectedValueOnce(new Error('audio unavailable'));
     const { result } = renderHook(() =>

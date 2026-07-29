@@ -90,6 +90,8 @@ export interface UseRecordingSessionOptions {
   onLimitReached?: () => void;
   /** Optional callback for language pack missing UI */
   onLanguagePackMissing?: (info: { locale: string; installedLocales: string[] }) => void;
+  /** Called when native recognition ends without an explicit stop/abort. */
+  onNativeEnd?: () => void;
 }
 
 export function useRecordingSession({
@@ -98,6 +100,7 @@ export function useRecordingSession({
   onPartialTranscript,
   onLimitReached,
   onLanguagePackMissing,
+  onNativeEnd,
 }: UseRecordingSessionOptions) {
   const [isRecording, setIsRecording] = useState(false);
   const [recordingPermissionState, setRecordingPermissionState] =
@@ -418,6 +421,7 @@ export function useRecordingSession({
 
         nativeSessionRef.current = await startNativeSpeechSession(transcriptionLocale, {
           permissionAlreadyGranted: Platform.OS !== 'web',
+          onEnd: onNativeEnd,
           onPartial: (text) => {
             onPartialTranscript?.(text, { baseTranscript: baseTranscriptRef.current });
           },
@@ -485,7 +489,7 @@ export function useRecordingSession({
         return { success: false, error: err instanceof Error ? err.message : 'start_failed' };
       }
     },
-    [audioRecorder, t, transcriptionLocale, onPartialTranscript, handleRecorderError]
+    [audioRecorder, t, transcriptionLocale, onNativeEnd, onPartialTranscript, handleRecorderError]
   );
 
   const toggleRecording = useCallback(
