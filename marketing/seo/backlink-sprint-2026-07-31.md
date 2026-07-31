@@ -102,6 +102,16 @@ The asset is local until an authorized production publication. Do not pitch the 
 - **Destination:** `https://noctalia.app/en/android-dream-analysis-app`
 - **Constraint:** a verified developer claim is required before any Featured Apps action.
 
+### Second-wave free directories
+
+| Directory | Positioning | Current free-path evidence | Hold condition |
+| --- | --- | --- | --- |
+| PitchWall | Voice-first Android dream journal with transparent reflection boundaries. | Official submit page exposes a free launch, a stated 30+ day wait and a claimed dofollow backlink. | Recheck public pricing/demo readiness; verify the eventual live link rather than trusting the platform claim. |
+| Launching Next | Fast morning voice capture for an Android dream journal. | Official form accepts a free submission and describes a permanent product profile, with an approximately three-month queue. | Recheck public pricing/demo readiness and the live outbound-link attributes. |
+| AI Tools Inc | AI-assisted dream journaling with published methodology and non-medical limits. | Official submission path offers a `$0` listing with a stated 30–90 day review queue and no guaranteed placement. | Recheck public pricing/demo readiness; never pay for priority without separate approval. |
+
+These three are qualified, not submitted. Reciprocal-link or pay-to-dofollow directories remain excluded from this wave.
+
 ## Outreach templates — prepared, not sent
 
 ### A. Existing roundup inclusion
@@ -212,13 +222,13 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 
 ## Approval-ready external batch
 
-- [ ] Submit Noctalia to Uneed — preview ready; legitimate account creation required.
+- [ ] Submit Noctalia to Uneed — correct Google account connected as `thannous-6884`; dossier ready, but final submission waits for the public pricing and demo readiness gates.
 - [ ] Submit Noctalia to Microlaunch — current launch route is Pro-only; no spending authorized.
-- [ ] Send the Good AI Tools factual correction — email/X only; blocked until a verified Noctalia sender is available.
+- [x] Send the Good AI Tools factual correction — sent from the verified public developer identity to `submitmatic@gmail.com`; Gmail message `19fb7ec531196fa8`; awaiting publisher update.
 - [x] Send the SaaSHub entity/indexation request — submitted through the product-change form; pending moderation.
-- [ ] Send outreach wave 1 to the ten personalized editorial targets — approved, but the public CSV gate still returns 404 and email-only routes need a Noctalia sender.
-- [ ] Resolve AlternativeTo account creation through its legitimate current path — signup reached; user-owned email, password and hCaptcha required, then a 7-day account-age wait.
-- [ ] Claim or verify the AppBrain developer account — public listing verified; claim login reached and verification will go to `contact@noctalia.app`.
+- [ ] Send outreach wave 1 to the ten personalized editorial targets — approved and a verified public developer sender is available, but the public CSV gate still returns 404.
+- [ ] Resolve AlternativeTo account creation through its legitimate current path — correct email identity is available; user-owned password and hCaptcha are still required, then a 7-day account-age wait.
+- [ ] Claim or verify the AppBrain developer account — account created and verification email sent to `contact@noctalia.app`; that mailbox must open the link to finish.
 
 ## Execution log — approved A/B/C batch
 
@@ -227,12 +237,12 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 | A — local SEO publication lot | Two focused publication commits created; full documentation build and checks pass. | Local only; `master` has not been pushed. |
 | A — production publication | Push was not performed. | Waiting for explicit confirmation that pushing `master` triggers Cloudflare Production. |
 | B — SaaSHub | Product name, Android category/entity distinction, official URL consistency and `noindex` review submitted. | Accepted by the form; pending moderation. |
-| B — Uneed | Noctalia URL preview retrieved the correct logo, title and press description. | Account creation required; no account created under an unrelated identity. |
+| B — Uneed | Correct Google identity connected and account `thannous-6884` created; Noctalia preview still has the correct logo, title and press description. | Final submission held until the public pricing and demo readiness gates pass. |
 | B — Microlaunch | The current New Launch dialog exposes only Pro Launch. | Paused before payment; no spend authorized. |
-| B — Good AI Tools | Current owner route verified through SubmitMatic; only email/X is exposed. | Correction not sent from the unrelated connected Gmail identity. |
-| B — editorial wave | Ten tailored drafts remain ready. | Not sent because the cited CSV is not yet public and email-only routes lack a verified Noctalia sender. |
-| C — AlternativeTo | Current signup form and its 7-day new-account rule verified. | Paused at user identity/password/hCaptcha. |
-| C — AppBrain | Existing public Noctalia listing verified at the canonical package URL; claim flow reached. | Paused at login; ownership email will be sent to `contact@noctalia.app`. |
+| B — Good AI Tools | Factual correction sent to `submitmatic@gmail.com` from the verified public developer identity. | Gmail message `19fb7ec531196fa8`; awaiting publisher update. |
+| B — editorial wave | Ten tailored drafts remain ready and the sender identity is now verified. | Not sent because the cited CSV is not yet public. |
+| C — AlternativeTo | Current signup form and its 7-day new-account rule verified; correct email identity available. | Paused for user-owned password and hCaptcha. |
+| C — AppBrain | Google login completed, Noctalia found through the official package, and developer verification requested. | Email sent to `contact@noctalia.app`; no forwarded copy reached `thannous@gmail.com`, so mailbox action is required. |
 
 Product Hunt remains outside this batch until a real 60–90 second Android walkthrough is recorded and the launch-day support plan is ready.
 
