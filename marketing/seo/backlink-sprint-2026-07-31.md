@@ -28,6 +28,7 @@ Tracking files:
 - `marketing/seo/backlink-outreach-log-2026-07-31.csv`: send, reply, follow-up and live-link state for the ten-message wave.
 - `marketing/seo/directory-submission-pack-wave-3-ai-2026-07-31.md`: one field-ready free Future Tools dossier plus an official-price decision matrix for six paid or reciprocal AI-directory routes.
 - `marketing/seo/directory-submission-pack-wave-2-2026-07-31.md`: distinct, field-ready copy and public readiness gates for PitchWall, Launching Next and AI Tools Inc.
+- `marketing/seo/product-hunt-launch-pack-2026-07-31.md`: current field requirements, final listing copy, first maker comment, readiness gates and a relative launch-day protocol.
 
 ## Manual backlink audit
 
@@ -248,7 +249,7 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 | C — AlternativeTo | Current signup form and its 7-day new-account rule verified; correct email identity available. | Paused for user-owned password and hCaptcha. |
 | C — AppBrain | Google login completed, Noctalia found through the official package, and developer verification requested. | Email sent to `contact@noctalia.app`; no forwarded copy reached `thannous@gmail.com`, so mailbox action is required. |
 
-Product Hunt remains outside this batch until the completed 71-second walkthrough is public and the launch-day support plan is ready.
+Product Hunt now has a complete local launch pack. It remains outside this batch until the pricing/video deployment is live, the walkthrough is uploaded to YouTube with publication approval, the personal account is verified, and a launch date plus genuine feedback cohort are approved.
 
 ## Measurement
 
