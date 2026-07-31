@@ -34,6 +34,17 @@
       }
     },
     {
+      "pageId": "page.pricing",
+      "layout": "content",
+      "slugs": {
+        "en": "pricing",
+        "fr": "tarifs",
+        "es": "precios",
+        "de": "preise",
+        "it": "prezzi"
+      }
+    },
+    {
       "pageId": "page.dream-content-methodology",
       "layout": "content",
       "slugs": {

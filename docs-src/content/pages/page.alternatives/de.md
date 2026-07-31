@@ -23,20 +23,20 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-07-31T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Beste Traumtagebuch-Apps 2026\",\n  \"description\": \"Vergleiche Noctalia mit DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud und neuen KI-Traumtagebüchern.\",\n  \"url\": \"https://noctalia.app/de/traumtagebuch-apps\",\n  \"inLanguage\": \"de\",\n  \"dateModified\": \"2026-07-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Beste Traumtagebuch-Apps 2026\",\n  \"description\": \"Vergleiche Noctalia mit DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud und neuen KI-Traumtagebüchern.\",\n  \"url\": \"https://noctalia.app/de/traumtagebuch-apps\",\n  \"inLanguage\": \"de\",\n  \"dateModified\": \"2026-07-31T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Beste Traumtagebuch-Apps 2026\",\n      \"item\": \"https://noctalia.app/de/traumtagebuch-apps\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Beste Traumtagebuch-Apps 2026</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 20. Mai 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Seite aktualisiert am 31. Juli 2026 · Produktdaten geprüft am 12. Juli 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Die passende Traumtagebuch-App hängt davon ab, wie schnell du morgens erfasst, ob du KI-Deutung möchtest, wie wichtig luzides Träumen ist und wie klar Datenschutz erklärt wird.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -92,6 +92,13 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Methodik</h2>
     <p>Diese Seite basiert auf öffentlichen Store-Seiten, offiziellen Produktseiten und Noctalia-Quellen. Preise, Bewertungen, Downloads und Funktionen ändern sich; prüfe die Quellen vor einer Kaufentscheidung.</p>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Vergleichsdaten herunterladen</h2>
+    <p>Die CSV-Datei bildet den Vergleich von 11 Apps in einem Format ab, das Forschende, Medienschaffende und App-Reviewer filtern oder zitieren können. Jede Zeile enthält Quelle und Prüfdatum.</p>
+    <p class="mt-4"><a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Traumtagebuch-App-Vergleich herunterladen (CSV)</a></p>
+    <p class="mt-3 text-sm text-purple-200/70">Diese redaktionelle Zusammenstellung darf mit Namensnennung von Noctalia und einem Link zu dieser Seite weiterverwendet werden. Die Daten sind eine datierte Momentaufnahme; prüfe vor Veröffentlichung die offiziellen Quellen.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

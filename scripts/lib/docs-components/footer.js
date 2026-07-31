@@ -32,6 +32,14 @@ function alternativesLabel(lang) {
   return 'Dream journal apps';
 }
 
+function pricingLabel(lang) {
+  if (lang === 'fr') return 'Tarifs';
+  if (lang === 'es') return 'Precios';
+  if (lang === 'de') return 'Preise';
+  if (lang === 'it') return 'Prezzi';
+  return 'Pricing';
+}
+
 function dreamAppAlternativeLabel(lang) {
   if (lang === 'fr') return 'Alternative DreamApp';
   if (lang === 'es') return 'Alternativa DreamApp';
@@ -109,6 +117,10 @@ function buildSeoFooterLinks(context) {
     {
       href: routePath('page.alternatives'),
       label: alternativesLabel(lang),
+    },
+    {
+      href: routePath('page.pricing'),
+      label: pricingLabel(lang),
     },
     {
       href: routePath('page.dreamapp-alternative'),

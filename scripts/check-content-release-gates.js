@@ -35,6 +35,7 @@ const COMMERCIAL_PAGE_FAMILIES = [
   'page.dream-dictionary-app',
   'page.dreamapp-alternative',
   'page.oniri-alternative',
+  'page.pricing',
   'page.voice-dream-journal',
 ];
 const MIN_COMMERCIAL_WORDS = 300;

@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Noctalia KI-Traumtagebuch App",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-31T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
@@ -82,6 +82,7 @@
     <ul class="list-disc pl-5 space-y-2">
       <li><a href="https://noctalia.app" class="text-dream-salmon hover:underline">Offizielle Website</a></li>
       <li><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Google Play Eintrag</a></li>
+      <li><a href="/de/preise" class="text-dream-salmon hover:underline">Tarife und Preise</a></li>
       <li><a href="/logo512.png" class="text-dream-salmon hover:underline">App-Icon</a></li>
       <li><a href="/de/ueber-uns" class="text-dream-salmon hover:underline">Über Noctalia</a></li>
       <li><a href="/de/methodik-trauminhalte" class="text-dream-salmon hover:underline">Methodik der Trauminhalte und Daten</a></li>

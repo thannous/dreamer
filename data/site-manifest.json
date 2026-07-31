@@ -96,6 +96,34 @@
             }
           }
         },
+        "page.pricing": {
+          "id": "page.pricing",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "pricing",
+          "locales": {
+            "en": {
+              "slug": "pricing",
+              "path": "/en/pricing"
+            },
+            "fr": {
+              "slug": "tarifs",
+              "path": "/fr/tarifs"
+            },
+            "es": {
+              "slug": "precios",
+              "path": "/es/precios"
+            },
+            "de": {
+              "slug": "preise",
+              "path": "/de/preise"
+            },
+            "it": {
+              "slug": "prezzi",
+              "path": "/it/prezzi"
+            }
+          }
+        },
         "page.dream-content-methodology": {
           "id": "page.dream-content-methodology",
           "type": "content",

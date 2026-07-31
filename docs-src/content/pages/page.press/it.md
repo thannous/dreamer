@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "App diario dei sogni con IA Noctalia",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-07-31T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
@@ -82,6 +82,7 @@
     <ul class="list-disc pl-5 space-y-2">
       <li><a href="https://noctalia.app" class="text-dream-salmon hover:underline">Sito ufficiale</a></li>
       <li><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Scheda Google Play</a></li>
+      <li><a href="/it/prezzi" class="text-dream-salmon hover:underline">Piani e prezzi</a></li>
       <li><a href="/logo512.png" class="text-dream-salmon hover:underline">Icona app</a></li>
       <li><a href="/it/chi-siamo" class="text-dream-salmon hover:underline">Chi siamo</a></li>
       <li><a href="/it/metodologia-contenuti-sogni" class="text-dream-salmon hover:underline">Metodologia dei contenuti e dei dati</a></li>
