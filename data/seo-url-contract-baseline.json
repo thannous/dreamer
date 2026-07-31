@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "cb1cddd858653b30017c4629924271e77ae83137",
+  "sourceRevision": "ed7513a01486c9ca1b34bdf6c526cf45973d5845",
   "counts": {
-    "logicalPages": 234,
-    "manifestPaths": 1170,
-    "uniqueManifestPaths": 1170,
-    "canonicalPages": 1170,
-    "sitemapEntries": 1170,
-    "allHtmlOutputPaths": 1175
+    "logicalPages": 235,
+    "manifestPaths": 1175,
+    "uniqueManifestPaths": 1175,
+    "canonicalPages": 1175,
+    "sitemapEntries": 1175,
+    "allHtmlOutputPaths": 1180
   },
   "manifestRoutes": [
     {
@@ -3759,6 +3759,56 @@
       "lang": "it",
       "slug": "stampa",
       "path": "/it/stampa"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "pricing",
+      "lang": "de",
+      "slug": "preise",
+      "path": "/de/preise"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "pricing",
+      "lang": "en",
+      "slug": "pricing",
+      "path": "/en/pricing"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "pricing",
+      "lang": "es",
+      "slug": "precios",
+      "path": "/es/precios"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "pricing",
+      "lang": "fr",
+      "slug": "tarifs",
+      "path": "/fr/tarifs"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "pricing",
+      "lang": "it",
+      "slug": "prezzi",
+      "path": "/it/prezzi"
     },
     {
       "collection": "pages",
@@ -11787,6 +11837,7 @@
     "docs/de/konto-loeschen.html",
     "docs/de/methodik-trauminhalte.html",
     "docs/de/oniri-alternative.html",
+    "docs/de/preise.html",
     "docs/de/presse.html",
     "docs/de/traumlexikon-app.html",
     "docs/de/traumsymbole/adler.html",
@@ -12023,6 +12074,7 @@
     "docs/en/legal-notice.html",
     "docs/en/oniri-alternative.html",
     "docs/en/press.html",
+    "docs/en/pricing.html",
     "docs/en/privacy-policy.html",
     "docs/en/symbols/abandonment.html",
     "docs/en/symbols/accident.html",
@@ -12257,6 +12309,7 @@
     "docs/es/index.html",
     "docs/es/metodologia-contenido-suenos.html",
     "docs/es/politica-privacidad.html",
+    "docs/es/precios.html",
     "docs/es/prensa.html",
     "docs/es/simbolos/abandono.html",
     "docs/es/simbolos/abeja.html",
@@ -12652,6 +12705,7 @@
     "docs/fr/symboles/voler.html",
     "docs/fr/symboles/yeux.html",
     "docs/fr/symboles/zombie.html",
+    "docs/fr/tarifs.html",
     "docs/index.html",
     "docs/it/alternativa-dreamapp.html",
     "docs/it/alternativa-oniri.html",
@@ -12726,6 +12780,7 @@
     "docs/it/index.html",
     "docs/it/metodologia-contenuti-sogni.html",
     "docs/it/note-legali.html",
+    "docs/it/prezzi.html",
     "docs/it/privacy-policy.html",
     "docs/it/simboli/abbandono.html",
     "docs/it/simboli/acqua.html",
@@ -37172,6 +37227,281 @@
         }
       ],
       "jsonLdBreadcrumbs": [],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "lang": "de",
+      "outputPath": "docs/de/preise.html",
+      "canonical": "https://noctalia.app/de/preise",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/preise"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/pricing"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/precios"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/tarifs"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/pricing"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/preise",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/de/preise",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/preise"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "lang": "en",
+      "outputPath": "docs/en/pricing.html",
+      "canonical": "https://noctalia.app/en/pricing",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/preise"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/pricing"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/precios"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/tarifs"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/pricing"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/pricing",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/en/pricing",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/pricing"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "lang": "es",
+      "outputPath": "docs/es/precios.html",
+      "canonical": "https://noctalia.app/es/precios",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/preise"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/pricing"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/precios"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/tarifs"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/pricing"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/precios",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/es/precios",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/precios"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "lang": "fr",
+      "outputPath": "docs/fr/tarifs.html",
+      "canonical": "https://noctalia.app/fr/tarifs",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/preise"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/pricing"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/precios"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/tarifs"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/pricing"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/tarifs",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/fr/tarifs",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/tarifs"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "lang": "it",
+      "outputPath": "docs/it/prezzi.html",
+      "canonical": "https://noctalia.app/it/prezzi",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/preise"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/pricing"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/precios"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/tarifs"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/pricing"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/prezzi",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/it/prezzi",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/prezzi"
+          }
+        ]
+      ],
       "visibleBreadcrumbs": []
     },
     {
@@ -96058,6 +96388,166 @@
         {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/press"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/preise",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/preise"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/pricing"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/precios"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/tarifs"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/pricing"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/pricing",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/preise"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/pricing"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/precios"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/tarifs"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/pricing"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/precios",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/preise"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/pricing"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/precios"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/tarifs"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/pricing"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/tarifs",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/preise"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/pricing"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/precios"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/tarifs"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/pricing"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/prezzi",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/preise"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/pricing"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/precios"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/tarifs"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/pricing"
         }
       ]
     },
