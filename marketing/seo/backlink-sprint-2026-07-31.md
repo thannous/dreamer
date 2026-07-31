@@ -16,13 +16,17 @@ Ahrefs project dashboard, read on 2026-07-31 without opening a detailed report o
 | Referring domains | 348 | +143 | Raw discovery volume is high but does not prove useful link equity. |
 | Organic traffic estimate | 3.4K | +2.3K | Organic visibility is growing despite DR 0. |
 | Organic keywords | 868 | +312 | Content breadth is growing; authority is the weak layer. |
+| Google Search clicks | 4K over 28 days | Previous 3K milestone on 2026-07-17 | Search Console milestone dated 2026-07-29; this proves growing visibility, not stronger backlink authority. |
 | Site Audit health | 100 | — | 1.6K pages crawled, 0 broken and 0 blocked in the 2026-07-27 crawl. |
 
 The detailed referring-domain report was intentionally not opened. The known manually defensible baseline remains two independent, indexable and followed listing pages. The large Ahrefs count must not be reported as 348 quality endorsements.
 
+The 4K-click Search Console milestone was received at `thannous@gmail.com` in message `19fb7b8d5e1cd617`. It reports the 28-day threshold reached on 2026-07-29; it is retained as a dated milestone rather than a full Search Console export.
+
 Tracking files:
 
 - `marketing/seo/backlink-results-2026-07-31.csv`: six manually audited surfaces, including the newly verified public AppBrain listing and one access-blocked store-derived citation;
+- `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
 - `marketing/seo/backlink-prospects-2026-07-31.csv`: 44 qualified opportunities, including 2 P0 corrections/reclamations, 18 P1 prospects and four platform-specific editorial syndication routes.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: ten recipient-specific editorial drafts, current contact routes and a two-follow-up stop policy.
 - `marketing/seo/backlink-outreach-log-2026-07-31.csv`: send, reply, follow-up and live-link state for the ten-message wave.
