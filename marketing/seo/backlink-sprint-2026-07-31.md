@@ -4,7 +4,7 @@
 
 This file is the execution source of truth for the current backlink sprint. Research, local content, copy and QA can proceed autonomously. Account creation, form submission, email or DM sending, publication, paid placement, reciprocal links and Ahrefs report-credit consumption require explicit approval.
 
-The A/B/C execution batch was approved on 2026-07-31. No spending, invented identity, CAPTCHA solving or publication claim is implied by that approval. The local SEO commits are ready, but the production push remains paused until the deployment side effect is confirmed in the exact authorization language requested by the execution safety gate.
+The A/B/C execution batch was approved on 2026-07-31. No spending, invented identity, CAPTCHA solving or unverified publication claim is implied by that approval. The user then explicitly authorized pushing the SEO commits to `master`, including the resulting Cloudflare Production deployment. The push and production verification completed on 2026-07-31.
 
 ## Baseline captured today
 
@@ -72,7 +72,7 @@ The five localized dream-journal comparison pages now expose a downloadable, sou
 - page and compilation update: 2026-07-31
 - reuse condition: attribution to Noctalia and a link to the comparison page
 
-The asset is local until an authorized production publication. Do not pitch the CSV as live before its public URL returns 200.
+The asset is public. `https://noctalia.app/data/dream-journal-apps-comparison-2026.csv` returned HTTP 200 with `text/csv; charset=utf-8` after the production deployment, so it can now be cited in reviewed outreach.
 
 ## Submission dossiers
 
@@ -125,7 +125,7 @@ The asset is local until an authorized production publication. Do not pitch the 
 
 These three are qualified, not submitted. Reciprocal-link or pay-to-dofollow directories remain excluded from this wave.
 
-The English product walkthrough is now built locally at `docs-src/static/video/noctalia-product-walkthrough-en-2026-07.mp4`: 71 seconds, 1920 × 1080, H.264, no audio and 2.7 MB. It uses the four current launch-gallery product screens and an explicit non-medical/non-predictive boundary. The press kit links it and exposes `VideoObject` structured data. It is not a public asset until the production URL returns 200.
+The English product walkthrough is public at `https://noctalia.app/video/noctalia-product-walkthrough-en-2026-07.mp4`: 71 seconds, 1920 × 1080, H.264, no audio and 2.7 MB. It uses the four current launch-gallery product screens and an explicit non-medical/non-predictive boundary. The press kit links it and exposes `VideoObject` structured data; the production URL returned HTTP 200 with `video/mp4` and 2,698,770 bytes.
 
 ## Outreach templates — prepared, not sent
 
@@ -237,12 +237,12 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 
 ## Approval-ready external batch
 
-- [ ] Submit Noctalia to Uneed — correct Google account connected as `thannous-6884`; dossier ready, but final submission waits for the public pricing and demo readiness gates.
+- [x] Submit Noctalia to Uneed — product `44802` is in the free waiting line under account `thannous-6884`, with launch scheduled for 2027-01-08; accurate copy and the public walkthrough video are saved. This is a queued submission, not a live backlink.
 - [ ] Submit Noctalia to Microlaunch — current launch route is Pro-only; no spending authorized.
 - [x] Send the Good AI Tools factual correction — sent from the verified public developer identity to `submitmatic@gmail.com`; Gmail message `19fb7ec531196fa8`; awaiting publisher update.
 - [x] Send the SaaSHub entity/indexation request — submitted through the product-change form; pending moderation.
 - [x] Send one final follow-up in the older SearchGun and Digital.Health threads — sent once with new methodology/eligibility value; no further message without a reply.
-- [ ] Send outreach wave 1 to the ten personalized editorial targets — approved and a verified public developer sender is available, but the public CSV gate still returns 404.
+- [ ] Send outreach wave 1 to the ten personalized editorial targets — approved, the verified public developer sender is available and the public CSV gate now returns 200; recheck each current recipient, article and contact route immediately before sending.
 - [ ] Resolve AlternativeTo account creation through its legitimate current path — correct email identity is available; user-owned password and hCaptcha are still required, then a 7-day account-age wait.
 - [ ] Claim or verify the AppBrain developer account — account created and verification email sent to `contact@noctalia.app`; that mailbox must open the link to finish.
 
@@ -250,19 +250,19 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 
 | Workstream | Result on 2026-07-31 | State |
 | --- | --- | --- |
-| A — local SEO publication lot | Two focused publication commits created; full documentation build and checks pass. | Local only; `master` has not been pushed. |
-| A — production publication | Push was not performed. | Waiting for explicit confirmation that pushing `master` triggers Cloudflare Production. |
+| A — local SEO publication lot | Thirteen scoped SEO commits were ready on `master`; the full release check passed. | Published without staging or modifying the unrelated social-work files. |
+| A — production publication | `master` was pushed at commit `7de71bc64d53adf80257fb659f4e12eb669c1d05`; local HEAD, `origin/master` and `git ls-remote` matched. | GitHub Actions run `30635290841` succeeded. Cloudflare Pages production deployment `acb85f4e-de56-4553-9cec-00220aa43115` completed successfully and aliased `https://noctalia.app`. |
 | B — SaaSHub | Product name, Android category/entity distinction, official URL consistency and `noindex` review submitted. | Accepted by the form; pending moderation. |
-| B — Uneed | Correct Google identity connected and account `thannous-6884` created; Noctalia preview still has the correct logo, title and press description. | Final submission held until the public pricing and demo readiness gates pass. |
+| B — Uneed | Product `44802` was submitted to the free waiting line from account `thannous-6884`; the generated copy was corrected, the public walkthrough video was added and the launch is scheduled for 2027-01-08. | No spend. It remains a queued submission, not a live backlink; the eventual listing requires at least 10 genuine launch-day upvotes to remain published. |
 | B — Microlaunch | The current New Launch dialog exposes only Pro Launch. | Paused before payment; no spend authorized. |
 | B — Good AI Tools | Factual correction sent to `submitmatic@gmail.com` from the verified public developer identity. | Gmail message `19fb7ec531196fa8`; awaiting publisher update. |
 | B — SearchGun | One final follow-up added the public methodology and offered an easy close-the-loop response. | Gmail message `19fb83074b0b329f`; stop unless the editor replies. |
 | B — Digital.Health | One final follow-up asked only whether a clearly non-medical consumer wellness app is eligible. | Gmail message `19fb830a67794116`; stop unless the directory replies. |
-| B — editorial wave | Ten tailored drafts remain ready and the sender identity is now verified. | Not sent because the cited CSV is not yet public. |
+| B — editorial wave | Ten tailored drafts remain ready, the sender identity is verified and the cited CSV is public. | Approved to send after a fresh recipient/article/contact-route check for each message. |
 | C — AlternativeTo | Current signup form and its 7-day new-account rule verified; correct email identity available. | Paused for user-owned password and hCaptcha. |
 | C — AppBrain | Google login with `thannous@gmail.com` completed, Noctalia was found through the official package, and the verification request was freshly submitted. | AppBrain confirmed that the access email was sent to `contact@noctalia.app`; no forwarded copy reached Gmail, so the OVH mailbox must open the link. |
 
-Product Hunt now has a complete local launch pack. It remains outside this batch until the pricing/video deployment is live, the walkthrough is uploaded to YouTube with publication approval, the personal account is verified, and a launch date plus genuine feedback cohort are approved.
+Product Hunt now has a complete local launch pack and the pricing/video deployment gate is cleared. It remains outside this batch until the walkthrough is uploaded to YouTube with publication approval, the personal account is verified, and a launch date plus genuine feedback cohort are approved.
 
 ## Measurement
 
