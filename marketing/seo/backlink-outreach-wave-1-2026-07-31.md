@@ -22,9 +22,9 @@ These are editorial requests, not link purchases. Do not offer payment, reciproc
 | # | Publication | Recipient | Current signal | Route | Ask |
 | ---: | --- | --- | --- | --- | --- |
 | 1 | App Charts | James Chen, Head of Editorial | January 2026 dream-app comparison by the Editorial Team | Contact form | Test Noctalia for the next update |
-| 2 | World of Lucid Dreaming | Editorial team | Maintained app index now labels legacy reviews and accepts developer walkthroughs | Contact form | Consider a clearly labelled developer walkthrough |
+| 2 | World of Lucid Dreaming | Editorial team | Maintained app index now labels legacy reviews and accepts developer walkthroughs | Public editorial email | Consider a clearly labelled developer walkthrough |
 | 3 | Android Authority | Joe Hindy | April 2025 Android/iOS journal-app roundup | General editorial email/form | Add Noctalia to the future test queue |
-| 4 | Best Apps for Android | Editorial team | 2026 guide says apps are installed and tested on real phones | Contact form | Add Noctalia to the next hands-on test cycle |
+| 4 | Best Apps for Android | Editorial team | 2026 guide says apps are installed and tested on real phones | Public editorial email | Add Noctalia to the next hands-on test cycle |
 | 5 | Mattress Miracle | Sleep-resource editorial team | March 2026 article rejects unsupported dream-app science claims | Public email | Review Noctalia's boundaries and factual dataset |
 | 6 | Dream Studies Portal | Ryan Hurd, Editor in Chief | Independent dream-tech coverage and interest in research provenance | Contact form | Review a short op-ed outline |
 | 7 | Sleep Review | Sree Roy, Chief Editor | Trade publication has covered AI-generated dream imagery | Direct editor email listed on contact page | Assess a news/background brief |
@@ -52,8 +52,8 @@ Founder, Noctalia
 ## 2. World of Lucid Dreaming — editorial team
 
 **Target:** `https://www.world-of-lucid-dreaming.com/lucid-dreaming-apps.html`
-**Route:** `https://www.world-of-lucid-dreaming.com/contact.html`
-**Subject:** `android app review`
+**Route:** `team@world-of-lucid-dreaming.com`, published at `https://www.world-of-lucid-dreaming.com/contact.html`
+**Subject:** `lucid app review`
 
 Hello,
 
@@ -86,7 +86,7 @@ Founder, Noctalia
 ## 4. Best Apps for Android — editorial team
 
 **Target:** `https://bestappsforandroid.com/best-journal-apps-for-android/`
-**Route:** `https://bestappsforandroid.com/contact/`
+**Route:** `hello@bestappsforandroid.com`, published at `https://bestappsforandroid.com/contact/`
 **Subject:** `journal test queue`
 
 Hello,
@@ -137,7 +137,7 @@ Founder, Noctalia
 ## 7. Sleep Review — Sree Roy
 
 **Target:** `https://sleepreviewmag.com/sleep-diagnostics/consumer-sleep-tracking/mintal-tracker-draw-my-dream/`
-**Route:** the Chief Editor address published at `https://sleepreviewmag.com/contact-us/`
+**Route:** `editor@sleepreviewmag.com`, published for the Chief Editor at `https://sleepreviewmag.com/contact-us/`
 **Subject:** `consumer dream ai`
 
 Hi Sree,
@@ -171,7 +171,7 @@ Founder, Noctalia
 ## 9. TechRadar — Paul Hatton
 
 **Target:** `https://www.techradar.com/computing/websites-apps/life-note`
-**Route:** address to Paul Hatton through `https://www.techradar.com/how-to/contact-us`; use the general team route only if the author route is unavailable
+**Route:** `paulo.n.hatton@gmail.com`, published on Paul Hatton's official TechRadar author page
 **Subject:** `homescreen heroes`
 
 Hi Paul,
@@ -188,7 +188,7 @@ Founder, Noctalia
 ## 10. Tom's Guide — Amanda Caswell
 
 **Target:** `https://www.tomsguide.com/ai/9-ways-to-start-journaling-with-chatgpt-in-2026-and-actually-stick-with-it`
-**Route:** the official “Contact Amanda: Email” link at `https://www.tomsguide.com/reference/about-us`
+**Route:** `amanda.caswell@futurenet.com`, exposed by the official “Contact Amanda: Email” link at `https://www.tomsguide.com/reference/about-us`
 **Subject:** `voice journaling`
 
 Hi Amanda,
@@ -233,9 +233,9 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 ## Current-source register
 
 - App Charts comparison and team: `https://appcharts.net/best-dream-journal-apps/`, `https://appcharts.net/about-me/`
-- World of Lucid Dreaming app index: `https://www.world-of-lucid-dreaming.com/lucid-dreaming-apps.html`
+- World of Lucid Dreaming app index and contact: `https://www.world-of-lucid-dreaming.com/lucid-dreaming-apps.html`, `https://www.world-of-lucid-dreaming.com/contact.html`
 - Android Authority article and contact: `https://www.androidauthority.com/best-diary-apps-journal-apps-android-892375/`, `https://www.androidauthority.com/contact/`
-- Best Apps for Android guide and testing policy: `https://bestappsforandroid.com/best-journal-apps-for-android/`, `https://bestappsforandroid.com/`
+- Best Apps for Android guide, testing policy and contact: `https://bestappsforandroid.com/best-journal-apps-for-android/`, `https://bestappsforandroid.com/`, `https://bestappsforandroid.com/contact/`
 - Mattress Miracle article and contact: `https://mattressmiracle.ca/blogs/mattress-miracle-blog/best-dream-journal-app`, `https://mattressmiracle.ca/pages/contact`
 - Dream Studies Portal article, about and contact: `https://dreamstudies.org/dream-hack-app-2015/`, `https://dreamstudies.org/about/`, `https://dreamstudies.org/contact/`
 - Sleep Review article and staff contact: `https://sleepreviewmag.com/sleep-diagnostics/consumer-sleep-tracking/mintal-tracker-draw-my-dream/`, `https://sleepreviewmag.com/contact-us/`
@@ -244,4 +244,4 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - Tom's Guide feature and current staff page: `https://www.tomsguide.com/ai/9-ways-to-start-journaling-with-chatgpt-in-2026-and-actually-stick-with-it`, `https://www.tomsguide.com/reference/about-us`
 - Sleep Foundation exclusion evidence: `https://www.sleepfoundation.org/about-us/pitch-us`
 
-HTTP verification on 2026-07-31: all target and contact routes returned 200 through a direct request except App Charts and World of Lucid Dreaming, which returned 403 to curl while remaining discoverable through normal web results. Those two require an interactive-browser recheck before sending. The new Noctalia CSV returned 404 because the local site changes have not been published; the four existing Noctalia landing pages used above returned 200.
+Verification on 2026-07-31: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`; Dream Studies Portal exposed reCAPTCHA, so its prefilled pitch remains intentionally unsent for user completion.
