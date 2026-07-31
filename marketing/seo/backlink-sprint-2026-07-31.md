@@ -25,7 +25,7 @@ The 4K-click Search Console milestone was received at `thannous@gmail.com` in me
 
 Tracking files:
 
-- `marketing/seo/backlink-results-2026-07-31.csv`: ten manually audited surfaces, including four indexable followed pages on independent domains, one lost historical listing and one access-blocked store-derived citation;
+- `marketing/seo/backlink-results-2026-07-31.csv`: eleven manually audited surfaces, including four indexable followed pages on independent domains, one rendered Reddit `nofollow ugc` citation, one lost historical listing and one access-blocked store-derived citation;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
 - `marketing/seo/backlink-prospects-2026-07-31.csv`: 44 qualified opportunities, including 2 P0 corrections/reclamations, 18 P1 prospects and four platform-specific editorial syndication routes.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: ten recipient-specific editorial drafts, current contact routes and a two-follow-up stop policy.
@@ -48,6 +48,7 @@ Tracking files:
 | Chrome-Stats | Automated request receives Cloudflare 403; search visibility was previously observed from store-derived data. | Store-data citation only; not a review. | Monitor through public search, not repeated automated requests. |
 | AppBrain | HTTP 200; indexable; self-canonical; public website link is `nofollow`. | Count as an entity/discovery citation, not link equity. | Claim through a legitimate AppBrain login and verify via `contact@noctalia.app`. |
 | GitHub README | HTTP 200 and indexable; external Noctalia link is `nofollow`. | Entity/discovery evidence only. | Retain while the repository remains public and accurate. |
+| Reddit profile post | Public rendered page is indexed; the Noctalia link uses `rel="noopener nofollow ugc"`; no canonical or `noindex` directive was exposed in the rendered DOM. | User-generated discovery/entity citation only; do not count as followed equity. | Retain as an existing launch record; do not manufacture engagement. |
 | Zearches | HTTP 200 and indexable, but the directory page no longer contains a detectable Noctalia link. | Historical listing is lost; do not count it as live. | Consider one factual resubmission only if the current free route still exists. |
 
 ## Strategic conclusion

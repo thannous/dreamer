@@ -17,6 +17,7 @@ Public pricing correction: older submission records below preserve the amounts e
 | Chrome-Stats | **Live and recently refreshed** at `https://chrome-stats.com/d/com.tanuki75.noctalia`, sourced from the official Google Play package and publisher. | Count as an independent store-data/entity citation, not an editorial review. | Let Google Play remain the source of truth; monitor for stale or incorrect app copy. |
 | Launch Llama | The product URL `https://tools.launchllama.co/products/noctalia` is live again, HTTP 200, indexable and self-canonical. Its official-site link now uses `rel="noopener noreferrer"` without `nofollow`. | Count as a live followed referring domain. The June nofollow observation and July 9 removal observation are historical, not current. | Retain and monitor for further route or link-policy changes. |
 | GitHub README | The public repository `https://github.com/thannous/dreamer` remains indexable and links to Noctalia with `rel="nofollow"`. | Entity and discovery evidence only, not followed equity. | Keep the README factual while the repository is public. |
+| Reddit profile post | `https://www.reddit.com/user/Emergency_Gap_1440/comments/1pwdves/noctalia_is_now_on_the_play_store/` is publicly rendered and indexed with an outbound `https://noctalia.app/` link using `rel="noopener nofollow ugc"`. | Count for discovery and entity corroboration only, not followed equity. | Preserve as an existing launch record; do not add artificial votes or comments. |
 | Zearches | The directory page still returns HTTP 200 and is indexable, but no Noctalia link is currently detectable. | Historical listing is lost; do not count it as live. | Consider one factual resubmission only if the current free route still exists. |
 | SpotFreeAI | No Noctalia URL appears in the public sitemap or current directory results. | Submission remains unconfirmed; do not count it. | One factual follow-up only, then close as rejected if no reply. |
 | FutureTools, OpenAIToolsHub, The Next AI, Crunchbase | No public Noctalia result was found in a fresh exact-name/domain search. | Pending or rejected; no backlink credit. | Do not resubmit repeatedly. Follow up only where an account or editorial reply exists. |
@@ -26,7 +27,7 @@ Public pricing correction: older submission records below preserve the amounts e
 - Four current independent domains with at least one indexable followed page: PeerPush, JunkStartups, Launch Llama and SaaSHub.
 - One independent Play-derived app profile: Chrome-Stats.
 - One live AI-directory mention with a nofollow link: Good AI Tools, pending factual correction.
-- Two additional nofollow/entity surfaces: AppBrain and the public GitHub README.
+- Three additional nofollow/entity surfaces: AppBrain, the public GitHub README and the existing Reddit launch post.
 - Google Play remains the authoritative distribution record, not an independent review.
 
 ### Authority work that must stay external
