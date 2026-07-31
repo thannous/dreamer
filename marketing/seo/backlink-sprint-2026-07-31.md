@@ -19,13 +19,13 @@ Ahrefs project dashboard, read on 2026-07-31 without opening a detailed report o
 | Google Search clicks | 4K over 28 days | Previous 3K milestone on 2026-07-17 | Search Console milestone dated 2026-07-29; this proves growing visibility, not stronger backlink authority. |
 | Site Audit health | 100 | — | 1.6K pages crawled, 0 broken and 0 blocked in the 2026-07-27 crawl. |
 
-The detailed referring-domain report was intentionally not opened. The known manually defensible baseline remains two independent, indexable and followed listing pages. The large Ahrefs count must not be reported as 348 quality endorsements.
+The detailed referring-domain report was intentionally not opened. The expanded manual recovery pass verifies four independent domains with at least one indexable and followed listing page: PeerPush, JunkStartups, Launch Llama and SaaSHub. The large Ahrefs count must not be reported as 348 quality endorsements.
 
 The 4K-click Search Console milestone was received at `thannous@gmail.com` in message `19fb7b8d5e1cd617`. It reports the 28-day threshold reached on 2026-07-29; it is retained as a dated milestone rather than a full Search Console export.
 
 Tracking files:
 
-- `marketing/seo/backlink-results-2026-07-31.csv`: six manually audited surfaces, including the newly verified public AppBrain listing and one access-blocked store-derived citation;
+- `marketing/seo/backlink-results-2026-07-31.csv`: ten manually audited surfaces, including four indexable followed pages on independent domains, one lost historical listing and one access-blocked store-derived citation;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
 - `marketing/seo/backlink-prospects-2026-07-31.csv`: 44 qualified opportunities, including 2 P0 corrections/reclamations, 18 P1 prospects and four platform-specific editorial syndication routes.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: ten recipient-specific editorial drafts, current contact routes and a two-follow-up stop policy.
@@ -41,10 +41,14 @@ Tracking files:
 | --- | --- | --- | --- |
 | PeerPush | HTTP 200; `index, follow`; self-canonical; Noctalia link has `rel="noopener"` only. | Count as an indexable followed referring page. | Retain and recheck quarterly. |
 | JunkStartups | HTTP 200; self-canonical; repeated Noctalia links use `noopener noreferrer` without `nofollow`. | Count as an indexable followed referring page. | Retain and recheck quarterly. |
+| Launch Llama | HTTP 200; indexable; self-canonical; the official-site link now uses `noopener noreferrer` without `nofollow`. | Count as a followed referring domain; the June nofollow observation is no longer current. | Retain and monitor for link-policy changes. |
 | Good AI Tools | HTTP 200; canonical; Noctalia link is `nofollow`; description still overstates offline analysis and psychological meaning. | Entity/discovery mention only. | Send the factual correction after approval. |
 | SaaSHub | HTTP 200; self-canonical; `noindex, follow`; mixed followed-looking and `nofollow` CTAs. | Do not count as indexed authority. | Ask for an indexable distinct app entity and consistent linking after approval. |
+| SaaSHub alternatives | HTTP 200; indexable; self-canonical; one press link is `nofollow`, while the official-site link has empty `rel`. | Count SaaSHub as a followed referring domain through this page, not through the noindexed main profile. | Retain and recheck with the main profile. |
 | Chrome-Stats | Automated request receives Cloudflare 403; search visibility was previously observed from store-derived data. | Store-data citation only; not a review. | Monitor through public search, not repeated automated requests. |
 | AppBrain | HTTP 200; indexable; self-canonical; public website link is `nofollow`. | Count as an entity/discovery citation, not link equity. | Claim through a legitimate AppBrain login and verify via `contact@noctalia.app`. |
+| GitHub README | HTTP 200 and indexable; external Noctalia link is `nofollow`. | Entity/discovery evidence only. | Retain while the repository remains public and accurate. |
+| Zearches | HTTP 200 and indexable, but the directory page no longer contains a detectable Noctalia link. | Historical listing is lost; do not count it as live. | Consider one factual resubmission only if the current free route still exists. |
 
 ## Strategic conclusion
 

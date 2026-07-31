@@ -104,6 +104,25 @@ describe('check-backlink-results', () => {
     expect(evaluateEvidence(blockedRow, evidence)).toEqual([]);
   });
 
+  it('accepts an explicitly tracked lost link and alerts if it returns', () => {
+    const lostRow = row({ authority_treatment: 'lost', link_rel: 'missing' });
+    const missingEvidence = analyzeHtml({
+      html: '<!doctype html><link rel="canonical" href="https://example.com/noctalia">',
+      pageUrl: lostRow.referring_page,
+      status: 200,
+    });
+    const restoredEvidence = analyzeHtml({
+      html: '<!doctype html><link rel="canonical" href="https://example.com/noctalia"><a href="https://noctalia.app/">Noctalia</a>',
+      pageUrl: lostRow.referring_page,
+      status: 200,
+    });
+
+    expect(evaluateEvidence(lostRow, missingEvidence)).toEqual([]);
+    expect(evaluateEvidence(lostRow, restoredEvidence)).toEqual([
+      'authority is followed, expected missing_link',
+    ]);
+  });
+
   it('audits a row through an injected fetch implementation', async () => {
     const fetchImpl = jest.fn(async () =>
       new Response(

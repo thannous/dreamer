@@ -2,7 +2,7 @@
 
 Goal: create free SEO backlinks for Noctalia by submitting the site/app to relevant directories and marketplaces.
 
-## Live verification update — 2026-07-09
+## Live verification update — 2026-07-31
 
 This section supersedes older status notes below when they conflict. A listing is only counted as independent authority when its public URL resolves, is indexable, and describes the dream-journal product rather than the unrelated Linux desktop project with the same name.
 
@@ -13,17 +13,20 @@ Public pricing correction: older submission records below preserve the amounts e
 | PeerPush | **Live and indexable** at `https://peerpush.com/p/noctalia` (the former `.net` URL serves the same page). The page has `robots: index, follow`, a self-canonical, and a link to `https://noctalia.app/?utm_source=peerpush&ref=peerpush` with `rel="noopener"` only. | Count as a live independent referring page and discovery surface. | Keep the listing factual and re-check quarterly. |
 | JunkStartups | **Live and indexable** at `https://junkstartups.com/startups/noctalia`. The public page links to `https://noctalia.app` with `rel="noopener noreferrer"` and no `nofollow`. | Count as a live independent referring page and entity mention. | Add logo/screenshots when account file upload is available; do not invent reviews. |
 | Good AI Tools | **Live** at `https://goodaitools.com/ai/noctalia`, but the outbound link is `nofollow`. The third-party copy currently overstates the product by saying analysis works offline and by presenting interpretation as insight into the subconscious or emotional health. | Count for discovery/entity corroboration, not followed link equity. Do not quote its unsupported claims. | Request a factual correction: offline capture is supported, while analysis and sync require reconnection; frame interpretation as reflection, not diagnosis or subconscious decoding. |
-| SaaSHub | The correct app URL `https://www.saashub.com/noctalia-app` resolves, but currently emits `noindex, follow`; its official-site CTA is `nofollow`. SaaSHub also has a separate indexed `/noctalia` page for an unrelated Linux desktop project. | Do **not** count the app page as an indexed or followed backlink today. Preserve the `Noctalia.app` naming to reduce entity collision. | Re-verify after the next quarterly product verification and ask SaaSHub to keep the app category/name distinct from the Linux project. |
+| SaaSHub | The correct app URL `https://www.saashub.com/noctalia-app` remains `noindex, follow`, but `https://www.saashub.com/noctalia-app-alternatives` is indexable, self-canonical and links to `https://noctalia.app/` with empty `rel`. SaaSHub also has a separate indexed `/noctalia` page for an unrelated Linux desktop project. | Count SaaSHub as a followed referring domain through the alternatives page, not through the noindexed app profile. Preserve the `Noctalia.app` naming to reduce entity collision. | Monitor both pages and keep the Android app distinct from the Linux project. |
 | Chrome-Stats | **Live and recently refreshed** at `https://chrome-stats.com/d/com.tanuki75.noctalia`, sourced from the official Google Play package and publisher. | Count as an independent store-data/entity citation, not an editorial review. | Let Google Play remain the source of truth; monitor for stale or incorrect app copy. |
-| Launch Llama | The former product URL `https://tools.launchllama.co/products/noctalia` now serves the generic Launch Llama homepage with a homepage canonical. | No live product backlink remains. | Mark removed; do not report it as active. |
+| Launch Llama | The product URL `https://tools.launchllama.co/products/noctalia` is live again, HTTP 200, indexable and self-canonical. Its official-site link now uses `rel="noopener noreferrer"` without `nofollow`. | Count as a live followed referring domain. The June nofollow observation and July 9 removal observation are historical, not current. | Retain and monitor for further route or link-policy changes. |
+| GitHub README | The public repository `https://github.com/thannous/dreamer` remains indexable and links to Noctalia with `rel="nofollow"`. | Entity and discovery evidence only, not followed equity. | Keep the README factual while the repository is public. |
+| Zearches | The directory page still returns HTTP 200 and is indexable, but no Noctalia link is currently detectable. | Historical listing is lost; do not count it as live. | Consider one factual resubmission only if the current free route still exists. |
 | SpotFreeAI | No Noctalia URL appears in the public sitemap or current directory results. | Submission remains unconfirmed; do not count it. | One factual follow-up only, then close as rejected if no reply. |
 | FutureTools, OpenAIToolsHub, The Next AI, Crunchbase | No public Noctalia result was found in a fresh exact-name/domain search. | Pending or rejected; no backlink credit. | Do not resubmit repeatedly. Follow up only where an account or editorial reply exists. |
 
 ### Authority work that can be claimed today
 
-- Two current, indexable independent listing pages: PeerPush and JunkStartups.
+- Four current independent domains with at least one indexable followed page: PeerPush, JunkStartups, Launch Llama and SaaSHub.
 - One independent Play-derived app profile: Chrome-Stats.
 - One live AI-directory mention with a nofollow link: Good AI Tools, pending factual correction.
+- Two additional nofollow/entity surfaces: AppBrain and the public GitHub README.
 - Google Play remains the authoritative distribution record, not an independent review.
 
 ### Authority work that must stay external

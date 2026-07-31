@@ -267,6 +267,7 @@ function evaluateEvidence(row, evidence) {
   const mismatches = [];
   const expectedStatus = Number(row.http_status);
   const knownBlocked = row.authority_treatment === 'store_derived_unverified';
+  const expectedMissing = ['lost', 'missing_link'].includes(row.authority_treatment);
 
   if (Number.isInteger(expectedStatus) && evidence.status !== expectedStatus) {
     mismatches.push(`HTTP ${evidence.status}, expected ${expectedStatus}`);
@@ -284,7 +285,7 @@ function evaluateEvidence(row, evidence) {
     }
   }
 
-  if (!knownBlocked && evidence.status >= 200 && evidence.status < 400) {
+  if (!knownBlocked && !expectedMissing && evidence.status >= 200 && evidence.status < 400) {
     const targetLinks = findTargetLinks(evidence, row.linked_url);
     if (targetLinks.length === 0) {
       const observed = evidence.noctaliaLinks.map((link) => link.href).join(', ') || 'none';
@@ -301,6 +302,8 @@ function evaluateEvidence(row, evidence) {
     evidence.indexability !== 'non_indexable'
   ) {
     mismatches.push(`authority page is ${evidence.indexability}, expected non_indexable`);
+  } else if (expectedMissing && evidence.observedTreatment !== 'missing_link') {
+    mismatches.push(`authority is ${evidence.observedTreatment}, expected missing_link`);
   }
 
   if (String(row.link_rel).startsWith('mixed:') && evidence.status >= 200 && evidence.status < 400) {
