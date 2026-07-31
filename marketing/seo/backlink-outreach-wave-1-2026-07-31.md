@@ -220,6 +220,78 @@ Would Noctalia be worth a hands-on test for a future Android or specialist-journ
 Thanh Chau
 Founder, Noctalia
 
+## 11. Know Your Ethos — editorial team
+
+**Target:** `https://knowyourethos.com/blog/best-dream-journal-apps-2026`
+**Route:** `support@knowyourethos.com`, published on the official FAQ; the 2026-07-31 attempt failed with `550 5.1.1`, so the route is closed unless the publisher exposes a working official contact
+**Subject:** `dream journal comparison`
+
+Hi Know Your Ethos team,
+
+Your April comparison is unusually candid for a product-owned publication: it names KYE's limits and gives competing apps specific strengths rather than treating the list as an advert.
+
+One specialist option you may want to test in a future update is Noctalia, an Android-first dream journal with voice capture, multilingual support, recurring-theme review, and explicit non-medical, non-predictive boundaries. The current reviewer pack and screenshots are here: https://noctalia.app/en/press
+
+Would you be open to considering it in the next hands-on refresh? Editorial judgment is entirely yours.
+
+Best,
+Thanh Chau
+Noctalia
+
+## 12. DeepJournal — editorial team
+
+**Target:** `https://deepjournal.app/blog/best-ai-journal-apps-in-2026`
+**Route:** `support@deepjournal.app`, published on the official contact page
+**Subject:** `mobile journal comparison`
+
+Hi DeepJournal team,
+
+Your July comparison makes an important distinction between encrypted storage, conventional API processing, and confidential inference. The disclosure that DeepJournal publishes the article—and that the review is not an independent audit—is also unusually clear.
+
+One specialist Android option you may want to test in a future mobile or niche-journal update is Noctalia: voice-first dream capture, multilingual support, recurring-theme review, and explicit non-medical, non-predictive boundaries. The current reviewer pack and screenshots are here: https://noctalia.app/en/press
+
+Would it be useful for a future hands-on refresh? Editorial judgment is entirely yours.
+
+Best,
+Thanh Chau
+Noctalia
+
+## 13. JournPad — editorial team
+
+**Target:** `https://journpad.com/blog/best-voice-journaling-apps-2026`
+**Route:** `support@journpad.com`, published in the official Terms and Privacy Policy
+**Subject:** `voice journal comparison`
+
+Hi JournPad team,
+
+Your July voice-journaling comparison is careful about what each workflow actually preserves: original audio, editable transcription, or a conversational exchange. It also labels the piece as an official-document comparison rather than a hands-on test.
+
+One specialist Android workflow you may want to evaluate in a future update is Noctalia: dream capture by voice before details fade, followed by multilingual transcription and guided reflection. Its AI features require connectivity, and the product is explicitly non-medical and non-predictive. The current workflow and limitations are here: https://noctalia.app/en/voice-dream-journal
+
+Would you be open to considering it in the next factual refresh? Editorial judgment is entirely yours.
+
+Best,
+Thanh Chau
+Noctalia
+
+## 14. Dreamz Journal — Jay Tee
+
+**Target:** `https://dreamz-journal.com/blog/best-dream-journal-apps-2026`
+**Route:** `support@dreamz-journal.com`, published as the direct editorial and press address; the 2026-07-31 attempt failed because the advertised mailbox does not exist or cannot receive mail, so the route is closed
+**Subject:** `editorial — android journal`
+
+Hi Jay,
+
+Your April roundup is clear about being written by the team behind Dreamz, and the methodology explains where the mystical framing ends: no prediction, diagnosis, or single universal meaning.
+
+Because the Dreamz Android edition is still on the waitlist, one current specialist option you may want to test for Android readers is Noctalia. It supports voice-first dream capture, multilingual transcription, recurring-theme review, and guided reflection with explicit non-medical, non-predictive limits; its AI features require connectivity. The reviewer pack and screenshots are here: https://noctalia.app/en/press
+
+Would you consider it for a future factual update? Editorial judgment is entirely yours.
+
+Best,
+Thanh Chau
+Noctalia
+
 ## Follow-up policy
 
 Journalists and editors receive at most two follow-ups. Stop immediately after a reply, rejection or opt-out.
@@ -263,6 +335,10 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - Oneironaut comparison and contact: `https://oneironauts.io/blog/best-dream-journal-apps`, `https://oneironauts.io/connect`
 - TechRadar feature, author and pitch policy: `https://www.techradar.com/computing/websites-apps/life-note`, `https://www.techradar.com/author/paul-hatton`, `https://www.techradar.com/how-to/how-to-pitch-your-ideas-to-techradar`
 - Tom's Guide feature and current staff page: `https://www.tomsguide.com/ai/9-ways-to-start-journaling-with-chatgpt-in-2026-and-actually-stick-with-it`, `https://www.tomsguide.com/reference/about-us`
+- Know Your Ethos comparison, company story and advertised support route that later failed delivery: `https://knowyourethos.com/blog/best-dream-journal-apps-2026`, `https://knowyourethos.com/our-story`, `https://knowyourethos.com/faq`
+- DeepJournal comparison, disclosure and official contact: `https://deepjournal.app/blog/best-ai-journal-apps-in-2026`, `https://deepjournal.app/contact`
+- JournPad comparison, official support address and product policies: `https://journpad.com/blog/best-voice-journaling-apps-2026`, `https://journpad.com/terms-of-use`, `https://journpad.com/privacy`
+- Dreamz Journal comparison, disclosed editor, methodology and advertised editorial contact that later failed delivery: `https://dreamz-journal.com/blog/best-dream-journal-apps-2026`, `https://dreamz-journal.com/about/`, `https://dreamz-journal.com/methodology/`, `https://dreamz-journal.com/contact/`
 - Sleep Foundation exclusion evidence: `https://www.sleepfoundation.org/about-us/pitch-us`
 
-Verification on 2026-07-31: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android's official address then failed with `554 5.7.1 Relay access denied`; no alternate address was inferred. Holstee was verified and contacted once as the replacement target. Dream Studies Portal exposed reCAPTCHA, so its prefilled pitch remains intentionally unsent for user completion.
+Verification on 2026-07-31: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android's official address then failed with `554 5.7.1 Relay access denied`; no alternate address was inferred. Holstee was verified and contacted once as the replacement target. Know Your Ethos was accepted only as a competitor-owned editorial prospect after its team byline, company story, legal navigation, official FAQ address and balanced competitor limitations were checked; its published address then rejected the factual request with `550 5.1.1`, so no follow-up or guessed alternative is permitted. Dreamz Journal's prominently advertised direct-editor mailbox also proved nonexistent or unable to receive mail, so its route was closed without a retry or inferred address. Dream Studies Portal exposed reCAPTCHA, so its prefilled pitch remains intentionally unsent for user completion.
