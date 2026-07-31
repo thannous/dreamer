@@ -23,9 +23,10 @@ The detailed referring-domain report was intentionally not opened. The known man
 Tracking files:
 
 - `marketing/seo/backlink-results-2026-07-31.csv`: six manually audited surfaces, including the newly verified public AppBrain listing and one access-blocked store-derived citation;
-- `marketing/seo/backlink-prospects-2026-07-31.csv`: 33 qualified opportunities, including 2 P0 corrections/reclamations and 15 P1 prospects.
+- `marketing/seo/backlink-prospects-2026-07-31.csv`: 40 qualified opportunities, including 2 P0 corrections/reclamations, 16 P1 prospects and six newly verified paid/reciprocal routes held outside the free sprint.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: ten recipient-specific editorial drafts, current contact routes and a two-follow-up stop policy.
 - `marketing/seo/backlink-outreach-log-2026-07-31.csv`: send, reply, follow-up and live-link state for the ten-message wave.
+- `marketing/seo/directory-submission-pack-wave-3-ai-2026-07-31.md`: one field-ready free Future Tools dossier plus an official-price decision matrix for six paid or reciprocal AI-directory routes.
 - `marketing/seo/directory-submission-pack-wave-2-2026-07-31.md`: distinct, field-ready copy and public readiness gates for PitchWall, Launching Next and AI Tools Inc.
 
 ## Manual backlink audit
@@ -247,7 +248,7 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 | C — AlternativeTo | Current signup form and its 7-day new-account rule verified; correct email identity available. | Paused for user-owned password and hCaptcha. |
 | C — AppBrain | Google login completed, Noctalia found through the official package, and developer verification requested. | Email sent to `contact@noctalia.app`; no forwarded copy reached `thannous@gmail.com`, so mailbox action is required. |
 
-Product Hunt remains outside this batch until a real 60–90 second Android walkthrough is recorded and the launch-day support plan is ready.
+Product Hunt remains outside this batch until the completed 71-second walkthrough is public and the launch-day support plan is ready.
 
 ## Measurement
 
