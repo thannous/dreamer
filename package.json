@@ -54,6 +54,7 @@
     "docs:build-guides": "node ./scripts/build-guides-pages.js",
     "docs:audit-blog-i18n": "node ./scripts/audit-blog-i18n-parity.js",
     "seo:gsc:export": "node ./scripts/export-search-console.js",
+    "seo:backlinks:check": "node ./scripts/check-backlink-results.js",
     "lint": "expo lint app components hooks lib context constants services tests supabase/functions scripts",
     "lint:scripts": "expo lint scripts --max-warnings=0",
     "scripts:list": "node ./scripts/list-scripts.js",

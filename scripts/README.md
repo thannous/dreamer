@@ -11,6 +11,7 @@ when another tool needs structured output.
 | Quality | `lint`, `lint:scripts`, `typecheck:*`, `test:*` | Read-only except normal test caches and artifacts. |
 | Site | `docs:build`, `docs:check`, `docs:release-check`, `docs:deploy:*` | `docs:build` regenerates ignored local output. Cloudflare rebuilds the same output from sources; deploy commands publish externally and require explicit intent. |
 | Content | `content:*`, `validate-seo`, `generate-sitemap` | Manifest commands without `:check` and sitemap generation write generated files. |
+| SEO | `seo:gsc:export`, `seo:backlinks:check` | GSC export writes a dated external-data report; backlink check fetches the tracked public referring pages but never rewrites the CSV. |
 | Android E2E | `test:e2e:*` | Requires an emulator or device, Maestro, and the matching runtime profile. |
 | Android release | `android:gates:*`, `android:release:local`, `build:apk:*` | May require ADB, a physical device, EAS credentials, or local build tooling. |
 | Subscriptions | `subscription:qa:*` | Some commands update local QA evidence; see the RevenueCat runbook before use. |
