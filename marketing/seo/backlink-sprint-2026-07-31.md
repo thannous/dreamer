@@ -46,7 +46,7 @@ Tracking files:
 | SaaSHub | HTTP 200; self-canonical; `noindex, follow`; mixed followed-looking and `nofollow` CTAs. | Do not count as indexed authority. | Ask for an indexable distinct app entity and consistent linking after approval. |
 | SaaSHub alternatives | HTTP 200; indexable; self-canonical; one press link is `nofollow`, while the official-site link has empty `rel`. | Count SaaSHub as a followed referring domain through this page, not through the noindexed main profile. | Retain and recheck with the main profile. |
 | Chrome-Stats | Automated request receives Cloudflare 403; search visibility was previously observed from store-derived data. | Store-data citation only; not a review. | Monitor through public search, not repeated automated requests. |
-| AppBrain | HTTP 200; indexable; self-canonical; public website link is `nofollow`. | Count as an entity/discovery citation, not link equity. | Claim through a legitimate AppBrain login and verify via `contact@noctalia.app`. |
+| AppBrain | HTTP 200; indexable; self-canonical; public website link is `nofollow`; the developer claim is verified. | Count as an entity/discovery citation, not link equity. | Keep the listing accurate; do not treat the verified dashboard or paid promotion offers as additional authority. |
 | GitHub README | HTTP 200 and indexable; external Noctalia link is `nofollow`. | Entity/discovery evidence only. | Retain while the repository remains public and accurate. |
 | Reddit profile post | Public rendered page is indexed; the Noctalia link uses `rel="noopener nofollow ugc"`; no canonical or `noindex` directive was exposed in the rendered DOM. | User-generated discovery/entity citation only; do not count as followed equity. | Retain as an existing launch record; do not manufacture engagement. |
 | Zearches | HTTP 200 and indexable, but the directory page no longer contains a detectable Noctalia link. | Historical listing is lost; do not count it as live. | Consider one factual resubmission only if the current free route still exists. |
@@ -113,7 +113,7 @@ The asset is public. `https://noctalia.app/data/dream-journal-apps-comparison-20
 - **App:** `com.tanuki75.noctalia`
 - **Positioning:** Android-first voice dream journal with structured reflection.
 - **Destination:** `https://noctalia.app/en/android-dream-analysis-app`
-- **Constraint:** a verified developer claim is required before any Featured Apps action.
+- **State:** developer claim verified through `contact@noctalia.app`; Noctalia appears under “Your apps in Google Play”. Any Featured Apps or paid-promotion action remains separate and unapproved.
 
 ### Second-wave free directories
 
@@ -244,7 +244,7 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 - [x] Send one final follow-up in the older SearchGun and Digital.Health threads — sent once with new methodology/eligibility value; no further message without a reply.
 - [ ] Send outreach wave 1 to the ten personalized editorial targets — approved, the verified public developer sender is available and the public CSV gate now returns 200; recheck each current recipient, article and contact route immediately before sending.
 - [ ] Resolve AlternativeTo account creation through its legitimate current path — correct email identity is available; user-owned password and hCaptcha are still required, then a 7-day account-age wait.
-- [ ] Claim or verify the AppBrain developer account — account created and verification email sent to `contact@noctalia.app`; that mailbox must open the link to finish.
+- [x] Claim or verify the AppBrain developer account — the official access email was opened in `contact@noctalia.app`; the developer dashboard now lists `Noctalia: Smart Dream Journal` under “Your apps in Google Play”.
 
 ## Execution log — approved A/B/C batch
 
@@ -260,7 +260,7 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 | B — Digital.Health | One final follow-up asked only whether a clearly non-medical consumer wellness app is eligible. | Gmail message `19fb830a67794116`; stop unless the directory replies. |
 | B — editorial wave | Ten tailored drafts remain ready, the sender identity is verified and the cited CSV is public. | Approved to send after a fresh recipient/article/contact-route check for each message. |
 | C — AlternativeTo | Current signup form and its 7-day new-account rule verified; correct email identity available. | Paused for user-owned password and hCaptcha. |
-| C — AppBrain | Google login with `thannous@gmail.com` completed, Noctalia was found through the official package, and the verification request was freshly submitted. | AppBrain confirmed that the access email was sent to `contact@noctalia.app`; no forwarded copy reached Gmail, so the OVH mailbox must open the link. |
+| C — AppBrain | The official access email was opened in the authenticated `contact@noctalia.app` mailbox and the claim link was validated for package `com.tanuki75.noctalia`. | Complete: the developer dashboard lists `Noctalia: Smart Dream Journal` under “Your apps in Google Play”. No promotion or spend was activated. |
 
 Product Hunt now has a complete local launch pack and the pricing/video deployment gate is cleared. It remains outside this batch until the walkthrough is uploaded to YouTube with publication approval, the personal account is verified, and a launch date plus genuine feedback cohort are approved.
 
