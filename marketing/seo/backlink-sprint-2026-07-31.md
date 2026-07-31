@@ -119,11 +119,19 @@ The asset is public. `https://noctalia.app/data/dream-journal-apps-comparison-20
 
 | Directory | Positioning | Current free-path evidence | Hold condition |
 | --- | --- | --- | --- |
-| PitchWall | Voice-first Android dream journal with transparent reflection boundaries. | Official submit page exposes a free launch, a stated 30+ day wait and a claimed dofollow backlink. | Recheck public pricing/demo readiness; verify the eventual live link rather than trusting the platform claim. |
+| PitchWall | Voice-first Android dream journal with transparent reflection boundaries. | Official submit page exposes a free launch, a stated 30+ day wait and a claimed dofollow backlink. | Account exists, but profile changes failed to persist twice; no product was submitted. OAuth also disclosed newsletter signup, so keep this route paused until the account controls work. |
 | Launching Next | Fast morning voice capture for an Android dream journal. | Official form accepts a free submission and describes a permanent product profile, with an approximately three-month queue. | Recheck public pricing/demo readiness and the live outbound-link attributes. |
-| AI Tools Inc | AI-assisted dream journaling with published methodology and non-medical limits. | Official submission path offers a `$0` listing with a stated 30–90 day review queue and no guaranteed placement. | Recheck public pricing/demo readiness; never pay for priority without separate approval. |
+| AI Tools Inc | AI-assisted dream journaling with published methodology and non-medical limits. | Free Typeform submission accepted on 2026-07-31; the official route states a 30–90 day queue and no guaranteed placement. | Pending review, not a live backlink. Only public product data and the professional contact identity were supplied; never pay for priority without separate approval. |
 
-These three are qualified, not submitted. Reciprocal-link or pay-to-dofollow directories remain excluded from this wave.
+Launching Next remains blocked on a truthful 90-day marketing-budget answer. Reciprocal-link or pay-to-dofollow directories remain excluded from this wave.
+
+### Directory trust check
+
+| Directory | Verified signals | Concrete cautions | Operational decision |
+| --- | --- | --- | --- |
+| Future Tools | Domain created in 2022; named operator and team; official About, FAQ, Terms and Privacy links; human review and affiliate/sponsorship disclosure; optional newsletter left unchecked. | CAPTCHA requires the user; more than 75% of submissions are rejected; placement and link treatment are not guaranteed. | Acceptable for a free, low-data submission. Form prefilled, not submitted. |
+| AI Tools Inc | Domain created in 2024; named founders; official About, Privacy, Terms and affiliate disclosure; public GitHub repository with visible history; official site links to the free Typeform. | Terms still contain `[Your Country/State]`; the free queue is 30–90 days and placement is not guaranteed; audience and authority claims are self-reported. | Acceptable only for public product data and a professional email. Free submission sent; no payment or sensitive data. |
+| PitchWall | Domain created in 2023; HTTPS; official privacy/terms/FAQ; limited OAuth profile/email data; privacy policy provides support and deletion routes. | OAuth disclosed newsletter signup; profile changes failed to persist after two saves; account notification/privacy routes exposed no usable controls; traffic, DR and dofollow figures are platform claims. | Pause. Account exists, but no product submission or payment until controls and persistence are reliable. |
 
 The English product walkthrough is public at `https://noctalia.app/video/noctalia-product-walkthrough-en-2026-07.mp4`: 71 seconds, 1920 × 1080, H.264, no audio and 2.7 MB. It uses the four current launch-gallery product screens and an explicit non-medical/non-predictive boundary. The press kit links it and exposes `VideoObject` structured data; the production URL returned HTTP 200 with `video/mp4` and 2,698,770 bytes.
 
@@ -254,6 +262,9 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 | A — production publication | `master` was pushed at commit `7de71bc64d53adf80257fb659f4e12eb669c1d05`; local HEAD, `origin/master` and `git ls-remote` matched. | GitHub Actions run `30635290841` succeeded. Cloudflare Pages production deployment `acb85f4e-de56-4553-9cec-00220aa43115` completed successfully and aliased `https://noctalia.app`. |
 | B — SaaSHub | Product name, Android category/entity distinction, official URL consistency and `noindex` review submitted. | Accepted by the form; pending moderation. |
 | B — Uneed | Product `44802` was submitted to the free waiting line from account `thannous-6884`; the generated copy was corrected, the public walkthrough video was added and the launch is scheduled for 2027-01-08. | No spend. It remains a queued submission, not a live backlink; the eventual listing requires at least 10 genuine launch-day upvotes to remain published. |
+| B — AI Tools Inc | Free Typeform submitted with Noctalia, its public press URL, the submitter name and the professional contact email. | Confirmation received; pending review, no spend, no password or sensitive data, and not a live backlink. |
+| B — PitchWall | Google OAuth account created and the free route opened. | Paused before product submission because the profile did not persist after two saves and OAuth disclosed newsletter signup. |
+| B — Future Tools | Free submission form prefilled with the approved factual copy; optional newsletter left unchecked. | Paused before submission for the user-owned CAPTCHA; no data was sent. |
 | B — Microlaunch | The current New Launch dialog exposes only Pro Launch. | Paused before payment; no spend authorized. |
 | B — Good AI Tools | Factual correction sent to `submitmatic@gmail.com` from the verified public developer identity. | Gmail message `19fb7ec531196fa8`; awaiting publisher update. |
 | B — SearchGun | One final follow-up added the public methodology and offered an easy close-the-loop response. | Gmail message `19fb83074b0b329f`; stop unless the editor replies. |

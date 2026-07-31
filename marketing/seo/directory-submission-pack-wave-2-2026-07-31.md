@@ -1,6 +1,6 @@
 # Noctalia directory submission pack — wave 2
 
-Evidence date: 2026-07-31. This pack contains distinct copy for PitchWall, Launching Next and AI Tools Inc. It is ready for form entry, but none of the three submissions should be sent until every public readiness gate below passes.
+Evidence date: 2026-07-31. This pack contains distinct copy for PitchWall, Launching Next and AI Tools Inc. The public readiness gates passed. AI Tools Inc was submitted through its free official Typeform and is pending review; PitchWall has an account but no product submission because profile changes did not persist; Launching Next still requires a truthful 90-day marketing-budget answer.
 
 ## Common verified product data
 
@@ -54,6 +54,7 @@ Claims boundary: Noctalia is for journaling, personal reflection and wellbeing. 
 > Noctalia supports English, French, Spanish, German and Italian. Start free on Android.
 
 - **Submission constraint:** select only the free route. Do not buy Pro/Premium, add a reciprocal badge or solicit strangers for votes. Treat PitchWall's dofollow statement as a platform claim until the live link is independently verified.
+- **Current state:** authenticated account created through Google OAuth, which also disclosed newsletter signup. Two attempts to save the required username/profile disappeared after reload, and the account notification/privacy routes exposed no usable controls. No product was submitted and no spend occurred; keep the route paused.
 
 ## Launching Next — editorial startup framing
 
@@ -98,6 +99,7 @@ Claims boundary: Noctalia is for journaling, personal reflection and wellbeing. 
 > The Android app also provides journal search, recurring-pattern review and basic lucid-dreaming tools. It supports five languages and offers a free Dreamer plan; Google Play shows the applicable Noctalia Plus options before purchase.
 
 - **Submission constraint:** free queue only. The official page states a 30–90 day listing time with no guaranteed placement. Do not purchase the `$129` Fast Lane.
+- **Current state:** free Typeform submitted and confirmation received. The form requested only the product name, public URL, submitter name and professional email; no password, card or sensitive data was supplied. This is pending review, not a live backlink. The site's terms still contain an unresolved `[Your Country/State]` placeholder, so do not expand data sharing or payment without a separate recheck and approval.
 
 ## Final pre-submit checklist
 

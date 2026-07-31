@@ -2,13 +2,13 @@
 
 Evidence date: 2026-07-31. This pack qualifies the current official submission routes for seven high-visibility AI directories. It distinguishes one viable free editorial route from paid or reciprocal-link routes so that a high advertised Domain Rating is never mistaken for a free backlink.
 
-No form has been submitted and no account, payment, reciprocal link or newsletter subscription has been created from this pack.
+The Future Tools form is prefilled, with its optional newsletter unchecked, but has not been submitted because CAPTCHA completion belongs to the user. No payment, reciprocal link or newsletter subscription has been created from this pack.
 
 ## Decision summary
 
 | Directory | Current official route | Cost or obligation | Decision |
 | --- | --- | --- | --- |
-| Future Tools | `https://futuretools.io/submit-a-tool` | Free form with CAPTCHA; human editorial review; inclusion is not guaranteed. | **Prepare first.** Submit only after the public pricing and video gates pass and submission is authorized. |
+| Future Tools | `https://futuretools.io/submit-a-tool` | Free form with CAPTCHA; human editorial review; inclusion is not guaranteed. | **Prefilled, not submitted.** Public gates passed and the optional newsletter is unchecked; user-owned CAPTCHA remains. |
 | There's An AI For That | `https://theresanaiforthat.com/launch/` | Current website launch starts at `$49`; the newsletter option is `$347`. | Hold for a separate spending decision. Do not use the paid launch merely for DR. |
 | Futurepedia | `https://www.futurepedia.io/submit-tool` | Basic `$247` route is sold out; current Verified Listing is `$497`. | Reject for the accelerated free sprint unless a later acquisition case justifies the spend. |
 | Toolify | `https://www.toolify.ai/submit` | `$99` one-time submission; the platform advertises listing within 48 hours. | Hold for separate spend approval and an ROI case; do not count the advertised links before publication. |
@@ -43,6 +43,8 @@ This copy is intentionally different from the AI Tools Inc version. It leads wit
 5. Privacy and terms return `200`.
 6. The current Future Tools form still offers the free editorial path and the selected category remains `Productivity`.
 7. The user explicitly authorizes this form submission; solving the CAPTCHA remains a user action.
+
+Current state: gates 1–6 passed and the approved fields are prefilled. The final submission has not been sent because CAPTCHA completion remains a user action.
 
 ## Paid-route copy reserve
 
