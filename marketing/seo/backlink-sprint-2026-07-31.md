@@ -4,6 +4,8 @@
 
 This file is the execution source of truth for the current backlink sprint. Research, local content, copy and QA can proceed autonomously. Account creation, form submission, email or DM sending, publication, paid placement, reciprocal links and Ahrefs report-credit consumption require explicit approval.
 
+The A/B/C execution batch was approved on 2026-07-31. No spending, invented identity, CAPTCHA solving or publication claim is implied by that approval. The local SEO commits are ready, but the production push remains paused until the deployment side effect is confirmed in the exact authorization language requested by the execution safety gate.
+
 ## Baseline captured today
 
 Ahrefs project dashboard, read on 2026-07-31 without opening a detailed report or consuming a report credit:
@@ -20,7 +22,7 @@ The detailed referring-domain report was intentionally not opened. The known man
 
 Tracking files:
 
-- `marketing/seo/backlink-results-2026-07-31.csv`: five manually audited surfaces, including four fetch-verified pages and one access-blocked store-derived citation;
+- `marketing/seo/backlink-results-2026-07-31.csv`: six manually audited surfaces, including the newly verified public AppBrain listing and one access-blocked store-derived citation;
 - `marketing/seo/backlink-prospects-2026-07-31.csv`: 30 qualified opportunities, including 2 P0 corrections/reclamations and 12 P1 prospects.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: ten recipient-specific editorial drafts, current contact routes and a two-follow-up stop policy.
 - `marketing/seo/backlink-outreach-log-2026-07-31.csv`: send, reply, follow-up and live-link state for the ten-message wave.
@@ -34,6 +36,7 @@ Tracking files:
 | Good AI Tools | HTTP 200; canonical; Noctalia link is `nofollow`; description still overstates offline analysis and psychological meaning. | Entity/discovery mention only. | Send the factual correction after approval. |
 | SaaSHub | HTTP 200; self-canonical; `noindex, follow`; mixed followed-looking and `nofollow` CTAs. | Do not count as indexed authority. | Ask for an indexable distinct app entity and consistent linking after approval. |
 | Chrome-Stats | Automated request receives Cloudflare 403; search visibility was previously observed from store-derived data. | Store-data citation only; not a review. | Monitor through public search, not repeated automated requests. |
+| AppBrain | HTTP 200; indexable; self-canonical; public website link is `nofollow`. | Count as an entity/discovery citation, not link equity. | Claim through a legitimate AppBrain login and verify via `contact@noctalia.app`. |
 
 ## Strategic conclusion
 
@@ -209,13 +212,27 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 
 ## Approval-ready external batch
 
-- [ ] Submit Noctalia to Uneed.
-- [ ] Submit Noctalia to Microlaunch.
-- [ ] Send the Good AI Tools factual correction.
-- [ ] Send the SaaSHub entity/indexation request.
-- [ ] Send outreach wave 1 to the ten personalized editorial targets.
-- [ ] Resolve AlternativeTo account creation through its legitimate current path.
-- [ ] Claim or verify the AppBrain developer account.
+- [ ] Submit Noctalia to Uneed — preview ready; legitimate account creation required.
+- [ ] Submit Noctalia to Microlaunch — current launch route is Pro-only; no spending authorized.
+- [ ] Send the Good AI Tools factual correction — email/X only; blocked until a verified Noctalia sender is available.
+- [x] Send the SaaSHub entity/indexation request — submitted through the product-change form; pending moderation.
+- [ ] Send outreach wave 1 to the ten personalized editorial targets — approved, but the public CSV gate still returns 404 and email-only routes need a Noctalia sender.
+- [ ] Resolve AlternativeTo account creation through its legitimate current path — signup reached; user-owned email, password and hCaptcha required, then a 7-day account-age wait.
+- [ ] Claim or verify the AppBrain developer account — public listing verified; claim login reached and verification will go to `contact@noctalia.app`.
+
+## Execution log — approved A/B/C batch
+
+| Workstream | Result on 2026-07-31 | State |
+| --- | --- | --- |
+| A — local SEO publication lot | Two focused publication commits created; full documentation build and checks pass. | Local only; `master` has not been pushed. |
+| A — production publication | Push was not performed. | Waiting for explicit confirmation that pushing `master` triggers Cloudflare Production. |
+| B — SaaSHub | Product name, Android category/entity distinction, official URL consistency and `noindex` review submitted. | Accepted by the form; pending moderation. |
+| B — Uneed | Noctalia URL preview retrieved the correct logo, title and press description. | Account creation required; no account created under an unrelated identity. |
+| B — Microlaunch | The current New Launch dialog exposes only Pro Launch. | Paused before payment; no spend authorized. |
+| B — Good AI Tools | Current owner route verified through SubmitMatic; only email/X is exposed. | Correction not sent from the unrelated connected Gmail identity. |
+| B — editorial wave | Ten tailored drafts remain ready. | Not sent because the cited CSV is not yet public and email-only routes lack a verified Noctalia sender. |
+| C — AlternativeTo | Current signup form and its 7-day new-account rule verified. | Paused at user identity/password/hCaptcha. |
+| C — AppBrain | Existing public Noctalia listing verified at the canonical package URL; claim flow reached. | Paused at login; ownership email will be sent to `contact@noctalia.app`. |
 
 Product Hunt remains outside this batch until a real 60–90 second Android walkthrough is recorded and the launch-day support plan is ready.
 
