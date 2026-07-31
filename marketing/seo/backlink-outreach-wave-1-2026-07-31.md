@@ -292,6 +292,60 @@ Best,
 Thanh Chau
 Noctalia
 
+## 15. Acuity — editorial team
+
+**Target:** `https://getacuity.io/blog/the-best-voice-journaling-apps-in-2026-no-typing-required`
+**Route:** `hello@getacuity.io`, published in Acuity's official Terms
+**Subject:** `voice journal comparison`
+
+Hi Acuity team,
+
+Keenan’s June comparison is unusually clear about the difference between voice capture, AI extraction, and a conventional multimedia journal. I also appreciated that it gives Day One, Rosebud, and Reflectly specific credit instead of treating the article as an Acuity advert.
+
+One specialist Android workflow you may want to test in a future update is Noctalia: fast dream capture by voice before details fade, multilingual transcription, recurring-theme review, and guided reflection. Its AI features require connectivity, and it is explicitly non-medical and non-predictive. The workflow and limitations are documented here: https://noctalia.app/en/voice-dream-journal
+
+Would it be useful for a future hands-on refresh? Editorial judgment is entirely yours.
+
+Best,
+Thanh Chau
+Noctalia
+
+## 16. CortexOS — Orlin Martinov
+
+**Target:** `https://cortexos.app/library/best-ai-journal-app-2026/`
+**Route:** `info@cortexos.app`, published as the direct press, review and fact-check route
+**Subject:** `AI journal comparison`
+
+Hi Orlin,
+
+Your April comparison is unusually explicit about both CortexOS’s bias and the cases where Day One, Journey, Rosebud, or Reflectly are the better fit. The on-device versus cloud distinction is also stated much more clearly than in most journal roundups.
+
+One narrower Android category you may want to test in a future update is dream-first journaling. Noctalia uses voice capture, multilingual transcription, recurring-theme review, generated imagery, and guided reflection. Unlike CortexOS, its AI workflow requires connectivity and provider processing; those limits, along with its non-medical and non-predictive boundaries, are documented in the reviewer pack: https://noctalia.app/en/press
+
+Would it be worth a factual test for a future specialist section? Editorial judgment is entirely yours.
+
+Best,
+Thanh Chau
+Founder, Noctalia
+
+## 17. Dearly — Swapnil Tiwari
+
+**Target:** `https://brooo.app/dearly/guides/best-voice-journaling-apps-android/`
+**Route:** `swapniltiwari775@gmail.com`, published as the developer contact in Dearly's official Privacy Policy
+**Subject:** `Android voice journals`
+
+Hi Swapnil,
+
+Your July Android comparison is refreshingly specific about what happens to audio, transcripts, and AI processing, and it openly separates where Dearly fits from where other workflows may be stronger.
+
+One dream-specific Android workflow you may want to test in a future update is Noctalia: voice capture before dream details fade, multilingual transcription, recurring-theme review, and guided reflection. Its AI features require connectivity, and the product is explicitly non-medical and non-predictive. The current workflow and limitations are here: https://noctalia.app/en/voice-dream-journal
+
+Would it be useful for a future hands-on refresh? Editorial judgment is entirely yours.
+
+Best,
+Thanh Chau
+Noctalia
+
 ## Follow-up policy
 
 Journalists and editors receive at most two follow-ups. Stop immediately after a reply, rejection or opt-out.
@@ -339,6 +393,10 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - DeepJournal comparison, disclosure and official contact: `https://deepjournal.app/blog/best-ai-journal-apps-in-2026`, `https://deepjournal.app/contact`
 - JournPad comparison, official support address and product policies: `https://journpad.com/blog/best-voice-journaling-apps-2026`, `https://journpad.com/terms-of-use`, `https://journpad.com/privacy`
 - Dreamz Journal comparison, disclosed editor, methodology and advertised editorial contact that later failed delivery: `https://dreamz-journal.com/blog/best-dream-journal-apps-2026`, `https://dreamz-journal.com/about/`, `https://dreamz-journal.com/methodology/`, `https://dreamz-journal.com/contact/`
+- Acuity comparison, identified operator, current privacy, terms and official contacts: `https://getacuity.io/blog/the-best-voice-journaling-apps-in-2026-no-typing-required`, `https://getacuity.io/privacy`, `https://getacuity.io/terms`, `https://getacuity.io/support`
+- CortexOS comparison, named founder, press route, trust center and privacy: `https://cortexos.app/library/best-ai-journal-app-2026/`, `https://cortexos.app/about/`, `https://cortexos.app/press/`, `https://cortexos.app/trust/`, `https://cortexos.app/privacy/`
+- Dearly Android comparison and identified developer privacy policy: `https://brooo.app/dearly/guides/best-voice-journaling-apps-android/`, `https://brooo.app/dearly/privacy/`
+- Paused publishers: Lound lacks a verified named publisher and usable editorial contact; Dayora's Terms and product pages materially conflict on AI-training use; remembr has no verified operator and its privacy, terms and contact pages return 404; Kiomora exposes no named operator and its protected contact values are malformed or misspelled: `https://lound.ai/blog/best-voice-journaling-apps-2026/`, `https://lound.ai/privacy/`, `https://www.dayora.ai/blog/best-voice-journaling-apps-2026`, `https://www.dayora.ai/terms`, `https://www.dayora.ai/contact`, `https://remembr.live/blog/best-voice-journal-apps-2026`, `https://remembr.live/`, `https://kiomora.com/blog/best-ai-journal-apps/`, `https://kiomora.com/about/`, `https://kiomora.com/press/`
 - Sleep Foundation exclusion evidence: `https://www.sleepfoundation.org/about-us/pitch-us`
 
-Verification on 2026-07-31: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android's official address then failed with `554 5.7.1 Relay access denied`; no alternate address was inferred. Holstee was verified and contacted once as the replacement target. Know Your Ethos was accepted only as a competitor-owned editorial prospect after its team byline, company story, legal navigation, official FAQ address and balanced competitor limitations were checked; its published address then rejected the factual request with `550 5.1.1`, so no follow-up or guessed alternative is permitted. Dreamz Journal's prominently advertised direct-editor mailbox also proved nonexistent or unable to receive mail, so its route was closed without a retry or inferred address. Dream Studies Portal exposed reCAPTCHA, so its prefilled pitch remains intentionally unsent for user completion.
+Verification on 2026-07-31: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android's official address then failed with `554 5.7.1 Relay access denied`; no alternate address was inferred. Holstee was verified and contacted once as the replacement target. Know Your Ethos was accepted only as a competitor-owned editorial prospect after its team byline, company story, legal navigation, official FAQ address and balanced competitor limitations were checked; its published address then rejected the factual request with `550 5.1.1`, so no follow-up or guessed alternative is permitted. Dreamz Journal's prominently advertised direct-editor mailbox also proved nonexistent or unable to receive mail, so its route was closed without a retry or inferred address. Acuity, CortexOS and Dearly were contacted only after their named author or operator, current comparison, official route, legal or trust material and Gmail history had been checked. Lound, Dayora, remembr and Kiomora were paused for the documented identity, legal, privacy-consistency or contact-route deficiencies. Dream Studies Portal exposed reCAPTCHA, so its prefilled pitch remains intentionally unsent for user completion.
