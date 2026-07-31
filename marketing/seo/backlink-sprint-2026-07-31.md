@@ -240,6 +240,7 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 - [ ] Submit Noctalia to Microlaunch — current launch route is Pro-only; no spending authorized.
 - [x] Send the Good AI Tools factual correction — sent from the verified public developer identity to `submitmatic@gmail.com`; Gmail message `19fb7ec531196fa8`; awaiting publisher update.
 - [x] Send the SaaSHub entity/indexation request — submitted through the product-change form; pending moderation.
+- [x] Send one final follow-up in the older SearchGun and Digital.Health threads — sent once with new methodology/eligibility value; no further message without a reply.
 - [ ] Send outreach wave 1 to the ten personalized editorial targets — approved and a verified public developer sender is available, but the public CSV gate still returns 404.
 - [ ] Resolve AlternativeTo account creation through its legitimate current path — correct email identity is available; user-owned password and hCaptcha are still required, then a 7-day account-age wait.
 - [ ] Claim or verify the AppBrain developer account — account created and verification email sent to `contact@noctalia.app`; that mailbox must open the link to finish.
@@ -254,9 +255,11 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 | B — Uneed | Correct Google identity connected and account `thannous-6884` created; Noctalia preview still has the correct logo, title and press description. | Final submission held until the public pricing and demo readiness gates pass. |
 | B — Microlaunch | The current New Launch dialog exposes only Pro Launch. | Paused before payment; no spend authorized. |
 | B — Good AI Tools | Factual correction sent to `submitmatic@gmail.com` from the verified public developer identity. | Gmail message `19fb7ec531196fa8`; awaiting publisher update. |
+| B — SearchGun | One final follow-up added the public methodology and offered an easy close-the-loop response. | Gmail message `19fb83074b0b329f`; stop unless the editor replies. |
+| B — Digital.Health | One final follow-up asked only whether a clearly non-medical consumer wellness app is eligible. | Gmail message `19fb830a67794116`; stop unless the directory replies. |
 | B — editorial wave | Ten tailored drafts remain ready and the sender identity is now verified. | Not sent because the cited CSV is not yet public. |
 | C — AlternativeTo | Current signup form and its 7-day new-account rule verified; correct email identity available. | Paused for user-owned password and hCaptcha. |
-| C — AppBrain | Google login completed, Noctalia found through the official package, and developer verification requested. | Email sent to `contact@noctalia.app`; no forwarded copy reached `thannous@gmail.com`, so mailbox action is required. |
+| C — AppBrain | Google login with `thannous@gmail.com` completed, Noctalia was found through the official package, and the verification request was freshly submitted. | AppBrain confirmed that the access email was sent to `contact@noctalia.app`; no forwarded copy reached Gmail, so the OVH mailbox must open the link. |
 
 Product Hunt now has a complete local launch pack. It remains outside this batch until the pricing/video deployment is live, the walkthrough is uploaded to YouTube with publication approval, the personal account is verified, and a launch date plus genuine feedback cohort are approved.
 
