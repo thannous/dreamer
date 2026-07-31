@@ -23,9 +23,10 @@ The detailed referring-domain report was intentionally not opened. The known man
 Tracking files:
 
 - `marketing/seo/backlink-results-2026-07-31.csv`: six manually audited surfaces, including the newly verified public AppBrain listing and one access-blocked store-derived citation;
-- `marketing/seo/backlink-prospects-2026-07-31.csv`: 30 qualified opportunities, including 2 P0 corrections/reclamations and 12 P1 prospects.
+- `marketing/seo/backlink-prospects-2026-07-31.csv`: 33 qualified opportunities, including 2 P0 corrections/reclamations and 15 P1 prospects.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: ten recipient-specific editorial drafts, current contact routes and a two-follow-up stop policy.
 - `marketing/seo/backlink-outreach-log-2026-07-31.csv`: send, reply, follow-up and live-link state for the ten-message wave.
+- `marketing/seo/directory-submission-pack-wave-2-2026-07-31.md`: distinct, field-ready copy and public readiness gates for PitchWall, Launching Next and AI Tools Inc.
 
 ## Manual backlink audit
 
@@ -111,6 +112,8 @@ The asset is local until an authorized production publication. Do not pitch the 
 | AI Tools Inc | AI-assisted dream journaling with published methodology and non-medical limits. | Official submission path offers a `$0` listing with a stated 30–90 day review queue and no guaranteed placement. | Recheck public pricing/demo readiness; never pay for priority without separate approval. |
 
 These three are qualified, not submitted. Reciprocal-link or pay-to-dofollow directories remain excluded from this wave.
+
+The English product walkthrough is now built locally at `docs-src/static/video/noctalia-product-walkthrough-en-2026-07.mp4`: 71 seconds, 1920 × 1080, H.264, no audio and 2.7 MB. It uses the four current launch-gallery product screens and an explicit non-medical/non-predictive boundary. The press kit links it and exposes `VideoObject` structured data. It is not a public asset until the production URL returns 200.
 
 ## Outreach templates — prepared, not sent
 
