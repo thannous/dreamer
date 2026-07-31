@@ -24,7 +24,7 @@ These are editorial requests, not link purchases. Do not offer payment, reciproc
 | 1 | App Charts | James Chen, Head of Editorial | January 2026 dream-app comparison by the Editorial Team | Contact form | Test Noctalia for the next update |
 | 2 | World of Lucid Dreaming | Editorial team | Maintained app index now labels legacy reviews and accepts developer walkthroughs | Public editorial email | Consider a clearly labelled developer walkthrough |
 | 3 | Android Authority | Joe Hindy | April 2025 Android/iOS journal-app roundup | General editorial email/form | Add Noctalia to the future test queue |
-| 4 | Best Apps for Android | Editorial team | 2026 guide says apps are installed and tested on real phones | Public editorial email | Add Noctalia to the next hands-on test cycle |
+| 4 | Best Apps for Android | Editorial team | 2026 guide says apps are installed and tested on real phones | Public editorial email; delivery failed with `554 Relay access denied` | Add Noctalia to the next hands-on test cycle |
 | 5 | Mattress Miracle | Sleep-resource editorial team | March 2026 article rejects unsupported dream-app science claims | Public email | Review Noctalia's boundaries and factual dataset |
 | 6 | Dream Studies Portal | Ryan Hurd, Editor in Chief | Independent dream-tech coverage and interest in research provenance | Contact form | Review a short op-ed outline |
 | 7 | Sleep Review | Sree Roy, Chief Editor | Trade publication has covered AI-generated dream imagery | Direct editor email listed on contact page | Assess a news/background brief |
@@ -86,7 +86,7 @@ Founder, Noctalia
 ## 4. Best Apps for Android — editorial team
 
 **Target:** `https://bestappsforandroid.com/best-journal-apps-for-android/`
-**Route:** `hello@bestappsforandroid.com`, published at `https://bestappsforandroid.com/contact/`
+**Route:** `hello@bestappsforandroid.com`, published at `https://bestappsforandroid.com/contact/`; the 2026-07-31 attempt failed with `554 5.7.1 Relay access denied`, and no alternative official route was found
 **Subject:** `journal test queue`
 
 Hello,
@@ -244,4 +244,4 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - Tom's Guide feature and current staff page: `https://www.tomsguide.com/ai/9-ways-to-start-journaling-with-chatgpt-in-2026-and-actually-stick-with-it`, `https://www.tomsguide.com/reference/about-us`
 - Sleep Foundation exclusion evidence: `https://www.sleepfoundation.org/about-us/pitch-us`
 
-Verification on 2026-07-31: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`; Dream Studies Portal exposed reCAPTCHA, so its prefilled pitch remains intentionally unsent for user completion.
+Verification on 2026-07-31: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android's official address then failed with `554 5.7.1 Relay access denied`; no alternate address was inferred. Dream Studies Portal exposed reCAPTCHA, so its prefilled pitch remains intentionally unsent for user completion.
