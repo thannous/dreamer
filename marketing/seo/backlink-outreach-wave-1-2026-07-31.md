@@ -25,6 +25,7 @@ These are editorial requests, not link purchases. Do not offer payment, reciproc
 | 2 | World of Lucid Dreaming | Editorial team | Maintained app index now labels legacy reviews and accepts developer walkthroughs | Public editorial email | Consider a clearly labelled developer walkthrough |
 | 3 | Android Authority | Joe Hindy | April 2025 Android/iOS journal-app roundup | General editorial email/form | Add Noctalia to the future test queue |
 | 4 | Best Apps for Android | Editorial team | 2026 guide says apps are installed and tested on real phones | Public editorial email; delivery failed with `554 Relay access denied` | Add Noctalia to the next hands-on test cycle |
+| 4R | Holstee | Dave Rad | July 2026 comparison discloses Holstee's ownership of Reflection and evaluates other apps | Public company email | Consider a specialist Android dream journal in a future update |
 | 5 | Mattress Miracle | Sleep-resource editorial team | March 2026 article rejects unsupported dream-app science claims | Public email | Review Noctalia's boundaries and factual dataset |
 | 6 | Dream Studies Portal | Ryan Hurd, Editor in Chief | Independent dream-tech coverage and interest in research provenance | Contact form | Review a short op-ed outline |
 | 7 | Sleep Review | Sree Roy, Chief Editor | Trade publication has covered AI-generated dream imagery | Direct editor email listed on contact page | Assess a news/background brief |
@@ -202,9 +203,28 @@ Would a hands-on Android test fit a future piece on dedicated versus general-pur
 Thanh Chau
 Founder, Noctalia
 
+## 4R. Holstee — Dave Rad (replacement route)
+
+**Target:** `https://www.holstee.com/blogs/mindful-matter/best-journaling-apps`
+**Route:** `hello@holstee.com`, published on Holstee's official article and About pages
+**Subject:** `dream journal test`
+
+Hi Dave,
+
+Your July 15 journaling-app comparison is unusually clear about Holstee building Reflection, and it evaluates Android availability, privacy and AI behavior rather than just feature count. Noctalia is a narrower Android-first journal for capturing dreams by voice immediately after waking, then reviewing recurring themes through guided reflection. It is not medical or predictive, and its AI features require connectivity.
+
+The current product facts and limitations are here: https://noctalia.app/en/press
+
+Would Noctalia be worth a hands-on test for a future Android or specialist-journal update?
+
+Thanh Chau
+Founder, Noctalia
+
 ## Follow-up policy
 
 Journalists and editors receive at most two follow-ups. Stop immediately after a reply, rejection or opt-out.
+
+Paul Hatton's automatic reply says he returns on 2026-08-12. His first follow-up is therefore deferred to 2026-08-13; do not contact him while he is away.
 
 ### Follow-up 1 — day 4 or 5
 
@@ -236,6 +256,7 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - World of Lucid Dreaming app index and contact: `https://www.world-of-lucid-dreaming.com/lucid-dreaming-apps.html`, `https://www.world-of-lucid-dreaming.com/contact.html`
 - Android Authority article and contact: `https://www.androidauthority.com/best-diary-apps-journal-apps-android-892375/`, `https://www.androidauthority.com/contact/`
 - Best Apps for Android guide, testing policy and contact: `https://bestappsforandroid.com/best-journal-apps-for-android/`, `https://bestappsforandroid.com/`, `https://bestappsforandroid.com/contact/`
+- Holstee current comparison, company history and contact: `https://www.holstee.com/blogs/mindful-matter/best-journaling-apps`, `https://www.holstee.com/pages/about`
 - Mattress Miracle article and contact: `https://mattressmiracle.ca/blogs/mattress-miracle-blog/best-dream-journal-app`, `https://mattressmiracle.ca/pages/contact`
 - Dream Studies Portal article, about and contact: `https://dreamstudies.org/dream-hack-app-2015/`, `https://dreamstudies.org/about/`, `https://dreamstudies.org/contact/`
 - Sleep Review article and staff contact: `https://sleepreviewmag.com/sleep-diagnostics/consumer-sleep-tracking/mintal-tracker-draw-my-dream/`, `https://sleepreviewmag.com/contact-us/`
@@ -244,4 +265,4 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - Tom's Guide feature and current staff page: `https://www.tomsguide.com/ai/9-ways-to-start-journaling-with-chatgpt-in-2026-and-actually-stick-with-it`, `https://www.tomsguide.com/reference/about-us`
 - Sleep Foundation exclusion evidence: `https://www.sleepfoundation.org/about-us/pitch-us`
 
-Verification on 2026-07-31: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android's official address then failed with `554 5.7.1 Relay access denied`; no alternate address was inferred. Dream Studies Portal exposed reCAPTCHA, so its prefilled pitch remains intentionally unsent for user completion.
+Verification on 2026-07-31: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android's official address then failed with `554 5.7.1 Relay access denied`; no alternate address was inferred. Holstee was verified and contacted once as the replacement target. Dream Studies Portal exposed reCAPTCHA, so its prefilled pitch remains intentionally unsent for user completion.

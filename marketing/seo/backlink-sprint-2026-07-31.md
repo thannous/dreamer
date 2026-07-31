@@ -228,12 +228,12 @@ Thanh Chau
 
 ## Personalization queue
 
-The first outreach wave should contain no more than ten tailored messages:
+The first outreach wave targets ten reachable editorial recipients. A route that hard-bounces may be replaced once after a fresh trust and contact audit, without retrying or guessing an address:
 
 1. App Charts — actual roundup inclusion and CSV.
 2. World of Lucid Dreaming — hands-on developer review with honest lucid-feature limits.
 3. Android Authority — Android-first voice workflow.
-4. Best Apps for Android — specialist journal use case.
+4. Best Apps for Android — specialist journal use case; official email failed, so Holstee became the verified replacement target.
 5. Mattress Miracle — research and non-medical boundary.
 6. Dream Studies Portal — provenance op-ed.
 7. Sleep Review — product-news/methodology angle.
@@ -250,7 +250,7 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 - [x] Send the Good AI Tools factual correction — sent from the verified public developer identity to `submitmatic@gmail.com`; Gmail message `19fb7ec531196fa8`; awaiting publisher update.
 - [x] Send the SaaSHub entity/indexation request — submitted through the product-change form; pending moderation.
 - [x] Send one final follow-up in the older SearchGun and Digital.Health threads — sent once with new methodology/eligibility value; no further message without a reply.
-- [ ] Send outreach wave 1 to the ten personalized editorial targets — eight email attempts were made and the App Charts form was accepted, but Best Apps for Android immediately failed with `554 5.7.1 Relay access denied`. Seven emails and the App Charts form remain in the awaiting-reply state. Dream Studies Portal is prefilled but not submitted because reCAPTCHA is user-owned; no alternative Best Apps address was guessed. The public CSV gate returns 200.
+- [ ] Send outreach wave 1 to ten reachable personalized editorial targets — Best Apps for Android failed with `554 5.7.1 Relay access denied`, so the current, transparent Holstee comparison was verified and contacted once as its replacement. Eight emails and the App Charts form are now in the awaiting-reply state. Dream Studies Portal is prefilled but not submitted because reCAPTCHA is user-owned. The public CSV gate returns 200.
 - [ ] Resolve AlternativeTo account creation through its legitimate current path — correct email identity is available; user-owned password and hCaptcha are still required, then a 7-day account-age wait.
 - [x] Claim or verify the AppBrain developer account — the official access email was opened in `contact@noctalia.app`; the developer dashboard now lists `Noctalia: Smart Dream Journal` under “Your apps in Google Play”.
 
@@ -269,7 +269,7 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 | B — Good AI Tools | Factual correction sent to `submitmatic@gmail.com` from the verified public developer identity. | Gmail message `19fb7ec531196fa8`; awaiting publisher update. |
 | B — SearchGun | One final follow-up added the public methodology and offered an easy close-the-loop response. | Gmail message `19fb83074b0b329f`; stop unless the editor replies. |
 | B — Digital.Health | One final follow-up asked only whether a clearly non-medical consumer wellness app is eligible. | Gmail message `19fb830a67794116`; stop unless the directory replies. |
-| B — editorial wave | Eight emails were attempted once after same-day article, identity and official-contact verification. Seven remain in awaiting-reply state: Android Authority `19fb9a8aa98b5d96`, Mattress Miracle `19fb9a8486dca53e`, Sleep Review `19fb9a854cbb5c16`, Oneironaut `19fb9a8611694132`, TechRadar `19fb9a8b695d4ff8`, Tom's Guide `19fb9a8c19fef0fb` and World of Lucid Dreaming `19fb9aee937105e6`. Best Apps for Android `19fb9afacdc85285` failed with `554 5.7.1 Relay access denied`. App Charts accepted its factual form with an explicit success confirmation. | Eight of ten targets were reached or submitted and are awaiting replies; first follow-up is not due before 2026-08-05. Dream Studies Portal remains prefilled for user reCAPTCHA, and Best Apps has no working official alternative route. |
+| B — editorial wave | Best Apps for Android `19fb9afacdc85285` failed with `554 5.7.1 Relay access denied`, so Holstee was verified as a disclosed competitor-adjacent replacement and contacted once at its public address, Gmail message `19fb9c02a9d07fa6`. Eight emails plus the accepted App Charts form are now awaiting editorial outcomes. Paul Hatton returned an automatic away notice through 2026-08-12. | Nine of ten reachable targets are sent or submitted. General first follow-ups remain due on 2026-08-05; TechRadar is deferred to 2026-08-13. Dream Studies Portal remains prefilled for user reCAPTCHA. No sent message is counted as a backlink. |
 | C — AlternativeTo | Current signup form and its 7-day new-account rule verified; correct email identity available. | Paused for user-owned password and hCaptcha. |
 | C — AppBrain | The official access email was opened in the authenticated `contact@noctalia.app` mailbox and the claim link was validated for package `com.tanuki75.noctalia`. | Complete: the developer dashboard lists `Noctalia: Smart Dream Journal` under “Your apps in Google Play”. No promotion or spend was activated. |
 
