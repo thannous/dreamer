@@ -25,9 +25,9 @@ The 4K-click Search Console milestone was received at `thannous@gmail.com` in me
 
 Tracking files:
 
-- `marketing/seo/backlink-results-2026-07-31.csv`: eleven manually audited surfaces, including four indexable followed pages on independent domains, one rendered Reddit `nofollow ugc` citation, one lost historical listing and one access-blocked store-derived citation;
+- `marketing/seo/backlink-results-2026-07-31.csv`: eleven manually audited surfaces, including four indexable followed pages on independent domains, one rendered Reddit `nofollow ugc` citation, one lost historical listing and one search-visible store-derived link whose treatment remains unverified;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
-- `marketing/seo/backlink-prospects-2026-07-31.csv`: 44 qualified opportunities, including 2 P0 corrections/reclamations, 18 P1 prospects and four platform-specific editorial syndication routes.
+- `marketing/seo/backlink-prospects-2026-07-31.csv`: 54 researched opportunities: 2 P0 corrections/reclamations, 23 P1 prospects, 28 P2 prospects or exclusions and 1 P3 launch route.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: ten recipient-specific editorial drafts, current contact routes and a two-follow-up stop policy.
 - `marketing/seo/backlink-outreach-log-2026-07-31.csv`: send, reply, follow-up and live-link state for the ten-message wave.
 - `marketing/seo/directory-submission-pack-wave-3-ai-2026-07-31.md`: one field-ready free Future Tools dossier plus an official-price decision matrix for six paid or reciprocal AI-directory routes.
@@ -45,7 +45,7 @@ Tracking files:
 | Good AI Tools | HTTP 200; canonical; Noctalia link is `nofollow`; description still overstates offline analysis and psychological meaning. | Entity/discovery mention only. | Send the factual correction after approval. |
 | SaaSHub | HTTP 200; self-canonical; `noindex, follow`; mixed followed-looking and `nofollow` CTAs. | Do not count as indexed authority. | Ask for an indexable distinct app entity and consistent linking after approval. |
 | SaaSHub alternatives | HTTP 200; indexable; self-canonical; one press link is `nofollow`, while the official-site link has empty `rel`. | Count SaaSHub as a followed referring domain through this page, not through the noindexed main profile. | Retain and recheck with the main profile. |
-| Chrome-Stats | Automated request receives Cloudflare 403; search visibility was previously observed from store-derived data. | Store-data citation only; not a review. | Monitor through public search, not repeated automated requests. |
+| Chrome-Stats | Direct automated requests receive Cloudflare 403, but the current public search rendering exposes an explicit Website link to `https://noctalia.app/`. | Link existence and indexability are visible; link attributes remain unverified, so exclude it from followed and nofollow totals. This is a store-derived citation, not a review. | Monitor through public search, not repeated automated requests. |
 | AppBrain | HTTP 200; indexable; self-canonical; public website link is `nofollow`; the developer claim is verified. | Count as an entity/discovery citation, not link equity. | Keep the listing accurate; do not treat the verified dashboard or paid promotion offers as additional authority. |
 | GitHub README | HTTP 200 and indexable; external Noctalia link is `nofollow`. | Entity/discovery evidence only. | Retain while the repository remains public and accurate. |
 | Reddit profile post | Public rendered page is indexed; the Noctalia link uses `rel="noopener nofollow ugc"`; no canonical or `noindex` directive was exposed in the rendered DOM. | User-generated discovery/entity citation only; do not count as followed equity. | Retain as an existing launch record; do not manufacture engagement. |
