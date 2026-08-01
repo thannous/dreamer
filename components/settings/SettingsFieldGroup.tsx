@@ -432,6 +432,34 @@ export function SettingsFieldGroup({
                 title={t('settings.section.rituals')}
                 testID="settings-section-notifications"
               >
+                {!notifications.isLoading && !notifications.unsupported && !notifications.hasPermissions ? (
+                  <View
+                    accessibilityLiveRegion="polite"
+                    accessibilityRole="alert"
+                    style={[
+                      styles.notificationWarning,
+                      {
+                        backgroundColor: noctalia.status.warning.background,
+                        borderColor: noctalia.status.warning.border,
+                      },
+                    ]}
+                  >
+                    <IconSymbol
+                      name="exclamationmark.triangle.fill"
+                      size={18}
+                      color={noctalia.status.warning.icon}
+                    />
+                    <Text
+                      style={[
+                        styles.notificationWarningText,
+                        { color: noctalia.status.warning.text },
+                      ]}
+                      testID="text.settings.notificationsPermissionWarning"
+                    >
+                      {t('notifications.warning.permissions')}
+                    </Text>
+                  </View>
+                ) : null}
                 <Pressable
                   accessibilityRole="switch"
                   accessibilityState={{ checked: reminderEnabled }}
@@ -830,6 +858,22 @@ const styles = StyleSheet.create({
   },
   ritualRow: {
     minHeight: 42,
+  },
+  notificationWarning: {
+    alignItems: 'center',
+    borderRadius: 12,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  notificationWarningText: {
+    flex: 1,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 13,
+    lineHeight: 18,
   },
   rowPressed: {
     opacity: 0.82,

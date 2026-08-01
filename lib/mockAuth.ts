@@ -1,10 +1,6 @@
 import type { Session, User } from '@supabase/supabase-js';
 
 import type { UserTier } from '@/constants/limits';
-import { resetGuestDreamRecordingCount } from '@/services/quota/GuestDreamCounter';
-import { resetMockQuotaEvents } from '@/services/quota/MockQuotaEventStore';
-import { quotaService } from '@/services/quotaService';
-import { preloadDreamsNow, resetMockStorage, setPreloadDreamsEnabled } from '@/services/mocks/storageServiceMock';
 
 export type MockProfile = 'new' | 'existing' | 'plus';
 
@@ -43,6 +39,46 @@ const PROFILE_CONFIG: Record<MockProfile, ProfileConfig> = {
 let currentUser: User | null = null;
 let accountCreatedOnDevice = false;
 const listeners = new Set<(user: User | null, session: Session | null) => void>();
+
+type MockProfileDependencies = {
+  preloadDreamsNow: typeof import('@/services/mocks/storageServiceMock').preloadDreamsNow;
+  resetMockStorage: typeof import('@/services/mocks/storageServiceMock').resetMockStorage;
+  setPreloadDreamsEnabled: typeof import('@/services/mocks/storageServiceMock').setPreloadDreamsEnabled;
+  resetGuestDreamRecordingCount: typeof import('@/services/quota/GuestDreamCounter').resetGuestDreamRecordingCount;
+  resetMockQuotaEvents: typeof import('@/services/quota/MockQuotaEventStore').resetMockQuotaEvents;
+  quotaService: typeof import('@/services/quotaService').quotaService;
+};
+
+let mockProfileDependencies: Promise<MockProfileDependencies> | null = null;
+
+function loadMockProfileDependencies(): Promise<MockProfileDependencies> {
+  if (!mockProfileDependencies) {
+    mockProfileDependencies = Promise.resolve().then(() => {
+      // Static-string requires stay visible to Metro while deferring module
+      // evaluation until a mock profile is actually used. This breaks the
+      // auth -> mockAuth -> quota -> guest/http -> auth startup cycle without
+      // relying on VM dynamic-import support in Jest.
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const storage = require('@/services/mocks/storageServiceMock') as typeof import('@/services/mocks/storageServiceMock');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const guestDreamCounter = require('@/services/quota/GuestDreamCounter') as typeof import('@/services/quota/GuestDreamCounter');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const mockQuotaEvents = require('@/services/quota/MockQuotaEventStore') as typeof import('@/services/quota/MockQuotaEventStore');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const quota = require('@/services/quotaService') as typeof import('@/services/quotaService');
+
+      return {
+        preloadDreamsNow: storage.preloadDreamsNow,
+        resetMockStorage: storage.resetMockStorage,
+        setPreloadDreamsEnabled: storage.setPreloadDreamsEnabled,
+        resetGuestDreamRecordingCount: guestDreamCounter.resetGuestDreamRecordingCount,
+        resetMockQuotaEvents: mockQuotaEvents.resetMockQuotaEvents,
+        quotaService: quota.quotaService,
+      };
+    });
+  }
+  return mockProfileDependencies;
+}
 
 function emitAuthChange(): void {
   listeners.forEach((listener) => {
@@ -84,6 +120,14 @@ type ApplyProfileOptions = {
 async function applyProfile(profile: MockProfile, emailOverride?: string, options?: ApplyProfileOptions): Promise<User> {
   const config = PROFILE_CONFIG[profile];
   const shouldResetState = !options?.preserveStorage;
+  const {
+    preloadDreamsNow,
+    quotaService,
+    resetGuestDreamRecordingCount,
+    resetMockQuotaEvents,
+    resetMockStorage,
+    setPreloadDreamsEnabled,
+  } = await loadMockProfileDependencies();
 
   if (shouldResetState) {
     // Disable the previous profile before clearing storage so an eager quota
@@ -137,6 +181,13 @@ export async function signInWithGoogleWeb(): Promise<User> {
 }
 
 export async function signOut(): Promise<void> {
+  const {
+    quotaService,
+    resetGuestDreamRecordingCount,
+    resetMockQuotaEvents,
+    resetMockStorage,
+    setPreloadDreamsEnabled,
+  } = await loadMockProfileDependencies();
   currentUser = null;
   setPreloadDreamsEnabled(false);
   resetMockStorage();

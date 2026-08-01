@@ -1,20 +1,24 @@
 /* @jest-environment jsdom */
 import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterAll, afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { OnboardingContextValue } from '@/context/OnboardingContext';
 import type { OnboardingEvent, OnboardingState } from '@/lib/onboardingState';
 import { TID } from '@/lib/testIDs';
 
 const mockContinueForSession = jest.fn();
+const mockAnnounceForAccessibility = jest.fn();
 const mockGetProductAnalyticsPreference = jest.fn();
 const mockReload = jest.fn();
 const mockReplace = jest.fn();
+const mockSetAccessibilityFocus = jest.fn();
 const mockSetProductAnalyticsEnabled = jest.fn();
 const mockTrackProductEvent = jest.fn().mockResolvedValue(undefined);
 const mockTransition = jest.fn();
 const mockUseOnboarding = jest.fn();
+const previousExpoOS = process.env.EXPO_OS;
+process.env.EXPO_OS = 'android';
 
 const buildState = (overrides: Partial<OnboardingState> = {}): OnboardingState => ({
   schemaVersion: 1,
@@ -79,6 +83,7 @@ jest.doMock('expo-router', () => ({
 jest.doMock('expo-asset', () => ({
   Asset: {
     fromModule: () => ({ uri: 'asset://onboarding-background' }),
+    loadAsync: jest.fn(async () => []),
   },
 }));
 
@@ -94,10 +99,13 @@ jest.doMock('react-native', () => {
       accessibilityHint,
       accessibilityState,
       accessibilityLiveRegion,
+      accessibilityElementsHidden,
       accessible,
       importantForAccessibility,
+      pointerEvents,
       contentContainerStyle,
       contentInsetAdjustmentBehavior,
+      fadeDuration,
       resizeMode,
       source,
       style,
@@ -107,6 +115,7 @@ jest.doMock('react-native', () => {
       ...rest,
       ...(testID ? { 'data-testid': testID } : {}),
       ...(onPress ? { onClick: onPress } : {}),
+      ...(onLayout ? { onMouseDown: onLayout } : {}),
       ...(accessibilityRole ? { role: accessibilityRole } : {}),
       ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
       ...(accessibilityHint ? { 'aria-description': accessibilityHint } : {}),
@@ -114,6 +123,9 @@ jest.doMock('react-native', () => {
         ? { 'aria-checked': accessibilityState.checked }
         : {}),
       ...(accessibilityLiveRegion ? { 'aria-live': accessibilityLiveRegion } : {}),
+      ...(accessibilityElementsHidden !== undefined
+        ? { 'aria-hidden': accessibilityElementsHidden }
+        : {}),
     };
   };
   const createElement = (tag: string) => {
@@ -136,14 +148,20 @@ jest.doMock('react-native', () => {
   return {
     __esModule: true,
     AccessibilityInfo: {
-      announceForAccessibility: jest.fn(),
-      setAccessibilityFocus: jest.fn(),
+      announceForAccessibility: mockAnnounceForAccessibility,
+      setAccessibilityFocus: mockSetAccessibilityFocus,
     },
     ActivityIndicator: () => <span data-testid="activity-indicator" />,
     Image: createElement('img'),
+    InteractionManager: {
+      runAfterInteractions: (callback: () => void) => {
+        callback();
+        return { cancel: jest.fn() };
+      },
+    },
     Platform: {
-      OS: 'web',
-      select: (values: Record<string, any>) => values?.web ?? values?.default,
+      OS: 'android',
+      select: (values: Record<string, any>) => values?.android ?? values?.default,
     },
     Pressable: createElement('button'),
     ScrollView: createElement('div'),
@@ -243,6 +261,14 @@ jest.doMock('@/lib/productAnalytics', () => ({
 const { default: OnboardingScreen } = require('@/app/onboarding');
 
 describe('Onboarding screen', () => {
+  afterAll(() => {
+    if (previousExpoOS === undefined) {
+      delete process.env.EXPO_OS;
+    } else {
+      process.env.EXPO_OS = previousExpoOS;
+    }
+  });
+
   beforeEach(() => {
     mockGetProductAnalyticsPreference.mockResolvedValue('disabled');
     mockReload.mockResolvedValue(buildState());
@@ -319,6 +345,100 @@ describe('Onboarding screen', () => {
         params: { source: 'onboarding' },
       });
     });
+  });
+
+  it('ignores a rapid duplicate completion press', async () => {
+    let resolveCompletion!: (state: OnboardingState) => void;
+    mockTransition.mockImplementationOnce(
+      () => new Promise<OnboardingState>((resolve) => {
+        resolveCompletion = resolve;
+      })
+    );
+    renderOnboarding({ step: 'path', selectedPath: 'dictionary' });
+    const primary = screen.getByTestId(TID.Button.OnboardingPrimary);
+
+    fireEvent.click(primary);
+    fireEvent.click(primary);
+
+    expect(mockTransition).toHaveBeenCalledTimes(1);
+    expect(mockReplace).not.toHaveBeenCalled();
+    resolveCompletion(buildCompletedState('dictionary'));
+    await waitFor(() => expect(mockReplace).toHaveBeenCalled());
+  });
+
+  it('ignores a rapid duplicate step transition', async () => {
+    let resolveTransition!: (state: OnboardingState) => void;
+    mockTransition.mockImplementationOnce(
+      () => new Promise<OnboardingState>((resolve) => {
+        resolveTransition = resolve;
+      })
+    );
+    renderOnboarding();
+    const next = screen.getByTestId(TID.Button.OnboardingIntroNext);
+
+    fireEvent.click(next);
+    fireEvent.click(next);
+
+    expect(mockTransition).toHaveBeenCalledTimes(1);
+    resolveTransition(buildState({ step: 'path', selectedPath: 'analyze' }));
+    await waitFor(() => expect(mockTransition).toHaveBeenCalledTimes(1));
+  });
+
+  it('moves accessibility focus only after the title layout is stable', () => {
+    renderOnboarding();
+    const title = screen.getByText(/onboarding\.intro\.title_lead/);
+
+    expect(mockSetAccessibilityFocus).not.toHaveBeenCalled();
+    fireEvent.mouseDown(title);
+    fireEvent.mouseDown(title);
+
+    expect(mockSetAccessibilityFocus).toHaveBeenCalledTimes(1);
+    expect(mockSetAccessibilityFocus).toHaveBeenCalledWith(1);
+    expect(mockAnnounceForAccessibility).toHaveBeenCalledWith(
+      'onboarding.progress'
+    );
+  });
+
+  it('focuses the preloaded path on the next Android frame', async () => {
+    const view = renderOnboarding();
+    await screen.findByTestId(TID.Component.OnboardingPath);
+
+    fireEvent.mouseDown(screen.getByText(/onboarding\.intro\.title_lead/));
+
+    mockUseOnboarding.mockReturnValue({
+      state: buildState({ step: 'path', selectedPath: 'analyze' }),
+      loading: false,
+      error: null,
+      scope: 'guest',
+      transition: mockTransition,
+      continueForSession: mockContinueForSession,
+      reload: mockReload,
+    });
+    view.rerender(<OnboardingScreen />);
+
+    await waitFor(() => expect(mockSetAccessibilityFocus).toHaveBeenCalledTimes(2));
+    expect(mockAnnounceForAccessibility).toHaveBeenCalledTimes(2);
+  });
+
+  it('preloads the path content outside the intro accessibility tree', async () => {
+    renderOnboarding();
+
+    const intro = screen.getByTestId(TID.Component.OnboardingIntro);
+    const path = await screen.findByTestId(TID.Component.OnboardingPath);
+
+    expect(intro.getAttribute('aria-hidden')).toBe('false');
+    expect(path.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('keeps the intro outside the accessibility tree on the path step', () => {
+    renderOnboarding({ step: 'path' });
+
+    expect(
+      screen.getByTestId(TID.Component.OnboardingIntro).getAttribute('aria-hidden')
+    ).toBe('true');
+    expect(
+      screen.getByTestId(TID.Component.OnboardingPath).getAttribute('aria-hidden')
+    ).toBe('false');
   });
 
   it('lets the user continue this session when persisting a skip fails', async () => {

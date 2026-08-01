@@ -7,6 +7,8 @@ const mockUseAuth = jest.fn();
 let capturedTabBarStyle: unknown = null;
 let mockPlatformOS: 'android' | 'ios' | 'web' = 'ios';
 let mockWindowWidth = 390;
+let mockRouteCommitted = true;
+let mockSegments: string[] = ['(tabs)', 'index'];
 
 afterEach(cleanup);
 
@@ -28,6 +30,7 @@ jest.doMock('expo-router', () => {
   return {
     Tabs,
     router: { push: jest.fn() },
+    useSegments: () => mockSegments,
   };
 });
 
@@ -91,6 +94,10 @@ jest.doMock('@/context/AuthContext', () => ({
   useAuth: () => mockUseAuth(),
 }));
 
+jest.doMock('@/context/StartupRouteContext', () => ({
+  useStartupRoute: () => ({ routeCommitted: mockRouteCommitted }),
+}));
+
 jest.doMock('@/context/ThemeContext', () => ({
   useTheme: () => ({ colors: {}, mode: 'light' }),
 }));
@@ -106,6 +113,26 @@ describe('TabLayout returning guest navigation', () => {
     capturedTabBarStyle = null;
     mockPlatformOS = 'ios';
     mockWindowWidth = 390;
+    mockRouteCommitted = true;
+    mockSegments = ['(tabs)', 'index'];
+  });
+
+  it('does not mount the animated tab navigator during the startup redirect', () => {
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+    mockRouteCommitted = false;
+
+    render(<TabLayout />);
+
+    expect(capturedTabBarStyle).toBeNull();
+  });
+
+  it('keeps the transient tab route static after another root route is committed', () => {
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+    mockSegments = ['onboarding'];
+
+    render(<TabLayout />);
+
+    expect(capturedTabBarStyle).toBeNull();
   });
 
   it('hides the entire bottom navigation while authentication is required', () => {

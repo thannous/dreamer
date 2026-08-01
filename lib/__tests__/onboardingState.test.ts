@@ -6,6 +6,7 @@ const mockStorageHarness = ((factory: () => {
   legacyCompleted: { value: boolean };
   failClaimWrite: { value: boolean };
   failSnapshotScopes: Set<string>;
+  snapshotWriteGates: Promise<void>[];
   operations: string[];
 }) => factory())(() => ({
   snapshots: new Map<string, string>(),
@@ -13,6 +14,7 @@ const mockStorageHarness = ((factory: () => {
   legacyCompleted: { value: false },
   failClaimWrite: { value: false },
   failSnapshotScopes: new Set<string>(),
+  snapshotWriteGates: [],
   operations: [],
 }));
 
@@ -26,6 +28,8 @@ jest.mock('@/services/storageService', () => ({
     if (mockStorageHarness.failSnapshotScopes.has(scope)) {
       throw new Error('snapshot write failed');
     }
+    const gate = mockStorageHarness.snapshotWriteGates.shift();
+    if (gate) await gate;
     mockStorageHarness.snapshots.set(scope, value);
   }),
   getOnboardingGuestClaimedBy: jest.fn(async () => mockStorageHarness.claimedBy.value),
@@ -38,18 +42,23 @@ jest.mock('@/services/storageService', () => ({
   }),
 }));
 
+// This import follows the storage mock so persistence ordering stays observable.
+// eslint-disable-next-line import/first
 import {
   ONBOARDING_INTENT_TTL_MS,
+  canReuseObservedStartupDestination,
   claimGuestOnboardingState,
   getDefaultOnboardingState,
   getOnboardingState,
   isStartupDestinationObserved,
   parseRecordingRouteParams,
+  persistOnboardingState,
   reduceOnboardingState,
   resolveRecordingEntryIntent,
   resolvePendingAnalysisRestart,
   resolveStartupDestination,
   resolveStartupDecision,
+  resolveExplicitStartupDestination,
 } from '@/lib/onboardingState';
 
 describe('onboardingState', () => {
@@ -59,6 +68,7 @@ describe('onboardingState', () => {
     mockStorageHarness.legacyCompleted.value = false;
     mockStorageHarness.failClaimWrite.value = false;
     mockStorageHarness.failSnapshotScopes.clear();
+    mockStorageHarness.snapshotWriteGates.length = 0;
     mockStorageHarness.operations.length = 0;
     jest.clearAllMocks();
   });
@@ -84,6 +94,36 @@ describe('onboardingState', () => {
         createdAt: 400,
         expiresAt: 400 + ONBOARDING_INTENT_TTL_MS,
       },
+    });
+  });
+
+  it('serializes optimistic snapshots and leaves the newest state durable', async () => {
+    let releaseFirst!: () => void;
+    mockStorageHarness.snapshotWriteGates.push(
+      new Promise<void>((resolve) => {
+        releaseFirst = resolve;
+      })
+    );
+    const started = reduceOnboardingState(
+      getDefaultOnboardingState(100),
+      { type: 'START' },
+      200
+    );
+    const path = reduceOnboardingState(started, { type: 'GO_TO_STEP', step: 'path' }, 300);
+
+    const first = persistOnboardingState('guest', started);
+    const second = persistOnboardingState('guest', path);
+    await Promise.resolve();
+
+    expect(mockStorageHarness.operations).toEqual(['snapshot:guest']);
+    releaseFirst();
+    await Promise.all([first, second]);
+
+    expect(mockStorageHarness.operations).toEqual(['snapshot:guest', 'snapshot:guest']);
+    expect(JSON.parse(mockStorageHarness.snapshots.get('guest') ?? '{}')).toMatchObject({
+      status: 'in_progress',
+      step: 'path',
+      selectedPath: 'analyze',
     });
   });
 
@@ -513,6 +553,79 @@ describe('onboardingState', () => {
     expect(isStartupDestinationObserved(destination, '/onboarding')).toBe(false);
     expect(isStartupDestinationObserved(destination, '/recording')).toBe(true);
     expect(isStartupDestinationObserved('/(tabs)/settings', '/settings')).toBe(true);
+  });
+
+  it('reuses only an already observed path-only startup destination', () => {
+    expect(canReuseObservedStartupDestination('/onboarding', '/onboarding')).toBe(true);
+    expect(canReuseObservedStartupDestination('/(tabs)/settings', '/settings')).toBe(true);
+    expect(canReuseObservedStartupDestination('/recording', '/onboarding')).toBe(false);
+    expect(canReuseObservedStartupDestination('/recording?source=notification', '/recording')).toBe(
+      false
+    );
+    expect(
+      canReuseObservedStartupDestination(
+        { pathname: '/recording', params: { entryId: 'entry-1' } },
+        '/recording'
+      )
+    ).toBe(false);
+  });
+
+  it('preserves only trusted, resolved native deep-link destinations', () => {
+    expect(
+      resolveExplicitStartupDestination(
+        'https://dream.noctalia.app/settings',
+        '/recording'
+      )
+    ).toBe('/settings');
+    expect(
+      resolveExplicitStartupDestination('noctalia://journal', '/journal')
+    ).toBe('/journal');
+    expect(
+      resolveExplicitStartupDestination(
+        'https://dream.noctalia.app.evil.example/settings',
+        '/settings'
+      )
+    ).toBeUndefined();
+    expect(
+      resolveExplicitStartupDestination('https://dream.noctalia.app/unknown', '/+not-found')
+    ).toBeUndefined();
+    expect(
+      resolveExplicitStartupDestination(
+        'noctalia://dream-chat/123?source=notification',
+        '/recording'
+      )
+    ).toBe('/dream-chat/123?source=notification');
+    expect(resolveExplicitStartupDestination(null, '/settings')).toBeUndefined();
+  });
+
+  it('keeps startup guards above an explicit deep-link default', () => {
+    const incomplete = getDefaultOnboardingState(1);
+    expect(
+      resolveStartupDecision({
+        returningGuestBlocked: false,
+        hasUser: false,
+        onboardingState: incomplete,
+        defaultDestination: '/settings',
+      }).reason
+    ).toBe('onboarding');
+
+    const completed = {
+      ...reduceOnboardingState(
+        { ...incomplete, selectedPath: 'analyze' },
+        { type: 'COMPLETE' },
+        Date.now()
+      ),
+      pendingRecordingIntent: null,
+    };
+    expect(
+      resolveStartupDecision({
+        returningGuestBlocked: false,
+        hasUser: false,
+        onboardingState: completed,
+        pendingNotificationUrl: '/recording',
+        defaultDestination: '/settings',
+      }).reason
+    ).toBe('notification');
   });
 
   it('opens an already completed pending analysis result after restart', () => {

@@ -13,13 +13,14 @@ import {
   claimGuestOnboardingState,
   getDefaultOnboardingState,
   getOnboardingState,
+  persistOnboardingState,
   reduceOnboardingState,
-  transitionOnboarding,
   type OnboardingEvent,
   type OnboardingPath,
   type OnboardingScope,
   type OnboardingState,
 } from '@/lib/onboardingState';
+import { markPerformance } from '@/lib/performanceTrace';
 
 export type OnboardingContextValue = {
   state: OnboardingState;
@@ -36,6 +37,30 @@ const OnboardingContext = createContext<OnboardingContextValue | null>(null);
 const toError = (value: unknown): Error =>
   value instanceof Error ? value : new Error('Unable to load onboarding state');
 
+const isRedundantEvent = (state: OnboardingState, event: OnboardingEvent): boolean => {
+  switch (event.type) {
+    case 'START':
+      return state.status === 'in_progress' && state.step !== null;
+    case 'GO_TO_STEP':
+      return state.status === 'in_progress' && state.step === event.step &&
+        (event.step !== 'path' || state.selectedPath !== null);
+    case 'SELECT_PATH':
+      return state.status === 'in_progress' && state.step === 'path' &&
+        state.selectedPath === event.path;
+    case 'COMPLETE':
+      return state.status === 'completed' &&
+        state.selectedPath === (event.path ?? state.selectedPath ?? 'analyze');
+    case 'SKIP':
+      return state.status === 'skipped';
+    case 'SET_PENDING_PHASE':
+      return state.pendingRecordingIntent?.phase === event.phase &&
+        (event.savedDreamId === undefined ||
+          state.pendingRecordingIntent.savedDreamId === event.savedDreamId);
+    case 'CLEAR_PENDING_INTENT':
+      return state.pendingRecordingIntent === null;
+  }
+};
+
 export function OnboardingProvider({ children }: React.PropsWithChildren) {
   const { user, loading: authLoading } = useAuth();
   const userId = user?.id;
@@ -49,7 +74,15 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
   const [error, setError] = useState<Error | null>(null);
   const activeLoadRef = useRef(0);
   const stateRef = useRef(state);
+  const persistedStateRef = useRef(state);
+  const transitionVersionRef = useRef(0);
+  const scopeRef = useRef(scope);
   const sessionOnlyRef = useRef(false);
+
+  useEffect(() => {
+    scopeRef.current = scope;
+    transitionVersionRef.current += 1;
+  }, [scope]);
 
   const loadScope = useCallback(async (): Promise<OnboardingState> => {
     const loadId = activeLoadRef.current + 1;
@@ -64,6 +97,7 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
       const next = await getOnboardingState(scope);
       if (activeLoadRef.current === loadId) {
         stateRef.current = next;
+        persistedStateRef.current = next;
         sessionOnlyRef.current = false;
         setState(next);
         setLoadedScope(scope);
@@ -75,6 +109,7 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
       if (activeLoadRef.current === loadId) {
         const safeState = getDefaultOnboardingState();
         stateRef.current = safeState;
+        persistedStateRef.current = safeState;
         sessionOnlyRef.current = false;
         setState(safeState);
         setLoadedScope(scope);
@@ -110,15 +145,39 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
         setState(next);
         return next;
       }
+
+      const previous = stateRef.current;
+      if (isRedundantEvent(previous, event)) return previous;
+
+      const transitionVersion = transitionVersionRef.current + 1;
+      transitionVersionRef.current = transitionVersion;
+      const next = reduceOnboardingState(previous, event);
+      stateRef.current = next;
+      setState(next);
+      setLoadedScope(scope);
+      markPerformance('onboarding.optimistic_state', { event: event.type });
+
       try {
-        const next = await transitionOnboarding(scope, event);
-        stateRef.current = next;
-        setState(next);
-        setLoadedScope(scope);
+        markPerformance('onboarding.persistence_started', { event: event.type });
+        await persistOnboardingState(scope, next);
+        markPerformance('onboarding.persistence_finished', { event: event.type });
+        if (scopeRef.current === scope) {
+          persistedStateRef.current = next;
+          if (transitionVersionRef.current === transitionVersion) setError(null);
+        }
         return next;
       } catch (cause) {
+        markPerformance('onboarding.persistence_failed', { event: event.type });
         const nextError = toError(cause);
-        setError(nextError);
+        if (
+          scopeRef.current === scope &&
+          transitionVersionRef.current === transitionVersion
+        ) {
+          const rollback = persistedStateRef.current;
+          stateRef.current = rollback;
+          setState(rollback);
+          setError(nextError);
+        }
         throw nextError;
       }
     },
@@ -138,7 +197,7 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
   }, [loadedScope, scope]);
 
   const scopeReady = loadedScope === scope;
-  const unloadedScopeState = useMemo(() => getDefaultOnboardingState(), [scope]);
+  const unloadedScopeState = useMemo(() => getDefaultOnboardingState(), []);
 
   const value = useMemo<OnboardingContextValue>(
     () => ({

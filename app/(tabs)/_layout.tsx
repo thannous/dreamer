@@ -1,4 +1,4 @@
-import { Tabs, router } from 'expo-router';
+import { Tabs, router, useSegments } from 'expo-router';
 import React, { useMemo } from 'react';
 import { Platform, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,6 +14,7 @@ import {
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
+import { useStartupRoute } from '@/context/StartupRouteContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -105,6 +106,21 @@ export default function TabLayout() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
+  const segments = useSegments();
+  const { routeCommitted } = useStartupRoute();
+
+  // Expo Router anchors the root stack on `(tabs)`. During a cold-start guard,
+  // keep that transient route free of Moti/Reanimated work; otherwise its home
+  // card animations can target Fabric views after the redirect detaches them.
+  const isTabsDestination = segments[0] === '(tabs)';
+  if (!routeCommitted || !isTabsDestination) {
+    return (
+      <View
+        importantForAccessibility="no-hide-descendants"
+        style={[styles.startupPlaceholder, { backgroundColor: noctalia.screen.background }]}
+      />
+    );
+  }
 
   const navigationLayout = getBottomNavigationLayout(width, height);
   const floatingBottomInset = Math.max(insets.bottom, navigationLayout.minimumBottomInset);
@@ -273,6 +289,9 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
+  startupPlaceholder: {
+    flex: 1,
+  },
   desktopContainer: {
     flex: 1,
     flexDirection: 'row',

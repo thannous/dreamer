@@ -25,10 +25,12 @@ import * as Notifications from 'expo-notifications';
 import { Stack, router, useNavigationContainerRef, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { LogBox, NativeModules, Platform } from 'react-native';
+import { InteractionManager, Linking, LogBox, NativeModules, Platform } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 
-import AnimatedSplashScreen from '@/components/AnimatedSplashScreen';
+import AnimatedSplashScreen, {
+  SPLASH_MINIMUM_VISIBLE_MS,
+} from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
 import { WhatsNewModalHost } from '@/components/releases/WhatsNewModal';
@@ -38,6 +40,7 @@ import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { DreamsProvider } from '@/context/DreamsContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { OnboardingProvider, useOnboarding } from '@/context/OnboardingContext';
+import { StartupRouteProvider } from '@/context/StartupRouteContext';
 import { SubscriptionProvider } from '@/context/SubscriptionContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useAppState } from '@/hooks/useAppState';
@@ -45,21 +48,21 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useSplashFailsafe } from '@/hooks/useSplashFailsafe';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 // useSubscriptionMonitor est maintenant intégré dans useSubscription
-import { initializeGoogleSignIn } from '@/lib/auth';
-import { configureAnalyticsProvider, trackProductEvent } from '@/lib/analytics';
-import { initGuestSession } from '@/lib/guestSession';
+import { trackProductEvent } from '@/lib/analytics';
 import { loadTranslations } from '@/lib/i18n';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
+import { createNotificationResponseTracker } from '@/lib/notificationResponse';
 import {
+  canReuseObservedStartupDestination,
   isStartupDestinationObserved,
+  resolveExplicitStartupDestination,
   resolveStartupDecision,
   type StartupDestinationDecision,
 } from '@/lib/onboardingState';
+import { markPerformance } from '@/lib/performanceTrace';
 import { setProductAnalyticsLocale } from '@/lib/productAnalytics';
 import type { LanguagePreference } from '@/lib/types';
 import { configureNotificationHandler } from '@/services/notificationService';
-import { migrateExistingGuestQuota } from '@/services/quota/GuestAnalysisCounter';
-import { migrateExistingGuestDreamRecording } from '@/services/quota/GuestDreamCounter';
 import {
   clearPendingRecordingNotification,
   getLanguagePreference,
@@ -179,7 +182,13 @@ function useNavigationIsReady(): boolean {
  * - Redirects to `/recording` on initial launch and on foreground
  * - Handles notification deep links (native only)
  */
-function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void }) {
+function RootLayoutNav({
+  nonCriticalStartupEnabled,
+  onStartupCommitted,
+}: {
+  nonCriticalStartupEnabled: boolean;
+  onStartupCommitted: () => void;
+}) {
   const { mode } = useTheme();
   const { user, returningGuestBlocked, loading: authLoading } = useAuth();
   const {
@@ -193,22 +202,54 @@ function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void 
   const hasTrackedColdStart = useRef(false);
   const previousOnboardingScope = useRef(onboardingScope);
   const notificationMutationVersion = useRef(0);
+  const notificationNavigationClaimed = useRef(false);
+  const notificationResponseTracker = useMemo(
+    () => createNotificationResponseTracker(),
+    []
+  );
   const [pendingNotificationUrl, setPendingNotificationUrl] = useState<'/recording' | null>(null);
   const [notificationQueueLoaded, setNotificationQueueLoaded] = useState(false);
+  const [initialLaunchUrl, setInitialLaunchUrl] = useState<string | null | undefined>(
+    Platform.OS === 'web' ? null : undefined
+  );
   const [startupDestination, setStartupDestination] = useState<Href | null>(null);
   const [startupDestinationEngaged, setStartupDestinationEngaged] = useState(false);
   const [notificationWinningDestination, setNotificationWinningDestination] =
     useState<Href | null>(null);
   const [notificationWinningEngaged, setNotificationWinningEngaged] = useState(false);
   const isNavigationReady = useNavigationIsReady();
-  const startupReady = !authLoading && !onboardingLoading && notificationQueueLoaded;
+  const startupReady =
+    !authLoading &&
+    !onboardingLoading &&
+    notificationQueueLoaded &&
+    initialLaunchUrl !== undefined;
 
-  useSubscriptionInitialize();
+  useSubscriptionInitialize({ enabled: nonCriticalStartupEnabled });
   // Note: useSubscriptionMonitor est maintenant intégré dans useSubscription
 
   useEffect(() => {
     pathnameRef.current = pathname;
   }, [pathname]);
+
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+
+    let active = true;
+    void Linking.getInitialURL()
+      .then((url) => {
+        if (active) setInitialLaunchUrl(url);
+      })
+      .catch((error) => {
+        if (__DEV__) {
+          console.warn('[RootLayoutNav] Unable to read initial launch URL', error);
+        }
+        if (active) setInitialLaunchUrl(null);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (previousOnboardingScope.current === onboardingScope) return;
@@ -220,6 +261,19 @@ function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void 
 
   const enqueueNotification = useCallback(async (notification: Notifications.Notification) => {
     if (notification.request.content.data?.url !== '/recording') return;
+
+    const responseIdentifier = notification.request.identifier;
+    if (!notificationResponseTracker.claim(responseIdentifier)) {
+      markPerformance('startup.notification_response_coalesced');
+      try {
+        Notifications.clearLastNotificationResponse();
+      } catch (error) {
+        if (__DEV__) {
+          console.warn('[RootLayoutNav] Unable to clear duplicate notification response', error);
+        }
+      }
+      return;
+    }
 
     const mutationVersion = notificationMutationVersion.current + 1;
     notificationMutationVersion.current = mutationVersion;
@@ -236,11 +290,12 @@ function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void 
         }
       }
     } catch (error) {
+      notificationResponseTracker.release(responseIdentifier);
       if (__DEV__) {
         console.warn('[RootLayoutNav] Unable to persist notification intent', error);
       }
     }
-  }, []);
+  }, [notificationResponseTracker]);
 
   useEffect(() => {
     let active = true;
@@ -279,6 +334,7 @@ function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void 
     try {
       await clearPendingRecordingNotification();
       if (notificationMutationVersion.current === mutationVersion) {
+        notificationNavigationClaimed.current = false;
         setPendingNotificationUrl(null);
         setNotificationWinningDestination(null);
         setNotificationWinningEngaged(false);
@@ -293,6 +349,13 @@ function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void 
   const engageDecision = useCallback(
     (decision: StartupDestinationDecision, options?: { startup?: boolean }) => {
       const isStartup = options?.startup === true;
+      if (decision.reason === 'notification') {
+        if (notificationNavigationClaimed.current) {
+          markPerformance('startup.notification_navigation_coalesced');
+          return;
+        }
+        notificationNavigationClaimed.current = true;
+      }
       if (isStartup) {
         setStartupDestination(decision.destination);
         setStartupDestinationEngaged(false);
@@ -303,7 +366,16 @@ function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void 
       }
 
       runAfterNavigationMount(() => {
-        router.replace(decision.destination);
+        const reuseObservedRoute = canReuseObservedStartupDestination(
+          decision.destination,
+          pathnameRef.current
+        );
+        if (reuseObservedRoute) {
+          markPerformance('startup.navigation_reused', { reason: decision.reason });
+        } else {
+          markPerformance('startup.navigation_replace', { reason: decision.reason });
+          router.replace(decision.destination);
+        }
         if (isStartup) setStartupDestinationEngaged(true);
         if (decision.reason === 'notification') setNotificationWinningEngaged(true);
       });
@@ -324,7 +396,9 @@ function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void 
     onStartupCommitted();
     if (!hasTrackedColdStart.current) {
       hasTrackedColdStart.current = true;
-      void trackProductEvent('app_session_started', { source: 'cold_start' });
+      InteractionManager.runAfterInteractions(() => {
+        void trackProductEvent('app_session_started', { source: 'cold_start' });
+      });
     }
   }, [onStartupCommitted, pathname, startupDestination, startupDestinationEngaged]);
 
@@ -498,11 +572,16 @@ function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void 
       hasUser: Boolean(user),
       onboardingState,
       pendingNotificationUrl,
+      defaultDestination: resolveExplicitStartupDestination(
+        initialLaunchUrl,
+        pathnameRef.current
+      ),
     });
     engageDecision(decision, { startup: true });
   }, [
     engageDecision,
     isNavigationReady,
+    initialLaunchUrl,
     onboardingState,
     pendingNotificationUrl,
     returningGuestBlocked,
@@ -557,7 +636,15 @@ function RootLayoutNav({ onStartupCommitted }: { onStartupCommitted: () => void 
     <NavigationThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>
       <KeyboardProviderComponent>
         <DreamsProvider>
-          <Stack>
+          {/* Startup redirects happen behind the custom splash. Disabling that
+              one native transition avoids scheduling transition work for a
+              surface that is immediately detached; later navigation keeps the
+              normal platform animation. */}
+          <Stack
+            screenOptions={{
+              animation: nonCriticalStartupEnabled ? 'default' : 'none',
+            }}
+          >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="onboarding" options={{ headerShown: false }} />
             <Stack.Screen name="recording" options={{ headerShown: false }} />
@@ -609,8 +696,7 @@ export default function RootLayout() {
     Fraunces_700Bold,
   });
   const [showCustomSplash, setShowCustomSplash] = useState(true);
-  const [shouldFadeSplash, setShouldFadeSplash] = useState(false);
-  const [minimumSplashElapsed, setMinimumSplashElapsed] = useState(false);
+  const [splashDelayElapsed, setSplashDelayElapsed] = useState(false);
   const [languageBootstrapped, setLanguageBootstrapped] = useState(false);
   const [startupDestinationCommitted, setStartupDestinationCommitted] = useState(false);
   const [initialLanguagePreference, setInitialLanguagePreference] = useState<LanguagePreference>('auto');
@@ -618,6 +704,10 @@ export default function RootLayout() {
   const shouldShowCustomSplash = showCustomSplash;
   const fontsSettled = fontsLoaded || Boolean(fontError) || splashTimedOut;
   const prefersReducedMotion = usePrefersReducedMotion();
+  const minimumSplashElapsed =
+    prefersReducedMotion || splashTimedOut || splashDelayElapsed;
+  const shouldFadeSplash =
+    minimumSplashElapsed && languageBootstrapped && startupDestinationCommitted;
   const locales = useLocales();
   const primaryLocale = locales[0];
   const hasBootstrappedLanguage = useRef(false);
@@ -628,7 +718,7 @@ export default function RootLayout() {
   );
 
   useEffect(() => {
-    void initGuestSession();
+    markPerformance('startup.root_mounted');
   }, []);
 
   useEffect(() => {
@@ -662,6 +752,7 @@ export default function RootLayout() {
         }
       } finally {
         if (active) {
+          markPerformance('startup.language_ready');
           setLanguageBootstrapped(true);
         }
       }
@@ -680,6 +771,7 @@ export default function RootLayout() {
     const hideAsync = async () => {
       try {
         await SplashScreen.hideAsync();
+        markPerformance('startup.native_splash_hidden');
       } catch (error) {
         console.warn('Unable to hide native splash screen', error);
       }
@@ -690,55 +782,60 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (!fontsSettled) return;
-    if (prefersReducedMotion || splashTimedOut) {
-      setMinimumSplashElapsed(true);
-      return;
-    }
+    if (prefersReducedMotion || splashTimedOut) return;
 
-    const timer = setTimeout(() => setMinimumSplashElapsed(true), 2800);
+    const timer = setTimeout(
+      () => setSplashDelayElapsed(true),
+      SPLASH_MINIMUM_VISIBLE_MS
+    );
     return () => clearTimeout(timer);
   }, [fontsSettled, prefersReducedMotion, splashTimedOut]);
 
   useEffect(() => {
-    if (!minimumSplashElapsed || shouldFadeSplash) {
-      return;
-    }
-
-    if (!languageBootstrapped || !startupDestinationCommitted) {
-      return;
-    }
-
-    setShouldFadeSplash(true);
-  }, [
-    languageBootstrapped,
-    minimumSplashElapsed,
-    shouldFadeSplash,
-    startupDestinationCommitted,
-  ]);
+    if (!shouldFadeSplash) return;
+    markPerformance('startup.custom_splash_outro_started');
+  }, [shouldFadeSplash]);
 
   useEffect(() => {
-    // Migrate existing guest quota counter (runs once, idempotent)
-    migrateExistingGuestQuota().catch((err) => {
-      if (__DEV__) console.warn('[RootLayout] Guest quota migration failed:', err);
-    });
-    migrateExistingGuestDreamRecording().catch((err) => {
-      if (__DEV__) console.warn('[RootLayout] Guest dream counter migration failed:', err);
-    });
-  }, []);
-
-  useEffect(() => {
-    // Configure notification handler on app startup
     configureNotificationHandler();
-    configureAnalyticsProvider();
-    // Initialize Google Sign-In configuration early (native platforms)
-    initializeGoogleSignIn();
   }, []);
+
+  useEffect(() => {
+    if (!startupDestinationCommitted) return;
+
+    const task = InteractionManager.runAfterInteractions(() => {
+      void import('@/lib/guestSession')
+        .then(({ initGuestSession }) => initGuestSession())
+        .catch((error) => {
+          if (__DEV__) console.warn('[RootLayout] Guest session init failed:', error);
+        });
+
+      void import('@/lib/auth').then(({ initializeGoogleSignIn }) => {
+        initializeGoogleSignIn();
+      });
+
+      void Promise.all([
+        import('@/services/quota/GuestAnalysisCounter').then(
+          ({ migrateExistingGuestQuota }) => migrateExistingGuestQuota()
+        ),
+        import('@/services/quota/GuestDreamCounter').then(
+          ({ migrateExistingGuestDreamRecording }) => migrateExistingGuestDreamRecording()
+        ),
+      ]).catch((error) => {
+        if (__DEV__) console.warn('[RootLayout] Guest counter migration failed:', error);
+      });
+    });
+
+    return () => task.cancel();
+  }, [startupDestinationCommitted]);
 
   const handleSplashFinished = useCallback(() => {
+    markPerformance('startup.interactive');
     setShowCustomSplash(false);
   }, []);
 
   const handleStartupCommitted = useCallback(() => {
+    markPerformance('startup.route_committed');
     setStartupDestinationCommitted(true);
   }, []);
 
@@ -755,7 +852,12 @@ export default function RootLayout() {
               <AuthProvider>
                 <OnboardingProvider>
                   <SubscriptionProvider>
-                    <RootLayoutNav onStartupCommitted={handleStartupCommitted} />
+                    <StartupRouteProvider routeCommitted={startupDestinationCommitted}>
+                      <RootLayoutNav
+                        nonCriticalStartupEnabled={startupDestinationCommitted}
+                        onStartupCommitted={handleStartupCommitted}
+                      />
+                    </StartupRouteProvider>
                     <WhatsNewModalHost ready={!shouldShowCustomSplash} />
                   </SubscriptionProvider>
                 </OnboardingProvider>
@@ -767,7 +869,10 @@ export default function RootLayout() {
       {shouldShowCustomSplash && (
         <AnimatedSplashScreen
           status={shouldFadeSplash ? 'outro' : 'intro'}
-          forceStatic={splashTimedOut}
+          // Fabric can detach the Android splash surface before queued UI-thread
+          // cancellations drain. Keep the branded surface, but do not start
+          // splash worklets on Android; iOS retains the animated treatment.
+          forceStatic={Platform.OS === 'android' || splashTimedOut}
           onAnimationEnd={handleSplashFinished}
         />
       )}

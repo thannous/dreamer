@@ -1,0 +1,81 @@
+# Focused Release gate for the notification-permission status contract.
+appId: com.tanuki75.noctalia
+name: Release notification permission status
+tags:
+  - release
+  - notifications
+  - permissions
+onFlowComplete:
+  - setAirplaneMode: disabled
+  - setPermissions:
+      permissions:
+        all: allow
+---
+- setAirplaneMode: disabled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+      notifications: deny
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- tapOn:
+    id: tab.settings
+- extendedWaitUntil:
+    visible:
+      id: screen.settings
+    timeout: 20000
+- scrollUntilVisible:
+    element:
+      id: text.settings.notificationsPermissionWarning
+    direction: DOWN
+    timeout: 20000
+    visibilityPercentage: 60
+- assertVisible:
+    id: text.settings.notificationsPermissionWarning
+
+# The settings controller refreshes permission status when the app resumes.
+- setPermissions:
+    permissions:
+      notifications: allow
+- pressKey: Home
+- launchApp:
+    stopApp: false
+- extendedWaitUntil:
+    notVisible:
+      id: text.settings.notificationsPermissionWarning
+    timeout: 10000
+
+- setPermissions:
+    permissions:
+      notifications: deny
+- pressKey: Home
+- launchApp:
+    permissions:
+      all: allow
+      notifications: deny
+- extendedWaitUntil:
+    visible:
+      id: tab.settings
+    timeout: 20000
+- tapOn:
+    id: tab.settings
+- extendedWaitUntil:
+    visible:
+      id: screen.settings
+    timeout: 20000
+- scrollUntilVisible:
+    element:
+      id: text.settings.notificationsPermissionWarning
+    direction: DOWN
+    timeout: 20000
+    visibilityPercentage: 60
+- assertVisible:
+    id: text.settings.notificationsPermissionWarning

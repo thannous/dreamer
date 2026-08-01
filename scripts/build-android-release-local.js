@@ -28,11 +28,13 @@ const COMMON_RELEASE_ENV_OVERRIDES = Object.freeze({
 const RELEASE_ENV_OVERRIDES = Object.freeze({
   ...COMMON_RELEASE_ENV_OVERRIDES,
   NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'false',
+  NOCTALIA_ANDROID_PERFORMANCE_PROFILEABLE: 'false',
   EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'false',
 });
 const TESTSTORE_ENV_OVERRIDES = Object.freeze({
   ...COMMON_RELEASE_ENV_OVERRIDES,
   NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'true',
+  NOCTALIA_ANDROID_PERFORMANCE_PROFILEABLE: 'false',
   EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'true',
 });
 const SUPPORTED_ABIS = new Set([
@@ -47,7 +49,9 @@ function parseArgs(argv) {
     abi: null,
     device: null,
     install: false,
+    profileable: false,
     profile: RELEASE_BUILD_PROFILE,
+    reuseNativeProject: false,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -90,6 +94,16 @@ function parseArgs(argv) {
 
     if (arg === '--install') {
       options.install = true;
+      continue;
+    }
+
+    if (arg === '--profileable') {
+      options.profileable = true;
+      continue;
+    }
+
+    if (arg === '--reuse-native-project') {
+      options.reuseNativeProject = true;
       continue;
     }
 
@@ -210,7 +224,8 @@ function getBuildEnv(
   env = process.env,
   temporaryDirectory = os.tmpdir(),
   releaseEnv = {},
-  profileName = RELEASE_BUILD_PROFILE
+  profileName = RELEASE_BUILD_PROFILE,
+  profileable = false
 ) {
   const buildEnv = { ...env };
   if (!buildEnv.GRADLE_USER_HOME && buildEnv.CODEX_CI === '1') {
@@ -221,6 +236,7 @@ function getBuildEnv(
     ...buildEnv,
     ...releaseEnv,
     ...getProfileEnvOverrides(profileName),
+    NOCTALIA_ANDROID_PERFORMANCE_PROFILEABLE: profileable ? 'true' : 'false',
   };
 }
 
@@ -243,14 +259,16 @@ function getApkPath(rootDir = ROOT) {
 
 function getOutputApkPath(
   rootDir = ROOT,
-  profileName = RELEASE_BUILD_PROFILE
+  profileName = RELEASE_BUILD_PROFILE,
+  profileable = false
 ) {
   const normalizedProfile = normalizeBuildProfile(profileName);
+  const variant = profileable ? '-profileable' : '';
   return path.join(
     rootDir,
     'dist',
     'android',
-    `${normalizedProfile}-release.apk`
+    `${normalizedProfile}${variant}-release.apk`
   );
 }
 
@@ -340,16 +358,51 @@ function assertTestStoreInstallTarget(profileName, install, device) {
   }
 }
 
+function assertProfileableBuildProfile(profileName, profileable) {
+  if (profileable && normalizeBuildProfile(profileName) !== RELEASE_BUILD_PROFILE) {
+    throw new Error(
+      'The profileable Release mode is available only with the production-apk profile.'
+    );
+  }
+}
+
+function assertReusableNativeProject(
+  rootDir = ROOT,
+  profileable = false,
+  existsSync = fs.existsSync,
+  readFileSync = fs.readFileSync
+) {
+  const gradleWrapper = getGradleWrapper(rootDir);
+  const buildGradle = path.join(rootDir, 'android', 'app', 'build.gradle');
+  if (!existsSync(gradleWrapper) || !existsSync(buildGradle)) {
+    throw new Error(
+      'Cannot reuse the native project because the generated Android project is missing.'
+    );
+  }
+  if (
+    profileable &&
+    !readFileSync(buildGradle, 'utf8').includes(
+      'profileable isAndroidPerformanceProfileableBuild'
+    )
+  ) {
+    throw new Error(
+      'The generated Android project lacks the profileable Release configuration; regenerate it before using --reuse-native-project.'
+    );
+  }
+}
+
 function printHelp() {
   process.stdout.write(
     [
       'Build a local Android Release APK for the ABI of a connected device.',
       '',
       'Usage:',
-      '  npm run android:release:local -- [--profile <profile>] [--abi <abi> | --device <serial>] [--install]',
+      '  npm run android:release:local -- [--profile <profile>] [--abi <abi> | --device <serial>] [--install] [--profileable] [--reuse-native-project]',
       '',
       `Profiles: ${[...SUPPORTED_BUILD_PROFILES].join(', ')} (default: ${RELEASE_BUILD_PROFILE}).`,
       `The ${TESTSTORE_BUILD_PROFILE} profile explicitly loads .env.teststore.`,
+      '--profileable enables low-overhead local profiling only for production-apk.',
+      '--reuse-native-project skips Expo prebuild and requires an already-generated compatible Android project.',
       'Automatic dotenv loading remains disabled for every profile.',
       'This is a debug-signed emulator/device validation build. Distribution builds remain multi-ABI.',
       '',
@@ -364,6 +417,8 @@ function main() {
     return;
   }
 
+  assertProfileableBuildProfile(options.profile, options.profileable);
+
   const releaseEnv = loadReleaseBuildEnv(
     ROOT,
     fs.readFileSync,
@@ -373,7 +428,8 @@ function main() {
     process.env,
     os.tmpdir(),
     releaseEnv,
-    options.profile
+    options.profile,
+    options.profileable
   );
   const adbCommand = env.ADB_BIN || resolveCommand('adb', { env }) || 'adb';
   let device = options.device;
@@ -389,16 +445,24 @@ function main() {
     }
     abi = abi ?? deviceAbi;
   }
-  const npxCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-  runChecked(npxCommand, getPrebuildArgs(), {
-    cwd: ROOT,
-    env,
-    label: 'Expo Android prebuild',
-  });
+  if (options.reuseNativeProject) {
+    assertReusableNativeProject(ROOT, options.profileable);
+  } else {
+    const npxCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+    runChecked(npxCommand, getPrebuildArgs(), {
+      cwd: ROOT,
+      env,
+      label: 'Expo Android prebuild',
+    });
+  }
 
   const gradleWrapper = getGradleWrapper();
   const apkPath = getApkPath();
-  const outputApkPath = getOutputApkPath(ROOT, options.profile);
+  const outputApkPath = getOutputApkPath(
+    ROOT,
+    options.profile,
+    options.profileable
+  );
   removeStaleApk(apkPath);
   removeStaleApk(outputApkPath);
   runChecked(
@@ -427,7 +491,7 @@ function main() {
   }
 
   process.stdout.write(
-    `Release APK built for ${abi} (${options.profile}): ${path.relative(ROOT, outputApkPath)}\n`
+    `Release APK built for ${abi} (${options.profile}${options.profileable ? ', profileable' : ''}): ${path.relative(ROOT, outputApkPath)}\n`
   );
 }
 
@@ -448,6 +512,8 @@ module.exports = {
   SUPPORTED_BUILD_PROFILES,
   TESTSTORE_BUILD_PROFILE,
   TESTSTORE_ENV_OVERRIDES,
+  assertProfileableBuildProfile,
+  assertReusableNativeProject,
   assertTestStoreInstallTarget,
   copyReleaseApk,
   getApkPath,

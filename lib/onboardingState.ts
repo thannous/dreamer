@@ -458,6 +458,16 @@ function withScopeLock<T>(scope: OnboardingScope, operation: () => Promise<T>): 
   return run;
 }
 
+export function persistOnboardingState(
+  scope: OnboardingScope,
+  state: OnboardingState
+): Promise<OnboardingState> {
+  return withScopeLock(scope, async () => {
+    await saveOnboardingStateSnapshot(scope, serializeState(state));
+    return state;
+  });
+}
+
 export function transitionOnboarding(
   scope: OnboardingScope,
   event: OnboardingEvent
@@ -650,10 +660,107 @@ const hrefPathname = (href: Href): string =>
 const normalizeObservedPath = (pathname: string): string =>
   pathname.replace(/^\/\(tabs\)(?=\/|$)/, '') || '/';
 
+const STATIC_NATIVE_ROUTES = new Set([
+  'add-dream',
+  'dream-guides',
+  'journal',
+  'modal',
+  'onboarding',
+  'paywall',
+  'recording',
+  'settings',
+  'sleep-sounds',
+  'statistics',
+  'symbol-dictionary',
+]);
+const PARAMETERIZED_NATIVE_ROUTES = new Set([
+  'dream-categories',
+  'dream-chat',
+  'dream-guide',
+  'journal',
+  'ritual',
+  'symbol-detail',
+]);
+
+const parseTrustedNativeLaunchUrl = (initialUrl: string): URL | null => {
+  try {
+    const parsed = new URL(initialUrl);
+    return (
+      parsed.protocol === 'noctalia:' ||
+      (parsed.protocol === 'https:' && parsed.hostname === 'dream.noctalia.app')
+    )
+      ? parsed
+      : null;
+  } catch {
+    return null;
+  }
+};
+
+const nativeRoutePath = (parsed: URL): string => {
+  if (parsed.protocol !== 'noctalia:' || !parsed.hostname) {
+    return parsed.pathname || '/';
+  }
+  return `/${parsed.hostname}${parsed.pathname}`;
+};
+
+const isSupportedNativeRoute = (pathname: string): boolean => {
+  const segments = pathname.split('/').filter(Boolean);
+  if (segments.length === 1) return STATIC_NATIVE_ROUTES.has(segments[0]);
+  if (segments.length === 2) {
+    return (
+      (segments[0] === 'auth' && segments[1] === 'callback') ||
+      PARAMETERIZED_NATIVE_ROUTES.has(segments[0])
+    );
+  }
+  return (
+    segments.length === 3 &&
+    segments[0] === 'auth' &&
+    segments[1] === 'callback' &&
+    segments[2] === 'success'
+  );
+};
+
+/**
+ * Preserve a supported app route from a trusted native launch URL. Deriving
+ * the path from the launch URL avoids depending on the transient `(tabs)`
+ * anchor that Expo Router may expose before it finishes resolving the link.
+ * Normal launcher starts still use `/recording`, and higher-priority
+ * auth/onboarding/notification decisions remain unchanged.
+ */
+export function resolveExplicitStartupDestination(
+  initialUrl: string | null | undefined,
+  _observedPathname?: string | null
+): Href | undefined {
+  if (!initialUrl) return undefined;
+  const parsed = parseTrustedNativeLaunchUrl(initialUrl);
+  if (!parsed) return undefined;
+
+  const pathname = nativeRoutePath(parsed).replace(/\/+$/, '') || '/';
+  if (!isSupportedNativeRoute(pathname)) return undefined;
+
+  return `${pathname}${parsed.search}${parsed.hash}` as Href;
+}
+
 export function isStartupDestinationObserved(
   destination: Href | null,
   pathname: string | null | undefined
 ): boolean {
   if (!destination || !pathname) return false;
   return normalizeObservedPath(hrefPathname(destination)) === normalizeObservedPath(pathname);
+}
+
+/**
+ * A path-only destination can reuse the route that Expo Router already mounted.
+ * Parameterized destinations must still be replaced so their params are applied.
+ */
+export function canReuseObservedStartupDestination(
+  destination: Href | null,
+  pathname: string | null | undefined
+): boolean {
+  return (
+    typeof destination === 'string' &&
+    !destination.includes('?') &&
+    !destination.includes('#') &&
+    isStartupDestinationObserved(destination, pathname)
+  );
 }

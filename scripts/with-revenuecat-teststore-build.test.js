@@ -41,6 +41,12 @@ describe('withRevenueCatTestStoreBuild', () => {
       "System.getenv('NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE') ?: 'false'"
     );
     expect(output).toContain('debuggable isRevenueCatTestStoreBuild');
+    expect(output).toContain(
+      "System.getenv('NOCTALIA_ANDROID_PERFORMANCE_PROFILEABLE') ?: 'false'"
+    );
+    expect(output).toContain(
+      'profileable isAndroidPerformanceProfileableBuild'
+    );
   });
 
   it('does not neutralize the Release optimization declarations', () => {
@@ -60,5 +66,8 @@ describe('withRevenueCatTestStoreBuild', () => {
 
     expect(twice).toBe(once);
     expect(twice.match(/debuggable isRevenueCatTestStoreBuild/g)).toHaveLength(1);
+    expect(
+      twice.match(/profileable isAndroidPerformanceProfileableBuild/g)
+    ).toHaveLength(1);
   });
 });

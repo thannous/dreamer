@@ -7,6 +7,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { trackProductEvent } from '@/lib/analytics';
 import type { OnboardingPath, OnboardingStep } from '@/lib/onboardingState';
+import { markPerformance } from '@/lib/performanceTrace';
 import {
   getProductAnalyticsPreference,
   isProductAnalyticsAvailable,
@@ -20,6 +21,7 @@ import {
   AccessibilityInfo,
   ActivityIndicator,
   Image,
+  InteractionManager,
   Platform,
   Pressable,
   ScrollView,
@@ -86,15 +88,23 @@ export default function OnboardingScreen() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const [selectedPathOverride, setSelectedPathOverride] = useState<OnboardingPath | null>(null);
   const [isLeaving, setIsLeaving] = useState(false);
+  const [isStepTransitioning, setIsStepTransitioning] = useState(false);
   const [failedAction, setFailedAction] = useState<FailedAction | null>(null);
   const [showPrivacySheet, setShowPrivacySheet] = useState(false);
   const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
   const [analyticsPreferenceLoading, setAnalyticsPreferenceLoading] = useState(false);
   const [analyticsPreferenceError, setAnalyticsPreferenceError] = useState(false);
   const [footerHeight, setFooterHeight] = useState(0);
-  const titleRef = useRef<Text | null>(null);
+  const [pathPreloaded, setPathPreloaded] = useState(state.step === 'path');
+  const [stepHeights, setStepHeights] = useState<Partial<Record<OnboardingStep, number>>>({});
+  const introTitleRef = useRef<Text | null>(null);
+  const pathTitleRef = useRef<Text | null>(null);
   const startedRef = useRef(false);
   const viewedStepsRef = useRef<Set<OnboardingStep>>(new Set());
+  const focusedStepRef = useRef<OnboardingStep | null>(null);
+  const isLeavingRef = useRef(false);
+  const stepTransitionRef = useRef(false);
+  const selectionVersionRef = useRef(0);
 
   const step: OnboardingStep = state.step === 'path' ? 'path' : 'intro';
   const titleAccent = noctalia.accent.strong;
@@ -121,6 +131,19 @@ export default function OnboardingScreen() {
   );
 
   useEffect(() => {
+    if (Platform.OS === 'web') return;
+    void Asset.loadAsync(PATH_BACKGROUND_IMAGE).catch(() => undefined);
+  }, []);
+
+  useEffect(() => {
+    if (loading || pathPreloaded || step === 'path') return;
+    const task = InteractionManager.runAfterInteractions(() => {
+      setPathPreloaded(true);
+    });
+    return () => task.cancel();
+  }, [loading, pathPreloaded, step]);
+
+  useEffect(() => {
     if (loading || startedRef.current || state.status !== 'not_started') return;
     startedRef.current = true;
     void transition({ type: 'START' })
@@ -133,24 +156,40 @@ export default function OnboardingScreen() {
 
   useEffect(() => {
     if (loading) return;
-    const timeout = setTimeout(() => {
-      if (process.env.EXPO_OS === 'web') {
-        titleRef.current?.focus();
-      } else {
-        const node = findNodeHandle(titleRef.current);
-        if (node) AccessibilityInfo.setAccessibilityFocus(node);
-      }
-      AccessibilityInfo.announceForAccessibility(
-        t('onboarding.progress', { current: step === 'intro' ? 1 : 2, total: 2 })
-      );
-    }, 120);
-
     if (!viewedStepsRef.current.has(step)) {
       viewedStepsRef.current.add(step);
       void trackProductEvent('onboarding_step_viewed', { step });
     }
-    return () => clearTimeout(timeout);
+  }, [loading, step]);
+
+  const handleTitleLayout = useCallback((renderedStep: OnboardingStep) => {
+    if (loading || step !== renderedStep || focusedStepRef.current === renderedStep) return;
+    markPerformance('onboarding.step_rendered', { step: renderedStep });
+    focusedStepRef.current = renderedStep;
+    if (process.env.EXPO_OS === 'web') {
+      (renderedStep === 'intro' ? introTitleRef : pathTitleRef).current?.focus();
+    } else {
+      const node = findNodeHandle(
+        (renderedStep === 'intro' ? introTitleRef : pathTitleRef).current
+      );
+      if (node) AccessibilityInfo.setAccessibilityFocus(node);
+    }
+    AccessibilityInfo.announceForAccessibility(
+      t('onboarding.progress', { current: renderedStep === 'intro' ? 1 : 2, total: 2 })
+    );
+    markPerformance('onboarding.accessibility_focus', { step: renderedStep });
   }, [loading, step, t]);
+
+  useEffect(() => {
+    if (
+      Platform.OS !== 'android'
+      || loading
+      || focusedStepRef.current === null
+      || focusedStepRef.current === step
+    ) return;
+    const frame = requestAnimationFrame(() => handleTitleLayout(step));
+    return () => cancelAnimationFrame(frame);
+  }, [handleTitleLayout, loading, step]);
 
   const openRecording = useCallback((nextState: typeof state, path: 'analyze' | 'memory') => {
     const pending = nextState.pendingRecordingIntent;
@@ -170,6 +209,10 @@ export default function OnboardingScreen() {
   }, []);
 
   const runStepTransition = useCallback(async (nextStep: OnboardingStep) => {
+    if (stepTransitionRef.current || isLeavingRef.current) return;
+    markPerformance('onboarding.continue_pressed', { next_step: nextStep });
+    stepTransitionRef.current = true;
+    setIsStepTransitioning(true);
     setFailedAction(null);
     try {
       await transition({ type: 'GO_TO_STEP', step: nextStep });
@@ -180,11 +223,15 @@ export default function OnboardingScreen() {
       });
     } catch {
       setFailedAction({ type: 'step', step: nextStep });
+    } finally {
+      stepTransitionRef.current = false;
+      setIsStepTransitioning(false);
     }
   }, [transition]);
 
   const completePath = useCallback(async (path: OnboardingPath) => {
-    if (isLeaving) return;
+    if (isLeavingRef.current || stepTransitionRef.current) return;
+    isLeavingRef.current = true;
     setIsLeaving(true);
     setFailedAction(null);
     try {
@@ -201,12 +248,14 @@ export default function OnboardingScreen() {
     } catch {
       setFailedAction({ type: 'complete', path });
     } finally {
+      isLeavingRef.current = false;
       setIsLeaving(false);
     }
-  }, [isLeaving, openRecording, transition]);
+  }, [openRecording, transition]);
 
   const skip = useCallback(async () => {
-    if (isLeaving) return;
+    if (isLeavingRef.current) return;
+    isLeavingRef.current = true;
     setIsLeaving(true);
     setFailedAction(null);
     try {
@@ -221,22 +270,31 @@ export default function OnboardingScreen() {
     } catch {
       setFailedAction({ type: 'skip' });
     } finally {
+      isLeavingRef.current = false;
       setIsLeaving(false);
     }
-  }, [isLeaving, step, transition]);
+  }, [step, transition]);
 
   const selectPath = useCallback((path: OnboardingPath) => {
+    const selectionVersion = selectionVersionRef.current + 1;
+    selectionVersionRef.current = selectionVersion;
     setSelectedPathOverride(path);
     setFailedAction(null);
-    void trackProductEvent('onboarding_choice_selected', {
-      surface: 'app_onboarding',
-      step: 'path',
-      choice: path,
-    });
-    void transition({ type: 'SELECT_PATH', path }).catch(() => {
-      setFailedAction({ type: 'select', path });
-    });
-  }, [transition]);
+    void transition({ type: 'SELECT_PATH', path })
+      .then(() => {
+        if (selectionVersionRef.current !== selectionVersion) return;
+        void trackProductEvent('onboarding_choice_selected', {
+          surface: 'app_onboarding',
+          step: 'path',
+          choice: path,
+        });
+      })
+      .catch(() => {
+        if (selectionVersionRef.current !== selectionVersion) return;
+        setSelectedPathOverride(state.selectedPath);
+        setFailedAction({ type: 'select', path });
+      });
+  }, [state.selectedPath, transition]);
 
   const retry = useCallback(async () => {
     const action = failedAction;
@@ -320,6 +378,14 @@ export default function OnboardingScreen() {
     const nextHeight = Math.ceil(event.nativeEvent.layout.height);
     setFooterHeight((current) => current === nextHeight ? current : nextHeight);
   }, []);
+  const handleStepLayout = useCallback((renderedStep: OnboardingStep, event: LayoutChangeEvent) => {
+    const measuredHeight = event.nativeEvent?.layout?.height;
+    if (!Number.isFinite(measuredHeight) || measuredHeight <= 0) return;
+    const nextHeight = Math.ceil(measuredHeight);
+    setStepHeights((current) => current[renderedStep] === nextHeight
+      ? current
+      : { ...current, [renderedStep]: nextHeight });
+  }, []);
 
   if (loading) {
     return (
@@ -334,6 +400,7 @@ export default function OnboardingScreen() {
   const selectedPath = selectedPathOverride ?? state.selectedPath ?? 'analyze';
   const selectedDefinition = PATHS.find((path) => path.id === selectedPath) ?? PATHS[0];
   const analyticsAvailable = isProductAnalyticsAvailable();
+  const layeredStepHeight = Math.max(stepHeights.intro ?? 0, stepHeights.path ?? 0) || undefined;
 
   return (
     <View style={[styles.screen, { backgroundColor: background }]} testID={TID.Screen.Onboarding}>
@@ -348,19 +415,37 @@ export default function OnboardingScreen() {
         ]}
       >
         <View style={styles.topBar}>
-          {step === 'path' ? (
+          <View style={styles.topBarLeading}>
+            <Text
+              accessibilityElementsHidden={step !== 'intro'}
+              importantForAccessibility={step === 'intro' ? 'auto' : 'no-hide-descendants'}
+              pointerEvents="none"
+              style={[
+                styles.brand,
+                { color: noctalia.text.primary },
+                step !== 'intro' && styles.inactiveControl,
+              ]}
+            >
+              Noctalia
+            </Text>
             <Pressable
+              accessibilityElementsHidden={step !== 'path'}
               accessibilityRole="button"
               accessibilityLabel={t('onboarding.back')}
               onPress={() => void runStepTransition('intro')}
-              style={styles.iconButton}
+              disabled={isStepTransitioning}
+              importantForAccessibility={step === 'path' ? 'auto' : 'no-hide-descendants'}
+              pointerEvents={step === 'path' ? 'auto' : 'none'}
+              style={[
+                styles.iconButton,
+                styles.topBarBack,
+                step !== 'path' && styles.inactiveControl,
+              ]}
               testID={TID.Button.OnboardingBack}
             >
               <IconSymbol name="chevron.left" size={22} color={noctalia.text.primary} />
             </Pressable>
-          ) : (
-            <Text style={[styles.brand, { color: noctalia.text.primary }]}>Noctalia</Text>
-          )}
+          </View>
           <Pressable
             accessibilityRole="button"
             onPress={() => void skip()}
@@ -372,14 +457,39 @@ export default function OnboardingScreen() {
           </Pressable>
         </View>
 
-        {step === 'intro' ? (
-          <View style={styles.intro} testID={TID.Component.OnboardingIntro}>
+        <View
+          style={Platform.OS === 'android'
+            ? [
+                styles.stepStage,
+                {
+                  height: layeredStepHeight,
+                },
+              ]
+            : undefined}
+        >
+          <View
+            accessibilityElementsHidden={step !== 'intro'}
+            importantForAccessibility={step === 'intro' ? 'auto' : 'no-hide-descendants'}
+            onLayout={Platform.OS === 'android'
+              ? (event) => handleStepLayout('intro', event)
+              : undefined}
+            pointerEvents={step === 'intro' ? 'auto' : 'none'}
+            style={[
+              styles.intro,
+              Platform.OS === 'android' && styles.stepLayer,
+              step !== 'intro' && (
+                Platform.OS === 'android' ? styles.inactiveStepLayer : styles.hiddenStep
+              ),
+            ]}
+            testID={TID.Component.OnboardingIntro}
+          >
             <View style={styles.heroImageWrap} accessible={false} importantForAccessibility="no-hide-descendants">
               {Platform.OS === 'web' ? (
                 <View style={[styles.heroImage, introBackgroundWebStyle]} />
               ) : (
                 <Image
                   accessible={false}
+                  fadeDuration={0}
                   source={INTRO_BACKGROUND_IMAGE}
                   resizeMode="cover"
                   style={styles.heroImage}
@@ -387,10 +497,11 @@ export default function OnboardingScreen() {
               )}
             </View>
             <Text
-              ref={titleRef}
+              ref={introTitleRef}
               {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
               accessible
               accessibilityRole="header"
+              onLayout={() => handleTitleLayout('intro')}
               style={[styles.title, webTitleFocusResetStyle, { color: noctalia.text.primary }]}
             >
               {t('onboarding.intro.title_lead')}{' '}
@@ -427,14 +538,31 @@ export default function OnboardingScreen() {
               </Text>
             </Pressable>
           </View>
-        ) : (
-          <View style={styles.paths}>
+
+          {pathPreloaded || step === 'path' ? (
+            <View
+              accessibilityElementsHidden={step !== 'path'}
+              importantForAccessibility={step === 'path' ? 'auto' : 'no-hide-descendants'}
+              onLayout={Platform.OS === 'android'
+                ? (event) => handleStepLayout('path', event)
+                : undefined}
+              pointerEvents={step === 'path' ? 'auto' : 'none'}
+              style={[
+                styles.paths,
+                Platform.OS === 'android' && styles.stepLayer,
+                step !== 'path' && (
+                  Platform.OS === 'android' ? styles.inactiveStepLayer : styles.hiddenStep
+                ),
+              ]}
+              testID={TID.Component.OnboardingPath}
+            >
             <View style={styles.pathHeroImageWrap} accessible={false} importantForAccessibility="no-hide-descendants">
               {Platform.OS === 'web' ? (
                 <View style={[styles.pathHeroImage, pathBackgroundWebStyle]} />
               ) : (
                 <Image
                   accessible={false}
+                  fadeDuration={0}
                   source={PATH_BACKGROUND_IMAGE}
                   resizeMode="cover"
                   style={styles.pathHeroImage}
@@ -442,10 +570,11 @@ export default function OnboardingScreen() {
               )}
             </View>
             <Text
-              ref={titleRef}
+              ref={pathTitleRef}
               {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
               accessible
               accessibilityRole="header"
+              onLayout={() => handleTitleLayout('path')}
               style={[styles.pathHeading, webTitleFocusResetStyle, { color: noctalia.text.primary }]}
             >
               {t('onboarding.path.title_lead')}{' '}
@@ -503,8 +632,9 @@ export default function OnboardingScreen() {
                 );
               })}
             </View>
-          </View>
-        )}
+            </View>
+          ) : null}
+        </View>
 
         {visibleError ? (
           <View
@@ -557,17 +687,20 @@ export default function OnboardingScreen() {
         ]}
       >
         <Pressable
+          accessibilityLabel={step === 'intro'
+            ? t('onboarding.intro.cta')
+            : t(`onboarding.path.${selectedDefinition.id}.cta`)}
           accessibilityRole="button"
           onPress={() => step === 'intro'
             ? void runStepTransition('path')
             : void completePath(selectedDefinition.id)}
-          disabled={isLeaving}
+          disabled={isLeaving || isStepTransitioning}
           style={({ pressed }) => [
             styles.primaryButton,
             {
               backgroundColor: noctalia.action.primary,
               borderColor: noctalia.action.primaryBorder,
-              opacity: pressed || isLeaving ? 0.78 : 1,
+              opacity: pressed || isLeaving || isStepTransitioning ? 0.78 : 1,
             },
           ]}
           testID={step === 'intro' ? TID.Button.OnboardingIntroNext : TID.Button.OnboardingPrimary}
@@ -575,20 +708,40 @@ export default function OnboardingScreen() {
           {isLeaving ? (
             <ActivityIndicator color={noctalia.action.primaryText} />
           ) : (
-            <>
-              <Text style={[styles.primaryText, { color: noctalia.action.primaryText }]}>
-                {step === 'intro'
-                  ? t('onboarding.intro.cta')
-                  : t(`onboarding.path.${selectedDefinition.id}.cta`)}
-              </Text>
-              <IconSymbol name="arrow.right" size={22} color={noctalia.action.primaryText} />
-            </>
+            <View style={styles.primaryContent}>
+              <View
+                accessibilityElementsHidden={step !== 'intro'}
+                importantForAccessibility={step === 'intro' ? 'auto' : 'no-hide-descendants'}
+                style={[
+                  styles.primaryContentLayer,
+                  step !== 'intro' && styles.inactiveControl,
+                ]}
+              >
+                <Text style={[styles.primaryText, { color: noctalia.action.primaryText }]}>
+                  {t('onboarding.intro.cta')}
+                </Text>
+                <IconSymbol name="arrow.right" size={22} color={noctalia.action.primaryText} />
+              </View>
+              <View
+                accessibilityElementsHidden={step !== 'path'}
+                importantForAccessibility={step === 'path' ? 'auto' : 'no-hide-descendants'}
+                style={[
+                  styles.primaryContentLayer,
+                  step !== 'path' && styles.inactiveControl,
+                ]}
+              >
+                <Text style={[styles.primaryText, { color: noctalia.action.primaryText }]}>
+                  {t(`onboarding.path.${selectedDefinition.id}.cta`)}
+                </Text>
+                <IconSymbol name="arrow.right" size={22} color={noctalia.action.primaryText} />
+              </View>
+            </View>
           )}
         </Pressable>
       </View>
 
-      <StandardBottomSheet
-        visible={showPrivacySheet}
+      {showPrivacySheet ? <StandardBottomSheet
+        visible
         onClose={() => setShowPrivacySheet(false)}
         title={t('onboarding.privacy.title')}
         subtitle={t('onboarding.privacy.body')}
@@ -640,7 +793,7 @@ export default function OnboardingScreen() {
             />
           )}
         </View>
-      </StandardBottomSheet>
+      </StandardBottomSheet> : null}
     </View>
   );
 }
@@ -656,6 +809,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 10,
   },
+  topBarLeading: { position: 'relative', width: 80, height: 44, justifyContent: 'center' },
+  topBarBack: { position: 'absolute', top: 0, left: 0 },
   brand: { fontFamily: Fonts.fraunces.regular, fontSize: 26, lineHeight: 32, minWidth: 80 },
   iconButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   skipButton: { minWidth: 72, minHeight: 44, alignItems: 'flex-end', justifyContent: 'center' },
@@ -689,7 +844,12 @@ const styles = StyleSheet.create({
   signalBody: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 18 },
   privacyLink: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 8 },
   privacyLinkText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, textDecorationLine: 'underline' },
+  stepStage: { position: 'relative', alignSelf: 'stretch' },
+  stepLayer: { position: 'absolute', top: 0, left: 0, right: 0 },
+  inactiveStepLayer: { opacity: 0 },
+  inactiveControl: { opacity: 0 },
   paths: { gap: 12 },
+  hiddenStep: { display: 'none' },
   pathHeroImageWrap: {
     alignSelf: 'stretch',
     aspectRatio: PATH_BACKGROUND_ASPECT_RATIO,
@@ -713,6 +873,8 @@ const styles = StyleSheet.create({
   errorButtonText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 13 },
   footer: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 20, paddingTop: 10 },
   primaryButton: { minHeight: 60, borderRadius: 20, borderCurve: 'continuous', borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 18 },
+  primaryContent: { position: 'relative', alignSelf: 'stretch', height: 24 },
+  primaryContentLayer: { position: 'absolute', top: 0, left: 0, right: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12 },
   primaryText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 17, lineHeight: 22, textAlign: 'center' },
   privacyAssurance: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, borderWidth: 1, borderRadius: 14, padding: 12, marginBottom: 14 },
   privacyAssuranceText: { flex: 1, fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 19 },

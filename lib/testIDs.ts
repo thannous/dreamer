@@ -166,6 +166,7 @@ export const TID = {
     RecordingVoiceHint: 'component.recording.voiceHint',
     OnboardingIntro: 'component.onboarding.intro',
     OnboardingIntroSignals: 'component.onboarding.introSignals',
+    OnboardingPath: 'component.onboarding.path',
     OnboardingError: 'component.onboarding.error',
     UnforgettableDreamPrompt: 'component.recording.unforgettableDreamPrompt',
     RememberedDreamProfileChips: 'component.recording.rememberedProfileChips',

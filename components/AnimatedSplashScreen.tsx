@@ -1,7 +1,6 @@
-import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
-import { memo, useEffect, useMemo, useState } from 'react';
-import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   Easing,
   cancelAnimation,
@@ -14,7 +13,7 @@ import Animated, {
   withRepeat,
   withSequence,
   withTiming,
-  type SharedValue
+  type SharedValue,
 } from 'react-native-reanimated';
 import Svg, { Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
@@ -28,7 +27,14 @@ const seededRandom = (seed: number) => {
 };
 
 // --- Configuration ---
-const PARTICLE_COUNT = 30;
+export const SPLASH_MINIMUM_VISIBLE_MS = 600;
+export const SPLASH_OUTRO_DURATION_MS = 250;
+export const SPLASH_PARTICLE_COUNT = 12;
+
+const getInitialViewport = () => {
+  const { width, height } = Dimensions.get('window');
+  return width > 0 && height > 0 ? { width, height } : DEFAULT_VIEWPORT;
+};
 
 const COLORS = {
   bgStart: DarkTheme.backgroundDark,
@@ -80,19 +86,12 @@ type AnimatedSplashScreenProps = {
   onAnimationEnd?: () => void;
 };
 
-const AnimatedSplashScreen = ({
+const AnimatedSplashContent = ({
   status = 'intro',
-  forceStatic = false,
   onAnimationEnd,
-}: AnimatedSplashScreenProps) => {
-  const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
-  const prefersReducedMotion = usePrefersReducedMotion();
-  const animateSplash = shouldUseAnimatedSplash(prefersReducedMotion, forceStatic);
-
-  useEffect(() => {
-    const { width, height } = Dimensions.get('window');
-    setViewport({ width, height });
-  }, []);
+}: Omit<AnimatedSplashScreenProps, 'forceStatic'>) => {
+  const [viewport] = useState(getInitialViewport);
+  const animateSplash = true;
 
   // Shared values
   const phase = useSharedValue(0); // 0 to 4
@@ -103,85 +102,83 @@ const AnimatedSplashScreen = ({
 
   const floatProgress = useSharedValue(0);
   const containerOpacity = useSharedValue(1);
+  const animationEndCalledRef = useRef(false);
+  const onAnimationEndRef = useRef(onAnimationEnd);
 
   useEffect(() => {
-    if (!animateSplash) {
+    onAnimationEndRef.current = onAnimationEnd;
+  }, [onAnimationEnd]);
+
+  const notifyAnimationEnd = useCallback(() => {
+    if (animationEndCalledRef.current) return;
+    animationEndCalledRef.current = true;
+    onAnimationEndRef.current?.();
+  }, []);
+
+  useEffect(() => {
+    if (!animateSplash || status !== 'intro') {
       cancelAnimation(phase);
       phase.value = 4;
-      return;
+      return () => cancelAnimation(phase);
     }
 
-    // Start the animation sequence
+    phase.value = 0;
     phase.value = withSequence(
-      // Phase 1: Ether - Wait/Float
-      withTiming(1, { duration: 800, easing: Easing.linear }),
-      // Phase 2: Draw Moon (0.8s -> 1.8s)
-      withTiming(2, { duration: 1000, easing: Easing.inOut(Easing.cubic) }),
-      // Phase 3: Draw Star (1.8s -> 2.4s)
-      withTiming(3, { duration: 600, easing: Easing.inOut(Easing.cubic) }),
-      // Phase 4: Fill, Glow, Text (2.4s -> 3.4s)
-      withTiming(4, { duration: 1000, easing: Easing.out(Easing.quad) })
+      withTiming(1, { duration: 150, easing: Easing.linear }),
+      withTiming(2, { duration: 250, easing: Easing.inOut(Easing.cubic) }),
+      withTiming(3, { duration: 150, easing: Easing.inOut(Easing.cubic) }),
+      withTiming(4, { duration: 250, easing: Easing.out(Easing.quad) })
     );
 
-    // Add haptic feedback for key milestones
-    const hapticTimers: ReturnType<typeof setTimeout>[] = [];
-    const triggerHaptics = () => {
-      if (Platform.OS === 'web') return;
-
-      // Phase 2: Moon drawn (approx 1.8s)
-      hapticTimers.push(
-        setTimeout(() => {
-          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        }, 1800)
-      );
-
-      // Phase 3-4: Star drawn / Ripple / Fill (approx 2.4s-3.4s)
-      hapticTimers.push(
-        setTimeout(() => {
-          void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        }, 2400)
-      );
-    };
-
-    triggerHaptics();
-    return () => {
-      hapticTimers.forEach(clearTimeout);
-      cancelAnimation(phase);
-    };
-  }, [animateSplash, phase]);
+    return () => cancelAnimation(phase);
+  }, [animateSplash, phase, status]);
 
   useEffect(() => {
-    if (!animateSplash) {
+    if (!animateSplash || status !== 'intro') {
       cancelAnimation(floatProgress);
       floatProgress.value = 0;
-      return;
+      return () => cancelAnimation(floatProgress);
     }
     floatProgress.value = withRepeat(
       withTiming(Math.PI * 2, { duration: 2400, easing: Easing.linear }),
       -1
     );
     return () => cancelAnimation(floatProgress);
-  }, [animateSplash, floatProgress]);
+  }, [animateSplash, floatProgress, status]);
 
   useEffect(() => {
-    if (status === 'outro') {
-      if (!animateSplash) {
-        containerOpacity.value = 0;
-        onAnimationEnd?.();
-        return;
-      }
-      // Fade out the whole screen
-      containerOpacity.value = withTiming(
-        0,
-        { duration: 800, easing: Easing.out(Easing.cubic) },
-        (finished) => {
-          if (finished && onAnimationEnd) {
-            runOnJS(onAnimationEnd)();
-          }
-        }
-      );
+    cancelAnimation(containerOpacity);
+
+    if (status !== 'outro') {
+      animationEndCalledRef.current = false;
+      containerOpacity.value = 1;
+      return () => cancelAnimation(containerOpacity);
     }
-  }, [animateSplash, status, onAnimationEnd, containerOpacity]);
+
+    // The two effects declared above stop every shared value that feeds a child
+    // style before this fade can unmount the Fabric tree.
+
+    if (!animateSplash) {
+      containerOpacity.value = 0;
+      notifyAnimationEnd();
+      return () => cancelAnimation(containerOpacity);
+    }
+
+    containerOpacity.value = withTiming(
+      0,
+      { duration: SPLASH_OUTRO_DURATION_MS, easing: Easing.out(Easing.cubic) },
+      (finished) => {
+        if (finished) runOnJS(notifyAnimationEnd)();
+      }
+    );
+
+    return () => cancelAnimation(containerOpacity);
+  }, [
+    animateSplash,
+    containerOpacity,
+    notifyAnimationEnd,
+    status,
+  ]);
 
   // --- Styles & Props ---
 
@@ -276,7 +273,7 @@ const AnimatedSplashScreen = ({
       {/* Particles */}
       {animateSplash && (
         <View style={StyleSheet.absoluteFill}>
-          {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
+          {Array.from({ length: SPLASH_PARTICLE_COUNT }).map((_, i) => (
             <Particle key={i} index={i} phase={phase} float={floatProgress} viewport={viewport} />
           ))}
         </View>
@@ -333,6 +330,96 @@ const AnimatedSplashScreen = ({
         </Animated.View>
       </View>
     </Animated.View>
+  );
+};
+
+const StaticSplashContent = ({
+  status = 'intro',
+  onAnimationEnd,
+}: Omit<AnimatedSplashScreenProps, 'forceStatic'>) => {
+  const animationEndCalledRef = useRef(false);
+  const onAnimationEndRef = useRef(onAnimationEnd);
+
+  useEffect(() => {
+    onAnimationEndRef.current = onAnimationEnd;
+  }, [onAnimationEnd]);
+
+  useEffect(() => {
+    if (status !== 'outro') {
+      animationEndCalledRef.current = false;
+      return;
+    }
+    if (animationEndCalledRef.current) return;
+    animationEndCalledRef.current = true;
+    onAnimationEndRef.current?.();
+  }, [status]);
+
+  return (
+    <View
+      pointerEvents="none"
+      accessible={false}
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+      style={[StyleSheet.absoluteFill, styles.container]}
+    >
+      <LinearGradient
+        colors={[COLORS.bgStart, COLORS.bgEnd]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <View style={styles.content}>
+        <View style={[styles.starGlowContainer, styles.staticGlow]}>
+          <Svg height="100%" width="100%" viewBox="0 0 100 100">
+            <Defs>
+              <RadialGradient id="staticCyanGlow" cx="50%" cy="50%" rx="50%" ry="50%">
+                <Stop offset="0%" stopColor={COLORS.cyan} stopOpacity="0.8" />
+                <Stop offset="100%" stopColor={COLORS.cyan} stopOpacity="0" />
+              </RadialGradient>
+            </Defs>
+            <Rect x="0" y="0" width="100" height="100" fill="url(#staticCyanGlow)" />
+          </Svg>
+        </View>
+        <View style={styles.logoContainer}>
+          <Svg width={280} height={280} viewBox="0 0 280 280" style={styles.svg}>
+            <Path
+              d={MOON_PATH}
+              fill={COLORS.moonFill}
+              stroke={COLORS.gold}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+            />
+            <Path
+              d={STAR_PATH}
+              fill={COLORS.cyan}
+              stroke={COLORS.cyan}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+            />
+          </Svg>
+        </View>
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>NOCTALIA</Text>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const AnimatedSplashScreen = ({
+  status = 'intro',
+  forceStatic = false,
+  onAnimationEnd,
+}: AnimatedSplashScreenProps) => {
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const animateSplash = shouldUseAnimatedSplash(prefersReducedMotion, forceStatic);
+
+  return animateSplash ? (
+    <AnimatedSplashContent status={status} onAnimationEnd={onAnimationEnd} />
+  ) : (
+    <StaticSplashContent status={status} onAnimationEnd={onAnimationEnd} />
   );
 };
 
@@ -433,6 +520,9 @@ const styles = StyleSheet.create({
     top: '50%',
     left: '50%',
     transform: [{ translateX: -60 }, { translateY: -80 }], // Adjust Y to match visual star center
+  },
+  staticGlow: {
+    opacity: 0.8,
   },
   ripple: {
     position: 'absolute',

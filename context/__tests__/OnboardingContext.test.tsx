@@ -21,7 +21,7 @@ const mockHarness = ((factory: any) => factory())(() => {
     defaultState,
     getState: jest.fn(),
     claim: jest.fn(async () => undefined),
-    transition: jest.fn(),
+    persist: jest.fn(),
   };
 });
 
@@ -33,8 +33,8 @@ jest.mock('@/lib/onboardingState', () => ({
   getDefaultOnboardingState: () => mockHarness.defaultState(),
   claimGuestOnboardingState: (userId: string) => mockHarness.claim(userId),
   getOnboardingState: (scope: string) => mockHarness.getState(scope),
-  transitionOnboarding: (scope: string, event: unknown) =>
-    mockHarness.transition(scope, event),
+  persistOnboardingState: (scope: string, state: unknown) =>
+    mockHarness.persist(scope, state),
   reduceOnboardingState: (state: any, event: any) => {
     const now = Date.now();
     if (event.type === 'SKIP') {
@@ -69,6 +69,35 @@ jest.mock('@/lib/onboardingState', () => ({
               },
       };
     }
+    if (event.type === 'START') {
+      return {
+        ...state,
+        status: 'in_progress',
+        step: state.step ?? 'intro',
+        startedAt: state.startedAt ?? now,
+        updatedAt: now,
+      };
+    }
+    if (event.type === 'GO_TO_STEP') {
+      return {
+        ...state,
+        status: 'in_progress',
+        step: event.step,
+        selectedPath: event.step === 'path' ? state.selectedPath ?? 'analyze' : state.selectedPath,
+        startedAt: state.startedAt ?? now,
+        updatedAt: now,
+      };
+    }
+    if (event.type === 'SELECT_PATH') {
+      return {
+        ...state,
+        status: 'in_progress',
+        step: 'path',
+        selectedPath: event.path,
+        startedAt: state.startedAt ?? now,
+        updatedAt: now,
+      };
+    }
     if (event.type === 'SET_PENDING_PHASE' && state.pendingRecordingIntent) {
       return {
         ...state,
@@ -95,6 +124,7 @@ describe('OnboardingContext scope isolation', () => {
     jest.clearAllMocks();
     mockHarness.auth = { user: { id: 'one' }, loading: false };
     mockHarness.getState.mockResolvedValue(mockHarness.defaultState());
+    mockHarness.persist.mockImplementation(async (_scope: string, state: unknown) => state);
   });
 
   it('exposes loading and not_started while a new account scope is unresolved', async () => {
@@ -153,7 +183,7 @@ describe('OnboardingContext scope isolation', () => {
       completionReason: 'analyze',
       pendingRecordingIntent: { postSave: 'confirm_analysis' },
     });
-    expect(mockHarness.transition).not.toHaveBeenCalled();
+    expect(mockHarness.persist).not.toHaveBeenCalled();
 
     await act(async () => {
       await result.current.transition({
@@ -171,6 +201,77 @@ describe('OnboardingContext scope isolation', () => {
         savedDreamId: 42,
       },
     });
-    expect(mockHarness.transition).not.toHaveBeenCalled();
+    expect(mockHarness.persist).not.toHaveBeenCalled();
+  });
+
+  it('renders a nonterminal transition before its persistence completes', async () => {
+    let resolvePersist!: (value: unknown) => void;
+    const persistence = new Promise(resolve => {
+      resolvePersist = resolve;
+    });
+    mockHarness.persist.mockReturnValueOnce(persistence);
+    const { result } = renderHook(() => useOnboarding(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    let transitionPromise!: Promise<unknown>;
+    act(() => {
+      transitionPromise = result.current.transition({ type: 'GO_TO_STEP', step: 'path' });
+    });
+
+    expect(result.current.state).toMatchObject({ step: 'path', selectedPath: 'analyze' });
+    expect(mockHarness.persist).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      resolvePersist(result.current.state);
+      await transitionPromise;
+    });
+  });
+
+  it('rolls back to the last durable state when the latest write fails', async () => {
+    mockHarness.persist.mockRejectedValueOnce(new Error('write failed'));
+    const { result } = renderHook(() => useOnboarding(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await expect(
+        result.current.transition({ type: 'GO_TO_STEP', step: 'path' })
+      ).rejects.toThrow('write failed');
+    });
+
+    expect(result.current.state).toMatchObject({ status: 'not_started', step: null });
+    expect(result.current.error?.message).toBe('write failed');
+  });
+
+  it('does not let a stale failed write overwrite a newer optimistic state', async () => {
+    let rejectFirst!: (error: Error) => void;
+    mockHarness.persist
+      .mockImplementationOnce(
+        () => new Promise((_resolve, reject) => {
+          rejectFirst = reject;
+        })
+      )
+      .mockImplementationOnce(async (_scope: string, state: unknown) => state);
+    const { result } = renderHook(() => useOnboarding(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    let first!: Promise<unknown>;
+    let second!: Promise<unknown>;
+    act(() => {
+      first = result.current.transition({ type: 'GO_TO_STEP', step: 'path' });
+      second = result.current.transition({ type: 'SELECT_PATH', path: 'memory' });
+    });
+
+    await act(async () => {
+      await second;
+      rejectFirst(new Error('stale write failed'));
+      await expect(first).rejects.toThrow('stale write failed');
+    });
+
+    expect(result.current.state).toMatchObject({
+      status: 'in_progress',
+      step: 'path',
+      selectedPath: 'memory',
+    });
+    expect(result.current.error).toBeNull();
   });
 });

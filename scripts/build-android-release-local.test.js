@@ -7,6 +7,8 @@ const {
   DEFAULT_GRADLE_JVM_ARGS,
   RELEASE_BUILD_PROFILE,
   TESTSTORE_BUILD_PROFILE,
+  assertProfileableBuildProfile,
+  assertReusableNativeProject,
   assertTestStoreInstallTarget,
   copyReleaseApk,
   getApkPath,
@@ -47,7 +49,9 @@ describe('build-android-release-local', () => {
       abi: null,
       device: 'emulator-5554',
       install: false,
+      profileable: false,
       profile: RELEASE_BUILD_PROFILE,
+      reuseNativeProject: false,
     });
   });
 
@@ -56,7 +60,9 @@ describe('build-android-release-local', () => {
       abi: null,
       device: null,
       install: true,
+      profileable: false,
       profile: RELEASE_BUILD_PROFILE,
+      reuseNativeProject: false,
     });
   });
 
@@ -65,7 +71,9 @@ describe('build-android-release-local', () => {
       abi: 'arm64-v8a',
       device: null,
       install: false,
+      profileable: false,
       profile: RELEASE_BUILD_PROFILE,
+      reuseNativeProject: false,
     });
   });
 
@@ -74,7 +82,9 @@ describe('build-android-release-local', () => {
       abi: null,
       device: null,
       install: false,
+      profileable: false,
       profile: TESTSTORE_BUILD_PROFILE,
+      reuseNativeProject: false,
     });
     expect(normalizeBuildProfile(RELEASE_BUILD_PROFILE)).toBe(
       RELEASE_BUILD_PROFILE
@@ -82,6 +92,23 @@ describe('build-android-release-local', () => {
     expect(() => normalizeBuildProfile('preview')).toThrow(
       'Unsupported build profile'
     );
+  });
+
+  it('keeps profileable Release builds explicit and production-like', () => {
+    expect(parseArgs(['--profileable', '--reuse-native-project'])).toEqual({
+      abi: null,
+      device: null,
+      install: false,
+      profileable: true,
+      profile: RELEASE_BUILD_PROFILE,
+      reuseNativeProject: true,
+    });
+    expect(() =>
+      assertProfileableBuildProfile(RELEASE_BUILD_PROFILE, true)
+    ).not.toThrow();
+    expect(() =>
+      assertProfileableBuildProfile(TESTSTORE_BUILD_PROFILE, true)
+    ).toThrow('only with the production-apk profile');
   });
 
   it('rejects a missing device serial', () => {
@@ -157,6 +184,22 @@ describe('build-android-release-local', () => {
       EXPO_PUBLIC_MOCK_MODE: 'false',
       EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'true',
       NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'true',
+      NOCTALIA_ANDROID_PERFORMANCE_PROFILEABLE: 'false',
+    });
+  });
+
+  it('enables profileability without making the production bundle debuggable', () => {
+    expect(
+      getBuildEnv(
+        {},
+        '/tmp',
+        { NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'false' },
+        RELEASE_BUILD_PROFILE,
+        true
+      )
+    ).toMatchObject({
+      NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'false',
+      NOCTALIA_ANDROID_PERFORMANCE_PROFILEABLE: 'true',
     });
   });
 
@@ -328,6 +371,34 @@ describe('build-android-release-local', () => {
         'revenuecat-teststore-release.apk'
       )
     );
+    expect(getOutputApkPath('/repo', RELEASE_BUILD_PROFILE, true)).toBe(
+      path.join(
+        '/repo',
+        'dist',
+        'android',
+        'production-apk-profileable-release.apk'
+      )
+    );
+  });
+
+  it('fails closed when a reusable native project lacks profileable support', () => {
+    const existsSync = jest.fn(() => true);
+    expect(() =>
+      assertReusableNativeProject(
+        '/repo',
+        true,
+        existsSync,
+        () => 'android { buildTypes { release {} } }'
+      )
+    ).toThrow('lacks the profileable Release configuration');
+    expect(() =>
+      assertReusableNativeProject(
+        '/repo',
+        true,
+        existsSync,
+        () => 'profileable isAndroidPerformanceProfileableBuild'
+      )
+    ).not.toThrow();
   });
 
   it('copies the Gradle APK into a profile-specific output directory', () => {

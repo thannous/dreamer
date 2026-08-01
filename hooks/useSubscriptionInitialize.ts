@@ -8,7 +8,13 @@ import { syncSubscriptionFromServer } from '@/services/subscriptionSyncService';
 
 const log = createScopedLogger('[useSubscriptionInitialize]');
 
-export function useSubscriptionInitialize() {
+type UseSubscriptionInitializeOptions = {
+  enabled?: boolean;
+};
+
+export function useSubscriptionInitialize(
+  { enabled = true }: UseSubscriptionInitializeOptions = {}
+) {
   const { user, refreshUser } = useAuth();
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -27,6 +33,8 @@ export function useSubscriptionInitialize() {
   const syncedUserIdRef = useRef<string | null>(null);
 
   useEffect(() => {
+    if (!enabled) return;
+
     let mounted = true;
 
     const run = async () => {
@@ -95,7 +103,7 @@ export function useSubscriptionInitialize() {
     return () => {
       mounted = false;
     };
-  }, [user?.id, isMockMode]); // ✅ CRITICAL: Remove refreshUser from dependencies
+  }, [enabled, user?.id, isMockMode]); // ✅ CRITICAL: Remove refreshUser from dependencies
 
   return { initialized, error };
 }

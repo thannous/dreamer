@@ -87,6 +87,8 @@ const toggleWeekday = jest.fn(async () => {});
 const setWeekdayTime = jest.fn(async () => {});
 const openSubscription = jest.fn();
 let notificationsUnsupported = true;
+let notificationsHasPermissions = false;
+let notificationsLoading = false;
 let weekdayEnabled = false;
 
 function preference(
@@ -154,8 +156,8 @@ jest.doMock('@/components/settings/useNotificationSettingsController', () => ({
       weekendEnabled: false,
       weekendTime: '10:00',
     },
-    hasPermissions: false,
-    isLoading: false,
+    hasPermissions: notificationsHasPermissions,
+    isLoading: notificationsLoading,
     unsupported: notificationsUnsupported,
     notificationsEnabled: weekdayEnabled,
     toggleWeekday,
@@ -213,6 +215,8 @@ afterEach(() => {
   jest.clearAllMocks();
   hardwareBackHandler = undefined;
   notificationsUnsupported = true;
+  notificationsHasPermissions = false;
+  notificationsLoading = false;
   weekdayEnabled = false;
 });
 
@@ -285,6 +289,25 @@ describe('SettingsFieldGroup', () => {
     expect(screen.getByTestId('settings-notifications-weekday-time').textContent).toContain('07:00');
     fireEvent.click(screen.getByTestId('settings-notifications-reminder-toggle'));
     expect(toggleWeekday).toHaveBeenCalledWith(false);
+  });
+
+  it('shows the accessible notification warning only after a denied permission is loaded', () => {
+    notificationsUnsupported = false;
+
+    const { rerender } = render(<SettingsFieldGroup {...baseProps} />);
+
+    const warning = screen.getByTestId('text.settings.notificationsPermissionWarning');
+    expect(warning.textContent).toBe('notifications.warning.permissions');
+    expect(warning.parentElement?.getAttribute('role')).toBe('alert');
+
+    notificationsHasPermissions = true;
+    rerender(<SettingsFieldGroup {...baseProps} />);
+    expect(screen.queryByTestId('text.settings.notificationsPermissionWarning')).toBeNull();
+
+    notificationsHasPermissions = false;
+    notificationsLoading = true;
+    rerender(<SettingsFieldGroup {...baseProps} />);
+    expect(screen.queryByTestId('text.settings.notificationsPermissionWarning')).toBeNull();
   });
 
   it('opens the Noctalia Plus flow from the compact promo card', () => {
