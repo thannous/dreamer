@@ -1,9 +1,10 @@
 # Noctalia backlink outreach — wave 1
 
 Prepared: 2026-07-31
-Status: local drafts only; nothing sent
+Updated: 2026-08-01
+Status: 15 messages or forms delivered/accepted; 3 official routes failed; awaiting editorial outcomes
 Sender: Thanh Chau, founder of Noctalia
-Reply identity: `contact@noctalia.app`
+Contact identity for form submissions: `contact@noctalia.app`
 
 ## Send gates
 
@@ -123,6 +124,7 @@ Founder, Noctalia
 **Target:** `https://dreamstudies.org/dream-hack-app-2015/`
 **Route:** `https://dreamstudies.org/contact/`
 **Subject:** `dream data provenance`
+**Sent:** 2026-08-01 at 02:56 CEST; the page confirmed `Thank you for your message. It has been sent.`
 
 Hi Ryan,
 
@@ -399,4 +401,4 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - Paused publishers: Lound lacks a verified named publisher and usable editorial contact; Dayora's Terms and product pages materially conflict on AI-training use; remembr has no verified operator and its privacy, terms and contact pages return 404; Kiomora exposes no named operator and its protected contact values are malformed or misspelled: `https://lound.ai/blog/best-voice-journaling-apps-2026/`, `https://lound.ai/privacy/`, `https://www.dayora.ai/blog/best-voice-journaling-apps-2026`, `https://www.dayora.ai/terms`, `https://www.dayora.ai/contact`, `https://remembr.live/blog/best-voice-journal-apps-2026`, `https://remembr.live/`, `https://kiomora.com/blog/best-ai-journal-apps/`, `https://kiomora.com/about/`, `https://kiomora.com/press/`
 - Sleep Foundation exclusion evidence: `https://www.sleepfoundation.org/about-us/pitch-us`
 
-Verification on 2026-07-31: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android's official address then failed with `554 5.7.1 Relay access denied`; no alternate address was inferred. Holstee was verified and contacted once as the replacement target. Know Your Ethos was accepted only as a competitor-owned editorial prospect after its team byline, company story, legal navigation, official FAQ address and balanced competitor limitations were checked; its published address then rejected the factual request with `550 5.1.1`, so no follow-up or guessed alternative is permitted. Dreamz Journal's prominently advertised direct-editor mailbox also proved nonexistent or unable to receive mail, so its route was closed without a retry or inferred address. Acuity, CortexOS and Dearly were contacted only after their named author or operator, current comparison, official route, legal or trust material and Gmail history had been checked. Lound, Dayora, remembr and Kiomora were paused for the documented identity, legal, privacy-consistency or contact-route deficiencies. Dream Studies Portal exposed reCAPTCHA, so its prefilled pitch remains intentionally unsent for user completion.
+Verification on 2026-07-31 and 2026-08-01: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android's official address then failed with `554 5.7.1 Relay access denied`; no alternate address was inferred. Holstee was verified and contacted once as the replacement target. Know Your Ethos was accepted only as a competitor-owned editorial prospect after its team byline, company story, legal navigation, official FAQ address and balanced competitor limitations were checked; its published address then rejected the factual request with `550 5.1.1`, so no follow-up or guessed alternative is permitted. Dreamz Journal's prominently advertised direct-editor mailbox also proved nonexistent or unable to receive mail, so its route was closed without a retry or inferred address. Acuity, CortexOS and Dearly were contacted only after their named author or operator, current comparison, official route, legal or trust material and Gmail history had been checked. Lound, Dayora, remembr and Kiomora were paused for the documented identity, legal, privacy-consistency or contact-route deficiencies. Dream Studies Portal's previously prepared form was submitted once on 2026-08-01 without bypassing reCAPTCHA, and its own page displayed the authoritative sent confirmation.
