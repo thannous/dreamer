@@ -19,8 +19,10 @@ import { useTheme } from '@/context/ThemeContext';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
+import { canDictate } from '@/lib/speechCapability';
 import {
   registerOfflineModelPromptHandler,
+  resolveDeviceSpeechCapability,
   type OfflineModelPromptHandler,
 } from '@/services/nativeSpeechRecognition';
 import {
@@ -80,6 +82,8 @@ type ComposerContextValue = {
   micTestID?: string;
   sendTestID?: string;
   isRecording: boolean;
+  /** False when the device cannot capture speech at all: the mic is hidden, not just disabled. */
+  isVoiceSupported: boolean;
   canSend: boolean;
   handleTextInputPress: () => void;
   handleSend: () => void;
@@ -231,6 +235,39 @@ function Root({
     };
   }, [resolveOfflineModelPrompt]);
 
+  // Voice is blocked only when the device cannot capture speech at all — the
+  // same ladder the recording screen uses. Every other tier still dictates,
+  // through the network recognizer or server transcription.
+  const [isVoiceSupported, setIsVoiceSupported] = useState(true);
+
+  useEffect(() => {
+    // Web resolves speech availability through the Web Speech API instead; the
+    // capability ladder is a native concern.
+    if (Platform.OS === 'web') {
+      return;
+    }
+
+    let isMounted = true;
+
+    resolveDeviceSpeechCapability(transcriptionLocale)
+      .then((capability) => {
+        if (isMounted) {
+          setIsVoiceSupported(canDictate(capability));
+        }
+      })
+      .catch(() => {
+        // Probing must never remove the control: assume voice works and let the
+        // existing per-attempt failure handling surface a real problem.
+        if (isMounted) {
+          setIsVoiceSupported(true);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [transcriptionLocale]);
+
   const recordingSession = useRecordingSession({
     transcriptionLocale,
     t,
@@ -344,6 +381,7 @@ function Root({
     micTestID,
     sendTestID,
     isRecording,
+    isVoiceSupported,
     canSend,
     handleTextInputPress,
     handleSend,
@@ -361,6 +399,7 @@ function Root({
     micTestID,
     sendTestID,
     isRecording,
+    isVoiceSupported,
     canSend,
     handleTextInputPress,
     handleSend,
@@ -541,7 +580,14 @@ function MicButton() {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { isRecording, isLoading, isDisabled, toggleRecording, micTestID } = useComposerContext();
+  const { isRecording, isVoiceSupported, isLoading, isDisabled, toggleRecording, micTestID } =
+    useComposerContext();
+
+  // Nothing on this device can capture speech: hide the control rather than
+  // offering a button that can only fail. The text input stays available.
+  if (!isVoiceSupported) {
+    return null;
+  }
 
   return (
     <Pressable
