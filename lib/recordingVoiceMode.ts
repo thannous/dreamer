@@ -3,6 +3,8 @@ import type { RecordingInputModePreference } from '@/lib/types';
 export type VoiceFallbackReason =
   | 'permission_denied'
   | 'stt_unavailable'
+  /** The device itself cannot capture speech — the voice control is hidden. */
+  | 'voice_unsupported'
   | 'language_pack_missing'
   | 'no_speech'
   | 'start_failed'

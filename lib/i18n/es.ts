@@ -509,6 +509,7 @@ const translations: Record<string, string> = {
     'recording.status.fallback.language_pack_missing': 'Falta este paquete de idioma. Escribe tu sueño aquí o vuelve a intentar después de instalarlo.',
     'recording.status.fallback.no_speech': 'No se detectó voz. Escribe lo que recuerdas o vuelve a intentar con voz.',
     'recording.status.fallback.start_failed': 'No se pudo iniciar la grabación. Escribe tu sueño aquí o vuelve a intentar con voz.',
+    'recording.status.fallback.voice_unsupported': 'Este dispositivo no puede captar la voz. Escribe aquí tu sueño.',
     'recording.status.retry_voice': 'Reintentar voz',
     'recording.onboarding.step_count': 'Paso {current}/{total}',
     'recording.onboarding.voice.body': 'Toca el micrófono para dictar tu sueño.',
