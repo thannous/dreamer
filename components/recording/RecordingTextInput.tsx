@@ -21,6 +21,8 @@ export interface RecordingTextInputProps {
   lengthWarning: string;
   instructionText: string;
   switchToVoiceLabel?: string;
+  /** False when the device cannot capture speech at all: the mic is hidden, not just disabled. */
+  voiceSupported?: boolean;
   voiceStatus?: MicButtonStatus;
   recordingDurationLabel?: string;
   spotlightTarget?: RecordingOnboardingTarget;
@@ -46,6 +48,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       lengthWarning,
       instructionText,
       switchToVoiceLabel,
+      voiceSupported = true,
       voiceStatus = 'idle',
       recordingDurationLabel,
       spotlightTarget,
@@ -178,7 +181,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
                   <IconSymbol name="plus" size={21} color={noctalia.text.secondary} />
                 </Pressable>
               ) : null}
-              {!isVoiceFirst ? (
+              {!isVoiceFirst && voiceSupported ? (
                 <View ref={voiceSpotlightRef} collapsable={false}>
                   <MicButton
                     status={voiceStatus}
@@ -310,8 +313,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
         </View>
 
         <View style={styles.textInputSection}>
-          {isVoiceFirst ? expressiveVoiceControl : textEditor}
-          {isVoiceFirst ? textEditor : null}
+          {isVoiceFirst && voiceSupported ? expressiveVoiceControl : textEditor}
+          {isVoiceFirst && voiceSupported ? textEditor : null}
 
           {lengthWarning ? (
             <Text style={[styles.lengthWarning, { color: noctalia.accent.strong }]}>

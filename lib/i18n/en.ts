@@ -509,6 +509,7 @@ const translations: Record<string, string> = {
     'recording.status.fallback.language_pack_missing': 'This language pack is missing. Type your dream here, or retry voice after installing it.',
     'recording.status.fallback.no_speech': 'No voice was detected. Type what you remember, or retry voice.',
     'recording.status.fallback.start_failed': 'Recording could not start. Type your dream here, or retry voice.',
+    'recording.status.fallback.voice_unsupported': 'This device cannot capture voice. Type your dream here instead.',
     'recording.status.retry_voice': 'Retry voice recording',
     'recording.onboarding.step_count': 'Step {current}/{total}',
     'recording.onboarding.voice.body': 'Tap the mic to dictate your dream.',

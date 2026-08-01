@@ -75,6 +75,8 @@ import {
   type VoiceCaptureFailure,
   type VoiceFallbackReason,
 } from '@/lib/recordingVoiceMode';
+import { canDictate } from '@/lib/speechCapability';
+import { resolveDeviceSpeechCapability } from '@/services/nativeSpeechRecognition';
 import { getRecordingDraftProgress } from '@/lib/recordingDraftProgress';
 import {
   getRecordingActivationInsight,
@@ -468,6 +470,48 @@ export default function RecordingScreen() {
   }, []);
 
   const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
+
+  // Voice is blocked only when the device cannot capture speech at all. Every
+  // Android version from minSdk 28 up degrades instead: to the network
+  // recognizer when no local model can be proven, then to server transcription
+  // when no RecognitionService exists.
+  const [isVoiceSupported, setIsVoiceSupported] = useState(true);
+
+  useEffect(() => {
+    // Web resolves speech availability through the Web Speech API instead; the
+    // capability ladder is a native concern.
+    if (Platform.OS === 'web') {
+      return;
+    }
+
+    let isMounted = true;
+
+    resolveDeviceSpeechCapability(transcriptionLocale)
+      .then((capability) => {
+        if (!isMounted) {
+          return;
+        }
+
+        const supported = canDictate(capability);
+        setIsVoiceSupported(supported);
+
+        if (!supported) {
+          setVoiceFallbackReason('voice_unsupported');
+          setInputMode('text');
+        }
+      })
+      .catch(() => {
+        // Probing must never block capture: assume voice works and let the
+        // existing per-attempt fallbacks surface a real failure.
+        if (isMounted) {
+          setIsVoiceSupported(true);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [transcriptionLocale]);
 
   const handleTranscriptChange = useCallback(
     (text: string) => {
@@ -1660,6 +1704,7 @@ export default function RecordingScreen() {
     const fallbackKeyByReason: Record<Exclude<VoiceFallbackReason, null>, string> = {
       permission_denied: 'recording.status.fallback.permission_denied',
       stt_unavailable: 'recording.status.fallback.stt_unavailable',
+      voice_unsupported: 'recording.status.fallback.voice_unsupported',
       language_pack_missing: 'recording.status.fallback.language_pack_missing',
       no_speech: 'recording.status.fallback.no_speech',
       start_failed: 'recording.status.fallback.start_failed',
@@ -2013,6 +2058,7 @@ export default function RecordingScreen() {
                       : t('recording.instructions.text') || "Ou transcris ici les murmures de ton subconscient..."
                   }
                   switchToVoiceLabel={voiceControlLabel}
+                  voiceSupported={isVoiceSupported}
                   voiceStatus={voiceControlStatus}
                   recordingDurationLabel={recordingDurationLabel}
                   spotlightTarget={

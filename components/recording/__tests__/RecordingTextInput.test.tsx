@@ -323,6 +323,62 @@ describe('RecordingTextInput', () => {
     expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
   });
 
+  it('hides the microphone entirely when the device cannot capture speech', () => {
+    render(
+      <RecordingTextInput
+        layout="voiceFirst"
+        voiceSupported={false}
+        value=""
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Type your dream"
+        switchToVoiceLabel="Dictate the dream"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    // The text editor must remain fully usable — blocking voice never blocks capture.
+    expect(screen.queryByTestId('compact-mic')).toBeNull();
+    expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
+  });
+
+  it('keeps the microphone in text layout when the device supports speech', () => {
+    render(
+      <RecordingTextInput
+        layout="textFirst"
+        voiceSupported
+        value=""
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Type your dream"
+        switchToVoiceLabel="Dictate the dream"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    expect(screen.getByTestId('compact-mic')).toBeTruthy();
+  });
+
+  it('hides the microphone in text layout when speech is unsupported', () => {
+    render(
+      <RecordingTextInput
+        layout="textFirst"
+        voiceSupported={false}
+        value=""
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Type your dream"
+        switchToVoiceLabel="Dictate the dream"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    expect(screen.queryByTestId('compact-mic')).toBeNull();
+  });
+
   it('points first-time voice users to the microphone and can be dismissed', () => {
     const onVoiceHintDismiss = jest.fn();
 

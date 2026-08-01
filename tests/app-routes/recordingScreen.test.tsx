@@ -500,6 +500,12 @@ jest.doMock('@/services/geminiService', () => ({
 
 jest.doMock('@/services/nativeSpeechRecognition', () => ({
   registerOfflineModelPromptHandler: () => jest.fn(),
+  resolveDeviceSpeechCapability: jest.fn().mockResolvedValue({
+    tier: 'on_device',
+    reason: 'locale_installed',
+    requiresOnDeviceRecognition: true,
+    localAlternatives: [],
+  }),
 }));
 
 jest.doMock('@/services/quota/GuestDreamCounter', () => ({

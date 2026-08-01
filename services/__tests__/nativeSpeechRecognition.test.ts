@@ -7,6 +7,7 @@ import {
   getSpeechLocaleAvailability,
   mergeFinalChunk,
   registerOfflineModelPromptHandler,
+  resolveDeviceSpeechCapability,
   startNativeSpeechSession,
 } from '../nativeSpeechRecognition';
 
@@ -482,5 +483,135 @@ describe('native speech module integration', () => {
 
     expect(result.error).toBe('lost');
     expect(result.errorCode).toBe('network');
+  });
+});
+
+describe('resolveDeviceSpeechCapability — Android API levels down to minSdk 28', () => {
+  afterEach(() => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'web';
+    delete (Platform as any).Version;
+    __setCachedSpeechModuleForTests(undefined);
+    jest.restoreAllMocks();
+  });
+
+  const androidModule = (overrides: Record<string, unknown> = {}) =>
+    ({
+      isRecognitionAvailable: jest.fn().mockReturnValue(true),
+      supportsOnDeviceRecognition: jest.fn().mockReturnValue(false),
+      getSupportedLocales: jest.fn().mockResolvedValue({ installedLocales: [] }),
+      getDefaultRecognitionService: jest.fn().mockReturnValue({ packageName: 'com.google.android.as' }),
+      getSpeechRecognitionServices: jest.fn().mockReturnValue(['com.google.android.as']),
+      ...overrides,
+    }) as any;
+
+  // The whole point of lowering minSdk: dictation must still resolve on API 28.
+  it.each([28, 29, 30])('keeps dictation available on API %i', async (version: number) => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'android';
+    (Platform as any).Version = version;
+    __setCachedSpeechModuleForTests(androidModule());
+
+    const capability = await resolveDeviceSpeechCapability('fr-FR');
+
+    expect(capability.tier).toBe('network');
+    expect(capability.requiresOnDeviceRecognition).toBe(false);
+  });
+
+  it('does not throw when getSupportedLocales is absent below API 33', async () => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'android';
+    (Platform as any).Version = 28;
+    __setCachedSpeechModuleForTests(androidModule({ getSupportedLocales: undefined }));
+
+    const capability = await resolveDeviceSpeechCapability('fr-FR');
+
+    expect(capability.tier).toBe('network');
+  });
+
+  it('does not force on-device on API 31 where locales cannot be introspected', async () => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'android';
+    (Platform as any).Version = 31;
+    __setCachedSpeechModuleForTests(
+      androidModule({ supportsOnDeviceRecognition: jest.fn().mockReturnValue(true) })
+    );
+
+    const capability = await resolveDeviceSpeechCapability('fr-FR');
+
+    expect(capability.tier).toBe('network');
+    expect(capability.reason).toBe('locale_introspection_unavailable');
+  });
+
+  it('prefers on-device on API 33 when the locale is installed', async () => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'android';
+    (Platform as any).Version = 33;
+    __setCachedSpeechModuleForTests(
+      androidModule({
+        supportsOnDeviceRecognition: jest.fn().mockReturnValue(true),
+        getSupportedLocales: jest.fn().mockResolvedValue({ installedLocales: ['fr-FR', 'de-DE'] }),
+      })
+    );
+
+    const capability = await resolveDeviceSpeechCapability('fr-FR');
+
+    expect(capability.tier).toBe('on_device');
+    expect(capability.requiresOnDeviceRecognition).toBe(true);
+    expect(capability.localAlternatives).toEqual(['de-DE']);
+  });
+
+  it('degrades to the server fallback when no recognition service exists', async () => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'android';
+    (Platform as any).Version = 28;
+    __setCachedSpeechModuleForTests(
+      androidModule({ isRecognitionAvailable: jest.fn().mockReturnValue(false) })
+    );
+
+    const capability = await resolveDeviceSpeechCapability('fr-FR');
+
+    expect(capability.tier).toBe('server_only');
+  });
+
+  it('degrades to the server fallback when the native module is missing', async () => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'android';
+    (Platform as any).Version = 28;
+    __setCachedSpeechModuleForTests(null);
+
+    const capability = await resolveDeviceSpeechCapability('fr-FR');
+
+    expect(capability.tier).toBe('server_only');
+  });
+
+  it('blocks voice only when the microphone is unusable', async () => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'android';
+    (Platform as any).Version = 34;
+    __setCachedSpeechModuleForTests(androidModule());
+
+    const capability = await resolveDeviceSpeechCapability('fr-FR', {
+      microphoneAvailable: false,
+    });
+
+    expect(capability.tier).toBe('unavailable');
+  });
+
+  it('survives a native module that throws on availability probes', async () => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'android';
+    (Platform as any).Version = 29;
+    __setCachedSpeechModuleForTests(
+      androidModule({
+        isRecognitionAvailable: jest.fn(() => {
+          throw new Error('binder died');
+        }),
+      })
+    );
+
+    const capability = await resolveDeviceSpeechCapability('fr-FR');
+
+    expect(capability.tier).toBe('server_only');
   });
 });

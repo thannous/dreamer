@@ -2,6 +2,13 @@ import { Platform } from 'react-native';
 
 import type { ExpoSpeechRecognitionModuleType } from 'expo-speech-recognition/build/ExpoSpeechRecognitionModule.types';
 
+import { APP_TRANSCRIPTION_LOCALES } from '@/lib/locale';
+import {
+  LOCALE_INTROSPECTION_MIN_API,
+  resolveSpeechCapability,
+  type SpeechCapability,
+} from '@/lib/speechCapability';
+
 type NativeSpeechOptions = {
   onPartial?: (text: string) => void;
   /** Recognition ended without the caller requesting stop/abort. */
@@ -361,9 +368,10 @@ export async function ensureOfflineSttModel(locale: string): Promise<boolean> {
     return false;
   }
 
-  // Android 13+ (API 33) needed for offline model download
+  // triggerModelDownload/checkRecognitionSupport are Android 13+ (API 33) only.
+  // Below that the app still dictates, just without offline model management.
   const androidApi = Number(Platform.Version);
-  if (androidApi < 33) {
+  if (androidApi < LOCALE_INTROSPECTION_MIN_API) {
     if (__DEV__) {
       console.log('[nativeSpeech] offline models require Android 13+', { androidApi });
     }
@@ -411,46 +419,104 @@ export async function ensureOfflineSttModel(locale: string): Promise<boolean> {
   }
 }
 
-async function shouldRequireOnDeviceRecognition(
-  speechModule: ExpoSpeechRecognitionModuleType,
+const getCapabilityPlatform = (): 'android' | 'ios' | 'web' => {
+  if (Platform.OS === 'android') return 'android';
+  if (Platform.OS === 'web') return 'web';
+  return 'ios';
+};
+
+const getAndroidApiLevel = (): number | null =>
+  Platform.OS === 'android' ? Number(Platform.Version) : null;
+
+export type DeviceSpeechCapability = SpeechCapability & {
+  androidRecognitionServicePackage?: string;
+};
+
+async function computeSpeechCapability(
+  speechModule: ExpoSpeechRecognitionModuleType | null,
   languageCode: string,
-  androidRecognitionServicePackage?: string
-): Promise<boolean> {
-  if (Platform.OS === 'web') {
-    if (__DEV__) {
-      console.log('[nativeSpeech] web platform, on-device not applicable');
-    }
-    return false;
+  canRecordAudio: boolean
+): Promise<DeviceSpeechCapability> {
+  if (!speechModule) {
+    // No native module: dictation survives through the server transcription
+    // fallback as long as the device can still record audio.
+    return resolveSpeechCapability({
+      platform: getCapabilityPlatform(),
+      androidApiLevel: getAndroidApiLevel(),
+      recognitionAvailable: false,
+      onDeviceRecognitionSupported: false,
+      installedLocales: [],
+      requestedLocale: languageCode,
+      appLocales: APP_TRANSCRIPTION_LOCALES,
+      canRecordAudio,
+    });
   }
 
-  if (!speechModule.supportsOnDeviceRecognition?.()) {
-    return false;
-  }
+  const androidRecognitionServicePackage = resolveAndroidRecognitionServiceOverride(speechModule);
 
+  let recognitionAvailable = false;
   try {
-    // Prefer on-device recognition only when the requested locale is already installed.
+    recognitionAvailable = speechModule.isRecognitionAvailable();
+  } catch {
+    /* treated as unavailable */
+  }
+
+  let onDeviceRecognitionSupported = false;
+  try {
+    onDeviceRecognitionSupported = speechModule.supportsOnDeviceRecognition?.() ?? false;
+  } catch {
+    /* treated as unsupported */
+  }
+
+  // Resolves to an empty list below API 33; the capability ladder treats that
+  // as "unknown", never as "nothing installed".
+  let installedLocales: string[] = [];
+  try {
     const supported = await speechModule.getSupportedLocales?.({ androidRecognitionServicePackage });
-    const installedLocales = supported?.installedLocales ?? [];
-    const normalizedLanguage = normalizeLocale(languageCode);
-    const isInstalled = installedLocales.some((locale) => normalizeLocale(locale) === normalizedLanguage);
-
-    if (__DEV__) {
-      console.log('[nativeSpeech] on-device availability check', {
-        languageCode,
-        isInstalled,
-        installedLocales: installedLocales.length,
-        androidRecognitionServicePackage,
-      });
-    }
-
-    // Returning false lets the recognition service use its online path.
-    return isInstalled;
+    installedLocales = supported?.installedLocales ?? [];
   } catch (error) {
     if (__DEV__) {
-      console.warn('[nativeSpeech] failed to check on-device availability', error);
+      console.warn('[nativeSpeech] failed to read supported locales for capability', error);
     }
-    return false;
   }
+
+  const capability = resolveSpeechCapability({
+    platform: getCapabilityPlatform(),
+    androidApiLevel: getAndroidApiLevel(),
+    recognitionAvailable,
+    onDeviceRecognitionSupported,
+    installedLocales,
+    requestedLocale: languageCode,
+    appLocales: APP_TRANSCRIPTION_LOCALES,
+    canRecordAudio,
+  });
+
+  if (__DEV__) {
+    console.log('[nativeSpeech] capability', {
+      languageCode,
+      tier: capability.tier,
+      reason: capability.reason,
+      androidApiLevel: getAndroidApiLevel(),
+      installedLocales: installedLocales.length,
+      localAlternatives: capability.localAlternatives,
+    });
+  }
+
+  return { ...capability, androidRecognitionServicePackage };
+}
+
+/**
+ * Resolves what dictation this device can deliver for `languageCode`.
+ *
+ * Pass `microphoneAvailable: false` once the recorder has proven the device has
+ * no usable microphone — that is the only input that blocks voice entirely.
+ */
+export async function resolveDeviceSpeechCapability(
+  languageCode: string,
+  options?: { microphoneAvailable?: boolean }
+): Promise<DeviceSpeechCapability> {
+  const speechModule = await loadSpeechRecognitionModule();
+  return computeSpeechCapability(speechModule, languageCode, options?.microphoneAvailable ?? true);
 }
 
 export async function startNativeSpeechSession(
@@ -495,12 +561,8 @@ export async function startNativeSpeechSession(
       return null;
     }
 
-    const androidRecognitionServicePackage = resolveAndroidRecognitionServiceOverride(speechModule);
-    const requiresOnDeviceRecognition = await shouldRequireOnDeviceRecognition(
-      speechModule,
-      languageCode,
-      androidRecognitionServicePackage
-    );
+    const capability = await computeSpeechCapability(speechModule, languageCode, true);
+    const { androidRecognitionServicePackage, requiresOnDeviceRecognition } = capability;
     const supportsRecording = speechModule.supportsRecording?.() ?? false;
     if (__DEV__) {
       const service = speechModule.getDefaultRecognitionService?.();
@@ -511,6 +573,7 @@ export async function startNativeSpeechSession(
         androidRecognitionServicePackage,
         supportsOnDevice,
         requiresOnDeviceRecognition,
+        tier: capability.tier,
         supportsRecording,
       });
     }
