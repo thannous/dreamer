@@ -620,6 +620,33 @@ contact@noctalia.app
 
 The official article is self-canonical, indexable, non-affiliated and names David Nield. Ziff Davis officially lists Lifehacker in its United States media portfolio and publishes a New York legal address. Nield's official site links directly to his Lifehacker profile and exposes a contact form without CAPTCHA. One submission was accepted from `contact@noctalia.app`; this remains outreach, not a backlink or editorial acceptance.
 
+## 30. Android Authority — Andy Walker and editorial team
+
+**Target:** `https://www.androidauthority.com/pixel-journal-alternatives-3603405/`
+**Route:** `https://www.androidauthority.com/contact/`, the official General enquiries form
+**Subject:** no separate subject field on the official form
+**Attempted:** 2026-08-02 at 23:15 CEST; Submit clicked once, but no authoritative acknowledgement appeared and the fields remained populated
+
+Hello Android Authority team,
+
+Andy Walker's Pixel Journal alternatives article compares fast capture, mood tracking, and long-term review. For a future update, one specialist Android workflow you may want to test is recording a dream by voice immediately after waking, before details fade.
+
+Noctalia lets people dictate or type a dream, then keep the transcript, mood, recurring symbols, generated images, and a guided reflection. Transcription and AI features require connectivity; the app is presented as a reflection tool, not medical advice, diagnosis, or prediction.
+
+Current Android workflow, limits, privacy references, and Google Play link:
+https://noctalia.app/en/voice-dream-journal
+
+If useful, I can provide hands-on access and answer factual questions. There is no payment, reciprocal link, ranking, placement, or guaranteed-link request; editorial judgment is entirely yours.
+
+Best regards,
+Thanh Chau
+Founder, Noctalia
+contact@noctalia.app
+
+The October 2025 comparison names Andy Walker and explicitly invites additional app suggestions. Android Authority identifies Authority Media, its Terms place the operator in British Columbia, Canada and state that manufacturers cannot influence editorial content, while the official contact page separates General enquiries from advertising. Optional advertising consent was refused before the factual form was filled. The page exposed no CAPTCHA or paid route, but clicking Submit once produced no visible success or error state and did not reset the fields.
+
+Post-action reconciliation then found the existing 2026-07-31 Android Authority email in section 3 and Gmail message `19fb9a8aa98b5d96`. The form click was therefore a publisher-level deduplication miss even though it targeted a different article and used a different channel. Delivery remains unconfirmed; Android Authority is now closed to all retries and follow-ups. Do not count this form attempt as accepted outreach, a publication, backlink or DR increase.
+
 ## Follow-up policy
 
 Journalists and editors receive at most two follow-ups. Stop immediately after a reply, rejection or opt-out.
@@ -689,6 +716,7 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - Digital Trends mobile-app guide and official editorial contact; qualified but not emailed while the professional Gmail identity is unavailable: `https://www.digitaltrends.com/mobile/best-note-taking-apps/`, `https://www.digitaltrends.com/contact-us/`
 - Android Police Pixel Journal alternatives, named author, editorial guidelines, official editorial-suggestions route and Canadian operator evidence; qualified but not emailed while the professional Gmail identity is unavailable: `https://www.androidpolice.com/android-pixel-journal-alternatives/`, `https://www.androidpolice.com/page/our-editorial-guidelines/`, `https://www.androidpolice.com/contact/`, `https://www.valnetinc.com/en/terms-of-use`, `https://www.valnetinc.com/en/editorial-integrity`
 - Lifehacker tested journal-app comparison, named author's official form and accountable United States operator; one factual form submission was accepted without CAPTCHA: `https://lifehacker.com/tech/best-journal-apps-to-use-instead-of-your-built-in-option`, `https://lifehacker.com/author/david-nield`, `https://davidnield.co/`, `https://www.ziffdavis.com/brands/technology/lifehacker`, `https://www.ziffdavis.com/terms-of-use`
+- Android Authority Pixel Journal alternatives, named author, Authority Media identity, Canadian address, editorial terms and official General enquiries form; one unconfirmed form click occurred after an earlier publisher-level email and the domain is now closed to every retry or follow-up: `https://www.androidauthority.com/pixel-journal-alternatives-3603405/`, `https://www.androidauthority.com/about/`, `https://www.androidauthority.com/terms-conditions/`, `https://www.androidauthority.com/contact/`
 - Rejected publisher: Apps Tested presents a topical current comparison, named staff and no-paid-placement claims, but exposes no Terms, legal entity, accountable address or jurisdiction; its noindex Privacy Policy names only the site and the team history could not be independently tied to the publication, so non-Russian ownership and operations remain unresolved: `https://appstested.com/best-journaling-apps/`, `https://appstested.com/about/`, `https://appstested.com/privacy-policy/`
 - Rejected community route: Slant's Android journaling comparison is stale and its current About, Terms, Privacy and Contact routes return Cloudflare 403 to independent checks; no accountable current operator, address or non-Russian location was verified, so no account, vote or recommendation was created: `https://www.slant.co/topics/1414/~best-journaling-apps-for-android`
 - Rejected or excluded directories: G2's official research policy excludes B2C-only products; Capterra's vendor route targets business-software buyers; both operators are accountable and non-Russian, but neither is a truthful product fit for Noctalia: `https://research.g2.com/methodology/research-faq`, `https://research.g2.com/methodology/categorization`, `https://www.capterra.com/vendors/`
