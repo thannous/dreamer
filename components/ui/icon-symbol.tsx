@@ -23,6 +23,7 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   'book.closed.fill': 'menu-book',
   'chart.bar.fill': 'insert-chart',
   'chart.pie.fill': 'pie-chart',
+  'chart.line.uptrend.xyaxis': 'show-chart',
   'checkmark.circle.fill': 'check-circle',
   'flame.fill': 'local-fire-department',
   'heart.fill': 'favorite',

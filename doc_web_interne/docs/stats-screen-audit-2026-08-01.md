@@ -433,3 +433,27 @@ Une régression a été introduite par P1-7 puis corrigée : appliquer le filtre
 **Action requise avant livraison :** `supabase/migrations/20260801120000_product_analytics_stats_events.sql` est **écrite mais non appliquée**, et l'edge function `api/routes/analytics.ts` n'est pas redéployée. Les événements `stats_*` sont rejetés côté serveur tant que ce n'est pas fait — la migration et le déploiement doivent précéder tout build embarquant cette instrumentation.
 
 **Dette signalée hors périmètre :** `symbol_detail_viewed` accepte `source: 'guide'` côté client (`lib/productAnalytics.ts:142`) mais pas côté serveur (`supabase/functions/api/routes/analytics.ts:123`) — dérive pré-existante, ces événements sont silencieusement perdus.
+
+---
+
+## 11. Phase 1 — profondeur payante (2026-08-02)
+
+Adresse partiellement **#15** (repenser ce que verrouille l'offre) et **#16** (brancher les données calculées mais jamais affichées).
+
+**Décidé par la mesure, pas par intuition.** Un spike a mesuré que les **symboles** ne se concentrent pas : 121 symboles sur 30 rêves → 29 symboles distincts pour 33 mentions rattachées (ratio 1,14). Une section « symboles récurrents » serait restée vide sous ~50 rêves. Les symboles sont donc **hors phase 1** — ils exigent d'abord que le schéma d'analyse renvoie un identifiant canonique. Les **émotions** souffrent du même mal brut (ratio 1,20 fr / 1,04 en) mais un lexique de 12 familles les concentre à **4,92**, et `theme` est une énumération à 4 valeurs, concentrée par construction.
+
+**Livré :**
+
+| Section | Accès | Source |
+|---|---|---|
+| Rythme (barres, jour de la semaine) | Gratuit | `dreamsByDay`, calculé depuis toujours et jamais affiché (#16) |
+| Émotions dominantes | Plus | `lib/dreamEmotions.ts` — 12 familles canoniques × 5 langues |
+| Thèmes au fil du temps (courbes) | Plus | Nouvelle agrégation thème × jour |
+
+**Le changement qui compte** : l'état verrouillé montre désormais **le compte réel et masque le détail** (« 6 émotions reviennent dans ton journal ») au lieu de quatre cartouches « Insight Plus » identiques. Vérifié en conditions réelles : la promesse verrouillée annonce 6, l'état débloqué en livre exactement 6.
+
+**Défauts trouvés par la review et corrigés :** la période « 7 jours » plafonne l'étendue à 7 alors que le seuil de S3 était de 14 — la section était **définitivement insatisfaisable** sous ce filtre ; le fragment `joy*` était silencieusement inerte (clé de bucket sur 4 caractères, stem de 3) ; S2 pouvait annoncer « 0 émotions reviennent » quand rien ne matchait le lexique.
+
+**Non traité, volontairement :** les 4 signaux existants du Profil onirique restent la boussole gratuite ; le dédoublonnage de la page (#18), le rythme vertical (#20) et la sémantique des métriques (#22) restent ouverts.
+
+**Note pour la suite :** `symbols` et `emotions` sont absents des rêves analysés **avant** l'arrivée de ces champs. Pour un utilisateur ancien, la section Émotions sera plus maigre que son journal ne le laisse penser.

@@ -17,6 +17,18 @@ describe('TID', () => {
     expect(TID.Component.StatsPeriodEmpty).toBe('component.stats.periodEmpty');
     expect(TID.Component.StatsTypeLegend).toBe('component.stats.typeLegend');
     expect(TID.Component.StatsTopThemes).toBe('component.stats.topThemes');
+    expect(TID.Component.StatsRhythm).toBe('component.stats.rhythm');
+    expect(TID.Component.StatsRhythmChart).toBe('component.stats.rhythmChart');
+    expect(TID.Component.StatsEmotions).toBe('component.stats.emotions');
+    expect(TID.Component.StatsEmotionsLocked).toBe('component.stats.emotions.locked');
+    expect(TID.Component.StatsEmotionsNotEnough).toBe('component.stats.emotions.notEnough');
+    expect(TID.Component.StatsThemeTrend).toBe('component.stats.themeTrend');
+    expect(TID.Component.StatsThemeTrendChart).toBe('component.stats.themeTrendChart');
+    expect(TID.Component.StatsThemeTrendLegend).toBe('component.stats.themeTrendLegend');
+    expect(TID.Component.StatsThemeTrendLocked).toBe('component.stats.themeTrend.locked');
+    expect(TID.Component.StatsThemeTrendNotEnough).toBe('component.stats.themeTrend.notEnough');
+    expect(TID.Button.StatsEmotionsUpgradeCta).toBe('btn.stats.emotions.upgradeCta');
+    expect(TID.Button.StatsThemeTrendUpgradeCta).toBe('btn.stats.themeTrend.upgradeCta');
     expect(TID.Button.StatsPeriodChip).toBe('btn.stats.periodChip');
     expect(TID.Button.StatsPeriodReset).toBe('btn.stats.periodReset');
     expect(TID.Button.StatsMostDiscussedDream).toBe('btn.stats.mostDiscussedDream');

@@ -18,12 +18,14 @@ import { PageHeader } from '@/components/inspiration/PageHeader';
 import { SectionHeading } from '@/components/inspiration/SectionHeading';
 import { NoctaliaScreenHeader, type NoctaliaHeaderAction } from '@/components/NoctaliaScreenHeader';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { StatsLockedSection, StatsNotEnoughData } from '@/components/stats/StatsLockedSection';
+import { StatsRankedList, type StatsRankedRow } from '@/components/stats/StatsRankedList';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
-import type { LabelLineConfig, pieDataItem } from 'react-native-gifted-charts';
-import { PieChart } from 'react-native-gifted-charts';
+import type { DataSet, LabelLineConfig, barDataItem, pieDataItem } from 'react-native-gifted-charts';
+import { BarChart, LineChart, PieChart } from 'react-native-gifted-charts';
 import { Line, Rect, Svg, Text as SvgText } from 'react-native-svg';
 
 import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
@@ -40,14 +42,17 @@ import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getStatsDreamCountBucket, trackProductEvent } from '@/lib/analytics';
+import { buildEmotionProfile, type EmotionProfile } from '@/lib/dreamEmotions';
+import { compareDreamFacets } from '@/lib/dreamFacets';
 import { buildDreamProfile, type DreamProfile } from '@/lib/dreamProfile';
-import { getDreamTypeLabel } from '@/lib/dreamLabels';
+import { getDreamThemeLabel, getDreamTypeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
 import { getDreamStatsInsight, type DreamStatsInsightKind } from '@/lib/dreamStatsInsight';
 import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { splitLabelText } from '@/lib/pieLabelUtils';
 import { deriveUserTier } from '@/lib/quotaTier';
-import type { DreamAnalysis, DreamType, SubscriptionTier } from '@/lib/types';
+import { startOfDay } from '@/lib/streakUtils';
+import type { DreamAnalysis, DreamTheme, DreamType, SubscriptionTier } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
 
 const CHART_HORIZONTAL_INSET = ThemeLayout.spacing.lg * 3;
@@ -65,6 +70,51 @@ const MIN_LABEL_WIDTH = 84;
 const MAX_LABEL_WIDTH = 196;
 const MIN_LABEL_LINE = 14;
 const MAX_LABEL_LINE = 28;
+
+// `getPieMetrics` subtracts CHART_HORIZONTAL_INSET (= 72) from the window width, but the real
+// horizontal chrome around a chart is scrollContent padding (md x2) + sectionInner padding
+// (22 x2) + chartContainer paddingHorizontal (md x2) = 108. That under-count is why the pie
+// callouts touch the donut at 390 px (audit §6.5, excluded item #20). The two new charts
+// measure it honestly rather than inheriting the bug.
+const SECTION_INNER_PADDING = 22;
+const CHART_CONTENT_INSET =
+  ThemeLayout.spacing.md * 2 + SECTION_INNER_PADDING * 2 + ThemeLayout.spacing.md * 2;
+// Desktop web lays the sections out in a wrapped row, so useWindowDimensions() reports the
+// window, not the column the chart lives in. The pie survives that only because
+// MAX_PIE_RADIUS caps it; a bar or line chart sized from the raw window width would spill out
+// of its card at 1440 px. Capping avoids an onLayout pass and a second render.
+// Checked against the narrowest desktop column the grid can produce: at DESKTOP_BREAKPOINT
+// (1024) a 60% chart column yields (1024 - 32) * 0.6 - 44 - 32 ~= 519 usable px.
+const MAX_CHART_CONTENT_WIDTH = 460;
+const MIN_CHART_CONTENT_WIDTH = 200;
+
+const RHYTHM_CHART_HEIGHT = 132;
+const RHYTHM_Y_AXIS_LABEL_WIDTH = 26;
+const RHYTHM_MIN_BAR_WIDTH = 10;
+const RHYTHM_MAX_BAR_WIDTH = 26;
+const RHYTHM_MIN_SPACING = 4;
+const RHYTHM_MAX_SPACING = 22;
+
+const THEME_TREND_CHART_HEIGHT = 148;
+const THEME_TREND_Y_AXIS_LABEL_WIDTH = 26;
+const THEME_TREND_MAX_POINTS = 30;
+const THEME_TREND_MIN_SPAN_DAYS = 14;
+const THEME_TREND_MIN_ANALYZED_DREAMS = 5;
+const THEME_TREND_MAX_X_LABELS = 5;
+const THEME_TREND_HIDE_POINTS_ABOVE = 12;
+const DAY_IN_MS = 24 * 60 * 60 * 1000;
+
+const WEEKDAY_LABEL_OPTIONS: Intl.DateTimeFormatOptions = { weekday: 'short' };
+const TREND_LABEL_OPTIONS: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' };
+
+// Indexed BY WEEKDAY NUMBER, not by position in `stats.dreamsByDay`: 2023-12-31 was a Sunday,
+// so WEEKDAY_REFERENCE_BY_DAY[d].getDay() === d for d in 0..6. Reading the label off
+// `entry.weekday` instead of the array index keeps the row correct even if ORDERED_WEEKDAYS
+// in useDreamStatistics is ever reordered. Local-time constructor, so no timezone shift.
+const WEEKDAY_REFERENCE_BY_DAY = Array.from({ length: 7 }, (_, day) =>
+  new Date(2023, 11, 31 + day).getTime(),
+);
+
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
 type StatsPeriod = 'all' | 'week' | 'month' | 'year';
 
@@ -115,12 +165,31 @@ const SECTION_ANIMATION_DELAY = {
   profile: 40,
   insight: 80,
   streaks: 120,
-  dreamTypes: 0,
-  topThemes: 40,
+  // Deferred group: these mount together, later, so the ramp restarts at 0.
+  rhythm: 0,
+  dreamTypes: 40,
+  topThemes: 80,
+  // Second restart. The two content sections sit a full viewport below Top themes, and the
+  // property this ramp exists to hold — every section starts fading within 120 ms of its own
+  // mount (audit P2-19) — must survive adding three sections. Extending linearly to 200 ms
+  // would have broken it. The same discontinuity already exists at streaks(120) ->
+  // dreamTypes.
+  emotions: 0,
+  themeTrend: 40,
   engagement: 80,
 } as const;
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
+// Bars in the S2 locked preview. Decorative and capped on purpose: the honest number is the
+// count line above them, so the bar count never has to equal `distinctFamilies`.
+const EMOTION_LOCKED_PREVIEW_ROWS = 5;
+const LOCKED_PREVIEW_RATIO_STEP = 0.18;
+
+// __DEV__-only lexicon-rot alarm. Ratio only — never `unmatched.samples`, which is raw
+// dream-derived free text (lib/dreamEmotions.ts privacy note).
+const EMOTION_COVERAGE_ALERT_MENTIONS = 20;
+const EMOTION_COVERAGE_ALERT_RATIO = 0.8;
 
 function getLabelHeight(lineCount: number) {
   const safeCount = Math.max(1, lineCount);
@@ -128,6 +197,64 @@ function getLabelHeight(lineCount: number) {
 }
 
 const PIE_LABEL_HEIGHT = getLabelHeight(MAX_LABEL_LINES);
+
+const getChartContentWidth = (screenWidth: number) =>
+  clamp(
+    Math.min(screenWidth, MAX_CHART_CONTENT_WIDTH + CHART_CONTENT_INSET) - CHART_CONTENT_INSET,
+    MIN_CHART_CONTENT_WIDTH,
+    MAX_CHART_CONTENT_WIDTH,
+  );
+
+// gifted-charts labels the y axis with `showFractionalValues: false`, so a maxValue that is
+// not a multiple of noOfSections silently prints repeated integers. Derive an integer step.
+const getIntegerAxis = (maxCount: number, maxSections = 4) => {
+  const safeMax = Math.max(1, maxCount);
+  const noOfSections = Math.min(maxSections, safeMax);
+  const stepValue = Math.ceil(safeMax / noOfSections);
+  return { noOfSections, maxValue: stepValue * noOfSections };
+};
+
+type RhythmMetrics = {
+  plotWidth: number;
+  barWidth: number;
+  spacing: number;
+  initialSpacing: number;
+  endSpacing: number;
+};
+
+// Same discipline as getPieMetrics: derive every dimension from the window width once, in a
+// pure function, and memoise the call. The wrapper lays a bar chart out as
+// initialSpacing + n x (barWidth + spacing) + endSpacing, which is where the +0.5 comes from
+// (it mirrors the library's own adjustToWidth formula, gifted-charts-core BarChart/index.js).
+function getRhythmMetrics(screenWidth: number, barCount: number): RhythmMetrics {
+  const plotWidth = Math.max(getChartContentWidth(screenWidth) - RHYTHM_Y_AXIS_LABEL_WIDTH, 120);
+  const slot = plotWidth / (Math.max(1, barCount) + 0.5);
+  const barWidth = Math.round(clamp(slot * 0.6, RHYTHM_MIN_BAR_WIDTH, RHYTHM_MAX_BAR_WIDTH));
+  const spacing = Math.round(clamp(slot - barWidth, RHYTHM_MIN_SPACING, RHYTHM_MAX_SPACING));
+  const leftover = plotWidth - barCount * (barWidth + spacing);
+  const initialSpacing = Math.round(Math.max(spacing, leftover / 2 + spacing / 2));
+
+  return { plotWidth, barWidth, spacing, initialSpacing, endSpacing: spacing };
+}
+
+type ThemeTrendMetrics = {
+  plotWidth: number;
+  spacing: number;
+  initialSpacing: number;
+  endSpacing: number;
+};
+
+function getThemeTrendMetrics(screenWidth: number, pointCount: number): ThemeTrendMetrics {
+  const plotWidth = Math.max(
+    getChartContentWidth(screenWidth) - THEME_TREND_Y_AXIS_LABEL_WIDTH,
+    120,
+  );
+  const initialSpacing = 10;
+  const endSpacing = 10;
+  const spacing = (plotWidth - initialSpacing - endSpacing) / Math.max(1, pointCount - 1);
+
+  return { plotWidth, spacing, initialSpacing, endSpacing };
+}
 
 type PieMetrics = {
   chartWidth: number;
@@ -186,6 +313,161 @@ function getPieMetrics(screenWidth: number): PieMetrics {
     pieChartDimension: pieRadius * 2 + pieExtraRadius * 2,
     pieChartCenter: pieRadius + pieExtraRadius,
   };
+}
+
+export type ThemeTrendSeries = {
+  theme: DreamTheme;
+  /** One bucket count per entry in `ThemeTrend.points`. */
+  counts: number[];
+  total: number;
+};
+
+export type ThemeTrend = {
+  /** Bucket start timestamps, ascending. Empty when there is nothing to plot. */
+  points: number[];
+  /** One entry per theme actually present, ranked with compareDreamFacets. At most 4. */
+  series: ThemeTrendSeries[];
+  /** Observed span between the first and last plotted dream, inclusive. */
+  spanDays: number;
+  /** Analysed, themed dreams that landed inside the window. */
+  analyzedDreams: number;
+  /** Days per bucket. 1 until the window needs more than THEME_TREND_MAX_POINTS points. */
+  bucketDays: number;
+  /**
+   * Hard ceiling the selected period puts on `spanDays`, or null for 'all' (unbounded).
+   * The span threshold is capped to it: under the 7-day period a 14-day span is unreachable
+   * by construction, so an uncapped threshold would make this section permanently
+   * unsatisfiable rather than merely empty. Deliberately NOT the resolved window length —
+   * for 'all' that is derived from the journal itself, and capping to it would dissolve the
+   * threshold entirely.
+   */
+  maxSpanDays: number | null;
+  /** Highest single bucket value across all series. Drives the y axis. */
+  maxCount: number;
+};
+
+const EMPTY_THEME_TREND: ThemeTrend = {
+  points: [],
+  series: [],
+  spanDays: 0,
+  analyzedDreams: 0,
+  bucketDays: 1,
+  maxCount: 0,
+  maxSpanDays: 0,
+};
+
+// Math.round, not Math.floor: startOfDay() returns local midnight, and across a DST boundary
+// a one-day gap is 23 or 25 hours, which floor() would count as zero days.
+const dayDiff = (fromDayStart: number, toDayStart: number) =>
+  Math.round((toDayStart - fromDayStart) / DAY_IN_MS);
+
+/**
+ * Theme x day aggregation for "Themes over time" (S3).
+ *
+ * Lives here, not on useDreamStatistics, on purpose. The hook receives an already-filtered
+ * array and cannot know which window produced it — which is exactly why its `dreamsOverTime`
+ * hard-codes 30 days and has never been renderable under a 7-day or 12-month filter. Teaching
+ * it the period would change its signature and ripple into every caller and its test file.
+ * Re-render cost is identical either way (both recompute on the same `periodDreams` identity
+ * change), so the decision rests on coupling alone.
+ *
+ * Exported so a unit test can drive it without rendering the screen. Expo Router only reads
+ * `default`, `ErrorBoundary` and `unstable_settings` from a route module; other named exports
+ * are ignored.
+ *
+ * `now` is a defaulted parameter rather than an argument the memo passes, mirroring
+ * `filterDreamsByStatsPeriod` above: it keeps the clock read out of the hook body (which
+ * react-hooks/purity flags) while staying injectable from a test.
+ */
+export function buildThemeTrend(
+  dreams: DreamAnalysis[],
+  period: StatsPeriod,
+  now: number = Date.now(),
+): ThemeTrend {
+  const themed = dreams.filter((dream) => Boolean(dream.theme) && isDreamAnalyzed(dream));
+  if (themed.length === 0) return EMPTY_THEME_TREND;
+
+  const todayStart = startOfDay(now).getTime();
+  let earliestDay = todayStart;
+  themed.forEach((dream) => {
+    const day = startOfDay(dream.id).getTime();
+    if (day < earliestDay) earliestDay = day;
+  });
+
+  // 'all' is anchored on today so the right edge always means "now", like dreamsOverTime.
+  const windowDays =
+    period === 'all'
+      ? Math.max(1, dayDiff(earliestDay, todayStart) + 1)
+      : STATS_PERIOD_DAYS[period];
+  const windowStart = todayStart - (windowDays - 1) * DAY_IN_MS;
+
+  // Bucketing keeps the point count bounded: 'all' on a two-year journal would otherwise be
+  // 730 x-positions x 4 series inside a nested ScrollView.
+  const bucketDays = Math.max(1, Math.ceil(windowDays / THEME_TREND_MAX_POINTS));
+  const pointCount = Math.max(1, Math.ceil(windowDays / bucketDays));
+
+  const counts = new Map<DreamTheme, number[]>();
+  let analyzedDreams = 0;
+  let firstDay = todayStart;
+  let lastDay = windowStart;
+
+  themed.forEach((dream) => {
+    const day = startOfDay(dream.id).getTime();
+    const offset = dayDiff(windowStart, day);
+    if (offset < 0 || offset >= windowDays) return;
+
+    const theme = dream.theme as DreamTheme;
+    const bucket = Math.min(Math.floor(offset / bucketDays), pointCount - 1);
+    const series = counts.get(theme) ?? new Array<number>(pointCount).fill(0);
+    series[bucket] += 1;
+    counts.set(theme, series);
+
+    analyzedDreams += 1;
+    if (day < firstDay) firstDay = day;
+    if (day > lastDay) lastDay = day;
+  });
+
+  if (analyzedDreams === 0) return EMPTY_THEME_TREND;
+
+  const series = Array.from(counts.entries())
+    .map(([theme, values]) => ({
+      theme,
+      counts: values,
+      total: values.reduce((sum, value) => sum + value, 0),
+    }))
+    // Same comparator as the pie and Top themes. Audit §7.2: two rankings of the same facet
+    // on one screen must never disagree on a tie.
+    .sort((a, b) => compareDreamFacets(a.total, a.theme, b.total, b.theme));
+
+  const maxCount = series.reduce(
+    (max, item) => item.counts.reduce((inner, value) => Math.max(inner, value), max),
+    0,
+  );
+
+  return {
+    points: Array.from(
+      { length: pointCount },
+      (_, index) => windowStart + index * bucketDays * DAY_IN_MS,
+    ),
+    series,
+    // Observed span, not the requested window: five dreams inside one week must not clear a
+    // 14-day threshold merely because '12 months' happens to be selected.
+    spanDays: dayDiff(firstDay, lastDay) + 1,
+    analyzedDreams,
+    bucketDays,
+    maxCount,
+    maxSpanDays: period === 'all' ? null : STATS_PERIOD_DAYS[period],
+  };
+}
+
+/**
+ * Span the timeline needs before it will draw, capped to the requested window.
+ * Uncapped, the 7-day period could never reach the 14-day minimum — the section would tell
+ * the user to "keep going for 7 more days" forever, whatever their journal contained.
+ */
+function getThemeTrendRequiredSpan(trend: ThemeTrend): number {
+  if (trend.maxSpanDays === null) return THEME_TREND_MIN_SPAN_DAYS;
+  return Math.min(THEME_TREND_MIN_SPAN_DAYS, Math.max(1, trend.maxSpanDays));
 }
 
 type DreamPieDataItem = pieDataItem & {
@@ -336,6 +618,109 @@ const SectionGlass = memo(function SectionGlass({
         {children}
       </View>
     </StaticFlatGlassCard>
+  );
+});
+
+type StatsRhythmSectionProps = {
+  noctalia: NoctaliaDesignTokens;
+  colors: ReturnType<typeof useTheme>['colors'];
+  dreamsByDay: { weekday: number; count: number }[];
+  weekdayLabels: string[];
+  metrics: RhythmMetrics;
+  t: ReturnType<typeof useTranslation>['t'];
+  formatNumber: ReturnType<typeof useLocaleFormatting>['formatNumber'];
+};
+
+/**
+ * "Rythme" (S1, free). Renders stats.dreamsByDay, which has been computed since day one and
+ * shown nowhere (audit §3.3).
+ *
+ * Every colour prop below has a hard-coded library default of black, gray or lightgray
+ * (gifted-charts-core/dist/utils/constants.js: BarDefaults.frontColor = 'black',
+ * AxesAndRulesDefaults.xAxisColor / yAxisColor = 'black', rulesColor = 'lightgray'), and both
+ * axis label styles fall through to React Native's own black Text default. This is the exact
+ * trap that made the donut hole unreadable in dark mode (audit §6.1) — every one of them is
+ * bound to a noctalia token, explicitly.
+ */
+const StatsRhythmSection = memo(function StatsRhythmSection({
+  noctalia,
+  colors,
+  dreamsByDay,
+  weekdayLabels,
+  metrics,
+  t,
+  formatNumber,
+}: StatsRhythmSectionProps) {
+  const countLabel = (count: number) =>
+    t(count === 1 ? 'stats.legend.count_one' : 'stats.legend.count', {
+      count: formatNumber(count),
+    });
+
+  const axis = getIntegerAxis(
+    dreamsByDay.reduce((max, entry) => Math.max(max, entry.count), 0),
+  );
+
+  const barData: barDataItem[] = dreamsByDay.map((entry) => ({
+    value: entry.count,
+    label: weekdayLabels[entry.weekday],
+    frontColor: noctalia.accent.base,
+  }));
+
+  // Same contract as the pie: one accessible element carrying every number a sighted user
+  // reads off the bars.
+  const accessibilityLabel = [
+    t('stats.section.dreams_by_day'),
+    ...dreamsByDay.map(
+      (entry) => `${weekdayLabels[entry.weekday]}: ${countLabel(entry.count)}`,
+    ),
+  ].join(', ');
+
+  return (
+    <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.rhythm}>
+      <SectionHeading
+        title={t('stats.section.dreams_by_day')}
+        icon="waveform"
+        colors={colors}
+      />
+      <View style={styles.chartContainer}>
+        <View
+          accessible
+          accessibilityRole="image"
+          accessibilityLabel={accessibilityLabel}
+          testID={TID.Component.StatsRhythmChart}
+          style={styles.chartFrame}
+        >
+          <BarChart
+            data={barData}
+            width={metrics.plotWidth}
+            height={RHYTHM_CHART_HEIGHT}
+            barWidth={metrics.barWidth}
+            spacing={metrics.spacing}
+            initialSpacing={metrics.initialSpacing}
+            endSpacing={metrics.endSpacing}
+            barBorderTopLeftRadius={4}
+            barBorderTopRightRadius={4}
+            maxValue={axis.maxValue}
+            noOfSections={axis.noOfSections}
+            yAxisLabelWidth={RHYTHM_Y_AXIS_LABEL_WIDTH}
+            // The wrapper always mounts a horizontal ScrollView; disabling it keeps 7 bars
+            // from becoming draggable and stops it competing with the page scroll.
+            disableScroll
+            showScrollIndicator={false}
+            // Defaults to false today; pinned so a library bump cannot start animating
+            // inside the ScrollView.
+            isAnimated={false}
+            frontColor={noctalia.accent.base}
+            backgroundColor="transparent"
+            xAxisColor={noctalia.surface.border}
+            yAxisColor={noctalia.surface.border}
+            rulesColor={noctalia.surface.border}
+            yAxisTextStyle={[styles.chartAxisLabel, { color: noctalia.text.tertiary }]}
+            xAxisLabelTextStyle={[styles.chartXAxisLabel, { color: noctalia.text.secondary }]}
+          />
+        </View>
+      </View>
+    </SectionGlass>
   );
 });
 
@@ -787,6 +1172,326 @@ const DreamProfileCard = memo(function DreamProfileCard({
   );
 });
 
+type StatsEmotionsSectionProps = {
+  noctalia: NoctaliaDesignTokens;
+  colors: ReturnType<typeof useTheme>['colors'];
+  profile: EmotionProfile;
+  rows: StatsRankedRow[];
+  maxCount: number;
+  canShowFamilies: boolean;
+  t: ReturnType<typeof useTranslation>['t'];
+  formatNumber: ReturnType<typeof useLocaleFormatting>['formatNumber'];
+  onUpgradePress: () => void;
+};
+
+/**
+ * "Émotions dominantes" (S2, Plus). The section this phase exists for: it replaces one of the
+ * four identical "Insight Plus" cartouches the audit §7.1 condemned — zero information scent,
+ * hiding values that were free two sections below — with a gate that states a real, computed
+ * number and locks only the detail.
+ *
+ * Three states behind one heading, in THIS order. Threshold first, tier second:
+ *   below threshold -> StatsNotEnoughData, naming how many more dreams are needed
+ *   free            -> StatsLockedSection: "N emotions keep coming back", detail locked
+ *   Plus            -> StatsRankedList, the SAME component Top themes renders
+ * Reversing the two checks would show a subscriber a locked card, and would show a free user
+ * "0 emotions keep coming back" — strictly worse than the cartouche this replaces.
+ *
+ * The list is unsliced. `stats.emotions.locked.count` promises `profile.distinctFamilies`;
+ * the unlocked state must deliver exactly that many rows or the gate is a lie.
+ */
+const StatsEmotionsSection = memo(function StatsEmotionsSection({
+  noctalia,
+  colors,
+  profile,
+  rows,
+  maxCount,
+  canShowFamilies,
+  t,
+  formatNumber,
+  onUpgradePress,
+}: StatsEmotionsSectionProps) {
+  const heading = (
+    <SectionHeading
+      title={t('stats.section.emotion_families')}
+      subtitle={t('stats.section.emotion_families.subtitle')}
+      icon="heart.fill"
+      colors={colors}
+    />
+  );
+
+  if (!profile.hasEnoughDreams) {
+    return (
+      <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.emotions}>
+        {heading}
+        <StatsNotEnoughData
+          noctalia={noctalia}
+          title={t('stats.not_enough.title')}
+          body={t(
+            profile.dreamsUntilReady === 1
+              ? 'stats.emotions.not_enough.body_one'
+              : 'stats.emotions.not_enough.body',
+            { count: formatNumber(profile.dreamsUntilReady) },
+          )}
+          testID={TID.Component.StatsEmotionsNotEnough}
+        />
+      </SectionGlass>
+    );
+  }
+
+  if (!canShowFamilies) {
+    return (
+      <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.emotions}>
+        {heading}
+        <StatsLockedSection
+          noctalia={noctalia}
+          countLabel={t(
+            profile.distinctFamilies === 1
+              ? 'stats.emotions.locked.count_one'
+              : 'stats.emotions.locked.count',
+            { count: formatNumber(profile.distinctFamilies) },
+          )}
+          bodyLabel={t('stats.emotions.locked.body')}
+          ctaLabel={t('stats.locked.cta')}
+          // Decorative ramp, capped at 5. The bars carry no count semantics — the line above
+          // them does — so this cap never contradicts `distinctFamilies`.
+          previewRows={profile.families
+            .slice(0, EMOTION_LOCKED_PREVIEW_ROWS)
+            .map((item, index) => ({
+              id: item.family,
+              ratio: 1 - index * LOCKED_PREVIEW_RATIO_STEP,
+            }))}
+          onPress={onUpgradePress}
+          testID={TID.Component.StatsEmotionsLocked}
+          ctaTestID={TID.Button.StatsEmotionsUpgradeCta}
+        />
+      </SectionGlass>
+    );
+  }
+
+  return (
+    <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.emotions}>
+      {heading}
+      <StatsRankedList
+        noctalia={noctalia}
+        rows={rows}
+        maxCount={maxCount}
+        testID={TID.Component.StatsEmotions}
+      />
+    </SectionGlass>
+  );
+});
+
+type StatsThemeTrendSectionProps = {
+  noctalia: NoctaliaDesignTokens;
+  colors: ReturnType<typeof useTheme>['colors'];
+  trend: ThemeTrend;
+  metrics: ThemeTrendMetrics;
+  canShowChart: boolean;
+  t: ReturnType<typeof useTranslation>['t'];
+  formatNumber: ReturnType<typeof useLocaleFormatting>['formatNumber'];
+  formatDate: ReturnType<typeof useLocaleFormatting>['formatDate'];
+  onUpgradePress: () => void;
+};
+
+/**
+ * "Themes over time" (S3, Plus). Three states inside one section, so the heading always has a
+ * place on the page:
+ *   - below threshold  -> StatsNotEnoughData, naming what is still missing
+ *   - free             -> StatsLockedSection: the real count, a locked shape
+ *   - Plus             -> the curve
+ *
+ * Colour defaults handled the same way as S1. LineChart adds one more trap worth naming:
+ * LineDefaults.endFillColor is literally 'white' — the same defect as the donut's
+ * innerCircleColor. It is inert only because areaChart stays off. Do not enable areaChart
+ * without setting startFillColor AND endFillColor.
+ *
+ * The legend and the accessible label read `dream.theme.*` ("Calme"), not the glossed
+ * `stats.theme.*` ("Calme (doux, rassurant)") that Top themes uses: the gloss is sized for a
+ * list row, not a chart chip.
+ */
+const StatsThemeTrendSection = memo(function StatsThemeTrendSection({
+  noctalia,
+  colors,
+  trend,
+  metrics,
+  canShowChart,
+  t,
+  formatNumber,
+  formatDate,
+  onUpgradePress,
+}: StatsThemeTrendSectionProps) {
+  const countLabel = (count: number) =>
+    t(count === 1 ? 'stats.legend.count_one' : 'stats.legend.count', {
+      count: formatNumber(count),
+    });
+  const themeColor = (theme: DreamTheme) => colors.tags[theme];
+
+  const requiredSpan = getThemeTrendRequiredSpan(trend);
+  const hasEnoughData =
+    trend.spanDays >= requiredSpan &&
+    trend.analyzedDreams >= THEME_TREND_MIN_ANALYZED_DREAMS;
+
+  const heading = (
+    <SectionHeading
+      title={t('stats.section.theme_timeline')}
+      subtitle={t('stats.section.theme_timeline.subtitle')}
+      icon="chart.line.uptrend.xyaxis"
+      colors={colors}
+    />
+  );
+
+  if (!hasEnoughData) {
+    // Dreams before days: it is the actionable one.
+    const missingDreams = THEME_TREND_MIN_ANALYZED_DREAMS - trend.analyzedDreams;
+    const missingDays = requiredSpan - trend.spanDays;
+    const body =
+      missingDreams > 0
+        ? t(
+            missingDreams === 1
+              ? 'stats.theme_timeline.not_enough.dreams_one'
+              : 'stats.theme_timeline.not_enough.dreams',
+            { count: formatNumber(missingDreams) },
+          )
+        : t(
+            missingDays === 1
+              ? 'stats.theme_timeline.not_enough.days_one'
+              : 'stats.theme_timeline.not_enough.days',
+            { count: formatNumber(missingDays) },
+          );
+
+    return (
+      <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.themeTrend}>
+        {heading}
+        <StatsNotEnoughData
+          noctalia={noctalia}
+          title={t('stats.not_enough.title')}
+          body={body}
+          testID={TID.Component.StatsThemeTrendNotEnough}
+        />
+      </SectionGlass>
+    );
+  }
+
+  if (!canShowChart) {
+    return (
+      <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.themeTrend}>
+        {heading}
+        <StatsLockedSection
+          noctalia={noctalia}
+          countLabel={t(
+            trend.series.length === 1
+              ? 'stats.theme_timeline.locked.count_one'
+              : 'stats.theme_timeline.locked.count',
+            {
+              count: formatNumber(trend.series.length),
+              days: formatNumber(trend.spanDays),
+            },
+          )}
+          bodyLabel={t('stats.theme_timeline.locked.body')}
+          ctaLabel={t('stats.locked.cta')}
+          // Decorative ramp, never the real proportions: the count is the honest part, the
+          // shape is not the answer. Same step as S2 so the two locked cards cannot drift.
+          previewRows={trend.series.map((item, index) => ({
+            id: item.theme,
+            ratio: 1 - index * LOCKED_PREVIEW_RATIO_STEP,
+          }))}
+          onPress={onUpgradePress}
+          testID={TID.Component.StatsThemeTrendLocked}
+          ctaTestID={TID.Button.StatsThemeTrendUpgradeCta}
+        />
+      </SectionGlass>
+    );
+  }
+
+  const axis = getIntegerAxis(trend.maxCount);
+  const hideDataPoints = trend.points.length > THEME_TREND_HIDE_POINTS_ABOVE;
+  const labelStride = Math.max(1, Math.ceil(trend.points.length / THEME_TREND_MAX_X_LABELS));
+  // With `dataSet`, the wrapper reads x labels from dataSet[0].data (LineChart/index.js:1121,
+  // `(data0 ?? data).map`). Chart-level xAxisLabelTexts is consulted per index for those same
+  // items, which is the only way to label a multi-series chart without coupling the labels to
+  // whichever theme happens to rank first.
+  const xAxisLabelTexts = trend.points.map((timestamp, index) =>
+    index % labelStride === 0 ? formatDate(timestamp, TREND_LABEL_OPTIONS) : '',
+  );
+
+  const dataSet: DataSet[] = trend.series.map((item) => ({
+    data: item.counts.map((value) => ({ value })),
+    color: themeColor(item.theme),
+    dataPointsColor: themeColor(item.theme),
+    hideDataPoints,
+  }));
+
+  const rangeLabel = t('stats.theme_timeline.a11y_range', {
+    from: formatDate(trend.points[0], TREND_LABEL_OPTIONS),
+    to: formatDate(trend.points[trend.points.length - 1], TREND_LABEL_OPTIONS),
+  });
+  const accessibilityLabel = [
+    t('stats.section.theme_timeline'),
+    ...trend.series.map(
+      (item) =>
+        `${getDreamThemeLabel(item.theme, t) ?? item.theme}: ${countLabel(item.total)}, ${rangeLabel}`,
+    ),
+  ].join(', ');
+
+  return (
+    <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.themeTrend}>
+      {heading}
+      <View style={styles.chartContainer}>
+        <View
+          accessible
+          accessibilityRole="image"
+          accessibilityLabel={accessibilityLabel}
+          testID={TID.Component.StatsThemeTrendChart}
+          style={styles.chartFrame}
+        >
+          <LineChart
+            dataSet={dataSet}
+            width={metrics.plotWidth}
+            height={THEME_TREND_CHART_HEIGHT}
+            spacing={metrics.spacing}
+            initialSpacing={metrics.initialSpacing}
+            endSpacing={metrics.endSpacing}
+            thickness={2}
+            dataPointsRadius={2.5}
+            maxValue={axis.maxValue}
+            noOfSections={axis.noOfSections}
+            yAxisLabelWidth={THEME_TREND_Y_AXIS_LABEL_WIDTH}
+            xAxisLabelTexts={xAxisLabelTexts}
+            disableScroll
+            showScrollIndicator={false}
+            isAnimated={false}
+            // Per-series colours are on the dataSet; these are the fallbacks the library
+            // would otherwise resolve to 'black' / 'black' / 'gray'.
+            color={noctalia.accent.base}
+            dataPointsColor={noctalia.accent.base}
+            textColor={noctalia.text.tertiary}
+            backgroundColor="transparent"
+            xAxisColor={noctalia.surface.border}
+            yAxisColor={noctalia.surface.border}
+            rulesColor={noctalia.surface.border}
+            yAxisTextStyle={[styles.chartAxisLabel, { color: noctalia.text.tertiary }]}
+            xAxisLabelTextStyle={[styles.chartXAxisLabel, { color: noctalia.text.secondary }]}
+          />
+        </View>
+        <View style={styles.legendContainer} testID={TID.Component.StatsThemeTrendLegend}>
+          {trend.series.map((item) => (
+            <View
+              key={item.theme}
+              style={[styles.legendItem, { backgroundColor: noctalia.surface.soft }]}
+            >
+              <View style={[styles.legendColor, { backgroundColor: themeColor(item.theme) }]} />
+              <Text style={[styles.legendText, { color: noctalia.text.primary }]}>
+                {getDreamThemeLabel(item.theme, t) ?? item.theme} ({countLabel(item.total)})
+              </Text>
+            </View>
+          ))}
+        </View>
+      </View>
+    </SectionGlass>
+  );
+});
+
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
 export default function StatisticsScreen() {
@@ -803,7 +1508,7 @@ export default function StatisticsScreen() {
     loading: subscriptionLoading,
   } = useSubscription();
   useClearWebFocus();
-  const { formatNumber, formatPercent } = useLocaleFormatting();
+  const { formatDate, formatNumber, formatPercent } = useLocaleFormatting();
   const [selectedStatsPeriod, setSelectedStatsPeriod] = useState<StatsPeriod>('all');
   const [showStatsPeriodSheet, setShowStatsPeriodSheet] = useState(false);
   const periodDreams = useMemo(
@@ -819,7 +1524,69 @@ export default function StatisticsScreen() {
     : navigationLayout.barHeight
       + navigationLayout.minimumBottomInset
       + ThemeLayout.spacing.lg;
+  // Hoisted above the memos that read it: `themeTrend` and `emotionProfile` are both gated on
+  // it, and a `useState` declared further down would be a use-before-declaration.
+  const [showDeferredSections, setShowDeferredSections] = useState(false);
   const pieMetrics = useMemo(() => getPieMetrics(width), [width]);
+  const rhythmMetrics = useMemo(
+    () => getRhythmMetrics(width, stats.dreamsByDay.length),
+    [stats.dreamsByDay.length, width],
+  );
+  // Deferred on purpose: the section is behind `showDeferredSections`, and gating the memo
+  // keeps the aggregation off the first frame the way the three existing deferred sections
+  // keep their render off it (audit §5.7).
+  const themeTrend = useMemo(
+    () =>
+      showDeferredSections
+        ? buildThemeTrend(periodDreams, selectedStatsPeriod)
+        : EMPTY_THEME_TREND,
+    [periodDreams, selectedStatsPeriod, showDeferredSections],
+  );
+  const themeTrendMetrics = useMemo(
+    () => getThemeTrendMetrics(width, themeTrend.points.length),
+    [themeTrend.points.length, width],
+  );
+  // Period-scoped, like every other number on the page (audit P1-7): the profile describes
+  // the active window, not the whole journal — the same rule `dreamProfile` follows. Deferred
+  // for the same reason the theme trend is: it keeps the ~975-fragment lexicon index off the
+  // first frame. Built by calling the real builder with `[]` while gated, so the neutral
+  // profile cannot drift from the type.
+  const emotionProfile = useMemo(
+    () => buildEmotionProfile(showDeferredSections ? periodDreams : []),
+    [periodDreams, showDeferredSections],
+  );
+  const maxEmotionCount = useMemo(
+    () => Math.max(...emotionProfile.families.map((item) => item.count), 1),
+    [emotionProfile.families],
+  );
+  // UNSLICED on purpose. The locked state sells `distinctFamilies`; if the unlocked list
+  // showed fewer rows than the number the free user was shown, the gate would be a lie.
+  // The ceiling is 12 by construction — the fixed family set.
+  const emotionRows = useMemo<StatsRankedRow[]>(
+    () =>
+      emotionProfile.families.map((item) => ({
+        id: item.family,
+        label: getEmotionFamilyLabel(item.family, t) ?? item.family,
+        countLabel: t(item.count === 1 ? 'stats.legend.count_one' : 'stats.legend.count', {
+          count: formatNumber(item.count),
+        }),
+        count: item.count,
+      })),
+    [emotionProfile.families, formatNumber, t],
+  );
+  // The only consumer of `coverage`. The lexicon is data and it rots when the analysis prompt
+  // or the model's vocabulary drifts; coverage falling is the only symptom, and it is silent.
+  // __DEV__ only, RATIO only — never `unmatched.samples`, and never to analytics.
+  useEffect(() => {
+    if (!__DEV__) return;
+    if (emotionProfile.totalMentions < EMOTION_COVERAGE_ALERT_MENTIONS) return;
+    if (emotionProfile.coverage >= EMOTION_COVERAGE_ALERT_RATIO) return;
+    console.warn(
+      `[StatisticsScreen] Emotion lexicon coverage ${Math.round(
+        emotionProfile.coverage * 100,
+      )}% over ${emotionProfile.totalMentions} mentions`,
+    );
+  }, [emotionProfile.coverage, emotionProfile.totalMentions]);
   // Journal-wide profile. Only the analytics payload reads it: `stats_screen_viewed`
   // pairs `profile_readiness` with an unfiltered `dream_count_bucket`, so both
   // properties must describe the whole journal or the event mixes two scales.
@@ -928,7 +1695,6 @@ export default function StatisticsScreen() {
   }, [formatNumber, selectedPeriodLabel, selectedStatsPeriod, stats, t]);
 
   const [showAnimations, setShowAnimations] = useState(false);
-  const [showDeferredSections, setShowDeferredSections] = useState(false);
   const [statsFocusEpoch, setStatsFocusEpoch] = useState(0);
   const statsViewTrackedEpochRef = useRef(0);
   const hasStatisticsContent = loaded && periodDreams.length > 0;
@@ -1015,6 +1781,16 @@ export default function StatisticsScreen() {
     pieMetrics.pieLabelWidth,
   ]);
 
+  // Locale-aware weekday abbreviations, no new i18n keys. Indexed by weekday number so the
+  // labels cannot drift out of step with ORDERED_WEEKDAYS in useDreamStatistics.
+  const weekdayLabels = useMemo(
+    () =>
+      WEEKDAY_REFERENCE_BY_DAY.map((timestamp) =>
+        formatDate(timestamp, WEEKDAY_LABEL_OPTIONS),
+      ),
+    [formatDate],
+  );
+
   const topDreamTypes = useMemo(() => stats.dreamTypeDistribution.slice(0, 5), [stats.dreamTypeDistribution]);
 
   // Memoize heavy pie chart data computation
@@ -1066,6 +1842,26 @@ export default function StatisticsScreen() {
   const maxThemeCount = useMemo(
     () => Math.max(...stats.topThemes.map((theme) => theme.count), 1),
     [stats.topThemes],
+  );
+
+  // Rows for the shared ranked-list visual. The `stats.theme.<value>` lookup and its
+  // raw-enum fallback are carried over verbatim from the previous inline block — the
+  // fallback is exactly what the tied-themes test reads back under the echo translator.
+  const topThemeRows = useMemo<StatsRankedRow[]>(
+    () =>
+      stats.topThemes.map((theme) => {
+        const themeKey = `stats.theme.${theme.theme}`;
+        const themeTranslation = t(themeKey);
+        return {
+          id: theme.theme,
+          label: themeTranslation === themeKey ? theme.theme : themeTranslation,
+          countLabel: t(theme.count === 1 ? 'stats.legend.count_one' : 'stats.legend.count', {
+            count: formatNumber(theme.count),
+          }),
+          count: theme.count,
+        };
+      }),
+    [formatNumber, stats.topThemes, t],
   );
 
   const statsHeaderActions = useMemo<NoctaliaHeaderAction[]>(
@@ -1397,6 +2193,30 @@ export default function StatisticsScreen() {
               </SectionGlass>
             </View>
 
+            {/*
+              Rythme (S1, free). Directly after Overview, as the contract binds, and deferred
+              like the other charts. `stats.dreamsByDay` has been computed since day one and
+              rendered nowhere (audit §3.3). No `stats.totalDreams > 0` half on the gate: the
+              screen already early-returns to StatsPeriodEmpty when `periodDreams` is empty,
+              and `stats` is computed from `periodDreams`, so the check is dead code.
+            */}
+            {showDeferredSections ? (
+              <View
+                style={[styles.section, isDesktopLayout && styles.sectionRhythmDesktop]}
+                testID={TID.Component.StatsRhythm}
+              >
+                <StatsRhythmSection
+                  noctalia={noctalia}
+                  colors={colors}
+                  dreamsByDay={stats.dreamsByDay}
+                  weekdayLabels={weekdayLabels}
+                  metrics={rhythmMetrics}
+                  t={t}
+                  formatNumber={formatNumber}
+                />
+              </View>
+            ) : null}
+
             {showDreamProfileSection ? (
               <>
                 <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
@@ -1619,65 +2439,72 @@ export default function StatisticsScreen() {
                     icon="star.fill"
                     colors={colors}
                   />
-                  <View style={styles.themesContainer} testID={TID.Component.StatsTopThemes}>
-                    {stats.topThemes.map((theme, index) => {
-                      const isLast = index === stats.topThemes.length - 1;
-                      const barWidth = Math.round((theme.count / maxThemeCount) * 100);
-                      const themeKey = `stats.theme.${theme.theme}`;
-                      const themeTranslation = t(themeKey);
-                      const themeLabel = themeTranslation === themeKey ? theme.theme : themeTranslation;
-                      const themeCountLabel = t(
-                        theme.count === 1 ? 'stats.legend.count_one' : 'stats.legend.count',
-                        { count: formatNumber(theme.count) },
-                      );
-                      return (
-                        <View key={theme.theme}>
-                          <View
-                            style={[
-                              styles.themeItem,
-                              !isLast && { borderBottomWidth: 1, borderBottomColor: noctalia.surface.border },
-                            ]}
-                          >
-                            <View style={[styles.themeRank, { backgroundColor: noctalia.surface.soft }]}>
-                              <Text style={[styles.themeRankText, { color: noctalia.accent.base }]}>{index + 1}</Text>
-                            </View>
-                            <View style={styles.themeContent}>
-                              <Text style={[styles.themeText, { color: noctalia.text.primary }]}>
-                                {themeLabel}
-                              </Text>
-                              <Text style={[styles.themeCount, { color: noctalia.text.secondary }]}>
-                                {themeCountLabel}
-                              </Text>
-                              <View
-                                style={styles.themeBarTrack}
-                                accessibilityRole="progressbar"
-                                accessibilityLabel={themeLabel}
-                                accessibilityValue={{
-                                  min: 0,
-                                  max: maxThemeCount,
-                                  now: theme.count,
-                                  text: themeCountLabel,
-                                }}
-                              >
-                                <View
-                                  style={[
-                                    styles.themeBarFill,
-                                    {
-                                      backgroundColor: noctalia.accent.base,
-                                      width: `${barWidth}%` as any,
-                                    },
-                                  ]}
-                                />
-                              </View>
-                            </View>
-                          </View>
-                        </View>
-                      );
-                    })}
-                  </View>
+                  <StatsRankedList
+                    noctalia={noctalia}
+                    rows={topThemeRows}
+                    maxCount={maxThemeCount}
+                    testID={TID.Component.StatsTopThemes}
+                  />
                 </SectionGlass>
               </View>
             )}
+
+            {/*
+              Émotions dominantes (S2, Plus). Between Top themes and Themes over time: the
+              contract's thesis is "Plus describes your dreams", so the depth sections sit with
+              the content, never below an activity counter.
+
+              Hidden entirely when the active period holds no dream carrying emotions — the
+              same rule the pie, Top themes and S3 follow. The "not enough yet" state is for a
+              near miss (1-2 dreams); telling a user with zero analysed dreams to analyse three
+              more only repeats the next-best-action card three sections above.
+            */}
+            {showDeferredSections &&
+            emotionProfile.dreamsWithEmotions > 0 &&
+            // Above the threshold the section only has something to say once at least one
+            // family matched. The lexicon is not expected to cover everything, so a journal
+            // can carry plenty of emotions and still rank none — and "0 emotions keep coming
+            // back" is precisely the empty promise this phase exists to remove.
+            (!emotionProfile.hasEnoughDreams || emotionProfile.distinctFamilies > 0) ? (
+              <View style={[styles.section, isDesktopLayout && styles.sectionEmotionsDesktop]}>
+                <StatsEmotionsSection
+                  noctalia={noctalia}
+                  colors={colors}
+                  profile={emotionProfile}
+                  rows={emotionRows}
+                  maxCount={maxEmotionCount}
+                  canShowFamilies={isPlusActive}
+                  t={t}
+                  formatNumber={formatNumber}
+                  onUpgradePress={handleDreamProfileUpgradePress}
+                />
+              </View>
+            ) : null}
+
+            {/*
+              Themes over time (S3, Plus). Sits with the content sections and above
+              Engagement: the contract's thesis is "Plus describes your dreams", so the two
+              depth sections must not sit below an activity counter. S2 (Émotions) goes
+              immediately above this block.
+            */}
+            {showDeferredSections && themeTrend.series.length > 0 ? (
+              <View
+                style={[styles.section, isDesktopLayout && styles.sectionThemeTrendDesktop]}
+                testID={TID.Component.StatsThemeTrend}
+              >
+                <StatsThemeTrendSection
+                  noctalia={noctalia}
+                  colors={colors}
+                  trend={themeTrend}
+                  metrics={themeTrendMetrics}
+                  canShowChart={isPlusActive}
+                  t={t}
+                  formatNumber={formatNumber}
+                  formatDate={formatDate}
+                  onUpgradePress={handleDreamProfileUpgradePress}
+                />
+              </View>
+            ) : null}
 
             {/* Engagement */}
             {showDeferredSections && (
@@ -1811,6 +2638,20 @@ const styles = StyleSheet.create({
     width: '40%',
     minWidth: 320,
   },
+  // Full width: Rythme sits between two full-width cards, and a 60% card there would leave a
+  // 40% hole in the grid.
+  sectionRhythmDesktop: {
+    width: '100%',
+  },
+  sectionThemeTrendDesktop: {
+    width: '60%',
+    minWidth: 420,
+  },
+  // Declared for S2, which is a ranked list like Top themes.
+  sectionEmotionsDesktop: {
+    width: '40%',
+    minWidth: 320,
+  },
   sectionEngagementDesktop: {
     width: '100%',
   },
@@ -1827,7 +2668,7 @@ const styles = StyleSheet.create({
     opacity: 0.85,
   },
   sectionInner: {
-    padding: 22,
+    padding: SECTION_INNER_PADDING,
   },
 
   // Stat cards
@@ -2158,6 +2999,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: ThemeLayout.spacing.sm,
   },
+  // The gifted-charts wrapper does its own vertical maths (container height = plot + 50, with
+  // marginBottom = xAxisLabelsHeight - 55), so this frame only centres — it must not impose a
+  // height or clip overflow.
+  chartFrame: {
+    alignSelf: 'center',
+    marginBottom: ThemeLayout.spacing.sm,
+  },
+  chartAxisLabel: {
+    fontSize: 11,
+    fontFamily: Fonts.spaceGrotesk.regular,
+  },
+  chartXAxisLabel: {
+    fontSize: 11,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    textAlign: 'center',
+  },
   pieChartCenterText: {
     fontSize: 24,
     fontFamily: Fonts.fraunces.bold,
@@ -2187,52 +3044,6 @@ const styles = StyleSheet.create({
   legendText: {
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.regular,
-  },
-
-  // Themes
-  themesContainer: {
-    gap: 0,
-  },
-  themeItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 4,
-    gap: ThemeLayout.spacing.md,
-  },
-  themeRank: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  themeRankText: {
-    fontSize: 16,
-    fontFamily: Fonts.fraunces.bold,
-  },
-  themeContent: {
-    flex: 1,
-  },
-  themeText: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    marginBottom: 2,
-  },
-  themeCount: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    marginBottom: 6,
-  },
-  themeBarTrack: {
-    height: 3,
-    borderRadius: 1.5,
-    overflow: 'hidden',
-  },
-  themeBarFill: {
-    height: 3,
-    borderRadius: 1.5,
-    opacity: 0.6,
   },
 
   // Most Discussed
