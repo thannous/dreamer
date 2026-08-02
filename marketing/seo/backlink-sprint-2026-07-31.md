@@ -23,9 +23,28 @@ The detailed referring-domain report was intentionally not opened. The expanded 
 
 The 4K-click Search Console milestone was received at `thannous@gmail.com` in message `19fb7b8d5e1cd617`. It reports the 28-day threshold reached on 2026-07-29; it is retained as a dated milestone rather than a full Search Console export.
 
+## Evidence update — 2026-08-02
+
+Ahrefs Gmail message `19fbe540f2066626` reports, for 2026-07-01 through 2026-08-01, three new referring domains, four new backlinks and one lost backlink. This is an alert delta, not a current absolute DR or referring-domain total; those absolute metrics were not re-read and must not be inferred from the email.
+
+The four alerted surfaces were independently checked before being counted:
+
+| Surface | Current evidence | Treatment |
+| --- | --- | --- |
+| PeerPush | `https://peerpush.com/p/noctalia` is HTTP 200, self-canonical and `index, follow`; the direct Noctalia link has `rel="noopener"`. The old `.net` route now uses `.com` as canonical. Ahrefs reports DR 70. | Retain as a high-value indexable followed citation. |
+| StackScope | The rendered 3 July directory filters to a real Noctalia row and a public 9.1/10 launch report. StackScope identifies DATAFREAK LTD, company 17328826, and publishes current About, Privacy, Terms and contact routes. The launch page's outbound links use `rel="nofollow noopener"`. | Legitimate topical citation, but current DOM overrides Ahrefs' historical dofollow label; exclude from followed equity. |
+| Droidspy | The public package profile is HTTP 200, indexable and self-canonical, with a direct Website link using `noopener noreferrer` and no `nofollow`. Terms, Privacy and Contact pages are live. | Count as followed, but only as a low-authority secondary citation: Ahrefs reports DR 0 and the public legal pages do not name an operator. |
+| Dreammeaniings | The Spanish article currently returns HTTP 200 and links to Noctalia with `nofollow`; Ahrefs reports DR 7 and also marked the same URL lost after a crawl error. | Low-trust, unstable citation. Do not pursue, pay, reciprocate or count it as quality authority. |
+
+The manual page totals therefore move from four to five verified indexable followed pages and from four to six verified indexable nofollow pages. This is a page-level audit, not proof that Ahrefs DR has increased.
+
+F6S remains a qualified operator, but account creation did not pass the execution gate. Google sign-in did not expose an account chooser in the in-app browser; the email recovery path for `contact@noctalia.app` then required reCAPTCHA. No CAPTCHA was solved or bypassed, no password was invented and no profile was created. The next step requires the user to complete the human verification before the public organization fields can be reviewed.
+
+The authenticated Gmail connector for `thannous@gmail.com` showed no reply from the editorial target domains after 2026-08-01. That check does not cover the separate `contact@noctalia.app` inbox and is not evidence that every form or address is unanswered.
+
 Tracking files:
 
-- `marketing/seo/backlink-results-2026-07-31.csv`: eleven manually audited surfaces, including four indexable followed pages on independent domains, one rendered Reddit `nofollow ugc` citation, one lost historical listing and one search-visible store-derived link whose treatment remains unverified;
+- `marketing/seo/backlink-results-2026-07-31.csv`: fourteen manually audited surfaces, including five indexable followed pages, six indexable nofollow pages, one nonindexable profile, one lost historical listing and one search-visible store-derived link whose treatment remains unverified;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
 - `marketing/seo/backlink-prospects-2026-07-31.csv`: 54 researched opportunities: 2 P0 corrections/reclamations, 23 P1 prospects, 28 P2 prospects or exclusions and 1 P3 launch route.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: ten recipient-specific editorial drafts, current contact routes and a two-follow-up stop policy.
