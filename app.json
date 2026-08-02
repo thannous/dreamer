@@ -119,6 +119,7 @@
         }
       ],
       "./plugins/withRevenueCatTestStoreBuild",
+      "./plugins/withSoftExceptionLogging",
       "expo-sqlite",
       "react-native-edge-to-edge",
       "expo-image",
