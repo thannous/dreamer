@@ -453,6 +453,48 @@ Best,
 Thannous
 Noctalia
 
+## 23. Android Guías — Lorena Figueredo and editorial team
+
+**Target:** `https://androidguias.com/las-apps-android-de-diario-personal-para-conocerte-mejor/`
+**Route:** `androidguias@actualidadblog.com`, published on Android Guías' official contact page
+**Subject:** `diarios Android por voz`
+**Sent:** 2026-08-02 at 21:18 CEST; Gmail message `19fc3e97bd835195`
+
+Hola equipo de Android Guías,
+
+Vuestra comparativa de apps de diario para Android distingue bien entre diarios generales, seguimiento emocional y opciones multimedia. Para una futura actualización, quizá os resulte útil probar una categoría más específica: diario de sueños con captura por voz antes de que se olviden los detalles.
+
+Noctalia es una app Android con voz o texto, transcripción, seguimiento de símbolos recurrentes, imágenes generadas y reflexión guiada. El procesamiento de IA requiere conexión y se presenta como reflexión, no como diagnóstico ni predicción:
+https://noctalia.app/es/diario-de-suenos-por-voz
+
+¿Os serviría una ficha factual y acceso para una prueba? La decisión editorial es completamente vuestra; no hay pago, intercambio de enlaces ni condiciones de publicación.
+
+Un saludo,
+Thanh Chau
+Noctalia
+
+## 24. SlashGear — JC Torres, Dave McQuilling and staff
+
+**Target:** `https://www.slashgear.com/1173504/best-journal-apps-to-help-you-cherish-your-memories/`
+**Route:** `staff@slashgear.com`, published in SlashGear's current structured contact data
+**Subject:** `specialist Android journals`
+**Sent:** 2026-08-02 at 21:18 CEST; Gmail message `19fc3e96d8df1d9f`
+
+Hi SlashGear team,
+
+Your journaling-app guide makes a useful point that specialized journals should be judged by the workflow they serve, not as interchangeable diaries. One Android-specific category for a future refresh is dream capture by voice, where details can disappear before someone starts typing.
+
+Noctalia supports voice or text capture, transcription, recurring-symbol review, generated imagery, and guided reflection. Its AI features require connectivity and are explicitly non-medical and non-predictive:
+https://noctalia.app/en/voice-dream-journal
+
+Would a factual reviewer brief and hands-on access be useful for a future update? Editorial judgment is entirely yours; there is no payment, reciprocal link, ranking, or placement request.
+
+Best,
+Thanh Chau
+Noctalia
+
+Both messages were sent by the currently authenticated Gmail connector as `Thanh Chau <thannous@gmail.com>`, not from `contact@noctalia.app`. Do not resend them from the professional address; wait for a reply and reconnect the connector before any new email outreach.
+
 ## Follow-up policy
 
 Journalists and editors receive at most two follow-ups. Stop immediately after a reply, rejection or opt-out.
@@ -508,9 +550,14 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - Elsewhere comparison, UK operator, research page and official team route: `https://medium.com/@elsewheredreams/best-dream-journal-apps-of-2025-fb7f800371b8`, `https://elsewhere.to/privacy`, `https://elsewhere.to/research`
 - Vowise comparison, named author, identified operator, current Terms and official contact: `https://www.vowise.com/blog/best-voice-journal-apps-2026/`, `https://www.vowise.com/terms-of-service/`, `https://www.vowise.com/contact/`
 - Android Central feature, named author, Future ownership and editorial standards: `https://www.androidcentral.com/apps-software/how-i-learned-to-manage-my-emotions-with-googles-journal-app`, `https://www.androidcentral.com/about`
+- Android Guías comparison, editorial team, Spanish operator, privacy and official contact: `https://androidguias.com/las-apps-android-de-diario-personal-para-conocerte-mejor/`, `https://androidguias.com/equipo-editorial/`, `https://androidguias.com/politica-privacidad/`, `https://androidguias.com/contacto/`
+- SlashGear journal-app guide, United States operator, editorial policies and official staff contact data: `https://www.slashgear.com/1173504/best-journal-apps-to-help-you-cherish-your-memories/`, `https://www.slashgear.com/about/`, `https://www.slashgear.com/policies/`
+- Android Headlines comparison and United States publisher/contact evidence; outreach remains blocked because the editorial addresses are protected by an automated challenge: `https://www.androidheadlines.com/best-journal-android-apps`, `https://www.androidheadlines.com/about`, `https://www.androidheadlines.com/contact`, `https://www.androidheadlines.com/privacy-policy`
+- Zapier journaling guide whose current criteria exclude special-purpose and AI-enhanced journals: `https://zapier.com/blog/best-journaling-apps/`
+- Rejected publishers: AndroidGuys does not expose a current accountable legal entity or address and its Privacy Policy retains an unresolved hosting-country placeholder; Technical Ustad exposes no legal entity or accountable location and its Privacy Policy contains staging and country placeholders: `https://androidguys.com/about-2/`, `https://androidguys.com/request-app-review/`, `https://technicalustad.com/dream-journal-apps/`, `https://technicalustad.com/about-us/`, `https://technicalustad.com/privacy-policy/`
 - Sleep.com dream-journal article, Mattress Firm operator and editorial standards: `https://www.sleep.com/sleep-health/dream-journal`, `https://www.sleep.com/editorial-guidelines`, `https://www.sleep.com/terms`, `https://www.sleep.com/privacy-policy`
 - Rejected publisher: ViviDiary exposes no verified legal operator, Terms or official editorial route for its broad hands-on and privacy claims: `https://blog.vividiary.live/compare/best-voice-journaling-apps-2026`
 - Rejected or paused publishers: Lound lacks a verified named publisher and usable editorial contact; Dayora's Terms and product pages materially conflict on AI-training use; remembr has no verified operator and its privacy, terms and contact pages return 404; Kiomora exposes no named operator and its protected contact values are malformed or misspelled; DreamStream names a research lead but not an accountable legal operator or location; Inner Dispatch exposes no verifiable operator, legal pages or editorial route. The non-Russian ownership and operations gate remains unresolved for DreamStream and Inner Dispatch, so neither was contacted: `https://lound.ai/blog/best-voice-journaling-apps-2026/`, `https://lound.ai/privacy/`, `https://www.dayora.ai/blog/best-voice-journaling-apps-2026`, `https://www.dayora.ai/terms`, `https://www.dayora.ai/contact`, `https://remembr.live/blog/best-voice-journal-apps-2026`, `https://remembr.live/`, `https://kiomora.com/blog/best-ai-journal-apps/`, `https://kiomora.com/about/`, `https://kiomora.com/press/`, `https://dreamstream.art/blog/best-dream-apps-2026/`, `https://dreamstream.art/about/`, `https://dreamstream.art/termsofservice/`, `https://innerdispatch.com/best-voice-journaling-apps/`
 - Sleep Foundation exclusion evidence: `https://www.sleepfoundation.org/about-us/pitch-us`
 
-Verification on 2026-07-31 through 2026-08-02: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android's official address then failed with `554 5.7.1 Relay access denied`; no alternate address was inferred. Holstee was verified and contacted once as the replacement target. Know Your Ethos was accepted only as a competitor-owned editorial prospect after its team byline, company story, legal navigation, official FAQ address and balanced competitor limitations were checked; its published address then rejected the factual request with `550 5.1.1`, so no follow-up or guessed alternative is permitted. Dreamz Journal's prominently advertised direct-editor mailbox also proved nonexistent or unable to receive mail, so its route was closed without a retry or inferred address. Acuity, CortexOS, Dearly and Android Central were contacted only after their named author or operator, current article, official route, legal or trust material and Gmail history had been checked. Lound, Dayora, remembr, Kiomora, DreamStream and Inner Dispatch were paused or rejected for the documented identity, legal, location, privacy-consistency or contact-route deficiencies. Sleep.com passed the independent operator and editorial-standards gate, but no suitable official editorial contact was found, so its customer-support route was not misused. Dream Studies Portal's previously prepared form was submitted once on 2026-08-01 without bypassing reCAPTCHA, and its own page displayed the authoritative sent confirmation.
+Verification on 2026-07-31 through 2026-08-02: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android's official address then failed with `554 5.7.1 Relay access denied`; no alternate address was inferred. Holstee was verified and contacted once as the replacement target. Know Your Ethos was accepted only as a competitor-owned editorial prospect after its team byline, company story, legal navigation, official FAQ address and balanced competitor limitations were checked; its published address then rejected the factual request with `550 5.1.1`, so no follow-up or guessed alternative is permitted. Dreamz Journal's prominently advertised direct-editor mailbox also proved nonexistent or unable to receive mail, so its route was closed without a retry or inferred address. Acuity, CortexOS, Dearly, Android Central, Android Guías and SlashGear were contacted only after their named author or operator, current article, official route, legal or trust material and Gmail history had been checked. The Android Guías and SlashGear destination pages returned HTTP 200 immediately before send, but the authenticated connector used `thannous@gmail.com`; those messages must not be duplicated. Lound, Dayora, remembr, Kiomora, DreamStream, Inner Dispatch, AndroidGuys and Technical Ustad were paused or rejected for the documented identity, legal, location, privacy-consistency or contact-route deficiencies. Sleep.com and Android Headlines passed operator gates, but neither exposed a usable current editorial inbox without misusing support or bypassing a challenge. Zapier was excluded because Noctalia falls outside the guide's stated selection criteria. Dream Studies Portal's previously prepared form was submitted once on 2026-08-01 without bypassing reCAPTCHA, and its own page displayed the authoritative sent confirmation.
