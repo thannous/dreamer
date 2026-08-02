@@ -67,6 +67,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Médias à télécharger</h2>
     <ul class="list-disc pl-5 space-y-2">
+      <li><a href="/fr/applications-journal-de-reves#dataset" class="text-dream-salmon hover:underline">Jeu de données comparatif des journaux de rêves (CSV, 11 apps)</a></li>
       <li><a href="/logo512.png" class="text-dream-salmon hover:underline">Icône carrée de l'app (PNG 512 × 512)</a></li>
       <li><a href="/logo/logo_noctalia.png" class="text-dream-salmon hover:underline">Logo Noctalia (PNG)</a></li>
       <li><a href="/screenshot/product-hunt/noctalia-product-hunt-01-voice-capture.png" class="text-dream-salmon hover:underline">Capture vocale (PNG 1270 × 760)</a></li>
@@ -85,6 +86,7 @@
       <li><a href="/fr/tarifs" class="text-dream-salmon hover:underline">Offres et tarifs</a></li>
       <li><a href="/logo512.png" class="text-dream-salmon hover:underline">Icône de l'app</a></li>
       <li><a href="/fr/a-propos" class="text-dream-salmon hover:underline">À propos de Noctalia</a></li>
+      <li><a href="/fr/applications-journal-de-reves#methodology" class="text-dream-salmon hover:underline">Méthodologie du comparatif des journaux de rêves</a></li>
       <li><a href="/fr/methodologie-contenus-reves" class="text-dream-salmon hover:underline">Méthodologie des contenus et des données</a></li>
     </ul>
   </section>

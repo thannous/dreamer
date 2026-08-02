@@ -69,6 +69,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Downloadable media</h2>
     <ul class="list-disc pl-5 space-y-2">
+      <li><a href="/en/dream-journal-apps#dataset" class="text-dream-salmon hover:underline">Dream journal app comparison dataset (CSV, 11 apps)</a></li>
       <li><a href="/video/noctalia-product-walkthrough-en-2026-07.mp4" class="text-dream-salmon hover:underline">Android product walkthrough (71 seconds, 1920 × 1080 MP4, no audio)</a></li>
       <li><a href="/logo512.png" class="text-dream-salmon hover:underline">Square app icon (512 × 512 PNG)</a></li>
       <li><a href="/logo/logo_noctalia.png" class="text-dream-salmon hover:underline">Noctalia logo (PNG)</a></li>
@@ -88,6 +89,7 @@
       <li><a href="/en/pricing" class="text-dream-salmon hover:underline">Plans and pricing</a></li>
       <li><a href="/logo512.png" class="text-dream-salmon hover:underline">App icon</a></li>
       <li><a href="/en/about" class="text-dream-salmon hover:underline">About Noctalia</a></li>
+      <li><a href="/en/dream-journal-apps#methodology" class="text-dream-salmon hover:underline">Dream journal app comparison methodology</a></li>
       <li><a href="/en/dream-content-methodology" class="text-dream-salmon hover:underline">Dream content and data methodology</a></li>
     </ul>
   </section>

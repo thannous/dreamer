@@ -23,20 +23,20 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-31T00:00:00+02:00",
+  "modifiedTime": "2026-08-03T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Meilleures applications journal de rêves 2026\",\n  \"description\": \"Comparez Noctalia avec DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud et les nouveaux journaux de rêves IA.\",\n  \"url\": \"https://noctalia.app/fr/applications-journal-de-reves\",\n  \"inLanguage\": \"fr\",\n  \"dateModified\": \"2026-07-31T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Meilleures applications journal de rêves 2026\",\n  \"description\": \"Comparez Noctalia avec DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud et les nouveaux journaux de rêves IA.\",\n  \"url\": \"https://noctalia.app/fr/applications-journal-de-reves\",\n  \"inLanguage\": \"fr\",\n  \"dateModified\": \"2026-08-03T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Meilleures applications de journal de rêves en 2026\",\n      \"item\": \"https://noctalia.app/fr/applications-journal-de-reves\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Meilleures applications de journal de rêves en 2026</h1>
-<p class="text-sm text-purple-300/70 mb-6">Page mise à jour le 31 juillet 2026 · Données produit vérifiées le 12 juillet 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Méthodologie mise à jour le 3 août 2026 · Données produit vérifiées le 12 juillet 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Le bon journal de rêves dépend de votre habitude au réveil, de votre besoin d’interprétation IA, de la place du rêve lucide et du niveau de clarté souhaité sur la confidentialité.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -89,12 +89,14 @@
     </ul>
   </section>
 
-  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+  <section id="methodology" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
     <h2 class="text-2xl font-serif text-white mb-4">Méthodologie</h2>
-    <p>Cette page est une comparaison produit et SEO maintenue à partir de fiches stores publiques, de pages officielles et des sources Noctalia. Les prix, notes, téléchargements et fonctionnalités changent; vérifiez les sources liées avant de décider.</p>
+    <p><strong>Périmètre et preuves.</strong> Cette comparaison consigne les informations visibles sur les fiches publiques des stores et les pages officielles des produits à la date de vérification indiquée. Elle inclut les journaux de rêves dédiés et les journaux plus généralistes dont le parcours consacré aux rêves est clairement documenté. Prix, notes, disponibilité et fonctionnalités peuvent changer : vérifiez les sources officielles liées avant publication ou achat.</p>
+    <p class="mt-4"><strong>Méthode d’examen.</strong> Il s’agit d’une revue documentaire, ni d’une étude clinique ni d’un test pratique en laboratoire. Nous ne créons pas de comptes concurrents, n’achetons pas leurs abonnements et ne déduisons pas les fonctions qui ne sont pas documentées publiquement. « Oui » signifie qu’une source officielle présentait la fonction à la date de vérification ; les qualificatifs comme « limitée » signalent une preuve publique incomplète ou plus restreinte.</p>
+    <p class="mt-4"><strong>Indépendance et corrections.</strong> Noctalia figure dans la comparaison et son éditeur publie cette page : elle doit donc être considérée comme une source intéressée. Aucun concurrent n’a payé pour être inclus, les liens sources ne sont pas affiliés et l’ordre du tableau n’est ni une note ni un classement. Pour demander une correction, envoyez une source officielle datée à <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>.</p>
   </section>
 
-  <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
+  <section id="dataset" class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5 scroll-mt-28">
     <h2 class="text-2xl font-serif text-white mb-4">Télécharger le jeu de données</h2>
     <p>Le fichier CSV reprend la comparaison de 11 applications dans un format filtrable et citable par les chercheurs, journalistes et auteurs de tests. Chaque ligne indique sa source et sa date de vérification.</p>
     <p class="mt-4"><a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Télécharger la comparaison des journaux de rêves (CSV)</a></p>

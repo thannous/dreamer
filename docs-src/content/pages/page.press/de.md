@@ -67,6 +67,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Medien zum Herunterladen</h2>
     <ul class="list-disc pl-5 space-y-2">
+      <li><a href="/de/traumtagebuch-apps#dataset" class="text-dream-salmon hover:underline">Vergleichsdaten zu Traumtagebuch-Apps (CSV, 11 Apps)</a></li>
       <li><a href="/logo512.png" class="text-dream-salmon hover:underline">Quadratisches App-Icon (PNG 512 × 512)</a></li>
       <li><a href="/logo/logo_noctalia.png" class="text-dream-salmon hover:underline">Noctalia-Logo (PNG)</a></li>
       <li><a href="/screenshot/product-hunt/noctalia-product-hunt-01-voice-capture.png" class="text-dream-salmon hover:underline">Sprachaufnahme (PNG 1270 × 760)</a></li>
@@ -85,6 +86,7 @@
       <li><a href="/de/preise" class="text-dream-salmon hover:underline">Tarife und Preise</a></li>
       <li><a href="/logo512.png" class="text-dream-salmon hover:underline">App-Icon</a></li>
       <li><a href="/de/ueber-uns" class="text-dream-salmon hover:underline">Über Noctalia</a></li>
+      <li><a href="/de/traumtagebuch-apps#methodology" class="text-dream-salmon hover:underline">Methodik des Traumtagebuch-App-Vergleichs</a></li>
       <li><a href="/de/methodik-trauminhalte" class="text-dream-salmon hover:underline">Methodik der Trauminhalte und Daten</a></li>
     </ul>
   </section>

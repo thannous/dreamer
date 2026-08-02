@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-31T00:00:00+02:00",
+  "modifiedTime": "2026-08-03T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Best Dream Journal Apps 2026\",\n  \"description\": \"Compare Android dream journal apps by voice capture, AI interpretation, privacy controls and pricing, including Noctalia, DreamApp, Oniri and more.\",\n  \"url\": \"https://noctalia.app/en/dream-journal-apps\",\n  \"inLanguage\": \"en\",\n  \"dateModified\": \"2026-07-31T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Best Dream Journal Apps 2026\",\n  \"description\": \"Compare Android dream journal apps by voice capture, AI interpretation, privacy controls and pricing, including Noctalia, DreamApp, Oniri and more.\",\n  \"url\": \"https://noctalia.app/en/dream-journal-apps\",\n  \"inLanguage\": \"en\",\n  \"dateModified\": \"2026-08-03T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Best dream journal apps in 2026\",\n      \"item\": \"https://noctalia.app/en/dream-journal-apps\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"ItemList\",\n  \"name\": \"Dream journal apps compared in 2026\",\n  \"itemListOrder\": \"https://schema.org/ItemListUnordered\",\n  \"numberOfItems\": 11,\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Noctalia\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"DreamApp\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Oniri\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 4,\n      \"name\": \"Dreamiary\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 5,\n      \"name\": \"Dreamlab\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 6,\n      \"name\": \"DreamKit\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 7,\n      \"name\": \"Rosebud\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 8,\n      \"name\": \"Dreamz Journal\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 9,\n      \"name\": \"DreamMirror\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 10,\n      \"name\": \"DreamStream\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 11,\n      \"name\": \"DreamNotes\"\n    }\n  ]\n}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Best dream journal apps in 2026</h1>
-<p class="text-sm text-purple-300/70 mb-6">Page updated July 31, 2026 · Product facts reviewed July 12, 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Methodology updated August 3, 2026 · Product facts reviewed July 12, 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">The right dream journal depends on your morning capture habit, whether you want AI interpretation, how much lucid dreaming structure you need, and how much privacy clarity matters to you.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -90,12 +90,14 @@
     </ul>
   </section>
 
-  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+  <section id="methodology" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
     <h2 class="text-2xl font-serif text-white mb-4">Methodology</h2>
-    <p>This page is a product and SEO comparison maintained from public store pages, official product pages, and Noctalia source material. Prices, ratings, downloads and features can change; verify the linked sources before making a purchase decision.</p>
+    <p><strong>Scope and evidence.</strong> This comparison records product claims visible on public app-store listings and official product pages on the stated review date. We include dedicated dream journals and broader journals with a clearly documented dream workflow. Prices, ratings, availability and features can change, so verify the linked official sources before publication or purchase.</p>
+    <p class="mt-4"><strong>Review method.</strong> This is a desk review, not a clinical study or a hands-on laboratory benchmark. We do not create competitor accounts, buy subscriptions or infer features that are not publicly documented. “Yes” means an official source advertised the feature on the review date; qualifiers such as “limited” identify incomplete or narrower public evidence.</p>
+    <p class="mt-4"><strong>Independence and corrections.</strong> Noctalia appears in this comparison and its maker publishes the page, so readers should treat it as an interested-party source. No competitor paid for inclusion, the source links are not affiliate links, and table order is not a score or ranking. Send a dated official source for any correction to <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>.</p>
   </section>
 
-  <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
+  <section id="dataset" class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5 scroll-mt-28">
     <h2 class="text-2xl font-serif text-white mb-4">Download the comparison dataset</h2>
     <p>The downloadable CSV reproduces the 11-app comparison in a format that researchers, journalists and app reviewers can filter or cite. Each row includes its source and last-review date.</p>
     <p class="mt-4"><a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Download the dream journal app comparison (CSV)</a></p>
