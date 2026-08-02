@@ -6,6 +6,7 @@ import type {
   DreamTheme,
   DreamType,
 } from '@/lib/types';
+import { compareDreamFacets } from '@/lib/dreamFacets';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { normalizeDreamMemoryMetadata } from '@/lib/dreamUtils';
 
@@ -53,7 +54,7 @@ function toFacets<T extends string>(map: Map<T, number>, total: number, limit = 
       count,
       percentage: percentage(count, total),
     }))
-    .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value))
+    .sort((a, b) => compareDreamFacets(a.count, a.value, b.count, b.value))
     .slice(0, limit);
 }
 
@@ -79,11 +80,14 @@ function getNextAction(params: {
   analyzedDreams: number;
   exploredDreams: number;
 }): DreamProfile['nextAction'] {
-  if (params.totalDreams === 0 || params.profileSeedDreams === 0) {
-    return 'add_anchor';
-  }
+  // Asking for an anchor dream only makes sense while the journal is empty or
+  // near-empty. `profileSeedDreams` counts only dreams captured through the
+  // "remembered dream" flow, so a user who journals normally never has one:
+  // gating `add_anchor` on the seed count alone pinned the beginner CTA on a
+  // profile already marked "living" (stats screen audit §5.2). The threshold is
+  // MIN_DREAMS_FOR_PATTERNS so the ladder stays aligned with getReadiness.
   if (params.totalDreams < MIN_DREAMS_FOR_PATTERNS) {
-    return 'capture_more';
+    return params.profileSeedDreams === 0 ? 'add_anchor' : 'capture_more';
   }
   if (params.analyzedDreams < params.totalDreams) {
     return 'analyze_unanalyzed';

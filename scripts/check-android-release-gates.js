@@ -31,6 +31,7 @@ const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const PLAY_INTEGRITY_PROJECT_NUMBER_KEY = 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER';
 const REVENUECAT_TEST_STORE_DEBUGGABLE_KEY =
   'NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE';
+const ANALYSIS_JOBS_ENABLED_KEY = 'EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED';
 const EXPECTED_GOOGLE_CLOUD_PROJECT_ID = 'gen-lang-client-0336445544';
 const EXPECTED_GOOGLE_OAUTH_ANDROID_CLIENT_ID = '359653779023-5dhs012rh7l3cjf0leoknn7j0dlgq0ok.apps.googleusercontent.com';
 const EXPECTED_GOOGLE_OAUTH_ANDROID_SHA1 = 'BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59';
@@ -38,6 +39,7 @@ const EXPECTED_ANDROID_PACKAGE_NAME = 'com.tanuki75.noctalia';
 const RELEASE_QUALIFICATION_WORKFLOW =
   '.eas/workflows/android-release-qualification.yml';
 const REQUIRED_EAS_PROFILES = ['preview', 'release', 'production-apk', 'production'];
+const ANALYSIS_BUNDLE_EAS_PROFILES = ['release', 'production-apk', 'production'];
 const REQUIRED_TESTSTORE_PUBLIC_ENV = [
   'EXPO_PUBLIC_API_URL',
   'EXPO_PUBLIC_SUPABASE_URL',
@@ -641,6 +643,19 @@ function checkAndroidReleaseGates({
       ? `Present in ${REQUIRED_EAS_PROFILES.join(', ')}.`
       : `Missing from ${profilesMissingProjectNumber.join(', ')}.`,
     `Add ${PLAY_INTEGRITY_PROJECT_NUMBER_KEY} to each Android release profile env.`
+  );
+
+  const profilesWithoutAnalysisBundles = ANALYSIS_BUNDLE_EAS_PROFILES.filter(
+    (profile) => easJson.build?.[profile]?.env?.[ANALYSIS_JOBS_ENABLED_KEY] !== 'true'
+  );
+  addCheck(
+    checks,
+    profilesWithoutAnalysisBundles.length === 0 ? 'pass' : 'fail',
+    'Monthly analysis and image bundles enabled in EAS profiles',
+    profilesWithoutAnalysisBundles.length === 0
+      ? `Enabled in ${ANALYSIS_BUNDLE_EAS_PROFILES.join(', ')}.`
+      : `Disabled or missing from ${profilesWithoutAnalysisBundles.join(', ')}.`,
+    `Set ${ANALYSIS_JOBS_ENABLED_KEY}=true so each admitted analysis can enqueue its bundled image.`
   );
 
   const releaseProfilesWithUnsafeTestStoreDebugging = REQUIRED_EAS_PROFILES.filter(

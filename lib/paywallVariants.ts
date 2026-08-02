@@ -74,6 +74,20 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     ],
     primaryLabelKey: 'subscription.paywall.variant.image_generation.cta',
   },
+  stats_profile: {
+    trigger: 'stats_profile',
+    chipKey: 'subscription.paywall.variant.stats_profile.chip',
+    headerTitleKey: 'subscription.paywall.variant.stats_profile.title',
+    headerSubtitleKey: 'subscription.paywall.variant.stats_profile.subtitle',
+    cardTitleKey: 'subscription.paywall.variant.stats_profile.card_title',
+    cardSubtitleKey: 'subscription.paywall.variant.stats_profile.card_subtitle',
+    featureKeys: [
+      'subscription.paywall.variant.stats_profile.feature_1',
+      'subscription.paywall.variant.stats_profile.feature_2',
+      'subscription.paywall.variant.stats_profile.feature_3',
+    ],
+    primaryLabelKey: 'subscription.paywall.variant.stats_profile.cta',
+  },
   returning_device: {
     trigger: 'returning_device',
     chipKey: 'subscription.paywall.variant.returning_device.chip',

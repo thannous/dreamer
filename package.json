@@ -75,6 +75,7 @@
     "android:gates:prebuild": "node ./scripts/check-android-release-gates.js --prebuild",
     "android:gates:strict": "node ./scripts/check-android-release-gates.js",
     "android:release:local": "node ./scripts/build-android-release-local.js",
+    "android:perf:measure": "node ./scripts/measure-android-performance.js",
     "test:e2e": "node ./scripts/run-maestro-android.js --suite core",
     "test:e2e:smoke": "node ./scripts/run-maestro-android.js --suite smoke",
     "test:e2e:smoke:fast": "node ./scripts/run-maestro-android.js --suite smoke --retries 0 --no-restart-metro",

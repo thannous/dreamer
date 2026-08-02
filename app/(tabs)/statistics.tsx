@@ -1,5 +1,5 @@
 import { router, useFocusEffect, type Href } from 'expo-router';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   InteractionManager,
   Platform,
@@ -16,7 +16,7 @@ import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackg
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeader } from '@/components/inspiration/PageHeader';
 import { SectionHeading } from '@/components/inspiration/SectionHeading';
-import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
+import { NoctaliaScreenHeader, type NoctaliaHeaderAction } from '@/components/NoctaliaScreenHeader';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { BottomSheet } from '@/components/ui/BottomSheet';
@@ -29,6 +29,7 @@ import { Line, Rect, Svg, Text as SvgText } from 'react-native-svg';
 import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -38,13 +39,15 @@ import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getStatsDreamCountBucket, trackProductEvent } from '@/lib/analytics';
 import { buildDreamProfile, type DreamProfile } from '@/lib/dreamProfile';
 import { getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamStatsInsight, type DreamStatsInsightKind } from '@/lib/dreamStatsInsight';
 import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { splitLabelText } from '@/lib/pieLabelUtils';
-import type { DreamAnalysis, DreamType } from '@/lib/types';
+import { deriveUserTier } from '@/lib/quotaTier';
+import type { DreamAnalysis, DreamType, SubscriptionTier } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
 
 const CHART_HORIZONTAL_INSET = ThemeLayout.spacing.lg * 3;
@@ -103,6 +106,19 @@ const DREAM_PROFILE_NEXT_ROUTE: Record<DreamProfile['nextAction'], Href> = {
   explore_more: '/(tabs)/journal',
   review_patterns: '/(tabs)/journal',
 };
+
+// Entry stagger. StaticFlatGlassCard fades each card in over 650 ms (GlassCard.tsx), so the
+// delays stay short: every section starts fading within 120 ms of its own mount instead of 750 ms.
+// The three deferred sections mount later (InteractionManager), so their ramp restarts at 0.
+const SECTION_ANIMATION_DELAY = {
+  overview: 0,
+  profile: 40,
+  insight: 80,
+  streaks: 120,
+  dreamTypes: 0,
+  topThemes: 40,
+  engagement: 80,
+} as const;
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
@@ -323,6 +339,49 @@ const SectionGlass = memo(function SectionGlass({
   );
 });
 
+type StatsHeaderActionsRowProps = {
+  actions: NoctaliaHeaderAction[];
+  noctalia: NoctaliaDesignTokens;
+};
+
+/**
+ * Desktop web keeps the centered PageHeader, which accepts no actions.
+ * This row restores the period filter and the share action just below it.
+ */
+const StatsHeaderActionsRow = memo(function StatsHeaderActionsRow({
+  actions,
+  noctalia,
+}: StatsHeaderActionsRowProps) {
+  return (
+    <View style={styles.desktopHeaderActions}>
+      {actions.map((action) => (
+        <Pressable
+          key={action.testID ?? action.accessibilityLabel}
+          accessibilityRole="button"
+          accessibilityLabel={action.accessibilityLabel}
+          testID={action.testID}
+          onPress={action.onPress}
+          hitSlop={8}
+          style={({ pressed }) => [
+            styles.desktopHeaderActionButton,
+            {
+              backgroundColor: action.active ? noctalia.action.primary : noctalia.surface.soft,
+              borderColor: action.active ? noctalia.action.primaryBorder : noctalia.surface.border,
+            },
+            pressed && styles.pressedButton,
+          ]}
+        >
+          <IconSymbol
+            name={action.icon}
+            size={20}
+            color={action.active ? noctalia.action.primaryText : noctalia.text.secondary}
+          />
+        </Pressable>
+      ))}
+    </View>
+  );
+});
+
 type StatsInsightCardProps = {
   noctalia: NoctaliaDesignTokens;
   insight: ReturnType<typeof getDreamStatsInsight>;
@@ -362,7 +421,7 @@ const StatsInsightCard = memo(function StatsInsightCard({
   return (
     <StaticFlatGlassCard
       intensity="moderate"
-      animationDelay={220}
+      animationDelay={SECTION_ANIMATION_DELAY.insight}
       style={styles.insightCard}
       testID={TID.Component.StatsInsight}
     >
@@ -417,6 +476,14 @@ const StatsInsightCard = memo(function StatsInsightCard({
                 </Text>
               </View>
               <View
+                accessibilityRole="progressbar"
+                accessibilityLabel={item.label}
+                accessibilityValue={{
+                  min: 0,
+                  max: 100,
+                  now: Math.round(clamp(item.ratio, 0, 1) * 100),
+                  text: item.value,
+                }}
                 style={[
                   styles.insightTrack,
                   {
@@ -546,7 +613,7 @@ const DreamProfileCard = memo(function DreamProfileCard({
   return (
     <StaticFlatGlassCard
       intensity="moderate"
-      animationDelay={260}
+      animationDelay={SECTION_ANIMATION_DELAY.profile}
       style={styles.profileCard}
       testID={TID.Component.DreamProfileCard}
     >
@@ -729,7 +796,12 @@ export default function StatisticsScreen() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { width, height } = useWindowDimensions();
   const scrollPerf = useScrollIdle();
-  const { isActive: isPlusActive } = useSubscription();
+  const { user, loading: authLoading } = useAuth();
+  const {
+    isActive: isPlusActive,
+    status: subscriptionStatus,
+    loading: subscriptionLoading,
+  } = useSubscription();
   useClearWebFocus();
   const { formatNumber, formatPercent } = useLocaleFormatting();
   const [selectedStatsPeriod, setSelectedStatsPeriod] = useState<StatsPeriod>('all');
@@ -738,6 +810,7 @@ export default function StatisticsScreen() {
     () => filterDreamsByStatsPeriod(dreams, selectedStatsPeriod),
     [dreams, selectedStatsPeriod],
   );
+  const isPeriodFiltered = selectedStatsPeriod !== 'all';
   const stats = useDreamStatistics(periodDreams);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height);
@@ -747,23 +820,79 @@ export default function StatisticsScreen() {
       + navigationLayout.minimumBottomInset
       + ThemeLayout.spacing.lg;
   const pieMetrics = useMemo(() => getPieMetrics(width), [width]);
-  const dreamProfile = useMemo(() => buildDreamProfile(dreams), [dreams]);
+  // Journal-wide profile. Only the analytics payload reads it: `stats_screen_viewed`
+  // pairs `profile_readiness` with an unfiltered `dream_count_bucket`, so both
+  // properties must describe the whole journal or the event mixes two scales.
+  const journalDreamProfile = useMemo(() => buildDreamProfile(dreams), [dreams]);
+  // Visible profile follows the active period (audit P1-7): the card, its signals and
+  // its next action must describe the same window as every other number on the page.
+  // Unfiltered, it reuses the journal-wide object, so the default period still costs
+  // exactly one pass over the dreams.
+  const dreamProfile = useMemo(
+    () => (isPeriodFiltered ? buildDreamProfile(periodDreams) : journalDreamProfile),
+    [isPeriodFiltered, journalDreamProfile, periodDreams],
+  );
   const statsInsight = useMemo(() => getDreamStatsInsight(stats), [stats]);
-  const hasAtLeastOneAnalysis = useMemo(() => dreams.some(isDreamAnalyzed), [dreams]);
-  const hasDreamProfileSeed = dreamProfile.hasAnchorDream || dreamProfile.rememberedDreams > 0;
+  // Visibility is journal-wide on purpose; only the numbers inside the cards follow the
+  // period. Scoping the gates to the window too (first pass at P1-7) hid the Dream Profile
+  // and the next-best-action together as soon as the selected period held nothing but
+  // unanalysed, non-remembered dreams — i.e. exactly when "analyse your pending dreams" is
+  // the most actionable advice, and, for a free account, the screen's only paywall entry.
+  const journalHasAnalysis = useMemo(() => dreams.some(isDreamAnalyzed), [dreams]);
+  const journalHasDreamProfileSeed =
+    journalDreamProfile.hasAnchorDream || journalDreamProfile.rememberedDreams > 0;
+  const showDreamProfileSection = journalHasAnalysis || journalHasDreamProfileSeed;
   const canShowDreamProfileSignals = isPlusActive;
+  const supabaseTier = useMemo(() => deriveUserTier(user), [user]);
+  // Same ladder as `analysis_started` (hooks/useDreamJournal.ts): a signed-out visitor is a
+  // 'guest', never a 'free' account. `subscriptionStatus` stays null for the whole guest
+  // session, so `status?.tier ?? 'free'` silently merged both cohorts into one.
+  const analyticsTier = useMemo<SubscriptionTier>(() => {
+    if (!user) return 'guest';
+    // Supabase already flags paid users; RevenueCat still overrides once it resolves.
+    const optimisticPaidTier = supabaseTier === 'plus' ? supabaseTier : null;
+    return subscriptionStatus?.tier ?? optimisticPaidTier ?? 'free';
+  }, [subscriptionStatus?.tier, supabaseTier, user]);
   const handleAddDreamPress = useCallback(() => {
     router.push(DREAM_PROFILE_NEXT_ROUTE.add_anchor);
   }, []);
   const handleDreamProfilePress = useCallback(() => {
+    void trackProductEvent('stats_cta_clicked', {
+      cta: 'dream_profile',
+      action: dreamProfile.nextAction,
+    });
     router.push(DREAM_PROFILE_NEXT_ROUTE[dreamProfile.nextAction]);
   }, [dreamProfile.nextAction]);
   const handleDreamProfileUpgradePress = useCallback(() => {
-    router.push(buildPaywallHref('settings'));
+    void trackProductEvent('stats_cta_clicked', {
+      cta: 'plus_upgrade',
+      action: 'unlock_signals',
+    });
+    router.push(buildPaywallHref('stats_profile'));
   }, []);
   const handleStatsInsightPress = useCallback(() => {
+    void trackProductEvent('stats_cta_clicked', {
+      cta: 'next_best_action',
+      action: statsInsight.kind,
+    });
     router.push(statsInsight.route);
-  }, [statsInsight.route]);
+  }, [statsInsight.kind, statsInsight.route]);
+  const handleOpenStatsPeriodSheet = useCallback(() => {
+    setShowStatsPeriodSheet(true);
+  }, []);
+  const handleResetStatsPeriod = useCallback(() => {
+    setSelectedStatsPeriod('all');
+    setShowStatsPeriodSheet(false);
+  }, []);
+  // Hoisted so the null check narrows inside the callback: TypeScript does not keep a
+  // property-access narrowing (`stats.mostDiscussedDream`) across a function boundary.
+  const mostDiscussedDreamId = stats.mostDiscussedDream?.id ?? null;
+  const handleMostDiscussedDreamPress = useCallback(() => {
+    if (mostDiscussedDreamId == null) {
+      return;
+    }
+    router.push(`/journal/${mostDiscussedDreamId}`);
+  }, [mostDiscussedDreamId]);
   const selectedPeriodLabel = useMemo(() => {
     const option = STATS_PERIOD_OPTIONS.find((item) => item.id === selectedStatsPeriod);
     return t(option?.labelKey ?? 'stats.period.all');
@@ -782,27 +911,64 @@ export default function StatisticsScreen() {
     });
 
     try {
-      await Share.share({
+      const result = await Share.share({
         title: t('stats.share.title'),
         message,
       });
+      void trackProductEvent('stats_shared', {
+        period: selectedStatsPeriod,
+        outcome: result?.action === 'dismissedAction' ? 'dismissed' : 'shared',
+      });
     } catch (error) {
+      void trackProductEvent('stats_shared', { period: selectedStatsPeriod, outcome: 'failed' });
       if (__DEV__) {
         console.error('[StatisticsScreen] Failed to share stats', error);
       }
     }
-  }, [formatNumber, selectedPeriodLabel, stats, t]);
+  }, [formatNumber, selectedPeriodLabel, selectedStatsPeriod, stats, t]);
 
   const [showAnimations, setShowAnimations] = useState(false);
   const [showDeferredSections, setShowDeferredSections] = useState(false);
+  const [statsFocusEpoch, setStatsFocusEpoch] = useState(0);
+  const statsViewTrackedEpochRef = useRef(0);
   const hasStatisticsContent = loaded && periodDreams.length > 0;
+  // Unfiltered on purpose: with no dream at all there is nothing to filter, but as soon
+  // as the journal holds one the period control must stay reachable — including from
+  // inside an empty period, where it is the only way back. Share is gated separately on
+  // `hasStatisticsContent` inside `statsHeaderActions`.
+  const showHeaderActions = loaded && dreams.length > 0;
 
   useFocusEffect(
     useCallback(() => {
       setShowAnimations(true);
+      setStatsFocusEpoch((value) => value + 1);
       return () => setShowAnimations(false);
     }, []),
   );
+
+  useEffect(() => {
+    if (!loaded || statsFocusEpoch === 0) return;
+    // Hold the emit until both sources of `analyticsTier` have settled, otherwise a Plus
+    // user whose entitlement has not resolved yet is stamped 'free' and the epoch guard
+    // below suppresses the corrected re-run. The guard is only armed once we really emit,
+    // so waiting here costs nothing and keeps the once-per-focus semantics intact.
+    if (authLoading || subscriptionLoading) return;
+    if (statsViewTrackedEpochRef.current === statsFocusEpoch) return;
+    statsViewTrackedEpochRef.current = statsFocusEpoch;
+    void trackProductEvent('stats_screen_viewed', {
+      tier: analyticsTier,
+      dream_count_bucket: getStatsDreamCountBucket(dreams.length),
+      profile_readiness: journalDreamProfile.readiness,
+    });
+  }, [
+    analyticsTier,
+    authLoading,
+    dreams.length,
+    journalDreamProfile.readiness,
+    loaded,
+    statsFocusEpoch,
+    subscriptionLoading,
+  ]);
 
   useEffect(() => {
     if (!hasStatisticsContent) {
@@ -883,37 +1049,68 @@ export default function StatisticsScreen() {
     [pieChartData, pieMetrics],
   );
 
+  // Screen readers get the same summary a sighted user reads off the callouts.
+  const pieAccessibilityLabel = useMemo(
+    () =>
+      [
+        t('stats.section.dream_types'),
+        ...pieChartData.map(
+          (item) =>
+            `${item.typeLabel} ${formatNumber(item.count)} · ${formatPercent(item.percentage / 100)}`,
+        ),
+      ].join(', '),
+    [formatNumber, formatPercent, pieChartData, t],
+  );
+
   // Compute max theme count for proportional bars
   const maxThemeCount = useMemo(
     () => Math.max(...stats.topThemes.map((theme) => theme.count), 1),
     [stats.topThemes],
   );
 
-  const statsHeaderActions = useMemo(
+  const statsHeaderActions = useMemo<NoctaliaHeaderAction[]>(
     () => [
+      // Always available while the journal has dreams — it is the only way out of the
+      // empty-period state below.
       {
         icon: 'calendar' as IconName,
-        onPress: () => setShowStatsPeriodSheet(true),
+        onPress: handleOpenStatsPeriodSheet,
         accessibilityLabel: t('stats.header.period'),
-        active: selectedStatsPeriod !== 'all',
+        active: isPeriodFiltered,
         testID: TID.Button.HeaderStatsPeriod,
       },
-      {
-        icon: 'square.and.arrow.up' as IconName,
-        onPress: () => {
-          void handleShareStats();
-        },
-        accessibilityLabel: t('stats.header.share'),
-        testID: TID.Button.HeaderStatsShare,
-      },
+      // Nothing to share while the active period holds no dream: the message would
+      // read "Dreams: 0, Favorites: 0" to a user whose journal is full.
+      ...(hasStatisticsContent
+        ? [
+            {
+              icon: 'square.and.arrow.up' as IconName,
+              onPress: () => {
+                void handleShareStats();
+              },
+              accessibilityLabel: t('stats.header.share'),
+              testID: TID.Button.HeaderStatsShare,
+            },
+          ]
+        : []),
     ],
-    [handleShareStats, selectedStatsPeriod, t],
+    [handleOpenStatsPeriodSheet, handleShareStats, hasStatisticsContent, isPeriodFiltered, t],
   );
 
   const header = isDesktopLayout ? (
-    <PageHeader titleKey="stats.title" animationSeed={showAnimations ? 1 : 0} />
+    <>
+      <PageHeader titleKey="stats.title" animationSeed={showAnimations ? 1 : 0} />
+      {showHeaderActions ? (
+        <ScreenContainer>
+          <StatsHeaderActionsRow actions={statsHeaderActions} noctalia={noctalia} />
+        </ScreenContainer>
+      ) : null}
+    </>
   ) : (
-    <NoctaliaScreenHeader titleKey="stats.title" actions={statsHeaderActions} />
+    <NoctaliaScreenHeader
+      titleKey="stats.title"
+      actions={showHeaderActions ? statsHeaderActions : undefined}
+    />
   );
 
   const periodSheet = (
@@ -937,6 +1134,10 @@ export default function StatisticsScreen() {
               accessibilityLabel={t(option.labelKey)}
               testID={TID.Button.StatsPeriodOption(option.id)}
               onPress={() => {
+                void trackProductEvent('stats_period_selected', {
+                  period: option.id,
+                  has_results: filterDreamsByStatsPeriod(dreams, option.id).length > 0,
+                });
                 setSelectedStatsPeriod(option.id);
                 setShowStatsPeriodSheet(false);
               }}
@@ -970,6 +1171,32 @@ export default function StatisticsScreen() {
       </View>
     </BottomSheet>
   );
+
+  // Audit P1-8: nothing on the page said which window the numbers described. The pill
+  // names the active period and doubles as the way back into the period sheet.
+  const periodChip = isPeriodFiltered ? (
+    <View style={styles.periodChipRow}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t('stats.period.indicator', { period: selectedPeriodLabel })}
+        testID={TID.Button.StatsPeriodChip}
+        onPress={handleOpenStatsPeriodSheet}
+        style={({ pressed }) => [
+          styles.periodChip,
+          {
+            backgroundColor: noctalia.surface.soft,
+            borderColor: noctalia.surface.borderStrong,
+          },
+          pressed && styles.pressedButton,
+        ]}
+      >
+        <IconSymbol name="calendar" size={14} color={noctalia.accent.base} />
+        <Text style={[styles.periodChipText, { color: noctalia.text.primary }]}>
+          {t('stats.period.indicator', { period: selectedPeriodLabel })}
+        </Text>
+      </Pressable>
+    </View>
+  ) : null;
 
   if (!loaded) {
     return (
@@ -1005,6 +1232,15 @@ export default function StatisticsScreen() {
             <ScreenContainer>
               <MockNavigationRail />
               <View style={styles.emptyState}>
+                <View style={styles.emptyCopy}>
+                  <IconSymbol name="chart.bar.fill" size={40} color={noctalia.text.tertiary} />
+                  <Text style={[styles.emptyHeading, { color: noctalia.text.primary }]}>
+                    {t('stats.empty.title')}
+                  </Text>
+                  <Text style={[styles.emptyBody, { color: noctalia.text.secondary }]}>
+                    {t('stats.empty.body')}
+                  </Text>
+                </View>
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={t('stats.profile.next_action.add_anchor.cta')}
@@ -1024,6 +1260,72 @@ export default function StatisticsScreen() {
                     {t('stats.profile.next_action.add_anchor.cta')}
                   </Text>
                 </Pressable>
+              </View>
+            </ScreenContainer>
+          </ScrollView>
+        </View>
+      </ScrollPerfProvider>
+    );
+  }
+
+  // Audit P1-9. The journal is not empty, the selected window is. Previously the page
+  // rendered an all-zero Overview plus a profile built from every dream — two numbers
+  // that contradicted each other. Now the whole page speaks about the same window.
+  if (periodDreams.length === 0) {
+    return (
+      <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+        <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
+          <AtmosphericBackground variant="subtle" />
+          {header}
+          {periodSheet}
+          <ScrollView
+            style={styles.scrollView}
+            contentInsetAdjustmentBehavior="automatic"
+            contentContainerStyle={[
+              styles.emptyScrollContent,
+              { paddingBottom: scrollBottomPadding },
+            ]}
+            showsVerticalScrollIndicator={false}
+          >
+            <ScreenContainer>
+              <MockNavigationRail />
+              <View style={styles.emptyState}>
+                <View
+                  style={[
+                    styles.periodEmptyCard,
+                    {
+                      backgroundColor: noctalia.surface.soft,
+                      borderColor: noctalia.surface.borderStrong,
+                    },
+                  ]}
+                  testID={TID.Component.StatsPeriodEmpty}
+                >
+                  <IconSymbol name="calendar" size={22} color={noctalia.accent.base} />
+                  <Text style={[styles.periodEmptyTitle, { color: noctalia.text.primary }]}>
+                    {t('stats.period.empty.title')}
+                  </Text>
+                  <Text style={[styles.periodEmptyBody, { color: noctalia.text.secondary }]}>
+                    {t('stats.period.empty.body')}
+                  </Text>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t('stats.period.reset')}
+                    testID={TID.Button.StatsPeriodReset}
+                    onPress={handleResetStatsPeriod}
+                    style={({ pressed }) => [
+                      styles.emptyPrimaryButton,
+                      {
+                        backgroundColor: noctalia.action.primary,
+                        borderColor: noctalia.action.primaryBorder,
+                      },
+                      pressed && styles.pressedButton,
+                    ]}
+                  >
+                    <Text style={[styles.emptyPrimaryButtonText, { color: noctalia.action.primaryText }]}>
+                      {t('stats.period.reset')}
+                    </Text>
+                  </Pressable>
+                </View>
               </View>
             </ScreenContainer>
           </ScrollView>
@@ -1052,9 +1354,10 @@ export default function StatisticsScreen() {
           <ScreenContainer>
             <MockNavigationRail />
             <View style={[styles.scrollContent, isDesktopLayout && styles.scrollContentDesktop]}>
+            {periodChip}
             {/* Overview Cards */}
             <View style={[styles.section, isDesktopLayout && styles.sectionOverviewDesktop]}>
-              <SectionGlass noctalia={noctalia} animationDelay={150}>
+              <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.overview}>
                 <SectionHeading
                   title={t('stats.section.overview')}
                   icon="chart.bar.fill"
@@ -1071,21 +1374,30 @@ export default function StatisticsScreen() {
                     value={formatNumber(stats.favoriteDreams)}
                     noctalia={noctalia}
                   />
-                  <StatCard
-                    title={t('stats.card.this_week')}
-                    value={formatNumber(stats.dreamsThisWeek)}
-                    noctalia={noctalia}
-                  />
-                  <StatCard
-                    title={t('stats.card.this_month')}
-                    value={formatNumber(stats.dreamsThisMonth)}
-                    noctalia={noctalia}
-                  />
+                  {/*
+                    Audit 22a: both counts are recomputed inside the already-filtered
+                    set, so under "7 days" they simply restate the total. A Fragment,
+                    not a View, so the two cards stay direct children of statsGrid.
+                  */}
+                  {isPeriodFiltered ? null : (
+                    <>
+                      <StatCard
+                        title={t('stats.card.this_week')}
+                        value={formatNumber(stats.dreamsThisWeek)}
+                        noctalia={noctalia}
+                      />
+                      <StatCard
+                        title={t('stats.card.this_month')}
+                        value={formatNumber(stats.dreamsThisMonth)}
+                        noctalia={noctalia}
+                      />
+                    </>
+                  )}
                 </View>
               </SectionGlass>
             </View>
 
-            {hasAtLeastOneAnalysis || hasDreamProfileSeed ? (
+            {showDreamProfileSection ? (
               <>
                 <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
                   <DreamProfileCard
@@ -1099,7 +1411,7 @@ export default function StatisticsScreen() {
                   />
                 </View>
 
-                {hasAtLeastOneAnalysis ? (
+                {journalHasAnalysis ? (
                   <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
                     <StatsInsightCard
                       noctalia={noctalia}
@@ -1115,7 +1427,7 @@ export default function StatisticsScreen() {
 
             {/* Streaks */}
             <View style={[styles.section, isDesktopLayout && styles.sectionStreaksDesktop]}>
-              <SectionGlass noctalia={noctalia} animationDelay={300}>
+              <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.streaks}>
                 <SectionHeading
                   title={t('stats.section.streaks')}
                   icon="flame.fill"
@@ -1151,7 +1463,7 @@ export default function StatisticsScreen() {
             {/* Dream Type Distribution */}
             {showDeferredSections && stats.dreamTypeDistribution.length > 0 && (
               <View style={[styles.section, isDesktopLayout && styles.sectionChartDesktop]}>
-                <SectionGlass noctalia={noctalia} animationDelay={450}>
+                <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.dreamTypes}>
                     <SectionHeading
                       title={t('stats.section.dream_types')}
                       icon="chart.pie.fill"
@@ -1159,7 +1471,12 @@ export default function StatisticsScreen() {
                     />
                   <View style={styles.chartContainer}>
                     <View style={styles.pieChartWrapper}>
-                      <View style={{ width: pieMetrics.pieChartDimension, height: pieMetrics.pieChartDimension }}>
+                      <View
+                        accessible
+                        accessibilityRole="image"
+                        accessibilityLabel={pieAccessibilityLabel}
+                        style={{ width: pieMetrics.pieChartDimension, height: pieMetrics.pieChartDimension }}
+                      >
                         <PieChart
                           data={pieChartData}
                           donut
@@ -1168,6 +1485,7 @@ export default function StatisticsScreen() {
                           extraRadius={pieMetrics.pieExtraRadius}
                           strokeWidth={1.5}
                           strokeColor={noctalia.screen.background}
+                          innerCircleColor={noctalia.screen.background}
                           showExternalLabels={false}
                           centerLabelComponent={() => (
                             <View>
@@ -1266,10 +1584,10 @@ export default function StatisticsScreen() {
                         </Svg>
                       </View>
                     </View>
-                    <View style={styles.legendContainer}>
-                      {topDreamTypes.map((item, index) => (
+                    <View style={styles.legendContainer} testID={TID.Component.StatsTypeLegend}>
+                      {pieChartData.map((item, index) => (
                         <View
-                          key={item.type}
+                          key={item.typeLabel}
                           style={[
                             styles.legendItem,
                             { backgroundColor: noctalia.surface.soft },
@@ -1282,7 +1600,7 @@ export default function StatisticsScreen() {
                             ]}
                           />
                           <Text style={[styles.legendText, { color: noctalia.text.primary }]}>
-                            {item.type} ({t('stats.legend.count', { count: formatNumber(item.count) })})
+                            {item.typeLabel} ({t(item.count === 1 ? 'stats.legend.count_one' : 'stats.legend.count', { count: formatNumber(item.count) })})
                           </Text>
                         </View>
                       ))}
@@ -1295,16 +1613,23 @@ export default function StatisticsScreen() {
             {/* Top Themes */}
             {showDeferredSections && stats.topThemes.length > 0 && (
               <View style={[styles.section, isDesktopLayout && styles.sectionTopThemesDesktop]}>
-                <SectionGlass noctalia={noctalia} animationDelay={600}>
+                <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.topThemes}>
                   <SectionHeading
                     title={t('stats.section.top_themes')}
                     icon="star.fill"
                     colors={colors}
                   />
-                  <View style={styles.themesContainer}>
+                  <View style={styles.themesContainer} testID={TID.Component.StatsTopThemes}>
                     {stats.topThemes.map((theme, index) => {
                       const isLast = index === stats.topThemes.length - 1;
                       const barWidth = Math.round((theme.count / maxThemeCount) * 100);
+                      const themeKey = `stats.theme.${theme.theme}`;
+                      const themeTranslation = t(themeKey);
+                      const themeLabel = themeTranslation === themeKey ? theme.theme : themeTranslation;
+                      const themeCountLabel = t(
+                        theme.count === 1 ? 'stats.legend.count_one' : 'stats.legend.count',
+                        { count: formatNumber(theme.count) },
+                      );
                       return (
                         <View key={theme.theme}>
                           <View
@@ -1318,16 +1643,22 @@ export default function StatisticsScreen() {
                             </View>
                             <View style={styles.themeContent}>
                               <Text style={[styles.themeText, { color: noctalia.text.primary }]}>
-                                {(() => {
-                                  const key = `stats.theme.${theme.theme}`;
-                                  const label = t(key);
-                                  return label === key ? theme.theme : label;
-                                })()}
+                                {themeLabel}
                               </Text>
                               <Text style={[styles.themeCount, { color: noctalia.text.secondary }]}>
-                                {t('stats.legend.count', { count: formatNumber(theme.count) })}
+                                {themeCountLabel}
                               </Text>
-                              <View style={styles.themeBarTrack}>
+                              <View
+                                style={styles.themeBarTrack}
+                                accessibilityRole="progressbar"
+                                accessibilityLabel={themeLabel}
+                                accessibilityValue={{
+                                  min: 0,
+                                  max: maxThemeCount,
+                                  now: theme.count,
+                                  text: themeCountLabel,
+                                }}
+                              >
                                 <View
                                   style={[
                                     styles.themeBarFill,
@@ -1351,7 +1682,7 @@ export default function StatisticsScreen() {
             {/* Engagement */}
             {showDeferredSections && (
               <View style={[styles.section, isDesktopLayout && styles.sectionEngagementDesktop]}>
-                <SectionGlass noctalia={noctalia} animationDelay={750}>
+                <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.engagement}>
                   <SectionHeading
                     title={t('stats.section.engagement')}
                     icon="bubble.left.and.bubble.right.fill"
@@ -1380,7 +1711,16 @@ export default function StatisticsScreen() {
                     />
                   </View>
                   {stats.mostDiscussedDream && (
-                    <View style={styles.mostDiscussedCard}>
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={`${stats.mostDiscussedDream.title}, ${t('stats.engagement.most_discussed.open')}`}
+                      testID={TID.Button.StatsMostDiscussedDream}
+                      onPress={handleMostDiscussedDreamPress}
+                      style={({ pressed }) => [
+                        styles.mostDiscussedCard,
+                        pressed && styles.pressedButton,
+                      ]}
+                    >
                       <View style={[styles.mostDiscussedDecoLine, { backgroundColor: noctalia.accent.base }]} />
                       <View style={styles.mostDiscussedInner}>
                         <IconSymbol name="quote.opening" size={18} color={noctalia.accent.base} />
@@ -1390,13 +1730,19 @@ export default function StatisticsScreen() {
                         <Text style={[styles.mostDiscussedDreamTitle, { color: noctalia.text.primary }]} numberOfLines={1}>
                           {stats.mostDiscussedDream.title}
                         </Text>
-                        <Text style={[styles.mostDiscussedCount, { color: noctalia.accent.base }]}>
-                          {t('stats.engagement.messages', {
-                            count: formatNumber(stats.mostDiscussedDreamUserMessages),
-                          })}
-                        </Text>
+                        <View style={styles.mostDiscussedFooter}>
+                          <Text style={[styles.mostDiscussedCount, { color: noctalia.accent.base }]}>
+                            {t(
+                              stats.mostDiscussedDreamUserMessages === 1
+                                ? 'stats.engagement.messages_one'
+                                : 'stats.engagement.messages',
+                              { count: formatNumber(stats.mostDiscussedDreamUserMessages) },
+                            )}
+                          </Text>
+                          <IconSymbol name="chevron.right" size={14} color={noctalia.accent.base} />
+                        </View>
                       </View>
-                    </View>
+                    </Pressable>
                   )}
                 </SectionGlass>
               </View>
@@ -1424,6 +1770,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: ThemeLayout.spacing.md,
+  },
+
+  // Desktop header actions (PageHeader takes no actions prop)
+  desktopHeaderActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: ThemeLayout.spacing.sm,
+    paddingHorizontal: ThemeLayout.spacing.md,
+    paddingBottom: ThemeLayout.spacing.sm,
+  },
+  desktopHeaderActionButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   // Sections
@@ -1720,7 +2084,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 19,
     fontFamily: Fonts.spaceGrotesk.bold,
-    textTransform: 'capitalize',
   },
   profilePlusPreview: {
     borderWidth: 1,
@@ -1824,7 +2187,6 @@ const styles = StyleSheet.create({
   legendText: {
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.regular,
-    textTransform: 'capitalize',
   },
 
   // Themes
@@ -1855,7 +2217,6 @@ const styles = StyleSheet.create({
   themeText: {
     fontSize: 15,
     fontFamily: Fonts.spaceGrotesk.medium,
-    textTransform: 'capitalize',
     marginBottom: 2,
   },
   themeCount: {
@@ -1897,6 +2258,11 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.fraunces.regular,
     fontStyle: 'italic',
   },
+  mostDiscussedFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
   mostDiscussedCount: {
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.medium,
@@ -1931,6 +2297,46 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.bold,
   },
+  periodChipRow: {
+    width: '100%',
+    flexDirection: 'row',
+    marginBottom: ThemeLayout.spacing.md,
+  },
+  periodChip: {
+    borderWidth: 1,
+    borderRadius: 999,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    minHeight: 30,
+    paddingHorizontal: 10,
+  },
+  periodChipText: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontFamily: Fonts.spaceGrotesk.medium,
+  },
+  periodEmptyCard: {
+    borderWidth: 1,
+    borderRadius: 20,
+    borderCurve: 'continuous',
+    padding: ThemeLayout.spacing.lg,
+    gap: ThemeLayout.spacing.sm,
+    alignItems: 'center',
+  },
+  periodEmptyTitle: {
+    fontSize: 20,
+    lineHeight: 26,
+    fontFamily: Fonts.fraunces.semiBold,
+    textAlign: 'center',
+  },
+  periodEmptyBody: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    textAlign: 'center',
+    marginBottom: ThemeLayout.spacing.xs,
+  },
 
   // Empty / Loading
   loadingContainer: {
@@ -1945,6 +2351,24 @@ const styles = StyleSheet.create({
   emptyState: {
     gap: ThemeLayout.spacing.lg,
     padding: ThemeLayout.spacing.lg,
+  },
+  emptyCopy: {
+    alignItems: 'center',
+    gap: ThemeLayout.spacing.sm,
+  },
+  emptyHeading: {
+    fontSize: 20,
+    lineHeight: 26,
+    fontFamily: Fonts.fraunces.semiBold,
+    textAlign: 'center',
+  },
+  emptyBody: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    textAlign: 'center',
+    maxWidth: 320,
+    alignSelf: 'center',
   },
   emptyScrollContent: {
     flexGrow: 1,

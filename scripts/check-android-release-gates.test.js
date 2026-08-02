@@ -32,6 +32,7 @@ function validEasJson() {
   const profile = {
     env: {
       EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER: '359653779023',
+      EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED: 'true',
       NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'false',
     },
   };
@@ -826,6 +827,28 @@ describe('android release gate preflight', () => {
 
     expect(report.ok).toBe(false);
     expect(report.checks.some((check) => check.status === 'fail' && check.details.includes('production'))).toBe(true);
+  });
+
+  it('fails when monthly analysis and image bundles are disabled in production', () => {
+    const root = setupFixture();
+    const eas = validEasJson();
+    delete eas.build.production.env.EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED;
+    writeJson(root, 'eas.json', eas);
+
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn: spawnWithTools(),
+    });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'fail' &&
+          check.title === 'Monthly analysis and image bundles enabled in EAS profiles' &&
+          check.details.includes('production')
+      )
+    ).toBe(true);
   });
 
   it('fails when Test Store debuggability is not isolated from Play profiles', () => {

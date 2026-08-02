@@ -51,10 +51,13 @@ jest.mock('@/hooks/usePrefersReducedMotion', () => ({
 // The import must follow the module factories so lifecycle callbacks stay observable.
 // eslint-disable-next-line import/first
 import AnimatedSplashScreen, {
+  ANDROID_STATIC_SPLASH_MINIMUM_VISIBLE_MS,
   SPLASH_MINIMUM_VISIBLE_MS,
   SPLASH_OUTRO_DURATION_MS,
   SPLASH_PARTICLE_COUNT,
+  getSplashMinimumVisibleMs,
   shouldUseAnimatedSplash,
+  shouldUseMinimalStaticSplash,
 } from '@/components/AnimatedSplashScreen';
 
 describe('AnimatedSplashScreen motion policy', () => {
@@ -79,8 +82,21 @@ describe('AnimatedSplashScreen motion policy', () => {
 
   it('keeps the startup animation inside the performance budget', () => {
     expect(SPLASH_MINIMUM_VISIBLE_MS).toBeLessThanOrEqual(600);
+    expect(ANDROID_STATIC_SPLASH_MINIMUM_VISIBLE_MS).toBeLessThanOrEqual(150);
     expect(SPLASH_OUTRO_DURATION_MS).toBeLessThanOrEqual(250);
     expect(SPLASH_PARTICLE_COUNT).toBeLessThanOrEqual(12);
+  });
+
+  it('does not hold the static Android splash for the animated iOS budget', () => {
+    expect(getSplashMinimumVisibleMs('android')).toBe(
+      ANDROID_STATIC_SPLASH_MINIMUM_VISIBLE_MS
+    );
+    expect(getSplashMinimumVisibleMs('ios')).toBe(SPLASH_MINIMUM_VISIBLE_MS);
+  });
+
+  it('removes decorative static gradients only on Android', () => {
+    expect(shouldUseMinimalStaticSplash('android')).toBe(true);
+    expect(shouldUseMinimalStaticSplash('ios')).toBe(false);
   });
 
   it('stops shared animations before the outro callback and calls it once', () => {

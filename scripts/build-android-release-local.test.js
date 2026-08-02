@@ -183,6 +183,7 @@ describe('build-android-release-local', () => {
       EXPO_NO_DOTENV: '1',
       EXPO_PUBLIC_MOCK_MODE: 'false',
       EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'true',
+      EXPO_PUBLIC_PERFORMANCE_TRACING: 'false',
       NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'true',
       NOCTALIA_ANDROID_PERFORMANCE_PROFILEABLE: 'false',
     });
@@ -199,6 +200,7 @@ describe('build-android-release-local', () => {
       )
     ).toMatchObject({
       NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'false',
+      EXPO_PUBLIC_PERFORMANCE_TRACING: 'true',
       NOCTALIA_ANDROID_PERFORMANCE_PROFILEABLE: 'true',
     });
   });

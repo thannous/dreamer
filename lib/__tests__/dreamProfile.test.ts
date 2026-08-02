@@ -130,6 +130,62 @@ describe('dreamProfile', () => {
     expect(profile.nextAction).toBe('analyze_unanalyzed');
   });
 
+  // `profileSeedDreams` only counts dreams captured through the "remembered dream"
+  // flow, so a user who simply journals every morning never has one. The previous rule
+  // returned `add_anchor` whenever that count was 0, regardless of journal size — which
+  // pinned the beginner CTA ("Add a dream") on a profile already labelled "living"
+  // (stats screen audit §5.2). These three cases are the only ones the fix changes.
+  const buildAnalyzedDream = (id: number, overrides: Partial<DreamAnalysis> = {}) =>
+    buildDream({
+      id,
+      isAnalyzed: true,
+      analyzedAt: id,
+      analysisStatus: 'done',
+      interpretation: 'Analysis',
+      ...overrides,
+    });
+  const exploredChat = [{ id: 'm1', role: 'model' as const, text: 'Insight' }];
+
+  it('never asks for an anchor dream once the journal is living, even without a seed', () => {
+    const profile = buildDreamProfile([
+      buildAnalyzedDream(3, { chatHistory: exploredChat }),
+      buildAnalyzedDream(2, { chatHistory: exploredChat }),
+      buildAnalyzedDream(1, { chatHistory: exploredChat }),
+    ]);
+
+    expect(profile.readiness).toBe('living');
+    expect(profile.rememberedDreams).toBe(0);
+    expect(profile.anchorDreams).toBe(0);
+    expect(profile.exploredDreams).toBe(3);
+    expect(profile.nextAction).toBe('review_patterns');
+  });
+
+  it('walks the ladder from a seedless journal of three dreams', () => {
+    const profile = buildDreamProfile([
+      buildAnalyzedDream(3),
+      buildAnalyzedDream(2),
+      buildDream({ id: 1, isAnalyzed: false, analysisStatus: 'none' }),
+    ]);
+
+    expect(profile.readiness).toBe('living');
+    expect(profile.rememberedDreams).toBe(0);
+    expect(profile.anchorDreams).toBe(0);
+    expect(profile.nextAction).toBe('analyze_unanalyzed');
+  });
+
+  it('still asks for an anchor dream one dream below the pattern threshold', () => {
+    const profile = buildDreamProfile([
+      buildAnalyzedDream(2, { chatHistory: exploredChat }),
+      buildAnalyzedDream(1, { chatHistory: exploredChat }),
+    ]);
+
+    // Two dreams is below MIN_DREAMS_FOR_PATTERNS, so the beginner rung is still the
+    // right advice — the fix moved the threshold, it did not remove `add_anchor`.
+    expect(profile.readiness).toBe('forming');
+    expect(profile.hasEnoughForPatterns).toBe(false);
+    expect(profile.nextAction).toBe('add_anchor');
+  });
+
   it('prompts exploration when all dreams are analyzed but not explored', () => {
     const profile = buildDreamProfile([
       buildDream({

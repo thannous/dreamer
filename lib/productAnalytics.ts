@@ -52,6 +52,10 @@ const PRODUCT_ANALYTICS_EVENT_NAMES = new Set<AnalyticsEventName>([
   'paywall_viewed',
   'empty_journal_remembered_cta_clicked',
   'onboarding_choice_selected',
+  'stats_screen_viewed',
+  'stats_period_selected',
+  'stats_shared',
+  'stats_cta_clicked',
 ]);
 
 const FORBIDDEN_PROPERTY_KEYS = new Set([
@@ -147,6 +151,7 @@ const PRODUCT_ANALYTICS_PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySch
       'analysis_cta',
       'exploration_limit',
       'image_generation',
+      'stats_profile',
       'settings',
       'settings_quota',
       'restore',
@@ -162,6 +167,36 @@ const PRODUCT_ANALYTICS_PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySch
     surface: oneOf('app_onboarding'),
     step: oneOf('intro', 'path'),
     choice: oneOf('continue', 'skip', 'analyze', 'memory', 'dictionary'),
+  },
+  stats_screen_viewed: {
+    tier: subscriptionTier,
+    dream_count_bucket: oneOf('0', '1_2', '3_9', '10_29', '30_plus'),
+    profile_readiness: oneOf('empty', 'seeded', 'forming', 'living'),
+  },
+  stats_period_selected: {
+    period: oneOf('all', 'week', 'month', 'year'),
+    has_results: bool,
+  },
+  stats_shared: {
+    period: oneOf('all', 'week', 'month', 'year'),
+    outcome: oneOf('shared', 'dismissed', 'failed'),
+  },
+  stats_cta_clicked: {
+    cta: oneOf('dream_profile', 'next_best_action', 'plus_upgrade'),
+    action: oneOf(
+      'add_anchor',
+      'capture_more',
+      'analyze_unanalyzed',
+      'explore_more',
+      'review_patterns',
+      'record',
+      'analyze',
+      'explore',
+      'favorite',
+      'streak',
+      'steady',
+      'unlock_signals'
+    ),
   },
 };
 

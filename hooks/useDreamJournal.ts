@@ -983,7 +983,9 @@ export const useDreamJournal = () => {
       }
 
       const result = await submitImageJobForDream(dream, {
-        clientRequestId: options?.clientRequestId,
+        clientRequestId:
+          options?.clientRequestId ??
+          (!dream.imageUrl && dream.isAnalyzed ? dream.analysisRequestId : undefined),
         prompt,
         transcript,
         previousImageUrl: options?.previousImageUrl ?? dream.imageUrl,

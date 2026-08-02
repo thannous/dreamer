@@ -92,6 +92,35 @@ export type AnalyticsEventMap = {
     step: 'intro' | 'path';
     choice: 'continue' | 'skip' | 'analyze' | 'memory' | 'dictionary';
   };
+  stats_screen_viewed: {
+    tier: SubscriptionTier;
+    dream_count_bucket: '0' | '1_2' | '3_9' | '10_29' | '30_plus';
+    profile_readiness: 'empty' | 'seeded' | 'forming' | 'living';
+  };
+  stats_period_selected: {
+    period: 'all' | 'week' | 'month' | 'year';
+    has_results: boolean;
+  };
+  stats_shared: {
+    period: 'all' | 'week' | 'month' | 'year';
+    outcome: 'shared' | 'dismissed' | 'failed';
+  };
+  stats_cta_clicked: {
+    cta: 'dream_profile' | 'next_best_action' | 'plus_upgrade';
+    action:
+      | 'add_anchor'
+      | 'capture_more'
+      | 'analyze_unanalyzed'
+      | 'explore_more'
+      | 'review_patterns'
+      | 'record'
+      | 'analyze'
+      | 'explore'
+      | 'favorite'
+      | 'streak'
+      | 'steady'
+      | 'unlock_signals';
+  };
 };
 
 export type AnalyticsEventName = keyof AnalyticsEventMap;
@@ -102,6 +131,7 @@ export type PaywallTrigger =
   | 'analysis_cta'
   | 'exploration_limit'
   | 'image_generation'
+  | 'stats_profile'
   | 'settings'
   | 'settings_quota'
   | 'restore'
@@ -207,6 +237,16 @@ export function getRecordingDurationBucket(
   return '181s_plus';
 }
 
+export function getStatsDreamCountBucket(
+  count: number
+): AnalyticsEventMap['stats_screen_viewed']['dream_count_bucket'] {
+  if (!Number.isFinite(count) || count <= 0) return '0';
+  if (count <= 2) return '1_2';
+  if (count <= 9) return '3_9';
+  if (count <= 29) return '10_29';
+  return '30_plus';
+}
+
 export function getPaywallTrigger(value: unknown): PaywallTrigger {
   if (typeof value !== 'string') return 'direct';
   const candidate = value.trim();
@@ -215,6 +255,7 @@ export function getPaywallTrigger(value: unknown): PaywallTrigger {
     case 'analysis_cta':
     case 'exploration_limit':
     case 'image_generation':
+    case 'stats_profile':
     case 'settings':
     case 'settings_quota':
     case 'restore':

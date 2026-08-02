@@ -3,13 +3,17 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useTranslation } from '@/hooks/useTranslation';
 import { MotiView } from '@/lib/moti';
+import {
+  shouldAnimateMicButtonSurface,
+  type MicButtonMotionStatus,
+} from '@/lib/recordingMotion';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { Platform, Pressable, StyleSheet, type AccessibilityState } from 'react-native';
+import { Platform, Pressable, StyleSheet, View, type AccessibilityState } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
-export type MicButtonStatus = 'idle' | 'preparing' | 'recording';
+export type MicButtonStatus = MicButtonMotionStatus;
 export type MicButtonInteraction = 'enabled' | 'disabled';
 export type MicButtonSize = 'inline' | 'compact' | 'expressive';
 
@@ -51,6 +55,7 @@ export function MicButton({
   const isPreparing = status === 'preparing';
   const disabled = interaction === 'disabled';
   const showPulses = isRecording && shouldAnimate;
+  const animateButtonSurface = shouldAnimateMicButtonSurface(status);
   const isInline = size === 'inline';
   const isCompact = size === 'compact' || isInline;
   const dimensions = isInline
@@ -160,50 +165,79 @@ export function MicButton({
       )}
 
       {/* Main Button */}
-      <MotiView
-        animate={{
-          scale: isRecording ? 1.05 : isPreparing ? 1.02 : 1,
-          backgroundColor: isRecording ? buttonRecordingBackground : buttonBackground,
-        }}
-        transition={{
-          type: 'timing',
-          duration: isPreparing ? 250 : 800,
-        }}
-        style={[
-          styles.button,
-          shadows.xl,
-          {
-            borderColor: noctalia.accent.base,
-            width: dimensions.button,
-            height: dimensions.button,
-            borderRadius: dimensions.button / 2,
-            borderWidth: dimensions.border,
-          },
-        ]}
-      >
-        {/* Breathing Icon */}
+      {animateButtonSurface ? (
         <MotiView
           animate={{
-            scale: isRecording ? 1.1 : 1,
-            opacity: isRecording ? 1 : 0.9,
+            scale: isRecording ? 1.05 : 1.02,
+            backgroundColor: isRecording ? buttonRecordingBackground : buttonBackground,
           }}
           transition={{
             type: 'timing',
-            duration: 1000,
-            loop: isRecording && shouldAnimate,
-            repeatReverse: true,
+            duration: isPreparing ? 250 : 800,
           }}
-          // Hide icon from accessibility tree since parent has the label
-          importantForAccessibility="no-hide-descendants"
-          accessibilityElementsHidden={true}
+          style={[
+            styles.button,
+            shadows.xl,
+            {
+              borderColor: noctalia.accent.base,
+              width: dimensions.button,
+              height: dimensions.button,
+              borderRadius: dimensions.button / 2,
+              borderWidth: dimensions.border,
+            },
+          ]}
         >
-          <IconSymbol
-            name={isRecording ? 'pause.fill' : 'mic.fill'}
-            size={dimensions.icon}
-            color={noctalia.text.primary}
-          />
+          {/* Breathing Icon */}
+          <MotiView
+            animate={{
+              scale: isRecording ? 1.1 : 1,
+              opacity: isRecording ? 1 : 0.9,
+            }}
+            transition={{
+              type: 'timing',
+              duration: 1000,
+              loop: isRecording && shouldAnimate,
+              repeatReverse: true,
+            }}
+            // Hide icon from accessibility tree since parent has the label
+            importantForAccessibility="no-hide-descendants"
+            accessibilityElementsHidden={true}
+          >
+            <IconSymbol
+              name={isRecording ? 'pause.fill' : 'mic.fill'}
+              size={dimensions.icon}
+              color={noctalia.text.primary}
+            />
+          </MotiView>
         </MotiView>
-      </MotiView>
+      ) : (
+        <View
+          style={[
+            styles.button,
+            shadows.xl,
+            {
+              backgroundColor: buttonBackground,
+              borderColor: noctalia.accent.base,
+              width: dimensions.button,
+              height: dimensions.button,
+              borderRadius: dimensions.button / 2,
+              borderWidth: dimensions.border,
+            },
+          ]}
+        >
+          <View
+            importantForAccessibility="no-hide-descendants"
+            accessibilityElementsHidden
+            style={styles.idleIcon}
+          >
+            <IconSymbol
+              name="mic.fill"
+              size={dimensions.icon}
+              color={noctalia.text.primary}
+            />
+          </View>
+        </View>
+      )}
     </Pressable>
   );
 }
@@ -221,6 +255,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
+  },
+  idleIcon: {
+    opacity: 0.9,
   },
   glow: {
     position: 'absolute',

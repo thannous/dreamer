@@ -29,7 +29,7 @@ import { InteractionManager, Linking, LogBox, NativeModules, Platform } from 're
 import { SystemBars } from 'react-native-edge-to-edge';
 
 import AnimatedSplashScreen, {
-  SPLASH_MINIMUM_VISIBLE_MS,
+  getSplashMinimumVisibleMs,
 } from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
@@ -704,6 +704,7 @@ export default function RootLayout() {
   const shouldShowCustomSplash = showCustomSplash;
   const fontsSettled = fontsLoaded || Boolean(fontError) || splashTimedOut;
   const prefersReducedMotion = usePrefersReducedMotion();
+  const splashMinimumVisibleMs = getSplashMinimumVisibleMs(Platform.OS);
   const minimumSplashElapsed =
     prefersReducedMotion || splashTimedOut || splashDelayElapsed;
   const shouldFadeSplash =
@@ -786,10 +787,10 @@ export default function RootLayout() {
 
     const timer = setTimeout(
       () => setSplashDelayElapsed(true),
-      SPLASH_MINIMUM_VISIBLE_MS
+      splashMinimumVisibleMs
     );
     return () => clearTimeout(timer);
-  }, [fontsSettled, prefersReducedMotion, splashTimedOut]);
+  }, [fontsSettled, prefersReducedMotion, splashMinimumVisibleMs, splashTimedOut]);
 
   useEffect(() => {
     if (!shouldFadeSplash) return;

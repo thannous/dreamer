@@ -15,6 +15,15 @@ const variantKeys = [
   'subscription.paywall.variant.exploration_limit.title',
   'subscription.paywall.variant.exploration_limit.card_title',
   'subscription.paywall.variant.exploration_limit.cta',
+  'subscription.paywall.variant.stats_profile.chip',
+  'subscription.paywall.variant.stats_profile.title',
+  'subscription.paywall.variant.stats_profile.subtitle',
+  'subscription.paywall.variant.stats_profile.card_title',
+  'subscription.paywall.variant.stats_profile.card_subtitle',
+  'subscription.paywall.variant.stats_profile.feature_1',
+  'subscription.paywall.variant.stats_profile.feature_2',
+  'subscription.paywall.variant.stats_profile.feature_3',
+  'subscription.paywall.variant.stats_profile.cta',
   'subscription.paywall.variant.settings.title',
   'subscription.paywall.variant.settings_quota.title',
   'subscription.paywall.variant.returning_device.title',
@@ -60,6 +69,19 @@ describe('paywallVariants', () => {
       primaryLabelKey: 'subscription.paywall.button.primary.free',
       featureKeys: PLUS_PAYWALL_FEATURE_KEYS,
     });
+  });
+
+  it('uses stats-specific copy for the dream profile gate', () => {
+    expect(getPaywallVariant('stats_profile')).toMatchObject({
+      trigger: 'stats_profile',
+      chipKey: 'subscription.paywall.variant.stats_profile.chip',
+      headerTitleKey: 'subscription.paywall.variant.stats_profile.title',
+      primaryLabelKey: 'subscription.paywall.variant.stats_profile.cta',
+    });
+
+    // A paywall opened from Stats must not fall back to the generic plan copy —
+    // that is the attribution/context gap the audit reported.
+    expect(getPaywallVariant('stats_profile').featureKeys).not.toEqual(PLUS_PAYWALL_FEATURE_KEYS);
   });
 
   it('uses concise Plus benefits for settings-triggered plan browsing', () => {

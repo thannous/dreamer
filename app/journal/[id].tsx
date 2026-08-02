@@ -265,10 +265,26 @@ export default function JournalDetailScreen() {
   const { t } = useTranslation();
   const referenceImagesEnabled = isReferenceImagesEnabled();
   const isPlus = tier === 'plus';
-  const canGenerateImage = !quotaLoading && canAnalyzeNow && (isPlus || tier === 'guest');
   const canUseReference = referenceImagesEnabled && Boolean(user);
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
+  const bundledImageRequestId = useMemo(
+    () =>
+      tier === 'free' &&
+      Boolean(user) &&
+      dream?.isAnalyzed === true &&
+      !dream.imageUrl?.trim() &&
+      dream.analysisRequestId
+        ? dream.analysisRequestId
+        : undefined,
+    [dream, tier, user]
+  );
+  const canGenerateImage =
+    !quotaLoading &&
+    (
+      (canAnalyzeNow && (isPlus || tier === 'guest')) ||
+      Boolean(bundledImageRequestId)
+    );
   useEffect(() => {
     if (dream?.analysisStatus !== 'pending' || isAnalyzing) return undefined;
 
@@ -901,7 +917,7 @@ export default function JournalDetailScreen() {
     if (!dream || isAnalysisLocked) return;
 
     // Defensive check: verify quota before attempting generation
-    if (!canAnalyzeNow) {
+    if (!canAnalyzeNow && !bundledImageRequestId) {
       return;
     }
 
@@ -915,6 +931,7 @@ export default function JournalDetailScreen() {
       await generateDreamImage(dream.id, {
         transcript: sourceText,
         previousImageUrl: dream.imageUrl || undefined,
+        clientRequestId: bundledImageRequestId,
       });
     } catch (error) {
       const msg = error instanceof Error ? error.message : t('common.unknown_error');
@@ -922,7 +939,7 @@ export default function JournalDetailScreen() {
     } finally {
       setIsRetryingImage(false);
     }
-  }, [canAnalyzeNow, dream, generateDreamImage, isAnalysisLocked, t]);
+  }, [bundledImageRequestId, canAnalyzeNow, dream, generateDreamImage, isAnalysisLocked, t]);
 
   const handleBackPress = useCallback(() => {
     router.replace('/(tabs)/journal');

@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { compareDreamFacets } from '@/lib/dreamFacets';
+import { UNKNOWN_DREAM_TYPE, type DreamTypeKey } from '@/lib/dreamLabels';
 import { getUserChatMessageCount, isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { calculateStreaks, isWithinDays, startOfDay } from '@/lib/streakUtils';
 import type { DreamAnalysis, DreamTheme } from '@/lib/types';
@@ -17,7 +19,7 @@ export interface DreamStatistics {
   dreamsOverTime: { timestamp: number; count: number }[];
 
   // Content analysis
-  dreamTypeDistribution: { type: string; count: number; percentage: number }[];
+  dreamTypeDistribution: { type: DreamTypeKey; count: number; percentage: number }[];
   topThemes: { theme: DreamTheme; count: number }[];
 
   // Engagement
@@ -49,7 +51,7 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
 
     const dayCount = new Map<number, number>();
     const dateCount = new Map<number, number>();
-    const typeCount = new Map<string, number>();
+    const typeCount = new Map<DreamTypeKey, number>();
     const themeCount = new Map<DreamTheme, number>();
     let totalChatMessages = 0;
     let dreamsWithChat = 0;
@@ -84,7 +86,10 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
         dateCount.set(dayTimestamp, (dateCount.get(dayTimestamp) || 0) + 1);
       }
 
-      const type = dream.dreamType || 'Unknown';
+      // The annotation is required: `dreamType` is declared non-optional, so TS
+      // discards the never-falsy fallback and would infer plain `DreamType`,
+      // hiding the sentinel from every consumer.
+      const type: DreamTypeKey = dream.dreamType || UNKNOWN_DREAM_TYPE;
       typeCount.set(type, (typeCount.get(type) || 0) + 1);
       if (dream.theme) {
         themeCount.set(dream.theme, (themeCount.get(dream.theme) || 0) + 1);
@@ -131,11 +136,11 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
         count,
         percentage: totalDreams > 0 ? Math.round((count / totalDreams) * 100) : 0,
       }))
-      .sort((a, b) => b.count - a.count);
+      .sort((a, b) => compareDreamFacets(a.count, a.type, b.count, b.type));
 
     const topThemes = Array.from(themeCount.entries())
       .map(([theme, count]) => ({ theme, count }))
-      .sort((a, b) => b.count - a.count)
+      .sort((a, b) => compareDreamFacets(a.count, a.theme, b.count, b.theme))
       .slice(0, 5);
 
     if (mostDiscussedDreamUserMessages === 0) {

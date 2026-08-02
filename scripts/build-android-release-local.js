@@ -236,6 +236,7 @@ function getBuildEnv(
     ...buildEnv,
     ...releaseEnv,
     ...getProfileEnvOverrides(profileName),
+    EXPO_PUBLIC_PERFORMANCE_TRACING: profileable ? 'true' : 'false',
     NOCTALIA_ANDROID_PERFORMANCE_PROFILEABLE: profileable ? 'true' : 'false',
   };
 }

@@ -111,6 +111,7 @@ type DreamImageAuthorizationContext = {
   analysis_request_id?: string | null;
   analysis_status?: string | null;
   is_analyzed?: boolean | null;
+  image_url?: string | null;
 };
 
 export const canCreateImageJobForTier = (input: {
@@ -126,8 +127,14 @@ export const canCreateImageJobForTier = (input: {
   return Boolean(
     input.dream &&
       input.dream.analysis_request_id === input.clientRequestId &&
-      input.dream.analysis_status === 'pending' &&
-      input.dream.is_analyzed !== true
+      (
+        (input.dream.analysis_status === 'pending' && input.dream.is_analyzed !== true) ||
+        (
+          input.dream.analysis_status === 'done' &&
+          input.dream.is_analyzed === true &&
+          !input.dream.image_url?.trim()
+        )
+      )
   );
 };
 
@@ -268,7 +275,7 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
     if (requestedDreamId != null && user) {
       const { data: dream, error: dreamError } = await supabase
         .from('dreams')
-        .select('id, analysis_request_id, analysis_status, is_analyzed')
+        .select('id, analysis_request_id, analysis_status, is_analyzed, image_url')
         .eq('id', requestedDreamId)
         .single();
 

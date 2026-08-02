@@ -4,6 +4,7 @@ import {
   getDurationMsBucket,
   getPaywallTrigger,
   getRecordingDurationBucket,
+  getStatsDreamCountBucket,
   getTranscriptLengthBucket,
   getTranscriptLengthBucketFromLength,
   resetAnalyticsProviderForTesting,
@@ -136,7 +137,16 @@ describe('analytics', () => {
     expect(getDurationMsBucket(45000)).toBe('15_45s');
     expect(getDurationMsBucket(45001)).toBe('45s_plus');
 
+    expect(getStatsDreamCountBucket(0)).toBe('0');
+    expect(getStatsDreamCountBucket(2)).toBe('1_2');
+    expect(getStatsDreamCountBucket(9)).toBe('3_9');
+    expect(getStatsDreamCountBucket(29)).toBe('10_29');
+    expect(getStatsDreamCountBucket(30)).toBe('30_plus');
+
     expect(getPaywallTrigger('analysis_limit')).toBe('analysis_limit');
+    // Hand-written switch: a trigger added to the union but missed here silently
+    // degrades to 'direct' and the paywall loses its origin.
+    expect(getPaywallTrigger('stats_profile')).toBe('stats_profile');
     expect(getPaywallTrigger('unknown')).toBe('direct');
     expect(getPaywallTrigger(undefined)).toBe('direct');
   });

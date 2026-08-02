@@ -4,6 +4,8 @@
 import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
+import { UNKNOWN_DREAM_TYPE } from '../../lib/dreamLabels';
+import { buildDreamProfile } from '../../lib/dreamProfile';
 import type { DreamAnalysis } from '../../lib/types';
 import { useDreamStatistics } from '../useDreamStatistics';
 
@@ -328,8 +330,29 @@ describe('useDreamStatistics', () => {
 
       const { result } = renderHook(() => useDreamStatistics(dreams));
 
-      const unknownType = result.current.dreamTypeDistribution.find((d) => d.type === 'Unknown');
+      // The bucket keeps the shared sentinel so the label layer can map it to
+      // `dream.type.unknown` instead of printing the raw word.
+      expect(UNKNOWN_DREAM_TYPE).toBe('Unknown');
+      const unknownType = result.current.dreamTypeDistribution.find(
+        (d) => d.type === UNKNOWN_DREAM_TYPE,
+      );
       expect(unknownType?.count).toBe(1);
+    });
+
+    it('breaks count ties on the type name rather than insertion order', () => {
+      const dreams = [
+        buildDream({ id: 1, dreamType: 'Nightmare' }),
+        buildDream({ id: 2, dreamType: 'Symbolic Dream' }),
+        buildDream({ id: 3, dreamType: 'Lucid Dream' }),
+      ];
+
+      const { result } = renderHook(() => useDreamStatistics(dreams));
+
+      expect(result.current.dreamTypeDistribution.map((entry) => entry.type)).toEqual([
+        'Lucid Dream',
+        'Nightmare',
+        'Symbolic Dream',
+      ]);
     });
   });
 
@@ -479,6 +502,29 @@ describe('useDreamStatistics', () => {
 
       expect(result.current.mostDiscussedDream).toBeNull();
       expect(result.current.mostDiscussedDreamUserMessages).toBe(0);
+    });
+  });
+
+  describe('theme ordering parity with the dream profile', () => {
+    it('ranks tied themes exactly like buildDreamProfile', () => {
+      // Insertion order is mystical, calm, noir. The free "Popular themes" section
+      // reads this hook while the paid profile signal reads buildDreamProfile; when
+      // the two used different tiebreaks they contradicted each other on screen.
+      const dreams = [
+        buildDream({ id: 6, theme: 'mystical' }),
+        buildDream({ id: 5, theme: 'mystical' }),
+        buildDream({ id: 4, theme: 'calm' }),
+        buildDream({ id: 3, theme: 'calm' }),
+        buildDream({ id: 2, theme: 'noir' }),
+        buildDream({ id: 1, theme: 'noir' }),
+      ];
+
+      const { result } = renderHook(() => useDreamStatistics(dreams));
+
+      expect(result.current.topThemes.map((entry) => entry.theme)).toEqual(
+        buildDreamProfile(dreams).topThemes.map((facet) => facet.value),
+      );
+      expect(result.current.topThemes[0].theme).toBe('calm');
     });
   });
 

@@ -14,6 +14,12 @@ describe('TID', () => {
     expect(TID.Button.InputModeDismiss).toBe('btn.recording.inputMode.dismiss');
     expect(TID.Component.DreamProfileCard).toBe('component.stats.dreamProfile');
     expect(TID.Component.DreamProfilePlusPreview).toBe('component.stats.dreamProfile.plusPreview');
+    expect(TID.Component.StatsPeriodEmpty).toBe('component.stats.periodEmpty');
+    expect(TID.Component.StatsTypeLegend).toBe('component.stats.typeLegend');
+    expect(TID.Component.StatsTopThemes).toBe('component.stats.topThemes');
+    expect(TID.Button.StatsPeriodChip).toBe('btn.stats.periodChip');
+    expect(TID.Button.StatsPeriodReset).toBe('btn.stats.periodReset');
+    expect(TID.Button.StatsMostDiscussedDream).toBe('btn.stats.mostDiscussedDream');
     expect(TID.Button.Exploration360Synthesis).toBe('btn.exploration360.synthesis');
     expect(TID.Button.EmptyStartRememberedDream).toBe('btn.empty.startRememberedDream');
     expect(TID.Button.OnboardingIntroNext).toBe('btn.onboarding.intro.next');

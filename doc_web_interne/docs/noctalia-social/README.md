@@ -1,6 +1,6 @@
 # Noctalia — Documentation de la campagne sociale
 
-Dernière vérification : 2026-07-28.
+Dernière vérification : 2026-07-31.
 
 Ce dossier est la source Markdown de la campagne organique TikTok et Instagram
 Reels de Noctalia. Le calendrier ne doit plus être maintenu sous forme d'image.
@@ -9,6 +9,17 @@ Reels de Noctalia. Le calendrier ne doit plus être maintenu sous forme d'image.
 
 - [`PUBLICATION-PLAN.md`](./PUBLICATION-PLAN.md) : calendrier éditorial, inventaire
   des finales Magnific et statuts de publication.
+- [`community-manager/README.md`](./community-manager/README.md) : espace de
+  travail, mandat, voix de marque et règles d'autorisation du community et social
+  media management.
+- [`community-manager/ACCOUNTS-AND-MANDATE.md`](./community-manager/ACCOUNTS-AND-MANDATE.md) :
+  registre des profils sociaux Noctalia, preuve GSC et mandat opérationnel actif.
+- [`community-manager/2026-08-us-europe-publication-plan.md`](./community-manager/2026-08-us-europe-publication-plan.md) :
+  plan organique quotidien validé du 31 juillet au 15 août pour les vidéos
+  locales, ciblé États-Unis et Europe.
+- [`community-manager/SOCIAL-SEO-MARKETING-BEST-PRACTICES.md`](./community-manager/SOCIAL-SEO-MARKETING-BEST-PRACTICES.md) :
+  règles 2026 sourcées pour le Social SEO, les légendes, les labels IA, la
+  mesure, les UTMs et les tests.
 - [`../noctalia-magnific-camera-path-flow.md`](../noctalia-magnific-camera-path-flow.md) :
   guide du Flow Magnific pour les plans reposant sur une trajectoire de caméra.
 

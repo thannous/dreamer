@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   Easing,
   cancelAnimation,
@@ -28,8 +28,14 @@ const seededRandom = (seed: number) => {
 
 // --- Configuration ---
 export const SPLASH_MINIMUM_VISIBLE_MS = 600;
+export const ANDROID_STATIC_SPLASH_MINIMUM_VISIBLE_MS = 150;
 export const SPLASH_OUTRO_DURATION_MS = 250;
 export const SPLASH_PARTICLE_COUNT = 12;
+
+export const getSplashMinimumVisibleMs = (platform: string): number =>
+  platform === 'android'
+    ? ANDROID_STATIC_SPLASH_MINIMUM_VISIBLE_MS
+    : SPLASH_MINIMUM_VISIBLE_MS;
 
 const getInitialViewport = () => {
   const { width, height } = Dimensions.get('window');
@@ -49,6 +55,9 @@ export const shouldUseAnimatedSplash = (
   prefersReducedMotion: boolean,
   forceStatic = false
 ): boolean => !prefersReducedMotion && !forceStatic;
+
+export const shouldUseMinimalStaticSplash = (platform: string): boolean =>
+  platform === 'android';
 
 // --- Logo Paths ---
 // Canvas: 280x280
@@ -335,8 +344,9 @@ const AnimatedSplashContent = ({
 
 const StaticSplashContent = ({
   status = 'intro',
+  minimal = false,
   onAnimationEnd,
-}: Omit<AnimatedSplashScreenProps, 'forceStatic'>) => {
+}: Omit<AnimatedSplashScreenProps, 'forceStatic'> & { minimal?: boolean }) => {
   const animationEndCalledRef = useRef(false);
   const onAnimationEndRef = useRef(onAnimationEnd);
 
@@ -362,24 +372,28 @@ const StaticSplashContent = ({
       importantForAccessibility="no-hide-descendants"
       style={[StyleSheet.absoluteFill, styles.container]}
     >
-      <LinearGradient
-        colors={[COLORS.bgStart, COLORS.bgEnd]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
+      {!minimal ? (
+        <LinearGradient
+          colors={[COLORS.bgStart, COLORS.bgEnd]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+      ) : null}
       <View style={styles.content}>
-        <View style={[styles.starGlowContainer, styles.staticGlow]}>
-          <Svg height="100%" width="100%" viewBox="0 0 100 100">
-            <Defs>
-              <RadialGradient id="staticCyanGlow" cx="50%" cy="50%" rx="50%" ry="50%">
-                <Stop offset="0%" stopColor={COLORS.cyan} stopOpacity="0.8" />
-                <Stop offset="100%" stopColor={COLORS.cyan} stopOpacity="0" />
-              </RadialGradient>
-            </Defs>
-            <Rect x="0" y="0" width="100" height="100" fill="url(#staticCyanGlow)" />
-          </Svg>
-        </View>
+        {!minimal ? (
+          <View style={[styles.starGlowContainer, styles.staticGlow]}>
+            <Svg height="100%" width="100%" viewBox="0 0 100 100">
+              <Defs>
+                <RadialGradient id="staticCyanGlow" cx="50%" cy="50%" rx="50%" ry="50%">
+                  <Stop offset="0%" stopColor={COLORS.cyan} stopOpacity="0.8" />
+                  <Stop offset="100%" stopColor={COLORS.cyan} stopOpacity="0" />
+                </RadialGradient>
+              </Defs>
+              <Rect x="0" y="0" width="100" height="100" fill="url(#staticCyanGlow)" />
+            </Svg>
+          </View>
+        ) : null}
         <View style={styles.logoContainer}>
           <Svg width={280} height={280} viewBox="0 0 280 280" style={styles.svg}>
             <Path
@@ -419,7 +433,11 @@ const AnimatedSplashScreen = ({
   return animateSplash ? (
     <AnimatedSplashContent status={status} onAnimationEnd={onAnimationEnd} />
   ) : (
-    <StaticSplashContent status={status} onAnimationEnd={onAnimationEnd} />
+    <StaticSplashContent
+      status={status}
+      minimal={shouldUseMinimalStaticSplash(Platform.OS)}
+      onAnimationEnd={onAnimationEnd}
+    />
   );
 };
 

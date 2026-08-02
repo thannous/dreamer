@@ -1660,4 +1660,36 @@ describe('useDreamJournal', () => {
       }).rejects.toThrow('Dream with id 999 not found');
     });
   });
+
+  describe('generateDreamImage', () => {
+    it('reuses the analysis request id to recover a missing bundled image', async () => {
+      setMockUser({ id: 'user-1' });
+      const analysisRequestId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
+      const analyzedDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        isAnalyzed: true,
+        analysisStatus: 'done',
+        analysisRequestId,
+        imageUrl: '',
+        imageGenerationFailed: true,
+      });
+      mockFetchDreamsFromSupabase.mockResolvedValue([analyzedDream]);
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.generateDreamImage(1, {
+          transcript: analyzedDream.transcript,
+        });
+      });
+
+      expect(mockSubmitImageGenerationJob).toHaveBeenCalledWith(
+        expect.objectContaining({
+          clientRequestId: analysisRequestId,
+          dreamId: 101,
+        })
+      );
+    });
+  });
 });

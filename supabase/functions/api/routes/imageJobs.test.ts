@@ -44,13 +44,30 @@ Deno.test('image job creation allows a free initial image linked to a pending an
   );
 });
 
-Deno.test('image job creation rejects unlinked or completed free generation', () => {
+Deno.test('image job creation allows recovery of a completed free analysis image', () => {
   assertEquals(
     canCreateImageJobForTier({
       tier: 'free',
       userId: 'free-user',
-      dream: pendingDream,
-      clientRequestId: 'different-request',
+      dream: { ...pendingDream, analysis_status: 'done', is_analyzed: true },
+      clientRequestId: 'analysis-request-1',
+    }),
+    true
+  );
+});
+
+Deno.test('image job creation rejects unlinked free generation', () => {
+  assertEquals(
+    canCreateImageJobForTier({
+      tier: 'free',
+      userId: 'free-user',
+      dream: {
+        ...pendingDream,
+        analysis_status: 'done',
+        is_analyzed: true,
+        image_url: 'https://example.test/existing.webp',
+      },
+      clientRequestId: 'analysis-request-1',
     }),
     false
   );
@@ -58,8 +75,8 @@ Deno.test('image job creation rejects unlinked or completed free generation', ()
     canCreateImageJobForTier({
       tier: 'free',
       userId: 'free-user',
-      dream: { ...pendingDream, analysis_status: 'done', is_analyzed: true },
-      clientRequestId: 'analysis-request-1',
+      dream: pendingDream,
+      clientRequestId: 'different-request',
     }),
     false
   );
