@@ -1,8 +1,8 @@
 # Noctalia backlink outreach — wave 1
 
 Prepared: 2026-07-31
-Updated: 2026-08-02
-Status: 23 messages or forms delivered/accepted; 1 temporarily delayed; 3 official routes failed; awaiting editorial outcomes
+Updated: 2026-08-03
+Status: 25 messages or forms delivered/accepted; 1 temporarily delayed; 3 official routes failed; awaiting editorial outcomes
 Sender: Thanh Chau, founder of Noctalia
 Contact identity for form submissions: `contact@noctalia.app`
 
@@ -547,10 +547,10 @@ The article, named author, current Terms, Privacy, Singapore operator and separa
 
 ## 27. Digital Trends — editorial team
 
-**Target:** `https://www.digitaltrends.com/mobile/best-note-taking-apps/`
+**Target:** `https://www.digitaltrends.com/phones/best-note-taking-apps/` (current redirect target)
 **Route:** `editorial@digitaltrends.com`, published on the official contact page for editorial suggestions, press and news
 **Subject:** `Editorial suggestion: Android voice-first dream journal`
-**State:** qualified and drafted; not sent while both available Gmail sessions authenticate as `thannous@gmail.com` instead of `contact@noctalia.app`
+**Sent:** 2026-08-03 at approximately 00:32 CEST from `contact@noctalia.app`; Zimbra displayed `Le mail a été envoyé.` The exact sent copy and same-day verification are recorded in `marketing/seo/backlink-outreach-wave-2-professional-mailbox-2026-08-03.md`.
 
 Hello Digital Trends editorial team,
 
@@ -568,14 +568,14 @@ Thanh Chau
 Founder, Noctalia
 contact@noctalia.app
 
-Digital Trends Media Group's current contact page identifies its Portland, Oregon office and separates editorial suggestions from reviews, advertising and licensing. The non-Russian operator gate passes, but this message must remain unsent until the professional mailbox is actually active in the connector.
+Digital Trends Media Group's current contact page identifies its Portland, Oregon office and separates editorial suggestions from reviews, advertising and licensing. The non-Russian operator gate passed; a same-mailbox sent-folder search returned no prior message before the single send.
 
 ## 28. Android Police — editorial team
 
 **Target:** `https://www.androidpolice.com/android-pixel-journal-alternatives/`
-**Route:** `https://www.androidpolice.com/contact/`, using Editorial Inquiries rather than advertising or partnership opportunities
+**Route:** `editorial@androidpolice.com`, rendered by the current official contact page under Editorial Inquiries rather than advertising or partnership opportunities
 **Subject:** `Editorial suggestion: Android voice dream journal`
-**State:** qualified and drafted; not sent while the available Gmail sessions authenticate as `thannous@gmail.com` instead of `contact@noctalia.app`
+**Sent:** 2026-08-03 at approximately 00:36 CEST from `contact@noctalia.app`; Zimbra displayed `Le mail a été envoyé.` The exact sent copy and same-day verification are recorded in `marketing/seo/backlink-outreach-wave-2-professional-mailbox-2026-08-03.md`.
 
 Hello Android Police editorial team,
 
@@ -593,7 +593,7 @@ Thanh Chau
 Founder, Noctalia
 contact@noctalia.app
 
-The article, named author, editorial guidelines and the contact page's explicit editorial-suggestions category were checked. Valnet Inc.'s current Terms identify a Quebec, Canada address, so the non-Russian operator gate passes. No message was sent and no client-rendered address was inferred.
+The article, named author, editorial guidelines and the contact page's explicit editorial-suggestions category were checked. Valnet Inc.'s current policies identify the Canadian operator, so the non-Russian operator gate passes. The exact editorial address was read from the current rendered official contact text, not inferred or decoded; a same-mailbox sent-folder search returned no prior message before the single send.
 
 ## 29. Lifehacker — David Nield
 
@@ -754,4 +754,6 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - Rejected or paused publishers: Lound lacks a verified named publisher and usable editorial contact; Dayora's Terms and product pages materially conflict on AI-training use; remembr has no verified operator and its privacy, terms and contact pages return 404; Kiomora exposes no named operator and its protected contact values are malformed or misspelled; DreamStream names a research lead but not an accountable legal operator or location; Inner Dispatch exposes no verifiable operator, legal pages or editorial route. The non-Russian ownership and operations gate remains unresolved for DreamStream and Inner Dispatch, so neither was contacted: `https://lound.ai/blog/best-voice-journaling-apps-2026/`, `https://lound.ai/privacy/`, `https://www.dayora.ai/blog/best-voice-journaling-apps-2026`, `https://www.dayora.ai/terms`, `https://www.dayora.ai/contact`, `https://remembr.live/blog/best-voice-journal-apps-2026`, `https://remembr.live/`, `https://kiomora.com/blog/best-ai-journal-apps/`, `https://kiomora.com/about/`, `https://kiomora.com/press/`, `https://dreamstream.art/blog/best-dream-apps-2026/`, `https://dreamstream.art/about/`, `https://dreamstream.art/termsofservice/`, `https://innerdispatch.com/best-voice-journaling-apps/`
 - Sleep Foundation exclusion evidence: `https://www.sleepfoundation.org/about-us/pitch-us`
 
-Verification on 2026-07-31 through 2026-08-02: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android's official address then failed with `554 5.7.1 Relay access denied`; no alternate address was inferred. Holstee was verified and contacted once as the replacement target. Know Your Ethos was accepted only as a competitor-owned editorial prospect after its team byline, company story, legal navigation, official FAQ address and balanced competitor limitations were checked; its published address then rejected the factual request with `550 5.1.1`, so no follow-up or guessed alternative is permitted. Dreamz Journal's prominently advertised direct-editor mailbox also proved nonexistent or unable to receive mail, so its route was closed without a retry or inferred address. Acuity, CortexOS, Dearly, Android Central, Android Guías and SlashGear were contacted only after their named author or operator, current article, official route, legal or trust material and Gmail history had been checked. The Android Guías and SlashGear destination pages returned HTTP 200 immediately before send, but the authenticated connector used `thannous@gmail.com`; those messages must not be duplicated. JournPad's server currently times out and Gmail is still retrying, so the route is delayed rather than failed and cannot receive a follow-up unless delivery is confirmed. Frandroid's French operator, editorial model, topical coverage and dedicated suggestion route were verified before the form accepted one factual message without CAPTCHA. Lifehacker's official article, named author, Ziff Davis ownership and the author's direct no-CAPTCHA contact form were checked before one factual submission from contact@noctalia.app was accepted. Android Police passed the current article, named-author, editorial-policy, official-route and Canadian-operator gates, but no email was sent while the connector remains on the wrong mailbox. Apps Tested and Slant were rejected because their current accountable operator and non-Russian location could not be verified. Clubic was excluded after its official page proved that the dofollow listing and editorial-test routes begin at 1,000 EUR and 3,000 EUR respectively. Gratitude Genie and Digital Trends passed the non-Russian operator and official-route gates, but no email was sent while the connector remains on the wrong mailbox. Make Tech Easier passed the Singapore operator and editorial-fit gates, but its prepared form remains unsubmitted because a human Turnstile is required. Speakwise was rejected because its own Terms and current App Store page identify different legal entities. G2 and Capterra were excluded because their B2B scope does not fit Noctalia; Geekflare was excluded because the relevant placement route is commercial; ZipDo was rejected because its accountable legal operator, address, non-Russian ownership and genuinely free route remain unverified. Lound, Dayora, remembr, Kiomora, DreamStream, Inner Dispatch, AndroidGuys and Technical Ustad were paused or rejected for the documented identity, legal, location, privacy-consistency or contact-route deficiencies. Sleep.com and Android Headlines passed operator gates, but neither exposed a usable current editorial inbox without misusing support or bypassing a challenge. Zapier was excluded because Noctalia falls outside the guide's stated selection criteria. Dream Studies Portal's previously prepared form was submitted once on 2026-08-01 without bypassing reCAPTCHA, and its own page displayed the authoritative sent confirmation.
+Verification on 2026-07-31 through 2026-08-03: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android, Know Your Ethos and Dreamz Journal then failed through their exact published routes and were closed without guessed alternatives. Android Guías and SlashGear were delivered from `thannous@gmail.com` before the professional mailbox became available and must not be duplicated. JournPad remains temporarily delayed and cannot receive a follow-up unless delivery is confirmed. Frandroid and Lifehacker supplied authoritative form confirmations from `contact@noctalia.app`.
+
+On 2026-08-03, Digital Trends, Gratitude Genie and Android Police were rechecked in Chrome, deduplicated against the Zimbra Sent folder and contacted once from `contact@noctalia.app`; each send displayed `Le mail a été envoyé.` The current Android Police contact text rendered the exact editorial address, so it was neither inferred nor decoded. No immediate bounce, automatic reply or editorial response was found. Make Tech Easier remains unsubmitted behind human Turnstile. Apps Tested, Slant, Clubic, Speakwise, G2, Capterra, Geekflare, ZipDo, Lound, Dayora, remembr, Kiomora, DreamStream, Inner Dispatch, AndroidGuys, Technical Ustad and Zapier remain excluded or paused for the documented trust, commercial, eligibility or topical reasons. Sleep.com and Android Headlines remain qualified but lack a usable current editorial route without misusing support or bypassing a challenge.
