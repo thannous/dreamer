@@ -108,4 +108,35 @@ describe('paywallVariants', () => {
       }
     }
   });
+
+  it('[B] Given the stats_profile paywall When its copy is read Then no language still promises recurring symbols', async () => {
+    // Every other assertion in this file checks key EXISTENCE only, so a half-applied copy
+    // rewrite — en updated, de still promising "Symbole" — ships green here AND under the
+    // key-parity test, which is about keys, not values. Recurring symbols are out of scope
+    // for this phase (the spike found they do not concentrate below ~50 dreams), so the
+    // paywall must stop selling them.
+    // Negative half only: it is the false promise, not the missing one, that damages trust.
+    // Revert: leave de.ts unrewritten — the German feature string fails by language and key.
+    await Promise.all(SUPPORTED_APP_LANGUAGES.map((language) => loadTranslations(language)));
+
+    const promiseKeys = [
+      'subscription.paywall.variant.stats_profile.subtitle',
+      'subscription.paywall.variant.stats_profile.card_subtitle',
+      'subscription.paywall.variant.stats_profile.feature_1',
+      'subscription.paywall.variant.stats_profile.feature_2',
+      'subscription.paywall.variant.stats_profile.feature_3',
+    ];
+
+    for (const language of SUPPORTED_APP_LANGUAGES) {
+      const t = getTranslator(language);
+
+      for (const key of promiseKeys) {
+        expect({ language, key, value: t(key) }).toEqual({
+          language,
+          key,
+          value: expect.not.stringMatching(/symbol|símbolo|simbol/i),
+        });
+      }
+    }
+  });
 });
