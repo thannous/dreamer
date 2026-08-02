@@ -177,6 +177,10 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     overflow: 'hidden',
   },
+  // Deliberately stays muted, unlike StatsRankedList's bars which were raised to full
+  // opacity. These widths are decorative — they encode nothing — so making them as crisp
+  // as the real ones would read as data the user does not actually have. The count above
+  // them is the honest number; these are texture.
   previewFill: {
     height: 6,
     borderRadius: 3,

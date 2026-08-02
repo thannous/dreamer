@@ -65,7 +65,7 @@ export const StatsRankedList = memo(function StatsRankedList({
                   {row.countLabel}
                 </Text>
                 <View
-                  style={styles.barTrack}
+                  style={[styles.barTrack, { backgroundColor: noctalia.surface.border }]}
                   accessibilityRole="progressbar"
                   accessibilityLabel={row.label}
                   accessibilityValue={{
@@ -130,14 +130,19 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.regular,
     marginBottom: 6,
   },
+  // The track carries a background so the bar reads as a PROPORTION rather than a bare
+  // length: without it only the filled part is drawn, and "3 dreams" and "1 dream" look
+  // like two unrelated dashes instead of a full bar next to a third of one.
   barTrack: {
-    height: 3,
-    borderRadius: 1.5,
+    height: 4,
+    borderRadius: 2,
     overflow: 'hidden',
   },
+  // Full opacity. At 0.6 over the dark card the accent washed out to the edge of
+  // legibility — verified on device — and these bars carry real data, so they have to
+  // survive a bright screen.
   barFill: {
-    height: 3,
-    borderRadius: 1.5,
-    opacity: 0.6,
+    height: 4,
+    borderRadius: 2,
   },
 });
