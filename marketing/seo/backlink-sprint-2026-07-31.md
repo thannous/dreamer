@@ -59,13 +59,17 @@ About.me passed the operator and free-plan trust checks, but not the authority-v
 
 Carrd is a legitimate free publishing platform operated by Carrd Inc.; sampled pages are HTTP 200, canonical and use followed outbound links. It is not an editorial citation or a startup directory. Publishing a thin Noctalia duplicate solely to manufacture a referring domain would provide little authority and could create brand or canonical confusion, so no account or page was created. Carrd should be reconsidered only if Noctalia has a distinct, user-serving mini-tool or campaign that merits its own page.
 
-Linktree is also a legitimate, current and free platform whose Terms identify Linktree Pty Ltd and allow authorized business use. Sampled public profiles are canonical and their main outbound links are followed. A new profile with no audience or role in Noctalia's channel strategy would still be an almost orphaned, self-created link rather than an endorsement from Linktree's high-DR domain. No account was created merely to stack a profile; the route can be reopened if Linktree becomes the maintained hub for real Noctalia social channels.
+Linktree is also a legitimate, current and free platform whose Terms identify Linktree Pty Ltd and allow authorized business use. Noctalia already has active Instagram, TikTok and X channels, so the route became a genuine maintained social hub rather than a standalone profile-stack link. The free `https://linktr.ee/noctaliadreams` profile was created through `contact@noctalia.app`; the user completed the one-time email verification, while the Pro trial and marketing opt-in were skipped and no payment method was added. It links to the official HTTPS site, Google Play and the three verified social handles with a factual non-medical, non-predictive bio.
+
+The logged-out public page is HTTP 200 and self-canonical, and the outbound anchors have no element-level `nofollow`. Its current page-level directive is nevertheless `meta robots="noindex, nofollow"`. The profile is therefore useful for social navigation but excluded from indexable followed and nofollow authority totals until both the directive and actual public indexation are independently reverified.
+
+Stripe Climate is not a free backlink route. Stripe's official documentation makes the hosted climate page available to businesses that activate a percentage-of-revenue, fixed monthly or one-time carbon-removal contribution. No Stripe setting, contribution, badge or hosted page was activated: spending is not authorized, and a climate commitment must be a genuine business decision rather than an SEO tactic.
 
 Tracking files:
 
-- `marketing/seo/backlink-results-2026-07-31.csv`: fourteen manually audited surfaces, including five indexable followed pages, six indexable nofollow pages, one nonindexable profile, one lost historical listing and one search-visible store-derived link whose treatment remains unverified;
+- `marketing/seo/backlink-results-2026-07-31.csv`: fifteen manually audited surfaces, including five indexable followed pages, six indexable nofollow pages, two nonindexable profiles, one lost historical listing and one search-visible store-derived link whose treatment remains unverified;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
-- `marketing/seo/backlink-prospects-2026-07-31.csv`: 61 researched opportunities: 2 P0 corrections/reclamations, 25 P1 prospects, 33 P2 prospects or exclusions and 1 P3 launch route.
+- `marketing/seo/backlink-prospects-2026-07-31.csv`: 62 researched opportunities: 2 P0 corrections/reclamations, 25 P1 prospects, 34 P2 prospects or exclusions and 1 P3 launch route.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: ten recipient-specific editorial drafts, current contact routes and a two-follow-up stop policy.
 - `marketing/seo/backlink-outreach-log-2026-07-31.csv`: send, reply, follow-up and live-link state for the ten-message wave.
 - `marketing/seo/directory-submission-pack-wave-3-ai-2026-07-31.md`: one field-ready free Future Tools dossier plus an official-price decision matrix for six paid or reciprocal AI-directory routes.
@@ -87,6 +91,7 @@ Tracking files:
 | AppBrain | HTTP 200; indexable; self-canonical; public website link is `nofollow`; the developer claim is verified. | Count as an entity/discovery citation, not link equity. | Keep the listing accurate; do not treat the verified dashboard or paid promotion offers as additional authority. |
 | GitHub README | HTTP 200 and indexable; external Noctalia link is `nofollow`. | Entity/discovery evidence only. | Retain while the repository remains public and accurate. |
 | Reddit profile post | Public rendered page is indexed; the Noctalia link uses `rel="noopener nofollow ugc"`; no canonical or `noindex` directive was exposed in the rendered DOM. | User-generated discovery/entity citation only; do not count as followed equity. | Retain as an existing launch record; do not manufacture engagement. |
+| Linktree social hub | HTTP 200; self-canonical; direct official-site and Google Play anchors use `noopener noreferrer`, but the page declares `meta robots="noindex, nofollow"`. | Social navigation only; exclude from both indexable followed and nofollow totals. | Maintain only if used by Noctalia's real social channels; recheck robots and public indexation on 2026-08-09. |
 | Zearches | HTTP 200 and indexable, but the directory page no longer contains a detectable Noctalia link. | Historical listing is lost; do not count it as live. | Consider one factual resubmission only if the current free route still exists. |
 
 ## Strategic conclusion
