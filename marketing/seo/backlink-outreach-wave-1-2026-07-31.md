@@ -647,6 +647,32 @@ The October 2025 comparison names Andy Walker and explicitly invites additional 
 
 Post-action reconciliation then found the existing 2026-07-31 Android Authority email in section 3 and Gmail message `19fb9a8aa98b5d96`. The form click was therefore a publisher-level deduplication miss even though it targeted a different article and used a different channel. Delivery remains unconfirmed; Android Authority is now closed to all retries and follow-ups. Do not count this form attempt as accepted outreach, a publication, backlink or DR increase.
 
+## 31. Forbes Vetted — McKenzie Dillon
+
+**Target:** `https://www.forbes.com/sites/forbes-personal-shopper/article/best-sleep-apps/`
+**Route:** Forbes' official writer-contact guidance says to use an email shown on the writer's personal page or a social account; no public author email is currently exposed, so none was inferred
+**Subject:** `Android dream-journal test for a future sleep-app update`
+**State:** qualified and drafted; not sent until both a verified author business route and `contact@noctalia.app` sending identity are available
+
+Hello McKenzie,
+
+Your January sleep-app guide gives dream journaling its own category and documents two weeks of hands-on Oniri testing. For a future update, you may want to compare a narrower Android-first workflow: recording a dream by voice immediately after waking, before the details fade.
+
+Noctalia lets people dictate or type a dream, then keep the transcript, mood, recurring symbols, generated images, and a guided reflection. Transcription and AI features require a connection, and the product is presented as a reflection tool—not medical advice, diagnosis, or prediction.
+
+The Android workflow, limitations, privacy references, Google Play link, and a source-labelled comparison dataset are here:
+https://noctalia.app/en/voice-dream-journal
+https://noctalia.app/data/dream-journal-apps-comparison-2026.csv
+
+If it fits a future hands-on comparison, I can provide test access and answer factual questions. There is no payment, reciprocal link, ranking, placement, or guaranteed-link request; the editorial decision is entirely yours.
+
+Best regards,
+Thanh Chau
+Founder, Noctalia
+contact@noctalia.app
+
+The exact guide, author, hands-on methodology, current Forbes writer-contact instructions and Forbes Media LLC's New Jersey legal identity were checked. The non-Russian operator gate passes. This draft must not be sent through a guessed address, a paid media route or the currently authenticated personal Gmail account.
+
 ## Follow-up policy
 
 Journalists and editors receive at most two follow-ups. Stop immediately after a reply, rejection or opt-out.
@@ -717,6 +743,8 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - Android Police Pixel Journal alternatives, named author, editorial guidelines, official editorial-suggestions route and Canadian operator evidence; qualified but not emailed while the professional Gmail identity is unavailable: `https://www.androidpolice.com/android-pixel-journal-alternatives/`, `https://www.androidpolice.com/page/our-editorial-guidelines/`, `https://www.androidpolice.com/contact/`, `https://www.valnetinc.com/en/terms-of-use`, `https://www.valnetinc.com/en/editorial-integrity`
 - Lifehacker tested journal-app comparison, named author's official form and accountable United States operator; one factual form submission was accepted without CAPTCHA: `https://lifehacker.com/tech/best-journal-apps-to-use-instead-of-your-built-in-option`, `https://lifehacker.com/author/david-nield`, `https://davidnield.co/`, `https://www.ziffdavis.com/brands/technology/lifehacker`, `https://www.ziffdavis.com/terms-of-use`
 - Android Authority Pixel Journal alternatives, named author, Authority Media identity, Canadian address, editorial terms and official General enquiries form; one unconfirmed form click occurred after an earlier publisher-level email and the domain is now closed to every retry or follow-up: `https://www.androidauthority.com/pixel-journal-alternatives-3603405/`, `https://www.androidauthority.com/about/`, `https://www.androidauthority.com/terms-conditions/`, `https://www.androidauthority.com/contact/`
+- Forbes Vetted's January 2026 sleep-app guide, named hands-on author, official writer-contact instructions and accountable United States operator; qualified but no author address was inferred and no outreach was sent while the professional mailbox is unavailable: `https://www.forbes.com/sites/forbes-personal-shopper/article/best-sleep-apps/`, `https://www.forbes.com/sites/forbes-personal-shopper/people/mdillonforbescom/`, `https://help.forbes.com/support/solutions/articles/73000602657-contact-a-writer`, `https://www.forbes.com/terms-and-conditions`, `https://www.forbes.com/privacy/english/`
+- Rejected or paused authoritative publishers: TechCrunch's current contact page explicitly refuses pitches and guest-post submissions despite publishing an accountable United States operator and author address; Tech Advisor publishes an accountable Foundry operator and direct author route, but its relevant opinion explicitly rejects AI-guided journaling and is a product-positioning mismatch: `https://techcrunch.com/2025/08/20/google-launches-a-new-pixel-journal-app/`, `https://techcrunch.com/contact-us/`, `https://techcrunch.com/terms-of-service/`, `https://www.techadvisor.com/article/2881728/the-pixel-10s-new-journal-app-has-ai-prompts-i-hate-it.html`, `https://www.techadvisor.com/about/contact`, `https://www.techadvisor.com/about`
 - Rejected publisher: Apps Tested presents a topical current comparison, named staff and no-paid-placement claims, but exposes no Terms, legal entity, accountable address or jurisdiction; its noindex Privacy Policy names only the site and the team history could not be independently tied to the publication, so non-Russian ownership and operations remain unresolved: `https://appstested.com/best-journaling-apps/`, `https://appstested.com/about/`, `https://appstested.com/privacy-policy/`
 - Rejected community route: Slant's Android journaling comparison is stale and its current About, Terms, Privacy and Contact routes return Cloudflare 403 to independent checks; no accountable current operator, address or non-Russian location was verified, so no account, vote or recommendation was created: `https://www.slant.co/topics/1414/~best-journaling-apps-for-android`
 - Rejected or excluded directories: G2's official research policy excludes B2C-only products; Capterra's vendor route targets business-software buyers; both operators are accountable and non-Russian, but neither is a truthful product fit for Noctalia: `https://research.g2.com/methodology/research-faq`, `https://research.g2.com/methodology/categorization`, `https://www.capterra.com/vendors/`
