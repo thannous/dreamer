@@ -136,12 +136,16 @@ export default function OnboardingScreen() {
   }, []);
 
   useEffect(() => {
-    if (loading || pathPreloaded || step === 'path') return;
+    if (loading || pathPreloaded || step === 'path' || isLeaving) return;
     const task = InteractionManager.runAfterInteractions(() => {
+      // The screen can start leaving between scheduling and draining this task.
+      // Mounting the path layer into a detaching screen makes Fabric insert a
+      // subtree while `react-native-screens` re-parents the same surface.
+      if (isLeavingRef.current) return;
       setPathPreloaded(true);
     });
     return () => task.cancel();
-  }, [loading, pathPreloaded, step]);
+  }, [isLeaving, loading, pathPreloaded, step]);
 
   useEffect(() => {
     if (loading || startedRef.current || state.status !== 'not_started') return;
@@ -246,10 +250,12 @@ export default function OnboardingScreen() {
         openRecording(next, path);
       }
     } catch {
-      setFailedAction({ type: 'complete', path });
-    } finally {
+      // Only the failure path restores the idle CTA. After a successful
+      // navigation this screen is detaching, and re-mounting the CTA subtree in
+      // the same commit races the native screen transition.
       isLeavingRef.current = false;
       setIsLeaving(false);
+      setFailedAction({ type: 'complete', path });
     }
   }, [openRecording, transition]);
 
@@ -268,10 +274,10 @@ export default function OnboardingScreen() {
       void trackProductEvent('onboarding_completed', { reason: 'skip', experience_version: 2 });
       router.replace('/recording');
     } catch {
-      setFailedAction({ type: 'skip' });
-    } finally {
+      // See `completePath`: the idle CTA only comes back when we stay.
       isLeavingRef.current = false;
       setIsLeaving(false);
+      setFailedAction({ type: 'skip' });
     }
   }, [step, transition]);
 
