@@ -1,8 +1,8 @@
 # Noctalia backlink outreach — wave 1
 
 Prepared: 2026-07-31
-Updated: 2026-08-01
-Status: 15 messages or forms delivered/accepted; 3 official routes failed; awaiting editorial outcomes
+Updated: 2026-08-02
+Status: 19 messages or forms delivered/accepted; 3 official routes failed; awaiting editorial outcomes
 Sender: Thanh Chau, founder of Noctalia
 Contact identity for form submissions: `contact@noctalia.app`
 
@@ -348,6 +348,92 @@ Best,
 Thanh Chau
 Noctalia
 
+## 18. Individuate.Me — Evgeny Smirnov
+
+**Target:** `https://individuate.me/articles/best-ai-dream-interpretation-apps-2026`
+**Route:** `hello@individuate.me`, published on the official site
+**Subject:** `android dream journals`
+**Sent:** 2026-08-02 at 18:55 CEST; Gmail message `19fc367251acc725`
+
+Hi Evgeny,
+
+Your buyer’s guide draws a useful line between apps that merely store dreams and apps that can surface patterns across a journal. I also appreciated the explicit disclosure that Individuate is one of the products reviewed.
+
+Noctalia may be a useful Android-first counterpoint in a future update: voice and text capture, recurring-symbol review, generated imagery, and guided AI reflection, with explicit cloud-processing and non-medical, non-predictive limits. We publish a dated, source-labelled comparison here: https://noctalia.app/en/dream-journal-apps
+
+Would it be useful for you to test it for a future refresh? I can provide reviewer access; you retain full editorial control.
+
+Thanh Chau
+Founder, Noctalia
+contact@noctalia.app
+
+## 19. Dreamly — Martin Berbesson
+
+**Target:** `https://www.dreamly-app.com/best-dream-interpretation-apps-2026/`
+**Route:** `hello@dreamly-app.com`, published on the official site
+**Subject:** `android dream journal comparison`
+**Sent:** 2026-08-02 at 18:56 CEST; Gmail message `19fc36826b487888`
+
+Hi Martin,
+
+Your 2026 comparison focuses on the combination of fast capture, a usable journal, recurring-pattern review, and privacy rather than treating interpretation as a one-off result.
+
+Noctalia may be a useful Android-first option to test in a future refresh: voice and text capture, recurring-symbol review, generated imagery, and guided AI reflection. Its public documentation also states the honest limits clearly — AI processing and sync require connectivity, and the output is non-medical and non-predictive: https://noctalia.app/en/press
+
+Would testing it fit a future update? I can provide reviewer access; you retain full editorial control.
+
+Thanh Chau
+Founder, Noctalia
+contact@noctalia.app
+
+## 20. Elsewhere — Dan Kennedy and editorial team
+
+**Target:** `https://medium.com/@elsewheredreams/best-dream-journal-apps-of-2025-fb7f800371b8`
+**Route:** `team@elsewhere.to`, published on Elsewhere's official research and privacy pages
+**Subject:** `dream app comparison update`
+**Sent:** 2026-08-02 at 19:53 CEST; Gmail message `19fc39babffac4d5`
+
+Hi Elsewhere team,
+
+Your 2025 dream-journal comparison is still referenced from your media page and Kelly Bulkeley’s dream-app resources. Noctalia launched later as an Android-first option for capturing dreams by voice before the details fade, with online transcription and guided reflection that is explicitly non-medical and non-predictive.
+
+We compiled a dated, source-labelled comparison of 11 current dream-journal apps here:
+https://noctalia.app/data/dream-journal-apps-comparison-2026.csv
+
+Because Noctalia produced it, it should be treated as a vendor source rather than independent research; competing apps are included with their strengths and limitations. The readable methodology and source notes are here:
+https://noctalia.app/en/dream-journal-apps
+
+Would this be useful for a future comparison update? I can also provide hands-on Android access or correct any factual errors. Editorial judgment is entirely yours; there is no payment, ranking, reciprocal-link or placement request.
+
+Best,
+Thanh Chau
+Founder, Noctalia
+
+## 21. Vowise — Jason Chen and editorial team
+
+**Target:** `https://www.vowise.com/blog/best-voice-journal-apps-2026/`
+**Route:** `support@vowise.com`, published on Vowise's official contact and Terms pages
+**Subject:** `voice journal comparison`
+**Sent:** 2026-08-02 at 19:53 CEST; Gmail message `19fc39bd70c07636`
+
+Hi Jason and the Vowise team,
+
+Your July voice-journal comparison is unusually clear about its source date, evaluation criteria and the fact that it is based on published product documentation rather than a laboratory test of every app.
+
+One specialist Android option for a future update is Noctalia. It is designed for time-sensitive dream capture by voice, then organizes the entry for later reflection. Transcription and AI reflection require connectivity, and the product is explicitly non-medical and non-predictive.
+
+The current workflow, limitations and reviewer materials are documented here:
+https://noctalia.app/en/voice-dream-journal
+
+We also publish a dated, source-labelled comparison dataset here:
+https://noctalia.app/data/dream-journal-apps-comparison-2026.csv
+
+Would Noctalia be worth a hands-on test for a future specialist-journal update? I can provide access or answer factual questions. Editorial judgment is entirely yours; there is no payment, ranking, reciprocal-link or placement request.
+
+Best,
+Thanh Chau
+Founder, Noctalia
+
 ## Follow-up policy
 
 Journalists and editors receive at most two follow-ups. Stop immediately after a reply, rejection or opt-out.
@@ -398,6 +484,11 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - Acuity comparison, identified operator, current privacy, terms and official contacts: `https://getacuity.io/blog/the-best-voice-journaling-apps-in-2026-no-typing-required`, `https://getacuity.io/privacy`, `https://getacuity.io/terms`, `https://getacuity.io/support`
 - CortexOS comparison, named founder, press route, trust center and privacy: `https://cortexos.app/library/best-ai-journal-app-2026/`, `https://cortexos.app/about/`, `https://cortexos.app/press/`, `https://cortexos.app/trust/`, `https://cortexos.app/privacy/`
 - Dearly Android comparison and identified developer privacy policy: `https://brooo.app/dearly/guides/best-voice-journaling-apps-android/`, `https://brooo.app/dearly/privacy/`
+- Individuate.Me comparison, named author, company Terms and Privacy: `https://individuate.me/articles/best-ai-dream-interpretation-apps-2026`, `https://individuate.me/terms`, `https://individuate.me/privacy`
+- Dreamly comparison, named author-trader and current legal pages: `https://www.dreamly-app.com/best-dream-interpretation-apps-2026/`, `https://www.dreamly-app.com/terms-of-use/`, `https://www.dreamly-app.com/privacy-policy/`
+- Elsewhere comparison, UK operator, research page and official team route: `https://medium.com/@elsewheredreams/best-dream-journal-apps-of-2025-fb7f800371b8`, `https://elsewhere.to/privacy`, `https://elsewhere.to/research`
+- Vowise comparison, named author, identified operator, current Terms and official contact: `https://www.vowise.com/blog/best-voice-journal-apps-2026/`, `https://www.vowise.com/terms-of-service/`, `https://www.vowise.com/contact/`
+- Rejected publisher: ViviDiary exposes no verified legal operator, Terms or official editorial route for its broad hands-on and privacy claims: `https://blog.vividiary.live/compare/best-voice-journaling-apps-2026`
 - Paused publishers: Lound lacks a verified named publisher and usable editorial contact; Dayora's Terms and product pages materially conflict on AI-training use; remembr has no verified operator and its privacy, terms and contact pages return 404; Kiomora exposes no named operator and its protected contact values are malformed or misspelled: `https://lound.ai/blog/best-voice-journaling-apps-2026/`, `https://lound.ai/privacy/`, `https://www.dayora.ai/blog/best-voice-journaling-apps-2026`, `https://www.dayora.ai/terms`, `https://www.dayora.ai/contact`, `https://remembr.live/blog/best-voice-journal-apps-2026`, `https://remembr.live/`, `https://kiomora.com/blog/best-ai-journal-apps/`, `https://kiomora.com/about/`, `https://kiomora.com/press/`
 - Sleep Foundation exclusion evidence: `https://www.sleepfoundation.org/about-us/pitch-us`
 

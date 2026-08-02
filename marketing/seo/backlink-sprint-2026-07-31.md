@@ -6,6 +6,8 @@ This file is the execution source of truth for the current backlink sprint. Rese
 
 The A/B/C execution batch was approved on 2026-07-31. No spending, invented identity, CAPTCHA solving or unverified publication claim is implied by that approval. The user then explicitly authorized pushing the SEO commits to `master`, including the resulting Cloudflare Production deployment. The push and production verification completed on 2026-07-31.
 
+The user added a geopolitical trust constraint on 2026-08-02: do not use Russian-operated platforms. Any operator with unresolved Russian ownership or operational ties is excluded by default; a Russian-language interface alone is not treated as evidence of Russian operation. No account, message or submission may proceed until the legal operator and current location are independently verified.
+
 ## Baseline captured today
 
 Ahrefs project dashboard, read on 2026-07-31 without opening a detailed report or consuming a report credit:
@@ -49,9 +51,16 @@ Two additional comparison publishers passed the operator, legal-page and contact
 - Individuate.Me: the article names Evgeny Smirnov, PhD, discloses its own-product affiliation, and the legal pages identify 4xxi Software Ltd in England and Wales. One factual Android comparison email was sent to the official `hello@individuate.me` address (Gmail message `19fc367251acc725`).
 - Dreamly: the article names Martin Berbesson, whose official app presence identifies him as the EU trader, and the site publishes current Privacy, Terms and support routes. One factual Android comparison email was sent to `hello@dreamly-app.com` (Gmail message `19fc36826b487888`). Dreamly's privacy policy permits commercial use of anonymized aggregated dream data; this is retained as a qualification caveat, and contacting the publisher is not an endorsement of that policy.
 
+Two further publications passed the same checks later on 2026-08-02:
+
+- Elsewhere: the 2025 comparison names Dan Kennedy and discloses that it is written by the Elsewhere team; the current Privacy Policy identifies ELSEWHERE.TO LTD and a Sheffield address, while the official research page publishes `team@elsewhere.to`. One factual update email disclosed Noctalia's comparison CSV as a vendor source rather than independent research (Gmail message `19fc39babffac4d5`).
+- Vowise: the July 2026 comparison names Jason Chen, dates its product-source review and says it relies on published documentation rather than laboratory testing of every app. Current Terms identify Zhuhai Dekuai Technology Co., Ltd. in China and the official contact route publishes `support@vowise.com`. One factual Android specialist-journal email was sent there (Gmail message `19fc39bd70c07636`).
+
+ViviDiary was rejected without contact. Its current comparison uses a named author persona and broad hands-on and privacy claims, but no verifiable legal operator, Terms or official editorial contact could be found on the public properties. No recipient was inferred.
+
 CHITTA was rejected without contact because its current article and product copy claim 98% accuracy, precise universal decoding, a 5,000-year-old symbolic system and Oracle guidance. Those claims conflict materially with Noctalia's reflective, non-predictive and non-medical position.
 
-Both sent messages offer factual reviewer access under full editorial control. They request neither payment, reciprocity, ranking nor a guaranteed link. A sent message remains outreach only: it is not a backlink, referring domain, publication or DR increase unless a live public result is later verified.
+All four messages sent on 2026-08-02 offer factual reviewer access under full editorial control. They request neither payment, reciprocity, ranking nor a guaranteed link. A sent message remains outreach only: it is not a backlink, referring domain, publication or DR increase unless a live public result is later verified.
 
 IndiePage was also checked against the original "free backlink" claim. It is an established product attributed publicly to Marc Lou, and sampled deployed profiles are indexable, self-canonical and use direct followed outbound links. It is not a free backlink route, however: the official pricing requires a 25 USD one-year pass or a 45 USD lifetime payment to deploy the page, while the Privacy and Terms pages remain dated 21 March 2023 and do not identify a legal entity or address. No account, profile or payment was created. The route is rejected for this sprint without labelling the service fraudulent.
 
@@ -63,15 +72,19 @@ Linktree is also a legitimate, current and free platform whose Terms identify Li
 
 The logged-out public page is HTTP 200 and self-canonical, and the outbound anchors have no element-level `nofollow`. Its current page-level directive is nevertheless `meta robots="noindex, nofollow"`. The profile is therefore useful for social navigation but excluded from indexable followed and nofollow authority totals until both the directive and actual public indexation are independently reverified.
 
+Mssg.me is not a Russian-operated service according to its current public Terms: they identify Sticktech LLC and an address in Cherkasy, Ukraine, and expressly make the service unavailable in Russia. A sampled public profile was indexable and exposed direct external links without `nofollow`, and the Terms retain a free version. Registration nevertheless requires both a user-chosen password and a Cloudflare Turnstile human check. No password was invented, no challenge was solved or bypassed, and no account was created; the route remains suspended for user action.
+
+Taplink is excluded under the user's non-Russian-operator constraint. Its current official Terms name Taplink LLC without a verifiable company address and state that court cases are governed by current Russian legislation. No account, data or payment was submitted; the route remains rejected unless current official legal documents later establish a non-Russian operator and jurisdiction.
+
 Stripe Climate is not a free backlink route. Stripe's official documentation makes the hosted climate page available to businesses that activate a percentage-of-revenue, fixed monthly or one-time carbon-removal contribution. No Stripe setting, contribution, badge or hosted page was activated: spending is not authorized, and a climate commitment must be a genuine business decision rather than an SEO tactic.
 
 Tracking files:
 
 - `marketing/seo/backlink-results-2026-07-31.csv`: fifteen manually audited surfaces, including five indexable followed pages, six indexable nofollow pages, two nonindexable profiles, one lost historical listing and one search-visible store-derived link whose treatment remains unverified;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
-- `marketing/seo/backlink-prospects-2026-07-31.csv`: 62 researched opportunities: 2 P0 corrections/reclamations, 25 P1 prospects, 34 P2 prospects or exclusions and 1 P3 launch route.
-- `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: ten recipient-specific editorial drafts, current contact routes and a two-follow-up stop policy.
-- `marketing/seo/backlink-outreach-log-2026-07-31.csv`: send, reply, follow-up and live-link state for the ten-message wave.
+- `marketing/seo/backlink-prospects-2026-07-31.csv`: 67 researched opportunities: 2 P0 corrections/reclamations, 27 P1 prospects, 37 P2 prospects or exclusions and 1 P3 launch route.
+- `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: 21 recipient-specific editorial messages or form dossiers, current contact routes and a two-follow-up stop policy.
+- `marketing/seo/backlink-outreach-log-2026-07-31.csv`: send, reply, follow-up and live-link state for 22 attempted routes, including 19 delivered or accepted and 3 failed official routes.
 - `marketing/seo/directory-submission-pack-wave-3-ai-2026-07-31.md`: one field-ready free Future Tools dossier plus an official-price decision matrix for six paid or reciprocal AI-directory routes.
 - `marketing/seo/directory-submission-pack-wave-2-2026-07-31.md`: distinct, field-ready copy and public readiness gates for PitchWall, Launching Next and AI Tools Inc.
 - `marketing/seo/product-hunt-launch-pack-2026-07-31.md`: current field requirements, final listing copy, first maker comment, readiness gates and a relative launch-day protocol.
