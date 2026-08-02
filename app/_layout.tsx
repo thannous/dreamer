@@ -61,6 +61,7 @@ import {
 } from '@/lib/onboardingState';
 import { markPerformance } from '@/lib/performanceTrace';
 import { setProductAnalyticsLocale } from '@/lib/productAnalytics';
+import { scheduleAfterStartupPaint } from '@/lib/startupPaint';
 import type { LanguagePreference } from '@/lib/types';
 import { configureNotificationHandler } from '@/services/notificationService';
 import {
@@ -699,6 +700,9 @@ export default function RootLayout() {
   const [splashDelayElapsed, setSplashDelayElapsed] = useState(false);
   const [languageBootstrapped, setLanguageBootstrapped] = useState(false);
   const [startupDestinationCommitted, setStartupDestinationCommitted] = useState(false);
+  const [startupDestinationPainted, setStartupDestinationPainted] = useState(
+    Platform.OS !== 'android'
+  );
   const [initialLanguagePreference, setInitialLanguagePreference] = useState<LanguagePreference>('auto');
   const splashTimedOut = useSplashFailsafe(showCustomSplash);
   const shouldShowCustomSplash = showCustomSplash;
@@ -707,8 +711,10 @@ export default function RootLayout() {
   const splashMinimumVisibleMs = getSplashMinimumVisibleMs(Platform.OS);
   const minimumSplashElapsed =
     prefersReducedMotion || splashTimedOut || splashDelayElapsed;
-  const shouldFadeSplash =
+  const startupSplashPrerequisitesReady =
     minimumSplashElapsed && languageBootstrapped && startupDestinationCommitted;
+  const shouldFadeSplash =
+    startupSplashPrerequisitesReady && startupDestinationPainted;
   const locales = useLocales();
   const primaryLocale = locales[0];
   const hasBootstrappedLanguage = useRef(false);
@@ -791,6 +797,21 @@ export default function RootLayout() {
     );
     return () => clearTimeout(timer);
   }, [fontsSettled, prefersReducedMotion, splashMinimumVisibleMs, splashTimedOut]);
+
+  useEffect(() => {
+    if (
+      Platform.OS !== 'android' ||
+      !startupSplashPrerequisitesReady ||
+      startupDestinationPainted
+    ) {
+      return;
+    }
+
+    return scheduleAfterStartupPaint(() => {
+      markPerformance('startup.destination_painted');
+      setStartupDestinationPainted(true);
+    });
+  }, [startupDestinationPainted, startupSplashPrerequisitesReady]);
 
   useEffect(() => {
     if (!shouldFadeSplash) return;

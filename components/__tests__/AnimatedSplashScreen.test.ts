@@ -57,7 +57,6 @@ import AnimatedSplashScreen, {
   SPLASH_PARTICLE_COUNT,
   getSplashMinimumVisibleMs,
   shouldUseAnimatedSplash,
-  shouldUseMinimalStaticSplash,
 } from '@/components/AnimatedSplashScreen';
 
 describe('AnimatedSplashScreen motion policy', () => {
@@ -92,11 +91,6 @@ describe('AnimatedSplashScreen motion policy', () => {
       ANDROID_STATIC_SPLASH_MINIMUM_VISIBLE_MS
     );
     expect(getSplashMinimumVisibleMs('ios')).toBe(SPLASH_MINIMUM_VISIBLE_MS);
-  });
-
-  it('removes decorative static gradients only on Android', () => {
-    expect(shouldUseMinimalStaticSplash('android')).toBe(true);
-    expect(shouldUseMinimalStaticSplash('ios')).toBe(false);
   });
 
   it('stops shared animations before the outro callback and calls it once', () => {
