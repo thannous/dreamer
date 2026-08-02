@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterAll, afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { OnboardingContextValue } from '@/context/OnboardingContext';
@@ -19,6 +19,16 @@ const mockTransition = jest.fn();
 const mockUseOnboarding = jest.fn();
 const previousExpoOS = process.env.EXPO_OS;
 process.env.EXPO_OS = 'android';
+
+// `sync` mirrors a settled app: interaction tasks drain as they are scheduled.
+// `manual` reproduces a task that is scheduled before the screen starts leaving
+// and only drains afterwards, which is the ordering the leaving guard covers.
+let interactionDrainMode: 'sync' | 'manual' = 'sync';
+const pendingInteractions: (() => void)[] = [];
+const drainPendingInteractions = () => {
+  const queued = pendingInteractions.splice(0, pendingInteractions.length);
+  queued.forEach((callback) => callback());
+};
 
 const buildState = (overrides: Partial<OnboardingState> = {}): OnboardingState => ({
   schemaVersion: 1,
@@ -155,7 +165,13 @@ jest.doMock('react-native', () => {
     Image: createElement('img'),
     InteractionManager: {
       runAfterInteractions: (callback: () => void) => {
-        callback();
+        if (interactionDrainMode === 'sync') {
+          callback();
+        } else {
+          pendingInteractions.push(callback);
+        }
+        // `cancel` intentionally does not unqueue: the guarded race is a task
+        // that already escaped cancellation.
         return { cancel: jest.fn() };
       },
     },
@@ -270,6 +286,8 @@ describe('Onboarding screen', () => {
   });
 
   beforeEach(() => {
+    interactionDrainMode = 'sync';
+    pendingInteractions.length = 0;
     mockGetProductAnalyticsPreference.mockResolvedValue('disabled');
     mockReload.mockResolvedValue(buildState());
     mockSetProductAnalyticsEnabled.mockResolvedValue(undefined);
@@ -306,6 +324,43 @@ describe('Onboarding screen', () => {
       expect(mockTransition).toHaveBeenCalledWith({ type: 'SKIP' });
       expect(mockReplace).toHaveBeenCalledWith('/recording');
     });
+  });
+
+  it('keeps the leaving CTA mounted after a successful skip', async () => {
+    renderOnboarding();
+
+    fireEvent.click(screen.getByTestId(TID.Button.OnboardingSkip));
+
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/recording'));
+
+    // Restoring the idle CTA here would re-mount its subtree in the same commit
+    // as the native screen detach.
+    expect(screen.getByTestId('activity-indicator')).toBeTruthy();
+  });
+
+  it('restores the idle CTA when the skip fails and the screen stays', async () => {
+    mockTransition.mockRejectedValueOnce(new Error('storage unavailable'));
+    renderOnboarding();
+
+    fireEvent.click(screen.getByTestId(TID.Button.OnboardingSkip));
+
+    await screen.findByTestId(TID.Component.OnboardingError);
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('activity-indicator')).toBeNull();
+  });
+
+  it('does not preload the path layer once the screen is leaving', async () => {
+    interactionDrainMode = 'manual';
+    renderOnboarding();
+
+    expect(screen.queryByTestId(TID.Component.OnboardingPath)).toBeNull();
+
+    fireEvent.click(screen.getByTestId(TID.Button.OnboardingSkip));
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/recording'));
+
+    act(() => drainPendingInteractions());
+
+    expect(screen.queryByTestId(TID.Component.OnboardingPath)).toBeNull();
   });
 
   it('keeps the remembered-dream choice through completion and opens its recording intent', async () => {
