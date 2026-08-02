@@ -116,7 +116,7 @@ const PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySchema> = {
   analysis_result_viewed: {
     source: oneOf('recording_flow', 'journal_detail', 'retry', 'unknown'),
   },
-  symbol_detail_viewed: { source: oneOf('onboarding', 'dictionary', 'search', 'unknown') },
+  symbol_detail_viewed: { source: oneOf('onboarding', 'dictionary', 'search', 'guide', 'unknown') },
   first_value_viewed: {
     value: oneOf('analysis_result', 'recording_insight', 'symbol_detail'),
     onboarding_path: oneOf('analyze', 'memory', 'dictionary', 'skip', 'unknown'),
