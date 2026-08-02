@@ -53,11 +53,19 @@ CHITTA was rejected without contact because its current article and product copy
 
 Both sent messages offer factual reviewer access under full editorial control. They request neither payment, reciprocity, ranking nor a guaranteed link. A sent message remains outreach only: it is not a backlink, referring domain, publication or DR increase unless a live public result is later verified.
 
+IndiePage was also checked against the original "free backlink" claim. It is an established product attributed publicly to Marc Lou, and sampled deployed profiles are indexable, self-canonical and use direct followed outbound links. It is not a free backlink route, however: the official pricing requires a 25 USD one-year pass or a 45 USD lifetime payment to deploy the page, while the Privacy and Terms pages remain dated 21 March 2023 and do not identify a legal entity or address. No account, profile or payment was created. The route is rejected for this sprint without labelling the service fraudulent.
+
+About.me passed the operator and free-plan trust checks, but not the authority-value gate. About.me Inc. offers a public free page; a sampled live profile was HTTP 200, indexable and self-canonical, yet its external website link was explicitly `nofollow`. The Terms also require the user to be an individual acting for personal use rather than on behalf of a third party. No account or brand-only profile was created. A genuine founder profile could be reconsidered for entity discovery, not as a DR backlink tactic.
+
+Carrd is a legitimate free publishing platform operated by Carrd Inc.; sampled pages are HTTP 200, canonical and use followed outbound links. It is not an editorial citation or a startup directory. Publishing a thin Noctalia duplicate solely to manufacture a referring domain would provide little authority and could create brand or canonical confusion, so no account or page was created. Carrd should be reconsidered only if Noctalia has a distinct, user-serving mini-tool or campaign that merits its own page.
+
+Linktree is also a legitimate, current and free platform whose Terms identify Linktree Pty Ltd and allow authorized business use. Sampled public profiles are canonical and their main outbound links are followed. A new profile with no audience or role in Noctalia's channel strategy would still be an almost orphaned, self-created link rather than an endorsement from Linktree's high-DR domain. No account was created merely to stack a profile; the route can be reopened if Linktree becomes the maintained hub for real Noctalia social channels.
+
 Tracking files:
 
 - `marketing/seo/backlink-results-2026-07-31.csv`: fourteen manually audited surfaces, including five indexable followed pages, six indexable nofollow pages, one nonindexable profile, one lost historical listing and one search-visible store-derived link whose treatment remains unverified;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
-- `marketing/seo/backlink-prospects-2026-07-31.csv`: 57 researched opportunities: 2 P0 corrections/reclamations, 25 P1 prospects, 29 P2 prospects or exclusions and 1 P3 launch route.
+- `marketing/seo/backlink-prospects-2026-07-31.csv`: 61 researched opportunities: 2 P0 corrections/reclamations, 25 P1 prospects, 33 P2 prospects or exclusions and 1 P3 launch route.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: ten recipient-specific editorial drafts, current contact routes and a two-follow-up stop policy.
 - `marketing/seo/backlink-outreach-log-2026-07-31.csv`: send, reply, follow-up and live-link state for the ten-message wave.
 - `marketing/seo/directory-submission-pack-wave-3-ai-2026-07-31.md`: one field-ready free Future Tools dossier plus an official-price decision matrix for six paid or reciprocal AI-directory routes.
