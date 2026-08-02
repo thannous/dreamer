@@ -42,11 +42,22 @@ F6S remains a qualified operator, but account creation did not pass the executio
 
 The authenticated Gmail connector for `thannous@gmail.com` showed no reply from the editorial target domains after 2026-08-01. That check does not cover the separate `contact@noctalia.app` inbox and is not evidence that every form or address is unanswered.
 
+### Editorial extension — 2026-08-02
+
+Two additional comparison publishers passed the operator, legal-page and contact-route checks before outreach:
+
+- Individuate.Me: the article names Evgeny Smirnov, PhD, discloses its own-product affiliation, and the legal pages identify 4xxi Software Ltd in England and Wales. One factual Android comparison email was sent to the official `hello@individuate.me` address (Gmail message `19fc367251acc725`).
+- Dreamly: the article names Martin Berbesson, whose official app presence identifies him as the EU trader, and the site publishes current Privacy, Terms and support routes. One factual Android comparison email was sent to `hello@dreamly-app.com` (Gmail message `19fc36826b487888`). Dreamly's privacy policy permits commercial use of anonymized aggregated dream data; this is retained as a qualification caveat, and contacting the publisher is not an endorsement of that policy.
+
+CHITTA was rejected without contact because its current article and product copy claim 98% accuracy, precise universal decoding, a 5,000-year-old symbolic system and Oracle guidance. Those claims conflict materially with Noctalia's reflective, non-predictive and non-medical position.
+
+Both sent messages offer factual reviewer access under full editorial control. They request neither payment, reciprocity, ranking nor a guaranteed link. A sent message remains outreach only: it is not a backlink, referring domain, publication or DR increase unless a live public result is later verified.
+
 Tracking files:
 
 - `marketing/seo/backlink-results-2026-07-31.csv`: fourteen manually audited surfaces, including five indexable followed pages, six indexable nofollow pages, one nonindexable profile, one lost historical listing and one search-visible store-derived link whose treatment remains unverified;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
-- `marketing/seo/backlink-prospects-2026-07-31.csv`: 54 researched opportunities: 2 P0 corrections/reclamations, 23 P1 prospects, 28 P2 prospects or exclusions and 1 P3 launch route.
+- `marketing/seo/backlink-prospects-2026-07-31.csv`: 57 researched opportunities: 2 P0 corrections/reclamations, 25 P1 prospects, 29 P2 prospects or exclusions and 1 P3 launch route.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: ten recipient-specific editorial drafts, current contact routes and a two-follow-up stop policy.
 - `marketing/seo/backlink-outreach-log-2026-07-31.csv`: send, reply, follow-up and live-link state for the ten-message wave.
 - `marketing/seo/directory-submission-pack-wave-3-ai-2026-07-31.md`: one field-ready free Future Tools dossier plus an official-price decision matrix for six paid or reciprocal AI-directory routes.
