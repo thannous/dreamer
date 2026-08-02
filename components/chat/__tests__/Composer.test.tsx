@@ -13,6 +13,7 @@ const mockSetupAppStateListener = jest.fn();
 const mockForceStopRecording = jest.fn();
 const mockAppStateCleanup = jest.fn();
 const mockRegisterOfflineModelPromptHandler = jest.fn();
+const mockResolveDeviceSpeechCapability = jest.fn();
 const mockBaseTranscriptRef = { current: '' };
 let mockIsRecording = false;
 
@@ -184,6 +185,7 @@ jest.mock('@/hooks/useTranslation', () => ({
 jest.mock('@/services/nativeSpeechRecognition', () => ({
   registerOfflineModelPromptHandler: (handler: unknown) =>
     mockRegisterOfflineModelPromptHandler(handler),
+  resolveDeviceSpeechCapability: (locale: string) => mockResolveDeviceSpeechCapability(locale),
 }));
 
 jest.mock('@/lib/speechRecognitionSettings', () => ({
@@ -191,7 +193,23 @@ jest.mock('@/lib/speechRecognitionSettings', () => ({
   openSpeechRecognitionLanguageSettings: jest.fn(),
 }));
 
-function renderComposer({
+/** Voice tier that still dictates — the mic stays visible. */
+const DICTATING_CAPABILITY = {
+  tier: 'network',
+  reason: 'locale_not_installed',
+  requiresOnDeviceRecognition: false,
+  localAlternatives: [],
+};
+
+/** No usable microphone: the only tier that blocks dictation entirely. */
+const UNAVAILABLE_CAPABILITY = {
+  tier: 'unavailable',
+  reason: 'no_microphone',
+  requiresOnDeviceRecognition: false,
+  localAlternatives: [],
+};
+
+async function renderComposer({
   isDisabled = false,
   isLoading = false,
   onChangeText = jest.fn(),
@@ -223,6 +241,9 @@ function renderComposer({
     </Composer.Root>
   );
 
+  // Let the mount-time speech capability probe settle before asserting.
+  await act(async () => {});
+
   return { onChangeText, onSend };
 }
 
@@ -235,12 +256,13 @@ describe('Composer', () => {
     mockStopRecording.mockResolvedValue({});
     mockSetupAppStateListener.mockReturnValue(mockAppStateCleanup);
     mockRegisterOfflineModelPromptHandler.mockReturnValue(jest.fn());
+    mockResolveDeviceSpeechCapability.mockResolvedValue(DICTATING_CAPABILITY);
   });
 
   afterEach(cleanup);
 
-  it('disables editing, voice, and sending when the composer is disabled', () => {
-    const { onChangeText, onSend } = renderComposer({ isDisabled: true });
+  it('disables editing, voice, and sending when the composer is disabled', async () => {
+    const { onChangeText, onSend } = await renderComposer({ isDisabled: true });
 
     expect((screen.getByTestId('composer-input') as HTMLInputElement).disabled).toBe(true);
     expect((screen.getByTestId('composer-mic') as HTMLButtonElement).disabled).toBe(true);
@@ -254,8 +276,8 @@ describe('Composer', () => {
     expect(onSend).not.toHaveBeenCalled();
   });
 
-  it('forwards text edits and invokes send for a non-empty draft', () => {
-    const { onChangeText, onSend } = renderComposer();
+  it('forwards text edits and invokes send for a non-empty draft', async () => {
+    const { onChangeText, onSend } = await renderComposer();
 
     fireEvent.change(screen.getByTestId('composer-input'), {
       target: { value: 'A blue room with rain' },
@@ -276,7 +298,7 @@ describe('Composer', () => {
           resolveStop = () => resolve({ transcript: 'with rain' });
         })
     );
-    const { onChangeText, onSend } = renderComposer();
+    const { onChangeText, onSend } = await renderComposer();
 
     fireEvent.click(screen.getByTestId('composer-send'));
 
@@ -296,7 +318,7 @@ describe('Composer', () => {
 
   it('alerts when voice recording cannot start', async () => {
     mockStartRecording.mockResolvedValue({ success: false, error: 'permission_denied' });
-    renderComposer();
+    await renderComposer();
 
     fireEvent.click(screen.getByTestId('composer-mic'));
 
@@ -307,5 +329,30 @@ describe('Composer', () => {
         'recording.alert.start_failed'
       );
     });
+  });
+
+  it('hides the mic when the device cannot capture speech at all', async () => {
+    mockResolveDeviceSpeechCapability.mockResolvedValue(UNAVAILABLE_CAPABILITY);
+
+    await renderComposer();
+
+    expect(screen.queryByTestId('composer-mic')).toBeNull();
+    // Typing and sending stay available: only dictation is gone.
+    expect((screen.getByTestId('composer-input') as HTMLInputElement).disabled).toBe(false);
+    expect((screen.getByTestId('composer-send') as HTMLButtonElement).disabled).toBe(false);
+  });
+
+  it('keeps the mic for tiers that can still dictate', async () => {
+    await renderComposer();
+
+    expect(screen.getByTestId('composer-mic')).not.toBeNull();
+  });
+
+  it('keeps the mic when the capability probe fails', async () => {
+    mockResolveDeviceSpeechCapability.mockRejectedValue(new Error('probe failed'));
+
+    await renderComposer();
+
+    expect(screen.getByTestId('composer-mic')).not.toBeNull();
   });
 });

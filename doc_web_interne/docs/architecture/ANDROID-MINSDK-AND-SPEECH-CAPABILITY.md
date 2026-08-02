@@ -69,6 +69,21 @@ dream journal than an honest fallback.
 [`plugins/withOptionalAndroidHardwareFeatures.js`](../../../plugins/withOptionalAndroidHardwareFeatures.js),
 so mic-less devices can install the app. The `unavailable` tier exists for them.
 
+### Surfaces that consult the ladder
+
+Every microphone in the app resolves the capability on mount and hides its
+control on the `unavailable` tier. Both skip the probe on web, where speech
+availability comes from the Web Speech API instead, and both keep the mic when
+the probe itself fails — a failed probe is not proof of a missing microphone.
+
+| Surface | Behaviour on `unavailable` |
+|---|---|
+| [`app/recording.tsx`](../../../app/recording.tsx) | Hides the mic (`voiceSupported` on `RecordingTextInput`), forces text mode, sets the `voice_unsupported` fallback reason |
+| [`components/chat/Composer.tsx`](../../../components/chat/Composer.tsx) | Hides `Composer.MicButton`; the text input and send button are untouched |
+
+The chat composer needs no message: text is already its primary input, so the
+absent mic costs the user nothing to explain.
+
 ## What degrades below API 33
 
 | Behaviour | Effect | Severity |
@@ -91,12 +106,13 @@ The `<queries>` element for `android.speech.RecognitionService` is required for
 ## Verification
 
 ```bash
-npm run test:file -- lib/__tests__/speechCapability.test.ts services/__tests__/nativeSpeechRecognition.test.ts
+npm run test:file -- lib/__tests__/speechCapability.test.ts services/__tests__/nativeSpeechRecognition.test.ts components/chat/__tests__/Composer.test.tsx
 ```
 
-The suites pin the ladder at API 28, 29, 30, 31, 32, 33 and 34, cover a native
-module that is missing or throws, and assert that voice is blocked only on
-microphone failure.
+The first two suites pin the ladder at API 28, 29, 30, 31, 32, 33 and 34, cover
+a native module that is missing or throws, and assert that voice is blocked only
+on microphone failure. The third covers the chat composer's mic across the
+hidden, visible, and failed-probe cases.
 
 ## Open items
 
@@ -106,9 +122,6 @@ microphone failure.
 - **Physical testing on API 28–30 has not been done.** The code paths are
   covered by unit tests; ROMs without Google services and OEM recognizer
   variance are not.
-- **The chat composer** (`components/chat/Composer.tsx`) has its own microphone
-  and does not consult the capability ladder. On a mic-less device its control
-  is still shown.
 - **Privacy declaration.** The `network` and `server_only` tiers can send audio
   off-device — the default recognizer to the system service, `/transcribe` to
   Supabase. Confirm both are reflected in the Play Console Data safety form.

@@ -809,7 +809,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 10,
   },
-  topBarLeading: { position: 'relative', width: 80, height: 44, justifyContent: 'center' },
+  topBarLeading: { position: 'relative', minWidth: 80, height: 44, justifyContent: 'center' },
   topBarBack: { position: 'absolute', top: 0, left: 0 },
   brand: { fontFamily: Fonts.fraunces.regular, fontSize: 26, lineHeight: 32, minWidth: 80 },
   iconButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
@@ -873,8 +873,11 @@ const styles = StyleSheet.create({
   errorButtonText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 13 },
   footer: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 20, paddingTop: 10 },
   primaryButton: { minHeight: 60, borderRadius: 20, borderCurve: 'continuous', borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 18 },
-  primaryContent: { position: 'relative', alignSelf: 'stretch', height: 24 },
-  primaryContentLayer: { position: 'absolute', top: 0, left: 0, right: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12 },
+  // flex: 1 (not alignSelf: 'stretch') — in the row-direction button, stretch only
+  // affects height; with absolute-only children the box collapses to width 0 and
+  // Android drops the label entirely.
+  primaryContent: { flex: 1, height: 24 },
+  primaryContentLayer: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12 },
   primaryText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 17, lineHeight: 22, textAlign: 'center' },
   privacyAssurance: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, borderWidth: 1, borderRadius: 14, padding: 12, marginBottom: 14 },
   privacyAssuranceText: { flex: 1, fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 19 },
