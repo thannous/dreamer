@@ -88,6 +88,10 @@ F6S remains a qualified operator, but account creation did not pass the executio
 
 The authenticated Gmail connector for `thannous@gmail.com` showed no reply from the editorial target domains after 2026-08-01. That check does not cover the separate `contact@noctalia.app` inbox and is not evidence that every form or address is unanswered.
 
+### Mailbox stop-check — 2026-08-03 10:12 CEST
+
+The separate `contact@noctalia.app` Zimbra session was checked again in the real Chrome browser. A combined search for the six clock-marked recipients (Android Headlines, Sleep.com, ILTY, The Verge, 9to5Google and Engadget) returned no result; dedicated searches for delivery-status/bounce terms and unsubscribe or opt-out terms also returned no result. This is a current inbox stop-check only: it does not prove remote delivery, publisher acceptance or a live backlink, and no draft or tracker state was advanced.
+
 ### Editorial extension — 2026-08-02
 
 Two additional comparison publishers passed the operator, legal-page and contact-route checks before outreach:
@@ -467,6 +471,8 @@ The read-only public verifier was rerun at 08:26 CEST on 2026-08-03 against all 
 A second read-only verifier run at 08:49 CEST on 2026-08-03 produced the same 19-row summary: 6 followed, 4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410. The checker again left `marketing/seo/backlink-results-2026-07-31.csv` untouched. This repeat confirms that the documented public-link state has not changed during the morning; it still does not establish Ahrefs DR movement, editorial acceptance or delivery of any outreach.
 
 A third read-only verifier run at 09:19 CEST returned the same 19-row summary and again left the tracker untouched: 6 followed, 4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410. Reddit, Chrome Stats, AppBrain and StackScope remain the changed or unreachable surfaces; no new public backlink was confirmed.
+
+A fourth read-only verifier run at 10:15 CEST returned the same remote-fetch summary. A follow-up rendered Chrome check then separated access-shell evidence from public-page evidence: Reddit still exposes the indexed UGC link with `noopener nofollow ugc`; Chrome-Stats and AppBrain both render public website links with `nofollow`; StackScope renders a self-canonical Noctalia page but no `noctalia.app` anchor, while the automated response is a Cloudflare challenge with `noindex,nofollow`. The four rows were updated with this dated evidence; the reconciled manual totals remain six indexable followed pages, seven indexable nofollow pages and two nonindexable profiles, excluding the unverified or blocked surfaces. No new backlink or DR movement was claimed.
 
 ### Ahrefs dashboard refresh — 2026-08-03 09:20 CEST
 
