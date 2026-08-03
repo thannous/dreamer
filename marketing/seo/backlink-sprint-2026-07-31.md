@@ -78,6 +78,12 @@ Opening each of the six drafts then showed Zimbra's authoritative scheduled-send
 
 A read-only Drafts-folder recheck at 08:56 CEST still showed exactly six drafts, labelled `kristijan.lucic`, `amy`, `hello`, `victoria.song`, `abner` and `staff`, matching the six scheduled routes above. No draft had moved to Sent; no draft was opened, edited, sent or unscheduled, and no follow-up date was assigned.
 
+### Mailbox recheck — 2026-08-03 09:16 CEST
+
+The authenticated Zimbra session was rechecked in real Chrome. Exact `in:inbox from:` searches for the seventeen current and recent campaign domains (including Sleepopolis, BestForAndroid, AndroidAyuda, AllThingsAI, Digital Trends, Gratitude Genie, Android Police, Goals & Progress, Penzu, Atlas Workspace, KapanLagi and the six clock-marked recipients) all returned zero results. This remains an inbox stop-check, not proof of remote delivery or publisher acceptance.
+
+The Drafts folder still contained exactly six messages, labelled `kristijan.lucic`, `amy`, `hello`, `victoria.song`, `abner` and `staff`. The Sent folder showed the already confirmed transmissions through Sleepopolis at 08:39 CEST, but none of the six future scheduled drafts had moved to Sent. No draft was opened, edited, sent or unscheduled, and no follow-up date was assigned.
+
 F6S remains a qualified operator, but account creation did not pass the execution gate. Google sign-in did not expose an account chooser in the in-app browser; the email recovery path for `contact@noctalia.app` then required reCAPTCHA. No CAPTCHA was solved or bypassed, no password was invented and no profile was created. The next step requires the user to complete the human verification before the public organization fields can be reviewed.
 
 The authenticated Gmail connector for `thannous@gmail.com` showed no reply from the editorial target domains after 2026-08-01. That check does not cover the separate `contact@noctalia.app` inbox and is not evidence that every form or address is unanswered.
