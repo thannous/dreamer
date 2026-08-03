@@ -466,6 +466,12 @@ The read-only public verifier was rerun at 08:26 CEST on 2026-08-03 against all 
 
 A second read-only verifier run at 08:49 CEST on 2026-08-03 produced the same 19-row summary: 6 followed, 4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410. The checker again left `marketing/seo/backlink-results-2026-07-31.csv` untouched. This repeat confirms that the documented public-link state has not changed during the morning; it still does not establish Ahrefs DR movement, editorial acceptance or delivery of any outreach.
 
+A third read-only verifier run at 09:19 CEST returned the same 19-row summary and again left the tracker untouched: 6 followed, 4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410. Reddit, Chrome Stats, AppBrain and StackScope remain the changed or unreachable surfaces; no new public backlink was confirmed.
+
+### Ahrefs dashboard refresh — 2026-08-03 09:20 CEST
+
+The authenticated Ahrefs dashboard was refreshed without opening a detailed referring-domain report or consuming a report credit. The Noctalia project `*.noctalia.app/*` shows Health Score `100`, Crawled `1.6K (+32)`, Broken `0`, Blocked `0`, Domain Rating `0`, Referring domains `360 (+130)`, total visitors `6.1K (+4.8K)`, organic traffic `4.2K (+3K)` and organic keywords `894 (+299)`. These are current dashboard aggregates, not proof that 130 domains are new followed editorial links; the public verifier and individual-page evidence remain authoritative for backlink qualification.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
