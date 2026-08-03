@@ -504,6 +504,12 @@ The authenticated `contact@noctalia.app` Zimbra session was also checked in Chro
 
 After the tracker-only commit `689e8658e` was pushed to `master`, the Cloudflare dashboard showed `689e865` itself as `Queued` behind the active `c0be187`. A second public check still found `#citation` absent. This confirms the new tracker commit has not yet produced a public-site change; no cancellation or manual deployment was attempted.
 
+### Cloudflare production advancement — 2026-08-03 11:17 CEST
+
+The authenticated Cloudflare Pages dashboard now shows deployment `124dd9c` (`31ce8e38.noctalia.pages.dev`) as the active Production deployment for `master`; automatic deployments remain enabled and the newer tracker commit `0e090b1` is still queued. The public domain and the matching preview both render the comparison page with the 11-app dataset, the downloadable CSV, a self-canonical `https://noctalia.app/en/dream-journal-apps` and `index, follow` robots. Both rendered pages still lack `#citation`, even though the source and local generated output contain that section, so the citation block remains source-side/queued rather than publicly verified. This is a production-asset confirmation only: no external referring page, followed link or Ahrefs DR movement was claimed.
+
+At 11:17 CEST, the authenticated `contact@noctalia.app` Zimbra search `in:drafts` still showed six clock-marked messages for Android Headlines, Sleep.com, The Verge, ILTY, Engadget and 9to5Google. The first scheduled slot is 14:00 CEST; none was sent early and no follow-up date was assigned.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
