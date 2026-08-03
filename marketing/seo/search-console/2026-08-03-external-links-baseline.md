@@ -39,6 +39,10 @@ The Search Console Links report has no selectable date range and can lag or samp
 
 The domain and target totals reconcile exactly to 149. This is a discovery inventory, not a quality score and not evidence that Ahrefs DR changed.
 
+## Live Chrome recheck — 2026-08-03 08:31 CEST
+
+The authenticated Google Search Console Links report was re-opened in the user-designated real Chrome session at 08:31 CEST. It still displayed 149 external links from eight source domains, with the same source-page and target-page counts: `google.com` 89/1, `goodaitools.com` 39/1, `saashub.com` 14/1, `chrome-stats.com` 3/1, and `appbrain.com`, `crunchbase.com`, `dreammeaniings.com` and `thamhiemmekong.com` 1/1 each. This is a read-only confirmation of the dated baseline; no export, report credit or remote mutation was used. Search Console does not establish follow/nofollow treatment, editorial acceptance, public publication or an Ahrefs DR change.
+
 ## New source verification: Tham Hiem Mekong
 
 Search Console identifies the exact referring page:
