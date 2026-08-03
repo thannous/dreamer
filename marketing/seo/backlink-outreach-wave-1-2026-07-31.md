@@ -2,7 +2,7 @@
 
 Prepared: 2026-07-31
 Updated: 2026-08-03
-Status: 25 messages or forms delivered/accepted; 1 temporarily delayed; 3 official routes failed; awaiting editorial outcomes
+Status: 26 messages or forms delivered/accepted; 1 temporarily delayed; 3 official routes failed; awaiting editorial outcomes
 Sender: Thanh Chau, founder of Noctalia
 Contact identity for form submissions: `contact@noctalia.app`
 
@@ -33,6 +33,7 @@ These are editorial requests, not link purchases. Do not offer payment, reciproc
 | 8 | Oneironaut | Editorial team | April 2026 dream-app comparison prioritizes voice and privacy | `welcome@oneironauts.io` | Test Noctalia for the next factual update |
 | 9 | TechRadar | Paul Hatton, Tech writer | Current Homescreen Heroes series includes first-person AI-journaling tests | Route through TechRadar team/contact page | Consider a hands-on test or founder interview |
 | 10 | Tom's Guide | Amanda Caswell, AI Editor | December 2025 AI-journaling guide highlights voice capture and habit formation | Official “Contact Amanda” link | Consider a dedicated Android hands-on test |
+| 11 | Sleepopolis | Editorial/press team | 2023 dream-app feature distinguishes consumer technology from clinically supported care | Official press email `contact@sleepopolis.com` | Consider a factual Android-focused update or test |
 
 ## 1. App Charts — James Chen
 
@@ -758,6 +759,31 @@ Noctalia
 
 The comparison is self-canonical with `index, follow`, discloses that ILTY publishes it, states that seven apps were tested for 30+ days and exposes direct followed links to Rosebud, Stoic, Mem.ai, Day One, Reflectly and Journey. Official About and Press pages name Alesya Skye and Artyom Sklyarov and place the two-person team in Colorado; the Contact page publishes the route above. Apple's current listing independently identifies SUUR Limited Liability Company as the seller and links `ilty.co` as the developer website. An exact Zimbra Sent-folder search returned no prior ILTY message. Zimbra now stores one clock-marked draft for 17:00 CEST. It receives no follow-up date until the Sent folder proves transmission, and remains scheduled outreach—not a sent message, reply, publication, referring domain, backlink or DR gain.
 
+## 39. Sleepopolis — editorial/press team
+
+**Target:** `https://sleepopolis.com/news/all-you-ever-wanted-to-know-about-dreams-and-the-growing-number-of-dream-apps/`
+**Route:** `contact@sleepopolis.com`, published on the official Press page
+**Subject:** `Editorial suggestion: update on dream apps`
+**State:** sent once from `contact@noctalia.app` on 2026-08-03 at 08:39 CEST; awaiting editorial reply
+
+Hello Sleepopolis editorial team,
+
+Your October 2023 guide, “All You Ever Wanted to Know About Dreams and the Growing Number of Dream Apps,” is careful to separate dream technology from clinically supported care. If you revisit it, Noctalia is a current Android-first option to test for the voice-capture workflow immediately after waking.
+
+Noctalia lets people dictate or type a dream, keep the transcript, and revisit possible emotions, symbols, themes and dream type through structured reflection. Transcription and AI features require a connection, and the app is a journaling aid—not medical advice, diagnosis or prediction.
+
+The current Android workflow, product facts, limitations and Google Play link are here:
+https://noctalia.app/en/voice-dream-journal
+
+If useful for a factual update or Android-focused test, I can provide access and answer questions. There is no payment, reciprocal link, ranking, placement or guaranteed-link request; the editorial decision is entirely yours.
+
+Thank you,
+Thanh Chau
+Founder, Noctalia
+contact@noctalia.app
+
+The current page rendered in Chrome as a self-canonical article naming Molly Nodurft and updated on 2023-10-16. Sleepopolis' current Contact page identifies Sleepopolis/Pillar4 Media at 2101 Thrift Road, Charlotte, NC 28208; its Press page publishes `contact@sleepopolis.com` for media inquiries. The site discloses affiliate relationships and describes its testing/editorial team, so this is a factual editorial suggestion rather than a paid-placement route. The Noctalia voice page was rechecked as canonical and `index, follow` immediately before composing. Exact Zimbra searches for both official Sleepopolis addresses and inbox mail from `sleepopolis.com` returned no result; after the send, Zimbra displayed `Le mail a été envoyé.`, `in:sent to:contact@sleepopolis.com` returned one result at 08:39 with the exact subject, and a fresh `in:inbox from:sleepopolis.com` check returned no result. Follow-ups are conditionally due on 2026-08-08 and 2026-08-16 only after fresh stop checks. This is transmission evidence only—not delivery to a human, editorial acceptance, publication, a backlink, a referring-domain increase or a DR gain.
+
 ## Additional current-comparison qualification — no outreach
 
 Claire Calls was rejected before contact. Its July 2026 AI-journaling comparison discloses the publisher's own-product bias, names founder Shawn Beck and exposes five direct external links without `nofollow`, so the citation pattern is useful. The current Terms, however, name only “Claire AI Technologies” and Illinois law without an exact legal entity suffix or accountable address. A focused exact-name and founder search returned no corroborating company record, leaving the operator location—and therefore the non-Russian trust gate—unverified. Its contact form also requires Cloudflare Turnstile. No challenge was handled and no form or product data was submitted.
@@ -827,6 +853,7 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - Sleep.com dream-journal article, Amy Wilkinson author profile and current professional work/contact pages, plus Mattress Firm operator and editorial standards; one deduplicated message is scheduled in Zimbra for 2026-08-03 at 15:30 CEST and is not yet sent: `https://www.sleep.com/sleep-health/dream-journal`, `https://www.sleep.com/blog/author/amy-wilkinson`, `https://www.amywilkinson.co/writing`, `https://www.amywilkinson.co/contact`, `https://www.sleep.com/editorial-guidelines`, `https://www.sleep.com/terms`, `https://www.sleep.com/privacy-policy`
 - Atlas Workspace's current journaling comparison, Jet New author profile, direct Contact route, operator disclosure and independent Singapore company record; one deduplicated message was confirmed in Sent at 03:27 CEST: `https://www.atlasworkspace.ai/blog/best-app-for-journaling`, `https://www.atlasworkspace.ai/about/jet-new`, `https://www.atlasworkspace.ai/contact`, `https://www.atlasworkspace.ai/service`, `https://companieshouse.sg/agentscale-ai-pte-ltd-202508156C`
 - ILTY's self-canonical index-follow comparison, named Colorado founders, official Contact and Press routes, and Apple seller identity; one deduplicated message is scheduled for 17:00 CEST and is not yet sent: `https://ilty.co/best/ai-journaling-apps`, `https://ilty.co/about`, `https://ilty.co/contact`, `https://ilty.co/press`, `https://ilty.co/terms`, `https://apps.apple.com/us/app/vent-ai-therapy-ilty/id6757708332`
+- Sleepopolis' dream-app article, current About and Contact operator evidence, official Press route and methodology/editorial disclosure; one deduplicated factual update suggestion was sent from `contact@noctalia.app` at 08:39 CEST and is awaiting review: `https://sleepopolis.com/news/all-you-ever-wanted-to-know-about-dreams-and-the-growing-number-of-dream-apps/`, `https://sleepopolis.com/about/`, `https://sleepopolis.com/contact/`, `https://sleepopolis.com/press/`
 - Claire Calls' current comparison, founder disclosure, Terms and Turnstile-protected contact route; rejected because the exact legal entity and accountable location remain unverified: `https://www.clairecalls.com/blog/best-ai-journaling-apps-2026`, `https://www.clairecalls.com/about`, `https://www.clairecalls.com/terms`, `https://www.clairecalls.com/contact`
 - Reflection.app's current comparison hub, direct competitor-domain link pattern, named founder, Delaware operator evidence and public press route; qualified but paused because the same founder's Holstee thread is already open: `https://www.reflection.app/best-journaling-apps`, `https://www.reflection.app/journaling-apps/day-one`, `https://www.reflection.app/about-us`, `https://www.reflection.app/terms-privacy-policy`, `https://www.reflection.app/press`, `https://www.reflection.app/faq`
 - Frandroid current Android app-guide coverage, Humanoid SAS legal identity, editorial independence and dedicated suggestion form: `https://www.frandroid.com/android/applications/top-applications/294095_5-outils-prendre-notes-android-dautres-plateformes`, `https://www.frandroid.com/a-propos`, `https://www.frandroid.com/mentions-legales`, `https://www.frandroid.com/contact#edito`
@@ -852,3 +879,5 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 Verification on 2026-07-31 through 2026-08-03: every target article, recipient role, official contact route and linked Noctalia page was checked again immediately before outreach. App Charts and World of Lucid Dreaming were verified through a normal browser after their automated-request restrictions. The Noctalia comparison CSV returned HTTP 200 with `text/csv`. Best Apps for Android, Know Your Ethos and Dreamz Journal then failed through their exact published routes and were closed without guessed alternatives. Android Guías and SlashGear were delivered from `thannous@gmail.com` before the professional mailbox became available and must not be duplicated. JournPad remains temporarily delayed and cannot receive a follow-up unless delivery is confirmed. Frandroid and Lifehacker supplied authoritative form confirmations from `contact@noctalia.app`.
 
 On 2026-08-03, Digital Trends, Gratitude Genie and Android Police were rechecked in Chrome, deduplicated against the Zimbra Sent folder and contacted once from `contact@noctalia.app`; each send displayed `Le mail a été envoyé.` The current Android Police contact text rendered the exact editorial address, so it was neither inferred nor decoded. Android Headlines' automatic security check later completed without CAPTCHA interaction, exposing Kristijan Lucic's directly published address; one deduplicated message is scheduled for 14:00 CEST but is not yet sent. Sleep.com's 2022 article, Mattress Firm operator evidence and Amy Wilkinson's current professional site were then rechecked in Chrome; her directly published work-inquiry address passed exact Sent-folder deduplication and one future-refresh message is scheduled for 15:30 CEST but is not yet sent. Atlas Workspace's current comparison, followed citation pattern, named founder, direct route and Singapore company record were also verified; one exact message was confirmed in Sent at 03:27 CEST. No follow-up date exists for either scheduled draft until Sent-folder confirmation. No immediate bounce, automatic reply or editorial response was found for the earlier routes; Atlas has not yet received a separate bounce/reply check. Make Tech Easier remains unsubmitted behind human Turnstile. Apps Tested, Slant, Clubic, Speakwise, G2, Capterra, Geekflare, ZipDo, Lound, Dayora, remembr, Kiomora, DreamStream, Inner Dispatch, AndroidGuys, Technical Ustad and Zapier remain excluded or paused for the documented trust, commercial, eligibility or topical reasons.
+
+On 2026-08-03 at 08:39 CEST, Sleepopolis was added as route 45 in the outreach log after a fresh Chrome qualification and exact Zimbra deduplication. Its official press address accepted one factual update suggestion from `contact@noctalia.app`; Sent-folder proof exists, but no delivery, reply, publication, backlink or DR gain is claimed. Sandman remains a qualified hold because its founder review has direct product-domain citations and accountable MUJO LLC evidence but no current editorial/press route. Mirror, Night Omen, Kelly Bulkeley and Dreams & Stars were excluded from outreach under the domain-citation, operator-route or renderability gates documented in `marketing/seo/editorial-discovery-wave-15-2026-08-03.md`.
