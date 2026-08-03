@@ -76,6 +76,8 @@ The six clock-marked drafts scheduled for later on 2026-08-03 also returned zero
 
 Opening each of the six drafts then showed Zimbra's authoritative scheduled-send notice: Android Headlines at 14:00, Sleep.com at 15:30, The Verge at 15:45, ILTY at 17:00, Engadget at 17:45 and 9to5Google at 19:30 CEST on 2026-08-03. The draft previews showed the intended recipient aliases and subjects; opening them did not alter, send or unschedule any message.
 
+A read-only Drafts-folder recheck at 08:56 CEST still showed exactly six drafts, labelled `kristijan.lucic`, `amy`, `hello`, `victoria.song`, `abner` and `staff`, matching the six scheduled routes above. No draft had moved to Sent; no draft was opened, edited, sent or unscheduled, and no follow-up date was assigned.
+
 F6S remains a qualified operator, but account creation did not pass the execution gate. Google sign-in did not expose an account chooser in the in-app browser; the email recovery path for `contact@noctalia.app` then required reCAPTCHA. No CAPTCHA was solved or bypassed, no password was invented and no profile was created. The next step requires the user to complete the human verification before the public organization fields can be reviewed.
 
 The authenticated Gmail connector for `thannous@gmail.com` showed no reply from the editorial target domains after 2026-08-01. That check does not cover the separate `contact@noctalia.app` inbox and is not evidence that every form or address is unanswered.
