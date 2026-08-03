@@ -66,7 +66,7 @@ The fifth rendered discovery pass is recorded in `marketing/seo/editorial-discov
 
 The exact replies and send gates are stored in `marketing/seo/backlink-follow-up-wave-1-2026-08-05.md`. The twelve route records that previously carried a 2026-08-05 date do not authorize twelve messages. Ten existing email threads are eligible only after a fresh no-reply, no-bounce, no-live-link check. App Charts has no reply thread and must not receive a duplicate contact-form submission. JournPad remains delivery-gated; its calendar dates are cleared until Gmail supplies authoritative delivery confirmation, after which a new three-day interval must be observed. Each eligible reply adds one new factual resource or test angle, stays in the original thread and asks for neither a link, ranking, placement date nor guaranteed inclusion.
 
-The next conditional batch is prepared in `marketing/seo/backlink-follow-up-wave-2-2026-08-08.md`. It covers the eleven currently dated 2026-08-08 routes, including the single consolidated KapanLagi source-reclamation route and the new Sleepopolis thread. The file is preparation only: every route still requires fresh reply, bounce, opt-out and live-link checks on the day, and no scheduled draft receives a follow-up date until its Sent-folder transmission is proven.
+The next conditional batch is prepared in `marketing/seo/backlink-follow-up-wave-2-2026-08-08.md`. It covers the ten currently dated 2026-08-08 routes, including the single consolidated KapanLagi source-reclamation route and the new Sleepopolis thread. The file is preparation only: every route still requires fresh reply, bounce, opt-out and live-link checks on the day, and no scheduled draft receives a follow-up date until its Sent-folder transmission is proven.
 
 ### Inbox and scheduled-send stop check — 2026-08-03 08:18 CEST
 
@@ -91,6 +91,12 @@ The authenticated Gmail connector for `thannous@gmail.com` showed no reply from 
 ### Mailbox stop-check — 2026-08-03 10:12 CEST
 
 The separate `contact@noctalia.app` Zimbra session was checked again in the real Chrome browser. A combined search for the six clock-marked recipients (Android Headlines, Sleep.com, ILTY, The Verge, 9to5Google and Engadget) returned no result; dedicated searches for delivery-status/bounce terms and unsubscribe or opt-out terms also returned no result. This is a current inbox stop-check only: it does not prove remote delivery, publisher acceptance or a live backlink, and no draft or tracker state was advanced.
+
+### Bounce reconciliation — 2026-08-03 12:17 CEST
+
+A later real-Chrome Spam-folder check found one permanent delivery failure for the earlier AndroidAyuda message. Zimbra displays `Delivery Status Notification (Failure)` from `mailer-daemon@googlemail.com` at 08:10 CEST, addressed to `androidayuda@googlegroups.com`. The body states that the Google Group may not exist, may require membership or may not accept posts; the original-message headers confirm the exact AndroidAyuda recipient and Spanish journal-guide subject.
+
+This is a hard bounce, not a publisher reply, acceptance or backlink. The AndroidAyuda outreach and prospect rows are now `hard_bounce_closed`, their 2026-08-08 follow-up has been removed, and no retry or guessed replacement address is allowed. A replacement can be considered only after a new official contact route passes the same trust and deduplication gates.
 
 ### Editorial extension — 2026-08-02
 
@@ -215,7 +221,7 @@ Tracking files:
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: 39 numbered recipient-specific editorial messages or form dossiers plus replacement route 4R, with current contact routes and a two-follow-up stop policy; routes 32–34 live in the professional-mailbox wave and route 39 is Sleepopolis.
 - `marketing/seo/backlink-outreach-wave-2-professional-mailbox-2026-08-03.md`: the exact sent copy, current trust evidence and follow-up dates for Digital Trends, Gratitude Genie and Android Police from `contact@noctalia.app`.
 - `marketing/seo/backlink-follow-up-wave-1-2026-08-05.md`: ten thread-specific first replies, one no-send form route, one delivery-gated route and the exact pre-send stop checks.
-- `marketing/seo/backlink-follow-up-wave-2-2026-08-08.md`: eleven conditional first-follow-up routes, including the consolidated KapanLagi reclamation and Sleepopolis, with exact stop gates and a no-send-until-recheck rule.
+- `marketing/seo/backlink-follow-up-wave-2-2026-08-08.md`: ten conditional first-follow-up routes, including the consolidated KapanLagi reclamation and Sleepopolis, with exact stop gates and a no-send-until-recheck rule.
 - `marketing/seo/backlink-outreach-log-2026-07-31.csv`: send, reply, follow-up and live-link state for 45 route records covering 44 unique publishers or directories: 6 scheduled but not yet sent messages, 1 temporarily delayed route, 1 unconfirmed form attempt and 3 failed official routes, with all other states stored row-by-row in the CSV.
 - `marketing/seo/directory-submission-pack-wave-3-ai-2026-07-31.md`: one field-ready free Future Tools dossier plus an official-price decision matrix for six paid or reciprocal AI-directory routes.
 - `marketing/seo/directory-submission-pack-wave-4-entities-design-2026-08-02.md`: the existing Crunchbase entity audit, a field-ready Behance mobile-product case study and evidence-backed exclusions for Dribbble, Chrome Web Store, GitHub Pages and Gumroad.

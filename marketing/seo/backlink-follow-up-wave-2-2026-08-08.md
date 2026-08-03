@@ -2,7 +2,7 @@
 
 Prepared: 2026-08-03 (Europe/Paris)
 
-This pack prepares the first conditional follow-up for the eleven route records currently dated 2026-08-08 in `marketing/seo/backlink-outreach-log-2026-07-31.csv`. It is not permission to send eleven messages. Each route must pass the stop gate on the day, remain in its original thread or form route, and close immediately after a reply, opt-out, permanent delivery failure or verified public citation.
+This pack prepares the first conditional follow-up for the ten route records currently dated 2026-08-08 in `marketing/seo/backlink-outreach-log-2026-07-31.csv`. It is not permission to send ten messages. Each route must pass the stop gate on the day, remain in its original thread or form route, and close immediately after a reply, opt-out, permanent delivery failure or verified public citation.
 
 ## Mandatory stop gate
 
@@ -29,7 +29,6 @@ Before any message:
 | `atlasworkspace.ai` | Jet New | The dated comparison CSV and the distinction between a dedicated dream journal and a general workspace | `initial_sent_waiting`, `awaiting_reply` | 2026-08-08, then final 2026-08-16 |
 | `kapanlagi.com` | Redaksi / Rizka Uzlifat | The six additional current water-dream pages that already print the exact Noctalia source URL as plain text | `initial_sent_waiting`, `awaiting_reply` | One consolidated route only; never six duplicate messages |
 | `bestforandroid.com` | editorial team | The public press-kit screenshots and the exact Android voice-capture test facts | `initial_sent_waiting`, `awaiting_reply` | 2026-08-08, then final 2026-08-16 |
-| `androidayuda.com` | editorial team | The Spanish press page and the non-medical, non-predictive product boundary | `initial_sent_waiting`, `awaiting_reply` | 2026-08-08, then final 2026-08-16 |
 | `sleepopolis.com` | press/editorial team | The current Android voice-capture workflow as a factual update to the 2023 dream-app article | `initial_sent_waiting`, `awaiting_reply` | 2026-08-08, then final 2026-08-16 |
 
 ## Sleepopolis conditional copy
