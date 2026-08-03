@@ -526,6 +526,12 @@ The authenticated Cloudflare Pages dashboard shows automatic deployments enabled
 
 The same Chrome Zimbra session still shows exactly six clock-marked drafts for Android Headlines, Sleep.com, The Verge, ILTY, Engadget and 9to5Google. The current time is before the first scheduled slot at 14:00 CEST, so no message was sent early and no follow-up date was assigned.
 
+### Android Headlines send reconciliation — 2026-08-03 14:25 CEST
+
+The 14:00 CEST slot has now been reconciled in the authenticated Zimbra session. The Android Headlines draft moved to `Sent`; its detail view shows sender `contact@noctalia.app`, the `kristijan.lucic` recipient alias, subject `journal app update` and the scheduled 14:00 timestamp. The Inbox contains no Android Headlines reply and Spam contains no new campaign bounce. This proves transmission only—not remote delivery, editorial acceptance, publication, a live backlink or a DR gain.
+
+Five clock-marked drafts remain scheduled and unsent: Sleep.com at 15:30, The Verge at 15:45, ILTY at 17:00, Engadget at 17:45 and 9to5Google at 19:30 CEST. No follow-up date is assigned to those routes until each later slot is independently confirmed in `Sent`; the first conditional Android Headlines follow-up remains 2026-08-08 after a fresh stop check.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
