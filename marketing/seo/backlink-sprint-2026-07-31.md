@@ -474,6 +474,10 @@ The authenticated Ahrefs dashboard was refreshed without opening a detailed refe
 
 The authenticated GSC Links report was also refreshed at 09:22 CEST. It still showed 149 external links from eight source domains to four Noctalia pages (with the visible top rows google.com 89, goodaitools.com 39, saashub.com 14, chrome-stats.com 3 and appbrain.com 1); no GSC export or mutation was performed. This confirms a stable discovery inventory, not new authority equity or DR movement.
 
+### Google index check for editorial assets — 2026-08-03 09:25 CEST
+
+An exact Google `site:` query rendered all three linkable English assets as indexed results: `/en/press` (Noctalia Press Kit), `/en/dream-journal-apps` (Best Dream Journal Apps 2026) and `/en/voice-dream-journal` (Voice Dream Journal App for Android). The snippets matched each page's intended title and topic. This confirms search visibility of the destinations used in outreach; it does not prove an external publisher linked them, that a result will remain stable, or that Ahrefs DR changed.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
