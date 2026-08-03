@@ -496,6 +496,12 @@ The indexed `/en/dream-journal-apps` asset now exposes a copyable citation block
 
 The official DEV sign-in route was opened read-only to determine whether the prepared canonical article could be created under the designated business identity. Google OAuth offered only `thannous@gmail.com` and `cloudtech.webmaster@gmail.com`; `contact@noctalia.app` was not available. No personal account was selected, no DEV account or draft was created, and no publication or backlink claim was made. The DEV route remains blocked until the correct business identity is available and publication is explicitly authorized for that account.
 
+### Cloudflare and scheduled-mail recheck — 2026-08-03 10:33 CEST
+
+The authenticated Cloudflare Pages dashboard was checked again in Chrome. Automatic deployments remain enabled for `thannous/dreamer` on `master`; Production still shows `c0be187` as the active deployment, while the latest SEO commit `cdf32f4` remains `Queued`. A fresh public-page check returned `HTTP 200` for `/en/dream-journal-apps` with the expected self-canonical, `index, follow` robots and `#dataset`, but `#citation` is still absent. The source-side citation block is therefore not yet live at the production edge, and no production backlink or DR gain was claimed.
+
+The authenticated `contact@noctalia.app` Zimbra session was also checked in Chrome with `in:drafts`. It still contains exactly six clock-marked drafts: Android Headlines, Sleep.com, The Verge, ILTY, Engadget and 9to5Google. The current time is before the first scheduled slot at 14:00 CEST, so none was counted as sent and no follow-up date was assigned. The Quality workflow for `cdf32f4` completed successfully; this proves repository validation only and does not override the Cloudflare or mailbox state.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
