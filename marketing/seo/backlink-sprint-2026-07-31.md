@@ -540,6 +540,10 @@ The Inbox contains one relevant automatic reply from Victoria Song at 15:45 stat
 
 The follow-up pack now contains fifteen conditional routes dated across 2026-08-08 and 2026-08-11. No follow-up was sent in this reconciliation, and no scheduled or transmitted message is counted as a backlink or DR gain.
 
+### Post-send public verification — 2026-08-03 21:06 CEST
+
+The read-only public verifier was rerun after the six transmissions. It checked all 19 tracked referring pages and returned the unchanged summary: 6 followed, 4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410 result, with 4 documented mismatches. Direct HTTP checks for `/en/press`, `/en/voice-dream-journal` and `/en/dream-journal-apps` all returned HTTP 200. No new public referring page, link treatment change or DR movement was observed; the Sent messages remain outreach transmission only.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
