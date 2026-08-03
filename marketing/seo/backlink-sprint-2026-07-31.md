@@ -72,6 +72,8 @@ The authenticated `contact@noctalia.app` Zimbra session was checked in the real 
 
 The six clock-marked drafts scheduled for later on 2026-08-03 also returned zero results in exact `in:sent to:` searches for `kristijan.lucic@androidheadlines.com`, `amy@amywilkinson.co`, `victoria.song@theverge.com`, `staff@engadget.com`, `abner@9to5mac.com` and `hello@ilty.co`. They remain scheduled drafts and must be confirmed in Sent after their stated times before any follow-up date is assigned. No duplicate message was sent and no tracker state was advanced.
 
+Opening each of the six drafts then showed Zimbra's authoritative scheduled-send notice: Android Headlines at 14:00, Sleep.com at 15:30, The Verge at 15:45, ILTY at 17:00, Engadget at 17:45 and 9to5Google at 19:30 CEST on 2026-08-03. The draft previews showed the intended recipient aliases and subjects; opening them did not alter, send or unschedule any message.
+
 F6S remains a qualified operator, but account creation did not pass the execution gate. Google sign-in did not expose an account chooser in the in-app browser; the email recovery path for `contact@noctalia.app` then required reCAPTCHA. No CAPTCHA was solved or bypassed, no password was invented and no profile was created. The next step requires the user to complete the human verification before the public organization fields can be reviewed.
 
 The authenticated Gmail connector for `thannous@gmail.com` showed no reply from the editorial target domains after 2026-08-01. That check does not cover the separate `contact@noctalia.app` inbox and is not evidence that every form or address is unanswered.
