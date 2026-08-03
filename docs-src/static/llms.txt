@@ -20,6 +20,7 @@ Noctalia is a dream journal and dream interpretation resource for people who wan
 ## App Comparison And Alternatives
 
 - Dream journal app comparison: https://noctalia.app/en/dream-journal-apps
+- Citable 2026 comparison findings: https://noctalia.app/en/dream-journal-apps#findings
 - Comparison methodology: https://noctalia.app/en/dream-journal-apps#methodology
 - Downloadable comparison dataset (CSV): https://noctalia.app/data/dream-journal-apps-comparison-2026.csv
 - DreamApp alternative: https://noctalia.app/en/dreamapp-alternative
