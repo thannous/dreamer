@@ -2,7 +2,7 @@
 
 Prepared: 2026-08-03 (Europe/Paris)
 
-This pack prepares the first conditional follow-up for the ten route records currently dated 2026-08-08 in `marketing/seo/backlink-outreach-log-2026-07-31.csv`. It is not permission to send ten messages. Each route must pass the stop gate on the day, remain in its original thread or form route, and close immediately after a reply, opt-out, permanent delivery failure or verified public citation.
+This pack prepares the first conditional follow-up for the fifteen route records currently dated 2026-08-08 in `marketing/seo/backlink-outreach-log-2026-07-31.csv`. It is not permission to send fifteen messages. Each route must pass the stop gate on the day, remain in its original thread or form route, and close immediately after a reply, opt-out, permanent delivery failure or verified public citation. The Verge is intentionally deferred to 2026-08-11 because Victoria Song's automatic reply says she is away through 2026-08-07.
 
 ## Mandatory stop gate
 
@@ -28,6 +28,11 @@ Before any message:
 | `penzu.com` | editorial/content team | The public methodology page separating reflective journaling from clinical or predictive claims | `initial_sent_waiting`, `awaiting_reply` | 2026-08-08, then final 2026-08-16 |
 | `atlasworkspace.ai` | Jet New | The dated comparison CSV and the distinction between a dedicated dream journal and a general workspace | `initial_sent_waiting`, `awaiting_reply` | 2026-08-08, then final 2026-08-16 |
 | `androidheadlines.com` | Kristijan Lucic | The five-step Android voice-capture, transcript-editing and reflection workflow, including the documented connectivity limit | `initial_sent_waiting`, `awaiting_reply` | 2026-08-08, then final 2026-08-16 |
+| `sleep.com` | Amy Wilkinson | The current Android voice-capture workflow as a factual future-refresh item for the Wakefully recommendation | `initial_sent_waiting`, `awaiting_reply` | 2026-08-08, then final 2026-08-16 |
+| `ilty.co` | Alesya Skye and Artyom Sklyarov | The Android voice-capture and transcript-editing workflow for a future comparison refresh | `initial_sent_waiting`, `awaiting_reply` | 2026-08-08, then final 2026-08-16 |
+| `theverge.com` | Victoria Song | The dated comparison dataset and the distinction between on-device and cloud-assisted journaling features | `auto_reply_waiting_return`, `auto_reply_away_until_2026-08-07` | 2026-08-11 after return, then final 2026-08-18 |
+| `engadget.com` | Engadget editorial team | The dated comparison dataset for AI features becoming standard in private journaling | `initial_sent_waiting`, `awaiting_reply` | 2026-08-08, then final 2026-08-16 |
+| `9to5google.com` | Abner Li | The dated comparison dataset for AI becoming standard in journaling apps | `initial_sent_waiting`, `awaiting_reply` | 2026-08-08, then final 2026-08-16 |
 | `kapanlagi.com` | Redaksi / Rizka Uzlifat | The six additional current water-dream pages that already print the exact Noctalia source URL as plain text | `initial_sent_waiting`, `awaiting_reply` | One consolidated route only; never six duplicate messages |
 | `sleepopolis.com` | press/editorial team | The current Android voice-capture workflow as a factual update to the 2023 dream-app article | `initial_sent_waiting`, `awaiting_reply` | 2026-08-08, then final 2026-08-16 |
 

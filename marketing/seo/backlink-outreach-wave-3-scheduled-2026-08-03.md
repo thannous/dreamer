@@ -3,7 +3,7 @@
 Prepared: 2026-08-03, before the scheduled send windows
 Sender: `contact@noctalia.app` through the user-designated OVH Zimbra mailbox
 
-These three recipient-specific drafts completed the handoff for the six messages scheduled on 2026-08-03. Android Headlines has since moved to Sent at 14:00 CEST; the other five routes remain time-gated and are documented in [`editorial-discovery-wave-7-2026-08-03.md`](editorial-discovery-wave-7-2026-08-03.md). A clock-marked draft is not a sent message, accepted pitch, publication, backlink, referring domain or DR gain.
+These recipient-specific drafts completed the handoff for the six messages scheduled on 2026-08-03. The later reconciliation now proves all six transmissions in Sent at their scheduled times. A transmitted message is not a delivered message, accepted pitch, publication, backlink, referring domain or DR gain.
 
 ## Send gate for every route
 
@@ -12,8 +12,11 @@ Send only once, at the stated local time, after a fresh `in:sent to:` search in 
 | Route | Recipient | Scheduled time | Noctalia destination | Current state |
 | --- | --- | --- | --- | --- |
 | Android Headlines | `kristijan.lucic@androidheadlines.com` | 14:00 CEST | `/en/press` | `initial_sent_waiting` — Sent proof at 14:00 CEST; first follow-up only after the 2026-08-08 stop gate |
-| Sleep.com | `amy@amywilkinson.co` | 15:30 CEST | `/en/voice-dream-journal` | `initial_scheduled_not_sent` |
-| ILTY | `hello@ilty.co` | 17:00 CEST | `/en/press` | `initial_scheduled_not_sent` |
+| Sleep.com | `amy@amywilkinson.co` | 15:30 CEST | `/en/voice-dream-journal` | `initial_sent_waiting` — Sent proof at 15:30; follow-up gated to 2026-08-08 |
+| The Verge | `victoria.song@theverge.com` | 15:45 CEST | `/en/dream-journal-apps#findings` | `auto_reply_waiting_return` — Sent proof at 15:45; follow-up deferred to 2026-08-11 |
+| ILTY | `hello@ilty.co` | 17:00 CEST | `/en/press` | `initial_sent_waiting` — Sent proof at 17:00; follow-up gated to 2026-08-08 |
+| Engadget | `staff@engadget.com` | 17:45 CEST | `/en/dream-journal-apps#findings` | `initial_sent_waiting` — Sent proof at 17:45; follow-up gated to 2026-08-08 |
+| 9to5Google | `abner@9to5mac.com` | 19:30 CEST | `/en/dream-journal-apps#findings` | `initial_sent_waiting` — Sent proof at 19:30; follow-up gated to 2026-08-08 |
 
 ## Android Headlines — exact draft
 
@@ -55,7 +58,7 @@ The recipient and publisher route were visible on current official pages, and th
 > Thanh Chau
 > Noctalia
 
-Amy Wilkinson's current professional site publishes the exact work address, independently cross-checked against her editor-writer identity. The route is intentionally a future-refresh suggestion; no follow-up date exists until Sent-folder confirmation.
+Amy Wilkinson's current professional site publishes the exact work address, independently cross-checked against her editor-writer identity. The route remains a future-refresh suggestion; Sent proof is recorded at 15:30 CEST and the first conditional follow-up is gated to 2026-08-08.
 
 ## ILTY — exact draft
 
@@ -75,7 +78,7 @@ Amy Wilkinson's current professional site publishes the exact work address, inde
 > Thank you,
 > Thanh Chau
 > Noctalia
-The official About, Press and Contact pages name both founders and publish `hello@ilty.co`; Apple's current listing independently identifies SUUR Limited Liability Company as seller. The route remains a clock-marked draft until the 17:00 CEST send gate is rechecked.
+The official About, Press and Contact pages name both founders and publish `hello@ilty.co`; Apple's current listing independently identifies SUUR Limited Liability Company as seller. Sent proof is recorded at 17:00 CEST; the first conditional follow-up is gated to 2026-08-08.
 
 ## Post-send evidence
 
@@ -88,3 +91,11 @@ Record, per route:
 5. no DR or backlink gain until the public evidence exists.
 
 Android Headlines post-send check: the message is present in Sent at 14:00 CEST, Inbox has no matching reply and Spam retains only the previously recorded AndroidAyuda bounce. The tracker now assigns the conditional first follow-up date 2026-08-08; no reply is being sent in this turn.
+
+## Full post-send reconciliation — 2026-08-03 20:53 CEST
+
+The authenticated Zimbra Sent folder now shows all six scheduled routes at their exact clock times: Android Headlines 14:00, Sleep.com 15:30, The Verge 15:45, ILTY 17:00, Engadget 17:45 and 9to5Google 19:30 CEST. The five newly reconciled rows show the `amy`, `victoria.song`, `hello`, `staff` and `abner` recipient aliases respectively. This proves transmission only, not remote delivery, editorial acceptance, publication, a live referring page or a DR gain.
+
+The Inbox has one relevant automatic reply from Victoria Song at 15:45 stating that she is away from 2026-07-27 through 2026-08-07. Her follow-up is therefore deferred to 2026-08-11 after return and a fresh stop gate. Focused Inbox searches for the other four full recipient addresses returned no result, and Spam still contains only the previously recorded AndroidAyuda delivery failure at 08:10; no new campaign bounce was found. The unrelated Ade Banji message was not treated as an editorial response and was left untouched.
+
+The conditional follow-up pack now covers fifteen routes: the five newly sent routes use 2026-08-08 after fresh stop checks, while The Verge uses 2026-08-11 because of the automatic absence notice. No follow-up was sent in this reconciliation.
