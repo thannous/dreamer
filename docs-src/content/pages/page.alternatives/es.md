@@ -31,6 +31,7 @@
   "jsonLd": [
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Mejores apps de diario de sueños 2026\",\n  \"description\": \"Compara Noctalia con DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud y nuevas apps de sueños con IA.\",\n  \"url\": \"https://noctalia.app/es/apps-diario-de-suenos\",\n  \"inLanguage\": \"es\",\n  \"dateModified\": \"2026-08-03T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Mejores apps de diario de sueños en 2026\",\n      \"item\": \"https://noctalia.app/es/apps-diario-de-suenos\"\n    }\n  ]\n}"
+    ,"{\"@context\":\"https://schema.org\",\"@type\":\"Dataset\",\"@id\":\"https://noctalia.app/es/apps-diario-de-suenos#dataset\",\"name\":\"Datos comparativos de apps de diario de sueños 2026\",\"description\":\"Una revisión documental fechada de 11 apps de diario de sueños sobre plataformas, captura de voz, interpretación con IA, imágenes, privacidad, exportación y sueño lúcido.\",\"url\":\"https://noctalia.app/es/apps-diario-de-suenos#dataset\",\"creator\":{\"@id\":\"https://noctalia.app/#organization\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"},\"dateCreated\":\"2026-07-12\",\"dateModified\":\"2026-08-03\",\"isAccessibleForFree\":true,\"inLanguage\":\"es\",\"keywords\":[\"apps de diario de sueños\",\"captura de voz\",\"interpretación de sueños con IA\",\"apps de sueño lúcido\"],\"measurementTechnique\":\"Revisión documental de páginas oficiales de productos y fichas públicas de tiendas; sin cuentas de competidores ni suscripciones de pago.\",\"distribution\":{\"@type\":\"DataDownload\",\"encodingFormat\":\"text/csv\",\"contentUrl\":\"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"}}"
   ],
   "activeNav": "resources"
 }
@@ -101,6 +102,14 @@
     <p>El CSV reproduce la comparación de 11 aplicaciones en un formato que investigadores, periodistas y autores de reseñas pueden filtrar o citar. Cada fila incluye su fuente y fecha de revisión.</p>
     <p class="mt-4"><a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Descargar la comparación de apps de sueños (CSV)</a></p>
     <p class="mt-3 text-sm text-purple-200/70">Puedes reutilizar esta compilación editorial con atribución a Noctalia y un enlace a esta página. Los datos son una instantánea fechada; comprueba las fuentes oficiales antes de publicar.</p>
+  </section>
+
+  <section id="citation" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Cómo citar estos datos</h2>
+    <p>Para un artículo, informe o nota de investigación, usa esta referencia estable:</p>
+    <p class="mt-4">Noctalia. (3 de agosto de 2026). <em>Datos comparativos de apps de diario de sueños 2026</em>.</p>
+    <p class="mt-3"><a href="https://noctalia.app/es/apps-diario-de-suenos#dataset" class="text-dream-salmon hover:underline">Fuente estable del dataset</a></p>
+    <p class="mt-3 text-sm text-purple-200/70">Conserva la atribución y el enlace estable al reutilizar el CSV. Es una revisión documental fechada, no un estudio clínico, una clasificación ni una estimación de cuota de mercado.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

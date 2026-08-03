@@ -31,6 +31,7 @@
   "jsonLd": [
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Meilleures applications journal de rêves 2026\",\n  \"description\": \"Comparez Noctalia avec DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud et les nouveaux journaux de rêves IA.\",\n  \"url\": \"https://noctalia.app/fr/applications-journal-de-reves\",\n  \"inLanguage\": \"fr\",\n  \"dateModified\": \"2026-08-03T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Meilleures applications de journal de rêves en 2026\",\n      \"item\": \"https://noctalia.app/fr/applications-journal-de-reves\"\n    }\n  ]\n}"
+    ,"{\"@context\":\"https://schema.org\",\"@type\":\"Dataset\",\"@id\":\"https://noctalia.app/fr/applications-journal-de-reves#dataset\",\"name\":\"Jeu de données comparatif des applications de journal de rêves 2026\",\"description\":\"Une revue documentaire datée de 11 applications de journal de rêves sur les plateformes, la capture vocale, l’interprétation IA, les images, la confidentialité, l’export et le rêve lucide.\",\"url\":\"https://noctalia.app/fr/applications-journal-de-reves#dataset\",\"creator\":{\"@id\":\"https://noctalia.app/#organization\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"},\"dateCreated\":\"2026-07-12\",\"dateModified\":\"2026-08-03\",\"isAccessibleForFree\":true,\"inLanguage\":\"fr\",\"keywords\":[\"applications journal de rêves\",\"capture vocale\",\"interprétation de rêves IA\",\"applications rêve lucide\"],\"measurementTechnique\":\"Revue documentaire des pages officielles et des fiches publiques des stores ; aucun compte concurrent et aucun abonnement payant.\",\"distribution\":{\"@type\":\"DataDownload\",\"encodingFormat\":\"text/csv\",\"contentUrl\":\"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"}}"
   ],
   "activeNav": "resources"
 }
@@ -101,6 +102,14 @@
     <p>Le fichier CSV reprend la comparaison de 11 applications dans un format filtrable et citable par les chercheurs, journalistes et auteurs de tests. Chaque ligne indique sa source et sa date de vérification.</p>
     <p class="mt-4"><a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Télécharger la comparaison des journaux de rêves (CSV)</a></p>
     <p class="mt-3 text-sm text-purple-200/70">Cette compilation éditoriale peut être réutilisée avec attribution à Noctalia et un lien vers cette page. Les informations constituent un instantané daté ; vérifiez les sources officielles avant publication.</p>
+  </section>
+
+  <section id="citation" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Comment citer ces données</h2>
+    <p>Pour un article, un rapport ou une note de recherche, utilisez cette référence stable&nbsp;:</p>
+    <p class="mt-4">Noctalia. (3 août 2026). <em>Jeu de données comparatif des applications de journal de rêves 2026</em>.</p>
+    <p class="mt-3"><a href="https://noctalia.app/fr/applications-journal-de-reves#dataset" class="text-dream-salmon hover:underline">https://noctalia.app/fr/applications-journal-de-reves#dataset</a></p>
+    <p class="mt-3 text-sm text-purple-200/70">Conservez l’attribution et le lien stable lors de la réutilisation du CSV. Il s’agit d’une revue documentaire datée, pas d’une étude clinique, d’un classement ni d’une estimation de part de marché.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

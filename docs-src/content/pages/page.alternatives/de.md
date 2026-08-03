@@ -31,6 +31,7 @@
   "jsonLd": [
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Beste Traumtagebuch-Apps 2026\",\n  \"description\": \"Vergleiche Noctalia mit DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud und neuen KI-Traumtagebüchern.\",\n  \"url\": \"https://noctalia.app/de/traumtagebuch-apps\",\n  \"inLanguage\": \"de\",\n  \"dateModified\": \"2026-08-03T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Beste Traumtagebuch-Apps 2026\",\n      \"item\": \"https://noctalia.app/de/traumtagebuch-apps\"\n    }\n  ]\n}"
+    ,"{\"@context\":\"https://schema.org\",\"@type\":\"Dataset\",\"@id\":\"https://noctalia.app/de/traumtagebuch-apps#dataset\",\"name\":\"Vergleichsdaten für Traumtagebuch-Apps 2026\",\"description\":\"Eine datierte Dokumentenprüfung von 11 Traumtagebuch-Apps zu Plattformen, Spracheingabe, KI-Deutung, Bildern, Datenschutz, Export und luzidem Träumen.\",\"url\":\"https://noctalia.app/de/traumtagebuch-apps#dataset\",\"creator\":{\"@id\":\"https://noctalia.app/#organization\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"},\"dateCreated\":\"2026-07-12\",\"dateModified\":\"2026-08-03\",\"isAccessibleForFree\":true,\"inLanguage\":\"de\",\"keywords\":[\"Traumtagebuch-Apps\",\"Sprachaufnahme\",\"KI-Traumdeutung\",\"luzides Träumen\"],\"measurementTechnique\":\"Dokumentenprüfung offizieller Produktseiten und öffentlicher App-Store-Einträge; keine Wettbewerberkonten und keine kostenpflichtigen Abonnements.\",\"distribution\":{\"@type\":\"DataDownload\",\"encodingFormat\":\"text/csv\",\"contentUrl\":\"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"}}"
   ],
   "activeNav": "resources"
 }
@@ -101,6 +102,14 @@
     <p>Die CSV-Datei bildet den Vergleich von 11 Apps in einem Format ab, das Forschende, Medienschaffende und App-Reviewer filtern oder zitieren können. Jede Zeile enthält Quelle und Prüfdatum.</p>
     <p class="mt-4"><a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Traumtagebuch-App-Vergleich herunterladen (CSV)</a></p>
     <p class="mt-3 text-sm text-purple-200/70">Diese redaktionelle Zusammenstellung darf mit Namensnennung von Noctalia und einem Link zu dieser Seite weiterverwendet werden. Die Daten sind eine datierte Momentaufnahme; prüfe vor Veröffentlichung die offiziellen Quellen.</p>
+  </section>
+
+  <section id="citation" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Diesen Datensatz zitieren</h2>
+    <p>Für einen Artikel, Bericht oder eine Forschungsnotiz kannst du diese stabile Quellenangabe verwenden:</p>
+    <p class="mt-4">Noctalia. (3. August 2026). <em>Vergleichsdaten für Traumtagebuch-Apps 2026</em>.</p>
+    <p class="mt-3"><a href="https://noctalia.app/de/traumtagebuch-apps#dataset" class="text-dream-salmon hover:underline">https://noctalia.app/de/traumtagebuch-apps#dataset</a></p>
+    <p class="mt-3 text-sm text-purple-200/70">Bitte die Namensnennung und den stabilen Link beim Wiederverwenden der CSV beibehalten. Dies ist eine datierte Dokumentenprüfung, keine klinische Studie, Rangliste oder Marktanteilsschätzung.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
