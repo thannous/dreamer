@@ -205,7 +205,7 @@ Tracking files:
 - `marketing/seo/backlink-results-2026-07-31.csv`: nineteen manually audited surfaces, including six indexable followed pages (one explicitly low-trust), seven indexable nofollow pages (one explicitly low-trust), two nonindexable profiles, one lost historical listing and three search-visible store-derived or entity-profile surfaces whose link treatment remains unverified;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
 - `marketing/seo/search-console/2026-08-03-external-links-baseline.md`: authenticated GSC inventory of 149 external links, eight source domains and four target pages, reconciled to manual link quality;
-- `marketing/seo/backlink-prospects-2026-07-31.csv`: 160 researched opportunities: 2 P0 corrections/reclamations, 54 P1 prospects, 103 P2 prospects or exclusions and 1 P3 launch route;
+- `marketing/seo/backlink-prospects-2026-07-31.csv`: 162 researched opportunities: 2 P0 corrections/reclamations, 54 P1 prospects, 105 P2 prospects or exclusions and 1 P3 launch route;
 - `marketing/seo/editorial-discovery-wave-3-2026-08-03.md`: rendered trust, domain-link and pending-publication decisions for the third editorial discovery pass.
 - `marketing/seo/editorial-discovery-wave-4-2026-08-03.md`: four current comparison decisions plus the no-credit Ahrefs project-dashboard refresh.
 - `marketing/seo/editorial-discovery-wave-5-2026-08-03.md`: three current product-owned guide decisions, all rejected at the direct competitor-domain citation gate.
@@ -218,6 +218,7 @@ Tracking files:
 - `marketing/seo/editorial-discovery-wave-15-2026-08-03.md`: Sleepopolis qualification and sent transmission, Sandman hold, and four fresh search-result exclusions.
 - `marketing/seo/editorial-discovery-wave-16-2026-08-03.md`: current Android-media triage; TechloMedia and All That SaaS excluded for store-only/nofollow patterns, and three routes held for missing rendered evidence.
 - `marketing/seo/editorial-discovery-wave-17-2026-08-03.md`: Oneironauts' existing thread was closed after a rendered citation/operator recheck, and Zamnesia was added as a P2 exclusion; no new outreach was sent.
+- `marketing/seo/editorial-discovery-wave-19-2026-08-03.md`: Best Journaling Apps was held for missing accountable operator/contact evidence and Dreamlusive was held as product support only; no new outreach was sent.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: 39 numbered recipient-specific editorial messages or form dossiers plus replacement route 4R, with current contact routes and a two-follow-up stop policy; routes 32–34 live in the professional-mailbox wave and route 39 is Sleepopolis.
 - `marketing/seo/backlink-outreach-wave-2-professional-mailbox-2026-08-03.md`: the exact sent copy, current trust evidence and follow-up dates for Digital Trends, Gratitude Genie and Android Police from `contact@noctalia.app`.
 - `marketing/seo/backlink-follow-up-wave-1-2026-08-05.md`: ten thread-specific first replies, one no-send form route, one delivery-gated route and the exact pre-send stop checks.
