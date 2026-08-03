@@ -42,3 +42,7 @@ The proposed send window is 2026-08-04 at 10:30 CEST, after an exact Zimbra Sent
 ## Decision
 
 Add one P1 record as `qualified_initial_outreach_ready_send_window`. The route is qualified for a single factual suggestion, but no message is sent in the late-night window and no followed link or authority gain is claimed.
+
+## Post-send reconciliation — 2026-08-04 00:46 CEST
+
+The user explicitly instructed that both prepared messages be sent immediately. A fresh `Tout le courrier` search for `andro4all.com` returned `Aucun résultat` before the action. The exact draft was sent from `contact@noctalia.app` to `prensa@andro4all.com`; Zimbra displayed `Le mail a été envoyé.` and `Envoyés` lists `Sugerencia para actualizar vuestro listado de diarios Android` at 00:46 with the `prensa` recipient alias. No CC, BCC or attachment was used. This is transmission proof only, not delivery, editorial acceptance, publication, a clickable backlink or a DR gain. The route is now `initial_sent_waiting`; the first follow-up is gated to 2026-08-09 and must stop on reply, bounce, opt-out or live citation.
