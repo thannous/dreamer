@@ -736,6 +736,28 @@ Founder, Noctalia
 
 The June 30 article names Jet New, discloses Atlas as the publisher's own product, describes a 30-day test across four of the eight compared apps and exposes four followed external citations in the rendered article. Jet's author page identifies him as Atlas founder, describes the comparison methodology and directly publishes the route above; the Contact page accepts partnership and press messages. Atlas identifies AgentScale AI Pte. Ltd. in its 2026 footer. The site's Terms use a generic governing-law clause, so the operator gate was not passed on that document alone: an independent Singapore registry mirror separately reports active UEN `202508156C`, Singapore jurisdiction and a registered Singapore address. An exact Zimbra Sent-folder search returned no result before the one message was sent. Zimbra displayed `Le mail a été envoyé.` and the exact subject appears in Sent at 03:27. This is delivered outreach—not a reply, publication, referring domain, backlink or DR gain.
 
+## 38. ILTY — Alesya Skye and Artyom Sklyarov
+
+**Target:** `https://ilty.co/best/ai-journaling-apps`
+**Route:** `hello@ilty.co`, published on the official Contact page for general inquiries and partnership opportunities
+**Subject:** `android journal test`
+**State:** scheduled from `contact@noctalia.app` for 2026-08-03 at 17:00 CEST, or 09:00 in Colorado; not yet sent
+
+Hi Alesya and Artyom,
+
+Your AI journaling roundup is unusually transparent about the 30-day test window and your ILTY disclosure.
+
+For a future refresh, would you be open to testing one specialist category the current seven don't cover? Noctalia is Android-first for dream journaling: voice or text capture, searchable entries, symbols, generated images and guided follow-up questions. It's a reflection tool, not therapy or prediction.
+
+The factual kit and 71-second walkthrough are here: https://noctalia.app/en/press
+
+Worth considering for a hands-on Android dream-journal slot?
+
+Thanh
+Noctalia
+
+The comparison is self-canonical with `index, follow`, discloses that ILTY publishes it, states that seven apps were tested for 30+ days and exposes direct followed links to Rosebud, Stoic, Mem.ai, Day One, Reflectly and Journey. Official About and Press pages name Alesya Skye and Artyom Sklyarov and place the two-person team in Colorado; the Contact page publishes the route above. Apple's current listing independently identifies SUUR Limited Liability Company as the seller and links `ilty.co` as the developer website. An exact Zimbra Sent-folder search returned no prior ILTY message. Zimbra now stores one clock-marked draft for 17:00 CEST. It receives no follow-up date until the Sent folder proves transmission, and remains scheduled outreach—not a sent message, reply, publication, referring domain, backlink or DR gain.
+
 ## Additional current-comparison qualification — no outreach
 
 Claire Calls was rejected before contact. Its July 2026 AI-journaling comparison discloses the publisher's own-product bias, names founder Shawn Beck and exposes five direct external links without `nofollow`, so the citation pattern is useful. The current Terms, however, name only “Claire AI Technologies” and Illinois law without an exact legal entity suffix or accountable address. A focused exact-name and founder search returned no corroborating company record, leaving the operator location—and therefore the non-Russian trust gate—unverified. Its contact form also requires Cloudflare Turnstile. No challenge was handled and no form or product data was submitted.
@@ -804,6 +826,7 @@ If a future update needs an Android voice-journal test, a one-line reply is enou
 - Rejected publishers: AndroidGuys does not expose a current accountable legal entity or address and its Privacy Policy retains an unresolved hosting-country placeholder; Technical Ustad exposes no legal entity or accountable location and its Privacy Policy contains staging and country placeholders: `https://androidguys.com/about-2/`, `https://androidguys.com/request-app-review/`, `https://technicalustad.com/dream-journal-apps/`, `https://technicalustad.com/about-us/`, `https://technicalustad.com/privacy-policy/`
 - Sleep.com dream-journal article, Amy Wilkinson author profile and current professional work/contact pages, plus Mattress Firm operator and editorial standards; one deduplicated message is scheduled in Zimbra for 2026-08-03 at 15:30 CEST and is not yet sent: `https://www.sleep.com/sleep-health/dream-journal`, `https://www.sleep.com/blog/author/amy-wilkinson`, `https://www.amywilkinson.co/writing`, `https://www.amywilkinson.co/contact`, `https://www.sleep.com/editorial-guidelines`, `https://www.sleep.com/terms`, `https://www.sleep.com/privacy-policy`
 - Atlas Workspace's current journaling comparison, Jet New author profile, direct Contact route, operator disclosure and independent Singapore company record; one deduplicated message was confirmed in Sent at 03:27 CEST: `https://www.atlasworkspace.ai/blog/best-app-for-journaling`, `https://www.atlasworkspace.ai/about/jet-new`, `https://www.atlasworkspace.ai/contact`, `https://www.atlasworkspace.ai/service`, `https://companieshouse.sg/agentscale-ai-pte-ltd-202508156C`
+- ILTY's self-canonical index-follow comparison, named Colorado founders, official Contact and Press routes, and Apple seller identity; one deduplicated message is scheduled for 17:00 CEST and is not yet sent: `https://ilty.co/best/ai-journaling-apps`, `https://ilty.co/about`, `https://ilty.co/contact`, `https://ilty.co/press`, `https://ilty.co/terms`, `https://apps.apple.com/us/app/vent-ai-therapy-ilty/id6757708332`
 - Claire Calls' current comparison, founder disclosure, Terms and Turnstile-protected contact route; rejected because the exact legal entity and accountable location remain unverified: `https://www.clairecalls.com/blog/best-ai-journaling-apps-2026`, `https://www.clairecalls.com/about`, `https://www.clairecalls.com/terms`, `https://www.clairecalls.com/contact`
 - Reflection.app's current comparison hub, direct competitor-domain link pattern, named founder, Delaware operator evidence and public press route; qualified but paused because the same founder's Holstee thread is already open: `https://www.reflection.app/best-journaling-apps`, `https://www.reflection.app/journaling-apps/day-one`, `https://www.reflection.app/about-us`, `https://www.reflection.app/terms-privacy-policy`, `https://www.reflection.app/press`, `https://www.reflection.app/faq`
 - Frandroid current Android app-guide coverage, Humanoid SAS legal identity, editorial independence and dedicated suggestion form: `https://www.frandroid.com/android/applications/top-applications/294095_5-outils-prendre-notes-android-dautres-plateformes`, `https://www.frandroid.com/a-propos`, `https://www.frandroid.com/mentions-legales`, `https://www.frandroid.com/contact#edito`
