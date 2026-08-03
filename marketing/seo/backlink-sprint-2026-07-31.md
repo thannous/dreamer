@@ -434,6 +434,8 @@ Product Hunt now has a complete local launch pack and the pricing/video deployme
 
 ## Measurement
 
+The read-only public verifier was rerun at 08:26 CEST on 2026-08-03 against all 19 rows in `marketing/seo/backlink-results-2026-07-31.csv`. It returned 6 followed, 4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410 result. The four changed or unreachable surfaces were Reddit (missing link), Chrome Stats (403), AppBrain (403) and StackScope (non-indexable). Crunchbase's 403 and APKPure's 410 remained their recorded baseline outcomes; no tracker row was modified. These are remote-state observations, not evidence of a new DR gain or a defect introduced by the SEO documentation.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
