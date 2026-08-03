@@ -770,6 +770,15 @@ function assertGitAncestor(rootDir, revision, options = {}, gitRunner = runGit) 
         );
       }
     }
+
+    // `docs:release-check` can validate a clean git archive when a temporary
+    // worktree cannot be created (for example, on a read-only `.git` mount).
+    // An archive intentionally has no Git metadata, so merge-base cannot prove
+    // ancestry. Keep the exact URL snapshot comparison enforced and defer only
+    // this provenance proof, just as we do for a shallow checkout.
+    if (shallowResult.status !== 0 && !fs.existsSync(path.join(rootDir, '.git'))) {
+      return { verified: false, shallow: true };
+    }
   }
 
   throw new Error(

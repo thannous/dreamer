@@ -373,6 +373,19 @@ describe('check-public-url-stability', () => {
     ).toEqual({ verified: false, shallow: true });
   });
 
+  it('defers only the ancestry proof in a git archive export', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-url-archive-'));
+    roots.push(root);
+    const archiveGitRunner = jest.fn((_rootDir, args) => {
+      if (args[0] === 'merge-base') return { status: 128, stdout: '', stderr: 'not a git repository' };
+      return { status: 128, stdout: '', stderr: 'not a git repository' };
+    });
+
+    expect(
+      assertGitAncestor(root, INITIAL_SOURCE_REVISION, { allowShallowCheck: true }, archiveGitRunner)
+    ).toEqual({ verified: false, shallow: true });
+  });
+
   it('rejects a non-ancestor for mutation modes and complete repositories', () => {
     const shallowGitRunner = jest.fn((_rootDir, args) => {
       if (args[0] === 'merge-base') return { status: 1, stdout: '', stderr: '' };
