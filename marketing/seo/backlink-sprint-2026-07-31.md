@@ -190,6 +190,7 @@ Tracking files:
 - `marketing/seo/editorial-discovery-wave-10-2026-08-03.md`: six additional KapanLagi unlinked source mentions consolidated into the existing single follow-up route.
 - `marketing/seo/editorial-discovery-wave-11-2026-08-03.md`: Dreams Journal and Dream Network Journal holds plus the IJoDR research-venue exclusion; no outreach sent.
 - `marketing/seo/editorial-discovery-wave-15-2026-08-03.md`: Sleepopolis qualification and sent transmission, Sandman hold, and four fresh search-result exclusions.
+- `marketing/seo/editorial-discovery-wave-16-2026-08-03.md`: current Android-media triage; TechloMedia and All That SaaS excluded for store-only/nofollow patterns, and three routes held for missing rendered evidence.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: 39 numbered recipient-specific editorial messages or form dossiers plus replacement route 4R, with current contact routes and a two-follow-up stop policy; routes 32–34 live in the professional-mailbox wave and route 39 is Sleepopolis.
 - `marketing/seo/backlink-outreach-wave-2-professional-mailbox-2026-08-03.md`: the exact sent copy, current trust evidence and follow-up dates for Digital Trends, Gratitude Genie and Android Police from `contact@noctalia.app`.
 - `marketing/seo/backlink-follow-up-wave-1-2026-08-05.md`: ten thread-specific first replies, one no-send form route, one delivery-gated route and the exact pre-send stop checks.
