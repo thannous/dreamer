@@ -520,6 +520,10 @@ At 11:17 CEST, the authenticated `contact@noctalia.app` Zimbra search `in:drafts
 
 The authenticated Cloudflare Pages dashboard was rechecked in Chrome. The `9c8a740` Production deployment now exposes `https://599f47bc.noctalia.pages.dev`; the newer tracker commit `be2515e` remains `Queued`. The public custom domain and the matching preview were fetched again after that promotion and both now contain the citation block. A rendered Chrome check of `https://noctalia.app/en/dream-journal-apps?check=1202` confirmed the self-canonical `https://noctalia.app/en/dream-journal-apps`, `index, follow` robots, `#dataset`, the CSV download link and `#citation` with the heading “How to cite this dataset”. This is a verified public editorial asset and deployment milestone; it is not an external referring page, followed backlink, editorial acceptance or Ahrefs DR gain.
 
+### Cloudflare deployment stop-check — 2026-08-03 14:20 CEST
+
+The authenticated Cloudflare Pages dashboard shows automatic deployments enabled for `thannous/dreamer` on `master`. Production remains `951480b` (`https://6654cd0d.noctalia.pages.dev`) with a successful status. The latest SEO baseline commit `4127cc7f9` has deployment ID `333146b8-427d-4b17-b2b4-42e728aa269d` and status `Loading`/queued in the All deployments list. No cancel, restart or manual promotion was performed. Until that deployment finishes, its production edge status is unverified; this does not affect the recorded Ahrefs/GSC snapshot and does not prove a new public backlink or DR change.
+
 The same Chrome Zimbra session still shows exactly six clock-marked drafts for Android Headlines, Sleep.com, The Verge, ILTY, Engadget and 9to5Google. The current time is before the first scheduled slot at 14:00 CEST, so no message was sent early and no follow-up date was assigned.
 
 Weekly, record only verified public outcomes:
