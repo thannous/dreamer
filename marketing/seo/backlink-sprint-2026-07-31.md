@@ -170,6 +170,10 @@ The live Chrome session rechecked the three assets used by the current outreach 
 
 The isolated worktree then ran `npm run docs:check` at 08:54 CEST after installing the locked dependencies locally. All content-release, manifest, international-SEO, URL-stability, content-hub, image-SEO and docs-shell contracts passed: 1,175 canonical pages, 1,175 sitemap URLs, 1,178 HTML pages, 0 broken internal links and 0 warnings. This is local generated-site validation only; it is not proof that the latest Cloudflare Production build has finished or that any external publisher has linked Noctalia.
 
+### Production deployment stop-check — 2026-08-03 10:25 CEST
+
+The authenticated Cloudflare Pages dashboard shows automatic deployments enabled for `thannous/dreamer` on `master`. Production still points to `f764ebc` (`docs(seo): record docs validation`), while the latest SEO commit `82f55bac0` has deployment ID `8926d68f-5846-4b59-b42a-1ecfde076bcb` and status `Queued`. The public edge consequently still exposes the older press links and no `#citation` section, although the source and local build contain it. No queued deployment was cancelled or manually forced; no production backlink or DR claim was made.
+
 ### Post-push Cloudflare edge check — 2026-08-03 09:06 CEST
 
 After commit `8c9951535` reached `origin/master`, a read-only edge check returned `HTTP 200` for `/en/press`, `/en/dream-journal-apps`, `/en/voice-dream-journal`, `/robots.txt` and `/sitemap.xml`; the responses were served through Cloudflare. This proves public reachability only. The commit contains SEO tracking documentation rather than generated site inputs, so neither the edge response nor the push proves that a new site build finished, that the exact commit is live in Cloudflare, or that DR changed.
@@ -462,7 +466,7 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 | C — AlternativeTo | Current signup form and its 7-day new-account rule verified; correct email identity available. | Paused for user-owned password and hCaptcha. |
 | C — AppBrain | The official access email was opened in the authenticated `contact@noctalia.app` mailbox and the claim link was validated for package `com.tanuki75.noctalia`. | Complete: the developer dashboard lists `Noctalia: Smart Dream Journal` under “Your apps in Google Play”. No promotion or spend was activated. |
 
-Product Hunt now has a complete local launch pack and the pricing/video deployment gate is cleared. It remains outside this batch until the walkthrough is uploaded to YouTube with publication approval, the personal account is verified, and a launch date plus genuine feedback cohort are approved.
+Product Hunt now has a complete local launch pack and the pricing/video deployment gate is cleared. A 10:27 CEST Chrome recheck opens the login page rather than a submission draft, so the personal account and account-age gate remain unverified. It remains outside this batch until the walkthrough is uploaded to YouTube with publication approval, the personal account is verified, and a launch date plus genuine feedback cohort are approved; no sign-in, upload, scheduling or publication was performed.
 
 ## Measurement
 
