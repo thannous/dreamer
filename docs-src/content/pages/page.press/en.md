@@ -71,6 +71,7 @@
     <ul class="list-disc pl-5 space-y-2">
       <li><a href="/en/dream-journal-apps#findings" class="text-dream-salmon hover:underline">Citable 2026 benchmark findings (11-app source review)</a></li>
       <li><a href="/en/dream-journal-apps#dataset" class="text-dream-salmon hover:underline">Dream journal app comparison dataset (CSV, 11 apps)</a></li>
+      <li><a href="/en/dream-journal-apps#citation" class="text-dream-salmon hover:underline">Citation-ready dataset reference</a></li>
       <li><a href="/video/noctalia-product-walkthrough-en-2026-07.mp4" class="text-dream-salmon hover:underline">Android product walkthrough (71 seconds, 1920 × 1080 MP4, no audio)</a></li>
       <li><a href="/logo512.png" class="text-dream-salmon hover:underline">Square app icon (512 × 512 PNG)</a></li>
       <li><a href="/logo/logo_noctalia.png" class="text-dream-salmon hover:underline">Noctalia logo (PNG)</a></li>

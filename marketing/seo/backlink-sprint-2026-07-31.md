@@ -478,6 +478,10 @@ The authenticated GSC Links report was also refreshed at 09:22 CEST. It still sh
 
 An exact Google `site:` query rendered all three linkable English assets as indexed results: `/en/press` (Noctalia Press Kit), `/en/dream-journal-apps` (Best Dream Journal Apps 2026) and `/en/voice-dream-journal` (Voice Dream Journal App for Android). The snippets matched each page's intended title and topic. This confirms search visibility of the destinations used in outreach; it does not prove an external publisher linked them, that a result will remain stable, or that Ahrefs DR changed.
 
+### Citation-ready dataset reference — 2026-08-03 09:29 CEST
+
+The indexed `/en/dream-journal-apps` asset now exposes a copyable citation block at `/en/dream-journal-apps#citation`, including the dated dataset title, stable URL and a plain-language limitation that the review is not a clinical study, ranking or market-share estimate. The press kit links directly to this anchor so journalists and researchers have a clear attribution path when reusing the CSV. `npm run docs:build` and `npm run docs:check` both passed locally (1,178 HTML pages, 1,175 sitemap URLs, 0 errors and 0 warnings). This improves the destination's editorial usability; it is not a backlink, acceptance or DR claim.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

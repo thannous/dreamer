@@ -117,6 +117,13 @@
     <p class="mt-3 text-sm text-purple-200/70">You may reuse this editorial compilation with attribution to Noctalia and a link to this comparison page. Product facts are a dated snapshot; verify the linked official sources before publication.</p>
   </section>
 
+  <section id="citation" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">How to cite this dataset</h2>
+    <p>For an article, report or research note, use the stable page and dataset reference below:</p>
+    <p class="mt-4 rounded-xl border border-white/10 bg-dream-dark/50 p-4 text-sm text-purple-100">Noctalia. (2026, August 3). <em>Dream Journal App Comparison Dataset 2026</em>. <a href="https://noctalia.app/en/dream-journal-apps#dataset" class="text-dream-salmon hover:underline">https://noctalia.app/en/dream-journal-apps#dataset</a></p>
+    <p class="mt-3 text-sm text-purple-200/70">Please keep the attribution and stable link when reusing the CSV. This is a dated desk review, not a clinical study, ranking or market-share estimate.</p>
+  </section>
+
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Sources checked</h2>
     <ul class="list-disc pl-5 space-y-2">
