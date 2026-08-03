@@ -40,4 +40,4 @@ Previously rejected or paused results (Everi, Hypnos, Know Your Ethos, Claire Ca
 
 ## Next gate
 
-Remain in scheduled-send mode. At 14:00 CEST, run the exact `in:sent to:` deduplication check for Android Headlines, then verify the scheduled message in `Sent`/`Spam` before recording transmission. A sent message is not evidence of delivery, acceptance, publication, a live backlink or a Domain Rating change.
+Android Headlines was verified in `Sent` at 14:00 CEST with sender `contact@noctalia.app`, recipient alias `kristijan.lucic` and subject `journal app update`; Spam contains no new campaign bounce and Inbox has no matching reply. The message is now `initial_sent_waiting`, with a conditional first follow-up on 2026-08-08. Continue the same exact Sent/Spam stop gate for Sleep.com at 15:30, The Verge at 15:45, ILTY at 17:00, Engadget at 17:45 and 9to5Google at 19:30. A sent message is not evidence of delivery, acceptance, publication, a live backlink or a Domain Rating change.

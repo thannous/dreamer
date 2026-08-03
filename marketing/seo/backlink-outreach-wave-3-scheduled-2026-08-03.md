@@ -3,7 +3,7 @@
 Prepared: 2026-08-03, before the scheduled send windows
 Sender: `contact@noctalia.app` through the user-designated OVH Zimbra mailbox
 
-These three recipient-specific drafts complete the handoff for the six messages scheduled on 2026-08-03. The other three exact drafts (The Verge, Engadget and 9to5Google) remain in [`editorial-discovery-wave-7-2026-08-03.md`](editorial-discovery-wave-7-2026-08-03.md). A clock-marked draft is not a sent message, accepted pitch, publication, backlink, referring domain or DR gain.
+These three recipient-specific drafts completed the handoff for the six messages scheduled on 2026-08-03. Android Headlines has since moved to Sent at 14:00 CEST; the other five routes remain time-gated and are documented in [`editorial-discovery-wave-7-2026-08-03.md`](editorial-discovery-wave-7-2026-08-03.md). A clock-marked draft is not a sent message, accepted pitch, publication, backlink, referring domain or DR gain.
 
 ## Send gate for every route
 
@@ -11,7 +11,7 @@ Send only once, at the stated local time, after a fresh `in:sent to:` search in 
 
 | Route | Recipient | Scheduled time | Noctalia destination | Current state |
 | --- | --- | --- | --- | --- |
-| Android Headlines | `kristijan.lucic@androidheadlines.com` | 14:00 CEST | `/en/press` | `initial_scheduled_not_sent` |
+| Android Headlines | `kristijan.lucic@androidheadlines.com` | 14:00 CEST | `/en/press` | `initial_sent_waiting` — Sent proof at 14:00 CEST; first follow-up only after the 2026-08-08 stop gate |
 | Sleep.com | `amy@amywilkinson.co` | 15:30 CEST | `/en/voice-dream-journal` | `initial_scheduled_not_sent` |
 | ILTY | `hello@ilty.co` | 17:00 CEST | `/en/press` | `initial_scheduled_not_sent` |
 
@@ -34,7 +34,7 @@ Send only once, at the stated local time, after a fresh `in:sent to:` search in 
 > Thanh Chau
 > Noctalia
 
-The recipient and publisher route were visible on current official pages, and the exact address was deduplicated in Zimbra before scheduling. Do not count this as delivered until the Sent folder proves transmission.
+The recipient and publisher route were visible on current official pages, and the exact address was deduplicated in Zimbra before scheduling. Zimbra's Sent detail now shows `contact@noctalia.app` to the `kristijan.lucic` recipient alias at 14:00 CEST with subject `journal app update`. This is transmission proof only; do not call it delivered, accepted, published or a backlink.
 
 ## Sleep.com — exact draft
 
@@ -86,3 +86,5 @@ Record, per route:
 3. public URL only after an independently verified live page contains a Noctalia link;
 4. link `rel`, indexability, canonical and referring-domain status;
 5. no DR or backlink gain until the public evidence exists.
+
+Android Headlines post-send check: the message is present in Sent at 14:00 CEST, Inbox has no matching reply and Spam retains only the previously recorded AndroidAyuda bounce. The tracker now assigns the conditional first follow-up date 2026-08-08; no reply is being sent in this turn.
