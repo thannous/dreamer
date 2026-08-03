@@ -43,6 +43,10 @@ The domain and target totals reconcile exactly to 149. This is a discovery inven
 
 The authenticated Google Search Console Links report was re-opened in the user-designated real Chrome session at 08:31 CEST. It still displayed 149 external links from eight source domains, with the same source-page and target-page counts: `google.com` 89/1, `goodaitools.com` 39/1, `saashub.com` 14/1, `chrome-stats.com` 3/1, and `appbrain.com`, `crunchbase.com`, `dreammeaniings.com` and `thamhiemmekong.com` 1/1 each. This is a read-only confirmation of the dated baseline; no export, report credit or remote mutation was used. Search Console does not establish follow/nofollow treatment, editorial acceptance, public publication or an Ahrefs DR change.
 
+## Live Chrome recheck — 2026-08-03 09:22 CEST
+
+The same authenticated Links report was refreshed again in real Chrome. It still showed `149` external links, `4` linked Noctalia pages and `32,291` internal links. The visible top source rows remained `google.com` 89, `goodaitools.com` 39, `saashub.com` 14, `chrome-stats.com` 3 and `appbrain.com` 1; the eight-domain reconciliation and the dated baseline remain unchanged. No export, row expansion, credit-consuming report or Search Console mutation was performed. GSC still provides no rel/follow, canonical or editorial-acceptance proof and does not demonstrate a DR change.
+
 ## New source verification: Tham Hiem Mekong
 
 Search Console identifies the exact referring page:

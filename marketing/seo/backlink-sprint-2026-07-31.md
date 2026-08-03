@@ -472,6 +472,8 @@ A third read-only verifier run at 09:19 CEST returned the same 19-row summary an
 
 The authenticated Ahrefs dashboard was refreshed without opening a detailed referring-domain report or consuming a report credit. The Noctalia project `*.noctalia.app/*` shows Health Score `100`, Crawled `1.6K (+32)`, Broken `0`, Blocked `0`, Domain Rating `0`, Referring domains `360 (+130)`, total visitors `6.1K (+4.8K)`, organic traffic `4.2K (+3K)` and organic keywords `894 (+299)`. These are current dashboard aggregates, not proof that 130 domains are new followed editorial links; the public verifier and individual-page evidence remain authoritative for backlink qualification.
 
+The authenticated GSC Links report was also refreshed at 09:22 CEST. It still showed 149 external links from eight source domains to four Noctalia pages (with the visible top rows google.com 89, goodaitools.com 39, saashub.com 14, chrome-stats.com 3 and appbrain.com 1); no GSC export or mutation was performed. This confirms a stable discovery inventory, not new authority equity or DR movement.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
