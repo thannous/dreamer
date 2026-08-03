@@ -20,3 +20,7 @@ The previously contacted June 29 page is also current and unlinked. Together, th
 ## Deduplication and follow-up decision
 
 KapanLagi's official Redaksi and About pages already passed the accountable Indonesian, non-Russian operator gate, and route 42 was sent at 05:27 CEST after exact Zimbra deduplication. Sending six more emails would create duplicate publisher-level outreach. Keep one route record, add the six URLs to the conditional follow-up due 2026-08-08, and stop immediately if KapanLagi replies, declines or publishes any link. A live anchor must be independently verified before the registry records a backlink or any DR effect.
+
+## Live recheck — 2026-08-03 09:02 CEST
+
+The six exact tracked URLs were reopened in the real Chrome session. Each stayed on its requested KapanLagi URL and returned the expected article title; the rendered DOM query found zero `noctalia.app` anchors on all six pages. This is an unchanged public state: any visible plain-text source reference remains an unlinked mention, not a backlink. The single KapanLagi route therefore remains conditionally eligible for the 2026-08-08 follow-up, subject to the day-of reply, bounce, opt-out and live-link stop checks. No backlink registry row or DR result was changed.
