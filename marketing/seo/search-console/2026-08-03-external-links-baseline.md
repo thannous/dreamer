@@ -55,10 +55,25 @@ Current rendered Chrome evidence:
 
 The operator therefore has accountable non-Russian evidence. The citation still fails the quality-action gate: the Italian subdomain is a broad translated question-and-answer surface, the article's named automotive and mechanical-engineering author is not a dream or sleep specialist, and the page provides no local legal or editorial navigation. Retain the unsolicited followed link as low-trust technical evidence, but do not contact, pay, reciprocate or cite it as quality authority.
 
+## Post-baseline manual discovery: Mental Momentum
+
+This source is not present in the authenticated Search Console inventory above. It was found afterward through an exact Google search and verified in rendered Chrome:
+
+`https://research.mental-momentum.ai/r/neuroscience-dreaming-memory-hj71od`
+
+- the page is titled `Neuroscience of Dreaming and Memory` and was updated on 2026-06-14;
+- source 37 links once to `https://noctalia.app/en/blog/ai-sleep-analysis-dreams`;
+- the page is self-canonical and declares `index, follow`;
+- the link uses `rel="nofollow noopener noreferrer"`;
+- current Terms identify Mental Momentum Inc. as a Virginia, United States operator, with United States hosting and Delaware law.
+
+The accountable non-Russian gate therefore passes. The citation increases the manual indexable nofollow-page count from 6 to 7, but it does not change the observed Search Console totals of 149 links and eight source domains. It is discovery and entity evidence only, not followed equity or proof of a DR increase; no outreach is needed.
+
 ## Decision
 
 - Manual followed-page count moves from 5 to 6, with the sixth explicitly classified `followed_low_trust`.
-- Manual indexable nofollow count remains 6.
+- Manual indexable nofollow count moves from 6 to 7 after the post-baseline Mental Momentum discovery.
 - Manual nonindexable profile count remains 2.
-- Current Ahrefs DR and absolute referring-domain total remain unverified on 2026-08-03 and must not be inferred from GSC.
+- The authenticated GSC report itself remains 149 external links from eight source domains to four Noctalia pages; Mental Momentum has not been observed there.
+- Current Ahrefs DR is 0 and the project-card referring-domain value is 360 on 2026-08-03; neither may be substituted for GSC's separate corpus.
 - The authority sprint should continue to prioritize independently edited Android, journaling, sleep and dream publications rather than raw store variants or translated content networks.
