@@ -510,6 +510,12 @@ The authenticated Cloudflare Pages dashboard now shows deployment `124dd9c` (`31
 
 At 11:17 CEST, the authenticated `contact@noctalia.app` Zimbra search `in:drafts` still showed six clock-marked messages for Android Headlines, Sleep.com, The Verge, ILTY, Engadget and 9to5Google. The first scheduled slot is 14:00 CEST; none was sent early and no follow-up date was assigned.
 
+### Public citation asset verified — 2026-08-03 12:02 CEST
+
+The authenticated Cloudflare Pages dashboard was rechecked in Chrome. The `9c8a740` Production deployment now exposes `https://599f47bc.noctalia.pages.dev`; the newer tracker commit `be2515e` remains `Queued`. The public custom domain and the matching preview were fetched again after that promotion and both now contain the citation block. A rendered Chrome check of `https://noctalia.app/en/dream-journal-apps?check=1202` confirmed the self-canonical `https://noctalia.app/en/dream-journal-apps`, `index, follow` robots, `#dataset`, the CSV download link and `#citation` with the heading “How to cite this dataset”. This is a verified public editorial asset and deployment milestone; it is not an external referring page, followed backlink, editorial acceptance or Ahrefs DR gain.
+
+The same Chrome Zimbra session still shows exactly six clock-marked drafts for Android Headlines, Sleep.com, The Verge, ILTY, Engadget and 9to5Google. The current time is before the first scheduled slot at 14:00 CEST, so no message was sent early and no follow-up date was assigned.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
