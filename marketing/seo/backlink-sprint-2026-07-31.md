@@ -482,6 +482,10 @@ An exact Google `site:` query rendered all three linkable English assets as inde
 
 The indexed `/en/dream-journal-apps` asset now exposes a copyable citation block at `/en/dream-journal-apps#citation`, including the dated dataset title, stable URL and a plain-language limitation that the review is not a clinical study, ranking or market-share estimate. The press kit links directly to this anchor so journalists and researchers have a clear attribution path when reusing the CSV. `npm run docs:build` and `npm run docs:check` both passed locally (1,178 HTML pages, 1,175 sitemap URLs, 0 errors and 0 warnings). This improves the destination's editorial usability; it is not a backlink, acceptance or DR claim.
 
+### DEV Community identity gate — 2026-08-03 09:57 CEST
+
+The official DEV sign-in route was opened read-only to determine whether the prepared canonical article could be created under the designated business identity. Google OAuth offered only `thannous@gmail.com` and `cloudtech.webmaster@gmail.com`; `contact@noctalia.app` was not available. No personal account was selected, no DEV account or draft was created, and no publication or backlink claim was made. The DEV route remains blocked until the correct business identity is available and publication is explicitly authorized for that account.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
