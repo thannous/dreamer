@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia AI dream journal app",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-07-31T00:00:00+02:00",
+  "modifiedTime": "2026-08-04T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Noctalia Press Kit</h1>
-<p class="text-sm text-purple-300/70 mb-6">Updated July 31, 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Updated August 4, 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an Android-first dream journal that helps people record dreams by voice, turn them into structured entries, and explore symbols, images, patterns, and guided follow-up questions.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -94,6 +94,15 @@
       <li><a href="/en/dream-journal-apps#methodology" class="text-dream-salmon hover:underline">Dream journal app comparison methodology</a></li>
       <li><a href="/en/dream-content-methodology" class="text-dream-salmon hover:underline">Dream content and data methodology</a></li>
     </ul>
+  </section>
+
+  <section id="citation" class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Citation and data reuse</h2>
+    <p>For an article, report, or app comparison, use the stable dataset page and keep the date visible. The review is a source-linked desk comparison, not a clinical study, ranking, or market-share estimate.</p>
+    <p class="mt-4"><a href="/en/dream-journal-apps#dataset" class="text-dream-salmon hover:underline">Dataset page and methodology</a> · <a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Download the CSV</a></p>
+    <p class="mt-4 text-sm text-purple-200/70">Suggested citation:</p>
+    <pre class="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-dream-dark/60 p-4 text-sm text-purple-100 whitespace-pre-wrap">Noctalia. (2026, August 3). Dream Journal App Comparison Dataset 2026. https://noctalia.app/en/dream-journal-apps#dataset</pre>
+    <p class="mt-3 text-sm text-purple-200/70">Attribution and a link to the stable dataset page are requested when the CSV or its normalized counts are reused. Verify changing product facts against the linked official sources.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
