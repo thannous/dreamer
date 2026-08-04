@@ -25,3 +25,14 @@ The same old localized content is served from `noctalia.pages.dev`, so the custo
 The English press asset is public and citable. The French, Spanish, German and Italian source updates are ready in `master` but remain **queued/unverified at the public edge**. They must not be described to a publisher as freshly updated until a later check shows the 4 August content. No manual production deployment was attempted because the existing authorization covers the master push, not a separate Cloudflare fallback or credential request.
 
 Next safe action: poll the public edge after the provider finishes. If the localized pages remain on 10 July, request explicit manual-production authorization or a scoped Cloudflare credential rather than silently bypassing the deployment gate.
+
+## Resolution recheck — 2026-08-04 18:19 CEST
+
+The provider rollout completed without a manual deployment. GitHub `Quality` is `success` and the Vercel context is `success` (`Deployment has completed`). Three consecutive no-cache samples of both `https://noctalia.app/` and `https://noctalia.pages.dev/` returned the 4 August date and `id="citation"` for all four localized press pages:
+
+- `/fr/presse` — `Mis à jour le 4 août 2026`
+- `/es/prensa` — `Actualizado el 4 de agosto de 2026`
+- `/de/presse` — `Aktualisiert am 4. August 2026`
+- `/it/stampa` — `Aggiornato il 4 agosto 2026`
+
+The initial edge mismatch is therefore resolved and the localized press pages can now be used as current linkable outreach assets. This proves public asset availability only; it does not prove an external publisher has linked Noctalia or that Domain Rating has changed.
