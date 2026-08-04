@@ -205,7 +205,7 @@ Tracking files:
 - `marketing/seo/backlink-results-2026-07-31.csv`: nineteen manually audited surfaces, including six indexable followed pages (one explicitly low-trust), seven indexable nofollow pages (one explicitly low-trust), two nonindexable profiles, one lost historical listing and three search-visible store-derived or entity-profile surfaces whose link treatment remains unverified;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
 - `marketing/seo/search-console/2026-08-03-external-links-baseline.md`: authenticated GSC inventory of 149 external links, eight source domains and four target pages, reconciled to manual link quality;
-- `marketing/seo/backlink-prospects-2026-07-31.csv`: 164 researched opportunities: 2 P0 corrections/reclamations, 56 P1 prospects, 105 P2 prospects or exclusions and 1 P3 launch route;
+- `marketing/seo/backlink-prospects-2026-07-31.csv`: 166 researched opportunities: 2 P0 corrections/reclamations, 56 P1 prospects, 107 P2 prospects or exclusions and 1 P3 launch route;
 - `marketing/seo/editorial-discovery-wave-3-2026-08-03.md`: rendered trust, domain-link and pending-publication decisions for the third editorial discovery pass.
 - `marketing/seo/editorial-discovery-wave-4-2026-08-03.md`: four current comparison decisions plus the no-credit Ahrefs project-dashboard refresh.
 - `marketing/seo/editorial-discovery-wave-5-2026-08-03.md`: three current product-owned guide decisions, all rejected at the direct competitor-domain citation gate.
@@ -225,6 +225,7 @@ Tracking files:
 - `marketing/seo/editorial-send-evidence-wave-23-2026-08-04.md`: fresh Zimbra duplicate searches, exact Xataka Android and Andro4all send subjects, Sent-folder timestamps and the transmission-only boundary; first follow-ups are gated to 2026-08-09.
 - `marketing/seo/backlink-measurement-check-2026-08-04-1650.md`: live HTTP recheck of both target routes; Xataka remains 200 with zero Noctalia URLs, while the Andro4all URL redirects to La Razón with zero Noctalia URLs; no backlink or DR gain was observed.
 - `marketing/seo/editorial-discovery-wave-23-2026-08-04.md`: deduplicated the current search results against the 164-row register; no new safe non-Russian editorial route passed the operator, contact and link-value gates.
+- `marketing/seo/editorial-discovery-wave-24-2026-08-04.md`: qualified the English AndroidOut developer route only as a Russian-network-gated hold, rejected AppAdvice for its iOS-only mismatch, held AppsApk for APK-mirror risk and excluded AppDirectory as a web-app/operator mismatch; no submission or message was sent.
 - `marketing/seo/backlink-outreach-wave-1-2026-07-31.md`: 39 numbered recipient-specific editorial messages or form dossiers plus replacement route 4R, with current contact routes and a two-follow-up stop policy; routes 32–34 live in the professional-mailbox wave and route 39 is Sleepopolis.
 - `marketing/seo/backlink-outreach-wave-2-professional-mailbox-2026-08-03.md`: the exact sent copy, current trust evidence and follow-up dates for Digital Trends, Gratitude Genie and Android Police from `contact@noctalia.app`.
 - `marketing/seo/backlink-follow-up-wave-1-2026-08-05.md`: ten thread-specific first replies, one no-send form route, one delivery-gated route and the exact pre-send stop checks.
