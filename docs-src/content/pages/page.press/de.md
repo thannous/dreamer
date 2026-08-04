@@ -35,7 +35,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Noctalia Pressekit</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 10. Juli 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 4. August 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia ist ein Android-orientiertes Traumtagebuch, mit dem Menschen Träume per Sprache festhalten, in strukturierte Einträge verwandeln und Symbole, Bilder, Muster und geführte Nachfragen erkunden.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -89,6 +89,15 @@
       <li><a href="/de/traumtagebuch-apps#methodology" class="text-dream-salmon hover:underline">Methodik des Traumtagebuch-App-Vergleichs</a></li>
       <li><a href="/de/methodik-trauminhalte" class="text-dream-salmon hover:underline">Methodik der Trauminhalte und Daten</a></li>
     </ul>
+  </section>
+
+  <section id="citation" class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Zitierung und Wiederverwendung der Daten</h2>
+    <p>Für einen Artikel, Bericht oder App-Vergleich kannst du die stabile Datensatzseite verwenden und das Datum beibehalten. Die Prüfung ist ein quellenverlinkter Dokumentenvergleich, keine klinische Studie, Rangliste oder Marktanteilsschätzung.</p>
+    <p class="mt-4"><a href="/de/traumtagebuch-apps#dataset" class="text-dream-salmon hover:underline">Datensatzseite und Methodik</a> · <a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>CSV herunterladen</a></p>
+    <p class="mt-4 text-sm text-purple-200/70">Vorgeschlagene Quellenangabe:</p>
+    <pre class="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-dream-dark/60 p-4 text-sm text-purple-100 whitespace-pre-wrap">Noctalia. (3. August 2026). Vergleichsdaten für Traumtagebuch-Apps 2026. https://noctalia.app/de/traumtagebuch-apps#dataset</pre>
+    <p class="mt-3 text-sm text-purple-200/70">Bitte die Namensnennung und den stabilen Link bei der Wiederverwendung der CSV oder ihrer normalisierten Daten beibehalten. Prüfe veränderliche Produktangaben anhand der verlinkten offiziellen Quellen.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

@@ -35,7 +35,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Press kit Noctalia</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 10 luglio 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 4 agosto 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia è un diario dei sogni per Android che aiuta a registrare i sogni con la voce, trasformarli in voci strutturate ed esplorare simboli, immagini, schemi e domande successive in riflessione guidata.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -89,6 +89,15 @@
       <li><a href="/it/app-diario-dei-sogni#methodology" class="text-dream-salmon hover:underline">Metodologia del confronto tra app per i sogni</a></li>
       <li><a href="/it/metodologia-contenuti-sogni" class="text-dream-salmon hover:underline">Metodologia dei contenuti e dei dati</a></li>
     </ul>
+  </section>
+
+  <section id="citation" class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Citazione e riutilizzo dei dati</h2>
+    <p>Per un articolo, un rapporto o un confronto tra app, usa la pagina stabile del dataset e mantieni visibile la data. La revisione è un confronto documentale con fonti collegate, non uno studio clinico, una classifica o una stima della quota di mercato.</p>
+    <p class="mt-4"><a href="/it/app-diario-dei-sogni#dataset" class="text-dream-salmon hover:underline">Pagina del dataset e metodologia</a> · <a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Scarica il CSV</a></p>
+    <p class="mt-4 text-sm text-purple-200/70">Citazione suggerita:</p>
+    <pre class="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-dream-dark/60 p-4 text-sm text-purple-100 whitespace-pre-wrap">Noctalia. (3 agosto 2026). Dati comparativi delle app diario dei sogni 2026. https://noctalia.app/it/app-diario-dei-sogni#dataset</pre>
+    <p class="mt-3 text-sm text-purple-200/70">Mantieni l’attribuzione e il link alla pagina stabile quando riutilizzi il CSV o i suoi dati normalizzati. Verifica le informazioni che possono cambiare nelle fonti ufficiali collegate.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

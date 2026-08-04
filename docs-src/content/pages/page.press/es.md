@@ -35,7 +35,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Kit de prensa de Noctalia</h1>
-<p class="text-sm text-purple-300/70 mb-6">Actualizado el 10 de julio de 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Actualizado el 4 de agosto de 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia es un diario de sueños para Android que permite grabar sueños por voz, convertirlos en entradas estructuradas y explorar símbolos, imágenes, patrones y preguntas de seguimiento en reflexión guiada.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -89,6 +89,16 @@
       <li><a href="/es/apps-diario-de-suenos#methodology" class="text-dream-salmon hover:underline">Metodología de la comparación de apps de sueños</a></li>
       <li><a href="/es/metodologia-contenido-suenos" class="text-dream-salmon hover:underline">Metodología del contenido y los datos</a></li>
     </ul>
+  </section>
+
+  <section id="citation" class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Citación y reutilización de datos</h2>
+    <p>Para un artículo, informe o comparativa de apps, utiliza la página estable del dataset y conserva la fecha. La revisión es una comparación documental con fuentes enlazadas, no un estudio clínico, una clasificación ni una estimación de cuota de mercado.</p>
+    <p class="mt-4"><a href="/es/apps-diario-de-suenos#dataset" class="text-dream-salmon hover:underline">Página del dataset y metodología</a> · <a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Descargar el CSV</a></p>
+    <p class="mt-4 text-sm text-purple-200/70">Cita sugerida:</p>
+    <pre class="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-dream-dark/60 p-4 text-sm text-purple-100 whitespace-pre-wrap">Noctalia. (3 de agosto de 2026). Datos comparativos de apps de diario de sueños 2026.</pre>
+    <p class="mt-3"><a href="/es/apps-diario-de-suenos#dataset" class="text-dream-salmon hover:underline">Fuente estable del dataset</a></p>
+    <p class="mt-3 text-sm text-purple-200/70">Conserva la atribución y el enlace a la página estable al reutilizar el CSV o sus datos normalizados. Verifica los datos que puedan cambiar en las fuentes oficiales enlazadas.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

@@ -35,7 +35,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Kit presse Noctalia</h1>
-<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 10 juillet 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 4 août 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia est un journal de rêves Android pensé pour enregistrer ses rêves par la voix, les transformer en entrées structurées, puis explorer symboles, images, motifs récurrents et questions de suivi guidées.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -89,6 +89,15 @@
       <li><a href="/fr/applications-journal-de-reves#methodology" class="text-dream-salmon hover:underline">Méthodologie du comparatif des journaux de rêves</a></li>
       <li><a href="/fr/methodologie-contenus-reves" class="text-dream-salmon hover:underline">Méthodologie des contenus et des données</a></li>
     </ul>
+  </section>
+
+  <section id="citation" class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Citation et réutilisation des données</h2>
+    <p>Pour un article, un rapport ou un comparatif d'applications, utilisez la page stable du jeu de données et conservez la date. Cette revue est une comparaison documentaire sourcée, pas une étude clinique, un classement ni une estimation de part de marché.</p>
+    <p class="mt-4"><a href="/fr/applications-journal-de-reves#dataset" class="text-dream-salmon hover:underline">Page du jeu de données et méthodologie</a> · <a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Télécharger le CSV</a></p>
+    <p class="mt-4 text-sm text-purple-200/70">Citation suggérée&nbsp;:</p>
+    <pre class="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-dream-dark/60 p-4 text-sm text-purple-100 whitespace-pre-wrap">Noctalia. (2026, 3 août). Jeu de données comparatif des applications de journal de rêves 2026. https://noctalia.app/fr/applications-journal-de-reves#dataset</pre>
+    <p class="mt-3 text-sm text-purple-200/70">Conservez l'attribution et le lien vers la page stable lors de la réutilisation du CSV ou de ses données normalisées. Vérifiez les informations susceptibles d'évoluer auprès des sources officielles liées.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
