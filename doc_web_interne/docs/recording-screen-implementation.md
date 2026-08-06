@@ -14,7 +14,7 @@ Successfully implemented a React Native Expo recording screen that faithfully re
 - **Main content area** with:
   - Italic instruction text: "Whisper your dream into the ether..."
   - Large circular microphone button (144px diameter)
-  - Animated waveform visualization (18 bars)
+  - Animated waveform visualization (18 bars) — since removed, see note below
   - Timestamp text: "Cycle of the Moon: [date and time]"
 - **Bottom section**:
   - Large textarea for manual text entry
@@ -30,12 +30,8 @@ Successfully implemented a React Native Expo recording screen that faithfully re
 - Icon changes from mic to stop icon when recording
 - Drop shadow and border styling matching maquette
 
-#### Waveform Component (`components/recording/Waveform.tsx`)
-- 18 animated vertical bars
-- Different heights and opacities for visual variety
-- Accent colors for specific bars (every 5th bar)
-- Smooth animation during recording
-- Static display when not recording
+#### Waveform Component (removed)
+The original `components/recording/Waveform.tsx` (18 animated vertical bars with varied heights/opacities, accent colors on every 5th bar, animated while recording) was later dropped from the recording screen and has been deleted, together with the unused `MicClouds.tsx`. Ambient visuals on the current screen are provided by `components/recording/AtmosphereBackground.tsx`.
 
 ### 3. Recording Functionality
 - **Microphone permissions**: Properly requested on mount via `AudioModule.requestRecordingPermissionsAsync()` (expo-audio)
@@ -82,7 +78,7 @@ Successfully implemented a React Native Expo recording screen that faithfully re
    - Reusable microphone button with animations
 
 2. `/mnt/c/Users/thann/WebstormProjects/dream-app/components/recording/Waveform.tsx`
-   - Animated audio waveform visualization
+   - Animated audio waveform visualization (since removed — no longer used by the recording screen)
 
 3. `doc_web_interne/docs/speech-to-text-integration.md`
    - Guide for implementing speech-to-text transcription
