@@ -42,6 +42,10 @@ const MIN_COMMERCIAL_WORDS = 300;
 const MIN_NEW_SYMBOL_DESCRIPTION_CHARS = 120;
 const MIN_NEW_SYMBOL_PROMPT_CHARS = 12;
 const MIN_NEW_SYMBOL_FAQ_ANSWER_CHARS = 50;
+const MIN_SYMBOL_DOCUMENT_TITLE_CHARS = 35;
+const MAX_SYMBOL_DOCUMENT_TITLE_CHARS = 60;
+const MIN_SYMBOL_DOCUMENT_META_DESCRIPTION_CHARS = 110;
+const MAX_SYMBOL_DOCUMENT_META_DESCRIPTION_CHARS = 160;
 const GIT_JSON_MAX_BUFFER_BYTES = 16 * 1024 * 1024;
 const RETIRED_MISATTRIBUTED_PMIDS = [
   '29316455',
@@ -823,6 +827,14 @@ function withoutModifiedAt(value) {
   return clone;
 }
 
+function withoutDocumentMetadata(value) {
+  const clone = withoutModifiedAt(value);
+  if (!clone || typeof clone !== 'object') return clone;
+  delete clone.documentTitle;
+  delete clone.documentMetaDescription;
+  return clone;
+}
+
 function sharedSymbolFields(symbol) {
   const clone = withoutModifiedAt(symbol) || {};
   for (const lang of siteConfig.languages) delete clone[lang];
@@ -834,9 +846,45 @@ function sharedSymbolFields(symbol) {
 
 function localizedSymbolFields(symbol, lang) {
   return {
-    content: withoutModifiedAt(symbol?.[lang]),
+    // Search-result metadata experiments do not change visible editorial copy,
+    // structured-data freshness, or sitemap lastmod values.
+    content: withoutDocumentMetadata(symbol?.[lang]),
     relatedArticle: symbol?.relatedArticles?.[lang] || '',
   };
+}
+
+function checkOptionalSymbolDocumentMetadata(locale, prefix, errors) {
+  if (Object.hasOwn(locale, 'documentTitle')) {
+    const title = typeof locale.documentTitle === 'string' ? locale.documentTitle.trim() : '';
+    const renderedLength = `${title} | Noctalia`.length;
+    if (!title) {
+      errors.push(`${prefix}: documentTitle must be a non-empty string`);
+    } else if (/\|\s*Noctalia\s*$/i.test(title)) {
+      errors.push(`${prefix}: documentTitle must omit the automatic | Noctalia suffix`);
+    } else if (
+      renderedLength < MIN_SYMBOL_DOCUMENT_TITLE_CHARS ||
+      renderedLength > MAX_SYMBOL_DOCUMENT_TITLE_CHARS
+    ) {
+      errors.push(
+        `${prefix}: rendered documentTitle must be ${MIN_SYMBOL_DOCUMENT_TITLE_CHARS}-${MAX_SYMBOL_DOCUMENT_TITLE_CHARS} characters`
+      );
+    }
+  }
+
+  if (Object.hasOwn(locale, 'documentMetaDescription')) {
+    const description =
+      typeof locale.documentMetaDescription === 'string'
+        ? locale.documentMetaDescription.trim()
+        : '';
+    if (
+      description.length < MIN_SYMBOL_DOCUMENT_META_DESCRIPTION_CHARS ||
+      description.length > MAX_SYMBOL_DOCUMENT_META_DESCRIPTION_CHARS
+    ) {
+      errors.push(
+        `${prefix}: documentMetaDescription must be ${MIN_SYMBOL_DOCUMENT_META_DESCRIPTION_CHARS}-${MAX_SYMBOL_DOCUMENT_META_DESCRIPTION_CHARS} characters`
+      );
+    }
+  }
 }
 
 function checkChangedSymbolDates(payload, errors) {
@@ -926,6 +974,7 @@ function checkSymbolLocalization(errors) {
           errors.push(`${prefix}: missing ${field}`);
         }
       }
+      checkOptionalSymbolDocumentMetadata(locale, prefix, errors);
       const slug = locale?.slug?.trim();
       if (slug) {
         const collision = seenSlugs[lang].get(slug);

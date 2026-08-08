@@ -816,8 +816,12 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const homePath = localizedHomePath(lang);
   const homeUrl = localizedHomeUrl(lang);
   const hreflang = generateHreflangUrls(symbol);
-  const metaTitle = generateMetaTitle(symbol, i18n, lang);
-  const metaDescription = generateMetaDescription(symbol, i18n, lang);
+  const sharedMetaTitle = generateMetaTitle(symbol, i18n, lang);
+  const sharedMetaDescription = generateMetaDescription(symbol, i18n, lang);
+  const documentTitle = symbolData.documentTitle || sharedMetaTitle;
+  const documentMetaDescription = truncateMetaDescription(
+    symbolData.documentMetaDescription || sharedMetaDescription
+  );
   const categoryName = getCategoryName(symbol, i18n, lang);
   const relatedSymbols = getRelatedSymbols(symbol, allSymbols, lang);
   const extendedContent = getExtendedContent(symbol.id, extended, lang);
@@ -844,7 +848,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     : DEFAULT_SOCIAL_IMAGE;
   const preferredImageWidth = responsiveIllustration?.width || 1200;
   const preferredImageHeight = responsiveIllustration?.height || 630;
-  const preferredImageAlt = illustration?.alt || metaTitle;
+  const preferredImageAlt = illustration?.alt || sharedMetaTitle;
   const softCta = symbolData.softCta && symbolData.softCta.href
     ? symbolData.softCta
     : null;
@@ -983,7 +987,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: visibleHeadline,
-    description: metaDescription,
+    description: sharedMetaDescription,
     image: {
       '@type': 'ImageObject',
       contentUrl: preferredImageUrl,
@@ -1068,8 +1072,8 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0a0514">
-    <title>${escapeHtml(metaTitle)} | Noctalia</title>
-    <meta name="description" content="${escapeHtml(metaDescription)}">
+    <title>${escapeHtml(documentTitle)} | Noctalia</title>
+    <meta name="description" content="${escapeHtml(documentMetaDescription)}">
     <link rel="canonical" href="https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}">
 ${hreflangLinks}
     <link rel="alternate" hreflang="x-default" href="${hreflang.en}">
@@ -1081,7 +1085,7 @@ ${renderAhrefsAnalyticsScript()}
 
     <!-- Open Graph -->
     <meta property="og:type" content="article">
-    <meta property="og:title" content="${escapeHtml(metaTitle)}">
+    <meta property="og:title" content="${escapeHtml(sharedMetaTitle)}">
     <meta property="og:description" content="${escapeHtml(symbolData.shortDescription)}">
     <meta property="og:url" content="https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}">
     <meta property="og:image" content="${preferredImageUrl}">
@@ -1098,7 +1102,7 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="${escapeHtml(metaTitle)}">
+    <meta name="twitter:title" content="${escapeHtml(sharedMetaTitle)}">
     <meta name="twitter:description" content="${escapeHtml(symbolData.shortDescription)}">
     <meta name="twitter:image" content="${preferredImageUrl}">
     <meta name="twitter:site" content="@NoctaliaDreams">
