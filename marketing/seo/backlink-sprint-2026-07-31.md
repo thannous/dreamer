@@ -205,7 +205,7 @@ Tracking files:
 - `marketing/seo/backlink-results-2026-07-31.csv`: nineteen manually audited surfaces, including six indexable followed pages (one explicitly low-trust), seven indexable nofollow pages (one explicitly low-trust), two nonindexable profiles, one lost historical listing and three search-visible store-derived or entity-profile surfaces whose link treatment remains unverified;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
 - `marketing/seo/search-console/2026-08-03-external-links-baseline.md`: authenticated GSC inventory of 149 external links, eight source domains and four target pages, reconciled to manual link quality;
-- `marketing/seo/backlink-prospects-2026-07-31.csv`: 170 researched opportunities: 2 P0 corrections/reclamations, 58 P1 prospects, 109 P2 prospects or exclusions and 1 P3 launch route;
+- `marketing/seo/backlink-prospects-2026-07-31.csv`: 192 researched opportunities: 2 P0 corrections/reclamations, 63 P1 prospects, 126 P2 prospects or exclusions and 1 P3 launch route;
 - `marketing/seo/editorial-discovery-wave-3-2026-08-03.md`: rendered trust, domain-link and pending-publication decisions for the third editorial discovery pass.
 - `marketing/seo/editorial-discovery-wave-4-2026-08-03.md`: four current comparison decisions plus the no-credit Ahrefs project-dashboard refresh.
 - `marketing/seo/editorial-discovery-wave-5-2026-08-03.md`: three current product-owned guide decisions, all rejected at the direct competitor-domain citation gate.
@@ -229,6 +229,10 @@ Tracking files:
 - `marketing/seo/editorial-discovery-wave-25-2026-08-04.md`: qualified AITrendTool as a P1 independent AI-directory route and transmitted the factual email at 18:48 CEST after a fresh duplicate search; AllThingsAI remains waiting and AI Tool Lab remains held because submissions are paused.
 - `marketing/seo/editorial-discovery-wave-26-2026-08-04.md`: Italian search triage rejected XANTARMOB as a stale affiliate list with no working contact route and BusinessMakerApp as a currently unavailable template-like route; Oniri was excluded as a product-owned competitor surface. No Russian site, email, account, form, product data or payment was used.
 - `marketing/seo/editorial-discovery-wave-27-2026-08-04.md`: rechecked the current Italian AndroidAyuda article but closed the route after the existing Google Group bounce, and transmitted the Everyeye P1 Italian editorial message at 18:49 CEST after a fresh duplicate search.
+- `marketing/seo/editorial-discovery-wave-28-2026-08-09.md`: rejected La Razón's store-only nofollow pattern and Androidsis' missing product-domain citations after both passed the accountable Spanish operator gate.
+- `marketing/seo/editorial-discovery-wave-29-2026-08-09.md`: rejected four product-comparison routes whose current pages use nofollow competitor links or no external competitor-domain citations.
+- `marketing/seo/editorial-discovery-wave-30-2026-08-09.md`: rejected four additional weak routes for store-only links, noindex/nofollow, missing competitor citations or incomplete operator disclosure.
+- `marketing/seo/editorial-discovery-wave-31-2026-08-09.md`: rejected Limen at the competitor-citation gate and three directories for reciprocal, paid, nofollow or opaque-operator link models; no account or submission was used.
 - `marketing/seo/editorial-send-evidence-wave-28-2026-08-04.md`: records the exact AITrendTool and Everyeye recipients, subjects, duplicate-search stop gate, Zimbra transmission proof and transmission-only boundary; both first follow-ups are gated to 2026-08-09.
 - `marketing/seo/backlink-public-asset-deployment-check-2026-08-04.md`: the initial source/edge reconciliation found localized pages still serving 10 July; a 18:19 CEST recheck then confirmed three consecutive current 4 August samples on both the custom domain and `noctalia.pages.dev`, with CI and Vercel success. No manual production deployment or backlink claim was made.
 - `marketing/seo/backlink-measurement-check-2026-08-04-1721.md`: the fresh read-only 19-row verifier returned the unchanged 6-followed, 4-nofollow, 2-missing-link, 3-non-indexable, 3-HTTP-403 and 1-HTTP-410 summary; no new public referring page or DR movement was claimed.
@@ -719,6 +723,20 @@ tiers. The recommended first batch is limited to six Priority A routes:
 KapanLagi, Penzu, Android Police, Xataka Android, AllThingsAI and AITrendTool.
 Transmission still requires explicit authorization and a final immediate stop
 gate.
+
+### Editorial discovery wave 31 — 2026-08-09
+
+Four newly found routes were rejected before any external action. Limen is
+operated by Alture Digital, S.L. in Spain, but its product-owned AI-journaling
+comparison gives competing apps no developer-domain links. StartupDirectory's
+free dofollow tier requires a reciprocal badge and its no-badge route is paid.
+Startup List promises followed listings but discloses no legal operator, country
+or concrete jurisdiction. SubmitStartup.io offers nofollow only for free, sells
+the dofollow upgrade and does not identify its operator; its six-URL public tool
+sitemap also does not substantiate the homepage's `500+` listing claim. No
+email, form, account, badge, product data or payment was used. Full evidence is
+recorded in `marketing/seo/editorial-discovery-wave-31-2026-08-09.md`; the
+central prospect register now contains 192 routes.
 
 Weekly, record only verified public outcomes:
 
