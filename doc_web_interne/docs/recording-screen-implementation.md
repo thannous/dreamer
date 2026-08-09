@@ -30,7 +30,7 @@ Successfully implemented a React Native Expo recording screen that faithfully re
 - Icon changes from mic to stop icon when recording
 - Drop shadow and border styling matching maquette
 
-#### Waveform Component (`components/recording/Waveform.tsx`)
+#### Waveform Component (ancienne implémentation supprimée)
 - 18 animated vertical bars
 - Different heights and opacities for visual variety
 - Accent colors for specific bars (every 5th bar)
@@ -81,10 +81,7 @@ Successfully implemented a React Native Expo recording screen that faithfully re
 1. `/mnt/c/Users/thann/WebstormProjects/dream-app/components/recording/MicButton.tsx`
    - Reusable microphone button with animations
 
-2. `/mnt/c/Users/thann/WebstormProjects/dream-app/components/recording/Waveform.tsx`
-   - Animated audio waveform visualization
-
-3. `doc_web_interne/docs/speech-to-text-integration.md`
+2. `doc_web_interne/docs/speech-to-text-integration.md`
    - Guide for implementing speech-to-text transcription
 
 4. `doc_web_interne/docs/recording-screen-implementation.md`
