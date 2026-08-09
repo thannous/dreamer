@@ -572,6 +572,20 @@ The overdue wave-2 targets were rechecked in the same pass. No new clickable cit
 
 The older Gmail wave is no longer mailbox-blocked. Direct reads show no human response in the nine remaining candidate threads, the delivery-failure search found no matching bounce for them, and their current public targets contain no Noctalia citation. World of Lucid Dreaming was readable through the search renderer after a direct HTTP 403. Nine first replies are therefore stop-gate eligible but remain unsent pending explicit authorization: World of Lucid Dreaming, Holstee, Mattress Miracle, Sleep Review, Tom's Guide, DeepJournal, Acuity, CortexOS and Dearly/Brooo. Oneironaut remains closed. JournPad received a final Gmail failure on 2026-08-03 and is now permanently closed without retry.
 
+### Gmail response and PeerPush account evidence — 2026-08-09 14:54 CEST
+
+An authenticated Gmail search found one material human editorial response. Dan Kennedy of Elsewhere replied that his next dream-app comparison is now likely in 2027, that he will reconsider Noctalia, and asked whether an iOS version is planned and whether the journal supports export. Current product evidence supports only an honest limited answer: Noctalia is Android-only today, has no public iOS release date, can share an individual dream card as a JPEG and can back up journal data through an account, but has no full journal PDF, CSV or JSON export. The exact reply is prepared in `marketing/seo/editorial-response-elsewhere-2026-08-09.md`; it remains unsent pending factual confirmation and explicit authorization. No future follow-up date is retained while a human question is open.
+
+PeerPush's 2026-08-07 monthly account email reports four named AI engines, eight total AI-system reads, 6,302 impressions, 3 upvotes, 1 comment, 2 followers and a top-31% Health & Wellness position. Those figures are retained only as self-reported platform telemetry, not independent proof of AI recommendations, indexation, referral traffic or DR movement. The email footer identifies Kriptonio Technologies d.o.o. in Zagreb, Croatia, which improves the non-Russian location evidence, while the current public Terms still omit a registered entity and address. The existing indexable followed listing is retained; no relaunch, paid promotion, guest-blog purchase, comment, follow, account change or screenshot upload was performed. Three existing 1270 × 760 product screenshots are shortlisted in `marketing/seo/peerpush-account-review-2026-08-09.md` for a future account edit only after explicit authorization.
+
+### Cloudflare deployment queue evidence — 2026-08-09 14:54 CEST
+
+Cloudflare's authenticated Pages API identifies deployment `2b4192db-4e95-4d35-bc05-4bc651bbad77` as the production deployment for commit `c8a5c43a95d606b3cb5b1f38fc7718d3ffa9ed7c` on `master`. It advanced from `queued` to the active `build` stage at 14:55 CEST after initialize and repository clone succeeded. The custom domain still serves version `ea710ef700d4` and the older DreamMirror/DreamNotes CSV source routes. No retry, cancellation, cache purge or manual deployment was used; the Git push and active build are proven, but this SEO source correction is not yet live.
+
+### Gmail wave-5 stop gate — 2026-08-09 14:58 CEST
+
+Five 2026-08-02 Gmail routes now pass both mailbox and public-target stop gates: Individuate, Dreamly, Vowise, Android Central and SlashGear. Each Gmail conversation contains only the original sent message, focused inbound and mailer-daemon searches returned no matching reply or bounce, and each current HTTP 200 target contains no Noctalia citation. One concise first reply per thread is prepared in `marketing/seo/backlink-follow-up-wave-5-2026-08-09.md`; all five remain unsent pending explicit authorization. Android Guías is excluded from the ready batch because its target timed out before a readable body was obtained. Frandroid and Lifehacker remain monitor-only because their original route was a form without a reply thread; no duplicate form submission is prepared.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
