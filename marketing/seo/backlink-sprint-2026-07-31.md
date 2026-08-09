@@ -618,6 +618,12 @@ The explicitly authorized free PeerPush profile edit is complete. Three existing
 
 No name, tagline, description, taxonomy, pricing, MRR, discount or social field was changed. No relaunch, paid placement, guest-blog purchase, social feature, comment or follow was used. This is verified profile enrichment on an already tracked referring page; it is not a new domain, new link, index refresh, AI citation, referral session or DR gain. Detailed evidence and the exact source assets are recorded in `marketing/seo/peerpush-account-review-2026-08-09.md`.
 
+### Fresh Ahrefs authority reading — 2026-08-09 15:58 CEST
+
+The authenticated Ahrefs Noctalia project overview now shows DR 0, 401 referring domains (+147 over 30 days), 4.6K organic traffic (+3.1K) and 932 organic keywords (+280). Compared with the last 2026-08-03 21:50 CEST snapshot, that is 34 more raw referring domains, roughly 0.3K more organic traffic and 34 more organic keywords, but no DR increase. The direct Ahrefs API returned no data because the account has zero remaining API units; the authenticated project card is the current evidence.
+
+The 401-domain figure is an Ahrefs index count, not a verified followed-domain count and not attribution to the backlink sprint. The 15:12 public verifier remains at 6 followed, 4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410. The PeerPush screenshot update occurred only minutes before the Ahrefs read and cannot have caused it. Full evidence and the deployment boundary are recorded in `marketing/seo/backlink-measurement-check-2026-08-09-1558.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
