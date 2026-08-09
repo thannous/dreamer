@@ -205,7 +205,7 @@ Tracking files:
 - `marketing/seo/backlink-results-2026-07-31.csv`: nineteen manually audited surfaces, including six indexable followed pages (one explicitly low-trust), seven indexable nofollow pages (one explicitly low-trust), two nonindexable profiles, one lost historical listing and three search-visible store-derived or entity-profile surfaces whose link treatment remains unverified;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
 - `marketing/seo/search-console/2026-08-03-external-links-baseline.md`: authenticated GSC inventory of 149 external links, eight source domains and four target pages, reconciled to manual link quality;
-- `marketing/seo/backlink-prospects-2026-07-31.csv`: 194 researched opportunities: 2 P0 corrections/reclamations, 63 P1 prospects, 128 P2 prospects or exclusions and 1 P3 launch route;
+- `marketing/seo/backlink-prospects-2026-07-31.csv`: 195 researched opportunities: 3 P0 corrections/reclamations, 63 P1 prospects, 128 P2 prospects or exclusions and 1 P3 launch route;
 - `marketing/seo/editorial-discovery-wave-3-2026-08-03.md`: rendered trust, domain-link and pending-publication decisions for the third editorial discovery pass.
 - `marketing/seo/editorial-discovery-wave-4-2026-08-03.md`: four current comparison decisions plus the no-credit Ahrefs project-dashboard refresh.
 - `marketing/seo/editorial-discovery-wave-5-2026-08-03.md`: three current product-owned guide decisions, all rejected at the direct competitor-domain citation gate.
@@ -750,6 +750,27 @@ social profiles. Neither page demonstrates a followed competitor-domain citation
 path, so no email, form, account, product data or payment was used. Full evidence
 is recorded in `marketing/seo/editorial-discovery-wave-32-2026-08-09.md`; the
 central prospect register now contains 194 routes.
+
+### Unlinked brand mention reclamation — 2026-08-09
+
+Marika Pech's current French article on precognitive dreams is a new P0 source-
+correction route. The exact self-canonical, index-follow page attributes the
+unsupported `40–60 %` experience figure to Noctalia in plain text without a
+link. Its legal notice identifies Marika Pech as a French auto-entrepreneur in
+Castelnau-le-Lez and OVH France as host; no Russian operator signal was found.
+
+Noctalia's cited French source has been corrected to distinguish belief from
+self-reported experience, cite the peer-reviewed Valášek and Watt (2015) paper
+and remove an unverifiable direct quotation attributed to Caroline Watt. The
+reclamation dossier proposes a matching factual correction and asks only that
+the existing `Source : Noctalia` attribution link to the corrected article. The
+publisher page demonstrates no external editorial source-link pattern, so
+acceptance and link treatment remain unknown. No form, email, comment, account
+or product data was used; transmission requires explicit authorization after
+the corrected Noctalia source is publicly verified. The central register now
+contains 195 routes: 3 P0, 63 P1, 128 P2 and 1 P3. Full evidence and unsent copy
+are recorded in
+`marketing/seo/brand-mention-reclamation-marikapech-2026-08-09.md`.
 
 Weekly, record only verified public outcomes:
 
