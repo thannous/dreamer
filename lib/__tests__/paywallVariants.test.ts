@@ -47,6 +47,14 @@ const variantKeys = [
   ...PLUS_PAYWALL_FEATURE_KEYS,
 ] as const;
 
+const recurrencePatternByLanguage = {
+  en: /repeat|recurr|coming back/i,
+  fr: /revien|r[ée]p[èe]t|r[ée]curr/i,
+  es: /repit|repet|recurr/i,
+  de: /wiederkehr|wiederhol/i,
+  it: /torn|ripet|ricorr/i,
+} as const;
+
 describe('paywallVariants', () => {
   it('returns moment-led copy keys for limit and exploration triggers', () => {
     expect(getPaywallVariant('analysis_limit')).toMatchObject({
@@ -135,6 +143,27 @@ describe('paywallVariants', () => {
           language,
           key,
           value: expect.not.stringMatching(/symbol|símbolo|simbol/i),
+        });
+      }
+    }
+  });
+
+  it('[B] Given detected emotion families When the stats paywall renders Then no language promises recurrence', async () => {
+    await Promise.all(SUPPORTED_APP_LANGUAGES.map((language) => loadTranslations(language)));
+
+    const promiseKeys = [
+      'subscription.paywall.variant.stats_profile.title',
+      'subscription.paywall.variant.stats_profile.subtitle',
+    ];
+
+    for (const language of SUPPORTED_APP_LANGUAGES) {
+      const t = getTranslator(language);
+
+      for (const key of promiseKeys) {
+        expect({ language, key, value: t(key) }).toEqual({
+          language,
+          key,
+          value: expect.not.stringMatching(recurrencePatternByLanguage[language]),
         });
       }
     }

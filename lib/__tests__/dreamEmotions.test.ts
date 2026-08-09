@@ -350,6 +350,30 @@ describe('buildEmotionProfile', () => {
     expect(profile.matchedMentions).toBe(2);
   });
 
+  it('[F5a] keeps one-off detected families out of the recurring set', () => {
+    const profile = buildEmotionProfile([
+      withEmotions(1, ['peur']),
+      withEmotions(2, ['joie']),
+      withEmotions(3, ['solitude']),
+    ]);
+
+    expect(profile.families).toHaveLength(3);
+    expect(profile.distinctFamilies).toBe(3);
+    expect(profile.recurringFamilies).toEqual([]);
+    expect(profile.recurringFamilyCount).toBe(0);
+  });
+
+  it('[F5b] marks a family as recurring only when it appears in multiple dreams', () => {
+    const profile = buildEmotionProfile([
+      withEmotions(1, ['peur']),
+      withEmotions(2, ['terreur', 'joie']),
+      withEmotions(3, ['solitude']),
+    ]);
+
+    expect(profile.recurringFamilies).toEqual([{ family: 'fear', count: 2 }]);
+    expect(profile.recurringFamilyCount).toBe(1);
+  });
+
   it('[F6] keeps unmatched mentions out of the matched count and out of coverage', () => {
     // Revert: count unmatched mentions into matchedMentions.
     const profile = buildEmotionProfile([withEmotions(1, ['peur', 'zzyzx'])]);

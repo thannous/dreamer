@@ -355,10 +355,14 @@ export type EmotionFamilyCount = {
 export type EmotionProfile = {
   /** Every family with count > 0, ranked. The caller slices; this module does not. */
   families: EmotionFamilyCount[];
+  /** Families present in at least two distinct dreams, preserving the same ranking. */
+  recurringFamilies: EmotionFamilyCount[];
   /** Dreams that carried at least one non-blank emotion name. */
   dreamsWithEmotions: number;
   /** Number of families with count > 0 — the honest number the locked state shows. */
   distinctFamilies: number;
+  /** Number of families present in at least two distinct dreams. */
+  recurringFamilyCount: number;
   totalMentions: number;
   matchedMentions: number;
   /** matchedMentions / totalMentions, 0..1, exactly 0 when totalMentions === 0. Not rounded. */
@@ -423,11 +427,14 @@ export function buildEmotionProfile(dreams: DreamAnalysis[]): EmotionProfile {
   const families: EmotionFamilyCount[] = Array.from(counts.entries())
     .map(([family, count]) => ({ family, count }))
     .sort((a, b) => compareDreamFacets(a.count, a.family, b.count, b.family));
+  const recurringFamilies = families.filter(({ count }) => count >= 2);
 
   return {
     families,
+    recurringFamilies,
     dreamsWithEmotions,
     distinctFamilies: families.length,
+    recurringFamilyCount: recurringFamilies.length,
     totalMentions,
     matchedMentions,
     coverage: totalMentions === 0 ? 0 : matchedMentions / totalMentions,

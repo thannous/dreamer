@@ -6,6 +6,22 @@ import { getTranslator, loadTranslations } from '../i18n';
 
 const languages = ['en', 'fr', 'es', 'de', 'it'] as const;
 
+const recurrencePatternByLanguage = {
+  en: /repeat|recurr|coming back/i,
+  fr: /revien|r[ée]p[èe]t|r[ée]curr/i,
+  es: /repit|repet|recurr/i,
+  de: /wiederkehr|wiederhol/i,
+  it: /torn|ripet|ricorr/i,
+} as const;
+
+const familyPatternByLanguage = {
+  en: /famil/i,
+  fr: /famill/i,
+  es: /famil/i,
+  de: /famil/i,
+  it: /famigli/i,
+} as const;
+
 // Declared `readonly string[]` rather than `as const` because the family keys are DERIVED
 // from EMOTION_FAMILY_IDS. Hand-listing them would let a renamed family quietly leave a dead
 // key behind in all five packs.
@@ -110,6 +126,36 @@ describe('stats screen i18n', () => {
         expect(t(pluralKey, { count: 4 })).toContain('4');
         expect(t(singularKey, { count: 1 })).not.toBe(t(pluralKey, { count: 1 }));
       }
+    }
+  });
+
+  it('describes detected emotion families without promising recurrence', async () => {
+    await Promise.all(languages.map((language) => loadTranslations(language)));
+
+    const honestCopyKeys = [
+      'stats.section.emotion_families.subtitle',
+      'stats.emotions.locked.count',
+      'stats.emotions.locked.count_one',
+    ];
+
+    for (const language of languages) {
+      const t = getTranslator(language);
+      const recurrencePattern = recurrencePatternByLanguage[language];
+
+      for (const key of honestCopyKeys) {
+        expect({ language, key, value: t(key, { count: 4 }) }).toEqual({
+          language,
+          key,
+          value: expect.not.stringMatching(recurrencePattern),
+        });
+      }
+
+      expect(t('stats.emotions.locked.count_one', { count: 1 })).toMatch(
+        familyPatternByLanguage[language],
+      );
+      expect(t('stats.emotions.locked.count', { count: 4 })).toMatch(
+        familyPatternByLanguage[language],
+      );
     }
   });
 
