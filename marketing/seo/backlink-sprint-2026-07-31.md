@@ -590,6 +590,12 @@ Five 2026-08-02 Gmail routes now pass both mailbox and public-target stop gates:
 
 Cloudflare Pages deployment `2b4192db-4e95-4d35-bc05-4bc651bbad77` completed all queue, initialize, clone, build and deploy stages successfully and now carries the `https://noctalia.app` alias. The public CSV returns HTTP 200 with `content-type: text/csv`, 3,463 bytes and the corrected DreamMirror root plus DreamNotes App Store source, both reviewed 2026-08-09. The rendered English comparison page also exposes both corrected source URLs. The public `version.txt` value did not change and is therefore not used as deployment proof; the Cloudflare deployment record and exact public artifacts are the authoritative evidence. This proves publication of the source correction, not a new external backlink, repository DOI, referral visit or DR gain.
 
+### Public backlink and mailbox refresh — 2026-08-09 15:12 CEST
+
+The read-only 19-row verifier remains unchanged at 6 followed, 4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410 result. PeerPush is still HTTP 200, indexable, self-canonical and followed; no tracked followed link was newly lost. Exact-match public searches found no new independently verifiable Noctalia referring page, and the current multilingual comparison results were already represented in the 170-row prospect register.
+
+An authenticated Gmail search after 2026-08-09 found no new campaign reply or delivery failure. The Chrome Zimbra session still opens at the login screen, so Inbox and Spam cannot clear Zimbra-routed follow-ups; its login tab was left open for user handoff. No message, account edit, screenshot upload, publication, payment or license grant was performed. Full evidence is recorded in `marketing/seo/backlink-measurement-check-2026-08-09-1512.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
