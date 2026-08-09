@@ -884,6 +884,25 @@ LLC is the US seller of the separate Arcana product. This is an owned
 destination, not a backlink or evidence of DR movement. Full evidence is recorded in
 `marketing/seo/dreamkit-alternative-asset-2026-08-09.md`.
 
+### DreamKit stale-listicle reclamation candidate — 2026-08-09
+
+The live DreamKit alternative enabled one new evidence-led correction route.
+DreamWell's June 2022 comparison remains HTTP 200, self-canonical and
+index-follow. It transparently discloses DreamWell's own-product interest,
+describes a 50-app hands-on review and links multiple competing developer
+domains directly without `nofollow`, but still presents DreamKit as available
+on Android and iOS. The former Android package now returns HTTP 404 and the
+former iOS ID resolves to the separate Arcana astrology and tarot product.
+
+DreamWell publishes a named team and `hi@dreamwellbewell.com`; its Terms select
+Delaware law, and Google Play independently identifies DreamWell, a Public
+Benefit Corporation at a Claymont, Delaware address. No Russian operator signal
+was found. One short factual correction and optional future-test message is
+prepared but unsent in
+`marketing/seo/editorial-discovery-wave-35-dreamkit-reclamation-2026-08-09.md`.
+The central register now contains 201 routes: 3 P0, 64 P1, 133 P2 and 1 P3.
+Adding a qualified route creates no backlink or DR movement.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
