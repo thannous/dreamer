@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "23837863a9e59bd29a7e59514d5835e2bb841497",
+  "sourceRevision": "16630fe5a1d618599f20bcb54fcb1c1ff4293ec0",
   "counts": {
-    "logicalPages": 236,
-    "manifestPaths": 1180,
-    "uniqueManifestPaths": 1180,
-    "canonicalPages": 1180,
-    "sitemapEntries": 1180,
-    "allHtmlOutputPaths": 1185
+    "logicalPages": 237,
+    "manifestPaths": 1185,
+    "uniqueManifestPaths": 1185,
+    "canonicalPages": 1185,
+    "sitemapEntries": 1185,
+    "allHtmlOutputPaths": 1190
   },
   "manifestRoutes": [
     {
@@ -3659,6 +3659,56 @@
       "lang": "it",
       "slug": "alternativa-dreamapp",
       "path": "/it/alternativa-dreamapp"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "dreamkit-alternative",
+      "lang": "de",
+      "slug": "dreamkit-alternative",
+      "path": "/de/dreamkit-alternative"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "dreamkit-alternative",
+      "lang": "en",
+      "slug": "dreamkit-alternative",
+      "path": "/en/dreamkit-alternative"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "dreamkit-alternative",
+      "lang": "es",
+      "slug": "alternativa-dreamkit",
+      "path": "/es/alternativa-dreamkit"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "dreamkit-alternative",
+      "lang": "fr",
+      "slug": "alternative-dreamkit",
+      "path": "/fr/alternative-dreamkit"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "dreamkit-alternative",
+      "lang": "it",
+      "slug": "alternativa-dreamkit",
+      "path": "/it/alternativa-dreamkit"
     },
     {
       "collection": "pages",
@@ -11872,6 +11922,7 @@
     "docs/de/datenschutz.html",
     "docs/de/dream-journal-ultimate-alternative.html",
     "docs/de/dreamapp-alternative.html",
+    "docs/de/dreamkit-alternative.html",
     "docs/de/guides/angsteinflossende-traumsymbole.html",
     "docs/de/guides/haeufigste-traumsymbole.html",
     "docs/de/guides/index.html",
@@ -12112,6 +12163,7 @@
     "docs/en/dream-journal-apps.html",
     "docs/en/dream-journal-ultimate-alternative.html",
     "docs/en/dreamapp-alternative.html",
+    "docs/en/dreamkit-alternative.html",
     "docs/en/guides/animal-dream-symbols.html",
     "docs/en/guides/death-transformation-dreams.html",
     "docs/en/guides/dream-locations.html",
@@ -12290,6 +12342,7 @@
     "docs/en/voice-dream-journal.html",
     "docs/es/alternativa-dream-journal-ultimate.html",
     "docs/es/alternativa-dreamapp.html",
+    "docs/es/alternativa-dreamkit.html",
     "docs/es/alternativa-oniri.html",
     "docs/es/app-analisis-suenos-android.html",
     "docs/es/app-interpretacion-suenos-ia.html",
@@ -12527,6 +12580,7 @@
     "docs/fr/a-propos.html",
     "docs/fr/alternative-dream-journal-ultimate.html",
     "docs/fr/alternative-dreamapp.html",
+    "docs/fr/alternative-dreamkit.html",
     "docs/fr/alternative-oniri.html",
     "docs/fr/application-analyse-de-reve-android.html",
     "docs/fr/application-interpretation-reves-ia.html",
@@ -12763,6 +12817,7 @@
     "docs/index.html",
     "docs/it/alternativa-dream-journal-ultimate.html",
     "docs/it/alternativa-dreamapp.html",
+    "docs/it/alternativa-dreamkit.html",
     "docs/it/alternativa-oniri.html",
     "docs/it/app-analisi-sogni-android.html",
     "docs/it/app-diario-dei-sogni.html",
@@ -36863,6 +36918,281 @@
           {
             "position": "2",
             "item": "https://noctalia.app/it/alternativa-dreamapp"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "lang": "de",
+      "outputPath": "docs/de/dreamkit-alternative.html",
+      "canonical": "https://noctalia.app/de/dreamkit-alternative",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dreamkit-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dreamkit"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/dreamkit-alternative",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/de/dreamkit-alternative",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/dreamkit-alternative"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "lang": "en",
+      "outputPath": "docs/en/dreamkit-alternative.html",
+      "canonical": "https://noctalia.app/en/dreamkit-alternative",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dreamkit-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dreamkit"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/dreamkit-alternative",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/en/dreamkit-alternative",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/dreamkit-alternative"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "lang": "es",
+      "outputPath": "docs/es/alternativa-dreamkit.html",
+      "canonical": "https://noctalia.app/es/alternativa-dreamkit",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dreamkit-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dreamkit"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/alternativa-dreamkit",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/es/alternativa-dreamkit",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/alternativa-dreamkit"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "lang": "fr",
+      "outputPath": "docs/fr/alternative-dreamkit.html",
+      "canonical": "https://noctalia.app/fr/alternative-dreamkit",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dreamkit-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dreamkit"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/alternative-dreamkit",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/fr/alternative-dreamkit",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/alternative-dreamkit"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "lang": "it",
+      "outputPath": "docs/it/alternativa-dreamkit.html",
+      "canonical": "https://noctalia.app/it/alternativa-dreamkit",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dreamkit-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dreamkit"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/alternativa-dreamkit",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/it/alternativa-dreamkit",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/alternativa-dreamkit"
           }
         ]
       ],
@@ -96398,6 +96728,166 @@
         {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/dreamapp-alternative"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/dreamkit-alternative",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dreamkit-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dreamkit"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/dreamkit-alternative",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dreamkit-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dreamkit"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/alternativa-dreamkit",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dreamkit-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dreamkit"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/alternative-dreamkit",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dreamkit-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dreamkit"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dreamkit-alternative",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/alternativa-dreamkit",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dreamkit-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dreamkit"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dreamkit"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dreamkit-alternative"
         }
       ]
     },

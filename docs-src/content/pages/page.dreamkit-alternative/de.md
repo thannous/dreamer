@@ -103,7 +103,7 @@
       <li><a href="https://dreamkit.app/pages/privacy_policy/" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">DreamKit-Datenschutzrichtlinie</a></li>
       <li><a href="https://apps.apple.com/us/app/arcana-astrology-tarot-chat/id1572753006" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Aktuelles Produkt unter der früheren DreamKit-iOS-Kennung</a></li>
       <li><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Noctalia bei Google Play</a></li>
-      <li><a href="/de/privacy-policy" class="text-dream-salmon hover:underline">Datenschutz bei Noctalia</a></li>
+      <li><a href="/de/datenschutz" class="text-dream-salmon hover:underline">Datenschutz bei Noctalia</a></li>
     </ul>
   </section>
 
