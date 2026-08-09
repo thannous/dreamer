@@ -602,6 +602,12 @@ Three new P1 routes were qualified from current official pricing, legal, privacy
 
 The truthful founder bio, eligible expertise lanes, exclusion rules, response template and exact external-action gates are prepared in `marketing/seo/media-source-platform-pack-2026-08-09.md`. The central prospect register now covers 173 routes, and `marketing/seo/media-source-platform-prospects-2026-08-09.csv` provides a focused three-row execution extract. No subscription, account, profile, mailbox connection, pitch, query response, publication or payment was performed. Authorization codes are E1 for Source of Sources, E2 for Qwoted and E3 for Featured.
 
+### Search Console external-links refresh — 2026-08-09
+
+The authenticated `sc-domain:noctalia.app` Links report now shows 148 external links from the same eight source domains to the same four Noctalia pages, versus 149 on 2026-08-03. The only aggregate change is SaaSHub from 14 to 13 source pages; all other domain counts are unchanged. The current 13-row drill-down targets the deep comparison page. Separately, the public verifier still sees the indexable followed `https://www.saashub.com/noctalia-app-alternatives` page targeting the homepage, so the one-row decrease does not identify or prove the loss of that audited citation. The prior baseline did not preserve its full 14-row URL list, which prevents an honest identification of the removed row.
+
+Internal links rose from 32,291 to 33,803, but that metric does not measure external authority. This read-only refresh creates no new domain, backlink, message, account, publication or DR claim. Full evidence is recorded in `marketing/seo/search-console/2026-08-09-external-links-refresh.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
