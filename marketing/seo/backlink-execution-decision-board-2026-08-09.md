@@ -22,6 +22,11 @@ backlink.
 - The authenticated Ahrefs overview at 2026-08-09 15:58 CEST showed DR 0 and
   401 referring domains. The large raw domain count is not equivalent to 401
   verified followed editorial citations.
+- A detailed authenticated Ahrefs referring-domain read at 2026-08-10 00:19
+  CEST showed that the highest-DR rows are dominated by domains Ahrefs labels
+  `SPAM`. Its dofollow filter recognizes PeerPush at DR 71 as the only clean,
+  high-DR followed domain; LaunchLlama is live-followed in the public HTML but
+  is not yet included by Ahrefs in that dofollow view.
 - A rendered link-treatment refresh at 23:56 CEST separated the former six-route
   Priority A batch: KapanLagi, Penzu and AllThingsAI retain direct DR potential;
   Android Police and Xataka Android lack a direct developer-domain pattern on
@@ -54,6 +59,9 @@ backlink.
   `Photo Creation` to `Self-Reflection` would improve topical accuracy and
   conversion, not create a new referring domain or prove DR growth.
 - Do not buy PeerPush relaunch, guest-blog, social or boosted-placement options.
+- Do not submit a Google disavow file for the unsolicited Ahrefs spam cluster:
+  there is no manual-action or ranking-harm evidence, and disavow would not turn
+  the raw Ahrefs domain count into quality authority.
 - Continue rejecting paid-link, reciprocal-badge, Russian-governed, opaque-
   operator, nofollow-only and fabricated-authority routes.
 - BestForAndroid remains closed after its $249 placement offer. The Verge waits
