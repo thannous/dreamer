@@ -4,7 +4,11 @@
     "appVersionSource": "remote"
   },
   "build": {
+    "base": {
+      "node": "24.19.0"
+    },
     "release": {
+      "extends": "base",
       "android": { "buildType": "app-bundle" },
       "environment": "production",
       "env": {
@@ -18,11 +22,13 @@
       }
     },
     "development": {
+      "extends": "base",
       "developmentClient": true,
       "distribution": "internal",
       "environment": "development"
     },
     "preview": {
+      "extends": "base",
       "channel": "preview",
       "distribution": "internal",
       "android": { "buildType": "apk" },
@@ -34,6 +40,7 @@
       }
     },
     "revenuecat-teststore": {
+      "extends": "base",
       "channel": "qa",
       "distribution": "internal",
       "android": { "buildType": "apk" },
@@ -48,6 +55,7 @@
       }
     },
     "production-apk": {
+      "extends": "base",
       "channel": "production",
       "android": { "buildType": "apk" },
       "env": {
@@ -62,6 +70,7 @@
       }
     },
     "e2e-test": {
+      "extends": "base",
       "withoutCredentials": true,
       "ios": { "simulator": true },
       "android": { "buildType": "apk" },
@@ -70,6 +79,7 @@
       }
     },
     "production": {
+      "extends": "base",
       "channel": "production",
       "autoIncrement": true,
       "environment": "production",
