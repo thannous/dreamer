@@ -7,7 +7,7 @@ backlink.
 
 ## Current evidence
 
-- The prospect register contains 200 qualified, paused, rejected or active
+- The prospect register contains 201 qualified, paused, rejected or active
   routes.
 - The outreach log contains 49 prior transmissions or attempts.
 - The prospect register and outreach log now agree on 31 first follow-ups that
@@ -30,8 +30,9 @@ backlink.
 | 1 | Elsewhere human reply | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
 | 2 | Marika Pech source correction | The live French article already names Noctalia but does not link it. Correcting the source protects factual accuracy and may reclaim the existing mention. | Submit one correction through the official route after confirming the wording and link are still unchanged. Do not request anchor manipulation or followed treatment. |
 | 3 | Six Priority A first follow-ups | KapanLagi, Penzu, Android Police, Xataka Android, AllThingsAI and AITrendTool have the best current combination of existing mention, competitor-link pattern, Android fit or free editorial route. | Reply once in each original thread only after an immediate reply, bounce, opt-out and live-citation stop gate. No attachments, tracking, payment or guaranteed-link request. |
-| 4 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |
-| 5 | Owned syndication | Hashnode and Medium drafts are ready, but a self-published profile link has lower incremental authority and canonical risk than an independent editorial citation. | Publish only after separate account and publication authorization and verify the rendered canonical and link attributes. |
+| 4 | DreamWell DreamKit correction | Its transparent 2022 comparison still presents DreamKit as available on Android and iOS, while the Android listing is now 404 and the former iOS ID is Arcana. The article links competing developer domains directly. | Send one factual correction and offer Noctalia only as an optional test candidate for a future refresh. No link, anchor, ranking, replacement or timing request. |
+| 5 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |
+| 6 | Owned syndication | Hashnode and Medium drafts are ready, but a self-published profile link has lower incremental authority and canonical risk than an independent editorial citation. | Publish only after separate account and publication authorization and verify the rendered canonical and link attributes. |
 
 ## Hold or reject
 
@@ -76,6 +77,14 @@ misread as approval for another.
 > J'autorise la modification gratuite de la fiche PeerPush : ajouter Google
 > Play et remplacer Photo Creation par Self-Reflection, sans relaunch ni
 > paiement.
+
+### D5 — DreamWell factual correction
+
+> J'autorise l'envoi unique à `hi@dreamwellbewell.com` du message factuel D5
+> préparé dans
+> `marketing/seo/editorial-discovery-wave-35-dreamkit-reclamation-2026-08-09.md`,
+> après le stop gate immédiat, sans demande de lien, classement, remplacement
+> de DreamKit, paiement ni relance automatique.
 
 Earned-media account or subscription choices retain the independent `E1`–`E5`
 codes in `marketing/seo/media-source-platform-pack-2026-08-09.md`.
