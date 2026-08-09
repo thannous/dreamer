@@ -111,7 +111,7 @@
     <p>For an article, report, or app comparison, use the stable dataset page and keep the date visible. The review is a source-linked desk comparison, not a clinical study, ranking, or market-share estimate.</p>
     <p class="mt-4"><a href="/en/dream-journal-apps#dataset" class="text-dream-salmon hover:underline">Dataset page and methodology</a> · <a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Download the CSV</a></p>
     <p class="mt-4 text-sm text-purple-200/70">Suggested citation:</p>
-    <pre class="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-dream-dark/60 p-4 text-sm text-purple-100 whitespace-pre-wrap">Noctalia. (2026, August 3). Dream Journal App Comparison Dataset 2026. https://noctalia.app/en/dream-journal-apps#dataset</pre>
+    <pre class="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-dream-dark/60 p-4 text-sm text-purple-100 whitespace-pre-wrap">Noctalia. (2026, August 9). Dream Journal App Comparison Dataset 2026. https://noctalia.app/en/dream-journal-apps#dataset</pre>
     <p class="mt-3 text-sm text-purple-200/70">Attribution and a link to the stable dataset page are requested when the CSV or its normalized counts are reused. Verify changing product facts against the linked official sources.</p>
   </section>
 

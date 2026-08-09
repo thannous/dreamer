@@ -96,7 +96,7 @@
     <p>Per un articolo, un rapporto o un confronto tra app, usa la pagina stabile del dataset e mantieni visibile la data. La revisione è un confronto documentale con fonti collegate, non uno studio clinico, una classifica o una stima della quota di mercato.</p>
     <p class="mt-4"><a href="/it/app-diario-dei-sogni#dataset" class="text-dream-salmon hover:underline">Pagina del dataset e metodologia</a> · <a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Scarica il CSV</a></p>
     <p class="mt-4 text-sm text-purple-200/70">Citazione suggerita:</p>
-    <pre class="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-dream-dark/60 p-4 text-sm text-purple-100 whitespace-pre-wrap">Noctalia. (3 agosto 2026). Dati comparativi delle app diario dei sogni 2026. https://noctalia.app/it/app-diario-dei-sogni#dataset</pre>
+    <pre class="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-dream-dark/60 p-4 text-sm text-purple-100 whitespace-pre-wrap">Noctalia. (9 agosto 2026). Dati comparativi delle app diario dei sogni 2026. https://noctalia.app/it/app-diario-dei-sogni#dataset</pre>
     <p class="mt-3 text-sm text-purple-200/70">Mantieni l’attribuzione e il link alla pagina stabile quando riutilizzi il CSV o i suoi dati normalizzati. Verifica le informazioni che possono cambiare nelle fonti ufficiali collegate.</p>
   </section>
 

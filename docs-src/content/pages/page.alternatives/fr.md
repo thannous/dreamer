@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Meilleures applications de journal de rêves en 2026</h1>
-<p class="text-sm text-purple-300/70 mb-6">Méthodologie mise à jour le 3 août 2026 · Données produit vérifiées le 12 juillet 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Jeu de données mis à jour le 9 août 2026 · Méthodologie mise à jour le 3 août 2026 · Revue produit initiale le 12 juillet 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Le bon journal de rêves dépend de votre habitude au réveil, de votre besoin d’interprétation IA, de la place du rêve lucide et du niveau de clarté souhaité sur la confidentialité.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -109,7 +109,7 @@
   <section id="citation" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
     <h2 class="text-2xl font-serif text-white mb-4">Comment citer ces données</h2>
     <p>Pour un article, un rapport ou une note de recherche, utilisez cette référence stable&nbsp;:</p>
-    <p class="mt-4">Noctalia. (3 août 2026). <em>Jeu de données comparatif des applications de journal de rêves 2026</em>.</p>
+    <p class="mt-4">Noctalia. (9 août 2026). <em>Jeu de données comparatif des applications de journal de rêves 2026</em>.</p>
     <p class="mt-3"><a href="https://noctalia.app/fr/applications-journal-de-reves#dataset" class="text-dream-salmon hover:underline">https://noctalia.app/fr/applications-journal-de-reves#dataset</a></p>
     <p class="mt-3 text-sm text-purple-200/70">Conservez l’attribution et le lien stable lors de la réutilisation du CSV. Il s’agit d’une revue documentaire datée, pas d’une étude clinique, d’un classement ni d’une estimation de part de marché.</p>
   </section>

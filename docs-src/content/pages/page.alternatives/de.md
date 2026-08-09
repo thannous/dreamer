@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Beste Traumtagebuch-Apps 2026</h1>
-<p class="text-sm text-purple-300/70 mb-6">Methodik aktualisiert am 3. August 2026 · Produktdaten geprüft am 12. Juli 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Datensatz aktualisiert am 9. August 2026 · Methodik aktualisiert am 3. August 2026 · Erste Produktprüfung am 12. Juli 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Die passende Traumtagebuch-App hängt davon ab, wie schnell du morgens erfasst, ob du KI-Deutung möchtest, wie wichtig luzides Träumen ist und wie klar Datenschutz erklärt wird.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -109,7 +109,7 @@
   <section id="citation" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
     <h2 class="text-2xl font-serif text-white mb-4">Diesen Datensatz zitieren</h2>
     <p>Für einen Artikel, Bericht oder eine Forschungsnotiz kannst du diese stabile Quellenangabe verwenden:</p>
-    <p class="mt-4">Noctalia. (3. August 2026). <em>Vergleichsdaten für Traumtagebuch-Apps 2026</em>.</p>
+    <p class="mt-4">Noctalia. (9. August 2026). <em>Vergleichsdaten für Traumtagebuch-Apps 2026</em>.</p>
     <p class="mt-3"><a href="https://noctalia.app/de/traumtagebuch-apps#dataset" class="text-dream-salmon hover:underline">https://noctalia.app/de/traumtagebuch-apps#dataset</a></p>
     <p class="mt-3 text-sm text-purple-200/70">Bitte die Namensnennung und den stabilen Link beim Wiederverwenden der CSV beibehalten. Dies ist eine datierte Dokumentenprüfung, keine klinische Studie, Rangliste oder Marktanteilsschätzung.</p>
   </section>

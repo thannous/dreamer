@@ -96,7 +96,7 @@
     <p>Pour un article, un rapport ou un comparatif d'applications, utilisez la page stable du jeu de données et conservez la date. Cette revue est une comparaison documentaire sourcée, pas une étude clinique, un classement ni une estimation de part de marché.</p>
     <p class="mt-4"><a href="/fr/applications-journal-de-reves#dataset" class="text-dream-salmon hover:underline">Page du jeu de données et méthodologie</a> · <a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Télécharger le CSV</a></p>
     <p class="mt-4 text-sm text-purple-200/70">Citation suggérée&nbsp;:</p>
-    <pre class="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-dream-dark/60 p-4 text-sm text-purple-100 whitespace-pre-wrap">Noctalia. (2026, 3 août). Jeu de données comparatif des applications de journal de rêves 2026. https://noctalia.app/fr/applications-journal-de-reves#dataset</pre>
+    <pre class="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-dream-dark/60 p-4 text-sm text-purple-100 whitespace-pre-wrap">Noctalia. (2026, 9 août). Jeu de données comparatif des applications de journal de rêves 2026. https://noctalia.app/fr/applications-journal-de-reves#dataset</pre>
     <p class="mt-3 text-sm text-purple-200/70">Conservez l'attribution et le lien vers la page stable lors de la réutilisation du CSV ou de ses données normalisées. Vérifiez les informations susceptibles d'évoluer auprès des sources officielles liées.</p>
   </section>
 

@@ -991,6 +991,34 @@ therefore closed, reducing the unsent eligible first-follow-up pool from 28 to
 27. Full evidence is in
 `marketing/seo/backlink-dr-followup-wave-37-2026-08-10.md`.
 
+### Linkable-asset integrity refresh — 2026-08-10
+
+The public 11-app comparison already exposed a stable index, follow dataset
+page, two CSV download links, visible methodology and citation instructions.
+The source audit found two reproducibility defects: its copyable citation still
+used August 3 while the Dataset schema and refreshed rows used August 9, and
+the CSV omitted the table's pricing field. Site sources now add
+pricing_signal to all 11 rows, add version and temporal coverage to the
+English Dataset schema, and align comparison and press citations across all
+five locales. The full build and docs check pass with 1,185 canonical sitemap
+URLs, zero broken internal links, zero errors and zero warnings. This improves
+the asset before outreach but is not a backlink or DR result. Evidence is in
+marketing/seo/backlink-linkable-asset-refresh-2026-08-10.md.
+
+### Editorial discovery wave 38 — 2026-08-10
+
+Seven newly surfaced AI-journaling pages were rejected before contact.
+Mindsera, Refalio, Taskade and Rosebud name competitors without linking their
+domains; Macaron's only inspected external editorial citation is nofollow; and
+ItsMyDream combines anonymous admin authorship with no product-domain links.
+Balance Journal is the only page in the pass that gives followed links to
+third-party editorial sources. Its Terms and Privacy indicate Poland and EU
+law, not Russia, but identify no accountable company, person or address, while
+its linked Google Play package and App Store ID both return not-found pages.
+No route clears both the trust and link-pattern gates. The central register now
+contains 211 routes: 3 P0, 64 P1, 143 P2 and 1 P3. Full evidence is in
+marketing/seo/editorial-discovery-wave-38-2026-08-10.md.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

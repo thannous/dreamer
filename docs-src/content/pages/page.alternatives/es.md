@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Mejores apps de diario de sueños en 2026</h1>
-<p class="text-sm text-purple-300/70 mb-6">Metodología actualizada el 3 de agosto de 2026 · Datos de producto revisados el 12 de julio de 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Datos actualizados el 9 de agosto de 2026 · Metodología actualizada el 3 de agosto de 2026 · Revisión inicial de productos el 12 de julio de 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">La app correcta depende de cómo capturas el sueño al despertar, si quieres interpretación con IA, cuánto valoras el sueño lúcido y qué claridad necesitas sobre privacidad.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -109,7 +109,7 @@
   <section id="citation" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
     <h2 class="text-2xl font-serif text-white mb-4">Cómo citar estos datos</h2>
     <p>Para un artículo, informe o nota de investigación, usa esta referencia estable:</p>
-    <p class="mt-4">Noctalia. (3 de agosto de 2026). <em>Datos comparativos de apps de diario de sueños 2026</em>.</p>
+    <p class="mt-4">Noctalia. (9 de agosto de 2026). <em>Datos comparativos de apps de diario de sueños 2026</em>.</p>
     <p class="mt-3"><a href="https://noctalia.app/es/apps-diario-de-suenos#dataset" class="text-dream-salmon hover:underline">Fuente estable del dataset</a></p>
     <p class="mt-3 text-sm text-purple-200/70">Conserva la atribución y el enlace estable al reutilizar el CSV. Es una revisión documental fechada, no un estudio clínico, una clasificación ni una estimación de cuota de mercado.</p>
   </section>
