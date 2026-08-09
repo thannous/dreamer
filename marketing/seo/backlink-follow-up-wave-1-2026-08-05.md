@@ -23,7 +23,7 @@ The initial message was accepted through the official contact form and produced 
 
 ### JournPad
 
-The original Gmail message remains associated with a temporary delivery warning and a 45-hour retry window. Do not follow up on the original calendar dates. If Gmail later confirms delivery, wait three full days from that confirmation before scheduling a first reply. If delivery fails permanently, close the route without guessing another address.
+Gmail issued a final Delivery Status Notification (Failure) on 2026-08-03 after the temporary retry window. The route is closed permanently as `delivery_failed_permanent_closed`. Do not follow up, retry or guess another address.
 
 ## Ten eligible replies
 
@@ -157,3 +157,7 @@ Reply in Gmail thread `19fb9f74525c865a`.
 - Every sent reply appears once in the original thread and has an exact timestamp and message identifier.
 - Inbox and bounce searches are recorded separately from sent-folder evidence.
 - `backlink-outreach-log-2026-07-31.csv` is updated only after authoritative send or response evidence.
+
+## Stop-check result — 2026-08-09
+
+Direct Gmail thread reads, a fresh delivery-failure search and current public-page checks leave nine first replies eligible but unsent: World of Lucid Dreaming, Holstee, Mattress Miracle, Sleep Review, Tom's Guide, DeepJournal, Acuity, CortexOS and Dearly/Brooo. Oneironaut remains closed and is excluded. JournPad now has a final Gmail delivery failure and is permanently closed. The nine proposed replies still require explicit authorization before transmission.

@@ -57,3 +57,7 @@ The copy does not ask for a backlink or guaranteed inclusion. If Sleepopolis rep
 ## Close-out evidence
 
 After the conditional batch, update the outreach log per route with the exact Sent timestamp, response or stop reason. Re-run the public verifier only after a page containing a clickable Noctalia link is independently visible; do not convert a sent follow-up, accepted pitch or account state into a backlink or DR claim.
+
+## Stop-check result — 2026-08-09
+
+The current public-page checks are recorded in `marketing/seo/backlink-follow-up-stop-check-2026-08-09.md`. No new clickable Noctalia citation was verified. KapanLagi still contains only an unlinked source URL, Digital Trends remains access-unverified behind HTTP 403, and the other readable targets contain no Noctalia match. The real Chrome Zimbra session is no longer authenticated, so no Inbox/Spam stop gate passed and no follow-up is eligible. The Verge remains deferred to 2026-08-11. Nothing was sent.

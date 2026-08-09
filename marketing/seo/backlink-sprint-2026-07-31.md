@@ -562,6 +562,16 @@ The follow-up pack now contains fifteen conditional routes dated across 2026-08-
 
 The read-only public verifier was rerun after the six transmissions. It checked all 19 tracked referring pages and returned the unchanged summary: 6 followed, 4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410 result, with 4 documented mismatches. Direct HTTP checks for `/en/press`, `/en/voice-dream-journal` and `/en/dream-journal-apps` all returned HTTP 200. No new public referring page, link treatment change or DR movement was observed; the Sent messages remain outreach transmission only.
 
+### Follow-up stop-check — 2026-08-09
+
+The public verifier was rerun and remains unchanged at 6 followed, 4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410 result. Current Ahrefs dashboard values were not re-read, so the last authenticated DR snapshot remains dated 2026-08-03 rather than being presented as current.
+
+The four routes due on 2026-08-09 received a fresh public-page gate. Xataka Android, AITrendTool and Everyeye expose no current Noctalia citation, but their follow-ups remain blocked because the real Chrome Zimbra tab now shows the login screen and Inbox/Spam cannot be checked. The Andro4all target now redirects to a La Razón article; the original Andro4all follow-up is closed as `closed_target_migrated_to_larazon` because the contacted route no longer controls the verified target. No message, form, account, publication or payment was used. Detailed evidence is in `marketing/seo/backlink-follow-up-stop-check-2026-08-09.md`.
+
+The overdue wave-2 targets were rechecked in the same pass. No new clickable citation was verified; KapanLagi remains an unlinked source mention, Digital Trends remains access-unverified behind HTTP 403, and the other publicly readable targets contain no Noctalia match. These public results do not clear the mailbox gate, so no wave-2 follow-up is eligible while Zimbra is unauthenticated. The Verge remains deferred to 2026-08-11.
+
+The older Gmail wave is no longer mailbox-blocked. Direct reads show no human response in the nine remaining candidate threads, the delivery-failure search found no matching bounce for them, and their current public targets contain no Noctalia citation. World of Lucid Dreaming was readable through the search renderer after a direct HTTP 403. Nine first replies are therefore stop-gate eligible but remain unsent pending explicit authorization: World of Lucid Dreaming, Holstee, Mattress Miracle, Sleep Review, Tom's Guide, DeepJournal, Acuity, CortexOS and Dearly/Brooo. Oneironaut remains closed. JournPad received a final Gmail failure on 2026-08-03 and is now permanently closed without retry.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

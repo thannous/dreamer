@@ -10,3 +10,10 @@ This is a conditional pack, not permission to send. On 2026-08-09 or later, each
 | `andro4all.com` | `prensa@andro4all.com` | `Sugerencia para actualizar vuestro listado de diarios Android` | `initial_sent_waiting` | 2026-08-09 |
 
 If the gate passes, use the original thread, add exactly one new factual item and ask neither for a backlink, anchor text, ranking, placement date, payment, reciprocity nor guaranteed inclusion. Transmission is not delivery, acceptance, publication, a backlink, a referring-domain increase or a DR gain.
+
+## Stop-check result — 2026-08-09
+
+The public-page and browser evidence is recorded in `marketing/seo/backlink-follow-up-stop-check-2026-08-09.md`.
+
+- Xataka Android still has no public Noctalia citation, but the Zimbra Inbox/Spam gate is blocked by an unauthenticated session. No follow-up is eligible yet.
+- The Andro4all target now redirects to La Razón. The original route is closed as `closed_target_migrated_to_larazon`; do not follow up to the Andro4all recipient.

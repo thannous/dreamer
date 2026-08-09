@@ -10,3 +10,7 @@ This is a conditional pack, not permission to send. On 2026-08-09 or later, each
 | `everyeye.it` | `a.ferraiuolo@everyeye.it` | `Suggerimento editoriale: diario dei sogni Android con cattura vocale` | `initial_sent_waiting` | 2026-08-09 |
 
 If the gate passes, use the original thread, add exactly one new factual item and ask neither for a backlink, anchor text, ranking, placement date, payment, reciprocity nor guaranteed inclusion. Transmission is not delivery, acceptance, publication, a backlink, a referring-domain increase or a DR gain.
+
+## Stop-check result — 2026-08-09
+
+The public pages still expose no Noctalia citation. The real Chrome Zimbra tab currently shows the login screen, so Inbox and Spam could not be checked. Both routes remain `follow_up_due_mailbox_gate_blocked`; no follow-up is eligible and nothing was sent.
