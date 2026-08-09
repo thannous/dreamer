@@ -1,11 +1,10 @@
 # Noctalia 3.1.0 — notes de version Google Play
 
-Statut : **envoyée à Google Play pour examen le 9 août 2026**. Le candidat
-`3.1.0 (53)` a passé les 19 gates Android, RevenueCat et Play, puis a été
-promu depuis la bibliothèque Internal vers Production avec un déploiement à
-100 % dans tous les pays ciblés. La Console affiche encore les modifications
-comme « en cours d'examen » : cette soumission ne prouve pas encore la
-disponibilité publique sur le Store.
+Statut : **publiée en Production le 9 août 2026**. La Console Play confirme
+`3.1.0 (53)` active dans 176 pays/régions. Un P1 clavier a ensuite été confirmé
+sur le panneau Compte Android : la version 53 reste donc à remplacer par un
+hotfix. Le correctif est validé dans un binaire Release QA local sur le Motorola,
+mais aucun nouveau candidat Internal ou Production n'a encore été soumis.
 
 ## Ce qui a été ajouté dans la 3.1
 

@@ -960,3 +960,48 @@ Findings:
 - No `findNodeHandle` web error. Remaining warnings are pre-existing Expo/require-cycle/deprecation warnings outside this feature.
 
 final result: passed
+
+## Android account sheet keyboard P1 — 2026-08-09
+
+Implementation screenshot paths:
+- Sign-in entry: `/tmp/noctalia-p1-signin-keyboard.png`
+- Sign-up entry: `/tmp/noctalia-p1-signup-keyboard.png`
+
+State and device:
+- Physical device: Motorola Edge 60 Fusion, `1220x2712`, Android keyboard open.
+- Artifact: local arm64-v8a Release QA package `com.tanuki75.noctalia.qa`, installed
+  alongside the Play-signed `com.tanuki75.noctalia` so version 53 data remained intact.
+- Route: Settings > Account, guest state, French locale.
+
+Comparison history:
+- P1 source finding: the content-sized account bottom sheet could leave the
+  password field and both email actions below the visible region when the Android
+  keyboard opened.
+- Fix: expose Expo UI native `snapPoints`, use `['full']` only for
+  `settings-account-sheet`, let the React Native host fill that detent, and make
+  the form ScrollView shrinkable with keyboard-aware scroll behavior.
+- Post-fix evidence: with a `1041px` IME inset, the sheet resized from
+  `[45,173][1175,2644]` to `[45,173][1175,1671]`; the focused password field
+  remained at `[113,1011][1108,1149]`, and both enabled actions remained fully
+  visible at `[113,1199][599,1338]` and `[622,1199][1108,1338]`.
+
+Primary interactions and runtime evidence:
+- Passed: opening from `settings-account-open-signin`, focusing the password,
+  and keeping both `btn.auth.signIn` and `btn.auth.signUp` accessible.
+- Passed: closing the sheet, reopening from `settings-account-open-signup`,
+  focusing the password, and keeping both actions accessible.
+- Passed: `mInputShown=true`, `mIsInputViewShown=true`, and IME bottom inset
+  `1041`; the Noctalia QA process remained alive and foregrounded.
+- Passed: 11 related Jest suites / 128 tests, focused 13 tests, app typecheck,
+  scoped lint with only two pre-existing hook warnings, mobile security audit
+  with zero failures, and `git diff --check`.
+- Release gate report: 16 pass, 1 fail, 2 blocked. The remaining entries concern
+  the not-yet-created hotfix candidate and stale release evidence; no new Store
+  submission is authorized by this QA record.
+
+Findings:
+- P0: none.
+- P1: none after the fix.
+- P2: none in the tested account-sheet keyboard scope.
+
+final result: passed
