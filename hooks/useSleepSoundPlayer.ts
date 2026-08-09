@@ -4,15 +4,15 @@ import {
   useAudioPlayerStatus,
 } from 'expo-audio';
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
-  getSleepSoundStartOffset,
   type SleepSoundConfig,
   type SleepTimerMinutes,
 } from '@/lib/sleepSounds';
 
 const SLEEP_SOUND_VOLUME = 0.65;
+const TIMER_UPDATE_INTERVAL_MS = 500;
 
 type UseSleepSoundPlayerOptions = {
   sound: SleepSoundConfig;
@@ -34,11 +34,11 @@ export function useSleepSoundPlayer({
   const status = useAudioPlayerStatus(player);
   const [hasStarted, setHasStarted] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const startOffset = useMemo(
-    () => getSleepSoundStartOffset(durationMinutes),
-    [durationMinutes],
-  );
+  const [remainingSeconds, setRemainingSeconds] = useState(durationMinutes * 60);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const remainingMsRef = useRef(durationMinutes * 60_000);
+  const startedAtMsRef = useRef<number | null>(null);
+  const previousNativePlayingRef = useRef(status.playing);
 
   const clearLockScreen = useCallback(() => {
     try {
@@ -48,21 +48,60 @@ export function useSleepSoundPlayer({
     }
   }, [player]);
 
+  const getRemainingMs = useCallback(() => {
+    if (startedAtMsRef.current === null) {
+      return remainingMsRef.current;
+    }
+
+    return Math.max(
+      0,
+      remainingMsRef.current - (Date.now() - startedAtMsRef.current),
+    );
+  }, []);
+
+  const commitElapsedTime = useCallback(() => {
+    const nextRemainingMs = getRemainingMs();
+    remainingMsRef.current = nextRemainingMs;
+    startedAtMsRef.current = null;
+    setRemainingSeconds(Math.ceil(nextRemainingMs / 1000));
+    return nextRemainingMs;
+  }, [getRemainingMs]);
+
+  const finishSession = useCallback(() => {
+    remainingMsRef.current = 0;
+    startedAtMsRef.current = null;
+    setRemainingSeconds(0);
+    setTimerRunning(false);
+    try {
+      player.pause();
+    } catch {
+      // The native player may already have been released during route cleanup.
+    }
+    clearLockScreen();
+  }, [clearLockScreen, player]);
+
   const stop = useCallback(async () => {
     player.pause();
     clearLockScreen();
+    const sessionDurationSeconds = durationMinutes * 60;
+    remainingMsRef.current = sessionDurationSeconds * 1000;
+    startedAtMsRef.current = null;
+    setRemainingSeconds(sessionDurationSeconds);
+    setTimerRunning(false);
     setHasStarted(false);
     setError(null);
 
     if (status.isLoaded) {
       try {
-        await player.seekTo(startOffset);
+        await player.seekTo(0);
       } catch {
         // The source may be changing; the next play request seeks again.
       }
     }
-  }, [clearLockScreen, player, startOffset, status.isLoaded]);
+  }, [clearLockScreen, durationMinutes, player, status.isLoaded]);
 
+  // expo-audio intentionally exposes player controls as mutable properties.
+  // eslint-disable-next-line react-hooks/immutability
   const play = useCallback(async () => {
     if (!status.isLoaded) return;
 
@@ -76,14 +115,16 @@ export function useSleepSoundPlayer({
         shouldRouteThroughEarpiece: false,
       });
 
-      // expo-audio intentionally exposes these player controls as mutable properties.
       // eslint-disable-next-line react-hooks/immutability
-      player.loop = false;
+      player.loop = true;
       player.volume = SLEEP_SOUND_VOLUME;
 
-      const shouldRestart = !hasStarted || status.didJustFinish || status.currentTime >= status.duration - 1;
+      const shouldRestart = !hasStarted || remainingMsRef.current <= 0;
       if (shouldRestart) {
-        await player.seekTo(startOffset);
+        const sessionDurationSeconds = durationMinutes * 60;
+        remainingMsRef.current = sessionDurationSeconds * 1000;
+        setRemainingSeconds(sessionDurationSeconds);
+        await player.seekTo(0);
       }
 
       player.setActiveForLockScreen(
@@ -99,41 +140,79 @@ export function useSleepSoundPlayer({
           showSeekForward: false,
         },
       );
+      startedAtMsRef.current = Date.now();
       player.play();
       setHasStarted(true);
+      setTimerRunning(true);
     } catch (playbackError) {
       if (__DEV__) {
         console.warn('[SleepSounds] Failed to start playback', playbackError);
       }
+      startedAtMsRef.current = null;
+      setTimerRunning(false);
       clearLockScreen();
       setError('playback_failed');
     }
   }, [
     albumTitle,
     clearLockScreen,
+    durationMinutes,
     hasStarted,
     player,
-    startOffset,
-    status.currentTime,
-    status.didJustFinish,
-    status.duration,
     status.isLoaded,
     title,
   ]);
 
   const pause = useCallback(() => {
+    commitElapsedTime();
+    setTimerRunning(false);
     player.pause();
-  }, [player]);
+  }, [commitElapsedTime, player]);
 
   useEffect(() => {
-    if (status.didJustFinish) {
-      clearLockScreen();
+    if (!timerRunning) return;
+
+    const updateTimer = () => {
+      const nextRemainingMs = getRemainingMs();
+      if (nextRemainingMs <= 0) {
+        finishSession();
+        return;
+      }
+      setRemainingSeconds(Math.ceil(nextRemainingMs / 1000));
+    };
+
+    updateTimer();
+    const timerId = setInterval(updateTimer, TIMER_UPDATE_INTERVAL_MS);
+    return () => clearInterval(timerId);
+  }, [finishSession, getRemainingMs, timerRunning]);
+
+  useEffect(() => {
+    const wasPlaying = previousNativePlayingRef.current;
+    previousNativePlayingRef.current = status.playing;
+
+    if (wasPlaying && !status.playing && timerRunning) {
+      commitElapsedTime();
+      setTimerRunning(false);
+      return;
     }
-  }, [clearLockScreen, status.didJustFinish]);
+
+    if (
+      !wasPlaying &&
+      status.playing &&
+      hasStarted &&
+      !timerRunning &&
+      remainingMsRef.current > 0
+    ) {
+      startedAtMsRef.current = Date.now();
+      setTimerRunning(true);
+    }
+  }, [commitElapsedTime, hasStarted, status.playing, timerRunning]);
 
   useFocusEffect(
     useCallback(() => {
       return () => {
+        commitElapsedTime();
+        setTimerRunning(false);
         try {
           player.pause();
         } catch {
@@ -142,12 +221,8 @@ export function useSleepSoundPlayer({
         }
         clearLockScreen();
       };
-    }, [clearLockScreen, player]),
+    }, [clearLockScreen, commitElapsedTime, player]),
   );
-
-  const remainingSeconds = hasStarted
-    ? Math.max(0, Math.ceil((status.duration || durationMinutes * 60) - status.currentTime))
-    : durationMinutes * 60;
 
   return {
     error,
@@ -157,7 +232,7 @@ export function useSleepSoundPlayer({
     isBuffering: status.isBuffering,
     pause,
     play,
-    remainingSeconds,
+    remainingSeconds: hasStarted ? remainingSeconds : durationMinutes * 60,
     stop,
   };
 }

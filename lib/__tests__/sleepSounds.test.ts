@@ -1,17 +1,13 @@
 import {
-  getSleepSoundStartOffset,
   isSleepSoundId,
   isSleepTimerMinutes,
+  SLEEP_SOUND_LOOP_SECONDS,
   SLEEP_SOUND_TIMER_OPTIONS,
 } from '@/lib/sleepSounds';
 
 describe('sleepSounds', () => {
-  it.each([
-    [15, 30 * 60],
-    [30, 15 * 60],
-    [45, 0],
-  ] as const)('starts a %i-minute session at offset %i seconds', (duration, offset) => {
-    expect(getSleepSoundStartOffset(duration)).toBe(offset);
+  it('uses compact five-minute source loops', () => {
+    expect(SLEEP_SOUND_LOOP_SECONDS).toBe(5 * 60);
   });
 
   it('exposes the three supported timer durations', () => {

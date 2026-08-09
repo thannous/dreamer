@@ -6,9 +6,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 OUTPUT_DIR="$REPO_ROOT/assets/audio/sleep"
 SAMPLE_RATE=48000
-DURATION=2700
-FADE_DURATION=30
-FADE_START=$((DURATION - FADE_DURATION))
+LOOP_DURATION=300
+CROSSFADE_DURATION=10
+SOURCE_DURATION=$((LOOP_DURATION + CROSSFADE_DURATION))
 AAC_BITRATE=40k
 
 for tool in ffmpeg ffprobe; do
@@ -22,12 +22,17 @@ mkdir -p "$OUTPUT_DIR"
 
 generate_rain() {
   ffmpeg -hide_banner -loglevel error -y \
-    -f lavfi -i "anoisesrc=color=pink:amplitude=0.58:seed=1101:sample_rate=${SAMPLE_RATE}:duration=${DURATION}" \
-    -f lavfi -i "anoisesrc=color=white:amplitude=0.30:seed=1103:sample_rate=${SAMPLE_RATE}:duration=${DURATION}" \
+    -f lavfi -i "anoisesrc=color=pink:amplitude=0.58:seed=1101:sample_rate=${SAMPLE_RATE}:duration=${SOURCE_DURATION}" \
+    -f lavfi -i "anoisesrc=color=white:amplitude=0.30:seed=1103:sample_rate=${SAMPLE_RATE}:duration=${SOURCE_DURATION}" \
     -filter_complex \
       "[0:a]highpass=f=500,lowpass=f=11500,volume=0.48[body];\
        [1:a]highpass=f=3800,lowpass=f=15000,volume=0.12[drops];\
-       [body][drops]amix=inputs=2:normalize=0,afade=t=out:st=${FADE_START}:d=${FADE_DURATION}[out]" \
+       [body][drops]amix=inputs=2:normalize=0,asplit=3[midin][tailin][headin];\
+       [midin]atrim=start=${CROSSFADE_DURATION}:end=${LOOP_DURATION},asetpts=PTS-STARTPTS[mid];\
+       [tailin]atrim=start=${LOOP_DURATION}:end=${SOURCE_DURATION},asetpts=PTS-STARTPTS[tail];\
+       [headin]atrim=start=0:end=${CROSSFADE_DURATION},asetpts=PTS-STARTPTS[head];\
+       [tail][head]acrossfade=d=${CROSSFADE_DURATION}:c1=tri:c2=tri[seam];\
+       [mid][seam]concat=n=2:v=0:a=1[out]" \
     -map "[out]" \
     -ar "$SAMPLE_RATE" \
     -ac 1 \
@@ -42,12 +47,17 @@ generate_rain() {
 
 generate_ocean_waves() {
   ffmpeg -hide_banner -loglevel error -y \
-    -f lavfi -i "anoisesrc=color=brown:amplitude=0.72:seed=2201:sample_rate=${SAMPLE_RATE}:duration=${DURATION}" \
-    -f lavfi -i "anoisesrc=color=pink:amplitude=0.38:seed=2203:sample_rate=${SAMPLE_RATE}:duration=${DURATION}" \
+    -f lavfi -i "anoisesrc=color=brown:amplitude=0.72:seed=2201:sample_rate=${SAMPLE_RATE}:duration=${SOURCE_DURATION}" \
+    -f lavfi -i "anoisesrc=color=pink:amplitude=0.38:seed=2203:sample_rate=${SAMPLE_RATE}:duration=${SOURCE_DURATION}" \
     -filter_complex \
       "[0:a]highpass=f=45,lowpass=f=1300,volume='0.33+0.12*sin(2*PI*t/18)+0.05*sin(2*PI*t/10)':eval=frame[swell];\
        [1:a]highpass=f=700,lowpass=f=4200,volume='0.075+0.035*sin(2*PI*t/18-0.50)':eval=frame[foam];\
-       [swell][foam]amix=inputs=2:normalize=0,afade=t=out:st=${FADE_START}:d=${FADE_DURATION}[out]" \
+       [swell][foam]amix=inputs=2:normalize=0,asplit=3[midin][tailin][headin];\
+       [midin]atrim=start=${CROSSFADE_DURATION}:end=${LOOP_DURATION},asetpts=PTS-STARTPTS[mid];\
+       [tailin]atrim=start=${LOOP_DURATION}:end=${SOURCE_DURATION},asetpts=PTS-STARTPTS[tail];\
+       [headin]atrim=start=0:end=${CROSSFADE_DURATION},asetpts=PTS-STARTPTS[head];\
+       [tail][head]acrossfade=d=${CROSSFADE_DURATION}:c1=tri:c2=tri[seam];\
+       [mid][seam]concat=n=2:v=0:a=1[out]" \
     -map "[out]" \
     -ar "$SAMPLE_RATE" \
     -ac 1 \
@@ -62,9 +72,14 @@ generate_ocean_waves() {
 
 generate_brown_noise() {
   ffmpeg -hide_banner -loglevel error -y \
-    -f lavfi -i "anoisesrc=color=brown:amplitude=0.76:seed=3301:sample_rate=${SAMPLE_RATE}:duration=${DURATION}" \
+    -f lavfi -i "anoisesrc=color=brown:amplitude=0.76:seed=3301:sample_rate=${SAMPLE_RATE}:duration=${SOURCE_DURATION}" \
     -filter_complex \
-      "[0:a]highpass=f=35,lowpass=f=5200,volume=0.46,afade=t=out:st=${FADE_START}:d=${FADE_DURATION}[out]" \
+      "[0:a]highpass=f=35,lowpass=f=5200,volume=0.46,asplit=3[midin][tailin][headin];\
+       [midin]atrim=start=${CROSSFADE_DURATION}:end=${LOOP_DURATION},asetpts=PTS-STARTPTS[mid];\
+       [tailin]atrim=start=${LOOP_DURATION}:end=${SOURCE_DURATION},asetpts=PTS-STARTPTS[tail];\
+       [headin]atrim=start=0:end=${CROSSFADE_DURATION},asetpts=PTS-STARTPTS[head];\
+       [tail][head]acrossfade=d=${CROSSFADE_DURATION}:c1=tri:c2=tri[seam];\
+       [mid][seam]concat=n=2:v=0:a=1[out]" \
     -map "[out]" \
     -ar "$SAMPLE_RATE" \
     -ac 1 \
@@ -91,12 +106,12 @@ validate_output() {
     exit 1
   fi
 
-  if ! awk -v duration="$duration" 'BEGIN { exit !(duration >= 2699.9 && duration <= 2700.1) }'; then
+  if ! awk -v duration="$duration" 'BEGIN { exit !(duration >= 299.9 && duration <= 300.1) }'; then
     echo "Unexpected duration in $output_file: $duration seconds" >&2
     exit 1
   fi
 
-  if (( size > 16000000 )); then
+  if (( size > 2000000 )); then
     echo "Audio asset is larger than expected: $output_file ($size bytes)" >&2
     exit 1
   fi

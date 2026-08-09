@@ -50,13 +50,15 @@ const sound: SleepSoundConfig = {
 
 describe('useSleepSoundPlayer', () => {
   beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-08-04T20:00:00Z'));
     jest.clearAllMocks();
     focusCleanup = undefined;
     mockPlayer.loop = true;
     mockPlayer.volume = 1;
     mockStatus.currentTime = 0;
     mockStatus.didJustFinish = false;
-    mockStatus.duration = 2700;
+    mockStatus.duration = 300;
     mockStatus.isBuffering = false;
     mockStatus.isLoaded = true;
     mockStatus.playing = false;
@@ -64,7 +66,11 @@ describe('useSleepSoundPlayer', () => {
     jest.mocked(mockPlayer.seekTo).mockResolvedValue(undefined);
   });
 
-  it('configures background playback and seeks to the 15 minute start point', async () => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('configures background playback and loops the compact source', async () => {
     const { result } = renderHook(() =>
       useSleepSoundPlayer({
         sound,
@@ -89,8 +95,8 @@ describe('useSleepSoundPlayer', () => {
       shouldPlayInBackground: true,
       shouldRouteThroughEarpiece: false,
     });
-    expect(mockPlayer.seekTo).toHaveBeenCalledWith(1800);
-    expect(mockPlayer.loop).toBe(false);
+    expect(mockPlayer.seekTo).toHaveBeenCalledWith(0);
+    expect(mockPlayer.loop).toBe(true);
     expect(mockPlayer.volume).toBe(0.65);
     expect(mockPlayer.setActiveForLockScreen).toHaveBeenCalledWith(
       true,
@@ -109,7 +115,7 @@ describe('useSleepSoundPlayer', () => {
   });
 
   it('resumes a paused session without seeking back to the start', async () => {
-    const { result, rerender } = renderHook(() =>
+    const { result } = renderHook(() =>
       useSleepSoundPlayer({
         sound,
         durationMinutes: 30,
@@ -121,16 +127,87 @@ describe('useSleepSoundPlayer', () => {
     await act(async () => {
       await result.current.play();
     });
-    mockStatus.currentTime = 1200;
-    rerender();
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+    act(() => {
+      result.current.pause();
+    });
 
     await act(async () => {
       await result.current.play();
     });
 
     expect(mockPlayer.seekTo).toHaveBeenCalledTimes(1);
-    expect(mockPlayer.seekTo).toHaveBeenCalledWith(900);
+    expect(mockPlayer.seekTo).toHaveBeenCalledWith(0);
     expect(mockPlayer.play).toHaveBeenCalledTimes(2);
+    expect(result.current.remainingSeconds).toBe(30 * 60 - 5);
+  });
+
+  it('keeps the timer aligned with native lock-screen pauses and resumes', async () => {
+    const { result, rerender } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 15,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+
+    await act(async () => {
+      await result.current.play();
+    });
+    act(() => {
+      mockStatus.playing = true;
+      rerender();
+    });
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+    act(() => {
+      mockStatus.playing = false;
+      rerender();
+    });
+
+    expect(result.current.remainingSeconds).toBe(15 * 60 - 5);
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+    expect(result.current.remainingSeconds).toBe(15 * 60 - 5);
+
+    act(() => {
+      mockStatus.playing = true;
+      rerender();
+    });
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+    expect(result.current.remainingSeconds).toBe(15 * 60 - 10);
+  });
+
+  it('stops playback when the selected timer expires', async () => {
+    const { result } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 15,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+
+    await act(async () => {
+      await result.current.play();
+    });
+
+    act(() => {
+      jest.setSystemTime(new Date('2026-08-04T20:15:00Z'));
+      jest.advanceTimersByTime(500);
+    });
+
+    expect(mockPlayer.pause).toHaveBeenCalledTimes(1);
+    expect(mockPlayer.clearLockScreenControls).toHaveBeenCalledTimes(1);
+    expect(result.current.remainingSeconds).toBe(0);
   });
 
   it('pauses and clears lock-screen controls when the route loses focus', () => {
