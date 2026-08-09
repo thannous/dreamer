@@ -1,7 +1,16 @@
 # Zimbra backlink follow-ups — authorization-ready batch
 
 Prepared on 2026-08-09 after the authenticated `contact@noctalia.app` mailbox
-stop gate completed at 18:21 CEST. Nothing in this file has been sent.
+stop gate completed at 18:21 CEST. The three D3A replies were transmitted on
+2026-08-10 after a new immediate stop gate; all other copy remains unsent.
+
+## Execution update — 2026-08-10
+
+KapanLagi was sent in its original thread at 00:40 CEST. Penzu and AllThingsAI
+were sent in their original threads at 00:41 CEST. Each Zimbra composer showed
+zero attachment chips, each send produced `Le mail a été envoyé`, and Sent
+shows two messages in each conversation. This records transmission only, not
+delivery, acceptance, publication, a backlink or DR movement.
 
 ## Gate result
 
@@ -239,8 +248,8 @@ being presented as direct DR opportunities.
 
 ## Authorization boundary
 
-Recommended first send batch: the six Priority A routes only. After explicit
-authorization, re-open each original thread, re-run the reply/bounce/live-link
-stop gate immediately before sending, and record the exact authoritative Sent
-timestamp. Do not infer delivery, acceptance, publication, a backlink or a DR
-change from transmission.
+The D3A half of the former Priority A batch—KapanLagi, Penzu and AllThingsAI—was
+authorized and executed once on 2026-08-10. D3B—Android Police, Xataka Android
+and AITrendTool—remains unsent and requires separate explicit authorization.
+Do not infer delivery, acceptance, publication, a backlink or a DR change from
+the D3A transmission.

@@ -34,6 +34,29 @@ The public nineteen-page verifier was also rerun and remains at 6 followed,
 4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410. D3A
 therefore remains eligible, but no transmission is authorized by this check.
 
+## D3A execution — 2026-08-10 00:38–00:41 CEST
+
+The user independently authorized one first reply in each existing D3A thread.
+Immediately before transmission, the three public targets were fetched again:
+KapanLagi returned HTTP 200 with four `Noctalia` mentions and zero
+`noctalia.app` anchors; Penzu and AllThingsAI each returned HTTP 200 with zero
+Noctalia mentions or anchors. Exact authenticated Zimbra searches still showed
+one conversation containing only the original sent message for each recipient.
+Spam contained no matching reply, bounce, opt-out or delivery warning.
+
+| Domain | Existing thread | Authoritative Zimbra result | Recorded state |
+| --- | --- | --- | --- |
+| `kapanlagi.com` | `Re: Source attribution on your water-dream article` to `redaksi.kapanlagi@kly.id` | `Le mail a été envoyé`; Sent shows a two-message conversation at 2026-08-10 00:40 CEST. | `followup_1_sent_waiting` |
+| `penzu.com` | `Re: Android-specific addition for your dream journal guide` to `info@penzu.com` | `Le mail a été envoyé`; Sent shows a two-message conversation at 2026-08-10 00:41 CEST. | `followup_1_sent_waiting` |
+| `allthingsai.work` | `Re: Directory submission — Noctalia` to `info@allthingsai.work` | `Le mail a été envoyé`; Sent shows a two-message conversation at 2026-08-10 00:41 CEST. | `followup_1_sent_waiting` |
+
+Each composer contained the approved factual copy and zero attachment chips.
+No payment, tracking, reciprocal arrangement or guaranteed-link request was
+added. The Sent state proves transmission only; it does not prove remote
+delivery, human receipt, editorial acceptance, publication, a backlink or a DR
+change. The conditional final check remains dated 2026-08-16 and must stop if a
+reply, failure, opt-out or public citation appears first.
+
 ## Routes due on 2026-08-09
 
 | Domain | Public-page stop gate | Mailbox stop gate | Decision |

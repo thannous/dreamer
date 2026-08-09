@@ -1,9 +1,9 @@
 # Backlink execution decision board — 2026-08-09
 
 This board reduces the current research inventory to the few external actions
-with the strongest evidence and a clear authorization boundary. Nothing in this
-file authorizes or records a send, account, profile, publication, payment or
-backlink.
+with the strongest evidence and a clear authorization boundary. It now records
+the authorized D3A transmission; every other choice remains independent and
+unexecuted. A sent message is not a publication, backlink or DR result.
 
 ## Current evidence
 
@@ -36,6 +36,10 @@ backlink.
   message, Spam contains no matching response or failure, KapanLagi remains an
   unlinked source cluster, and neither Penzu nor AllThingsAI exposes a public
   Noctalia inclusion.
+- The immediate D3A gate passed again at 00:38–00:40 CEST. One reply was then
+  transmitted in each existing thread: KapanLagi at 00:40, Penzu at 00:41 and
+  AllThingsAI at 00:41. Zimbra Sent shows two messages in every conversation;
+  no attachment was added. This is transmission evidence only.
 - Elsewhere's current Medium comparison is indexable, but its inspected product
   links are `ugc nofollow`. The pending reply is relationship maintenance, not
   a claim of followed equity.
@@ -44,7 +48,7 @@ backlink.
 
 | Rank | Route | Why it comes here | Action boundary |
 | ---: | --- | --- | --- |
-| 1 | Three DR-first follow-ups | KapanLagi already uses the exact source across seven pages; Penzu exposes followed external-resource links; an ordinary AllThingsAI directory page exposes a separate followed product-domain link. | Reply once in each original thread only after an immediate reply, bounce, opt-out and live-citation stop gate. No attachments, tracking, payment or guaranteed-link request. |
+| 1 | Three DR-first follow-ups | KapanLagi already uses the exact source across seven pages; Penzu exposes followed external-resource links; an ordinary AllThingsAI directory page exposes a separate followed product-domain link. | Executed once in each original thread on 2026-08-10 after the immediate stop gate. Monitor only until the conditional 2026-08-16 check; stop on reply, failure, opt-out or live citation. |
 | 2 | Elsewhere human reply | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal, although Medium currently marks product links `ugc nofollow`. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
 | 3 | Marika Pech source correction | The live French article already names Noctalia but does not link it. Correcting the source protects factual accuracy and may reclaim the existing mention. | Submit one correction through the official route after confirming the wording and link are still unchanged. Do not request anchor manipulation or followed treatment. |
 | 4 | DreamWell DreamKit correction | Its transparent 2022 comparison still presents DreamKit as available on Android and iOS, while the Android listing is now 404 and the former iOS ID is Arcana. The article links competing developer domains directly. | Send one factual correction and offer Noctalia only as an optional test candidate for a future refresh. No link, anchor, ranking, replacement or timing request. |
@@ -97,6 +101,11 @@ misread as approval for another.
 > J'autorise une première relance unique dans les fils existants pour
 > KapanLagi, Penzu et AllThingsAI,
 > après un stop gate immédiat, sans pièce jointe, paiement ni garantie de lien.
+
+**Executed:** 2026-08-10 at 00:40–00:41 CEST in the three existing threads.
+Zimbra confirmed each send and Sent shows two messages per conversation. No
+attachment, payment or link guarantee was used. Publication and DR remain
+unverified.
 
 ### D3B — Three editorial-visibility follow-ups
 

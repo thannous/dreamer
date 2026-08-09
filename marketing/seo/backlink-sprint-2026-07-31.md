@@ -824,6 +824,23 @@ recorded in
 account, profile, publication, payment or backlink was created by this
 consolidation.
 
+### D3A DR-first follow-ups transmitted — 2026-08-10
+
+The user authorized exactly one first reply in the existing KapanLagi, Penzu
+and AllThingsAI threads. A fresh 00:38–00:40 CEST gate found no live Noctalia
+anchor on the three public targets, no human reply, bounce, opt-out or delivery
+warning in the exact authenticated Zimbra conversations, and no matching Spam
+message. KapanLagi still exposed four plain-text Noctalia mentions and zero
+anchors; Penzu and AllThingsAI exposed no Noctalia inclusion.
+
+The approved copy was sent without attachments, payment, tracking, reciprocity
+or a guaranteed-link request. Zimbra displayed `Le mail a été envoyé` for each
+reply, and Sent shows two-message conversations at 00:40 CEST for KapanLagi and
+00:41 CEST for Penzu and AllThingsAI. These are three transmissions, not proof
+of delivery, acceptance, publication, a backlink, a new referring domain or DR
+movement. The next conditional check remains 2026-08-16 and must stop on any
+reply, failure, opt-out or verified public citation.
+
 ### Editorial discovery wave 34 — 2026-08-09
 
 Three fresh search results were rejected before contact. DreamScribe's current
