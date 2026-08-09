@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia AI dream journal app",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-08-04T00:00:00+02:00",
+  "modifiedTime": "2026-08-09T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Noctalia Press Kit</h1>
-<p class="text-sm text-purple-300/70 mb-6">Updated August 4, 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Updated August 9, 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an Android-first dream journal that helps people record dreams by voice, turn them into structured entries, and explore symbols, images, patterns, and guided follow-up questions.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -51,6 +51,16 @@
       <div><dt class="text-sm text-purple-200/70">Languages</dt><dd class="text-white">English, French, Spanish, German, Italian</dd></div>
       <div><dt class="text-sm text-purple-200/70">Founder</dt><dd class="text-white">Thanh Chau</dd></div>
     </dl>
+  </section>
+
+  <section id="current-availability" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Current availability and export</h2>
+    <ul class="list-disc pl-5 space-y-2">
+      <li><strong class="text-white">Public availability:</strong> Noctalia is available on Android through Google Play. It is not currently available on iOS, and there is no public iOS release date.</li>
+      <li><strong class="text-white">Individual sharing:</strong> A user can share an individual dream card as a JPEG image through the device share sheet.</li>
+      <li><strong class="text-white">Portable journal export:</strong> Noctalia does not currently provide a full-journal PDF, CSV, JSON, or archive export.</li>
+    </ul>
+    <p class="mt-4 text-sm text-purple-200/70">These are current product facts, not future roadmap commitments. Please verify this section before publishing time-sensitive availability or export claims.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
