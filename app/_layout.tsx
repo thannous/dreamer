@@ -1,23 +1,17 @@
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import {
-  Fraunces_400Regular,
-  Fraunces_500Medium,
-  Fraunces_600SemiBold,
-  Fraunces_700Bold,
-} from '@expo-google-fonts/fraunces';
-import {
-  Lora_400Regular,
-  Lora_400Regular_Italic,
-  Lora_700Bold,
-  Lora_700Bold_Italic,
-} from '@expo-google-fonts/lora';
-import {
-  SpaceGrotesk_400Regular,
-  SpaceGrotesk_500Medium,
-  SpaceGrotesk_700Bold,
-} from '@expo-google-fonts/space-grotesk';
+import { Fraunces_400Regular } from '@expo-google-fonts/fraunces/400Regular';
+import { Fraunces_500Medium } from '@expo-google-fonts/fraunces/500Medium';
+import { Fraunces_600SemiBold } from '@expo-google-fonts/fraunces/600SemiBold';
+import { Fraunces_700Bold } from '@expo-google-fonts/fraunces/700Bold';
+import { Lora_400Regular } from '@expo-google-fonts/lora/400Regular';
+import { Lora_400Regular_Italic } from '@expo-google-fonts/lora/400Regular_Italic';
+import { Lora_700Bold } from '@expo-google-fonts/lora/700Bold';
+import { Lora_700Bold_Italic } from '@expo-google-fonts/lora/700Bold_Italic';
+import { SpaceGrotesk_400Regular } from '@expo-google-fonts/space-grotesk/400Regular';
+import { SpaceGrotesk_500Medium } from '@expo-google-fonts/space-grotesk/500Medium';
+import { SpaceGrotesk_700Bold } from '@expo-google-fonts/space-grotesk/700Bold';
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from 'expo-router/react-navigation';
 import { useFonts } from 'expo-font';
 import { useLocales } from 'expo-localization';
@@ -891,9 +885,8 @@ export default function RootLayout() {
       {shouldShowCustomSplash && (
         <AnimatedSplashScreen
           status={shouldFadeSplash ? 'outro' : 'intro'}
-          // Fabric can detach the Android splash surface before queued UI-thread
-          // cancellations drain. Keep the branded surface, but do not start
-          // splash worklets on Android; iOS retains the animated treatment.
+          // Android uses a lightweight bitmap-only implementation while iOS
+          // retains the animated treatment.
           forceStatic={Platform.OS === 'android' || splashTimedOut}
           onAnimationEnd={handleSplashFinished}
         />
