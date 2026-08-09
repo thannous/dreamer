@@ -634,6 +634,12 @@ A sampled public expert profile returned HTTP 200 and linked the expert's websit
 
 Four fresh comparison pages were rejected before contact. Taro's Tarot is operated by a disclosed Delaware company and links eight reviewed product domains, but every one of those anchors is `nofollow`. TodoAndroid identifies AB Internet Networks 2008 S.L. in Spain, yet its relevant Android dream-journal article links no named product domain. Nuju and The Success Diary are product-owned AI-journaling comparisons whose competitor names remain plain text while external links serve only their own products or social profiles. No message, form, account, product data or payment was used. Full evidence is recorded in `marketing/seo/editorial-discovery-wave-29-2026-08-09.md`.
 
+### Earned-media and launch-platform qualification wave — 2026-08-09
+
+HARO is a new P1 earned-citation route. Current official Terms and Privacy identify Terkel, Inc. at a Scottsdale, Arizona address; the free source membership sends up to three weekday journalist-query digests. Rules prohibit off-topic replies, unsolicited product pitches, reporter-data harvesting, attachments and automated accounts. Source membership can also create a public Expert Page across HARO, Featured or related Terkel properties, so authorization code `E5` requires an account-overlap and visibility check before activation. No Russian operator signal was found, and no membership, subscription, profile or reply was created.
+
+BetaList, StartupBase and Peerlist were rejected or paused before external action. BetaList now requires payment for every submission. StartupBase's free route requires reciprocal participation and a site badge but explicitly excludes the backlink, while its $39 tier sells the do-follow link. Peerlist is free and accountable, but only the weekly top five receive a backlink and launch eligibility requires a verified legal-name profile with real photo and potentially Stripe identity data. The central register now contains 184 routes and the focused media-source register contains five P1 platforms. Full evidence and the HARO response checklist are recorded in `marketing/seo/earned-media-and-launch-platform-wave-2026-08-09.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

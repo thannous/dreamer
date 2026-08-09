@@ -1,6 +1,6 @@
 # Media-source backlink pack — 2026-08-09
 
-This pack qualifies four non-Russian, free media-source routes that can lead to
+This pack qualifies five non-Russian, free media-source routes that can lead to
 genuine editorial citations. It prepares truthful identity, expertise and reply
 copy only. It does not authorize an account, newsletter subscription, public
 profile, pitch, mailbox connection, publication or payment.
@@ -13,6 +13,7 @@ profile, pitch, mailbox connection, publication or payment.
 | P1 | Qwoted | Basic plan, 2 pitches per month with a 2-hour delay | Journalist request, expert discovery and earned publisher citation | Real-person account and public profile require explicit authorization |
 | P1 | Featured | Free forever, no card, limited daily usage | Journalist requests, bylined articles and publisher placements | Magic-link account and any later submission require explicit authorization |
 | P1 | SourceBottle | Free expert profile, directory listing, media alerts and unlimited self-service call-out responses | Public expert discovery plus an earned journalist citation | User-chosen password, human verification and explicit authorization required |
+| P1 | HARO | Up to three free journalist-query digests per weekday | A reporter may select and cite a relevant first-hand answer | Source membership and possible public Expert Page require explicit authorization |
 
 These routes are stronger than self-created profile links because the intended
 outcome is an editor-controlled citation on an independent publisher. None
@@ -93,6 +94,34 @@ guarantees selection, a backlink, followed treatment or a DR increase.
   non-personal contributions. Use only the concise factual bio in this pack;
   do not upload the comparison dataset, proprietary copy or unpublished work.
 
+### Help a Reporter Out (HARO)
+
+- Official site and about page: <https://www.helpareporter.com/>,
+  <https://www.helpareporter.com/about>
+- Terms and privacy: <https://www.helpareporter.com/terms>,
+  <https://www.helpareporter.com/privacy>
+- Operator: Terkel, Inc., 7014 E Camelback Road, Suite B100A, Scottsdale,
+  AZ 85251; `haro@helpareporter.com`. Terkel also operates Featured.
+- The current service is free and sends up to three journalist-query digests
+  per weekday. The authority path is a reporter-selected quote or source
+  citation on the reporter's eventual publication, never the subscription
+  itself.
+- Current rules prohibit off-topic responses, product pitches unless the query
+  specifically requests a product, reporter-data harvesting, attachments and
+  automated accounts. Responses must answer one specific query in good faith.
+- Source registration can create or enrich a public Expert Page on HARO,
+  Featured or a related Terkel site using the source's name, bio, role,
+  organization, public articles and social links. Public pages may appear in
+  search results. Personal information is stored and processed in the United
+  States.
+- The public signup entry point requests an email address. Do not assume that a
+  prior Featured identity will be merged, reused or kept private; inspect every
+  subsequent field and visibility control after authorization and before
+  activation.
+- No Russian operator, address or jurisdiction signal was found. No source
+  membership, email subscription, Expert Page, query reply or payment was
+  created.
+
 ## Truthful founder profile
 
 Use these fields only after account or subscription authorization:
@@ -171,6 +200,9 @@ broad market claim:
 - **E4 — SourceBottle:** create one free real-person account for Thanh Chau
   using `contact@noctalia.app`, with a user-chosen password and user-completed
   verification code; select only the free plan, no paid pitching or advertising.
+- **E5 — HARO:** create or activate one free Source Member subscription for
+  Thanh Chau using `contact@noctalia.app`; inspect any Featured account overlap
+  and public Expert Page fields before confirmation, and send no query reply.
 
 Every later journalist response is a separate external transmission. Recheck
 outlet identity, deadline, topical fit, requested personal data and factual
