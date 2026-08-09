@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Noctalia is an AI-powered dream journal app: users record dreams by voice or text, a Supabase Edge Function backend (Gemini AI) produces interpretations, imagery, and categorization, and dreams are explored through a journal, statistics, chat, a symbol dictionary, and lucid-dreaming rituals. The app supports guest mode with quotas, Supabase auth (including Google Sign-In), RevenueCat subscriptions, and five languages (en, fr, es, de, it). The repo also contains a generated multilingual marketing site.
 
-**Tech stack:** Expo SDK 57 (Expo Router), React Native 0.86, React 19, TypeScript strict, Supabase (auth, Postgres, Deno Edge Functions), RevenueCat, Jest (unit), Vitest (perf only), Maestro (Android E2E). Requires Node >= 22.23.1.
+**Tech stack:** Expo SDK 57 (Expo Router), React Native 0.86, React 19, TypeScript strict, Supabase (auth, Postgres, Deno Edge Functions), RevenueCat, Jest (unit), Vitest (perf only), Maestro (Android E2E). Requires Node >= 24.19.0 and < 25.
 
 `package.json` is the command source of truth — do not invent parallel wrappers. `AGENTS.md` is the companion repository guide and is kept current.
 
