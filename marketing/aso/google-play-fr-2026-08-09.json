@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "package_name": "com.tanuki75.noctalia",
+  "locale": "fr-FR",
+  "status": "draft",
+  "effective_date": "2026-08-09",
+  "positioning": {
+    "primary_promise": "Un journal de rêves vivant qui révèle les symboles, les émotions et les motifs qui évoluent au fil des nuits.",
+    "voice_role": "La dictée est une option de saisie secondaire, jamais la promesse principale.",
+    "trust_boundary": "Noctalia propose des pistes de réflexion, jamais un diagnostic ni une prédiction."
+  },
+  "publication": {
+    "mode": "manual",
+    "play_console_mutation_allowed": false,
+    "notes": "Source de travail validable localement. Toute publication dans Google Play exige une autorisation explicite."
+  },
+  "listing": {
+    "title": "Noctalia : Journal de rêves",
+    "short_description": "Ton journal de rêves vivant : symboles, émotions et motifs évoluent avec toi.",
+    "full_description": "Chaque rêve laisse une trace. Noctalia transforme tes souvenirs en un journal de rêves vivant qui évolue avec toi.\n\nAu fil des nuits, retrouve tes symboles, tes émotions et les motifs qui reviennent dans ton histoire. Explore-les comme des pistes de réflexion — jamais comme un diagnostic ou une prédiction.\n\nUN JOURNAL QUI GRANDIT AVEC TOI\n• Consigne un rêve dès le réveil, par écrit ou avec la dictée facultative.\n• Ajoute tes émotions, tes symboles et les détails dont tu te souviens.\n• Relis tes nuits dans un journal clair, intime et vivant.\n\nDES MOTIFS QUI SE RÉVÈLENT\n• Repère les symboles et thèmes récurrents.\n• Observe comment tes émotions évoluent au fil du temps.\n• Retrouve les liens entre tes rêves sans leur imposer une signification unique.\n\nUNE EXPLORATION PERSONNELLE\n• Approfondis chaque rêve grâce à des questions de réflexion.\n• Donne une forme visuelle à son atmosphère avec une illustration onirique.\n• Reviens sur tes souvenirs quand un nouveau rêve fait écho aux précédents.\n\nTON ESPACE, TON RYTHME\nNoctalia est conçu comme un espace personnel pour se souvenir, observer et réfléchir. L’application ne remplace aucun avis médical ou psychologique et ne prétend pas prédire l’avenir.\n\nCommence ton journal de rêves et laisse ton histoire nocturne prendre vie, une nuit après l’autre."
+  },
+  "indexed_keywords": [
+    "journal de rêves",
+    "carnet de rêves",
+    "symboles des rêves",
+    "motifs récurrents",
+    "émotions",
+    "suivi des rêves",
+    "souvenirs de rêves"
+  ],
+  "screenshot_brief": [
+    {
+      "order": 1,
+      "role": "core",
+      "surface": "journal",
+      "caption": "Un journal qui grandit avec chaque rêve",
+      "proof": "Montrer plusieurs rêves datés et une continuité visuelle entre les nuits.",
+      "requirements": ["Interface Android", "Aucune Dynamic Island", "Contenu de démonstration lisible", "Aucun microphone au premier plan"]
+    },
+    {
+      "order": 2,
+      "role": "core",
+      "surface": "patterns",
+      "caption": "Retrouve les symboles qui reviennent",
+      "proof": "Montrer des symboles ou thèmes récurrents reliés à plusieurs rêves.",
+      "requirements": ["Interface Android", "Récurrence compréhensible sans petit texte", "Aucun microphone au premier plan"]
+    },
+    {
+      "order": 3,
+      "role": "core",
+      "surface": "emotions",
+      "caption": "Observe ce qui évolue au fil des nuits",
+      "proof": "Montrer une évolution d’émotions ou de motifs dans le temps.",
+      "requirements": ["Interface Android", "Évolution visible en moins de deux secondes", "Aucun microphone au premier plan"]
+    },
+    {
+      "order": 4,
+      "role": "support",
+      "surface": "dream-detail",
+      "caption": "Relis chaque rêve comme une histoire",
+      "proof": "Montrer une fiche de rêve riche avec récit, émotion et symboles.",
+      "requirements": ["Interface Android", "Hiérarchie de lecture nette"]
+    },
+    {
+      "order": 5,
+      "role": "support",
+      "surface": "dream-art",
+      "caption": "Donne une image à l’atmosphère du rêve",
+      "proof": "Montrer une illustration associée à un rêve déjà consigné.",
+      "requirements": ["Interface Android", "L’image sert le souvenir, sans promesse divinatoire"]
+    },
+    {
+      "order": 6,
+      "role": "trust",
+      "surface": "reflection",
+      "caption": "Explore sans diagnostic ni prédiction",
+      "proof": "Montrer des questions ou pistes de réflexion ouvertes.",
+      "requirements": ["Interface Android", "Aucune promesse médicale ou prédictive"]
+    },
+    {
+      "order": 7,
+      "role": "secondary",
+      "surface": "capture",
+      "caption": "Écris ou dicte quand le souvenir est frais",
+      "proof": "Montrer l’écriture comme chemin principal et la dictée comme option.",
+      "requirements": ["Interface Android", "La dictée reste visuellement secondaire"]
+    }
+  ]
+}

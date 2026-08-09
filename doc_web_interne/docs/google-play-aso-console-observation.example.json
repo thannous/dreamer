@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "package_name": "com.tanuki75.noctalia",
+  "data_origin": "play_console_manual_export",
+  "checked_at": "2026-01-29T00:00:00.000Z",
+  "period": {
+    "start": "2026-01-01",
+    "end": "2026-01-28",
+    "comparison_start": "2025-12-04",
+    "comparison_end": "2025-12-31"
+  },
+  "metrics": [
+    {
+      "family": "store_listing_clicks",
+      "id": "visitors",
+      "segment": "all",
+      "unit": "count",
+      "value": 100,
+      "change_percent_vs_previous_period": 10
+    },
+    {
+      "family": "store_listing_clicks",
+      "id": "unique_install_clicks",
+      "segment": "all",
+      "unit": "count",
+      "value": 40,
+      "change_percent_vs_previous_period": 5
+    },
+    {
+      "family": "store_listing_clicks",
+      "id": "click_through_rate",
+      "segment": "all",
+      "unit": "percent",
+      "value": 40,
+      "change_percent_vs_previous_period": -4
+    }
+  ],
+  "limitations": [
+    "Exemple de schéma : remplacer les valeurs par l’export Play Console du même jour.",
+    "Les changements sont relatifs à la période précédente affichée par Play Console."
+  ]
+}

@@ -103,6 +103,10 @@ doc_web_interne/docs/revenuecat-play-store-state.local.json
 doc_web_interne/docs/revenuecat-subscriber-expiry-state.local.json
 doc_web_interne/docs/google-play-subscription-state.local.json
 doc_web_interne/docs/google-play-track-state.local.json
+doc_web_interne/docs/google-play-aso-performance-state.local.json
+doc_web_interne/docs/google-play-aso-console-observation.local.json
+doc_web_interne/docs/google-play-vitals-state.local.json
+doc_web_interne/docs/google-play-listing-state.local.json
 doc_web_interne/docs/android-play-upgrade-33-to-34.local.json
 doc_web_interne/docs/android-voice-analysis-evidence.local.json
 doc_web_interne/docs/google-cloud-project-state.local.json
