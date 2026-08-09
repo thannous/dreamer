@@ -22,9 +22,21 @@ export ANDROID_OAUTH_CLIENT_ID='<android-oauth-client-id>'
 export PLAY_APP_SIGNING_SHA1='<play-app-signing-sha1>'
 ```
 
-`QA_ANDROID_VERSION_CODE` doit toujours correspondre a `expo.android.versionCode` dans `app.json`
-et au binaire installe depuis Google Play. Toute preuve `passed` avec une autre valeur reste
-historique et ne qualifie pas le candidat courant.
+Lorsque `eas.json` utilise `appVersionSource: "remote"`, `QA_ANDROID_VERSION_CODE` doit correspondre
+au `appBuildVersion` EAS et au binaire installe depuis Google Play. La valeur statique de `app.json`
+sert uniquement de repli local et peut etre inferieure au compteur distant auto-incremente. Toute
+preuve `passed` avec une autre valeur reste historique et ne qualifie pas le candidat courant.
+
+### Comptes QA persistants
+
+- Compte A payant: connexion Google `thannous@gmail.com`. Utiliser la session Google deja presente
+  sur le telephone QA; ne jamais stocker de mot de passe Google dans le depot ou dans un fichier env.
+- Compte B gratuit: compte email confirme, configure uniquement dans `.env.qa.local` via
+  `REVENUECAT_QA_SWITCH_FREE_EMAIL` et `REVENUECAT_QA_SWITCH_FREE_PASSWORD`.
+- `.env.qa.local` est ignore par Git. La documentation ne doit contenir ni le mot de passe ni
+  l'adresse du compte B; verifier sa disponibilite avec un login Supabase Auth avant chaque campagne.
+- Si le compte B doit etre remplace, creer un utilisateur email distinct, confirmer son email,
+  verifier qu'il reste `free / inactive`, puis mettre a jour uniquement `.env.qa.local`.
 
 ## Politique de release smoke actuelle
 
