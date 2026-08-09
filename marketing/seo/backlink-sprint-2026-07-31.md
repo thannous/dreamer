@@ -640,6 +640,33 @@ HARO is a new P1 earned-citation route. Current official Terms and Privacy ident
 
 BetaList, StartupBase and Peerlist were rejected or paused before external action. BetaList now requires payment for every submission. StartupBase's free route requires reciprocal participation and a site badge but explicitly excludes the backlink, while its $39 tier sells the do-follow link. Peerlist is free and accountable, but only the weekly top five receive a backlink and launch eligibility requires a verified legal-name profile with real photo and potentially Stripe identity data. The central register now contains 184 routes and the focused media-source register contains five P1 platforms. Full evidence and the HARO response checklist are recorded in `marketing/seo/earned-media-and-launch-platform-wave-2026-08-09.md`.
 
+### PeerPush trust closure and free correction queue — 2026-08-09 17:10 CEST
+
+The authenticated monthly email, public listing and account edit form were
+re-read without saving a change. The email's screenshot recommendation is stale:
+the public and editable galleries both expose four screenshots. The public page
+retains its self-canonical, `index, follow` directive and direct followed
+Noctalia CTA with `rel="noopener"` only.
+
+The non-Russian trust gate is now independently closed. [Fina
+Info.BIZ](https://infobiz.fina.hr/tvrtka/kriptonio-technologies-d-o-o/OIB-74485246028),
+the Croatian Financial Agency's business-information surface, lists Kriptonio
+Technologies d.o.o. as an active Croatian private micro-company under OIB
+`74485246028`, with a Sesvete address and Ivan Pušić as founder and director.
+PeerPush's public Terms still fail to name that entity or a concrete governing
+jurisdiction and declare paid promotions final and non-refundable, so the
+existing free listing is retained while relaunch, guest-blog and promotion
+spend remain rejected.
+
+Three account-field improvements are queued behind a fresh explicit edit
+authorization: add the verified Google Play URL, replace `Photo Creation` with
+the available `Self-Reflection` use case, and review `Hobbyists` against the live
+accepted audience taxonomy before choosing any replacement. These are topical
+accuracy and conversion improvements to an existing followed page, not a new
+referring domain or DR event. No email reply, saved field, relaunch, account
+creation, publication or payment was performed. Detailed evidence is recorded
+in `marketing/seo/peerpush-account-review-2026-08-09.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

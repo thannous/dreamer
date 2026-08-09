@@ -25,8 +25,9 @@ search engine indexed a new page, or that Domain Rating changed.
 | Noctalia listing | HTTP 200, self-canonical, `index, follow` |
 | Website link | Direct `noctalia.app` CTA with `rel="noopener"`, therefore technically followed |
 | Operator location | Account email footer identifies Kriptonio Technologies d.o.o., Zagreb, Croatia; this is an official non-Russian signal |
-| Public legal identity | Current Terms still identify only PeerPush and expose no registered entity or address; independent registry confirmation remains missing |
-| Paid features | Relaunch, guest-blog and promotion routes are commercial upsells; no spend is authorized |
+| Independent registry | [Fina Info.BIZ](https://infobiz.fina.hr/tvrtka/kriptonio-technologies-d-o-o/OIB-74485246028) lists Kriptonio Technologies d.o.o. as an active Croatian private micro-company, OIB `74485246028`, at Ulica Ivana Meštrovića 35, Sesvete, with Ivan Pušić as founder and director |
+| Public legal identity | Current [PeerPush Terms](https://peerpush.com/terms) still identify only PeerPush and expose no registered entity, address or concrete governing jurisdiction; the registry match strengthens accountability but does not repair this disclosure gap |
+| Paid features | Relaunch, guest-blog and promotion routes are commercial upsells; the Terms say paid promotion payments are final and non-refundable, and no spend is authorized |
 
 ## Recommended action
 
@@ -67,3 +68,36 @@ prove a new referring domain, a new backlink, crawler pickup of the new images,
 AI recommendation, referral session, index refresh or Domain Rating movement.
 No relaunch, promotion, social feature, guest-blog purchase or other spend was
 used.
+
+## Read-only trust and free correction recheck — 2026-08-09 17:10 CEST
+
+The current account email and public listing were re-read in the authenticated
+Chrome session. The email's instruction to add at least two screenshots is now
+stale: the public gallery and the edit form both show four screenshots. The
+listing remains self-canonical and `index, follow`; its direct website CTA still
+targets `https://noctalia.app/?utm_source=peerpush&ref=peerpush` with
+`rel="noopener"` only.
+
+The authenticated edit form exposes three factual quality issues that can be
+corrected for free after a separate explicit account-edit authorization:
+
+1. add the canonical Google Play URL
+   `https://play.google.com/store/apps/details?id=com.tanuki75.noctalia`;
+2. replace the weak `Photo Creation` use case with the available
+   `Self-Reflection` use case while retaining `Journaling`;
+3. review the broad `Hobbyists` audience and replace it only with a more precise
+   option that is actually present in PeerPush's live accepted taxonomy.
+
+These changes would improve topical accuracy and installation conversion on an
+existing followed page. They would not create a new referring domain or prove
+DR movement. No field was saved, no email was answered, and no paid feature was
+opened or purchased during this recheck.
+
+Independent trust evidence was also completed. The Croatian Financial Agency's
+[Fina Info.BIZ](https://infobiz.fina.hr/tvrtka/kriptonio-technologies-d-o-o/OIB-74485246028)
+lists Kriptonio Technologies d.o.o. as active, with OIB
+`74485246028`, private ownership, Croatian address and Ivan Pušić as founder and
+director. This passes the accountable non-Russian operator gate for retaining
+the free listing. PeerPush's own legal pages remain weaker than the registry
+evidence because their Terms do not name that company or a concrete governing
+jurisdiction.
