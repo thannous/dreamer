@@ -787,6 +787,30 @@ comment, product data or payment was used. The central register now contains
 197 routes: 3 P0, 63 P1, 130 P2 and 1 P3. Full evidence is recorded in
 `marketing/seo/editorial-discovery-wave-33-2026-08-09.md`.
 
+### Execution decision consolidation — 2026-08-09
+
+The prospect and outreach registers were reconciled after a status mismatch was
+found. The outreach log correctly contained 31 first follow-ups that had passed
+their last recorded stop gates, while nine Gmail wave-1 routes still had stale
+`initial_*_waiting` statuses in the prospect register. Those nine status and
+verification-date fields now match the outreach evidence; no send timestamp,
+response or public-link claim was added.
+
+The next external actions are ranked rather than bundled. Elsewhere's human
+reply comes first, followed by the Marika Pech factual source correction, then a
+six-route Priority A follow-up batch limited to KapanLagi, Penzu, Android
+Police, Xataka Android, AllThingsAI and AITrendTool. The remaining 25 eligible
+first follow-ups stay queued, not approved. Free earned-media intake and owned
+syndication remain behind separate account or publication authorizations.
+PeerPush stays live and free; its current profile corrections are conversion
+work, not a new-domain action, and all paid upsells remain rejected.
+
+Exact independent authorization language and post-send measurement gates are
+recorded in
+`marketing/seo/backlink-execution-decision-board-2026-08-09.md`. No email, form,
+account, profile, publication, payment or backlink was created by this
+consolidation.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
