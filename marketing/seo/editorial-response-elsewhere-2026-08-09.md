@@ -12,6 +12,18 @@ Noctalia when he prepares it, and asked two product questions:
 This is a human editorial response and a future-review signal. It is not an
 acceptance, publication, backlink, followed link, referral visit, or DR gain.
 
+## 22:06 CEST stop-gate refresh
+
+- The authenticated Gmail thread still contains exactly two messages: Thanh's
+  initial note and Dan Kennedy's 2026-08-04 reply. There is no later reply,
+  bounce, opt-out or prior answer from Noctalia in that thread.
+- `https://noctalia.app/en/press#current-availability` returns HTTP 200 on the
+  production domain and still states Android-only availability, no public iOS
+  release date, image sharing for an individual dream and no full-journal PDF,
+  CSV, JSON or archive export.
+- The route therefore remains response-ready, but transmission is still an
+  external action requiring explicit authorization.
+
 ## Product evidence checked
 
 | Question | Current evidence | Safe answer |
@@ -32,21 +44,20 @@ Subject: `Re: dream app comparison update`
 
 > Hi Dan,
 >
-> Thanks — and I appreciate the concrete questions.
+> Thanks — those are exactly the right questions.
 >
-> Noctalia is publicly available on Android today. It is not currently available
-> on iOS, and I do not have a public iOS release date I can responsibly give you.
+> Noctalia is Android-only today. I do not have an announced or committed iOS
+> release or date that I can responsibly share.
 >
-> It also does not currently offer a full portable journal export such as PDF,
-> CSV or JSON. A user can share an individual dream card as an image and can
-> back up the journal through an account, but if full export is essential,
-> Noctalia is not there yet.
+> Users can share an individual dream card as an image and back up their journal
+> through an account, but there is no full-journal PDF, CSV, JSON or archive
+> export today.
 >
 > I have put those current limitations in the press kit as well:
 > https://noctalia.app/en/press#current-availability
 >
-> That is useful product feedback for us. If either point changes before your
-> next comparison, may I send you one concise update?
+> If either point changes before your next comparison, may I send you one short
+> update?
 >
 > Best dreams,
 > Thanh

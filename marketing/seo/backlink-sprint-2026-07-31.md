@@ -845,6 +845,26 @@ editorial destinations. It is an owned asset, not a backlink or proof of DR
 movement. Full evidence and the publication boundary are recorded in
 `marketing/seo/dream-journal-ultimate-alternative-asset-2026-08-09.md`.
 
+### D1–D2 approval batch refresh — 2026-08-09
+
+At 22:06 CEST, the authenticated Elsewhere Gmail thread still contained only
+Thanh's initial note and Dan Kennedy's human reply asking about iOS and export.
+The production press kit remained HTTP 200 and documented Android-only
+availability, no announced iOS release date and no full-journal portable export.
+The reply was tightened to answer only those facts and remains unsent.
+
+The exact Marika Pech article also remained HTTP 200, self-canonical and
+`follow, index`, with the old `40–60 %` claim, the plain-text Noctalia
+attribution and no `noctalia.app` anchor. Its named French operator, official
+contact route and non-Russian trust gate remained valid. The corrected Noctalia
+source was live and exposed the peer-reviewed belief-versus-experience evidence
+and DOI. One concise correction request remains unsent.
+
+The independent D1 and D2 authorization text, immediate pre-send gates and
+measurement boundary are consolidated in
+`marketing/seo/backlink-approval-batch-d1-d2-2026-08-09.md`. No email, form,
+account, publication, payment or backlink was created by this refresh.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
