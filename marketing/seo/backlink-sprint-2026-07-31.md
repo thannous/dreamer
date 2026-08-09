@@ -868,18 +868,20 @@ account, publication, payment or backlink was created by this refresh.
 ### Fourth competitor-alternative destination — 2026-08-09
 
 A fourth source-linked alternative family was prepared for DreamKit in English,
-French, Spanish, German and Italian. Current official evidence confirms an
-established Android listing with PDF export, cloud backup, app locking and
-reality-check reminders, while the former DreamKit iOS identifier now resolves
-to the separate Arcana astrology and tarot product. The pages preserve those
-strengths and the platform caveat instead of implying feature or availability
-parity.
+French, Spanish, German and Italian. An earlier August 9 Google Play snapshot
+showed an established footprint and advertised PDF export, cloud backup, app
+locking and reality-check reminders. During the final release check, however,
+the same package URL returned HTTP 404 in US and French checks; the former iOS
+identifier now resolves to the separate Arcana astrology and tarot product. The
+pages treat those store facts as historical and position DreamKit mainly as a
+migration case for existing users.
 
 The new family is linked from all five alternatives hubs and included in the
-site route, illustration, `llms.txt` and commercial release contracts. Current
-official operator signals point to the United States and Neural Candy LLC; no
-Russian operator signal was found. This is an owned destination, not a backlink
-or evidence of DR movement. Full evidence is recorded in
+site route, illustration, `llms.txt` and commercial release contracts. No
+Russian operator signal was found, but the current DreamKit site does not expose
+enough legal-operator information for independent confirmation; Neural Candy
+LLC is the US seller of the separate Arcana product. This is an owned
+destination, not a backlink or evidence of DR movement. Full evidence is recorded in
 `marketing/seo/dreamkit-alternative-asset-2026-08-09.md`.
 
 Weekly, record only verified public outcomes:
