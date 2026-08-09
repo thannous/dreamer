@@ -15,5 +15,8 @@ If the gate passes, use the original thread, add exactly one new factual item an
 
 The public-page and browser evidence is recorded in `marketing/seo/backlink-follow-up-stop-check-2026-08-09.md`.
 
-- Xataka Android still has no public Noctalia citation, but the Zimbra Inbox/Spam gate is blocked by an unauthenticated session. No follow-up is eligible yet.
+- Xataka Android still has no public Noctalia citation. Authenticated Zimbra
+  search shows only the original sent conversation, and Spam contains no
+  matching reply, bounce, opt-out or delivery warning. The route is now
+  `followup_1_eligible_awaiting_explicit_authorization`; nothing was sent.
 - The Andro4all target now redirects to La Razón. The original route is closed as `closed_target_migrated_to_larazon`; do not follow up to the Andro4all recipient.

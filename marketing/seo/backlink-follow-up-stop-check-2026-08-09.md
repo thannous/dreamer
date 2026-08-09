@@ -1,6 +1,8 @@
 # Backlink follow-up stop-check — 2026-08-09
 
-Checked on 2026-08-09 (Europe/Paris). This is evidence gathering only. No email, form, account, publication or payment was sent or created.
+Checked on 2026-08-09 (Europe/Paris), with the authenticated Zimbra stop gate
+completed at 18:21 CEST. This is evidence gathering only. No email, form,
+account, publication or payment was sent or created.
 
 ## Global public baseline
 
@@ -19,14 +21,25 @@ The distribution is unchanged from the 2026-08-03 public verification. This does
 
 | Domain | Public-page stop gate | Mailbox stop gate | Decision |
 | --- | --- | --- | --- |
-| `xatakandroid.com` | Target returns HTTP 200. Current HTML and rendered search expose no `Noctalia` or `noctalia.app` citation. | Blocked: the real Chrome Zimbra tab currently shows the login screen instead of the authenticated `contact@noctalia.app` mailbox. | `follow_up_due_mailbox_gate_blocked`; do not send until Inbox and Spam are checked. |
+| `xatakandroid.com` | Target returns HTTP 200. Current HTML and rendered search expose no `Noctalia` or `noctalia.app` citation. | Authenticated Zimbra `Tout le courrier` search returns one conversation containing only the original sent message. Spam contains no matching reply, bounce, opt-out or delivery warning. | `followup_1_eligible_awaiting_explicit_authorization`; do not send without a separate send authorization. |
 | `andro4all.com` | The target now redirects to a La Razón article and exposes no Noctalia citation. The originally contacted Andro4all route no longer controls the verified target URL. | Not required for a follow-up decision because the public target migration invalidates the original route. | `closed_target_migrated_to_larazon`; do not follow up to `prensa@andro4all.com`. A future La Razón route would require fresh qualification and separate authorization. |
-| `aitrendtool.com` | The free submission page returns HTTP 200, still describes human editorial review, and exposes no Noctalia citation. Exact public site search also found no Noctalia listing. | Blocked by the unauthenticated Zimbra state. | `follow_up_due_mailbox_gate_blocked`; do not send until Inbox and Spam are checked. |
-| `everyeye.it` | The topical article returns HTTP 200. Current HTML and exact site search expose no `Noctalia` or `noctalia.app` citation. | Blocked by the unauthenticated Zimbra state. | `follow_up_due_mailbox_gate_blocked`; do not send until Inbox and Spam are checked. |
+| `aitrendtool.com` | The free submission page returns HTTP 200, still describes human editorial review, and exposes no Noctalia citation. Exact public site search also found no Noctalia listing. | Authenticated Zimbra `Tout le courrier` search returns one conversation containing only the original sent message. Spam contains no matching reply, bounce, opt-out or delivery warning. | `followup_1_eligible_awaiting_explicit_authorization`; do not send without a separate send authorization. |
+| `everyeye.it` | The topical article returns HTTP 200. Current HTML and exact site search expose no `Noctalia` or `noctalia.app` citation. | Authenticated Zimbra `Tout le courrier` search returns one conversation containing only the original sent message. Spam contains no matching reply, bounce, opt-out or delivery warning. | `followup_1_eligible_awaiting_explicit_authorization`; do not send without a separate send authorization. |
 
-## Required next gate
+## Completed mailbox gate and remaining authorization gate
 
-After the user signs in to `https://zimbra1.mail.ovh.net/modern/` in the real Chrome browser, search each exact recipient and subject in Inbox and Spam. Close a route on any reply, decline, opt-out, bounce, delivery warning or already-live citation. If a route still passes, prepare one reply in the original thread and request explicit authorization before transmission.
+The real Chrome session is authenticated as `contact@noctalia.app`. Exact-domain
+searches across `Tout le courrier` were run for the three due routes and all
+wave-2 email routes. Each open route contains only the original sent message,
+except The Verge's already-recorded automatic away reply and
+BestForAndroid's already-closed paid offer. Spam contains the previously
+recorded AndroidAyuda permanent failure and no new campaign reply, bounce,
+opt-out or warning.
+
+The public and mailbox stop gates therefore pass for Xataka Android,
+AITrendTool and Everyeye. Their first replies may be prepared in the original
+threads, but transmission still requires explicit authorization. The Andro4all
+route remains closed because its target migrated to La Razón.
 
 ## Overdue wave-2 public gate
 
@@ -34,12 +47,16 @@ The fifteen wave-2 targets were also rechecked on 2026-08-09. This does not clea
 
 | Treatment | Domains | Evidence |
 | --- | --- | --- |
-| HTTP 200; no public Noctalia citation found | `allthingsai.work`, `gratitudegenie.com`, `androidpolice.com`, `goalsandprogress.com`, `penzu.com`, `atlasworkspace.ai`, `ilty.co`, `theverge.com`, `engadget.com`, `9to5google.com`, `sleepopolis.com` | Direct current HTML checks found no `Noctalia` or `noctalia.app`; exact public search also found no AllThingsAI listing. |
+| HTTP 200 or fully rendered in real Chrome; no public Noctalia citation found | `allthingsai.work`, `digitaltrends.com`, `gratitudegenie.com`, `androidpolice.com`, `goalsandprogress.com`, `penzu.com`, `atlasworkspace.ai`, `ilty.co`, `theverge.com`, `engadget.com`, `9to5google.com`, `sleepopolis.com` | Direct current HTML checks found no `Noctalia` or `noctalia.app`; exact public search also found no AllThingsAI listing. Digital Trends' current article rendered in real Chrome with its July 27, 2026 title/byline and no Noctalia match, clearing the earlier HTTP-only access uncertainty. |
 | Direct HTTP blocked, independently readable, no citation found | `androidheadlines.com`, `sleep.com` | Direct requests returned HTTP 403, but current search-rendered page copies were readable and contained no Noctalia match. |
-| Access-unverified | `digitaltrends.com` | Direct and search fetches returned HTTP 403. Do not infer absence or publication; a rendered authenticated/user-browser check is still required. |
 | Unlinked source mention remains | `kapanlagi.com` | The current page still prints the exact Noctalia source URL and names Noctalia, but no clickable `href` to `noctalia.app` is present. It remains source reclamation, not a backlink. |
 
-The Verge remains deferred until 2026-08-11 because of the previously recorded automatic away reply. Every other wave-2 route remains `follow_up_due_mailbox_gate_blocked`; the public check alone is insufficient to send.
+Authenticated Zimbra searches show only the original sent conversation for the
+fourteen wave-2 routes other than The Verge. No new matching reply or bounce is
+present in Spam. Those fourteen routes are now
+`followup_1_eligible_awaiting_explicit_authorization`. The Verge remains
+deferred until 2026-08-11 because of the previously recorded automatic away
+reply. Eligibility is not permission to send.
 
 ## Gmail wave-1 gate
 

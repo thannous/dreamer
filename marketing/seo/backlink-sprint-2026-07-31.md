@@ -698,6 +698,28 @@ confirming the public creator and affiliation, and publishing the record all
 remain external stop gates. No repository account, draft, DOI, license grant,
 upload or publication was created.
 
+### Authenticated Zimbra follow-up gate — 2026-08-09 18:21 CEST
+
+The real Chrome Zimbra session is authenticated as `contact@noctalia.app`.
+Exact-domain searches across `Tout le courrier` show only the original sent
+conversation for the seventeen currently due open routes. Spam contains the
+previously recorded AndroidAyuda permanent failure and no new matching reply,
+bounce, opt-out or delivery warning. The Verge's automatic away reply and
+BestForAndroid's $249 paid-placement offer remain correctly excluded.
+
+Digital Trends' current July 27, 2026 article also rendered fully in real Chrome
+and contains no Noctalia match, clearing the previous HTTP-only access
+uncertainty. Combined with the existing public-page checks, fourteen wave-2
+routes plus Xataka Android, AITrendTool and Everyeye are now
+`followup_1_eligible_awaiting_explicit_authorization`. No message was sent.
+
+Exact original-thread reply copy for all seventeen routes is recorded in
+`marketing/seo/backlink-follow-up-zimbra-ready-2026-08-09.md`, ranked into three
+tiers. The recommended first batch is limited to six Priority A routes:
+KapanLagi, Penzu, Android Police, Xataka Android, AllThingsAI and AITrendTool.
+Transmission still requires explicit authorization and a final immediate stop
+gate.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

@@ -60,4 +60,15 @@ After the conditional batch, update the outreach log per route with the exact Se
 
 ## Stop-check result — 2026-08-09
 
-The current public-page checks are recorded in `marketing/seo/backlink-follow-up-stop-check-2026-08-09.md`. No new clickable Noctalia citation was verified. KapanLagi still contains only an unlinked source URL, Digital Trends remains access-unverified behind HTTP 403, and the other readable targets contain no Noctalia match. The real Chrome Zimbra session is no longer authenticated, so no Inbox/Spam stop gate passed and no follow-up is eligible. The Verge remains deferred to 2026-08-11. Nothing was sent.
+The current public-page checks are recorded in
+`marketing/seo/backlink-follow-up-stop-check-2026-08-09.md`. No new clickable
+Noctalia citation was verified. KapanLagi still contains only an unlinked source
+URL, and Digital Trends was cleared in a full real-Chrome render with no
+Noctalia match.
+
+The authenticated `contact@noctalia.app` Zimbra session then cleared the
+mailbox gate: exact-domain searches show only the original sent conversation
+for the fourteen routes other than The Verge, and Spam contains no new matching
+reply or failure. Those fourteen routes are
+`followup_1_eligible_awaiting_explicit_authorization`. The Verge remains
+deferred to 2026-08-11. Nothing was sent.

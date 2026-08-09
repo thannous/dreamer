@@ -13,4 +13,7 @@ If the gate passes, use the original thread, add exactly one new factual item an
 
 ## Stop-check result — 2026-08-09
 
-The public pages still expose no Noctalia citation. The real Chrome Zimbra tab currently shows the login screen, so Inbox and Spam could not be checked. Both routes remain `follow_up_due_mailbox_gate_blocked`; no follow-up is eligible and nothing was sent.
+The public pages still expose no Noctalia citation. Authenticated Zimbra
+searches show only the original sent conversation for each route, and Spam
+contains no matching reply, bounce, opt-out or delivery warning. Both routes
+are now `followup_1_eligible_awaiting_explicit_authorization`; nothing was sent.
