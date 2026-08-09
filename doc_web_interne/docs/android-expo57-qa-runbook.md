@@ -281,13 +281,14 @@ Supabase. Il se termine toujours par une déconnexion.
 Le flow `release-auth-voice-analysis` est une gate manuelle : après le début de
 la dictée, prononcer exactement :
 
-> Last night I walked through a quiet forest under a bright moon, then a golden
-> fox guided me to a blue door.
+> Cette nuit, je marchais dans une forêt calme sous une lune brillante, puis un
+> renard doré m'a guidé vers une porte bleue.
 
-Le scénario n'autorise la sauvegarde que si les ancres `forest|moon` puis
-`fox|door` apparaissent dans la transcription. Il exige ensuite la carte de
-transcription et une interprétation réelle, puis se déconnecte. Le minuteur du
-microphone seul ne constitue jamais une preuve de reconnaissance vocale.
+Le scénario sélectionne explicitement le français et n'autorise la sauvegarde
+que si les ancres `forêt|lune` puis `renard|porte` apparaissent dans la
+transcription. Il exige ensuite la carte de transcription et une interprétation
+réelle, puis se déconnecte. Le minuteur du microphone seul ne constitue jamais
+une preuve de reconnaissance vocale.
 
 Sur l'émulateur Android 36.5.11 testé, l'injection audio gRPC fait quitter le
 processus de l'émulateur et l'audio hôte n'est pas capturé de manière fiable.
