@@ -1,0 +1,11 @@
+date,phase,evidence,status,decision,next_action
+2026-08-09,J25,"Git ancestry and worktree status",confirmed,"old archive branch had zero unique commits and 136-commit lag; twelve untracked syntheses preserved","consolidate on fresh master-based branch"
+2026-08-09,J25,"master and origin/master synchronization",confirmed,"initial base 4447cf268; archive branch fast-forwarded to origin/master 92697d742 before publication; unrelated main-worktree WIP preserved","do not touch unrelated files"
+2026-08-09,J25,"Rank Tracker mobile snapshot",confirmed,"50 rows; 42 ranked; 8 unranked; 14 improved; 7 declined; 21 stable; 0 frozen","archive aggregate and preserve configuration"
+2026-08-09,J25,"Rank Tracker desktop snapshot",confirmed,"50 rows; 42 ranked; 8 unranked; 15 improved; 8 declined; 19 stable; 0 frozen","archive aggregate and preserve configuration"
+2026-08-09,J25,"Rank Tracker target comparison",confirmed,"three clear URL drifts: traumlexikon mobile; 50 sueños mobile; sognare acqua sporca desktop","collect SERP or GSC proof before action"
+2026-08-09,J25,"Commit 3bac9c1f6 and live HTTP",confirmed,"metadata-only support plus casa ragno perro variants published; scuola absent","freeze three URLs through 2026-09-05"
+2026-08-09,J25,"scuola source and live metadata",confirmed,"no document metadata override on master or production","keep separate experiment pending"
+2026-08-09,J25,"Limits and usage layers",mixed,"web UI last confirmed 63 general credits on 2026-08-08; connector reports Trial billed monthly and zero API units","manual UI reconciliation before paid work"
+2026-08-09,J25,"Site Audit state",carried_forward,"1147/10000 and latest crawl 2026-08-03 Health Score 100","no crawl in this consolidation"
+2026-08-09,J25,"SEO sources Rank Tracker crawl indexing and spend",not_performed,"documentation-only reconciliation","J27 subscription decision remains pending"
