@@ -7,7 +7,7 @@ backlink.
 
 ## Current evidence
 
-- The prospect register contains 197 qualified, paused, rejected or active
+- The prospect register contains 200 qualified, paused, rejected or active
   routes.
 - The outreach log contains 49 prior transmissions or attempts.
 - The prospect register and outreach log now agree on 31 first follow-ups that

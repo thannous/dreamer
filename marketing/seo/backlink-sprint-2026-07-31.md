@@ -205,7 +205,7 @@ Tracking files:
 - `marketing/seo/backlink-results-2026-07-31.csv`: nineteen manually audited surfaces, including six indexable followed pages (one explicitly low-trust), seven indexable nofollow pages (one explicitly low-trust), two nonindexable profiles, one lost historical listing and three search-visible store-derived or entity-profile surfaces whose link treatment remains unverified;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
 - `marketing/seo/search-console/2026-08-03-external-links-baseline.md`: authenticated GSC inventory of 149 external links, eight source domains and four target pages, reconciled to manual link quality;
-- `marketing/seo/backlink-prospects-2026-07-31.csv`: 197 researched opportunities: 3 P0 corrections/reclamations, 63 P1 prospects, 130 P2 prospects or exclusions and 1 P3 launch route;
+- `marketing/seo/backlink-prospects-2026-07-31.csv`: 200 researched opportunities: 3 P0 corrections/reclamations, 63 P1 prospects, 133 P2 prospects or exclusions and 1 P3 launch route;
 - `marketing/seo/editorial-discovery-wave-3-2026-08-03.md`: rendered trust, domain-link and pending-publication decisions for the third editorial discovery pass.
 - `marketing/seo/editorial-discovery-wave-4-2026-08-03.md`: four current comparison decisions plus the no-credit Ahrefs project-dashboard refresh.
 - `marketing/seo/editorial-discovery-wave-5-2026-08-03.md`: three current product-owned guide decisions, all rejected at the direct competitor-domain citation gate.
@@ -810,6 +810,25 @@ recorded in
 `marketing/seo/backlink-execution-decision-board-2026-08-09.md`. No email, form,
 account, profile, publication, payment or backlink was created by this
 consolidation.
+
+### Editorial discovery wave 34 — 2026-08-09
+
+Three fresh search results were rejected before contact. DreamScribe's current
+owner-disclosed roundup names competing apps but links none of their developer
+domains; its Terms also fail to identify a legal entity, address or concrete
+jurisdiction. Planwiz's indexable guide links only its own product ecosystem,
+publishes unsupported numerical claims about recall, anxiety, sleep, lucid
+dreaming and PTSD recovery, and leaves its legal `Owner` unidentified.
+DreamAndMeaning demonstrates direct external citations and identifies
+AccelerMedia LLC at a Jacksonville, Florida address, but its app section uses
+store links rather than developer domains and the surrounding site combines
+unnamed expert claims, affiliate content, trauma, therapy and prophetic-dream
+material that conflicts with Noctalia's non-medical and non-predictive position.
+
+No email, form, account, comment, product data or payment was used. The central
+register now contains 200 routes: 3 P0, 63 P1, 133 P2 and 1 P3. Full evidence is
+recorded in
+`marketing/seo/editorial-discovery-wave-34-2026-08-09.md`.
 
 Weekly, record only verified public outcomes:
 
