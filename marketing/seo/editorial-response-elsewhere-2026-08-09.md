@@ -12,6 +12,13 @@ Noctalia when he prepares it, and asked two product questions:
 This is a human editorial response and a future-review signal. It is not an
 acceptance, publication, backlink, followed link, referral visit, or DR gain.
 
+The current Medium comparison is self-canonical, `index, follow` and still does
+not mention Noctalia. Its inspected product-domain links, including Elsewhere,
+Oniri and DreamKit, carry `rel="noopener ugc nofollow"`. A future inclusion on
+that page would therefore be editorial discovery under the observed policy,
+not followed equity. The factual reply remains worthwhile because it preserves
+a real editor relationship and may lead to a different future citation surface.
+
 ## 22:06 CEST stop-gate refresh
 
 - The authenticated Gmail thread still contains exactly two messages: Thanh's

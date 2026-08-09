@@ -22,23 +22,31 @@ backlink.
 - The authenticated Ahrefs overview at 2026-08-09 15:58 CEST showed DR 0 and
   401 referring domains. The large raw domain count is not equivalent to 401
   verified followed editorial citations.
+- A rendered link-treatment refresh at 23:56 CEST separated the former six-route
+  Priority A batch: KapanLagi, Penzu and AllThingsAI retain direct DR potential;
+  Android Police and Xataka Android lack a direct developer-domain pattern on
+  the target pages, while the sampled AITrendTool product links are `nofollow`.
+- Elsewhere's current Medium comparison is indexable, but its inspected product
+  links are `ugc nofollow`. The pending reply is relationship maintenance, not
+  a claim of followed equity.
 
 ## Recommended execution order
 
 | Rank | Route | Why it comes here | Action boundary |
 | ---: | --- | --- | --- |
-| 1 | Elsewhere human reply | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
-| 2 | Marika Pech source correction | The live French article already names Noctalia but does not link it. Correcting the source protects factual accuracy and may reclaim the existing mention. | Submit one correction through the official route after confirming the wording and link are still unchanged. Do not request anchor manipulation or followed treatment. |
-| 3 | Six Priority A first follow-ups | KapanLagi, Penzu, Android Police, Xataka Android, AllThingsAI and AITrendTool have the best current combination of existing mention, competitor-link pattern, Android fit or free editorial route. | Reply once in each original thread only after an immediate reply, bounce, opt-out and live-citation stop gate. No attachments, tracking, payment or guaranteed-link request. |
+| 1 | Three DR-first follow-ups | KapanLagi already uses the exact source across seven pages; Penzu exposes followed external-resource links; an ordinary AllThingsAI directory page exposes a separate followed product-domain link. | Reply once in each original thread only after an immediate reply, bounce, opt-out and live-citation stop gate. No attachments, tracking, payment or guaranteed-link request. |
+| 2 | Elsewhere human reply | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal, although Medium currently marks product links `ugc nofollow`. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
+| 3 | Marika Pech source correction | The live French article already names Noctalia but does not link it. Correcting the source protects factual accuracy and may reclaim the existing mention. | Submit one correction through the official route after confirming the wording and link are still unchanged. Do not request anchor manipulation or followed treatment. |
 | 4 | DreamWell DreamKit correction | Its transparent 2022 comparison still presents DreamKit as available on Android and iOS, while the Android listing is now 404 and the former iOS ID is Arcana. The article links competing developer domains directly. | Send one factual correction and offer Noctalia only as an optional test candidate for a future refresh. No link, anchor, ranking, replacement or timing request. |
-| 5 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |
-| 6 | Owned syndication | Hashnode and Medium drafts are ready, but a self-published profile link has lower incremental authority and canonical risk than an independent editorial citation. | Publish only after separate account and publication authorization and verify the rendered canonical and link attributes. |
+| 5 | Three editorial-visibility follow-ups | Android Police and Xataka Android are credible Android publishers but the target pages lack a direct developer-domain citation pattern. AITrendTool's sampled product links are `nofollow`. | Treat these as discovery and relationship opportunities, not the DR-first batch. Authorize separately and verify any eventual public link without assuming equity. |
+| 6 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |
+| 7 | Owned syndication | Hashnode and Medium drafts are ready, but a self-published profile link has lower incremental authority and canonical risk than an independent editorial citation. | Publish only after separate account and publication authorization and verify the rendered canonical and link attributes. |
 
 ## Hold or reject
 
 - Keep the remaining 25 eligible first follow-ups queued. They have lower
-  expected value than the six-route Priority A batch and should not be sent as a
-  bulk blast.
+  expected value than the six reviewed routes and should not be sent as a bulk
+  blast. Only the three `D3A` routes are currently classified as DR-first.
 - Keep PeerPush's existing free followed listing. Its four screenshots are
   already live. Adding Google Play and correcting `Photo Creation` to
   `Self-Reflection` would improve topical accuracy and conversion, not create a
@@ -66,11 +74,18 @@ misread as approval for another.
 > J'autorise l'envoi du message factuel à Marika Pech par sa route officielle,
 > sans paiement ni autre publication.
 
-### D3 — Six Priority A first follow-ups
+### D3A — Three DR-first follow-ups
 
 > J'autorise une première relance unique dans les fils existants pour
-> KapanLagi, Penzu, Android Police, Xataka Android, AllThingsAI et AITrendTool,
+> KapanLagi, Penzu et AllThingsAI,
 > après un stop gate immédiat, sans pièce jointe, paiement ni garantie de lien.
+
+### D3B — Three editorial-visibility follow-ups
+
+> J'autorise une première relance unique dans les fils existants pour Android
+> Police, Xataka Android et AITrendTool, en comprenant que les pages vérifiées
+> n'établissent pas de potentiel de lien suivi, après un stop gate immédiat,
+> sans pièce jointe, paiement ni garantie de lien.
 
 ### D4 — PeerPush free profile correction
 

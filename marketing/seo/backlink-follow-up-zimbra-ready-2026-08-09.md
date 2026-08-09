@@ -20,9 +20,16 @@ stop gate completed at 18:21 CEST. Nothing in this file has been sent.
 
 | Priority | Routes | Reason |
 | --- | --- | --- |
-| A | KapanLagi, Penzu, Android Police, Xataka Android, AllThingsAI, AITrendTool | Existing source mention, direct competitor-link pattern, strong Android fit or free editorial directory route |
+| A — DR first | KapanLagi, Penzu, AllThingsAI | Existing multi-page source mention or currently verified followed product-domain pattern |
+| A — visibility | Android Police, Xataka Android, AITrendTool | Credible editorial or directory visibility, but no verified direct followed-domain pattern on the sampled target pages |
 | B | Digital Trends, Android Headlines, Sleep.com, Atlas Workspace, ILTY, Engadget, 9to5Google, Sleepopolis, Gratitude Genie | Credible editorial fit, but broad inboxes, older pages or less certain specialist inclusion |
 | C | Goals & Progress, Everyeye | Weak domain-citation pattern or article is thematic rather than an app comparison |
+
+The rendered link-treatment evidence and the independent `D3A`/`D3B`
+authorization boundaries are recorded in
+`marketing/seo/backlink-dr-priority-refresh-2026-08-09.md`. The message copy
+below is unchanged; the split only prevents discovery-oriented routes from
+being presented as direct DR opportunities.
 
 ## Exact reply copy
 

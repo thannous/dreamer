@@ -796,14 +796,27 @@ their last recorded stop gates, while nine Gmail wave-1 routes still had stale
 verification-date fields now match the outreach evidence; no send timestamp,
 response or public-link claim was added.
 
-The next external actions are ranked rather than bundled. Elsewhere's human
-reply comes first, followed by the Marika Pech factual source correction, then a
-six-route Priority A follow-up batch limited to KapanLagi, Penzu, Android
-Police, Xataka Android, AllThingsAI and AITrendTool. The remaining 25 eligible
+The next external actions are ranked rather than bundled. A later rendered
+link-treatment refresh split the former six-route Priority A batch into three
+DR-first follow-ups (`D3A`: KapanLagi, Penzu and AllThingsAI) and three
+editorial-visibility follow-ups (`D3B`: Android Police, Xataka Android and
+AITrendTool). Penzu exposes direct followed resource links, an ordinary
+AllThingsAI directory page exposes a separate followed product-domain link and
+KapanLagi already prints the exact Noctalia source across seven pages. By
+contrast, the sampled AITrendTool product links are `nofollow`, while the
+Android Police and Xataka target pages do not establish a direct
+developer-domain pattern.
+
+Elsewhere's human reply remains relationship-ready, but its current Medium
+comparison marks inspected product links `ugc nofollow`; it no longer outranks
+the `D3A` batch for immediate DR probability. The Marika Pech factual source
+correction follows as an unlinked-mention reclamation. The remaining 25 eligible
 first follow-ups stay queued, not approved. Free earned-media intake and owned
 syndication remain behind separate account or publication authorizations.
 PeerPush stays live and free; its current profile corrections are conversion
-work, not a new-domain action, and all paid upsells remain rejected.
+work, not a new-domain action, and all paid upsells remain rejected. Full
+rendered evidence is recorded in
+`marketing/seo/backlink-dr-priority-refresh-2026-08-09.md`.
 
 Exact independent authorization language and post-send measurement gates are
 recorded in
