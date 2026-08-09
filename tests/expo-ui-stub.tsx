@@ -4,6 +4,7 @@ type CommonProps = {
   children?: React.ReactNode;
   hidden?: boolean;
   label?: string;
+  matchContents?: boolean;
   modifiers?: ExpoUIModifier[];
   testID?: string;
 };
@@ -47,7 +48,7 @@ function container(tag: string, role?: string) {
 }
 
 export const Host = container('div');
-export function RNHostView({ children, hidden, modifiers, testID }: CommonProps) {
+export function RNHostView({ children, hidden, matchContents, modifiers, testID }: CommonProps) {
   usePositionedLayout(testID, modifiers);
   if (hidden) return null;
   const child = React.Children.only(children) as React.ReactElement<{
@@ -60,6 +61,7 @@ export function RNHostView({ children, hidden, modifiers, testID }: CommonProps)
     'div',
     {
       'data-child-pointer-events': child.props.pointerEvents,
+      'data-match-contents': String(matchContents),
       'data-testid': testID,
     },
     renderedChild
@@ -217,12 +219,21 @@ export function BottomSheet({
   children,
   isPresented,
   onDismiss,
+  snapPoints,
   testID,
-}: CommonProps & { isPresented: boolean; onDismiss: () => void }) {
+}: CommonProps & {
+  isPresented: boolean;
+  onDismiss: () => void;
+  snapPoints?: ('half' | 'full' | { fraction: number } | { height: number })[];
+}) {
   if (!isPresented) return null;
   return React.createElement(
     'div',
-    { role: 'dialog', 'data-testid': testID },
+    {
+      role: 'dialog',
+      'data-testid': testID,
+      'data-snap-points': snapPoints ? JSON.stringify(snapPoints) : undefined,
+    },
     children,
     React.createElement(
       'button',

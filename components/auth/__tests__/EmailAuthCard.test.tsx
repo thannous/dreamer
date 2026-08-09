@@ -49,6 +49,32 @@ jest.mock('react-native', () => {
         onChange={(event) => onChangeText?.((event.target as HTMLInputElement).value)}
       />
     ),
+    ScrollView: ({
+      automaticallyAdjustKeyboardInsets,
+      children,
+      contentInsetAdjustmentBehavior,
+      keyboardDismissMode,
+      keyboardShouldPersistTaps,
+      nestedScrollEnabled,
+    }: {
+      automaticallyAdjustKeyboardInsets?: boolean;
+      children?: React.ReactNode;
+      contentInsetAdjustmentBehavior?: string;
+      keyboardDismissMode?: string;
+      keyboardShouldPersistTaps?: string;
+      nestedScrollEnabled?: boolean;
+    }) => (
+      <div
+        data-testid="account-sheet-scroll"
+        data-adjust-keyboard-insets={String(automaticallyAdjustKeyboardInsets)}
+        data-content-inset-adjustment={contentInsetAdjustmentBehavior}
+        data-keyboard-dismiss-mode={keyboardDismissMode}
+        data-keyboard-taps={keyboardShouldPersistTaps}
+        data-nested-scroll={String(nestedScrollEnabled)}
+      >
+        {children}
+      </div>
+    ),
     View: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
       <div data-testid={testID}>{children}</div>
     ),
@@ -174,7 +200,24 @@ jest.mock('@/components/auth/EmailVerificationDialog', () => ({
 }));
 
 jest.mock('@/components/ui/StandardBottomSheet', () => ({
-  StandardBottomSheet: () => <div data-testid="standard-bottom-sheet" />,
+  StandardBottomSheet: ({
+    children,
+    snapPoints,
+    testID,
+    visible,
+  }: {
+    children?: React.ReactNode;
+    snapPoints?: unknown[];
+    testID?: string;
+    visible: boolean;
+  }) => visible ? (
+    <div
+      data-testid={testID ?? 'standard-bottom-sheet'}
+      data-snap-points={snapPoints ? JSON.stringify(snapPoints) : undefined}
+    >
+      {children}
+    </div>
+  ) : null,
 }));
 
 jest.mock('@/constants/journalTheme', () => ({
@@ -359,6 +402,22 @@ describe('EmailAuthCard', () => {
     expect(screen.queryByText('settings.account.local_hint')).toBeNull();
     expect(screen.getByTestId('settings-account-open-signup')).toBeDefined();
     expect(screen.getByTestId('settings-account-open-signin')).toBeDefined();
+  });
+
+  it('opens the account form in a full-height keyboard-scrollable sheet', () => {
+    render(<EmailAuthCard presentation="embedded" />);
+
+    fireEvent.click(screen.getByTestId('settings-account-open-signin'));
+
+    expect(screen.getByTestId('settings-account-sheet').getAttribute('data-snap-points')).toBe(
+      '["full"]'
+    );
+    expect(screen.getByTestId('account-sheet-scroll').getAttribute('data-keyboard-dismiss-mode'))
+      .toBe('on-drag');
+    expect(screen.getByTestId('account-sheet-scroll').getAttribute('data-keyboard-taps'))
+      .toBe('handled');
+    expect(screen.getByTestId('account-sheet-scroll').getAttribute('data-nested-scroll'))
+      .toBe('true');
   });
 
   it('renders signed-in state and allows sign-out', async () => {

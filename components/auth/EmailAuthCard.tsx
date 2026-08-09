@@ -1004,11 +1004,16 @@ export const EmailAuthCard: React.FC<Props> = ({
           primaryLabel: t('common.done'),
           onPrimary: () => setAccountSheetVisible(false),
         }}
+        snapPoints={['full']}
         testID="settings-account-sheet"
       >
         <ScrollView
+          automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
           contentContainerStyle={styles.accountSheetContent}
+          contentInsetAdjustmentBehavior="automatic"
+          keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
           keyboardShouldPersistTaps="handled"
+          nestedScrollEnabled
           showsVerticalScrollIndicator={false}
           style={styles.accountSheetScroll}
         >
@@ -1131,8 +1136,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   accountSheetScroll: {
+    flexGrow: 1,
+    flexShrink: 1,
     marginTop: ThemeLayout.spacing.md,
     maxHeight: 520,
+    minHeight: 0,
   },
   accountSheetContent: {
     paddingBottom: ThemeLayout.spacing.sm,

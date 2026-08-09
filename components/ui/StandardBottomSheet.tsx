@@ -17,7 +17,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
-import { BottomSheet } from './BottomSheet';
+import { BottomSheet, type BottomSheetProps } from './BottomSheet';
 import {
   BottomSheetActions,
   BottomSheetLinkAction,
@@ -81,6 +81,8 @@ export type StandardBottomSheetProps = {
   titleTestID?: string;
   /** Additional style for the sheet container */
   style?: StyleProp<ViewStyle>;
+  /** Optional native sheet heights. Omit to keep content-sized behavior. */
+  snapPoints?: BottomSheetProps['snapPoints'];
 };
 
 /**
@@ -120,6 +122,7 @@ export function StandardBottomSheet({
   testID,
   titleTestID,
   style,
+  snapPoints,
 }: StandardBottomSheetProps) {
   const { colors, mode, shadows } = useTheme();
   const insets = useSafeAreaInsets();
@@ -157,6 +160,7 @@ export function StandardBottomSheet({
       visible={visible}
       onClose={onClose}
       backdropColor={backdropColor}
+      snapPoints={snapPoints}
       style={[
         styles.sheet,
         {

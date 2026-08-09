@@ -28,6 +28,8 @@ export type BottomSheetProps = {
   testID?: string;
   /** How users can dismiss the sheet by gesture (default: 'pan'). */
   dismissBehavior?: 'pan' | 'none';
+  /** Optional native sheet heights. Omit to keep content-sized behavior. */
+  snapPoints?: React.ComponentProps<typeof ExpoBottomSheet>['snapPoints'];
 };
 
 const NATIVE_SHEET_HORIZONTAL_INSET = 16;
@@ -59,6 +61,7 @@ export function BottomSheet({
   backdropColor: _backdropColor,
   testID,
   dismissBehavior = 'pan',
+  snapPoints,
 }: BottomSheetProps) {
   const { colors, mode } = useTheme();
   const { width: viewportWidth } = useWindowDimensions();
@@ -120,6 +123,13 @@ export function BottomSheet({
         viewportWidth,
         Platform.OS === 'ios' ? 'ios' : 'android'
       );
+  const fillsViewport = snapPoints?.some((snapPoint) =>
+    snapPoint === 'full' || (
+      typeof snapPoint === 'object' &&
+      'fraction' in snapPoint &&
+      snapPoint.fraction >= 1
+    )
+  ) ?? false;
 
   return (
     <ExpoBottomSheet
@@ -127,9 +137,10 @@ export function BottomSheet({
       isPresented={visible}
       onDismiss={handleDismiss}
       showDragIndicator={false}
+      snapPoints={snapPoints}
       testID={testID}
     >
-      <RNHostView matchContents>
+      <RNHostView matchContents={!fillsViewport}>
         <View
           accessibilityViewIsModal
           style={[
@@ -139,6 +150,7 @@ export function BottomSheet({
               borderColor: noctalia.surface.border,
             },
             style,
+            fillsViewport && styles.sheetFullHeight,
             nativeContentWidth != null && { width: nativeContentWidth },
           ]}
         >
@@ -158,5 +170,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     paddingHorizontal: 24,
     paddingVertical: 28,
+  },
+  sheetFullHeight: {
+    flex: 1,
   },
 });

@@ -39,6 +39,27 @@ describe('BottomSheet Expo UI adapter', () => {
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 
+  it('forwards full-height snap points to the native sheet', () => {
+    render(
+      <BottomSheet
+        visible
+        onClose={() => {}}
+        snapPoints={['full']}
+        testID="sheet.full"
+      >
+        Full-height content
+      </BottomSheet>
+    );
+
+    const sheet = screen.getByTestId('sheet.full');
+
+    expect(sheet.getAttribute('data-snap-points')).toBe(
+      '["full"]'
+    );
+    expect(sheet.querySelector('[data-match-contents]')?.getAttribute('data-match-contents'))
+      .toBe('false');
+  });
+
   it('preserves dismiss behavior for dismissible and non-dismissible sheets', () => {
     const onClose = jest.fn();
     const { rerender } = render(
