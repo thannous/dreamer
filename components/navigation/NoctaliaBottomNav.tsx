@@ -64,7 +64,6 @@ export function NoctaliaBottomNav({
   const addBackground = noctalia.action.primary;
   const addBorder = noctalia.action.primaryBorder;
   const addTextColor = noctalia.action.primaryText;
-  const isDreamCaptureActive = activeKey === 'addDream';
   const horizontalLayout = getTabBarHorizontalLayout(width);
   const items: BottomNavItem[] = [
     {
@@ -85,10 +84,8 @@ export function NoctaliaBottomNav({
     },
     {
       key: 'addDream',
-      label: isDreamCaptureActive ? t('nav.capture_dream') : t('nav.add_dream'),
-      accessibilityLabel: isDreamCaptureActive
-        ? t('nav.capture_dream_accessibility')
-        : t('journal.add_button.accessibility'),
+      label: t('nav.capture_dream'),
+      accessibilityLabel: t('nav.capture_dream_accessibility'),
       icon: addDreamIcon,
       href: '/recording',
       testID: TID.Tab.AddDream,
@@ -163,6 +160,8 @@ export function NoctaliaBottomNav({
                   <Text
                     style={[styles.addLabel, { color: addTextColor }]}
                     numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.85}
                   >
                     {item.label}
                   </Text>
@@ -187,6 +186,8 @@ export function NoctaliaBottomNav({
                     ]}
                     numberOfLines={1}
                     ellipsizeMode="tail"
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.8}
                   >
                     {item.label}
                   </Text>

@@ -127,4 +127,12 @@ describe('NoctaliaBottomNav', () => {
 
     expect(screen.getByTestId(TID.Tab.AddDream)).toBeTruthy();
   });
+
+  it('keeps the capture label stable when another tab is active', () => {
+    render(<NoctaliaBottomNav activeKey="home" />);
+
+    const captureTab = screen.getByTestId(TID.Tab.AddDream);
+    expect(captureTab.textContent).toBe('nav.capture_dream');
+    expect(captureTab.getAttribute('aria-label')).toBe('nav.capture_dream_accessibility');
+  });
 });

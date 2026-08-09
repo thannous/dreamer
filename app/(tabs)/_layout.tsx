@@ -52,7 +52,9 @@ function TabBarItem({ label, icon, focused, palette, compact }: {
           { color: focused ? palette.textActive : palette.text },
         ]}
         numberOfLines={1}
-        ellipsizeMode="tail">
+        ellipsizeMode="tail"
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}>
         {label}
       </Text>
     </View>
@@ -92,7 +94,9 @@ function AddDreamTabItem({ label, palette, compact }: {
           { color: palette.textOnAccentSurface },
         ]}
         numberOfLines={1}
-        ellipsizeMode="tail">
+        ellipsizeMode="tail"
+        adjustsFontSizeToFit
+        minimumFontScale={0.85}>
         {label}
       </Text>
     </View>
@@ -223,19 +227,19 @@ export default function TabLayout() {
         name="add-dream"
         options={returningGuestBlocked ? {
           href: null,
-          title: t('nav.add_dream'),
+          title: t('nav.capture_dream'),
         } : {
-          title: t('journal.add_button.label'),
+          title: t('nav.capture_dream'),
           tabBarButton: (props) => (
             <HapticTab
               {...props}
               onPress={handleAddDreamPress}
               testID={TID.Tab.AddDream}
-              accessibilityLabel={t('journal.add_button.accessibility')}
+              accessibilityLabel={t('nav.capture_dream_accessibility')}
             />
           ),
           tabBarIcon: () => (
-            <AddDreamTabItem label={t('nav.add_dream')} palette={palette} compact={navigationLayout.compact} />
+            <AddDreamTabItem label={t('nav.capture_dream')} palette={palette} compact={navigationLayout.compact} />
           ),
         }}
       />
