@@ -253,7 +253,6 @@
         "npm:expo-audio@~57.0.2",
         "npm:expo-blur@~57.0.2",
         "npm:expo-build-properties@~57.0.5",
-        "npm:expo-camera@~57.0.2",
         "npm:expo-constants@~57.0.3",
         "npm:expo-crypto@~57.0.1",
         "npm:expo-dev-client@~57.0.6",

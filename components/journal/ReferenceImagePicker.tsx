@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import {
   ActivityIndicator,
-  Modal,
   Pressable,
   StyleSheet,
   Text,
@@ -19,7 +18,6 @@ import {
 } from 'react-native';
 import { Image } from 'expo-image';
 import type { Action as ImageManipulatorAction } from 'expo-image-manipulator';
-import type { CameraType, CameraView as ExpoCameraView } from 'expo-camera';
 
 import { REFERENCE_IMAGES } from '@/constants/appConfig';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -29,10 +27,8 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import {
-  loadExpoCameraModule,
   loadExpoImageManipulatorModule,
   loadExpoImagePickerModule,
-  type ExpoCameraModule,
 } from '@/lib/referenceImagePlatform';
 import type { ReferenceImage } from '@/lib/types';
 
@@ -47,11 +43,6 @@ interface SelectedImage {
   uri: string;
   mimeType: string;
 }
-
-type CameraPermission = {
-  granted: boolean;
-  canAskAgain: boolean;
-};
 
 const MAX_COMPRESSED_SIZE_BYTES = 1.5 * 1024 * 1024; // 1.5MB decoded payload
 const MAX_DIMENSION = 512;
@@ -121,20 +112,14 @@ export function ReferenceImagePicker({
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const pendingHandledRef = useRef(false);
-  const cameraRef = useRef<ExpoCameraView | null>(null);
   const mountedRef = useRef(true);
   const activeRef = useRef(active);
   const lifecycleEpochRef = useRef(0);
-  const cameraEpochRef = useRef(0);
   const operationSequenceRef = useRef(0);
   const operationInFlightRef = useRef<number | null>(null);
-  const captureSequenceRef = useRef(0);
-  const captureInFlightRef = useRef<number | null>(null);
   const selectedImagesRef = useRef<SelectedImage[]>([]);
   const onImagesSelectedRef = useRef(onImagesSelected);
   const subjectTypeRef = useRef(subjectType);
-  const [expoCamera, setExpoCamera] = useState<ExpoCameraModule | null>(null);
-  const [cameraPermission, setCameraPermission] = useState<CameraPermission | null>(null);
 
   useEffect(() => {
     onImagesSelectedRef.current = onImagesSelected;
@@ -146,9 +131,7 @@ export function ReferenceImagePicker({
     return () => {
       mountedRef.current = false;
       lifecycleEpochRef.current += 1;
-      cameraEpochRef.current += 1;
       operationInFlightRef.current = null;
-      captureInFlightRef.current = null;
     };
   }, []);
 
@@ -171,10 +154,6 @@ export function ReferenceImagePicker({
 
   const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isCameraVisible, setIsCameraVisible] = useState(false);
-  const [isCameraReady, setIsCameraReady] = useState(false);
-  const [isCapturing, setIsCapturing] = useState(false);
-  const cameraFacing: CameraType = subjectType === 'person' ? 'front' : 'back';
   const canAddMore = selectedImages.length < maxImages;
 
   useLayoutEffect(() => {
@@ -184,14 +163,9 @@ export function ReferenceImagePicker({
     }
 
     lifecycleEpochRef.current += 1;
-    cameraEpochRef.current += 1;
     operationInFlightRef.current = null;
-    captureInFlightRef.current = null;
     // Closing the parent sheet invalidates native work even though the picker stays mounted.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsCameraVisible(false);
-    setIsCameraReady(false);
-    setIsCapturing(false);
     setIsLoading(false);
   }, [active]);
 
@@ -222,43 +196,6 @@ export function ReferenceImagePicker({
     },
     [isLifecycleCurrent]
   );
-
-  const loadExpoCamera = useCallback(async (): Promise<ExpoCameraModule | null> => {
-    if (expoCamera) {
-      return expoCamera;
-    }
-
-    try {
-      const camera = await loadExpoCameraModule();
-      if (mountedRef.current && activeRef.current) {
-        setExpoCamera(camera);
-      }
-      return camera;
-    } catch (error) {
-      if (__DEV__) {
-        console.warn('[ReferenceImagePicker] expo-camera unavailable:', error);
-      }
-      return null;
-    }
-  }, [expoCamera]);
-
-  const ensureCameraPermission = useCallback(async (camera: ExpoCameraModule) => {
-    const existing = await camera.Camera.getCameraPermissionsAsync();
-    if (existing.granted) {
-      const permission = { granted: true, canAskAgain: existing.canAskAgain };
-      if (mountedRef.current && activeRef.current) {
-        setCameraPermission(permission);
-      }
-      return permission;
-    }
-
-    const requested = await camera.Camera.requestCameraPermissionsAsync();
-    const permission = { granted: requested.granted, canAskAgain: requested.canAskAgain };
-    if (mountedRef.current && activeRef.current) {
-      setCameraPermission(permission);
-    }
-    return permission;
-  }, []);
 
   const processSelectedAssets = useCallback(
     async (assets: { uri: string }[], epoch = lifecycleEpochRef.current) => {
@@ -343,74 +280,6 @@ export function ReferenceImagePicker({
     };
   }, [active, isLifecycleCurrent, processSelectedAssets]);
 
-  const closeCamera = useCallback(() => {
-    cameraEpochRef.current += 1;
-    captureInFlightRef.current = null;
-    setIsCameraVisible(false);
-    setIsCameraReady(false);
-    setIsCapturing(false);
-  }, []);
-
-  const handleCapture = useCallback(async () => {
-    if (
-      !cameraRef.current
-      || !isCameraReady
-      || isCapturing
-      || captureInFlightRef.current !== null
-      || !activeRef.current
-    ) {
-      return;
-    }
-
-    const captureId = ++captureSequenceRef.current;
-    captureInFlightRef.current = captureId;
-    const lifecycleEpoch = lifecycleEpochRef.current;
-    const cameraEpoch = cameraEpochRef.current;
-    let processingStarted = false;
-    setIsCapturing(true);
-    try {
-      const photo = await cameraRef.current.takePictureAsync({ quality: 0.9 });
-      if (
-        !isLifecycleCurrent(lifecycleEpoch)
-        || cameraEpochRef.current !== cameraEpoch
-        || captureInFlightRef.current !== captureId
-      ) {
-        return;
-      }
-      if (!photo?.uri) {
-        throw new Error('Missing photo uri');
-      }
-
-      setIsCameraVisible(false);
-      setIsCameraReady(false);
-      setIsLoading(true);
-      processingStarted = true;
-      await processSelectedAssets([{ uri: photo.uri }], lifecycleEpoch);
-    } catch (error) {
-      if (
-        !isLifecycleCurrent(lifecycleEpoch)
-        || cameraEpochRef.current !== cameraEpoch
-        || captureInFlightRef.current !== captureId
-      ) {
-        return;
-      }
-      if (__DEV__) {
-        console.error('[ReferenceImagePicker] Capture error:', error);
-      }
-      Alert.alert(t('common.error_title'), t('reference_image.pick_error'));
-    } finally {
-      if (captureInFlightRef.current === captureId) {
-        captureInFlightRef.current = null;
-        if (mountedRef.current) {
-          setIsCapturing(false);
-          if (processingStarted) {
-            setIsLoading(false);
-          }
-        }
-      }
-    }
-  }, [isCameraReady, isCapturing, isLifecycleCurrent, processSelectedAssets, t]);
-
   const handlePickImages = useCallback(async () => {
     if (!canAddMore || operationInFlightRef.current !== null || !activeRef.current) {
       return;
@@ -482,53 +351,6 @@ export function ReferenceImagePicker({
     t,
   ]);
 
-  const handleTakePhotoWithImagePicker = useCallback(async (lifecycleEpoch: number) => {
-    if (!canAddMore || !isLifecycleCurrent(lifecycleEpoch)) {
-      return;
-    }
-
-    const ImagePicker = await loadExpoImagePickerModule();
-    if (!isLifecycleCurrent(lifecycleEpoch)) {
-      return;
-    }
-
-    const { status, canAskAgain } = await ImagePicker.requestCameraPermissionsAsync();
-    if (!isLifecycleCurrent(lifecycleEpoch)) {
-      return;
-    }
-    if (status !== 'granted') {
-      showPermissionDeniedAlert(
-        'reference_image.camera_permission_title',
-        'reference_image.camera_permission_message',
-        canAskAgain
-      );
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: false,
-      quality: 0.9,
-      cameraType:
-        subjectType === 'person' ? ImagePicker.CameraType.front : ImagePicker.CameraType.back,
-    });
-
-    if (
-      !isLifecycleCurrent(lifecycleEpoch)
-      || result.canceled
-      || !result.assets?.length
-    ) {
-      return;
-    }
-
-    await processSelectedAssets(result.assets, lifecycleEpoch);
-  }, [
-    canAddMore,
-    isLifecycleCurrent,
-    processSelectedAssets,
-    showPermissionDeniedAlert,
-    subjectType,
-  ]);
-
   const handleTakePhoto = useCallback(async () => {
     if (!canAddMore || operationInFlightRef.current !== null || !activeRef.current) {
       return;
@@ -539,33 +361,39 @@ export function ReferenceImagePicker({
     const lifecycleEpoch = lifecycleEpochRef.current;
     try {
       setIsLoading(true);
-      const camera = await loadExpoCamera();
+      const ImagePicker = await loadExpoImagePickerModule();
       if (!isLifecycleCurrent(lifecycleEpoch)) {
-        return;
-      }
-      if (!camera) {
-        await handleTakePhotoWithImagePicker(lifecycleEpoch);
         return;
       }
 
-      const permission = cameraPermission?.granted
-        ? cameraPermission
-        : await ensureCameraPermission(camera);
+      const { status, canAskAgain } = await ImagePicker.requestCameraPermissionsAsync();
       if (!isLifecycleCurrent(lifecycleEpoch)) {
         return;
       }
-      if (!permission?.granted) {
+      if (status !== 'granted') {
         showPermissionDeniedAlert(
           'reference_image.camera_permission_title',
           'reference_image.camera_permission_message',
-          permission?.canAskAgain ?? false
+          canAskAgain
         );
         return;
       }
 
-      cameraEpochRef.current += 1;
-      setIsCameraReady(false);
-      setIsCameraVisible(true);
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: false,
+        quality: 0.9,
+        cameraType:
+          subjectType === 'person' ? ImagePicker.CameraType.front : ImagePicker.CameraType.back,
+      });
+      if (
+        !isLifecycleCurrent(lifecycleEpoch)
+        || result.canceled
+        || !result.assets?.length
+      ) {
+        return;
+      }
+
+      await processSelectedAssets(result.assets, lifecycleEpoch);
     } catch (error) {
       if (!isLifecycleCurrent(lifecycleEpoch)) {
         return;
@@ -584,12 +412,10 @@ export function ReferenceImagePicker({
     }
   }, [
     canAddMore,
-    cameraPermission,
-    ensureCameraPermission,
-    handleTakePhotoWithImagePicker,
     isLifecycleCurrent,
-    loadExpoCamera,
+    processSelectedAssets,
     showPermissionDeniedAlert,
+    subjectType,
     t,
   ]);
 
@@ -604,71 +430,8 @@ export function ReferenceImagePicker({
     [commitSelection]
   );
 
-  const CameraView = expoCamera?.CameraView;
-
-  const handleCameraMountError = useCallback(
-    (error: { message: string }) => {
-      if (__DEV__) {
-        console.error('[ReferenceImagePicker] Camera mount error:', error);
-      }
-      closeCamera();
-      if (mountedRef.current && activeRef.current) {
-        Alert.alert(t('common.error_title'), t('reference_image.pick_error'));
-      }
-    },
-    [closeCamera, t]
-  );
-
   return (
     <View style={styles.container}>
-      {isCameraVisible && CameraView && (
-        <Modal
-          visible={isCameraVisible}
-          animationType="slide"
-          onRequestClose={closeCamera}
-        >
-          <View style={styles.cameraModal}>
-            <CameraView
-              ref={cameraRef}
-              style={styles.cameraView}
-              facing={cameraFacing}
-              onCameraReady={() => setIsCameraReady(true)}
-              onMountError={handleCameraMountError}
-            />
-            {!isCameraReady && (
-              <View style={styles.cameraLoading}>
-                <ActivityIndicator color="#fff" />
-              </View>
-            )}
-            <View style={styles.cameraTopBar}>
-              <Pressable
-                onPress={closeCamera}
-                accessibilityRole="button"
-                accessibilityLabel={t('common.cancel')}
-                style={styles.cameraCloseButton}
-              >
-                <IconSymbol name="xmark" size={20} color="#fff" />
-              </Pressable>
-            </View>
-            <View style={styles.cameraControls}>
-              <Pressable
-                onPress={handleCapture}
-                disabled={!isCameraReady || isCapturing}
-                accessibilityRole="button"
-                accessibilityLabel={t('reference_image.take_photo')}
-                testID="reference-image-camera-capture"
-                style={[
-                  styles.cameraCaptureButton,
-                  (!isCameraReady || isCapturing) && styles.cameraCaptureButtonDisabled,
-                ]}
-              >
-                <View style={styles.cameraCaptureInner} />
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
-      )}
-
       <Text style={[styles.title, { color: noctalia.text.primary }]}>
         {t(`reference_image.title_${subjectType}`)}
       </Text>
@@ -700,11 +463,11 @@ export function ReferenceImagePicker({
         {canAddMore && (
           <>
             {!isWeb && (
-            <Pressable
-              onPress={handleTakePhoto}
-              disabled={isLoading}
-              accessibilityLabel={t('reference_image.take_photo')}
-              accessibilityRole="button"
+              <Pressable
+                onPress={handleTakePhoto}
+                disabled={isLoading}
+                accessibilityLabel={t('reference_image.take_photo')}
+                accessibilityRole="button"
                 style={[
                   styles.addButton,
                   { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.soft },
@@ -803,59 +566,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 12,
     marginTop: ThemeLayout.spacing.sm,
-  },
-  cameraModal: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  cameraView: {
-    flex: 1,
-  },
-  cameraLoading: {
-    ...StyleSheet.absoluteFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.35)',
-  },
-  cameraTopBar: {
-    position: 'absolute',
-    top: 16,
-    left: 16,
-  },
-  cameraCloseButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.55)',
-  },
-  cameraControls: {
-    position: 'absolute',
-    bottom: 36,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cameraCaptureButton: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    borderWidth: 4,
-    borderColor: 'rgba(255,255,255,0.9)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.15)',
-  },
-  cameraCaptureButtonDisabled: {
-    opacity: 0.6,
-  },
-  cameraCaptureInner: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: 'rgba(255,255,255,0.95)',
   },
 });
 

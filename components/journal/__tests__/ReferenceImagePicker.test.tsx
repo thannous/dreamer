@@ -1,7 +1,7 @@
 /* @jest-environment jsdom */
 
 import React from 'react';
-import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker';
@@ -14,13 +14,8 @@ const mockRequestCameraPermission = jest.fn();
 const mockLaunchImageLibrary = jest.fn();
 const mockLaunchCamera = jest.fn();
 const mockManipulateImage = jest.fn();
-const mockLoadCamera = jest.fn();
 const mockLoadImagePicker = jest.fn();
 const mockLoadImageManipulator = jest.fn();
-const mockGetCameraPermission = jest.fn();
-const mockRequestNativeCameraPermission = jest.fn();
-const mockTakePicture = jest.fn();
-const mockPressHandlers = new Map<string, () => void | Promise<void>>();
 
 function createDeferred<T>() {
   let resolve: ((value: T) => void) | undefined;
@@ -32,49 +27,6 @@ function createDeferred<T>() {
     resolve: (value: T) => resolve?.(value),
   };
 }
-
-const MockCameraView = React.forwardRef(function MockCameraView(
-  {
-    facing,
-    onCameraReady,
-    onMountError,
-  }: {
-    facing?: string;
-    onCameraReady?: () => void;
-    onMountError?: (error: { message: string }) => void;
-  },
-  ref: React.ForwardedRef<{ takePictureAsync: typeof mockTakePicture }>
-) {
-  React.useImperativeHandle(ref, () => ({
-    takePictureAsync: mockTakePicture,
-  }));
-
-  return (
-    <>
-      <button
-        data-facing={facing}
-        data-testid="mock-camera-ready"
-        onClick={onCameraReady}
-      >
-        Camera ready
-      </button>
-      <button
-        data-testid="mock-camera-mount-error"
-        onClick={() => onMountError?.({ message: 'Camera failed to mount' })}
-      >
-        Camera mount error
-      </button>
-    </>
-  );
-});
-
-const mockCameraModule = {
-  Camera: {
-    getCameraPermissionsAsync: mockGetCameraPermission,
-    requestCameraPermissionsAsync: mockRequestNativeCameraPermission,
-  },
-  CameraView: MockCameraView,
-};
 
 const mockImagePicker = {
   CameraType: {
@@ -105,13 +57,6 @@ jest.mock('react-native', () => {
     ActivityIndicator: () => <span data-testid="activity-indicator" />,
     Alert: { alert: (...args: unknown[]) => mockAlert(...args) },
     Linking: { openSettings: () => mockOpenSettings() },
-    Modal: ({
-      children,
-      visible,
-    }: {
-      children?: React.ReactNode;
-      visible?: boolean;
-    }) => (visible ? <div role="dialog">{children}</div> : null),
     Platform: {
       OS: 'android',
       select: (options: Record<string, unknown>) => options.android ?? options.default,
@@ -129,9 +74,6 @@ jest.mock('react-native', () => {
       onPress?: () => void | Promise<void>;
       testID?: string;
     }) => {
-      if (testID && onPress) {
-        mockPressHandlers.set(testID, onPress);
-      }
       return (
         <button
           aria-label={accessibilityLabel}
@@ -159,7 +101,6 @@ jest.mock('expo-image', () => ({
 }));
 
 jest.mock('@/lib/referenceImagePlatform', () => ({
-  loadExpoCameraModule: () => mockLoadCamera(),
   loadExpoImageManipulatorModule: () => mockLoadImageManipulator(),
   loadExpoImagePickerModule: () => mockLoadImagePicker(),
 }));
@@ -202,18 +143,7 @@ jest.mock('@/hooks/useTranslation', () => ({
 describe('ReferenceImagePicker', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockPressHandlers.clear();
     mockGetPendingResult.mockResolvedValue(null);
-    mockGetCameraPermission.mockResolvedValue({
-      canAskAgain: true,
-      granted: true,
-    });
-    mockRequestNativeCameraPermission.mockResolvedValue({
-      canAskAgain: true,
-      granted: true,
-    });
-    mockTakePicture.mockResolvedValue({ uri: 'file://native-camera.jpg' });
-    mockLoadCamera.mockResolvedValue(mockCameraModule);
     mockLoadImagePicker.mockResolvedValue(mockImagePicker);
     mockLoadImageManipulator.mockResolvedValue(mockImageManipulator);
     mockRequestCameraPermission.mockResolvedValue({
@@ -239,19 +169,6 @@ describe('ReferenceImagePicker', () => {
   });
 
   afterEach(cleanup);
-
-  async function openReadyNativeCamera() {
-    fireEvent.click(
-      screen.getByRole('button', { name: 'reference_image.take_photo' })
-    );
-    const dialog = await screen.findByRole('dialog');
-    fireEvent.click(within(dialog).getByTestId('mock-camera-ready'));
-    const captureButton = within(dialog).getByTestId(
-      'reference-image-camera-capture'
-    ) as HTMLButtonElement;
-    await waitFor(() => expect(captureButton.disabled).toBe(false));
-    return { captureButton, dialog };
-  }
 
   it('offers system settings after a permanent gallery permission refusal', async () => {
     mockRequestMediaLibraryPermission.mockResolvedValue({
@@ -462,10 +379,9 @@ describe('ReferenceImagePicker', () => {
     expect(screen.getByAltText('reference preview')).toBeTruthy();
   });
 
-  it('falls back to ImagePicker camera when expo-camera is unavailable', async () => {
-    mockLoadCamera.mockRejectedValue(new Error('camera module unavailable'));
+  it('captures with the ImagePicker system camera and compresses the result', async () => {
     mockLaunchCamera.mockResolvedValue({
-      assets: [{ uri: 'file://fallback-camera.jpg' }],
+      assets: [{ uri: 'file://system-camera.jpg' }],
       canceled: false,
     });
     const onImagesSelected = jest.fn();
@@ -486,49 +402,51 @@ describe('ReferenceImagePicker', () => {
         {
           mimeType: 'image/webp',
           type: 'animal',
-          uri: 'file://fallback-camera.jpg.webp',
+          uri: 'file://system-camera.jpg.webp',
         },
       ]);
     });
     expect(mockRequestCameraPermission).toHaveBeenCalledTimes(1);
+    expect(mockLaunchCamera).toHaveBeenCalledWith({
+      allowsEditing: false,
+      cameraType: 'back',
+      quality: 0.9,
+    });
     expect(screen.getByAltText('reference preview')).toBeTruthy();
   });
 
-  it('captures with expo-camera after permission and readiness, then closes the modal', async () => {
-    mockGetCameraPermission.mockResolvedValue({
-      canAskAgain: true,
-      granted: false,
+  it('offers system settings after a permanent camera permission refusal', async () => {
+    mockRequestCameraPermission.mockResolvedValue({
+      canAskAgain: false,
+      status: 'denied',
     });
-    const onImagesSelected = jest.fn();
     render(
       <ReferenceImagePicker
-        subjectType="animal"
-        onImagesSelected={onImagesSelected}
+        subjectType="person"
+        onImagesSelected={jest.fn()}
       />
     );
 
-    const { captureButton, dialog } = await openReadyNativeCamera();
-    expect(within(dialog).getByTestId('mock-camera-ready').getAttribute('data-facing')).toBe('back');
-    expect(mockRequestNativeCameraPermission).toHaveBeenCalledTimes(1);
-
-    fireEvent.click(captureButton);
+    fireEvent.click(
+      screen.getByRole('button', { name: 'reference_image.take_photo' })
+    );
 
     await waitFor(() => {
-      expect(onImagesSelected).toHaveBeenCalledWith([
-        {
-          mimeType: 'image/webp',
-          type: 'animal',
-          uri: 'file://native-camera.jpg.webp',
-        },
-      ]);
-      expect(screen.queryByRole('dialog')).toBeNull();
+      expect(mockAlert).toHaveBeenCalledTimes(1);
     });
-    expect(mockTakePicture).toHaveBeenCalledTimes(1);
-    expect(screen.getByAltText('reference preview')).toBeTruthy();
+    const [title, message, actions] = mockAlert.mock.calls[0];
+    expect(title).toBe('reference_image.camera_permission_title');
+    expect(message).toBe('reference_image.permission_denied_permanently');
+    const openSettingsAction = (actions as { text: string; onPress?: () => void }[])
+      .find((action) => action.text === 'reference_image.open_settings');
+
+    openSettingsAction?.onPress?.();
+    expect(mockOpenSettings).toHaveBeenCalledTimes(1);
+    expect(mockLaunchCamera).not.toHaveBeenCalled();
   });
 
   it('reports a camera permission API failure as a technical error', async () => {
-    mockGetCameraPermission.mockRejectedValue(new Error('permission service unavailable'));
+    mockRequestCameraPermission.mockRejectedValue(new Error('permission service unavailable'));
     render(
       <ReferenceImagePicker
         subjectType="person"
@@ -546,11 +464,12 @@ describe('ReferenceImagePicker', () => {
         'reference_image.pick_error'
       );
     });
-    expect(mockRequestNativeCameraPermission).not.toHaveBeenCalled();
-    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(mockLaunchCamera).not.toHaveBeenCalled();
   });
 
-  it('closes the modal and explains when the native camera fails to mount', async () => {
+  it('coalesces two camera openings while permission is pending', async () => {
+    const permission = createDeferred<{ canAskAgain: boolean; status: string }>();
+    mockRequestCameraPermission.mockReturnValue(permission.promise);
     render(
       <ReferenceImagePicker
         subjectType="person"
@@ -558,82 +477,27 @@ describe('ReferenceImagePicker', () => {
       />
     );
 
-    fireEvent.click(
-      screen.getByRole('button', { name: 'reference_image.take_photo' })
-    );
-    const dialog = await screen.findByRole('dialog');
-    fireEvent.click(within(dialog).getByTestId('mock-camera-mount-error'));
-
-    expect(screen.queryByRole('dialog')).toBeNull();
-    expect(mockAlert).toHaveBeenCalledWith(
-      'common.error_title',
-      'reference_image.pick_error'
-    );
-  });
-
-  it('rejects synchronous reentry into the capture handler', async () => {
-    const photo = createDeferred<{ uri: string }>();
-    mockTakePicture.mockReturnValue(photo.promise);
-    const onImagesSelected = jest.fn();
-    render(
-      <ReferenceImagePicker
-        subjectType="person"
-        onImagesSelected={onImagesSelected}
-      />
-    );
-
-    await openReadyNativeCamera();
-    const captureHandler = mockPressHandlers.get('reference-image-camera-capture');
-    expect(captureHandler).toBeTruthy();
+    const openCameraButton = screen.getByRole('button', {
+      name: 'reference_image.take_photo',
+    });
     act(() => {
-      void captureHandler?.();
-      void captureHandler?.();
+      openCameraButton.click();
+      openCameraButton.click();
     });
-    expect(mockTakePicture).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(mockRequestCameraPermission).toHaveBeenCalledTimes(1));
 
     await act(async () => {
-      photo.resolve({ uri: 'file://single-capture.jpg' });
+      permission.resolve({ canAskAgain: true, status: 'granted' });
     });
-    await waitFor(() => {
-      expect(onImagesSelected).toHaveBeenCalledWith([
-        {
-          mimeType: 'image/webp',
-          type: 'person',
-          uri: 'file://single-capture.jpg.webp',
-        },
-      ]);
-    });
-    expect(mockTakePicture).toHaveBeenCalledTimes(1);
-  });
-
-  it('drops a delayed capture when the camera modal is closed', async () => {
-    const photo = createDeferred<{ uri: string }>();
-    mockTakePicture.mockReturnValue(photo.promise);
-    const onImagesSelected = jest.fn();
-    render(
-      <ReferenceImagePicker
-        subjectType="person"
-        onImagesSelected={onImagesSelected}
-      />
-    );
-
-    const { captureButton, dialog } = await openReadyNativeCamera();
-    fireEvent.click(captureButton);
-    fireEvent.click(
-      within(dialog).getByRole('button', { name: 'common.cancel' })
-    );
-
-    await act(async () => {
-      photo.resolve({ uri: 'file://closed-camera.jpg' });
-    });
-    expect(screen.queryByRole('dialog')).toBeNull();
-    expect(onImagesSelected).not.toHaveBeenCalled();
-    expect(mockAlert).not.toHaveBeenCalled();
+    await waitFor(() => expect(mockLaunchCamera).toHaveBeenCalledTimes(1));
   });
 
   it('drops a delayed capture when the picker becomes inactive', async () => {
-    const photo = createDeferred<{ uri: string }>();
-    mockTakePicture.mockReturnValue(photo.promise);
+    const photo = createDeferred<{
+      assets: { uri: string }[];
+      canceled: boolean;
+    }>();
+    mockLaunchCamera.mockReturnValue(photo.promise);
     const onImagesSelected = jest.fn();
     const { rerender } = render(
       <ReferenceImagePicker
@@ -643,8 +507,10 @@ describe('ReferenceImagePicker', () => {
       />
     );
 
-    const { captureButton } = await openReadyNativeCamera();
-    fireEvent.click(captureButton);
+    fireEvent.click(
+      screen.getByRole('button', { name: 'reference_image.take_photo' })
+    );
+    await waitFor(() => expect(mockLaunchCamera).toHaveBeenCalledTimes(1));
     rerender(
       <ReferenceImagePicker
         active={false}
@@ -654,57 +520,13 @@ describe('ReferenceImagePicker', () => {
     );
 
     await act(async () => {
-      photo.resolve({ uri: 'file://inactive-camera.jpg' });
+      photo.resolve({
+        assets: [{ uri: 'file://inactive-camera.jpg' }],
+        canceled: false,
+      });
     });
     expect(onImagesSelected).not.toHaveBeenCalled();
     expect(mockAlert).not.toHaveBeenCalled();
-  });
-
-  it('drops a delayed capture after unmount', async () => {
-    const photo = createDeferred<{ uri: string }>();
-    mockTakePicture.mockReturnValue(photo.promise);
-    const onImagesSelected = jest.fn();
-    const view = render(
-      <ReferenceImagePicker
-        subjectType="person"
-        onImagesSelected={onImagesSelected}
-      />
-    );
-
-    const { captureButton } = await openReadyNativeCamera();
-    fireEvent.click(captureButton);
-    view.unmount();
-
-    await act(async () => {
-      photo.resolve({ uri: 'file://unmounted-camera.jpg' });
-    });
-    expect(onImagesSelected).not.toHaveBeenCalled();
-    expect(mockAlert).not.toHaveBeenCalled();
-  });
-
-  it('coalesces two camera openings while the module is loading', async () => {
-    const cameraModule = createDeferred<typeof mockCameraModule>();
-    mockLoadCamera.mockReturnValue(cameraModule.promise);
-    render(
-      <ReferenceImagePicker
-        subjectType="person"
-        onImagesSelected={jest.fn()}
-      />
-    );
-    const openCameraButton = screen.getByRole('button', {
-      name: 'reference_image.take_photo',
-    });
-
-    act(() => {
-      openCameraButton.click();
-      openCameraButton.click();
-    });
-    expect(mockLoadCamera).toHaveBeenCalledTimes(1);
-
-    await act(async () => {
-      cameraModule.resolve(mockCameraModule);
-    });
-    await waitFor(() => expect(screen.getByRole('dialog')).toBeTruthy());
   });
 
   it('does not resurrect a removed image when a later compression completes', async () => {
