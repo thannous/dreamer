@@ -101,3 +101,33 @@ director. This passes the accountable non-Russian operator gate for retaining
 the free listing. PeerPush's own legal pages remain weaker than the registry
 evidence because their Terms do not name that company or a concrete governing
 jurisdiction.
+
+## Authenticated conversion recheck — 2026-08-10 00:09 CEST
+
+The monthly email was authenticated in Gmail as sent by `mail.peerpush.com`,
+signed by `peerpush.com` and transported with TLS. Its recommendation to add at
+least two screenshots remains stale because the public listing still exposes
+four screenshots.
+
+The authenticated Visibility dashboard supplied the missing conversion
+context for the preceding platform claims:
+
+- 21 distinct human visitors in the current 30-day window;
+- 83 detail-page views in the displayed seven-day window;
+- 157 PeerPush impressions in the displayed seven-day window;
+- **0 external clicks to Noctalia in the full 30-day window**;
+- 7 crawler-indexing events in 30 days: Parallel Crawler 4, ByteDance 1,
+  Meta AI 1 and OpenAI GPTBot 1.
+
+PeerPush separately labels Copilot, ChatGPT, Claude and Gemini as having found
+the listing. That coverage label is a platform interpretation of crawl and
+discovery signals, not evidence that any assistant cited or recommended
+Noctalia to a user. The zero-click result also means the free listing has not
+yet demonstrated referral value that could justify a relaunch, promotion,
+social feature or guest-blog purchase.
+
+The public listing was reverified in rendered Chrome during the same check. It
+remains self-canonical, `index, follow`, and exposes the Noctalia CTA with
+`rel="noopener"` only. Retain the free followed backlink, keep paid features
+closed, and measure future PeerPush referral clicks separately from crawler
+activity and Domain Rating.

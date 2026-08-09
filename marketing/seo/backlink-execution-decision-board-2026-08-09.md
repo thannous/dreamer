@@ -48,9 +48,11 @@ backlink.
   expected value than the six reviewed routes and should not be sent as a bulk
   blast. Only the three `D3A` routes are currently classified as DR-first.
 - Keep PeerPush's existing free followed listing. Its four screenshots are
-  already live. Adding Google Play and correcting `Photo Creation` to
-  `Self-Reflection` would improve topical accuracy and conversion, not create a
-  new referring domain or prove DR growth.
+  already live. Its authenticated dashboard showed 21 distinct human visitors
+  in 30 days, 83 detail-page views in the displayed seven-day window and zero
+  external clicks in 30 days. Adding Google Play and correcting
+  `Photo Creation` to `Self-Reflection` would improve topical accuracy and
+  conversion, not create a new referring domain or prove DR growth.
 - Do not buy PeerPush relaunch, guest-blog, social or boosted-placement options.
 - Continue rejecting paid-link, reciprocal-badge, Russian-governed, opaque-
   operator, nofollow-only and fabricated-authority routes.
@@ -100,6 +102,16 @@ misread as approval for another.
 > `marketing/seo/editorial-discovery-wave-35-dreamkit-reclamation-2026-08-09.md`,
 > après le stop gate immédiat, sans demande de lien, classement, remplacement
 > de DreamKit, paiement ni relance automatique.
+
+### D6 — PeerPush free product update
+
+> J'autorise la publication gratuite de la mise à jour PeerPush préparée pour
+> Noctalia 3.1, uniquement après confirmation publique du hotfix Android 54 ou
+> ultérieur, sans modification de profil, relaunch, promotion, achat ni autre
+> publication.
+
+The prepared copy and its publication gates are in
+`marketing/seo/peerpush-free-product-update-draft-2026-08-10.md`.
 
 Earned-media account or subscription choices retain the independent `E1`–`E5`
 codes in `marketing/seo/media-source-platform-pack-2026-08-09.md`.
