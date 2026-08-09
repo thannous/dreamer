@@ -1,6 +1,6 @@
 # Media-source backlink pack — 2026-08-09
 
-This pack qualifies three non-Russian, free media-source routes that can lead to
+This pack qualifies four non-Russian, free media-source routes that can lead to
 genuine editorial citations. It prepares truthful identity, expertise and reply
 copy only. It does not authorize an account, newsletter subscription, public
 profile, pitch, mailbox connection, publication or payment.
@@ -12,6 +12,7 @@ profile, pitch, mailbox connection, publication or payment.
 | P1 | Source of Sources | Up to three journalist-query emails per day | A relevant journalist may quote and cite the founder or Noctalia | Newsletter subscription requires explicit authorization |
 | P1 | Qwoted | Basic plan, 2 pitches per month with a 2-hour delay | Journalist request, expert discovery and earned publisher citation | Real-person account and public profile require explicit authorization |
 | P1 | Featured | Free forever, no card, limited daily usage | Journalist requests, bylined articles and publisher placements | Magic-link account and any later submission require explicit authorization |
+| P1 | SourceBottle | Free expert profile, directory listing, media alerts and unlimited self-service call-out responses | Public expert discovery plus an earned journalist citation | User-chosen password, human verification and explicit authorization required |
 
 These routes are stronger than self-created profile links because the intended
 outcome is an editor-controlled citation on an independent publisher. None
@@ -62,6 +63,35 @@ guarantees selection, a backlink, followed treatment or a DR increase.
 - A Gmail or Outlook connection is optional. Do not connect any mailbox for
   this sprint; use the platform form only after a query is reviewed.
 - No Russian operator, address or jurisdiction signal was found.
+
+### SourceBottle
+
+- Official site and about page: <https://www.sourcebottle.com/>,
+  <https://www.sourcebottle.com/about.asp>
+- Pricing: <https://www.sourcebottle.com/pricing.asp>
+- Signup: <https://www.sourcebottle.com/subscribe.asp>
+- Terms and privacy: <https://www.sourcebottle.com/terms.asp>,
+  <https://www.sourcebottle.com/privacy.asp>
+- Operator: TheSourceBottle Pty Ltd, ACN 147 880 064 and ABN 45 147 880 064.
+  The current Australian Business Register entry confirms the entity:
+  <https://abr.business.gov.au/ABN/View?id=45147880064>.
+- The free-forever plan includes an Expert Profile, basic Expert Directory
+  listing, up to ten keywords, media call-out alerts and unlimited
+  self-service responses. Paid human pitching is optional and excluded.
+- Current rules prohibit off-topic replies, harvesting addresses and reposting
+  call-outs. Australian law governs the service. No Russian operator, address
+  or jurisdiction signal was found.
+- A sampled live Expert Profile returned HTTP 200, exposed no robots exclusion
+  and linked the expert's website directly without a `nofollow` attribute.
+  However, profile URLs contain signed tokens and expose no stable canonical;
+  indexation and lasting backlink value are therefore unproven and must not be
+  counted before the exact future profile is independently verified.
+- Signup asks for `contact@noctalia.app`, a user-chosen password, first name,
+  surname, alert timezone, Terms acceptance and a human verification code. No
+  field was submitted and no verification was attempted.
+- The Terms assign SourceBottle the intellectual-property rights in submitted
+  non-personal contributions. Use only the concise factual bio in this pack;
+  do not upload the comparison dataset, proprietary copy or unpublished work.
 
 ## Truthful founder profile
 
@@ -138,6 +168,9 @@ broad market claim:
   `contact@noctalia.app`; no paid plan and no pitch until separately reviewed.
 - **E3 — Featured:** create one free magic-link account for Thanh Chau using
   `contact@noctalia.app`; no mailbox connection, paid plan or submission.
+- **E4 — SourceBottle:** create one free real-person account for Thanh Chau
+  using `contact@noctalia.app`, with a user-chosen password and user-completed
+  verification code; select only the free plan, no paid pitching or advertising.
 
 Every later journalist response is a separate external transmission. Recheck
 outlet identity, deadline, topical fit, requested personal data and factual

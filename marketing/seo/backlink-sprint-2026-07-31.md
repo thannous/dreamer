@@ -624,6 +624,16 @@ The authenticated Ahrefs Noctalia project overview now shows DR 0, 401 referring
 
 The 401-domain figure is an Ahrefs index count, not a verified followed-domain count and not attribution to the backlink sprint. The 15:12 public verifier remains at 6 followed, 4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410. The PeerPush screenshot update occurred only minutes before the Ahrefs read and cannot have caused it. Full evidence and the deployment boundary are recorded in `marketing/seo/backlink-measurement-check-2026-08-09-1558.md`.
 
+### Media-source platform qualification wave 2 — 2026-08-09
+
+SourceBottle is a new P1 earned-citation route. Current official Terms identify TheSourceBottle Pty Ltd and Australian law, while the Australian Business Register confirms ABN 45 147 880 064. The free-forever plan includes an Expert Profile, basic directory listing, up to ten keywords, media alerts and unlimited self-service call-out responses. Its anti-spam rules prohibit off-topic replies and address harvesting, and no Russian operator signal was found.
+
+A sampled public expert profile returned HTTP 200 and linked the expert's website without `nofollow`, but its signed URL and missing canonical make stable indexation unproven. Signup requires a user-chosen password and human verification, and the Terms assign rights in submitted non-personal contributions. The execution pack therefore permits only a concise factual bio after explicit authorization; no dataset, proprietary article, account, profile, response, payment or verification attempt was used. Authorization code `E4` is documented in `marketing/seo/media-source-platform-pack-2026-08-09.md`. The focused media-source register now covers four P1 platforms.
+
+### Editorial discovery wave 29 — 2026-08-09
+
+Four fresh comparison pages were rejected before contact. Taro's Tarot is operated by a disclosed Delaware company and links eight reviewed product domains, but every one of those anchors is `nofollow`. TodoAndroid identifies AB Internet Networks 2008 S.L. in Spain, yet its relevant Android dream-journal article links no named product domain. Nuju and The Success Diary are product-owned AI-journaling comparisons whose competitor names remain plain text while external links serve only their own products or social profiles. No message, form, account, product data or payment was used. Full evidence is recorded in `marketing/seo/editorial-discovery-wave-29-2026-08-09.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
