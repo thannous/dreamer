@@ -7,7 +7,7 @@ backlink.
 
 ## Current evidence
 
-- The prospect register contains 201 qualified, paused, rejected or active
+- The prospect register contains 202 qualified, paused, rejected or active
   routes.
 - The outreach log contains 49 prior transmissions or attempts.
 - The prospect register and outreach log now agree on 31 first follow-ups that
@@ -64,6 +64,9 @@ backlink.
   the raw Ahrefs domain count into quality authority.
 - Continue rejecting paid-link, reciprocal-badge, Russian-governed, opaque-
   operator, nofollow-only and fabricated-authority routes.
+- SourceForge is trusted and exposes a free Basic Vendor tier, but its current
+  criteria require software commercially available to businesses. Do not force
+  Noctalia's consumer Android app into an inaccurate B2B listing for host DR.
 - BestForAndroid remains closed after its $249 placement offer. The Verge waits
   until after its recorded away period. Broken, bounced and migrated routes
   remain closed unless a new official route is independently qualified.
