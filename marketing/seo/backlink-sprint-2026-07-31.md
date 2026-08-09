@@ -586,6 +586,10 @@ Cloudflare's authenticated Pages API identifies deployment `2b4192db-4e95-4d35-b
 
 Five 2026-08-02 Gmail routes now pass both mailbox and public-target stop gates: Individuate, Dreamly, Vowise, Android Central and SlashGear. Each Gmail conversation contains only the original sent message, focused inbound and mailer-daemon searches returned no matching reply or bounce, and each current HTTP 200 target contains no Noctalia citation. One concise first reply per thread is prepared in `marketing/seo/backlink-follow-up-wave-5-2026-08-09.md`; all five remain unsent pending explicit authorization. Android Guías is excluded from the ready batch because its target timed out before a readable body was obtained. Frandroid and Lifehacker remain monitor-only because their original route was a form without a reply thread; no duplicate form submission is prepared.
 
+### Dataset source correction publicly verified — 2026-08-09 15:06 CEST
+
+Cloudflare Pages deployment `2b4192db-4e95-4d35-bc05-4bc651bbad77` completed all queue, initialize, clone, build and deploy stages successfully and now carries the `https://noctalia.app` alias. The public CSV returns HTTP 200 with `content-type: text/csv`, 3,463 bytes and the corrected DreamMirror root plus DreamNotes App Store source, both reviewed 2026-08-09. The rendered English comparison page also exposes both corrected source URLs. The public `version.txt` value did not change and is therefore not used as deployment proof; the Cloudflare deployment record and exact public artifacts are the authoritative evidence. This proves publication of the source correction, not a new external backlink, repository DOI, referral visit or DR gain.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
