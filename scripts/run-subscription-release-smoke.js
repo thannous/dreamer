@@ -7,6 +7,7 @@ const path = require('path');
 const {
   checkPlayQaDevice,
 } = require('./check-play-qa-device');
+const { readAppVersionCode } = require('./update-google-play-track-state');
 const {
   generateSubscriptionQaReport,
 } = require('./subscription-qa-report');
@@ -61,7 +62,7 @@ Usage:
   npm run subscription:qa:release-smoke -- [--device <adb-id>] [--version-code <code>] [--json] [--report-only]
 
 Runs one final RevenueCat release verdict with three assertions:
-1. the candidate is installed from Google Play and matches app.json versionCode
+1. the candidate is installed from Google Play and matches the requested remote versionCode
 2. restore evidence is valid for the candidate
 3. account isolation evidence is valid for the candidate
 
@@ -74,18 +75,14 @@ RevenueCat keys/SDK, or webhook lifecycle behavior changed.
 `.trim());
 }
 
-function readAppIdentity(root = ROOT, readFile = fs.readFileSync) {
+function readAppIdentity(root = ROOT, readFile = fs.readFileSync, env = process.env) {
   const config = JSON.parse(readFile(path.join(root, 'app.json'), 'utf8'));
   const versionName = String(config?.expo?.version ?? '').trim();
   const packageName = String(config?.expo?.android?.package ?? '').trim();
-  const versionCode = String(config?.expo?.android?.versionCode ?? '').trim();
+  const versionCode = readAppVersionCode(root, readFile, env);
 
   if (!versionName) throw new Error('app.json expo.version is required.');
   if (!packageName) throw new Error('app.json expo.android.package is required.');
-  if (!/^[1-9]\d*$/.test(versionCode)) {
-    throw new Error('app.json expo.android.versionCode must be a positive integer.');
-  }
-
   return { packageName, versionCode, versionName };
 }
 
@@ -93,7 +90,7 @@ function buildLivePlayAssertion({ identity, expectedVersionCode, deviceReport })
   const sourceMatches = expectedVersionCode === identity.versionCode;
   let detail;
   if (!sourceMatches) {
-    detail = `Requested versionCode ${expectedVersionCode} does not match app.json ${identity.versionCode}.`;
+    detail = `Requested versionCode ${expectedVersionCode} does not match QA candidate ${identity.versionCode}.`;
   } else if (!deviceReport?.ok) {
     detail = deviceReport?.message || 'Play-installed candidate preflight failed.';
   } else {
@@ -111,7 +108,11 @@ function buildLivePlayAssertion({ identity, expectedVersionCode, deviceReport })
 function runReleaseSmoke(options = {}, dependencies = {}) {
   const root = options.root ?? ROOT;
   const env = dependencies.env ?? process.env;
-  const identity = (dependencies.readAppIdentity ?? readAppIdentity)(root);
+  const identity = (dependencies.readAppIdentity ?? readAppIdentity)(
+    root,
+    fs.readFileSync,
+    env
+  );
   const expectedVersionCode = String(options.versionCode ?? identity.versionCode);
   const deviceReport = (dependencies.checkPlayQaDevice ?? checkPlayQaDevice)({
     device: options.device,

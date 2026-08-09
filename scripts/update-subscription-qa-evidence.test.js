@@ -30,7 +30,7 @@ function candidateVersionArgs() {
   return ['--version-code', String(ANDROID_CANDIDATE_VERSION_CODE)];
 }
 
-function runUpdate(args = []) {
+function runUpdate(args = [], env = process.env) {
   // Keep one subprocess assertion for the public help/CLI contract. The
   // remaining cases exercise the exported implementation directly so this
   // suite does not pay a Node startup cost for every validation branch.
@@ -42,7 +42,7 @@ function runUpdate(args = []) {
   }
 
   try {
-    const gate = updateEvidence(parseArgs(args));
+    const gate = updateEvidence(parseArgs(args), env);
     return {
       status: 0,
       stdout: `Updated: ${gate.status} at ${gate.testedAt}\n`,
@@ -78,10 +78,40 @@ describe('subscription QA evidence updater', () => {
     expect(result.stdout).toContain('npm run android:play-qa-device -- --device <adb-id>');
     expect(result.stdout).toContain('--version-code <n>');
     expect(result.stdout).toContain(
-      `must match app.json Android candidate ${ANDROID_CANDIDATE_VERSION_CODE}`
+      `must match the QA Android candidate ${ANDROID_CANDIDATE_VERSION_CODE}`
     );
+    expect(result.stdout).toContain('Set QA_ANDROID_VERSION_CODE when EAS uses remote versioning');
     expect(result.stdout).toContain('play_annual evidence must also confirm base plan P1Y');
     expect(result.stdout).toContain('play_cancellation_and_expiry evidence must confirm cancellation/expiry');
+  });
+
+  it('accepts a remote EAS candidate supplied by QA_ANDROID_VERSION_CODE', () => {
+    const file = tempFile();
+    const result = runUpdate(
+      [
+        '--file',
+        file,
+        '--gate',
+        'restore_after_reinstall',
+        '--tester',
+        'tester@example.com',
+        '--app-user-id',
+        '00000000-0000-4000-8000-000000000000',
+        '--evidence',
+        'restore verified on the Play-installed remote candidate',
+        '--version-code',
+        '53',
+        '--tested-at',
+        '2026-08-09T12:00:00.000Z',
+      ],
+      { ...process.env, QA_ANDROID_VERSION_CODE: '53' }
+    );
+
+    expect(result.status).toBe(0);
+    expect(JSON.parse(fs.readFileSync(file, 'utf8')).gates.restore_after_reinstall).toMatchObject({
+      status: 'passed',
+      versionCode: 53,
+    });
   });
 
   it('creates a local evidence file from the example and marks one gate as passed', () => {

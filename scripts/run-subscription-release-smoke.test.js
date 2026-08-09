@@ -3,6 +3,7 @@
 const {
   formatReleaseSmoke,
   parseArgs,
+  readAppIdentity,
   runReleaseSmoke,
   toJsonReceipt,
 } = require('./run-subscription-release-smoke');
@@ -107,7 +108,27 @@ describe('subscription release smoke', () => {
     expect(toJsonReceipt(result)).toMatchObject({ status: 'pass', verified: 3, total: 3 });
   });
 
-  it('blocks when the requested Play version does not match app.json', () => {
+  it('uses QA_ANDROID_VERSION_CODE for an EAS remotely versioned candidate', () => {
+    const identity = readAppIdentity(
+      '/repo',
+      () =>
+        JSON.stringify({
+          expo: {
+            version: '3.1.0',
+            android: { package: 'com.tanuki75.noctalia', versionCode: 50 },
+          },
+        }),
+      { QA_ANDROID_VERSION_CODE: '53' }
+    );
+
+    expect(identity).toEqual({
+      packageName: 'com.tanuki75.noctalia',
+      versionCode: '53',
+      versionName: '3.1.0',
+    });
+  });
+
+  it('blocks when the requested Play version does not match the QA candidate', () => {
     const result = runReleaseSmoke({ versionCode: '53' }, dependencies());
 
     expect(result.ok).toBe(false);
@@ -116,7 +137,7 @@ describe('subscription release smoke', () => {
       status: 'blocked',
     });
     expect(result.assertions[0].detail).toContain(
-      'Requested versionCode 53 does not match app.json 52'
+      'Requested versionCode 53 does not match QA candidate 52'
     );
   });
 

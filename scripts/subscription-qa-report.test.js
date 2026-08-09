@@ -241,6 +241,32 @@ describe('subscription QA report release gate', () => {
     });
   });
 
+  it('qualifies evidence against the remote EAS candidate version', () => {
+    const gates = Object.fromEntries(
+      RELEASE_SMOKE_EVIDENCE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-08-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          versionCode: 53,
+          evidence: evidenceForKey(key),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-release'], {
+      QA_ANDROID_VERSION_CODE: '53',
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('| PASS | Subscription release smoke | 2/2 evidence assertions verified |');
+    expect(result.stdout).not.toContain('from app.json');
+  });
+
   it('blocks the release smoke evidence when account isolation is missing', () => {
     const gates = Object.fromEntries(
       RELEASE_SMOKE_EVIDENCE_KEYS.filter((key) => key !== 'account_switch').map((key) => [

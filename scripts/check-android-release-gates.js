@@ -595,13 +595,16 @@ function checkAndroidReleaseGates({
   }
   let androidCandidateVersionCode = null;
   try {
-    androidCandidateVersionCode = readAppVersionCode(rootDir, readFileSync);
+    androidCandidateVersionCode = readAppVersionCode(rootDir, readFileSync, env);
+    const versionCodeSource = env.QA_ANDROID_VERSION_CODE
+      ? 'QA_ANDROID_VERSION_CODE'
+      : 'app.json expo.android.versionCode';
     addCheck(
       checks,
       'pass',
       'Android release candidate versionCode',
-      `app.json expo.android.versionCode=${androidCandidateVersionCode}.`,
-      'Increment expo.android.versionCode for every Android store candidate.'
+      `${versionCodeSource}=${androidCandidateVersionCode}.`,
+      'Set QA_ANDROID_VERSION_CODE to the installed EAS/Play candidate when appVersionSource is remote.'
     );
   } catch (error) {
     addCheck(

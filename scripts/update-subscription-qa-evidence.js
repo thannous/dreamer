@@ -7,7 +7,9 @@ const path = require('path');
 const { readAppVersionCode } = require('./update-google-play-track-state');
 
 const ROOT = path.resolve(__dirname, '..');
-const ANDROID_CANDIDATE_VERSION_CODE = readAppVersionCode(ROOT);
+function getAndroidCandidateVersionCode(env = process.env) {
+  return readAppVersionCode(ROOT, fs.readFileSync, env);
+}
 const DEFAULT_EXAMPLE = path.join(ROOT, 'doc_web_interne/docs/revenuecat-qa-evidence.example.json');
 const DEFAULT_TARGET = path.join(ROOT, 'doc_web_interne/docs/revenuecat-qa-evidence.local.json');
 // The example is immutable during one CLI invocation. Keep its raw JSON in
@@ -97,7 +99,8 @@ Options:
   --device-id <id>     Required for play_* gates; ADB serial of the physical tester device.
   --installer-package-name <name>
                        Required for play_* gates; must be com.android.vending.
-  --version-code <n>   Required for every gate; must match app.json Android candidate ${ANDROID_CANDIDATE_VERSION_CODE}.
+  --version-code <n>   Required for every gate; must match the QA Android candidate ${getAndroidCandidateVersionCode()}.
+                       Set QA_ANDROID_VERSION_CODE when EAS uses remote versioning.
                        For play_* gates, this is the installed versionCode from Play.
                        play_monthly evidence must also confirm base plan P1M.
                        play_annual evidence must also confirm base plan P1Y.
@@ -193,15 +196,16 @@ function requirePlayInstallerPackageName(options) {
   }
 }
 
-function requireCandidateVersionCode(options) {
+function requireCandidateVersionCode(options, env = process.env) {
   requireValue(options, 'versionCode', '--version-code');
   const value = String(options.versionCode).trim();
   if (!/^[1-9]\d*$/.test(value)) {
     throw new Error('Evidence versionCode must be a positive integer.');
   }
-  if (value !== ANDROID_CANDIDATE_VERSION_CODE) {
+  const candidateVersionCode = getAndroidCandidateVersionCode(env);
+  if (value !== candidateVersionCode) {
     throw new Error(
-      `Evidence versionCode ${value} does not match Android release candidate ${ANDROID_CANDIDATE_VERSION_CODE} from app.json.`
+      `Evidence versionCode ${value} does not match Android release candidate ${candidateVersionCode}.`
     );
   }
 }
@@ -237,7 +241,7 @@ function loadEvidence(filePath) {
   return JSON.parse(DEFAULT_EXAMPLE_JSON);
 }
 
-function updateEvidence(options) {
+function updateEvidence(options, env = process.env) {
   requireValue(options, 'gate', '--gate');
   requireValue(options, 'tester', '--tester');
   requireValue(options, 'appUserId', '--app-user-id');
@@ -260,7 +264,7 @@ function updateEvidence(options) {
   requirePlayInstalledEvidence(options);
   requirePlayDeviceId(options);
   requirePlayInstallerPackageName(options);
-  requireCandidateVersionCode(options);
+  requireCandidateVersionCode(options, env);
   requirePlayAnnualBasePlanEvidence(options);
   requirePlayCancellationConvergenceEvidence(options);
   requireAccountSwitchEvidence(options);

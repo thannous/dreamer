@@ -8,7 +8,19 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_TARGET = path.join(ROOT, 'doc_web_interne/docs/google-play-track-state.local.json');
 
-function readAppVersionCode(rootDir = ROOT, readFileSync = fs.readFileSync) {
+function readAppVersionCode(
+  rootDir = ROOT,
+  readFileSync = fs.readFileSync,
+  env = process.env
+) {
+  const remoteCandidateVersionCode = String(env?.QA_ANDROID_VERSION_CODE ?? '').trim();
+  if (remoteCandidateVersionCode) {
+    if (!/^[1-9]\d*$/.test(remoteCandidateVersionCode)) {
+      throw new Error('QA_ANDROID_VERSION_CODE must be a positive integer.');
+    }
+    return remoteCandidateVersionCode;
+  }
+
   const appJsonPath = path.join(rootDir, 'app.json');
   let appConfig;
   try {
@@ -115,7 +127,8 @@ Options:
   --source <label>                Snapshot source label.
   --package-name <name>           Package name recorded in the snapshot.
   --track <name>                  Expected track. Defaults to internal.
-  --expected-version-code <code>  Expected versionCode. Defaults to app.json expo.android.versionCode (${EXPECTED.versionCode}).
+  --expected-version-code <code>  Expected versionCode. Defaults to QA_ANDROID_VERSION_CODE when set,
+                                  otherwise app.json expo.android.versionCode (${EXPECTED.versionCode}).
   --expected-status <status>      Expected release status. Defaults to completed.
 `.trim());
 }

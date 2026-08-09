@@ -168,6 +168,15 @@ describe('Google Play track state updater', () => {
     expect(parseArgs([]).expectedVersionCode).toBe(String(appConfig.expo.android.versionCode));
   });
 
+  it('prefers the remote EAS candidate from QA_ANDROID_VERSION_CODE', () => {
+    expect(
+      readAppVersionCode(undefined, undefined, { QA_ANDROID_VERSION_CODE: '53' })
+    ).toBe('53');
+    expect(() =>
+      readAppVersionCode(undefined, undefined, { QA_ANDROID_VERSION_CODE: 'invalid' })
+    ).toThrow('QA_ANDROID_VERSION_CODE must be a positive integer');
+  });
+
   it('can evaluate track readiness against a newer candidate than the stored snapshot expectation', () => {
     const document = normalizeSnapshot(JSON.stringify(apiSnapshot()), {
       checkedAt: '2026-05-15T00:00:00.000Z',

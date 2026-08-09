@@ -121,10 +121,15 @@ const EXPECTED = {
 };
 
 const appConfig = readJson('app.json');
-const androidCandidateVersionCode = String(appConfig?.expo?.android?.versionCode ?? '').trim();
+const androidCandidateVersionCode = String(
+  process.env.QA_ANDROID_VERSION_CODE ?? appConfig?.expo?.android?.versionCode ?? ''
+).trim();
 if (!/^[1-9]\d*$/.test(androidCandidateVersionCode)) {
-  throw new Error('app.json expo.android.versionCode must be a positive integer.');
+  throw new Error('QA_ANDROID_VERSION_CODE or app.json expo.android.versionCode must be a positive integer.');
 }
+const androidCandidateVersionSource = process.env.QA_ANDROID_VERSION_CODE
+  ? 'QA_ANDROID_VERSION_CODE'
+  : 'app.json';
 
 function read(file) {
   return fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -662,7 +667,7 @@ function getCandidateVersionCodeIssue(gate) {
     return `versionCode is required for Android release candidate ${androidCandidateVersionCode}`;
   }
   if (versionCodeText !== androidCandidateVersionCode) {
-    return `versionCode ${versionCodeText} does not match Android release candidate ${androidCandidateVersionCode} from app.json`;
+    return `versionCode ${versionCodeText} does not match Android release candidate ${androidCandidateVersionCode} from ${androidCandidateVersionSource}`;
   }
   return null;
 }
