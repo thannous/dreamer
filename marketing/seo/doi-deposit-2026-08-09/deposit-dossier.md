@@ -49,13 +49,16 @@ Do not invent an ORCID. Add one only if the creator supplies and confirms it.
 
 ## Proposed upload files
 
-1. `dream-journal-apps-comparison-2026.csv` copied byte-for-byte from
+1. `dream-journal-apps-comparison-2026.csv`, now present in this directory and
+   verified byte-for-byte against
    `docs-src/static/data/dream-journal-apps-comparison-2026.csv`.
 2. `README.md` from this directory, after replacing the pending-license notice.
 3. `SHA256SUMS.txt` from this directory.
 
 The public CSV currently has 11 records, 11 columns, 3,463 bytes, and SHA-256
 `c5fc652cf6af20184fc6e5c3c3d3e96ba506c69cb229516301af1380892ff28e`.
+The packaged copy has the same size and hash. `SHA256SUMS.txt` validates the
+upload filename directly.
 
 ## Pre-publication stop gates
 

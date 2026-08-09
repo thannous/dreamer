@@ -681,6 +681,23 @@ data or payment was used. Full evidence is recorded in
 `marketing/seo/editorial-discovery-wave-30-2026-08-09.md`; the central prospect
 register now contains 188 routes.
 
+### DOI deposit package completion — 2026-08-09
+
+The local Zenodo deposit package now contains the actual 11-record comparison
+CSV, verified byte-for-byte against the public tracked source at
+`docs-src/static/data/dream-journal-apps-comparison-2026.csv`. Both files are
+3,463 bytes and share SHA-256
+`c5fc652cf6af20184fc6e5c3c3d3e96ba506c69cb229516301af1380892ff28e`;
+the package checksum manifest validates the intended upload filename.
+
+This closes the local assembly gap only. Zenodo's current policies allow
+research-artifact deposits by users who hold the appropriate rights, retain
+ownership with the depositor, and require a license for publicly available
+files. Creating an account or draft, reserving a DOI, approving `CC BY 4.0`,
+confirming the public creator and affiliation, and publishing the record all
+remain external stop gates. No repository account, draft, DOI, license grant,
+upload or publication was created.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

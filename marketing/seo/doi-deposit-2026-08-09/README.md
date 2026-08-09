@@ -13,6 +13,7 @@ license is Creative Commons Attribution 4.0 International (`CC BY 4.0`).
 ## Dataset
 
 - Source file: `docs-src/static/data/dream-journal-apps-comparison-2026.csv`
+- Deposit copy: `dream-journal-apps-comparison-2026.csv` in this directory
 - Public distribution: <https://noctalia.app/data/dream-journal-apps-comparison-2026.csv>
 - Landing page: <https://noctalia.app/en/dream-journal-apps#dataset>
 - Format: UTF-8 CSV with a header row
@@ -21,6 +22,10 @@ license is Creative Commons Attribution 4.0 International (`CC BY 4.0`).
 - First public citation date: 2026-08-03
 - Latest source-route verification in this package: 2026-08-09
 - SHA-256: `c5fc652cf6af20184fc6e5c3c3d3e96ba506c69cb229516301af1380892ff28e`
+
+The deposit copy is intentionally byte-for-byte identical to the tracked source
+file. Re-run both a byte comparison and `SHA256SUMS.txt` verification immediately
+before creating a repository draft; do not upload a regenerated spreadsheet.
 
 ## Scope and method
 
