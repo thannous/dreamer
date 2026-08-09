@@ -612,6 +612,12 @@ Internal links rose from 32,291 to 33,803, but that metric does not measure exte
 
 The migrated La Razón diary-app roundup and Androidsis' current lucid-dream app guide both pass the accountable Spanish non-Russian operator gate, but fail the domain-citation value gate. La Razón routes all ten app calls to action to Google Play with `nofollow`; Androidsis mentions many products while exposing no clickable external product-domain citation. Neither publisher was contacted, and the old Andro4all outreach was not transferred to La Razón. Full evidence is recorded in `marketing/seo/editorial-discovery-wave-28-2026-08-09.md`; the central prospect register now contains 175 routes.
 
+### PeerPush screenshot enrichment — 2026-08-09 15:55 CEST
+
+The explicitly authorized free PeerPush profile edit is complete. Three existing 1270 × 760 Noctalia gallery assets were uploaded through the current `thannous@gmail.com` account: voice capture, AI interpretation and guided reflection. The public `https://peerpush.com/p/noctalia` page now renders four screenshots in total, including the previous image, while retaining its self-canonical, `index, follow` robots and direct followed Noctalia CTA (`rel="noopener"`).
+
+No name, tagline, description, taxonomy, pricing, MRR, discount or social field was changed. No relaunch, paid placement, guest-blog purchase, social feature, comment or follow was used. This is verified profile enrichment on an already tracked referring page; it is not a new domain, new link, index refresh, AI citation, referral session or DR gain. Detailed evidence and the exact source assets are recorded in `marketing/seo/peerpush-account-review-2026-08-09.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

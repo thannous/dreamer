@@ -39,6 +39,31 @@ account-edit authorization:
 2. `docs-src/static/screenshot/product-hunt/noctalia-product-hunt-02-ai-interpretation.png`
 3. `docs-src/static/screenshot/product-hunt/noctalia-product-hunt-03-guided-reflection.png`
 
-Each is 1270 × 760 and clearly labels Noctalia as an Android product. No account
-change, upload, relaunch, comment, follow, guest-post purchase, or promotion was
-performed during this review.
+Each is 1270 × 760 and clearly labels Noctalia as an Android product. At the
+time of the initial review, no account change, upload, relaunch, comment, follow,
+guest-post purchase, or promotion had been performed.
+
+## Authorized screenshot update — 2026-08-09 15:55 CEST
+
+The user-authorized free listing edit was completed through the existing
+PeerPush account for `thannous@gmail.com`. The three shortlisted PNG files were
+uploaded without changing the product name, tagline, description, website,
+categories, pricing, social profile, discount, MRR or any paid feature.
+
+The saved public page at `https://peerpush.com/p/noctalia` now exposes four
+screenshots in total: the prior 400 × 832 image plus three newly served
+400 × 239 derivatives. All four image responses completed in the rendered
+gallery. The same public-page verification also retained:
+
+- title `Noctalia | PeerPush`;
+- self-canonical `https://peerpush.com/p/noctalia`;
+- robots `index, follow`;
+- the website CTA to
+  `https://noctalia.app/?utm_source=peerpush&ref=peerpush` with
+  `rel="noopener"` only.
+
+This proves the profile edit and public screenshot publication. It does not
+prove a new referring domain, a new backlink, crawler pickup of the new images,
+AI recommendation, referral session, index refresh or Domain Rating movement.
+No relaunch, promotion, social feature, guest-blog purchase or other spend was
+used.
