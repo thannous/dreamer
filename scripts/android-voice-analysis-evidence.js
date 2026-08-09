@@ -4,6 +4,7 @@
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
+const { readAppVersionCode } = require('./update-google-play-track-state');
 
 const VOICE_ANALYSIS_FLOW = 'maestro/release-auth-voice-analysis.yml';
 const VOICE_ANALYSIS_EVIDENCE =
@@ -12,8 +13,8 @@ const VOICE_ANALYSIS_SCHEMA_VERSION = 1;
 
 const REQUIRED_FLOW_TOKENS = Object.freeze([
   'id: btn.recordToggle',
-  'forest|moon',
-  'fox|door',
+  'for[eê]t|lune',
+  'renard|porte',
   'id: btn.saveDream',
   'id: component.transcriptCard',
   'Interpretation|Interprétation',
@@ -23,13 +24,17 @@ const REQUIRED_FLOW_TOKENS = Object.freeze([
 const sha256 = (value) =>
   crypto.createHash('sha256').update(value).digest('hex');
 
-function readExpectedBuildIdentity(rootDir, readFileSync = fs.readFileSync) {
+function readExpectedBuildIdentity(
+  rootDir,
+  readFileSync = fs.readFileSync,
+  env = process.env
+) {
   const appConfig = JSON.parse(
     readFileSync(path.join(rootDir, 'app.json'), 'utf8')
   );
   const packageName = String(appConfig?.expo?.android?.package || '').trim();
   const versionName = String(appConfig?.expo?.version || '').trim();
-  const versionCode = Number(appConfig?.expo?.android?.versionCode);
+  const versionCode = Number(readAppVersionCode(rootDir, readFileSync, env));
 
   if (!packageName || !versionName || !Number.isInteger(versionCode) || versionCode < 1) {
     throw new Error('app.json does not define a complete Android build identity.');
@@ -110,6 +115,7 @@ function evaluateVoiceAnalysisEvidence({
   phase = 'qualification',
   existsSync = fs.existsSync,
   readFileSync = fs.readFileSync,
+  env = process.env,
 } = {}) {
   const wiring = inspectVoiceAnalysisWiring(rootDir, {
     existsSync,
@@ -135,7 +141,7 @@ function evaluateVoiceAnalysisEvidence({
   let expected;
   try {
     evidence = JSON.parse(readFileSync(evidencePath, 'utf8'));
-    expected = readExpectedBuildIdentity(rootDir, readFileSync);
+    expected = readExpectedBuildIdentity(rootDir, readFileSync, env);
   } catch {
     return {
       status: pendingStatus(phase),
@@ -198,6 +204,7 @@ function writeVoiceAnalysisEvidence({
   targetKind,
   now = () => new Date(),
   fsImpl = fs,
+  env = process.env,
 } = {}) {
   const wiring = inspectVoiceAnalysisWiring(rootDir, {
     existsSync: fsImpl.existsSync,
@@ -210,7 +217,7 @@ function writeVoiceAnalysisEvidence({
     throw new Error('Voice runtime evidence requires an emulator or physical target kind.');
   }
 
-  const expected = readExpectedBuildIdentity(rootDir, fsImpl.readFileSync);
+  const expected = readExpectedBuildIdentity(rootDir, fsImpl.readFileSync, env);
   if (
     buildIdentity?.packageName !== expected.packageName ||
     buildIdentity?.versionName !== expected.versionName ||

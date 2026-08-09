@@ -13,6 +13,7 @@ const {
   VOICE_ANALYSIS_FLOW,
   writeVoiceAnalysisEvidence,
 } = require('./android-voice-analysis-evidence');
+const { readAppVersionCode } = require('./update-google-play-track-state');
 
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_MAESTRO_BIN_WINDOWS = 'C:\\Users\\thann\\maestro\\maestro\\bin\\maestro.bat';
@@ -504,14 +505,15 @@ function listAndroidDevices() {
 
 function readExpectedAndroidBuild(
   rootDir = ROOT,
-  readFileSync = fs.readFileSync
+  readFileSync = fs.readFileSync,
+  env = process.env
 ) {
   const appConfig = JSON.parse(
     readFileSync(path.join(rootDir, 'app.json'), 'utf8')
   );
   const packageName = String(appConfig?.expo?.android?.package || '').trim();
   const versionName = String(appConfig?.expo?.version || '').trim();
-  const versionCode = Number(appConfig?.expo?.android?.versionCode);
+  const versionCode = readAppVersionCode(rootDir, readFileSync, env);
 
   if (!packageName) {
     throw new Error('app.json must define expo.android.package for Release E2E.');
@@ -519,14 +521,10 @@ function readExpectedAndroidBuild(
   if (!versionName) {
     throw new Error('app.json must define expo.version for Release E2E.');
   }
-  if (!Number.isInteger(versionCode) || versionCode < 1) {
-    throw new Error('app.json must define a positive expo.android.versionCode for Release E2E.');
-  }
-
   return {
     packageName,
     versionName,
-    versionCode: String(versionCode),
+    versionCode,
   };
 }
 

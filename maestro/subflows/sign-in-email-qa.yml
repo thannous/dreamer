@@ -1,5 +1,22 @@
 appId: com.tanuki75.noctalia
 ---
+- runFlow:
+    when:
+      notVisible:
+        id: input.auth.email
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: settings-account-open-signin
+          direction: UP
+          visibilityPercentage: 60
+          timeout: 30000
+      - tapOn:
+          id: settings-account-open-signin
+- extendedWaitUntil:
+    visible:
+      id: input.auth.email
+    timeout: 30000
 - runFlow: fill-email-qa-credentials.yml
 - extendedWaitUntil:
     visible: "Save password to Google Password Manager.*|Sign Out|Se déconnecter|Cerrar sesión|Esci|Abmelden|Sign in failed|Échec de la connexion|Fallo al iniciar sesión|Accesso non riuscito|Anmeldung fehlgeschlagen"

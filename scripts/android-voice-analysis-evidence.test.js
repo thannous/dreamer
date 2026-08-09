@@ -59,8 +59,8 @@ function setupFixture() {
       '---',
       '- tapOn:',
       '    id: btn.recordToggle',
-      '- assertVisible: forest|moon',
-      '- assertVisible: fox|door',
+      '- assertVisible: for[eê]t|lune',
+      '- assertVisible: renard|porte',
       '- tapOn:',
       '    id: btn.saveDream',
       '- assertVisible:',
@@ -122,6 +122,23 @@ describe('Android Release voice runtime evidence', () => {
       .toMatchObject({ status: 'pass' });
     expect(fs.statSync(path.join(root, VOICE_ANALYSIS_EVIDENCE)).mode & 0o777)
       .toBe(0o600);
+  });
+
+  it('binds the receipt to a remote EAS version code when provided', () => {
+    const root = setupFixture();
+    const remoteBuild = { ...BUILD, versionCode: '53' };
+    const env = { QA_ANDROID_VERSION_CODE: remoteBuild.versionCode };
+
+    const receipt = writeVoiceAnalysisEvidence({
+      rootDir: root,
+      buildIdentity: remoteBuild,
+      targetKind: 'physical',
+      env,
+    });
+
+    expect(receipt.versionCode).toBe(53);
+    expect(evaluateVoiceAnalysisEvidence({ rootDir: root, env }))
+      .toMatchObject({ status: 'pass' });
   });
 
   it('blocks a stale receipt when the flow semantics change', () => {

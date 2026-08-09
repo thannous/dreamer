@@ -59,6 +59,26 @@ describe('run-maestro-android Release preflight', () => {
     expect(readFileSync).toHaveBeenCalledWith('/repo/app.json', 'utf8');
   });
 
+  it('uses QA_ANDROID_VERSION_CODE for an EAS remotely versioned Release', () => {
+    const readFileSync = jest.fn(() => JSON.stringify({
+      expo: {
+        version: '3.1.0',
+        android: {
+          package: 'com.tanuki75.noctalia',
+          versionCode: 50,
+        },
+      },
+    }));
+
+    expect(
+      readExpectedAndroidBuild('/repo', readFileSync, { QA_ANDROID_VERSION_CODE: '53' })
+    ).toEqual({
+      packageName: 'com.tanuki75.noctalia',
+      versionName: '3.1.0',
+      versionCode: '53',
+    });
+  });
+
   it('matches the current release metadata declared in app.json', () => {
     const appConfig = JSON.parse(
       fs.readFileSync(path.resolve(__dirname, '..', 'app.json'), 'utf8')

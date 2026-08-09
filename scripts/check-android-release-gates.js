@@ -780,6 +780,7 @@ function checkAndroidReleaseGates({
     phase,
     existsSync,
     readFileSync,
+    env,
   });
   addCheck(
     checks,

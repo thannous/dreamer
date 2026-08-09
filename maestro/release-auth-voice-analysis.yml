@@ -1,6 +1,6 @@
 # Production Release integration: real email login, microphone-driven transcript,
 # authenticated save and analysis, then logout. A QA tester or a validated audio
-# input route must speak the documented English sentinel once dictation starts.
+# input route must speak the documented French sentinel once dictation starts.
 appId: com.tanuki75.noctalia
 name: Release authenticated voice transcription and analysis
 tags:
@@ -12,7 +12,7 @@ onFlowComplete:
   - runFlow:
       when:
         visible:
-          id: text.recording.voiceStatusDuration
+          text: "Mettre en pause"
       commands:
         - tapOn:
             id: btn.recordToggle
@@ -38,12 +38,37 @@ onFlowComplete:
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000
+
+# Make the spoken sentinel deterministic regardless of the device locale. The
+# speech recognizer follows the explicit app language selected here, and the QA
+# phone has the corresponding offline model installed.
 - scrollUntilVisible:
     element:
-      id: btn.auth.google
+      id: settings-language-choice
     direction: DOWN
     visibilityPercentage: 60
     timeout: 30000
+- tapOn:
+    id: settings-language-choice
+- extendedWaitUntil:
+    visible:
+      id: settings-language-choice.sheet
+    timeout: 10000
+- tapOn:
+    id: settings-language-choice.option.fr
+- extendedWaitUntil:
+    notVisible:
+      id: settings-language-choice.sheet
+    timeout: 30000
+
+- scrollUntilVisible:
+    element:
+      id: settings-account-open-signin
+    direction: UP
+    visibilityPercentage: 60
+    timeout: 30000
+- assertVisible:
+    id: settings-account-open-signin
 - assertNotVisible:
     id: btn.auth.signOut
 - runFlow: subflows/sign-in-email-qa.yml
@@ -62,21 +87,17 @@ onFlowComplete:
     timeout: 20000
 - tapOn:
     id: btn.recordToggle
-- extendedWaitUntil:
-    visible:
-      id: text.recording.voiceStatusDuration
-    timeout: 20000
 
-# Require two ordered semantic anchors from the English QA sentence (the clean
-# Release starts in English). This prevents a microphone timer or a stale text
-# field from being accepted as transcription.
+# Require two ordered semantic anchors from the French QA sentence. This
+# prevents a microphone timer or a stale text field from being accepted as
+# transcription.
 - extendedWaitUntil:
-    visible: "(?i).*(forest|moon).*(fox|door).*"
+    visible: "(?i).*(for[eê]t|lune).*(renard|porte).*"
     timeout: 45000
 - tapOn:
     id: btn.recordToggle
 - extendedWaitUntil:
-    visible: "(?i).*(forest|moon).*(fox|door).*"
+    visible: "(?i).*(for[eê]t|lune).*(renard|porte).*"
     timeout: 15000
 
 # Save and analyze only after the microphone-derived transcript is visible.
@@ -125,7 +146,7 @@ onFlowComplete:
     visibilityPercentage: 60
 - assertVisible:
     id: component.transcriptCard
-- assertVisible: "(?i).*(forest|moon).*(fox|door).*"
+- assertVisible: "(?i).*(for[eê]t|lune).*(renard|porte).*"
 
 # End in a clean guest state.
 - openLink: noctalia://settings
@@ -142,7 +163,19 @@ onFlowComplete:
     id: btn.auth.signOut
 - extendedWaitUntil:
     visible:
-      id: btn.auth.google
+      id: screen.recording
     timeout: 60000
+- openLink: noctalia://settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: settings-account-open-signin
+    direction: UP
+    visibilityPercentage: 60
+    timeout: 30000
+- assertVisible:
+    id: settings-account-open-signin
 - assertNotVisible:
     id: btn.auth.signOut
