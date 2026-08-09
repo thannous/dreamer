@@ -667,6 +667,20 @@ referring domain or DR event. No email reply, saved field, relaunch, account
 creation, publication or payment was performed. Detailed evidence is recorded
 in `marketing/seo/peerpush-account-review-2026-08-09.md`.
 
+### Editorial discovery wave 30 — 2026-08-09
+
+Four fresh routes were rejected before contact. Freeappsforme sends reviewed
+apps only to Google Play or the App Store, makes predictive dream claims and
+does not disclose an accountable operator; a Yandex endpoint is a cautionary
+signal rather than proof of Russian ownership, so the publisher is excluded
+under the conservative non-Russian gate. AppsHunter is iOS-only and declares
+`noindex,nofollow`. JournalOwl and Life Note are product-owned editorial pages
+that name competing apps without linking their developer domains; their public
+operator disclosures are also incomplete. No message, form, account, product
+data or payment was used. Full evidence is recorded in
+`marketing/seo/editorial-discovery-wave-30-2026-08-09.md`; the central prospect
+register now contains 188 routes.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
