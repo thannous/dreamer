@@ -31,6 +31,11 @@ backlink.
   Priority A batch: KapanLagi, Penzu and AllThingsAI retain direct DR potential;
   Android Police and Xataka Android lack a direct developer-domain pattern on
   the target pages, while the sampled AITrendTool product links are `nofollow`.
+- The D3A public and authenticated Zimbra stop gate was refreshed at 2026-08-10
+  00:31 CEST: each mailbox search still contains only the original sent
+  message, Spam contains no matching response or failure, KapanLagi remains an
+  unlinked source cluster, and neither Penzu nor AllThingsAI exposes a public
+  Noctalia inclusion.
 - Elsewhere's current Medium comparison is indexable, but its inspected product
   links are `ugc nofollow`. The pending reply is relationship maintenance, not
   a claim of followed equity.

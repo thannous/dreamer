@@ -17,6 +17,23 @@ account, publication or payment was sent or created.
 
 The distribution is unchanged from the 2026-08-03 public verification. This does not prove a current Ahrefs DR value because the authenticated Ahrefs dashboard was not reopened.
 
+## D3A refresh — 2026-08-10 00:31 CEST
+
+The three DR-first routes were refreshed without sending or modifying any
+message:
+
+| Domain | Current public evidence | Current mailbox evidence | Result |
+| --- | --- | --- | --- |
+| `kapanlagi.com` | A direct HTTP 200 fetch of the current wallet-and-water article contains four `Noctalia` mentions and zero `noctalia.app` anchors. Current exact public search still exposes several KapanLagi pages citing the same Noctalia source URL. | The authenticated `contact@noctalia.app` Zimbra search contains exactly one result: the original sent message. | Unlinked source reclamation remains live; no reply, bounce or opt-out. |
+| `penzu.com` | The current dream-journal guide returns HTTP 200 with zero `Noctalia` mentions and zero `noctalia.app` anchors. | The exact Zimbra search contains exactly one result: the original sent message. | No public inclusion; no reply, bounce or opt-out. |
+| `allthingsai.work` | The current homepage returns HTTP 200 with zero `Noctalia` mentions and zero `noctalia.app` anchors; exact public site search exposes no Noctalia listing. | The exact Zimbra search contains exactly one result: the original sent message. | No public listing; no reply, bounce or opt-out. |
+
+The Zimbra Spam folder contains the already-recorded AndroidAyuda delivery
+failure and no KapanLagi, Penzu or AllThingsAI reply, bounce, opt-out or warning.
+The public nineteen-page verifier was also rerun and remains at 6 followed,
+4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410. D3A
+therefore remains eligible, but no transmission is authorized by this check.
+
 ## Routes due on 2026-08-09
 
 | Domain | Public-page stop gate | Mailbox stop gate | Decision |
