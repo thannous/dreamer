@@ -29,16 +29,19 @@ delivery, acceptance, publication, a backlink or DR movement.
 
 | Priority | Routes | Reason |
 | --- | --- | --- |
-| A — DR first | KapanLagi, Penzu, AllThingsAI | Existing multi-page source mention or currently verified followed product-domain pattern |
+| A — DR first, executed | KapanLagi, Penzu, AllThingsAI | The authorized first replies were sent on 2026-08-10 and now remain in monitored waiting state |
+| A — topical followed pattern | Atlas Workspace, ILTY | Current self-canonical comparisons directly link six competitor developer domains without `nofollow`; publisher DR and future treatment remain unverified |
 | A — visibility | Android Police, Xataka Android, AITrendTool | Credible editorial or directory visibility, but no verified direct followed-domain pattern on the sampled target pages |
-| B | Digital Trends, Android Headlines, Sleep.com, Atlas Workspace, ILTY, Engadget, 9to5Google, Sleepopolis, Gratitude Genie | Credible editorial fit, but broad inboxes, older pages or less certain specialist inclusion |
+| B | Digital Trends, Android Headlines, Sleep.com, Engadget, 9to5Google, Sleepopolis, Gratitude Genie | Credible editorial fit, but broad inboxes, older pages or less certain specialist inclusion |
 | C | Goals & Progress, Everyeye | Weak domain-citation pattern or article is thematic rather than an app comparison |
 
 The rendered link-treatment evidence and the independent `D3A`/`D3B`
 authorization boundaries are recorded in
 `marketing/seo/backlink-dr-priority-refresh-2026-08-09.md`. The message copy
 below is unchanged; the split only prevents discovery-oriented routes from
-being presented as direct DR opportunities.
+being presented as direct DR opportunities. The 2026-08-10 rendered refresh
+promotes Atlas and ILTY into the separate `D7` followed-pattern batch without
+claiming either publisher's current DR.
 
 ## Exact reply copy
 

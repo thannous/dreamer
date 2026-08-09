@@ -132,3 +132,20 @@ The ten Gmail threads prepared in wave 1 were read directly on 2026-08-09. Nine 
 These nine routes are `followup_1_eligible_awaiting_explicit_authorization`. No reply was sent. The already-prepared copy in `marketing/seo/backlink-follow-up-wave-1-2026-08-05.md` remains the exact proposed batch.
 
 The same Gmail failure search also found the final JournPad Delivery Status Notification (Failure) dated 2026-08-03. JournPad is now closed as `delivery_failed_permanent_closed`; no retry or alternative address is allowed.
+
+## Followed-pattern reclassification — 2026-08-10 01:25 CEST
+
+Real Chrome rechecked six already-contacted targets. Atlas Workspace and ILTY
+remain self-canonical and `index, follow`, expose no Noctalia citation and each
+directly link six competitor developer domains without `nofollow`. Exact
+authenticated Zimbra searches still contain only their original sent message.
+They are isolated as the authorization-gated `D7` batch; this is not permission
+to send and does not prove publisher DR or future link treatment.
+
+World of Lucid Dreaming, Sleep Review and 9to5Google were not promoted because
+their inspected target pages expose no comparable developer-domain pattern.
+The Acuity target now declares the Ripple version as canonical and contains no
+competitor product-domain anchor. Connected Gmail still contains only the
+original Acuity message and no matching failure, but canonical migration closes
+the legacy follow-up and clears its dates. The current eligible first-follow-up
+count is 27.

@@ -972,6 +972,25 @@ still require independent D2 and D5 authorization plus a new immediate stop
 gate. Full evidence is in
 `marketing/seo/backlink-readiness-d2-d5-2026-08-10.md`.
 
+### DR-first follow-up reclassification — 2026-08-10 01:25 CEST
+
+A six-page real-Chrome comparison found two additional clean followed-pattern
+routes among the already-contacted publishers. Atlas Workspace and ILTY each
+retain a self-canonical `index, follow` comparison with six direct competitor
+developer-domain links and no Noctalia citation; their named operator and
+official contact evidence remains current, and exact Zimbra searches contain
+only the original sent message. Their 62-word and 57-word first replies remain
+unsent in a new independent `D7` authorization batch.
+
+World of Lucid Dreaming, Sleep Review and 9to5Google were not promoted because
+their inspected target pages expose no comparable developer-domain citation
+pattern. The Acuity target now declares a Ripple URL as canonical and exposes
+no competitor product-domain anchor; connected Gmail contains only the original
+sent message and no matching delivery failure. The legacy Acuity follow-up is
+therefore closed, reducing the unsent eligible first-follow-up pool from 28 to
+27. Full evidence is in
+`marketing/seo/backlink-dr-followup-wave-37-2026-08-10.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
