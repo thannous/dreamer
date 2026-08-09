@@ -39,6 +39,8 @@ describe('subscription QA local verifier', () => {
         '## Current Session Readiness',
         'Verified manual/external scenarios: 0',
         'Manual or external gates remaining: 7',
+        '## RevenueCat Release Smoke Evidence',
+        'Release smoke evidence assertions remaining: 2',
         'Account switch | Test Store or Play | Plus user logout does not leak to free user',
         'Test Store signed-in account env',
         'Account switch second account env',
@@ -92,6 +94,7 @@ describe('subscription QA local verifier', () => {
         'scripts/check-play-install-source.js',
         'scripts/check-play-qa-device.js',
         'scripts/wait-for-play-qa-device.js',
+        'scripts/run-subscription-release-smoke.js',
       ])
     );
     const unitCommand = commands.find((command) => command.label === 'unit: subscription QA scripts');

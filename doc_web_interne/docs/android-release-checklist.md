@@ -1,6 +1,6 @@
 # Noctalia Android Release Checklist
 
-Dernière mise à jour: 2026-05-04.
+Dernière mise à jour: 2026-08-09.
 
 Cette checklist concentre les gates Android avant Google Play Internal Testing.
 Elle complète `PRODUCTION_CONSTANTS.md` et `PRODUCTION_PREP.md`.
@@ -36,8 +36,8 @@ du bundle JavaScript. Référence: Expo EAS Environment Variables
 
 ```bash
 npm run subscription:qa:verify-local
-npm run subscription:qa:release-gate
-npm run android:gates:strict
+npm run subscription:qa:report
+npm run android:gates:prebuild
 npx expo install --check
 npx expo-doctor
 npm run typecheck:app
@@ -48,8 +48,8 @@ npx eas-cli@latest build -p android --profile production
 
 `npm run android:gates` est un préflight non bloquant qui imprime les gates
 locales, bloquées et manuelles sans exposer les valeurs sensibles. Utiliser
-`npm run android:gates:strict` en CI ou avant release pour échouer tant que
-`adb`, un device/emulator Android, Maestro, ou une config locale requise manque.
+`npm run android:gates:prebuild` avant la construction. Le gate strict final
+est exécuté après l'installation du candidat depuis Play Internal Testing.
 
 - [ ] Uploader l'AAB signé sur Google Play Internal Testing.
 - [ ] Copier le SHA-1 Play App Signing depuis Play Console → App Integrity.
@@ -65,9 +65,18 @@ Installer depuis la piste Internal Testing, pas en sideload.
 - [ ] Guest session bootstrap sans warning `Missing EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER`.
 - [ ] Google Sign-In.
 - [ ] RevenueCat offering load.
-- [ ] Achat test et restore.
-- [ ] Enregistrer les preuves `play_monthly`, `play_annual` et `play_cancellation_and_expiry` avec `npm run subscription:qa:evidence -- --device-id <adb-id> --installer-package-name com.android.vending --version-code <installed-version-code>`.
-- [ ] Relancer `npm run subscription:qa:release-gate` puis `npm run android:gates:strict`.
+- [ ] Restaurer le compte payant sur le candidat Play et enregistrer `restore_after_reinstall` avec le `versionCode` installé.
+- [ ] Passer du compte payant au second compte et enregistrer `account_switch`; le second compte doit rester `free / inactive`.
+- [ ] Lancer le verdict unique:
+
+  ```bash
+  npm run subscription:qa:release-smoke -- \
+    --device <adb-id> \
+    --version-code <installed-version-code>
+  ```
+
+- [ ] Exiger `3/3` puis relancer `npm run android:gates:strict`.
+- [ ] Si les produits/forfaits, le paywall/achat, les clés ou le SDK RevenueCat, ou le webhook ont changé, exécuter aussi `npm run subscription:qa:full-gate` et requalifier les sept scénarios.
 - [ ] Limite quota vers paywall.
 - [ ] Enregistrement audio et fallback texte.
 - [ ] App Links `https://dream.noctalia.app`.

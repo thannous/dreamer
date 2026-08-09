@@ -43,6 +43,7 @@ const process = {
 const reportNow = options.now ? options.now() : new Date();
 const PLAY_STORE_STATE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 const args = new Set(process.argv.slice(2));
+const requireReleaseCoverage = args.has('--require-release');
 const requireFullCoverage = args.has('--require-full');
 const evidencePath = process.env.REVENUECAT_QA_EVIDENCE_PATH
   ? path.resolve(ROOT, process.env.REVENUECAT_QA_EVIDENCE_PATH)
@@ -72,15 +73,18 @@ const supabasePlayIntegritySecretsStatePath = process.env.SUPABASE_PLAY_INTEGRIT
 if (args.has('--help') || args.has('-h')) {
   console.log(`
 Usage:
-  node ./scripts/subscription-qa-report.js [--require-full]
+  node ./scripts/subscription-qa-report.js [--require-release | --require-full]
 
 Options:
-  --require-full  Exit non-zero while Test Store purchase or Play Internal Testing gates remain manual.
+  --require-release  Require the release-smoke evidence: restore and account isolation.
+  --require-full     Require every Test Store and Play lifecycle scenario.
 `.trim());
   return { stdout: `${lines.join('\n')}\n`, stderr: '', exitCode: 0 };
 }
 
-const unknownArgs = [...args].filter((arg) => arg !== '--require-full');
+const unknownArgs = [...args].filter(
+  (arg) => arg !== '--require-release' && arg !== '--require-full'
+);
 if (unknownArgs.length > 0) {
   throw new Error(`Unknown argument: ${unknownArgs.join(', ')}`);
 }
@@ -96,6 +100,14 @@ const EXPECTED = {
   playProductIds: {
     monthly: 'prodfce10ef2a8',
     annual: 'prod98337b31be',
+  },
+  releaseSmokeEvidenceKeys: [
+    'restore_after_reinstall',
+    'account_switch',
+  ],
+  releaseSmokeEvidenceLabels: {
+    restore_after_reinstall: 'Restore',
+    account_switch: 'Account isolation',
   },
   manualGateKeys: [
     'test_store_monthly',
@@ -990,8 +1002,12 @@ const checks = [
     'Subscription QA report CLIs are wired',
     pkg.scripts['subscription:qa:report'] === 'node ./scripts/subscription-qa-report.js' &&
       pkg.scripts['subscription:qa:release-gate'] ===
+        'node ./scripts/run-subscription-release-smoke.js' &&
+      pkg.scripts['subscription:qa:release-smoke'] ===
+        'node ./scripts/run-subscription-release-smoke.js' &&
+      pkg.scripts['subscription:qa:full-gate'] ===
         'node ./scripts/subscription-qa-report.js --require-full',
-    'npm run subscription:qa:report and npm run subscription:qa:release-gate'
+    'npm run subscription:qa:report, npm run subscription:qa:release-smoke and npm run subscription:qa:full-gate'
   ),
   check(
     'Production APK build is gated by subscription QA',
@@ -1045,7 +1061,7 @@ const checks = [
     'npm run android:play-qa-device:wait'
   ),
   check(
-    'Evidence template covers all release gates',
+    'Evidence template covers all full-coverage scenarios',
     EXPECTED.manualGateKeys.every((key) => evidenceExample.gates?.[key]),
     EXPECTED.manualGateKeys.join(', ')
   ),
@@ -1365,28 +1381,74 @@ scenarioRows.forEach(([coverage, scenario, layer, proof, nextGate]) => {
 });
 
 const manualGates = scenarioRows.filter(([coverage]) => coverage !== 'Automated' && coverage !== 'Verified');
+const releaseSmokeEvidenceRows = EXPECTED.releaseSmokeEvidenceKeys.map((key) => {
+  const row = scenarioRows.find(([, scenario]) => slugify(scenario) === key);
+  return {
+    key,
+    label: EXPECTED.releaseSmokeEvidenceLabels[key],
+    scenario: row?.[1] ?? key,
+    verified: row?.[0] === 'Verified',
+    row: row ?? [
+      'Pending',
+      EXPECTED.releaseSmokeEvidenceLabels[key],
+      'Evidence schema',
+      'Release-smoke evidence scenario is missing from the report.',
+      'Restore the missing release-smoke scenario definition.',
+    ],
+  };
+});
+const remainingReleaseSmokeEvidence = releaseSmokeEvidenceRows
+  .filter(({ verified }) => !verified)
+  .map(({ row }) => row);
+const releaseSmokeStatus = remainingReleaseSmokeEvidence.length === 0 ? 'PASS' : 'BLOCKED';
+
+console.log('');
+console.log('## RevenueCat Release Smoke Evidence');
+console.log('');
+console.log('| Status | Gate | Assertions |');
+console.log('| --- | --- | --- |');
+console.log(
+  `| ${releaseSmokeStatus} | Subscription release smoke | ${releaseSmokeEvidenceRows.length - remainingReleaseSmokeEvidence.length}/${releaseSmokeEvidenceRows.length} evidence assertions verified |`
+);
+console.log('');
+console.log('### Evidence assertions');
+console.log('');
+console.log('| Status | Assertion | Evidence scenario |');
+console.log('| --- | --- | --- |');
+releaseSmokeEvidenceRows.forEach(({ label, scenario, verified }) => {
+  console.log(`| ${verified ? 'PASS' : 'BLOCKED'} | ${label} | ${scenario} |`);
+});
+console.log('');
+console.log(`Release smoke evidence assertions remaining: ${remainingReleaseSmokeEvidence.length}`);
+
 console.log('');
 console.log(`Automated scenarios: ${scenarioRows.filter(([coverage]) => coverage === 'Automated').length}`);
 console.log(`Verified manual/external scenarios: ${scenarioRows.filter(([coverage]) => coverage === 'Verified').length}`);
 console.log(`Historical manual/external scenarios: ${scenarioRows.filter(([coverage]) => coverage === 'Historical').length}`);
 console.log(`Manual or external gates remaining: ${manualGates.length}`);
-if (manualGates.length > 0) {
+const nextGates = requireReleaseCoverage && !requireFullCoverage
+  ? remainingReleaseSmokeEvidence
+  : manualGates;
+if (nextGates.length > 0) {
   console.log('');
   console.log('## Next Gates');
   console.log('');
-  manualGates.forEach(([, scenario, layer, proof, evidence]) => {
+  nextGates.forEach(([, scenario, layer, proof, evidence]) => {
     console.log(`- ${scenario} (${layer}): ${proof}; ${evidence}`);
   });
   console.log('');
   console.log('## Evidence Commands');
   console.log('');
-  manualGates.forEach(([, scenario]) => {
+  nextGates.forEach(([, scenario]) => {
     console.log(`- ${scenario}: \`${getEvidenceCommand(scenario)}\``);
   });
 }
 
+const evidenceDiagnosticScenarios = requireReleaseCoverage && !requireFullCoverage
+  ? scenarios.filter(([, scenario]) => EXPECTED.releaseSmokeEvidenceKeys.includes(slugify(scenario)))
+  : scenarios;
 const evidenceIssues = fs.existsSync(evidencePath)
-  ? scenarios
+  ? evidenceDiagnosticScenarios
       .filter(([coverage]) => coverage !== 'Automated')
       .map(([, scenario]) => [scenario, getGateEvidenceIssue(evidence, scenario)])
       .filter(([, issue]) => issue)
@@ -1470,6 +1532,14 @@ if (failed.length > 0) {
   process.exitCode = 1;
 }
 
+if (requireReleaseCoverage && remainingReleaseSmokeEvidence.length > 0) {
+  console.log('');
+  console.log(
+    `RevenueCat release smoke is BLOCKED: ${remainingReleaseSmokeEvidence.length} evidence assertion(s) still require validation.`
+  );
+  process.exitCode = 1;
+}
+
 if (requireFullCoverage && manualGates.length > 0) {
   console.log('');
   console.log(
@@ -1482,6 +1552,18 @@ return {
   stdout: lines.length > 0 ? `${lines.join('\n')}\n` : '',
   stderr: '',
   exitCode: process.exitCode,
+  releaseSmoke: {
+    status: releaseSmokeStatus.toLowerCase(),
+    total: releaseSmokeEvidenceRows.length,
+    verified: releaseSmokeEvidenceRows.length - remainingReleaseSmokeEvidence.length,
+    remaining: remainingReleaseSmokeEvidence.length,
+    assertions: releaseSmokeEvidenceRows.map(({ key, label, scenario, verified }) => ({
+      key,
+      label,
+      scenario,
+      status: verified ? 'pass' : 'blocked',
+    })),
+  },
 };
 }
 

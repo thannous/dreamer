@@ -4,6 +4,13 @@ Ce document décrit la qualification Android reproductible de Noctalia après la
 migration Expo 57. Il sépare strictement le téléphone Google Play du device
 Test Store.
 
+> Politique active depuis le 9 août 2026 : les sections versionCode 34 ci-dessous
+> restent un historique de migration. La release courante se conclut avec un
+> seul `subscription:qa:release-smoke` à trois assertions : candidat installé
+> depuis Play, restauration du compte payant, isolation du compte gratuit. La
+> couverture complète des sept scénarios est réservée aux changements Billing
+> ou aux campagnes QA périodiques.
+
 ## État de qualification au 12 juillet 2026
 
 - Le backend Noctalia expose désormais `/transcribe`. Les probes
@@ -459,8 +466,7 @@ build IDs, identifiants d'appareil et adresses réseau.
 ```bash
 npm run subscription:qa:verify-local
 npm run subscription:qa:report
-npm run subscription:qa:release-gate
-npm run android:gates:strict
+npm run android:gates:prebuild
 npx expo install --check
 npx expo-doctor
 npm run typecheck:app
@@ -470,6 +476,20 @@ npm run test:fast
 npm audit --omit=dev --audit-level=high
 npm audit --audit-level=high
 ```
+
+Après upload Internal Testing, installation du candidat exact et enregistrement des preuves
+`restore_after_reinstall` et `account_switch`:
+
+```bash
+npm run subscription:qa:release-smoke -- \
+  --device "$ANDROID_PLAY_DEVICE" \
+  --version-code <versionCode-candidat>
+npm run android:gates:strict
+```
+
+Le smoke produit un seul `PASS` ou `BLOCKED`. Utiliser `npm run subscription:qa:full-gate`
+uniquement si le catalogue/forfait Play, le paywall ou l'achat, la clé/SDK RevenueCat ou le
+webhook/cycle de vie ont changé, ainsi que lors des campagnes QA complètes.
 
 Les deux audits doivent rester à zéro alerte haute/critique. Ne jamais utiliser
 `npm audit fix --force` sur cette migration : il peut proposer un downgrade
@@ -497,11 +517,11 @@ le build échoue. Le workflow doit être publié dans le dépôt et le projet EA
 
 Le GO Play exige :
 
-- preuve physique d'upgrade 33 vers 34 qualifiante ;
-- Google Sign-In, Billing et Play Integrity validés sur la v34 Play ;
-- achats mensuel et annuel, restore Google et switch paid vers free validés ;
-- convergence RevenueCat/backend prouvée ;
-- voix réelle vers transcription, sauvegarde et analyse validée sur la v34 ;
+- le candidat exact installé depuis Google Play sur un téléphone physique ;
+- restauration Google du compte payant et switch paid vers free validés sur ce candidat ;
+- Google Sign-In, Billing et Play Integrity valides ;
+- achat mensuel/annuel et convergence RevenueCat/backend revalidés si le périmètre Billing a changé ;
+- voix réelle vers transcription, sauvegarde et analyse validée ;
 - fonction Edge `api` déployée et fallback `/transcribe` vérifié avec un APK
   reconstruit ;
 - permissions production et readiness Test Store vertes ;
@@ -509,9 +529,8 @@ Le GO Play exige :
 
 Sinon, verdict **NO-GO** avec la gate exacte et le chemin de preuve manquant.
 
-État courant : **NO-GO**. Les blocages actifs sont la publication de la v34 sur
-Play Internal suivie de l'upgrade et des transactions physiques, puis la gate
-voix réelle sur un téléphone v34. Les gates Test Store v34 sont fermées.
+État historique du 12 juillet 2026 : **NO-GO v34**. Ce verdict ne décrit pas le
+candidat courant; seul le release smoke exécuté avec le `versionCode` actuel fait foi.
 
 ## 10. Dépannage rapide
 

@@ -6,7 +6,23 @@ Derniere mise a jour locale: 2026-05-15
 
 Objectif utilisateur: tester et finaliser le workflow RevenueCat avec differents profils utilisateurs et abonnements, du mock valide au Test Store puis Play autant que possible localement.
 
-## Criteres de succes
+## Politique de release actuelle — 2026-08-09
+
+Cet audit conserve les preuves historiques des sept scenarios, mais ils ne constituent plus sept
+portes obligatoires a chaque release. Le verdict courant est un seul smoke:
+
+```bash
+npm run subscription:qa:release-smoke -- --device <adb-id> --version-code <code>
+```
+
+Il exige simultanement le candidat exact installe depuis Play, la restauration du compte payant et
+l'isolation du second compte gratuit. `npm run subscription:qa:full-gate` conserve les sept
+scenarios pour les changements Billing et les campagnes QA periodiques.
+
+## Criteres de succes de l'audit historique
+
+Les preuves datees ci-dessous decrivent la campagne de mai 2026. Elles ne remplacent pas le
+release smoke courant defini plus haut.
 
 | Critere | Artefact | Preuve actuelle | Statut |
 | --- | --- | --- | --- |
@@ -19,7 +35,7 @@ Objectif utilisateur: tester et finaliser le workflow RevenueCat avec differents
 | Preflight achat sans Store | `test:e2e:subscription-teststore:purchase:preflight` | Valide plan, credentials et args Maestro sans lancer Maestro ni achat | Fait |
 | Preparer le flow achat Test Store | `maestro/subscription-teststore-purchase-manual.yml`, `maestro/subscription-teststore-purchase-google-manual.yml` | Le runner accepte `REVENUECAT_QA_AUTH=email` ou `google`; le flow Google gere `Continue with Google`, le compte deja connecte, la confirmation `TEST VALID PURCHASE`, puis refresh | Fait |
 | Capturer les preuves manuelles | `scripts/update-subscription-qa-evidence.js` | Helper remplit `revenuecat-qa-evidence.local.json` avec `testedAt`, `tester`, `appUserId`, `evidence`; `appUserId`, les gates `play_*` `easBuildId`, `versionCode`, les `deviceId` physiques et `installerPackageName=com.android.vending` doivent etre valides; `play_monthly` doit confirmer `P1M`, `play_annual` doit confirmer `P1Y`, et `play_cancellation_and_expiry` doit confirmer annulation/expiration, webhook RevenueCat et convergence backend. Le texte du template, les dates invalides, les identites vides ou en espaces, les ids invalides, les `deviceId` emulateur, les installers non-Play et les `versionCode` manquants/invalides sont refuses | Fait |
-| Bloquer release sans preuve complete | `scripts/subscription-qa-report.js --require-full` | `npm run subscription:qa:release-gate` reste rouge sans preuves; une preuve identique au texte du template reste aussi bloquee | Fait |
+| Bloquer release sans le smoke final | `scripts/run-subscription-release-smoke.js` | `npm run subscription:qa:release-smoke` rend un verdict unique sur l'identite Play, le restore et l'isolation; le full gate reste separe | Fait |
 | Bloquer release Android tant que RevenueCat/Play est rouge | `scripts/check-android-release-gates.js` | `npm run android:gates:strict -- --report-only` relance le 2026-05-15T00:36Z: 10 pass, 1 fail (`RevenueCat subscription QA release gate` avec 1 gate restante `play_cancellation_and_expiry`), 1 blocked (`Play payments profile for Billing` avec 3 exigences ouvertes), 2 manual (`Supabase Play Integrity secrets`, `Play-installed RevenueCat purchase and restore`). Le device ADB est maintenant visible, donc le blocage restant n'est plus le transport ADB. | Fait |
 | Revalider le harnais local sans Store | `npm run subscription:qa:verify-local` | Lance les checks syntaxiques, les tests du harnais QA, les tests du gate Android, `subscription:qa:report`, une verification que la release gate bloque sans preuve pour la bonne raison, les preflights d'achat monthly/annual et le preflight account-switch avec comptes factices sans achat ni Metro; le verificateur couvre aussi les snapshots Google OAuth et profil de paiement Play | Fait |
 | Extraire l'appUserId RevenueCat du device | `npm run subscription:qa:device-app-user-id -- --device emulator-5554 --env-file .env.teststore` | Ajoute le helper read-only `scripts/extract-revenuecat-app-user-id.js`, qui lit `shared_prefs/com_revenuecat_purchases_preferences.xml` via `adb shell run-as`, masque la cle SDK et retourne l'UUID RevenueCat. Execute le 2026-05-14 sur `Pixel_7_Play_API_36`: `appUserId 1239729f-7468-48c9-b26a-7aa8b4a82591` | Fait local |
@@ -85,8 +101,8 @@ Objectif utilisateur: tester et finaliser le workflow RevenueCat avec differents
 | Google Play | `.env.playstore`, `eas.json`, `constants/subscription.ts` | Config presente; `subscription:qa:report` verifie `release`, `preview`, `production`, `production-apk`; achat Play non execute |
 | Entitlement live | MCP RevenueCat `list_entitlements` via nouveau `codex exec` | `Noctalia Plus` existe et attache les produits Test Store `monthly`/`yearly` et Play `noctalia_plus:monthly`/`noctalia_plus:annual` |
 | Visualiser les workflows | `SubscriptionQALab.tsx` | Surface Settings affiche mode, SDK key, packages, user, tier, product, renews, quota, auth, actions; les details d'action incluent `appUserId` quand disponible pour faciliter la preuve structuree |
-| Etre sur que tout fonctionne | `subscription:qa:release-gate` | Gate bloque tant que les preuves manuelles/externes sont absentes |
-| Ne pas publier Android si RevenueCat/Play n'est pas robuste | `npm run android:gates:strict` | Gate strict Android echoue tant que `subscription:qa:release-gate` echoue; le rapport affiche `RevenueCat subscription QA release gate` comme `FAIL`, bloque `Play payments profile for Billing` si le snapshot contient des exigences ouvertes, peut passer ou bloquer `Supabase Play Integrity secrets` depuis un snapshot local sans valeurs secretes, remonte l'etat USB et ADB Wireless quand aucun device n'est visible, et conseille le wait helper Play QA avant les preuves Play-installed |
+| Etre sur que le candidat courant fonctionne | `subscription:qa:release-smoke` | Verdict unique bloque si l'identite Play, la restauration ou l'isolation du compte manque |
+| Ne pas publier Android si RevenueCat/Play n'est pas robuste | `npm run android:gates:strict` | Gate strict Android echoue tant que le release smoke est rouge; le full gate reste reserve aux changements Billing et aux campagnes completes |
 | Ne pas confondre mock et reel | `subscription-qa-report.js`, `revenuecat-qa-workflow.md` | Matrice separe Automated, Manual purchase gate, External store gate |
 | Enregistrer les preuves | `revenuecat-qa-evidence.example.json`, `update-subscription-qa-evidence.js`, `extract-revenuecat-app-user-id.js` | Tests prouvent evidence -> report -> gate count; les gates Play sans `easBuildId` UUID, sans `versionCode` entier positif, sans `deviceId` physique, sans `installerPackageName=com.android.vending` ou sans confirmation texte `com.android.vending` restent bloquees; `play_monthly` exige `P1M`, `play_annual` exige `P1Y`, et `play_cancellation_and_expiry` exige annulation/expiration observee, webhook RevenueCat et convergence backend. Les preuves sans `appUserId` UUID, les textes de preuve restes au template, les dates invalides, les identites en espaces et les JSON invalides ne comptent pas. Le 2026-05-14, l'appUserId RevenueCat a ete extrait des preferences app debug via le helper device et les preuves locales Test Store monthly, annual, restore apres reinstall et account-switch ont ete inscrites dans le fichier gitignore |
 | Revalidation live RevenueCat | MCP RevenueCat `list_projects` puis offerings/packages via nouveau `codex exec` | `Noctalia` = `proje6db7596`; offering `default` actif; `$rc_monthly` -> `monthly` + `noctalia_plus:monthly`; `$rc_annual` -> `yearly` + `noctalia_plus:annual` |
@@ -122,14 +138,14 @@ npm run subscription:qa:device-app-user-id -- --device emulator-5554 --env-file 
 npm run android:device:physical
 npm run android:play-qa-device -- --device <adb-id>
 npm run android:play-qa-device:wait
-npm run subscription:qa:release-gate
+npm run subscription:qa:release-smoke -- --device <adb-id> --version-code <code>
 npm run android:gates:strict
 npm test -- scripts/subscription-qa-report.test.js scripts/update-subscription-qa-evidence.test.js scripts/update-revenuecat-play-store-state.test.js scripts/update-google-play-subscription-state.test.js scripts/update-google-cloud-project-state.test.js scripts/update-google-oauth-android-client-state.test.js scripts/update-google-play-payments-profile-state.test.js scripts/update-supabase-play-integrity-secrets-state.test.js scripts/run-subscription-teststore-purchase.test.js scripts/run-subscription-account-switch.test.js scripts/verify-subscription-qa-local.test.js scripts/check-android-release-gates.test.js scripts/check-android-adb-device.test.js scripts/check-play-install-source.test.js scripts/check-play-qa-device.test.js scripts/wait-for-play-qa-device.test.js scripts/extract-revenuecat-app-user-id.test.js --runInBand --watchman=false
 npm run lint
 npm run typecheck:app
 ```
 
-Etat verifie au 2026-05-15:
+Etat historique verifie au 2026-05-15:
 
 - `subscription:qa:report`: passe
 - `subscription:qa:report`: relance le 2026-05-15T00:48Z; affiche `Current Session Readiness`, 8 scenarios automatises, 6 scenarios manuels/externes verifies (`test_store_monthly`, `test_store_annual`, `restore_after_reinstall`, `account_switch`, `play_monthly`, `play_annual`) et 1 gate restante (`play_cancellation_and_expiry`). Les variables Test Store sont absentes, l'approbation d'achat n'est pas definie, le POCO physique est visible via ADB Wi-Fi et l'app est Play-installed, Google Play direct confirme `monthly/P1M/ACTIVE` et `annual/P1Y/ACTIVE`, le snapshot RevenueCat Play mensuel affiche encore `prodfce10ef2a8: annual/P1Y; expected P1M`, et le snapshot annuel est `READY` en `prod98337b31be: annual/P1Y`.
@@ -303,8 +319,8 @@ RevenueCat `EXPIRATION` (`source_event_id=D7D88494-40FE-44F5-9449-D1FCB295F516`)
 2026-05-15T00:31:48.325880Z, passant `prior_tier=plus`, `prior_is_active=true` a `next_tier=free`,
 `next_is_active=false`, `outcome=updated`, puis un `subscription_refresh` `metadata.requestedSource=restore`
 traite le 2026-05-15T07:18:15.548449Z garde `free/inactive`. La gate locale
-`play_cancellation_and_expiry` a ete enregistree comme `passed`, et `npm run subscription:qa:release-gate`
-passe avec 7 preuves manuelles/externes verifiees et 0 gate restante.
+`play_cancellation_and_expiry` a ete enregistree comme `passed`, et l'ancien full gate
+passait avec 7 preuves manuelles/externes verifiees et 0 gate restante.
 
 Doc RevenueCat Expo relue le 2026-05-15: RevenueCat indique que l'utilisation et le test avec Expo
 necessitent une development build, qu'Expo Go ne supporte pas le code natif requis pour les achats
@@ -321,9 +337,10 @@ affiche maintenant `12 pass, 0 fail, 1 blocked, 1 manual`. Le seul blocage dur r
 production Android est le profil de paiement Google Play: `tax_information/missing/critical`,
 `payout_method/missing/critical`, `ireland_tax_information/missing/warning`.
 
-## Conditions pour declarer l'objectif complet
+## Couverture complete historique
 
-Ne pas declarer l'objectif complet tant que ces sept portes ne sont pas passees dans `revenuecat-qa-evidence.local.json`:
+Les sept preuves ci-dessous qualifient une campagne QA complete. Elles ne sont plus toutes requises
+pour chaque release smoke:
 
 - `test_store_monthly`
 - `test_store_annual`
@@ -338,9 +355,15 @@ Chaque porte doit contenir `status: "passed"`, un `testedAt` valide, `tester`, u
 Les portes `play_*` doivent aussi contenir un `easBuildId` UUID, un `versionCode` entier positif,
 un `deviceId` physique non-emulateur et `installerPackageName: "com.android.vending"` pour lier la
 preuve au build installe via Play Internal Testing.
-Le release gate doit ensuite passer:
+Pour une campagne complete:
 
 ```bash
-npm run subscription:qa:release-gate
+npm run subscription:qa:full-gate
+```
+
+Pour une release normale sans changement Billing, le seul verdict final est:
+
+```bash
+npm run subscription:qa:release-smoke -- --device <adb-id> --version-code <code>
 npm run android:gates:strict
 ```

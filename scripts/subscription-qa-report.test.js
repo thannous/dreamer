@@ -30,6 +30,10 @@ const MANUAL_GATE_KEYS = [
   'play_annual',
   'play_cancellation_and_expiry',
 ];
+const RELEASE_SMOKE_EVIDENCE_KEYS = [
+  'restore_after_reinstall',
+  'account_switch',
+];
 
 const virtualFiles = {};
 let virtualFileIndex = 0;
@@ -75,7 +79,12 @@ function runReport(args = [], env = {}) {
     fs: createOverlayFileSystem(virtualFiles),
     now: () => new Date('2026-01-01T00:00:00.000Z'),
   });
-  return { status: result.exitCode, stdout: result.stdout, stderr: result.stderr };
+  return {
+    status: result.exitCode,
+    stdout: result.stdout,
+    stderr: result.stderr,
+    releaseSmoke: result.releaseSmoke,
+  };
 }
 
 function runCliReport(args = [], env = {}) {
@@ -194,6 +203,78 @@ function writeGooglePlayTrackStateSnapshot(versionCode, status = 'completed') {
 }
 
 describe('subscription QA report release gate', () => {
+  it('keeps the release smoke evidence focused on restore and account isolation', () => {
+    const gates = Object.fromEntries(
+      RELEASE_SMOKE_EVIDENCE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: evidenceForKey(key),
+          ...(key.startsWith('play_') ? playEvidenceFields() : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-release'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('## RevenueCat Release Smoke Evidence');
+    expect(result.stdout).toContain(
+      '| PASS | Subscription release smoke | 2/2 evidence assertions verified |'
+    );
+    expect(result.stdout).toContain('| PASS | Restore | Restore after reinstall |');
+    expect(result.stdout).toContain('| PASS | Account isolation | Account switch |');
+    expect(result.stdout).toContain('Release smoke evidence assertions remaining: 0');
+    expect(result.stdout).toContain('Manual or external gates remaining: 5');
+    expect(result.stdout).not.toContain('RevenueCat release smoke is BLOCKED');
+    expect(result.releaseSmoke).toMatchObject({
+      status: 'pass',
+      total: 2,
+      verified: 2,
+      remaining: 0,
+    });
+  });
+
+  it('blocks the release smoke evidence when account isolation is missing', () => {
+    const gates = Object.fromEntries(
+      RELEASE_SMOKE_EVIDENCE_KEYS.filter((key) => key !== 'account_switch').map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: evidenceForKey(key),
+          ...(key.startsWith('play_') ? playEvidenceFields() : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-release'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain(
+      '| BLOCKED | Subscription release smoke | 1/2 evidence assertions verified |'
+    );
+    expect(result.stdout).toContain('| BLOCKED | Account isolation | Account switch |');
+    expect(result.stdout).toContain('Release smoke evidence assertions remaining: 1');
+    expect(result.stdout).toContain(
+      'RevenueCat release smoke is BLOCKED: 1 evidence assertion(s) still require validation.'
+    );
+    expect(result.releaseSmoke).toMatchObject({ status: 'blocked', remaining: 1 });
+    expect(result.stdout).not.toContain('- Play annual:');
+    expect(result.stdout).not.toContain('- Play cancellation and expiry:');
+  });
+
   it('keeps the full release gate blocked when manual evidence is missing', () => {
     const result = runCliReport(['--require-full'], {
       REVENUECAT_QA_EVIDENCE_PATH: path.join(os.tmpdir(), 'missing-revenuecat-evidence.json'),
@@ -265,7 +346,7 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('OK | Supabase Play Integrity secrets snapshot parses');
     expect(result.stdout).toContain('OK | Play store state snapshot updater exists');
     expect(result.stdout).toContain('npm run subscription:qa:play-state');
-    expect(result.stdout).toContain('OK | Evidence template covers all release gates');
+    expect(result.stdout).toContain('OK | Evidence template covers all full-coverage scenarios');
     expect(result.stdout).toContain('OK | Local evidence file is gitignored');
     expect(result.stdout).toContain('OK | Google Play subscription state snapshot is gitignored');
     expect(result.stdout).toContain('OK | Google Play subscription state updater exists');
@@ -304,7 +385,7 @@ describe('subscription QA report release gate', () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('# Subscription QA Report');
     expect(result.stdout).toContain(
-      '| OK | Subscription QA report CLIs are wired | npm run subscription:qa:report and npm run subscription:qa:release-gate |'
+      '| OK | Subscription QA report CLIs are wired | npm run subscription:qa:report, npm run subscription:qa:release-smoke and npm run subscription:qa:full-gate |'
     );
     expect(result.stdout).toContain('Manual or external gates remaining: 7');
     expect(result.stdout).toContain('## Current Session Readiness');

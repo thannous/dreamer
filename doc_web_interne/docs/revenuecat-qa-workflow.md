@@ -6,7 +6,7 @@ Les commandes ci-dessous sont parametrees pour le candidat courant. Ne recopier 
 historique depuis une ancienne preuve locale:
 
 ```bash
-export QA_ANDROID_VERSION_CODE=34
+export QA_ANDROID_VERSION_CODE='<versionCode-candidat>'
 export QA_EMULATOR_DEVICE='<emulator-adb-id>'
 export QA_PHYSICAL_DEVICE='<physical-adb-id>'
 export QA_PRIMARY_EMAIL='<qa-primary-email>'
@@ -22,9 +22,40 @@ export ANDROID_OAUTH_CLIENT_ID='<android-oauth-client-id>'
 export PLAY_APP_SIGNING_SHA1='<play-app-signing-sha1>'
 ```
 
-`QA_ANDROID_VERSION_CODE=34` est la seule valeur qualifiante pour la migration Expo 57 actuelle.
-Toute preuve marquee `passed` avec un autre `versionCode` est historique et doit etre rejouee; elle
-ne doit jamais etre comptee comme preuve de release v34.
+`QA_ANDROID_VERSION_CODE` doit toujours correspondre a `expo.android.versionCode` dans `app.json`
+et au binaire installe depuis Google Play. Toute preuve `passed` avec une autre valeur reste
+historique et ne qualifie pas le candidat courant.
+
+## Politique de release smoke actuelle
+
+La decision RevenueCat finale est un seul gate, avec trois assertions:
+
+1. le telephone physique porte le candidat exact installe par `com.android.vending`;
+2. le compte payant retrouve `plus / active` apres restauration;
+3. apres changement de compte, le second compte reste `free / inactive`.
+
+Commande canonique apres upload Internal Testing et enregistrement des deux preuves comportementales:
+
+```bash
+npm run subscription:qa:release-smoke -- \
+  --device "${QA_PHYSICAL_DEVICE}" \
+  --version-code "${QA_ANDROID_VERSION_CODE}"
+```
+
+La commande ne lance aucune transaction et ne modifie pas le telephone. Elle verifie le binaire
+Play en direct, puis les preuves structurees `restore_after_reinstall` et `account_switch`. Le nom
+historique `subscription:qa:release-gate` reste un alias compatible vers le meme smoke.
+
+Les sept scenarios ne bloquent plus chaque release. Ils restent disponibles via:
+
+```bash
+npm run subscription:qa:full-gate
+```
+
+Rejouer ce full gate si les produits ou forfaits Play, le paywall/achat, les cles RevenueCat, la
+version du SDK Purchases ou le webhook/cycle de vie ont change. Le rejouer aussi periodiquement.
+Un correctif limite a l'isolation des comptes reste couvert par le release smoke, sans imposer un
+nouvel achat mensuel et annuel.
 
 ## 1. Mock Lab
 
@@ -65,10 +96,11 @@ Preuve attendue:
 - les quotas passent illimites en `plus`, puis reviennent limites en `free`
 - l'ouverture du paywall garde la meme lecture d'etat
 
-Le mode release gate doit rester rouge tant que les achats reels n'ont pas ete preuves:
+Le release smoke doit rester rouge tant que le candidat Play, la restauration et l'isolation du
+second compte ne sont pas tous qualifies:
 
 ```bash
-npm run subscription:qa:release-gate
+npm run subscription:qa:release-smoke -- --device <adb-id> --version-code <code>
 ```
 
 Pour revalider uniquement le harnais local sans demarrer Metro ni toucher au Store:
@@ -79,9 +111,9 @@ npm run subscription:qa:verify-local
 
 Cette commande inclut les preflights d'achat monthly et annual avec un compte factice. Elle valide
 le chemin CLI garde, mais ne lance pas Maestro et ne peut pas ouvrir le Store sans
-`REVENUECAT_QA_APPROVAL`. Elle verifie aussi, avec un chemin de preuve isole, que la release gate
-reste bloquee quand aucune preuve manuelle n'est fournie, et que ce blocage vient bien des preuves
-manquantes, pas d'un check local casse.
+`REVENUECAT_QA_APPROVAL`. Elle verifie aussi, avec un chemin de preuve isole, que les assertions
+de restauration et d'isolation restent bloquees sans preuve et que ce blocage ne vient pas d'un
+check local casse.
 
 `npm run subscription:qa:report` affiche aussi `Current Session Readiness`. Cette section est le
 premier diagnostic a lire avant de reprendre les tests reels: elle indique si les variables
@@ -332,7 +364,7 @@ Quand une preuve manuelle existe, copier `doc_web_interne/docs/revenuecat-qa-evi
 vers `doc_web_interne/docs/revenuecat-qa-evidence.local.json`, puis passer le gate concerne a
 `"status": "passed"` avec un `testedAt` valide, `tester`, `appUserId` et une preuve courte. La
 preuve doit etre specifique au test realise: le texte d'exemple du template ne suffit pas et reste
-bloque par `subscription:qa:release-gate`. Le fichier `.local.json` est ignore par git pour eviter
+bloque par `subscription:qa:release-smoke`. Le fichier `.local.json` est ignore par git pour eviter
 de committer des emails, ids testeur ou chemins de captures.
 `appUserId` doit etre l'UUID Supabase/RevenueCat du compte teste, pas l'email du testeur.
 
@@ -483,7 +515,7 @@ Preuve locale actuelle:
   `account_switch`.
 - Les trois gates `play_*` restent historiques sur un ancien candidat et sont
   donc ouvertes pour v34.
-- Seuls `subscription:qa:report` et `subscription:qa:release-gate` sur le fichier courant font foi;
+- Seuls `subscription:qa:report` et `subscription:qa:release-smoke` sur le fichier courant font foi;
   une mention historique dans cette documentation ne ferme jamais une gate.
 
 Checklist d'achat Test Store:
@@ -535,8 +567,8 @@ Ordre de reprise v34 recommande:
    `--allow-physical` dans cette sequence locale.
 4. Depuis le compte Plus confirme, `account-switch:preflight`, puis le flow garde avec
    `REVENUECAT_QA_SWITCH_APPROVAL`; il doit finir sur le second compte `free / inactive`.
-5. Reconnecter le compte QA principal, puis relancer `subscription:qa:report` et
-   `subscription:qa:release-gate`.
+5. Reconnecter le compte QA principal, puis relancer `subscription:qa:report` et le
+   `subscription:qa:release-smoke` sur le candidat Play.
 
 ## 3. Google Play Internal Testing
 
@@ -599,11 +631,9 @@ npm run android:gates:strict
 npx eas build -p android --profile preview
 ```
 
-`npm run android:gates:strict` est volontairement bloquant avant release Android: il execute
-`subscription:qa:release-gate` et echoue tant que les gates RevenueCat manuelles/externes ne sont
-pas toutes fermees. Pour v34, les quatre preuves Test Store sont requalifiees; les trois preuves
-`play_*` gardent un `versionCode` historique et restent ouvertes jusqu'a requalification. Il bloque
-aussi le profil de paiement Play si
+`npm run android:gates:strict` est volontairement bloquant avant release Android: il execute le
+release smoke et echoue tant que l'identite du candidat Play, la restauration et l'isolation du
+compte ne forment pas un verdict unique `PASS`. Il bloque aussi le profil de paiement Play si
 `doc_web_interne/docs/google-play-payments-profile-state.local.json` contient des exigences ouvertes.
 
 Pour rafraichir la preuve locale du project number Google Cloud utilise par Play Integrity:
@@ -863,7 +893,10 @@ physique visible par ADB et installe depuis Play Internal Testing.
 - Le Test Store prouve le SDK RevenueCat, pas les produits Play.
 - Play Internal Testing reste la preuve finale pour achat, restore et webhook reels.
 
-## Etat de couverture actuel
+## Etat historique de la campagne v34
+
+Les lignes ci-dessous conservent le bilan de la campagne v34. Pour le candidat courant, seul le
+release smoke a trois assertions et, lorsque le perimetre Billing change, le full gate font foi.
 
 Automatise localement:
 
@@ -877,13 +910,17 @@ Encore manuel ou externe:
 - build installe via Google Play Internal Testing
 - achats, restore, annulation, expiration, grace period et webhook Play reels
 
-Commande de garde:
+Commande de garde finale:
 
 ```bash
-npm run subscription:qa:release-gate
+npm run subscription:qa:release-smoke -- \
+  --device "${QA_PHYSICAL_DEVICE}" \
+  --version-code "${QA_ANDROID_VERSION_CODE}"
 npm run android:gates:strict
 ```
 
-Ces commandes doivent echouer tant que les trois gates `play_monthly`, `play_annual` et
-`play_cancellation_and_expiry` ne disposent pas de preuves v34 qualifiantes couvrant, selon la gate,
-les achats, le restore ou l'expiration, et la convergence backend/store.
+Ces commandes doivent echouer tant qu'une des trois assertions du smoke reste ouverte. Les achats
+mensuel/annuel, l'annulation, l'expiration et la convergence webhook/backend restent dans
+`npm run subscription:qa:full-gate`; ils sont obligatoires apres une modification Billing ou lors
+d'une campagne QA complete, mais ne bloquent plus automatiquement chaque candidat sans changement
+de ce perimetre.

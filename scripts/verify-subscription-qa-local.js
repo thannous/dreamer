@@ -32,6 +32,7 @@ const syntaxFiles = [
   'scripts/check-play-install-source.js',
   'scripts/check-play-qa-device.js',
   'scripts/wait-for-play-qa-device.js',
+  'scripts/run-subscription-release-smoke.js',
   'scripts/extract-revenuecat-app-user-id.js',
 ];
 
@@ -55,6 +56,7 @@ const unitTestFiles = [
   'scripts/check-play-install-source.test.js',
   'scripts/check-play-qa-device.test.js',
   'scripts/wait-for-play-qa-device.test.js',
+  'scripts/run-subscription-release-smoke.test.js',
   'scripts/extract-revenuecat-app-user-id.test.js',
 ];
 
@@ -95,6 +97,8 @@ const commands = [
       '## Current Session Readiness',
       'Verified manual/external scenarios: 0',
       'Manual or external gates remaining: 7',
+      '## RevenueCat Release Smoke Evidence',
+      'Release smoke evidence assertions remaining: 2',
       'Account switch | Test Store or Play | Plus user logout does not leak to free user',
       'Test Store signed-in account env',
       'Account switch second account env',
@@ -134,16 +138,16 @@ const commands = [
   },
   {
     type: 'report',
-    label: 'guard: release gate blocks missing manual evidence',
+    label: 'guard: release smoke blocks missing candidate evidence',
     command: process.execPath,
-    args: ['scripts/subscription-qa-report.js', '--require-full'],
+    args: ['scripts/subscription-qa-report.js', '--require-release'],
     env: {
       REVENUECAT_QA_EVIDENCE_PATH: path.join(os.tmpdir(), 'missing-revenuecat-qa-evidence.local.json'),
     },
     expectedStatus: 1,
     expectedStdoutIncludes: [
-      'Manual or external gates remaining: 7',
-      'Full RevenueCat workflow is not complete: 7 manual or external gate(s) still require evidence.',
+      'Release smoke evidence assertions remaining: 2',
+      'RevenueCat release smoke is BLOCKED: 2 evidence assertion(s) still require validation.',
     ],
     forbiddenStdoutIncludes: ['Blocked checks:'],
   },

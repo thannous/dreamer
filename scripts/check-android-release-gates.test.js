@@ -260,8 +260,8 @@ describe('android release gate preflight', () => {
           status: subscriptionGateStatus,
           stdout:
             subscriptionGateStatus === 0
-              ? 'Full RevenueCat workflow is complete.\n'
-              : 'Manual or external gates remaining: 4\nFull RevenueCat workflow is not complete: 4 manual or external gate(s) still require evidence.\n',
+              ? '[subscription-release-smoke] assertions: 3/3\n[subscription-release-smoke] PASS - final release smoke\n'
+              : '[subscription-release-smoke] assertions: 1/3\n[subscription-release-smoke] BLOCKED - final release smoke\n',
           stderr: '',
         };
       }
@@ -625,8 +625,8 @@ describe('android release gate preflight', () => {
         (check) =>
           check.status === 'fail' &&
           check.title === 'RevenueCat subscription QA release gate' &&
-          check.details.includes('4 manual or external gate(s) still require evidence') &&
-          check.remediation.includes('remaining evidence gates listed in the report')
+          check.details.includes('assertions: 1/3') &&
+          check.remediation.includes('single final verdict')
       )
     ).toBe(true);
   });

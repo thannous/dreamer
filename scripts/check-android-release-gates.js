@@ -184,6 +184,10 @@ function summarizeCommandOutput(output) {
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean);
+  const releaseSmoke = lines.filter((line) =>
+    /subscription-release-smoke.*(?:assertions:|BLOCKED - final release smoke)/i.test(line)
+  );
+  if (releaseSmoke.length > 0) return releaseSmoke.join(' ');
   const important = lines.filter((line) =>
     /Full RevenueCat workflow is not complete|Manual or external gates remaining|Blocked checks:/i.test(line)
   );
@@ -750,7 +754,7 @@ function checkAndroidReleaseGates({
     subscriptionGate.details,
     prebuild
       ? 'Run npm run subscription:qa:report and fix its blocked local/config checks before building the Android candidate.'
-      : 'Run npm run subscription:qa:release-gate and close the remaining evidence gates listed in the report before Android production release.'
+      : 'Run npm run subscription:qa:release-smoke on the Play-installed candidate and close its single final verdict before Android production release.'
   );
 
   const fallbackFlowPath = path.join(rootDir, 'maestro/recording-text-fallback.yml');
