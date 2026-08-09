@@ -115,6 +115,8 @@ const renderSubscriptionHook = (options?: UseSubscriptionOptions) =>
 describe('useSubscription', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
+    const { Platform } = require('react-native');
+    Platform.OS = 'ios';
     mockCurrentUser = { id: 'user-1', app_metadata: { subscription_version: 1 }, user_metadata: {} };
     mockIsEntitlementExpired.mockReturnValue(false);
     mockMapStatusFromInfo.mockReturnValue({ tier: 'free', isActive: false });
@@ -134,6 +136,31 @@ describe('useSubscription', () => {
   });
 
   describe('authentication handling', () => {
+    it('does not transfer Play purchases automatically when switching accounts on Android', async () => {
+      const { Platform } = require('react-native');
+      const { initializeSubscription, syncSubscriptionPurchases } = require('../services/subscriptionService');
+      Platform.OS = 'android';
+
+      const { rerender } = renderSubscriptionHook();
+
+      await waitFor(() => {
+        expect(initializeSubscription).toHaveBeenCalledWith('user-1');
+      });
+
+      mockCurrentUser = {
+        id: 'free-user-2',
+        app_metadata: { tier: 'free', subscription_version: 1 },
+        user_metadata: {},
+      };
+      rerender();
+
+      await waitFor(() => {
+        expect(initializeSubscription).toHaveBeenCalledWith('free-user-2');
+      });
+
+      expect(syncSubscriptionPurchases).not.toHaveBeenCalled();
+    });
+
     it('given unauthenticated user when using subscription then requires auth', async () => {
       // Given
       mockCurrentUser = null;
@@ -289,6 +316,7 @@ describe('useSubscription', () => {
   describe('restore functionality', () => {
     it('given authenticated user when restoring successfully then updates subscription', async () => {
       // Given
+      const { restoreSubscriptionPurchases } = require('../services/subscriptionService');
       const { result } = renderSubscriptionHook();
       await act(async () => {});
 
@@ -300,6 +328,7 @@ describe('useSubscription', () => {
       // Then
       expect(result.current.isActive).toBe(true);
       expect(result.current.processing).toBe(false);
+      expect(restoreSubscriptionPurchases).toHaveBeenCalledTimes(1);
       expect(mockSetUserTierLocally).toHaveBeenCalledWith(expect.objectContaining({ tier: 'plus' }));
     });
 
@@ -343,6 +372,46 @@ describe('useSubscription', () => {
 
       expect(result.current.processing).toBe(false);
       expect(result.current.error?.message).toBe('Restore failed');
+    });
+
+    it('keeps the secondary account free when RevenueCat rejects a receipt owned by another account', async () => {
+      const { restoreSubscriptionPurchases } = require('../services/subscriptionService');
+      const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+      const receiptAlreadyInUseError = Object.assign(
+        new Error('Receipt already in use by another App User ID'),
+        { code: 'RECEIPT_ALREADY_IN_USE' }
+      );
+      jest.mocked(restoreSubscriptionPurchases).mockRejectedValue(receiptAlreadyInUseError);
+      mockCurrentUser = {
+        id: 'free-user-2',
+        app_metadata: { tier: 'free', subscription_version: 1 },
+        user_metadata: {},
+      };
+
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      const { result } = renderSubscriptionHook();
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+      jest.mocked(syncSubscriptionFromServer).mockClear();
+      mockSetUserTierLocally.mockClear();
+
+      try {
+        await act(async () => {
+          await expect(result.current.restore()).rejects.toBe(receiptAlreadyInUseError);
+        });
+
+        expect(result.current.status).toMatchObject({ tier: 'free', isActive: false });
+        expect(result.current.isActive).toBe(false);
+        expect(result.current.error?.message).toBe('subscription.error.receipt_already_in_use');
+        expect(restoreSubscriptionPurchases).toHaveBeenCalledTimes(1);
+        expect(syncSubscriptionFromServer).not.toHaveBeenCalled();
+        expect(mockSetUserTierLocally).not.toHaveBeenCalledWith(
+          expect.objectContaining({ tier: 'plus' })
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
     });
 
     it('given authenticated user when restoring with initialization error then formats error message', async () => {

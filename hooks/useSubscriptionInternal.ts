@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { User } from '@supabase/supabase-js';
-import { Platform } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
 import { isMockModeEnabled } from '@/lib/env';
 import { normalizeSubscriptionTier } from '@/lib/quotaTier';
@@ -9,14 +8,12 @@ import { isEntitlementExpired } from '@/lib/revenuecat';
 import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 import { quotaService } from '@/services/quotaService';
 import {
-  getSubscriptionStatus,
   initializeSubscription,
   isSubscriptionInitialized,
   loadSubscriptionPackages,
   purchaseSubscriptionPackage,
   refreshSubscriptionStatus,
   restoreSubscriptionPurchases,
-  syncSubscriptionPurchases,
 } from '@/services/subscriptionService';
 import { syncSubscriptionFromServer } from '@/services/subscriptionSyncService';
 import { useSubscriptionCustomerInfoListener } from './useSubscriptionCustomerInfoListener';
@@ -109,14 +106,6 @@ function formatError(e: unknown): Error {
 
 export type UseSubscriptionOptions = {
   loadPackages?: boolean;
-};
-
-const globalAndroidPurchaseSyncState: {
-  inProgress: boolean;
-  lastUserId: string | null;
-} = {
-  inProgress: false,
-  lastUserId: null,
 };
 
 export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
@@ -407,30 +396,9 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
           isUserTransitioningRef.current = false;
         }
 
-        // Android edge case: Play Store reports "déjà abonné" but RevenueCat returns free.
-        // We avoid calling restorePurchases() automatically (it can alias accounts and is slow).
-        // Instead, do a one-shot syncPurchases + refresh to pull entitlements if needed.
-        if (
-          Platform.OS === 'android' &&
-          !requiresAuth &&
-          !globalAndroidPurchaseSyncState.inProgress &&
-          globalAndroidPurchaseSyncState.lastUserId !== user?.id &&
-          (nextStatus?.tier === 'free' || nextStatus?.isActive === false)
-        ) {
-          globalAndroidPurchaseSyncState.inProgress = true;
-          globalAndroidPurchaseSyncState.lastUserId = user?.id ?? null;
-          try {
-            await syncSubscriptionPurchases();
-            const refreshed = await getSubscriptionStatus();
-            if (mounted && refreshed) {
-              setStatus(refreshed);
-            }
-          } catch (syncErr) {
-            console.warn('[useSubscription] Android syncPurchases failed', syncErr);
-          } finally {
-            globalAndroidPurchaseSyncState.inProgress = false;
-          }
-        }
+        // Never call syncPurchases automatically after an account change. RevenueCat treats
+        // it as a restore and may transfer the Play receipt to the newly identified user.
+        // Store reconciliation must remain an explicit action through restore().
       } catch (e) {
         if (mounted) {
           setError(formatError(e));
