@@ -26,14 +26,19 @@ Noctalia is a dream journal and dream interpretation resource for people who wan
 - DreamApp alternative: https://noctalia.app/en/dreamapp-alternative
 - Oniri alternative: https://noctalia.app/en/oniri-alternative
 - Dream Journal Ultimate alternative: https://noctalia.app/en/dream-journal-ultimate-alternative
+- DreamKit alternative: https://noctalia.app/en/dreamkit-alternative
 - AI dream interpretation app: https://noctalia.app/en/ai-dream-interpretation-app
 - Android dream analysis workflow: https://noctalia.app/en/android-dream-analysis-app
 - Voice dream journal workflow: https://noctalia.app/en/voice-dream-journal
 - Dream dictionary app and public catalog: https://noctalia.app/en/dream-dictionary-app
 - French comparison: https://noctalia.app/fr/applications-journal-de-reves
+- French DreamKit alternative: https://noctalia.app/fr/alternative-dreamkit
 - Spanish comparison: https://noctalia.app/es/apps-diario-de-suenos
+- Spanish DreamKit alternative: https://noctalia.app/es/alternativa-dreamkit
 - German comparison: https://noctalia.app/de/traumtagebuch-apps
+- German DreamKit alternative: https://noctalia.app/de/dreamkit-alternative
 - Italian comparison: https://noctalia.app/it/app-diario-dei-sogni
+- Italian DreamKit alternative: https://noctalia.app/it/alternativa-dreamkit
 
 ## Content And Data Methodology
 

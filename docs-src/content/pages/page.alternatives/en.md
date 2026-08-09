@@ -66,6 +66,7 @@
 <li><a href="/en/dreamapp-alternative" class="text-dream-salmon hover:underline">DreamApp alternative</a></li>
 <li><a href="/en/oniri-alternative" class="text-dream-salmon hover:underline">Oniri alternative</a></li>
 <li><a href="/en/dream-journal-ultimate-alternative" class="text-dream-salmon hover:underline">Dream Journal Ultimate alternative</a></li>
+<li><a href="/en/dreamkit-alternative" class="text-dream-salmon hover:underline">DreamKit alternative</a></li>
 <li><a href="/en/ai-dream-interpretation-app" class="text-dream-salmon hover:underline">AI dream interpretation app</a></li>
     </ul>
   </section>

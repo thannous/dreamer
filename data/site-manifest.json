@@ -264,6 +264,34 @@
             }
           }
         },
+        "page.dreamkit-alternative": {
+          "id": "page.dreamkit-alternative",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dreamkit-alternative",
+          "locales": {
+            "en": {
+              "slug": "dreamkit-alternative",
+              "path": "/en/dreamkit-alternative"
+            },
+            "fr": {
+              "slug": "alternative-dreamkit",
+              "path": "/fr/alternative-dreamkit"
+            },
+            "es": {
+              "slug": "alternativa-dreamkit",
+              "path": "/es/alternativa-dreamkit"
+            },
+            "de": {
+              "slug": "dreamkit-alternative",
+              "path": "/de/dreamkit-alternative"
+            },
+            "it": {
+              "slug": "alternativa-dreamkit",
+              "path": "/it/alternativa-dreamkit"
+            }
+          }
+        },
         "page.ai-dream-interpretation-app": {
           "id": "page.ai-dream-interpretation-app",
           "type": "content",

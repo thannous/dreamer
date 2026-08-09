@@ -53,6 +53,7 @@
 <li><a href="/de/dreamapp-alternative" class="text-dream-salmon hover:underline">DreamApp-Alternative</a></li>
 <li><a href="/de/oniri-alternative" class="text-dream-salmon hover:underline">Oniri-Alternative</a></li>
 <li><a href="/de/dream-journal-ultimate-alternative" class="text-dream-salmon hover:underline">Dream Journal Ultimate Alternative</a></li>
+<li><a href="/de/dreamkit-alternative" class="text-dream-salmon hover:underline">DreamKit-Alternative</a></li>
 <li><a href="/de/ki-traumdeutung-app" class="text-dream-salmon hover:underline">KI-App zur Traumdeutung</a></li>
     </ul>
   </section>

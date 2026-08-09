@@ -53,6 +53,7 @@
 <li><a href="/it/alternativa-dreamapp" class="text-dream-salmon hover:underline">Alternativa a DreamApp</a></li>
 <li><a href="/it/alternativa-oniri" class="text-dream-salmon hover:underline">Alternativa a Oniri</a></li>
 <li><a href="/it/alternativa-dream-journal-ultimate" class="text-dream-salmon hover:underline">Alternativa a Dream Journal Ultimate</a></li>
+<li><a href="/it/alternativa-dreamkit" class="text-dream-salmon hover:underline">Alternativa a DreamKit</a></li>
 <li><a href="/it/app-interpretazione-sogni-ai" class="text-dream-salmon hover:underline">App di interpretazione dei sogni con IA</a></li>
     </ul>
   </section>

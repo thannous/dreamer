@@ -15,10 +15,10 @@ describe('sitewide page illustrations', () => {
   const registry = readCompleteImageAssetRegistry();
   const routes = listPageIllustrationRoutes();
 
-  it('covers 35 page families in all five supported languages', () => {
-    expect(Object.keys(config.families)).toHaveLength(35);
+  it('covers 36 page families in all five supported languages', () => {
+    expect(Object.keys(config.families)).toHaveLength(36);
     expect(SUPPORTED_LANGS).toEqual(['en', 'fr', 'es', 'de', 'it']);
-    expect(routes).toHaveLength(175);
+    expect(routes).toHaveLength(180);
 
     for (const pageId of Object.keys(config.families)) {
       expect(routes.filter((route) => route.pageId === pageId)).toHaveLength(5);

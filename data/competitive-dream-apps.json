@@ -257,6 +257,73 @@
           "observedFacts": ["optional sync account", "dream storage under the account", "United States processing"]
         }
       ]
+    },
+    "dreamKit": {
+      "name": "DreamKit",
+      "positioning": "Established Android dream journal with interpretation, AI art, analysis, PDF export, cloud backup, biometric lock and reality-check reminders.",
+      "platforms": ["Android", "Official web page"],
+      "pricing": {
+        "model": "Free Android download; no current universal price claim",
+        "publicPriceSignals": [
+          "The current Google Play page exposes an Install action and does not list a universal subscription price",
+          "The former DreamKit App Store identifier now belongs to Arcana, which lists its own separate in-app purchase"
+        ],
+        "comparisonRule": "Do not reuse historic DreamKit iOS pricing or describe Arcana pricing as DreamKit pricing."
+      },
+      "storeSignals": [
+        "Google Play showed 100K+ downloads, 4.0 stars and about 5.38K reviews on 2026-08-09.",
+        "The Android listing showed a May 10, 2024 update date on 2026-08-09.",
+        "The former iOS identifier 1572753006 was an active Arcana astrology and tarot listing, not a DreamKit dream-journal listing, on 2026-08-09."
+      ],
+      "strengths": [
+        "Large public Android install and review footprint",
+        "PDF export, cloud backup and passcode or biometric lock advertised on Google Play",
+        "Dream analysis, AI art and reality-check reminders in one journal",
+        "Longstanding lightweight journaling workflow"
+      ],
+      "limitations": [
+        "The Android store page had not been updated since May 2024 at the verification date",
+        "DreamKit is no longer a current iOS listing under its former App Store identifier",
+        "The privacy policy says journal and interpretation content is saved and processed by third-party services and generated images are accessible on the public internet",
+        "Google Play says the app may collect location, personal information and other data categories and that data is not encrypted"
+      ],
+      "bestFor": [
+        "Android users who already rely on DreamKit's PDF export or cloud backup",
+        "Users who value reality-check reminders and a mature lightweight journal",
+        "Users who prefer keeping an established DreamKit archive rather than starting a new journal"
+      ],
+      "notIdealFor": [
+        "Users who need a current DreamKit-branded iOS app",
+        "Users who want a voice-first Android capture-to-reflection workflow",
+        "Users who need generated images to remain private by policy"
+      ],
+      "migrationNotes": [
+        "Export the DreamKit archive to PDF before evaluating another journal.",
+        "Keep the original DreamKit export because Noctalia does not advertise automatic DreamKit import.",
+        "Move a small set of recent dreams manually and compare capture, reflection and search before switching fully."
+      ],
+      "sources": [
+        {
+          "label": "DreamKit official site",
+          "url": "https://dreamkit.app/",
+          "observedFacts": ["dream journal", "AI interpretation", "AI image generation", "dream analysis", "lucid-dreaming positioning"]
+        },
+        {
+          "label": "DreamKit Google Play",
+          "url": "https://play.google.com/store/apps/details?id=app.DreamKit.DreamKit.dreamkit&hl=en_US",
+          "observedFacts": ["100K+ downloads", "4.0 stars", "5.38K reviews", "May 10 2024 update", "PDF export", "cloud backup", "biometric lock", "reality-check reminders", "United States developer signal"]
+        },
+        {
+          "label": "DreamKit privacy policy",
+          "url": "https://dreamkit.app/pages/privacy_policy/",
+          "observedFacts": ["third-party processing of journals and interpretations", "generated images accessible on the public internet", "effective January 1 2023"]
+        },
+        {
+          "label": "Former DreamKit App Store identifier",
+          "url": "https://apps.apple.com/us/app/arcana-astrology-tarot-chat/id1572753006",
+          "observedFacts": ["current Arcana product name", "Neural Candy LLC", "major rebranding in January 2026", "not a current DreamKit-branded dream-journal listing"]
+        }
+      ]
     }
   }
 }
