@@ -104,12 +104,51 @@ Chaque document doit indiquer sa date, son propriétaire, son statut et ses
 plateformes. Les données sensibles, identifiants et contenus privés ne doivent pas
 être copiés dans le dépôt.
 
+## Exclusion d’asset — 2026-08-06
+
+`HIGGS_2026-08-05_140043_POPBOT_1068d59d.mp4` est exclu de la sélection
+éditoriale Noctalia. Sa définition `2160×3840` (et sa durée de 8 secondes) ne
+correspond pas au profil des masters retenus pour la campagne, contrôlés en
+`1080×1920` avec une durée d’environ 12 secondes.
+
+Statut : **EXCLU — ni validé, ni planifié, ni publié**. La copie source Drive
+est conservée à des fins d’archive et n’est pas supprimée :
+[POPBOT dans le dossier Drive](https://drive.google.com/file/d/1Gnii1vUzoUYeRSM2d3do8If0hBoL45bJ/view?usp=drivesdk).
+Une éventuelle version `1080×1920` devra repasser par la validation éditoriale
+avant toute utilisation.
+
+## Convention de nommage des exports vidéo Drive — 2026-08-08
+
+Les prochains exports vidéo Noctalia doivent utiliser le format :
+
+`PREFIX_DESCRIPTION_DE_MEGALOPOLE_NUMERO.ext`
+
+Le préfixe décrit l'ambiance ou le moment (`NIGHT`, `SUNSET`, `AFTERGLOW`,
+`DAY`, ou équivalent), puis vient le type de mégalopole et le numéro de
+séquence. L'image source et la vidéo correspondante conservent le même nom de
+base. Les brouillons portent un suffixe explicite, par exemple
+`_DRAFT_16x9`.
+
+Exemples de référence :
+
+- `NIGHT_ANCIENT_ROME_MEGALOPOLIS_01.mp4`
+- `SUNSET_ANCIENT_ROME_MEGALOPOLIS_02.mp4`
+- `AFTERGLOW_ANCIENT_ROME_MEGALOPOLIS_03.mp4`
+- `DAY_ANCIENT_ROME_MEGALOPOLIS_04.mp4`
+
+Cette convention s'applique aux prochains dépôts et exports Drive ; elle ne
+renomme pas rétroactivement les fichiers déjà publiés ou archivés.
+
 ## Plans actifs
 
 - [`2026-08-us-europe-publication-plan.md`](./2026-08-us-europe-publication-plan.md) :
-  calendrier quotidien validé du 31 juillet au 15 août 2026 pour Instagram,
-  TikTok et X, ciblé États-Unis et Europe. Le statut vérifié de chaque file est
-  tenu dans le document.
+  calendrier validé du 31 juillet au 15 août 2026 pour Instagram, TikTok et X,
+  ciblé États-Unis et Europe. Depuis le 6 août, la cadence opérationnelle est
+  de trois vidéos par jour aux créneaux documentés ; le statut vérifié de chaque
+  file est tenu dans le document.
+- [`../MEDIA-INVENTORY.md`](../MEDIA-INVENTORY.md) : inventaire des masters
+  locaux, des lots Drive, des noms historiques, des propositions de migration
+  et de l'historique de publication vérifié.
 
 ## Références
 

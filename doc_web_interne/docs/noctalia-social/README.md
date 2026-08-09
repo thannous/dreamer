@@ -58,6 +58,11 @@ Les images de départ restent dans `01 — Assets mutualisés`. Elles ne doivent
 - `PLANIFIÉE` : date et heure de publication confirmées.
 - `PUBLIÉE` : URL publique et métriques à renseigner.
 
+L'inventaire des médias, des noms Drive et de l'historique CM est tenu dans
+[`MEDIA-INVENTORY.md`](./MEDIA-INVENTORY.md). Les noms affichés dans Drive ne
+sont renommés qu'après correspondance vérifiée avec le master et les références
+de publication.
+
 Une vidéo ne passe jamais automatiquement de `FINALE CANDIDATE` à `VALIDÉE`.
 Une présence dans Magnific n'est ni une programmation ni une publication.
 
