@@ -11,9 +11,11 @@ import {
 } from "react-native";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { AtmosphericBackground } from "@/components/inspiration/AtmosphericBackground";
+import { DreamPulseCard } from "@/components/inspiration/DreamPulseCard";
 import { FlatGlassCard } from "@/components/inspiration/GlassCard";
 import { PageHeader } from "@/components/inspiration/PageHeader";
 import { SectionHeading } from "@/components/inspiration/SectionHeading";
+import { DreamCard } from "@/components/journal/DreamCard";
 import { NoctaliaScreenHeader } from "@/components/NoctaliaScreenHeader";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { DecoLines, ThemeLayout } from "@/constants/journalTheme";
@@ -23,14 +25,20 @@ import {
 } from "@/constants/layout";
 import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from "@/constants/noctaliaDesign";
 import { Fonts } from "@/constants/theme";
+import { useDreamsData } from "@/context/DreamsContext";
 import { useTheme } from "@/context/ThemeContext";
 import { ScrollPerfProvider } from "@/context/ScrollPerfContext";
 import { useAppState } from "@/hooks/useAppState";
 import { useClearWebFocus } from "@/hooks/useClearWebFocus";
+import { useLocaleFormatting } from "@/hooks/useLocaleFormatting";
 import { useScrollIdle } from "@/hooks/useScrollIdle";
 import { useTranslation } from "@/hooks/useTranslation";
 import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
 import type { DreamGuideLanguage } from "@/lib/dreamGuideTypes";
+import { getDreamPulse, type DreamPulseState } from "@/lib/dreamPulse";
+import { isDreamAnalyzed } from "@/lib/dreamUsage";
+import { getSleepSoundCopy } from "@/lib/sleepSoundCopy";
+import { isSleepSoundsAvailable } from "@/lib/sleepSoundsFeature";
 import {
   RITUALS,
   type RitualConfig,
@@ -142,6 +150,8 @@ export default function InspirationScreen() {
   );
   const { width, height } = useWindowDimensions();
   const scrollPerf = useScrollIdle();
+  const { dreams, loaded: dreamsLoaded } = useDreamsData();
+  const { formatShortDate } = useLocaleFormatting();
   useClearWebFocus();
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
   const [selectedRitualId, setSelectedRitualId] = useState<RitualId>("starter");
@@ -162,6 +172,43 @@ export default function InspirationScreen() {
   }, []);
   const handleOpenGuides = useCallback(() => {
     router.push("/dream-guides" as any);
+  }, []);
+
+  // Personal pulse + latest dream hero
+  const pulse = useMemo(
+    () => (dreamsLoaded ? getDreamPulse(dreams) : null),
+    [dreams, dreamsLoaded],
+  );
+  const lastDream = useMemo(() => {
+    if (!pulse || pulse.lastDreamAt === null) return null;
+    return dreams.find((dream) => dream.id === pulse.lastDreamAt) ?? null;
+  }, [dreams, pulse]);
+  const sleepSoundsAvailable = isSleepSoundsAvailable(Platform.OS);
+  const sleepCopy = useMemo(
+    () => getSleepSoundCopy(currentLang ?? "en"),
+    [currentLang],
+  );
+
+  const handlePulseCta = useCallback(
+    (state: DreamPulseState) => {
+      if ((state === "today" || state === "analyze") && lastDream) {
+        router.push(`/journal/${lastDream.id}` as any);
+        return;
+      }
+      router.push("/recording" as any);
+    },
+    [lastDream],
+  );
+  const handleOpenLastDream = useCallback((dreamId: number) => {
+    router.push(`/journal/${dreamId}` as any);
+  }, []);
+  const handleOpenLastDreamChat = useCallback(() => {
+    if (lastDream) {
+      router.push(`/dream-chat/${lastDream.id}` as any);
+    }
+  }, [lastDream]);
+  const handleOpenSleepSounds = useCallback(() => {
+    router.push("/sleep-sounds" as any);
   }, []);
   const homeHeaderActions = useMemo(
     () => [
@@ -366,6 +413,73 @@ export default function InspirationScreen() {
             ]}
           >
             <View style={isDesktopLayout ? styles.desktopGrid : undefined}>
+              {/* Personal journal pulse */}
+              <View
+                style={[
+                  styles.homeSectionSpacing,
+                  !isDesktopLayout && styles.mobileSectionPadding,
+                  isDesktopLayout && styles.desktopFullSection,
+                ]}
+              >
+                <DreamPulseCard pulse={pulse} onPressCta={handlePulseCta} />
+              </View>
+
+              {/* Latest dream hero */}
+              {lastDream ? (
+                <View
+                  style={[
+                    styles.homeSectionSpacing,
+                    !isDesktopLayout && styles.mobileSectionPadding,
+                    isDesktopLayout && styles.desktopFullSection,
+                  ]}
+                >
+                  <SectionHeading
+                    title={t("inspiration.lastDream.title")}
+                    subtitle={t("inspiration.lastDream.subtitle")}
+                    colors={colors}
+                    icon="moon.stars.fill"
+                  />
+                  <DreamCard
+                    dream={lastDream}
+                    onPress={handleOpenLastDream}
+                    dateLabel={formatShortDate(lastDream.id)}
+                    variant="featured"
+                    testID={TID.List.DreamItem(`home-${lastDream.id}`)}
+                  />
+                  {isDreamAnalyzed(lastDream) ? (
+                    <Pressable
+                      onPress={handleOpenLastDreamChat}
+                      accessibilityRole="button"
+                      accessibilityLabel={t("inspiration.lastDream.chat_cta")}
+                      testID={TID.Button.InspirationLastDreamChat}
+                      style={({ pressed }) => [
+                        styles.lastDreamChatButton,
+                        {
+                          backgroundColor: noctalia.surface.soft,
+                          borderColor: noctalia.surface.border,
+                        },
+                        pressed && styles.pressedButton,
+                      ]}
+                    >
+                      <IconSymbol
+                        name="bubble.left.and.bubble.right.fill"
+                        size={16}
+                        color={noctalia.accent.base}
+                      />
+                      <Text
+                        style={[
+                          styles.lastDreamChatLabel,
+                          { color: noctalia.accent.base },
+                        ]}
+                        numberOfLines={1}
+                      >
+                        {t("inspiration.lastDream.chat_cta")}
+                      </Text>
+                    </Pressable>
+                  ) : null}
+                </View>
+              ) : null}
+
               <View
                 style={[
                   styles.homeSectionSpacing,
@@ -396,6 +510,26 @@ export default function InspirationScreen() {
                   onPress={handleOpenGuides}
                 />
               </View>
+
+              {/* Sleep sounds entry (feature-flagged, native only) */}
+              {sleepSoundsAvailable ? (
+                <View
+                  style={[
+                    styles.homeSectionSpacing,
+                    isDesktopLayout && styles.desktopFullSection,
+                  ]}
+                >
+                  <DreamGuidesHomeCard
+                    noctalia={noctalia}
+                    kicker={sleepCopy.entryTitle}
+                    title={sleepCopy.screenTitle}
+                    body={sleepCopy.entryBody}
+                    icon="moon.stars.fill"
+                    testID={TID.Button.HomeSleepSounds}
+                    onPress={handleOpenSleepSounds}
+                  />
+                </View>
+              ) : null}
 
               {/* Rituals with Progress Rings */}
               <View style={styles.sectionSpacing}>
@@ -643,6 +777,8 @@ type DreamGuidesHomeCardProps = {
   title: string;
   body: string;
   onPress: () => void;
+  icon?: IconName;
+  testID?: string;
 };
 
 const DreamGuidesHomeCard = memo(function DreamGuidesHomeCard({
@@ -651,6 +787,8 @@ const DreamGuidesHomeCard = memo(function DreamGuidesHomeCard({
   title,
   body,
   onPress,
+  icon = "sparkles",
+  testID = "btn.home.dreamGuides",
 }: DreamGuidesHomeCardProps) {
   return (
     <View style={styles.dreamGuidesHomeContainer}>
@@ -659,7 +797,7 @@ const DreamGuidesHomeCard = memo(function DreamGuidesHomeCard({
           onPress={onPress}
           accessibilityRole="button"
           accessibilityLabel={title}
-          testID="btn.home.dreamGuides"
+          testID={testID}
           style={({ pressed }) => [
             styles.dreamGuidesHomeButton,
             pressed && styles.pressedButton,
@@ -671,7 +809,7 @@ const DreamGuidesHomeCard = memo(function DreamGuidesHomeCard({
               { backgroundColor: noctalia.surface.soft },
             ]}
           >
-            <IconSymbol name="sparkles" size={23} color={noctalia.accent.base} />
+            <IconSymbol name={icon} size={23} color={noctalia.accent.base} />
           </View>
           <View style={styles.dreamGuidesHomeCopy}>
             <Text style={[styles.dreamGuidesHomeKicker, { color: noctalia.accent.base }]}>
@@ -1109,6 +1247,22 @@ const styles = StyleSheet.create({
   pressedButton: {
     opacity: 0.82,
     transform: [{ scale: 0.98 }],
+  },
+
+  lastDreamChatButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginTop: 14,
+  },
+  lastDreamChatLabel: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 14,
   },
 
   // Info cards stack

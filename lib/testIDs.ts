@@ -99,6 +99,8 @@ export const TID = {
     InspirationTipNext: 'btn.inspiration.tipNext',
     InspirationQuickAction: (id: string) => `btn.inspiration.quick.${id}`,
     InspirationPulseCta: 'btn.inspiration.pulseCta',
+    InspirationLastDreamChat: 'btn.inspiration.lastDream.chat',
+    HomeSleepSounds: 'btn.home.sleepSounds',
     StatsInsightCta: 'btn.stats.insightCta',
     DreamProfileCta: 'btn.stats.dreamProfile.cta',
     DreamProfileUpgradeCta: 'btn.stats.dreamProfile.upgradeCta',
