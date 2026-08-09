@@ -933,6 +933,31 @@ prepared but unsent in
 The central register now contains 201 routes: 3 P0, 64 P1, 133 P2 and 1 P3.
 Adding a qualified route creates no backlink or DR movement.
 
+### Editorial discovery wave 36 — 2026-08-10
+
+Two newly surfaced 2026 comparison pages were rejected before contact. Echo's
+self-canonical AI-journaling comparison exposes no external product-domain
+anchors, while its legal pages identify no entity, address, country or
+jurisdiction. Hello Diary's self-canonical comparison links only its own Google
+Play listing; its About, Privacy and Terms pages likewise omit an accountable
+operator and jurisdiction. Neither route clears both the domain-citation and
+non-Russian operator gates. No email, form, account, product data or payment was
+used. The central register now contains 204 routes: 3 P0, 64 P1, 136 P2 and 1
+P3. Full evidence is recorded in
+`marketing/seo/editorial-discovery-wave-36-2026-08-10.md`.
+
+### D3A post-send monitor — 2026-08-10 00:52 CEST
+
+The three public targets remain unchanged and expose no new Noctalia anchor.
+Exact authenticated Zimbra searches still return the same two-message
+KapanLagi, Penzu and AllThingsAI conversations, with no inbound response; Spam
+contains no matching new failure. This read-only check creates no delivery,
+acceptance, backlink, referring-domain or DR claim. For the next DR-oriented
+authorization, Marika Pech (`D2`) now ranks first because the live page already
+contains an unlinked Noctalia attribution; DreamWell (`D5`) follows because its
+page directly links competitor domains without `nofollow`, but its 2022 age
+reduces update probability.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

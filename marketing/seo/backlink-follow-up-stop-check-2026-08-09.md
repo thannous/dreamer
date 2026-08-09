@@ -57,6 +57,17 @@ delivery, human receipt, editorial acceptance, publication, a backlink or a DR
 change. The conditional final check remains dated 2026-08-16 and must stop if a
 reply, failure, opt-out or public citation appears first.
 
+## D3A post-send monitor — 2026-08-10 00:52 CEST
+
+A read-only public refresh found no change: the checked KapanLagi article still
+returns HTTP 200 with four Noctalia mentions and zero `noctalia.app` anchors;
+Penzu and AllThingsAI still return HTTP 200 with zero Noctalia mentions or
+anchors. Exact authenticated Zimbra searches return one two-message
+conversation for each recipient—the original message and the authorized first
+reply—with no inbound response. Spam remains at three messages and contains
+only the previously recorded AndroidAyuda campaign failure. No message or
+mailbox state was modified by this monitor.
+
 ## Routes due on 2026-08-09
 
 | Domain | Public-page stop gate | Mailbox stop gate | Decision |
