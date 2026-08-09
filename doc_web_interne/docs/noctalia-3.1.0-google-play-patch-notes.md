@@ -1,8 +1,11 @@
 # Noctalia 3.1.0 — notes de version Google Play
 
-Statut : **brouillon prêt à copier**. Ne pas publier avant la validation
-complète des gates Android, RevenueCat et Play. Le candidat suivi par le dépôt
-est `3.1.0 (50)` ; cela ne prouve ni son upload ni sa disponibilité sur le Store.
+Statut : **envoyée à Google Play pour examen le 9 août 2026**. Le candidat
+`3.1.0 (53)` a passé les 19 gates Android, RevenueCat et Play, puis a été
+promu depuis la bibliothèque Internal vers Production avec un déploiement à
+100 % dans tous les pays ciblés. La Console affiche encore les modifications
+comme « en cours d'examen » : cette soumission ne prouve pas encore la
+disponibilité publique sur le Store.
 
 ## Ce qui a été ajouté dans la 3.1
 
@@ -17,6 +20,8 @@ Les changements SEO, sociaux, analytiques et les outils internes ne sont pas
 présentés comme des nouveautés de l’application dans la fiche Play.
 
 ## Textes Google Play
+
+Les cinq textes ci-dessous ont été enregistrés dans la release Production 53.
 
 ### Français (fr-FR)
 
