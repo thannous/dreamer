@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-05-20",
+  "checkedAt": "2026-08-09",
   "maintainer": "Noctalia marketing/SEO",
   "methodology": [
     "Use public store pages, official product pages, and Noctalia owned pages as the source of truth.",
@@ -188,6 +188,73 @@
           "label": "Oniri App Store",
           "url": "https://apps.apple.com/us/app/oniri-your-dream-journal/id968737914",
           "observedFacts": ["free with in-app purchases", "4.6 stars", "3.6K ratings", "US IAP price table", "English plus 6 more languages"]
+        }
+      ]
+    },
+    "dreamJournalUltimate": {
+      "name": "Dream Journal Ultimate",
+      "positioning": "Established cross-platform dream journal with voice capture, AI interpretation and images, a public Dream Wall, symbol tools, statistics, and lucid-dreaming training.",
+      "platforms": ["Android", "iOS", "iPad", "Web community and resources"],
+      "pricing": {
+        "model": "Free download with in-app purchases and a premium subscription",
+        "publicPriceSignals": [
+          "Google Play lists in-app purchases",
+          "Apple App Store lists a free download with in-app purchases",
+          "The official press kit describes the product as free with a premium subscription available"
+        ],
+        "comparisonRule": "Do not publish one universal subscription price without checking the purchase flow in the target country and date."
+      },
+      "storeSignals": [
+        "Google Play showed 100K+ downloads, 4.4 stars and about 1.14K reviews on 2026-08-09.",
+        "Apple App Store showed 4.5 stars from 547 ratings on 2026-08-09.",
+        "Google Play was updated August 1, 2026 and the App Store listed version 2026.8.5."
+      ],
+      "strengths": [
+        "Cross-platform Android and iOS availability",
+        "Optional Dream Wall community and similar-dream discovery",
+        "Lucid Dreaming Academy, reality-check reminders, symbols, statistics and AI images",
+        "PIN or biometric journal lock and cloud sync"
+      ],
+      "limitations": [
+        "The social and lucid-training surface is broader than users seeking a focused private reflection workflow may need",
+        "Google Play discloses collection of personal information, app activity and other data categories, plus sharing of app activity, app information, performance and device identifiers",
+        "The public privacy policy says synced journal entries and account data are processed in the United States"
+      ],
+      "bestFor": [
+        "Users who need iOS as well as Android",
+        "Users who want lucid-dreaming lessons and reality checks",
+        "Users who value an optional public dream community and similar-dream discovery"
+      ],
+      "notIdealFor": [
+        "Users who want a narrower Android-first capture-to-reflection workflow",
+        "Users who do not want community features in their dream-journal product",
+        "Users whose priority is Noctalia's disclosed EU-hosted journal-data model"
+      ],
+      "migrationNotes": [
+        "Keep Dream Journal Ultimate if iOS, Dream Wall or advanced lucid training is central to the habit.",
+        "Copy a small set of recent dreams before switching because Noctalia does not currently advertise a full portable journal import.",
+        "Rebuild recurring symbols from recent entries rather than promising automatic migration parity."
+      ],
+      "sources": [
+        {
+          "label": "Dream Journal Ultimate official site",
+          "url": "https://dreamjournal.co/",
+          "observedFacts": ["voice dream recording", "AI interpretation", "Dream Wall", "PIN or biometric lock", "cloud sync", "Android and iOS positioning"]
+        },
+        {
+          "label": "Dream Journal Ultimate Google Play",
+          "url": "https://play.google.com/store/apps/details?id=dreamcapsule.com.dl.dreamjournalultimate&hl=en_US",
+          "observedFacts": ["100K+ downloads", "4.4 stars", "1.14K reviews", "August 1 2026 update", "data-safety categories", "Dream Labs LLC"]
+        },
+        {
+          "label": "Dream Journal Ultimate App Store",
+          "url": "https://apps.apple.com/us/app/dream-journal-ultimate/id802558054",
+          "observedFacts": ["free with in-app purchases", "4.5 stars", "547 ratings", "version 2026.8.5", "English plus 11 languages"]
+        },
+        {
+          "label": "Dream Journal Ultimate privacy policy",
+          "url": "https://dreamjournal.co/privacy-policy",
+          "observedFacts": ["optional sync account", "dream storage under the account", "United States processing"]
         }
       ]
     }

@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "6176a248ca6b0da40b7c5c8f10d3a9d359440de2",
+  "sourceRevision": "8a303ebf9392cf0ee8de16cc2b58a954f789ea65",
   "counts": {
-    "logicalPages": 235,
-    "manifestPaths": 1175,
-    "uniqueManifestPaths": 1175,
-    "canonicalPages": 1175,
-    "sitemapEntries": 1175,
-    "allHtmlOutputPaths": 1180
+    "logicalPages": 236,
+    "manifestPaths": 1180,
+    "uniqueManifestPaths": 1180,
+    "canonicalPages": 1180,
+    "sitemapEntries": 1180,
+    "allHtmlOutputPaths": 1185
   },
   "manifestRoutes": [
     {
@@ -3559,6 +3559,56 @@
       "lang": "it",
       "slug": "dizionario-dei-sogni-app",
       "path": "/it/dizionario-dei-sogni-app"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "dream-journal-ultimate-alternative",
+      "lang": "de",
+      "slug": "dream-journal-ultimate-alternative",
+      "path": "/de/dream-journal-ultimate-alternative"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "dream-journal-ultimate-alternative",
+      "lang": "en",
+      "slug": "dream-journal-ultimate-alternative",
+      "path": "/en/dream-journal-ultimate-alternative"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "dream-journal-ultimate-alternative",
+      "lang": "es",
+      "slug": "alternativa-dream-journal-ultimate",
+      "path": "/es/alternativa-dream-journal-ultimate"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "dream-journal-ultimate-alternative",
+      "lang": "fr",
+      "slug": "alternative-dream-journal-ultimate",
+      "path": "/fr/alternative-dream-journal-ultimate"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "dream-journal-ultimate-alternative",
+      "lang": "it",
+      "slug": "alternativa-dream-journal-ultimate",
+      "path": "/it/alternativa-dream-journal-ultimate"
     },
     {
       "collection": "pages",
@@ -11820,6 +11870,7 @@
     "docs/de/blog/wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen.html",
     "docs/de/blog/zeitumstellung-schlaf-traeume.html",
     "docs/de/datenschutz.html",
+    "docs/de/dream-journal-ultimate-alternative.html",
     "docs/de/dreamapp-alternative.html",
     "docs/de/guides/angsteinflossende-traumsymbole.html",
     "docs/de/guides/haeufigste-traumsymbole.html",
@@ -12059,6 +12110,7 @@
     "docs/en/dream-content-methodology.html",
     "docs/en/dream-dictionary-app.html",
     "docs/en/dream-journal-apps.html",
+    "docs/en/dream-journal-ultimate-alternative.html",
     "docs/en/dreamapp-alternative.html",
     "docs/en/guides/animal-dream-symbols.html",
     "docs/en/guides/death-transformation-dreams.html",
@@ -12236,6 +12288,7 @@
     "docs/en/symbols/zombie.html",
     "docs/en/terms.html",
     "docs/en/voice-dream-journal.html",
+    "docs/es/alternativa-dream-journal-ultimate.html",
     "docs/es/alternativa-dreamapp.html",
     "docs/es/alternativa-oniri.html",
     "docs/es/app-analisis-suenos-android.html",
@@ -12472,6 +12525,7 @@
     "docs/es/sobre.html",
     "docs/es/terminos.html",
     "docs/fr/a-propos.html",
+    "docs/fr/alternative-dream-journal-ultimate.html",
     "docs/fr/alternative-dreamapp.html",
     "docs/fr/alternative-oniri.html",
     "docs/fr/application-analyse-de-reve-android.html",
@@ -12707,6 +12761,7 @@
     "docs/fr/symboles/zombie.html",
     "docs/fr/tarifs.html",
     "docs/index.html",
+    "docs/it/alternativa-dream-journal-ultimate.html",
     "docs/it/alternativa-dreamapp.html",
     "docs/it/alternativa-oniri.html",
     "docs/it/app-analisi-sogni-android.html",
@@ -36258,6 +36313,281 @@
           {
             "position": "2",
             "item": "https://noctalia.app/it/dizionario-dei-sogni-app"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "lang": "de",
+      "outputPath": "docs/de/dream-journal-ultimate-alternative.html",
+      "canonical": "https://noctalia.app/de/dream-journal-ultimate-alternative",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/dream-journal-ultimate-alternative",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/de/dream-journal-ultimate-alternative",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/dream-journal-ultimate-alternative"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "lang": "en",
+      "outputPath": "docs/en/dream-journal-ultimate-alternative.html",
+      "canonical": "https://noctalia.app/en/dream-journal-ultimate-alternative",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/dream-journal-ultimate-alternative",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/en/dream-journal-ultimate-alternative",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "lang": "es",
+      "outputPath": "docs/es/alternativa-dream-journal-ultimate.html",
+      "canonical": "https://noctalia.app/es/alternativa-dream-journal-ultimate",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/alternativa-dream-journal-ultimate",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/es/alternativa-dream-journal-ultimate",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/alternativa-dream-journal-ultimate"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "lang": "fr",
+      "outputPath": "docs/fr/alternative-dream-journal-ultimate.html",
+      "canonical": "https://noctalia.app/fr/alternative-dream-journal-ultimate",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/alternative-dream-journal-ultimate",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/fr/alternative-dream-journal-ultimate",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/alternative-dream-journal-ultimate"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "lang": "it",
+      "outputPath": "docs/it/alternativa-dream-journal-ultimate.html",
+      "canonical": "https://noctalia.app/it/alternativa-dream-journal-ultimate",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/alternativa-dream-journal-ultimate",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/it/alternativa-dream-journal-ultimate",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/alternativa-dream-journal-ultimate"
           }
         ]
       ],
@@ -95748,6 +96078,166 @@
         {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/dream-dictionary-app"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/dream-journal-ultimate-alternative",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/dream-journal-ultimate-alternative",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/alternativa-dream-journal-ultimate",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/alternative-dream-journal-ultimate",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/alternativa-dream-journal-ultimate",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/alternative-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/alternativa-dream-journal-ultimate"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dream-journal-ultimate-alternative"
         }
       ]
     },

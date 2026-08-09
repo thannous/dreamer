@@ -830,6 +830,21 @@ register now contains 200 routes: 3 P0, 63 P1, 133 P2 and 1 P3. Full evidence is
 recorded in
 `marketing/seo/editorial-discovery-wave-34-2026-08-09.md`.
 
+### Third competitor-alternative destination — 2026-08-09
+
+The directory-readiness audit found only two dedicated competitor-alternative
+families. A third, source-linked Dream Journal Ultimate alternative was prepared
+in English, French, Spanish, German and Italian after current official-site,
+Google Play, App Store, privacy and legal verification. The copy explicitly
+credits Dream Journal Ultimate for iOS, its optional Dream Wall, similar-dream
+discovery and structured lucid-dreaming tools, while positioning Noctalia only
+around its verified Android-first voice-to-reflection workflow.
+
+This clears the three-alternative-page content gate for future directory and
+editorial destinations. It is an owned asset, not a backlink or proof of DR
+movement. Full evidence and the publication boundary are recorded in
+`marketing/seo/dream-journal-ultimate-alternative-asset-2026-08-09.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

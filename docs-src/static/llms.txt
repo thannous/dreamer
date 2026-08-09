@@ -25,6 +25,7 @@ Noctalia is a dream journal and dream interpretation resource for people who wan
 - Downloadable comparison dataset (CSV): https://noctalia.app/data/dream-journal-apps-comparison-2026.csv
 - DreamApp alternative: https://noctalia.app/en/dreamapp-alternative
 - Oniri alternative: https://noctalia.app/en/oniri-alternative
+- Dream Journal Ultimate alternative: https://noctalia.app/en/dream-journal-ultimate-alternative
 - AI dream interpretation app: https://noctalia.app/en/ai-dream-interpretation-app
 - Android dream analysis workflow: https://noctalia.app/en/android-dream-analysis-app
 - Voice dream journal workflow: https://noctalia.app/en/voice-dream-journal
