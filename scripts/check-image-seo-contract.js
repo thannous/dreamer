@@ -263,7 +263,7 @@ function validateSitewidePageIllustrations({ pageMap, sitemap, errors, warnings 
     else if (bytes > WARNING_BYTES) warnings.push(`${canonicalPath}: ${image.src} is ${bytes} bytes (review above ${WARNING_BYTES})`);
   }
 
-  if (routes.length !== 170) errors.push(`expected 170 sitewide illustration routes, found ${routes.length}`);
+  if (routes.length !== 175) errors.push(`expected 175 sitewide illustration routes, found ${routes.length}`);
   if (placementCount !== routes.length) {
     errors.push(`expected ${routes.length} visible sitewide illustrations, found ${placementCount}`);
   }
