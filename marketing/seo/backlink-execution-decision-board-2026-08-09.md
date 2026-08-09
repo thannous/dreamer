@@ -45,6 +45,12 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   no public link change. Each exact Zimbra search still returns the same
   two-message conversation, and Spam still contains only the older AndroidAyuda
   failure.
+- A second real-Chrome monitor at 01:11 CEST found the same public and mailbox
+  state. D2 and D5 were also requalified without transmission: both official
+  recipient searches return no prior conversation; Marika's unlinked mention
+  and corrected Noctalia source remain live; DreamWell's stale DreamKit links,
+  followed competitor-domain pattern, official Press mailbox and current
+  `/terms-of-service/` Delaware-law page remain live.
 - Fresh public checks keep Marika Pech as the nearest DR-oriented recovery: its
   article still names Noctalia once in plain text with no anchor. DreamWell
   remains the next higher-link-policy candidate because its current comparison

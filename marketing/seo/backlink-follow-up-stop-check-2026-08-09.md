@@ -68,6 +68,16 @@ reply—with no inbound response. Spam remains at three messages and contains
 only the previously recorded AndroidAyuda campaign failure. No message or
 mailbox state was modified by this monitor.
 
+## D3A post-send monitor — 2026-08-10 01:11 CEST
+
+The same three routes were checked again in real Chrome. KapanLagi remains
+self-canonical and `index, follow`, with four `Noctalia` mentions and zero
+`noctalia.app` anchors. Penzu and AllThingsAI still contain zero Noctalia
+mentions and zero anchors. Exact authenticated Zimbra searches still return one
+two-message conversation for each recipient and no inbound message. No public
+link or mailbox state changed, so all three routes remain
+`followup_1_sent_waiting` until the conditional 2026-08-16 check.
+
 ## Routes due on 2026-08-09
 
 | Domain | Public-page stop gate | Mailbox stop gate | Decision |

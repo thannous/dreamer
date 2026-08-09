@@ -958,6 +958,20 @@ contains an unlinked Noctalia attribution; DreamWell (`D5`) follows because its
 page directly links competitor domains without `nofollow`, but its 2022 age
 reduces update probability.
 
+### D2/D5 authorization readiness — 2026-08-10 01:11 CEST
+
+Real Chrome reconfirmed the public and trust gates for the next two DR-oriented
+routes. Marika Pech still contains one unlinked Noctalia attribution and the old
+source wording; the corrected Noctalia evidence is already live. DreamWell
+still links the removed DreamKit Android package and the iOS ID that now resolves
+to Arcana, while directly linking five competitor domains without `nofollow`.
+Its current Terms route is `/terms-of-service/`; the old `/terms-of-use/` path
+is a not-found page. Exact authenticated Zimbra searches found no prior
+conversation with either official recipient. The messages remain unsent and
+still require independent D2 and D5 authorization plus a new immediate stop
+gate. Full evidence is in
+`marketing/seo/backlink-readiness-d2-d5-2026-08-10.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

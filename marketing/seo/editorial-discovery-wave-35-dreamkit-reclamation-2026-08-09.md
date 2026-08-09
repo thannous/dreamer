@@ -30,9 +30,12 @@ DreamKit with Noctalia. The 2022 article may remain intentionally historical.
 
 - DreamWell's About and Press pages identify a named team and publish
   `hi@dreamwellbewell.com` for direct contact.
-- The Terms select Delaware law and courts. Google Play independently identifies
-  `DreamWell, a Public Benefit Corporation`, the same support email, a United
-  States phone number and a Claymont, Delaware address.
+- The current [Terms of Service](https://dreamwellbewell.com/terms-of-service/)
+  name `DreamWell, a Public Benefit Corporation` and select Delaware law and
+  courts. Google Play independently identifies the same entity, support email,
+  a United States phone number and a Claymont, Delaware address. The former
+  `/terms-of-use/` path now returns DreamWell's not-found page and is not an
+  authoritative legal route.
 - No Russian operator signal was found in the reviewed official pages or store
   identity.
 - The article is transparent about being product-owned and cites competitor
@@ -71,6 +74,17 @@ Subject: `DreamKit listing`
 The message contains one factual destination, one low-friction question and no
 placement or link request. It must remain unsent until the user explicitly
 authorizes this exact route.
+
+## 01:11 CEST readiness refresh — 2026-08-10
+
+Real Chrome confirmed that the comparison, DreamKit wording, five direct
+competitor-domain links and both stale store destinations remain unchanged. The
+Noctalia source page is live, self-canonical and `index, follow`. DreamWell's
+current Press page still publishes `hi@dreamwellbewell.com`, and the corrected
+Terms route above still names the entity and Delaware law. An exact
+authenticated Zimbra search for the recipient returns no result. No message was
+sent; every required check must be repeated immediately after explicit D5
+authorization.
 
 ## Required pre-send gate
 

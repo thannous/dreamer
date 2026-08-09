@@ -91,6 +91,18 @@ Merci,
 Thanh Chau
 Fondateur de Noctalia
 
+## 01:11 CEST readiness refresh — 2026-08-10
+
+Real Chrome confirmed that the publisher article is still self-canonical and
+`index, follow`, contains the old 40–60% wording and exactly one plain-text
+`Noctalia` mention, and exposes zero `noctalia.app` anchors. The corrected
+Noctalia source is live on the custom domain with the belief-versus-experience
+distinction and the Valášek and Watt sources. The current legal notice still
+names the French operator and publishes the official mailbox; the contact page
+still exposes its collaboration form. An exact authenticated Zimbra search for
+`contact@marikapech.com` returns no result. No message was sent; every required
+check must be repeated immediately after explicit D2 authorization.
+
 ## External-action stop gate
 
 Before any transmission:
