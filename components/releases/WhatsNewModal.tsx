@@ -31,7 +31,7 @@ import {
   saveLastSeenReleaseNotesVersion,
 } from '@/services/storageService';
 
-export const RELEASE_NOTES_VERSION = '3.0.0';
+export const RELEASE_NOTES_VERSION = '3.1.0';
 
 const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
   ? ({
@@ -68,24 +68,24 @@ export function WhatsNewModal({ visible, onClose, onPrimary }: WhatsNewModalProp
   const features = useMemo<Feature[]>(
     () => [
       {
-        icon: 'sparkles',
-        title: t('release_notes.analysis.title'),
-        body: t('release_notes.analysis.body'),
+        icon: 'chart.bar.fill',
+        title: t('release_notes.stats.title'),
+        body: t('release_notes.stats.body'),
       },
       {
-        icon: 'book.closed.fill',
-        title: t('release_notes.guides.title'),
-        body: t('release_notes.guides.body'),
+        icon: 'heart.fill',
+        title: t('release_notes.patterns.title'),
+        body: t('release_notes.patterns.body'),
       },
       {
-        icon: 'mic',
-        title: t('release_notes.capture.title'),
-        body: t('release_notes.capture.body'),
+        icon: 'bolt.fill',
+        title: t('release_notes.android.title'),
+        body: t('release_notes.android.body'),
       },
       {
         icon: 'slider.horizontal.3',
-        title: t('release_notes.settings.title'),
-        body: t('release_notes.settings.body'),
+        title: t('release_notes.navigation.title'),
+        body: t('release_notes.navigation.body'),
       },
     ],
     [t]
@@ -335,7 +335,7 @@ export function WhatsNewModalHost({ ready }: { ready: boolean }) {
 
   const handlePrimary = useCallback(() => {
     persistDismissal();
-    router.push('/dream-guides');
+    router.push('/statistics');
   }, [persistDismissal]);
 
   return (

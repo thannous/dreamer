@@ -2,7 +2,7 @@
   "expo": {
     "name": "Noctalia",
     "slug": "noctalia",
-    "version": "3.0.2",
+    "version": "3.1.0",
     "icon": "./assets/images/icon.png",
     "scheme": "noctalia",
     "userInterfaceStyle": "automatic",
@@ -24,7 +24,7 @@
       }
     },
     "android": {
-      "versionCode": 47,
+      "versionCode": 50,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -142,7 +142,7 @@
       }
     },
     "owner": "tanuki75",
-    "runtimeVersion": "3.0.2",
+    "runtimeVersion": "3.1.0",
     "updates": {
       "url": "https://u.expo.dev/cfd1b275-9dad-40d7-9d9a-147c7bb38415"
     }

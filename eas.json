@@ -49,7 +49,7 @@
     },
     "production-apk": {
       "channel": "production",
-      "android": { "buildType": "apk", "credentialsSource": "local" },
+      "android": { "buildType": "apk" },
       "env": {
         "NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE": "false",
         "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api",

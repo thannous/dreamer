@@ -111,17 +111,17 @@ jest.mock('react-native-safe-area-context', () => ({
 
 const copy: Record<string, string> = {
   'release_notes.badge': 'NOUVEAUTÉS · {version}',
-  'release_notes.title': 'Noctalia évolue',
-  'release_notes.subtitle': 'Vos rêves, encore plus loin.',
-  'release_notes.analysis.title': 'Analyse améliorée',
-  'release_notes.analysis.body': 'Des lectures plus profondes et plus personnelles.',
-  'release_notes.guides.title': 'Nouveaux guides',
-  'release_notes.guides.body': 'Explorez les grands thèmes de vos rêves.',
-  'release_notes.capture.title': 'Capture simplifiée',
-  'release_notes.capture.body': 'Écrivez ou dictez plus facilement.',
-  'release_notes.settings.title': 'Paramètres repensés',
-  'release_notes.settings.body': 'Tout est plus simple à retrouver.',
-  'release_notes.primary': 'Découvrir les nouveautés',
+  'release_notes.title': 'Noctalia 3.1 est là',
+  'release_notes.subtitle': 'De nouveaux repères pour lire tes rêves dans la durée.',
+  'release_notes.stats.title': 'Des statistiques plus riches',
+  'release_notes.stats.body': 'Visualise ton rythme de journal et tes périodes les plus actives.',
+  'release_notes.patterns.title': 'Tes tendances oniriques',
+  'release_notes.patterns.body': 'Repère tes émotions dominantes et l’évolution de tes thèmes avec Plus.',
+  'release_notes.android.title': 'Android plus fluide',
+  'release_notes.android.body': 'Profite d’un démarrage plus rapide et d’une expérience plus stable.',
+  'release_notes.navigation.title': 'Une navigation plus claire',
+  'release_notes.navigation.body': 'Des repères plus lisibles et de nouvelles améliorations d’accessibilité.',
+  'release_notes.primary': 'Voir mes statistiques',
   'release_notes.later': 'Plus tard',
   'release_notes.close': 'Fermer les nouveautés',
 };
@@ -155,7 +155,7 @@ describe('WhatsNewModal', () => {
     mockSaveLastSeenReleaseNotesVersion.mockResolvedValue(undefined);
   });
 
-  it('renders the 3.0.0 release copy and exposes every dismissal path', () => {
+  it('renders the 3.1.0 release copy and exposes every dismissal path', () => {
     const onClose = jest.fn();
     const onPrimary = jest.fn();
     const view = render(
@@ -163,10 +163,10 @@ describe('WhatsNewModal', () => {
     );
 
     expect(view.getByText(`NOUVEAUTÉS · ${RELEASE_NOTES_VERSION}`)).toBeTruthy();
-    expect(view.getByText('Analyse améliorée')).toBeTruthy();
-    expect(view.getByText('Nouveaux guides')).toBeTruthy();
-    expect(view.getByText('Capture simplifiée')).toBeTruthy();
-    expect(view.getByText('Paramètres repensés')).toBeTruthy();
+    expect(view.getByText('Des statistiques plus riches')).toBeTruthy();
+    expect(view.getByText('Tes tendances oniriques')).toBeTruthy();
+    expect(view.getByText('Android plus fluide')).toBeTruthy();
+    expect(view.getByText('Une navigation plus claire')).toBeTruthy();
 
     fireEvent.press(view.getByTestId(TID.Button.WhatsNewPrimary));
     fireEvent.press(view.getByTestId(TID.Button.WhatsNewLater));
@@ -187,14 +187,14 @@ describe('WhatsNewModal', () => {
     expect(lightStyle.backgroundColor).toBe('rgba(255, 253, 248, 0.99)');
   });
 
-  it('shows once after onboarding and persists the version before opening guides', async () => {
+  it('shows once after onboarding and persists the version before opening statistics', async () => {
     const view = render(<WhatsNewModalHost ready />);
 
     await waitFor(() => expect(view.getByTestId(TID.Modal.WhatsNew)).toBeTruthy());
     fireEvent.press(view.getByTestId(TID.Button.WhatsNewPrimary));
 
     expect(mockSaveLastSeenReleaseNotesVersion).toHaveBeenCalledWith(RELEASE_NOTES_VERSION);
-    expect(mockPush).toHaveBeenCalledWith('/dream-guides');
+    expect(mockPush).toHaveBeenCalledWith('/statistics');
   });
 
   it('does not show during onboarding or after this release was seen', async () => {
