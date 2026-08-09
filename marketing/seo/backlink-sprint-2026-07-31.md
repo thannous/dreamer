@@ -608,6 +608,10 @@ The authenticated `sc-domain:noctalia.app` Links report now shows 148 external l
 
 Internal links rose from 32,291 to 33,803, but that metric does not measure external authority. This read-only refresh creates no new domain, backlink, message, account, publication or DR claim. Full evidence is recorded in `marketing/seo/search-console/2026-08-09-external-links-refresh.md`.
 
+### Editorial discovery wave 28 — 2026-08-09
+
+The migrated La Razón diary-app roundup and Androidsis' current lucid-dream app guide both pass the accountable Spanish non-Russian operator gate, but fail the domain-citation value gate. La Razón routes all ten app calls to action to Google Play with `nofollow`; Androidsis mentions many products while exposing no clickable external product-domain citation. Neither publisher was contacted, and the old Andro4all outreach was not transferred to La Razón. Full evidence is recorded in `marketing/seo/editorial-discovery-wave-28-2026-08-09.md`; the central prospect register now contains 175 routes.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
