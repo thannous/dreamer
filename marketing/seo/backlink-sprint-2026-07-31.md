@@ -596,6 +596,12 @@ The read-only 19-row verifier remains unchanged at 6 followed, 4 nofollow, 2 mis
 
 An authenticated Gmail search after 2026-08-09 found no new campaign reply or delivery failure. The Chrome Zimbra session still opens at the login screen, so Inbox and Spam cannot clear Zimbra-routed follow-ups; its login tab was left open for user handoff. No message, account edit, screenshot upload, publication, payment or license grant was performed. Full evidence is recorded in `marketing/seo/backlink-measurement-check-2026-08-09-1512.md`.
 
+### Media-source platform qualification — 2026-08-09
+
+Three new P1 routes were qualified from current official pricing, legal, privacy and community-rule pages: Source of Sources, Qwoted and Featured. All three identify accountable United States operators and addresses, expose a free route and prohibit or strongly constrain irrelevant or fabricated pitches; no Russian operator signal was found. Their intended outcome is an earned journalist or publisher citation rather than a self-created profile backlink.
+
+The truthful founder bio, eligible expertise lanes, exclusion rules, response template and exact external-action gates are prepared in `marketing/seo/media-source-platform-pack-2026-08-09.md`. The central prospect register now covers 173 routes, and `marketing/seo/media-source-platform-prospects-2026-08-09.csv` provides a focused three-row execution extract. No subscription, account, profile, mailbox connection, pitch, query response, publication or payment was performed. Authorization codes are E1 for Source of Sources, E2 for Qwoted and E3 for Featured.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
