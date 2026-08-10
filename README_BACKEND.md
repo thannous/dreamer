@@ -36,9 +36,10 @@ Expected endpoints
   - Response JSON: `{ "title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string }`
   - Env required: `GEMINI_API_KEY`
   - Optional env overrides:
-    - `GEMINI_MODEL` (default `gemini-3-flash-preview`)
-    - `GEMINI_FALLBACK_MODEL` (default `gemini-3.1-flash-lite`)
-    - `GEMINI_LITE_MODEL` (default `gemini-3.1-flash-lite`)
+    - `GEMINI_MODEL` (dream-analysis default `gemini-3.6-flash`)
+    - `GEMINI_FALLBACK_MODEL` (dream-analysis fallback default `gemini-3.5-flash-lite`)
+    - `GEMINI_CHAT_MODEL` (chat default `gemini-3.5-flash-lite`; falls back to `GEMINI_LITE_MODEL`)
+    - `GEMINI_LITE_MODEL` (lightweight-task and chat-fallback default `gemini-3.5-flash-lite`)
     - `IMAGEN_PLUS_MODEL` (subscriber default `gemini-3.1-flash-image`)
     - `IMAGEN_FREE_MODEL` (free/guest default `gemini-3.1-flash-lite-image`)
     - `IMAGEN_MODEL` (legacy subscriber-only alias for `IMAGEN_PLUS_MODEL`)
