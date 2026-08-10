@@ -13,7 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 const { assertDocsBuildReady } = require('./lib/docs-check-helpers');
-const { getLanguageTag, siteConfig } = require('./lib/docs-site-config');
+const { getLanguageTag } = require('./lib/docs-site-config');
 const {
   SUPPORTED_LANGS,
   normalizeUrl,

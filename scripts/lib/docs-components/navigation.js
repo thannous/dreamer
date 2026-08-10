@@ -45,8 +45,7 @@ function navLinkClass(isActive) {
 // Primary nav destinations, rendered only when the destination exists in the
 // current language (collections unavailable in a language are hidden).
 function primaryNavLinks(context) {
-  const { lang, locale, meta, hasRoute, routePath } = context;
-  const activeNav = meta.activeNav || null;
+  const { lang, locale, hasRoute, routePath } = context;
   return [
     { pageId: 'blog.index', label: locale.resources, nav: 'resources' },
     { pageId: 'guide.index', label: locale.dreamGuides, nav: 'guides' },
@@ -58,7 +57,7 @@ function primaryNavLinks(context) {
 }
 
 function renderMobileMenuPanel(context) {
-  const { entry, lang, locale, locales } = context;
+  const { entry, lang, locales } = context;
   const links = primaryNavLinks(context);
   const downloadLabel = downloadAppLabel(lang);
   const linkClass = 'block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors';

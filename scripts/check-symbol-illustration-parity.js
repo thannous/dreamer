@@ -3,7 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { ROOT_DIR, getCollectionLanguages, siteConfig } = require('./lib/docs-site-config');
+const { ROOT_DIR, getCollectionLanguages } = require('./lib/docs-site-config');
 
 const SYMBOL_DATASETS = [
   {
