@@ -464,6 +464,11 @@ export default function OnboardingScreen() {
         </View>
 
         <View
+          // Keep this stage and its step layers as real native views: letting
+          // Fabric flatten/unflatten them while router.replace() detaches the
+          // screen reparents their children mid-commit and crashes Android
+          // with "addViewAt: view already has a parent".
+          collapsable={false}
           style={Platform.OS === 'android'
             ? [
                 styles.stepStage,
@@ -474,6 +479,7 @@ export default function OnboardingScreen() {
             : undefined}
         >
           <View
+            collapsable={false}
             accessibilityElementsHidden={step !== 'intro'}
             importantForAccessibility={step === 'intro' ? 'auto' : 'no-hide-descendants'}
             onLayout={Platform.OS === 'android'
@@ -547,6 +553,7 @@ export default function OnboardingScreen() {
 
           {pathPreloaded || step === 'path' ? (
             <View
+              collapsable={false}
               accessibilityElementsHidden={step !== 'path'}
               importantForAccessibility={step === 'path' ? 'auto' : 'no-hide-descendants'}
               onLayout={Platform.OS === 'android'
