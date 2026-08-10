@@ -1,6 +1,6 @@
 import type { SleepSoundId } from '@/lib/sleepSounds';
 
-type SupportedLanguage = 'en' | 'fr' | 'es' | 'de' | 'it';
+type SupportedLanguage = 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt';
 
 export type SleepSoundCopy = {
   entryTitle: string;
@@ -124,6 +124,27 @@ const COPY: Record<SupportedLanguage, SleepSoundCopy> = {
       rain: { title: 'Pioggia leggera', description: 'Una pioggia dolce e regolare' },
       ocean: { title: 'Onde notturne', description: 'Onde lente su una riva lontana' },
       'brown-noise': { title: 'Rumore marrone', description: 'Un velo sonoro profondo e uniforme' },
+    },
+  },
+  pt: {
+    entryTitle: 'Sons para dormir',
+    entryBody: 'Escolha um som suave e deixe que ele termine aos poucos.',
+    screenTitle: 'Sons para dormir',
+    screenSubtitle: 'Uma paisagem sonora tranquila para acompanhar você até o sono.',
+    chooseSound: 'Escolha um ambiente',
+    chooseDuration: 'Tempo de reprodução',
+    minutes: 'min',
+    play: 'Iniciar ambiente',
+    pause: 'Pausar',
+    resume: 'Retomar',
+    loading: 'Preparando o som…',
+    volumeHint: 'Mantenha o volume baixo e confortável.',
+    backgroundHint: 'O som continua com a tela bloqueada e termina automaticamente.',
+    error: 'Não foi possível iniciar o ambiente. Tente novamente.',
+    sounds: {
+      rain: { title: 'Chuva suave', description: 'Uma chuva leve e constante' },
+      ocean: { title: 'Ondas noturnas', description: 'Ondas lentas em uma praia distante' },
+      'brown-noise': { title: 'Ruído marrom', description: 'Um som profundo e uniforme' },
     },
   },
 };
