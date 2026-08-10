@@ -5,7 +5,7 @@
   "lang": "pt-br",
   "slug": "termos-de-uso",
   "title": "Termos de Uso | Noctalia",
-  "description": "Termos de Uso do Noctalia: acesso ao app, assinaturas, uso permitido, privacidade e contato.",
+  "description": "Termos de Uso da Noctalia: regras de acesso ao app, conta, assinatura Google Play, uso permitido, privacidade, responsabilidades, cancelamento e contato.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",

@@ -5,7 +5,7 @@
   "lang": "pt-br",
   "slug": "politica-de-privacidade",
   "title": "Política de Privacidade | Noctalia",
-  "description": "Política de privacidade da Noctalia: dados coletados, uso, hospedagem e direitos dos usuários.",
+  "description": "Política de Privacidade da Noctalia: saiba quais dados coletamos, como usamos e protegemos suas informações e como exercer seus direitos pela LGPD e pelo RGPD.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",
