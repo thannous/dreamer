@@ -7,6 +7,7 @@ describe('getSleepSoundCopy', () => {
     ['es', 'Ambientes nocturnos', 'Lluvia suave', 'Olas nocturnas', 'Ruido marrón'],
     ['de', 'Abendliche Klänge', 'Sanfter Regen', 'Nächtliche Wellen', 'Braunes Rauschen'],
     ['it', 'Atmosfere della sera', 'Pioggia leggera', 'Onde notturne', 'Rumore marrone'],
+    ['pt', 'Sons para dormir', 'Chuva suave', 'Ondas noturnas', 'Ruído marrom'],
   ])(
     'returns complete %s copy',
     (language, screenTitle, rainTitle, oceanTitle, brownNoiseTitle) => {
@@ -29,9 +30,10 @@ describe('getSleepSoundCopy', () => {
   it('normalizes regional locale tags and casing', () => {
     expect(getSleepSoundCopy('FR-fr').screenTitle).toBe('Ambiances du soir');
     expect(getSleepSoundCopy('es-MX').screenTitle).toBe('Ambientes nocturnos');
+    expect(getSleepSoundCopy('pt-BR').screenTitle).toBe('Sons para dormir');
   });
 
-  it.each([undefined, null, '', 'pt-BR', 'ja'])('falls back to English for %p', (language) => {
+  it.each([undefined, null, '', 'ja'])('falls back to English for %p', (language) => {
     const copy = getSleepSoundCopy(language);
 
     expect(copy.screenTitle).toBe('Evening ambience');
