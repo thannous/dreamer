@@ -28,7 +28,7 @@ const translations: Record<string, string> = {
     'nav.add_dream': 'Adicionar',
     'nav.capture_dream': 'Registrar',
     'nav.capture_dream_accessibility': 'Registrar um sonho',
-    'nav.stats': 'Estatísticas',
+    'nav.stats': 'Dados',
     'nav.settings': 'Ajustes',
     'onboarding.skip': 'Pular',
     'onboarding.back': 'Voltar',
