@@ -3,6 +3,8 @@
  */
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import * as Haptics from 'expo-haptics';
+import { Platform } from 'react-native';
 
 import { ErrorType, type ClassifiedError } from '../../lib/errors';
 import { useAnalysisProgress, AnalysisStep } from '../useAnalysisProgress';
@@ -12,6 +14,13 @@ jest.mock('../useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
+}));
+
+jest.mock('expo-haptics', () => ({
+  impactAsync: jest.fn(),
+  notificationAsync: jest.fn(),
+  ImpactFeedbackStyle: { Light: 'light', Medium: 'medium', Heavy: 'heavy' },
+  NotificationFeedbackType: { Success: 'success', Warning: 'warning', Error: 'error' },
 }));
 
 
@@ -221,6 +230,110 @@ describe('useAnalysisProgress', () => {
 
       expect(result.current.error).toBeNull();
       expect(result.current.step).toBe(AnalysisStep.IDLE);
+    });
+  });
+
+  describe('step haptics', () => {
+    const initialPlatform = Platform.OS;
+
+    beforeEach(() => {
+      Platform.OS = 'ios';
+      jest.clearAllMocks();
+    });
+
+    afterEach(() => {
+      Platform.OS = initialPlatform;
+    });
+
+    it('fires a light impact on each analysis milestone', () => {
+      const { result } = renderHook(() => useAnalysisProgress());
+
+      act(() => {
+        result.current.setStep(AnalysisStep.ANALYZING);
+      });
+      act(() => {
+        result.current.setStep(AnalysisStep.GENERATING_IMAGE);
+      });
+      act(() => {
+        result.current.setStep(AnalysisStep.FINALIZING);
+      });
+
+      expect(Haptics.impactAsync).toHaveBeenCalledTimes(3);
+      expect(Haptics.impactAsync).toHaveBeenCalledWith(Haptics.ImpactFeedbackStyle.Light);
+    });
+
+    it('does not repeat the haptic when the same step is set twice', () => {
+      const { result } = renderHook(() => useAnalysisProgress());
+
+      act(() => {
+        result.current.setStep(AnalysisStep.ANALYZING);
+      });
+      act(() => {
+        result.current.setStep(AnalysisStep.ANALYZING);
+      });
+
+      expect(Haptics.impactAsync).toHaveBeenCalledTimes(1);
+    });
+
+    it('fires a success notification on completion', () => {
+      const { result } = renderHook(() => useAnalysisProgress());
+
+      act(() => {
+        result.current.setStep(AnalysisStep.COMPLETE);
+      });
+
+      expect(Haptics.notificationAsync).toHaveBeenCalledWith(Haptics.NotificationFeedbackType.Success);
+      expect(Haptics.impactAsync).not.toHaveBeenCalled();
+    });
+
+    it('fires an error notification when the analysis fails', () => {
+      const { result } = renderHook(() => useAnalysisProgress());
+
+      const error: ClassifiedError = {
+        type: ErrorType.NETWORK,
+        originalError: new Error('Test'),
+        userMessage: 'Network error',
+        canRetry: true,
+        message: 'Network error',
+      };
+
+      act(() => {
+        result.current.setError(error);
+      });
+
+      expect(Haptics.notificationAsync).toHaveBeenCalledTimes(1);
+      expect(Haptics.notificationAsync).toHaveBeenCalledWith(Haptics.NotificationFeedbackType.Error);
+    });
+
+    it('fires again after a reset restarts the flow', () => {
+      const { result } = renderHook(() => useAnalysisProgress());
+
+      act(() => {
+        result.current.setStep(AnalysisStep.ANALYZING);
+      });
+      act(() => {
+        result.current.reset();
+      });
+      act(() => {
+        result.current.setStep(AnalysisStep.ANALYZING);
+      });
+
+      expect(Haptics.impactAsync).toHaveBeenCalledTimes(2);
+    });
+
+    it('stays silent on web', () => {
+      Platform.OS = 'web';
+      const { result } = renderHook(() => useAnalysisProgress());
+
+      act(() => {
+        result.current.setStep(AnalysisStep.ANALYZING);
+      });
+      act(() => {
+        result.current.setStep(AnalysisStep.COMPLETE);
+      });
+
+      expect(Haptics.impactAsync).not.toHaveBeenCalled();
+      expect(Haptics.notificationAsync).not.toHaveBeenCalled();
     });
   });
 
