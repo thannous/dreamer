@@ -78,6 +78,20 @@ two-message conversation for each recipient and no inbound message. No public
 link or mailbox state changed, so all three routes remain
 `followup_1_sent_waiting` until the conditional 2026-08-16 check.
 
+## D3A post-send monitor — 2026-08-10 02:37 CEST
+
+The authorized first replies were not repeated. Exact authenticated Zimbra
+searches still return one two-message conversation for each official recipient:
+KapanLagi at 00:40 CEST, Penzu at 00:41 and AllThingsAI at 00:41. No inbound
+reply, bounce or opt-out appears in those conversations.
+
+The same real-Chrome public gate remains negative. The KapanLagi article still
+contains Noctalia in plain text but exposes zero `noctalia.app` anchors; Penzu's
+current guide and the AllThingsAI homepage contain zero Noctalia mentions and
+zero anchors. An exact Google site search exposes no indexed AllThingsAI
+Noctalia page. All three routes remain `followup_1_sent_waiting`; the next
+conditional check stays dated 2026-08-16.
+
 ## Routes due on 2026-08-09
 
 | Domain | Public-page stop gate | Mailbox stop gate | Decision |

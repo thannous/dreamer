@@ -1019,6 +1019,56 @@ No route clears both the trust and link-pattern gates. The central register now
 contains 211 routes: 3 P0, 64 P1, 143 P2 and 1 P3. Full evidence is in
 marketing/seo/editorial-discovery-wave-38-2026-08-10.md.
 
+### Editorial discovery wave 39 — 2026-08-10
+
+The current PitchWall founder profile now persists publicly and is
+self-canonical, but it contains only a plain-text Noctalia bio and zero
+`noctalia.app` anchors. More importantly, current homepage and sampled product
+page website clicks use internal `/out/` redirects marked
+`rel="noopener nofollow"`, contradicting the platform's earlier dofollow claim.
+Terms select Indian law and Indore courts, so no Russian jurisdiction signal is
+present, but they still identify no legal entity or accountable address.
+PitchWall is therefore reclassified from P1 to P2 and removed from the
+DR-oriented submission queue without submitting a product or changing the
+account.
+
+Five additional Google surfaces were rejected before contact. Dazed names
+DreamKit in a credible but old feature without demonstrating app
+developer-domain citations; Jyotirgamya links apps only to Google Play while
+making unsupported high-stakes claims; Appfigures exposes only a transient
+similar-app snippet that resolves to an unrelated product; the surfaced Hugging
+Face page is a 404; and Appelse sends all inspected app calls to mobile stores
+while leaving operator identity and jurisdiction unclear. Full evidence is in
+`marketing/seo/editorial-discovery-wave-39-2026-08-10.md`.
+
+The central register now contains 216 routes: 3 P0, 63 P1, 149 P2 and 1 P3.
+No live-result row was added because this wave produced no public Noctalia
+anchor.
+
+### Authority measurement refresh — 2026-08-10 02:33 CEST
+
+The authenticated Ahrefs overview now reports DR 0.1, 406 referring domains,
+453 backlinks, 4.6K organic traffic and 936 organic keywords. Compared with
+the 00:19 CEST read, this is `+0.1` DR and `+5` referring domains. Ahrefs splits
+the current profile into 8 followed versus 398 not-followed domains; five of
+the eight followed domains are labelled `SPAM` in its detailed report.
+
+The public 19-row verifier remains unchanged at 6 followed, 4 nofollow, 2
+missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410. The Ahrefs movement is
+therefore recorded as a third-party index change, not attributed to the D3A
+emails, the latest deployment or any specific link. Detailed evidence is in
+`marketing/seo/backlink-measurement-check-2026-08-10-0233.md`.
+
+### D3A post-send monitor — 2026-08-10 02:37 CEST
+
+Exact authenticated Zimbra searches still show one two-message conversation
+for KapanLagi, Penzu and AllThingsAI, with no inbound reply, bounce or opt-out.
+The public gate is also unchanged: KapanLagi remains an unlinked plain-text
+source, Penzu exposes no Noctalia mention or anchor, and neither the AllThingsAI
+homepage nor an exact Google site search exposes a Noctalia listing. The
+one-time authorized replies were not repeated; all three routes remain
+`followup_1_sent_waiting` until the conditional 2026-08-16 check.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

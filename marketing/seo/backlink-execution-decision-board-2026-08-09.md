@@ -7,7 +7,7 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 
 ## Current evidence
 
-- The prospect register contains 204 qualified, paused, rejected or active
+- The prospect register contains 216 qualified, paused, rejected or active
   routes.
 - The outreach log contains 49 prior transmissions or attempts.
 - The prospect register and outreach log now agree on 27 unsent first
@@ -28,6 +28,12 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   `SPAM`. Its dofollow filter recognizes PeerPush at DR 71 as the only clean,
   high-DR followed domain; LaunchLlama is live-followed in the public HTML but
   is not yet included by Ahrefs in that dofollow view.
+- A fresh authenticated overview at 02:33 CEST moved from DR 0 to DR 0.1 and
+  from 401 to 406 referring domains. Ahrefs now reports 8 followed versus 398
+  not-followed domains; five of the eight followed domains are labelled
+  `SPAM`. PeerPush (DR 71) and Tham Hiem Mekong (DR 55) are the only clean,
+  non-zero-DR entries in that view, while Tham Hiem Mekong remains a weakly
+  relevant low-trust citation. The change is measured, but its cause is not.
 - A rendered link-treatment refresh at 23:56 CEST separated the former six-route
   Priority A batch: KapanLagi, Penzu and AllThingsAI retain direct DR potential;
   Android Police and Xataka Android lack a direct developer-domain pattern on
@@ -51,6 +57,10 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   and corrected Noctalia source remain live; DreamWell's stale DreamKit links,
   followed competitor-domain pattern, official Press mailbox and current
   `/terms-of-service/` Delaware-law page remain live.
+- A third read-only monitor at 02:37 CEST again found exactly one two-message
+  conversation for each D3A recipient and no inbound reply, bounce or opt-out.
+  KapanLagi remains an unlinked plain-text mention; Penzu and AllThingsAI still
+  expose no public Noctalia inclusion. No duplicate follow-up was sent.
 - A 01:25 CEST rendered link-policy comparison promotes Atlas Workspace and
   ILTY into one separate followed-pattern batch: their current comparisons link
   six competitor developer domains each without `nofollow`, their accountable
@@ -102,6 +112,12 @@ citation.
   the raw Ahrefs domain count into quality authority.
 - Continue rejecting paid-link, reciprocal-badge, Russian-governed, opaque-
   operator, nofollow-only and fabricated-authority routes.
+- Remove PitchWall from the DR-oriented submission queue. Its founder profile
+  now preserves the Noctalia bio but exposes no `noctalia.app` anchor, while
+  current homepage and sampled product-page website clicks use internal
+  `/out/` URLs marked `rel="noopener nofollow"`. Indian law and Indore courts
+  establish a non-Russian jurisdiction, but Terms still name no accountable
+  legal entity or address.
 - SourceForge is trusted and exposes a free Basic Vendor tier, but its current
   criteria require software commercially available to businesses. Do not force
   Noctalia's consumer Android app into an inaccurate B2B listing for host DR.
