@@ -339,7 +339,7 @@ The asset is public. `https://noctalia.app/data/dream-journal-apps-comparison-20
 | --- | --- | --- | --- |
 | PitchWall | Voice-first Android dream journal with transparent reflection boundaries. | Official submit page exposes a free launch, a stated 30+ day wait and a claimed dofollow backlink. | Account exists, but profile changes failed to persist twice; no product was submitted. OAuth also disclosed newsletter signup, so keep this route paused until the account controls work. |
 | Launching Next | Fast morning voice capture for an Android dream journal. | Official form accepts a free submission and describes a permanent product profile, with an approximately three-month queue. | Recheck public pricing/demo readiness and the live outbound-link attributes. |
-| AI Tools Inc | AI-assisted dream journaling with published methodology and non-medical limits. | Free Typeform submission accepted on 2026-07-31; the official route states a 30–90 day queue and no guaranteed placement. | Pending review, not a live backlink. Only public product data and the professional contact identity were supplied; never pay for priority without separate approval. |
+| AI Tools Inc | AI-assisted dream journaling with published methodology and non-medical limits. | Free Typeform submission accepted on 2026-07-31; the official route states a 30–90 day queue and no guaranteed placement. | Day-10 Google and internal-directory checks expose no public Noctalia listing. Keep pending, do not resubmit or pay, and recheck on 2026-08-30. |
 
 Launching Next remains blocked on a truthful 90-day marketing-budget answer. Reciprocal-link or pay-to-dofollow directories remain excluded from this wave.
 
@@ -480,7 +480,7 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 | A — production publication | `master` was pushed at commit `7de71bc64d53adf80257fb659f4e12eb669c1d05`; local HEAD, `origin/master` and `git ls-remote` matched. | GitHub Actions run `30635290841` succeeded. Cloudflare Pages production deployment `acb85f4e-de56-4553-9cec-00220aa43115` completed successfully and aliased `https://noctalia.app`. |
 | B — SaaSHub | Product name, Android category/entity distinction, official URL consistency and `noindex` review submitted. | Public profile content updated; indexation request remains unresolved because the page is still `noindex, follow`. |
 | B — Uneed | Product `44802` was submitted to the free waiting line from account `thannous-6884`; the generated copy was corrected, the public walkthrough video was added and the launch is scheduled for 2027-01-08. | No spend. It remains a queued submission, not a live backlink; the eventual listing requires at least 10 genuine launch-day upvotes to remain published. |
-| B — AI Tools Inc | Free Typeform submitted with Noctalia, its public press URL, the submitter name and the professional contact email. | Confirmation received; pending review, no spend, no password or sensitive data, and not a live backlink. |
+| B — AI Tools Inc | Free Typeform submitted with Noctalia, its public press URL, the submitter name and the professional contact email. | Confirmation received; day-10 public checks found no Google or internal-directory listing. Pending review, no spend, no password or sensitive data, and not a live backlink. |
 | B — PitchWall | Google OAuth account created and the free route opened. | Paused before product submission because the profile did not persist after two saves and OAuth disclosed newsletter signup. |
 | B — Future Tools | Free submission form prefilled with the approved factual copy; optional newsletter left unchecked. | Paused before submission for the user-owned CAPTCHA; no data was sent. |
 | B — Microlaunch | The current New Launch dialog exposes only Pro Launch. | Paused before payment; no spend authorized. |
@@ -1301,6 +1301,17 @@ official-site CTA. This preserves the existing SaaSHub referring domain but is
 not a newly acquired backlink or DR gain. No second request, reciprocal badge,
 login, payment or promotion was used. Evidence is in
 `marketing/seo/backlink-measurement-check-2026-08-10-2230.md`.
+
+### AI Tools Inc pending-publication check — 2026-08-10 22:51 CEST
+
+The July 31 free submission remains inside the publisher's stated 30–90 day
+review window. An exact Google query for `site:aitools.inc "Noctalia"` returned
+no document, and the public AI Tools Inc search returned only the fuzzy `Deep
+Nostalgia` result with no Noctalia detail URL or anchor. There is therefore no
+public page on which canonical, robots or link treatment can be verified, and
+no live-result row is added. This is a pending day-10 state, not a rejection.
+Do not resubmit or pay; next public check is 2026-08-30. Evidence is in
+`marketing/seo/backlink-measurement-check-2026-08-10-2251.md`.
 
 Weekly, record only verified public outcomes:
 
