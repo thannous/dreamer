@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Noctalia is an AI-powered dream journal app: users record dreams by voice or text, a Supabase Edge Function backend (Gemini AI) produces interpretations, imagery, and categorization, and dreams are explored through a journal, statistics, chat, a symbol dictionary, and lucid-dreaming rituals. The app supports guest mode with quotas, Supabase auth (including Google Sign-In), RevenueCat subscriptions, and five languages (en, fr, es, de, it). The repo also contains a generated multilingual marketing site.
+Noctalia is an AI-powered dream journal app: users record dreams by voice or text, a Supabase Edge Function backend (Gemini AI) produces interpretations, imagery, and categorization, and dreams are explored through a journal, statistics, chat, a symbol dictionary, and lucid-dreaming rituals. The app supports guest mode with quotas, Supabase auth (including Google Sign-In), RevenueCat subscriptions, and six languages (en, fr, es, de, it, pt). The repo also contains a generated multilingual marketing site.
 
 **Tech stack:** Expo SDK 57 (Expo Router), React Native 0.86, React 19, TypeScript strict, Supabase (auth, Postgres, Deno Edge Functions), RevenueCat, Jest (unit), Vitest (perf only), Maestro (Android E2E). Requires Node >= 24.19.0 and < 25.
 
@@ -87,7 +87,8 @@ Core services have three files: a conditional export (e.g. `services/geminiServi
 
 ### Backend (Supabase Edge Functions)
 The backend is Deno Edge Functions in `supabase/functions/`:
-- **`api`** — main router (`api/index.ts` maps `METHOD /path` to handlers in `api/routes/`): dream analysis (`/analyzeDream`, `/analyzeDreamFull`, `/categorizeDream`), images (`/generateImage`, async `/image-jobs` + `/image-jobs/status`), `/chat`, `/transcribe`, guest sessions (`/guest/session`), quotas (`/quota/status`, `/auth/mark-upgrade`), subscription sync (`/subscription/*`), and product analytics (`/analytics/*`). Shared logic (auth headers, quota enforcement, Play Integrity, prompts, schemas) is in `api/lib/`.
+- **`api`** — main router (`api/index.ts` maps `METHOD /path` to handlers in `api/routes/`): dream analysis (`/analyzeDream`, `/analyzeDreamFull`, `/categorizeDream`, async `/analysis-jobs` + `/analysis-jobs/status`), images (`/generateImage`, `/generateImageWithReference`, async `/image-jobs` + `/image-jobs/status`), `/chat`, `/transcribe`, guest sessions (`/guest/session`) and guest QA device management (`/qa/guest-device/*`), quotas (`/quota/status`, `/auth/mark-upgrade`), subscription sync (`/subscription/*`), account deletion (`DELETE /account`), and product analytics (`/analytics/*`). Shared logic (auth headers, quota enforcement, Play Integrity, prompts, schemas) is in `api/lib/`.
+- **`analysis-job-worker`** — background dream analysis jobs.
 - **`image-job-worker`** — background image generation jobs.
 - **`revenuecat-webhook`** — RevenueCat entitlement events.
 
@@ -98,11 +99,11 @@ The client resolves the API base URL via `lib/config.ts` (`EXPO_PUBLIC_API_URL` 
 ### Routing & Provider Stack
 Expo Router file-based routing in `app/`: tabs in `app/(tabs)/` (index/home, journal, statistics, settings, add-dream) plus stack screens for recording, `journal/[id]`, dream-chat, dream-categories, dream-guide(s), onboarding, paywall, auth, ritual, sleep-sounds, symbol-dictionary, and symbol-detail. New screens need a `Stack.Screen` entry in `app/_layout.tsx`.
 
-Provider nesting in `app/_layout.tsx` (outermost first): `LanguageProvider` → `ThemeProvider` → `AuthProvider` → `OnboardingProvider` → `SubscriptionProvider` → navigation/keyboard providers → `DreamsProvider`. Consume via hooks: `useDreams()`, `useAuth()`, `useSubscription()`, `useTranslation()`, `useTheme()`.
+Provider nesting in `app/_layout.tsx` (outermost first): `LanguageProvider` → `ThemeProvider` → `AuthProvider` → `OnboardingProvider` → `SubscriptionProvider` → `StartupRouteProvider` → navigation/keyboard providers → `DreamsProvider`. Consume via hooks: `useDreams()`, `useAuth()`, `useSubscription()`, `useTranslation()`, `useTheme()`.
 
 ### Dream Data Flow
 1. Recording screen captures voice (`expo-audio` + `expo-speech-recognition`, with text fallback) — see `useRecordingSession`.
-2. Transcript goes through `analyzeDreamWithImageResilient()` (`services/geminiService.ts`), which falls back to analysis-only if image generation fails (`imageGenerationFailed: true`); images may also complete asynchronously via image jobs (`PendingImageJob`).
+2. Transcript goes through `analyzeDreamWithImageResilient()` (`services/geminiService.ts`), which falls back to analysis-only if image generation fails (`imageGenerationFailed: true`). Both analysis and images can also complete asynchronously via server-side jobs (`submitDreamAnalysisJob`/`submitImageGenerationJob`, polled through `lib/analysisJobPolling.ts`; pending state in `PendingImageJob`).
 3. `useAnalysisProgress` tracks multi-step progress for the `AnalysisProgress` component.
 4. The dream is saved through `DreamsContext`/`useDreamJournal` to local storage (AsyncStorage via `storageService.ts`), and synced to Supabase through `services/supabaseDreamService.ts` with an offline mutation queue (`useOfflineSyncQueue`, sync states in `lib/types.ts`: `DreamSyncState`, `SyncMutationStatus`).
 
@@ -113,7 +114,7 @@ Core types are in `lib/types.ts` (`DreamAnalysis`, `ChatMessage`, `DreamType`, `
 - **Subscriptions:** RevenueCat SDK config in `lib/revenuecat.ts`, client service in `services/subscriptionService*.ts`, state in `SubscriptionContext` with `useSubscription*` hooks, server reconciliation via `services/subscriptionSyncService.ts` + `/subscription/*` routes + the webhook. Paywall screens/variants: `app/paywall.tsx`, `lib/paywallVariants.ts`. A subscription QA lab and extensive `subscription:qa:*` scripts exist for release verification.
 
 ### Internationalization & Theming
-i18n in `lib/i18n.ts` + `lib/i18n/` with `useTranslation()`; language preference in `LanguageContext` (`AppLanguage = en|fr|es|de|it`). Marketing-site locales are separate, under `docs-src/locales/`. Theming via `ThemeContext` (light/dark/auto) with constants in `constants/theme.ts` and `ThemedView`/`ThemedText` components.
+i18n in `lib/i18n.ts` + `lib/i18n/` with `useTranslation()`; language preference in `LanguageContext` (`AppLanguage = en|fr|es|de|it|pt`). Marketing-site locales are separate, under `docs-src/locales/` (including `pt-br`). Theming via `ThemeContext` (light/dark/auto) with constants in `constants/theme.ts` and `ThemedView`/`ThemedText` components.
 
 ### Path Alias
 `@/*` maps to the project root (e.g. `import { useDreams } from '@/context/DreamsContext'`).
