@@ -272,4 +272,24 @@ describe('Paywall screen', () => {
       'subscription.paywall.toast.success'
     );
   });
+
+  it('replaces an untranslated store error with the localized generic message', () => {
+    mockUseSubscription.mockReturnValue({
+      status: { tier: 'free', isActive: false, expiryDate: null },
+      isActive: false,
+      loading: false,
+      processing: false,
+      error: new Error('The device or user is not allowed to make the purchase.'),
+      packages,
+      purchase: mockPurchase,
+      restore: mockRestore,
+      requiresAuth: false,
+    });
+
+    render(<PaywallScreen />);
+
+    expect(screen.getByTestId(TID.BottomSheet.PaywallError).textContent).toBe(
+      'subscription.paywall.error.message'
+    );
+  });
 });
