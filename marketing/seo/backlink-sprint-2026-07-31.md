@@ -1228,6 +1228,21 @@ attachment, product data, payment or publication was used. Full evidence and
 copy are in `marketing/seo/competitor-citation-gap-wave-44-2026-08-10.md` and
 `marketing/seo/backlink-spanish-radio-ready-2026-08-10.md`.
 
+### Publication-ready data graphic — 2026-08-10
+
+The public 11-app dataset now has a 1200 × 675 SVG feature snapshot designed
+for factual editorial reuse. It visualizes four reproducible normalized
+signals, links back to the stable comparison page and is discoverable from the
+English press kit. The comparison page exposes the source CSV, methodology,
+attribution wording and explicit limitations beside the image; `ImageObject`
+schema describes the asset on both destinations. A direct CSV reconciliation
+also corrected the pre-existing prose so DreamKit's historical listing signals
+are no longer described as values marked exactly `Yes`. This is an owned
+linkable asset, not an external referring page, endorsement or DR result. No
+third-party account, post, message, form, attachment, payment or publication
+was used. Evidence and reuse rules are in
+`marketing/seo/linkable-asset-feature-snapshot-2026-08-10.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
+  <title id="title">Dream journal apps in 2026: feature snapshot</title>
+  <desc id="description">A bar chart based on a source-linked desk review of 11 dream journal app rows. Ten show an AI interpretation signal, seven show voice capture, four show a generated-image signal, and three show lucid-dreaming structure. Historical DreamKit listing claims remain explicitly labeled in the source dataset.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0514"/>
+      <stop offset="0.58" stop-color="#160a2b"/>
+      <stop offset="1" stop-color="#2e1065"/>
+    </linearGradient>
+    <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fda481"/>
+      <stop offset="1" stop-color="#c084fc"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="82%" cy="12%" r="58%">
+      <stop offset="0" stop-color="#fda481" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#fda481" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="675" rx="32" fill="url(#background)"/>
+  <rect width="1200" height="675" rx="32" fill="url(#glow)"/>
+  <circle cx="1090" cy="90" r="3" fill="#fff7ed" opacity="0.8"/>
+  <circle cx="1048" cy="130" r="2" fill="#e9d5ff" opacity="0.7"/>
+  <circle cx="1125" cy="165" r="2.5" fill="#fda481" opacity="0.75"/>
+
+  <g font-family="Outfit, Inter, system-ui, sans-serif">
+    <text x="72" y="62" fill="#fda481" font-size="17" font-weight="600" letter-spacing="3">NOCTALIA · DATA NOTE</text>
+    <text x="72" y="128" fill="#fff7ed" font-size="48" font-weight="650">Dream journal apps in 2026</text>
+    <text x="72" y="168" fill="#e9d5ff" font-size="22" opacity="0.86">Feature signals in a source-linked desk review of 11 apps</text>
+
+    <g fill="#e9d5ff" font-size="16" opacity="0.64">
+      <text x="398" y="213">0</text>
+      <text x="972" y="213">11 apps</text>
+    </g>
+    <g stroke="#fff7ed" stroke-opacity="0.12" stroke-width="1">
+      <line x1="400" y1="222" x2="400" y2="552"/>
+      <line x1="700" y1="222" x2="700" y2="552"/>
+      <line x1="1000" y1="222" x2="1000" y2="552"/>
+    </g>
+
+    <g font-size="23" font-weight="520">
+      <text x="72" y="265" fill="#fff7ed">AI interpretation signal</text>
+      <text x="72" y="355" fill="#fff7ed">Voice capture</text>
+      <text x="72" y="445" fill="#fff7ed">Generated-image signal</text>
+      <text x="72" y="535" fill="#fff7ed">Lucid-dreaming structure</text>
+    </g>
+
+    <g>
+      <rect x="400" y="238" width="600" height="36" rx="18" fill="#fff7ed" opacity="0.1"/>
+      <rect x="400" y="238" width="545" height="36" rx="18" fill="url(#bar)"/>
+      <rect x="400" y="328" width="600" height="36" rx="18" fill="#fff7ed" opacity="0.1"/>
+      <rect x="400" y="328" width="382" height="36" rx="18" fill="url(#bar)"/>
+      <rect x="400" y="418" width="600" height="36" rx="18" fill="#fff7ed" opacity="0.1"/>
+      <rect x="400" y="418" width="218" height="36" rx="18" fill="url(#bar)"/>
+      <rect x="400" y="508" width="600" height="36" rx="18" fill="#fff7ed" opacity="0.1"/>
+      <rect x="400" y="508" width="164" height="36" rx="18" fill="url(#bar)"/>
+    </g>
+
+    <g fill="#fff7ed" font-size="25" font-weight="650">
+      <text x="1028" y="266">10 / 11</text>
+      <text x="1028" y="356">7 / 11</text>
+      <text x="1028" y="446">4 / 11</text>
+      <text x="1028" y="536">3 / 11</text>
+    </g>
+
+    <line x1="72" y1="585" x2="1128" y2="585" stroke="#fff7ed" stroke-opacity="0.16"/>
+    <text x="72" y="620" fill="#e9d5ff" font-size="16" opacity="0.74">Descriptive counts, not rankings, market share, product quality, or clinical evidence · Dataset updated 9 Aug 2026</text>
+    <text x="72" y="649" fill="#fda481" font-size="17" font-weight="600">noctalia.app/en/dream-journal-apps</text>
+  </g>
+</svg>
