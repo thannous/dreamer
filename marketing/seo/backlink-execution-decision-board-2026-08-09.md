@@ -1,17 +1,18 @@
 # Backlink execution decision board — 2026-08-09
 
 This board reduces the current research inventory to the few external actions
-with the strongest evidence and a clear authorization boundary. Nothing in this
-file authorizes or records a send, account, profile, publication, payment or
-backlink.
+with the strongest evidence and a clear authorization boundary. It now records
+the authorized D3A transmission; every other choice remains independent and
+unexecuted. A sent message is not a publication, backlink or DR result.
 
 ## Current evidence
 
-- The prospect register contains 200 qualified, paused, rejected or active
+- The prospect register contains 224 qualified, paused, rejected or active
   routes.
 - The outreach log contains 49 prior transmissions or attempts.
-- The prospect register and outreach log now agree on 31 first follow-ups that
-  passed their last recorded public-page and mailbox stop gates.
+- The prospect register and outreach log now agree on 27 unsent first
+  follow-ups after closing the migrated Acuity route;
+  the three D3A routes moved to `followup_1_sent_waiting`.
 - One publisher, Elsewhere, sent a human reply and asked two factual product
   questions.
 - One publisher, Marika Pech, already cites Noctalia in plain text and exposes
@@ -22,29 +23,117 @@ backlink.
 - The authenticated Ahrefs overview at 2026-08-09 15:58 CEST showed DR 0 and
   401 referring domains. The large raw domain count is not equivalent to 401
   verified followed editorial citations.
+- A detailed authenticated Ahrefs referring-domain read at 2026-08-10 00:19
+  CEST showed that the highest-DR rows are dominated by domains Ahrefs labels
+  `SPAM`. Its dofollow filter recognizes PeerPush at DR 71 as the only clean,
+  high-DR followed domain; LaunchLlama is live-followed in the public HTML but
+  is not yet included by Ahrefs in that dofollow view.
+- A fresh authenticated overview at 02:33 CEST moved from DR 0 to DR 0.1 and
+  from 401 to 406 referring domains. Ahrefs now reports 8 followed versus 398
+  not-followed domains; five of the eight followed domains are labelled
+  `SPAM`. PeerPush (DR 71) and Tham Hiem Mekong (DR 55) are the only clean,
+  non-zero-DR entries in that view, while Tham Hiem Mekong remains a weakly
+  relevant low-trust citation. The change is measured, but its cause is not.
+- A rendered link-treatment refresh at 23:56 CEST separated the former six-route
+  Priority A batch: KapanLagi, Penzu and AllThingsAI retain direct DR potential;
+  Android Police and Xataka Android lack a direct developer-domain pattern on
+  the target pages, while the sampled AITrendTool product links are `nofollow`.
+- The D3A public and authenticated Zimbra stop gate was refreshed at 2026-08-10
+  00:31 CEST: each mailbox search still contains only the original sent
+  message, Spam contains no matching response or failure, KapanLagi remains an
+  unlinked source cluster, and neither Penzu nor AllThingsAI exposes a public
+  Noctalia inclusion.
+- The immediate D3A gate passed again at 00:38–00:40 CEST. One reply was then
+  transmitted in each existing thread: KapanLagi at 00:40, Penzu at 00:41 and
+  AllThingsAI at 00:41. Zimbra Sent shows two messages in every conversation;
+  no attachment was added. This is transmission evidence only.
+- A 00:52 CEST read-only post-send check found no new D3A reply or bounce and
+  no public link change. Each exact Zimbra search still returns the same
+  two-message conversation, and Spam still contains only the older AndroidAyuda
+  failure.
+- A second real-Chrome monitor at 01:11 CEST found the same public and mailbox
+  state. D2 and D5 were also requalified without transmission: both official
+  recipient searches return no prior conversation; Marika's unlinked mention
+  and corrected Noctalia source remain live; DreamWell's stale DreamKit links,
+  followed competitor-domain pattern, official Press mailbox and current
+  `/terms-of-service/` Delaware-law page remain live.
+- A third read-only monitor at 02:37 CEST again found exactly one two-message
+  conversation for each D3A recipient and no inbound reply, bounce or opt-out.
+  KapanLagi remains an unlinked plain-text mention; Penzu and AllThingsAI still
+  expose no public Noctalia inclusion. No duplicate follow-up was sent.
+- A 01:25 CEST rendered link-policy comparison promotes Atlas Workspace and
+  ILTY into one separate followed-pattern batch: their current comparisons link
+  six competitor developer domains each without `nofollow`, their accountable
+  non-Russian operator and official contact routes remain public, and exact
+  Zimbra searches contain only the original sent message. The same check keeps
+  World of Lucid Dreaming, Sleep Review and 9to5Google outside DR-first because
+  their inspected target pages expose no comparable developer-domain pattern.
+  Acuity is closed because its target is now canonical to Ripple and the current
+  page exposes no competitor product-domain anchors.
+- Fresh public checks keep Marika Pech as the nearest DR-oriented recovery: its
+  article still names Noctalia once in plain text with no anchor. DreamWell
+  remains the next higher-link-policy candidate because its current comparison
+  directly links several competitor domains without `nofollow`, although its
+  2022 age lowers update probability.
+- Elsewhere's current Medium comparison is indexable, but its inspected product
+  links are `ugc nofollow`. The pending reply is relationship maintenance, not
+  a claim of followed equity.
+- A competitor-citation gap pass adds two current P1 routes. Dealroom's
+  self-canonical Wakefully profile links the developer domain without
+  `nofollow`; its named Dutch operator offers free human accounts but prohibits
+  bots, so Noctalia's missing company fields and a user-operated account remain
+  gates. Simone's April 2026 Rosebud review links the product domain twice
+  without `nofollow`; Agentik SAS and French law provide accountable non-Russian
+  control, and one factual editorial note is prepared but unsent.
+- Marie Claire and Madame Figaro are excluded as visibly partnered commercial
+  content, KingLand as paid-only, TrendHunter and MakeUseOf as nofollow, and
+  Fondation FIT as program-specific financing news with no general Noctalia
+  route.
 
-## Recommended execution order
+## Recommended next execution order
 
 | Rank | Route | Why it comes here | Action boundary |
 | ---: | --- | --- | --- |
-| 1 | Elsewhere human reply | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
-| 2 | Marika Pech source correction | The live French article already names Noctalia but does not link it. Correcting the source protects factual accuracy and may reclaim the existing mention. | Submit one correction through the official route after confirming the wording and link are still unchanged. Do not request anchor manipulation or followed treatment. |
-| 3 | Six Priority A first follow-ups | KapanLagi, Penzu, Android Police, Xataka Android, AllThingsAI and AITrendTool have the best current combination of existing mention, competitor-link pattern, Android fit or free editorial route. | Reply once in each original thread only after an immediate reply, bounce, opt-out and live-citation stop gate. No attachments, tracking, payment or guaranteed-link request. |
-| 4 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |
-| 5 | Owned syndication | Hashnode and Medium drafts are ready, but a self-published profile link has lower incremental authority and canonical risk than an independent editorial citation. | Publish only after separate account and publication authorization and verify the rendered canonical and link attributes. |
+| 1 | Marika Pech source correction (`D2`) | The live French article already names Noctalia but does not link it. Correcting the source protects factual accuracy and offers the shortest path from a real mention to a citation. | Submit one correction through the official route after confirming the wording and link are still unchanged. Do not request anchor manipulation or followed treatment. |
+| 2 | DreamWell DreamKit correction (`D5`) | Its transparent 2022 comparison still presents DreamKit as available on Android and iOS, while the Android listing is now 404 and the former iOS ID is Arcana. The article links several competitor domains directly without `nofollow`. | Send one factual correction and offer Noctalia only as an optional test candidate for a future refresh. No link, anchor, ranking, replacement or timing request. |
+| 3 | Atlas and ILTY followed-pattern replies (`D7`) | Both current comparisons are self-canonical and `index, follow`, link six competitor developer domains without `nofollow`, name accountable non-Russian operators and retain the original unanswered Zimbra thread. | Send one concise first reply in each existing thread only after a fresh stop gate. This is topical clean-domain potential; current publisher DR and future link treatment remain unproven. |
+| 4 | Dealroom company profile (`D8A`) | Wakefully's self-canonical profile links `wakefully.io` directly without `nofollow`; Dealroom identifies a Dutch legal operator and permits free human accounts and contributions. | First confirm the missing entity, headquarters, founding, size and funding fields. The user must create and validate the human account manually because Dealroom prohibits bots. No invented fields or payment. |
+| 5 | Simone editorial note (`D8B`) | The current Rosebud review is by a named author and links `rosebud.app` twice without `nofollow`; Agentik SAS, French law and the official mailbox pass the trust gate. | Send the prepared factual French note only after a fresh page, destination and mailbox stop gate. Ask only whether Noctalia is useful to test; no link, anchor, rank or placement request. |
+| 6 | Elsewhere human reply (`D1`) | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal, although Medium currently marks product links `ugc nofollow`. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
+| 7 | Three editorial-visibility follow-ups (`D3B`) | Android Police and Xataka Android are credible Android publishers but the target pages lack a direct developer-domain citation pattern. AITrendTool's sampled product links are `nofollow`. | Treat these as discovery and relationship opportunities, not the DR-first batch. Authorize separately and verify any eventual public link without assuming equity. |
+| 8 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |
+| 9 | Owned syndication | Hashnode and Medium drafts are ready, but a self-published profile link has lower incremental authority and canonical risk than an independent editorial citation. | Publish only after separate account and publication authorization and verify the rendered canonical and link attributes. |
+
+The completed D3A batch is no longer ranked as a future action. Monitor it until
+the conditional 2026-08-16 gate and stop on reply, failure, opt-out or live
+citation.
 
 ## Hold or reject
 
-- Keep the remaining 25 eligible first follow-ups queued. They have lower
-  expected value than the six-route Priority A batch and should not be sent as a
-  bulk blast.
+- Keep the other 22 eligible first follow-ups queued. They have lower expected
+  value than the separately reviewed `D3B` and `D7` routes and should not be
+  sent as a bulk blast.
 - Keep PeerPush's existing free followed listing. Its four screenshots are
-  already live. Adding Google Play and correcting `Photo Creation` to
-  `Self-Reflection` would improve topical accuracy and conversion, not create a
-  new referring domain or prove DR growth.
+  already live. Its authenticated dashboard showed 21 distinct human visitors
+  in 30 days, 83 detail-page views in the displayed seven-day window and zero
+  external clicks in 30 days. Adding Google Play and correcting
+  `Photo Creation` to `Self-Reflection` would improve topical accuracy and
+  conversion, not create a new referring domain or prove DR growth.
 - Do not buy PeerPush relaunch, guest-blog, social or boosted-placement options.
+- Do not submit a Google disavow file for the unsolicited Ahrefs spam cluster:
+  there is no manual-action or ranking-harm evidence, and disavow would not turn
+  the raw Ahrefs domain count into quality authority.
 - Continue rejecting paid-link, reciprocal-badge, Russian-governed, opaque-
   operator, nofollow-only and fabricated-authority routes.
+- Remove PitchWall from the DR-oriented submission queue. Its founder profile
+  now preserves the Noctalia bio but exposes no `noctalia.app` anchor, while
+  current homepage and sampled product-page website clicks use internal
+  `/out/` URLs marked `rel="noopener nofollow"`. Indian law and Indore courts
+  establish a non-Russian jurisdiction, but Terms still name no accountable
+  legal entity or address.
+- SourceForge is trusted and exposes a free Basic Vendor tier, but its current
+  criteria require software commercially available to businesses. Do not force
+  Noctalia's consumer Android app into an inaccurate B2B listing for host DR.
 - BestForAndroid remains closed after its $249 placement offer. The Verge waits
   until after its recorded away period. Broken, bounced and migrated routes
   remain closed unless a new official route is independently qualified.
@@ -65,17 +154,72 @@ misread as approval for another.
 > J'autorise l'envoi du message factuel à Marika Pech par sa route officielle,
 > sans paiement ni autre publication.
 
-### D3 — Six Priority A first follow-ups
+### D3A — Three DR-first follow-ups
 
 > J'autorise une première relance unique dans les fils existants pour
-> KapanLagi, Penzu, Android Police, Xataka Android, AllThingsAI et AITrendTool,
+> KapanLagi, Penzu et AllThingsAI,
 > après un stop gate immédiat, sans pièce jointe, paiement ni garantie de lien.
+
+**Executed:** 2026-08-10 at 00:40–00:41 CEST in the three existing threads.
+Zimbra confirmed each send and Sent shows two messages per conversation. No
+attachment, payment or link guarantee was used. Publication and DR remain
+unverified.
+
+### D3B — Three editorial-visibility follow-ups
+
+> J'autorise une première relance unique dans les fils existants pour Android
+> Police, Xataka Android et AITrendTool, en comprenant que les pages vérifiées
+> n'établissent pas de potentiel de lien suivi, après un stop gate immédiat,
+> sans pièce jointe, paiement ni garantie de lien.
 
 ### D4 — PeerPush free profile correction
 
 > J'autorise la modification gratuite de la fiche PeerPush : ajouter Google
 > Play et remplacer Photo Creation par Self-Reflection, sans relaunch ni
 > paiement.
+
+### D5 — DreamWell factual correction
+
+> J'autorise l'envoi unique à `hi@dreamwellbewell.com` du message factuel D5
+> préparé dans
+> `marketing/seo/editorial-discovery-wave-35-dreamkit-reclamation-2026-08-09.md`,
+> après le stop gate immédiat, sans demande de lien, classement, remplacement
+> de DreamKit, paiement ni relance automatique.
+
+### D6 — PeerPush free product update
+
+> J'autorise la publication gratuite de la mise à jour PeerPush préparée pour
+> Noctalia 3.1, uniquement après confirmation publique du hotfix Android 54 ou
+> ultérieur, sans modification de profil, relaunch, promotion, achat ni autre
+> publication.
+
+The prepared copy and its publication gates are in
+`marketing/seo/peerpush-free-product-update-draft-2026-08-10.md`.
+
+### D7 — Atlas Workspace and ILTY followed-pattern replies
+
+> J'autorise une première relance unique dans les fils existants pour Atlas
+> Workspace et ILTY, après un stop gate immédiat, sans pièce jointe, paiement,
+> relance automatique, classement ni garantie de lien.
+
+The current rendered link-policy evidence and exact copy are recorded in
+`marketing/seo/backlink-dr-followup-wave-37-2026-08-10.md`.
+
+### D8A — Dealroom free company profile preparation
+
+> Je confirme les champs d'entreprise manquants dans le dossier D8A et
+> j'autorise la préparation d'une fiche Dealroom gratuite. Je créerai et
+> validerai moi-même le compte humain conformément aux Conditions de Dealroom ;
+> aucun bot, paiement, donnée inventée ni garantie de lien.
+
+### D8B — Simone editorial note
+
+> J'autorise l'envoi unique du message D8B préparé à `hello@simone.app`, après
+> un stop gate immédiat, sans pièce jointe, paiement, relance automatique,
+> demande de lien, classement ni garantie de couverture.
+
+The current evidence, exact copy and platform boundaries are recorded in
+`marketing/seo/backlink-dealroom-simone-ready-2026-08-10.md`.
 
 Earned-media account or subscription choices retain the independent `E1`–`E5`
 codes in `marketing/seo/media-source-platform-pack-2026-08-09.md`.

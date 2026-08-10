@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-05-20",
+  "checkedAt": "2026-08-09",
   "maintainer": "Noctalia marketing/SEO",
   "methodology": [
     "Use public store pages, official product pages, and Noctalia owned pages as the source of truth.",
@@ -188,6 +188,142 @@
           "label": "Oniri App Store",
           "url": "https://apps.apple.com/us/app/oniri-your-dream-journal/id968737914",
           "observedFacts": ["free with in-app purchases", "4.6 stars", "3.6K ratings", "US IAP price table", "English plus 6 more languages"]
+        }
+      ]
+    },
+    "dreamJournalUltimate": {
+      "name": "Dream Journal Ultimate",
+      "positioning": "Established cross-platform dream journal with voice capture, AI interpretation and images, a public Dream Wall, symbol tools, statistics, and lucid-dreaming training.",
+      "platforms": ["Android", "iOS", "iPad", "Web community and resources"],
+      "pricing": {
+        "model": "Free download with in-app purchases and a premium subscription",
+        "publicPriceSignals": [
+          "Google Play lists in-app purchases",
+          "Apple App Store lists a free download with in-app purchases",
+          "The official press kit describes the product as free with a premium subscription available"
+        ],
+        "comparisonRule": "Do not publish one universal subscription price without checking the purchase flow in the target country and date."
+      },
+      "storeSignals": [
+        "Google Play showed 100K+ downloads, 4.4 stars and about 1.14K reviews on 2026-08-09.",
+        "Apple App Store showed 4.5 stars from 547 ratings on 2026-08-09.",
+        "Google Play was updated August 1, 2026 and the App Store listed version 2026.8.5."
+      ],
+      "strengths": [
+        "Cross-platform Android and iOS availability",
+        "Optional Dream Wall community and similar-dream discovery",
+        "Lucid Dreaming Academy, reality-check reminders, symbols, statistics and AI images",
+        "PIN or biometric journal lock and cloud sync"
+      ],
+      "limitations": [
+        "The social and lucid-training surface is broader than users seeking a focused private reflection workflow may need",
+        "Google Play discloses collection of personal information, app activity and other data categories, plus sharing of app activity, app information, performance and device identifiers",
+        "The public privacy policy says synced journal entries and account data are processed in the United States"
+      ],
+      "bestFor": [
+        "Users who need iOS as well as Android",
+        "Users who want lucid-dreaming lessons and reality checks",
+        "Users who value an optional public dream community and similar-dream discovery"
+      ],
+      "notIdealFor": [
+        "Users who want a narrower Android-first capture-to-reflection workflow",
+        "Users who do not want community features in their dream-journal product",
+        "Users whose priority is Noctalia's disclosed EU-hosted journal-data model"
+      ],
+      "migrationNotes": [
+        "Keep Dream Journal Ultimate if iOS, Dream Wall or advanced lucid training is central to the habit.",
+        "Copy a small set of recent dreams before switching because Noctalia does not currently advertise a full portable journal import.",
+        "Rebuild recurring symbols from recent entries rather than promising automatic migration parity."
+      ],
+      "sources": [
+        {
+          "label": "Dream Journal Ultimate official site",
+          "url": "https://dreamjournal.co/",
+          "observedFacts": ["voice dream recording", "AI interpretation", "Dream Wall", "PIN or biometric lock", "cloud sync", "Android and iOS positioning"]
+        },
+        {
+          "label": "Dream Journal Ultimate Google Play",
+          "url": "https://play.google.com/store/apps/details?id=dreamcapsule.com.dl.dreamjournalultimate&hl=en_US",
+          "observedFacts": ["100K+ downloads", "4.4 stars", "1.14K reviews", "August 1 2026 update", "data-safety categories", "Dream Labs LLC"]
+        },
+        {
+          "label": "Dream Journal Ultimate App Store",
+          "url": "https://apps.apple.com/us/app/dream-journal-ultimate/id802558054",
+          "observedFacts": ["free with in-app purchases", "4.5 stars", "547 ratings", "version 2026.8.5", "English plus 11 languages"]
+        },
+        {
+          "label": "Dream Journal Ultimate privacy policy",
+          "url": "https://dreamjournal.co/privacy-policy",
+          "observedFacts": ["optional sync account", "dream storage under the account", "United States processing"]
+        }
+      ]
+    },
+    "dreamKit": {
+      "name": "DreamKit",
+      "positioning": "Former dream journal whose store pages are no longer verified as available; relevant mainly to existing users preserving or exporting an installed archive.",
+      "platforms": ["Official informational website", "Former Android package unavailable", "Former iOS identifier now belongs to Arcana"],
+      "pricing": {
+        "model": "No current DreamKit store price verified",
+        "publicPriceSignals": [
+          "The former Google Play package returned HTTP 404 in US and French checks on 2026-08-09",
+          "The former DreamKit App Store identifier now belongs to Arcana, which lists its own separate in-app purchase"
+        ],
+        "comparisonRule": "Do not reuse historic DreamKit iOS pricing or describe Arcana pricing as DreamKit pricing."
+      },
+      "storeSignals": [
+        "An earlier 2026-08-09 Google Play snapshot showed 100K+ downloads, 4.0 stars and about 5.38K reviews; these are historical figures only.",
+        "The same Android package URL later returned HTTP 404 in US and French checks during the 2026-08-09 release validation.",
+        "The historical Android snapshot showed a May 10, 2024 update date.",
+        "The former iOS identifier 1572753006 was an active Arcana astrology and tarot listing, not a DreamKit dream-journal listing, on 2026-08-09."
+      ],
+      "strengths": [
+        "Historical Android install and review footprint",
+        "PDF export, cloud backup and passcode or biometric lock were advertised on the former Google Play listing",
+        "Dream analysis, AI art and reality-check reminders were advertised together",
+        "Longstanding lightweight journaling workflow for existing installations"
+      ],
+      "limitations": [
+        "The former Android store page returned HTTP 404 during release validation on 2026-08-09",
+        "DreamKit is no longer a current iOS listing under its former App Store identifier, which belongs to Arcana",
+        "No current DreamKit download or store price could be verified",
+        "The privacy policy says journal and interpretation content is saved and processed by third-party services and generated images are accessible on the public internet",
+        "Google Play says the app may collect location, personal information and other data categories and that data is not encrypted"
+      ],
+      "bestFor": [
+        "Existing users whose installed DreamKit version still supports PDF export or cloud backup",
+        "Existing users who still rely on its reality-check reminder routine",
+        "Users preserving an established DreamKit archive before migration"
+      ],
+      "notIdealFor": [
+        "Anyone who needs a currently downloadable DreamKit store app",
+        "Users who want a voice-first Android capture-to-reflection workflow",
+        "Users who need generated images to remain private by policy"
+      ],
+      "migrationNotes": [
+        "Export the DreamKit archive to PDF before evaluating another journal.",
+        "Keep the original DreamKit export because Noctalia does not advertise automatic DreamKit import.",
+        "Move a small set of recent dreams manually and compare capture, reflection and search before switching fully."
+      ],
+      "sources": [
+        {
+          "label": "DreamKit official site",
+          "url": "https://dreamkit.app/",
+          "observedFacts": ["dream journal", "AI interpretation", "AI image generation", "dream analysis", "lucid-dreaming positioning"]
+        },
+        {
+          "label": "Former DreamKit Google Play URL",
+          "url": "https://play.google.com/store/apps/details?id=app.DreamKit.DreamKit.dreamkit&hl=en_US",
+          "observedFacts": ["HTTP 404 during final US and French checks on 2026-08-09", "earlier same-day snapshot showed 100K+ downloads, 4.0 stars, 5.38K reviews and May 10 2024 update", "historical listing advertised PDF export, cloud backup, biometric lock and reality-check reminders"]
+        },
+        {
+          "label": "DreamKit privacy policy",
+          "url": "https://dreamkit.app/pages/privacy_policy/",
+          "observedFacts": ["third-party processing of journals and interpretations", "generated images accessible on the public internet", "effective January 1 2023"]
+        },
+        {
+          "label": "Former DreamKit App Store identifier",
+          "url": "https://apps.apple.com/us/app/arcana-astrology-tarot-chat/id1572753006",
+          "observedFacts": ["current Arcana product name", "Neural Candy LLC", "major rebranding in January 2026", "not a current DreamKit-branded dream-journal listing"]
         }
       ]
     }

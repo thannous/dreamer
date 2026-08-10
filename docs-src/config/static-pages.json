@@ -91,6 +91,28 @@
       }
     },
     {
+      "pageId": "page.dream-journal-ultimate-alternative",
+      "layout": "content",
+      "slugs": {
+        "en": "dream-journal-ultimate-alternative",
+        "fr": "alternative-dream-journal-ultimate",
+        "es": "alternativa-dream-journal-ultimate",
+        "de": "dream-journal-ultimate-alternative",
+        "it": "alternativa-dream-journal-ultimate"
+      }
+    },
+    {
+      "pageId": "page.dreamkit-alternative",
+      "layout": "content",
+      "slugs": {
+        "en": "dreamkit-alternative",
+        "fr": "alternative-dreamkit",
+        "es": "alternativa-dreamkit",
+        "de": "dreamkit-alternative",
+        "it": "alternativa-dreamkit"
+      }
+    },
+    {
       "pageId": "page.ai-dream-interpretation-app",
       "layout": "content",
       "slugs": {

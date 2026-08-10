@@ -23,27 +23,27 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-08-03T00:00:00+02:00",
+  "modifiedTime": "2026-08-09T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Mejores apps de diario de sueños 2026\",\n  \"description\": \"Compara Noctalia con DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud y nuevas apps de sueños con IA.\",\n  \"url\": \"https://noctalia.app/es/apps-diario-de-suenos\",\n  \"inLanguage\": \"es\",\n  \"dateModified\": \"2026-08-03T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Mejores apps de diario de sueños 2026\",\n  \"description\": \"Compara Noctalia con DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud y nuevas apps de sueños con IA.\",\n  \"url\": \"https://noctalia.app/es/apps-diario-de-suenos\",\n  \"inLanguage\": \"es\",\n  \"dateModified\": \"2026-08-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Mejores apps de diario de sueños en 2026\",\n      \"item\": \"https://noctalia.app/es/apps-diario-de-suenos\"\n    }\n  ]\n}"
-    ,"{\"@context\":\"https://schema.org\",\"@type\":\"Dataset\",\"@id\":\"https://noctalia.app/es/apps-diario-de-suenos#dataset\",\"name\":\"Datos comparativos de apps de diario de sueños 2026\",\"description\":\"Una revisión documental fechada de 11 apps de diario de sueños sobre plataformas, captura de voz, interpretación con IA, imágenes, privacidad, exportación y sueño lúcido.\",\"url\":\"https://noctalia.app/es/apps-diario-de-suenos#dataset\",\"creator\":{\"@id\":\"https://noctalia.app/#organization\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"},\"dateCreated\":\"2026-07-12\",\"dateModified\":\"2026-08-03\",\"isAccessibleForFree\":true,\"inLanguage\":\"es\",\"keywords\":[\"apps de diario de sueños\",\"captura de voz\",\"interpretación de sueños con IA\",\"apps de sueño lúcido\"],\"measurementTechnique\":\"Revisión documental de páginas oficiales de productos y fichas públicas de tiendas; sin cuentas de competidores ni suscripciones de pago.\",\"distribution\":{\"@type\":\"DataDownload\",\"encodingFormat\":\"text/csv\",\"contentUrl\":\"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"}}"
+    ,"{\"@context\":\"https://schema.org\",\"@type\":\"Dataset\",\"@id\":\"https://noctalia.app/es/apps-diario-de-suenos#dataset\",\"name\":\"Datos comparativos de apps de diario de sueños 2026\",\"description\":\"Una revisión documental fechada de 11 apps de diario de sueños sobre plataformas, captura de voz, interpretación con IA, imágenes, privacidad, exportación y sueño lúcido.\",\"url\":\"https://noctalia.app/es/apps-diario-de-suenos#dataset\",\"creator\":{\"@id\":\"https://noctalia.app/#organization\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"},\"dateCreated\":\"2026-07-12\",\"dateModified\":\"2026-08-09\",\"isAccessibleForFree\":true,\"inLanguage\":\"es\",\"keywords\":[\"apps de diario de sueños\",\"captura de voz\",\"interpretación de sueños con IA\",\"apps de sueño lúcido\"],\"measurementTechnique\":\"Revisión documental de páginas oficiales de productos y fichas públicas de tiendas; sin cuentas de competidores ni suscripciones de pago.\",\"distribution\":{\"@type\":\"DataDownload\",\"encodingFormat\":\"text/csv\",\"contentUrl\":\"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"}}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Mejores apps de diario de sueños en 2026</h1>
-<p class="text-sm text-purple-300/70 mb-6">Metodología actualizada el 3 de agosto de 2026 · Datos de producto revisados el 12 de julio de 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Datos actualizados el 9 de agosto de 2026 · Metodología actualizada el 3 de agosto de 2026 · Revisión inicial de productos el 12 de julio de 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">La app correcta depende de cómo capturas el sueño al despertar, si quieres interpretación con IA, cuánto valoras el sueño lúcido y qué claridad necesitas sobre privacidad.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Respuesta rápida</h2>
-    <p>Elige Noctalia si buscas una app pensada primero para Android para captura rápida por voz, interpretación IA, imágenes generadas, símbolos recurrentes y reflexión guiada. Elige Oniri si tu prioridad es el sueño lúcido avanzado. Considera DreamApp para una app masiva de interpretación, DreamKit para un diario ligero y Dreamiary o Dreamz para enfoques más centrados en símbolos.</p>
+    <p>Elige Noctalia si buscas una app pensada primero para Android para captura rápida por voz, interpretación IA, imágenes generadas, símbolos recurrentes y reflexión guiada. Elige Oniri si tu prioridad es el sueño lúcido avanzado. Considera DreamApp para interpretación general y Dreamiary o Dreamz para enfoques centrados en símbolos. Los usuarios actuales de DreamKit deben comprobar la disponibilidad en tiendas y consultar la comparación de migración dedicada.</p>
     <p class="mt-4 text-sm text-purple-200/70">Noctalia es una herramienta de reflexión. No ofrece diagnóstico médico, psicológico, legal, financiero ni predicciones.</p>
   </section>
 
@@ -52,6 +52,8 @@
     <ul class="list-disc pl-5 space-y-2">
 <li><a href="/es/alternativa-dreamapp" class="text-dream-salmon hover:underline">Alternativa a DreamApp</a></li>
 <li><a href="/es/alternativa-oniri" class="text-dream-salmon hover:underline">Alternativa a Oniri</a></li>
+<li><a href="/es/alternativa-dream-journal-ultimate" class="text-dream-salmon hover:underline">Alternativa a Dream Journal Ultimate</a></li>
+<li><a href="/es/alternativa-dreamkit" class="text-dream-salmon hover:underline">Alternativa a DreamKit</a></li>
 <li><a href="/es/app-interpretacion-suenos-ia" class="text-dream-salmon hover:underline">App de interpretación de sueños con IA</a></li>
     </ul>
   </section>
@@ -66,7 +68,7 @@
 <tr><td class="py-4 pr-4 text-white font-medium">Oniri</td><td class="py-4 pr-4 ">iOS / beta Android</td><td class="py-4 pr-4 ">Freemium / premium</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">Diario y análisis</td><td class="py-4 pr-4 ">Exportación y privacidad destacadas</td><td class="py-4 pr-4 ">Fuerte</td><td class="py-4 pr-4 ">Práctica de sueño lúcido y técnicas avanzadas</td><td class="py-4 pr-4 ">Captura rápida por voz en Android y flujo visual más enfocado</td></tr>
 <tr><td class="py-4 pr-4 text-white font-medium">Dreamiary</td><td class="py-4 pr-4 ">Android / iOS</td><td class="py-4 pr-4 ">Base gratuita, mejoras de pago</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">Sin señal visual fuerte</td><td class="py-4 pr-4 ">Biblioteca personal de símbolos</td><td class="py-4 pr-4 ">Discurso de privacidad y enfoque local</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">Diario privado con estado de ánimo y símbolos</td><td class="py-4 pr-4 ">Imágenes generadas o reflexión guiada</td></tr>
 <tr><td class="py-4 pr-4 text-white font-medium">Dreamlab</td><td class="py-4 pr-4 ">iOS / Android según página</td><td class="py-4 pr-4 ">Plan gratis más mensual/anual</td><td class="py-4 pr-4 ">Texto y voz</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">Diccionario personal y patrones</td><td class="py-4 pr-4 ">Diario privado seguro</td><td class="py-4 pr-4 ">Limitado</td><td class="py-4 pr-4 ">Diario IA centrado en emoción, ánimo y patrones</td><td class="py-4 pr-4 ">Tracción Android probada hoy</td></tr>
-<tr><td class="py-4 pr-4 text-white font-medium">DreamKit</td><td class="py-4 pr-4 ">Android / iOS</td><td class="py-4 pr-4 ">Gratis con señales de monetización</td><td class="py-4 pr-4 ">Más texto</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">Artículos y etiquetas</td><td class="py-4 pr-4 ">PDF, bloqueo biométrico, copia cloud</td><td class="py-4 pr-4 ">Pruebas de realidad</td><td class="py-4 pr-4 ">Diario ligero maduro con arte IA</td><td class="py-4 pr-4 ">Pruebas recientes de fiabilidad IA y privacidad más detallada</td></tr>
+<tr><td class="py-4 pr-4 text-white font-medium">DreamKit</td><td class="py-4 pr-4 ">La antigua ficha Android devuelve 404; el antiguo ID iOS es Arcana</td><td class="py-4 pr-4 ">Sin precio actual verificado</td><td class="py-4 pr-4 ">Antigua ficha centrada en texto</td><td class="py-4 pr-4 ">Antigua ficha</td><td class="py-4 pr-4 ">Antigua ficha</td><td class="py-4 pr-4 ">Se anunciaban artículos y etiquetas</td><td class="py-4 pr-4 ">Se anunciaban PDF, bloqueo biométrico y copia cloud</td><td class="py-4 pr-4 ">Se anunciaban pruebas de realidad</td><td class="py-4 pr-4 ">Usuarios existentes que conservan o exportan un archivo funcional</td><td class="py-4 pr-4 ">Quien busca una app actualmente descargable</td></tr>
 <tr><td class="py-4 pr-4 text-white font-medium">Rosebud</td><td class="py-4 pr-4 ">Web / apps</td><td class="py-4 pr-4 ">Journaling IA por suscripción</td><td class="py-4 pr-4 ">Más texto</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">Sin énfasis visual de sueños</td><td class="py-4 pr-4 ">Tags y temas</td><td class="py-4 pr-4 ">Privacidad generalista de journaling IA</td><td class="py-4 pr-4 ">No</td><td class="py-4 pr-4 ">Journaling amplio y reflexión personal</td><td class="py-4 pr-4 ">Producto Android dedicado a sueños</td></tr>
 <tr><td class="py-4 pr-4 text-white font-medium">Dreamz Journal</td><td class="py-4 pr-4 ">iOS, Android anunciado</td><td class="py-4 pr-4 ">Gratis más premium en web</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">Estilo editorial grimoire</td><td class="py-4 pr-4 ">Gran diccionario declarado</td><td class="py-4 pr-4 ">Diario privado, exportar/borrar</td><td class="py-4 pr-4 ">Ritual y reflexión</td><td class="py-4 pr-4 ">Lecturas místicas y símbolos</td><td class="py-4 pr-4 ">Tono psicológico sobrio o Android ya</td></tr>
 <tr><td class="py-4 pr-4 text-white font-medium">DreamMirror</td><td class="py-4 pr-4 ">Distribución Android directa</td><td class="py-4 pr-4 ">No centrado en store</td><td class="py-4 pr-4 ">Sí</td><td class="py-4 pr-4 ">IA reflexiva</td><td class="py-4 pr-4 ">No</td><td class="py-4 pr-4 ">Ligero</td><td class="py-4 pr-4 ">Privacidad fuerte y anti-hype</td><td class="py-4 pr-4 ">No</td><td class="py-4 pr-4 ">Reflexión calmada y privada</td><td class="py-4 pr-4 ">Google Play, imágenes o diccionario amplio</td></tr>
@@ -84,7 +86,7 @@
 <li><strong>Oniri:</strong> Práctica de sueño lúcido y técnicas avanzadas. Menos ideal para: Captura rápida por voz en Android y flujo visual más enfocado.</li>
 <li><strong>Dreamiary:</strong> Diario privado con estado de ánimo y símbolos. Menos ideal para: Imágenes generadas o reflexión guiada.</li>
 <li><strong>Dreamlab:</strong> Diario IA centrado en emoción, ánimo y patrones. Menos ideal para: Tracción Android probada hoy.</li>
-<li><strong>DreamKit:</strong> Diario ligero maduro con arte IA. Menos ideal para: Pruebas recientes de fiabilidad IA y privacidad más detallada.</li>
+<li><strong>DreamKit:</strong> relevante sobre todo para usuarios existentes que conservan o exportan un archivo funcional. Menos ideal para quien busca una app actualmente descargable: la antigua ficha Android devuelve 404 y el antiguo ID iOS es Arcana.</li>
 <li><strong>Rosebud:</strong> Journaling amplio y reflexión personal. Menos ideal para: Producto Android dedicado a sueños.</li>
 <li><strong>Dreamz Journal:</strong> Lecturas místicas y símbolos. Menos ideal para: Tono psicológico sobrio o Android ya.</li>
     </ul>
@@ -107,7 +109,7 @@
   <section id="citation" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
     <h2 class="text-2xl font-serif text-white mb-4">Cómo citar estos datos</h2>
     <p>Para un artículo, informe o nota de investigación, usa esta referencia estable:</p>
-    <p class="mt-4">Noctalia. (3 de agosto de 2026). <em>Datos comparativos de apps de diario de sueños 2026</em>.</p>
+    <p class="mt-4">Noctalia. (9 de agosto de 2026). <em>Datos comparativos de apps de diario de sueños 2026</em>.</p>
     <p class="mt-3"><a href="https://noctalia.app/es/apps-diario-de-suenos#dataset" class="text-dream-salmon hover:underline">Fuente estable del dataset</a></p>
     <p class="mt-3 text-sm text-purple-200/70">Conserva la atribución y el enlace estable al reutilizar el CSV. Es una revisión documental fechada, no un estudio clínico, una clasificación ni una estimación de cuota de mercado.</p>
   </section>

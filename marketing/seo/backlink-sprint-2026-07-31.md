@@ -205,7 +205,7 @@ Tracking files:
 - `marketing/seo/backlink-results-2026-07-31.csv`: nineteen manually audited surfaces, including six indexable followed pages (one explicitly low-trust), seven indexable nofollow pages (one explicitly low-trust), two nonindexable profiles, one lost historical listing and three search-visible store-derived or entity-profile surfaces whose link treatment remains unverified;
 - `marketing/seo/backlink-measurements-2026.csv`: dated authority and visibility snapshots, with evidence scope kept explicit;
 - `marketing/seo/search-console/2026-08-03-external-links-baseline.md`: authenticated GSC inventory of 149 external links, eight source domains and four target pages, reconciled to manual link quality;
-- `marketing/seo/backlink-prospects-2026-07-31.csv`: 200 researched opportunities: 3 P0 corrections/reclamations, 63 P1 prospects, 133 P2 prospects or exclusions and 1 P3 launch route;
+- `marketing/seo/backlink-prospects-2026-07-31.csv`: 201 researched opportunities: 3 P0 corrections/reclamations, 64 P1 prospects, 133 P2 prospects or exclusions and 1 P3 launch route;
 - `marketing/seo/editorial-discovery-wave-3-2026-08-03.md`: rendered trust, domain-link and pending-publication decisions for the third editorial discovery pass.
 - `marketing/seo/editorial-discovery-wave-4-2026-08-03.md`: four current comparison decisions plus the no-credit Ahrefs project-dashboard refresh.
 - `marketing/seo/editorial-discovery-wave-5-2026-08-03.md`: three current product-owned guide decisions, all rejected at the direct competitor-domain citation gate.
@@ -796,20 +796,50 @@ their last recorded stop gates, while nine Gmail wave-1 routes still had stale
 verification-date fields now match the outreach evidence; no send timestamp,
 response or public-link claim was added.
 
-The next external actions are ranked rather than bundled. Elsewhere's human
-reply comes first, followed by the Marika Pech factual source correction, then a
-six-route Priority A follow-up batch limited to KapanLagi, Penzu, Android
-Police, Xataka Android, AllThingsAI and AITrendTool. The remaining 25 eligible
+The next external actions are ranked rather than bundled. A later rendered
+link-treatment refresh split the former six-route Priority A batch into three
+DR-first follow-ups (`D3A`: KapanLagi, Penzu and AllThingsAI) and three
+editorial-visibility follow-ups (`D3B`: Android Police, Xataka Android and
+AITrendTool). Penzu exposes direct followed resource links, an ordinary
+AllThingsAI directory page exposes a separate followed product-domain link and
+KapanLagi already prints the exact Noctalia source across seven pages. By
+contrast, the sampled AITrendTool product links are `nofollow`, while the
+Android Police and Xataka target pages do not establish a direct
+developer-domain pattern.
+
+Elsewhere's human reply remains relationship-ready, but its current Medium
+comparison marks inspected product links `ugc nofollow`; it no longer outranks
+the `D3A` batch for immediate DR probability. The Marika Pech factual source
+correction follows as an unlinked-mention reclamation. The remaining 25 eligible
 first follow-ups stay queued, not approved. Free earned-media intake and owned
 syndication remain behind separate account or publication authorizations.
 PeerPush stays live and free; its current profile corrections are conversion
-work, not a new-domain action, and all paid upsells remain rejected.
+work, not a new-domain action, and all paid upsells remain rejected. Full
+rendered evidence is recorded in
+`marketing/seo/backlink-dr-priority-refresh-2026-08-09.md`.
 
 Exact independent authorization language and post-send measurement gates are
 recorded in
 `marketing/seo/backlink-execution-decision-board-2026-08-09.md`. No email, form,
 account, profile, publication, payment or backlink was created by this
 consolidation.
+
+### D3A DR-first follow-ups transmitted — 2026-08-10
+
+The user authorized exactly one first reply in the existing KapanLagi, Penzu
+and AllThingsAI threads. A fresh 00:38–00:40 CEST gate found no live Noctalia
+anchor on the three public targets, no human reply, bounce, opt-out or delivery
+warning in the exact authenticated Zimbra conversations, and no matching Spam
+message. KapanLagi still exposed four plain-text Noctalia mentions and zero
+anchors; Penzu and AllThingsAI exposed no Noctalia inclusion.
+
+The approved copy was sent without attachments, payment, tracking, reciprocity
+or a guaranteed-link request. Zimbra displayed `Le mail a été envoyé` for each
+reply, and Sent shows two-message conversations at 00:40 CEST for KapanLagi and
+00:41 CEST for Penzu and AllThingsAI. These are three transmissions, not proof
+of delivery, acceptance, publication, a backlink, a new referring domain or DR
+movement. The next conditional check remains 2026-08-16 and must stop on any
+reply, failure, opt-out or verified public citation.
 
 ### Editorial discovery wave 34 — 2026-08-09
 
@@ -829,6 +859,246 @@ No email, form, account, comment, product data or payment was used. The central
 register now contains 200 routes: 3 P0, 63 P1, 133 P2 and 1 P3. Full evidence is
 recorded in
 `marketing/seo/editorial-discovery-wave-34-2026-08-09.md`.
+
+### Third competitor-alternative destination — 2026-08-09
+
+The directory-readiness audit found only two dedicated competitor-alternative
+families. A third, source-linked Dream Journal Ultimate alternative was prepared
+in English, French, Spanish, German and Italian after current official-site,
+Google Play, App Store, privacy and legal verification. The copy explicitly
+credits Dream Journal Ultimate for iOS, its optional Dream Wall, similar-dream
+discovery and structured lucid-dreaming tools, while positioning Noctalia only
+around its verified Android-first voice-to-reflection workflow.
+
+This clears the three-alternative-page content gate for future directory and
+editorial destinations. It is an owned asset, not a backlink or proof of DR
+movement. Full evidence and the publication boundary are recorded in
+`marketing/seo/dream-journal-ultimate-alternative-asset-2026-08-09.md`.
+
+### D1–D2 approval batch refresh — 2026-08-09
+
+At 22:06 CEST, the authenticated Elsewhere Gmail thread still contained only
+Thanh's initial note and Dan Kennedy's human reply asking about iOS and export.
+The production press kit remained HTTP 200 and documented Android-only
+availability, no announced iOS release date and no full-journal portable export.
+The reply was tightened to answer only those facts and remains unsent.
+
+The exact Marika Pech article also remained HTTP 200, self-canonical and
+`follow, index`, with the old `40–60 %` claim, the plain-text Noctalia
+attribution and no `noctalia.app` anchor. Its named French operator, official
+contact route and non-Russian trust gate remained valid. The corrected Noctalia
+source was live and exposed the peer-reviewed belief-versus-experience evidence
+and DOI. One concise correction request remains unsent.
+
+The independent D1 and D2 authorization text, immediate pre-send gates and
+measurement boundary are consolidated in
+`marketing/seo/backlink-approval-batch-d1-d2-2026-08-09.md`. No email, form,
+account, publication, payment or backlink was created by this refresh.
+
+### Fourth competitor-alternative destination — 2026-08-09
+
+A fourth source-linked alternative family was prepared for DreamKit in English,
+French, Spanish, German and Italian. An earlier August 9 Google Play snapshot
+showed an established footprint and advertised PDF export, cloud backup, app
+locking and reality-check reminders. During the final release check, however,
+the same package URL returned HTTP 404 in US and French checks; the former iOS
+identifier now resolves to the separate Arcana astrology and tarot product. The
+pages treat those store facts as historical and position DreamKit mainly as a
+migration case for existing users.
+
+The new family is linked from all five alternatives hubs and included in the
+site route, illustration, `llms.txt` and commercial release contracts. No
+Russian operator signal was found, but the current DreamKit site does not expose
+enough legal-operator information for independent confirmation; Neural Candy
+LLC is the US seller of the separate Arcana product. This is an owned
+destination, not a backlink or evidence of DR movement. Full evidence is recorded in
+`marketing/seo/dreamkit-alternative-asset-2026-08-09.md`.
+
+### DreamKit stale-listicle reclamation candidate — 2026-08-09
+
+The live DreamKit alternative enabled one new evidence-led correction route.
+DreamWell's June 2022 comparison remains HTTP 200, self-canonical and
+index-follow. It transparently discloses DreamWell's own-product interest,
+describes a 50-app hands-on review and links multiple competing developer
+domains directly without `nofollow`, but still presents DreamKit as available
+on Android and iOS. The former Android package now returns HTTP 404 and the
+former iOS ID resolves to the separate Arcana astrology and tarot product.
+
+DreamWell publishes a named team and `hi@dreamwellbewell.com`; its Terms select
+Delaware law, and Google Play independently identifies DreamWell, a Public
+Benefit Corporation at a Claymont, Delaware address. No Russian operator signal
+was found. One short factual correction and optional future-test message is
+prepared but unsent in
+`marketing/seo/editorial-discovery-wave-35-dreamkit-reclamation-2026-08-09.md`.
+The central register now contains 201 routes: 3 P0, 64 P1, 133 P2 and 1 P3.
+Adding a qualified route creates no backlink or DR movement.
+
+### Editorial discovery wave 36 — 2026-08-10
+
+Two newly surfaced 2026 comparison pages were rejected before contact. Echo's
+self-canonical AI-journaling comparison exposes no external product-domain
+anchors, while its legal pages identify no entity, address, country or
+jurisdiction. Hello Diary's self-canonical comparison links only its own Google
+Play listing; its About, Privacy and Terms pages likewise omit an accountable
+operator and jurisdiction. Neither route clears both the domain-citation and
+non-Russian operator gates. No email, form, account, product data or payment was
+used. The central register now contains 204 routes: 3 P0, 64 P1, 136 P2 and 1
+P3. Full evidence is recorded in
+`marketing/seo/editorial-discovery-wave-36-2026-08-10.md`.
+
+### D3A post-send monitor — 2026-08-10 00:52 CEST
+
+The three public targets remain unchanged and expose no new Noctalia anchor.
+Exact authenticated Zimbra searches still return the same two-message
+KapanLagi, Penzu and AllThingsAI conversations, with no inbound response; Spam
+contains no matching new failure. This read-only check creates no delivery,
+acceptance, backlink, referring-domain or DR claim. For the next DR-oriented
+authorization, Marika Pech (`D2`) now ranks first because the live page already
+contains an unlinked Noctalia attribution; DreamWell (`D5`) follows because its
+page directly links competitor domains without `nofollow`, but its 2022 age
+reduces update probability.
+
+### D2/D5 authorization readiness — 2026-08-10 01:11 CEST
+
+Real Chrome reconfirmed the public and trust gates for the next two DR-oriented
+routes. Marika Pech still contains one unlinked Noctalia attribution and the old
+source wording; the corrected Noctalia evidence is already live. DreamWell
+still links the removed DreamKit Android package and the iOS ID that now resolves
+to Arcana, while directly linking five competitor domains without `nofollow`.
+Its current Terms route is `/terms-of-service/`; the old `/terms-of-use/` path
+is a not-found page. Exact authenticated Zimbra searches found no prior
+conversation with either official recipient. The messages remain unsent and
+still require independent D2 and D5 authorization plus a new immediate stop
+gate. Full evidence is in
+`marketing/seo/backlink-readiness-d2-d5-2026-08-10.md`.
+
+### DR-first follow-up reclassification — 2026-08-10 01:25 CEST
+
+A six-page real-Chrome comparison found two additional clean followed-pattern
+routes among the already-contacted publishers. Atlas Workspace and ILTY each
+retain a self-canonical `index, follow` comparison with six direct competitor
+developer-domain links and no Noctalia citation; their named operator and
+official contact evidence remains current, and exact Zimbra searches contain
+only the original sent message. Their 62-word and 57-word first replies remain
+unsent in a new independent `D7` authorization batch.
+
+World of Lucid Dreaming, Sleep Review and 9to5Google were not promoted because
+their inspected target pages expose no comparable developer-domain citation
+pattern. The Acuity target now declares a Ripple URL as canonical and exposes
+no competitor product-domain anchor; connected Gmail contains only the original
+sent message and no matching delivery failure. The legacy Acuity follow-up is
+therefore closed, reducing the unsent eligible first-follow-up pool from 28 to
+27. Full evidence is in
+`marketing/seo/backlink-dr-followup-wave-37-2026-08-10.md`.
+
+### Linkable-asset integrity refresh — 2026-08-10
+
+The public 11-app comparison already exposed a stable index, follow dataset
+page, two CSV download links, visible methodology and citation instructions.
+The source audit found two reproducibility defects: its copyable citation still
+used August 3 while the Dataset schema and refreshed rows used August 9, and
+the CSV omitted the table's pricing field. Site sources now add
+pricing_signal to all 11 rows, add version and temporal coverage to the
+English Dataset schema, and align comparison and press citations across all
+five locales. The full build and docs check pass with 1,185 canonical sitemap
+URLs, zero broken internal links, zero errors and zero warnings. This improves
+the asset before outreach but is not a backlink or DR result. Evidence is in
+marketing/seo/backlink-linkable-asset-refresh-2026-08-10.md.
+
+### Editorial discovery wave 38 — 2026-08-10
+
+Seven newly surfaced AI-journaling pages were rejected before contact.
+Mindsera, Refalio, Taskade and Rosebud name competitors without linking their
+domains; Macaron's only inspected external editorial citation is nofollow; and
+ItsMyDream combines anonymous admin authorship with no product-domain links.
+Balance Journal is the only page in the pass that gives followed links to
+third-party editorial sources. Its Terms and Privacy indicate Poland and EU
+law, not Russia, but identify no accountable company, person or address, while
+its linked Google Play package and App Store ID both return not-found pages.
+No route clears both the trust and link-pattern gates. The central register now
+contains 211 routes: 3 P0, 64 P1, 143 P2 and 1 P3. Full evidence is in
+marketing/seo/editorial-discovery-wave-38-2026-08-10.md.
+
+### Editorial discovery wave 39 — 2026-08-10
+
+The current PitchWall founder profile now persists publicly and is
+self-canonical, but it contains only a plain-text Noctalia bio and zero
+`noctalia.app` anchors. More importantly, current homepage and sampled product
+page website clicks use internal `/out/` redirects marked
+`rel="noopener nofollow"`, contradicting the platform's earlier dofollow claim.
+Terms select Indian law and Indore courts, so no Russian jurisdiction signal is
+present, but they still identify no legal entity or accountable address.
+PitchWall is therefore reclassified from P1 to P2 and removed from the
+DR-oriented submission queue without submitting a product or changing the
+account.
+
+Five additional Google surfaces were rejected before contact. Dazed names
+DreamKit in a credible but old feature without demonstrating app
+developer-domain citations; Jyotirgamya links apps only to Google Play while
+making unsupported high-stakes claims; Appfigures exposes only a transient
+similar-app snippet that resolves to an unrelated product; the surfaced Hugging
+Face page is a 404; and Appelse sends all inspected app calls to mobile stores
+while leaving operator identity and jurisdiction unclear. Full evidence is in
+`marketing/seo/editorial-discovery-wave-39-2026-08-10.md`.
+
+The central register now contains 216 routes: 3 P0, 63 P1, 149 P2 and 1 P3.
+No live-result row was added because this wave produced no public Noctalia
+anchor.
+
+### Authority measurement refresh — 2026-08-10 02:33 CEST
+
+The authenticated Ahrefs overview now reports DR 0.1, 406 referring domains,
+453 backlinks, 4.6K organic traffic and 936 organic keywords. Compared with
+the 00:19 CEST read, this is `+0.1` DR and `+5` referring domains. Ahrefs splits
+the current profile into 8 followed versus 398 not-followed domains; five of
+the eight followed domains are labelled `SPAM` in its detailed report.
+
+The public 19-row verifier remains unchanged at 6 followed, 4 nofollow, 2
+missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410. The Ahrefs movement is
+therefore recorded as a third-party index change, not attributed to the D3A
+emails, the latest deployment or any specific link. Detailed evidence is in
+`marketing/seo/backlink-measurement-check-2026-08-10-0233.md`.
+
+### D3A post-send monitor — 2026-08-10 02:37 CEST
+
+Exact authenticated Zimbra searches still show one two-message conversation
+for KapanLagi, Penzu and AllThingsAI, with no inbound reply, bounce or opt-out.
+The public gate is also unchanged: KapanLagi remains an unlinked plain-text
+source, Penzu exposes no Noctalia mention or anchor, and neither the AllThingsAI
+homepage nor an exact Google site search exposes a Noctalia listing. The
+one-time authorized replies were not repeated; all three routes remain
+`followup_1_sent_waiting` until the conditional 2026-08-16 check.
+
+### Competitor citation gap wave 40 — 2026-08-10
+
+Ahrefs' free competitor endpoint reconfirmed the current ten-domain project
+set, including Oniri and Wakefully, but the account has zero workspace API
+units until the 2026-08-16 reset and the authenticated Link Intersect interface
+is locked behind the Trial pricing gate. No bypass, plan change or payment was
+attempted. Public indexed competitor citations were used only for discovery,
+then every page was inspected in real Chrome for canonical, indexability, link
+attributes, accountable operator and external-action route.
+
+Two routes pass. Dealroom's self-canonical Wakefully profile links
+`wakefully.io` directly without `nofollow`; Dealroom.co B.V. is a named Dutch
+operator and Terms allow free human accounts and accurate contributions, but
+prohibit bots. A field-ready Noctalia dossier therefore leaves legal entity,
+headquarters, founding, company-size and funding data for user confirmation and
+requires a user-operated account. Simone's April 2026 Rosebud review links the
+product domain twice without `nofollow`; Agentik SAS, French law and
+`hello@simone.app` pass the trust gate. One short French editorial note is ready
+but unsent and preserves Noctalia's non-medical boundary.
+
+Six surfaces are excluded: Marie Claire and Madame Figaro are visibly partnered
+Médias France commercial content; KingLand charges EUR 25 or EUR 75 for every
+public submission package; TrendHunter and MakeUseOf mark the observed product
+links nofollow; Fondation FIT is a specific 2022 financing announcement with no
+general Noctalia route. The central register now contains 224 routes: 3 P0, 65
+P1, 155 P2 and 1 P3. No account, profile, contribution, email, form, attachment,
+payment, publication or live Noctalia backlink was created. Full evidence and
+the independent `D8A` and `D8B` gates are in
+`marketing/seo/competitor-citation-gap-wave-40-2026-08-10.md` and
+`marketing/seo/backlink-dealroom-simone-ready-2026-08-10.md`.
 
 Weekly, record only verified public outcomes:
 

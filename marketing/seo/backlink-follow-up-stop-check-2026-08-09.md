@@ -17,6 +17,81 @@ account, publication or payment was sent or created.
 
 The distribution is unchanged from the 2026-08-03 public verification. This does not prove a current Ahrefs DR value because the authenticated Ahrefs dashboard was not reopened.
 
+## D3A refresh — 2026-08-10 00:31 CEST
+
+The three DR-first routes were refreshed without sending or modifying any
+message:
+
+| Domain | Current public evidence | Current mailbox evidence | Result |
+| --- | --- | --- | --- |
+| `kapanlagi.com` | A direct HTTP 200 fetch of the current wallet-and-water article contains four `Noctalia` mentions and zero `noctalia.app` anchors. Current exact public search still exposes several KapanLagi pages citing the same Noctalia source URL. | The authenticated `contact@noctalia.app` Zimbra search contains exactly one result: the original sent message. | Unlinked source reclamation remains live; no reply, bounce or opt-out. |
+| `penzu.com` | The current dream-journal guide returns HTTP 200 with zero `Noctalia` mentions and zero `noctalia.app` anchors. | The exact Zimbra search contains exactly one result: the original sent message. | No public inclusion; no reply, bounce or opt-out. |
+| `allthingsai.work` | The current homepage returns HTTP 200 with zero `Noctalia` mentions and zero `noctalia.app` anchors; exact public site search exposes no Noctalia listing. | The exact Zimbra search contains exactly one result: the original sent message. | No public listing; no reply, bounce or opt-out. |
+
+The Zimbra Spam folder contains the already-recorded AndroidAyuda delivery
+failure and no KapanLagi, Penzu or AllThingsAI reply, bounce, opt-out or warning.
+The public nineteen-page verifier was also rerun and remains at 6 followed,
+4 nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP 410. D3A
+therefore remains eligible, but no transmission is authorized by this check.
+
+## D3A execution — 2026-08-10 00:38–00:41 CEST
+
+The user independently authorized one first reply in each existing D3A thread.
+Immediately before transmission, the three public targets were fetched again:
+KapanLagi returned HTTP 200 with four `Noctalia` mentions and zero
+`noctalia.app` anchors; Penzu and AllThingsAI each returned HTTP 200 with zero
+Noctalia mentions or anchors. Exact authenticated Zimbra searches still showed
+one conversation containing only the original sent message for each recipient.
+Spam contained no matching reply, bounce, opt-out or delivery warning.
+
+| Domain | Existing thread | Authoritative Zimbra result | Recorded state |
+| --- | --- | --- | --- |
+| `kapanlagi.com` | `Re: Source attribution on your water-dream article` to `redaksi.kapanlagi@kly.id` | `Le mail a été envoyé`; Sent shows a two-message conversation at 2026-08-10 00:40 CEST. | `followup_1_sent_waiting` |
+| `penzu.com` | `Re: Android-specific addition for your dream journal guide` to `info@penzu.com` | `Le mail a été envoyé`; Sent shows a two-message conversation at 2026-08-10 00:41 CEST. | `followup_1_sent_waiting` |
+| `allthingsai.work` | `Re: Directory submission — Noctalia` to `info@allthingsai.work` | `Le mail a été envoyé`; Sent shows a two-message conversation at 2026-08-10 00:41 CEST. | `followup_1_sent_waiting` |
+
+Each composer contained the approved factual copy and zero attachment chips.
+No payment, tracking, reciprocal arrangement or guaranteed-link request was
+added. The Sent state proves transmission only; it does not prove remote
+delivery, human receipt, editorial acceptance, publication, a backlink or a DR
+change. The conditional final check remains dated 2026-08-16 and must stop if a
+reply, failure, opt-out or public citation appears first.
+
+## D3A post-send monitor — 2026-08-10 00:52 CEST
+
+A read-only public refresh found no change: the checked KapanLagi article still
+returns HTTP 200 with four Noctalia mentions and zero `noctalia.app` anchors;
+Penzu and AllThingsAI still return HTTP 200 with zero Noctalia mentions or
+anchors. Exact authenticated Zimbra searches return one two-message
+conversation for each recipient—the original message and the authorized first
+reply—with no inbound response. Spam remains at three messages and contains
+only the previously recorded AndroidAyuda campaign failure. No message or
+mailbox state was modified by this monitor.
+
+## D3A post-send monitor — 2026-08-10 01:11 CEST
+
+The same three routes were checked again in real Chrome. KapanLagi remains
+self-canonical and `index, follow`, with four `Noctalia` mentions and zero
+`noctalia.app` anchors. Penzu and AllThingsAI still contain zero Noctalia
+mentions and zero anchors. Exact authenticated Zimbra searches still return one
+two-message conversation for each recipient and no inbound message. No public
+link or mailbox state changed, so all three routes remain
+`followup_1_sent_waiting` until the conditional 2026-08-16 check.
+
+## D3A post-send monitor — 2026-08-10 02:37 CEST
+
+The authorized first replies were not repeated. Exact authenticated Zimbra
+searches still return one two-message conversation for each official recipient:
+KapanLagi at 00:40 CEST, Penzu at 00:41 and AllThingsAI at 00:41. No inbound
+reply, bounce or opt-out appears in those conversations.
+
+The same real-Chrome public gate remains negative. The KapanLagi article still
+contains Noctalia in plain text but exposes zero `noctalia.app` anchors; Penzu's
+current guide and the AllThingsAI homepage contain zero Noctalia mentions and
+zero anchors. An exact Google site search exposes no indexed AllThingsAI
+Noctalia page. All three routes remain `followup_1_sent_waiting`; the next
+conditional check stays dated 2026-08-16.
+
 ## Routes due on 2026-08-09
 
 | Domain | Public-page stop gate | Mailbox stop gate | Decision |
@@ -71,3 +146,20 @@ The ten Gmail threads prepared in wave 1 were read directly on 2026-08-09. Nine 
 These nine routes are `followup_1_eligible_awaiting_explicit_authorization`. No reply was sent. The already-prepared copy in `marketing/seo/backlink-follow-up-wave-1-2026-08-05.md` remains the exact proposed batch.
 
 The same Gmail failure search also found the final JournPad Delivery Status Notification (Failure) dated 2026-08-03. JournPad is now closed as `delivery_failed_permanent_closed`; no retry or alternative address is allowed.
+
+## Followed-pattern reclassification — 2026-08-10 01:25 CEST
+
+Real Chrome rechecked six already-contacted targets. Atlas Workspace and ILTY
+remain self-canonical and `index, follow`, expose no Noctalia citation and each
+directly link six competitor developer domains without `nofollow`. Exact
+authenticated Zimbra searches still contain only their original sent message.
+They are isolated as the authorization-gated `D7` batch; this is not permission
+to send and does not prove publisher DR or future link treatment.
+
+World of Lucid Dreaming, Sleep Review and 9to5Google were not promoted because
+their inspected target pages expose no comparable developer-domain pattern.
+The Acuity target now declares the Ripple version as canonical and contains no
+competitor product-domain anchor. Connected Gmail still contains only the
+original Acuity message and no matching failure, but canonical migration closes
+the legacy follow-up and clears its dates. The current eligible first-follow-up
+count is 27.

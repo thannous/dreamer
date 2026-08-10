@@ -1,0 +1,6 @@
+date,phase,evidence,status,decision,next_authorization
+2026-08-08,J24,"GSC 2026-07-10..2026-08-06 vs 2026-06-12..2026-07-09",confirmed,"scuola GO_TO_IMPLEMENTATION_GATE","local metadata-only implementation"
+2026-08-08,J24,"11 URLs live and exact source objects",confirmed,"no confounder detected","none"
+2026-08-08,J24,"Rank Tracker mobile and desktop",confirmed,"50/50; last actual snapshot 2026-08-02","wait for next weekly snapshot"
+2026-08-08,J24,"Limits & Usage live",confirmed,"63 general credits; delta J24 0; Site Audit 1147/10000","none"
+2026-08-08,J24,"SEO source changes",not_performed,"stop before implementation","explicit local implementation authorization"

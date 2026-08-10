@@ -96,7 +96,7 @@
     <p>Für einen Artikel, Bericht oder App-Vergleich kannst du die stabile Datensatzseite verwenden und das Datum beibehalten. Die Prüfung ist ein quellenverlinkter Dokumentenvergleich, keine klinische Studie, Rangliste oder Marktanteilsschätzung.</p>
     <p class="mt-4"><a href="/de/traumtagebuch-apps#dataset" class="text-dream-salmon hover:underline">Datensatzseite und Methodik</a> · <a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>CSV herunterladen</a></p>
     <p class="mt-4 text-sm text-purple-200/70">Vorgeschlagene Quellenangabe:</p>
-    <pre class="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-dream-dark/60 p-4 text-sm text-purple-100 whitespace-pre-wrap">Noctalia. (3. August 2026). Vergleichsdaten für Traumtagebuch-Apps 2026. https://noctalia.app/de/traumtagebuch-apps#dataset</pre>
+    <pre class="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-dream-dark/60 p-4 text-sm text-purple-100 whitespace-pre-wrap">Noctalia. (9. August 2026). Vergleichsdaten für Traumtagebuch-Apps 2026. https://noctalia.app/de/traumtagebuch-apps#dataset</pre>
     <p class="mt-3 text-sm text-purple-200/70">Bitte die Namensnennung und den stabilen Link bei der Wiederverwendung der CSV oder ihrer normalisierten Daten beibehalten. Prüfe veränderliche Produktangaben anhand der verlinkten offiziellen Quellen.</p>
   </section>
 

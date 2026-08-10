@@ -15,7 +15,7 @@ describe('sitewide page illustrations', () => {
   const registry = readCompleteImageAssetRegistry();
   const routes = listPageIllustrationRoutes();
 
-  it('covers 34 page families in exactly the languages where each page exists', () => {
+  it('covers 36 page families in exactly the languages where each page exists', () => {
     const manifest = JSON.parse(
       fs.readFileSync(path.join(REPO_ROOT, 'data', 'site-manifest.json'), 'utf8')
     );
@@ -26,7 +26,7 @@ describe('sitewide page illustrations', () => {
       }
     }
 
-    expect(Object.keys(config.families)).toHaveLength(34);
+    expect(Object.keys(config.families)).toHaveLength(36);
     expect(SUPPORTED_LANGS).toEqual(['en', 'fr', 'es', 'de', 'it', 'pt-br']);
 
     let expectedRouteCount = 0;

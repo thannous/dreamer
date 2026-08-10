@@ -1,7 +1,16 @@
 # Zimbra backlink follow-ups — authorization-ready batch
 
 Prepared on 2026-08-09 after the authenticated `contact@noctalia.app` mailbox
-stop gate completed at 18:21 CEST. Nothing in this file has been sent.
+stop gate completed at 18:21 CEST. The three D3A replies were transmitted on
+2026-08-10 after a new immediate stop gate; all other copy remains unsent.
+
+## Execution update — 2026-08-10
+
+KapanLagi was sent in its original thread at 00:40 CEST. Penzu and AllThingsAI
+were sent in their original threads at 00:41 CEST. Each Zimbra composer showed
+zero attachment chips, each send produced `Le mail a été envoyé`, and Sent
+shows two messages in each conversation. This records transmission only, not
+delivery, acceptance, publication, a backlink or DR movement.
 
 ## Gate result
 
@@ -20,9 +29,19 @@ stop gate completed at 18:21 CEST. Nothing in this file has been sent.
 
 | Priority | Routes | Reason |
 | --- | --- | --- |
-| A | KapanLagi, Penzu, Android Police, Xataka Android, AllThingsAI, AITrendTool | Existing source mention, direct competitor-link pattern, strong Android fit or free editorial directory route |
-| B | Digital Trends, Android Headlines, Sleep.com, Atlas Workspace, ILTY, Engadget, 9to5Google, Sleepopolis, Gratitude Genie | Credible editorial fit, but broad inboxes, older pages or less certain specialist inclusion |
+| A — DR first, executed | KapanLagi, Penzu, AllThingsAI | The authorized first replies were sent on 2026-08-10 and now remain in monitored waiting state |
+| A — topical followed pattern | Atlas Workspace, ILTY | Current self-canonical comparisons directly link six competitor developer domains without `nofollow`; publisher DR and future treatment remain unverified |
+| A — visibility | Android Police, Xataka Android, AITrendTool | Credible editorial or directory visibility, but no verified direct followed-domain pattern on the sampled target pages |
+| B | Digital Trends, Android Headlines, Sleep.com, Engadget, 9to5Google, Sleepopolis, Gratitude Genie | Credible editorial fit, but broad inboxes, older pages or less certain specialist inclusion |
 | C | Goals & Progress, Everyeye | Weak domain-citation pattern or article is thematic rather than an app comparison |
+
+The rendered link-treatment evidence and the independent `D3A`/`D3B`
+authorization boundaries are recorded in
+`marketing/seo/backlink-dr-priority-refresh-2026-08-09.md`. The message copy
+below is unchanged; the split only prevents discovery-oriented routes from
+being presented as direct DR opportunities. The 2026-08-10 rendered refresh
+promotes Atlas and ILTY into the separate `D7` followed-pattern batch without
+claiming either publisher's current DR.
 
 ## Exact reply copy
 
@@ -232,8 +251,8 @@ stop gate completed at 18:21 CEST. Nothing in this file has been sent.
 
 ## Authorization boundary
 
-Recommended first send batch: the six Priority A routes only. After explicit
-authorization, re-open each original thread, re-run the reply/bounce/live-link
-stop gate immediately before sending, and record the exact authoritative Sent
-timestamp. Do not infer delivery, acceptance, publication, a backlink or a DR
-change from transmission.
+The D3A half of the former Priority A batch—KapanLagi, Penzu and AllThingsAI—was
+authorized and executed once on 2026-08-10. D3B—Android Police, Xataka Android
+and AITrendTool—remains unsent and requires separate explicit authorization.
+Do not infer delivery, acceptance, publication, a backlink or a DR change from
+the D3A transmission.

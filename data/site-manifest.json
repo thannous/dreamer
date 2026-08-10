@@ -245,6 +245,62 @@
             }
           }
         },
+        "page.dream-journal-ultimate-alternative": {
+          "id": "page.dream-journal-ultimate-alternative",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-journal-ultimate-alternative",
+          "locales": {
+            "en": {
+              "slug": "dream-journal-ultimate-alternative",
+              "path": "/en/dream-journal-ultimate-alternative"
+            },
+            "fr": {
+              "slug": "alternative-dream-journal-ultimate",
+              "path": "/fr/alternative-dream-journal-ultimate"
+            },
+            "es": {
+              "slug": "alternativa-dream-journal-ultimate",
+              "path": "/es/alternativa-dream-journal-ultimate"
+            },
+            "de": {
+              "slug": "dream-journal-ultimate-alternative",
+              "path": "/de/dream-journal-ultimate-alternative"
+            },
+            "it": {
+              "slug": "alternativa-dream-journal-ultimate",
+              "path": "/it/alternativa-dream-journal-ultimate"
+            }
+          }
+        },
+        "page.dreamkit-alternative": {
+          "id": "page.dreamkit-alternative",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dreamkit-alternative",
+          "locales": {
+            "en": {
+              "slug": "dreamkit-alternative",
+              "path": "/en/dreamkit-alternative"
+            },
+            "fr": {
+              "slug": "alternative-dreamkit",
+              "path": "/fr/alternative-dreamkit"
+            },
+            "es": {
+              "slug": "alternativa-dreamkit",
+              "path": "/es/alternativa-dreamkit"
+            },
+            "de": {
+              "slug": "dreamkit-alternative",
+              "path": "/de/dreamkit-alternative"
+            },
+            "it": {
+              "slug": "alternativa-dreamkit",
+              "path": "/it/alternativa-dreamkit"
+            }
+          }
+        },
         "page.ai-dream-interpretation-app": {
           "id": "page.ai-dream-interpretation-app",
           "type": "content",

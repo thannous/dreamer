@@ -44,6 +44,8 @@ const COMMERCIAL_PAGE_FAMILIES = [
   'page.alternatives',
   'page.android-dream-analysis-app',
   'page.dream-dictionary-app',
+  'page.dream-journal-ultimate-alternative',
+  'page.dreamkit-alternative',
   'page.dreamapp-alternative',
   'page.oniri-alternative',
   'page.pricing',
@@ -80,6 +82,8 @@ const GOOGLE_SOFTWARE_APPLICATION_SIGNAL_FIELDS = [
 ];
 const COMMERCIAL_FAQ_MINIMUMS = new Map([
   ['page.ai-dream-interpretation-app', 2],
+  ['page.dream-journal-ultimate-alternative', 2],
+  ['page.dreamkit-alternative', 2],
   ['page.dreamapp-alternative', 2],
   ['page.oniri-alternative', 2],
 ]);
