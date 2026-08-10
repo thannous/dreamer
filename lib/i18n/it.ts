@@ -867,6 +867,7 @@ const translations: Record<string, string> = {
     'subscription.paywall.toast.success': 'Noctalia Plus è ora attivo sul tuo account.',
     'subscription.paywall.toast.restored': 'Acquisti ripristinati.',
     'subscription.paywall.error.title': 'Errore',
+    'subscription.paywall.error.message': 'Non è stato possibile completare l’acquisto. Controlla il tuo account Play Store e riprova.',
     'subscription.paywall.error.ok': 'OK',
     'subscription.paywall.expiry_date': 'Valido fino al {{date}}',
     'subscription.paywall.auto_renew.on': 'Rinnovo automatico',

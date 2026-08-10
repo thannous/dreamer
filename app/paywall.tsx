@@ -654,7 +654,9 @@ export default function PaywallScreen() {
         visible={showErrorSheet}
         onClose={handleCloseErrorSheet}
         title={t('subscription.paywall.error.title')}
-        subtitle={error ? translateWithFallback(error.message, error.message) : undefined}
+        subtitle={error
+          ? translateWithFallback(error.message, t('subscription.paywall.error.message'))
+          : undefined}
         actions={{
           primaryLabel: t('subscription.paywall.error.ok'),
           onPrimary: handleCloseErrorSheet,
