@@ -113,6 +113,14 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   mailbox duplicate check is clear. Dormi, Galoppo & Charme, Les Echos and Les
   Écrits remain P2 for medical, predictive, contextual or operator-accountability
   reasons. `D10A` is prepared and unsent.
+- A rendered audit of the original high-DR content-platform claims keeps DEV as
+  the only P1 owned-publication route: its sampled `dev.to` article is
+  self-canonical, indexable and links the author's app without `nofollow` or
+  `ugc`. Substack's sampled links are also followed, but its publication is a
+  self-published subdomain with no verified canonical override. Hashnode is
+  downgraded to P2 because its sampled post lives on `hashnode.dev`, not
+  `hashnode.com`, and marks external author links `nofollow ugc`; Medium's
+  sampled product links remain `ugc nofollow`. No account or post was created.
 
 ## Recommended next execution order
 
@@ -128,7 +136,7 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 | 8 | Elsewhere human reply (`D1`) | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal, although Medium currently marks product links `ugc nofollow`. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
 | 9 | Three editorial-visibility follow-ups (`D3B`) | Android Police and Xataka Android are credible Android publishers but the target pages lack a direct developer-domain citation pattern. AITrendTool's sampled product links are `nofollow`. | Treat these as discovery and relationship opportunities, not the DR-first batch. Authorize separately and verify any eventual public link without assuming equity. |
 | 10 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |
-| 11 | Owned syndication | Hashnode and Medium drafts are ready, but a self-published profile link has lower incremental authority and canonical risk than an independent editorial citation. | Publish only after separate account and publication authorization and verify the rendered canonical and link attributes. |
+| 11 | Owned syndication | DEV is the strongest route because its sampled public app links are followed and it supports a Noctalia canonical. A short Substack excerpt is second. Hashnode and Medium are audience-distribution routes only because their sampled author or product links are `nofollow ugc`. All remain self-published and lower-authority than an earned citation. | Publish one platform at a time only after separate account and publication authorization. Set and verify the canonical where supported, then inspect the rendered link attributes without promising DR. |
 
 The completed D3A batch is no longer ranked as a future action. Monitor it until
 the conditional 2026-08-16 gate and stop on reply, failure, opt-out or live

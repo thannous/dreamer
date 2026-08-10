@@ -824,6 +824,31 @@ recorded in
 account, profile, publication, payment or backlink was created by this
 consolidation.
 
+### High-DR platform reality check — wave 45 — 2026-08-10
+
+The original viral content-platform list was rechecked against rendered public
+pages rather than host DR labels. DEV remains the only P1 owned-publication
+route: its sampled self-canonical, Google-discoverable dream-journal article
+links the author's live app twice without `nofollow` or `ugc`, and DEV supports
+a `canonical_url` back to Noctalia. Substack's sampled dream-app comparison is
+also self-canonical and exposes direct followed product links, but no official
+per-post canonical override has been verified, so only the prepared excerpt is
+retained at P2.
+
+Hashnode is downgraded from P1 to P2. The sampled public post is hosted on a
+`hashnode.dev` subdomain rather than `hashnode.com`, and its author-supplied
+external links are marked `nofollow ugc`; canonicalized syndication can still
+serve audience distribution but should not be sold internally as a DR 88
+backlink. Medium remains P2 because every inspected product-domain link in the
+current Elsewhere comparison is `ugc nofollow`, despite the page being
+self-canonical and indexable. The central register remains at 238 routes and is
+now 3 P0, 66 P1, 168 P2 and 1 P3.
+
+No account, draft, post, comment, form, email, attachment, product data,
+payment or publication was created. No Russian-operated or Russian-governed
+site was opened or promoted. Full rendered evidence is recorded in
+`marketing/seo/high-dr-platform-reality-check-wave-45-2026-08-10.md`.
+
 ### D3A DR-first follow-ups transmitted — 2026-08-10
 
 The user authorized exactly one first reply in the existing KapanLagi, Penzu
