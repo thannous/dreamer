@@ -81,7 +81,7 @@ const nullableCount: PropertyValueValidator = (value) =>
   value === null || (typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= 1_000_000);
 const nullableIdentifier: PropertyValueValidator = (value) =>
   value === null || (typeof value === 'string' && value.length <= 96 && /^[a-zA-Z0-9._:-]*$/.test(value));
-const supportedLanguage = oneOf('fr', 'en', 'es', 'de', 'it');
+const supportedLanguage = oneOf('fr', 'en', 'es', 'de', 'it', 'pt');
 const subscriptionTier = oneOf('guest', 'free', 'plus');
 
 const PRODUCT_ANALYTICS_PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySchema> = {
@@ -286,7 +286,8 @@ function isEnvelope(value: unknown): value is ProductAnalyticsEnvelope {
       candidate.locale === 'en' ||
       candidate.locale === 'es' ||
       candidate.locale === 'de' ||
-      candidate.locale === 'it') &&
+      candidate.locale === 'it' ||
+      candidate.locale === 'pt') &&
     !!normalizedProperties &&
     validateEventProperties(candidate.event_name as AnalyticsEventName, normalizedProperties)
   );
@@ -361,7 +362,7 @@ function validateEventProperties(
 function getLocale(): ProductAnalyticsEnvelope['locale'] {
   if (effectiveLocale) return effectiveLocale;
   const language = getLocales()[0]?.languageCode?.toLowerCase();
-  return language === 'fr' || language === 'es' || language === 'de' || language === 'it'
+  return language === 'fr' || language === 'es' || language === 'de' || language === 'it' || language === 'pt'
     ? language
     : 'en';
 }

@@ -18,13 +18,13 @@ type LocaleMetadata = {
 };
 
 export type LanguageContextValue = {
-  /** Current effective language ('en', 'fr', or 'es') */
+  /** Current effective language ('en', 'fr', 'es', 'de', 'it', or 'pt') */
   language: AppLanguage;
   /** Current system language derived from device settings */
   systemLanguage: AppLanguage;
   /** Snapshot of primary locale metadata reported by the OS */
   locale: LocaleMetadata;
-  /** User's language preference ('auto', 'en', 'fr', or 'es') */
+  /** User's language preference ('auto' or one of the supported languages) */
   preference: LanguagePreference;
   /** Update the user's language preference */
   setPreference: (preference: LanguagePreference) => Promise<void>;

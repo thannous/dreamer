@@ -14,7 +14,13 @@ const staticPagesConfig = readJson(path.join(DOCS_SRC_DIR, 'config', 'static-pag
 function loadLocales() {
   const locales = {};
   for (const lang of siteConfig.languages) {
-    locales[lang] = readJson(path.join(DOCS_SRC_DIR, 'locales', `${lang}.json`));
+    const localePath = path.join(DOCS_SRC_DIR, 'locales', `${lang}.json`);
+    if (!fs.existsSync(localePath)) {
+      throw new Error(
+        `Missing locale source file: ${path.relative(ROOT_DIR, localePath)} (required by site language "${lang}")`
+      );
+    }
+    locales[lang] = readJson(localePath);
   }
   return locales;
 }
@@ -47,8 +53,18 @@ function getStaticPagePath(pageId, lang) {
   return slug ? `/${lang}/${slug}` : `/${lang}/`;
 }
 
+function getLanguageTag(lang) {
+  return siteConfig.languageTags?.[lang] || lang;
+}
+
+function getCollectionLanguages(collectionId) {
+  const languages = siteConfig.collections?.[collectionId]?.languages;
+  return Array.isArray(languages) && languages.length > 0 ? languages : siteConfig.languages;
+}
+
 function getAndroidStoreUrl(lang) {
-  const suffix = lang ? `&hl=${lang}` : '';
+  const hl = lang ? siteConfig.storeLinks?.hlOverrides?.[lang] || lang : null;
+  const suffix = hl ? `&hl=${hl}` : '';
   return `${siteConfig.storeLinks.androidBase}${suffix}`;
 }
 
@@ -59,6 +75,8 @@ module.exports = {
   ROOT_DIR,
   STATIC_DATA_DIR,
   getAndroidStoreUrl,
+  getCollectionLanguages,
+  getLanguageTag,
   getStaticPageConfig,
   getStaticPagePath,
   loadLocales,

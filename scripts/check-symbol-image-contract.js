@@ -8,6 +8,7 @@ const {
   DATA_DIR,
   DOCS_DIR,
   STATIC_DATA_DIR,
+  getCollectionLanguages,
   siteConfig,
 } = require('./lib/docs-site-config');
 const {
@@ -94,7 +95,7 @@ function validateSymbolImageContract() {
   let expectedDictionarySources = null;
 
   for (const symbol of catalog.symbols || []) {
-    for (const lang of siteConfig.languages) {
+    for (const lang of getCollectionLanguages('symbols')) {
       const slug = symbol?.[lang]?.slug;
       const symbolsPath = siteConfig.symbolsPath?.[lang];
       if (!slug || !symbolsPath) {
@@ -172,7 +173,7 @@ function validateSymbolImageContract() {
     }
   }
 
-  for (const lang of siteConfig.languages) {
+  for (const lang of getCollectionLanguages('guides')) {
     const dictionarySlug = symbolI18n[lang]?.dictionary_slug;
     const relativePagePath = path.join(
       lang,

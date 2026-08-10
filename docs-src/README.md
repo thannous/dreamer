@@ -69,6 +69,39 @@ npm run docs:check
 
 The build fails if any blog article is missing one of the configured languages.
 
+### Add a language with partial collection coverage
+
+Site languages live in `docs-src/config/site.config.json` (`languages`). Some
+collections can restrict their coverage: `collections.blog`,
+`collections.symbols`, and `collections.guides` each declare their own
+`languages` list, while static pages declare availability per page through the
+`slugs` keys of `docs-src/config/static-pages.json`. Brazilian Portuguese
+(`pt-br`) is the reference example: it covers only the pages listed in
+`static-pages.json`, never the blog, symbol, or guide collections.
+
+To add such a language:
+
+1. Add the internal identifier (lowercase, e.g. `pt-br`) to `languages`.
+2. Add its public BCP 47 tag to `languageTags` (e.g. `"pt-br": "pt-BR"`, used
+   for `<html lang>` and `hreflang`) and its Open Graph locale to
+   `localeCodes` (e.g. `"pt-br": "pt_BR"`).
+3. If the Play Store `hl` parameter differs from the identifier, add
+   `storeLinks.hlOverrides` (e.g. `"pt-br": "pt-BR"`).
+4. Keep the language out of `collections.*.languages` for collections it does
+   not cover; those collections emit no URL and no `hreflang` for it.
+5. Add the language only to the `slugs` of the static pages that have a
+   translation, then create `docs-src/locales/<lang>.json` and one
+   `docs-src/content/pages/<pageId>/<lang>.md` per declared slug. A declared
+   slug without its source file fails the build; there is no English fallback
+   under a `/<lang>/` URL.
+6. Run `npm run docs:build` and `npm run docs:check`.
+
+Pages available in the new language emit reciprocal `hreflang` only between
+existing translations, plus `x-default` pointing to the English URL. Pages
+without an English version omit `x-default`. Navigation, footer, and the
+language switcher only link to destinations that exist in the current
+language.
+
 ### Preview and publish on Cloudflare Pages
 
 Production is deployed by the Cloudflare Pages Git integration from the `master`

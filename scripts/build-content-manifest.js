@@ -16,6 +16,7 @@ const path = require('path');
 const {
   DOCS_SRC_DIR,
   DATA_DIR,
+  getCollectionLanguages,
   siteConfig,
 } = require('./lib/docs-site-config');
 const {
@@ -28,6 +29,7 @@ const {
 const CONTENT_MANIFEST_PATH = path.join(DATA_DIR, 'content-manifest.json');
 const LEGACY_BLOG_SLUGS_PATH = path.join(DATA_DIR, 'blog-slugs.json');
 const BLOG_SOURCE_DIR = path.join(DOCS_SRC_DIR, 'content', 'blog');
+const BLOG_LANGUAGES = getCollectionLanguages('blog');
 const CHECK_ONLY = process.argv.includes('--check');
 
 function sortEntryIds(ids) {
@@ -40,7 +42,7 @@ function sortEntryIds(ids) {
 
 function manifestEntryFromSource(entryId, localizedMeta) {
   const locales = {};
-  for (const lang of siteConfig.languages) {
+  for (const lang of BLOG_LANGUAGES) {
     const slug = localizedMeta[lang]?.slug ?? '';
     locales[lang] = {
       slug,
@@ -79,6 +81,13 @@ function buildFromSource() {
       continue;
     }
 
+    if (!BLOG_LANGUAGES.includes(lang)) {
+      validationErrors.push(
+        `Language "${lang}" in ${relativePath} is not available for the blog collection`
+      );
+      continue;
+    }
+
     if (meta.pageId && meta.pageId !== entryDir) {
       validationErrors.push(
         `Page id mismatch in ${relativePath}: expected "${entryDir}", got "${meta.pageId}"`
@@ -99,7 +108,7 @@ function buildFromSource() {
   for (const entryId of sortEntryIds(grouped.keys())) {
     const localizedMeta = grouped.get(entryId);
 
-    for (const lang of siteConfig.languages) {
+    for (const lang of BLOG_LANGUAGES) {
       if (!localizedMeta[lang]) {
         validationErrors.push(`Missing ${lang} source for blog entry "${entryId}"`);
         continue;
@@ -131,7 +140,7 @@ function buildFromLegacy() {
     const entryId = articleKey === 'index' ? 'blog.index' : `blog.${articleKey}`;
     const localizedMeta = {};
 
-    for (const lang of siteConfig.languages) {
+    for (const lang of BLOG_LANGUAGES) {
       const slug = typeof article?.slugs?.[lang] === 'string' ? article.slugs[lang].trim() : '';
       if (entryId !== 'blog.index' && !slug) {
         validationErrors.push(`Empty slug for legacy blog entry "${entryId}" language "${lang}"`);

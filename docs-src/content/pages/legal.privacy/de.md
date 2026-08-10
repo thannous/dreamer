@@ -145,7 +145,7 @@
       <li><strong>Nutzungsanalyse mit Einwilligung:</strong> Microsoft stellt Clarity erst nach deiner Zustimmung bereit. Einzelheiten findest du in der <a href="https://privacy.microsoft.com/privacystatement" class="text-dream-salmon hover:underline">Datenschutzerklärung von Microsoft</a>.</li>
       <li><strong>Reichweitenmessung mit Einwilligung:</strong> Google stellt Google Analytics erst nach deiner Zustimmung bereit. Einzelheiten findest du in der <a href="https://policies.google.com/privacy" class="text-dream-salmon hover:underline">Datenschutzerklärung von Google</a>.</li>
       <li><strong>KI- und Sprachanbieter:</strong> Google Gemini, Google Cloud Speech-to-Text und gegebenenfalls vergleichbare Anbieter.</li>
-      <li><strong>Abonnementverwaltung:</strong> RevenueCat verarbeitet anonyme Nutzerkennungen und Kaufdaten des jeweils genutzten App-Stores, derzeit Google Play. Vollständige Zahlungsdaten laufen nicht über Noctalia.</li>
+      <li><strong>Abonnementverwaltung:</strong> RevenueCat verarbeitet anonyme Nutzerkennungen und Kaufdaten des jeweils genutzten App-Stores, derzeit Google Play. Vollständige Zahlungsdaten laufen nicht über Noctalia. Nach der Kontolöschung löscht Noctalia die Abonnementdaten auf seiner Seite; Kaufaufzeichnungen können jedoch von Google Play und RevenueCat gemäß ihren eigenen gesetzlichen Pflichten aufbewahrt werden. Die Kontolöschung kündigt das Google-Play-Abonnement nicht; es wird in Google Play &gt; Zahlungen und Abos verwaltet.</li>
       <li><strong>Behörden und Berater:</strong> soweit gesetzlich erforderlich oder zur Wahrung unserer Rechte.</li>
     </ul>
   </section>

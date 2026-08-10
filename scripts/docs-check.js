@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
-const { DOCS_DIR, ROOT_DIR, siteConfig } = require('./lib/docs-site-config');
+const { DOCS_DIR, ROOT_DIR, getCollectionLanguages, siteConfig, staticPagesConfig } = require('./lib/docs-site-config');
 const { assertDocsBuildReady } = require('./lib/docs-check-helpers');
 const { normalizePrettyPath, readJson, walkFiles } = require('./lib/docs-source-utils');
 const { validateCloudflarePagesRedirects } = require('./lib/pages-redirect-contract');
@@ -382,12 +382,30 @@ function assertReferencedBlogImagesOptimized() {
   }
 }
 
+function expectedEntryLanguages(collectionId, entryId) {
+  if (collectionId === 'pages') {
+    const page = staticPagesConfig.pages.find((item) => item.pageId === entryId);
+    if (page) return siteConfig.languages.filter((lang) => page.slugs?.[lang] != null);
+  }
+  return getCollectionLanguages(collectionId);
+}
+
 function assertManifestParity(manifest) {
   const errors = [];
 
-  for (const collection of Object.values(manifest.collections || {})) {
+  for (const [collectionId, collection] of Object.entries(manifest.collections || {})) {
     for (const entry of Object.values(collection.entries || {})) {
-      for (const lang of siteConfig.languages) {
+      const expectedLanguages = expectedEntryLanguages(collectionId, entry.id);
+
+      // Entries must not expose locales outside their collection coverage
+      // (e.g. no pt-br blog, symbol or guide locales).
+      for (const lang of Object.keys(entry.locales || {})) {
+        if (!expectedLanguages.includes(lang)) {
+          errors.push(`[unexpected locale] ${entry.id} language=${lang}`);
+        }
+      }
+
+      for (const lang of expectedLanguages) {
         if (!entry.locales?.[lang]) {
           errors.push(`[missing locale] ${entry.id} language=${lang}`);
           continue;

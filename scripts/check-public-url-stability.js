@@ -689,6 +689,40 @@ function normalizeCanonicalImageCarrier(expected, actual) {
   };
 }
 
+function isStrictSubsequence(expectedEntries, actualEntries) {
+  let index = 0;
+  for (const actualEntry of actualEntries) {
+    if (
+      index < expectedEntries.length &&
+      compareStableValues(expectedEntries[index], actualEntry)
+    ) {
+      index += 1;
+    }
+  }
+  return index === expectedEntries.length;
+}
+
+// Extension mode tolerates existing pages gaining hreflang alternates (for
+// example when a new language is added to the site) as long as every
+// previously contracted alternate is preserved verbatim and in order, and
+// nothing else about the page changes.
+function normalizeAdditiveAlternates(field) {
+  return (expected, actual) => {
+    const expectedEntries = expected[field] || [];
+    const actualEntries = actual[field] || [];
+    if (!isStrictSubsequence(expectedEntries, actualEntries)) return { expected, actual };
+    return { expected, actual: { ...actual, [field]: expected[field] } };
+  };
+}
+
+function composeNormalizers(...normalizers) {
+  return (expected, actual) =>
+    normalizers.reduce(
+      (pair, normalize) => normalize(pair.expected, pair.actual),
+      { expected, actual }
+    );
+}
+
 function compareOutputPaths(expected, actual, allowAdditions) {
   const expectedSet = new Set(expected);
   const actualSet = new Set(actual);
@@ -719,10 +753,15 @@ function compareSnapshots(expected, actual, options = {}) {
   errors.push(
     ...compareKeyedRecords(expected.canonicalPages, actual.canonicalPages, 'canonical page', {
       allowAdditions,
-      normalizePair: normalizeCanonicalImageCarrier,
+      normalizePair: allowAdditions
+        ? composeNormalizers(normalizeCanonicalImageCarrier, normalizeAdditiveAlternates('hreflangs'))
+        : normalizeCanonicalImageCarrier,
     })
   );
-  errors.push(...compareKeyedRecords(expected.sitemap, actual.sitemap, 'sitemap route', { allowAdditions }));
+  errors.push(...compareKeyedRecords(expected.sitemap, actual.sitemap, 'sitemap route', {
+    allowAdditions,
+    normalizePair: allowAdditions ? normalizeAdditiveAlternates('alternates') : undefined,
+  }));
 
   if (!compareStableValues(expected.redirects, actual.redirects)) {
     const difference = firstDifference(expected.redirects, actual.redirects);

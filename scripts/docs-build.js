@@ -10,9 +10,11 @@ const {
   DOCS_DIR,
   DOCS_SRC_DIR,
   ROOT_DIR,
+  siteConfig,
   staticPagesConfig,
 } = require('./lib/docs-site-config');
 const { renderManagedPage } = require('./lib/docs-renderer');
+const { staticPageLanguages } = require('./lib/site-manifest');
 const {
   copyDir,
   copyFile,
@@ -102,7 +104,7 @@ function outputPathForBlogEntry(entry, lang) {
 }
 
 function cleanManagedOutputs() {
-  for (const lang of ['en', 'fr', 'es', 'de', 'it']) {
+  for (const lang of siteConfig.languages) {
     const langDir = path.join(DOCS_DIR, lang);
     const blogDir = path.join(langDir, 'blog');
 
@@ -129,7 +131,9 @@ function writeManagedPages(manifest) {
   const homeEntry = manifest.collections.pages.entries['page.home'];
 
   for (const page of staticPagesConfig.pages) {
-    for (const lang of Object.keys(page.slugs)) {
+    // Pages exist exactly in the languages declared in their `slugs` map;
+    // a missing <lang>.md source is a hard error, never an English fallback.
+    for (const lang of staticPageLanguages(page)) {
       const outputPath = outputPathForStaticPage(page, lang);
       const { meta, body } = readSourceDocument(sourcePath('pages', page.pageId, lang));
       ensureDir(path.dirname(outputPath));

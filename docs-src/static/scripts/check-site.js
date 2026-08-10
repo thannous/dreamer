@@ -17,12 +17,23 @@ const {
   assertDocsBuildReady,
   normalizeForSearch,
 } = require('../../scripts/lib/docs-check-helpers');
+const {
+  getCollectionLanguages,
+  getLanguageTag,
+  siteConfig,
+} = require('../../scripts/lib/docs-site-config');
 
 const DOCS_ROOT = path.resolve(__dirname, '..');
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const SITE_ORIGIN = 'https://noctalia.app';
-const LANGS = ['en', 'fr', 'es', 'de', 'it'];
-const LANG_DIRS = new Set(LANGS);
+// Symbol and guide collections keep their own (full-coverage) language set.
+const LANGS = [...new Set([
+  ...getCollectionLanguages('symbols'),
+  ...getCollectionLanguages('guides'),
+])];
+// Every site language gets a URL prefix; the public <html lang> tag comes
+// from siteConfig.languageTags (e.g. /pt-br/ pages declare lang="pt-BR").
+const LANG_DIRS = new Set(siteConfig.languages);
 let decodeHtmlEntities = null;
 try {
   ({ decodeHTML: decodeHtmlEntities } = require('entities'));
@@ -426,11 +437,11 @@ function main() {
 
     const declaredLang = extractHtmlLang(html);
     const topDir = toPosix(relHtml).split('/')[0];
-    if (LANG_DIRS.has(topDir) && declaredLang && declaredLang !== topDir) {
+    if (LANG_DIRS.has(topDir) && declaredLang && declaredLang !== getLanguageTag(topDir)) {
       errors.push({
         type: 'lang-mismatch',
         file: relHtml,
-        detail: `<html lang="${declaredLang}"> but file is under /${topDir}/`
+        detail: `<html lang="${declaredLang}"> but file is under /${topDir}/ (expected "${getLanguageTag(topDir)}")`
       });
     }
 

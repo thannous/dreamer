@@ -15,13 +15,35 @@ describe('sitewide page illustrations', () => {
   const registry = readCompleteImageAssetRegistry();
   const routes = listPageIllustrationRoutes();
 
-  it('covers 34 page families in all five supported languages', () => {
-    expect(Object.keys(config.families)).toHaveLength(34);
-    expect(SUPPORTED_LANGS).toEqual(['en', 'fr', 'es', 'de', 'it']);
-    expect(routes).toHaveLength(170);
+  it('covers 34 page families in exactly the languages where each page exists', () => {
+    const manifest = JSON.parse(
+      fs.readFileSync(path.join(REPO_ROOT, 'data', 'site-manifest.json'), 'utf8')
+    );
+    const localeCountByPageId = {};
+    for (const collection of Object.values(manifest.collections || {})) {
+      for (const [pageId, entry] of Object.entries(collection.entries || {})) {
+        localeCountByPageId[pageId] = Object.keys(entry.locales || {}).length;
+      }
+    }
 
+    expect(Object.keys(config.families)).toHaveLength(34);
+    expect(SUPPORTED_LANGS).toEqual(['en', 'fr', 'es', 'de', 'it', 'pt-br']);
+
+    let expectedRouteCount = 0;
     for (const pageId of Object.keys(config.families)) {
-      expect(routes.filter((route) => route.pageId === pageId)).toHaveLength(5);
+      const localeCount = localeCountByPageId[pageId];
+      expect(localeCount).toBeGreaterThan(0);
+      expectedRouteCount += localeCount;
+      expect(routes.filter((route) => route.pageId === pageId)).toHaveLength(localeCount);
+    }
+    expect(routes).toHaveLength(expectedRouteCount);
+
+    // pt-br is a partial-coverage language: only families with a pt-br locale
+    // in the site manifest expose pt-br illustration routes.
+    const ptBrRoutes = routes.filter((route) => route.lang === 'pt-br');
+    expect(ptBrRoutes.length).toBeGreaterThan(0);
+    for (const route of ptBrRoutes) {
+      expect(route.path).toMatch(/^\/pt-br\//);
     }
   });
 

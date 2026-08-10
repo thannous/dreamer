@@ -3,6 +3,7 @@ import en from '@/lib/i18n/en';
 import es from '@/lib/i18n/es';
 import fr from '@/lib/i18n/fr';
 import italian from '@/lib/i18n/it';
+import pt from '@/lib/i18n/pt';
 
 const dreamImageProgressKeys = [
   'journal.detail.image.preparing_title',
@@ -14,7 +15,7 @@ const dreamImageProgressKeys = [
 
 describe('dream detail i18n', () => {
   it('has localized image generation progress labels in every supported language', () => {
-    const packs = { de, en, es, fr, it: italian };
+    const packs = { de, en, es, fr, it: italian, pt };
 
     for (const translations of Object.values(packs)) {
       for (const key of dreamImageProgressKeys) {

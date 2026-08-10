@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import { getTranslator, loadTranslations } from '../i18n';
 
-const languages = ['en', 'fr', 'es', 'de', 'it'] as const;
+const languages = ['en', 'fr', 'es', 'de', 'it', 'pt'] as const;
 
 const statsProfileKeys = [
   'stats.profile.eyebrow',

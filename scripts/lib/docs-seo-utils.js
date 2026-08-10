@@ -1,4 +1,9 @@
-const SUPPORTED_LANGS = ['en', 'fr', 'es', 'de', 'it'];
+const { siteConfig, getLanguageTag } = require('./docs-site-config');
+
+// Site languages (internal identifiers, e.g. "pt-br"). Public BCP 47 tags
+// (e.g. "pt-BR") come from siteConfig.languageTags via getLanguageTag.
+const SUPPORTED_LANGS = siteConfig.languages;
+const SUPPORTED_LANGUAGE_TAGS = SUPPORTED_LANGS.map(getLanguageTag);
 
 function normalizeUrl(url) {
   return String(url || '')
@@ -67,6 +72,7 @@ function matchLineEndings(text, template) {
 
 module.exports = {
   SUPPORTED_LANGS,
+  SUPPORTED_LANGUAGE_TAGS,
   normalizeUrl,
   extractTagAttributes,
   extractLinkTags,

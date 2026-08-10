@@ -324,6 +324,36 @@ describe('check-public-url-stability', () => {
     );
   });
 
+  it('allows existing pages to gain hreflang alternates in extension mode only', () => {
+    const root = createFixtureRoot();
+    roots.push(root);
+    const baseline = buildSnapshot(root, { sourceRevision: INITIAL_SOURCE_REVISION });
+    const candidate = clone(baseline);
+    const newAlternate = { hreflang: 'pt-BR', href: 'https://noctalia.app/pt-br/' };
+    // New language alternates are inserted before x-default, like the renderer does.
+    candidate.canonicalPages[0].hreflangs.splice(1, 0, newAlternate);
+    candidate.sitemap[0].alternates.splice(1, 0, newAlternate);
+
+    // Strict check mode keeps rejecting any change to a contracted page.
+    expect(() => compareSnapshots(baseline, candidate)).toThrow(/canonical page changed/);
+    // Extension mode accepts pure alternate insertions.
+    expect(() => compareSnapshots(baseline, candidate, { allowAdditions: true })).not.toThrow();
+
+    // Mutating a contracted alternate is still rejected in extension mode.
+    const mutated = clone(baseline);
+    mutated.canonicalPages[0].hreflangs[0].href = 'https://noctalia.app/moved';
+    expect(() => compareSnapshots(baseline, mutated, { allowAdditions: true })).toThrow(
+      /canonical page changed.*field=hreflangs/
+    );
+
+    // Reordering contracted sitemap alternates is still rejected too.
+    const reordered = clone(baseline);
+    reordered.sitemap[0].alternates.reverse();
+    expect(() => compareSnapshots(baseline, reordered, { allowAdditions: true })).toThrow(
+      /sitemap route changed.*field=alternates/
+    );
+  });
+
   it('refuses to overwrite an existing baseline', () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-url-write-'));
     roots.push(root);

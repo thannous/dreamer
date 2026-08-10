@@ -5,7 +5,7 @@ import en from './i18n/en';
 export type Translations = Record<string, string>;
 
 const DEFAULT_LANGUAGE: AppLanguage = 'en';
-const SUPPORTED_LANGUAGES: readonly AppLanguage[] = ['en', 'fr', 'es', 'de', 'it'] as const;
+const SUPPORTED_LANGUAGES: readonly AppLanguage[] = ['en', 'fr', 'es', 'de', 'it', 'pt'] as const;
 
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -101,6 +101,11 @@ async function importLanguagePack(language: AppLanguage): Promise<Translations> 
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       requireModule: () => require('./i18n/it') as TranslationModule,
     },
+    pt: {
+      importModule: () => import('./i18n/pt'),
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      requireModule: () => require('./i18n/pt') as TranslationModule,
+    },
   };
 
   switch (language) {
@@ -110,6 +115,7 @@ async function importLanguagePack(language: AppLanguage): Promise<Translations> 
     case 'es':
     case 'de':
     case 'it':
+    case 'pt':
       return resolveModule(loaders[language]!);
     default:
       return en;

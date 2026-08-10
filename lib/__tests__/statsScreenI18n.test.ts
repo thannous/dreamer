@@ -4,7 +4,7 @@ import { EMOTION_FAMILY_IDS } from '@/lib/dreamEmotions';
 
 import { getTranslator, loadTranslations } from '../i18n';
 
-const languages = ['en', 'fr', 'es', 'de', 'it'] as const;
+const languages = ['en', 'fr', 'es', 'de', 'it', 'pt'] as const;
 
 const recurrencePatternByLanguage = {
   en: /repeat|recurr|coming back/i,
@@ -12,6 +12,7 @@ const recurrencePatternByLanguage = {
   es: /repit|repet|recurr/i,
   de: /wiederkehr|wiederhol/i,
   it: /torn|ripet|ricorr/i,
+  pt: /repit|recorr|volt/i,
 } as const;
 
 const familyPatternByLanguage = {
@@ -20,6 +21,7 @@ const familyPatternByLanguage = {
   es: /famil/i,
   de: /famil/i,
   it: /famigli/i,
+  pt: /fam[ií]l/i,
 } as const;
 
 // Declared `readonly string[]` rather than `as const` because the family keys are DERIVED

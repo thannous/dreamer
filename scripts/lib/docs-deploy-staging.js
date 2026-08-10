@@ -3,20 +3,16 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { DOCS_DIR } = require('./docs-site-config');
+const { DOCS_DIR, siteConfig } = require('./docs-site-config');
 const { copyFile, walkFiles } = require('./docs-source-utils');
 
 const ALLOWED_ROOT_DIRECTORIES = new Set([
   '.well-known',
   'auth',
   'css',
-  'de',
-  'en',
-  'es',
+  ...siteConfig.languages,
   'fonts',
-  'fr',
   'img',
-  'it',
   'js',
   'logo',
   'screenshot',

@@ -48,7 +48,7 @@ export type ValidatedAnalyticsEvent = {
   journey_id: string | null;
   platform: 'android';
   app_version: string;
-  locale: 'fr' | 'en' | 'es' | 'de' | 'it';
+  locale: 'fr' | 'en' | 'es' | 'de' | 'it' | 'pt';
   properties: Properties;
 };
 
@@ -62,7 +62,7 @@ const nullableShortString: PropertyValidator = (value) =>
   value === null || (typeof value === 'string' && value.length <= 96 && /^[a-zA-Z0-9._:-]*$/.test(value));
 const nullableCount: PropertyValidator = (value) =>
   value === null || (typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= 1_000_000);
-const supportedLanguage = oneOf('fr', 'en', 'es', 'de', 'it');
+const supportedLanguage = oneOf('fr', 'en', 'es', 'de', 'it', 'pt');
 const tier = oneOf('guest', 'free', 'plus');
 
 const PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySchema> = {
@@ -220,7 +220,7 @@ export function validateProductAnalyticsEvent(
   if (event.schema_version !== 1 || event.platform !== 'android') return false;
   if (event.journey_id !== null && (typeof event.journey_id !== 'string' || !UUID_PATTERN.test(event.journey_id))) return false;
   if (typeof event.app_version !== 'string' || !/^[0-9A-Za-z.+_-]{1,32}$/.test(event.app_version)) return false;
-  if (typeof event.locale !== 'string' || !['fr', 'en', 'es', 'de', 'it'].includes(event.locale)) return false;
+  if (typeof event.locale !== 'string' || !['fr', 'en', 'es', 'de', 'it', 'pt'].includes(event.locale)) return false;
   if (typeof event.occurred_at !== 'string') return false;
   const occurredAt = Date.parse(event.occurred_at);
   if (!Number.isFinite(occurredAt) || occurredAt < now - MAX_EVENT_AGE_MS || occurredAt > now + MAX_FUTURE_SKEW_MS) return false;

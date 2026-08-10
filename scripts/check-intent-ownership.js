@@ -9,9 +9,15 @@ const {
   DOCS_DIR,
   DOCS_SRC_DIR,
   ROOT_DIR,
+  getCollectionLanguages,
   siteConfig,
 } = require('./lib/docs-site-config');
 const { readSourceDocument } = require('./lib/docs-source-utils');
+
+// Intent ownership pairs blog articles with symbol pages; both collections
+// share the same full-coverage languages (partial-coverage languages such as
+// pt-br have neither blog nor symbol pages).
+const FULL_COVERAGE_LANGUAGES = getCollectionLanguages('blog');
 
 const SYMBOL_DIRECTORIES = {
   de: 'traumsymbole',
@@ -34,67 +40,67 @@ const QUICK_LOOKUP_MARKERS = {
 const INTENT_OWNERSHIP = [
   {
     id: 'water',
-    locales: siteConfig.languages,
+    locales: FULL_COVERAGE_LANGUAGES,
     primary: { kind: 'blog', id: 'blog.water-dreams-meaning', intent: 'comprehensive scenarios' },
     secondary: { kind: 'symbol', id: 'water', intent: 'quick symbol lookup' },
   },
   {
     id: 'flying',
-    locales: siteConfig.languages,
+    locales: FULL_COVERAGE_LANGUAGES,
     primary: { kind: 'blog', id: 'blog.flying-dreams-meaning', intent: 'scenarios and lucid context' },
     secondary: { kind: 'symbol', id: 'flying', intent: 'quick symbol lookup' },
   },
   {
     id: 'teeth',
-    locales: siteConfig.languages,
+    locales: FULL_COVERAGE_LANGUAGES,
     primary: { kind: 'blog', id: 'blog.teeth-falling-out-dreams', intent: 'complete teeth scenarios' },
     secondary: { kind: 'symbol', id: 'teeth', intent: 'quick symbol lookup' },
   },
   {
     id: 'falling',
-    locales: siteConfig.languages,
+    locales: FULL_COVERAGE_LANGUAGES,
     primary: { kind: 'blog', id: 'blog.falling-dreams-meaning', intent: 'complete falling scenarios' },
     secondary: { kind: 'symbol', id: 'falling', intent: 'quick symbol lookup' },
   },
   {
     id: 'snake',
-    locales: siteConfig.languages,
+    locales: FULL_COVERAGE_LANGUAGES,
     primary: { kind: 'blog', id: 'blog.snake-dreams-meaning', intent: 'complete snake scenarios' },
     secondary: { kind: 'symbol', id: 'snake', intent: 'quick symbol lookup' },
   },
   {
     id: 'death',
-    locales: siteConfig.languages,
+    locales: FULL_COVERAGE_LANGUAGES,
     primary: { kind: 'blog', id: 'blog.death-dreams-meaning', intent: 'complete death scenarios' },
     secondary: { kind: 'symbol', id: 'death', intent: 'quick symbol lookup' },
   },
   {
     id: 'chase',
-    locales: siteConfig.languages,
+    locales: FULL_COVERAGE_LANGUAGES,
     primary: { kind: 'blog', id: 'blog.being-chased-dreams', intent: 'complete chase scenarios' },
     secondary: { kind: 'symbol', id: 'chase', intent: 'quick symbol lookup' },
   },
   {
     id: 'ex-partner',
-    locales: siteConfig.languages,
+    locales: FULL_COVERAGE_LANGUAGES,
     primary: { kind: 'blog', id: 'blog.dreams-about-ex', intent: 'complete ex-partner scenarios' },
     secondary: { kind: 'symbol', id: 'ex-partner', intent: 'quick symbol lookup' },
   },
   {
     id: 'pregnancy',
-    locales: siteConfig.languages,
+    locales: FULL_COVERAGE_LANGUAGES,
     primary: { kind: 'blog', id: 'blog.pregnancy-dreams-meaning', intent: 'complete pregnancy scenarios' },
     secondary: { kind: 'symbol', id: 'pregnancy', intent: 'quick symbol lookup' },
   },
   {
     id: 'baby',
-    locales: siteConfig.languages,
+    locales: FULL_COVERAGE_LANGUAGES,
     primary: { kind: 'blog', id: 'blog.pregnancy-dreams-meaning', intent: 'pregnancy and baby scenarios' },
     secondary: { kind: 'symbol', id: 'baby', intent: 'quick symbol lookup' },
   },
   {
     id: 'dictionary-vs-common',
-    locales: siteConfig.languages,
+    locales: FULL_COVERAGE_LANGUAGES,
     primary: { kind: 'dictionary-guide', intent: 'searchable 150-symbol atlas' },
     secondary: { kind: 'curated-common-guide', intent: 'curated 20-example guide' },
   },

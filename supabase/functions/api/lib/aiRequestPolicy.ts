@@ -60,7 +60,7 @@ const UUID_PATTERN =
 
 export const isValidUuid = (value: string): boolean => UUID_PATTERN.test(value);
 
-const SUPPORTED_AI_LANGUAGES = new Set(['en', 'fr', 'es', 'de', 'it']);
+const SUPPORTED_AI_LANGUAGES = new Set(['en', 'fr', 'es', 'de', 'it', 'pt']);
 
 export const normalizeAiLanguage = (value: string): string => {
   const base = value.toLowerCase().split(/[-_]/)[0];

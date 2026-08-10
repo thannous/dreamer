@@ -38,6 +38,18 @@
         <p class="text-lg text-purple-200/80 mb-10">Dernière mise à jour : 22 novembre 2025</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
+            <!-- Avertissement important : abonnement -->
+            <div class="p-6 rounded-2xl bg-red-900/20 border border-red-500/20 flex gap-4 items-start">
+                <i data-lucide="alert-triangle" class="w-6 h-6 text-red-400 shrink-0 mt-1"></i>
+                <div>
+                    <h2 class="text-red-200 font-bold mb-1">Attention : supprimer le compte ne résilie pas l'abonnement</h2>
+                    <p class="text-sm text-red-200/80">
+                        La suppression de votre compte Noctalia ne résilie pas votre abonnement Google Play. Pour le résilier, rendez-vous dans
+                        <strong>Google Play &gt; Paiements et abonnements &gt; Abonnements</strong>.
+                    </p>
+                </div>
+            </div>
+
             <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
                 <h2 class="text-2xl font-serif text-white mb-4">1. Suppression de votre compte depuis l'application</h2>
                 <p>Lorsque cette fonctionnalité est disponible dans l'application Noctalia, vous pouvez supprimer votre compte directement depuis l'interface :</p>

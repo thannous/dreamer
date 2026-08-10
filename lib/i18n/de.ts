@@ -1234,6 +1234,36 @@ const translations: Record<string, string> = {
     'symbols.home_explore_button': 'Symbole entdecken',
     'symbols.home_search_hint': 'Wasser, Haus, Schlange suchen...',
     'symbols.open_dictionary': 'Alle Symbole ansehen',
+
+    // Language selector
+    'settings.language.option.pt.label': 'Portugiesisch (Brasilien)',
+    'settings.language.option.pt.description': 'Träume auf Portugiesisch',
+
+    // Legal links & account deletion
+    'settings.legal.sectionTitle': 'Rechtliches',
+    'settings.legal.privacyPolicy': 'Datenschutzerklärung',
+    'settings.legal.termsOfUse': 'Nutzungsbedingungen',
+    'settings.legal.accountDeletion': 'Konto löschen',
+    'settings.deleteAccount.title': 'Konto löschen',
+    'settings.deleteAccount.description': 'Löscht dein Konto und alle zugehörigen Daten endgültig.',
+    'settings.deleteAccount.confirmTitle': 'Konto löschen?',
+    'settings.deleteAccount.confirmMessage': 'Diese Aktion ist unwiderruflich. Deine Träume und deine Daten werden endgültig gelöscht.',
+    'settings.deleteAccount.subscriptionWarning': 'Das Löschen des Kontos kündigt dein Google-Play-Abonnement NICHT. Kündige es unter Google Play > Zahlungen und Abos.',
+    'settings.deleteAccount.confirmButton': 'Endgültig löschen',
+    'settings.deleteAccount.successTitle': 'Konto gelöscht',
+    'settings.deleteAccount.successMessage': 'Dein Konto und deine Daten wurden gelöscht.',
+    'settings.deleteAccount.errorMessage': 'Wir konnten dein Konto nicht löschen. Bitte versuche es erneut oder kontaktiere contact@noctalia.app.',
+
+    // Journal detail accessibility
+    'journalDetail.a11y.editTranscript': 'Transkript bearbeiten',
+    'journalDetail.a11y.toggleFavorite': 'Favorit umschalten',
+    'journalDetail.a11y.shareDream': 'Traum teilen',
+    'journalDetail.a11y.deleteDream': 'Traum löschen',
+    'journalDetail.a11y.copyShareText': 'Teilen-Text kopieren',
+    'journalDetail.a11y.closeShareModal': 'Teilen-Dialog schließen',
+
+    // Notification reminder title
+    'notifications.reminder.title': 'Traumtagebuch-Erinnerung',
   };
 
 export default translations;

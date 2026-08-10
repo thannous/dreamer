@@ -4,7 +4,7 @@ import { EMOTION_FAMILY_IDS } from '../dreamEmotions';
 import { getEmotionFamilyLabel } from '../dreamLabels';
 import { getTranslator, loadTranslations } from '../i18n';
 
-const languages = ['en', 'fr', 'es', 'de', 'it'] as const;
+const languages = ['en', 'fr', 'es', 'de', 'it', 'pt'] as const;
 
 describe('getEmotionFamilyLabel', () => {
   it('[B] Given a family id When the label is resolved Then it goes through the stats.emotion.family namespace', () => {
@@ -12,7 +12,7 @@ describe('getEmotionFamilyLabel', () => {
     // (mirroring DREAM_THEME_LABEL_KEYS), so its coverage is proved through this loop
     // rather than through Object.keys: every canonical id must resolve, and it must resolve
     // under `stats.emotion.family.<id>`.
-    // Revert: point any id at `stats.emotion.<id>` — that id fails by name, and the 12 x 5
+    // Revert: point any id at `stats.emotion.<id>` — that id fails by name, and the 12 x 6
     // translated strings would otherwise have gone dead silently.
     const t = (key: string) => `[[${key}]]`;
 
@@ -23,7 +23,7 @@ describe('getEmotionFamilyLabel', () => {
     expect(EMOTION_FAMILY_IDS).toHaveLength(12);
   });
 
-  it('[B] Given every family When the catalogue is loaded Then a real label resolves in all five languages', async () => {
+  it('[B] Given every family When the catalogue is loaded Then a real label resolves in all six languages', async () => {
     await Promise.all(languages.map((language) => loadTranslations(language)));
 
     for (const language of languages) {

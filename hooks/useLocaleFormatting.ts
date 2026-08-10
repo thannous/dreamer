@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import { useLanguage } from '@/context/LanguageContext';
+import { getFormattingLocale } from '@/lib/locale';
 import {
   formatDreamDate as baseFormatDreamDate,
   formatDreamTime as baseFormatDreamTime,
@@ -13,8 +14,8 @@ import {
 } from '@/lib/dateUtils';
 
 export function useLocaleFormatting() {
-  const { locale } = useLanguage();
-  const localeTag = locale.languageTag;
+  const { language } = useLanguage();
+  const localeTag = getFormattingLocale(language);
 
   const formatDate = useCallback(
     (value: Date | number, options?: Intl.DateTimeFormatOptions) => {

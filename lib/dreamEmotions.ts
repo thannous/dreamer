@@ -221,6 +221,20 @@ export const EMOTION_FAMILY_LEXICON: EmotionLexicon = {
     serenity: ['calma*', 'tranquill*', 'pace', 'seren*', 'sollievo', 'conforto', 'sicurezza', 'rassicur*', 'fiducia', 'accettazione', 'quiete', 'riposo', 'benessere'],
     guilt: ['colpa*', 'colpevol*', 'vergogna*', 'vergognos*', 'rimorso', 'rimpianto', 'imbarazz*', 'impostor*', 'smascherat*', 'inadeguat*', 'umiliazione', 'umilia*', 'indegnita'],
   },
+  pt: {
+    fear: ['medo*', 'amedrontad*', 'apreensiv*', 'assustad*', 'aterrorizad*', 'inseguranc*', 'receio*'],
+    loneliness: ['solidao', 'sozinh*', 'isolad*', 'rejeitad*', 'sem companhia'],
+    weariness: ['cansaco', 'esgotad*', 'exaust*', 'fadiga*', 'tedio*', 'entediad*'],
+    helplessness: ['desespero', 'sem saida', 'sem esperanca', 'sem controle', 'perda de controle', 'vulneravel*'],
+    irritation: ['irritaca*', 'raiva', 'frustraca*', 'aborrecim*', 'zangad*'],
+    disorientation: ['desnortead*', 'estranheza', 'tontura', 'vertigem', 'atordoa*', 'entorpecim*'],
+    urgency: ['pressa', 'estress*', 'tensao', 'agitaca*', 'atrasad*', 'sem tempo', 'apressad*'],
+    tenderness: ['afeto', 'carinho*', 'saudade', 'cumplicidade', 'afetiv*', 'apegad*'],
+    grief: ['luto', 'perda', 'dor', 'sofriment*', 'choro*', 'magoa*', 'pesar*'],
+    joy: ['empolgaca*', 'orgulho', 'esperanca', 'liberdade', 'diversao', 'animad*', 'maravilhad*'],
+    serenity: ['sossego', 'bem estar', 'confianca', 'aceitaca*', 'relaxad*'],
+    guilt: ['vergonha*', 'remorso', 'arrependim*', 'humilhaca*', 'inadequaca*', 'expost*', 'envergonhad*'],
+  },
 };
 
 // ─── Lazy global index + matcher ─────────────────────────────────────────────
@@ -293,6 +307,7 @@ const NEGATORS = new Set([
   'sin', 'ningun', 'ninguna', 'nunca',
   'ohne', 'kein', 'keine', 'keinen', 'nie', 'niemals',
   'senza', 'nessun', 'nessuna', 'mai',
+  'sem', 'nenhum', 'nenhuma', 'nem',
 ]);
 
 function matchesAt(tokens: string[], at: number, fragment: LexiconFragment): boolean {

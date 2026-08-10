@@ -1,19 +1,27 @@
 import { SUPPORTED_APP_LANGUAGES } from './language';
 import type { AppLanguage } from './types';
 
+/** BCP 47 tag used for each language the app ships. */
+const APP_LANGUAGE_TAGS: Record<AppLanguage, string> = {
+  en: 'en-US',
+  fr: 'fr-FR',
+  es: 'es-ES',
+  de: 'de-DE',
+  it: 'it-IT',
+  // Brazilian Portuguese: the only Portuguese variant the app ships.
+  pt: 'pt-BR',
+};
+
 export function getTranscriptionLocale(language: AppLanguage): string {
-  switch (language) {
-    case 'fr':
-      return 'fr-FR';
-    case 'es':
-      return 'es-ES';
-    case 'de':
-      return 'de-DE';
-    case 'it':
-      return 'it-IT';
-    default:
-      return 'en-US';
-  }
+  return APP_LANGUAGE_TAGS[language];
+}
+
+/**
+ * Locale used to format dates, times and numbers. Formatting follows the
+ * language selected in the app, not the device locale.
+ */
+export function getFormattingLocale(language: AppLanguage): string {
+  return APP_LANGUAGE_TAGS[language];
 }
 
 /**

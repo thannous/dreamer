@@ -1235,6 +1235,36 @@ const translations: Record<string, string> = {
     'symbols.home_explore_button': 'Explorer les symboles',
     'symbols.home_search_hint': 'Rechercher eau, maison, serpent...',
     'symbols.open_dictionary': 'Voir tous les symboles',
+
+    // Language selector
+    'settings.language.option.pt.label': 'Portugais (Brésil)',
+    'settings.language.option.pt.description': 'Rêvez en portugais',
+
+    // Legal links & account deletion
+    'settings.legal.sectionTitle': 'Informations légales',
+    'settings.legal.privacyPolicy': 'Politique de confidentialité',
+    'settings.legal.termsOfUse': 'Conditions d’utilisation',
+    'settings.legal.accountDeletion': 'Supprimer le compte',
+    'settings.deleteAccount.title': 'Supprimer le compte',
+    'settings.deleteAccount.description': 'Supprime définitivement votre compte et toutes les données associées.',
+    'settings.deleteAccount.confirmTitle': 'Supprimer votre compte ?',
+    'settings.deleteAccount.confirmMessage': 'Cette action est irréversible. Vos rêves et vos données seront définitivement supprimés.',
+    'settings.deleteAccount.subscriptionWarning': 'La suppression du compte NE résilie PAS votre abonnement Google Play. Annulez-le dans Google Play > Paiements et abonnements.',
+    'settings.deleteAccount.confirmButton': 'Supprimer définitivement',
+    'settings.deleteAccount.successTitle': 'Compte supprimé',
+    'settings.deleteAccount.successMessage': 'Votre compte et vos données ont été supprimés.',
+    'settings.deleteAccount.errorMessage': 'Impossible de supprimer votre compte. Réessayez ou contactez contact@noctalia.app.',
+
+    // Journal detail accessibility
+    'journalDetail.a11y.editTranscript': 'Modifier la transcription',
+    'journalDetail.a11y.toggleFavorite': 'Basculer le favori',
+    'journalDetail.a11y.shareDream': 'Partager le rêve',
+    'journalDetail.a11y.deleteDream': 'Supprimer le rêve',
+    'journalDetail.a11y.copyShareText': 'Copier le texte de partage',
+    'journalDetail.a11y.closeShareModal': 'Fermer la fenêtre de partage',
+
+    // Notification reminder title
+    'notifications.reminder.title': 'Rappel du journal de rêves',
   };
 
 export default translations;

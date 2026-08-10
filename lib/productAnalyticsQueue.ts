@@ -8,7 +8,7 @@ export type ProductAnalyticsEnvelope = {
   journey_id: string | null;
   platform: 'android' | 'ios' | 'web';
   app_version: string;
-  locale: 'fr' | 'en' | 'es' | 'de' | 'it';
+  locale: 'fr' | 'en' | 'es' | 'de' | 'it' | 'pt';
   properties: Record<string, ProductAnalyticsPrimitive>;
 };
 

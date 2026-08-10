@@ -26,6 +26,11 @@ export const Alert = {
   alert: () => {},
 };
 
+export const Linking = {
+  openURL: (_url: string): Promise<void> => Promise.resolve(),
+  canOpenURL: (_url: string): Promise<boolean> => Promise.resolve(true),
+};
+
 export const ActivityIndicator = (props: any) =>
   React.createElement('div', { ...props, 'data-testid': props?.testID ?? props?.['data-testid'] });
 

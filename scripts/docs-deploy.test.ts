@@ -92,7 +92,7 @@ describe('docs-deploy helpers', () => {
 
   it('stages runtime files while excluding source and audit artifacts', () => {
     const docsDir = path.join(tmpRoot, 'docs');
-    for (const directory of ['css', 'js', 'en', 'fr', 'es', 'de', 'it', 'scripts', 'data']) {
+    for (const directory of ['css', 'js', 'en', 'fr', 'es', 'de', 'it', 'pt-br', 'scripts', 'data']) {
       fs.mkdirSync(path.join(docsDir, directory), { recursive: true });
     }
     for (const fileName of [
@@ -107,7 +107,7 @@ describe('docs-deploy helpers', () => {
     }
     fs.writeFileSync(path.join(docsDir, 'css', 'site.css'), 'body{}', 'utf8');
     fs.writeFileSync(path.join(docsDir, 'js', 'site.js'), 'void 0;', 'utf8');
-    for (const lang of ['en', 'fr', 'es', 'de', 'it']) {
+    for (const lang of ['en', 'fr', 'es', 'de', 'it', 'pt-br']) {
       fs.writeFileSync(path.join(docsDir, lang, 'index.html'), `<h1>${lang}</h1>`, 'utf8');
     }
     fs.writeFileSync(path.join(docsDir, 'en', 'about.html'), '<h1>About</h1>', 'utf8');
@@ -120,6 +120,7 @@ describe('docs-deploy helpers', () => {
 
     expect(fs.existsSync(path.join(staging.deployDir, 'index.html'))).toBe(true);
     expect(fs.existsSync(path.join(staging.deployDir, 'css', 'site.css'))).toBe(true);
+    expect(fs.existsSync(path.join(staging.deployDir, 'pt-br', 'index.html'))).toBe(true);
     expect(fs.existsSync(path.join(staging.deployDir, 'AGENTS.md'))).toBe(false);
     expect(fs.existsSync(path.join(staging.deployDir, 'scripts'))).toBe(false);
     expect(fs.existsSync(path.join(staging.deployDir, 'data'))).toBe(false);

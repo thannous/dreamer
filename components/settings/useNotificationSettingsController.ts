@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, AppState, Platform } from 'react-native';
 
 import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/context/LanguageContext';
+import { getFormattingLocale } from '@/lib/locale';
 import type { NotificationSettings } from '@/lib/types';
 import {
   cancelAllNotifications,
@@ -88,6 +90,8 @@ export function useNotificationSettingsController(): NotificationSettingsControl
   const [hasPermissions, setHasPermissions] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { t } = useTranslation();
+  const { language } = useLanguage();
+  const formattingLocale = getFormattingLocale(language);
 
   const refreshPermissions = useCallback(async () => {
     if (unsupported) {
@@ -279,10 +283,10 @@ export function useNotificationSettingsController(): NotificationSettingsControl
     }
 
     return t('notifications.next_reminder', {
-      day: next.date.toLocaleDateString('default', { weekday: 'long' }),
+      day: next.date.toLocaleDateString(formattingLocale, { weekday: 'long' }),
       time: next.time,
     });
-  }, [settings, t]);
+  }, [settings, t, formattingLocale]);
 
   return {
     settings,

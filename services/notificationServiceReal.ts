@@ -1,9 +1,12 @@
 import * as Notifications from 'expo-notifications';
+import { getLocales } from 'expo-localization';
 import { Platform } from 'react-native';
 
-import { getTranslator } from '@/lib/i18n';
+import { getTranslator, loadTranslations } from '@/lib/i18n';
+import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
 import type { RitualId } from '@/lib/inspirationRituals';
-import type { NotificationSettings } from '@/lib/types';
+import type { LanguagePreference, NotificationSettings } from '@/lib/types';
+import { getLanguagePreference } from '@/services/storageService';
 
 // Array of smart, motivational notification prompt keys
 const NOTIFICATION_PROMPT_KEYS = [
@@ -29,6 +32,27 @@ const NOTIFICATION_CHANNEL_ID = 'dream-reminders';
 
 type ReminderType = 'daily' | 'ritual';
 const REMINDER_TYPE_DATA_KEY = 'dreamerReminderType';
+
+type NotificationTranslator = ReturnType<typeof getTranslator>;
+
+/**
+ * Resolve the user's chosen language (stored preference, 'auto' → system
+ * language) and return a translator with that pack already loaded.
+ * Falls back to English when storage or locale detection fails.
+ */
+async function getNotificationTranslator(): Promise<NotificationTranslator> {
+  let preference: LanguagePreference = 'auto';
+  try {
+    preference = await getLanguagePreference();
+  } catch {
+    // Keep 'auto' and fall back to the system language below.
+  }
+
+  const systemLanguage = normalizeAppLanguage(getLocales()[0]?.languageCode);
+  const language = resolveEffectiveLanguage(preference, systemLanguage);
+  await loadTranslations(language);
+  return getTranslator(language);
+}
 
 const getTimeParts = (time: string): { hours: number; minutes: number } => {
   const [hours, minutes] = time.split(':').map(Number);
@@ -152,7 +176,7 @@ export async function requestNotificationPermissions(): Promise<boolean> {
   // one notification channel exists. Create it before reading or requesting
   // permissions so first-run users can actually receive the system prompt.
   if (Platform.OS === 'android') {
-    const t = getTranslator();
+    const t = await getNotificationTranslator();
     await Notifications.setNotificationChannelAsync(NOTIFICATION_CHANNEL_ID, {
       name: t('notifications.channel_name'),
       importance: Notifications.AndroidImportance.HIGH,
@@ -182,14 +206,12 @@ export async function requestNotificationPermissions(): Promise<boolean> {
 /**
  * Get a random notification prompt from the array
  */
-function getRandomPrompt(): string {
-  const t = getTranslator();
+function getRandomPrompt(t: NotificationTranslator): string {
   const randomIndex = Math.floor(Math.random() * NOTIFICATION_PROMPT_KEYS.length);
   return t(NOTIFICATION_PROMPT_KEYS[randomIndex]);
 }
 
-function getRitualReminderBody(ritualId: RitualId): string {
-  const t = getTranslator();
+function getRitualReminderBody(t: NotificationTranslator, ritualId: RitualId): string {
   switch (ritualId) {
     case 'starter':
       return t('notifications.ritual.body.starter');
@@ -198,7 +220,7 @@ function getRitualReminderBody(ritualId: RitualId): string {
     case 'lucid':
       return t('notifications.ritual.body.lucid');
     default:
-      return getRandomPrompt();
+      return getRandomPrompt(t);
   }
 }
 
@@ -223,8 +245,10 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
     return;
   }
 
+  const t = await getNotificationTranslator();
+
   const baseContent: Omit<Notifications.NotificationContentInput, 'body'> = {
-    title: 'Dream Journal Reminder',
+    title: t('notifications.reminder.title'),
     data: { url: '/recording', [REMINDER_TYPE_DATA_KEY]: 'daily' },
     sound: true,
     priority: Notifications.AndroidNotificationPriority.HIGH,
@@ -234,7 +258,7 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
     await scheduleWeeklyRemindersForDays({
       days: WEEKDAY_WEEKDAYS,
       time: settings.weekdayTime,
-      content: { ...baseContent, body: getRandomPrompt() },
+      content: { ...baseContent, body: getRandomPrompt(t) },
     });
   }
 
@@ -242,7 +266,7 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
     await scheduleWeeklyRemindersForDays({
       days: WEEKEND_WEEKDAYS,
       time: settings.weekendTime,
-      content: { ...baseContent, body: getRandomPrompt() },
+      content: { ...baseContent, body: getRandomPrompt(t) },
     });
   }
 
@@ -271,11 +295,11 @@ export async function scheduleRitualReminder(settings: NotificationSettings, rit
     return;
   }
 
-  const t = getTranslator();
+  const t = await getNotificationTranslator();
 
   const baseContent: Notifications.NotificationContentInput = {
     title: t('inspiration.ritual.title'),
-    body: getRitualReminderBody(ritualId),
+    body: getRitualReminderBody(t, ritualId),
     data: { url: '/recording', ritualId, [REMINDER_TYPE_DATA_KEY]: 'ritual' },
     sound: true,
     priority: Notifications.AndroidNotificationPriority.HIGH,
@@ -314,10 +338,12 @@ export async function sendTestNotification(): Promise<void> {
     return;
   }
 
+  const t = await getNotificationTranslator();
+
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: 'Dream Journal Reminder',
-      body: getRandomPrompt(),
+      title: t('notifications.reminder.title'),
+      body: getRandomPrompt(t),
       data: { url: '/recording', test: true },
       sound: true,
       priority: Notifications.AndroidNotificationPriority.HIGH,

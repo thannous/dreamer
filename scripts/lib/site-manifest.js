@@ -2,6 +2,7 @@ const path = require('path');
 const {
   DATA_DIR,
   STATIC_DATA_DIR,
+  getCollectionLanguages,
   siteConfig,
   staticPagesConfig,
 } = require('./docs-site-config');
@@ -18,12 +19,18 @@ function getStaticPageLocalePath(page, lang) {
   return slug ? `/${lang}/${slug}` : `/${lang}/`;
 }
 
+function staticPageLanguages(page) {
+  // A static page exists exactly in the languages declared in its `slugs` map.
+  // There is no implicit fallback to the default language.
+  return siteConfig.languages.filter((lang) => page.slugs[lang] != null);
+}
+
 function buildStaticPagesCollection() {
   const entries = {};
 
   for (const page of staticPagesConfig.pages) {
     const locales = {};
-    for (const lang of siteConfig.languages) {
+    for (const lang of staticPageLanguages(page)) {
       const slug = page.slugs[lang];
       locales[lang] = {
         slug,
@@ -35,7 +42,7 @@ function buildStaticPagesCollection() {
       id: page.pageId,
       type: page.layout,
       canonicalLanguage: siteConfig.defaultLanguage,
-      canonicalSlug: page.slugs[siteConfig.defaultLanguage],
+      canonicalSlug: page.slugs[siteConfig.defaultLanguage] ?? null,
       locales,
     };
   }
@@ -54,6 +61,7 @@ function buildBlogCollection() {
 function buildGuideCollection() {
   const symbolI18n = readJson(path.join(STATIC_DATA_DIR, 'symbol-i18n.json'));
   const curation = readJson(path.join(STATIC_DATA_DIR, 'curation-pages.json'));
+  const guideLanguages = getCollectionLanguages('guides');
   const entries = {};
 
   entries['guide.index'] = {
@@ -62,7 +70,7 @@ function buildGuideCollection() {
     canonicalLanguage: siteConfig.defaultLanguage,
     canonicalSlug: '',
     locales: Object.fromEntries(
-      siteConfig.languages.map((lang) => [
+      guideLanguages.map((lang) => [
         lang,
         {
           slug: '',
@@ -78,7 +86,7 @@ function buildGuideCollection() {
     canonicalLanguage: siteConfig.defaultLanguage,
     canonicalSlug: symbolI18n.en.dictionary_slug,
     locales: Object.fromEntries(
-      siteConfig.languages.map((lang) => [
+      guideLanguages.map((lang) => [
         lang,
         {
           slug: symbolI18n[lang].dictionary_slug,
@@ -95,7 +103,7 @@ function buildGuideCollection() {
       canonicalLanguage: siteConfig.defaultLanguage,
       canonicalSlug: page.slugs[siteConfig.defaultLanguage],
       locales: Object.fromEntries(
-        siteConfig.languages.map((lang) => [
+        guideLanguages.map((lang) => [
           lang,
           {
             slug: page.slugs[lang],
@@ -115,6 +123,7 @@ function buildGuideCollection() {
 function buildSymbolCollection() {
   const symbolsData = readJson(path.join(DATA_DIR, 'dream-symbols.json'));
   const symbolI18n = readJson(path.join(STATIC_DATA_DIR, 'symbol-i18n.json'));
+  const symbolLanguages = getCollectionLanguages('symbols');
   const entries = {};
 
   for (const symbol of symbolsData.symbols || []) {
@@ -124,7 +133,7 @@ function buildSymbolCollection() {
       canonicalLanguage: siteConfig.defaultLanguage,
       canonicalSlug: symbol.en.slug,
       locales: Object.fromEntries(
-        siteConfig.languages.map((lang) => [
+        symbolLanguages.map((lang) => [
           lang,
           {
             slug: symbol[lang].slug,
@@ -142,7 +151,7 @@ function buildSymbolCollection() {
       canonicalLanguage: siteConfig.defaultLanguage,
       canonicalSlug: symbolI18n.en.category_slugs[categoryId],
       locales: Object.fromEntries(
-        siteConfig.languages.map((lang) => [
+        symbolLanguages.map((lang) => [
           lang,
           {
             slug: symbolI18n[lang].category_slugs[categoryId],
@@ -186,4 +195,5 @@ function buildEntryIndex(manifest) {
 module.exports = {
   buildEntryIndex,
   buildSiteManifest,
+  staticPageLanguages,
 };

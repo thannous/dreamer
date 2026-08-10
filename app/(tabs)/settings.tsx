@@ -19,6 +19,7 @@ import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeader } from '@/components/inspiration/PageHeader';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
+import { LegalSection } from '@/components/settings/LegalSection';
 import { SettingsFieldGroup } from '@/components/settings/SettingsFieldGroup';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -123,6 +124,12 @@ export default function SettingsScreen() {
     </View>
   );
 
+  const legal = (
+    <View style={styles.rnSlot} testID="settings-legal-rn-content">
+      <LegalSection />
+    </View>
+  );
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -155,6 +162,7 @@ export default function SettingsScreen() {
               ? t('settings.app_version', { version: appVersion })
               : undefined}
             bottomPadding={bottomPadding}
+            legal={legal}
             onOpenSubscription={handleOpenPaywall}
             quota={quota}
             returningGuestBlocked={returningGuestBlocked}

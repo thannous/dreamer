@@ -29,7 +29,9 @@ function makeManifest() {
   return {
     schemaVersion: 1,
     defaultLanguage: 'en',
-    languages: [...EXPECTED_LANGUAGES],
+    // The site manifest lists every site language (including partial-coverage
+    // ones); hub entries only exist in the blog collection languages.
+    languages: ['en', 'fr', 'es', 'de', 'it', 'pt-br'],
     collections: {
       blog: {
         entries: Object.fromEntries(
@@ -232,10 +234,10 @@ describe('content hub registry', () => {
     }
   );
 
-  it('rejects a manifest that does not provide exactly the five supported languages', () => {
+  it('rejects a manifest that does not provide exactly the site languages', () => {
     const manifest = makeManifest();
     manifest.languages = ['en', 'fr', 'es', 'de'];
-    expectInvalid({ manifest }, /languages must be exactly en, fr, es, de, it/);
+    expectInvalid({ manifest }, /languages must be exactly en, fr, es, de, it, pt-br/);
   });
 
   it('rejects unknown pageIds and incomplete localized entries', () => {

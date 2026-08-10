@@ -198,7 +198,7 @@ describe('dreamEmotions lexicon', () => {
     }
   });
 
-  it('[A4] maps every fragment to exactly one family across all five languages', () => {
+  it('[A4] maps every fragment to exactly one family across all six languages', () => {
     // GLOBAL uniqueness is what makes a language-free matcher safe.
     // Revert: add `'hate'` to fr urgency AND `'hate'` to en irritation.
     const owners = new Map<string, Set<EmotionFamilyId>>();

@@ -38,6 +38,18 @@
         <p class="text-lg text-purple-200/80 mb-10">You can delete your Noctalia account at any time. Deletion removes your personal data from active systems, subject to legal retention duties (e.g., logs or invoices kept as required by law).</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
+            <!-- Important notice: subscription -->
+            <div class="p-6 rounded-2xl bg-red-900/20 border border-red-500/20 flex gap-4 items-start">
+                <i data-lucide="alert-triangle" class="w-6 h-6 text-red-400 shrink-0 mt-1"></i>
+                <div>
+                    <h2 class="text-red-200 font-bold mb-1">Important: deleting your account does not cancel your subscription</h2>
+                    <p class="text-sm text-red-200/80">
+                        Deleting your Noctalia account does not cancel your Google Play subscription. To cancel it, go to
+                        <strong>Google Play &gt; Payments &amp; subscriptions &gt; Subscriptions</strong>.
+                    </p>
+                </div>
+            </div>
+
             <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
                 <h2 class="text-2xl font-serif text-white mb-4">Delete directly in the app</h2>
                 <ol class="list-decimal pl-5 space-y-3">
