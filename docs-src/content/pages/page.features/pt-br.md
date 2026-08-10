@@ -29,7 +29,7 @@
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Funcionalidades do Noctalia\",\"description\":\"Registro por voz ou texto, transcrição, interpretação de sonhos inspirada em Jung, símbolos, imagem gerada, perguntas guiadas, estatísticas e privacidade.\",\"url\":\"https://noctalia.app/pt-br/funcionalidades\",\"inLanguage\":\"pt-br\",\"datePublished\":\"2026-08-09\",\"dateModified\":\"2026-08-09\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Funcionalidades do Noctalia\",\"description\":\"Registro por voz ou texto, transcrição, interpretação de sonhos inspirada em Jung, símbolos, imagem gerada, perguntas guiadas, estatísticas e privacidade.\",\"url\":\"https://noctalia.app/pt-br/funcionalidades\",\"inLanguage\":\"pt-BR\",\"datePublished\":\"2026-08-09\",\"dateModified\":\"2026-08-09\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\",\"name\":\"Noctalia\",\"url\":\"https://noctalia.app\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Início\",\"item\":\"https://noctalia.app/pt-br/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Funcionalidades\",\"item\":\"https://noctalia.app/pt-br/funcionalidades\"}]}"
   ],

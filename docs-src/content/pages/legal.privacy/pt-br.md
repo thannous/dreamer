@@ -29,7 +29,7 @@
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Política de privacidade\",\n    \"url\": \"https://noctalia.app/pt-br/politica-de-privacidade\",\n    \"inLanguage\": \"pt-br\",\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"name\": \"Política de privacidade\",\n    \"url\": \"https://noctalia.app/pt-br/politica-de-privacidade\",\n    \"inLanguage\": \"pt-BR\",\n    \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n    }\n}",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 1,\n                    \"name\": \"Início\",\n                    \"item\": \"https://noctalia.app/pt-br/\"\n                },\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 2,\n                    \"name\": \"Política de Privacidade\",\n                    \"item\": \"https://noctalia.app/pt-br/politica-de-privacidade\"\n                }\n            ]\n        }"
   ],
   "activeNav": null
