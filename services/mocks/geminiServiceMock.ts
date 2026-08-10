@@ -43,8 +43,11 @@ function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// Fixed analysis duration so the loading experience stays visible in mock mode.
+const MOCK_ANALYSIS_DURATION_MS = 5000;
+
 /**
- * Mock dream analysis (1-3 seconds)
+ * Mock dream analysis (fixed 5 seconds)
  */
 export async function analyzeDream(
   transcript: string,
@@ -53,7 +56,7 @@ export async function analyzeDream(
   _context?: AnalysisRequestContext
 ): Promise<AnalysisResult> {
   console.log('[MOCK] analyzeDream called with transcript:', transcript.slice(0, 50) + '...', 'lang:', lang);
-  await delay(1000 + Math.random() * 2000); // 1-3 seconds
+  await delay(MOCK_ANALYSIS_DURATION_MS);
 
   const result = generateAnalysisResult(transcript);
   console.log('[MOCK] analyzeDream returning:', result.title);
@@ -113,7 +116,7 @@ export async function analyzeDreamWithImage(
   _context?: AnalysisRequestContext
 ): Promise<AnalysisResult & { imageUrl: string }> {
   console.log('[MOCK] analyzeDreamWithImage called with lang:', lang);
-  await delay(3000 + Math.random() * 2000); // 3-5 seconds
+  await delay(MOCK_ANALYSIS_DURATION_MS);
 
   const result = generateAnalysisResult(transcript);
   const imageUrl = getRandomImageForTheme(result.theme);
@@ -135,11 +138,11 @@ export async function analyzeDreamWithImageResilient(
   console.log('[MOCK] analyzeDreamWithImageResilient called with lang:', lang);
 
   // Simulate progressive delay (analysis phase)
-  await delay(2000);
+  await delay(MOCK_ANALYSIS_DURATION_MS / 2);
   const result = generateAnalysisResult(transcript);
 
   // Simulate image generation phase
-  await delay(2000 + Math.random() * 1000); // Additional 2-3 seconds
+  await delay(MOCK_ANALYSIS_DURATION_MS / 2);
   const imageUrl = getRandomImageForTheme(result.theme);
 
   console.log('[MOCK] analyzeDreamWithImageResilient returning with image:', imageUrl);

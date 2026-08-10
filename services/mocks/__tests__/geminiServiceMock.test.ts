@@ -28,7 +28,7 @@ describe('geminiServiceMock', () => {
       const transcript = 'I was flying over mountains';
       const resultPromise = analyzeDream(transcript, 'en');
 
-      await jest.advanceTimersByTimeAsync(3000);
+      await jest.advanceTimersByTimeAsync(5000);
 
       const result = await resultPromise;
 
@@ -44,7 +44,7 @@ describe('geminiServiceMock', () => {
       const transcript = 'A dream about water';
       const resultPromise = analyzeDream(transcript, 'en');
 
-      await jest.advanceTimersByTimeAsync(3000);
+      await jest.advanceTimersByTimeAsync(5000);
       await resultPromise;
 
       expect(console.log).toHaveBeenCalledWith(

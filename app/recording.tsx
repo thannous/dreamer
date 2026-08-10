@@ -2156,7 +2156,10 @@ export default function RecordingScreen() {
         ) : null}
       </View>
       <PostSaveOfferSheet
-        visible={Boolean(onboardingOfferDream) && !showQuotaLimitSheet}
+        // Hide the sheet while the analysis runs so the lunar progress
+        // experience (and the reveal) stays visible; error paths reset the
+        // progress to IDLE, which brings the sheet back with its retry state.
+        visible={Boolean(onboardingOfferDream) && !showQuotaLimitSheet && !isAnalyzing}
         kind={onboardingOfferKind}
         quotaState={analysisOfferQuotaState}
         remaining={usage?.analysis.remaining}
