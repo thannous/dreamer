@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "6176a248ca6b0da40b7c5c8f10d3a9d359440de2",
+  "sourceRevision": "8241cbefbbb981934f586e9a71a309cfde3e6019",
   "counts": {
-    "logicalPages": 235,
-    "manifestPaths": 1175,
-    "uniqueManifestPaths": 1175,
-    "canonicalPages": 1175,
-    "sitemapEntries": 1175,
-    "allHtmlOutputPaths": 1180
+    "logicalPages": 237,
+    "manifestPaths": 1186,
+    "uniqueManifestPaths": 1186,
+    "canonicalPages": 1186,
+    "sitemapEntries": 1186,
+    "allHtmlOutputPaths": 1191
   },
   "manifestRoutes": [
     {
@@ -3112,6 +3112,16 @@
     },
     {
       "collection": "pages",
+      "pageId": "legal.account-deletion",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "account-deletion",
+      "lang": "pt-br",
+      "slug": "exclusao-de-conta",
+      "path": "/pt-br/exclusao-de-conta"
+    },
+    {
+      "collection": "pages",
       "pageId": "legal.notice",
       "type": "content",
       "canonicalLanguage": "en",
@@ -3212,6 +3222,16 @@
     },
     {
       "collection": "pages",
+      "pageId": "legal.privacy",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "privacy-policy",
+      "lang": "pt-br",
+      "slug": "politica-de-privacidade",
+      "path": "/pt-br/politica-de-privacidade"
+    },
+    {
+      "collection": "pages",
       "pageId": "legal.terms",
       "type": "content",
       "canonicalLanguage": "en",
@@ -3259,6 +3279,16 @@
       "lang": "it",
       "slug": "termini",
       "path": "/it/termini"
+    },
+    {
+      "collection": "pages",
+      "pageId": "legal.terms",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "terms",
+      "lang": "pt-br",
+      "slug": "termos-de-uso",
+      "path": "/pt-br/termos-de-uso"
     },
     {
       "collection": "pages",
@@ -3362,6 +3392,16 @@
     },
     {
       "collection": "pages",
+      "pageId": "page.ai-dream-interpretation-app",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "ai-dream-interpretation-app",
+      "lang": "pt-br",
+      "slug": "app-interpretacao-de-sonhos-ia",
+      "path": "/pt-br/app-interpretacao-de-sonhos-ia"
+    },
+    {
+      "collection": "pages",
       "pageId": "page.alternatives",
       "type": "content",
       "canonicalLanguage": "en",
@@ -3459,6 +3499,16 @@
       "lang": "it",
       "slug": "app-analisi-sogni-android",
       "path": "/it/app-analisi-sogni-android"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.android-dream-analysis-app",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "android-dream-analysis-app",
+      "lang": "pt-br",
+      "slug": "app-android-analise-de-sonhos",
+      "path": "/pt-br/app-android-analise-de-sonhos"
     },
     {
       "collection": "pages",
@@ -3562,6 +3612,16 @@
     },
     {
       "collection": "pages",
+      "pageId": "page.dream-dictionary-app",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "dream-dictionary-app",
+      "lang": "pt-br",
+      "slug": "app-dicionario-de-sonhos",
+      "path": "/pt-br/app-dicionario-de-sonhos"
+    },
+    {
+      "collection": "pages",
       "pageId": "page.dreamapp-alternative",
       "type": "content",
       "canonicalLanguage": "en",
@@ -3612,6 +3672,26 @@
     },
     {
       "collection": "pages",
+      "pageId": "page.faq",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": null,
+      "lang": "pt-br",
+      "slug": "perguntas-frequentes",
+      "path": "/pt-br/perguntas-frequentes"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.features",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": null,
+      "lang": "pt-br",
+      "slug": "funcionalidades",
+      "path": "/pt-br/funcionalidades"
+    },
+    {
+      "collection": "pages",
       "pageId": "page.home",
       "type": "landing",
       "canonicalLanguage": "en",
@@ -3659,6 +3739,16 @@
       "lang": "it",
       "slug": "",
       "path": "/it/"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.home",
+      "type": "landing",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "",
+      "lang": "pt-br",
+      "slug": "",
+      "path": "/pt-br/"
     },
     {
       "collection": "pages",
@@ -3812,6 +3902,16 @@
     },
     {
       "collection": "pages",
+      "pageId": "page.pricing",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "pricing",
+      "lang": "pt-br",
+      "slug": "precos",
+      "path": "/pt-br/precos"
+    },
+    {
+      "collection": "pages",
       "pageId": "page.voice-dream-journal",
       "type": "content",
       "canonicalLanguage": "en",
@@ -3859,6 +3959,16 @@
       "lang": "it",
       "slug": "diario-dei-sogni-vocale",
       "path": "/it/diario-dei-sogni-vocale"
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.voice-dream-journal",
+      "type": "content",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "voice-dream-journal",
+      "lang": "pt-br",
+      "slug": "diario-de-sonhos-por-voz",
+      "path": "/pt-br/diario-de-sonhos-por-voz"
     },
     {
       "collection": "symbols",
@@ -12941,7 +13051,18 @@
     "docs/it/simboli/vulcano.html",
     "docs/it/simboli/zombie.html",
     "docs/it/stampa.html",
-    "docs/it/termini.html"
+    "docs/it/termini.html",
+    "docs/pt-br/app-android-analise-de-sonhos.html",
+    "docs/pt-br/app-dicionario-de-sonhos.html",
+    "docs/pt-br/app-interpretacao-de-sonhos-ia.html",
+    "docs/pt-br/diario-de-sonhos-por-voz.html",
+    "docs/pt-br/exclusao-de-conta.html",
+    "docs/pt-br/funcionalidades.html",
+    "docs/pt-br/index.html",
+    "docs/pt-br/perguntas-frequentes.html",
+    "docs/pt-br/politica-de-privacidade.html",
+    "docs/pt-br/precos.html",
+    "docs/pt-br/termos-de-uso.html"
   ],
   "canonicalPages": [
     {
@@ -33576,6 +33697,10 @@
           "href": "https://noctalia.app/it/eliminazione-account"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/exclusao-de-conta"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/account-deletion"
         }
@@ -33629,6 +33754,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/eliminazione-account"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/exclusao-de-conta"
         },
         {
           "hreflang": "x-default",
@@ -33686,6 +33815,10 @@
           "href": "https://noctalia.app/it/eliminazione-account"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/exclusao-de-conta"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/account-deletion"
         }
@@ -33739,6 +33872,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/eliminazione-account"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/exclusao-de-conta"
         },
         {
           "hreflang": "x-default",
@@ -33796,6 +33933,10 @@
           "href": "https://noctalia.app/it/eliminazione-account"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/exclusao-de-conta"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/account-deletion"
         }
@@ -33818,6 +33959,65 @@
           {
             "position": "2",
             "item": "https://noctalia.app/it/eliminazione-account"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "legal.account-deletion",
+      "lang": "pt-br",
+      "outputPath": "docs/pt-br/exclusao-de-conta.html",
+      "canonical": "https://noctalia.app/pt-br/exclusao-de-conta",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/konto-loeschen"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/account-deletion"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/eliminacion-cuenta"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/suppression-compte"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/eliminazione-account"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/exclusao-de-conta"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/account-deletion"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/pt-br/exclusao-de-conta",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/pt-br/exclusao-de-conta",
+          "id": "https://noctalia.app/pt-br/exclusao-de-conta",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/pt-br/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/pt-br/exclusao-de-conta"
           }
         ]
       ],
@@ -34126,6 +34326,10 @@
           "href": "https://noctalia.app/it/privacy-policy"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/politica-de-privacidade"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/privacy-policy"
         }
@@ -34179,6 +34383,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/privacy-policy"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/politica-de-privacidade"
         },
         {
           "hreflang": "x-default",
@@ -34236,6 +34444,10 @@
           "href": "https://noctalia.app/it/privacy-policy"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/politica-de-privacidade"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/privacy-policy"
         }
@@ -34289,6 +34501,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/privacy-policy"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/politica-de-privacidade"
         },
         {
           "hreflang": "x-default",
@@ -34346,6 +34562,10 @@
           "href": "https://noctalia.app/it/privacy-policy"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/politica-de-privacidade"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/privacy-policy"
         }
@@ -34368,6 +34588,65 @@
           {
             "position": "2",
             "item": "https://noctalia.app/it/privacy-policy"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "legal.privacy",
+      "lang": "pt-br",
+      "outputPath": "docs/pt-br/politica-de-privacidade.html",
+      "canonical": "https://noctalia.app/pt-br/politica-de-privacidade",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/datenschutz"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/privacy-policy"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/politica-privacidad"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/politique-confidentialite"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/privacy-policy"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/politica-de-privacidade"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/privacy-policy"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/pt-br/politica-de-privacidade",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/pt-br/politica-de-privacidade",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/pt-br/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/pt-br/politica-de-privacidade"
           }
         ]
       ],
@@ -34399,6 +34678,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/termini"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/termos-de-uso"
         },
         {
           "hreflang": "x-default",
@@ -34456,6 +34739,10 @@
           "href": "https://noctalia.app/it/termini"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/termos-de-uso"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/terms"
         }
@@ -34509,6 +34796,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/termini"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/termos-de-uso"
         },
         {
           "hreflang": "x-default",
@@ -34566,6 +34857,10 @@
           "href": "https://noctalia.app/it/termini"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/termos-de-uso"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/terms"
         }
@@ -34621,6 +34916,10 @@
           "href": "https://noctalia.app/it/termini"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/termos-de-uso"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/terms"
         }
@@ -34643,6 +34942,65 @@
           {
             "position": "2",
             "item": "https://noctalia.app/it/termini"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "legal.terms",
+      "lang": "pt-br",
+      "outputPath": "docs/pt-br/termos-de-uso.html",
+      "canonical": "https://noctalia.app/pt-br/termos-de-uso",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/agb"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/terms"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/terminos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/cgu"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/termini"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/termos-de-uso"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/terms"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/pt-br/termos-de-uso",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/pt-br/termos-de-uso",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/pt-br/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/pt-br/termos-de-uso"
           }
         ]
       ],
@@ -34916,6 +35274,10 @@
           "href": "https://noctalia.app/it/app-interpretazione-sogni-ai"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/ai-dream-interpretation-app"
         }
@@ -34969,6 +35331,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/app-interpretazione-sogni-ai"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia"
         },
         {
           "hreflang": "x-default",
@@ -35026,6 +35392,10 @@
           "href": "https://noctalia.app/it/app-interpretazione-sogni-ai"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/ai-dream-interpretation-app"
         }
@@ -35079,6 +35449,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/app-interpretazione-sogni-ai"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia"
         },
         {
           "hreflang": "x-default",
@@ -35136,6 +35510,10 @@
           "href": "https://noctalia.app/it/app-interpretazione-sogni-ai"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/ai-dream-interpretation-app"
         }
@@ -35158,6 +35536,65 @@
           {
             "position": "2",
             "item": "https://noctalia.app/it/app-interpretazione-sogni-ai"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.ai-dream-interpretation-app",
+      "lang": "pt-br",
+      "outputPath": "docs/pt-br/app-interpretacao-de-sonhos-ia.html",
+      "canonical": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/ki-traumdeutung-app"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/ai-dream-interpretation-app"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/app-interpretacion-suenos-ia"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/application-interpretation-reves-ia"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/app-interpretazione-sogni-ai"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/ai-dream-interpretation-app"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/pt-br/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia"
           }
         ]
       ],
@@ -35466,6 +35903,10 @@
           "href": "https://noctalia.app/it/app-analisi-sogni-android"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-android-analise-de-sonhos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/android-dream-analysis-app"
         }
@@ -35519,6 +35960,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/app-analisi-sogni-android"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-android-analise-de-sonhos"
         },
         {
           "hreflang": "x-default",
@@ -35576,6 +36021,10 @@
           "href": "https://noctalia.app/it/app-analisi-sogni-android"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-android-analise-de-sonhos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/android-dream-analysis-app"
         }
@@ -35629,6 +36078,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/app-analisi-sogni-android"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-android-analise-de-sonhos"
         },
         {
           "hreflang": "x-default",
@@ -35686,6 +36139,10 @@
           "href": "https://noctalia.app/it/app-analisi-sogni-android"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-android-analise-de-sonhos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/android-dream-analysis-app"
         }
@@ -35708,6 +36165,65 @@
           {
             "position": "2",
             "item": "https://noctalia.app/it/app-analisi-sogni-android"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.android-dream-analysis-app",
+      "lang": "pt-br",
+      "outputPath": "docs/pt-br/app-android-analise-de-sonhos.html",
+      "canonical": "https://noctalia.app/pt-br/app-android-analise-de-sonhos",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/android-traumanalyse-app"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/android-dream-analysis-app"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/app-analisis-suenos-android"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/application-analyse-de-reve-android"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/app-analisi-sogni-android"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-android-analise-de-sonhos"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/android-dream-analysis-app"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/pt-br/app-android-analise-de-sonhos",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/pt-br/app-android-analise-de-sonhos",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/pt-br/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/pt-br/app-android-analise-de-sonhos"
           }
         ]
       ],
@@ -36016,6 +36532,10 @@
           "href": "https://noctalia.app/it/dizionario-dei-sogni-app"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-dicionario-de-sonhos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/dream-dictionary-app"
         }
@@ -36069,6 +36589,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/dizionario-dei-sogni-app"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-dicionario-de-sonhos"
         },
         {
           "hreflang": "x-default",
@@ -36126,6 +36650,10 @@
           "href": "https://noctalia.app/it/dizionario-dei-sogni-app"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-dicionario-de-sonhos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/dream-dictionary-app"
         }
@@ -36179,6 +36707,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/dizionario-dei-sogni-app"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-dicionario-de-sonhos"
         },
         {
           "hreflang": "x-default",
@@ -36236,6 +36768,10 @@
           "href": "https://noctalia.app/it/dizionario-dei-sogni-app"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-dicionario-de-sonhos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/dream-dictionary-app"
         }
@@ -36258,6 +36794,65 @@
           {
             "position": "2",
             "item": "https://noctalia.app/it/dizionario-dei-sogni-app"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-dictionary-app",
+      "lang": "pt-br",
+      "outputPath": "docs/pt-br/app-dicionario-de-sonhos.html",
+      "canonical": "https://noctalia.app/pt-br/app-dicionario-de-sonhos",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumlexikon-app"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dream-dictionary-app"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/diccionario-de-suenos-app"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/dictionnaire-de-reves-application"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/dizionario-dei-sogni-app"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-dicionario-de-sonhos"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dream-dictionary-app"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/pt-br/app-dicionario-de-sonhos",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/pt-br/app-dicionario-de-sonhos",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/pt-br/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/pt-br/app-dicionario-de-sonhos"
           }
         ]
       ],
@@ -36540,6 +37135,76 @@
     },
     {
       "collection": "pages",
+      "pageId": "page.faq",
+      "lang": "pt-br",
+      "outputPath": "docs/pt-br/perguntas-frequentes.html",
+      "canonical": "https://noctalia.app/pt-br/perguntas-frequentes",
+      "hreflangs": [
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/perguntas-frequentes"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/pt-br/perguntas-frequentes",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/pt-br/perguntas-frequentes",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/pt-br/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/pt-br/perguntas-frequentes"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.features",
+      "lang": "pt-br",
+      "outputPath": "docs/pt-br/funcionalidades.html",
+      "canonical": "https://noctalia.app/pt-br/funcionalidades",
+      "hreflangs": [
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/funcionalidades"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/pt-br/funcionalidades",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/pt-br/funcionalidades",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/pt-br/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/pt-br/funcionalidades"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
       "pageId": "page.home",
       "lang": "de",
       "outputPath": "docs/de/index.html",
@@ -36564,6 +37229,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/"
         },
         {
           "hreflang": "x-default",
@@ -36603,6 +37272,10 @@
           "href": "https://noctalia.app/it/"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/"
         }
@@ -36638,6 +37311,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/"
         },
         {
           "hreflang": "x-default",
@@ -36677,6 +37354,10 @@
           "href": "https://noctalia.app/it/"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/"
         }
@@ -36714,11 +37395,56 @@
           "href": "https://noctalia.app/it/"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/"
         }
       ],
       "ogUrl": "https://noctalia.app/it/",
+      "jsonLdIdentities": [],
+      "jsonLdBreadcrumbs": [],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.home",
+      "lang": "pt-br",
+      "outputPath": "docs/pt-br/index.html",
+      "canonical": "https://noctalia.app/pt-br/",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/pt-br/",
       "jsonLdIdentities": [],
       "jsonLdBreadcrumbs": [],
       "visibleBreadcrumbs": []
@@ -37257,6 +37983,10 @@
           "href": "https://noctalia.app/it/prezzi"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/precos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/pricing"
         }
@@ -37310,6 +38040,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/precos"
         },
         {
           "hreflang": "x-default",
@@ -37367,6 +38101,10 @@
           "href": "https://noctalia.app/it/prezzi"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/precos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/pricing"
         }
@@ -37420,6 +38158,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/precos"
         },
         {
           "hreflang": "x-default",
@@ -37477,6 +38219,10 @@
           "href": "https://noctalia.app/it/prezzi"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/precos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/pricing"
         }
@@ -37499,6 +38245,65 @@
           {
             "position": "2",
             "item": "https://noctalia.app/it/prezzi"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "lang": "pt-br",
+      "outputPath": "docs/pt-br/precos.html",
+      "canonical": "https://noctalia.app/pt-br/precos",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/preise"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/pricing"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/precios"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/tarifs"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/precos"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/pricing"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/pt-br/precos",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/pt-br/precos",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/pt-br/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/pt-br/precos"
           }
         ]
       ],
@@ -37530,6 +38335,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/diario-dei-sogni-vocale"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz"
         },
         {
           "hreflang": "x-default",
@@ -37587,6 +38396,10 @@
           "href": "https://noctalia.app/it/diario-dei-sogni-vocale"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/voice-dream-journal"
         }
@@ -37640,6 +38453,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/diario-dei-sogni-vocale"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz"
         },
         {
           "hreflang": "x-default",
@@ -37697,6 +38514,10 @@
           "href": "https://noctalia.app/it/diario-dei-sogni-vocale"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/voice-dream-journal"
         }
@@ -37752,6 +38573,10 @@
           "href": "https://noctalia.app/it/diario-dei-sogni-vocale"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/voice-dream-journal"
         }
@@ -37774,6 +38599,65 @@
           {
             "position": "2",
             "item": "https://noctalia.app/it/diario-dei-sogni-vocale"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.voice-dream-journal",
+      "lang": "pt-br",
+      "outputPath": "docs/pt-br/diario-de-sonhos-por-voz.html",
+      "canonical": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumtagebuch-spracheingabe"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/voice-dream-journal"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/diario-de-suenos-por-voz"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/journal-de-reves-vocal"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/diario-dei-sogni-vocale"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/voice-dream-journal"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz",
+          "id": null,
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/pt-br/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz"
           }
         ]
       ],
@@ -94178,6 +95062,10 @@
           "href": "https://noctalia.app/it/eliminazione-account"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/exclusao-de-conta"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/account-deletion"
         }
@@ -94208,6 +95096,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/eliminazione-account"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/exclusao-de-conta"
         },
         {
           "hreflang": "x-default",
@@ -94242,6 +95134,10 @@
           "href": "https://noctalia.app/it/eliminazione-account"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/exclusao-de-conta"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/account-deletion"
         }
@@ -94274,6 +95170,10 @@
           "href": "https://noctalia.app/it/eliminazione-account"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/exclusao-de-conta"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/account-deletion"
         }
@@ -94304,6 +95204,46 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/eliminazione-account"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/exclusao-de-conta"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/account-deletion"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "legal.account-deletion",
+      "lang": "pt-br",
+      "loc": "https://noctalia.app/pt-br/exclusao-de-conta",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/konto-loeschen"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/account-deletion"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/eliminacion-cuenta"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/suppression-compte"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/eliminazione-account"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/exclusao-de-conta"
         },
         {
           "hreflang": "x-default",
@@ -94498,6 +95438,10 @@
           "href": "https://noctalia.app/it/privacy-policy"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/politica-de-privacidade"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/privacy-policy"
         }
@@ -94528,6 +95472,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/privacy-policy"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/politica-de-privacidade"
         },
         {
           "hreflang": "x-default",
@@ -94562,6 +95510,10 @@
           "href": "https://noctalia.app/it/privacy-policy"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/politica-de-privacidade"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/privacy-policy"
         }
@@ -94592,6 +95544,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/privacy-policy"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/politica-de-privacidade"
         },
         {
           "hreflang": "x-default",
@@ -94626,6 +95582,46 @@
           "href": "https://noctalia.app/it/privacy-policy"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/politica-de-privacidade"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/privacy-policy"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "legal.privacy",
+      "lang": "pt-br",
+      "loc": "https://noctalia.app/pt-br/politica-de-privacidade",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/datenschutz"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/privacy-policy"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/politica-privacidad"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/politique-confidentialite"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/privacy-policy"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/politica-de-privacidade"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/privacy-policy"
         }
@@ -94656,6 +95652,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/termini"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/termos-de-uso"
         },
         {
           "hreflang": "x-default",
@@ -94690,6 +95690,10 @@
           "href": "https://noctalia.app/it/termini"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/termos-de-uso"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/terms"
         }
@@ -94720,6 +95724,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/termini"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/termos-de-uso"
         },
         {
           "hreflang": "x-default",
@@ -94754,6 +95762,10 @@
           "href": "https://noctalia.app/it/termini"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/termos-de-uso"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/terms"
         }
@@ -94784,6 +95796,46 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/termini"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/termos-de-uso"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/terms"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "legal.terms",
+      "lang": "pt-br",
+      "loc": "https://noctalia.app/pt-br/termos-de-uso",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/agb"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/terms"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/terminos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/cgu"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/termini"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/termos-de-uso"
         },
         {
           "hreflang": "x-default",
@@ -94978,6 +96030,10 @@
           "href": "https://noctalia.app/it/app-interpretazione-sogni-ai"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/ai-dream-interpretation-app"
         }
@@ -95008,6 +96064,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/app-interpretazione-sogni-ai"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia"
         },
         {
           "hreflang": "x-default",
@@ -95042,6 +96102,10 @@
           "href": "https://noctalia.app/it/app-interpretazione-sogni-ai"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/ai-dream-interpretation-app"
         }
@@ -95074,6 +96138,10 @@
           "href": "https://noctalia.app/it/app-interpretazione-sogni-ai"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/ai-dream-interpretation-app"
         }
@@ -95104,6 +96172,46 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/app-interpretazione-sogni-ai"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/ai-dream-interpretation-app"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.ai-dream-interpretation-app",
+      "lang": "pt-br",
+      "loc": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/ki-traumdeutung-app"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/ai-dream-interpretation-app"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/app-interpretacion-suenos-ia"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/application-interpretation-reves-ia"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/app-interpretazione-sogni-ai"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia"
         },
         {
           "hreflang": "x-default",
@@ -95298,6 +96406,10 @@
           "href": "https://noctalia.app/it/app-analisi-sogni-android"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-android-analise-de-sonhos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/android-dream-analysis-app"
         }
@@ -95328,6 +96440,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/app-analisi-sogni-android"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-android-analise-de-sonhos"
         },
         {
           "hreflang": "x-default",
@@ -95362,6 +96478,10 @@
           "href": "https://noctalia.app/it/app-analisi-sogni-android"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-android-analise-de-sonhos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/android-dream-analysis-app"
         }
@@ -95394,6 +96514,10 @@
           "href": "https://noctalia.app/it/app-analisi-sogni-android"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-android-analise-de-sonhos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/android-dream-analysis-app"
         }
@@ -95424,6 +96548,46 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/app-analisi-sogni-android"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-android-analise-de-sonhos"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/android-dream-analysis-app"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.android-dream-analysis-app",
+      "lang": "pt-br",
+      "loc": "https://noctalia.app/pt-br/app-android-analise-de-sonhos",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/android-traumanalyse-app"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/android-dream-analysis-app"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/app-analisis-suenos-android"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/application-analyse-de-reve-android"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/app-analisi-sogni-android"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-android-analise-de-sonhos"
         },
         {
           "hreflang": "x-default",
@@ -95618,6 +96782,10 @@
           "href": "https://noctalia.app/it/dizionario-dei-sogni-app"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-dicionario-de-sonhos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/dream-dictionary-app"
         }
@@ -95648,6 +96816,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/dizionario-dei-sogni-app"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-dicionario-de-sonhos"
         },
         {
           "hreflang": "x-default",
@@ -95682,6 +96854,10 @@
           "href": "https://noctalia.app/it/dizionario-dei-sogni-app"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-dicionario-de-sonhos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/dream-dictionary-app"
         }
@@ -95714,6 +96890,10 @@
           "href": "https://noctalia.app/it/dizionario-dei-sogni-app"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-dicionario-de-sonhos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/dream-dictionary-app"
         }
@@ -95744,6 +96924,46 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/dizionario-dei-sogni-app"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-dicionario-de-sonhos"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/dream-dictionary-app"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.dream-dictionary-app",
+      "lang": "pt-br",
+      "loc": "https://noctalia.app/pt-br/app-dicionario-de-sonhos",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumlexikon-app"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/dream-dictionary-app"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/diccionario-de-suenos-app"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/dictionnaire-de-reves-application"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/dizionario-dei-sogni-app"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/app-dicionario-de-sonhos"
         },
         {
           "hreflang": "x-default",
@@ -95913,6 +97133,30 @@
     },
     {
       "collection": "pages",
+      "pageId": "page.faq",
+      "lang": "pt-br",
+      "loc": "https://noctalia.app/pt-br/perguntas-frequentes",
+      "alternates": [
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/perguntas-frequentes"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.features",
+      "lang": "pt-br",
+      "loc": "https://noctalia.app/pt-br/funcionalidades",
+      "alternates": [
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/funcionalidades"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
       "pageId": "page.home",
       "lang": "de",
       "loc": "https://noctalia.app/de/",
@@ -95936,6 +97180,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/"
         },
         {
           "hreflang": "x-default",
@@ -95970,6 +97218,10 @@
           "href": "https://noctalia.app/it/"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/"
         }
@@ -96000,6 +97252,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/"
         },
         {
           "hreflang": "x-default",
@@ -96034,6 +97290,10 @@
           "href": "https://noctalia.app/it/"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/"
         }
@@ -96064,6 +97324,46 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.home",
+      "lang": "pt-br",
+      "loc": "https://noctalia.app/pt-br/",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/"
         },
         {
           "hreflang": "x-default",
@@ -96418,6 +97718,10 @@
           "href": "https://noctalia.app/it/prezzi"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/precos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/pricing"
         }
@@ -96448,6 +97752,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/precos"
         },
         {
           "hreflang": "x-default",
@@ -96482,6 +97790,10 @@
           "href": "https://noctalia.app/it/prezzi"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/precos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/pricing"
         }
@@ -96512,6 +97824,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/precos"
         },
         {
           "hreflang": "x-default",
@@ -96546,6 +97862,46 @@
           "href": "https://noctalia.app/it/prezzi"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/precos"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/pricing"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.pricing",
+      "lang": "pt-br",
+      "loc": "https://noctalia.app/pt-br/precos",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/preise"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/pricing"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/precios"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/tarifs"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/prezzi"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/precos"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/pricing"
         }
@@ -96576,6 +97932,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/diario-dei-sogni-vocale"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz"
         },
         {
           "hreflang": "x-default",
@@ -96610,6 +97970,10 @@
           "href": "https://noctalia.app/it/diario-dei-sogni-vocale"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/voice-dream-journal"
         }
@@ -96640,6 +98004,10 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/diario-dei-sogni-vocale"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz"
         },
         {
           "hreflang": "x-default",
@@ -96674,6 +98042,10 @@
           "href": "https://noctalia.app/it/diario-dei-sogni-vocale"
         },
         {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz"
+        },
+        {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/voice-dream-journal"
         }
@@ -96704,6 +98076,46 @@
         {
           "hreflang": "it",
           "href": "https://noctalia.app/it/diario-dei-sogni-vocale"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/voice-dream-journal"
+        }
+      ]
+    },
+    {
+      "collection": "pages",
+      "pageId": "page.voice-dream-journal",
+      "lang": "pt-br",
+      "loc": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumtagebuch-spracheingabe"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/voice-dream-journal"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/diario-de-suenos-por-voz"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/journal-de-reves-vocal"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/diario-dei-sogni-vocale"
+        },
+        {
+          "hreflang": "pt-BR",
+          "href": "https://noctalia.app/pt-br/diario-de-sonhos-por-voz"
         },
         {
           "hreflang": "x-default",
