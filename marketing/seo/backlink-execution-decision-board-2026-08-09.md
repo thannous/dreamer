@@ -7,7 +7,7 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 
 ## Current evidence
 
-- The prospect register contains 216 qualified, paused, rejected or active
+- The prospect register contains 224 qualified, paused, rejected or active
   routes.
 - The outreach log contains 49 prior transmissions or attempts.
 - The prospect register and outreach log now agree on 27 unsent first
@@ -78,6 +78,17 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 - Elsewhere's current Medium comparison is indexable, but its inspected product
   links are `ugc nofollow`. The pending reply is relationship maintenance, not
   a claim of followed equity.
+- A competitor-citation gap pass adds two current P1 routes. Dealroom's
+  self-canonical Wakefully profile links the developer domain without
+  `nofollow`; its named Dutch operator offers free human accounts but prohibits
+  bots, so Noctalia's missing company fields and a user-operated account remain
+  gates. Simone's April 2026 Rosebud review links the product domain twice
+  without `nofollow`; Agentik SAS and French law provide accountable non-Russian
+  control, and one factual editorial note is prepared but unsent.
+- Marie Claire and Madame Figaro are excluded as visibly partnered commercial
+  content, KingLand as paid-only, TrendHunter and MakeUseOf as nofollow, and
+  Fondation FIT as program-specific financing news with no general Noctalia
+  route.
 
 ## Recommended next execution order
 
@@ -86,10 +97,12 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 | 1 | Marika Pech source correction (`D2`) | The live French article already names Noctalia but does not link it. Correcting the source protects factual accuracy and offers the shortest path from a real mention to a citation. | Submit one correction through the official route after confirming the wording and link are still unchanged. Do not request anchor manipulation or followed treatment. |
 | 2 | DreamWell DreamKit correction (`D5`) | Its transparent 2022 comparison still presents DreamKit as available on Android and iOS, while the Android listing is now 404 and the former iOS ID is Arcana. The article links several competitor domains directly without `nofollow`. | Send one factual correction and offer Noctalia only as an optional test candidate for a future refresh. No link, anchor, ranking, replacement or timing request. |
 | 3 | Atlas and ILTY followed-pattern replies (`D7`) | Both current comparisons are self-canonical and `index, follow`, link six competitor developer domains without `nofollow`, name accountable non-Russian operators and retain the original unanswered Zimbra thread. | Send one concise first reply in each existing thread only after a fresh stop gate. This is topical clean-domain potential; current publisher DR and future link treatment remain unproven. |
-| 4 | Elsewhere human reply (`D1`) | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal, although Medium currently marks product links `ugc nofollow`. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
-| 5 | Three editorial-visibility follow-ups (`D3B`) | Android Police and Xataka Android are credible Android publishers but the target pages lack a direct developer-domain citation pattern. AITrendTool's sampled product links are `nofollow`. | Treat these as discovery and relationship opportunities, not the DR-first batch. Authorize separately and verify any eventual public link without assuming equity. |
-| 6 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |
-| 7 | Owned syndication | Hashnode and Medium drafts are ready, but a self-published profile link has lower incremental authority and canonical risk than an independent editorial citation. | Publish only after separate account and publication authorization and verify the rendered canonical and link attributes. |
+| 4 | Dealroom company profile (`D8A`) | Wakefully's self-canonical profile links `wakefully.io` directly without `nofollow`; Dealroom identifies a Dutch legal operator and permits free human accounts and contributions. | First confirm the missing entity, headquarters, founding, size and funding fields. The user must create and validate the human account manually because Dealroom prohibits bots. No invented fields or payment. |
+| 5 | Simone editorial note (`D8B`) | The current Rosebud review is by a named author and links `rosebud.app` twice without `nofollow`; Agentik SAS, French law and the official mailbox pass the trust gate. | Send the prepared factual French note only after a fresh page, destination and mailbox stop gate. Ask only whether Noctalia is useful to test; no link, anchor, rank or placement request. |
+| 6 | Elsewhere human reply (`D1`) | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal, although Medium currently marks product links `ugc nofollow`. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
+| 7 | Three editorial-visibility follow-ups (`D3B`) | Android Police and Xataka Android are credible Android publishers but the target pages lack a direct developer-domain citation pattern. AITrendTool's sampled product links are `nofollow`. | Treat these as discovery and relationship opportunities, not the DR-first batch. Authorize separately and verify any eventual public link without assuming equity. |
+| 8 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |
+| 9 | Owned syndication | Hashnode and Medium drafts are ready, but a self-published profile link has lower incremental authority and canonical risk than an independent editorial citation. | Publish only after separate account and publication authorization and verify the rendered canonical and link attributes. |
 
 The completed D3A batch is no longer ranked as a future action. Monitor it until
 the conditional 2026-08-16 gate and stop on reply, failure, opt-out or live
@@ -191,6 +204,22 @@ The prepared copy and its publication gates are in
 
 The current rendered link-policy evidence and exact copy are recorded in
 `marketing/seo/backlink-dr-followup-wave-37-2026-08-10.md`.
+
+### D8A — Dealroom free company profile preparation
+
+> Je confirme les champs d'entreprise manquants dans le dossier D8A et
+> j'autorise la préparation d'une fiche Dealroom gratuite. Je créerai et
+> validerai moi-même le compte humain conformément aux Conditions de Dealroom ;
+> aucun bot, paiement, donnée inventée ni garantie de lien.
+
+### D8B — Simone editorial note
+
+> J'autorise l'envoi unique du message D8B préparé à `hello@simone.app`, après
+> un stop gate immédiat, sans pièce jointe, paiement, relance automatique,
+> demande de lien, classement ni garantie de couverture.
+
+The current evidence, exact copy and platform boundaries are recorded in
+`marketing/seo/backlink-dealroom-simone-ready-2026-08-10.md`.
 
 Earned-media account or subscription choices retain the independent `E1`–`E5`
 codes in `marketing/seo/media-source-platform-pack-2026-08-09.md`.
