@@ -1079,12 +1079,14 @@ attempted. Public indexed competitor citations were used only for discovery,
 then every page was inspected in real Chrome for canonical, indexability, link
 attributes, accountable operator and external-action route.
 
-Two routes pass. Dealroom's self-canonical Wakefully profile links
+Two routes initially passed. Dealroom's self-canonical Wakefully profile links
 `wakefully.io` directly without `nofollow`; Dealroom.co B.V. is a named Dutch
 operator and Terms allow free human accounts and accurate contributions, but
 prohibit bots. A field-ready Noctalia dossier therefore leaves legal entity,
 headquarters, founding, company-size and funding data for user confirmation and
-requires a user-operated account. Simone's April 2026 Rosebud review links the
+requires a user-operated account. At 03:46 CEST the user explicitly abandoned
+Dealroom; the route is now closed as P2 with no account, demo booking or
+contribution. Simone's April 2026 Rosebud review links the
 product domain twice without `nofollow`; Agentik SAS, French law and
 `hello@simone.app` pass the trust gate. One short French editorial note is ready
 but unsent and preserves Noctalia's non-medical boundary.
@@ -1093,10 +1095,10 @@ Six surfaces are excluded: Marie Claire and Madame Figaro are visibly partnered
 Médias France commercial content; KingLand charges EUR 25 or EUR 75 for every
 public submission package; TrendHunter and MakeUseOf mark the observed product
 links nofollow; Fondation FIT is a specific 2022 financing announcement with no
-general Noctalia route. The central register now contains 224 routes: 3 P0, 65
-P1, 155 P2 and 1 P3. No account, profile, contribution, email, form, attachment,
+general Noctalia route. The central register now contains 224 routes: 3 P0, 64
+P1, 156 P2 and 1 P3. No account, profile, contribution, email, form, attachment,
 payment, publication or live Noctalia backlink was created. Full evidence and
-the independent `D8A` and `D8B` gates are in
+the closed `D8A` record and active `D8B` gate are in
 `marketing/seo/competitor-citation-gap-wave-40-2026-08-10.md` and
 `marketing/seo/backlink-dealroom-simone-ready-2026-08-10.md`.
 

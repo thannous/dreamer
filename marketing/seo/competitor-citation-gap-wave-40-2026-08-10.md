@@ -18,11 +18,11 @@ page was then opened and inspected for its current URL, canonical, robots state,
 outbound link attributes, operator evidence and external-action path. A search
 result alone was never treated as a backlink opportunity.
 
-## Qualified gaps
+## Initially qualified gaps and current decision
 
 | Route | Competitor citation evidence | Trust and fit | Decision |
 | --- | --- | --- | --- |
-| [Dealroom Wakefully profile](https://app.dealroom.co/companies/wakefully) | The self-canonical profile links `wakefully.io` directly with `rel="noreferrer noopener"` and exposes `Suggest an update`. | Privacy identifies Dealroom.co B.V., Cornelis Dirkszstraat 27-2, 1056 TP Amsterdam, Netherlands, Chamber of Commerce 59237368. Terms select Dutch law and Amsterdam courts, allow free human accounts, prohibit bots and require accurate, non-misleading contributions. | **P1.** Prepare a truthful company-profile dossier. Do not create an account or contribute until the user confirms missing company fields and authorizes the human-operated action. |
+| [Dealroom Wakefully profile](https://app.dealroom.co/companies/wakefully) | The self-canonical profile links `wakefully.io` directly with `rel="noreferrer noopener"` and exposes `Suggest an update`. | Privacy identifies Dealroom.co B.V., Cornelis Dirkszstraat 27-2, 1056 TP Amsterdam, Netherlands, Chamber of Commerce 59237368. Terms select Dutch law and Amsterdam courts, allow free human accounts, prohibit bots and require accurate, non-misleading contributions. | **Closed / P2.** The user explicitly abandoned the route at 03:46 CEST. No account, demo booking or contribution; do not reactivate without a new instruction. |
 | [Simone Rosebud review](https://simone.app/fr/blog/rosebud) | The indexed April 5, 2026 article by Hakim Barraud links `rosebud.app` twice with no `nofollow`. The current page has no canonical or robots meta tag. | Terms and Privacy identify Agentik SAS, select French law and publish `hello@simone.app`; no Russian operator signal was found. The topic fits Noctalia, but some therapy-adjacent copy requires a strict non-medical pitch. | **P1.** One factual French editorial note is ready, with no request for a link, anchor, ranking or placement. It remains unsent. |
 
 The proposed Simone source is already live at
@@ -43,8 +43,9 @@ capture, and explicitly says Noctalia does not replace medical advice.
 
 ## Result and measurement boundary
 
-The central register now contains 224 routes: 3 P0, 65 P1, 155 P2 and 1 P3.
-This wave adds two qualified future actions and six exclusions. It creates no
+The central register now contains 224 routes: 3 P0, 64 P1, 156 P2 and 1 P3.
+This wave retains one qualified future action, one user-closed route and six
+exclusions. It creates no
 Noctalia backlink, referring domain, indexation event, referral session or DR
-movement. A future Dealroom profile or Simone email must be measured separately
-from any later public citation.
+movement. A future Simone email must be measured separately from any later
+public citation.

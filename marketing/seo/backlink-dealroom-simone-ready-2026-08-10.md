@@ -1,10 +1,15 @@
 # Backlink activation pack — Dealroom and Simone — 2026-08-10
 
-This pack converts the two wave-40 P1 routes into reviewable next actions. It
-does not authorize or execute either route. No account, profile, contribution,
-email, form, attachment, payment or publication was used.
+This pack originally converted the two wave-40 routes into reviewable next
+actions. Dealroom was explicitly abandoned by the user at 03:46 CEST; only
+Simone remains active. No account, profile, contribution, email, form,
+attachment, payment or publication was used.
 
-## D8A — Dealroom company profile
+## D8A — Dealroom company profile — closed
+
+**Decision:** do not pursue. The user explicitly removed Dealroom from the
+backlink plan on 2026-08-10. The evidence below is retained only to explain the
+decision and must not be reused as an authorization.
 
 ### Verified route
 
@@ -42,15 +47,10 @@ incorporation country, headquarters and postal address, founding date, employee
 count, financing or funding, investors, revenue, company stage and customer
 model.
 
-### Exact D8A authorization
+### Closure
 
-> Je confirme les champs d'entreprise manquants dans le dossier D8A et
-> j'autorise la préparation d'une fiche Dealroom gratuite. Je créerai et
-> validerai moi-même le compte humain conformément aux Conditions de Dealroom ;
-> aucun bot, paiement, donnée inventée ni garantie de lien.
-
-Even after this authorization, Codex may prepare the final field map and guide
-the user, but must not automate account creation or submission.
+`D8A` is retired. No account, demo booking, form or submission is due. Reopen
+only if the user gives a new explicit instruction naming Dealroom.
 
 ## D8B — Simone editorial note
 
@@ -93,8 +93,8 @@ the user, but must not automate account creation or submission.
 
 ## Measurement boundary
 
-A Dealroom account, contribution, accepted profile or sent Simone email is not
-a backlink. Add a result only after a public page exposes a clickable Noctalia
+A sent Simone email is not a backlink. Add a result only after a public page
+exposes a clickable Noctalia
 destination and its HTTP status, canonical, indexability and link attributes
 have been inspected. Attribute no Ahrefs DR movement to these actions without
 separate evidence.
