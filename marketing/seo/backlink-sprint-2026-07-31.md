@@ -1259,6 +1259,21 @@ test or localized angles. No message, form, account, attachment, payment or
 publication was used. Evidence is in
 `marketing/seo/linkable-asset-outreach-refresh-2026-08-10.md`.
 
+### Editorial discovery wave 46 — 2026-08-10
+
+A focused mainstream-media gap search surfaced exact Pixel Journal or AI
+journaling coverage at Mashable, PCMag and How-To Geek. Chrome's site-safety
+policy blocked Mashable and PCMag, so neither received a trust, operator or
+link-value verdict and no workaround was attempted. How-To Geek's current
+self-canonical Pixel Journal article contains no Noctalia mention; its Google
+source link is `nofollow` and its product actions are `nofollow sponsored`,
+with no followed developer-domain citation. It is closed at P2 before contact.
+The broader WIRED result was a hardware roundup and was not promoted. The
+central register now contains 239 routes: 3 P0, 66 P1, 169 P2 and 1 P3. No
+Russian-operated site, message, form, account, attachment, payment or
+publication was used. Full evidence is in
+`marketing/seo/editorial-discovery-wave-46-2026-08-10.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

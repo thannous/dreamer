@@ -7,7 +7,7 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 
 ## Current evidence
 
-- The prospect register contains 238 qualified, paused, rejected or active
+- The prospect register contains 239 qualified, paused, rejected or active
   routes.
 - The outreach log contains 49 prior transmissions or attempts.
 - The prospect register and outreach log now agree on 27 unsent first
@@ -127,6 +127,12 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   downgraded to P2 because its sampled post lives on `hashnode.dev`, not
   `hashnode.com`, and marks external author links `nofollow ugc`; Medium's
   sampled product links remain `ugc nofollow`. No account or post was created.
+- A mainstream-media coverage-gap pass closed How-To Geek at P2: its exact
+  Pixel Journal article links Google's source with `nofollow`, marks commercial
+  actions `nofollow sponsored` and exposes no followed developer-domain
+  citation. Mashable and PCMag were blocked by Chrome's site-safety policy and
+  remain unclassified rather than receiving a trust verdict from missing
+  evidence. No workaround or outreach was used.
 
 ## Recommended next execution order
 
