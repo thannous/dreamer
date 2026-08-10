@@ -146,6 +146,12 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   authority totals. The indexable alternatives page retains its followed
   official-site CTA. This is retention plus entity cleanup, not a new backlink
   or DR result; no second request or paid promotion is recommended.
+- AI Tools Inc remains pending at day 10 of its stated 30–90 day free review
+  queue. An exact Google site query returned no Noctalia document and the
+  directory's public search returned only the fuzzy `Deep Nostalgia` result,
+  with no Noctalia detail URL or anchor. This is not a rejection, but there is
+  no public page or backlink to count. Do not resubmit or pay; recheck on
+  2026-08-30.
 
 ## Recommended next execution order
 
