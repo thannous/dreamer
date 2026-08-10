@@ -1122,6 +1122,28 @@ routes: 3 P0, 64 P1, 157 P2 and 1 P3. No external action or live Noctalia link
 was created. Full evidence is in
 `marketing/seo/competitor-citation-gap-wave-41-2026-08-10.md`.
 
+### Competitor citation gap wave 42 — 2026-08-10
+
+A public Sognipedia citation pass found two Italian operators but no safe
+DR-first action. IlFaroOnline is an accountable registered Italian publisher
+and its current article links `sognipedia.it` twice without `nofollow`, but the
+page visibly declares `ARTICOLO SPONSORIZZATO`; the route is paid branded
+content and is rejected without contact or spend.
+
+Il Buio in Sala remains an active personal cinema blog with a public contributor
+policy, a consistent mailbox and a maintained `Scritti da Voi` archive through
+December 2024. Its 2016 Sognipedia contribution does not provide a clean
+developer-domain precedent: the live anchor routes through a monetized VigLink
+redirect. Six sampled 2024 contributor articles contain no external
+non-Blogger article-body links, so the older promise of prominent author links
+is not verified by current practice. The route is P2 and paused. A surfaced
+Russian BuiltWith result was not opened, and no message, form, account,
+attachment, product data, payment or publication was used.
+
+The central register now contains 227 routes: 3 P0, 64 P1, 159 P2 and 1 P3.
+Full evidence is in
+`marketing/seo/competitor-citation-gap-wave-42-2026-08-10.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

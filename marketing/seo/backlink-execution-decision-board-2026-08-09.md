@@ -7,7 +7,7 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 
 ## Current evidence
 
-- The prospect register contains 225 qualified, paused, rejected or active
+- The prospect register contains 227 qualified, paused, rejected or active
   routes.
 - The outreach log contains 49 prior transmissions or attempts.
 - The prospect register and outreach log now agree on 27 unsent first
@@ -93,6 +93,12 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   Celestial and confirmed Australian law, but the publisher names no legal
   entity or address and mixes paid psychic services, affiliate recommendations
   and predictive claims. It is P2 and rejected; the contact form was not used.
+- A Sognipedia citation-gap pass rejected two Italian routes before contact.
+  IlFaroOnline labels the followed citation as sponsored content. Il Buio in
+  Sala still accepts contributor articles, but its Sognipedia anchor is a
+  monetized VigLink redirect and six sampled 2024 contributions contain no
+  external article-body links. Neither route demonstrates a free, direct,
+  current DR-first path.
 
 ## Recommended next execution order
 
@@ -131,6 +137,10 @@ citation.
 - Keep Golden Celestial outside outreach. Its two Dream Bible links are
   followed, but that signal does not override the missing accountable operator
   and the conflict with Noctalia's non-predictive, non-medical positioning.
+- Keep IlFaroOnline outside outreach because its Sognipedia citation is
+  explicitly sponsored. Keep Il Buio in Sala paused until a current contributor
+  page demonstrates a direct, indexable external-author link; the 2016 VigLink
+  redirect is not sufficient DR evidence.
 - Remove PitchWall from the DR-oriented submission queue. Its founder profile
   now preserves the Noctalia bio but exposes no `noctalia.app` anchor, while
   current homepage and sampled product-page website clicks use internal
