@@ -8,7 +8,8 @@
         "fr": "",
         "es": "",
         "de": "",
-        "it": ""
+        "it": "",
+        "pt-br": ""
       }
     },
     {
@@ -41,7 +42,8 @@
         "fr": "tarifs",
         "es": "precios",
         "de": "preise",
-        "it": "prezzi"
+        "it": "prezzi",
+        "pt-br": "precos"
       }
     },
     {
@@ -118,7 +120,8 @@
         "fr": "application-interpretation-reves-ia",
         "es": "app-interpretacion-suenos-ia",
         "de": "ki-traumdeutung-app",
-        "it": "app-interpretazione-sogni-ai"
+        "it": "app-interpretazione-sogni-ai",
+        "pt-br": "app-interpretacao-de-sonhos-ia"
       }
     },
     {
@@ -129,7 +132,8 @@
         "fr": "dictionnaire-de-reves-application",
         "es": "diccionario-de-suenos-app",
         "de": "traumlexikon-app",
-        "it": "dizionario-dei-sogni-app"
+        "it": "dizionario-dei-sogni-app",
+        "pt-br": "app-dicionario-de-sonhos"
       }
     },
     {
@@ -140,7 +144,8 @@
         "fr": "application-analyse-de-reve-android",
         "es": "app-analisis-suenos-android",
         "de": "android-traumanalyse-app",
-        "it": "app-analisi-sogni-android"
+        "it": "app-analisi-sogni-android",
+        "pt-br": "app-android-analise-de-sonhos"
       }
     },
     {
@@ -151,7 +156,22 @@
         "fr": "journal-de-reves-vocal",
         "es": "diario-de-suenos-por-voz",
         "de": "traumtagebuch-spracheingabe",
-        "it": "diario-dei-sogni-vocale"
+        "it": "diario-dei-sogni-vocale",
+        "pt-br": "diario-de-sonhos-por-voz"
+      }
+    },
+    {
+      "pageId": "page.features",
+      "layout": "content",
+      "slugs": {
+        "pt-br": "funcionalidades"
+      }
+    },
+    {
+      "pageId": "page.faq",
+      "layout": "content",
+      "slugs": {
+        "pt-br": "perguntas-frequentes"
       }
     },
     {
@@ -173,7 +193,8 @@
         "fr": "politique-confidentialite",
         "es": "politica-privacidad",
         "de": "datenschutz",
-        "it": "privacy-policy"
+        "it": "privacy-policy",
+        "pt-br": "politica-de-privacidade"
       }
     },
     {
@@ -184,7 +205,8 @@
         "fr": "cgu",
         "es": "terminos",
         "de": "agb",
-        "it": "termini"
+        "it": "termini",
+        "pt-br": "termos-de-uso"
       }
     },
     {
@@ -195,7 +217,8 @@
         "fr": "suppression-compte",
         "es": "eliminacion-cuenta",
         "de": "konto-loeschen",
-        "it": "eliminazione-account"
+        "it": "eliminazione-account",
+        "pt-br": "exclusao-de-conta"
       }
     }
   ]

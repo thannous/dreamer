@@ -14,8 +14,9 @@ const {
 const {
   listPageIllustrationRoutes,
   readCompleteImageAssetRegistry,
+  readPageIllustrationConfig,
 } = require('./lib/page-illustrations');
-const { walkFiles } = require('./lib/docs-source-utils');
+const { readJson, walkFiles } = require('./lib/docs-source-utils');
 
 const WARNING_BYTES = 180_000;
 const MAX_BYTES = 250_000;
@@ -263,7 +264,23 @@ function validateSitewidePageIllustrations({ pageMap, sitemap, errors, warnings 
     else if (bytes > WARNING_BYTES) warnings.push(`${canonicalPath}: ${image.src} is ${bytes} bytes (review above ${WARNING_BYTES})`);
   }
 
-  if (routes.length !== 180) errors.push(`expected 180 sitewide illustration routes, found ${routes.length}`);
+  // Each illustration family produces one route per locale the page actually
+  // exists in (partial-coverage languages only cover existing pages).
+  const illustrationConfig = readPageIllustrationConfig();
+  const siteManifest = readJson(path.join(ROOT_DIR, 'data', 'site-manifest.json'));
+  const localeCountByPageId = new Map();
+  for (const collection of Object.values(siteManifest.collections || {})) {
+    for (const [pageId, entry] of Object.entries(collection.entries || {})) {
+      localeCountByPageId.set(pageId, Object.keys(entry.locales || {}).length);
+    }
+  }
+  const expectedRouteCount = Object.keys(illustrationConfig.families || {}).reduce(
+    (count, pageId) => count + (localeCountByPageId.get(pageId) || 0),
+    0
+  );
+  if (routes.length !== expectedRouteCount) {
+    errors.push(`expected ${expectedRouteCount} sitewide illustration routes, found ${routes.length}`);
+  }
   if (placementCount !== routes.length) {
     errors.push(`expected ${routes.length} visible sitewide illustrations, found ${placementCount}`);
   }

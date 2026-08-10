@@ -19,6 +19,8 @@ export const NETWORK_REQUEST_POLICIES = {
   guestSessionCreate: createPolicy(10000, 1, 750),
   guestQaCommand: createPolicy(10000, 0, 1000),
   authMarkUpgrade: createPolicy(10000, 2, 1000),
+  // No auto-retry: deletion must not be replayed after an ambiguous failure.
+  accountDeletion: createPolicy(20000, 0, 1000),
 
   // Quota / subscription
   quotaStatus: createPolicy(10000, 1, 750),

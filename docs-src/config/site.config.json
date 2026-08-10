@@ -7,14 +7,35 @@
     "fr",
     "es",
     "de",
-    "it"
+    "it",
+    "pt-br"
   ],
+  "languageTags": {
+    "en": "en",
+    "fr": "fr",
+    "es": "es",
+    "de": "de",
+    "it": "it",
+    "pt-br": "pt-BR"
+  },
   "localeCodes": {
     "en": "en_US",
     "fr": "fr_FR",
     "es": "es_ES",
     "de": "de_DE",
-    "it": "it_IT"
+    "it": "it_IT",
+    "pt-br": "pt_BR"
+  },
+  "collections": {
+    "blog": {
+      "languages": ["en", "fr", "es", "de", "it"]
+    },
+    "symbols": {
+      "languages": ["en", "fr", "es", "de", "it"]
+    },
+    "guides": {
+      "languages": ["en", "fr", "es", "de", "it"]
+    }
   },
   "symbolsPath": {
     "en": "symbols",
@@ -24,7 +45,10 @@
     "it": "simboli"
   },
   "storeLinks": {
-    "androidBase": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia"
+    "androidBase": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
+    "hlOverrides": {
+      "pt-br": "pt-BR"
+    }
   },
   "socialLinks": [
     {

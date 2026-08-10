@@ -7,6 +7,10 @@ function routePath(entryIndex, pageId, lang) {
   return entryIndex.get(pageId)?.locales?.[lang]?.path || `/${lang}/`;
 }
 
+function hasRoute(entryIndex, pageId, lang) {
+  return Boolean(entryIndex.get(pageId)?.locales?.[lang]?.path);
+}
+
 function createRenderContext({ manifest, entryId, meta, entryOverride = null }) {
   const entryIndex = buildEntryIndex(manifest);
   const lang = meta.lang || siteConfig.defaultLanguage;
@@ -20,6 +24,7 @@ function createRenderContext({ manifest, entryId, meta, entryOverride = null }) 
     locales,
     manifest,
     meta,
+    hasRoute: (pageId, candidateLang = lang) => hasRoute(entryIndex, pageId, candidateLang),
     routePath: (pageId, candidateLang = lang) => routePath(entryIndex, pageId, candidateLang),
     siteConfig,
   };
@@ -27,5 +32,6 @@ function createRenderContext({ manifest, entryId, meta, entryOverride = null }) 
 
 module.exports = {
   createRenderContext,
+  hasRoute,
   routePath,
 };

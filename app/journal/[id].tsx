@@ -1214,7 +1214,7 @@ export default function JournalDetailScreen() {
             setIsEditingTranscript(true);
           }}
           testID={TID.Button.EditTranscript}
-          accessibilityLabel="Edit transcript"
+          accessibilityLabel={t('journalDetail.a11y.editTranscript')}
           disabled={isAnalysisLocked}
           style={({ pressed }) => [
             styles.transcriptEditButton,
@@ -2046,7 +2046,7 @@ export default function JournalDetailScreen() {
                 onPress={handleToggleFavorite}
                 disabled={isAnalysisLocked}
                 testID={TID.Button.DreamFavorite}
-                accessibilityLabel="Toggle favorite"
+                accessibilityLabel={t('journalDetail.a11y.toggleFavorite')}
                 style={[
                   styles.actionButton,
                   shadows.sm,
@@ -2075,7 +2075,7 @@ export default function JournalDetailScreen() {
                 onPress={onShare}
                 disabled={isSharing || isAnalysisLocked}
                 testID={TID.Button.DreamShare}
-                accessibilityLabel="Share dream"
+                accessibilityLabel={t('journalDetail.a11y.shareDream')}
                 style={[
                   styles.actionButton,
                   shadows.sm,
@@ -2108,7 +2108,7 @@ export default function JournalDetailScreen() {
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
               accessibilityRole="link"
               testID={TID.Button.DreamDelete}
-              accessibilityLabel="Delete dream"
+              accessibilityLabel={t('journalDetail.a11y.deleteDream')}
             >
               <IconSymbol name="trash" size={18} color={noctalia.status.danger.icon} />
               <Text style={[styles.deleteLinkText, { color: noctalia.status.danger.text }]}>
@@ -2271,7 +2271,7 @@ export default function JournalDetailScreen() {
                   style={[styles.shareCopyButton, { backgroundColor: noctalia.action.primary }]}
                   onPress={handleCopyShareText}
                   testID={TID.Button.ShareCopy}
-                  accessibilityLabel="Copy share text"
+                  accessibilityLabel={t('journalDetail.a11y.copyShareText')}
                 >
                   <IconSymbol
                     name={shareCopyStatus === 'success' ? 'checkmark' : 'doc.on.doc'}
@@ -2296,7 +2296,7 @@ export default function JournalDetailScreen() {
                 style={[styles.shareCloseButton, { borderColor: noctalia.surface.border }]}
                 onPress={closeShareModal}
                 testID={TID.Button.ShareClose}
-                accessibilityLabel="Close share modal"
+                accessibilityLabel={t('journalDetail.a11y.closeShareModal')}
               >
                 <Text style={[styles.shareCloseButtonText, { color: noctalia.text.secondary }]}
                 >

@@ -1234,6 +1234,36 @@ const translations: Record<string, string> = {
     'symbols.home_explore_button': 'Explore symbols',
     'symbols.home_search_hint': 'Search water, house, snake...',
     'symbols.open_dictionary': 'View all symbols',
+
+    // Language selector
+    'settings.language.option.pt.label': 'Portuguese (Brazil)',
+    'settings.language.option.pt.description': 'Dream in Portuguese',
+
+    // Legal links & account deletion
+    'settings.legal.sectionTitle': 'Legal',
+    'settings.legal.privacyPolicy': 'Privacy Policy',
+    'settings.legal.termsOfUse': 'Terms of Use',
+    'settings.legal.accountDeletion': 'Delete account',
+    'settings.deleteAccount.title': 'Delete account',
+    'settings.deleteAccount.description': 'Permanently deletes your account and all associated data.',
+    'settings.deleteAccount.confirmTitle': 'Delete your account?',
+    'settings.deleteAccount.confirmMessage': 'This action is irreversible. Your dreams and your data will be permanently deleted.',
+    'settings.deleteAccount.subscriptionWarning': 'Deleting your account does NOT cancel your Google Play subscription. Cancel it in Google Play > Payments & subscriptions.',
+    'settings.deleteAccount.confirmButton': 'Delete permanently',
+    'settings.deleteAccount.successTitle': 'Account deleted',
+    'settings.deleteAccount.successMessage': 'Your account and your data have been deleted.',
+    'settings.deleteAccount.errorMessage': 'We could not delete your account. Please try again or contact contact@noctalia.app.',
+
+    // Journal detail accessibility
+    'journalDetail.a11y.editTranscript': 'Edit transcript',
+    'journalDetail.a11y.toggleFavorite': 'Toggle favorite',
+    'journalDetail.a11y.shareDream': 'Share dream',
+    'journalDetail.a11y.deleteDream': 'Delete dream',
+    'journalDetail.a11y.copyShareText': 'Copy share text',
+    'journalDetail.a11y.closeShareModal': 'Close share modal',
+
+    // Notification reminder title
+    'notifications.reminder.title': 'Dream Journal Reminder',
   };
 
 export default translations;

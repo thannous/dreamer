@@ -3,7 +3,6 @@
 const fs = require('fs');
 const path = require('path');
 const { imageSize } = require('image-size');
-const { SUPPORTED_LANGS } = require('./lib/docs-seo-utils');
 const { renderAhrefsAnalyticsScript } = require('./lib/ahrefs-analytics');
 const { createRenderContext } = require('./lib/docs-components/context');
 const { renderFooter: renderSharedFooter } = require('./lib/docs-components/footer');
@@ -126,6 +125,11 @@ const SITE_CONFIG = fs.existsSync(path.join(DOCS_SRC_DIR, 'config', 'site.config
 const SITE_MANIFEST = fs.existsSync(path.join(ROOT_DATA_DIR, 'site-manifest.json'))
   ? JSON.parse(fs.readFileSync(path.join(ROOT_DATA_DIR, 'site-manifest.json'), 'utf8'))
   : { collections: { blog: { entries: {} } } };
+
+// Guide pages (hub, dictionary, curations) only exist in the guide collection
+// languages. Languages with partial site coverage (e.g. pt-br) never get
+// guide pages nor guide hreflang alternates.
+const SUPPORTED_LANGS = SITE_CONFIG.collections?.guides?.languages || ['en', 'fr', 'es', 'de', 'it'];
 
 // Localized blog slug → article title (without the "| Noctalia" suffix), so
 // symbol cards can say which related article they link to.

@@ -16,6 +16,10 @@ const {
   readImageAssetRegistry,
 } = require('./lib/image-seo-assets');
 const {
+  getCollectionLanguages,
+  siteConfig,
+} = require('./lib/docs-site-config');
+const {
   listPageIllustrationRoutes,
   readCompleteImageAssetRegistry,
 } = require('./lib/page-illustrations');
@@ -285,8 +289,11 @@ function loadBlogManifestHreflangs() {
       if (!entry || typeof entry !== 'object') continue;
       if (entry.type !== 'blogArticle' && entry.type !== 'blogIndex') continue;
 
+      // Blog locales only cover the blog collection languages (partial
+      // coverage never emits hreflang for unavailable translations).
+      const entryLanguages = Object.keys(entry.locales || {});
       const hreflangs = {};
-      for (const lang of languages) {
+      for (const lang of entryLanguages) {
         const href = normalizeManifestPathToUrl(entry?.locales?.[lang]?.path);
         if (href) {
           hreflangs[lang] = href;
@@ -301,7 +308,7 @@ function loadBlogManifestHreflangs() {
       if (Object.keys(hreflangs).length === 0) continue;
       result.entryCount += 1;
 
-      for (const lang of languages) {
+      for (const lang of entryLanguages) {
         const pageUrl = hreflangs[lang];
         if (!pageUrl) continue;
         result.map.set(pageUrl, hreflangs);
@@ -364,7 +371,7 @@ function loadManagedSourceLastmodPaths() {
       const symbolI18n = fs.existsSync(SYMBOL_I18N_PATH)
         ? JSON.parse(fs.readFileSync(SYMBOL_I18N_PATH, 'utf8'))
         : {};
-      const languages = Array.isArray(manifest?.languages) ? manifest.languages : [];
+      const languages = getCollectionLanguages('guides');
       for (const lang of languages) {
         const guidePaths = [`/${lang}/guides/`];
         if (symbolI18n?.[lang]?.dictionary_slug) {
@@ -537,7 +544,10 @@ function groupUrlsByContent(files, sourceLastmodPaths = new Map()) {
  */
 function getPriority(url) {
   // Homepage gets highest priority
-  if (url.match(/^https:\/\/noctalia\.app\/(en|fr|es|de|it)\/?$/)) {
+  const languagePattern = siteConfig.languages
+    .map((lang) => lang.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|');
+  if (url.match(new RegExp(`^https://noctalia\\.app/(${languagePattern})/?$`))) {
     return '1.0';
   }
 

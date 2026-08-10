@@ -53,6 +53,7 @@ const recurrencePatternByLanguage = {
   es: /repit|repet|recurr/i,
   de: /wiederkehr|wiederhol/i,
   it: /torn|ripet|ricorr/i,
+  pt: /repit|recorr|volt/i,
 } as const;
 
 describe('paywallVariants', () => {

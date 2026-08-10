@@ -3,6 +3,7 @@ const path = require('path');
 const { imageSize } = require('image-size');
 const {
   DOCS_SRC_DIR,
+  getLanguageTag,
   readAssetVersion,
   siteConfig,
 } = require('./docs-site-config');
@@ -137,7 +138,7 @@ function resolveImageDimensions(value, fallback = { width: 1200, height: 630 }) 
 function htmlAttributes(meta) {
   const attrs = [];
   const lang = meta.lang || siteConfig.defaultLanguage;
-  attrs.push(` lang="${escapeHtml(lang)}"`);
+  attrs.push(` lang="${escapeHtml(getLanguageTag(lang))}"`);
 
   if (meta.htmlClass && meta.htmlClass.trim()) {
     attrs.push(` class="${escapeHtml(meta.htmlClass)}"`);
@@ -157,31 +158,43 @@ function bodyAttributes(meta) {
   return attrs.join('');
 }
 
+function entryLanguages(entry) {
+  if (!entry) return [];
+  return siteConfig.languages.filter((lang) => Boolean(entry.locales?.[lang]?.path));
+}
+
 function renderAlternateLinks(entry) {
   const lines = [];
   if (!entry) return '';
 
-  for (const lang of siteConfig.languages) {
-    const locale = entry.locales?.[lang];
-    if (!locale) continue;
+  // hreflang alternates only cover translations that actually exist for this
+  // page (partial-coverage languages never fall back to English URLs).
+  for (const lang of entryLanguages(entry)) {
     lines.push(
-      `    <link rel="alternate" hreflang="${lang}" href="${absoluteUrl(locale.path)}">`
+      `    <link rel="alternate" hreflang="${getLanguageTag(lang)}" href="${absoluteUrl(entry.locales[lang].path)}">`
     );
   }
 
+  const englishPath = entry.locales?.[siteConfig.defaultLanguage]?.path;
+  // x-default points to the English URL when one exists; pages without an
+  // English version omit x-default entirely. Language homes point to the
+  // root language selector.
   const xDefaultPath =
     entry.id === 'page.home'
       ? '/'
-      : entry.locales?.[siteConfig.defaultLanguage]?.path || '/';
-  lines.push(
-    `    <link rel="alternate" hreflang="x-default" href="${absoluteUrl(xDefaultPath)}">`
-  );
+      : englishPath || null;
+  if (xDefaultPath) {
+    lines.push(
+      `    <link rel="alternate" hreflang="x-default" href="${absoluteUrl(xDefaultPath)}">`
+    );
+  }
 
   return lines.join('\n');
 }
 
-function renderLocaleAlternates(lang) {
-  return siteConfig.languages
+function renderLocaleAlternates(lang, entry) {
+  const available = entry ? entryLanguages(entry) : siteConfig.languages;
+  return available
     .filter((candidate) => candidate !== lang)
     .map(
       (candidate) =>
@@ -564,7 +577,7 @@ function renderCommonHead(meta, entry, assetVersion, bodyHtml) {
     `    <meta property="og:image:height" content="${ogImageDimensions.height}">`,
     `    <meta property="og:image:alt" content="${escapeHtml(ogImageAlt)}">`,
     `    <meta property="og:locale" content="${siteConfig.localeCodes[lang]}">`,
-    renderLocaleAlternates(lang),
+    renderLocaleAlternates(lang, entry),
     '    <meta property="og:site_name" content="Noctalia">',
     articleMetaLines.join('\n'),
     `    <meta name="twitter:card" content="${escapeHtml(meta.twitterCard || 'summary_large_image')}">`,
@@ -1103,6 +1116,8 @@ module.exports = {
   optimizeBlogIndexImages,
   optimizeBlogArticleImages,
   protectMailtoLinksFromCloudflareObfuscation,
+  renderAlternateLinks,
+  renderLocaleAlternates,
   renderManagedPage,
   renderJsonLd,
   resolvePageImageContext,

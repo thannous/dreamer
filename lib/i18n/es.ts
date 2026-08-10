@@ -1234,6 +1234,36 @@ const translations: Record<string, string> = {
     'symbols.home_explore_button': 'Explorar símbolos',
     'symbols.home_search_hint': 'Buscar agua, casa, serpiente...',
     'symbols.open_dictionary': 'Ver todos los símbolos',
+
+    // Language selector
+    'settings.language.option.pt.label': 'Portugués (Brasil)',
+    'settings.language.option.pt.description': 'Sueña en portugués',
+
+    // Legal links & account deletion
+    'settings.legal.sectionTitle': 'Legal',
+    'settings.legal.privacyPolicy': 'Política de privacidad',
+    'settings.legal.termsOfUse': 'Términos de uso',
+    'settings.legal.accountDeletion': 'Eliminar cuenta',
+    'settings.deleteAccount.title': 'Eliminar cuenta',
+    'settings.deleteAccount.description': 'Elimina permanentemente tu cuenta y todos los datos asociados.',
+    'settings.deleteAccount.confirmTitle': '¿Eliminar tu cuenta?',
+    'settings.deleteAccount.confirmMessage': 'Esta acción es irreversible. Tus sueños y tus datos se eliminarán permanentemente.',
+    'settings.deleteAccount.subscriptionWarning': 'Eliminar la cuenta NO cancela tu suscripción de Google Play. Cancélala en Google Play > Pagos y suscripciones.',
+    'settings.deleteAccount.confirmButton': 'Eliminar permanentemente',
+    'settings.deleteAccount.successTitle': 'Cuenta eliminada',
+    'settings.deleteAccount.successMessage': 'Tu cuenta y tus datos han sido eliminados.',
+    'settings.deleteAccount.errorMessage': 'No pudimos eliminar tu cuenta. Inténtalo de nuevo o contacta con contact@noctalia.app.',
+
+    // Journal detail accessibility
+    'journalDetail.a11y.editTranscript': 'Editar transcripción',
+    'journalDetail.a11y.toggleFavorite': 'Alternar favorito',
+    'journalDetail.a11y.shareDream': 'Compartir sueño',
+    'journalDetail.a11y.deleteDream': 'Eliminar sueño',
+    'journalDetail.a11y.copyShareText': 'Copiar texto para compartir',
+    'journalDetail.a11y.closeShareModal': 'Cerrar ventana de compartir',
+
+    // Notification reminder title
+    'notifications.reminder.title': 'Recordatorio del diario de sueños',
   };
 
 export default translations;

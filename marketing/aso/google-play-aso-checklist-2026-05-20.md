@@ -1,5 +1,7 @@
 # Google Play ASO Copy Pack - Noctalia - 2026-05-20
 
+> Archive historique. Le positionnement vocal de ce document est remplacé pour la fiche française par la source canonique `marketing/aso/google-play-fr-2026-08-09.json`, centrée sur le « journal de rêves vivant ».
+
 ## Goal
 
 Improve qualified Android conversion from organic search, web comparison pages, and Google Play visitors. Position Noctalia as an Android-first dream journal for fast voice capture, AI reflection, generated dream images, recurring symbols, guided exploration, and privacy-conscious self-reflection.

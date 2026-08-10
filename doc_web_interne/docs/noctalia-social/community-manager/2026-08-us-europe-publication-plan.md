@@ -1514,3 +1514,92 @@ Le post X du troisième créneau affiche le compte `@NoctaliaDreams`, la copie,
 la vidéo intégrée et `Made with AI`. Les légendes restent sans texte
 « AI-generated » ni `@mention`. Les labels natifs TikTok/X sont séparés du
 texte éditorial.
+
+## Préflight du 9 août — créneau 1 en attente — 2026-08-09, 15:16 CEST
+
+La cadence du 09/08 prévoit trois créneaux, mais la source de vérité ne valide
+pour l'instant qu'un seul master distinct : `07-horloge.mp4` pour le créneau 2
+à 19:30 / 19:45 / 20:15. Aucun master distinct n'est actuellement validé et
+attribué aux créneaux 1 (15:30 / 15:45 / 16:15) ou 3 (22:30 / 22:45 / 23:15).
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | — | **EN ATTENTE** | **EN ATTENTE** | **EN ATTENTE** |
+| 19:30 / 19:45 / 20:15 | `07-horloge.mp4` | **PROGRAMMÉE** selon la file vérifiée du calendrier | **EN ATTENTE** jusqu'à 19:45 | **PROGRAMMÉE** selon la file Scheduled du calendrier |
+| 22:30 / 22:45 / 23:15 | — | **EN ATTENTE** | **EN ATTENTE** | **EN ATTENTE** |
+
+Ne pas publier, programmer ou réutiliser un contenu pour les créneaux 1 et 3
+tant qu'un master distinct n'est pas validé. Les statuts de `07-horloge.mp4`
+seront recontrôlés avant son créneau exact ; une file future ne vaut pas URL
+publique.
+
+## Revalidation du 9 août — créneau 2 TikTok — 2026-08-09, 19:25 CEST
+
+La file TikTok Studio du compte `@noctaliadreams` affiche la ligne exacte
+`07-horloge.mp4` pour le 09/08 à 19:30. Le lien Studio est
+[7669150296035183894](https://www.tiktok.com/@noctaliadreams/video/7669150296035183894)
+et la légende commence par `What happens when time breaks in a dream?`, avec
+`#Noctalia`, sans `@mention` ni texte « AI-generated ». `Brouillons 0` est
+confirmé et aucun doublon du jour n'est visible.
+
+Cette ligne reste **PROGRAMMÉE** jusqu'au contrôle de son URL publique après
+19:30. Instagram reste **EN ATTENTE** jusqu'à 19:45 et X demeure
+**PROGRAMMÉE** à 20:15 selon la file déjà vérifiée.
+
+## Exécution du 9 août — créneau 2 TikTok et Instagram — 2026-08-09, 19:47 CEST
+
+Le même asset `07-horloge.mp4` est maintenant public sur TikTok et Instagram,
+après contrôle du bon compte et de l'absence de doublon sur le profil Instagram.
+X reste **PROGRAMMÉE** à 20:15 jusqu'à vérification de son URL publique.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 19:30 / 19:45 / 20:15 | `07-horloge.mp4` | **PUBLIÉE** — [URL publique vérifiée](https://www.tiktok.com/@noctaliadreams/video/7669150296035183894) | **PUBLIÉE** — [Reel public vérifié](https://www.instagram.com/noctaliadreams/reel/Db1OdU6pT0F/) | **PROGRAMMÉE** à 20:15 selon la file Scheduled vérifiée |
+
+Légende TikTok/Instagram : `What happens when time breaks in a dream? ⏳
+#Noctalia #Dreamscape #DreamJournal`. Elle ne contient ni `@mention` ni texte
+« AI-generated ». Le profil Instagram est passé de 15 à 16 publications et
+affiche le nouveau Reel avec cette légende exacte.
+
+## Exécution du 9 août — créneau 2 complet — 2026-08-09, 20:15 CEST
+
+Le post X du créneau 2 est public sur `@NoctaliaDreams` à
+[l'URL vérifiée](https://x.com/NoctaliaDreams/status/2086516610505048347).
+L'horodatage Snowflake correspond au 09/08/2026 à 20:15:00 Paris. La page
+affiche la copie `What happens when time breaks in a dream?`, `#Noctalia
+#Dreamscape`, la vidéo de 12 secondes et le label natif `Made with AI`, sans
+`@mention` ni texte « AI-generated ».
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 19:30 / 19:45 / 20:15 | `07-horloge.mp4` | **PUBLIÉE** — [TikTok](https://www.tiktok.com/@noctaliadreams/video/7669150296035183894) | **PUBLIÉE** — [Instagram](https://www.instagram.com/noctaliadreams/reel/Db1OdU6pT0F/) | **PUBLIÉE** — [X](https://x.com/NoctaliaDreams/status/2086516610505048347) |
+
+## État final du 9 août — neuf lignes documentées — 2026-08-09, 23:15 CEST
+
+Les neuf lignes attendues sont documentées. Seul le créneau 2 disposait d'un
+asset distinct validé et a été publié sur les trois réseaux. Les créneaux 1 et
+3 restent **EN ATTENTE** sur chaque réseau ; aucune vidéo déjà publiée n'a été
+réutilisée et aucun doublon n'a été créé.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | — | **EN ATTENTE** | **EN ATTENTE** | **EN ATTENTE** |
+| 19:30 / 19:45 / 20:15 | `07-horloge.mp4` | **PUBLIÉE** — [URL](https://www.tiktok.com/@noctaliadreams/video/7669150296035183894) | **PUBLIÉE** — [URL](https://www.instagram.com/noctaliadreams/reel/Db1OdU6pT0F/) | **PUBLIÉE** — [URL](https://x.com/NoctaliaDreams/status/2086516610505048347) |
+| 22:30 / 22:45 / 23:15 | — | **EN ATTENTE** | **EN ATTENTE** | **EN ATTENTE** |
+
+## Préflight du 10 août — trois créneaux documentés — 2026-08-10, 01:17 CEST
+
+La source de vérité valide `08-tempete.mp4` pour le créneau 2. La file déjà
+vérifiée le conserve sur TikTok à 19:30 et X à 20:15 ; Instagram devra être
+publié directement à 19:45 après contrôle anti-doublon. Aucun asset distinct
+n'est encore attribué aux créneaux 1 et 3.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | — | **EN ATTENTE** | **EN ATTENTE** | **EN ATTENTE** |
+| 19:30 / 19:45 / 20:15 | `08-tempete.mp4` | **PROGRAMMÉE** à 19:30 — Studio `7669151005212151062` | **EN ATTENTE** jusqu'à 19:45 | **PROGRAMMÉE** à 20:15 selon la file Scheduled vérifiée |
+| 22:30 / 22:45 / 23:15 | — | **EN ATTENTE** | **EN ATTENTE** | **EN ATTENTE** |
+
+Légende prévue TikTok/Instagram : `Would you enter the storm? ⛈️ #Noctalia
+#Dreamscape #DreamJournal`. Les créneaux sans asset distinct resteront en
+attente ; aucune vidéo publiée ne sera réutilisée.

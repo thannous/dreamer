@@ -49,7 +49,7 @@ type RecordingGuideActionController = {
 };
 
 const THEME_VALUES: ThemePreference[] = ['auto', 'light', 'dark'];
-const LANGUAGE_VALUES: LanguagePreference[] = ['auto', 'en', 'fr', 'es', 'de', 'it'];
+const LANGUAGE_VALUES: LanguagePreference[] = ['auto', 'en', 'fr', 'es', 'de', 'it', 'pt'];
 const JOURNAL_LAYOUT_VALUES: JournalLayoutPreference[] = ['cards', 'compact'];
 
 export function useThemeSettingsPreference(): SettingsPreferenceController<ThemePreference> {

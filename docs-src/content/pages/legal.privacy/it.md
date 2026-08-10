@@ -145,7 +145,7 @@
       <li><strong>Analisi d'uso con consenso:</strong> Microsoft fornisce Clarity solo dopo la tua accettazione. I dettagli sono disponibili nell'<a href="https://privacy.microsoft.com/privacystatement" class="text-dream-salmon hover:underline">Informativa sulla privacy di Microsoft</a>.</li>
       <li><strong>Misurazione dell'audience con consenso:</strong> Google fornisce Google Analytics solo dopo la tua accettazione. I dettagli sono disponibili nell'<a href="https://policies.google.com/privacy" class="text-dream-salmon hover:underline">Informativa sulla privacy di Google</a>.</li>
       <li><strong>Provider IA e voce:</strong> Google Gemini, Google Cloud Speech-to-Text e, se necessario, servizi equivalenti.</li>
-      <li><strong>Gestione abbonamenti:</strong> RevenueCat tratta identificatori anonimi e informazioni di acquisto fornite dallo store applicabile, attualmente Google Play. I dati completi di pagamento non passano da Noctalia.</li>
+      <li><strong>Gestione abbonamenti:</strong> RevenueCat tratta identificatori anonimi e informazioni di acquisto fornite dallo store applicabile, attualmente Google Play. I dati completi di pagamento non passano da Noctalia. Dopo l'eliminazione dell'account, Noctalia cancella i dati dell'abbonamento dal proprio lato; i registri degli acquisti possono tuttavia essere conservati da Google Play e RevenueCat in conformità con i rispettivi obblighi legali. L'eliminazione dell'account non annulla l'abbonamento Google Play, che si gestisce in Google Play &gt; Pagamenti e abbonamenti.</li>
       <li><strong>Autorità e consulenti:</strong> quando richiesto dalla legge o per tutelare i nostri diritti.</li>
     </ul>
   </section>

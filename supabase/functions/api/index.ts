@@ -10,10 +10,12 @@
 // - POST /api/subscription/refresh { source? } -> { ok, tier, version, updated }
 // - POST /api/subscription/sync { source? } -> { ok, tier, version, updated }
 // - POST /api/subscription/reconcile { batchSize?, maxTotal?, minAgeHours? } -> { ok, processed, updated, changed }
+// - DELETE /api/account -> { deleted }
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders } from './lib/constants.ts';
+import { handleDeleteAccount } from './routes/account.ts';
 import { handleChat } from './routes/chat.ts';
 import { handleAnalyzeDream, handleAnalyzeDreamFull, handleCategorizeDream } from './routes/dreams.ts';
 import { handleCreateImageJob, handleGetImageJobStatus } from './routes/imageJobs.ts';
@@ -51,6 +53,7 @@ const routes = new Map<string, RouteHandler>([
   ['POST /subscription/reconcile', handleSubscriptionReconcile],
   ['POST /quota/status', handleQuotaStatus],
   ['POST /auth/mark-upgrade', handleAuthMarkUpgrade],
+  ['DELETE /account', handleDeleteAccount],
   ['POST /chat', handleChat],
   ['POST /transcribe', handleTranscribe],
   ['POST /analyzeDream', handleAnalyzeDream],

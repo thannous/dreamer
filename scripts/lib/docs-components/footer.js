@@ -37,7 +37,18 @@ function pricingLabel(lang) {
   if (lang === 'es') return 'Precios';
   if (lang === 'de') return 'Preise';
   if (lang === 'it') return 'Prezzi';
+  if (lang === 'pt-br') return 'Preços';
   return 'Pricing';
+}
+
+function featuresLabel(lang) {
+  if (lang === 'pt-br') return 'Funcionalidades';
+  return 'Features';
+}
+
+function faqLabel(lang) {
+  if (lang === 'pt-br') return 'Perguntas frequentes';
+  return 'FAQ';
 }
 
 function dreamAppAlternativeLabel(lang) {
@@ -61,6 +72,7 @@ function aiDreamAppLabel(lang) {
   if (lang === 'es') return 'App suenos IA';
   if (lang === 'de') return 'KI-Traumdeutung-App';
   if (lang === 'it') return 'App sogni IA';
+  if (lang === 'pt-br') return 'App de sonhos com IA';
   return 'AI dream app';
 }
 
@@ -69,6 +81,7 @@ function dreamDictionaryAppLabel(lang) {
   if (lang === 'es') return 'Diccionario de suenos app';
   if (lang === 'de') return 'Traumlexikon App';
   if (lang === 'it') return 'Dizionario sogni app';
+  if (lang === 'pt-br') return 'App dicionário de sonhos';
   return 'Dream dictionary app';
 }
 
@@ -77,6 +90,7 @@ function androidDreamAnalysisAppLabel(lang) {
   if (lang === 'es') return 'Analisis suenos Android';
   if (lang === 'de') return 'Android Traumanalyse';
   if (lang === 'it') return 'Analisi sogni Android';
+  if (lang === 'pt-br') return 'Análise de sonhos Android';
   return 'Android dream analysis';
 }
 
@@ -85,6 +99,7 @@ function voiceDreamJournalLabel(lang) {
   if (lang === 'es') return 'Diario suenos por voz';
   if (lang === 'de') return 'Traumtagebuch Sprache';
   if (lang === 'it') return 'Diario sogni vocale';
+  if (lang === 'pt-br') return 'Diário de sonhos por voz';
   return 'Voice dream journal';
 }
 
@@ -107,66 +122,88 @@ function loadFeaturedBlogTitles() {
 const featuredBlogTitles = loadFeaturedBlogTitles();
 
 function buildSeoFooterLinks(context) {
-  const { lang, locale, routePath } = context;
+  const { lang, locale, hasRoute, routePath } = context;
 
+  // Every footer link is gated on the destination actually existing in the
+  // current language (partial-coverage languages never link to missing pages).
   const featuredResources = [
     {
-      href: routePath('blog.index'),
+      pageId: 'blog.index',
       label: locale.blog,
     },
     {
-      href: routePath('page.alternatives'),
+      pageId: 'page.alternatives',
       label: alternativesLabel(lang),
     },
     {
-      href: routePath('page.pricing'),
+      pageId: 'page.pricing',
       label: pricingLabel(lang),
     },
     {
-      href: routePath('page.dreamapp-alternative'),
+      pageId: 'page.features',
+      label: featuresLabel(lang),
+    },
+    {
+      pageId: 'page.faq',
+      label: faqLabel(lang),
+    },
+    {
+      pageId: 'page.dreamapp-alternative',
       label: dreamAppAlternativeLabel(lang),
     },
     {
-      href: routePath('page.oniri-alternative'),
+      pageId: 'page.oniri-alternative',
       label: oniriAlternativeLabel(lang),
     },
     {
-      href: routePath('page.ai-dream-interpretation-app'),
+      pageId: 'page.ai-dream-interpretation-app',
       label: aiDreamAppLabel(lang),
     },
     {
-      href: routePath('page.dream-dictionary-app'),
+      pageId: 'page.dream-dictionary-app',
       label: dreamDictionaryAppLabel(lang),
     },
     {
-      href: routePath('page.android-dream-analysis-app'),
+      pageId: 'page.android-dream-analysis-app',
       label: androidDreamAnalysisAppLabel(lang),
     },
     {
-      href: routePath('page.voice-dream-journal'),
+      pageId: 'page.voice-dream-journal',
       label: voiceDreamJournalLabel(lang),
     },
+  ]
+    .filter((link) => hasRoute(link.pageId, lang))
+    .map((link) => ({ href: routePath(link.pageId), label: link.label }));
+
+  featuredResources.push(
     ...(siteConfig.seoLinking?.featuredBlogEntries || [])
       .map((entryId) => {
+        if (!hasRoute(entryId, lang)) return null;
         const href = routePath(entryId);
         const label = featuredBlogTitles.get(`${entryId}:${lang}`);
-        if (!href || !label) return null;
+        if (!label) return null;
         return { href, label };
       })
-      .filter(Boolean),
-  ];
+      .filter(Boolean)
+  );
 
   const featuredGuides = [
     {
-      href: routePath('guide.dictionary'),
+      pageId: 'guide.dictionary',
       label: locale.dreamDictionary,
     },
     {
-      href: routePath('guide.index'),
+      pageId: 'guide.index',
       label: locale.dreamGuides,
     },
+  ]
+    .filter((link) => hasRoute(link.pageId, lang))
+    .map((link) => ({ href: routePath(link.pageId), label: link.label }));
+
+  featuredGuides.push(
     ...(siteConfig.seoLinking?.featuredGuideEntries || [])
       .map((entryId) => {
+        if (!hasRoute(entryId, lang)) return null;
         const pageId = entryId.replace(/^guide\./, '');
         const page = (curationPagesData.pages || []).find((item) => item.id === pageId);
         if (!page || !page[lang]?.title) return null;
@@ -175,11 +212,12 @@ function buildSeoFooterLinks(context) {
           label: page[lang].title,
         };
       })
-      .filter(Boolean),
-  ];
+      .filter(Boolean)
+  );
 
   const popularSymbols = (siteConfig.seoLinking?.featuredSymbols || [])
     .map((symbolId) => {
+      if (!hasRoute(`symbol.${symbolId}`, lang)) return null;
       const symbol = (dreamSymbolsData.symbols || []).find((item) => item.id === symbolId);
       if (!symbol || !symbol[lang]?.name) return null;
       return {
@@ -202,7 +240,7 @@ function renderFooterLinks(links) {
 }
 
 function renderFooter(context) {
-  const { lang, locale, meta, routePath } = context;
+  const { lang, locale, meta, hasRoute, routePath } = context;
   const { featuredResources, featuredGuides, popularSymbols } = buildSeoFooterLinks(context);
   const isBlogPremium = meta.layout === 'blogIndex' && String(meta.mainClass || '').includes('blog-premium');
   const homeHref = lang === 'en' ? '/' : `/${lang}/`;
@@ -219,6 +257,54 @@ function renderFooter(context) {
     )
     .join('\n');
 
+  // Link columns only render when they have at least one destination
+  // available in the current language.
+  const resourcesColumn = featuredResources.length > 0
+    ? [
+        '            <div>',
+        `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerResources)}</h5>`,
+        '                <ul class="space-y-2 text-sm text-gray-500">',
+        renderFooterLinks(featuredResources),
+        '                </ul>',
+        '            </div>',
+      ].join('\n')
+    : null;
+  const guidesColumn = featuredGuides.length > 0
+    ? [
+        '            <div>',
+        `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerGuides)}</h5>`,
+        '                <ul class="space-y-2 text-sm text-gray-500">',
+        renderFooterLinks(featuredGuides),
+        '                </ul>',
+        '            </div>',
+      ].join('\n')
+    : null;
+  const symbolsColumn = popularSymbols.length > 0
+    ? [
+        '            <div>',
+        `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.popularSymbols)}</h5>`,
+        '                <ul class="space-y-2 text-sm text-gray-500">',
+        renderFooterLinks(popularSymbols),
+        '                </ul>',
+        '            </div>',
+      ].join('\n')
+    : null;
+
+  const legalLinks = [
+    { pageId: 'page.about', label: locale.about },
+    { pageId: 'page.press', label: pressKitLabel(lang) },
+    { pageId: 'legal.notice', label: locale.legalNotice },
+    { pageId: 'legal.privacy', label: locale.privacy },
+    { pageId: 'legal.terms', label: locale.terms },
+    { pageId: 'legal.account-deletion', label: locale.accountDeletion },
+  ]
+    .filter((link) => hasRoute(link.pageId, lang))
+    .map(
+      (link) =>
+        `                    <li><a href="${routePath(link.pageId)}" class="hover:text-dream-salmon transition-colors">${escapeHtml(link.label)}</a></li>`
+    )
+    .join('\n');
+
   return [
     `    <footer class="${footerClass}">`,
     '        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">',
@@ -232,33 +318,13 @@ function renderFooter(context) {
     socialLinks,
     '                </div>',
     '            </div>',
-    '            <div>',
-    `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerResources)}</h5>`,
-    '                <ul class="space-y-2 text-sm text-gray-500">',
-    renderFooterLinks(featuredResources),
-    '                </ul>',
-    '            </div>',
-    '            <div>',
-    `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerGuides)}</h5>`,
-    '                <ul class="space-y-2 text-sm text-gray-500">',
-    renderFooterLinks(featuredGuides),
-    '                </ul>',
-    '            </div>',
-    '            <div>',
-    `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.popularSymbols)}</h5>`,
-    '                <ul class="space-y-2 text-sm text-gray-500">',
-    renderFooterLinks(popularSymbols),
-    '                </ul>',
-    '            </div>',
+    resourcesColumn,
+    guidesColumn,
+    symbolsColumn,
     '            <div>',
     `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerLegal)}</h5>`,
     '                <ul class="space-y-2 text-sm text-gray-500 mb-4">',
-    `                    <li><a href="${routePath('page.about')}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.about)}</a></li>`,
-    `                    <li><a href="${routePath('page.press')}" class="hover:text-dream-salmon transition-colors">${escapeHtml(pressKitLabel(lang))}</a></li>`,
-    `                    <li><a href="${routePath('legal.notice')}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.legalNotice)}</a></li>`,
-    `                    <li><a href="${routePath('legal.privacy')}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.privacy)}</a></li>`,
-    `                    <li><a href="${routePath('legal.terms')}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.terms)}</a></li>`,
-    `                    <li><a href="${routePath('legal.account-deletion')}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.accountDeletion)}</a></li>`,
+    legalLinks,
     '                </ul>',
     `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerDownload)}</h5>`,
     '                <div class="flex flex-col gap-3">',
@@ -277,7 +343,9 @@ function renderFooter(context) {
     `            <span class="mt-2 md:mt-0 flex gap-2 items-center">${escapeHtml(locale.footerMadeWith)} <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> ${escapeHtml(locale.footerForDreamers)}</span>`,
     '        </div>',
     '    </footer>',
-  ].join('\n');
+  ]
+    .filter(Boolean)
+    .join('\n');
 }
 
 module.exports = {

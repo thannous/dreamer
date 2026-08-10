@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import { getTranslator, loadTranslations } from '../i18n';
 
-const languages: ('en' | 'fr' | 'es' | 'de' | 'it')[] = ['en', 'fr', 'es', 'de', 'it'];
+const languages: ('en' | 'fr' | 'es' | 'de' | 'it' | 'pt')[] = ['en', 'fr', 'es', 'de', 'it', 'pt'];
 
 const obsoleteFirstRunOnboardingKeys = [
   'onboarding.path.library.title',

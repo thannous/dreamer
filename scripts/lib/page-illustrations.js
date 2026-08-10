@@ -4,11 +4,13 @@ const {
   getResponsiveImageData,
   readImageAssetRegistry,
 } = require('./image-seo-assets');
+const { siteConfig } = require('./docs-site-config');
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 const CONFIG_PATH = path.join(REPO_ROOT, 'docs-src', 'config', 'page-illustrations.json');
 const SITE_MANIFEST_PATH = path.join(REPO_ROOT, 'data', 'site-manifest.json');
-const SUPPORTED_LANGS = ['en', 'fr', 'es', 'de', 'it'];
+// Languages with localized illustration alt/caption templates.
+const SUPPORTED_LANGS = siteConfig.languages;
 
 const ALT_TEMPLATES = {
   en: (title) => `Dreamlike editorial illustration for ${title}`,
@@ -16,6 +18,7 @@ const ALT_TEMPLATES = {
   es: (title) => `Ilustración editorial onírica para «${title}»`,
   de: (title) => `Traumhafte redaktionelle Illustration zu „${title}“`,
   it: (title) => `Illustrazione editoriale onirica per «${title}»`,
+  'pt-br': (title) => `Ilustração editorial onírica para «${title}»`,
 };
 
 const CAPTION_TEMPLATES = {
@@ -24,6 +27,7 @@ const CAPTION_TEMPLATES = {
   es: (title) => `Una escena editorial de Noctalia sobre «${title}».`,
   de: (title) => `Eine redaktionelle Noctalia-Szene zu „${title}“.`,
   it: (title) => `Una scena editoriale di Noctalia dedicata a «${title}».`,
+  'pt-br': (title) => `Uma cena editorial Noctalia sobre «${title}».`,
 };
 
 let cachedConfig;
@@ -138,10 +142,11 @@ function listPageIllustrationRoutes(manifest = readSiteManifest()) {
   for (const pageId of Object.keys(config.families)) {
     const entry = getManifestEntry(pageId, manifest);
     if (!entry) throw new Error(`Missing site manifest entry for ${pageId}`);
-    for (const lang of SUPPORTED_LANGS) {
-      const pagePath = entry.locales?.[lang]?.path;
-      if (!pagePath) throw new Error(`Missing ${lang} route for ${pageId}`);
-      routes.push({ pageId, lang, path: pagePath });
+    // Routes exist exactly for the locales the page is published in
+    // (partial-coverage languages only cover the pages that exist).
+    for (const [lang, locale] of Object.entries(entry.locales || {})) {
+      if (!locale?.path) throw new Error(`Missing ${lang} route for ${pageId}`);
+      routes.push({ pageId, lang, path: locale.path });
     }
   }
   return routes;

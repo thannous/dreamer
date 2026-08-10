@@ -35,6 +35,10 @@ jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({ t: mockTranslate }),
 }));
 
+jest.mock('@/context/LanguageContext', () => ({
+  useLanguage: () => ({ language: 'en' }),
+}));
+
 jest.mock('@/services/notificationService', () => ({
   cancelAllNotifications: (...args: unknown[]) => mockCancelAllNotifications(...args),
   hasNotificationPermissions: (...args: unknown[]) => mockHasNotificationPermissions(...args),

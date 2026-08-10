@@ -1,8 +1,12 @@
 const path = require('path');
 const { readJson, readSourceDocument } = require('./docs-source-utils');
+const { getCollectionLanguages, siteConfig } = require('./docs-site-config');
 
 const DEFAULT_ROOT_DIR = path.resolve(__dirname, '..', '..');
-const EXPECTED_LANGUAGES = Object.freeze(['en', 'fr', 'es', 'de', 'it']);
+// Content hubs only interconnect blog entries, so they live in the blog
+// collection languages (partial-coverage site languages are excluded).
+const EXPECTED_LANGUAGES = Object.freeze(getCollectionLanguages('blog'));
+const SITE_LANGUAGES = Object.freeze([...siteConfig.languages]);
 const FORBIDDEN_IDENTITY_KEYS = new Set(['url', 'path', 'slug', 'canonical', 'hreflang']);
 const HUB_KINDS = new Set(['hubAndSpoke', 'contentDatabase']);
 
@@ -58,12 +62,12 @@ function findForbiddenIdentityKeys(value, errors, location = 'config', seen = ne
   }
 }
 
-function hasExactlyExpectedLanguages(languages) {
-  if (!Array.isArray(languages) || languages.length !== EXPECTED_LANGUAGES.length) return false;
+function hasExactlyExpectedLanguages(languages, expected = EXPECTED_LANGUAGES) {
+  if (!Array.isArray(languages) || languages.length !== expected.length) return false;
   const actual = new Set(languages);
   return (
-    actual.size === EXPECTED_LANGUAGES.length &&
-    EXPECTED_LANGUAGES.every((lang) => actual.has(lang))
+    actual.size === expected.length &&
+    expected.every((lang) => actual.has(lang))
   );
 }
 
@@ -76,9 +80,9 @@ function buildManifestIndex(manifest, errors) {
     return { entries, collections };
   }
 
-  if (!hasExactlyExpectedLanguages(manifest.languages)) {
+  if (!hasExactlyExpectedLanguages(manifest.languages, SITE_LANGUAGES)) {
     errors.push(
-      `site manifest languages must be exactly ${EXPECTED_LANGUAGES.join(', ')} (received ${
+      `site manifest languages must be exactly ${SITE_LANGUAGES.join(', ')} (received ${
         Array.isArray(manifest.languages) ? manifest.languages.join(', ') : typeof manifest.languages
       })`
     );

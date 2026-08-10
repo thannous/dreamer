@@ -38,6 +38,18 @@
 <p class="text-lg text-purple-200/80 mb-10">Du kannst dein Noctalia-Konto jederzeit löschen. Dabei werden deine personenbezogenen Daten aus aktiven Systemen entfernt, vorbehaltlich gesetzlicher Aufbewahrungspflichten.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
+  <!-- Wichtiger Hinweis: Abo -->
+  <div class="p-6 rounded-2xl bg-red-900/20 border border-red-500/20 flex gap-4 items-start">
+    <i data-lucide="alert-triangle" class="w-6 h-6 text-red-400 shrink-0 mt-1"></i>
+    <div>
+      <h2 class="text-red-200 font-bold mb-1">Achtung: Das Löschen des Kontos kündigt das Abo nicht</h2>
+      <p class="text-sm text-red-200/80">
+        Das Löschen deines Noctalia-Kontos kündigt dein Google-Play-Abo nicht. Um es zu kündigen, gehe zu
+        <strong>Google Play &gt; Zahlungen und Abos &gt; Abos</strong>.
+      </p>
+    </div>
+  </div>
+
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Direkt in der App löschen</h2>
     <ol class="list-decimal pl-5 space-y-3">

@@ -9,6 +9,8 @@ const { spawnSync } = require('child_process');
 const {
   DOCS_SRC_DIR,
   ROOT_DIR,
+  getCollectionLanguages,
+  getStaticPageConfig,
   getStaticPagePath,
   siteConfig,
 } = require('./lib/docs-site-config');
@@ -28,6 +30,15 @@ const {
 const BLOG_SOURCE_DIR = path.join(DOCS_SRC_DIR, 'content', 'blog');
 const PAGE_SOURCE_DIR = path.join(DOCS_SRC_DIR, 'content', 'pages');
 const CONTENT_DIR = path.join(DOCS_SRC_DIR, 'content');
+// Symbol catalogs only exist in the symbol collection languages (partial
+// coverage languages such as pt-br have no symbol content).
+const SYMBOL_LANGUAGES = getCollectionLanguages('symbols');
+
+function staticPageSourceLanguages(pageId) {
+  const page = getStaticPageConfig(pageId);
+  if (!page) return [];
+  return siteConfig.languages.filter((lang) => page.slugs?.[lang] != null);
+}
 const COMMERCIAL_PAGE_FAMILIES = [
   'page.ai-dream-interpretation-app',
   'page.alternatives',
@@ -546,7 +557,7 @@ function checkCommercialPage(meta, body, pageId, lang, filePath, errors) {
 function checkCommercialContent(errors) {
   let pageCount = 0;
   for (const pageId of COMMERCIAL_PAGE_FAMILIES) {
-    for (const lang of siteConfig.languages) {
+    for (const lang of staticPageSourceLanguages(pageId)) {
       const filePath = path.join(PAGE_SOURCE_DIR, pageId, `${lang}.md`);
       if (!fs.existsSync(filePath)) {
         errors.push(`[commercial page] missing ${path.relative(ROOT_DIR, filePath)}`);
@@ -564,10 +575,16 @@ function checkHomeProductFacts(errors) {
   const storeUrl = siteConfig.storeLinks.androidBase;
   let pageCount = 0;
 
-  for (const lang of siteConfig.languages) {
+  for (const lang of staticPageSourceLanguages('page.home')) {
     const filePath = path.join(PAGE_SOURCE_DIR, 'page.home', `${lang}.md`);
     const { meta, body } = readSourceDocument(filePath);
     const facts = HOME_PRODUCT_FACTS[lang];
+    // Product-fact phrasing is only enforced for languages with canonical
+    // fact strings; other home pages are still required to exist.
+    if (!facts) {
+      pageCount += 1;
+      continue;
+    }
     const visibleText = normalizeText(body);
     pageCount += 1;
 
@@ -778,7 +795,7 @@ function checkChangedExtendedSymbolContent(errors) {
     const payload = JSON.parse(fs.readFileSync(absolutePath, 'utf8'));
     const symbols = catalog.symbols(payload);
     for (const locales of Object.values(symbols)) {
-      for (const lang of siteConfig.languages) {
+      for (const lang of SYMBOL_LANGUAGES) {
         if (locales?.[lang]) localeCount += 1;
       }
     }
@@ -788,7 +805,7 @@ function checkChangedExtendedSymbolContent(errors) {
     const previousSymbols = catalog.symbols(previousPayload);
     const interpretations = new Map();
     for (const [symbolId, locales] of Object.entries(symbols)) {
-      for (const lang of siteConfig.languages) {
+      for (const lang of SYMBOL_LANGUAGES) {
         const normalized = normalizeText(locales?.[lang]?.fullInterpretation);
         if (!normalized) continue;
         const key = `${lang}\u0000${normalized}`;
@@ -798,7 +815,7 @@ function checkChangedExtendedSymbolContent(errors) {
     }
 
     for (const [symbolId, locales] of Object.entries(symbols)) {
-      for (const lang of siteConfig.languages) {
+      for (const lang of SYMBOL_LANGUAGES) {
         const currentLocale = locales?.[lang];
         if (!currentLocale) continue;
         const previousLocale = previousSymbols?.[symbolId]?.[lang];
@@ -841,7 +858,7 @@ function withoutDocumentMetadata(value) {
 
 function sharedSymbolFields(symbol) {
   const clone = withoutModifiedAt(symbol) || {};
-  for (const lang of siteConfig.languages) delete clone[lang];
+  for (const lang of SYMBOL_LANGUAGES) delete clone[lang];
   // relatedArticles is keyed by locale, so changing one language must not
   // refresh the publication dates of every translated symbol page.
   delete clone.relatedArticles;
@@ -921,7 +938,7 @@ function checkChangedSymbolDates(payload, errors) {
       }
     }
 
-    for (const lang of siteConfig.languages) {
+    for (const lang of SYMBOL_LANGUAGES) {
       const localeChanged =
         !previous ||
         JSON.stringify(localizedSymbolFields(symbol, lang)) !==
@@ -944,9 +961,9 @@ function checkSymbolLocalization(errors) {
   const previousSymbolIds = baselineSymbolIds(payload);
   const symbolIds = new Set(symbols.map((symbol) => symbol?.id).filter(Boolean));
   const seenIds = new Set();
-  const seenSlugs = Object.fromEntries(siteConfig.languages.map((lang) => [lang, new Map()]));
+  const seenSlugs = Object.fromEntries(SYMBOL_LANGUAGES.map((lang) => [lang, new Map()]));
   const seenDescriptionTemplates = Object.fromEntries(
-    siteConfig.languages.map((lang) => [lang, new Map()])
+    SYMBOL_LANGUAGES.map((lang) => [lang, new Map()])
   );
 
   for (const symbol of symbols) {
@@ -966,7 +983,7 @@ function checkSymbolLocalization(errors) {
         }
       }
     }
-    for (const lang of siteConfig.languages) {
+    for (const lang of SYMBOL_LANGUAGES) {
       const locale = symbol?.[lang];
       const prefix = `[symbol localization] ${symbol?.id || '<missing-id>'}.${lang}`;
       if (!locale || typeof locale !== 'object') {

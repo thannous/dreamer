@@ -6,7 +6,8 @@
     "fr",
     "es",
     "de",
-    "it"
+    "it",
+    "pt-br"
   ],
   "collections": {
     "pages": {
@@ -37,6 +38,10 @@
             "it": {
               "slug": "",
               "path": "/it/"
+            },
+            "pt-br": {
+              "slug": "",
+              "path": "/pt-br/"
             }
           }
         },
@@ -121,6 +126,10 @@
             "it": {
               "slug": "prezzi",
               "path": "/it/prezzi"
+            },
+            "pt-br": {
+              "slug": "precos",
+              "path": "/pt-br/precos"
             }
           }
         },
@@ -317,6 +326,10 @@
             "it": {
               "slug": "app-interpretazione-sogni-ai",
               "path": "/it/app-interpretazione-sogni-ai"
+            },
+            "pt-br": {
+              "slug": "app-interpretacao-de-sonhos-ia",
+              "path": "/pt-br/app-interpretacao-de-sonhos-ia"
             }
           }
         },
@@ -345,6 +358,10 @@
             "it": {
               "slug": "dizionario-dei-sogni-app",
               "path": "/it/dizionario-dei-sogni-app"
+            },
+            "pt-br": {
+              "slug": "app-dicionario-de-sonhos",
+              "path": "/pt-br/app-dicionario-de-sonhos"
             }
           }
         },
@@ -373,6 +390,10 @@
             "it": {
               "slug": "app-analisi-sogni-android",
               "path": "/it/app-analisi-sogni-android"
+            },
+            "pt-br": {
+              "slug": "app-android-analise-de-sonhos",
+              "path": "/pt-br/app-android-analise-de-sonhos"
             }
           }
         },
@@ -401,6 +422,34 @@
             "it": {
               "slug": "diario-dei-sogni-vocale",
               "path": "/it/diario-dei-sogni-vocale"
+            },
+            "pt-br": {
+              "slug": "diario-de-sonhos-por-voz",
+              "path": "/pt-br/diario-de-sonhos-por-voz"
+            }
+          }
+        },
+        "page.features": {
+          "id": "page.features",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": null,
+          "locales": {
+            "pt-br": {
+              "slug": "funcionalidades",
+              "path": "/pt-br/funcionalidades"
+            }
+          }
+        },
+        "page.faq": {
+          "id": "page.faq",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": null,
+          "locales": {
+            "pt-br": {
+              "slug": "perguntas-frequentes",
+              "path": "/pt-br/perguntas-frequentes"
             }
           }
         },
@@ -457,6 +506,10 @@
             "it": {
               "slug": "privacy-policy",
               "path": "/it/privacy-policy"
+            },
+            "pt-br": {
+              "slug": "politica-de-privacidade",
+              "path": "/pt-br/politica-de-privacidade"
             }
           }
         },
@@ -485,6 +538,10 @@
             "it": {
               "slug": "termini",
               "path": "/it/termini"
+            },
+            "pt-br": {
+              "slug": "termos-de-uso",
+              "path": "/pt-br/termos-de-uso"
             }
           }
         },
@@ -513,6 +570,10 @@
             "it": {
               "slug": "eliminazione-account",
               "path": "/it/eliminazione-account"
+            },
+            "pt-br": {
+              "slug": "exclusao-de-conta",
+              "path": "/pt-br/exclusao-de-conta"
             }
           }
         }

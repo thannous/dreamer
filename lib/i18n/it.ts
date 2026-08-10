@@ -1234,6 +1234,36 @@ const translations: Record<string, string> = {
     'symbols.home_explore_button': 'Esplora i simboli',
     'symbols.home_search_hint': 'Cerca acqua, casa, serpente...',
     'symbols.open_dictionary': 'Vedi tutti i simboli',
+
+    // Language selector
+    'settings.language.option.pt.label': 'Portoghese (Brasile)',
+    'settings.language.option.pt.description': 'Sogna in portoghese',
+
+    // Legal links & account deletion
+    'settings.legal.sectionTitle': 'Note legali',
+    'settings.legal.privacyPolicy': 'Informativa sulla privacy',
+    'settings.legal.termsOfUse': 'Termini di utilizzo',
+    'settings.legal.accountDeletion': 'Elimina account',
+    'settings.deleteAccount.title': 'Elimina account',
+    'settings.deleteAccount.description': 'Elimina definitivamente il tuo account e tutti i dati associati.',
+    'settings.deleteAccount.confirmTitle': 'Eliminare il tuo account?',
+    'settings.deleteAccount.confirmMessage': 'Questa azione è irreversibile. I tuoi sogni e i tuoi dati saranno eliminati definitivamente.',
+    'settings.deleteAccount.subscriptionWarning': 'L’eliminazione dell’account NON annulla il tuo abbonamento Google Play. Annullalo in Google Play > Pagamenti e abbonamenti.',
+    'settings.deleteAccount.confirmButton': 'Elimina definitivamente',
+    'settings.deleteAccount.successTitle': 'Account eliminato',
+    'settings.deleteAccount.successMessage': 'Il tuo account e i tuoi dati sono stati eliminati.',
+    'settings.deleteAccount.errorMessage': 'Impossibile eliminare il tuo account. Riprova o contatta contact@noctalia.app.',
+
+    // Journal detail accessibility
+    'journalDetail.a11y.editTranscript': 'Modifica trascrizione',
+    'journalDetail.a11y.toggleFavorite': 'Attiva/disattiva preferito',
+    'journalDetail.a11y.shareDream': 'Condividi sogno',
+    'journalDetail.a11y.deleteDream': 'Elimina sogno',
+    'journalDetail.a11y.copyShareText': 'Copia testo di condivisione',
+    'journalDetail.a11y.closeShareModal': 'Chiudi finestra di condivisione',
+
+    // Notification reminder title
+    'notifications.reminder.title': 'Promemoria del diario dei sogni',
   };
 
 export default translations;

@@ -225,6 +225,10 @@ jest.doMock('@/components/quota/QuotaStatusCard', () => ({
   QuotaStatusCard: () => <div data-testid="quota-status-card" />,
 }));
 
+jest.doMock('@/components/settings/LegalSection', () => ({
+  LegalSection: () => <div data-testid="legal-section" />,
+}));
+
 jest.doMock('@/components/settings/SettingsFieldGroup', () => ({
   SettingsFieldGroup: function MockSettingsFieldGroup(props: any) {
     capturedSettingsProps = props;

@@ -5,7 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { DOCS_DIR, ROOT_DIR, siteConfig } = require('./lib/docs-site-config');
+const { DOCS_DIR, ROOT_DIR, getCollectionLanguages, siteConfig } = require('./lib/docs-site-config');
 const { MAX_OUTPUT_BYTES } = require('./optimize-homepage-hero');
 
 const HERO_PATH = path.join(DOCS_DIR, 'img', 'hero', 'noctalia-observatory-bg.webp');
@@ -93,7 +93,7 @@ function checkWebPerformanceContract() {
     }
   }
 
-  for (const lang of siteConfig.languages) {
+  for (const lang of getCollectionLanguages('blog')) {
     const indexPath = path.join(DOCS_DIR, lang, 'blog', 'index.html');
     if (!fs.existsSync(indexPath)) {
       errors.push(`[blog index images] missing ${path.relative(ROOT_DIR, indexPath)}`);
@@ -126,7 +126,7 @@ function checkWebPerformanceContract() {
   }
 
 
-  for (const lang of siteConfig.languages) {
+  for (const lang of getCollectionLanguages('blog')) {
     const blogDir = path.join(DOCS_DIR, lang, 'blog');
     if (!fs.existsSync(blogDir)) continue;
     for (const entry of fs.readdirSync(blogDir, { withFileTypes: true })) {

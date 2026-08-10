@@ -9,6 +9,7 @@ module.exports = {
   roots: [
     '<rootDir>/app',
     '<rootDir>/components',
+    '<rootDir>/constants',
     '<rootDir>/context',
     '<rootDir>/hooks',
     '<rootDir>/lib',

@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useQuota } from '@/hooks/useQuota';
+import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { TID } from '@/lib/testIDs';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { router } from 'expo-router';
@@ -68,6 +69,7 @@ export const QuotaStatusCard: React.FC<Props> = ({
   const cardBg = noctalia.surface.raised;
   const { t } = useTranslation();
   const { quotaStatus, loading, error, refetch, tier } = useQuota();
+  const { formatDate } = useLocaleFormatting();
   const isDegradedGuest = !user && quotaStatus?.guestBootstrapStatus === 'degraded';
 
   const rows = useMemo(() => ([
@@ -94,7 +96,7 @@ export const QuotaStatusCard: React.FC<Props> = ({
     if (tier !== 'free') return null;
     try {
       const { periodEnd } = getMonthlyQuotaPeriod();
-      const dateStr = periodEnd.toLocaleDateString(undefined, {
+      const dateStr = formatDate(periodEnd, {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
@@ -103,7 +105,7 @@ export const QuotaStatusCard: React.FC<Props> = ({
     } catch {
       return null;
     }
-  }, [t, tier]);
+  }, [t, tier, formatDate]);
 
   const handleUpgrade = () => {
     if (onUpgradePress) {

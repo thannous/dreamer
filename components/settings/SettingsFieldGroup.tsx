@@ -39,6 +39,7 @@ type SettingsFieldGroupProps = {
   account: ReactElement;
   appVersionLabel?: string;
   bottomPadding: number;
+  legal?: ReactElement;
   onOpenSubscription: () => void;
   quota: ReactElement;
   returningGuestBlocked: boolean;
@@ -303,6 +304,7 @@ export function SettingsFieldGroup({
   account,
   appVersionLabel,
   bottomPadding,
+  legal,
   onOpenSubscription,
   quota,
   returningGuestBlocked,
@@ -548,6 +550,8 @@ export function SettingsFieldGroup({
               </View>
             </>
           ) : null}
+
+          {legal}
 
           {appVersionLabel ? (
             <View style={styles.versionFooter} testID="settings-app-version">

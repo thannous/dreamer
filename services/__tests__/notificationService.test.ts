@@ -49,6 +49,15 @@ jest.mock('../notificationServiceReal', () => mockRealService);
 jest.mock('expo-notifications', () => mockNotifications);
 jest.mock('@/lib/i18n', () => ({
   getTranslator: () => (key: string) => key,
+  loadTranslations: jest.fn(async () => ({})),
+}));
+
+jest.mock('@/services/storageService', () => ({
+  getLanguagePreference: jest.fn(async () => 'auto'),
+}));
+
+jest.mock('expo-localization', () => ({
+  getLocales: () => [{ languageCode: 'en' }],
 }));
 
 describe('notificationService', () => {
