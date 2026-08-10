@@ -1274,6 +1274,20 @@ Russian-operated site, message, form, account, attachment, payment or
 publication was used. Full evidence is in
 `marketing/seo/editorial-discovery-wave-46-2026-08-10.md`.
 
+### Editorial discovery wave 47 — 2026-08-10
+
+One focused search across the remaining CNET, ZDNET, Ars Technica and WIRED
+coverage gaps surfaced WIRED's July 2025 Claude subscriber-livestream replay as
+the strongest editorial result. Google's snippet mentions an AI journaling app
+and Rosebud, but the rendered static article contains zero Rosebud, journaling,
+journal or Noctalia mentions. It is self-canonical and `index, follow`, yet its
+12 article links are internal and it exposes zero external product citations.
+The route is therefore closed at P2 before operator/contact enrichment. The
+central register now contains 240 routes: 3 P0, 66 P1, 170 P2 and 1 P3. No
+Russian-operated site, alternate query, paywall bypass, message, form, account,
+attachment, payment or publication was used. Full evidence is in
+`marketing/seo/editorial-discovery-wave-47-2026-08-10.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

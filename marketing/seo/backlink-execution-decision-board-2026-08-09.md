@@ -7,7 +7,7 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 
 ## Current evidence
 
-- The prospect register contains 239 qualified, paused, rejected or active
+- The prospect register contains 240 qualified, paused, rejected or active
   routes.
 - The outreach log contains 49 prior transmissions or attempts.
 - The prospect register and outreach log now agree on 27 unsent first
@@ -133,6 +133,12 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   citation. Mashable and PCMag were blocked by Chrome's site-safety policy and
   remain unclassified rather than receiving a trust verdict from missing
   evidence. No workaround or outreach was used.
+- A second mainstream-media pass closed WIRED at P2. Google's AI-journaling
+  snippet comes from the embedded livestream, while the rendered article has
+  zero Rosebud, journaling, journal or Noctalia mentions and zero external
+  article links. The page is indexable and attributable, but the exact route
+  fails both the topicality and developer-citation gates. No paywall bypass,
+  contact enrichment or outreach was used.
 
 ## Recommended next execution order
 
