@@ -7,7 +7,7 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 
 ## Current evidence
 
-- The prospect register contains 233 qualified, paused, rejected or active
+- The prospect register contains 238 qualified, paused, rejected or active
   routes.
 - The outreach log contains 49 prior transmissions or attempts.
 - The prospect register and outreach log now agree on 27 unsent first
@@ -106,6 +106,13 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   a German sole proprietor with a public professional email. Four plain-text or
   community surfaces remain P2. The two German notes are independently gated
   as `D9A` and `D9B`; neither was sent.
+- A secondary-benchmark citation pass promotes one Spanish municipal-radio
+  route. Three self-canonical Ràdio Nova pages link `psicologia-online.com`
+  sources without `nofollow`, the active program identifies Aitor Bernal Marín
+  at a Barcelona-area municipal studio and publishes a direct email, and the
+  mailbox duplicate check is clear. Dormi, Galoppo & Charme, Les Echos and Les
+  Écrits remain P2 for medical, predictive, contextual or operator-accountability
+  reasons. `D10A` is prepared and unsent.
 
 ## Recommended next execution order
 
@@ -117,10 +124,11 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 | 4 | Simone editorial note (`D8B`) | The current Rosebud review is by a named author and links `rosebud.app` twice without `nofollow`; Agentik SAS, French law and the official mailbox pass the trust gate. | Send the prepared factual French note only after a fresh page, destination and mailbox stop gate. Ask only whether Noctalia is useful to test; no link, anchor, rank or placement request. |
 | 5 | ANTENNE BAYERN editorial note (`D9A`) | Its indexable guide links two exact competitor symbol pages without `nofollow`; the registered German broadcaster publishes a direct newsroom mailbox. | Send the prepared German note once after a fresh page, destination and mailbox stop gate. Offer a test only; no link, anchor, rank or placement request. |
 | 6 | Epigenius editorial note (`D9B`) | Its indexable 2025 article links the competitor directly and already discusses keeping a dream journal; the named German operator publishes a direct email. | Send the prepared German note once after a fresh stop gate. Keep the non-medical boundary explicit and do not request a link or placement. |
-| 7 | Elsewhere human reply (`D1`) | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal, although Medium currently marks product links `ugc nofollow`. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
-| 8 | Three editorial-visibility follow-ups (`D3B`) | Android Police and Xataka Android are credible Android publishers but the target pages lack a direct developer-domain citation pattern. AITrendTool's sampled product links are `nofollow`. | Treat these as discovery and relationship opportunities, not the DR-first batch. Authorize separately and verify any eventual public link without assuming equity. |
-| 9 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |
-| 10 | Owned syndication | Hashnode and Medium drafts are ready, but a self-published profile link has lower incremental authority and canonical risk than an independent editorial citation. | Publish only after separate account and publication authorization and verify the rendered canonical and link attributes. |
+| 7 | Ràdio Nova editorial note (`D10A`) | Three exact dream-series pages cite the Spanish competitor directly without `nofollow`; the accountable municipal-radio program remains active in 2026 and publishes a direct recipient. | Send the prepared Spanish note once after a fresh page, destination and mailbox stop gate. Offer a test only; no link, anchor, rank or placement request. |
+| 8 | Elsewhere human reply (`D1`) | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal, although Medium currently marks product links `ugc nofollow`. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
+| 9 | Three editorial-visibility follow-ups (`D3B`) | Android Police and Xataka Android are credible Android publishers but the target pages lack a direct developer-domain citation pattern. AITrendTool's sampled product links are `nofollow`. | Treat these as discovery and relationship opportunities, not the DR-first batch. Authorize separately and verify any eventual public link without assuming equity. |
+| 10 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |
+| 11 | Owned syndication | Hashnode and Medium drafts are ready, but a self-published profile link has lower incremental authority and canonical risk than an independent editorial citation. | Publish only after separate account and publication authorization and verify the rendered canonical and link attributes. |
 
 The completed D3A batch is no longer ranked as a future action. Monitor it until
 the conditional 2026-08-16 gate and stop on reply, failure, opt-out or live
@@ -261,6 +269,17 @@ The current evidence, exact copy and platform boundaries are recorded in
 The current evidence, exact German copy and route-specific gates for `D9A` and
 `D9B` are recorded in
 `marketing/seo/backlink-german-editorial-ready-2026-08-10.md`.
+
+### D10A — Ràdio Nova / De Què Parlem? editorial note
+
+> J'autorise l'envoi unique du message D10A préparé à
+> `dequeparlem@radionova.cat`, après un stop gate immédiat, sans formulaire,
+> pièce jointe, paiement, relance automatique, demande de lien, classement ni
+> garantie de couverture.
+
+The current evidence, exact Spanish copy and route-specific stop gate are
+recorded in
+`marketing/seo/backlink-spanish-radio-ready-2026-08-10.md`.
 
 Earned-media account or subscription choices retain the independent `E1`–`E5`
 codes in `marketing/seo/media-source-platform-pack-2026-08-09.md`.

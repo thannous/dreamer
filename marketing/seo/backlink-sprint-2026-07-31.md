@@ -1171,6 +1171,38 @@ publication was used. Full evidence and copy are in
 `marketing/seo/competitor-citation-gap-wave-43-2026-08-10.md` and
 `marketing/seo/backlink-german-editorial-ready-2026-08-10.md`.
 
+### Competitor citation gap wave 44 — 2026-08-10
+
+The four established secondary multilingual benchmarks were audited through
+public exact-domain discovery and rendered real-Chrome checks. The only new P1
+route is Ràdio Nova's active municipal program De Què Parlem?: three
+self-canonical 2021 dream-series articles link `psicologia-online.com` sources
+directly without `nofollow`, two recommend keeping a dream journal, and the
+site publishes program episodes through June 2026. Privacy and Contact identify
+Aitor Bernal Marín at the Vilanova del Camí studios and publish
+`dequeparlem@radionova.cat`. Authenticated Zimbra all-mail searches for the
+domain and exact recipient returned no result. One Spanish note is prepared as
+`D10A` but was not sent.
+
+Four direct-citation surfaces remain P2. Dormi is branded medical
+sleep-paralysis copy rather than an app-review route. Galoppo & Charme links 28
+Smorfia pages but maps dreams to cabala numbers, luck and winnings. Les Echos'
+France Minéraux links sit inside critical pseudoscience reporting unrelated to
+Noctalia. Les Écrits on OverBlog links two competitor pages, but the exact
+publisher identity, address, non-Russian location and working contact route are
+not accountable. The existing About.me exclusion was reconfirmed because the
+indexed Smorfia profile exposes no external domain anchor.
+
+The prior Última Hora evidence row was corrected from the nonexistent
+`/es/app-diario-de-suenos` 404 to the live, self-canonical
+`/es/apps-diario-de-suenos`. The new D10A destination
+`/es/diario-de-suenos-por-voz` is also live, self-canonical and `index, follow`.
+The central register now contains 238 routes: 3 P0, 67 P1, 167 P2 and 1 P3. No
+Russian-owned site was opened and no message, form, comment, account,
+attachment, product data, payment or publication was used. Full evidence and
+copy are in `marketing/seo/competitor-citation-gap-wave-44-2026-08-10.md` and
+`marketing/seo/backlink-spanish-radio-ready-2026-08-10.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
