@@ -85,3 +85,16 @@ un fichier Drive est réversible et conserve normalement son identifiant, mais
 change le nom affiché dans les liens et les exports. Après validation, le CM
 renommera les fichiers Drive en place, alignera les images source sur le même
 nom de base, puis mettra à jour ce registre et les références Markdown.
+
+## Préflight du 09/08/2026
+
+La cadence à trois créneaux est active, mais seul `07-horloge.mp4` est
+actuellement validé dans la source de vérité pour le créneau 2. Les créneaux 1
+et 3 restent **EN ATTENTE** sur les trois réseaux faute de masters distincts
+validés ; aucune vidéo déjà publiée ne sera réutilisée.
+
+| Créneau | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | — | **EN ATTENTE** | **EN ATTENTE** | **EN ATTENTE** |
+| 19:30 / 19:45 / 20:15 | `07-horloge.mp4` | **PROGRAMMÉE** | **EN ATTENTE** jusqu'à 19:45 | **PROGRAMMÉE** |
+| 22:30 / 22:45 / 23:15 | — | **EN ATTENTE** | **EN ATTENTE** | **EN ATTENTE** |
