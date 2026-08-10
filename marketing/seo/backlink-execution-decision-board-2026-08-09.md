@@ -70,6 +70,12 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   their inspected target pages expose no comparable developer-domain pattern.
   Acuity is closed because its target is now canonical to Ripple and the current
   page exposes no competitor product-domain anchors.
+- A 21:30 CEST real-Chrome refresh reconfirmed the Atlas and ILTY canonical,
+  indexability, zero-Noctalia and six-direct-competitor-link signals. Their
+  unsent D7 replies now use the public 11-app feature snapshot, CSV and
+  methodology as the single editorial resource, with Noctalia's compiler role
+  and DreamKit's historical evidence disclosed. Engadget and 9to5Google copy
+  was corrected for the same dataset version but remains outside DR-first.
 - Fresh public checks keep Marika Pech as the nearest DR-oriented recovery: its
   article still names Noctalia once in plain text with no anchor. DreamWell
   remains the next higher-link-policy candidate because its current comparison
@@ -128,7 +134,7 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 | ---: | --- | --- | --- |
 | 1 | Marika Pech source correction (`D2`) | The live French article already names Noctalia but does not link it. Correcting the source protects factual accuracy and offers the shortest path from a real mention to a citation. | Submit one correction through the official route after confirming the wording and link are still unchanged. Do not request anchor manipulation or followed treatment. |
 | 2 | DreamWell DreamKit correction (`D5`) | Its transparent 2022 comparison still presents DreamKit as available on Android and iOS, while the Android listing is now 404 and the former iOS ID is Arcana. The article links several competitor domains directly without `nofollow`. | Send one factual correction and offer Noctalia only as an optional test candidate for a future refresh. No link, anchor, ranking, replacement or timing request. |
-| 3 | Atlas and ILTY followed-pattern replies (`D7`) | Both current comparisons are self-canonical and `index, follow`, link six competitor developer domains without `nofollow`, name accountable non-Russian operators and retain the original unanswered Zimbra thread. | Send one concise first reply in each existing thread only after a fresh stop gate. This is topical clean-domain potential; current publisher DR and future link treatment remain unproven. |
+| 3 | Atlas and ILTY followed-pattern replies (`D7`) | Both current comparisons are self-canonical and `index, follow`, link six competitor developer domains without `nofollow`, name accountable non-Russian operators and retain the original unanswered Zimbra thread. The revised replies now offer one transparent, source-linked 11-app graphic rather than a broad product pitch. | Send one concise first reply in each existing thread only after a fresh stop gate. This is topical clean-domain potential; current publisher DR and future link treatment remain unproven. |
 | 4 | Simone editorial note (`D8B`) | The current Rosebud review is by a named author and links `rosebud.app` twice without `nofollow`; Agentik SAS, French law and the official mailbox pass the trust gate. | Send the prepared factual French note only after a fresh page, destination and mailbox stop gate. Ask only whether Noctalia is useful to test; no link, anchor, rank or placement request. |
 | 5 | ANTENNE BAYERN editorial note (`D9A`) | Its indexable guide links two exact competitor symbol pages without `nofollow`; the registered German broadcaster publishes a direct newsroom mailbox. | Send the prepared German note once after a fresh page, destination and mailbox stop gate. Offer a test only; no link, anchor, rank or placement request. |
 | 6 | Epigenius editorial note (`D9B`) | Its indexable 2025 article links the competitor directly and already discusses keeping a dream journal; the named German operator publishes a direct email. | Send the prepared German note once after a fresh stop gate. Keep the non-medical boundary explicit and do not request a link or placement. |

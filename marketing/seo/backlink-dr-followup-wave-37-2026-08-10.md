@@ -33,16 +33,25 @@ referring-domain potential—not a promised high-DR placement.
 
 ## Approval-ready reply copy
 
-The existing messages remain unchanged in
-`marketing/seo/backlink-follow-up-zimbra-ready-2026-08-09.md`:
+The messages in
+`marketing/seo/backlink-follow-up-zimbra-ready-2026-08-09.md` were refreshed at
+21:30 CEST after the source-linked graphic went live:
 
-- Atlas: 62 words, one Noctalia methodology link and one low-friction factual
-  question;
-- ILTY: 57 words, one Noctalia workflow link and one low-friction test-access
-  offer.
+- Atlas: one Noctalia feature-snapshot link, transparent compiler disclosure
+  and one low-friction source-use question;
+- ILTY: one Noctalia feature-snapshot link, transparent compiler disclosure,
+  explicit historical-DreamKit labeling and one low-friction source-use
+  question.
 
 Neither message requests a rank, anchor, replacement, followed attribute,
 payment, timing or guaranteed link.
+
+The same real-Chrome refresh reconfirmed that both exact target pages are
+self-canonical and `index, follow`, contain no Noctalia mention or anchor and
+retain six direct competitor-domain links without `nofollow`. The destination
+is self-canonical, `index, follow` and renders the SVG, CSV, methodology and
+four descriptive counts. This does not replace the immediate pre-send stop
+gate.
 
 Exact authorization:
 

@@ -12,6 +12,13 @@ zero attachment chips, each send produced `Le mail a été envoyé`, and Sent
 shows two messages in each conversation. This records transmission only, not
 delivery, acceptance, publication, a backlink or DR movement.
 
+At 21:30 CEST, the unsent Atlas, ILTY, Engadget and 9to5Google follow-up copy
+was refreshed against the public 11-app feature snapshot. Atlas and ILTY now
+use the more relevant source-linked graphic instead of a broad press-kit or
+product-workflow angle. Engadget and 9to5Google remain outside DR-first, but
+their wording now distinguishes nine rows marked `Yes` from the historical
+DreamKit listing signal. No sent message was rewritten or repeated.
+
 ## Gate result
 
 - Each of the seventeen routes below has no new human reply, decline, opt-out,
@@ -157,11 +164,11 @@ claiming either publisher's current DR.
 
 > Hi Jet,
 >
-> One additional comparison resource: Noctalia publishes a dated eleven-app source sheet that distinguishes dedicated dream journals from general journaling and workspace products without ranking them by quality.
+> For a future hands-on refresh, this source-linked snapshot may help separate specialist dream-journal signals from general journaling and workspace features. Noctalia compiled the 11-row dataset and is one of the products; the chart links its CSV and methodology and does not rank quality.
 >
-> https://noctalia.app/en/dream-journal-apps#dataset
+> https://noctalia.app/en/dream-journal-apps#feature-snapshot
 >
-> If that method is useful for a future hands-on refresh, I can answer factual questions. Otherwise I will close the thread here.
+> Would the source sheet be useful for your next comparison update? Otherwise I will close the thread here.
 >
 > Thanh
 
@@ -169,11 +176,11 @@ claiming either publisher's current DR.
 
 > Hi Alesya and Artyom,
 >
-> One current Android workflow for a future comparison refresh: voice capture, transcript correction and reflective follow-up are documented separately from the general product page, including the connectivity limitation.
+> For a future AI-journaling refresh, this source-linked 11-row snapshot compares AI interpretation, voice, generated-image and lucid-dreaming signals. Noctalia compiled it and is one of the products; historical DreamKit claims remain labeled in the CSV rather than presented as current hands-on evidence.
 >
-> https://noctalia.app/en/voice-dream-journal
+> https://noctalia.app/en/dream-journal-apps#feature-snapshot
 >
-> I can provide test access if useful. Otherwise I will close the thread here.
+> Would the source sheet be useful for a future update? Otherwise I will close the thread here.
 >
 > Thanh
 
@@ -181,11 +188,11 @@ claiming either publisher's current DR.
 
 > Hello Engadget team,
 >
-> One additional source for the Pixel Journal context: our dated review found that 10 of 11 sampled dream-journal apps advertised some AI feature, while only a minority clearly documented where processing occurs. The source sheet is public.
+> One new source for the Pixel Journal context: Noctalia turned its dated 11-app review into a source-linked graphic with the CSV and methodology beside it. The current version marks nine rows exactly “Yes” for AI interpretation and preserves a tenth historical DreamKit listing separately.
 >
-> https://noctalia.app/en/dream-journal-apps#findings
+> https://noctalia.app/en/dream-journal-apps#feature-snapshot
 >
-> This is a small product-page review, not market-share or clinical research. I will close the thread if it is not useful.
+> Noctalia compiled the dataset and is one of the products. This is a small desk review, not market-share, quality or clinical research. I will close the thread if it is not useful.
 >
 > Thanh
 
@@ -193,11 +200,11 @@ claiming either publisher's current DR.
 
 > Hi Abner,
 >
-> One additional source after your Pixel Journal coverage: a dated review of eleven dream-journal products found AI advertised by 10 of 11, with source URLs and methodology published separately.
+> One new source after your Pixel Journal coverage: Noctalia turned its dated 11-app review into a source-linked graphic with the CSV and methodology beside it. The current version marks nine rows exactly “Yes” for AI interpretation and preserves a tenth historical DreamKit listing separately.
 >
-> https://noctalia.app/en/dream-journal-apps#findings
+> https://noctalia.app/en/dream-journal-apps#feature-snapshot
 >
-> It is a small product-page dataset, not a market-share or quality claim. If it is not useful, I will close the thread here.
+> Noctalia compiled the dataset and is one of the products. It is a small desk review, not a market-share, quality or clinical claim. If it is not useful, I will close the thread here.
 >
 > Thanh
 

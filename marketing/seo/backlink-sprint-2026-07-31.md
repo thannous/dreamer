@@ -1243,6 +1243,22 @@ third-party account, post, message, form, attachment, payment or publication
 was used. Evidence and reuse rules are in
 `marketing/seo/linkable-asset-feature-snapshot-2026-08-10.md`.
 
+### Linkable-asset outreach refresh — 2026-08-10 21:30 CEST
+
+A real-Chrome recheck confirmed that Atlas Workspace and ILTY remain the two
+best unsent follow-ups for the new asset: each exact comparison is
+self-canonical, `index, follow`, contains no Noctalia mention or anchor and
+links six competitor domains directly without `nofollow`. Their D7 replies now
+use one transparent feature-snapshot link with the CSV and methodology beside
+it, disclose that Noctalia compiled and appears in the dataset, and keep
+DreamKit's historical evidence explicit. Engadget and 9to5Google follow-up copy
+was also aligned to the current dataset version but remains outside DR-first
+because their sampled targets expose no comparable developer-domain citation
+pattern. D2, D5, D8B, D9A, D9B and D10A keep their more relevant correction,
+test or localized angles. No message, form, account, attachment, payment or
+publication was used. Evidence is in
+`marketing/seo/linkable-asset-outreach-refresh-2026-08-10.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
