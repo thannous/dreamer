@@ -1,13 +1,23 @@
 /* @jest-environment jsdom */
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { TID } from '@/lib/testIDs';
 
+let mockWindowWidth = 390;
+let mockWindowHeight = 844;
+let mockFontScale = 1;
+
 jest.mock('react-native', () => {
   const React = require('react');
+  const flattenStyle = (style: unknown): Record<string, unknown> => {
+    if (Array.isArray(style)) {
+      return Object.assign({}, ...style.filter(Boolean).map(flattenStyle));
+    }
+    return style && typeof style === 'object' ? style as Record<string, unknown> : {};
+  };
   const MockTextInput = React.forwardRef(
     (
       {
@@ -16,6 +26,7 @@ jest.mock('react-native', () => {
         onChangeText,
         onFocus,
         placeholder,
+        style,
         testID,
         value,
       }: {
@@ -24,6 +35,7 @@ jest.mock('react-native', () => {
         onChangeText?: (value: string) => void;
         onFocus?: () => void;
         placeholder?: string;
+        style?: unknown;
         testID?: string;
         value?: string;
       },
@@ -33,6 +45,7 @@ jest.mock('react-native', () => {
         ref={ref}
         data-testid={testID}
         disabled={!editable}
+        data-native-style={JSON.stringify(flattenStyle(style))}
         placeholder={placeholder}
         value={value}
         onBlur={onBlur}
@@ -44,6 +57,7 @@ jest.mock('react-native', () => {
   MockTextInput.displayName = 'MockTextInput';
 
   return {
+    Platform: { OS: 'web' },
     Pressable: ({
       children,
       disabled,
@@ -59,14 +73,43 @@ jest.mock('react-native', () => {
         {typeof children === 'function' ? children({ pressed: false }) : children}
       </button>
     ),
-    StyleSheet: { create: (styles: Record<string, unknown>) => styles },
-    Text: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
-      <span data-testid={testID}>{children}</span>
+    StyleSheet: {
+      create: (styles: Record<string, unknown>) => styles,
+      flatten: flattenStyle,
+    },
+    Text: ({
+      children,
+      style,
+      testID,
+    }: {
+      children?: React.ReactNode;
+      style?: unknown;
+      testID?: string;
+    }) => (
+      <span data-native-style={JSON.stringify(flattenStyle(style))} data-testid={testID}>
+        {children}
+      </span>
     ),
     TextInput: MockTextInput,
-    View: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
-      <div data-testid={testID}>{children}</div>
+    View: ({
+      children,
+      style,
+      testID,
+    }: {
+      children?: React.ReactNode;
+      style?: unknown;
+      testID?: string;
+    }) => (
+      <div data-native-style={JSON.stringify(flattenStyle(style))} data-testid={testID}>
+        {children}
+      </div>
     ),
+    useWindowDimensions: () => ({
+      width: mockWindowWidth,
+      height: mockWindowHeight,
+      scale: 1,
+      fontScale: mockFontScale,
+    }),
   };
 });
 
@@ -170,6 +213,12 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 describe('RecordingTextInput', () => {
+  beforeEach(() => {
+    mockWindowWidth = 390;
+    mockWindowHeight = 844;
+    mockFontScale = 1;
+  });
+
   it('prioritizes the editable transcript while keeping voice available in text mode', () => {
     const onSwitchToVoice = jest.fn();
 
@@ -426,5 +475,93 @@ describe('RecordingTextInput', () => {
     fireEvent.click(screen.getByTestId('compact-mic'));
 
     expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    [1, 144],
+    [1.3, 144],
+    [2, 164],
+  ])(
+    'uses an adaptive compact-height editor at 320 dp with font scale %s',
+    (fontScale: number, expectedMinHeight: number) => {
+      mockWindowWidth = 320;
+      mockWindowHeight = 640;
+      mockFontScale = fontScale;
+
+      render(
+        <RecordingTextInput
+          value=""
+          onChange={jest.fn()}
+          disabled={false}
+          lengthWarning=""
+          instructionText="Write what you remember"
+          onSwitchToVoice={jest.fn()}
+        />
+      );
+
+      const instructionStyle = screen.getByText('Write what you remember').getAttribute(
+        'data-native-style'
+      );
+      const inputStyle = screen.getByTestId(TID.Input.DreamTranscript).getAttribute(
+        'data-native-style'
+      );
+
+      expect(instructionStyle).toContain('"fontSize":21');
+      expect(instructionStyle).toContain('"lineHeight":29');
+      expect(inputStyle).toContain(`"minHeight":${expectedMinHeight}`);
+      expect(inputStyle).toContain('"maxHeight":286');
+    }
+  );
+
+  it('preserves the existing title and editor geometry above 360 dp', () => {
+    render(
+      <RecordingTextInput
+        value=""
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Write what you remember"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    expect(screen.getByText('Write what you remember').getAttribute('data-native-style')).toContain(
+      '"fontSize":23'
+    );
+    expect(screen.getByText('Write what you remember').getAttribute('data-native-style')).toContain(
+      '"lineHeight":32'
+    );
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('data-native-style')).toContain(
+      '"minHeight":196'
+    );
+  });
+
+  it('preserves the existing short-landscape compact geometry', () => {
+    mockWindowWidth = 640;
+    mockWindowHeight = 320;
+
+    render(
+      <RecordingTextInput
+        compact
+        value=""
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Write what you remember"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    const instructionStyle = screen.getByText('Write what you remember').getAttribute(
+      'data-native-style'
+    );
+    const inputStyle = screen.getByTestId(TID.Input.DreamTranscript).getAttribute(
+      'data-native-style'
+    );
+
+    expect(instructionStyle).toContain('"fontSize":18');
+    expect(instructionStyle).toContain('"lineHeight":24');
+    expect(inputStyle).toContain('"minHeight":96');
+    expect(inputStyle).toContain('"maxHeight":112');
   });
 });

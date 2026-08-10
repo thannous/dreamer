@@ -1,12 +1,14 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { cleanup, render } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const mockUseAuth = jest.fn();
 let capturedTabBarStyle: unknown = null;
 let mockPlatformOS: 'android' | 'ios' | 'web' = 'ios';
 let mockWindowWidth = 390;
+let mockWindowHeight = 844;
+let mockFontScale = 1;
 let mockRouteCommitted = true;
 let mockSegments: string[] = ['(tabs)', 'index'];
 
@@ -23,7 +25,11 @@ jest.doMock('expo-router', () => {
     capturedTabBarStyle = screenOptions?.tabBarStyle ?? null;
     return <div>{children}</div>;
   };
-  const TabsScreen = () => null;
+  const TabsScreen = ({
+    options,
+  }: {
+    options?: { tabBarIcon?: (state: { focused: boolean }) => React.ReactNode };
+  }) => <div>{options?.tabBarIcon?.({ focused: false })}</div>;
   TabsScreen.displayName = 'MockTabsScreen';
   Tabs.Screen = TabsScreen;
 
@@ -34,22 +40,51 @@ jest.doMock('expo-router', () => {
   };
 });
 
-jest.doMock('react-native', () => ({
-  Platform: {
-    get OS() {
-      return mockPlatformOS;
+jest.doMock('react-native', () => {
+  const flattenStyle = (style: unknown): Record<string, unknown> => {
+    if (Array.isArray(style)) {
+      return Object.assign({}, ...style.filter(Boolean).map(flattenStyle));
+    }
+    return style && typeof style === 'object' ? style as Record<string, unknown> : {};
+  };
+
+  return {
+    Platform: {
+      get OS() {
+        return mockPlatformOS;
+      },
     },
-  },
-  StyleSheet: { create: <T extends Record<string, unknown>>(styles: T) => styles },
-  Text: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
-  View: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
-  useWindowDimensions: () => ({
-    width: mockWindowWidth,
-    height: 844,
-    scale: 1,
-    fontScale: 1,
-  }),
-}));
+    StyleSheet: {
+      create: <T extends Record<string, unknown>>(styles: T) => styles,
+      flatten: flattenStyle,
+    },
+    Text: ({
+      children,
+      maxFontSizeMultiplier,
+      style,
+    }: {
+      children?: React.ReactNode;
+      maxFontSizeMultiplier?: number;
+      style?: unknown;
+    }) => (
+      <span
+        data-max-font-size-multiplier={maxFontSizeMultiplier}
+        data-native-style={JSON.stringify(flattenStyle(style))}
+      >
+        {children}
+      </span>
+    ),
+    View: ({ children, style }: { children?: React.ReactNode; style?: unknown }) => (
+      <div data-native-style={JSON.stringify(flattenStyle(style))}>{children}</div>
+    ),
+    useWindowDimensions: () => ({
+      width: mockWindowWidth,
+      height: mockWindowHeight,
+      scale: 1,
+      fontScale: mockFontScale,
+    }),
+  };
+});
 
 jest.doMock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 34, left: 0 }),
@@ -113,6 +148,8 @@ describe('TabLayout returning guest navigation', () => {
     capturedTabBarStyle = null;
     mockPlatformOS = 'ios';
     mockWindowWidth = 390;
+    mockWindowHeight = 844;
+    mockFontScale = 1;
     mockRouteCommitted = true;
     mockSegments = ['(tabs)', 'index'];
   });
@@ -176,5 +213,66 @@ describe('TabLayout returning guest navigation', () => {
       left: expect.anything(),
       width: expect.anything(),
     }));
+  });
+
+  it.each([1, 1.3, 2])(
+    'uses constrained 11 sp labels and a 64 by 68 dp center action at 320 dp with font scale %s',
+    (fontScale: number) => {
+      mockPlatformOS = 'android';
+      mockWindowWidth = 320;
+      mockWindowHeight = 640;
+      mockFontScale = fontScale;
+      mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+
+      render(<TabLayout />);
+
+      expect(capturedTabBarStyle).toEqual(expect.objectContaining({
+        end: 8,
+        height: 86,
+        paddingHorizontal: 4,
+        start: 8,
+      }));
+
+      const labels = [
+        'nav.home',
+        'nav.journal',
+        'nav.capture_dream',
+        'nav.stats',
+        'nav.settings',
+      ].map((label) => screen.getByText(label));
+      const centerStyle = screen.getByText('nav.capture_dream').parentElement?.getAttribute(
+        'data-native-style'
+      );
+
+      expect(centerStyle).toContain('"width":64');
+      expect(centerStyle).toContain('"height":68');
+      labels.forEach((label) => {
+        expect(label.getAttribute('data-max-font-size-multiplier')).toBe('1.3');
+        expect(label.getAttribute('data-native-style')).toContain('"fontSize":11');
+        expect(label.getAttribute('data-native-style')).toContain('"width":"100%"');
+        expect(label.getAttribute('data-native-style')).toContain('"flexShrink":1');
+      });
+    }
+  );
+
+  it('preserves the existing tab geometry at 390 dp', () => {
+    mockPlatformOS = 'android';
+    mockWindowWidth = 390;
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+
+    render(<TabLayout />);
+
+    const centerLabel = screen.getByText('nav.capture_dream');
+    const centerStyle = centerLabel.parentElement?.getAttribute('data-native-style');
+
+    expect(capturedTabBarStyle).toEqual(expect.objectContaining({
+      end: 22,
+      paddingHorizontal: 8,
+      start: 22,
+    }));
+    expect(centerStyle).toContain('"width":72');
+    expect(centerStyle).toContain('"height":76');
+    expect(centerLabel.getAttribute('data-native-style')).toContain('"fontSize":12');
+    expect(centerLabel.getAttribute('data-max-font-size-multiplier')).toBeNull();
   });
 });

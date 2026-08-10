@@ -2,7 +2,7 @@
 
 Archive initiale : J1 à J17, du 16 juillet au 1er août 2026
 
-Contrôles additionnels : J18 à J25, du 2 au 9 août 2026
+Contrôles additionnels : J18 à J26, du 2 au 10 août 2026
 
 Projet Ahrefs : `9361004`
 
@@ -33,9 +33,26 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j24-evidence-2026-08-08.csv`](./j24-evidence-2026-08-08.csv) : registre compact des preuves et du point d'autorisation J24.
 - [`j25-master-reconciliation-2026-08-09.md`](./j25-master-reconciliation-2026-08-09.md) : réconciliation entre l'archive Starter, le `master` courant, la vague metadata publiée et le snapshot Rank Tracker du 9 août.
 - [`j25-evidence-register-2026-08-09.csv`](./j25-evidence-register-2026-08-09.csv) : registre compact des preuves, anomalies d'URL et points d'arrêt J25.
+- [`j26-gsc-content-opportunities-2026-08-10.md`](./j26-gsc-content-opportunities-2026-08-10.md) : analyse GSC `page × query` et arbitrage chef SEO ; IT en mesure, correction DE séparée, architecture DE et EN en HOLD.
+- [`j26-content-opportunity-backlog-2026-08-10.csv`](./j26-content-opportunity-backlog-2026-08-10.csv) : backlog agrégé et priorisé, avec statuts `HOLD_MESURE`, `GO_SEPARE`, `HOLD_ARCHITECTURE` et `HOLD_POST_DEPLOIEMENT`, sans export longue traîne brut.
+- [`j26-new-content-summary-2026-08-10.md`](./j26-new-content-summary-2026-08-10.md) : synthèse séparée confirmant zéro nouvelle page immédiate et une seule candidate IT conditionnelle.
 - [`rank-tracker-portfolio-50-2026-07-16.csv`](./rank-tracker-portfolio-50-2026-07-16.csv) : portefeuille validé des 50 couples, assaini des métriques brutes.
 - [`rank-tracker-target-map-2026-08-01.csv`](./rank-tracker-target-map-2026-08-01.csv) : correspondance durable entre chaque tag `target-*` et l'URL cible voulue.
 - [`j10-prioritization-2026-07-25.md`](./j10-prioritization-2026-07-25.md) et [`j10-priorities-2026-07-25.csv`](./j10-priorities-2026-07-25.csv) : première consolidation versionnée du portefeuille 5 + 3.
+
+## Décision J26 après revue chef SEO
+
+| Lot | Statut | Décision durable |
+|---|---|---|
+| IT `acqua sporca/torbida` | `HOLD_MESURE` | conserver fiche = intention courte et guide = scénarios larges ; aucune édition immédiate, aucune troisième page, aucun cross-canonical |
+| DE `traumlexikon` | `GO_SEPARE` | ancre produit renommée en `Traumlexikon-App für Android` après autorisation ; push, déploiement et effet SEO restent à vérifier séparément |
+| DE `Traumdeutung` | `HOLD_ARCHITECTURE` | comparer quatre URL, dont le hub existant `/de/blog/traumbedeutungen-interpretation-symbole`, avant toute redistribution de rôle |
+| EN `dream journal app` | `HOLD_POST_DEPLOIEMENT` | attendre 28 jours complets depuis le dernier déploiement public vérifié ; les données arrêtées au 7 août ne mesurent pas les modifications du 8 au 10 août |
+| Nouveau contenu | `AUCUNE_NOUVELLE_PAGE` | 0 nouvelle page maintenant ; page IT eau sale uniquement conditionnelle après mesure et preuve d'une valeur incrémentale |
+
+Pour l'Italie, les 1 349 impressions du cluster au niveau requête/propriété restent distinctes des 1 433 impressions cumulées au niveau page. Le page-level passe de fiche 94 / guide 578 à fiche 909 / guide 506 ; ce basculement doit être mesuré sur une fenêtre entièrement postérieure au 16 juillet avant une nouvelle action.
+
+Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon-App für Android`, autorisée puis modifiée dans `docs-src/` dans un lot chirurgical séparé. Elle ne modifie ni `data/`, ni `docs/`, et ne constitue pas une preuve de push, de déploiement, de publication ou d'effet SEO.
 
 ## Autorités et précautions
 
@@ -51,7 +68,7 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - Rank Tracker : `50/50`, allocation et géolocalisations inchangées.
 - Dernier snapshot hebdomadaire réellement disponible : 9 août 2026, avec 42 couples classés et 8 non classés sur chaque appareil et aucun mot-clé gelé.
 - Site Audit : `1 147/10 000` crédits de crawl observés ; dernier crawl visible daté du 3 août, Health Score 100.
-- Dernière fenêtre GSC complète conservée : 10 juillet au 6 août 2026, comparée au 12 juin–9 juillet.
+- À J25, la dernière fenêtre GSC conservée était le 10 juillet–6 août, comparée au 12 juin–9 juillet. L'analyse J26 la remplace pour cette décision par le 11 juillet–7 août, comparé au 13 juin–10 juillet.
 - Le gel commun des cinq priorités est arrivé à son terme ; chaque expérience conserve désormais son propre contrat et son propre point d'autorisation.
 - `scuola` a reçu le verdict `GO_TO_IMPLEMENTATION_GATE`, puis une autorisation locale limitée, mais aucune variante `scuola` n'est présente sur `master` ou en production au 9 août. `ascensor` reste le second candidat.
 - Le support générique metadata-only et une vague distincte sur `casa`, `ragno` et `perro` ont été publiés le 8 août par le commit `3bac9c1f6`. Ces trois URL sont gelées jusqu'au 5 septembre, avec lecture J+7 le 15 août.

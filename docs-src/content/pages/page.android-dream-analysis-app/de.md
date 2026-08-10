@@ -64,7 +64,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Analyse, Lexikon oder Spracheingabe?</h2>
-    <p>F&uuml;r ein einzelnes Traumbild eignet sich das <a href="/de/traumlexikon-app" class="text-dream-salmon hover:underline">Traumlexikon</a>. Wenn Schreiben direkt nach dem Aufwachen zu langsam ist, hilft das <a href="/de/traumtagebuch-spracheingabe" class="text-dream-salmon hover:underline">Traumtagebuch mit Spracheingabe</a>. Die Analyse bezieht dagegen den gesamten gespeicherten Traum ein.</p>
+    <p>F&uuml;r ein einzelnes Traumbild eignet sich die <a href="/de/traumlexikon-app" class="text-dream-salmon hover:underline">Traumlexikon-App für Android</a>. Wenn Schreiben direkt nach dem Aufwachen zu langsam ist, hilft das <a href="/de/traumtagebuch-spracheingabe" class="text-dream-salmon hover:underline">Traumtagebuch mit Spracheingabe</a>. Die Analyse bezieht dagegen den gesamten gespeicherten Traum ein.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

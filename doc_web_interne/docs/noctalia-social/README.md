@@ -1,12 +1,17 @@
 # Noctalia — Documentation de la campagne sociale
 
-Dernière vérification : 2026-07-31.
+Dernière vérification : 2026-08-10.
 
 Ce dossier est la source Markdown de la campagne organique TikTok et Instagram
 Reels de Noctalia. Le calendrier ne doit plus être maintenu sous forme d'image.
 
 ## Documents
 
+- [`HIGGSFIELD-HANDOFF.md`](./HIGGSFIELD-HANDOFF.md) : procédure portable de
+  reprise de la production Higgsfield sur un autre poste, sans transférer les
+  médias ni les secrets dans Git.
+- [`HIGGSFIELD-GENERATION-MANIFEST-02.json`](./HIGGSFIELD-GENERATION-MANIFEST-02.json) :
+  manifeste machine-readable des 32 paires Seedance 2.5 livrées.
 - [`PUBLICATION-PLAN.md`](./PUBLICATION-PLAN.md) : calendrier éditorial, inventaire
   des finales Magnific et statuts de publication.
 - [`community-manager/README.md`](./community-manager/README.md) : espace de

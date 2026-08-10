@@ -1603,3 +1603,23 @@ n'est encore attribué aux créneaux 1 et 3.
 Légende prévue TikTok/Instagram : `Would you enter the storm? ⛈️ #Noctalia
 #Dreamscape #DreamJournal`. Les créneaux sans asset distinct resteront en
 attente ; aucune vidéo publiée ne sera réutilisée.
+
+## Stock Higgsfield reçu — 32 vidéos — 2026-08-10
+
+La production Higgsfield est terminée : 32 vidéos Seedance 2.5 de 15 secondes,
+verticales 9:16 en 720p avec audio, sont classées avec leurs 32 images associées.
+Les 32 correspondances de noms ont le statut QC `OK` dans
+l'[inventaire source](https://docs.google.com/spreadsheets/d/1rHw5WG4HVeiL-vDlV6TfSNVs5-1JW-scovcb0CZeMNk/edit).
+
+**Statut CM : DISPONIBLES — EN ATTENTE DE VALIDATION ÉDITORIALE.** Cette
+livraison ne vaut pas autorisation de publication. Aucun de ces assets ne doit
+remplir automatiquement les créneaux 1 ou 3 du 10 août, ni remplacer une ligne
+déjà programmée, avant validation explicite de l'utilisateur ou du directeur
+créatif. Après validation, le CM affectera trois masters distincts par date et
+conservera le même asset sur TikTok, Instagram et X pour chaque créneau.
+
+La convention obligatoire est
+`DAY|SUNSET|AFTERGLOW|NIGHT_<THEME>_<DESCRIPTION>_02`, avec le même nom de base
+pour l'image et la vidéo. Les trois finales portant `_V2` sont conservées telles
+quelles. Pour une nouvelle production, compter 15 minutes par vidéo, en série,
+avec une seule génération à la fois.

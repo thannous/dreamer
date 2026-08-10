@@ -115,6 +115,7 @@ export function NoctaliaBottomNav({
         style={[
           styles.bar,
           navigationLayout.compact && styles.compactBar,
+          navigationLayout.narrow && styles.narrowBar,
           horizontalLayout,
           {
             bottom: floatingBottomInset,
@@ -146,6 +147,7 @@ export function NoctaliaBottomNav({
                   style={[
                     styles.addItem,
                     navigationLayout.compact && styles.compactAddItem,
+                    navigationLayout.narrow && styles.narrowAddItem,
                     {
                       backgroundColor: addBackground,
                       borderColor: addBorder,
@@ -158,10 +160,16 @@ export function NoctaliaBottomNav({
                     color={addTextColor}
                   />
                   <Text
-                    style={[styles.addLabel, { color: addTextColor }]}
+                    style={[
+                      styles.addLabel,
+                      navigationLayout.narrow && styles.narrowAddLabel,
+                      { color: addTextColor },
+                    ]}
                     numberOfLines={1}
+                    ellipsizeMode="tail"
                     adjustsFontSizeToFit
-                    minimumFontScale={0.85}
+                    minimumFontScale={navigationLayout.narrow ? 0.75 : 0.85}
+                    maxFontSizeMultiplier={navigationLayout.narrow ? 1.3 : undefined}
                   >
                     {item.label}
                   </Text>
@@ -182,12 +190,14 @@ export function NoctaliaBottomNav({
                     style={[
                       styles.label,
                       navigationLayout.compact && styles.compactLabel,
+                      navigationLayout.narrow && styles.narrowLabel,
                       { color: isActive ? navActiveColor : navInactiveColor },
                     ]}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                     adjustsFontSizeToFit
-                    minimumFontScale={0.8}
+                    minimumFontScale={navigationLayout.narrow ? 0.75 : 0.8}
+                    maxFontSizeMultiplier={navigationLayout.narrow ? 1.3 : undefined}
                   >
                     {item.label}
                   </Text>
@@ -229,14 +239,20 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 4,
   },
+  narrowBar: {
+    paddingHorizontal: 4,
+  },
   item: {
     flex: 1,
+    minWidth: 0,
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },
   standardItem: {
     flex: 1,
+    width: '100%',
+    minWidth: 0,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 5,
@@ -247,9 +263,17 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
+    width: '100%',
+    minWidth: 0,
+    flexShrink: 1,
+    textAlign: 'center',
   },
   compactLabel: {
     fontSize: 11,
+  },
+  narrowLabel: {
+    fontSize: 11,
+    paddingHorizontal: 1,
   },
   addItem: {
     width: 72,
@@ -273,9 +297,24 @@ const styles = StyleSheet.create({
     gap: 1,
     transform: [{ translateY: -4 }],
   },
+  narrowAddItem: {
+    width: 64,
+    height: 68,
+    borderRadius: 24,
+    gap: 3,
+    transform: [{ translateY: -6 }],
+  },
   addLabel: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 12,
+    width: '100%',
+    minWidth: 0,
+    flexShrink: 1,
+    textAlign: 'center',
+  },
+  narrowAddLabel: {
+    fontSize: 11,
+    paddingHorizontal: 1,
   },
   pressed: {
     opacity: 0.72,

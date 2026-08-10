@@ -8,9 +8,17 @@ import { TID } from '@/lib/testIDs';
 
 let mockPlatformOS: 'android' | 'web' = 'web';
 let mockWindowWidth = 390;
+let mockWindowHeight = 844;
+let mockFontScale = 1;
 
 jest.mock('react-native', () => {
   const React = require('react');
+  const flattenStyle = (style: unknown): Record<string, unknown> => {
+    if (Array.isArray(style)) {
+      return Object.assign({}, ...style.filter(Boolean).map(flattenStyle));
+    }
+    return style && typeof style === 'object' ? style as Record<string, unknown> : {};
+  };
 
   return {
     Platform: {
@@ -33,20 +41,36 @@ jest.mock('react-native', () => {
     ),
     StyleSheet: {
       create: <T extends Record<string, unknown>>(styles: T) => styles,
+      flatten: flattenStyle,
     },
-    Text: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
+    Text: ({
+      children,
+      maxFontSizeMultiplier,
+      style,
+    }: {
+      children?: React.ReactNode;
+      maxFontSizeMultiplier?: number;
+      style?: unknown;
+    }) => (
+      <span
+        data-max-font-size-multiplier={maxFontSizeMultiplier}
+        data-native-style={JSON.stringify(flattenStyle(style))}
+      >
+        {children}
+      </span>
+    ),
     View: ({
       children,
       style,
     }: {
       children?: React.ReactNode;
       style?: unknown;
-    }) => <div data-native-style={JSON.stringify(style)}>{children}</div>,
+    }) => <div data-native-style={JSON.stringify(flattenStyle(style))}>{children}</div>,
     useWindowDimensions: () => ({
       width: mockWindowWidth,
-      height: 844,
+      height: mockWindowHeight,
       scale: 1,
-      fontScale: 1,
+      fontScale: mockFontScale,
     }),
   };
 });
@@ -95,6 +119,8 @@ afterEach(() => {
   cleanup();
   mockPlatformOS = 'web';
   mockWindowWidth = 390;
+  mockWindowHeight = 844;
+  mockFontScale = 1;
 });
 
 describe('NoctaliaBottomNav', () => {
@@ -134,5 +160,58 @@ describe('NoctaliaBottomNav', () => {
     const captureTab = screen.getByTestId(TID.Tab.AddDream);
     expect(captureTab.textContent).toBe('nav.capture_dream');
     expect(captureTab.getAttribute('aria-label')).toBe('nav.capture_dream_accessibility');
+  });
+
+  it.each([1, 1.3, 2])(
+    'constrains every label and reduces the center action at 320 dp with font scale %s',
+    (fontScale) => {
+      mockPlatformOS = 'android';
+      mockWindowWidth = 320;
+      mockWindowHeight = 640;
+      mockFontScale = fontScale;
+
+      render(<NoctaliaBottomNav activeKey="addDream" />);
+
+      const captureTab = screen.getByTestId(TID.Tab.AddDream);
+      const barStyle = captureTab.parentElement?.getAttribute('data-native-style');
+      const centerStyle = captureTab.querySelector('div')?.getAttribute('data-native-style');
+      const labels = captureTab.parentElement?.querySelectorAll(
+        '[data-max-font-size-multiplier="1.3"]'
+      );
+
+      expect(barStyle).toContain('"paddingHorizontal":4');
+      expect(barStyle).toContain('"start":8');
+      expect(barStyle).toContain('"end":8');
+      expect(centerStyle).toContain('"width":64');
+      expect(centerStyle).toContain('"height":68');
+      expect(labels).toHaveLength(5);
+      labels?.forEach((label) => {
+        expect(label.getAttribute('data-native-style')).toContain('"fontSize":11');
+        expect(label.getAttribute('data-native-style')).toContain('"width":"100%"');
+        expect(label.getAttribute('data-native-style')).toContain('"flexShrink":1');
+      });
+    }
+  );
+
+  it('preserves the current center action and margins above the narrow breakpoint', () => {
+    mockPlatformOS = 'android';
+    mockWindowWidth = 390;
+
+    render(<NoctaliaBottomNav activeKey="addDream" />);
+
+    const captureTab = screen.getByTestId(TID.Tab.AddDream);
+    const barStyle = captureTab.parentElement?.getAttribute('data-native-style');
+    const centerStyle = captureTab.querySelector('div')?.getAttribute('data-native-style');
+    const centerLabel = Array.from(captureTab.querySelectorAll('span')).find(
+      (element) => element.textContent === 'nav.capture_dream'
+    );
+
+    expect(barStyle).toContain('"paddingHorizontal":8');
+    expect(barStyle).toContain('"start":22');
+    expect(barStyle).toContain('"end":22');
+    expect(centerStyle).toContain('"width":72');
+    expect(centerStyle).toContain('"height":76');
+    expect(centerLabel?.getAttribute('data-native-style')).toContain('"fontSize":12');
+    expect(centerLabel?.getAttribute('data-max-font-size-multiplier')).toBeNull();
   });
 });

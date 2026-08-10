@@ -31,15 +31,22 @@ type TabPalette = {
   textActive: string;
 };
 
-function TabBarItem({ label, icon, focused, palette, compact }: {
+function TabBarItem({ label, icon, focused, palette, compact, narrow }: {
   label: string;
   icon: IconName;
   focused: boolean;
   palette: TabPalette;
   compact: boolean;
+  narrow: boolean;
 }) {
   return (
-    <View style={[styles.tabItem, compact && styles.tabItemCompact]}>
+    <View
+      style={[
+        styles.tabItem,
+        compact && styles.tabItemCompact,
+        narrow && styles.tabItemNarrow,
+      ]}
+    >
       <IconSymbol
         size={24}
         name={icon}
@@ -49,28 +56,32 @@ function TabBarItem({ label, icon, focused, palette, compact }: {
         style={[
           styles.tabLabel,
           compact && styles.tabLabelCompact,
+          narrow && styles.tabLabelNarrow,
           { color: focused ? palette.textActive : palette.text },
         ]}
         numberOfLines={1}
         ellipsizeMode="tail"
         adjustsFontSizeToFit
-        minimumFontScale={0.8}>
+        minimumFontScale={narrow ? 0.75 : 0.8}
+        maxFontSizeMultiplier={narrow ? 1.3 : undefined}>
         {label}
       </Text>
     </View>
   );
 }
 
-function AddDreamTabItem({ label, palette, compact }: {
+function AddDreamTabItem({ label, palette, compact, narrow }: {
   label: string;
   palette: TabPalette;
   compact: boolean;
+  narrow: boolean;
 }) {
   return (
     <View
       style={[
         styles.addTabItem,
         compact && styles.addTabItemCompact,
+        narrow && styles.addTabItemNarrow,
         {
           backgroundColor: palette.accent,
           borderColor: palette.accentLight,
@@ -91,12 +102,14 @@ function AddDreamTabItem({ label, palette, compact }: {
         style={[
           styles.addTabLabel,
           compact && styles.addTabLabelCompact,
+          narrow && styles.addTabLabelNarrow,
           { color: palette.textOnAccentSurface },
         ]}
         numberOfLines={1}
         ellipsizeMode="tail"
         adjustsFontSizeToFit
-        minimumFontScale={0.85}>
+        minimumFontScale={narrow ? 0.75 : 0.85}
+        maxFontSizeMultiplier={narrow ? 1.3 : undefined}>
         {label}
       </Text>
     </View>
@@ -150,7 +163,7 @@ export default function TabLayout() {
     ...getTabBarHorizontalLayout(width),
     backgroundColor: palette.barBg,
     height: navigationLayout.barHeight,
-    paddingHorizontal: 8,
+    paddingHorizontal: navigationLayout.narrow ? 4 : 8,
     paddingTop: navigationLayout.compact ? 4 : 7,
     paddingBottom: navigationLayout.compact ? 4 : 7,
     borderRadius: navigationLayout.compact ? 28 : 36,
@@ -204,7 +217,7 @@ export default function TabLayout() {
             <HapticTab {...props} testID={TID.Tab.Home} accessibilityLabel={t('nav.home')} />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="house" label={t('nav.home')} focused={focused} palette={palette} compact={navigationLayout.compact} />
+            <TabBarItem icon="house" label={t('nav.home')} focused={focused} palette={palette} compact={navigationLayout.compact} narrow={navigationLayout.narrow} />
           ),
         }}
       />
@@ -219,7 +232,7 @@ export default function TabLayout() {
             <HapticTab {...props} testID={TID.Tab.Journal} accessibilityLabel={t('nav.journal')} />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="book" label={t('nav.journal')} focused={focused} palette={palette} compact={navigationLayout.compact} />
+            <TabBarItem icon="book" label={t('nav.journal')} focused={focused} palette={palette} compact={navigationLayout.compact} narrow={navigationLayout.narrow} />
           ),
         }}
       />
@@ -239,7 +252,7 @@ export default function TabLayout() {
             />
           ),
           tabBarIcon: () => (
-            <AddDreamTabItem label={t('nav.capture_dream')} palette={palette} compact={navigationLayout.compact} />
+            <AddDreamTabItem label={t('nav.capture_dream')} palette={palette} compact={navigationLayout.compact} narrow={navigationLayout.narrow} />
           ),
         }}
       />
@@ -254,7 +267,7 @@ export default function TabLayout() {
             <HapticTab {...props} testID={TID.Tab.Stats} accessibilityLabel={t('nav.stats')} />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="chart.bar" label={t('nav.stats')} focused={focused} palette={palette} compact={navigationLayout.compact} />
+            <TabBarItem icon="chart.bar" label={t('nav.stats')} focused={focused} palette={palette} compact={navigationLayout.compact} narrow={navigationLayout.narrow} />
           ),
         }}
       />
@@ -266,7 +279,7 @@ export default function TabLayout() {
             <HapticTab {...props} testID={TID.Tab.Settings} accessibilityLabel={t('nav.settings')} />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="gear" label={t('nav.settings')} focused={focused} palette={palette} compact={navigationLayout.compact} />
+            <TabBarItem icon="gear" label={t('nav.settings')} focused={focused} palette={palette} compact={navigationLayout.compact} narrow={navigationLayout.narrow} />
           ),
         }}
       />
@@ -305,6 +318,7 @@ const styles = StyleSheet.create({
   },
   tabItem: {
     flex: 1,
+    minWidth: 0,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 5,
@@ -312,12 +326,23 @@ const styles = StyleSheet.create({
   tabItemCompact: {
     gap: 1,
   },
+  tabItemNarrow: {
+    gap: 4,
+  },
   tabLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
+    width: '100%',
+    minWidth: 0,
+    flexShrink: 1,
+    textAlign: 'center',
   },
   tabLabelCompact: {
     fontSize: 11,
+  },
+  tabLabelNarrow: {
+    fontSize: 11,
+    paddingHorizontal: 1,
   },
   addTabItem: {
     width: 72,
@@ -340,6 +365,13 @@ const styles = StyleSheet.create({
     gap: 1,
     transform: [{ translateY: -4 }],
   },
+  addTabItemNarrow: {
+    width: 64,
+    height: 68,
+    borderRadius: 24,
+    gap: 3,
+    transform: [{ translateY: -6 }],
+  },
   addTabIconShell: {
     width: 32,
     height: 30,
@@ -353,8 +385,16 @@ const styles = StyleSheet.create({
   addTabLabel: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 12,
+    width: '100%',
+    minWidth: 0,
+    flexShrink: 1,
+    textAlign: 'center',
   },
   addTabLabelCompact: {
     fontSize: 11,
+  },
+  addTabLabelNarrow: {
+    fontSize: 11,
+    paddingHorizontal: 1,
   },
 });

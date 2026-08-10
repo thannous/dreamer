@@ -1,6 +1,6 @@
 # Noctalia — inventaire média et historique CM
 
-Dernière mise à jour : 2026-08-08.
+Dernière mise à jour : 2026-08-10.
 
 Ce registre complète le [plan de publication](./PUBLICATION-PLAN.md) et le
 [plan community manager](./community-manager/2026-08-us-europe-publication-plan.md).
@@ -18,8 +18,46 @@ identifiant stable même si son nom est renommé.
 | Drive `03_Epic_Seedance` | exports `01` à `10` Seedance | 10 | inventoriés, hors plan de publication actuel |
 | Drive `02_Rome_Ancient_Megalopolis/02_Videos_9x16` | finales Rome verticales | 4 | déjà conformes à la convention |
 | Drive `02_Rome_Ancient_Megalopolis/03_Drafts_16x9` | `NIGHT_ANCIENT_ROME_MEGALOPOLIS_01_DRAFT_16x9.mp4` | 1 | brouillon, conforme et non publiable |
+| Drive — inventaire Higgsfield `00_Inventory_Video_Image_Noctalia_2026` | 32 paires image/vidéo Seedance 2.5 | 32 | **DISPONIBLES — EN ATTENTE DE VALIDATION ÉDITORIALE** |
 
 Les fichiers Drive sont accessibles depuis le [dossier principal Noctalia](https://drive.google.com/drive/folders/1XcIaDxqf7KD-1hgZesDuNUcazIC9oxVW).
+
+## Livraison Higgsfield — 32 paires vérifiées — 2026-08-10
+
+L'[inventaire Google Sheets vérifié](https://docs.google.com/spreadsheets/d/1rHw5WG4HVeiL-vDlV6TfSNVs5-1JW-scovcb0CZeMNk/edit)
+contient 32 vidéos et 32 images, soit 32 paires dont le nom de base correspond
+exactement. Le contrôle source indique pour chaque vidéo : Seedance 2.5,
+15 secondes, vertical 9:16, 720p, mode Unlimited et QC paire `OK`. La livraison
+est techniquement disponible, mais elle n'est pas automatiquement validée pour
+publication : le CM attend le feu vert éditorial de l'utilisateur ou du
+directeur créatif avant de l'affecter à un créneau.
+
+Convention obligatoire pour les prochains exports :
+
+`DAY|SUNSET|AFTERGLOW|NIGHT_<THEME>_<DESCRIPTION>_02`
+
+L'image et la vidéo associée doivent partager exactement le même nom de base.
+Les trois finales V2 ci-dessous sont les seules exceptions présentes dans ce
+lot et doivent conserver leur suffixe :
+
+- `SUNSET_AFROFUTURISM_SOLAR_CULTURAL_02_V2`
+- `AFTERGLOW_NEON_NOIR_HOLOGRAPHIC_THRILLER_02_V2`
+- `NIGHT_NEON_NOIR_HOLOGRAPHIC_THRILLER_02_V2`
+
+| Thème | DAY | SUNSET | AFTERGLOW | NIGHT |
+|---|---|---|---|---|
+| AETHERPUNK | `DAY_AETHERPUNK_CELESTIAL_FLOATING_02` | `SUNSET_AETHERPUNK_CELESTIAL_FLOATING_02` | `AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02` | `NIGHT_AETHERPUNK_CELESTIAL_FLOATING_02` |
+| AFROFUTURISM | `DAY_AFROFUTURISM_SOLAR_CULTURAL_02` | `SUNSET_AFROFUTURISM_SOLAR_CULTURAL_02_V2` | `AFTERGLOW_AFROFUTURISM_SOLAR_CULTURAL_02` | `NIGHT_AFROFUTURISM_SOLAR_CULTURAL_02` |
+| ARCANEPUNK | `DAY_ARCANEPUNK_LUMINOUS_RUNE_02` | `SUNSET_ARCANEPUNK_LUMINOUS_RUNE_02` | `AFTERGLOW_ARCANEPUNK_LUMINOUS_RUNE_02` | `NIGHT_ARCANEPUNK_LUMINOUS_RUNE_02` |
+| FROSTPUNK_CRYOPUNK | `DAY_FROSTPUNK_CRYOPUNK_ICE_AURORA_02` | `SUNSET_FROSTPUNK_CRYOPUNK_ICE_AURORA_02` | `AFTERGLOW_FROSTPUNK_CRYOPUNK_ICE_AURORA_02` | `NIGHT_FROSTPUNK_CRYOPUNK_ICE_AURORA_02` |
+| LUNARPUNK | `DAY_LUNARPUNK_SILVER_LUNAR_02` | `SUNSET_LUNARPUNK_SILVER_LUNAR_02` | `AFTERGLOW_LUNARPUNK_SILVER_LUNAR_02` | `NIGHT_LUNARPUNK_SILVER_LUNAR_02` |
+| NEON_NOIR | `DAY_NEON_NOIR_HOLOGRAPHIC_THRILLER_02` | `SUNSET_NEON_NOIR_HOLOGRAPHIC_THRILLER_02` | `AFTERGLOW_NEON_NOIR_HOLOGRAPHIC_THRILLER_02_V2` | `NIGHT_NEON_NOIR_HOLOGRAPHIC_THRILLER_02_V2` |
+| OCEANPUNK | `DAY_OCEANPUNK_ABYSSAL_BIOLUMINESCENT_02` | `SUNSET_OCEANPUNK_ABYSSAL_BIOLUMINESCENT_02` | `AFTERGLOW_OCEANPUNK_ABYSSAL_BIOLUMINESCENT_02` | `NIGHT_OCEANPUNK_ABYSSAL_BIOLUMINESCENT_02` |
+| VOLCANOPUNK | `DAY_VOLCANOPUNK_BASALT_LAVA_02` | `SUNSET_VOLCANOPUNK_BASALT_LAVA_02` | `AFTERGLOW_VOLCANOPUNK_BASALT_LAVA_02` | `NIGHT_VOLCANOPUNK_BASALT_LAVA_02` |
+
+Pour les futures productions, réserver **15 minutes par vidéo** et lancer une
+seule génération à la fois. La moyenne observée est de 10 à 12 minutes, la
+fourchette habituelle de 6 à 15 minutes, avec des pointes possibles à 16 minutes.
 
 ## Historique CM et preuve de publication
 
