@@ -1,8 +1,9 @@
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { MicButton, type MicButtonStatus } from '@/components/recording/MicButton';
+import { getRecordingComposerLayout } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
@@ -66,7 +67,12 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
   ) {
     const { colors, mode, shadows } = useTheme();
     const { t } = useTranslation();
+    const { width, height, fontScale } = useWindowDimensions();
     const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+    const composerLayout = useMemo(
+      () => getRecordingComposerLayout(width, height, fontScale),
+      [fontScale, height, width]
+    );
     const hasValue = value.trim().length > 0;
     const [isFocused, setIsFocused] = useState(false);
     const textSpotlightRef = useRef<View | null>(null);
@@ -126,6 +132,10 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           onChangeText={onChange}
           style={[
             styles.textInput,
+            composerLayout.narrow && {
+              minHeight: composerLayout.inputMinHeight,
+              maxHeight: composerLayout.inputMaxHeight,
+            },
             compact && styles.textInputCompact,
             hasValue && styles.textInputWithValue,
             showInlineActions && styles.textInputWithInlineActions,
@@ -300,10 +310,17 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
 
     return (
       <>
-        <View style={[styles.recordingSection, compact && styles.recordingSectionCompact]}>
+        <View
+          style={[
+            styles.recordingSection,
+            composerLayout.narrow && styles.recordingSectionNarrow,
+            compact && styles.recordingSectionCompact,
+          ]}
+        >
           <Text
             style={[
               styles.instructionText,
+              composerLayout.narrow && styles.instructionTextNarrow,
               compact && styles.instructionTextCompact,
               { color: noctalia.text.secondary },
             ]}
@@ -337,6 +354,9 @@ const styles = StyleSheet.create({
   recordingSectionCompact: {
     marginTop: 0,
   },
+  recordingSectionNarrow: {
+    marginTop: 10,
+  },
   instructionText: {
     fontSize: 23,
     lineHeight: 32,
@@ -346,6 +366,10 @@ const styles = StyleSheet.create({
   instructionTextCompact: {
     fontSize: 18,
     lineHeight: 24,
+  },
+  instructionTextNarrow: {
+    fontSize: 21,
+    lineHeight: 29,
   },
   textInputSection: {
     width: '100%',

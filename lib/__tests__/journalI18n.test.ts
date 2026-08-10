@@ -247,16 +247,25 @@ describe('getTranslator replacement functionality', () => {
 
   it('given region-specific language when translating then normalizes to base language', async () => {
     // Given
-    await Promise.all([loadTranslations('fr'), loadTranslations('es')]);
+    await Promise.all([loadTranslations('fr'), loadTranslations('es'), loadTranslations('pt')]);
     const tFr = getTranslator('fr-FR');
     const tEs = getTranslator('es_MX');
+    const tPt = getTranslator('pt-BR');
 
     // When
     const resultFr = tFr('nav.home');
     const resultEs = tEs('nav.home');
+    const resultPt = [
+      tPt('nav.home'),
+      tPt('nav.journal'),
+      tPt('nav.capture_dream'),
+      tPt('nav.stats'),
+      tPt('nav.settings'),
+    ];
 
     // Then
     expect(resultFr).toBe('Accueil');
     expect(resultEs).toBe('Inicio');
+    expect(resultPt).toEqual(['Início', 'Diário', 'Registrar', 'Dados', 'Ajustes']);
   });
 });
