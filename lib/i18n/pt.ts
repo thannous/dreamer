@@ -645,6 +645,7 @@ const translations: Record<string, string> = {
     'analysis.step.complete': 'Concluído',
     'analysis.step.error': 'Ocorreu um erro',
     'analysis.retry': 'Tentar novamente',
+    'analysis.reveal.title': 'Seu sonho se revela',
     'analysis.mantra.analyzing.1': 'Tecendo os fios do seu sonho...',
     'analysis.mantra.analyzing.2': 'Ouvindo o seu subconsciente...',
     'analysis.mantra.analyzing.3': 'Decifrando símbolos ocultos...',

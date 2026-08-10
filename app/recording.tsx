@@ -1,4 +1,5 @@
 import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
+import { ANALYSIS_REVEAL_HOLD_MS, AnalysisRevealOverlay } from '@/components/analysis/AnalysisRevealOverlay';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { SubjectProposition } from '@/components/journal/SubjectProposition';
 import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
@@ -1277,7 +1278,8 @@ export default function RecordingScreen() {
       setOnboardingOfferDream(null);
       setAnalysisOfferError(false);
       resetComposer();
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      // Hold on the reveal overlay before opening the analyzed dream
+      await new Promise((resolve) => setTimeout(resolve, ANALYSIS_REVEAL_HOLD_MS));
       navigateAfterSave(analyzedDream, preCount, { skipFirstDreamSheet: true });
       return true;
     } catch (error) {
@@ -1406,7 +1408,8 @@ export default function RecordingScreen() {
       setDetectedSubjectType(null);
       resetComposer();
 
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      // Hold on the reveal overlay before opening the analyzed dream
+      await new Promise((resolve) => setTimeout(resolve, ANALYSIS_REVEAL_HOLD_MS));
       navigateToJournalDetail(updatedDream.id);
     } catch (error) {
       log.error('Generate with reference failed:', error);
@@ -2246,6 +2249,7 @@ export default function RecordingScreen() {
         offlineModelLocale={offlineModelLocale}
         onOfflineModelDownloadComplete={handleOfflineModelDownloadComplete}
       />
+      <AnalysisRevealOverlay visible={analysisProgress.step === AnalysisStep.COMPLETE} />
     </>
   );
 }
