@@ -139,6 +139,13 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   article links. The page is indexable and attributable, but the exact route
   fails both the topicality and developer-citation gates. No paywall bypass,
   contact enrichment or outreach was used.
+- SaaSHub's July 31 product-change submission now has a visible public outcome:
+  accurate Android positioning, pricing, Google Play route, categories,
+  screenshots and a verified marker are live on the main profile. The page
+  still declares `noindex, follow`, so it remains excluded from indexable
+  authority totals. The indexable alternatives page retains its followed
+  official-site CTA. This is retention plus entity cleanup, not a new backlink
+  or DR result; no second request or paid promotion is recommended.
 
 ## Recommended next execution order
 

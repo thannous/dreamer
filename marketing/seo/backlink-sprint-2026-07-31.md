@@ -260,8 +260,8 @@ Tracking files:
 | JunkStartups | HTTP 200; self-canonical; repeated Noctalia links use `noopener noreferrer` without `nofollow`. | Count as an indexable followed referring page. | Retain and recheck quarterly. |
 | Launch Llama | HTTP 200; indexable; self-canonical; the official-site link now uses `noopener noreferrer` without `nofollow`. | Count as a followed referring domain; the June nofollow observation is no longer current. | Retain and monitor for link-policy changes. |
 | Good AI Tools | HTTP 200; canonical; Noctalia link is `nofollow`; description still overstates offline analysis and psychological meaning. | Entity/discovery mention only. | Send the factual correction after approval. |
-| SaaSHub | HTTP 200; self-canonical; `noindex, follow`; mixed followed-looking and `nofollow` CTAs. | Do not count as indexed authority. | Ask for an indexable distinct app entity and consistent linking after approval. |
-| SaaSHub alternatives | HTTP 200; indexable; self-canonical; one press link is `nofollow`, while the official-site link has empty `rel`. | Count SaaSHub as a followed referring domain through this page, not through the noindexed main profile. | Retain and recheck with the main profile. |
+| SaaSHub | Public product corrections are now visible; HTTP 200; self-canonical; `noindex, follow`; primary official-site CTA has empty `rel`, while pricing and footer links are `nofollow`. | The submission produced a real content update, but the profile still does not count as indexed authority. | Do not repeat the request; recheck on 2026-08-24. |
+| SaaSHub alternatives | HTTP 200; indexable; self-canonical; one pricing link is `nofollow`, while the official-site CTA has empty `rel`. | Count SaaSHub as a followed referring domain through this page, not through the noindexed main profile. | Retain and recheck on 2026-08-24. |
 | Chrome-Stats | Direct automated requests receive Cloudflare 403, but the current public search rendering exposes an explicit Website link to `https://noctalia.app/`. | Link existence and indexability are visible; link attributes remain unverified, so exclude it from followed and nofollow totals. This is a store-derived citation, not a review. | Monitor through public search, not repeated automated requests. |
 | AppBrain | HTTP 200; indexable; self-canonical; public website link is `nofollow`; the developer claim is verified. | Count as an entity/discovery citation, not link equity. | Keep the listing accurate; do not treat the verified dashboard or paid promotion offers as additional authority. |
 | GitHub README | HTTP 200 and indexable; external Noctalia link is `nofollow`. | Entity/discovery evidence only. | Retain while the repository remains public and accurate. |
@@ -466,7 +466,7 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 - [x] Submit Noctalia to Uneed — product `44802` is in the free waiting line under account `thannous-6884`, with launch scheduled for 2027-01-08; accurate copy and the public walkthrough video are saved. This is a queued submission, not a live backlink.
 - [ ] Submit Noctalia to Microlaunch — current launch route is Pro-only; no spending authorized.
 - [x] Send the Good AI Tools factual correction — sent from the verified public developer identity to `submitmatic@gmail.com`; Gmail message `19fb7ec531196fa8`; awaiting publisher update.
-- [x] Send the SaaSHub entity/indexation request — submitted through the product-change form; pending moderation.
+- [x] Send the SaaSHub entity/indexation request — public content corrections are visible; the profile remains `noindex, follow` and no separate moderation notice was observed.
 - [x] Send one final follow-up in the older SearchGun and Digital.Health threads — sent once with new methodology/eligibility value; no further message without a reply.
 - [x] Send outreach wave 1 to ten reachable personalized editorial targets — Best Apps for Android failed with `554 5.7.1 Relay access denied`, so the current, transparent Holstee comparison was verified and contacted once as its replacement. Eight emails plus the accepted App Charts and Dream Studies Portal forms are now in the awaiting-reply state. Dream Studies Portal confirmed the 2026-08-01 submission on-page; no reCAPTCHA bypass occurred. The public CSV gate returns 200.
 - [ ] Resolve AlternativeTo account creation through its legitimate current path — correct email identity is available; user-owned password and hCaptcha are still required, then a 7-day account-age wait.
@@ -478,7 +478,7 @@ The personalized copy and sources live in `marketing/seo/backlink-outreach-wave-
 | --- | --- | --- |
 | A — local SEO publication lot | Thirteen scoped SEO commits were ready on `master`; the full release check passed. | Published without staging or modifying the unrelated social-work files. |
 | A — production publication | `master` was pushed at commit `7de71bc64d53adf80257fb659f4e12eb669c1d05`; local HEAD, `origin/master` and `git ls-remote` matched. | GitHub Actions run `30635290841` succeeded. Cloudflare Pages production deployment `acb85f4e-de56-4553-9cec-00220aa43115` completed successfully and aliased `https://noctalia.app`. |
-| B — SaaSHub | Product name, Android category/entity distinction, official URL consistency and `noindex` review submitted. | Accepted by the form; pending moderation. |
+| B — SaaSHub | Product name, Android category/entity distinction, official URL consistency and `noindex` review submitted. | Public profile content updated; indexation request remains unresolved because the page is still `noindex, follow`. |
 | B — Uneed | Product `44802` was submitted to the free waiting line from account `thannous-6884`; the generated copy was corrected, the public walkthrough video was added and the launch is scheduled for 2027-01-08. | No spend. It remains a queued submission, not a live backlink; the eventual listing requires at least 10 genuine launch-day upvotes to remain published. |
 | B — AI Tools Inc | Free Typeform submitted with Noctalia, its public press URL, the submitter name and the professional contact email. | Confirmation received; pending review, no spend, no password or sensitive data, and not a live backlink. |
 | B — PitchWall | Google OAuth account created and the free route opened. | Paused before product submission because the profile did not persist after two saves and OAuth disclosed newsletter signup. |
@@ -1287,6 +1287,20 @@ central register now contains 240 routes: 3 P0, 66 P1, 170 P2 and 1 P3. No
 Russian-operated site, alternate query, paywall bypass, message, form, account,
 attachment, payment or publication was used. Full evidence is in
 `marketing/seo/editorial-discovery-wave-47-2026-08-10.md`.
+
+### SaaSHub public outcome check — 2026-08-10 22:30 CEST
+
+The July 31 product-change submission has produced a visible public content
+update: the main profile now carries Noctalia's accurate Android dream-journal
+description, current freemium and Plus pricing, Google Play route, relevant
+categories, four screenshots and an officially verified marker. It remains
+self-canonical but `noindex, follow`; only the primary official-site CTA has
+empty `rel`, while the pricing and footer links are `nofollow`. The separate
+alternatives page remains self-canonical, indexable and retains its followed
+official-site CTA. This preserves the existing SaaSHub referring domain but is
+not a newly acquired backlink or DR gain. No second request, reciprocal badge,
+login, payment or promotion was used. Evidence is in
+`marketing/seo/backlink-measurement-check-2026-08-10-2230.md`.
 
 Weekly, record only verified public outcomes:
 
