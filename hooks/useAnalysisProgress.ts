@@ -1,4 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { Platform } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import type { ClassifiedError } from '@/lib/errors';
 import { useTranslation } from '@/hooks/useTranslation';
 
@@ -46,6 +48,28 @@ const STEP_CONFIG: Record<AnalysisStep, { progress: number; messageKey: string }
   },
 };
 
+// A gentle tick on each analysis milestone, a stronger cue on completion/error.
+const triggerStepHaptic = (step: AnalysisStep) => {
+  if (Platform.OS === 'web') {
+    return;
+  }
+  switch (step) {
+    case AnalysisStep.ANALYZING:
+    case AnalysisStep.GENERATING_IMAGE:
+    case AnalysisStep.FINALIZING:
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      break;
+    case AnalysisStep.COMPLETE:
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      break;
+    case AnalysisStep.ERROR:
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      break;
+    default:
+      break;
+  }
+};
+
 export function useAnalysisProgress() {
   const { t } = useTranslation();
   const [state, setState] = useState<AnalysisProgressState>({
@@ -57,6 +81,8 @@ export function useAnalysisProgress() {
 
   // Track the target progress for smooth animation
   const animationRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Deduplicate haptics when the same step is set repeatedly
+  const lastHapticStepRef = useRef<AnalysisStep>(AnalysisStep.IDLE);
 
   // Ensure we clean up any running interval when the hook's owner unmounts
   useEffect(() => {
@@ -109,6 +135,10 @@ export function useAnalysisProgress() {
         customMessage: undefined,
       }));
       animateProgress(config.progress);
+      if (step !== lastHapticStepRef.current) {
+        lastHapticStepRef.current = step;
+        triggerStepHaptic(step);
+      }
     },
     [animateProgress]
   );
@@ -125,6 +155,10 @@ export function useAnalysisProgress() {
       error,
       customMessage: error.userMessage,
     });
+    if (lastHapticStepRef.current !== AnalysisStep.ERROR) {
+      lastHapticStepRef.current = AnalysisStep.ERROR;
+      triggerStepHaptic(AnalysisStep.ERROR);
+    }
   }, []);
 
   const reset = useCallback(() => {
@@ -132,6 +166,7 @@ export function useAnalysisProgress() {
       clearInterval(animationRef.current);
       animationRef.current = null;
     }
+    lastHapticStepRef.current = AnalysisStep.IDLE;
     setState({
       step: AnalysisStep.IDLE,
       progress: 0,

@@ -151,6 +151,12 @@ jest.doMock('@/components/analysis/AnalysisProgress', () => ({
   AnalysisProgress: () => <div data-testid="analysis-progress" />,
 }));
 
+jest.doMock('@/components/analysis/AnalysisRevealOverlay', () => ({
+  ANALYSIS_REVEAL_HOLD_MS: 950,
+  AnalysisRevealOverlay: ({ visible }: { visible: boolean }) =>
+    visible ? <div data-testid="analysis-reveal-overlay" /> : null,
+}));
+
 jest.doMock('@/components/dev/MockNavigationRail', () => ({
   MockNavigationRail: () => null,
 }));
