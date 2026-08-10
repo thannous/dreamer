@@ -7,7 +7,7 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 
 ## Current evidence
 
-- The prospect register contains 224 qualified, paused, rejected or active
+- The prospect register contains 225 qualified, paused, rejected or active
   routes.
 - The outreach log contains 49 prior transmissions or attempts.
 - The prospect register and outreach log now agree on 27 unsent first
@@ -89,6 +89,10 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   content, KingLand as paid-only, TrendHunter and MakeUseOf as nofollow, and
   Fondation FIT as program-specific financing news with no general Noctalia
   route.
+- A Dream Bible citation-gap pass found a followed competitor pattern on Golden
+  Celestial and confirmed Australian law, but the publisher names no legal
+  entity or address and mixes paid psychic services, affiliate recommendations
+  and predictive claims. It is P2 and rejected; the contact form was not used.
 
 ## Recommended next execution order
 
@@ -124,6 +128,9 @@ citation.
   the raw Ahrefs domain count into quality authority.
 - Continue rejecting paid-link, reciprocal-badge, Russian-governed, opaque-
   operator, nofollow-only and fabricated-authority routes.
+- Keep Golden Celestial outside outreach. Its two Dream Bible links are
+  followed, but that signal does not override the missing accountable operator
+  and the conflict with Noctalia's non-predictive, non-medical positioning.
 - Remove PitchWall from the DR-oriented submission queue. Its founder profile
   now preserves the Noctalia bio but exposes no `noctalia.app` anchor, while
   current homepage and sampled product-page website clicks use internal

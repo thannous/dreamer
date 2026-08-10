@@ -1102,6 +1102,26 @@ the closed `D8A` record and active `D8B` gate are in
 `marketing/seo/competitor-citation-gap-wave-40-2026-08-10.md` and
 `marketing/seo/backlink-dealroom-simone-ready-2026-08-10.md`.
 
+### Competitor citation gap wave 41 — 2026-08-10
+
+The authenticated Ahrefs subscription endpoint still reports a Trial workspace
+with zero API units until the 2026-08-16 reset. A live followed, non-spam
+Dream Bible backlink query returned no rows because the unit limit was reached;
+no upgrade, pricing flow, bypass or spend was attempted. A focused public
+exact-domain search was used only to discover pages, then the strongest
+inspectable publisher was audited in real Chrome.
+
+Golden Celestial's current article links `dreambible.com` twice without
+`nofollow`, is self-canonical and is governed by Australian law. It nevertheless
+fails the operator and brand-safety gates: its legal pages name no entity or
+postal address, its writer credentials are not independently verifiable, and
+the roundup is dominated by paid psychic services, affiliate recommendations
+and predictive claims. The general contact form was inspected but not filled or
+submitted. The route is P2 and rejected. The central register now contains 225
+routes: 3 P0, 64 P1, 157 P2 and 1 P3. No external action or live Noctalia link
+was created. Full evidence is in
+`marketing/seo/competitor-citation-gap-wave-41-2026-08-10.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
