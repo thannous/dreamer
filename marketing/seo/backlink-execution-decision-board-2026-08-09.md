@@ -7,7 +7,7 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 
 ## Current evidence
 
-- The prospect register contains 227 qualified, paused, rejected or active
+- The prospect register contains 233 qualified, paused, rejected or active
   routes.
 - The outreach log contains 49 prior transmissions or attempts.
 - The prospect register and outreach log now agree on 27 unsent first
@@ -99,6 +99,13 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   monetized VigLink redirect and six sampled 2024 contributions contain no
   external article-body links. Neither route demonstrates a free, direct,
   current DR-first path.
+- A Spanish/German citation pass found two new P1 German editorial routes.
+  ANTENNE BAYERN links two `traum-deutung.de` pages without `nofollow` and
+  exposes an accountable registered German broadcaster and editorial mailbox.
+  Epigenius links the competitor directly, discusses dream journaling and names
+  a German sole proprietor with a public professional email. Four plain-text or
+  community surfaces remain P2. The two German notes are independently gated
+  as `D9A` and `D9B`; neither was sent.
 
 ## Recommended next execution order
 
@@ -108,10 +115,12 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 | 2 | DreamWell DreamKit correction (`D5`) | Its transparent 2022 comparison still presents DreamKit as available on Android and iOS, while the Android listing is now 404 and the former iOS ID is Arcana. The article links several competitor domains directly without `nofollow`. | Send one factual correction and offer Noctalia only as an optional test candidate for a future refresh. No link, anchor, ranking, replacement or timing request. |
 | 3 | Atlas and ILTY followed-pattern replies (`D7`) | Both current comparisons are self-canonical and `index, follow`, link six competitor developer domains without `nofollow`, name accountable non-Russian operators and retain the original unanswered Zimbra thread. | Send one concise first reply in each existing thread only after a fresh stop gate. This is topical clean-domain potential; current publisher DR and future link treatment remain unproven. |
 | 4 | Simone editorial note (`D8B`) | The current Rosebud review is by a named author and links `rosebud.app` twice without `nofollow`; Agentik SAS, French law and the official mailbox pass the trust gate. | Send the prepared factual French note only after a fresh page, destination and mailbox stop gate. Ask only whether Noctalia is useful to test; no link, anchor, rank or placement request. |
-| 5 | Elsewhere human reply (`D1`) | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal, although Medium currently marks product links `ugc nofollow`. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
-| 6 | Three editorial-visibility follow-ups (`D3B`) | Android Police and Xataka Android are credible Android publishers but the target pages lack a direct developer-domain citation pattern. AITrendTool's sampled product links are `nofollow`. | Treat these as discovery and relationship opportunities, not the DR-first batch. Authorize separately and verify any eventual public link without assuming equity. |
-| 7 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |
-| 8 | Owned syndication | Hashnode and Medium drafts are ready, but a self-published profile link has lower incremental authority and canonical risk than an independent editorial citation. | Publish only after separate account and publication authorization and verify the rendered canonical and link attributes. |
+| 5 | ANTENNE BAYERN editorial note (`D9A`) | Its indexable guide links two exact competitor symbol pages without `nofollow`; the registered German broadcaster publishes a direct newsroom mailbox. | Send the prepared German note once after a fresh page, destination and mailbox stop gate. Offer a test only; no link, anchor, rank or placement request. |
+| 6 | Epigenius editorial note (`D9B`) | Its indexable 2025 article links the competitor directly and already discusses keeping a dream journal; the named German operator publishes a direct email. | Send the prepared German note once after a fresh stop gate. Keep the non-medical boundary explicit and do not request a link or placement. |
+| 7 | Elsewhere human reply (`D1`) | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal, although Medium currently marks product links `ugc nofollow`. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
+| 8 | Three editorial-visibility follow-ups (`D3B`) | Android Police and Xataka Android are credible Android publishers but the target pages lack a direct developer-domain citation pattern. AITrendTool's sampled product links are `nofollow`. | Treat these as discovery and relationship opportunities, not the DR-first batch. Authorize separately and verify any eventual public link without assuming equity. |
+| 9 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |
+| 10 | Owned syndication | Hashnode and Medium drafts are ready, but a self-published profile link has lower incremental authority and canonical risk than an independent editorial citation. | Publish only after separate account and publication authorization and verify the rendered canonical and link attributes. |
 
 The completed D3A batch is no longer ranked as a future action. Monitor it until
 the conditional 2026-08-16 gate and stop on reply, failure, opt-out or live
@@ -235,6 +244,23 @@ instruction reopens the route.
 
 The current evidence, exact copy and platform boundaries are recorded in
 `marketing/seo/backlink-dealroom-simone-ready-2026-08-10.md`.
+
+### D9A — ANTENNE BAYERN editorial note
+
+> J'autorise l'envoi unique du message D9A préparé à
+> `redaktion@antenne.de`, après un stop gate immédiat, sans pièce jointe,
+> paiement, relance automatique, demande de lien, classement ni garantie de
+> couverture.
+
+### D9B — Epigenius editorial note
+
+> J'autorise l'envoi unique du message D9B préparé à `info@epigenius.de`,
+> après un stop gate immédiat, sans formulaire, pièce jointe, paiement, relance
+> automatique, demande de lien, classement ni garantie de couverture.
+
+The current evidence, exact German copy and route-specific gates for `D9A` and
+`D9B` are recorded in
+`marketing/seo/backlink-german-editorial-ready-2026-08-10.md`.
 
 Earned-media account or subscription choices retain the independent `E1`–`E5`
 codes in `marketing/seo/media-source-platform-pack-2026-08-09.md`.

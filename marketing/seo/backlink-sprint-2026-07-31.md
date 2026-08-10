@@ -1144,6 +1144,33 @@ The central register now contains 227 routes: 3 P0, 64 P1, 159 P2 and 1 P3.
 Full evidence is in
 `marketing/seo/competitor-citation-gap-wave-42-2026-08-10.md`.
 
+### Competitor citation gap wave 43 — 2026-08-10
+
+The Spanish `misabueso.com` pass produced no current linkable editorial route.
+The strongest accountable publisher, Paraguayan newspaper Última Hora, keeps a
+self-canonical 2007 resource archive but shows the competitor domain only as
+plain text. Academic PDFs, presentations, forums and automated analysis pages
+were not treated as app-placement opportunities.
+
+The German `traum-deutung.de` pass produced two P1 routes. ANTENNE BAYERN's
+self-canonical index-follow guide links two exact competitor symbol pages
+without `nofollow`; its legal notice identifies the registered German
+broadcaster, named managers, a content-responsible editor, commercial register,
+media regulator and `redaktion@antenne.de`. Epigenius' self-canonical
+index-follow March 2025 article directly links the competitor and discusses
+keeping a dream journal; its legal notice identifies German sole proprietor
+Sindy Grambow and the current contact page publishes `info@epigenius.de`.
+
+One factual German note is ready for each route under independent authorization
+codes `D9A` and `D9B`. Neither was sent. WMN, UnAuf and MeinBezirk remain P2
+because their exact pages name the competitor only in plain text; MeinBezirk is
+also a community-contributor surface. The central register now contains 233
+routes: 3 P0, 66 P1, 163 P2 and 1 P3. No Russian result was opened and no
+message, form, comment, account, attachment, product data, payment or
+publication was used. Full evidence and copy are in
+`marketing/seo/competitor-citation-gap-wave-43-2026-08-10.md` and
+`marketing/seo/backlink-german-editorial-ready-2026-08-10.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
