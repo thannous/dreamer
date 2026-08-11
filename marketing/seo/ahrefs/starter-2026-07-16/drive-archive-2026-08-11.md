@@ -18,7 +18,7 @@ Noctalia/
 
 ## Périmètre synchronisé
 
-Le sous-dossier de clôture contient les 15 livrables durables `j25-*`, `j26-*` et `j27-*` présents dans ce dossier Git au commit source `06cec17be9228b23e5d8de23c5bd2008d3266aba` : dix fichiers Markdown et cinq fichiers CSV.
+Le sous-dossier de clôture contient les 15 livrables durables `j25-*`, `j26-*` et `j27-*` présents dans ce dossier Git au commit source `06cec17be9228b23e5d8de23c5bd2008d3266aba` : neuf fichiers Markdown et six fichiers CSV.
 
 La vérification Drive après téléversement a confirmé 15 fichiers, sans doublon de nom. Le registre détaillé, avec identifiant Drive, URL et empreinte SHA-256 locale, est conservé dans [`drive-sync-manifest-2026-08-11.csv`](./drive-sync-manifest-2026-08-11.csv).
 
