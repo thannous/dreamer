@@ -64,7 +64,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Análisis, diccionario y captura por voz cumplen funciones distintas</h2>
-    <p>Esta página explica el flujo completo de análisis. Si solo buscas el significado general de una imagen, empieza por el <a href="/es/diccionario-de-suenos-app" class="text-dream-salmon hover:underline">diccionario de sueños</a>. Si tu problema es anotar todo al despertar, consulta el <a href="/es/diario-de-suenos-por-voz" class="text-dream-salmon hover:underline">diario de sueños por voz</a>. El análisis de Noctalia conecta esos elementos con el sueño guardado completo.</p>
+    <p>Esta página explica el flujo completo de análisis. Si solo buscas el significado general de una imagen, empieza por la <a href="/es/diccionario-de-suenos-app" class="text-dream-salmon hover:underline">app de diccionario de sueños</a>. Si tu problema es anotar todo al despertar, consulta el <a href="/es/diario-de-suenos-por-voz" class="text-dream-salmon hover:underline">diario de sueños por voz</a>. El análisis de Noctalia conecta esos elementos con el sueño guardado completo.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
