@@ -14,7 +14,7 @@ Successfully implemented a React Native Expo recording screen that faithfully re
 - **Main content area** with:
   - Italic instruction text: "Whisper your dream into the ether..."
   - Large circular microphone button (144px diameter)
-  - Animated waveform visualization (18 bars)
+  - Animated ambient background driven by `AtmosphereBackground`
   - Timestamp text: "Cycle of the Moon: [date and time]"
 - **Bottom section**:
   - Large textarea for manual text entry
@@ -30,12 +30,10 @@ Successfully implemented a React Native Expo recording screen that faithfully re
 - Icon changes from mic to stop icon when recording
 - Drop shadow and border styling matching maquette
 
-#### Waveform Component (ancienne implémentation supprimée)
-- 18 animated vertical bars
-- Different heights and opacities for visual variety
-- Accent colors for specific bars (every 5th bar)
-- Smooth animation during recording
-- Static display when not recording
+#### AtmosphereBackground Component (`components/recording/AtmosphereBackground.tsx`)
+- Provides the current ambient visual layer behind the recording controls
+- Adapts its animation to screen focus, platform, theme, and reduced-motion preferences
+- Replaces the former `Waveform.tsx` and `MicClouds.tsx` implementations, which were unused and have been removed
 
 ### 3. Recording Functionality
 - **Microphone permissions**: Properly requested on mount via `AudioModule.requestRecordingPermissionsAsync()` (expo-audio)
