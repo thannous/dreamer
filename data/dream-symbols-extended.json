@@ -11605,6 +11605,53 @@
           { "context": "Tartarughe appena nate", "meaning": "I piccoli possono evidenziare un inizio fragile, cure ripetute o diversi passi modesti." }
         ]
       }
+    },
+    "crocodile": {
+      "en": {
+        "fullInterpretation": "<p>A crocodile can concentrate vigilance and hidden tension in a dream. Begin with distance and movement: was it below the water, watching, approaching, chasing or already inside your space? A remote animal and an immediate attack create very different emotional contexts.</p>\n<p>Its stillness can fit patient observation, restraint or power that has not been used. A chase may instead make urgency, avoidance or a boundary under pressure visible. Neither scene proves that another person is deceptive or that danger is coming.</p>\n<p>A documentary, zoo visit, news image, game or recent conversation can supply the animal directly. Compare that trigger with your feeling and the place where the crocodile appeared before assigning a broader personal meaning.</p>",
+        "variations": [
+          { "context": "A crocodile in water", "meaning": "Something partly visible may feel uncertain or emotionally charged; distance and movement show whether the scene felt watchful or urgent." },
+          { "context": "Being chased or attacked", "meaning": "The action can mirror pressure, avoidance or a rapid search for safety without predicting real harm." },
+          { "context": "A crocodile in the house", "meaning": "A wild animal inside a personal space may highlight boundaries, privacy or tension that feels too close." },
+          { "context": "A calm or harmless crocodile", "meaning": "Calm behavior can emphasize respect, restraint, coexistence or simply a striking recent image rather than threat." }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Un crocodile peut concentrer vigilance et tension cachée dans un rêve. Commencez par la distance et le mouvement : était-il sous l’eau, en observation, en approche, à votre poursuite ou déjà dans votre espace ? Un animal éloigné et une attaque immédiate créent des contextes très différents.</p>\n<p>Son immobilité peut correspondre à l’observation patiente, la retenue ou une force non utilisée. Une poursuite peut plutôt rendre visibles urgence, évitement ou limite sous pression. Aucune scène ne prouve qu’une personne trompe ni qu’un danger arrive.</p>\n<p>Documentaire, zoo, actualité, jeu ou conversation récente peuvent fournir directement l’animal. Comparez ce déclencheur à votre émotion et au lieu d’apparition avant de chercher un sens personnel plus large.</p>",
+        "variations": [
+          { "context": "Un crocodile dans l’eau", "meaning": "Ce qui n’est que partiellement visible peut sembler incertain ou chargé d’émotion; distance et mouvement précisent le niveau d’urgence." },
+          { "context": "Être poursuivi ou attaqué", "meaning": "L’action peut refléter pression, évitement ou recherche rapide de sécurité sans annoncer un danger réel." },
+          { "context": "Un crocodile dans la maison", "meaning": "Un animal sauvage dans un espace personnel peut mettre en avant limites, intimité ou tension devenue trop proche." },
+          { "context": "Un crocodile calme ou inoffensif", "meaning": "Le calme peut souligner respect, retenue, coexistence ou simple souvenir d’une image marquante plutôt qu’une menace." }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Un cocodrilo puede concentrar vigilancia y tensión oculta en un sueño. Empieza por distancia y movimiento: ¿estaba bajo el agua, observando, acercándose, persiguiéndote o ya dentro de tu espacio? Un animal lejano y un ataque inmediato crean contextos emocionales distintos.</p>\n<p>Su quietud puede encajar con observación paciente, contención o una fuerza que no se ha usado. Una persecución puede hacer visibles urgencia, evitación o un límite bajo presión. Ninguna escena demuestra que alguien engañe ni que vaya a ocurrir un peligro.</p>\n<p>Un documental, zoo, noticia, juego o conversación reciente pueden aportar el animal directamente. Compara ese estímulo con tu emoción y el lugar donde apareció antes de buscar un sentido personal más amplio.</p>",
+        "variations": [
+          { "context": "Un cocodrilo en el agua", "meaning": "Algo parcialmente visible puede sentirse incierto o emocional; distancia y movimiento muestran si la escena era vigilante o urgente." },
+          { "context": "Ser perseguido o atacado", "meaning": "La acción puede reflejar presión, evitación o búsqueda rápida de seguridad sin anunciar daño real." },
+          { "context": "Un cocodrilo dentro de casa", "meaning": "Un animal salvaje en un espacio personal puede destacar límites, intimidad o tensión que se siente demasiado cerca." },
+          { "context": "Un cocodrilo tranquilo o inofensivo", "meaning": "La calma puede enfatizar respeto, contención, convivencia o una imagen reciente llamativa en lugar de amenaza." }
+        ]
+      },
+      "de": {
+        "fullInterpretation": "<p>Ein Krokodil kann im Traum Wachsamkeit und verborgene Spannung bündeln. Beginne mit Abstand und Bewegung: War es unter Wasser, beobachtete es, kam es näher, verfolgte es dich oder war es bereits in deinem Raum? Ein entferntes Tier und ein unmittelbarer Angriff schaffen ganz andere Gefühlslagen.</p>\n<p>Seine Ruhe kann zu geduldiger Beobachtung, Zurückhaltung oder ungenutzter Kraft passen. Eine Verfolgung kann dagegen Dringlichkeit, Vermeidung oder eine Grenze unter Druck sichtbar machen. Keine Szene beweist Täuschung oder ein kommendes Unglück.</p>\n<p>Dokumentation, Zoobesuch, Nachrichtenbild, Spiel oder aktuelles Gespräch können das Tier direkt liefern. Vergleiche diesen Auslöser mit Gefühl und Ort, bevor du eine breitere persönliche Bedeutung suchst.</p>",
+        "variations": [
+          { "context": "Ein Krokodil im Wasser", "meaning": "Etwas nur teilweise Sichtbares kann unsicher oder emotional wirken; Abstand und Bewegung zeigen Wachsamkeit oder Dringlichkeit." },
+          { "context": "Verfolgt oder angegriffen werden", "meaning": "Die Handlung kann Druck, Vermeidung oder eine schnelle Suche nach Sicherheit spiegeln, ohne realen Schaden vorherzusagen." },
+          { "context": "Ein Krokodil im Haus", "meaning": "Ein Wildtier im persönlichen Raum kann Grenzen, Privatsphäre oder eine zu nahe gerückte Spannung hervorheben." },
+          { "context": "Ein ruhiges oder harmloses Krokodil", "meaning": "Ruhe kann Respekt, Zurückhaltung, Koexistenz oder ein auffälliges aktuelles Bild statt Bedrohung betonen." }
+        ]
+      },
+      "it": {
+        "fullInterpretation": "<p>Un coccodrillo può concentrare vigilanza e tensione nascosta in sogno. Parti da distanza e movimento: era sotto l’acqua, osservava, si avvicinava, ti inseguiva o si trovava già nel tuo spazio? Un animale lontano e un attacco immediato creano contesti emotivi diversi.</p>\n<p>La sua immobilità può collegarsi a osservazione paziente, controllo o forza non utilizzata. Un inseguimento può invece rendere visibili urgenza, evitamento o un confine sotto pressione. Nessuna scena dimostra che qualcuno inganni o che stia arrivando un pericolo.</p>\n<p>Un documentario, zoo, notizia, gioco o conversazione recente possono fornire direttamente l’animale. Confronta questo stimolo con emozione e luogo prima di cercare un significato personale più ampio.</p>",
+        "variations": [
+          { "context": "Un coccodrillo nell’acqua", "meaning": "Qualcosa di parzialmente visibile può sembrare incerto o carico di emozione; distanza e movimento indicano vigilanza o urgenza." },
+          { "context": "Essere inseguiti o attaccati", "meaning": "L’azione può riflettere pressione, evitamento o ricerca rapida di sicurezza senza predire danni reali." },
+          { "context": "Un coccodrillo dentro casa", "meaning": "Un animale selvatico nello spazio personale può mettere in primo piano confini, privacy o tensione troppo vicina." },
+          { "context": "Un coccodrillo tranquillo o innocuo", "meaning": "La calma può evidenziare rispetto, controllo, convivenza o un’immagine recente sorprendente invece della minaccia." }
+        ]
+      }
     }
   }
 }

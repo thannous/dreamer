@@ -2,7 +2,7 @@
   "meta": {
     "version": "1.0.0",
     "lastUpdated": "2026-08-11",
-    "totalSymbols": 155,
+    "totalSymbols": 156,
     "languages": [
       "en",
       "fr",
@@ -10,7 +10,7 @@
       "de",
       "it"
     ],
-    "symbolCount": 155
+    "symbolCount": 156
   },
   "categories": {
     "nature": {
@@ -12466,6 +12466,173 @@
         "ocean",
         "island",
         "frog"
+      ],
+      "modifiedAt": "2026-08-11"
+    },
+    {
+      "id": "crocodile",
+      "category": "animals",
+      "priority": 2,
+      "en": {
+        "slug": "crocodiles",
+        "name": "Crocodiles",
+        "seoTitle": "crocodiles, attacks or crocodiles in water",
+        "documentTitle": "Dreaming About Crocodiles: Meaning and Context",
+        "documentMetaDescription": "Dreaming about crocodiles? Compare water, pursuit, attack, house and calm crocodile scenes using your emotion and recent context, not predictions.",
+        "shortDescription": "A crocodile in a dream may focus attention on vigilance, boundaries, hidden tension or contained strength. Its distance, movement, setting and your response distinguish a perceived threat from a calm encounter or recent memory.",
+        "askYourself": [
+          "Was the crocodile in water, chasing or attacking me, inside a house, still or unexpectedly calm?",
+          "Did I feel fear, fascination, control, disgust or respect for its distance and power?",
+          "Which current situation asks for clearer boundaries, patient observation or a response to pressure that has stayed beneath the surface?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about a crocodile?",
+            "answer": "A crocodile can fit themes of vigilance, boundaries, concealed tension or contained strength. Its behavior and your emotion provide more context than one universal definition."
+          },
+          {
+            "question": "What does a crocodile in water mean in a dream?",
+            "answer": "Water can make an unclear feeling or situation more prominent. Notice whether the animal stayed distant, surfaced slowly, followed you or blocked your route."
+          },
+          {
+            "question": "What does being chased or attacked by a crocodile mean?",
+            "answer": "A chase or attack may mirror urgency, avoidance or feeling pressured. It does not predict harm; compare the scene with current stress and the way you tried to reach safety."
+          },
+          {
+            "question": "What does a calm crocodile or a crocodile in the house mean?",
+            "answer": "A calm animal may shift attention toward respect, restraint or coexistence. A crocodile indoors can place those themes inside a personal boundary, while recent media can also supply the image directly."
+          }
+        ]
+      },
+      "fr": {
+        "slug": "crocodile",
+        "name": "Crocodile",
+        "seoTitle": "crocodile, attaque ou crocodile dans l’eau",
+        "documentTitle": "Rêver de crocodile : sens et scénarios",
+        "documentMetaDescription": "Rêver de crocodile : comparez eau, poursuite, attaque, maison et animal calme à partir de l’émotion et du contexte récent, sans prédiction.",
+        "shortDescription": "Un crocodile dans un rêve peut attirer l’attention sur la vigilance, les limites, une tension cachée ou une force contenue. Sa distance, son mouvement, le lieu et votre réaction distinguent menace perçue, rencontre calme et souvenir récent.",
+        "askYourself": [
+          "Le crocodile était-il dans l’eau, à ma poursuite, agressif, dans une maison, immobile ou étonnamment calme ?",
+          "Ai-je ressenti peur, fascination, maîtrise, dégoût ou respect pour sa distance et sa puissance ?",
+          "Quelle situation actuelle demande des limites plus nettes, de l’observation ou une réponse à une pression restée sous la surface ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de crocodile ?",
+            "answer": "Le crocodile peut rejoindre vigilance, limites, tension dissimulée ou force contenue. Son comportement et votre émotion apportent plus de contexte qu’une définition universelle."
+          },
+          {
+            "question": "Que signifie un crocodile dans l’eau dans un rêve ?",
+            "answer": "L’eau peut rendre plus visible une émotion ou une situation incertaine. Observez si l’animal restait loin, remontait lentement, vous suivait ou bloquait le passage."
+          },
+          {
+            "question": "Que signifie être poursuivi ou attaqué par un crocodile ?",
+            "answer": "La poursuite ou l’attaque peut reprendre urgence, évitement ou pression ressentie. Elle ne prédit pas un danger; comparez la scène au stress actuel et à votre recherche de sécurité."
+          },
+          {
+            "question": "Que signifie un crocodile calme ou présent dans la maison ?",
+            "answer": "Un animal calme peut orienter la scène vers respect, retenue ou coexistence. Dans la maison, ces thèmes entrent dans une limite personnelle; une image récente peut aussi expliquer le rêve."
+          }
+        ]
+      },
+      "es": {
+        "slug": "cocodrilos",
+        "name": "Cocodrilos",
+        "seoTitle": "cocodrilos, ataques o cocodrilos en el agua",
+        "documentTitle": "Soñar con cocodrilos: significado y escenas",
+        "documentMetaDescription": "Soñar con cocodrilos: compara agua, persecución, ataque, casa y animales tranquilos según la emoción y el contexto reciente, sin predicciones.",
+        "shortDescription": "Soñar con un cocodrilo puede destacar vigilancia, límites, tensión oculta o fuerza contenida. Su distancia, movimiento, lugar y tu reacción diferencian una amenaza percibida de un encuentro tranquilo o un recuerdo reciente.",
+        "askYourself": [
+          "¿El cocodrilo estaba en el agua, me perseguía, atacaba, aparecía en casa, permanecía quieto o parecía tranquilo?",
+          "¿Sentí miedo, fascinación, control, rechazo o respeto por su distancia y su fuerza?",
+          "¿Qué situación actual requiere límites más claros, observación paciente o responder a una presión que sigue bajo la superficie?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con cocodrilos?",
+            "answer": "Un cocodrilo puede relacionarse con vigilancia, límites, tensión escondida o fuerza contenida. Su conducta y tu emoción aportan más contexto que un significado universal."
+          },
+          {
+            "question": "¿Qué significa un cocodrilo en el agua en un sueño?",
+            "answer": "El agua puede hacer más visible una emoción o situación incierta. Observa si el animal estaba lejos, salía despacio, te seguía o bloqueaba el camino."
+          },
+          {
+            "question": "¿Qué significa que un cocodrilo te persiga o ataque?",
+            "answer": "Una persecución o un ataque pueden reflejar urgencia, evitación o presión. No anuncian daño; compara la escena con el estrés actual y tu forma de buscar seguridad."
+          },
+          {
+            "question": "¿Qué significa un cocodrilo tranquilo o dentro de casa?",
+            "answer": "Un animal tranquilo puede señalar respeto, contención o convivencia. Dentro de casa, esos temas entran en un límite personal; una imagen reciente también puede explicar la escena."
+          }
+        ]
+      },
+      "de": {
+        "slug": "krokodil",
+        "name": "Krokodil",
+        "seoTitle": "Krokodil, Angriff oder Krokodil im Wasser",
+        "documentTitle": "Traumdeutung Krokodil: Bedeutung und Szenen",
+        "documentMetaDescription": "Krokodil im Traum: Vergleiche Wasser, Verfolgung, Angriff, Haus und ruhige Tiere anhand von Gefühl und aktuellem Kontext statt Vorhersagen.",
+        "shortDescription": "Ein Krokodil im Traum kann Wachsamkeit, Grenzen, verborgene Spannung oder gebändigte Stärke hervorheben. Abstand, Bewegung, Ort und Reaktion unterscheiden eine empfundene Bedrohung von einer ruhigen Begegnung oder aktuellen Erinnerung.",
+        "askYourself": [
+          "War das Krokodil im Wasser, hinter mir her, im Angriff, im Haus, unbeweglich oder überraschend ruhig?",
+          "Empfand ich Angst, Faszination, Kontrolle, Abscheu oder Respekt vor Abstand und Kraft des Tieres?",
+          "Welche aktuelle Situation verlangt deutlichere Grenzen, geduldige Beobachtung oder eine Antwort auf unterschwelligen Druck?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet ein Krokodil im Traum?",
+            "answer": "Ein Krokodil kann zu Wachsamkeit, Grenzen, verborgener Spannung oder gebändigter Stärke passen. Verhalten und Gefühl geben mehr Kontext als eine allgemeine Symbolregel."
+          },
+          {
+            "question": "Was bedeutet ein Krokodil im Wasser im Traum?",
+            "answer": "Wasser kann ein unklares Gefühl oder eine unsichere Lage hervorheben. Achte darauf, ob das Tier entfernt blieb, langsam auftauchte, dir folgte oder den Weg versperrte."
+          },
+          {
+            "question": "Was bedeutet die Verfolgung oder der Angriff eines Krokodils?",
+            "answer": "Verfolgung oder Angriff können Dringlichkeit, Vermeidung oder empfundenen Druck spiegeln. Sie sagen keinen Schaden voraus; vergleiche die Szene mit aktuellem Stress und deiner Suche nach Sicherheit."
+          },
+          {
+            "question": "Was bedeutet ein ruhiges Krokodil oder ein Krokodil im Haus?",
+            "answer": "Ein ruhiges Tier kann Respekt, Zurückhaltung oder Koexistenz betonen. Im Haus liegen diese Themen innerhalb einer persönlichen Grenze; auch ein aktuelles Bild kann die Szene auslösen."
+          }
+        ]
+      },
+      "it": {
+        "slug": "coccodrilli",
+        "name": "Coccodrilli",
+        "seoTitle": "coccodrilli, attacchi o coccodrilli nell’acqua",
+        "documentTitle": "Sognare coccodrilli: significato e scenari",
+        "documentMetaDescription": "Sognare coccodrilli: confronta acqua, inseguimento, attacco, casa e animali tranquilli usando emozione e contesto recente, senza previsioni.",
+        "shortDescription": "Sognare un coccodrillo può mettere in primo piano vigilanza, confini, tensione nascosta o forza contenuta. Distanza, movimento, luogo e reazione distinguono una minaccia percepita da un incontro tranquillo o un ricordo recente.",
+        "askYourself": [
+          "Il coccodrillo era nell’acqua, mi inseguiva, attaccava, era in casa, restava fermo o appariva tranquillo?",
+          "Provavo paura, fascino, controllo, disgusto o rispetto per la sua distanza e la sua forza?",
+          "Quale situazione attuale richiede confini più chiari, osservazione paziente o una risposta a una pressione rimasta sotto la superficie?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare coccodrilli?",
+            "answer": "Un coccodrillo può collegarsi a vigilanza, confini, tensione nascosta o forza contenuta. Comportamento ed emozione offrono più contesto di una definizione universale."
+          },
+          {
+            "question": "Che cosa significa un coccodrillo nell’acqua in sogno?",
+            "answer": "L’acqua può rendere più evidente un’emozione o una situazione incerta. Nota se l’animale restava lontano, emergeva lentamente, ti seguiva o bloccava il passaggio."
+          },
+          {
+            "question": "Che cosa significa essere inseguiti o attaccati da un coccodrillo?",
+            "answer": "Inseguimento o attacco possono riflettere urgenza, evitamento o pressione. Non predicono danni; confronta la scena con lo stress attuale e il modo in cui cercavi sicurezza."
+          },
+          {
+            "question": "Che cosa significa un coccodrillo tranquillo o dentro casa?",
+            "answer": "Un animale tranquillo può spostare l’attenzione su rispetto, controllo o convivenza. In casa, questi temi entrano in un confine personale; anche un’immagine recente può spiegare la scena."
+          }
+        ]
+      },
+      "relatedSymbols": [
+        "water",
+        "chase",
+        "house",
+        "snake"
       ],
       "modifiedAt": "2026-08-11"
     }

@@ -6640,6 +6640,34 @@
             }
           }
         },
+        "symbol.crocodile": {
+          "id": "symbol.crocodile",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "crocodiles",
+          "locales": {
+            "en": {
+              "slug": "crocodiles",
+              "path": "/en/symbols/crocodiles"
+            },
+            "fr": {
+              "slug": "crocodile",
+              "path": "/fr/symboles/crocodile"
+            },
+            "es": {
+              "slug": "cocodrilos",
+              "path": "/es/simbolos/cocodrilos"
+            },
+            "de": {
+              "slug": "krokodil",
+              "path": "/de/traumsymbole/krokodil"
+            },
+            "it": {
+              "slug": "coccodrilli",
+              "path": "/it/simboli/coccodrilli"
+            }
+          }
+        },
         "symbolCategory.nature": {
           "id": "symbolCategory.nature",
           "type": "symbolCategory",

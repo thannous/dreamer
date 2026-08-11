@@ -28,8 +28,8 @@ Ce chantier ne modifie pas :
 
 | Priorité | Levier | État au 11 août | Prochaine porte |
 |---|---|---|---|
-| P0 | `turtle`, 5 langues | `PUSHED_FIX_PENDING` | pousser le correctif de contrat de test, attendre CI/déploiement puis établir la preuve publique |
-| P0 | `crocodile`, 5 langues | `QUEUED_AFTER_TURTLE` | ne commencer la publication qu'après preuve HTTP de `turtle` |
+| P0 | `turtle`, 5 langues | `LIVE_VERIFIED` | mesurer sur des fenêtres GSC complètes sans demander d'indexation |
+| P0 | `crocodile`, 5 langues | `LOCAL_VALIDATED` | commit et contrat URL isolés, puis un seul push/déploiement après contrôle du diff |
 | P0 | `lice`, 5 langues | `QUEUED_AFTER_CROCODILE` | ne commencer la publication qu'après preuve HTTP de `crocodile` |
 | P0 | autorité externe | `PREPARE_ONLY_NO_SEND` | nouveau stop gate puis autorisation explicite, dossier par dossier |
 | P1 | expérience `scuola` | `HOLD_UNTIL_2026-08-15` | lire la fenêtre J+7 de `casa/ragno/perro`, puis ouvrir un lot metadata-only séparé si le signal reste propre |
@@ -84,7 +84,29 @@ Le blocage du contrat URL n'est pas une régression : le dépôt exige que l'ajo
 
 Le push `5b8f3b0da` vers `master` a révélé une unique assertion de test restée codée en dur à 154 symboles dans `scripts/lib/content-hub-registry.test.js`. Le registre réel en contient désormais 155. Ce défaut est imputable au lot `turtle` et n'est pas classé comme bruit de baseline.
 
-Le correctif local porte uniquement le libellé et l'attente `154 → 155`. Le test ciblé passe 15/15 et la suite rapide complète passe 260 suites et 2 474 tests. Un push correctif séparé est nécessaire avant de considérer le pipeline distant comme vert.
+Le correctif porte uniquement le libellé et l'attente `154 → 155`. Le test ciblé passe 15/15 et la suite rapide complète passe 260 suites et 2 474 tests. Le commit `d1890c203` a été poussé sur `master`; le run Quality `31516168322` est entièrement vert, dont le build et le contrôle du site en 10 min 31 s.
+
+À 17:39 UTC, les cinq routes publiques répondent HTTP 200 avec le titre localisé attendu, un canonical vers elles-mêmes, `index, follow`, six liens `hreflang` et le contenu dédié. Le master éditorial et les quatre variantes responsives répondent également 200 en `image/webp`. Le statut du check GitHub « Cloudflare Pages » est resté retardé en `in_progress` après la mise en ligne; la preuve HTTP publique, et non ce statut décalé, établit la publication.
+
+## Lot 2 — `crocodile`
+
+### Preuve et ownership
+
+Le propriétaire dédié reprend l'intention précise dans cinq marchés sans retirer le rôle de hub aux guides animaux. Les volumes pays observés dans la collecte J27 sont : IT 700 (`KD 0`), DE 500 (`KD 0`), FR 150 (`KD 0`), ES 900 (`KD 0`) et US 40 (`KD 8`). Les trois impressions historiques DE/IT observées sur des guides restent un facteur de mesure, pas un motif pour canonicaliser la fiche vers le hub.
+
+| Langue | Route canonique préparée |
+|---|---|
+| EN | `/en/symbols/crocodiles` |
+| FR | `/fr/symboles/crocodile` |
+| ES | `/es/simbolos/cocodrilos` |
+| DE | `/de/traumsymbole/krokodil` |
+| IT | `/it/simboli/coccodrilli` |
+
+Le contenu distingue eau, observation, poursuite ou attaque, présence dans la maison et animal calme. Il n'assimile pas le rêve à une prédiction, une tromperie certaine ou un danger futur.
+
+Actif éditorial local : `docs-src/static/img/symbols/editorial-2026-08-j27/crocodile-v1.webp`, 1 600 × 900, plus quatre variantes de 240 à 1 200 pixels. L'illustration montre un seul crocodile dans l'eau, sans humain, attaque, texte, logo, filigrane ni code divinatoire.
+
+Contrôles locaux avant commit : inventaire porté à 156 symboles, 780 pages de détail, 785 contenus étendus, cinq titres de 38 à 46 caractères et cinq descriptions de 139 à 146 caractères. `docs:build`, le contrat d'image, la parité multilingue et les 15 tests du registre passent. Le lot reste local tant que son propre contrat URL et le release check depuis un HEAD propre ne sont pas établis.
 
 ## Autorité externe — frontière d'autorisation
 
@@ -95,7 +117,13 @@ L'ordre conservé est : Marika Pech, DreamWell, Atlas/ILTY, puis routes éditori
 3. autorisation explicite propre à l'envoi ;
 4. preuve d'envoi distincte d'une réponse, d'une publication ou d'un backlink acquis.
 
-État actuel : aucun envoi externe effectué par ce chantier.
+Stop gate du 11 août :
+
+- Marika Pech conserve la mention texte « Source : Noctalia, 2026 » et l'affirmation 40–60 %, sans lien Noctalia; Gmail ne contient aucun message pour `marikapech.com`.
+- DreamWell conserve son bloc DreamKit, affirme encore une disponibilité Android et iOS et ne mentionne pas Noctalia; Gmail ne contient aucun message pour `dreamwellbewell.com`.
+- Atlas et ILTY ne mentionnent toujours pas Noctalia sur leurs comparatifs publics. Leurs conversations d'origine sont dans Zimbra, pas dans le Gmail connecté; le contrôle boîte immédiat n'est donc pas réputé franchi dans ce passage.
+
+État actuel : aucun envoi externe effectué par ce chantier. Marika et DreamWell sont prêts pour une autorisation d'envoi distincte après ultime contrôle public/boîte; Atlas/ILTY restent bloqués par le stop gate Zimbra et leur autorisation `D7`.
 
 ## Expériences et leviers différés
 
@@ -105,7 +133,16 @@ Baseline naturelle : 7 clics, 1 906 impressions, CTR 0,367 %, position 6,08. Auc
 
 ### 254 URL explorées non indexées
 
-La liste doit être segmentée en pages attendues, faibles, dupliquées et réellement utiles. L'article allemand sur la poursuite est le premier cas à lire, pas une autorisation automatique de maillage. Un lien interne n'est ajouté que si la page cible est canonique, indexable, utile pour l'intention et absente du chemin actuel.
+Le rapport GSC live, mis à jour le 7 août, a été exporté le 11 août. Son archive contient exactement 254 lignes d'URL et porte l'empreinte SHA-256 `515e55b94bb2195ebc90ea0e9d443518ef0addb0bb369ddea52f76a559c24bfb`.
+
+| Segment | Nombre | Décision |
+|---|---:|---|
+| routes canoniques actuelles | 184 | auditer par valeur et intention; aucune demande d'indexation en masse |
+| anciennes variantes `.html` ou routes legacy | 70 | aucune optimisation : les 70 répondent actuellement 301 avec une destination |
+
+Les 184 routes actuelles se répartissent en 106 fiches symbole, 72 articles et 6 guides. Dix-sept ont été explorées dans les 28 jours précédant la mise à jour GSC; les autres sont plus anciennes. Le graphe généré donne à chacune au moins 4 sources de liens internes distinctes (médiane 10, maximum 42) : cette liste ne révèle donc aucun orphelin et ne justifie pas un ajout massif de liens.
+
+L'article allemand sur la poursuite est bien dans le segment canonique, avec une dernière exploration le 4 août et 14 sources internes distinctes. Il reste le premier cas à lire, mais son statut n'est pas une preuve qu'un lien entrant supplémentaire résoudrait l'indexation. Le seul ajout préparatoire plausible est un lien contextuel et sémantiquement distinct vers l'article sur les rêves récurrents dans la section dédiée; il doit rester dans un lot P1 séparé après la vague P0.
 
 ### Propriétaires existants
 
@@ -113,13 +150,13 @@ La liste doit être segmentée en pages attendues, faibles, dupliquées et réel
 
 ### Redirection italienne mal encodée
 
-La variante `per%C3%A9...` renvoie encore 404 publiquement, mais son correctif appartient à un autre worktree. Elle reste en `HOLD_GSC_PROOF` jusqu'à confirmation de cette URL exacte dans GSC ; aucun diff externe n'est repris à l'aveugle.
+La variante `per%C3%A9...` renvoie encore 404 publiquement, mais elle n'apparaît ni dans les 254 URL explorées/non indexées ni dans les trois 404 courantes de GSC. L'inspection directe de l'URL a échoué avec une erreur temporaire GSC et ne fournit donc pas de preuve positive. Elle reste en `HOLD_GSC_PROOF`; aucun diff d'un autre worktree n'est repris à l'aveugle.
 
 ## Mesure et coût
 
 - Crédits Ahrefs consommés par cette implémentation : 0.
 - Dernier compteur durable disponible avant ce chantier : 113/200 crédits généraux utilisés.
-- Requêtes GSC brutes versionnées : aucune.
+- Export GSC brut : archive CSV conservée hors dépôt en attente de synchronisation Drive; seule son empreinte et sa segmentation décisionnelle sont versionnées.
 - Mutation GSC : aucune.
 - Demande d'indexation : aucune.
 - Achat ou changement d'abonnement : aucun ; la décision reste à l'utilisateur.
