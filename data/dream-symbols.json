@@ -1,8 +1,8 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-07-24",
-    "totalSymbols": 150,
+    "lastUpdated": "2026-08-11",
+    "totalSymbols": 154,
     "languages": [
       "en",
       "fr",
@@ -10,7 +10,7 @@
       "de",
       "it"
     ],
-    "symbolCount": 150
+    "symbolCount": 154
   },
   "categories": {
     "nature": {
@@ -650,6 +650,7 @@
       "de": {
         "slug": "verfolgung",
         "name": "Verfolgung / Verfolgt werden",
+        "documentTitle": "Verfolgt werden im Traum: Bedeutung",
         "shortDescription": "Traumdeutung verfolgt werden: Eine Verfolgung zeigt oft, dass du einem Problem, Druck oder Gefühl ausweichst. Entscheidend ist, wer dich verfolgt, ob du fliehen kannst und ob der Traum wiederkehrt.",
         "askYourself": [
           "Von wem oder was werde ich verfolgt?",
@@ -678,7 +679,8 @@
             "question": "Was kann ich nach dem Aufwachen notieren?",
             "answer": "Notiere den Verfolger, den Ort, deine Fluchtmöglichkeit und das Gefühl nach dem Aufwachen. Diese Details zeigen oft, welches Thema der Traum markiert."
           }
-        ]
+        ],
+        "modifiedAt": "2026-08-11"
       },
       "it": {
         "slug": "inseguimento",
@@ -740,6 +742,7 @@
       "fr": {
         "slug": "maison",
         "name": "Maison",
+        "documentTitle": "Rêver de maison : sens et scénarios",
         "shortDescription": "Rêver de maison parle souvent de vous-même, de votre sécurité intérieure et de votre histoire personnelle. Maison inconnue, maison d’enfance, pièces visitées, maison en ruine, en travaux ou hantée donnent des pistes différentes selon l’émotion du rêve.",
         "askYourself": [
           "La maison était-elle inconnue, d’enfance, en ruine, en travaux, hantée ou en train de s’effondrer ?",
@@ -772,7 +775,8 @@
             "question": "Quelles questions noter dans son journal après un rêve de maison ?",
             "answer": "Notez la pièce principale, l’état de la maison, les personnes présentes et l’émotion dominante. Demandez-vous aussi quelle zone de votre vie ressemble à cette maison en ce moment."
           }
-        ]
+        ],
+        "modifiedAt": "2026-08-11"
       },
       "es": {
         "slug": "casa",
@@ -1818,6 +1822,7 @@
       "it": {
         "slug": "automobile",
         "name": "Automobile",
+        "documentTitle": "Sognare un’automobile: significato e scenari",
         "shortDescription": "Sognare un’automobile può riflettere il modo in cui procedi, scegli una direzione o condividi il controllo. Chi guida, le condizioni dell’auto, la destinazione e l’emozione chiariscono il contesto.",
         "askYourself": [
           "Ero alla guida, passeggero o osservavo l’automobile da fuori?",
@@ -1843,7 +1848,7 @@
             "answer": "Un guasto può riflettere stanchezza, ritardi o un progetto da rivedere. Un incidente può esprimere paura di perdere il controllo o di vedere due obiettivi scontrarsi, senza prevedere eventi reali."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-08-11"
       },
       "relatedSymbols": [
         "road",
@@ -2607,6 +2612,7 @@
       "it": {
         "slug": "pioggia",
         "name": "Pioggia",
+        "documentTitle": "Sognare la pioggia: significato e scenari",
         "shortDescription": "Sognare pioggia parla di rilascio emotivo, purificazione e rinnovamento. Pioggia forte, temporale, pioggia in casa o guardata da dentro mostrano quanto sei esposto o protetto mentre un'emozione si scioglie.",
         "askYourself": [
           "La pioggia era leggera, forte, improvvisa o parte di un temporale?",
@@ -2632,7 +2638,7 @@
             "answer": "La pioggia in casa porta il rilascio emotivo nello spazio privato: famiglia, riposo, sicurezza o confini personali che hanno bisogno di attenzione."
           }
         ],
-        "modifiedAt": "2026-07-06"
+        "modifiedAt": "2026-08-11"
       },
       "relatedSymbols": [
         "water",
@@ -11628,6 +11634,673 @@
         "de": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
         "it": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
       }
+    },
+    {
+      "id": "excrement",
+      "category": "body",
+      "priority": 2,
+      "en": {
+        "slug": "poop",
+        "name": "Poop",
+        "seoTitle": "poop or feces",
+        "documentTitle": "Dreaming About Poop: Meaning and Context",
+        "documentMetaDescription": "Dreaming about poop or feces? Compare toilets, cleaning, eating, shame, relief and recurring scenes without treating the dream as a prediction.",
+        "shortDescription": "Poop or feces in a dream may focus attention on embarrassment, release, privacy or something you want to remove. The setting, what happened to it and whether you felt disgust, relief or indifference matter more than a fixed meaning.",
+        "askYourself": [
+          "Was the poop in a toilet, on the floor, on clothing, in the mouth or somewhere unexpected?",
+          "Did I hide it, clean it, touch it, step in it or feel relieved after it disappeared?",
+          "Which recent situation has involved privacy, shame, mess, money, health or the need to let go?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about poop or feces?",
+            "answer": "It may relate to release, embarrassment, privacy, boundaries or a problem that feels unpleasant to handle. Your action and emotion in the scene are more useful than a universal definition."
+          },
+          {
+            "question": "What does cleaning poop in a dream mean?",
+            "answer": "Cleaning it may reflect taking responsibility, repairing a mistake or trying to restore order. Notice whether the task felt manageable, unfair, urgent or endless."
+          },
+          {
+            "question": "What does poop in the mouth or eating poop mean in a dream?",
+            "answer": "This disturbing scene can express disgust, humiliation, words you regret or pressure to accept something unwanted. It is not a prediction and can also follow a recent sensory memory."
+          },
+          {
+            "question": "Does dreaming about poop predict money or good luck?",
+            "answer": "Some traditions connect feces with money or luck, but there is no reliable predictive rule. Compare that association with your own feeling, recent events and the exact dream setting."
+          }
+        ]
+      },
+      "fr": {
+        "slug": "caca",
+        "name": "Caca",
+        "seoTitle": "caca ou excréments",
+        "documentTitle": "Rêver de caca : sens et scénarios",
+        "documentMetaDescription": "Rêver de caca ou d’excréments : comparez toilettes, nettoyage, honte, soulagement et scènes récurrentes sans prendre le rêve pour une prédiction.",
+        "shortDescription": "Rêver de caca ou d’excréments peut mettre en avant la gêne, le soulagement, l’intimité ou une chose dont vous voulez vous débarrasser. Le lieu, votre geste et l’émotion ressentie comptent davantage qu’une définition figée.",
+        "askYourself": [
+          "Le caca était-il dans les toilettes, au sol, sur un vêtement, dans la bouche ou ailleurs ?",
+          "Ai-je essayé de le cacher, de le nettoyer, de l’éviter ou ai-je ressenti un soulagement ?",
+          "Quelle situation récente touche à l’intimité, la honte, le désordre, l’argent, la santé ou le besoin de lâcher prise ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de caca ou d’excréments ?",
+            "answer": "Le rêve peut concerner le soulagement, la gêne, l’intimité, les limites ou un problème désagréable à gérer. Votre action et votre émotion sont plus utiles qu’un sens universel."
+          },
+          {
+            "question": "Que signifie nettoyer du caca dans un rêve ?",
+            "answer": "Nettoyer peut évoquer une responsabilité, une erreur à réparer ou le besoin de remettre de l’ordre. Demandez-vous si la tâche semblait juste, urgente, possible ou interminable."
+          },
+          {
+            "question": "Que signifie rêver de caca dans la bouche ou d’en manger ?",
+            "answer": "Cette scène pénible peut exprimer le dégoût, l’humiliation, des paroles regrettées ou l’obligation d’accepter quelque chose. Elle ne prédit rien et peut reprendre un souvenir récent."
+          },
+          {
+            "question": "Rêver de caca annonce-t-il de l’argent ou de la chance ?",
+            "answer": "Certaines traditions associent les excréments à l’argent ou à la chance, mais aucune règle prédictive n’est fiable. Comparez cette croyance avec vos émotions et le contexte précis."
+          }
+        ]
+      },
+      "es": {
+        "slug": "caca",
+        "name": "Caca",
+        "seoTitle": "caca o excremento",
+        "documentTitle": "Soñar con caca: significado y escenas",
+        "documentMetaDescription": "Soñar con caca o excremento: compara baños, limpieza, vergüenza, alivio y escenas recurrentes sin interpretar el sueño como una predicción.",
+        "shortDescription": "Soñar con caca o excremento puede destacar vergüenza, alivio, privacidad o algo que quieres retirar de tu vida. El lugar, lo que hiciste y si sentiste asco, calma o indiferencia importan más que un significado fijo.",
+        "askYourself": [
+          "¿El excremento estaba en el baño, en el suelo, en la ropa, en la boca o en un lugar inesperado?",
+          "¿Intentaba esconderlo, limpiarlo, evitarlo, tocarlo o sentía alivio cuando desaparecía?",
+          "¿Qué situación reciente incluye intimidad, vergüenza, desorden, dinero, salud o necesidad de soltar algo?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con caca o excremento?",
+            "answer": "Puede relacionarse con alivio, vergüenza, intimidad, límites o un problema desagradable de gestionar. Tu acción y emoción ofrecen más contexto que una definición universal."
+          },
+          {
+            "question": "¿Qué significa limpiar caca en un sueño?",
+            "answer": "Limpiarla puede reflejar responsabilidad, reparación de un error o necesidad de recuperar el orden. Observa si la tarea parecía posible, injusta, urgente o interminable."
+          },
+          {
+            "question": "¿Qué significa soñar con excremento en la boca o comerlo?",
+            "answer": "La escena puede expresar asco, humillación, palabras que lamentas o presión para aceptar algo no deseado. No predice un hecho y también puede repetir un recuerdo sensorial."
+          },
+          {
+            "question": "¿Soñar con caca anuncia dinero o buena suerte?",
+            "answer": "Algunas tradiciones relacionan el excremento con dinero o suerte, pero no existe una regla predictiva fiable. Compárala con tu emoción y con el contexto concreto del sueño."
+          }
+        ]
+      },
+      "de": {
+        "slug": "kot",
+        "name": "Kot",
+        "seoTitle": "Kot oder Exkremente",
+        "documentTitle": "Traumdeutung Kot: Bedeutung und Szenen",
+        "documentMetaDescription": "Kot oder Exkremente im Traum: Vergleiche Toilette, Reinigung, Scham, Erleichterung und wiederkehrende Szenen, ohne sie als Vorhersage zu lesen.",
+        "shortDescription": "Kot oder Exkremente im Traum können Scham, Erleichterung, Privatsphäre oder etwas Unangenehmes in den Vordergrund rücken, das du loswerden willst. Ort, Handlung und Gefühl sind wichtiger als eine feste Deutung.",
+        "askYourself": [
+          "Lag der Kot in der Toilette, auf dem Boden, an Kleidung, im Mund oder an einem unerwarteten Ort?",
+          "Hast du ihn versteckt, gereinigt, berührt, vermieden oder nach seinem Verschwinden Erleichterung gespürt?",
+          "Welche aktuelle Situation betrifft Privatsphäre, Scham, Unordnung, Geld, Gesundheit oder Loslassen?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeuten Kot oder Exkremente im Traum?",
+            "answer": "Mögliche Themen sind Erleichterung, Scham, Privatsphäre, Grenzen oder ein unangenehmes Problem. Handlung und Gefühl geben mehr Aufschluss als eine allgemeine Symbolregel."
+          },
+          {
+            "question": "Was bedeutet es, im Traum Kot zu reinigen?",
+            "answer": "Reinigen kann Verantwortung, Wiedergutmachung oder den Wunsch nach Ordnung spiegeln. Achte darauf, ob die Aufgabe machbar, ungerecht, dringend oder endlos wirkte."
+          },
+          {
+            "question": "Was bedeuten Kot im Mund oder das Essen von Kot im Traum?",
+            "answer": "Die belastende Szene kann Ekel, Demütigung, bereute Worte oder den Druck ausdrücken, etwas Unerwünschtes anzunehmen. Sie sagt nichts voraus und kann eine Erinnerung aufgreifen."
+          },
+          {
+            "question": "Kündigt Kot im Traum Geld oder Glück an?",
+            "answer": "Manche Traditionen verbinden Exkremente mit Geld oder Glück, doch es gibt keine verlässliche Vorhersageregel. Vergleiche die Vorstellung mit Gefühl und konkretem Kontext."
+          }
+        ]
+      },
+      "it": {
+        "slug": "cacca",
+        "name": "Cacca",
+        "seoTitle": "cacca o feci",
+        "documentTitle": "Sognare cacca: significato e scenari",
+        "documentMetaDescription": "Sognare cacca o feci: confronta bagno, pulizia, vergogna, sollievo e scene ricorrenti senza leggere il sogno come una previsione.",
+        "shortDescription": "Sognare cacca o feci può mettere in primo piano vergogna, sollievo, privacy o qualcosa di sgradevole che vuoi eliminare. Luogo, gesto ed emozione contano più di un significato fisso o di una credenza popolare.",
+        "askYourself": [
+          "La cacca era nel water, sul pavimento, sui vestiti, in bocca o in un luogo inatteso?",
+          "Cercavo di nasconderla, pulirla, evitarla, toccarla o provavo sollievo quando spariva?",
+          "Quale situazione recente riguarda privacy, vergogna, disordine, denaro, salute o bisogno di lasciare andare?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare cacca o feci?",
+            "answer": "Può riguardare sollievo, vergogna, privacy, confini o un problema sgradevole da gestire. Azione ed emozione offrono più contesto di una definizione universale."
+          },
+          {
+            "question": "Che cosa significa pulire la cacca in sogno?",
+            "answer": "Pulire può riflettere responsabilità, riparazione di un errore o bisogno di ristabilire ordine. Nota se il compito sembrava possibile, ingiusto, urgente o infinito."
+          },
+          {
+            "question": "Che cosa significa sognare cacca in bocca o mangiarla?",
+            "answer": "La scena può esprimere disgusto, umiliazione, parole di cui ti penti o pressione ad accettare qualcosa. Non predice un evento e può riprendere un ricordo sensoriale."
+          },
+          {
+            "question": "Sognare cacca porta soldi o fortuna?",
+            "answer": "Alcune tradizioni collegano le feci a denaro o fortuna, ma non esiste una regola predittiva affidabile. Confronta la credenza con emozione e contesto preciso."
+          }
+        ]
+      },
+      "relatedSymbols": [
+        "bathroom",
+        "mouth",
+        "illness"
+      ],
+      "modifiedAt": "2026-08-11"
+    },
+    {
+      "id": "worms",
+      "category": "animals",
+      "priority": 2,
+      "en": {
+        "slug": "worms",
+        "name": "Worms",
+        "seoTitle": "worms or earthworms",
+        "documentTitle": "Dreaming About Worms: Meaning and Context",
+        "documentMetaDescription": "Dreaming about worms? Compare worms in soil, food, the mouth or body, and use emotion and recent events to interpret the scene without predictions.",
+        "shortDescription": "Worms in a dream may draw attention to something hidden, persistent, decaying or slowly changing beneath the surface. Their location, number, movement and your reaction help distinguish disgust or worry from renewal and ordinary memory.",
+        "askYourself": [
+          "Were the worms in soil, food, water, the mouth, the body or another unexpected place?",
+          "Were they white, dark, alive, still, multiplying or leaving the scene?",
+          "Did I feel disgust, fear, curiosity, responsibility or relief, and what recent event carries that feeling?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about worms?",
+            "answer": "Worms can fit themes of hidden concern, persistence, decomposition or renewal. The dream’s location and emotional tone matter more than treating worms as one fixed symbol."
+          },
+          {
+            "question": "What do worms in the mouth or body mean in a dream?",
+            "answer": "This scene may express disgust, intrusive thoughts, health anxiety or words that feel hard to say. It does not diagnose illness, so separate dream imagery from real symptoms."
+          },
+          {
+            "question": "What do white or living worms mean in a dream?",
+            "answer": "Color and movement can make the image feel more vivid, but they have no universal code. Ask whether the worms seemed threatening, natural, useful or simply unexpected."
+          },
+          {
+            "question": "Why do dreams show many worms or worms in food?",
+            "answer": "A large number may amplify a small concern, while food can connect the scene to trust, appetite or contamination. Recent meals, gardening or media may also be the direct trigger."
+          }
+        ]
+      },
+      "fr": {
+        "slug": "vers",
+        "name": "Vers",
+        "seoTitle": "vers ou vers de terre",
+        "documentTitle": "Rêver de vers : sens et scénarios",
+        "documentMetaDescription": "Rêver de vers : comparez terre, nourriture, bouche ou corps, puis utilisez l’émotion et les événements récents sans transformer le rêve en prédiction.",
+        "shortDescription": "Des vers dans un rêve peuvent attirer l’attention sur une chose cachée, persistante, en décomposition ou en transformation lente. Leur emplacement, leur nombre, leur mouvement et votre réaction distinguent inquiétude, dégoût ou renouveau.",
+        "askYourself": [
+          "Les vers se trouvaient-ils dans la terre, la nourriture, l’eau, la bouche, le corps ou ailleurs ?",
+          "Étaient-ils blancs, sombres, vivants, immobiles, nombreux ou en train de disparaître ?",
+          "Ai-je ressenti du dégoût, de la peur, de la curiosité, une responsabilité ou un soulagement ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de vers ?",
+            "answer": "Les vers peuvent évoquer une inquiétude cachée, la persistance, la décomposition ou le renouveau. Le lieu et l’émotion de la scène comptent davantage qu’un symbole fixe."
+          },
+          {
+            "question": "Que signifient des vers dans la bouche ou le corps ?",
+            "answer": "Cette image peut exprimer dégoût, pensées envahissantes, inquiétude de santé ou paroles difficiles. Elle ne permet pas de diagnostiquer une maladie réelle."
+          },
+          {
+            "question": "Que signifient des vers blancs ou vivants dans un rêve ?",
+            "answer": "La couleur et le mouvement rendent l’image plus vive, mais ne forment pas un code universel. Demandez-vous si les vers semblaient menaçants, naturels ou utiles."
+          },
+          {
+            "question": "Pourquoi rêver de nombreux vers ou de vers dans la nourriture ?",
+            "answer": "Le nombre peut amplifier une petite inquiétude; la nourriture peut toucher à la confiance, l’appétit ou la contamination. Un repas, le jardinage ou une image récente peuvent suffire."
+          }
+        ]
+      },
+      "es": {
+        "slug": "gusanos",
+        "name": "Gusanos",
+        "seoTitle": "gusanos o lombrices",
+        "documentTitle": "Soñar con gusanos: significado y escenas",
+        "documentMetaDescription": "Soñar con gusanos: compara tierra, comida, boca o cuerpo y usa la emoción y los hechos recientes para entender la escena sin hacer predicciones.",
+        "shortDescription": "Soñar con gusanos puede destacar algo oculto, persistente, en descomposición o que cambia lentamente bajo la superficie. El lugar, la cantidad, el movimiento y tu reacción separan asco o preocupación de renovación y memoria cotidiana.",
+        "askYourself": [
+          "¿Los gusanos estaban en tierra, comida, agua, la boca, el cuerpo o en otro lugar inesperado?",
+          "¿Eran blancos, oscuros, vivos, inmóviles, muchos o estaban saliendo de la escena?",
+          "¿Sentía asco, miedo, curiosidad, responsabilidad o alivio, y qué situación reciente comparte esa emoción?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con gusanos?",
+            "answer": "Los gusanos pueden encajar con preocupación oculta, persistencia, descomposición o renovación. El lugar y la emoción de la escena importan más que una definición fija."
+          },
+          {
+            "question": "¿Qué significan gusanos en la boca o el cuerpo?",
+            "answer": "La escena puede expresar asco, pensamientos intrusivos, ansiedad de salud o palabras difíciles. No diagnostica una enfermedad, así que separa imagen y síntoma real."
+          },
+          {
+            "question": "¿Qué significan gusanos blancos o vivos en un sueño?",
+            "answer": "Color y movimiento hacen la imagen más intensa, pero no forman un código universal. Pregúntate si los gusanos parecían amenazantes, naturales, útiles o inesperados."
+          },
+          {
+            "question": "¿Por qué soñar con muchos gusanos o gusanos en la comida?",
+            "answer": "Una gran cantidad puede amplificar una preocupación pequeña; la comida puede conectar con confianza, apetito o contaminación. Una comida, el jardín o un vídeo también pueden activar la escena."
+          }
+        ]
+      },
+      "de": {
+        "slug": "wuermer",
+        "name": "Würmer",
+        "seoTitle": "Würmer oder Regenwürmer",
+        "documentTitle": "Traumdeutung Würmer: Bedeutung und Szenen",
+        "documentMetaDescription": "Würmer im Traum: Vergleiche Erde, Essen, Mund oder Körper und nutze Gefühl sowie aktuelle Erlebnisse, ohne die Szene als Vorhersage zu lesen.",
+        "shortDescription": "Würmer im Traum können etwas Verborgenes, Hartnäckiges, Zerfallendes oder eine langsame Veränderung unter der Oberfläche hervorheben. Ort, Anzahl, Bewegung und Reaktion unterscheiden Ekel oder Sorge von Erneuerung und Alltagserinnerung.",
+        "askYourself": [
+          "Waren die Würmer in Erde, Essen, Wasser, im Mund, am Körper oder an einem unerwarteten Ort?",
+          "Waren sie weiß, dunkel, lebendig, still, zahlreich oder verließen sie die Szene?",
+          "Habe ich Ekel, Angst, Neugier, Verantwortung oder Erleichterung gespürt, und welches aktuelle Erlebnis passt dazu?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeuten Würmer im Traum?",
+            "answer": "Würmer können zu verborgener Sorge, Beharrlichkeit, Zerfall oder Erneuerung passen. Ort und Gefühlslage der Szene sind hilfreicher als eine feste Symbolregel."
+          },
+          {
+            "question": "Was bedeuten Würmer im Mund oder am Körper?",
+            "answer": "Die Szene kann Ekel, aufdringliche Gedanken, Gesundheitsangst oder schwer aussprechbare Worte spiegeln. Sie stellt keine Diagnose und sollte von realen Symptomen getrennt werden."
+          },
+          {
+            "question": "Was bedeuten weiße oder lebende Würmer im Traum?",
+            "answer": "Farbe und Bewegung machen das Bild eindringlich, bilden aber keinen universellen Code. Frage dich, ob die Würmer bedrohlich, natürlich, nützlich oder nur unerwartet wirkten."
+          },
+          {
+            "question": "Warum erscheinen viele Würmer oder Würmer im Essen?",
+            "answer": "Eine große Menge kann eine kleine Sorge verstärken; Essen kann Vertrauen, Appetit oder Verunreinigung berühren. Mahlzeiten, Gartenarbeit oder Medien sind ebenfalls mögliche Auslöser."
+          }
+        ]
+      },
+      "it": {
+        "slug": "vermi",
+        "name": "Vermi",
+        "seoTitle": "vermi o lombrichi",
+        "documentTitle": "Sognare vermi: significato e scenari",
+        "documentMetaDescription": "Sognare vermi: confronta terra, cibo, bocca o corpo e usa emozione ed eventi recenti per capire la scena senza trasformarla in una previsione.",
+        "shortDescription": "Sognare vermi può mettere in evidenza qualcosa di nascosto, persistente, in decomposizione o che cambia lentamente sotto la superficie. Luogo, quantità, movimento e reazione distinguono disgusto o preoccupazione da rinnovamento e memoria quotidiana.",
+        "askYourself": [
+          "I vermi erano nella terra, nel cibo, nell’acqua, in bocca, sul corpo o in un luogo inatteso?",
+          "Erano bianchi, scuri, vivi, immobili, numerosi o stavano lasciando la scena?",
+          "Provavo disgusto, paura, curiosità, responsabilità o sollievo, e quale evento recente ha la stessa emozione?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare vermi?",
+            "answer": "I vermi possono richiamare una preoccupazione nascosta, persistenza, decomposizione o rinnovamento. Luogo ed emozione della scena contano più di una regola fissa."
+          },
+          {
+            "question": "Che cosa significano vermi in bocca o sul corpo?",
+            "answer": "La scena può esprimere disgusto, pensieri intrusivi, ansia per la salute o parole difficili. Non diagnostica una malattia e va distinta da sintomi reali."
+          },
+          {
+            "question": "Che cosa significano vermi bianchi o vivi in sogno?",
+            "answer": "Colore e movimento rendono l’immagine intensa, ma non formano un codice universale. Chiediti se i vermi sembravano minacciosi, naturali, utili o inattesi."
+          },
+          {
+            "question": "Perché sognare tanti vermi o vermi nel cibo?",
+            "answer": "Una grande quantità può amplificare una piccola preoccupazione; il cibo può collegarsi a fiducia, appetito o contaminazione. Pasti, giardinaggio o immagini recenti possono attivare la scena."
+          }
+        ]
+      },
+      "relatedSymbols": [
+        "ant",
+        "snake",
+        "garden"
+      ],
+      "relatedGuide": "animal-dream-symbols",
+      "modifiedAt": "2026-08-11"
+    },
+    {
+      "id": "cockroach",
+      "category": "animals",
+      "priority": 2,
+      "en": {
+        "slug": "cockroach",
+        "name": "Cockroach",
+        "seoTitle": "cockroach or roaches",
+        "documentTitle": "Dreaming About Cockroaches: Meaning",
+        "documentMetaDescription": "Dreaming about cockroaches or roaches? Compare one insect, an infestation, killing or cleaning them, and the emotion that made the scene memorable.",
+        "shortDescription": "A cockroach in a dream may make persistence, intrusion, disgust or a problem that keeps returning feel visible. Its number, location, movement and your response help separate a personal fear from resilience or a recent everyday trigger.",
+        "askYourself": [
+          "Was there one cockroach or many, and was it in the kitchen, bedroom, bathroom or outdoors?",
+          "Did I freeze, run, kill it, clean the area, watch it escape or feel strangely calm?",
+          "Which current problem feels invasive, hard to remove, embarrassing or unexpectedly resilient?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about cockroaches?",
+            "answer": "Cockroaches may fit themes of intrusion, disgust, persistence or resilience. Your relationship with insects and the exact setting matter more than a single universal meaning."
+          },
+          {
+            "question": "What do many cockroaches or an infestation mean in a dream?",
+            "answer": "Many insects can amplify a concern that feels difficult to contain. The scene may reflect stress or a recent encounter, but it does not predict a real infestation."
+          },
+          {
+            "question": "What does killing or cleaning cockroaches mean in a dream?",
+            "answer": "Removing them may reflect setting a boundary, confronting a repeated problem or restoring order. Notice whether the effort worked and whether you felt relief, guilt or fear."
+          },
+          {
+            "question": "What does a cockroach in the house or bed mean in a dream?",
+            "answer": "A private setting can focus the dream on safety, intimacy or unwanted intrusion. A real sighting, pest concern or image seen that day is also a direct possible trigger."
+          }
+        ]
+      },
+      "fr": {
+        "slug": "cafard",
+        "name": "Cafard",
+        "seoTitle": "cafard ou cafards",
+        "documentTitle": "Rêver de cafards : sens et scénarios",
+        "documentMetaDescription": "Rêver de cafards : comparez insecte isolé, invasion, nettoyage ou élimination, puis l’émotion et le contexte qui ont rendu la scène marquante.",
+        "shortDescription": "Un cafard dans un rêve peut rendre visibles la persistance, l’intrusion, le dégoût ou un problème qui revient. Son nombre, son emplacement, son mouvement et votre réaction distinguent une peur personnelle, la résilience ou un déclencheur récent.",
+        "askYourself": [
+          "Y avait-il un seul cafard ou plusieurs, et se trouvait-il dans la cuisine, la chambre ou la salle de bain ?",
+          "Ai-je fui, essayé de le tuer, nettoyé la zone, regardé l’insecte partir ou gardé mon calme ?",
+          "Quel problème actuel semble intrusif, difficile à éliminer, gênant ou étonnamment persistant ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de cafards ?",
+            "answer": "Les cafards peuvent évoquer intrusion, dégoût, persistance ou résilience. Votre rapport aux insectes et le lieu précis comptent davantage qu’un sens universel."
+          },
+          {
+            "question": "Que signifie rêver de nombreux cafards ou d’une invasion ?",
+            "answer": "Le nombre peut amplifier une inquiétude difficile à contenir. La scène peut refléter du stress ou une rencontre récente, mais elle ne prédit pas une invasion réelle."
+          },
+          {
+            "question": "Que signifie tuer ou nettoyer des cafards dans un rêve ?",
+            "answer": "Les éliminer peut évoquer une limite posée, un problème répété affronté ou un retour à l’ordre. Observez si l’effort réussissait et quelle émotion suivait."
+          },
+          {
+            "question": "Que signifie un cafard dans la maison ou le lit ?",
+            "answer": "Un lieu intime peut orienter le rêve vers la sécurité, l’intimité ou l’intrusion. Un insecte vu récemment, une crainte de nuisibles ou une image peuvent aussi suffire."
+          }
+        ]
+      },
+      "es": {
+        "slug": "cucaracha",
+        "name": "Cucaracha",
+        "seoTitle": "cucaracha o cucarachas",
+        "documentTitle": "Soñar con cucarachas: significado",
+        "documentMetaDescription": "Soñar con cucarachas: compara un insecto, una invasión, matarlas o limpiar la zona y la emoción que hizo memorable la escena del sueño.",
+        "shortDescription": "Soñar con una cucaracha puede hacer visibles persistencia, intrusión, asco o un problema que vuelve. La cantidad, el lugar, el movimiento y tu reacción ayudan a separar miedo personal, resistencia o un desencadenante cotidiano reciente.",
+        "askYourself": [
+          "¿Había una cucaracha o muchas, y estaban en la cocina, el dormitorio, el baño o fuera de casa?",
+          "¿Me quedaba inmóvil, huía, las mataba, limpiaba la zona, las veía escapar o mantenía la calma?",
+          "¿Qué problema actual se siente invasivo, difícil de eliminar, vergonzoso o inesperadamente resistente?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con cucarachas?",
+            "answer": "Las cucarachas pueden encajar con intrusión, asco, persistencia o resistencia. Tu relación con los insectos y el lugar exacto importan más que un significado universal."
+          },
+          {
+            "question": "¿Qué significa soñar con muchas cucarachas o una plaga?",
+            "answer": "Una gran cantidad puede amplificar una preocupación difícil de contener. Puede reflejar estrés o una experiencia reciente, pero no predice una plaga real."
+          },
+          {
+            "question": "¿Qué significa matar o limpiar cucarachas en un sueño?",
+            "answer": "Eliminarlas puede reflejar un límite, afrontar un problema repetido o recuperar el orden. Observa si lo conseguías y si sentías alivio, culpa o miedo."
+          },
+          {
+            "question": "¿Qué significa una cucaracha en la casa o la cama?",
+            "answer": "Un espacio privado puede llevar el sueño hacia seguridad, intimidad o intrusión. Ver un insecto, temer una plaga o consumir una imagen reciente también puede activarlo."
+          }
+        ]
+      },
+      "de": {
+        "slug": "kakerlake",
+        "name": "Kakerlake",
+        "seoTitle": "Kakerlake oder Kakerlaken",
+        "documentTitle": "Traumdeutung Kakerlaken: Bedeutung",
+        "documentMetaDescription": "Kakerlaken im Traum: Vergleiche einzelnes Tier, Befall, Töten oder Reinigen und das Gefühl, das die Szene besonders einprägsam machte.",
+        "shortDescription": "Eine Kakerlake im Traum kann Hartnäckigkeit, Eindringen, Ekel oder ein wiederkehrendes Problem sichtbar machen. Anzahl, Ort, Bewegung und deine Reaktion unterscheiden persönliche Angst, Widerstandskraft oder einen aktuellen Auslöser.",
+        "askYourself": [
+          "War es eine Kakerlake oder waren es viele, und erschienen sie in Küche, Schlafzimmer, Bad oder draußen?",
+          "Bist du erstarrt, geflohen, hast du sie getötet, gereinigt, beobachtet oder Ruhe bewahrt?",
+          "Welches aktuelle Problem wirkt aufdringlich, schwer zu beseitigen, peinlich oder erstaunlich hartnäckig?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeuten Kakerlaken im Traum?",
+            "answer": "Kakerlaken können zu Eindringen, Ekel, Beharrlichkeit oder Widerstandskraft passen. Deine Erfahrungen mit Insekten und der genaue Ort sind wichtiger als eine feste Regel."
+          },
+          {
+            "question": "Was bedeuten viele Kakerlaken oder ein Befall im Traum?",
+            "answer": "Viele Tiere können eine schwer kontrollierbare Sorge verstärken. Die Szene kann Stress oder eine aktuelle Begegnung spiegeln, sagt aber keinen echten Befall voraus."
+          },
+          {
+            "question": "Was bedeutet das Töten oder Reinigen von Kakerlaken?",
+            "answer": "Das Entfernen kann für eine Grenze, die Konfrontation mit einem wiederkehrenden Problem oder neue Ordnung stehen. Achte darauf, ob es gelang und welches Gefühl folgte."
+          },
+          {
+            "question": "Was bedeutet eine Kakerlake in Haus oder Bett?",
+            "answer": "Ein privater Ort kann Sicherheit, Intimität oder unerwünschtes Eindringen betonen. Ein reales Tier, Schädlingssorge oder ein kürzlich gesehenes Bild sind ebenfalls mögliche Auslöser."
+          }
+        ]
+      },
+      "it": {
+        "slug": "scarafaggio",
+        "name": "Scarafaggio",
+        "seoTitle": "scarafaggio o scarafaggi",
+        "documentTitle": "Sognare scarafaggi: significato",
+        "documentMetaDescription": "Sognare scarafaggi: confronta un insetto, un’invasione, eliminarli o pulire la zona e l’emozione che ha reso memorabile la scena.",
+        "shortDescription": "Sognare uno scarafaggio può rendere visibili persistenza, intrusione, disgusto o un problema che ritorna. Quantità, luogo, movimento e reazione aiutano a distinguere paura personale, resistenza o un recente stimolo quotidiano.",
+        "askYourself": [
+          "C’era uno scarafaggio o ce n’erano molti, e si trovavano in cucina, camera, bagno o all’aperto?",
+          "Restavo immobile, fuggivo, li uccidevo, pulivo la zona, li guardavo scappare o rimanevo calmo?",
+          "Quale problema attuale sembra invasivo, difficile da eliminare, imbarazzante o sorprendentemente resistente?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare scarafaggi?",
+            "answer": "Gli scarafaggi possono richiamare intrusione, disgusto, persistenza o resistenza. Il tuo rapporto con gli insetti e il luogo preciso contano più di un significato universale."
+          },
+          {
+            "question": "Che cosa significa sognare tanti scarafaggi o un’invasione?",
+            "answer": "Una grande quantità può amplificare una preoccupazione difficile da contenere. Può riflettere stress o un incontro recente, ma non predice un’infestazione reale."
+          },
+          {
+            "question": "Che cosa significa uccidere o pulire scarafaggi in sogno?",
+            "answer": "Eliminarli può riflettere un confine, affrontare un problema ripetuto o ristabilire ordine. Nota se riuscivi nell’azione e se provavi sollievo, colpa o paura."
+          },
+          {
+            "question": "Che cosa significa uno scarafaggio in casa o nel letto?",
+            "answer": "Un luogo privato può portare il sogno verso sicurezza, intimità o intrusione. Un insetto visto, una paura concreta o un’immagine recente possono essere lo stimolo diretto."
+          }
+        ]
+      },
+      "relatedSymbols": [
+        "ant",
+        "house",
+        "kitchen"
+      ],
+      "relatedGuide": "animal-dream-symbols",
+      "modifiedAt": "2026-08-11"
+    },
+    {
+      "id": "shoes",
+      "category": "objects",
+      "priority": 2,
+      "en": {
+        "slug": "shoes",
+        "name": "Shoes",
+        "seoTitle": "shoes, lost shoes or new shoes",
+        "documentTitle": "Dreaming About Shoes: Meaning and Context",
+        "documentMetaDescription": "Dreaming about shoes? Compare new, lost, broken, wrong or missing shoes and use the path, fit and emotion to understand the scene in context.",
+        "shortDescription": "Shoes in a dream may focus attention on direction, readiness, identity or how well a role fits. Their condition, whether they belonged to you and the path ahead help distinguish a practical memory from a choice or transition.",
+        "askYourself": [
+          "Were the shoes new, old, lost, broken, too tight, too large or different from each other?",
+          "Was I wearing them, choosing a pair, searching for one shoe or unable to move comfortably?",
+          "Which current role, decision or next step feels like a good fit, a poor fit or not yet ready?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about shoes?",
+            "answer": "Shoes may relate to direction, preparation, identity or the role you are stepping into. Their fit, condition and destination are more useful than one fixed interpretation."
+          },
+          {
+            "question": "What do new, broken or lost shoes mean in a dream?",
+            "answer": "New shoes can fit readiness or experimentation; broken or lost shoes may reflect delay, discomfort or uncertainty. Personal memories and practical needs can also explain them."
+          },
+          {
+            "question": "What does choosing or wearing the wrong shoes mean?",
+            "answer": "Choosing a pair can mirror comparison or preparation. Shoes that do not fit may highlight a role, plan or expectation that feels uncomfortable rather than predict failure."
+          },
+          {
+            "question": "What does walking without shoes mean in a dream?",
+            "answer": "Being barefoot may feel free, exposed, grounded or unprepared depending on the surface and emotion. Compare the scene with your real sense of safety and readiness."
+          }
+        ]
+      },
+      "fr": {
+        "slug": "chaussures",
+        "name": "Chaussures",
+        "seoTitle": "chaussures neuves, perdues ou cassées",
+        "documentTitle": "Rêver de chaussures : sens et scénarios",
+        "documentMetaDescription": "Rêver de chaussures : comparez paire neuve, perdue, cassée, mal adaptée ou absente, puis le chemin, la taille et l’émotion de la scène.",
+        "shortDescription": "Des chaussures dans un rêve peuvent mettre en avant la direction, la préparation, l’identité ou l’adaptation à un rôle. Leur état, leur propriétaire, leur taille et le chemin à suivre distinguent souvenir pratique, choix ou transition.",
+        "askYourself": [
+          "Les chaussures étaient-elles neuves, usées, perdues, cassées, trop serrées, trop grandes ou dépareillées ?",
+          "Les portais-je, choisissais-je une paire, cherchais-je une chaussure ou marchais-je avec difficulté ?",
+          "Quel rôle, quelle décision ou quelle prochaine étape semble bien adaptée, inconfortable ou encore prématurée ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de chaussures ?",
+            "answer": "Les chaussures peuvent concerner direction, préparation, identité ou rôle à endosser. Leur taille, leur état et la destination donnent plus de contexte qu’un sens fixe."
+          },
+          {
+            "question": "Que signifient des chaussures neuves, cassées ou perdues ?",
+            "answer": "Une paire neuve peut évoquer préparation ou essai; une paire cassée ou perdue peut accompagner retard, gêne ou incertitude. Un besoin concret peut aussi expliquer le rêve."
+          },
+          {
+            "question": "Que signifie choisir ou porter les mauvaises chaussures ?",
+            "answer": "Choisir peut refléter comparaison ou préparation. Une paire mal adaptée peut mettre en avant un rôle, un projet ou une attente inconfortable sans annoncer un échec."
+          },
+          {
+            "question": "Que signifie marcher sans chaussures dans un rêve ?",
+            "answer": "Être pieds nus peut sembler libre, vulnérable, ancré ou mal préparé selon le sol et l’émotion. Comparez la scène avec votre sentiment réel de sécurité."
+          }
+        ]
+      },
+      "es": {
+        "slug": "zapatos",
+        "name": "Zapatos",
+        "seoTitle": "zapatos nuevos, perdidos o rotos",
+        "documentTitle": "Soñar con zapatos: significado y escenas",
+        "documentMetaDescription": "Soñar con zapatos: compara pares nuevos, perdidos, rotos, inadecuados o ausentes y usa camino, talla y emoción para entender la escena.",
+        "shortDescription": "Soñar con zapatos puede destacar dirección, preparación, identidad o cómo encaja un papel en tu vida. Su estado, a quién pertenecían, la talla y el camino por delante separan recuerdo práctico, decisión o transición.",
+        "askYourself": [
+          "¿Los zapatos eran nuevos, viejos, perdidos, rotos, demasiado pequeños, grandes o diferentes entre sí?",
+          "¿Los llevaba, elegía un par, buscaba un zapato o no podía caminar con comodidad?",
+          "¿Qué papel, decisión o siguiente paso se siente adecuado, incómodo o todavía prematuro?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con zapatos?",
+            "answer": "Los zapatos pueden relacionarse con dirección, preparación, identidad o el papel que asumes. Talla, estado y destino ofrecen más contexto que una interpretación fija."
+          },
+          {
+            "question": "¿Qué significan zapatos nuevos, rotos o perdidos?",
+            "answer": "Un par nuevo puede encajar con preparación o prueba; uno roto o perdido puede reflejar retraso, incomodidad o duda. Una necesidad cotidiana también puede explicarlo."
+          },
+          {
+            "question": "¿Qué significa elegir o llevar los zapatos equivocados?",
+            "answer": "Elegir puede reflejar comparación o preparación. Un par que no encaja puede señalar un papel, plan o expectativa incómodos, sin predecir que vayas a fracasar."
+          },
+          {
+            "question": "¿Qué significa caminar sin zapatos en un sueño?",
+            "answer": "Ir descalzo puede sentirse libre, expuesto, conectado o poco preparado según el suelo y la emoción. Compáralo con tu sensación real de seguridad y preparación."
+          }
+        ]
+      },
+      "de": {
+        "slug": "schuhe",
+        "name": "Schuhe",
+        "seoTitle": "neue, verlorene oder kaputte Schuhe",
+        "documentTitle": "Traumdeutung Schuhe: Bedeutung und Szenen",
+        "documentMetaDescription": "Schuhe im Traum: Vergleiche neue, verlorene, kaputte, unpassende oder fehlende Schuhe und nutze Weg, Passform und Gefühl für den Kontext.",
+        "shortDescription": "Schuhe im Traum können Richtung, Vorbereitung, Identität oder die Passung einer Rolle hervorheben. Zustand, Besitzer, Größe und der weitere Weg unterscheiden eine praktische Erinnerung von Entscheidung oder Übergang.",
+        "askYourself": [
+          "Waren die Schuhe neu, alt, verloren, kaputt, zu eng, zu groß oder gehörten sie nicht zusammen?",
+          "Habe ich sie getragen, ein Paar gewählt, einen Schuh gesucht oder konnte ich nicht bequem gehen?",
+          "Welche Rolle, Entscheidung oder nächste Etappe fühlt sich passend, unbequem oder noch nicht bereit an?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeuten Schuhe im Traum?",
+            "answer": "Schuhe können Richtung, Vorbereitung, Identität oder eine neue Rolle aufgreifen. Passform, Zustand und Ziel geben mehr Kontext als eine feste Deutungsregel."
+          },
+          {
+            "question": "Was bedeuten neue, kaputte oder verlorene Schuhe?",
+            "answer": "Neue Schuhe können zu Vorbereitung oder Erprobung passen; kaputte oder verlorene zu Verzögerung, Unbehagen oder Unsicherheit. Auch ein Alltagsbedarf kann der Auslöser sein."
+          },
+          {
+            "question": "Was bedeutet es, die falschen Schuhe zu wählen oder zu tragen?",
+            "answer": "Die Wahl kann Vergleich oder Vorbereitung spiegeln. Unpassende Schuhe können eine unbequeme Rolle, einen Plan oder eine Erwartung zeigen, ohne ein Scheitern vorherzusagen."
+          },
+          {
+            "question": "Was bedeutet Barfußgehen im Traum?",
+            "answer": "Barfußgehen kann je nach Untergrund und Gefühl frei, verletzlich, geerdet oder unvorbereitet wirken. Vergleiche die Szene mit deinem realen Sicherheitsgefühl."
+          }
+        ]
+      },
+      "it": {
+        "slug": "scarpe",
+        "name": "Scarpe",
+        "seoTitle": "scarpe nuove, perse o rotte",
+        "documentTitle": "Sognare scarpe: significato e scenari",
+        "documentMetaDescription": "Sognare scarpe: confronta paia nuove, perse, rotte, inadatte o mancanti e usa percorso, misura ed emozione per capire la scena nel contesto.",
+        "shortDescription": "Sognare scarpe può mettere in primo piano direzione, preparazione, identità o quanto un ruolo si adatta alla tua vita. Stato, proprietario, misura e percorso distinguono memoria pratica, scelta o transizione.",
+        "askYourself": [
+          "Le scarpe erano nuove, vecchie, perse, rotte, troppo strette, grandi o diverse tra loro?",
+          "Le indossavo, sceglievo un paio, cercavo una scarpa o non riuscivo a camminare comodamente?",
+          "Quale ruolo, decisione o prossimo passo sembra adatto, scomodo o non ancora pronto?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare scarpe?",
+            "answer": "Le scarpe possono riguardare direzione, preparazione, identità o il ruolo in cui stai entrando. Misura, stato e destinazione danno più contesto di un significato fisso."
+          },
+          {
+            "question": "Che cosa significano scarpe nuove, rotte o perse?",
+            "answer": "Un paio nuovo può richiamare preparazione o prova; uno rotto o perso può riflettere ritardo, disagio o dubbio. Anche un bisogno quotidiano può spiegare il sogno."
+          },
+          {
+            "question": "Che cosa significa scegliere o indossare le scarpe sbagliate?",
+            "answer": "Scegliere può riflettere confronto o preparazione. Scarpe inadatte possono indicare un ruolo, un piano o un’aspettativa scomodi, senza prevedere un fallimento."
+          },
+          {
+            "question": "Che cosa significa camminare senza scarpe in sogno?",
+            "answer": "Essere scalzi può sembrare libero, vulnerabile, radicato o impreparato secondo il terreno e l’emozione. Confronta la scena con il tuo senso reale di sicurezza."
+          }
+        ]
+      },
+      "relatedSymbols": [
+        "clothes",
+        "feet",
+        "path",
+        "road"
+      ],
+      "modifiedAt": "2026-08-11"
     }
   ]
 }

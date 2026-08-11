@@ -6500,6 +6500,118 @@
             }
           }
         },
+        "symbol.excrement": {
+          "id": "symbol.excrement",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "poop",
+          "locales": {
+            "en": {
+              "slug": "poop",
+              "path": "/en/symbols/poop"
+            },
+            "fr": {
+              "slug": "caca",
+              "path": "/fr/symboles/caca"
+            },
+            "es": {
+              "slug": "caca",
+              "path": "/es/simbolos/caca"
+            },
+            "de": {
+              "slug": "kot",
+              "path": "/de/traumsymbole/kot"
+            },
+            "it": {
+              "slug": "cacca",
+              "path": "/it/simboli/cacca"
+            }
+          }
+        },
+        "symbol.worms": {
+          "id": "symbol.worms",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "worms",
+          "locales": {
+            "en": {
+              "slug": "worms",
+              "path": "/en/symbols/worms"
+            },
+            "fr": {
+              "slug": "vers",
+              "path": "/fr/symboles/vers"
+            },
+            "es": {
+              "slug": "gusanos",
+              "path": "/es/simbolos/gusanos"
+            },
+            "de": {
+              "slug": "wuermer",
+              "path": "/de/traumsymbole/wuermer"
+            },
+            "it": {
+              "slug": "vermi",
+              "path": "/it/simboli/vermi"
+            }
+          }
+        },
+        "symbol.cockroach": {
+          "id": "symbol.cockroach",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "cockroach",
+          "locales": {
+            "en": {
+              "slug": "cockroach",
+              "path": "/en/symbols/cockroach"
+            },
+            "fr": {
+              "slug": "cafard",
+              "path": "/fr/symboles/cafard"
+            },
+            "es": {
+              "slug": "cucaracha",
+              "path": "/es/simbolos/cucaracha"
+            },
+            "de": {
+              "slug": "kakerlake",
+              "path": "/de/traumsymbole/kakerlake"
+            },
+            "it": {
+              "slug": "scarafaggio",
+              "path": "/it/simboli/scarafaggio"
+            }
+          }
+        },
+        "symbol.shoes": {
+          "id": "symbol.shoes",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "shoes",
+          "locales": {
+            "en": {
+              "slug": "shoes",
+              "path": "/en/symbols/shoes"
+            },
+            "fr": {
+              "slug": "chaussures",
+              "path": "/fr/symboles/chaussures"
+            },
+            "es": {
+              "slug": "zapatos",
+              "path": "/es/simbolos/zapatos"
+            },
+            "de": {
+              "slug": "schuhe",
+              "path": "/de/traumsymbole/schuhe"
+            },
+            "it": {
+              "slug": "scarpe",
+              "path": "/it/simboli/scarpe"
+            }
+          }
+        },
         "symbolCategory.nature": {
           "id": "symbolCategory.nature",
           "type": "symbolCategory",

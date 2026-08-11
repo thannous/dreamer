@@ -1,6 +1,6 @@
 {
-  "version": "2026-07-v2",
-  "promptVersion": "noctalia-symbol-editorial-v2",
+  "version": "2026-08-j27",
+  "promptVersion": "noctalia-symbol-editorial-j27",
   "generatedWith": "OpenAI image_gen built-in tool",
   "responsiveBase": "/img/seo/symbols-v2",
   "assets": {
@@ -186,6 +186,13 @@
       "category": "objects",
       "subject": "Clothes"
     },
+    "cockroach": {
+      "src": "/img/symbols/editorial-2026-08-j27/cockroach-v1.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Cockroach"
+    },
     "cow": {
       "src": "/img/symbols/editorial-2026-07-v2/cow-v2.webp",
       "width": 1600,
@@ -283,6 +290,13 @@
       "height": 900,
       "category": "body",
       "subject": "Eyes"
+    },
+    "excrement": {
+      "src": "/img/symbols/editorial-2026-08-j27/excrement-v1.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "body",
+      "subject": "Excrement"
     },
     "father": {
       "src": "/img/symbols/editorial-2026-07-v2/father-v2.webp",
@@ -676,6 +690,13 @@
       "category": "people",
       "subject": "Sibling"
     },
+    "shoes": {
+      "src": "/img/symbols/editorial-2026-08-j27/shoes-v1.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Shoes"
+    },
     "snow": {
       "src": "/img/symbols/editorial-2026-07-v2/snow-v2.webp",
       "width": 1600,
@@ -794,6 +815,13 @@
       "height": 900,
       "category": "places",
       "subject": "Workplace"
+    },
+    "worms": {
+      "src": "/img/symbols/editorial-2026-08-j27/worms-v1.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Worms"
     },
     "zombie": {
       "src": "/img/symbols/editorial-2026-07-v2/zombie-v2.webp",

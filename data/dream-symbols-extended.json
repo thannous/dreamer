@@ -1,7 +1,7 @@
 {
   "meta": {
     "description": "Extended content for dream symbols - full interpretations and variations",
-    "lastUpdated": "2026-07-24"
+    "lastUpdated": "2026-08-11"
   },
   "symbols": {
     "water": {
@@ -11369,6 +11369,194 @@
       "it": {
         "fullInterpretation": "<p>Maschera può sembrare stranamente specifico in un sogno. Per questo vale la pena prenderlo sul serio senza prenderlo alla lettera. Spesso raccoglie più fili: strumenti, scelte, legami, tempo e piccoli dettagli che organizzano la vita quotidiana.</p>\n<p>Nota se il sogno rendeva il simbolo familiare o strano. Il familiare può rimandare a una memoria vissuta; lo strano può mostrare un vecchio schema visto da un’altra angolazione.</p>\n<p>L’indizio più forte è quasi sempre l’emozione: sollievo, vergogna, paura, curiosità, irritazione o desiderio. Restringe il significato più velocemente di qualsiasi interpretazione universale.</p>\n<p>Se registri il sogno in Noctalia, tieni una frase per ciò che è successo e una per ciò che ti ha ricordato. Quel piccolo contrasto spesso rivela il tema vero.</p>",
         "variations": []
+      }
+    },
+    "excrement": {
+      "en": {
+        "fullInterpretation": "<p>Poop or feces in a dream is often memorable because it breaks rules about privacy and cleanliness. Rather than assuming a prediction, begin with the scene: where it appeared, who noticed it, what you did and whether the strongest feeling was shame, disgust, urgency or relief.</p>\n<p>A toilet or successful cleanup may fit release, responsibility or restoring order. Feces on clothing, the floor or in the mouth can feel more exposing and may connect to boundaries, humiliation, unwanted words or a situation you feel forced to handle. The image does not have one meaning across every dream.</p>\n<p>Recent illness, caring duties, a pet, a child, cleaning or even a conversation about money can supply the literal material. Record the location, action and emotional shift before comparing symbolic possibilities.</p>",
+        "variations": [
+          { "context": "Poop in a toilet", "meaning": "The scene may concern release, privacy or a process reaching its proper place. Relief versus blockage changes the emphasis." },
+          { "context": "Cleaning poop", "meaning": "Cleaning may reflect responsibility, repair or a wish to restore order after an uncomfortable event." },
+          { "context": "Poop in the mouth or on the body", "meaning": "Exposure, disgust, boundaries or words that feel unacceptable may be relevant, without implying a physical event." },
+          { "context": "A large amount of poop", "meaning": "Quantity can amplify a manageable issue until it feels overwhelming, absurd or impossible to hide." }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Le caca ou les excréments marquent souvent un rêve parce qu’ils transgressent les règles d’intimité et de propreté. Au lieu d’y voir une prédiction, commencez par la scène : lieu, personnes présentes, geste accompli et émotion dominante, honte, dégoût, urgence ou soulagement.</p>\n<p>Des toilettes ou un nettoyage réussi peuvent correspondre au fait de relâcher une tension, d’assumer une responsabilité ou de remettre de l’ordre. Sur les vêtements, au sol ou dans la bouche, l’image peut davantage toucher aux limites, à l’exposition ou à une situation imposée.</p>\n<p>Une maladie récente, des soins, un animal, un enfant, du ménage ou une discussion sur l’argent peuvent fournir un déclencheur littéral. Notez d’abord le lieu, l’action et le changement d’émotion.</p>",
+        "variations": [
+          { "context": "Du caca dans les toilettes", "meaning": "La scène peut concerner le soulagement, l’intimité ou un processus qui trouve sa place. Le blocage ou la facilité change la lecture." },
+          { "context": "Nettoyer des excréments", "meaning": "Le nettoyage peut évoquer responsabilité, réparation ou besoin de remettre de l’ordre après un événement gênant." },
+          { "context": "Du caca dans la bouche ou sur le corps", "meaning": "L’exposition, le dégoût, les limites ou des paroles inacceptables peuvent être en jeu, sans annoncer un événement physique." },
+          { "context": "Une grande quantité de caca", "meaning": "La quantité peut amplifier un problème jusqu’à le rendre envahissant, absurde ou impossible à cacher." }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>La caca o el excremento suele destacar en un sueño porque rompe normas de privacidad y limpieza. En vez de asumir una predicción, empieza por la escena: dónde apareció, quién lo vio, qué hiciste y si dominaban vergüenza, asco, urgencia o alivio.</p>\n<p>Un inodoro o una limpieza que funciona pueden encajar con soltar tensión, asumir responsabilidad o recuperar el orden. En la ropa, el suelo o la boca, la imagen puede acercarse más a límites, exposición, palabras no deseadas o una situación que te obligan a manejar.</p>\n<p>Una enfermedad, tareas de cuidado, una mascota, un niño, la limpieza o una conversación sobre dinero pueden aportar el material literal. Anota lugar, acción y cambio emocional antes de buscar símbolos.</p>",
+        "variations": [
+          { "context": "Caca en el inodoro", "meaning": "Puede tratar de alivio, privacidad o un proceso que llega a su lugar. La facilidad o el atasco cambian el énfasis." },
+          { "context": "Limpiar excremento", "meaning": "La limpieza puede reflejar responsabilidad, reparación o deseo de recuperar el orden después de algo incómodo." },
+          { "context": "Caca en la boca o el cuerpo", "meaning": "Exposición, asco, límites o palabras inaceptables pueden ser relevantes, sin anunciar un hecho físico." },
+          { "context": "Una gran cantidad de caca", "meaning": "La cantidad puede amplificar un asunto manejable hasta volverlo abrumador, absurdo o difícil de ocultar." }
+        ]
+      },
+      "de": {
+        "fullInterpretation": "<p>Kot oder Exkremente bleiben im Traum oft im Gedächtnis, weil sie Regeln zu Privatsphäre und Sauberkeit verletzen. Statt eine Vorhersage anzunehmen, beginne mit der Szene: Ort, anwesende Personen, Handlung und das stärkste Gefühl wie Scham, Ekel, Dringlichkeit oder Erleichterung.</p>\n<p>Eine Toilette oder erfolgreiches Reinigen kann zu Loslassen, Verantwortung oder wiederhergestellter Ordnung passen. Kot auf Kleidung, Boden oder im Mund kann Grenzen, Bloßstellung, unerwünschte Worte oder eine aufgezwungene Aufgabe stärker betonen.</p>\n<p>Krankheit, Pflege, Haustiere, Kinder, Reinigung oder ein Gespräch über Geld können das Bild direkt ausgelöst haben. Notiere zuerst Ort, Handlung und Gefühlswechsel.</p>",
+        "variations": [
+          { "context": "Kot in der Toilette", "meaning": "Die Szene kann Loslassen, Privatsphäre oder einen geordneten Prozess betreffen. Erleichterung oder Verstopfung verändern den Schwerpunkt." },
+          { "context": "Kot reinigen", "meaning": "Reinigen kann Verantwortung, Wiedergutmachung oder den Wunsch nach Ordnung nach einem unangenehmen Ereignis spiegeln." },
+          { "context": "Kot im Mund oder am Körper", "meaning": "Bloßstellung, Ekel, Grenzen oder unerwünschte Worte können mitschwingen, ohne ein körperliches Ereignis anzukündigen." },
+          { "context": "Sehr viel Kot", "meaning": "Die Menge kann ein lösbares Thema vergrößern, bis es überwältigend, absurd oder kaum zu verbergen wirkt." }
+        ]
+      },
+      "it": {
+        "fullInterpretation": "<p>Cacca o feci restano impresse perché violano regole di privacy e pulizia. Invece di cercare una previsione, parti dalla scena: luogo, persone presenti, gesto compiuto ed emozione dominante come vergogna, disgusto, urgenza o sollievo.</p>\n<p>Un water o una pulizia riuscita possono collegarsi al lasciare andare, assumersi una responsabilità o ristabilire ordine. Su vestiti, pavimento o in bocca, l’immagine può mettere più in evidenza confini, esposizione, parole indesiderate o una situazione imposta.</p>\n<p>Malattia, cura di qualcuno, animali, bambini, pulizie o un discorso sul denaro possono fornire uno stimolo letterale. Annota prima luogo, azione e cambiamento emotivo.</p>",
+        "variations": [
+          { "context": "Cacca nel water", "meaning": "La scena può riguardare sollievo, privacy o un processo al posto giusto. Facilità e blocco cambiano l’accento." },
+          { "context": "Pulire le feci", "meaning": "Pulire può riflettere responsabilità, riparazione o desiderio di ristabilire ordine dopo qualcosa di scomodo." },
+          { "context": "Cacca in bocca o sul corpo", "meaning": "Esposizione, disgusto, confini o parole inaccettabili possono essere rilevanti, senza annunciare un evento fisico." },
+          { "context": "Una grande quantità di cacca", "meaning": "La quantità può amplificare un problema gestibile fino a renderlo opprimente, assurdo o difficile da nascondere." }
+        ]
+      }
+    },
+    "worms": {
+      "en": {
+        "fullInterpretation": "<p>Worms can make a hidden process visible in a dream. They may appear around soil, food, decay or renewal, but the useful question is what they were doing and how close they came to you. Disgust, curiosity and calm lead to different interpretations.</p>\n<p>Worms in the mouth or body can feel invasive and may reflect intrusive thoughts, health worry or words that are difficult to express. In soil or compost, the same animals may instead point toward slow change and the breakdown of old material into something usable.</p>\n<p>Gardening, fishing, food, illness or an image seen recently may explain the dream directly. The scene cannot diagnose a condition, so keep real symptoms separate from symbolic reflection.</p>",
+        "variations": [
+          { "context": "Worms in soil", "meaning": "Hidden work, slow change or ordinary contact with nature may be more relevant than disgust." },
+          { "context": "Worms in the mouth", "meaning": "The scene may touch on unwanted words, intrusion or anxiety, but it does not diagnose illness." },
+          { "context": "White or living worms", "meaning": "Color and movement increase vividness without creating a universal meaning; your reaction remains the key clue." },
+          { "context": "Many worms in food", "meaning": "The image may amplify concern about trust, appetite or contamination, or simply replay a recent sensory trigger." }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Des vers peuvent rendre visible un processus caché. Ils apparaissent près de la terre, de la nourriture, de la décomposition ou du renouveau, mais la question utile reste ce qu’ils faisaient et à quelle distance ils se trouvaient. Dégoût, curiosité et calme orientent vers des pistes différentes.</p>\n<p>Dans la bouche ou le corps, ils peuvent sembler envahissants et rejoindre des pensées intrusives, une inquiétude de santé ou des paroles difficiles. Dans la terre ou le compost, les mêmes animaux peuvent plutôt évoquer un changement lent.</p>\n<p>Jardinage, pêche, nourriture, maladie ou image récente peuvent expliquer directement le rêve. La scène ne diagnostique rien; séparez les symptômes réels de la réflexion symbolique.</p>",
+        "variations": [
+          { "context": "Des vers dans la terre", "meaning": "Un travail caché, un changement lent ou un contact ordinaire avec la nature peuvent compter davantage que le dégoût." },
+          { "context": "Des vers dans la bouche", "meaning": "La scène peut toucher aux paroles indésirables, à l’intrusion ou à l’anxiété, sans diagnostiquer une maladie." },
+          { "context": "Des vers blancs ou vivants", "meaning": "Couleur et mouvement rendent l’image plus vive sans créer de sens universel; votre réaction reste l’indice principal." },
+          { "context": "De nombreux vers dans la nourriture", "meaning": "L’image peut amplifier une inquiétude sur la confiance, l’appétit ou la contamination, ou reprendre un stimulus récent." }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Los gusanos pueden hacer visible un proceso oculto. Aparecen cerca de tierra, comida, descomposición o renovación, pero la pregunta útil es qué hacían y cuánto se acercaban. Asco, curiosidad y calma llevan a lecturas distintas.</p>\n<p>En la boca o el cuerpo pueden sentirse invasivos y conectar con pensamientos intrusivos, ansiedad de salud o palabras difíciles. En tierra o compost, los mismos animales pueden señalar cambio lento y transformación de material antiguo.</p>\n<p>Jardinería, pesca, comida, enfermedad o una imagen reciente pueden explicar el sueño directamente. La escena no diagnostica una condición; separa síntomas reales y reflexión simbólica.</p>",
+        "variations": [
+          { "context": "Gusanos en la tierra", "meaning": "Trabajo oculto, cambio lento o contacto cotidiano con la naturaleza pueden importar más que el asco." },
+          { "context": "Gusanos en la boca", "meaning": "La escena puede tocar palabras no deseadas, intrusión o ansiedad, pero no diagnostica una enfermedad." },
+          { "context": "Gusanos blancos o vivos", "meaning": "Color y movimiento aumentan la intensidad sin crear un significado universal; tu reacción sigue siendo la pista principal." },
+          { "context": "Muchos gusanos en la comida", "meaning": "Puede amplificar preocupación por confianza, apetito o contaminación, o repetir un estímulo sensorial reciente." }
+        ]
+      },
+      "de": {
+        "fullInterpretation": "<p>Würmer können im Traum einen verborgenen Prozess sichtbar machen. Sie erscheinen bei Erde, Essen, Zerfall oder Erneuerung, doch entscheidend ist, was sie taten und wie nahe sie kamen. Ekel, Neugier und Ruhe führen zu unterschiedlichen Ansätzen.</p>\n<p>Im Mund oder am Körper können sie aufdringlich wirken und zu Gedanken, Gesundheitsangst oder schwer aussprechbaren Worten passen. In Erde oder Kompost können dieselben Tiere eher langsame Veränderung und Verwertung alten Materials betonen.</p>\n<p>Gartenarbeit, Angeln, Essen, Krankheit oder ein aktuelles Bild können den Traum direkt erklären. Die Szene diagnostiziert keine Erkrankung; trenne reale Symptome von symbolischer Reflexion.</p>",
+        "variations": [
+          { "context": "Würmer in der Erde", "meaning": "Verborgene Arbeit, langsame Veränderung oder normaler Naturkontakt können wichtiger sein als Ekel." },
+          { "context": "Würmer im Mund", "meaning": "Die Szene kann unerwünschte Worte, Eindringen oder Angst berühren, stellt aber keine Diagnose." },
+          { "context": "Weiße oder lebende Würmer", "meaning": "Farbe und Bewegung erhöhen die Eindringlichkeit ohne festen Code; deine Reaktion bleibt der stärkste Hinweis." },
+          { "context": "Viele Würmer im Essen", "meaning": "Das Bild kann Sorge um Vertrauen, Appetit oder Verunreinigung verstärken oder einen aktuellen Sinneseindruck wiederholen." }
+        ]
+      },
+      "it": {
+        "fullInterpretation": "<p>I vermi possono rendere visibile un processo nascosto. Appaiono vicino a terra, cibo, decomposizione o rinnovamento, ma la domanda utile riguarda ciò che facevano e quanto erano vicini. Disgusto, curiosità e calma portano a letture diverse.</p>\n<p>In bocca o sul corpo possono sembrare invasivi e collegarsi a pensieri intrusivi, ansia per la salute o parole difficili. Nella terra o nel compost gli stessi animali possono invece richiamare un cambiamento lento.</p>\n<p>Giardinaggio, pesca, cibo, malattia o un’immagine recente possono spiegare direttamente il sogno. La scena non diagnostica una condizione; separa sintomi reali e riflessione simbolica.</p>",
+        "variations": [
+          { "context": "Vermi nella terra", "meaning": "Lavoro nascosto, cambiamento lento o normale contatto con la natura possono contare più del disgusto." },
+          { "context": "Vermi in bocca", "meaning": "La scena può toccare parole indesiderate, intrusione o ansia, ma non diagnostica una malattia." },
+          { "context": "Vermi bianchi o vivi", "meaning": "Colore e movimento aumentano l’intensità senza creare un codice universale; la tua reazione resta l’indizio principale." },
+          { "context": "Tanti vermi nel cibo", "meaning": "L’immagine può amplificare preoccupazioni su fiducia, appetito o contaminazione, oppure ripetere uno stimolo recente." }
+        ]
+      }
+    },
+    "cockroach": {
+      "en": {
+        "fullInterpretation": "<p>A cockroach can concentrate several reactions at once: disgust, alarm, persistence and surprise that something survived. Start with the number and location. One insect crossing a floor creates a different story from many cockroaches filling a private room.</p>\n<p>If you tried to kill, trap or clean them, the dream may parallel a repeated problem or a boundary you want to restore. If you watched calmly, resilience, adaptation or simple curiosity may fit better than threat.</p>\n<p>A real sighting, pest concern, travel memory or video can trigger the image without hidden meaning. The dream does not predict an infestation; use it to examine what currently feels intrusive or hard to remove.</p>",
+        "variations": [
+          { "context": "One cockroach", "meaning": "A single persistent concern or a recent literal sighting may be enough to explain the scene." },
+          { "context": "Many cockroaches", "meaning": "Quantity can make stress feel spreading or difficult to contain, without predicting a real infestation." },
+          { "context": "Killing or removing cockroaches", "meaning": "The action may reflect confrontation, boundary setting or a wish to restore order." },
+          { "context": "A cockroach in bed or food", "meaning": "A private or nourishing space can heighten themes of trust, safety and unwanted intrusion." }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Un cafard peut concentrer plusieurs réactions : dégoût, alerte, persistance et surprise devant ce qui résiste. Commencez par le nombre et le lieu. Un insecte qui traverse le sol raconte autre chose qu’une invasion dans une pièce intime.</p>\n<p>Si vous tentiez de le tuer, le capturer ou nettoyer, le rêve peut rejoindre un problème répété ou une limite à restaurer. Si vous l’observiez calmement, résilience, adaptation ou curiosité peuvent mieux convenir que la menace.</p>\n<p>Un insecte réellement vu, une crainte de nuisibles, un voyage ou une vidéo peuvent déclencher l’image. Le rêve ne prédit pas une invasion; il aide à examiner ce qui semble intrusif ou difficile à éliminer.</p>",
+        "variations": [
+          { "context": "Un seul cafard", "meaning": "Une préoccupation persistante ou un insecte vu récemment peuvent suffire à expliquer la scène." },
+          { "context": "De nombreux cafards", "meaning": "Le nombre peut rendre le stress envahissant ou incontrôlable, sans annoncer une invasion réelle." },
+          { "context": "Tuer ou retirer les cafards", "meaning": "L’action peut refléter confrontation, limite posée ou désir de remettre de l’ordre." },
+          { "context": "Un cafard dans le lit ou la nourriture", "meaning": "Un espace intime ou nourricier peut renforcer les thèmes de confiance, sécurité et intrusion." }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Una cucaracha puede concentrar asco, alarma, persistencia y sorpresa ante algo que sobrevive. Empieza por cantidad y lugar. Un insecto cruzando el suelo crea una historia distinta de muchas cucarachas ocupando una habitación privada.</p>\n<p>Si intentabas matarlas, atraparlas o limpiar, el sueño puede acercarse a un problema repetido o un límite que quieres recuperar. Si observabas con calma, resistencia, adaptación o curiosidad pueden encajar mejor que amenaza.</p>\n<p>Ver un insecto, temer una plaga, viajar o mirar un vídeo puede activar la imagen. El sueño no predice una infestación; úsalo para explorar qué se siente intrusivo o difícil de eliminar.</p>",
+        "variations": [
+          { "context": "Una cucaracha", "meaning": "Una preocupación persistente o un insecto visto recientemente pueden explicar la escena por sí solos." },
+          { "context": "Muchas cucarachas", "meaning": "La cantidad puede hacer que el estrés parezca extenderse o escapar al control, sin predecir una plaga real." },
+          { "context": "Matar o retirar cucarachas", "meaning": "La acción puede reflejar confrontación, establecimiento de límites o deseo de recuperar el orden." },
+          { "context": "Una cucaracha en la cama o comida", "meaning": "Un espacio íntimo o nutritivo puede intensificar temas de confianza, seguridad e intrusión no deseada." }
+        ]
+      },
+      "de": {
+        "fullInterpretation": "<p>Eine Kakerlake kann Ekel, Alarm, Hartnäckigkeit und Überraschung über das Überleben bündeln. Beginne mit Anzahl und Ort. Ein einzelnes Tier auf dem Boden erzählt eine andere Geschichte als viele Kakerlaken in einem privaten Raum.</p>\n<p>Wenn du sie töten, fangen oder wegputzen wolltest, kann der Traum zu einem wiederkehrenden Problem oder einer Grenze passen, die du erneuern willst. Ruhiges Beobachten kann eher Widerstandskraft, Anpassung oder Neugier betonen.</p>\n<p>Ein echtes Tier, Schädlingssorge, eine Reise oder ein Video können das Bild direkt auslösen. Der Traum sagt keinen Befall voraus; nutze ihn, um ein aufdringliches oder schwer lösbares Thema zu prüfen.</p>",
+        "variations": [
+          { "context": "Eine Kakerlake", "meaning": "Eine hartnäckige Sorge oder eine aktuelle reale Begegnung können die Szene bereits erklären." },
+          { "context": "Viele Kakerlaken", "meaning": "Die Menge kann Stress als ausbreitend oder unkontrollierbar darstellen, ohne einen realen Befall anzukündigen." },
+          { "context": "Kakerlaken töten oder entfernen", "meaning": "Die Handlung kann Konfrontation, Grenzsetzung oder den Wunsch nach Ordnung spiegeln." },
+          { "context": "Eine Kakerlake im Bett oder Essen", "meaning": "Ein privater oder nährender Ort kann Vertrauen, Sicherheit und unerwünschtes Eindringen verstärken." }
+        ]
+      },
+      "it": {
+        "fullInterpretation": "<p>Uno scarafaggio può concentrare disgusto, allarme, persistenza e sorpresa davanti a qualcosa che resiste. Parti da quantità e luogo. Un insetto che attraversa il pavimento racconta una storia diversa da molti scarafaggi in una stanza privata.</p>\n<p>Se cercavi di ucciderli, catturarli o pulire, il sogno può collegarsi a un problema ripetuto o a un confine da ristabilire. Se osservavi con calma, resistenza, adattamento o curiosità possono essere più adatti della minaccia.</p>\n<p>Un insetto visto, una paura concreta, un viaggio o un video possono attivare l’immagine. Il sogno non predice un’infestazione; usalo per esaminare ciò che sembra invasivo o difficile da eliminare.</p>",
+        "variations": [
+          { "context": "Uno scarafaggio", "meaning": "Una preoccupazione persistente o un incontro reale recente possono spiegare la scena da soli." },
+          { "context": "Molti scarafaggi", "meaning": "La quantità può far sembrare lo stress diffuso o fuori controllo, senza predire un’infestazione reale." },
+          { "context": "Uccidere o rimuovere scarafaggi", "meaning": "L’azione può riflettere confronto, definizione di un confine o desiderio di ristabilire ordine." },
+          { "context": "Uno scarafaggio nel letto o nel cibo", "meaning": "Uno spazio intimo o nutriente può intensificare fiducia, sicurezza e intrusione indesiderata." }
+        ]
+      }
+    },
+    "shoes": {
+      "en": {
+        "fullInterpretation": "<p>Shoes connect the body to a path, so dreams often use them around readiness, direction and fit. Begin with practical details: were they yours, could you walk, and where were you trying to go? A perfect pair and a painful pair create opposite emotional contexts.</p>\n<p>Choosing shoes can mirror preparation or comparison between roles. Losing one shoe, wearing mismatched shoes or finding them broken may make uncertainty, delay or discomfort visible, but it does not predict that a plan will fail.</p>\n<p>Shopping, travel, a dress code, sore feet or shoes by the door can easily supply the image. Compare the literal trigger with the broader question of whether your current next step feels suitable.</p>",
+        "variations": [
+          { "context": "New shoes", "meaning": "A new pair may fit preparation, experimentation or attention to how a new role feels." },
+          { "context": "Lost or missing shoes", "meaning": "Searching may reflect delay, uncertainty or feeling unprepared for the next step." },
+          { "context": "Broken or uncomfortable shoes", "meaning": "Pain or damage can highlight a plan, role or pace that no longer fits comfortably." },
+          { "context": "Choosing between shoes", "meaning": "The choice may mirror comparison between identities, destinations or ways of presenting yourself." }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Les chaussures relient le corps à un chemin; le rêve peut donc les utiliser autour de la préparation, la direction et l’adaptation. Commencez par les détails pratiques : vous appartenaient-elles, pouviez-vous marcher et où vouliez-vous aller ?</p>\n<p>Choisir une paire peut refléter la préparation ou la comparaison entre plusieurs rôles. Perdre une chaussure, porter une paire dépareillée ou la trouver cassée peut rendre visibles doute, retard ou gêne, sans annoncer l’échec d’un projet.</p>\n<p>Achats, voyage, tenue imposée, douleur aux pieds ou chaussures près de la porte peuvent fournir le déclencheur. Comparez cette cause avec la question plus large de la prochaine étape.</p>",
+        "variations": [
+          { "context": "Des chaussures neuves", "meaning": "Une nouvelle paire peut correspondre à la préparation, l’essai ou l’attention portée à un nouveau rôle." },
+          { "context": "Des chaussures perdues ou absentes", "meaning": "La recherche peut refléter retard, incertitude ou sentiment de ne pas être prêt pour la suite." },
+          { "context": "Des chaussures cassées ou inconfortables", "meaning": "La douleur ou les dégâts peuvent signaler un projet, un rôle ou un rythme devenu mal adapté." },
+          { "context": "Choisir entre plusieurs paires", "meaning": "Le choix peut reprendre une comparaison entre identités, destinations ou façons de se présenter." }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Los zapatos conectan el cuerpo con un camino, por eso el sueño puede usarlos alrededor de preparación, dirección y ajuste. Empieza por detalles prácticos: ¿eran tuyos, podías caminar y adónde intentabas ir? Un par perfecto y uno doloroso crean contextos opuestos.</p>\n<p>Elegir zapatos puede reflejar preparación o comparación entre roles. Perder uno, llevar un par diferente o encontrarlo roto puede hacer visibles duda, retraso o incomodidad, sin anunciar que un plan fracasará.</p>\n<p>Compras, viaje, código de vestimenta, dolor de pies o zapatos junto a la puerta pueden activar la imagen. Compara esa causa literal con si tu próximo paso actual se siente adecuado.</p>",
+        "variations": [
+          { "context": "Zapatos nuevos", "meaning": "Un par nuevo puede encajar con preparación, prueba o atención a cómo se siente un papel reciente." },
+          { "context": "Zapatos perdidos o ausentes", "meaning": "La búsqueda puede reflejar retraso, incertidumbre o sensación de no estar listo para avanzar." },
+          { "context": "Zapatos rotos o incómodos", "meaning": "Dolor o daño pueden destacar un plan, un papel o un ritmo que ya no encajan bien." },
+          { "context": "Elegir entre varios zapatos", "meaning": "La elección puede reflejar comparación entre identidades, destinos o formas de presentarte." }
+        ]
+      },
+      "de": {
+        "fullInterpretation": "<p>Schuhe verbinden den Körper mit einem Weg, daher nutzt ein Traum sie oft für Vorbereitung, Richtung und Passung. Beginne mit praktischen Details: Waren es deine Schuhe, konntest du gehen und wohin wolltest du? Ein passendes und ein schmerzendes Paar schaffen gegensätzliche Kontexte.</p>\n<p>Schuhe auszuwählen kann Vorbereitung oder den Vergleich zwischen Rollen spiegeln. Einen Schuh zu verlieren, ungleiche Schuhe zu tragen oder kaputte zu finden, kann Unsicherheit, Verzögerung oder Unbehagen sichtbar machen, ohne ein Scheitern vorherzusagen.</p>\n<p>Einkaufen, Reise, Kleiderordnung, Fußschmerz oder Schuhe an der Tür können das Bild direkt auslösen. Vergleiche den Anlass damit, ob der nächste Schritt gerade zu dir passt.</p>",
+        "variations": [
+          { "context": "Neue Schuhe", "meaning": "Ein neues Paar kann zu Vorbereitung, Erprobung oder Aufmerksamkeit für eine neue Rolle passen." },
+          { "context": "Verlorene oder fehlende Schuhe", "meaning": "Die Suche kann Verzögerung, Unsicherheit oder mangelnde Bereitschaft für den nächsten Schritt spiegeln." },
+          { "context": "Kaputte oder unbequeme Schuhe", "meaning": "Schmerz oder Schaden können einen Plan, eine Rolle oder ein Tempo hervorheben, die nicht mehr passen." },
+          { "context": "Zwischen Schuhen wählen", "meaning": "Die Wahl kann einen Vergleich zwischen Identitäten, Zielen oder Arten der Selbstdarstellung spiegeln." }
+        ]
+      },
+      "it": {
+        "fullInterpretation": "<p>Le scarpe collegano il corpo a un percorso, quindi il sogno può usarle intorno a preparazione, direzione e adattamento. Parti dai dettagli pratici: erano tue, riuscivi a camminare e dove volevi andare? Un paio perfetto e uno doloroso creano contesti opposti.</p>\n<p>Scegliere scarpe può riflettere preparazione o confronto tra ruoli. Perderne una, indossarne due diverse o trovarle rotte può rendere visibili dubbio, ritardo o disagio, senza annunciare il fallimento di un piano.</p>\n<p>Shopping, viaggio, abbigliamento richiesto, dolore ai piedi o scarpe vicino alla porta possono attivare l’immagine. Confronta lo stimolo con quanto il prossimo passo ti sembra adatto.</p>",
+        "variations": [
+          { "context": "Scarpe nuove", "meaning": "Un paio nuovo può collegarsi a preparazione, prova o attenzione a come si sente un nuovo ruolo." },
+          { "context": "Scarpe perse o mancanti", "meaning": "La ricerca può riflettere ritardo, incertezza o sensazione di non essere pronti per il passo successivo." },
+          { "context": "Scarpe rotte o scomode", "meaning": "Dolore o danno possono evidenziare un piano, un ruolo o un ritmo che non si adattano più bene." },
+          { "context": "Scegliere tra più scarpe", "meaning": "La scelta può riflettere confronto tra identità, destinazioni o modi di presentarti." }
+        ]
       }
     }
   }

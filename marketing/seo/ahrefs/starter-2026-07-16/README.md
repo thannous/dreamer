@@ -44,6 +44,8 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j26-competitive-gap-backlog-2026-08-10.csv`](./j26-competitive-gap-backlog-2026-08-10.csv) : backlog exploitable après Starter, séparant actifs existants, absences locales non confirmées et facteurs confondants.
 - [`j27-gsc-keyword-validation-2026-08-11.md`](./j27-gsc-keyword-validation-2026-08-11.md) : validation GSC 28 jours et fenêtre disponible « 12 mois », six rapports Keyword Explorer/SERP et décisions chaussures/crocodile.
 - [`j27-content-validation-backlog-2026-08-11.csv`](./j27-content-validation-backlog-2026-08-11.csv) : backlog post-Starter des propriétaires prospectifs, preuves, conflits et portes d'implémentation.
+- [`j27-ranking-expansion-2026-08-11.md`](./j27-ranking-expansion-2026-08-11.md) : extension J27 autorisée, croisement de 80 requêtes Ahrefs avec GSC, lot de 20 routes localisées et quatre quick wins de titres existants.
+- [`j27-ranking-expansion-backlog-2026-08-11.csv`](./j27-ranking-expansion-backlog-2026-08-11.csv) : matrice pays de 80 requêtes pour les vagues suivantes, avec métriques observées, statut et porte d'ownership.
 - [`rank-tracker-portfolio-50-2026-07-16.csv`](./rank-tracker-portfolio-50-2026-07-16.csv) : portefeuille validé des 50 couples, assaini des métriques brutes.
 - [`rank-tracker-target-map-2026-08-01.csv`](./rank-tracker-target-map-2026-08-01.csv) : correspondance durable entre chaque tag `target-*` et l'URL cible voulue.
 - [`j10-prioritization-2026-07-25.md`](./j10-prioritization-2026-07-25.md) et [`j10-priorities-2026-07-25.csv`](./j10-priorities-2026-07-25.csv) : première consolidation versionnée du portefeuille 5 + 3.
@@ -66,7 +68,7 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 
 1. Les compteurs live Ahrefs, la facturation et les données GSC fraîches priment toujours sur cette archive.
 2. Les preuves brutes J1–J3 citées dans les réconciliations historiques ne sont plus présentes dans les archives accessibles. Leurs décisions sont conservées, mais aucune donnée absente n'a été recréée.
-3. Le dernier compteur général vérifié dans l'interface est `76 crédits utilisés` au 11 août, après les Lots A à D, sept rapports Organic Keywords concurrentiels et six rapports Keyword Explorer/SERP, avec une prochaine facturation et remise à zéro le 16 août 2026 UTC.
+3. Le dernier compteur général vérifié dans l'interface est `113/200 crédits utilisés` au 11 août, après les Lots A à D, les rapports Organic Keywords concurrentiels, les collectes Keyword Explorer groupées et huit SERP ciblées, avec une prochaine facturation et remise à zéro le 16 août 2026 UTC.
 4. Les 50 suivis, leurs emplacements et leurs tags ne doivent pas être modifiés sans décision explicite. Un changement d'emplacement détruirait l'historique du couple concerné.
 5. Les pages et expériences restent soumises à leurs gels respectifs. Une prévalidation n'autorise ni édition, ni commit, ni publication.
 6. Le connecteur Ahrefs et l'interface web n'exposent pas les mêmes compteurs. Le relevé API `Trial, billed monthly` du 9 août décrit la couche API ; il ne remplace ni le plan Starter observé dans l'interface ni son compteur de crédits généraux.
@@ -106,3 +108,7 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 - Crocodile reste `HOLD_OWNER_REVIEW` : trois impressions historiques sont déjà réparties entre les guides animaux DE et IT, et aucune impression n'est visible sur 28 jours.
 - `casa`, `ragno`, `perro`, `scuola`, le lot italien eau et l'anglais restent dans leurs contrats de mesure respectifs.
 - La recommandation d'abonnement reste provisoirement `LEAN_FREE` ; la décision de facturation appartient à l'utilisateur.
+- Une autorisation ultérieure a ouvert un lot d'expansion distinct : caca/excréments, vers, cafard et chaussures sont préparés comme quatre propriétaires canoniques dans cinq langues, soit 20 routes, sans toucher aux expériences gelées.
+- Dix rapports pays groupés ont validé 80 requêtes additionnelles pour seulement dix crédits ; tortue, crocodile et poux forment la prochaine vague prioritaire, tandis que les conflits d'ownership restent en HOLD.
+- Huit SERP exactes ont confirmé que des pages à faible autorité se classent déjà sur les requêtes du lot ; compteur final `113/200`, soit 87 crédits nominaux encore disponibles avant la remise à zéro.
+- Quatre titres trop longs à fort volume GSC sont raccourcis dans les sources : `pioggia`, `automobile`, `verfolgung` et `maison`. Les six URL candidates totalisaient 159 clics et 20 250 impressions sur 28 jours ; le lot retenu en représente 144 et 19 024.
