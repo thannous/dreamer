@@ -212,6 +212,14 @@ export const useDreamJournal = () => {
   const [pendingImageJobsVersion, setPendingImageJobsVersion] = useState(0);
   const analysisStatusOverridesRef = useRef<Map<number, DreamAnalysis['analysisStatus']>>(new Map());
   const analysisRequestIdsRef = useRef<Map<number, string>>(new Map());
+  // In-memory only: lets screens outside recording surface an in-flight
+  // analysis (and its outcome) without reading persisted dream state.
+  const [activeAnalysis, setActiveAnalysis] = useState<{ dreamId: number } | null>(null);
+  const [lastAnalysisOutcome, setLastAnalysisOutcome] = useState<{
+    dreamId: number;
+    status: 'done' | 'failed';
+    completedAt: number;
+  } | null>(null);
 
   useEffect(() => {
     analysisRequestIdsRef.current.clear();
@@ -1217,6 +1225,7 @@ export const useDreamJournal = () => {
       let serverJobAccepted = false;
       let serverJobTerminalFailure = false;
 
+      setActiveAnalysis({ dreamId });
       try {
         if (useServerAnalysisJob) {
           const command = await submitDreamAnalysisJob({
@@ -1273,6 +1282,7 @@ export const useDreamJournal = () => {
           analysisRequestIdsRef.current.delete(dreamId);
           quotaService.invalidate(user);
           emitProgress(AnalysisStep.COMPLETE);
+          setLastAnalysisOutcome({ dreamId, status: 'done', completedAt: Date.now() });
           return refreshedDream;
         }
 
@@ -1362,9 +1372,11 @@ export const useDreamJournal = () => {
 
         quotaService.invalidate(user);
         emitProgress(AnalysisStep.COMPLETE);
+        setLastAnalysisOutcome({ dreamId, status: 'done', completedAt: Date.now() });
         return next;
       } catch (error) {
         const quotaError = coerceQuotaError(error, tier);
+        setLastAnalysisOutcome({ dreamId, status: 'failed', completedAt: Date.now() });
         if (serverJobAccepted) {
           if (serverJobTerminalFailure) {
             analysisStatusOverridesRef.current.set(dreamId, 'failed');
@@ -1399,6 +1411,8 @@ export const useDreamJournal = () => {
           }
         }
         throw quotaError ?? error;
+      } finally {
+        setActiveAnalysis(null);
       }
     },
     [
@@ -1422,6 +1436,8 @@ export const useDreamJournal = () => {
   return {
     dreams,
     loaded,
+    activeAnalysis,
+    lastAnalysisOutcome,
     addDream,
     updateDream,
     applyServerDreamState,

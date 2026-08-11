@@ -1,6 +1,6 @@
 import { Tabs, router, useSegments } from 'expo-router';
 import React, { useMemo } from 'react';
-import { Platform, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
@@ -14,6 +14,7 @@ import {
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
+import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
 import { useStartupRoute } from '@/context/StartupRouteContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -76,8 +77,12 @@ function AddDreamTabItem({ label, palette, compact, narrow }: {
   compact: boolean;
   narrow: boolean;
 }) {
+  // While a dream analysis runs in the background, the Capture button carries
+  // the in-progress state so no overlay has to cover the screen content.
+  const { activeAnalysis } = useAnalysisActivity();
   return (
     <View
+      accessibilityState={activeAnalysis ? { busy: true } : undefined}
       style={[
         styles.addTabItem,
         compact && styles.addTabItemCompact,
@@ -92,11 +97,15 @@ function AddDreamTabItem({ label, palette, compact, narrow }: {
       <View
         style={[styles.addTabIconShell, compact && styles.addTabIconShellCompact]}
       >
-        <IconSymbol
-          size={24}
-          name="pencil"
-          color={palette.textOnAccentSurface}
-        />
+        {activeAnalysis ? (
+          <ActivityIndicator size="small" color={palette.textOnAccentSurface} />
+        ) : (
+          <IconSymbol
+            size={24}
+            name="pencil"
+            color={palette.textOnAccentSurface}
+          />
+        )}
       </View>
       <Text
         style={[

@@ -6,12 +6,14 @@ import {
 } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import { router } from 'expo-router';
 import React, { useMemo } from 'react';
 import {
+  ActivityIndicator,
   Platform,
   Pressable,
   StyleSheet,
@@ -50,6 +52,9 @@ export function NoctaliaBottomNav({
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
+  // The Capture button doubles as the in-progress indicator for a background
+  // dream analysis, so no overlay has to cover the screen content.
+  const { activeAnalysis } = useAnalysisActivity();
 
   if (Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT) {
     return null;
@@ -154,11 +159,15 @@ export function NoctaliaBottomNav({
                     },
                   ]}
                 >
-                  <IconSymbol
-                    size={24}
-                    name={item.icon}
-                    color={addTextColor}
-                  />
+                  {activeAnalysis ? (
+                    <ActivityIndicator size="small" color={addTextColor} />
+                  ) : (
+                    <IconSymbol
+                      size={24}
+                      name={item.icon}
+                      color={addTextColor}
+                    />
+                  )}
                   <Text
                     style={[
                       styles.addLabel,

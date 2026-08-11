@@ -1,3 +1,4 @@
+import { AnalysisActivityProvider } from '@/context/AnalysisActivityContext';
 import { useDreamJournal } from '@/hooks/useDreamJournal';
 import type { AnalysisSource } from '@/lib/analytics';
 import type { DreamAnalysis, DreamCategorization } from '@/lib/types';
@@ -64,6 +65,14 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     [journal.dreams, journal.loaded]
   );
 
+  const analysisActivityValue = useMemo(
+    () => ({
+      activeAnalysis: journal.activeAnalysis,
+      lastAnalysisOutcome: journal.lastAnalysisOutcome,
+    }),
+    [journal.activeAnalysis, journal.lastAnalysisOutcome]
+  );
+
   // Actions context - stable references but will refresh if implementations change (e.g., login/network)
   const actionsValue = useMemo(
     () => ({
@@ -97,7 +106,9 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   return (
     <DreamsDataContext.Provider value={dataValue}>
       <DreamsActionsContext.Provider value={actionsValue}>
-        {children}
+        <AnalysisActivityProvider value={analysisActivityValue}>
+          {children}
+        </AnalysisActivityProvider>
       </DreamsActionsContext.Provider>
     </DreamsDataContext.Provider>
   );

@@ -262,6 +262,9 @@ export default function RecordingScreen() {
   const activePostSaveRef = useRef<'confirm_analysis' | 'journal_first' | null>(null);
   const captureStartedTrackedRef = useRef(false);
   const analysisLaunchRef = useRef(false);
+  // Tracks whether this screen is the focused one so a background analysis
+  // never yanks the user out of another screen when it completes.
+  const isScreenFocusedRef = useRef(true);
   const restoredPendingIntentRef = useRef<string | null>(null);
   const analysisOfferTrackedRef = useRef<Set<number>>(new Set());
   const initialRouteModeRef = useRef(parsedRecordingParams.mode);
@@ -608,7 +611,9 @@ export default function RecordingScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      isScreenFocusedRef.current = true;
       return () => {
+        isScreenFocusedRef.current = false;
         void forceStopRecording('blur');
         blurActiveElement();
       };
@@ -1280,7 +1285,13 @@ export default function RecordingScreen() {
       resetComposer();
       // Hold on the reveal overlay before opening the analyzed dream
       await new Promise((resolve) => setTimeout(resolve, ANALYSIS_REVEAL_HOLD_MS));
-      navigateAfterSave(analyzedDream, preCount, { skipFirstDreamSheet: true });
+      if (isScreenFocusedRef.current) {
+        navigateAfterSave(analyzedDream, preCount, { skipFirstDreamSheet: true });
+      } else {
+        // The user navigated elsewhere mid-analysis: the global indicator
+        // announces the result, so do not steal their navigation.
+        analysisProgress.reset();
+      }
       return true;
     } catch (error) {
       if (error instanceof QuotaError) {
@@ -1410,7 +1421,11 @@ export default function RecordingScreen() {
 
       // Hold on the reveal overlay before opening the analyzed dream
       await new Promise((resolve) => setTimeout(resolve, ANALYSIS_REVEAL_HOLD_MS));
-      navigateToJournalDetail(updatedDream.id);
+      if (isScreenFocusedRef.current) {
+        navigateToJournalDetail(updatedDream.id);
+      } else {
+        analysisProgress.reset();
+      }
     } catch (error) {
       log.error('Generate with reference failed:', error);
       const classified = error && typeof error === 'object' && 'userMessage' in error && 'canRetry' in error

@@ -646,6 +646,8 @@ const translations: Record<string, string> = {
     'analysis.step.error': 'Error occurred',
     'analysis.retry': 'Try Again',
     'analysis.reveal.title': 'Your dream is revealed',
+    'analysis.indicator.done': 'Dream analyzed · Tap to open',
+    'analysis.indicator.failed': 'Analysis interrupted · Dream saved',
     'analysis.mantra.analyzing.1': 'Weaving the threads of your dream...',
     'analysis.mantra.analyzing.2': 'Listening to your subconscious...',
     'analysis.mantra.analyzing.3': 'Decoding hidden symbols...',
