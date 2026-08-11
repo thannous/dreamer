@@ -23,15 +23,15 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-08-09T00:00:00+02:00",
+  "modifiedTime": "2026-08-11T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Migliori app diario dei sogni 2026\",\n  \"description\": \"Confronta Noctalia con DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud e nuove app sogni con IA.\",\n  \"url\": \"https://noctalia.app/it/app-diario-dei-sogni\",\n  \"inLanguage\": \"it\",\n  \"dateModified\": \"2026-08-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Migliori app diario dei sogni 2026\",\n  \"description\": \"Confronta Noctalia con DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud e nuove app sogni con IA.\",\n  \"url\": \"https://noctalia.app/it/app-diario-dei-sogni\",\n  \"inLanguage\": \"it\",\n  \"dateModified\": \"2026-08-11T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/it/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Migliori app per diario dei sogni nel 2026\",\n      \"item\": \"https://noctalia.app/it/app-diario-dei-sogni\"\n    }\n  ]\n}"
-    ,"{\"@context\":\"https://schema.org\",\"@type\":\"Dataset\",\"@id\":\"https://noctalia.app/it/app-diario-dei-sogni#dataset\",\"name\":\"Dati comparativi delle app diario dei sogni 2026\",\"description\":\"Una revisione documentale datata di 11 app diario dei sogni su piattaforme, cattura vocale, interpretazione IA, immagini, privacy, esportazione e sogno lucido.\",\"url\":\"https://noctalia.app/it/app-diario-dei-sogni#dataset\",\"creator\":{\"@id\":\"https://noctalia.app/#organization\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"},\"dateCreated\":\"2026-07-12\",\"dateModified\":\"2026-08-09\",\"isAccessibleForFree\":true,\"inLanguage\":\"it\",\"keywords\":[\"app diario dei sogni\",\"cattura vocale\",\"interpretazione dei sogni con IA\",\"app per sogni lucidi\"],\"measurementTechnique\":\"Revisione documentale di pagine ufficiali dei prodotti e schede pubbliche degli store; nessun account concorrente e nessun abbonamento a pagamento.\",\"distribution\":{\"@type\":\"DataDownload\",\"encodingFormat\":\"text/csv\",\"contentUrl\":\"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"}}"
+    ,"{\"@context\":\"https://schema.org\",\"@type\":\"Dataset\",\"@id\":\"https://noctalia.app/it/app-diario-dei-sogni#dataset\",\"name\":\"Dati comparativi delle app diario dei sogni 2026\",\"description\":\"Una revisione documentale datata di 11 app diario dei sogni su piattaforme, cattura vocale, interpretazione IA, immagini, privacy, esportazione e sogno lucido.\",\"url\":\"https://noctalia.app/it/app-diario-dei-sogni#dataset\",\"creator\":{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\"},\"publisher\":{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\"},\"license\":\"https://noctalia.app/it/app-diario-dei-sogni#dataset-license-v1\",\"dateCreated\":\"2026-07-12\",\"dateModified\":\"2026-08-09\",\"isAccessibleForFree\":true,\"inLanguage\":\"it\",\"keywords\":[\"app diario dei sogni\",\"cattura vocale\",\"interpretazione dei sogni con IA\",\"app per sogni lucidi\"],\"measurementTechnique\":\"Revisione documentale di pagine ufficiali dei prodotti e schede pubbliche degli store; nessun account concorrente e nessun abbonamento a pagamento.\",\"distribution\":{\"@type\":\"DataDownload\",\"encodingFormat\":\"text/csv\",\"contentUrl\":\"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"}}"
   ],
   "activeNav": "resources"
 }
@@ -103,7 +103,14 @@
     <h2 class="text-2xl font-serif text-white mb-4">Scarica i dati del confronto</h2>
     <p>Il CSV riproduce il confronto tra 11 app in un formato che ricercatori, giornalisti e recensori possono filtrare o citare. Ogni riga include la fonte e la data di verifica.</p>
     <p class="mt-4"><a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Scarica il confronto delle app per i sogni (CSV)</a></p>
-    <p class="mt-3 text-sm text-purple-200/70">Puoi riutilizzare questa raccolta editoriale citando Noctalia e collegando questa pagina. I dati sono un'istantanea datata; verifica le fonti ufficiali prima della pubblicazione.</p>
+    <p class="mt-3 text-sm text-purple-200/70">Puoi riutilizzare questa raccolta editoriale secondo la <a href="#dataset-license-v1" class="text-dream-salmon hover:underline">Licenza di riutilizzo del dataset Noctalia 1.0</a>. I dati sono un’istantanea datata; verifica le fonti ufficiali prima della pubblicazione.</p>
+  </section>
+
+  <section id="dataset-license-v1" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Licenza di riutilizzo del dataset Noctalia 1.0</h2>
+    <p>Il CSV scaricabile e i relativi conteggi normalizzati possono essere copiati, citati, condivisi e adattati a condizione di attribuirli a «Noctalia — Dati comparativi delle app diario dei sogni 2026», collegare questa pagina stabile, mantenere la data di revisione e indicare chiaramente le modifiche sostanziali.</p>
+    <p class="mt-4">Questa autorizzazione si applica esclusivamente ai dati del CSV e ai conteggi normalizzati. Non copre il nome o il logo Noctalia come marchi, il codice o il design dell’app e del sito, le illustrazioni editoriali né i materiali di terzi. Il dataset è fornito «così com’è», senza garanzie; i fatti e i materiali di terzi restano soggetti ai rispettivi diritti.</p>
+    <p class="mt-4 text-sm text-purple-200/70">Versione 1.0 · In vigore dall’11 agosto 2026</p>
   </section>
 
   <section id="citation" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">

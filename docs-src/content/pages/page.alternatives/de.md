@@ -23,15 +23,15 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-08-09T00:00:00+02:00",
+  "modifiedTime": "2026-08-11T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Beste Traumtagebuch-Apps 2026\",\n  \"description\": \"Vergleiche Noctalia mit DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud und neuen KI-Traumtagebüchern.\",\n  \"url\": \"https://noctalia.app/de/traumtagebuch-apps\",\n  \"inLanguage\": \"de\",\n  \"dateModified\": \"2026-08-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Beste Traumtagebuch-Apps 2026\",\n  \"description\": \"Vergleiche Noctalia mit DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud und neuen KI-Traumtagebüchern.\",\n  \"url\": \"https://noctalia.app/de/traumtagebuch-apps\",\n  \"inLanguage\": \"de\",\n  \"dateModified\": \"2026-08-11T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Beste Traumtagebuch-Apps 2026\",\n      \"item\": \"https://noctalia.app/de/traumtagebuch-apps\"\n    }\n  ]\n}"
-    ,"{\"@context\":\"https://schema.org\",\"@type\":\"Dataset\",\"@id\":\"https://noctalia.app/de/traumtagebuch-apps#dataset\",\"name\":\"Vergleichsdaten für Traumtagebuch-Apps 2026\",\"description\":\"Eine datierte Dokumentenprüfung von 11 Traumtagebuch-Apps zu Plattformen, Spracheingabe, KI-Deutung, Bildern, Datenschutz, Export und luzidem Träumen.\",\"url\":\"https://noctalia.app/de/traumtagebuch-apps#dataset\",\"creator\":{\"@id\":\"https://noctalia.app/#organization\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"},\"dateCreated\":\"2026-07-12\",\"dateModified\":\"2026-08-09\",\"isAccessibleForFree\":true,\"inLanguage\":\"de\",\"keywords\":[\"Traumtagebuch-Apps\",\"Sprachaufnahme\",\"KI-Traumdeutung\",\"luzides Träumen\"],\"measurementTechnique\":\"Dokumentenprüfung offizieller Produktseiten und öffentlicher App-Store-Einträge; keine Wettbewerberkonten und keine kostenpflichtigen Abonnements.\",\"distribution\":{\"@type\":\"DataDownload\",\"encodingFormat\":\"text/csv\",\"contentUrl\":\"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"}}"
+    ,"{\"@context\":\"https://schema.org\",\"@type\":\"Dataset\",\"@id\":\"https://noctalia.app/de/traumtagebuch-apps#dataset\",\"name\":\"Vergleichsdaten für Traumtagebuch-Apps 2026\",\"description\":\"Eine datierte Dokumentenprüfung von 11 Traumtagebuch-Apps zu Plattformen, Spracheingabe, KI-Deutung, Bildern, Datenschutz, Export und luzidem Träumen.\",\"url\":\"https://noctalia.app/de/traumtagebuch-apps#dataset\",\"creator\":{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\"},\"publisher\":{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\"},\"license\":\"https://noctalia.app/de/traumtagebuch-apps#dataset-license-v1\",\"dateCreated\":\"2026-07-12\",\"dateModified\":\"2026-08-09\",\"isAccessibleForFree\":true,\"inLanguage\":\"de\",\"keywords\":[\"Traumtagebuch-Apps\",\"Sprachaufnahme\",\"KI-Traumdeutung\",\"luzides Träumen\"],\"measurementTechnique\":\"Dokumentenprüfung offizieller Produktseiten und öffentlicher App-Store-Einträge; keine Wettbewerberkonten und keine kostenpflichtigen Abonnements.\",\"distribution\":{\"@type\":\"DataDownload\",\"encodingFormat\":\"text/csv\",\"contentUrl\":\"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"}}"
   ],
   "activeNav": "resources"
 }
@@ -103,7 +103,14 @@
     <h2 class="text-2xl font-serif text-white mb-4">Vergleichsdaten herunterladen</h2>
     <p>Die CSV-Datei bildet den Vergleich von 11 Apps in einem Format ab, das Forschende, Medienschaffende und App-Reviewer filtern oder zitieren können. Jede Zeile enthält Quelle und Prüfdatum.</p>
     <p class="mt-4"><a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Traumtagebuch-App-Vergleich herunterladen (CSV)</a></p>
-    <p class="mt-3 text-sm text-purple-200/70">Diese redaktionelle Zusammenstellung darf mit Namensnennung von Noctalia und einem Link zu dieser Seite weiterverwendet werden. Die Daten sind eine datierte Momentaufnahme; prüfe vor Veröffentlichung die offiziellen Quellen.</p>
+    <p class="mt-3 text-sm text-purple-200/70">Diese redaktionelle Zusammenstellung darf gemäß der <a href="#dataset-license-v1" class="text-dream-salmon hover:underline">Noctalia-Datensatz-Nutzungslizenz 1.0</a> weiterverwendet werden. Die Daten sind eine datierte Momentaufnahme; prüfe vor Veröffentlichung die offiziellen Quellen.</p>
+  </section>
+
+  <section id="dataset-license-v1" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Noctalia-Datensatz-Nutzungslizenz 1.0</h2>
+    <p>Die herunterladbare CSV-Datei und ihre normalisierten Zählwerte dürfen kopiert, zitiert, geteilt und bearbeitet werden, sofern „Noctalia — Vergleichsdaten für Traumtagebuch-Apps 2026“ genannt, auf diese stabile Datensatzseite verlinkt, das Prüfdatum beibehalten und wesentliche Änderungen klar gekennzeichnet werden.</p>
+    <p class="mt-4">Diese Erlaubnis gilt nur für die CSV-Daten und die normalisierten Zählwerte. Sie umfasst weder den Namen oder das Logo von Noctalia als Marken noch den Code oder das Design der App und Website, redaktionelle Illustrationen oder Material Dritter. Der Datensatz wird ohne Gewährleistung in der vorliegenden Form bereitgestellt; Fakten und Materialien Dritter unterliegen weiterhin den jeweiligen Rechten.</p>
+    <p class="mt-4 text-sm text-purple-200/70">Version 1.0 · Gültig ab 11. August 2026</p>
   </section>
 
   <section id="citation" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">

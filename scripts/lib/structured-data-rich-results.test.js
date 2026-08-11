@@ -1,4 +1,5 @@
 const {
+  validateDatasetRichResults,
   validateSoftwareApplicationRichResults,
 } = require('../check-content-release-gates');
 
@@ -36,6 +37,45 @@ describe('Google software application rich-result contract', () => {
           '@type': 'ListItem',
           position: 1,
           name: 'Example dream journal',
+        },
+      ])
+    ).toEqual([]);
+  });
+});
+
+describe('Google dataset rich-result contract', () => {
+  it('rejects untyped creator and publisher references and a missing license', () => {
+    expect(
+      validateDatasetRichResults([
+        {
+          '@type': 'Dataset',
+          name: 'Example dataset',
+          creator: { '@id': 'https://example.com/#organization' },
+          publisher: { '@id': 'https://example.com/#organization' },
+        },
+      ])
+    ).toEqual([
+      'Example dataset: creator must be a Person or Organization object',
+      'Example dataset: publisher must be a Person or Organization object',
+      'Example dataset: license must be an absolute URL or a CreativeWork with an absolute URL',
+    ]);
+  });
+
+  it('accepts typed organizations and a versioned license URL', () => {
+    expect(
+      validateDatasetRichResults([
+        {
+          '@type': 'Dataset',
+          name: 'Example dataset',
+          creator: {
+            '@type': 'Organization',
+            '@id': 'https://example.com/#organization',
+          },
+          publisher: {
+            '@type': 'Organization',
+            '@id': 'https://example.com/#organization',
+          },
+          license: 'https://example.com/dataset#license-v1',
         },
       ])
     ).toEqual([]);

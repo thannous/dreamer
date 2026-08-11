@@ -322,8 +322,60 @@ function validateSoftwareApplicationRichResults(nodes) {
   return errors;
 }
 
+function hasPersonOrOrganizationType(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const types = Array.isArray(value['@type']) ? value['@type'] : [value['@type']];
+  return types.some((type) => type === 'Person' || type === 'Organization');
+}
+
+function isAbsoluteHttpUrl(value) {
+  if (typeof value !== 'string') return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' || url.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
+function hasValidDatasetLicense(value) {
+  if (isAbsoluteHttpUrl(value)) return true;
+  return (
+    value &&
+    typeof value === 'object' &&
+    !Array.isArray(value) &&
+    nodeHasType(value, 'CreativeWork') &&
+    isAbsoluteHttpUrl(value.url)
+  );
+}
+
+function validateDatasetRichResults(nodes) {
+  const errors = [];
+
+  for (const node of Array.isArray(nodes) ? nodes : []) {
+    if (!nodeHasType(node, 'Dataset')) continue;
+    const label = node?.name || '<unnamed dataset>';
+
+    for (const property of ['creator', 'publisher']) {
+      const values = Array.isArray(node?.[property]) ? node[property] : [node?.[property]];
+      if (values.length === 0 || values.some((value) => !hasPersonOrOrganizationType(value))) {
+        errors.push(`${label}: ${property} must be a Person or Organization object`);
+      }
+    }
+
+    if (!hasValidDatasetLicense(node?.license)) {
+      errors.push(
+        `${label}: license must be an absolute URL or a CreativeWork with an absolute URL`
+      );
+    }
+  }
+
+  return errors;
+}
+
 function checkStructuredDataRichResultSources(errors) {
   const files = walkFiles(CONTENT_DIR, (filePath) => filePath.endsWith('.md'));
+  let datasetCount = 0;
   let softwareApplicationCount = 0;
 
   for (const filePath of files) {
@@ -333,19 +385,23 @@ function checkStructuredDataRichResultSources(errors) {
       softwareApplicationCount += nodes.filter((node) =>
         GOOGLE_SOFTWARE_APPLICATION_TYPES.some((type) => nodeHasType(node, type))
       ).length;
+      datasetCount += nodes.filter((node) => nodeHasType(node, 'Dataset')).length;
       for (const error of validateSoftwareApplicationRichResults(nodes)) {
         errors.push(
           `[software app rich result] ${path.relative(ROOT_DIR, filePath)}: ${error}`
         );
       }
+      for (const error of validateDatasetRichResults(nodes)) {
+        errors.push(`[dataset rich result] ${path.relative(ROOT_DIR, filePath)}: ${error}`);
+      }
     } catch (error) {
       errors.push(
-        `[software app rich result] ${path.relative(ROOT_DIR, filePath)}: invalid JSON-LD (${error.message})`
+        `[structured data rich result] ${path.relative(ROOT_DIR, filePath)}: invalid JSON-LD (${error.message})`
       );
     }
   }
 
-  return softwareApplicationCount;
+  return { datasetCount, softwareApplicationCount };
 }
 
 function findMalformedSpanishInvertedQuestions(bodyHtml) {
@@ -1037,7 +1093,7 @@ function runReleaseGates() {
   const errors = [];
   const articleCount = checkArticleDateSources(errors);
   const structuredDataDates = checkStructuredDataDateSources(errors);
-  const softwareApplicationCount = checkStructuredDataRichResultSources(errors);
+  const { datasetCount, softwareApplicationCount } = checkStructuredDataRichResultSources(errors);
   const spanish = checkSpanishEditorialPunctuation(errors);
   const spanishOrthography = checkSpanishOrthography(errors);
   const researchLinkFileCount = checkMisattributedResearchLinks(errors);
@@ -1059,6 +1115,7 @@ function runReleaseGates() {
     researchLinkFileCount,
     spanish,
     spanishOrthography,
+    datasetCount,
     softwareApplicationCount,
     structuredDataDates,
     symbolCount,
@@ -1078,6 +1135,7 @@ function main() {
       `${result.structuredDataDates.articleSchemaCount} article schemas, ` +
       `${result.structuredDataDates.datedPageSchemaCount} dated page schemas, ` +
       `${result.softwareApplicationCount} software application schemas, ` +
+      `${result.datasetCount} dataset schemas, ` +
       `${result.spanish.fileCount} Spanish articles, ${result.commercialPageCount} commercial pages, ` +
       `${result.homePageCount} home product-fact pages, ${result.metadataFileCount} metadata sources, ` +
       `${result.researchLinkFileCount} research-link sources, ` +
@@ -1111,6 +1169,7 @@ module.exports = {
   normalizeSymbolDescriptionTemplate,
   terminalMetadataWord,
   validateExpandedSymbolLocale,
+  validateDatasetRichResults,
   validateSoftwareApplicationRichResults,
   runReleaseGates,
 };

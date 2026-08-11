@@ -23,15 +23,15 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-08-09T00:00:00+02:00",
+  "modifiedTime": "2026-08-11T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Meilleures applications journal de rêves 2026\",\n  \"description\": \"Comparez Noctalia avec DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud et les nouveaux journaux de rêves IA.\",\n  \"url\": \"https://noctalia.app/fr/applications-journal-de-reves\",\n  \"inLanguage\": \"fr\",\n  \"dateModified\": \"2026-08-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Meilleures applications journal de rêves 2026\",\n  \"description\": \"Comparez Noctalia avec DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud et les nouveaux journaux de rêves IA.\",\n  \"url\": \"https://noctalia.app/fr/applications-journal-de-reves\",\n  \"inLanguage\": \"fr\",\n  \"dateModified\": \"2026-08-11T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Meilleures applications de journal de rêves en 2026\",\n      \"item\": \"https://noctalia.app/fr/applications-journal-de-reves\"\n    }\n  ]\n}"
-    ,"{\"@context\":\"https://schema.org\",\"@type\":\"Dataset\",\"@id\":\"https://noctalia.app/fr/applications-journal-de-reves#dataset\",\"name\":\"Jeu de données comparatif des applications de journal de rêves 2026\",\"description\":\"Une revue documentaire datée de 11 applications de journal de rêves sur les plateformes, la capture vocale, l’interprétation IA, les images, la confidentialité, l’export et le rêve lucide.\",\"url\":\"https://noctalia.app/fr/applications-journal-de-reves#dataset\",\"creator\":{\"@id\":\"https://noctalia.app/#organization\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"},\"dateCreated\":\"2026-07-12\",\"dateModified\":\"2026-08-09\",\"isAccessibleForFree\":true,\"inLanguage\":\"fr\",\"keywords\":[\"applications journal de rêves\",\"capture vocale\",\"interprétation de rêves IA\",\"applications rêve lucide\"],\"measurementTechnique\":\"Revue documentaire des pages officielles et des fiches publiques des stores ; aucun compte concurrent et aucun abonnement payant.\",\"distribution\":{\"@type\":\"DataDownload\",\"encodingFormat\":\"text/csv\",\"contentUrl\":\"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"}}"
+    ,"{\"@context\":\"https://schema.org\",\"@type\":\"Dataset\",\"@id\":\"https://noctalia.app/fr/applications-journal-de-reves#dataset\",\"name\":\"Jeu de données comparatif des applications de journal de rêves 2026\",\"description\":\"Une revue documentaire datée de 11 applications de journal de rêves sur les plateformes, la capture vocale, l’interprétation IA, les images, la confidentialité, l’export et le rêve lucide.\",\"url\":\"https://noctalia.app/fr/applications-journal-de-reves#dataset\",\"creator\":{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\"},\"publisher\":{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\"},\"license\":\"https://noctalia.app/fr/applications-journal-de-reves#dataset-license-v1\",\"dateCreated\":\"2026-07-12\",\"dateModified\":\"2026-08-09\",\"isAccessibleForFree\":true,\"inLanguage\":\"fr\",\"keywords\":[\"applications journal de rêves\",\"capture vocale\",\"interprétation de rêves IA\",\"applications rêve lucide\"],\"measurementTechnique\":\"Revue documentaire des pages officielles et des fiches publiques des stores ; aucun compte concurrent et aucun abonnement payant.\",\"distribution\":{\"@type\":\"DataDownload\",\"encodingFormat\":\"text/csv\",\"contentUrl\":\"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"}}"
   ],
   "activeNav": "resources"
 }
@@ -103,7 +103,14 @@
     <h2 class="text-2xl font-serif text-white mb-4">Télécharger le jeu de données</h2>
     <p>Le fichier CSV reprend la comparaison de 11 applications dans un format filtrable et citable par les chercheurs, journalistes et auteurs de tests. Chaque ligne indique sa source et sa date de vérification.</p>
     <p class="mt-4"><a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Télécharger la comparaison des journaux de rêves (CSV)</a></p>
-    <p class="mt-3 text-sm text-purple-200/70">Cette compilation éditoriale peut être réutilisée avec attribution à Noctalia et un lien vers cette page. Les informations constituent un instantané daté ; vérifiez les sources officielles avant publication.</p>
+    <p class="mt-3 text-sm text-purple-200/70">Cette compilation éditoriale peut être réutilisée selon la <a href="#dataset-license-v1" class="text-dream-salmon hover:underline">Licence de réutilisation du jeu de données Noctalia 1.0</a>. Les informations constituent un instantané daté ; vérifiez les sources officielles avant publication.</p>
+  </section>
+
+  <section id="dataset-license-v1" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Licence de réutilisation du jeu de données Noctalia 1.0</h2>
+    <p>Le CSV téléchargeable et ses décomptes normalisés peuvent être copiés, cités, partagés et adaptés à condition de créditer « Noctalia — Jeu de données comparatif des applications de journal de rêves 2026 », de créer un lien vers cette page stable, de conserver la date de vérification et d’indiquer clairement toute modification substantielle.</p>
+    <p class="mt-4">Cette autorisation s’applique uniquement aux données du CSV et aux décomptes normalisés. Elle ne couvre pas le nom ou le logo Noctalia en tant que marques, le code et le design de l’application ou du site, les illustrations éditoriales ni les contenus provenant de tiers. Le jeu de données est fourni « en l’état », sans garantie ; les faits et contenus tiers restent soumis à leurs droits respectifs.</p>
+    <p class="mt-4 text-sm text-purple-200/70">Version 1.0 · En vigueur le 11 août 2026</p>
   </section>
 
   <section id="citation" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
