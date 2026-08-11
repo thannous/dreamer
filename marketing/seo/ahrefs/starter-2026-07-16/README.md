@@ -46,6 +46,8 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j27-content-validation-backlog-2026-08-11.csv`](./j27-content-validation-backlog-2026-08-11.csv) : backlog post-Starter des propriétaires prospectifs, preuves, conflits et portes d'implémentation.
 - [`j27-ranking-expansion-2026-08-11.md`](./j27-ranking-expansion-2026-08-11.md) : extension J27 autorisée, croisement de 80 requêtes Ahrefs avec GSC, lot de 20 routes localisées et quatre quick wins de titres existants.
 - [`j27-ranking-expansion-backlog-2026-08-11.csv`](./j27-ranking-expansion-backlog-2026-08-11.csv) : matrice pays de 80 requêtes pour les vagues suivantes, avec métriques observées, statut et porte d'ownership.
+- [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacement Drive de la clôture J25–J27, périmètre synchronisé et règles de conservation.
+- [`drive-sync-manifest-2026-08-11.csv`](./drive-sync-manifest-2026-08-11.csv) : correspondance vérifiable entre les 15 fichiers Git, leurs identifiants Drive et leurs empreintes SHA-256.
 - [`rank-tracker-portfolio-50-2026-07-16.csv`](./rank-tracker-portfolio-50-2026-07-16.csv) : portefeuille validé des 50 couples, assaini des métriques brutes.
 - [`rank-tracker-target-map-2026-08-01.csv`](./rank-tracker-target-map-2026-08-01.csv) : correspondance durable entre chaque tag `target-*` et l'URL cible voulue.
 - [`j10-prioritization-2026-07-25.md`](./j10-prioritization-2026-07-25.md) et [`j10-priorities-2026-07-25.csv`](./j10-priorities-2026-07-25.csv) : première consolidation versionnée du portefeuille 5 + 3.
