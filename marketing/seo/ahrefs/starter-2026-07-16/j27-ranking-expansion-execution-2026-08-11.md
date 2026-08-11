@@ -29,7 +29,7 @@ Ce chantier ne modifie pas :
 | Priorité | Levier | État au 11 août | Prochaine porte |
 |---|---|---|---|
 | P0 | `turtle`, 5 langues | `LIVE_VERIFIED` | mesurer sur des fenêtres GSC complètes sans demander d'indexation |
-| P0 | `crocodile`, 5 langues | `LOCAL_VALIDATED` | commit et contrat URL isolés, puis un seul push/déploiement après contrôle du diff |
+| P0 | `crocodile`, 5 langues | `PUSHED_CI_GREEN_DEPLOY_BLOCKED` | inspecter le build Cloudflare `abb9d5e9…`, puis établir cinq preuves HTTP avant tout lot `lice` |
 | P0 | `lice`, 5 langues | `QUEUED_AFTER_CROCODILE` | ne commencer la publication qu'après preuve HTTP de `crocodile` |
 | P0 | autorité externe | `PREPARE_ONLY_NO_SEND` | nouveau stop gate puis autorisation explicite, dossier par dossier |
 | P1 | expérience `scuola` | `HOLD_UNTIL_2026-08-15` | lire la fenêtre J+7 de `casa/ragno/perro`, puis ouvrir un lot metadata-only séparé si le signal reste propre |
@@ -106,7 +106,15 @@ Le contenu distingue eau, observation, poursuite ou attaque, présence dans la m
 
 Actif éditorial local : `docs-src/static/img/symbols/editorial-2026-08-j27/crocodile-v1.webp`, 1 600 × 900, plus quatre variantes de 240 à 1 200 pixels. L'illustration montre un seul crocodile dans l'eau, sans humain, attaque, texte, logo, filigrane ni code divinatoire.
 
-Contrôles locaux avant commit : inventaire porté à 156 symboles, 780 pages de détail, 785 contenus étendus, cinq titres de 38 à 46 caractères et cinq descriptions de 139 à 146 caractères. `docs:build`, le contrat d'image, la parité multilingue et les 15 tests du registre passent. Le lot reste local tant que son propre contrat URL et le release check depuis un HEAD propre ne sont pas établis.
+Contrôles locaux avant commit : inventaire porté à 156 symboles, 780 pages de détail, 785 contenus étendus, cinq titres de 38 à 46 caractères et cinq descriptions de 139 à 146 caractères. `docs:build`, le contrat d'image, la parité multilingue et les 15 tests du registre passent.
+
+### Git, CI et publication
+
+Le contenu et ses actifs sont isolés dans `2edfd52c5` (`feat(seo): add localized crocodile ranking owners`). Le contrat public additif des cinq routes est isolé dans `789c82dc4` (`chore(seo): extend URL contract for crocodile`). Aucun chemin existant n'a été retiré ou modifié par l'extension.
+
+Le release check sur export Git propre passe avec 0 erreur et 0 avertissement dans `docs:check`, ainsi que 0 lien interne cassé. Son contrôle de profondeur conserve 70 avertissements non bloquants sur des fiches allemandes courtes, sans lien avec ce lot. La suite complète passe 260 suites et 2 474 tests. Le push fast-forward vers `master` a établi `origin/master = 789c82dc418cdf5ce98f669a9f09337b20324a25`; le run Quality exact `31519264150` est entièrement vert, dont le build/check du site en 8 min 56 s.
+
+La publication reste distincte : le build Cloudflare Pages `abb9d5e9-2ccb-4772-961c-81ff244e41d7`, démarré à 17:46:16 UTC, est toujours affiché `Building` après 18:46 UTC. La version publique reste `6d282b9e1c91` et les cinq routes crocodile renvoient encore 404. Le dashboard est à l'écran de connexion; ses journaux ne sont pas accessibles dans la session actuelle. Aucun redéploiement manuel et aucun lot `lice` ne sont lancés tant que ce build n'est pas diagnostiqué ou que la preuve publique n'est pas acquise.
 
 ## Autorité externe — frontière d'autorisation
 
@@ -156,7 +164,8 @@ La variante `per%C3%A9...` renvoie encore 404 publiquement, mais elle n'apparaî
 
 - Crédits Ahrefs consommés par cette implémentation : 0.
 - Dernier compteur durable disponible avant ce chantier : 113/200 crédits généraux utilisés.
-- Export GSC brut : archive CSV conservée hors dépôt en attente de synchronisation Drive; seule son empreinte et sa segmentation décisionnelle sont versionnées.
+- Export GSC brut : archive CSV conservée hors dépôt; le connecteur Drive a refusé son téléversement en raison de son caractère potentiellement sensible. Une autorisation explicite dédiée aux données brutes est requise; seule son empreinte et sa segmentation décisionnelle sont versionnées.
+- Rapport synthétique Drive : `j27-ranking-expansion-execution-2026-08-11.md`, identifiant `11HiAE9xMxWzbP6HMhui63XDneuPZVOgk`, dans `05 - Clôture J25-J27 - 2026-08-11`; aucun partage n'a été modifié.
 - Mutation GSC : aucune.
 - Demande d'indexation : aucune.
 - Achat ou changement d'abonnement : aucun ; la décision reste à l'utilisateur.
