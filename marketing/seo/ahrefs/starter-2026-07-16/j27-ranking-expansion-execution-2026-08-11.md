@@ -30,7 +30,7 @@ Ce chantier ne modifie pas :
 |---|---|---|---|
 | P0 | `turtle`, 5 langues | `LIVE_VERIFIED` | mesurer sur des fenêtres GSC complètes sans demander d'indexation |
 | P0 | `crocodile`, 5 langues | `LIVE_VERIFIED` | mesurer sur des fenêtres GSC complètes sans demander d'indexation |
-| P0 | `lice`, 5 langues | `LOCAL_FULL_CHECK_GREEN` | committer le contrat URL, coordonner puis pousser ce seul concept vers `master` |
+| P0 | `lice`, 5 langues | `LIVE_VERIFIED` | mesurer sur des fenêtres GSC complètes sans demander d'indexation |
 | P0 | autorité externe | `PREPARE_ONLY_NO_SEND` | nouveau stop gate puis autorisation explicite, dossier par dossier |
 | P1 | expérience `scuola` | `HOLD_UNTIL_2026-08-15` | lire la fenêtre J+7 de `casa/ragno/perro`, puis ouvrir un lot metadata-only séparé si le signal reste propre |
 | P1 | 254 URL explorées non indexées | `DIAGNOSTIC_ONLY` | segmenter, commencer par l'article DE sur la poursuite, n'ajouter qu'un lien contextuel prouvé |
@@ -139,6 +139,10 @@ Actif éditorial : `docs-src/static/img/symbols/editorial-2026-08-j27/lice-v1.we
 Contrôles locaux avant commit : 157 symboles uniques, 785 pages de détail et 790 contenus étendus; cinq titres de 40 à 42 caractères et cinq descriptions de 137 à 146 caractères. `docs:build` passe avec 0 erreur, le contrat des images vérifie 785 héros, cartes, données structurées et entrées sitemap, la parité multilingue passe et les 32 tests ciblés du registre et de l'image sont verts. `docs:check` s'arrête uniquement sur la porte attendue des cinq routes nouvelles et de leurs 21 surfaces dérivées, avant extension additive de la baseline URL.
 
 Le contenu et ses actifs sont isolés dans `8ecf0772f` (`feat(seo): add localized lice ranking owners`). Depuis ce HEAD propre, la baseline URL a été étendue sans retrait : 1 231 routes manifeste, 1 231 pages canoniques, 1 231 entrées sitemap et 1 236 sorties HTML. Après extension, `docs:check` passe entièrement avec 0 erreur, 0 avertissement et 0 lien interne cassé; le contrat de hub valide 1 000 pages localisées et 2 305 relations requises.
+
+Le contrat additif et sa preuve sont isolés dans `9029b0b69` (`chore(seo): extend URL contract for lice`). Le push fast-forward établit `origin/master = 9029b0b6953b4c593d0dd33b52576734f49e70f8`. Le run Quality exact `31526228703` est entièrement vert : Edge Functions en 18 s, suite rapide en 1 min 26 s et build/check du site en 8 min. Le release check local sur export Git propre est également vert; la suite complète passe 260 suites et 2 474 tests.
+
+Cloudflare Pages a publié le déploiement `e082900b-f2e1-4538-a1f8-90e4481e4fa1` déclenché par ce SHA propre. Créé à 19:07:05 UTC, il termine le build avec succès à 19:21:45 UTC, puis le déploiement en 27 s à 19:22:13 UTC; l'alias `https://noctalia.app` est attaché. Les cinq routes répondent HTTP 200 avec le titre localisé attendu, canonical auto-référent, directives `index, follow`, six alternates uniques (`en`, `fr`, `es`, `de`, `it`, `x-default`) et contenu dédié. Le master éditorial et les quatre variantes 240w, 480w, 800w et 1200w répondent tous 200 en `image/webp`. La variante 480w a connu un 404 de propagation de quelques secondes juste après le basculement, puis a répondu 200 sur l'alias et l'URL de déploiement avec le même ETag; aucune mutation ni relance n'a été nécessaire.
 
 ## Autorité externe — frontière d'autorisation
 
