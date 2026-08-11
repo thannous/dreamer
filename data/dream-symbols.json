@@ -2,7 +2,7 @@
   "meta": {
     "version": "1.0.0",
     "lastUpdated": "2026-08-11",
-    "totalSymbols": 156,
+    "totalSymbols": 157,
     "languages": [
       "en",
       "fr",
@@ -10,7 +10,7 @@
       "de",
       "it"
     ],
-    "symbolCount": 156
+    "symbolCount": 157
   },
   "categories": {
     "nature": {
@@ -12633,6 +12633,173 @@
         "chase",
         "house",
         "snake"
+      ],
+      "modifiedAt": "2026-08-11"
+    },
+    {
+      "id": "lice",
+      "category": "animals",
+      "priority": 2,
+      "en": {
+        "slug": "lice",
+        "name": "Lice",
+        "seoTitle": "lice in hair, removing lice or many lice",
+        "documentTitle": "Dreaming About Lice: Meaning and Context",
+        "documentMetaDescription": "Dreaming about lice? Compare lice in hair, removing them, many lice and finding them on someone using emotion and recent context, not predictions.",
+        "shortDescription": "Lice in a dream may bring repeated irritation, close boundaries, care or fear of social exposure into focus. Who had them, how many appeared and whether you removed them help separate practical concern from a broader emotional theme.",
+        "askYourself": [
+          "Were the lice in my hair, numerous, being removed, or found on a child or another person?",
+          "Did I feel itching, disgust, shame, urgency, relief, protectiveness or patient concentration?",
+          "Has a school notice, family concern, cleaning task, close contact or repeated small problem recently occupied my attention?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about lice?",
+            "answer": "Lice can fit repeated irritation, intrusive worries, close boundaries, care or social discomfort. The person affected and your response give more context than one fixed meaning."
+          },
+          {
+            "question": "What do lice in your hair mean in a dream?",
+            "answer": "Lice in your own hair may make a persistent concern feel personal and hard to ignore. Recent itching, a health notice or checking someone’s hair can also supply the image directly."
+          },
+          {
+            "question": "What does removing or killing lice in a dream mean?",
+            "answer": "Removing lice can emphasize careful problem-solving, cleaning, relief or the wish to regain control over repeated small pressures. It does not predict a real infestation."
+          },
+          {
+            "question": "What do many lice or lice on a child mean in a dream?",
+            "answer": "Many lice can amplify overwhelm or repetition. Finding them on a child or another person may highlight care and responsibility, especially after a real school, family or health concern."
+          }
+        ]
+      },
+      "fr": {
+        "slug": "poux",
+        "name": "Poux",
+        "seoTitle": "poux dans les cheveux, retirer des poux ou en voir beaucoup",
+        "documentTitle": "Rêver de poux : signification et scénarios",
+        "documentMetaDescription": "Rêver de poux : comparez cheveux, retrait, grand nombre et présence sur un proche selon l’émotion et le contexte récent, sans prédiction.",
+        "shortDescription": "Des poux dans un rêve peuvent attirer l’attention sur une irritation répétée, des limites trop proches, le soin ou la peur du regard social. La personne concernée, leur nombre et votre façon d’agir distinguent souci concret et thème émotionnel.",
+        "askYourself": [
+          "Les poux étaient-ils dans mes cheveux, très nombreux, retirés un à un ou présents sur un enfant ou un proche ?",
+          "Ai-je ressenti démangeaison, dégoût, honte, urgence, soulagement, protection ou concentration ?",
+          "Une alerte scolaire, une inquiétude familiale, un nettoyage, un contact rapproché ou un petit problème répétitif m’a-t-il récemment occupé ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de poux ?",
+            "answer": "Les poux peuvent rejoindre irritation répétée, souci envahissant, proximité, soin ou gêne sociale. La personne touchée et votre réaction donnent plus de contexte qu’un sens unique."
+          },
+          {
+            "question": "Que signifient des poux dans les cheveux en rêve ?",
+            "answer": "Dans vos propres cheveux, ils peuvent rendre un souci persistant personnel et difficile à ignorer. Une démangeaison, une alerte sanitaire ou un contrôle récent peut aussi fournir directement l’image."
+          },
+          {
+            "question": "Que signifie enlever ou tuer des poux dans un rêve ?",
+            "answer": "Retirer des poux peut mettre en scène résolution minutieuse, nettoyage, soulagement ou reprise de contrôle face à de petites pressions répétées. Cela ne prédit pas une infestation réelle."
+          },
+          {
+            "question": "Que signifient beaucoup de poux ou des poux sur un enfant ?",
+            "answer": "Un grand nombre peut amplifier débordement et répétition. Sur un enfant ou un proche, la scène peut souligner soin et responsabilité, surtout après une préoccupation scolaire, familiale ou sanitaire."
+          }
+        ]
+      },
+      "es": {
+        "slug": "piojos",
+        "name": "Piojos",
+        "seoTitle": "piojos en el pelo, quitar piojos o ver muchos",
+        "documentTitle": "Soñar con piojos: significado y escenarios",
+        "documentMetaDescription": "Soñar con piojos: compara pelo, eliminación, gran cantidad y presencia en otra persona según emoción y contexto reciente, sin predicciones.",
+        "shortDescription": "Los piojos en un sueño pueden destacar irritación repetida, límites demasiado cercanos, cuidado o temor a la exposición social. Quién los tenía, cuántos aparecían y cómo actuabas diferencian una preocupación práctica de un tema emocional.",
+        "askYourself": [
+          "¿Los piojos estaban en mi pelo, eran muchos, los quitaba o aparecían en un niño u otra persona?",
+          "¿Sentí picor, asco, vergüenza, urgencia, alivio, protección o concentración paciente?",
+          "¿Un aviso escolar, una preocupación familiar, una limpieza, un contacto cercano o un pequeño problema repetido ha ocupado mi atención?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con piojos?",
+            "answer": "Los piojos pueden relacionarse con irritación repetida, preocupaciones invasivas, cercanía, cuidado o incomodidad social. La persona afectada y tu respuesta aportan más contexto que un significado fijo."
+          },
+          {
+            "question": "¿Qué significan los piojos en el pelo en un sueño?",
+            "answer": "En tu propio pelo pueden volver personal y difícil de ignorar una preocupación persistente. Un picor, un aviso sanitario o revisar el pelo de alguien también pueden aportar la imagen directamente."
+          },
+          {
+            "question": "¿Qué significa quitar o matar piojos en un sueño?",
+            "answer": "Quitar piojos puede destacar solución cuidadosa, limpieza, alivio o deseo de recuperar control ante pequeñas presiones repetidas. No predice una infestación real."
+          },
+          {
+            "question": "¿Qué significan muchos piojos o piojos en un niño?",
+            "answer": "Muchos piojos pueden intensificar agobio y repetición. En un niño u otra persona pueden señalar cuidado y responsabilidad, especialmente tras una preocupación escolar, familiar o sanitaria."
+          }
+        ]
+      },
+      "de": {
+        "slug": "laeuse",
+        "name": "Läuse",
+        "seoTitle": "Läuse im Haar, Läuse entfernen oder viele Läuse",
+        "documentTitle": "Traumdeutung Läuse: Bedeutung und Szenen",
+        "documentMetaDescription": "Läuse im Traum: Vergleiche Haare, Entfernen, viele Läuse und Befall bei anderen anhand von Gefühl und aktuellem Kontext statt Vorhersagen.",
+        "shortDescription": "Läuse im Traum können wiederkehrende Reizung, zu große Nähe, Fürsorge oder Angst vor sozialer Bloßstellung hervorheben. Betroffene Person, Anzahl und dein Handeln unterscheiden praktische Sorge von einem breiteren Gefühlsthema.",
+        "askYourself": [
+          "Waren die Läuse in meinen Haaren, sehr zahlreich, wurden sie entfernt oder waren sie bei einem Kind oder einer anderen Person?",
+          "Empfand ich Juckreiz, Ekel, Scham, Dringlichkeit, Erleichterung, Schutzbedürfnis oder geduldige Konzentration?",
+          "Haben ein Schulhinweis, familiäre Sorge, Reinigung, enger Kontakt oder ein wiederkehrendes kleines Problem zuletzt meine Aufmerksamkeit beansprucht?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeuten Läuse im Traum?",
+            "answer": "Läuse können zu wiederkehrender Reizung, aufdringlichen Sorgen, Nähe, Fürsorge oder sozialem Unbehagen passen. Betroffene Person und Reaktion geben mehr Kontext als eine feste Deutung."
+          },
+          {
+            "question": "Was bedeuten Läuse in den Haaren im Traum?",
+            "answer": "Im eigenen Haar können sie eine hartnäckige Sorge persönlich und schwer übersehbar machen. Juckreiz, ein Gesundheitshinweis oder eine aktuelle Haarkontrolle können das Bild auch direkt liefern."
+          },
+          {
+            "question": "Was bedeutet es, im Traum Läuse zu entfernen oder zu töten?",
+            "answer": "Läuse zu entfernen kann sorgfältiges Problemlösen, Reinigung, Erleichterung oder zurückgewonnene Kontrolle über kleine wiederkehrende Belastungen betonen. Es sagt keinen realen Befall voraus."
+          },
+          {
+            "question": "Was bedeuten viele Läuse oder Läuse bei einem Kind?",
+            "answer": "Viele Läuse können Überforderung und Wiederholung verstärken. Bei einem Kind oder anderen Menschen kann die Szene Fürsorge und Verantwortung nach einer schulischen, familiären oder gesundheitlichen Sorge hervorheben."
+          }
+        ]
+      },
+      "it": {
+        "slug": "pidocchi",
+        "name": "Pidocchi",
+        "seoTitle": "pidocchi nei capelli, toglierli o vederne molti",
+        "documentTitle": "Sognare i pidocchi: significato e scenari",
+        "documentMetaDescription": "Sognare i pidocchi: confronta capelli, rimozione, grande quantità e presenza su altre persone usando emozione e contesto, senza previsioni.",
+        "shortDescription": "I pidocchi in sogno possono mettere in primo piano irritazione ripetuta, confini troppo vicini, cura o timore dell’esposizione sociale. Persona coinvolta, quantità e modo di agire distinguono una preoccupazione pratica da un tema emotivo.",
+        "askYourself": [
+          "I pidocchi erano nei miei capelli, erano molti, li toglievo o comparivano su un bambino o un’altra persona?",
+          "Provavo prurito, disgusto, vergogna, urgenza, sollievo, protezione o concentrazione paziente?",
+          "Un avviso scolastico, una preoccupazione familiare, una pulizia, un contatto stretto o un piccolo problema ripetuto ha occupato di recente la mia attenzione?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare i pidocchi?",
+            "answer": "I pidocchi possono collegarsi a irritazione ripetuta, pensieri invadenti, vicinanza, cura o disagio sociale. Persona coinvolta e reazione offrono più contesto di un significato fisso."
+          },
+          {
+            "question": "Che cosa significano i pidocchi nei capelli in sogno?",
+            "answer": "Nei propri capelli possono rendere personale e difficile da ignorare una preoccupazione persistente. Prurito, avviso sanitario o controllo recente dei capelli possono anche fornire direttamente l’immagine."
+          },
+          {
+            "question": "Che cosa significa togliere o uccidere pidocchi in sogno?",
+            "answer": "Togliere pidocchi può evidenziare soluzione accurata, pulizia, sollievo o recupero del controllo su piccole pressioni ripetute. Non predice un’infestazione reale."
+          },
+          {
+            "question": "Che cosa significano molti pidocchi o pidocchi su un bambino?",
+            "answer": "Molti pidocchi possono amplificare sovraccarico e ripetizione. Su un bambino o un’altra persona possono richiamare cura e responsabilità dopo una preoccupazione scolastica, familiare o sanitaria."
+          }
+        ]
+      },
+      "relatedSymbols": [
+        "hair",
+        "child",
+        "school",
+        "worms"
       ],
       "modifiedAt": "2026-08-11"
     }

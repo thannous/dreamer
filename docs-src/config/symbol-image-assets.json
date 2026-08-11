@@ -466,6 +466,13 @@
       "category": "nature",
       "subject": "Lightning"
     },
+    "lice": {
+      "src": "/img/symbols/editorial-2026-08-j27/lice-v1.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Louse"
+    },
     "lion": {
       "src": "/img/symbols/editorial-2026-07-v2/lion-v2.webp",
       "width": 1600,

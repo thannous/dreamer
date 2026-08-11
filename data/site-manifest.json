@@ -6668,6 +6668,34 @@
             }
           }
         },
+        "symbol.lice": {
+          "id": "symbol.lice",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "lice",
+          "locales": {
+            "en": {
+              "slug": "lice",
+              "path": "/en/symbols/lice"
+            },
+            "fr": {
+              "slug": "poux",
+              "path": "/fr/symboles/poux"
+            },
+            "es": {
+              "slug": "piojos",
+              "path": "/es/simbolos/piojos"
+            },
+            "de": {
+              "slug": "laeuse",
+              "path": "/de/traumsymbole/laeuse"
+            },
+            "it": {
+              "slug": "pidocchi",
+              "path": "/it/simboli/pidocchi"
+            }
+          }
+        },
         "symbolCategory.nature": {
           "id": "symbolCategory.nature",
           "type": "symbolCategory",

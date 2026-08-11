@@ -29,8 +29,8 @@ Ce chantier ne modifie pas :
 | Priorité | Levier | État au 11 août | Prochaine porte |
 |---|---|---|---|
 | P0 | `turtle`, 5 langues | `LIVE_VERIFIED` | mesurer sur des fenêtres GSC complètes sans demander d'indexation |
-| P0 | `crocodile`, 5 langues | `PUSHED_CI_GREEN_DEPLOY_BLOCKED` | inspecter le build Cloudflare `abb9d5e9…`, puis établir cinq preuves HTTP avant tout lot `lice` |
-| P0 | `lice`, 5 langues | `QUEUED_AFTER_CROCODILE` | ne commencer la publication qu'après preuve HTTP de `crocodile` |
+| P0 | `crocodile`, 5 langues | `LIVE_VERIFIED` | mesurer sur des fenêtres GSC complètes sans demander d'indexation |
+| P0 | `lice`, 5 langues | `LOCAL_BUILD_AUTHORIZED` | préparer et contrôler le troisième concept seul avant tout push |
 | P0 | autorité externe | `PREPARE_ONLY_NO_SEND` | nouveau stop gate puis autorisation explicite, dossier par dossier |
 | P1 | expérience `scuola` | `HOLD_UNTIL_2026-08-15` | lire la fenêtre J+7 de `casa/ragno/perro`, puis ouvrir un lot metadata-only séparé si le signal reste propre |
 | P1 | 254 URL explorées non indexées | `DIAGNOSTIC_ONLY` | segmenter, commencer par l'article DE sur la poursuite, n'ajouter qu'un lien contextuel prouvé |
@@ -114,7 +114,29 @@ Le contenu et ses actifs sont isolés dans `2edfd52c5` (`feat(seo): add localize
 
 Le release check sur export Git propre passe avec 0 erreur et 0 avertissement dans `docs:check`, ainsi que 0 lien interne cassé. Son contrôle de profondeur conserve 70 avertissements non bloquants sur des fiches allemandes courtes, sans lien avec ce lot. La suite complète passe 260 suites et 2 474 tests. Le push fast-forward vers `master` a établi `origin/master = 789c82dc418cdf5ce98f669a9f09337b20324a25`; le run Quality exact `31519264150` est entièrement vert, dont le build/check du site en 8 min 56 s.
 
-La publication reste distincte : le build Cloudflare Pages `abb9d5e9-2ccb-4772-961c-81ff244e41d7`, démarré à 17:46:16 UTC, est toujours affiché `Building` après 18:46 UTC. La version publique reste `6d282b9e1c91` et les cinq routes crocodile renvoient encore 404. Le dashboard est à l'écran de connexion; ses journaux ne sont pas accessibles dans la session actuelle. Aucun redéploiement manuel et aucun lot `lice` ne sont lancés tant que ce build n'est pas diagnostiqué ou que la preuve publique n'est pas acquise.
+La session Chrome authentifiée a permis d'inspecter le déploiement Cloudflare Pages exact `abb9d5e9-2ccb-4772-961c-81ff244e41d7`. Il a terminé avec succès à 18:51:21 UTC sur la branche `master` et le commit `789c82d`, après 11 min 23 s. Les journaux confirment 3 837 actifs traités, 1 237 fichiers téléversés, 2 600 déjà présents, puis `Assets published` et `Your site was deployed`. Le check GitHub « Cloudflare Pages » du même SHA est désormais `completed/success`.
+
+La preuve publique est acquise : les cinq routes localisées répondent HTTP 200, portent leur titre localisé suivi de `| Noctalia`, un canonical auto-référent, des directives `index, follow` et les six alternates uniques `en`, `fr`, `es`, `de`, `it`, `x-default`. Le master éditorial et les quatre variantes responsives répondent également HTTP 200 en `image/webp`. Aucun redéploiement manuel ni demande d'indexation n'a été nécessaire. Cette porte autorise désormais la préparation locale du lot `lice`, qui reste un concept et un déploiement séparés.
+
+## Lot 3 — `lice`
+
+### Preuve et ownership
+
+Les cinq requêtes sont classées `GO_NEXT_WAVE` dans le backlog J27. Les volumes pays observés sont : IT 800 (`KD 0`), DE 200 (`KD 0`), FR 150 (`KD 0`), ES 1 600 (`KD 18`) et US 30 (`KD 0`). En Espagne, un domaine DR 0 apparaît déjà en 10e position, ce qui confirme une surface accessible malgré le KD supérieur. Aucun propriétaire dédié n'était visible dans la fenêtre GSC contrôlée; l'angle argent, chance ou prédiction est explicitement exclu.
+
+| Langue | Route canonique préparée |
+|---|---|
+| EN | `/en/symbols/lice` |
+| FR | `/fr/symboles/poux` |
+| ES | `/es/simbolos/piojos` |
+| DE | `/de/traumsymbole/laeuse` |
+| IT | `/it/simboli/pidocchi` |
+
+Les cinq propriétaires couvrent poux dans les cheveux, retrait, grand nombre et présence sur un enfant ou un proche. Le contenu sépare irritation répétée, limites proches, soin et gêne sociale des déclencheurs littéraux possibles : alerte scolaire, conversation familiale, démangeaison, contrôle des cheveux, nettoyage ou article récent. Il précise qu'un rêve ne diagnostique pas une infestation et ne prédit ni argent, ni chance, ni événement futur.
+
+Actif éditorial : `docs-src/static/img/symbols/editorial-2026-08-j27/lice-v1.webp`, 1 600 × 900, accompagné de quatre variantes de 240 à 1 200 pixels. L'image montre un seul pou anatomiquement reconnaissable sur quelques cheveux, sans visage, plaie, sang, œufs, autre insecte, texte, logo, filigrane ni code divinatoire.
+
+Contrôles locaux avant commit : 157 symboles uniques, 785 pages de détail et 790 contenus étendus; cinq titres de 40 à 42 caractères et cinq descriptions de 137 à 146 caractères. `docs:build` passe avec 0 erreur, le contrat des images vérifie 785 héros, cartes, données structurées et entrées sitemap, la parité multilingue passe et les 32 tests ciblés du registre et de l'image sont verts. `docs:check` s'arrête uniquement sur la porte attendue des cinq routes nouvelles et de leurs 21 surfaces dérivées, avant extension additive de la baseline URL.
 
 ## Autorité externe — frontière d'autorisation
 
