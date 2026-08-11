@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "85a49e9107facd3b087fe79692cb5e1928258f84",
+  "sourceRevision": "46e24e94f4f12d8a1242e6df8991124c581a65f8",
   "counts": {
-    "logicalPages": 243,
-    "manifestPaths": 1216,
-    "uniqueManifestPaths": 1216,
-    "canonicalPages": 1216,
-    "sitemapEntries": 1216,
-    "allHtmlOutputPaths": 1221
+    "logicalPages": 244,
+    "manifestPaths": 1221,
+    "uniqueManifestPaths": 1221,
+    "canonicalPages": 1221,
+    "sitemapEntries": 1221,
+    "allHtmlOutputPaths": 1226
   },
   "manifestRoutes": [
     {
@@ -11222,6 +11222,56 @@
     },
     {
       "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "turtles",
+      "lang": "de",
+      "slug": "schildkroete",
+      "path": "/de/traumsymbole/schildkroete"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "turtles",
+      "lang": "en",
+      "slug": "turtles",
+      "path": "/en/symbols/turtles"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "turtles",
+      "lang": "es",
+      "slug": "tortugas",
+      "path": "/es/simbolos/tortugas"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "turtles",
+      "lang": "fr",
+      "slug": "tortue",
+      "path": "/fr/symboles/tortue"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "turtles",
+      "lang": "it",
+      "slug": "tartarughe",
+      "path": "/it/simboli/tartarughe"
+    },
+    {
+      "collection": "symbols",
       "pageId": "symbol.unable-to-speak",
       "type": "symbol",
       "canonicalLanguage": "en",
@@ -12366,6 +12416,7 @@
     "docs/de/traumsymbole/ring.html",
     "docs/de/traumsymbole/rose.html",
     "docs/de/traumsymbole/schatten.html",
+    "docs/de/traumsymbole/schildkroete.html",
     "docs/de/traumsymbole/schlafzimmer.html",
     "docs/de/traumsymbole/schlange.html",
     "docs/de/traumsymbole/schluessel.html",
@@ -12645,6 +12696,7 @@
     "docs/en/symbols/train.html",
     "docs/en/symbols/trapped.html",
     "docs/en/symbols/tree.html",
+    "docs/en/symbols/turtles.html",
     "docs/en/symbols/unable-to-speak.html",
     "docs/en/symbols/volcano.html",
     "docs/en/symbols/watch.html",
@@ -12891,6 +12943,7 @@
     "docs/es/simbolos/tiburon.html",
     "docs/es/simbolos/tormenta.html",
     "docs/es/simbolos/tornado.html",
+    "docs/es/simbolos/tortugas.html",
     "docs/es/simbolos/tren.html",
     "docs/es/simbolos/vaca.html",
     "docs/es/simbolos/volar.html",
@@ -13127,6 +13180,7 @@
     "docs/fr/symboles/telephone.html",
     "docs/fr/symboles/test-de-grossesse.html",
     "docs/fr/symboles/tornade.html",
+    "docs/fr/symboles/tortue.html",
     "docs/fr/symboles/train.html",
     "docs/fr/symboles/tremblement-de-terre.html",
     "docs/fr/symboles/vache.html",
@@ -13365,6 +13419,7 @@
     "docs/it/simboli/specchio.html",
     "docs/it/simboli/squalo.html",
     "docs/it/simboli/strada.html",
+    "docs/it/simboli/tartarughe.html",
     "docs/it/simboli/telefono.html",
     "docs/it/simboli/tempesta.html",
     "docs/it/simboli/terremoto.html",
@@ -81730,6 +81785,301 @@
     },
     {
       "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "lang": "de",
+      "outputPath": "docs/de/traumsymbole/schildkroete.html",
+      "canonical": "https://noctalia.app/de/traumsymbole/schildkroete",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schildkroete"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/tortugas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/tortue"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/tartarughe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/traumsymbole/schildkroete",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/de/traumsymbole/schildkroete",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/guides/traumsymbole-lexikon"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/de/traumsymbole/schildkroete"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "lang": "en",
+      "outputPath": "docs/en/symbols/turtles.html",
+      "canonical": "https://noctalia.app/en/symbols/turtles",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schildkroete"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/tortugas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/tortue"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/tartarughe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/symbols/turtles",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/en/symbols/turtles",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/guides/dream-symbols-dictionary"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/en/symbols/turtles"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "lang": "es",
+      "outputPath": "docs/es/simbolos/tortugas.html",
+      "canonical": "https://noctalia.app/es/simbolos/tortugas",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schildkroete"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/tortugas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/tortue"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/tartarughe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/simbolos/tortugas",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/es/simbolos/tortugas",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/guides/diccionario-simbolos-suenos"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/es/simbolos/tortugas"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "lang": "fr",
+      "outputPath": "docs/fr/symboles/tortue.html",
+      "canonical": "https://noctalia.app/fr/symboles/tortue",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schildkroete"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/tortugas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/tortue"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/tartarughe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/symboles/tortue",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/fr/symboles/tortue",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/guides/dictionnaire-symboles-reves"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/fr/symboles/tortue"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "lang": "it",
+      "outputPath": "docs/it/simboli/tartarughe.html",
+      "canonical": "https://noctalia.app/it/simboli/tartarughe",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schildkroete"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/tortugas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/tortue"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/tartarughe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/simboli/tartarughe",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/it/simboli/tartarughe",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/guides/dizionario-simboli-sogni"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/it/simboli/tartarughe"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
       "pageId": "symbol.unable-to-speak",
       "lang": "de",
       "outputPath": "docs/de/traumsymbole/nicht-sprechen-konnen.html",
@@ -123380,6 +123730,166 @@
         {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/symbols/tree"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/traumsymbole/schildkroete",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schildkroete"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/tortugas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/tortue"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/tartarughe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/symbols/turtles",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schildkroete"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/tortugas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/tortue"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/tartarughe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/simbolos/tortugas",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schildkroete"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/tortugas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/tortue"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/tartarughe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/symboles/tortue",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schildkroete"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/tortugas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/tortue"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/tartarughe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.turtle",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/simboli/tartarughe",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schildkroete"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/turtles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/tortugas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/tortue"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/tartarughe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/turtles"
         }
       ]
     },

@@ -28,7 +28,7 @@ Ce chantier ne modifie pas :
 
 | Priorité | Levier | État au 11 août | Prochaine porte |
 |---|---|---|---|
-| P0 | `turtle`, 5 langues | `LOCAL_VALIDATED_PENDING_COMMIT` | commit contenu, extension du contrat URL, push, déploiement et preuve publique |
+| P0 | `turtle`, 5 langues | `COMMITTED_PENDING_PUSH` | push sur `master`, déploiement et preuve publique |
 | P0 | `crocodile`, 5 langues | `QUEUED_AFTER_TURTLE` | ne commencer la publication qu'après preuve HTTP de `turtle` |
 | P0 | `lice`, 5 langues | `QUEUED_AFTER_CROCODILE` | ne commencer la publication qu'après preuve HTTP de `crocodile` |
 | P0 | autorité externe | `PREPARE_ONLY_NO_SEND` | nouveau stop gate puis autorisation explicite, dossier par dossier |
@@ -64,6 +64,8 @@ Variantes responsives : 240, 480, 800 et 1 200 pixels sous `docs-src/static/img/
 
 ### Contrôles locaux
 
+Commit de contenu local : `46e24e94f` (`feat(seo): add localized turtle ranking owners`). Le contrat URL est étendu depuis ce commit dans un second commit technique, sans autre concept.
+
 | Contrôle | Résultat |
 |---|---|
 | JSON et whitespace | vert |
@@ -73,6 +75,8 @@ Variantes responsives : 240, 480, 800 et 1 200 pixels sous `docs-src/static/img/
 | parité des illustrations | verte dans les cinq langues |
 | canoniques/hreflang/indexabilité | cinq auto-canoniques, six alternates avec `x-default`, `index, follow` |
 | stabilité des URL avant extension | blocage attendu : cinq routes et leurs sorties dérivées ne sont pas encore dans la baseline |
+| contrat URL après extension | vert : 1 221 routes manifeste, 1 221 pages canoniques, 1 221 entrées sitemap et 1 226 sorties HTML |
+| release check sur export Git propre | vert : 0 erreur structurelle, 0 lien interne cassé et surface de déploiement propre ; validation des liens externes volontairement exclue |
 
 Le blocage du contrat URL n'est pas une régression : le dépôt exige que l'ajout soit d'abord commité, puis inscrit dans la baseline depuis un HEAD propre. L'extension du contrat sera donc un commit technique séparé mais poussée avec le seul concept `turtle`, afin de produire un seul déploiement de concept.
 
