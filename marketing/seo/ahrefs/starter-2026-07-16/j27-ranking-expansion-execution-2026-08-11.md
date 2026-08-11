@@ -28,7 +28,7 @@ Ce chantier ne modifie pas :
 
 | Priorité | Levier | État au 11 août | Prochaine porte |
 |---|---|---|---|
-| P0 | `turtle`, 5 langues | `COMMITTED_PENDING_PUSH` | push sur `master`, déploiement et preuve publique |
+| P0 | `turtle`, 5 langues | `PUSHED_FIX_PENDING` | pousser le correctif de contrat de test, attendre CI/déploiement puis établir la preuve publique |
 | P0 | `crocodile`, 5 langues | `QUEUED_AFTER_TURTLE` | ne commencer la publication qu'après preuve HTTP de `turtle` |
 | P0 | `lice`, 5 langues | `QUEUED_AFTER_CROCODILE` | ne commencer la publication qu'après preuve HTTP de `crocodile` |
 | P0 | autorité externe | `PREPARE_ONLY_NO_SEND` | nouveau stop gate puis autorisation explicite, dossier par dossier |
@@ -79,6 +79,12 @@ Commit de contenu local : `46e24e94f` (`feat(seo): add localized turtle ranking 
 | release check sur export Git propre | vert : 0 erreur structurelle, 0 lien interne cassé et surface de déploiement propre ; validation des liens externes volontairement exclue |
 
 Le blocage du contrat URL n'est pas une régression : le dépôt exige que l'ajout soit d'abord commité, puis inscrit dans la baseline depuis un HEAD propre. L'extension du contrat sera donc un commit technique séparé mais poussée avec le seul concept `turtle`, afin de produire un seul déploiement de concept.
+
+### Retour CI après le premier push
+
+Le push `5b8f3b0da` vers `master` a révélé une unique assertion de test restée codée en dur à 154 symboles dans `scripts/lib/content-hub-registry.test.js`. Le registre réel en contient désormais 155. Ce défaut est imputable au lot `turtle` et n'est pas classé comme bruit de baseline.
+
+Le correctif local porte uniquement le libellé et l'attente `154 → 155`. Le test ciblé passe 15/15 et la suite rapide complète passe 260 suites et 2 474 tests. Un push correctif séparé est nécessaire avant de considérer le pipeline distant comme vert.
 
 ## Autorité externe — frontière d'autorisation
 
