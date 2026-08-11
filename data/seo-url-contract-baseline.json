@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "46e24e94f4f12d8a1242e6df8991124c581a65f8",
+  "sourceRevision": "2edfd52c568a651d5475f9462de6b222cce76b18",
   "counts": {
-    "logicalPages": 244,
-    "manifestPaths": 1221,
-    "uniqueManifestPaths": 1221,
-    "canonicalPages": 1221,
-    "sitemapEntries": 1221,
-    "allHtmlOutputPaths": 1226
+    "logicalPages": 245,
+    "manifestPaths": 1226,
+    "uniqueManifestPaths": 1226,
+    "canonicalPages": 1226,
+    "sitemapEntries": 1226,
+    "allHtmlOutputPaths": 1231
   },
   "manifestRoutes": [
     {
@@ -5819,6 +5819,56 @@
       "lang": "it",
       "slug": "collega",
       "path": "/it/simboli/collega"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "crocodiles",
+      "lang": "de",
+      "slug": "krokodil",
+      "path": "/de/traumsymbole/krokodil"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "crocodiles",
+      "lang": "en",
+      "slug": "crocodiles",
+      "path": "/en/symbols/crocodiles"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "crocodiles",
+      "lang": "es",
+      "slug": "cocodrilos",
+      "path": "/es/simbolos/cocodrilos"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "crocodiles",
+      "lang": "fr",
+      "slug": "crocodile",
+      "path": "/fr/symboles/crocodile"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "crocodiles",
+      "lang": "it",
+      "slug": "coccodrilli",
+      "path": "/it/simboli/coccodrilli"
     },
     {
       "collection": "symbols",
@@ -12384,6 +12434,7 @@
     "docs/de/traumsymbole/krahe.html",
     "docs/de/traumsymbole/krankenhaus.html",
     "docs/de/traumsymbole/krankheit.html",
+    "docs/de/traumsymbole/krokodil.html",
     "docs/de/traumsymbole/kuche.html",
     "docs/de/traumsymbole/kuh.html",
     "docs/de/traumsymbole/lahmung.html",
@@ -12585,6 +12636,7 @@
     "docs/en/symbols/cockroach.html",
     "docs/en/symbols/cow.html",
     "docs/en/symbols/coworker.html",
+    "docs/en/symbols/crocodiles.html",
     "docs/en/symbols/crow.html",
     "docs/en/symbols/crying.html",
     "docs/en/symbols/death.html",
@@ -12835,6 +12887,7 @@
     "docs/es/simbolos/cirugia.html",
     "docs/es/simbolos/coche.html",
     "docs/es/simbolos/cocina.html",
+    "docs/es/simbolos/cocodrilos.html",
     "docs/es/simbolos/companero-de-trabajo.html",
     "docs/es/simbolos/conejo.html",
     "docs/es/simbolos/corazon.html",
@@ -13073,6 +13126,7 @@
     "docs/fr/symboles/corps.html",
     "docs/fr/symboles/courir.html",
     "docs/fr/symboles/cri.html",
+    "docs/fr/symboles/crocodile.html",
     "docs/fr/symboles/cuisine.html",
     "docs/fr/symboles/dauphin.html",
     "docs/fr/symboles/defunt.html",
@@ -13310,6 +13364,7 @@
     "docs/it/simboli/celeste.html",
     "docs/it/simboli/centro-commerciale.html",
     "docs/it/simboli/chiave.html",
+    "docs/it/simboli/coccodrilli.html",
     "docs/it/simboli/collega.html",
     "docs/it/simboli/coniglio.html",
     "docs/it/simboli/corpo.html",
@@ -49918,6 +49973,301 @@
           {
             "position": "3",
             "item": "https://noctalia.app/it/simboli/collega"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "lang": "de",
+      "outputPath": "docs/de/traumsymbole/krokodil.html",
+      "canonical": "https://noctalia.app/de/traumsymbole/krokodil",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/krokodil"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cocodrilos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/crocodile"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/coccodrilli"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/traumsymbole/krokodil",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/de/traumsymbole/krokodil",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/guides/traumsymbole-lexikon"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/de/traumsymbole/krokodil"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "lang": "en",
+      "outputPath": "docs/en/symbols/crocodiles.html",
+      "canonical": "https://noctalia.app/en/symbols/crocodiles",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/krokodil"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cocodrilos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/crocodile"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/coccodrilli"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/symbols/crocodiles",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/en/symbols/crocodiles",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/guides/dream-symbols-dictionary"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/en/symbols/crocodiles"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "lang": "es",
+      "outputPath": "docs/es/simbolos/cocodrilos.html",
+      "canonical": "https://noctalia.app/es/simbolos/cocodrilos",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/krokodil"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cocodrilos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/crocodile"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/coccodrilli"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/simbolos/cocodrilos",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/es/simbolos/cocodrilos",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/guides/diccionario-simbolos-suenos"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/es/simbolos/cocodrilos"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "lang": "fr",
+      "outputPath": "docs/fr/symboles/crocodile.html",
+      "canonical": "https://noctalia.app/fr/symboles/crocodile",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/krokodil"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cocodrilos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/crocodile"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/coccodrilli"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/symboles/crocodile",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/fr/symboles/crocodile",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/guides/dictionnaire-symboles-reves"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/fr/symboles/crocodile"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "lang": "it",
+      "outputPath": "docs/it/simboli/coccodrilli.html",
+      "canonical": "https://noctalia.app/it/simboli/coccodrilli",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/krokodil"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cocodrilos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/crocodile"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/coccodrilli"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/simboli/coccodrilli",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/it/simboli/coccodrilli",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/guides/dizionario-simboli-sogni"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/it/simboli/coccodrilli"
           }
         ]
       ],
@@ -106450,6 +106800,166 @@
         {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/symbols/coworker"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/traumsymbole/krokodil",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/krokodil"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cocodrilos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/crocodile"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/coccodrilli"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/symbols/crocodiles",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/krokodil"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cocodrilos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/crocodile"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/coccodrilli"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/simbolos/cocodrilos",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/krokodil"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cocodrilos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/crocodile"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/coccodrilli"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/symboles/crocodile",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/krokodil"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cocodrilos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/crocodile"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/coccodrilli"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.crocodile",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/simboli/coccodrilli",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/krokodil"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cocodrilos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/crocodile"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/coccodrilli"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/crocodiles"
         }
       ]
     },
