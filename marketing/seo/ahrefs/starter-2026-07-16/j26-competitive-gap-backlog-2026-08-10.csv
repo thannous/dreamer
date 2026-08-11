@@ -1,0 +1,24 @@
+priority,market,cluster,status,noctalia_asset,competitor_query,volume,kd,competitor_position,competitor_source,next_action,conflict
+P1,IT,shoes,PENDING_GSC_ABSENCE,,sognare scarpe nuove smorfia napoletana,450,0,1,lasmorfianapoletana.com,"query x page GSC IT sur 12 mois et 28 jours; aucune page avant validation",none
+P1,DE,shoes,PENDING_GSC_ABSENCE,,traumdeutung schuhe,300,0,"3; 2","traum-deutung.de; traumdeuter.ch","query x page GSC DE sur 12 mois et 28 jours; aucune page avant validation",none
+P1,FR,shoes,PENDING_GSC_ABSENCE,,rever de chaussures,350,0,2,tristan-moir.fr,"query x page GSC FR sur 12 mois et 28 jours; aucune page avant validation",none
+P1,ES,shoes,PENDING_GSC_ABSENCE,,soñar con zapatos,400,0,"5; 6",misabueso.com,"query x page GSC ES sur 12 mois et 28 jours; aucune page avant validation",none
+P2,IT,crocodile,PENDING_GSC_ABSENCE,,sognare coccodrilli,600,0,"9; 8",guidasogni.it,"valider l'absence GSC après shoes",none
+P2,DE,crocodile,PENDING_GSC_ABSENCE,,traumdeutung krokodil,500,0,"3; 5","traum-deutung.de; traumdeuter.ch","valider l'absence GSC après shoes",none
+P3,IT,church,PENDING_INTENT_VALIDATION,,sognare di stare in chiesa con tanta gente,450,0,"2; 6; 5","lasmorfianapoletana.com; guidasogni.it","qualifier intention et présence GSC avant tout contenu",none
+P3,DE,church,PENDING_INTENT_VALIDATION,,traumdeutung kirche,100,0,"3; 1",traumdeuter.ch,"qualifier intention et présence GSC avant tout contenu",none
+P3,ES,church,PENDING_INTENT_VALIDATION,,soñar con iglesia,80,0,3,misabueso.com,"qualifier intention et présence GSC avant tout contenu",none
+P2,IT,feces,PENDING_GSC_ABSENCE,,sognare cacca,3600,6,7,lasmorfianapoletana.com,"agréger les variantes dans GSC sans additionner les volumes",none
+P2,IT,lice,PENDING_GSC_ABSENCE,,sognare di avere i pidocchi,700,0,"8; 6",guidasogni.it,"valider absence et valeur GSC",none
+P2,IT,worms,PENDING_GSC_ABSENCE,,sognare vermi bianchi vivi,1700,8,10,guidasogni.it,"valider absence et valeur GSC",none
+P2,IT,eggs,PENDING_GSC_ABSENCE,,sognare uova,900,6,"11; 10",guidasogni.it,"valider absence et valeur GSC",none
+P2,IT,money,EXISTING_URL_FIRST,https://noctalia.app/it/simboli/denaro,sognare soldi di carta,2200,0,8,lasmorfianapoletana.com,"mesurer propriétaire CTR et position GSC avant édition",none
+P2,IT,bicycle,EXISTING_URL_FIRST,https://noctalia.app/it/simboli/bicicletta,sognare di andare in bicicletta,350,0,"4; 2",lasmorfianapoletana.com,"mesurer propriétaire CTR et position GSC avant édition",none
+P2,IT,pregnancy,EXISTING_URL_FIRST,https://noctalia.app/it/simboli/gravidanza,sognare di essere incinta smorfia napoletana,900,0,2,lasmorfianapoletana.com,"mesurer propriétaire CTR et position GSC avant édition",none
+P2,IT,crying,EXISTING_URL_FIRST,https://noctalia.app/it/simboli/piangere,sognare di piangere,1600,0,5,lasmorfianapoletana.com,"mesurer propriétaire CTR et position GSC avant édition",none
+P2,IT,plane,EXISTING_URL_FIRST,https://noctalia.app/it/simboli/aereo,sognare aereo che cade,200,0,3,guidasogni.it,"mesurer propriétaire CTR et position GSC avant édition",none
+P2,IT,lost,EXISTING_URL_FIRST,https://noctalia.app/it/simboli/perdersi,sognare di perdersi e non trovare la strada,500,0,"4; 5",guidasogni.it,"mesurer propriétaire CTR et position GSC avant édition",none
+P2,IT,earthquake,EXISTING_URL_FIRST,https://noctalia.app/it/simboli/terremoto,sognare terremoto,1000,0,"12; 9",guidasogni.it,"mesurer propriétaire CTR et position GSC avant édition",none
+P1,DE,generic-traumdeutung,HOLD_ARCHITECTURE,https://noctalia.app/de/blog/traumbedeutungen-interpretation-symbole,traumdeutung,31000,26,1,traum-deutung.de,"conserver le HOLD à quatre URL et protéger lexique et hub",DE architecture hold
+P1,FR,dream-dictionary,EXISTING_URL_FIRST,https://noctalia.app/fr/guides/dictionnaire-symboles-reves,dictionnaire des reves,4900,7,1,signification-reve.com,"cartographier les requêtes GSC du dictionnaire avant tout changement",none
+P1,ES,dream-dictionary,PROTECT_EXISTING,https://noctalia.app/es/guides/diccionario-simbolos-suenos,diccionario de los sueños,1400,12,3,misabueso.com,"protéger la cible déjà validée par GSC",none

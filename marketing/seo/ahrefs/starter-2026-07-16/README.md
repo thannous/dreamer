@@ -36,6 +36,12 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j26-gsc-content-opportunities-2026-08-10.md`](./j26-gsc-content-opportunities-2026-08-10.md) : analyse GSC `page × query` et arbitrage chef SEO ; IT en mesure, correction DE séparée, architecture DE et EN en HOLD.
 - [`j26-content-opportunity-backlog-2026-08-10.csv`](./j26-content-opportunity-backlog-2026-08-10.csv) : backlog agrégé et priorisé, avec statuts `HOLD_MESURE`, `GO_SEPARE`, `HOLD_ARCHITECTURE` et `HOLD_POST_DEPLOIEMENT`, sans export longue traîne brut.
 - [`j26-new-content-summary-2026-08-10.md`](./j26-new-content-summary-2026-08-10.md) : synthèse séparée confirmant zéro nouvelle page immédiate et une seule candidate IT conditionnelle.
+- [`j26-seo-takeover-live-reconciliation-2026-08-10.md`](./j26-seo-takeover-live-reconciliation-2026-08-10.md) : reprise des comptes Ahrefs et GSC, chronologie depuis J25, réconciliation live et backlog de clôture.
+- [`j26-evidence-register-2026-08-10.csv`](./j26-evidence-register-2026-08-10.csv) : registre compact des preuves live, facteurs confondants et portes d'autorisation J26.
+- [`j26-j31-starter-utilization-plan-2026-08-10.md`](./j26-j31-starter-utilization-plan-2026-08-10.md) : plan de consommation contrôlée avant le reset du 16 août, avec statut d'exécution J26.
+- [`j26-starter-execution-2026-08-10.md`](./j26-starter-execution-2026-08-10.md) : résultats des Lots A à D, crawl planifié, compteurs finaux, concurrents retenus, backlog J27 et recommandation provisoire Free vs Starter.
+- [`j26-competitive-keyword-gap-2026-08-10.md`](./j26-competitive-keyword-gap-2026-08-10.md) : collecte Organic Keywords ciblée sur sept concurrents IT/DE/FR/ES, coût réel, exclusions et hypothèses à valider dans GSC.
+- [`j26-competitive-gap-backlog-2026-08-10.csv`](./j26-competitive-gap-backlog-2026-08-10.csv) : backlog exploitable après Starter, séparant actifs existants, absences locales non confirmées et facteurs confondants.
 - [`rank-tracker-portfolio-50-2026-07-16.csv`](./rank-tracker-portfolio-50-2026-07-16.csv) : portefeuille validé des 50 couples, assaini des métriques brutes.
 - [`rank-tracker-target-map-2026-08-01.csv`](./rank-tracker-target-map-2026-08-01.csv) : correspondance durable entre chaque tag `target-*` et l'URL cible voulue.
 - [`j10-prioritization-2026-07-25.md`](./j10-prioritization-2026-07-25.md) et [`j10-priorities-2026-07-25.csv`](./j10-priorities-2026-07-25.csv) : première consolidation versionnée du portefeuille 5 + 3.
@@ -58,7 +64,7 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 
 1. Les compteurs live Ahrefs, la facturation et les données GSC fraîches priment toujours sur cette archive.
 2. Les preuves brutes J1–J3 citées dans les réconciliations historiques ne sont plus présentes dans les archives accessibles. Leurs décisions sont conservées, mais aucune donnée absente n'a été recréée.
-3. Le dernier compteur général vérifié dans l'interface est `63 crédits utilisés` au 8 août, avec une prochaine facturation et remise à zéro le 16 août 2026 UTC. Le passage antérieur de 62 à 63 n'est pas attribué à un lot précis ; J19 à J24 ont consommé zéro crédit général confirmé.
+3. Le dernier compteur général vérifié dans l'interface est `70 crédits utilisés` au 10 août, après les Lots A à D puis sept rapports Organic Keywords concurrentiels, avec une prochaine facturation et remise à zéro le 16 août 2026 UTC. Les Lots A à D étaient restés à `63 → 63`, tandis que chaque rapport concurrentiel exploitable a ensuite ajouté un crédit.
 4. Les 50 suivis, leurs emplacements et leurs tags ne doivent pas être modifiés sans décision explicite. Un changement d'emplacement détruirait l'historique du couple concerné.
 5. Les pages et expériences restent soumises à leurs gels respectifs. Une prévalidation n'autorise ni édition, ni commit, ni publication.
 6. Le connecteur Ahrefs et l'interface web n'exposent pas les mêmes compteurs. Le relevé API `Trial, billed monthly` du 9 août décrit la couche API ; il ne remplace ni le plan Starter observé dans l'interface ni son compteur de crédits généraux.
@@ -77,3 +83,14 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 - Les onze URL de décision contrôlées à J23 répondaient HTTP 200, étaient indexables, auto-canoniques et inchangées dans leurs sources depuis la clôture J10.
 - La vague metadata du 8 août constitue un facteur confondant séparé ; elle ne doit pas être attribuée au test `scuola`, qui n'a pas commencé.
 - Aucun nouveau crawl, achat, dépense générale Ahrefs ou changement des 50 suivis n'a été effectué par la réconciliation J25.
+
+## Actualisation J26 au 10 août 2026
+
+- Lots Ahrefs A à D exécutés sans mutation externe : empreinte organique, architecture interne, backlinks et concurrents.
+- Compteur général visible : `63 → 63` ; Rank Tracker : `50/50` inchangé.
+- Crawl planifié terminé à Health Score 100, 0 erreur, 1 201 URL internes et `2 843/10 000` crédits workspace utilisés.
+- Deux descriptions légales PT-BR trop courtes sont la seule hausse des warnings `44 → 46`. Les deux notices `x-default` PT-BR-only sont conformes au contrat du dépôt et restent acceptées.
+- Un lien éditorial dofollow DR 55 vers l'article italien de rappel des rêves est confirmé publiquement ; le reste du profil reste fortement pollué par le spam.
+- Le détail décisionnel et la shortlist J27 sont dans `j26-starter-execution-2026-08-10.md`.
+- Content Gap est verrouillé derrière la tarification sur le plan observé. Sept rapports Organic Keywords ciblés ont été utilisés à la place : compteur général `63 → 70`, Rank Tracker `50/50` inchangé et Site Audit workspace `3 627/10 000` au dernier relevé.
+- Le signal concurrentiel principal est un gap multilingue chaussures, absent des trois inventaires de symboles mais encore soumis à validation GSC. Aucune nouvelle page n'est autorisée depuis cette preuve seule.
