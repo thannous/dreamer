@@ -48,8 +48,9 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j27-ranking-expansion-backlog-2026-08-11.csv`](./j27-ranking-expansion-backlog-2026-08-11.csv) : matrice pays de 80 requêtes pour les vagues suivantes, avec métriques observées, statut et porte d'ownership.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
-- [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacement Drive de la clôture J25–J27, périmètre synchronisé et règles de conservation.
+- [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27 et Misabueso GSC, périmètres synchronisés et règles de conservation.
 - [`drive-sync-manifest-2026-08-11.csv`](./drive-sync-manifest-2026-08-11.csv) : correspondance vérifiable entre les 15 fichiers Git, leurs identifiants Drive et leurs empreintes SHA-256.
+- [`drive-sync-manifest-misabueso-2026-08-11.csv`](./drive-sync-manifest-misabueso-2026-08-11.csv) : correspondance vérifiable des deux rapports Misabueso GSC archivés dans leur sous-dossier dédié.
 - [`rank-tracker-portfolio-50-2026-07-16.csv`](./rank-tracker-portfolio-50-2026-07-16.csv) : portefeuille validé des 50 couples, assaini des métriques brutes.
 - [`rank-tracker-target-map-2026-08-01.csv`](./rank-tracker-target-map-2026-08-01.csv) : correspondance durable entre chaque tag `target-*` et l'URL cible voulue.
 - [`j10-prioritization-2026-07-25.md`](./j10-prioritization-2026-07-25.md) et [`j10-priorities-2026-07-25.csv`](./j10-priorities-2026-07-25.csv) : première consolidation versionnée du portefeuille 5 + 3.
