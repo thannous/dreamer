@@ -30,7 +30,7 @@ Ce chantier ne modifie pas :
 |---|---|---|---|
 | P0 | `turtle`, 5 langues | `LIVE_VERIFIED` | mesurer sur des fenêtres GSC complètes sans demander d'indexation |
 | P0 | `crocodile`, 5 langues | `LIVE_VERIFIED` | mesurer sur des fenêtres GSC complètes sans demander d'indexation |
-| P0 | `lice`, 5 langues | `LOCAL_BUILD_AUTHORIZED` | préparer et contrôler le troisième concept seul avant tout push |
+| P0 | `lice`, 5 langues | `LOCAL_FULL_CHECK_GREEN` | committer le contrat URL, coordonner puis pousser ce seul concept vers `master` |
 | P0 | autorité externe | `PREPARE_ONLY_NO_SEND` | nouveau stop gate puis autorisation explicite, dossier par dossier |
 | P1 | expérience `scuola` | `HOLD_UNTIL_2026-08-15` | lire la fenêtre J+7 de `casa/ragno/perro`, puis ouvrir un lot metadata-only séparé si le signal reste propre |
 | P1 | 254 URL explorées non indexées | `DIAGNOSTIC_ONLY` | segmenter, commencer par l'article DE sur la poursuite, n'ajouter qu'un lien contextuel prouvé |
@@ -137,6 +137,8 @@ Les cinq propriétaires couvrent poux dans les cheveux, retrait, grand nombre et
 Actif éditorial : `docs-src/static/img/symbols/editorial-2026-08-j27/lice-v1.webp`, 1 600 × 900, accompagné de quatre variantes de 240 à 1 200 pixels. L'image montre un seul pou anatomiquement reconnaissable sur quelques cheveux, sans visage, plaie, sang, œufs, autre insecte, texte, logo, filigrane ni code divinatoire.
 
 Contrôles locaux avant commit : 157 symboles uniques, 785 pages de détail et 790 contenus étendus; cinq titres de 40 à 42 caractères et cinq descriptions de 137 à 146 caractères. `docs:build` passe avec 0 erreur, le contrat des images vérifie 785 héros, cartes, données structurées et entrées sitemap, la parité multilingue passe et les 32 tests ciblés du registre et de l'image sont verts. `docs:check` s'arrête uniquement sur la porte attendue des cinq routes nouvelles et de leurs 21 surfaces dérivées, avant extension additive de la baseline URL.
+
+Le contenu et ses actifs sont isolés dans `8ecf0772f` (`feat(seo): add localized lice ranking owners`). Depuis ce HEAD propre, la baseline URL a été étendue sans retrait : 1 231 routes manifeste, 1 231 pages canoniques, 1 231 entrées sitemap et 1 236 sorties HTML. Après extension, `docs:check` passe entièrement avec 0 erreur, 0 avertissement et 0 lien interne cassé; le contrat de hub valide 1 000 pages localisées et 2 305 relations requises.
 
 ## Autorité externe — frontière d'autorisation
 
