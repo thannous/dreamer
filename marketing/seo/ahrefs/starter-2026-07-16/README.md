@@ -2,7 +2,7 @@
 
 Archive initiale : J1 à J17, du 16 juillet au 1er août 2026
 
-Contrôles additionnels : J18 à J26, du 2 au 10 août 2026
+Contrôles additionnels : J18 à J27, du 2 au 11 août 2026
 
 Projet Ahrefs : `9361004`
 
@@ -42,6 +42,8 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j26-starter-execution-2026-08-10.md`](./j26-starter-execution-2026-08-10.md) : résultats des Lots A à D, crawl planifié, compteurs finaux, concurrents retenus, backlog J27 et recommandation provisoire Free vs Starter.
 - [`j26-competitive-keyword-gap-2026-08-10.md`](./j26-competitive-keyword-gap-2026-08-10.md) : collecte Organic Keywords ciblée sur sept concurrents IT/DE/FR/ES, coût réel, exclusions et hypothèses à valider dans GSC.
 - [`j26-competitive-gap-backlog-2026-08-10.csv`](./j26-competitive-gap-backlog-2026-08-10.csv) : backlog exploitable après Starter, séparant actifs existants, absences locales non confirmées et facteurs confondants.
+- [`j27-gsc-keyword-validation-2026-08-11.md`](./j27-gsc-keyword-validation-2026-08-11.md) : validation GSC 28 jours et fenêtre disponible « 12 mois », six rapports Keyword Explorer/SERP et décisions chaussures/crocodile.
+- [`j27-content-validation-backlog-2026-08-11.csv`](./j27-content-validation-backlog-2026-08-11.csv) : backlog post-Starter des propriétaires prospectifs, preuves, conflits et portes d'implémentation.
 - [`rank-tracker-portfolio-50-2026-07-16.csv`](./rank-tracker-portfolio-50-2026-07-16.csv) : portefeuille validé des 50 couples, assaini des métriques brutes.
 - [`rank-tracker-target-map-2026-08-01.csv`](./rank-tracker-target-map-2026-08-01.csv) : correspondance durable entre chaque tag `target-*` et l'URL cible voulue.
 - [`j10-prioritization-2026-07-25.md`](./j10-prioritization-2026-07-25.md) et [`j10-priorities-2026-07-25.csv`](./j10-priorities-2026-07-25.csv) : première consolidation versionnée du portefeuille 5 + 3.
@@ -51,20 +53,20 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 | Lot | Statut | Décision durable |
 |---|---|---|
 | IT `acqua sporca/torbida` | `HOLD_MESURE` | conserver fiche = intention courte et guide = scénarios larges ; aucune édition immédiate, aucune troisième page, aucun cross-canonical |
-| DE `traumlexikon` | `GO_SEPARE` | ancre produit renommée en `Traumlexikon-App für Android` après autorisation ; push, déploiement et effet SEO restent à vérifier séparément |
+| DE `traumlexikon` | `GO_SEPARE` | ancre produit renommée en `Traumlexikon-App für Android` et présente sur `master` ; déploiement public et effet SEO restent à vérifier séparément |
 | DE `Traumdeutung` | `HOLD_ARCHITECTURE` | comparer quatre URL, dont le hub existant `/de/blog/traumbedeutungen-interpretation-symbole`, avant toute redistribution de rôle |
 | EN `dream journal app` | `HOLD_POST_DEPLOIEMENT` | attendre 28 jours complets depuis le dernier déploiement public vérifié ; les données arrêtées au 7 août ne mesurent pas les modifications du 8 au 10 août |
 | Nouveau contenu | `AUCUNE_NOUVELLE_PAGE` | 0 nouvelle page maintenant ; page IT eau sale uniquement conditionnelle après mesure et preuve d'une valeur incrémentale |
 
 Pour l'Italie, les 1 349 impressions du cluster au niveau requête/propriété restent distinctes des 1 433 impressions cumulées au niveau page. Le page-level passe de fiche 94 / guide 578 à fiche 909 / guide 506 ; ce basculement doit être mesuré sur une fenêtre entièrement postérieure au 16 juillet avant une nouvelle action.
 
-Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon-App für Android`, autorisée puis modifiée dans `docs-src/` dans un lot chirurgical séparé. Elle ne modifie ni `data/`, ni `docs/`, et ne constitue pas une preuve de push, de déploiement, de publication ou d'effet SEO.
+Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon-App für Android`, autorisée puis modifiée dans `docs-src/` dans un lot chirurgical séparé. La source est désormais présente sur `master`, sans que cela prouve encore le déploiement public ni un effet SEO.
 
 ## Autorités et précautions
 
 1. Les compteurs live Ahrefs, la facturation et les données GSC fraîches priment toujours sur cette archive.
 2. Les preuves brutes J1–J3 citées dans les réconciliations historiques ne sont plus présentes dans les archives accessibles. Leurs décisions sont conservées, mais aucune donnée absente n'a été recréée.
-3. Le dernier compteur général vérifié dans l'interface est `70 crédits utilisés` au 10 août, après les Lots A à D puis sept rapports Organic Keywords concurrentiels, avec une prochaine facturation et remise à zéro le 16 août 2026 UTC. Les Lots A à D étaient restés à `63 → 63`, tandis que chaque rapport concurrentiel exploitable a ensuite ajouté un crédit.
+3. Le dernier compteur général vérifié dans l'interface est `76 crédits utilisés` au 11 août, après les Lots A à D, sept rapports Organic Keywords concurrentiels et six rapports Keyword Explorer/SERP, avec une prochaine facturation et remise à zéro le 16 août 2026 UTC.
 4. Les 50 suivis, leurs emplacements et leurs tags ne doivent pas être modifiés sans décision explicite. Un changement d'emplacement détruirait l'historique du couple concerné.
 5. Les pages et expériences restent soumises à leurs gels respectifs. Une prévalidation n'autorise ni édition, ni commit, ni publication.
 6. Le connecteur Ahrefs et l'interface web n'exposent pas les mêmes compteurs. Le relevé API `Trial, billed monthly` du 9 août décrit la couche API ; il ne remplace ni le plan Starter observé dans l'interface ni son compteur de crédits généraux.
@@ -94,3 +96,13 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 - Le détail décisionnel et la shortlist J27 sont dans `j26-starter-execution-2026-08-10.md`.
 - Content Gap est verrouillé derrière la tarification sur le plan observé. Sept rapports Organic Keywords ciblés ont été utilisés à la place : compteur général `63 → 70`, Rank Tracker `50/50` inchangé et Site Audit workspace `3 627/10 000` au dernier relevé.
 - Le signal concurrentiel principal est un gap multilingue chaussures, absent des trois inventaires de symboles mais encore soumis à validation GSC. Aucune nouvelle page n'est autorisée depuis cette preuve seule.
+
+## Actualisation J27 au 11 août 2026
+
+- La dernière journée GSC complète est le 9 août ; la fenêtre 28 jours du 13 juillet au 9 août affiche 4 273 clics, 491 150 impressions, un CTR arrondi à 0,9 % et une position arrondie à 7,3.
+- Le filtre GSC `scarpe|schuhe|chaussures|zapatos` renvoie 0 clic et 0 impression sur 28 jours et sur la fenêtre « 12 mois » disponible depuis le 5 décembre 2025.
+- Six rapports Keyword Explorer/SERP ont coûté exactement six crédits : compteur général `70 → 76`, Rank Tracker `50/50` et Site Audit workspace `3 627/10 000` inchangés.
+- Chaussures passe à `GO_CONTENT_BRIEF` pour IT, DE, FR et ES ; aucune page n'est encore créée ni publiée.
+- Crocodile reste `HOLD_OWNER_REVIEW` : trois impressions historiques sont déjà réparties entre les guides animaux DE et IT, et aucune impression n'est visible sur 28 jours.
+- `casa`, `ragno`, `perro`, `scuola`, le lot italien eau et l'anglais restent dans leurs contrats de mesure respectifs.
+- La recommandation d'abonnement reste provisoirement `LEAN_FREE` ; la décision de facturation appartient à l'utilisateur.
