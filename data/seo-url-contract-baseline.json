@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "e7db96d6c0f45583c20d5395486d6d0973378dfb",
+  "sourceRevision": "85a49e9107facd3b087fe79692cb5e1928258f84",
   "counts": {
-    "logicalPages": 239,
-    "manifestPaths": 1196,
-    "uniqueManifestPaths": 1196,
-    "canonicalPages": 1196,
-    "sitemapEntries": 1196,
-    "allHtmlOutputPaths": 1201
+    "logicalPages": 243,
+    "manifestPaths": 1216,
+    "uniqueManifestPaths": 1216,
+    "canonicalPages": 1216,
+    "sitemapEntries": 1216,
+    "allHtmlOutputPaths": 1221
   },
   "manifestRoutes": [
     {
@@ -5672,6 +5672,56 @@
     },
     {
       "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "cockroach",
+      "lang": "de",
+      "slug": "kakerlake",
+      "path": "/de/traumsymbole/kakerlake"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "cockroach",
+      "lang": "en",
+      "slug": "cockroach",
+      "path": "/en/symbols/cockroach"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "cockroach",
+      "lang": "es",
+      "slug": "cucaracha",
+      "path": "/es/simbolos/cucaracha"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "cockroach",
+      "lang": "fr",
+      "slug": "cafard",
+      "path": "/fr/symboles/cafard"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "cockroach",
+      "lang": "it",
+      "slug": "scarafaggio",
+      "path": "/it/simboli/scarafaggio"
+    },
+    {
+      "collection": "symbols",
       "pageId": "symbol.cow",
       "type": "symbol",
       "canonicalLanguage": "en",
@@ -6619,6 +6669,56 @@
       "lang": "it",
       "slug": "esame",
       "path": "/it/simboli/esame"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "poop",
+      "lang": "de",
+      "slug": "kot",
+      "path": "/de/traumsymbole/kot"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "poop",
+      "lang": "en",
+      "slug": "poop",
+      "path": "/en/symbols/poop"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "poop",
+      "lang": "es",
+      "slug": "caca",
+      "path": "/es/simbolos/caca"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "poop",
+      "lang": "fr",
+      "slug": "caca",
+      "path": "/fr/symboles/caca"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "poop",
+      "lang": "it",
+      "slug": "cacca",
+      "path": "/it/simboli/cacca"
     },
     {
       "collection": "symbols",
@@ -10222,6 +10322,56 @@
     },
     {
       "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "shoes",
+      "lang": "de",
+      "slug": "schuhe",
+      "path": "/de/traumsymbole/schuhe"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "shoes",
+      "lang": "en",
+      "slug": "shoes",
+      "path": "/en/symbols/shoes"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "shoes",
+      "lang": "es",
+      "slug": "zapatos",
+      "path": "/es/simbolos/zapatos"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "shoes",
+      "lang": "fr",
+      "slug": "chaussures",
+      "path": "/fr/symboles/chaussures"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "shoes",
+      "lang": "it",
+      "slug": "scarpe",
+      "path": "/it/simboli/scarpe"
+    },
+    {
+      "collection": "symbols",
       "pageId": "symbol.sibling",
       "type": "symbol",
       "canonicalLanguage": "en",
@@ -11522,6 +11672,56 @@
     },
     {
       "collection": "symbols",
+      "pageId": "symbol.worms",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "worms",
+      "lang": "de",
+      "slug": "wuermer",
+      "path": "/de/traumsymbole/wuermer"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "worms",
+      "lang": "en",
+      "slug": "worms",
+      "path": "/en/symbols/worms"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "worms",
+      "lang": "es",
+      "slug": "gusanos",
+      "path": "/es/simbolos/gusanos"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "worms",
+      "lang": "fr",
+      "slug": "vers",
+      "path": "/fr/symboles/vers"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "worms",
+      "lang": "it",
+      "slug": "vermi",
+      "path": "/it/simboli/vermi"
+    },
+    {
+      "collection": "symbols",
       "pageId": "symbol.zombie",
       "type": "symbol",
       "canonicalLanguage": "en",
@@ -12119,6 +12319,7 @@
     "docs/de/traumsymbole/hotel.html",
     "docs/de/traumsymbole/hund.html",
     "docs/de/traumsymbole/insel.html",
+    "docs/de/traumsymbole/kakerlake.html",
     "docs/de/traumsymbole/kaninchen.html",
     "docs/de/traumsymbole/katze.html",
     "docs/de/traumsymbole/keller.html",
@@ -12129,6 +12330,7 @@
     "docs/de/traumsymbole/koerper.html",
     "docs/de/traumsymbole/koffer.html",
     "docs/de/traumsymbole/kollege.html",
+    "docs/de/traumsymbole/kot.html",
     "docs/de/traumsymbole/krahe.html",
     "docs/de/traumsymbole/krankenhaus.html",
     "docs/de/traumsymbole/krankheit.html",
@@ -12170,6 +12372,7 @@
     "docs/de/traumsymbole/schmetterling.html",
     "docs/de/traumsymbole/schnee.html",
     "docs/de/traumsymbole/schreien.html",
+    "docs/de/traumsymbole/schuhe.html",
     "docs/de/traumsymbole/schule.html",
     "docs/de/traumsymbole/schwangerschaft.html",
     "docs/de/traumsymbole/schwangerschaftstest.html",
@@ -12205,6 +12408,7 @@
     "docs/de/traumsymbole/weg.html",
     "docs/de/traumsymbole/weinen.html",
     "docs/de/traumsymbole/wolf.html",
+    "docs/de/traumsymbole/wuermer.html",
     "docs/de/traumsymbole/wuste.html",
     "docs/de/traumsymbole/zaehne.html",
     "docs/de/traumsymbole/zombie.html",
@@ -12327,6 +12531,7 @@
     "docs/en/symbols/classroom.html",
     "docs/en/symbols/cliff.html",
     "docs/en/symbols/clothes.html",
+    "docs/en/symbols/cockroach.html",
     "docs/en/symbols/cow.html",
     "docs/en/symbols/coworker.html",
     "docs/en/symbols/crow.html",
@@ -12405,6 +12610,7 @@
     "docs/en/symbols/places.html",
     "docs/en/symbols/plane.html",
     "docs/en/symbols/police.html",
+    "docs/en/symbols/poop.html",
     "docs/en/symbols/pregnancy-test.html",
     "docs/en/symbols/pregnancy.html",
     "docs/en/symbols/prison.html",
@@ -12421,6 +12627,7 @@
     "docs/en/symbols/screaming.html",
     "docs/en/symbols/shadow.html",
     "docs/en/symbols/shark.html",
+    "docs/en/symbols/shoes.html",
     "docs/en/symbols/sibling.html",
     "docs/en/symbols/snake.html",
     "docs/en/symbols/snow.html",
@@ -12447,6 +12654,7 @@
     "docs/en/symbols/whale.html",
     "docs/en/symbols/wolf.html",
     "docs/en/symbols/workplace.html",
+    "docs/en/symbols/worms.html",
     "docs/en/symbols/zombie.html",
     "docs/en/terms.html",
     "docs/en/voice-dream-journal.html",
@@ -12563,6 +12771,7 @@
     "docs/es/simbolos/buho.html",
     "docs/es/simbolos/caballo.html",
     "docs/es/simbolos/cabello.html",
+    "docs/es/simbolos/caca.html",
     "docs/es/simbolos/caida.html",
     "docs/es/simbolos/camino.html",
     "docs/es/simbolos/carretera.html",
@@ -12578,6 +12787,7 @@
     "docs/es/simbolos/conejo.html",
     "docs/es/simbolos/corazon.html",
     "docs/es/simbolos/correr.html",
+    "docs/es/simbolos/cucaracha.html",
     "docs/es/simbolos/cuerpo.html",
     "docs/es/simbolos/cuervo.html",
     "docs/es/simbolos/cueva.html",
@@ -12604,6 +12814,7 @@
     "docs/es/simbolos/funeral.html",
     "docs/es/simbolos/gato.html",
     "docs/es/simbolos/grito.html",
+    "docs/es/simbolos/gusanos.html",
     "docs/es/simbolos/hermano-o-hermana.html",
     "docs/es/simbolos/hormiga.html",
     "docs/es/simbolos/hospital.html",
@@ -12684,6 +12895,7 @@
     "docs/es/simbolos/vaca.html",
     "docs/es/simbolos/volar.html",
     "docs/es/simbolos/volcan.html",
+    "docs/es/simbolos/zapatos.html",
     "docs/es/simbolos/zombi.html",
     "docs/es/sobre.html",
     "docs/es/terminos.html",
@@ -12787,11 +12999,14 @@
     "docs/fr/symboles/bebe.html",
     "docs/fr/symboles/bouche.html",
     "docs/fr/symboles/bus.html",
+    "docs/fr/symboles/caca.html",
+    "docs/fr/symboles/cafard.html",
     "docs/fr/symboles/cascade.html",
     "docs/fr/symboles/celeste.html",
     "docs/fr/symboles/centre-commercial.html",
     "docs/fr/symboles/chambre.html",
     "docs/fr/symboles/chat.html",
+    "docs/fr/symboles/chaussures.html",
     "docs/fr/symboles/chemin.html",
     "docs/fr/symboles/cheval.html",
     "docs/fr/symboles/cheveux.html",
@@ -12917,6 +13132,7 @@
     "docs/fr/symboles/vache.html",
     "docs/fr/symboles/valise.html",
     "docs/fr/symboles/velo.html",
+    "docs/fr/symboles/vers.html",
     "docs/fr/symboles/vetements.html",
     "docs/fr/symboles/voiture.html",
     "docs/fr/symboles/volcan.html",
@@ -13029,6 +13245,7 @@
     "docs/it/simboli/barca.html",
     "docs/it/simboli/bicicletta.html",
     "docs/it/simboli/bocca.html",
+    "docs/it/simboli/cacca.html",
     "docs/it/simboli/cadere.html",
     "docs/it/simboli/camera-da-letto.html",
     "docs/it/simboli/cane.html",
@@ -13135,6 +13352,8 @@
     "docs/it/simboli/sangue.html",
     "docs/it/simboli/sanguinamento.html",
     "docs/it/simboli/scale.html",
+    "docs/it/simboli/scarafaggio.html",
+    "docs/it/simboli/scarpe.html",
     "docs/it/simboli/scogliera.html",
     "docs/it/simboli/sconosciuto.html",
     "docs/it/simboli/scuola.html",
@@ -13156,6 +13375,7 @@
     "docs/it/simboli/uccello.html",
     "docs/it/simboli/urlare.html",
     "docs/it/simboli/valigia.html",
+    "docs/it/simboli/vermi.html",
     "docs/it/simboli/vestiti.html",
     "docs/it/simboli/volare.html",
     "docs/it/simboli/vulcano.html",
@@ -48765,6 +48985,301 @@
     },
     {
       "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "lang": "de",
+      "outputPath": "docs/de/traumsymbole/kakerlake.html",
+      "canonical": "https://noctalia.app/de/traumsymbole/kakerlake",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kakerlake"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cucaracha"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cafard"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarafaggio"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/traumsymbole/kakerlake",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/de/traumsymbole/kakerlake",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/guides/traumsymbole-lexikon"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/de/traumsymbole/kakerlake"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "lang": "en",
+      "outputPath": "docs/en/symbols/cockroach.html",
+      "canonical": "https://noctalia.app/en/symbols/cockroach",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kakerlake"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cucaracha"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cafard"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarafaggio"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/symbols/cockroach",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/en/symbols/cockroach",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/guides/dream-symbols-dictionary"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/en/symbols/cockroach"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "lang": "es",
+      "outputPath": "docs/es/simbolos/cucaracha.html",
+      "canonical": "https://noctalia.app/es/simbolos/cucaracha",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kakerlake"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cucaracha"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cafard"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarafaggio"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/simbolos/cucaracha",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/es/simbolos/cucaracha",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/guides/diccionario-simbolos-suenos"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/es/simbolos/cucaracha"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "lang": "fr",
+      "outputPath": "docs/fr/symboles/cafard.html",
+      "canonical": "https://noctalia.app/fr/symboles/cafard",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kakerlake"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cucaracha"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cafard"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarafaggio"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/symboles/cafard",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/fr/symboles/cafard",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/guides/dictionnaire-symboles-reves"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/fr/symboles/cafard"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "lang": "it",
+      "outputPath": "docs/it/simboli/scarafaggio.html",
+      "canonical": "https://noctalia.app/it/simboli/scarafaggio",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kakerlake"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cucaracha"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cafard"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarafaggio"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/simboli/scarafaggio",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/it/simboli/scarafaggio",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/guides/dizionario-simboli-sogni"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/it/simboli/scarafaggio"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
       "pageId": "symbol.cow",
       "lang": "de",
       "outputPath": "docs/de/traumsymbole/kuh.html",
@@ -54363,6 +54878,301 @@
           {
             "position": "3",
             "item": "https://noctalia.app/it/simboli/esame"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "lang": "de",
+      "outputPath": "docs/de/traumsymbole/kot.html",
+      "canonical": "https://noctalia.app/de/traumsymbole/kot",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kot"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/poop"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/caca"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/caca"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cacca"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/poop"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/traumsymbole/kot",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/de/traumsymbole/kot",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/guides/traumsymbole-lexikon"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/de/traumsymbole/kot"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "lang": "en",
+      "outputPath": "docs/en/symbols/poop.html",
+      "canonical": "https://noctalia.app/en/symbols/poop",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kot"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/poop"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/caca"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/caca"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cacca"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/poop"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/symbols/poop",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/en/symbols/poop",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/guides/dream-symbols-dictionary"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/en/symbols/poop"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "lang": "es",
+      "outputPath": "docs/es/simbolos/caca.html",
+      "canonical": "https://noctalia.app/es/simbolos/caca",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kot"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/poop"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/caca"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/caca"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cacca"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/poop"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/simbolos/caca",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/es/simbolos/caca",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/guides/diccionario-simbolos-suenos"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/es/simbolos/caca"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "lang": "fr",
+      "outputPath": "docs/fr/symboles/caca.html",
+      "canonical": "https://noctalia.app/fr/symboles/caca",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kot"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/poop"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/caca"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/caca"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cacca"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/poop"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/symboles/caca",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/fr/symboles/caca",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/guides/dictionnaire-symboles-reves"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/fr/symboles/caca"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "lang": "it",
+      "outputPath": "docs/it/simboli/cacca.html",
+      "canonical": "https://noctalia.app/it/simboli/cacca",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kot"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/poop"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/caca"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/caca"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cacca"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/poop"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/simboli/cacca",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/it/simboli/cacca",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/guides/dizionario-simboli-sogni"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/it/simboli/cacca"
           }
         ]
       ],
@@ -75610,6 +76420,301 @@
     },
     {
       "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "lang": "de",
+      "outputPath": "docs/de/traumsymbole/schuhe.html",
+      "canonical": "https://noctalia.app/de/traumsymbole/schuhe",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schuhe"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/zapatos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/chaussures"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarpe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/traumsymbole/schuhe",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/de/traumsymbole/schuhe",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/guides/traumsymbole-lexikon"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/de/traumsymbole/schuhe"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "lang": "en",
+      "outputPath": "docs/en/symbols/shoes.html",
+      "canonical": "https://noctalia.app/en/symbols/shoes",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schuhe"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/zapatos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/chaussures"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarpe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/symbols/shoes",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/en/symbols/shoes",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/guides/dream-symbols-dictionary"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/en/symbols/shoes"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "lang": "es",
+      "outputPath": "docs/es/simbolos/zapatos.html",
+      "canonical": "https://noctalia.app/es/simbolos/zapatos",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schuhe"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/zapatos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/chaussures"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarpe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/simbolos/zapatos",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/es/simbolos/zapatos",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/guides/diccionario-simbolos-suenos"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/es/simbolos/zapatos"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "lang": "fr",
+      "outputPath": "docs/fr/symboles/chaussures.html",
+      "canonical": "https://noctalia.app/fr/symboles/chaussures",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schuhe"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/zapatos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/chaussures"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarpe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/symboles/chaussures",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/fr/symboles/chaussures",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/guides/dictionnaire-symboles-reves"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/fr/symboles/chaussures"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "lang": "it",
+      "outputPath": "docs/it/simboli/scarpe.html",
+      "canonical": "https://noctalia.app/it/simboli/scarpe",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schuhe"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/zapatos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/chaussures"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarpe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/simboli/scarpe",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/it/simboli/scarpe",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/guides/dizionario-simboli-sogni"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/it/simboli/scarpe"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
       "pageId": "symbol.sibling",
       "lang": "de",
       "outputPath": "docs/de/traumsymbole/geschwister.html",
@@ -83273,6 +84378,301 @@
           {
             "position": "3",
             "item": "https://noctalia.app/it/simboli/luogo-di-lavoro"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "lang": "de",
+      "outputPath": "docs/de/traumsymbole/wuermer.html",
+      "canonical": "https://noctalia.app/de/traumsymbole/wuermer",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wuermer"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/worms"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/gusanos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/vers"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vermi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/worms"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/traumsymbole/wuermer",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/de/traumsymbole/wuermer",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/guides/traumsymbole-lexikon"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/de/traumsymbole/wuermer"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "lang": "en",
+      "outputPath": "docs/en/symbols/worms.html",
+      "canonical": "https://noctalia.app/en/symbols/worms",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wuermer"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/worms"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/gusanos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/vers"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vermi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/worms"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/symbols/worms",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/en/symbols/worms",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/guides/dream-symbols-dictionary"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/en/symbols/worms"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "lang": "es",
+      "outputPath": "docs/es/simbolos/gusanos.html",
+      "canonical": "https://noctalia.app/es/simbolos/gusanos",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wuermer"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/worms"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/gusanos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/vers"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vermi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/worms"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/simbolos/gusanos",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/es/simbolos/gusanos",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/guides/diccionario-simbolos-suenos"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/es/simbolos/gusanos"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "lang": "fr",
+      "outputPath": "docs/fr/symboles/vers.html",
+      "canonical": "https://noctalia.app/fr/symboles/vers",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wuermer"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/worms"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/gusanos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/vers"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vermi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/worms"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/symboles/vers",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/fr/symboles/vers",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/guides/dictionnaire-symboles-reves"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/fr/symboles/vers"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "lang": "it",
+      "outputPath": "docs/it/simboli/vermi.html",
+      "canonical": "https://noctalia.app/it/simboli/vermi",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wuermer"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/worms"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/gusanos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/vers"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vermi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/worms"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/simboli/vermi",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/it/simboli/vermi",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/guides/dizionario-simboli-sogni"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/it/simboli/vermi"
           }
         ]
       ],
@@ -104225,6 +105625,166 @@
     },
     {
       "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/traumsymbole/kakerlake",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kakerlake"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cucaracha"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cafard"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarafaggio"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/symbols/cockroach",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kakerlake"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cucaracha"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cafard"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarafaggio"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/simbolos/cucaracha",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kakerlake"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cucaracha"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cafard"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarafaggio"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/symboles/cafard",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kakerlake"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cucaracha"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cafard"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarafaggio"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cockroach",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/simboli/scarafaggio",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kakerlake"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cucaracha"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cafard"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarafaggio"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cockroach"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
       "pageId": "symbol.cow",
       "lang": "de",
       "loc": "https://noctalia.app/de/traumsymbole/kuh",
@@ -107260,6 +108820,166 @@
         {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/symbols/exam"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/traumsymbole/kot",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kot"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/poop"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/caca"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/caca"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cacca"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/poop"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/symbols/poop",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kot"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/poop"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/caca"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/caca"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cacca"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/poop"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/simbolos/caca",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kot"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/poop"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/caca"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/caca"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cacca"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/poop"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/symboles/caca",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kot"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/poop"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/caca"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/caca"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cacca"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/poop"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.excrement",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/simboli/cacca",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/kot"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/poop"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/caca"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/caca"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cacca"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/poop"
         }
       ]
     },
@@ -118785,6 +120505,166 @@
     },
     {
       "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/traumsymbole/schuhe",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schuhe"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/zapatos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/chaussures"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarpe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/symbols/shoes",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schuhe"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/zapatos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/chaussures"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarpe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/simbolos/zapatos",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schuhe"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/zapatos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/chaussures"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarpe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/symboles/chaussures",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schuhe"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/zapatos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/chaussures"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarpe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.shoes",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/simboli/scarpe",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/schuhe"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/zapatos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/chaussures"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scarpe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/shoes"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
       "pageId": "symbol.sibling",
       "lang": "de",
       "loc": "https://noctalia.app/de/traumsymbole/geschwister",
@@ -122940,6 +124820,166 @@
         {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/symbols/workplace"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/traumsymbole/wuermer",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wuermer"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/worms"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/gusanos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/vers"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vermi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/worms"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/symbols/worms",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wuermer"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/worms"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/gusanos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/vers"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vermi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/worms"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/simbolos/gusanos",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wuermer"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/worms"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/gusanos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/vers"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vermi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/worms"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/symboles/vers",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wuermer"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/worms"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/gusanos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/vers"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vermi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/worms"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.worms",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/simboli/vermi",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wuermer"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/worms"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/gusanos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/vers"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vermi"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/worms"
         }
       ]
     },
