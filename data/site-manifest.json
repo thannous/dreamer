@@ -6612,6 +6612,34 @@
             }
           }
         },
+        "symbol.turtle": {
+          "id": "symbol.turtle",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "turtles",
+          "locales": {
+            "en": {
+              "slug": "turtles",
+              "path": "/en/symbols/turtles"
+            },
+            "fr": {
+              "slug": "tortue",
+              "path": "/fr/symboles/tortue"
+            },
+            "es": {
+              "slug": "tortugas",
+              "path": "/es/simbolos/tortugas"
+            },
+            "de": {
+              "slug": "schildkroete",
+              "path": "/de/traumsymbole/schildkroete"
+            },
+            "it": {
+              "slug": "tartarughe",
+              "path": "/it/simboli/tartarughe"
+            }
+          }
+        },
         "symbolCategory.nature": {
           "id": "symbolCategory.nature",
           "type": "symbolCategory",

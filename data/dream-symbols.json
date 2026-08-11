@@ -2,7 +2,7 @@
   "meta": {
     "version": "1.0.0",
     "lastUpdated": "2026-08-11",
-    "totalSymbols": 154,
+    "totalSymbols": 155,
     "languages": [
       "en",
       "fr",
@@ -10,7 +10,7 @@
       "de",
       "it"
     ],
-    "symbolCount": 154
+    "symbolCount": 155
   },
   "categories": {
     "nature": {
@@ -12299,6 +12299,173 @@
         "feet",
         "path",
         "road"
+      ],
+      "modifiedAt": "2026-08-11"
+    },
+    {
+      "id": "turtle",
+      "category": "animals",
+      "priority": 2,
+      "en": {
+        "slug": "turtles",
+        "name": "Turtles",
+        "seoTitle": "turtles, turtle shells or baby turtles",
+        "documentTitle": "Dreaming About Turtles: Meaning and Context",
+        "documentMetaDescription": "Dreaming about turtles? Compare water, shells, hiding, slow movement and baby turtles using your emotion and recent experiences, not predictions.",
+        "shortDescription": "A turtle in a dream may draw attention to pace, protection, persistence or withdrawal. Whether it moved on land or in water, hid in its shell, approached you or needed help changes the personal context.",
+        "askYourself": [
+          "Was the turtle on land, swimming, hiding in its shell, following me or unable to move?",
+          "Did its pace feel reassuring, frustrating, vulnerable or exactly right for the scene?",
+          "Which current situation involves patience, protection, steady progress or a need to come out of retreat?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about a turtle?",
+            "answer": "A turtle can fit themes of patience, protection, persistence or withdrawal. Its behavior and your emotion are more useful than assigning one universal meaning."
+          },
+          {
+            "question": "What does a turtle in water mean in a dream?",
+            "answer": "Water may shift attention toward emotion, adaptation or moving with less resistance. Notice whether the turtle swam calmly, struggled or disappeared from view."
+          },
+          {
+            "question": "What does a turtle hiding in its shell mean?",
+            "answer": "Retreating into a shell may mirror a wish for privacy, safety or time before responding. It can also replay a literal image without carrying a hidden message."
+          },
+          {
+            "question": "What do baby turtles or many turtles mean in a dream?",
+            "answer": "Baby turtles may highlight fragile beginnings or small steps, while many turtles can emphasize a shared pace or repeated responsibility. Neither scene predicts an outcome."
+          }
+        ]
+      },
+      "fr": {
+        "slug": "tortue",
+        "name": "Tortue",
+        "seoTitle": "tortue, carapace ou bébés tortues",
+        "documentTitle": "Rêver de tortue : sens et scénarios",
+        "documentMetaDescription": "Rêver de tortue : comparez eau, carapace, retrait, lenteur et bébés tortues à partir de l’émotion et du contexte, sans prédiction.",
+        "shortDescription": "Une tortue dans un rêve peut mettre en avant le rythme, la protection, la persévérance ou le retrait. Son déplacement sur terre ou dans l’eau, sa carapace et votre réaction donnent le contexte personnel.",
+        "askYourself": [
+          "La tortue marchait-elle, nageait-elle, se cachait-elle dans sa carapace ou avait-elle besoin d’aide ?",
+          "Sa lenteur semblait-elle rassurante, frustrante, vulnérable ou adaptée à la scène ?",
+          "Quelle situation actuelle demande patience, protection, progression régulière ou sortie d’un retrait ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de tortue ?",
+            "answer": "La tortue peut rejoindre la patience, la protection, la persévérance ou le retrait. Son comportement et votre émotion comptent davantage qu’une définition universelle."
+          },
+          {
+            "question": "Que signifie une tortue dans l’eau dans un rêve ?",
+            "answer": "L’eau peut orienter la scène vers l’émotion, l’adaptation ou un mouvement plus fluide. Observez si la tortue nageait calmement, luttait ou disparaissait."
+          },
+          {
+            "question": "Que signifie une tortue cachée dans sa carapace ?",
+            "answer": "Le retrait peut refléter un besoin d’intimité, de sécurité ou de temps avant de répondre. Une image récente peut aussi expliquer directement la scène."
+          },
+          {
+            "question": "Que signifient des bébés tortues ou plusieurs tortues ?",
+            "answer": "Des bébés tortues peuvent évoquer un début fragile ou de petites étapes; un groupe peut accentuer un rythme partagé ou des responsabilités répétées, sans prédire l’avenir."
+          }
+        ]
+      },
+      "es": {
+        "slug": "tortugas",
+        "name": "Tortugas",
+        "seoTitle": "tortugas, caparazones o tortugas bebés",
+        "documentTitle": "Soñar con tortugas: significado y escenas",
+        "documentMetaDescription": "Soñar con tortugas: compara agua, caparazón, esconderse, movimiento lento y crías según la emoción y el contexto, sin predicciones.",
+        "shortDescription": "Soñar con una tortuga puede destacar ritmo, protección, constancia o retirada. Si caminaba, nadaba, se escondía en el caparazón, se acercaba o necesitaba ayuda cambia el contexto personal.",
+        "askYourself": [
+          "¿La tortuga estaba en tierra, nadaba, se escondía en el caparazón, me seguía o no podía avanzar?",
+          "¿Su ritmo parecía tranquilo, frustrante, vulnerable o adecuado para la escena?",
+          "¿Qué situación actual requiere paciencia, protección, progreso constante o salir de un retiro?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con tortugas?",
+            "answer": "Una tortuga puede encajar con paciencia, protección, constancia o retirada. Su conducta y tu emoción aportan más contexto que un significado universal."
+          },
+          {
+            "question": "¿Qué significa una tortuga en el agua en un sueño?",
+            "answer": "El agua puede dirigir la escena hacia emoción, adaptación o movimiento con menos resistencia. Observa si nadaba con calma, luchaba o desaparecía."
+          },
+          {
+            "question": "¿Qué significa una tortuga escondida en su caparazón?",
+            "answer": "Esconderse puede reflejar necesidad de intimidad, seguridad o tiempo antes de responder. También puede repetir una imagen reciente sin mensaje oculto."
+          },
+          {
+            "question": "¿Qué significan tortugas bebés o muchas tortugas?",
+            "answer": "Las crías pueden destacar comienzos frágiles o pasos pequeños; muchas tortugas pueden enfatizar un ritmo compartido o responsabilidades repetidas, sin anunciar resultados."
+          }
+        ]
+      },
+      "de": {
+        "slug": "schildkroete",
+        "name": "Schildkröte",
+        "seoTitle": "Schildkröte, Panzer oder junge Schildkröten",
+        "documentTitle": "Traumdeutung Schildkröte: Bedeutung",
+        "documentMetaDescription": "Schildkröte im Traum: Vergleiche Wasser, Panzer, Rückzug, langsame Bewegung und Jungtiere anhand von Gefühl und Kontext statt Vorhersagen.",
+        "shortDescription": "Eine Schildkröte im Traum kann Tempo, Schutz, Ausdauer oder Rückzug hervorheben. Ob sie an Land lief, schwamm, sich in den Panzer zurückzog oder Hilfe brauchte, verändert den persönlichen Zusammenhang.",
+        "askYourself": [
+          "War die Schildkröte an Land, im Wasser, im Panzer, hinter mir oder konnte sie sich nicht bewegen?",
+          "Wirkte ihr Tempo beruhigend, frustrierend, verletzlich oder für die Szene genau richtig?",
+          "Welche aktuelle Situation verlangt Geduld, Schutz, stetigen Fortschritt oder ein Ende des Rückzugs?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet eine Schildkröte im Traum?",
+            "answer": "Eine Schildkröte kann zu Geduld, Schutz, Ausdauer oder Rückzug passen. Verhalten und Gefühl geben mehr Aufschluss als eine allgemeine Symbolregel."
+          },
+          {
+            "question": "Was bedeutet eine Schildkröte im Wasser im Traum?",
+            "answer": "Wasser kann Gefühl, Anpassung oder Bewegung mit weniger Widerstand betonen. Achte darauf, ob das Tier ruhig schwamm, kämpfte oder verschwand."
+          },
+          {
+            "question": "Was bedeutet eine Schildkröte, die sich im Panzer versteckt?",
+            "answer": "Der Rückzug kann ein Bedürfnis nach Privatsphäre, Sicherheit oder Bedenkzeit spiegeln. Auch ein aktuelles Bild kann die Szene direkt ausgelöst haben."
+          },
+          {
+            "question": "Was bedeuten junge oder viele Schildkröten im Traum?",
+            "answer": "Jungtiere können einen empfindlichen Anfang oder kleine Schritte hervorheben; viele Tiere können gemeinsames Tempo oder wiederkehrende Verantwortung betonen, ohne etwas vorherzusagen."
+          }
+        ]
+      },
+      "it": {
+        "slug": "tartarughe",
+        "name": "Tartarughe",
+        "seoTitle": "tartarughe, guscio o tartarughe appena nate",
+        "documentTitle": "Sognare tartarughe: significato e scenari",
+        "documentMetaDescription": "Sognare tartarughe: confronta acqua, guscio, ritiro, lentezza e piccoli appena nati usando emozione e contesto, senza previsioni.",
+        "shortDescription": "Sognare una tartaruga può mettere in primo piano ritmo, protezione, costanza o ritiro. Se camminava, nuotava, rientrava nel guscio, si avvicinava o aveva bisogno di aiuto cambia il contesto personale.",
+        "askYourself": [
+          "La tartaruga era sulla terra, nuotava, si nascondeva nel guscio, mi seguiva o non riusciva a muoversi?",
+          "Il suo ritmo sembrava rassicurante, frustrante, vulnerabile o adatto alla scena?",
+          "Quale situazione attuale richiede pazienza, protezione, progresso costante o uscita da un ritiro?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare tartarughe?",
+            "answer": "Una tartaruga può collegarsi a pazienza, protezione, costanza o ritiro. Comportamento ed emozione offrono più contesto di una definizione universale."
+          },
+          {
+            "question": "Che cosa significa una tartaruga nell’acqua in sogno?",
+            "answer": "L’acqua può orientare la scena verso emozione, adattamento o movimento con meno resistenza. Nota se nuotava tranquilla, faticava o spariva."
+          },
+          {
+            "question": "Che cosa significa una tartaruga nascosta nel guscio?",
+            "answer": "Ritirarsi può riflettere bisogno di privacy, sicurezza o tempo prima di rispondere. Anche un’immagine recente può spiegare direttamente la scena."
+          },
+          {
+            "question": "Che cosa significano tartarughe appena nate o molte tartarughe?",
+            "answer": "I piccoli possono evidenziare un inizio fragile o passi ridotti; molte tartarughe possono accentuare un ritmo condiviso o responsabilità ripetute, senza predire risultati."
+          }
+        ]
+      },
+      "relatedSymbols": [
+        "water",
+        "ocean",
+        "island",
+        "frog"
       ],
       "modifiedAt": "2026-08-11"
     }

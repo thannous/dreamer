@@ -46,6 +46,7 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j27-content-validation-backlog-2026-08-11.csv`](./j27-content-validation-backlog-2026-08-11.csv) : backlog post-Starter des propriétaires prospectifs, preuves, conflits et portes d'implémentation.
 - [`j27-ranking-expansion-2026-08-11.md`](./j27-ranking-expansion-2026-08-11.md) : extension J27 autorisée, croisement de 80 requêtes Ahrefs avec GSC, lot de 20 routes localisées et quatre quick wins de titres existants.
 - [`j27-ranking-expansion-backlog-2026-08-11.csv`](./j27-ranking-expansion-backlog-2026-08-11.csv) : matrice pays de 80 requêtes pour les vagues suivantes, avec métriques observées, statut et porte d'ownership.
+- [`j27-ranking-expansion-execution-2026-08-11.md`](./j27-ranking-expansion-execution-2026-08-11.md) : journal du chantier `turtle` → `crocodile` → `lice`, séparation des états Git/publics et portes d'autorisation des leviers différés.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
 - [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27 et Misabueso GSC, périmètres synchronisés et règles de conservation.

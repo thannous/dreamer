@@ -11558,6 +11558,53 @@
           { "context": "Scegliere tra più scarpe", "meaning": "La scelta può riflettere confronto tra identità, destinazioni o modi di presentarti." }
         ]
       }
+    },
+    "turtle": {
+      "en": {
+        "fullInterpretation": "<p>A turtle can make pace and protection visible in a dream. Begin with movement: was it crossing land, swimming, still, trapped or retreating into its shell? Calm progress and frustrating delay create different contexts.</p>\n<p>The shell can fit privacy, boundaries or time needed before responding. A turtle moving steadily may instead highlight persistence and a pace that is sustainable even when it looks slow from outside.</p>\n<p>A pet, documentary, beach visit, conservation story or image seen that day can supply the symbol directly. The dream does not predict longevity or luck; compare the scene with your current need for safety and progress.</p>",
+        "variations": [
+          { "context": "A turtle in water", "meaning": "Swimming can emphasize adaptation, emotion or movement that feels easier than progress on land." },
+          { "context": "A turtle hiding in its shell", "meaning": "Retreat may reflect privacy, protection or time needed before engaging again." },
+          { "context": "A slow or stuck turtle", "meaning": "The pace may mirror frustration, patience or a process that cannot be rushed safely." },
+          { "context": "Baby turtles", "meaning": "Small turtles can highlight a fragile beginning, repeated care or several modest steps rather than one large change." }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Une tortue peut rendre visibles le rythme et la protection. Commencez par son déplacement : traversait-elle la terre, nageait-elle, restait-elle immobile, était-elle coincée ou se retirait-elle dans sa carapace ? Progression calme et retard frustrant créent des contextes différents.</p>\n<p>La carapace peut rejoindre l’intimité, les limites ou le temps nécessaire avant de répondre. Une tortue qui avance régulièrement peut plutôt mettre en avant la persévérance et un rythme durable, même s’il semble lent.</p>\n<p>Animal familier, documentaire, plage, histoire de protection ou image récente peuvent fournir directement le symbole. Le rêve ne prédit ni longévité ni chance; comparez la scène avec votre besoin actuel de sécurité et d’avancement.</p>",
+        "variations": [
+          { "context": "Une tortue dans l’eau", "meaning": "La nage peut accentuer adaptation, émotion ou mouvement plus facile que la progression sur terre." },
+          { "context": "Une tortue cachée dans sa carapace", "meaning": "Le retrait peut refléter intimité, protection ou temps nécessaire avant de revenir au contact." },
+          { "context": "Une tortue lente ou coincée", "meaning": "Le rythme peut reprendre frustration, patience ou processus qu’il serait risqué de précipiter." },
+          { "context": "Des bébés tortues", "meaning": "Les petits peuvent mettre en avant un début fragile, des soins répétés ou plusieurs étapes modestes." }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Una tortuga puede hacer visibles ritmo y protección. Empieza por su movimiento: ¿cruzaba tierra, nadaba, permanecía quieta, estaba atrapada o se escondía en el caparazón? Progreso tranquilo y retraso frustrante crean contextos distintos.</p>\n<p>El caparazón puede relacionarse con intimidad, límites o tiempo antes de responder. Una tortuga que avanza con constancia puede destacar persistencia y un ritmo sostenible aunque parezca lento desde fuera.</p>\n<p>Una mascota, documental, visita a la playa, noticia de conservación o imagen reciente pueden aportar el símbolo directamente. El sueño no predice longevidad ni suerte; compáralo con tu necesidad actual de seguridad y avance.</p>",
+        "variations": [
+          { "context": "Una tortuga en el agua", "meaning": "Nadar puede enfatizar adaptación, emoción o movimiento más fácil que avanzar por tierra." },
+          { "context": "Una tortuga escondida en el caparazón", "meaning": "La retirada puede reflejar intimidad, protección o tiempo antes de volver a participar." },
+          { "context": "Una tortuga lenta o atrapada", "meaning": "El ritmo puede reflejar frustración, paciencia o un proceso que no conviene acelerar." },
+          { "context": "Tortugas bebés", "meaning": "Las crías pueden destacar un comienzo frágil, cuidados repetidos o varios pasos modestos." }
+        ]
+      },
+      "de": {
+        "fullInterpretation": "<p>Eine Schildkröte kann im Traum Tempo und Schutz sichtbar machen. Beginne mit ihrer Bewegung: Lief sie über Land, schwamm sie, blieb sie stehen, war sie gefangen oder zog sie sich in den Panzer zurück? Ruhiger Fortschritt und frustrierende Verzögerung schaffen verschiedene Kontexte.</p>\n<p>Der Panzer kann zu Privatsphäre, Grenzen oder notwendiger Bedenkzeit passen. Eine stetig laufende Schildkröte kann dagegen Ausdauer und ein tragfähiges Tempo betonen, auch wenn es von außen langsam wirkt.</p>\n<p>Haustier, Dokumentation, Strandbesuch, Naturschutzbericht oder ein aktuelles Bild können das Symbol direkt liefern. Der Traum sagt weder Langlebigkeit noch Glück voraus; vergleiche ihn mit deinem Bedürfnis nach Sicherheit und Fortschritt.</p>",
+        "variations": [
+          { "context": "Eine Schildkröte im Wasser", "meaning": "Schwimmen kann Anpassung, Gefühl oder Bewegung betonen, die leichter als der Weg an Land wirkt." },
+          { "context": "Eine Schildkröte im Panzer", "meaning": "Rückzug kann Privatsphäre, Schutz oder notwendige Zeit vor neuer Beteiligung spiegeln." },
+          { "context": "Eine langsame oder gefangene Schildkröte", "meaning": "Das Tempo kann Frust, Geduld oder einen Prozess zeigen, der sich nicht sicher beschleunigen lässt." },
+          { "context": "Junge Schildkröten", "meaning": "Jungtiere können einen empfindlichen Anfang, wiederholte Fürsorge oder mehrere kleine Schritte hervorheben." }
+        ]
+      },
+      "it": {
+        "fullInterpretation": "<p>Una tartaruga può rendere visibili ritmo e protezione. Parti dal movimento: attraversava la terra, nuotava, restava ferma, era bloccata o rientrava nel guscio? Progresso tranquillo e ritardo frustrante creano contesti diversi.</p>\n<p>Il guscio può collegarsi a privacy, confini o tempo necessario prima di rispondere. Una tartaruga che procede con costanza può invece mettere in primo piano perseveranza e un ritmo sostenibile, anche se appare lento.</p>\n<p>Un animale domestico, documentario, visita alla spiaggia, storia di tutela o immagine recente possono fornire direttamente il simbolo. Il sogno non predice longevità o fortuna; confrontalo con il bisogno attuale di sicurezza e avanzamento.</p>",
+        "variations": [
+          { "context": "Una tartaruga nell’acqua", "meaning": "Nuotare può evidenziare adattamento, emozione o movimento più facile del cammino sulla terra." },
+          { "context": "Una tartaruga nascosta nel guscio", "meaning": "Il ritiro può riflettere privacy, protezione o tempo prima di partecipare di nuovo." },
+          { "context": "Una tartaruga lenta o bloccata", "meaning": "Il ritmo può riprendere frustrazione, pazienza o un processo che non va accelerato." },
+          { "context": "Tartarughe appena nate", "meaning": "I piccoli possono evidenziare un inizio fragile, cure ripetute o diversi passi modesti." }
+        ]
+      }
     }
   }
 }
