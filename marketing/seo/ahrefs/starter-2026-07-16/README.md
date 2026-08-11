@@ -49,8 +49,8 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j27-ranking-expansion-execution-2026-08-11.md`](./j27-ranking-expansion-execution-2026-08-11.md) : journal du chantier `turtle` → `crocodile` → `lice`, séparation des états Git/publics et portes d'autorisation des leviers différés.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
-- [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27 et Misabueso GSC, périmètres synchronisés et règles de conservation.
-- [`drive-sync-manifest-2026-08-11.csv`](./drive-sync-manifest-2026-08-11.csv) : correspondance vérifiable entre les 15 fichiers Git, leurs identifiants Drive et leurs empreintes SHA-256.
+- [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27, Misabueso GSC et preuves brutes, périmètres synchronisés et règles de conservation.
+- [`drive-sync-manifest-2026-08-11.csv`](./drive-sync-manifest-2026-08-11.csv) : correspondance vérifiable entre les 16 fichiers Git, leurs identifiants Drive et leurs empreintes SHA-256.
 - [`drive-sync-manifest-misabueso-2026-08-11.csv`](./drive-sync-manifest-misabueso-2026-08-11.csv) : correspondance vérifiable des deux rapports Misabueso GSC archivés dans leur sous-dossier dédié.
 - [`rank-tracker-portfolio-50-2026-07-16.csv`](./rank-tracker-portfolio-50-2026-07-16.csv) : portefeuille validé des 50 couples, assaini des métriques brutes.
 - [`rank-tracker-target-map-2026-08-01.csv`](./rank-tracker-target-map-2026-08-01.csv) : correspondance durable entre chaque tag `target-*` et l'URL cible voulue.
