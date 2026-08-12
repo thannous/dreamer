@@ -33,7 +33,7 @@ Ce chantier ne modifie pas :
 | P0 | `lice`, 5 langues | `LIVE_VERIFIED` | mesurer sur des fenêtres GSC complètes sans demander d'indexation |
 | P0 | autorité externe | `PREPARE_ONLY_NO_SEND` | nouveau stop gate puis autorisation explicite, dossier par dossier |
 | P1 | expérience `scuola` | `HOLD_UNTIL_2026-08-15` | lire la fenêtre J+7 de `casa/ragno/perro`, puis ouvrir un lot metadata-only séparé si le signal reste propre |
-| P1 | 254 URL explorées non indexées | `DIAGNOSTIC_ONLY` | segmenter, commencer par l'article DE sur la poursuite, n'ajouter qu'un lien contextuel prouvé |
+| P1 | 254 URL explorées non indexées | `FIRST_CASE_IMPLEMENTED_2026-08-12` | mesurer l'article DE sur la poursuite après son lien contextuel; poursuivre le tri sans demande d'indexation |
 | P2 | `/es/simbolos/coche` | `QUEUED_FOR_OWNER_OPTIMIZATION` | revalider la source et le SERP avant toute édition |
 | P2 | ancres IT poursuite | `HOLD_UNTIL_NEEDED` | ne différencier fiche/article que si la répartition GSC reste ambiguë |
 | P3 | redirection IT mal encodée | `HOLD_GSC_PROOF` | confirmer l'URL exacte dans GSC avant intégration ; ne pas reprendre le WIP d'un autre worktree |
@@ -178,7 +178,9 @@ Le rapport GSC live, mis à jour le 7 août, a été exporté le 11 août. Son a
 
 Les 184 routes actuelles se répartissent en 106 fiches symbole, 72 articles et 6 guides. Dix-sept ont été explorées dans les 28 jours précédant la mise à jour GSC; les autres sont plus anciennes. Le graphe généré donne à chacune au moins 4 sources de liens internes distinctes (médiane 10, maximum 42) : cette liste ne révèle donc aucun orphelin et ne justifie pas un ajout massif de liens.
 
-L'article allemand sur la poursuite est bien dans le segment canonique, avec une dernière exploration le 4 août et 14 sources internes distinctes. Il reste le premier cas à lire, mais son statut n'est pas une preuve qu'un lien entrant supplémentaire résoudrait l'indexation. Le seul ajout préparatoire plausible est un lien contextuel et sémantiquement distinct vers l'article sur les rêves récurrents dans la section dédiée; il doit rester dans un lot P1 séparé après la vague P0.
+L'article allemand sur la poursuite est bien dans le segment canonique, avec une dernière exploration le 4 août et 14 sources internes distinctes. Il reste le premier cas à lire, mais son statut n'est pas une preuve qu'un lien entrant supplémentaire résoudrait l'indexation. Le seul ajout préparatoire plausible est un lien contextuel et sémantiquement distinct depuis la section dédiée de l'article sur les rêves récurrents vers l'article détaillé sur la poursuite; il doit rester dans un lot P1 séparé après la vague P0.
+
+Mise à jour du 12 août : le cas a été repris dans `j28-gsc-indexation-triage-2026-08-12.md`. GSC montre désormais des impressions pour l'article DE sur la poursuite; l'ancien statut de couverture n'est donc plus interprété comme un blocage actuel. Un seul lien entrant contextuel a été retenu depuis l'article DE sur les rêves récurrents, sans demande d'indexation et sans changement d'ownership.
 
 ### Propriétaires existants
 
