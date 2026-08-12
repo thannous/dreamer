@@ -12,8 +12,8 @@ Trois actions sont retenues sur des preuves fraîches et sans toucher aux expér
 
 | Levier | Décision | État |
 |---|---|---|
-| propriétaire ES `/es/simbolos/coche` | optimiser uniquement le titre et la meta description pour `coche`, `carro`, conduite et perte du véhicule | `PUSHED_AWAITING_PUBLIC_ALIAS` |
-| nouveau propriétaire `scorpion` | créer cinq routes localisées, avec contenu, image, curation animaux et contrat URL | `LOCAL_VALIDATED_BEFORE_URL_CONTRACT` |
+| propriétaire ES `/es/simbolos/coche` | optimiser uniquement le titre et la meta description pour `coche`, `carro`, conduite et perte du véhicule | `LIVE_VERIFIED` |
+| nouveau propriétaire `scorpion` | créer cinq routes localisées, avec contenu, image, curation animaux et contrat URL | `LOCAL_VALIDATED_WITH_URL_CONTRACT` |
 | avertissements Site Audit PT-BR | accepter les deux absences de `x-default` comme intentionnelles, faute d'équivalent EN | `NO_ACTION_ACCEPTED` |
 
 Aucun envoi externe, changement Rank Tracker, achat, add-on, changement d'abonnement, crawl manuel ou demande d'indexation n'est inclus.
@@ -36,7 +36,7 @@ Le traitement conserve slug, canonical, corps, ancres et date éditoriale. Seuls
 - titre : `Soñar con coche o carro: significado y escenarios` ;
 - description : `Soñar con coche o carro: compara conducir, perder el coche, viajar de pasajero, averías y accidentes según la emoción y el contexto del sueño.`
 
-Le commit `240689ebc` est poussé sur `master`. Le déploiement Vercel du même SHA est réussi ; au moment de cette écriture, l'alias public `https://noctalia.app` sert encore les anciennes balises. La publication publique reste donc à confirmer séparément.
+Le commit `240689ebc` est poussé sur `master`. Le run Quality `31622526211` et le déploiement Vercel du même SHA sont réussis. Le déploiement Cloudflare Pages `96373ff6-bc97-48c4-beed-c2050a34e49b` a terminé son build avant le basculement de l'alias. À 17:41 UTC, `https://noctalia.app/es/simbolos/coche` répond HTTP 200 avec le nouveau titre, la nouvelle description, son canonical inchangé et `index, follow`. Cette preuve établit la publication, pas un gain de CTR.
 
 ### `scorpion`
 
@@ -76,6 +76,8 @@ Contrôles locaux avant extension du contrat :
 - 15 tests du registre de contenu verts ;
 - contrat des images vert ;
 - `npm run docs:check` arrêté uniquement par la porte additive attendue des cinq nouvelles routes.
+
+Le contenu est isolé dans `bb0a08ab1` (`feat(seo): add localized scorpion ranking owners`). Le contrat public est ensuite étendu additivement dans `c1a83dcc0` : 1 236 routes manifeste, 1 236 pages canoniques, 1 236 entrées sitemap et 1 241 sorties HTML. `npm run docs:check` passe alors avec 0 erreur, 0 avertissement et 0 lien interne cassé. La release-check sur export Git propre passe également avec 0 lien interne ou externe cassé et conserve 70 avertissements de profondeur DE non bloquants déjà connus.
 
 ## Site Audit et crédits
 

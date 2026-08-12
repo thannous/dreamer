@@ -127,6 +127,6 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 - La page DE sur les rêves récurrents, forte de 41 clics et 5,34 k impressions à position 6,7 sur 28 jours, porte désormais un seul lien contextuel vers l'article détaillé sur la poursuite. L'ancre reste distincte de la fiche symbole A–Z.
 - Le lot est publié sur `master` au commit `130cd0af1`; GitHub Actions `Quality`, Cloudflare Pages et les contrôles HTTP publics sont verts.
 - Aucun crédit Ahrefs, changement Rank Tracker, redéploiement manuel ni demande d'indexation n'a été consommé par ce traitement.
-- Le propriétaire ES `coche` est optimisé sans changer URL, canonical ou corps ; le commit `240689ebc` est poussé et sa preuve sur l'alias public reste à acquérir.
+- Le propriétaire ES `coche` est optimisé sans changer URL, canonical ou corps ; le commit `240689ebc` est poussé et les nouvelles balises sont vérifiées sur l'alias public.
 - Le cluster `scorpion` est absent de GSC sur 28 jours et sur toute la fenêtre disponible depuis le 5 décembre 2025. Ahrefs confirme quatre KD de 0 à 1 et des volumes pays de 60 à 450 ; le marché DE conserve un KD non disponible faute de mise à jour Starter.
 - Le compteur général Ahrefs passe de 119 à 126 crédits utilisés. Les 50 suivis et le workspace Site Audit `3 627/10 000` restent inchangés.
