@@ -48,6 +48,7 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j27-ranking-expansion-backlog-2026-08-11.csv`](./j27-ranking-expansion-backlog-2026-08-11.csv) : matrice pays de 80 requêtes pour les vagues suivantes, avec métriques observées, statut et porte d'ownership.
 - [`j27-ranking-expansion-execution-2026-08-11.md`](./j27-ranking-expansion-execution-2026-08-11.md) : journal du chantier `turtle` → `crocodile` → `lice`, séparation des états Git/publics et portes d'autorisation des leviers différés.
 - [`j28-gsc-indexation-triage-2026-08-12.md`](./j28-gsc-indexation-triage-2026-08-12.md) : tri du premier cas parmi les 254 URL, contradiction couverture/performance GSC, lien contextuel DE publié et preuves Git/CI/Cloudflare/HTTP.
+- [`j28-actionable-levers-execution-2026-08-12.md`](./j28-actionable-levers-execution-2026-08-12.md) : exécution de l'optimisation `coche`, validation GSC/Ahrefs et préparation des cinq propriétaires `scorpion`, avec coût et stop-gates.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
 - [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27, Misabueso GSC et preuves brutes, périmètres synchronisés et règles de conservation.
@@ -126,3 +127,6 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 - La page DE sur les rêves récurrents, forte de 41 clics et 5,34 k impressions à position 6,7 sur 28 jours, porte désormais un seul lien contextuel vers l'article détaillé sur la poursuite. L'ancre reste distincte de la fiche symbole A–Z.
 - Le lot est publié sur `master` au commit `130cd0af1`; GitHub Actions `Quality`, Cloudflare Pages et les contrôles HTTP publics sont verts.
 - Aucun crédit Ahrefs, changement Rank Tracker, redéploiement manuel ni demande d'indexation n'a été consommé par ce traitement.
+- Le propriétaire ES `coche` est optimisé sans changer URL, canonical ou corps ; le commit `240689ebc` est poussé et sa preuve sur l'alias public reste à acquérir.
+- Le cluster `scorpion` est absent de GSC sur 28 jours et sur toute la fenêtre disponible depuis le 5 décembre 2025. Ahrefs confirme quatre KD de 0 à 1 et des volumes pays de 60 à 450 ; le marché DE conserve un KD non disponible faute de mise à jour Starter.
+- Le compteur général Ahrefs passe de 119 à 126 crédits utilisés. Les 50 suivis et le workspace Site Audit `3 627/10 000` restent inchangés.

@@ -1,8 +1,8 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-08-11",
-    "totalSymbols": 157,
+    "lastUpdated": "2026-08-12",
+    "totalSymbols": 158,
     "languages": [
       "en",
       "fr",
@@ -10,7 +10,7 @@
       "de",
       "it"
     ],
-    "symbolCount": 157
+    "symbolCount": 158
   },
   "categories": {
     "nature": {
@@ -12804,6 +12804,173 @@
         "worms"
       ],
       "modifiedAt": "2026-08-11"
+    },
+    {
+      "id": "scorpion",
+      "category": "animals",
+      "priority": 2,
+      "en": {
+        "slug": "scorpions",
+        "name": "Scorpions",
+        "seoTitle": "scorpions, stings or hidden scorpions",
+        "documentTitle": "Dreaming About Scorpions: Meaning and Context",
+        "documentMetaDescription": "Dreaming about scorpions? Compare a calm or hidden scorpion, a sting, many scorpions and the place they appeared using emotion and recent context.",
+        "shortDescription": "A scorpion in a dream can bring vigilance, boundaries, hidden tension or self-protection into focus. Its distance, movement, location and your reaction help distinguish a vivid recent image from a broader emotional theme.",
+        "askYourself": [
+          "Was the scorpion calm, hidden, approaching, stinging, inside the house or one of many?",
+          "Did I feel fear, disgust, curiosity, control, pain, caution or respect for its distance?",
+          "Has a documentary, outdoor encounter, warning, conflict or boundary issue recently occupied my attention?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about scorpions?",
+            "answer": "Scorpions can fit vigilance, boundaries, hidden tension or protection. Their behavior, location and your emotion provide more useful context than a fixed universal meaning."
+          },
+          {
+            "question": "What does a scorpion sting mean in a dream?",
+            "answer": "A sting can make a sharp remark, sudden conflict or vulnerable boundary vivid. It does not predict injury; compare the scene with recent pressure and any literal sensation during sleep."
+          },
+          {
+            "question": "What do many or hidden scorpions mean in a dream?",
+            "answer": "Many scorpions can amplify repeated concerns, while a hidden one may highlight uncertainty or careful attention. Neither scene proves that another person is deceptive."
+          },
+          {
+            "question": "What does a calm scorpion or one in the house mean?",
+            "answer": "A calm scorpion may shift the focus toward restraint and respect. Inside a house, the same image can emphasize privacy or boundaries, especially after a recent image or encounter."
+          }
+        ]
+      },
+      "fr": {
+        "slug": "scorpion",
+        "name": "Scorpion",
+        "seoTitle": "scorpion, piqûre ou scorpion caché",
+        "documentTitle": "Rêver de scorpion : sens et scénarios",
+        "documentMetaDescription": "Rêver de scorpion : comparez animal calme ou caché, piqûre, grand nombre et lieu d’apparition selon l’émotion et le contexte récent.",
+        "shortDescription": "Un scorpion dans un rêve peut mettre en avant vigilance, limites, tension cachée ou protection. Sa distance, son mouvement, le lieu et votre réaction distinguent une image récente marquante d’un thème émotionnel plus large.",
+        "askYourself": [
+          "Le scorpion était-il calme, caché, en approche, en train de piquer, dans la maison ou parmi plusieurs autres ?",
+          "Ai-je ressenti peur, dégoût, curiosité, contrôle, douleur, prudence ou respect de sa distance ?",
+          "Un documentaire, une rencontre, un avertissement, un conflit ou une question de limites m’a-t-il récemment occupé ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de scorpion ?",
+            "answer": "Le scorpion peut rejoindre vigilance, limites, tension cachée ou protection. Son comportement, le lieu et votre émotion donnent plus de contexte qu’une définition universelle."
+          },
+          {
+            "question": "Que signifie une piqûre de scorpion en rêve ?",
+            "answer": "La piqûre peut rendre concrète une remarque blessante, un conflit soudain ou une limite vulnérable. Elle ne prédit pas une blessure; comparez-la aux pressions et sensations récentes."
+          },
+          {
+            "question": "Que signifient plusieurs scorpions ou un scorpion caché ?",
+            "answer": "Plusieurs animaux peuvent amplifier des préoccupations répétées; un scorpion caché peut souligner incertitude ou vigilance. La scène ne prouve pas qu’une personne trompe."
+          },
+          {
+            "question": "Que signifie un scorpion calme ou dans la maison ?",
+            "answer": "Un scorpion calme peut déplacer l’attention vers retenue et respect. Dans la maison, il peut toucher à l’intimité ou aux limites, surtout après une image ou rencontre récente."
+          }
+        ]
+      },
+      "es": {
+        "slug": "escorpiones",
+        "name": "Escorpiones",
+        "seoTitle": "escorpiones, picadura o escorpión escondido",
+        "documentTitle": "Soñar con escorpiones: significado y escenas",
+        "documentMetaDescription": "Soñar con escorpiones: compara un animal tranquilo o escondido, picaduras, muchos escorpiones y el lugar según la emoción y el contexto reciente.",
+        "shortDescription": "Un escorpión en un sueño puede destacar vigilancia, límites, tensión oculta o autoprotección. Su distancia, movimiento, ubicación y tu reacción diferencian una imagen reciente intensa de un tema emocional más amplio.",
+        "askYourself": [
+          "¿El escorpión estaba tranquilo, escondido, se acercaba, picaba, aparecía en casa o había muchos?",
+          "¿Sentí miedo, asco, curiosidad, control, dolor, cautela o respeto por su distancia?",
+          "¿Un documental, encuentro, aviso, conflicto o problema de límites ha ocupado recientemente mi atención?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con escorpiones?",
+            "answer": "Los escorpiones pueden relacionarse con vigilancia, límites, tensión oculta o protección. Su conducta, ubicación y tu emoción aportan más contexto que un significado fijo."
+          },
+          {
+            "question": "¿Qué significa la picadura de un escorpión en un sueño?",
+            "answer": "Una picadura puede volver concreta una frase hiriente, un conflicto repentino o un límite vulnerable. No predice una lesión; compárala con presiones y sensaciones recientes."
+          },
+          {
+            "question": "¿Qué significan muchos escorpiones o uno escondido?",
+            "answer": "Muchos escorpiones pueden intensificar preocupaciones repetidas; uno escondido puede destacar incertidumbre o cautela. La escena no demuestra que alguien te engañe."
+          },
+          {
+            "question": "¿Qué significa un escorpión tranquilo o dentro de casa?",
+            "answer": "Un animal tranquilo puede orientar la lectura hacia control y respeto. Dentro de casa puede señalar intimidad o límites, especialmente tras una imagen o encuentro reciente."
+          }
+        ]
+      },
+      "de": {
+        "slug": "skorpion",
+        "name": "Skorpion",
+        "seoTitle": "Skorpion, Stich oder versteckter Skorpion",
+        "documentTitle": "Traumdeutung Skorpion: Bedeutung und Szenen",
+        "documentMetaDescription": "Skorpion im Traum: Vergleiche ruhiges oder verstecktes Tier, Stich, viele Skorpione und den Ort anhand von Gefühl und aktuellem Kontext.",
+        "shortDescription": "Ein Skorpion im Traum kann Wachsamkeit, Grenzen, verborgene Spannung oder Selbstschutz hervorheben. Abstand, Bewegung, Ort und Reaktion unterscheiden ein aktuelles starkes Bild von einem breiteren Gefühlsthema.",
+        "askYourself": [
+          "War der Skorpion ruhig, versteckt, kam er näher, stach er, war er im Haus oder einer von vielen?",
+          "Empfand ich Angst, Ekel, Neugier, Kontrolle, Schmerz, Vorsicht oder Respekt vor seinem Abstand?",
+          "Haben Dokumentation, Begegnung, Warnung, Konflikt oder eine Grenzfrage zuletzt meine Aufmerksamkeit beansprucht?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet ein Skorpion im Traum?",
+            "answer": "Ein Skorpion kann zu Wachsamkeit, Grenzen, verborgener Spannung oder Schutz passen. Verhalten, Ort und Gefühl geben mehr Kontext als eine feste Deutung."
+          },
+          {
+            "question": "Was bedeutet ein Skorpionstich im Traum?",
+            "answer": "Ein Stich kann eine verletzende Bemerkung, plötzlichen Konflikt oder eine empfindliche Grenze anschaulich machen. Er sagt keine Verletzung voraus; vergleiche aktuelle Belastung und Körpergefühl."
+          },
+          {
+            "question": "Was bedeuten viele oder versteckte Skorpione?",
+            "answer": "Viele Tiere können wiederkehrende Sorgen verstärken; ein versteckter Skorpion kann Unsicherheit oder Vorsicht betonen. Die Szene beweist keine Täuschung durch andere."
+          },
+          {
+            "question": "Was bedeutet ein ruhiger Skorpion oder einer im Haus?",
+            "answer": "Ein ruhiges Tier kann Selbstkontrolle und Respekt betonen. Im Haus kann es Privatsphäre oder Grenzen hervorheben, besonders nach einem aktuellen Bild oder einer Begegnung."
+          }
+        ]
+      },
+      "it": {
+        "slug": "scorpioni",
+        "name": "Scorpioni",
+        "seoTitle": "scorpioni, puntura o scorpione nascosto",
+        "documentTitle": "Sognare scorpioni: significato e scenari",
+        "documentMetaDescription": "Sognare scorpioni: confronta animale tranquillo o nascosto, puntura, molti scorpioni e luogo usando emozione e contesto recente.",
+        "shortDescription": "Uno scorpione in sogno può mettere in primo piano vigilanza, confini, tensione nascosta o autoprotezione. Distanza, movimento, luogo e reazione distinguono un’immagine recente da un tema emotivo più ampio.",
+        "askYourself": [
+          "Lo scorpione era tranquillo, nascosto, si avvicinava, pungeva, era in casa o compariva con molti altri?",
+          "Provavo paura, disgusto, curiosità, controllo, dolore, cautela o rispetto per la sua distanza?",
+          "Un documentario, incontro, avviso, conflitto o problema di confini ha occupato di recente la mia attenzione?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare scorpioni?",
+            "answer": "Gli scorpioni possono collegarsi a vigilanza, confini, tensione nascosta o protezione. Comportamento, luogo ed emozione offrono più contesto di un significato fisso."
+          },
+          {
+            "question": "Che cosa significa la puntura di uno scorpione in sogno?",
+            "answer": "Una puntura può rendere concreta una frase dolorosa, un conflitto improvviso o un confine vulnerabile. Non predice una ferita; confrontala con pressioni e sensazioni recenti."
+          },
+          {
+            "question": "Che cosa significano molti scorpioni o uno nascosto?",
+            "answer": "Molti scorpioni possono intensificare preoccupazioni ripetute; uno nascosto può evidenziare incertezza o cautela. La scena non dimostra l’inganno di qualcuno."
+          },
+          {
+            "question": "Che cosa significa uno scorpione tranquillo o in casa?",
+            "answer": "Un animale tranquillo può spostare l’attenzione su controllo e rispetto. In casa può richiamare privacy o confini, soprattutto dopo un’immagine o un incontro recente."
+          }
+        ]
+      },
+      "relatedSymbols": [
+        "spider",
+        "snake",
+        "hiding",
+        "desert"
+      ],
+      "modifiedAt": "2026-08-12"
     }
   ]
 }

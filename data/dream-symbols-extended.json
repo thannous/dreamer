@@ -1,7 +1,7 @@
 {
   "meta": {
     "description": "Extended content for dream symbols - full interpretations and variations",
-    "lastUpdated": "2026-08-11"
+    "lastUpdated": "2026-08-12"
   },
   "symbols": {
     "water": {
@@ -11697,6 +11697,53 @@
           { "context": "Togliere o uccidere pidocchi", "meaning": "La rimozione accurata può evidenziare azione pratica, pazienza, pulizia o sollievo mentre un problema gestibile diminuisce." },
           { "context": "Molti pidocchi", "meaning": "Una grande quantità può intensificare ripetizione, sovraccarico o disagio sociale senza predire denaro, fortuna o eventi futuri." },
           { "context": "Pidocchi su un bambino o un’altra persona", "meaning": "L’attenzione può spostarsi su cura, responsabilità e confini vicini, soprattutto dopo una preoccupazione scolastica o familiare." }
+        ]
+      }
+    },
+    "scorpion": {
+      "en": {
+        "fullInterpretation": "<p>A scorpion can make vigilance, boundaries and hidden tension vivid in a dream. Begin with distance and behavior: was it still, hiding, approaching, stinging, inside the house or one of many? A calm animal and a sudden sting create different emotional contexts.</p>\n<p>Its hard body and defensive tail can fit protection, restraint or readiness to respond. A sting may instead highlight a sharp conflict or vulnerable limit. Neither image proves betrayal, predicts harm or identifies another person as dangerous.</p>\n<p>A documentary, outdoor encounter, warning sign, game, article or physical sensation can supply the image directly. Compare that trigger with your emotion and the place where the scorpion appeared before looking for a broader personal theme.</p>",
+        "variations": [
+          { "context": "A calm or watching scorpion", "meaning": "Stillness can emphasize restraint, careful observation, respect or a strong image that did not actually threaten you." },
+          { "context": "A scorpion sting or attack", "meaning": "The action can mirror a sharp conflict, painful remark or exposed boundary without predicting injury." },
+          { "context": "Many or hidden scorpions", "meaning": "Number and concealment can amplify repeated worries, uncertainty or the need to look carefully before acting." },
+          { "context": "A scorpion in the house", "meaning": "A defensive animal in a personal space can bring privacy, closeness and limits into focus." }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Un scorpion peut rendre très concrètes vigilance, limites et tension cachée. Commencez par la distance et le comportement : restait-il immobile, se cachait-il, approchait-il, piquait-il, était-il dans la maison ou parmi plusieurs autres ? Animal calme et piqûre soudaine créent des contextes différents.</p>\n<p>Sa carapace et sa queue défensive peuvent rejoindre protection, retenue ou préparation à répondre. Une piqûre peut plutôt mettre en avant conflit vif ou limite vulnérable. Aucune image ne prouve une trahison, ne prédit un dommage ni ne désigne une personne dangereuse.</p>\n<p>Documentaire, rencontre extérieure, panneau d’avertissement, jeu, article ou sensation physique peuvent fournir directement l’image. Comparez ce déclencheur à l’émotion et au lieu avant de chercher un thème personnel plus large.</p>",
+        "variations": [
+          { "context": "Un scorpion calme ou en observation", "meaning": "L’immobilité peut souligner retenue, observation attentive, respect ou simple image forte sans menace réelle." },
+          { "context": "Une piqûre ou une attaque", "meaning": "L’action peut refléter conflit vif, remarque blessante ou limite exposée sans annoncer une blessure." },
+          { "context": "Plusieurs scorpions ou un scorpion caché", "meaning": "Le nombre et la dissimulation peuvent amplifier soucis répétés, incertitude ou besoin d’observer avant d’agir." },
+          { "context": "Un scorpion dans la maison", "meaning": "Un animal défensif dans un espace personnel peut mettre en avant intimité, proximité et limites." }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Un escorpión puede volver muy concretas la vigilancia, los límites y la tensión oculta. Empieza por distancia y conducta: ¿estaba quieto, escondido, se acercaba, picaba, aparecía dentro de casa o había muchos? Un animal tranquilo y una picadura repentina crean contextos emocionales distintos.</p>\n<p>Su cuerpo duro y su cola defensiva pueden relacionarse con protección, contención o preparación para responder. Una picadura puede destacar un conflicto agudo o un límite vulnerable. Ninguna imagen demuestra traición, predice daño ni identifica a otra persona como peligrosa.</p>\n<p>Un documental, encuentro al aire libre, señal de aviso, juego, artículo o sensación física pueden aportar la imagen directamente. Compara ese estímulo con tu emoción y el lugar antes de buscar un tema personal más amplio.</p>",
+        "variations": [
+          { "context": "Un escorpión tranquilo u observando", "meaning": "La quietud puede destacar control, observación atenta, respeto o una imagen intensa que no te amenazaba." },
+          { "context": "Una picadura o un ataque", "meaning": "La acción puede reflejar un conflicto agudo, una frase dolorosa o un límite expuesto sin anunciar una lesión." },
+          { "context": "Muchos escorpiones o uno escondido", "meaning": "La cantidad y el escondite pueden intensificar preocupaciones repetidas, incertidumbre o necesidad de observar antes de actuar." },
+          { "context": "Un escorpión dentro de casa", "meaning": "Un animal defensivo en un espacio personal puede poner en primer plano intimidad, cercanía y límites." }
+        ]
+      },
+      "de": {
+        "fullInterpretation": "<p>Ein Skorpion kann Wachsamkeit, Grenzen und verborgene Spannung im Traum anschaulich machen. Beginne mit Abstand und Verhalten: War er ruhig, versteckt, kam er näher, stach er, war er im Haus oder einer von vielen? Ein stilles Tier und ein plötzlicher Stich schaffen unterschiedliche Gefühlslagen.</p>\n<p>Sein harter Körper und der defensive Schwanz können zu Schutz, Zurückhaltung oder Bereitschaft zur Reaktion passen. Ein Stich kann dagegen einen scharfen Konflikt oder eine empfindliche Grenze betonen. Kein Bild beweist Verrat, sagt Schaden voraus oder macht eine andere Person gefährlich.</p>\n<p>Dokumentation, Begegnung im Freien, Warnschild, Spiel, Artikel oder Körpergefühl können das Bild direkt liefern. Vergleiche diesen Auslöser mit Gefühl und Ort, bevor du ein breiteres persönliches Thema suchst.</p>",
+        "variations": [
+          { "context": "Ein ruhiger oder beobachtender Skorpion", "meaning": "Stillstand kann Selbstkontrolle, genaue Beobachtung, Respekt oder ein starkes Bild ohne tatsächliche Bedrohung betonen." },
+          { "context": "Ein Stich oder Angriff", "meaning": "Die Handlung kann einen scharfen Konflikt, eine verletzende Bemerkung oder eine offene Grenze spiegeln, ohne Verletzung vorherzusagen." },
+          { "context": "Viele oder versteckte Skorpione", "meaning": "Anzahl und Verbergen können wiederkehrende Sorgen, Unsicherheit oder den Bedarf an genauer Beobachtung verstärken." },
+          { "context": "Ein Skorpion im Haus", "meaning": "Ein defensives Tier im persönlichen Raum kann Privatsphäre, Nähe und Grenzen in den Mittelpunkt rücken." }
+        ]
+      },
+      "it": {
+        "fullInterpretation": "<p>Uno scorpione può rendere concrete vigilanza, confini e tensione nascosta in sogno. Parti da distanza e comportamento: era fermo, nascosto, si avvicinava, pungeva, era in casa o compariva con molti altri? Un animale tranquillo e una puntura improvvisa creano contesti emotivi diversi.</p>\n<p>Il corpo duro e la coda difensiva possono collegarsi a protezione, controllo o prontezza nel rispondere. Una puntura può invece evidenziare un conflitto acuto o un confine vulnerabile. Nessuna immagine dimostra tradimento, predice danni o identifica una persona pericolosa.</p>\n<p>Documentario, incontro all’aperto, cartello di avviso, gioco, articolo o sensazione fisica possono fornire direttamente l’immagine. Confronta questo stimolo con emozione e luogo prima di cercare un tema personale più ampio.</p>",
+        "variations": [
+          { "context": "Uno scorpione tranquillo o in osservazione", "meaning": "L’immobilità può evidenziare controllo, osservazione attenta, rispetto o un’immagine forte senza minaccia reale." },
+          { "context": "Una puntura o un attacco", "meaning": "L’azione può riflettere conflitto acuto, frase dolorosa o confine esposto senza predire una ferita." },
+          { "context": "Molti scorpioni o uno nascosto", "meaning": "Quantità e nascondiglio possono amplificare preoccupazioni ripetute, incertezza o bisogno di osservare prima di agire." },
+          { "context": "Uno scorpione in casa", "meaning": "Un animale difensivo nello spazio personale può mettere in primo piano privacy, vicinanza e confini." }
         ]
       }
     }

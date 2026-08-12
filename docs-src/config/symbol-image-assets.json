@@ -676,6 +676,13 @@
       "category": "nature",
       "subject": "Rose"
     },
+    "scorpion": {
+      "src": "/img/symbols/editorial-2026-08-j27/scorpion-v1.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Scorpion"
+    },
     "screaming": {
       "src": "/img/symbols/editorial-2026-07-v2/screaming-v2.webp",
       "width": 1600,

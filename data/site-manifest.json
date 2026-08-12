@@ -6696,6 +6696,34 @@
             }
           }
         },
+        "symbol.scorpion": {
+          "id": "symbol.scorpion",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "scorpions",
+          "locales": {
+            "en": {
+              "slug": "scorpions",
+              "path": "/en/symbols/scorpions"
+            },
+            "fr": {
+              "slug": "scorpion",
+              "path": "/fr/symboles/scorpion"
+            },
+            "es": {
+              "slug": "escorpiones",
+              "path": "/es/simbolos/escorpiones"
+            },
+            "de": {
+              "slug": "skorpion",
+              "path": "/de/traumsymbole/skorpion"
+            },
+            "it": {
+              "slug": "scorpioni",
+              "path": "/it/simboli/scorpioni"
+            }
+          }
+        },
         "symbolCategory.nature": {
           "id": "symbolCategory.nature",
           "type": "symbolCategory",
