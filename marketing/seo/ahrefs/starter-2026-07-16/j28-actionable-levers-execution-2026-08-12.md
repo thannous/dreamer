@@ -13,7 +13,7 @@ Trois actions sont retenues sur des preuves fraîches et sans toucher aux expér
 | Levier | Décision | État |
 |---|---|---|
 | propriétaire ES `/es/simbolos/coche` | optimiser uniquement le titre et la meta description pour `coche`, `carro`, conduite et perte du véhicule | `LIVE_VERIFIED` |
-| nouveau propriétaire `scorpion` | créer cinq routes localisées, avec contenu, image, curation animaux et contrat URL | `LOCAL_VALIDATED_WITH_URL_CONTRACT` |
+| nouveau propriétaire `scorpion` | créer cinq routes localisées, avec contenu, image, curation animaux et contrat URL | `LIVE_VERIFIED` |
 | avertissements Site Audit PT-BR | accepter les deux absences de `x-default` comme intentionnelles, faute d'équivalent EN | `NO_ACTION_ACCEPTED` |
 
 Aucun envoi externe, changement Rank Tracker, achat, add-on, changement d'abonnement, crawl manuel ou demande d'indexation n'est inclus.
@@ -78,6 +78,8 @@ Contrôles locaux avant extension du contrat :
 - `npm run docs:check` arrêté uniquement par la porte additive attendue des cinq nouvelles routes.
 
 Le contenu est isolé dans `bb0a08ab1` (`feat(seo): add localized scorpion ranking owners`). Le contrat public est ensuite étendu additivement dans `c1a83dcc0` : 1 236 routes manifeste, 1 236 pages canoniques, 1 236 entrées sitemap et 1 241 sorties HTML. `npm run docs:check` passe alors avec 0 erreur, 0 avertissement et 0 lien interne cassé. La release-check sur export Git propre passe également avec 0 lien interne ou externe cassé et conserve 70 avertissements de profondeur DE non bloquants déjà connus.
+
+Le push fast-forward porte `master` à `475f4b892`. Le run Quality exact `31623935279` est entièrement vert et Cloudflare Pages confirme le déploiement `cc12fbc9-7c72-4ca1-93a9-ed49d9391c4f` en succès. Les cinq routes répondent publiquement HTTP 200 avec leur titre attendu, canonical auto-référent, `index, follow` et les six alternates uniques `en`, `fr`, `es`, `de`, `it`, `x-default`. Le master éditorial et les quatre variantes responsives répondent HTTP 200 en `image/webp`; la curation anglaise des rêves d'animaux contient le lien vers le nouveau propriétaire. Aucune demande d'indexation n'a été envoyée.
 
 ## Site Audit et crédits
 
