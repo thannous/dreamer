@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "8ecf0772f366407f6a4e58e1c4325a4a8931e1b5",
+  "sourceRevision": "bb0a08ab1139181a2b8d2456bff3841024db6813",
   "counts": {
-    "logicalPages": 246,
-    "manifestPaths": 1231,
-    "uniqueManifestPaths": 1231,
-    "canonicalPages": 1231,
-    "sitemapEntries": 1231,
-    "allHtmlOutputPaths": 1236
+    "logicalPages": 247,
+    "manifestPaths": 1236,
+    "uniqueManifestPaths": 1236,
+    "canonicalPages": 1236,
+    "sitemapEntries": 1236,
+    "allHtmlOutputPaths": 1241
   },
   "manifestRoutes": [
     {
@@ -10272,6 +10272,56 @@
     },
     {
       "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "scorpions",
+      "lang": "de",
+      "slug": "skorpion",
+      "path": "/de/traumsymbole/skorpion"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "scorpions",
+      "lang": "en",
+      "slug": "scorpions",
+      "path": "/en/symbols/scorpions"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "scorpions",
+      "lang": "es",
+      "slug": "escorpiones",
+      "path": "/es/simbolos/escorpiones"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "scorpions",
+      "lang": "fr",
+      "slug": "scorpion",
+      "path": "/fr/symboles/scorpion"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "scorpions",
+      "lang": "it",
+      "slug": "scorpioni",
+      "path": "/it/simboli/scorpioni"
+    },
+    {
+      "collection": "symbols",
       "pageId": "symbol.screaming",
       "type": "symbol",
       "canonicalLanguage": "en",
@@ -12532,6 +12582,7 @@
     "docs/de/traumsymbole/schwimmen.html",
     "docs/de/traumsymbole/see.html",
     "docs/de/traumsymbole/sich-verstecken.html",
+    "docs/de/traumsymbole/skorpion.html",
     "docs/de/traumsymbole/sonne.html",
     "docs/de/traumsymbole/spiegel.html",
     "docs/de/traumsymbole/spinne.html",
@@ -12779,6 +12830,7 @@
     "docs/en/symbols/rose.html",
     "docs/en/symbols/running.html",
     "docs/en/symbols/school.html",
+    "docs/en/symbols/scorpions.html",
     "docs/en/symbols/screaming.html",
     "docs/en/symbols/shadow.html",
     "docs/en/symbols/shark.html",
@@ -12962,6 +13014,7 @@
     "docs/es/simbolos/enfermedad.html",
     "docs/es/simbolos/escaleras.html",
     "docs/es/simbolos/esconderse.html",
+    "docs/es/simbolos/escorpiones.html",
     "docs/es/simbolos/escuela.html",
     "docs/es/simbolos/espejo.html",
     "docs/es/simbolos/ex-pareja.html",
@@ -13280,6 +13333,7 @@
     "docs/fr/symboles/salle-de-bain.html",
     "docs/fr/symboles/salle-de-classe.html",
     "docs/fr/symboles/sang.html",
+    "docs/fr/symboles/scorpion.html",
     "docs/fr/symboles/se-cacher.html",
     "docs/fr/symboles/serpent.html",
     "docs/fr/symboles/soleil.html",
@@ -13520,6 +13574,7 @@
     "docs/it/simboli/scarpe.html",
     "docs/it/simboli/scogliera.html",
     "docs/it/simboli/sconosciuto.html",
+    "docs/it/simboli/scorpioni.html",
     "docs/it/simboli/scuola.html",
     "docs/it/simboli/seminterrato.html",
     "docs/it/simboli/sentiero.html",
@@ -76290,6 +76345,301 @@
     },
     {
       "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "lang": "de",
+      "outputPath": "docs/de/traumsymbole/skorpion.html",
+      "canonical": "https://noctalia.app/de/traumsymbole/skorpion",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/skorpion"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/escorpiones"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/scorpion"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scorpioni"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/traumsymbole/skorpion",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/de/traumsymbole/skorpion",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/guides/traumsymbole-lexikon"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/de/traumsymbole/skorpion"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "lang": "en",
+      "outputPath": "docs/en/symbols/scorpions.html",
+      "canonical": "https://noctalia.app/en/symbols/scorpions",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/skorpion"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/escorpiones"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/scorpion"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scorpioni"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/symbols/scorpions",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/en/symbols/scorpions",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/guides/dream-symbols-dictionary"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/en/symbols/scorpions"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "lang": "es",
+      "outputPath": "docs/es/simbolos/escorpiones.html",
+      "canonical": "https://noctalia.app/es/simbolos/escorpiones",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/skorpion"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/escorpiones"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/scorpion"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scorpioni"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/simbolos/escorpiones",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/es/simbolos/escorpiones",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/guides/diccionario-simbolos-suenos"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/es/simbolos/escorpiones"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "lang": "fr",
+      "outputPath": "docs/fr/symboles/scorpion.html",
+      "canonical": "https://noctalia.app/fr/symboles/scorpion",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/skorpion"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/escorpiones"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/scorpion"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scorpioni"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/symboles/scorpion",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/fr/symboles/scorpion",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/guides/dictionnaire-symboles-reves"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/fr/symboles/scorpion"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "lang": "it",
+      "outputPath": "docs/it/simboli/scorpioni.html",
+      "canonical": "https://noctalia.app/it/simboli/scorpioni",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/skorpion"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/escorpiones"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/scorpion"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scorpioni"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/simboli/scorpioni",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/it/simboli/scorpioni",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/guides/dizionario-simboli-sogni"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/it/simboli/scorpioni"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
       "pageId": "symbol.screaming",
       "lang": "de",
       "outputPath": "docs/de/traumsymbole/schreien.html",
@@ -121390,6 +121740,166 @@
         {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/symbols/school"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/traumsymbole/skorpion",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/skorpion"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/escorpiones"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/scorpion"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scorpioni"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/symbols/scorpions",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/skorpion"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/escorpiones"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/scorpion"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scorpioni"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/simbolos/escorpiones",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/skorpion"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/escorpiones"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/scorpion"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scorpioni"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/symboles/scorpion",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/skorpion"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/escorpiones"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/scorpion"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scorpioni"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.scorpion",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/simboli/scorpioni",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/skorpion"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/scorpions"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/escorpiones"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/scorpion"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/scorpioni"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/scorpions"
         }
       ]
     },
