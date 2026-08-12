@@ -52,6 +52,26 @@ Le passage « Gejagt werden » renvoie désormais vers l'article détaillé avec
 
 Les champs `modifiedTime`, `dateModified` et la date visible ont été alignés sur le 12 août 2026. Le titre, la description, l'URL, le canonical et l'ownership ne changent pas.
 
+## Publication et preuve publique
+
+- commit fonctionnel : `130cd0af15c706617e5c7d02e0287035de6ac362`;
+- `origin/master` vérifié au même SHA après le push fast-forward;
+- GitHub Actions `Quality` : run `31599096603`, succès;
+- job site : succès en 10 min 30 s;
+- suite de tests rapide : succès en 2 min 03 s;
+- Edge Functions : succès en 18 s;
+- Cloudflare Pages : déploiement `9172273f-b373-46d7-8efc-d9c39954e9ed`, statut `success`;
+- URL immuable : `https://9172273f.noctalia.pages.dev`;
+- durée Cloudflare : 13 min 55 s, dont build 12 min et deploy 13 s;
+- page source sur l'URL immuable : HTTP 200;
+- page source sur `https://noctalia.app` : HTTP 200;
+- page cible sur `https://noctalia.app` : HTTP 200;
+- ancre `typischen Szenarien eines Verfolgungstraums` visible sur l'URL immuable et l'alias public;
+- source publique : `index, follow`, canonical auto-référentiel et `dateModified` au 12 août 2026;
+- cible publique : `index, follow` et canonical auto-référentiel.
+
+Aucun redéploiement manuel ni demande d'indexation n'a été déclenché.
+
 ## Garde-fous
 
 - aucune dépense de crédit Ahrefs;

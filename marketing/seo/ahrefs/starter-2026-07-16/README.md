@@ -2,7 +2,7 @@
 
 Archive initiale : J1 à J17, du 16 juillet au 1er août 2026
 
-Contrôles additionnels : J18 à J27, du 2 au 11 août 2026
+Contrôles additionnels : J18 à J28, du 2 au 12 août 2026
 
 Projet Ahrefs : `9361004`
 
@@ -47,6 +47,7 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j27-ranking-expansion-2026-08-11.md`](./j27-ranking-expansion-2026-08-11.md) : extension J27 autorisée, croisement de 80 requêtes Ahrefs avec GSC, lot de 20 routes localisées et quatre quick wins de titres existants.
 - [`j27-ranking-expansion-backlog-2026-08-11.csv`](./j27-ranking-expansion-backlog-2026-08-11.csv) : matrice pays de 80 requêtes pour les vagues suivantes, avec métriques observées, statut et porte d'ownership.
 - [`j27-ranking-expansion-execution-2026-08-11.md`](./j27-ranking-expansion-execution-2026-08-11.md) : journal du chantier `turtle` → `crocodile` → `lice`, séparation des états Git/publics et portes d'autorisation des leviers différés.
+- [`j28-gsc-indexation-triage-2026-08-12.md`](./j28-gsc-indexation-triage-2026-08-12.md) : tri du premier cas parmi les 254 URL, contradiction couverture/performance GSC, lien contextuel DE publié et preuves Git/CI/Cloudflare/HTTP.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
 - [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27, Misabueso GSC et preuves brutes, périmètres synchronisés et règles de conservation.
@@ -118,3 +119,10 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 - Dix rapports pays groupés ont validé 80 requêtes additionnelles pour seulement dix crédits ; tortue, crocodile et poux forment la prochaine vague prioritaire, tandis que les conflits d'ownership restent en HOLD.
 - Huit SERP exactes ont confirmé que des pages à faible autorité se classent déjà sur les requêtes du lot ; compteur final `113/200`, soit 87 crédits nominaux encore disponibles avant la remise à zéro.
 - Quatre titres trop longs à fort volume GSC sont raccourcis dans les sources : `pioggia`, `automobile`, `verfolgung` et `maison`. Les six URL candidates totalisaient 159 clics et 20 250 impressions sur 28 jours ; le lot retenu en représente 144 et 19 024.
+
+## Actualisation J28 au 12 août 2026
+
+- Le premier cas des 254 URL, l'article DE sur la poursuite, génère déjà 1 clic et 83 impressions à position 8,9 sur les 28 jours complets au 9 août. Son ancien statut « explorée, actuellement non indexée » est traité comme retardé ou transitoire, pas comme un blocage actuel.
+- La page DE sur les rêves récurrents, forte de 41 clics et 5,34 k impressions à position 6,7 sur 28 jours, porte désormais un seul lien contextuel vers l'article détaillé sur la poursuite. L'ancre reste distincte de la fiche symbole A–Z.
+- Le lot est publié sur `master` au commit `130cd0af1`; GitHub Actions `Quality`, Cloudflare Pages et les contrôles HTTP publics sont verts.
+- Aucun crédit Ahrefs, changement Rank Tracker, redéploiement manuel ni demande d'indexation n'a été consommé par ce traitement.
