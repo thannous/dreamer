@@ -1,6 +1,6 @@
 # Noctalia — archive Drive des rapports Ahrefs Starter
 
-Synchronisation vérifiée le 11 août 2026.
+Synchronisation vérifiée le 12 août 2026.
 
 ## Emplacement
 
@@ -24,9 +24,9 @@ Noctalia/
 
 ### Clôture J25–J27
 
-Le sous-dossier de clôture contient les 15 livrables durables `j25-*`, `j26-*` et `j27-*` présents dans ce dossier Git au commit source `06cec17be9228b23e5d8de23c5bd2008d3266aba`, plus le journal d'exécution du ranking au commit source `670e7fd210af5e3a3a93fed02b30338813faaf52` : dix fichiers Markdown et six fichiers CSV.
+Le sous-dossier de clôture contient les 15 livrables durables `j25-*`, `j26-*` et `j27-*` présents dans ce dossier Git au commit source `06cec17be9228b23e5d8de23c5bd2008d3266aba`, le journal d'exécution du ranking au commit source `670e7fd210af5e3a3a93fed02b30338813faaf52`, puis le rapport de tri GSC J28 au commit source `b2384a4e63965c2d3dda394f78545ef858b9e6ad` : onze fichiers Markdown et six fichiers CSV.
 
-La vérification Drive après création puis mise à jour sur le même identifiant a confirmé 16 fichiers, sans doublon de nom. Le registre détaillé, avec identifiant Drive, URL et empreinte SHA-256 locale, est conservé dans [`drive-sync-manifest-2026-08-11.csv`](./drive-sync-manifest-2026-08-11.csv).
+La vérification Drive après ajout du rapport J28 a confirmé 17 fichiers, dont un seul nommé `j28-gsc-indexation-triage-2026-08-12.md`. Le registre détaillé, avec identifiant Drive, URL et empreinte SHA-256 locale, est conservé dans [`drive-sync-manifest-2026-08-11.csv`](./drive-sync-manifest-2026-08-11.csv).
 
 ### Ownership Misabueso GSC
 
