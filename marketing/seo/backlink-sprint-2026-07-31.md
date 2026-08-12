@@ -1346,6 +1346,25 @@ requires its own explicit user authorization and an immediate public and mailbox
 recheck before transmission. No email, form, account change, payment or
 publication was used.
 
+### D7 followed-pattern stop-gate refresh — 2026-08-13
+
+Atlas Workspace and ILTY remain the strongest already-contacted followed-pattern
+routes. Each exact comparison is self-canonical, `index, follow`, contains zero
+Noctalia mentions and links six competitor developer domains directly without
+`nofollow`. Atlas still names Jet New in Singapore and AgentScale AI Pte. Ltd.
+and publishes the founder's address. ILTY still names its two founders and press
+address, while Apple's current listing identifies SUUR Limited Liability Company
+as developer and seller. No Russian operator signal was found.
+
+The Noctalia 11-app destination remains self-canonical, `index, follow` and
+exposes the editable SVG, source CSV and methodology. At 01:57 CEST, exact
+authenticated Zimbra `Tout le courrier` searches returned one conversation per
+recipient. Each expanded conversation displays `1` and only the original August
+3 message; no reply is visible. Both current gates are clear, but neither D7
+reply was sent: the independent exact authorization and an immediate repeat
+stop gate remain mandatory. Evidence and copy are in
+`marketing/seo/backlink-authorization-pack-d7-2026-08-13.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

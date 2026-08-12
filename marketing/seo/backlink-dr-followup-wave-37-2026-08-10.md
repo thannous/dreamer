@@ -59,6 +59,26 @@ Exact authorization:
 > Workspace et ILTY, après un stop gate immédiat, sans pièce jointe, paiement,
 > relance automatique, classement ni garantie de lien.
 
+## 2026-08-13 readiness refresh
+
+Real Chrome reconfirmed both exact comparisons as self-canonical and `index,
+follow`, with zero Noctalia mentions and the same six direct competitor-domain
+links without `nofollow`. Atlas now dates its comparison August 3, 2026. Its
+About and Support pages still name Jet New in Singapore, AgentScale AI Pte. Ltd.
+and `jet@atlasworkspace.ai`. ILTY's About and Contact pages still name Alesya
+Skye and Artyom Sklyarov and publish `hello@ilty.co`; Apple's current listing
+still names SUUR Limited Liability Company as developer and seller. No Russian
+operator signal was found for either route.
+
+The live Noctalia destination remains self-canonical and `index, follow` and
+exposes the 11-app snapshot, editable SVG, source CSV and methodology. At 01:57
+CEST, each authenticated Zimbra `Tout le courrier` recipient search returned one
+conversation. Each expanded conversation displays exactly `1` and contains only
+the original August 3 message; no reply is visible. The current gates are clear,
+but both replies remain unsent pending the exact D7 authorization and an
+immediate repeat stop gate. Detailed evidence and unchanged copy are in
+`marketing/seo/backlink-authorization-pack-d7-2026-08-13.md`.
+
 ## Required execution gate
 
 Immediately after authorization and before any transmission:

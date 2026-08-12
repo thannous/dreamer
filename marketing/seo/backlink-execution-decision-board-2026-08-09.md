@@ -91,6 +91,14 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   methodology as the single editorial resource, with Noctalia's compiler role
   and DreamKit's historical evidence disclosed. Engadget and 9to5Google copy
   was corrected for the same dataset version but remains outside DR-first.
+- A 2026-08-13 real-Chrome and authenticated Zimbra refresh keeps D7 ready but
+  unsent. Both pages retain zero Noctalia mentions and six direct
+  competitor-domain links without `nofollow`; Atlas identifies its Singapore
+  founder and company, while ILTY's current Apple listing identifies SUUR
+  Limited Liability Company. Each exact all-mail search returns one expanded
+  one-message conversation containing only the original August 3 pitch. No
+  reply is visible. D7 still requires its exact authorization and an immediate
+  repeat stop gate before either first reply.
 - Fresh public checks keep Marika Pech as the nearest DR-oriented recovery: its
   article still names Noctalia once in plain text with no anchor. DreamWell
   remains the next higher-link-policy candidate because its current comparison
