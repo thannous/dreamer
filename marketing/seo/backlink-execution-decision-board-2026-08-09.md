@@ -61,6 +61,15 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   and corrected Noctalia source remain live; DreamWell's stale DreamKit links,
   followed competitor-domain pattern, official Press mailbox and current
   `/terms-of-service/` Delaware-law page remain live.
+- A 2026-08-13 real-Chrome refresh reconfirmed both D2 and D5 public gates.
+  Marika Pech still prints the disputed 40–60 % wording, one plain-text
+  Noctalia attribution and no Noctalia anchor; DreamWell still publishes the
+  stale DreamKit store claims and five sampled direct competitor-domain links.
+  The corrected Noctalia destinations, named French/Delaware operators and
+  official recipients remain live, and connected Gmail contains no matching
+  parallel thread. Zimbra is logged out, so neither route is currently cleared
+  for transmission even after authorization until the professional-mailbox
+  stop gate is rerun.
 - A third read-only monitor at 02:37 CEST again found exactly one two-message
   conversation for each D3A recipient and no inbound reply, bounce or opt-out.
   KapanLagi remains an unlinked plain-text mention; Penzu and AllThingsAI still

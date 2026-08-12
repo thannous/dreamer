@@ -86,6 +86,26 @@ authenticated Zimbra search for the recipient returns no result. No message was
 sent; every required check must be repeated immediately after explicit D5
 authorization.
 
+## 2026-08-13 public refresh
+
+Real Chrome reconfirmed the comparison as self-canonical and `index, follow`.
+It still describes DreamKit as available on Android and iOS, links the former
+Google Play package and iOS identifier directly, exposes zero Noctalia links
+and links five sampled competitor developer domains without `nofollow`. The
+former Android package still renders Google's “requested URL was not found”
+page. The former iOS identifier redirects to `Arcana: Astrology & Tarot Chat`
+from Neural Candy LLC. Noctalia's DreamKit alternative remains self-canonical,
+`index, follow` and explicitly documents both store changes.
+
+DreamWell's Press page still publishes `hi@dreamwellbewell.com` and names the
+founding team. Its current Terms still identify `DreamWell, a Public Benefit
+Corporation`, select Delaware law and contain no Russian operator signal. The
+connected Gmail account contains no matching DreamWell message. The
+professional Zimbra session has expired and shows the login screen, so the
+authoritative `contact@noctalia.app` duplicate/reply/bounce gate is unavailable.
+D5 remains unsent and must not be transmitted until the user both authorizes D5
+and reconnects Zimbra for an immediate final search.
+
 ## Required pre-send gate
 
 Immediately before any authorized transmission:

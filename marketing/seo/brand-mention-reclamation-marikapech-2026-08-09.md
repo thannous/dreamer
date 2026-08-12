@@ -103,6 +103,23 @@ still exposes its collaboration form. An exact authenticated Zimbra search for
 `contact@marikapech.com` returns no result. No message was sent; every required
 check must be repeated immediately after explicit D2 authorization.
 
+## 2026-08-13 public refresh
+
+Real Chrome reconfirmed the exact article as HTTP-rendered, self-canonical and
+`follow, index`. It still contains the two `40–60 %` statements, exactly one
+plain-text `Noctalia` attribution and zero `noctalia.app` anchors. The corrected
+Noctalia source remains self-canonical and `index, follow`; it publishes the
+55–70 % belief range, the belief-versus-experience distinction, the Valášek and
+Watt record and DOI `10.1016/j.paid.2015.07.028`. The current legal notice still
+names Marika Pech in Castelnau-le-Lez, OVH as host and
+`contact [at] marikapech.com` as the official mailbox.
+
+The connected Gmail account contains no matching Marika Pech message. The
+professional Zimbra session has expired and shows the login screen, so the
+authoritative `contact@noctalia.app` duplicate/reply/bounce gate is not yet
+available. D2 remains unsent and must not be transmitted until the user both
+authorizes D2 and reconnects Zimbra for an immediate final search.
+
 ## External-action stop gate
 
 Before any transmission:

@@ -1329,6 +1329,20 @@ message, submission, account action, payment or publication was performed.
 Evidence is in
 `marketing/seo/backlink-measurement-check-2026-08-13-0049.md`.
 
+### D2/D5 public stop-gate refresh — 2026-08-13
+
+The two highest-ranked unsent editorial corrections remain factually viable.
+Marika Pech still carries the unlinked Noctalia attribution and disputed
+40–60 % wording; the corrected French source and accountable French operator
+remain live. DreamWell still claims DreamKit is on Android and iOS, links the
+now-missing Android package and iOS ID now redirecting to Arcana, and retains a
+direct followed competitor-domain pattern. Its public-benefit-corporation,
+Delaware-law and official-recipient signals remain live. Connected Gmail has no
+matching thread for either route. Professional Zimbra is logged out, so no
+transmission is cleared: each route still requires its own explicit user
+authorization and an immediate authenticated Zimbra duplicate/reply/bounce
+search. No email, form, account change, payment or publication was used.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
