@@ -67,9 +67,11 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   stale DreamKit store claims and five sampled direct competitor-domain links.
   The corrected Noctalia destinations, named French/Delaware operators and
   official recipients remain live, and connected Gmail contains no matching
-  parallel thread. Zimbra is logged out, so neither route is currently cleared
-  for transmission even after authorization until the professional-mailbox
-  stop gate is rerun.
+  parallel thread. At 01:27 CEST, authenticated Zimbra `Tout le courrier`
+  searches for both exact recipients and prepared subjects returned no result.
+  Both current mailbox gates are clear, but neither route is authorized or
+  transmitted; the public and mailbox checks must be repeated immediately
+  before any separately approved send.
 - A third read-only monitor at 02:37 CEST again found exactly one two-message
   conversation for each D3A recipient and no inbound reply, bounce or opt-out.
   KapanLagi remains an unlinked plain-text mention; Penzu and AllThingsAI still

@@ -9,12 +9,14 @@ created.
 
 | Code | Route | Fresh public evidence | Remaining gate |
 | --- | --- | --- | --- |
-| D2 | Marika Pech source correction | The self-canonical `follow, index` article still contains the two 40–60 % statements, one plain-text Noctalia attribution and zero Noctalia anchors. The corrected Noctalia source, peer-reviewed reference, DOI, named French operator and official mailbox remain live. | Explicit D2 authorization plus an authenticated Zimbra search immediately before sending. |
-| D5 | DreamWell DreamKit correction | The self-canonical `index, follow` comparison still links the former DreamKit stores, says Android and iOS, exposes no Noctalia link and links five sampled competitor domains without `nofollow`. Google Play is still not found and the iOS ID redirects to Arcana. DreamWell's team, mailbox, public-benefit-corporation and Delaware-law signals remain live. | Explicit D5 authorization plus an authenticated Zimbra search immediately before sending. |
+| D2 | Marika Pech source correction | The self-canonical `follow, index` article still contains the two 40–60 % statements, one plain-text Noctalia attribution and zero Noctalia anchors. The corrected Noctalia source, peer-reviewed reference, DOI, named French operator and official mailbox remain live. | Explicit D2 authorization. Repeat the authenticated Zimbra and public-page stop gate immediately before sending. |
+| D5 | DreamWell DreamKit correction | The self-canonical `index, follow` comparison still links the former DreamKit stores, says Android and iOS, exposes no Noctalia link and links five sampled competitor domains without `nofollow`. Google Play is still not found and the iOS ID redirects to Arcana. DreamWell's team, mailbox, public-benefit-corporation and Delaware-law signals remain live. | Explicit D5 authorization. Repeat the authenticated Zimbra and public-page stop gate immediately before sending. |
 
 Connected Gmail contains no matching message for either official recipient.
-This is secondary evidence only: outreach was previously conducted through
-`contact@noctalia.app`, and its Zimbra session is currently logged out.
+At 01:27 CEST, authenticated Zimbra searches scoped to `Tout le courrier`
+returned `Aucun résultat` for both exact recipients and both prepared subjects.
+No prior send, reply, bounce, opt-out, draft or delivery warning was visible.
+This clears the current mailbox stop gate only; neither message was sent.
 
 ## Exact authorization choices
 
@@ -41,9 +43,9 @@ Exact copy and evidence:
 
 ## Send boundary
 
-Even after authorization, do not transmit while Zimbra is logged out. Once the
-user reconnects `contact@noctalia.app`, search the exact recipient, domain and
-subject in Inbox, Sent, Drafts and Spam. Stop on any prior send, reply, bounce,
-opt-out or delivery warning. If clear, send the selected route once and record
-only the authoritative sent state. A backlink is recorded only after a public
-clickable Noctalia URL is independently verified.
+The current authenticated search is clear but is not durable authorization.
+Immediately before any authorized transmission, repeat the exact recipient,
+domain and subject searches in `Tout le courrier`, then stop on any prior send,
+reply, bounce, opt-out or delivery warning. If clear, send the selected route
+once and record only the authoritative sent state. A backlink is recorded only
+after a public clickable Noctalia URL is independently verified.

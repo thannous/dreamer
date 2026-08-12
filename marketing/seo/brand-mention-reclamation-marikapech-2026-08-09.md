@@ -114,11 +114,12 @@ Watt record and DOI `10.1016/j.paid.2015.07.028`. The current legal notice still
 names Marika Pech in Castelnau-le-Lez, OVH as host and
 `contact [at] marikapech.com` as the official mailbox.
 
-The connected Gmail account contains no matching Marika Pech message. The
-professional Zimbra session has expired and shows the login screen, so the
-authoritative `contact@noctalia.app` duplicate/reply/bounce gate is not yet
-available. D2 remains unsent and must not be transmitted until the user both
-authorizes D2 and reconnects Zimbra for an immediate final search.
+The connected Gmail account contains no matching Marika Pech message. At
+01:27 CEST, the authenticated `contact@noctalia.app` Zimbra session returned
+`Aucun résultat` from `Tout le courrier` for the exact recipient and prepared
+subject. No prior send, reply, bounce, opt-out, draft or delivery warning was
+visible. D2 remains unsent and must not be transmitted until the user explicitly
+authorizes it and the public and mailbox gates are repeated immediately.
 
 ## External-action stop gate
 

@@ -1338,10 +1338,13 @@ remain live. DreamWell still claims DreamKit is on Android and iOS, links the
 now-missing Android package and iOS ID now redirecting to Arcana, and retains a
 direct followed competitor-domain pattern. Its public-benefit-corporation,
 Delaware-law and official-recipient signals remain live. Connected Gmail has no
-matching thread for either route. Professional Zimbra is logged out, so no
-transmission is cleared: each route still requires its own explicit user
-authorization and an immediate authenticated Zimbra duplicate/reply/bounce
-search. No email, form, account change, payment or publication was used.
+matching thread for either route. At 01:27 CEST, authenticated Zimbra searches
+scoped to `Tout le courrier` returned no result for both exact recipients and
+both prepared subjects; no prior send, reply, bounce, opt-out, draft or delivery
+warning was visible. Both current mailbox gates are clear, but each route still
+requires its own explicit user authorization and an immediate public and mailbox
+recheck before transmission. No email, form, account change, payment or
+publication was used.
 
 Weekly, record only verified public outcomes:
 

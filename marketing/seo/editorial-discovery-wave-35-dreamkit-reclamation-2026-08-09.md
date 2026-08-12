@@ -100,11 +100,12 @@ from Neural Candy LLC. Noctalia's DreamKit alternative remains self-canonical,
 DreamWell's Press page still publishes `hi@dreamwellbewell.com` and names the
 founding team. Its current Terms still identify `DreamWell, a Public Benefit
 Corporation`, select Delaware law and contain no Russian operator signal. The
-connected Gmail account contains no matching DreamWell message. The
-professional Zimbra session has expired and shows the login screen, so the
-authoritative `contact@noctalia.app` duplicate/reply/bounce gate is unavailable.
-D5 remains unsent and must not be transmitted until the user both authorizes D5
-and reconnects Zimbra for an immediate final search.
+connected Gmail account contains no matching DreamWell message. At 01:27 CEST,
+the authenticated `contact@noctalia.app` Zimbra session returned `Aucun
+résultat` from `Tout le courrier` for the exact recipient and prepared subject.
+No prior send, reply, bounce, opt-out, draft or delivery warning was visible.
+D5 remains unsent and must not be transmitted until the user explicitly
+authorizes it and the public and mailbox gates are repeated immediately.
 
 ## Required pre-send gate
 
