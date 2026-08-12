@@ -21,6 +21,13 @@ const { readJson, walkFiles } = require('./lib/docs-source-utils');
 const WARNING_BYTES = 180_000;
 const MAX_BYTES = 250_000;
 const LEGACY_SOCIAL_IMAGE = /\/img\/og\/noctalia-(?:en|fr|es|de|it)-1200x630\.jpg/i;
+const FEATURE_SNAPSHOT_METADATA = Object.freeze({
+  contentUrl: 'https://noctalia.app/img/research/dream-journal-apps-feature-snapshot-2026.svg',
+  copyrightNotice: '© 2026 Noctalia',
+  license: 'https://noctalia.app/en/press#media-license',
+  acquireLicensePage: 'https://noctalia.app/en/press#media-contact',
+  pagePaths: ['/en/dream-journal-apps', '/en/press'],
+});
 
 function parseAttributes(tag) {
   const attributes = {};
@@ -92,6 +99,54 @@ function collectSchemaImageUrls(blocks) {
   }
   visit(blocks);
   return urls;
+}
+
+function collectSchemaImageObjects(blocks) {
+  const images = [];
+  function visit(node) {
+    if (Array.isArray(node)) {
+      for (const child of node) visit(child);
+      return;
+    }
+    if (!node || typeof node !== 'object') return;
+    const types = Array.isArray(node['@type']) ? node['@type'] : [node['@type']];
+    if (types.includes('ImageObject')) images.push(node);
+    for (const value of Object.values(node)) visit(value);
+  }
+  visit(blocks);
+  return images;
+}
+
+function validateFeatureSnapshotLicenseMetadata({ pageMap, errors }) {
+  for (const canonicalPath of FEATURE_SNAPSHOT_METADATA.pagePaths) {
+    const rendered = pageMap.get(canonicalPath);
+    if (!rendered) {
+      errors.push(`${canonicalPath}: feature snapshot page not found`);
+      continue;
+    }
+    const images = collectSchemaImageObjects(
+      jsonLdBlocks(rendered.html, errors, canonicalPath)
+    );
+    const image = images.find(
+      (candidate) => candidate.contentUrl === FEATURE_SNAPSHOT_METADATA.contentUrl
+    );
+    if (!image) {
+      errors.push(`${canonicalPath}: feature snapshot ImageObject not found`);
+      continue;
+    }
+    for (const field of ['copyrightNotice', 'license', 'acquireLicensePage']) {
+      if (image[field] !== FEATURE_SNAPSHOT_METADATA[field]) {
+        errors.push(`${canonicalPath}: feature snapshot ${field} mismatch`);
+      }
+    }
+  }
+
+  const pressHtml = pageMap.get('/en/press')?.html || '';
+  for (const anchor of ['media-license', 'media-contact']) {
+    if (!new RegExp(`<[^>]+\\bid=(['"])${anchor}\\1`, 'i').test(pressHtml)) {
+      errors.push(`/en/press: missing #${anchor} target`);
+    }
+  }
 }
 
 function findImageTagForAsset(html, assetId) {
@@ -415,6 +470,8 @@ function checkImageSeoContract(options = {}) {
     });
   }
 
+  validateFeatureSnapshotLicenseMetadata({ pageMap, errors });
+
   const allHtmlFiles = walkFiles(DOCS_DIR, (candidate) => candidate.endsWith('.html'));
   let editorialHeroCount = 0;
   for (const filePath of allHtmlFiles) {
@@ -455,9 +512,11 @@ if (require.main === module) main();
 
 module.exports = {
   checkImageSeoContract,
+  collectSchemaImageObjects,
   collectSchemaImageUrls,
   parseAttributes,
   validateAltText,
   validateEditorialHero,
+  validateFeatureSnapshotLicenseMetadata,
   validateSitewidePageIllustrations,
 };

@@ -1,8 +1,10 @@
 const {
+  collectSchemaImageObjects,
   collectSchemaImageUrls,
   parseAttributes,
   validateAltText,
   validateEditorialHero,
+  validateFeatureSnapshotLicenseMetadata,
 } = require('./check-image-seo-contract');
 
 describe('image SEO contract helpers', () => {
@@ -39,6 +41,54 @@ describe('image SEO contract helpers', () => {
       },
     ]);
     expect([...urls]).toEqual(['https://noctalia.app/img/article.webp']);
+  });
+
+  it('collects ImageObject nodes from nested schema graphs', () => {
+    const images = collectSchemaImageObjects({
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          primaryImageOfPage: {
+            '@type': 'ImageObject',
+            contentUrl: 'https://noctalia.app/img/research/chart.svg',
+          },
+        },
+      ],
+    });
+
+    expect(images).toEqual([
+      expect.objectContaining({ contentUrl: 'https://noctalia.app/img/research/chart.svg' }),
+    ]);
+  });
+
+  it('requires consistent feature snapshot license metadata and visible targets', () => {
+    const image = {
+      '@context': 'https://schema.org',
+      '@type': 'ImageObject',
+      contentUrl: 'https://noctalia.app/img/research/dream-journal-apps-feature-snapshot-2026.svg',
+      copyrightNotice: '© 2026 Noctalia',
+      license: 'https://noctalia.app/en/press#media-license',
+      acquireLicensePage: 'https://noctalia.app/en/press#media-contact',
+    };
+    const render = (schema, body = '') => ({
+      html: `<script type="application/ld+json">${JSON.stringify(schema)}</script>${body}`,
+    });
+    const pageMap = new Map([
+      ['/en/dream-journal-apps', render(image)],
+      [
+        '/en/press',
+        render(image, '<section id="media-license"></section><section id="media-contact"></section>'),
+      ],
+    ]);
+    const errors = [];
+
+    validateFeatureSnapshotLicenseMetadata({ pageMap, errors });
+
+    expect(errors).toEqual([]);
+
+    pageMap.set('/en/dream-journal-apps', render({ ...image, license: undefined }));
+    validateFeatureSnapshotLicenseMetadata({ pageMap, errors });
+    expect(errors).toContain('/en/dream-journal-apps: feature snapshot license mismatch');
   });
 
   it('accepts a crawlable priority image inside the shared article hero', () => {
