@@ -24,9 +24,9 @@ Noctalia/
 
 ### Clôture J25–J27
 
-Le sous-dossier de clôture contient les 15 livrables durables `j25-*`, `j26-*` et `j27-*` présents dans ce dossier Git au commit source `06cec17be9228b23e5d8de23c5bd2008d3266aba`, le journal d'exécution du ranking au commit source `670e7fd210af5e3a3a93fed02b30338813faaf52`, puis le rapport de tri GSC J28 au commit source `b2384a4e63965c2d3dda394f78545ef858b9e6ad` : onze fichiers Markdown et six fichiers CSV.
+Le sous-dossier de clôture contient les 15 livrables durables `j25-*`, `j26-*` et `j27-*` présents dans ce dossier Git au commit source `06cec17be9228b23e5d8de23c5bd2008d3266aba`, le journal d'exécution du ranking au commit source `670e7fd210af5e3a3a93fed02b30338813faaf52`, le rapport de tri GSC J28 au commit source `b2384a4e63965c2d3dda394f78545ef858b9e6ad`, puis le rapport d'exécution des leviers J28 au commit source `236f32bfd1c0358dd36e30255e39c365d8d5b032` : douze fichiers Markdown et six fichiers CSV.
 
-La vérification Drive après ajout du rapport J28 a confirmé 17 fichiers, dont un seul nommé `j28-gsc-indexation-triage-2026-08-12.md`. Le registre détaillé, avec identifiant Drive, URL et empreinte SHA-256 locale, est conservé dans [`drive-sync-manifest-2026-08-11.csv`](./drive-sync-manifest-2026-08-11.csv).
+La vérification Drive après ajout des deux rapports J28 a confirmé leur présence unique dans le dossier cible. `j28-actionable-levers-execution-2026-08-12.md` porte l'identifiant Drive `1C6jW4OczqS38VElFwsQQca7TrMIwdT7m` et l'empreinte SHA-256 locale `ed739b0f330dc5063375a160c4b1c7040671c2beab50718fe2e502dc6f1e982a`. Le registre détaillé des 18 fichiers, avec identifiant Drive, URL et empreinte locale, est conservé dans [`drive-sync-manifest-2026-08-11.csv`](./drive-sync-manifest-2026-08-11.csv).
 
 ### Ownership Misabueso GSC
 
