@@ -17,9 +17,13 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   questions.
 - One publisher, Marika Pech, already cites Noctalia in plain text and exposes
   a genuine source-correction opportunity.
-- The last public verifier covered nineteen tracked pages: 6 indexable followed,
-  4 indexable nofollow, 2 missing-link, 3 non-indexable, 3 HTTP 403 and 1 HTTP
-  410.
+- The 2026-08-13 clean-baseline refresh covered nineteen tracked pages. Direct
+  verification returned 6 followed, 4 nofollow, 2 missing-link, 3
+  non-indexable, 3 HTTP 403 and 1 HTTP 410. Real Chrome then restored Reddit's
+  rendered `nofollow ugc` citation, producing a reconciled current inventory of
+  6 followed, 5 nofollow and 3 non-indexable pages; Chrome-Stats and AppBrain
+  are excluded from those totals because their current link treatment could
+  not be safely reverified.
 - The authenticated Ahrefs overview at 2026-08-09 15:58 CEST showed DR 0 and
   401 referring domains. The large raw domain count is not equivalent to 401
   verified followed editorial citations.

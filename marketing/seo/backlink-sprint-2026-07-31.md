@@ -1313,6 +1313,22 @@ no live-result row is added. This is a pending day-10 state, not a rejection.
 Do not resubmit or pay; next public check is 2026-08-30. Evidence is in
 `marketing/seo/backlink-measurement-check-2026-08-10-2251.md`.
 
+### Clean public baseline — 2026-08-13 00:49 CEST
+
+The sprint now has an isolated worktree based exactly on current
+`origin/master` at `553cc4077`. The read-only nineteen-row verifier confirms
+that all six tracked followed pages remain reproducible. A real-Chrome
+reconciliation restores Reddit as a rendered `nofollow ugc` citation, while
+Chrome-Stats and AppBrain remain HTTP 403 and cannot receive a current link-
+treatment verdict. Their former nofollow observations are retained as history
+but excluded from current authority totals. StackScope is now explicitly
+tracked as self-canonical, `noindex, follow` and missing the Noctalia anchor.
+The reconciled baseline is therefore 6 followed, 5 nofollow and 3 non-indexable
+pages; no new backlink or DR gain is claimed. Dealroom remains closed and no
+message, submission, account action, payment or publication was performed.
+Evidence is in
+`marketing/seo/backlink-measurement-check-2026-08-13-0049.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

@@ -268,6 +268,8 @@ function evaluateEvidence(row, evidence) {
   const expectedStatus = Number(row.http_status);
   const knownBlocked = row.authority_treatment === 'store_derived_unverified';
   const expectedMissing = ['lost', 'missing_link'].includes(row.authority_treatment);
+  const expectedNonIndexableMissing =
+    row.authority_treatment === 'non_indexable_missing_link';
 
   if (Number.isInteger(expectedStatus) && evidence.status !== expectedStatus) {
     mismatches.push(`HTTP ${evidence.status}, expected ${expectedStatus}`);
@@ -285,7 +287,13 @@ function evaluateEvidence(row, evidence) {
     }
   }
 
-  if (!knownBlocked && !expectedMissing && evidence.status >= 200 && evidence.status < 400) {
+  if (
+    !knownBlocked &&
+    !expectedMissing &&
+    !expectedNonIndexableMissing &&
+    evidence.status >= 200 &&
+    evidence.status < 400
+  ) {
     const targetLinks = findTargetLinks(evidence, row.linked_url);
     if (targetLinks.length === 0) {
       const observed = evidence.noctaliaLinks.map((link) => link.href).join(', ') || 'none';
@@ -302,6 +310,13 @@ function evaluateEvidence(row, evidence) {
     evidence.indexability !== 'non_indexable'
   ) {
     mismatches.push(`authority page is ${evidence.indexability}, expected non_indexable`);
+  } else if (
+    expectedNonIndexableMissing &&
+    (evidence.indexability !== 'non_indexable' || evidence.noctaliaLinks.length > 0)
+  ) {
+    mismatches.push(
+      `authority is ${evidence.observedTreatment} with ${evidence.noctaliaLinks.length} Noctalia link(s), expected non_indexable_missing_link`
+    );
   } else if (expectedMissing && evidence.observedTreatment !== 'missing_link') {
     mismatches.push(`authority is ${evidence.observedTreatment}, expected missing_link`);
   }

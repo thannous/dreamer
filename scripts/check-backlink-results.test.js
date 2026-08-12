@@ -123,6 +123,29 @@ describe('check-backlink-results', () => {
     ]);
   });
 
+  it('tracks a page that is both non-indexable and missing the expected link', () => {
+    const compoundRow = row({
+      authority_treatment: 'non_indexable_missing_link',
+      indexability: 'noindex, follow',
+      link_rel: 'missing',
+    });
+    const currentEvidence = analyzeHtml({
+      html: '<!doctype html><meta name="robots" content="noindex, follow"><link rel="canonical" href="https://example.com/noctalia">',
+      pageUrl: compoundRow.referring_page,
+      status: 200,
+    });
+    const linkReturnedEvidence = analyzeHtml({
+      html: '<!doctype html><meta name="robots" content="noindex, follow"><link rel="canonical" href="https://example.com/noctalia"><a href="https://noctalia.app/">Noctalia</a>',
+      pageUrl: compoundRow.referring_page,
+      status: 200,
+    });
+
+    expect(evaluateEvidence(compoundRow, currentEvidence)).toEqual([]);
+    expect(evaluateEvidence(compoundRow, linkReturnedEvidence)).toEqual([
+      'authority is non_indexable with 1 Noctalia link(s), expected non_indexable_missing_link',
+    ]);
+  });
+
   it('audits a row through an injected fetch implementation', async () => {
     const fetchImpl = jest.fn(async () =>
       new Response(
