@@ -1467,6 +1467,23 @@ second automatic follow-up is allowed. Wave 51 evidence is in
 `marketing/seo/editorial-discovery-wave-51-2026-08-13.md`. The register now
 contains 254 routes: 3 P0, 66 P1, 184 P2 and 1 P3.
 
+### Backlink outcome monitor wave 52 — 2026-08-13
+
+The read-only 19-row verifier still observes 6 followed, 4 nofollow, 2 missing-
+link, 3 non-indexable, 3 HTTP-403 and 1 HTTP-410 results. Its only changed row
+is the already documented Reddit application-shell mismatch; this does not
+override the latest rendered `nofollow ugc` link evidence. Fresh exact-domain,
+brand/topic and four deep-link searches found no new independently published
+Noctalia citation. Direct HTTP checks also found zero Noctalia anchors on the
+current self-canonical, indexable Atlas Workspace, ILTY, Marika Pech and
+DreamWell pages.
+
+No results row or prospect row was added. The results tracker remains at 19
+rows and the prospect register at 254 routes. No new referring domain, topical
+editorial link, deep link, traffic result or Ahrefs DR movement is claimed.
+Evidence is in
+`marketing/seo/backlink-outcome-monitor-wave-52-2026-08-13.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

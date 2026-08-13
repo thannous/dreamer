@@ -386,6 +386,16 @@ codes in `marketing/seo/media-source-platform-pack-2026-08-09.md`.
 
 ## Required verification after any authorization
 
+Wave 52 performed an outcome-only public monitor. The 19-row checker retained
+the existing distribution of 6 followed, 4 nofollow, 2 missing-link, 3 non-
+indexable, 3 HTTP-403 and 1 HTTP-410 rows; its Reddit mismatch remains an
+application-shell limitation already covered by rendered evidence. Fresh
+exact-domain, brand/topic and deep-link searches found no new independent
+Noctalia citation. Atlas Workspace, ILTY, Marika Pech and DreamWell remain
+self-canonical and indexable but expose zero Noctalia anchors. No message or
+form was sent, no second follow-up is allowed, and no result or prospect row
+was added.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer
