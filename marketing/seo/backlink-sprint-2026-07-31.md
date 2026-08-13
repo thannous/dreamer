@@ -1605,6 +1605,26 @@ Evidence is in
 contains 273 routes: 3 P0, 70 P1, 199 P2 and 1 P3. No external action or new
 backlink outcome occurred.
 
+### Editorial discovery wave 59 — 2026-08-13
+
+Skeptical Inquirer is the only new P1 route. Its self-canonical, indexable
+Richard Wiseman interview directly links `dreamonapp.com` without a declared
+`rel` value. Its accountable US nonprofit operator, named editors and current
+guidelines are public, and the guidelines allow a query before submission. A
+future query must disclose Noctalia's compiler and product role and remain an
+evidence-led fit check; no manuscript or attachment is prepared or authorized.
+
+The Dream Boat / Dream Research Institute is P2 because its official contact
+page expressly rejects promotional requests despite a topical Elsewhere
+episode and direct product citation in distributed show notes. The Sigmund
+Freud Museum Vienna is P2 because its indexable 2024 Elsewhere presentation
+page and archive contain no direct `elsewhere.to` anchor.
+
+Evidence is in
+`marketing/seo/editorial-discovery-wave-59-2026-08-13.md`. The register now
+contains 276 routes: 3 P0, 71 P1, 201 P2 and 1 P3. No external action or new
+backlink outcome occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

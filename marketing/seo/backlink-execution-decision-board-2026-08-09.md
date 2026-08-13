@@ -465,6 +465,18 @@ The register now contains 273 routes: 3 P0, 70 P1, 199 P2 and 1 P3. No message,
 form, account, attachment, payment or publication action was used, and no
 backlink or Ahrefs movement is proved.
 
+Wave 59 adds Skeptical Inquirer as one P1 route, prepared but unsent. Its
+self-canonical and indexable Richard Wiseman interview directly links the
+DreamOn product domain, while its accountable US nonprofit operator, named
+editors and live guidelines are public. Any separately authorized first action
+must be a short fit query that discloses Noctalia's compiler and product role,
+not a manuscript or attachment. The Dream Boat / DRI is P2 because the official
+contact policy rejects promotional requests despite its Elsewhere episode, and
+the Sigmund Freud Museum Vienna is P2 because its Elsewhere event pages expose
+no direct product-domain link. The register now contains 276 routes: 3 P0, 71
+P1, 201 P2 and 1 P3. No message, form, account, manuscript, attachment, payment
+or publication action was used, and no backlink or Ahrefs movement is proved.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer
