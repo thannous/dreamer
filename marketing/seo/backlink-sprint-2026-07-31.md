@@ -1646,6 +1646,28 @@ Evidence is in
 contains 279 routes: 3 P0, 72 P1, 203 P2 and 1 P3. No external action or new
 backlink outcome occurred.
 
+### Editorial discovery wave 61 — 2026-08-14
+
+Fast Company is the only new P1 route. Its still-public 2012 hands-on Dream:ON
+review directly links `dreamonapp.com`, while its current masthead and author
+page keep Mark Wilson on the product-design, UX and AI beat and publish his
+official email. A future note may offer the dated 11-app snapshot only as
+transparent source material for a retrospective on the evolution of dream-app
+design; it must disclose Noctalia's compiler and product role and must not ask
+for coverage, ranking, anchor text or a link.
+
+The Guardian is P2 because its highly relevant 2025 AI dream-app essay exposes
+no direct product-domain citation or official named-writer route; its separate
+direct Dream:ON precedent is fourteen years old. Superinteressante is P2
+because its direct Dream:ON link is from 2014 and its current masthead exposes
+no compatible editorial suggestion route despite active dream-science
+coverage.
+
+Evidence is in
+`marketing/seo/editorial-discovery-wave-61-2026-08-14.md`. The register now
+contains 282 routes: 3 P0, 73 P1, 205 P2 and 1 P3. No external action or new
+backlink outcome occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

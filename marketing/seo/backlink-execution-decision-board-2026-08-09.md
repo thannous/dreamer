@@ -491,6 +491,20 @@ details. The register now contains 279 routes: 3 P0, 72 P1, 203 P2 and 1 P3.
 No message, form, account, manuscript, attachment, payment or publication
 action was used, and no backlink or Ahrefs movement is proved.
 
+Wave 61 adds Fast Company as one P1 route, prepared but unsent. Its public
+hands-on Dream:ON review directly links the product domain, while the current
+masthead and official author page retain Mark Wilson on the product-design, UX
+and AI beat and publish his address. Any separately authorized first action
+must be a concise, transparent story-data note based on the dated Noctalia
+snapshot, disclosing Noctalia's compiler and product role; it must not request
+coverage, ranking, anchor text or a link. The Guardian is P2 because its current
+AI dream-app essay has no direct product-domain citation or official named
+route, and Superinteressante is P2 because its direct precedent is stale and no
+current compatible editorial suggestion route is public. The register now
+contains 282 routes: 3 P0, 73 P1, 205 P2 and 1 P3. No email, form, account,
+pitch, manuscript, attachment, product data, payment or publication action was
+used, and no backlink or Ahrefs movement is proved.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer
