@@ -505,6 +505,20 @@ contains 282 routes: 3 P0, 73 P1, 205 P2 and 1 P3. No email, form, account,
 pitch, manuscript, attachment, product data, payment or publication action was
 used, and no backlink or Ahrefs movement is proved.
 
+Wave 62 adds no P1 route. NextPit and träumen.org are P2 because their exact
+Oniri and Awoken review precedents link only to app stores, not directly to a
+comparable product domain. SZ Magazin is P2 because its current adjacent test
+of eight mood trackers exposes no comparable product-domain citation. All
+three operators are identifiable and non-Russian, but that does not override
+the citation gate. A passive mailbox check left Atlas Workspace and ILTY at
+`followup_1_sent_waiting`: each thread contains two messages, the first
+follow-up remains the latest visible item, and no response, bounce, opt-out or
+warning was observed. Fresh public checks found no Noctalia citation. No
+second follow-up is authorized or scheduled. The register now contains 285
+routes: 3 P0, 73 P1, 208 P2 and 1 P3. No email, form, account, pitch,
+manuscript, attachment, product data, payment or publication action was used,
+and no backlink or Ahrefs movement is proved.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer

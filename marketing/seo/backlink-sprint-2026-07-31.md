@@ -1668,6 +1668,27 @@ Evidence is in
 contains 282 routes: 3 P0, 73 P1, 205 P2 and 1 P3. No external action or new
 backlink outcome occurred.
 
+### Editorial discovery wave 62 — 2026-08-14
+
+No new route passed the strict P1 gate. NextPit's live hands-on Oniri review
+and träumen.org's detailed Awoken review link only to app stores, not directly
+to a comparable product domain. SZ Magazin's current psychologist-led test of
+eight mood trackers is strongly adjacent but exposes no direct product-domain
+or store citation. All three publishers have identifiable non-Russian European
+operators, but operator trust cannot replace the citation-precedent gate.
+
+A passive real-Chrome mailbox check found the Atlas Workspace and ILTY threads
+unchanged at two messages each, with Noctalia's first follow-up still the latest
+visible item and no response, bounce, opt-out or warning. Fresh public fetches
+returned HTTP 200, self-canonical index-follow articles and no Noctalia
+citation. Both routes remain `followup_1_sent_waiting`; no second follow-up is
+authorized or scheduled.
+
+Evidence is in
+`marketing/seo/editorial-discovery-wave-62-2026-08-14.md`. The register now
+contains 285 routes: 3 P0, 73 P1, 208 P2 and 1 P3. No external action or new
+backlink outcome occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
