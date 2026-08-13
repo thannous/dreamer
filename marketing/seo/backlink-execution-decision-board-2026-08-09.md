@@ -191,6 +191,19 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 | 5 | ANTENNE BAYERN editorial note (`D9A`) | Its indexable guide links two exact competitor symbol pages without `nofollow`; the registered German broadcaster publishes a direct newsroom mailbox. | Send the prepared German note once after a fresh page, destination and mailbox stop gate. Offer a test only; no link, anchor, rank or placement request. |
 | 6 | Epigenius editorial note (`D9B`) | Its indexable 2025 article links the competitor directly and already discusses keeping a dream journal; the named German operator publishes a direct email. | Send the prepared German note once after a fresh stop gate. Keep the non-medical boundary explicit and do not request a link or placement. |
 | 7 | Ràdio Nova editorial note (`D10A`) | Three exact dream-series pages cite the Spanish competitor directly without `nofollow`; the accountable municipal-radio program remains active in 2026 and publishes a direct recipient. | Send the prepared Spanish note once after a fresh page, destination and mailbox stop gate. Offer a test only; no link, anchor, rank or placement request. |
+
+The next permission request should stay limited to `D2` and `D5`, as two
+separate choices rather than a bundled approval. `D2` has the shortest path
+because Noctalia is already named on the target page; `D5` has the clearest
+factual-update hook and a deep alternative page. `D8B`, `D9A`, `D9B` and `D10A`
+remain prepared but should not dilute this first authorization lot.
+
+Wave 49 did not add a contact-ready route. Tuck is held on a cross-host staging
+canonical despite direct dream-app developer links, and Yahoo Health is held
+because no exact public editorial route for its current testing desk was
+verified. Atlas Workspace and ILTY remain passive-only after their authorized
+first replies; their public pages still contain no Noctalia mention, while the
+mailbox check is currently indeterminate because Zimbra requires login.
 | 8 | Elsewhere human reply (`D1`) | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal, although Medium currently marks product links `ugc nofollow`. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
 | 9 | Three editorial-visibility follow-ups (`D3B`) | Android Police and Xataka Android are credible Android publishers but the target pages lack a direct developer-domain citation pattern. AITrendTool's sampled product links are `nofollow`. | Treat these as discovery and relationship opportunities, not the DR-first batch. Authorize separately and verify any eventual public link without assuming equity. |
 | 10 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |

@@ -1401,6 +1401,26 @@ attachment, payment or publication was used, and no backlink or DR movement is
 claimed. Evidence is in
 `marketing/seo/editorial-discovery-wave-48-2026-08-13.md`.
 
+### Editorial discovery wave 49 — 2026-08-13
+
+The next established-publisher pass found no contact-ready route. Tuck's public
+dream-app section still links several developer domains directly and its US
+operator and contribution form are accountable, but real Chrome exposes a
+cross-host canonical to `tuckprod.wpenginepowered.com`; the legacy page is held
+as P2 until indexability and freshness are repaired. Yahoo Health's March 2026
+team-tested sleep-app review is current, named and directly links products, but
+no exact public source-correction or product-testing contact for that desk was
+verified. It is also held as P2 rather than contacted through a guessed address
+or unrelated route.
+
+The passive Atlas Workspace and ILTY public check found no Noctalia mention on
+either current comparison. The Zimbra session has expired to its login screen,
+so the mailbox half is indeterminate and no credential was entered. Both routes
+remain `followup_1_sent_waiting`; no second automatic follow-up is allowed.
+Wave 49 evidence is in
+`marketing/seo/editorial-discovery-wave-49-2026-08-13.md`. The register now
+contains 249 routes: 3 P0, 66 P1, 179 P2 and 1 P3.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
