@@ -38,6 +38,8 @@
 /it/blog/sogni-stressanti-sul-lavoro-perché-il-tuo-lavoro-ti-segue-nel-sonno /it/blog/sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno 301
 /it/blog/perché-sogniamo-la-scienza-dietro-le-tue-avventure-notturne.html /it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne 301
 /it/blog/perché-sogniamo-la-scienza-dietro-le-tue-avventure-notturne /it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne 301
+/it/blog/perché-sogniamo-la-scienza-dietro-le-tue-aventures-notturne /it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne 301
+/it/blog/perché-sogniamo-la-scienza-dietro-le-tue-aventures-notturne.html /it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne 301
 /it/blog/perché-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica.html /it/blog/perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica 301
 /it/blog/perché-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica /it/blog/perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica 301
 
@@ -85,3 +87,7 @@
 /politique-confidentialite /fr/politique-confidentialite 301
 /suppression-compte.html /fr/suppression-compte 301
 /suppression-compte /fr/suppression-compte 301
+
+# Legacy Italian typo reported by Search Console
+/it/blog/perché-sogniamo-la-scienza-dietro-le-tue-aventures-notturne /it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne 301
+/it/blog/perché-sogniamo-la-scienza-dietro-le-tue-aventures-notturne.html /it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne 301
