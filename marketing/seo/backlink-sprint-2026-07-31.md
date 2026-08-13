@@ -1501,6 +1501,29 @@ All three are P2 rejections. No contact or account action occurred. Evidence is
 in `marketing/seo/editorial-discovery-wave-53-2026-08-13.md`. The register now
 contains 257 routes: 3 P0, 66 P1, 187 P2 and 1 P3.
 
+### Editorial discovery and passive outcome check wave 54 — 2026-08-13
+
+Authenticated Zimbra `Tout le courrier` searches still show exactly one
+two-message conversation for Atlas Workspace and one for ILTY. Their latest
+visible items are the authorized 02:35 and 02:36 CEST Noctalia replies; no
+incoming reply, failure, opt-out or warning is visible. Both public comparison
+pages return HTTP 200 and expose zero Noctalia mentions. They remain
+`followup_1_sent_waiting`, with no second automatic follow-up allowed.
+
+Three new routes failed before contact. Androidworld publishes a current named-
+author Android dream-app roundup under accountable Dutch operator BigSpark
+B.V., but every inspected app citation points to Google Play. Computer Hoy's
+named-author roundup is stale and also links all seven apps only through Google
+Play. Gitnux directly links multiple product domains and publishes a human-
+reviewed editorial process and official corrections route, but the reviewed
+institutional pages do not identify a registered legal entity, address or
+governing jurisdiction. All three are P2.
+
+The connected Ahrefs API returned zero remaining units before providing fresh
+backlink statistics or DR. No metric value or movement is inferred. Evidence is
+in `marketing/seo/editorial-discovery-wave-54-2026-08-13.md`. The register now
+contains 260 routes: 3 P0, 66 P1, 190 P2 and 1 P3.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

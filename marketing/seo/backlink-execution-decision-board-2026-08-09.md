@@ -404,6 +404,17 @@ zero external app links and its tested institutional routes return 404. No
 message, form or account action was used. The register now contains 257 routes:
 3 P0, 66 P1, 187 P2 and 1 P3.
 
+Wave 54 passively reconfirms one two-message Zimbra conversation for Atlas
+Workspace and one for ILTY, with no incoming reply, failure, opt-out or warning
+visible. Both current public pages return HTTP 200 and contain zero Noctalia
+mentions. Do not send a second follow-up. Androidworld and Computer Hoy are P2
+because their exact dream-app citation patterns are Google Play only. Gitnux is
+also P2: its current named-author comparison links product domains directly and
+publishes an editorial corrections route, but its registered legal entity,
+address and governing jurisdiction remain unverified. The Ahrefs API returned
+zero remaining units before any fresh DR or backlink metric was produced. The
+register now contains 260 routes: 3 P0, 66 P1, 190 P2 and 1 P3.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer
