@@ -477,6 +477,20 @@ no direct product-domain link. The register now contains 276 routes: 3 P0, 71
 P1, 201 P2 and 1 P3. No message, form, account, manuscript, attachment, payment
 or publication action was used, and no backlink or Ahrefs movement is proved.
 
+Wave 60 adds Scott Britton / PsyMed as one P1 route, prepared but unsent. Its
+self-canonical and indexable startup landscape directly links the comparable
+Shape and Oniri product domains, and the named accountable US author explicitly
+invites builders in the covered field to reach out. Any separately authorized
+first action must be a short factual update note based on the dated Noctalia
+snapshot, with no request for inclusion, ranking, anchor text or a link.
+Refinery29 is P2 because its exact DreamOn citation is twelve years old,
+`nofollow` and lacks a compatible current general editorial route. Lucid
+Dreaming Experience is P2 because its live Lucidity mention exposes no direct
+product-domain anchor despite current submissions and accountable publication
+details. The register now contains 279 routes: 3 P0, 72 P1, 203 P2 and 1 P3.
+No message, form, account, manuscript, attachment, payment or publication
+action was used, and no backlink or Ahrefs movement is proved.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer

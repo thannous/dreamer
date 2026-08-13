@@ -1625,6 +1625,27 @@ Evidence is in
 contains 276 routes: 3 P0, 71 P1, 201 P2 and 1 P3. No external action or new
 backlink outcome occurred.
 
+### Editorial discovery wave 60 — 2026-08-14
+
+Scott Britton / PsyMed is the only new P1 route. The self-canonical, indexable
+startup landscape has a dedicated Dreamwork section that directly links
+`shapedream.co` and `oniri.io` without declared `rel` values and invites
+builders in the covered field to reach out. The named author is accountable
+through his official site plus independent Salesforce and Salesforce Ventures
+records. A future note may offer the dated Noctalia snapshot as a factual
+update only; it must not request inclusion, ranking, anchor text or a link.
+
+Refinery29 is P2 because its direct DreamOn precedent is from 2014, explicitly
+`nofollow`, and no compatible current general editorial route was found. Lucid
+Dreaming Experience is P2 because its live Lucidity article exposes no direct
+product-domain anchor despite the quarterly's active 2026 submission program
+and accountable US publication details.
+
+Evidence is in
+`marketing/seo/editorial-discovery-wave-60-2026-08-14.md`. The register now
+contains 279 routes: 3 P0, 72 P1, 203 P2 and 1 P3. No external action or new
+backlink outcome occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
