@@ -10,6 +10,24 @@ function downloadAppLabel(lang) {
   return 'Download app';
 }
 
+function languageSwitcherLabel(lang) {
+  if (lang === 'fr') return 'Choisir la langue';
+  if (lang === 'es') return 'Elegir idioma';
+  if (lang === 'de') return 'Sprache auswählen';
+  if (lang === 'it') return 'Scegli la lingua';
+  if (lang === 'pt-br') return 'Escolher idioma';
+  return 'Choose language';
+}
+
+function mobileMenuLabel(lang) {
+  if (lang === 'fr') return 'Menu de navigation';
+  if (lang === 'es') return 'Menú de navegación';
+  if (lang === 'de') return 'Navigationsmenü';
+  if (lang === 'it') return 'Menu di navigazione';
+  if (lang === 'pt-br') return 'Menu de navegação';
+  return 'Navigation menu';
+}
+
 function normalizeHomePath(lang, pagePath) {
   if (lang !== 'en') return pagePath;
   return pagePath === '/en/' ? '/' : pagePath;
@@ -99,6 +117,8 @@ function renderNavigation(context) {
   const isBlogPremium = meta.layout === 'blogIndex' && String(meta.mainClass || '').includes('blog-premium');
   const downloadLabel = downloadAppLabel(lang);
   const storeHref = getAndroidStoreUrl(lang);
+  const languageLabel = languageSwitcherLabel(lang);
+  const menuLabel = mobileMenuLabel(lang);
 
   const desktopLinks = links
     .map((link) => {
@@ -126,7 +146,7 @@ function renderNavigation(context) {
     '            </div>',
     '            <div class="noctalia-premium-nav-actions flex items-center gap-3">',
     '                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">',
-    '                    <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">',
+    `                    <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="${escapeHtml(languageLabel)}" id="languageDropdownButton">`,
     '                        <i data-lucide="languages" class="w-4 h-4"></i>',
     `                        <span>${lang.toUpperCase()}</span>`,
     '                        <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>',
@@ -136,7 +156,7 @@ function renderNavigation(context) {
     '                    </div>',
     '                </div>',
     `                <a href="${storeHref}" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">${escapeHtml(downloadLabel)}</a>`,
-    '                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">',
+    `                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="${escapeHtml(menuLabel)}" aria-expanded="false">`,
     '                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>',
     '                </button>',
     '            </div>',

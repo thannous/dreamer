@@ -4,8 +4,8 @@
   "layout": "content",
   "lang": "de",
   "slug": "traumtagebuch-apps",
-  "title": "Beste Traumtagebuch-Apps 2026 | Noctalia",
-  "description": "Vergleiche Noctalia mit DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud und neuen KI-Traumtagebüchern.",
+  "title": "Traumtagebuch-Apps nach Bedarf (2026) | Noctalia",
+  "description": "Vergleiche 11 Traumtagebuch-Apps nach Bedarf mit einem quellenverknüpften Datensatz von 2026 zu Sprache, KI, Bildern, Datenschutz und luzidem Träumen.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",
@@ -13,38 +13,73 @@
   "bodyStyle": "",
   "mainClass": "pt-32 pb-20 px-6 max-w-6xl mx-auto",
   "ogType": "article",
-  "ogTitle": "Beste Traumtagebuch-Apps 2026",
-  "ogDescription": "Vergleiche Noctalia mit DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud und neuen KI-Traumtagebüchern.",
+  "ogTitle": "Traumtagebuch-Apps nach Bedarf (2026)",
+  "ogDescription": "Vergleiche 11 Traumtagebuch-Apps nach Bedarf mit einem quellenverknüpften Datensatz von 2026 zu Sprache, KI, Bildern, Datenschutz und luzidem Träumen.",
   "ogImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
-  "ogImageAlt": "Noctalia dream journal app",
+  "ogImageAlt": "Noctalia Traumtagebuch-App",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Beste Traumtagebuch-Apps 2026",
-  "twitterDescription": "Vergleiche Noctalia mit DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud und neuen KI-Traumtagebüchern.",
+  "twitterTitle": "Traumtagebuch-Apps nach Bedarf (2026)",
+  "twitterDescription": "Vergleiche 11 Traumtagebuch-Apps nach Bedarf mit einem quellenverknüpften Datensatz von 2026 zu Sprache, KI, Bildern, Datenschutz und luzidem Träumen.",
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
-  "twitterImageAlt": "Noctalia dream journal app",
+  "twitterImageAlt": "Noctalia Traumtagebuch-App",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-08-11T00:00:00+02:00",
+  "modifiedTime": "2026-08-13T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Beste Traumtagebuch-Apps 2026\",\n  \"description\": \"Vergleiche Noctalia mit DreamApp, Oniri, Dreamiary, Dreamlab, DreamKit, Rosebud und neuen KI-Traumtagebüchern.\",\n  \"url\": \"https://noctalia.app/de/traumtagebuch-apps\",\n  \"inLanguage\": \"de\",\n  \"dateModified\": \"2026-08-11T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Beste Traumtagebuch-Apps 2026\",\n      \"item\": \"https://noctalia.app/de/traumtagebuch-apps\"\n    }\n  ]\n}"
-    ,"{\"@context\":\"https://schema.org\",\"@type\":\"Dataset\",\"@id\":\"https://noctalia.app/de/traumtagebuch-apps#dataset\",\"name\":\"Vergleichsdaten für Traumtagebuch-Apps 2026\",\"description\":\"Eine datierte Dokumentenprüfung von 11 Traumtagebuch-Apps zu Plattformen, Spracheingabe, KI-Deutung, Bildern, Datenschutz, Export und luzidem Träumen.\",\"url\":\"https://noctalia.app/de/traumtagebuch-apps#dataset\",\"creator\":{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\"},\"publisher\":{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\"},\"license\":\"https://noctalia.app/de/traumtagebuch-apps#dataset-license-v1\",\"dateCreated\":\"2026-07-12\",\"dateModified\":\"2026-08-09\",\"isAccessibleForFree\":true,\"inLanguage\":\"de\",\"keywords\":[\"Traumtagebuch-Apps\",\"Sprachaufnahme\",\"KI-Traumdeutung\",\"luzides Träumen\"],\"measurementTechnique\":\"Dokumentenprüfung offizieller Produktseiten und öffentlicher App-Store-Einträge; keine Wettbewerberkonten und keine kostenpflichtigen Abonnements.\",\"distribution\":{\"@type\":\"DataDownload\",\"encodingFormat\":\"text/csv\",\"contentUrl\":\"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"}}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Traumtagebuch-Apps nach Bedarf (2026)\",\"description\":\"Vergleiche 11 Traumtagebuch-Apps nach Bedarf mit einem quellenverknüpften Datensatz von 2026 zu Sprache, KI, Bildern, Datenschutz und luzidem Träumen.\",\"url\":\"https://noctalia.app/de/traumtagebuch-apps\",\"inLanguage\":\"de\",\"dateModified\":\"2026-08-13T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Traumtagebuch-Apps nach Bedarf im Jahr 2026\",\n      \"item\": \"https://noctalia.app/de/traumtagebuch-apps\"\n    }\n  ]\n}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"ItemList\",\"name\":\"2026 verglichene Traumtagebuch-Apps\",\"itemListOrder\":\"https://schema.org/ItemListUnordered\",\"numberOfItems\":11,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Noctalia\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"DreamApp\"},{\"@type\":\"ListItem\",\"position\":3,\"name\":\"Oniri\"},{\"@type\":\"ListItem\",\"position\":4,\"name\":\"Dreamiary\"},{\"@type\":\"ListItem\",\"position\":5,\"name\":\"Dreamlab\"},{\"@type\":\"ListItem\",\"position\":6,\"name\":\"DreamKit\"},{\"@type\":\"ListItem\",\"position\":7,\"name\":\"Rosebud\"},{\"@type\":\"ListItem\",\"position\":8,\"name\":\"Dreamz Journal\"},{\"@type\":\"ListItem\",\"position\":9,\"name\":\"DreamMirror\"},{\"@type\":\"ListItem\",\"position\":10,\"name\":\"DreamStream\"},{\"@type\":\"ListItem\",\"position\":11,\"name\":\"DreamNotes\"}]}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"Dataset\",\"@id\":\"https://noctalia.app/de/traumtagebuch-apps#dataset\",\"identifier\":\"noctalia-dream-journal-apps-comparison-2026\",\"name\":\"Vergleichsdaten für Traumtagebuch-Apps 2026\",\"description\":\"Eine datierte Dokumentenprüfung von 11 Traumtagebuch-Apps zu Plattformen, Preissignalen, Spracheingabe, KI-Deutung, generierten Bildern, Datenschutz oder Export, luzidem Träumen, Einsatzbereichen und Einschränkungen.\",\"url\":\"https://noctalia.app/de/traumtagebuch-apps#dataset\",\"creator\":{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\"},\"publisher\":{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\"},\"license\":\"https://noctalia.app/de/traumtagebuch-apps#dataset-license-v1\",\"dateCreated\":\"2026-07-12\",\"dateModified\":\"2026-08-09\",\"version\":\"2026-08-09\",\"temporalCoverage\":\"2026-07-12/2026-08-09\",\"isAccessibleForFree\":true,\"inLanguage\":\"en\",\"keywords\":[\"Traumtagebuch-Apps\",\"Sprachaufnahme\",\"KI-Traumdeutung\",\"luzides Träumen\"],\"variableMeasured\":[\"Plattformen\",\"Preissignal\",\"Spracheingabe\",\"KI-Deutung\",\"generierte Bilder\",\"Datenschutz- oder Exportsignal\",\"luzides Träumen\",\"empfohlener Einsatzbereich\",\"Einschränkung\"],\"measurementTechnique\":\"Dokumentenprüfung offizieller Produktseiten und öffentlicher App-Store-Einträge; keine Wettbewerberkonten und keine kostenpflichtigen Abonnements.\",\"distribution\":{\"@type\":\"DataDownload\",\"encodingFormat\":\"text/csv\",\"inLanguage\":\"en\",\"contentUrl\":\"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"ImageObject\",\"@id\":\"https://noctalia.app/de/traumtagebuch-apps#feature-snapshot-image\",\"name\":\"Traumtagebuch-Apps 2026: Funktionsübersicht\",\"caption\":\"Vier beschreibende Funktionszählungen aus Noctalias quellenverknüpfter Dokumentenprüfung von 11 Traumtagebuch-Apps.\",\"contentUrl\":\"https://noctalia.app/img/research/dream-journal-apps-feature-snapshot-2026-de.svg\",\"encodingFormat\":\"image/svg+xml\",\"width\":1200,\"height\":675,\"dateCreated\":\"2026-08-13\",\"creditText\":\"Noctalia\",\"creator\":{\"@id\":\"https://noctalia.app/#organization\"},\"copyrightNotice\":\"© 2026 Noctalia\",\"license\":\"https://noctalia.app/en/press#media-license\",\"acquireLicensePage\":\"https://noctalia.app/en/press#media-contact\",\"isPartOf\":{\"@id\":\"https://noctalia.app/de/traumtagebuch-apps#dataset\"}}"
   ],
   "activeNav": "resources"
 }
 ---
-<h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Beste Traumtagebuch-Apps 2026</h1>
-<p class="text-sm text-purple-300/70 mb-6">Datensatz aktualisiert am 9. August 2026 · Methodik aktualisiert am 3. August 2026 · Erste Produktprüfung am 12. Juli 2026</p>
+<h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Traumtagebuch-Apps nach Bedarf im Jahr 2026</h1>
+<p class="text-sm text-purple-300/70 mb-6">Datensatzversion: 9. August 2026 · 8 App-Zeilen zuletzt am 12. Juli und 3 Zeilen am 9. August geprüft · Methodik aktualisiert am 3. August</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Die passende Traumtagebuch-App hängt davon ab, wie schnell du morgens erfasst, ob du KI-Deutung möchtest, wie wichtig luzides Träumen ist und wie klar Datenschutz erklärt wird.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-    <h2 class="text-2xl font-serif text-white mb-4">Kurzantwort</h2>
-    <p>Wähle Noctalia, wenn du ein zuerst für Android entwickeltes Traumtagebuch für schnelle Spracheingabe, KI-Deutung, generierte Traumbilder, wiederkehrende Symbole und geführte Reflexion suchst. Oniri passt besser für fortgeschrittenes luzides Träumen. DreamApp eignet sich für breite Traumdeutung, Dreamiary und Dreamz für symbolreiche Ansätze. Bestehende DreamKit-Nutzer sollten die Store-Verfügbarkeit prüfen und den eigenen Migrationsvergleich lesen.</p>
+    <h2 class="text-2xl font-serif text-white mb-4">Auswahl nach Bedarf: Kurzantwort</h2>
+    <ul class="list-disc pl-5 space-y-2">
+      <li><strong>Android und schnelle Spracheingabe:</strong> Noctalia.</li>
+      <li><strong>Fortgeschrittene Praxis des luziden Träumens:</strong> Oniri.</li>
+      <li><strong>Allgemein verständliche Traumbedeutungen:</strong> DreamApp.</li>
+      <li><strong>Symbolreiche oder mystische Ansätze:</strong> Dreamiary oder Dreamz Journal.</li>
+      <li><strong>Bestehendes DreamKit-Archiv:</strong> Prüfe die Store-Verfügbarkeit und lies vor einem Wechsel den eigenen Migrationsvergleich.</li>
+    </ul>
+    <p class="mt-4 text-sm text-purple-100"><strong>Offenlegung:</strong> Noctalia veröffentlicht diesen Vergleich und ist eine der geprüften Apps. Die Reihenfolge der Tabelle ist weder eine Wertung noch eine Rangliste. Lies die <a href="#methodology" class="text-dream-salmon hover:underline">Methodik und Unabhängigkeitserklärung</a>.</p>
+    <p class="mt-5"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=de" class="inline-flex items-center rounded-full bg-dream-salmon px-5 py-3 font-semibold text-dream-dark hover:opacity-90" rel="nofollow noopener noreferrer" target="_blank">Noctalia kostenlos auf Android testen</a></p>
     <p class="mt-4 text-sm text-purple-200/70">Noctalia ist ein Reflexionstool und keine medizinische, psychologische, rechtliche, finanzielle oder vorhersagende Beratung.</p>
+  </section>
+
+  <section id="findings" class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Was der Datensatz mit 11 Apps zeigt</h2>
+    <p>Diese beschreibenden Ergebnisse stammen aus der datierten, quellenverknüpften Prüfung. Die aktuelle Datensatzversion ist vom 9. August 2026. Sie fassen die normalisierten CSV-Felder zusammen, ohne Marktanteil, Produktqualität oder klinische Wirksamkeit zu schätzen.</p>
+    <div class="grid gap-4 md:grid-cols-2 mt-6">
+      <div class="rounded-xl border border-white/10 bg-dream-dark/40 p-5"><p class="text-3xl font-serif text-dream-cream">10 von 11</p><p class="mt-2 text-sm">Zeilen zeigen ein Signal für <strong>KI-Deutung</strong>: Neun sind mit „Ja“ markiert und der frühere DreamKit-Eintrag bewarb die Funktion. DreamMirrors enger gefasste „reflektierende KI“ wird nicht mitgezählt.</p></div>
+      <div class="rounded-xl border border-white/10 bg-dream-dark/40 p-5"><p class="text-3xl font-serif text-dream-cream">7 von 11</p><p class="mt-2 text-sm">zeigen ausdrücklich Unterstützung oder Positionierung für <strong>Spracheingabe</strong>, gezählt aus „Stark“, „Ja“ oder „Text und Sprache“.</p></div>
+      <div class="rounded-xl border border-white/10 bg-dream-dark/40 p-5"><p class="text-3xl font-serif text-dream-cream">4 von 11</p><p class="mt-2 text-sm">zeigen ein Signal für <strong>generierte Bilder</strong>: Drei sind mit „Ja“ markiert und der frühere DreamKit-Eintrag bewarb die Funktion. Teilweise visuelle Aussagen und redaktionelle Stile werden nicht mitgezählt.</p></div>
+      <div class="rounded-xl border border-white/10 bg-dream-dark/40 p-5"><p class="text-3xl font-serif text-dream-cream">3 von 11</p><p class="mt-2 text-sm">zeigen eine <strong>Struktur für luzides Träumen</strong>: Oniri ist mit „Stark“, Dreamiary mit „Ja“ markiert und der frühere DreamKit-Eintrag bewarb Realitätsprüfungen.</p></div>
+    </div>
+    <p class="mt-5 text-sm text-purple-200/70">Du kannst diese Zählungen mit der <a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>quellenverknüpften CSV-Datei</a> nachvollziehen. Breitere oder eingeschränkte Bezeichnungen werden bewusst nicht mitgezählt, sofern sie oben nicht ausdrücklich genannt sind.</p>
+  </section>
+
+  <section id="feature-snapshot" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
+    <h2 class="text-2xl font-serif text-white mb-4">Funktionsübersicht der 11 Apps herunterladen</h2>
+    <p>Diese publikationsfertige Grafik zeigt die vier reproduzierbaren Zählungen oben. Sie ist eine beschreibende Momentaufnahme öffentlicher Produktangaben, keine Rangliste, kein Praxistest, keine Marktanteilsschätzung und keine klinische Studie.</p>
+    <figure class="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-dream-dark/40">
+      <a href="/img/research/dream-journal-apps-feature-snapshot-2026-de.svg" download>
+        <img src="/img/research/dream-journal-apps-feature-snapshot-2026-de.svg" width="1200" height="675" loading="lazy" alt="Balkendiagramm mit vier Signalen in 11 Traumtagebuch-App-Zeilen: KI-Deutung 10 von 11, Spracheingabe 7 von 11, generierte Bilder 4 von 11 und Struktur für luzides Träumen 3 von 11.">
+      </a>
+      <figcaption class="p-4 text-sm text-purple-200/70">Funktionsübersicht auf Grundlage des quellenverknüpften Datensatzes, Version vom 9. August 2026.</figcaption>
+    </figure>
+    <p class="mt-4"><a href="/img/research/dream-journal-apps-feature-snapshot-2026-de.svg" class="text-dream-salmon hover:underline" download>Bearbeitbare SVG-Datei herunterladen (1200 × 675)</a> · <a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Quell-CSV herunterladen</a> · <a href="#methodology" class="text-dream-salmon hover:underline">Methodik lesen</a></p>
+    <p class="mt-3 text-sm text-purple-200/70">Nenne bei sachlicher redaktioneller Wiederverwendung Noctalia als Quelle und verlinke diese stabile Vergleichsseite. Lass Prüfdatum und Einschränkungen sichtbar.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -59,7 +94,7 @@
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
-    <h2 class="text-2xl font-serif text-white mb-4">Beste Traumtagebuch-Apps 2026</h2>
+    <h2 class="text-2xl font-serif text-white mb-4">Vergleich von 11 Apps nach Bedarf im Jahr 2026</h2>
     <table class="w-full text-left text-sm min-w-[1100px]">
       <thead class="text-purple-200"><tr><th class="py-3 pr-4">App</th><th class="py-3 pr-4">Plattformen</th><th class="py-3 pr-4">Preis-Signal</th><th class="py-3 pr-4">Sprache</th><th class="py-3 pr-4">KI-Deutung</th><th class="py-3 pr-4">Bilder</th><th class="py-3 pr-4">Symbole</th><th class="py-3 pr-4">Export/Datenschutz</th><th class="py-3 pr-4">Luzides Träumen</th><th class="py-3 pr-4">Am besten für</th><th class="py-3 pr-4">Weniger ideal für</th></tr></thead>
       <tbody class="divide-y divide-white/10">
@@ -72,7 +107,7 @@
 <tr><td class="py-4 pr-4 text-white font-medium">Rosebud</td><td class="py-4 pr-4 ">Web / Apps</td><td class="py-4 pr-4 ">KI-Journaling per Abo</td><td class="py-4 pr-4 ">Eher Text</td><td class="py-4 pr-4 ">Ja</td><td class="py-4 pr-4 ">Kein traumspezifischer visueller Fokus</td><td class="py-4 pr-4 ">Tags und Themen</td><td class="py-4 pr-4 ">Allgemeiner KI-Journaling-Datenschutz</td><td class="py-4 pr-4 ">Nein</td><td class="py-4 pr-4 ">Breiteres Journaling und Selbstreflexion</td><td class="py-4 pr-4 ">Dediziertes Android-Produkt für Träume</td></tr>
 <tr><td class="py-4 pr-4 text-white font-medium">Dreamz Journal</td><td class="py-4 pr-4 ">iOS, Android angekündigt</td><td class="py-4 pr-4 ">Gratis plus Premium auf der Website</td><td class="py-4 pr-4 ">Ja</td><td class="py-4 pr-4 ">Ja</td><td class="py-4 pr-4 ">Editorialer Grimoire-Stil</td><td class="py-4 pr-4 ">Großes Symbollexikon behauptet</td><td class="py-4 pr-4 ">Privates Journal, Export/Löschung</td><td class="py-4 pr-4 ">Ritual und Reflexion</td><td class="py-4 pr-4 ">Mystische Lesarten und Symbole</td><td class="py-4 pr-4 ">Nüchterner psychologischer Ton oder Android sofort</td></tr>
 <tr><td class="py-4 pr-4 text-white font-medium">DreamMirror</td><td class="py-4 pr-4 ">Direkte Android-Verteilung</td><td class="py-4 pr-4 ">Nicht Store-zentriert</td><td class="py-4 pr-4 ">Ja</td><td class="py-4 pr-4 ">Reflektierende KI</td><td class="py-4 pr-4 ">Nein</td><td class="py-4 pr-4 ">Leicht</td><td class="py-4 pr-4 ">Stark privat und anti-hype</td><td class="py-4 pr-4 ">Nein</td><td class="py-4 pr-4 ">Ruhige private Reflexion</td><td class="py-4 pr-4 ">Google Play, Bilder oder größeres Lexikon</td></tr>
-<tr><td class="py-4 pr-4 text-white font-medium">DreamStream</td><td class="py-4 pr-4 ">Early Access</td><td class="py-4 pr-4 ">Visuell premium</td><td class="py-4 pr-4 ">Ja</td><td class="py-4 pr-4 ">Ja</td><td class="py-4 pr-4 ">Starkes visuelles Storytelling</td><td class="py-4 pr-4 ">Archetypen und Mapping</td><td class="py-4 pr-4 ">Sensibler visueller Ansatz zu prüfen</td><td class="py-4 pr-4 ">Nein</td><td class="py-4 pr-4 ">Cineastische Traumvisualisierung</td><td class="py-4 pr-4 ">Ruhigeres privates Journal</td></tr>
+<tr><td class="py-4 pr-4 text-white font-medium">DreamStream</td><td class="py-4 pr-4 ">Early Access</td><td class="py-4 pr-4 ">Visuell premium</td><td class="py-4 pr-4 ">Ja</td><td class="py-4 pr-4 ">Ja</td><td class="py-4 pr-4 ">Starkes visuelles Storytelling</td><td class="py-4 pr-4 ">Archetypen und Mapping</td><td class="py-4 pr-4 ">Sensibler visueller Ansatz und digitales Zwillingsmodell zu prüfen</td><td class="py-4 pr-4 ">Nein</td><td class="py-4 pr-4 ">Cineastische Traumvisualisierung</td><td class="py-4 pr-4 ">Ruhigeres privates Journal</td></tr>
 <tr><td class="py-4 pr-4 text-white font-medium">DreamNotes</td><td class="py-4 pr-4 ">iOS</td><td class="py-4 pr-4 ">Gratis mit Abo-Signalen</td><td class="py-4 pr-4 ">Text/Chat</td><td class="py-4 pr-4 ">Ja</td><td class="py-4 pr-4 ">Kein starkes visuelles Signal</td><td class="py-4 pr-4 ">Symbolbibliothek</td><td class="py-4 pr-4 ">On-device-/Privacy-Botschaft</td><td class="py-4 pr-4 ">Nein</td><td class="py-4 pr-4 ">Schnelle Analyse auf iOS</td><td class="py-4 pr-4 ">Android-Nutzer</td></tr>
       </tbody>
     </table>
@@ -101,7 +136,7 @@
 
   <section id="dataset" class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5 scroll-mt-28">
     <h2 class="text-2xl font-serif text-white mb-4">Vergleichsdaten herunterladen</h2>
-    <p>Die CSV-Datei bildet den Vergleich von 11 Apps in einem Format ab, das Forschende, Medienschaffende und App-Reviewer filtern oder zitieren können. Jede Zeile enthält Quelle und Prüfdatum.</p>
+    <p>Die englischsprachige CSV-Datei bildet den Vergleich von 11 Apps in einem Format ab, das Forschende, Medienschaffende und App-Reviewer filtern oder zitieren können. Jede Zeile enthält Quelle und Prüfdatum.</p>
     <p class="mt-4"><a href="/data/dream-journal-apps-comparison-2026.csv" class="text-dream-salmon hover:underline" download>Traumtagebuch-App-Vergleich herunterladen (CSV)</a></p>
     <p class="mt-3 text-sm text-purple-200/70">Diese redaktionelle Zusammenstellung darf gemäß der <a href="#dataset-license-v1" class="text-dream-salmon hover:underline">Noctalia-Datensatz-Nutzungslizenz 1.0</a> weiterverwendet werden. Die Daten sind eine datierte Momentaufnahme; prüfe vor Veröffentlichung die offiziellen Quellen.</p>
   </section>
