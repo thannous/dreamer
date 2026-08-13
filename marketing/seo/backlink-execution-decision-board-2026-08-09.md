@@ -381,6 +381,17 @@ The current evidence, exact Spanish copy and route-specific stop gate are
 recorded in
 `marketing/seo/backlink-spanish-radio-ready-2026-08-10.md`.
 
+### D11 — IASD DreamTime and Skeptical Inquirer fit queries
+
+Decision required: authorize neither, either one explicitly, or both explicitly.
+
+The recommended small lot contains two independent, strongly topical editorial
+routes. DreamTime first needs a non-member eligibility and topic-fit answer;
+Skeptical Inquirer first needs a topic-fit answer. Both messages disclose that
+Noctalia compiled and appears in the snapshot. Neither requests coverage,
+ranking, anchor text, `dofollow`, placement or a link. The exact copy and stop
+gates are in `backlink-authorization-pack-d11-2026-08-14.md`.
+
 Earned-media account or subscription choices retain the independent `E1`–`E5`
 codes in `marketing/seo/media-source-platform-pack-2026-08-09.md`.
 
@@ -530,6 +541,18 @@ deduplicated against existing publisher routes. The register now contains 287
 routes: 3 P0, 73 P1, 210 P2 and 1 P3. No email, form, account, pitch,
 manuscript, attachment, product data, payment or publication action was used,
 and no backlink or Ahrefs movement is proved.
+
+Wave 64 adds no P1 route. Harvard SEAS is P2 because its direct uDreamed
+product-domain precedent is from January 2018, covers a Harvard student's
+launch and exposes an article-specific press contact rather than a current
+outside-product suggestion route. Current searches otherwise rediscovered
+existing publisher routes or product-owned, storefront and UGC surfaces. The
+D11 authorization pack revalidates IASD DreamTime and Skeptical Inquirer as the
+highest-value small unsent lot: two exact fit queries, no manuscripts and no
+link request. The register now contains 288 routes: 3 P0, 73 P1, 211 P2 and 1
+P3. No email, form, account, query, pitch, manuscript, attachment, product data,
+payment or publication action was used, and no backlink or Ahrefs movement is
+proved.
 
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.

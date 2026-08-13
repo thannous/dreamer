@@ -1704,6 +1704,26 @@ publisher routes. Evidence is in
 contains 287 routes: 3 P0, 73 P1, 210 P2 and 1 P3. No external action or new
 backlink outcome occurred.
 
+### Editorial discovery wave 64 and D11 authorization pack — 2026-08-14
+
+No new route passed the strict P1 gate. Harvard SEAS's live 2018 student-founder
+feature directly links uDreamed, but its age, institutional-student context and
+article-specific press contact do not establish a current outside-product
+editorial route. Other relevant results were existing publisher routes,
+product-owned comparisons, storefronts or UGC and were not duplicated.
+
+Fresh public checks revalidated IASD DreamTime and Skeptical Inquirer as the
+strongest small authorization lot among existing unsent P1 routes. The exact
+D11 fit queries disclose Noctalia's compiler and product role, attach no
+manuscript and request no coverage, ranking, anchor, `dofollow`, placement or
+link. They remain unsent pending exact authorization and separate immediate
+stop gates.
+
+Evidence is in `marketing/seo/editorial-discovery-wave-64-2026-08-14.md` and
+`marketing/seo/backlink-authorization-pack-d11-2026-08-14.md`. The register now
+contains 288 routes: 3 P0, 73 P1, 211 P2 and 1 P3. No external action or new
+backlink outcome occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
