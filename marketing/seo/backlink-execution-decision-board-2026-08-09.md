@@ -214,6 +214,17 @@ authenticated Zimbra `Tout le courrier` check found one two-message Atlas
 conversation and one two-message ILTY conversation, with no incoming reply,
 bounce, opt-out or warning visible. Both remain passive-only
 `followup_1_sent_waiting`; no second automatic follow-up is allowed.
+
+Wave 51 adds no contact-ready route. MindJrnl is rejected because its exact
+product-owned comparison links no competing developer domain. Calmevo is held
+despite a strong direct-domain citation pattern because the publisher exposes
+only a first name and broad European description, without a legal entity,
+address or jurisdiction. Nemos is rejected because its product-owned page is
+explicitly iPhone-only and contains no Android scope. The public `D2` and `D5`
+gates remain clear, but both routes still require separate exact authorization
+and an immediate mailbox stop gate. The current Chrome mailbox session is at
+the Roundcube login screen, so Atlas Workspace and ILTY remain passive-only on
+their last verified `followup_1_sent_waiting` state.
 | 8 | Elsewhere human reply (`D1`) | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal, although Medium currently marks product links `ugc nofollow`. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
 | 9 | Three editorial-visibility follow-ups (`D3B`) | Android Police and Xataka Android are credible Android publishers but the target pages lack a direct developer-domain citation pattern. AITrendTool's sampled product links are `nofollow`. | Treat these as discovery and relationship opportunities, not the DR-first batch. Authorize separately and verify any eventual public link without assuming equity. |
 | 10 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |

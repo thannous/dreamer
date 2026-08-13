@@ -1442,6 +1442,31 @@ proof. Wave 50 evidence is in
 `marketing/seo/editorial-discovery-wave-50-2026-08-13.md`. The register now
 contains 251 routes: 3 P0, 66 P1, 181 P2 and 1 P3.
 
+### Editorial discovery wave 51 — 2026-08-13
+
+Real Chrome reconfirmed the public half of the `D2` and `D5` readiness gates.
+Marika Pech still publishes the two stale 40–60% statements, one plain-text
+Noctalia attribution and zero Noctalia anchors, while the corrected Noctalia
+deep source remains current and indexable. DreamWell still names DreamKit four
+times, exposes zero Noctalia links and directly links five competing product
+domains without `nofollow`; the Noctalia DreamKit-alternative deep source still
+documents the 404 and Arcana state. Neither route was sent, and each still
+requires its own exact authorization plus an immediate full stop gate.
+
+Three new comparisons failed before contact. MindJrnl has an accountable US
+operator but no competing product-domain links on the exact page. Calmevo has a
+strong direct-domain pattern but identifies only “Tadas, a European writer”,
+without a legal entity, surname, address or jurisdiction. Nemos is an iPhone-
+only comparison published by another iPhone product and contains no Android
+scope. All three are P2; no form or message was used.
+
+The Chrome mailbox session reached the Roundcube login screen, so no fresh
+Atlas Workspace or ILTY reply/bounce/opt-out claim is possible. No credential
+was entered. Their last verified state remains `followup_1_sent_waiting` and no
+second automatic follow-up is allowed. Wave 51 evidence is in
+`marketing/seo/editorial-discovery-wave-51-2026-08-13.md`. The register now
+contains 254 routes: 3 P0, 66 P1, 184 P2 and 1 P3.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
