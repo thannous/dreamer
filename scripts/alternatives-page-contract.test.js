@@ -95,11 +95,13 @@ describe('dream journal app comparison contract', () => {
         version: '2026-08-09',
         temporalCoverage: '2026-07-12/2026-08-09',
         isAccessibleForFree: true,
+        inLanguage: 'en',
       });
       expect(dataset.variableMeasured).toHaveLength(9);
       expect(dataset.distribution).toMatchObject({
         '@type': 'DataDownload',
         encodingFormat: 'text/csv',
+        inLanguage: 'en',
         contentUrl: DATASET_URL,
       });
       expect(image).toMatchObject({

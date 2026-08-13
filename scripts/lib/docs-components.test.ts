@@ -56,12 +56,12 @@ describe('docs shared components', () => {
   });
 
   it.each([
-    ['en', 'Choose language', 'Open navigation menu'],
-    ['fr', 'Choisir la langue', 'Ouvrir le menu de navigation'],
-    ['es', 'Elegir idioma', 'Abrir el menú de navegación'],
-    ['de', 'Sprache auswählen', 'Navigationsmenü öffnen'],
-    ['it', 'Scegli la lingua', 'Apri il menu di navigazione'],
-    ['pt-br', 'Escolher idioma', 'Abrir menu de navegação'],
+    ['en', 'Choose language', 'Navigation menu'],
+    ['fr', 'Choisir la langue', 'Menu de navigation'],
+    ['es', 'Elegir idioma', 'Menú de navegación'],
+    ['de', 'Sprache auswählen', 'Navigationsmenü'],
+    ['it', 'Scegli la lingua', 'Menu di navigazione'],
+    ['pt-br', 'Escolher idioma', 'Menu de navegação'],
   ])('localizes the %s navigation control labels', (lang, languageLabel, menuLabel) => {
     const { createRenderContext } = require('./docs-components/context');
     const { renderNavigation } = require('./docs-components/navigation');

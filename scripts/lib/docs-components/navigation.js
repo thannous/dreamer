@@ -20,12 +20,12 @@ function languageSwitcherLabel(lang) {
 }
 
 function mobileMenuLabel(lang) {
-  if (lang === 'fr') return 'Ouvrir le menu de navigation';
-  if (lang === 'es') return 'Abrir el menú de navegación';
-  if (lang === 'de') return 'Navigationsmenü öffnen';
-  if (lang === 'it') return 'Apri il menu di navigazione';
-  if (lang === 'pt-br') return 'Abrir menu de navegação';
-  return 'Open navigation menu';
+  if (lang === 'fr') return 'Menu de navigation';
+  if (lang === 'es') return 'Menú de navegación';
+  if (lang === 'de') return 'Navigationsmenü';
+  if (lang === 'it') return 'Menu di navigazione';
+  if (lang === 'pt-br') return 'Menu de navegação';
+  return 'Navigation menu';
 }
 
 function normalizeHomePath(lang, pagePath) {

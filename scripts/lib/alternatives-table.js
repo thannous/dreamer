@@ -96,7 +96,18 @@ function parseComparisonData(input) {
     } catch {
       throw new Error(`Comparison CSV contains an invalid source_url for "${record.app}"`);
     }
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(record.last_reviewed)) {
+    const dateMatch = record.last_reviewed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    const reviewedAt = dateMatch
+      ? new Date(
+        Date.UTC(Number(dateMatch[1]), Number(dateMatch[2]) - 1, Number(dateMatch[3]))
+      )
+      : null;
+    if (
+      !dateMatch ||
+      reviewedAt.getUTCFullYear() !== Number(dateMatch[1]) ||
+      reviewedAt.getUTCMonth() !== Number(dateMatch[2]) - 1 ||
+      reviewedAt.getUTCDate() !== Number(dateMatch[3])
+    ) {
       throw new Error(`Comparison CSV contains an invalid last_reviewed for "${record.app}"`);
     }
     byApp.set(record.app, record);

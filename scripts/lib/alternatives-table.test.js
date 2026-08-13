@@ -57,6 +57,15 @@ describe('alternatives comparison table build contract', () => {
     );
   });
 
+  it('rejects impossible calendar dates in last_reviewed', () => {
+    const source = fs.readFileSync(COMPARISON_DATA_PATH, 'utf8');
+    const impossibleDate = source.replace('2026-07-12', '2026-02-31');
+
+    expect(() => parseComparisonData(impossibleDate)).toThrow(
+      'Comparison CSV contains an invalid last_reviewed'
+    );
+  });
+
   it('provides the table-specific visible copy in every supported locale', () => {
     for (const lang of LANGUAGES) {
       const locale = JSON.parse(
