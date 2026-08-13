@@ -1384,6 +1384,23 @@ guaranteed-link request was used. Both routes move to
 only—not delivery, editorial acceptance, publication, a live backlink, link
 treatment or DR movement.
 
+### Editorial discovery wave 48 — 2026-08-13
+
+Seven previously untracked journaling or dream-app domains were inspected in
+real Chrome under a direct-domain citation and non-Russian operator gate.
+AppGuias is an accountable Spanish publisher but its exact article exposes zero
+external links. Jenova identifies Azeroth Inc., Delaware law and a public
+contact and uses followed external sources, but it is a competing dream product
+whose source-only citation pattern and prophetic/spiritual positioning conflict
+with Noctalia. LiveIt, Steal What Works, Bitflap, Marlvel and Mindful Suite fail
+earlier because their exact pages link only first-party properties, internal
+profiles or Apple/Google storefronts rather than competing developer domains.
+
+All seven routes are P2 rejections. No contact, message, form, account,
+attachment, payment or publication was used, and no backlink or DR movement is
+claimed. Evidence is in
+`marketing/seo/editorial-discovery-wave-48-2026-08-13.md`.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
