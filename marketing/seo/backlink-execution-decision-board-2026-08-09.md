@@ -452,6 +452,19 @@ established. The register now contains 270 routes: 3 P0, 69 P1, 197 P2 and 1
 P3. No message, form, account, attachment, payment or publication action was
 used, and no backlink or Ahrefs movement is proved.
 
+Wave 58 adds KSQD / The Dream Journal as one P1 route, prepared but unsent. Its
+self-canonical and indexable DreamWell founder episode directly links the
+comparable product domain with `rel="noopener"`; the current show and its host
+publish a direct inquiry route under accountable California nonprofit Natural
+Bridges Media. A future note must stay factual and non-clinical and requires
+its own exact authorization and immediate page, destination, mailbox and
+outcome stop gate. The Dream World Podcast is P2 because Oniri is named but not
+linked and the host is an official Oniri contributor, while DreamFlux is P2
+because the exact surface currently returns HTTP 521 with `noindex, nofollow`.
+The register now contains 273 routes: 3 P0, 70 P1, 199 P2 and 1 P3. No message,
+form, account, attachment, payment or publication action was used, and no
+backlink or Ahrefs movement is proved.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer

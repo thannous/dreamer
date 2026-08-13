@@ -1583,6 +1583,28 @@ verified. Evidence is in
 contains 270 routes: 3 P0, 69 P1, 197 P2 and 1 P3. No external action or new
 backlink outcome occurred.
 
+### Editorial discovery wave 58 — 2026-08-13
+
+KSQD / The Dream Journal is the only new P1 route. Its self-canonical,
+indexable DreamWell founder episode directly links `DreamWellBeWell.com` with
+`rel="noopener"` and no `nofollow`, `ugc` or `sponsored` value. The show remains
+active in 2026; accountable California nonprofit Natural Bridges Media and host
+Katherine Bell publish official identity and contact evidence. The route is
+prepared but unsent and requires its own exact authorization plus an immediate
+stop gate.
+
+The Dream World Podcast is P2 because its current resource page names Oniri
+without a product-domain anchor and Oniri's official blog identifies the host
+as an Oniri author, so this is not an independent comparable citation
+precedent. DreamFlux is P2 because its search-cached direct Oniri citation is
+not currently reproducible on a stable public surface: a fresh strict fetch
+returned HTTP 521 with `noindex, nofollow` and no canonical.
+
+Evidence is in
+`marketing/seo/editorial-discovery-wave-58-2026-08-13.md`. The register now
+contains 273 routes: 3 P0, 70 P1, 199 P2 and 1 P3. No external action or new
+backlink outcome occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
