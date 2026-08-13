@@ -52,6 +52,7 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j29-authority-recovery-2026-08-13.md`](./j29-authority-recovery-2026-08-13.md) : collecte durable nouveaux/perdus, pages par liens et ancres, séparation du spam et backlog d'autorité externe avec portes D2–D10A.
 - [`j29-gsc-ahrefs-cluster-validation-2026-08-13.md`](./j29-gsc-ahrefs-cluster-validation-2026-08-13.md) : validation GSC 28 jours et fenêtre disponible des clusters guêpe/cimetière, micro-lot Ahrefs à cinq crédits et ordre `cemetery` puis `wasp` après la porte J+7.
 - [`j29-gsc-ahrefs-cluster-backlog-2026-08-13.csv`](./j29-gsc-ahrefs-cluster-backlog-2026-08-13.csv) : backlog pays exploitable des six requêtes vérifiées, avec métriques Ahrefs, état GSC et prochaine action sans export brut.
+- [`j29-j31-cemetery-implementation-brief-2026-08-13.md`](./j29-j31-cemetery-implementation-brief-2026-08-13.md) : brief multilingue prêt à implémenter pour les cinq propriétaires `cemetery` EN/FR/ES/DE/IT, preuves par couche, micro-lot SERP bloqué à `0` unité API (`0` crédit dépensé) et critères GO/HOLD à la porte du 15 août.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
 - [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27, Misabueso GSC et preuves brutes, périmètres synchronisés et règles de conservation.
@@ -164,3 +165,11 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
   15 août, mené par l'Italie (`600` recherches, KD `0`, TP `600`). `wasp` suit,
   mené par l'Espagne (`600` recherches, KD `0`, TP `250`). Aucun nouveau
   propriétaire n'est publié à J29.
+- Le lot J29–J31 `cemetery` a produit le brief multilingue des cinq
+  propriétaires EN/FR/ES/DE/IT et requalifié les lignes `cemetery` des deux
+  backlogs en attente de la porte J+7. Le micro-lot de quatre SERP autorisé
+  s'est heurté à une couche API à `0` unité : deux appels ES refusés côté
+  serveur, les trois autres non tentés, `0` crédit général dépensé. La
+  baseline reste `131/200` utilisés (`69` restants), remise à zéro le
+  16 août 2026 à 00:00 UTC ; Rank Tracker `50/50` et Site Audit
+  `3 627/10 000` inchangés. Aucune page, route ou image n'a été créée.
