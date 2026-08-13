@@ -36,12 +36,14 @@ Deux expressions régulières multilingues ont été contrôlées :
 | Cluster | 28 jours | Fenêtre disponible « 12 mois » | Décision d'ownership |
 | --- | ---: | ---: | --- |
 | `wasp|guêpe|avispa|Wespe|vespa` | `0` clic, `0` impression | `0` clic, `0` impression | absence durable de propriétaire GSC |
-| `cemetery|cimetière|cementerio|Friedhof|cimitero` | `0` clic, `0` impression | `0` clic, `1` impression, position `51` | l'unique impression est une longue requête EN sur un chien dans un cimetière ; aucun propriétaire de concept |
+| `cemeter(y|ies)|graveyards?|cimeti[eè]res?|cementerios?|friedh(o|ö|oe)f(e)?|cimiter[oi]|camposanto` | `0` clic, `0` impression | `0` clic, `1` impression, position `51` | l'unique impression est une longue requête EN sur un chien dans un cimetière ; aucun propriétaire de concept |
 
 La fenêtre « 12 mois » disponible dans la propriété commence le 5 décembre
 2025 et se termine le 11 août 2026. Les totaux filtrés de Search Console peuvent
 être incomplets ; les zéros sont donc une preuve d'absence dans les données
 restituées, pas une garantie absolue d'absence de toute requête anonymisée.
+Le cluster cimetière et ses synonymes ont été relus en direct le 13 août ; GSC
+n'avait pas encore ajouté de journée complète au-delà du 11 août.
 
 ## Preuve Ahrefs ciblée
 
@@ -70,6 +72,23 @@ Les deux SERP approfondies confirment la faisabilité :
   zéro backlink ; les variantes visibles incluent les tombes, la nuit, la foule
   et le sens psychologique.
 
+Un complément UI autorisé a ensuite lu quatre SERP supplémentaires pour
+`cemetery`, sans utiliser la couche API :
+
+- ES `soñar con cementerio` : DR `25`, `40` et `0` en positions 3, 4 et 5 ;
+- DE `traumdeutung friedhof` : résultat DR `0`, sans domaine référent, en
+  position 7 ;
+- FR `rêver de cimetière` : résultat DR `0`, sans domaine référent, en
+  position 6 ;
+- US `dreaming about cemetery` : résultat DR `9`, sans domaine référent, en
+  position 5 ; le Parent Topic et les variantes imposent de couvrir le
+  synonyme `graveyard` dans le même propriétaire.
+
+Ce complément coûte exactement `4` crédits, de `131/200` à `135/200`. Il reste
+`65` crédits avant la remise à zéro du 16 août 2026 à 00:00 UTC. Aucun bouton
+de mise à jour des SERP n'a été utilisé ; les snapshots visibles dataient du
+1er août (ES), 5 août (DE), 25 juillet (FR) et 24 juin (US).
+
 Ces observations ne garantissent pas un classement. Elles prouvent seulement
 qu'une page sans forte autorité externe peut entrer dans les SERP actuelles si
 elle satisfait correctement l'intention.
@@ -88,7 +107,9 @@ localisé susceptible de créer une cannibalisation immédiate.
 2. Si ce checkpoint ne révèle aucun incident, préparer `cemetery` comme un seul
    concept partagé avec cinq propriétaires localisés. Commencer l'angle par
    lieu, mémoire, deuil, transition, tombes, nuit et présence d'autres personnes ;
-   ne pas centrer la page italienne sur les numéros de la Smorfia.
+   ne pas centrer la page italienne sur les numéros de la Smorfia. Utiliser
+   `/en/symbols/cemetery` au singulier et traiter `graveyard` comme synonyme,
+   sans seconde page.
 3. Soumettre le concept à `docs:build`, `docs:check` et aux contrats URL, puis
    isoler contenu, contrat, commit et déploiement comme pour les vagues
    précédentes.
@@ -102,5 +123,5 @@ localisé susceptible de créer une cannibalisation immédiate.
 Aucun contenu, route, canonical, hreflang, suivi, crawl, message externe,
 demande d'indexation, achat, add-on ou abonnement n'a été modifié par cette
 validation. Le connecteur API Ahrefs a signalé `0` unité API disponible ; cette
-couche reste distincte des `69` crédits généraux encore visibles dans
-l'interface Starter.
+couche reste distincte des `65` crédits généraux encore visibles dans
+l'interface Starter après le complément UI.

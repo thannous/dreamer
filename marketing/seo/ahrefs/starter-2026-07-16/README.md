@@ -50,9 +50,9 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j28-gsc-indexation-triage-2026-08-12.md`](./j28-gsc-indexation-triage-2026-08-12.md) : tri du premier cas parmi les 254 URL, contradiction couverture/performance GSC, lien contextuel DE publié et preuves Git/CI/Cloudflare/HTTP.
 - [`j28-actionable-levers-execution-2026-08-12.md`](./j28-actionable-levers-execution-2026-08-12.md) : exécution de l'optimisation `coche`, validation GSC/Ahrefs et préparation des cinq propriétaires `scorpion`, avec coût et stop-gates.
 - [`j29-authority-recovery-2026-08-13.md`](./j29-authority-recovery-2026-08-13.md) : collecte durable nouveaux/perdus, pages par liens et ancres, séparation du spam et backlog d'autorité externe avec portes D2–D10A.
-- [`j29-gsc-ahrefs-cluster-validation-2026-08-13.md`](./j29-gsc-ahrefs-cluster-validation-2026-08-13.md) : validation GSC 28 jours et fenêtre disponible des clusters guêpe/cimetière, micro-lot Ahrefs à cinq crédits et ordre `cemetery` puis `wasp` après la porte J+7.
-- [`j29-gsc-ahrefs-cluster-backlog-2026-08-13.csv`](./j29-gsc-ahrefs-cluster-backlog-2026-08-13.csv) : backlog pays exploitable des six requêtes vérifiées, avec métriques Ahrefs, état GSC et prochaine action sans export brut.
-- [`j29-j31-cemetery-implementation-brief-2026-08-13.md`](./j29-j31-cemetery-implementation-brief-2026-08-13.md) : brief multilingue prêt à implémenter pour les cinq propriétaires `cemetery` EN/FR/ES/DE/IT, preuves par couche, micro-lot SERP bloqué à `0` unité API (`0` crédit dépensé) et critères GO/HOLD à la porte du 15 août.
+- [`j29-gsc-ahrefs-cluster-validation-2026-08-13.md`](./j29-gsc-ahrefs-cluster-validation-2026-08-13.md) : validation GSC 28 jours et fenêtre disponible des clusters guêpe/cimetière, micro-lot Ahrefs initial à cinq crédits, complément UI à quatre crédits et ordre `cemetery` puis `wasp` après la porte J+7.
+- [`j29-gsc-ahrefs-cluster-backlog-2026-08-13.csv`](./j29-gsc-ahrefs-cluster-backlog-2026-08-13.csv) : backlog pays exploitable des huit requêtes vérifiées, avec métriques Ahrefs, état GSC et prochaine action sans export brut.
+- [`j29-j31-cemetery-implementation-brief-2026-08-13.md`](./j29-j31-cemetery-implementation-brief-2026-08-13.md) : brief multilingue prêt à implémenter pour les cinq propriétaires `cemetery` EN/FR/ES/DE/IT, GSC revalidé, quatre SERP Starter UI (`4` crédits), route EN singulière confirmée et critères GO/HOLD à la porte du 15 août.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
 - [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27, Misabueso GSC et preuves brutes, périmètres synchronisés et règles de conservation.
@@ -167,9 +167,21 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
   propriétaire n'est publié à J29.
 - Le lot J29–J31 `cemetery` a produit le brief multilingue des cinq
   propriétaires EN/FR/ES/DE/IT et requalifié les lignes `cemetery` des deux
-  backlogs en attente de la porte J+7. Le micro-lot de quatre SERP autorisé
-  s'est heurté à une couche API à `0` unité : deux appels ES refusés côté
-  serveur, les trois autres non tentés, `0` crédit général dépensé. La
-  baseline reste `131/200` utilisés (`69` restants), remise à zéro le
-  16 août 2026 à 00:00 UTC ; Rank Tracker `50/50` et Site Audit
-  `3 627/10 000` inchangés. Aucune page, route ou image n'a été créée.
+  backlogs en attente de la porte J+7. Après deux appels API ES refusés et
+  gratuits, les quatre SERP autorisées ont été lues dans l'interface Starter :
+  ES, DE, FR et US/EN. Elles montrent notamment des résultats DR `0` en
+  positions 5, 7 et 6 sur les trois premiers marchés et confirment le synonyme
+  `graveyard` pour l'anglais. Le compteur passe exactement de `131/200` à
+  `135/200`, soit `65` crédits restants avant la remise à zéro du 16 août 2026
+  à 00:00 UTC ; Rank Tracker `50/50` et Site Audit `3 627/10 000` restent
+  inchangés.
+- La route EN préparée est corrigée en `/en/symbols/cemetery` : les 24
+  propriétaires de lieux existants sont singuliers sauf le pluriel lexical
+  `stairs`, et `scripts/lib/site-manifest.js` respecte le slug déclaré. Une
+  seule page couvre `cemetery` et `graveyard`; aucune page synonyme ni
+  redirection d'une route jamais publiée n'est créée.
+- GSC a été relu avec une regex élargie aux pluriels et synonymes : `0` clic et
+  `0` impression sur 28 jours ; `0` clic, `1` impression, position `51` sur la
+  fenêtre disponible du 5 décembre 2025 au 11 août 2026. L'unique requête est
+  le long-tail chien/cimetière déjà identifié, hors intention. Aucune page,
+  route ou image n'a été créée.

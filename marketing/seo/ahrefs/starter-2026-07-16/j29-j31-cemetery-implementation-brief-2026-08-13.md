@@ -51,7 +51,9 @@ Fenêtre 28 jours, 15 juillet–11 août 2026 (dernière journée complète visi
 11 août) : `4 231` clics, `501 427` impressions, CTR `0,8 %`, position moyenne
 `7,4` pour la propriété.
 
-Cluster `cemetery|cimetière|cementerio|Friedhof|cimitero` :
+Expression revalidée en direct le 13 août, volontairement élargie aux variantes
+et synonymes :
+`cemeter(y|ies)|graveyards?|cimeti[eè]res?|cementerios?|friedh(o|ö|oe)f(e)?|cimiter[oi]|camposanto`.
 
 - 28 jours : `0` clic, `0` impression ;
 - fenêtre disponible « 12 mois » (5 décembre 2025 → 11 août 2026) : `0` clic,
@@ -61,51 +63,54 @@ Cluster `cemetery|cimetière|cementerio|Friedhof|cimitero` :
   restituées (les totaux filtrés peuvent être incomplets ; cela ne garantit
   pas l'absence de toute requête anonymisée).
 
-Aucune nouvelle lecture GSC n'a été produite par ce lot : aucune couche GSC
-fraîche n'était accessible dans la session de collecte, et aucune valeur
-ultérieure au 11 août n'est affirmée ici.
+La lecture live n'ajoute pas de journée complète : Search Console indique une
+mise à jour récente, mais la dernière journée restituée reste le 11 août. Les
+deux fenêtres ci-dessus ont donc été confirmées, pas prolongées.
 
 ### Preuve Ahrefs (projet `9361004`)
 
-Relevé `Limits & Usage` au début du lot (gratuit, via API) : plan
-`Trial, billed monthly`, remise à zéro `2026-08-16T00:00:00Z`, usage API
-workspace `0/0`. Cette couche API est distincte du compteur de crédits
-généraux de l'interface ; la baseline UI à revalider restait `131/200`
-utilisés, `69` restants, Rank Tracker `50/50`, Site Audit `3 627/10 000`
-(dernier relevé documenté au 13 août).
+Relevé live `Limits & Usage` dans l'interface avant collecte : plan
+`Starter, billed monthly`, prochaine facturation le 16 août 2026 UTC, remise
+à zéro le `2026-08-16T00:00:00Z`, compteur général `131/200`, Rank Tracker
+`50/50` et Site Audit `3 627/10 000`. La couche API, elle, reste à `0/0` et ne
+remplace pas le compteur général de l'interface.
 
 Micro-lot SERP autorisé (plafond 4 crédits généraux) :
 
-| # | Marché | Requête | Résultat |
-| ---: | --- | --- | --- |
-| 1 | ES | `soñar con cementerio` | refus serveur : `API units limit reached. Expected usage: 50, API units left: 0` |
-| 1 bis | ES | `soñar con cementerio` (variante réduite) | même refus serveur |
-| 2 | DE | `traumdeutung friedhof` | non tentée : même couche API épuisée |
-| 3 | FR | `rêver de cimetière` | non tentée : même couche API épuisée |
-| 4 | US/EN | `dreaming about cemetery` | non tentée : même couche API épuisée |
+Les deux tentatives initiales via l'API ES ont été refusées avec
+`API units limit reached. Expected usage: 50, API units left: 0` et n'ont pas
+consommé de crédit général. Le complément a ensuite utilisé uniquement
+l'interface Starter, une ouverture de rapport par marché :
 
-Coût réel du micro-lot : `0` crédit. Aucun appel n'a retourné de données ; la
-baseline `131/200` (69 restants) reste la référence non contredite. Le blocage
-confirme la frontière déjà documentée : la couche API signale `0` unité
-disponible, distincte des crédits généraux visibles dans l'interface Starter.
-Aucun achat, add-on ou changement d'abonnement n'a été effectué pour lever ce
-blocage.
+| # | Marché | Requête | Snapshot SERP | Preuve utile |
+| ---: | --- | --- | --- | --- |
+| 1 | ES | `soñar con cementerio` | 1 août 2026 | AI Overview et PAA avant les résultats ; positions organiques 3/4/5 à DR 25/40/0 et 0/0/1 domaine référent |
+| 2 | DE | `traumdeutung friedhof` | 5 août 2026 | AI Overview et PAA ; page DR 0, 0 domaine référent en position 7, puis une autre DR 0 en position 11 |
+| 3 | FR | `rêver de cimetière` | 25 juillet 2026 | PAA en position 1 ; page DR 0, 0 domaine référent en position 6 et page DR 10, 0 domaine référent en position 10 |
+| 4 | US/EN | `dreaming about cemetery` | 24 juin 2026 | AI Overview et PAA ; page DR 9, 0 domaine référent en position 5, avec résultats UGC dans la SERP |
 
-Métriques Ahrefs disponibles sans nouvelle dépense (déjà versionnées) :
+Coût exact du complément UI : `4` crédits, compteur `131 → 135/200` ; il reste
+`65` crédits généraux. Aucun bouton `Update` n'a été utilisé : les dates de
+snapshot ci-dessus sont celles affichées par Ahrefs et ne sont pas présentées
+comme des SERP du jour. Aucun achat, add-on ou changement d'abonnement n'a été
+effectué.
 
-| Marché | Requête | KD | Volume pays | TP | Source |
-| --- | --- | ---: | ---: | ---: | --- |
-| IT | `sognare cimitero` | 0 | 600 | 600 | micro-lot J29 du 13 août |
-| ES | `soñar con cementerio` | 0 | 250 | 150 | micro-lot J29 du 13 août |
-| DE | `traumdeutung friedhof` | 0 | 150 | 60 | micro-lot J29 du 13 août |
-| FR | `rêver de cimetière` | 0 | 60 | 300 | backlog J27 du 11 août, non revalidé J29 |
-| US | `dreaming about cemetery` | 0 | 10 | 60 | backlog J27 du 11 août, non revalidé J29 |
+Métriques Ahrefs consolidées après le complément UI :
 
-SERP déjà documentées : IT `sognare cimitero` (DR `0` en positions 3 et 8,
-DR `25` en position 4 avec zéro domaine référent ; variantes tombes, nuit,
-foule, sens psychologique). Aucune SERP fraîche DE/FR/US n'existe pour ce
-concept ; les valeurs FR/US ci-dessus datent du 11 août et doivent être
-traitées comme indicatives.
+| Marché | Requête | KD | Volume pays | TP | Parent Topic observé | Source |
+| --- | --- | ---: | ---: | ---: | --- | --- |
+| IT | `sognare cimitero` | 0 | 600 | 600 | `sognare cimitero` | micro-lot J29 du 13 août |
+| ES | `soñar con cementerio` | 0 | 250 | 150 | `soñar con cementerio` | interface UI relue le 13 août |
+| DE | `traumdeutung friedhof` | 0 | 150 | 60 | `traumdeutung friedhof` | interface UI relue le 13 août |
+| FR | `rêver de cimetière` | 0 | 60 | 300 | `rever de cimetiere` (volume pays 150) | interface UI relue le 13 août |
+| US | `dreaming about cemetery` | 0 | 10 | 60 | `spiritual meaning of graveyard in dreams` (volume pays 30) | interface UI relue le 13 août |
+
+La SERP IT déjà documentée conserve deux pages DR `0` en positions 3 et 8 et
+une page DR `25` sans domaine référent en position 4. Les quatre lectures UI
+complémentaires montrent le même levier : l'autorité externe n'est pas un
+prérequis absolu pour entrer dans ces SERP. Elles affinent aussi les sous-thèmes :
+tombes et foule en ES ; `Grab`/`Gräber` en DE ; marche et recherche d'une tombe
+en FR ; `graveyard`, visite et marche en EN. Cela ne garantit aucun classement.
 
 ## Brief éditorial partagé
 
@@ -134,31 +139,38 @@ logo, filigrane ni code divinatoire, décliné en variantes 240/480/800/1 200.
 
 | Langue | Route canonique |
 | --- | --- |
-| EN | `/en/symbols/cemeteries` |
+| EN | `/en/symbols/cemetery` |
 | FR | `/fr/symboles/cimetiere` |
 | ES | `/es/simbolos/cementerio` |
 | DE | `/de/traumsymbole/friedhof` |
 | IT | `/it/simboli/cimitero` |
 
-La forme plurielle EN suit le pattern des propriétaires d'intention (`turtles`,
-`crocodiles`, `scorpions`) ; les autres langues utilisent le singulier de la
-requête principale. À confirmer à l'implémentation avec le contrat URL.
+Le contrat EN est confirmé au singulier. Les 24 propriétaires locaux de la
+catégorie `places` utilisent un nom de lieu singulier, sauf le pluriel lexical
+`stairs`; `scripts/lib/site-manifest.js` construit explicitement la route avec
+`symbol[lang].slug` et n'impose pas le pattern
+animal de `turtles`, `crocodiles` ou `scorpions`. Les requêtes et résultats
+observés emploient aussi majoritairement `cemetery` au singulier. Comme
+`/en/symbols/cemeteries` n'a jamais été publié, aucune redirection legacy n'est
+à créer.
 
-### EN — `/en/symbols/cemeteries`
+### EN — `/en/symbols/cemetery`
 
-- Title : `Dreaming About Cemeteries: Meaning and Context`
-- H1 : `What It Means to Dream About a Cemetery`
-- Meta description : `Dreaming about a cemetery? Compare graves, night, walking through, visiting someone and your emotion using context, not predictions.`
+- Title : `Cemetery Dream Meaning: Graves, Visits and Context`
+- H1 : `Dreaming About a Cemetery or Graveyard`
+- Meta description : `Dreaming about a cemetery or graveyard? Compare graves, walking, visits, night and your emotion in context, without fixed spiritual predictions.`
 - Scénarios : wandering among graves at night; searching for a specific grave;
   a crowded cemetery or funeral gathering; an abandoned or peaceful cemetery
   during the day.
 - FAQ : what does dreaming about a cemetery mean? What about walking through
   graves at night? What if I was visiting someone's grave? Does a cemetery
   dream predict death or bad news? (réponse cadrée : non, aucune prédiction).
-- Liens/ancres internes : `death` (« dreams about death »),
-  `deceased-person` (« dreaming of a deceased person »),
-  `funeral` (« funeral dreams »), hub lieux (`places`).
-- Données : US volume `10`, KD `0`, TP `60` (11 août, indicatif).
+- Liens/ancres internes : `/en/symbols/death` (« dreams about death »),
+  `/en/symbols/deceased-person` (« dreaming of a deceased person »),
+  `/en/symbols/funeral` (« funeral dreams »),
+  `/en/symbols/places` (« place dream symbols »).
+- Données : US volume `10`, KD `0`, TP `60`, avec `graveyard` dans le Parent
+  Topic et les variantes ; ne pas reprendre la promesse spirituelle comme fait.
 
 ### FR — `/fr/symboles/cimetiere`
 
@@ -171,10 +183,12 @@ requête principale. À confirmer à l'implémentation avec le contrat URL.
 - FAQ : que signifie rêver de cimetière ? Et rêver de marcher entre les
   tombes la nuit ? Et si je visitais la tombe de quelqu'un ? Rêver de
   cimetière annonce-t-il un décès ou une mauvaise nouvelle ? (cadrage : non).
-- Liens/ancres internes : `mort` (« rêver de mort »),
-  `defunt` (« rêver d'un défunt »), `enterrement` (« rêver d'enterrement »),
-  hub lieux.
-- Données : FR volume `60`, KD `0`, TP `300` (11 août, indicatif).
+- Liens/ancres internes : `/fr/symboles/mort` (« rêver de mort »),
+  `/fr/symboles/defunt` (« rêver d'un défunt »),
+  `/fr/symboles/enterrement` (« rêver d'enterrement »),
+  `/fr/symboles/lieux` (« symboles de lieux en rêve »).
+- Données : FR volume `60`, KD `0`, TP `300`; Parent Topic sans accent
+  `rever de cimetiere`, volume pays `150`.
 
 ### ES — `/es/simbolos/cementerio`
 
@@ -187,9 +201,10 @@ requête principale. À confirmer à l'implémentation avec le contrat URL.
 - FAQ : ¿qué significa soñar con cementerio? ¿Y caminar entre tumbas de
   noche? ¿Y visitar la tumba de alguien? ¿Soñar con cementerio anuncia una
   muerte o una mala noticia? (encuadre: no).
-- Liens/ancres internes : `muerte` (« soñar con muerte »),
-  `persona-fallecida` (« soñar con una persona fallecida »),
-  `funeral` (« soñar con un funeral »), hub de lugares.
+- Liens/ancres internes : `/es/simbolos/muerte` (« soñar con muerte »),
+  `/es/simbolos/persona-fallecida` (« soñar con una persona fallecida »),
+  `/es/simbolos/funeral` (« soñar con un funeral »),
+  `/es/simbolos/lugares` (« símbolos de lugares en sueños »).
 - Données : ES volume `250`, KD `0`, TP `150` (13 août).
 
 ### DE — `/de/traumsymbole/friedhof`
@@ -203,9 +218,10 @@ requête principale. À confirmer à l'implémentation avec le contrat URL.
 - FAQ : Was bedeutet es, von einem Friedhof zu träumen? Was bedeutet ein
   nächtlicher Gang über den Friedhof? Was, wenn ich ein Grab besucht habe?
   Kündigt ein Friedhofstraum einen Tod an? (Einordnung: nein).
-- Liens/ancres internes : `tod` (« Traumdeutung Tod »),
-  `verstorbene-person` (« verstorbene Person im Traum »),
-  `beerdigung` (« Traumdeutung Beerdigung »), Hub Orte.
+- Liens/ancres internes : `/de/traumsymbole/tod` (« Traumdeutung Tod »),
+  `/de/traumsymbole/verstorbene-person` (« verstorbene Person im Traum »),
+  `/de/traumsymbole/beerdigung` (« Traumdeutung Beerdigung »),
+  `/de/traumsymbole/orte` (« Traumsymbole Orte »).
 - Données : DE volume `150`, KD `0`, TP `60` (13 août).
 
 ### IT — `/it/simboli/cimitero`
@@ -219,9 +235,10 @@ requête principale. À confirmer à l'implémentation avec le contrat URL.
 - FAQ : cosa significa sognare un cimitero? E camminare tra le tombe di
   notte? E visitare la tomba di qualcuno? Sognare un cimitero annuncia una
   morte o una cattiva notizia? (inquadratura: no).
-- Liens/ancres internes : `morte` (« sognare la morte »),
-  `persona-defunta` (« sognare una persona defunta »),
-  `funerale` (« sognare un funerale »), hub dei luoghi.
+- Liens/ancres internes : `/it/simboli/morte` (« sognare la morte »),
+  `/it/simboli/persona-defunta` (« sognare una persona defunta »),
+  `/it/simboli/funerale` (« sognare un funerale »),
+  `/it/simboli/luoghi` (« simboli dei luoghi nei sogni »).
 - Données : IT volume `600`, KD `0`, TP `600` (13 août) — marché pilote.
 - Exclusion renforcée : ne pas centrer la page sur les numéros de la Smorfia
   ni sur la loterie ; le folklore reste une limite mentionnée, pas l'angle.
@@ -260,8 +277,8 @@ Conditions de HOLD :
 - incapacité à produire l'actif éditorial conforme aux exclusions.
 
 Après publication, mesure uniquement sur fenêtres GSC complètes, sans demande
-d'indexation ; requalifier si les valeurs FR/US (11 août) divergeaient
-fortement d'une revalidation ultérieure.
+d'indexation ; conserver `cemetery` comme propriétaire EN tout en surveillant
+les variantes `graveyard`, sans créer une seconde page synonyme.
 
 ## Frontières du lot J29–J31
 
@@ -270,6 +287,6 @@ fortement d'une revalidation ultérieure.
 - Aucune modification de `scuola`, `casa`, `ragno`, `perro` ni des 50 suivis.
 - Le lot s'est limité à collecte, documentation et brief ; aucune page, route
   ou image n'a été créée ; rien n'a été publié ni poussé vers `master`.
-- Coût Ahrefs du lot : `0` crédit (deux appels SERP refusés côté serveur,
-  couche API à `0` unité) ; le plafond autorisé de 4 crédits n'a pas été
-  entamé.
+- Coût Ahrefs du complément : `4` crédits généraux (`131 → 135/200`), après
+  deux appels API refusés et gratuits ; `65` crédits restent. Les 50 suivis et
+  le quota Site Audit sont inchangés.
