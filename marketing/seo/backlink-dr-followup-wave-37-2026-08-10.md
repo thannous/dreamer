@@ -70,23 +70,34 @@ Skye and Artyom Sklyarov and publish `hello@ilty.co`; Apple's current listing
 still names SUUR Limited Liability Company as developer and seller. No Russian
 operator signal was found for either route.
 
-The live Noctalia destination remains self-canonical and `index, follow` and
-exposes the 11-app snapshot, editable SVG, source CSV and methodology. At 01:57
-CEST, each authenticated Zimbra `Tout le courrier` recipient search returned one
-conversation. Each expanded conversation displays exactly `1` and contains only
-the original August 3 message; no reply is visible. The current gates are clear,
-but both replies remain unsent pending the exact D7 authorization and an
-immediate repeat stop gate. Detailed evidence and unchanged copy are in
+The live Noctalia destination remained self-canonical and `index, follow` and
+exposed the 11-app snapshot, editable SVG, source CSV and methodology. The user
+then granted the exact D7 authorization. Immediately before each transmission,
+the public and authenticated Zimbra stop gates were repeated: neither target
+contained Noctalia, both retained the same direct developer-domain link pattern,
+and each exact recipient search showed only the original one-message thread with
+no visible reply, failure, opt-out or warning.
+
+Atlas Workspace received one reply in its existing thread at 02:35 CEST and
+ILTY received one at 02:36 CEST. Zimbra displayed `Le mail a été envoyé.` after
+each action, and the exact recipient searches then showed one two-message
+conversation for each route. There was no attachment, CC, BCC, tracking,
+payment, ranking, placement or guaranteed-link request. Both routes are now
+`followup_1_sent_waiting`; no automatic follow-up is scheduled. This is
+transmission evidence only, not delivery, acceptance, publication, a backlink
+or DR movement. Detailed evidence and exact copy are in
 `marketing/seo/backlink-authorization-pack-d7-2026-08-13.md`.
 
-## Required execution gate
+## Completed execution gate
 
-Immediately after authorization and before any transmission:
+Immediately after authorization and before transmission, the workflow:
 
-1. reopen both exact comparison pages and stop on a new Noctalia mention or a
+1. reopened both exact comparison pages and found no new Noctalia mention or
    changed competitor-domain link policy;
-2. search the exact recipient in authenticated Zimbra and stop on any reply,
-   failure, opt-out, warning or more than the single original message;
-3. verify each Noctalia destination is live and factually unchanged;
-4. reply once in each existing thread with zero attachment, CC, BCC or tracking;
-5. record only the authoritative sent state, then wait for a public result.
+2. searched each exact recipient in authenticated Zimbra and found only the
+   single original message, with no visible reply, failure, opt-out or warning;
+3. verified the Noctalia destination and source assets remained live;
+4. replied once in each existing thread with zero attachment, CC, BCC or
+   tracking;
+5. recorded the authoritative two-message sent state and returned both routes
+   to passive monitoring for a public result.

@@ -1,16 +1,17 @@
 # Backlink authorization pack D7 — 2026-08-13
 
-This pack refreshes the two already-contacted followed-pattern opportunities in
-real Chrome and authenticated `contact@noctalia.app` Zimbra. It records public
-and mailbox evidence only. No email, form, account change, attachment, payment,
+This pack refreshes and records the authorized execution of the two
+already-contacted followed-pattern opportunities in real Chrome and
+authenticated `contact@noctalia.app` Zimbra. Two replies were transmitted in
+their existing threads. No form, account change, attachment, payment,
 publication or backlink was created.
 
 ## Current decision
 
-| Route | Fresh public and trust evidence | Fresh mailbox evidence | Remaining gate |
+| Route | Fresh public and trust evidence | Immediate mailbox stop gate | Execution result |
 | --- | --- | --- | --- |
-| Atlas Workspace | The exact comparison is self-canonical, `index, follow`, contains zero Noctalia mentions and directly links Day One, Journey, Diarium, Reflect, Obsidian and Notion without `nofollow`. About names founder Jet New in Singapore and AgentScale AI Pte. Ltd.; Support publishes `jet@atlasworkspace.ai`. No Russian operator signal was found. | At 01:57 CEST, the exact `Tout le courrier` recipient search returned one conversation. Its expanded thread displays `1` and contains only the original 2026-08-03 03:27 CEST message. No reply is visible. | Explicit D7 authorization, then repeat the public and mailbox stop gate immediately before replying. |
-| ILTY | The exact comparison is self-canonical, `index, follow`, contains zero Noctalia mentions and directly links Rosebud, Stoic, Mem.ai, Day One, Reflectly and Journey without `nofollow`. About names Alesya Skye and Artyom Sklyarov; Contact publishes `hello@ilty.co` for press and partnerships; Apple's current listing identifies SUUR Limited Liability Company as developer and seller. No Russian operator signal was found. | At 01:57 CEST, the exact `Tout le courrier` recipient search returned one conversation. Its expanded thread displays `1` and contains only the original 2026-08-03 17:00 CEST message. No reply is visible. | The same independent D7 authorization, then repeat the public and mailbox stop gate immediately before replying. |
+| Atlas Workspace | Immediately before sending, the exact comparison remained self-canonical, `index, follow`, contained zero Noctalia mentions and directly linked Day One, Journey, Diarium, Reflect, Obsidian and Notion without `nofollow`. About names founder Jet New in Singapore and AgentScale AI Pte. Ltd.; Support publishes `jet@atlasworkspace.ai`. No Russian operator signal was found. | The exact `Tout le courrier` recipient search returned one conversation. Its expanded thread displayed `1` and contained only the original 2026-08-03 03:27 CEST message; no reply, failure, opt-out or warning was visible. | The authorized reply was sent once at 02:35 CEST. Zimbra displayed `Le mail a été envoyé.` and the exact recipient search then showed one two-message conversation. |
+| ILTY | Immediately before sending, the exact comparison remained self-canonical, `index, follow`, contained zero Noctalia mentions and directly linked Rosebud, Stoic, Mem.ai, Day One, Reflectly and Journey without `nofollow`. About names Alesya Skye and Artyom Sklyarov; Contact publishes `hello@ilty.co` for press and partnerships; Apple's current listing identifies SUUR Limited Liability Company as developer and seller. No Russian operator signal was found. | The exact `Tout le courrier` recipient search returned one conversation. Its expanded thread displayed `1` and contained only the original 2026-08-03 17:00 CEST message; no reply, failure, opt-out or warning was visible. | The authorized reply was sent once at 02:36 CEST. Zimbra displayed `Le mail a été envoyé.` and the exact recipient search then showed one two-message conversation. |
 
 The evidence demonstrates a plausible direct developer-domain citation policy,
 not either publisher's current Ahrefs DR, acceptance probability or future link
@@ -68,15 +69,22 @@ replacement, `dofollow`, payment, timing or guaranteed link.
 > Workspace et ILTY, après un stop gate immédiat, sans pièce jointe, paiement,
 > relance automatique, classement ni garantie de lien.
 
-## Execution boundary
+## Applied execution boundary
 
-After authorization and immediately before transmission:
+After authorization and immediately before transmission, the following gates
+were applied:
 
-1. reopen both exact comparisons and stop on a Noctalia inclusion or changed
-   developer-domain link policy;
-2. confirm each Zimbra thread still contains only the original message and stop
-   on any reply, failure, opt-out or warning;
-3. confirm the Noctalia feature snapshot, SVG, CSV and methodology remain live;
-4. reply once per existing thread with zero attachment, CC, BCC or tracking;
-5. record transmission separately from delivery, acceptance, publication,
-   backlink and DR movement.
+1. both exact comparisons were reopened; neither contained Noctalia and their
+   direct developer-domain link patterns were unchanged;
+2. each Zimbra thread still contained only the original message, with no
+   visible reply, failure, opt-out or warning;
+3. the Noctalia feature snapshot, SVG, CSV and methodology remained live;
+4. one reply was sent per existing thread with zero attachment, CC, BCC or
+   tracking;
+5. both exact recipient searches then showed one two-message conversation and
+   no immediate inbound failure.
+
+This proves transmission only. Delivery, editorial acceptance, publication, a
+live backlink, link attributes and DR movement remain unverified. No automatic
+follow-up is scheduled; any later action requires a new stop gate and explicit
+authorization.

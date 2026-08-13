@@ -91,14 +91,18 @@ unexecuted. A sent message is not a publication, backlink or DR result.
   methodology as the single editorial resource, with Noctalia's compiler role
   and DreamKit's historical evidence disclosed. Engadget and 9to5Google copy
   was corrected for the same dataset version but remains outside DR-first.
-- A 2026-08-13 real-Chrome and authenticated Zimbra refresh keeps D7 ready but
-  unsent. Both pages retain zero Noctalia mentions and six direct
+- A 2026-08-13 real-Chrome and authenticated Zimbra refresh kept D7 ready before
+  execution. Both pages retained zero Noctalia mentions and six direct
   competitor-domain links without `nofollow`; Atlas identifies its Singapore
   founder and company, while ILTY's current Apple listing identifies SUUR
   Limited Liability Company. Each exact all-mail search returns one expanded
   one-message conversation containing only the original August 3 pitch. No
-  reply is visible. D7 still requires its exact authorization and an immediate
-  repeat stop gate before either first reply.
+  reply was visible. After the user's exact authorization, an immediate repeat
+  stop gate passed for each route. Atlas Workspace received one reply at 02:35
+  CEST and ILTY one at 02:36 CEST; Zimbra confirmed each send and exact recipient
+  searches showed one two-message conversation per route. Both are now
+  `followup_1_sent_waiting`, with no automatic follow-up. Transmission is not a
+  backlink or DR proof.
 - Fresh public checks keep Marika Pech as the nearest DR-oriented recovery: its
   article still names Noctalia once in plain text with no anchor. DreamWell
   remains the next higher-link-policy candidate because its current comparison
@@ -182,7 +186,7 @@ unexecuted. A sent message is not a publication, backlink or DR result.
 | ---: | --- | --- | --- |
 | 1 | Marika Pech source correction (`D2`) | The live French article already names Noctalia but does not link it. Correcting the source protects factual accuracy and offers the shortest path from a real mention to a citation. | Submit one correction through the official route after confirming the wording and link are still unchanged. Do not request anchor manipulation or followed treatment. |
 | 2 | DreamWell DreamKit correction (`D5`) | Its transparent 2022 comparison still presents DreamKit as available on Android and iOS, while the Android listing is now 404 and the former iOS ID is Arcana. The article links several competitor domains directly without `nofollow`. | Send one factual correction and offer Noctalia only as an optional test candidate for a future refresh. No link, anchor, ranking, replacement or timing request. |
-| 3 | Atlas and ILTY followed-pattern replies (`D7`) | Both current comparisons are self-canonical and `index, follow`, link six competitor developer domains without `nofollow`, name accountable non-Russian operators and retain the original unanswered Zimbra thread. The revised replies now offer one transparent, source-linked 11-app graphic rather than a broad product pitch. | Send one concise first reply in each existing thread only after a fresh stop gate. This is topical clean-domain potential; current publisher DR and future link treatment remain unproven. |
+| 3 | Atlas and ILTY followed-pattern replies (`D7`) | Both current comparisons are self-canonical and `index, follow`, link six competitor developer domains without `nofollow` and name accountable non-Russian operators. One authorized first reply was transmitted in each existing thread after a fresh stop gate. | Passive monitoring only. Do not send another message automatically. This is topical clean-domain potential; delivery, current publisher DR, acceptance and future link treatment remain unproven. |
 | 4 | Simone editorial note (`D8B`) | The current Rosebud review is by a named author and links `rosebud.app` twice without `nofollow`; Agentik SAS, French law and the official mailbox pass the trust gate. | Send the prepared factual French note only after a fresh page, destination and mailbox stop gate. Ask only whether Noctalia is useful to test; no link, anchor, rank or placement request. |
 | 5 | ANTENNE BAYERN editorial note (`D9A`) | Its indexable guide links two exact competitor symbol pages without `nofollow`; the registered German broadcaster publishes a direct newsroom mailbox. | Send the prepared German note once after a fresh page, destination and mailbox stop gate. Offer a test only; no link, anchor, rank or placement request. |
 | 6 | Epigenius editorial note (`D9B`) | Its indexable 2025 article links the competitor directly and already discusses keeping a dream journal; the named German operator publishes a direct email. | Send the prepared German note once after a fresh stop gate. Keep the non-medical boundary explicit and do not request a link or placement. |

@@ -1365,6 +1365,25 @@ reply was sent: the independent exact authorization and an immediate repeat
 stop gate remain mandatory. Evidence and copy are in
 `marketing/seo/backlink-authorization-pack-d7-2026-08-13.md`.
 
+### D7 authorized execution — 2026-08-13
+
+The user authorized one first reply in the existing Atlas Workspace and ILTY
+threads. Immediately before transmission, real Chrome reconfirmed both exact
+target pages as self-canonical and `index, follow`, with zero Noctalia mentions
+and the same six direct competitor-domain links without `nofollow`. The live
+Noctalia feature snapshot still exposed its SVG, source CSV and methodology.
+Exact authenticated Zimbra `Tout le courrier` searches then showed one original
+message per route and no visible reply, failure, opt-out or warning.
+
+One Atlas Workspace reply was transmitted at 02:35 CEST and one ILTY reply at
+02:36 CEST. Zimbra displayed `Le mail a été envoyé.` after each action, and the
+exact recipient searches then showed one two-message conversation for each
+route. No attachment, CC, BCC, tracking, payment, ranking, placement or
+guaranteed-link request was used. Both routes move to
+`followup_1_sent_waiting`, with no automatic follow-up. This proves transmission
+only—not delivery, editorial acceptance, publication, a live backlink, link
+treatment or DR movement.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
