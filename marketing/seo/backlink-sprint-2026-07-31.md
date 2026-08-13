@@ -1547,6 +1547,24 @@ Evidence is in
 contains 263 routes: 3 P0, 67 P1, 192 P2 and 1 P3. No message, form, account,
 membership, attachment, payment or publication action occurred.
 
+### Editorial discovery wave 56 — 2026-08-13
+
+Four routes failed before contact. Sleep Review has an accountable free news
+route, but its current guidelines generally exclude consumer-only software and
+explicitly omit product-page links. The University of Nebraska page directly
+links several sleep-app developer domains, but is a clinical sleep-treatment
+and monitoring resource with no official editorial suggestion route for a
+dream journal. Oneirica's current, tightly topical article cites DOI research
+sources rather than product domains and exposes no verified accountable
+operator. Dream x Engineering has an identifiable MIT Media Lab-linked team,
+but its hostname currently fails valid TLS, its indexed material is stale and
+its invitation is limited to research news and publications.
+
+All four are P2 rejections. Evidence is in
+`marketing/seo/editorial-discovery-wave-56-2026-08-13.md`. The register now
+contains 267 routes: 3 P0, 67 P1, 196 P2 and 1 P3. No external action occurred
+and no new backlink, deep link, traffic result or Ahrefs DR movement is proved.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
