@@ -204,6 +204,16 @@ because no exact public editorial route for its current testing desk was
 verified. Atlas Workspace and ILTY remain passive-only after their authorized
 first replies; their public pages still contain no Noctalia mention, while the
 mailbox check is currently indeterminate because Zimbra requires login.
+
+Wave 50 also adds no contact-ready route. PositivePsychology.com is rejected
+because its exact journaling-app citations are storefront-only. Psych Central
+has a valid direct-domain precedent but is rejected for this campaign because
+its medically reviewed page requires research-backed mental-health products
+and Noctalia deliberately makes no clinical-efficacy claim. A fresh
+authenticated Zimbra `Tout le courrier` check found one two-message Atlas
+conversation and one two-message ILTY conversation, with no incoming reply,
+bounce, opt-out or warning visible. Both remain passive-only
+`followup_1_sent_waiting`; no second automatic follow-up is allowed.
 | 8 | Elsewhere human reply (`D1`) | A real editor replied, expects another comparison around 2027 and asked about iOS and export. This is the warmest relationship signal, although Medium currently marks product links `ugc nofollow`. | Send one factual answer only. State Android-only availability, no public iOS date and no full portable journal export. Do not request placement or a link. |
 | 9 | Three editorial-visibility follow-ups (`D3B`) | Android Police and Xataka Android are credible Android publishers but the target pages lack a direct developer-domain citation pattern. AITrendTool's sampled product links are `nofollow`. | Treat these as discovery and relationship opportunities, not the DR-first batch. Authorize separately and verify any eventual public link without assuming equity. |
 | 10 | Free earned-media intake | Source of Sources is the lightest first test. Qwoted, Featured, SourceBottle and HARO require progressively more identity, profile or account state. | Authorize each existing `E1`–`E5` code separately. Every journalist response remains a separate send requiring review. |

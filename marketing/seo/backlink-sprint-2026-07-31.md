@@ -1421,6 +1421,27 @@ Wave 49 evidence is in
 `marketing/seo/editorial-discovery-wave-49-2026-08-13.md`. The register now
 contains 249 routes: 3 P0, 66 P1, 179 P2 and 1 P3.
 
+### Editorial discovery wave 50 — 2026-08-13
+
+Established psychology and academic/association discovery produced no new
+contact-ready route. PositivePsychology.com publishes an accountable Dutch
+operator and a current named-author journaling article, but its four app
+citations resolve only to Apple or Google storefronts. Psych Central directly
+links product domains and has accountable medical-editorial governance, but its
+exact 2022 review requires research-backed mental-health apps and formal
+vetting; non-medical Noctalia does not meet that page-specific evidence bar.
+Both routes are P2 and neither contact or feedback channel was used.
+
+Authenticated Zimbra `Tout le courrier` searches now show exactly one
+two-message conversation for Atlas Workspace and one for ILTY. The latest
+visible items are the authorized 02:35 and 02:36 CEST Noctalia follow-ups; no
+incoming reply, bounce, opt-out or warning is visible. Both remain
+`followup_1_sent_waiting`, and no second automatic follow-up is allowed. This is
+mailbox observation only, not delivery, acceptance, publication, backlink or DR
+proof. Wave 50 evidence is in
+`marketing/seo/editorial-discovery-wave-50-2026-08-13.md`. The register now
+contains 251 routes: 3 P0, 66 P1, 181 P2 and 1 P3.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
