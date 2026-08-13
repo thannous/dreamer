@@ -21,64 +21,80 @@
     es: '/es/politica-privacidad',
     fr: '/fr/politique-confidentialite',
     it: '/it/privacy-policy',
+    'pt-br': '/pt-br/politica-de-privacidade',
   };
   const translations = {
     de: {
-      accept: 'Noctalia verbessern',
+      accept: 'Reichweitenmessung erlauben',
       description:
         'Mit deiner Zustimmung verwenden wir Cookies zur Reichweitenmessung ausschließlich, um Noctalia und seine Website zu verbessern. Keine Werbung.',
       gpc: 'Das Datenschutzsignal deines Browsers ist aktiv. Die Analyse bleibt deaktiviert.',
       manage: 'Analytics-Einstellungen',
       privacy: 'Mehr erfahren',
-      reject: 'Ablehnen',
+      reject: 'Ohne Messung fortfahren',
       title: 'Cookies zur Reichweitenmessung',
     },
     en: {
-      accept: 'Improve Noctalia',
+      accept: 'Allow audience measurement',
       description:
         'With your permission, we use audience measurement cookies solely to improve Noctalia and its website. No advertising.',
       gpc: 'Your browser privacy signal is active. Analytics will remain disabled.',
       manage: 'Analytics preferences',
       privacy: 'Learn more',
-      reject: 'Decline',
+      reject: 'Continue without measurement',
       title: 'Audience measurement cookies',
     },
     es: {
-      accept: 'Mejorar Noctalia',
+      accept: 'Permitir la medición de audiencia',
       description:
         'Con tu permiso, usamos cookies de medición de audiencia únicamente para mejorar Noctalia y su sitio web. Sin publicidad.',
       gpc: 'La señal de privacidad de tu navegador está activa. La analítica seguirá desactivada.',
       manage: 'Preferencias de analítica',
       privacy: 'Más información',
-      reject: 'Rechazar',
+      reject: 'Continuar sin medición',
       title: 'Cookies de medición de audiencia',
     },
     fr: {
-      accept: 'Améliorer Noctalia',
+      accept: "Autoriser la mesure d'audience",
       description:
         "Avec votre accord, nous utilisons des cookies de mesure d'audience uniquement pour améliorer Noctalia et son site. Aucun usage publicitaire.",
       gpc: "Le signal de confidentialité de votre navigateur est actif. L'analyse reste désactivée.",
       manage: 'Préférences analytics',
       privacy: 'En savoir plus',
-      reject: 'Refuser',
+      reject: 'Continuer sans mesure',
       title: "Cookies de mesure d'audience",
     },
     it: {
-      accept: 'Migliora Noctalia',
+      accept: 'Consenti la misurazione del pubblico',
       description:
         'Con il tuo consenso, utilizziamo cookie di misurazione del pubblico esclusivamente per migliorare Noctalia e il suo sito. Nessuna pubblicità.',
       gpc: 'Il segnale privacy del browser è attivo. Le analisi resteranno disattivate.',
       manage: 'Preferenze analytics',
       privacy: 'Scopri di più',
-      reject: 'Rifiuta',
+      reject: 'Continua senza misurazione',
       title: "Cookie per la misurazione dell'audience",
+    },
+    'pt-br': {
+      accept: 'Permitir medição de audiência',
+      description:
+        'Com a sua permissão, usamos cookies de medição de audiência apenas para melhorar o Noctalia e o site. Sem publicidade.',
+      gpc: 'O sinal de privacidade do seu navegador está ativo. A medição continuará desativada.',
+      manage: 'Preferências de medição',
+      privacy: 'Saiba mais',
+      reject: 'Continuar sem medição',
+      title: 'Cookies de medição de audiência',
     },
   };
   let analyticsConsentGranted = false;
 
   const getLanguage = () => {
-    const language = document.documentElement.lang.toLowerCase().split('-')[0];
-    return translations[language] ? language : 'en';
+    const language = document.documentElement.lang.toLowerCase().replace('_', '-');
+    if (translations[language]) {
+      return language;
+    }
+
+    const baseLanguage = language.split('-')[0];
+    return translations[baseLanguage] ? baseLanguage : 'en';
   };
 
   const isGpcEnabled = () => navigator.globalPrivacyControl === true;
@@ -281,23 +297,21 @@
     style.id = CONSENT_STYLE_ID;
     style.textContent = `
       .noctalia-consent-panel[hidden] { display: none; }
-      .noctalia-consent-panel { position: fixed; z-index: 10000; left: 50%; bottom: 1rem; width: min(42rem, calc(100% - 2rem)); transform: translateX(-50%); padding: 1.1rem; border: 1px solid rgba(253, 164, 129, 0.35); border-radius: 1rem; background: rgba(10, 5, 20, 0.98); color: #fff7f0; box-shadow: 0 1.25rem 3.5rem rgba(0, 0, 0, 0.45); }
-      .noctalia-consent-panel h2 { margin: 0 0 0.45rem; color: #fff7f0; font-size: 1.15rem; line-height: 1.3; }
-      .noctalia-consent-panel p { margin: 0; color: rgba(255, 247, 240, 0.82); font-size: 0.9rem; line-height: 1.55; }
+      .noctalia-consent-panel { position: fixed; z-index: 10000; right: 1rem; bottom: 1rem; width: min(30rem, calc(100% - 2rem)); padding: 0.85rem; border: 1px solid rgba(253, 164, 129, 0.35); border-radius: 0.9rem; background: rgba(10, 5, 20, 0.96); color: #fff7f0; box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.4); }
+      .noctalia-consent-panel h2 { margin: 0 0 0.3rem; color: #fff7f0; font-size: 1rem; line-height: 1.25; }
+      .noctalia-consent-panel p { margin: 0; color: rgba(255, 247, 240, 0.82); font-size: 0.82rem; line-height: 1.4; }
       .noctalia-consent-panel a { color: #fda481; text-decoration: underline; text-underline-offset: 0.2em; }
       .noctalia-consent-gpc { margin-top: 0.55rem !important; color: #fda481 !important; }
-      .noctalia-consent-actions { display: flex; flex-direction: column; align-items: center; gap: 0.65rem; margin-top: 1rem; }
-      .noctalia-consent-actions button[data-consent="granted"] { width: 100%; min-height: 2.75rem; padding: 0.65rem 0.9rem; border: 1px solid rgba(253, 164, 129, 0.75); border-radius: 999px; background: transparent; color: #fff7f0; font: inherit; font-weight: 700; cursor: pointer; }
-      .noctalia-consent-actions button[data-consent="granted"]:hover { background: rgba(253, 164, 129, 0.12); }
-      .noctalia-consent-actions button[data-consent="denied"] { border: 0; padding: 0.35rem 0.5rem; background: transparent; color: rgba(255, 247, 240, 0.78); font: inherit; font-size: 0.85rem; text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; }
-      .noctalia-consent-actions button[data-consent="denied"]:hover { color: #fda481; }
+      .noctalia-consent-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.55rem; margin-top: 0.75rem; }
+      .noctalia-consent-actions button { min-height: 2.65rem; padding: 0.55rem 0.65rem; border: 1px solid rgba(253, 164, 129, 0.65); border-radius: 0.7rem; background: transparent; color: #fff7f0; font: inherit; font-size: 0.78rem; font-weight: 650; line-height: 1.25; cursor: pointer; }
+      .noctalia-consent-actions button:hover { border-color: #fda481; background: rgba(253, 164, 129, 0.1); }
       .noctalia-consent-actions button:disabled { cursor: not-allowed; opacity: 0.45; }
       .noctalia-consent-actions button:focus-visible, .noctalia-consent-manage:focus-visible { outline: 3px solid #fff7f0; outline-offset: 3px; }
       .noctalia-consent-manage-wrap { display: flex; justify-content: center; margin-top: 1.25rem; }
       .noctalia-consent-manage { border: 0; padding: 0.35rem; background: transparent; color: rgba(255, 247, 240, 0.72); font: inherit; font-size: 0.8rem; text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; }
       .noctalia-consent-manage:hover { color: #fda481; }
-      @media (max-width: 520px) { .noctalia-consent-panel { bottom: 0; width: 100%; border-right: 0; border-bottom: 0; border-left: 0; border-radius: 1rem 1rem 0 0; padding: 1rem; } }
-      @media (prefers-reduced-motion: no-preference) { .noctalia-consent-panel { animation: noctalia-consent-in 180ms ease-out; } @keyframes noctalia-consent-in { from { opacity: 0; transform: translate(-50%, 0.75rem); } } }
+      @media (max-width: 520px) { .noctalia-consent-panel { right: 0.75rem; bottom: 0.75rem; width: calc(100% - 1.5rem); padding: 0.8rem; } .noctalia-consent-panel h2 { font-size: 0.95rem; } .noctalia-consent-panel p { font-size: 0.78rem; } .noctalia-consent-actions button { min-height: 2.5rem; padding: 0.5rem; font-size: 0.74rem; } }
+      @media (prefers-reduced-motion: no-preference) { .noctalia-consent-panel { animation: noctalia-consent-in 180ms ease-out; } @keyframes noctalia-consent-in { from { opacity: 0; transform: translateY(0.75rem); } } }
     `;
     document.head.appendChild(style);
   };

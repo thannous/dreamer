@@ -67,6 +67,13 @@ describe('site shell Clarity consent control', () => {
     expect(document.querySelector('script[src*="clarity.ms/tag"]')).toBeNull();
     expect(window.clarity).toBeUndefined();
     expect(document.querySelector('footer #noctalia-analytics-preferences')).not.toBeNull();
+
+    const styles = document.getElementById('noctalia-consent-style').textContent;
+    expect(styles).toContain('right: 1rem; bottom: 1rem; width: min(30rem, calc(100% - 2rem))');
+    expect(styles).toContain('grid-template-columns: repeat(2, minmax(0, 1fr))');
+    expect(styles).toContain('right: 0.75rem; bottom: 0.75rem; width: calc(100% - 1.5rem)');
+    expect(styles).toContain('.noctalia-consent-actions button {');
+    expect(styles).not.toContain('transform: translateX(-50%)');
   });
 
   it('persists an opt-in for six months and loads Clarity asynchronously once', () => {
@@ -148,37 +155,44 @@ describe('site shell Clarity consent control', () => {
     [
       'de',
       'Cookies zur Reichweitenmessung',
-      'Noctalia verbessern',
-      'Ablehnen',
+      'Reichweitenmessung erlauben',
+      'Ohne Messung fortfahren',
       '/de/datenschutz',
     ],
     [
       'en',
       'Audience measurement cookies',
-      'Improve Noctalia',
-      'Decline',
+      'Allow audience measurement',
+      'Continue without measurement',
       '/en/privacy-policy',
     ],
     [
       'es',
       'Cookies de medición de audiencia',
-      'Mejorar Noctalia',
-      'Rechazar',
+      'Permitir la medición de audiencia',
+      'Continuar sin medición',
       '/es/politica-privacidad',
     ],
     [
       'fr',
       "Cookies de mesure d'audience",
-      'Améliorer Noctalia',
-      'Refuser',
+      "Autoriser la mesure d'audience",
+      'Continuer sans mesure',
       '/fr/politique-confidentialite',
     ],
     [
       'it',
       "Cookie per la misurazione dell'audience",
-      'Migliora Noctalia',
-      'Rifiuta',
+      'Consenti la misurazione del pubblico',
+      'Continua senza misurazione',
       '/it/privacy-policy',
+    ],
+    [
+      'pt-BR',
+      'Cookies de medição de audiência',
+      'Permitir medição de audiência',
+      'Continuar sem medição',
+      '/pt-br/politica-de-privacidade',
     ],
   ])(
     'uses localized %s copy and the matching privacy policy',
