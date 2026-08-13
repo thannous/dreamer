@@ -1,6 +1,6 @@
 # Noctalia — archive Drive des rapports Ahrefs Starter
 
-Synchronisation vérifiée le 12 août 2026.
+Synchronisation vérifiée le 13 août 2026.
 
 ## Emplacement
 
@@ -26,7 +26,14 @@ Noctalia/
 
 Le sous-dossier de clôture contient les 15 livrables durables `j25-*`, `j26-*` et `j27-*` présents dans ce dossier Git au commit source `06cec17be9228b23e5d8de23c5bd2008d3266aba`, le journal d'exécution du ranking au commit source `670e7fd210af5e3a3a93fed02b30338813faaf52`, le rapport de tri GSC J28 au commit source `b2384a4e63965c2d3dda394f78545ef858b9e6ad`, puis le rapport d'exécution des leviers J28 au commit source `236f32bfd1c0358dd36e30255e39c365d8d5b032` : douze fichiers Markdown et six fichiers CSV.
 
-La vérification Drive après ajout des deux rapports J28 a confirmé leur présence unique dans le dossier cible. `j28-actionable-levers-execution-2026-08-12.md` porte l'identifiant Drive `1C6jW4OczqS38VElFwsQQca7TrMIwdT7m` et l'empreinte SHA-256 locale `ed739b0f330dc5063375a160c4b1c7040671c2beab50718fe2e502dc6f1e982a`. Le registre détaillé des 18 fichiers, avec identifiant Drive, URL et empreinte locale, est conservé dans [`drive-sync-manifest-2026-08-11.csv`](./drive-sync-manifest-2026-08-11.csv).
+La vérification Drive après ajout du rapport J29 a confirmé sa présence unique
+dans le dossier cible. `j29-authority-recovery-2026-08-13.md` porte
+l'identifiant Drive `1pBHvbx25DtwkBS6Qf1RfRTA_b0IjP-Is` et l'empreinte
+SHA-256 locale
+`c48c70510fcb7e8bae00986d1542f302deab003841462f04fad555ae0dbde557`.
+Le registre détaillé des 19 fichiers, avec identifiant Drive, URL et empreinte
+locale, est conservé dans
+[`drive-sync-manifest-2026-08-11.csv`](./drive-sync-manifest-2026-08-11.csv).
 
 ### Ownership Misabueso GSC
 
