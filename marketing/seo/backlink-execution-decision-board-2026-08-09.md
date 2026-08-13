@@ -415,6 +415,20 @@ address and governing jurisdiction remain unverified. The Ahrefs API returned
 zero remaining units before any fresh DR or backlink metric was produced. The
 register now contains 260 routes: 3 P0, 66 P1, 190 P2 and 1 P3.
 
+Wave 55 adds IASD DreamTime as P1 prepared but unsent. The accountable United
+States association publishes named editors and submission guidelines for work
+on all aspects of dreaming; its public 2025 conference program directly links
+the comparable `elsewhere.to` product domain. DreamTime also describes itself
+as a forum for IASD members, so a short query must first confirm eligibility
+and external-link treatment. It requires exact user authorization and a fresh
+page, destination and mailbox stop gate; do not attach or submit an article,
+open an account, buy membership or make a payment. HowToLucid and Lucid Dream
+Society are P2: the former's stale exact precedent is iTunes-only and conflicts
+with Noctalia's brand boundaries, while the latter's exact route is now
+404/noindex, its historical precedent was store-only and its operator identity
+remains insufficient. The register now contains 263 routes: 3 P0, 67 P1, 192
+P2 and 1 P3. No new public backlink or DR movement is proved.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer

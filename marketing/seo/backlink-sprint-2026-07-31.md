@@ -1524,6 +1524,29 @@ backlink statistics or DR. No metric value or movement is inferred. Evidence is
 in `marketing/seo/editorial-discovery-wave-54-2026-08-13.md`. The register now
 contains 260 routes: 3 P0, 66 P1, 190 P2 and 1 P3.
 
+### Editorial discovery and public outcome check wave 55 — 2026-08-13
+
+The 19-row public verifier remains at 6 followed, 4 nofollow, 2 missing-link,
+3 non-indexable, 3 HTTP-403 and 1 HTTP-410 results. The existing Reddit static-
+shell mismatch does not override its latest rendered `nofollow ugc` evidence,
+and no fresh Noctalia citation was found on contacted exact pages.
+
+IASD is the only new P1 route. DreamTime accepts long-form work on all aspects
+of dreaming under named editors, while IASD's public 2025 conference program
+contains a direct clickable `elsewhere.to` product-domain precedent. Because
+DreamTime describes itself as a forum for IASD members, a separately authorized
+query must first confirm eligibility and external-link treatment; no article,
+attachment, membership or payment was submitted. HowToLucid is P2 because its
+stale exact review links only to iTunes and its brand claims conflict with
+Noctalia's boundaries. Lucid Dream Society is P2 because the exact route is now
+404/noindex, its historical citation was Google Play only and its accountable
+operator remains unverified.
+
+Evidence is in
+`marketing/seo/editorial-discovery-wave-55-2026-08-13.md`. The register now
+contains 263 routes: 3 P0, 67 P1, 192 P2 and 1 P3. No message, form, account,
+membership, attachment, payment or publication action occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
