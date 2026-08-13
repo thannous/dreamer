@@ -666,6 +666,16 @@ function injectEditorialLinks(symbolId, lang, html) {
   return html;
 }
 
+function renderVariationContext(symbolId, lang, context) {
+  const label = escapeHtml(sanitizeEmDashes(context));
+
+  if (symbolId === 'night' && lang === 'de' && context === 'In der Dunkelheit verfolgt werden') {
+    return `<a class="text-dream-salmon hover:underline" href="/de/traumsymbole/verfolgung">${label}</a>`;
+  }
+
+  return label;
+}
+
 function safeJsonStringifyForHtml(data, space = 4) {
   return JSON.stringify(data, null, space).replace(/</g, '\\u003c');
 }
@@ -856,7 +866,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   // Generate variations HTML
   const variationsHtml = variations.map(v => `
                     <div class="variation-card">
-                        <h3>${escapeHtml(sanitizeEmDashes(v.context))}</h3>
+                        <h3>${renderVariationContext(symbol.id, lang, v.context)}</h3>
                         <p>${escapeHtml(sanitizeEmDashes(v.meaning))}</p>
                     </div>`).join('\n');
 
