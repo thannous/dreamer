@@ -50,6 +50,8 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j28-gsc-indexation-triage-2026-08-12.md`](./j28-gsc-indexation-triage-2026-08-12.md) : tri du premier cas parmi les 254 URL, contradiction couverture/performance GSC, lien contextuel DE publié et preuves Git/CI/Cloudflare/HTTP.
 - [`j28-actionable-levers-execution-2026-08-12.md`](./j28-actionable-levers-execution-2026-08-12.md) : exécution de l'optimisation `coche`, validation GSC/Ahrefs et préparation des cinq propriétaires `scorpion`, avec coût et stop-gates.
 - [`j29-authority-recovery-2026-08-13.md`](./j29-authority-recovery-2026-08-13.md) : collecte durable nouveaux/perdus, pages par liens et ancres, séparation du spam et backlog d'autorité externe avec portes D2–D10A.
+- [`j29-gsc-ahrefs-cluster-validation-2026-08-13.md`](./j29-gsc-ahrefs-cluster-validation-2026-08-13.md) : validation GSC 28 jours et fenêtre disponible des clusters guêpe/cimetière, micro-lot Ahrefs à cinq crédits et ordre `cemetery` puis `wasp` après la porte J+7.
+- [`j29-gsc-ahrefs-cluster-backlog-2026-08-13.csv`](./j29-gsc-ahrefs-cluster-backlog-2026-08-13.csv) : backlog pays exploitable des six requêtes vérifiées, avec métriques Ahrefs, état GSC et prochaine action sans export brut.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
 - [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27, Misabueso GSC et preuves brutes, périmètres synchronisés et règles de conservation.
@@ -151,3 +153,14 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
   prioritaires, préparées mais non envoyées sans autorisation indépendante.
   `D7` Atlas et ILTY a déjà reçu une relance autorisée dans un lot séparé et
   passe en surveillance passive.
+- La validation complémentaire guêpe/cimetière conserve GSC complet au 11 août :
+  guêpe affiche `0` impression sur 28 jours et sur toute la fenêtre disponible ;
+  cimetière affiche `0` impression sur 28 jours et une seule impression
+  historique, issue d'une longue requête anglaise sur un chien.
+- Trois rapports Keyword Explorer groupés et deux SERP ciblées font passer le
+  compteur général de `126/200` à `131/200`. Il reste `69` crédits généraux ;
+  Rank Tracker reste à `50/50` et Site Audit à `3 627/10 000`.
+- `cemetery` devient le prochain concept recommandé après la lecture J+7 du
+  15 août, mené par l'Italie (`600` recherches, KD `0`, TP `600`). `wasp` suit,
+  mené par l'Espagne (`600` recherches, KD `0`, TP `250`). Aucun nouveau
+  propriétaire n'est publié à J29.
