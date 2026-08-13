@@ -1565,6 +1565,24 @@ All four are P2 rejections. Evidence is in
 contains 267 routes: 3 P0, 67 P1, 196 P2 and 1 P3. No external action occurred
 and no new backlink, deep link, traffic result or Ahrefs DR movement is proved.
 
+### Editorial discovery wave 57 — 2026-08-13
+
+Two independently accountable dreamwork routes pass the strict product-domain
+precedent gate. Genevieve Camp's current, self-canonical Elsewhere review
+directly links several `elsewhere.to/dream/*` pages without a declared `rel`
+value. Dream Revolution's Wake TF Up podcast previously interviewed Elsewhere's
+co-founders for 58 minutes and its public episode notes directly link
+`elsewhere.to`. Both are P1 prepared but unsent, and each requires a separate
+exact authorization plus an immediate stop gate.
+
+Personal Development Apps is P2: its current named-author journaling comparison
+links only internal reviews, while its institutional pages identify no legal
+entity, address or jurisdiction and its named staff could not be independently
+verified. Evidence is in
+`marketing/seo/editorial-discovery-wave-57-2026-08-13.md`. The register now
+contains 270 routes: 3 P0, 69 P1, 197 P2 and 1 P3. No external action or new
+backlink outcome occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

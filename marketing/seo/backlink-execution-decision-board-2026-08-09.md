@@ -440,6 +440,18 @@ and invites research news rather than product evidence. All four are P2. The
 register now contains 267 routes: 3 P0, 67 P1, 196 P2 and 1 P3. No external
 action or backlink outcome occurred.
 
+Wave 57 adds two P1 routes, both prepared but unsent. Genevieve Camp publishes
+a current first-person Elsewhere review with direct `elsewhere.to/dream/*`
+links, while Dream Revolution / Wake TF Up previously hosted Elsewhere's two
+co-founders and directly linked `elsewhere.to` in public episode notes. Each
+route needs its own exact authorization and immediate page, destination,
+mailbox and outcome stop gate; do not infer bundled authorization. Personal
+Development Apps is P2 because the exact comparison links only internal reviews
+and no accountable legal operator or independently verified staff identity was
+established. The register now contains 270 routes: 3 P0, 69 P1, 197 P2 and 1
+P3. No message, form, account, attachment, payment or publication action was
+used, and no backlink or Ahrefs movement is proved.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer
