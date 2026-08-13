@@ -4,8 +4,8 @@
   "layout": "content",
   "lang": "en",
   "slug": "dream-journal-apps",
-  "title": "Best Dream Journal Apps 2026 | Noctalia",
-  "description": "Compare 11 dream journal apps using a source-linked 2026 dataset covering voice capture, AI interpretation, generated images, privacy signals and lucid dreaming.",
+  "title": "Best Dream Journal Apps by Need (2026) | Noctalia",
+  "description": "Compare 11 dream journal apps by use case with a source-linked 2026 dataset covering voice, AI, images, privacy and lucid dreaming.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",
@@ -13,39 +13,47 @@
   "bodyStyle": "",
   "mainClass": "pt-32 pb-20 px-6 max-w-6xl mx-auto",
   "ogType": "article",
-  "ogTitle": "Best Dream Journal Apps 2026",
-  "ogDescription": "Compare 11 dream journal apps using a source-linked 2026 dataset covering voice capture, AI interpretation, generated images, privacy signals and lucid dreaming.",
+  "ogTitle": "Best Dream Journal Apps by Need (2026)",
+  "ogDescription": "Compare 11 dream journal apps by use case with a source-linked 2026 dataset covering voice, AI, images, privacy and lucid dreaming.",
   "ogImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "ogImageAlt": "Noctalia dream journal app",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Best Dream Journal Apps 2026",
-  "twitterDescription": "Compare 11 dream journal apps using a source-linked 2026 dataset covering voice capture, AI interpretation, generated images, privacy signals and lucid dreaming.",
+  "twitterTitle": "Best Dream Journal Apps by Need (2026)",
+  "twitterDescription": "Compare 11 dream journal apps by use case with a source-linked 2026 dataset covering voice, AI, images, privacy and lucid dreaming.",
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-08-12T00:00:00+02:00",
+  "modifiedTime": "2026-08-13T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Best Dream Journal Apps 2026\",\n  \"description\": \"Compare 11 dream journal apps using a source-linked 2026 dataset covering voice capture, AI interpretation, generated images, privacy signals and lucid dreaming.\",\n  \"url\": \"https://noctalia.app/en/dream-journal-apps\",\n  \"inLanguage\": \"en\",\n  \"dateModified\": \"2026-08-12T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Best dream journal apps in 2026\",\n      \"item\": \"https://noctalia.app/en/dream-journal-apps\"\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Best Dream Journal Apps by Need (2026)\",\n  \"description\": \"Compare 11 dream journal apps by use case with a source-linked 2026 dataset covering voice, AI, images, privacy and lucid dreaming.\",\n  \"url\": \"https://noctalia.app/en/dream-journal-apps\",\n  \"inLanguage\": \"en\",\n  \"dateModified\": \"2026-08-13T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Best dream journal apps by need in 2026\",\n      \"item\": \"https://noctalia.app/en/dream-journal-apps\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"ItemList\",\n  \"name\": \"Dream journal apps compared in 2026\",\n  \"itemListOrder\": \"https://schema.org/ItemListUnordered\",\n  \"numberOfItems\": 11,\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Noctalia\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"DreamApp\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Oniri\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 4,\n      \"name\": \"Dreamiary\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 5,\n      \"name\": \"Dreamlab\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 6,\n      \"name\": \"DreamKit\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 7,\n      \"name\": \"Rosebud\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 8,\n      \"name\": \"Dreamz Journal\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 9,\n      \"name\": \"DreamMirror\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 10,\n      \"name\": \"DreamStream\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 11,\n      \"name\": \"DreamNotes\"\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Dataset\",\n  \"@id\": \"https://noctalia.app/en/dream-journal-apps#dataset\",\n  \"name\": \"Dream Journal App Comparison Dataset 2026\",\n  \"description\": \"A dated desk-review dataset comparing 11 dream journal apps across platforms, pricing signals, voice capture, AI interpretation, generated images, privacy or export signals, lucid dreaming, use cases and caveats.\",\n  \"url\": \"https://noctalia.app/en/dream-journal-apps#dataset\",\n  \"creator\": {\n    \"@type\": \"Organization\",\n    \"@id\": \"https://noctalia.app/#organization\"\n  },\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"@id\": \"https://noctalia.app/#organization\"\n  },\n  \"license\": \"https://noctalia.app/en/dream-journal-apps#dataset-license-v1\",\n  \"dateCreated\": \"2026-07-12\",\n  \"dateModified\": \"2026-08-09\",\n  \"version\": \"2026-08-09\",\n  \"temporalCoverage\": \"2026-07-12/2026-08-09\",\n  \"isAccessibleForFree\": true,\n  \"inLanguage\": \"en\",\n  \"keywords\": [\n    \"dream journal apps\",\n    \"voice dream journal\",\n    \"AI dream interpretation\",\n    \"lucid dreaming apps\"\n  ],\n  \"variableMeasured\": [\n    \"platforms\",\n    \"pricing signal\",\n    \"voice capture\",\n    \"AI interpretation\",\n    \"generated images\",\n    \"privacy or export signal\",\n    \"lucid dreaming\",\n    \"best for\",\n    \"caveat\"\n  ],\n  \"measurementTechnique\": \"Desk review of official product pages and public app-store listings; no competitor accounts or paid subscriptions.\",\n  \"distribution\": {\n    \"@type\": \"DataDownload\",\n    \"encodingFormat\": \"text/csv\",\n    \"contentUrl\": \"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Dataset\",\n  \"@id\": \"https://noctalia.app/en/dream-journal-apps#dataset\",\n  \"identifier\": \"noctalia-dream-journal-apps-comparison-2026\",\n  \"name\": \"Dream Journal App Comparison Dataset 2026\",\n  \"description\": \"A dated desk-review dataset comparing 11 dream journal apps across platforms, pricing signals, voice capture, AI interpretation, generated images, privacy or export signals, lucid dreaming, use cases and caveats.\",\n  \"url\": \"https://noctalia.app/en/dream-journal-apps#dataset\",\n  \"creator\": {\n    \"@type\": \"Organization\",\n    \"@id\": \"https://noctalia.app/#organization\"\n  },\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"@id\": \"https://noctalia.app/#organization\"\n  },\n  \"license\": \"https://noctalia.app/en/dream-journal-apps#dataset-license-v1\",\n  \"dateCreated\": \"2026-07-12\",\n  \"dateModified\": \"2026-08-09\",\n  \"version\": \"2026-08-09\",\n  \"temporalCoverage\": \"2026-07-12/2026-08-09\",\n  \"isAccessibleForFree\": true,\n  \"inLanguage\": \"en\",\n  \"keywords\": [\n    \"dream journal apps\",\n    \"voice dream journal\",\n    \"AI dream interpretation\",\n    \"lucid dreaming apps\"\n  ],\n  \"variableMeasured\": [\n    \"platforms\",\n    \"pricing signal\",\n    \"voice capture\",\n    \"AI interpretation\",\n    \"generated images\",\n    \"privacy or export signal\",\n    \"lucid dreaming\",\n    \"best for\",\n    \"caveat\"\n  ],\n  \"measurementTechnique\": \"Desk review of official product pages and public app-store listings; no competitor accounts or paid subscriptions.\",\n  \"distribution\": {\n    \"@type\": \"DataDownload\",\n    \"encodingFormat\": \"text/csv\",\n    \"inLanguage\": \"en\",\n    \"contentUrl\": \"https://noctalia.app/data/dream-journal-apps-comparison-2026.csv\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"ImageObject\",\n  \"@id\": \"https://noctalia.app/en/dream-journal-apps#feature-snapshot-image\",\n  \"name\": \"Dream journal apps in 2026: feature snapshot\",\n  \"caption\": \"Four descriptive feature counts from Noctalia's source-linked desk review of 11 dream journal apps.\",\n  \"contentUrl\": \"https://noctalia.app/img/research/dream-journal-apps-feature-snapshot-2026.svg\",\n  \"encodingFormat\": \"image/svg+xml\",\n  \"width\": 1200,\n  \"height\": 675,\n  \"dateCreated\": \"2026-08-10\",\n  \"creditText\": \"Noctalia\",\n  \"creator\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  },\n  \"copyrightNotice\": \"© 2026 Noctalia\",\n  \"license\": \"https://noctalia.app/en/press#media-license\",\n  \"acquireLicensePage\": \"https://noctalia.app/en/press#media-contact\",\n  \"isPartOf\": {\n    \"@id\": \"https://noctalia.app/en/dream-journal-apps#dataset\"\n  }\n}"
   ],
   "activeNav": "resources"
 }
 ---
-<h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Best dream journal apps in 2026</h1>
-<p class="text-sm text-purple-300/70 mb-6">Dataset updated August 9, 2026 · Methodology updated August 3, 2026 · Initial product review July 12, 2026</p>
+<h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Best dream journal apps by need in 2026</h1>
+<p class="text-sm text-purple-300/70 mb-6">Dataset version: August 9, 2026 · 8 app rows last reviewed July 12 and 3 rows August 9 · Methodology updated August 3</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">The right dream journal depends on your morning capture habit, whether you want AI interpretation, how much lucid dreaming structure you need, and how much privacy clarity matters to you.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-    <h2 class="text-2xl font-serif text-white mb-4">Quick answer</h2>
-    <p>Choose Noctalia if you want an Android journal built for fast voice capture, AI interpretation, generated dream images, recurring symbols, and guided reflection. Choose Oniri if advanced lucid dreaming is the priority. Consider DreamApp for mainstream interpretation and Dreamiary or Dreamz for symbol-heavy approaches. Existing DreamKit users should verify store availability and use the dedicated migration comparison before switching.</p>
+    <h2 class="text-2xl font-serif text-white mb-4">Best apps by need: quick answer</h2>
+    <ul class="list-disc pl-5 space-y-2">
+      <li><strong>Android and fast voice capture:</strong> Noctalia.</li>
+      <li><strong>Advanced lucid-dreaming practice:</strong> Oniri.</li>
+      <li><strong>Mainstream dream meanings:</strong> DreamApp.</li>
+      <li><strong>Symbol-heavy or mystical approaches:</strong> Dreamiary or Dreamz Journal.</li>
+      <li><strong>Existing DreamKit archive:</strong> verify store availability and use the dedicated migration comparison before switching.</li>
+    </ul>
+    <p class="mt-4 text-sm text-purple-100"><strong>Disclosure:</strong> Noctalia publishes this comparison and is one of the apps reviewed. Table order is not a score or ranking. Review the <a href="#methodology" class="text-dream-salmon hover:underline">methodology and independence statement</a>.</p>
+    <p class="mt-5"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="inline-flex items-center rounded-full bg-dream-salmon px-5 py-3 font-semibold text-dream-dark hover:opacity-90" rel="nofollow noopener noreferrer" target="_blank">Try Noctalia free on Android</a></p>
     <p class="mt-4 text-sm text-purple-200/70">Noctalia is a reflection tool. It does not provide medical, psychological, legal, financial or predictive advice.</p>
   </section>
 
@@ -86,7 +94,8 @@
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
-    <h2 class="text-2xl font-serif text-white mb-4">Best dream journal apps in 2026</h2>
+    <h2 class="text-2xl font-serif text-white mb-4">Compare 11 dream journal apps by need</h2>
+    <p class="mb-4 text-sm text-purple-200/80"><strong>How to read the table:</strong> “Yes” or “Strong” means the feature was explicitly advertised by an official source on the stated review date. “Limited,” “some,” and “former listing” describe narrower or historical evidence; they are not scores.</p>
     <table class="w-full text-left text-sm min-w-[1100px]">
       <thead class="text-purple-200"><tr><th class="py-3 pr-4">App</th><th class="py-3 pr-4">Platforms</th><th class="py-3 pr-4">Pricing signal</th><th class="py-3 pr-4">Voice</th><th class="py-3 pr-4">AI interpretation</th><th class="py-3 pr-4">Images</th><th class="py-3 pr-4">Symbols</th><th class="py-3 pr-4">Export/privacy</th><th class="py-3 pr-4">Lucid dreaming</th><th class="py-3 pr-4">Best for</th><th class="py-3 pr-4">Not ideal for</th></tr></thead>
       <tbody class="divide-y divide-white/10">

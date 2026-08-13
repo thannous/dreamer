@@ -55,6 +55,28 @@ describe('docs shared components', () => {
     expect(html).toContain('noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors');
   });
 
+  it.each([
+    ['en', 'Choose language', 'Open navigation menu'],
+    ['fr', 'Choisir la langue', 'Ouvrir le menu de navigation'],
+    ['es', 'Elegir idioma', 'Abrir el menú de navegación'],
+    ['de', 'Sprache auswählen', 'Navigationsmenü öffnen'],
+    ['it', 'Scegli la lingua', 'Apri il menu di navigazione'],
+    ['pt-br', 'Escolher idioma', 'Abrir menu de navegação'],
+  ])('localizes the %s navigation control labels', (lang, languageLabel, menuLabel) => {
+    const { createRenderContext } = require('./docs-components/context');
+    const { renderNavigation } = require('./docs-components/navigation');
+    const context = createRenderContext({
+      manifest,
+      entryId: 'page.home',
+      meta: { lang, layout: 'landing' },
+    });
+
+    const html = renderNavigation(context);
+
+    expect(html).toContain(`aria-label="${languageLabel}"`);
+    expect(html).toContain(`aria-label="${menuLabel}"`);
+  });
+
   it('renders the shared footer from a render context', () => {
     const { createRenderContext } = require('./docs-components/context');
     const { renderFooter } = require('./docs-components/footer');

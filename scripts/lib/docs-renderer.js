@@ -9,6 +9,7 @@ const {
 } = require('./docs-site-config');
 const { escapeHtml } = require('./docs-source-utils');
 const { renderAhrefsAnalyticsScript } = require('./ahrefs-analytics');
+const { enhanceAlternativesTable } = require('./alternatives-table');
 const { renderViewTransitionHeadStyles } = require('./docs-view-transitions');
 const { createRenderContext } = require('./docs-components/context');
 const { renderFooter: renderSharedFooter } = require('./docs-components/footer');
@@ -457,7 +458,7 @@ function renderJsonLd(meta, entry, bodyHtml, preferredImage = null) {
     .join('\n\n');
 }
 
-function renderStyles(meta, assetVersion) {
+function renderStyles(meta, assetVersion, entryId = '') {
   const assets = siteConfig.assetPaths;
   const lines = [
     `    <link rel="stylesheet" href="${assets.stylesCss}?v=${assetVersion}">`,
@@ -479,6 +480,12 @@ function renderStyles(meta, assetVersion) {
   if (meta.layout === 'landing') {
     lines.push(`    <link rel="stylesheet" href="/css/observatory.css?v=${assetVersion}">`);
     lines.push(`    <link rel="stylesheet" href="${assets.experienceCss}?v=${assetVersion}">`);
+  }
+
+  if (entryId === 'page.alternatives') {
+    lines.push(
+      `    <link rel="stylesheet" href="/css/alternatives-table.css?v=${assetVersion}">`
+    );
   }
 
   lines.push(renderSharedComponentStyles());
@@ -591,7 +598,7 @@ function renderCommonHead(meta, entry, assetVersion, bodyHtml) {
     '    <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>',
     preloadLines.join('\n'),
     renderAhrefsAnalyticsScript(),
-    renderStyles(meta, assetVersion),
+    renderStyles(meta, assetVersion, entry?.id),
     renderViewTransitionHeadStyles(),
     renderHeadScripts(meta, assetVersion),
     renderJsonLd(meta, entry, bodyHtml, {
@@ -1079,6 +1086,13 @@ function renderManagedPage({
     renderedBodyHtml = insertEducationalImage(renderedBodyHtml, imageContext);
   } else {
     renderedBodyHtml = promoteManagedContentHero(renderedBodyHtml, renderMeta, imageContext);
+  }
+  if (entryId === 'page.alternatives') {
+    renderedBodyHtml = enhanceAlternativesTable(renderedBodyHtml, {
+      lang: context.lang,
+      languageTag: getLanguageTag(context.lang),
+      locale: context.locale,
+    });
   }
 
   const headHtml = renderCommonHead(renderMeta, entry, assetVersion, renderedBodyHtml);
