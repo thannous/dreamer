@@ -519,6 +519,18 @@ routes: 3 P0, 73 P1, 208 P2 and 1 P3. No email, form, account, pitch,
 manuscript, attachment, product data, payment or publication action was used,
 and no backlink or Ahrefs movement is proved.
 
+Wave 63 adds no P1 route. VICE is P2 despite a direct Dream:ON domain link
+because that hands-on precedent is ten years old and the current official route
+is reserved for authored journalism pitches rather than factual product or
+dataset notes. Authority Magazine's Oniri interview is P2 because its exact
+Medium URL currently returns HTTP 403 with a `noindex, nofollow` challenge, so
+the page, direct-link attributes, operator and compatible route cannot be
+verified from public evidence. Wake TF Up / Dream Revolution and Forbes were
+deduplicated against existing publisher routes. The register now contains 287
+routes: 3 P0, 73 P1, 210 P2 and 1 P3. No email, form, account, pitch,
+manuscript, attachment, product data, payment or publication action was used,
+and no backlink or Ahrefs movement is proved.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer

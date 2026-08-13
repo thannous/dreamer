@@ -1689,6 +1689,21 @@ Evidence is in
 contains 285 routes: 3 P0, 73 P1, 208 P2 and 1 P3. No external action or new
 backlink outcome occurred.
 
+### Editorial discovery wave 63 — 2026-08-14
+
+No new route passed the strict P1 gate. VICE's live first-person lucid-app test
+directly links Dream:ON, but the precedent is ten years old and its current
+official route is for original writer pitches rather than product or dataset
+notes. Authority Magazine's Oniri interview currently returns HTTP 403 with a
+`noindex, nofollow` challenge, preventing fresh verification of the exact page,
+direct product link, operator and compatible editorial route.
+
+Wake TF Up / Dream Revolution and Forbes were deduplicated against existing
+publisher routes. Evidence is in
+`marketing/seo/editorial-discovery-wave-63-2026-08-14.md`. The register now
+contains 287 routes: 3 P0, 73 P1, 210 P2 and 1 P3. No external action or new
+backlink outcome occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
