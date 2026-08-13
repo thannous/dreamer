@@ -153,7 +153,7 @@
 
 <h2 id="what-children-dream">What Do Children Dream About?</h2>
 <p>
-                    What children dream about shifts dramatically as they grow. While adults often dream about work, relationships, and daily concerns, younger children inhabit a different dreamscape, populated by the things that matter most in their world.
+                    What children dream about shifts dramatically as they grow. While adults often <a class="text-dream-salmon hover:underline" href="stress-dreams-work">dream about work</a>, relationships, and daily concerns, younger children inhabit a different dreamscape, populated by the things that matter most in their world.
                 </p>
 <h3>Ages 3-5: Animals and familiar settings</h3>
 <p>
