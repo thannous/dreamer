@@ -49,6 +49,7 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j27-ranking-expansion-execution-2026-08-11.md`](./j27-ranking-expansion-execution-2026-08-11.md) : journal du chantier `turtle` → `crocodile` → `lice`, séparation des états Git/publics et portes d'autorisation des leviers différés.
 - [`j28-gsc-indexation-triage-2026-08-12.md`](./j28-gsc-indexation-triage-2026-08-12.md) : tri du premier cas parmi les 254 URL, contradiction couverture/performance GSC, lien contextuel DE publié et preuves Git/CI/Cloudflare/HTTP.
 - [`j28-actionable-levers-execution-2026-08-12.md`](./j28-actionable-levers-execution-2026-08-12.md) : exécution de l'optimisation `coche`, validation GSC/Ahrefs et préparation des cinq propriétaires `scorpion`, avec coût et stop-gates.
+- [`j29-authority-recovery-2026-08-13.md`](./j29-authority-recovery-2026-08-13.md) : collecte durable nouveaux/perdus, pages par liens et ancres, séparation du spam et backlog d'autorité externe avec portes D2–D10A.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
 - [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27, Misabueso GSC et preuves brutes, périmètres synchronisés et règles de conservation.
@@ -130,3 +131,23 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 - Le propriétaire ES `coche` est optimisé sans changer URL, canonical ou corps ; le commit `240689ebc` est poussé et les nouvelles balises sont vérifiées sur l'alias public.
 - Le cluster `scorpion` est absent de GSC sur 28 jours et sur toute la fenêtre disponible depuis le 5 décembre 2025. Ahrefs confirme quatre KD de 0 à 1 et des volumes pays de 60 à 450 ; le marché DE conserve un KD non disponible faute de mise à jour Starter.
 - Le compteur général Ahrefs passe de 119 à 126 crédits utilisés. Les 50 suivis et le workspace Site Audit `3 627/10 000` restent inchangés.
+
+## Actualisation J29 au 13 août 2026
+
+- Ahrefs affiche DR `0.1`, UR `5`, 477 backlinks et 421 domaines référents ;
+  seuls 10 liens et 10 domaines sont suivis, et la majorité des nouveaux
+  signaux suivis reste du spam ou du PBN.
+- Le lot nouveaux/perdus, Best by links et ancres ne fait pas bouger le compteur
+  général : `126/200` avant et après. Rank Tracker reste à `50/50` et Site Audit
+  à `3 627/10 000`.
+- Aucun lien suivi perdu n'est visible sur le dernier mois. Les rapports Broken
+  backlinks et Link intersect restent verrouillés derrière un boost ; aucun
+  achat ou changement de plan n'est effectué.
+- GSC, complet au 11 août, affiche sur 28 jours `4.23K` clics, `501K`
+  impressions, CTR `0.8 %` et position `7.4`. Le rapport Links contient 148
+  liens externes vers quatre destinations ; la petite baisse ne prouve pas une
+  perte récupérable.
+- `D2` Marika Pech et `D5` DreamWell restent les deux actions externes
+  prioritaires, préparées mais non envoyées sans autorisation indépendante.
+  `D7` Atlas et ILTY a déjà reçu une relance autorisée dans un lot séparé et
+  passe en surveillance passive.
