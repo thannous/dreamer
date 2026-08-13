@@ -128531,9 +128531,7 @@
       "/politique-confidentialite.html /fr/politique-confidentialite 301",
       "/politique-confidentialite /fr/politique-confidentialite 301",
       "/suppression-compte.html /fr/suppression-compte 301",
-      "/suppression-compte /fr/suppression-compte 301",
-      "/it/blog/perché-sogniamo-la-scienza-dietro-le-tue-aventures-notturne /it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne 301",
-      "/it/blog/perché-sogniamo-la-scienza-dietro-le-tue-aventures-notturne.html /it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne 301"
+      "/suppression-compte /fr/suppression-compte 301"
     ],
     "vercel": {
       "redirects": [
