@@ -622,6 +622,25 @@ editorial objective. The original 2026-07-31 transmission remains recorded;
 no new mailbox or external action occurred. The register now contains 299
 routes: 3 P0, 74 P1, 221 P2 and 1 P3.
 
+Wave 69 adds The Irish Times as one P1 prepared but unsent route. Its live
+sleep article directly links Headspace and Calm with empty `rel`, while the
+publisher's official pages identify Irish Times DAC, The Irish Times Trust,
+independent editorial reporting lines, a Dublin address and the Health desk
+route. D14 offers the dated Noctalia snapshot only for possible future coverage
+and does not ask for a correction, inclusion or link. The 2022 precedent lowers
+expected response probability, so this is a narrow secondary authorization
+candidate rather than a priority override.
+
+SELF and Choosing Therapy fail the direct-domain gate because their comparable
+product actions use sponsored redirects. Washington University Psychiatry has
+a direct Day One precedent but no compatible current update route on its stale
+resource page. The University of Florida PAMI PDF cannot be safely retrieved
+through a trusted TLS chain. KapanLagi's known source cluster remains plain text
+with zero Noctalia anchors on the representative pages checked. The register
+now contains 304 routes: 3 P0, 75 P1, 225 P2 and 1 P3. No transmission,
+delivery, reply, acceptance, linked publication, traffic or Ahrefs movement is
+proved.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer

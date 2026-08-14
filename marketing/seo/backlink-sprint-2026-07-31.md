@@ -1800,6 +1800,31 @@ contains 299 routes: 3 P0, 74 P1, 221 P2 and 1 P3. No email, reply, form,
 account, attachment, payment, collaboration, publication, backlink, traffic or
 Ahrefs result occurred.
 
+### Editorial discovery wave 69 and D14 authorization pack — 2026-08-14
+
+The Irish Times is one new P1 route. Its live sleep article is HTTP 200,
+self-canonical and indexable, and directly links `headspace.com` and `calm.com`
+with empty `rel`. The publisher documents The Irish Times Trust, the board of
+The Irish Times DAC, independent editor and managing-director reporting lines,
+its Dublin address and the official `health@irishtimes.com` route. D14 offers
+the dated Noctalia snapshot only as a transparent source for future coverage;
+the 2022 article lowers expected response probability and is not framed as a
+correction or inclusion request. D14 remains unsent pending exact authorization
+and an immediate public and authenticated-mailbox stop gate.
+
+SELF, Choosing Therapy, Washington University Psychiatry and the University of
+Florida PAMI PDF are P2 respectively for sponsored affiliate redirects,
+internal sponsored redirects, a stale resource with no compatible update route
+and failed trusted TLS verification. Fresh checks of three representative
+KapanLagi pages confirm their source lists still print Noctalia's deep URL as
+plain text but expose no clickable `href`; the known cluster remains an unlinked
+mention rather than a backlink result. Evidence is in
+`marketing/seo/editorial-discovery-wave-69-2026-08-14.md` and
+`marketing/seo/backlink-authorization-pack-d14-2026-08-14.md`. The register now
+contains 304 routes: 3 P0, 75 P1, 225 P2 and 1 P3. No email, reply, form,
+account, attachment, payment, publication, backlink, traffic or Ahrefs result
+occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;
