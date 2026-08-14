@@ -812,3 +812,32 @@ Neither is authorized or sent. The register now contains 323 routes: 3 P0, 77
 P1, 242 P2 and 1 P3. No external action, public-results row or backlink/metric
 claim occurred. Detailed evidence is in
 `marketing/seo/editorial-discovery-wave-76-2026-08-14.md`.
+
+## Wave 77 decision — 2026-08-14
+
+Keep Atlas Workspace and ILTY at `followup_1_sent_waiting` with passive
+monitoring only. Fresh authenticated real-Chrome searches found exactly one
+two-message conversation for each route, both messages outgoing, with no
+incoming reply, bounce, opt-out or warning. Fresh public checks found no
+Noctalia citation. Do not send a second follow-up automatically.
+
+Keep the University of Utah medical-student wellness resource as a P1
+low-probability institutional hold. The exact page is canonical and indexable,
+links Sleep Cycle and Relax Melodies developer domains without `nofollow`, and
+the public university identifies the responsible program and manager. Its
+undated page and legacy HTTP product links lower probability, while Noctalia's
+non-medical boundary forbids positioning it as sleep treatment or efficacy
+evidence. Any future note still requires exact authorization and an immediate
+public, recipient and mailbox stop gate.
+
+Reject SleepingOnTheEdge, SleepWiseReviews and App Store Tracker at P2.
+SleepingOnTheEdge exposes no direct app-domain link and no accountable operator
+identity or jurisdiction. SleepWise's commercial anchors are Amazon affiliate
+destinations and its publisher identity remains unverifiable. App Store Tracker
+uses store-only product links and identifies only first-name builders in Europe.
+
+Keep D15 Service95 and D12 Woman & Home as the next minimal authorization pair.
+Neither is authorized or sent. The register now contains 327 routes: 3 P0, 78
+P1, 245 P2 and 1 P3. No external action, public-results row or backlink/metric
+claim occurred. Detailed evidence is in
+`marketing/seo/editorial-discovery-wave-77-2026-08-14.md`.

@@ -1990,3 +1990,29 @@ anonymous 2016 page. Coach's 2018 product links are sponsored, nofollow or store
 links. The register now contains 323 routes: 3 P0, 77 P1, 242 P2 and 1 P3. No
 external action or backlink/metric result occurred. Evidence is in
 `marketing/seo/editorial-discovery-wave-76-2026-08-14.md`.
+
+### Editorial discovery wave 77 — 2026-08-14
+
+Fresh authenticated real-Chrome Zimbra checks found the Atlas Workspace and
+ILTY threads unchanged: each contains exactly two outgoing messages and no
+incoming reply, bounce, opt-out or warning. Their public comparison pages remain
+HTTP 200, self-canonical and indexable with zero Noctalia mentions. Both routes
+stay `followup_1_sent_waiting` and passive-only; no second automatic follow-up
+is allowed.
+
+The University of Utah medical-student wellness resource is one new P1
+low-probability hold. Its canonical indexable page directly links Sleep Cycle
+and Relax Melodies developer domains without `nofollow`, and the public
+university identifies the responsible wellness program and manager. The page is
+undated, uses several legacy HTTP product URLs and cannot frame Noctalia as a
+sleep treatment or efficacy tool, so the route remains behind D15 Service95 and
+D12 Woman & Home and is neither authorized nor sent.
+
+SleepingOnTheEdge, SleepWiseReviews and App Store Tracker are three P2
+exclusions. The first exposes no direct app-domain link and lacks a responsible
+operator identity. SleepWise exposes only Amazon affiliate destinations and no
+verifiable legal identity or jurisdiction. App Store Tracker uses only
+`apps.apple.com` product actions and identifies its builders and jurisdiction
+too imprecisely. The register now contains 327 routes: 3 P0, 78 P1, 245 P2 and
+1 P3. No external action or backlink/metric result occurred. Evidence is in
+`marketing/seo/editorial-discovery-wave-77-2026-08-14.md`.
