@@ -1937,3 +1937,18 @@ interview subject. Evidence is in
 `marketing/seo/editorial-discovery-wave-73-2026-08-14.md`. The register now
 contains 314 routes: 3 P0, 76 P1, 234 P2 and 1 P3. No external action or
 backlink/metric result occurred.
+
+### Editorial discovery wave 74 — 2026-08-14
+
+Mattress Clarity, Maeve Magazine and mindbodygreen are three new P2 exclusions.
+Mattress Clarity has an accountable United States operator and a named news-tip
+route, but its current sleep-app guide links no comparable developer domain.
+Maeve's indexable guide exposes zero external links while all four advertised
+institutional pages return HTTP 404. mindbodygreen has accountable editorial
+standards and a submissions route, but its dream-journal guide names no app and
+links no comparable product domain.
+
+None displaces the prepared D15 Service95 and D12 Woman & Home authorization
+pair. The register now contains 317 routes: 3 P0, 76 P1, 237 P2 and 1 P3.
+No external action or backlink/metric result occurred. Evidence is in
+`marketing/seo/editorial-discovery-wave-74-2026-08-14.md`.

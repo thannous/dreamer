@@ -748,3 +748,20 @@ anchor. Keep the public-results log unchanged.
 The prospect register now contains 314 routes: 3 P0, 76 P1, 234 P2 and 1 P3.
 No external action or backlink/metric claim occurred. Detailed evidence is in
 `marketing/seo/editorial-discovery-wave-73-2026-08-14.md`.
+
+## Wave 74 decision — 2026-08-14
+
+Do not advance Mattress Clarity, Maeve Magazine or mindbodygreen. Mattress
+Clarity has a named news team, official route and accountable Pillar4 Media LLC
+operator, but its current sleep-app guide exposes no direct comparable product
+domain. Maeve's current guide exposes zero external anchors, and its advertised
+About, Contact, Privacy Policy and Terms pages all return HTTP 404. The current
+mindbodygreen dream-journal guide names no app and exposes no comparable
+product-domain citation, despite the publisher's accountable editorial process
+and official submissions route.
+
+Keep D15 Service95 and D12 Woman & Home as the next minimal authorization pair;
+wave 74 adds no route that should displace them. Neither route is authorized or
+sent. The register now contains 317 routes: 3 P0, 76 P1, 237 P2 and 1 P3. No
+external action, public-results row or backlink/metric claim occurred. Detailed
+evidence is in `marketing/seo/editorial-discovery-wave-74-2026-08-14.md`.
