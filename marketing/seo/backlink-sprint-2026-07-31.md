@@ -2154,3 +2154,31 @@ non-indexable citations. The register now contains 339 routes: 3 P0, 85 P1,
 250 P2 and 1 P3. No email, form, account, payment, publication, public-results
 row, quality backlink or metric claim occurred. Evidence is in
 `marketing/seo/editorial-discovery-wave-82-2026-08-14.md`.
+
+### Editorial discovery wave 83 — 2026-08-14
+
+KSQD / The Dream Journal is revalidated as the strongest next dream-specific
+route. Its HTTP-200 self-canonical DreamWell founder episode directly links the
+product domain without `nofollow`; the show remains current through August 2026
+and publishes Katherine Bell's official address. KSQD identifies accountable
+California nonprofit operator Natural Bridges Media, independently corroborated
+by the FCC.
+
+D17 now contains one bounded founder-contribution note about Android dream
+capture, privacy and the limits of automated interpretation. It discloses
+Noctalia's ownership and inclusion in the transparent snapshot and requests no
+link, coverage, inclusion, anchor, dofollow, placement, ranking or guarantee.
+It is prepared but not authorized or sent; the exact route-specific phrase and
+immediate mailbox stop gate remain mandatory.
+
+QAwerk, Worldmetrics, Brent Council and Podfeet are recorded at P2 for,
+respectively, nofollow plus a commercial service funnel; paid placements,
+sponsored nofollow links and operator gaps; sensitive SEND/minors scope and a
+provider directory precedent; and a stale Apple-platform mismatch plus current
+HTTP 403.
+
+The register now contains 343 routes: 3 P0, 85 P1, 254 P2 and 1 P3. D17 is the
+strongest next thematic authorization choice; D15 and D12 remain separate
+prepared choices. No email, form, account, payment, publication, public-results
+row, quality backlink or metric claim occurred. Evidence is in
+`marketing/seo/editorial-discovery-wave-83-2026-08-14.md`.

@@ -981,3 +981,30 @@ choices. Neither is authorized or sent. The register now contains 339 routes:
 3 P0, 85 P1, 250 P2 and 1 P3. No external action or public-results row occurred.
 Detailed evidence is in
 `marketing/seo/editorial-discovery-wave-82-2026-08-14.md`.
+
+## Wave 83 decision — 2026-08-14
+
+Promote the already-qualified KSQD / The Dream Journal route to exact prepared
+choice D17. Its current DreamWell founder episode provides the strongest
+dream-specific direct-product precedent in the ready set, the show remains
+active and its public host route plus independently corroborated nonprofit
+operator evidence pass the accountability and non-Russian gates.
+
+D17 is prepared, not authorized or sent. It offers a bounded founder
+conversation about Android dream capture, privacy and interpretation limits,
+with ownership and dataset conflict disclosed. It requests no link, inclusion,
+coverage, anchor, dofollow, placement, ranking or guarantee. Any transmission
+requires the exact D17 authorization plus immediate public, recipient and full
+authenticated-mailbox stop gates. Any reply or interview scheduling requires a
+new explicit decision; never follow up automatically.
+
+Keep QAwerk, Worldmetrics, Brent Council and Podfeet at P2. Respectively, they
+fail link attribute and commercial independence; paid-placement, sponsored-link
+and accountable-operator gates; sensitive SEND/minors scope and editorial
+independence; and platform eligibility, recency and current raw retrieval.
+
+D17 is the strongest next thematic authorization choice. D15 Service95 and D12
+Woman & Home remain separate prepared choices; authorization for one never
+authorizes another. The register now contains 343 routes: 3 P0, 85 P1, 254 P2
+and 1 P3. No external action or public-results row occurred. Detailed evidence
+is in `marketing/seo/editorial-discovery-wave-83-2026-08-14.md`.
