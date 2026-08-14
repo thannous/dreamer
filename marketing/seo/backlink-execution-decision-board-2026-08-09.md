@@ -707,3 +707,23 @@ D12 event, but that is not authenticated-mailbox proof. Any authorized send
 still requires the full immediate public and mailbox stop gate. No transmission
 occurred. Exact wording and evidence are in
 `marketing/seo/backlink-next-authorization-lot-2026-08-14.md`.
+
+## Wave 72 decision — 2026-08-14
+
+Keep Atlas Workspace and ILTY at `followup_1_sent_waiting` with no automatic
+second follow-up. Their live pages still contain no Noctalia citation, while the
+current mailbox state is indeterminate because the real-Chrome Zimbra session
+is logged out. The outreach log now preserves the already-observed 02:35 and
+02:36 CEST first-follow-up transmission timestamps.
+
+Keep Yahoo Health at P2. A current official author address now exists, but the
+article's main product actions are affiliate redirects and its direct Slumber
+link is `nofollow`; contactability does not override the link-precedent gate.
+Reject Technical Ustad at P2 because its exact dream-app guide is store-heavy,
+the only direct product-domain citation is incidental, and no accountable legal
+operator or jurisdiction is published. Its official contact page also rejects
+collaborations.
+
+The register remains at 312 routes: 3 P0, 77 P1, 231 P2 and 1 P3. No external
+action, public-results row or backlink/metric claim occurred. Detailed evidence
+is in `marketing/seo/editorial-discovery-wave-72-2026-08-14.md`.

@@ -1896,3 +1896,22 @@ route-specific authorization and immediately before sending. Neither note was
 sent, and no downstream backlink or metric result is claimed. The ranking,
 limitations and exact separate authorization statements are recorded in
 `marketing/seo/backlink-next-authorization-lot-2026-08-14.md`.
+
+### Editorial discovery wave 72 — 2026-08-14
+
+The outreach log now reflects the already-verified Atlas Workspace and ILTY
+first-follow-up transmissions at 02:35 and 02:36 CEST on 2026-08-13. Fresh
+public checks found both comparison pages HTTP 200, self-canonical and
+`index, follow`, with no Noctalia mention. The current real-Chrome Zimbra page
+was logged out, so reply, bounce and opt-out state is indeterminate; no
+credential was entered and no second follow-up was sent.
+
+Yahoo Health remains P2 despite a newly verified official author address: its
+main comparable-product actions use Yahoo affiliate redirects and the direct
+Slumber link is `nofollow`. Technical Ustad remains a P2 rejection because its
+dream-app guide is store-heavy, its only direct product-domain reference is an
+incidental Day One pricing link, and no legal operator or jurisdiction is
+published; its contact page also refuses collaborations. Evidence is in
+`marketing/seo/editorial-discovery-wave-72-2026-08-14.md`. The register remains
+at 312 routes: 3 P0, 77 P1, 231 P2 and 1 P3. No external action or
+backlink/metric result occurred.
