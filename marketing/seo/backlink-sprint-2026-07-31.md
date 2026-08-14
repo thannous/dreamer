@@ -2016,3 +2016,32 @@ verifiable legal identity or jurisdiction. App Store Tracker uses only
 too imprecisely. The register now contains 327 routes: 3 P0, 78 P1, 245 P2 and
 1 P3. No external action or backlink/metric result occurred. Evidence is in
 `marketing/seo/editorial-discovery-wave-77-2026-08-14.md`.
+
+### Editorial discovery wave 78 — 2026-08-14
+
+A read-only competitor-backlink pass adds two P1 holds. IMAGE.ie publishes a
+current named-author dream article that is self-canonical and indexable and
+deep-links Elsewhere's `Food & Eating` atlas without `nofollow`. IMAGE
+Publications Limited, its Irish address, editorial mailbox and pitch policy are
+public. The link was supplied through an interview with an Elsewhere
+collaborator, so it proves editorial acceptance of a source-supplied deep link
+rather than an independent product review.
+
+Timing's current named-author Mac journaling comparison is self-canonical and
+indexable and links Rosebud plus multiple comparable product domains without
+`nofollow`. Timing Software GmbH publishes accountable German operator details
+and an official contact route. Noctalia is Android-only and is not eligible for
+the current Mac list, so the route is held only for a future cross-platform or
+Android source contribution.
+
+Fresh authenticated Ahrefs UI evidence also lists the exact Wirecutter review
+as a live Rosebud referrer, but the current public page remains unavailable
+under the browser-safety gate. Secondary index evidence does not clear its
+canonical, indexability, rendered rel or contact-policy requirements, so it
+remains P2. The Ahrefs API connector had zero units and no fresh Noctalia DR
+measure was taken.
+
+Neither new P1 displaces D15 Service95 or D12 Woman & Home. The register now
+contains 329 routes: 3 P0, 80 P1, 245 P2 and 1 P3. No external action or
+backlink/metric result occurred. Evidence is in
+`marketing/seo/editorial-discovery-wave-78-2026-08-14.md`.

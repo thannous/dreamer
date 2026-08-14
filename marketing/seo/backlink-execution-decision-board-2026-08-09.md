@@ -841,3 +841,33 @@ Neither is authorized or sent. The register now contains 327 routes: 3 P0, 78
 P1, 245 P2 and 1 P3. No external action, public-results row or backlink/metric
 claim occurred. Detailed evidence is in
 `marketing/seo/editorial-discovery-wave-77-2026-08-14.md`.
+
+## Wave 78 decision — 2026-08-14
+
+Keep IMAGE.ie as a P1 source-supplied-precedent hold. Its current named-author
+dream article is self-canonical and indexable and deep-links Elsewhere's atlas
+without `nofollow`; IMAGE Publications Limited, its Irish address, official
+editorial mailbox and pitch policy are public. Because the link followed an
+interview with an Elsewhere collaborator, it is weaker than an independent
+product-review precedent. Any future note must disclose Noctalia's compiler and
+included-product roles and requires exact route authorization plus an immediate
+public, recipient and mailbox stop gate.
+
+Keep Timing as a P1 platform-mismatch hold. Its current Mac journaling roundup
+links multiple comparable product domains without `nofollow`, and Timing
+Software GmbH plus the named author are accountable. Noctalia is Android-only,
+so it is not eligible for the current list; only a future broader or Android
+source contribution could be relevant. Any transmission remains separately
+gated and unauthorized.
+
+Do not promote Wirecutter from P2. Authenticated Ahrefs lists its exact 2026
+review as a live Rosebud referrer, but the current public page remains
+unavailable under the browser-safety gate. Secondary index evidence cannot
+verify the current canonical, indexability, rendered rel or contact policy. The
+Ahrefs API connector had zero units and no fresh Noctalia DR measure occurred.
+
+Keep D15 Service95 and D12 Woman & Home as the next minimal authorization pair.
+Neither is authorized or sent. The register now contains 329 routes: 3 P0, 80
+P1, 245 P2 and 1 P3. No external action, public-results row or backlink/metric
+claim occurred. Detailed evidence is in
+`marketing/seo/editorial-discovery-wave-78-2026-08-14.md`.
