@@ -1008,3 +1008,30 @@ Woman & Home remain separate prepared choices; authorization for one never
 authorizes another. The register now contains 343 routes: 3 P0, 85 P1, 254 P2
 and 1 P3. No external action or public-results row occurred. Detailed evidence
 is in `marketing/seo/editorial-discovery-wave-83-2026-08-14.md`.
+
+## Wave 84 decision — 2026-08-14
+
+Keep LEGE ARTIS as a P1 academic dream-research long-horizon hold. Its current
+Slovak university-journal identity and public editorial routes pass the
+accountability and non-Russian gates, while its 2022 dream-narrative paper
+directly cites `dreamjournal.net` and identifies its Ukrainian university
+authors.
+
+Do not authorize the route now. The published article is closed and the
+Noctalia 11-app snapshot is descriptive rather than empirical. Never ask the
+journal or authors to amend the paper, add a citation, link to Noctalia or reach
+a favorable conclusion. Any future contribution may only offer the dated public
+taxonomy and CSV as optional background for independent future research, with
+ownership and Noctalia's inclusion disclosed.
+
+Keep the CU Boulder dream-informatics paper and Slapenisgoed sleep-app guide at
+P2. Their accountable identities and topic fit do not compensate for the lack
+of an independent direct-product-domain precedent: the inspected comparable
+destinations are store-only, unlinked names or vendor technical documentation.
+
+D17 remains the strongest next thematic authorization choice. D15 and D12 are
+separate choices, and none is authorized or sent. The register now contains 346
+routes: 3 P0, 86 P1, 256 P2 and 1 P3. The passive Atlas/ILTY mailbox stop-check
+remains unresolved at the official OVH login screen; no credential or mailbox
+action was used. No external action or public-results row occurred. Detailed
+evidence is in `marketing/seo/editorial-discovery-wave-84-2026-08-14.md`.

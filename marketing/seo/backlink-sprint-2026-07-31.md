@@ -2182,3 +2182,33 @@ strongest next thematic authorization choice; D15 and D12 remain separate
 prepared choices. No email, form, account, payment, publication, public-results
 row, quality backlink or metric claim occurred. Evidence is in
 `marketing/seo/editorial-discovery-wave-83-2026-08-14.md`.
+
+### Editorial discovery wave 84 — 2026-08-14
+
+LEGE ARTIS is one new P1 academic dream-research hold. Its current journal and
+contact pages identify the peer-reviewed publication of the University of SS
+Cyril and Methodius in Trnava, Slovakia. Its 2022 paper directly cites
+`dreamjournal.net`, concerns dream reports and names two V.N. Karazin Kharkiv
+National University authors in Ukraine. This passes the accountable,
+non-Russian and direct-product-domain precedent gates.
+
+The route is not ready for outreach. The article was received in 2021 and
+reviewed in 2022; it is closed and must never be asked to add or amend a
+citation. The Noctalia snapshot is a descriptive, product-compiled taxonomy,
+not an empirical research corpus. A future note could only offer the dated CSV
+as optional background for independent future research, with ownership and
+inclusion disclosed and no request for a citation, link or conclusion. Keep it
+behind D17, D15 and D12.
+
+The CU Boulder personal-dream-informatics paper and Slapenisgoed sleep-app guide
+are recorded at P2. The former names comparable apps but cites Dreamboard only
+as an Apple App Store item. The latter sends product recommendations to stores;
+its inspected vendor-domain link is supporting technical documentation rather
+than a product recommendation, and the page dates from 2019.
+
+The register now contains 346 routes: 3 P0, 86 P1, 256 P2 and 1 P3. No email,
+form, account, credential, payment, publication, public-results row, quality
+backlink or metric claim occurred. The passive Atlas/ILTY mailbox stop-check
+could not be completed because the official OVH webmail was at its login screen;
+no credential was entered and no mailbox action occurred. Evidence is in
+`marketing/seo/editorial-discovery-wave-84-2026-08-14.md`.
