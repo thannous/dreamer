@@ -1745,6 +1745,27 @@ found no new independent Noctalia citation. Evidence is in
 contains 289 routes: 3 P0, 74 P1, 211 P2 and 1 P3. No external action or new
 backlink outcome occurred.
 
+### Editorial discovery wave 66 and D13 authorization pack — 2026-08-14
+
+Women's Health is one new P1 route. Its current mental-health app guide is HTTP
+200, self-canonical and `index, follow`, and directly links `calm.com` without
+an affiliate redirect. The publication identifies Hearst Magazines, its New
+York address, current editorial team, reporting standards and editorial
+independence; its About page explicitly accepts editorial ideas at
+`whsubmissions@hearst.com`. D13 offers the dated Noctalia snapshot as a
+transparent source for a future app-guide update, while separating dream
+journaling from diagnosis or sleep treatment. It remains unsent pending exact
+authorization and an immediate public and authenticated-mailbox stop gate.
+
+Healthline, Prevention and Good Housekeeping are P2. Healthline's published
+reader route is for corrections rather than outside-product ideas. Prevention's
+current Calm precedent uses an affiliate redirect, and Good Housekeeping's
+app-guide links are `nofollow` affiliate redirects to store pages. Evidence is
+in `marketing/seo/editorial-discovery-wave-66-2026-08-14.md` and
+`marketing/seo/backlink-authorization-pack-d13-2026-08-14.md`. The register now
+contains 293 routes: 3 P0, 75 P1, 214 P2 and 1 P3. No external action or new
+backlink outcome occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

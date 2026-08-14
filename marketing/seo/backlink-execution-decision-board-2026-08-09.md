@@ -580,6 +580,19 @@ an authenticated mailbox. The register now contains 289 routes: 3 P0, 74 P1,
 211 P2 and 1 P3. No email, reply, form, account, attachment, payment,
 publication, backlink or Ahrefs result occurred.
 
+Wave 66 adds Women's Health as one P1 prepared but unsent route. Its current
+mental-health app guide is HTTP 200, self-canonical and indexable, and directly
+links `calm.com` without an affiliate redirect. Women's Health identifies
+Hearst Magazines, its New York address, current editorial team, reporting and
+independence standards, and explicitly accepts editorial ideas at
+`whsubmissions@hearst.com`. D13 offers the dated Noctalia snapshot only as a
+transparent source for a future app-guide update and preserves the non-clinical
+boundary. Healthline, Prevention and Good Housekeeping are P2 respectively for
+a reader-correction route mismatch, an affiliate-redirect-only precedent and a
+store-only affiliate precedent. The register now contains 293 routes: 3 P0,
+75 P1, 214 P2 and 1 P3. No email, form, account, attachment, payment,
+publication, backlink or Ahrefs result occurred.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer
