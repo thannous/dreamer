@@ -1844,3 +1844,18 @@ Targets for the first 30 days after authorized execution:
 - at least 2 topical editorial links;
 - at least 2 deep links;
 - zero paid, automated, reciprocal or manipulated links.
+
+### Ahrefs quality reconciliation — 2026-08-14 04:09 CEST
+
+The authenticated Noctalia project now displays DR `0`, 419 referring domains
+(`+151` over 30 days), 4.6K organic traffic (`+3.1K`) and 974 organic keywords
+(`+271`). The connected API has zero remaining units, while the real-Chrome UI
+remains available; those are separate access states.
+
+The first 50 all-domain rows sorted by DR contain 47 domains explicitly marked
+`SPAM` by Ahrefs. The three unlabelled rows are already-known PeerPush,
+LaunchLlama and Tham Hiem Mekong sources, respectively a product listing, a
+directory ecosystem and a low-trust unrelated source. None is a newly acquired
+independent thematic editorial domain. The `+151` raw index change is therefore
+not attributed to outreach, and no public-results row is added. Full evidence
+is in `marketing/seo/backlink-measurement-check-2026-08-14-0409.md`.

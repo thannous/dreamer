@@ -653,3 +653,18 @@ proved.
 5. Measure Ahrefs DR, referring domains and GSC/referral outcomes separately;
    do not attribute a metric movement to a send, commit or deployment without
    evidence.
+
+## Wave 70 measurement decision — 2026-08-14 04:09 CEST
+
+The authenticated Ahrefs project displays DR `0`, 419 referring domains, 4.6K
+organic traffic and 974 organic keywords. Its DR-sorted all-domain report marks
+47 of the first 50 rows as `SPAM`. The three remaining rows are already-known
+PeerPush, LaunchLlama and Tham Hiem Mekong sources; none passes as a newly
+acquired independent thematic editorial domain. The current `+151` 30-day
+referring-domain movement is a raw index count, not sprint attribution.
+
+No external action occurred, no public-results row changes, and Atlas Workspace
+and ILTY remain passive-monitor-only. Continue allocating effort to accountable
+sleep, dream and journaling publishers with direct comparable-domain precedent.
+The detailed evidence is in
+`marketing/seo/backlink-measurement-check-2026-08-14-0409.md`.
