@@ -2045,3 +2045,36 @@ Neither new P1 displaces D15 Service95 or D12 Woman & Home. The register now
 contains 329 routes: 3 P0, 80 P1, 245 P2 and 1 P3. No external action or
 backlink/metric result occurred. Evidence is in
 `marketing/seo/editorial-discovery-wave-78-2026-08-14.md`.
+
+### Editorial discovery wave 79 — 2026-08-14
+
+Fresh public checks found Atlas Workspace and ILTY HTTP 200, self-canonical,
+indexable and still without a Noctalia mention. Real Chrome reached the OVH
+login page with the mailbox identity prefilled but without an authenticated
+session; mailbox reply, bounce and opt-out state is therefore indeterminate.
+No credential was entered and no second follow-up was sent.
+
+Authenticated Ahrefs Site Explorer showed DR 0.1, 480 backlinks, 425 referring
+domains, 4.7K estimated organic traffic and 977 organic keywords at 07:59 CEST.
+The earlier 04:09 reading showed DR 0, while 2026-08-10 and 2026-08-13 had
+already shown 0.1. Treat this as an oscillating return to the earlier level, not
+a durable or causal gain; the visible profile remains dominated by spam and no
+new quality editorial domain was verified.
+
+Casey Douglass and ProWritingAid are two new P1 holds. Casey's independent
+hands-on Rosebud review directly links the product and privacy deep page without
+`nofollow`, and his public review policy plus Norfolk identity support a real
+review route. Its age, low authority, general-AI rather than dream focus and
+broader horror/adult context keep it behind D15 and D12. ProWritingAid's current
+twelve-app guide links comparable developer domains without `nofollow`, while
+Orpheus Technology Ltd is accountable under England and Wales law; its team
+byline and general-support-only contact route also keep it behind D15 and D12.
+
+BURO Serbia is excluded at P2 because BURO's own history identifies the global
+brand as founded in Russia, the local Serbian legal operator is not separately
+identified and the Oniri precedent is founder-supplied. Sleepgram is rejected
+at P2 because its Oniri deep links are works-cited sources on ecommerce content,
+with no named legal operator or editorial route. The register now contains 333
+routes: 3 P0, 82 P1, 247 P2 and 1 P3. No form, email, account, payment,
+publication, new quality backlink, referral session or causal DR gain occurred.
+Evidence is in `marketing/seo/editorial-discovery-wave-79-2026-08-14.md`.

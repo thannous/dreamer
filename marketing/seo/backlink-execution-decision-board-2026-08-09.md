@@ -871,3 +871,36 @@ Neither is authorized or sent. The register now contains 329 routes: 3 P0, 80
 P1, 245 P2 and 1 P3. No external action, public-results row or backlink/metric
 claim occurred. Detailed evidence is in
 `marketing/seo/editorial-discovery-wave-78-2026-08-14.md`.
+
+## Wave 79 decision — 2026-08-14
+
+Keep Atlas Workspace and ILTY at `followup_1_sent_waiting` and passive-only.
+Their public comparisons remain HTTP 200, canonical and indexable with zero
+Noctalia mention. The OVH session is logged out, so mailbox outcome is
+indeterminate and cannot justify any second follow-up.
+
+Record the fresh Ahrefs DR `0.1` reading separately from acquisition evidence.
+The 04:09 reading was `0`, but earlier 2026-08-10 and 2026-08-13 readings were
+already `0.1`; the current value is not yet durable and the spam-heavy profile
+prevents causal attribution.
+
+Keep Casey Douglass as a P1 independent-review, low-authority hold. His
+hands-on Rosebud review directly links product and privacy pages, his review
+policy preserves disclosure and his public form accepts review requests. The
+route is older, broader than dream journaling and lower authority, so it stays
+behind D15 and D12.
+
+Keep ProWritingAid as a P1 corporate-editorial, general-contact hold. Its
+current twelve-app guide directly links comparable developer domains and its UK
+operator is accountable, but the team byline and absence of a dedicated
+editorial route reduce actionability.
+
+Exclude BURO Serbia at P2 under the Russian-origin gate and do not reopen it.
+Reject Sleepgram at P2 because its Oniri links are research citations on
+ecommerce content and its legal-operator and editorial-route gates fail.
+
+Keep D15 Service95 and D12 Woman & Home as the next separate authorization
+choices. Neither is authorized or sent. The register now contains 333 routes:
+3 P0, 82 P1, 247 P2 and 1 P3. No external action or public-results row occurred.
+Detailed evidence is in
+`marketing/seo/editorial-discovery-wave-79-2026-08-14.md`.
