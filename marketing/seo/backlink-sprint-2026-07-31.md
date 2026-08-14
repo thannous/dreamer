@@ -1781,6 +1781,25 @@ in `marketing/seo/editorial-discovery-wave-67-2026-08-14.md`. The register now
 contains 295 routes: 3 P0, 75 P1, 216 P2 and 1 P3. No email, form, account,
 attachment, payment, publication, backlink or Ahrefs result occurred.
 
+### Editorial discovery wave 68 — 2026-08-14
+
+No new P1 route passed every gate. TIME has a direct journaling-app-domain
+precedent, but only a letters-to-the-editor route and a current raw HTTP 406.
+iMore uses affiliate redirects to App Store pages. Healthy Capital District's
+exact self-care apps PDF fails trusted TLS verification. Mindful owns the
+leading comparable product promoted in its current guide and pairs its wider
+collaborator route with mutual amplification. All four are P2.
+
+Real Chrome also revalidated the previously contacted World of Lucid Dreaming
+app index. The live page explicitly says app developers provide the detailed
+rundowns, so the route is reclassified P2 and closed to follow-up under the
+independent-editorial objective. The original transparent developer-walkthrough
+email remains the only proved transmission. Evidence is in
+`marketing/seo/editorial-discovery-wave-68-2026-08-14.md`. The register now
+contains 299 routes: 3 P0, 74 P1, 221 P2 and 1 P3. No email, reply, form,
+account, attachment, payment, collaboration, publication, backlink, traffic or
+Ahrefs result occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

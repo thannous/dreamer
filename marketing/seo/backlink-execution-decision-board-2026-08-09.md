@@ -604,6 +604,24 @@ contact routes, but the guide exposes no direct comparable app-domain links.
 Both routes are P2. The register now contains 295 routes: 3 P0, 75 P1, 216 P2
 and 1 P3. No external action or new backlink outcome occurred.
 
+Wave 68 adds no P1. TIME directly cites three journaling-app domains, but its
+published editorial route is specifically for letters responding to coverage
+and the raw page currently returns HTTP 406. iMore's live journaling guide uses
+affiliate redirects to App Store pages rather than direct product domains.
+Healthy Capital District is an accountable New York nonprofit, but its exact
+self-care apps PDF fails trusted TLS verification. Mindful's live app guide and
+operator are verifiable, but Mindfulness United owns both the publication and
+the leading `mindfulness.com` product, while its collaborator model centers
+mutual amplification. All four new routes are P2.
+
+A real-Chrome recheck also showed that the already-contacted World of Lucid
+Dreaming index explicitly delegates the detailed app rundowns to app
+developers. That route is reclassified from P1 to P2 and closed to follow-up
+because a developer-authored walkthrough does not meet the current independent
+editorial objective. The original 2026-07-31 transmission remains recorded;
+no new mailbox or external action occurred. The register now contains 299
+routes: 3 P0, 74 P1, 221 P2 and 1 P3.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer
