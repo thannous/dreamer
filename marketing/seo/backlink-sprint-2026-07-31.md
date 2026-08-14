@@ -2129,3 +2129,28 @@ The register now contains 335 routes: 3 P0, 84 P1, 247 P2 and 1 P3. No email,
 form, account, payment, publication, public-results row, quality backlink or
 metric claim occurred. Evidence is in
 `marketing/seo/editorial-discovery-wave-81-2026-08-14.md`.
+
+### Editorial discovery wave 82 — 2026-08-14
+
+AFC / Actors Fund of Canada is one new P1 institutional refresh hold. Its
+HTTP-200, self-canonical, index-follow journaling resource directly links Day
+One, Journey, Grid Diary and Daylio product domains without `nofollow`. AFC
+publishes accountable Canadian operator, staff, address and charity evidence,
+which Government of Canada and CanadaHelps sources independently corroborate.
+
+The route is not ready for outreach: the resource dates from 2022 and covers
+broad journaling rather than dreams. Any future note may offer only the Android
+voice-dream-journal deep page as an optional example, disclose ownership and
+avoid any inclusion, link, anchor, treatment or favorable-outcome request. Keep
+it behind D15 Service95 and D12 Woman & Home.
+
+XCN News, CBTIweb and Bustle are recorded at P2. XCN lacks an accountable
+operator and discloses sponsorship; CBTIweb is a clinical provider-training
+resource with a support-only route; Bustle's named review links only to the
+Apple App Store rather than a comparable product domain.
+
+The fresh public verifier remains 6 followed, 5 reconciled nofollow and 3
+non-indexable citations. The register now contains 339 routes: 3 P0, 85 P1,
+250 P2 and 1 P3. No email, form, account, payment, publication, public-results
+row, quality backlink or metric claim occurred. Evidence is in
+`marketing/seo/editorial-discovery-wave-82-2026-08-14.md`.

@@ -957,3 +957,27 @@ choices. Neither is authorized or sent. The register now contains 335 routes:
 3 P0, 84 P1, 247 P2 and 1 P3. No external action or public-results row occurred.
 Detailed evidence is in
 `marketing/seo/editorial-discovery-wave-81-2026-08-14.md`.
+
+## Wave 82 decision — 2026-08-14
+
+Keep AFC / Actors Fund of Canada as a P1 independent institutional-resource
+refresh hold. Its public journaling resource links multiple comparable product
+domains without `nofollow`, and its official plus independent Canadian evidence
+passes the accountability and non-Russian gates.
+
+Do not authorize the route yet. The resource dates from 2022 and broad
+journaling is weaker than the dream- and sleep-specific D15 and D12 routes. A
+future note may offer only the Noctalia voice-dream-journal deep page as an
+optional example, with ownership disclosed and no inclusion, link, anchor,
+treatment or favorable-outcome request.
+
+Keep XCN News, CBTIweb and Bustle at P2. Respectively, they fail accountable
+operator and sponsorship, clinical scope and editorial-route fit, and direct
+product-domain precedent. Do not let topic fit or publisher authority override
+those gates.
+
+Keep D15 Service95 and D12 Woman & Home as the next separate authorization
+choices. Neither is authorized or sent. The register now contains 339 routes:
+3 P0, 85 P1, 250 P2 and 1 P3. No external action or public-results row occurred.
+Detailed evidence is in
+`marketing/seo/editorial-discovery-wave-82-2026-08-14.md`.
