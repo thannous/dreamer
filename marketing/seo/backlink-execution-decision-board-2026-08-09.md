@@ -686,3 +686,24 @@ blog as a substitute for independent editorial precedent.
 The register now contains 312 routes: 3 P0, 77 P1, 231 P2 and 1 P3. No
 transmission, delivery, reply, acceptance, linked publication, traffic result or
 Ahrefs movement is proved.
+
+## Next authorization lot — 2026-08-14
+
+Reduce the prepared backlog to D15 Service95 and D12 Woman & Home, with separate
+route-specific authorization. D15 ranks first for exact dream-app topical fit
+and deep-link value despite its 2022 article date. D12 ranks second because its
+guide was updated in August 2025 and its named Health Channel Editor remains
+active in August 2026, improving the near-term response case despite the
+sleep-adjacent scope.
+
+Defer D16, D13 and D14. Their direct-domain precedents remain valid, but their
+contributor channel, broad submissions inbox or older general-health article
+lower the next-action score. D11 remains a longer-cycle contributed-article fit
+query rather than an editor-owned factual source note.
+
+Current public checks returned HTTP 200 for both referring pages and the
+Noctalia destination. Local outreach and results logs contain no exact D15 or
+D12 event, but that is not authenticated-mailbox proof. Any authorized send
+still requires the full immediate public and mailbox stop gate. No transmission
+occurred. Exact wording and evidence are in
+`marketing/seo/backlink-next-authorization-lot-2026-08-14.md`.

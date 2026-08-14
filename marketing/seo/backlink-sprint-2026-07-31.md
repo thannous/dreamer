@@ -1880,3 +1880,19 @@ Evidence is in `marketing/seo/editorial-discovery-wave-71-2026-08-14.md` and
 now contains 312 routes: 3 P0, 77 P1, 231 P2 and 1 P3. No email, form, account,
 attachment, payment, publication, backlink, traffic result or Ahrefs DR
 movement occurred.
+
+### Next authorization lot — 2026-08-14
+
+The prepared backlog is narrowed to two independently authorizable routes:
+D15 Service95 for exact dream-app topical fit and D12 Woman & Home for its
+current named health editor and August 2025 guide update. Both target the
+feature-snapshot deep link. D16 Happiful, D13 Women's Health, D14 The Irish
+Times Health and the longer-cycle D11 fit queries remain deferred.
+
+Fresh public checks returned HTTP 200 for both referring pages and the Noctalia
+destination. The local outreach and results logs contain no exact D15 or D12
+event; this does not replace the authenticated-mailbox stop gate required after
+route-specific authorization and immediately before sending. Neither note was
+sent, and no downstream backlink or metric result is claimed. The ranking,
+limitations and exact separate authorization statements are recorded in
+`marketing/seo/backlink-next-authorization-lot-2026-08-14.md`.
