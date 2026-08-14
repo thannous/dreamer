@@ -1766,6 +1766,21 @@ in `marketing/seo/editorial-discovery-wave-66-2026-08-14.md` and
 contains 293 routes: 3 P0, 75 P1, 214 P2 and 1 P3. No external action or new
 backlink outcome occurred.
 
+### Editorial discovery wave 67 — 2026-08-14
+
+No new P1 route passed every gate. The Independent's live mindfulness-app guide
+is indexable and directly links several comparable product domains, but current
+Companies House records retain Evgeny Lebedev as a director and register
+Sovereignty Media Limited as a person with significant control. The current UK
+Parliament register connects Lord Lebedev's shareholding in Sovereignty Media
+to its minority stake in the publisher. The route is therefore excluded under
+the campaign's absolute Russian-operator rule. Sleep Advisor is identifiable,
+current and contactable, but its healthy-sleep app guide exposes no direct
+comparable app-domain links. It fails the citation-precedent gate. Evidence is
+in `marketing/seo/editorial-discovery-wave-67-2026-08-14.md`. The register now
+contains 295 routes: 3 P0, 75 P1, 216 P2 and 1 P3. No email, form, account,
+attachment, payment, publication, backlink or Ahrefs result occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

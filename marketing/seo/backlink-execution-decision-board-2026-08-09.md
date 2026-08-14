@@ -593,6 +593,17 @@ store-only affiliate precedent. The register now contains 293 routes: 3 P0,
 75 P1, 214 P2 and 1 P3. No email, form, account, attachment, payment,
 publication, backlink or Ahrefs result occurred.
 
+Wave 67 adds no P1. The Independent's current mindfulness-app guide is a strong
+direct-domain precedent, but current Companies House records retain Evgeny
+Lebedev as a director and register Sovereignty Media Limited as a person with
+significant control. The current UK Parliament register links Lord Lebedev's
+shareholding in Sovereignty Media to its minority stake in the publisher. This
+fails the campaign's absolute Russian-operator exclusion. Sleep Advisor is an
+accountable Pillar4 Media publication with a current app guide and public
+contact routes, but the guide exposes no direct comparable app-domain links.
+Both routes are P2. The register now contains 295 routes: 3 P0, 75 P1, 216 P2
+and 1 P3. No external action or new backlink outcome occurred.
+
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
 2. Record only the authoritative sent or form-accepted state; do not infer
