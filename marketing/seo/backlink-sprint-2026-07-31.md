@@ -2103,3 +2103,29 @@ The register now contains 334 routes: 3 P0, 83 P1, 247 P2 and 1 P3. No email,
 form, account, payment, publication, public-results row, quality backlink or
 metric claim occurred. Evidence is in
 `marketing/seo/editorial-discovery-wave-80-2026-08-14.md`.
+
+### Editorial discovery wave 81 — 2026-08-14
+
+BEING Mental Health Consumers is one new P1 institutional migration hold. Its
+public *Introduction to Journaling* learner resource directly links Daylio,
+Day One, Journey and Balance product domains, while the current official
+contact page publishes a dedicated e-learning address. BEING is an accountable
+Australian company limited by guarantee and regulated charity, independently
+identified by NSW Government sources.
+
+The route is not ready for outreach: the e-learning platform is migrating, the
+resource dates from 2023 and its scope is broad journaling rather than dreams.
+Any future note may offer only the non-clinical Android voice-journaling deep
+page, with ownership disclosure and no request for inclusion or a link. Keep it
+behind D15 Service95 and D12 Woman & Home.
+
+Sleep Foundation's current Pitch Us page now exposes a public email and invites
+subject-matter experts and unique-data ideas, but its dream-journal page has no
+comparable product citation and its app-guide links are sponsored, nofollow or
+affiliate redirects. The route remains rejected; the registry evidence was
+updated instead of treating contact availability as editorial fit.
+
+The register now contains 335 routes: 3 P0, 84 P1, 247 P2 and 1 P3. No email,
+form, account, payment, publication, public-results row, quality backlink or
+metric claim occurred. Evidence is in
+`marketing/seo/editorial-discovery-wave-81-2026-08-14.md`.

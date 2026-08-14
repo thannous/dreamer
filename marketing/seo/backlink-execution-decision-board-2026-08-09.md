@@ -930,3 +930,30 @@ choices. Neither is authorized or sent. The register now contains 334 routes:
 3 P0, 83 P1, 247 P2 and 1 P3. No external action or public-results row occurred.
 Detailed evidence is in
 `marketing/seo/editorial-discovery-wave-80-2026-08-14.md`.
+
+## Wave 81 decision — 2026-08-14
+
+Keep BEING Mental Health Consumers as a P1 independent institutional-resource
+migration hold. Its public journaling learner resource directly links multiple
+comparable product domains, and its official contact page identifies a dedicated
+e-learning route. Its Australian company, charity and government-recognised
+operator evidence passes the accountability and non-Russian gates.
+
+Do not authorize the route yet. The current e-learning platform is migrating,
+the resource dates from 2023 and broad journaling is weaker than the dream- and
+sleep-specific D15 and D12 routes. A future note may offer only the Noctalia
+voice-journaling deep page as an optional non-clinical example, with ownership
+disclosed and no inclusion, link, treatment, evidence or favorable-outcome
+request.
+
+Do not reopen Sleep Foundation. Its current Pitch Us page now exposes a public
+email, but the dream-journal page has no comparable product-domain citation and
+the app-guide precedents use sponsored, nofollow or affiliate destinations.
+Contact availability does not satisfy independent citation precedent or route
+fit.
+
+Keep D15 Service95 and D12 Woman & Home as the next separate authorization
+choices. Neither is authorized or sent. The register now contains 335 routes:
+3 P0, 84 P1, 247 P2 and 1 P3. No external action or public-results row occurred.
+Detailed evidence is in
+`marketing/seo/editorial-discovery-wave-81-2026-08-14.md`.
