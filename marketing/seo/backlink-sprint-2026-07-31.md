@@ -1952,3 +1952,23 @@ None displaces the prepared D15 Service95 and D12 Woman & Home authorization
 pair. The register now contains 317 routes: 3 P0, 76 P1, 237 P2 and 1 P3.
 No external action or backlink/metric result occurred. Evidence is in
 `marketing/seo/editorial-discovery-wave-74-2026-08-14.md`.
+
+### Editorial discovery wave 75 — 2026-08-14
+
+Authenticated real-Chrome Zimbra checks found the Atlas Workspace and ILTY
+threads unchanged: each contains exactly two outgoing messages and no incoming
+reply, bounce, opt-out or warning. Their public pages remain HTTP 200 with no
+Noctalia mention, so both stay `followup_1_sent_waiting` and passive-only.
+
+Exact mailbox searches for the prepared D15 Service95 and D12 Woman & Home
+recipients each returned `Aucun résultat`. This is dedupe evidence only, not
+authorization or the full immediate stop gate; both notes remain unsent.
+
+Poligrafi and the Sleep and Dream Database are two new P2 exclusions. The
+peer-reviewed Poligrafi article mentions `Elsewhere.to` only as plain text and
+has no clickable product-domain URI. The database homepage directly links
+Elsewhere, but explicitly identifies it as a partner and creative collaborator
+whose team manages the database, so the link is affiliated rather than
+independent editorial precedent. The register now contains 319 routes: 3 P0,
+76 P1, 239 P2 and 1 P3. No external action or backlink/metric result occurred.
+Evidence is in `marketing/seo/editorial-discovery-wave-75-2026-08-14.md`.

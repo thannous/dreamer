@@ -765,3 +765,28 @@ wave 74 adds no route that should displace them. Neither route is authorized or
 sent. The register now contains 317 routes: 3 P0, 76 P1, 237 P2 and 1 P3. No
 external action, public-results row or backlink/metric claim occurred. Detailed
 evidence is in `marketing/seo/editorial-discovery-wave-74-2026-08-14.md`.
+
+## Wave 75 decision — 2026-08-14
+
+Keep Atlas Workspace and ILTY at `followup_1_sent_waiting` with passive
+monitoring only. Fresh authenticated real-Chrome Zimbra searches found exactly
+one two-message conversation for each route, both messages outgoing, with no
+incoming reply, bounce, opt-out or warning. Fresh public checks found no
+Noctalia citation. Do not send a second follow-up automatically.
+
+Keep D15 Service95 and D12 Woman & Home as the next minimal authorization pair.
+Exact recipient searches in authenticated Zimbra returned no result for either
+route, but this is only current dedupe evidence. Neither route is authorized or
+sent, and each still requires its exact independent authorization and an
+immediate full stop gate.
+
+Reject Poligrafi at P2 because its strong peer-reviewed dream-research article
+mentions `Elsewhere.to` only as plain text; PDF annotation inspection found no
+clickable product-domain URI. Reject the Sleep and Dream Database at P2 because
+its direct Elsewhere link is explicitly a partner placement and its About page
+says the Elsewhere team manages the database. Neither route provides the
+required independent direct-product citation precedent.
+
+The register now contains 319 routes: 3 P0, 76 P1, 239 P2 and 1 P3. No external
+action, public-results row or backlink/metric claim occurred. Detailed evidence
+is in `marketing/seo/editorial-discovery-wave-75-2026-08-14.md`.
