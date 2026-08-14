@@ -1724,6 +1724,27 @@ Evidence is in `marketing/seo/editorial-discovery-wave-64-2026-08-14.md` and
 contains 288 routes: 3 P0, 73 P1, 211 P2 and 1 P3. No external action or new
 backlink outcome occurred.
 
+### Editorial discovery wave 65 and D12 authorization pack — 2026-08-14
+
+Woman & Home is one new P1 route. Its current sleep-app guide is HTTP 200,
+self-canonical and indexable, directly links multiple comparable product
+domains and names the current Health Channel Editor. Future Publishing Limited,
+its UK registration, London address, editorial standards and official contact
+convention are public; Grace Walsh's author page exposes her exact official
+address. D12 offers the dated Noctalia snapshot as an adjacent source for a
+future update while explicitly separating dream journaling from sleep
+treatment or measurement. It remains unsent pending exact authorization and an
+immediate public and authenticated-mailbox stop gate.
+
+A passive real-Chrome mailbox check could not inspect Atlas Workspace or ILTY:
+OVH displayed its login page, so the result is indeterminate rather than a
+verified no-op. No second follow-up is authorized. Fresh exact-brand searches
+found no new independent Noctalia citation. Evidence is in
+`marketing/seo/editorial-discovery-wave-65-2026-08-14.md` and
+`marketing/seo/backlink-authorization-pack-d12-2026-08-14.md`. The register now
+contains 289 routes: 3 P0, 74 P1, 211 P2 and 1 P3. No external action or new
+backlink outcome occurred.
+
 Weekly, record only verified public outcomes:
 
 - live referring page URL;

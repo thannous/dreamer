@@ -392,6 +392,19 @@ Noctalia compiled and appears in the snapshot. Neither requests coverage,
 ranking, anchor text, `dofollow`, placement or a link. The exact copy and stop
 gates are in `backlink-authorization-pack-d11-2026-08-14.md`.
 
+### D12 — Woman & Home factual source note
+
+Decision required: authorize this one note explicitly or keep it unsent.
+
+The current Woman & Home sleep-app guide is independent, indexable and links
+several comparable app domains directly. Future Publishing Limited and the
+current Health Channel Editor are publicly accountable, and the publication
+exposes Grace Walsh's official address. The note offers the dated Noctalia
+snapshot as an adjacent future-update source while clearly separating dream
+journaling from sleep treatment and measurement. It requests no coverage,
+ranking, anchor, `dofollow`, placement or link. Exact copy and stop gates are
+in `backlink-authorization-pack-d12-2026-08-14.md`.
+
 Earned-media account or subscription choices retain the independent `E1`–`E5`
 codes in `marketing/seo/media-source-platform-pack-2026-08-09.md`.
 
@@ -553,6 +566,19 @@ link request. The register now contains 288 routes: 3 P0, 73 P1, 211 P2 and 1
 P3. No email, form, account, query, pitch, manuscript, attachment, product data,
 payment or publication action was used, and no backlink or Ahrefs movement is
 proved.
+
+Wave 65 adds Woman & Home as one P1 prepared but unsent route. Its current
+sleep-app guide is HTTP 200, self-canonical and indexable, directly links
+several comparable app domains, and names Grace Walsh as Health Channel
+Editor. The publication identifies Future Publishing Limited, its England and
+Wales registration, London address, editorial standards and the official
+`futurenet.com` address convention; Grace's author page exposes the exact
+`mailto:` route. D12 offers the dated Noctalia snapshot only as an adjacent
+future-update source and preserves the non-clinical boundary. The mailbox
+monitor is indeterminate because Chrome reached the OVH login page rather than
+an authenticated mailbox. The register now contains 289 routes: 3 P0, 74 P1,
+211 P2 and 1 P3. No email, reply, form, account, attachment, payment,
+publication, backlink or Ahrefs result occurred.
 
 1. Re-run the route-specific public and mailbox stop gate immediately before
    transmitting.
