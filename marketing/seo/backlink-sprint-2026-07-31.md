@@ -1915,3 +1915,25 @@ published; its contact page also refuses collaborations. Evidence is in
 `marketing/seo/editorial-discovery-wave-72-2026-08-14.md`. The register remains
 at 312 routes: 3 P0, 77 P1, 231 P2 and 1 P3. No external action or
 backlink/metric result occurred.
+
+### Editorial discovery wave 73 — 2026-08-14
+
+A passive ten-page check found no new clickable Noctalia backlink. Eight exact
+pages returned HTTP 200 with zero genuine Noctalia editorial anchor. KapanLagi
+still prints Noctalia's water-dream deep URL as source text but exposes no
+clickable link; Sleep.com returned HTTP 403 and is therefore indeterminate.
+Android Police's two apparent matches were only the serialized request
+user-agent, not article content.
+
+Genevieve Camp, Tripsitter and Foreword Reviews are three P2 exclusions.
+Genevieve Camp was downgraded from P1 after stricter brand-safety revalidation;
+it has a strong first-hand topical review, direct Elsewhere deep
+links and an accountable Florida LLC, but its astrology, karma, spiritual-guide,
+precognitive-dream and trauma-coaching positioning conflicts with Noctalia's
+brand boundary. Tripsitter has no direct app-domain precedent and a
+psychedelic/dangerous-substance context. Foreword Reviews currently returns 403
+with `noindex,nofollow`, while its Elsewhere mention is supplied by the
+interview subject. Evidence is in
+`marketing/seo/editorial-discovery-wave-73-2026-08-14.md`. The register now
+contains 314 routes: 3 P0, 76 P1, 234 P2 and 1 P3. No external action or
+backlink/metric result occurred.

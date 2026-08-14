@@ -727,3 +727,24 @@ collaborations.
 The register remains at 312 routes: 3 P0, 77 P1, 231 P2 and 1 P3. No external
 action, public-results row or backlink/metric claim occurred. Detailed evidence
 is in `marketing/seo/editorial-discovery-wave-72-2026-08-14.md`.
+
+## Wave 73 decision — 2026-08-14
+
+Do not advance Genevieve Camp, Tripsitter or Foreword Reviews. Downgrade the
+previously qualified Genevieve Camp route from P1 to P2: it passes the topical,
+direct-link and accountable-operator gates but fails the
+brand-safety gate because its surrounding practice promotes astrology, karma,
+spiritual guides, precognitive dream categories and trauma-oriented coaching.
+Tripsitter lacks direct comparable product-domain links and centers psychedelic
+and dangerous-substance content. Foreword Reviews currently returns HTTP 403
+with `noindex,nofollow`, and its Elsewhere reference is an interviewee-supplied
+affiliated mention rather than an independent product evaluation.
+
+The passive result check found no new clickable Noctalia backlink. KapanLagi
+retains only an unlinked deep-URL source mention; Sleep.com is indeterminate
+behind HTTP 403; the other sampled pages expose no genuine Noctalia editorial
+anchor. Keep the public-results log unchanged.
+
+The prospect register now contains 314 routes: 3 P0, 76 P1, 234 P2 and 1 P3.
+No external action or backlink/metric claim occurred. Detailed evidence is in
+`marketing/seo/editorial-discovery-wave-73-2026-08-14.md`.
