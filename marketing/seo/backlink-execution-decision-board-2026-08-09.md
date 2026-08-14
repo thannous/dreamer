@@ -790,3 +790,25 @@ required independent direct-product citation precedent.
 The register now contains 319 routes: 3 P0, 76 P1, 239 P2 and 1 P3. No external
 action, public-results row or backlink/metric claim occurred. Detailed evidence
 is in `marketing/seo/editorial-discovery-wave-75-2026-08-14.md`.
+
+## Wave 76 decision — 2026-08-14
+
+Keep Men’s Health as a P1 low-probability hold, not in the next authorization
+lot. The exact page provides one qualifying direct SleepScore citation with an
+empty `rel`, and the publisher and author route are accountable and public.
+However, the article was last modified in 2019, most other commercial links are
+affiliate redirects, and the author's official HTTPS endpoint currently fails
+certificate validation. Any future use still requires exact authorization and
+an immediate public, recipient and mailbox stop gate.
+
+Reject Techinch, Macworld and Coach at P2. Techinch links no comparable product
+domain on the exact page and its underlying Wirecutter review uses sponsored
+redirects. Macworld's anonymous 2016 page routes Sleep Cycle through a nofollow
+affiliate link. Coach's 2018 comparable links are sponsored, nofollow or store
+links. None passes the required independent direct-product citation gate.
+
+Keep D15 Service95 and D12 Woman & Home as the next minimal authorization pair.
+Neither is authorized or sent. The register now contains 323 routes: 3 P0, 77
+P1, 242 P2 and 1 P3. No external action, public-results row or backlink/metric
+claim occurred. Detailed evidence is in
+`marketing/seo/editorial-discovery-wave-76-2026-08-14.md`.

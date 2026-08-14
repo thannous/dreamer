@@ -1972,3 +1972,21 @@ whose team manages the database, so the link is affiliated rather than
 independent editorial precedent. The register now contains 319 routes: 3 P0,
 76 P1, 239 P2 and 1 P3. No external action or backlink/metric result occurred.
 Evidence is in `marketing/seo/editorial-discovery-wave-75-2026-08-14.md`.
+
+### Editorial discovery wave 76 — 2026-08-14
+
+Men’s Health is one new P1 low-probability hold. Its indexable sleep-app article
+has a direct followed-looking SleepScore domain citation, while the current
+publisher pages identify Hearst Magazines, named editors, reporting standards
+and editorial independence. Isadora Baum's official site publishes a
+professional mailbox, but the article was last updated in 2019 and the author's
+HTTPS endpoint currently fails certificate validation. Keep the route behind
+D15 Service95 and D12 Woman & Home; it is neither authorized nor sent.
+
+Techinch, Macworld and Coach are three new P2 exclusions. Techinch's exact page
+links no journaling-app domain and the underlying Wirecutter product links are
+sponsored redirects. Macworld uses a nofollow affiliate redirect on an
+anonymous 2016 page. Coach's 2018 product links are sponsored, nofollow or store
+links. The register now contains 323 routes: 3 P0, 77 P1, 242 P2 and 1 P3. No
+external action or backlink/metric result occurred. Evidence is in
+`marketing/seo/editorial-discovery-wave-76-2026-08-14.md`.
