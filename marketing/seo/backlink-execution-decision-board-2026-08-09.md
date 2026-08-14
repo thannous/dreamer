@@ -668,3 +668,21 @@ and ILTY remain passive-monitor-only. Continue allocating effort to accountable
 sleep, dream and journaling publishers with direct comparable-domain precedent.
 The detailed evidence is in
 `marketing/seo/backlink-measurement-check-2026-08-14-0409.md`.
+
+## Wave 71 decision — 2026-08-14
+
+Prepare Service95 as D15 and Happiful as D16, but transmit neither without its
+own exact authorization. Both routes pass the live direct comparable-domain,
+accountable non-Russian operator and official editorial-channel gates. Their
+older source articles reduce expected response probability; they do not outrank
+newer specialist opportunities solely because their publishers are established.
+
+Reject Poosh, Glamour, World Sleep Day, Psychology Today, Dream and Meaning and
+BetterSleep for the route-specific reasons recorded in wave 71. Do not use a
+commercial collaboration address, letters desk, participant submission,
+affiliated plain-text mention, predictive content operator or competitor-owned
+blog as a substitute for independent editorial precedent.
+
+The register now contains 312 routes: 3 P0, 77 P1, 231 P2 and 1 P3. No
+transmission, delivery, reply, acceptance, linked publication, traffic result or
+Ahrefs movement is proved.

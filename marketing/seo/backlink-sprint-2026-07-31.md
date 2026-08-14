@@ -1859,3 +1859,24 @@ directory ecosystem and a low-trust unrelated source. None is a newly acquired
 independent thematic editorial domain. The `+151` raw index change is therefore
 not attributed to outreach, and no public-results row is added. Full evidence
 is in `marketing/seo/backlink-measurement-check-2026-08-14-0409.md`.
+
+### Editorial discovery wave 71 and D15–D16 pack — 2026-08-14
+
+Service95 and Happiful are two new P1 routes. Their live editorial articles
+directly link several comparable app domains, while current legal pages identify
+accountable UK operators and current official editorial addresses. D15 and D16
+offer the dated Noctalia snapshot only as a disclosed source for possible future
+coverage; neither asks for inclusion, a link, ranking, anchor or `dofollow`.
+Both routes are older precedents, so they remain secondary candidates and are
+unsent pending separate exact authorization plus an immediate public and
+authenticated-mailbox stop gate.
+
+Poosh, Glamour, World Sleep Day, Psychology Today, Dream and Meaning and
+BetterSleep are P2 for commercial-only routing, founder-sourced `nofollow`
+coverage, participant-supplied content, an unlinked affiliated mention,
+brand-safety mismatch and product-owned competitor content respectively.
+Evidence is in `marketing/seo/editorial-discovery-wave-71-2026-08-14.md` and
+`marketing/seo/backlink-authorization-pack-d15-d16-2026-08-14.md`. The register
+now contains 312 routes: 3 P0, 77 P1, 231 P2 and 1 P3. No email, form, account,
+attachment, payment, publication, backlink, traffic result or Ahrefs DR
+movement occurred.
