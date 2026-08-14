@@ -2212,3 +2212,27 @@ backlink or metric claim occurred. The passive Atlas/ILTY mailbox stop-check
 could not be completed because the official OVH webmail was at its login screen;
 no credential was entered and no mailbox action occurred. Evidence is in
 `marketing/seo/editorial-discovery-wave-84-2026-08-14.md`.
+
+### Editorial discovery wave 85 — 2026-08-14
+
+Brown University's 2017 sleep-tracker comparison, MacStories' Yume app debut,
+Codega's DreamWell founder episode and PsychSIGN's 2017 trainee-wellness manual
+are recorded at P2. Brown has direct Fitbit and Microsoft product-domain
+precedents but is a stale sleep-tracker experiment. MacStories is independent
+and dream-specific, but its route is iPhone-only and its public teaser exposes
+no verifiable product link. Codega directly links DreamWell, but its ET, NHI,
+alien-contact and paranormal framing conflicts with Noctalia. PsychSIGN prints
+`sleepcycle.com`, but the resource is an old sensitive clinical/professional
+manual for physician trainees.
+
+Fresh public checks found Atlas Workspace and ILTY HTTP 200, self-canonical,
+index-follow and without a Noctalia mention. This is not a mailbox or delivery
+check; OVH remains at login and no credential was entered. Ahrefs competitor
+discovery returned zero API units remaining before yielding backlink data, so
+no fresh DR or authority claim is possible.
+
+The register now contains 350 routes: 3 P0, 86 P1, 260 P2 and 1 P3. D17 remains
+the strongest next thematic authorization choice; D15 and D12 remain separate.
+None is authorized or sent. No external action or public-results row occurred.
+Evidence is in
+`marketing/seo/editorial-discovery-wave-85-2026-08-14.md`.

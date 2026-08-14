@@ -1035,3 +1035,26 @@ routes: 3 P0, 86 P1, 256 P2 and 1 P3. The passive Atlas/ILTY mailbox stop-check
 remains unresolved at the official OVH login screen; no credential or mailbox
 action was used. No external action or public-results row occurred. Detailed
 evidence is in `marketing/seo/editorial-discovery-wave-84-2026-08-14.md`.
+
+## Wave 85 decision — 2026-08-14
+
+Keep Brown University's 2017 tracker comparison, MacStories' Yume item,
+Codega's DreamWell episode and PsychSIGN's trainee-wellness manual at P2. Their
+respective failures are stale sleep-tracker scope, Apple-only eligibility plus
+no public product-domain precedent, ET/NHI paranormal brand mismatch, and
+sensitive clinical/professional scope plus staleness. Direct product domains or
+accountable publishers do not override those gates.
+
+Do not create a new authorization choice from this wave. D17 KSQD remains the
+strongest dream-specific prepared route. D15 and D12 remain separate choices;
+authorization for one never authorizes another. None is authorized or sent.
+
+Atlas Workspace and ILTY remain passive-only. Their exact pages are HTTP 200,
+self-canonical, index-follow and show no Noctalia mention, but the mailbox is
+unavailable at the OVH login screen. No second follow-up is allowed. Ahrefs
+competitor discovery is unavailable because the API reports zero units; do not
+infer a fresh DR measurement from that failure.
+
+The register now contains 350 routes: 3 P0, 86 P1, 260 P2 and 1 P3. No external
+action or public-results row occurred. Detailed evidence is in
+`marketing/seo/editorial-discovery-wave-85-2026-08-14.md`.
