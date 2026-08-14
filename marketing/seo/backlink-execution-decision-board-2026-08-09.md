@@ -904,3 +904,29 @@ choices. Neither is authorized or sent. The register now contains 333 routes:
 3 P0, 82 P1, 247 P2 and 1 P3. No external action or public-results row occurred.
 Detailed evidence is in
 `marketing/seo/editorial-discovery-wave-79-2026-08-14.md`.
+
+## Wave 80 decision — 2026-08-14
+
+Keep Atlas Workspace and ILTY at `followup_1_sent_waiting` and passive-only.
+Their public pages remain HTTP 200, canonical and indexable with zero Noctalia
+mention. Mailbox state is indeterminate, so no reply, bounce or opt-out claim
+can be made and no second follow-up is permitted.
+
+Retain Digital Trends as an existing contacted P1. A separate independent
+first-person Day One article now proves a followed direct-product precedent,
+but it neither creates a new route nor resets the outreach gate. Any first
+follow-up still requires exact authorization and a fresh mailbox stop gate.
+
+Keep the University of Würzburg as a P1 academic research-contribution,
+long-horizon hold. Its open-access study directly cites Day One after a two-week
+participant test, and the current German university profile confirms the
+corresponding author's identity, contact and continuing digital-memory research.
+The existing paper is closed, the Noctalia snapshot is non-empirical and a
+future scholarly citation is not a 30-day acquisition route. Never ask for an
+amendment, product citation, link or favorable conclusion.
+
+Keep D15 Service95 and D12 Woman & Home as the next separate authorization
+choices. Neither is authorized or sent. The register now contains 334 routes:
+3 P0, 83 P1, 247 P2 and 1 P3. No external action or public-results row occurred.
+Detailed evidence is in
+`marketing/seo/editorial-discovery-wave-80-2026-08-14.md`.

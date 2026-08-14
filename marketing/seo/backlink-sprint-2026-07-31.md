@@ -2078,3 +2078,28 @@ with no named legal operator or editorial route. The register now contains 333
 routes: 3 P0, 82 P1, 247 P2 and 1 P3. No form, email, account, payment,
 publication, new quality backlink, referral session or causal DR gain occurred.
 Evidence is in `marketing/seo/editorial-discovery-wave-79-2026-08-14.md`.
+
+### Editorial discovery wave 80 — 2026-08-14
+
+Fresh public checks found Atlas Workspace and ILTY HTTP 200, self-canonical,
+indexable and still without a Noctalia mention. Mailbox state was unavailable,
+so reply, bounce and opt-out status remains indeterminate; neither route may
+receive a second automatic follow-up.
+
+A separate Digital Trends first-person staff article independently links Day
+One's developer domain without `nofollow`, strengthening the publisher-level
+precedent. Digital Trends is not a new route: it was already contacted once on
+2026-08-03. Its first follow-up remains separately gated and unauthorized.
+
+The University of Würzburg is one new P1 academic long-horizon hold. Its public
+open-access smart-journaling study had participants use Day One, directly cites
+the developer domain and identifies a corresponding author who remains at the
+German institute with an active digital-memory research focus. The existing
+paper cannot be amended, the Noctalia snapshot is descriptive rather than
+empirical and a future scholarly citation falls outside the 30-day horizon.
+Keep the route behind D15 Service95 and D12 Woman & Home.
+
+The register now contains 334 routes: 3 P0, 83 P1, 247 P2 and 1 P3. No email,
+form, account, payment, publication, public-results row, quality backlink or
+metric claim occurred. Evidence is in
+`marketing/seo/editorial-discovery-wave-80-2026-08-14.md`.
