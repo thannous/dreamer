@@ -201,5 +201,5 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 - Le lot `cemetery` est implémenté localement dans cinq langues avec 159
   concepts au total, contenu développé, maillage, curation lieux et actif
   éditorial responsive. Il n'est ni poussé ni publié.
-- Le contenu est figé au commit local `0125dee7f`; le contrat URL est étendu
+- Le contenu est figé au commit local `001ad3a94`; le contrat URL est étendu
   additivement depuis ce HEAD et `docs:check` passe sans erreur ni avertissement.
