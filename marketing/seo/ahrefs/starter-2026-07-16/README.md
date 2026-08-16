@@ -53,6 +53,7 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j29-gsc-ahrefs-cluster-validation-2026-08-13.md`](./j29-gsc-ahrefs-cluster-validation-2026-08-13.md) : validation GSC 28 jours et fenêtre disponible des clusters guêpe/cimetière, micro-lot Ahrefs initial à cinq crédits, complément UI à quatre crédits et ordre `cemetery` puis `wasp` après la porte J+7.
 - [`j29-gsc-ahrefs-cluster-backlog-2026-08-13.csv`](./j29-gsc-ahrefs-cluster-backlog-2026-08-13.csv) : backlog pays exploitable des huit requêtes vérifiées, avec métriques Ahrefs, état GSC et prochaine action sans export brut.
 - [`j29-j31-cemetery-implementation-brief-2026-08-13.md`](./j29-j31-cemetery-implementation-brief-2026-08-13.md) : brief multilingue prêt à implémenter pour les cinq propriétaires `cemetery` EN/FR/ES/DE/IT, GSC revalidé, quatre SERP Starter UI (`4` crédits), route EN singulière confirmée et critères GO/HOLD à la porte du 15 août.
+- [`j32-catch-up-2026-08-16.md`](./j32-catch-up-2026-08-16.md) : rattrapage du checkpoint J+7, reset Starter confirmé, lecture Rank Tracker/Site Audit et implémentation locale des cinq propriétaires `cemetery`, avec séparation du contrat URL et de la publication.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
 - [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27, Misabueso GSC et preuves brutes, périmètres synchronisés et règles de conservation.
@@ -185,3 +186,18 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
   fenêtre disponible du 5 décembre 2025 au 11 août 2026. L'unique requête est
   le long-tail chien/cimetière déjà identifié, hors intention. Aucune page,
   route ou image n'a été créée.
+
+## Actualisation J32 au 16 août 2026
+
+- Le checkpoint J+7 manqué le 15 août est rattrapé sur deux fenêtres complètes
+  de sept jours. `ragno` progresse nettement, `perro` progresse à position
+  stable et `casa` gagne en visibilité et en position malgré un CTR en baisse :
+  aucun incident ne justifie une retouche ou un rollback.
+- `casa`, `ragno` et `perro` restent gelés jusqu'au 5 septembre ; `scuola`
+  reste séparée et non démarrée.
+- Le reset Starter est visible : compteur général `0`, Rank Tracker `50/50`,
+  Site Audit mensuel `0/10 000`, prochaine remise à zéro le 16 septembre à
+  00:00 UTC. La décision de facturation reste à l'utilisateur.
+- Le lot `cemetery` est implémenté localement dans cinq langues avec 159
+  concepts au total, contenu développé, maillage, curation lieux et actif
+  éditorial responsive. Il n'est ni poussé ni publié.

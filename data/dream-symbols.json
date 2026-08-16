@@ -1,8 +1,8 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-08-12",
-    "totalSymbols": 158,
+    "lastUpdated": "2026-08-16",
+    "totalSymbols": 159,
     "languages": [
       "en",
       "fr",
@@ -10,7 +10,7 @@
       "de",
       "it"
     ],
-    "symbolCount": 158
+    "symbolCount": 159
   },
   "categories": {
     "nature": {
@@ -12971,6 +12971,173 @@
         "desert"
       ],
       "modifiedAt": "2026-08-12"
+    },
+    {
+      "id": "cemetery",
+      "category": "places",
+      "priority": 2,
+      "en": {
+        "slug": "cemetery",
+        "name": "Cemetery",
+        "seoTitle": "cemetery, graveyard, graves or cemetery visits",
+        "documentTitle": "Cemetery Dreams: Graves, Visits and Context",
+        "documentMetaDescription": "Dreaming about a cemetery or graveyard? Compare graves, walking, visits, night and your emotion in context, without fixed spiritual predictions.",
+        "shortDescription": "A cemetery in a dream can bring memory, grief, transition or the wish to revisit something finished into focus. The graves, time of day, people present and what you were doing distinguish a recent reminder from a broader personal theme.",
+        "askYourself": [
+          "Was I walking among graves, searching for one, visiting someone, attending a gathering or trying to leave?",
+          "Did the cemetery feel peaceful, neglected, crowded, frightening, familiar or unexpectedly ordinary?",
+          "What recent memory, loss, ending, family story, visit or image could have supplied this particular place?"
+        ],
+        "faq": [
+          {
+            "question": "What does dreaming about a cemetery mean?",
+            "answer": "A cemetery may fit memory, grief, transition or reflection on something that has ended. The setting, action and emotion are more useful than one fixed meaning."
+          },
+          {
+            "question": "What does walking through graves at night mean in a dream?",
+            "answer": "Night can intensify uncertainty or fear, while walking may show exploration or an attempt to find direction. A recent visit, story or image can also explain the scene directly."
+          },
+          {
+            "question": "What does visiting someone's grave mean in a dream?",
+            "answer": "A visit can bring remembrance, an unfinished conversation or a wish for connection into focus. It does not prove contact with the deceased or carry a universal message."
+          },
+          {
+            "question": "Does a cemetery dream predict death or bad news?",
+            "answer": "No. A dream cannot predict a death or bad news. Compare the scene with recent experiences and emotions rather than treating it as a warning."
+          }
+        ]
+      },
+      "fr": {
+        "slug": "cimetiere",
+        "name": "Cimetière",
+        "seoTitle": "cimetière, tombes, nuit ou visite d’une tombe",
+        "documentTitle": "Rêver de cimetière : sens et scénarios",
+        "documentMetaDescription": "Rêver de cimetière : comparez tombes, nuit, promenade, visite d’une tombe et émotion ressentie, à partir du contexte, sans prédiction.",
+        "shortDescription": "Un cimetière dans un rêve peut mettre en avant mémoire, deuil, transition ou besoin de revenir sur une étape terminée. Les tombes, le moment, les personnes présentes et votre action distinguent rappel récent et thème personnel plus large.",
+        "askYourself": [
+          "Marchais-je entre les tombes, en cherchais-je une, rendais-je visite à quelqu’un, assistais-je à un rassemblement ou voulais-je partir ?",
+          "Le cimetière semblait-il paisible, abandonné, bondé, inquiétant, familier ou étonnamment ordinaire ?",
+          "Quel souvenir, deuil, changement, récit familial, visite ou image récente peut avoir fourni ce lieu précis ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de cimetière ?",
+            "answer": "Le cimetière peut rejoindre mémoire, deuil, transition ou réflexion sur une étape terminée. Le lieu, l’action et l’émotion comptent davantage qu’une définition fixe."
+          },
+          {
+            "question": "Que signifie marcher entre les tombes la nuit en rêve ?",
+            "answer": "La nuit peut amplifier incertitude ou peur; la marche peut montrer exploration ou recherche de direction. Une visite, une histoire ou une image récente peut aussi expliquer la scène."
+          },
+          {
+            "question": "Que signifie visiter la tombe de quelqu’un en rêve ?",
+            "answer": "La visite peut mettre en avant souvenir, conversation inachevée ou besoin de lien. Elle ne prouve aucun contact avec un défunt et ne porte pas de message universel."
+          },
+          {
+            "question": "Rêver de cimetière annonce-t-il un décès ou une mauvaise nouvelle ?",
+            "answer": "Non. Un rêve ne permet de prévoir ni décès ni mauvaise nouvelle. Comparez la scène aux expériences et émotions récentes plutôt que d’y voir un avertissement."
+          }
+        ]
+      },
+      "es": {
+        "slug": "cementerio",
+        "name": "Cementerio",
+        "seoTitle": "cementerio, tumbas, noche o visita a una tumba",
+        "documentTitle": "Soñar con cementerio: significado y escenas",
+        "documentMetaDescription": "Soñar con cementerio: compara tumbas, noche, pasear entre lápidas, visitar una tumba y tu emoción según el contexto, sin predicciones.",
+        "shortDescription": "Un cementerio en un sueño puede destacar memoria, duelo, transición o necesidad de volver sobre una etapa terminada. Las tumbas, el momento, las personas presentes y tu acción diferencian un recuerdo reciente de un tema personal más amplio.",
+        "askYourself": [
+          "¿Caminaba entre tumbas, buscaba una concreta, visitaba a alguien, asistía a una reunión o intentaba salir?",
+          "¿El cementerio parecía tranquilo, abandonado, lleno, aterrador, familiar o sorprendentemente normal?",
+          "¿Qué recuerdo, pérdida, final, historia familiar, visita o imagen reciente pudo aportar este lugar preciso?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con cementerio?",
+            "answer": "Un cementerio puede relacionarse con memoria, duelo, transición o reflexión sobre algo terminado. El lugar, la acción y la emoción aportan más contexto que un significado fijo."
+          },
+          {
+            "question": "¿Qué significa caminar entre tumbas de noche en un sueño?",
+            "answer": "La noche puede intensificar incertidumbre o miedo, mientras caminar puede señalar exploración o búsqueda de dirección. Una visita, historia o imagen reciente también puede explicar la escena."
+          },
+          {
+            "question": "¿Qué significa visitar la tumba de alguien en un sueño?",
+            "answer": "La visita puede destacar recuerdo, una conversación pendiente o deseo de conexión. No demuestra contacto con una persona fallecida ni contiene un mensaje universal."
+          },
+          {
+            "question": "¿Soñar con cementerio anuncia una muerte o una mala noticia?",
+            "answer": "No. Un sueño no puede predecir una muerte ni una mala noticia. Compara la escena con experiencias y emociones recientes en vez de tratarla como una advertencia."
+          }
+        ]
+      },
+      "de": {
+        "slug": "friedhof",
+        "name": "Friedhof",
+        "seoTitle": "Friedhof, Gräber, Nacht oder Grabesuche",
+        "documentTitle": "Traumdeutung Friedhof: Bedeutung und Szenen",
+        "documentMetaDescription": "Traumdeutung Friedhof: Gräber, Nacht, Spaziergang, Grabesuche und Gefühl im Kontext vergleichen, ohne Vorhersage.",
+        "shortDescription": "Ein Friedhof im Traum kann Erinnerung, Trauer, Übergang oder den Wunsch betonen, auf einen beendeten Abschnitt zurückzublicken. Gräber, Tageszeit, anwesende Menschen und Handlung unterscheiden einen aktuellen Auslöser von einem breiteren persönlichen Thema.",
+        "askYourself": [
+          "Ging ich zwischen Gräbern, suchte ich ein bestimmtes Grab, besuchte ich jemanden, nahm ich an einer Versammlung teil oder wollte ich gehen?",
+          "Wirkte der Friedhof friedlich, verlassen, voll, beängstigend, vertraut oder überraschend alltäglich?",
+          "Welche aktuelle Erinnerung, Trauer, Veränderung, Familiengeschichte, Begegnung oder Abbildung könnte diesen Ort geliefert haben?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Friedhof zu träumen?",
+            "answer": "Ein Friedhof kann zu Erinnerung, Trauer, Übergang oder Rückblick auf etwas Beendetes passen. Ort, Handlung und Gefühl geben mehr Kontext als eine feste Deutung."
+          },
+          {
+            "question": "Was bedeutet ein nächtlicher Gang über den Friedhof?",
+            "answer": "Die Nacht kann Unsicherheit oder Angst verstärken; das Gehen kann Erkundung oder Orientierungssuche zeigen. Auch ein aktueller Besuch, Bericht oder ein Bild kann die Szene erklären."
+          },
+          {
+            "question": "Was bedeutet der Besuch eines Grabes im Traum?",
+            "answer": "Ein Besuch kann Erinnerung, ein offenes Gespräch oder den Wunsch nach Verbindung betonen. Er beweist keinen Kontakt zu Verstorbenen und enthält keine allgemeingültige Botschaft."
+          },
+          {
+            "question": "Kündigt ein Friedhofstraum einen Tod oder schlechte Nachrichten an?",
+            "answer": "Nein. Ein Traum kann weder Tod noch schlechte Nachrichten vorhersagen. Vergleiche die Szene mit aktuellen Erfahrungen und Gefühlen, statt sie als Warnung zu behandeln."
+          }
+        ]
+      },
+      "it": {
+        "slug": "cimitero",
+        "name": "Cimitero",
+        "seoTitle": "cimitero, tombe, notte o ricerca di una tomba",
+        "documentTitle": "Sognare cimitero: significato e scene",
+        "documentMetaDescription": "Sognare cimitero: confronta tombe, notte, passeggiata, ricerca di una tomba ed emozione partendo dal contesto, senza previsioni.",
+        "shortDescription": "Un cimitero in sogno può mettere in primo piano memoria, lutto, transizione o bisogno di tornare su una fase conclusa. Tombe, momento, persone presenti e azione distinguono un richiamo recente da un tema personale più ampio.",
+        "askYourself": [
+          "Camminavo tra le tombe, ne cercavo una precisa, visitavo qualcuno, partecipavo a un incontro o cercavo di uscire?",
+          "Il cimitero sembrava tranquillo, abbandonato, affollato, spaventoso, familiare o sorprendentemente normale?",
+          "Quale ricordo, perdita, conclusione, storia familiare, visita o immagine recente può aver fornito questo luogo preciso?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un cimitero?",
+            "answer": "Un cimitero può collegarsi a memoria, lutto, transizione o riflessione su qualcosa di concluso. Luogo, azione ed emozione offrono più contesto di un significato fisso."
+          },
+          {
+            "question": "Che cosa significa camminare tra le tombe di notte in sogno?",
+            "answer": "La notte può intensificare incertezza o paura; camminare può indicare esplorazione o ricerca di direzione. Anche una visita, storia o immagine recente può spiegare la scena."
+          },
+          {
+            "question": "Che cosa significa visitare la tomba di qualcuno in sogno?",
+            "answer": "La visita può evidenziare ricordo, una conversazione incompiuta o desiderio di legame. Non dimostra un contatto con una persona defunta né contiene un messaggio universale."
+          },
+          {
+            "question": "Sognare un cimitero annuncia una morte o una cattiva notizia?",
+            "answer": "No. Un sogno non può prevedere una morte o una cattiva notizia. Confronta la scena con esperienze ed emozioni recenti invece di trattarla come un avvertimento."
+          }
+        ]
+      },
+      "relatedSymbols": [
+        "death",
+        "deceased-person",
+        "funeral",
+        "path"
+      ],
+      "modifiedAt": "2026-08-16"
     }
   ]
 }

@@ -6724,6 +6724,34 @@
             }
           }
         },
+        "symbol.cemetery": {
+          "id": "symbol.cemetery",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "cemetery",
+          "locales": {
+            "en": {
+              "slug": "cemetery",
+              "path": "/en/symbols/cemetery"
+            },
+            "fr": {
+              "slug": "cimetiere",
+              "path": "/fr/symboles/cimetiere"
+            },
+            "es": {
+              "slug": "cementerio",
+              "path": "/es/simbolos/cementerio"
+            },
+            "de": {
+              "slug": "friedhof",
+              "path": "/de/traumsymbole/friedhof"
+            },
+            "it": {
+              "slug": "cimitero",
+              "path": "/it/simboli/cimitero"
+            }
+          }
+        },
         "symbolCategory.nature": {
           "id": "symbolCategory.nature",
           "type": "symbolCategory",

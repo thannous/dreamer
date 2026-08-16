@@ -172,6 +172,13 @@
       "category": "places",
       "subject": "Cave"
     },
+    "cemetery": {
+      "src": "/img/symbols/editorial-2026-08-j31/cemetery-v1.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Cemetery"
+    },
     "classroom": {
       "src": "/img/symbols/editorial-2026-07-v2/classroom-v2.webp",
       "width": 1600,
