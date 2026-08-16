@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "bb0a08ab1139181a2b8d2456bff3841024db6813",
+  "sourceRevision": "0125dee7febe36bc7856fefe87b4d9fbaa9258f8",
   "counts": {
-    "logicalPages": 247,
-    "manifestPaths": 1236,
-    "uniqueManifestPaths": 1236,
-    "canonicalPages": 1236,
-    "sitemapEntries": 1236,
-    "allHtmlOutputPaths": 1241
+    "logicalPages": 248,
+    "manifestPaths": 1241,
+    "uniqueManifestPaths": 1241,
+    "canonicalPages": 1241,
+    "sitemapEntries": 1241,
+    "allHtmlOutputPaths": 1246
   },
   "manifestRoutes": [
     {
@@ -5419,6 +5419,56 @@
       "lang": "it",
       "slug": "grotta",
       "path": "/it/simboli/grotta"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "cemetery",
+      "lang": "de",
+      "slug": "friedhof",
+      "path": "/de/traumsymbole/friedhof"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "cemetery",
+      "lang": "en",
+      "slug": "cemetery",
+      "path": "/en/symbols/cemetery"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "cemetery",
+      "lang": "es",
+      "slug": "cementerio",
+      "path": "/es/simbolos/cementerio"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "cemetery",
+      "lang": "fr",
+      "slug": "cimetiere",
+      "path": "/fr/symboles/cimetiere"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "cemetery",
+      "lang": "it",
+      "slug": "cimitero",
+      "path": "/it/simboli/cimitero"
     },
     {
       "collection": "symbols",
@@ -12496,6 +12546,7 @@
     "docs/de/traumsymbole/fluss.html",
     "docs/de/traumsymbole/fremder.html",
     "docs/de/traumsymbole/freund.html",
+    "docs/de/traumsymbole/friedhof.html",
     "docs/de/traumsymbole/frosch.html",
     "docs/de/traumsymbole/fusse.html",
     "docs/de/traumsymbole/garten.html",
@@ -12731,6 +12782,7 @@
     "docs/en/symbols/cat.html",
     "docs/en/symbols/cave.html",
     "docs/en/symbols/celestial.html",
+    "docs/en/symbols/cemetery.html",
     "docs/en/symbols/child.html",
     "docs/en/symbols/classroom.html",
     "docs/en/symbols/cliff.html",
@@ -12987,6 +13039,7 @@
     "docs/es/simbolos/casa.html",
     "docs/es/simbolos/cascada.html",
     "docs/es/simbolos/celestial.html",
+    "docs/es/simbolos/cementerio.html",
     "docs/es/simbolos/centro-comercial.html",
     "docs/es/simbolos/cirugia.html",
     "docs/es/simbolos/coche.html",
@@ -13225,6 +13278,7 @@
     "docs/fr/symboles/chien.html",
     "docs/fr/symboles/chirurgie.html",
     "docs/fr/symboles/chute.html",
+    "docs/fr/symboles/cimetiere.html",
     "docs/fr/symboles/cle.html",
     "docs/fr/symboles/coeur.html",
     "docs/fr/symboles/collegue.html",
@@ -13472,6 +13526,7 @@
     "docs/it/simboli/celeste.html",
     "docs/it/simboli/centro-commerciale.html",
     "docs/it/simboli/chiave.html",
+    "docs/it/simboli/cimitero.html",
     "docs/it/simboli/coccodrilli.html",
     "docs/it/simboli/collega.html",
     "docs/it/simboli/coniglio.html",
@@ -47723,6 +47778,301 @@
           {
             "position": "3",
             "item": "https://noctalia.app/it/simboli/grotta"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "lang": "de",
+      "outputPath": "docs/de/traumsymbole/friedhof.html",
+      "canonical": "https://noctalia.app/de/traumsymbole/friedhof",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/friedhof"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cementerio"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cimetiere"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cimitero"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/traumsymbole/friedhof",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/de/traumsymbole/friedhof",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/guides/traumsymbole-lexikon"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/de/traumsymbole/friedhof"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "lang": "en",
+      "outputPath": "docs/en/symbols/cemetery.html",
+      "canonical": "https://noctalia.app/en/symbols/cemetery",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/friedhof"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cementerio"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cimetiere"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cimitero"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/symbols/cemetery",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/en/symbols/cemetery",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/guides/dream-symbols-dictionary"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/en/symbols/cemetery"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "lang": "es",
+      "outputPath": "docs/es/simbolos/cementerio.html",
+      "canonical": "https://noctalia.app/es/simbolos/cementerio",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/friedhof"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cementerio"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cimetiere"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cimitero"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/simbolos/cementerio",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/es/simbolos/cementerio",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/guides/diccionario-simbolos-suenos"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/es/simbolos/cementerio"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "lang": "fr",
+      "outputPath": "docs/fr/symboles/cimetiere.html",
+      "canonical": "https://noctalia.app/fr/symboles/cimetiere",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/friedhof"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cementerio"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cimetiere"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cimitero"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/symboles/cimetiere",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/fr/symboles/cimetiere",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/guides/dictionnaire-symboles-reves"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/fr/symboles/cimetiere"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "lang": "it",
+      "outputPath": "docs/it/simboli/cimitero.html",
+      "canonical": "https://noctalia.app/it/simboli/cimitero",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/friedhof"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cementerio"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cimetiere"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cimitero"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/simboli/cimitero",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/it/simboli/cimitero",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/guides/dizionario-simboli-sogni"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/it/simboli/cimitero"
           }
         ]
       ],
@@ -106220,6 +106570,166 @@
         {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/symbols/cave"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/traumsymbole/friedhof",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/friedhof"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cementerio"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cimetiere"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cimitero"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/symbols/cemetery",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/friedhof"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cementerio"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cimetiere"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cimitero"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/simbolos/cementerio",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/friedhof"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cementerio"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cimetiere"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cimitero"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/symboles/cimetiere",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/friedhof"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cementerio"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cimetiere"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cimitero"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.cemetery",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/simboli/cimitero",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/friedhof"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/cemetery"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/cementerio"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/cimetiere"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/cimitero"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/cemetery"
         }
       ]
     },
