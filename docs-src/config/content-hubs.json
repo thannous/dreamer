@@ -8,6 +8,8 @@
       "hubPageId": "blog.dream-meanings",
       "spokePageIds": [
         "blog.anxiety-dreams-meaning",
+        "blog.back-to-school-dreams",
+        "blog.back-to-school-nightmares-children",
         "blog.being-chased-dreams",
         "blog.children-dreams-guide",
         "blog.death-dreams-meaning",
@@ -32,6 +34,16 @@
           "blog.stress-dreams-work",
           "blog.exam-dreams-meaning",
           "blog.stop-nightmares-guide"
+        ],
+        "blog.back-to-school-dreams": [
+          "blog.exam-dreams-meaning",
+          "blog.anxiety-dreams-meaning",
+          "blog.recurring-dreams-meaning"
+        ],
+        "blog.back-to-school-nightmares-children": [
+          "blog.children-dreams-guide",
+          "blog.stop-nightmares-guide",
+          "blog.back-to-school-dreams"
         ],
         "blog.being-chased-dreams": [
           "blog.anxiety-dreams-meaning",

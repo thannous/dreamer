@@ -1,7 +1,7 @@
 {
   "meta": {
     "description": "Extended content for dream symbols - full interpretations and variations",
-    "lastUpdated": "2026-08-12"
+    "lastUpdated": "2026-08-16"
   },
   "symbols": {
     "water": {
@@ -11791,6 +11791,63 @@
           { "context": "Cercare o visitare una tomba precisa", "meaning": "La scena può evidenziare un ricordo, una relazione o una conversazione incompiuta senza dimostrare contatto con la persona defunta." },
           { "context": "Un cimitero affollato o una cerimonia", "meaning": "Le altre persone possono spostare l’attenzione su lutto condiviso, ruoli familiari, aspettative sociali o una cerimonia recente." },
           { "context": "Un cimitero abbandonato o sereno di giorno", "meaning": "L’abbandono può accentuare la distanza dal passato; la luce calma può sostenere riflessione, accettazione o ricordo ordinario di un luogo." }
+        ]
+      }
+    },
+    "wasp": {
+      "en": {
+        "fullInterpretation": "<p>A wasp can make irritation, boundaries and perceived threat vivid in a dream. Begin with behavior: was it stinging, attacking, chasing you, calm, near a nest or one of many? A single quiet wasp and a swarm create very different emotional contexts.</p>\n<p>Unlike the bee — which dreams usually tie to work, community or sweet rewards — the wasp often carries a defensive charge: a stinging remark, a conflict that escalates fast, a limit someone crossed. A sting can embody that hurt precisely; an attack or chase can mirror pressure you struggle to escape. Neither image predicts harm or proves that someone around you is hostile.</p>\n<p>A real encounter, a nest spotted near the house, a documentary, a painful comment or even a physical sensation during sleep can supply the image directly. Compare that trigger with your emotion and the place where the wasp appeared before looking for a broader personal theme.</p>",
+        "variations": [
+          { "context": "A wasp sting", "meaning": "Can reflect a hurtful remark, a sudden conflict or a crossed boundary, without predicting an actual injury." },
+          { "context": "Being attacked or chased by wasps", "meaning": "Suggests pressure that feels hard to escape — criticism, conflict or accumulated irritation rather than a real danger." },
+          { "context": "A wasp nest", "meaning": "Points to a nearby source of tension, often at home or work; approaching or avoiding it mirrors how you handle that tension." },
+          { "context": "Many wasps or a swarm", "meaning": "Can amplify a swarm of small recurring worries; the number expresses intensity more than the number of real problems." },
+          { "context": "A calm wasp that does not sting", "meaning": "Shifts the focus toward vigilance and restraint: an uncomfortable presence you can observe without being hurt." },
+          { "context": "A wasp rather than a bee", "meaning": "Dreams usually separate the two: the bee speaks of work and community, the wasp of irritation, defense and boundaries." }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Une guêpe peut rendre très concrètes irritation, limites et menace ressentie. Commencez par le comportement : piquait-elle, attaquait-elle, vous poursuivait-elle, restait-elle calme, proche d’un nid ou parmi plusieurs autres ? Une guêpe isolée et paisible ne crée pas le même contexte émotionnel qu’un essaim.</p>\n<p>Contrairement à l’abeille — que les rêves relient plutôt au travail, à la communauté ou aux récompenses — la guêpe porte souvent une charge défensive : remarque piquante, conflit qui monte vite, limite franchie. La piqûre peut incarner cette blessure avec précision; l’attaque ou la poursuite peut refléter une pression difficile à éviter. Aucune image ne prédit un dommage ni ne prouve l’hostilité de votre entourage.</p>\n<p>Une rencontre réelle, un nid repéré près de la maison, un documentaire, un commentaire blessant ou même une sensation physique pendant le sommeil peuvent fournir directement l’image. Comparez ce déclencheur à l’émotion et au lieu avant de chercher un thème personnel plus large.</p>",
+        "variations": [
+          { "context": "Une piqûre de guêpe", "meaning": "Peut refléter une remarque blessante, un conflit soudain ou une limite franchie, sans prédire une blessure réelle." },
+          { "context": "Être attaqué ou poursuivi par des guêpes", "meaning": "Suggère une pression difficile à éviter — critiques, conflit ou irritation accumulée plutôt qu’un danger réel." },
+          { "context": "Un nid de guêpes", "meaning": "Désigne une source de tension proche, souvent à la maison ou au travail; s’en approcher ou l’éviter reflète votre manière de gérer cette tension." },
+          { "context": "De nombreuses guêpes ou un essaim", "meaning": "Peut amplifier un essaim de petits soucis récurrents; le nombre exprime une intensité plus qu’un nombre de problèmes réels." },
+          { "context": "Une guêpe calme qui ne pique pas", "meaning": "Déplace l’attention vers vigilance et retenue : une présence inconfortable que vous pouvez observer sans être blessé." },
+          { "context": "Une guêpe plutôt qu’une abeille", "meaning": "Les rêves distinguent souvent les deux : l’abeille parle de travail et de communauté, la guêpe d’irritation, de défense et de limites." }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Una avispa puede volver muy concretas la irritación, los límites y la amenaza percibida. Empieza por la conducta: ¿picaba, atacaba, te perseguía, estaba tranquila, cerca de un nido o había muchas? Una avispa sola y tranquila no crea el mismo contexto emocional que un enjambre.</p>\n<p>A diferencia de la abeja — que los sueños suelen vincular con el trabajo, la comunidad o las recompensas — la avispa suele cargar una carga defensiva: un comentario hiriente, un conflicto que escala rápido, un límite cruzado. La picadura puede encarnar ese dolor con precisión; el ataque o la persecución puede reflejar una presión difícil de evitar. Ninguna imagen predice daño ni demuestra hostilidad en tu entorno.</p>\n<p>Un encuentro real, un nido visto cerca de casa, un documental, un comentario doloroso o incluso una sensación física durante el sueño pueden aportar la imagen directamente. Compara ese estímulo con tu emoción y el lugar antes de buscar un tema personal más amplio.</p>",
+        "variations": [
+          { "context": "Una picadura de avispa", "meaning": "Puede reflejar un comentario hiriente, un conflicto repentino o un límite cruzado, sin predecir una lesión real." },
+          { "context": "Ser atacado o perseguido por avispas", "meaning": "Sugiere una presión difícil de evitar: críticas, conflicto o irritación acumulada en lugar de un peligro real." },
+          { "context": "Un nido de avispas", "meaning": "Señala una fuente de tensión cercana, a menudo en casa o en el trabajo; acercarte o evitarlo refleja cómo gestionas esa tensión." },
+          { "context": "Muchas avispas o un enjambre", "meaning": "Puede amplificar un enjambre de pequeñas preocupaciones repetidas; la cantidad expresa intensidad más que el número de problemas reales." },
+          { "context": "Una avispa tranquila que no pica", "meaning": "Desplaza la atención hacia vigilancia y contención: una presencia incómoda que puedes observar sin salir herido." },
+          { "context": "Una avispa en lugar de una abeja", "meaning": "Los sueños suelen separarlas: la abeja habla de trabajo y comunidad, la avispa de irritación, defensa y límites." }
+        ]
+      },
+      "de": {
+        "fullInterpretation": "<p>Eine Wespe kann Gereiztheit, Grenzen und eine empfundene Bedrohung im Traum anschaulich machen. Beginne mit dem Verhalten: Hat sie gestochen, angegriffen, dich verfolgt, war sie ruhig, in Nestnähe oder eine von vielen? Eine einzelne stille Wespe und ein Schwarm schaffen sehr unterschiedliche Gefühlslagen.</p>\n<p>Anders als die Biene — die Träume meist mit Arbeit, Gemeinschaft oder süßen Belohnungen verbinden — trägt die Wespe oft eine defensive Ladung: eine verletzende Bemerkung, ein schnell eskalierender Konflikt, eine überschrittene Grenze. Der Stich kann diesen Schmerz präzise verkörpern; Angriff oder Verfolgung können einen Druck spiegeln, dem du schwer entkommst. Kein Bild sagt Schaden voraus oder beweist Feindseligkeit im Umfeld.</p>\n<p>Eine echte Begegnung, ein Nest am Haus, eine Dokumentation, eine schmerzhafte Bemerkung oder sogar ein Körpergefühl im Schlaf können das Bild direkt liefern. Vergleiche diesen Auslöser mit Gefühl und Ort, bevor du ein breiteres persönliches Thema suchst.</p>",
+        "variations": [
+          { "context": "Ein Wespenstich", "meaning": "Kann eine verletzende Bemerkung, einen plötzlichen Konflikt oder eine überschrittene Grenze spiegeln, ohne eine Verletzung vorherzusagen." },
+          { "context": "Von Wespen angegriffen oder verfolgt werden", "meaning": "Deutet auf Druck hin, dem man schwer entkommt — Kritik, Konflikt oder angesammelte Gereiztheit statt realer Gefahr." },
+          { "context": "Ein Wespennest", "meaning": "Weist auf eine Spannungsquelle in der Nähe hin, oft zu Hause oder bei der Arbeit; Nähern oder Vermeiden spiegelt den Umgang mit dieser Spannung." },
+          { "context": "Viele Wespen oder ein Schwarm", "meaning": "Kann einen Schwarm kleiner wiederkehrender Sorgen verstärken; die Anzahl drückt Intensität aus, nicht die Zahl realer Probleme." },
+          { "context": "Eine ruhige Wespe, die nicht sticht", "meaning": "Verschiebt den Fokus auf Wachsamkeit und Zurückhaltung: eine unangenehme Präsenz, die du unverletzt beobachten kannst." },
+          { "context": "Eine Wespe statt einer Biene", "meaning": "Träume trennen meist beide: Die Biene spricht von Arbeit und Gemeinschaft, die Wespe von Gereiztheit, Verteidigung und Grenzen." }
+        ]
+      },
+      "it": {
+        "fullInterpretation": "<p>Una vespa può rendere concrete irritazione, confini e minaccia percepita in sogno. Parti dal comportamento: pungeva, attaccava, ti inseguiva, era tranquilla, vicino a un nido o compariva con molte altre? Una vespa sola e pacifica non crea lo stesso contesto emotivo di uno sciame.</p>\n<p>A differenza dell’ape — che i sogni legano piuttosto a lavoro, comunità o ricompense — la vespa porta spesso una carica difensiva: un commento pungente, un conflitto che sale in fretta, un confine superato. La puntura può incarnare quel dolore con precisione; l’attacco o l’inseguimento può riflettere una pressione difficile da evitare. Nessuna immagine predice danni né dimostra ostilità intorno a te.</p>\n<p>Un incontro reale, un nido avvistato vicino a casa, un documentario, un commento doloroso o persino una sensazione fisica durante il sonno possono fornire direttamente l’immagine. Confronta questo stimolo con emozione e luogo prima di cercare un tema personale più ampio.</p>",
+        "variations": [
+          { "context": "Una puntura di vespa", "meaning": "Può riflettere un commento doloroso, un conflitto improvviso o un confine superato, senza prevedere una ferita reale." },
+          { "context": "Essere attaccati o inseguiti dalle vespe", "meaning": "Suggerisce una pressione difficile da evitare: critiche, conflitto o irritazione accumulata piuttosto che un pericolo reale." },
+          { "context": "Un nido di vespe", "meaning": "Indica una fonte di tensione vicina, spesso in casa o al lavoro; avvicinarsi o evitarlo riflette il tuo modo di gestire quella tensione." },
+          { "context": "Molte vespe o uno sciame", "meaning": "Può amplificare uno sciame di piccole preoccupazioni ripetute; il numero esprime intensità più che il numero di problemi reali." },
+          { "context": "Una vespa tranquilla che non punge", "meaning": "Sposta l’attenzione su vigilanza e controllo: una presenza scomoda che puoi osservare senza essere ferito." },
+          { "context": "Una vespa invece di un’ape", "meaning": "I sogni spesso le distinguono: l’ape parla di lavoro e comunità, la vespa di irritazione, difesa e confini." }
         ]
       }
     }

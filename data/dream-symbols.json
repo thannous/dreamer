@@ -2,7 +2,7 @@
   "meta": {
     "version": "1.0.0",
     "lastUpdated": "2026-08-16",
-    "totalSymbols": 159,
+    "totalSymbols": 160,
     "languages": [
       "en",
       "fr",
@@ -10,7 +10,7 @@
       "de",
       "it"
     ],
-    "symbolCount": 159
+    "symbolCount": 160
   },
   "categories": {
     "nature": {
@@ -13136,6 +13136,173 @@
         "deceased-person",
         "funeral",
         "path"
+      ],
+      "modifiedAt": "2026-08-16"
+    },
+    {
+      "id": "wasp",
+      "category": "animals",
+      "priority": 2,
+      "en": {
+        "slug": "wasps",
+        "name": "Wasps",
+        "seoTitle": "wasps, stings, attacks or a nest",
+        "documentTitle": "Dreaming About Wasps: Sting, Attack or Nest",
+        "documentMetaDescription": "Dreaming about wasps? Compare a sting, an attack or chase, a wasp nest, many wasps and calm wasps using your emotion and recent context.",
+        "shortDescription": "A wasp in a dream can bring irritation, boundaries, anger or a perceived threat into focus. Its behavior — stinging, chasing, nesting nearby or simply present — and your reaction help separate a vivid recent image from a wider emotional theme.",
+        "askYourself": [
+          "Was the wasp stinging, attacking, chasing me, calm, near a nest or one of many?",
+          "Did I feel fear, pain, irritation, panic, control or simple caution around it?",
+          "Has an argument, a stinging remark, an insect encounter or a nest nearby recently occupied my attention?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about wasps?",
+            "answer": "Wasps can fit irritation, anger, boundaries or a perceived threat. The wasp's behavior, the place and your emotion give more useful context than a fixed universal meaning."
+          },
+          {
+            "question": "What does a wasp sting mean in a dream?",
+            "answer": "A sting can make a hurtful remark, a sudden conflict or a crossed boundary vivid. It does not predict injury; compare the scene with recent tensions and any literal sensation during sleep."
+          },
+          {
+            "question": "What does being attacked or chased by wasps mean?",
+            "answer": "An attack or pursuit can mirror pressure that feels hard to escape — criticism, conflict or accumulated irritation. It reflects intensity, not a real danger waiting for you."
+          },
+          {
+            "question": "What does a wasp nest or many wasps mean in a dream?",
+            "answer": "A nest can point to a source of tension close to home or work; many wasps can amplify a swarm of small worries. Neither scene proves that people around you are hostile."
+          }
+        ]
+      },
+      "fr": {
+        "slug": "guepes",
+        "name": "Guêpes",
+        "seoTitle": "guêpes, piqûre, attaque ou nid",
+        "documentTitle": "Rêver de guêpes : piqûre, attaque ou nid",
+        "documentMetaDescription": "Rêver de guêpes : comparez piqûre, attaque ou poursuite, nid, essaim et guêpes calmes selon l’émotion et le contexte récent.",
+        "shortDescription": "Une guêpe dans un rêve peut mettre en avant irritation, limites, colère ou menace ressentie. Son comportement — piqûre, poursuite, nid proche ou simple présence — et votre réaction distinguent une image récente marquante d’un thème émotionnel plus large.",
+        "askYourself": [
+          "La guêpe piquait-elle, attaquait-elle, me poursuivait-elle, restait-elle calme, proche d’un nid ou parmi plusieurs autres ?",
+          "Ai-je ressenti peur, douleur, irritation, panique, contrôle ou simple prudence à son égard ?",
+          "Une dispute, une remarque piquante, une rencontre avec un insecte ou un nid voisin a-t-elle récemment occupé mon attention ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de guêpes ?",
+            "answer": "Les guêpes peuvent rejoindre irritation, colère, limites ou menace ressentie. Le comportement de l’insecte, le lieu et votre émotion donnent plus de contexte qu’une définition universelle."
+          },
+          {
+            "question": "Que signifie une piqûre de guêpe en rêve ?",
+            "answer": "La piqûre peut rendre concrète une remarque blessante, un conflit soudain ou une limite franchie. Elle ne prédit pas une blessure; comparez la scène aux tensions récentes et aux sensations du sommeil."
+          },
+          {
+            "question": "Que signifie être attaqué ou poursuivi par des guêpes ?",
+            "answer": "L’attaque ou la poursuite peut refléter une pression difficile à éviter — critiques, conflit ou irritation accumulée. Elle exprime une intensité, pas un danger réel."
+          },
+          {
+            "question": "Que signifient un nid de guêpes ou de nombreuses guêpes ?",
+            "answer": "Le nid peut désigner une source de tension proche, à la maison ou au travail; de nombreuses guêpes amplifient un essaim de petits soucis. La scène ne prouve pas l’hostilité de votre entourage."
+          }
+        ]
+      },
+      "es": {
+        "slug": "avispas",
+        "name": "Avispas",
+        "seoTitle": "avispas, picadura, ataque o nido",
+        "documentTitle": "Soñar con avispas: picadura, ataque o nido",
+        "documentMetaDescription": "Soñar con avispas: compara picaduras, ataques o persecuciones, un nido, muchas avispas y avispas tranquilas según tu emoción y contexto reciente.",
+        "shortDescription": "Una avispa en un sueño puede destacar irritación, límites, enfado o una amenaza percibida. Su comportamiento — picar, perseguir, anidar cerca o simplemente estar presente — y tu reacción diferencian una imagen reciente intensa de un tema emocional más amplio.",
+        "askYourself": [
+          "¿La avispa picaba, atacaba, me perseguía, estaba tranquila, cerca de un nido o había muchas?",
+          "¿Sentí miedo, dolor, irritación, pánico, control o simple precaución ante ella?",
+          "¿Una discusión, un comentario hiriente, un encuentro con un insecto o un nido cercano ha ocupado recientemente mi atención?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con avispas?",
+            "answer": "Las avispas pueden relacionarse con irritación, enfado, límites o una amenaza percibida. Su conducta, el lugar y tu emoción aportan más contexto que un significado fijo."
+          },
+          {
+            "question": "¿Qué significa la picadura de una avispa en un sueño?",
+            "answer": "Una picadura puede volver concreto un comentario hiriente, un conflicto repentino o un límite cruzado. No predice una lesión; compárala con tensiones recientes y sensaciones durante el sueño."
+          },
+          {
+            "question": "¿Qué significa ser atacado o perseguido por avispas?",
+            "answer": "Un ataque o una persecución puede reflejar una presión difícil de evitar: críticas, conflicto o irritación acumulada. Expresa intensidad, no un peligro real."
+          },
+          {
+            "question": "¿Qué significan un nido de avispas o muchas avispas?",
+            "answer": "El nido puede señalar una fuente de tensión cercana, en casa o en el trabajo; muchas avispas amplifican un enjambre de pequeñas preocupaciones. La escena no demuestra hostilidad en tu entorno."
+          }
+        ]
+      },
+      "de": {
+        "slug": "wespen",
+        "name": "Wespen",
+        "seoTitle": "Wespen, Stich, Angriff oder Nest",
+        "documentTitle": "Von Wespen träumen: Stich, Angriff oder Nest",
+        "documentMetaDescription": "Von Wespen träumen: Vergleiche Stich, Angriff oder Verfolgung, ein Nest, viele Wespen und ruhige Tiere anhand von Gefühl und aktuellem Kontext.",
+        "shortDescription": "Eine Wespe im Traum kann Gereiztheit, Grenzen, Ärger oder eine empfundene Bedrohung hervorheben. Ihr Verhalten — stechen, verfolgen, in der Nähe nisten oder einfach anwesend sein — und deine Reaktion unterscheiden ein aktuelles starkes Bild von einem breiteren Gefühlsthema.",
+        "askYourself": [
+          "Hat die Wespe gestochen, angegriffen, mich verfolgt, war sie ruhig, in Nestnähe oder eine von vielen?",
+          "Empfand ich Angst, Schmerz, Gereiztheit, Panik, Kontrolle oder einfach Vorsicht?",
+          "Haben ein Streit, eine verletzende Bemerkung, eine Insektenbegegnung oder ein Nest in der Nähe zuletzt meine Aufmerksamkeit beansprucht?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Wespen zu träumen?",
+            "answer": "Wespen können zu Gereiztheit, Ärger, Grenzen oder einer empfundenen Bedrohung passen. Verhalten, Ort und Gefühl geben mehr Kontext als eine feste Deutung."
+          },
+          {
+            "question": "Was bedeutet ein Wespenstich im Traum?",
+            "answer": "Ein Stich kann eine verletzende Bemerkung, einen plötzlichen Konflikt oder eine überschrittene Grenze anschaulich machen. Er sagt keine Verletzung voraus; vergleiche aktuelle Spannungen und Körpergefühle im Schlaf."
+          },
+          {
+            "question": "Was bedeutet es, von Wespen angegriffen oder verfolgt zu werden?",
+            "answer": "Ein Angriff oder eine Verfolgung kann einen Druck spiegeln, dem man schwer entkommt — Kritik, Konflikt oder angesammelte Gereiztheit. Er drückt Intensität aus, keine reale Gefahr."
+          },
+          {
+            "question": "Was bedeuten ein Wespennest oder viele Wespen im Traum?",
+            "answer": "Ein Nest kann auf eine Spannungsquelle in der Nähe hinweisen, zu Hause oder bei der Arbeit; viele Wespen verstärken einen Schwarm kleiner Sorgen. Die Szene beweist keine Feindseligkeit im Umfeld."
+          }
+        ]
+      },
+      "it": {
+        "slug": "vespe",
+        "name": "Vespe",
+        "seoTitle": "vespe, puntura, attacco o nido",
+        "documentTitle": "Sognare vespe: puntura, attacco o nido",
+        "documentMetaDescription": "Sognare vespe: confronta puntura, attacco o inseguimento, un nido, molte vespe e vespe tranquille usando emozione e contesto recente.",
+        "shortDescription": "Una vespa in sogno può mettere in primo piano irritazione, confini, rabbia o una minaccia percepita. Il suo comportamento — pungere, inseguire, nidificare vicino o essere semplicemente presente — e la tua reazione distinguono un’immagine recente intensa da un tema emotivo più ampio.",
+        "askYourself": [
+          "La vespa pungeva, attaccava, mi inseguiva, era tranquilla, vicino a un nido o compariva con molte altre?",
+          "Provavo paura, dolore, irritazione, panico, controllo o semplice cautela nei suoi confronti?",
+          "Un litigio, un commento pungente, un incontro con un insetto o un nido vicino ha occupato di recente la mia attenzione?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare vespe?",
+            "answer": "Le vespe possono collegarsi a irritazione, rabbia, confini o minaccia percepita. Comportamento, luogo ed emozione offrono più contesto di un significato fisso."
+          },
+          {
+            "question": "Che cosa significa la puntura di una vespa in sogno?",
+            "answer": "Una puntura può rendere concreto un commento doloroso, un conflitto improvviso o un confine superato. Non predice una ferita; confrontala con tensioni recenti e sensazioni durante il sonno."
+          },
+          {
+            "question": "Che cosa significa essere attaccati o inseguiti dalle vespe?",
+            "answer": "Un attacco o un inseguimento può riflettere una pressione difficile da evitare: critiche, conflitto o irritazione accumulata. Esprime intensità, non un pericolo reale."
+          },
+          {
+            "question": "Che cosa significano un nido di vespe o molte vespe?",
+            "answer": "Il nido può indicare una fonte di tensione vicina, in casa o al lavoro; molte vespe amplificano uno sciame di piccole preoccupazioni. La scena non dimostra ostilità intorno a te."
+          }
+        ]
+      },
+      "relatedSymbols": [
+        "bee",
+        "ant",
+        "scorpion",
+        "spider"
       ],
       "modifiedAt": "2026-08-16"
     }

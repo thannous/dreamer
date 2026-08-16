@@ -694,6 +694,62 @@
             }
           }
         },
+        "blog.back-to-school-dreams": {
+          "id": "blog.back-to-school-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "back-to-school-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "back-to-school-dreams-meaning",
+              "path": "/en/blog/back-to-school-dreams-meaning"
+            },
+            "fr": {
+              "slug": "rever-retourner-ecole",
+              "path": "/fr/blog/rever-retourner-ecole"
+            },
+            "es": {
+              "slug": "sonar-volver-escuela",
+              "path": "/es/blog/sonar-volver-escuela"
+            },
+            "de": {
+              "slug": "traum-zurueck-in-die-schule",
+              "path": "/de/blog/traum-zurueck-in-die-schule"
+            },
+            "it": {
+              "slug": "sognare-tornare-scuola",
+              "path": "/it/blog/sognare-tornare-scuola"
+            }
+          }
+        },
+        "blog.back-to-school-nightmares-children": {
+          "id": "blog.back-to-school-nightmares-children",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "back-to-school-nightmares-children",
+          "locales": {
+            "en": {
+              "slug": "back-to-school-nightmares-children",
+              "path": "/en/blog/back-to-school-nightmares-children"
+            },
+            "fr": {
+              "slug": "cauchemars-rentree-enfant",
+              "path": "/fr/blog/cauchemars-rentree-enfant"
+            },
+            "es": {
+              "slug": "pesadillas-vuelta-al-cole-ninos",
+              "path": "/es/blog/pesadillas-vuelta-al-cole-ninos"
+            },
+            "de": {
+              "slug": "albtraeume-schulanfang-kinder",
+              "path": "/de/blog/albtraeume-schulanfang-kinder"
+            },
+            "it": {
+              "slug": "incubi-rientro-scolastico-bambini",
+              "path": "/it/blog/incubi-rientro-scolastico-bambini"
+            }
+          }
+        },
         "blog.being-chased-dreams": {
           "id": "blog.being-chased-dreams",
           "type": "blogArticle",
@@ -6749,6 +6805,34 @@
             "it": {
               "slug": "cimitero",
               "path": "/it/simboli/cimitero"
+            }
+          }
+        },
+        "symbol.wasp": {
+          "id": "symbol.wasp",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "wasps",
+          "locales": {
+            "en": {
+              "slug": "wasps",
+              "path": "/en/symbols/wasps"
+            },
+            "fr": {
+              "slug": "guepes",
+              "path": "/fr/symboles/guepes"
+            },
+            "es": {
+              "slug": "avispas",
+              "path": "/es/simbolos/avispas"
+            },
+            "de": {
+              "slug": "wespen",
+              "path": "/de/traumsymbole/wespen"
+            },
+            "it": {
+              "slug": "vespe",
+              "path": "/it/simboli/vespe"
             }
           }
         },

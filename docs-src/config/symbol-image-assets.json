@@ -816,6 +816,13 @@
       "category": "nature",
       "subject": "Volcano"
     },
+    "wasp": {
+      "src": "/img/symbols/editorial-2026-08-j27/wasp-v1.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Wasp"
+    },
     "watch": {
       "src": "/img/symbols/editorial-2026-07-v2/watch-v2.webp",
       "width": 1600,
