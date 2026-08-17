@@ -219,6 +219,7 @@ const styles = StyleSheet.create({
   chipText: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 14,
+    flexShrink: 0,
   },
   pressed: {
     opacity: 0.76,

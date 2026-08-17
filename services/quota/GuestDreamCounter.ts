@@ -10,12 +10,15 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSavedDreams } from '@/services/storageService';
+import { isMockModeEnabled } from '@/lib/env';
 
 const DREAM_RECORDING_KEY = 'guest_total_dream_recording_count_v1';
 const MIGRATION_KEY = 'guest_dream_recording_migrated_v1';
 
 let recordingLock: Promise<void> = Promise.resolve();
 const recordingCountListeners = new Set<() => void>();
+/** Mock dreams live in memory; keep the recording counter in the same session lifetime. */
+let mockSessionRecordingCount = 0;
 
 const emitRecordingCountChange = () => {
   recordingCountListeners.forEach((listener) => listener());
@@ -44,6 +47,9 @@ function safeParseInt(val: string | null): number {
 }
 
 export async function getLocalDreamRecordingCount(): Promise<number> {
+  if (isMockModeEnabled()) {
+    return mockSessionRecordingCount;
+  }
   try {
     const val = await AsyncStorage.getItem(DREAM_RECORDING_KEY);
     return safeParseInt(val);
@@ -54,6 +60,11 @@ export async function getLocalDreamRecordingCount(): Promise<number> {
 }
 
 export async function incrementLocalDreamRecordingCount(): Promise<number> {
+  if (isMockModeEnabled()) {
+    mockSessionRecordingCount += 1;
+    emitRecordingCountChange();
+    return mockSessionRecordingCount;
+  }
   try {
     const current = await getLocalDreamRecordingCount();
     const next = current + 1;
@@ -72,6 +83,7 @@ export async function incrementLocalDreamRecordingCount(): Promise<number> {
  * counter after the reset completes.
  */
 export async function resetGuestDreamRecordingCount(): Promise<void> {
+  mockSessionRecordingCount = 0;
   await withGuestDreamRecordingLock(async () => {
     await AsyncStorage.multiRemove([DREAM_RECORDING_KEY, MIGRATION_KEY]);
     emitRecordingCountChange();
@@ -83,6 +95,9 @@ export async function resetGuestDreamRecordingCount(): Promise<void> {
  * Uses max(localCounter, currentDreamCount) so deletions don't reduce usage.
  */
 export async function getGuestRecordedDreamCount(currentDreamCount: number): Promise<number> {
+  if (isMockModeEnabled()) {
+    return Math.max(mockSessionRecordingCount, currentDreamCount);
+  }
   const local = await getLocalDreamRecordingCount();
   return Math.max(local, currentDreamCount);
 }
