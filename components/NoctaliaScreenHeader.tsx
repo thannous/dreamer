@@ -209,6 +209,8 @@ const styles = StyleSheet.create({
     height: 42,
     flexDirection: 'row',
     alignItems: 'center',
+    flexGrow: 0,
+    flexShrink: 0, // Keep intrinsic width so the row scrolls instead of ellipsizing labels.
     gap: 7,
     borderRadius: 21,
     borderWidth: 1,

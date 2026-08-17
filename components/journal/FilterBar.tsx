@@ -295,6 +295,8 @@ const styles = StyleSheet.create({
   filterButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexGrow: 0,
+    flexShrink: 0, // Keep intrinsic width so the row scrolls instead of ellipsizing labels.
     gap: 6,
     paddingHorizontal: 12,
     paddingVertical: 6,
