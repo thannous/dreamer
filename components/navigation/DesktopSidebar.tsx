@@ -116,7 +116,7 @@ export function DesktopSidebar() {
       <View style={styles.navSection}>
         {navItems.map((item) => (
           <NavItem
-            key={item.href}
+            key={item.testID ?? item.label}
             icon={item.icon}
             label={item.label}
             href={item.href}
