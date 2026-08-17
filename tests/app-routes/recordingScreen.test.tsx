@@ -12,6 +12,8 @@ const mockCategorizeDream = jest.fn();
 const mockForceStopRecording = jest.fn();
 const mockGetGuestRecordedDreamCount = jest.fn();
 const mockGetInputModePreference = jest.fn();
+const mockBack = jest.fn();
+const mockCanGoBack = jest.fn(() => false);
 const mockPush = jest.fn();
 const mockReplace = jest.fn();
 const mockSaveInputModePreference = jest.fn();
@@ -41,6 +43,8 @@ const buildDream = (transcript: string, id = 42): DreamAnalysis => ({
 
 jest.doMock('expo-router', () => ({
   router: {
+    back: mockBack,
+    canGoBack: mockCanGoBack,
     push: mockPush,
     replace: mockReplace,
     setParams: jest.fn(),
@@ -104,6 +108,38 @@ jest.doMock('react-native', () => {
   );
   MockScrollView.displayName = 'MockScrollView';
 
+  const MockPressable = React.forwardRef(
+    (
+      {
+        children,
+        onPress,
+        testID,
+        accessibilityLabel,
+        ...props
+      }: {
+        children?: React.ReactNode;
+        onPress?: () => void;
+        testID?: string;
+        accessibilityLabel?: string;
+        [key: string]: unknown;
+      },
+      ref: React.ForwardedRef<HTMLButtonElement>
+    ) =>
+      React.createElement(
+        'button',
+        {
+          ...props,
+          'aria-label': accessibilityLabel,
+          'data-testid': testID,
+          onClick: onPress,
+          ref,
+          type: 'button',
+        },
+        children
+      )
+  );
+  MockPressable.displayName = 'MockPressable';
+
   return {
     __esModule: true,
     Alert: { alert: jest.fn() },
@@ -115,6 +151,7 @@ jest.doMock('react-native', () => {
       dismiss: jest.fn(),
     },
     KeyboardAvoidingView: createElement('div'),
+    Pressable: MockPressable,
     Platform: {
       get OS() {
         return mockPlatformOS;
@@ -311,6 +348,10 @@ jest.doMock('@/components/Toast', () => ({
 
 jest.doMock('@/components/ui/StandardBottomSheet', () => ({
   StandardBottomSheet: () => null,
+}));
+
+jest.doMock('@/components/ui/icon-symbol', () => ({
+  IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
 }));
 
 jest.doMock('@/context/AuthContext', () => ({
@@ -548,6 +589,7 @@ describe('Recording screen', () => {
     mockSaveInputModePreference.mockResolvedValue(undefined);
     mockStartRecording.mockResolvedValue({ success: true });
     mockStopRecording.mockResolvedValue({ transcript: '' });
+    mockCanGoBack.mockReturnValue(false);
   });
 
   afterEach(() => {
@@ -578,6 +620,7 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
 
     expect(screen.getByTestId('recording-bottom-nav')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Button.RecordingHome)).toBeNull();
   });
 
   it('keeps capture navigation hidden on desktop Web', () => {
@@ -587,6 +630,31 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
 
     expect(screen.queryByTestId('recording-bottom-nav')).toBeNull();
+    expect(screen.getByTestId(TID.Button.RecordingHome)).toBeTruthy();
+  });
+
+  it('returns to tabs from desktop capture when the stack cannot go back', () => {
+    mockPlatformOS = 'web';
+    mockViewportWidth = 1280;
+    mockCanGoBack.mockReturnValue(false);
+
+    render(<RecordingScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.RecordingHome));
+
+    expect(mockBack).not.toHaveBeenCalled();
+    expect(mockReplace).toHaveBeenCalledWith('/(tabs)');
+  });
+
+  it('pops capture on desktop Web when the stack can go back', () => {
+    mockPlatformOS = 'web';
+    mockViewportWidth = 1280;
+    mockCanGoBack.mockReturnValue(true);
+
+    render(<RecordingScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.RecordingHome));
+
+    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockReplace).not.toHaveBeenCalled();
   });
 
   it('keeps a voice failure visible until the user explicitly switches to text', async () => {
