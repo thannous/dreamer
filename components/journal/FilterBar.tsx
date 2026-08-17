@@ -7,7 +7,16 @@ import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import type { DreamTheme, DreamType } from '@/lib/types';
 import * as Haptics from 'expo-haptics';
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
+import {
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  type TextStyle,
+  type ViewStyle,
+} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -241,62 +250,81 @@ export const FilterBar = memo(function FilterBar({
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}
     >
-      {items.map((item) => {
-        const isActive = item.active;
-        const color = isActive ? activeIconColor : iconColor;
-        const baseLabel = item.label ?? '';
-        const label = item.id === 'theme'
-          ? `${baseLabel}${themeFilterSuffix}`
-          : item.id === 'date'
-            ? `${baseLabel}${dateRangeBadge ? ` • ${dateRangeBadge}` : ''}`
-            : baseLabel;
+      <View style={[styles.row, Platform.OS === 'web' ? webMaxContentStyle : null]}>
+        {items.map((item) => {
+          const isActive = item.active;
+          const color = isActive ? activeIconColor : iconColor;
+          const baseLabel = item.label ?? '';
+          const label = item.id === 'theme'
+            ? `${baseLabel}${themeFilterSuffix}`
+            : item.id === 'date'
+              ? `${baseLabel}${dateRangeBadge ? ` • ${dateRangeBadge}` : ''}`
+              : baseLabel;
 
-        return (
-          <FilterPill
-            key={item.id}
-            isActive={isActive}
-            activeColor={noctalia.action.primary}
-            inactiveColor={noctalia.surface.soft}
-            onPress={item.onPress}
-            accessibilityLabel={getAccessibilityLabel(item.id, t)}
-            testID={item.testID}
+          return (
+            <FilterPill
+              key={item.id}
+              isActive={isActive}
+              activeColor={noctalia.action.primary}
+              inactiveColor={noctalia.surface.soft}
+              onPress={item.onPress}
+              accessibilityLabel={getAccessibilityLabel(item.id, t)}
+              testID={item.testID}
+            >
+              {renderIcon(item.id, color)}
+              {item.label ? (
+                <Text
+                  style={[
+                    styles.filterButtonText,
+                    { color },
+                    Platform.OS === 'web' ? webNowrapStyle : null,
+                  ]}
+                >
+                  {label}
+                </Text>
+              ) : null}
+              <ActiveCheck visible={isActive} color={activeIconColor} />
+            </FilterPill>
+          );
+        })}
+
+        {hasActiveFilters && (
+          <Pressable
+            style={[styles.filterButton, { backgroundColor: noctalia.surface.soft }]}
+            onPress={onClear}
+            accessibilityRole="button"
+            accessibilityLabel={t('journal.filter.accessibility.clear')}
+            testID={clearTestID}
           >
-            {renderIcon(item.id, color)}
-            {item.label ? (
-              <Text style={[styles.filterButtonText, { color }]}>{label}</Text>
-            ) : null}
-            <ActiveCheck visible={isActive} color={activeIconColor} />
-          </FilterPill>
-        );
-      })}
-
-      {hasActiveFilters && (
-        <Pressable
-          style={[styles.filterButton, { backgroundColor: noctalia.surface.soft }]}
-          onPress={onClear}
-          accessibilityRole="button"
-          accessibilityLabel={t('journal.filter.accessibility.clear')}
-          testID={clearTestID}
-        >
-          <CloseIcon size={16} color={iconColor} />
-          <Text style={[styles.filterButtonText, { color: iconColor }]}>{t('journal.filter.clear')}</Text>
-        </Pressable>
-      )}
+            <CloseIcon size={16} color={iconColor} />
+            <Text style={[styles.filterButtonText, { color: iconColor }]}>{t('journal.filter.clear')}</Text>
+          </Pressable>
+        )}
+      </View>
     </ScrollView>
   );
 });
 
+const webMaxContentStyle = { width: 'max-content' } as unknown as ViewStyle;
+const webNowrapStyle = { whiteSpace: 'nowrap' } as unknown as TextStyle;
+
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    gap: ThemeLayout.spacing.sm,
+    flexGrow: 0,
     paddingRight: ThemeLayout.spacing.md,
+  },
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    alignItems: 'center',
+    gap: ThemeLayout.spacing.sm,
   },
   filterButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'flex-start',
     flexGrow: 0,
-    flexShrink: 0, // Keep intrinsic width so the row scrolls instead of ellipsizing labels.
+    flexShrink: 0,
     gap: 6,
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -306,5 +334,7 @@ const styles = StyleSheet.create({
   filterButtonText: {
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.medium,
+    flexGrow: 0,
+    flexShrink: 0,
   },
 });

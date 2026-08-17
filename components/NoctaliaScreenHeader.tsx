@@ -5,7 +5,17 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import React, { type ReactNode, memo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import {
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+  type TextStyle,
+  type ViewStyle,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
@@ -107,45 +117,50 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.chips}
+          contentContainerStyle={styles.chipsScroll}
         >
-          {chips.map((chip) => (
-            <Pressable
-              key={chip.id}
-              onPress={chip.onPress}
-              style={({ pressed }) => [
-                styles.chip,
-                {
-                  backgroundColor: chip.active ? noctalia.action.primary : iconButtonBg,
-                  borderColor: chip.active ? noctalia.action.primaryBorder : noctalia.surface.border,
-                },
-                pressed && styles.pressed,
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel={chip.accessibilityLabel ?? chip.label}
-              testID={chip.testID}
-            >
-              <IconSymbol
-                name={chip.icon}
-                size={17}
-                color={chip.active ? noctalia.action.primaryText : quietIconColor}
-              />
-              <Text
-                style={[
-                  styles.chipText,
-                  { color: chip.active ? noctalia.action.primaryText : noctalia.text.secondary },
+          <View style={[styles.chipsRow, Platform.OS === 'web' ? webMaxContentStyle : null]}>
+            {chips.map((chip) => (
+              <Pressable
+                key={chip.id}
+                onPress={chip.onPress}
+                style={({ pressed }) => [
+                  styles.chip,
+                  {
+                    backgroundColor: chip.active ? noctalia.action.primary : iconButtonBg,
+                    borderColor: chip.active ? noctalia.action.primaryBorder : noctalia.surface.border,
+                  },
+                  pressed && styles.pressed,
                 ]}
-                numberOfLines={1}
+                accessibilityRole="button"
+                accessibilityLabel={chip.accessibilityLabel ?? chip.label}
+                testID={chip.testID}
               >
-                {chip.label}
-              </Text>
-            </Pressable>
-          ))}
+                <IconSymbol
+                  name={chip.icon}
+                  size={17}
+                  color={chip.active ? noctalia.action.primaryText : quietIconColor}
+                />
+                <Text
+                  style={[
+                    styles.chipText,
+                    { color: chip.active ? noctalia.action.primaryText : noctalia.text.secondary },
+                    Platform.OS === 'web' ? webNowrapStyle : null,
+                  ]}
+                >
+                  {chip.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
         </ScrollView>
       ) : null}
     </View>
   );
 });
+
+const webMaxContentStyle = { width: 'max-content' } as unknown as ViewStyle;
+const webNowrapStyle = { whiteSpace: 'nowrap' } as unknown as TextStyle;
 
 const styles = StyleSheet.create({
   container: {
@@ -200,17 +215,24 @@ const styles = StyleSheet.create({
   slot: {
     paddingHorizontal: ThemeLayout.spacing.md,
   },
-  chips: {
-    gap: ThemeLayout.spacing.sm,
+  chipsScroll: {
+    flexGrow: 0,
     paddingHorizontal: ThemeLayout.spacing.lg,
     paddingBottom: ThemeLayout.spacing.xs,
+  },
+  chipsRow: {
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    alignItems: 'center',
+    gap: ThemeLayout.spacing.sm,
   },
   chip: {
     height: 42,
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'flex-start',
     flexGrow: 0,
-    flexShrink: 0, // Keep intrinsic width so the row scrolls instead of ellipsizing labels.
+    flexShrink: 0,
     gap: 7,
     borderRadius: 21,
     borderWidth: 1,
@@ -219,6 +241,7 @@ const styles = StyleSheet.create({
   chipText: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 14,
+    flexGrow: 0,
     flexShrink: 0,
   },
   pressed: {
