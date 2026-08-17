@@ -47,7 +47,7 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
       <IconSymbol
         name={icon}
         size={22}
-        color={isActive ? noctalia.accent.base : noctalia.text.secondary}
+        color={isActive ? noctalia.accent.text : noctalia.text.secondary}
       />
       <Text
         style={[

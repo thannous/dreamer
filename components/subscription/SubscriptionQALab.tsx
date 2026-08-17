@@ -337,7 +337,7 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
       ? noctalia.status.danger.text
       : action.kind === 'warning'
         ? noctalia.status.warning.text
-        : noctalia.accent.base;
+        : noctalia.accent.text;
 
   return (
     <View
@@ -364,7 +364,7 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
         testID={isEmbedded ? `${TID.Screen.SubscriptionQALab}.toggle` : undefined}
       >
         <View style={styles.headerText}>
-          <Text style={[styles.eyebrow, { color: noctalia.accent.base }]}>RevenueCat QA</Text>
+          <Text style={[styles.eyebrow, { color: noctalia.accent.text }]}>RevenueCat QA</Text>
           <Text style={[styles.title, { color: noctalia.text.primary }]}>{qaTitle}</Text>
           {showsContent ? (
             <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
@@ -372,7 +372,7 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
             </Text>
           ) : null}
         </View>
-        {isBusy ? <ActivityIndicator color={noctalia.accent.base} /> : null}
+        {isBusy ? <ActivityIndicator color={noctalia.accent.text} /> : null}
         {isEmbedded && !isBusy ? (
           <View
             accessibilityElementsHidden
@@ -558,7 +558,7 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
           { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border },
         ]}
       >
-        <Text style={[styles.noticeTitle, { color: noctalia.accent.base }]}>Snapshot</Text>
+        <Text style={[styles.noticeTitle, { color: noctalia.accent.text }]}>Snapshot</Text>
         <Text style={[styles.noticeText, { color: noctalia.text.secondary }]}>{snapshotValue}</Text>
       </View>
         </>

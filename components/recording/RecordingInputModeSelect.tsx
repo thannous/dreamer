@@ -44,7 +44,7 @@ export function RecordingInputModeSelect({
   const textColor = noctalia.text.primary;
   const mutedColor = noctalia.text.secondary;
   const accentColor = noctalia.accent.base;
-  const selectedMetaColor = mode === 'dark' ? noctalia.accent.soft : noctalia.accent.strong;
+  const selectedMetaColor = noctalia.accent.text;
 
   const options = useMemo(
     () => [
@@ -217,7 +217,7 @@ export function RecordingInputModeSelect({
                     <IconSymbol
                       name={option.icon}
                       size={16}
-                      color={isSelected ? accentColor : mutedColor}
+                      color={isSelected ? selectedMetaColor : mutedColor}
                     />
                   </View>
                   <View style={styles.optionCopy}>

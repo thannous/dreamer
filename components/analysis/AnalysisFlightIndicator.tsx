@@ -84,7 +84,7 @@ export function AnalysisFlightIndicator() {
         <IconSymbol
           name={failed ? 'exclamationmark.triangle' : 'sparkles'}
           size={16}
-          color={noctalia.accent.base}
+          color={noctalia.accent.text}
         />
         <Text numberOfLines={1} style={[styles.label, { color: noctalia.text.primary }]}>
           {label}

@@ -104,7 +104,7 @@ export default function SymbolDetailScreen() {
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.base} />
+          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
         </Pressable>
 
         <ScrollView
@@ -125,8 +125,8 @@ export default function SymbolDetailScreen() {
           <FlatGlassCard style={styles.headerCard} animationDelay={0}>
             {/* Category badge */}
             <View style={styles.categoryRow}>
-              <IconSymbol name={categoryIcon} size={16} color={noctalia.accent.base} />
-              <Text style={[styles.categoryText, { color: noctalia.accent.base }]}>
+              <IconSymbol name={categoryIcon} size={16} color={noctalia.accent.text} />
+              <Text style={[styles.categoryText, { color: noctalia.accent.text }]}>
                 {categoryName}
               </Text>
             </View>
@@ -209,7 +209,7 @@ export default function SymbolDetailScreen() {
             <FlatGlassCard style={styles.contentCard} animationDelay={0}>
               {content.askYourself.map((q, i) => (
                 <View key={`${q}-${i}`} style={styles.askRow}>
-                  <IconSymbol name="questionmark.circle.fill" size={18} color={noctalia.accent.base} />
+                  <IconSymbol name="questionmark.circle.fill" size={18} color={noctalia.accent.text} />
                   <Text
                     selectable
                     style={[styles.askText, { color: noctalia.text.primary }]}
@@ -255,7 +255,7 @@ export default function SymbolDetailScreen() {
                     <IconSymbol
                       name={getCategoryIcon(related.category)}
                       size={14}
-                      color={noctalia.accent.base}
+                      color={noctalia.accent.text}
                     />
                     <Text
                       style={[styles.relatedName, { color: noctalia.text.primary }]}
@@ -318,7 +318,7 @@ function VariationCard({
       >
         <Text
           selectable
-          style={[styles.variationContext, { color: noctalia.accent.base }]}
+          style={[styles.variationContext, { color: noctalia.accent.text }]}
         >
           {variation.context}
         </Text>

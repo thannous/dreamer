@@ -1392,8 +1392,8 @@ export default function JournalDetailScreen() {
       {!isEditing && dreamMemoryItems.length > 0 && (
         <View style={[styles.metadataMemoryBlock, { borderTopColor: noctalia.surface.border }]}>
           <View style={styles.metadataMemoryHeader}>
-            <IconSymbol name="moon.stars.fill" size={16} color={noctalia.accent.base} />
-            <Text style={[styles.metadataMemoryTitle, { color: noctalia.accent.base }]}>
+            <IconSymbol name="moon.stars.fill" size={16} color={noctalia.accent.text} />
+            <Text style={[styles.metadataMemoryTitle, { color: noctalia.accent.text }]}>
               {t('journal.detail.zone.memory')}
             </Text>
           </View>
@@ -1489,7 +1489,7 @@ export default function JournalDetailScreen() {
         : {
             background: noctalia.surface.active,
             border: noctalia.surface.border,
-            icon: noctalia.accent.base,
+            icon: noctalia.accent.text,
             title: noctalia.text.primary,
             message: noctalia.text.secondary,
           };
@@ -1507,7 +1507,7 @@ export default function JournalDetailScreen() {
         </View>
         <Text style={[styles.statusMessage, { color: cardTone.message }]}>{message}</Text>
         {isSyncPending ? (
-          <ActivityIndicator size="small" color={noctalia.accent.base} />
+          <ActivityIndicator size="small" color={noctalia.accent.text} />
         ) : null}
         {isSyncPending || isSyncFailed ? (
           <Pressable
@@ -1611,7 +1611,7 @@ export default function JournalDetailScreen() {
           </View>
           <View style={styles.detailActionCopy}>
             <Text
-              style={[styles.detailActionStep, { color: noctalia.accent.base }]}
+              style={[styles.detailActionStep, { color: noctalia.accent.text }]}
               testID={TID.Text.DreamDetailActionStep}
             >
               {detailActionCard.step}
@@ -1678,7 +1678,7 @@ export default function JournalDetailScreen() {
         ]}
       >
         <View style={styles.firstValueBackupHeader}>
-          <IconSymbol name="lock.shield" size={20} color={noctalia.accent.base} />
+          <IconSymbol name="lock.shield" size={20} color={noctalia.accent.text} />
           <Text
             style={[styles.firstValueBackupTitle, { color: noctalia.text.primary }]}
             testID={TID.Text.FirstValueBackupTitle}
@@ -1706,7 +1706,7 @@ export default function JournalDetailScreen() {
 
   const renderDetailZoneHeader = (label: string) => (
     <View style={styles.detailZoneHeader}>
-      <Text style={[styles.detailZoneHeaderText, { color: noctalia.accent.base }]}>
+      <Text style={[styles.detailZoneHeaderText, { color: noctalia.accent.text }]}>
         {label}
       </Text>
       <View style={[styles.detailZoneRule, { backgroundColor: noctalia.accent.base }]} />
@@ -1933,7 +1933,7 @@ export default function JournalDetailScreen() {
                   <Skeleton style={{ height: 60, width: '100%', borderRadius: 8 }} />
                   ) : dream.shareableQuote ? (
                   <FlatGlassCard style={styles.quoteBoxGlass} animationDelay={450}>
-                    <IconSymbol name="quote.opening" size={28} color={noctalia.accent.base} style={styles.quoteIcon} />
+                    <IconSymbol name="quote.opening" size={28} color={noctalia.accent.text} style={styles.quoteIcon} />
                     <Text style={[styles.quote, { color: noctalia.text.primary }]}>
                       &quot;{dream.shareableQuote}&quot;
                     </Text>
@@ -1949,7 +1949,7 @@ export default function JournalDetailScreen() {
                 ) : dream.interpretation ? (
                   <>
                     <View style={styles.sectionHeader}>
-                      <Text style={[styles.sectionHeaderText, { color: noctalia.accent.base }]}>
+                      <Text style={[styles.sectionHeaderText, { color: noctalia.accent.text }]}>
                         {t('journal.detail.interpretation_header')}
                       </Text>
                       <View style={[DecoLines.rule, { backgroundColor: noctalia.accent.base, marginTop: 8 }]} />
@@ -1965,7 +1965,7 @@ export default function JournalDetailScreen() {
                 {!isAnalysisPending && dream.symbols && dream.symbols.length > 0 ? (
                   <>
                     <View style={styles.sectionHeader}>
-                      <Text style={[styles.sectionHeaderText, { color: noctalia.accent.base }]}>
+                      <Text style={[styles.sectionHeaderText, { color: noctalia.accent.text }]}>
                         {t('journal.detail.symbols_header')}
                       </Text>
                       <View style={[DecoLines.rule, { backgroundColor: noctalia.accent.base, marginTop: 8 }]} />
@@ -1986,7 +1986,7 @@ export default function JournalDetailScreen() {
                 {!isAnalysisPending && dream.emotions && dream.emotions.length > 0 ? (
                   <>
                     <View style={styles.sectionHeader}>
-                      <Text style={[styles.sectionHeaderText, { color: noctalia.accent.base }]}>
+                      <Text style={[styles.sectionHeaderText, { color: noctalia.accent.text }]}>
                         {t('journal.detail.emotions_header')}
                       </Text>
                       <View style={[DecoLines.rule, { backgroundColor: noctalia.accent.base, marginTop: 8 }]} />
@@ -2007,7 +2007,7 @@ export default function JournalDetailScreen() {
                 {!isAnalysisPending && dream.reflectionQuestions && dream.reflectionQuestions.length > 0 ? (
                   <>
                     <View style={styles.sectionHeader}>
-                      <Text style={[styles.sectionHeaderText, { color: noctalia.accent.base }]}>
+                      <Text style={[styles.sectionHeaderText, { color: noctalia.accent.text }]}>
                         {t('journal.detail.reflection_header')}
                       </Text>
                       <View style={[DecoLines.rule, { backgroundColor: noctalia.accent.base, marginTop: 8 }]} />

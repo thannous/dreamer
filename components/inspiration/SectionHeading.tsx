@@ -37,7 +37,7 @@ export function SectionHeading({
               },
             ]}
           >
-            <IconSymbol name={icon} size={14} color={noctalia.accent.base} />
+            <IconSymbol name={icon} size={14} color={noctalia.accent.text} />
           </View>
         )}
         <Text style={[styles.sectionTitle, { color: noctalia.text.primary }]}>

@@ -107,7 +107,7 @@ export default function OnboardingScreen() {
   const selectionVersionRef = useRef(0);
 
   const step: OnboardingStep = state.step === 'path' ? 'path' : 'intro';
-  const titleAccent = noctalia.accent.strong;
+  const titleAccent = noctalia.accent.text;
   const background = noctalia.screen.background;
   const introUri = Asset.fromModule(INTRO_BACKGROUND_IMAGE).uri;
   const pathUri = Asset.fromModule(PATH_BACKGROUND_IMAGE).uri;
@@ -396,7 +396,7 @@ export default function OnboardingScreen() {
   if (loading) {
     return (
       <View style={[styles.loading, { backgroundColor: background }]} testID={TID.Screen.Onboarding}>
-        <ActivityIndicator color={noctalia.accent.base} />
+        <ActivityIndicator color={noctalia.accent.text} />
       </View>
     );
   }

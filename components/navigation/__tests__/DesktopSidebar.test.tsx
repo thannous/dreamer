@@ -49,7 +49,7 @@ jest.mock('@/components/ui/icon-symbol', () => ({
 
 jest.mock('@/constants/noctaliaDesign', () => ({
   getNoctaliaDesignTokens: () => ({
-    accent: { base: '#accent' },
+    accent: { base: '#accent', text: '#accent'},
     screen: { background: '#bg' },
     surface: { active: '#active', border: '#border', soft: '#soft' },
     text: { primary: '#text', secondary: '#muted' },

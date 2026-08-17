@@ -68,7 +68,7 @@ export function EmailVerificationIcon({
   }));
 
   const resolvedSuccessColor = successColor ?? noctalia.status.success.icon;
-  const iconColor = verified ? resolvedSuccessColor : color ?? noctalia.accent.base;
+  const iconColor = verified ? resolvedSuccessColor : color ?? noctalia.accent.text;
   const badgeSize = size * 0.4;
 
   return (

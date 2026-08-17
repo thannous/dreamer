@@ -29,7 +29,7 @@ export function GradientText({
 }: GradientTextProps) {
   const theme = useTheme();
   const noctalia = getNoctaliaDesignTokens(theme.colors, theme.mode);
-  const resolvedColors = colors ?? ([noctalia.text.primary, noctalia.accent.base] as const);
+  const resolvedColors = colors ?? ([noctalia.text.primary, noctalia.accent.text] as const);
   const isWeb = Platform.OS === 'web';
 
   // On web, fall back to solid color (first color in gradient)

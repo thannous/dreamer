@@ -51,7 +51,7 @@ export const EmailVerificationPendingDialog: React.FC<EmailVerificationPendingDi
         <View style={styles.iconContainer}>
           <EmailVerificationIcon
             size={64}
-            color={noctalia.accent.base}
+            color={noctalia.accent.text}
             verified={false}
             successColor={noctalia.status.success.icon}
           />
@@ -74,7 +74,7 @@ export const EmailVerificationPendingDialog: React.FC<EmailVerificationPendingDi
 
         {/* Status badge - only show when not verified */}
         <View style={[styles.badge, { backgroundColor: noctalia.surface.soft }]}>
-          <ActivityIndicator color={noctalia.accent.base} size="small" />
+          <ActivityIndicator color={noctalia.accent.text} size="small" />
           <Text style={[styles.badgeText, { color: noctalia.text.secondary }]}>
             {t('settings.account.verification.waiting_short')}
           </Text>
@@ -133,7 +133,7 @@ export const EmailVerificationSuccessDialog: React.FC<EmailVerificationSuccessDi
         <View style={styles.iconContainer}>
           <EmailVerificationIcon
             size={64}
-            color={noctalia.accent.base}
+            color={noctalia.accent.text}
             verified
             successColor={noctalia.status.success.icon}
           />

@@ -299,7 +299,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
         ) : null}
         {recordingDurationLabel ? (
           <Text
-            style={[styles.voiceCaptureDuration, { color: noctalia.accent.strong }]}
+            style={[styles.voiceCaptureDuration, { color: noctalia.accent.text }]}
             testID={TID.Text.RecordingVoiceStatusDuration}
           >
             {recordingDurationLabel}
@@ -334,7 +334,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           {isVoiceFirst && voiceSupported ? textEditor : null}
 
           {lengthWarning ? (
-            <Text style={[styles.lengthWarning, { color: noctalia.accent.strong }]}>
+            <Text style={[styles.lengthWarning, { color: noctalia.accent.text }]}>
               {lengthWarning}
             </Text>
           ) : null}

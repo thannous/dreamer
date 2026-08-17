@@ -445,9 +445,9 @@ export function LoadingIndicator({ text, visible = true }: { text?: string; visi
         </View>
         <View style={[loadingStyles.bubble, { backgroundColor: noctalia.surface.active }]}>
           <View style={loadingStyles.dots}>
-            <AnimatedDot delay={0} color={noctalia.accent.base} />
-            <AnimatedDot delay={150} color={noctalia.accent.base} />
-            <AnimatedDot delay={300} color={noctalia.accent.base} />
+            <AnimatedDot delay={0} color={noctalia.accent.text} />
+            <AnimatedDot delay={150} color={noctalia.accent.text} />
+            <AnimatedDot delay={300} color={noctalia.accent.text} />
           </View>
           {text && (
             <Text style={[loadingStyles.text, { color: noctalia.text.secondary }]}>

@@ -79,7 +79,7 @@ export function OfflineModelDownloadSheet({
     >
       {isDownloading && (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={noctalia.accent.base} />
+          <ActivityIndicator size="large" color={noctalia.accent.text} />
         </View>
       )}
     </StandardBottomSheet>

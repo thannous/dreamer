@@ -89,7 +89,7 @@ export function AdvancedFilterSheet({
     >
       <View style={styles.header}>
         <View style={styles.titleBlock}>
-          <Text style={[styles.eyebrow, { color: noctalia.accent.base }]}>
+          <Text style={[styles.eyebrow, { color: noctalia.accent.text }]}>
             {t('journal.filter_sheet.eyebrow')}
           </Text>
           <Text style={[styles.title, { color: noctalia.text.primary }]}>

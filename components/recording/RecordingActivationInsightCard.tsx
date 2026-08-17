@@ -38,7 +38,7 @@ export function RecordingActivationInsightCard({
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const accessibleAccent = noctalia.accent.strong;
+  const accessibleAccent = noctalia.accent.text;
 
   const signalLabels = useMemo(
     () => insight?.signalIds.map((signalId) => t(`recording.activation_insight.signal.${signalId}`)) ?? [],

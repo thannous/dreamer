@@ -62,7 +62,7 @@ export function MockNavigationRail() {
               <Text
                 style={[
                   styles.label,
-                  { color: isSelected ? noctalia.accent.base : noctalia.text.secondary },
+                  { color: isSelected ? noctalia.accent.text : noctalia.text.secondary },
                 ]}
               >
                 {item.shortLabel}

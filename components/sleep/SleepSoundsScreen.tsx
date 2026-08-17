@@ -138,7 +138,7 @@ export function SleepSoundsScreen() {
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
         >
-          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.base} />
+          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
         </Pressable>
 
         <ScrollView
@@ -158,7 +158,7 @@ export function SleepSoundsScreen() {
                 <IconSymbol
                   name="speaker.wave.2.fill"
                   size={30}
-                  color={noctalia.accent.base}
+                  color={noctalia.accent.text}
                 />
               </View>
               <Text style={[styles.title, { color: noctalia.text.primary }]}>
@@ -207,7 +207,7 @@ export function SleepSoundsScreen() {
                         <IconSymbol
                           name={candidate.icon}
                           size={24}
-                          color={selected ? noctalia.accent.base : noctalia.text.secondary}
+                          color={selected ? noctalia.accent.text : noctalia.text.secondary}
                         />
                       </View>
                       <View style={styles.soundCopy}>
@@ -224,7 +224,7 @@ export function SleepSoundsScreen() {
                         <IconSymbol
                           name="checkmark.circle.fill"
                           size={22}
-                          color={noctalia.accent.base}
+                          color={noctalia.accent.text}
                         />
                       ) : null}
                     </Pressable>

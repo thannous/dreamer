@@ -84,7 +84,7 @@ export function RecordingOnboardingTour({
       >
         <View style={styles.header}>
           <View style={[styles.icon, { backgroundColor: `${noctalia.accent.base}24` }]}>
-            <IconSymbol name={icon} size={23} color={noctalia.accent.base} />
+            <IconSymbol name={icon} size={23} color={noctalia.accent.text} />
           </View>
           <View style={styles.copy}>
             <Text style={[styles.progress, { color: noctalia.accent.soft }]}>

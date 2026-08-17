@@ -56,7 +56,7 @@ export function AnalysisNoticeSheet({
           background: noctalia.surface.soft,
           border: noctalia.surface.border,
           text: noctalia.text.primary,
-          icon: noctalia.accent.base,
+          icon: noctalia.accent.text,
         };
   const iconName = tone === 'success'
     ? 'checkmark.circle.fill'

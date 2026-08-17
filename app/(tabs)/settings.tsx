@@ -102,7 +102,7 @@ export default function SettingsScreen() {
             <IconSymbol
               name="person.crop.circle.badge.exclamationmark"
               size={48}
-              color={noctalia.accent.base}
+              color={noctalia.accent.text}
             />
             <Text style={[styles.returningGuestTitle, { color: noctalia.text.primary }]}>
               {t('auth.returning_guest.banner_title')}

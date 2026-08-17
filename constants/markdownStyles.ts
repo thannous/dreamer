@@ -107,14 +107,14 @@ export function createMarkdownStyles(colors: ThemeColors): MarkdownStyles {
 
     // Links
     link: {
-      color: colors.accent,
+      color: colors.accentText,
       textDecorationLine: 'underline',
     },
 
     // Code
     code_inline: {
       backgroundColor: colors.backgroundSecondary,
-      color: colors.accent,
+      color: colors.accentText,
       fontFamily: Platform.select({
         ios: Fonts.mono,
         default: 'monospace',
@@ -154,11 +154,11 @@ export function createMarkdownStyles(colors: ThemeColors): MarkdownStyles {
       marginBottom: 6,
     },
     list_item_bullet: {
-      color: colors.accent,
+      color: colors.accentText,
       marginRight: 8,
     },
     list_item_number: {
-      color: colors.accent,
+      color: colors.accentText,
       marginRight: 8,
     },
 

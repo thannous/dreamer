@@ -23,6 +23,8 @@ export function getNoctaliaDesignTokens(colors: ThemeColors, mode: ThemeMode) {
       base: colors.accent,
       strong: colors.accentDark,
       soft: colors.accentLight,
+      /** Copy and icons on paper/night surfaces. `base` is for fills and rules only. */
+      text: colors.accentText,
     },
     surface: {
       base: isDark ? 'rgba(13, 11, 28, 0.92)' : colors.backgroundCard,

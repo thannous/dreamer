@@ -464,12 +464,12 @@ export default function InspirationScreen() {
                       <IconSymbol
                         name="bubble.left.and.bubble.right.fill"
                         size={16}
-                        color={noctalia.accent.base}
+                        color={noctalia.accent.text}
                       />
                       <Text
                         style={[
                           styles.lastDreamChatLabel,
-                          { color: noctalia.accent.base },
+                          { color: noctalia.accent.text },
                         ]}
                         numberOfLines={1}
                       >
@@ -679,7 +679,8 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
   isDesktopLayout,
   onOpenSymbols,
 }: DreamSymbolsHeroProps) {
-  const accent = noctalia.accent.base;
+  const accentFill = noctalia.accent.base;
+  const accentText = noctalia.accent.text;
   const symbolCardStyle = StyleSheet.flatten([
     styles.symbolHeroCard,
     isDesktopLayout && styles.symbolHeroCardDesktop,
@@ -695,7 +696,7 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
         <View
           style={[
             styles.symbolHeroAccentLine,
-            { backgroundColor: accent },
+            { backgroundColor: accentFill },
           ]}
         />
         <View style={styles.symbolHeroContent}>
@@ -708,9 +709,9 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
                 },
               ]}
             >
-              <IconSymbol name="book.closed.fill" size={22} color={accent} />
+              <IconSymbol name="book.closed.fill" size={22} color={accentText} />
             </View>
-            <Text style={[styles.symbolHeroKicker, { color: accent }]}>
+            <Text style={[styles.symbolHeroKicker, { color: accentText }]}>
               {t("symbols.home_card_kicker")}
             </Text>
           </View>
@@ -744,12 +745,12 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
             <IconSymbol
               name="book.closed.fill"
               size={18}
-              color={mode === "dark" ? accent : noctalia.action.primaryText}
+              color={mode === "dark" ? accentText : noctalia.action.primaryText}
             />
             <Text
               style={[
                 styles.symbolHeroExploreText,
-                { color: mode === "dark" ? accent : noctalia.action.primaryText },
+                { color: mode === "dark" ? accentText : noctalia.action.primaryText },
               ]}
               numberOfLines={1}
             >
@@ -758,7 +759,7 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
             <Text
               style={[
                 styles.symbolHeroExploreArrow,
-                { color: mode === "dark" ? accent : noctalia.action.primaryText },
+                { color: mode === "dark" ? accentText : noctalia.action.primaryText },
               ]}
             >
               →
@@ -809,10 +810,10 @@ const DreamGuidesHomeCard = memo(function DreamGuidesHomeCard({
               { backgroundColor: noctalia.surface.soft },
             ]}
           >
-            <IconSymbol name={icon} size={23} color={noctalia.accent.base} />
+            <IconSymbol name={icon} size={23} color={noctalia.accent.text} />
           </View>
           <View style={styles.dreamGuidesHomeCopy}>
-            <Text style={[styles.dreamGuidesHomeKicker, { color: noctalia.accent.base }]}>
+            <Text style={[styles.dreamGuidesHomeKicker, { color: noctalia.accent.text }]}>
               {kicker}
             </Text>
             <Text style={[styles.dreamGuidesHomeTitle, { color: noctalia.text.primary }]}>
@@ -825,7 +826,7 @@ const DreamGuidesHomeCard = memo(function DreamGuidesHomeCard({
               {body}
             </Text>
           </View>
-          <IconSymbol name="chevron.right" size={20} color={noctalia.accent.base} />
+          <IconSymbol name="chevron.right" size={20} color={noctalia.accent.text} />
         </Pressable>
       </FlatGlassCard>
     </View>
@@ -923,7 +924,7 @@ const RitualScrollSection = memo(function RitualScrollSection({
                 <IconSymbol
                   name={iconName as any}
                   size={20}
-                  color={noctalia.accent.base}
+                  color={noctalia.accent.text}
                 />
               </View>
 
@@ -964,7 +965,7 @@ const RitualScrollSection = memo(function RitualScrollSection({
                   />
                 </View>
                 <Text
-                  style={[styles.ritualProgressText, { color: noctalia.accent.base }]}
+                  style={[styles.ritualProgressText, { color: noctalia.accent.text }]}
                 >
                   {t("inspiration.ritual.steps_progress")
                     .replace("{completed}", String(completedCount))
@@ -1040,7 +1041,7 @@ const TipCard = memo(function TipCard({
               },
             ]}
           >
-            <IconSymbol name="sparkles" size={18} color={noctalia.accent.base} />
+            <IconSymbol name="sparkles" size={18} color={noctalia.accent.text} />
           </View>
         </View>
 
@@ -1062,9 +1063,9 @@ const TipCard = memo(function TipCard({
           <IconSymbol
             name="arrow.triangle.2.circlepath"
             size={16}
-            color={noctalia.accent.base}
+            color={noctalia.accent.text}
           />
-          <Text style={[styles.tipButtonLabel, { color: noctalia.accent.base }]}>
+          <Text style={[styles.tipButtonLabel, { color: noctalia.accent.text }]}>
             {nextLabel}
           </Text>
         </Pressable>
@@ -1124,7 +1125,7 @@ const InfoCard = memo(function InfoCard({ noctalia, icon, title, body }: InfoCar
         <IconSymbol
           name={icon}
           size={18}
-          color={noctalia.accent.base}
+          color={noctalia.accent.text}
         />
       </View>
       <View style={styles.infoContent}>
@@ -1171,7 +1172,7 @@ const QuoteCard = memo(function QuoteCard({
         ]}
       />
       <View style={styles.quoteInner}>
-        <IconSymbol name="quote.opening" size={24} color={noctalia.accent.base} />
+        <IconSymbol name="quote.opening" size={24} color={noctalia.accent.text} />
         <Text style={[styles.quoteText, { color: noctalia.text.primary }]}>
           {t("inspiration.quote.text")}
         </Text>

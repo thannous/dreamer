@@ -77,7 +77,7 @@ export const PricingOption: React.FC<PricingOptionProps> = function PricingOptio
           <MaterialIcons
             name={isSelected ? 'radio-button-checked' : 'radio-button-unchecked'}
             size={21}
-            color={isSelected ? noctalia.accent.base : noctalia.text.tertiary}
+            color={isSelected ? noctalia.accent.text : noctalia.text.tertiary}
           />
         ) : null}
         <View style={styles.textContainer}>

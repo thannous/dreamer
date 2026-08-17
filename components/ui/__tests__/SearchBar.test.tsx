@@ -17,7 +17,7 @@ jest.mock('@/context/ThemeContext', () => ({
 
 jest.mock('@/constants/noctaliaDesign', () => ({
   getNoctaliaDesignTokens: () => ({
-    accent: { base: '#b27a42' },
+    accent: { base: '#b27a42', text: '#b27a42'},
     surface: {
       active: '#fff8ef',
       border: '#ddd',

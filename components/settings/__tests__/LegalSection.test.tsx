@@ -31,7 +31,7 @@ jest.mock('@/constants/noctaliaDesign', () => ({
   getNoctaliaDesignTokens: () => ({
     surface: { raised: '#fff', borderStrong: '#000', border: '#000', soft: '#eee' },
     text: { primary: '#000', secondary: '#111', tertiary: '#222' },
-    accent: { base: '#333' },
+    accent: { base: '#333', text: '#333'},
     status: { danger: { background: '#f00', border: '#f00', text: '#f00', icon: '#f00' } },
     action: { primary: '#000', primaryText: '#fff' },
   }),

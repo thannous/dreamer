@@ -137,7 +137,7 @@ export const QuotaStatusCard: React.FC<Props> = ({
             {t('settings.quota.subtitle', { tier: tierLabel })}
           </Text>
         </View>
-        {loading && <ActivityIndicator color={noctalia.accent.base} />}
+        {loading && <ActivityIndicator color={noctalia.accent.text} />}
       </View>
 
       {error && (

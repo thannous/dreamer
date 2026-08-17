@@ -988,11 +988,11 @@ export default function DreamChatScreen() {
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.base} />
+          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
         </Pressable>
 
         <View style={[styles.blockedContainer]} testID={TID.Chat.ScreenBlocked}>
-          <IconSymbol name="lock.fill" size={64} color={noctalia.accent.base} />
+          <IconSymbol name="lock.fill" size={64} color={noctalia.accent.text} />
           <Text style={[styles.blockedTitle, { color: noctalia.text.primary }]}>
             {t('dream_chat.exploration_limit.title')}
           </Text>
@@ -1027,7 +1027,7 @@ export default function DreamChatScreen() {
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.base} />
+          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
         </Pressable>
 
         <View style={styles.quotaCheckContainer}>
@@ -1048,7 +1048,7 @@ export default function DreamChatScreen() {
             </>
           ) : (
             <>
-              <ActivityIndicator size="large" color={noctalia.accent.base} />
+              <ActivityIndicator size="large" color={noctalia.accent.text} />
               <Text style={[styles.errorText, { color: noctalia.text.secondary, marginTop: 16 }]}>
                 {t('dream_chat.checking_access')}
               </Text>
@@ -1197,7 +1197,7 @@ export default function DreamChatScreen() {
             accessibilityLabel={t('journal.back_button')}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <IconSymbol name="chevron.left" size={22} color={noctalia.accent.base} />
+            <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
           </Pressable>
 
           <MessagesList

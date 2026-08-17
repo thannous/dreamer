@@ -163,7 +163,7 @@ export function GuestProdQALab() {
     >
       <View style={styles.header}>
         <View style={[styles.icon, { backgroundColor: noctalia.accent.soft }]}>
-          <IconSymbol name="checkmark.shield.fill" size={22} color={noctalia.accent.base} />
+          <IconSymbol name="checkmark.shield.fill" size={22} color={noctalia.accent.text} />
         </View>
         <View style={styles.headerCopy}>
           <Text style={[styles.title, { color: noctalia.text.primary }]}>Passeport invité QA</Text>
@@ -171,7 +171,7 @@ export function GuestProdQALab() {
             Production réelle · un appareil · 24 heures
           </Text>
         </View>
-        {loading ? <ActivityIndicator color={noctalia.accent.base} /> : null}
+        {loading ? <ActivityIndicator color={noctalia.accent.text} /> : null}
       </View>
 
       <Text style={[styles.status, { color: noctalia.text.primary }]}>{passportState}</Text>

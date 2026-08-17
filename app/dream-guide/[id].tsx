@@ -108,10 +108,10 @@ export default function DreamGuideDetailScreen() {
               <IconSymbol
                 name={getDreamGuideIcon(guide.id)}
                 size={21}
-                color={noctalia.accent.base}
+                color={noctalia.accent.text}
               />
             </View>
-            <Text style={[styles.guideLabel, { color: noctalia.accent.base }]}>
+            <Text style={[styles.guideLabel, { color: noctalia.accent.text }]}>
               {copy.guideLabel}
             </Text>
           </View>
@@ -131,7 +131,7 @@ export default function DreamGuideDetailScreen() {
           {practicalContent ? (
             <View style={styles.practicalSection}>
               <View style={styles.sectionHeadingRow}>
-                <IconSymbol name="checkmark.circle.fill" size={19} color={noctalia.accent.base} />
+                <IconSymbol name="checkmark.circle.fill" size={19} color={noctalia.accent.text} />
                 <Text style={[styles.sectionHeading, { color: noctalia.text.primary }]}>
                   {copy.essentialsHeading}
                 </Text>
@@ -144,7 +144,7 @@ export default function DreamGuideDetailScreen() {
                     style={styles.practicalPointCard}
                   >
                     <View style={[styles.pointIndex, { backgroundColor: noctalia.surface.soft }]}>
-                      <Text style={[styles.pointIndexText, { color: noctalia.accent.base }]}>
+                      <Text style={[styles.pointIndexText, { color: noctalia.accent.text }]}>
                         {index + 1}
                       </Text>
                     </View>
@@ -162,7 +162,7 @@ export default function DreamGuideDetailScreen() {
           ) : (
             <>
               <View style={styles.sectionHeadingRow}>
-                <IconSymbol name="book.closed.fill" size={19} color={noctalia.accent.base} />
+                <IconSymbol name="book.closed.fill" size={19} color={noctalia.accent.text} />
                 <Text style={[styles.sectionHeading, { color: noctalia.text.primary }]}>
                   {copy.symbolsHeading}
                 </Text>
@@ -186,7 +186,7 @@ export default function DreamGuideDetailScreen() {
 
           <View style={styles.conclusionSection}>
             <View style={styles.sectionHeadingRow}>
-              <IconSymbol name="lightbulb.fill" size={19} color={noctalia.accent.base} />
+              <IconSymbol name="lightbulb.fill" size={19} color={noctalia.accent.text} />
               <Text style={[styles.sectionHeading, { color: noctalia.text.primary }]}>
                 {copy.conclusionHeading}
               </Text>

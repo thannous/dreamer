@@ -95,6 +95,7 @@ vi.mock('../../../context/ThemeContext', () => ({
       mode: 'dark',
       colors: {
         accent: '#00f',
+      accentText: '#00f',
         backgroundCard: '#111',
         backgroundDark: '#000',
         backgroundSecondary: '#222',

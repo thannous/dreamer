@@ -189,6 +189,7 @@ jest.doMock('@/context/ThemeContext', () => ({
       navbarBorder: '#514637',
       navbarTextActive: '#FFF9EF',
       navbarTextInactive: '#AFA7BB',
+      accentText: '#EAD4B4',
     },
   }),
 }));

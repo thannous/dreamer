@@ -15,7 +15,7 @@ export function LoadingState({ message = 'Loading...', size = 'large' }: Loading
 
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
-      <ActivityIndicator size={size} color={noctalia.accent.base} />
+      <ActivityIndicator size={size} color={noctalia.accent.text} />
       {message && <Text style={[styles.message, { color: noctalia.text.secondary }]}>{message}</Text>}
     </View>
   );
