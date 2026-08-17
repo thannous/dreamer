@@ -105,18 +105,41 @@ export function generateChatResponse(userMessage: string, dreamContext: string):
   return responses[Math.floor(Math.random() * responses.length)];
 }
 
+function pickFromTranscript<T>(transcript: string, items: readonly T[]): T {
+  let hash = 0;
+  for (let index = 0; index < transcript.length; index += 1) {
+    hash = (hash * 31 + transcript.charCodeAt(index)) >>> 0;
+  }
+  return items[hash % items.length];
+}
+
+export function titleFromTranscript(transcript: string): string {
+  const cleaned = transcript.replace(/\s+/g, ' ').trim();
+  if (!cleaned) return DREAM_TITLES[0];
+
+  const sentence = cleaned.split(/[.!?…]/)[0]?.trim() || cleaned;
+  const words = sentence.split(' ').filter(Boolean).slice(0, 8);
+  const raw = words.join(' ');
+  const clipped = raw.length > 52 ? `${raw.slice(0, 49).trimEnd()}…` : raw;
+  return clipped.charAt(0).toUpperCase() + clipped.slice(1);
+}
+
 /**
- * Generate random analysis result (for API mock)
+ * Generate analysis result (for API mock).
+ * Titles follow the transcript so successive mock dreams stay distinguishable.
  */
 export function generateAnalysisResult(transcript: string) {
-  const theme = THEMES[Math.floor(Math.random() * THEMES.length)];
+  const theme = pickFromTranscript(transcript, THEMES);
+  const interpretation = pickFromTranscript(transcript, INTERPRETATIONS);
+  const shareableQuote = pickFromTranscript(transcript, SHAREABLE_QUOTES);
+  const dreamType = pickFromTranscript(transcript, DREAM_TYPES);
 
   return {
-    title: DREAM_TITLES[Math.floor(Math.random() * DREAM_TITLES.length)],
-    interpretation: INTERPRETATIONS[Math.floor(Math.random() * INTERPRETATIONS.length)],
-    shareableQuote: SHAREABLE_QUOTES[Math.floor(Math.random() * SHAREABLE_QUOTES.length)],
+    title: titleFromTranscript(transcript),
+    interpretation,
+    shareableQuote,
     theme,
-    dreamType: DREAM_TYPES[Math.floor(Math.random() * DREAM_TYPES.length)],
+    dreamType,
     imagePrompt: `A ${theme} dream scene: ${transcript.slice(0, 50)}`,
     symbols: [
       { name: 'Water', meaning: 'Emotional currents moving beneath the surface of this dream.' },
