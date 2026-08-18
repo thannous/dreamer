@@ -1,5 +1,8 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 
+const LUCID_APP_VERSION = '1.0.0';
+const LUCID_EAS_PROJECT_ID = 'd210576f-5dc4-4f7a-a5e1-a407c209c3a2';
+
 function isLucidNativeMarker(value: string | undefined): boolean {
   if (value === undefined || value === '' || value === 'noctalia') return false;
   if (value === 'lucid') return true;
@@ -95,9 +98,15 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     slug: 'noctalia-lucid-trainer',
     scheme: 'noctalia-lucid',
     icon: lucidIcon,
+    // The companion is a new store application: it starts its own version
+    // line instead of inheriting Noctalia's. EAS (appVersionSource=remote)
+    // owns the build numbers after the first build.
+    version: LUCID_APP_VERSION,
+    runtimeVersion: LUCID_APP_VERSION,
     ios: {
       ...baseExpo.ios,
       bundleIdentifier: 'com.tanuki75.noctalia.lucid',
+      buildNumber: '1',
       associatedDomains: ['applinks:lucid.noctalia.app'],
       infoPlist: {
         ...lucidInfoPlist,
@@ -108,6 +117,7 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     android: {
       ...baseExpo.android,
       package: 'com.tanuki75.noctalia.lucid',
+      versionCode: 1,
       adaptiveIcon: {
         backgroundColor: '#201131',
         foregroundImage: lucidIcon,
@@ -153,7 +163,7 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     ],
     extra: {
       ...baseExpo.extra,
-      eas: undefined,
+      eas: { projectId: LUCID_EAS_PROJECT_ID },
       product: 'lucid-trainer',
       // RevenueCat SDK keys identify a concrete store application. The
       // companion must receive its own public keys through its build profile;
