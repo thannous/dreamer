@@ -1,14 +1,53 @@
 # Noctalia — Espace Community & Social Media Manager
 
-Créé le 2026-07-29. Mandat mis à jour le 2026-07-31.
+Créé le 2026-07-29. Mandat mis à jour le 2026-08-13.
 
 Ce dossier est mon espace de travail opérationnel pour le community management et
 le social media management organiques de Noctalia. Le registre éditorial officiel
 reste [`../PUBLICATION-PLAN.md`](../PUBLICATION-PLAN.md) : un brouillon présent ici
 n'est ni validé, ni planifié, ni publié.
 
+## Contrôles reproductibles avant action native
+
+- `npm run social:health` : contrôle les 87 créneaux principaux, les cartes
+  d'archives, l'inventaire anti-doublon par plateforme et les packages roulants
+  Pinterest. Un master `BLOQUÉ QA` doit être explicitement bloqué dans sa ligne
+  et dans le statut global. Ce contrôle est local et ne prouve aucune
+  programmation ni publication.
+- `npm run social:proof -- <registre-du-jour.md>` : valide la structure et les
+  domaines des preuves déjà collectées sans exiger que la journée soit close.
+- `npm run social:proof:close -- <registre-du-jour.md>` : ne doit passer qu'en
+  fin de journée, lorsque les 12 lignes sont `PUBLIÉES` avec 12 URL publiques
+  distinctes sur les domaines attendus.
+- `npm run social:proof:registers` : découvre automatiquement les registres
+  `PUBLIC-PROOF-AAAA-MM-JJ.md`; toute date antérieure à aujourd'hui
+  (`Europe/Paris`) doit être strictement close, tandis qu'aujourd'hui et les
+  dates futures restent validées en mode structure sans publication anticipée.
+- `npm run social:proof:due` : applique au registre du jour les passages de
+  contrôle réels (`16:05`, `16:45`, `17:55`, `18:15`, `18:45`, `20:05`,
+  `20:45`, `23:05`, `23:45`). Une ligne encore sans statut `PUBLIÉ` et URL
+  publique après son checkpoint rend `social:health` rouge ; avant le premier
+  checkpoint, ce contrôle reste un no-op vérifié.
+- `npm run social:automation:check` : contrôle localement les deux heartbeats
+  actifs, leurs 14 passages principaux, leurs 6 passages secondaires, les
+  horaires minimums attendus, les gates DreamViews/Reddit et l'absence de
+  chevauchement. Ce contrôle dépend des automations Codex de la machine et
+  reste séparé de `social:health` pour ne pas simuler une preuve native.
+
+Une commande verte n'autorise jamais une publication anticipée et ne remplace
+pas le contrôle du compte, du master, de l'heure et de l'absence de doublon
+dans la plateforme native.
+
 ## Mission
 
+- piloter la diffusion principale de trois vidéos distinctes par jour sur
+  TikTok, Instagram et X, puis la vidéo hero quotidienne sur YouTube Shorts,
+  Facebook Reels et Pinterest ;
+- résorber progressivement le retard des plateformes d'extension avec une file
+  `ARCHIVE` séparée, limitée à une ancienne vidéo supplémentaire par jour et
+  strictement contrôlée par plateforme ;
+- développer la communauté dans l'ordre validé : DreamViews d'abord, puis
+  Reddit seulement après création et maturation d'un compte Noctalia dédié ;
 - transformer le positionnement et les contenus de Noctalia en idées sociales
   adaptées à chaque plateforme ;
 - préparer les briefs, légendes, scripts, variantes et recommandations de
@@ -21,10 +60,13 @@ n'est ni validé, ni planifié, ni publié.
 ## Périmètre actuel
 
 - Marque : Noctalia.
-- Plateformes sociales gérées : Instagram, TikTok et X.
-- Le calendrier [`../PUBLICATION-PLAN.md`](../PUBLICATION-PLAN.md) couvre
-  actuellement TikTok et Instagram Reels ; X fait partie du mandat de gestion,
-  mais n'a pas encore de calendrier de publication dédié.
+- Plateformes sociales gérées : TikTok, Instagram, X, YouTube Shorts, Facebook
+  Reels et Pinterest.
+- DreamViews est autorisé sous mandat communautaire distinct pour des
+  contributions manuelles, utiles, espacées et sans lien, après contrôle de la
+  session et du fil. Reddit reste hors mandat jusqu'à la création et la
+  maturation d'un compte Noctalia dédié. Snapchat reste bloqué par sa porte de
+  performance.
 - Audience : adultes curieux de leurs rêves, du journal de rêves, de la
   connaissance de soi et du rêve lucide.
 - Langues du produit : français, anglais, espagnol, allemand et italien.
@@ -146,6 +188,11 @@ renomme pas rétroactivement les fichiers déjà publiés ou archivés.
   ciblé États-Unis et Europe. Depuis le 6 août, la cadence opérationnelle est
   de trois vidéos par jour aux créneaux documentés ; le statut vérifié de chaque
   file est tenu dans le document.
+- [`organic-expansion-2026-08-12-2026-09-10/`](./organic-expansion-2026-08-12-2026-09-10/) :
+  programme opérationnel de 30 jours pour YouTube Shorts, Facebook Reels,
+  Pinterest et la participation Reddit/DreamViews. Les nouveaux comptes restent
+  à configurer et à ajouter au mandat avant publication ; Snapchat reste bloqué
+  jusqu'à identification de deux formats gagnants.
 - [`../MEDIA-INVENTORY.md`](../MEDIA-INVENTORY.md) : inventaire des masters
   locaux, des lots Drive, des noms historiques, des propositions de migration
   et de l'historique de publication vérifié.

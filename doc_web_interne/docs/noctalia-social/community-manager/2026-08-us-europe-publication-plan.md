@@ -338,7 +338,7 @@ ont donc été créées une seule fois, puis relues dans la file du compte cible
 |---|---|---|---|
 | 11/08 · 20:15 | `73-cavernes-de-nacre.mp4` | `How deep would you go? #Noctalia #Dreamscape` | **PROGRAMMÉE** |
 | 12/08 · 20:15 | `68-prairie-des-lanternes.mp4` | `A field that remembers the stars. #Noctalia #Dreamscape` | **PROGRAMMÉE** |
-| 13/08 · 20:15 | `70-cathedrale-solaire.mp4` | `Would you step into the light? #Noctalia #Dreamscape` | **PROGRAMMÉE** |
+| 13/08 · 20:15 | `70-cathedrale-solaire.mp4` | `Would you step into the light? #Noctalia #Dreamscape` | **PUBLIÉE** — [URL publique vérifiée](https://x.com/NoctaliaDreams/status/2087966162046910588) |
 | 14/08 · 20:15 | `71-ballons-de-laube.mp4` | `If the sky carried you away, where would you land? #Noctalia #Dreamscape` | **PROGRAMMÉE** |
 | 15/08 · 20:15 | `74-ocean-de-plumes.mp4` | `What if the sky grew wings? #Noctalia #Dreamscape` | **PROGRAMMÉE** |
 
@@ -1528,11 +1528,6 @@ attribué aux créneaux 1 (15:30 / 15:45 / 16:15) ou 3 (22:30 / 22:45 / 23:15).
 | 19:30 / 19:45 / 20:15 | `07-horloge.mp4` | **PROGRAMMÉE** selon la file vérifiée du calendrier | **EN ATTENTE** jusqu'à 19:45 | **PROGRAMMÉE** selon la file Scheduled du calendrier |
 | 22:30 / 22:45 / 23:15 | — | **EN ATTENTE** | **EN ATTENTE** | **EN ATTENTE** |
 
-Ne pas publier, programmer ou réutiliser un contenu pour les créneaux 1 et 3
-tant qu'un master distinct n'est pas validé. Les statuts de `07-horloge.mp4`
-seront recontrôlés avant son créneau exact ; une file future ne vaut pas URL
-publique.
-
 ## Revalidation du 9 août — créneau 2 TikTok — 2026-08-09, 19:25 CEST
 
 La file TikTok Studio du compte `@noctaliadreams` affiche la ligne exacte
@@ -1623,3 +1618,854 @@ La convention obligatoire est
 pour l'image et la vidéo. Les trois finales portant `_V2` sont conservées telles
 quelles. Pour une nouvelle production, compter 15 minutes par vidéo, en série,
 avec une seule génération à la fois.
+
+## Contrôle du 10 août — créneau 2 — 2026-08-10, 19:16 CEST
+
+Le contrôle courant de TikTok Studio n'a pas pu revalider la file : la session
+Chrome accessible au CM redirige vers l'écran de connexion TikTok. Aucune
+suppression, reprogrammation ou publication de remplacement n'a été effectuée.
+La ligne `08-tempete.mp4` reste **PROGRAMMÉE selon le dernier état vérifié** à
+19:30, mais elle ne sera marquée **PUBLIÉE** qu'après ouverture de son URL
+publique. Instagram reste **EN ATTENTE** jusqu'à 19:45 et X reste
+**PROGRAMMÉE selon le dernier état vérifié** à 20:15.
+
+## Exécution du 10 août — créneau 2 TikTok — 2026-08-10, 19:35 CEST
+
+La session Chrome du compte `@noctaliadreams` affiche maintenant
+`08-tempete.mp4` sur le profil public avec la légende `Would you enter the
+storm? ⛈️ #Noctalia #Dreamscape #DreamJournal`. L'URL publique vérifiée est
+https://www.tiktok.com/@noctaliadreams/video/7669151005212151062. TikTok passe
+donc à **PUBLIÉE** ; Instagram reste **EN ATTENTE** jusqu'à 19:45 et X reste
+**PROGRAMMÉE** à 20:15 selon le dernier état vérifié.
+
+## Exécution du 10 août — créneau 2 Instagram — 2026-08-10, 19:45 CEST
+
+Après contrôle anti-doublon du profil `@noctaliadreams` (16 publications avant
+l'envoi), le fichier exact `08-tempete.mp4` a été publié avec la légende
+`Would you enter the storm? ⛈️ #Noctalia #Dreamscape #DreamJournal`. Instagram
+a confirmé `Votre reel a été partagé`, puis le profil est passé à 17
+publications. L'URL publique vérifiée est
+https://www.instagram.com/noctaliadreams/reel/Db3zI6iJuHs/. Instagram passe à
+**PUBLIÉE**.
+
+Le contrôle de la file X à 19:45 ne peut pas confirmer la ligne Noctalia : la
+session Chrome X active est connectée à `@TanukiLabsAI`, et l'onglet Scheduled
+de ce compte est vide. Aucun post n'a été créé, supprimé ou modifié sur ce
+compte. La ligne X Noctalia reste **À REVALIDER** à 20:15 depuis son profil
+public ; elle ne doit pas être comptée comme publiée sans URL publique.
+
+## Exécution du 10 août — créneau 2 complet — 2026-08-10, 20:16 CEST
+
+Le profil public `@NoctaliaDreams` affiche le post `Would you enter the storm?
+#Noctalia #Dreamscape` avec la vidéo et le label natif `Made with AI`. L'URL
+publique vérifiée est
+https://x.com/NoctaliaDreams/status/2086878998340997468. L'horodatage Snowflake
+correspond au 10/08/2026 à 20:15:00 Paris. X passe donc à **PUBLIÉE**.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 19:30 / 19:45 / 20:15 | `08-tempete.mp4` | **PUBLIÉE** — [URL](https://www.tiktok.com/@noctaliadreams/video/7669151005212151062) | **PUBLIÉE** — [URL](https://www.instagram.com/noctaliadreams/reel/Db3zI6iJuHs/) | **PUBLIÉE** — [URL](https://x.com/NoctaliaDreams/status/2086878998340997468) |
+
+## État final du 10 août — neuf lignes documentées — 2026-08-10, 23:26 CEST
+
+Les neuf lignes de la journée sont documentées. Le créneau 2 a été publié sur
+les trois réseaux avec le même asset et trois URL publiques vérifiées. Les
+créneaux 1 et 3 restent **EN ATTENTE** faute d'assets distincts validés ; aucun
+contenu déjà publié n'a été réutilisé et aucun doublon n'a été créé.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | — | **EN ATTENTE** | **EN ATTENTE** | **EN ATTENTE** |
+| 19:30 / 19:45 / 20:15 | `08-tempete.mp4` | **PUBLIÉE** — [URL](https://www.tiktok.com/@noctaliadreams/video/7669151005212151062) | **PUBLIÉE** — [URL](https://www.instagram.com/noctaliadreams/reel/Db3zI6iJuHs/) | **PUBLIÉE** — [URL](https://x.com/NoctaliaDreams/status/2086878998340997468) |
+| 22:30 / 22:45 / 23:15 | — | **EN ATTENTE** | **EN ATTENTE** | **EN ATTENTE** |
+
+## Rattrapage du 10 août — créneaux 1 et 3 — 2026-08-11, 03:35 CEST
+
+À la demande explicite de l'utilisateur, les deux créneaux restés en attente le
+10 août ont été rattrapés immédiatement le 11 août. Deux masters Higgsfield
+distincts ont été retenus et le même master a été publié sur TikTok, Instagram
+et X pour chaque ligne. Les comptes contrôlés sont `@noctaliadreams` sur TikTok
+et Instagram et `@NoctaliaDreams` sur X. Les labels natifs IA sont actifs sur
+TikTok et X ; les légendes ne contiennent ni `@mention` ni texte
+« AI-generated ».
+
+| Ligne rattrapée du 10/08 | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| Créneau 1 | `DAY_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PUBLIÉE** — [URL](https://www.tiktok.com/@noctaliadreams/video/7672578329249156374) | **PUBLIÉE** — [URL](https://www.instagram.com/noctaliadreams/reel/Db4Z_TeJJNC/) | **PUBLIÉE** — [URL](https://x.com/NoctaliaDreams/status/2086987370335760713) |
+| Créneau 3 | `NIGHT_NEON_NOIR_HOLOGRAPHIC_THRILLER_02_V2.mp4` | **PUBLIÉE** — [URL](https://www.tiktok.com/@noctaliadreams/video/7672579626975251734) | **PUBLIÉE** — [URL](https://www.instagram.com/noctaliadreams/reel/Db4afsypfzD/) | **PUBLIÉE** — [URL](https://x.com/NoctaliaDreams/status/2086988510112677987) |
+
+Le premier envoi Instagram a signalé une erreur sans créer de Reel ; l'absence
+de doublon a été vérifiée avant une nouvelle tentative, ensuite confirmée par
+`Votre reel a été partagé`. TikTok a placé brièvement les deux vidéos en
+examen ; la file Studio les affiche désormais toutes les deux en visibilité
+`Tout le monde`. Le créneau régulier du 11 août avec
+`73-cavernes-de-nacre.mp4` reste inchangé et programmé aux horaires prévus.
+
+## Préflight du 11 août — créneau 1 — 2026-08-11, 15:16 CEST
+
+Le prochain créneau de 15:30 / 15:45 / 16:15 ne possède toujours aucun master
+distinct affecté et validé dans la source de vérité. Il reste donc **EN
+ATTENTE** sur TikTok, Instagram et X ; aucune vidéo déjà publiée ni aucun asset
+hors planning n'a été réutilisé automatiquement. Le créneau 2 conserve
+`73-cavernes-de-nacre.mp4` aux horaires déjà programmés et ne doit pas être
+modifié.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | — | **EN ATTENTE** | **EN ATTENTE** | **EN ATTENTE** |
+| 19:30 / 19:45 / 20:15 | `73-cavernes-de-nacre.mp4` | **PROGRAMMÉE** | **EN ATTENTE** jusqu'à 19:45 | **PROGRAMMÉE** |
+| 22:30 / 22:45 / 23:15 | — | **EN ATTENTE** | **EN ATTENTE** | **EN ATTENTE** |
+
+## Calendrier corrigé — vidéos sans préfixe avant les séries atmosphériques — 2026-08-11
+
+Cette section est l'unique calendrier futur faisant foi et remplace intégralement
+le calendrier réordonné précédent. Décision éditoriale explicite de
+l'utilisateur : **toute vidéo dont le nom commence par `DAY_`, `SUNSET_`,
+`NIGHT_` ou `AFTERGLOW_` doit venir après toutes les vidéos restantes sans ces
+préfixes**. La règle s'applique à toutes les familles, pas seulement à
+`LUNARPUNK` ou `AFTERGLOW`.
+
+Le recoupement Drive du 11 août a confirmé 38 MP4 dans les deux réserves sans
+préfixe : 10 dans
+[`03_Epic_Seedance`](https://drive.google.com/drive/folders/15Is78UbL8m-MgS0TtUINHLGrHww_QkSz)
+et 28 dans
+[`01_Serie_Reveil/02_Videos_1080p`](https://drive.google.com/drive/folders/11Vezb5jefPqXe-Nxe_Urm0ccJyXUdioR).
+Trois ne sont pas réutilisables : `POPBOT` est exclu, `WATERFALL PARADISE` et
+`HEAVENLY PALACE` sont déjà publics. Les **35 vidéos restantes** ont 35 noms et
+35 tailles distincts ; aucune n'a la même taille qu'un master local déjà
+publié. Avec les quatre masters historiques déjà programmés du 12 au 15 août,
+elles remplissent exactement les **39 créneaux du 12 au 24 août**.
+
+Le calendrier conserve sans modification les quatre lignes TikTok/X déjà
+confirmées au créneau 2 du 12 au 15 août. Les 35 nouvelles lignes sont
+**AFFECTÉES — À PROGRAMMER APRÈS PRÉFLIGHT** : présence Drive, nom unique et
+fichier MP4 non vide sont vérifiés, mais le statut `PROGRAMMÉE` exige encore le
+contrôle du fichier exact, du compte, de la date, de l'heure et de l'absence de
+doublon dans la file native. Une ligne ne devient `PUBLIÉE` qu'avec son URL
+publique.
+
+### Priorité 1 — sans préfixe — 12 au 24 août
+
+| Date | Créneau 1 — 15:30 / 15:45 / 16:15 | Créneau 2 — 19:30 / 19:45 / 20:15 | Créneau 3 — 22:30 / 22:45 / 23:15 |
+|---|---|---|---|
+| 12/08 | [`01-levitation-envol.mp4`](https://drive.google.com/file/d/1k9g_sXz1nidp0evCQpqhPX-gpaN1rXTj/view?usp=drivesdk) | `68-prairie-des-lanternes.mp4` — TikTok/X déjà programmés | [`02-escalier-vortex.mp4`](https://drive.google.com/file/d/1CGLKFoPHJYBF7c0XGIg4lDiCGfW9Klic/view?usp=drivesdk) |
+| 13/08 | [`03-ville-engloutie-eruption.mp4`](https://drive.google.com/file/d/1OtnnSmWetibCPckmf5P-do5qzNiMKqP_/view?usp=drivesdk) | `70-cathedrale-solaire.mp4` — TikTok/X déjà programmés | [`04-ocean-ciel-tempete.mp4`](https://drive.google.com/file/d/1HNLW6PyfCJwLwmdhu6W6mYRK3DxfMX2K/view?usp=drivesdk) |
+| 14/08 | [`05-foret-bioluminescente-embrasement.mp4`](https://drive.google.com/file/d/1tPuPsPMkTNB-3CrqSwHQoq3qc1ye0D6y/view?usp=drivesdk) | `71-ballons-de-laube.mp4` — TikTok/X déjà programmés | [`06-chute-infinie-traversee.mp4`](https://drive.google.com/file/d/1wZ79DO--7YxS5GUpSX3wZGKQNhWbIK1f/view?usp=drivesdk) |
+| 15/08 | [`07-couloir-portes-deferlement.mp4`](https://drive.google.com/file/d/1ZACN3tJ9OJZU1Nk5jKHGETz69VvQA2wr/view?usp=drivesdk) | `74-ocean-de-plumes.mp4` — TikTok/X déjà programmés | [`08-baleines-celestes-impact.mp4`](https://drive.google.com/file/d/1bk6p1_5igHYR3nyuxXhDn8V_uJxmX-zN/view?usp=drivesdk) |
+| 16/08 | [`09-monde-miroir-brisure.mp4`](https://drive.google.com/file/d/1EDn-TtLhtKFaB_mJ0x3AiReztbccbN2Z/view?usp=drivesdk) | [`10-constellation-naissance.mp4`](https://drive.google.com/file/d/1D6PNyxu4_QuElUHWkKEReLuZGeLRxeSY/view?usp=drivesdk) | [`HIGGS_2026-08-05_130802_CRAYON_MARKET_b09972e9.mp4`](https://drive.google.com/file/d/1lhU3KRY6pKpexcR3BhXoRLVIpf7GpdYy/view?usp=drivesdk) |
+| 17/08 | [`HIGGS_2026-08-05_143033_JUNGLE_CRYSTAL_FPV_4c148b7e.mp4`](https://drive.google.com/file/d/11LjME5EeCycaPE8wUisjTzHgHJHojjK3/view?usp=drivesdk) | [`HIGGS_2026-08-05_155812_CITY_POV_A_2c5b1abd.mp4`](https://drive.google.com/file/d/1bIiq7kwrkMeZCUxWc1s_adK13-PoWj34/view?usp=drivesdk) | [`HIGGS_2026-08-05_161541_CITY_POV_B_a7ea3391.mp4`](https://drive.google.com/file/d/15760sg4LyjCzKgCUBbxFF6VAYlxhmY8R/view?usp=drivesdk) |
+| 18/08 | [`HIGGS_2026-08-05_171605_CITY_POV_C_cecd94a1.mp4`](https://drive.google.com/file/d/1WdrEZbxecliH4PuJ4c1Bob0lIgFyDi3T/view?usp=drivesdk) | [`HIGGS_2026-08-05_174658_CITY_POV_D_749127f1.mp4`](https://drive.google.com/file/d/15oZlPE-3rNkrCrs6hJdfceSLuEUZJRa7/view?usp=drivesdk) | [`HIGGS_2026-08-05_162633_TSUNAMI_NEWS_14edcce9.mp4`](https://drive.google.com/file/d/18-Jxu-tS9bsROBHNI9uuV87s-0Ci_jtW/view?usp=drivesdk) |
+| 19/08 | [`HIGGS_2026-08-05_183301_TIME_FREEZE_CITY_073670c9.mp4`](https://drive.google.com/file/d/1FAAs_y8kdqiwtlLb7agA97REAeknYPrU/view?usp=drivesdk) | [`HIGGS_2026-08-05_212002_MAGIC_DOOR_b3d4a35f.mp4`](https://drive.google.com/file/d/1gymhuX7gyqBhO6Ftvsw6LA2gWOlNEjw3/view?usp=drivesdk) | [`HIGGS_2026-08-06_001_FP_CITY.mp4`](https://drive.google.com/file/d/131Z9P3gaKZfKx3nQ4HWIImXsPtnueY4O/view?usp=drivesdk) |
+| 20/08 | [`HIGGS_2026-08-06_002_FP_CITY.mp4`](https://drive.google.com/file/d/1cw_1zeLG3570V9IPFtM0QFRiBoqbwEd3/view?usp=drivesdk) | [`HIGGS_2026-08-06_003_FP_CITY.mp4`](https://drive.google.com/file/d/1Frjj-yq3hvsyMDK1E4xSx8qdQOGZtcyZ/view?usp=drivesdk) | [`HIGGS_2026-08-06_004_FP_CITY.mp4`](https://drive.google.com/file/d/1x3L8VRYjNv-ArDhq9vN-N5rRVN6tCkDi/view?usp=drivesdk) |
+| 21/08 | [`HIGGS_2026-08-06_005_FP_CITY.mp4`](https://drive.google.com/file/d/1kpY7pKxLS_p0TqXW7Ua5Z9MVYTXSUejQ/view?usp=drivesdk) | [`HIGGS_2026-08-06_006_FP_CITY.mp4`](https://drive.google.com/file/d/13MiIjDsIFypUadBg91TgOXGG4Hid2geQ/view?usp=drivesdk) | [`NOC_REVEIL_S01_VIDEO_1080p_v01.mp4`](https://drive.google.com/file/d/1-kVPTMlRhCQF5dET30hhiioL--ktttMy/view?usp=drivesdk) |
+| 22/08 | [`NOC_REVEIL_S02_VIDEO_1080p_v01.mp4`](https://drive.google.com/file/d/1QZE6C8j2VoTeH0M-5ewDRWxx8oo-nRTz/view?usp=drivesdk) | [`NOC_REVEIL_S03_VIDEO_1080p_v01.mp4`](https://drive.google.com/file/d/1N2kidH39C2X3Lr-i4zhb7PEcNJrw7bXm/view?usp=drivesdk) | [`NOC_REVEIL_S04_VIDEO_1080p_v01.mp4`](https://drive.google.com/file/d/1Pj2TSGRNyF_Pu0phQbDO5kTY42IDaxM_/view?usp=drivesdk) |
+| 23/08 | [`NOC_REVEIL_S05_VIDEO_1080p_v01.mp4`](https://drive.google.com/file/d/1botqADpiUEgHOrjTQQ7gHeRUkbrw5g0Z/view?usp=drivesdk) | [`NOC_REVEIL_S06_VIDEO_1080p_v01.mp4`](https://drive.google.com/file/d/1fS1-3SGdEf8vNWpovVzfWsOQZu2gj_0L/view?usp=drivesdk) | [`NOC_REVEIL_S07_VIDEO_1080p_v01.mp4`](https://drive.google.com/file/d/15Tl7TIPGU2-fJ-nY7f7EGIb5YwXLwMM5/view?usp=drivesdk) |
+| 24/08 | [`NOC_REVEIL_S08_VIDEO_1080p_v01.mp4`](https://drive.google.com/file/d/1SJl_DwUIRB6Je1TbpIZ-teeK5DwB6KWN/view?usp=drivesdk) | [`NOC_REVEIL_S09_VIDEO_1080p_v01.mp4`](https://drive.google.com/file/d/1tgWj_RnvUq8QPH7zBItXVC3iXlLYeL8K/view?usp=drivesdk) | [`NOC_REVEIL_S10_VIDEO_1080p_v01.mp4`](https://drive.google.com/file/d/17wvF_39cLPP0PRH81k2OEMB2hXd4-EPR/view?usp=drivesdk) |
+
+### Priorité 2 — tous les préfixes atmosphériques à la fin — 25 au 31 août
+
+Les 21 lignes d'août ci-dessous proviennent du
+[lot `_02` certifié](https://docs.google.com/spreadsheets/d/1rHw5WG4HVeiL-vDlV6TfSNVs5-1JW-scovcb0CZeMNk/edit).
+`DAY_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` et
+`NIGHT_NEON_NOIR_HOLOGRAPHIC_THRILLER_02_V2.mp4`, déjà publics, sont absents.
+
+| Date | Créneau 1 — 15:30 / 15:45 / 16:15 | Créneau 2 — 19:30 / 19:45 / 20:15 | Créneau 3 — 22:30 / 22:45 / 23:15 |
+|---|---|---|---|
+| 25/08 | [`SUNSET_AETHERPUNK_CELESTIAL_FLOATING_02.mp4`](https://drive.google.com/file/d/1cuwT4ZwWM2DI1dsl_IVB07ZKZBNoMDy2/view?usp=drivesdk) | [`AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4`](https://drive.google.com/file/d/1wN9HOGwL4b5COmwmig8w3K5v2qeyHWxj/view?usp=drivesdk) | [`NIGHT_AETHERPUNK_CELESTIAL_FLOATING_02.mp4`](https://drive.google.com/file/d/1i03yUdivitF1YRQGlPItDWnpGP-DNl2q/view?usp=drivesdk) |
+| 26/08 | [`DAY_AFROFUTURISM_SOLAR_CULTURAL_02.mp4`](https://drive.google.com/file/d/15umEXHNYwKTx0e-qND12PVoRoJmiB9kL/view?usp=drivesdk) | [`SUNSET_AFROFUTURISM_SOLAR_CULTURAL_02_V2.mp4`](https://drive.google.com/file/d/17-CP36XneHLy1oWuc03Xcn9z-W0qJteV/view?usp=drivesdk) | [`AFTERGLOW_AFROFUTURISM_SOLAR_CULTURAL_02.mp4`](https://drive.google.com/file/d/1tDOoTlxozczauv42gfOW5dRy7sthgLzK/view?usp=drivesdk) |
+| 27/08 | [`NIGHT_AFROFUTURISM_SOLAR_CULTURAL_02.mp4`](https://drive.google.com/file/d/1p_Nj22xQx2OfPa5KHcgZD9OL0MC99XIp/view?usp=drivesdk) | [`DAY_ARCANEPUNK_LUMINOUS_RUNE_02.mp4`](https://drive.google.com/file/d/1ceHyI1clI-6JZJb7hgY9_U9W-VTn8R3d/view?usp=drivesdk) | [`SUNSET_ARCANEPUNK_LUMINOUS_RUNE_02.mp4`](https://drive.google.com/file/d/1gUNRFNGMh2eL_toon8ZPVOgHOLYwFQZ8/view?usp=drivesdk) |
+| 28/08 | [`AFTERGLOW_ARCANEPUNK_LUMINOUS_RUNE_02.mp4`](https://drive.google.com/file/d/1igkKJTjZ8jw2X-6XpUliWu-lFuUD5huQ/view?usp=drivesdk) | [`NIGHT_ARCANEPUNK_LUMINOUS_RUNE_02.mp4`](https://drive.google.com/file/d/1_YJrihpX5jlQGj4eXi_7vYOC90AVHWUg/view?usp=drivesdk) | [`DAY_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4`](https://drive.google.com/file/d/15OfxlfoDiFnoWjxPKorKL5TpWd11izde/view?usp=drivesdk) |
+| 29/08 | [`SUNSET_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4`](https://drive.google.com/file/d/1jAVathhKY4kgCS7agb40YOXX8mMZTMFB/view?usp=drivesdk) | [`AFTERGLOW_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4`](https://drive.google.com/file/d/1hQT9jsb_0y3iG5JkHT2ngh-noTxyNEuM/view?usp=drivesdk) | [`NIGHT_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4`](https://drive.google.com/file/d/1DHDFE4QWRdJZqNpkXh9_zr6mT99nCFOd/view?usp=drivesdk) |
+| 30/08 | [`AFTERGLOW_SURREAL_FLOWER_WORLD_FLIGHT_01.mp4`](https://drive.google.com/file/d/1-u2rUCDdfBv325IyHSszcrc4gOG5olQV/view?usp=drivesdk) | [`SUNSET_LUNARPUNK_SILVER_LUNAR_02.mp4`](https://drive.google.com/file/d/1e3FRxwonqFB4d1yQs78EryrQoGpLbY2I/view?usp=drivesdk) | [`AFTERGLOW_LUNARPUNK_SILVER_LUNAR_02.mp4`](https://drive.google.com/file/d/1FM4XId-jmkmGyOPoCJnOf1rhx3XMyLML/view?usp=drivesdk) |
+| 31/08 | [`NIGHT_LUNARPUNK_SILVER_LUNAR_02.mp4`](https://drive.google.com/file/d/1iDcKS1Zkac47JlrL8ZE44Y-jExOpcB4t/view?usp=drivesdk) | [`DAY_NEON_NOIR_HOLOGRAPHIC_THRILLER_02.mp4`](https://drive.google.com/file/d/1c6ISgx7jom6ey39hpY7aIkGm5CRhj-D5/view?usp=drivesdk) | [`SUNSET_NEON_NOIR_HOLOGRAPHIC_THRILLER_02.mp4`](https://drive.google.com/file/d/14q_JveCodwtYrWkOak75KtBcogKocjnE/view?usp=drivesdk) |
+
+### Réserve atmosphérique suivante — 1er au 3 septembre
+
+Ces neuf vidéos certifiées restent après la séquence d'août et ne doivent pas
+être avancées devant les vidéos sans préfixe :
+
+| Date | Créneau 1 | Créneau 2 | Créneau 3 |
+|---|---|---|---|
+| 01/09 | [`AFTERGLOW_NEON_NOIR_HOLOGRAPHIC_THRILLER_02_V2.mp4`](https://drive.google.com/file/d/1kPem94q2rU90uDyY-3uZTaD_Ac2o1kaP/view?usp=drivesdk) | [`DAY_OCEANPUNK_ABYSSAL_BIOLUMINESCENT_02.mp4`](https://drive.google.com/file/d/1r5KopwNUs8CPC6Va923Lc3s4_vvyUMvO/view?usp=drivesdk) | [`SUNSET_OCEANPUNK_ABYSSAL_BIOLUMINESCENT_02.mp4`](https://drive.google.com/file/d/1tQm3pC2hDsx97ZYqyyw4cKjLfIdiLbqO/view?usp=drivesdk) |
+| 02/09 | [`AFTERGLOW_OCEANPUNK_ABYSSAL_BIOLUMINESCENT_02.mp4`](https://drive.google.com/file/d/1ZxRe7LbTokrjepLfFEnoMppK2Tdb4LIZ/view?usp=drivesdk) | [`NIGHT_OCEANPUNK_ABYSSAL_BIOLUMINESCENT_02.mp4`](https://drive.google.com/file/d/1k8k6wMjqndHvqn2eoFNp88fLf4T_hW0s/view?usp=drivesdk) | [`DAY_VOLCANOPUNK_BASALT_LAVA_02.mp4`](https://drive.google.com/file/d/1MoHbtsKPx7PsGfa-Gj38ak8UgRNTIdVV/view?usp=drivesdk) |
+| 03/09 | [`SUNSET_VOLCANOPUNK_BASALT_LAVA_02.mp4`](https://drive.google.com/file/d/1hCq4bHPMaGOSg65KdwZYkBjRpTTuZShJ/view?usp=drivesdk) | [`AFTERGLOW_VOLCANOPUNK_BASALT_LAVA_02.mp4`](https://drive.google.com/file/d/16Y025RJQgQsGcyM9aIXG0iWWqk0dHsbg/view?usp=drivesdk) | [`NIGHT_VOLCANOPUNK_BASALT_LAVA_02.mp4`](https://drive.google.com/file/d/1JfWyLeBJDmP_G4TTLBmvrDXs-3wFyuW3/view?usp=drivesdk) |
+
+Les neuf liens Drive exacts ont été réconciliés le 13 août avec la feuille
+certifiée `Inventaire!A10:N41`. Les masters exacts ont ensuite passé le
+préflight local : H.264 High/AAC, 720×1280, 24 fps, durée 15,072 s. Les lignes
+restent **AFFECTÉES — PRÊTES À PROGRAMMER**, mais ne deviennent `PROGRAMMÉES`
+qu'après preuve dans la file native du compte exact.
+
+Les neuf masters ont aussi été copiés sans modification dans les dossiers
+durables `output/video/noctalia-social-execution-2026-09-01/` à
+`output/video/noctalia-social-execution-2026-09-03/`. Les SHA-256 après copie
+correspondent au tableau ci-dessous ; ces copies locales ne prouvent ni upload,
+ni programmation, ni publication.
+
+| Date / créneau | Asset exact | SHA-256 |
+|---|---|---|
+| 01/09 C1 | `AFTERGLOW_NEON_NOIR_HOLOGRAPHIC_THRILLER_02_V2.mp4` | `19ac02ec8267f1e7a94771fb694848078f23a6c3628fce4f36046327edd287f7` |
+| 01/09 C2 | `DAY_OCEANPUNK_ABYSSAL_BIOLUMINESCENT_02.mp4` | `695386c3dba29962ad0c6a5c4d2d469bf101abf916540beacb8b9e6694bd9964` |
+| 01/09 C3 | `SUNSET_OCEANPUNK_ABYSSAL_BIOLUMINESCENT_02.mp4` | `c1ece3d12b57403bc9929f4ca05873985dc2b4c4df1095df774177c5c7a64d42` |
+| 02/09 C1 | `AFTERGLOW_OCEANPUNK_ABYSSAL_BIOLUMINESCENT_02.mp4` | `eec6f5ca4f6137ed378a085fc34a31945287f0a0251811c95cbc91fa8d1b9ea4` |
+| 02/09 C2 | `NIGHT_OCEANPUNK_ABYSSAL_BIOLUMINESCENT_02.mp4` | `3acae9b424a965f665a0bcce2a9379bdbae02f45c330fb18656ed8530e0c2ebe` |
+| 02/09 C3 | `DAY_VOLCANOPUNK_BASALT_LAVA_02.mp4` | `ef9c1ac097e13be5e1fe90bfd5a0e271db66b4701d33049eac07fc3f708b8dce` |
+| 03/09 C1 | `SUNSET_VOLCANOPUNK_BASALT_LAVA_02.mp4` | `fa0e240c151bfacba0cdec6a55c62d2e46e8936d12f8a686d9df5193d6ee92bc` |
+| 03/09 C2 | `AFTERGLOW_VOLCANOPUNK_BASALT_LAVA_02.mp4` | `f6b70f6838e98d352ea088515bd4274d190aea79247c5f2c45e4fb144ccebcad` |
+| 03/09 C3 | `NIGHT_VOLCANOPUNK_BASALT_LAVA_02.mp4` | `f499309d043ec7d4b824a815b0e6d79c677854b21ad4808f8bf0eb1e301f9434` |
+
+Les 35 variantes récupérées de Magnific/Pikaso restent dans `90_Archives` et
+ne complètent pas ce calendrier : leur préfixe respecte la règle de fin de
+séquence, mais leur statut reste **ARCHIVÉE — NON PUBLIABLE SANS NOUVELLE
+VALIDATION**. Les fichiers `_01` non certifiés restent eux aussi exclus.
+
+Contrôles éditoriaux à appliquer aux légendes et miniatures : précision
+culturelle pour AFROFUTURISM ; contraste mobile pour FROSTPUNK et LUNARPUNK ;
+risque de scintillement pour ARCANEPUNK et NEON_NOIR ; lisibilité des
+particules pour AETHERPUNK et OCEANPUNK ; fumée/lave pour VOLCANOPUNK.
+
+## Programmation native du 12 août — vérifiée le 11 août 2026
+
+Le compte TikTok contrôlé est `@noctaliadreams`. Les trois lignes du 12 août
+sont visibles dans TikTok Studio aux heures exactes. Les deux nouvelles lignes
+sans préfixe ont été programmées avec le label natif de contenu généré activé,
+sans texte « AI-generated » dans les légendes. Les liens ci-dessous sont des
+liens de ligne Studio planifiée et **ne constituent pas encore une preuve de
+publication publique**.
+
+Le compte X contrôlé est `@NoctaliaDreams`. Les trois lignes du 12 août sont
+visibles dans l'onglet `Scheduled` aux heures exactes. X a détecté le contenu
+généré et affiche le label natif `Made with AI` séparément des copies. Aucune
+copie ne contient `AI-generated` ni `@mention`.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | `01-levitation-envol.mp4` | **PUBLIÉE** — [URL publique TikTok](https://www.tiktok.com/@noctaliadreams/video/7672845593449893142), profil et légende vérifiés le 12/08 | **PUBLIÉE** — [URL publique Instagram](https://www.instagram.com/noctaliadreams/reel/Db8dSsRpbyH/), rattrapage direct vérifié le 12/08 à 17:13 avec mention IA native | **PUBLIÉE** — [URL publique X](https://x.com/NoctaliaDreams/status/2087543376233324924), profil, légende et label `Made with AI` vérifiés le 12/08 |
+| 19:30 / 19:45 / 20:15 | `68-prairie-des-lanternes.mp4` | **PUBLIÉE** — [URL publique TikTok](https://www.tiktok.com/@noctaliadreams/video/7669511051330768150), profil et légende vérifiés le 12/08 | **PUBLIÉE** — [URL publique Instagram](https://www.instagram.com/noctaliadreams/reel/Db84qSIJt1J/), rattrapage direct vérifié le 12/08 à 21:13 avec mention IA native | **PUBLIÉE** — [URL publique X](https://x.com/NoctaliaDreams/status/2087603774147715546), profil, légende et label `Made with AI` vérifiés le 12/08 |
+| 22:30 / 22:45 / 23:15 | `02-escalier-vortex.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672846296939646230), 12/08 à 22:30 | **PRÊTE** — master Drive exact et légende `A staircase spirals beyond the world. Would you climb it? #Noctalia #Dreamscape #SurrealDreams` vérifiés le 12/08 à 21:20 ; publication directe à 22:45 | **PROGRAMMÉE** — file vérifiée, 12/08 à 23:15 |
+
+Le déclenchement automatique de préparation a été avancé de `:25` à `:05`
+pour respecter la contrainte native TikTok d'au moins quinze minutes entre la
+programmation et l'heure d'envoi. Les passages Instagram restent à `:45`.
+
+### Exécution du 12 août — créneau 1 réconcilié — 2026-08-12, 17:13 CEST
+
+Le contrôle public a confirmé l'asset `01-levitation-envol.mp4` sur TikTok
+`@noctaliadreams` et X `@NoctaliaDreams`. Le Reel Instagram exact était absent
+du profil `@noctaliadreams` après son heure de 15:45 ; il a été publié en
+rattrapage immédiat après contrôle anti-doublon, depuis le lien Drive exact du
+calendrier, en format 9:16 et avec la mention IA native activée. Les trois URL
+publiques sont désormais consignées dans la ligne ci-dessus.
+
+### Exécution du 12 août — créneau 2 réconcilié — 2026-08-12, 21:14 CEST
+
+Le contrôle public a confirmé l'asset `68-prairie-des-lanternes.mp4` sur
+TikTok `@noctaliadreams` et X `@NoctaliaDreams` après leurs heures respectives.
+Le Reel Instagram exact était absent du profil `@noctaliadreams` après son
+heure de 19:45 ; il a été publié en rattrapage immédiat après contrôle
+anti-doublon depuis le master local exact. Le préflight a confirmé H.264,
+1080×1920, 24 fps, vidéo 12,041667 s, audio/conteneur 12,122667 s et SHA-256
+`925da1a7b7134cce7264adea6d0686551a38e90a54d2771efdec02cc6c7255a7`.
+La légende anglaise exacte a été vérifiée et la mention IA native a été
+activée avant publication. Les trois URL publiques sont consignées dans la
+ligne ci-dessus.
+
+### Préparation du 12 août — créneau 3 — 2026-08-12, 21:18 CEST
+
+Le master Drive exact `02-escalier-vortex.mp4` a été téléchargé depuis le lien
+du calendrier et contrôlé avant le créneau Instagram : H.264, 1080×1920,
+24 fps, vidéo 15,041667 s, audio/conteneur 15,092971 s et SHA-256
+`af162200c1978aec8b0ba4941eeef10b3723ce0741ef3e1ca79530b4666d5113`.
+La légende exacte a été relue sur la ligne TikTok : `A staircase spirals
+beyond the world. Would you climb it? #Noctalia #Dreamscape #SurrealDreams`.
+Le statut Instagram est **PRÊTE**, pas publié : l'heure de 22:45 n'est pas
+échue. Les programmations TikTok 22:30 et X 23:15 restent inchangées.
+
+Un contre-audit indépendant a confirmé : 39 assets sans préfixe uniques du 12
+au 24 août, puis les 30 assets certifiés commençant par `DAY_`, `SUNSET_`,
+`NIGHT_` ou `AFTERGLOW_` uniquement à partir du 25 août. Aucun doublon futur,
+aucun `POPBOT`, aucun `WATERFALL PARADISE`, aucun `HEAVENLY PALACE`, et aucune
+des deux vidéos préfixées déjà publiées ne figurent dans les tables futures.
+
+## Exécution du 11 août — créneau 2 complété — 2026-08-11, 21:12 CEST
+
+Le contrôle anti-doublon a confirmé que `73-cavernes-de-nacre.mp4` était déjà
+public sur TikTok et X, mais absent du profil Instagram `@noctaliadreams`. Le
+Reel Instagram manquant a donc été publié immédiatement en rattrapage, avec le
+fichier exact et la légende prévue, puis contrôlé sur le profil public. Les
+trois réseaux utilisent désormais le même asset pour ce créneau. La légende
+Instagram ne contient ni texte « AI-generated » ni `@mention`; aucun réglage
+natif de déclaration IA n'était proposé dans le formulaire Web Instagram.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 19:30 / 19:45 / 20:15 | `73-cavernes-de-nacre.mp4` | **PUBLIÉE** — [URL publique](https://www.tiktok.com/@noctaliadreams/video/7669510452715474198) | **PUBLIÉE** — [URL publique](https://www.instagram.com/noctaliadreams/reel/Db6TxYRJwIG/) — rattrapage vérifié à 21:12 | **PUBLIÉE** — [URL publique](https://x.com/NoctaliaDreams/status/2087241386164662725), label natif `Made with AI` visible |
+
+## Programmation native en lot — 13 au 15 août — vérifiée le 12 août 2026 à 00:33 CEST
+
+Les comptes contrôlés sont `@noctaliadreams` sur TikTok et
+`@NoctaliaDreams` sur X. Les six nouvelles lignes TikTok et les six nouvelles
+lignes X des créneaux 1 et 3 ont été créées depuis les fichiers Drive exacts
+du calendrier, puis vérifiées dans leurs files natives. Les quatre lignes
+historiques des créneaux 2 du 12 au 15 août ont été conservées sans
+modification. Les labels IA natifs sont actifs séparément des légendes ; les
+copies ne contiennent ni `@mention` ni texte littéral « AI-generated ».
+
+Les liens TikTok ci-dessous sont des liens de ligne Studio planifiée et ne sont
+pas encore des preuves de publication publique. Les lignes X sont confirmées
+par leur présence dans `Scheduled`, avec l'heure Europe/Paris, la copie et la
+vidéo de 15 secondes visibles. Instagram reste **EN ATTENTE** : aucun Reel
+futur n'a été publié avant son heure.
+
+| Date | Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|---|
+| 13/08 | 15:30 / 15:45 / 16:15 | `03-ville-engloutie-eruption.mp4` | **PUBLIÉE** — [URL publique vérifiée](https://www.tiktok.com/@noctaliadreams/video/7672900166269046039), compte `@noctaliadreams`, hook exact, durée 0:15 et label IA natif visibles après 15:30 | **PUBLIÉE EN RATTRAPAGE À 20:32** — [Reel public vérifié](https://www.instagram.com/noctaliadreams/reel/Db_Y9_wpnJS/), compte, légende exacte, audio d’origine et label `Creator avec IA` concordants | **PUBLIÉE** — [URL publique vérifiée](https://x.com/NoctaliaDreams/status/2087905764786520085), compte `@NoctaliaDreams`, copie exacte, vidéo 0:15 et label `Made with AI` visibles |
+| 13/08 | 19:30 / 19:45 / 20:15 | `70-cathedrale-solaire.mp4` | **PUBLIÉE** — [URL publique vérifiée](https://www.tiktok.com/@noctaliadreams/video/7669511356776844566), compte `@noctaliadreams`, hook exact et durée 0:12 visibles après 19:30 | **PUBLIÉE** — [Reel public vérifié](https://www.instagram.com/noctaliadreams/reel/Db_TvvmpRrl/), compte, légende exacte et label natif IA concordants | **PUBLIÉE** — [URL publique vérifiée](https://x.com/NoctaliaDreams/status/2087966162046910588), compte `@NoctaliaDreams`, copie exacte, vidéo 0:12 et label `Made with AI` concordants |
+| 13/08 | 22:30 / 22:45 / 23:15 | `04-ocean-ciel-tempete.mp4` | **PUBLIÉE** — [URL publique vérifiée](https://www.tiktok.com/@noctaliadreams/video/7672900511825415446), compte `@noctaliadreams`, hook exact, durée 0:15 et label IA natif visibles après 22:30 | **PUBLIÉE** — [Reel public vérifié](https://www.instagram.com/noctaliadreams/reel/Db_oYftpXmx/), compte, légende exacte, audio d’origine et label `Creator avec IA` concordants | **PUBLIÉE** — [URL publique vérifiée](https://x.com/NoctaliaDreams/status/2088011460479688877), compte `@NoctaliaDreams`, copie exacte, vidéo 0:15 et label `Made with AI` concordants |
+| 14/08 | 15:30 / 15:45 / 16:15 | `05-foret-bioluminescente-embrasement.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672901802949414166), légende `A bioluminescent forest catches fire…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file vérifiée à 16:15, copie `A bioluminescent forest catches fire…` |
+| 14/08 | 19:30 / 19:45 / 20:15 | `71-ballons-de-laube.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7669511641754733826) | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file vérifiée à 20:15 |
+| 14/08 | 22:30 / 22:45 / 23:15 | `06-chute-infinie-traversee.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672902106499599638), légende `An endless fall becomes a journey…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file vérifiée à 23:15, copie `An endless fall becomes a journey…` |
+| 15/08 | 15:30 / 15:45 / 16:15 | `07-couloir-portes-deferlement.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672903215687519491), légende `A corridor of doors opens into a flood…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file vérifiée à 16:15, copie `A corridor of doors opens into a flood…` |
+| 15/08 | 19:30 / 19:45 / 20:15 | `74-ocean-de-plumes.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7669511893291257110) | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file vérifiée à 20:15 |
+| 15/08 | 22:30 / 22:45 / 23:15 | `08-baleines-celestes-impact.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672905012036766978), légende `Celestial whales break through the sky…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file vérifiée à 23:15, copie `Celestial whales break through the sky…` |
+
+À l'issue du lot, TikTok Studio affiche `Brouillons 0`. La prochaine journée à
+préflighter et programmer est le 16 août ; aucune ligne du 16 août ou au-delà
+n'est déclarée `PROGRAMMÉE` dans ce journal sans contrôle natif ultérieur.
+
+## Programmation native en lot — 16 et 17 août — vérifiée le 12 août 2026
+
+Les six masters ont été téléchargés depuis les liens Drive exacts du calendrier
+et contrôlés avant envoi : H.264/AAC, 1080×1920, 24 fps, durée 15,092971 s,
+avec une piste audio. Les comptes contrôlés restent `@noctaliadreams` sur
+TikTok et `@NoctaliaDreams` sur X. Chaque ligne est visible dans la file native
+à l'heure Europe/Paris prévue, et TikTok Studio affiche `Brouillons 0`.
+
+Les labels IA natifs sont actifs séparément des légendes. Les liens TikTok sont
+des liens Studio planifiés, pas encore des URL publiques. Instagram reste
+**EN ATTENTE** jusqu'à chaque heure de publication directe.
+
+| Date | Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|---|
+| 16/08 | 15:30 / 15:45 / 16:15 | `09-monde-miroir-brisure.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672907476156615958), légende `A mirror world begins to break…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file vérifiée à 16:15, copie `A mirror world begins to break…` |
+| 16/08 | 19:30 / 19:45 / 20:15 | `10-constellation-naissance.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672907603541871894), légende `A constellation is born above the city…` | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file vérifiée à 20:15, copie `A constellation is born above the city…` |
+| 16/08 | 22:30 / 22:45 / 23:15 | `HIGGS_2026-08-05_130802_CRAYON_MARKET_b09972e9.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672907707799702806), légende `A market drawn in living color…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file vérifiée à 23:15, copie `A market drawn in living color…` |
+| 17/08 | 15:30 / 15:45 / 16:15 | `HIGGS_2026-08-05_143033_JUNGLE_CRYSTAL_FPV_4c148b7e.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672908640755535126), légende `A crystal jungle opens ahead…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file vérifiée à 16:15, copie `A crystal jungle opens ahead…` |
+| 17/08 | 19:30 / 19:45 / 20:15 | `HIGGS_2026-08-05_155812_CITY_POV_A_2c5b1abd.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672908734812753174), légende `A dream city unfolds below…` | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file vérifiée à 20:15, copie `A dream city unfolds below…` |
+| 17/08 | 22:30 / 22:45 / 23:15 | `HIGGS_2026-08-05_161541_CITY_POV_B_a7ea3391.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672908815154662678), légende `The city keeps changing around you…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file vérifiée à 23:15, copie `The city keeps changing around you…` |
+
+La prochaine journée à préflighter et programmer est le 18 août. Les lignes
+du 18 août ou au-delà restent **AFFECTÉES — À PROGRAMMER APRÈS PRÉFLIGHT**
+tant qu'elles ne sont pas vérifiées dans les files natives.
+
+## Programmation native en lot — 18 août — vérifiée le 12 août 2026
+
+Les trois masters exacts du 18 août ont été contrôlés avant envoi : H.264/AAC,
+1080×1920, 24 fps, durée 15,092971 s, avec une piste audio. Les trois lignes
+TikTok sont visibles dans Studio, les trois lignes X sont visibles dans
+`Scheduled`, et TikTok Studio affiche `Brouillons 0`. Les labels IA natifs sont
+actifs séparément des légendes.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | `HIGGS_2026-08-05_171605_CITY_POV_C_cecd94a1.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672909813348568342), légende `A city shifts beneath your feet…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file vérifiée à 16:15, copie `A city shifts beneath your feet…` |
+| 19:30 / 19:45 / 20:15 | `HIGGS_2026-08-05_174658_CITY_POV_D_749127f1.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672909895074630934), légende existante `Neon streets stretch into the horizon…` à conserver | **EN ATTENTE** — publication directe à 19:45 avec copie corrigée après QA visuelle : `A city rises beyond the clouds. Would you keep moving? #Noctalia #Dreamscape #SurrealDreams` | **PROGRAMMÉE** — file vérifiée à 20:15, copie existante `Neon streets stretch into the horizon…` à conserver |
+| 22:30 / 22:45 / 23:15 | `HIGGS_2026-08-05_162633_TSUNAMI_NEWS_14edcce9.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672909972921011459), légende `A wave rises above the city…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file vérifiée à 23:15, copie `A wave rises above the city…` |
+
+La prochaine journée à préflighter et programmer est le 19 août. Les lignes
+ultérieures restent **AFFECTÉES — À PROGRAMMER APRÈS PRÉFLIGHT**.
+
+## Programmation native en lot — 19 août — vérifiée le 12 août 2026
+
+Les trois masters exacts du 19 août ont été téléchargés depuis les liens Drive
+du calendrier et contrôlés avant envoi : H.264/AAC, 1080×1920, 24 fps, durée
+15,092971 s, avec une piste audio. Les trois lignes TikTok sont visibles dans
+Studio, les trois lignes X sont visibles dans `Scheduled`, et TikTok Studio
+affiche `Brouillons 0`. Les labels IA natifs sont actifs séparément des
+légendes.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | `HIGGS_2026-08-05_183301_TIME_FREEZE_CITY_073670c9.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672911514487033110), légende `Time stops across the city…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file vérifiée à 16:15, copie `Time stops across the city…` |
+| 19:30 / 19:45 / 20:15 | `HIGGS_2026-08-05_212002_MAGIC_DOOR_b3d4a35f.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672911596418649366), légende `A hidden door opens into another world…` | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file vérifiée à 20:15, copie `A hidden door opens into another world…` |
+| 22:30 / 22:45 / 23:15 | `HIGGS_2026-08-06_001_FP_CITY.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672911649380011287), légende `A dream city rushes past you…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file vérifiée à 23:15, copie `A dream city rushes past you…` |
+
+La prochaine journée à préflighter et programmer est le 20 août. Les lignes
+ultérieures restent **AFFECTÉES — À PROGRAMMER APRÈS PRÉFLIGHT**.
+
+## Programmation native en lot — 20 août — vérifiée le 12 août 2026
+
+Les trois masters exacts du 20 août ont été téléchargés depuis les liens Drive
+du calendrier et contrôlés avant envoi : H.264/AAC, 1080×1920, 24 fps, durée
+15,092971 s, avec une piste audio. Les trois lignes TikTok sont visibles dans
+Studio, les trois lignes X sont visibles dans `Scheduled`, et TikTok Studio
+affiche `Brouillons 0`. Les labels IA natifs sont actifs séparément des
+légendes.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | `HIGGS_2026-08-06_002_FP_CITY.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672912656361098518), légende `A utopian city floats above the clouds…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file vérifiée à 16:15, copie `A utopian city floats above the clouds…` |
+| 19:30 / 19:45 / 20:15 | `HIGGS_2026-08-06_003_FP_CITY.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672912710354357526), légende `Racing through a city built for the sky…` | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file vérifiée à 20:15, copie `Racing through a city built for the sky…` |
+| 22:30 / 22:45 / 23:15 | `HIGGS_2026-08-06_004_FP_CITY.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672912756110118166), légende `A holographic skyline comes alive at sunset…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file vérifiée à 23:15, copie `A holographic skyline comes alive at sunset…` |
+
+La prochaine journée à préflighter et programmer est le 21 août. Les lignes
+ultérieures restent **AFFECTÉES — À PROGRAMMER APRÈS PRÉFLIGHT**.
+
+## Programmation native en lot — 21 août — vérifiée le 12 août 2026
+
+Les trois masters exacts du 21 août ont été téléchargés depuis les liens Drive
+du calendrier et contrôlés avant envoi : H.264/AAC, 1080×1920, 24 fps, durée
+15,092971 s, avec une piste audio. Les trois lignes TikTok sont visibles dans
+Studio, les trois lignes X sont visibles dans `Scheduled`, et TikTok Studio
+affiche `Brouillons 0`. Les labels IA natifs sont actifs séparément des
+légendes.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | `HIGGS_2026-08-06_005_FP_CITY.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672913676256496918), légende `Flying through a city of glass and steel…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file vérifiée à 16:15, copie `Flying through a city of glass and steel…` |
+| 19:30 / 19:45 / 20:15 | `HIGGS_2026-08-06_006_FP_CITY.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672913741863800086), légende `A neon city moves faster than thought…` | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file vérifiée à 20:15, copie `A neon city moves faster than thought…` |
+| 22:30 / 22:45 / 23:15 | `NOC_REVEIL_S01_VIDEO_1080p_v01.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672913798419746070), légende `The dream breaks just before you understand it…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file vérifiée à 23:15, copie `The dream breaks just before you understand it…` |
+
+La prochaine journée à préflighter et programmer est le 22 août. Les lignes
+ultérieures restent **AFFECTÉES — À PROGRAMMER APRÈS PRÉFLIGHT**.
+
+## Programmation native en lot — 22 août — vérifiée le 12 août 2026
+
+Les trois masters exacts du 22 août ont été téléchargés depuis les liens Drive
+du calendrier, inspectés visuellement et contrôlés avant envoi : H.264/AAC,
+1080×1920, 24 fps, durée 15,092971 s, avec une piste audio. Les trois lignes
+TikTok sont visibles dans Studio, les trois lignes X sont visibles dans
+`Scheduled`, et TikTok Studio affiche `Brouillons 0`. Les labels IA natifs sont
+actifs séparément des légendes.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | `NOC_REVEIL_S02_VIDEO_1080p_v01.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672914780075724054), légende `You wake underwater but never need to breathe…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file vérifiée à 16:15, copie `You wake underwater but never need to breathe…` |
+| 19:30 / 19:45 / 20:15 | `NOC_REVEIL_S03_VIDEO_1080p_v01.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672914844755987734), légende `You wake above the city with no ground beneath you…` | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file vérifiée à 20:15, copie `You wake above the city with no ground beneath you…` |
+| 22:30 / 22:45 / 23:15 | `NOC_REVEIL_S04_VIDEO_1080p_v01.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672914883452865794), légende `Your reflection wakes before you do…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file vérifiée à 23:15, copie `Your reflection wakes before you do…` |
+
+La prochaine journée à préflighter et programmer est le 23 août. Les lignes
+ultérieures restent **AFFECTÉES — À PROGRAMMER APRÈS PRÉFLIGHT**.
+
+## Programmation native en lot — 23 août — vérifiée le 12 août 2026
+
+Les trois masters exacts du 23 août ont été téléchargés depuis les liens Drive
+du calendrier, inspectés visuellement et contrôlés avant envoi : H.264/AAC,
+1080×1920, 24 fps, durée 15,092971 s, avec une piste audio. Les trois lignes
+TikTok sont visibles dans Studio, les trois lignes X sont visibles dans
+`Scheduled`, et TikTok Studio affiche `Brouillons 0`. Les labels IA natifs sont
+actifs séparément des légendes.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | `NOC_REVEIL_S05_VIDEO_1080p_v01.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672915826298653974), légende `The forest remembers your dream before you do…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file vérifiée à 16:15, copie `The forest remembers your dream before you do…` |
+| 19:30 / 19:45 / 20:15 | `NOC_REVEIL_S06_VIDEO_1080p_v01.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672915873992019222), légende `A memory circles you like smoke…` | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file vérifiée à 20:15, copie `A memory circles you like smoke…` |
+| 22:30 / 22:45 / 23:15 | `NOC_REVEIL_S07_VIDEO_1080p_v01.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672915923279432982), légende `Every door opens into the same dream…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file vérifiée à 23:15, copie `Every door opens into the same dream…` |
+
+La prochaine journée à préflighter et programmer est le 24 août. Les lignes
+ultérieures restent **AFFECTÉES — À PROGRAMMER APRÈS PRÉFLIGHT**.
+
+## Programmation native en lot — 24 août — vérifiée le 12 août 2026
+
+Les trois masters exacts du 24 août ont été téléchargés depuis les liens Drive
+du calendrier, inspectés visuellement et contrôlés avant envoi : H.264/AAC,
+1080×1920, 24 fps, durée 15,092971 s, avec une piste audio. Les trois lignes
+TikTok sont visibles dans Studio, les trois lignes X sont visibles dans
+`Scheduled`, et TikTok Studio affiche `Brouillons 0`. Les labels IA natifs sont
+actifs séparément des légendes.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672916773661838614), légende `The ocean pauses under a single star…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file vérifiée à 16:15, copie `The ocean pauses under a single star…` |
+| 19:30 / 19:45 / 20:15 | `NOC_REVEIL_S09_VIDEO_1080p_v01.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672916819446992150), légende `A staircase appears where the dream should end…` | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file vérifiée à 20:15, copie `A staircase appears where the dream should end…` |
+| 22:30 / 22:45 / 23:15 | `NOC_REVEIL_S10_VIDEO_1080p_v01.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672916867375287574), légende `You wake with light still moving between your hands…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file vérifiée à 23:15, copie `You wake with light still moving between your hands…` |
+
+Les vidéos restantes sans préfixe sont désormais épuisées dans la séquence. La
+prochaine journée à préflighter et programmer est le 25 août, avec le début des
+séries `DAY_`, `SUNSET_`, `NIGHT_` et `AFTERGLOW_` affectées au calendrier.
+
+## Programmation native en lot — 25 août — vérifiée le 12 août 2026
+
+Les trois masters exacts du 25 août ont été rattachés à leurs liens Drive dans
+le calendrier, téléchargés et contrôlés avant envoi : H.264/AAC, 720×1280,
+24 fps, durée 15,072 s, avec une piste audio. TikTok `@noctaliadreams` affiche
+les trois lignes aux heures prévues et `Brouillons 0`.
+
+La session X a d'abord basculé sur `@ShapierApp`, puis a été rétablie et
+recontrôlée sur `@NoctaliaDreams`. Les trois lignes du 25 août sont désormais
+visibles dans `Scheduled` aux heures prévues, avec le label natif `Made with AI`.
+Instagram reste **EN ATTENTE** jusqu'à chaque heure de publication directe.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | `SUNSET_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672917900054777110), légende `At sunset, a city blooms above the clouds…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file native vérifiée à 16:15, copie `At sunset, a city blooms above the clouds…` |
+| 19:30 / 19:45 / 20:15 | `AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672917947765083414), légende `Afterglow turns the sky into a road…` | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file native vérifiée à 20:15, copie `Afterglow turns the sky into a road…` |
+| 22:30 / 22:45 / 23:15 | `NIGHT_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672918015448567062), légende `At night, the floating city wakes under the aurora…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file native vérifiée à 23:15, copie `At night, the floating city wakes under the aurora…` |
+
+La prochaine journée à préflighter est le 26 août.
+
+## Programmation native en lot — 26 août — vérifiée le 12 août 2026
+
+Les trois masters exacts du 26 août ont été rattachés à leurs liens Drive dans
+le calendrier, téléchargés, inspectés visuellement et contrôlés avant envoi :
+H.264/AAC, 720×1280, 24 fps, durée 15,041667 à 15,072 s, avec une piste audio.
+TikTok `@noctaliadreams` affiche les trois lignes aux heures prévues et
+`Brouillons 0`. La copie reste descriptive et évite toute exotisation.
+
+La session X est vérifiée sur `@NoctaliaDreams` et les trois lignes du 26 août
+sont visibles dans `Scheduled`, avec le label natif `Made with AI`.
+Instagram reste **EN ATTENTE** jusqu'à chaque heure de publication directe.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | `DAY_AFROFUTURISM_SOLAR_CULTURAL_02.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672918770880351510), légende `A solar city grows toward the light…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file native vérifiée à 16:15, copie `A solar city grows toward the light…` |
+| 19:30 / 19:45 / 20:15 | `SUNSET_AFROFUTURISM_SOLAR_CULTURAL_02_V2.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672918804267109654), légende `At sunset, gardens and towers share the same horizon…` | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file native vérifiée à 20:15, copie `At sunset, gardens and towers share the same horizon…` |
+| 22:30 / 22:45 / 23:15 | `AFTERGLOW_AFROFUTURISM_SOLAR_CULTURAL_02.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672918876228685078), légende `Afterglow traces every road with light…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file native vérifiée à 23:15, copie `Afterglow traces every road with light…` |
+
+La prochaine journée à préflighter est le 27 août.
+
+## Programmation native en lot — 27 août — vérifiée le 12 août 2026
+
+Les trois masters exacts du 27 août ont été rattachés à leurs liens Drive dans
+le calendrier, téléchargés, inspectés visuellement et contrôlés avant envoi :
+H.264/AAC, 720×1280, 24 fps, durée 15,041667 à 15,072 s, avec une piste audio.
+TikTok `@noctaliadreams` affiche les trois lignes aux heures prévues et
+`Brouillons 0`.
+
+La session X est vérifiée sur `@NoctaliaDreams` et les trois lignes du 27 août
+sont visibles dans `Scheduled`, avec le label natif `Made with AI`.
+Instagram reste **EN ATTENTE** jusqu'à chaque heure de publication directe.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | `NIGHT_AFROFUTURISM_SOLAR_CULTURAL_02.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672919358477225238), légende `At night, a solar city becomes a garden of stars…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file native vérifiée à 16:15, copie `At night, a solar city becomes a garden of stars…` |
+| 19:30 / 19:45 / 20:15 | `DAY_ARCANEPUNK_LUMINOUS_RUNE_02.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672919409828171030), légende `Runes drift through a city of stone…` | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file native vérifiée à 20:15, copie `Runes drift through a city of stone…` |
+| 22:30 / 22:45 / 23:15 | `SUNSET_ARCANEPUNK_LUMINOUS_RUNE_02.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672919442166205718), légende `At sunset, the towers begin to glow from within…` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file native vérifiée à 23:15, copie `At sunset, the towers begin to glow from within…` |
+
+La prochaine journée à préflighter est le 28 août.
+
+## Programmation native en lot — 28 août — contrôle du 12 août 2026
+
+Les trois masters exacts du 28 août ont été rattachés à leurs liens Drive,
+téléchargés, inspectés visuellement et contrôlés : H.264/AAC, 720×1280,
+24 fps, durée 15,041667 à 15,072 s, avec une piste audio.
+
+TikTok `@noctaliadreams` a accepté les deux premières lignes, puis a refusé la
+troisième avec le message natif `Tu peux programmer un maximum de 30
+publications.` La ligne 22:30 est donc **EN ATTENTE — CAPACITÉ TIKTOK PLEINE**,
+sans brouillon ni doublon. TikTok Studio affiche `Brouillons 0`.
+
+La session X est vérifiée sur `@NoctaliaDreams` et les trois lignes du 28 août
+sont visibles dans `Scheduled`, avec le label natif `Made with AI`.
+Instagram reste **EN ATTENTE** jusqu'à chaque heure de publication directe.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 15:30 / 15:45 / 16:15 | `AFTERGLOW_ARCANEPUNK_LUMINOUS_RUNE_02.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672920128085986582), légende `Afterglow paints the rune city in violet fire…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file native vérifiée à 16:15, copie `Afterglow paints the rune city in violet fire…` |
+| 19:30 / 19:45 / 20:15 | `NIGHT_ARCANEPUNK_LUMINOUS_RUNE_02.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7672920175947058454), légende `At night, blue sigils keep the city awake…` | **EN ATTENTE** — publication directe à 19:45 | **PROGRAMMÉE** — file native vérifiée à 20:15, copie `At night, blue sigils keep the city awake…` |
+| 22:30 / 22:45 / 23:15 | `DAY_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4` | **PROGRAMMÉE** — [ligne Studio](https://www.tiktok.com/@noctaliadreams/video/7673172327512689942) vérifiée le 12/08 dans la file native au `28 août, 22:30`, légende `An ice city cuts through a world of white. Would you follow it? #Noctalia #Dreamscape #SurrealDreams`, label IA actif ; `Brouillons 0` | **EN ATTENTE** — publication directe à 22:45 | **PROGRAMMÉE** — file native vérifiée à 23:15, copie `An ice city rises beneath the aurora…` |
+
+Les neuf liens Drive des 29 au 31 août ont été vérifiés par leur nom exact et
+rattachés aux lignes du calendrier. Leur programmation TikTok attend la
+libération de places supplémentaires dans la file. Les neuf lignes X sont visibles dans
+`Scheduled` aux heures prévues, avec le label natif `Made with AI`.
+
+Le préflight technique des neuf MP4 est également terminé : H.264/AAC,
+720×1280, 24 fps, durée 15,041667 à 15,072 s, avec une piste audio. Les copies
+principales ci-dessous sont préparées ; elles ne constituent ni une
+programmation ni une publication.
+
+| Date | Créneau | Asset | Début de légende préparé | Statut plateformes |
+|---|---|---|---|---|
+| 29/08 | 15:30 / 15:45 / 16:15 | `SUNSET_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4` | `At sunset, an ice city glows beneath the aurora…` | TikTok **PROGRAMMÉE** — [ligne Studio vérifiée](https://www.tiktok.com/@noctaliadreams/video/7673364997099064598), 29/08 à 15:30 ; Instagram **EN ATTENTE** ; X **PROGRAMMÉE — file vérifiée à 16:15** |
+| 29/08 | 19:30 / 19:45 / 20:15 | `AFTERGLOW_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4` | `Afterglow melts across a frozen skyline…` | TikTok **PROGRAMMÉE** — [ligne Studio vérifiée](https://www.tiktok.com/@noctaliadreams/video/7673366283458596118), 29/08 à 19:30 ; Instagram **EN ATTENTE** ; X **PROGRAMMÉE — file vérifiée à 20:15** |
+| 29/08 | 22:30 / 22:45 / 23:15 | `NIGHT_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4` | `At night, the aurora becomes the city's sky…` | TikTok **PROGRAMMÉE** — [ligne Studio vérifiée](https://www.tiktok.com/@noctaliadreams/video/7673524915017878807), 29/08 à 22:30, légende exacte et `Brouillons 0` ; Instagram **EN ATTENTE** ; X **PROGRAMMÉE — file vérifiée à 23:15** |
+| 30/08 | 15:30 / 15:45 / 16:15 | `AFTERGLOW_SURREAL_FLOWER_WORLD_FLIGHT_01.mp4` | `A world of flowers opens between two planets…` | TikTok **PROGRAMMÉE — [ligne Studio vérifiée](https://www.tiktok.com/@noctaliadreams/video/7673607555146403094)**, 30/08 à 15:30, copie exacte, label IA natif actif et `Brouillons 0` ; Instagram **EN ATTENTE** ; X **PROGRAMMÉE — file native vérifiée à 16:15**, compte `@NoctaliaDreams`, copie exacte, média 10 s et label `Made with AI`; contrôle après transaction : une occurrence du nouveau hook, zéro occurrence de l'ancien. Master distinct du LUNARPUNK incohérent, Drive `1-u2rUCDdfBv325IyHSszcrc4gOG5olQV`, SHA-256 `229d1f545586ccaa51e363af5fdb100d8e45906892c5b8bdfe08b9509527ced0`. Facebook est **PROGRAMMÉ — REMPLACEMENT EXACT VÉRIFIÉ DANS LA MÊME LIGNE NATIVE**, sans dette restante ; seule l'ancienne ligne YouTube reste à remplacer avec preuve exacte. |
+| 30/08 | 19:30 / 19:45 / 20:15 | `SUNSET_LUNARPUNK_SILVER_LUNAR_02.mp4` | `Sunset reaches a city built from moonlight…` | TikTok **PROGRAMMÉE — [ligne Studio vérifiée](https://www.tiktok.com/@noctaliadreams/video/7673617553012395286)**, 30/08 à 19:30, copie exacte, label IA natif actif et `Brouillons 0` ; Instagram **EN ATTENTE** ; X **PROGRAMMÉE — file vérifiée à 20:15** |
+| 30/08 | 22:30 / 22:45 / 23:15 | `AFTERGLOW_LUNARPUNK_SILVER_LUNAR_02.mp4` | `Afterglow drifts across a lunar skyline…` | TikTok **EN ATTENTE — capacité pleine** ; Instagram **EN ATTENTE** ; X **PROGRAMMÉE — file vérifiée à 23:15** |
+| 31/08 | 15:30 / 15:45 / 16:15 | `NIGHT_LUNARPUNK_SILVER_LUNAR_02.mp4` | `At night, the lunar city shines like a memory…` | TikTok **EN ATTENTE — capacité pleine** ; Instagram **EN ATTENTE** ; X **PROGRAMMÉE — file vérifiée à 16:15** |
+| 31/08 | 19:30 / 19:45 / 20:15 | `DAY_NEON_NOIR_HOLOGRAPHIC_THRILLER_02.mp4` | `Rain turns the city into a hologram…` | TikTok **EN ATTENTE — capacité pleine** ; Instagram **EN ATTENTE** ; X **PROGRAMMÉE — file vérifiée à 20:15** |
+| 31/08 | 22:30 / 22:45 / 23:15 | `SUNSET_NEON_NOIR_HOLOGRAPHIC_THRILLER_02.mp4` | `At sunset, every neon sign tells a different story…` | TikTok **EN ATTENTE — capacité pleine** ; Instagram **EN ATTENTE** ; X **PROGRAMMÉE — file vérifiée à 23:15** |
+
+## Préflight Instagram en lot — 16 au 19 août — 13 août 2026, 07:12 CEST
+
+Les douze masters exacts suivants ont été téléchargés depuis les liens Drive du
+calendrier principal puis contrôlés localement. Ils sont **PRÊTS** pour la
+publication directe Instagram à leur heure ; ce préflight ne constitue ni une
+programmation ni une publication.
+
+Le 13 août, ces douze binaires ont aussi été copiés sans modification dans les
+dossiers durables `output/video/noctalia-social-execution-2026-08-16/` à
+`output/video/noctalia-social-execution-2026-08-19/`. Les SHA-256 après copie
+correspondent exactement au tableau ci-dessous. Les noms de base restent
+inchangés ; ces copies locales ne sont ni des uploads ni des publications.
+
+| Date | Heure Instagram | Asset exact | SHA-256 | Contrôle technique | Statut |
+|---|---:|---|---|---|---|
+| 16/08 | 15:45 | `09-monde-miroir-brisure.mp4` | `b8fce740f367e9525e005d5e1696e91669bd5875fbf9b3a99857e340ef118eeb` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 16/08 | 19:45 | `10-constellation-naissance.mp4` | `29d2bc9f167a8a42cce84d1d01798f666f6f6d2de16abf62703d1ebf6398a3e7` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 16/08 | 22:45 | `HIGGS_2026-08-05_130802_CRAYON_MARKET_b09972e9.mp4` | `fcf3a1d6eaf4cba943bce504a36d925b934d3378c64889b6353f705f747cbfb8` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 17/08 | 15:45 | `HIGGS_2026-08-05_143033_JUNGLE_CRYSTAL_FPV_4c148b7e.mp4` | `901bfd8b8ccc66d0187f27e40813fd4a5829573c3a0c62c2759afee5e27ae498` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 17/08 | 19:45 | `HIGGS_2026-08-05_155812_CITY_POV_A_2c5b1abd.mp4` | `7b7e1181f9c98ee3ff585e4db14149f83ce819d2102b6ad7a374dc525bc02ef3` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 17/08 | 22:45 | `HIGGS_2026-08-05_161541_CITY_POV_B_a7ea3391.mp4` | `4b0d26f3e67be85b6fc64d5efd5b61a3670df39a80f049c0ea5f5132237cf662` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 18/08 | 15:45 | `HIGGS_2026-08-05_171605_CITY_POV_C_cecd94a1.mp4` | `162fadd70af87d9427b25412373286da0d712c90047121083401e0c61b976168` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 18/08 | 19:45 | `HIGGS_2026-08-05_174658_CITY_POV_D_749127f1.mp4` | `bb5ebe7e7db50f35faa2395ddcc1e2dc69ff732ff0a661f115bbf1f5266eb02c` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 18/08 | 22:45 | `HIGGS_2026-08-05_162633_TSUNAMI_NEWS_14edcce9.mp4` | `53fc712cc59dc93a89004a0e58a11d8928f21c4f232edf8d8b8c4b5e310747a3` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 19/08 | 15:45 | `HIGGS_2026-08-05_183301_TIME_FREEZE_CITY_073670c9.mp4` | `6dab3013d1d88aab53a9df2b3afafb6781232c8050454e984e793400ea3fb1a5` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 19/08 | 19:45 | `HIGGS_2026-08-05_212002_MAGIC_DOOR_b3d4a35f.mp4` | `898560755258d64719d4dac446de2ab7da8994c029902f645224b4ec5f2e02bc` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 19/08 | 22:45 | `HIGGS_2026-08-06_001_FP_CITY.mp4` | `0391eb0ede98943b7280aabd91bcd855b8826c1b5047a0a8c6bd5c9eac885042` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+
+### Préflight Instagram en lot — 20 au 24 août — 13 août 2026, 07:16 CEST
+
+Les quinze masters exacts suivants ont été téléchargés depuis les liens Drive
+de leurs lignes du calendrier principal. Les quinze fichiers sont distincts,
+lisibles et contiennent un flux vidéo H.264 High ainsi qu'un flux audio AAC LC.
+Ils sont **PRÊTS** pour Instagram, sans upload, programmation ni publication
+anticipée.
+
+Le 13 août, les quinze binaires ont également été copiés sans modification dans
+les dossiers durables `output/video/noctalia-social-execution-2026-08-20/` à
+`output/video/noctalia-social-execution-2026-08-24/`. Les SHA-256 après copie
+correspondent au tableau ci-dessous ; ces copies ne sont ni des uploads ni des
+publications.
+
+| Date | Heure Instagram | Asset exact | SHA-256 | Contrôle technique | Statut |
+|---|---:|---|---|---|---|
+| 20/08 | 15:45 | `HIGGS_2026-08-06_002_FP_CITY.mp4` | `0878191738340327cce75d19ecc9a04831cfe2804aaf75c631ce635a761f2f28` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 20/08 | 19:45 | `HIGGS_2026-08-06_003_FP_CITY.mp4` | `84285ad67b2ffffd0476617b85b40b494110869bfc40b19713b023ba58c4acd4` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 20/08 | 22:45 | `HIGGS_2026-08-06_004_FP_CITY.mp4` | `fc76a8edbb7d65496e84b9db714ef16aa5de0f27dfde2eb963199d8bef92491b` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 21/08 | 15:45 | `HIGGS_2026-08-06_005_FP_CITY.mp4` | `0adbabaf58b2259fcd4fc482234825db227abb27f1edb57b6d428eda967d37d1` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 21/08 | 19:45 | `HIGGS_2026-08-06_006_FP_CITY.mp4` | `c6b177b32a76baa000997645cf56ab6bf68f6109e0d60dd2ceca9ebabd295c6f` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 21/08 | 22:45 | `NOC_REVEIL_S01_VIDEO_1080p_v01.mp4` | `f75c0135c66c6f064dfa7502c6b67a8317ec1fcd2b548f569d21a03b06cddb48` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 22/08 | 15:45 | `NOC_REVEIL_S02_VIDEO_1080p_v01.mp4` | `238747004dfec0526a3a124f852a770ce0a81e3ce5e96f8c3b514eb161ca4560` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 22/08 | 19:45 | `NOC_REVEIL_S03_VIDEO_1080p_v01.mp4` | `90af8ac5a88848829972740c9cbb0b7c26f57fd8706ee97e7c4609935e2a8999` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 22/08 | 22:45 | `NOC_REVEIL_S04_VIDEO_1080p_v01.mp4` | `102b49ae65a33fc2171497a955be2c566e316113d27c1dbc014e203aa3e0a951` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 23/08 | 15:45 | `NOC_REVEIL_S05_VIDEO_1080p_v01.mp4` | `fbb15f710eb8cd382791928778f68f0bc993326131802e6b3ba90d5f8a149e0d` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 23/08 | 19:45 | `NOC_REVEIL_S06_VIDEO_1080p_v01.mp4` | `e73666b7107ee2d6f221ff257c18bb6ea7d80bd60a3ae1a26311c095a4091a81` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 23/08 | 22:45 | `NOC_REVEIL_S07_VIDEO_1080p_v01.mp4` | `53af2e1900f8e5178af7a1d07ffbd74c892f3cf3b7716c339f5d7136f3b51359` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 24/08 | 15:45 | `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4` | `3cbcbf99c19c490a234a26688961506d902fa2fdbd965d8b7e1022d7f2f3e9f8` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 24/08 | 19:45 | `NOC_REVEIL_S09_VIDEO_1080p_v01.mp4` | `e7dab8b35453e348777d7ff3064ba67ae77290e325b03218da944851aa675a40` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+| 24/08 | 22:45 | `NOC_REVEIL_S10_VIDEO_1080p_v01.mp4` | `2aaf33bd8ecbdbd95baa6411c14f27bd71056e219dc2bf520c585ba73e7a3875` | H.264 High/AAC LC, 1080×1920, 24 fps, 15,092971 s | **PRÊT — publication directe à l'heure après contrôle anti-doublon** |
+
+### Préflight Instagram en lot — 25 au 31 août — 13 août 2026, 07:19 CEST
+
+Les 21 masters atmosphériques exacts ont été téléchargés depuis les liens Drive
+de leurs lignes du calendrier principal. Leurs SHA-256 sont tous distincts et
+chaque fichier contient un flux H.264 High vertical ainsi qu'un flux audio AAC
+LC. Ils restent **PRÊTS**, sans upload ni publication anticipée. Les contrôles
+éditoriaux spécifiques au thème restent obligatoires au moment de la légende.
+
+Les quinze masters des 25 au 29 août ont aussi été copiés sans modification
+dans les dossiers durables `output/video/noctalia-social-execution-2026-08-25/`
+à `output/video/noctalia-social-execution-2026-08-29/`. Leurs SHA-256 après
+copie correspondent au tableau. Les six masters des 30 et 31 août ont ensuite
+été copiés sans modification dans les dossiers durables
+`output/video/noctalia-social-execution-2026-08-30/` et
+`output/video/noctalia-social-execution-2026-08-31/` ; leurs SHA-256 après
+copie correspondent également au préflight. Ces copies locales ne sont ni des
+uploads ni des publications.
+
+| Date | Heure Instagram | Asset exact | SHA-256 | Contrôle technique | Statut |
+|---|---:|---|---|---|---|
+| 25/08 | 15:45 | `SUNSET_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | `e722ce36aec6f77fd3722f3891fa82997044cc89448bd6ec483c1f5ebad349d3` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — anti-doublon requis à l'heure** |
+| 25/08 | 19:45 | `AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | `4aea7e1bb610e2b701d11c1509fe0167d744985059c31fa733630663c3c9d308` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — anti-doublon requis à l'heure** |
+| 25/08 | 22:45 | `NIGHT_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | `dfb8c127ff19a5558b0c36d8f93e953440a5c2eea5c6de153ab143453c9e957d` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — anti-doublon requis à l'heure** |
+| 26/08 | 15:45 | `DAY_AFROFUTURISM_SOLAR_CULTURAL_02.mp4` | `6e83cbc2ed83fae0ab23d59dedffbdeec5e76695bbaccc2da05faee5030741bd` | H.264 High/AAC LC, 720×1280, 24 fps, 15,041667 s | **PRÊT — précision culturelle requise** |
+| 26/08 | 19:45 | `SUNSET_AFROFUTURISM_SOLAR_CULTURAL_02_V2.mp4` | `cc2299dc4a9b5c667c1100f276d6e68e011396932d672db083bc5cd5f92f8ce7` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — précision culturelle requise** |
+| 26/08 | 22:45 | `AFTERGLOW_AFROFUTURISM_SOLAR_CULTURAL_02.mp4` | `84bb309903c266f8ff9d48695b5962c242f6be5f4169a33a0a4a8f2a6e38535d` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — précision culturelle requise** |
+| 27/08 | 15:45 | `NIGHT_AFROFUTURISM_SOLAR_CULTURAL_02.mp4` | `f8c0b2342bc24a1eae0c3340d4534ad1422bca22829d2cdaa383d2dd8b7f5673` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — précision culturelle requise** |
+| 27/08 | 19:45 | `DAY_ARCANEPUNK_LUMINOUS_RUNE_02.mp4` | `cd08a19a437264c992a5ca059e5ba082110fdcc1a102ccb3851d9ca2220e60d1` | H.264 High/AAC LC, 720×1280, 24 fps, 15,041667 s | **PRÊT — contrôle scintillement requis** |
+| 27/08 | 22:45 | `SUNSET_ARCANEPUNK_LUMINOUS_RUNE_02.mp4` | `540070709870b445cdc08261ed628cbb4b306d10eaa7b35b2850e6a9c5b492b6` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — contrôle scintillement requis** |
+| 28/08 | 15:45 | `AFTERGLOW_ARCANEPUNK_LUMINOUS_RUNE_02.mp4` | `d9bc4266c1bf876a12ca4aeae58e936584268d69851d626c0e09b0e4ed314dbc` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — contrôle scintillement requis** |
+| 28/08 | 19:45 | `NIGHT_ARCANEPUNK_LUMINOUS_RUNE_02.mp4` | `c05c6e4f400d3641c50d098f71316015cecb1781eab43b31559167422a1952a9` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — contrôle scintillement requis** |
+| 28/08 | 22:45 | `DAY_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4` | `51871e9ee6b68c63df13286ea8956ab99af4d9efe12479999a947ace992aec95` | H.264 High/AAC LC, 720×1280, 24 fps, 15,041667 s | **PRÊT — contraste mobile requis** |
+| 29/08 | 15:45 | `SUNSET_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4` | `123dd1145f6f26924f4a9c4406ae75f185e69e3090c6b78c2b777089e5f78bbc` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — contraste mobile requis** |
+| 29/08 | 19:45 | `AFTERGLOW_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4` | `04603782ba87823993c20979788b5547b9d05262e9b4377503c4a4593007881e` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — contraste mobile requis** |
+| 29/08 | 22:45 | `NIGHT_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4` | `86b4f8f95feee077a5558f48ff65ffe08af4caa97c3ca3fddd04a695ada1fbfc` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — contraste mobile requis** |
+| 30/08 | 15:45 | `AFTERGLOW_SURREAL_FLOWER_WORLD_FLIGHT_01.mp4` | `229d1f545586ccaa51e363af5fdb100d8e45906892c5b8bdfe08b9509527ced0` | H.264/AAC, 720×1280, 24 fps, 10 s | **PRÊT — RÉAFFECTATION VALIDÉE** : contrôle visuel à 1/5/9 s et décodage intégral sans erreur ; publication directe seulement à 15:45 après anti-doublon |
+| 30/08 | 19:45 | `SUNSET_LUNARPUNK_SILVER_LUNAR_02.mp4` | `9c0695859f64fcebab4ca81cf2fa43a7ab05bdb5b033c83d0af02c9b2533ded8` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — exposition mobile requise** |
+| 30/08 | 22:45 | `AFTERGLOW_LUNARPUNK_SILVER_LUNAR_02.mp4` | `ef6fdf9d71209e805ec30cc6ef93a5e43d157ee3d5ebfd50855e454cb01dffbb` | H.264 High/AAC LC, 720×1280, 24 fps, 15,041667 s | **PRÊT — exposition mobile requise** |
+| 31/08 | 15:45 | `NIGHT_LUNARPUNK_SILVER_LUNAR_02.mp4` | `d65f0481298a929bef30e906cf3ad94b84df90a391699eb074ea0ac19f535f2a` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — exposition mobile requise** |
+| 31/08 | 19:45 | `DAY_NEON_NOIR_HOLOGRAPHIC_THRILLER_02.mp4` | `163816650056b9729c81a8e8ed4bb018ac2796e9544b02b777869151412b449d` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — contrôle scintillement requis** |
+| 31/08 | 22:45 | `SUNSET_NEON_NOIR_HOLOGRAPHIC_THRILLER_02.mp4` | `6cd3ce7b4fc049fe4669c2abcf6bc30d4e035eea17e1d6bf1c9a232e0da56ea0` | H.264 High/AAC LC, 720×1280, 24 fps, 15,072 s | **PRÊT — contrôle scintillement requis** |
+
+## Réconciliation tardive du créneau 3 du 12 août — 13 août 2026, 00:06 CEST
+
+Le déclenchement prévu à 22:06 est arrivé à 00:06 CEST. Le contrôle public a
+été réalisé avant toute tentative de rattrapage avec le fichier exact
+`02-escalier-vortex.mp4` : H.264/AAC, 1080×1920, 24 fps, 15,092971 s,
+65 191 000 octets, SHA-256
+`af162200c1978aec8b0ba4941eeef10b3723ce0741ef3e1ca79530b4666d5113`.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 22:30 / 22:45 / 23:15 | `02-escalier-vortex.mp4` | **PUBLIÉE** — [URL publique vérifiée](https://www.tiktok.com/@noctaliadreams/video/7672846296939646230), légende `A staircase spirals beyond the world…` | **EN ATTENTE — SESSION NON AUTHENTIFIÉE** — le profil public ne montre aucun Reel correspondant ; aucune tentative de doublon | **PUBLIÉE** — [URL publique vérifiée](https://x.com/NoctaliaDreams/status/2087649072635117724), copie `Would you climb a staircase beyond the world?`, label `Made with AI` visible |
+
+Le rattrapage Instagram nécessite que le propriétaire reconnecte
+`@noctaliadreams` dans une session navigateur accessible. Les trois lignes du
+13 août restent inchangées et aucune publication anticipée n'a été créée.
+
+## Contrôle d'ouverture du 13 août — 2026-08-13, 05:57 CEST
+
+Le compte Instagram exact `@noctaliadreams` est de nouveau authentifié dans la
+session Chrome accessible. Le profil affiche 22 publications et aucune ligne
+correspondant à `02-escalier-vortex.mp4` : l'absence de doublon est confirmée,
+mais le Reel du créneau 3 du 12 août reste **EN ATTENTE — RATTRAPAGE REQUIS**.
+TikTok et X du même créneau restent publics aux URL déjà vérifiées ci-dessus.
+
+À l'heure du contrôle, aucun créneau du 13 août n'était encore échu. La ligne
+TikTok `03-ville-engloutie-eruption.mp4` affiche toujours la date native
+`2026-08-13 15:30`, la bonne légende et le label IA. Les trois lignes Instagram
+du jour restent **EN ATTENTE** jusqu'à 15:45, 19:45 et 22:45 ; elles ne doivent
+pas être publiées avant ces heures. Les états TikTok/X programmés du calendrier
+restent inchangés. Aucune publication, suppression ou duplication n'a été
+effectuée pendant ce contrôle de statut.
+
+## Rattrapage Instagram du créneau 3 du 12 août — 13 août 2026, 06:08 CEST
+
+Le compte exact `@noctaliadreams`, le master exact
+`02-escalier-vortex.mp4`, son SHA-256
+`af162200c1978aec8b0ba4941eeef10b3723ce0741ef3e1ca79530b4666d5113`, la
+légende et l'absence de doublon ont été revalidés immédiatement avant l'action.
+Le Reel a été publié avec la légende
+`A staircase spirals beyond the world. Would you climb it? #Noctalia #Dreamscape #SurrealDreams`
+et la mention IA native activée. Le profil est passé de 22 à 23 publications.
+
+| Créneau Paris | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|
+| 22:30 / 22:45 / 23:15 | `02-escalier-vortex.mp4` | **PUBLIÉE** — [URL publique vérifiée](https://www.tiktok.com/@noctaliadreams/video/7672846296939646230) | **PUBLIÉE — RATTRAPAGE** — [URL publique vérifiée](https://www.instagram.com/noctaliadreams/reel/Db915M6p0gy/), légende exacte et mention IA native visibles | **PUBLIÉE** — [URL publique vérifiée](https://x.com/NoctaliaDreams/status/2087649072635117724) |
+
+La diffusion principale du 12 août est désormais complète sur TikTok,
+Instagram et X. Les créneaux du 13 août restent inchangés et aucune publication
+future n'a été anticipée.
+
+## Remplissage roulant TikTok — 13 août 2026, 06:18 CEST
+
+La capacité libérée dans la file TikTok a permis de traiter la première ligne
+du 29 août. Le compte `@noctaliadreams`, le master exact Drive
+`SUNSET_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4`, la date, l'heure, la légende et
+l'absence de doublon ont été vérifiés. Préflight local : H.264 High/AAC,
+720×1280, 24 fps, 15,072 s, 23 994 925 octets, SHA-256
+`123dd1145f6f26924f4a9c4406ae75f185e69e3090c6b78c2b777089e5f78bbc`.
+
+| Date | Créneau | Asset | TikTok | Instagram | X |
+|---|---|---|---|---|---|
+| 29/08 | 15:30 / 15:45 / 16:15 | `SUNSET_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4` | **PROGRAMMÉE** — [ligne Studio vérifiée](https://www.tiktok.com/@noctaliadreams/video/7673364997099064598), 29/08 à 15:30, label IA activé, légende `At sunset, an ice city glows beneath the aurora…` | **EN ATTENTE** — publication directe à 15:45 | **PROGRAMMÉE** — file précédemment vérifiée à 16:15 |
+| 29/08 | 19:30 / 19:45 / 20:15 | `AFTERGLOW_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4` | **PROGRAMMÉE** — [ligne Studio vérifiée](https://www.tiktok.com/@noctaliadreams/video/7673366283458596118), 29/08 à 19:30, label IA activé et contrôle TikTok sans problème | **EN ATTENTE** | **PROGRAMMÉE** — file précédemment vérifiée à 20:15 |
+
+La troisième ligne du 29 août reste inchangée. Aucun fichier proche, variante
+ou `_01` n'a été substitué. Le faux blocage provenait d'une inversion de casse
+dans une copie de travail de l'identifiant (`jK` au lieu de `Jk`) ; le lien de
+la source de vérité était correct et a été revalidé par lecture directe du
+dossier officiel `02_Videos_9x16`.
+
+Préflight `AFTERGLOW_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4` : H.264 High/AAC,
+720×1280, 24 fps, 15,072 s, 26 738 655 octets, SHA-256
+`04603782ba87823993c20979788b5547b9d05262e9b4377503c4a4593007881e`.
+La troisième ligne `NIGHT_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4` est
+**PROGRAMMÉE** sur TikTok : après libération réelle d'une place le 13/08, le
+compte, le master, le 29/08 à 22:30, la légende exacte et la ligne native ont été
+vérifiés. La preuve native est
+[TikTok Studio](https://www.tiktok.com/@noctaliadreams/video/7673524915017878807)
+et `Brouillons 0` reste affiché. Préflight : H.264 High/AAC,
+720×1280, 24 fps, 15,072 s,
+26 488 575 octets, SHA-256
+`86b4f8f95feee077a5558f48ff65ffe08af4caa97c3ca3fddd04a695ada1fbfc`.
+
+## Fermeture de la dette X du 1er au 3 septembre — 13 août 2026, 11:35–11:48 CEST
+
+La session et le menu de compte ont été contrôlés sur `Noctalia` /
+`@NoctaliaDreams`. Les neuf masters exacts du calendrier ont été importés un
+par un, reconnus `Ready` et associés à leur copie X courte avec
+`#Noctalia #Dreamscape`. Le label natif `Made with AI` est resté séparé du
+texte. Les neuf lignes apparaissent chacune exactement une fois dans
+`Scheduled`, aux heures suivantes :
+
+| Date | Créneau X Paris | Statut vérifié |
+|---|---|---|
+| 01/09 | 16:15 / 20:15 / 23:15 | **3/3 PROGRAMMÉES — file native vérifiée** |
+| 02/09 | 16:15 / 20:15 / 23:15 | **3/3 PROGRAMMÉES — file native vérifiée** |
+| 03/09 | 16:15 / 20:15 / 23:15 | **3/3 PROGRAMMÉES — file native vérifiée** |
+
+Aucune ligne existante n'a été supprimée, aucune date future n'a été publiée
+en avance et aucun brouillon n'a été laissé. Ces statuts restent des preuves de
+programmation, pas des preuves de publication publique ; les URL publiques
+seront ajoutées après chaque envoi.
+
+## Affectation des heroes secondaires du 4 au 10 septembre — 13 août 2026
+
+Le propriétaire a validé explicitement sept masters Magnific/Pikaso distincts
+pour prolonger la diffusion organique quotidienne sur YouTube Shorts,
+Facebook Reels et Pinterest. Cette affectation ne modifie pas le calendrier
+principal à trois vidéos quotidiennes TikTok, Instagram et X, qui reste arrêté
+au 3 septembre dans cette source.
+
+| Date | Master Drive exact | SHA-256 | YouTube | Facebook | Pinterest |
+|---|---|---|---|---|---|
+| 04/09 | [`NIGHT_ARCANEPUNK_LIVING_LIBRARY_01.mp4`](https://drive.google.com/file/d/1IToR6CMGhWWoa-TV497Dx0eSmxXtEEnM/view?usp=drivesdk) | `7c26be7b564603af2b76c3133c2fcc121f6d1eb395dd397dd2657b071d3e5920` | **PRÊT** | **PROGRAMMÉ — 18:15** | **PRÊT** |
+| 05/09 | [`AFTERGLOW_DREAMSCAPE_INFINITE_STAIRCASE_01.mp4`](https://drive.google.com/file/d/1k_qPjARP7oxA7lrSoCb3oioeOhA1Uidl/view?usp=drivesdk) | `558b60cc8b18efe4921330254cb117004798e5b625ea244a159a7eda63869800` | **PRÊT** | **PROGRAMMÉ — 18:15** | **PRÊT** |
+| 06/09 | [`NIGHT_COSMIC_STAR_OCEAN_01.mp4`](https://drive.google.com/file/d/1WyLKbViyiZHwn4kfuwXLgo1h7EzSHJaT/view?usp=drivesdk) | `1751df4ccee45adccf3fce04050ac6e77f3317da4b04c64d1cbd9053ca0a24c1` | **PRÊT** | **PROGRAMMÉ — 18:15** | **PRÊT** |
+| 07/09 | [`NIGHT_COSMIC_PLANETARY_STAIRCASE_01.mp4`](https://drive.google.com/file/d/19E15ulgE8i_z6Qa_mlyFePsMZQSXWboo/view?usp=drivesdk) | `453343ffc13eec3d29a210076dfd60e43577a3e7c688c5c416a57b236b9a1319` | **PRÊT** | **PROGRAMMÉ — 18:15** | **PRÊT** |
+| 08/09 | [`AFTERGLOW_COSMIC_GALAXY_STEPPING_STONES_01.mp4`](https://drive.google.com/file/d/1Zl2PSDuU-yhcF_O7lPvMaYt0uj1yjbDn/view?usp=drivesdk) | `faebf677a52aef62bb7a0525d1afcbcbdc4d929c3b01379595d85d525ecdac9d` | **PRÊT** | **PROGRAMMÉ — 18:15** | **PRÊT** |
+| 09/09 | [`AFTERGLOW_SURREAL_PLANET_FLOWER_RUN_01.mp4`](https://drive.google.com/file/d/1Z2J4wPdFNcj4H04C0SKNj-AEYAKqxBL4/view?usp=drivesdk) | `45f03cb3f536713421f62e116f4c0b627c28c906522dfe855d28933394357787` | **PRÊT** | **PROGRAMMÉ — 18:15** | **PRÊT** |
+| 10/09 | [`NIGHT_COSMIC_PEARL_CONSTELLATION_01.mp4`](https://drive.google.com/file/d/1GmQ8f5w_S_D3boOY_e3b56pXIU8SX4y-/view?usp=drivesdk) | `2539f1eee67d8491b15093bc866fb3d5a9c247a805384c25ecbac9347c22174f` | **PRÊT** | **PROGRAMMÉ — 18:15** | **PRÊT** |
+
+Le packaging natif et les UTM sont documentés dans le dossier d'extension
+organique. Les sept lignes Facebook ci-dessus ont été vérifiées dans la file
+native de la page `Noctalia`, audience `Public`. YouTube et Pinterest restent
+`PRÊT` tant que leurs lignes ne sont pas visibles dans leurs files natives.
+
+## Préparation Instagram du 13 août — 13 août 2026, 06:28 CEST
+
+Aucun créneau du 13 août n'est encore échu. Les trois masters Instagram exacts
+ont néanmoins été rendus disponibles localement afin d'éviter un téléchargement
+au dernier moment. Les fichiers des créneaux 1 et 3 proviennent des identifiants
+Drive exacts du calendrier ; le créneau 2 utilise le master historique local
+déjà référencé par le plan. Aucun upload ni publication anticipée n'a été créé.
+
+| Créneau Instagram | Asset | Préflight | Statut |
+|---|---|---|---|
+| 15:45 | `03-ville-engloutie-eruption.mp4` | H.264 High/AAC, 1080×1920, 24 fps, 15,092971 s, 64 560 046 octets, SHA-256 `6a0e69b2c7651ecd7d97e2c870e14c7c6a7b062a98535fd6fe115e21760cfe10` | **PRÊTE — publication directe uniquement à partir de 15:45** |
+| 19:45 | `70-cathedrale-solaire.mp4` | H.264 High/AAC, 1080×1920, 24 fps, 12,122667 s, 14 764 860 octets, SHA-256 `bd93e4cec9879977b4b7f206e3ff37412876776cb31a5f48b26418c57d167090` | **PRÊTE — publication directe uniquement à partir de 19:45** |
+| 22:45 | `04-ocean-ciel-tempete.mp4` | H.264 High/AAC, 1080×1920, 24 fps, 15,092971 s, 74 391 284 octets, SHA-256 `898f8ec488835b7f83fa5d5bf178b8926640317b95e42c8885711eb1762534be` | **PRÊTE — publication directe uniquement à partir de 22:45** |
+
+Le hero du 12 août reste vérifié publiquement sur les six comptes mandatés :
+les six URL consignées dans les journaux ont répondu en HTTP `200` le 13 août
+à 06:26 CEST. Ce contrôle HTTP complète les vérifications visuelles antérieures,
+sans les remplacer pour l'identité exacte de l'asset et du compte.
+
+## Affectation principale validée du 4 au 10 septembre — 13 août 2026
+
+Le propriétaire a validé les quatorze candidats forts présentés avec les sept
+heroes secondaires déjà approuvés. Le calendrier principal TikTok / Instagram /
+X est donc couvert à raison de trois masters distincts par jour du 4 au 10
+septembre, sans utiliser les trois réserves faibles ni les sept exclusions.
+
+La fiche faisant foi, incluant les 21 masters, les SHA-256, les sources, les
+copies TikTok/Instagram et X, est
+[`38-MAIN-CALENDAR-GAP-2026-09-04-10.md`](./organic-expansion-2026-08-12-2026-09-10/38-MAIN-CALENDAR-GAP-2026-09-04-10.md).
+Les quatorze nouveaux masters ont été copiés sans altérer leurs sources dans
+`output/video/noctalia-social-approved-2026-09-04-10/` ; les empreintes après
+copie correspondent aux empreintes validées. Les 21 lignes portent le statut
+**AFFECTÉES — PRÊTES APRÈS PRÉFLIGHT NATIF — NON PROGRAMMÉES** sur TikTok,
+Instagram et X jusqu'à preuve distincte dans chaque plateforme.
+
+La ligne TikTok du 29 août à 22:30 est désormais **PROGRAMMÉE** après
+libération de capacité, sans suppression d'une ligne existante : URL native
+`7673524915017878807`, légende exacte, horaire et `Brouillons 0` vérifiés.
+
+### Préflight Instagram en lot — 14 et 15 août
+
+Les six masters Instagram des 14 et 15 août sont également disponibles et
+préflightés. Les quatre nouveaux masters proviennent des liens Drive exacts du
+calendrier ; les deux masters historiques utilisent les fichiers locaux déjà
+référencés. Ils restent **PRÊTS**, sans upload et sans publication anticipée.
+
+| Date · heure | Asset | Préflight SHA-256 | Statut |
+|---|---|---|---|
+| 14/08 · 15:45 | `05-foret-bioluminescente-embrasement.mp4` | 1080×1920, H.264/AAC, 15,092971 s, `962c4f3844f46a7fe0d4c74a6f8915ffa644e6f62a6274cc106bc3116cd1ed2f` | **PRÊTE** |
+| 14/08 · 19:45 | `71-ballons-de-laube.mp4` | 1080×1920, H.264/AAC, 12,122667 s, `8ddea36a0a615a1b140d767ec77ffb8ad58d64aa918e977952828f530679d4eb` | **PRÊTE** |
+| 14/08 · 22:45 | `06-chute-infinie-traversee.mp4` | 1080×1920, H.264/AAC, 15,092971 s, `5233c2ad03b6272446ba57b9b21ec23ba1bc949841f8703dbffdb3af4cbbc189` | **PRÊTE** |
+| 15/08 · 15:45 | `07-couloir-portes-deferlement.mp4` | 1080×1920, H.264/AAC, 15,092971 s, `7788e66f4d4bc13da8e7ef5b05c8c64a3f0608f0d6d81d6a826cb5bdc6dfb558` | **PRÊTE** |
+| 15/08 · 19:45 | `74-ocean-de-plumes.mp4` | 1080×1920, H.264/AAC, 12,122667 s, `8ab51d8eb64c8cc9f944e638b4ae3e408da946302c8c67e7879949aa5f6d3195` | **PRÊTE** |
+| 15/08 · 22:45 | `08-baleines-celestes-impact.mp4` | 1080×1920, H.264/AAC, 15,092971 s, `d6d952ef4dc0bdb192c46e48e258dc6cd0474ab5df720a0c983908c87c21902d` | **PRÊTE** |
