@@ -215,3 +215,11 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 - Validation : `docs:build` vert (1 254 pages par langue après intégration du lot `cemetery`, 53 articles × 5 langues) et tous les contrôles `docs:check` passent ; `check-public-url-stability` a reçu l'extension intentionnelle de la baseline (+15 routes, `1241 → 1256` chemins manifest) après le commit du lot.
 - Le lot est intégré par-dessus `origin/master` (lot `cemetery` fusionné entre-temps) et publié sur `master` au commit `60580f34e` ; le contrat URL est étendu au commit `c04c4f92f` ; la vérification `docs:check` complète est verte après extension.
 - Aucun crédit Ahrefs, crawl, changement Rank Tracker, déploiement manuel ni demande d'indexation n'a été consommé par ce traitement.
+- La reprise opérationnelle J34 confirme publiquement les 15 URL du lot, pose
+  leur baseline GSC à `0/0` avant données post-publication, relève le nouveau
+  cycle Starter (`1` crédit général, Rank Tracker `50/50`, Site Audit
+  `500/10 000`) et le crawl automatique du 17 août (Health Score `100`,
+  `0` erreur). Le croisement des 21 titres trop longs avec GSC retient seulement
+  `/fr/symboles/porte`, `/fr/symboles/voiture` et `/fr/symboles/foret` pour un
+  raccourcissement ciblé, sans toucher aux URL, canonicals ni expériences
+  gelées. Détails : `j34-execution-2026-08-18.md`.
