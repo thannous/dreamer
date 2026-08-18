@@ -1,9 +1,9 @@
 # Noctalia — Fiche Google Play Brésil (pt-BR) — 2026-08-09
 
 - **Package** : `com.tanuki75.noctalia`
-- **Version cible** : 3.1.0 (versionCode 54)
+- **Version cible** : 3.1.0. Production **live = versionCode 54** depuis le 9 août 2026 23:47. Candidat **57** créé le 18 août 2026, pas encore envoyé pour examen.
 - **Locale** : pt-BR
-- **Statut** : brouillon de travail. Aucune publication n'est effectuée à partir de ce document. Toute mutation dans Play Console exige une autorisation explicite.
+- **Statut** : brouillon de travail. Le hotfix 54 n’est plus un prérequis : il est déjà public. Aucune publication, activation Brésil ni mutation Play n'est effectuée à partir de ce document. Toute mutation dans Play Console exige une autorisation explicite.
 - **Sources** : `marketing/aso/google-play-fr-2026-08-09.json` (fiche FR canonique), `doc_web_interne/docs/noctalia-3.1.0-google-play-patch-notes.md`, `docs-src/content/pages/legal.privacy/fr.md`, `docs-src/content/pages/legal.terms/fr.md`, `doc_web_interne/docs/product-analytics-privacy-assessment.md`, `constants/subscription.ts`.
 
 ## Positionnement (rappel, aligné sur la fiche FR)
@@ -83,10 +83,20 @@ Faits repris des sources : chiffrement SSL/TLS et audio non conservé après tra
 
 ## 4. Texte de mise à jour (release notes) — 3.1.0, pt-BR
 
-Adapté des notes 3.1.0 existantes (5 langues). Ne mentionne que ce qui y figure : Statistiques enrichies (rythme du journal ; émotions dominantes et évolution des thèmes avec Plus), démarrage Android plus rapide, navigation plus stable, accessibilité/fiabilité. **303 caractères**.
+### 4.1 Notes 54 live (hotfix + 3.1)
+
+Adapté des notes 3.1.0 existantes (5 langues). Ne mentionne que ce qui y figure : Statistiques enrichies (rythme du journal ; émotions dominantes et évolution des thèmes avec Plus), démarrage Android plus rapide, navigation plus stable, accessibilité/fiabilité. **303 caractères**. Le What’s New FR public du 18 août ajoute en tête le correctif clavier du panneau Compte ; ce préfixe n’est pas encore dans le brouillon pt-BR ci-dessous.
 
 ```text
 Explore como seus sonhos evoluem com as novas Estatísticas: o ritmo do seu diário e, com o Plus, suas emoções dominantes e a evolução dos seus temas ao longo do tempo. O Noctalia 3.1 também traz inicialização mais rápida no Android, navegação mais estável e melhorias de acessibilidade e confiabilidade.
+```
+
+### 4.2 Brouillon notes 57 (pas encore dans Play)
+
+Aligné sur les notes EN/DE/ES/FR/IT enregistrées dans la release Production 17 le 18 août 2026. **Non soumis** tant que 57 n’est pas publique. **238 caractères**.
+
+```text
+A espera da análise ficou mais clara, com uma animação lunar e retorno háptico a cada etapa. A navegação cabe melhor em telas pequenas. Esta versão também prepara o português do Brasil e mostra com mais clareza os erros de compra do Play.
 ```
 
 ## 5. Captures à produire en portugais (7)
@@ -168,4 +178,4 @@ Comparer la déclaration publiée avec l'ensemble des collectes réelles (le bro
 
 ---
 
-**Note finale** : ce document prépare le lancement Google Play au Brésil. Aucune publication, activation de pays, modification de prix ni soumission de formulaire n'a été effectuée. Toute action dans Play Console exige une autorisation explicite.
+**Note finale** : ce document prépare le lancement Google Play au Brésil. Relu le 18 août 2026 : 54 est live, 57 n’est pas encore envoyée pour examen, le pays Brésil n’est pas activé. Aucune publication, activation de pays, modification de prix ni soumission de formulaire n'a été effectuée. Toute action dans Play Console exige une autorisation explicite.

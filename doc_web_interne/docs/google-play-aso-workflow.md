@@ -1,6 +1,6 @@
 # Workflow Google Play / ASO de Noctalia
 
-Dernière mise à jour : 2026-08-09
+Dernière mise à jour : 2026-08-18
 
 ## Objectif et garde-fous
 
@@ -11,6 +11,7 @@ Ce workflow centralise la fiche française, le brief des captures Android et les
 - Les URI Cloud Storage, tokens, identifiants d’edit et métriques réelles restent dans des fichiers `*.local.json` ignorés par Git.
 - Une absence de donnée, une réponse refusée ou un volume masqué par Google n’est jamais interprété comme zéro.
 - Toute publication dans Play Console exige une autorisation explicite séparée.
+- État binaire courant : `noctalia-3.1.0-google-play-patch-notes.md` (Production live **54**, candidat **57** pas encore envoyé pour examen).
 
 ```mermaid
 flowchart LR

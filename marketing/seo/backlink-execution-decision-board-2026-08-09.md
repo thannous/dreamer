@@ -329,6 +329,10 @@ unverified.
 The prepared copy and its publication gates are in
 `marketing/seo/peerpush-free-product-update-draft-2026-08-10.md`.
 
+Play Console 2026-08-18: Production live is versionCode **54** since 9 August
+23:47. The public hotfix gate in the quote above is therefore satisfied. This
+does not authorize D6 publication.
+
 ### D7 — Atlas Workspace and ILTY followed-pattern replies
 
 > J'autorise une première relance unique dans les fils existants pour Atlas

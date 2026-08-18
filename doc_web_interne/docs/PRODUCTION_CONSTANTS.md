@@ -2,7 +2,11 @@
 
 Dernière revue locale: 2026-05-04.
 
-Statut release: **incomplet pour publication store**. Les valeurs cochées ci-dessous
+> **État store (18 août 2026)** : Production Play live = `3.1.0` versionCode
+> **54**. Voir `noctalia-3.1.0-google-play-patch-notes.md`. Cette checklist
+> du 4 mai reste un inventaire de secrets, pas le statut de publication.
+
+Statut historique au 4 mai 2026: **incomplet pour publication store**. Les valeurs cochées ci-dessous
 sont identifiées dans le projet local ou déjà documentées. Les cases non cochées
 restent bloquantes pour un build production fiable, sauf waiver explicite.
 

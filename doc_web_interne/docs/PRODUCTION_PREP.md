@@ -2,7 +2,13 @@
 
 Dernière revue locale: 2026-05-04.
 
-Statut actuel: **pas prêt pour publication production**. Le projet peut entrer en phase
+> **État store (18 août 2026)** : l’app est déjà en Production Google Play.
+> Live = `3.1.0` versionCode **54**. Release **57** créée, pas encore envoyée
+> pour examen. Ce document du 4 mai 2026 reste une checklist de premier
+> lancement ; il n’est plus la source de vérité du statut store. Voir
+> `noctalia-3.1.0-google-play-patch-notes.md`.
+
+Statut historique au 4 mai 2026: **pas prêt pour publication production**. Le projet peut entrer en phase
 **release candidate / Google Play Internal Testing** après configuration des secrets
 production, génération d'un AAB signé, et validation sur un appareil installé depuis
 la piste Internal Testing.

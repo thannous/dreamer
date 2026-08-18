@@ -1,9 +1,13 @@
 # Noctalia Android Release Checklist
 
-Dernière mise à jour: 2026-08-09.
+Dernière mise à jour: 2026-08-18.
 
 Cette checklist concentre les gates Android avant Google Play Internal Testing.
 Elle complète `PRODUCTION_CONSTANTS.md` et `PRODUCTION_PREP.md`.
+
+État store courant (Play Console, 18 août 2026) : Production live **54 (3.1.0)** ;
+candidat **57** créé, pas encore envoyé pour examen. Détail :
+`noctalia-3.1.0-google-play-patch-notes.md`.
 
 ## 1. Variables EAS publiques
 

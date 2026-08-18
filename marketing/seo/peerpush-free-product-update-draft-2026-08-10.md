@@ -1,7 +1,9 @@
 # PeerPush free product update draft — 2026-08-10
 
-Status: **prepared, not published**. This file does not authorize a PeerPush
-post, profile edit, relaunch, promotion, purchase or any other external action.
+Status: **prepared, not published**. Play gate 1 is **satisfied** as of
+2026-08-18: Production live is versionCode **54** since 9 August 23:47. This
+file still does not authorize a PeerPush post, profile edit, relaunch,
+promotion, purchase or any other external action.
 
 ## Purpose
 
@@ -32,7 +34,8 @@ https://play.google.com/store/apps/details?id=com.tanuki75.noctalia
 ## Evidence source
 
 - `doc_web_interne/docs/noctalia-3.1.0-google-play-patch-notes.md` records the
-  approved 3.1 feature wording and the Production 53 state.
+  approved 3.1 feature wording and the 2026-08-18 Play state: live **54**,
+  candidate **57** created but not sent for review.
 - `app.json` and `package.json` identify the app version as `3.1.0`.
 - The existing PeerPush listing is self-canonical, `index, follow`, and links
   directly to Noctalia with `rel="noopener"` only.
@@ -40,9 +43,10 @@ https://play.google.com/store/apps/details?id=com.tanuki75.noctalia
 ## Mandatory pre-publication gates
 
 1. Confirm in Google Play that hotfix version code `54` or a later version is
-   active in Production. Version 53 remains live with a known P1 account-panel
-   keyboard issue, so do not promote the release before the replacement is
-   public.
+   active in Production. **Confirmed 2026-08-18 ~19:55 Europe/Paris**: 54 is
+   live at 100% since 9 August 23:47; 53 is deactivated. Re-check immediately
+   before any separately authorized PeerPush publish. A later 57 candidate
+   exists but is not yet sent for review and is not required for this gate.
 2. Re-open `https://peerpush.com/p/noctalia` and stop if an equivalent 3.1
    update already exists.
 3. Confirm the public listing still links to `https://noctalia.app/` and remains
