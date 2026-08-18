@@ -179,7 +179,12 @@ check('Companion app-link host declarations',
     filter.data?.some((data) => data.scheme === 'https' && data.host === 'lucid.noctalia.app')
   ) && config.ios?.associatedDomains?.includes('applinks:lucid.noctalia.app')
 );
-check('No inherited update or EAS project binding', !config.updates && !config.extra?.eas);
+check('Companion uses its own EAS project and does not inherit Noctalia OTA',
+  !config.updates &&
+    config.extra?.eas?.projectId === 'd210576f-5dc4-4f7a-a5e1-a407c209c3a2' &&
+    config.extra?.eas?.projectId !== baseConfig?.extra?.eas?.projectId &&
+    baseConfig?.extra?.eas?.projectId === 'cfd1b275-9dad-40d7-9d9a-147c7bb38415'
+);
 check('Shared Supabase identity remains configured',
   config.extra?.supabaseUrl === baseConfig?.extra?.supabaseUrl &&
     config.extra?.supabaseAnonKey === baseConfig?.extra?.supabaseAnonKey

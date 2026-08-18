@@ -1,6 +1,7 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 const LUCID_APP_VERSION = '1.0.0';
+const LUCID_EAS_PROJECT_ID = 'd210576f-5dc4-4f7a-a5e1-a407c209c3a2';
 
 function isLucidNativeMarker(value: string | undefined): boolean {
   if (value === undefined || value === '' || value === 'noctalia') return false;
@@ -162,7 +163,7 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     ],
     extra: {
       ...baseExpo.extra,
-      eas: undefined,
+      eas: { projectId: LUCID_EAS_PROJECT_ID },
       product: 'lucid-trainer',
       // RevenueCat SDK keys identify a concrete store application. The
       // companion must receive its own public keys through its build profile;

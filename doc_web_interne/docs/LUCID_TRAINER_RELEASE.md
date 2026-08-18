@@ -128,22 +128,24 @@ backend URL: `lucid-preview` (internal APK for device gates) and
 versionCode). The companion starts its own version line (`1.0.0`, versionCode
 `1`) in `app.config.ts`; EAS owns build numbers afterwards.
 
-Because `app.config.ts` removes the inherited `extra.eas.projectId`, the
-companion is a **separate EAS project** (`@tanuki75/noctalia-lucid-trainer`).
-Before the first build, once and interactively:
+The companion is a **separate EAS project** (`@tanuki75/noctalia-lucid-trainer`).
+`app.json` keeps Noctalia's project ID; Lucid's ID lives only in `app.config.ts`
+when both variant selectors are `lucid`.
+
+Recorded EAS project ID (created 2026-08-18): `d210576f-5dc4-4f7a-a5e1-a407c209c3a2`
+Dashboard: https://expo.dev/accounts/tanuki75/projects/noctalia-lucid-trainer
+
+Before the first build:
 
 1. `NOCTALIA_APP_VARIANT=lucid EXPO_PUBLIC_APP_VARIANT=lucid npx eas-cli@latest init`
-   → creates/links the companion project. Record its project ID here (do not
-   write it into `app.json`, which stays Noctalia's).
-2. Create the EAS environment variables of that project (`preview` and
-   `production` environments), never in tracked files:
-   `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`,
-   `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY` (the companion's own public key, see §7),
-   and optionally `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` +
-   `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` (both or neither).
-3. Generate the Android keystore for `com.tanuki75.noctalia.lucid`
-   (`eas credentials -p android`, or accept the prompt of the first
-   interactive `eas build`). Never reuse Noctalia's keystore.
+   → already done. Do not write the companion ID into `app.json`.
+2. EAS env (`preview` + `production`), never in tracked files:
+   `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` are set
+   (shared Noctalia backend). Still missing: `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`
+   (companion public key, see §7). Optional later: both Google client IDs or neither.
+3. Android keystore for `com.tanuki75.noctalia.lucid`: created remotely on first
+   `eas build --profile lucid-production --non-interactive` (credentials name
+   `Build Credentials WMdMSVWot6`, default). Never reuse Noctalia's.
 4. Create the Play Console application for `com.tanuki75.noctalia.lucid`,
    link it to Google Cloud project `359653779023` (Play Integrity), grant the
    existing service account access to it, and complete Data Safety, privacy
@@ -151,6 +153,12 @@ Before the first build, once and interactively:
 5. **Upload the first AAB manually** in Play Console (Internal testing).
    Google Play requires the first upload of a new application through the
    console; `eas submit` works from the second build on.
+
+First store AAB (2026-08-18): EAS build
+`42835601-5df4-4228-8730-e95e3ed3f82e`, profile `lucid-production`,
+`com.tanuki75.noctalia.lucid` 1.0.0 (versionCode 2 — remote autoIncrement
+initialized from local 1). Dashboard:
+https://expo.dev/accounts/tanuki75/projects/noctalia-lucid-trainer/builds/42835601-5df4-4228-8730-e95e3ed3f82e
 
 Then, per candidate:
 
@@ -210,7 +218,7 @@ The candidate is ready for a release decision only when the evidence table is co
 | Expo UI | Device/profile screenshots and checklist | Pending per candidate |
 | Android signed candidate | Artifact hash plus emulator and physical-device report | External gate |
 | iOS signed candidate | Simulator and physical-device report | External gate |
-| Supabase | Applied migration and two-user isolation evidence | External gate |
+| Supabase | Applied migration and two-user isolation evidence | Schema applied 2026-08-18 on `usuyppgsmmowzizhaoqj`; two-user isolation still pending |
 | Cloud deletion | RPC tombstones/reset fence plus stale-device rejection | External gate |
 | RevenueCat/store billing | Purchase/restore/account/expiry evidence | External gate |
 | Google account login | Companion OAuth clients, redirect scheme, Android and iOS sign-in evidence | External gate |
