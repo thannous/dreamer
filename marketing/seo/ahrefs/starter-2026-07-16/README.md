@@ -54,6 +54,8 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j29-gsc-ahrefs-cluster-backlog-2026-08-13.csv`](./j29-gsc-ahrefs-cluster-backlog-2026-08-13.csv) : backlog pays exploitable des huit requêtes vérifiées, avec métriques Ahrefs, état GSC et prochaine action sans export brut.
 - [`j29-j31-cemetery-implementation-brief-2026-08-13.md`](./j29-j31-cemetery-implementation-brief-2026-08-13.md) : brief multilingue prêt à implémenter pour les cinq propriétaires `cemetery` EN/FR/ES/DE/IT, GSC revalidé, quatre SERP Starter UI (`4` crédits), route EN singulière confirmée et critères GO/HOLD à la porte du 15 août.
 - [`j32-catch-up-2026-08-16.md`](./j32-catch-up-2026-08-16.md) : rattrapage du checkpoint J+7, reset Starter confirmé, lecture Rank Tracker/Site Audit et implémentation locale des cinq propriétaires `cemetery`, avec séparation du contrat URL et de la publication.
+- [`j34-execution-2026-08-18.md`](./j34-execution-2026-08-18.md) : reprise J34, preuve publique des 15 URL du lot rentrée/guêpes, baseline GSC à 0/0, nouveau cycle Starter et raccourcissement ciblé de trois titles FR (`porte`, `voiture`, `foret`).
+- [`j35-exact-query-matching-2026-08-18.md`](./j35-exact-query-matching-2026-08-18.md) : vérification GSC d'une proposition externe (sept URL, trois titles), courbe CTR du site par position, inspection URL de `alluvione` et lot d'appariement des requêtes exactes ES/IT sur les pages existantes, sans nouvelle URL ni changement de title.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
 - [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27, Misabueso GSC et preuves brutes, périmètres synchronisés et règles de conservation.
@@ -223,3 +225,31 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
   `/fr/symboles/porte`, `/fr/symboles/voiture` et `/fr/symboles/foret` pour un
   raccourcissement ciblé, sans toucher aux URL, canonicals ni expériences
   gelées. Détails : `j34-execution-2026-08-18.md`.
+
+## Actualisation J35 au 18 août 2026 — requêtes exactes ES/IT sur les pages existantes
+
+- Une proposition externe (sept nouvelles URL ES/IT/FR, trois titles à retoucher)
+  est vérifiée sur un export GSC de 28 jours. Les chiffres sont exacts ; la
+  lecture « CTR 5–10× trop bas » ne l'est pas : la courbe CTR pondérée du site
+  est écrasée en ES/IT (ES pos 4-5 : 0,33 %, IT pos 4-5 : 0,90 %) et
+  `suenos-de-agua` (1,00 %, pos 5,1), `arbol` (0,58 %, pos 6,7) et `cane`
+  (1,58 %, pos 4,6) sont au niveau ou au-dessus. Aucun title n'est retouché ;
+  aucune URL n'est créée (cinq des sept auraient doublonné un propriétaire déjà
+  en position 2-6 : décisions J26 inondation/loup/feu confirmées).
+- Exécuté sur `master` : six H3 égaux aux requêtes et H2 ancrées renommées
+  sur `/es/blog/suenos-de-agua` (93 % de ses impressions sont « inundación » ;
+  les ancres `#estado`, `#tipos`, `#simbolismo`, `#interpretaciones` font
+  16,4 k impressions chacune à 0 clic en liens de saut), deux FAQ ajoutées ;
+  scénarios « Lobos que te atacan o te quieren atacar » (`lobo` ES) et « Un
+  bambino maschio sconosciuto » (`bambino` IT).
+- `/it/simboli/alluvione` est « Explorée, actuellement non indexée », dernier
+  crawl le 11 mai, seule référente connue le sitemap, 0 impression en 28 jours
+  alors que « acqua in casa / casa allagata » se disperse sur quatre pages
+  (dont `casa`, gelée). Décision : `alluvione` devient le propriétaire de ce
+  cluster ; scénario renommé « Acqua in casa o casa allagata », `it.modifiedAt`
+  rafraîchi, deux liens contextuels depuis l'article IT sur l'eau (qui ne la
+  liait jamais). `casa`, `ragno`, `perro` restent gelés jusqu'au 5 septembre.
+- Validation : `docs:build` et `docs:check` verts (0 erreur, 0
+  avertissement), tests node 88/88, contrat URL inchangé. Aucun crédit
+  Ahrefs, changement Rank Tracker ni demande d'indexation. Lecture prévue à
+  partir du 16 septembre. Détails : `j35-exact-query-matching-2026-08-18.md`.

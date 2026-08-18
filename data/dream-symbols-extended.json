@@ -1,7 +1,7 @@
 {
   "meta": {
     "description": "Extended content for dream symbols - full interpretations and variations",
-    "lastUpdated": "2026-08-16"
+    "lastUpdated": "2026-08-18"
   },
   "symbols": {
     "water": {
@@ -2390,8 +2390,8 @@
         "fullInterpretation": "<p>Le alluvioni nei sogni sono potenti simboli di emozioni travolgenti, grandi cambiamenti di vita e perdita di controllo. L'acqua che supera i suoi confini naturali riflette sentimenti che vanno oltre ciò che normalmente riesci a gestire.</p>\n<p>Un'alluvione può anche simboleggiare purificazione e rilascio emotivo – a volte le emozioni accumulate devono essere liberate, anche se il processo è caotico.</p>\n<p>Lo stato dell'acqua alluvionale è significativo: acque torbide o sporche indicano emozioni confuse e negative, mentre acque chiare simboleggiano un'esperienza più purificante.</p>\n<p>Sfuggire a un'alluvione dimostra resilienza e la capacità di trovare una via d'uscita anche in situazioni travolgenti.</p>",
         "variations": [
           {
-            "context": "Un'alluvione che entra in casa",
-            "meaning": "Rappresenta emozioni travolgenti che invadono la tua vita personale, o circostanze esterne che minacciano la tua stabilità."
+            "context": "Acqua in casa o casa allagata",
+            "meaning": "Sognare acqua in casa, un'alluvione che entra dalle porte o le stanze allagate porta la scena nello spazio privato: emozioni travolgenti che invadono la vita personale, o circostanze esterne che minacciano la stabilità. Annota quale stanza si allaga, se l'acqua è pulita o sporca e se riesci a fermarla, salvare qualcosa o solo osservare."
           },
           {
             "context": "Essere trascinati dalle acque alluvionali",
@@ -7139,8 +7139,8 @@
         "fullInterpretation": "<p>Un lobo puede activar asociaciones muy distintas: amenaza, cautela, autonomía, protección o pertenencia. Empieza por lo observable: si estaba solo o en manada, si se acercaba o mantenía la distancia y si sentías miedo, calma o curiosidad.</p>\n<p>Si atacaba o perseguía, compáralo con una presión o un conflicto reciente, sin asumir que predice una agresión. Si acompañaba o protegía, puede servir como imagen de apoyo, confianza o límites.</p>\n<p>Una manada dirige la atención hacia el grupo: pertenencia, lealtad, normas o presión social. Tu asociación personal con los lobos y cualquier experiencia reciente importan más que un diccionario fijo.</p>",
         "variations": [
           {
-            "context": "Lobo atacando",
-            "meaning": "Puede encajar con miedo, conflicto o varias presiones a la vez. Relaciónalo con una situación reciente en la que te sentiste acorralado o en alerta."
+            "context": "Lobos que te atacan o te quieren atacar",
+            "meaning": "Soñar con lobos que te atacan, o que te quieren atacar sin llegar a hacerlo, puede encajar con miedo, conflicto o varias presiones a la vez. Fíjate en si era uno o una manada, si te alcanzaban y si protegías a alguien, y relaciónalo con una situación reciente en la que te sentiste acorralado o en alerta."
           },
           {
             "context": "Lobo solitario",
@@ -8344,6 +8344,10 @@
           {
             "context": "Un bambino sconosciuto",
             "meaning": "Può richiamare qualcosa di recente o ancora poco familiare. Chiediti se ti incuriosiva, ti preoccupava o chiedeva attenzione."
+          },
+          {
+            "context": "Un bambino maschio sconosciuto",
+            "meaning": "Sognare un bambino maschio sconosciuto, piccolo o già in età scolare, non predice una nascita né il sesso di un figlio. Il dettaglio “maschio” e l'estraneità possono dare forma a un progetto nuovo, a una responsabilità inattesa o a un ricordo d'infanzia; osserva come si comportava, se ti seguiva o chiedeva aiuto e che emozione ti lasciava al risveglio."
           },
           {
             "context": "Il proprio figlio, per chi è genitore",

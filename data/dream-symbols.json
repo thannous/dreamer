@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-08-16",
+    "lastUpdated": "2026-08-18",
     "totalSymbols": 160,
     "languages": [
       "en",
@@ -1697,7 +1697,8 @@
             "question": "Cosa significa sognare un’alluvione di acqua sporca?",
             "answer": "L’acqua sporca segnala confusione, stanchezza o emozioni mescolate che hanno ancora bisogno di ordine."
           }
-        ]
+        ],
+        "modifiedAt": "2026-08-18"
       },
       "relatedSymbols": [
         "water",
@@ -3231,7 +3232,7 @@
             "answer": "Proteggere o tenere un bambino può accompagnare cura, responsabilità o il desiderio di sostenere qualcosa che sta crescendo. La calma o la fatica provata chiariscono il tono della scena."
           }
         ],
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-08-18"
       },
       "relatedSymbols": [
         "baby",
@@ -4552,7 +4553,7 @@
           "button": "Probar la app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-08-18"
       },
       "de": {
         "slug": "wolf",
