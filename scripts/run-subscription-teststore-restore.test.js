@@ -22,7 +22,7 @@ function runWrapper(args = [], env = {}) {
 
 function createFakeNpm() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fake-npm-restore-'));
-  const bin = path.join(dir, 'npm');
+  const bin = path.join(dir, 'npm-cli.js');
   fs.writeFileSync(
     bin,
     `#!/usr/bin/env node
@@ -36,8 +36,7 @@ fs.writeFileSync(process.env.CAPTURE_PATH, JSON.stringify({
 `,
     'utf8'
   );
-  fs.chmodSync(bin, 0o755);
-  return dir;
+  return bin;
 }
 
 describe('guarded Test Store restore runner', () => {
@@ -66,10 +65,10 @@ describe('guarded Test Store restore runner', () => {
   });
 
   it('runs only the guarded standalone Release flow', () => {
-    const fakeNpmDir = createFakeNpm();
+    const fakeNpmCli = createFakeNpm();
     const capturePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'restore-capture-')), 'capture.json');
     const result = runWrapper(['--device', 'emulator-5554'], {
-      PATH: `${fakeNpmDir}${path.delimiter}${process.env.PATH}`,
+      npm_execpath: fakeNpmCli,
       CAPTURE_PATH: capturePath,
       REVENUECAT_QA_EMAIL: 'tester+restore@example.com',
       REVENUECAT_QA_RESTORE_APPROVAL: APPROVAL,

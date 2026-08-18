@@ -4,6 +4,7 @@
 
 const { spawnSync } = require('child_process');
 const path = require('path');
+const { resolveNpmInvocation } = require('./android-tooling');
 const {
   getSensitiveFlowGuardToken,
   SENSITIVE_FLOW_GUARD_ENV,
@@ -98,9 +99,15 @@ if (clearStateApproval !== CLEAR_STATE_APPROVAL) {
   );
 }
 
+const npm = resolveNpmInvocation();
+if (!npm) {
+  fail('npm CLI is unavailable. Run this command through npm or install npm beside Node.js.');
+}
+
 const result = spawnSync(
-  'npm',
+  npm.command,
   [
+    ...npm.baseArgs,
     'run',
     'test:e2e:release:teststore:local',
     '--',

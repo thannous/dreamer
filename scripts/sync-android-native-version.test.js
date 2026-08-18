@@ -1,6 +1,8 @@
 'use strict';
 /* global describe, expect, it, jest */
 
+const path = require('node:path');
+
 const {
   syncAndroidNativeVersion,
 } = require('./sync-android-native-version');
@@ -14,14 +16,16 @@ describe('syncAndroidNativeVersion', () => {
   });
 
   it('copies the tracked Expo version into the generated Gradle project', () => {
+    const appConfigPath = path.join('/repo', 'app.json');
+    const buildGradlePath = path.join('/repo', 'android', 'app', 'build.gradle');
     const files = new Map([
-      ['/repo/app.json', JSON.stringify({
+      [appConfigPath, JSON.stringify({
         expo: {
           version: '3.0.2',
           android: { versionCode: 38 },
         },
       })],
-      ['/repo/android/app/build.gradle', [
+      [buildGradlePath, [
         'defaultConfig {',
         '    versionCode 36',
         '    versionName "3.0.0"',
@@ -42,8 +46,8 @@ describe('syncAndroidNativeVersion', () => {
       versionCode: 38,
       versionName: '3.0.2',
     });
-    expect(files.get('/repo/android/app/build.gradle')).toContain('versionCode 38');
-    expect(files.get('/repo/android/app/build.gradle')).toContain('versionName "3.0.2"');
+    expect(files.get(buildGradlePath)).toContain('versionCode 38');
+    expect(files.get(buildGradlePath)).toContain('versionName "3.0.2"');
   });
 
   it('does not rewrite an already synchronized Gradle project', () => {

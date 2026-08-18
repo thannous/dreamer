@@ -56,7 +56,7 @@ describe('run-maestro-android Release preflight', () => {
     }));
 
     expect(readExpectedAndroidBuild('/repo', readFileSync)).toEqual(EXPECTED);
-    expect(readFileSync).toHaveBeenCalledWith('/repo/app.json', 'utf8');
+    expect(readFileSync).toHaveBeenCalledWith(path.join('/repo', 'app.json'), 'utf8');
   });
 
   it('uses QA_ANDROID_VERSION_CODE for an EAS remotely versioned Release', () => {

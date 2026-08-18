@@ -120,8 +120,10 @@ describe('Android Release voice runtime evidence', () => {
     });
     expect(evaluateVoiceAnalysisEvidence({ rootDir: root }))
       .toMatchObject({ status: 'pass' });
-    expect(fs.statSync(path.join(root, VOICE_ANALYSIS_EVIDENCE)).mode & 0o777)
-      .toBe(0o600);
+    if (process.platform !== 'win32') {
+      expect(fs.statSync(path.join(root, VOICE_ANALYSIS_EVIDENCE)).mode & 0o777)
+        .toBe(0o600);
+    }
   });
 
   it('binds the receipt to a remote EAS version code when provided', () => {

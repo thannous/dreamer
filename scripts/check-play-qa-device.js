@@ -236,6 +236,7 @@ function checkPlayQaDevice({
   const playInstallSource = checkPlayInstallSource({
     spawn,
     env,
+    platform,
     device: selection.device.id,
     packageName,
   });

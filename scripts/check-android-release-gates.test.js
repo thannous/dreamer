@@ -231,6 +231,11 @@ function writeSupabasePlayIntegritySecretsSnapshot(root, overrides = {}) {
 }
 
 describe('android release gate preflight', () => {
+  function npmRunScript(args) {
+    const runIndex = args.indexOf('run');
+    return runIndex === -1 ? null : args[runIndex + 1];
+  }
+
   function spawnWithTools({
     subscriptionGateStatus = 0,
     subscriptionReportStatus = 0,
@@ -239,8 +244,8 @@ describe('android release gate preflight', () => {
     adbUsbStdout = '',
   } = {}) {
     return (command, args) => {
-      if (command === 'which' && args[0] === 'adb') return { status: 0 };
-      if (command === 'which' && args[0] === 'maestro') return { status: 0 };
+      if (['which', 'where'].includes(command) && args[0] === 'adb') return { status: 0 };
+      if (['which', 'where'].includes(command) && args[0] === 'maestro') return { status: 0 };
       if (command === 'adb' && args[0] === 'devices') {
         return {
           status: 0,
@@ -255,7 +260,7 @@ describe('android release gate preflight', () => {
       if (command === 'ioreg') {
         return { status: 0, stdout: adbUsbStdout, stderr: '' };
       }
-      if (/^npm(\.cmd)?$/.test(command) && args.join(' ') === 'run subscription:qa:release-gate') {
+      if (npmRunScript(args) === 'subscription:qa:release-gate') {
         return {
           status: subscriptionGateStatus,
           stdout:
@@ -265,7 +270,7 @@ describe('android release gate preflight', () => {
           stderr: '',
         };
       }
-      if (/^npm(\.cmd)?$/.test(command) && args.join(' ') === 'run subscription:qa:report') {
+      if (npmRunScript(args) === 'subscription:qa:report') {
         return {
           status: subscriptionReportStatus,
           stdout:
@@ -318,9 +323,9 @@ describe('android release gate preflight', () => {
 
     expect(report.ok).toBe(true);
     expect(report.phase).toBe('prebuild');
-    expect(calls.some((call) => call.slice(1).join(' ') === 'run subscription:qa:report')).toBe(true);
+    expect(calls.some((call) => npmRunScript(call.slice(1)) === 'subscription:qa:report')).toBe(true);
     expect(
-      calls.some((call) => call.slice(1).join(' ') === 'run subscription:qa:release-gate')
+      calls.some((call) => npmRunScript(call.slice(1)) === 'subscription:qa:release-gate')
     ).toBe(false);
     expect(
       report.checks.some(
@@ -754,7 +759,7 @@ describe('android release gate preflight', () => {
     const spawn = (command, args) => {
       if (command === 'which' && args[0] === 'adb') return { status: 1 };
       if (command === 'which' && args[0] === 'maestro') return { status: 0 };
-      if (/^npm(\.cmd)?$/.test(command) && args.join(' ') === 'run subscription:qa:release-gate') {
+      if (npmRunScript(args) === 'subscription:qa:release-gate') {
         return { status: 0, stdout: 'ok\n', stderr: '' };
       }
       if (command === adbPath && args[0] === 'devices') {
@@ -770,6 +775,7 @@ describe('android release gate preflight', () => {
       rootDir: root,
       spawn,
       env: { HOME: fakeHome },
+      platform: 'darwin',
     });
 
     expect(report.ok).toBe(true);
@@ -788,7 +794,7 @@ describe('android release gate preflight', () => {
     const spawn = (command, args) => {
       if (command === 'which' && args[0] === 'maestro') return { status: 1 };
       if (command === 'which' && args[0] === 'adb') return { status: 0 };
-      if (/^npm(\.cmd)?$/.test(command) && args.join(' ') === 'run subscription:qa:release-gate') {
+      if (npmRunScript(args) === 'subscription:qa:release-gate') {
         return { status: 0, stdout: 'ok\n', stderr: '' };
       }
       if (command === 'adb' && args[0] === 'devices') {
@@ -804,6 +810,7 @@ describe('android release gate preflight', () => {
       rootDir: root,
       spawn,
       env: { MAESTRO_CLI_PATH: maestroPath },
+      platform: 'darwin',
     });
 
     expect(report.ok).toBe(true);

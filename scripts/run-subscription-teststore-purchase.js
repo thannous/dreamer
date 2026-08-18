@@ -4,6 +4,7 @@
 
 const { spawnSync } = require('child_process');
 const path = require('path');
+const { resolveNpmInvocation } = require('./android-tooling');
 const {
   getSensitiveFlowGuardToken,
   SENSITIVE_FLOW_GUARD_ENV,
@@ -127,7 +128,12 @@ const args = [
   ...maestroArgs,
 ];
 
-const result = spawnSync('npm', args, {
+const npm = resolveNpmInvocation();
+if (!npm) {
+  fail('npm CLI is unavailable. Run this command through npm or install npm beside Node.js.');
+}
+
+const result = spawnSync(npm.command, [...npm.baseArgs, ...args], {
   cwd: ROOT,
   env: {
     ...process.env,

@@ -22,7 +22,7 @@ function runWrapper(args = [], env = {}) {
 
 function createFakeNpm() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fake-npm-account-switch-'));
-  const bin = path.join(dir, 'npm');
+  const bin = path.join(dir, 'npm-cli.js');
   fs.writeFileSync(
     bin,
     `#!/usr/bin/env node
@@ -40,8 +40,7 @@ process.exit(Number(process.env.FAKE_NPM_STATUS || 0));
 `,
     'utf8'
   );
-  fs.chmodSync(bin, 0o755);
-  return dir;
+  return bin;
 }
 
 describe('account switch runner', () => {
@@ -89,10 +88,10 @@ describe('account switch runner', () => {
   });
 
   it('passes second account credentials and Maestro args to the flow', () => {
-    const fakeNpmDir = createFakeNpm();
+    const fakeNpmCli = createFakeNpm();
     const capturePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'account-switch-capture-')), 'capture.json');
     const result = runWrapper(['--device', 'emulator-5554'], {
-      PATH: `${fakeNpmDir}${path.delimiter}${process.env.PATH}`,
+      npm_execpath: fakeNpmCli,
       REVENUECAT_QA_SWITCH_APPROVAL: APPROVAL,
       REVENUECAT_QA_EMAIL: 'paid@example.com',
       REVENUECAT_QA_SWITCH_FREE_EMAIL: 'free@example.com',

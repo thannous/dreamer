@@ -9,6 +9,7 @@ const {
   getAdbCandidates,
   getMaestroCandidates,
   resolveCommand,
+  resolveNpmInvocation,
 } = require('./android-tooling');
 const {
   detectAdbMdnsServices,
@@ -27,7 +28,6 @@ const {
 } = require('./update-supabase-play-integrity-secrets-state');
 
 const ROOT = path.resolve(__dirname, '..');
-const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const PLAY_INTEGRITY_PROJECT_NUMBER_KEY = 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER';
 const REVENUECAT_TEST_STORE_DEBUGGABLE_KEY =
   'NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE';
@@ -537,9 +537,18 @@ function checkSubscriptionQaGate(
   rootDir,
   scriptName,
   spawn = spawnSync,
-  env = process.env
+  env = process.env,
+  platform = process.platform,
+  existsSync = fs.existsSync
 ) {
-  const result = spawn(npmCommand, ['run', scriptName], {
+  const npm = resolveNpmInvocation({ env, platform, existsSync });
+  if (!npm) {
+    return {
+      ok: false,
+      details: 'npm CLI is unavailable from npm_execpath and the bundled Windows Node.js installation.',
+    };
+  }
+  const result = spawn(npm.command, [...npm.baseArgs, 'run', scriptName], {
     cwd: rootDir,
     env,
     encoding: 'utf8',
@@ -746,7 +755,9 @@ function checkAndroidReleaseGates({
     rootDir,
     subscriptionScript,
     spawn,
-    env
+    env,
+    platform,
+    existsSync
   );
   addCheck(
     checks,
@@ -790,7 +801,7 @@ function checkAndroidReleaseGates({
     voiceEvidenceCheck.remediation
   );
 
-  const adbCommand = resolveCommand('adb', { spawn, existsSync, env });
+  const adbCommand = resolveCommand('adb', { spawn, existsSync, env, platform });
   const adbAvailable = Boolean(adbCommand);
   addCheck(
     checks,
@@ -823,7 +834,7 @@ function checkAndroidReleaseGates({
     );
   }
 
-  const maestroCommand = resolveCommand('maestro', { spawn, existsSync, env });
+  const maestroCommand = resolveCommand('maestro', { spawn, existsSync, env, platform });
   const maestroAvailable = Boolean(maestroCommand);
   addCheck(
     checks,

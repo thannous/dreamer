@@ -67,10 +67,11 @@ function readPackageInfo(output) {
 function checkPlayInstallSource({
   spawn = spawnSync,
   env = process.env,
+  platform = process.platform,
   device,
   packageName = DEFAULT_PACKAGE,
 } = {}) {
-  const adbCommand = resolveCommand('adb', { spawn, env });
+  const adbCommand = resolveCommand('adb', { spawn, env, platform });
   if (!adbCommand) {
     return {
       ok: false,

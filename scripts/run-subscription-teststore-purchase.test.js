@@ -18,7 +18,7 @@ function runWrapper(args = [], env = {}) {
 
 function createFakeNpm() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fake-npm-'));
-  const bin = path.join(dir, 'npm');
+  const bin = path.join(dir, 'npm-cli.js');
   fs.writeFileSync(
     bin,
     `#!/usr/bin/env node
@@ -37,8 +37,7 @@ process.exit(Number(process.env.FAKE_NPM_STATUS || 0));
 `,
     'utf8'
   );
-  fs.chmodSync(bin, 0o755);
-  return dir;
+  return bin;
 }
 
 describe('guarded Test Store purchase runner', () => {
@@ -75,10 +74,10 @@ describe('guarded Test Store purchase runner', () => {
   });
 
   it('passes approval, credentials, plan and Maestro args to the guarded flow', () => {
-    const fakeNpmDir = createFakeNpm();
+    const fakeNpmCli = createFakeNpm();
     const capturePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'purchase-capture-')), 'capture.json');
     const result = runWrapper(['--plan', 'annual', '--device', 'emulator-5554'], {
-      PATH: `${fakeNpmDir}${path.delimiter}${process.env.PATH}`,
+      npm_execpath: fakeNpmCli,
       REVENUECAT_QA_APPROVAL: APPROVAL,
       REVENUECAT_QA_EMAIL: 'tester@example.com',
       REVENUECAT_QA_PASSWORD: 'password',
@@ -109,10 +108,10 @@ describe('guarded Test Store purchase runner', () => {
   });
 
   it('runs the Google purchase flow without requiring an email password', () => {
-    const fakeNpmDir = createFakeNpm();
+    const fakeNpmCli = createFakeNpm();
     const capturePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'purchase-capture-')), 'capture.json');
     const result = runWrapper(['--plan', 'monthly', '--device', 'emulator-5554'], {
-      PATH: `${fakeNpmDir}${path.delimiter}${process.env.PATH}`,
+      npm_execpath: fakeNpmCli,
       REVENUECAT_QA_APPROVAL: APPROVAL,
       REVENUECAT_QA_AUTH: 'google',
       REVENUECAT_QA_EMAIL: 'tester@example.com',

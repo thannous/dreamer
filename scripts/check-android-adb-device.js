@@ -242,7 +242,7 @@ function checkAndroidAdbDevice({
   platform = process.platform,
   requirePhysical = false,
 } = {}) {
-  const adbCommand = resolveCommand('adb', { spawn, env });
+  const adbCommand = resolveCommand('adb', { spawn, env, platform });
   if (!adbCommand) {
     return {
       ok: false,

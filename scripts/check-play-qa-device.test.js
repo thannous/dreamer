@@ -27,7 +27,7 @@ function spawnFor({
   `,
 } = {}) {
   return (command, args) => {
-    if (command === 'which' && args[0] === 'adb') {
+    if (['which', 'where'].includes(command) && args[0] === 'adb') {
       return { status: whichAdb ? 0 : 1, stdout: whichAdb ? '/usr/bin/adb\n' : '', stderr: '' };
     }
     if (command === 'adb' && args[0] === 'devices') {
