@@ -228,7 +228,7 @@ export function AnalysisProgress({ step, progress, message, error, onRetry }: An
                 transition={{ type: 'timing', duration: 640 }}
                 style={styles.orbIcon}
               >
-                <IconSymbol name={STEP_ICONS[step]} size={30} color={noctalia.accent.base} />
+                <IconSymbol name={STEP_ICONS[step]} size={30} color={noctalia.accent.text} />
               </MotiView>
             </MotiView>
           </View>

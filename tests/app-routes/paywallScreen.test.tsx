@@ -137,6 +137,7 @@ jest.doMock('@/context/ThemeContext', () => ({
     mode: 'dark',
     colors: {
       accent: '#6f62b5',
+      accentText: '#55479c',
       accentDark: '#55479c',
       accentLight: '#988de0',
       backgroundCard: '#221b3b',

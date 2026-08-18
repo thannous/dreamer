@@ -93,7 +93,7 @@ export default function GoogleSignInButton() {
           <ActivityIndicator color={noctalia.text.primary} size="small" />
         ) : (
           <>
-            <IconSymbol name="g.circle.fill" size={20} color={noctalia.accent.base} />
+            <IconSymbol name="g.circle.fill" size={20} color={noctalia.accent.text} />
             <Text style={[styles.buttonText, { color: noctalia.text.primary }]}>{t('auth.google.cta')}</Text>
           </>
         )}

@@ -156,7 +156,7 @@ export default function RitualDetailScreen() {
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.base} />
+          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
         </Pressable>
 
         <ScrollView
@@ -179,7 +179,7 @@ export default function RitualDetailScreen() {
               <IconSymbol
                 name={iconName}
                 size={28}
-                color={noctalia.accent.base}
+                color={noctalia.accent.text}
               />
             </View>
             <Text style={[styles.title, { color: noctalia.text.primary }]}>
@@ -208,7 +208,7 @@ export default function RitualDetailScreen() {
                 ]}
               />
             </View>
-            <Text style={[styles.progressText, { color: noctalia.accent.base }]}>
+            <Text style={[styles.progressText, { color: noctalia.accent.text }]}>
               {t('inspiration.ritual.steps_progress')
                 .replace('{completed}', String(completedCount))
                 .replace('{total}', String(totalSteps))}
@@ -237,7 +237,7 @@ export default function RitualDetailScreen() {
                   <IconSymbol
                     name="speaker.wave.2.fill"
                     size={24}
-                    color={noctalia.accent.base}
+                    color={noctalia.accent.text}
                   />
                 </View>
                 <View style={styles.sleepSoundCopy}>
@@ -248,7 +248,7 @@ export default function RitualDetailScreen() {
                     {sleepSoundCopy.entryBody}
                   </Text>
                 </View>
-                <IconSymbol name="chevron.right" size={20} color={noctalia.accent.base} />
+                <IconSymbol name="chevron.right" size={20} color={noctalia.accent.text} />
               </Pressable>
             </GlassCard>
           ) : null}

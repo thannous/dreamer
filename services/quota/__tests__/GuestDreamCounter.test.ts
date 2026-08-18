@@ -45,6 +45,11 @@ jest.mock('@/services/storageService', () => ({
   getSavedDreams: mockGetSavedDreams,
 }));
 
+let mockIsMockModeEnabled = false;
+jest.mock('@/lib/env', () => ({
+  isMockModeEnabled: () => mockIsMockModeEnabled,
+}));
+
 
 const DREAM_RECORDING_KEY = 'guest_total_dream_recording_count_v1';
 const MIGRATION_KEY = 'guest_dream_recording_migrated_v1';
@@ -54,6 +59,7 @@ describe('GuestDreamCounter', () => {
     jest.resetModules();
     mockStorage.clear();
     mockGetSavedDreams.mockReset();
+    mockIsMockModeEnabled = false;
     jest.clearAllMocks();
     ({
       getGuestRecordedDreamCount,
@@ -114,5 +120,24 @@ describe('GuestDreamCounter', () => {
     mockGetSavedDreams.mockResolvedValue([{ id: 1 }, { id: 2 }, { id: 3 }] as any);
     await migrateExistingGuestDreamRecording();
     expect(mockStorage.get(DREAM_RECORDING_KEY)).toBe('2');
+  });
+
+  it('ignores persisted recording counts in mock mode so an empty in-memory journal can save again', async () => {
+    mockIsMockModeEnabled = true;
+    mockStorage.set(DREAM_RECORDING_KEY, '2');
+
+    ({
+      getGuestRecordedDreamCount,
+      getLocalDreamRecordingCount,
+      incrementLocalDreamRecordingCount,
+    } = require('../GuestDreamCounter'));
+
+    await expect(getGuestRecordedDreamCount(0)).resolves.toBe(0);
+    await expect(getLocalDreamRecordingCount()).resolves.toBe(0);
+
+    await incrementLocalDreamRecordingCount();
+    await incrementLocalDreamRecordingCount();
+    expect(mockStorage.get(DREAM_RECORDING_KEY)).toBe('2');
+    await expect(getGuestRecordedDreamCount(2)).resolves.toBe(2);
   });
 });

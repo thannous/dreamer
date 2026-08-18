@@ -109,7 +109,7 @@ function PreferenceSheet<T extends string>({
           <IconSymbol
             name={PREFERENCE_HEADER_ICONS[kind]}
             size={24}
-            color={noctalia.accent.base}
+            color={noctalia.accent.text}
           />
         </View>
         <View style={styles.preferenceHeaderCopy}>
@@ -186,7 +186,7 @@ function PreferenceSheet<T extends string>({
                     size={20}
                     color={option.current
                       ? noctalia.action.primaryText
-                      : noctalia.accent.base}
+                      : noctalia.accent.text}
                   />
                 </View>
                 <View style={styles.preferenceOptionCopy}>
@@ -244,7 +244,7 @@ function EditorialCard({ children, compact = false, icon, noctalia, title, testI
     >
       <View style={[styles.cardHeader, compact && styles.compactCardHeader]}>
         <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>{title}</Text>
-        <IconSymbol name={icon} size={23} color={noctalia.accent.base} />
+        <IconSymbol name={icon} size={23} color={noctalia.accent.text} />
       </View>
       {children}
     </View>
@@ -283,7 +283,7 @@ function PreferenceRow({
       ]}
       testID={testID}
     >
-      <IconSymbol name={icon} size={21} color={noctalia.accent.base} />
+      <IconSymbol name={icon} size={21} color={noctalia.accent.text} />
       <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>{label}</Text>
       <Text
         numberOfLines={1}
@@ -473,7 +473,7 @@ export function SettingsFieldGroup({
                   ]}
                   testID="settings-notifications-reminder-toggle"
                 >
-                  <IconSymbol name="bell" size={21} color={noctalia.accent.base} />
+                  <IconSymbol name="bell" size={21} color={noctalia.accent.text} />
                   <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>
                     {t('settings.rituals.reminders')}
                   </Text>
@@ -498,7 +498,7 @@ export function SettingsFieldGroup({
                   ]}
                   testID="settings-notifications-weekday-time"
                 >
-                  <IconSymbol name="clock" size={21} color={noctalia.accent.base} />
+                  <IconSymbol name="clock" size={21} color={noctalia.accent.text} />
                   <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>
                     {t('settings.rituals.reminder_time')}
                   </Text>
@@ -523,7 +523,7 @@ export function SettingsFieldGroup({
                 testID="settings-section-subscription"
               >
                 <View style={[styles.plusIcon, { borderColor: noctalia.accent.base }]}>
-                  <IconSymbol name="sparkles" size={28} color={noctalia.accent.base} />
+                  <IconSymbol name="sparkles" size={28} color={noctalia.accent.text} />
                 </View>
                 <View style={styles.plusCopy}>
                   <Text style={[styles.plusTitle, { color: noctalia.text.primary }]}>
@@ -533,7 +533,7 @@ export function SettingsFieldGroup({
                     {subscriptionSubtitle}
                   </Text>
                 </View>
-                <IconSymbol name="chevron.right" size={26} color={noctalia.accent.base} />
+                <IconSymbol name="chevron.right" size={26} color={noctalia.accent.text} />
               </Pressable>
 
               <View
@@ -645,7 +645,7 @@ export function SettingsFieldGroup({
                 },
               ]}
             >
-              <IconSymbol name="clock" size={24} color={noctalia.accent.base} />
+              <IconSymbol name="clock" size={24} color={noctalia.accent.text} />
             </View>
             <View style={styles.preferenceHeaderCopy}>
               <Text style={[styles.preferenceTitle, { color: noctalia.text.primary }]}>

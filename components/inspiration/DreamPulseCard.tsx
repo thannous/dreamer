@@ -77,9 +77,9 @@ export const DreamPulseCard = memo(function DreamPulseCard({
       <View style={styles.inner}>
         <View style={styles.eyebrowRow}>
           <View style={[styles.eyebrowIcon, { backgroundColor: noctalia.surface.soft }]}>
-            <IconSymbol name="waveform" size={16} color={noctalia.accent.base} />
+            <IconSymbol name="waveform" size={16} color={noctalia.accent.text} />
           </View>
-          <Text style={[styles.eyebrow, { color: noctalia.accent.base }]}>
+          <Text style={[styles.eyebrow, { color: noctalia.accent.text }]}>
             {t('inspiration.pulse.eyebrow')}
           </Text>
         </View>

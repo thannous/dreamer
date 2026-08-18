@@ -90,7 +90,7 @@ jest.mock('@/constants/theme', () => ({
 const noctalia = {
   surface: { soft: '#111', border: '#222', borderStrong: '#333' },
   text: { primary: '#eee', secondary: '#ccc', tertiary: '#999' },
-  accent: { base: '#a0f' },
+  accent: { base: '#a0f', text: '#a0f'},
 } as unknown as NoctaliaDesignTokens;
 
 afterEach(() => {

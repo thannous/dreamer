@@ -21,6 +21,8 @@ export interface ThemeColors {
   accent: string;
   accentDark: string;
   accentLight: string;
+  /** Accessible accent for copy and icons on paper/night surfaces. Do not use `accent` as text. */
+  accentText: string;
 
   // UI elements
   timeline: string;
@@ -61,6 +63,7 @@ export const DarkTheme: ThemeColors = {
   accent: '#D4A574', // Champagne/wheat accent shared with the light palette
   accentDark: '#9A6332', // Pressed states and strong borders
   accentLight: '#EAD4B4', // Soft highlight and hairlines
+  accentText: '#EAD4B4', // Readable champagne on nocturnal surfaces
 
   // UI elements
   timeline: '#6B573D', // Timeline line color
@@ -94,13 +97,14 @@ export const LightTheme: ThemeColors = {
   // Text colors
   textPrimary: '#2A2838', // Main text - deep purple-gray
   textSecondary: '#6B6880', // Secondary text - muted purple-gray
-  textTertiary: '#9B98AC', // Tertiary text - lighter gray
+  textTertiary: '#6F6C84', // Tertiary copy — WCAG AA on paper/card (≥ 4.5:1)
   textOnAccentSurface: '#4A2F1B', // Deep amber-brown for contrast on warm accents
 
   // Accent colors
-  accent: '#D4A574', // Champagne gold accent
+  accent: '#D4A574', // Champagne gold accent — fills, rules, and gold CTA surfaces only
   accentDark: '#9A6332', // Darker amber for text, borders, pressed states
   accentLight: '#EAD4B4', // Lighter champagne
+  accentText: '#9A6332', // Readable amber on cream — never use `accent` as text in light mode
 
   // UI elements
   timeline: '#E7DED0', // Timeline - subtle warm line
@@ -111,7 +115,7 @@ export const LightTheme: ThemeColors = {
   navbarBg: '#FBFAF7', // Same as backgroundDark
   navbarBorder: '#E8E2D8', // Same family as divider
   navbarTextActive: '#2A2838', // Dark text for active tab
-  navbarTextInactive: '#9B98AC', // Muted gray for inactive tabs
+  navbarTextInactive: '#6F6C84', // Inactive tabs — same AA gray as tertiary copy
 
   // Tag colors - pastel versions
   tags: {

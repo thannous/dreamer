@@ -54,10 +54,10 @@ export function Exploration360Panel({
               { backgroundColor: noctalia.surface.soft },
             ]}
           >
-            <IconSymbol name="sparkles" size={21} color={noctalia.accent.base} />
+            <IconSymbol name="sparkles" size={21} color={noctalia.accent.text} />
           </View>
           <View style={styles.headerCopy}>
-            <Text style={[styles.eyebrow, { color: noctalia.accent.base }]}>
+            <Text style={[styles.eyebrow, { color: noctalia.accent.text }]}>
               {t('dream_categories.exploration360.eyebrow')}
             </Text>
             <Text style={[styles.title, { color: noctalia.text.primary }]}>
@@ -81,7 +81,7 @@ export function Exploration360Panel({
           <IconSymbol
             name={progress.isComplete ? 'checkmark.circle.fill' : 'bubble.left.and.bubble.right'}
             size={15}
-            color={noctalia.accent.base}
+            color={noctalia.accent.text}
           />
           <Text style={[styles.progressText, { color: noctalia.text.primary }]}>
             {t('dream_categories.exploration360.progress', {
@@ -107,7 +107,7 @@ export function Exploration360Panel({
                 <IconSymbol
                   name={axis.completed ? 'checkmark.circle.fill' : 'hourglass'}
                   size={15}
-                  color={axis.completed ? noctalia.accent.base : noctalia.text.secondary}
+                  color={axis.completed ? noctalia.accent.text : noctalia.text.secondary}
                 />
                 <Text style={[styles.axisTitle, { color: noctalia.text.primary }]} numberOfLines={1}>
                   {t(axis.titleKey)}
@@ -150,7 +150,7 @@ export function Exploration360Panel({
               },
             ]}
           >
-            <IconSymbol name="checkmark.circle.fill" size={16} color={noctalia.accent.base} />
+            <IconSymbol name="checkmark.circle.fill" size={16} color={noctalia.accent.text} />
             <Text style={[styles.doneText, { color: noctalia.text.primary }]}>
               {t('dream_categories.exploration360.synthesis.done')}
             </Text>

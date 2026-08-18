@@ -407,7 +407,7 @@ export default function SymbolDictionaryScreen() {
         ]}
       >
         <View style={[styles.guidesBannerIcon, { backgroundColor: noctalia.surface.soft }]}>
-          <IconSymbol name="sparkles" size={20} color={noctalia.accent.base} />
+          <IconSymbol name="sparkles" size={20} color={noctalia.accent.text} />
         </View>
         <View style={styles.guidesBannerCopy}>
           <Text style={[styles.guidesBannerTitle, { color: noctalia.text.primary }]}>

@@ -83,7 +83,7 @@ export function EmptyState({
           accessibilityRole="button"
           testID={TID.Button.EmptyClearFilters}
         >
-          <Text style={[styles.secondaryText, { color: noctalia.accent.base }]}>
+          <Text style={[styles.secondaryText, { color: noctalia.accent.text }]}>
             {t('journal.filter.clear')}
           </Text>
         </Pressable>

@@ -113,7 +113,7 @@ export function AnalysisRevealOverlay({ visible }: AnalysisRevealOverlayProps) {
             },
           ]}
         >
-          <IconSymbol name="sparkles" size={40} color={noctalia.accent.base} />
+          <IconSymbol name="sparkles" size={40} color={noctalia.accent.text} />
         </MotiView>
       </View>
 

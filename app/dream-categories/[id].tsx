@@ -131,7 +131,7 @@ export default function DreamCategoriesScreen() {
               accessibilityLabel={t('journal.back_button')}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
-              <IconSymbol name="chevron.left" size={20} color={noctalia.accent.base} />
+              <IconSymbol name="chevron.left" size={20} color={noctalia.accent.text} />
             </Pressable>
             <View style={styles.dreamTitleContent}>
               <Text style={[styles.dreamTitle, { color: noctalia.text.primary }]}>{dream.title}</Text>

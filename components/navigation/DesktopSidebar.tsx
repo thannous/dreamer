@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { usePathname, useRouter } from 'expo-router';
+import { usePathname, useRouter, type Href } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -17,7 +17,7 @@ type IconName = Parameters<typeof IconSymbol>[0]['name'];
 interface NavItemProps {
   icon: IconName;
   label: string;
-  href: string;
+  href: Href;
   isActive: boolean;
   testID?: string;
 }
@@ -33,7 +33,7 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
   return (
     <Pressable
       testID={testID}
-      onPress={() => router.push(href as '/(tabs)')}
+      onPress={() => router.push(href)}
       onHoverIn={() => setIsHovered(true)}
       onHoverOut={() => setIsHovered(false)}
       style={[
@@ -47,7 +47,7 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
       <IconSymbol
         name={icon}
         size={22}
-        color={isActive ? noctalia.accent.base : noctalia.text.secondary}
+        color={isActive ? noctalia.accent.text : noctalia.text.secondary}
       />
       <Text
         style={[
@@ -70,9 +70,15 @@ export function DesktopSidebar() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   // When returning guest is blocked, only show settings
-  const allNavItems: { icon: IconName; label: string; href: string; testID?: string }[] = [
+  const allNavItems: { icon: IconName; label: string; href: Href; testID?: string }[] = [
     { icon: 'house.fill', label: t('nav.home'), href: '/', testID: TID.Tab.Home },
     { icon: 'book.fill', label: t('nav.journal'), href: '/journal', testID: TID.Tab.Journal },
+    {
+      icon: 'pencil',
+      label: t('nav.capture_dream'),
+      href: '/recording',
+      testID: TID.Tab.AddDream,
+    },
     { icon: 'chart.bar.fill', label: t('nav.stats'), href: '/statistics', testID: TID.Tab.Stats },
     { icon: 'gear', label: t('nav.settings'), href: '/settings', testID: TID.Tab.Settings },
   ];
@@ -81,11 +87,12 @@ export function DesktopSidebar() {
     ? allNavItems.filter((item) => item.href === '/settings')
     : allNavItems;
 
-  const isActive = (href: string) => {
-    if (href === '/') {
+  const isActive = (href: Href) => {
+    const path = typeof href === 'string' ? href : String(href);
+    if (path === '/') {
       return pathname === '/' || pathname === '/index';
     }
-    return pathname.startsWith(href);
+    return pathname.startsWith(path);
   };
 
   return (
@@ -109,7 +116,7 @@ export function DesktopSidebar() {
       <View style={styles.navSection}>
         {navItems.map((item) => (
           <NavItem
-            key={item.href}
+            key={item.testID ?? item.label}
             icon={item.icon}
             label={item.label}
             href={item.href}

@@ -51,7 +51,7 @@ function ScreenErrorFallback({ error, resetError }: ScreenErrorFallbackProps): R
               styles.devError,
               {
                 backgroundColor: noctalia.surface.soft,
-                color: noctalia.accent.base,
+                color: noctalia.accent.text,
               },
             ]}
           >

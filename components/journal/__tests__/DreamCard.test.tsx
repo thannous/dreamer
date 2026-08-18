@@ -70,6 +70,7 @@ jest.mock('@/context/ThemeContext', () => ({
       textSecondary: '#aaa',
       textTertiary: '#666',
       accent: '#6b5a8e',
+      accentText: '#c4b5fd',
       textOnAccentSurface: '#fff',
       tags: {
         surreal: '#6b5a8e',

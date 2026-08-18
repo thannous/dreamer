@@ -95,7 +95,7 @@ jest.mock('@/context/ThemeContext', () => ({
 jest.mock('@/constants/noctaliaDesign', () => ({
   getNoctaliaDesignTokens: (_colors: unknown, mode: 'light' | 'dark') => ({
     text: { primary: mode === 'dark' ? '#fff' : '#222', secondary: '#777', tertiary: '#888' },
-    accent: { base: '#D4A574', strong: '#9A6332', soft: '#EAD4B4' },
+    accent: { base: '#D4A574', strong: '#9A6332', soft: '#EAD4B4', text: '#9A6332'},
     surface: { soft: '#eee', border: '#ddd', borderStrong: '#ccc' },
     action: { primary: '#D4A574', primaryBorder: '#EAD4B4', primaryText: '#3B2412' },
   }),

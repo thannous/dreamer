@@ -1050,7 +1050,7 @@ export default function JournalListScreen() {
             {selectedTheme === theme && (
               <View style={styles.modalOptionCheckWrapper}>
                 <View style={[styles.modalOptionCheckBadge, { backgroundColor: noctalia.surface.raised }]}>
-                  <IconSymbol name="checkmark" size={14} color={noctalia.accent.base} />
+                  <IconSymbol name="checkmark" size={14} color={noctalia.accent.text} />
                 </View>
               </View>
             )}
@@ -1091,7 +1091,7 @@ export default function JournalListScreen() {
             {selectedDreamType === dreamType && (
               <View style={styles.modalOptionCheckWrapper}>
                 <View style={[styles.modalOptionCheckBadge, { backgroundColor: noctalia.surface.raised }]}>
-                  <IconSymbol name="checkmark" size={14} color={noctalia.accent.base} />
+                  <IconSymbol name="checkmark" size={14} color={noctalia.accent.text} />
                 </View>
               </View>
             )}

@@ -374,7 +374,7 @@ export default function PaywallScreen() {
         <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH}>
           <View style={styles.topBar}>
             <View style={styles.brandLockup}>
-              <IconSymbol name="moon.stars.fill" size={24} color={noctalia.accent.base} />
+              <IconSymbol name="moon.stars.fill" size={24} color={noctalia.accent.text} />
               <Text style={[styles.brandName, { color: noctalia.text.primary }]}>Noctalia</Text>
             </View>
             <Pressable
@@ -383,7 +383,7 @@ export default function PaywallScreen() {
               accessibilityRole="button"
               testID={TID.Button.PaywallClose}
             >
-              <Text style={[styles.closeLabel, { color: noctalia.accent.base }]}>
+              <Text style={[styles.closeLabel, { color: noctalia.accent.text }]}>
                 {t('subscription.paywall.button.close')}
               </Text>
             </Pressable>
@@ -391,11 +391,11 @@ export default function PaywallScreen() {
 
           {!isActive ? (
             <View style={styles.kickerRow}>
-              <IconSymbol name="sparkles" size={13} color={noctalia.accent.base} />
-              <Text style={[styles.kickerText, { color: noctalia.accent.base }]}>
+              <IconSymbol name="sparkles" size={13} color={noctalia.accent.text} />
+              <Text style={[styles.kickerText, { color: noctalia.accent.text }]}>
                 {translateWithFallback(paywallVariant.chipKey)}
               </Text>
-              <IconSymbol name="sparkles" size={13} color={noctalia.accent.base} />
+              <IconSymbol name="sparkles" size={13} color={noctalia.accent.text} />
             </View>
           ) : null}
 
@@ -415,7 +415,7 @@ export default function PaywallScreen() {
 
           {loading ? (
             <View style={styles.loadingRow}>
-              <ActivityIndicator color={noctalia.accent.base} />
+              <ActivityIndicator color={noctalia.accent.text} />
               <Text style={[styles.loadingLabel, { color: noctalia.text.secondary }]}>
                 {t('subscription.paywall.loading')}
               </Text>
@@ -441,10 +441,10 @@ export default function PaywallScreen() {
                 </View>
                 <View style={[styles.comparisonPlusCell, { backgroundColor: noctalia.surface.active }]}>
                   <View style={styles.comparisonPlusHeader}>
-                    <Text style={[styles.comparisonPlusHeaderText, { color: noctalia.accent.base }]}>
+                    <Text style={[styles.comparisonPlusHeaderText, { color: noctalia.accent.text }]}>
                       {t('subscription.paywall.comparison.plus')}
                     </Text>
-                    <IconSymbol name="sparkles" size={16} color={noctalia.accent.base} />
+                    <IconSymbol name="sparkles" size={16} color={noctalia.accent.text} />
                   </View>
                 </View>
               </View>
@@ -458,7 +458,7 @@ export default function PaywallScreen() {
                 >
                   <View style={styles.comparisonFeatureCell}>
                     <View style={[styles.comparisonIcon, { backgroundColor: noctalia.surface.soft }]}>
-                      <IconSymbol name={row.icon} size={15} color={noctalia.accent.base} />
+                      <IconSymbol name={row.icon} size={15} color={noctalia.accent.text} />
                     </View>
                     <Text style={[styles.comparisonFeatureText, { color: noctalia.text.primary }]}>
                       {row.label}
@@ -467,7 +467,7 @@ export default function PaywallScreen() {
                   <View style={styles.comparisonFreeCell}>
                     <View style={styles.comparisonFreeValue}>
                       {row.showFreeInfinity ? (
-                        <Text style={[styles.comparisonInfinity, { color: noctalia.accent.base }]}>∞</Text>
+                        <Text style={[styles.comparisonInfinity, { color: noctalia.accent.text }]}>∞</Text>
                       ) : null}
                       <Text
                         style={[
@@ -486,7 +486,7 @@ export default function PaywallScreen() {
                   <View style={[styles.comparisonPlusCell, { backgroundColor: noctalia.surface.active }]}>
                     <View style={styles.comparisonPlusValue}>
                       {row.showPlusInfinity ? (
-                        <Text style={[styles.comparisonInfinity, { color: noctalia.accent.base }]}>∞</Text>
+                        <Text style={[styles.comparisonInfinity, { color: noctalia.accent.text }]}>∞</Text>
                       ) : null}
                       <Text style={[styles.comparisonPlusText, { color: noctalia.text.primary }]}>
                         {row.plus}
@@ -504,12 +504,12 @@ export default function PaywallScreen() {
                     {index < 2 ? (
                       <Text
                         accessible={false}
-                        style={[styles.benefitInfinity, { color: noctalia.accent.base }]}
+                        style={[styles.benefitInfinity, { color: noctalia.accent.text }]}
                       >
                         ∞
                       </Text>
                     ) : (
-                      <IconSymbol name="checkmark" size={14} color={noctalia.accent.base} />
+                      <IconSymbol name="checkmark" size={14} color={noctalia.accent.text} />
                     )}
                   </View>
                   <Text

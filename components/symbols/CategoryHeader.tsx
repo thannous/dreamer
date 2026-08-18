@@ -35,7 +35,7 @@ export function CategoryHeader({ category, count, language }: CategoryHeaderProp
           alignItems: 'center',
           gap: ThemeLayout.spacing.sm,
         }}>
-        <IconSymbol name={icon} size={18} color={noctalia.accent.base} />
+        <IconSymbol name={icon} size={18} color={noctalia.accent.text} />
         <Text
           style={{
             flex: 1,

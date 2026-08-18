@@ -70,13 +70,13 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = function Subscr
             <Text style={[styles.badgeText, { color: noctalia.action.primaryText }]}>{badge}</Text>
           </View>
         ) : null}
-        {isLoading ? <ActivityIndicator color={noctalia.accent.base} /> : null}
+        {isLoading ? <ActivityIndicator color={noctalia.accent.text} /> : null}
       </View>
 
       <View style={styles.featureList}>
         {features.map((feature) => (
           <View key={feature} style={styles.featureRow}>
-            <Text style={[styles.featureBullet, { color: noctalia.accent.base }]}>•</Text>
+            <Text style={[styles.featureBullet, { color: noctalia.accent.text }]}>•</Text>
           <Text style={[styles.featureText, { color: noctalia.text.primary }]}>{feature}</Text>
         </View>
       ))}

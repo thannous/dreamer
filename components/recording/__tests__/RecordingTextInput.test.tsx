@@ -152,6 +152,7 @@ jest.mock('@/context/ThemeContext', () => ({
       backgroundSecondary: '#111',
       divider: '#333',
       accent: '#c5a46d',
+      accentText: '#e3c592',
       accentLight: '#e3c592',
       textPrimary: '#fff',
       textSecondary: '#aaa',

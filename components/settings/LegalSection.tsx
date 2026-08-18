@@ -129,7 +129,7 @@ export function LegalSection() {
         <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>
           {t('settings.legal.sectionTitle')}
         </Text>
-        <IconSymbol name="lock.shield" size={23} color={noctalia.accent.base} />
+        <IconSymbol name="lock.shield" size={23} color={noctalia.accent.text} />
       </View>
       {LEGAL_LINK_ROWS.map((row) => (
         <Pressable
@@ -143,7 +143,7 @@ export function LegalSection() {
           ]}
           testID={row.testID}
         >
-          <IconSymbol name={row.icon} size={21} color={noctalia.accent.base} />
+          <IconSymbol name={row.icon} size={21} color={noctalia.accent.text} />
           <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>
             {t(row.labelKey)}
           </Text>

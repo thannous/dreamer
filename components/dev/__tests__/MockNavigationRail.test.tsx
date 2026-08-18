@@ -53,7 +53,7 @@ jest.mock('react-native-safe-area-context', () => ({
 
 jest.mock('@/constants/noctaliaDesign', () => ({
   getNoctaliaDesignTokens: () => ({
-    accent: { base: '#accent' },
+    accent: { base: '#accent', text: '#accent'},
     surface: { active: '#active', border: '#border', raised: '#raised' },
     text: { secondary: '#secondary' },
   }),

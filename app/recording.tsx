@@ -3,6 +3,7 @@ import { ANALYSIS_REVEAL_HOLD_MS, AnalysisRevealOverlay } from '@/components/ana
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { SubjectProposition } from '@/components/journal/SubjectProposition';
 import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import {
@@ -115,6 +116,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   type LayoutChangeEvent,
   ScrollView,
   StyleSheet,
@@ -1532,6 +1534,13 @@ export default function RecordingScreen() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const gradientColors = noctalia.screen.gradient;
   const isDesktopWeb = Platform.OS === 'web' && viewportWidth >= DESKTOP_BREAKPOINT;
+  const closeRecording = useCallback(() => {
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+    router.replace('/(tabs)');
+  }, []);
   const fixedFooterBottomOffset = keyboardVisible
     ? insets.bottom
     : isDesktopWeb
@@ -2030,6 +2039,25 @@ export default function RecordingScreen() {
           style={StyleSheet.absoluteFill}
         />
         <AtmosphereBackground />
+        {isDesktopWeb ? (
+          <Pressable
+            onPress={closeRecording}
+            style={[
+              styles.desktopCloseButton,
+              {
+                top: Math.max(insets.top, 12),
+                backgroundColor: noctalia.surface.raised,
+                borderColor: noctalia.surface.border,
+              },
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel={t('nav.home')}
+            testID={TID.Button.RecordingHome}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
+          </Pressable>
+        ) : null}
         <KeyboardAvoidingView
           behavior="height"
           style={styles.keyboardView}
@@ -2458,6 +2486,17 @@ const styles = StyleSheet.create({
   gradient: {
     flex: 1,
     position: 'relative',
+  },
+  desktopCloseButton: {
+    position: 'absolute',
+    left: 16,
+    zIndex: 50,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   keyboardView: {
     flex: 1,

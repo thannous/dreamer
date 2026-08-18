@@ -26,7 +26,7 @@ export default function ModalScreen() {
         ]}
       >
         <View style={[styles.iconWrap, { backgroundColor: noctalia.surface.soft }]}>
-          <IconSymbol name="sparkles" size={24} color={noctalia.accent.base} />
+          <IconSymbol name="sparkles" size={24} color={noctalia.accent.text} />
         </View>
         <Text style={[styles.title, { color: noctalia.text.primary }]}>
           Noctalia

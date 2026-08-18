@@ -46,7 +46,7 @@ export const DreamGuideCard = memo(function DreamGuideCard({
         <IconSymbol
           name={getDreamGuideIcon(guide.id)}
           size={22}
-          color={noctalia.accent.base}
+          color={noctalia.accent.text}
         />
       </View>
       <View style={styles.copy}>
@@ -56,7 +56,7 @@ export const DreamGuideCard = memo(function DreamGuideCard({
         <Text style={[styles.description, { color: noctalia.text.secondary }]} numberOfLines={2}>
           {content.metaDescription}
         </Text>
-        <Text style={[styles.count, { color: noctalia.accent.base }]}>{metaLabel}</Text>
+        <Text style={[styles.count, { color: noctalia.accent.text }]}>{metaLabel}</Text>
       </View>
       <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
     </Pressable>

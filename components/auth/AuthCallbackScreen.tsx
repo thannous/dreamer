@@ -17,7 +17,7 @@ const AuthCallbackScreen: React.FC = () => {
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
       <AtmosphericBackground />
-      <ActivityIndicator color={noctalia.accent.base} />
+      <ActivityIndicator color={noctalia.accent.text} />
     </View>
   );
 };

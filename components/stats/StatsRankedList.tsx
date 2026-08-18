@@ -57,7 +57,7 @@ export const StatsRankedList = memo(function StatsRankedList({
               ]}
             >
               <View style={[styles.rank, { backgroundColor: noctalia.surface.soft }]}>
-                <Text style={[styles.rankText, { color: noctalia.accent.base }]}>{index + 1}</Text>
+                <Text style={[styles.rankText, { color: noctalia.accent.text }]}>{index + 1}</Text>
               </View>
               <View style={styles.content}>
                 <Text style={[styles.text, { color: noctalia.text.primary }]}>{row.label}</Text>

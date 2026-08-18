@@ -78,7 +78,7 @@ export default function DreamGuidesScreen() {
             {copy.screenSubtitle}
           </Text>
 
-          <Text style={[styles.sectionLabel, { color: noctalia.accent.base }]}>
+          <Text style={[styles.sectionLabel, { color: noctalia.accent.text }]}>
             {copy.practicalLabel}
           </Text>
           <View style={styles.guideList}>
@@ -95,7 +95,7 @@ export default function DreamGuidesScreen() {
 
           <FlatGlassCard intensity="strong" style={styles.dictionaryCard}>
             <View style={[styles.dictionaryIcon, { backgroundColor: noctalia.surface.soft }]}>
-              <IconSymbol name="book.closed.fill" size={24} color={noctalia.accent.base} />
+              <IconSymbol name="book.closed.fill" size={24} color={noctalia.accent.text} />
             </View>
             <View style={styles.dictionaryCopy}>
               <Text style={[styles.dictionaryTitle, { color: noctalia.text.primary }]}>
@@ -125,7 +125,7 @@ export default function DreamGuidesScreen() {
             </View>
           </FlatGlassCard>
 
-          <Text style={[styles.sectionLabel, { color: noctalia.accent.base }]}>
+          <Text style={[styles.sectionLabel, { color: noctalia.accent.text }]}>
             {copy.symbolGuidesLabel}
           </Text>
           <View style={styles.guideList}>

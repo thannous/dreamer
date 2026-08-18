@@ -64,7 +64,7 @@ export const StatsLockedSection = memo(function StatsLockedSection({
       testID={testID}
     >
       <View style={styles.header}>
-        <IconSymbol name="lock.fill" size={16} color={noctalia.accent.base} />
+        <IconSymbol name="lock.fill" size={16} color={noctalia.accent.text} />
         <Text style={[styles.count, { color: noctalia.text.primary }]}>{countLabel}</Text>
       </View>
       <Text style={[styles.body, { color: noctalia.text.secondary }]}>{bodyLabel}</Text>
@@ -103,8 +103,8 @@ export const StatsLockedSection = memo(function StatsLockedSection({
           pressed && styles.pressed,
         ]}
       >
-        <Text style={[styles.ctaText, { color: noctalia.accent.base }]}>{ctaLabel}</Text>
-        <IconSymbol name="arrow.right" size={15} color={noctalia.accent.base} />
+        <Text style={[styles.ctaText, { color: noctalia.accent.text }]}>{ctaLabel}</Text>
+        <IconSymbol name="arrow.right" size={15} color={noctalia.accent.text} />
       </Pressable>
     </View>
   );
@@ -136,7 +136,7 @@ export const StatsNotEnoughData = memo(function StatsNotEnoughData({
       ]}
       testID={testID}
     >
-      <IconSymbol name="hourglass" size={18} color={noctalia.accent.base} />
+      <IconSymbol name="hourglass" size={18} color={noctalia.accent.text} />
       <Text style={[styles.notEnoughTitle, { color: noctalia.text.primary }]}>{title}</Text>
       <Text style={[styles.notEnoughBody, { color: noctalia.text.secondary }]}>{body}</Text>
     </View>
