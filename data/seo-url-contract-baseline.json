@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "001ad3a94b0c96580d6649c47f8883396950c20c",
+  "sourceRevision": "60580f34ed5aa7b5626a8a1506ed0a6b9b7a94ca",
   "counts": {
-    "logicalPages": 248,
-    "manifestPaths": 1241,
-    "uniqueManifestPaths": 1241,
-    "canonicalPages": 1241,
-    "sitemapEntries": 1241,
-    "allHtmlOutputPaths": 1246
+    "logicalPages": 251,
+    "manifestPaths": 1256,
+    "uniqueManifestPaths": 1256,
+    "canonicalPages": 1256,
+    "sitemapEntries": 1256,
+    "allHtmlOutputPaths": 1261
   },
   "manifestRoutes": [
     {
@@ -159,6 +159,106 @@
       "lang": "it",
       "slug": "sogni-ansia-significato",
       "path": "/it/blog/sogni-ansia-significato"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "back-to-school-dreams-meaning",
+      "lang": "de",
+      "slug": "traum-zurueck-in-die-schule",
+      "path": "/de/blog/traum-zurueck-in-die-schule"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "back-to-school-dreams-meaning",
+      "lang": "en",
+      "slug": "back-to-school-dreams-meaning",
+      "path": "/en/blog/back-to-school-dreams-meaning"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "back-to-school-dreams-meaning",
+      "lang": "es",
+      "slug": "sonar-volver-escuela",
+      "path": "/es/blog/sonar-volver-escuela"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "back-to-school-dreams-meaning",
+      "lang": "fr",
+      "slug": "rever-retourner-ecole",
+      "path": "/fr/blog/rever-retourner-ecole"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "back-to-school-dreams-meaning",
+      "lang": "it",
+      "slug": "sognare-tornare-scuola",
+      "path": "/it/blog/sognare-tornare-scuola"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "back-to-school-nightmares-children",
+      "lang": "de",
+      "slug": "albtraeume-schulanfang-kinder",
+      "path": "/de/blog/albtraeume-schulanfang-kinder"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "back-to-school-nightmares-children",
+      "lang": "en",
+      "slug": "back-to-school-nightmares-children",
+      "path": "/en/blog/back-to-school-nightmares-children"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "back-to-school-nightmares-children",
+      "lang": "es",
+      "slug": "pesadillas-vuelta-al-cole-ninos",
+      "path": "/es/blog/pesadillas-vuelta-al-cole-ninos"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "back-to-school-nightmares-children",
+      "lang": "fr",
+      "slug": "cauchemars-rentree-enfant",
+      "path": "/fr/blog/cauchemars-rentree-enfant"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "back-to-school-nightmares-children",
+      "lang": "it",
+      "slug": "incubi-rientro-scolastico-bambini",
+      "path": "/it/blog/incubi-rientro-scolastico-bambini"
     },
     {
       "collection": "blog",
@@ -11572,6 +11672,56 @@
     },
     {
       "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "wasps",
+      "lang": "de",
+      "slug": "wespen",
+      "path": "/de/traumsymbole/wespen"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "wasps",
+      "lang": "en",
+      "slug": "wasps",
+      "path": "/en/symbols/wasps"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "wasps",
+      "lang": "es",
+      "slug": "avispas",
+      "path": "/es/simbolos/avispas"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "wasps",
+      "lang": "fr",
+      "slug": "guepes",
+      "path": "/fr/symboles/guepes"
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "type": "symbol",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "wasps",
+      "lang": "it",
+      "slug": "vespe",
+      "path": "/it/simboli/vespe"
+    },
+    {
+      "collection": "symbols",
       "pageId": "symbol.watch",
       "type": "symbol",
       "canonicalLanguage": "en",
@@ -12429,6 +12579,7 @@
     "docs/de/agb.html",
     "docs/de/android-traumanalyse-app.html",
     "docs/de/blog/albtraeume-hitze-stress.html",
+    "docs/de/blog/albtraeume-schulanfang-kinder.html",
     "docs/de/blog/albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann.html",
     "docs/de/blog/angsttraeume-bedeutung.html",
     "docs/de/blog/bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen.html",
@@ -12468,6 +12619,7 @@
     "docs/de/blog/traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation.html",
     "docs/de/blog/traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt.html",
     "docs/de/blog/traeume-zu-real-mobius-modell.html",
+    "docs/de/blog/traum-zurueck-in-die-schule.html",
     "docs/de/blog/traumbedeutungen-interpretation-symbole.html",
     "docs/de/blog/trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen.html",
     "docs/de/blog/traumkontrolle-problemloesung.html",
@@ -12662,6 +12814,7 @@
     "docs/de/traumsymbole/wasserfall.html",
     "docs/de/traumsymbole/weg.html",
     "docs/de/traumsymbole/weinen.html",
+    "docs/de/traumsymbole/wespen.html",
     "docs/de/traumsymbole/wolf.html",
     "docs/de/traumsymbole/wuermer.html",
     "docs/de/traumsymbole/wuste.html",
@@ -12679,6 +12832,8 @@
     "docs/en/blog/ai-dream-journal-privacy.html",
     "docs/en/blog/ai-sleep-analysis-dreams.html",
     "docs/en/blog/anxiety-dreams-meaning.html",
+    "docs/en/blog/back-to-school-dreams-meaning.html",
+    "docs/en/blog/back-to-school-nightmares-children.html",
     "docs/en/blog/being-chased-dreams.html",
     "docs/en/blog/children-dreams-guide.html",
     "docs/en/blog/climate-dreams-eco-anxiety.html",
@@ -12907,6 +13062,7 @@
     "docs/en/symbols/turtles.html",
     "docs/en/symbols/unable-to-speak.html",
     "docs/en/symbols/volcano.html",
+    "docs/en/symbols/wasps.html",
     "docs/en/symbols/watch.html",
     "docs/en/symbols/water.html",
     "docs/en/symbols/waterfall.html",
@@ -12945,6 +13101,7 @@
     "docs/es/blog/index.html",
     "docs/es/blog/ola-calor-sueno-suenos.html",
     "docs/es/blog/pesadillas-calor-estres.html",
+    "docs/es/blog/pesadillas-vuelta-al-cole-ninos.html",
     "docs/es/blog/por-que-olvidamos-suenos.html",
     "docs/es/blog/por-que-sonamos-ciencia.html",
     "docs/es/blog/privacidad-ia-diario-suenos.html",
@@ -12954,6 +13111,7 @@
     "docs/es/blog/significado-suenos-recurrentes.html",
     "docs/es/blog/sonar-con-examen-significado.html",
     "docs/es/blog/sonar-despierto-estados-oniricos.html",
+    "docs/es/blog/sonar-volver-escuela.html",
     "docs/es/blog/sueno-rem-suenos.html",
     "docs/es/blog/sueno-salud-prioridad.html",
     "docs/es/blog/suenos-climaticos-ecoansiedad.html",
@@ -13020,6 +13178,7 @@
     "docs/es/simbolos/aula.html",
     "docs/es/simbolos/autobus.html",
     "docs/es/simbolos/avion.html",
+    "docs/es/simbolos/avispas.html",
     "docs/es/simbolos/ballena.html",
     "docs/es/simbolos/bano.html",
     "docs/es/simbolos/barco.html",
@@ -13175,6 +13334,7 @@
     "docs/fr/blog/bruit-nocturne-sommeil-reves.html",
     "docs/fr/blog/canicule-sommeil-reves.html",
     "docs/fr/blog/cauchemars-chaleur-stress.html",
+    "docs/fr/blog/cauchemars-rentree-enfant.html",
     "docs/fr/blog/comment-se-souvenir-de-ses-reves.html",
     "docs/fr/blog/confidentialite-ia-journal-reves.html",
     "docs/fr/blog/controler-reves-resolution-problemes.html",
@@ -13198,6 +13358,7 @@
     "docs/fr/blog/reveil-nocturne-rappel-reves.html",
     "docs/fr/blog/rever-eveille-etats-oniriques.html",
     "docs/fr/blog/rever-examen-signification.html",
+    "docs/fr/blog/rever-retourner-ecole.html",
     "docs/fr/blog/reves-anxiete-signification.html",
     "docs/fr/blog/reves-climatiques-eco-anxiete.html",
     "docs/fr/blog/reves-de-chute.html",
@@ -13316,6 +13477,7 @@
     "docs/fr/symboles/grenouille.html",
     "docs/fr/symboles/grossesse.html",
     "docs/fr/symboles/grotte.html",
+    "docs/fr/symboles/guepes.html",
     "docs/fr/symboles/hibou.html",
     "docs/fr/symboles/hopital.html",
     "docs/fr/symboles/hotel.html",
@@ -13432,6 +13594,7 @@
     "docs/it/blog/incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera.html",
     "docs/it/blog/incubi-caldo-stress.html",
     "docs/it/blog/incubi-cause-significato-e-come-fermarli.html",
+    "docs/it/blog/incubi-rientro-scolastico-bambini.html",
     "docs/it/blog/index.html",
     "docs/it/blog/la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla.html",
     "docs/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna.html",
@@ -13448,6 +13611,7 @@
     "docs/it/blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti.html",
     "docs/it/blog/sognare-da-svegli-stati-onirici.html",
     "docs/it/blog/sognare-esame-significato.html",
+    "docs/it/blog/sognare-tornare-scuola.html",
     "docs/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione.html",
     "docs/it/blog/sogni-ansia-significato.html",
     "docs/it/blog/sogni-climatici-eco-ansia.html",
@@ -13651,6 +13815,7 @@
     "docs/it/simboli/urlare.html",
     "docs/it/simboli/valigia.html",
     "docs/it/simboli/vermi.html",
+    "docs/it/simboli/vespe.html",
     "docs/it/simboli/vestiti.html",
     "docs/it/simboli/volare.html",
     "docs/it/simboli/vulcano.html",
@@ -14757,6 +14922,686 @@
           {
             "position": "3",
             "item": "https://noctalia.app/it/blog/sogni-ansia-significato"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/it/",
+        "https://noctalia.app/it/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "lang": "de",
+      "outputPath": "docs/de/blog/traum-zurueck-in-die-schule.html",
+      "canonical": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/sonar-volver-escuela"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/rever-retourner-ecole"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sognare-tornare-scuola"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/de/",
+        "https://noctalia.app/de/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "lang": "en",
+      "outputPath": "docs/en/blog/back-to-school-dreams-meaning.html",
+      "canonical": "https://noctalia.app/en/blog/back-to-school-dreams-meaning",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/sonar-volver-escuela"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/rever-retourner-ecole"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sognare-tornare-scuola"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/blog/back-to-school-dreams-meaning",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/en/blog/back-to-school-dreams-meaning",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/en/blog/back-to-school-dreams-meaning",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/",
+        "https://noctalia.app/en/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "lang": "es",
+      "outputPath": "docs/es/blog/sonar-volver-escuela.html",
+      "canonical": "https://noctalia.app/es/blog/sonar-volver-escuela",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/sonar-volver-escuela"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/rever-retourner-ecole"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sognare-tornare-scuola"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/blog/sonar-volver-escuela",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/es/blog/sonar-volver-escuela",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/es/blog/sonar-volver-escuela",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/es/blog/sonar-volver-escuela"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/es/blog/sonar-volver-escuela"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/es/",
+        "https://noctalia.app/es/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "lang": "fr",
+      "outputPath": "docs/fr/blog/rever-retourner-ecole.html",
+      "canonical": "https://noctalia.app/fr/blog/rever-retourner-ecole",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/sonar-volver-escuela"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/rever-retourner-ecole"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sognare-tornare-scuola"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/blog/rever-retourner-ecole",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/fr/blog/rever-retourner-ecole",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/fr/blog/rever-retourner-ecole",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/fr/blog/rever-retourner-ecole"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/fr/blog/rever-retourner-ecole"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/fr/",
+        "https://noctalia.app/fr/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "lang": "it",
+      "outputPath": "docs/it/blog/sognare-tornare-scuola.html",
+      "canonical": "https://noctalia.app/it/blog/sognare-tornare-scuola",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/sonar-volver-escuela"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/rever-retourner-ecole"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sognare-tornare-scuola"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/blog/sognare-tornare-scuola",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/it/blog/sognare-tornare-scuola",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/it/blog/sognare-tornare-scuola",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/it/blog/sognare-tornare-scuola"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/it/blog/sognare-tornare-scuola"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/it/",
+        "https://noctalia.app/it/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "lang": "de",
+      "outputPath": "docs/de/blog/albtraeume-schulanfang-kinder.html",
+      "canonical": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/de/",
+        "https://noctalia.app/de/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "lang": "en",
+      "outputPath": "docs/en/blog/back-to-school-nightmares-children.html",
+      "canonical": "https://noctalia.app/en/blog/back-to-school-nightmares-children",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/blog/back-to-school-nightmares-children",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/en/blog/back-to-school-nightmares-children",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/en/blog/back-to-school-nightmares-children",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/",
+        "https://noctalia.app/en/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "lang": "es",
+      "outputPath": "docs/es/blog/pesadillas-vuelta-al-cole-ninos.html",
+      "canonical": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/es/",
+        "https://noctalia.app/es/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "lang": "fr",
+      "outputPath": "docs/fr/blog/cauchemars-rentree-enfant.html",
+      "canonical": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/fr/",
+        "https://noctalia.app/fr/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "lang": "it",
+      "outputPath": "docs/it/blog/incubi-rientro-scolastico-bambini.html",
+      "canonical": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini"
           }
         ]
       ],
@@ -84070,6 +84915,301 @@
     },
     {
       "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "lang": "de",
+      "outputPath": "docs/de/traumsymbole/wespen.html",
+      "canonical": "https://noctalia.app/de/traumsymbole/wespen",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wespen"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/avispas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/guepes"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vespe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/traumsymbole/wespen",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/de/traumsymbole/wespen",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/guides/traumsymbole-lexikon"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/de/traumsymbole/wespen"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "lang": "en",
+      "outputPath": "docs/en/symbols/wasps.html",
+      "canonical": "https://noctalia.app/en/symbols/wasps",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wespen"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/avispas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/guepes"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vespe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/symbols/wasps",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/en/symbols/wasps",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/guides/dream-symbols-dictionary"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/en/symbols/wasps"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "lang": "es",
+      "outputPath": "docs/es/simbolos/avispas.html",
+      "canonical": "https://noctalia.app/es/simbolos/avispas",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wespen"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/avispas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/guepes"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vespe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/simbolos/avispas",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/es/simbolos/avispas",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/guides/diccionario-simbolos-suenos"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/es/simbolos/avispas"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "lang": "fr",
+      "outputPath": "docs/fr/symboles/guepes.html",
+      "canonical": "https://noctalia.app/fr/symboles/guepes",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wespen"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/avispas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/guepes"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vespe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/symboles/guepes",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/fr/symboles/guepes",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/guides/dictionnaire-symboles-reves"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/fr/symboles/guepes"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "lang": "it",
+      "outputPath": "docs/it/simboli/vespe.html",
+      "canonical": "https://noctalia.app/it/simboli/vespe",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wespen"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/avispas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/guepes"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vespe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/simboli/vespe",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/it/simboli/vespe",
+          "mainEntityOfPageId": null
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/guides/dizionario-simboli-sogni"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/it/simboli/vespe"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": []
+    },
+    {
+      "collection": "symbols",
       "pageId": "symbol.watch",
       "lang": "de",
       "outputPath": "docs/de/traumsymbole/uhr.html",
@@ -89562,6 +90702,326 @@
         {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/blog/anxiety-dreams-meaning"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/sonar-volver-escuela"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/rever-retourner-ecole"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sognare-tornare-scuola"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/blog/back-to-school-dreams-meaning",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/sonar-volver-escuela"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/rever-retourner-ecole"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sognare-tornare-scuola"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/blog/sonar-volver-escuela",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/sonar-volver-escuela"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/rever-retourner-ecole"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sognare-tornare-scuola"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/blog/rever-retourner-ecole",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/sonar-volver-escuela"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/rever-retourner-ecole"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sognare-tornare-scuola"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-dreams",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/blog/sognare-tornare-scuola",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/sonar-volver-escuela"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/rever-retourner-ecole"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/sognare-tornare-scuola"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-dreams-meaning"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/blog/back-to-school-nightmares-children",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.back-to-school-nightmares-children",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/back-to-school-nightmares-children"
         }
       ]
     },
@@ -126250,6 +127710,166 @@
         {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/symbols/volcano"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/traumsymbole/wespen",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wespen"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/avispas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/guepes"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vespe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/symbols/wasps",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wespen"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/avispas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/guepes"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vespe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/simbolos/avispas",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wespen"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/avispas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/guepes"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vespe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/symboles/guepes",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wespen"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/avispas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/guepes"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vespe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        }
+      ]
+    },
+    {
+      "collection": "symbols",
+      "pageId": "symbol.wasp",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/simboli/vespe",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/traumsymbole/wespen"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/symbols/wasps"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/simbolos/avispas"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/symboles/guepes"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/simboli/vespe"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/symbols/wasps"
         }
       ]
     },
