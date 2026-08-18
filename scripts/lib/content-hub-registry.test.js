@@ -147,12 +147,14 @@ function expectInvalid({ config = makeConfig(), manifest = makeManifest(), sourc
 }
 
 describe('content hub registry', () => {
-  it('loads the real topology with exactly the 27 approved blog spokes', () => {
+  it('loads the real topology with exactly the 29 approved blog spokes', () => {
     const registry = loadContentHubRegistry({ rootDir: ROOT_DIR });
     const blogHubs = registry.hubs.filter((hub) => hub.kind === 'hubAndSpoke');
     const actualSpokes = blogHubs.flatMap((hub) => hub.spokePageIds).sort();
     const expectedSpokes = [
       'blog.anxiety-dreams-meaning',
+      'blog.back-to-school-dreams',
+      'blog.back-to-school-nightmares-children',
       'blog.being-chased-dreams',
       'blog.children-dreams-guide',
       'blog.death-dreams-meaning',
@@ -183,7 +185,7 @@ describe('content hub registry', () => {
 
     expect(registry.hubs).toHaveLength(4);
     expect(actualSpokes).toEqual(expectedSpokes);
-    expect(new Set(actualSpokes).size).toBe(27);
+    expect(new Set(actualSpokes).size).toBe(29);
     expect(Object.isFrozen(registry.hubs)).toBe(true);
     expect(Object.isFrozen(registry.getHubByPageId('blog.dream-meanings'))).toBe(true);
   });
@@ -216,12 +218,12 @@ describe('content hub registry', () => {
     ]);
   });
 
-  it('selects the existing 8 categories and 159 symbols without rendering them', () => {
+  it('selects the existing 8 categories and 160 symbols without rendering them', () => {
     const registry = loadContentHubRegistry({ rootDir: ROOT_DIR });
     const members = registry.selectMembers('dream-symbols');
 
     expect(members.filter((pageId) => pageId.startsWith('symbolCategory.'))).toHaveLength(8);
-    expect(members.filter((pageId) => pageId.startsWith('symbol.'))).toHaveLength(159);
+    expect(members.filter((pageId) => pageId.startsWith('symbol.'))).toHaveLength(160);
     expect(registry.getHubByPageId('guide.dictionary')?.renderMode).toBe('validateOnly');
   });
 
