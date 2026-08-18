@@ -116,6 +116,42 @@
         "buildType": "apk",
         "credentialsSource": "remote"
       }
+    },
+    "lucid-preview": {
+      "extends": "base",
+      "distribution": "internal",
+      "environment": "preview",
+      "android": {
+        "buildType": "apk",
+        "credentialsSource": "remote"
+      },
+      "env": {
+        "NOCTALIA_APP_VARIANT": "lucid",
+        "EXPO_PUBLIC_APP_VARIANT": "lucid",
+        "NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE": "false",
+        "EXPO_PUBLIC_MOCK_MODE": "false",
+        "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api",
+        "EXPO_PUBLIC_PRODUCT_ANALYTICS_ENABLED": "true",
+        "EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER": "359653779023"
+      }
+    },
+    "lucid-production": {
+      "extends": "base",
+      "autoIncrement": true,
+      "environment": "production",
+      "android": {
+        "buildType": "app-bundle",
+        "credentialsSource": "remote"
+      },
+      "env": {
+        "NOCTALIA_APP_VARIANT": "lucid",
+        "EXPO_PUBLIC_APP_VARIANT": "lucid",
+        "NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE": "false",
+        "EXPO_PUBLIC_MOCK_MODE": "false",
+        "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api",
+        "EXPO_PUBLIC_PRODUCT_ANALYTICS_ENABLED": "true",
+        "EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER": "359653779023"
+      }
     }
   },
   "submit": {

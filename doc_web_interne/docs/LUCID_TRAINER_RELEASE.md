@@ -119,6 +119,50 @@ Only after explicit authorization for native build/signing:
 
 Do not call an emulator installation “physical-device proof” or an unsigned/debug artifact a store candidate.
 
+### 5.1 EAS build and Play submission path
+
+`eas.json` carries two companion profiles that set both variant selectors
+(`NOCTALIA_APP_VARIANT=lucid`, `EXPO_PUBLIC_APP_VARIANT=lucid`) and the shared
+backend URL: `lucid-preview` (internal APK for device gates) and
+`lucid-production` (store AAB, remote credentials, auto-incremented
+versionCode). The companion starts its own version line (`1.0.0`, versionCode
+`1`) in `app.config.ts`; EAS owns build numbers afterwards.
+
+Because `app.config.ts` removes the inherited `extra.eas.projectId`, the
+companion is a **separate EAS project** (`@tanuki75/noctalia-lucid-trainer`).
+Before the first build, once and interactively:
+
+1. `NOCTALIA_APP_VARIANT=lucid EXPO_PUBLIC_APP_VARIANT=lucid npx eas-cli@latest init`
+   → creates/links the companion project. Record its project ID here (do not
+   write it into `app.json`, which stays Noctalia's).
+2. Create the EAS environment variables of that project (`preview` and
+   `production` environments), never in tracked files:
+   `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`,
+   `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY` (the companion's own public key, see §7),
+   and optionally `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` +
+   `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` (both or neither).
+3. Generate the Android keystore for `com.tanuki75.noctalia.lucid`
+   (`eas credentials -p android`, or accept the prompt of the first
+   interactive `eas build`). Never reuse Noctalia's keystore.
+4. Create the Play Console application for `com.tanuki75.noctalia.lucid`,
+   link it to Google Cloud project `359653779023` (Play Integrity), grant the
+   existing service account access to it, and complete Data Safety, privacy
+   policy, listing assets and content rating.
+5. **Upload the first AAB manually** in Play Console (Internal testing).
+   Google Play requires the first upload of a new application through the
+   console; `eas submit` works from the second build on.
+
+Then, per candidate:
+
+```powershell
+$env:NOCTALIA_APP_VARIANT='lucid'; $env:EXPO_PUBLIC_APP_VARIANT='lucid'
+npx eas-cli@latest build -p android --profile lucid-production
+npx eas-cli@latest submit -p android --profile internal --latest
+```
+
+The variant environment must also be set on the shell that runs `eas`,
+so that the CLI resolves the companion `app.config.ts` identity locally.
+
 ## 6. iOS candidate gates
 
 Validate independently after explicit authorization and access to Apple signing:

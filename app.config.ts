@@ -1,5 +1,7 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 
+const LUCID_APP_VERSION = '1.0.0';
+
 function isLucidNativeMarker(value: string | undefined): boolean {
   if (value === undefined || value === '' || value === 'noctalia') return false;
   if (value === 'lucid') return true;
@@ -95,9 +97,15 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     slug: 'noctalia-lucid-trainer',
     scheme: 'noctalia-lucid',
     icon: lucidIcon,
+    // The companion is a new store application: it starts its own version
+    // line instead of inheriting Noctalia's. EAS (appVersionSource=remote)
+    // owns the build numbers after the first build.
+    version: LUCID_APP_VERSION,
+    runtimeVersion: LUCID_APP_VERSION,
     ios: {
       ...baseExpo.ios,
       bundleIdentifier: 'com.tanuki75.noctalia.lucid',
+      buildNumber: '1',
       associatedDomains: ['applinks:lucid.noctalia.app'],
       infoPlist: {
         ...lucidInfoPlist,
@@ -108,6 +116,7 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     android: {
       ...baseExpo.android,
       package: 'com.tanuki75.noctalia.lucid',
+      versionCode: 1,
       adaptiveIcon: {
         backgroundColor: '#201131',
         foregroundImage: lucidIcon,
