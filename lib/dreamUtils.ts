@@ -146,7 +146,10 @@ export function normalizeDreamMemoryMetadata(
     ? (value.strongestFragment as DreamStrongestFragment)
     : undefined;
   const createdFrom =
-    value.createdFrom === 'onboarding' || value.createdFrom === 'journal' || value.createdFrom === 'profile'
+    value.createdFrom === 'onboarding' ||
+    value.createdFrom === 'journal' ||
+    value.createdFrom === 'profile' ||
+    value.createdFrom === 'lucid_trainer'
       ? value.createdFrom
       : undefined;
 

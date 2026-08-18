@@ -36,7 +36,9 @@ const {
   });
 
   const mockClearRemoteDreamStorage = jest.fn();
-  const mockConsumeStayOnSettingsIntent = jest.fn(() => stayOnSettings);
+  const mockConsumeStayOnSettingsIntent = jest.fn(() =>
+    stayOnSettings ? '/(tabs)/settings' : null
+  );
   const mockRouterReplace = jest.fn();
 
   const mockCreateCircuitBreaker = jest.fn(() => ({
@@ -89,7 +91,7 @@ jest.mock('@/lib/circuitBreaker', () => ({
 }));
 
 jest.mock('@/lib/navigationIntents', () => ({
-  consumeStayOnSettingsIntent: mockConsumeStayOnSettingsIntent,
+  consumeStayOnSettingsDestination: mockConsumeStayOnSettingsIntent,
 }));
 
 jest.mock('@/services/storageService', () => ({
@@ -177,6 +179,20 @@ describe('AuthContext', () => {
     });
 
     expect(mockRouterReplace).toHaveBeenCalledWith('/(tabs)/settings');
+  });
+
+  it('given a Lucid auth intent__when user loads__then stays inside Lucid Trainer', async () => {
+    mockSetCurrentUser({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} });
+    mockConsumeStayOnSettingsIntent.mockReturnValueOnce('/lucid/(tabs)/settings');
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <AuthProvider>{children}</AuthProvider>
+    );
+
+    const { result } = renderHook(() => useAuth(), { wrapper });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(mockRouterReplace).toHaveBeenCalledWith('/lucid/(tabs)/settings');
   });
 
   it('given user tier update__when setUserTierLocally called__then updates metadata', async () => {

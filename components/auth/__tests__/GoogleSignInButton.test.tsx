@@ -112,6 +112,21 @@ describe('GoogleSignInButton', () => {
     cleanup();
   });
 
+  it('records the Lucid return destination before native Google authentication', async () => {
+    mockSignInWithGoogle.mockResolvedValueOnce(undefined);
+    render(<GoogleSignInButton returnTo="/lucid/(tabs)/settings" />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.AuthGoogle));
+
+    await waitFor(() => expect(mockSignInWithGoogle).toHaveBeenCalled());
+    expect(mockRequestStayOnSettingsIntent).toHaveBeenCalledWith({
+      destination: '/lucid/(tabs)/settings',
+    });
+    expect(mockRequestStayOnSettingsIntent.mock.invocationCallOrder[0]).toBeLessThan(
+      mockSignInWithGoogle.mock.invocationCallOrder[0]
+    );
+  });
+
   it('shows a generic alert without error logging for Google developer errors', async () => {
     const developerError = Object.assign(new Error('DEVELOPER_ERROR'), {
       code: 'DEVELOPER_ERROR',

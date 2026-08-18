@@ -84,8 +84,14 @@ const loadAuth = async (options?: {
   mockMode?: boolean;
   platformOS?: 'ios' | 'web';
   googleModule?: typeof defaultGoogleModule | null;
+  lucidTrainer?: boolean;
 }) => {
-  const { mockMode = false, platformOS = 'ios', googleModule = defaultGoogleModule } = options ?? {};
+  const {
+    mockMode = false,
+    platformOS = 'ios',
+    googleModule = defaultGoogleModule,
+    lucidTrainer = false,
+  } = options ?? {};
 
   jest.resetModules();
 
@@ -104,6 +110,8 @@ const loadAuth = async (options?: {
   jest.doMock('../logger', () => ({
     createScopedLogger: () => mockLogger,
   }));
+
+  jest.doMock('../appVariant', () => ({ isLucidTrainer: lucidTrainer }));
 
   jest.doMock('../supabase', () => ({
     supabase: mockSupabase,
@@ -201,6 +209,27 @@ describe('auth helpers', () => {
         })
       );
     });
+  });
+
+  it('reports native Google sign-in unavailable without companion client IDs', async () => {
+    const auth = await loadAuth({ platformOS: 'ios' });
+
+    expect(auth.isGoogleSignInAvailable()).toBe(false);
+  });
+
+  it('reports native Google sign-in available only with both required iOS client IDs', async () => {
+    process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = 'web-client-id';
+    process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID = 'ios-client-id';
+    const auth = await loadAuth({ platformOS: 'ios' });
+
+    expect(auth.isGoogleSignInAvailable()).toBe(true);
+  });
+
+  it('keeps Supabase web OAuth available without native client IDs', async () => {
+    process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID = '';
+    const auth = await loadAuth({ platformOS: 'web' });
+
+    expect(auth.isGoogleSignInAvailable()).toBe(true);
   });
 
   it('warns when Google Sign-In client id is missing', async () => {
@@ -340,6 +369,30 @@ describe('auth helpers', () => {
       access_token: 'access-token',
       refresh_token: 'refresh-token',
     });
+  });
+
+  it('uses the companion app link for Lucid Trainer email verification', async () => {
+    const auth = await loadAuth({ lucidTrainer: true });
+
+    await auth.signUpWithEmailPassword('user@example.com', 'password', 'fr');
+
+    expect(mockSupabaseAuth.signUp).toHaveBeenCalledWith(expect.objectContaining({
+      options: expect.objectContaining({
+        emailRedirectTo: 'https://lucid.noctalia.app/lucid/account',
+      }),
+    }));
+  });
+
+  it('keeps the Noctalia email verification app link for the base app', async () => {
+    const auth = await loadAuth({ lucidTrainer: false });
+
+    await auth.resendVerificationEmail('user@example.com');
+
+    expect(mockSupabaseAuth.resend).toHaveBeenCalledWith(expect.objectContaining({
+      options: {
+        emailRedirectTo: 'https://dream.noctalia.app/recording',
+      },
+    }));
   });
 
   it('waits briefly for access token before marking fingerprint', async () => {

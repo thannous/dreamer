@@ -1,6 +1,8 @@
 const STAY_ON_SETTINGS_KEY = 'dreamer:return_to_settings';
 
-let stayOnSettingsRequested = false;
+export type AuthReturnDestination = '/(tabs)/settings' | '/lucid/(tabs)/settings';
+
+let stayOnSettingsRequested: AuthReturnDestination | null = null;
 
 const getSessionStorage = (): Storage | null => {
   try {
@@ -13,6 +15,7 @@ const getSessionStorage = (): Storage | null => {
 
 type StayIntentOptions = {
   persist?: boolean;
+  destination?: AuthReturnDestination;
 };
 
 /**
@@ -21,9 +24,9 @@ type StayIntentOptions = {
  * a full page reload (useful for OAuth flows on web).
  */
 export function requestStayOnSettingsIntent(options?: StayIntentOptions) {
-  stayOnSettingsRequested = true;
+  stayOnSettingsRequested = options?.destination ?? '/(tabs)/settings';
   if (options?.persist) {
-    getSessionStorage()?.setItem(STAY_ON_SETTINGS_KEY, '1');
+    getSessionStorage()?.setItem(STAY_ON_SETTINGS_KEY, stayOnSettingsRequested);
   }
 }
 
@@ -31,7 +34,7 @@ export function requestStayOnSettingsIntent(options?: StayIntentOptions) {
  * Clear any pending intent. Useful when an auth flow fails before completion.
  */
 export function clearStayOnSettingsIntent() {
-  stayOnSettingsRequested = false;
+  stayOnSettingsRequested = null;
   getSessionStorage()?.removeItem(STAY_ON_SETTINGS_KEY);
 }
 
@@ -39,15 +42,23 @@ export function clearStayOnSettingsIntent() {
  * Returns true once when a stay-on-settings intent is pending. Subsequent calls
  * return false until `requestStayOnSettingsIntent` is invoked again.
  */
-export function consumeStayOnSettingsIntent(): boolean {
+export function consumeStayOnSettingsDestination(): AuthReturnDestination | null {
   const storage = getSessionStorage();
-  if (storage?.getItem(STAY_ON_SETTINGS_KEY)) {
-    storage.removeItem(STAY_ON_SETTINGS_KEY);
-    stayOnSettingsRequested = false;
-    return true;
+  const persisted = storage?.getItem(STAY_ON_SETTINGS_KEY);
+  if (persisted) {
+    storage?.removeItem(STAY_ON_SETTINGS_KEY);
+    stayOnSettingsRequested = null;
+    return persisted === '/lucid/(tabs)/settings'
+      ? '/lucid/(tabs)/settings'
+      : '/(tabs)/settings';
   }
 
-  const shouldStay = stayOnSettingsRequested;
-  stayOnSettingsRequested = false;
-  return shouldStay;
+  const destination = stayOnSettingsRequested;
+  stayOnSettingsRequested = null;
+  return destination;
+}
+
+/** Backward-compatible boolean API used by older tests and consumers. */
+export function consumeStayOnSettingsIntent(): boolean {
+  return consumeStayOnSettingsDestination() !== null;
 }

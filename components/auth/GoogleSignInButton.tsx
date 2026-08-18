@@ -23,7 +23,11 @@ function getErrorMessage(error: unknown): string | undefined {
   return typeof message === 'string' ? message : undefined;
 }
 
-export default function GoogleSignInButton() {
+export default function GoogleSignInButton({
+  returnTo = '/(tabs)/settings',
+}: {
+  returnTo?: '/(tabs)/settings' | '/lucid/(tabs)/settings';
+}) {
   const [loading, setLoading] = useState(false);
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -35,16 +39,16 @@ export default function GoogleSignInButton() {
     try {
       if (Platform.OS === 'web') {
         log.debug('Platform is Web, using OAuth popup');
-        requestStayOnSettingsIntent({ persist: true });
+        requestStayOnSettingsIntent({ persist: true, destination: returnTo });
         await signInWithGoogleWeb();
         // Supabase handles redirect/popup; session will be captured via onAuthChange
         return;
       }
 
       log.debug('Platform is Native, using Google Sign-In');
+      requestStayOnSettingsIntent({ destination: returnTo });
       await signInWithGoogle();
       log.debug('Sign-in successful');
-      requestStayOnSettingsIntent();
       // Navigation is handled by auth state listener in settings screen
     } catch (error: unknown) {
       clearStayOnSettingsIntent();

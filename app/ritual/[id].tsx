@@ -36,6 +36,49 @@ const RITUAL_ICONS: Record<RitualId, IconName> = {
   lucid: 'eye.fill',
 };
 
+const LUCID_TRAINER_BRIDGE_COPY = {
+  en: {
+    title: 'Continue with Lucid Trainer',
+    body: 'Open a structured daytime, bedtime and morning practice. Your Noctalia journal stays here, and dream text is never transferred automatically.',
+    action: 'Open Lucid Trainer',
+  },
+  fr: {
+    title: 'Continuer avec Lucid Trainer',
+    body: 'Ouvrez un entraînement structuré en journée, au coucher et au réveil. Votre journal Noctalia reste ici et aucun texte de rêve n’est transféré automatiquement.',
+    action: 'Ouvrir Lucid Trainer',
+  },
+  es: {
+    title: 'Continuar con Lucid Trainer',
+    body: 'Abre una práctica estructurada para el día, la noche y la mañana. Tu diario Noctalia permanece aquí y el texto de tus sueños nunca se transfiere automáticamente.',
+    action: 'Abrir Lucid Trainer',
+  },
+  de: {
+    title: 'Mit Lucid Trainer fortfahren',
+    body: 'Öffne ein strukturiertes Training für Tag, Einschlafen und Morgen. Dein Noctalia-Tagebuch bleibt hier; Traumtexte werden nie automatisch übertragen.',
+    action: 'Lucid Trainer öffnen',
+  },
+  it: {
+    title: 'Continua con Lucid Trainer',
+    body: 'Apri una pratica strutturata per il giorno, la sera e il mattino. Il diario Noctalia resta qui e il testo dei sogni non viene mai trasferito automaticamente.',
+    action: 'Apri Lucid Trainer',
+  },
+  pt: {
+    title: 'Continuar com o Lucid Trainer',
+    body: 'Abra uma prática estruturada para o dia, a hora de dormir e a manhã. O diário Noctalia permanece aqui e o texto dos sonhos nunca é transferido automaticamente.',
+    action: 'Abrir o Lucid Trainer',
+  },
+} as const;
+
+function getLucidTrainerBridgeCopy(language: string) {
+  const baseLanguage = language.trim().toLowerCase().split(/[-_]/)[0];
+  if (baseLanguage in LUCID_TRAINER_BRIDGE_COPY) {
+    return LUCID_TRAINER_BRIDGE_COPY[
+      baseLanguage as keyof typeof LUCID_TRAINER_BRIDGE_COPY
+    ];
+  }
+  return LUCID_TRAINER_BRIDGE_COPY.en;
+}
+
 export default function RitualDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const ritualId = id as RitualId;
@@ -43,6 +86,10 @@ export default function RitualDetailScreen() {
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const { t, currentLang } = useTranslation();
   const sleepSoundCopy = useMemo(() => getSleepSoundCopy(currentLang), [currentLang]);
+  const lucidTrainerBridgeCopy = useMemo(
+    () => getLucidTrainerBridgeCopy(currentLang),
+    [currentLang],
+  );
   const sleepSoundsAvailable = isSleepSoundsAvailable();
   const insets = useSafeAreaInsets();
   const scrollPerf = useScrollIdle();
@@ -124,6 +171,10 @@ export default function RitualDetailScreen() {
 
   const handleOpenSleepSounds = useCallback(() => {
     router.push('/sleep-sounds' as any);
+  }, []);
+
+  const handleOpenLucidTrainer = useCallback(() => {
+    router.push('/lucid' as any);
   }, []);
 
   const completedSteps = ritualProgress[ritualId] ?? {};
@@ -214,6 +265,47 @@ export default function RitualDetailScreen() {
                 .replace('{total}', String(totalSteps))}
             </Text>
           </View>
+
+          {ritual.id === 'lucid' ? (
+            <GlassCard intensity="moderate" style={styles.lucidTrainerCard} animationDelay={100}>
+              <Pressable
+                onPress={handleOpenLucidTrainer}
+                testID="ritual-lucid-trainer-bridge"
+                accessibilityRole="button"
+                accessibilityLabel={lucidTrainerBridgeCopy.action}
+                accessibilityHint={lucidTrainerBridgeCopy.body}
+                style={({ pressed }) => [
+                  styles.lucidTrainerButton,
+                  { opacity: pressed ? 0.8 : 1 },
+                ]}
+              >
+                <View
+                  style={[
+                    styles.lucidTrainerIcon,
+                    { backgroundColor: noctalia.surface.soft },
+                  ]}
+                >
+                  <IconSymbol
+                    name="eye.fill"
+                    size={25}
+                    color={noctalia.accent.base}
+                  />
+                </View>
+                <View style={styles.lucidTrainerCopy}>
+                  <Text style={[styles.lucidTrainerTitle, { color: noctalia.text.primary }]}>
+                    {lucidTrainerBridgeCopy.title}
+                  </Text>
+                  <Text style={[styles.lucidTrainerBody, { color: noctalia.text.secondary }]}>
+                    {lucidTrainerBridgeCopy.body}
+                  </Text>
+                  <Text style={[styles.lucidTrainerAction, { color: noctalia.accent.base }]}>
+                    {lucidTrainerBridgeCopy.action}
+                  </Text>
+                </View>
+                <IconSymbol name="chevron.right" size={20} color={noctalia.accent.base} />
+              </Pressable>
+            </GlassCard>
+          ) : null}
 
           {sleepSoundsAvailable ? (
             <GlassCard intensity="moderate" style={styles.sleepSoundCard} animationDelay={100}>
@@ -397,6 +489,43 @@ const styles = StyleSheet.create({
   sleepSoundCard: {
     borderRadius: 24,
     overflow: 'hidden',
+  },
+  lucidTrainerCard: {
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  lucidTrainerButton: {
+    minHeight: 126,
+    padding: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  lucidTrainerIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lucidTrainerCopy: {
+    flex: 1,
+    gap: 5,
+  },
+  lucidTrainerTitle: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 16,
+    lineHeight: 21,
+  },
+  lucidTrainerBody: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  lucidTrainerAction: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 13,
+    lineHeight: 18,
   },
   sleepSoundButton: {
     minHeight: 94,

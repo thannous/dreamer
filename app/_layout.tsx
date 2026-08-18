@@ -44,7 +44,9 @@ import { useSplashFailsafe } from '@/hooks/useSplashFailsafe';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 // useSubscriptionMonitor est maintenant intégré dans useSubscription
 import { trackProductEvent } from '@/lib/analytics';
+import { isLucidTrainer } from '@/lib/appVariant';
 import { loadTranslations } from '@/lib/i18n';
+import { isSafeLucidNotificationRoute } from '@/lib/lucid/routes';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
 import { createNotificationResponseTracker } from '@/lib/notificationResponse';
 import {
@@ -102,6 +104,19 @@ void SplashScreen.preventAutoHideAsync().catch((error) => {
 });
 
 const ROOT_VIEW_STYLE = { flex: 1 } as const;
+
+function resolveAppStartupDecision(
+  input: Parameters<typeof resolveStartupDecision>[0]
+): StartupDestinationDecision {
+  if (!isLucidTrainer) return resolveStartupDecision(input);
+  const explicit = input.defaultDestination;
+  const explicitPath = typeof explicit === 'string' ? explicit : String(explicit?.pathname ?? '');
+  return {
+    destination: explicit && explicitPath.startsWith('/lucid') ? explicit : '/lucid',
+    reason: 'default',
+  };
+}
+
 function runAfterNavigationMount(callback: () => void) {
   const timeout = setTimeout(callback, 0);
 
@@ -134,7 +149,7 @@ const KeyboardProviderComponent: React.ComponentType<React.PropsWithChildren> =
  * See: https://docs.expo.dev/router/reference/unstable-settings/
  */
 export const unstable_settings = {
-  anchor: '(tabs)',
+  anchor: isLucidTrainer ? 'lucid' : '(tabs)',
 };
 
 /**
@@ -204,6 +219,7 @@ function RootLayoutNav({
     []
   );
   const [pendingNotificationUrl, setPendingNotificationUrl] = useState<'/recording' | null>(null);
+  const [pendingLucidNotificationUrl, setPendingLucidNotificationUrl] = useState<Href | null>(null);
   const [notificationQueueLoaded, setNotificationQueueLoaded] = useState(false);
   const [initialLaunchUrl, setInitialLaunchUrl] = useState<string | null | undefined>(
     Platform.OS === 'web' ? null : undefined
@@ -256,7 +272,8 @@ function RootLayoutNav({
   }, [onboardingScope]);
 
   const enqueueNotification = useCallback(async (notification: Notifications.Notification) => {
-    if (notification.request.content.data?.url !== '/recording') return;
+    const notificationUrl = notification.request.content.data?.url;
+    if (notificationUrl !== '/recording' && !isSafeLucidNotificationRoute(notificationUrl)) return;
 
     const responseIdentifier = notification.request.identifier;
     if (!notificationResponseTracker.claim(responseIdentifier)) {
@@ -267,6 +284,16 @@ function RootLayoutNav({
         if (__DEV__) {
           console.warn('[RootLayoutNav] Unable to clear duplicate notification response', error);
         }
+      }
+      return;
+    }
+
+    if (isSafeLucidNotificationRoute(notificationUrl)) {
+      setPendingLucidNotificationUrl(notificationUrl as Href);
+      try {
+        Notifications.clearLastNotificationResponse();
+      } catch (error) {
+        if (__DEV__) console.warn('[RootLayoutNav] Unable to clear Lucid notification response', error);
       }
       return;
     }
@@ -332,6 +359,7 @@ function RootLayoutNav({
       if (notificationMutationVersion.current === mutationVersion) {
         notificationNavigationClaimed.current = false;
         setPendingNotificationUrl(null);
+        setPendingLucidNotificationUrl(null);
         setNotificationWinningDestination(null);
         setNotificationWinningEngaged(false);
       }
@@ -392,9 +420,11 @@ function RootLayoutNav({
     onStartupCommitted();
     if (!hasTrackedColdStart.current) {
       hasTrackedColdStart.current = true;
-      InteractionManager.runAfterInteractions(() => {
-        void trackProductEvent('app_session_started', { source: 'cold_start' });
-      });
+      if (!isLucidTrainer) {
+        InteractionManager.runAfterInteractions(() => {
+          void trackProductEvent('app_session_started', { source: 'cold_start' });
+        });
+      }
     }
   }, [onStartupCommitted, pathname, startupDestination, startupDestinationEngaged]);
 
@@ -415,7 +445,7 @@ function RootLayoutNav({
 
   // Guard: Redirect returning guests (account created but logged out) to settings
   useEffect(() => {
-    if (!isNavigationReady || !startupReady || !returningGuestBlocked || user) {
+    if (isLucidTrainer || !isNavigationReady || !startupReady || !returningGuestBlocked || user) {
       return;
     }
 
@@ -441,12 +471,14 @@ function RootLayoutNav({
         return;
       }
 
-      const decision = resolveStartupDecision({
+      const decision = pendingLucidNotificationUrl
+        ? { destination: pendingLucidNotificationUrl, reason: 'notification' as const }
+        : resolveAppStartupDecision({
         returningGuestBlocked,
         hasUser: Boolean(user),
         onboardingState,
         pendingNotificationUrl,
-      });
+        });
       if (decision.reason !== 'default') {
         engageDecision(decision);
         return;
@@ -465,6 +497,7 @@ function RootLayoutNav({
         currentPath === '/statistics' ||
         currentPath === '/(tabs)/statistics';
       const isInOnboarding = currentPath === '/onboarding';
+      const isInLucid = currentPath?.startsWith('/lucid');
       const isInJournalDetail =
         currentPath?.startsWith('/journal/') ||
         currentPath?.startsWith('/dream-chat/') ||
@@ -517,6 +550,8 @@ function RootLayoutNav({
         return;
       }
 
+      if (isInLucid) return;
+
       if (isInJournalDetail) {
         if (__DEV__) {
           console.log('[RootLayoutNav] stay on journal detail, skip redirect');
@@ -534,6 +569,7 @@ function RootLayoutNav({
       onboardingState,
       pathname,
       pendingNotificationUrl,
+      pendingLucidNotificationUrl,
       returningGuestBlocked,
       startupReady,
       user,
@@ -545,7 +581,9 @@ function RootLayoutNav({
       return;
     }
 
-    void trackProductEvent('app_session_started', { source: 'foreground' });
+    if (!isLucidTrainer) {
+      void trackProductEvent('app_session_started', { source: 'foreground' });
+    }
 
     if (__DEV__) {
       console.log('[RootLayoutNav] App returned to foreground, checking recording redirect', {
@@ -563,15 +601,18 @@ function RootLayoutNav({
     }
 
     hasInitialNavigated.current = true;
-    const decision = resolveStartupDecision({
+    const explicitDestination = resolveExplicitStartupDestination(
+      initialLaunchUrl,
+      pathnameRef.current
+    );
+    const decision = pendingLucidNotificationUrl
+      ? { destination: pendingLucidNotificationUrl, reason: 'notification' as const }
+      : resolveAppStartupDecision({
       returningGuestBlocked,
       hasUser: Boolean(user),
       onboardingState,
       pendingNotificationUrl,
-      defaultDestination: resolveExplicitStartupDestination(
-        initialLaunchUrl,
-        pathnameRef.current
-      ),
+      defaultDestination: explicitDestination,
     });
     engageDecision(decision, { startup: true });
   }, [
@@ -580,6 +621,7 @@ function RootLayoutNav({
     initialLaunchUrl,
     onboardingState,
     pendingNotificationUrl,
+    pendingLucidNotificationUrl,
     returningGuestBlocked,
     startupReady,
     user,
@@ -599,7 +641,7 @@ function RootLayoutNav({
 
   useEffect(() => {
     if (
-      !pendingNotificationUrl ||
+      (!pendingNotificationUrl && !pendingLucidNotificationUrl) ||
       !isNavigationReady ||
       !startupReady ||
       !hasInitialNavigated.current ||
@@ -608,12 +650,14 @@ function RootLayoutNav({
       return;
     }
 
-    const decision = resolveStartupDecision({
+    const decision = pendingLucidNotificationUrl
+      ? { destination: pendingLucidNotificationUrl, reason: 'notification' as const }
+      : resolveAppStartupDecision({
       returningGuestBlocked,
       hasUser: Boolean(user),
       onboardingState,
       pendingNotificationUrl,
-    });
+        });
     if (decision.reason === 'notification') {
       engageDecision(decision);
     }
@@ -623,6 +667,7 @@ function RootLayoutNav({
     notificationWinningDestination,
     onboardingState,
     pendingNotificationUrl,
+    pendingLucidNotificationUrl,
     returningGuestBlocked,
     startupReady,
     user,
@@ -652,14 +697,15 @@ function RootLayoutNav({
             <Stack.Screen name="dream-guides" options={{ headerShown: false }} />
             <Stack.Screen name="dream-guide/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="ritual/[id]" options={{ headerShown: false }} />
+            <Stack.Screen name="lucid" options={{ headerShown: false }} />
             <Stack.Screen name="sleep-sounds" options={{ headerShown: false }} />
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
           </Stack>
           <OfflineModelPromptHost />
           <AnalysisFlightIndicator />
-          <VercelAnalytics />
-          <VercelSpeedInsights />
+          {!isLucidTrainer ? <VercelAnalytics /> : null}
+          {!isLucidTrainer ? <VercelSpeedInsights /> : null}
         </DreamsProvider>
         <SystemBars
           style={{

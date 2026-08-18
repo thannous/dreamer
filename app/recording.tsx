@@ -1646,11 +1646,19 @@ export default function RecordingScreen() {
 
     appliedRouteEntriesRef.current.add(routeEntryKey);
     activePostSaveRef.current = resolvedRecordingEntryIntent.postSave;
-    if (resolvedRecordingEntryIntent.intent) {
+    if (resolvedRecordingEntryIntent.source === 'lucid_trainer') {
+      setCaptureIntent('remembered');
+    } else if (resolvedRecordingEntryIntent.intent) {
       setCaptureIntent(resolvedRecordingEntryIntent.intent);
     }
     setRememberedCaptureSource(resolveRememberedCaptureSource(resolvedRecordingEntryIntent.source));
-    setRememberedKind(undefined);
+    setRememberedKind(
+      resolvedRecordingEntryIntent.source === 'lucid_trainer'
+        ? resolvedRecordingEntryIntent.lucidHandoffOutcome === 'lucid'
+          ? 'lucid'
+          : 'old'
+        : undefined
+    );
     setRememberedApproximatePeriod(undefined);
     setRememberedStrongestFragment(undefined);
     setVoiceFallbackReason(null);
@@ -1678,6 +1686,11 @@ export default function RecordingScreen() {
         entryId: undefined,
         intent: undefined,
         source: undefined,
+        v: undefined,
+        technique: undefined,
+        outcome: undefined,
+        lucidity: undefined,
+        recall: undefined,
         postSave: undefined,
         next: undefined,
         mode: undefined,

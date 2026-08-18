@@ -356,6 +356,21 @@ describe('dreamUtils', () => {
       expect(dream.memory?.createdFromOnboarding).toBeUndefined();
     });
 
+    it('preserves a minimal Lucid Trainer origin without marking onboarding', () => {
+      const dream = buildRememberedDream('I noticed I was dreaming.', {
+        defaultTitle: 'Dream memory',
+        rememberedKind: 'lucid',
+        createdFrom: 'lucid_trainer',
+      });
+
+      expect(dream.memory).toMatchObject({
+        origin: 'remembered',
+        rememberedKind: 'lucid',
+        createdFrom: 'lucid_trainer',
+      });
+      expect(dream.memory?.createdFromOnboarding).toBeUndefined();
+    });
+
     it('maps remembered recurring, nightmare and lucid dreams to canonical dream types', () => {
       expect(buildRememberedDream('Again', { defaultTitle: 'Dream', rememberedKind: 'recurring' }).dreamType).toBe('Recurring Dream');
       expect(buildRememberedDream('Fear', { defaultTitle: 'Dream', rememberedKind: 'nightmare' }).dreamType).toBe('Nightmare');

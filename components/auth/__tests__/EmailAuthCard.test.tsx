@@ -83,6 +83,7 @@ jest.mock('react-native', () => {
 
 const {
   mockAlert,
+  mockClearStayOnSettingsIntent,
   mockRequestStayOnSettingsIntent,
   mockSignInWithEmailPassword,
   mockSignUpWithEmailPassword,
@@ -91,6 +92,7 @@ const {
   mockReloadDreams,
 } = ((factory: any) => factory())(() => ({
   mockAlert: jest.fn(),
+  mockClearStayOnSettingsIntent: jest.fn(),
   mockRequestStayOnSettingsIntent: jest.fn(),
   mockSignInWithEmailPassword: jest.fn(),
   mockSignUpWithEmailPassword: jest.fn(),
@@ -186,6 +188,7 @@ jest.mock('@/lib/auth', () => ({
 }));
 
 jest.mock('@/lib/navigationIntents', () => ({
+  clearStayOnSettingsIntent: mockClearStayOnSettingsIntent,
   requestStayOnSettingsIntent: mockRequestStayOnSettingsIntent,
 }));
 
@@ -325,9 +328,33 @@ describe('EmailAuthCard', () => {
     });
 
     expect(mockRequestStayOnSettingsIntent).toHaveBeenCalled();
+    expect(mockRequestStayOnSettingsIntent.mock.invocationCallOrder[0]).toBeLessThan(
+      mockSignInWithEmailPassword.mock.invocationCallOrder[0]
+    );
     await waitFor(() => {
       expect((screen.getByTestId(TID.Input.AuthPassword) as HTMLInputElement).value).toBe('');
     });
+  });
+
+  it('requests the Lucid settings destination before authentication can emit a session', async () => {
+    render(<EmailAuthCard returnTo="/lucid/(tabs)/settings" />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.AuthEmail), {
+      target: { value: 'user@example.com' },
+    });
+    fireEvent.change(screen.getByTestId(TID.Input.AuthPassword), {
+      target: { value: 'password' },
+    });
+    fireEvent.click(screen.getByTestId(TID.Button.AuthSignIn));
+
+    await waitFor(() => {
+      expect(mockRequestStayOnSettingsIntent).toHaveBeenCalledWith({
+        destination: '/lucid/(tabs)/settings',
+      });
+    });
+    expect(mockRequestStayOnSettingsIntent.mock.invocationCallOrder[0]).toBeLessThan(
+      mockSignInWithEmailPassword.mock.invocationCallOrder[0]
+    );
   });
 
   it('starts verification flow on sign-up when email is unconfirmed', async () => {
@@ -394,6 +421,13 @@ describe('EmailAuthCard', () => {
     render(<EmailAuthCard />);
 
     expect(screen.getByText('settings.account.hint.configure_supabase')).toBeDefined();
+  });
+
+  it('hides Google sign-in and its divider when the companion credentials are unavailable', () => {
+    render(<EmailAuthCard showGoogleSignIn={false} />);
+
+    expect(screen.queryByTestId('google-sign-in')).toBeNull();
+    expect(screen.queryByText('common.or')).toBeNull();
   });
 
   it('keeps the embedded guest summary concise', () => {

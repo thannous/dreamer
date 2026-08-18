@@ -63,7 +63,12 @@ export type OnboardingEvent =
 export type RecordingRouteParams = {
   entryId?: string | string[];
   intent?: 'fresh' | 'remembered' | string | string[];
-  source?: 'onboarding' | 'journal' | 'profile' | string | string[];
+  source?: 'onboarding' | 'journal' | 'profile' | 'lucid_trainer' | string | string[];
+  v?: '1' | string | string[];
+  technique?: 'mild' | 'ssild' | 'wbtb' | string | string[];
+  outcome?: 'lucid' | 'remembered' | 'no_recall' | string | string[];
+  lucidity?: 'none' | 'low' | 'medium' | 'high' | string | string[];
+  recall?: 'none' | 'low' | 'medium' | 'high' | string | string[];
   postSave?: 'analyze' | 'journal' | string | string[];
   replayGuide?: '1' | string | string[];
   next?: 'analyze' | string | string[];
@@ -73,7 +78,8 @@ export type RecordingRouteParams = {
 export type ParsedRecordingIntent = {
   entryId: string | null;
   intent: 'fresh' | 'remembered' | null;
-  source: 'onboarding' | 'journal' | 'profile' | null;
+  source: 'onboarding' | 'journal' | 'profile' | 'lucid_trainer' | null;
+  lucidHandoffOutcome: 'lucid' | 'remembered' | 'no_recall' | null;
   postSave: 'confirm_analysis' | 'journal_first' | null;
   replayGuide: boolean;
   mode: 'text' | 'voice' | null;
@@ -83,7 +89,8 @@ export type ParsedRecordingIntent = {
 export type ResolvedRecordingEntryIntent = {
   entryId: string;
   intent: 'fresh' | 'remembered' | null;
-  source: 'onboarding' | 'journal' | 'profile' | null;
+  source: 'onboarding' | 'journal' | 'profile' | 'lucid_trainer' | null;
+  lucidHandoffOutcome: 'lucid' | 'remembered' | 'no_recall' | null;
   postSave: 'confirm_analysis' | 'journal_first' | null;
   mode: 'text' | 'voice' | null;
   origin: 'route' | 'pending';
@@ -516,6 +523,7 @@ const firstParam = (value: string | string[] | undefined): string | undefined =>
 export function parseRecordingRouteParams(params: RecordingRouteParams): ParsedRecordingIntent {
   const rawIntent = firstParam(params.intent);
   const rawSource = firstParam(params.source);
+  const rawOutcome = firstParam(params.outcome);
   const rawPostSave = firstParam(params.postSave);
   const rawNext = firstParam(params.next);
   const rawMode = firstParam(params.mode);
@@ -523,8 +531,16 @@ export function parseRecordingRouteParams(params: RecordingRouteParams): ParsedR
 
   const intent = rawIntent === 'fresh' || rawIntent === 'remembered' ? rawIntent : null;
   const source =
-    rawSource === 'onboarding' || rawSource === 'journal' || rawSource === 'profile'
+    rawSource === 'onboarding' ||
+    rawSource === 'journal' ||
+    rawSource === 'profile' ||
+    rawSource === 'lucid_trainer'
       ? rawSource
+      : null;
+  const lucidHandoffOutcome =
+    source === 'lucid_trainer' &&
+    (rawOutcome === 'lucid' || rawOutcome === 'remembered' || rawOutcome === 'no_recall')
+      ? rawOutcome
       : null;
   const postSave =
     rawPostSave === 'analyze'
@@ -540,6 +556,7 @@ export function parseRecordingRouteParams(params: RecordingRouteParams): ParsedR
     entryId,
     intent,
     source,
+    lucidHandoffOutcome,
     postSave,
     replayGuide: firstParam(params.replayGuide) === '1',
     mode: rawMode === 'text' || rawMode === 'voice' ? rawMode : null,
@@ -568,6 +585,7 @@ export function resolveRecordingEntryIntent(
       entryId,
       intent: route.intent,
       source: route.source,
+      lucidHandoffOutcome: route.lucidHandoffOutcome,
       postSave: route.postSave,
       mode: route.mode,
       origin: 'route',
@@ -580,6 +598,7 @@ export function resolveRecordingEntryIntent(
     entryId: pending.entryId,
     intent: pending.intent,
     source: pending.source,
+    lucidHandoffOutcome: null,
     postSave: pending.postSave,
     // A valid explicit mode remains higher priority than the scoped preference,
     // even when the rest of the capture intent comes from persisted state.
@@ -664,6 +683,7 @@ const STATIC_NATIVE_ROUTES = new Set([
   'add-dream',
   'dream-guides',
   'journal',
+  'lucid',
   'modal',
   'onboarding',
   'paywall',
@@ -687,7 +707,9 @@ const parseTrustedNativeLaunchUrl = (initialUrl: string): URL | null => {
     const parsed = new URL(initialUrl);
     return (
       parsed.protocol === 'noctalia:' ||
-      (parsed.protocol === 'https:' && parsed.hostname === 'dream.noctalia.app')
+      parsed.protocol === 'noctalia-lucid:' ||
+      (parsed.protocol === 'https:' &&
+        (parsed.hostname === 'dream.noctalia.app' || parsed.hostname === 'lucid.noctalia.app'))
     )
       ? parsed
       : null;
@@ -697,7 +719,10 @@ const parseTrustedNativeLaunchUrl = (initialUrl: string): URL | null => {
 };
 
 const nativeRoutePath = (parsed: URL): string => {
-  if (parsed.protocol !== 'noctalia:' || !parsed.hostname) {
+  if (
+    (parsed.protocol !== 'noctalia:' && parsed.protocol !== 'noctalia-lucid:') ||
+    !parsed.hostname
+  ) {
     return parsed.pathname || '/';
   }
   return `/${parsed.hostname}${parsed.pathname}`;
@@ -705,6 +730,25 @@ const nativeRoutePath = (parsed: URL): string => {
 
 const isSupportedNativeRoute = (pathname: string): boolean => {
   const segments = pathname.split('/').filter(Boolean);
+  if (segments[0] === 'lucid') {
+    if (segments.length === 1) return true;
+    if (segments.length === 2) {
+      return [
+        'about',
+        'data',
+        'help',
+        'morning',
+        'onboarding',
+        'permissions',
+        'privacy',
+        'reality-check',
+        'science',
+        'subscription',
+        'weekly',
+      ].includes(segments[1]);
+    }
+    return segments.length === 3 && segments[1] === 'program' && ['mild', 'ssild', 'wbtb'].includes(segments[2]);
+  }
   if (segments.length === 1) return STATIC_NATIVE_ROUTES.has(segments[0]);
   if (segments.length === 2) {
     return (

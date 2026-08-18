@@ -144,6 +144,7 @@ describe('onboardingState', () => {
       entryId: 'memory-entry',
       intent: 'remembered',
       source: 'onboarding',
+      lucidHandoffOutcome: null,
       postSave: 'journal_first',
       mode: null,
       origin: 'pending',
@@ -171,8 +172,22 @@ describe('onboardingState', () => {
       entryId: 'profile-fresh',
       intent: 'fresh',
       source: 'profile',
+      lucidHandoffOutcome: null,
       postSave: 'confirm_analysis',
       mode: null,
+      origin: 'route',
+    });
+  });
+
+  it('recognizes the consented Lucid Trainer handoff as a remembered capture', () => {
+    const route = parseRecordingRouteParams({
+      source: 'lucid_trainer',
+      outcome: 'lucid',
+    });
+
+    expect(resolveRecordingEntryIntent(route, null)).toMatchObject({
+      source: 'lucid_trainer',
+      lucidHandoffOutcome: 'lucid',
       origin: 'route',
     });
   });
@@ -478,6 +493,7 @@ describe('onboardingState', () => {
       entryId: 'entry-1',
       intent: 'remembered',
       source: 'onboarding',
+      lucidHandoffOutcome: null,
       postSave: 'confirm_analysis',
       replayGuide: true,
       mode: 'voice',

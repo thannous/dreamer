@@ -90,9 +90,10 @@ describe('resolveRememberedCaptureSource', () => {
     expect(resolveRememberedCaptureSource('unknown')).toBe('journal');
   });
 
-  it('accepts explicit profile and onboarding sources', () => {
+  it('accepts explicit profile, onboarding and Lucid Trainer sources', () => {
     expect(resolveRememberedCaptureSource('profile')).toBe('profile');
     expect(resolveRememberedCaptureSource('onboarding')).toBe('onboarding');
+    expect(resolveRememberedCaptureSource('lucid_trainer')).toBe('lucid_trainer');
     expect(resolveRememberedCaptureSource(['profile'])).toBe('profile');
   });
 });

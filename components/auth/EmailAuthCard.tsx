@@ -32,7 +32,10 @@ import {
 } from '@/lib/auth';
 import { TID } from '@/lib/testIDs';
 import type { MockProfile } from '@/lib/auth';
-import { requestStayOnSettingsIntent } from '@/lib/navigationIntents';
+import {
+  clearStayOnSettingsIntent,
+  requestStayOnSettingsIntent,
+} from '@/lib/navigationIntents';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { isMockModeEnabled as isMockModeEnabledEnv } from '@/lib/env';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
@@ -77,11 +80,15 @@ const isUnverifiedEmailError = (error: unknown): error is AuthApiError => {
 type Props = {
   isCompact?: boolean;
   presentation?: 'card' | 'embedded';
+  returnTo?: '/(tabs)/settings' | '/lucid/(tabs)/settings';
+  showGoogleSignIn?: boolean;
 };
 
 export const EmailAuthCard: React.FC<Props> = ({
   isCompact = false,
   presentation = 'card',
+  returnTo = '/(tabs)/settings',
+  showGoogleSignIn = true,
 }) => {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -139,6 +146,10 @@ export const EmailAuthCard: React.FC<Props> = ({
     setPassword('');
     setPasswordVisible(false);
   }, []);
+
+  const requestAuthReturn = useCallback(() => {
+    requestStayOnSettingsIntent({ destination: returnTo });
+  }, [returnTo]);
 
   const clearPendingVerification = useCallback(() => {
     setPendingVerification(null);
@@ -201,6 +212,7 @@ export const EmailAuthCard: React.FC<Props> = ({
       });
     }
     setSubmitting('signin');
+    requestAuthReturn();
     try {
       await signInWithEmailPassword(trimmedEmail, password);
       if (__DEV__) {
@@ -209,12 +221,12 @@ export const EmailAuthCard: React.FC<Props> = ({
         });
       }
       clearPendingVerification();
-      requestStayOnSettingsIntent();
       if (__DEV__) {
         console.log('[EmailAuthCard] requested stay-on-settings intent');
       }
       resetSensitiveInputs();
     } catch (error) {
+      clearStayOnSettingsIntent();
       handleSupabaseError(error, 'settings.account.alert.signin_failed.title');
     } finally {
       setSubmitting(null);
@@ -226,17 +238,19 @@ export const EmailAuthCard: React.FC<Props> = ({
     if (emailActionsDisabled) return;
     const passwordForVerification = password;
     setSubmitting('signup');
+    requestAuthReturn();
     try {
       const newUser = await signUpWithEmailPassword(trimmedEmail, passwordForVerification, language);
       const needsVerification = !newUser?.email_confirmed_at;
       if (needsVerification) {
+        clearStayOnSettingsIntent();
         startVerificationFlow(trimmedEmail, passwordForVerification, true, Date.now());
       } else {
         clearPendingVerification();
       }
-      requestStayOnSettingsIntent();
       resetSensitiveInputs();
     } catch (error) {
+      clearStayOnSettingsIntent();
       handleSupabaseError(error, 'settings.account.alert.signup_failed.title');
     } finally {
       setSubmitting(null);
@@ -259,10 +273,11 @@ export const EmailAuthCard: React.FC<Props> = ({
   const handleMockSignIn = async (profile: MockProfile) => {
     if (!isMockModeEnabled) return;
     setMockProfileLoading(profile);
+    requestAuthReturn();
     try {
       await signInMock(profile);
-      requestStayOnSettingsIntent();
     } catch (error) {
+      clearStayOnSettingsIntent();
       handleSupabaseError(error, 'settings.account.alert.signin_failed.title');
     } finally {
       setMockProfileLoading((current) => (current === profile ? null : current));
@@ -276,7 +291,7 @@ export const EmailAuthCard: React.FC<Props> = ({
       await signOut();
       await reloadDreams();
       clearPendingVerification();
-      requestStayOnSettingsIntent();
+      clearStayOnSettingsIntent();
     } catch (error) {
       handleSupabaseError(error, 'settings.account.alert.signout_failed.title');
     } finally {
@@ -298,17 +313,18 @@ export const EmailAuthCard: React.FC<Props> = ({
     }
 
     setVerificationPolling(true);
+    requestAuthReturn();
     try {
       await signInWithEmailPassword(pendingVerification.email, pendingVerification.password);
       // Show success state briefly before closing
       setVerificationSuccess(true);
-      requestStayOnSettingsIntent();
       resetSensitiveInputs();
       // Close dialog after showing success animation
       setTimeout(() => {
         clearPendingVerification();
       }, 1500);
     } catch (error) {
+      clearStayOnSettingsIntent();
       if (!isUnverifiedEmailError(error) && __DEV__) {
         console.warn('[EmailAuthCard] verification poll failed', error);
       }
@@ -320,6 +336,7 @@ export const EmailAuthCard: React.FC<Props> = ({
     clearPendingVerification,
     isMockBusy,
     pendingVerification,
+    requestAuthReturn,
     resetSensitiveInputs,
     submitting,
     user,
@@ -363,7 +380,6 @@ export const EmailAuthCard: React.FC<Props> = ({
       setLastVerificationEmailSentAt(now);
       setCooldownTick(now);
       setResendStatus('success');
-      requestStayOnSettingsIntent();
     } catch (error) {
       if (__DEV__) {
         console.warn('[EmailAuthCard] resend verification failed', error);
@@ -828,9 +844,9 @@ export const EmailAuthCard: React.FC<Props> = ({
             <View style={[styles.dividerLine, { backgroundColor: noctalia.surface.border }]} />
           </View>
         </>
-      ) : (
+      ) : showGoogleSignIn ? (
         <>
-          <GoogleSignInButton />
+          <GoogleSignInButton returnTo={returnTo} />
 
           <View style={[styles.divider, isEmbedded && styles.dividerEmbedded]}>
             <View style={[styles.dividerLine, { backgroundColor: noctalia.surface.border }]} />
@@ -838,7 +854,7 @@ export const EmailAuthCard: React.FC<Props> = ({
             <View style={[styles.dividerLine, { backgroundColor: noctalia.surface.border }]} />
           </View>
         </>
-      )}
+      ) : null}
 
       {authForm}
     </View>

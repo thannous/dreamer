@@ -7,6 +7,7 @@ import { getExpoPublicEnvValue, isMockModeEnabled } from './env';
 import { createScopedLogger } from './logger';
 import { NETWORK_REQUEST_POLICIES } from './networkPolicy';
 import type { SubscriptionTier } from './types';
+import { isLucidTrainer } from './appVariant';
 
 export type { MockProfile } from './mockAuth';
 
@@ -87,6 +88,16 @@ function getGoogleWebClientId(): string | undefined {
 
 function getGoogleIosClientId(): string | undefined {
   return getExpoPublicEnvValue('EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID');
+}
+
+/**
+ * Whether the current binary has enough configuration to offer Google sign-in.
+ * Web OAuth is configured in Supabase and does not use the native client IDs.
+ */
+export function isGoogleSignInAvailable(): boolean {
+  if (Platform.OS === 'web') return true;
+  if (!getGoogleWebClientId()) return false;
+  return Platform.OS !== 'ios' || Boolean(getGoogleIosClientId());
 }
 
 function getErrorCode(error: unknown): string | undefined {
@@ -360,7 +371,11 @@ export async function signInWithEmailPassword(email: string, password: string) {
 
 // Use an https redirect so the same confirmation link works on desktop (web) and on mobile
 // (via Universal Links / Android App Links), avoiding OS prompts like "xdg-open" on Linux.
-const EMAIL_REDIRECT_NATIVE = 'https://dream.noctalia.app/recording';
+export function getNativeEmailRedirect(): string {
+  return isLucidTrainer
+    ? 'https://lucid.noctalia.app/lucid/account'
+    : 'https://dream.noctalia.app/recording';
+}
 
 export async function signUpWithEmailPassword(email: string, password: string, userLang?: string) {
   if (isMockMode) {
@@ -369,7 +384,7 @@ export async function signUpWithEmailPassword(email: string, password: string, u
 
   const guestUpgradeProof = await captureGuestUpgradeProof();
   const signUpOptions = {
-    emailRedirectTo: EMAIL_REDIRECT_NATIVE,
+    emailRedirectTo: getNativeEmailRedirect(),
     data: userLang ? { lang: userLang } : undefined,
   };
   const { data, error } = await supabase.auth.signUp({
@@ -401,7 +416,7 @@ export async function resendVerificationEmail(email: string) {
     type: 'signup',
     email,
     options: {
-      emailRedirectTo: EMAIL_REDIRECT_NATIVE,
+      emailRedirectTo: getNativeEmailRedirect(),
     },
   });
   if (error) throw error;

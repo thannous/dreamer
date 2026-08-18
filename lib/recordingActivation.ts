@@ -1,7 +1,10 @@
 import type { DreamMemoryCreatedFrom } from '@/lib/types';
 
 export type RecordingCaptureIntent = 'fresh' | 'remembered';
-export type RememberedCaptureSource = Extract<DreamMemoryCreatedFrom, 'onboarding' | 'journal' | 'profile'>;
+export type RememberedCaptureSource = Extract<
+  DreamMemoryCreatedFrom,
+  'onboarding' | 'journal' | 'profile' | 'lucid_trainer'
+>;
 
 export type RecordingActivationPromptInput = {
   recordingOnboardingLoaded: boolean;
@@ -22,7 +25,9 @@ export function resolveRememberedCaptureSource(
   value: string | string[] | null | undefined
 ): RememberedCaptureSource {
   const raw = Array.isArray(value) ? value[0] : value;
-  return raw === 'onboarding' || raw === 'profile' ? raw : 'journal';
+  return raw === 'onboarding' || raw === 'profile' || raw === 'lucid_trainer'
+    ? raw
+    : 'journal';
 }
 
 export function getRecordingActivationPromptState(
