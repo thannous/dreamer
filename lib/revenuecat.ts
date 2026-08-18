@@ -64,8 +64,7 @@ const ENTITLEMENT_PRIORITY = [...LEGACY_PLUS_ENTITLEMENT_IDS, ...PLUS_ENTITLEMEN
 function tierFromEntitlementId(entitlementId: string): SubscriptionTier {
   if (LEGACY_PLUS_ENTITLEMENT_IDS.includes(entitlementId)) return 'plus';
   if (PLUS_ENTITLEMENT_IDS.includes(entitlementId)) return 'plus';
-  // Default safe paid tier if an entitlement exists but isn't explicitly mapped.
-  return 'plus';
+  return 'free';
 }
 
 /**
@@ -83,8 +82,9 @@ export function isEntitlementExpired(expiryDate: string | null): boolean {
 }
 
 /**
- * Finds the active entitlement from CustomerInfo based on priority.
- * Returns the first matching entitlement or the first active one if none match priority.
+ * Finds the active Noctalia Plus entitlement from CustomerInfo based on priority.
+ * Unknown entitlements belong to another product or experiment and must never
+ * unlock Noctalia Plus.
  */
 export function getActiveEntitlement(info: CustomerInfoLike | null): Entitlement | null {
   const active = (info?.entitlements?.active ?? {}) as Record<string, Entitlement>;
@@ -96,8 +96,7 @@ export function getActiveEntitlement(info: CustomerInfoLike | null): Entitlement
     }
   }
 
-  const firstKey = Object.keys(active)[0];
-  return firstKey ? active[firstKey] : null;
+  return null;
 }
 
 export function getActiveEntitlementId(info: CustomerInfoLike | null): string | null {
@@ -110,8 +109,7 @@ export function getActiveEntitlementId(info: CustomerInfoLike | null): string | 
     }
   }
 
-  const firstKey = Object.keys(active)[0];
-  return firstKey ?? null;
+  return null;
 }
 
 /**

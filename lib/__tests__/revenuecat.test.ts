@@ -76,7 +76,7 @@ describe('revenuecat utils', () => {
       expect(result?.productIdentifier).toBe('high_priority');
     });
 
-    it('given unknown entitlement key returns first one', () => {
+    it('given unknown entitlement key does not unlock Noctalia Plus', () => {
       const info: CustomerInfoLike = {
         entitlements: {
           active: {
@@ -89,7 +89,7 @@ describe('revenuecat utils', () => {
 
       const result = getActiveEntitlement(info);
 
-      expect(result?.productIdentifier).toBe('custom_product');
+      expect(result).toBeNull();
     });
 
     it('given undefined entitlements returns null', () => {
@@ -121,7 +121,7 @@ describe('revenuecat utils', () => {
       expect(mapTierFromCustomerInfo(info)).toBe('plus');
     });
 
-    it('given any active entitlement returns plus tier', () => {
+    it('given an unknown active entitlement returns free tier', () => {
       const info: CustomerInfoLike = {
         entitlements: {
           active: {
@@ -129,7 +129,25 @@ describe('revenuecat utils', () => {
           },
         },
       };
-      expect(mapTierFromCustomerInfo(info)).toBe('plus');
+      expect(mapTierFromCustomerInfo(info)).toBe('free');
+    });
+
+    it('ignores a companion entitlement when Noctalia Plus is absent', () => {
+      const info: CustomerInfoLike = {
+        entitlements: {
+          active: {
+            lucid_trainer_plus: { productIdentifier: 'lucid_trainer_annual' },
+          },
+        },
+      };
+
+      expect(mapStatus(info)).toEqual({
+        tier: 'free',
+        isActive: false,
+        expiryDate: null,
+        productId: null,
+        willRenew: undefined,
+      });
     });
   });
 
