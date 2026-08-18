@@ -1,0 +1,386 @@
+import {
+  LUCID_TRAINER_SCHEMA_VERSION,
+  type LucidOnboardingState,
+  type LucidProgramProgress,
+  type LucidSyncEntity,
+  type LucidTechnique,
+  type LucidTrainerPreferences,
+  type LucidTrainerState,
+} from '@/lib/lucid/model';
+
+export type { LucidTrainerState } from '@/lib/lucid/model';
+
+function sortedUnique(values: readonly string[]): string[] {
+  return [...new Set(values)].sort((left, right) => left.localeCompare(right));
+}
+
+function canonicalize(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(canonicalize);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, nested]) => [key, canonicalize(nested)])
+    );
+  }
+  return value;
+}
+
+export function canonicalLucidJson(value: unknown): string {
+  return JSON.stringify(canonicalize(value));
+}
+
+function chooseNewest<T extends { updatedAt: number }>(left: T, right: T): T {
+  if (left.updatedAt !== right.updatedAt) {
+    return left.updatedAt > right.updatedAt ? left : right;
+  }
+  return canonicalLucidJson(left) >= canonicalLucidJson(right) ? left : right;
+}
+
+function minNullable(left: number | null, right: number | null): number | null {
+  if (left === null) return right;
+  if (right === null) return left;
+  return Math.min(left, right);
+}
+
+function maxNullable(left: number | null, right: number | null): number | null {
+  if (left === null) return right;
+  if (right === null) return left;
+  return Math.max(left, right);
+}
+
+export function mergeLucidProgramProgress(
+  left: LucidProgramProgress,
+  right: LucidProgramProgress
+): LucidProgramProgress {
+  if (left.technique !== right.technique) {
+    throw new Error('Cannot merge progress for different techniques');
+  }
+
+  const newest = chooseNewest(left, right);
+  const status =
+    left.status === 'completed' || right.status === 'completed' ? 'completed' : newest.status;
+
+  return {
+    technique: left.technique,
+    programId: newest.programId,
+    status,
+    currentDay: Math.max(left.currentDay, right.currentDay),
+    completedExerciseIds: sortedUnique([
+      ...left.completedExerciseIds,
+      ...right.completedExerciseIds,
+    ]),
+    practiceDates: sortedUnique([...left.practiceDates, ...right.practiceDates]),
+    startedAt: minNullable(left.startedAt, right.startedAt),
+    completedAt: status === 'completed' ? maxNullable(left.completedAt, right.completedAt) : null,
+    updatedAt: Math.max(left.updatedAt, right.updatedAt),
+  };
+}
+
+export function createInitialLucidTrainerState(params: {
+  now: number;
+  timeZone: string;
+  locale?: LucidTrainerPreferences['locale'];
+}): LucidTrainerState {
+  const { now, timeZone, locale = 'en' } = params;
+  return {
+    schemaVersion: LUCID_TRAINER_SCHEMA_VERSION,
+    createdAt: now,
+    updatedAt: now,
+    onboarding: {
+      status: 'not_started',
+      goal: null,
+      experience: null,
+      weeklyTarget: 3,
+      sleepSchedule: {
+        bedtime: '22:30',
+        wakeTime: '07:00',
+        timeZone,
+      },
+      notificationsPermission: 'unknown',
+      notificationsExplained: false,
+      audioSafetyAccepted: false,
+      analyticsConsent: null,
+      accessibility: {
+        reduceMotion: false,
+        largerText: false,
+        screenReaderOptimized: false,
+      },
+      completedAt: null,
+      updatedAt: now,
+    },
+    preferences: {
+      locale,
+      theme: 'system',
+      cloudSyncEnabled: false,
+      noctaliaLinkEnabled: false,
+      notificationsEnabled: false,
+      realityCheckRemindersPerDay: 3,
+      audioCuesEnabled: false,
+      audioVolume: 0.25,
+      timeZone,
+      updatedAt: now,
+    },
+    progress: [],
+    experiments: [],
+    realityChecks: [],
+    weeklyReviews: [],
+  };
+}
+
+export function createLucidProgramProgress(
+  technique: LucidTechnique,
+  now: number
+): LucidProgramProgress {
+  return {
+    technique,
+    programId: `${technique}-foundations`,
+    status: 'not_started',
+    currentDay: 1,
+    completedExerciseIds: [],
+    practiceDates: [],
+    startedAt: null,
+    completedAt: null,
+    updatedAt: now,
+  };
+}
+
+function assertMatchingEntities(left: LucidSyncEntity, right: LucidSyncEntity): void {
+  if (left.entityType !== right.entityType || left.entityKey !== right.entityKey) {
+    throw new Error('Cannot resolve a conflict between different Lucid Trainer entities');
+  }
+}
+
+export function resolveLucidEntityConflict(
+  left: LucidSyncEntity,
+  right: LucidSyncEntity
+): LucidSyncEntity {
+  assertMatchingEntities(left, right);
+
+  if (left.entityType === 'progress' && right.entityType === 'progress') {
+    return {
+      entityType: 'progress',
+      entityKey: left.entityKey,
+      value: mergeLucidProgramProgress(left.value, right.value),
+    };
+  }
+
+  const leftUpdatedAt = left.value.updatedAt;
+  const rightUpdatedAt = right.value.updatedAt;
+  if (leftUpdatedAt !== rightUpdatedAt) {
+    return leftUpdatedAt > rightUpdatedAt ? left : right;
+  }
+
+  return canonicalLucidJson(left) >= canonicalLucidJson(right) ? left : right;
+}
+
+function mergeEntities(
+  left: readonly LucidSyncEntity[],
+  right: readonly LucidSyncEntity[]
+): LucidSyncEntity[] {
+  const merged = new Map<string, LucidSyncEntity>();
+  [...left, ...right].forEach((entity) => {
+    const mapKey = `${entity.entityType}:${entity.entityKey}`;
+    const existing = merged.get(mapKey);
+    merged.set(mapKey, existing ? resolveLucidEntityConflict(existing, entity) : entity);
+  });
+  return [...merged.values()].sort((a, b) => {
+    const typeOrder = a.entityType.localeCompare(b.entityType);
+    return typeOrder !== 0 ? typeOrder : a.entityKey.localeCompare(b.entityKey);
+  });
+}
+
+export function getLucidSyncEntities(state: LucidTrainerState): LucidSyncEntity[] {
+  return [
+    { entityType: 'onboarding', entityKey: 'onboarding', value: state.onboarding },
+    { entityType: 'preferences', entityKey: 'preferences', value: state.preferences },
+    ...state.progress.map(
+      (value): LucidSyncEntity => ({
+        entityType: 'progress',
+        entityKey: value.technique,
+        value,
+      })
+    ),
+    ...state.experiments.map(
+      (value): LucidSyncEntity => ({ entityType: 'experiment', entityKey: value.id, value })
+    ),
+    ...state.realityChecks.map(
+      (value): LucidSyncEntity => ({
+        entityType: 'reality_check',
+        entityKey: value.id,
+        value,
+      })
+    ),
+    ...state.weeklyReviews.map(
+      (value): LucidSyncEntity => ({
+        entityType: 'weekly_review',
+        entityKey: value.id,
+        value,
+      })
+    ),
+  ];
+}
+
+export function applyLucidSyncEntity(
+  state: LucidTrainerState,
+  entity: LucidSyncEntity
+): LucidTrainerState {
+  const updatedAt = Math.max(state.updatedAt, entity.value.updatedAt);
+  switch (entity.entityType) {
+    case 'onboarding':
+      return { ...state, onboarding: entity.value, updatedAt };
+    case 'preferences':
+      return { ...state, preferences: entity.value, updatedAt };
+    case 'progress':
+      return {
+        ...state,
+        updatedAt,
+        progress: [
+          ...state.progress.filter((item) => item.technique !== entity.entityKey),
+          entity.value,
+        ].sort((a, b) => a.technique.localeCompare(b.technique)),
+      };
+    case 'experiment':
+      return {
+        ...state,
+        updatedAt,
+        experiments: [
+          ...state.experiments.filter((item) => item.id !== entity.entityKey),
+          entity.value,
+        ].sort((a, b) => b.occurredAt - a.occurredAt || a.id.localeCompare(b.id)),
+      };
+    case 'reality_check':
+      return {
+        ...state,
+        updatedAt,
+        realityChecks: [
+          ...state.realityChecks.filter((item) => item.id !== entity.entityKey),
+          entity.value,
+        ].sort((a, b) => b.occurredAt - a.occurredAt || a.id.localeCompare(b.id)),
+      };
+    case 'weekly_review':
+      return {
+        ...state,
+        updatedAt,
+        weeklyReviews: [
+          ...state.weeklyReviews.filter((item) => item.id !== entity.entityKey),
+          entity.value,
+        ].sort((a, b) => b.weekStart.localeCompare(a.weekStart) || a.id.localeCompare(b.id)),
+      };
+  }
+}
+
+export function removeLucidSyncEntity(
+  state: LucidTrainerState,
+  entityType: LucidSyncEntity['entityType'],
+  entityKey: string,
+  updatedAt: number
+): LucidTrainerState {
+  const nextUpdatedAt = Math.max(state.updatedAt, updatedAt);
+  switch (entityType) {
+    case 'onboarding':
+    case 'preferences':
+      // Singleton records are required for a valid local state. A server deletion
+      // is represented by resetting the whole local state, not by deleting one.
+      return state;
+    case 'progress':
+      return {
+        ...state,
+        updatedAt: nextUpdatedAt,
+        progress: state.progress.filter((item) => item.technique !== entityKey),
+      };
+    case 'experiment':
+      return {
+        ...state,
+        updatedAt: nextUpdatedAt,
+        experiments: state.experiments.filter((item) => item.id !== entityKey),
+      };
+    case 'reality_check':
+      return {
+        ...state,
+        updatedAt: nextUpdatedAt,
+        realityChecks: state.realityChecks.filter((item) => item.id !== entityKey),
+      };
+    case 'weekly_review':
+      return {
+        ...state,
+        updatedAt: nextUpdatedAt,
+        weeklyReviews: state.weeklyReviews.filter((item) => item.id !== entityKey),
+      };
+  }
+}
+
+export function mergeLucidTrainerStates(
+  left: LucidTrainerState,
+  right: LucidTrainerState
+): LucidTrainerState {
+  const mergedEntities = mergeEntities(getLucidSyncEntities(left), getLucidSyncEntities(right));
+  const onboarding = mergedEntities.find(
+    (entity): entity is Extract<LucidSyncEntity, { entityType: 'onboarding' }> =>
+      entity.entityType === 'onboarding'
+  );
+  const preferences = mergedEntities.find(
+    (entity): entity is Extract<LucidSyncEntity, { entityType: 'preferences' }> =>
+      entity.entityType === 'preferences'
+  );
+  if (!onboarding || !preferences) {
+    throw new Error('Lucid Trainer state is missing required singleton entities');
+  }
+
+  return {
+    schemaVersion: LUCID_TRAINER_SCHEMA_VERSION,
+    createdAt: Math.min(left.createdAt, right.createdAt),
+    updatedAt: Math.max(left.updatedAt, right.updatedAt),
+    onboarding: onboarding.value,
+    preferences: preferences.value,
+    progress: mergedEntities
+      .filter(
+        (entity): entity is Extract<LucidSyncEntity, { entityType: 'progress' }> =>
+          entity.entityType === 'progress'
+      )
+      .map((entity) => entity.value),
+    experiments: mergedEntities
+      .filter(
+        (entity): entity is Extract<LucidSyncEntity, { entityType: 'experiment' }> =>
+          entity.entityType === 'experiment'
+      )
+      .map((entity) => entity.value)
+      .sort((a, b) => b.occurredAt - a.occurredAt || a.id.localeCompare(b.id)),
+    realityChecks: mergedEntities
+      .filter(
+        (entity): entity is Extract<LucidSyncEntity, { entityType: 'reality_check' }> =>
+          entity.entityType === 'reality_check'
+      )
+      .map((entity) => entity.value)
+      .sort((a, b) => b.occurredAt - a.occurredAt || a.id.localeCompare(b.id)),
+    weeklyReviews: mergedEntities
+      .filter(
+        (entity): entity is Extract<LucidSyncEntity, { entityType: 'weekly_review' }> =>
+          entity.entityType === 'weekly_review'
+      )
+      .map((entity) => entity.value)
+      .sort((a, b) => b.weekStart.localeCompare(a.weekStart) || a.id.localeCompare(b.id)),
+  };
+}
+
+export function updateLucidOnboarding(
+  state: LucidTrainerState,
+  onboarding: LucidOnboardingState
+): LucidTrainerState {
+  return applyLucidSyncEntity(state, {
+    entityType: 'onboarding',
+    entityKey: 'onboarding',
+    value: onboarding,
+  });
+}
+
+export function updateLucidPreferences(
+  state: LucidTrainerState,
+  preferences: LucidTrainerPreferences
+): LucidTrainerState {
+  return applyLucidSyncEntity(state, {
+    entityType: 'preferences',
+    entityKey: 'preferences',
+    value: preferences,
+  });
+}

@@ -1,0 +1,68 @@
+import type { LucidEvidenceReference } from './types';
+
+export const LUCID_EVIDENCE_REFERENCES = [
+  {
+    id: 'ildis-2020',
+    kind: 'original-research',
+    title: 'Findings From the International Lucid Dream Induction Study',
+    authors: 'Adventure-Heart, D. J.',
+    year: 2020,
+    publication: 'Frontiers in Psychology, 11, 1746',
+    identifier: { type: 'doi', value: '10.3389/fpsyg.2020.01746' },
+    url: 'https://doi.org/10.3389/fpsyg.2020.01746',
+    topics: ['induction', 'mild', 'ssild', 'wbtb', 'reality-testing', 'safety'],
+    note: 'A home-based study comparing technique combinations; results were self-reported and attrition was substantial, so they do not establish a predictable effect.',
+  },
+  {
+    id: 'tan-fan-2023',
+    kind: 'systematic-review',
+    title: 'A systematic review of new empirical data on lucid dream induction techniques',
+    authors: 'Tan, S., & Fan, J.',
+    year: 2023,
+    publication: 'Journal of Sleep Research, 32(3), e13786',
+    identifier: { type: 'doi', value: '10.1111/jsr.13786' },
+    url: 'https://doi.org/10.1111/jsr.13786',
+    topics: ['induction', 'mild', 'ssild', 'wbtb', 'safety'],
+    note: 'A review of recent induction studies; it identifies promising approaches while stressing uneven methods and the need for replication.',
+  },
+  {
+    id: 'stumbrys-2012',
+    kind: 'systematic-review',
+    title: 'Induction of lucid dreams: A systematic review of evidence',
+    authors: 'Stumbrys, T., Erlacher, D., Schädlich, M., & Schredl, M.',
+    year: 2012,
+    publication: 'Consciousness and Cognition, 21(3), 1456–1475',
+    identifier: { type: 'doi', value: '10.1016/j.concog.2012.07.003' },
+    url: 'https://doi.org/10.1016/j.concog.2012.07.003',
+    topics: ['definition', 'induction', 'mild', 'reality-testing'],
+    note: 'A systematic review of laboratory and field studies showing that evidence quality and outcomes vary across induction techniques.',
+  },
+  {
+    id: 'baird-2022',
+    kind: 'original-research',
+    title: 'Lucid Dreaming Occurs in Activated REM Sleep, Not a Mixture of Sleep and Wakefulness',
+    authors: 'Baird, B., Tononi, G., & LaBerge, S.',
+    year: 2022,
+    publication: 'Sleep, 45(4), zsab294',
+    identifier: { type: 'pmid', value: '35167686' },
+    url: 'https://pubmed.ncbi.nlm.nih.gov/35167686/',
+    topics: ['definition', 'rem-sleep'],
+    note: 'A physiological study supporting lucid dreaming as a form of activated REM sleep; it does not show that a training method will work for an individual.',
+  },
+  {
+    id: 'aasm-srs-2015',
+    kind: 'consensus-statement',
+    title: 'Recommended Amount of Sleep for a Healthy Adult: A Joint Consensus Statement of the American Academy of Sleep Medicine and Sleep Research Society',
+    authors: 'Watson, N. F., Badr, M. S., Belenky, G., et al.',
+    year: 2015,
+    publication: 'Sleep, 38(6), 843–844',
+    identifier: { type: 'doi', value: '10.5665/sleep.4716' },
+    url: 'https://doi.org/10.5665/sleep.4716',
+    topics: ['sleep-duration', 'safety'],
+    note: 'Consensus for healthy adults: preserve a regular opportunity for at least seven hours of sleep; individual needs and clinical situations vary.',
+  },
+] as const satisfies readonly LucidEvidenceReference[];
+
+export const LUCID_EVIDENCE_REFERENCE_IDS = LUCID_EVIDENCE_REFERENCES.map(
+  (reference) => reference.id,
+);

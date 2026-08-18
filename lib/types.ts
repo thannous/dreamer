@@ -65,7 +65,7 @@ export interface DreamCategorization {
  * second dream-like model. Missing metadata means a normal captured dream.
  */
 export type DreamMemoryOrigin = 'captured' | 'remembered';
-export type DreamMemoryCreatedFrom = 'onboarding' | 'journal' | 'profile';
+export type DreamMemoryCreatedFrom = 'onboarding' | 'journal' | 'profile' | 'lucid_trainer';
 export type RememberedDreamKind =
   | 'old'
   | 'recurring'
