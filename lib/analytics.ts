@@ -121,6 +121,32 @@ export type AnalyticsEventMap = {
       | 'steady'
       | 'unlock_signals';
   };
+  lucid_activation_completed: {
+    goal: 'lucidity' | 'recall' | 'consistency' | 'exploration';
+    experience: 'new' | 'some' | 'experienced';
+    reminder_frequency: 'none' | 'low' | 'medium' | 'high';
+  };
+  lucid_training_completed: {
+    technique: 'mild' | 'ssild' | 'wbtb';
+    phase: 'day' | 'bedtime' | 'night' | 'morning';
+    outcome: 'completed' | 'skipped' | 'interrupted';
+    duration: 'under_5m' | '5_15m' | '15m_plus';
+  };
+  lucid_retention_observed: {
+    week: 'week_1' | 'week_2_4' | 'week_5_plus';
+    active_days: '0' | '1_2' | '3_4' | '5_7';
+    status: 'active' | 'returning' | 'lapsed';
+  };
+  lucid_noctalia_handoff: {
+    action: 'open_noctalia' | 'transfer_summary';
+    outcome: 'opened' | 'fallback' | 'cancelled' | 'failed';
+    transfer: 'none' | 'experiment_summary';
+  };
+  lucid_conversion: {
+    surface: 'program' | 'paywall' | 'settings';
+    action: 'viewed' | 'started' | 'completed' | 'restored';
+    tier: 'free' | 'plus' | 'unknown';
+  };
 };
 
 export type AnalyticsEventName = keyof AnalyticsEventMap;

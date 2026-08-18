@@ -31,3 +31,20 @@ Deno.test('analytics guest session rejects fingerprint and device id fields', as
 
   assertEquals(response.status, 400);
 });
+
+Deno.test('analytics guest session rejects iOS until App Attest is implemented', async () => {
+  const response = await handleAnalyticsGuestSession(
+    new Request('https://example.supabase.co/functions/v1/api/analytics/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        platform: 'ios',
+        requestHash: 'a'.repeat(64),
+        integrityToken: 'x'.repeat(32),
+      }),
+    })
+  );
+
+  assertEquals(response.status, 401);
+  assertEquals(await response.json(), { error: 'Invalid integrity proof' });
+});

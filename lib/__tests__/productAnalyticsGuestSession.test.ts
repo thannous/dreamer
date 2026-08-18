@@ -4,6 +4,7 @@ import { Platform } from 'react-native';
 import { getAccessToken } from '@/lib/auth';
 import { fetchJSON } from '@/lib/http';
 import {
+  canDeliverProductAnalytics,
   fetchProductAnalyticsJSON,
   getProductAnalyticsAuthHeaders,
   resetProductAnalyticsGuestSessionForTesting,
@@ -113,5 +114,26 @@ describe('product analytics guest session', () => {
     const requestHeaders = eventOptions.headers;
     expect(requestHeaders).toEqual({ 'x-analytics-guest-token': 'analytics-session-token' });
     expect(JSON.stringify(requestHeaders)).not.toMatch(/x-guest|fingerprint|device[_-]?id/i);
+  });
+
+  it('allows an authenticated iOS session to deliver events without Play Integrity', async () => {
+    Platform.OS = 'ios';
+    mockAccessToken.mockResolvedValue('user-access-token');
+
+    await expect(canDeliverProductAnalytics()).resolves.toBe(true);
+    await expect(getProductAnalyticsAuthHeaders()).resolves.toEqual({
+      Authorization: 'Bearer user-access-token',
+    });
+    expect(AppIntegrity.requestIntegrityCheckAsync).not.toHaveBeenCalled();
+  });
+
+  it('keeps unauthenticated iOS delivery closed until App Attest exists', async () => {
+    Platform.OS = 'ios';
+
+    await expect(canDeliverProductAnalytics()).resolves.toBe(false);
+    await expect(getProductAnalyticsAuthHeaders()).rejects.toThrow(
+      'Product analytics guest sessions are Android-only'
+    );
+    expect(AppIntegrity.requestIntegrityCheckAsync).not.toHaveBeenCalled();
   });
 });

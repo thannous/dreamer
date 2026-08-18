@@ -35,8 +35,9 @@ function context(req: Request, user: unknown | null = { id: 'authenticated-user'
   };
 }
 
-Deno.test('analytics validator accepts an allowlisted Android envelope', () => {
+Deno.test('analytics validator accepts allowlisted Android and iOS envelopes', () => {
   assertEquals(validateProductAnalyticsEvent(validEvent(), now), true);
+  assertEquals(validateProductAnalyticsEvent(validEvent({ platform: 'ios' }), now), true);
 });
 
 Deno.test('activation insight allowlist excludes dream-derived semantic properties', () => {
@@ -62,7 +63,7 @@ Deno.test('activation insight allowlist excludes dream-derived semantic properti
   }), now), false);
 });
 
-Deno.test('analytics validator rejects content, unknown fields, stale events, and non-Android envelopes', () => {
+Deno.test('analytics validator rejects content, unknown fields, stale events, and non-mobile envelopes', () => {
   assertEquals(validateProductAnalyticsEvent(validEvent({
     properties: { step: 'intro', transcript: 'private dream' },
   }), now), false);
@@ -76,7 +77,7 @@ Deno.test('analytics validator rejects content, unknown fields, stale events, an
   assertEquals(validateProductAnalyticsEvent(validEvent({
     occurred_at: '2026-07-01T12:00:00.000Z',
   }), now), false);
-  assertEquals(validateProductAnalyticsEvent(validEvent({ platform: 'ios' }), now), false);
+  assertEquals(validateProductAnalyticsEvent(validEvent({ platform: 'web' }), now), false);
   assertEquals(validateProductAnalyticsEvent(validEvent({
     event_name: 'onboarding_choice_selected',
     properties: {

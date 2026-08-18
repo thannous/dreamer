@@ -146,6 +146,11 @@ export async function getProductAnalyticsAuthHeaders(): Promise<Record<string, s
   return { 'x-analytics-guest-token': session.token };
 }
 
+export async function canDeliverProductAnalytics(): Promise<boolean> {
+  if (await getAccessToken()) return true;
+  return Platform.OS === 'android';
+}
+
 export async function fetchProductAnalyticsJSON<T>(
   url: string,
   options: HttpOptions,

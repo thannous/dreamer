@@ -34,6 +34,11 @@ const EVENT_NAMES = [
   'stats_period_selected',
   'stats_shared',
   'stats_cta_clicked',
+  'lucid_activation_completed',
+  'lucid_training_completed',
+  'lucid_retention_observed',
+  'lucid_noctalia_handoff',
+  'lucid_conversion',
 ] as const;
 
 type AnalyticsEventName = (typeof EVENT_NAMES)[number];
@@ -46,7 +51,7 @@ export type ValidatedAnalyticsEvent = {
   schema_version: 1;
   occurred_at: string;
   journey_id: string | null;
-  platform: 'android';
+  platform: 'android' | 'ios';
   app_version: string;
   locale: 'fr' | 'en' | 'es' | 'de' | 'it' | 'pt';
   properties: Properties;
@@ -179,6 +184,32 @@ const PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySchema> = {
       'unlock_signals'
     ),
   },
+  lucid_activation_completed: {
+    goal: oneOf('lucidity', 'recall', 'consistency', 'exploration'),
+    experience: oneOf('new', 'some', 'experienced'),
+    reminder_frequency: oneOf('none', 'low', 'medium', 'high'),
+  },
+  lucid_training_completed: {
+    technique: oneOf('mild', 'ssild', 'wbtb'),
+    phase: oneOf('day', 'bedtime', 'night', 'morning'),
+    outcome: oneOf('completed', 'skipped', 'interrupted'),
+    duration: oneOf('under_5m', '5_15m', '15m_plus'),
+  },
+  lucid_retention_observed: {
+    week: oneOf('week_1', 'week_2_4', 'week_5_plus'),
+    active_days: oneOf('0', '1_2', '3_4', '5_7'),
+    status: oneOf('active', 'returning', 'lapsed'),
+  },
+  lucid_noctalia_handoff: {
+    action: oneOf('open_noctalia', 'transfer_summary'),
+    outcome: oneOf('opened', 'fallback', 'cancelled', 'failed'),
+    transfer: oneOf('none', 'experiment_summary'),
+  },
+  lucid_conversion: {
+    surface: oneOf('program', 'paywall', 'settings'),
+    action: oneOf('viewed', 'started', 'completed', 'restored'),
+    tier: oneOf('free', 'plus', 'unknown'),
+  },
 };
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -217,7 +248,7 @@ export function validateProductAnalyticsEvent(
 
   if (typeof event.event_id !== 'string' || !UUID_PATTERN.test(event.event_id)) return false;
   if (typeof event.event_name !== 'string' || !EVENT_NAMES.includes(event.event_name as AnalyticsEventName)) return false;
-  if (event.schema_version !== 1 || event.platform !== 'android') return false;
+  if (event.schema_version !== 1 || (event.platform !== 'android' && event.platform !== 'ios')) return false;
   if (event.journey_id !== null && (typeof event.journey_id !== 'string' || !UUID_PATTERN.test(event.journey_id))) return false;
   if (typeof event.app_version !== 'string' || !/^[0-9A-Za-z.+_-]{1,32}$/.test(event.app_version)) return false;
   if (typeof event.locale !== 'string' || !['fr', 'en', 'es', 'de', 'it', 'pt'].includes(event.locale)) return false;

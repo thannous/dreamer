@@ -6,9 +6,11 @@ import * as Network from 'expo-network';
 import { AppState, Platform } from 'react-native';
 
 import type { AnalyticsEventMap, AnalyticsEventName, AnalyticsProvider } from '@/lib/analytics';
+import { isLucidTrainer } from '@/lib/appVariant';
 import { getApiBaseUrl } from '@/lib/config';
 import { createScopedLogger } from '@/lib/logger';
 import {
+  canDeliverProductAnalytics,
   fetchProductAnalyticsJSON,
   resetProductAnalyticsGuestSessionForTesting,
 } from '@/lib/productAnalyticsGuestSession';
@@ -56,6 +58,11 @@ const PRODUCT_ANALYTICS_EVENT_NAMES = new Set<AnalyticsEventName>([
   'stats_period_selected',
   'stats_shared',
   'stats_cta_clicked',
+  'lucid_activation_completed',
+  'lucid_training_completed',
+  'lucid_retention_observed',
+  'lucid_noctalia_handoff',
+  'lucid_conversion',
 ]);
 
 const FORBIDDEN_PROPERTY_KEYS = new Set([
@@ -198,6 +205,32 @@ const PRODUCT_ANALYTICS_PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySch
       'unlock_signals'
     ),
   },
+  lucid_activation_completed: {
+    goal: oneOf('lucidity', 'recall', 'consistency', 'exploration'),
+    experience: oneOf('new', 'some', 'experienced'),
+    reminder_frequency: oneOf('none', 'low', 'medium', 'high'),
+  },
+  lucid_training_completed: {
+    technique: oneOf('mild', 'ssild', 'wbtb'),
+    phase: oneOf('day', 'bedtime', 'night', 'morning'),
+    outcome: oneOf('completed', 'skipped', 'interrupted'),
+    duration: oneOf('under_5m', '5_15m', '15m_plus'),
+  },
+  lucid_retention_observed: {
+    week: oneOf('week_1', 'week_2_4', 'week_5_plus'),
+    active_days: oneOf('0', '1_2', '3_4', '5_7'),
+    status: oneOf('active', 'returning', 'lapsed'),
+  },
+  lucid_noctalia_handoff: {
+    action: oneOf('open_noctalia', 'transfer_summary'),
+    outcome: oneOf('opened', 'fallback', 'cancelled', 'failed'),
+    transfer: oneOf('none', 'experiment_summary'),
+  },
+  lucid_conversion: {
+    surface: oneOf('program', 'paywall', 'settings'),
+    action: oneOf('viewed', 'started', 'completed', 'restored'),
+    tier: oneOf('free', 'plus', 'unknown'),
+  },
 };
 
 type ProductAnalyticsPreference = 'enabled' | 'disabled';
@@ -221,6 +254,15 @@ let remoteDisabled = false;
 let effectiveLocale: ProductAnalyticsEnvelope['locale'] | null = null;
 let appStateSubscription: { remove: () => void } | null = null;
 let networkSubscription: { remove: () => void } | null = null;
+
+export function resolveDefaultProductAnalyticsPreference(
+  lucidTrainer = isLucidTrainer
+): ProductAnalyticsPreference {
+  // Noctalia keeps its historical first-party analytics default. The companion
+  // promises an explicit opt-in during its own onboarding, so a missing value
+  // must fail closed before the Lucid state has finished hydrating.
+  return lucidTrainer ? 'disabled' : 'enabled';
+}
 
 function runSerialized<T>(work: () => Promise<T>): Promise<T> {
   const run = storageChain.then(work, work);
@@ -279,7 +321,7 @@ function isEnvelope(value: unknown): value is ProductAnalyticsEnvelope {
     typeof candidate.occurred_at === 'string' &&
     (candidate.journey_id === null ||
       (typeof candidate.journey_id === 'string' && UUID_PATTERN.test(candidate.journey_id))) &&
-    candidate.platform === 'android' &&
+    (candidate.platform === 'android' || candidate.platform === 'ios') &&
     typeof candidate.app_version === 'string' &&
     /^[0-9A-Za-z.+_-]{1,32}$/.test(candidate.app_version) &&
     (candidate.locale === 'fr' ||
@@ -417,10 +459,16 @@ async function getJourneyRecord(): Promise<JourneyRecord | null> {
   }
 }
 
+export function isProductAnalyticsPlatform(
+  platform = Platform.OS
+): platform is 'android' | 'ios' {
+  return platform === 'android' || platform === 'ios';
+}
+
 export function isProductAnalyticsAvailable(): boolean {
   return (
     !remoteDisabled &&
-    Platform.OS === 'android' &&
+    isProductAnalyticsPlatform() &&
     (process.env.EXPO_PUBLIC_PRODUCT_ANALYTICS_ENABLED ?? '').toLowerCase() === 'true'
   );
 }
@@ -429,9 +477,11 @@ export async function getProductAnalyticsPreference(): Promise<ProductAnalyticsP
   if (preferenceCache) return preferenceCache;
   try {
     const stored = await AsyncStorage.getItem(PREFERENCE_KEY);
-    preferenceCache = stored === null || stored === 'enabled'
-      ? 'enabled'
-      : 'disabled';
+    preferenceCache = stored === null
+      ? resolveDefaultProductAnalyticsPreference()
+      : stored === 'enabled'
+        ? 'enabled'
+        : 'disabled';
   } catch {
     // A storage failure is not equivalent to the user having no preference.
     // Fail closed for this session instead of starting collection unexpectedly.
@@ -459,13 +509,16 @@ async function enqueueProductAnalyticsEvent<TName extends AnalyticsEventName>(
   const journey = await getJourneyRecord();
   if (!journey) return;
 
+  const platform = Platform.OS;
+  if (!isProductAnalyticsPlatform(platform)) return;
+
   const envelope: ProductAnalyticsEnvelope = {
     event_id: Crypto.randomUUID(),
     event_name: eventName,
     schema_version: 1,
     occurred_at: new Date().toISOString(),
     journey_id: journey.id,
-    platform: 'android',
+    platform,
     app_version: getAppVersion(),
     locale: getLocale(),
     properties: normalizedProperties,
@@ -551,6 +604,7 @@ export async function flushProductAnalytics(): Promise<void> {
   if (flushPromise) return flushPromise;
   flushPromise = (async () => {
     if (!isProductAnalyticsAvailable() || (await getProductAnalyticsPreference()) === 'disabled') return;
+    if (!(await canDeliverProductAnalytics())) return;
     if (!(await isNetworkReachable())) return;
 
     for (let iteration = 0; iteration < 10; iteration += 1) {
@@ -635,7 +689,8 @@ async function loadPendingDeletions(): Promise<PendingDeletion[]> {
 }
 
 async function flushPendingProductAnalyticsDeletions(): Promise<void> {
-  if (Platform.OS !== 'android' || deletionFlushPromise) return deletionFlushPromise ?? undefined;
+  if (deletionFlushPromise) return deletionFlushPromise;
+  if (!(await canDeliverProductAnalytics())) return;
   deletionFlushPromise = (async () => {
     const initialPending = await runSerialized(loadPendingDeletions);
     if (initialPending.length === 0) return;
@@ -750,7 +805,7 @@ export async function initializeProductAnalytics(): Promise<void> {
   }
   initialized = true;
 
-  if (Platform.OS === 'android') {
+  if (isProductAnalyticsPlatform()) {
     networkSubscription = Network.addNetworkStateListener((state) => {
       if (state.isConnected !== false && state.isInternetReachable !== false) {
         void flushPendingProductAnalyticsDeletions();

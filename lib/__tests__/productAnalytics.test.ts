@@ -10,10 +10,11 @@ import {
   initializeProductAnalytics,
   isProductAnalyticsAvailable,
   resetProductAnalyticsForTesting,
+  resolveDefaultProductAnalyticsPreference,
   setProductAnalyticsLocale,
   setProductAnalyticsEnabled,
 } from '@/lib/productAnalytics';
-import { fetchProductAnalyticsJSON } from '@/lib/productAnalyticsGuestSession';
+import { canDeliverProductAnalytics, fetchProductAnalyticsJSON } from '@/lib/productAnalyticsGuestSession';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock')
@@ -32,6 +33,7 @@ jest.mock('expo-network', () => ({
 jest.mock('@/lib/productAnalyticsGuestSession', () => ({
   fetchProductAnalyticsJSON: jest.fn(),
   resetProductAnalyticsGuestSessionForTesting: jest.fn(async () => undefined),
+  canDeliverProductAnalytics: jest.fn(async () => true),
 }));
 
 jest.mock('@/lib/config', () => ({
@@ -39,6 +41,7 @@ jest.mock('@/lib/config', () => ({
 }));
 
 const mockFetch = jest.mocked(fetchProductAnalyticsJSON);
+const mockCanDeliver = jest.mocked(canDeliverProductAnalytics);
 const mockNetworkState = jest.mocked(Network.getNetworkStateAsync);
 
 describe('first-party product analytics', () => {
@@ -61,6 +64,7 @@ describe('first-party product analytics', () => {
       type: Network.NetworkStateType.NONE,
     });
     mockFetch.mockReset();
+    mockCanDeliver.mockReset().mockResolvedValue(true);
   });
 
   afterEach(async () => {
@@ -71,13 +75,49 @@ describe('first-party product analytics', () => {
     else process.env.EXPO_PUBLIC_PRODUCT_ANALYTICS_ENABLED = originalFlag;
   });
 
-  it('is available only for Android when the client feature flag is enabled', () => {
+  it('is available on Android and iOS when the client feature flag is enabled', () => {
     expect(isProductAnalyticsAvailable()).toBe(true);
     Platform.OS = 'ios';
+    expect(isProductAnalyticsAvailable()).toBe(true);
+    Platform.OS = 'web';
     expect(isProductAnalyticsAvailable()).toBe(false);
     Platform.OS = 'android';
     process.env.EXPO_PUBLIC_PRODUCT_ANALYTICS_ENABLED = 'false';
     expect(isProductAnalyticsAvailable()).toBe(false);
+  });
+
+  it('records consented iOS events with an iOS envelope', async () => {
+    Platform.OS = 'ios';
+    const provider = createProductAnalyticsProvider();
+    await provider.track('onboarding_step_viewed', { step: 'intro' });
+
+    const queue = JSON.parse((await AsyncStorage.getItem('product-analytics-queue-v1')) ?? '[]');
+    expect(queue).toHaveLength(1);
+    expect(queue[0]).toEqual(expect.objectContaining({
+      event_name: 'onboarding_step_viewed',
+      platform: 'ios',
+      locale: 'fr',
+      properties: { step: 'intro' },
+    }));
+  });
+
+  it('keeps queued iOS guest events local until an authenticated delivery path exists', async () => {
+    Platform.OS = 'ios';
+    mockCanDeliver.mockResolvedValue(false);
+    mockNetworkState.mockResolvedValue({
+      isConnected: true,
+      isInternetReachable: true,
+      type: Network.NetworkStateType.WIFI,
+    });
+
+    const provider = createProductAnalyticsProvider();
+    await provider.track('onboarding_step_viewed', { step: 'intro' });
+    await flushProductAnalytics();
+
+    const queue = JSON.parse((await AsyncStorage.getItem('product-analytics-queue-v1')) ?? '[]');
+    expect(queue).toHaveLength(1);
+    expect(queue[0].platform).toBe('ios');
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 
   it('persists an event before a network send and never stores content fields', async () => {
@@ -205,7 +245,7 @@ describe('first-party product analytics', () => {
     await expect(getProductAnalyticsPreference()).resolves.toBe('disabled');
   });
 
-  it('treats an unknown stored preference as disabled while null remains the default opt-in', async () => {
+  it('treats an unknown stored preference as disabled while Noctalia keeps its historical default', async () => {
     await AsyncStorage.setItem('product-analytics-preference-v1', 'unexpected-value');
     await resetProductAnalyticsForTesting();
     expect(await getProductAnalyticsPreference()).toBe('disabled');
@@ -213,6 +253,11 @@ describe('first-party product analytics', () => {
     await AsyncStorage.removeItem('product-analytics-preference-v1');
     await resetProductAnalyticsForTesting();
     expect(await getProductAnalyticsPreference()).toBe('enabled');
+  });
+
+  it('fails closed before explicit consent in the Lucid Trainer companion', () => {
+    expect(resolveDefaultProductAnalyticsPreference(true)).toBe('disabled');
+    expect(resolveDefaultProductAnalyticsPreference(false)).toBe('enabled');
   });
 
   it('uses the effective app locale supplied by the bootstrap', async () => {
