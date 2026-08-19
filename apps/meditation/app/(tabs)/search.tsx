@@ -3,6 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
+import { EmptyIllustration } from '@/components/atmosphere/EmptyIllustration';
 import { Screen } from '@/components/atmosphere/Screen';
 import { SessionArtwork } from '@/components/session/SessionArtwork';
 import { SessionCard } from '@/components/session/SessionCard';
@@ -58,6 +59,15 @@ export default function SearchTab() {
 
   const isFiltered = query.trim().length > 0 || maxLength !== null;
 
+  // Zero and one are their own words in most languages — "0 séances" is wrong
+  // in French, and "Aucune séance" reads better than a digit anyway.
+  const countLabel =
+    results.length === 0
+      ? t('search.results.zero')
+      : results.length === 1
+        ? t('search.results.one')
+        : t('search.results', { count: results.length });
+
   return (
     <Screen variant="subtle" edges={['top']}>
       <ScrollView
@@ -109,15 +119,12 @@ export default function SearchTab() {
         ) : null}
 
         <View className="gap-3">
-          <Text variant="h2">{isFiltered
-              ? results.length === 1
-                ? t('search.results.one')
-                : t('search.results', { count: results.length })
-              : t('search.all')}</Text>
+          <Text variant="h2">{isFiltered ? countLabel : t('search.all')}</Text>
           <Rule className="self-start" />
 
           {results.length === 0 ? (
-            <View className="gap-2 py-8">
+            <View className="items-center gap-2 py-8">
+              <EmptyIllustration name="search" />
               <Text variant="h3" className="text-center">
                 {t('search.empty.title')}
               </Text>

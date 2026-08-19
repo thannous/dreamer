@@ -284,4 +284,5 @@ export const de: Record<keyof typeof en, string> = {
   'paywall.remaining': 'Noch {count} kostenlose Sitzungen diesen Monat',
   'paywall.remaining.none': 'Diesen Monat keine kostenlose Sitzung mehr',
   'profile.calendar.summary': "An {practised} der letzten {total} Tage geübt",
+  'search.results.zero': "Keine Sitzung",
 };

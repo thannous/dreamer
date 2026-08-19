@@ -2,6 +2,7 @@ import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect } from 'react';
 import { ScrollView, View } from 'react-native';
 
+import { EmptyIllustration } from '@/components/atmosphere/EmptyIllustration';
 import { ProgressiveSilence } from '@/components/atmosphere/ProgressiveSilence';
 import { Screen } from '@/components/atmosphere/Screen';
 import { PlayerControls } from '@/components/player/PlayerControls';
@@ -57,6 +58,7 @@ export default function PlayerScreen() {
       <Screen variant="immersive">
         <BackLink label={t('player.close')} className="px-gutter pt-2" />
         <View className="flex-1 items-center justify-center gap-3 px-gutter">
+          <EmptyIllustration name="offline" />
           <Text variant="h2" className="text-center">
             {t('player.unavailable.title')}
           </Text>

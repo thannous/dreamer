@@ -251,4 +251,5 @@ export const en = {
   "paywall.remaining": "{count} free sessions left this month",
   "paywall.remaining.none": "No free session left this month",
   'profile.calendar.summary': "Practised on {practised} of the last {total} days",
+  'search.results.zero': "No session",
 } as const;

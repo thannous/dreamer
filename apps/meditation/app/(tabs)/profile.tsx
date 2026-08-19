@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
+import { EmptyIllustration } from '@/components/atmosphere/EmptyIllustration';
 import { Screen } from '@/components/atmosphere/Screen';
 import { StatTile } from '@/components/profile/StatTile';
 import { StreakCalendar } from '@/components/profile/StreakCalendar';
@@ -43,7 +44,8 @@ export default function ProfileTab() {
         </View>
 
         {empty ? (
-          <View className="gap-3 py-8">
+          <View className="items-center gap-3 py-8">
+            <EmptyIllustration name="practice" />
             <Text variant="h3" className="text-center">
               {t('profile.empty.title')}
             </Text>

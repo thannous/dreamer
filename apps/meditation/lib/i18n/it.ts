@@ -284,4 +284,5 @@ export const it: Record<keyof typeof en, string> = {
   'paywall.remaining': 'Restano {count} sessioni gratuite questo mese',
   'paywall.remaining.none': 'Nessuna sessione gratuita rimasta questo mese',
   'profile.calendar.summary': "Praticato {practised} degli ultimi {total} giorni",
+  'search.results.zero': "Nessuna sessione",
 };
