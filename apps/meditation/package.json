@@ -14,7 +14,14 @@
     "web": "expo start --web",
     "test": "jest",
     "lint": "expo lint app components constants context hooks lib services tests",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "maestro test maestro/smoke.yml",
+    "test:e2e:all": "maestro test maestro/",
+    "test:e2e:onboarding": "maestro test maestro/onboarding.yml",
+    "test:e2e:playback": "maestro test maestro/session-playback.yml",
+    "test:e2e:breathing": "maestro test maestro/breathing.yml",
+    "test:e2e:paywall": "maestro test maestro/paywall.yml",
+    "test:e2e:settings": "maestro test maestro/settings.yml"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",
@@ -54,6 +61,7 @@
   "devDependencies": {
     "@testing-library/react-native": "^13.3.3",
     "@types/jest": "^29.5.14",
+    "@types/node": "^26.2.0",
     "@types/react": "~19.2.2",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.1",

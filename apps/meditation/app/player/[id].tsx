@@ -12,6 +12,7 @@ import { AMBIENCES } from '@/content/ambiences';
 import { NARRATOR_BY_ID } from '@/content/narrators';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
 import { useSubscription } from '@/context/SubscriptionContext';
 import { usePlayer } from '@/context/PlayerContext';
@@ -70,9 +71,13 @@ export default function PlayerScreen() {
 
   return (
     <Screen variant="immersive">
-      <View className="flex-1">
+      <View testID={TID.Screen.Player} className="flex-1">
         <ProgressiveSilence active={playing} className="px-gutter pt-2">
-          <BackLink label={t('player.close')} fallbackHref="/(tabs)" />
+          <BackLink
+            testID={TID.Button.PlayerClose}
+            label={t('player.close')}
+            fallbackHref="/(tabs)"
+          />
         </ProgressiveSilence>
 
         <View className="flex-1 justify-center px-gutter">

@@ -1,0 +1,48 @@
+# Home → a free session → playback → the practice is logged.
+#
+# `sleep-descent` is one of the four sessions bundled with the app, so this
+# flow needs no network and no media bucket.
+appId: com.noctalia.meditation
+---
+- runFlow: onboarding.yml
+
+- tapOn:
+    id: 'tab.search'
+- assertVisible:
+    id: 'screen.search'
+
+# The first row of the catalogue is the first free session.
+- tapOn:
+    point: '50%,72%'
+- assertVisible:
+    id: 'screen.session'
+
+- tapOn:
+    id: 'btn.session.play'
+- assertVisible:
+    id: 'screen.player'
+
+# Playback starts on its own; the chrome then withdraws (progressive silence).
+- assertVisible:
+    id: 'text.player.position'
+- waitForAnimationToEnd:
+    timeout: 6000
+
+# One touch brings the controls back, then the transport answers.
+- tapOn:
+    point: '50%,45%'
+- tapOn:
+    id: 'btn.player.forward'
+- tapOn:
+    id: 'btn.player.toggle'
+
+- tapOn:
+    id: 'btn.player.close'
+- assertVisible:
+    id: 'screen.session'
+
+# A started session shows up as resumable on the home screen.
+- tapOn:
+    id: 'tab.home'
+- assertVisible:
+    id: 'screen.home'

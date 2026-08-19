@@ -12,6 +12,7 @@ import { Screen } from '@/components/atmosphere/Screen';
 import { Button, Rule, Text } from '@/components/ui';
 import { Curve, Duration, PressOpacity } from '@/constants/motion';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 
 import { StepDots } from './StepDots';
 
@@ -28,6 +29,8 @@ type Props = React.PropsWithChildren<{
   canContinue?: boolean;
   onSkip?: () => void;
   skipLabel?: string;
+  /** Maestro anchor for the step, from `TID.Screen`. */
+  testID?: string;
 }>;
 
 /**
@@ -45,6 +48,7 @@ export function OnboardingScreen({
   canContinue = true,
   onSkip,
   skipLabel,
+  testID,
   children,
 }: Props) {
   const router = useRouter();
@@ -72,7 +76,7 @@ export function OnboardingScreen({
 
   return (
     <Screen variant="subtle">
-      <View className="flex-1">
+      <View testID={testID} className="flex-1">
         <View className="flex-row items-center justify-between px-gutter pb-2 pt-2">
           {router.canGoBack() ? (
             <AnimatedPressable
@@ -113,7 +117,12 @@ export function OnboardingScreen({
         </ScrollView>
 
         <View className="gap-3 px-gutter pb-4 pt-2">
-          <Button label={ctaLabel} onPress={onContinue} disabled={!canContinue} />
+          <Button
+            testID={TID.Button.OnboardingContinue}
+            label={ctaLabel}
+            onPress={onContinue}
+            disabled={!canContinue}
+          />
           {onSkip ? (
             <Button label={skipLabel ?? t('common.skip')} variant="ghost" onPress={onSkip} />
           ) : null}

@@ -1,0 +1,40 @@
+# A premium session sends a free listener to the paywall, and the purchase
+# opens the gate. Runs against the mock store — see config.yaml.
+appId: com.noctalia.meditation
+---
+- runFlow: onboarding.yml
+
+- tapOn:
+    id: 'tab.search'
+- assertVisible:
+    id: 'screen.search'
+
+# "Dream preparation" is entirely premium — the last category tile.
+- tapOn:
+    point: '75%,58%'
+- tapOn:
+    point: '50%,45%'
+- assertVisible:
+    id: 'screen.session'
+
+- tapOn:
+    id: 'btn.session.play'
+- assertVisible:
+    id: 'screen.paywall'
+
+# Restore and the legal links are mandatory on a paywall, on either store.
+- assertVisible:
+    id: 'btn.paywall.restore'
+
+- tapOn:
+    id: 'btn.paywall.buy'
+- assertVisible:
+    id: 'screen.session'
+
+# The same button now opens the session instead of the paywall.
+- tapOn:
+    id: 'btn.session.play'
+- assertVisible:
+    id: 'screen.player'
+- assertNotVisible:
+    id: 'screen.paywall'

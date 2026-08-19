@@ -9,6 +9,7 @@ import { BackLink, Button, Card, Rule, Text } from '@/components/ui';
 import { NARRATOR_BY_ID } from '@/content/narrators';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
 import { useSubscription } from '@/context/SubscriptionContext';
 import type { TranslationKey } from '@/lib/i18n';
@@ -52,6 +53,7 @@ export default function SessionDetail() {
       <BackLink label={t('common.back')} className="px-gutter pb-2 pt-2" />
 
       <ScrollView
+        testID={TID.Screen.SessionDetail}
         contentContainerClassName="pb-10 gap-6"
         showsVerticalScrollIndicator={false}>
         <SessionArtwork
@@ -103,6 +105,7 @@ export default function SessionDetail() {
 
       <View className="gap-3 px-gutter pb-4">
         <Button
+          testID={TID.Button.SessionPlay}
           label={ctaLabel}
           onPress={() => {
             // The gate is checked here rather than inside the player: a listener
@@ -118,6 +121,7 @@ export default function SessionDetail() {
         <Pressable
           accessibilityRole="button"
           accessibilityState={{ selected: saved }}
+          testID={TID.Button.SessionFavorite}
           onPress={() => toggleFavorite(session.id)}
           className="items-center py-2 active:opacity-70">
           <Text variant="bodySm" tone="accent">

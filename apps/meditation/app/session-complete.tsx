@@ -6,6 +6,7 @@ import { Screen } from '@/components/atmosphere/Screen';
 import { Button, Card, Rule, Text } from '@/components/ui';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import type { TranslationKey } from '@/lib/i18n';
 import { toMinutes } from '@/lib/library';
 
@@ -33,7 +34,7 @@ export default function SessionCompleteScreen() {
 
   return (
     <Screen variant="immersive">
-      <View className="flex-1 justify-between px-gutter pb-4 pt-16">
+      <View testID={TID.Screen.SessionComplete} className="flex-1 justify-between px-gutter pb-4 pt-16">
         <View className="gap-4">
           <Text variant="display">{t('complete.title')}</Text>
           <Rule className="self-start" />

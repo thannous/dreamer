@@ -13,6 +13,7 @@ import {
   type BreathDurationMinutes,
 } from '@/content/breathing';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
 import { useBreathEngine } from '@/hooks/useBreathEngine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -79,12 +80,15 @@ export default function BreatheExercise() {
     <Screen variant="immersive">
       <BackLink label={t('player.close')} fallbackHref="/(tabs)" className="px-gutter pt-2" />
 
-      <View className="flex-1 items-center justify-center gap-10 px-gutter">
+      <View
+        testID={TID.Screen.BreatheExercise}
+        className="flex-1 items-center justify-center gap-10 px-gutter">
         <View className="items-center gap-2">
           <Text variant="overline">
             {t(`breathe.pattern.${pattern.id}.name` as TranslationKey)}
           </Text>
           <Text
+            testID={TID.Text.BreathePhase}
             variant="display"
             className="text-center"
             accessibilityLiveRegion="polite"
@@ -134,6 +138,7 @@ export default function BreatheExercise() {
           <Button label={t('breathe.again')} onPress={engine.reset} />
         ) : (
           <Button
+            testID={TID.Button.BreatheStart}
             label={
               engine.running
                 ? t('breathe.pause')

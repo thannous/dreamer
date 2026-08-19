@@ -14,6 +14,7 @@ type Props = {
   /** Where to land when there is no history — a deep link opened cold. */
   fallbackHref?: '/' | '/(tabs)' | '/search';
   className?: string;
+  testID?: string;
 };
 
 /**
@@ -21,7 +22,7 @@ type Props = {
  * its own: it does not exist on Android hardware-button setups, and a
  * deep-linked screen may have nothing to go back to at all.
  */
-export function BackLink({ label, fallbackHref = '/(tabs)', className }: Props) {
+export function BackLink({ label, fallbackHref = '/(tabs)', className, testID }: Props) {
   const router = useRouter();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'link' });
 
@@ -36,6 +37,7 @@ export function BackLink({ label, fallbackHref = '/(tabs)', className }: Props) 
   return (
     <View className={className}>
       <AnimatedPressable
+        testID={testID}
         accessibilityRole="button"
         onPress={goBack}
         onPressIn={handlePressIn}

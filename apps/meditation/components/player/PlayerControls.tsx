@@ -5,6 +5,7 @@ import Animated from 'react-native-reanimated';
 import { Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
+import { TID } from '@/lib/testIDs';
 import { SEEK_STEP_SEC } from '@/lib/audio';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -19,15 +20,18 @@ function SkipButton({
   label,
   glyph,
   onPress,
+  testID,
 }: {
   label: string;
   glyph: string;
   onPress: () => void;
+  testID: string;
 }) {
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'chip' });
 
   return (
     <AnimatedPressable
+      testID={testID}
       accessibilityRole="button"
       accessibilityLabel={label}
       onPress={onPress}
@@ -51,12 +55,14 @@ export function PlayerControls({ playing, onToggle, onSkip }: Props) {
   return (
     <View className="flex-row items-center justify-center gap-8">
       <SkipButton
+        testID={TID.Button.PlayerBack}
         label={t('player.back15')}
         glyph={`−${SEEK_STEP_SEC}`}
         onPress={() => onSkip(-SEEK_STEP_SEC)}
       />
 
       <AnimatedPressable
+        testID={TID.Button.PlayerToggle}
         accessibilityRole="button"
         accessibilityLabel={playing ? t('player.pause') : t('player.play')}
         onPress={onToggle}
@@ -70,6 +76,7 @@ export function PlayerControls({ playing, onToggle, onSkip }: Props) {
       </AnimatedPressable>
 
       <SkipButton
+        testID={TID.Button.PlayerForward}
         label={t('player.forward15')}
         glyph={`+${SEEK_STEP_SEC}`}
         onPress={() => onSkip(SEEK_STEP_SEC)}

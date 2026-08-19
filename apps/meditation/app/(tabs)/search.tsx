@@ -10,6 +10,7 @@ import { Chip, Rule, Text, TextField } from '@/components/ui';
 import { CATEGORIES } from '@/content/categories';
 import { SESSIONS } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import type { TranslationKey } from '@/lib/i18n';
 import { searchSessions } from '@/lib/library';
@@ -60,6 +61,7 @@ export default function SearchTab() {
   return (
     <Screen variant="subtle" edges={['top']}>
       <ScrollView
+        testID={TID.Screen.Search}
         contentContainerClassName="px-gutter pb-10 pt-4 gap-6"
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>

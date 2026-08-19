@@ -8,6 +8,7 @@ import { MiniPlayer } from '@/components/player/MiniPlayer';
 import { Text } from '@/components/ui';
 import { FontFamily } from '@/constants/typography';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { useTheme } from '@/context/ThemeContext';
 
 const TAB_BAR_HEIGHT = 64;
@@ -47,10 +48,22 @@ export default function TabsLayout() {
           />
         ),
       }}>
-        <Tabs.Screen name="index" options={{ title: t('tabs.home') }} />
-        <Tabs.Screen name="breathe" options={{ title: t('tabs.breathe') }} />
-        <Tabs.Screen name="search" options={{ title: t('tabs.search') }} />
-        <Tabs.Screen name="profile" options={{ title: t('tabs.profile') }} />
+        <Tabs.Screen
+          name="index"
+          options={{ title: t('tabs.home'), tabBarButtonTestID: TID.Tab.Home }}
+        />
+        <Tabs.Screen
+          name="breathe"
+          options={{ title: t('tabs.breathe'), tabBarButtonTestID: TID.Tab.Breathe }}
+        />
+        <Tabs.Screen
+          name="search"
+          options={{ title: t('tabs.search'), tabBarButtonTestID: TID.Tab.Search }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{ title: t('tabs.profile'), tabBarButtonTestID: TID.Tab.Profile }}
+        />
       </Tabs>
 
       {/* Pinned directly above the bar rather than inside it: expo-router owns

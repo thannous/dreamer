@@ -13,10 +13,11 @@ type Props = {
   value?: string;
   onPress?: () => void;
   disabled?: boolean;
+  testID?: string;
 };
 
 /** One line of settings: a name, its current value, and somewhere to go. */
-export function SettingsRow({ label, value, onPress, disabled = false }: Props) {
+export function SettingsRow({ label, value, onPress, disabled = false, testID }: Props) {
   const { style, handlePressIn, handlePressOut } = usePressMotion({
     surface: 'card',
     restOpacity: disabled ? 0.4 : 1,
@@ -24,6 +25,7 @@ export function SettingsRow({ label, value, onPress, disabled = false }: Props) 
 
   return (
     <AnimatedPressable
+      testID={testID}
       accessibilityRole="button"
       accessibilityState={{ disabled }}
       disabled={disabled || !onPress}

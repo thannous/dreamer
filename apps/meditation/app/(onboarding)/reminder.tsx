@@ -6,6 +6,7 @@ import { OnboardingScreen } from '@/components/onboarding/OnboardingScreen';
 import { SelectableCard } from '@/components/onboarding/SelectableCard';
 import { Chip, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { useOnboarding } from '@/context/OnboardingContext';
 
 /** Evening slots. A meditation reminder at 08:00 would miss the point. */
@@ -35,6 +36,7 @@ export default function ReminderStep() {
 
   return (
     <OnboardingScreen
+      testID={TID.Screen.OnboardingReminder}
       step={4}
       totalSteps={4}
       title={t('onboarding.reminder.title')}

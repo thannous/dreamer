@@ -5,6 +5,7 @@ import { Screen } from '@/components/atmosphere/Screen';
 import { SelectableCard } from '@/components/onboarding/SelectableCard';
 import { BackLink, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import type { TranslationKey } from '@/lib/i18n';
 import { SHIPPED_LANGUAGES } from '@/lib/types';
 
@@ -20,6 +21,7 @@ export default function LanguageScreen() {
       <BackLink label={t('common.back')} className="px-gutter pt-2" />
 
       <ScrollView
+        testID={TID.Screen.Language}
         contentContainerClassName="px-gutter pb-16 pt-2 gap-6"
         showsVerticalScrollIndicator={false}>
         <View className="gap-3">
@@ -32,6 +34,7 @@ export default function LanguageScreen() {
           {SHIPPED_LANGUAGES.map((code) => (
             <SelectableCard
               key={code}
+              testID={`lang.${code}`}
               mode="single"
               label={t(`language.${code}` as TranslationKey)}
               selected={language === code}

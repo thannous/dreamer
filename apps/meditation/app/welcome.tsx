@@ -7,6 +7,7 @@ import { Screen } from '@/components/atmosphere/Screen';
 import { Button, Rule, Text } from '@/components/ui';
 import { Curve, Duration, StaggerDelayMs } from '@/constants/motion';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { areAccountsEnabled } from '@/lib/env';
 
 /**
@@ -38,7 +39,7 @@ export default function WelcomeScreen() {
 
   return (
     <Screen variant="immersive">
-      <View className="flex-1 justify-between px-gutter pb-4 pt-16">
+      <View testID={TID.Screen.Welcome} className="flex-1 justify-between px-gutter pb-4 pt-16">
         <View className="gap-4">
           <Animated.View entering={beat(0)}>
             <Text variant="overline">{t('welcome.tagline')}</Text>
@@ -58,7 +59,11 @@ export default function WelcomeScreen() {
 
           {/* Both buttons arrive together: the commitment is one beat, not two. */}
           <Animated.View className="gap-3" entering={beat(4)}>
-            <Button label={t('welcome.cta')} onPress={() => router.push('/goals')} />
+            <Button
+              testID={TID.Button.WelcomeStart}
+              label={t('welcome.cta')}
+              onPress={() => router.push('/goals')}
+            />
             {areAccountsEnabled() ? (
               <Button
                 label={t('welcome.signin')}

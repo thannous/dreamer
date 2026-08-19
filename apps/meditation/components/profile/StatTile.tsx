@@ -8,12 +8,14 @@ type Props = {
   label: string;
   /** The one tile that carries the breathing accent stripe. */
   featured?: boolean;
+  testID?: string;
 };
 
 /** A number in Fraunces, its name underneath. Nothing else. */
-export function StatTile({ value, label, featured = false }: Props) {
+export function StatTile({ value, label, featured = false, testID }: Props) {
   return (
     <View
+      testID={testID}
       className={`flex-1 items-center gap-1 rounded-xl border px-2 py-4 ${
         featured ? 'border-champagne-soft bg-ink-panel' : 'border-hairline bg-ink-card'
       }`}>

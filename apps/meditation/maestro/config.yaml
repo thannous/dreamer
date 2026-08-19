@@ -1,0 +1,6 @@
+# Shared by every flow in this folder.
+appId: com.noctalia.meditation
+---
+# Flows assume the app was built with EXPO_PUBLIC_MOCK_MODE=true:
+# the audio and store mocks are what make playback and purchase deterministic
+# without narration files, a media bucket or a RevenueCat account.

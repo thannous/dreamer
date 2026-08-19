@@ -587,7 +587,7 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 | **L5 — Profil & séries** | Journal de pratique, séries, statistiques, calendrier | Écran 11 |
 | **L6 — Réglages** | Réglages, profil local + photo, langue, rappels planifiés (`notificationService` + mock), aide/FAQ, légal | Écrans 18–22, 24 |
 | **L7 — Monétisation** | RevenueCat (+ magasin simulé), règles d'accès pures, paywall contextuel, gating sur trois points de déclenchement | Écran 17 |
-| **L8 — Finition** | ✅ 4 locales restantes (es, de, it, pt) · ✅ accessibilité · ⬜ fonds vidéo, tests Maestro, icône/splash, préparation stores | Release candidate |
+| **L8 — Finition** | ✅ 4 locales restantes (es, de, it, pt) · ✅ accessibilité · ✅ flux Maestro (écrits, non exécutés) · ⬜ fonds vidéo, icône/splash, préparation stores | Release candidate |
 
 ---
 
@@ -628,4 +628,4 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 - [ ] Téléchargement store ≤ 60 Mo (iOS) / ≤ 50 Mo (Android) ; une session distante déjà écoutée se relit hors ligne.
 - [ ] Aucune référence à un compte ou à un backend applicatif dans le code livré (`ACCOUNTS_ENABLED=false` → `/(auth)/*` injoignable).
 - [ ] `tsc --noEmit` et `eslint` passent sans erreur.
-- [ ] Le parcours E2E Maestro « onboarding → session → fin » passe sur émulateur Android.
+- [~] Le parcours E2E Maestro « onboarding → session → fin » passe sur émulateur Android. *(L8 : six flux écrits et ancrés sur 37 testID ; un test statique vérifie que chaque ancre ciblée existe réellement dans le code. **Jamais exécutés** — ni Maestro CLI ni émulateur sur cette machine.)*

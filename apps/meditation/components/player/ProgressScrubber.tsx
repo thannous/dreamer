@@ -4,6 +4,7 @@ import { Pressable, View, type LayoutChangeEvent } from 'react-native';
 import { Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
 import { formatTime, SEEK_STEP_SEC } from '@/lib/audio';
+import { TID } from '@/lib/testIDs';
 
 type Props = {
   positionSec: number;
@@ -50,7 +51,9 @@ export function ProgressScrubber({ positionSec, durationSec, onSeek }: Props) {
       </Pressable>
 
       <View className="flex-row justify-between">
-        <Text variant="caption">{formatTime(positionSec)}</Text>
+        <Text testID={TID.Text.PlayerPosition} variant="caption">
+          {formatTime(positionSec)}
+        </Text>
         <Text variant="caption">-{formatTime(remaining)}</Text>
       </View>
     </View>

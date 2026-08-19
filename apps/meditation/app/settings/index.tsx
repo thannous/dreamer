@@ -7,6 +7,7 @@ import { Screen } from '@/components/atmosphere/Screen';
 import { SettingsGroup, SettingsRow } from '@/components/settings/SettingsRow';
 import { BackLink, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { useSettings } from '@/context/SettingsContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { TranslationKey } from '@/lib/i18n';
@@ -32,6 +33,7 @@ export default function SettingsScreen() {
       <BackLink label={t('common.back')} className="px-gutter pt-2" />
 
       <ScrollView
+        testID={TID.Screen.Settings}
         contentContainerClassName="pb-16 pt-2 gap-6"
         showsVerticalScrollIndicator={false}>
         <View className="gap-3 px-gutter">
@@ -57,11 +59,13 @@ export default function SettingsScreen() {
 
         <SettingsGroup title={t('settings.group.app')}>
           <SettingsRow
+            testID={TID.Button.SettingsTheme}
             label={t('settings.theme')}
             value={t(`settings.theme.${preference}` as TranslationKey)}
             onPress={cycleTheme}
           />
           <SettingsRow
+            testID={TID.Button.SettingsLanguage}
             label={t('settings.language')}
             value={t(`language.${language}` as TranslationKey)}
             onPress={() => router.push('/settings/language')}
