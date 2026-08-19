@@ -480,6 +480,8 @@ publication.
 
 | 18/08 après 22:45 | C3 TikTok + Instagram / preuves publiques de nuit | TikTok C3 22:30 et Instagram C3 22:45 sont échus ; X C2/C3 restent sans permalink | TikTok C3 [7672909972921011459](https://www.tiktok.com/@noctaliadreams/video/7672909972921011459) ouvert après 22:30 : plus programmé, légende `A wave rises above the city. Would you wake up or keep watching?`, label créateur IA. Instagram C3 [DcMg5Kfp1jg](https://www.instagram.com/reel/DcMg5Kfp1jg/) : même accroche, label IA natif ; Reels C1 et C2 non retouchés | Registre `53-PUBLIC-PROOF-2026-08-18.md` mis à jour à `10/12` : principal `7/9`, HERO `3/3`. X C2 et X C3 restent PROGRAMMÉ avec URL à collecter ; aucun status ID inventé. 17/08 non clos | **PREUVES NUIT TIKTOK C3 ET IG C3 ACQUISES — X SANS PERMALINK** |
 
+| 19/08 après 15:45 | C1 principal / preuves publiques TikTok et Instagram | C1 TikTok 15:30 et Instagram 15:45 sont échus ; master `HIGGS_2026-08-05_183301_TIME_FREEZE_CITY_073670c9.mp4` ; X C1 ignoré sans permalink ; C2/C3 encore non publiés | TikTok C1 [7672911514487033110](https://www.tiktok.com/@noctaliadreams/video/7672911514487033110) : légende `Time stops across the city. What would you do first? #Noctalia #Dreamscape #SurrealDreams`, label créateur IA. Instagram C1 [DcOWIEWpgSh](https://www.instagram.com/reel/DcOWIEWpgSh/) : accroche `Time stops across the city.`, label IA natif | Registre `54-PUBLIC-PROOF-2026-08-19.md` mis à jour à `2/12` : principal `2/9`, HERO `0/3`. X C1 reste PROGRAMMÉ avec URL à collecter ; aucun status ID inventé. C2/C3 inchangés (PROGRAMMÉ / PRÊT — DIRECT). 17/08 non clos | **PREUVES C1 TIKTOK/INSTAGRAM ACQUISES — X SANS PERMALINK — C2/C3 INCHANGÉS** |
+
 ## Décision finale
 
 - Format A : `À ÉVALUER`.
