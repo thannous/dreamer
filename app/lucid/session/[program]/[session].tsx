@@ -11,11 +11,11 @@ import type { LucidTechnique } from '@/lib/lucid/model';
 import { closeLucidRoute } from '@/lib/lucid/routes';
 
 const COPY = {
-  en: { guided: 'Guided practice', step: 'Step', reflect: 'Reflection', caution: 'Keep in mind', complete: 'Complete session', done: 'Session completed', invalid: 'Session unavailable' },
-  fr: { guided: 'Pratique guidée', step: 'Étape', reflect: 'Réflexion', caution: 'À garder en tête', complete: 'Terminer la séance', done: 'Séance terminée', invalid: 'Séance indisponible' },
-  es: { guided: 'Práctica guiada', step: 'Paso', reflect: 'Reflexión', caution: 'Ten en cuenta', complete: 'Completar sesión', done: 'Sesión completada', invalid: 'Sesión no disponible' },
-  de: { guided: 'Geführte Übung', step: 'Schritt', reflect: 'Reflexion', caution: 'Beachte', complete: 'Einheit abschließen', done: 'Einheit abgeschlossen', invalid: 'Einheit nicht verfügbar' },
-  it: { guided: 'Pratica guidata', step: 'Passaggio', reflect: 'Riflessione', caution: 'Da ricordare', complete: 'Completa sessione', done: 'Sessione completata', invalid: 'Sessione non disponibile' },
+  en: { guided: 'Guided practice', step: 'Step', reflect: 'Reflection', caution: 'Keep in mind', complete: 'Complete session', done: 'Session completed', invalid: 'Session unavailable', stepsChecked: 'Steps checked:' },
+  fr: { guided: 'Pratique guidée', step: 'Étape', reflect: 'Réflexion', caution: 'À garder en tête', complete: 'Terminer la séance', done: 'Séance terminée', invalid: 'Séance indisponible', stepsChecked: 'Étapes cochées :' },
+  es: { guided: 'Práctica guiada', step: 'Paso', reflect: 'Reflexión', caution: 'Ten en cuenta', complete: 'Completar sesión', done: 'Sesión completada', invalid: 'Sesión no disponible', stepsChecked: 'Pasos marcados:' },
+  de: { guided: 'Geführte Übung', step: 'Schritt', reflect: 'Reflexion', caution: 'Beachte', complete: 'Einheit abschließen', done: 'Einheit abgeschlossen', invalid: 'Einheit nicht verfügbar', stepsChecked: 'Abgehakte Schritte:' },
+  it: { guided: 'Pratica guidata', step: 'Passaggio', reflect: 'Riflessione', caution: 'Da ricordare', complete: 'Completa sessione', done: 'Sessione completata', invalid: 'Sessione non disponibile', stepsChecked: 'Passi spuntati:' },
 } as const;
 
 function isTechnique(value: string | string[] | undefined): value is LucidTechnique {
@@ -81,7 +81,7 @@ export default function LucidSessionScreen() {
 
       <LucidCard accent="amber"><View style={styles.notice}><Ionicons name="shield-checkmark" size={23} color={palette.amber} /><View style={styles.noticeCopy}><Text style={[styles.noticeLabel, { color: palette.amber }]}>{copy.caution}</Text><Text style={[styles.noticeText, { color: palette.textSecondary }]}>{session.caution}</Text></View></View></LucidCard>
       <LucidCard><Text style={[styles.noticeLabel, { color: palette.accent }]}>{copy.reflect}</Text><Text style={[styles.reflection, { color: palette.text }]}>{session.reflectionPrompt}</Text></LucidCard>
-      <LucidButton label={alreadyDone ? copy.done : copy.complete} icon="checkmark-circle" disabled={!alreadyDone && progress < 1} loading={saving} onPress={() => alreadyDone ? close() : void finish()} testID="lucid-session-complete" />
+      <LucidButton label={alreadyDone ? copy.done : copy.complete} icon="checkmark-circle" disabled={!alreadyDone && progress < 1} disabledReason={`${copy.stepsChecked} ${checked.filter(Boolean).length} / ${checked.length}`} loading={saving} onPress={() => alreadyDone ? close() : void finish()} testID="lucid-session-complete" />
     </LucidScreen>
   );
 }

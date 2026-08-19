@@ -166,6 +166,7 @@ export function LucidButton({
   icon,
   variant = 'primary',
   disabled = false,
+  disabledReason,
   loading = false,
   accessibilityHint,
   testID,
@@ -175,6 +176,9 @@ export function LucidButton({
   icon?: IconName;
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   disabled?: boolean;
+  // Shown under the button while it is disabled. A disabled action must always
+  // name the condition it is waiting for, never leave the user guessing.
+  disabledReason?: string;
   loading?: boolean;
   accessibilityHint?: string;
   testID?: string;
@@ -192,10 +196,11 @@ export function LucidButton({
         ? palette.surfaceRaised
         : 'transparent';
 
-  return (
+  const reason = disabled && !loading && disabledReason ? disabledReason : null;
+  const button = (
     <Pressable
       accessibilityRole="button"
-      accessibilityHint={accessibilityHint}
+      accessibilityHint={accessibilityHint ?? reason ?? undefined}
       accessibilityState={{ disabled, busy: loading }}
       disabled={disabled || loading}
       onPress={onPress}
@@ -218,6 +223,14 @@ export function LucidButton({
         </>
       )}
     </Pressable>
+  );
+
+  if (!reason) return button;
+  return (
+    <View style={styles.buttonBlock}>
+      {button}
+      <Text accessibilityLiveRegion="polite" style={[styles.buttonReason, { color: palette.amber }]}>{reason}</Text>
+    </View>
   );
 }
 
@@ -382,6 +395,8 @@ const styles = StyleSheet.create({
   pressedWithoutMotion: { opacity: 0.82 },
   button: { minHeight: 52, borderRadius: 16, borderWidth: 1, paddingHorizontal: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 9 },
   buttonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 15, textAlign: 'center' },
+  buttonBlock: { gap: 8 },
+  buttonReason: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 13, lineHeight: 18, textAlign: 'center' },
   sectionHeader: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 12, marginTop: 4 },
   sectionCopy: { flex: 1, gap: 3 },
   sectionTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 20, lineHeight: 26 },
