@@ -14,12 +14,20 @@
     "web": "expo start --web",
     "test": "jest",
     "lint": "expo lint app components constants context hooks lib services tests",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "maestro test maestro/smoke.yml",
+    "test:e2e:all": "maestro test maestro/",
+    "test:e2e:onboarding": "maestro test maestro/onboarding.yml",
+    "test:e2e:playback": "maestro test maestro/session-playback.yml",
+    "test:e2e:breathing": "maestro test maestro/breathing.yml",
+    "test:e2e:paywall": "maestro test maestro/paywall.yml",
+    "test:e2e:settings": "maestro test maestro/settings.yml"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",
     "@expo-google-fonts/lora": "^0.4.2",
     "@expo-google-fonts/space-grotesk": "^0.4.1",
+    "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~57.0.14",
     "expo-audio": "~57.0.3",
@@ -37,6 +45,7 @@
     "expo-router": "~57.0.14",
     "expo-splash-screen": "~57.0.7",
     "expo-status-bar": "~57.0.1",
+    "expo-symbols": "~57.0.2",
     "expo-system-ui": "~57.0.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -54,6 +63,7 @@
   "devDependencies": {
     "@testing-library/react-native": "^13.3.3",
     "@types/jest": "^29.5.14",
+    "@types/node": "^26.2.0",
     "@types/react": "~19.2.2",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.1",

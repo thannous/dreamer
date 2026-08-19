@@ -254,4 +254,6 @@ export const fr: Record<keyof typeof en, string> = {
   "paywall.error": "L’achat n’a pas abouti. Rien n’a été débité.",
   "paywall.remaining": "{count} séances gratuites ce mois-ci",
   "paywall.remaining.none": "Plus de séance gratuite ce mois-ci",
+  'profile.calendar.summary': "Pratiqué {practised} des {total} derniers jours",
+  'search.results.zero': "Aucune séance",
 };

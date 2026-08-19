@@ -65,7 +65,7 @@ export function Chip({
       onPressOut={handlePressOut}
       style={style}
       className={[
-        'h-9 items-center justify-center rounded-full border px-4',
+        'min-h-9 items-center justify-center rounded-full border px-4 py-2',
         selected ? 'border-champagne-soft bg-champagne' : 'border-hairline bg-ink-panel/60',
         className ?? '',
       ].join(' ')}

@@ -2,11 +2,13 @@ import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
+import { EmptyIllustration } from '@/components/atmosphere/EmptyIllustration';
 import { Screen } from '@/components/atmosphere/Screen';
 import { StatTile } from '@/components/profile/StatTile';
 import { StreakCalendar } from '@/components/profile/StreakCalendar';
 import { Button, Card, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
 import { calendarDays, computeStats, computeStreak, toLocalDay } from '@/lib/streak';
 
@@ -28,6 +30,7 @@ export default function ProfileTab() {
   return (
     <Screen variant="subtle" edges={['top']}>
       <ScrollView
+        testID={TID.Screen.Profile}
         contentContainerClassName="px-gutter pb-24 pt-4 gap-6"
         showsVerticalScrollIndicator={false}>
         <View className="gap-3">
@@ -41,7 +44,8 @@ export default function ProfileTab() {
         </View>
 
         {empty ? (
-          <View className="gap-3 py-8">
+          <View className="items-center gap-3 py-8">
+            <EmptyIllustration name="practice" />
             <Text variant="h3" className="text-center">
               {t('profile.empty.title')}
             </Text>
@@ -58,7 +62,12 @@ export default function ProfileTab() {
         ) : (
           <>
             <View className="flex-row gap-3">
-              <StatTile value={streak.current} label={t('profile.streak.current')} featured />
+              <StatTile
+                testID={TID.Text.ProfileStreak}
+                value={streak.current}
+                label={t('profile.streak.current')}
+                featured
+              />
               <StatTile value={streak.longest} label={t('profile.streak.longest')} />
             </View>
 

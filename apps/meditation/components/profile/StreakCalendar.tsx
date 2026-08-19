@@ -37,11 +37,25 @@ export function StreakCalendar({ days }: Props) {
         ))}
       </View>
 
-      <View className="flex-row flex-wrap">
+      {/* One summary instead of thirty-five dates: a screen reader reading out
+          every day of five weeks buries the number that actually matters. */}
+      <View
+        className="flex-row flex-wrap"
+        // `accessible` is what collapses the thirty-five dots into one element;
+        // without it the role is never exposed and each dot is read separately.
+        accessible
+        accessibilityRole="summary"
+        accessibilityLabel={t('profile.calendar.summary', {
+          practised: days.filter((day) => day.practised).length,
+          total: days.length,
+        })}>
         {days.map((day) => (
-          <View key={day.day} className="w-[14.28%] items-center py-1.5">
+          <View
+            key={day.day}
+            className="w-[14.28%] items-center py-1.5"
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants">
             <View
-              accessibilityLabel={day.day}
               className={[
                 'h-6 w-6 rounded-full border',
                 day.practised ? 'border-champagne bg-champagne' : 'border-hairline',

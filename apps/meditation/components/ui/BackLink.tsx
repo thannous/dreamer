@@ -3,8 +3,10 @@ import React from 'react';
 import { Pressable, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
+import { useTheme } from '@/context/ThemeContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 
+import { IconSymbol } from './icon-symbol';
 import { Text } from './Text';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -14,6 +16,7 @@ type Props = {
   /** Where to land when there is no history — a deep link opened cold. */
   fallbackHref?: '/' | '/(tabs)' | '/search';
   className?: string;
+  testID?: string;
 };
 
 /**
@@ -21,8 +24,9 @@ type Props = {
  * its own: it does not exist on Android hardware-button setups, and a
  * deep-linked screen may have nothing to go back to at all.
  */
-export function BackLink({ label, fallbackHref = '/(tabs)', className }: Props) {
+export function BackLink({ label, fallbackHref = '/(tabs)', className, testID }: Props) {
   const router = useRouter();
+  const { colors } = useTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'link' });
 
   const goBack = () => {
@@ -36,13 +40,15 @@ export function BackLink({ label, fallbackHref = '/(tabs)', className }: Props) 
   return (
     <View className={className}>
       <AnimatedPressable
+        testID={testID}
         accessibilityRole="button"
         onPress={goBack}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         hitSlop={12}
         style={style}
-        className="self-start">
+        className="flex-row items-center gap-1 self-start">
+        <IconSymbol name="chevron.left" color={colors.accentText} size={18} />
         <Text variant="bodySm" tone="accent">
           {label}
         </Text>

@@ -6,6 +6,7 @@ import Animated from 'react-native-reanimated';
 import { Screen } from '@/components/atmosphere/Screen';
 import { BackLink, Button, Card, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { useSubscription } from '@/context/SubscriptionContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import type { GateReason } from '@/lib/entitlements';
@@ -120,7 +121,11 @@ export default function PaywallScreen() {
   if (isPlus) {
     return (
       <Screen variant="immersive">
-        <BackLink label={t('paywall.close')} className="px-gutter pt-2" />
+        <BackLink
+        testID={TID.Button.PaywallClose}
+        label={t('paywall.close')}
+        className="px-gutter pt-2"
+      />
         <View className="flex-1 items-center justify-center gap-3 px-gutter">
           <Text variant="h1" className="text-center">
             {t('paywall.active.title')}
@@ -139,6 +144,7 @@ export default function PaywallScreen() {
       <BackLink label={t('paywall.close')} className="px-gutter pt-2" />
 
       <ScrollView
+        testID={TID.Screen.Paywall}
         contentContainerClassName="px-gutter pb-6 pt-2 gap-6"
         showsVerticalScrollIndicator={false}>
         <View className="gap-3">
@@ -184,9 +190,20 @@ export default function PaywallScreen() {
       </ScrollView>
 
       <View className="gap-2 px-gutter pb-4">
-        <Button label={t('paywall.cta')} loading={busy} disabled={!selected} onPress={buy} />
+        <Button
+          testID={TID.Button.PaywallBuy}
+          label={t('paywall.cta')}
+          loading={busy}
+          disabled={!selected}
+          onPress={buy}
+        />
         {/* Both are mandatory on a paywall, on either store. */}
-        <Button label={t('paywall.restore')} variant="ghost" onPress={restore} />
+        <Button
+          testID={TID.Button.PaywallRestore}
+          label={t('paywall.restore')}
+          variant="ghost"
+          onPress={restore}
+        />
         <Pressable
           accessibilityRole="link"
           onPress={() => Linking.openURL(TERMS_URL).catch(() => {})}

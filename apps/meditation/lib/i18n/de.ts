@@ -283,4 +283,6 @@ export const de: Record<keyof typeof en, string> = {
   'paywall.error': 'Der Kauf ist nicht zustande gekommen. Es wurde nichts abgebucht.',
   'paywall.remaining': 'Noch {count} kostenlose Sitzungen diesen Monat',
   'paywall.remaining.none': 'Diesen Monat keine kostenlose Sitzung mehr',
+  'profile.calendar.summary': "An {practised} der letzten {total} Tage geübt",
+  'search.results.zero': "Keine Sitzung",
 };

@@ -70,7 +70,12 @@ export function NightBackground({ variant = 'immersive' }: Props) {
   }));
 
   return (
-    <View style={[StyleSheet.absoluteFill, { pointerEvents: 'none', zIndex: 0 }]}>
+    <View
+      // Purely decorative: a screen reader has nothing to say about a gradient,
+      // and reading it out would bury the actual content.
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+      style={[StyleSheet.absoluteFill, { pointerEvents: 'none', zIndex: 0 }]}>
       <LinearGradient
         colors={[...atmosphere.gradient]}
         locations={[...atmosphere.gradientLocations]}

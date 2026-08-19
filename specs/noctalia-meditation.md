@@ -545,8 +545,9 @@ Le jour venu, la marche est courte : Supabase est déjà en place pour Noctalia,
 | ~~Artworks de sessions~~ | — | **Supprimé en L2** : l'artwork est peint depuis la paire d'accent de la catégorie (`SessionArtwork`) plus le grain. 24 bitmaps représentaient un poids réel pour ce que la palette exprime déjà, et le dégradé reste dans la marque par construction. |
 | Fonds vidéo | 3–4 | 1080×1920 MP4 H.264, muet, ≤ 6 Mo |
 | Avatars de narrateurs | 3 | 512×512 WebP |
-| Icône d'app + splash | — | Déclinaison Noctalia : croissant/étoile or `#D4A574` sur `#03040D` |
-| Illustrations d'états vides | 4 | SVG monochrome or |
+| Icône d'app + splash | ✅ | Croissant champagne dans un anneau fin, généré par `scripts/generate-brand-assets.py` — rendu analytique, aucune dépendance graphique. Sept fichiers, 115 Ko. Splash décliné : ambre profond sur papier (4,1:1), champagne sur encre (9,2:1). |
+| Illustrations d'états vides | ✅ 4 | Traits champagne dans le langage de l'atmosphère (`EmptyIllustration`) : signet vide, loupe sur ciel vide, pastilles de calendrier creuses, croissant dans une orbite rompue. Chacune montre une absence, jamais un échec. |
+| Icônes | ✅ | `IconSymbol` repris de l'app journal : SF Symbols sur iOS, MaterialIcons ailleurs. Aucun jeu maison. |
 
 Les visuels peuvent être générés (pipeline Higgsfield déjà en place côté marque) ; la direction artistique doit rester cohérente avec les artworks de rêves de Noctalia.
 
@@ -587,7 +588,7 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 | **L5 — Profil & séries** | Journal de pratique, séries, statistiques, calendrier | Écran 11 |
 | **L6 — Réglages** | Réglages, profil local + photo, langue, rappels planifiés (`notificationService` + mock), aide/FAQ, légal | Écrans 18–22, 24 |
 | **L7 — Monétisation** | RevenueCat (+ magasin simulé), règles d'accès pures, paywall contextuel, gating sur trois points de déclenchement | Écran 17 |
-| **L8 — Finition** | ✅ 4 locales restantes (es, de, it, pt) · ⬜ fonds vidéo, accessibilité, tests Maestro, icône/splash, préparation stores | Release candidate |
+| **L8 — Finition** | ✅ 4 locales · ✅ accessibilité · ✅ flux Maestro (écrits, non exécutés) · ✅ icône et splash · ✅ icônes d'interface et illustrations d'états vides · ⬜ fonds vidéo, préparation stores | Release candidate |
 
 ---
 
@@ -628,4 +629,4 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 - [ ] Téléchargement store ≤ 60 Mo (iOS) / ≤ 50 Mo (Android) ; une session distante déjà écoutée se relit hors ligne.
 - [ ] Aucune référence à un compte ou à un backend applicatif dans le code livré (`ACCOUNTS_ENABLED=false` → `/(auth)/*` injoignable).
 - [ ] `tsc --noEmit` et `eslint` passent sans erreur.
-- [ ] Le parcours E2E Maestro « onboarding → session → fin » passe sur émulateur Android.
+- [~] Le parcours E2E Maestro « onboarding → session → fin » passe sur émulateur Android. *(L8 : six flux écrits et ancrés sur 37 testID ; un test statique vérifie que chaque ancre ciblée existe réellement dans le code. **Jamais exécutés** — ni Maestro CLI ni émulateur sur cette machine.)*

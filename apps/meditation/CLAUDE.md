@@ -60,7 +60,13 @@ npm run lint       # eslint
     opacité partielle. Utiliser une `SharedValue` + `withTiming`, comme le
     souffle et le silence progressif — ou rien. Une commande parfois invisible
     est un défaut bien pire qu'un fondu manquant.
-11. **L'audio passe par `services/audioService`**, jamais par `expo-audio`
+11. **Les icônes passent par `IconSymbol`**, repris tel quel de l'app journal :
+    SF Symbols natifs sur iOS, MaterialIcons ailleurs via la table `MAPPING`.
+    Le vocabulaire est celui des SF Symbols. Ne pas dessiner d'icônes maison :
+    la cohérence qui compte est entre les deux apps de la marque, pas à
+    l'intérieur d'une seule. Vérifier que la correspondance Material ne ment
+    pas — `replay-10` sur un bouton qui saute 15 s est un défaut, pas un détail.
+12. **L'audio passe par `services/audioService`**, jamais par `expo-audio`
     directement : c'est ce qui permet au mock de le remplacer en E2E et en
     développement sans fichiers audio.
 

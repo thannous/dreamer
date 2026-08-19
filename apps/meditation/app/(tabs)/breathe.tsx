@@ -8,6 +8,7 @@ import { SessionArtwork } from '@/components/session/SessionArtwork';
 import { Rule, Text } from '@/components/ui';
 import { BREATHING_PATTERNS, type BreathingPattern } from '@/content/breathing';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { useSubscription } from '@/context/SubscriptionContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import { cycleDurationMs } from '@/lib/breathing';
@@ -39,7 +40,7 @@ function PatternCard({ pattern }: { pattern: BreathingPattern }) {
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       style={style}>
-      <SessionArtwork accent={pattern.accent} rounded="xl" className="h-32 justify-end">
+      <SessionArtwork accent={pattern.accent} rounded="xl" className="min-h-32 justify-end">
         <View className="gap-1 p-gutter">
           <Text variant="overline">
             {rhythm}
@@ -61,6 +62,7 @@ export default function BreatheTab() {
   return (
     <Screen variant="subtle" edges={['top']}>
       <ScrollView
+        testID={TID.Screen.Breathe}
         contentContainerClassName="px-gutter pb-24 pt-4 gap-6"
         showsVerticalScrollIndicator={false}>
         <View className="gap-3">

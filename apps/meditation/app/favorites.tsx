@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { ScrollView, View } from 'react-native';
 
+import { EmptyIllustration } from '@/components/atmosphere/EmptyIllustration';
 import { Screen } from '@/components/atmosphere/Screen';
 import { SessionCard } from '@/components/session/SessionCard';
 import { BackLink, Button, Rule, Text } from '@/components/ui';
@@ -34,7 +35,8 @@ export default function FavoritesScreen() {
         </View>
 
         {sessions.length === 0 ? (
-          <View className="gap-3 py-10">
+          <View className="items-center gap-3 py-10">
+            <EmptyIllustration name="saved" />
             <Text variant="h3" className="text-center">
               {t('favorites.empty.title')}
             </Text>

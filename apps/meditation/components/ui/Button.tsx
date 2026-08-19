@@ -31,9 +31,14 @@ const LABEL_TONE: Record<ButtonVariant, TextTone> = {
   ghost: 'accent',
 };
 
+/**
+ * Minimum heights, not fixed ones: at 200% text scaling a fixed height clips
+ * the label instead of growing with it. The minimum still guarantees the 44pt
+ * touch target at normal scale.
+ */
 const SIZE: Record<ButtonSize, string> = {
-  md: 'h-12 px-5',
-  lg: 'h-14 px-6',
+  md: 'min-h-12 px-5 py-3',
+  lg: 'min-h-14 px-6 py-4',
 };
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);

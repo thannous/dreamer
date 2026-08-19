@@ -4,6 +4,7 @@ import React from 'react';
 import { OnboardingScreen } from '@/components/onboarding/OnboardingScreen';
 import { SelectableCard } from '@/components/onboarding/SelectableCard';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { useOnboarding } from '@/context/OnboardingContext';
 import type { TranslationKey } from '@/lib/i18n';
 import { PRACTICE_GOALS, type PracticeGoal } from '@/lib/types';
@@ -23,6 +24,7 @@ export default function GoalsStep() {
 
   return (
     <OnboardingScreen
+      testID={TID.Screen.OnboardingGoals}
       step={1}
       totalSteps={4}
       title={t('onboarding.goals.title')}

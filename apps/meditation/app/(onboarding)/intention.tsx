@@ -4,6 +4,7 @@ import React from 'react';
 import { OnboardingScreen } from '@/components/onboarding/OnboardingScreen';
 import { SelectableCard } from '@/components/onboarding/SelectableCard';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { useOnboarding } from '@/context/OnboardingContext';
 import type { TranslationKey } from '@/lib/i18n';
 import { DAILY_INTENTIONS } from '@/lib/types';
@@ -15,6 +16,7 @@ export default function IntentionStep() {
 
   return (
     <OnboardingScreen
+      testID={TID.Screen.OnboardingIntention}
       step={3}
       totalSteps={4}
       title={t('onboarding.intention.title')}

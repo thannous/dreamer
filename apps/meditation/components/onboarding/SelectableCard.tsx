@@ -22,6 +22,7 @@ type Props = {
   onPress: () => void;
   /** Single-choice steps announce as radios, multi-choice as checkboxes. */
   mode?: 'single' | 'multiple';
+  testID?: string;
 };
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -37,7 +38,14 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
  * merely overridden, because a class the inline style always beats is dead code
  * that desyncs the day a token moves.
  */
-export function SelectableCard({ label, hint, selected, onPress, mode = 'multiple' }: Props) {
+export function SelectableCard({
+  label,
+  hint,
+  selected,
+  onPress,
+  mode = 'multiple',
+  testID,
+}: Props) {
   const { colors } = useTheme();
   const reducedMotion = useReducedMotion();
   // Same driver as the rest of the kit, consumed as a raw value: press has to
@@ -90,6 +98,7 @@ export function SelectableCard({ label, hint, selected, onPress, mode = 'multipl
 
   return (
     <AnimatedPressable
+      testID={testID}
       onPress={handlePress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}

@@ -7,6 +7,7 @@ import { SessionCard } from '@/components/session/SessionCard';
 import { Button, Card, Rule, Text } from '@/components/ui';
 import { sessionsInCategory, sessionsUpTo } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
 import { useOnboarding } from '@/context/OnboardingContext';
 import type { TranslationKey } from '@/lib/i18n';
@@ -41,6 +42,7 @@ export default function HomeTab() {
   return (
     <Screen variant="subtle" edges={['top']}>
       <ScrollView
+        testID={TID.Screen.Home}
         contentContainerClassName="px-gutter pb-10 pt-4 gap-8"
         showsVerticalScrollIndicator={false}>
         <View className="gap-1">
