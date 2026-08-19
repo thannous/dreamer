@@ -6,6 +6,10 @@ import { trackProductEvent } from '@/lib/analytics';
 import { isLucidTrainer } from '@/lib/appVariant';
 import { createScopedLogger } from '@/lib/logger';
 import {
+  resolveInactivityPlan,
+  resolveStreakRiskPlan,
+} from '@/lib/engagementReminders';
+import {
   buildOptInNotificationSettings,
   DEFAULT_REMINDER_OPT_IN_TIME,
   getReminderTimeBucket,
@@ -15,6 +19,8 @@ import {
 import {
   requestNotificationPermissions,
   scheduleDailyNotification,
+  scheduleInactivityReminders,
+  scheduleStreakRiskReminder,
   scheduleWeeklyRecapReminder,
 } from '@/services/notificationService';
 import {
@@ -127,6 +133,9 @@ export function useReminderOptIn(surface: ReminderOptInSurface): ReminderOptInCo
       await saveNotificationSettings(next);
       await scheduleDailyNotification(next);
       await scheduleWeeklyRecapReminder(next);
+      const now = Date.now();
+      await scheduleStreakRiskReminder(next, resolveStreakRiskPlan(dreams, now));
+      await scheduleInactivityReminders(next, resolveInactivityPlan(dreams, now));
       await saveReminderPromptDismissed(true).catch(() => undefined);
       void trackProductEvent('reminder_prompt_action', {
         surface,
@@ -139,7 +148,7 @@ export function useReminderOptIn(surface: ReminderOptInSurface): ReminderOptInCo
     } finally {
       if (mountedRef.current) setBusy(false);
     }
-  }, [busy, selectedTime, surface]);
+  }, [busy, dreams, selectedTime, surface]);
 
   return {
     visible: eligible && !unsupported,

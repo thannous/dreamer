@@ -8,6 +8,8 @@ const mockTrackProductEvent = jest.fn();
 const mockRequestPermissions = jest.fn();
 const mockScheduleDaily = jest.fn();
 const mockScheduleWeekly = jest.fn();
+const mockScheduleStreakRisk = jest.fn();
+const mockScheduleInactivity = jest.fn();
 const mockGetSettings = jest.fn();
 const mockSaveSettings = jest.fn();
 const mockGetDismissed = jest.fn();
@@ -37,6 +39,8 @@ jest.mock('@/services/notificationService', () => ({
   requestNotificationPermissions: () => mockRequestPermissions(),
   scheduleDailyNotification: (settings: unknown) => mockScheduleDaily(settings),
   scheduleWeeklyRecapReminder: (settings: unknown) => mockScheduleWeekly(settings),
+  scheduleStreakRiskReminder: (settings: unknown, plan: unknown) => mockScheduleStreakRisk(settings, plan),
+  scheduleInactivityReminders: (settings: unknown, plans: unknown) => mockScheduleInactivity(settings, plans),
 }));
 jest.mock('@/services/storageService', () => ({
   getNotificationSettings: () => mockGetSettings(),
@@ -107,7 +111,15 @@ describe('useReminderOptIn', () => {
     });
 
     expect(mockRequestPermissions).toHaveBeenCalledTimes(1);
-    const expected = { weekdayEnabled: true, weekdayTime: '07:30', weekendEnabled: true, weekendTime: '08:30', weeklyRecapEnabled: true };
+    const expected = {
+      weekdayEnabled: true,
+      weekdayTime: '07:30',
+      weekendEnabled: true,
+      weekendTime: '08:30',
+      weeklyRecapEnabled: true,
+      streakRiskEnabled: true,
+      inactivityNudgeEnabled: true,
+    };
     expect(mockSaveSettings).toHaveBeenCalledWith(expected);
     expect(mockScheduleDaily).toHaveBeenCalledWith(expected);
     expect(mockScheduleWeekly).toHaveBeenCalledWith(expected);

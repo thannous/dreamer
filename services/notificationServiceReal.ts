@@ -2,6 +2,11 @@ import * as Notifications from 'expo-notifications';
 import { getLocales } from 'expo-localization';
 import { Platform } from 'react-native';
 
+import type {
+  InactivityReminderPlan,
+  InactivityReminderStage,
+  StreakRiskReminderPlan,
+} from '@/lib/engagementReminders';
 import { getTranslator, loadTranslations } from '@/lib/i18n';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
 import type { RitualId } from '@/lib/inspirationRituals';
@@ -30,8 +35,15 @@ const NOTIFICATION_PROMPT_KEYS = [
 // Notification channel for Android
 const NOTIFICATION_CHANNEL_ID = 'dream-reminders';
 
-type ReminderType = 'daily' | 'ritual' | 'weekly_recap';
+type ReminderType = 'daily' | 'ritual' | 'weekly_recap' | 'streak_risk' | 'inactivity';
 const REMINDER_TYPE_DATA_KEY = 'dreamerReminderType';
+const REMINDER_TYPES: readonly ReminderType[] = [
+  'daily',
+  'ritual',
+  'weekly_recap',
+  'streak_risk',
+  'inactivity',
+];
 
 /** Sunday, 10:00 local: late enough for a lie-in, early enough to plan the week. */
 export const WEEKLY_RECAP_WEEKDAY = 1; // 1 = Sunday
@@ -72,7 +84,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isReminderType(value: unknown): value is ReminderType {
-  return value === 'daily' || value === 'ritual' || value === 'weekly_recap';
+  return typeof value === 'string' && (REMINDER_TYPES as readonly string[]).includes(value);
 }
 
 function matchesReminderType(request: Notifications.NotificationRequest, reminderType: ReminderType): boolean {
@@ -88,6 +100,12 @@ function matchesReminderType(request: Notifications.NotificationRequest, reminde
 
   if (reminderType === 'ritual') {
     return typeof legacyRitualId === 'string';
+  }
+
+  // Only 'daily' and 'ritual' ever shipped without the marker: without this
+  // guard, cancelling a newer family would sweep away legacy daily reminders.
+  if (reminderType !== 'daily') {
+    return false;
   }
 
   return (
@@ -134,6 +152,30 @@ async function scheduleWeeklyRemindersForDays(params: {
       })
     )
   );
+}
+
+/**
+ * One-shot reminder fired at an exact local instant. Used by the engagement
+ * families, whose deadline is a specific evening rather than a weekly rhythm.
+ */
+async function scheduleDatedReminder(params: {
+  triggerAt: number;
+  content: Notifications.NotificationContentInput;
+}): Promise<void> {
+  if (params.triggerAt <= Date.now()) {
+    // Defensive: expo fires a past DATE trigger immediately, which would turn a
+    // stale plan into an unexpected buzz.
+    return;
+  }
+
+  await Notifications.scheduleNotificationAsync({
+    content: params.content,
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.DATE,
+      date: new Date(params.triggerAt),
+      channelId: NOTIFICATION_CHANNEL_ID,
+    },
+  });
 }
 
 /**
@@ -422,6 +464,98 @@ export async function scheduleWeeklyRecapReminder(settings: NotificationSettings
       priority: Notifications.AndroidNotificationPriority.DEFAULT,
     },
   });
+}
+
+/**
+ * Schedule (or clear) the single evening reminder for a streak that would end
+ * at the next local midnight. Always replaces the previous one, so saving a
+ * dream simply re-runs this with a fresh plan (or `null` to cancel).
+ *
+ * Independent from the daily reminders, the ritual reminders and the weekly
+ * recap: only the `streak_risk` family is touched.
+ */
+export async function scheduleStreakRiskReminder(
+  settings: NotificationSettings,
+  plan: StreakRiskReminderPlan | null
+): Promise<void> {
+  if (Platform.OS === 'web') {
+    return;
+  }
+
+  await cancelScheduledReminders('streak_risk');
+  if (settings.streakRiskEnabled !== true || plan === null) {
+    return;
+  }
+
+  const t = await getNotificationTranslator();
+  await scheduleDatedReminder({
+    triggerAt: plan.triggerAt,
+    content: {
+      title: t('notifications.streak_risk.title', { count: plan.streakLength }),
+      body: t('notifications.streak_risk.body', { count: plan.streakLength }),
+      data: { url: '/recording', [REMINDER_TYPE_DATA_KEY]: 'streak_risk' },
+      sound: true,
+      priority: Notifications.AndroidNotificationPriority.DEFAULT,
+    },
+  });
+
+  if (__DEV__) {
+    console.log(
+      `Scheduled streak risk reminder for ${new Date(plan.triggerAt).toISOString()} (streak ${plan.streakLength})`
+    );
+  }
+}
+
+function getInactivityCopy(
+  t: NotificationTranslator,
+  stage: InactivityReminderStage
+): { title: string; body: string } {
+  const prefix = stage === 3 ? 'notifications.inactivity.day3' : 'notifications.inactivity.day7';
+  return { title: t(`${prefix}.title`), body: t(`${prefix}.body`) };
+}
+
+/**
+ * Schedule (or clear) the comeback reminders. The plan carries at most the two
+ * stages still ahead (3 and 7 silent nights) and nothing beyond, so a dormant
+ * user is nudged twice and then left alone.
+ */
+export async function scheduleInactivityReminders(
+  settings: NotificationSettings,
+  plans: readonly InactivityReminderPlan[]
+): Promise<void> {
+  if (Platform.OS === 'web') {
+    return;
+  }
+
+  await cancelScheduledReminders('inactivity');
+  if (settings.inactivityNudgeEnabled !== true || plans.length === 0) {
+    return;
+  }
+
+  const t = await getNotificationTranslator();
+  for (const plan of plans) {
+    const copy = getInactivityCopy(t, plan.stage);
+    await scheduleDatedReminder({
+      triggerAt: plan.triggerAt,
+      content: {
+        title: copy.title,
+        body: copy.body,
+        data: {
+          url: '/recording',
+          [REMINDER_TYPE_DATA_KEY]: 'inactivity',
+          inactivityStage: plan.stage,
+        },
+        sound: true,
+        priority: Notifications.AndroidNotificationPriority.DEFAULT,
+      },
+    });
+  }
+
+  if (__DEV__) {
+    console.log(
+      `Scheduled inactivity reminders: ${plans.map((plan) => `J+${plan.stage}`).join(', ')}`
+    );
+  }
 }
 
 export async function cancelAllNotifications(): Promise<void> {

@@ -3,6 +3,7 @@
  * Logs to console instead of scheduling real notifications
  */
 
+import type { InactivityReminderPlan, StreakRiskReminderPlan } from '@/lib/engagementReminders';
 import type { RitualId } from '@/lib/inspirationRituals';
 import type { NotificationSettings } from '@/lib/types';
 
@@ -146,6 +147,20 @@ export async function sendTestNotification(): Promise<void> {
  */
 export async function scheduleWeeklyRecapReminder(settings: NotificationSettings): Promise<void> {
   console.log('[MOCK NOTIFICATIONS] scheduleWeeklyRecapReminder called with settings:', settings);
+}
+
+export async function scheduleStreakRiskReminder(
+  settings: NotificationSettings,
+  plan: StreakRiskReminderPlan | null
+): Promise<void> {
+  console.log('[MOCK NOTIFICATIONS] scheduleStreakRiskReminder called with settings:', settings, 'plan:', plan);
+}
+
+export async function scheduleInactivityReminders(
+  settings: NotificationSettings,
+  plans: readonly InactivityReminderPlan[]
+): Promise<void> {
+  console.log('[MOCK NOTIFICATIONS] scheduleInactivityReminders called with settings:', settings, 'plans:', plans);
 }
 
 export async function cancelAllNotifications(): Promise<void> {

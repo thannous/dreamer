@@ -2,13 +2,20 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, AppState, Platform } from 'react-native';
 
 import { useTranslation } from '@/hooks/useTranslation';
+import { useDreamsData } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
+import {
+  resolveInactivityPlan,
+  resolveStreakRiskPlan,
+} from '@/lib/engagementReminders';
 import { getFormattingLocale } from '@/lib/locale';
 import type { NotificationSettings } from '@/lib/types';
 import {
   hasNotificationPermissions,
   requestNotificationPermissions,
   scheduleDailyNotification,
+  scheduleInactivityReminders,
+  scheduleStreakRiskReminder,
   scheduleWeeklyRecapReminder,
   sendTestNotification,
 } from '@/services/notificationService';
@@ -20,6 +27,8 @@ const DEFAULT_SETTINGS: NotificationSettings = {
   weekendEnabled: false,
   weekendTime: '10:00',
   weeklyRecapEnabled: false,
+  streakRiskEnabled: false,
+  inactivityNudgeEnabled: false,
 };
 
 export type NotificationTimeInput = Date | string | undefined;
@@ -33,6 +42,8 @@ export interface NotificationSettingsController {
   toggleWeekday: (enabled: boolean) => Promise<void>;
   toggleWeekend: (enabled: boolean) => Promise<void>;
   toggleWeeklyRecap: (enabled: boolean) => Promise<void>;
+  toggleStreakRisk: (enabled: boolean) => Promise<void>;
+  toggleInactivityNudge: (enabled: boolean) => Promise<void>;
   setWeekdayTime: (time: NotificationTimeInput) => Promise<void>;
   setWeekendTime: (time: NotificationTimeInput) => Promise<void>;
   sendTest: () => Promise<void>;
@@ -91,6 +102,9 @@ export function useNotificationSettingsController(): NotificationSettingsControl
   const [settings, setSettings] = useState<NotificationSettings>({ ...DEFAULT_SETTINGS });
   const [hasPermissions, setHasPermissions] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  // The engagement reminders are dated one-shots: enabling one has to schedule
+  // it against the journal as it stands right now.
+  const { dreams } = useDreamsData();
   const { t } = useTranslation();
   const { language } = useLanguage();
   const formattingLocale = getFormattingLocale(language);
@@ -234,6 +248,54 @@ export function useNotificationSettingsController(): NotificationSettingsControl
     [updateToggle]
   );
 
+  /**
+   * Shared body for the two engagement toggles. Each one only ever touches its
+   * own notification family, so turning the streak heads-up off never disturbs
+   * the daily reminders, the rituals or the Sunday recap.
+   */
+  const updateEngagementToggle = useCallback(async (
+    key: 'streakRiskEnabled' | 'inactivityNudgeEnabled',
+    enabled: boolean
+  ) => {
+    if (!unsupported && !(await requestPermissionsIfNeeded(enabled))) {
+      return;
+    }
+
+    const previousSettings = settings;
+    const newSettings = { ...settings, [key]: enabled };
+    setSettings(newSettings);
+
+    try {
+      await saveNotificationSettings(newSettings);
+      if (!unsupported) {
+        const now = Date.now();
+        if (key === 'streakRiskEnabled') {
+          await scheduleStreakRiskReminder(newSettings, resolveStreakRiskPlan(dreams, now));
+        } else {
+          await scheduleInactivityReminders(newSettings, resolveInactivityPlan(dreams, now));
+        }
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.error('Failed to update engagement reminder setting:', error);
+      }
+      setSettings(previousSettings);
+      Alert.alert(
+        t('notifications.alert.update_failed.title'),
+        t('notifications.alert.update_failed.message')
+      );
+    }
+  }, [dreams, requestPermissionsIfNeeded, settings, t, unsupported]);
+
+  const toggleStreakRisk = useCallback(
+    (enabled: boolean) => updateEngagementToggle('streakRiskEnabled', enabled),
+    [updateEngagementToggle]
+  );
+  const toggleInactivityNudge = useCallback(
+    (enabled: boolean) => updateEngagementToggle('inactivityNudgeEnabled', enabled),
+    [updateEngagementToggle]
+  );
+
   const updateTime = useCallback(async (
     key: 'weekdayTime' | 'weekendTime',
     value: NotificationTimeInput
@@ -321,6 +383,8 @@ export function useNotificationSettingsController(): NotificationSettingsControl
     toggleWeekday,
     toggleWeekend,
     toggleWeeklyRecap,
+    toggleStreakRisk,
+    toggleInactivityNudge,
     setWeekdayTime,
     setWeekendTime,
     sendTest,
