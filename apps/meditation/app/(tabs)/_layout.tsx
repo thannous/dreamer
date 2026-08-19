@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { MiniPlayer } from '@/components/player/MiniPlayer';
 
-import { Text } from '@/components/ui';
+import { IconSymbol, Text } from '@/components/ui';
 import { FontFamily } from '@/constants/typography';
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
@@ -36,17 +36,12 @@ export default function TabsLayout() {
           borderTopColor: colors.navbarBorder,
           borderTopWidth: 1,
           height: TAB_BAR_HEIGHT,
-          paddingTop: 8,
+          paddingTop: 6,
         },
         tabBarActiveTintColor: colors.textPrimary,
         tabBarInactiveTintColor: colors.textTertiary,
         tabBarLabelStyle: { fontFamily: FontFamily.medium, fontSize: 12 },
-        tabBarIcon: ({ focused }) => (
-          <View
-            className="h-[2.5px] w-6 rounded-full"
-            style={{ backgroundColor: focused ? colors.accent : 'transparent' }}
-          />
-        ),
+        tabBarIcon: ({ color }) => <IconSymbol name="house" color={color} size={22} />,
       }}>
         <Tabs.Screen
           name="index"
@@ -54,15 +49,29 @@ export default function TabsLayout() {
         />
         <Tabs.Screen
           name="breathe"
-          options={{ title: t('tabs.breathe'), tabBarButtonTestID: TID.Tab.Breathe }}
+          options={{
+            title: t('tabs.breathe'),
+            tabBarButtonTestID: TID.Tab.Breathe,
+            tabBarIcon: ({ color }) => <IconSymbol name="wind" color={color} size={22} />,
+          }}
         />
         <Tabs.Screen
           name="search"
-          options={{ title: t('tabs.search'), tabBarButtonTestID: TID.Tab.Search }}
+          options={{
+            title: t('tabs.search'),
+            tabBarButtonTestID: TID.Tab.Search,
+            tabBarIcon: ({ color }) => (
+              <IconSymbol name="magnifyingglass" color={color} size={22} />
+            ),
+          }}
         />
         <Tabs.Screen
           name="profile"
-          options={{ title: t('tabs.profile'), tabBarButtonTestID: TID.Tab.Profile }}
+          options={{
+            title: t('tabs.profile'),
+            tabBarButtonTestID: TID.Tab.Profile,
+            tabBarIcon: ({ color }) => <IconSymbol name="person" color={color} size={22} />,
+          }}
         />
       </Tabs>
 

@@ -4,9 +4,10 @@ import { Pressable, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { SessionArtwork } from '@/components/session/SessionArtwork';
-import { Text } from '@/components/ui';
+import { IconSymbol, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
 import { usePlayer } from '@/context/PlayerContext';
+import { useTheme } from '@/context/ThemeContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import type { TranslationKey } from '@/lib/i18n';
 
@@ -23,6 +24,7 @@ export function MiniPlayer() {
   const segments = useSegments();
   const { t } = useTranslation();
   const { session, status, toggle } = usePlayer();
+  const { colors } = useTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
 
   const onPlayerScreen = segments.some((segment) => segment === 'player');
@@ -61,9 +63,11 @@ export function MiniPlayer() {
           onPress={toggle}
           hitSlop={{ top: 4, bottom: 4, left: 12, right: 12 }}
           className="h-9 w-9 items-center justify-center rounded-full border border-hairline active:opacity-70">
-          <Text variant="bodySm" tone="accent">
-            {playing ? '❙❙' : '▶'}
-          </Text>
+          <IconSymbol
+            name={playing ? 'pause.fill' : 'play.fill'}
+            color={colors.accentText}
+            size={18}
+          />
         </Pressable>
       </View>
     </Animated.View>

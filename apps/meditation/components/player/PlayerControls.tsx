@@ -2,11 +2,12 @@ import React from 'react';
 import { Pressable, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { Text } from '@/components/ui';
+import { IconSymbol } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
+import { useTheme } from '@/context/ThemeContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
-import { TID } from '@/lib/testIDs';
 import { SEEK_STEP_SEC } from '@/lib/audio';
+import { TID } from '@/lib/testIDs';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -18,15 +19,16 @@ type Props = {
 
 function SkipButton({
   label,
-  glyph,
+  icon,
   onPress,
   testID,
 }: {
   label: string;
-  glyph: string;
+  icon: 'gobackward.15' | 'goforward.15';
   onPress: () => void;
   testID: string;
 }) {
+  const { colors } = useTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'chip' });
 
   return (
@@ -40,9 +42,7 @@ function SkipButton({
       hitSlop={16}
       style={style}
       className="h-12 w-12 items-center justify-center rounded-full border border-hairline">
-      <Text variant="bodySm" tone="accent" className="font-medium">
-        {glyph}
-      </Text>
+      <IconSymbol name={icon} color={colors.accentText} size={22} />
     </AnimatedPressable>
   );
 }
@@ -50,6 +50,7 @@ function SkipButton({
 /** Three controls, nothing else. The rest of the screen is the session. */
 export function PlayerControls({ playing, onToggle, onSkip }: Props) {
   const { t } = useTranslation();
+  const { colors } = useTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'button' });
 
   return (
@@ -57,7 +58,7 @@ export function PlayerControls({ playing, onToggle, onSkip }: Props) {
       <SkipButton
         testID={TID.Button.PlayerBack}
         label={t('player.back15')}
-        glyph={`−${SEEK_STEP_SEC}`}
+        icon="gobackward.15"
         onPress={() => onSkip(-SEEK_STEP_SEC)}
       />
 
@@ -70,15 +71,17 @@ export function PlayerControls({ playing, onToggle, onSkip }: Props) {
         onPressOut={handlePressOut}
         style={style}
         className="h-20 w-20 items-center justify-center rounded-full border border-champagne-soft bg-champagne">
-        <Text variant="h2" tone="onAccent">
-          {playing ? '❙❙' : '▶'}
-        </Text>
+        <IconSymbol
+          name={playing ? 'pause.fill' : 'play.fill'}
+          color={colors.textOnAccent}
+          size={28}
+        />
       </AnimatedPressable>
 
       <SkipButton
         testID={TID.Button.PlayerForward}
         label={t('player.forward15')}
-        glyph={`+${SEEK_STEP_SEC}`}
+        icon="goforward.15"
         onPress={() => onSkip(SEEK_STEP_SEC)}
       />
     </View>

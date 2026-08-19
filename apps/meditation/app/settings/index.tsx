@@ -62,6 +62,7 @@ export default function SettingsScreen() {
             testID={TID.Button.SettingsTheme}
             label={t('settings.theme')}
             value={t(`settings.theme.${preference}` as TranslationKey)}
+            inline
             onPress={cycleTheme}
           />
           <SettingsRow

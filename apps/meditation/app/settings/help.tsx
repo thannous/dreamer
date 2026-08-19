@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Linking, Pressable, ScrollView, View } from 'react-native';
 
 import { Screen } from '@/components/atmosphere/Screen';
-import { BackLink, Button, Rule, Text } from '@/components/ui';
+import { BackLink, Button, IconSymbol, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
+import { useTheme } from '@/context/ThemeContext';
 import type { TranslationKey } from '@/lib/i18n';
 
 const QUESTIONS = [1, 2, 3, 4, 5] as const;
@@ -11,6 +12,7 @@ const CONTACT = 'mailto:bonjour@noctalia.app';
 
 function FaqItem({ index }: { index: number }) {
   const { t } = useTranslation();
+  const { colors } = useTheme();
   const [open, setOpen] = useState(false);
 
   return (
@@ -23,9 +25,11 @@ function FaqItem({ index }: { index: number }) {
         <Text variant="body" className="flex-1">
           {t(`help.q${index}` as TranslationKey)}
         </Text>
-        <Text variant="bodySm" tone="accent">
-          {open ? '−' : '+'}
-        </Text>
+        <IconSymbol
+          name={open ? 'chevron.up' : 'chevron.down'}
+          color={colors.accentText}
+          size={18}
+        />
       </View>
       {open ? (
         <Text variant="bodySm" className="mt-3">

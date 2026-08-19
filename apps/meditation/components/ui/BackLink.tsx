@@ -3,8 +3,10 @@ import React from 'react';
 import { Pressable, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
+import { useTheme } from '@/context/ThemeContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 
+import { IconSymbol } from './icon-symbol';
 import { Text } from './Text';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -24,6 +26,7 @@ type Props = {
  */
 export function BackLink({ label, fallbackHref = '/(tabs)', className, testID }: Props) {
   const router = useRouter();
+  const { colors } = useTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'link' });
 
   const goBack = () => {
@@ -44,7 +47,8 @@ export function BackLink({ label, fallbackHref = '/(tabs)', className, testID }:
         onPressOut={handlePressOut}
         hitSlop={12}
         style={style}
-        className="self-start">
+        className="flex-row items-center gap-1 self-start">
+        <IconSymbol name="chevron.left" color={colors.accentText} size={18} />
         <Text variant="bodySm" tone="accent">
           {label}
         </Text>

@@ -546,7 +546,8 @@ Le jour venu, la marche est courte : Supabase est déjà en place pour Noctalia,
 | Fonds vidéo | 3–4 | 1080×1920 MP4 H.264, muet, ≤ 6 Mo |
 | Avatars de narrateurs | 3 | 512×512 WebP |
 | Icône d'app + splash | ✅ | Croissant champagne dans un anneau fin, généré par `scripts/generate-brand-assets.py` — rendu analytique, aucune dépendance graphique. Sept fichiers, 115 Ko. Splash décliné : ambre profond sur papier (4,1:1), champagne sur encre (9,2:1). |
-| Illustrations d'états vides | 4 | SVG monochrome or |
+| Illustrations d'états vides | 4 | SVG monochrome or — **non fait**, les états vides sont textuels |
+| Icônes | ✅ | `IconSymbol` repris de l'app journal : SF Symbols sur iOS, MaterialIcons ailleurs. Aucun jeu maison. |
 
 Les visuels peuvent être générés (pipeline Higgsfield déjà en place côté marque) ; la direction artistique doit rester cohérente avec les artworks de rêves de Noctalia.
 

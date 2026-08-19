@@ -73,6 +73,7 @@ export default function SearchTab() {
         <TextField
           label={t('search.title')}
           hideLabel
+          icon="magnifyingglass"
           value={query}
           onChangeText={setQuery}
           placeholder={t('search.placeholder')}

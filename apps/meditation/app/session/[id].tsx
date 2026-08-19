@@ -5,13 +5,14 @@ import { Pressable, ScrollView, View } from 'react-native';
 import { Screen } from '@/components/atmosphere/Screen';
 import { BenefitList } from '@/components/session/BenefitList';
 import { SessionArtwork } from '@/components/session/SessionArtwork';
-import { BackLink, Button, Card, Rule, Text } from '@/components/ui';
+import { BackLink, Button, Card, IconSymbol, Rule, Text } from '@/components/ui';
 import { NARRATOR_BY_ID } from '@/content/narrators';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
 import { useSubscription } from '@/context/SubscriptionContext';
+import { useTheme } from '@/context/ThemeContext';
 import type { TranslationKey } from '@/lib/i18n';
 import { toMinutes } from '@/lib/library';
 import { RESUME_MAX_RATIO, RESUME_MIN_RATIO } from '@/lib/types';
@@ -22,6 +23,7 @@ export default function SessionDetail() {
   const { t } = useTranslation();
   const { isFavorite, toggleFavorite, progress } = useLibrary();
   const { gateForSession, openPaywall } = useSubscription();
+  const { colors } = useTheme();
 
   const session = id ? SESSION_BY_ID[id] : undefined;
 
@@ -123,7 +125,12 @@ export default function SessionDetail() {
           accessibilityState={{ selected: saved }}
           testID={TID.Button.SessionFavorite}
           onPress={() => toggleFavorite(session.id)}
-          className="items-center py-2 active:opacity-70">
+          className="flex-row items-center justify-center gap-2 py-2 active:opacity-70">
+          <IconSymbol
+            name={saved ? 'bookmark.fill' : 'bookmark'}
+            color={colors.accentText}
+            size={18}
+          />
           <Text variant="bodySm" tone="accent">
             {saved ? t('session.favorite.remove') : t('session.favorite.add')}
           </Text>
