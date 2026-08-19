@@ -1,9 +1,14 @@
-import React, { memo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { memo, useEffect, useRef } from 'react';
+import { Text, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
-import { ThemeLayout } from '@/constants/journalTheme';
+import { DURATION, EASING } from '@/components/motion';
 import type { NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 
 /**
  * The ranked list shipped for "Top themes": rank chip, label, count, proportional bar.
@@ -29,6 +34,10 @@ export type StatsRankedRow = {
 };
 
 export type StatsRankedListProps = {
+  /**
+   * Colours come from `global.css` since the Uniwind port, but the prop stays: it is the
+   * call signature both callers share, and dropping it would be an API change, not a port.
+   */
   noctalia: NoctaliaDesignTokens;
   /** Already ranked by the caller. Rendered in order, unsliced. */
   rows: StatsRankedRow[];
@@ -37,35 +46,72 @@ export type StatsRankedListProps = {
   testID: string;
 };
 
+/**
+ * The bar grows from zero ONCE, on the row's first mount — the single moment where the
+ * length of the bar is information the reader has not seen yet.
+ *
+ * `width`, not `scaleX`: the fill is childless and sits inside a fixed-height, clipped
+ * track, so nothing else re-lays-out, and the 2px radius survives (a scaled bar smears its
+ * own corners). Every later change — the user picked another period — is written straight
+ * to the shared value, so a number that merely moved never replays an entrance.
+ */
+const RankedBarFill = memo(function RankedBarFill({ percent }: { percent: number }) {
+  const reduced = useReducedMotion();
+  const width = useSharedValue(reduced ? percent : 0);
+  const hasGrown = useRef(false);
+
+  useEffect(() => {
+    if (hasGrown.current || reduced) {
+      width.set(percent);
+      return;
+    }
+    hasGrown.current = true;
+    width.set(withTiming(percent, { duration: DURATION.normal, easing: EASING.out }));
+  }, [percent, reduced, width]);
+
+  const animatedStyle = useAnimatedStyle(() => ({ width: `${width.get()}%` }));
+
+  // Full opacity. At 0.6 over the dark card the accent washed out to the edge of
+  // legibility — verified on device — and these bars carry real data, so they have to
+  // survive a bright screen.
+  return <Animated.View className="h-1 rounded-[2px] bg-champagne" style={animatedStyle} />;
+});
+
 export const StatsRankedList = memo(function StatsRankedList({
-  noctalia,
   rows,
   maxCount,
   testID,
 }: StatsRankedListProps) {
   return (
-    <View style={styles.container} testID={testID}>
+    <View className="gap-0" testID={testID}>
       {rows.map((row, index) => {
         const isLast = index === rows.length - 1;
         const barWidth = Math.round((row.count / maxCount) * 100);
         return (
           <View key={row.id}>
             <View
-              style={[
-                styles.item,
-                !isLast && { borderBottomWidth: 1, borderBottomColor: noctalia.surface.border },
-              ]}
+              className={`flex-row items-center py-[14px] px-1 gap-4${
+                isLast ? '' : ' border-b border-line'
+              }`}
             >
-              <View style={[styles.rank, { backgroundColor: noctalia.surface.soft }]}>
-                <Text style={[styles.rankText, { color: noctalia.accent.text }]}>{index + 1}</Text>
+              <View className="w-9 h-9 rounded-full items-center justify-center bg-ink-soft">
+                <Text className="text-[16px] font-display-bold text-champagne-on">
+                  {index + 1}
+                </Text>
               </View>
-              <View style={styles.content}>
-                <Text style={[styles.text, { color: noctalia.text.primary }]}>{row.label}</Text>
-                <Text style={[styles.count, { color: noctalia.text.secondary }]}>
+              <View className="flex-1">
+                <Text className="text-[15px] font-sans-medium text-ivory mb-0.5">{row.label}</Text>
+                <Text className="text-[12px] font-sans text-ivory-muted mb-1.5">
                   {row.countLabel}
                 </Text>
+                {/*
+                  The track carries a background so the bar reads as a PROPORTION rather than
+                  a bare length: without it only the filled part is drawn, and "3 dreams" and
+                  "1 dream" look like two unrelated dashes instead of a full bar next to a
+                  third of one.
+                */}
                 <View
-                  style={[styles.barTrack, { backgroundColor: noctalia.surface.border }]}
+                  className="h-1 rounded-[2px] overflow-hidden bg-line"
                   accessibilityRole="progressbar"
                   accessibilityLabel={row.label}
                   accessibilityValue={{
@@ -75,15 +121,7 @@ export const StatsRankedList = memo(function StatsRankedList({
                     text: row.countLabel,
                   }}
                 >
-                  <View
-                    style={[
-                      styles.barFill,
-                      {
-                        backgroundColor: noctalia.accent.base,
-                        width: `${barWidth}%` as any,
-                      },
-                    ]}
-                  />
+                  <RankedBarFill percent={barWidth} />
                 </View>
               </View>
             </View>
@@ -92,57 +130,4 @@ export const StatsRankedList = memo(function StatsRankedList({
       })}
     </View>
   );
-});
-
-// Moved verbatim from app/(tabs)/statistics.tsx (the `// Themes` block).
-const styles = StyleSheet.create({
-  container: {
-    gap: 0,
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 4,
-    gap: ThemeLayout.spacing.md,
-  },
-  rank: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  rankText: {
-    fontSize: 16,
-    fontFamily: Fonts.fraunces.bold,
-  },
-  content: {
-    flex: 1,
-  },
-  text: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    marginBottom: 2,
-  },
-  count: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    marginBottom: 6,
-  },
-  // The track carries a background so the bar reads as a PROPORTION rather than a bare
-  // length: without it only the filled part is drawn, and "3 dreams" and "1 dream" look
-  // like two unrelated dashes instead of a full bar next to a third of one.
-  barTrack: {
-    height: 4,
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  // Full opacity. At 0.6 over the dark card the accent washed out to the edge of
-  // legibility — verified on device — and these bars carry real data, so they have to
-  // survive a bright screen.
-  barFill: {
-    height: 4,
-    borderRadius: 2,
-  },
 });

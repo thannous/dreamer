@@ -1,10 +1,9 @@
 import React, { forwardRef, memo, useCallback, useRef, useState } from 'react';
-import { Platform, Pressable, StyleSheet, TextInput, View, type TextStyle } from 'react-native';
+import { Platform, TextInput, View, type TextStyle } from 'react-native';
 
+import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
 interface SearchBarProps {
@@ -20,6 +19,12 @@ type WebTextInputStyle = TextStyle & {
   outlineColor?: string;
   outlineWidth?: number;
 };
+
+/**
+ * Values `className` cannot reach: `borderCurve` is a React Native-only property and the
+ * web outline reset is a DOM concern. Both stay as style objects.
+ */
+const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 const webInputFocusResetStyle: WebTextInputStyle | null = Platform.OS === 'web'
   ? {
@@ -51,20 +56,14 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
     }
   }, [forwardedRef]);
 
-  const glassBackground = noctalia.surface.raised;
-  const focusBorderColor = noctalia.accent.base;
-  const focusBackgroundColor = noctalia.surface.active;
-
   return (
     <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: isFocused ? focusBackgroundColor : glassBackground,
-          borderWidth: isFocused ? 1.5 : 1,
-          borderColor: isFocused ? focusBorderColor : noctalia.surface.border,
-        },
-      ]}
+      className={`h-11 flex-row items-center gap-2 rounded-md px-4 ${
+        isFocused
+          ? 'border-[1.5px] border-champagne bg-ink-active'
+          : 'border border-line bg-ink-raised'
+      }`}
+      style={CONTINUOUS_CORNERS}
       testID={testID}
     >
       <IconSymbol
@@ -78,11 +77,8 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={noctalia.text.tertiary}
-        style={[
-          styles.input,
-          webInputFocusResetStyle,
-          { color: noctalia.text.primary },
-        ]}
+        className="flex-1 py-0 font-sans text-[15px] text-ivory"
+        style={webInputFocusResetStyle}
         testID={inputTestID}
         accessibilityLabel={placeholder}
         autoFocus={autoFocus}
@@ -94,7 +90,7 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
         onBlur={() => setIsFocused(false)}
       />
       {value.length > 0 && (
-        <Pressable
+        <PressableScale
           onPress={() => {
             onChangeText('');
             requestAnimationFrame(() => inputRef.current?.focus());
@@ -107,26 +103,8 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
             size={18}
             color={noctalia.text.tertiary}
           />
-        </Pressable>
+        </PressableScale>
       )}
     </View>
   );
 }));
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: ThemeLayout.borderRadius.md,
-    borderCurve: 'continuous',
-    paddingHorizontal: ThemeLayout.spacing.md,
-    gap: ThemeLayout.spacing.sm,
-    height: 44,
-  },
-  input: {
-    flex: 1,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    paddingVertical: 0,
-  },
-});

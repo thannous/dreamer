@@ -60,10 +60,12 @@ export const Easing = {
   inOut: () => 'inOut',
 };
 
-export const Pressable = ({ children, onPress, disabled, testID }: any) =>
+export const Pressable = ({ children, onPress, onPressIn, onPressOut, disabled, testID }: any) =>
   React.createElement(
     'button',
-    { 'data-testid': testID, disabled, onClick: onPress },
+    // `onPressIn`/`onPressOut` are passed through so press-in feedback (the moment the
+    // user actually perceives) is reachable from `fireEvent(node, 'pressIn')`.
+    { 'data-testid': testID, disabled, onClick: onPress, onPress, onPressIn, onPressOut },
     typeof children === 'function' ? children({ pressed: false }) : children
   );
 

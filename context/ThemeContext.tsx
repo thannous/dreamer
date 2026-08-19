@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+import { Uniwind } from 'uniwind';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { DarkTheme, LightTheme, Shadows, type ThemeColors } from '@/constants/journalTheme';
 import { getThemePreference, saveThemePreference } from '@/services/storageService';
@@ -82,6 +83,13 @@ export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) =
     }
     return preference;
   }, [preference, systemMode]);
+
+  // Keep Uniwind's theme in sync with the app preference so `dark:` classNames and the
+  // legacy `colors` object can never disagree. `system` re-enables adaptive themes;
+  // an explicit choice also flips RN's Appearance so native dialogs follow along.
+  useEffect(() => {
+    Uniwind.setTheme(preference === 'auto' ? 'system' : preference);
+  }, [preference]);
 
   // Select theme colors based on mode
   const colors = useMemo(() => {

@@ -8,13 +8,13 @@ import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
 import { FilterBar } from '@/components/journal/FilterBar';
+import { PressableScale } from '@/components/motion';
 import { NoctaliaScreenHeader, type NoctaliaHeaderChip } from '@/components/NoctaliaScreenHeader';
 import { SearchBar } from '@/components/ui/SearchBar';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import {
   DESKTOP_BREAKPOINT,
   LAYOUT_MAX_WIDTH,
@@ -42,20 +42,30 @@ import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useSt
 import {
   Platform,
   Pressable,
-  StyleSheet,
   Text,
   type TextInput,
   View,
   type ViewToken,
   useWindowDimensions,
 } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
 const PREFETCH_MAX_PER_FLUSH = 8;
-const MAX_ANIMATED_ITEMS = 15;
+
+/**
+ * FlashList owns these through props that take a style object, and the desktop max
+ * width comes from a TS constant, so both stay in TypeScript.
+ */
+const DESKTOP_MAX_WIDTH_STYLE = { alignSelf: 'center', width: '100%', maxWidth: LAYOUT_MAX_WIDTH } as const;
+const LIST_CONTENT_STYLE = { paddingHorizontal: ThemeLayout.spacing.md } as const;
+const LIST_CONTENT_ATLAS_STYLE = { paddingHorizontal: ThemeLayout.spacing.lg } as const;
+
+const MODAL_OPTION_CLASS = 'mb-2 rounded-sm border px-4 py-3';
+const MODAL_OPTION_TEXT_CLASS = 'text-center font-sans-medium text-[16px] capitalize';
+const MODAL_CHECK_BADGE_CLASS =
+  'absolute right-4 top-1/2 h-[22px] w-[22px] -translate-y-[11px] items-center justify-center rounded-full bg-ink-raised';
 
 const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
   // Supabase thumbnails use a `-thumb` filename suffix (see `services/supabaseDreamService.ts`).
@@ -138,9 +148,6 @@ export default function JournalListScreen() {
     focusSearchInput();
   }, [focusSearchInput, searchQuery.length, showAtlasSearch]);
 
-  // Track which items have been animated to prevent re-animation on FlashList recycle
-  const animatedIdsRef = useRef(new Set<number>());
-
   // Modal states
   const [showThemeModal, setShowThemeModal] = useState(false);
   const [showDateModal, setShowDateModal] = useState(false);
@@ -174,29 +181,21 @@ export default function JournalListScreen() {
     : navigationLayout.barHeight
       + navigationLayout.minimumBottomInset
       + ThemeLayout.spacing.lg;
-  const desktopDateTextStyle = useMemo(
-    () => [styles.desktopDate, { color: noctalia.text.secondary }],
-    [noctalia.text.secondary]
-  );
   const listContentStyle = useMemo(
-    () => [styles.listContent, { paddingBottom: listBottomPadding }],
+    () => [LIST_CONTENT_STYLE, { paddingBottom: listBottomPadding }],
     [listBottomPadding]
   );
   const listContentAtlasStyle = useMemo(
-    () => [styles.listContentAtlas, { paddingBottom: listBottomPadding }],
+    () => [LIST_CONTENT_ATLAS_STYLE, { paddingBottom: listBottomPadding }],
     [listBottomPadding]
   );
   const listContentDesktopStyle = useMemo(
-    () => [styles.listContent, styles.listContentDesktop, { paddingBottom: listBottomPadding }],
+    () => [LIST_CONTENT_STYLE, DESKTOP_MAX_WIDTH_STYLE, { paddingBottom: listBottomPadding }],
     [listBottomPadding]
   );
   const listExtraData = useMemo(
     () => ({ isAtlasLayout, isScrolling }),
     [isAtlasLayout, isScrolling],
-  );
-  const filtersContainerStyle = useMemo(
-    () => [styles.filtersContainer, isDesktopLayout && styles.filtersContainerDesktop],
-    [isDesktopLayout]
   );
 
   // Get available themes
@@ -461,16 +460,12 @@ export default function JournalListScreen() {
     };
   }, []);
 
+  // No `entering` on a row: FlashList recycles them, so an entrance replays on every
+  // scroll. The list itself is the thing that appeared, and it appeared with the screen.
   const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
     const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
     const isFirstItem = index === 0;
-
-    // Stagger enter animation only for the first batch; skip if already animated
-    const shouldAnimate = index < MAX_ANIMATED_ITEMS && !animatedIdsRef.current.has(item.id);
-    if (shouldAnimate) {
-      animatedIdsRef.current.add(item.id);
-    }
 
     if (isAtlasLayout) {
       const monthLabel = formatDate(item.id, { month: 'short', year: 'numeric' }).replace('.', '').toUpperCase();
@@ -479,7 +474,8 @@ export default function JournalListScreen() {
         ? formatDate(previousDream.id, { month: 'short', year: 'numeric' }).replace('.', '').toUpperCase()
         : null;
       const sectionLabel = index === 0 || monthLabel !== previousMonthLabel ? monthLabel : null;
-      const row = (
+
+      return (
         <AtlasDreamRow
           dream={item}
           onPress={handleDreamPress}
@@ -489,88 +485,36 @@ export default function JournalListScreen() {
           sectionLabel={sectionLabel}
         />
       );
-
-      if (shouldAnimate) {
-        return (
-          <Animated.View
-            style={styles.atlasListItem}
-            entering={FadeInDown.delay(index * 30).duration(300).springify()}
-          >
-            {row}
-          </Animated.View>
-        );
-      }
-
-      return (
-        <View style={styles.atlasListItem}>
-          {row}
-        </View>
-      );
-    }
-
-    const card = (
-      <DreamCard
-        dream={item}
-        onPress={handleDreamPress}
-        scrollState={isScrolling ? 'scrolling' : 'idle'}
-        testID={TID.List.DreamItem(item.id)}
-        dateLabel={dateStr}
-        variant={isFirstItem ? 'featured' : 'standard'}
-      />
-    );
-
-    if (shouldAnimate) {
-      return (
-        <Animated.View
-          style={styles.listItem}
-          entering={FadeInDown.delay(index * 30).duration(300).springify()}
-        >
-          {card}
-        </Animated.View>
-      );
     }
 
     return (
-      <View style={styles.listItem}>
-        {card}
+      <View className="mb-6">
+        <DreamCard
+          dream={item}
+          onPress={handleDreamPress}
+          scrollState={isScrolling ? 'scrolling' : 'idle'}
+          testID={TID.List.DreamItem(item.id)}
+          dateLabel={dateStr}
+          variant={isFirstItem ? 'featured' : 'standard'}
+        />
       </View>
     );
   }, [filteredDreams, formatDate, formatDreamListDate, t, handleDreamPress, isAtlasLayout, isScrolling]);
 
-  const renderDreamItemTablet = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
+  const renderDreamItemTablet = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
     const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
     const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
 
-    const shouldAnimate = index < MAX_ANIMATED_ITEMS && !animatedIdsRef.current.has(item.id);
-    if (shouldAnimate) {
-      animatedIdsRef.current.add(item.id);
-    }
-
-    const card = (
-      <DreamCard
-        dream={item}
-        onPress={handleDreamPress}
-        scrollState={isScrolling ? 'scrolling' : 'idle'}
-        testID={TID.List.DreamItem(item.id)}
-        dateLabel={dateStr}
-        variant="standard"
-      />
-    );
-
-    if (shouldAnimate) {
-      return (
-        <Animated.View
-          style={styles.tabletCardWrapper}
-          entering={FadeInDown.delay(index * 30).duration(300).springify()}
-        >
-          {card}
-        </Animated.View>
-      );
-    }
-
     return (
-      <View style={styles.tabletCardWrapper}>
-        {card}
+      <View className="mb-4 flex-1 px-1">
+        <DreamCard
+          dream={item}
+          onPress={handleDreamPress}
+          scrollState={isScrolling ? 'scrolling' : 'idle'}
+          testID={TID.List.DreamItem(item.id)}
+          dateLabel={dateStr}
+          variant="standard"
+        />
       </View>
     );
   }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
@@ -583,19 +527,20 @@ export default function JournalListScreen() {
     const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
 
     const isHero = isRecent && hasImage;
+    const weightClass = isHero
+      ? 'flex-[2]'
+      : isFavorite
+        ? 'flex-[1.5]'
+        : isAnalyzed
+          ? 'flex-[1.3]'
+          : hasImage
+            ? 'flex-[1.2]'
+            : 'flex-1';
 
     return (
-      <View
-        style={[
-          styles.desktopCardWrapper,
-          isHero && styles.desktopCardHero,
-          !isHero && isFavorite && styles.desktopCardFavorite,
-          !isHero && !isFavorite && isAnalyzed && styles.desktopCardAnalyzed,
-          !isHero && !isFavorite && !isAnalyzed && hasImage && styles.desktopCardWithImage,
-        ]}
-      >
-        <View style={styles.desktopMetaRow}> 
-          <Text style={desktopDateTextStyle}>
+      <View className={`mb-8 min-w-0 px-1 ${weightClass}`}>
+        <View className="mb-1 flex-row items-center justify-between">
+          <Text className="font-sans text-[14px] text-ivory-muted">
             {formatDreamListDate(item.id)}
             {dreamTypeLabel ? ` • ${dreamTypeLabel}` : ''}
           </Text>
@@ -608,7 +553,7 @@ export default function JournalListScreen() {
         />
       </View>
     );
-  }, [desktopDateTextStyle, formatDreamListDate, t, handleDreamPress, isScrolling]);
+  }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
 
   const hasActiveFilter = !!(
     searchQuery ||
@@ -834,7 +779,7 @@ export default function JournalListScreen() {
 
   return (
     <ScrollPerfProvider isScrolling={isScrolling}>
-      <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID={TID.Screen.Journal}>
+      <View className="flex-1 bg-ink" testID={TID.Screen.Journal}>
         {/* Atmospheric dreamlike background */}
         <AtmosphericBackground variant="subtle" />
 
@@ -878,12 +823,13 @@ export default function JournalListScreen() {
             <PageHeaderContent
               titleKey="journal.title"
               animationSeed={showHeaderAnimations ? 1 : 0}
-              style={isDesktopLayout ? styles.headerDesktop : undefined}
+              style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
             />
 
             {/* Search and Filters */}
             <View
-              style={filtersContainerStyle}
+              className="gap-4 p-4"
+              style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
             >
               <MockNavigationRail />
               {/* SearchBar */}
@@ -902,19 +848,15 @@ export default function JournalListScreen() {
                 selectedDreamType={selectedDreamType}
                 clearTestID={TID.Button.ClearFilters}
               />
-              <Pressable
+              <PressableScale
                 onPress={handleRememberedToggle}
+                haptic="selection"
                 accessibilityRole="button"
                 accessibilityState={{ selected: showRememberedOnly }}
                 accessibilityLabel={t('recording.activation_insight.signal.memory')}
-                style={({ pressed }) => [
-                  styles.rememberedFilterButton,
-                  {
-                    backgroundColor: showRememberedOnly ? noctalia.action.primary : noctalia.surface.soft,
-                    borderColor: showRememberedOnly ? noctalia.action.primaryBorder : noctalia.surface.border,
-                    opacity: pressed ? 0.82 : 1,
-                  },
-                ]}
+                className={`flex-row items-center gap-1.5 self-start rounded-full border border-continuous px-3 py-2 ${
+                  showRememberedOnly ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
+                }`}
               >
                 <IconSymbol
                   name="moon.stars.fill"
@@ -922,27 +864,24 @@ export default function JournalListScreen() {
                   color={showRememberedOnly ? noctalia.action.primaryText : noctalia.text.primary}
                 />
                 <Text
-                  style={[
-                    styles.rememberedFilterText,
-                    { color: showRememberedOnly ? noctalia.action.primaryText : noctalia.text.primary },
-                  ]}
+                  className={`font-sans-medium text-[14px] ${
+                    showRememberedOnly ? 'text-on-champagne' : 'text-ivory'
+                  }`}
                 >
                   {t('recording.activation_insight.signal.memory')}
                 </Text>
                 {showRememberedOnly ? (
                   <IconSymbol name="checkmark" size={12} color={noctalia.action.primaryText} />
                 ) : null}
-              </Pressable>
+              </PressableScale>
             </View>
           </>
         )}
 
       {/* Guest Upsell */}
       <View
-        style={[
-          styles.upsellContainer,
-          isDesktopLayout && styles.upsellDesktop,
-        ]}
+        className="mb-2 px-4"
+        style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
       >
         <UpsellCard />
       </View>
@@ -1019,95 +958,69 @@ export default function JournalListScreen() {
         style={{ backgroundColor: noctalia.surface.raised }}
         testID={TID.Modal.Theme}
       >
-        <Text style={[styles.modalTitle, { color: noctalia.text.primary }]}>
+        <Text className="mb-4 text-center font-sans-bold text-[20px] text-ivory">
           {t('journal.theme_modal.title')}
         </Text>
-        <Text style={[styles.modalSubtext, { color: noctalia.text.secondary }]}>
+        <Text className="mb-4 text-center font-sans text-[14px] text-ivory-muted">
           {t('journal.detail.theme_label')}
         </Text>
         {availableThemes.map((theme) => (
-          <Pressable
+          <PressableScale
             key={theme}
-            style={[
-              styles.modalOption,
-              {
-                backgroundColor: selectedTheme === theme
-                  ? noctalia.action.primary
-                  : noctalia.surface.soft,
-                borderColor: selectedTheme === theme
-                  ? noctalia.action.primaryBorder
-                  : noctalia.surface.border,
-              },
-            ]}
+            className={`${MODAL_OPTION_CLASS} ${
+              selectedTheme === theme ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
+            }`}
             onPress={() => handleThemeSelect(theme)}
           >
             <Text
-              style={[
-                styles.modalOptionText,
-                {
-                  color: selectedTheme === theme
-                    ? noctalia.action.primaryText
-                    : noctalia.text.primary,
-                },
-              ]}
+              className={`${MODAL_OPTION_TEXT_CLASS} ${
+                selectedTheme === theme ? 'text-on-champagne' : 'text-ivory'
+              }`}
             >
               {getDreamThemeLabel(theme, t) ?? theme}
             </Text>
             {selectedTheme === theme && (
-              <View style={styles.modalOptionCheckWrapper}>
-                <View style={[styles.modalOptionCheckBadge, { backgroundColor: noctalia.surface.raised }]}>
+              <View className="absolute inset-0">
+                <View className={MODAL_CHECK_BADGE_CLASS}>
                   <IconSymbol name="checkmark" size={14} color={noctalia.accent.text} />
                 </View>
               </View>
             )}
-          </Pressable>
+          </PressableScale>
         ))}
         <View style={{ height: 16 }} />
-        <Text style={[styles.modalSubtext, { color: noctalia.text.secondary }]}>
+        <Text className="mb-4 text-center font-sans text-[14px] text-ivory-muted">
           {t('journal.detail.dream_type_label')}
         </Text>
         {availableDreamTypes.map((dreamType) => (
-          <Pressable
+          <PressableScale
             key={dreamType}
-            style={[
-              styles.modalOption,
-              {
-                backgroundColor: selectedDreamType === dreamType
-                  ? noctalia.action.primary
-                  : noctalia.surface.soft,
-                borderColor: selectedDreamType === dreamType
-                  ? noctalia.action.primaryBorder
-                  : noctalia.surface.border,
-              },
-            ]}
+            className={`${MODAL_OPTION_CLASS} ${
+              selectedDreamType === dreamType ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
+            }`}
             onPress={() => handleDreamTypeSelect(dreamType)}
           >
             <Text
-              style={[
-                styles.modalOptionText,
-                {
-                  color: selectedDreamType === dreamType
-                    ? noctalia.action.primaryText
-                    : noctalia.text.primary,
-                },
-              ]}
+              className={`${MODAL_OPTION_TEXT_CLASS} ${
+                selectedDreamType === dreamType ? 'text-on-champagne' : 'text-ivory'
+              }`}
             >
               {getDreamTypeLabel(dreamType, t) ?? dreamType}
             </Text>
             {selectedDreamType === dreamType && (
-              <View style={styles.modalOptionCheckWrapper}>
-                <View style={[styles.modalOptionCheckBadge, { backgroundColor: noctalia.surface.raised }]}>
+              <View className="absolute inset-0">
+                <View className={MODAL_CHECK_BADGE_CLASS}>
                   <IconSymbol name="checkmark" size={14} color={noctalia.accent.text} />
                 </View>
               </View>
             )}
-          </Pressable>
+          </PressableScale>
         ))}
         <Pressable
-          style={styles.modalCancelButton}
+          className="mt-4 py-3"
           onPress={() => setShowThemeModal(false)}
         >
-          <Text style={[styles.modalCancelText, { color: noctalia.text.secondary }]}>
+          <Text className="text-center font-sans-medium text-[16px] text-ivory-muted">
             {t('common.cancel')}
           </Text>
         </Pressable>
@@ -1131,176 +1044,3 @@ export default function JournalListScreen() {
     </ScrollPerfProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  headerDesktop: {
-    alignSelf: 'center',
-    width: '100%',
-    maxWidth: LAYOUT_MAX_WIDTH,
-  },
-  filtersContainer: {
-    padding: ThemeLayout.spacing.md,
-    gap: ThemeLayout.spacing.md,
-  },
-  filtersContainerDesktop: {
-    alignSelf: 'center',
-    width: '100%',
-    maxWidth: LAYOUT_MAX_WIDTH,
-  },
-  rememberedFilterButton: {
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: ThemeLayout.borderRadius.full,
-    borderCurve: 'continuous',
-    borderWidth: 1,
-  },
-  rememberedFilterText: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.medium,
-  },
-  upsellContainer: {
-    paddingHorizontal: ThemeLayout.spacing.md,
-    marginBottom: ThemeLayout.spacing.sm,
-  },
-  listContent: {
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingBottom: ThemeLayout.spacing.xl,
-  },
-  listContentAtlas: {
-    paddingHorizontal: ThemeLayout.spacing.lg,
-    paddingBottom: ThemeLayout.spacing.xl,
-  },
-  listContentDesktop: {
-    alignSelf: 'center',
-    width: '100%',
-    maxWidth: LAYOUT_MAX_WIDTH,
-  },
-  upsellDesktop: {
-    alignSelf: 'center',
-    width: '100%',
-    maxWidth: LAYOUT_MAX_WIDTH,
-  },
-  desktopMetaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: ThemeLayout.spacing.xs,
-  },
-  desktopDate: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
-  },
-  desktopBadgesRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: ThemeLayout.spacing.xs,
-  },
-  desktopBadge: {
-    borderRadius: ThemeLayout.borderRadius.full,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  desktopBadgeText: {
-    fontSize: 11,
-    fontFamily: Fonts.spaceGrotesk.medium,
-  },
-  desktopRow: {
-    flexDirection: 'row',
-    columnGap: ThemeLayout.spacing.md,
-  },
-  desktopColumnWrapper: {
-    gap: ThemeLayout.spacing.lg,
-    columnGap: ThemeLayout.spacing.lg,
-    paddingHorizontal: ThemeLayout.spacing.sm,
-  },
-  desktopCardWrapper: {
-    flex: 1,
-    marginBottom: ThemeLayout.spacing.xl,
-    paddingHorizontal: ThemeLayout.spacing.xs,
-    minWidth: 0,
-  },
-  desktopCardHero: {
-    flex: 2,
-  },
-  desktopCardFavorite: {
-    flex: 1.5,
-  },
-  desktopCardAnalyzed: {
-    flex: 1.3,
-  },
-  desktopCardWithImage: {
-    flex: 1.2,
-  },
-  listItem: {
-    marginBottom: ThemeLayout.spacing.lg,
-  },
-  atlasListItem: {
-    marginBottom: 0,
-  },
-  tabletCardWrapper: {
-    flex: 1,
-    paddingHorizontal: ThemeLayout.spacing.xs,
-    marginBottom: ThemeLayout.spacing.md,
-  },
-  // date style removed — date is now inside DreamCard as an overline
-  // empty state styles moved to EmptyState component
-  modalTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    marginBottom: ThemeLayout.spacing.md,
-    textAlign: 'center',
-  },
-  modalSubtext: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    marginBottom: ThemeLayout.spacing.md,
-    textAlign: 'center',
-  },
-  modalOption: {
-    borderWidth: 1,
-    paddingVertical: 12,
-    paddingHorizontal: ThemeLayout.spacing.md,
-    borderRadius: ThemeLayout.borderRadius.sm,
-    marginBottom: 8,
-  },
-  modalOptionText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textAlign: 'center',
-    textTransform: 'capitalize',
-  },
-  modalOptionCheckWrapper: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-  },
-  modalOptionCheckBadge: {
-    position: 'absolute',
-    right: ThemeLayout.spacing.md,
-    top: '50%',
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    alignItems: 'center',
-    justifyContent: 'center',
-    transform: [{ translateY: -11 }],
-  },
-  modalCancelButton: {
-    marginTop: ThemeLayout.spacing.md,
-    paddingVertical: 12,
-  },
-  modalCancelText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textAlign: 'center',
-  },
-});

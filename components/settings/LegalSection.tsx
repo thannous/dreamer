@@ -3,17 +3,15 @@ import {
   ActivityIndicator,
   Alert,
   Linking,
-  Pressable,
-  StyleSheet,
   Switch,
   Text,
   View,
 } from 'react-native';
 
+import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getLegalLink, type LegalLinkKind } from '@/constants/legalLinks';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useAnalyticsPreferenceController } from '@/components/settings/useAnalyticsPreferenceController';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -22,6 +20,11 @@ import {
   finalizeAccountDeletion,
   requestAccountDeletion,
 } from '@/services/accountDeletionService';
+
+/** Rows are stacked edge to edge; hit slop would overlap the neighbouring row. */
+const NO_HIT_SLOP = 0;
+
+const ROW_CLASS = 'min-h-[46px] w-full flex-row items-center gap-4 border-t border-line py-2';
 
 type LegalLinkRow = {
   icon: 'lock.shield' | 'doc.on.doc' | 'globe';
@@ -119,17 +122,11 @@ export function LegalSection() {
 
   return (
     <View
-      style={[
-        styles.card,
-        {
-          backgroundColor: noctalia.surface.raised,
-          borderColor: noctalia.surface.borderStrong,
-        },
-      ]}
+      className="w-full overflow-hidden rounded-[18px] border border-line-strong bg-ink-raised px-4"
       testID="settings-section-legal"
     >
-      <View style={styles.cardHeader}>
-        <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>
+      <View className="min-h-12 flex-row items-center justify-between">
+        <Text className="font-display-semibold text-h2 text-ivory">
           {t('settings.legal.sectionTitle')}
         </Text>
         <IconSymbol name="lock.shield" size={23} color={noctalia.accent.text} />
@@ -139,15 +136,15 @@ export function LegalSection() {
           accessibilityRole="switch"
           accessibilityState={{ checked: analyticsPreference.enabled === true }}
           accessibilityLabel={analyticsPreference.toggleLabel}
-          style={[styles.row, { borderTopColor: noctalia.surface.border, borderTopWidth: 1 }]}
+          className={ROW_CLASS}
           testID="settings-analytics-preference"
         >
           <IconSymbol name="chart.bar.fill" size={21} color={noctalia.accent.text} />
-          <View style={styles.deleteCopy}>
-            <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>
+          <View className="flex-1 gap-0.5">
+            <Text className="flex-1 font-sans text-[15px] leading-[20px] text-ivory">
               {analyticsPreference.title}
             </Text>
-            <Text style={[styles.deleteDescription, { color: noctalia.text.secondary }]}>
+            <Text className="font-sans text-caption text-ivory-muted">
               {analyticsPreference.error ? analyticsPreference.errorMessage : analyticsPreference.description}
             </Text>
           </View>
@@ -165,98 +162,45 @@ export function LegalSection() {
         </View>
       ) : null}
       {LEGAL_LINK_ROWS.map((row) => (
-        <Pressable
+        <PressableScale
           accessibilityRole="link"
           key={row.kind}
           onPress={() => openLegalLink(row.kind)}
-          style={({ pressed }) => [
-            styles.row,
-            { borderTopColor: noctalia.surface.border, borderTopWidth: 1 },
-            pressed && styles.rowPressed,
-          ]}
+          className={ROW_CLASS}
+          hitSlop={NO_HIT_SLOP}
           testID={row.testID}
         >
           <IconSymbol name={row.icon} size={21} color={noctalia.accent.text} />
-          <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>
+          <Text className="flex-1 font-sans text-[15px] leading-[20px] text-ivory">
             {t(row.labelKey)}
           </Text>
           <IconSymbol name="chevron.right" size={20} color={noctalia.text.tertiary} />
-        </Pressable>
+        </PressableScale>
       ))}
       {user ? (
-        <Pressable
+        <PressableScale
           accessibilityRole="button"
           accessibilityState={{ disabled: isDeleting }}
           disabled={isDeleting}
           onPress={confirmDeletion}
-          style={({ pressed }) => [
-            styles.row,
-            { borderTopColor: noctalia.surface.border, borderTopWidth: 1 },
-            pressed && styles.rowPressed,
-          ]}
+          className={ROW_CLASS}
+          hitSlop={NO_HIT_SLOP}
           testID="settings-delete-account"
         >
           <IconSymbol name="trash" size={21} color={noctalia.status.danger.icon} />
-          <View style={styles.deleteCopy}>
-            <Text style={[styles.rowLabel, { color: noctalia.status.danger.text }]}>
+          <View className="flex-1 gap-0.5">
+            <Text className="flex-1 font-sans text-[15px] leading-[20px] text-danger-on">
               {t('settings.deleteAccount.title')}
             </Text>
-            <Text style={[styles.deleteDescription, { color: noctalia.text.secondary }]}>
+            <Text className="font-sans text-caption text-ivory-muted">
               {t('settings.deleteAccount.description')}
             </Text>
           </View>
           {isDeleting ? (
             <ActivityIndicator color={noctalia.status.danger.icon} testID="settings-delete-account-loading" />
           ) : null}
-        </Pressable>
+        </PressableScale>
       ) : null}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    borderRadius: 18,
-    borderWidth: 1,
-    overflow: 'hidden',
-    paddingHorizontal: 16,
-    width: '100%',
-  },
-  cardHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    minHeight: 48,
-  },
-  cardTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 22,
-    lineHeight: 28,
-  },
-  row: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 16,
-    minHeight: 46,
-    paddingVertical: 8,
-    width: '100%',
-  },
-  rowPressed: {
-    opacity: 0.82,
-  },
-  rowLabel: {
-    flex: 1,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 20,
-  },
-  deleteCopy: {
-    flex: 1,
-    gap: 2,
-  },
-  deleteDescription: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
-    lineHeight: 16,
-  },
-});

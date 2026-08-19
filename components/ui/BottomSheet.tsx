@@ -2,7 +2,6 @@ import { BottomSheet as ExpoBottomSheet, RNHostView } from '@expo/ui';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Platform,
-  StyleSheet,
   Text,
   useWindowDimensions,
   View,
@@ -10,8 +9,6 @@ import {
   type ViewStyle,
 } from 'react-native';
 
-import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { useTheme } from '@/context/ThemeContext';
 import { blurActiveElement } from '@/lib/accessibility';
 
 export type BottomSheetProps = {
@@ -20,6 +17,8 @@ export type BottomSheetProps = {
   children: React.ReactNode;
   /** Optional style override for the React Native sheet content. */
   style?: StyleProp<ViewStyle>;
+  /** Optional class override for the React Native sheet content. Applied last, so it wins. */
+  className?: string;
   /**
    * Kept for API compatibility. Expo UI owns the native/Vaul backdrop.
    */
@@ -58,14 +57,13 @@ export function BottomSheet({
   onClose,
   children,
   style,
+  className,
   backdropColor: _backdropColor,
   testID,
   dismissBehavior = 'pan',
   snapPoints,
 }: BottomSheetProps) {
-  const { colors, mode } = useTheme();
   const { width: viewportWidth } = useWindowDimensions();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const previouslyFocusedElementRef = useRef<{ focus?: () => void } | null>(null);
   const wasVisibleRef = useRef(false);
   const [presentationEpoch, setPresentationEpoch] = useState(0);
@@ -143,16 +141,14 @@ export function BottomSheet({
       <RNHostView matchContents={!fillsViewport}>
         <View
           accessibilityViewIsModal
-          style={[
-            styles.sheet,
-            {
-              backgroundColor: noctalia.surface.raised,
-              borderColor: noctalia.surface.border,
-            },
-            style,
-            fillsViewport && styles.sheetFullHeight,
-            nativeContentWidth != null && { width: nativeContentWidth },
-          ]}
+          className={[
+            'w-full self-stretch rounded-t-artwork border-line border-t bg-ink-raised px-6 py-7',
+            className,
+            fillsViewport ? 'flex-1' : undefined,
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          style={[style, nativeContentWidth != null && { width: nativeContentWidth }]}
         >
           {normalizedChildren}
         </View>
@@ -161,17 +157,3 @@ export function BottomSheet({
   );
 }
 
-const styles = StyleSheet.create({
-  sheet: {
-    width: '100%',
-    alignSelf: 'stretch',
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    borderTopWidth: 1,
-    paddingHorizontal: 24,
-    paddingVertical: 28,
-  },
-  sheetFullHeight: {
-    flex: 1,
-  },
-});

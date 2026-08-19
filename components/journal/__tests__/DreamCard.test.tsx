@@ -51,6 +51,11 @@ jest.mock('react-native-reanimated', () => {
   return {
     __esModule: true,
     default: Animated,
+    // `PressableScale` (via `components/motion`) reads these at module scope.
+    createAnimatedComponent: (Component: any) => Component,
+    cubicBezier: (...points: number[]) => `cubic-bezier(${points.join(', ')})`,
+    Easing: { bezier: () => (value: unknown) => value },
+    useReducedMotion: () => false,
   };
 });
 

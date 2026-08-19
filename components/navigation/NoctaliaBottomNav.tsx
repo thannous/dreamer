@@ -5,7 +5,6 @@ import {
   getTabBarHorizontalLayout,
 } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -16,11 +15,11 @@ import {
   ActivityIndicator,
   Platform,
   Pressable,
-  StyleSheet,
   Text,
   View,
   useWindowDimensions,
   type LayoutChangeEvent,
+  type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -40,6 +39,38 @@ type NoctaliaBottomNavProps = {
   activeKey: BottomNavKey;
   addDreamIcon?: IconName;
   onBarLayout?: (event: LayoutChangeEvent) => void;
+};
+
+/**
+ * Shadows have no `global.css` token — RN spreads a shadow over five properties
+ * (`shadowColor/Offset/Opacity/Radius` plus Android `elevation`) that Tailwind's single
+ * `box-shadow` does not map onto without changing how Android draws it. They stay here.
+ */
+const BAR_SHADOW: ViewStyle = {
+  shadowColor: '#000000',
+  shadowOffset: { width: 0, height: 12 },
+  shadowOpacity: 0.22,
+  shadowRadius: 24,
+  elevation: 14,
+};
+
+const ADD_SHADOW: ViewStyle = {
+  shadowColor: '#000000',
+  shadowOffset: { width: 0, height: 8 },
+  shadowOpacity: 0.24,
+  shadowRadius: 14,
+  elevation: 8,
+};
+
+/**
+ * The capture button lifts out of the bar. Kept as a transform on the style prop rather
+ * than a `-translate-y-*` class: Tailwind v4 emits the `translate` shorthand through CSS
+ * variables, and the exact RN transform is what the current pixel output depends on.
+ */
+const ADD_LIFT = {
+  default: { transform: [{ translateY: -8 }] } satisfies ViewStyle,
+  compact: { transform: [{ translateY: -4 }] } satisfies ViewStyle,
+  narrow: { transform: [{ translateY: -6 }] } satisfies ViewStyle,
 };
 
 export function NoctaliaBottomNav({
@@ -62,14 +93,39 @@ export function NoctaliaBottomNav({
 
   const navigationLayout = getBottomNavigationLayout(width, height);
   const floatingBottomInset = Math.max(insets.bottom, navigationLayout.minimumBottomInset);
-  const barBackground = noctalia.nav.background;
-  const barBorder = noctalia.nav.border;
+  // Icon and indicator colours are values on native props, so they stay on the tokens.
   const navActiveColor = noctalia.nav.active;
   const navInactiveColor = noctalia.nav.inactive;
-  const addBackground = noctalia.action.primary;
-  const addBorder = noctalia.action.primaryBorder;
   const addTextColor = noctalia.action.primaryText;
   const horizontalLayout = getTabBarHorizontalLayout(width);
+
+  const barClassName = [
+    'absolute flex-row border border-line-nav bg-ink-nav',
+    navigationLayout.compact ? 'rounded-[28px] py-1' : 'rounded-[36px] py-[7px]',
+    navigationLayout.narrow ? 'px-1' : 'px-2',
+  ].join(' ');
+
+  const addItemClassName = [
+    'items-center justify-center border-2 border-champagne-soft bg-champagne',
+    navigationLayout.compact
+      ? 'h-[56px] w-[60px] gap-px rounded-[22px]'
+      : navigationLayout.narrow
+        ? 'h-[68px] w-[64px] gap-[3px] rounded-[24px]'
+        : 'h-[76px] w-[72px] gap-1 rounded-[27px]',
+  ].join(' ');
+
+  const addLift = navigationLayout.compact
+    ? ADD_LIFT.compact
+    : navigationLayout.narrow
+      ? ADD_LIFT.narrow
+      : ADD_LIFT.default;
+
+  const labelSizeClassName = navigationLayout.narrow
+    ? 'text-[11px] px-px'
+    : navigationLayout.compact
+      ? 'text-[11px]'
+      : 'text-[12px]';
+
   const items: BottomNavItem[] = [
     {
       key: 'home',
@@ -114,19 +170,16 @@ export function NoctaliaBottomNav({
   ];
 
   return (
-    <View pointerEvents="box-none" style={styles.overlay}>
+    <View pointerEvents="box-none" className="absolute inset-0 z-[45]">
       <View
         onLayout={onBarLayout}
+        className={barClassName}
         style={[
-          styles.bar,
-          navigationLayout.compact && styles.compactBar,
-          navigationLayout.narrow && styles.narrowBar,
-          horizontalLayout,
+          BAR_SHADOW,
           {
             bottom: floatingBottomInset,
             height: navigationLayout.barHeight,
-            backgroundColor: barBackground,
-            borderColor: barBorder,
+            ...horizontalLayout,
           },
         ]}
       >
@@ -142,23 +195,10 @@ export function NoctaliaBottomNav({
               accessibilityState={{ selected: isActive }}
               accessibilityLabel={item.accessibilityLabel}
               testID={item.testID}
-              style={({ pressed }) => [
-                styles.item,
-                pressed && styles.pressed,
-              ]}
+              className="h-full min-w-0 flex-1 items-center justify-center active:opacity-[0.72]"
             >
               {isCenter ? (
-                <View
-                  style={[
-                    styles.addItem,
-                    navigationLayout.compact && styles.compactAddItem,
-                    navigationLayout.narrow && styles.narrowAddItem,
-                    {
-                      backgroundColor: addBackground,
-                      borderColor: addBorder,
-                    },
-                  ]}
-                >
+                <View className={addItemClassName} style={[ADD_SHADOW, addLift]}>
                   {activeAnalysis ? (
                     <ActivityIndicator size="small" color={addTextColor} />
                   ) : (
@@ -169,11 +209,9 @@ export function NoctaliaBottomNav({
                     />
                   )}
                   <Text
-                    style={[
-                      styles.addLabel,
-                      navigationLayout.narrow && styles.narrowAddLabel,
-                      { color: addTextColor },
-                    ]}
+                    className={`font-sans-bold w-full min-w-0 shrink text-center text-on-champagne ${
+                      navigationLayout.narrow ? 'text-[11px] px-px' : 'text-[12px]'
+                    }`}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                     adjustsFontSizeToFit
@@ -185,10 +223,9 @@ export function NoctaliaBottomNav({
                 </View>
               ) : (
                 <View
-                  style={[
-                    styles.standardItem,
-                    navigationLayout.compact && styles.compactStandardItem,
-                  ]}
+                  className={`w-full min-w-0 flex-1 items-center justify-center ${
+                    navigationLayout.compact ? 'gap-px' : 'gap-[5px]'
+                  }`}
                 >
                   <IconSymbol
                     size={24}
@@ -196,12 +233,9 @@ export function NoctaliaBottomNav({
                     color={isActive ? navActiveColor : navInactiveColor}
                   />
                   <Text
-                    style={[
-                      styles.label,
-                      navigationLayout.compact && styles.compactLabel,
-                      navigationLayout.narrow && styles.narrowLabel,
-                      { color: isActive ? navActiveColor : navInactiveColor },
-                    ]}
+                    className={`font-sans-medium w-full min-w-0 shrink text-center ${labelSizeClassName} ${
+                      isActive ? 'text-nav-active' : 'text-nav-inactive'
+                    }`}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                     adjustsFontSizeToFit
@@ -219,113 +253,3 @@ export function NoctaliaBottomNav({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    top: 0,
-    zIndex: 45,
-  },
-  bar: {
-    position: 'absolute',
-    paddingHorizontal: 8,
-    paddingTop: 7,
-    paddingBottom: 7,
-    borderRadius: 36,
-    borderWidth: 1,
-    flexDirection: 'row',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.22,
-    shadowRadius: 24,
-    elevation: 14,
-  },
-  compactBar: {
-    borderRadius: 28,
-    paddingTop: 4,
-    paddingBottom: 4,
-  },
-  narrowBar: {
-    paddingHorizontal: 4,
-  },
-  item: {
-    flex: 1,
-    minWidth: 0,
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  standardItem: {
-    flex: 1,
-    width: '100%',
-    minWidth: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-  },
-  compactStandardItem: {
-    gap: 1,
-  },
-  label: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
-    width: '100%',
-    minWidth: 0,
-    flexShrink: 1,
-    textAlign: 'center',
-  },
-  compactLabel: {
-    fontSize: 11,
-  },
-  narrowLabel: {
-    fontSize: 11,
-    paddingHorizontal: 1,
-  },
-  addItem: {
-    width: 72,
-    height: 76,
-    borderRadius: 27,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 4,
-    transform: [{ translateY: -8 }],
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.24,
-    shadowRadius: 14,
-    elevation: 8,
-  },
-  compactAddItem: {
-    width: 60,
-    height: 56,
-    borderRadius: 22,
-    gap: 1,
-    transform: [{ translateY: -4 }],
-  },
-  narrowAddItem: {
-    width: 64,
-    height: 68,
-    borderRadius: 24,
-    gap: 3,
-    transform: [{ translateY: -6 }],
-  },
-  addLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
-    width: '100%',
-    minWidth: 0,
-    flexShrink: 1,
-    textAlign: 'center',
-  },
-  narrowAddLabel: {
-    fontSize: 11,
-    paddingHorizontal: 1,
-  },
-  pressed: {
-    opacity: 0.72,
-  },
-});

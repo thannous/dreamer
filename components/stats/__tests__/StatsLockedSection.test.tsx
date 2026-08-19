@@ -30,6 +30,12 @@ jest.mock('react-native', () => {
       accessibilityLabel,
       accessibilityElementsHidden,
       importantForAccessibility,
+      // React Native-only props PressableScale sets. Swallowed, not spread: letting them
+      // reach the DOM turns every render into unknown-property noise.
+      hitSlop,
+      pressRetentionOffset,
+      onPressIn,
+      onPressOut,
       style,
       ...rest
     } = props;

@@ -8,24 +8,24 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
   Switch,
   Text,
   useWindowDimensions,
   View,
+  type TextStyle,
 } from 'react-native';
 
+import { PressableScale } from '@/components/motion';
 import { DateTimePicker } from '@/components/ui/DateTimePicker';
 import {
   BottomSheet,
   getNativeBottomSheetContentWidth,
 } from '@/components/ui/BottomSheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { TID } from '@/lib/testIDs';
 
 import {
   getDateFromTime,
@@ -46,6 +46,44 @@ type SettingsFieldGroupProps = {
   subscriptionSubtitle: string;
   subscriptionTitle: string;
 };
+
+/**
+ * Values `className` cannot reach.
+ *
+ * `Switch` accepts no `className` (Uniwind types it as `never`); the web time input is a
+ * DOM node, not a React Native view; and `fontVariant` has no utility.
+ */
+const REMINDER_SWITCH_STYLE = { transform: [{ scale: 1.15 }] } as const;
+const TABULAR_NUMS_STYLE: TextStyle = { fontVariant: ['tabular-nums'] };
+const WEB_TIME_PICKER_STYLE = {
+  backgroundColor: 'transparent',
+  borderWidth: 0,
+  fontFamily: 'SpaceGrotesk_700Bold',
+  fontSize: 28,
+  minHeight: 48,
+  textAlign: 'center',
+  width: '100%',
+} as const;
+
+/** Settings rows are stacked edge to edge; hit slop would overlap the neighbouring row. */
+const NO_HIT_SLOP = 0;
+
+const ROW_CLASS = 'min-h-[46px] w-full flex-row items-center gap-4';
+const RITUAL_ROW_CLASS = `${ROW_CLASS} min-h-[42px]`;
+const ROW_LABEL_CLASS = 'flex-1 font-sans text-[15px] leading-[20px] text-ivory';
+const ROW_VALUE_CLASS = 'max-w-[36%] shrink font-sans text-[15px] leading-[20px] text-right text-ivory-muted';
+const CARD_CLASS = 'w-full rounded-[18px] border border-line-strong bg-ink-raised';
+const SHEET_HANDLE_CLASS = 'mb-[18px] h-1 w-[38px] self-center rounded-[2px] bg-line-strong';
+const SHEET_HEADER_CLASS = 'mb-[18px] flex-row items-center gap-3';
+const SHEET_HEADER_ICON_CLASS =
+  'h-11 w-11 items-center justify-center rounded-[22px] border border-champagne-soft bg-ink-soft';
+const SHEET_TITLE_CLASS = 'font-display-semibold text-[23px] leading-[28px] text-ivory';
+const SHEET_SUBTITLE_CLASS = 'font-sans text-[13px] leading-[18px] text-ivory-muted';
+const SHEET_CONTENT_CLASS = 'px-gutter pt-2 pb-6';
+const DONE_BUTTON_CLASS = 'mt-2 items-center rounded-sm bg-champagne py-2';
+const DONE_BUTTON_LABEL_CLASS = 'font-sans-bold text-[16px] text-on-champagne';
+
+const cx = (...parts: (string | false | null | undefined)[]) => parts.filter(Boolean).join(' ');
 
 type PreferenceKind = 'theme' | 'language' | 'journal';
 
@@ -92,58 +130,40 @@ function PreferenceSheet<T extends string>({
     <BottomSheet
       visible={isPresented}
       onClose={onDismiss}
-      style={styles.preferenceSheet}
+      className={SHEET_CONTENT_CLASS}
       testID={`${testID}.sheet`}
     >
-      <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.borderStrong }]} />
-      <View style={styles.preferenceHeader}>
-        <View
-          style={[
-            styles.preferenceHeaderIcon,
-            {
-              backgroundColor: noctalia.surface.soft,
-              borderColor: noctalia.accent.soft,
-            },
-          ]}
-        >
+      <View className={SHEET_HANDLE_CLASS} />
+      <View className={SHEET_HEADER_CLASS}>
+        <View className={SHEET_HEADER_ICON_CLASS}>
           <IconSymbol
             name={PREFERENCE_HEADER_ICONS[kind]}
             size={24}
             color={noctalia.accent.text}
           />
         </View>
-        <View style={styles.preferenceHeaderCopy}>
-          <Text style={[styles.preferenceTitle, { color: noctalia.text.primary }]}>
+        <View className="flex-1 gap-0.5">
+          <Text className={SHEET_TITLE_CLASS}>
             {controller.title}
           </Text>
-          <Text style={[styles.preferenceSubtitle, { color: noctalia.text.secondary }]}>
+          <Text className={SHEET_SUBTITLE_CLASS}>
             {controller.description}
           </Text>
         </View>
-        <Pressable
+        <PressableScale
           accessibilityLabel={t('common.cancel')}
           accessibilityRole="button"
           onPress={onDismiss}
-          style={({ pressed }) => [
-            styles.sheetCloseButton,
-            { backgroundColor: noctalia.surface.soft },
-            pressed && styles.rowPressed,
-          ]}
+          className="h-9 w-9 items-center justify-center rounded-[18px] bg-ink-soft"
         >
           <IconSymbol name="xmark" size={20} color={noctalia.text.secondary} />
-        </Pressable>
+        </PressableScale>
       </View>
 
       <View
         accessibilityLabel={controller.title}
         accessibilityRole="radiogroup"
-        style={[
-          styles.preferenceOptions,
-          {
-            backgroundColor: noctalia.surface.base,
-            borderColor: noctalia.surface.borderStrong,
-          },
-        ]}
+        className="overflow-hidden rounded-lg border border-line-strong bg-ink-card"
       >
           {controller.options.map((option, index) => {
             const selectOption = () => {
@@ -152,7 +172,7 @@ function PreferenceSheet<T extends string>({
             };
 
             return (
-              <Pressable
+              <PressableScale
                 accessibilityHint={option.description.replace(/\s+/g, ' ')}
                 accessibilityLabel={option.label}
                 accessibilityRole="radio"
@@ -160,26 +180,19 @@ function PreferenceSheet<T extends string>({
                 disabled={controller.saving}
                 key={option.value}
                 onPress={selectOption}
-                style={({ pressed }) => [
-                  styles.preferenceOption,
-                  index < controller.options.length - 1 && {
-                    borderBottomColor: noctalia.surface.border,
-                    borderBottomWidth: 1,
-                  },
-                  option.current && { backgroundColor: noctalia.surface.active },
-                  pressed && styles.rowPressed,
-                ]}
+                hitSlop={NO_HIT_SLOP}
+                className={cx(
+                  'min-h-[66px] flex-row items-center gap-3 px-3.5 py-2.5',
+                  index < controller.options.length - 1 && 'border-b border-b-line',
+                  option.current && 'bg-ink-active'
+                )}
                 testID={option.testID ?? `${testID}.option.${option.value}`}
               >
                 <View
-                  style={[
-                    styles.preferenceOptionIcon,
-                    {
-                      backgroundColor: option.current
-                        ? noctalia.action.primary
-                        : noctalia.surface.soft,
-                    },
-                  ]}
+                  className={cx(
+                    'h-9 w-9 items-center justify-center rounded-[18px]',
+                    option.current ? 'bg-champagne' : 'bg-ink-soft'
+                  )}
                 >
                   <IconSymbol
                     name={getPreferenceOptionIcon(kind, option.value)}
@@ -189,31 +202,30 @@ function PreferenceSheet<T extends string>({
                       : noctalia.accent.text}
                   />
                 </View>
-                <View style={styles.preferenceOptionCopy}>
+                <View className="min-w-0 flex-1 gap-0.5">
                   <Text
-                    style={[
-                      styles.preferenceOptionLabel,
-                      option.current && styles.preferenceOptionLabelSelected,
-                      { color: noctalia.text.primary },
-                    ]}
+                    className={cx(
+                      'text-[15px] leading-[19px] text-ivory',
+                      option.current ? 'font-sans-bold' : 'font-sans-medium'
+                    )}
                   >
                     {option.label}
                   </Text>
-                  <Text style={[styles.preferenceOptionDescription, { color: noctalia.text.secondary }]}>
+                  <Text className="font-sans text-caption text-ivory-muted">
                     {option.description}
                   </Text>
                 </View>
                 <View
-                  style={[
-                    styles.radioOutline,
-                    { borderColor: option.current ? noctalia.accent.base : noctalia.text.tertiary },
-                  ]}
+                  className={cx(
+                    'h-5 w-5 items-center justify-center rounded-[10px] border-[1.5px]',
+                    option.current ? 'border-champagne' : 'border-ivory-faint'
+                  )}
                 >
                   {option.current ? (
-                    <View style={[styles.radioDot, { backgroundColor: noctalia.accent.base }]} />
+                    <View className="h-2.5 w-2.5 rounded-[5px] bg-champagne" />
                   ) : null}
                 </View>
-              </Pressable>
+              </PressableScale>
             );
           })}
       </View>
@@ -232,18 +244,14 @@ type EditorialCardProps = {
 
 function EditorialCard({ children, compact = false, icon, noctalia, title, testID }: EditorialCardProps) {
   return (
-    <View
-      style={[
-        styles.editorialCard,
-        {
-          backgroundColor: noctalia.surface.raised,
-          borderColor: noctalia.surface.borderStrong,
-        },
-      ]}
-      testID={testID}
-    >
-      <View style={[styles.cardHeader, compact && styles.compactCardHeader]}>
-        <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>{title}</Text>
+    <View className={`${CARD_CLASS} overflow-hidden px-4`} testID={testID}>
+      <View
+        className={cx(
+          'flex-row items-center justify-between',
+          compact ? 'min-h-10' : 'min-h-12'
+        )}
+      >
+        <Text className="font-display-semibold text-h2 text-ivory">{title}</Text>
         <IconSymbol name={icon} size={23} color={noctalia.accent.text} />
       </View>
       {children}
@@ -273,30 +281,23 @@ function PreferenceRow({
   wideValue = false,
 }: PreferenceRowProps) {
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.editorialRow,
-        !isLast && { borderBottomColor: noctalia.surface.border, borderBottomWidth: 1 },
-        pressed && styles.rowPressed,
-      ]}
+      hitSlop={NO_HIT_SLOP}
+      className={cx(ROW_CLASS, !isLast && 'border-b border-b-line')}
       testID={testID}
     >
       <IconSymbol name={icon} size={21} color={noctalia.accent.text} />
-      <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>{label}</Text>
+      <Text className={ROW_LABEL_CLASS}>{label}</Text>
       <Text
         numberOfLines={1}
-        style={[
-          styles.rowValue,
-          wideValue && styles.rowValueWide,
-          { color: noctalia.text.secondary },
-        ]}
+        className={cx(ROW_VALUE_CLASS, wideValue && 'max-w-[48%]')}
       >
         {value}
       </Text>
       <IconSymbol name="chevron.right" size={20} color={noctalia.text.tertiary} />
-    </Pressable>
+    </PressableScale>
   );
 }
 
@@ -313,7 +314,7 @@ function PreferenceRow({
 function SettingsContentHost({ children, testID }: { children: ReactElement; testID?: string }) {
   if (Platform.OS === 'ios') {
     return (
-      <View style={styles.iosContentHost} testID={testID}>
+      <View className="w-full flex-1" testID={testID}>
         {children}
       </View>
     );
@@ -392,28 +393,28 @@ export function SettingsFieldGroup({
   const toggleWeeklyRecap = () => {
     void notifications.toggleWeeklyRecap(!weeklyRecapEnabled);
   };
+  const streakRiskEnabled = notifications.settings.streakRiskEnabled === true;
+  const toggleStreakRisk = () => {
+    void notifications.toggleStreakRisk(!streakRiskEnabled);
+  };
+  const inactivityNudgeEnabled = notifications.settings.inactivityNudgeEnabled === true;
+  const toggleInactivityNudge = () => {
+    void notifications.toggleInactivityNudge(!inactivityNudgeEnabled);
+  };
 
   return (
     <>
       <SettingsContentHost testID="settings-editorial-host">
         <ScrollView
-          contentContainerStyle={[
-            styles.content,
-            { paddingBottom: Math.max(bottomPadding, 112) },
-          ]}
+          contentContainerClassName="gap-3.5 px-gutter pt-[35px]"
+          contentContainerStyle={{ paddingBottom: Math.max(bottomPadding, 112) }}
           contentInsetAdjustmentBehavior="never"
           showsVerticalScrollIndicator={false}
-          style={styles.scroll}
+          className="w-full flex-1"
           testID="settings-field-group"
         >
           <View
-            style={[
-              styles.accountCard,
-              {
-                backgroundColor: noctalia.surface.raised,
-                borderColor: noctalia.surface.borderStrong,
-              },
-            ]}
+            className={`${CARD_CLASS} overflow-hidden px-4 py-1`}
             testID="settings-section-account"
           >
             {account}
@@ -481,13 +482,7 @@ export function SettingsFieldGroup({
                   <View
                     accessibilityLiveRegion="polite"
                     accessibilityRole="alert"
-                    style={[
-                      styles.notificationWarning,
-                      {
-                        backgroundColor: noctalia.status.warning.background,
-                        borderColor: noctalia.status.warning.border,
-                      },
-                    ]}
+                    className="mb-2 flex-row items-center gap-2.5 rounded-md border border-warning-line bg-warning px-3 py-2.5"
                   >
                     <IconSymbol
                       name="exclamationmark.triangle.fill"
@@ -495,10 +490,7 @@ export function SettingsFieldGroup({
                       color={noctalia.status.warning.icon}
                     />
                     <Text
-                      style={[
-                        styles.notificationWarningText,
-                        { color: noctalia.status.warning.text },
-                      ]}
+                      className="flex-1 font-sans-medium text-[13px] leading-[18px] text-warning-on"
                       testID="text.settings.notificationsPermissionWarning"
                     >
                       {t('notifications.warning.permissions')}
@@ -509,15 +501,11 @@ export function SettingsFieldGroup({
                   accessibilityRole="switch"
                   accessibilityState={{ checked: reminderEnabled }}
                   onPress={toggleReminder}
-                  style={[
-                    styles.editorialRow,
-                    styles.ritualRow,
-                    { borderBottomColor: noctalia.surface.border, borderBottomWidth: 1 },
-                  ]}
+                  className={`${RITUAL_ROW_CLASS} border-b border-b-line`}
                   testID="settings-notifications-reminder-toggle"
                 >
                   <IconSymbol name="bell" size={21} color={noctalia.accent.text} />
-                  <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>
+                  <Text className={ROW_LABEL_CLASS}>
                     {t('settings.rituals.reminders')}
                   </Text>
                   <Switch
@@ -528,44 +516,34 @@ export function SettingsFieldGroup({
                     thumbColor={noctalia.text.primary}
                     trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
                     value={reminderEnabled}
-                    style={styles.reminderSwitch}
+                    style={REMINDER_SWITCH_STYLE}
                   />
                 </Pressable>
-                <Pressable
+                <PressableScale
                   accessibilityRole="button"
                   onPress={() => setActiveTimePicker('weekday')}
-                  style={({ pressed }) => [
-                    styles.editorialRow,
-                    styles.ritualRow,
-                    { borderBottomColor: noctalia.surface.border, borderBottomWidth: 1 },
-                    pressed && styles.rowPressed,
-                  ]}
+                  hitSlop={NO_HIT_SLOP}
+                  className={`${RITUAL_ROW_CLASS} border-b border-b-line`}
                   testID="settings-notifications-weekday-time"
                 >
                   <IconSymbol name="clock" size={21} color={noctalia.accent.text} />
-                  <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>
+                  <Text className={ROW_LABEL_CLASS}>
                     {t('settings.rituals.reminder_time')}
                   </Text>
-                  <Text style={[styles.rowValue, { color: noctalia.text.secondary }]}>
+                  <Text className={ROW_VALUE_CLASS}>
                     {reminderTime}
                   </Text>
                   <IconSymbol name="chevron.right" size={20} color={noctalia.text.tertiary} />
-                </Pressable>
+                </PressableScale>
                 <Pressable
                   accessibilityRole="switch"
                   accessibilityState={{ checked: weekendEnabled }}
                   onPress={toggleWeekendReminder}
-                  style={[
-                    styles.editorialRow,
-                    styles.ritualRow,
-                    weekendEnabled
-                      ? { borderBottomColor: noctalia.surface.border, borderBottomWidth: 1 }
-                      : null,
-                  ]}
+                  className={cx(RITUAL_ROW_CLASS, weekendEnabled && 'border-b border-b-line')}
                   testID="settings-notifications-weekend-toggle"
                 >
                   <IconSymbol name="sun.max.fill" size={21} color={noctalia.accent.text} />
-                  <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>
+                  <Text className={ROW_LABEL_CLASS}>
                     {t('settings.rituals.weekend_reminders')}
                   </Text>
                   <Switch
@@ -576,47 +554,40 @@ export function SettingsFieldGroup({
                     thumbColor={noctalia.text.primary}
                     trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
                     value={weekendEnabled}
-                    style={styles.reminderSwitch}
+                    style={REMINDER_SWITCH_STYLE}
                   />
                 </Pressable>
                 {weekendEnabled ? (
-                  <Pressable
+                  <PressableScale
                     accessibilityRole="button"
                     onPress={() => setActiveTimePicker('weekend')}
-                    style={({ pressed }) => [
-                      styles.editorialRow,
-                      styles.ritualRow,
-                      pressed && styles.rowPressed,
-                    ]}
+                    hitSlop={NO_HIT_SLOP}
+                    className={RITUAL_ROW_CLASS}
                     testID="settings-notifications-weekend-time"
                   >
                     <IconSymbol name="clock" size={21} color={noctalia.accent.text} />
-                    <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>
+                    <Text className={ROW_LABEL_CLASS}>
                       {t('settings.rituals.weekend_reminder_time')}
                     </Text>
-                    <Text style={[styles.rowValue, { color: noctalia.text.secondary }]}>
+                    <Text className={ROW_VALUE_CLASS}>
                       {weekendTime}
                     </Text>
                     <IconSymbol name="chevron.right" size={20} color={noctalia.text.tertiary} />
-                  </Pressable>
+                  </PressableScale>
                 ) : null}
                 <Pressable
                   accessibilityRole="switch"
                   accessibilityState={{ checked: weeklyRecapEnabled }}
                   onPress={toggleWeeklyRecap}
-                  style={[
-                    styles.editorialRow,
-                    styles.ritualRow,
-                    { borderTopColor: noctalia.surface.border, borderTopWidth: 1 },
-                  ]}
+                  className={`${RITUAL_ROW_CLASS} border-t border-t-line`}
                   testID="settings-notifications-weekly-recap-toggle"
                 >
                   <IconSymbol name="calendar" size={21} color={noctalia.accent.text} />
-                  <View style={styles.rowCopy}>
-                    <Text style={[styles.rowLabel, styles.rowLabelStacked, { color: noctalia.text.primary }]}>
+                  <View className="flex-1 gap-0.5">
+                    <Text className={`${ROW_LABEL_CLASS} flex-[0]`}>
                       {t('settings.rituals.weekly_recap')}
                     </Text>
-                    <Text style={[styles.rowHint, { color: noctalia.text.tertiary }]} numberOfLines={2}>
+                    <Text className="text-caption text-ivory-faint" numberOfLines={2}>
                       {t('settings.rituals.weekly_recap_hint')}
                     </Text>
                   </View>
@@ -628,66 +599,108 @@ export function SettingsFieldGroup({
                     thumbColor={noctalia.text.primary}
                     trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
                     value={weeklyRecapEnabled}
-                    style={styles.reminderSwitch}
+                    style={REMINDER_SWITCH_STYLE}
+                  />
+                </Pressable>
+                <Pressable
+                  accessibilityRole="switch"
+                  accessibilityState={{ checked: streakRiskEnabled }}
+                  onPress={toggleStreakRisk}
+                  className={`${RITUAL_ROW_CLASS} border-t border-t-line`}
+                  testID={TID.Button.SettingsStreakRiskToggle}
+                >
+                  <IconSymbol name="flame.fill" size={21} color={noctalia.accent.text} />
+                  <View className="flex-1 gap-0.5">
+                    <Text className={`${ROW_LABEL_CLASS} flex-[0]`}>
+                      {t('settings.rituals.streak_risk')}
+                    </Text>
+                    <Text className="text-caption text-ivory-faint" numberOfLines={2}>
+                      {t('settings.rituals.streak_risk_hint')}
+                    </Text>
+                  </View>
+                  <Switch
+                    ios_backgroundColor={noctalia.surface.soft}
+                    onValueChange={(enabled) => {
+                      void notifications.toggleStreakRisk(enabled);
+                    }}
+                    thumbColor={noctalia.text.primary}
+                    trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
+                    value={streakRiskEnabled}
+                    style={REMINDER_SWITCH_STYLE}
+                  />
+                </Pressable>
+                <Pressable
+                  accessibilityRole="switch"
+                  accessibilityState={{ checked: inactivityNudgeEnabled }}
+                  onPress={toggleInactivityNudge}
+                  className={`${RITUAL_ROW_CLASS} border-t border-t-line`}
+                  testID={TID.Button.SettingsInactivityNudgeToggle}
+                >
+                  <IconSymbol name="moon.stars.fill" size={21} color={noctalia.accent.text} />
+                  <View className="flex-1 gap-0.5">
+                    <Text className={`${ROW_LABEL_CLASS} flex-[0]`}>
+                      {t('settings.rituals.inactivity_nudge')}
+                    </Text>
+                    <Text className="text-caption text-ivory-faint" numberOfLines={2}>
+                      {t('settings.rituals.inactivity_nudge_hint')}
+                    </Text>
+                  </View>
+                  <Switch
+                    ios_backgroundColor={noctalia.surface.soft}
+                    onValueChange={(enabled) => {
+                      void notifications.toggleInactivityNudge(enabled);
+                    }}
+                    thumbColor={noctalia.text.primary}
+                    trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
+                    value={inactivityNudgeEnabled}
+                    style={REMINDER_SWITCH_STYLE}
                   />
                 </Pressable>
                 {!notifications.unsupported && reminderEnabled ? (
-                  <View style={styles.reminderFooter}>
+                  <View className="flex-col items-start gap-0.5 px-4 pt-2.5 pb-3">
                     <Text
-                      style={[styles.reminderHint, { color: noctalia.text.tertiary }]}
+                      className="text-[13px] leading-[18px] text-ivory-faint"
                       testID="text.settings.nextReminder"
                     >
                       {notifications.nextReminderText}
                     </Text>
-                    <Pressable
+                    <PressableScale
                       accessibilityRole="button"
                       onPress={() => void notifications.sendTest()}
-                      style={({ pressed }) => [styles.reminderTestButton, pressed && styles.rowPressed]}
+                      className="px-0 py-1.5"
                       testID="settings-notifications-send-test"
                     >
-                      <Text style={[styles.reminderTestLabel, { color: noctalia.accent.text }]}>
+                      <Text className="font-semibold text-[14px] text-champagne-on">
                         {t('notifications.button.test')}
                       </Text>
-                    </Pressable>
+                    </PressableScale>
                   </View>
                 ) : null}
               </EditorialCard>
 
-              <Pressable
+              <PressableScale
                 accessibilityRole="button"
                 onPress={onOpenSubscription}
-                style={({ pressed }) => [
-                  styles.plusCard,
-                  {
-                    backgroundColor: noctalia.surface.raised,
-                    borderColor: noctalia.accent.base,
-                  },
-                  pressed && styles.rowPressed,
-                ]}
+                hitSlop={NO_HIT_SLOP}
+                className="min-h-16 w-full flex-row items-center gap-3.5 rounded-[18px] border border-champagne bg-ink-raised px-4 py-2.5"
                 testID="settings-section-subscription"
               >
-                <View style={[styles.plusIcon, { borderColor: noctalia.accent.base }]}>
+                <View className="h-11 w-11 items-center justify-center rounded-[22px] border border-champagne">
                   <IconSymbol name="sparkles" size={28} color={noctalia.accent.text} />
                 </View>
-                <View style={styles.plusCopy}>
-                  <Text style={[styles.plusTitle, { color: noctalia.text.primary }]}>
+                <View className="flex-1 gap-0.5">
+                  <Text className="font-display-semibold text-[20px] leading-[25px] text-ivory">
                     {subscriptionTitle}
                   </Text>
-                  <Text style={[styles.plusSubtitle, { color: noctalia.text.secondary }]}>
+                  <Text className="font-sans text-[13px] leading-[17px] text-ivory-muted">
                     {subscriptionSubtitle}
                   </Text>
                 </View>
                 <IconSymbol name="chevron.right" size={26} color={noctalia.accent.text} />
-              </Pressable>
+              </PressableScale>
 
               <View
-                style={[
-                  styles.quotaCard,
-                  {
-                    backgroundColor: noctalia.surface.raised,
-                    borderColor: noctalia.surface.borderStrong,
-                  },
-                ]}
+                className={`${CARD_CLASS} p-4`}
                 testID="settings-section-quota"
               >
                 {quota}
@@ -698,10 +711,11 @@ export function SettingsFieldGroup({
           {legal}
 
           {appVersionLabel ? (
-            <View style={styles.versionFooter} testID="settings-app-version">
+            <View className="items-center px-4 py-2.5" testID="settings-app-version">
               <Text
                 selectable
-                style={[styles.versionText, { color: noctalia.text.tertiary }]}
+                className="text-center font-sans text-caption tracking-[0.2px] text-ivory-faint"
+                style={TABULAR_NUMS_STYLE}
               >
                 {appVersionLabel}
               </Text>
@@ -741,13 +755,8 @@ export function SettingsFieldGroup({
         >
           <RNHostView matchContents>
             <View
-              style={[
-                styles.iosTimePicker,
-                {
-                  backgroundColor: noctalia.surface.raised,
-                  width: getNativeBottomSheetContentWidth(viewportWidth, 'ios'),
-                },
-              ]}
+              className="w-full bg-ink-raised p-4"
+              style={{ width: getNativeBottomSheetContentWidth(viewportWidth, 'ios') }}
             >
               <DateTimePicker
                 display="spinner"
@@ -757,15 +766,15 @@ export function SettingsFieldGroup({
                 themeVariant={mode}
                 value={getDateFromTime(activePickerTime)}
               />
-              <Pressable
+              <PressableScale
                 accessibilityRole="button"
                 onPress={() => setWeekdayPickerVisible(false)}
-                style={[styles.doneButton, { backgroundColor: noctalia.action.primary }]}
+                className={DONE_BUTTON_CLASS}
               >
-                <Text style={[styles.doneButtonText, { color: noctalia.action.primaryText }]}>
+                <Text className={DONE_BUTTON_LABEL_CLASS}>
                   {t('notifications.button.done')}
                 </Text>
-              </Pressable>
+              </PressableScale>
             </View>
           </RNHostView>
         </ExpoBottomSheet>
@@ -775,45 +784,29 @@ export function SettingsFieldGroup({
         <BottomSheet
           visible={weekdayPickerVisible}
           onClose={() => setWeekdayPickerVisible(false)}
-          style={styles.timeSheet}
+          className={SHEET_CONTENT_CLASS}
           testID="settings-notifications-weekday-sheet"
         >
-          <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.borderStrong }]} />
-          <View style={styles.timeSheetHeader}>
-            <View
-              style={[
-                styles.preferenceHeaderIcon,
-                {
-                  backgroundColor: noctalia.surface.soft,
-                  borderColor: noctalia.accent.soft,
-                },
-              ]}
-            >
+          <View className={SHEET_HANDLE_CLASS} />
+          <View className={SHEET_HEADER_CLASS}>
+            <View className={SHEET_HEADER_ICON_CLASS}>
               <IconSymbol name="clock" size={24} color={noctalia.accent.text} />
             </View>
-            <View style={styles.preferenceHeaderCopy}>
-              <Text style={[styles.preferenceTitle, { color: noctalia.text.primary }]}>
+            <View className="flex-1 gap-0.5">
+              <Text className={SHEET_TITLE_CLASS}>
                 {activePickerTitle}
               </Text>
-              <Text style={[styles.preferenceSubtitle, { color: noctalia.text.secondary }]}>
+              <Text className={SHEET_SUBTITLE_CLASS}>
                 {notifications.nextReminderText}
               </Text>
             </View>
           </View>
-          <View
-            style={[
-              styles.webTimePickerFrame,
-              {
-                backgroundColor: noctalia.surface.base,
-                borderColor: noctalia.surface.borderStrong,
-              },
-            ]}
-          >
+          <View className="mb-4 items-center rounded-lg border border-line-strong bg-ink-card p-4">
             <DateTimePicker
               mode="time"
               onValueChange={(_event, date) => void setActivePickerTime(date)}
               style={{
-                ...styles.webTimePicker,
+                ...WEB_TIME_PICKER_STYLE,
                 color: noctalia.text.primary,
                 colorScheme: mode,
               } as never}
@@ -821,25 +814,21 @@ export function SettingsFieldGroup({
               value={getDateFromTime(activePickerTime)}
             />
           </View>
-          <Pressable
+          <PressableScale
             accessibilityRole="button"
             onPress={() => setWeekdayPickerVisible(false)}
-            style={({ pressed }) => [
-              styles.doneButton,
-              { backgroundColor: noctalia.action.primary },
-              pressed && styles.rowPressed,
-            ]}
+            className={DONE_BUTTON_CLASS}
           >
-            <Text style={[styles.doneButtonText, { color: noctalia.action.primaryText }]}>
+            <Text className={DONE_BUTTON_LABEL_CLASS}>
               {t('notifications.button.done')}
             </Text>
-          </Pressable>
+          </PressableScale>
         </BottomSheet>
       ) : null}
 
       {Platform.OS === 'android' && weekdayPickerVisible ? (
         <RNHostView matchContents>
-          <View style={styles.pickerHost}>
+          <View className="w-px">
             <DateTimePicker
               display="default"
               is24Hour
@@ -859,322 +848,3 @@ export function SettingsFieldGroup({
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  scroll: {
-    flex: 1,
-    width: '100%',
-  },
-  iosContentHost: {
-    flex: 1,
-    width: '100%',
-  },
-  content: {
-    gap: 14,
-    paddingHorizontal: 20,
-    paddingTop: 35,
-  },
-  accountCard: {
-    borderRadius: 18,
-    borderWidth: 1,
-    overflow: 'hidden',
-    paddingHorizontal: 16,
-    paddingVertical: 4,
-    width: '100%',
-  },
-  preferenceSheet: {
-    paddingBottom: 24,
-    paddingHorizontal: 20,
-    paddingTop: 8,
-  },
-  sheetHandle: {
-    alignSelf: 'center',
-    borderRadius: 2,
-    height: 4,
-    marginBottom: 18,
-    width: 38,
-  },
-  preferenceHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 18,
-  },
-  preferenceHeaderIcon: {
-    alignItems: 'center',
-    borderRadius: 22,
-    borderWidth: 1,
-    height: 44,
-    justifyContent: 'center',
-    width: 44,
-  },
-  preferenceHeaderCopy: {
-    flex: 1,
-    gap: 2,
-  },
-  preferenceTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 23,
-    lineHeight: 28,
-  },
-  preferenceSubtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  sheetCloseButton: {
-    alignItems: 'center',
-    borderRadius: 18,
-    height: 36,
-    justifyContent: 'center',
-    width: 36,
-  },
-  preferenceOptions: {
-    borderRadius: 16,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  preferenceOption: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 12,
-    minHeight: 66,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  preferenceOptionIcon: {
-    alignItems: 'center',
-    borderRadius: 18,
-    height: 36,
-    justifyContent: 'center',
-    width: 36,
-  },
-  preferenceOptionCopy: {
-    flex: 1,
-    gap: 2,
-    minWidth: 0,
-  },
-  preferenceOptionLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 15,
-    lineHeight: 19,
-  },
-  preferenceOptionLabelSelected: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-  preferenceOptionDescription: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
-    lineHeight: 16,
-  },
-  radioOutline: {
-    alignItems: 'center',
-    borderRadius: 10,
-    borderWidth: 1.5,
-    height: 20,
-    justifyContent: 'center',
-    width: 20,
-  },
-  radioDot: {
-    borderRadius: 5,
-    height: 10,
-    width: 10,
-  },
-  editorialCard: {
-    borderRadius: 18,
-    borderWidth: 1,
-    overflow: 'hidden',
-    paddingHorizontal: 16,
-    width: '100%',
-  },
-  cardHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    minHeight: 48,
-  },
-  compactCardHeader: {
-    minHeight: 40,
-  },
-  cardTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 22,
-    lineHeight: 28,
-  },
-  editorialRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 16,
-    minHeight: 46,
-    width: '100%',
-  },
-  ritualRow: {
-    minHeight: 42,
-  },
-  notificationWarning: {
-    alignItems: 'center',
-    borderRadius: 12,
-    borderWidth: 1,
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-  },
-  notificationWarningText: {
-    flex: 1,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  rowPressed: {
-    opacity: 0.82,
-  },
-  rowLabel: {
-    flex: 1,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 20,
-  },
-  rowValue: {
-    flexShrink: 1,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 20,
-    maxWidth: '36%',
-    textAlign: 'right',
-  },
-  rowValueWide: {
-    maxWidth: '48%',
-  },
-  plusCard: {
-    alignItems: 'center',
-    borderRadius: 18,
-    borderWidth: 1,
-    flexDirection: 'row',
-    gap: 14,
-    minHeight: 64,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    width: '100%',
-  },
-  quotaCard: {
-    borderRadius: 18,
-    borderWidth: 1,
-    padding: 16,
-    width: '100%',
-  },
-  versionFooter: {
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-  },
-  versionText: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
-    fontVariant: ['tabular-nums'],
-    letterSpacing: 0.2,
-    lineHeight: 16,
-    textAlign: 'center',
-  },
-  plusIcon: {
-    alignItems: 'center',
-    borderRadius: 22,
-    borderWidth: 1,
-    height: 44,
-    justifyContent: 'center',
-    width: 44,
-  },
-  plusCopy: {
-    flex: 1,
-    gap: 2,
-  },
-  plusTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 20,
-    lineHeight: 25,
-  },
-  plusSubtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 17,
-  },
-  reminderSwitch: {
-    transform: [{ scale: 1.15 }],
-  },
-  rowCopy: {
-    flex: 1,
-    gap: 2,
-  },
-  rowLabelStacked: {
-    flex: 0,
-  },
-  rowHint: {
-    fontSize: 12,
-    lineHeight: 16,
-  },
-  reminderFooter: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: 2,
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 12,
-  },
-  reminderHint: {
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  reminderTestButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 0,
-  },
-  reminderTestLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  pickerHost: {
-    width: 1,
-  },
-  timeSheet: {
-    paddingBottom: 24,
-    paddingHorizontal: 20,
-    paddingTop: 8,
-  },
-  timeSheetHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 18,
-  },
-  webTimePickerFrame: {
-    alignItems: 'center',
-    borderRadius: 16,
-    borderWidth: 1,
-    marginBottom: 16,
-    padding: 16,
-  },
-  webTimePicker: {
-    backgroundColor: 'transparent',
-    borderWidth: 0,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 28,
-    minHeight: 48,
-    textAlign: 'center',
-    width: '100%',
-  },
-  iosTimePicker: {
-    padding: ThemeLayout.spacing.md,
-    width: '100%',
-  },
-  doneButton: {
-    alignItems: 'center',
-    borderRadius: ThemeLayout.borderRadius.sm,
-    marginTop: ThemeLayout.spacing.sm,
-    paddingVertical: ThemeLayout.spacing.sm,
-  },
-  doneButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
-  },
-});
