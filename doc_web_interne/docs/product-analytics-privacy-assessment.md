@@ -16,6 +16,7 @@ Ce document décrit l’implémentation technique et les vérifications externes
 - Rapports interdits sous dix parcours.
 - Opposition disponible dans l’introduction et les réglages ; l’opposition purge la file locale et demande la suppression des parcours encore connus.
 - Arrêt immédiat possible par `EXPO_PUBLIC_PRODUCT_ANALYTICS_ENABLED=false` ou `PRODUCT_ANALYTICS_INGEST_ENABLED=false`.
+- Entonnoir d’achat (2026-08-19) : `paywall_plan_selected`, `purchase_started`, `purchase_completed`, `purchase_failed`, `restore_completed`, `paywall_dismissed`. Propriétés strictement catégorielles (`trigger`, `plan` mensuel/annuel, `tier`, `reason`, `outcome`, `plan_selected`) ; aucun prix, devise, identifiant produit, reçu ou message d’erreur libre. Même date : `reminder_prompt_action` (`surface`, `action`, `time_bucket` — jamais l’heure exacte). Allowlist appliquée côté client (`lib/productAnalytics.ts`), API (`api/routes/analytics.ts`) et base (`20260819120000_product_analytics_purchase_and_reminder_events.sql`).
 
 ## Auto-évaluation au regard du cadre CNIL
 

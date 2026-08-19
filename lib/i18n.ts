@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import type { AppLanguage } from '@/lib/types';
 
 import en from './i18n/en';
@@ -162,7 +164,14 @@ export const getTranslator = (lang?: string) => {
 
   return (key: string, replacements?: Record<string, string | number>): string => {
     const languageTranslations = loadedTranslations[language] ?? fallbackTranslations;
-    let s = languageTranslations[key] ?? fallbackTranslations[key] ?? key;
+    const platform = Platform.OS;
+    const platformKey = platform === 'ios' || platform === 'android' ? `${key}.${platform}` : null;
+    let s = (platformKey
+      ? languageTranslations[platformKey] ?? fallbackTranslations[platformKey]
+      : undefined)
+      ?? languageTranslations[key]
+      ?? fallbackTranslations[key]
+      ?? key;
 
     if (replacements) {
       for (const [k, value] of Object.entries(replacements)) {

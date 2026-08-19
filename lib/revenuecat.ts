@@ -36,7 +36,50 @@ export interface PurchasesPackageLike {
     title?: string;
     description?: string;
     subscriptionPeriod?: string | null;
+    /** iOS / StoreKit introductory offer (free trial when price is 0). */
+    introPrice?: {
+      price?: number;
+      periodUnit?: string;
+      periodNumberOfUnits?: number;
+      cycles?: number;
+    } | null;
+    /** Google Play default subscription option (base plan + eligible offer). */
+    defaultOption?: {
+      freePhase?: {
+        billingPeriod?: { unit?: string; value?: number; iso8601?: string } | null;
+        billingCycleCount?: number | null;
+      } | null;
+    } | null;
   };
+}
+
+const PERIOD_UNIT_DAYS: Record<string, number> = {
+  DAY: 1,
+  WEEK: 7,
+  MONTH: 30,
+  YEAR: 365,
+};
+
+/**
+ * Days of free trial the store currently offers for this package, or null.
+ * Google Play exposes it as the free pricing phase of the default option; iOS
+ * as an introductory price of 0. Only free phases count — discounted intro
+ * prices are not a trial.
+ */
+export function getFreeTrialDays(product: PurchasesPackageLike['product']): number | null {
+  const freePhase = product.defaultOption?.freePhase;
+  if (freePhase?.billingPeriod?.unit && typeof freePhase.billingPeriod.value === 'number') {
+    const unitDays = PERIOD_UNIT_DAYS[String(freePhase.billingPeriod.unit).toUpperCase()];
+    const cycles = freePhase.billingCycleCount && freePhase.billingCycleCount > 0 ? freePhase.billingCycleCount : 1;
+    if (unitDays) return unitDays * freePhase.billingPeriod.value * cycles;
+  }
+  const intro = product.introPrice;
+  if (intro && (intro.price ?? 1) === 0 && intro.periodUnit && typeof intro.periodNumberOfUnits === 'number') {
+    const unitDays = PERIOD_UNIT_DAYS[String(intro.periodUnit).toUpperCase()];
+    const cycles = intro.cycles && intro.cycles > 0 ? intro.cycles : 1;
+    if (unitDays) return unitDays * intro.periodNumberOfUnits * cycles;
+  }
+  return null;
 }
 
 const LEGACY_PLUS_ENTITLEMENT_IDS = [
@@ -189,5 +232,6 @@ export function mapPackage(pkg: PurchasesPackageLike): PurchasePackage {
     currency: product.currencyCode ?? '',
     title: product.title ?? '',
     description: product.description ?? '',
+    freeTrialDays: getFreeTrialDays(product),
   };
 }

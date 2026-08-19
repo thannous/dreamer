@@ -292,7 +292,45 @@ describe('revenuecat utils', () => {
         currency: 'USD',
         title: 'Monthly Plus',
         description: 'Full access to all features',
+        freeTrialDays: null,
       });
+    });
+
+    it('exposes the free-trial length from Play free phases and iOS intro prices', () => {
+      const playTrial: PurchasesPackageLike = {
+        identifier: 'annual',
+        packageType: 'ANNUAL',
+        product: {
+          price: 21.99,
+          priceString: '$21.99',
+          defaultOption: {
+            freePhase: { billingPeriod: { unit: 'WEEK', value: 1, iso8601: 'P1W' }, billingCycleCount: 1 },
+          },
+        },
+      };
+      expect(mapPackage(playTrial).freeTrialDays).toBe(7);
+
+      const iosTrial: PurchasesPackageLike = {
+        identifier: 'annual',
+        packageType: 'ANNUAL',
+        product: {
+          price: 21.99,
+          priceString: '$21.99',
+          introPrice: { price: 0, periodUnit: 'DAY', periodNumberOfUnits: 14, cycles: 1 },
+        },
+      };
+      expect(mapPackage(iosTrial).freeTrialDays).toBe(14);
+
+      const discountedIntro: PurchasesPackageLike = {
+        identifier: 'monthly',
+        packageType: 'MONTHLY',
+        product: {
+          price: 3.49,
+          priceString: '$3.49',
+          introPrice: { price: 0.99, periodUnit: 'MONTH', periodNumberOfUnits: 1, cycles: 3 },
+        },
+      };
+      expect(mapPackage(discountedIntro).freeTrialDays).toBeNull();
     });
 
     it('given annual package returns annual interval', () => {
@@ -328,6 +366,7 @@ describe('revenuecat utils', () => {
         currency: '',
         title: '',
         description: '',
+        freeTrialDays: null,
       });
     });
 

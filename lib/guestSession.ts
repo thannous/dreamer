@@ -9,6 +9,7 @@ import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { getAccessToken } from '@/lib/auth';
 import { GuestSessionError, GuestSessionErrorCode } from '@/lib/errors';
 import { getExpoPublicEnvValue } from '@/lib/env';
+import { getTurnstileToken, isWebGuestSessionAvailable } from '@/lib/turnstileWeb';
 import { logger } from '@/lib/logger';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 
@@ -35,7 +36,7 @@ const STORAGE_KEY = 'guest-session-v1';
 const EXPIRY_SAFETY_MS = 30_000;
 
 const createInitialGuestBootstrapState = (): GuestBootstrapState => {
-  if (Platform.OS === 'web') {
+  if (Platform.OS === 'web' && !isWebGuestSessionAvailable()) {
     return {
       status: 'degraded',
       reasonCode: GuestSessionErrorCode.PLATFORM_UNSUPPORTED,
@@ -118,7 +119,7 @@ const isProviderInvalidError = (error: unknown): boolean => {
 
 export async function initGuestSession(): Promise<boolean> {
   if (Platform.OS !== 'android') {
-    if (Platform.OS === 'web') {
+    if (Platform.OS === 'web' && !isWebGuestSessionAvailable()) {
       updateGuestBootstrapState('degraded', GuestSessionErrorCode.PLATFORM_UNSUPPORTED);
     } else {
       updateGuestBootstrapState('ready');
@@ -184,10 +185,31 @@ const mapGuestSessionFailure = (error: unknown): GuestSessionErrorCode => {
 
 const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecord | null> => {
   const base = getApiBaseUrl();
-  const requestHash = await createRequestHash(fingerprint);
-  let integrityToken: string | null = null;
+  const body: {
+    fingerprint: string;
+    platform: string;
+    requestHash?: string;
+    integrityToken?: string;
+    turnstileToken?: string;
+  } = {
+    fingerprint,
+    platform: Platform.OS,
+  };
+
+  if (Platform.OS === 'web') {
+    // Web guests are gated by a Cloudflare Turnstile challenge instead of a
+    // device attestation. Without a token the API refuses the session.
+    const turnstileToken = await getTurnstileToken();
+    if (!turnstileToken) {
+      logger.warn('[guestSession] Turnstile token unavailable');
+      updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);
+      return null;
+    }
+    body.turnstileToken = turnstileToken;
+  }
 
   if (Platform.OS === 'android') {
+    const requestHash = await createRequestHash(fingerprint);
     const prepared = await initGuestSession();
     if (!prepared) {
       logger.warn('[guestSession] Play Integrity provider not ready');
@@ -195,7 +217,8 @@ const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecor
       return null;
     }
     try {
-      integrityToken = await AppIntegrity.requestIntegrityCheckAsync(requestHash);
+      body.integrityToken = await AppIntegrity.requestIntegrityCheckAsync(requestHash);
+      body.requestHash = requestHash;
     } catch (error) {
       if (isProviderInvalidError(error)) {
         preparePromise = null;
@@ -206,7 +229,8 @@ const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecor
           return null;
         }
         try {
-          integrityToken = await AppIntegrity.requestIntegrityCheckAsync(requestHash);
+          body.integrityToken = await AppIntegrity.requestIntegrityCheckAsync(requestHash);
+          body.requestHash = requestHash;
         } catch (retryError) {
           logger.warn('[guestSession] Play Integrity request failed after retry', retryError);
           updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);
@@ -224,12 +248,7 @@ const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecor
   try {
     response = await fetchJSON<GuestSessionResponse>(`${base}/guest/session`, {
       method: 'POST',
-      body: {
-        fingerprint,
-        requestHash,
-        integrityToken,
-        platform: Platform.OS,
-      },
+      body,
       ...NETWORK_REQUEST_POLICIES.guestSessionCreate,
     });
   } catch (error) {
@@ -257,7 +276,7 @@ const ensureGuestSession = async (): Promise<GuestSessionRecord | null> => {
     return cached;
   }
 
-  if (Platform.OS === 'web') {
+  if (Platform.OS === 'web' && !isWebGuestSessionAvailable()) {
     updateGuestBootstrapState('degraded', GuestSessionErrorCode.PLATFORM_UNSUPPORTED);
     return null;
   }

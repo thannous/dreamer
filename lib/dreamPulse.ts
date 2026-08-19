@@ -1,5 +1,6 @@
 import type { DreamAnalysis } from './types';
 import { isDreamAnalyzed } from './dreamUsage';
+import { calculateStreaks } from './streakUtils';
 
 export type DreamPulseState = 'empty' | 'today' | 'stale' | 'analyze' | 'steady';
 
@@ -10,6 +11,9 @@ export type DreamPulse = {
   favoriteCount: number;
   lastDreamAt: number | null;
   daysSinceLastDream: number | null;
+  /** Consecutive days (today or yesterday included) with at least one dream. */
+  currentStreak: number;
+  longestStreak: number;
 };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -48,8 +52,12 @@ export function getDreamPulse(dreams: DreamAnalysis[], now = Date.now()): DreamP
       favoriteCount,
       lastDreamAt: null,
       daysSinceLastDream: null,
+      currentStreak: 0,
+      longestStreak: 0,
     };
   }
+
+  const streaks = calculateStreaks(dreams, now);
 
   const daysSinceLastDream = Math.max(
     0,
@@ -72,5 +80,7 @@ export function getDreamPulse(dreams: DreamAnalysis[], now = Date.now()): DreamP
     favoriteCount,
     lastDreamAt,
     daysSinceLastDream,
+    currentStreak: streaks.current,
+    longestStreak: streaks.longest,
   };
 }

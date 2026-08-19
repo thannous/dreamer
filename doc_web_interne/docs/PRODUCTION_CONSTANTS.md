@@ -54,6 +54,13 @@ restent bloquantes pour un build production fiable, sauf waiver explicite.
 - [ ] `GUEST_SESSION_SECRET`  
   - Pourquoi : signer les tokens `x-guest-token`.  
   - Où placer : secret Supabase Functions (plaintext, long random).
+- [ ] `TURNSTILE_SECRET_KEY` (invités web, 2026-08-19)  
+  - Pourquoi : vérifier côté API le jeton Cloudflare Turnstile envoyé par `POST /guest/session` avec `platform: 'web'`. Sans ce secret, les sessions invité web restent refusées (fail-closed).  
+  - Où récupérer : Cloudflare Dashboard → Turnstile → widget `dream.noctalia.app` (mode Managed, action `guest_session`).  
+  - Où placer : secret Supabase Functions (plaintext).
+- [ ] `EXPO_PUBLIC_TURNSTILE_SITE_KEY` (invités web)  
+  - Pourquoi : clé publique du même widget, lue par `lib/turnstileWeb.ts` ; sa présence active le parcours invité sur le web (analyse IA sans compte).  
+  - Où placer : environnement du build web (`.env`/Cloudflare Pages) — valeur publique, jamais le secret.
 ## Google OAuth (auth)
 - [x] `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`  
   - Pourquoi : OAuth web + échange d’ID token pour Supabase.  

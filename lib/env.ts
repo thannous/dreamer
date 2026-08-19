@@ -23,7 +23,8 @@ export type ExpoPublicEnvKey =
   | 'EXPO_PUBLIC_SUBSCRIPTION_QA_LAB'
   | 'EXPO_PUBLIC_SUPABASE_ANON_KEY'
   | 'EXPO_PUBLIC_SUPABASE_FUNCTION_JWT'
-  | 'EXPO_PUBLIC_SUPABASE_URL';
+  | 'EXPO_PUBLIC_SUPABASE_URL'
+  | 'EXPO_PUBLIC_TURNSTILE_SITE_KEY';
 
 export function getExpoPublicEnvValue(key: ExpoPublicEnvKey): string | undefined {
   switch (key) {
@@ -57,6 +58,8 @@ export function getExpoPublicEnvValue(key: ExpoPublicEnvKey): string | undefined
       return process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY;
     case 'EXPO_PUBLIC_REVENUECAT_WEB_KEY':
       return process.env.EXPO_PUBLIC_REVENUECAT_WEB_KEY;
+    case 'EXPO_PUBLIC_TURNSTILE_SITE_KEY':
+      return process.env.EXPO_PUBLIC_TURNSTILE_SITE_KEY;
     case 'EXPO_PUBLIC_SLEEP_SOUNDS_ENABLED':
       return process.env.EXPO_PUBLIC_SLEEP_SOUNDS_ENABLED;
     case 'EXPO_PUBLIC_SUBSCRIPTION_QA_LAB':

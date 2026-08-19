@@ -45,8 +45,10 @@ import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 // useSubscriptionMonitor est maintenant intégré dans useSubscription
 import { trackProductEvent } from '@/lib/analytics';
 import { isLucidTrainer } from '@/lib/appVariant';
+import { isPasswordResetPath } from '@/lib/authRoutes';
 import { loadTranslations } from '@/lib/i18n';
 import { isSafeLucidNotificationRoute } from '@/lib/lucid/routes';
+import { isSafeAppNotificationRoute } from '@/lib/notificationRoutes';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
 import { createNotificationResponseTracker } from '@/lib/notificationResponse';
 import {
@@ -273,7 +275,13 @@ function RootLayoutNav({
 
   const enqueueNotification = useCallback(async (notification: Notifications.Notification) => {
     const notificationUrl = notification.request.content.data?.url;
-    if (notificationUrl !== '/recording' && !isSafeLucidNotificationRoute(notificationUrl)) return;
+    if (
+      notificationUrl !== '/recording' &&
+      !isSafeLucidNotificationRoute(notificationUrl) &&
+      !isSafeAppNotificationRoute(notificationUrl)
+    ) {
+      return;
+    }
 
     const responseIdentifier = notification.request.identifier;
     if (!notificationResponseTracker.claim(responseIdentifier)) {
@@ -288,7 +296,9 @@ function RootLayoutNav({
       return;
     }
 
-    if (isSafeLucidNotificationRoute(notificationUrl)) {
+    if (isSafeLucidNotificationRoute(notificationUrl) || isSafeAppNotificationRoute(notificationUrl)) {
+      // In-memory pending route (Lucid screens and the weekly recap): no
+      // persisted intent, the destination is consumed once navigation is ready.
       setPendingLucidNotificationUrl(notificationUrl as Href);
       try {
         Notifications.clearLastNotificationResponse();
@@ -451,9 +461,10 @@ function RootLayoutNav({
 
     const currentPath = pathnameRef.current ?? pathname;
     const allowedRoutes = ['/settings', '/(tabs)/settings'];
-    const isOnAllowedRoute = allowedRoutes.some(
-      (route) => currentPath === route || currentPath?.startsWith(`${route}/`)
-    );
+    const isOnAllowedRoute =
+      allowedRoutes.some(
+        (route) => currentPath === route || currentPath?.startsWith(`${route}/`)
+      ) || isPasswordResetPath(currentPath);
 
     if (!isOnAllowedRoute) {
       if (__DEV__) {
@@ -489,6 +500,7 @@ function RootLayoutNav({
         currentPath?.includes('/settings') ||
         currentPath?.startsWith('/(tabs)/settings') ||
         pathname?.startsWith('/(tabs)/settings');
+      const isInPasswordReset = isPasswordResetPath(currentPath);
       const isInPaywall = currentPath === '/paywall';
       const isInJournalList =
         currentPath === '/journal' ||
@@ -507,7 +519,8 @@ function RootLayoutNav({
         currentPath?.startsWith('/dream-guides') ||
         currentPath?.startsWith('/dream-guide/') ||
         currentPath?.startsWith('/ritual/') ||
-        currentPath?.startsWith('/sleep-sounds');
+        currentPath?.startsWith('/sleep-sounds') ||
+        currentPath?.startsWith('/weekly-recap');
 
       if (__DEV__) {
         console.log('[RootLayoutNav] navigateForForeground', {
@@ -521,6 +534,8 @@ function RootLayoutNav({
         }
         return;
       }
+
+      if (isInPasswordReset) return;
 
       if (isInPaywall) {
         if (__DEV__) {
@@ -601,6 +616,13 @@ function RootLayoutNav({
     }
 
     hasInitialNavigated.current = true;
+    if (isPasswordResetPath(pathnameRef.current ?? pathname)) {
+      // The password-recovery link must land on its own screen (web opens it
+      // directly, native via app link); that screen decides where to go next.
+      markPerformance('startup.navigation_reused', { reason: 'password_reset' });
+      onStartupCommitted();
+      return;
+    }
     const explicitDestination = resolveExplicitStartupDestination(
       initialLaunchUrl,
       pathnameRef.current
@@ -620,6 +642,8 @@ function RootLayoutNav({
     isNavigationReady,
     initialLaunchUrl,
     onboardingState,
+    onStartupCommitted,
+    pathname,
     pendingNotificationUrl,
     pendingLucidNotificationUrl,
     returningGuestBlocked,
@@ -700,7 +724,8 @@ function RootLayoutNav({
             <Stack.Screen name="lucid" options={{ headerShown: false }} />
             <Stack.Screen name="sleep-sounds" options={{ headerShown: false }} />
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
+            <Stack.Screen name="auth/reset-password" options={{ headerShown: false }} />
+            <Stack.Screen name="weekly-recap" options={{ headerShown: false }} />
           </Stack>
           <OfflineModelPromptHost />
           <AnalysisFlightIndicator />

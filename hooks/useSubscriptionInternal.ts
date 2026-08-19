@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { isMockModeEnabled } from '@/lib/env';
 import { normalizeSubscriptionTier } from '@/lib/quotaTier';
 import { isEntitlementExpired } from '@/lib/revenuecat';
+import { isUserCancelledError as isSharedUserCancelledError, type RevenueCatLikeError } from '@/lib/subscriptionErrors';
 import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 import { quotaService } from '@/services/quotaService';
 import {
@@ -20,37 +21,22 @@ import { useSubscriptionCustomerInfoListener } from './useSubscriptionCustomerIn
 import { useSubscriptionExpiryTimer } from './useSubscriptionExpiryTimer';
 import { useSubscriptionMonitor } from './useSubscriptionMonitor';
 
-type RevenueCatError = Error & {
-  userCancelled?: boolean;
-  code?: string | number;
-};
+type RevenueCatError = RevenueCatLikeError;
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function isUserCancelledError(e: unknown): boolean {
-  if (typeof e !== 'object' || e === null) return false;
-  const error = e as RevenueCatError;
-
-  if (__DEV__) {
+  if (__DEV__ && typeof e === 'object' && e !== null) {
+    const error = e as RevenueCatError;
     console.log('[useSubscription] isUserCancelledError checking:', {
       userCancelled: error.userCancelled,
       code: error.code,
       message: error.message?.substring(0, 100),
     });
   }
-
-  // RevenueCat sets userCancelled flag or uses various cancellation codes
-  if (error.userCancelled === true) return true;
-  if (error.code === 'PURCHASE_CANCELLED_ERROR') return true;
-  if (error.code === 'PurchaseCancelledError') return true;
-  if (error.code === 'USER_CANCELED') return true;
-  // Some versions use numeric code 1; coerce strings to cover both
-  const numericCode = typeof error.code === 'string' ? Number.parseInt(error.code, 10) : error.code;
-  if (numericCode === 1) return true;
-
-  return false;
+  return isSharedUserCancelledError(e);
 }
 
 function formatError(e: unknown): Error {

@@ -46,6 +46,24 @@ jest.mock('@/services/accountDeletionService', () => ({
   finalizeAccountDeletion: jest.fn(),
 }));
 
+let mockAnalyticsAvailable = true;
+const mockAnalyticsToggle = jest.fn(async () => {});
+jest.mock('@/components/settings/useAnalyticsPreferenceController', () => ({
+  useAnalyticsPreferenceController: () => ({
+    title: 'analytics.privacy.title',
+    description: 'analytics.privacy.description',
+    toggleLabel: 'analytics.privacy.toggle_label',
+    status: 'analytics.privacy.enabled',
+    errorMessage: 'analytics.privacy.error',
+    available: mockAnalyticsAvailable,
+    enabled: true,
+    loading: false,
+    saving: false,
+    error: false,
+    toggle: mockAnalyticsToggle,
+  }),
+}));
+
 const mockRequestAccountDeletion = jest.mocked(requestAccountDeletion);
 const mockFinalizeAccountDeletion = jest.mocked(finalizeAccountDeletion);
 
@@ -66,6 +84,21 @@ describe('LegalSection', () => {
   });
 
   afterEach(cleanup);
+
+  it('exposes the usage-measurement opt-out when analytics is available', () => {
+    mockAnalyticsAvailable = true;
+    const { getByTestId } = render(<LegalSection />);
+
+    fireEvent(getByTestId('settings-analytics-preference-switch'), 'valueChange', false);
+    expect(mockAnalyticsToggle).toHaveBeenCalledWith(false);
+  });
+
+  it('hides the usage-measurement row when analytics is unavailable in this build', () => {
+    mockAnalyticsAvailable = false;
+    const { queryByTestId } = render(<LegalSection />);
+    expect(queryByTestId('settings-analytics-preference')).toBeNull();
+    mockAnalyticsAvailable = true;
+  });
 
   it('opens the localized legal pages in the browser', () => {
     const { getByTestId } = render(<LegalSection />);

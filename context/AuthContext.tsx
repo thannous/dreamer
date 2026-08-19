@@ -5,7 +5,9 @@ import { router } from 'expo-router';
 import { isMockModeEnabled } from '@/lib/env';
 import { getCurrentUser, onAuthChange } from '@/lib/auth';
 import { createCircuitBreaker } from '@/lib/circuitBreaker';
-import { consumeStayOnSettingsDestination } from '@/lib/navigationIntents';
+import { getPaywallTrigger } from '@/lib/analytics';
+import { clearStayOnSettingsIntent, consumeStayOnSettingsDestination, peekReturnToPaywallTrigger } from '@/lib/navigationIntents';
+import { buildPaywallHref } from '@/lib/paywallRoute';
 import { normalizeSubscriptionTier } from '@/lib/quotaTier';
 import type { SubscriptionTier } from '@/lib/types';
 import { clearRemoteDreamStorage } from '@/services/storageService';
@@ -90,6 +92,16 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
       if (__DEV__) {
         console.log('[AuthContext] ensureSettingsTab: no user, skipping');
       }
+      return;
+    }
+    const paywallTrigger = peekReturnToPaywallTrigger();
+    if (paywallTrigger) {
+      // The user signed in from the paywall: bring them straight back to it.
+      // The intent is cleared by the paywall screen itself, so if a route gate
+      // (e.g. onboarding for a fresh user scope) replaces this navigation, the
+      // gate's exit can still honour it.
+      clearStayOnSettingsIntent();
+      router.replace(buildPaywallHref(getPaywallTrigger(paywallTrigger)));
       return;
     }
     const settingsDestination = consumeStayOnSettingsDestination();

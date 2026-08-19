@@ -341,29 +341,17 @@ describe('geminiServiceReal', () => {
       expect(result.imageGenerationFailed).toBe(false);
     });
 
-    it('tries separate image generation when combined returns no image', async () => {
-      // First call: combined returns analysis without image
+    it('does not spend a second image generation when the combined call returns no image', async () => {
+      // Combined returns analysis without image: the server already tried once.
       (global.fetch as ReturnType<typeof jest.fn>)
         .mockReturnValueOnce(mockFetchResponse(buildAnalysisResult()))
-        // Second call: separate image generation succeeds
+        // A second call would be a separate image generation — it must not happen.
         .mockReturnValueOnce(mockFetchResponse({ imageUrl: 'https://separate.img.com/dream.jpg' }));
 
       const result = await analyzeDreamWithImageResilient('Dream', 'en');
 
-      expect(global.fetch).toHaveBeenCalledTimes(2);
-      expect(result.imageUrl).toBe('https://separate.img.com/dream.jpg');
-      expect(result.imageGenerationFailed).toBe(false);
-    });
-
-    it('returns null imageUrl when separate image generation fails', async () => {
-      // First call: combined returns analysis without image
-      (global.fetch as ReturnType<typeof jest.fn>)
-        .mockReturnValueOnce(mockFetchResponse(buildAnalysisResult()))
-        // Second call: separate image generation fails (no imageUrl/imageBytes)
-        .mockReturnValueOnce(mockFetchResponse({}));
-
-      const result = await analyzeDreamWithImageResilient('Dream', 'en');
-
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(result.title).toBe('Dream Title');
       expect(result.imageUrl).toBeNull();
       expect(result.imageGenerationFailed).toBe(true);
     });

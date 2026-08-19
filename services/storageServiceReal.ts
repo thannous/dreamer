@@ -28,6 +28,7 @@ const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
 const JOURNAL_LAYOUT_PREFERENCE_KEY = 'gemini_dream_journal_layout_preference';
 const RECORDING_INPUT_MODE_PREFERENCE_KEY = 'gemini_dream_journal_recording_input_mode_preference';
 const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
+const REMINDER_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_reminder_prompt_dismissed';
 const RECORDING_ONBOARDING_COMPLETED_KEY = 'gemini_dream_journal_recording_onboarding_completed';
 const RECORDING_VOICE_HINT_COMPLETED_KEY = 'gemini_dream_journal_recording_voice_hint_completed_v1';
 const REMEMBERED_DREAM_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_remembered_dream_prompt_dismissed';
@@ -1017,6 +1018,35 @@ export async function saveRecordingVoiceStatusHidden(hidden: boolean): Promise<v
       console.error('Failed to save recording voice status preference:', error);
     }
     throw new Error('Failed to save recording voice status preference');
+  }
+}
+
+/**
+ * Whether the in-app "morning reminder" opt-in card was dismissed. Once true the
+ * card never comes back; the user can still enable reminders from Settings.
+ */
+export async function getReminderPromptDismissed(): Promise<boolean> {
+  try {
+    const savedPreference = await getItem(REMINDER_PROMPT_DISMISSED_KEY);
+    if (savedPreference) {
+      return JSON.parse(savedPreference) === true;
+    }
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to retrieve reminder prompt state:', error);
+    }
+  }
+  return false;
+}
+
+export async function saveReminderPromptDismissed(dismissed: boolean): Promise<void> {
+  try {
+    await setItem(REMINDER_PROMPT_DISMISSED_KEY, JSON.stringify(dismissed));
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to save reminder prompt state:', error);
+    }
+    throw new Error('Failed to save reminder prompt state');
   }
 }
 

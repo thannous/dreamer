@@ -26,6 +26,7 @@ export const configureNotificationHandler = service.configureNotificationHandler
 export const requestNotificationPermissions = service.requestNotificationPermissions;
 export const scheduleDailyNotification = service.scheduleDailyNotification;
 export const scheduleRitualReminder = service.scheduleRitualReminder;
+export const scheduleWeeklyRecapReminder = service.scheduleWeeklyRecapReminder;
 export const cancelAllNotifications = service.cancelAllNotifications;
 export const getScheduledNotifications = service.getScheduledNotifications;
 export const hasNotificationPermissions = service.hasNotificationPermissions;

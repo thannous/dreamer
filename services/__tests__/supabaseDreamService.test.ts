@@ -281,6 +281,39 @@ describe('supabaseDreamService', () => {
     expect(dream.memory).toEqual(memory);
   });
 
+  it('createDreamInSupabase stores the analysis prompt version inside analysis_details', async () => {
+    const singleMock = jest.fn().mockResolvedValueOnce({
+      data: buildRow({
+        analysis_details: {
+          symbols: [{ name: 'Water', meaning: 'Flow' }],
+          promptVersion: 'analysis-2026-08-19.1',
+        },
+      }),
+      error: null,
+    });
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({ single: singleMock })),
+    }));
+    mocks.from.mockReturnValue({ upsert: upsertMock });
+
+    const { createDreamInSupabase } = require('../supabaseDreamService');
+
+    const dream = await createDreamInSupabase(
+      buildDream({
+        symbols: [{ name: 'Water', meaning: 'Flow' }],
+        promptVersion: 'analysis-2026-08-19.1',
+      }) as any,
+      'user-1',
+    );
+
+    const row = (((upsertMock as any).mock.calls[0]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+    expect(row.analysis_details).toEqual({
+      symbols: [{ name: 'Water', meaning: 'Flow' }],
+      promptVersion: 'analysis-2026-08-19.1',
+    });
+    expect(dream.promptVersion).toBe('analysis-2026-08-19.1');
+  });
+
   it('createDreamInSupabase preserves remembered memory when retrying without the memory column', async () => {
     const memory = {
       version: 1,

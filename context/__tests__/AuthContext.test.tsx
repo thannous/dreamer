@@ -90,8 +90,11 @@ jest.mock('@/lib/circuitBreaker', () => ({
   createCircuitBreaker: mockCreateCircuitBreaker,
 }));
 
+const mockConsumeReturnToPaywallTrigger = jest.fn((): string | null => null);
 jest.mock('@/lib/navigationIntents', () => ({
   consumeStayOnSettingsDestination: mockConsumeStayOnSettingsIntent,
+  peekReturnToPaywallTrigger: () => mockConsumeReturnToPaywallTrigger(),
+  clearStayOnSettingsIntent: jest.fn(),
 }));
 
 jest.mock('@/services/storageService', () => ({
@@ -179,6 +182,20 @@ describe('AuthContext', () => {
     });
 
     expect(mockRouterReplace).toHaveBeenCalledWith('/(tabs)/settings');
+  });
+
+  it('given a pending paywall return__when user loads__then goes back to the paywall with its trigger', async () => {
+    mockSetCurrentUser({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} });
+    mockConsumeReturnToPaywallTrigger.mockReturnValueOnce('analysis_limit');
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <AuthProvider>{children}</AuthProvider>
+    );
+
+    const { result } = renderHook(() => useAuth(), { wrapper });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(mockRouterReplace).toHaveBeenCalledWith({ pathname: '/paywall', params: { trigger: 'analysis_limit' } });
   });
 
   it('given a Lucid auth intent__when user loads__then stays inside Lucid Trainer', async () => {

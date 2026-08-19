@@ -2,7 +2,7 @@ import { UpsellCard } from '@/components/guest/UpsellCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
-import { AdvancedFilterSheet } from '@/components/journal/AdvancedFilterSheet';
+import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal/AdvancedFilterSheet';
 import { AtlasDreamRow } from '@/components/journal/AtlasDreamRow';
 import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
@@ -29,7 +29,7 @@ import { useJournalLayoutPreference } from '@/hooks/useJournalLayoutPreference';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
-import { applyFilters, getUniqueDreamTypes, getUniqueThemes } from '@/lib/dreamFilters';
+import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
@@ -114,6 +114,7 @@ export default function JournalListScreen() {
   const [showExploredOnly, setShowExploredOnly] = useState(false);
   const [showRememberedOnly, setShowRememberedOnly] = useState(false);
   const [showNeedsExplorationOnly, setShowNeedsExplorationOnly] = useState(false);
+  const [sortOrder, setSortOrder] = useState<JournalSortOrder>('newest');
   const [showAtlasSearch, setShowAtlasSearch] = useState(false);
 
   const focusSearchInput = useCallback(() => {
@@ -233,11 +234,12 @@ export default function JournalListScreen() {
       },
     });
 
-    if (!showNeedsExplorationOnly) {
-      return baseDreams;
-    }
+    const orderedDreams = showNeedsExplorationOnly
+      ? baseDreams.filter((dream) => isDreamAnalyzed(dream) && !isDreamExplored(dream))
+      : baseDreams;
 
-    return baseDreams.filter((dream) => isDreamAnalyzed(dream) && !isDreamExplored(dream));
+    // Stored order is newest-first; only the opposite order needs a sort.
+    return sortOrder === 'oldest' ? sortDreamsByDate(orderedDreams, true) : orderedDreams;
   }, [
     dreams,
     deferredSearchQuery,
@@ -251,6 +253,7 @@ export default function JournalListScreen() {
     showNeedsExplorationOnly,
     resolveDreamMemorySearchLabel,
     t,
+    sortOrder,
   ]);
 
   const rememberPrefetchedUri = useCallback((uri: string): boolean => {
@@ -318,6 +321,7 @@ export default function JournalListScreen() {
     setShowExploredOnly(false);
     setShowRememberedOnly(false);
     setShowNeedsExplorationOnly(false);
+    setSortOrder('newest');
   }, []);
 
   const toggleThemeFilter = useCallback((theme: DreamTheme) => {
@@ -1004,6 +1008,8 @@ export default function JournalListScreen() {
         onThemeSelect={toggleThemeFilter}
         onDreamTypeSelect={toggleDreamTypeFilter}
         onDateRangeChange={handleDateRangeChange}
+        sortOrder={sortOrder}
+        onSortOrderChange={setSortOrder}
       />
 
       {/* Theme Selection BottomSheet */}

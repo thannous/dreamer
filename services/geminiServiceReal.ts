@@ -36,6 +36,7 @@ export type AnalysisResult = {
   symbols?: DreamSymbolInsight[];
   emotions?: DreamEmotionInsight[];
   reflectionQuestions?: string[];
+  promptVersion?: string;
   quotaUsed?: { analysis: number };
 };
 
@@ -197,16 +198,12 @@ export async function analyzeDreamWithImageResilient(
 
     if (imageUrl) {
       return { ...res, imageUrl, imageGenerationFailed: false };
-    } else {
-      // Combined call succeeded but no image returned, try separate image generation
-      try {
-        const separateImageUrl = await generateImageForDream(res.imagePrompt);
-        return { ...res, imageUrl: separateImageUrl, imageGenerationFailed: false };
-      } catch {
-        // Image generation failed, return analysis without image
-        return { ...res, imageUrl: null, imageGenerationFailed: true };
-      }
     }
+    // The combined route already spent one image attempt server-side. Do not
+    // fire a second automatic generation here: the journal detail screen offers
+    // an explicit retry, and background image jobs cover the async path. This
+    // caps the worst case at one analysis + one image per capture on this path.
+    return { ...res, imageUrl: null, imageGenerationFailed: true };
   } catch {
     // Combined call failed entirely, try analysis only as fallback
     try {
@@ -214,7 +211,7 @@ export async function analyzeDreamWithImageResilient(
       // so we don't pass it again for fallback analysis-only call
       const analysisOnly = await analyzeDream(transcript, lang, undefined, context);
 
-      // Try to generate image separately
+      // Analysis-only never produces an image: allow exactly one image attempt.
       try {
         const imageUrl = await generateImageForDream(analysisOnly.imagePrompt);
         return { ...analysisOnly, imageUrl, imageGenerationFailed: false };

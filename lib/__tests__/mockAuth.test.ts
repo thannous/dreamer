@@ -39,6 +39,7 @@ const {
   onAuthChange,
   resendVerificationEmail,
   signInWithEmailPassword,
+  signInWithApple,
   signInWithGoogle,
   signInWithGoogleWeb,
   signInWithProfile,
@@ -158,6 +159,16 @@ describe('mockAuth', () => {
       const user = await signInWithGoogle();
 
       // Then
+      expect(user.email).toBe('mock.existing@dreamer.app');
+      expect(user.user_metadata?.profile).toBe('existing');
+      expect(user.email_confirmed_at).toBeTruthy();
+    });
+  });
+
+  describe('signInWithApple', () => {
+    it('given Apple sign in when signing in then returns existing user', async () => {
+      const user = await signInWithApple();
+
       expect(user.email).toBe('mock.existing@dreamer.app');
       expect(user.user_metadata?.profile).toBe('existing');
       expect(user.email_confirmed_at).toBeTruthy();

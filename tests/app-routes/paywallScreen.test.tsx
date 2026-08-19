@@ -12,6 +12,7 @@ const mockPurchase = jest.fn();
 const mockRestore = jest.fn();
 const mockTrackProductEvent = jest.fn().mockResolvedValue(undefined);
 const mockUseSubscription = jest.fn();
+const mockOpenURL = jest.fn().mockResolvedValue(undefined);
 
 jest.doMock('expo-router', () => ({
   router: {
@@ -66,6 +67,9 @@ jest.doMock('react-native', () => {
     Platform: {
       OS: 'web',
       select: (values: Record<string, any>) => values?.web ?? values?.default,
+    },
+    Linking: {
+      openURL: (...args: unknown[]) => mockOpenURL(...args),
     },
     Pressable: createElement('button'),
     ScrollView: createElement('div'),
@@ -181,7 +185,15 @@ jest.doMock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
     translationRevision: 0,
+    currentLang: 'fr',
   }),
+}));
+
+const mockRequestReturnToPaywallIntent = jest.fn();
+const mockClearReturnToPaywallIntent = jest.fn();
+jest.doMock('@/lib/navigationIntents', () => ({
+  requestReturnToPaywallIntent: mockRequestReturnToPaywallIntent,
+  clearReturnToPaywallIntent: mockClearReturnToPaywallIntent,
 }));
 
 jest.doMock('@/lib/analytics', () => ({
@@ -195,6 +207,7 @@ jest.doMock('@/lib/logger', () => ({
   }),
 }));
 
+const { getLegalLink } = require('@/constants/legalLinks') as typeof import('@/constants/legalLinks');
 const { default: PaywallScreen } = require('@/app/paywall');
 
 const packages = [
@@ -274,6 +287,129 @@ describe('Paywall screen', () => {
     );
   });
 
+  it('tracks the purchase funnel around a successful purchase', async () => {
+    mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true });
+    render(<PaywallScreen />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.PaywallPurchase));
+
+    await waitFor(() => {
+      expect(mockTrackProductEvent).toHaveBeenCalledWith('purchase_completed', {
+        trigger: 'settings',
+        plan: 'annual',
+        tier: 'plus',
+      });
+    });
+    expect(mockTrackProductEvent).toHaveBeenCalledWith('purchase_started', {
+      trigger: 'settings',
+      plan: 'annual',
+      tier: 'free',
+    });
+    const purchaseFailed = mockTrackProductEvent.mock.calls.filter(([name]: unknown[]) => name === 'purchase_failed');
+    expect(purchaseFailed).toHaveLength(0);
+
+    fireEvent.click(screen.getByTestId(TID.Button.PaywallClose));
+    const dismissed = mockTrackProductEvent.mock.calls.filter(([name]: unknown[]) => name === 'paywall_dismissed');
+    expect(dismissed).toHaveLength(0);
+  });
+
+  it('tracks a cancelled purchase as purchase_failed with reason cancelled', async () => {
+    const cancelled = Object.assign(new Error('Purchase was cancelled.'), { userCancelled: true });
+    mockPurchase.mockRejectedValue(cancelled);
+    render(<PaywallScreen />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.PaywallSelectMonthly));
+    fireEvent.click(screen.getByTestId(TID.Button.PaywallPurchase));
+
+    await waitFor(() => {
+      expect(mockTrackProductEvent).toHaveBeenCalledWith('purchase_failed', {
+        trigger: 'settings',
+        plan: 'monthly',
+        reason: 'cancelled',
+      });
+    });
+    expect(mockTrackProductEvent).toHaveBeenCalledWith('paywall_plan_selected', {
+      trigger: 'settings',
+      plan: 'monthly',
+      tier: 'free',
+    });
+  });
+
+  it('tracks a dismissal only when the paywall is closed without a purchase', () => {
+    render(<PaywallScreen />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.PaywallClose));
+
+    expect(mockTrackProductEvent).toHaveBeenCalledWith('paywall_dismissed', {
+      trigger: 'settings',
+      tier: 'free',
+      plan_selected: false,
+    });
+  });
+
+  it('tracks restore outcomes', async () => {
+    mockRestore.mockResolvedValue({ tier: 'free', isActive: false });
+    render(<PaywallScreen />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.PaywallRestore));
+
+    await waitFor(() => {
+      expect(mockTrackProductEvent).toHaveBeenCalledWith('restore_completed', {
+        trigger: 'settings',
+        outcome: 'nothing_to_restore',
+      });
+    });
+  });
+
+  it('sends a guest to the account section and remembers to come back to the paywall', () => {
+    mockUseSubscription.mockReturnValue({
+      status: { tier: 'free', isActive: false, expiryDate: null },
+      isActive: false,
+      loading: false,
+      processing: false,
+      error: null,
+      packages,
+      purchase: mockPurchase,
+      restore: mockRestore,
+      requiresAuth: true,
+    });
+    render(<PaywallScreen />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.PaywallPurchase));
+
+    expect(mockRequestReturnToPaywallIntent).toHaveBeenCalledWith('settings', { persist: true });
+    expect(mockReplace).toHaveBeenCalledWith('/(tabs)/settings?section=account');
+    expect(mockPurchase).not.toHaveBeenCalled();
+  });
+
+  it('clears the return-to-paywall intent when the paywall is closed on purpose', () => {
+    render(<PaywallScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.PaywallClose));
+    expect(mockClearReturnToPaywallIntent).toHaveBeenCalled();
+  });
+
+  it('shows the free-trial CTA and footnote when the selected plan has a trial', async () => {
+    mockUseSubscription.mockReturnValue({
+      status: { tier: 'free', isActive: false, expiryDate: null },
+      isActive: false,
+      loading: false,
+      processing: false,
+      error: null,
+      packages: [packages[0], { ...packages[1], freeTrialDays: 7 }],
+      purchase: mockPurchase,
+      restore: mockRestore,
+      requiresAuth: false,
+    });
+    render(<PaywallScreen />);
+
+    expect(screen.getByTestId(TID.Text.PaywallTrialFootnote).textContent).toBe(
+      'subscription.paywall.trial_footnote'
+    );
+    expect(screen.getByTestId(TID.Button.PaywallPurchase).textContent).toBe(
+      'subscription.paywall.button.primary.trial'
+    );
+  });
+
   it('replaces an untranslated store error with the localized generic message', () => {
     mockUseSubscription.mockReturnValue({
       status: { tier: 'free', isActive: false, expiryDate: null },
@@ -292,5 +428,15 @@ describe('Paywall screen', () => {
     expect(screen.getByTestId(TID.BottomSheet.PaywallError).textContent).toBe(
       'subscription.paywall.error.message'
     );
+  });
+
+  it('exposes Terms of Use and Privacy Policy links that open getLegalLink destinations', () => {
+    render(<PaywallScreen />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.PaywallTermsOfUse));
+    expect(mockOpenURL).toHaveBeenCalledWith(getLegalLink('termsOfUse', 'fr'));
+
+    fireEvent.click(screen.getByTestId(TID.Button.PaywallPrivacyPolicy));
+    expect(mockOpenURL).toHaveBeenCalledWith(getLegalLink('privacyPolicy', 'fr'));
   });
 });

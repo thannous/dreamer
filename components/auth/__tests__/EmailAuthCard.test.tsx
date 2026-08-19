@@ -89,6 +89,7 @@ const {
   mockSignUpWithEmailPassword,
   mockSignOut,
   mockResendVerificationEmail,
+  mockRequestPasswordReset,
   mockReloadDreams,
 } = ((factory: any) => factory())(() => ({
   mockAlert: jest.fn(),
@@ -98,6 +99,7 @@ const {
   mockSignUpWithEmailPassword: jest.fn(),
   mockSignOut: jest.fn(),
   mockResendVerificationEmail: jest.fn(),
+  mockRequestPasswordReset: jest.fn(),
   mockReloadDreams: jest.fn(),
 }));
 
@@ -165,6 +167,11 @@ jest.mock('@/components/auth/GoogleSignInButton', () => ({
   default: () => <div data-testid="google-sign-in" />,
 }));
 
+jest.mock('@/components/auth/AppleSignInButton', () => ({
+  __esModule: true,
+  default: () => <div data-testid="apple-sign-in" />,
+}));
+
 jest.mock('@/components/auth/EmailVerificationBanner', () => ({
   __esModule: true,
   default: () => <div data-testid="banner" />,
@@ -180,6 +187,7 @@ jest.mock('@/components/ui/icon-symbol', () => ({
 }));
 
 jest.mock('@/lib/auth', () => ({
+  requestPasswordReset: mockRequestPasswordReset,
   signInMock: jest.fn(),
   signInWithEmailPassword: mockSignInWithEmailPassword,
   signOut: mockSignOut,
@@ -207,17 +215,23 @@ jest.mock('@/components/ui/StandardBottomSheet', () => ({
   StandardBottomSheet: ({
     children,
     snapPoints,
+    subtitle,
     testID,
+    title,
     visible,
   }: {
     children?: React.ReactNode;
     snapPoints?: unknown[];
+    subtitle?: string;
     testID?: string;
+    title?: string;
     visible: boolean;
   }) => visible ? (
     <div
       data-testid={testID ?? 'standard-bottom-sheet'}
       data-snap-points={snapPoints ? JSON.stringify(snapPoints) : undefined}
+      data-title={title}
+      data-subtitle={subtitle}
     >
       {children}
     </div>
@@ -252,6 +266,8 @@ describe('EmailAuthCard', () => {
 
   afterEach(() => {
     cleanup();
+    const { Platform } = require('react-native') as { Platform: { OS: string } };
+    Platform.OS = 'web';
     if (usingFakeTimers) {
       jest.clearAllTimers();
       jest.useRealTimers();
@@ -269,6 +285,131 @@ describe('EmailAuthCard', () => {
     mockSignUpWithEmailPassword.mockResolvedValue({ email_confirmed_at: null });
     mockSignOut.mockResolvedValue(undefined);
     mockReloadDreams.mockResolvedValue(undefined);
+    mockRequestPasswordReset.mockResolvedValue(undefined);
+  });
+
+  it('opens the forgot-password panel pre-filled with the sign-in email and shows a neutral confirmation', async () => {
+    render(<EmailAuthCard />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.AuthEmail), {
+      target: { value: ' user@example.com ' },
+    });
+    expect(screen.queryByTestId(TID.Component.AuthForgotPasswordPanel)).toBeNull();
+
+    fireEvent.click(screen.getByTestId(TID.Button.AuthForgotPassword));
+
+    expect(screen.getByTestId(TID.Component.AuthForgotPasswordPanel)).toBeDefined();
+    expect(screen.getByText('auth.forgot_password.title')).toBeDefined();
+    expect((screen.getByTestId(TID.Input.AuthForgotPasswordEmail) as HTMLInputElement).value).toBe(
+      'user@example.com'
+    );
+
+    fireEvent.click(screen.getByTestId(TID.Button.AuthSendPasswordReset));
+
+    await waitFor(() => {
+      expect(mockRequestPasswordReset).toHaveBeenCalledWith('user@example.com');
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId(TID.Text.AuthForgotPasswordStatus).textContent).toBe(
+        'auth.forgot_password.sent'
+      );
+    });
+    // The neutral confirmation replaces the form; no sign-in attempt was made.
+    expect(screen.queryByTestId(TID.Input.AuthForgotPasswordEmail)).toBeNull();
+    expect(screen.queryByTestId(TID.Button.AuthSendPasswordReset)).toBeNull();
+    expect(mockSignInWithEmailPassword).not.toHaveBeenCalled();
+    expect(mockAlert).not.toHaveBeenCalled();
+  });
+
+  it('shows the same neutral confirmation for an unknown address', async () => {
+    render(<EmailAuthCard />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.AuthForgotPassword));
+    fireEvent.change(screen.getByTestId(TID.Input.AuthForgotPasswordEmail), {
+      target: { value: 'nobody@example.com' },
+    });
+    fireEvent.click(screen.getByTestId(TID.Button.AuthSendPasswordReset));
+
+    await waitFor(() => {
+      expect(mockRequestPasswordReset).toHaveBeenCalledWith('nobody@example.com');
+    });
+    await waitFor(() => {
+      expect(screen.getByText('auth.forgot_password.sent')).toBeDefined();
+    });
+  });
+
+  it('keeps the send button disabled until the reset email is valid and while sending', async () => {
+    let resolveRequest: () => void = () => {};
+    mockRequestPasswordReset.mockImplementation(
+      () => new Promise<void>((resolve) => {
+        resolveRequest = resolve;
+      })
+    );
+
+    render(<EmailAuthCard />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.AuthForgotPassword));
+    expect((screen.getByTestId(TID.Button.AuthSendPasswordReset) as HTMLButtonElement).disabled).toBe(true);
+
+    fireEvent.change(screen.getByTestId(TID.Input.AuthForgotPasswordEmail), {
+      target: { value: 'not-an-email' },
+    });
+    expect((screen.getByTestId(TID.Button.AuthSendPasswordReset) as HTMLButtonElement).disabled).toBe(true);
+
+    fireEvent.change(screen.getByTestId(TID.Input.AuthForgotPasswordEmail), {
+      target: { value: 'user@example.com' },
+    });
+    expect((screen.getByTestId(TID.Button.AuthSendPasswordReset) as HTMLButtonElement).disabled).toBe(false);
+
+    fireEvent.click(screen.getByTestId(TID.Button.AuthSendPasswordReset));
+    await waitFor(() => {
+      expect((screen.getByTestId(TID.Button.AuthSendPasswordReset) as HTMLButtonElement).disabled).toBe(true);
+    });
+    expect(mockRequestPasswordReset).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      resolveRequest();
+    });
+    await waitFor(() => {
+      expect(screen.getByText('auth.forgot_password.sent')).toBeDefined();
+    });
+  });
+
+  it('surfaces a generic translated error when the reset request fails', async () => {
+    mockRequestPasswordReset.mockRejectedValue(new Error('rate limited'));
+
+    render(<EmailAuthCard />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.AuthForgotPassword));
+    fireEvent.change(screen.getByTestId(TID.Input.AuthForgotPasswordEmail), {
+      target: { value: 'user@example.com' },
+    });
+    fireEvent.click(screen.getByTestId(TID.Button.AuthSendPasswordReset));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('standard-bottom-sheet').getAttribute('data-title')).toBe(
+        'auth.forgot_password.error_title'
+      );
+    });
+    expect(screen.getByTestId('standard-bottom-sheet').getAttribute('data-subtitle')).toBe(
+      'auth.forgot_password.error_message'
+    );
+    // The panel stays open so the user can retry.
+    expect(screen.queryByText('auth.forgot_password.sent')).toBeNull();
+    expect(screen.getByTestId(TID.Input.AuthForgotPasswordEmail)).toBeDefined();
+  });
+
+  it('closes the forgot-password panel with cancel', () => {
+    render(<EmailAuthCard />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.AuthForgotPassword));
+    expect(screen.getByTestId(TID.Component.AuthForgotPasswordPanel)).toBeDefined();
+
+    fireEvent.click(screen.getByTestId(TID.Button.AuthCloseForgotPassword));
+
+    expect(screen.queryByTestId(TID.Component.AuthForgotPasswordPanel)).toBeNull();
+    expect(screen.getByTestId(TID.Button.AuthForgotPassword)).toBeDefined();
+    expect(mockRequestPasswordReset).not.toHaveBeenCalled();
   });
 
   it('shows unverified prompt and allows resending verification email when sign-in fails for confirmation', async () => {
@@ -428,6 +569,28 @@ describe('EmailAuthCard', () => {
 
     expect(screen.queryByTestId('google-sign-in')).toBeNull();
     expect(screen.queryByText('common.or')).toBeNull();
+  });
+
+  it('shows Apple sign-in on iOS when third-party login is shown', () => {
+    const { Platform } = require('react-native') as { Platform: { OS: string } };
+    Platform.OS = 'ios';
+    try {
+      render(<EmailAuthCard />);
+      expect(screen.getByTestId('apple-sign-in')).toBeDefined();
+    } finally {
+      Platform.OS = 'web';
+    }
+  });
+
+  it('hides Apple sign-in on iOS when third-party login is hidden', () => {
+    const { Platform } = require('react-native') as { Platform: { OS: string } };
+    Platform.OS = 'ios';
+    try {
+      render(<EmailAuthCard showGoogleSignIn={false} />);
+      expect(screen.queryByTestId('apple-sign-in')).toBeNull();
+    } finally {
+      Platform.OS = 'web';
+    }
   });
 
   it('keeps the embedded guest summary concise', () => {

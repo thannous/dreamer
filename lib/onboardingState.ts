@@ -752,7 +752,7 @@ const isSupportedNativeRoute = (pathname: string): boolean => {
   if (segments.length === 1) return STATIC_NATIVE_ROUTES.has(segments[0]);
   if (segments.length === 2) {
     return (
-      (segments[0] === 'auth' && segments[1] === 'callback') ||
+      (segments[0] === 'auth' && (segments[1] === 'callback' || segments[1] === 'reset-password')) ||
       PARAMETERIZED_NATIVE_ROUTES.has(segments[0])
     );
   }

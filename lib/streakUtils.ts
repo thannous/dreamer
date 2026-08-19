@@ -51,8 +51,20 @@ export const calculateStreaks = <T extends TimestampedItem>(
   if (items.length === 0) return { current: 0, longest: 0 };
 
   // Perf: callers that already receive newest-first data can skip a copy + sort here.
-  const sortedItems = options.sortedDescending ? items : [...items].sort((a, b) => b.id - a.id);
+  const sortedByTime = options.sortedDescending ? items : [...items].sort((a, b) => b.id - a.id);
   const dayInMs = 24 * 60 * 60 * 1000;
+
+  // A streak counts days, not entries: several dreams recorded on the same day
+  // are one step of the streak. Keep the first (newest) item of each local day.
+  const sortedItems: T[] = [];
+  let lastDay: number | null = null;
+  for (const item of sortedByTime) {
+    const day = startOfDayTime(item.id);
+    if (day !== lastDay) {
+      sortedItems.push(item);
+      lastDay = day;
+    }
+  }
 
   let currentStreak = 0;
   let longestStreak = 0;

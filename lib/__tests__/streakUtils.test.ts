@@ -137,9 +137,7 @@ describe('streakUtils', () => {
       expect(result.longest).toBe(4);
     });
 
-    it('given multiple items on same day counts each item (not deduplicated)', () => {
-      // Note: The original algorithm doesn't deduplicate days.
-      // Multiple items on the same day are counted as consecutive (daysDiff = 0).
+    it('given multiple items on same day counts days, not entries', () => {
       const now = new Date('2024-03-15T12:00:00').getTime();
       const items = [
         { id: now }, // today morning
@@ -150,9 +148,9 @@ describe('streakUtils', () => {
 
       const result = calculateStreaks(items, now);
 
-      // All 4 items are counted as consecutive since daysDiff <= 1
-      expect(result.current).toBe(4);
-      expect(result.longest).toBe(4);
+      // Three entries today + one yesterday = a two-day streak.
+      expect(result.current).toBe(2);
+      expect(result.longest).toBe(2);
     });
 
     it('given items out of order still calculates correctly', () => {

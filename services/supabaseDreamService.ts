@@ -537,7 +537,7 @@ type SupabaseDreamRow = {
   analysis_details?: Record<string, unknown> | null;
 };
 
-type AnalysisDetailFields = Pick<DreamAnalysis, 'symbols' | 'emotions' | 'reflectionQuestions'>;
+type AnalysisDetailFields = Pick<DreamAnalysis, 'symbols' | 'emotions' | 'reflectionQuestions' | 'promptVersion'>;
 
 const normalizeAnalysisDetails = (value: unknown): AnalysisDetailFields => {
   const source = (value ?? {}) as Record<string, unknown>;
@@ -554,11 +554,16 @@ const normalizeAnalysisDetails = (value: unknown): AnalysisDetailFields => {
   const reflectionQuestions = Array.isArray(source.reflectionQuestions)
     ? source.reflectionQuestions.filter((question: unknown): question is string => typeof question === 'string')
     : [];
+  const promptVersion =
+    typeof source.promptVersion === 'string' && source.promptVersion.length > 0 && source.promptVersion.length <= 64
+      ? source.promptVersion
+      : undefined;
 
   return {
     ...(symbols.length > 0 ? { symbols } : {}),
     ...(emotions.length > 0 ? { emotions } : {}),
     ...(reflectionQuestions.length > 0 ? { reflectionQuestions } : {}),
+    ...(promptVersion ? { promptVersion } : {}),
   };
 };
 
@@ -567,6 +572,7 @@ const toAnalysisDetailsColumn = (dream: DreamAnalysis): Record<string, unknown> 
     symbols: dream.symbols,
     emotions: dream.emotions,
     reflectionQuestions: dream.reflectionQuestions,
+    promptVersion: dream.promptVersion,
   });
   return Object.keys(details).length > 0 ? details : null;
 };

@@ -1,6 +1,7 @@
-import type { Session, User } from '@supabase/supabase-js';
+import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 
 import * as mockAuth from './mockAuth';
+import { PASSWORD_RESET_ROUTE } from './authRoutes';
 import { isMockModeEnabled } from './env';
 import { createScopedLogger } from './logger';
 import { supabase } from './supabase';
@@ -75,6 +76,10 @@ function getWebRedirectTo(): string {
  */
 export function initializeGoogleSignIn() {
   // No-op on web
+}
+
+export function isAppleSignInAvailable(): boolean {
+  return false;
 }
 
 export async function getAccessToken(): Promise<string | null> {
@@ -167,6 +172,66 @@ export async function resendVerificationEmail(email: string) {
   if (error) throw error;
 }
 
+// The recovery link lands on the reset-password screen of the current web origin
+// (localhost while developing, dream.noctalia.app in production).
+export function getPasswordResetRedirect(): string {
+  return `${getWebRedirectTo()}${PASSWORD_RESET_ROUTE}`;
+}
+
+/**
+ * Send a password-recovery email. Resolves even when no account matches the
+ * address (Supabase does not disclose that), so callers must show a neutral
+ * confirmation and never infer account existence from the result.
+ */
+export async function requestPasswordReset(email: string): Promise<void> {
+  if (isMockMode) {
+    await mockAuth.requestPasswordReset(email);
+    return;
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: getPasswordResetRedirect(),
+  });
+  if (error) throw error;
+}
+
+/**
+ * Set a new password for the current (recovery or regular) session.
+ */
+export async function updatePassword(newPassword: string): Promise<User | null> {
+  if (isMockMode) {
+    return mockAuth.updatePassword(newPassword);
+  }
+
+  const { data, error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) throw error;
+  const { data: sessionData } = await supabase.auth.getSession();
+  await ensureSessionPersistence(sessionData.session ?? null);
+  return data.user ?? null;
+}
+
+/**
+ * Observe auth events relevant to password recovery. When the browser opens a
+ * recovery link, supabase-js consumes the URL fragment and emits
+ * `PASSWORD_RECOVERY`; a subscriber attached later still receives the session
+ * through `INITIAL_SESSION`, so callers may treat any event carrying a session
+ * as "allowed to set a new password".
+ */
+export function onPasswordRecovery(
+  cb: (event: AuthChangeEvent, session: Session | null) => void
+): () => void {
+  if (isMockMode) {
+    return mockAuth.onAuthChange((user, session) => {
+      cb(user ? 'SIGNED_IN' : 'SIGNED_OUT', session);
+    });
+  }
+
+  const { data } = supabase.auth.onAuthStateChange((event, session) => {
+    cb(event, session ?? null);
+  });
+  return () => data.subscription.unsubscribe();
+}
+
 /**
  * Sign in with Google using Supabase OAuth popup (web)
  */
@@ -195,6 +260,14 @@ export async function signInWithGoogle(): Promise<User> {
   }
 
   throw new Error('Google Sign-In on web should use the web-specific implementation');
+}
+
+export async function signInWithApple(): Promise<User> {
+  if (isMockMode) {
+    return mockAuth.signInWithApple();
+  }
+
+  throw new Error('Sign in with Apple is only available on iOS.');
 }
 
 /**

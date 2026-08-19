@@ -5,6 +5,7 @@ import {
   Linking,
   Pressable,
   StyleSheet,
+  Switch,
   Text,
   View,
 } from 'react-native';
@@ -13,6 +14,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getLegalLink, type LegalLinkKind } from '@/constants/legalLinks';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { useAnalyticsPreferenceController } from '@/components/settings/useAnalyticsPreferenceController';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -55,6 +57,7 @@ export function LegalSection() {
   const { t, currentLang } = useTranslation();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const [isDeleting, setIsDeleting] = useState(false);
+  const analyticsPreference = useAnalyticsPreferenceController();
 
   const openLegalLink = useCallback(
     (kind: LegalLinkKind) => {
@@ -131,6 +134,36 @@ export function LegalSection() {
         </Text>
         <IconSymbol name="lock.shield" size={23} color={noctalia.accent.text} />
       </View>
+      {analyticsPreference.available ? (
+        <View
+          accessibilityRole="switch"
+          accessibilityState={{ checked: analyticsPreference.enabled === true }}
+          accessibilityLabel={analyticsPreference.toggleLabel}
+          style={[styles.row, { borderTopColor: noctalia.surface.border, borderTopWidth: 1 }]}
+          testID="settings-analytics-preference"
+        >
+          <IconSymbol name="chart.bar.fill" size={21} color={noctalia.accent.text} />
+          <View style={styles.deleteCopy}>
+            <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>
+              {analyticsPreference.title}
+            </Text>
+            <Text style={[styles.deleteDescription, { color: noctalia.text.secondary }]}>
+              {analyticsPreference.error ? analyticsPreference.errorMessage : analyticsPreference.description}
+            </Text>
+          </View>
+          <Switch
+            disabled={analyticsPreference.loading || analyticsPreference.saving}
+            ios_backgroundColor={noctalia.surface.soft}
+            onValueChange={(next) => {
+              void analyticsPreference.toggle(next);
+            }}
+            testID="settings-analytics-preference-switch"
+            thumbColor={noctalia.text.primary}
+            trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
+            value={analyticsPreference.enabled === true}
+          />
+        </View>
+      ) : null}
       {LEGAL_LINK_ROWS.map((row) => (
         <Pressable
           accessibilityRole="link"

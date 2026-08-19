@@ -180,6 +180,10 @@ export async function signInWithGoogleWeb(): Promise<User> {
   return applyProfile('existing');
 }
 
+export async function signInWithApple(): Promise<User> {
+  return applyProfile('existing');
+}
+
 export async function signOut(): Promise<void> {
   const {
     quotaService,
@@ -209,6 +213,14 @@ export async function resendVerificationEmail(_email?: string): Promise<void> {
     email_confirmed_at: new Date().toISOString(),
   } as User;
   emitAuthChange();
+}
+
+export async function requestPasswordReset(_email: string): Promise<void> {
+  // Mock mode has no mailbox: resolve so the UI shows its neutral confirmation.
+}
+
+export async function updatePassword(_newPassword: string): Promise<User | null> {
+  return currentUser;
 }
 
 export function onAuthChange(callback: (user: User | null, session: Session | null) => void): () => void {

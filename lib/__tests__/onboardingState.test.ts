@@ -612,6 +612,12 @@ describe('onboardingState', () => {
       )
     ).toBe('/dream-chat/123?source=notification');
     expect(resolveExplicitStartupDestination(null, '/settings')).toBeUndefined();
+    expect(
+      resolveExplicitStartupDestination(
+        'https://dream.noctalia.app/auth/reset-password#access_token=abc&type=recovery',
+        '/recording'
+      )
+    ).toBe('/auth/reset-password#access_token=abc&type=recovery');
   });
 
   it('keeps startup guards above an explicit deep-link default', () => {

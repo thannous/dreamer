@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
@@ -10,6 +10,7 @@ import { PricingOption } from '@/components/subscription/PricingOption';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getLegalLink, type LegalLinkKind } from '@/constants/legalLinks';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
@@ -20,12 +21,14 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
 import { createScopedLogger } from '@/lib/logger';
+import { clearReturnToPaywallIntent, requestReturnToPaywallIntent } from '@/lib/navigationIntents';
 import {
   calculateAnnualDiscount,
   calculateMonthlyEquivalent,
   sortPackages,
 } from '@/lib/paywallUtils';
 import { getPaywallVariant, PLUS_PAYWALL_FEATURE_KEYS } from '@/lib/paywallVariants';
+import { classifyPurchaseFailure } from '@/lib/subscriptionErrors';
 import { TID } from '@/lib/testIDs';
 
 const log = createScopedLogger('[Paywall]');
@@ -34,7 +37,7 @@ const PAYWALL_MAX_WIDTH = 720;
 export default function PaywallScreen() {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { t, translationRevision } = useTranslation();
+  const { t, translationRevision, currentLang } = useTranslation();
   const { formatDate, formatNumber, formatTime } = useLocaleFormatting();
   const params = useLocalSearchParams<{ trigger?: string }>();
   useClearWebFocus();
@@ -57,6 +60,8 @@ export default function PaywallScreen() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [showErrorSheet, setShowErrorSheet] = useState(false);
   const viewedAnalyticsKeyRef = useRef<string | null>(null);
+  const purchaseOutcomeRef = useRef<'none' | 'completed' | 'restored'>('none');
+  const dismissedTrackedRef = useRef(false);
 
   const rootStyle = useMemo(
     () => [styles.root, { backgroundColor: noctalia.screen.background }],
@@ -104,42 +109,106 @@ export default function PaywallScreen() {
     [sortedPackages]
   );
   const effectiveSelectedId = selectedId ?? defaultSelectedId;
+  const selectedPackage = useMemo(
+    () => sortedPackages.find((pkg) => pkg.id === effectiveSelectedId) ?? null,
+    [effectiveSelectedId, sortedPackages]
+  );
+  const selectedPlan = selectedPackage?.interval ?? null;
+  const selectedTrialDays = selectedPackage?.freeTrialDays ?? null;
+  const analyticsTier = subscriptionStatus?.tier ?? 'free';
   const canPurchase =
     Boolean(effectiveSelectedId) && !processing && !loading && !isActive && !requiresAuth;
 
   const handleClose = useCallback(() => {
+    // Leaving the paywall on purpose ends any "come back after sign-in" intent.
+    clearReturnToPaywallIntent();
+    if (!isActive && purchaseOutcomeRef.current === 'none' && !dismissedTrackedRef.current) {
+      dismissedTrackedRef.current = true;
+      void trackProductEvent('paywall_dismissed', {
+        trigger: paywallTrigger,
+        tier: analyticsTier,
+        plan_selected: selectedId !== null,
+      });
+    }
     if (router.canGoBack()) {
       router.back();
     } else {
       router.replace('/(tabs)/settings');
     }
-  }, []);
+  }, [analyticsTier, isActive, paywallTrigger, selectedId]);
 
   const handleSelect = useCallback((id: string) => {
     setSelectedId(id);
-  }, []);
+    const plan = sortedPackages.find((pkg) => pkg.id === id)?.interval;
+    if (plan) {
+      void trackProductEvent('paywall_plan_selected', {
+        trigger: paywallTrigger,
+        plan,
+        tier: analyticsTier,
+      });
+    }
+  }, [analyticsTier, paywallTrigger, sortedPackages]);
 
   const handleOpenAuth = useCallback(() => {
-    router.replace('/(tabs)/settings');
-  }, []);
+    // Remember the paywall context so a successful sign-in comes straight back
+    // here instead of leaving the user on the Settings tab.
+    requestReturnToPaywallIntent(paywallTrigger, { persist: true });
+    router.replace('/(tabs)/settings?section=account');
+  }, [paywallTrigger]);
+
+  const handleOpenLegalLink = useCallback((kind: LegalLinkKind) => {
+    void Linking.openURL(getLegalLink(kind, currentLang)).catch(() => {
+      // No browser available: nothing actionable to surface here.
+    });
+  }, [currentLang]);
 
   const handlePurchase = useCallback(async () => {
-    if (!effectiveSelectedId || !canPurchase) return;
+    if (!effectiveSelectedId || !canPurchase || !selectedPlan) return;
+    void trackProductEvent('purchase_started', {
+      trigger: paywallTrigger,
+      plan: selectedPlan,
+      tier: analyticsTier,
+    });
     try {
-      await purchase(effectiveSelectedId);
+      const nextStatus = await purchase(effectiveSelectedId);
+      purchaseOutcomeRef.current = 'completed';
+      clearReturnToPaywallIntent();
+      void trackProductEvent('purchase_completed', {
+        trigger: paywallTrigger,
+        plan: selectedPlan,
+        tier: nextStatus?.tier ?? 'plus',
+      });
       setToastMessage(t('subscription.paywall.toast.success'));
-    } catch {
+    } catch (purchaseError) {
+      void trackProductEvent('purchase_failed', {
+        trigger: paywallTrigger,
+        plan: selectedPlan,
+        reason: classifyPurchaseFailure(purchaseError),
+      });
     }
-  }, [canPurchase, effectiveSelectedId, purchase, t]);
+  }, [analyticsTier, canPurchase, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t]);
 
   const handleRestore = useCallback(async () => {
     if (processing || requiresAuth) return;
     try {
-      await restore();
+      const nextStatus = await restore();
+      const restored = Boolean(nextStatus?.isActive);
+      if (restored) {
+        purchaseOutcomeRef.current = 'restored';
+        clearReturnToPaywallIntent();
+      }
+      void trackProductEvent('restore_completed', {
+        trigger: paywallTrigger,
+        outcome: restored ? 'restored' : 'nothing_to_restore',
+      });
       setToastMessage(t('subscription.paywall.toast.restored'));
-    } catch {
+    } catch (restoreError) {
+      void trackProductEvent('restore_completed', {
+        trigger: paywallTrigger,
+        outcome: classifyPurchaseFailure(restoreError) === 'cancelled' ? 'cancelled' : 'failed',
+      });
     }
-  }, [processing, requiresAuth, restore, t]);
+  }, [paywallTrigger, processing, requiresAuth, restore, t]);
 
   const handleHideToast = useCallback(() => {
     setToastMessage(null);
@@ -225,13 +294,20 @@ export default function PaywallScreen() {
             ),
             price: comparablePrice,
             intervalLabel: translateWithFallback('subscription.paywall.option.interval.monthly'),
-            billingDetail: isAnnual
-              ? t('subscription.paywall.option.billing.annual', { price: pkg.priceFormatted })
-              : t('subscription.paywall.option.billing.monthly'),
+            billingDetail: pkg.freeTrialDays
+              ? t('subscription.paywall.option.billing.trial', {
+                  days: pkg.freeTrialDays,
+                  price: pkg.priceFormatted,
+                })
+              : isAnnual
+                ? t('subscription.paywall.option.billing.annual', { price: pkg.priceFormatted })
+                : t('subscription.paywall.option.billing.monthly'),
             badge:
-              isAnnual && annualDiscount
-                ? `−${annualDiscount}%`
-                : undefined,
+              pkg.freeTrialDays
+                ? t('subscription.paywall.option.badge.trial', { days: pkg.freeTrialDays })
+                : isAnnual && annualDiscount
+                  ? `−${annualDiscount}%`
+                  : undefined,
             testID:
               pkg.interval === 'monthly'
                 ? TID.Button.PaywallSelectMonthly
@@ -599,10 +675,24 @@ export default function PaywallScreen() {
                   >
                     {requiresAuth
                       ? t('subscription.paywall.button.primary.auth')
-                      : translateWithFallback(paywallVariant.primaryLabelKey)}
+                      : selectedTrialDays
+                        ? t('subscription.paywall.button.primary.trial', { days: selectedTrialDays })
+                        : translateWithFallback(paywallVariant.primaryLabelKey)}
                   </Text>
                 )}
               </Pressable>
+            ) : null}
+
+            {!isActive && !requiresAuth && selectedTrialDays && selectedPackage ? (
+              <Text
+                style={[styles.trialFootnote, { color: noctalia.text.secondary }]}
+                testID={TID.Text.PaywallTrialFootnote}
+              >
+                {t('subscription.paywall.trial_footnote', {
+                  days: selectedTrialDays,
+                  price: selectedPackage.priceFormatted,
+                })}
+              </Text>
             ) : null}
 
             {!isActive ? (
@@ -638,6 +728,30 @@ export default function PaywallScreen() {
               {t('subscription.paywall.notice.store')}
             </Text>
           ) : null}
+
+          <View style={styles.legalLinks}>
+            <Pressable
+              accessibilityRole="link"
+              onPress={() => handleOpenLegalLink('termsOfUse')}
+              style={({ pressed }) => [pressed && styles.legalLinkPressed]}
+              testID={TID.Button.PaywallTermsOfUse}
+            >
+              <Text style={[styles.legalLink, { color: noctalia.text.secondary }]}>
+                {t('settings.legal.termsOfUse')}
+              </Text>
+            </Pressable>
+            <Text style={[styles.legalSeparator, { color: noctalia.text.secondary }]}>·</Text>
+            <Pressable
+              accessibilityRole="link"
+              onPress={() => handleOpenLegalLink('privacyPolicy')}
+              style={({ pressed }) => [pressed && styles.legalLinkPressed]}
+              testID={TID.Button.PaywallPrivacyPolicy}
+            >
+              <Text style={[styles.legalLink, { color: noctalia.text.secondary }]}>
+                {t('settings.legal.privacyPolicy')}
+              </Text>
+            </Pressable>
+          </View>
         </ScreenContainer>
       </ScrollView>
 
@@ -918,6 +1032,12 @@ const styles = StyleSheet.create({
   primaryButtonPressed: {
     opacity: 0.9,
   },
+  trialFootnote: {
+    marginTop: 8,
+    textAlign: 'center',
+    fontSize: 12,
+    lineHeight: 16,
+  },
   primaryLabel: {
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.bold,
@@ -938,6 +1058,26 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 12,
     fontFamily: Fonts.spaceGrotesk.regular,
+  },
+  legalLinks: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  legalLink: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 12,
+    textDecorationLine: 'underline',
+  },
+  legalLinkPressed: {
+    opacity: 0.75,
+  },
+  legalSeparator: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 12,
   },
   emptyText: {
     marginTop: ThemeLayout.spacing.md,

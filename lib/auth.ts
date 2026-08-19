@@ -1,4 +1,4 @@
-import type { Session, User } from '@supabase/supabase-js';
+import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 import { Platform } from 'react-native';
 
 import { supabase } from './supabase';
@@ -8,6 +8,7 @@ import { createScopedLogger } from './logger';
 import { NETWORK_REQUEST_POLICIES } from './networkPolicy';
 import type { SubscriptionTier } from './types';
 import { isLucidTrainer } from './appVariant';
+import { PASSWORD_RESET_ROUTE } from './authRoutes';
 
 export type { MockProfile } from './mockAuth';
 
@@ -98,6 +99,10 @@ export function isGoogleSignInAvailable(): boolean {
   if (Platform.OS === 'web') return true;
   if (!getGoogleWebClientId()) return false;
   return Platform.OS !== 'ios' || Boolean(getGoogleIosClientId());
+}
+
+export function isAppleSignInAvailable(): boolean {
+  return Platform.OS === 'ios';
 }
 
 function getErrorCode(error: unknown): string | undefined {
@@ -377,6 +382,71 @@ export function getNativeEmailRedirect(): string {
     : 'https://dream.noctalia.app/recording';
 }
 
+// The recovery link is handled by the web app: it lands on the reset-password
+// screen with the recovery session in the URL fragment (supabase-js implicit flow).
+export function getPasswordResetRedirect(): string {
+  if (isLucidTrainer) {
+    return 'https://lucid.noctalia.app/lucid/account';
+  }
+  if (Platform.OS === 'web') {
+    return `${getWebRedirectTo()}${PASSWORD_RESET_ROUTE}`;
+  }
+  return `${WEB_REDIRECT_FALLBACK}${PASSWORD_RESET_ROUTE}`;
+}
+
+/**
+ * Send a password-recovery email. Resolves even when no account matches the
+ * address (Supabase does not disclose that), so callers must show a neutral
+ * confirmation and never infer account existence from the result.
+ */
+export async function requestPasswordReset(email: string): Promise<void> {
+  if (isMockMode) {
+    await mockAuth.requestPasswordReset(email);
+    return;
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: getPasswordResetRedirect(),
+  });
+  if (error) throw error;
+}
+
+/**
+ * Set a new password for the current (recovery or regular) session.
+ */
+export async function updatePassword(newPassword: string): Promise<User | null> {
+  if (isMockMode) {
+    return mockAuth.updatePassword(newPassword);
+  }
+
+  const { data, error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) throw error;
+  const { data: sessionData } = await supabase.auth.getSession();
+  await ensureSessionPersistence(sessionData.session ?? null, 'updatePassword');
+  return data.user ?? null;
+}
+
+/**
+ * Observe auth events relevant to password recovery. supabase-js emits
+ * `PASSWORD_RECOVERY` when the app is opened from a recovery link; a session
+ * restored later still arrives as `INITIAL_SESSION`/`SIGNED_IN`, so callers
+ * can treat any event carrying a session as "allowed to set a new password".
+ */
+export function onPasswordRecovery(
+  cb: (event: AuthChangeEvent, session: Session | null) => void
+): () => void {
+  if (isMockMode) {
+    return mockAuth.onAuthChange((user, session) => {
+      cb(user ? 'SIGNED_IN' : 'SIGNED_OUT', session);
+    });
+  }
+
+  const { data } = supabase.auth.onAuthStateChange((event, session) => {
+    cb(event, session ?? null);
+  });
+  return () => data.subscription.unsubscribe();
+}
+
 export async function signUpWithEmailPassword(email: string, password: string, userLang?: string) {
   if (isMockMode) {
     return mockAuth.signUpWithEmailPassword(email, userLang);
@@ -529,6 +599,96 @@ export async function signInWithGoogle(): Promise<User> {
     }
     throw error;
   }
+}
+
+/**
+ * Sign in with Apple using the native iOS credential.
+ * Returns the authenticated user from Supabase.
+ */
+export async function signInWithApple(): Promise<User> {
+  if (isMockMode) {
+    return mockAuth.signInWithApple();
+  }
+
+  if (Platform.OS !== 'ios') {
+    throw new Error('Sign in with Apple is only available on iOS.');
+  }
+
+  const guestUpgradeProof = await captureGuestUpgradeProof();
+  const { requestAppleIdentityCredential } = await loadModuleWithJestRequire(
+    () => import('./appleAuth'),
+    () => require('./appleAuth') as typeof import('./appleAuth')
+  );
+
+  try {
+    log.debug('Starting Apple Sign-In process');
+    const credential = await requestAppleIdentityCredential();
+    log.debug('Exchanging Apple identity token with Supabase');
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: 'apple',
+      token: credential.identityToken,
+      nonce: credential.nonce,
+    });
+
+    if (error) {
+      log.warn('Supabase signInWithIdToken (apple) failed', {
+        code: error.code,
+        status: error.status,
+        message: error.message,
+      });
+      throw error;
+    }
+
+    if (!data.user) {
+      log.warn('No user data received from Supabase');
+      throw new Error('No user data received from Supabase');
+    }
+
+    await ensureSessionPersistence(data.session ?? null, 'signInWithApple');
+
+    await markFingerprintUpgraded(guestUpgradeProof).catch(() => {
+      // Fail silently if marking fails
+    });
+
+    if (credential.authorizationCode) {
+      await storeAppleAuthorizationCode(credential.authorizationCode).catch((storeError) => {
+        log.warn('Failed to store Apple authorization for later revocation', storeError);
+      });
+    }
+
+    return data.user;
+  } catch (error: unknown) {
+    log.warn('Apple Sign-In failed', error);
+    const errorCode = getErrorCode(error);
+    if (errorCode === 'ERR_REQUEST_CANCELED' || getErrorMessage(error) === 'SIGN_IN_CANCELLED') {
+      throw new Error('SIGN_IN_CANCELLED');
+    }
+    throw error;
+  }
+}
+
+async function storeAppleAuthorizationCode(authorizationCode: string): Promise<void> {
+  const { getApiBaseUrl } = await loadModuleWithJestRequire(
+    () => import('./config'),
+    () => require('./config') as typeof import('./config')
+  );
+  const { fetchJSON } = await loadModuleWithJestRequire(
+    () => import('./http'),
+    () => require('./http') as typeof import('./http')
+  );
+  const token = await waitForAccessToken();
+  if (!token) {
+    log.warn('No access token available to store Apple authorization');
+    return;
+  }
+  await fetchJSON(`${getApiBaseUrl()}/auth/apple-token`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: { authorizationCode },
+    ...NETWORK_REQUEST_POLICIES.authMarkUpgrade,
+  });
 }
 
 /**

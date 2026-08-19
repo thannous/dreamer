@@ -6,10 +6,10 @@ import { useLanguage } from '@/context/LanguageContext';
 import { getFormattingLocale } from '@/lib/locale';
 import type { NotificationSettings } from '@/lib/types';
 import {
-  cancelAllNotifications,
   hasNotificationPermissions,
   requestNotificationPermissions,
   scheduleDailyNotification,
+  scheduleWeeklyRecapReminder,
   sendTestNotification,
 } from '@/services/notificationService';
 import { getNotificationSettings, saveNotificationSettings } from '@/services/storageService';
@@ -19,6 +19,7 @@ const DEFAULT_SETTINGS: NotificationSettings = {
   weekdayTime: '07:00',
   weekendEnabled: false,
   weekendTime: '10:00',
+  weeklyRecapEnabled: false,
 };
 
 export type NotificationTimeInput = Date | string | undefined;
@@ -31,6 +32,7 @@ export interface NotificationSettingsController {
   notificationsEnabled: boolean;
   toggleWeekday: (enabled: boolean) => Promise<void>;
   toggleWeekend: (enabled: boolean) => Promise<void>;
+  toggleWeeklyRecap: (enabled: boolean) => Promise<void>;
   setWeekdayTime: (time: NotificationTimeInput) => Promise<void>;
   setWeekendTime: (time: NotificationTimeInput) => Promise<void>;
   sendTest: () => Promise<void>;
@@ -183,11 +185,10 @@ export function useNotificationSettingsController(): NotificationSettingsControl
     try {
       await saveNotificationSettings(newSettings);
       if (!unsupported) {
-        if (newSettings.weekdayEnabled || newSettings.weekendEnabled) {
-          await scheduleDailyNotification(newSettings);
-        } else {
-          await cancelAllNotifications();
-        }
+        // scheduleDailyNotification replaces only the daily family; when both
+        // toggles are off it cancels them and schedules nothing, which keeps
+        // the weekly recap and ritual reminders intact.
+        await scheduleDailyNotification(newSettings);
       }
     } catch (error) {
       if (__DEV__) {
@@ -205,6 +206,29 @@ export function useNotificationSettingsController(): NotificationSettingsControl
     (enabled: boolean) => updateToggle('weekdayEnabled', enabled),
     [updateToggle]
   );
+  const toggleWeeklyRecap = useCallback(async (enabled: boolean) => {
+    if (!unsupported && !(await requestPermissionsIfNeeded(enabled))) {
+      return;
+    }
+    const previousSettings = settings;
+    const newSettings = { ...settings, weeklyRecapEnabled: enabled };
+    setSettings(newSettings);
+    try {
+      await saveNotificationSettings(newSettings);
+      if (!unsupported) {
+        await scheduleWeeklyRecapReminder(newSettings);
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.error('Failed to update weekly recap setting:', error);
+      }
+      setSettings(previousSettings);
+      Alert.alert(
+        t('notifications.alert.update_failed.title'),
+        t('notifications.alert.update_failed.message')
+      );
+    }
+  }, [requestPermissionsIfNeeded, settings, t, unsupported]);
   const toggleWeekend = useCallback(
     (enabled: boolean) => updateToggle('weekendEnabled', enabled),
     [updateToggle]
@@ -296,6 +320,7 @@ export function useNotificationSettingsController(): NotificationSettingsControl
     notificationsEnabled: settings.weekdayEnabled || settings.weekendEnabled,
     toggleWeekday,
     toggleWeekend,
+    toggleWeeklyRecap,
     setWeekdayTime,
     setWeekendTime,
     sendTest,

@@ -73,6 +73,8 @@ const basePulse: DreamPulse = {
   favoriteCount: 3,
   lastDreamAt: 1_700_000_000_000,
   daysSinceLastDream: 1,
+  currentStreak: 0,
+  longestStreak: 0,
 };
 
 describe('DreamPulseCard', () => {
@@ -99,6 +101,8 @@ describe('DreamPulseCard', () => {
           favoriteCount: 0,
           lastDreamAt: null,
           daysSinceLastDream: null,
+          currentStreak: 0,
+          longestStreak: 0,
         }}
         onPressCta={jest.fn()}
       />,
@@ -133,4 +137,29 @@ describe('DreamPulseCard', () => {
     expect(screen.getByText('inspiration.pulse.last.days|5')).toBeTruthy();
     expect(screen.getByText('inspiration.pulse.stale.title')).toBeTruthy();
   });
+
+  it('shows the current streak pill and the best streak when it is higher', () => {
+    render(
+      <DreamPulseCard pulse={{ ...basePulse, currentStreak: 3, longestStreak: 7 }} onPressCta={jest.fn()} />
+    );
+
+    expect(screen.getByTestId(TID.Component.InspirationStreak)).toBeTruthy();
+    expect(screen.getByText('inspiration.pulse.streak.days|3')).toBeTruthy();
+    expect(screen.getByText('inspiration.pulse.streak.best|7')).toBeTruthy();
+  });
+
+  it('uses the singular streak copy and hides the best streak when equal', () => {
+    render(
+      <DreamPulseCard pulse={{ ...basePulse, currentStreak: 1, longestStreak: 1 }} onPressCta={jest.fn()} />
+    );
+
+    expect(screen.getByText('inspiration.pulse.streak.days_one|1')).toBeTruthy();
+    expect(screen.queryByText(/inspiration\.pulse\.streak\.best/)).toBeNull();
+  });
+
+  it('hides the streak pill without an active streak', () => {
+    render(<DreamPulseCard pulse={basePulse} onPressCta={jest.fn()} />);
+    expect(screen.queryByTestId(TID.Component.InspirationStreak)).toBeNull();
+  });
+
 });

@@ -13,6 +13,8 @@ const mockSupabaseAuth = {
   signUp: jest.fn(),
   setSession: jest.fn(),
   resend: jest.fn(),
+  resetPasswordForEmail: jest.fn(),
+  updateUser: jest.fn(),
   signInWithIdToken: jest.fn(),
   signInWithOAuth: jest.fn(),
   signOut: jest.fn(),
@@ -28,8 +30,11 @@ const mockMockAuth = {
   signInWithEmailPassword: jest.fn(),
   signUpWithEmailPassword: jest.fn(),
   resendVerificationEmail: jest.fn(),
+  requestPasswordReset: jest.fn(),
+  updatePassword: jest.fn(),
   signInWithGoogle: jest.fn(),
   signInWithGoogleWeb: jest.fn(),
+  signInWithApple: jest.fn(),
   signOut: jest.fn(),
   signInWithProfile: jest.fn(),
   updateUserTier: jest.fn(),
@@ -46,6 +51,15 @@ const mockGetGuestHeaders = jest.fn(async () => ({
   'x-guest-fingerprint': 'device-1',
   'x-guest-platform': 'ios',
 }));
+
+const defaultAppleModule = {
+  isAvailableAsync: jest.fn(),
+  signInAsync: jest.fn(),
+  AppleAuthenticationScope: {
+    FULL_NAME: 0,
+    EMAIL: 1,
+  },
+};
 
 const defaultGoogleModule = {
   GoogleSignin: {
@@ -141,6 +155,8 @@ const loadAuth = async (options?: {
     jest.doMock('@react-native-google-signin/google-signin', () => googleModule);
   }
 
+  jest.doMock('expo-apple-authentication', () => defaultAppleModule);
+
   return require('../auth');
 };
 
@@ -175,6 +191,11 @@ describe('auth helpers', () => {
     });
 
     mockSupabaseAuth.resend.mockResolvedValue({ error: null });
+    mockSupabaseAuth.resetPasswordForEmail.mockResolvedValue({ data: {}, error: null });
+    mockSupabaseAuth.updateUser.mockResolvedValue({
+      data: { user: { id: 'user-1' } },
+      error: null,
+    });
 
     mockSupabaseAuth.signInWithIdToken.mockResolvedValue({
       data: { user: { id: 'user-1', email: 'user@example.com' } },
@@ -189,6 +210,8 @@ describe('auth helpers', () => {
     mockSupabaseAuth.signOut.mockResolvedValue({ error: null });
     mockSupabaseAuth.signInWithOAuth.mockResolvedValue({ error: null });
     mockFetchJSON.mockResolvedValue({ ok: true });
+    defaultAppleModule.isAvailableAsync.mockReset().mockResolvedValue(true);
+    defaultAppleModule.signInAsync.mockReset();
   });
 
   it('initializes Google Sign-In when configured', async () => {
@@ -438,6 +461,146 @@ describe('auth helpers', () => {
     await expect(auth.resendVerificationEmail('user@example.com')).rejects.toThrow('fail');
   });
 
+  it('requests a password reset with the app reset-password link', async () => {
+    const auth = await loadAuth();
+
+    await auth.requestPasswordReset('user@example.com');
+
+    expect(mockSupabaseAuth.resetPasswordForEmail).toHaveBeenCalledWith('user@example.com', {
+      redirectTo: 'https://dream.noctalia.app/auth/reset-password',
+    });
+  });
+
+  it('routes Lucid Trainer password resets to the companion account link', async () => {
+    const auth = await loadAuth({ lucidTrainer: true });
+
+    await auth.requestPasswordReset('user@example.com');
+
+    expect(mockSupabaseAuth.resetPasswordForEmail).toHaveBeenCalledWith('user@example.com', {
+      redirectTo: 'https://lucid.noctalia.app/lucid/account',
+    });
+  });
+
+  it('uses the current web origin for the reset-password link on web', async () => {
+    Object.defineProperty(globalThis, 'location', {
+      configurable: true,
+      value: { origin: 'http://localhost:8081' },
+    });
+    try {
+      const auth = await loadAuth({ platformOS: 'web' });
+
+      await auth.requestPasswordReset('user@example.com');
+
+      expect(mockSupabaseAuth.resetPasswordForEmail).toHaveBeenCalledWith('user@example.com', {
+        redirectTo: 'http://localhost:8081/auth/reset-password',
+      });
+    } finally {
+      delete (globalThis as { location?: unknown }).location;
+    }
+  });
+
+  it('surfaces password reset request errors and delegates in mock mode', async () => {
+    const auth = await loadAuth();
+    mockSupabaseAuth.resetPasswordForEmail.mockResolvedValueOnce({
+      data: null,
+      error: new Error('rate limited'),
+    });
+
+    await expect(auth.requestPasswordReset('user@example.com')).rejects.toThrow('rate limited');
+
+    const mockAuthModule = await loadAuth({ mockMode: true });
+    await mockAuthModule.requestPasswordReset('user@example.com');
+
+    expect(mockMockAuth.requestPasswordReset).toHaveBeenCalledWith('user@example.com');
+    expect(mockSupabaseAuth.resetPasswordForEmail).toHaveBeenCalledTimes(1);
+  });
+
+  it('updates the password and re-persists the current session', async () => {
+    mockSupabaseAuth.getSession.mockResolvedValueOnce({
+      data: {
+        session: {
+          access_token: 'access-token',
+          refresh_token: 'refresh-token',
+          user: { id: 'user-1' },
+        },
+      },
+    });
+    const auth = await loadAuth();
+
+    const user = await auth.updatePassword('new-secret');
+
+    expect(mockSupabaseAuth.updateUser).toHaveBeenCalledWith({ password: 'new-secret' });
+    expect(mockSupabaseAuth.setSession).toHaveBeenCalledWith({
+      access_token: 'access-token',
+      refresh_token: 'refresh-token',
+    });
+    expect(user?.id).toBe('user-1');
+  });
+
+  it('surfaces password update errors without touching the session', async () => {
+    mockSupabaseAuth.updateUser.mockResolvedValueOnce({
+      data: { user: null },
+      error: new Error('same_password'),
+    });
+    const auth = await loadAuth();
+
+    await expect(auth.updatePassword('new-secret')).rejects.toThrow('same_password');
+    expect(mockSupabaseAuth.setSession).not.toHaveBeenCalled();
+  });
+
+  it('delegates password updates to mock auth in mock mode', async () => {
+    mockMockAuth.updatePassword.mockResolvedValueOnce({ id: 'mock-user' });
+    const auth = await loadAuth({ mockMode: true });
+
+    const user = await auth.updatePassword('new-secret');
+
+    expect(mockMockAuth.updatePassword).toHaveBeenCalledWith('new-secret');
+    expect(user?.id).toBe('mock-user');
+    expect(mockSupabaseAuth.updateUser).not.toHaveBeenCalled();
+  });
+
+  it('forwards PASSWORD_RECOVERY auth events to recovery listeners', async () => {
+    const unsubscribe = jest.fn();
+    mockSupabaseAuth.onAuthStateChange.mockReturnValueOnce({
+      data: { subscription: { unsubscribe } },
+    });
+    const auth = await loadAuth();
+    const callback = jest.fn();
+
+    const stop = auth.onPasswordRecovery(callback);
+    const listener = mockSupabaseAuth.onAuthStateChange.mock.calls[0][0] as (
+      event: string,
+      session: unknown
+    ) => void;
+    const session = { access_token: 'access-token', user: { id: 'user-1' } };
+    listener('PASSWORD_RECOVERY', session);
+    listener('SIGNED_OUT', null);
+    stop();
+
+    expect(callback).toHaveBeenNthCalledWith(1, 'PASSWORD_RECOVERY', session);
+    expect(callback).toHaveBeenNthCalledWith(2, 'SIGNED_OUT', null);
+    expect(unsubscribe).toHaveBeenCalledTimes(1);
+  });
+
+  it('maps mock auth changes to recovery events in mock mode', async () => {
+    const unsubscribe = jest.fn();
+    mockMockAuth.onAuthChange.mockReturnValueOnce(unsubscribe);
+    const auth = await loadAuth({ mockMode: true });
+    const callback = jest.fn();
+
+    const stop = auth.onPasswordRecovery(callback);
+    const listener = mockMockAuth.onAuthChange.mock.calls[0][0] as (
+      user: unknown,
+      session: unknown
+    ) => void;
+    listener({ id: 'mock-user' }, null);
+    listener(null, null);
+
+    expect(callback).toHaveBeenNthCalledWith(1, 'SIGNED_IN', null);
+    expect(callback).toHaveBeenNthCalledWith(2, 'SIGNED_OUT', null);
+    expect(stop).toBe(unsubscribe);
+  });
+
   it('signs in with Google and returns user', async () => {
     process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = 'client-id';
     mockSupabaseAuth.signInWithIdToken.mockResolvedValueOnce({
@@ -517,6 +680,65 @@ describe('auth helpers', () => {
 
     expect(mockLogger.warn).toHaveBeenCalledWith('No ID token found in response');
     expect(mockLogger.error).not.toHaveBeenCalled();
+  });
+
+  it('signs in with Apple and marks guest upgrade', async () => {
+    defaultAppleModule.signInAsync.mockResolvedValueOnce({
+      identityToken: 'apple-id-token',
+      authorizationCode: 'apple-auth-code',
+      user: 'apple-user',
+    });
+    mockSupabaseAuth.signInWithIdToken.mockResolvedValueOnce({
+      data: {
+        user: { id: 'user-1', email: 'user@example.com' },
+        session: { access_token: 'access-token', refresh_token: 'refresh-token' },
+      },
+      error: null,
+    });
+    const auth = await loadAuth();
+
+    const user = await auth.signInWithApple();
+
+    expect(defaultAppleModule.signInAsync).toHaveBeenCalledWith(
+      expect.objectContaining({
+        nonce: 'mock-hash-fingerprint',
+      })
+    );
+    expect(mockSupabaseAuth.signInWithIdToken).toHaveBeenCalledWith({
+      provider: 'apple',
+      token: 'apple-id-token',
+      nonce: 'mock-uuid-1234',
+    });
+    expect(mockSupabaseAuth.setSession).toHaveBeenCalledWith({
+      access_token: 'access-token',
+      refresh_token: 'refresh-token',
+    });
+    expect(mockFetchJSON).toHaveBeenCalledWith(
+      'https://api.example.com/auth/mark-upgrade',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({
+          Authorization: 'Bearer access-token',
+          'x-guest-token': 'guest-token',
+          'x-guest-fingerprint': 'device-1',
+        }),
+        body: { fingerprint: 'device-1' },
+      })
+    );
+    expect(user.id).toBe('user-1');
+  });
+
+  it('throws when Apple sign-in is cancelled', async () => {
+    defaultAppleModule.signInAsync.mockRejectedValueOnce({ code: 'ERR_REQUEST_CANCELED' });
+    const auth = await loadAuth();
+
+    await expect(auth.signInWithApple()).rejects.toThrow('SIGN_IN_CANCELLED');
+  });
+
+  it('reports Apple sign-in available on iOS', async () => {
+    const auth = await loadAuth({ platformOS: 'ios' });
+
+    expect(auth.isAppleSignInAvailable()).toBe(true);
   });
 
   it('signs in with Google on web using OAuth', async () => {

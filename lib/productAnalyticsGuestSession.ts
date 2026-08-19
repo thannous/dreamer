@@ -63,24 +63,39 @@ async function prepareIntegrity(): Promise<boolean> {
 }
 
 async function createAnalyticsGuestSession(): Promise<AnalyticsGuestSessionRecord> {
-  if (!(await prepareIntegrity())) {
+  if (Platform.OS !== 'android' && Platform.OS !== 'ios') {
     throw new Error('Product analytics guest session unavailable');
   }
 
-  const requestHash = await Crypto.digestStringAsync(
-    Crypto.CryptoDigestAlgorithm.SHA256,
-    `${Date.now()}:${Crypto.randomUUID()}`
-  );
-  const integrityToken = await AppIntegrity.requestIntegrityCheckAsync(requestHash);
+  let body: {
+    platform: 'android' | 'ios';
+    requestHash?: string;
+    integrityToken?: string;
+  };
+
+  if (Platform.OS === 'ios') {
+    body = { platform: 'ios' };
+  } else {
+    if (!(await prepareIntegrity())) {
+      throw new Error('Product analytics guest session unavailable');
+    }
+
+    const requestHash = await Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA256,
+      `${Date.now()}:${Crypto.randomUUID()}`
+    );
+    body = {
+      requestHash,
+      integrityToken: await AppIntegrity.requestIntegrityCheckAsync(requestHash),
+      platform: 'android',
+    };
+  }
+
   const response = await fetchJSON<AnalyticsGuestSessionResponse>(
     `${getApiBaseUrl()}/analytics/session`,
     {
       method: 'POST',
-      body: {
-        requestHash,
-        integrityToken,
-        platform: 'android',
-      },
+      body,
       timeoutMs: 10_000,
     }
   );
@@ -139,8 +154,8 @@ export async function invalidateProductAnalyticsGuestSession(): Promise<void> {
 export async function getProductAnalyticsAuthHeaders(): Promise<Record<string, string>> {
   const accessToken = await getAccessToken();
   if (accessToken) return { Authorization: `Bearer ${accessToken}` };
-  if (Platform.OS !== 'android') {
-    throw new Error('Product analytics guest sessions are Android-only');
+  if (Platform.OS !== 'android' && Platform.OS !== 'ios') {
+    throw new Error('Product analytics guest sessions are unavailable on this platform');
   }
   const session = await ensureAnalyticsGuestSession();
   return { 'x-analytics-guest-token': session.token };
@@ -148,7 +163,7 @@ export async function getProductAnalyticsAuthHeaders(): Promise<Record<string, s
 
 export async function canDeliverProductAnalytics(): Promise<boolean> {
   if (await getAccessToken()) return true;
-  return Platform.OS === 'android';
+  return Platform.OS === 'android' || Platform.OS === 'ios';
 }
 
 export async function fetchProductAnalyticsJSON<T>(

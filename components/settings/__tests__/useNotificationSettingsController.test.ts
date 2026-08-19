@@ -10,6 +10,7 @@ const mockHasNotificationPermissions = jest.fn();
 const mockRequestNotificationPermissions = jest.fn();
 const mockScheduleDailyNotification = jest.fn();
 const mockCancelAllNotifications = jest.fn();
+const mockScheduleWeeklyRecapReminder = jest.fn();
 const mockSendTestNotification = jest.fn();
 const mockAlert = jest.fn();
 const mockAddAppStateListener = jest.fn();
@@ -44,6 +45,7 @@ jest.mock('@/services/notificationService', () => ({
   hasNotificationPermissions: (...args: unknown[]) => mockHasNotificationPermissions(...args),
   requestNotificationPermissions: (...args: unknown[]) => mockRequestNotificationPermissions(...args),
   scheduleDailyNotification: (...args: unknown[]) => mockScheduleDailyNotification(...args),
+  scheduleWeeklyRecapReminder: (...args: unknown[]) => mockScheduleWeeklyRecapReminder(...args),
   sendTestNotification: (...args: unknown[]) => mockSendTestNotification(...args),
 }));
 
@@ -59,6 +61,7 @@ const defaultSettings: NotificationSettings = {
   weekdayTime: '07:00',
   weekendEnabled: false,
   weekendTime: '10:00',
+  weeklyRecapEnabled: false,
 };
 
 describe('useNotificationSettingsController', () => {
@@ -74,6 +77,7 @@ describe('useNotificationSettingsController', () => {
     mockRequestNotificationPermissions.mockResolvedValue(true);
     mockScheduleDailyNotification.mockResolvedValue(undefined);
     mockCancelAllNotifications.mockResolvedValue(undefined);
+    mockScheduleWeeklyRecapReminder.mockResolvedValue(undefined);
     mockSendTestNotification.mockResolvedValue(undefined);
     mockTranslate.mockImplementation((key: string, values?: Record<string, unknown>) => (
       values ? `${key}:${JSON.stringify(values)}` : key
@@ -162,7 +166,7 @@ describe('useNotificationSettingsController', () => {
     expect(mockCancelAllNotifications).not.toHaveBeenCalled();
   });
 
-  it('cancels notifications when the last enabled reminder is disabled', async () => {
+  it('rebuilds only the daily family when the last enabled reminder is disabled', async () => {
     mockGetNotificationSettings.mockResolvedValue({ ...defaultSettings, weekdayEnabled: true });
     const { result } = renderHook(() => useNotificationSettingsController());
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -170,7 +174,22 @@ describe('useNotificationSettingsController', () => {
     await act(async () => result.current.toggleWeekday(false));
 
     expect(mockSaveNotificationSettings).toHaveBeenCalledWith(defaultSettings);
-    expect(mockCancelAllNotifications).toHaveBeenCalledTimes(1);
+    // Never cancel every scheduled notification: the weekly recap, ritual and
+    // Lucid families must survive switching the morning reminder off.
+    expect(mockCancelAllNotifications).not.toHaveBeenCalled();
+    expect(mockScheduleDailyNotification).toHaveBeenCalledWith(defaultSettings);
+  });
+
+  it('persists and schedules the weekly recap independently from daily reminders', async () => {
+    const { result } = renderHook(() => useNotificationSettingsController());
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => result.current.toggleWeeklyRecap(true));
+
+    const expected = { ...defaultSettings, weeklyRecapEnabled: true };
+    // Permissions were already granted in this fixture, so no prompt is needed.
+    expect(mockSaveNotificationSettings).toHaveBeenCalledWith(expected);
+    expect(mockScheduleWeeklyRecapReminder).toHaveBeenCalledWith(expected);
     expect(mockScheduleDailyNotification).not.toHaveBeenCalled();
   });
 

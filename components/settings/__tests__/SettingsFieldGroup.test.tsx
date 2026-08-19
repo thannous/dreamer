@@ -90,6 +90,10 @@ let notificationsUnsupported = true;
 let notificationsHasPermissions = false;
 let notificationsLoading = false;
 let weekdayEnabled = false;
+let weekendEnabled = false;
+const toggleWeekend = jest.fn(async () => {});
+const setWeekendTime = jest.fn(async () => {});
+const sendTestNotification = jest.fn(async () => {});
 
 function preference(
   title: string,
@@ -153,18 +157,19 @@ jest.doMock('@/components/settings/useNotificationSettingsController', () => ({
     settings: {
       weekdayEnabled,
       weekdayTime: '07:00',
-      weekendEnabled: false,
+      weekendEnabled,
       weekendTime: '10:00',
     },
     hasPermissions: notificationsHasPermissions,
     isLoading: notificationsLoading,
     unsupported: notificationsUnsupported,
-    notificationsEnabled: weekdayEnabled,
+    notificationsEnabled: weekdayEnabled || weekendEnabled,
     toggleWeekday,
-    toggleWeekend: jest.fn(async () => {}),
+    toggleWeekend,
+    toggleWeeklyRecap: jest.fn(async () => {}),
     setWeekdayTime,
-    setWeekendTime: jest.fn(async () => {}),
-    sendTest: jest.fn(async () => {}),
+    setWeekendTime,
+    sendTest: sendTestNotification,
     nextReminderText: 'notifications.next',
   }),
 }));
@@ -219,6 +224,7 @@ afterEach(() => {
   notificationsHasPermissions = false;
   notificationsLoading = false;
   weekdayEnabled = false;
+  weekendEnabled = false;
 });
 
 describe('SettingsFieldGroup', () => {
@@ -290,6 +296,25 @@ describe('SettingsFieldGroup', () => {
     expect(screen.getByTestId('settings-notifications-weekday-time').textContent).toContain('07:00');
     fireEvent.click(screen.getByTestId('settings-notifications-reminder-toggle'));
     expect(toggleWeekday).toHaveBeenCalledWith(false);
+  });
+
+  it('exposes weekend reminders, the next reminder hint and the test button', () => {
+    notificationsUnsupported = false;
+    notificationsHasPermissions = true;
+    weekdayEnabled = true;
+
+    const { rerender } = render(<SettingsFieldGroup {...baseProps} />);
+
+    expect(screen.queryByTestId('settings-notifications-weekend-time')).toBeNull();
+    expect(screen.getByTestId('text.settings.nextReminder').textContent).toBe('notifications.next');
+    fireEvent.click(screen.getByTestId('settings-notifications-weekend-toggle'));
+    expect(toggleWeekend).toHaveBeenCalledWith(true);
+    fireEvent.click(screen.getByTestId('settings-notifications-send-test'));
+    expect(sendTestNotification).toHaveBeenCalledTimes(1);
+
+    weekendEnabled = true;
+    rerender(<SettingsFieldGroup {...baseProps} />);
+    expect(screen.getByTestId('settings-notifications-weekend-time').textContent).toContain('10:00');
   });
 
   it('shows the accessible notification warning only after a denied permission is loaded', () => {

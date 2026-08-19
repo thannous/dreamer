@@ -26,6 +26,8 @@ describe('getDreamPulse', () => {
       favoriteCount: 0,
       lastDreamAt: null,
       daysSinceLastDream: null,
+      currentStreak: 0,
+      longestStreak: 0,
     });
   });
 
@@ -46,6 +48,20 @@ describe('getDreamPulse', () => {
     expect(pulse.analyzedCount).toBe(1);
     expect(pulse.favoriteCount).toBe(1);
     expect(pulse.daysSinceLastDream).toBe(0);
+  });
+
+  it('exposes the day streak alongside the counters', () => {
+    const pulse = getDreamPulse([
+      dream({ id: Date.UTC(2026, 4, 4, 7) }),
+      dream({ id: Date.UTC(2026, 4, 4, 9) }),
+      dream({ id: Date.UTC(2026, 4, 3, 7) }),
+      dream({ id: Date.UTC(2026, 3, 20, 7) }),
+      dream({ id: Date.UTC(2026, 3, 19, 7) }),
+      dream({ id: Date.UTC(2026, 3, 18, 7) }),
+    ], now);
+
+    expect(pulse.currentStreak).toBe(2);
+    expect(pulse.longestStreak).toBe(3);
   });
 
   it('returns stale state after three days without a dream', () => {

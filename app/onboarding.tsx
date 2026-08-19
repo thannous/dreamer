@@ -5,7 +5,9 @@ import { Fonts } from '@/constants/theme';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import { trackProductEvent } from '@/lib/analytics';
+import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
+import { peekReturnToPaywallTrigger } from '@/lib/navigationIntents';
+import { buildPaywallHref } from '@/lib/paywallRoute';
 import type { OnboardingPath, OnboardingStep } from '@/lib/onboardingState';
 import { markPerformance } from '@/lib/performanceTrace';
 import {
@@ -244,7 +246,12 @@ export default function OnboardingScreen() {
         reason: path,
         experience_version: 2,
       });
-      if (path === 'dictionary') {
+      const pendingPaywall = peekReturnToPaywallTrigger();
+      if (pendingPaywall) {
+        // The user signed in from the paywall and onboarding intercepted the
+        // redirect (fresh user scope): finish where they wanted to go.
+        router.replace(buildPaywallHref(getPaywallTrigger(pendingPaywall)));
+      } else if (path === 'dictionary') {
         router.replace({ pathname: '/symbol-dictionary', params: { source: 'onboarding' } });
       } else {
         openRecording(next, path);
@@ -272,7 +279,8 @@ export default function OnboardingScreen() {
         choice: 'skip',
       });
       void trackProductEvent('onboarding_completed', { reason: 'skip', experience_version: 2 });
-      router.replace('/recording');
+      const pendingPaywall = peekReturnToPaywallTrigger();
+      router.replace(pendingPaywall ? buildPaywallHref(getPaywallTrigger(pendingPaywall)) : '/recording');
     } catch {
       // See `completePath`: the idle CTA only comes back when we stay.
       isLeavingRef.current = false;

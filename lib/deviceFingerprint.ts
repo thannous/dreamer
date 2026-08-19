@@ -25,6 +25,17 @@ function getWebStorage(): Storage | null {
 }
 
 async function safeRead(): Promise<string | null> {
+  const webStorage = getWebStorage();
+  if (webStorage) {
+    // Web has no secure store: keep the pseudonymous fingerprint in
+    // localStorage so guest quotas survive a reload (Turnstile + server-side
+    // limits remain the actual abuse controls).
+    try {
+      return webStorage.getItem(STORAGE_KEY);
+    } catch {
+      return null;
+    }
+  }
   try {
     return await SecureStore.getItemAsync(STORAGE_KEY);
   } catch {
@@ -33,10 +44,19 @@ async function safeRead(): Promise<string | null> {
 }
 
 async function safeWrite(value: string): Promise<void> {
+  const webStorage = getWebStorage();
+  if (webStorage) {
+    try {
+      webStorage.setItem(STORAGE_KEY, value);
+    } catch {
+      // Private mode / quota exceeded: fingerprint stays in memory only.
+    }
+    return;
+  }
   try {
     await SecureStore.setItemAsync(STORAGE_KEY, value);
   } catch {
-    // If secure storage is unavailable (e.g., web), we silently skip persistence
+    // If secure storage is unavailable, we silently skip persistence
   }
 }
 

@@ -300,6 +300,31 @@ function PreferenceRow({
   );
 }
 
+/**
+ * Wrapper for the settings React Native content.
+ *
+ * On Android (Jetpack Compose) and web the content lives inside the @expo/ui
+ * `Host` through `RNHostView`. On iOS the SwiftUI `RNHostView` only attaches
+ * its touch handler to the hosted RN view during SwiftUI `onAppear`; when the
+ * RN subtree mounts after that (the normal order for this screen) the whole
+ * settings content renders but never receives touches. The content here is
+ * plain React Native, so iOS renders it directly and skips the SwiftUI host.
+ */
+function SettingsContentHost({ children, testID }: { children: ReactElement; testID?: string }) {
+  if (Platform.OS === 'ios') {
+    return (
+      <View style={styles.iosContentHost} testID={testID}>
+        {children}
+      </View>
+    );
+  }
+  return (
+    <RNHostView style={{ height: '100%', width: '100%' }} testID={testID}>
+      {children}
+    </RNHostView>
+  );
+}
+
 export function SettingsFieldGroup({
   account,
   appVersionLabel,
@@ -320,7 +345,9 @@ export function SettingsFieldGroup({
   const [themeSheetVisible, setThemeSheetVisible] = useState(false);
   const [languageSheetVisible, setLanguageSheetVisible] = useState(false);
   const [journalLayoutSheetVisible, setJournalLayoutSheetVisible] = useState(false);
-  const [weekdayPickerVisible, setWeekdayPickerVisible] = useState(false);
+  const [activeTimePicker, setActiveTimePicker] = useState<'weekday' | 'weekend' | null>(null);
+  const weekdayPickerVisible = activeTimePicker !== null;
+  const setWeekdayPickerVisible = (visible: boolean) => setActiveTimePicker(visible ? 'weekday' : null);
 
   useEffect(() => {
     if (
@@ -342,17 +369,33 @@ export function SettingsFieldGroup({
 
   const reminderEnabled = notifications.notificationsEnabled;
   const reminderTime = notifications.settings.weekdayTime;
+  const weekendEnabled = notifications.settings.weekendEnabled;
+  const weekendTime = notifications.settings.weekendTime;
+  const activePickerTime =
+    activeTimePicker === 'weekend' ? notifications.settings.weekendTime : notifications.settings.weekdayTime;
+  const setActivePickerTime = (date: Date | undefined) =>
+    activeTimePicker === 'weekend'
+      ? notifications.setWeekendTime(date)
+      : notifications.setWeekdayTime(date);
+  const activePickerTitle =
+    activeTimePicker === 'weekend'
+      ? t('settings.rituals.weekend_reminder_time')
+      : t('settings.rituals.reminder_time');
 
   const toggleReminder = () => {
     void notifications.toggleWeekday(!notifications.settings.weekdayEnabled);
   };
+  const toggleWeekendReminder = () => {
+    void notifications.toggleWeekend(!notifications.settings.weekendEnabled);
+  };
+  const weeklyRecapEnabled = notifications.settings.weeklyRecapEnabled === true;
+  const toggleWeeklyRecap = () => {
+    void notifications.toggleWeeklyRecap(!weeklyRecapEnabled);
+  };
 
   return (
     <>
-      <RNHostView
-        style={{ height: '100%', width: '100%' }}
-        testID="settings-editorial-host"
-      >
+      <SettingsContentHost testID="settings-editorial-host">
         <ScrollView
           contentContainerStyle={[
             styles.content,
@@ -490,10 +533,11 @@ export function SettingsFieldGroup({
                 </Pressable>
                 <Pressable
                   accessibilityRole="button"
-                  onPress={() => setWeekdayPickerVisible(true)}
+                  onPress={() => setActiveTimePicker('weekday')}
                   style={({ pressed }) => [
                     styles.editorialRow,
                     styles.ritualRow,
+                    { borderBottomColor: noctalia.surface.border, borderBottomWidth: 1 },
                     pressed && styles.rowPressed,
                   ]}
                   testID="settings-notifications-weekday-time"
@@ -507,6 +551,106 @@ export function SettingsFieldGroup({
                   </Text>
                   <IconSymbol name="chevron.right" size={20} color={noctalia.text.tertiary} />
                 </Pressable>
+                <Pressable
+                  accessibilityRole="switch"
+                  accessibilityState={{ checked: weekendEnabled }}
+                  onPress={toggleWeekendReminder}
+                  style={[
+                    styles.editorialRow,
+                    styles.ritualRow,
+                    weekendEnabled
+                      ? { borderBottomColor: noctalia.surface.border, borderBottomWidth: 1 }
+                      : null,
+                  ]}
+                  testID="settings-notifications-weekend-toggle"
+                >
+                  <IconSymbol name="sun.max.fill" size={21} color={noctalia.accent.text} />
+                  <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>
+                    {t('settings.rituals.weekend_reminders')}
+                  </Text>
+                  <Switch
+                    ios_backgroundColor={noctalia.surface.soft}
+                    onValueChange={(enabled) => {
+                      void notifications.toggleWeekend(enabled);
+                    }}
+                    thumbColor={noctalia.text.primary}
+                    trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
+                    value={weekendEnabled}
+                    style={styles.reminderSwitch}
+                  />
+                </Pressable>
+                {weekendEnabled ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={() => setActiveTimePicker('weekend')}
+                    style={({ pressed }) => [
+                      styles.editorialRow,
+                      styles.ritualRow,
+                      pressed && styles.rowPressed,
+                    ]}
+                    testID="settings-notifications-weekend-time"
+                  >
+                    <IconSymbol name="clock" size={21} color={noctalia.accent.text} />
+                    <Text style={[styles.rowLabel, { color: noctalia.text.primary }]}>
+                      {t('settings.rituals.weekend_reminder_time')}
+                    </Text>
+                    <Text style={[styles.rowValue, { color: noctalia.text.secondary }]}>
+                      {weekendTime}
+                    </Text>
+                    <IconSymbol name="chevron.right" size={20} color={noctalia.text.tertiary} />
+                  </Pressable>
+                ) : null}
+                <Pressable
+                  accessibilityRole="switch"
+                  accessibilityState={{ checked: weeklyRecapEnabled }}
+                  onPress={toggleWeeklyRecap}
+                  style={[
+                    styles.editorialRow,
+                    styles.ritualRow,
+                    { borderTopColor: noctalia.surface.border, borderTopWidth: 1 },
+                  ]}
+                  testID="settings-notifications-weekly-recap-toggle"
+                >
+                  <IconSymbol name="calendar" size={21} color={noctalia.accent.text} />
+                  <View style={styles.rowCopy}>
+                    <Text style={[styles.rowLabel, styles.rowLabelStacked, { color: noctalia.text.primary }]}>
+                      {t('settings.rituals.weekly_recap')}
+                    </Text>
+                    <Text style={[styles.rowHint, { color: noctalia.text.tertiary }]} numberOfLines={2}>
+                      {t('settings.rituals.weekly_recap_hint')}
+                    </Text>
+                  </View>
+                  <Switch
+                    ios_backgroundColor={noctalia.surface.soft}
+                    onValueChange={(enabled) => {
+                      void notifications.toggleWeeklyRecap(enabled);
+                    }}
+                    thumbColor={noctalia.text.primary}
+                    trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
+                    value={weeklyRecapEnabled}
+                    style={styles.reminderSwitch}
+                  />
+                </Pressable>
+                {!notifications.unsupported && reminderEnabled ? (
+                  <View style={styles.reminderFooter}>
+                    <Text
+                      style={[styles.reminderHint, { color: noctalia.text.tertiary }]}
+                      testID="text.settings.nextReminder"
+                    >
+                      {notifications.nextReminderText}
+                    </Text>
+                    <Pressable
+                      accessibilityRole="button"
+                      onPress={() => void notifications.sendTest()}
+                      style={({ pressed }) => [styles.reminderTestButton, pressed && styles.rowPressed]}
+                      testID="settings-notifications-send-test"
+                    >
+                      <Text style={[styles.reminderTestLabel, { color: noctalia.accent.text }]}>
+                        {t('notifications.button.test')}
+                      </Text>
+                    </Pressable>
+                  </View>
+                ) : null}
               </EditorialCard>
 
               <Pressable
@@ -564,7 +708,7 @@ export function SettingsFieldGroup({
             </View>
           ) : null}
         </ScrollView>
-      </RNHostView>
+      </SettingsContentHost>
 
       <PreferenceSheet
         controller={theme}
@@ -608,10 +752,10 @@ export function SettingsFieldGroup({
               <DateTimePicker
                 display="spinner"
                 mode="time"
-                onValueChange={(_event, date) => void notifications.setWeekdayTime(date)}
+                onValueChange={(_event, date) => void setActivePickerTime(date)}
                 testID="settings-notifications-weekday-picker"
                 themeVariant={mode}
-                value={getDateFromTime(notifications.settings.weekdayTime)}
+                value={getDateFromTime(activePickerTime)}
               />
               <Pressable
                 accessibilityRole="button"
@@ -649,7 +793,7 @@ export function SettingsFieldGroup({
             </View>
             <View style={styles.preferenceHeaderCopy}>
               <Text style={[styles.preferenceTitle, { color: noctalia.text.primary }]}>
-                {t('settings.rituals.reminder_time')}
+                {activePickerTitle}
               </Text>
               <Text style={[styles.preferenceSubtitle, { color: noctalia.text.secondary }]}>
                 {notifications.nextReminderText}
@@ -667,14 +811,14 @@ export function SettingsFieldGroup({
           >
             <DateTimePicker
               mode="time"
-              onValueChange={(_event, date) => void notifications.setWeekdayTime(date)}
+              onValueChange={(_event, date) => void setActivePickerTime(date)}
               style={{
                 ...styles.webTimePicker,
                 color: noctalia.text.primary,
                 colorScheme: mode,
               } as never}
               testID="settings-notifications-weekday-picker"
-              value={getDateFromTime(notifications.settings.weekdayTime)}
+              value={getDateFromTime(activePickerTime)}
             />
           </View>
           <Pressable
@@ -702,12 +846,12 @@ export function SettingsFieldGroup({
               mode="time"
               onDismiss={() => setWeekdayPickerVisible(false)}
               onValueChange={(_event, date) => {
-                void notifications.setWeekdayTime(date);
+                void setActivePickerTime(date);
                 setWeekdayPickerVisible(false);
               }}
               presentation="dialog"
               testID="settings-notifications-weekday-picker"
-              value={getDateFromTime(notifications.settings.weekdayTime)}
+              value={getDateFromTime(activePickerTime)}
             />
           </View>
         </RNHostView>
@@ -718,6 +862,10 @@ export function SettingsFieldGroup({
 
 const styles = StyleSheet.create({
   scroll: {
+    flex: 1,
+    width: '100%',
+  },
+  iosContentHost: {
     flex: 1,
     width: '100%',
   },
@@ -953,6 +1101,37 @@ const styles = StyleSheet.create({
   },
   reminderSwitch: {
     transform: [{ scale: 1.15 }],
+  },
+  rowCopy: {
+    flex: 1,
+    gap: 2,
+  },
+  rowLabelStacked: {
+    flex: 0,
+  },
+  rowHint: {
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  reminderFooter: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: 2,
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 12,
+  },
+  reminderHint: {
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  reminderTestButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 0,
+  },
+  reminderTestLabel: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   pickerHost: {
     width: 1,

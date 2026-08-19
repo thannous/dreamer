@@ -156,6 +156,12 @@ jest.mock('expo-crypto', () => ({
   CryptoDigestAlgorithm: { SHA256: 'SHA256' },
 }));
 
+jest.mock('expo-apple-authentication', () => ({
+  isAvailableAsync: jest.fn(async () => false),
+  signInAsync: jest.fn(),
+  AppleAuthenticationScope: { FULL_NAME: 0, EMAIL: 1 },
+}));
+
 jest.mock('expo-file-system', () => {
   const fileContents = new Map<string, string>();
 

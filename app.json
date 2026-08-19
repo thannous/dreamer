@@ -10,6 +10,7 @@
       "supportsTablet": true,
       "requireFullScreen": false,
       "bundleIdentifier": "com.tanuki75.noctalia",
+      "usesAppleSignIn": true,
       "associatedDomains": [
         "applinks:dream.noctalia.app"
       ],
@@ -123,7 +124,8 @@
       "expo-sqlite",
       "react-native-edge-to-edge",
       "expo-image",
-      "expo-sharing"
+      "expo-sharing",
+      "expo-apple-authentication"
     ],
     "experiments": {
       "typedRoutes": true,

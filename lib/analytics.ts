@@ -147,7 +147,46 @@ export type AnalyticsEventMap = {
     action: 'viewed' | 'started' | 'completed' | 'restored';
     tier: 'free' | 'plus' | 'unknown';
   };
+  paywall_plan_selected: {
+    trigger: PaywallTrigger;
+    plan: PurchasePlan;
+    tier: SubscriptionTier;
+  };
+  purchase_started: {
+    trigger: PaywallTrigger;
+    plan: PurchasePlan;
+    tier: SubscriptionTier;
+  };
+  purchase_completed: {
+    trigger: PaywallTrigger;
+    plan: PurchasePlan;
+    tier: SubscriptionTier;
+  };
+  purchase_failed: {
+    trigger: PaywallTrigger;
+    plan: PurchasePlan;
+    reason: PurchaseFailureReason;
+  };
+  restore_completed: {
+    trigger: PaywallTrigger;
+    outcome: 'restored' | 'nothing_to_restore' | 'cancelled' | 'failed';
+  };
+  paywall_dismissed: {
+    trigger: PaywallTrigger;
+    tier: SubscriptionTier;
+    plan_selected: boolean;
+  };
+  reminder_prompt_action: {
+    surface: 'journal_detail' | 'home';
+    action: 'enabled' | 'dismissed' | 'denied';
+    time_bucket: ReminderTimeBucket;
+  };
 };
+
+export type ReminderTimeBucket = 'before_6' | '6_7' | '7_8' | '8_9' | 'after_9' | 'unknown';
+
+export type PurchasePlan = 'monthly' | 'annual';
+export type PurchaseFailureReason = 'cancelled' | 'auth_required' | 'network' | 'store' | 'unknown';
 
 export type AnalyticsEventName = keyof AnalyticsEventMap;
 export type AnalysisSource = AnalyticsEventMap['analysis_started']['source'];

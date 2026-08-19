@@ -130,6 +130,8 @@ export interface DreamAnalysis {
   symbols?: DreamSymbolInsight[];
   emotions?: DreamEmotionInsight[];
   reflectionQuestions?: string[];
+  /** Version of the analysis prompt/schema that produced this reading (server-stamped). */
+  promptVersion?: string;
   imageUrl: string; // Full-resolution image for detail views
   thumbnailUrl?: string; // Smaller thumbnail for list views (optional for backward compatibility)
   imageUpdatedAt?: number; // Timestamp bump to force image refresh when replaced
@@ -178,6 +180,8 @@ export interface NotificationSettings {
   weekdayTime: string; // "HH:MM"
   weekendEnabled: boolean;
   weekendTime: string; // "HH:MM"
+  /** Sunday-morning "your week in dreams" recap. Optional for settings saved before it existed. */
+  weeklyRecapEnabled?: boolean;
 }
 
 export interface RitualStepProgress {
@@ -268,6 +272,8 @@ export interface PurchasePackage {
   currency: string;
   title?: string;
   description?: string;
+  /** Free-trial length in days when the store offers one to this user (null otherwise). */
+  freeTrialDays?: number | null;
 }
 
 /**

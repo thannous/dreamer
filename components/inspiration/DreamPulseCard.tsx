@@ -91,6 +91,29 @@ export const DreamPulseCard = memo(function DreamPulseCard({
           {t(`inspiration.pulse.${copyState}.body`)}
         </Text>
 
+        {showMetrics && pulse.currentStreak > 0 ? (
+          <View
+            accessibilityRole="text"
+            testID={TID.Component.InspirationStreak}
+            style={[
+              styles.streakRow,
+              { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border },
+            ]}
+          >
+            <IconSymbol name="flame.fill" size={16} color={noctalia.accent.text} />
+            <Text style={[styles.streakText, { color: noctalia.text.primary }]} numberOfLines={1}>
+              {pulse.currentStreak === 1
+                ? t('inspiration.pulse.streak.days_one', { count: pulse.currentStreak })
+                : t('inspiration.pulse.streak.days', { count: pulse.currentStreak })}
+            </Text>
+            {pulse.longestStreak > pulse.currentStreak ? (
+              <Text style={[styles.streakBest, { color: noctalia.text.secondary }]} numberOfLines={1}>
+                {t('inspiration.pulse.streak.best', { count: pulse.longestStreak })}
+              </Text>
+            ) : null}
+          </View>
+        ) : null}
+
         {showMetrics ? (
           <View style={[styles.metricsRow, { borderColor: noctalia.surface.border }]}>
             {metrics.map((metric) => (
@@ -210,6 +233,25 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 15,
     lineHeight: 22,
+  },
+  streakRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    alignSelf: 'flex-start',
+    marginTop: 14,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  streakText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 13,
+  },
+  streakBest: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 12,
   },
   metricsRow: {
     flexDirection: 'row',

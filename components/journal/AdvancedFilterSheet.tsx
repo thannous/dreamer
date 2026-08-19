@@ -26,7 +26,12 @@ type AdvancedFilterSheetProps = {
   onThemeSelect: (theme: DreamTheme) => void;
   onDreamTypeSelect: (dreamType: DreamType) => void;
   onDateRangeChange: (start: Date | null, end: Date | null) => void;
+  sortOrder?: JournalSortOrder;
+  onSortOrderChange?: (order: JournalSortOrder) => void;
 };
+
+export type JournalSortOrder = 'newest' | 'oldest';
+const SORT_ORDERS: JournalSortOrder[] = ['newest', 'oldest'];
 
 export function AdvancedFilterSheet({
   visible,
@@ -41,21 +46,25 @@ export function AdvancedFilterSheet({
   onThemeSelect,
   onDreamTypeSelect,
   onDateRangeChange,
+  sortOrder = 'newest',
+  onSortOrderChange,
 }: AdvancedFilterSheetProps) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
 
-  const renderOption = <T extends DreamTheme | DreamType>({
+  const renderOption = <T extends DreamTheme | DreamType | JournalSortOrder>({
     id,
     label,
     selected,
     onPress,
+    showCheckmark = true,
   }: {
     id: T;
     label: string;
     selected: boolean;
     onPress: (id: T) => void;
+    showCheckmark?: boolean;
   }) => {
     const optionColor = selected ? noctalia.action.primaryText : noctalia.text.primary;
 
@@ -73,7 +82,7 @@ export function AdvancedFilterSheet({
         accessibilityRole="button"
       >
         <Text style={[styles.optionText, { color: optionColor }]}>{label}</Text>
-        {selected ? (
+        {selected && showCheckmark ? (
           <IconSymbol name="checkmark" size={15} color={optionColor} />
         ) : null}
       </Pressable>
@@ -155,6 +164,27 @@ export function AdvancedFilterSheet({
             </Text>
           )}
         </View>
+
+        {onSortOrderChange ? (
+          <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: noctalia.text.primary }]}>
+              {t('journal.filter_sheet.sort_section')}
+            </Text>
+            <View style={styles.optionGrid} testID={TID.Component.JournalSortOptions}>
+              {SORT_ORDERS.map((order) =>
+                renderOption({
+                  id: order,
+                  label: t(`journal.filter_sheet.sort.${order}`),
+                  selected: sortOrder === order,
+                  onPress: onSortOrderChange,
+                  // A two-way toggle: the selected style is enough, and the
+                  // theme/type checkmarks keep meaning "an active filter".
+                  showCheckmark: false,
+                })
+              )}
+            </View>
+          </View>
+        ) : null}
 
         <View style={styles.section}>
           <DateRangePicker

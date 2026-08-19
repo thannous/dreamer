@@ -144,6 +144,10 @@ export async function sendTestNotification(): Promise<void> {
 /**
  * Mock cancel all notifications
  */
+export async function scheduleWeeklyRecapReminder(settings: NotificationSettings): Promise<void> {
+  console.log('[MOCK NOTIFICATIONS] scheduleWeeklyRecapReminder called with settings:', settings);
+}
+
 export async function cancelAllNotifications(): Promise<void> {
   console.log('[MOCK NOTIFICATIONS] Cancelling all scheduled notifications');
   mockScheduledNotifications = [];

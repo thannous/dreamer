@@ -1,3 +1,4 @@
+import { ReminderOptInCard } from '@/components/reminders/ReminderOptInCard';
 import { Toast } from '@/components/Toast';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { ImageRetry } from '@/components/journal/ImageRetry';
@@ -285,6 +286,11 @@ export default function JournalDetailScreen() {
       (canAnalyzeNow && (isPlus || tier === 'guest')) ||
       Boolean(bundledImageRequestId)
     );
+  // Free accounts cannot generate images: offer Plus instead of a dead end.
+  const canOfferImageUpgrade = !quotaLoading && !canGenerateImage && tier === 'free';
+  const handleImageUpgrade = useCallback(() => {
+    router.push(buildPaywallHref('image_generation'));
+  }, []);
   useEffect(() => {
     if (dream?.analysisStatus !== 'pending' || isAnalyzing) return undefined;
 
@@ -1801,6 +1807,23 @@ export default function JournalDetailScreen() {
                       <Text style={[styles.imagePlaceholderSubtitle, { color: noctalia.text.secondary }]}>
                         {t('journal.detail.image.quota_exceeded_message')}
                       </Text>
+                      {canOfferImageUpgrade ? (
+                        <Pressable
+                          onPress={handleImageUpgrade}
+                          accessibilityRole="button"
+                          testID={TID.Button.ImageUpgrade}
+                          style={[
+                            styles.imageActionButton,
+                            shadows.md,
+                            { backgroundColor: noctalia.action.primary },
+                          ]}
+                        >
+                          <IconSymbol name="sparkles" size={18} color={noctalia.action.primaryText} />
+                          <Text style={[styles.imageActionText, { color: noctalia.action.primaryText }]}>
+                            {t('journal.detail.image.upgrade_action')}
+                          </Text>
+                        </Pressable>
+                      ) : null}
                     </View>
                   )
                 ) : isAnalysisPending || isImageJobPending ? (
@@ -1851,6 +1874,29 @@ export default function JournalDetailScreen() {
                     </Text>
                     {!isRetryingImage && !isImageJobPending && !isAnalysisLocked && (
                       <View style={styles.imageActionsColumn}>
+                        {canOfferImageUpgrade && (
+                          <>
+                            <Pressable
+                              onPress={handleImageUpgrade}
+                              accessibilityRole="button"
+                              testID={TID.Button.ImageUpgrade}
+                              style={[
+                                styles.imageActionButton,
+                                shadows.md,
+                                { backgroundColor: noctalia.action.primary },
+                              ]}
+                            >
+                              <IconSymbol name="sparkles" size={18} color={noctalia.action.primaryText} />
+                              <Text style={[styles.imageActionText, { color: noctalia.action.primaryText }]}>
+                                {t('journal.detail.image.upgrade_action')}
+                              </Text>
+                            </Pressable>
+
+                            <Text style={[styles.imageOrText, { color: noctalia.text.secondary }]}>
+                              {t('journal.detail.image.or')}
+                            </Text>
+                          </>
+                        )}
                         {canGenerateImage && (
                           <>
                             <Pressable
@@ -2038,6 +2084,10 @@ export default function JournalDetailScreen() {
             )}
 
             {renderFirstValueBackupCard()}
+
+            {!isEditing && !isEditingTranscript ? (
+              <ReminderOptInCard surface="journal_detail" style={styles.reminderOptInCard} />
+            ) : null}
 
             {renderDetailZoneHeader(t('journal.detail.zone.actions'))}
 
@@ -2814,6 +2864,9 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  reminderOptInCard: {
+    marginBottom: 20,
   },
   firstValueBackupCard: {
     borderWidth: 1,

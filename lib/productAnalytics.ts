@@ -63,6 +63,13 @@ const PRODUCT_ANALYTICS_EVENT_NAMES = new Set<AnalyticsEventName>([
   'lucid_retention_observed',
   'lucid_noctalia_handoff',
   'lucid_conversion',
+  'paywall_plan_selected',
+  'purchase_started',
+  'purchase_completed',
+  'purchase_failed',
+  'restore_completed',
+  'paywall_dismissed',
+  'reminder_prompt_action',
 ]);
 
 const FORBIDDEN_PROPERTY_KEYS = new Set([
@@ -90,6 +97,19 @@ const nullableIdentifier: PropertyValueValidator = (value) =>
   value === null || (typeof value === 'string' && value.length <= 96 && /^[a-zA-Z0-9._:-]*$/.test(value));
 const supportedLanguage = oneOf('fr', 'en', 'es', 'de', 'it', 'pt');
 const subscriptionTier = oneOf('guest', 'free', 'plus');
+const paywallTrigger = oneOf(
+  'analysis_limit',
+  'analysis_cta',
+  'exploration_limit',
+  'image_generation',
+  'stats_profile',
+  'settings',
+  'settings_quota',
+  'restore',
+  'returning_device',
+  'direct'
+);
+const purchasePlan = oneOf('monthly', 'annual');
 
 const PRODUCT_ANALYTICS_PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySchema> = {
   app_session_started: { source: oneOf('cold_start', 'foreground') },
@@ -153,18 +173,7 @@ const PRODUCT_ANALYTICS_PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySch
     hours_since_onboarding_bucket: oneOf('0_1h', '1_24h', '24h_plus', 'unknown'),
   },
   paywall_viewed: {
-    trigger: oneOf(
-      'analysis_limit',
-      'analysis_cta',
-      'exploration_limit',
-      'image_generation',
-      'stats_profile',
-      'settings',
-      'settings_quota',
-      'restore',
-      'returning_device',
-      'direct'
-    ),
+    trigger: paywallTrigger,
     tier: subscriptionTier,
     usage_count: nullableCount,
     offering_id: nullableIdentifier,
@@ -230,6 +239,40 @@ const PRODUCT_ANALYTICS_PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySch
     surface: oneOf('program', 'paywall', 'settings'),
     action: oneOf('viewed', 'started', 'completed', 'restored'),
     tier: oneOf('free', 'plus', 'unknown'),
+  },
+  paywall_plan_selected: {
+    trigger: paywallTrigger,
+    plan: purchasePlan,
+    tier: subscriptionTier,
+  },
+  purchase_started: {
+    trigger: paywallTrigger,
+    plan: purchasePlan,
+    tier: subscriptionTier,
+  },
+  purchase_completed: {
+    trigger: paywallTrigger,
+    plan: purchasePlan,
+    tier: subscriptionTier,
+  },
+  purchase_failed: {
+    trigger: paywallTrigger,
+    plan: purchasePlan,
+    reason: oneOf('cancelled', 'auth_required', 'network', 'store', 'unknown'),
+  },
+  restore_completed: {
+    trigger: paywallTrigger,
+    outcome: oneOf('restored', 'nothing_to_restore', 'cancelled', 'failed'),
+  },
+  paywall_dismissed: {
+    trigger: paywallTrigger,
+    tier: subscriptionTier,
+    plan_selected: bool,
+  },
+  reminder_prompt_action: {
+    surface: oneOf('journal_detail', 'home'),
+    action: oneOf('enabled', 'dismissed', 'denied'),
+    time_bucket: oneOf('before_6', '6_7', '7_8', '8_9', 'after_9', 'unknown'),
   },
 };
 

@@ -30,8 +30,13 @@ const NOTIFICATION_PROMPT_KEYS = [
 // Notification channel for Android
 const NOTIFICATION_CHANNEL_ID = 'dream-reminders';
 
-type ReminderType = 'daily' | 'ritual';
+type ReminderType = 'daily' | 'ritual' | 'weekly_recap';
 const REMINDER_TYPE_DATA_KEY = 'dreamerReminderType';
+
+/** Sunday, 10:00 local: late enough for a lie-in, early enough to plan the week. */
+export const WEEKLY_RECAP_WEEKDAY = 1; // 1 = Sunday
+export const WEEKLY_RECAP_TIME = '10:00';
+export const WEEKLY_RECAP_URL = '/weekly-recap';
 
 type NotificationTranslator = ReturnType<typeof getTranslator>;
 
@@ -67,7 +72,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isReminderType(value: unknown): value is ReminderType {
-  return value === 'daily' || value === 'ritual';
+  return value === 'daily' || value === 'ritual' || value === 'weekly_recap';
 }
 
 function matchesReminderType(request: Notifications.NotificationRequest, reminderType: ReminderType): boolean {
@@ -109,14 +114,16 @@ async function cancelScheduledReminders(reminderType: ReminderType): Promise<voi
 async function scheduleWeeklyRemindersForDays(params: {
   days: number[];
   time: string;
-  content: Notifications.NotificationContentInput;
+  content:
+    | Notifications.NotificationContentInput
+    | ((weekday: number) => Notifications.NotificationContentInput);
 }): Promise<void> {
   const { hours, minutes } = getTimeParts(params.time);
 
   await Promise.all(
     params.days.map((weekday) =>
       Notifications.scheduleNotificationAsync({
-        content: params.content,
+        content: typeof params.content === 'function' ? params.content(weekday) : params.content,
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
           weekday,
@@ -211,6 +218,27 @@ function getRandomPrompt(t: NotificationTranslator): string {
   return t(NOTIFICATION_PROMPT_KEYS[randomIndex]);
 }
 
+/**
+ * Pick one distinct prompt per weekday (1 = Sunday … 7 = Saturday) so the
+ * repeating weekly reminders do not show the same sentence every morning.
+ * The rotation is reshuffled each time the schedule is rebuilt.
+ */
+export function buildWeeklyPromptRotation(
+  t: NotificationTranslator,
+  random: () => number = Math.random
+): Record<number, string> {
+  const keys = [...NOTIFICATION_PROMPT_KEYS];
+  for (let index = keys.length - 1; index > 0; index -= 1) {
+    const swap = Math.floor(random() * (index + 1));
+    [keys[index], keys[swap]] = [keys[swap], keys[index]];
+  }
+  const rotation: Record<number, string> = {};
+  for (let weekday = 1; weekday <= 7; weekday += 1) {
+    rotation[weekday] = t(keys[(weekday - 1) % keys.length]);
+  }
+  return rotation;
+}
+
 function getRitualReminderBody(t: NotificationTranslator, ritualId: RitualId): string {
   switch (ritualId) {
     case 'starter':
@@ -253,12 +281,17 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
     sound: true,
     priority: Notifications.AndroidNotificationPriority.HIGH,
   };
+  const promptByWeekday = buildWeeklyPromptRotation(t);
+  const contentForWeekday = (weekday: number): Notifications.NotificationContentInput => ({
+    ...baseContent,
+    body: promptByWeekday[weekday] ?? getRandomPrompt(t),
+  });
 
   if (settings.weekdayEnabled) {
     await scheduleWeeklyRemindersForDays({
       days: WEEKDAY_WEEKDAYS,
       time: settings.weekdayTime,
-      content: { ...baseContent, body: getRandomPrompt(t) },
+      content: contentForWeekday,
     });
   }
 
@@ -266,7 +299,7 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
     await scheduleWeeklyRemindersForDays({
       days: WEEKEND_WEEKDAYS,
       time: settings.weekendTime,
-      content: { ...baseContent, body: getRandomPrompt(t) },
+      content: contentForWeekday,
     });
   }
 
@@ -362,6 +395,35 @@ export async function sendTestNotification(): Promise<void> {
 /**
  * Cancel all scheduled notifications
  */
+/**
+ * Schedule (or cancel) the weekly "your week in dreams" recap. It repeats every
+ * Sunday morning and deep-links to the recap screen. Independent from the daily
+ * reminders so a user can keep one without the other.
+ */
+export async function scheduleWeeklyRecapReminder(settings: NotificationSettings): Promise<void> {
+  if (Platform.OS === 'web') {
+    return;
+  }
+
+  await cancelScheduledReminders('weekly_recap');
+  if (!settings.weeklyRecapEnabled) {
+    return;
+  }
+
+  const t = await getNotificationTranslator();
+  await scheduleWeeklyRemindersForDays({
+    days: [WEEKLY_RECAP_WEEKDAY],
+    time: WEEKLY_RECAP_TIME,
+    content: {
+      title: t('notifications.weekly_recap.title'),
+      body: t('notifications.weekly_recap.body'),
+      data: { url: WEEKLY_RECAP_URL, [REMINDER_TYPE_DATA_KEY]: 'weekly_recap' },
+      sound: true,
+      priority: Notifications.AndroidNotificationPriority.DEFAULT,
+    },
+  });
+}
+
 export async function cancelAllNotifications(): Promise<void> {
   if (Platform.OS === 'web') {
     return;

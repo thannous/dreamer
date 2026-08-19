@@ -127,13 +127,23 @@ describe('product analytics guest session', () => {
     expect(AppIntegrity.requestIntegrityCheckAsync).not.toHaveBeenCalled();
   });
 
-  it('keeps unauthenticated iOS delivery closed until App Attest exists', async () => {
+  it('lets an unauthenticated iOS guest obtain analytics auth without Play Integrity', async () => {
     Platform.OS = 'ios';
+    mockFetch.mockResolvedValueOnce({
+      token: 'ios-analytics-token',
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+    });
 
-    await expect(canDeliverProductAnalytics()).resolves.toBe(false);
-    await expect(getProductAnalyticsAuthHeaders()).rejects.toThrow(
-      'Product analytics guest sessions are Android-only'
-    );
+    await expect(canDeliverProductAnalytics()).resolves.toBe(true);
+    await expect(getProductAnalyticsAuthHeaders()).resolves.toEqual({
+      'x-analytics-guest-token': 'ios-analytics-token',
+    });
     expect(AppIntegrity.requestIntegrityCheckAsync).not.toHaveBeenCalled();
+    expect(AppIntegrity.prepareIntegrityTokenProviderAsync).not.toHaveBeenCalled();
+    const sessionCall = mockFetch.mock.calls[0];
+    if (!sessionCall) throw new Error('Expected analytics session request');
+    const sessionOptions = sessionCall[1];
+    if (!sessionOptions) throw new Error('Expected analytics session request options');
+    expect(sessionOptions.body).toEqual({ platform: 'ios' });
   });
 });

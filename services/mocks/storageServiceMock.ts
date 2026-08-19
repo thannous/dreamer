@@ -359,6 +359,31 @@ export async function saveRecordingVoiceStatusHidden(hidden: boolean): Promise<v
   }
 }
 
+const REMINDER_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_reminder_prompt_dismissed';
+
+export async function getReminderPromptDismissed(): Promise<boolean> {
+  console.log('[MOCK STORAGE] getReminderPromptDismissed called');
+  try {
+    const savedPreference = mockStorage[REMINDER_PROMPT_DISMISSED_KEY];
+    if (savedPreference) {
+      return JSON.parse(savedPreference) === true;
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to retrieve reminder prompt state:', error);
+  }
+  return false;
+}
+
+export async function saveReminderPromptDismissed(dismissed: boolean): Promise<void> {
+  console.log('[MOCK STORAGE] saveReminderPromptDismissed called:', dismissed);
+  try {
+    mockStorage[REMINDER_PROMPT_DISMISSED_KEY] = JSON.stringify(dismissed);
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to save reminder prompt state:', error);
+    throw new Error('Failed to save reminder prompt state');
+  }
+}
+
 export async function getRecordingOnboardingCompleted(): Promise<boolean> {
   console.log('[MOCK STORAGE] getRecordingOnboardingCompleted called');
   try {

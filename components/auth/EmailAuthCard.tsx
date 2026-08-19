@@ -20,16 +20,19 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { EmailVerificationPendingDialog, EmailVerificationSuccessDialog } from '@/components/auth/EmailVerificationDialog';
+import AppleSignInButton from '@/components/auth/AppleSignInButton';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
 import { EyeIcon, EyeOffIcon } from '@/components/icons/DreamIcons';
 import {
+  requestPasswordReset,
   resendVerificationEmail,
   signInMock,
   signInWithEmailPassword,
   signOut,
   signUpWithEmailPassword,
 } from '@/lib/auth';
+import { EMAIL_REGEX, PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
 import { TID } from '@/lib/testIDs';
 import type { MockProfile } from '@/lib/auth';
 import {
@@ -41,11 +44,10 @@ import { isMockModeEnabled as isMockModeEnabledEnv } from '@/lib/env';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PASSWORD_MIN_LENGTH = 6;
 const isMockModeEnabled = isMockModeEnabledEnv();
 const VERIFICATION_POLL_INTERVAL_MS = 15000;
 const RESEND_COOLDOWN_MS = 60000;
+const PASSWORD_RESET_COOLDOWN_MS = 60000;
 
 const mockProfiles: { profile: MockProfile; titleKey: string; subtitleKey: string }[] = [
   {
@@ -122,10 +124,19 @@ export const EmailAuthCard: React.FC<Props> = ({
     messageKey: string | null;
   }>({ visible: false, titleKey: '', messageKey: null });
   const [accountSheetVisible, setAccountSheetVisible] = useState(false);
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+  const [forgotPasswordStatus, setForgotPasswordStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
+  const [lastPasswordResetSentAt, setLastPasswordResetSentAt] = useState<number | null>(null);
 
   const trimmedEmail = useMemo(() => email.trim(), [email]);
   const emailValid = useMemo(() => EMAIL_REGEX.test(trimmedEmail), [trimmedEmail]);
   const passwordValid = useMemo(() => password.length >= PASSWORD_MIN_LENGTH, [password]);
+  const trimmedForgotPasswordEmail = useMemo(() => forgotPasswordEmail.trim(), [forgotPasswordEmail]);
+  const forgotPasswordEmailValid = useMemo(
+    () => EMAIL_REGEX.test(trimmedForgotPasswordEmail),
+    [trimmedForgotPasswordEmail]
+  );
 
   const showEmailError = touched.email && trimmedEmail.length > 0 && !emailValid;
   const showPasswordError = touched.password && password.length > 0 && !passwordValid;
@@ -141,6 +152,13 @@ export const EmailAuthCard: React.FC<Props> = ({
     return Math.max(0, RESEND_COOLDOWN_MS - (cooldownTick - lastVerificationEmailSentAt));
   }, [cooldownTick, lastVerificationEmailSentAt]);
   const resendCooldownSeconds = Math.ceil(resendCooldownRemainingMs / 1000);
+  const passwordResetCooldownRemainingMs = useMemo(() => {
+    if (!lastPasswordResetSentAt) {
+      return 0;
+    }
+    return Math.max(0, PASSWORD_RESET_COOLDOWN_MS - (cooldownTick - lastPasswordResetSentAt));
+  }, [cooldownTick, lastPasswordResetSentAt]);
+  const passwordResetCooldownSeconds = Math.ceil(passwordResetCooldownRemainingMs / 1000);
 
   const resetSensitiveInputs = useCallback(() => {
     setPassword('');
@@ -192,10 +210,12 @@ export const EmailAuthCard: React.FC<Props> = ({
         error,
       });
     }
-    // For sign-in errors, use a user-friendly message key; for others, show generic message
+    // For sign-in and reset-request errors, use a user-friendly message key; for others, show generic message
     const messageKey = titleKey === 'settings.account.alert.signin_failed.title'
       ? 'settings.account.alert.signin_failed.message'
-      : null;
+      : titleKey === 'auth.forgot_password.error_title'
+        ? 'auth.forgot_password.error_message'
+        : null;
     setAuthErrorSheet({ visible: true, titleKey, messageKey });
   };
 
@@ -348,6 +368,10 @@ export const EmailAuthCard: React.FC<Props> = ({
     if (event) {
       event.preventDefault();
     }
+    if (forgotPasswordOpen) {
+      // Enter inside the reset panel is handled by its own onSubmitEditing.
+      return;
+    }
     attemptSignIn();
   };
 
@@ -388,6 +412,49 @@ export const EmailAuthCard: React.FC<Props> = ({
     }
   };
 
+  const passwordResetCooldownMessage = useMemo(() => {
+    if (passwordResetCooldownRemainingMs > 0) {
+      return t('settings.account.verification.resend_in', { seconds: passwordResetCooldownSeconds });
+    }
+    return null;
+  }, [passwordResetCooldownRemainingMs, passwordResetCooldownSeconds, t]);
+  const passwordResetDisabled =
+    forgotPasswordStatus === 'sending' ||
+    passwordResetCooldownRemainingMs > 0 ||
+    !forgotPasswordEmailValid;
+
+  const openForgotPassword = () => {
+    setForgotPasswordEmail(trimmedEmail);
+    setForgotPasswordStatus('idle');
+    setForgotPasswordOpen(true);
+  };
+
+  const closeForgotPassword = () => {
+    setForgotPasswordOpen(false);
+    setForgotPasswordStatus('idle');
+  };
+
+  const handleRequestPasswordReset = async () => {
+    if (passwordResetDisabled) {
+      return;
+    }
+    setForgotPasswordStatus('sending');
+    try {
+      await requestPasswordReset(trimmedForgotPasswordEmail);
+      // Neutral confirmation: the copy never reveals whether the address has an account.
+      const now = Date.now();
+      setLastPasswordResetSentAt(now);
+      setCooldownTick(now);
+      setForgotPasswordStatus('sent');
+    } catch (error) {
+      if (__DEV__) {
+        console.warn('[EmailAuthCard] password reset request failed', error);
+      }
+      setForgotPasswordStatus('idle');
+      handleSupabaseError(error, 'auth.forgot_password.error_title');
+    }
+  };
+
   useEffect(() => {
     if (unverifiedEmail && trimmedEmail !== unverifiedEmail) {
       setUnverifiedEmail(null);
@@ -399,14 +466,14 @@ export const EmailAuthCard: React.FC<Props> = ({
   }, [clearPendingVerification, pendingVerification, trimmedEmail, unverifiedEmail]);
 
   useEffect(() => {
-    if (!pendingVerification && !lastVerificationEmailSentAt) {
+    if (!pendingVerification && !lastVerificationEmailSentAt && !lastPasswordResetSentAt) {
       return;
     }
     const tick = setInterval(() => {
       setCooldownTick(Date.now());
     }, 1000);
     return () => clearInterval(tick);
-  }, [lastVerificationEmailSentAt, pendingVerification]);
+  }, [lastPasswordResetSentAt, lastVerificationEmailSentAt, pendingVerification]);
 
   useEffect(() => {
     if (!pendingVerification || user) {
@@ -422,6 +489,8 @@ export const EmailAuthCard: React.FC<Props> = ({
     if (user) {
       clearPendingVerification();
       setAccountSheetVisible(false);
+      setForgotPasswordOpen(false);
+      setForgotPasswordStatus('idle');
     }
   }, [clearPendingVerification, user]);
 
@@ -592,6 +661,110 @@ export const EmailAuthCard: React.FC<Props> = ({
           )}
         </Pressable>
       </View>
+
+      {forgotPasswordOpen ? (
+        <View
+          style={[
+            styles.forgotPasswordPanel,
+            isCompact && styles.unverifiedBannerCompact,
+            { backgroundColor: noctalia.surface.active, borderColor: noctalia.surface.border },
+          ]}
+          testID={TID.Component.AuthForgotPasswordPanel}
+        >
+          <Text style={[styles.unverifiedTitle, { color: noctalia.text.primary }]}>
+            {t('auth.forgot_password.title')}
+          </Text>
+          {forgotPasswordStatus === 'sent' ? (
+            <Text
+              style={[styles.unverifiedMessage, { color: noctalia.text.secondary }]}
+              testID={TID.Text.AuthForgotPasswordStatus}
+            >
+              {t('auth.forgot_password.sent')}
+            </Text>
+          ) : (
+            <>
+              <Text style={[styles.unverifiedMessage, { color: noctalia.text.secondary }]}>
+                {t('auth.forgot_password.message')}
+              </Text>
+              <TextInput
+                testID={TID.Input.AuthForgotPasswordEmail}
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: isEmbedded ? noctalia.surface.soft : noctalia.surface.raised,
+                    borderColor: noctalia.surface.border,
+                    color: noctalia.text.primary,
+                  },
+                ]}
+                placeholder={t('settings.account.placeholder.email')}
+                placeholderTextColor={noctalia.text.secondary}
+                value={forgotPasswordEmail}
+                onChangeText={setForgotPasswordEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                inputMode="email"
+                textContentType="emailAddress"
+                onSubmitEditing={handleRequestPasswordReset}
+              />
+            </>
+          )}
+          <View style={styles.forgotPasswordActions}>
+            {forgotPasswordStatus !== 'sent' ? (
+              <Pressable
+                style={({ pressed }) => [
+                  styles.unverifiedAction,
+                  pressed && styles.unverifiedActionPressed,
+                  passwordResetDisabled && styles.unverifiedActionDisabled,
+                  {
+                    borderColor: noctalia.action.primaryBorder,
+                    backgroundColor: noctalia.surface.raised,
+                  },
+                ]}
+                onPress={handleRequestPasswordReset}
+                disabled={passwordResetDisabled}
+                testID={TID.Button.AuthSendPasswordReset}
+              >
+                {forgotPasswordStatus === 'sending' ? (
+                  <ActivityIndicator color={noctalia.text.primary} />
+                ) : (
+                  <Text style={[styles.unverifiedActionText, { color: noctalia.text.primary }]}>
+                    {t('auth.forgot_password.send')}
+                  </Text>
+                )}
+              </Pressable>
+            ) : null}
+            <Pressable
+              accessibilityRole="button"
+              hitSlop={8}
+              onPress={closeForgotPassword}
+              style={({ pressed }) => [styles.forgotPasswordClose, pressed && styles.unverifiedActionPressed]}
+              testID={TID.Button.AuthCloseForgotPassword}
+            >
+              <Text style={[styles.unverifiedActionText, { color: noctalia.text.secondary }]}>
+                {forgotPasswordStatus === 'sent' ? t('common.done') : t('common.cancel')}
+              </Text>
+            </Pressable>
+          </View>
+          {passwordResetCooldownMessage && forgotPasswordStatus !== 'sent' ? (
+            <Text style={[styles.unverifiedStatus, { color: noctalia.text.secondary }]}>
+              {passwordResetCooldownMessage}
+            </Text>
+          ) : null}
+        </View>
+      ) : (
+        <Pressable
+          accessibilityRole="button"
+          hitSlop={8}
+          onPress={openForgotPassword}
+          disabled={isBusy}
+          style={({ pressed }) => [styles.forgotPasswordLink, pressed && styles.unverifiedActionPressed]}
+          testID={TID.Button.AuthForgotPassword}
+        >
+          <Text style={[styles.forgotPasswordLinkText, { color: noctalia.accent.text }]}>
+            {t('auth.forgot_password.link')}
+          </Text>
+        </Pressable>
+      )}
 
       {showSupabaseConfigHint && (
         <Text style={[styles.hint, { color: noctalia.text.secondary }]}>
@@ -847,6 +1020,7 @@ export const EmailAuthCard: React.FC<Props> = ({
       ) : showGoogleSignIn ? (
         <>
           <GoogleSignInButton returnTo={returnTo} />
+          {Platform.OS === 'ios' ? <AppleSignInButton returnTo={returnTo} /> : null}
 
           <View style={[styles.divider, isEmbedded && styles.dividerEmbedded]}>
             <View style={[styles.dividerLine, { backgroundColor: noctalia.surface.border }]} />
@@ -1382,6 +1556,30 @@ const styles = StyleSheet.create({
     marginTop: ThemeLayout.spacing.xs,
     fontSize: 12,
     fontFamily: Fonts.spaceGrotesk.regular,
+  },
+  forgotPasswordLink: {
+    alignSelf: 'flex-start',
+    marginTop: ThemeLayout.spacing.sm,
+    paddingVertical: ThemeLayout.spacing.xs,
+  },
+  forgotPasswordLinkText: {
+    fontSize: 13,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    textDecorationLine: 'underline',
+  },
+  forgotPasswordPanel: {
+    borderWidth: 1,
+    borderRadius: ThemeLayout.borderRadius.md,
+    padding: ThemeLayout.spacing.md,
+    marginTop: ThemeLayout.spacing.md,
+  },
+  forgotPasswordActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: ThemeLayout.spacing.md,
+  },
+  forgotPasswordClose: {
+    paddingVertical: ThemeLayout.spacing.xs,
   },
 });
 

@@ -12,6 +12,10 @@ import {
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { AtmosphericBackground } from "@/components/inspiration/AtmosphericBackground";
 import { DreamPulseCard } from "@/components/inspiration/DreamPulseCard";
+import { ReminderOptInCard } from "@/components/reminders/ReminderOptInCard";
+import { PersonalReadingCard } from "@/components/inspiration/PersonalReadingCard";
+import { useNotificationSettingsController } from "@/components/settings/useNotificationSettingsController";
+import { buildPersonalReading } from "@/lib/personalReading";
 import { FlatGlassCard } from "@/components/inspiration/GlassCard";
 import { PageHeader } from "@/components/inspiration/PageHeader";
 import { SectionHeading } from "@/components/inspiration/SectionHeading";
@@ -54,13 +58,6 @@ import { getRitualPreference, getRitualStepProgress, saveRitualStepProgress } fr
 type IconName = Parameters<typeof IconSymbol>[0]["name"];
 type TranslateFn = ReturnType<typeof useTranslation>["t"];
 type RitualProgressState = Partial<Record<RitualId, Record<string, boolean>>>;
-type ResolvedCopyCard = {
-  id: string;
-  icon: IconName;
-  title: string;
-  body: string;
-};
-
 const TIP_KEYS = [
   "inspiration.tips.captureImmediately",
   "inspiration.tips.titleLater",
@@ -71,69 +68,6 @@ const TIP_KEYS = [
 
 const DATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
 
-type CopyCard = {
-  id: string;
-  icon: IconName;
-  titleKey: string;
-  bodyKey: string;
-};
-
-const PROMPT_CARDS: CopyCard[] = [
-  {
-    id: "people",
-    icon: "lightbulb.fill",
-    titleKey: "inspiration.prompts.people.title",
-    bodyKey: "inspiration.prompts.people.body",
-  },
-  {
-    id: "emotion",
-    icon: "sparkles",
-    titleKey: "inspiration.prompts.emotions.title",
-    bodyKey: "inspiration.prompts.emotions.body",
-  },
-  {
-    id: "symbols",
-    icon: "moon.stars.fill",
-    titleKey: "inspiration.prompts.symbols.title",
-    bodyKey: "inspiration.prompts.symbols.body",
-  },
-];
-
-const EXERCISE_CARDS: CopyCard[] = [
-  {
-    id: "intention",
-    icon: "moon.stars.fill",
-    titleKey: "inspiration.exercises.intention.title",
-    bodyKey: "inspiration.exercises.intention.body",
-  },
-  {
-    id: "patterns",
-    icon: "calendar",
-    titleKey: "inspiration.exercises.patterns.title",
-    bodyKey: "inspiration.exercises.patterns.body",
-  },
-  {
-    id: "micro",
-    icon: "pencil",
-    titleKey: "inspiration.exercises.microjournaling.title",
-    bodyKey: "inspiration.exercises.microjournaling.body",
-  },
-];
-
-const MYTH_CARDS: CopyCard[] = [
-  {
-    id: "memory",
-    icon: "quote.opening",
-    titleKey: "inspiration.myths.memory.title",
-    bodyKey: "inspiration.myths.memory.body",
-  },
-  {
-    id: "recurrence",
-    icon: "figure.walk",
-    titleKey: "inspiration.myths.recurrence.title",
-    bodyKey: "inspiration.myths.recurrence.body",
-  },
-];
 
 /**
  * Inspiration / rituals screen.
@@ -179,6 +113,15 @@ export default function InspirationScreen() {
     () => (dreamsLoaded ? getDreamPulse(dreams) : null),
     [dreams, dreamsLoaded],
   );
+  const personalReading = useMemo(
+    () => (dreamsLoaded && dreams.length > 0 ? buildPersonalReading(dreams) : null),
+    [dreams, dreamsLoaded]
+  );
+  const notificationSettings = useNotificationSettingsController();
+  const nextReminderText =
+    !notificationSettings.unsupported && notificationSettings.notificationsEnabled
+      ? notificationSettings.nextReminderText
+      : null;
   const lastDream = useMemo(() => {
     if (!pulse || pulse.lastDreamAt === null) return null;
     return dreams.find((dream) => dream.id === pulse.lastDreamAt) ?? null;
@@ -228,36 +171,6 @@ export default function InspirationScreen() {
     [selectedRitualId, t],
   );
   const tips = useMemo(() => TIP_KEYS.map((key) => t(key)), [t]);
-  const prompts = useMemo(
-    (): ResolvedCopyCard[] =>
-      PROMPT_CARDS.map((card) => ({
-        id: card.id,
-        icon: card.icon,
-        title: t(card.titleKey),
-        body: t(card.bodyKey),
-      })),
-    [t],
-  );
-  const exercises = useMemo(
-    (): ResolvedCopyCard[] =>
-      EXERCISE_CARDS.map((card) => ({
-        id: card.id,
-        icon: card.icon,
-        title: t(card.titleKey),
-        body: t(card.bodyKey),
-      })),
-    [t],
-  );
-  const myths = useMemo(
-    (): ResolvedCopyCard[] =>
-      MYTH_CARDS.map((card) => ({
-        id: card.id,
-        icon: card.icon,
-        title: t(card.titleKey),
-        body: t(card.bodyKey),
-      })),
-    [t],
-  );
 
   const refreshProgressOnDateChange = useCallback(() => {
     const now = new Date();
@@ -424,6 +337,29 @@ export default function InspirationScreen() {
                 <DreamPulseCard pulse={pulse} onPressCta={handlePulseCta} />
               </View>
 
+              {/* Morning reminder opt-in (one-time, native only) */}
+              <View
+                style={[
+                  !isDesktopLayout && styles.mobileSectionPadding,
+                  isDesktopLayout && styles.desktopFullSection,
+                ]}
+              >
+                <ReminderOptInCard surface="home" style={styles.reminderOptInCard} />
+              </View>
+
+              {/* Reading of the day — derived from the user's own journal */}
+              {personalReading ? (
+                <View
+                  style={[
+                    styles.homeSectionSpacing,
+                    !isDesktopLayout && styles.mobileSectionPadding,
+                    isDesktopLayout && styles.desktopFullSection,
+                  ]}
+                >
+                  <PersonalReadingCard reading={personalReading} nextReminderText={nextReminderText} />
+                </View>
+              ) : null}
+
               {/* Latest dream hero */}
               {lastDream ? (
                 <View
@@ -563,67 +499,6 @@ export default function InspirationScreen() {
                 />
               </View>
 
-              {/* Prompts */}
-              <View
-                style={[
-                  styles.sectionSpacing,
-                  !isDesktopLayout && styles.mobileSectionPadding,
-                  isDesktopLayout && styles.desktopHalfSection,
-                ]}
-              >
-                <SectionHeading
-                  title={t("inspiration.prompts.title")}
-                  subtitle={t("inspiration.prompts.subtitle")}
-                  colors={colors}
-                  icon="lightbulb.fill"
-                />
-                <InfoCardsSection noctalia={noctalia} cards={prompts} />
-              </View>
-
-              {/* Exercises */}
-              <View
-                style={[
-                  styles.sectionSpacing,
-                  !isDesktopLayout && styles.mobileSectionPadding,
-                  isDesktopLayout && styles.desktopHalfSection,
-                ]}
-              >
-                <SectionHeading
-                  title={t("inspiration.exercises.title")}
-                  subtitle={t("inspiration.exercises.subtitle")}
-                  colors={colors}
-                  icon="pencil"
-                />
-                <InfoCardsSection noctalia={noctalia} cards={exercises} />
-              </View>
-
-              {/* Myths */}
-              <View
-                style={[
-                  styles.sectionSpacing,
-                  !isDesktopLayout && styles.mobileSectionPadding,
-                  isDesktopLayout && styles.desktopHalfSection,
-                ]}
-              >
-                <SectionHeading
-                  title={t("inspiration.myths.title")}
-                  subtitle={t("inspiration.myths.subtitle")}
-                  colors={colors}
-                  icon="quote.opening"
-                />
-                <InfoCardsSection noctalia={noctalia} cards={myths} />
-              </View>
-
-              {/* Closing Quote */}
-              <View
-                style={[
-                  styles.sectionSpacing,
-                  !isDesktopLayout && styles.mobileSectionPadding,
-                  isDesktopLayout && styles.desktopHalfSection,
-                ]}
-              >
-                <QuoteCard noctalia={noctalia} />
-              </View>
             </View>
           </ScreenContainer>
         </ScrollView>
@@ -1079,118 +954,10 @@ const TipCard = memo(function TipCard({
 
 // ─── Info Card ───────────────────────────────────────────────────────────────
 
-type InfoCardProps = {
-  noctalia: NoctaliaDesignTokens;
-  icon: IconName;
-  title: string;
-  body: string;
-};
 
-const InfoCardsSection = memo(function InfoCardsSection({
-  noctalia,
-  cards,
-}: {
-  noctalia: NoctaliaDesignTokens;
-  cards: ResolvedCopyCard[];
-}) {
-  return (
-    <View style={styles.stack}>
-      {cards.map((card) => (
-        <InfoCard
-          key={card.id}
-          noctalia={noctalia}
-          icon={card.icon}
-          title={card.title}
-          body={card.body}
-        />
-      ))}
-    </View>
-  );
-});
-
-const InfoCard = memo(function InfoCard({ noctalia, icon, title, body }: InfoCardProps) {
-  return (
-    <View
-      style={[
-        styles.infoCard,
-        { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.raised },
-      ]}
-    >
-      <View
-        style={[
-          styles.infoIconWrapper,
-          { backgroundColor: noctalia.surface.soft },
-        ]}
-      >
-        <IconSymbol
-          name={icon}
-          size={18}
-          color={noctalia.accent.text}
-        />
-      </View>
-      <View style={styles.infoContent}>
-        <Text style={[styles.infoTitle, { color: noctalia.text.primary }]}>
-          {title}
-        </Text>
-        <Text style={[styles.infoBody, { color: noctalia.text.secondary }]}>
-          {body}
-        </Text>
-      </View>
-    </View>
-  );
-});
 
 // ─── Quote Card ──────────────────────────────────────────────────────────────
 
-const QuoteCard = memo(function QuoteCard({
-  noctalia,
-}: {
-  noctalia: NoctaliaDesignTokens;
-}) {
-  const { t } = useTranslation();
-  const quoteCardStyle = useMemo(
-    () => StyleSheet.flatten([
-      styles.quoteCard,
-      { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.raised },
-    ]),
-    [noctalia.surface.border, noctalia.surface.raised],
-  );
-
-  return (
-    <FlatGlassCard
-      intensity="subtle"
-      style={quoteCardStyle}
-      animateOnMount={false}
-    >
-      {/* Top decorative line */}
-      <View
-        style={[
-          styles.quoteDecoLine,
-          {
-            backgroundColor: noctalia.accent.base,
-          },
-        ]}
-      />
-      <View style={styles.quoteInner}>
-        <IconSymbol name="quote.opening" size={24} color={noctalia.accent.text} />
-        <Text style={[styles.quoteText, { color: noctalia.text.primary }]}>
-          {t("inspiration.quote.text")}
-        </Text>
-        <View style={styles.quoteAttribution}>
-          <View
-            style={[
-              styles.quoteAttributionDash,
-              { backgroundColor: noctalia.accent.base },
-            ]}
-          />
-          <Text style={[styles.quoteAuthor, { color: noctalia.text.secondary }]}>
-            {t("inspiration.quote.author")}
-          </Text>
-        </View>
-      </View>
-    </FlatGlassCard>
-  );
-});
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
@@ -1223,6 +990,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     marginHorizontal: -12,
+  },
+  reminderOptInCard: {
+    marginBottom: 24,
   },
   desktopFullSection: {
     width: "100%",

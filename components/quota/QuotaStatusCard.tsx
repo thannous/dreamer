@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import { View, Text, StyleSheet, Pressable, ActivityIndicator, Platform } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -12,7 +12,10 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { QUOTAS } from '@/constants/limits';
+import { createScopedLogger } from '@/lib/logger';
 import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
+
+const log = createScopedLogger('[QuotaStatusCard]');
 
 type UsageEntry = {
   used: number;
@@ -106,6 +109,25 @@ export const QuotaStatusCard: React.FC<Props> = ({
       return null;
     }
   }, [t, tier, formatDate]);
+
+  const [managing, setManaging] = useState(false);
+  const canManageSubscription = isPaidTier && Platform.OS !== 'web';
+  const handleManageSubscription = useCallback(async () => {
+    if (managing) return;
+    setManaging(true);
+    try {
+      // RevenueCat Customer Center: cancel / pause / restore flows with the
+      // configured retention offer, instead of sending people to the store.
+      // Loaded lazily so the native purchases-ui module is only touched on demand.
+      const { presentRevenueCatCustomerCenter } = await import('@/services/revenuecatUI');
+      await presentRevenueCatCustomerCenter({ userId: user?.id ?? null });
+      refetch();
+    } catch (error) {
+      log.warn('Customer Center unavailable', error);
+    } finally {
+      setManaging(false);
+    }
+  }, [managing, refetch, user?.id]);
 
   const handleUpgrade = () => {
     if (onUpgradePress) {
@@ -216,6 +238,25 @@ export const QuotaStatusCard: React.FC<Props> = ({
         </View>
       )}
 
+      {canManageSubscription && (
+        <Pressable
+          style={[styles.manageButton, { borderColor: noctalia.surface.borderStrong }]}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: managing, busy: managing }}
+          disabled={managing}
+          onPress={() => void handleManageSubscription()}
+          testID={TID.Button.ManageSubscription}
+        >
+          {managing ? (
+            <ActivityIndicator size="small" color={noctalia.text.primary} />
+          ) : (
+            <Text style={[styles.manageText, { color: noctalia.text.primary }]}>
+              {t('settings.quota.manage_subscription')}
+            </Text>
+          )}
+        </Pressable>
+      )}
+
       {tier === 'free' && freeResetMessage && (
         <View style={[styles.notice, { backgroundColor: noctalia.surface.soft }]}>
           <Text style={[styles.noticeText, { color: noctalia.text.secondary }]}>
@@ -315,6 +356,19 @@ const styles = StyleSheet.create({
   },
   noticeText: {
     fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 14,
+  },
+  manageButton: {
+    marginTop: 12,
+    minHeight: 44,
+    borderRadius: 999,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  manageText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 14,
   },
   ctaButton: {

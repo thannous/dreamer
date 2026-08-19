@@ -34,6 +34,34 @@ import { buildPaywallHref } from '@/lib/paywallRoute';
 
 const SETTINGS_DESKTOP_MAX_WIDTH = 760;
 
+type SettingsHostProps = {
+  children: React.ReactElement;
+  colorScheme: 'light' | 'dark';
+  hostKey?: string;
+  seedColor: string;
+  style: React.ComponentProps<typeof View>['style'];
+};
+
+/**
+ * Android (Compose) and web render the settings inside the @expo/ui `Host` so
+ * `RNHostView`/native pickers get their environment. On iOS the settings
+ * content is plain React Native and the SwiftUI `Host` + `RNHostView` pair
+ * loses touch handling when the RN subtree mounts after SwiftUI's `onAppear`
+ * (@expo/ui 57): every row rendered but nothing responded. iOS therefore
+ * renders the content directly; the iOS-only bottom sheets it uses work
+ * without a surrounding `Host`.
+ */
+function SettingsHost({ children, colorScheme, hostKey, seedColor, style }: SettingsHostProps) {
+  if (Platform.OS === 'ios') {
+    return <View style={style}>{children}</View>;
+  }
+  return (
+    <Host colorScheme={colorScheme} ignoreSafeArea="all" key={hostKey} seedColor={seedColor} style={style}>
+      {children}
+    </Host>
+  );
+}
+
 export default function SettingsScreen() {
   const { colors, mode } = useTheme();
   const { returningGuestBlocked } = useAuth();
@@ -149,10 +177,9 @@ export default function SettingsScreen() {
       )}
 
       <View style={[styles.fieldGroupFrame, isDesktopLayout && styles.fieldGroupFrameDesktop]}>
-        <Host
+        <SettingsHost
           colorScheme={mode}
-          ignoreSafeArea="all"
-          key={nativeHostKey}
+          hostKey={nativeHostKey}
           seedColor={noctalia.accent.base}
           style={hostStyle}
         >
@@ -169,7 +196,7 @@ export default function SettingsScreen() {
             subscriptionSubtitle={t('settings.plus.subtitle')}
             subscriptionTitle={t('subscription.settings.title.plus')}
           />
-        </Host>
+        </SettingsHost>
       </View>
     </KeyboardAvoidingView>
   );
