@@ -585,7 +585,7 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 | **L3 — Lecture** | `audioService` (+ mock), `mediaService`, `PlayerProvider`, lecteur plein écran avec silence progressif, mini-lecteur, ambiances, vitesse, minuteur de fondu, fin de séance | Écrans 13, 23 |
 | **L4 — Respiration** | `useBreathEngine` (horloge unique, phases pures), liste des 4 rythmes, exercice animé, repli `prefers-reduced-motion`, journal de pratique | Écrans 9, 14 |
 | **L5 — Profil & séries** | Journal de pratique, séries, statistiques, calendrier | Écran 11 |
-| **L6 — Réglages** | Réglages, compte + photo, langue, rappels, aide/FAQ, légal | Écrans 18–22, 24 |
+| **L6 — Réglages** | Réglages, profil local + photo, langue, rappels planifiés (`notificationService` + mock), aide/FAQ, légal | Écrans 18–22, 24 |
 | **L7 — Monétisation** | RevenueCat, gating premium, paywall | Écran 17 |
 | **L8 — Finition** | Fonds vidéo, haptique, accessibilité, **4 locales restantes** (es, de, it, pt), tests Maestro, icône/splash, préparation stores | Release candidate |
 

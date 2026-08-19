@@ -88,7 +88,11 @@ export default function ProfileTab() {
               variant="secondary"
               onPress={() => router.push('/favorites')}
             />
-            <Button label={t('profile.settings')} variant="ghost" disabled />
+            <Button
+              label={t('profile.settings')}
+              variant="ghost"
+              onPress={() => router.push('/settings')}
+            />
           </View>
         </Card>
       </ScrollView>

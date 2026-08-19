@@ -25,6 +25,7 @@ import { LanguageProvider } from '@/context/LanguageContext';
 import { LibraryProvider } from '@/context/LibraryContext';
 import { OnboardingProvider } from '@/context/OnboardingContext';
 import { PlayerProvider } from '@/context/PlayerContext';
+import { SettingsProvider } from '@/context/SettingsContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 
 SplashScreen.preventAutoHideAsync().catch(() => {
@@ -95,11 +96,13 @@ export default function RootLayout() {
             {/* One breath for the whole app — a single UI-thread animation. */}
             <BreathProvider>
               <OnboardingProvider>
-                <LibraryProvider>
-                  <PlayerProvider>
-                    <RootNavigator />
-                  </PlayerProvider>
-                </LibraryProvider>
+                <SettingsProvider>
+                  <LibraryProvider>
+                    <PlayerProvider>
+                      <RootNavigator />
+                    </PlayerProvider>
+                  </LibraryProvider>
+                </SettingsProvider>
               </OnboardingProvider>
             </BreathProvider>
           </ThemeProvider>
