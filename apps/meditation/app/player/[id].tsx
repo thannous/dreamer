@@ -13,6 +13,7 @@ import { NARRATOR_BY_ID } from '@/content/narrators';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
 import { useLibrary } from '@/context/LibraryContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 import { usePlayer } from '@/context/PlayerContext';
 import { FADE_TIMERS, formatTime, PLAYBACK_RATES } from '@/lib/audio';
 import type { TranslationKey } from '@/lib/i18n';
@@ -21,6 +22,7 @@ export default function PlayerScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t } = useTranslation();
   const { progress } = useLibrary();
+  const { gateForTimer, openPaywall } = useSubscription();
   const player = usePlayer();
 
   const session = id ? SESSION_BY_ID[id] : undefined;
@@ -139,7 +141,14 @@ export default function PlayerScreen() {
                 key={minutes}
                 label={t('player.timer.minutes', { count: minutes })}
                 selected={player.fadeMinutes === minutes}
-                onPress={() => player.setFadeTimer(minutes)}
+                onPress={() => {
+                  const gate = gateForTimer(minutes);
+                  if (!gate.allowed) {
+                    openPaywall(gate.reason);
+                    return;
+                  }
+                  player.setFadeTimer(minutes);
+                }}
               />
             ))}
           </ScrollView>

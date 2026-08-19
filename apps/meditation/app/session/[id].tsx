@@ -10,6 +10,7 @@ import { NARRATOR_BY_ID } from '@/content/narrators';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
 import { useLibrary } from '@/context/LibraryContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 import type { TranslationKey } from '@/lib/i18n';
 import { toMinutes } from '@/lib/library';
 import { RESUME_MAX_RATIO, RESUME_MIN_RATIO } from '@/lib/types';
@@ -19,6 +20,7 @@ export default function SessionDetail() {
   const router = useRouter();
   const { t } = useTranslation();
   const { isFavorite, toggleFavorite, progress } = useLibrary();
+  const { gateForSession, openPaywall } = useSubscription();
 
   const session = id ? SESSION_BY_ID[id] : undefined;
 
@@ -100,7 +102,19 @@ export default function SessionDetail() {
       </ScrollView>
 
       <View className="gap-3 px-gutter pb-4">
-        <Button label={ctaLabel} onPress={() => router.push(`/player/${session.id}`)} />
+        <Button
+          label={ctaLabel}
+          onPress={() => {
+            // The gate is checked here rather than inside the player: a listener
+            // should meet the paywall before the artwork, not after it.
+            const gate = gateForSession(session);
+            if (!gate.allowed) {
+              openPaywall(gate.reason);
+              return;
+            }
+            router.push(`/player/${session.id}`);
+          }}
+        />
         <Pressable
           accessibilityRole="button"
           accessibilityState={{ selected: saved }}

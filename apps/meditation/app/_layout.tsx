@@ -26,6 +26,7 @@ import { LibraryProvider } from '@/context/LibraryContext';
 import { OnboardingProvider } from '@/context/OnboardingContext';
 import { PlayerProvider } from '@/context/PlayerContext';
 import { SettingsProvider } from '@/context/SettingsContext';
+import { SubscriptionProvider } from '@/context/SubscriptionContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 
 SplashScreen.preventAutoHideAsync().catch(() => {
@@ -98,9 +99,13 @@ export default function RootLayout() {
               <OnboardingProvider>
                 <SettingsProvider>
                   <LibraryProvider>
-                    <PlayerProvider>
-                      <RootNavigator />
-                    </PlayerProvider>
+                    {/* Below LibraryProvider: the monthly quota is counted
+                        from the practice log. */}
+                    <SubscriptionProvider>
+                      <PlayerProvider>
+                        <RootNavigator />
+                      </PlayerProvider>
+                    </SubscriptionProvider>
                   </LibraryProvider>
                 </SettingsProvider>
               </OnboardingProvider>

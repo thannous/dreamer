@@ -8,6 +8,7 @@ import { SessionArtwork } from '@/components/session/SessionArtwork';
 import { Rule, Text } from '@/components/ui';
 import { BREATHING_PATTERNS, type BreathingPattern } from '@/content/breathing';
 import { useTranslation } from '@/context/LanguageContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import { cycleDurationMs } from '@/lib/breathing';
 import type { TranslationKey } from '@/lib/i18n';
@@ -17,7 +18,9 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 function PatternCard({ pattern }: { pattern: BreathingPattern }) {
   const router = useRouter();
   const { t } = useTranslation();
+  const { gateForPattern, openPaywall } = useSubscription();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
+  const gate = gateForPattern(pattern.id);
 
   // The rhythm, written out: "4 · 7 · 8" says more than any description.
   const rhythm = pattern.phases.map((phase) => phase.seconds).join(' · ');
@@ -26,13 +29,22 @@ function PatternCard({ pattern }: { pattern: BreathingPattern }) {
   return (
     <AnimatedPressable
       accessibilityRole="button"
-      onPress={() => router.push(`/breathe/${pattern.id}`)}
+      onPress={() => {
+        if (!gate.allowed) {
+          openPaywall(gate.reason);
+          return;
+        }
+        router.push(`/breathe/${pattern.id}`);
+      }}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       style={style}>
       <SessionArtwork accent={pattern.accent} rounded="xl" className="h-32 justify-end">
         <View className="gap-1 p-gutter">
-          <Text variant="overline">{rhythm}</Text>
+          <Text variant="overline">
+            {rhythm}
+            {gate.allowed ? '' : ` · ${t('common.plus')}`}
+          </Text>
           <Text variant="h2">{t(`breathe.pattern.${pattern.id}.name` as TranslationKey)}</Text>
           <Text variant="bodySm">
             {t(`breathe.pattern.${pattern.id}.hint` as TranslationKey)} · {cycleSec}s
