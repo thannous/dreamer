@@ -6,18 +6,12 @@ import { SelectableCard } from '@/components/onboarding/SelectableCard';
 import { BackLink, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
 import type { TranslationKey } from '@/lib/i18n';
-import { SHIPPED_LANGUAGES, type AppLanguage } from '@/lib/types';
+import { SHIPPED_LANGUAGES } from '@/lib/types';
 
-/** The four locales that have no catalogue yet — shown, but not selectable. */
-const PENDING: AppLanguage[] = ['es', 'de', 'it', 'pt'];
-
-const PENDING_NAMES: Record<string, string> = {
-  es: 'Español',
-  de: 'Deutsch',
-  it: 'Italiano',
-  pt: 'Português',
-};
-
+/**
+ * Each language is named in itself — a German reader looks for "Deutsch", not
+ * for whatever the current interface calls German.
+ */
 export default function LanguageScreen() {
   const { t, language, setLanguage } = useTranslation();
 
@@ -43,17 +37,6 @@ export default function LanguageScreen() {
               selected={language === code}
               onPress={() => setLanguage(code)}
             />
-          ))}
-        </View>
-
-        <View className="gap-3 opacity-40">
-          {PENDING.map((code) => (
-            <View
-              key={code}
-              className="flex-row items-center justify-between rounded-xl border border-hairline bg-ink-card p-gutter">
-              <Text variant="h3">{PENDING_NAMES[code]}</Text>
-              <Text variant="caption">{t('language.soon')}</Text>
-            </View>
           ))}
         </View>
       </ScrollView>

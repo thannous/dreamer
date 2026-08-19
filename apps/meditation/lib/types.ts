@@ -1,11 +1,15 @@
 /** Six languages, as in the Noctalia journal app. */
 export type AppLanguage = 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt';
 
-/**
- * Only these ship today. The other four locales land in L8 — the type above is
- * the target so nothing has to be widened later.
- */
-export const SHIPPED_LANGUAGES = ['en', 'fr'] as const satisfies readonly AppLanguage[];
+/** All six ship. Kept as a runtime list for the language picker to iterate. */
+export const SHIPPED_LANGUAGES = [
+  'en',
+  'fr',
+  'es',
+  'de',
+  'it',
+  'pt',
+] as const satisfies readonly AppLanguage[];
 export type ShippedLanguage = (typeof SHIPPED_LANGUAGES)[number];
 
 export type PracticeGoal =

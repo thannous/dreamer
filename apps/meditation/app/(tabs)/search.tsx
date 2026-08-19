@@ -106,7 +106,11 @@ export default function SearchTab() {
         ) : null}
 
         <View className="gap-3">
-          <Text variant="h2">{isFiltered ? t('search.results', { count: results.length }) : t('search.all')}</Text>
+          <Text variant="h2">{isFiltered
+              ? results.length === 1
+                ? t('search.results.one')
+                : t('search.results', { count: results.length })
+              : t('search.all')}</Text>
           <Rule className="self-start" />
 
           {results.length === 0 ? (

@@ -1,10 +1,17 @@
+import { de } from '@/lib/i18n/de';
 import { en } from '@/lib/i18n/en';
+import { es } from '@/lib/i18n/es';
 import { fr } from '@/lib/i18n/fr';
-import { isShippedLanguage, resolveLanguage, translate } from '@/lib/i18n';
-import type { AppLanguage } from '@/lib/types';
-
-/** The four locales that land in L8 and have no catalogue yet. */
-const UNSHIPPED: AppLanguage[] = ['es', 'de', 'it', 'pt'];
+import { isAppLanguage, translate } from '@/lib/i18n';
+import { it as itCatalogue } from '@/lib/i18n/it';
+import { pt } from '@/lib/i18n/pt';
+import { contentEn } from '@/lib/i18n/content.en';
+import { contentDe } from '@/lib/i18n/content.de';
+import { contentEs } from '@/lib/i18n/content.es';
+import { contentFr } from '@/lib/i18n/content.fr';
+import { contentIt } from '@/lib/i18n/content.it';
+import { contentPt } from '@/lib/i18n/content.pt';
+import { SHIPPED_LANGUAGES, type AppLanguage } from '@/lib/types';
 
 describe('translate', () => {
   it('fills every placeholder it is given a value for', () => {
@@ -27,52 +34,81 @@ describe('translate', () => {
     expect(translate('en', 'welcome.cta', { current: 2 })).toBe(en['welcome.cta']);
   });
 
-  it('serves French from the French catalogue', () => {
+  it('serves each language from its own catalogue', () => {
     expect(translate('fr', 'welcome.cta')).toBe(fr['welcome.cta']);
-    expect(translate('fr', 'welcome.cta')).not.toBe(en['welcome.cta']);
+    expect(translate('es', 'welcome.cta')).toBe(es['welcome.cta']);
+    expect(translate('de', 'welcome.cta')).toBe(de['welcome.cta']);
+    expect(translate('it', 'welcome.cta')).toBe(itCatalogue['welcome.cta']);
+    expect(translate('pt', 'welcome.cta')).toBe(pt['welcome.cta']);
   });
 
-  // Falling back to English is the point: an unshipped locale must never leak
-  // a raw key like `welcome.cta` into the interface.
-  it.each(UNSHIPPED)('falls back to English for %s', (language) => {
-    expect(translate(language, 'welcome.cta')).toBe(en['welcome.cta']);
-    expect(translate(language, 'onboarding.goals.title')).toBe(en['onboarding.goals.title']);
+  it('serves catalogue copy, not only interface chrome', () => {
+    expect(translate('de', 'session.sleep-descent.title')).toBe(
+      contentDe['session.sleep-descent.title']
+    );
+    expect(translate('de', 'session.sleep-descent.title')).not.toBe(
+      contentEn['session.sleep-descent.title']
+    );
   });
 
-  it('still interpolates through the fallback', () => {
-    expect(translate('de', 'common.step', { current: 1, total: 4 })).toBe('Step 1 of 4');
-  });
-});
-
-describe('resolveLanguage', () => {
-  it('keeps the shipped languages', () => {
-    expect(resolveLanguage('en')).toBe('en');
-    expect(resolveLanguage('fr')).toBe('fr');
-  });
-
-  it.each(UNSHIPPED)('resolves %s onto English', (language) => {
-    expect(resolveLanguage(language)).toBe('en');
-  });
-
-  it('recognises exactly the two shipped codes', () => {
-    expect(isShippedLanguage('en')).toBe(true);
-    expect(isShippedLanguage('fr')).toBe(true);
-    expect(isShippedLanguage('es')).toBe(false);
-    expect(isShippedLanguage('EN')).toBe(false);
-    expect(isShippedLanguage('')).toBe(false);
+  it('falls back to English rather than leaking a raw key', () => {
+    // Should an unknown language ever reach this far, a key on screen is the
+    // one outcome that must not happen.
+    expect(translate('xx' as AppLanguage, 'welcome.cta')).toBe(en['welcome.cta']);
   });
 });
 
-describe('catalogues', () => {
-  it('translates every English key into French', () => {
-    expect(Object.keys(fr).sort()).toEqual(Object.keys(en).sort());
+describe('catalogue completeness', () => {
+  const CATALOGUES: Record<string, Record<string, string>> = {
+    fr,
+    es,
+    de,
+    it: itCatalogue,
+    pt,
+  };
+  const CONTENT: Record<string, Record<string, string>> = {
+    fr: contentFr,
+    es: contentEs,
+    de: contentDe,
+    it: contentIt,
+    pt: contentPt,
+  };
+
+  it.each(Object.keys(CATALOGUES))('%s covers every interface key', (language) => {
+    const missing = Object.keys(en).filter((key) => !(key in CATALOGUES[language]));
+    expect(missing).toEqual([]);
   });
 
-  it('keeps the same placeholders on both sides', () => {
-    const placeholders = (value: string) => (value.match(/\{(\w+)\}/g) ?? []).sort();
+  it.each(Object.keys(CONTENT))('%s covers every catalogue key', (language) => {
+    const missing = Object.keys(contentEn).filter((key) => !(key in CONTENT[language]));
+    expect(missing).toEqual([]);
+  });
 
-    for (const key of Object.keys(en) as (keyof typeof en)[]) {
-      expect(placeholders(fr[key])).toEqual(placeholders(en[key]));
-    }
+  it.each(Object.keys(CATALOGUES))('%s carries no leftover English', (language) => {
+    // A handful of strings are legitimately identical across languages —
+    // product names, "Plus", "Pause", "4-7-8". Anything beyond that many
+    // usually means a forgotten copy-paste.
+    const identical = Object.keys(en).filter((key) => CATALOGUES[language][key] === en[key as keyof typeof en]);
+    expect(identical.length).toBeLessThan(25);
+  });
+
+  /** Placeholders are contractual: a lost `{count}` renders a sentence wrong. */
+  it.each(Object.keys(CATALOGUES))('%s keeps every placeholder', (language) => {
+    const placeholders = (value: string) => (value.match(/\{(\w+)\}/g) ?? []).sort().join(',');
+    const broken = Object.keys(en).filter(
+      (key) => placeholders(en[key as keyof typeof en]) !== placeholders(CATALOGUES[language][key])
+    );
+    expect(broken).toEqual([]);
+  });
+});
+
+describe('isAppLanguage', () => {
+  it.each(SHIPPED_LANGUAGES)('accepts %s', (language) => {
+    expect(isAppLanguage(language)).toBe(true);
+  });
+
+  it('rejects anything else', () => {
+    expect(isAppLanguage('xx')).toBe(false);
+    expect(isAppLanguage('')).toBe(false);
   });
 });

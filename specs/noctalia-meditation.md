@@ -587,7 +587,7 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 | **L5 — Profil & séries** | Journal de pratique, séries, statistiques, calendrier | Écran 11 |
 | **L6 — Réglages** | Réglages, profil local + photo, langue, rappels planifiés (`notificationService` + mock), aide/FAQ, légal | Écrans 18–22, 24 |
 | **L7 — Monétisation** | RevenueCat (+ magasin simulé), règles d'accès pures, paywall contextuel, gating sur trois points de déclenchement | Écran 17 |
-| **L8 — Finition** | Fonds vidéo, haptique, accessibilité, **4 locales restantes** (es, de, it, pt), tests Maestro, icône/splash, préparation stores | Release candidate |
+| **L8 — Finition** | ✅ 4 locales restantes (es, de, it, pt) · ⬜ fonds vidéo, accessibilité, tests Maestro, icône/splash, préparation stores | Release candidate |
 
 ---
 
@@ -619,7 +619,7 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 - [ ] Les 24 routes existent et sont atteignables ; aucune route morte.
 - [ ] Chaque écran est correct en clair **et** en sombre, avec l'atmosphère Noctalia.
 - [ ] Zéro couleur en dur hors `tailwind.config.js` / `constants/theme.ts`.
-- [ ] Zéro chaîne de caractères en dur : tout passe par i18n, dans les 6 langues.
+- [x] Zéro chaîne de caractères en dur : tout passe par i18n, dans les 6 langues. *(L8 : 375 clés × 6 langues, interface et catalogue. Trois tests verrouillent la parité — couverture complète des clés, absence d'anglais résiduel, conservation des placeholders. Allemand vérifié à l'écran.)*
 - [ ] Lecture audio continue écran verrouillé sur iOS et Android, reprise à la position exacte.
 - [x] Les 4 patterns de respiration respectent leurs durées de phase à ±100 ms sur 5 minutes. *(Vérifié en L4 : exact par construction — les phases dérivent d'une horloge unique, pas d'une chaîne de minuteurs. Mesuré à l'écran : expiration 7,99 s / inspiration 4,02 s.)*
 - [x] La série s'incrémente une fois par jour civil local et se rompt après un jour manqué. *(Vérifié en L5 : logique pure dans `lib/streak.ts`, 21 tests dont les deux moitiés du critère, puis contrôlé à l'écran — série 3, record 4, 7 pratiques, 63 min, calendrier aligné.)*
