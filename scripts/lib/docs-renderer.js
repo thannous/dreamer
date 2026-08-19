@@ -17,6 +17,7 @@ const { renderPageHero } = require('./docs-components/hero');
 const { renderNavigation } = require('./docs-components/navigation');
 const { renderSharedComponentStyles } = require('./docs-components/styles');
 const { renderContentHubModule } = require('./docs-components/content-hubs');
+const { renderBlogWebAppCtaModule } = require('./docs-components/web-app-cta');
 const { loadContentHubRegistry } = require('./content-hub-registry');
 const { inlineLucideIcons } = require('./lucide-inline');
 const {
@@ -1084,6 +1085,12 @@ function renderManagedPage({
     renderedBodyHtml = optimizeBlogArticleImages(renderedBodyHtml, renderMeta, imageContext);
     renderedBodyHtml = ensureEditorialArticleHero(renderedBodyHtml, imageContext);
     renderedBodyHtml = insertEducationalImage(renderedBodyHtml, imageContext);
+    renderedBodyHtml = renderBlogWebAppCtaModule({
+      bodyHtml: renderedBodyHtml,
+      lang: context.lang,
+      locale: context.locale,
+      pageId: entryId,
+    });
   } else {
     renderedBodyHtml = promoteManagedContentHero(renderedBodyHtml, renderMeta, imageContext);
   }

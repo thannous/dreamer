@@ -1,4 +1,4 @@
-const { getAndroidStoreUrl, getLanguageTag, siteConfig } = require('../docs-site-config');
+const { getAndroidStoreUrl, getLanguageTag, getWebAppUrl, siteConfig } = require('../docs-site-config');
 const { escapeHtml } = require('../docs-source-utils');
 
 function downloadAppLabel(lang) {
@@ -75,9 +75,10 @@ function primaryNavLinks(context) {
 }
 
 function renderMobileMenuPanel(context) {
-  const { entry, lang, locales } = context;
+  const { entry, lang, locale, locales } = context;
   const links = primaryNavLinks(context);
   const downloadLabel = downloadAppLabel(lang);
+  const webAppHref = getWebAppUrl(lang, { medium: 'nav' });
   const linkClass = 'block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors';
 
   const navLinks = links
@@ -101,6 +102,7 @@ function renderMobileMenuPanel(context) {
     '            <div class="mobile-menu-surface rounded-2xl py-2">',
     navLinks,
     `                <a href="${getAndroidStoreUrl(lang)}" class="${linkClass} text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">${escapeHtml(downloadLabel)}</a>`,
+    `                <a href="${webAppHref}" class="${linkClass} noctalia-premium-webapp-mobile" rel="noopener" target="_blank">${escapeHtml(locale.webAppCta)}</a>`,
     '                <div class="border-t border-white/10 mt-2 pt-2">',
     langLinks,
     '                </div>',
@@ -110,13 +112,14 @@ function renderMobileMenuPanel(context) {
 }
 
 function renderNavigation(context) {
-  const { entry, lang, locales, meta } = context;
+  const { entry, lang, locale, locales, meta } = context;
   const dropdown = renderLanguageDropdown({ entry, lang, locales });
   const links = primaryNavLinks(context);
   const homeHref = lang === 'en' ? '/' : `/${lang}/`;
   const isBlogPremium = meta.layout === 'blogIndex' && String(meta.mainClass || '').includes('blog-premium');
   const downloadLabel = downloadAppLabel(lang);
   const storeHref = getAndroidStoreUrl(lang);
+  const webAppHref = getWebAppUrl(lang, { medium: 'nav' });
   const languageLabel = languageSwitcherLabel(lang);
   const menuLabel = mobileMenuLabel(lang);
 
@@ -156,6 +159,7 @@ function renderNavigation(context) {
     '                    </div>',
     '                </div>',
     `                <a href="${storeHref}" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">${escapeHtml(downloadLabel)}</a>`,
+    `                <a href="${webAppHref}" class="noctalia-premium-download noctalia-premium-webapp rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="noopener" target="_blank">${escapeHtml(locale.webAppCta)}</a>`,
     `                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="${escapeHtml(menuLabel)}" aria-expanded="false">`,
     '                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>',
     '                </button>',

@@ -35,5 +35,9 @@
   "footerForDreamers": "für Träumer",
   "availableOn": "Erhältlich bei",
   "googlePlay": "Google Play",
+  "webAppCta": "Im Browser ausprobieren",
+  "webAppKicker": "Ohne Installation",
+  "webAppHeading": "Starte dein Traumtagebuch im Browser",
+  "webAppNote": "Schreibe und speichere einen Traum im Browser. Die KI-Analyse erfordert ein kostenloses Konto.",
   "copyright": "© 2026 TiMax. Noctalia wird von TiMax herausgegeben."
 }

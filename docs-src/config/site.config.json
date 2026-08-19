@@ -46,6 +46,7 @@
   },
   "storeLinks": {
     "androidBase": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
+    "webAppBase": "https://dream.noctalia.app/",
     "hlOverrides": {
       "pt-br": "pt-BR"
     }

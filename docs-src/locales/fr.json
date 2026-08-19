@@ -35,5 +35,9 @@
   "footerForDreamers": "pour les rêveurs",
   "availableOn": "Disponible sur",
   "googlePlay": "Google Play",
+  "webAppCta": "Essayer dans le navigateur",
+  "webAppKicker": "Sans installation",
+  "webAppHeading": "Commencez votre journal de rêves dans le navigateur",
+  "webAppNote": "Écrivez et enregistrez un rêve dans votre navigateur. L'analyse IA demande un compte gratuit.",
   "copyright": "© 2026 TiMax. Noctalia est éditée par TiMax."
 }

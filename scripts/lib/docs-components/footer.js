@@ -5,6 +5,7 @@ const {
   DATA_DIR,
   STATIC_DATA_DIR,
   getAndroidStoreUrl,
+  getWebAppUrl,
   siteConfig,
 } = require('../docs-site-config');
 const { escapeHtml, readJson, readSourceDocument } = require('../docs-source-utils');
@@ -333,6 +334,13 @@ function renderFooter(context) {
     '                        <div class="leading-none">',
     `                            <div class="text-[9px] uppercase">${escapeHtml(locale.availableOn)}</div>`,
     `                            <div class="text-sm font-bold">${escapeHtml(locale.googlePlay)}</div>`,
+    '                        </div>',
+    '                    </a>',
+    `                    <a href="${getWebAppUrl(lang, { medium: 'footer' })}" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10 footer-webapp-cta" rel="noopener" target="_blank">`,
+    '                        <i data-lucide="globe" class="w-5 h-5"></i>',
+    '                        <div class="leading-none">',
+    `                            <div class="text-[9px] uppercase">${escapeHtml(locale.webAppKicker)}</div>`,
+    `                            <div class="text-sm font-bold">${escapeHtml(locale.webAppCta)}</div>`,
     '                        </div>',
     '                    </a>',
     '                </div>',

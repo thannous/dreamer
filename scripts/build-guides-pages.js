@@ -977,6 +977,9 @@ function renderGuideHubStyles() {
           .guides-title { max-width: 16ch; }
           .guides-depth-copy { grid-template-columns: 1fr; }
         }
+        @media (max-width: 1240px) {
+          .noctalia-premium-webapp { display: none; }
+        }
         @media (max-width: 980px) {
           .noctalia-premium-nav {
             background: rgba(10, 5, 20, 0.78);
@@ -3329,6 +3332,9 @@ ${renderViewTransitionHeadStyles()}
                 align-items: center;
                 justify-content: center;
             }
+        }
+        @media (max-width: 1240px) {
+            .noctalia-premium-webapp { display: none; }
         }
         @media (max-width: 1100px) {
             .noctalia-premium-download,

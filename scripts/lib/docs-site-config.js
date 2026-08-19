@@ -68,6 +68,30 @@ function getAndroidStoreUrl(lang) {
   return `${siteConfig.storeLinks.androidBase}${suffix}`;
 }
 
+// Public web app (Expo web build) CTA. The URL only carries campaign
+// attribution — never visitor data. Parameters are emitted in a fixed order
+// so identical surfaces always produce byte-identical links. `lang` is kept
+// for parity with `getAndroidStoreUrl`; the web app currently derives its
+// language from the browser and reads no language hint from the URL.
+function getWebAppUrl(lang, { medium, content } = {}) {
+  const base = siteConfig.storeLinks?.webAppBase;
+  if (!base) {
+    throw new Error('Missing storeLinks.webAppBase in docs-src/config/site.config.json');
+  }
+  if (!medium) {
+    throw new Error('getWebAppUrl requires a `medium` (utm_medium) for the surface that renders the link');
+  }
+
+  const params = new URLSearchParams();
+  params.set('utm_source', 'noctalia.app');
+  params.set('utm_medium', String(medium));
+  params.set('utm_campaign', 'web_app');
+  if (content) params.set('utm_content', String(content));
+
+  const separator = base.includes('?') ? '&' : '?';
+  return `${base}${separator}${params.toString()}`;
+}
+
 module.exports = {
   DATA_DIR,
   DOCS_DIR,
@@ -79,6 +103,7 @@ module.exports = {
   getLanguageTag,
   getStaticPageConfig,
   getStaticPagePath,
+  getWebAppUrl,
   loadLocales,
   readAssetVersion,
   siteConfig,

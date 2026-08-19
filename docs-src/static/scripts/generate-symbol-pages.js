@@ -18,6 +18,7 @@
 const fs = require('fs');
 const path = require('path');
 const { createRenderContext } = require('../../scripts/lib/docs-components/context');
+const { getWebAppUrl, loadLocales } = require('../../scripts/lib/docs-site-config');
 const { renderFooter: renderSharedFooter } = require('../../scripts/lib/docs-components/footer');
 const { renderNavigation } = require('../../scripts/lib/docs-components/navigation');
 const { renderSharedComponentStyles } = require('../../scripts/lib/docs-components/styles');
@@ -303,6 +304,9 @@ function parseSourceDocument(raw) {
 }
 
 const SHARED_SITE_CONFIG = loadSharedSiteConfig();
+// Shared UI strings (docs-src/locales) for the web-app CTA rendered on every
+// symbol, category and curated-guide page.
+const SHARED_LOCALES = loadLocales();
 
 function getSymbolCtaUrl(lang) {
   const paths = {
@@ -329,16 +333,25 @@ const SYMBOL_CONVERSION_COPY = {
   it: { store: 'Scarica Noctalia su Google Play', details: 'Scopri come Noctalia usa il tuo contesto' },
 };
 
-function renderSymbolConversionActions(lang) {
+// `content` identifies the page family entry (canonical symbol id, or a
+// `category-`/`guide-` prefixed id) so web-app clicks can be attributed per
+// landing page independently of the localized slug.
+function renderSymbolConversionActions(lang, content) {
   const copy = SYMBOL_CONVERSION_COPY[lang] || SYMBOL_CONVERSION_COPY.en;
-  return `<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+  const sharedLocale = SHARED_LOCALES[lang] || SHARED_LOCALES.en;
+  const webAppHref = getWebAppUrl(lang, { medium: 'symbol_page', content });
+  return `<div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-3">
+                    <a href="${webAppHref}" class="symbol-webapp-cta inline-flex items-center justify-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" rel="noopener" target="_blank">
+                        ${escapeHtml(sharedLocale.webAppCta)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
                     <a href="${getAndroidStoreUrl(lang)}" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" rel="nofollow noopener noreferrer" target="_blank">
                         ${escapeHtml(copy.store)} <i data-lucide="external-link" class="w-5 h-5"></i>
                     </a>
                     <a href="${getSymbolCtaUrl(lang)}" class="inline-flex items-center justify-center gap-2 px-8 py-4 glass-button text-dream-cream rounded-full font-bold hover:border-dream-salmon/40 transition-colors">
                         ${escapeHtml(copy.details)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     </a>
-                </div>`;
+                </div>
+                <p class="symbol-webapp-note text-xs mt-3 max-w-lg mx-auto">${escapeHtml(sharedLocale.webAppNote)}</p>`;
 }
 
 function loadSiteManifest() {
@@ -1717,7 +1730,7 @@ ${relatedArticleHtml}
                 <p class="mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
-                ${renderSymbolConversionActions(lang)}
+                ${renderSymbolConversionActions(lang, symbol.id)}
             </aside>
 
             <!-- Back to Dictionary -->
@@ -2530,7 +2543,7 @@ ${relatedGuidesHtml}
                 <p class="mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
-                ${renderSymbolConversionActions(lang)}
+                ${renderSymbolConversionActions(lang, `category-${categoryId}`)}
             </aside>
 
             <!-- Back to Dictionary -->
@@ -3154,7 +3167,7 @@ ${renderPseoHeroIllustration(pageIllustration)}
                 <p class="mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
-                ${renderSymbolConversionActions(lang)}
+                ${renderSymbolConversionActions(lang, `guide-${page.id}`)}
             </aside>
 
             <!-- Back to Dictionary -->
