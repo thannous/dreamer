@@ -264,6 +264,13 @@ describe('Lucid cold-route navigation', () => {
   it('uses the same cold-launch fallback after saving a morning review', async () => {
     render(<LucidMorningScreen />);
 
+    // Nothing is pre-answered, so the review has to be filled in before it saves.
+    fireEvent.click(screen.getByRole('button', { name: 'MILD' }));
+    fireEvent.click(screen.getByRole('button', { name: '10 minutes' }));
+    fireEvent.click(screen.getByRole('button', { name: 'No lucidity' }));
+    fireEvent.click(screen.getAllByRole('button', { name: '3' })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: '3' })[1]);
+
     fireEvent.click(screen.getByTestId('lucid-morning-save'));
     await waitFor(() => expect(mockAlert).toHaveBeenCalledTimes(1));
 

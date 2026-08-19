@@ -25,11 +25,11 @@ import type { LucidTechnique } from '@/lib/lucid/model';
 import { closeLucidRoute } from '@/lib/lucid/routes';
 
 const COPY = {
-  en: { program: 'Guided program', evidence: 'Evidence and limits', calendar: 'Practice calendar', calendarHint: 'Missed days stay available. Never shorten sleep to catch up.', today: 'Today', available: 'Available', upcoming: 'Planned', plan: 'Program plan', session: 'Session', min: 'min', start: 'Start program', resume: 'Resume training', pause: 'Pause program', restart: 'Review program', prerequisites: 'Before you begin', stop: 'Stop rules', complete: 'Completed', unavailable: 'Program unavailable' },
-  fr: { program: 'Programme guidé', evidence: 'Preuves et limites', calendar: 'Calendrier de pratique', calendarHint: 'Les jours manqués restent disponibles. Ne réduisez jamais votre sommeil pour rattraper.', today: 'Aujourd’hui', available: 'Disponible', upcoming: 'Prévu', plan: 'Plan du programme', session: 'Séance', min: 'min', start: 'Commencer le programme', resume: 'Reprendre l’entraînement', pause: 'Mettre en pause', restart: 'Revoir le programme', prerequisites: 'Avant de commencer', stop: 'Quand arrêter', complete: 'Terminé', unavailable: 'Programme indisponible' },
-  es: { program: 'Programa guiado', evidence: 'Evidencia y límites', calendar: 'Calendario de práctica', calendarHint: 'Los días perdidos siguen disponibles. Nunca acortes el sueño para recuperar.', today: 'Hoy', available: 'Disponible', upcoming: 'Planificado', plan: 'Plan del programa', session: 'Sesión', min: 'min', start: 'Iniciar programa', resume: 'Continuar entrenamiento', pause: 'Pausar programa', restart: 'Revisar programa', prerequisites: 'Antes de empezar', stop: 'Cuándo parar', complete: 'Completado', unavailable: 'Programa no disponible' },
-  de: { program: 'Geführtes Programm', evidence: 'Evidenz und Grenzen', calendar: 'Übungskalender', calendarHint: 'Verpasste Tage bleiben verfügbar. Verkürze nie den Schlaf zum Aufholen.', today: 'Heute', available: 'Verfügbar', upcoming: 'Geplant', plan: 'Programmplan', session: 'Einheit', min: 'Min.', start: 'Programm starten', resume: 'Training fortsetzen', pause: 'Programm pausieren', restart: 'Programm ansehen', prerequisites: 'Vor dem Start', stop: 'Stoppregeln', complete: 'Abgeschlossen', unavailable: 'Programm nicht verfügbar' },
-  it: { program: 'Programma guidato', evidence: 'Prove e limiti', calendar: 'Calendario di pratica', calendarHint: 'I giorni saltati restano disponibili. Non ridurre mai il sonno per recuperare.', today: 'Oggi', available: 'Disponibile', upcoming: 'Pianificato', plan: 'Piano del programma', session: 'Sessione', min: 'min', start: 'Inizia programma', resume: 'Continua training', pause: 'Metti in pausa', restart: 'Rivedi programma', prerequisites: 'Prima di iniziare', stop: 'Quando fermarsi', complete: 'Completato', unavailable: 'Programma non disponibile' },
+  en: { program: 'Guided program', evidence: 'Evidence and limits', calendar: 'Practice calendar', calendarHint: 'Missed days stay available. Never shorten sleep to catch up.', calendarPending: 'Dates appear once you start the program.', today: 'Today', available: 'Available', upcoming: 'Planned', plan: 'Program plan', session: 'Session', min: 'min', start: 'Start program', resume: 'Resume training', pause: 'Pause program', restart: 'Review program', prerequisites: 'Before you begin', stop: 'Stop rules', complete: 'Completed', unavailable: 'Program unavailable' },
+  fr: { program: 'Programme guidé', evidence: 'Preuves et limites', calendar: 'Calendrier de pratique', calendarHint: 'Les jours manqués restent disponibles. Ne réduisez jamais votre sommeil pour rattraper.', calendarPending: 'Les dates apparaîtront au démarrage du programme.', today: 'Aujourd’hui', available: 'Disponible', upcoming: 'Prévu', plan: 'Plan du programme', session: 'Séance', min: 'min', start: 'Commencer le programme', resume: 'Reprendre l’entraînement', pause: 'Mettre en pause', restart: 'Revoir le programme', prerequisites: 'Avant de commencer', stop: 'Quand arrêter', complete: 'Terminé', unavailable: 'Programme indisponible' },
+  es: { program: 'Programa guiado', evidence: 'Evidencia y límites', calendar: 'Calendario de práctica', calendarHint: 'Los días perdidos siguen disponibles. Nunca acortes el sueño para recuperar.', calendarPending: 'Las fechas aparecerán al iniciar el programa.', today: 'Hoy', available: 'Disponible', upcoming: 'Planificado', plan: 'Plan del programa', session: 'Sesión', min: 'min', start: 'Iniciar programa', resume: 'Continuar entrenamiento', pause: 'Pausar programa', restart: 'Revisar programa', prerequisites: 'Antes de empezar', stop: 'Cuándo parar', complete: 'Completado', unavailable: 'Programa no disponible' },
+  de: { program: 'Geführtes Programm', evidence: 'Evidenz und Grenzen', calendar: 'Übungskalender', calendarHint: 'Verpasste Tage bleiben verfügbar. Verkürze nie den Schlaf zum Aufholen.', calendarPending: 'Die Termine erscheinen, sobald du das Programm startest.', today: 'Heute', available: 'Verfügbar', upcoming: 'Geplant', plan: 'Programmplan', session: 'Einheit', min: 'Min.', start: 'Programm starten', resume: 'Training fortsetzen', pause: 'Programm pausieren', restart: 'Programm ansehen', prerequisites: 'Vor dem Start', stop: 'Stoppregeln', complete: 'Abgeschlossen', unavailable: 'Programm nicht verfügbar' },
+  it: { program: 'Programma guidato', evidence: 'Prove e limiti', calendar: 'Calendario di pratica', calendarHint: 'I giorni saltati restano disponibili. Non ridurre mai il sonno per recuperare.', calendarPending: 'Le date compaiono all’avvio del programma.', today: 'Oggi', available: 'Disponibile', upcoming: 'Pianificato', plan: 'Piano del programma', session: 'Sessione', min: 'min', start: 'Inizia programma', resume: 'Continua training', pause: 'Metti in pausa', restart: 'Rivedi programma', prerequisites: 'Prima di iniziare', stop: 'Quando fermarsi', complete: 'Completato', unavailable: 'Programma non disponibile' },
 } as const;
 
 function isTechnique(value: string | string[] | undefined): value is LucidTechnique {
@@ -55,13 +55,18 @@ export default function LucidProgramDetailScreen() {
   const completed = progress?.completedExerciseIds.length ?? 0;
   const active = progress?.status === 'active';
   const actionLabel = progress?.status === 'completed' ? copy.restart : progress ? copy.resume : copy.start;
-  const calendar = buildLucidProgramCalendar({
-    startDateKey: getLucidLocalDateKey(progress?.startedAt ?? now),
-    todayDateKey: getLucidLocalDateKey(now),
-    sessionCount: program.sessions.length,
-    weeklyTarget: state!.onboarding.weeklyTarget,
-    completedSessionCount: completed,
-  });
+  // A program that was never started has no dates. Showing a calendar built on
+  // `now` would invent a schedule — and a "today" the user never planned.
+  const startedAt = progress?.startedAt ?? null;
+  const calendar = startedAt !== null
+    ? buildLucidProgramCalendar({
+        startDateKey: getLucidLocalDateKey(startedAt),
+        todayDateKey: getLucidLocalDateKey(now),
+        sessionCount: program.sessions.length,
+        weeklyTarget: state!.onboarding.weeklyTarget,
+        completedSessionCount: completed,
+      })
+    : null;
 
   const handleStart = async () => {
     setBusy(true);
@@ -90,26 +95,30 @@ export default function LucidProgramDetailScreen() {
         <Text style={[styles.body, { color: palette.textSecondary }]}>{content.science.uncertainty}</Text>
       </LucidCard>
 
-      <LucidSectionHeader title={copy.calendar} caption={copy.calendarHint} />
+      <LucidSectionHeader title={copy.calendar} caption={startedAt !== null ? copy.calendarHint : copy.calendarPending} />
       <View style={styles.calendarGrid}>
-        {calendar.map((entry) => (
-          <CalendarDay
-            key={entry.session}
-            dateKey={entry.dateKey}
-            label={
-              entry.status === 'completed'
-                ? copy.complete
-                : entry.status === 'today'
-                  ? copy.today
-                  : entry.status === 'available'
-                    ? copy.available
-                    : copy.upcoming
-            }
-            locale={content.locale}
-            session={entry.session}
-            status={entry.status}
-          />
-        ))}
+        {calendar
+          ? calendar.map((entry) => (
+              <CalendarDay
+                key={entry.session}
+                dateKey={entry.dateKey}
+                label={
+                  entry.status === 'completed'
+                    ? copy.complete
+                    : entry.status === 'today'
+                      ? copy.today
+                      : entry.status === 'available'
+                        ? copy.available
+                        : copy.upcoming
+                }
+                locale={content.locale}
+                session={entry.session}
+                status={entry.status}
+              />
+            ))
+          : program.sessions.map((session) => (
+              <CalendarDay key={session.id} label={copy.upcoming} locale={content.locale} session={session.session} status="upcoming" />
+            ))}
       </View>
 
       <View style={styles.twoColumn}>
@@ -152,15 +161,15 @@ function Bullet({ text, color }: { text: string; color: string }) {
   return <View style={styles.bullet}><View style={[styles.dot, { backgroundColor: color }]} /><Text style={[styles.bulletText, { color: palette.textSecondary }]}>{text}</Text></View>;
 }
 
-function CalendarDay({ dateKey, label, locale, session, status }: { dateKey: string; label: string; locale: string; session: number; status: LucidProgramCalendarStatus }) {
+function CalendarDay({ dateKey, label, locale, session, status }: { dateKey?: string; label: string; locale: string; session: number; status: LucidProgramCalendarStatus }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const color = status === 'completed' ? palette.cyan : status === 'today' ? palette.accent : palette.textSecondary;
-  const date = new Date(`${dateKey}T12:00:00`);
+  const date = dateKey ? new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric' }).format(new Date(`${dateKey}T12:00:00`)) : '—';
   return (
-    <View accessibilityLabel={`${session}, ${label}, ${dateKey}`} style={[styles.calendarDay, { backgroundColor: status === 'today' ? palette.accentSoft : palette.surface, borderColor: status === 'completed' ? palette.cyan : status === 'today' ? palette.accent : palette.border }]}>
+    <View accessibilityLabel={dateKey ? `${session}, ${label}, ${dateKey}` : `${session}, ${label}`} style={[styles.calendarDay, { backgroundColor: status === 'today' ? palette.accentSoft : palette.surface, borderColor: status === 'completed' ? palette.cyan : status === 'today' ? palette.accent : palette.border }]}>
       <Text style={[styles.calendarSession, { color }]}>{session}</Text>
-      <Text style={[styles.calendarDate, { color: palette.text }]}>{new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric' }).format(date)}</Text>
+      <Text style={[styles.calendarDate, { color: dateKey ? palette.text : palette.textMuted }]}>{date}</Text>
       <Text numberOfLines={1} style={[styles.calendarStatus, { color }]}>{label}</Text>
     </View>
   );
