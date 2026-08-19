@@ -140,11 +140,22 @@ export function LucidCard({
         : accent === 'amber'
           ? palette.amber
           : palette.border;
+  // Une carte pressable est un contrôle : son bord doit tenir 3:1. En thème
+  // clair la carte blanche ne se détache du fond que de 1,08:1, le filet est
+  // donc le seul repère. À 47% d'opacité il tombait à 1,94:1.
+  const interactive = !!onPress;
   const cardStyle = [
     styles.card,
     {
       backgroundColor: palette.surface,
-      borderColor: accent === 'none' ? palette.border : `${accentColor}77`,
+      borderColor:
+        accent === 'none'
+          ? interactive
+            ? palette.borderInteractive
+            : palette.border
+          : interactive
+            ? accentColor
+            : `${accentColor}77`,
     },
     style,
   ];
@@ -373,7 +384,9 @@ export function LucidToggleRow({
         // Éteint, le rail était à 1,22:1 sur la carte en thème clair, et le
         // pouce blanc à 1,22:1 sur le rail : l'interrupteur off était invisible.
         trackColor={{ false: palette.borderInteractive, true: palette.accent }}
-        thumbColor={mode === 'dark' ? '#F7F5FF' : '#FFFFFF'}
+        // Le pouce prend la surface : clair sur le rail sombre, sombre sur le
+        // rail accent. Le pouce presque blanc était à 1,94:1 sur l'accent sombre.
+        thumbColor={palette.surface}
       />
     </View>
   );
