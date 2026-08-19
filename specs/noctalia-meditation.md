@@ -622,7 +622,7 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 - [ ] Zéro chaîne de caractères en dur : tout passe par i18n, dans les 6 langues.
 - [ ] Lecture audio continue écran verrouillé sur iOS et Android, reprise à la position exacte.
 - [x] Les 4 patterns de respiration respectent leurs durées de phase à ±100 ms sur 5 minutes. *(Vérifié en L4 : exact par construction — les phases dérivent d'une horloge unique, pas d'une chaîne de minuteurs. Mesuré à l'écran : expiration 7,99 s / inspiration 4,02 s.)*
-- [ ] La série s'incrémente une fois par jour civil local et se rompt après un jour manqué.
+- [x] La série s'incrémente une fois par jour civil local et se rompt après un jour manqué. *(Vérifié en L5 : logique pure dans `lib/streak.ts`, 21 tests dont les deux moitiés du critère, puis contrôlé à l'écran — série 3, record 4, 7 pratiques, 63 min, calendrier aligné.)*
 - [ ] Le paywall s'ouvre sur chaque point de déclenchement listé et « Restaurer » fonctionne.
 - [ ] Aucun appel réseau au premier lancement : onboarding et première session jouables en mode avion.
 - [ ] Téléchargement store ≤ 60 Mo (iOS) / ≤ 50 Mo (Android) ; une session distante déjà écoutée se relit hors ligne.
