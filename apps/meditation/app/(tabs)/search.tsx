@@ -32,7 +32,7 @@ function CategoryTile({ category }: { category: Category }) {
       onPressOut={handlePressOut}
       style={style}
       className="w-[48%]">
-      <SessionArtwork accent={category.accent} className="h-24 justify-end">
+      <SessionArtwork accent={category.accent} className="min-h-24 justify-end">
         <View className="p-3">
           <Text variant="h3" numberOfLines={1}>
             {t(`category.${category.slug}.name` as TranslationKey)}

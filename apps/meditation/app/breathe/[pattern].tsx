@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { useWindowDimensions, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { AccessibilityInfo, useWindowDimensions, View } from 'react-native';
 
 import { Screen } from '@/components/atmosphere/Screen';
 import { BreathGauge } from '@/components/breathe/BreathGauge';
@@ -16,6 +16,7 @@ import { useTranslation } from '@/context/LanguageContext';
 import { useLibrary } from '@/context/LibraryContext';
 import { useBreathEngine } from '@/hooks/useBreathEngine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useScreenReader } from '@/hooks/useScreenReader';
 import { formatTime } from '@/lib/audio';
 import type { TranslationKey } from '@/lib/i18n';
 
@@ -24,6 +25,7 @@ export default function BreatheExercise() {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const reducedMotion = useReducedMotion();
+  const screenReader = useScreenReader();
   const { recordPractice } = useLibrary();
 
   const valid = patternParam && isBreathingPatternId(patternParam);
@@ -34,6 +36,25 @@ export default function BreatheExercise() {
   );
 
   const engine = useBreathEngine({ pattern, durationMin });
+
+  /**
+   * Speak each phase change.
+   *
+   * The ring IS the instruction — without this, the exercise gives a blind
+   * listener nothing at all. `accessibilityLiveRegion` covers Android; iOS
+   * needs the explicit announcement, so both are wired.
+   */
+  const spokenPhaseRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!screenReader || !engine.running) return;
+    if (spokenPhaseRef.current === engine.state.phase) return;
+
+    spokenPhaseRef.current = engine.state.phase;
+    AccessibilityInfo.announceForAccessibility(
+      t(`breathe.phase.${engine.state.phase}` as TranslationKey)
+    );
+  }, [screenReader, engine.running, engine.state.phase, t]);
 
   // A finished exercise counts as practice, exactly like a guided session.
   useEffect(() => {
@@ -63,7 +84,11 @@ export default function BreatheExercise() {
           <Text variant="overline">
             {t(`breathe.pattern.${pattern.id}.name` as TranslationKey)}
           </Text>
-          <Text variant="display" className="text-center">
+          <Text
+            variant="display"
+            className="text-center"
+            accessibilityLiveRegion="polite"
+            accessibilityRole="header">
             {engine.finished
               ? t('breathe.complete.title')
               : t(`breathe.phase.${engine.state.phase}` as TranslationKey)}
@@ -77,7 +102,9 @@ export default function BreatheExercise() {
             remainingSec={engine.state.phaseRemainingSec}
           />
         ) : (
-          <BreathRing scale={engine.scale} accent={pattern.accent} size={ringSize} />
+          <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+            <BreathRing scale={engine.scale} accent={pattern.accent} size={ringSize} />
+          </View>
         )}
 
         <View className="items-center gap-1">

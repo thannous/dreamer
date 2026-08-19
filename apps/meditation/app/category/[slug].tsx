@@ -38,7 +38,7 @@ export default function CategoryScreen() {
         <SessionArtwork
           accent={category.accent}
           rounded="artwork"
-          className="mx-gutter h-40 justify-end">
+          className="mx-gutter min-h-40 justify-end">
           <View className="gap-1 p-gutter">
             <Text variant="h1">{t(`category.${slug}.name` as TranslationKey)}</Text>
             <Text variant="bodySm">{t(`category.${slug}.tagline` as TranslationKey)}</Text>

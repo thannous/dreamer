@@ -587,7 +587,7 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 | **L5 — Profil & séries** | Journal de pratique, séries, statistiques, calendrier | Écran 11 |
 | **L6 — Réglages** | Réglages, profil local + photo, langue, rappels planifiés (`notificationService` + mock), aide/FAQ, légal | Écrans 18–22, 24 |
 | **L7 — Monétisation** | RevenueCat (+ magasin simulé), règles d'accès pures, paywall contextuel, gating sur trois points de déclenchement | Écran 17 |
-| **L8 — Finition** | ✅ 4 locales restantes (es, de, it, pt) · ⬜ fonds vidéo, accessibilité, tests Maestro, icône/splash, préparation stores | Release candidate |
+| **L8 — Finition** | ✅ 4 locales restantes (es, de, it, pt) · ✅ accessibilité · ⬜ fonds vidéo, tests Maestro, icône/splash, préparation stores | Release candidate |
 
 ---
 

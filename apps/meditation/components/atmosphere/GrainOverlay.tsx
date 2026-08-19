@@ -27,6 +27,8 @@ export function GrainOverlay({ opacity, style }: Props) {
 
   return (
     <View
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
       style={[
         StyleSheet.absoluteFill,
         { opacity: resolved, zIndex: 0, pointerEvents: 'none' },

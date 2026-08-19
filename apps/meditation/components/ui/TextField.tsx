@@ -25,7 +25,7 @@ export function TextField({ label, hideLabel = false, className, ...rest }: Prop
         // The caret and selection are the one place the champagne fill is
         // allowed near text — it is a mark, not a glyph.
         selectionColor={colors.accent}
-        className="h-12 rounded-md border border-hairline bg-ink-card px-4 font-sans text-body text-ivory"
+        className="min-h-12 rounded-md border border-hairline bg-ink-card px-4 py-3 font-sans text-body text-ivory"
         {...rest}
       />
     </View>

@@ -57,7 +57,7 @@ export default function SessionDetail() {
         <SessionArtwork
           accent={session.accent}
           rounded="artwork"
-          className="mx-gutter h-56 justify-end">
+          className="mx-gutter min-h-56 justify-end">
           <View className="gap-1 p-gutter">
             {session.isPremium ? <Text variant="overline">{t('common.plus')}</Text> : null}
             <Text variant="h1">{t(`session.${session.id}.title` as TranslationKey)}</Text>

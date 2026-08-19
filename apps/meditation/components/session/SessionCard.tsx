@@ -42,7 +42,7 @@ export function SessionCard({ session, variant = 'row' }: Props) {
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         style={style}>
-        <SessionArtwork accent={session.accent} rounded="artwork" className="h-48 justify-end">
+        <SessionArtwork accent={session.accent} rounded="artwork" className="min-h-48 justify-end">
           <View className="gap-1 p-gutter">
             {session.isPremium ? <Text variant="overline">{t('common.plus')}</Text> : null}
             <Text variant="h1">{title}</Text>

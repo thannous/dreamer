@@ -39,7 +39,7 @@ function PatternCard({ pattern }: { pattern: BreathingPattern }) {
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       style={style}>
-      <SessionArtwork accent={pattern.accent} rounded="xl" className="h-32 justify-end">
+      <SessionArtwork accent={pattern.accent} rounded="xl" className="min-h-32 justify-end">
         <View className="gap-1 p-gutter">
           <Text variant="overline">
             {rhythm}

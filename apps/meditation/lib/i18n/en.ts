@@ -250,4 +250,5 @@ export const en = {
   "paywall.error": "The purchase did not go through. Nothing was charged.",
   "paywall.remaining": "{count} free sessions left this month",
   "paywall.remaining.none": "No free session left this month",
+  'profile.calendar.summary': "Practised on {practised} of the last {total} days",
 } as const;

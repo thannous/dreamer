@@ -59,7 +59,7 @@ export function MiniPlayer() {
           accessibilityRole="button"
           accessibilityLabel={playing ? t('player.pause') : t('player.play')}
           onPress={toggle}
-          hitSlop={12}
+          hitSlop={{ top: 4, bottom: 4, left: 12, right: 12 }}
           className="h-9 w-9 items-center justify-center rounded-full border border-hairline active:opacity-70">
           <Text variant="bodySm" tone="accent">
             {playing ? '❙❙' : '▶'}
