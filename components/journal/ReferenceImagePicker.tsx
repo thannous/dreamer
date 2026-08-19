@@ -8,8 +8,6 @@ import React, {
 } from 'react';
 import {
   ActivityIndicator,
-  Pressable,
-  StyleSheet,
   Text,
   View,
   Alert,
@@ -20,9 +18,8 @@ import { Image } from 'expo-image';
 import type { Action as ImageManipulatorAction } from 'expo-image-manipulator';
 
 import { REFERENCE_IMAGES } from '@/constants/appConfig';
+import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
-import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -101,6 +98,12 @@ async function compressImage(uri: string): Promise<{ uri: string; mimeType: stri
 }
 
 const isWeb = Platform.OS === 'web';
+
+/** expo-image is not a Uniwind component, so the preview box stays an object. */
+const PREVIEW_IMAGE_STYLE = { width: 80, height: 80, borderRadius: 12, borderWidth: 1 } as const;
+
+const ADD_BUTTON_CLASS =
+  'h-20 w-20 items-center justify-center rounded-md border-2 border-dashed border-line bg-ink-soft';
 
 export function ReferenceImagePicker({
   subjectType,
@@ -431,142 +434,76 @@ export function ReferenceImagePicker({
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={[styles.title, { color: noctalia.text.primary }]}>
+    <View className="py-4">
+      <Text className="mb-1 font-sans-bold text-[16px] text-ivory">
         {t(`reference_image.title_${subjectType}`)}
       </Text>
-      <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
+      <Text className="mb-4 font-sans text-body-sm text-ivory-muted">
         {t('reference_image.subtitle')}
       </Text>
 
-      <View style={styles.imagesRow}>
+      <View className="flex-row flex-wrap gap-2">
         {selectedImages.map((image, index) => (
-          <View key={`${image.uri}-${index}`} style={styles.imageWrapper}>
+          <View key={`${image.uri}-${index}`} className="relative">
             <Image
               source={{ uri: image.uri }}
-              style={[styles.preview, { borderColor: noctalia.surface.border }]}
+              style={[PREVIEW_IMAGE_STYLE, { borderColor: noctalia.surface.border }]}
               contentFit="cover"
             />
-            <Pressable
+            <PressableScale
               onPress={() => handleRemoveImage(index)}
-              style={[styles.removeButton, shadows.sm, { backgroundColor: noctalia.surface.raised }]}
-              hitSlop={8}
+              className="absolute -right-1.5 -top-1.5 h-6 w-6 items-center justify-center rounded-full bg-ink-raised"
+              style={shadows.sm}
               accessibilityRole="button"
               accessibilityLabel={t('reference_image.remove_photo', { index: index + 1 })}
               accessibilityHint={t('reference_image.remove_photo_hint')}
             >
               <IconSymbol name="xmark" size={16} color={noctalia.text.primary} />
-            </Pressable>
+            </PressableScale>
           </View>
         ))}
 
         {canAddMore && (
           <>
             {!isWeb && (
-              <Pressable
+              <PressableScale
                 onPress={handleTakePhoto}
                 disabled={isLoading}
                 accessibilityLabel={t('reference_image.take_photo')}
                 accessibilityRole="button"
-                style={[
-                  styles.addButton,
-                  { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.soft },
-                  isLoading && styles.addButtonDisabled,
-                ]}
+                className={`${ADD_BUTTON_CLASS} ${isLoading ? 'opacity-60' : ''}`}
               >
                 {isLoading ? (
                   <ActivityIndicator color={noctalia.text.secondary} />
                 ) : (
                   <IconSymbol name="camera" size={28} color={noctalia.text.secondary} />
                 )}
-              </Pressable>
+              </PressableScale>
             )}
-            <Pressable
+            <PressableScale
               onPress={handlePickImages}
               disabled={isLoading}
               accessibilityLabel={t('reference_image.pick_from_gallery')}
               accessibilityRole="button"
-              style={[
-                styles.addButton,
-                { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.soft },
-                isLoading && styles.addButtonDisabled,
-              ]}
+              className={`${ADD_BUTTON_CLASS} ${isLoading ? 'opacity-60' : ''}`}
             >
               {isLoading ? (
                 <ActivityIndicator color={noctalia.text.secondary} />
               ) : (
                 <IconSymbol name="photo.on.rectangle" size={28} color={noctalia.text.secondary} />
               )}
-            </Pressable>
+            </PressableScale>
           </>
         )}
       </View>
 
       {selectedImages.length > 0 && (
-        <Text style={[styles.hint, { color: noctalia.text.secondary }]}>
+        <Text className="mt-2 font-sans text-[12px] text-ivory-muted">
           {t('reference_image.selected_count', { count: selectedImages.length, max: maxImages })}
         </Text>
       )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: ThemeLayout.spacing.md,
-  },
-  title: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
-    marginBottom: ThemeLayout.spacing.xs,
-  },
-  subtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: ThemeLayout.spacing.md,
-  },
-  imagesRow: {
-    flexDirection: 'row',
-    gap: ThemeLayout.spacing.sm,
-    flexWrap: 'wrap',
-  },
-  imageWrapper: {
-    position: 'relative',
-  },
-  preview: {
-    width: 80,
-    height: 80,
-    borderRadius: ThemeLayout.borderRadius.md,
-    borderWidth: 1,
-  },
-  removeButton: {
-    position: 'absolute',
-    top: -6,
-    right: -6,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addButton: {
-    width: 80,
-    height: 80,
-    borderRadius: ThemeLayout.borderRadius.md,
-    borderWidth: 2,
-    borderStyle: 'dashed',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addButtonDisabled: {
-    opacity: 0.6,
-  },
-  hint: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
-    marginTop: ThemeLayout.spacing.sm,
-  },
-});
 
 export default ReferenceImagePicker;

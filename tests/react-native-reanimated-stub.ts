@@ -1,4 +1,10 @@
-import { FlatList, Image, ScrollView, Text, View } from 'react-native';
+// Import the repo's React Native stub directly, NOT 'react-native'.
+// jest-expo's preset maps 'react-native' to the real package, and this repo replaces
+// RN's own jest setup (see jest.config.expo.js), so the native module registry is never
+// initialised. Touching a real RN component here throws
+// `new NativeEventEmitter() requires a non-null argument` at import time, before a
+// single test runs.
+import { FlatList, Image, ScrollView, Text, View } from './react-native-stub';
 
 const createAnimatedComponent = (Component: any) => Component;
 
@@ -33,7 +39,18 @@ export const Easing = {
   in: (fn: any) => fn,
   out: (fn: any) => fn,
   inOut: (fn: any) => fn,
+  bezier: (..._points: number[]) => (value: any) => value,
 };
+
+// Reanimated CSS easing helpers. Under test they only need to be inert values that
+// survive being spread into a style object.
+export const cubicBezier = (...points: number[]) => `cubic-bezier(${points.join(', ')})`;
+export const linear = (...points: any[]) => `linear(${points.join(', ')})`;
+export const steps = (count: number, modifier?: string) =>
+  `steps(${count}${modifier ? `, ${modifier}` : ''})`;
+
+// Motion is never reduced under test, so components render their full-motion branch.
+export const useReducedMotion = () => false;
 
 export const Extrapolation = { CLAMP: 'clamp' };
 export const ReduceMotion = { System: 'system', Always: 'always', Never: 'never' };
@@ -72,14 +89,25 @@ const springifyChain = {
   damping: () => springifyChain,
 };
 
-const enteringChain = {
+const enteringChain: any = {
   delay: () => enteringChain,
   duration: () => enteringChain,
   springify: () => springifyChain,
+  withInitialValues: () => enteringChain,
+  easing: () => enteringChain,
+  build: () => () => ({ initialValues: {}, animations: {} }),
 };
 
+export const FadeIn = enteringChain;
+export const FadeOut = enteringChain;
 export const FadeInDown = enteringChain;
-export const SlideInDown = { springify: () => springifyChain };
+export const FadeInUp = enteringChain;
+export const FadeOutDown = enteringChain;
+export const FadeOutUp = enteringChain;
+export const SlideInDown = { springify: () => springifyChain, ...enteringChain };
+export const SlideOutDown = enteringChain;
+export const LinearTransition = enteringChain;
+export const CurvedTransition = enteringChain;
 
 export default Animated;
 export { createAnimatedComponent };

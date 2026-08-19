@@ -1,9 +1,7 @@
 import React, { memo, useMemo, useRef } from 'react';
-import { View, TextInput, StyleSheet, Pressable } from 'react-native';
+import { View, TextInput, Pressable } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -41,13 +39,16 @@ export const SearchBar = memo(function SearchBar({
   const inputRef = useRef<TextInput>(null);
 
   return (
-    <View style={[styles.container, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }]} testID={testID}>
-      <View style={styles.iconContainer}>
+    <View
+      className="flex-row items-center rounded-md border border-line bg-ink-soft px-4 py-1.5"
+      testID={testID}
+    >
+      <View className="mr-2">
         <SearchIcon size={20} color={noctalia.text.secondary} />
       </View>
       <TextInput
         ref={inputRef}
-        style={[styles.input, { color: noctalia.text.primary }]}
+        className="flex-1 font-sans text-[16px] text-ivory"
         testID={inputTestID}
         value={value}
         onChangeText={onChangeText}
@@ -66,36 +67,11 @@ export const SearchBar = memo(function SearchBar({
           accessibilityRole="button"
           accessibilityLabel={t('common.clear')}
           hitSlop={8}
-          style={({ pressed }) => [styles.clearButton, pressed && styles.clearButtonPressed]}
+          className="ml-2 active:opacity-70"
         >
           <IconSymbol name="xmark.circle.fill" size={18} color={noctalia.text.secondary} />
         </Pressable>
       )}
     </View>
   );
-});
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: ThemeLayout.borderRadius.md,
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingVertical: 6,
-    borderWidth: 1,
-  },
-  iconContainer: {
-    marginRight: ThemeLayout.spacing.sm,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
-  },
-  clearButton: {
-    marginLeft: ThemeLayout.spacing.sm,
-  },
-  clearButtonPressed: {
-    opacity: 0.7,
-  },
 });

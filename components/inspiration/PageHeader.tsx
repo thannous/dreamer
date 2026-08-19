@@ -1,12 +1,10 @@
 import React, { useMemo } from 'react';
-import { Platform, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { View, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { GradientText } from '@/components/inspiration/GradientText';
-import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
-import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
+import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { MotiView } from '@/lib/moti';
@@ -46,12 +44,12 @@ export function PageHeaderContent({
   animationSeed,
 }: PageHeaderProps) {
   const { colors, mode } = useTheme();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
   const seed = animationSeed ?? 'default';
 
+  // `LinearGradient` takes colour values, not styles, so the gradient stays in TS.
   const headerGradientColors = useMemo(
     () =>
       mode === 'dark'
@@ -62,11 +60,9 @@ export function PageHeaderContent({
 
   return (
     <View
-      style={[
-        styles.header,
-        { paddingTop: insets.top + topSpacing },
-        style,
-      ]}
+      className="items-center px-4 pb-2"
+      // The safe-area inset is a runtime measurement; only its value can be inline.
+      style={[{ paddingTop: insets.top + topSpacing }, style]}
     >
       <MotiView
         key={`header-${seed}`}
@@ -74,7 +70,7 @@ export function PageHeaderContent({
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: 'timing', duration: 700 }}
       >
-        <GradientText colors={headerGradientColors} style={styles.headerTitle}>
+        <GradientText colors={headerGradientColors} className="font-display-semibold text-[20px]">
           {t(titleKey)}
         </GradientText>
       </MotiView>
@@ -84,25 +80,8 @@ export function PageHeaderContent({
         animate={{ opacity: 1, scaleX: 1 }}
         transition={{ type: 'timing', duration: 600, delay: 350 }}
       >
-        <View style={[styles.headerRule, { backgroundColor: noctalia.accent.base }]} />
+        <View className="mt-[10px] h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
       </MotiView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  header: {
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingTop: Platform.OS === 'ios' ? 60 : 20,
-    paddingBottom: ThemeLayout.spacing.sm,
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.fraunces.semiBold,
-  },
-  headerRule: {
-    ...DecoLines.rule,
-    marginTop: 10,
-  },
-});

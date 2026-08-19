@@ -1,11 +1,10 @@
 import { Image } from 'expo-image';
 import { usePathname, useRouter, type Href } from 'expo-router';
 import React, { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -22,11 +21,17 @@ interface NavItemProps {
   testID?: string;
 }
 
+/** Keep in step with the `w-[240px]` class on the sidebar root. */
 const SIDEBAR_WIDTH = 240;
+
+/** Logo box. `expo-image` is not a Uniwind-patched component, so it keeps a style prop. */
+const LOGO_STYLE = { width: 40, height: 40, borderRadius: 10 } as const;
 
 function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
   const { colors, mode } = useTheme();
   const router = useRouter();
+  // Uniwind exposes `active:`/`focus:`/`disabled:` on Pressable but no hover variant,
+  // and this sidebar is desktop-web only — hover stays a React state.
   const [isHovered, setIsHovered] = useState(false);
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
@@ -36,11 +41,9 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
       onPress={() => router.push(href)}
       onHoverIn={() => setIsHovered(true)}
       onHoverOut={() => setIsHovered(false)}
-      style={[
-        styles.navItem,
-        isActive && { backgroundColor: noctalia.surface.active },
-        isHovered && !isActive && { backgroundColor: noctalia.surface.soft },
-      ]}
+      className={`flex-row items-center gap-[14px] rounded-[10px] p-3 ${
+        isActive ? 'bg-ink-active' : isHovered ? 'bg-ink-soft' : ''
+      }`}
       accessibilityRole="button"
       accessibilityLabel={label}
     >
@@ -50,10 +53,7 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
         color={isActive ? noctalia.accent.text : noctalia.text.secondary}
       />
       <Text
-        style={[
-          styles.navLabel,
-          { color: isActive ? noctalia.text.primary : noctalia.text.secondary },
-        ]}
+        className={`font-sans-medium text-[15px] ${isActive ? 'text-ivory' : 'text-ivory-muted'}`}
       >
         {label}
       </Text>
@@ -64,10 +64,8 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
 export function DesktopSidebar() {
   const { t } = useTranslation();
   const pathname = usePathname();
-  const { colors, mode } = useTheme();
   const { returningGuestBlocked } = useAuth();
   const appVersion = getAppVersionString({ prefix: 'v' });
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   // When returning guest is blocked, only show settings
   const allNavItems: { icon: IconName; label: string; href: Href; testID?: string }[] = [
@@ -96,24 +94,19 @@ export function DesktopSidebar() {
   };
 
   return (
-    <View
-      style={[
-        styles.sidebar,
-        { backgroundColor: noctalia.screen.background, borderRightColor: noctalia.surface.border },
-      ]}
-    >
+    <View className="h-full w-[240px] flex-col border-r border-line bg-ink px-4 py-6">
       {/* Logo Section */}
-      <View style={styles.logoSection}>
+      <View className="mb-8 flex-row items-center gap-3 px-2">
         <Image
           source={require('@/assets/images/icon.png')}
-          style={styles.logo}
+          style={LOGO_STYLE}
           contentFit="contain"
         />
-        <Text style={[styles.appName, { color: noctalia.text.primary }]}>Noctalia</Text>
+        <Text className="font-sans-bold text-h2 text-ivory">Noctalia</Text>
       </View>
 
       {/* Navigation Items */}
-      <View style={styles.navSection}>
+      <View className="flex-1 gap-1">
         {navItems.map((item) => (
           <NavItem
             key={item.testID ?? item.label}
@@ -127,9 +120,9 @@ export function DesktopSidebar() {
       </View>
 
       {/* Footer Section */}
-      <View style={[styles.footer, { borderTopColor: noctalia.surface.border }]}>
+      <View className="border-t border-line pt-4">
         {appVersion ? (
-          <Text style={[styles.footerText, { color: noctalia.text.secondary }]}>{appVersion}</Text>
+          <Text className="font-sans text-caption text-center text-ivory-muted">{appVersion}</Text>
         ) : null}
       </View>
     </View>
@@ -137,55 +130,3 @@ export function DesktopSidebar() {
 }
 
 export { SIDEBAR_WIDTH };
-
-const styles = StyleSheet.create({
-  sidebar: {
-    width: SIDEBAR_WIDTH,
-    height: '100%',
-    borderRightWidth: 1,
-    paddingVertical: 24,
-    paddingHorizontal: 16,
-    flexDirection: 'column',
-  },
-  logoSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: 8,
-    marginBottom: 32,
-  },
-  logo: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-  },
-  appName: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 22,
-  },
-  navSection: {
-    flex: 1,
-    gap: 4,
-  },
-  navItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-  },
-  navLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 15,
-  },
-  footer: {
-    paddingTop: 16,
-    borderTopWidth: 1,
-  },
-  footerText: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
-    textAlign: 'center',
-  },
-});

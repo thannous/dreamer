@@ -5,7 +5,6 @@ import React, { useCallback, useMemo } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
-  StyleSheet,
   Text,
   type ViewStyle,
   useWindowDimensions,
@@ -24,7 +23,6 @@ import { SettingsFieldGroup } from '@/components/settings/SettingsFieldGroup';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -32,7 +30,22 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { getAppVersionString } from '@/lib/appVersion';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 
-const SETTINGS_DESKTOP_MAX_WIDTH = 760;
+/**
+ * `Host` is an @expo/ui component and the returning-guest card is a `GlassCard`, so
+ * neither takes a `className`. Both keep plain style objects.
+ */
+const HOST_STYLE = { flex: 1, width: '100%' } as const;
+const RETURNING_GUEST_CARD_STYLE = {
+  borderRadius: 24,
+  marginBottom: ThemeLayout.spacing.md,
+  overflow: 'hidden',
+  padding: 0,
+} as const;
+
+/** The three slots that host React Native content inside the native settings shell. */
+const RN_SLOT_CLASS = 'w-full self-center';
+/** Compose's matchContents measurement otherwise clips the last auth row. */
+const ACCOUNT_SLOT_ANDROID_CLASS = `${RN_SLOT_CLASS} pb-6`;
 
 type SettingsHostProps = {
   children: React.ReactElement;
@@ -82,7 +95,7 @@ export default function SettingsScreen() {
     : bottomTabBarHeight + ThemeLayout.spacing.md;
   const hostStyle = Platform.OS === 'web'
     ? [
-        styles.host,
+        HOST_STYLE,
         {
           '--expo-ui-background': noctalia.surface.base,
           '--expo-ui-foreground': noctalia.text.primary,
@@ -100,7 +113,7 @@ export default function SettingsScreen() {
         // React Native Web forwards CSS custom properties to the Host element.
         } as unknown as ViewStyle,
       ]
-    : styles.host;
+    : HOST_STYLE;
 
   const handleOpenPaywall = useCallback(() => {
     router.push(buildPaywallHref('settings'));
@@ -108,34 +121,26 @@ export default function SettingsScreen() {
 
   const account = (
     <View
-      style={[
-        styles.rnSlot,
-        Platform.OS === 'android' && styles.accountRnSlot,
-      ]}
+      className={Platform.OS === 'android' ? ACCOUNT_SLOT_ANDROID_CLASS : RN_SLOT_CLASS}
       testID="settings-account-rn-content"
     >
       {returningGuestBlocked ? (
         <StaticFlatGlassCard
           intensity="moderate"
           animationDelay={100}
-          style={styles.returningGuestGlassCard}
+          style={RETURNING_GUEST_CARD_STYLE}
         >
-          <View
-            style={[
-              styles.returningGuestAccentStripe,
-              { backgroundColor: noctalia.accent.base },
-            ]}
-          />
-          <View style={styles.returningGuestInner}>
+          <View className="h-[3px] w-full bg-champagne opacity-[0.85]" />
+          <View className="items-center gap-2 p-6">
             <IconSymbol
               name="person.crop.circle.badge.exclamationmark"
               size={48}
               color={noctalia.accent.text}
             />
-            <Text style={[styles.returningGuestTitle, { color: noctalia.text.primary }]}>
+            <Text className="mt-2 text-center font-display-semibold text-[20px] text-ivory">
               {t('auth.returning_guest.banner_title')}
             </Text>
-            <Text style={[styles.returningGuestMessage, { color: noctalia.text.secondary }]}>
+            <Text className="text-center font-sans text-body-sm text-ivory-muted">
               {t('auth.returning_guest.message')}
             </Text>
           </View>
@@ -147,13 +152,13 @@ export default function SettingsScreen() {
   );
 
   const quota = (
-    <View style={styles.rnSlot} testID="settings-quota-rn-content">
+    <View className={RN_SLOT_CLASS} testID="settings-quota-rn-content">
       <QuotaStatusCard onUpgradePress={handleOpenPaywall} presentation="embedded" />
     </View>
   );
 
   const legal = (
-    <View style={styles.rnSlot} testID="settings-legal-rn-content">
+    <View className={RN_SLOT_CLASS} testID="settings-legal-rn-content">
       <LegalSection />
     </View>
   );
@@ -161,7 +166,7 @@ export default function SettingsScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={[styles.container, { backgroundColor: noctalia.screen.background }]}
+      className="flex-1 bg-ink"
       testID="screen.settings"
     >
       <AtmosphericBackground variant="subtle" />
@@ -176,7 +181,11 @@ export default function SettingsScreen() {
         />
       )}
 
-      <View style={[styles.fieldGroupFrame, isDesktopLayout && styles.fieldGroupFrameDesktop]}>
+      {/* 760px is inline: Tailwind extracts class names statically, so it cannot
+          come from a constant. */}
+      <View
+        className={`w-full flex-1${isDesktopLayout ? ' max-w-[760px] self-center' : ''}`}
+      >
         <SettingsHost
           colorScheme={mode}
           hostKey={nativeHostKey}
@@ -201,57 +210,3 @@ export default function SettingsScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  fieldGroupFrame: {
-    flex: 1,
-    width: '100%',
-  },
-  fieldGroupFrameDesktop: {
-    alignSelf: 'center',
-    maxWidth: SETTINGS_DESKTOP_MAX_WIDTH,
-  },
-  host: {
-    flex: 1,
-    width: '100%',
-  },
-  rnSlot: {
-    alignSelf: 'center',
-    width: '100%',
-  },
-  accountRnSlot: {
-    // Compose's matchContents measurement otherwise clips the last auth row.
-    paddingBottom: ThemeLayout.spacing.lg,
-  },
-  returningGuestGlassCard: {
-    borderRadius: 24,
-    marginBottom: ThemeLayout.spacing.md,
-    overflow: 'hidden',
-    padding: 0,
-  },
-  returningGuestAccentStripe: {
-    height: 3,
-    opacity: 0.85,
-    width: '100%',
-  },
-  returningGuestInner: {
-    alignItems: 'center',
-    gap: ThemeLayout.spacing.sm,
-    padding: ThemeLayout.spacing.lg,
-  },
-  returningGuestTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 20,
-    marginTop: ThemeLayout.spacing.sm,
-    textAlign: 'center',
-  },
-  returningGuestMessage: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
-    lineHeight: 20,
-    textAlign: 'center',
-  },
-});

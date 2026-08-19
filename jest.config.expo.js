@@ -44,6 +44,9 @@ module.exports = {
     '^expo-linear-gradient$': '<rootDir>/tests/expo-linear-gradient-stub.ts',
     '^expo$': '<rootDir>/tests/expo-stub.ts',
     '^react-native-svg$': '<rootDir>/tests/react-native-svg-stub.ts',
+    '^uniwind$': '<rootDir>/tests/uniwind-stub.tsx',
+    '^react-native-worklets$': '<rootDir>/tests/react-native-worklets-stub.ts',
+    '\\.css$': '<rootDir>/tests/css-stub.js',
   },
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',

@@ -1,10 +1,8 @@
-import React, { useMemo, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Pressable, Platform } from 'react-native';
 
+import { PressableScale } from '@/components/motion';
 import { DateTimePicker } from '@/components/ui/DateTimePicker';
-import { ThemeLayout } from '@/constants/journalTheme';
-import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
@@ -22,8 +20,7 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
   const [localStartDate, setLocalStartDate] = useState<Date | null>(startDate);
   const [localEndDate, setLocalEndDate] = useState<Date | null>(endDate);
   const [pickerMode, setPickerMode] = useState<PickerMode>('none');
-  const { colors, mode } = useTheme();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const { mode } = useTheme();
   const { t } = useTranslation();
   const { formatDate } = useLocaleFormatting();
 
@@ -87,60 +84,61 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border }]}>
-      <Text style={[styles.title, { color: noctalia.text.primary }]}>{t('journal.date_picker.title')}</Text>
+    <View className="w-full max-w-[400px] rounded-lg border border-line bg-ink-raised p-6">
+      <Text className="mb-6 text-center font-sans-bold text-[20px] text-ivory">
+        {t('journal.date_picker.title')}
+      </Text>
 
       {/* Quick select buttons */}
-      <View style={styles.quickSelectContainer}>
-        <Text style={[styles.sectionLabel, { color: noctalia.text.secondary }]}>{t('journal.date_picker.quick_select')}</Text>
-        <View style={styles.quickButtons}>
-          <Pressable
-            style={[styles.quickButton, { backgroundColor: noctalia.surface.soft }]}
-            onPress={() => handleQuickSelect(0)}
-          >
-            <Text style={[styles.quickButtonText, { color: noctalia.text.primary }]}>{t('journal.date_picker.quick.today')}</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.quickButton, { backgroundColor: noctalia.surface.soft }]}
-            onPress={() => handleQuickSelect(7)}
-          >
-            <Text style={[styles.quickButtonText, { color: noctalia.text.primary }]}>{t('journal.date_picker.quick.last7')}</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.quickButton, { backgroundColor: noctalia.surface.soft }]}
-            onPress={() => handleQuickSelect(30)}
-          >
-            <Text style={[styles.quickButtonText, { color: noctalia.text.primary }]}>{t('journal.date_picker.quick.last30')}</Text>
-          </Pressable>
+      <View className="mb-6">
+        <Text className="mb-2 font-sans-medium text-[14px] text-ivory-muted">
+          {t('journal.date_picker.quick_select')}
+        </Text>
+        <View className="flex-row flex-wrap gap-2">
+          <PressableScale className="rounded-sm bg-ink-soft px-3 py-2" onPress={() => handleQuickSelect(0)}>
+            <Text className="font-sans text-[14px] text-ivory">{t('journal.date_picker.quick.today')}</Text>
+          </PressableScale>
+          <PressableScale className="rounded-sm bg-ink-soft px-3 py-2" onPress={() => handleQuickSelect(7)}>
+            <Text className="font-sans text-[14px] text-ivory">{t('journal.date_picker.quick.last7')}</Text>
+          </PressableScale>
+          <PressableScale className="rounded-sm bg-ink-soft px-3 py-2" onPress={() => handleQuickSelect(30)}>
+            <Text className="font-sans text-[14px] text-ivory">{t('journal.date_picker.quick.last30')}</Text>
+          </PressableScale>
         </View>
       </View>
 
       {/* Custom range */}
-      <View style={styles.customRangeContainer}>
-        <Text style={[styles.sectionLabel, { color: noctalia.text.secondary }]}>{t('journal.date_picker.custom_range')}</Text>
+      <View className="mb-6">
+        <Text className="mb-2 font-sans-medium text-[14px] text-ivory-muted">
+          {t('journal.date_picker.custom_range')}
+        </Text>
 
         {/* Start Date */}
-        <View style={styles.dateRow}>
-          <Text style={[styles.dateLabel, { color: noctalia.text.secondary }]}>{t('journal.date_picker.from')}</Text>
-          <Pressable
+        <View className="mb-2 flex-row items-center">
+          <Text className="w-[60px] font-sans text-[16px] text-ivory-muted">
+            {t('journal.date_picker.from')}
+          </Text>
+          <PressableScale
             testID="journal-date-range-start-button"
-            style={[styles.dateButton, { backgroundColor: noctalia.surface.soft }]}
+            className="flex-1 rounded-sm bg-ink-soft px-4 py-3"
             onPress={() => setPickerMode('start')}
           >
-            <Text style={[styles.dateButtonText, { color: noctalia.text.primary }]}>{formatPickerDate(localStartDate)}</Text>
-          </Pressable>
+            <Text className="font-sans-medium text-[16px] text-ivory">{formatPickerDate(localStartDate)}</Text>
+          </PressableScale>
         </View>
 
         {/* End Date */}
-        <View style={styles.dateRow}>
-          <Text style={[styles.dateLabel, { color: noctalia.text.secondary }]}>{t('journal.date_picker.to')}</Text>
-          <Pressable
+        <View className="mb-2 flex-row items-center">
+          <Text className="w-[60px] font-sans text-[16px] text-ivory-muted">
+            {t('journal.date_picker.to')}
+          </Text>
+          <PressableScale
             testID="journal-date-range-end-button"
-            style={[styles.dateButton, { backgroundColor: noctalia.surface.soft }]}
+            className="flex-1 rounded-sm bg-ink-soft px-4 py-3"
             onPress={() => setPickerMode('end')}
           >
-            <Text style={[styles.dateButtonText, { color: noctalia.text.primary }]}>{formatPickerDate(localEndDate)}</Text>
-          </Pressable>
+            <Text className="font-sans-medium text-[16px] text-ivory">{formatPickerDate(localEndDate)}</Text>
+          </PressableScale>
         </View>
       </View>
 
@@ -173,117 +171,24 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
       )}
 
       {/* Action buttons */}
-      <View style={styles.actionButtons}>
-        <Pressable
-          style={[styles.actionButton, styles.clearButton, { backgroundColor: noctalia.surface.soft }]}
+      <View className="mb-4 flex-row gap-2">
+        <PressableScale
+          className="flex-1 items-center rounded-sm bg-ink-soft py-3"
           onPress={handleClear}
         >
-          <Text style={[styles.clearButtonText, { color: noctalia.text.primary }]}>{t('common.clear')}</Text>
-        </Pressable>
-        <Pressable
-          style={[styles.actionButton, styles.applyButton, { backgroundColor: noctalia.action.primary }]}
+          <Text className="font-sans-medium text-[16px] text-ivory">{t('common.clear')}</Text>
+        </PressableScale>
+        <PressableScale
+          className="flex-1 items-center rounded-sm bg-champagne py-3"
           onPress={handleApply}
         >
-          <Text style={[styles.applyButtonText, { color: noctalia.action.primaryText }]}>{t('common.apply')}</Text>
-        </Pressable>
+          <Text className="font-sans-bold text-[16px] text-on-champagne">{t('common.apply')}</Text>
+        </PressableScale>
       </View>
 
-      <Pressable
-        style={styles.cancelButton}
-        onPress={onClose}
-      >
-        <Text style={[styles.cancelButtonText, { color: noctalia.text.secondary }]}>{t('common.cancel')}</Text>
+      <Pressable className="items-center py-3" onPress={onClose}>
+        <Text className="font-sans-medium text-[16px] text-ivory-muted">{t('common.cancel')}</Text>
       </Pressable>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    borderRadius: ThemeLayout.borderRadius.lg,
-    padding: ThemeLayout.spacing.lg,
-    width: '100%',
-    maxWidth: 400,
-    borderWidth: 1,
-  },
-  title: {
-    fontSize: 20,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    marginBottom: ThemeLayout.spacing.lg,
-    textAlign: 'center',
-  },
-  sectionLabel: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    marginBottom: ThemeLayout.spacing.sm,
-  },
-  quickSelectContainer: {
-    marginBottom: ThemeLayout.spacing.lg,
-  },
-  quickButtons: {
-    flexDirection: 'row',
-    gap: 8,
-    flexWrap: 'wrap',
-  },
-  quickButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: ThemeLayout.borderRadius.sm,
-  },
-  quickButtonText: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
-  },
-  customRangeContainer: {
-    marginBottom: ThemeLayout.spacing.lg,
-  },
-  dateRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: ThemeLayout.spacing.sm,
-  },
-  dateLabel: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    width: 60,
-  },
-  dateButton: {
-    flex: 1,
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingVertical: 12,
-    borderRadius: ThemeLayout.borderRadius.sm,
-  },
-  dateButtonText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.medium,
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    gap: ThemeLayout.spacing.sm,
-    marginBottom: ThemeLayout.spacing.md,
-  },
-  actionButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: ThemeLayout.borderRadius.sm,
-    alignItems: 'center',
-  },
-  clearButton: {},
-  clearButtonText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.medium,
-  },
-  applyButton: {},
-  applyButtonText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-  cancelButton: {
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  cancelButtonText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.medium,
-  },
-});

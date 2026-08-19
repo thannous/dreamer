@@ -113,6 +113,15 @@ Core types are in `lib/types.ts` (`DreamAnalysis`, `ChatMessage`, `DreamType`, `
 - **Guest mode:** server-issued guest sessions with device fingerprinting (`lib/guestSession.ts`, `lib/deviceFingerprint.ts`) and limits (`lib/guestLimits.ts`); quota tiers in `lib/quotaTier.ts`, checked via `useQuota` and `services/quotaService.ts`. The backend enforces quotas in `api/lib/analysisQuota.ts`.
 - **Subscriptions:** RevenueCat SDK config in `lib/revenuecat.ts`, client service in `services/subscriptionService*.ts`, state in `SubscriptionContext` with `useSubscription*` hooks, server reconciliation via `services/subscriptionSyncService.ts` + `/subscription/*` routes + the webhook. Paywall screens/variants: `app/paywall.tsx`, `lib/paywallVariants.ts`. A subscription QA lab and extensive `subscription:qa:*` scripts exist for release verification.
 
+### Styling (Uniwind) & Motion
+Styling is **Uniwind** — Tailwind v4 bindings for React Native. All design tokens live in `global.css` (imported on the first line of `app/_layout.tsx`); `metro.config.js` wraps the Metro config with `withUniwindConfig`, which must stay the outermost wrapper. `context/ThemeContext.tsx` mirrors the user's preference into `Uniwind.setTheme`, so `dark:` variants and the legacy `colors` object can never disagree. Regenerate `uniwind-types.d.ts` with `npm run uniwind:types` after changing `global.css`.
+
+Colour vocabulary is `ink` (grounds/surfaces), `ivory` (text), `champagne` (accent). **`champagne` is never a text colour** — accented copy uses `text-champagne-on`. `global.css` duplicates the values in `constants/journalTheme.ts` / `constants/noctaliaDesign.ts` by design: unmigrated screens read the TS constants, migrated screens read the CSS variables, and both must be changed together. Colour values passed as props (LinearGradient, icons, charts) legitimately stay on `useTheme()`.
+
+Uniwind and `StyleSheet` coexist — migration is incremental, but a single component is migrated fully or not at all. See `specs/uniwind-migration-guide.md` and `specs/adr-001-nativewind-vs-uniwind.md`.
+
+Motion primitives live in `components/motion/` (`PressableScale`, `Reveal`, and the `DURATION`/`EASE`/`SPRING` tokens mirroring `constants/animations.ts`). Use the `animate-expo` skill before adding any animation and apply its frequency gate — high-frequency interactions (tab switches, toggles, scrolling) get no animation, and tabs never slide.
+
 ### Internationalization & Theming
 i18n in `lib/i18n.ts` + `lib/i18n/` with `useTranslation()`; language preference in `LanguageContext` (`AppLanguage = en|fr|es|de|it|pt`). Marketing-site locales are separate, under `docs-src/locales/` (including `pt-br`). Theming via `ThemeContext` (light/dark/auto) with constants in `constants/theme.ts` and `ThemedView`/`ThemedText` components.
 

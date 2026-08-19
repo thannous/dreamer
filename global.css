@@ -1,0 +1,275 @@
+/**
+ * Uniwind / Tailwind v4 entry point for Noctalia.
+ *
+ * Vocabulary follows specs/noctalia-meditation.md §5.5 so both Noctalia apps name the
+ * same colour the same way:
+ *   ink       -> the night itself: backgrounds, cards, panels
+ *   ivory     -> everything written on it
+ *   champagne -> the gold accent
+ *
+ * Values are copied from the existing source of truth and must stay in step with it:
+ *   colors     -> constants/journalTheme.ts (DarkTheme / LightTheme)
+ *   surfaces   -> constants/noctaliaDesign.ts (getNoctaliaDesignTokens)
+ *   fonts      -> constants/theme.ts (Fonts)
+ *   motion     -> constants/animations.ts
+ * Screens still on StyleSheet read the TS constants; screens on Uniwind read these
+ * variables. Change one, change the other.
+ *
+ * NON-NEGOTIABLE: `champagne` (#D4A574) is a fill and rule colour. It is never text.
+ * Text and icons use `champagne-on`, which is WCAG AA on both grounds.
+ */
+@import 'tailwindcss';
+@import 'uniwind';
+
+/* Scan roots.
+   Tailwind v4 also auto-detects sources from this file's directory (the repo root), so
+   the negative rules below are load-bearing: without them it compiles utilities out of
+   prose in Markdown, generated marketing HTML and E2E flows. That is not merely wasteful
+   — a class quoted in documentation as an EXAMPLE OF A MISTAKE becomes a real rule in the
+   bundle. Keep this list in step when a top-level directory is added. */
+@source './app';
+@source './components';
+@source './context';
+@source './hooks';
+@source './lib';
+
+@source not './specs';
+@source not './docs';
+@source not './docs-src';
+@source not './marketing';
+@source not './data';
+@source not './scripts';
+@source not './script';
+@source not './supabase';
+@source not './maestro';
+@source not './tests';
+@source not './__mocks__';
+@source not './android';
+@source not './ios';
+@source not './doc_web_interne';
+@source not './MAQUETTE';
+@source not './assets';
+@source not './public';
+
+@theme {
+  /* ============================================================== typography ==
+     React Native resolves weight through the family name, not `font-weight`, so
+     each weight is its own token. */
+  --font-sans: 'SpaceGrotesk_400Regular';
+  --font-sans-medium: 'SpaceGrotesk_500Medium';
+  --font-sans-bold: 'SpaceGrotesk_700Bold';
+  --font-serif: 'Lora_400Regular';
+  --font-serif-italic: 'Lora_400Regular_Italic';
+  --font-serif-bold: 'Lora_700Bold';
+  --font-serif-bold-italic: 'Lora_700Bold_Italic'; /* the shareable-quote face */
+  --font-display: 'Fraunces_400Regular';
+  --font-display-medium: 'Fraunces_500Medium';
+  --font-display-semibold: 'Fraunces_600SemiBold';
+  --font-display-bold: 'Fraunces_700Bold';
+
+  /* Type scale — spec §5.3 */
+  --text-display: 34px;
+  --text-display--line-height: 40px;
+  --text-h1: 28px;
+  --text-h1--line-height: 34px;
+  --text-h2: 22px;
+  --text-h2--line-height: 28px;
+  --text-h3: 18px;
+  --text-h3--line-height: 24px;
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-overline: 11px;
+  --text-overline--line-height: 14px;
+  --text-overline--letter-spacing: 0.12em;
+
+  /* =================================================================== shape ==
+     Spec §5.4. `xl` is the card radius shared with GlassCardTokens.borderRadius. */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-artwork: 28px;
+  --radius-full: 999px;
+
+  /* Screen gutter, so no two screens drift apart */
+  --spacing-gutter: 20px;
+
+  /* ============================================================== breakpoints */
+  --breakpoint-tablet: 600px; /* TABLET_BREAKPOINT */
+  --breakpoint-desktop: 1024px; /* DESKTOP_BREAKPOINT */
+
+  /* ================================================================== motion ==
+     Mirrors constants/animations.ts. Press feedback sits below the 150 ms
+     perceptual floor; anything a finger touches uses a spring in JS instead. */
+  --duration-press: 120ms;
+  --duration-fast: 200ms;
+  --duration-normal: 400ms;
+  --duration-slow: 600ms;
+
+  /* Reanimated's built-in curves are too weak to read on a phone. */
+  --ease-out-ui: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-ui: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@layer theme {
+  :root {
+    /* ==================================================================== */
+    /* DARK — the primary palette: nocturnal ink under champagne gold        */
+    /* ==================================================================== */
+    @variant dark {
+      /* -- ink: grounds and surfaces ---------------------------------- */
+      --color-ink: #03040d; /* backgroundDark */
+      --color-ink-panel: #192344; /* backgroundSecondary */
+      --color-ink-card: rgba(13, 11, 28, 0.92); /* surface.base */
+      --color-ink-raised: rgba(18, 13, 35, 0.86); /* surface.raised */
+      --color-ink-active: rgba(25, 35, 68, 0.88); /* surface.active */
+      --color-ink-soft: rgba(255, 249, 239, 0.06); /* surface.soft */
+      --color-ink-solid: #0d0b1c; /* backgroundCard, opaque */
+      --color-ink-overlay: rgba(3, 4, 13, 0.72); /* surface.overlay */
+      --color-ink-nav: #050510; /* navbarBg */
+
+      /* -- ivory: everything written ---------------------------------- */
+      --color-ivory: #fff9ef; /* textPrimary */
+      --color-ivory-muted: #b7aec9; /* textSecondary */
+      --color-ivory-faint: #8e84a7; /* textTertiary */
+      --color-ivory-disabled: rgba(255, 249, 239, 0.44);
+
+      /* -- champagne: the accent -------------------------------------- */
+      --color-champagne: #d4a574; /* fills and rules ONLY */
+      --color-champagne-on: #ead4b4; /* the readable one — text and icons */
+      --color-champagne-deep: #9a6332; /* pressed states, strong borders */
+      --color-champagne-soft: #ead4b4; /* hairlines, highlights */
+      --color-champagne-dim: rgba(234, 212, 180, 0.2); /* disabled fill */
+      --color-champagne-dim-line: rgba(234, 212, 180, 0.18); /* action.disabledBorder */
+      --color-on-champagne: #3b2412; /* text ON a gold surface */
+
+      /* -- lines ------------------------------------------------------- */
+      --color-line: #514637; /* divider */
+      --color-line-strong: rgba(234, 212, 180, 0.36);
+      --color-line-nav: #514637;
+      --color-timeline: #6b573d;
+
+      /* -- navigation -------------------------------------------------- */
+      --color-nav-active: #fff9ef;
+      --color-nav-inactive: #afa7bb;
+
+      /* -- status ------------------------------------------------------ */
+      --color-danger: rgba(159, 18, 57, 0.22);
+      --color-danger-line: rgba(253, 164, 175, 0.35);
+      --color-danger-on: #ffe4ea;
+      --color-danger-icon: #fda4af;
+      --color-success: rgba(22, 101, 52, 0.22);
+      --color-success-line: rgba(134, 239, 172, 0.28);
+      --color-success-on: #dcfce7;
+      --color-success-icon: #86efac;
+      --color-warning: rgba(154, 99, 50, 0.22);
+      --color-warning-line: rgba(234, 212, 180, 0.34);
+      --color-warning-on: #fff7d6;
+      --color-warning-icon: #ead4b4;
+
+      /* -- dream tags -------------------------------------------------- */
+      --color-tag-surreal: #7f6fa8;
+      --color-tag-mystical: #6c568f;
+      --color-tag-calm: #446b8c;
+      --color-tag-noir: #31354f;
+
+      /* -- atmosphere -------------------------------------------------- */
+      --color-particle: rgba(234, 212, 180, 0.22);
+      --color-star: rgba(234, 212, 180, 0.7);
+      --color-veil: rgba(25, 35, 68, 0.42);
+      --color-orbit: rgba(234, 212, 180, 0.24);
+      --color-horizon: rgba(255, 249, 239, 0.08);
+    }
+
+    /* ==================================================================== */
+    /* LIGHT — cream paper, for reading a dream minutes after waking         */
+    /* ==================================================================== */
+    @variant light {
+      --color-ink: #fbfaf7;
+      --color-ink-panel: #f3efe7;
+      --color-ink-card: #fffdf8;
+      --color-ink-raised: #fffdf8;
+      --color-ink-active: #f3efe7;
+      --color-ink-soft: #f3efe7;
+      --color-ink-solid: #fffdf8;
+      --color-ink-overlay: rgba(251, 250, 247, 0.92);
+      --color-ink-nav: #fbfaf7;
+
+      --color-ivory: #2a2838;
+      --color-ivory-muted: #6b6880;
+      --color-ivory-faint: #6f6c84;
+      --color-ivory-disabled: rgba(42, 40, 56, 0.45);
+
+      --color-champagne: #d4a574;
+      --color-champagne-on: #9a6332; /* never `champagne` as text on cream */
+      --color-champagne-deep: #9a6332;
+      --color-champagne-soft: #ead4b4;
+      --color-champagne-dim: rgba(212, 165, 116, 0.28);
+      --color-champagne-dim-line: rgba(154, 99, 50, 0.18); /* action.disabledBorder */
+      --color-on-champagne: #4a2f1b;
+
+      --color-line: #e4ddd2;
+      --color-line-strong: #e4ddd2;
+      --color-line-nav: #e8e2d8;
+      --color-timeline: #e7ded0;
+
+      --color-nav-active: #2a2838;
+      --color-nav-inactive: #6f6c84;
+
+      --color-danger: #fff1f2;
+      --color-danger-line: #fda4af;
+      --color-danger-on: #9f1239;
+      --color-danger-icon: #be123c;
+      --color-success: #ecfdf3;
+      --color-success-line: #bbf7d0;
+      --color-success-on: #166534;
+      --color-success-icon: #16a34a;
+      --color-warning: #fef3c7;
+      --color-warning-line: #f59e0b;
+      --color-warning-on: #92400e;
+      --color-warning-icon: #d97706;
+
+      --color-tag-surreal: #b8aecb;
+      --color-tag-mystical: #c5b8d8;
+      --color-tag-calm: #a5c4e0;
+      --color-tag-noir: #a8a8c0;
+
+      --color-particle: rgba(212, 165, 116, 0.34);
+      --color-star: rgba(154, 99, 50, 0.45);
+      --color-veil: rgba(243, 239, 231, 0.72);
+      --color-orbit: rgba(154, 99, 50, 0.18);
+      --color-horizon: rgba(154, 99, 50, 0.1);
+    }
+  }
+}
+
+/* ==========================================================================
+   Composite utilities — the shapes that repeat on every Noctalia screen.
+   ========================================================================== */
+
+/** The standard card. Use this, not GlassCard, inside anything that scrolls. */
+@utility card {
+  background-color: var(--color-ink-card);
+  border-width: 1px;
+  border-color: var(--color-line);
+  border-radius: var(--radius-xl);
+}
+
+/** Screen gutter, so no two screens drift apart. */
+@utility gutter {
+  padding-left: var(--spacing-gutter);
+  padding-right: var(--spacing-gutter);
+}
+
+/** Small-caps label. Pair with `font-sans-medium text-ivory-faint`. */
+@utility overline {
+  font-size: var(--text-overline);
+  line-height: var(--text-overline--line-height);
+  letter-spacing: var(--text-overline--letter-spacing);
+  text-transform: uppercase;
+}

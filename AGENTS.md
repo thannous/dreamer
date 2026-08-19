@@ -16,6 +16,26 @@ Noctalia is an Expo/React Native dream-journal app with a Supabase backend and a
 
 Cloudflare Pages builds `docs/` from tracked sources on `master`; verify the branch and deployment intent before publishing.
 
+## Styling and Motion
+
+- Styling is **Uniwind** (Tailwind v4 bindings for React Native). Tokens live in `global.css`
+  and nowhere else; `metro.config.js` wraps the config with `withUniwindConfig` as the
+  outermost wrapper. See `specs/uniwind-migration-guide.md` and `specs/adr-001-nativewind-vs-uniwind.md`.
+- Colour vocabulary: `ink` (grounds and surfaces), `ivory` (text), `champagne` (accent).
+  **`champagne` is never a text colour** — accented copy uses `text-champagne-on`, which is
+  WCAG AA on both grounds.
+- `global.css` and `constants/journalTheme.ts` / `constants/noctaliaDesign.ts` are kept in
+  step by hand: screens still on `StyleSheet` read the TS constants, migrated screens read the
+  CSS variables. Change a colour in one, change it in the other.
+- Uniwind and `StyleSheet` coexist; migration is incremental. Migrate a component fully or not
+  at all — a component half in `className` is where contrast and spacing regressions hide.
+- Colour values passed as *props* (LinearGradient `colors`, icon `color=`, chart colours) stay
+  on `useTheme()`. That is expected, not debt.
+- Motion primitives are in `components/motion/` (`PressableScale`, `Reveal`, `DURATION`, `EASE`,
+  `SPRING`). Run the `animate-expo` skill before writing any animation and apply its frequency
+  gate — most things should not animate. Tabs never slide.
+- After editing `global.css`, run `npm run uniwind:types`.
+
 ## Operating Principles
 
 1. When explaining something to the user, use the Visualize skill

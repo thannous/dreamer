@@ -1,11 +1,11 @@
 import { router } from 'expo-router';
 import React, { memo, useCallback, useMemo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Text, View, type ViewStyle } from 'react-native';
 
 import { FlatGlassCard } from '@/components/inspiration/GlassCard';
+import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
@@ -17,7 +17,14 @@ type Props = {
   reading: PersonalReading;
   /** Next scheduled reminder, already formatted, or null when reminders are off. */
   nextReminderText: string | null;
+  /**
+   * `false` when the card sits inside a `Reveal` that already plays the entrance —
+   * two entrances on one surface read as a stutter.
+   */
+  animateOnMount?: boolean;
 };
+
+const ROW_CLASS = 'flex-row items-center gap-3 border-t-[length:hairlineWidth()] border-t-line py-3';
 
 /**
  * "Reading of the day": three lines derived from the user's own journal —
@@ -25,7 +32,11 @@ type Props = {
  * link to the weekly recap. Replaces the generic tips that used to fill the
  * home screen for every user forever.
  */
-export const PersonalReadingCard = memo(function PersonalReadingCard({ reading, nextReminderText }: Props) {
+export const PersonalReadingCard = memo(function PersonalReadingCard({
+  reading,
+  nextReminderText,
+  animateOnMount = true,
+}: Props) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
@@ -63,6 +74,21 @@ export const PersonalReadingCard = memo(function PersonalReadingCard({ reading, 
     router.push(WEEKLY_RECAP_ROUTE);
   }, []);
 
+  /**
+   * `FlatGlassCard` takes a `ViewStyle`, not a `className`, and merges it *after* its
+   * own frame — so the card's shape has to stay a style object to keep overriding it.
+   */
+  const cardStyle = useMemo<ViewStyle>(
+    () => ({
+      borderRadius: 24,
+      borderWidth: 1,
+      overflow: 'hidden',
+      backgroundColor: noctalia.surface.raised,
+      borderColor: noctalia.surface.border,
+    }),
+    [noctalia.surface.raised, noctalia.surface.border],
+  );
+
   const rows = [
     {
       key: 'recurring',
@@ -93,26 +119,32 @@ export const PersonalReadingCard = memo(function PersonalReadingCard({ reading, 
   return (
     <FlatGlassCard
       intensity="strong"
-      style={StyleSheet.flatten([
-        styles.card,
-        { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
-      ])}
+      style={cardStyle}
+      animateOnMount={animateOnMount}
       testID={TID.Component.PersonalReading}
     >
-      <View style={styles.inner}>
-        <View style={styles.header}>
-          <Text style={[styles.eyebrow, { color: noctalia.accent.text }]}>{t('inspiration.reading.eyebrow')}</Text>
-          <Text style={[styles.title, { color: noctalia.text.primary }]}>{t('inspiration.reading.title')}</Text>
+      <View className="px-5 pb-3 pt-[18px]">
+        <View className="mb-2 gap-1">
+          <Text className="font-sans-bold text-[12px] uppercase tracking-[1.4px] text-champagne-on">
+            {t('inspiration.reading.eyebrow')}
+          </Text>
+          <Text className="font-display-semibold text-[22px] leading-7 text-ivory">
+            {t('inspiration.reading.title')}
+          </Text>
         </View>
         {rows.map((row) => {
           const content = (
             <>
-              <View style={[styles.rowIcon, { backgroundColor: noctalia.surface.soft }]}>
+              <View className="h-[30px] w-[30px] items-center justify-center rounded-[15px] bg-ink-soft">
                 <IconSymbol name={row.icon} size={16} color={noctalia.accent.text} />
               </View>
-              <View style={styles.rowCopy}>
-                <Text style={[styles.rowLabel, { color: noctalia.text.secondary }]}>{row.label}</Text>
-                <Text style={[styles.rowValue, { color: noctalia.text.primary }]} numberOfLines={2} testID={row.testID}>
+              <View className="flex-1 gap-0.5">
+                <Text className="font-sans text-[12px] text-ivory-muted">{row.label}</Text>
+                <Text
+                  className="font-sans-bold text-[15px] leading-5 text-ivory"
+                  numberOfLines={2}
+                  testID={row.testID}
+                >
                   {row.value}
                 </Text>
               </View>
@@ -122,100 +154,33 @@ export const PersonalReadingCard = memo(function PersonalReadingCard({ reading, 
             </>
           );
           return row.onPress ? (
-            <Pressable
+            <PressableScale
               key={row.key}
               accessibilityRole="button"
               onPress={row.onPress}
               testID={TID.Button.PersonalReadingNext}
-              style={({ pressed }) => [styles.row, { borderTopColor: noctalia.surface.border }, pressed && styles.pressed]}
+              className={ROW_CLASS}
             >
               {content}
-            </Pressable>
+            </PressableScale>
           ) : (
-            <View key={row.key} style={[styles.row, { borderTopColor: noctalia.surface.border }]}>
+            <View key={row.key} className={ROW_CLASS}>
               {content}
             </View>
           );
         })}
-        <Pressable
+        <PressableScale
           accessibilityRole="button"
           onPress={handleOpenRecap}
           testID={TID.Button.PersonalReadingRecap}
-          style={({ pressed }) => [styles.recapLink, pressed && styles.pressed]}
+          className="flex-row items-center gap-1.5 self-start py-2"
         >
-          <Text style={[styles.recapLabel, { color: noctalia.accent.text }]}>{t('inspiration.reading.recap_cta')}</Text>
+          <Text className="font-sans-bold text-[14px] text-champagne-on">
+            {t('inspiration.reading.recap_cta')}
+          </Text>
           <IconSymbol name="chevron.right" size={14} color={noctalia.accent.text} />
-        </Pressable>
+        </PressableScale>
       </View>
     </FlatGlassCard>
   );
-});
-
-const styles = StyleSheet.create({
-  card: {
-    borderRadius: 24,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  inner: {
-    paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 12,
-  },
-  header: {
-    gap: 4,
-    marginBottom: 8,
-  },
-  eyebrow: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
-    letterSpacing: 1.4,
-    textTransform: 'uppercase',
-  },
-  title: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 22,
-    lineHeight: 28,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
-  rowIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  rowCopy: {
-    flex: 1,
-    gap: 2,
-  },
-  rowLabel: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
-  },
-  rowValue: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
-    lineHeight: 20,
-  },
-  recapLink: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    alignSelf: 'flex-start',
-    paddingVertical: 8,
-  },
-  recapLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 14,
-  },
-  pressed: {
-    opacity: 0.85,
-  },
 });

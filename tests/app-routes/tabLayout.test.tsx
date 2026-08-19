@@ -58,24 +58,41 @@ jest.doMock('react-native', () => {
       create: <T extends Record<string, unknown>>(styles: T) => styles,
       flatten: flattenStyle,
     },
+    // `className` is resolved by Uniwind's Metro transformer, which Jest never runs, so
+    // it arrives here as an inert string. Exposing it lets these tests keep asserting the
+    // exact geometry — the pixel values now live in the class string instead of the
+    // resolved style object, and are just as explicit there.
     Text: ({
       children,
       maxFontSizeMultiplier,
       style,
+      className,
     }: {
       children?: React.ReactNode;
       maxFontSizeMultiplier?: number;
       style?: unknown;
+      className?: string;
     }) => (
       <span
         data-max-font-size-multiplier={maxFontSizeMultiplier}
         data-native-style={JSON.stringify(flattenStyle(style))}
+        data-native-class={className}
       >
         {children}
       </span>
     ),
-    View: ({ children, style }: { children?: React.ReactNode; style?: unknown }) => (
-      <div data-native-style={JSON.stringify(flattenStyle(style))}>{children}</div>
+    View: ({
+      children,
+      style,
+      className,
+    }: {
+      children?: React.ReactNode;
+      style?: unknown;
+      className?: string;
+    }) => (
+      <div data-native-style={JSON.stringify(flattenStyle(style))} data-native-class={className}>
+        {children}
+      </div>
     ),
     useWindowDimensions: () => ({
       width: mockWindowWidth,
@@ -240,17 +257,17 @@ describe('TabLayout returning guest navigation', () => {
         'nav.stats',
         'nav.settings',
       ].map((label) => screen.getByText(label));
-      const centerStyle = screen.getByText('nav.capture_dream').parentElement?.getAttribute(
-        'data-native-style'
+      const centerClass = screen.getByText('nav.capture_dream').parentElement?.getAttribute(
+        'data-native-class'
       );
 
-      expect(centerStyle).toContain('"width":64');
-      expect(centerStyle).toContain('"height":68');
+      expect(centerClass).toContain('w-[64px]');
+      expect(centerClass).toContain('h-[68px]');
       labels.forEach((label) => {
         expect(label.getAttribute('data-max-font-size-multiplier')).toBe('1.3');
-        expect(label.getAttribute('data-native-style')).toContain('"fontSize":11');
-        expect(label.getAttribute('data-native-style')).toContain('"width":"100%"');
-        expect(label.getAttribute('data-native-style')).toContain('"flexShrink":1');
+        expect(label.getAttribute('data-native-class')).toContain('text-[11px]');
+        expect(label.getAttribute('data-native-class')).toContain('w-full');
+        expect(label.getAttribute('data-native-class')).toContain('shrink');
       });
     }
   );
@@ -263,16 +280,16 @@ describe('TabLayout returning guest navigation', () => {
     render(<TabLayout />);
 
     const centerLabel = screen.getByText('nav.capture_dream');
-    const centerStyle = centerLabel.parentElement?.getAttribute('data-native-style');
+    const centerClass = centerLabel.parentElement?.getAttribute('data-native-class');
 
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
       end: 22,
       paddingHorizontal: 8,
       start: 22,
     }));
-    expect(centerStyle).toContain('"width":72');
-    expect(centerStyle).toContain('"height":76');
-    expect(centerLabel.getAttribute('data-native-style')).toContain('"fontSize":12');
+    expect(centerClass).toContain('w-[72px]');
+    expect(centerClass).toContain('h-[76px]');
+    expect(centerLabel.getAttribute('data-native-class')).toContain('text-[12px]');
     expect(centerLabel.getAttribute('data-max-font-size-multiplier')).toBeNull();
   });
 });

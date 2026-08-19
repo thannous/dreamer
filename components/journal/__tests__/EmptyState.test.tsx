@@ -51,14 +51,27 @@ jest.mock('react-native', () => {
   };
 });
 
-jest.mock('react-native-reanimated', () => ({
-  __esModule: true,
-  default: {
-    View: ({ children, ...props }: { children?: React.ReactNode }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}));
+jest.mock('react-native-reanimated', () => {
+  const entering: Record<string, unknown> = {};
+  ['delay', 'duration', 'springify', 'withInitialValues', 'easing'].forEach((key) => {
+    entering[key] = () => entering;
+  });
+
+  return {
+    __esModule: true,
+    default: {
+      View: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+      createAnimatedComponent: (Component: unknown) => Component,
+    },
+    // `Reveal` and `PressableScale` (via `components/motion`) read these at module scope.
+    createAnimatedComponent: (Component: unknown) => Component,
+    cubicBezier: (...points: number[]) => `cubic-bezier(${points.join(', ')})`,
+    Easing: { bezier: () => (value: unknown) => value },
+    useReducedMotion: () => false,
+    FadeIn: entering,
+    FadeInDown: entering,
+  };
+});
 
 jest.mock('react-native-svg', () => {
   const React = require('react');
@@ -86,10 +99,6 @@ jest.mock('@/context/ThemeContext', () => ({
       textTertiary: '#8f88a6',
     },
   }),
-}));
-
-jest.mock('@/hooks/useJournalAnimations', () => ({
-  useFadeInUp: () => ({}),
 }));
 
 jest.mock('@/hooks/useTranslation', () => ({

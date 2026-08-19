@@ -1,10 +1,9 @@
 import React, { memo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Text, View, type ViewStyle } from 'react-native';
 
+import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ThemeLayout } from '@/constants/journalTheme';
 import type { NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 
 /**
  * The paid gate the audit asked for (§7.1): show the count, lock the detail.
@@ -19,6 +18,12 @@ import { Fonts } from '@/constants/theme';
  * look different if there is nothing to make them differ.
  */
 
+/**
+ * `borderCurve` has no Tailwind token and `global.css` does not define one, so the iOS
+ * continuous corner stays a style object rather than silently disappearing from the port.
+ */
+const CONTINUOUS_CORNERS: ViewStyle = { borderCurve: 'continuous' };
+
 export type StatsLockedPreviewRow = {
   id: string;
   /**
@@ -30,6 +35,10 @@ export type StatsLockedPreviewRow = {
 };
 
 export type StatsLockedSectionProps = {
+  /**
+   * Surfaces and copy read `global.css` since the Uniwind port; this still carries the
+   * icon colours, which are values passed to a native prop rather than styles.
+   */
   noctalia: NoctaliaDesignTokens;
   /** Already translated. The honest, computed count line. */
   countLabel: string;
@@ -56,61 +65,63 @@ export const StatsLockedSection = memo(function StatsLockedSection({
   ctaTestID,
 }: StatsLockedSectionProps) {
   return (
+    // Mirrors `profilePlusPreview` in app/(tabs)/statistics.tsx — the visual reference the
+    // contract names.
     <View
-      style={[
-        styles.card,
-        { borderColor: noctalia.surface.borderStrong, backgroundColor: noctalia.surface.soft },
-      ]}
+      className="border rounded-[18px] p-3.5 gap-3 border-line-strong bg-ink-soft"
+      style={CONTINUOUS_CORNERS}
       testID={testID}
     >
-      <View style={styles.header}>
+      <View className="flex-row items-center gap-2">
         <IconSymbol name="lock.fill" size={16} color={noctalia.accent.text} />
-        <Text style={[styles.count, { color: noctalia.text.primary }]}>{countLabel}</Text>
+        <Text className="flex-1 text-[15px] leading-5 font-sans-bold text-ivory">{countLabel}</Text>
       </View>
-      <Text style={[styles.body, { color: noctalia.text.secondary }]}>{bodyLabel}</Text>
+      <Text className="text-[13px] leading-[18px] font-sans text-ivory-muted">{bodyLabel}</Text>
       <View
-        style={styles.preview}
+        className="gap-[9px]"
         // The bars are unlabelled on purpose; a screen reader announcing N nameless
         // progress bars is noise. The count line above is the text alternative.
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
       >
         {previewRows.map((row) => (
-          <View
-            key={row.id}
-            style={[styles.previewTrack, { backgroundColor: noctalia.surface.border }]}
-          >
+          <View key={row.id} className="h-1.5 rounded-[3px] overflow-hidden bg-line">
+            {/*
+              Deliberately stays muted, unlike StatsRankedList's bars which were raised to
+              full opacity. These widths are decorative — they encode nothing — so making
+              them as crisp as the real ones would read as data the user does not actually
+              have. The count above them is the honest number; these are texture.
+
+              And they never animate: growing a bar explains where a value came from, and
+              these values came from nowhere.
+            */}
             <View
-              style={[
-                styles.previewFill,
-                {
-                  width: `${Math.round(clampRatio(row.ratio) * 100)}%`,
-                  backgroundColor: row.color ?? noctalia.accent.base,
-                },
-              ]}
+              className="h-1.5 rounded-[3px] opacity-60 bg-champagne"
+              style={{
+                width: `${Math.round(clampRatio(row.ratio) * 100)}%`,
+                ...(row.color ? { backgroundColor: row.color } : null),
+              }}
             />
           </View>
         ))}
       </View>
-      <Pressable
+      <PressableScale
         accessibilityRole="button"
         accessibilityLabel={ctaLabel}
         testID={ctaTestID}
         onPress={onPress}
-        style={({ pressed }) => [
-          styles.cta,
-          { borderColor: noctalia.surface.borderStrong },
-          pressed && styles.pressed,
-        ]}
+        className="min-h-[42px] rounded-[15px] border px-3.5 flex-row items-center justify-center gap-2 self-start border-line-strong"
+        style={CONTINUOUS_CORNERS}
       >
-        <Text style={[styles.ctaText, { color: noctalia.accent.text }]}>{ctaLabel}</Text>
+        <Text className="text-[14px] font-sans-bold text-center text-champagne-on">{ctaLabel}</Text>
         <IconSymbol name="arrow.right" size={15} color={noctalia.accent.text} />
-      </Pressable>
+      </PressableScale>
     </View>
   );
 });
 
 export type StatsNotEnoughDataProps = {
+  /** Kept for the same reason as `StatsLockedSectionProps.noctalia`. */
   noctalia: NoctaliaDesignTokens;
   /** Already translated. */
   title: string;
@@ -130,101 +141,17 @@ export const StatsNotEnoughData = memo(function StatsNotEnoughData({
     <View
       accessible
       accessibilityLabel={`${title}. ${body}`}
-      style={[
-        styles.notEnough,
-        { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.soft },
-      ]}
+      className="border rounded-[18px] p-4 gap-1 items-center border-line bg-ink-soft"
+      style={CONTINUOUS_CORNERS}
       testID={testID}
     >
       <IconSymbol name="hourglass" size={18} color={noctalia.accent.text} />
-      <Text style={[styles.notEnoughTitle, { color: noctalia.text.primary }]}>{title}</Text>
-      <Text style={[styles.notEnoughBody, { color: noctalia.text.secondary }]}>{body}</Text>
+      <Text className="text-[16px] leading-[21px] font-display-semibold text-center text-ivory">
+        {title}
+      </Text>
+      <Text className="text-[13px] leading-[18px] font-sans text-center text-ivory-muted">
+        {body}
+      </Text>
     </View>
   );
-});
-
-const styles = StyleSheet.create({
-  // Mirrors `profilePlusPreview` in app/(tabs)/statistics.tsx — the visual reference the
-  // contract names.
-  card: {
-    borderWidth: 1,
-    borderRadius: 18,
-    borderCurve: 'continuous',
-    padding: 14,
-    gap: 12,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  count: {
-    flex: 1,
-    fontSize: 15,
-    lineHeight: 20,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-  body: {
-    fontSize: 13,
-    lineHeight: 18,
-    fontFamily: Fonts.spaceGrotesk.regular,
-  },
-  preview: {
-    gap: 9,
-  },
-  previewTrack: {
-    height: 6,
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  // Deliberately stays muted, unlike StatsRankedList's bars which were raised to full
-  // opacity. These widths are decorative — they encode nothing — so making them as crisp
-  // as the real ones would read as data the user does not actually have. The count above
-  // them is the honest number; these are texture.
-  previewFill: {
-    height: 6,
-    borderRadius: 3,
-    opacity: 0.6,
-  },
-  cta: {
-    minHeight: 42,
-    borderRadius: 15,
-    borderCurve: 'continuous',
-    borderWidth: 1,
-    paddingHorizontal: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    alignSelf: 'flex-start',
-  },
-  ctaText: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    textAlign: 'center',
-  },
-  pressed: {
-    opacity: 0.82,
-    transform: [{ scale: 0.98 }],
-  },
-  notEnough: {
-    borderWidth: 1,
-    borderRadius: 18,
-    borderCurve: 'continuous',
-    padding: ThemeLayout.spacing.md,
-    gap: ThemeLayout.spacing.xs,
-    alignItems: 'center',
-  },
-  notEnoughTitle: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontFamily: Fonts.fraunces.semiBold,
-    textAlign: 'center',
-  },
-  notEnoughBody: {
-    fontSize: 13,
-    lineHeight: 18,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    textAlign: 'center',
-  },
 });

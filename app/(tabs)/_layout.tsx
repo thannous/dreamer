@@ -1,6 +1,6 @@
 import { Tabs, router, useSegments } from 'expo-router';
 import React, { useMemo } from 'react';
-import { ActivityIndicator, Platform, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, Platform, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
@@ -12,7 +12,6 @@ import {
   getTabBarHorizontalLayout,
 } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
 import { useStartupRoute } from '@/context/StartupRouteContext';
@@ -42,11 +41,9 @@ function TabBarItem({ label, icon, focused, palette, compact, narrow }: {
 }) {
   return (
     <View
-      style={[
-        styles.tabItem,
-        compact && styles.tabItemCompact,
-        narrow && styles.tabItemNarrow,
-      ]}
+      className={`flex-1 min-w-0 items-center justify-center ${
+        compact ? 'gap-[1px]' : narrow ? 'gap-[4px]' : 'gap-[5px]'
+      }`}
     >
       <IconSymbol
         size={24}
@@ -54,12 +51,10 @@ function TabBarItem({ label, icon, focused, palette, compact, narrow }: {
         color={focused ? palette.textActive : palette.text}
       />
       <Text
-        style={[
-          styles.tabLabel,
-          compact && styles.tabLabelCompact,
-          narrow && styles.tabLabelNarrow,
-          { color: focused ? palette.textActive : palette.text },
-        ]}
+        className={`w-full min-w-0 shrink text-center font-sans-medium ${
+          compact ? 'text-[11px]' : narrow ? 'text-[11px] px-[1px]' : 'text-[12px]'
+        }`}
+        style={{ color: focused ? palette.textActive : palette.text }}
         numberOfLines={1}
         ellipsizeMode="tail"
         adjustsFontSizeToFit
@@ -83,10 +78,21 @@ function AddDreamTabItem({ label, palette, compact, narrow }: {
   return (
     <View
       accessibilityState={activeAnalysis ? { busy: true } : undefined}
+      className={`items-center justify-center border-2 ${
+        compact
+          ? 'w-[60px] h-[56px] rounded-[22px] gap-[1px]'
+          : narrow
+            ? 'w-[64px] h-[68px] rounded-[24px] gap-[3px]'
+            : 'w-[72px] h-[76px] rounded-[27px] gap-[4px]'
+      }`}
       style={[
-        styles.addTabItem,
-        compact && styles.addTabItemCompact,
-        narrow && styles.addTabItemNarrow,
+        // The lift stays a real transform: Tailwind v4 emits `translate` through CSS
+        // variables and Uniwind resolves that declaration by splitting the string, so
+        // `-translate-y-2` is not safe here. Shadows stay too — RN spreads them over
+        // shadow*/elevation, which has no single Tailwind equivalent, and the colour
+        // is derived from the palette.
+        ADD_TAB_LIFT[compact ? 'compact' : narrow ? 'narrow' : 'default'],
+        ADD_TAB_SHADOW,
         {
           backgroundColor: palette.accent,
           borderColor: palette.accentLight,
@@ -95,7 +101,9 @@ function AddDreamTabItem({ label, palette, compact, narrow }: {
       ]}
     >
       <View
-        style={[styles.addTabIconShell, compact && styles.addTabIconShellCompact]}
+        className={`w-[32px] rounded-[16px] items-center justify-center ${
+          compact ? 'h-[26px]' : 'h-[30px]'
+        }`}
       >
         {activeAnalysis ? (
           <ActivityIndicator size="small" color={palette.textOnAccentSurface} />
@@ -108,12 +116,10 @@ function AddDreamTabItem({ label, palette, compact, narrow }: {
         )}
       </View>
       <Text
-        style={[
-          styles.addTabLabel,
-          compact && styles.addTabLabelCompact,
-          narrow && styles.addTabLabelNarrow,
-          { color: palette.textOnAccentSurface },
-        ]}
+        className={`w-full min-w-0 shrink text-center font-sans-bold ${
+          compact ? 'text-[11px]' : narrow ? 'text-[11px]' : 'text-[12px]'
+        }`}
+        style={{ color: palette.textOnAccentSurface }}
         numberOfLines={1}
         ellipsizeMode="tail"
         adjustsFontSizeToFit
@@ -143,7 +149,8 @@ export default function TabLayout() {
     return (
       <View
         importantForAccessibility="no-hide-descendants"
-        style={[styles.startupPlaceholder, { backgroundColor: noctalia.screen.background }]}
+        className="flex-1"
+        style={{ backgroundColor: noctalia.screen.background }}
       />
     );
   }
@@ -197,6 +204,10 @@ export default function TabLayout() {
   const tabs = (
     <Tabs
       screenOptions={{
+        // Tabs are peers, not a hierarchy, and the user pays for this transition dozens
+        // of times a session. `none` is also the navigator default — pinned explicitly so
+        // a future default change cannot start sliding the most-used surface in the app.
+        animation: 'none',
         sceneStyle: {
           backgroundColor: noctalia.screen.background,
         },
@@ -298,9 +309,9 @@ export default function TabLayout() {
   // Desktop web layout with sidebar
   if (isDesktopWeb) {
     return (
-      <View style={styles.desktopContainer}>
+      <View className="flex-1 flex-row">
         <DesktopSidebar />
-        <View style={styles.desktopContent}>
+        <View className="flex-1">
           {tabs}
         </View>
       </View>
@@ -314,96 +325,26 @@ export default function TabLayout() {
   );
 }
 
-const styles = StyleSheet.create({
-  startupPlaceholder: {
-    flex: 1,
-  },
-  desktopContainer: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  desktopContent: {
-    flex: 1,
-  },
-  tabItem: {
-    flex: 1,
-    minWidth: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-  },
-  tabItemCompact: {
-    gap: 1,
-  },
-  tabItemNarrow: {
-    gap: 4,
-  },
-  tabLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
-    width: '100%',
-    minWidth: 0,
-    flexShrink: 1,
-    textAlign: 'center',
-  },
-  tabLabelCompact: {
-    fontSize: 11,
-  },
-  tabLabelNarrow: {
-    fontSize: 11,
-    paddingHorizontal: 1,
-  },
-  addTabItem: {
-    width: 72,
-    height: 76,
-    borderRadius: 27,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 4,
-    transform: [{ translateY: -8 }],
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.24,
-    shadowRadius: 14,
-    elevation: 8,
-  },
-  addTabItemCompact: {
-    width: 60,
-    height: 56,
-    borderRadius: 22,
-    gap: 1,
-    transform: [{ translateY: -4 }],
-  },
-  addTabItemNarrow: {
-    width: 64,
-    height: 68,
-    borderRadius: 24,
-    gap: 3,
-    transform: [{ translateY: -6 }],
-  },
-  addTabIconShell: {
-    width: 32,
-    height: 30,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addTabIconShellCompact: {
-    height: 26,
-  },
-  addTabLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
-    width: '100%',
-    minWidth: 0,
-    flexShrink: 1,
-    textAlign: 'center',
-  },
-  addTabLabelCompact: {
-    fontSize: 11,
-  },
-  addTabLabelNarrow: {
-    fontSize: 11,
-    paddingHorizontal: 1,
-  },
-});
+/**
+ * The capture button's lift. This stays a real `transform` rather than a
+ * `-translate-y-*` class: Tailwind v4 emits `translate` through CSS variables and
+ * Uniwind resolves that declaration by splitting the string, so the variable form
+ * would not survive. Everything else on this button is a className.
+ */
+const ADD_TAB_LIFT = {
+  default: { transform: [{ translateY: -8 }] },
+  compact: { transform: [{ translateY: -4 }] },
+  narrow: { transform: [{ translateY: -6 }] },
+} satisfies Record<string, ViewStyle>;
+
+/**
+ * React Native spreads a shadow across `shadow*` plus Android `elevation`; Tailwind's
+ * single `box-shadow` does not map onto that without changing how Android renders it.
+ * The colour is per-theme, so it is merged at the call site.
+ */
+const ADD_TAB_SHADOW = {
+  shadowOffset: { width: 0, height: 8 },
+  shadowOpacity: 0.24,
+  shadowRadius: 14,
+  elevation: 8,
+} satisfies ViewStyle;

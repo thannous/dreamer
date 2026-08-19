@@ -1,8 +1,6 @@
+import { PressableScale } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { ThemeLayout, getTagColor } from '@/constants/journalTheme';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
-import { useScalePress } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import { areDreamMemoryMetadataEqual, getDreamSyncState } from '@/lib/dreamUtils';
@@ -13,8 +11,7 @@ import { getDreamImageVersion, getDreamThumbnailUri, getImageConfig, withCacheBu
 import { DreamAnalysis } from '@/lib/types';
 import { Image } from 'expo-image';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import Animated from 'react-native-reanimated';
+import { Text, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export type DreamCardVariant = 'standard' | 'featured';
@@ -30,8 +27,34 @@ interface DreamCardProps {
   variant?: DreamCardVariant;
 }
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const failedThumbnailUris = new Set<string>();
+
+/** expo-image is not a Uniwind component, so its fill style stays an object. */
+const CARD_IMAGE_STYLE = { width: '100%', height: '100%' } as const;
+
+/** Tag colours have to resolve to a literal class so Tailwind can see them. */
+const THEME_TAG_CLASS: Record<string, string> = {
+  surreal: 'bg-tag-surreal',
+  mystical: 'bg-tag-mystical',
+  calm: 'bg-tag-calm',
+  noir: 'bg-tag-noir',
+};
+
+const BADGE_CLASS: Record<'accent' | 'secondary' | 'warning' | 'danger', string> = {
+  accent: 'bg-champagne',
+  secondary: 'bg-ink-soft',
+  warning: 'bg-warning',
+  danger: 'bg-danger',
+};
+
+const BADGE_TEXT_CLASS: Record<'accent' | 'secondary' | 'warning' | 'danger', string> = {
+  accent: 'text-on-champagne',
+  secondary: 'text-ivory',
+  warning: 'text-warning-on',
+  danger: 'text-danger-on',
+};
+
+const CARD_CLASS = 'overflow-hidden rounded-md border border-continuous border-line bg-ink-raised';
 
 export const DreamCard = memo(function DreamCard({
   dream,
@@ -43,8 +66,6 @@ export const DreamCard = memo(function DreamCard({
 }: DreamCardProps) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const cardBg = noctalia.surface.raised;
-  const { animatedStyle, onPressIn, onPressOut } = useScalePress();
   const { t } = useTranslation();
   const handlePress = useCallback(() => {
     onPress(dream.id);
@@ -165,17 +186,7 @@ export const DreamCard = memo(function DreamCard({
     return list;
   }, [hasImage, isAnalyzed, isExplored, isFavorite, isRemembered, syncState, t]);
 
-  const imageHeight = isFeatured ? 200 : 160;
-  const getBadgeBackgroundColor = useCallback(
-    (variant: 'accent' | 'secondary' | 'warning' | 'danger') => {
-      if (variant === 'accent') return noctalia.action.primary;
-      if (variant === 'danger') return noctalia.status.danger.background;
-      if (variant === 'warning') return noctalia.status.warning.background;
-      return noctalia.surface.soft;
-    },
-    [noctalia]
-  );
-  const getBadgeTextColor = useCallback(
+  const getBadgeIconColor = useCallback(
     (variant: 'accent' | 'secondary' | 'warning' | 'danger') => {
       if (variant === 'accent') return noctalia.action.primaryText;
       if (variant === 'danger') return noctalia.status.danger.text;
@@ -185,204 +196,135 @@ export const DreamCard = memo(function DreamCard({
     [noctalia]
   );
 
+  const badgeList = badges.map((badge, i) => {
+    const key = badge.label || badge.icon || String(i);
+
+    return (
+      <View
+        key={key}
+        className={`flex-row items-center gap-1 rounded-full border-continuous px-2.5 py-1 ${BADGE_CLASS[badge.variant]}`}
+        accessibilityLabel={badge.label}
+        accessible={!!badge.label}
+      >
+        {badge.icon && (
+          <IconSymbol name={badge.icon} size={14} color={getBadgeIconColor(badge.variant)} />
+        )}
+        {badge.label && (
+          <Text className={`font-sans-medium text-[11px] ${BADGE_TEXT_CLASS[badge.variant]}`}>
+            {badge.label}
+          </Text>
+        )}
+      </View>
+    );
+  });
+
+  const themeTag = dream.theme ? (
+    <View
+      className={`rounded-full border-continuous px-2 py-1 ${
+        THEME_TAG_CLASS[dream.theme] ?? THEME_TAG_CLASS.surreal
+      }`}
+    >
+      <Text className="font-sans text-[12px] text-ivory">{themeLabel}</Text>
+    </View>
+  ) : null;
+
   // Vertical layout: image on top (cards with images)
   if (hasImage) {
     return (
-      <Animated.View>
-        <AnimatedPressable
-          style={[styles.cardVertical, { backgroundColor: cardBg, borderColor: noctalia.surface.border, borderWidth: 1 }, animatedStyle]}
-          onPress={handlePress}
-          onPressIn={onPressIn}
-          onPressOut={onPressOut}
-          accessibilityRole="button"
-          accessibilityLabel={dream.title || t('journal.card.accessibility.open')}
-          testID={testID}
-        >
-          <View style={[styles.verticalImageContainer, { height: imageHeight }]}>
-            <Image
-              source={{ uri: imageUri }}
-              style={styles.image}
-              contentFit={imageConfig.contentFit}
-              transition={imageTransition}
-              cachePolicy={imageConfig.cachePolicy}
-              priority={imagePriority}
-              recyclingKey={imageRecyclingKey}
-              onError={() => {
-                if (trimmedThumbnailUri && trimmedThumbnailUri !== fullImageUri) {
-                  failedThumbnailUris.add(trimmedThumbnailUri);
-                }
-                if (!preferFullImage && fullImageUri && imageUri !== fullImageUri) {
-                  setUseFullImage(true);
-                }
-              }}
-              placeholder={imagePlaceholder}
-            />
-            {/* Heart overlay for favorited dreams */}
-            {isFavorite && (
-              <View style={[styles.favoriteOverlay, { backgroundColor: noctalia.surface.overlay }]}>
-                <IconSymbol name="heart.fill" size={18} color={noctalia.accent.soft} />
-              </View>
-            )}
-          </View>
-          <View style={styles.verticalContent}>
-            {dateLabel && (
-              <Text style={[styles.dateOverline, { color: noctalia.text.tertiary }]}>
-                {dateLabel}
-              </Text>
-            )}
-            <Text
-              style={[
-                isFeatured ? styles.titleFeatured : styles.title,
-                { color: noctalia.text.primary },
-              ]}
-              numberOfLines={isFeatured ? 2 : 1}
-            >
-              {dream.title}
+      <PressableScale
+        className={CARD_CLASS}
+        onPress={handlePress}
+        accessibilityRole="button"
+        accessibilityLabel={dream.title || t('journal.card.accessibility.open')}
+        testID={testID}
+      >
+        <View className={`w-full overflow-hidden ${isFeatured ? 'h-[200px]' : 'h-[160px]'}`}>
+          <Image
+            source={{ uri: imageUri }}
+            style={CARD_IMAGE_STYLE}
+            contentFit={imageConfig.contentFit}
+            transition={imageTransition}
+            cachePolicy={imageConfig.cachePolicy}
+            priority={imagePriority}
+            recyclingKey={imageRecyclingKey}
+            onError={() => {
+              if (trimmedThumbnailUri && trimmedThumbnailUri !== fullImageUri) {
+                failedThumbnailUris.add(trimmedThumbnailUri);
+              }
+              if (!preferFullImage && fullImageUri && imageUri !== fullImageUri) {
+                setUseFullImage(true);
+              }
+            }}
+            placeholder={imagePlaceholder}
+          />
+          {/* Heart overlay for favorited dreams */}
+          {isFavorite && (
+            <View className="absolute right-2.5 top-2.5 h-8 w-8 items-center justify-center rounded-md border-continuous bg-ink-overlay">
+              <IconSymbol name="heart.fill" size={18} color={noctalia.accent.soft} />
+            </View>
+          )}
+        </View>
+        <View className="gap-2 p-4">
+          {dateLabel && (
+            <Text className="font-sans-medium text-[11px] uppercase text-ivory-faint">
+              {dateLabel}
             </Text>
-            {isFeatured && dream.shareableQuote ? (
-              <Text
-                style={[
-                  styles.shareableQuote,
-                  styles.fourLineExcerpt,
-                  { color: noctalia.text.secondary },
-                ]}
-                numberOfLines={4}
-              >
-                {dream.shareableQuote}
-              </Text>
-            ) : (
-              <Text
-                style={[
-                  styles.description,
-                  styles.fourLineExcerpt,
-                  { color: noctalia.text.secondary },
-                ]}
-                numberOfLines={4}
-              >
-                {dream.transcript}
-              </Text>
-            )}
-            {(dream.theme || badges.length > 0) && (
-              <View style={styles.tagContainer}>
-                {dream.theme && (
-                  <View style={[styles.tag, { backgroundColor: getTagColor(dream.theme, colors) }]}>
-                    <Text style={[styles.tagText, { color: noctalia.text.primary }]}>{themeLabel}</Text>
-                  </View>
-                )}
-                  {badges.map((badge, i) => {
-                    const key = badge.label || badge.icon || String(i);
-                    const badgeBackground = getBadgeBackgroundColor(badge.variant);
-                    const badgeColor = getBadgeTextColor(badge.variant);
-
-                    return (
-                    <View
-                      key={key}
-                      style={[
-                        styles.stateBadge,
-                        { backgroundColor: badgeBackground },
-                      ]}
-                      accessibilityLabel={badge.label}
-                      accessible={!!badge.label}
-                    >
-                      {badge.icon && (
-                        <IconSymbol
-                          name={badge.icon}
-                          size={14}
-                          color={badgeColor}
-                        />
-                      )}
-                      {badge.label && (
-                        <Text
-                          style={[
-                            styles.stateBadgeText,
-                            { color: badgeColor },
-                          ]}
-                        >
-                          {badge.label}
-                        </Text>
-                      )}
-                    </View>
-                  );
-                })}
-              </View>
-            )}
-          </View>
-        </AnimatedPressable>
-      </Animated.View>
+          )}
+          <Text
+            className={`font-serif-bold text-ivory ${isFeatured ? 'text-[20px]' : 'text-[16px]'}`}
+            numberOfLines={isFeatured ? 2 : 1}
+          >
+            {dream.title}
+          </Text>
+          {isFeatured && dream.shareableQuote ? (
+            <Text className="min-h-[80px] font-sans italic text-body-sm text-ivory-muted" numberOfLines={4}>
+              {dream.shareableQuote}
+            </Text>
+          ) : (
+            <Text className="min-h-[80px] font-sans text-body-sm text-ivory-muted" numberOfLines={4}>
+              {dream.transcript}
+            </Text>
+          )}
+          {(dream.theme || badges.length > 0) && (
+            <View className="flex-row flex-wrap gap-2">
+              {themeTag}
+              {badgeList}
+            </View>
+          )}
+        </View>
+      </PressableScale>
     );
   }
 
   // Horizontal layout: text-only cards (no image)
   return (
-    <Animated.View>
-      <AnimatedPressable
-        style={[styles.card, { backgroundColor: cardBg, borderColor: noctalia.surface.border, borderWidth: 1 }, animatedStyle]}
-        onPress={handlePress}
-        onPressIn={onPressIn}
-        onPressOut={onPressOut}
-        accessibilityRole="button"
-        accessibilityLabel={dream.title || t('journal.card.accessibility.open')}
-        testID={testID}
-      >
-        <View style={styles.content}>
-          {dateLabel && (
-            <Text style={[styles.dateOverline, { color: noctalia.text.tertiary }]}>
-              {dateLabel}
-            </Text>
-          )}
-          <Text style={[styles.title, { color: noctalia.text.primary }]} numberOfLines={1}>
-            {dream.title}
+    <PressableScale
+      className={CARD_CLASS}
+      onPress={handlePress}
+      accessibilityRole="button"
+      accessibilityLabel={dream.title || t('journal.card.accessibility.open')}
+      testID={testID}
+    >
+      <View className="flex-1 justify-center gap-2 p-4">
+        {dateLabel && (
+          <Text className="font-sans-medium text-[11px] uppercase text-ivory-faint">
+            {dateLabel}
           </Text>
-          <Text style={[styles.description, { color: noctalia.text.secondary }]} numberOfLines={3}>
-            {dream.transcript}
-          </Text>
-          {(dream.theme || badges.length > 0) && (
-            <View style={styles.tagContainer}>
-              {dream.theme && (
-                <View style={[styles.tag, { backgroundColor: getTagColor(dream.theme, colors) }]}>
-                  <Text style={[styles.tagText, { color: noctalia.text.primary }]}>{themeLabel}</Text>
-                </View>
-              )}
-              {badges.map((badge, i) => {
-                const key = badge.label || badge.icon || String(i);
-                const badgeBackground = getBadgeBackgroundColor(badge.variant);
-                const badgeColor = getBadgeTextColor(badge.variant);
-
-                return (
-                  <View
-                    key={key}
-                    style={[
-                    styles.stateBadge,
-                    { backgroundColor: badgeBackground },
-                  ]}
-                    accessibilityLabel={badge.label}
-                    accessible={!!badge.label}
-                  >
-                    {badge.icon && (
-                    <IconSymbol
-                      name={badge.icon}
-                      size={14}
-                      color={badgeColor}
-                    />
-                  )}
-                    {badge.label && (
-                      <Text
-                        style={[
-                          styles.stateBadgeText,
-                          { color: badgeColor },
-                        ]}
-                      >
-                        {badge.label}
-                      </Text>
-                    )}
-                  </View>
-                );
-              })}
-            </View>
-          )}
-        </View>
-      </AnimatedPressable>
-    </Animated.View>
+        )}
+        <Text className="font-serif-bold text-[16px] text-ivory" numberOfLines={1}>
+          {dream.title}
+        </Text>
+        <Text className="font-sans text-body-sm text-ivory-muted" numberOfLines={3}>
+          {dream.transcript}
+        </Text>
+        {(dream.theme || badges.length > 0) && (
+          <View className="flex-row flex-wrap gap-2">
+            {themeTag}
+            {badgeList}
+          </View>
+        )}
+      </View>
+    </PressableScale>
   );
 }, (prev, next) => {
   if (prev === next) return true;
@@ -418,104 +360,4 @@ export const DreamCard = memo(function DreamCard({
     && prevDream.lastSyncError === nextDream.lastSyncError
     && prevHasModelMessage === nextHasModelMessage
   );
-});
-
-const styles = StyleSheet.create({
-  // Vertical layout card (with image on top)
-  cardVertical: {
-    borderRadius: ThemeLayout.borderRadius.md,
-    borderCurve: 'continuous',
-    overflow: 'hidden',
-  },
-  verticalImageContainer: {
-    width: '100%',
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  favoriteOverlay: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    borderRadius: 12,
-    borderCurve: 'continuous',
-    width: 32,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  verticalContent: {
-    padding: 16,
-    gap: 8,
-  },
-  dateOverline: {
-    fontSize: 11,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textTransform: 'uppercase',
-  },
-  // Horizontal layout card (text-only, no image)
-  card: {
-    borderRadius: ThemeLayout.borderRadius.md,
-    borderCurve: 'continuous',
-    overflow: 'hidden',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16,
-    gap: 8,
-  },
-  title: {
-    fontSize: 16,
-    fontFamily: Fonts.lora.bold,
-  },
-  titleFeatured: {
-    fontSize: 20,
-    fontFamily: Fonts.lora.bold,
-  },
-  shareableQuote: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontStyle: 'italic',
-    lineHeight: 20,
-  },
-  description: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    lineHeight: 20,
-  },
-  fourLineExcerpt: {
-    minHeight: 80,
-  },
-  tagContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  tag: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: ThemeLayout.borderRadius.full,
-    borderCurve: 'continuous',
-  },
-  tagText: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.regular,
-  },
-  stateBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: ThemeLayout.borderRadius.full,
-    borderCurve: 'continuous',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  stateBadgeText: {
-    fontSize: 11,
-    fontFamily: Fonts.spaceGrotesk.medium,
-  },
 });

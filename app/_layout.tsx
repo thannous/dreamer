@@ -1,3 +1,4 @@
+import '@/global.css';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -27,6 +28,7 @@ import AnimatedSplashScreen, {
 } from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AnalysisFlightIndicator } from '@/components/analysis/AnalysisFlightIndicator';
+import { EngagementRemindersHost } from '@/components/reminders/EngagementRemindersHost';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
 import { WhatsNewModalHost } from '@/components/releases/WhatsNewModal';
 import { VercelAnalytics } from '@/components/VercelAnalytics';
@@ -728,6 +730,7 @@ function RootLayoutNav({
             <Stack.Screen name="weekly-recap" options={{ headerShown: false }} />
           </Stack>
           <OfflineModelPromptHost />
+          <EngagementRemindersHost />
           <AnalysisFlightIndicator />
           {!isLucidTrainer ? <VercelAnalytics /> : null}
           {!isLucidTrainer ? <VercelSpeedInsights /> : null}

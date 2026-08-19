@@ -13,9 +13,13 @@ export function Collapsible({ children, title }: PropsWithChildren & { title: st
   const noctalia = getNoctaliaDesignTokens(colors, mode);
 
   return (
-    <ThemedView style={[styles.container, { borderColor: noctalia.surface.border }]}>
+    <ThemedView
+      className="border-b-line py-2.5"
+      // `hairlineWidth` is device-dependent (1 / PixelRatio); no class can express it.
+      style={{ borderBottomWidth: StyleSheet.hairlineWidth }}
+    >
       <TouchableOpacity
-        style={styles.heading}
+        className="flex-row items-center gap-1.5"
         onPress={() => setIsOpen((value) => !value)}
         activeOpacity={0.8}
         hitSlop={8}
@@ -31,27 +35,11 @@ export function Collapsible({ children, title }: PropsWithChildren & { title: st
           style={{ transform: [{ rotate: isOpen ? '90deg' : '0deg' }] }}
         />
 
-        <ThemedText type="defaultSemiBold" style={{ color: noctalia.text.primary }}>
+        <ThemedText type="defaultSemiBold" className="text-ivory">
           {title}
         </ThemedText>
       </TouchableOpacity>
-      {isOpen && <ThemedView style={styles.content}>{children}</ThemedView>}
+      {isOpen && <ThemedView className="mt-2.5 ml-6">{children}</ThemedView>}
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingVertical: 10,
-  },
-  heading: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  content: {
-    marginTop: 10,
-    marginLeft: 24,
-  },
-});

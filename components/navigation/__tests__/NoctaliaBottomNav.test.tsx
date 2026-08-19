@@ -29,13 +29,15 @@ jest.mock('react-native', () => {
     Pressable: ({
       accessibilityLabel,
       children,
+      className,
       testID,
     }: {
       accessibilityLabel?: string;
       children?: React.ReactNode | ((state: { pressed: boolean }) => React.ReactNode);
+      className?: string;
       testID?: string;
     }) => (
-      <button aria-label={accessibilityLabel} data-testid={testID}>
+      <button aria-label={accessibilityLabel} data-native-class={className} data-testid={testID}>
         {typeof children === 'function' ? children({ pressed: false }) : children}
       </button>
     ),
@@ -45,15 +47,18 @@ jest.mock('react-native', () => {
     },
     Text: ({
       children,
+      className,
       maxFontSizeMultiplier,
       style,
     }: {
       children?: React.ReactNode;
+      className?: string;
       maxFontSizeMultiplier?: number;
       style?: unknown;
     }) => (
       <span
         data-max-font-size-multiplier={maxFontSizeMultiplier}
+        data-native-class={className}
         data-native-style={JSON.stringify(flattenStyle(style))}
       >
         {children}
@@ -61,11 +66,17 @@ jest.mock('react-native', () => {
     ),
     View: ({
       children,
+      className,
       style,
     }: {
       children?: React.ReactNode;
+      className?: string;
       style?: unknown;
-    }) => <div data-native-style={JSON.stringify(flattenStyle(style))}>{children}</div>,
+    }) => (
+      <div data-native-class={className} data-native-style={JSON.stringify(flattenStyle(style))}>
+        {children}
+      </div>
+    ),
     useWindowDimensions: () => ({
       width: mockWindowWidth,
       height: mockWindowHeight,
@@ -174,21 +185,24 @@ describe('NoctaliaBottomNav', () => {
 
       const captureTab = screen.getByTestId(TID.Tab.AddDream);
       const barStyle = captureTab.parentElement?.getAttribute('data-native-style');
-      const centerStyle = captureTab.querySelector('div')?.getAttribute('data-native-style');
+      const barClass = captureTab.parentElement?.getAttribute('data-native-class');
+      const centerClass = captureTab.querySelector('div')?.getAttribute('data-native-class');
       const labels = captureTab.parentElement?.querySelectorAll(
         '[data-max-font-size-multiplier="1.3"]'
       );
 
-      expect(barStyle).toContain('"paddingHorizontal":4');
+      // Bar insets stay measured values on the style prop; padding is a token class.
       expect(barStyle).toContain('"start":8');
       expect(barStyle).toContain('"end":8');
-      expect(centerStyle).toContain('"width":64');
-      expect(centerStyle).toContain('"height":68');
+      expect(barClass).toContain('px-1');
+      expect(centerClass).toContain('w-[64px]');
+      expect(centerClass).toContain('h-[68px]');
       expect(labels).toHaveLength(5);
       labels?.forEach((label) => {
-        expect(label.getAttribute('data-native-style')).toContain('"fontSize":11');
-        expect(label.getAttribute('data-native-style')).toContain('"width":"100%"');
-        expect(label.getAttribute('data-native-style')).toContain('"flexShrink":1');
+        const labelClass = label.getAttribute('data-native-class');
+        expect(labelClass).toContain('text-[11px]');
+        expect(labelClass).toContain('w-full');
+        expect(labelClass).toContain('shrink');
       });
     }
   );
@@ -201,17 +215,18 @@ describe('NoctaliaBottomNav', () => {
 
     const captureTab = screen.getByTestId(TID.Tab.AddDream);
     const barStyle = captureTab.parentElement?.getAttribute('data-native-style');
-    const centerStyle = captureTab.querySelector('div')?.getAttribute('data-native-style');
+    const barClass = captureTab.parentElement?.getAttribute('data-native-class');
+    const centerClass = captureTab.querySelector('div')?.getAttribute('data-native-class');
     const centerLabel = Array.from(captureTab.querySelectorAll('span')).find(
       (element) => element.textContent === 'nav.capture_dream'
     );
 
-    expect(barStyle).toContain('"paddingHorizontal":8');
     expect(barStyle).toContain('"start":22');
     expect(barStyle).toContain('"end":22');
-    expect(centerStyle).toContain('"width":72');
-    expect(centerStyle).toContain('"height":76');
-    expect(centerLabel?.getAttribute('data-native-style')).toContain('"fontSize":12');
+    expect(barClass).toContain('px-2');
+    expect(centerClass).toContain('w-[72px]');
+    expect(centerClass).toContain('h-[76px]');
+    expect(centerLabel?.getAttribute('data-native-class')).toContain('text-[12px]');
     expect(centerLabel?.getAttribute('data-max-font-size-multiplier')).toBeNull();
   });
 });

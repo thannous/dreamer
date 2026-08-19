@@ -1,29 +1,11 @@
-import { ThemeLayout } from '@/constants/journalTheme';
+import { PressableScale } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import type { DreamTheme, DreamType } from '@/lib/types';
-import * as Haptics from 'expo-haptics';
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
-import {
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  type TextStyle,
-  type ViewStyle,
-} from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSequence,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
+import React, { memo, useMemo } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -166,60 +148,42 @@ const getAccessibilityLabel = (id: FilterItemId, t: (key: string) => string) => 
   }
 };
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const PILL_CLASSNAME =
+  'flex-row shrink-0 grow-0 items-center gap-1.5 self-start rounded-full border-continuous px-3 py-1.5';
 
 /**
- * Animated filter pill with scale bounce on toggle and background color transition.
+ * Filter pill.
+ *
+ * Toggling a filter happens dozens of times a session, so it gets press feedback and
+ * nothing else: the previous version bounced every pill on mount and cross-faded its
+ * background on every toggle, which is animation the user pays for on every tap. The
+ * fill and the checkmark already say "active".
  */
 function FilterPill({
   isActive,
-  activeColor,
-  inactiveColor,
   onPress,
   accessibilityLabel,
   testID,
   children,
 }: {
   isActive: boolean;
-  activeColor: string;
-  inactiveColor: string;
   onPress: () => void;
   accessibilityLabel?: string;
   testID?: string;
   children: React.ReactNode;
 }) {
-  const scale = useSharedValue(1);
-
-  // Bounce on active state change
-  useEffect(() => {
-    scale.value = withSequence(
-      withSpring(1.05, { damping: 12, stiffness: 200 }),
-      withSpring(1, { damping: 15, stiffness: 150 })
-    );
-  }, [isActive, scale]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-    backgroundColor: withTiming(isActive ? activeColor : inactiveColor, { duration: 200 }),
-  }));
-
-  const handlePress = useCallback(() => {
-    if (Platform.OS === 'ios') {
-      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
-    onPress();
-  }, [onPress]);
-
   return (
-    <AnimatedPressable
-      style={[styles.filterButton, animatedStyle]}
-      onPress={handlePress}
+    <PressableScale
+      className={`${PILL_CLASSNAME} ${isActive ? 'bg-champagne' : 'bg-ink-soft'}`}
+      haptic="selection"
+      onPress={onPress}
       accessibilityRole="button"
+      accessibilityState={{ selected: isActive }}
       accessibilityLabel={accessibilityLabel}
       testID={testID}
     >
       {children}
-    </AnimatedPressable>
+    </PressableScale>
   );
 }
 
@@ -248,9 +212,9 @@ export const FilterBar = memo(function FilterBar({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.container}
+      contentContainerClassName="grow-0 pr-4"
     >
-      <View style={[styles.row, Platform.OS === 'web' ? webMaxContentStyle : null]}>
+      <View className="web:w-max flex-row flex-nowrap items-center gap-2">
         {items.map((item) => {
           const isActive = item.active;
           const color = isActive ? activeIconColor : iconColor;
@@ -265,8 +229,6 @@ export const FilterBar = memo(function FilterBar({
             <FilterPill
               key={item.id}
               isActive={isActive}
-              activeColor={noctalia.action.primary}
-              inactiveColor={noctalia.surface.soft}
               onPress={item.onPress}
               accessibilityLabel={getAccessibilityLabel(item.id, t)}
               testID={item.testID}
@@ -274,11 +236,9 @@ export const FilterBar = memo(function FilterBar({
               {renderIcon(item.id, color)}
               {item.label ? (
                 <Text
-                  style={[
-                    styles.filterButtonText,
-                    { color },
-                    Platform.OS === 'web' ? webNowrapStyle : null,
-                  ]}
+                  className={`web:whitespace-nowrap shrink-0 grow-0 font-sans-medium text-[14px] ${
+                    isActive ? 'text-on-champagne' : 'text-ivory'
+                  }`}
                 >
                   {label}
                 </Text>
@@ -289,52 +249,20 @@ export const FilterBar = memo(function FilterBar({
         })}
 
         {hasActiveFilters && (
-          <Pressable
-            style={[styles.filterButton, { backgroundColor: noctalia.surface.soft }]}
+          <PressableScale
+            className={`${PILL_CLASSNAME} bg-ink-soft`}
             onPress={onClear}
             accessibilityRole="button"
             accessibilityLabel={t('journal.filter.accessibility.clear')}
             testID={clearTestID}
           >
             <CloseIcon size={16} color={iconColor} />
-            <Text style={[styles.filterButtonText, { color: iconColor }]}>{t('journal.filter.clear')}</Text>
-          </Pressable>
+            <Text className="shrink-0 grow-0 font-sans-medium text-[14px] text-ivory">
+              {t('journal.filter.clear')}
+            </Text>
+          </PressableScale>
         )}
       </View>
     </ScrollView>
   );
-});
-
-const webMaxContentStyle = { width: 'max-content' } as unknown as ViewStyle;
-const webNowrapStyle = { whiteSpace: 'nowrap' } as unknown as TextStyle;
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 0,
-    paddingRight: ThemeLayout.spacing.md,
-  },
-  row: {
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    gap: ThemeLayout.spacing.sm,
-  },
-  filterButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    flexGrow: 0,
-    flexShrink: 0,
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: ThemeLayout.borderRadius.full,
-    borderCurve: 'continuous',
-  },
-  filterButtonText: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    flexGrow: 0,
-    flexShrink: 0,
-  },
 });

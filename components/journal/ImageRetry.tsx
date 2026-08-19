@@ -1,10 +1,10 @@
+import { PressableScale } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ErrorType } from '@/lib/errors';
 import React, { useMemo } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 interface ImageRetryProps {
@@ -40,11 +40,11 @@ export function ImageRetry({ onRetry, isRetrying = false, errorType }: ImageRetr
   const canRetry = !isBlocked;
 
   return (
-    <View style={[styles.container, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }]}>
-      <View style={styles.iconContainer}>
+    <View className="aspect-[2/3] w-full items-center justify-center rounded-lg border-2 border-dashed border-line bg-ink-soft p-6">
+      <View className="relative mb-5">
         <IconSymbol name="photo" size={64} color={noctalia.text.secondary} />
         {!isRetrying && (
-          <View style={[styles.errorBadge, { backgroundColor: noctalia.surface.raised }]}>
+          <View className="absolute -bottom-1 -right-1 rounded-md bg-ink-raised p-0.5">
             <IconSymbol
               name={isBlocked ? 'xmark.circle.fill' : 'exclamationmark.circle.fill'}
               size={24}
@@ -54,103 +54,32 @@ export function ImageRetry({ onRetry, isRetrying = false, errorType }: ImageRetr
         )}
       </View>
 
-      <Text style={[styles.title, { color: noctalia.text.primary }]}>{getTitle()}</Text>
-      <Text style={[styles.message, { color: noctalia.text.secondary }]}>{getMessage()}</Text>
+      <Text className="mb-3 text-center font-sans-bold text-[20px] text-ivory">{getTitle()}</Text>
+      <Text className="mb-6 px-4 text-center font-sans text-[15px] leading-[22px] text-ivory-muted">
+        {getMessage()}
+      </Text>
 
       {canRetry && (
-        <Pressable
-          style={[
-            styles.retryButton,
-            shadows.lg,
-            {
-              backgroundColor: noctalia.action.primary,
-              borderColor: noctalia.action.primaryBorder,
-            },
-            isRetrying && styles.retryButtonDisabled,
-          ]}
+        <PressableScale
+          className={`flex-row items-center justify-center rounded-md border border-champagne-soft bg-champagne px-6 py-3.5 ${
+            isRetrying ? 'opacity-60' : ''
+          }`}
+          style={shadows.lg}
           onPress={onRetry}
           disabled={isRetrying}
         >
-          {isRetrying ? (
-            <View style={styles.buttonContent}>
+          <View className="flex-row items-center gap-2">
+            {isRetrying ? (
               <ActivityIndicator size="small" color={noctalia.action.primaryText} />
-              <Text style={[styles.retryButtonText, { color: noctalia.action.primaryText }]}>{t('image_retry.generating')}</Text>
-            </View>
-          ) : (
-            <View style={styles.buttonContent}>
+            ) : (
               <IconSymbol name="arrow.clockwise" size={20} color={noctalia.action.primaryText} />
-              <Text style={[styles.retryButtonText, { color: noctalia.action.primaryText }]}>{t('image_retry.retry_generation')}</Text>
-            </View>
-          )}
-        </Pressable>
+            )}
+            <Text className="font-sans-bold text-[16px] text-on-champagne">
+              {isRetrying ? t('image_retry.generating') : t('image_retry.retry_generation')}
+            </Text>
+          </View>
+        </PressableScale>
       )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    aspectRatio: 2 / 3,
-    // backgroundColor: set dynamically
-    borderRadius: 16,
-    padding: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    // borderColor: set dynamically
-    borderStyle: 'dashed',
-  },
-  iconContainer: {
-    position: 'relative',
-    marginBottom: 20,
-  },
-  errorBadge: {
-    position: 'absolute',
-    bottom: -4,
-    right: -4,
-    // backgroundColor: set dynamically
-    borderRadius: 12,
-    padding: 2,
-  },
-  title: {
-    fontSize: 20,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    // color: set dynamically
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  message: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    // color: set dynamically
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 24,
-    paddingHorizontal: 16,
-  },
-  retryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    // backgroundColor: set dynamically
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    borderWidth: 1,
-    // shadow: applied via theme shadows.lg
-  },
-  retryButtonDisabled: {
-    opacity: 0.6,
-  },
-  buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  retryButtonText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    // color: set dynamically
-  },
-});

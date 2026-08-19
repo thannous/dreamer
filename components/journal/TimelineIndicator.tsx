@@ -1,6 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { ThemeLayout } from '@/constants/journalTheme';
+import { View } from 'react-native';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { getDreamIcon, DreamIconType } from '@/constants/dreamIcons';
@@ -39,25 +38,10 @@ export const TimelineIndicator = memo(function TimelineIndicator({ dreamType }: 
   const IconComponent = ICON_COMPONENTS[iconType];
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.iconCircle, { backgroundColor: noctalia.action.primary }]}>
+    <View className="items-center pt-1.5">
+      <View className="z-10 h-8 w-8 items-center justify-center rounded-full bg-champagne">
         <IconComponent size={18} color={noctalia.action.primaryText} />
       </View>
     </View>
   );
-});
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    paddingTop: 6,
-  },
-  iconCircle: {
-    width: ThemeLayout.timelineIconContainerSize,
-    height: ThemeLayout.timelineIconContainerSize,
-    borderRadius: ThemeLayout.timelineIconContainerSize / 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 10,
-  },
 });

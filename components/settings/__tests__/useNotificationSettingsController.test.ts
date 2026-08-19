@@ -11,6 +11,8 @@ const mockRequestNotificationPermissions = jest.fn();
 const mockScheduleDailyNotification = jest.fn();
 const mockCancelAllNotifications = jest.fn();
 const mockScheduleWeeklyRecapReminder = jest.fn();
+const mockScheduleStreakRiskReminder = jest.fn();
+const mockScheduleInactivityReminders = jest.fn();
 const mockSendTestNotification = jest.fn();
 const mockAlert = jest.fn();
 const mockAddAppStateListener = jest.fn();
@@ -18,6 +20,7 @@ const mockRemoveAppStateListener = jest.fn();
 const mockTranslate = jest.fn();
 
 let mockPlatformOS = 'ios';
+let mockDreams: { id: number }[] = [];
 let mockAppStateChange: ((state: string) => void) | undefined;
 
 jest.mock('react-native', () => ({
@@ -40,12 +43,18 @@ jest.mock('@/context/LanguageContext', () => ({
   useLanguage: () => ({ language: 'en' }),
 }));
 
+jest.mock('@/context/DreamsContext', () => ({
+  useDreamsData: () => ({ dreams: mockDreams, loaded: true }),
+}));
+
 jest.mock('@/services/notificationService', () => ({
   cancelAllNotifications: (...args: unknown[]) => mockCancelAllNotifications(...args),
   hasNotificationPermissions: (...args: unknown[]) => mockHasNotificationPermissions(...args),
   requestNotificationPermissions: (...args: unknown[]) => mockRequestNotificationPermissions(...args),
   scheduleDailyNotification: (...args: unknown[]) => mockScheduleDailyNotification(...args),
   scheduleWeeklyRecapReminder: (...args: unknown[]) => mockScheduleWeeklyRecapReminder(...args),
+  scheduleStreakRiskReminder: (...args: unknown[]) => mockScheduleStreakRiskReminder(...args),
+  scheduleInactivityReminders: (...args: unknown[]) => mockScheduleInactivityReminders(...args),
   sendTestNotification: (...args: unknown[]) => mockSendTestNotification(...args),
 }));
 
@@ -62,12 +71,23 @@ const defaultSettings: NotificationSettings = {
   weekendEnabled: false,
   weekendTime: '10:00',
   weeklyRecapEnabled: false,
+  streakRiskEnabled: false,
+  inactivityNudgeEnabled: false,
 };
+
+/**
+ * The streak deadline is an evening slot (21:00 local), so a journal built from the
+ * real clock yields a plan in the morning and `null` once that hour has passed.
+ * `now` is pinned to a fixed afternoon so the engagement assertions hold whatever
+ * time of day the suite runs at.
+ */
+const NOW = new Date(2026, 4, 12, 14, 0, 0, 0).getTime();
 
 describe('useNotificationSettingsController', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useRealTimers();
+    jest.spyOn(Date, 'now').mockReturnValue(NOW);
     (globalThis as any).__DEV__ = false;
     mockPlatformOS = 'ios';
     mockAppStateChange = undefined;
@@ -78,6 +98,9 @@ describe('useNotificationSettingsController', () => {
     mockScheduleDailyNotification.mockResolvedValue(undefined);
     mockCancelAllNotifications.mockResolvedValue(undefined);
     mockScheduleWeeklyRecapReminder.mockResolvedValue(undefined);
+    mockScheduleStreakRiskReminder.mockResolvedValue(undefined);
+    mockScheduleInactivityReminders.mockResolvedValue(undefined);
+    mockDreams = [];
     mockSendTestNotification.mockResolvedValue(undefined);
     mockTranslate.mockImplementation((key: string, values?: Record<string, unknown>) => (
       values ? `${key}:${JSON.stringify(values)}` : key
@@ -191,6 +214,74 @@ describe('useNotificationSettingsController', () => {
     expect(mockSaveNotificationSettings).toHaveBeenCalledWith(expected);
     expect(mockScheduleWeeklyRecapReminder).toHaveBeenCalledWith(expected);
     expect(mockScheduleDailyNotification).not.toHaveBeenCalled();
+  });
+
+  it('arms the streak heads-up against the current journal, leaving the other families alone', async () => {
+    const yesterday = new Date(NOW);
+    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setHours(8, 0, 0, 0);
+    const twoDaysAgo = new Date(yesterday);
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 1);
+    mockDreams = [{ id: yesterday.getTime() }, { id: twoDaysAgo.getTime() }];
+
+    const { result } = renderHook(() => useNotificationSettingsController());
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => result.current.toggleStreakRisk(true));
+
+    const expected = { ...defaultSettings, streakRiskEnabled: true };
+    expect(mockSaveNotificationSettings).toHaveBeenCalledWith(expected);
+    expect(mockScheduleStreakRiskReminder).toHaveBeenCalledWith(
+      expected,
+      expect.objectContaining({ streakLength: 2 })
+    );
+    expect(mockScheduleDailyNotification).not.toHaveBeenCalled();
+    expect(mockScheduleWeeklyRecapReminder).not.toHaveBeenCalled();
+    expect(mockScheduleInactivityReminders).not.toHaveBeenCalled();
+  });
+
+  it('passes a null streak plan when the journal has nothing to protect', async () => {
+    mockDreams = [];
+    const { result } = renderHook(() => useNotificationSettingsController());
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => result.current.toggleStreakRisk(true));
+
+    expect(mockScheduleStreakRiskReminder).toHaveBeenCalledWith(
+      { ...defaultSettings, streakRiskEnabled: true },
+      null
+    );
+  });
+
+  it('arms both comeback stages and touches no other family', async () => {
+    mockDreams = [{ id: Date.now() }];
+    const { result } = renderHook(() => useNotificationSettingsController());
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => result.current.toggleInactivityNudge(true));
+
+    const expected = { ...defaultSettings, inactivityNudgeEnabled: true };
+    expect(mockSaveNotificationSettings).toHaveBeenCalledWith(expected);
+    expect(mockScheduleInactivityReminders).toHaveBeenCalledWith(
+      expected,
+      [expect.objectContaining({ stage: 3 }), expect.objectContaining({ stage: 7 })]
+    );
+    expect(mockScheduleStreakRiskReminder).not.toHaveBeenCalled();
+    expect(mockScheduleDailyNotification).not.toHaveBeenCalled();
+  });
+
+  it('rolls an engagement toggle back and alerts when scheduling fails', async () => {
+    mockScheduleInactivityReminders.mockRejectedValueOnce(new Error('schedule failed'));
+    const { result } = renderHook(() => useNotificationSettingsController());
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => result.current.toggleInactivityNudge(true));
+
+    expect(result.current.settings).toEqual(defaultSettings);
+    expect(mockAlert).toHaveBeenCalledWith(
+      'notifications.alert.update_failed.title',
+      'notifications.alert.update_failed.message'
+    );
   });
 
   it('rolls a toggle back and alerts when scheduling fails', async () => {

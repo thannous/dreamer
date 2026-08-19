@@ -1,18 +1,16 @@
 import { View, type ViewProps } from 'react-native';
 
-import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { useTheme } from '@/context/ThemeContext';
-
 export type ThemedViewProps = ViewProps & {
+  /**
+   * @deprecated Theme-specific overrides are handled by the `dark:` variant now.
+   * Pass `className="bg-x dark:bg-y"` instead.
+   */
   lightColor?: string;
+  /** @deprecated See `lightColor`. */
   darkColor?: string;
+  className?: string;
 };
 
-export function ThemedView({ style, lightColor, darkColor, ...otherProps }: ThemedViewProps) {
-  const { colors, mode } = useTheme();
-  const noctalia = getNoctaliaDesignTokens(colors, mode);
-  const overrideColor = mode === 'dark' ? darkColor : lightColor;
-  const backgroundColor = overrideColor ?? noctalia.screen.background;
-
-  return <View style={[{ backgroundColor }, style]} {...otherProps} />;
+export function ThemedView({ style, lightColor, darkColor, className, ...otherProps }: ThemedViewProps) {
+  return <View className={`bg-ink ${className ?? ''}`} style={style} {...otherProps} />;
 }
