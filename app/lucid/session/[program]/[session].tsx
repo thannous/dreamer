@@ -72,7 +72,7 @@ export default function LucidSessionScreen() {
         return (
           <LucidCard key={`${session.id}-${index}`} accent={done ? 'cyan' : 'none'} onPress={() => !alreadyDone && setChecked((values) => values.map((value, itemIndex) => itemIndex === index ? !value : value))} accessibilityLabel={`${copy.step} ${index + 1}: ${stepText}`}>
             <View style={styles.stepRow}>
-              <View style={[styles.check, { backgroundColor: done ? palette.cyan : palette.surfaceRaised, borderColor: done ? palette.cyan : palette.border }]}>{done ? <Ionicons name="checkmark" size={18} color={palette.backgroundDeep} /> : <Text style={[styles.checkNumber, { color: palette.textSecondary }]}>{index + 1}</Text>}</View>
+              <View style={[styles.check, { backgroundColor: done ? palette.cyan : palette.surfaceRaised, borderColor: done ? palette.cyan : palette.borderInteractive }]}>{done ? <Ionicons name="checkmark" size={18} color={palette.backgroundDeep} /> : <Text style={[styles.checkNumber, { color: palette.textSecondary }]}>{index + 1}</Text>}</View>
               <View style={styles.stepCopy}><Text style={[styles.stepLabel, { color: palette.textMuted }]}>{copy.step} {index + 1}</Text><Text style={[styles.stepText, { color: palette.text }]}>{stepText}</Text></View>
             </View>
           </LucidCard>

@@ -152,7 +152,7 @@ export default function LucidOnboardingScreen() {
           <Text style={[styles.body, { color: palette.textSecondary }]}>{content.onboarding.reminderExplanation}</Text>
           <View accessibilityRole="radiogroup" style={styles.frequencyRow}>
             {[2, 3, 5, 7].map((value) => (
-              <Pressable key={value} testID={`lucid-weekly-target-${value}`} accessibilityRole="radio" accessibilityState={{ selected: weeklyTarget === value }} onPress={() => setWeeklyTarget(value)} style={[styles.frequency, { backgroundColor: weeklyTarget === value ? palette.accentSoft : palette.surfaceRaised, borderColor: weeklyTarget === value ? palette.accent : palette.border }]}>
+              <Pressable key={value} testID={`lucid-weekly-target-${value}`} accessibilityRole="radio" accessibilityState={{ selected: weeklyTarget === value }} onPress={() => setWeeklyTarget(value)} style={[styles.frequency, { backgroundColor: weeklyTarget === value ? palette.accentSoft : palette.surfaceRaised, borderColor: weeklyTarget === value ? palette.accent : palette.borderInteractive }]}>
                 <Text style={[styles.frequencyValue, { color: weeklyTarget === value ? palette.accent : palette.text }]}>{value}</Text>
                 <Text style={[styles.frequencyLabel, { color: palette.textSecondary }]}>{copy.days}</Text>
               </Pressable>
@@ -224,7 +224,7 @@ function TimeField({ label, value, onChange }: { label: string; value: string; o
   return (
     <View style={styles.timeField}>
       <Text style={[styles.fieldLabel, { color: palette.textSecondary }]}>{label}</Text>
-      <TextInput accessibilityLabel={label} keyboardType="numbers-and-punctuation" maxLength={5} onChangeText={onChange} placeholder="22:30" placeholderTextColor={palette.textMuted} selectTextOnFocus style={[styles.timeInput, { backgroundColor: palette.surfaceRaised, borderColor: isLucidLocalTime(value) ? palette.border : palette.danger, color: palette.text }]} value={value} />
+      <TextInput accessibilityLabel={label} keyboardType="numbers-and-punctuation" maxLength={5} onChangeText={onChange} placeholder="22:30" placeholderTextColor={palette.textMuted} selectTextOnFocus style={[styles.timeInput, { backgroundColor: palette.surfaceRaised, borderColor: isLucidLocalTime(value) ? palette.borderInteractive : palette.danger, color: palette.text }]} value={value} />
     </View>
   );
 }

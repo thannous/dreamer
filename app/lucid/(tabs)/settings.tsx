@@ -661,7 +661,7 @@ export default function LucidSettingsScreen() {
                 styles.option,
                 {
                   backgroundColor: selected ? palette.accentSoft : palette.surface,
-                  borderColor: selected ? palette.accent : palette.border,
+                  borderColor: selected ? palette.accent : palette.borderInteractive,
                   opacity: pressed ? 0.76 : 1,
                 },
               ]}
@@ -807,7 +807,7 @@ export default function LucidSettingsScreen() {
               styles.zoneButton,
               {
                 backgroundColor: palette.surfaceRaised,
-                borderColor: palette.border,
+                borderColor: palette.borderInteractive,
                 opacity: pressed ? 0.76 : 1,
               },
             ]}
@@ -892,7 +892,7 @@ export default function LucidSettingsScreen() {
                     ? palette.accentSoft
                     : palette.surfaceRaised,
                 borderColor:
-                  state.preferences.locale === locale ? palette.accent : palette.border,
+                  state.preferences.locale === locale ? palette.accent : palette.borderInteractive,
               },
             ]}
           >
@@ -999,7 +999,7 @@ function TimeField({
           styles.timeInput,
           {
             backgroundColor: palette.surfaceRaised,
-            borderColor: valid ? palette.border : palette.danger,
+            borderColor: valid ? palette.borderInteractive : palette.danger,
             color: palette.text,
           },
         ]}

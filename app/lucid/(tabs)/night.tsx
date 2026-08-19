@@ -64,7 +64,7 @@ export default function LucidNightScreen() {
       <View style={styles.soundRow}>
         {SLEEP_SOUNDS.map((sound) => {
           const selected = sound.id === (audio.plan?.soundId ?? soundId);
-          return <Pressable key={sound.id} disabled={!!audio.plan} accessibilityRole="radio" accessibilityState={{ selected, disabled: !!audio.plan }} onPress={() => setSoundId(sound.id)} style={[styles.sound, { backgroundColor: selected ? palette.accentSoft : palette.surface, borderColor: selected ? palette.accent : palette.border }]}><Ionicons name={sound.id === 'rain' ? 'rainy' : sound.id === 'ocean' ? 'water' : 'pulse'} size={24} color={selected ? palette.accent : palette.textSecondary} /><Text style={[styles.soundLabel, { color: palette.text }]}>{copy[sound.id]}</Text></Pressable>;
+          return <Pressable key={sound.id} disabled={!!audio.plan} accessibilityRole="radio" accessibilityState={{ selected, disabled: !!audio.plan }} onPress={() => setSoundId(sound.id)} style={[styles.sound, { backgroundColor: selected ? palette.accentSoft : palette.surface, borderColor: selected ? palette.accent : palette.borderInteractive }]}><Ionicons name={sound.id === 'rain' ? 'rainy' : sound.id === 'ocean' ? 'water' : 'pulse'} size={24} color={selected ? palette.accent : palette.textSecondary} /><Text style={[styles.soundLabel, { color: palette.text }]}>{copy[sound.id]}</Text></Pressable>;
         })}
       </View>
       <LucidButton label={copy.preview} variant="secondary" icon={audio.isPlaying ? 'volume-high' : 'play'} disabled={!safe || !audio.isLoaded || audio.isScheduling || !!audio.plan} onPress={() => void audio.preview()} />
@@ -77,7 +77,7 @@ export default function LucidNightScreen() {
       </LucidCard>
 
       <LucidSectionHeader title={copy.timer} />
-      <View style={styles.timerRow}>{[240, 360, 480].map((value) => <Pressable key={value} accessibilityRole="radio" accessibilityState={{ selected: timerMinutes === value }} onPress={() => setTimerMinutes(value)} style={[styles.timer, { backgroundColor: timerMinutes === value ? palette.amberSoft : palette.surface, borderColor: timerMinutes === value ? palette.amber : palette.border }]}><Text style={[styles.timerValue, { color: timerMinutes === value ? palette.amber : palette.text }]}>{value / 60}</Text><Text style={[styles.timerLabel, { color: palette.textSecondary }]}>{copy.hours}</Text></Pressable>)}</View>
+      <View style={styles.timerRow}>{[240, 360, 480].map((value) => <Pressable key={value} accessibilityRole="radio" accessibilityState={{ selected: timerMinutes === value }} onPress={() => setTimerMinutes(value)} style={[styles.timer, { backgroundColor: timerMinutes === value ? palette.amberSoft : palette.surface, borderColor: timerMinutes === value ? palette.amber : palette.borderInteractive }]}><Text style={[styles.timerValue, { color: timerMinutes === value ? palette.amber : palette.text }]}>{value / 60}</Text><Text style={[styles.timerLabel, { color: palette.textSecondary }]}>{copy.hours}</Text></Pressable>)}</View>
 
       <LucidButton label={copy.morning} variant="ghost" icon="sunny" onPress={() => router.push('/lucid/morning')} />
     </LucidScreen>

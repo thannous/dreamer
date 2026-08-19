@@ -209,7 +209,7 @@ export function LucidButton({
         styles.button,
         {
           backgroundColor: background,
-          borderColor: danger ? `${palette.danger}66` : primary ? palette.accentStrong : palette.border,
+          borderColor: danger ? `${palette.danger}66` : primary ? palette.accentStrong : palette.borderInteractive,
           opacity: disabled ? 0.45 : pressed ? 0.78 : 1,
         },
       ]}
@@ -251,7 +251,7 @@ export function LucidSectionHeader({ title, caption, action }: { title: string; 
 export function LucidPill({ label, tone = 'violet', icon }: { label: string; tone?: 'violet' | 'cyan' | 'amber' | 'neutral'; icon?: IconName }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const color = tone === 'cyan' ? palette.cyan : tone === 'amber' ? palette.amber : tone === 'neutral' ? palette.textSecondary : palette.accent;
+  const color = tone === 'cyan' ? palette.cyanOn : tone === 'amber' ? palette.amber : tone === 'neutral' ? palette.textSecondary : palette.accent;
   const bg = tone === 'cyan' ? palette.cyanSoft : tone === 'amber' ? palette.amberSoft : tone === 'neutral' ? palette.surfaceRaised : palette.accentSoft;
   return (
     <View style={[styles.pill, { backgroundColor: bg }]}>
@@ -316,7 +316,7 @@ export function LucidChoiceCard({
         styles.choice,
         {
           backgroundColor: selected ? palette.accentSoft : palette.surface,
-          borderColor: selected ? palette.accent : palette.border,
+          borderColor: selected ? palette.accent : palette.borderInteractive,
           opacity: pressed ? 0.78 : 1,
         },
       ]}
@@ -364,7 +364,9 @@ export function LucidToggleRow({
         disabled={disabled}
         onValueChange={onValueChange}
         value={value}
-        trackColor={{ false: palette.surfaceMuted, true: palette.accent }}
+        // Éteint, le rail était à 1,22:1 sur la carte en thème clair, et le
+        // pouce blanc à 1,22:1 sur le rail : l'interrupteur off était invisible.
+        trackColor={{ false: palette.borderInteractive, true: palette.accent }}
         thumbColor={mode === 'dark' ? '#F7F5FF' : '#FFFFFF'}
       />
     </View>
@@ -375,7 +377,7 @@ export function LucidIconAction({ label, icon, onPress, role = 'button' }: { lab
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   return (
-    <Pressable accessibilityRole={role} accessibilityLabel={label} onPress={onPress} style={({ pressed }) => [styles.iconAction, { backgroundColor: palette.surfaceRaised, borderColor: palette.border, opacity: pressed ? 0.7 : 1 }]}>
+    <Pressable accessibilityRole={role} accessibilityLabel={label} onPress={onPress} style={({ pressed }) => [styles.iconAction, { backgroundColor: palette.surfaceRaised, borderColor: palette.borderInteractive, opacity: pressed ? 0.7 : 1 }]}>
       <Ionicons name={icon} size={21} color={palette.text} />
     </Pressable>
   );

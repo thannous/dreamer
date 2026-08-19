@@ -52,7 +52,7 @@ export default function LucidRealityCheckScreen() {
 
 function LucidPillButton({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
   const { colors, mode } = useTheme(); const palette = getLucidPalette(colors, mode);
-  return <View><Text accessibilityRole="button" accessibilityState={{ selected }} onPress={onPress} style={[styles.pillButton, { backgroundColor: selected ? palette.accentSoft : palette.surfaceRaised, borderColor: selected ? palette.accent : palette.border, color: selected ? palette.accent : palette.textSecondary }]}>{label}</Text></View>;
+  return <View><Text accessibilityRole="button" accessibilityState={{ selected }} onPress={onPress} style={[styles.pillButton, { backgroundColor: selected ? palette.accentSoft : palette.surfaceRaised, borderColor: selected ? palette.accent : palette.borderInteractive, color: selected ? palette.accent : palette.textSecondary }]}>{label}</Text></View>;
 }
 
 const styles = StyleSheet.create({ focus: { alignItems: 'center', gap: 14, paddingVertical: 5 }, eye: { width: 72, height: 72, borderRadius: 25, alignItems: 'center', justifyContent: 'center' }, focusText: { fontFamily: 'Fraunces_500Medium', fontSize: 18, lineHeight: 25, textAlign: 'center' }, section: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 17, marginTop: 4 }, wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, outcomes: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, pillButton: { overflow: 'hidden', borderRadius: 16, borderWidth: 1, paddingHorizontal: 13, paddingVertical: 10, fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12 } });

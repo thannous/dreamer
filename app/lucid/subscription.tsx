@@ -735,7 +735,7 @@ export default function LucidSubscriptionScreen() {
                     styles.plan,
                     {
                       backgroundColor: selected ? palette.accentSoft : palette.surface,
-                      borderColor: selected ? palette.accent : palette.border,
+                      borderColor: selected ? palette.accent : palette.borderInteractive,
                       opacity: busy ? 0.55 : pressed ? 0.78 : 1,
                     },
                   ]}

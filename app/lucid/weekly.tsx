@@ -89,7 +89,7 @@ export default function LucidWeeklyScreen() {
           styles.notes,
           {
             backgroundColor: palette.surface,
-            borderColor: palette.border,
+            borderColor: palette.borderInteractive,
             color: palette.text,
           },
         ]}
