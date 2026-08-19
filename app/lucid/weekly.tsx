@@ -63,11 +63,11 @@ export default function LucidWeeklyScreen() {
     >
       <View style={styles.metrics}>
         <LucidMetric value={String(practiceDays)} label={copy.practice} />
-        <LucidMetric value={String(review.current.recalledDreams)} label={copy.recall} tone="cyan" />
+        <LucidMetric value={String(review.current.recalledDreams)} label={copy.recall} tone="accent" />
         <LucidMetric value={String(review.current.lucidDreams)} label={copy.lucid} tone="amber" />
       </View>
-      <LucidCard accent="cyan">
-        <LucidPill label={copy.recommendation} tone="cyan" icon="sparkles" />
+      <LucidCard accent="accent">
+        <LucidPill label={copy.recommendation} tone="accent" icon="sparkles" />
         <Text style={[styles.recommendation, { color: palette.text }]}>
           {review.coaching.technique
             ? content.programs[review.coaching.technique].title

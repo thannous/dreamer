@@ -332,12 +332,12 @@ export default function LucidDataScreen() {
       </LucidCard>
 
       <LucidSectionHeader title={c.bridge} />
-      <LucidCard accent="violet">
+      <LucidCard accent="accent">
         <View style={styles.bridgeTop}>
           <Ionicons name="link" size={25} color={palette.accent} />
           <LucidPill
             label={state!.preferences.noctaliaLinkEnabled ? 'opt-in' : 'off'}
-            tone={state!.preferences.noctaliaLinkEnabled ? 'cyan' : 'neutral'}
+            tone={state!.preferences.noctaliaLinkEnabled ? 'accent' : 'neutral'}
           />
         </View>
         <Text style={[styles.body, { color: palette.textSecondary }]}>{c.bridgeBody}</Text>

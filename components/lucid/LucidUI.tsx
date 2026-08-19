@@ -67,7 +67,7 @@ export function LucidScreen({
           <View style={styles.headerRow}>
             <View style={styles.headerCopy}>
               {eyebrow ? (
-                <Text style={[styles.eyebrow, { color: palette.cyan }]}>{eyebrow}</Text>
+                <Text style={[styles.eyebrow, { color: palette.accent }]}>{eyebrow}</Text>
               ) : null}
               {title ? (
                 <Text accessibilityRole="header" style={[styles.title, { color: palette.text }]}>
@@ -89,11 +89,7 @@ export function LucidScreen({
   return (
     <View testID={testID} style={[styles.root, { backgroundColor: palette.background }]}>
       <LinearGradient
-        colors={
-          mode === 'dark'
-            ? ['rgba(105,82,190,0.25)', 'rgba(12,18,36,0)', 'rgba(23,91,96,0.12)']
-            : ['rgba(140,116,214,0.16)', 'rgba(246,246,251,0)', 'rgba(67,164,157,0.09)']
-        }
+        colors={palette.atmosphere}
         locations={[0, 0.48, 1]}
         pointerEvents="none"
         style={StyleSheet.absoluteFill}
@@ -123,7 +119,7 @@ export function LucidCard({
 }: {
   children: ReactNode;
   style?: ViewStyle;
-  accent?: 'none' | 'violet' | 'cyan' | 'amber';
+  accent?: 'none' | 'accent' | 'amber';
   onPress?: () => void;
   accessibilityLabel?: string;
   testID?: string;
@@ -133,13 +129,7 @@ export function LucidCard({
   const reduceMotion =
     useOptionalLucidTrainer()?.state?.onboarding.accessibility.reduceMotion ?? false;
   const accentColor =
-    accent === 'violet'
-      ? palette.accent
-      : accent === 'cyan'
-        ? palette.cyan
-        : accent === 'amber'
-          ? palette.amber
-          : palette.border;
+    accent === 'accent' ? palette.accent : accent === 'amber' ? palette.amber : palette.border;
   // Une carte pressable est un contrôle : son bord doit tenir 3:1. En thème
   // clair la carte blanche ne se détache du fond que de 1,08:1, le filet est
   // donc le seul repère. À 47% d'opacité il tombait à 1,94:1.
@@ -265,11 +255,11 @@ export function LucidSectionHeader({ title, caption, action }: { title: string; 
   );
 }
 
-export function LucidPill({ label, tone = 'violet', icon }: { label: string; tone?: 'violet' | 'cyan' | 'amber' | 'neutral'; icon?: IconName }) {
+export function LucidPill({ label, tone = 'accent', icon }: { label: string; tone?: 'accent' | 'amber' | 'neutral'; icon?: IconName }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const color = tone === 'cyan' ? palette.cyanOn : tone === 'amber' ? palette.amber : tone === 'neutral' ? palette.textSecondary : palette.accent;
-  const bg = tone === 'cyan' ? palette.cyanSoft : tone === 'amber' ? palette.amberSoft : tone === 'neutral' ? palette.surfaceRaised : palette.accentSoft;
+  const color = tone === 'amber' ? palette.amber : tone === 'neutral' ? palette.textSecondary : palette.accentOn;
+  const bg = tone === 'amber' ? palette.amberSoft : tone === 'neutral' ? palette.surfaceRaised : palette.accentSoft;
   return (
     <View style={[styles.pill, { backgroundColor: bg }]}>
       {icon ? <Ionicons name={icon} size={13} color={color} /> : null}
@@ -289,15 +279,17 @@ export function LucidProgressBar({ value, accessibilityLabel }: { value: number;
       accessibilityValue={{ min: 0, max: 100, now: Math.round(normalized * 100) }}
       style={[styles.progressTrack, { backgroundColor: palette.surfaceRaised }]}
     >
-      <View style={[styles.progressFill, { backgroundColor: palette.cyan, width: `${normalized * 100}%` }]} />
+      <View style={[styles.progressFill, { backgroundColor: palette.accent, width: `${normalized * 100}%` }]} />
     </View>
   );
 }
 
-export function LucidMetric({ value, label, tone = 'violet' }: { value: string; label: string; tone?: 'violet' | 'cyan' | 'amber' }) {
+export function LucidMetric({ value, label, tone = 'neutral' }: { value: string; label: string; tone?: 'accent' | 'amber' | 'neutral' }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const color = tone === 'cyan' ? palette.cyan : tone === 'amber' ? palette.amber : palette.accent;
+  // Une tuile ne se colore que si la couleur encode quelque chose. Par défaut
+  // elle est neutre : trois tuiles vides en trois teintes ne disaient rien.
+  const color = tone === 'accent' ? palette.accent : tone === 'amber' ? palette.amber : palette.text;
   return (
     <View style={[styles.metric, { backgroundColor: palette.surfaceRaised }]}>
       <Text style={[styles.metricValue, { color }]}>{value}</Text>

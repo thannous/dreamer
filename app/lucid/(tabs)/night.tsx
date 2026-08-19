@@ -44,8 +44,8 @@ export default function LucidNightScreen() {
 
   return (
     <LucidScreen testID="lucid-night" eyebrow={copy.eyebrow} title={copy.title} subtitle={copy.subtitle}>
-      <LucidCard accent={audio.plan ? 'cyan' : 'violet'}>
-        <View style={styles.activeTop}><View style={[styles.moon, { backgroundColor: audio.plan ? palette.cyanSoft : palette.accentSoft }]}><Ionicons name={audio.plan ? 'radio' : 'moon'} size={31} color={audio.plan ? palette.cyan : palette.accent} /></View><View style={styles.activeCopy}><Text style={[styles.cardTitle, { color: palette.text }]}>{audio.plan ? copy.active : copy.prep}</Text><Text style={[styles.body, { color: palette.textSecondary }]}>{audio.plan ? `${formatTime(audio.remainingSeconds)} ${copy.remaining}` : content.nightSignals.intro}</Text></View></View>
+      <LucidCard accent={audio.plan ? 'accent' : 'none'}>
+        <View style={styles.activeTop}><View style={[styles.moon, { backgroundColor: audio.plan ? palette.accentSoft : palette.accentSoft }]}><Ionicons name={audio.plan ? 'radio' : 'moon'} size={31} color={audio.plan ? palette.accent : palette.accent} /></View><View style={styles.activeCopy}><Text style={[styles.cardTitle, { color: palette.text }]}>{audio.plan ? copy.active : copy.prep}</Text><Text style={[styles.body, { color: palette.textSecondary }]}>{audio.plan ? `${formatTime(audio.remainingSeconds)} ${copy.remaining}` : content.nightSignals.intro}</Text></View></View>
         <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.next}</Text>
         {audio.plan ? <LucidButton label={copy.stop} variant="danger" icon="stop" onPress={() => void audio.stopNight()} /> : <LucidButton label={copy.start} icon="moon" disabled={!safe || audio.isScheduling} disabledReason={missing.length ? `${copy.needs} ${missing.join(', ')}` : undefined} onPress={() => void start()} testID="lucid-night-start" />}
         {audio.error ? <Text style={[styles.error, { color: palette.danger }]}>{copy.failed} ({audio.error})</Text> : null}
@@ -57,7 +57,7 @@ export default function LucidNightScreen() {
         <LucidToggleRow title={copy.route} value={speaker} onValueChange={setSpeaker} icon="volume-low" />
         <LucidToggleRow title={copy.fragile} value={fragile} onValueChange={setFragile} icon="bed" />
         <LucidToggleRow title={copy.hearing} value={hearing} onValueChange={setHearing} icon="ear" />
-        {content.nightSignals.safeguards.map((item) => <View key={item} style={styles.safeguard}><Ionicons name="shield-checkmark" size={18} color={palette.cyan} /><Text style={[styles.safeguardText, { color: palette.textSecondary }]}>{item}</Text></View>)}
+        {content.nightSignals.safeguards.map((item) => <View key={item} style={styles.safeguard}><Ionicons name="shield-checkmark" size={18} color={palette.accent} /><Text style={[styles.safeguardText, { color: palette.textSecondary }]}>{item}</Text></View>)}
       </LucidCard>
 
       <LucidSectionHeader title={copy.library} caption={content.nightSignals.optionalLabel} />
@@ -71,7 +71,7 @@ export default function LucidNightScreen() {
 
       <LucidSectionHeader title={copy.volume} />
       <LucidCard>
-        <View style={styles.levels}>{[0.1, 0.15, 0.2, 0.25, 0.3].map((value) => <Pressable key={value} accessibilityRole="radio" accessibilityState={{ selected: Math.abs(volume - value) < 0.01 }} onPress={() => void updatePreferences({ audioVolume: value })} style={[styles.level, { backgroundColor: Math.abs(volume - value) < 0.01 ? palette.cyan : palette.surfaceRaised }]}><Text style={[styles.levelText, { color: Math.abs(volume - value) < 0.01 ? palette.backgroundDeep : palette.textSecondary }]}>{Math.round(value * 100)}%</Text></Pressable>)}</View>
+        <View style={styles.levels}>{[0.1, 0.15, 0.2, 0.25, 0.3].map((value) => <Pressable key={value} accessibilityRole="radio" accessibilityState={{ selected: Math.abs(volume - value) < 0.01 }} onPress={() => void updatePreferences({ audioVolume: value })} style={[styles.level, { backgroundColor: Math.abs(volume - value) < 0.01 ? palette.accent : palette.surfaceRaised }]}><Text style={[styles.levelText, { color: Math.abs(volume - value) < 0.01 ? palette.backgroundDeep : palette.textSecondary }]}>{Math.round(value * 100)}%</Text></Pressable>)}</View>
         <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.speaker}</Text>
         <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.systemVolume}</Text>
       </LucidCard>

@@ -42,12 +42,12 @@ export default function LucidTodayScreen() {
   const coaching = copy[week.coaching.action];
 
   return (
-    <LucidScreen testID="lucid-today" eyebrow={copy.eyebrow} title={copy.greeting} status={<LucidPill label={syncStatus === 'synced' ? copy.synced : copy.local} tone={syncStatus === 'synced' ? 'cyan' : 'neutral'} icon={syncStatus === 'synced' ? 'cloud-done' : 'phone-portrait'} />}>
+    <LucidScreen testID="lucid-today" eyebrow={copy.eyebrow} title={copy.greeting} status={<LucidPill label={syncStatus === 'synced' ? copy.synced : copy.local} tone={syncStatus === 'synced' ? 'accent' : 'neutral'} icon={syncStatus === 'synced' ? 'cloud-done' : 'phone-portrait'} />}>
       <LucidSectionHeader title={copy.daily} />
       {active && program ? (
-        <LucidCard accent="violet">
+        <LucidCard accent="accent">
           <View style={styles.cardTop}>
-            <LucidPill label={program.expandedName} tone="violet" />
+            <LucidPill label={program.expandedName} tone="accent" />
             <Text style={[styles.sessionLabel, { color: palette.textSecondary }]}>{copy.session} {active.currentDay} {copy.of} {program.sessions.length}</Text>
           </View>
           <Text style={[styles.cardTitle, { color: palette.text }]}>{program.sessions[sessionIndex].title}</Text>
@@ -56,7 +56,7 @@ export default function LucidTodayScreen() {
           <LucidButton label={copy.continue} icon="play" onPress={() => router.push(`/lucid/session/${active.technique}/${active.currentDay}`)} />
         </LucidCard>
       ) : (
-        <LucidCard accent="violet">
+        <LucidCard accent="accent">
           <View style={[styles.emptyIcon, { backgroundColor: palette.accentSoft }]}><Ionicons name="map" size={28} color={palette.accent} /></View>
           <Text style={[styles.cardTitle, { color: palette.text }]}>{content.programs.mild.title}</Text>
           <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.noProgram}</Text>
@@ -65,11 +65,11 @@ export default function LucidTodayScreen() {
       )}
 
       <View style={styles.twoColumn}>
-        <LucidCard accent="cyan" style={styles.halfCard} onPress={() => router.push('/lucid/reality-check')} accessibilityLabel={copy.doCheck}>
-          <Ionicons name="eye" size={25} color={palette.cyan} />
+        <LucidCard accent="accent" style={styles.halfCard} onPress={() => router.push('/lucid/reality-check')} accessibilityLabel={copy.doCheck}>
+          <Ionicons name="eye" size={25} color={palette.accent} />
           <Text style={[styles.smallTitle, { color: palette.text }]}>{copy.reality}</Text>
           <Text style={[styles.smallBody, { color: palette.textSecondary }]}>{copy.realityBody}</Text>
-          <Text style={[styles.inlineAction, { color: palette.cyan }]}>{copy.doCheck} →</Text>
+          <Text style={[styles.inlineAction, { color: palette.accent }]}>{copy.doCheck} →</Text>
         </LucidCard>
         <LucidCard accent="amber" style={styles.halfCard} onPress={() => router.push('/lucid/morning')} accessibilityLabel={copy.log}>
           <Ionicons name="sunny" size={25} color={palette.amber} />
@@ -82,13 +82,13 @@ export default function LucidTodayScreen() {
       <LucidSectionHeader title={copy.week} />
       <View style={styles.metrics}>
         <LucidMetric value={String(week.current.attempts)} label={copy.attempts} />
-        <LucidMetric value={week.current.recallRate == null ? '—' : `${Math.round(week.current.recallRate * 100)}%`} label={copy.recall} tone="cyan" />
+        <LucidMetric value={week.current.recallRate == null ? '—' : `${Math.round(week.current.recallRate * 100)}%`} label={copy.recall} tone="accent" />
         <LucidMetric value={String(week.current.lucidDreams)} label={copy.lucid} tone="amber" />
       </View>
 
-      <LucidCard accent="cyan" onPress={() => router.push('/lucid/weekly')} accessibilityLabel={copy.coach}>
+      <LucidCard accent="accent" onPress={() => router.push('/lucid/weekly')} accessibilityLabel={copy.coach}>
         <View style={styles.cardTop}>
-          <LucidPill label={copy.coach} tone="cyan" icon="sparkles" />
+          <LucidPill label={copy.coach} tone="accent" icon="sparkles" />
           <Ionicons name="arrow-forward" color={palette.textMuted} size={19} />
         </View>
         <Text style={[styles.bodyStrong, { color: palette.text }]}>{coaching}</Text>

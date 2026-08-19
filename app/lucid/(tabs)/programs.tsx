@@ -9,10 +9,13 @@ import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { LucidTechnique } from '@/lib/lucid/model';
 
-const PROGRAMS: { id: LucidTechnique; icon: 'bulb' | 'radio' | 'alarm'; tone: 'violet' | 'cyan' | 'amber' }[] = [
-  { id: 'mild', icon: 'bulb', tone: 'violet' },
-  { id: 'ssild', icon: 'radio', tone: 'cyan' },
-  { id: 'wbtb', icon: 'alarm', tone: 'amber' },
+// La technique est identifiée par son icône et son nom, pas par une couleur :
+// trois accents de poids égal ne désignaient plus rien. L'accent est réservé à
+// l'état — un programme engagé — qui, lui, mérite d'être vu.
+const PROGRAMS: { id: LucidTechnique; icon: 'bulb' | 'radio' | 'alarm' }[] = [
+  { id: 'mild', icon: 'bulb' },
+  { id: 'ssild', icon: 'radio' },
+  { id: 'wbtb', icon: 'alarm' },
 ];
 
 const COPY = {
@@ -30,13 +33,14 @@ export default function LucidProgramsScreen() {
   const copy = COPY[content.locale];
   return (
     <LucidScreen testID="lucid-programs" eyebrow={copy.eyebrow} title={copy.title} subtitle={copy.subtitle}>
-      {PROGRAMS.map(({ id, icon, tone }) => {
+      {PROGRAMS.map(({ id, icon }) => {
         const program = content.programs[id];
         const progress = state!.progress.find((item) => item.technique === id);
-        const color = tone === 'cyan' ? palette.cyan : tone === 'amber' ? palette.amber : palette.accent;
+        const engaged = progress != null && progress.status !== 'paused';
+        const color = palette.accent;
         const status = progress?.status === 'completed' ? copy.completed : progress?.status === 'active' ? copy.active : copy.notStarted;
         return (
-          <LucidCard key={id} accent={tone} onPress={() => router.push(`/lucid/program/${id}`)} accessibilityLabel={program.title} testID={`lucid-program-${id}`}>
+          <LucidCard key={id} accent={engaged ? 'accent' : 'none'} onPress={() => router.push(`/lucid/program/${id}`)} accessibilityLabel={program.title} testID={`lucid-program-${id}`}>
             <View style={styles.topRow}>
               <View style={[styles.programIcon, { backgroundColor: `${color}1F` }]}><Ionicons name={icon} size={27} color={color} /></View>
               <View style={styles.topCopy}>
@@ -47,8 +51,8 @@ export default function LucidProgramsScreen() {
             </View>
             <Text style={[styles.summary, { color: palette.textSecondary }]}>{program.summary}</Text>
             <View style={styles.metaRow}>
-              <LucidPill label={`${program.sessions.length} ${copy.sessions}`} tone={tone} icon="calendar" />
-              <LucidPill label={status} tone={progress?.status === 'completed' ? 'cyan' : 'neutral'} />
+              <LucidPill label={`${program.sessions.length} ${copy.sessions}`} tone="neutral" icon="calendar" />
+              <LucidPill label={status} tone={engaged ? 'accent' : 'neutral'} />
             </View>
             <LucidProgressBar value={(progress?.completedExerciseIds.length ?? 0) / program.sessions.length} />
           </LucidCard>
@@ -56,7 +60,7 @@ export default function LucidProgramsScreen() {
       })}
       <LucidCard>
         <View style={styles.noticeRow}>
-          <Ionicons name="shield-checkmark" size={24} color={palette.cyan} />
+          <Ionicons name="shield-checkmark" size={24} color={palette.accent} />
           <Text style={[styles.notice, { color: palette.textSecondary }]}>{content.science.sleepPriority}</Text>
         </View>
       </LucidCard>

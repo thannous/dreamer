@@ -37,7 +37,7 @@ export default function LucidRealityCheckScreen() {
   const save = async () => { if (method === null || context === null || outcome === null || !mindful) return; setSaving(true); try { await addRealityCheck({ method, context, outcome, mindful }); Alert.alert(copy.saved, content.realityChecks.completionPrompt, [{ text: content.chrome.common.done, onPress: close }]); } finally { setSaving(false); } };
   return (
     <LucidScreen eyebrow={copy.eyebrow} title={copy.title} subtitle={copy.subtitle} trailing={<LucidIconAction label={content.chrome.common.cancel} icon="close" onPress={close} />} testID="lucid-reality-check">
-      <LucidCard accent="cyan"><View style={styles.focus}><View style={[styles.eye, { backgroundColor: palette.cyanSoft }]}><Ionicons name="eye" size={37} color={palette.cyan} /></View><Text style={[styles.focusText, { color: palette.text }]}>{content.realityChecks.qualityPrinciples[0]}</Text></View></LucidCard>
+      <LucidCard accent="accent"><View style={styles.focus}><View style={[styles.eye, { backgroundColor: palette.accentSoft }]}><Ionicons name="eye" size={37} color={palette.accent} /></View><Text style={[styles.focusText, { color: palette.text }]}>{content.realityChecks.qualityPrinciples[0]}</Text></View></LucidCard>
       <Text style={[styles.section, { color: palette.text }]}>{copy.method}</Text>
       {METHODS.map((item) => <LucidChoiceCard key={item} title={copy[item]} selected={method === item} onPress={() => setMethod(item)} icon={item === 'nose_breathing' ? 'fitness' : item === 'finger_count' ? 'hand-left' : item === 'text_reread' ? 'text' : 'time'} />)}
       <Text style={[styles.section, { color: palette.text }]}>{copy.context}</Text>

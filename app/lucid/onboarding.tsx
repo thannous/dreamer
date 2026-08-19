@@ -123,7 +123,7 @@ export default function LucidOnboardingScreen() {
 
       {step === 0 ? (
         <>
-          <LucidCard accent="violet">
+          <LucidCard accent="accent">
             <View style={[styles.heroIcon, { backgroundColor: palette.accentSoft }]}>
               <Ionicons name="moon" size={34} color={palette.accent} />
             </View>
@@ -132,7 +132,7 @@ export default function LucidOnboardingScreen() {
           </LucidCard>
           {content.onboarding.consentItems.slice(0, 3).map((item) => (
             <View key={item} style={styles.pointRow}>
-              <Ionicons name="checkmark-circle" size={20} color={palette.cyan} />
+              <Ionicons name="checkmark-circle" size={20} color={palette.accent} />
               <Text style={[styles.pointText, { color: palette.textSecondary }]}>{item}</Text>
             </View>
           ))}
@@ -169,7 +169,7 @@ export default function LucidOnboardingScreen() {
             <TimeField label={copy.wake} value={wakeTime} onChange={setWakeTime} />
           </View>
           <View style={styles.pointRow}>
-            <Ionicons name="globe-outline" size={19} color={palette.cyan} />
+            <Ionicons name="globe-outline" size={19} color={palette.accent} />
             <Text style={[styles.pointText, { color: palette.textSecondary }]}>{timeZone}</Text>
           </View>
         </LucidCard>
@@ -177,7 +177,7 @@ export default function LucidOnboardingScreen() {
 
       {step === 5 ? (
         <>
-          <LucidCard accent="cyan">
+          <LucidCard accent="accent">
             <Text style={[styles.heroTitle, { color: palette.text }]}>{content.onboarding.permissionsTitle}</Text>
             <Text style={[styles.body, { color: palette.textSecondary }]}>{content.onboarding.notificationPermission}</Text>
             {notificationPermission === 'granted' ? (

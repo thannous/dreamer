@@ -64,15 +64,15 @@ export default function LucidSessionScreen() {
 
   return (
     <LucidScreen eyebrow={`${program.title} · ${copy.guided}`} title={session.title} subtitle={session.objective} trailing={<LucidIconAction label={content.chrome.common.back} icon="close" onPress={close} />}>
-      <View style={styles.meta}><LucidPill label={`${session.durationMinutes} min`} tone="cyan" icon="time" /><LucidPill label={`${session.session} / ${program.sessions.length}`} tone="violet" icon="calendar" /></View>
+      <View style={styles.meta}><LucidPill label={`${session.durationMinutes} min`} tone="accent" icon="time" /><LucidPill label={`${session.session} / ${program.sessions.length}`} tone="accent" icon="calendar" /></View>
       <LucidProgressBar value={alreadyDone ? 1 : progress} accessibilityLabel={session.title} />
 
       {session.steps.map((stepText, index) => {
         const done = alreadyDone || checked[index];
         return (
-          <LucidCard key={`${session.id}-${index}`} accent={done ? 'cyan' : 'none'} onPress={() => !alreadyDone && setChecked((values) => values.map((value, itemIndex) => itemIndex === index ? !value : value))} accessibilityLabel={`${copy.step} ${index + 1}: ${stepText}`}>
+          <LucidCard key={`${session.id}-${index}`} accent={done ? 'accent' : 'none'} onPress={() => !alreadyDone && setChecked((values) => values.map((value, itemIndex) => itemIndex === index ? !value : value))} accessibilityLabel={`${copy.step} ${index + 1}: ${stepText}`}>
             <View style={styles.stepRow}>
-              <View style={[styles.check, { backgroundColor: done ? palette.cyan : palette.surfaceRaised, borderColor: done ? palette.cyan : palette.borderInteractive }]}>{done ? <Ionicons name="checkmark" size={18} color={palette.backgroundDeep} /> : <Text style={[styles.checkNumber, { color: palette.textSecondary }]}>{index + 1}</Text>}</View>
+              <View style={[styles.check, { backgroundColor: done ? palette.accent : palette.surfaceRaised, borderColor: done ? palette.accent : palette.borderInteractive }]}>{done ? <Ionicons name="checkmark" size={18} color={palette.backgroundDeep} /> : <Text style={[styles.checkNumber, { color: palette.textSecondary }]}>{index + 1}</Text>}</View>
               <View style={styles.stepCopy}><Text style={[styles.stepLabel, { color: palette.textMuted }]}>{copy.step} {index + 1}</Text><Text style={[styles.stepText, { color: palette.text }]}>{stepText}</Text></View>
             </View>
           </LucidCard>

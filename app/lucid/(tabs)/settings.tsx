@@ -582,7 +582,7 @@ export default function LucidSettingsScreen() {
       subtitle={content.privacy.consentControl}
     >
       <LucidSectionHeader title={copy.account} />
-      <LucidCard accent="violet">
+      <LucidCard accent="accent">
         <View style={styles.accountTop}>
           <View style={[styles.accountIcon, { backgroundColor: palette.accentSoft }]}>
             <Ionicons
@@ -601,7 +601,7 @@ export default function LucidSettingsScreen() {
           </View>
           <LucidPill
             label={syncStatus}
-            tone={syncStatus === 'synced' ? 'cyan' : 'neutral'}
+            tone={syncStatus === 'synced' ? 'accent' : 'neutral'}
           />
         </View>
         <LucidButton
@@ -774,7 +774,7 @@ export default function LucidSettingsScreen() {
       </LucidCard>
 
       <LucidSectionHeader title={copy.schedule} caption={copy.scheduleBody} />
-      <LucidCard accent="cyan">
+      <LucidCard accent="accent">
         <View style={styles.timeRow}>
           <TimeField
             label={copy.bedtime}
@@ -870,7 +870,7 @@ export default function LucidSettingsScreen() {
         <Text
           accessibilityLiveRegion="polite"
           accessibilityRole="text"
-          style={[styles.feedback, { color: palette.cyan }]}
+          style={[styles.feedback, { color: palette.accent }]}
         >
           {settingStatus}
         </Text>

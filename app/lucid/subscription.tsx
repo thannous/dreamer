@@ -586,14 +586,14 @@ export default function LucidSubscriptionScreen() {
       }
       testID="lucid-subscription-screen"
     >
-      <LucidCard accent={subscription.isActive ? 'cyan' : 'violet'}>
+      <LucidCard accent={subscription.isActive ? 'accent' : 'none'}>
         <View style={styles.hero}>
           <View
             style={[
               styles.heroIcon,
               {
                 backgroundColor: subscription.isActive
-                  ? palette.cyanSoft
+                  ? palette.accentSoft
                   : palette.accentSoft,
               },
             ]}
@@ -601,16 +601,16 @@ export default function LucidSubscriptionScreen() {
             <Ionicons
               name="diamond"
               size={34}
-              color={subscription.isActive ? palette.cyan : palette.accent}
+              color={subscription.isActive ? palette.accent : palette.accent}
             />
           </View>
           <View style={styles.heroCopy}>
             <View style={styles.pills}>
               <LucidPill
                 label={subscription.isActive ? copy.active : copy.free}
-                tone={subscription.isActive ? 'cyan' : 'neutral'}
+                tone={subscription.isActive ? 'accent' : 'neutral'}
               />
-              <LucidPill label={copy.shared} tone="violet" icon="link" />
+              <LucidPill label={copy.shared} tone="accent" icon="link" />
             </View>
             <Text style={[styles.heroBody, { color: palette.text }]}>
               {subscription.isActive ? copy.activeBody : copy.freeBody}
@@ -624,7 +624,7 @@ export default function LucidSubscriptionScreen() {
         <View style={styles.features}>
           {copy.benefits.map((feature) => (
             <View key={feature} style={styles.featureRow}>
-              <Ionicons name="checkmark-circle" size={20} color={palette.cyan} />
+              <Ionicons name="checkmark-circle" size={20} color={palette.accent} />
               <Text style={[styles.featureText, { color: palette.textSecondary }]}>
                 {feature}
               </Text>
@@ -746,7 +746,7 @@ export default function LucidSubscriptionScreen() {
                       {pkg.interval === 'annual' && annualDiscount ? (
                         <LucidPill
                           label={replaceToken(copy.save, 'discount', String(annualDiscount))}
-                          tone="cyan"
+                          tone="accent"
                         />
                       ) : null}
                     </View>
@@ -852,7 +852,7 @@ export default function LucidSubscriptionScreen() {
           <Ionicons
             name={subscription.isActive ? 'shield-checkmark' : 'shield-outline'}
             size={25}
-            color={subscription.isActive ? palette.cyan : palette.accent}
+            color={subscription.isActive ? palette.accent : palette.accent}
           />
           <View style={styles.stateCopy}>
             <Text accessibilityRole="header" style={[styles.cardTitle, { color: palette.text }]}>

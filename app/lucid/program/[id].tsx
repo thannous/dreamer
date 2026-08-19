@@ -82,15 +82,15 @@ export default function LucidProgramDetailScreen() {
   return (
     <LucidScreen eyebrow={copy.program} title={program.title} subtitle={program.summary} trailing={<LucidIconAction label={content.chrome.common.back} icon="close" onPress={close} />}>
       <View style={styles.meta}>
-        <LucidPill label={program.expandedName} tone="violet" icon="sparkles" />
-        <LucidPill label={`${program.sessions.length} ${copy.session.toLowerCase()}`} tone="cyan" icon="calendar" />
+        <LucidPill label={program.expandedName} tone="accent" icon="sparkles" />
+        <LucidPill label={`${program.sessions.length} ${copy.session.toLowerCase()}`} tone="accent" icon="calendar" />
       </View>
       <LucidProgressBar value={completed / program.sessions.length} />
       <LucidButton label={actionLabel} icon="play" loading={busy} onPress={() => void handleStart()} />
       {active ? <LucidButton label={copy.pause} variant="ghost" icon="pause" onPress={() => void pauseProgram(id)} /> : null}
 
-      <LucidCard accent="cyan">
-        <LucidPill label={copy.evidence} tone="cyan" icon="flask" />
+      <LucidCard accent="accent">
+        <LucidPill label={copy.evidence} tone="accent" icon="flask" />
         <Text style={[styles.bodyStrong, { color: palette.text }]}>{program.evidenceNote}</Text>
         <Text style={[styles.body, { color: palette.textSecondary }]}>{content.science.uncertainty}</Text>
       </LucidCard>
@@ -124,7 +124,7 @@ export default function LucidProgramDetailScreen() {
       <View style={styles.twoColumn}>
         <LucidCard style={styles.half}>
           <Text style={[styles.cardLabel, { color: palette.text }]}>{copy.prerequisites}</Text>
-          {program.prerequisites.map((item) => <Bullet key={item} text={item} color={palette.cyan} />)}
+          {program.prerequisites.map((item) => <Bullet key={item} text={item} color={palette.accent} />)}
         </LucidCard>
         <LucidCard style={styles.half}>
           <Text style={[styles.cardLabel, { color: palette.text }]}>{copy.stop}</Text>
@@ -139,8 +139,8 @@ export default function LucidProgramDetailScreen() {
         return (
           <LucidCard key={session.id} onPress={locked ? undefined : () => router.push(`/lucid/session/${id}/${session.session}`)} accessibilityLabel={session.title}>
             <View style={styles.sessionRow}>
-              <View style={[styles.sessionNumber, { backgroundColor: done ? palette.cyanSoft : palette.surfaceRaised }]}>
-                {done ? <Ionicons name="checkmark" size={18} color={palette.cyan} /> : <Text style={[styles.sessionNumberText, { color: locked ? palette.textMuted : palette.text }]}>{session.session}</Text>}
+              <View style={[styles.sessionNumber, { backgroundColor: done ? palette.accentSoft : palette.surfaceRaised }]}>
+                {done ? <Ionicons name="checkmark" size={18} color={palette.accent} /> : <Text style={[styles.sessionNumberText, { color: locked ? palette.textMuted : palette.text }]}>{session.session}</Text>}
               </View>
               <View style={styles.sessionCopy}>
                 <Text style={[styles.sessionTitle, { color: locked ? palette.textMuted : palette.text }]}>{session.title}</Text>
@@ -164,10 +164,10 @@ function Bullet({ text, color }: { text: string; color: string }) {
 function CalendarDay({ dateKey, label, locale, session, status }: { dateKey?: string; label: string; locale: string; session: number; status: LucidProgramCalendarStatus }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const color = status === 'completed' ? palette.cyan : status === 'today' ? palette.accent : palette.textSecondary;
+  const color = status === 'completed' ? palette.accent : status === 'today' ? palette.accent : palette.textSecondary;
   const date = dateKey ? new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric' }).format(new Date(`${dateKey}T12:00:00`)) : '—';
   return (
-    <View accessibilityLabel={dateKey ? `${session}, ${label}, ${dateKey}` : `${session}, ${label}`} style={[styles.calendarDay, { backgroundColor: status === 'today' ? palette.accentSoft : palette.surface, borderColor: status === 'completed' ? palette.cyan : status === 'today' ? palette.accent : palette.border }]}>
+    <View accessibilityLabel={dateKey ? `${session}, ${label}, ${dateKey}` : `${session}, ${label}`} style={[styles.calendarDay, { backgroundColor: status === 'today' ? palette.accentSoft : palette.surface, borderColor: status === 'completed' ? palette.accent : status === 'today' ? palette.accent : palette.border }]}>
       <Text style={[styles.calendarSession, { color }]}>{session}</Text>
       <Text style={[styles.calendarDate, { color: dateKey ? palette.text : palette.textMuted }]}>{date}</Text>
       <Text numberOfLines={1} style={[styles.calendarStatus, { color }]}>{label}</Text>

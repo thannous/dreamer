@@ -148,28 +148,28 @@ export default function LucidPermissionsScreen() {
         />
       }
     >
-      <LucidCard accent={permission === 'granted' ? 'cyan' : 'amber'}>
+      <LucidCard accent={permission === 'granted' ? 'accent' : 'amber'}>
         <View style={styles.top}>
           <View
             style={[
               styles.icon,
               {
                 backgroundColor:
-                  permission === 'granted' ? palette.cyanSoft : palette.amberSoft,
+                  permission === 'granted' ? palette.accentSoft : palette.amberSoft,
               },
             ]}
           >
             <Ionicons
               name="notifications"
               size={28}
-              color={permission === 'granted' ? palette.cyan : palette.amber}
+              color={permission === 'granted' ? palette.accent : palette.amber}
             />
           </View>
           <View style={styles.copy}>
             <Text style={[styles.title, { color: palette.text }]}>{c.notifications}</Text>
             <LucidPill
               label={c[permission]}
-              tone={permission === 'granted' ? 'cyan' : 'amber'}
+              tone={permission === 'granted' ? 'accent' : 'amber'}
             />
           </View>
         </View>
