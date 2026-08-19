@@ -17,8 +17,91 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Job-level filters (not workflow paths-ignore) so docs/marketing PRs still
+  # get Site source build, while docs/social/chore-only changes skip Jest,
+  # app typecheck/lint, and Edge Function tests.
+  changes:
+    name: Detect relevant changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      app: ${{ steps.detect.outputs.app }}
+      site: ${{ steps.detect.outputs.site }}
+      edge: ${{ steps.detect.outputs.edge }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Classify changed paths
+        id: detect
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          write_outputs() {
+            echo "app=$1" >> "$GITHUB_OUTPUT"
+            echo "site=$2" >> "$GITHUB_OUTPUT"
+            echo "edge=$3" >> "$GITHUB_OUTPUT"
+          }
+
+          if [[ -z "$BASE_SHA" || "$BASE_SHA" =~ ^0+$ ]] || ! git cat-file -e "${BASE_SHA}^{commit}"; then
+            echo "No usable base commit; running the full Quality suite."
+            write_outputs true true true
+            exit 0
+          fi
+
+          git diff --name-only "$BASE_SHA" "$HEAD_SHA" > "$RUNNER_TEMP/changed-files.txt"
+          if [[ ! -s "$RUNNER_TEMP/changed-files.txt" ]]; then
+            echo "No changed files; skipping expensive Quality jobs."
+            write_outputs false false false
+            exit 0
+          fi
+
+          echo "Changed files:"
+          cat "$RUNNER_TEMP/changed-files.txt"
+
+          # Prefix/suffix regex so nested paths match (bash case globs like
+          # doc_web_interne/* and *.md do not). Skip the full gate only when
+          # every changed file is docs/social/chore content.
+          docs_social_or_chore='^(doc_web_interne/|marketing/|docs-src/|docs/|data/.+\.json$|.*\.mdx?$)'
+
+          if grep -Evq "$docs_social_or_chore" "$RUNNER_TEMP/changed-files.txt"; then
+            app=true
+            echo "App/code paths changed; running Jest and PR quality."
+          else
+            app=false
+            echo "Docs/social/chore-only changes; skipping Jest and PR quality."
+          fi
+
+          if grep -Eq '^(\.github/workflows/quality\.yml|docs-src/|docs/|data/|scripts/|package(-lock)?\.json$)' \
+            "$RUNNER_TEMP/changed-files.txt"; then
+            site=true
+            echo "Site-related files changed; running the site build."
+          else
+            site=false
+            echo "No site-related files changed; skipping the site build."
+          fi
+
+          if grep -Eq '^(\.github/workflows/quality\.yml|supabase/|deno\.lock$)' \
+            "$RUNNER_TEMP/changed-files.txt"; then
+            edge=true
+            echo "Edge Function paths changed; running Deno checks."
+          else
+            edge=false
+            echo "No Edge Function paths changed; skipping Deno checks."
+          fi
+
+          write_outputs "$app" "$site" "$edge"
+
   edge-functions:
     name: Edge Functions check and tests
+    needs: changes
+    if: needs.changes.outputs.edge == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -41,60 +124,33 @@ jobs:
 
   site-build:
     name: Site source build and checks
+    needs: changes
+    if: needs.changes.outputs.site == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Detect site-related changes
-        id: site-changes
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          if [[ -z "$BASE_SHA" || "$BASE_SHA" =~ ^0+$ ]] || ! git cat-file -e "${BASE_SHA}^{commit}"; then
-            echo "No usable base commit; running the site validation."
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          git diff --name-only "$BASE_SHA" "$HEAD_SHA" > "$RUNNER_TEMP/changed-files.txt"
-          if grep -Eq '^(\.github/workflows/quality\.yml|docs-src/|docs/|data/|scripts/|package(-lock)?\.json$)' "$RUNNER_TEMP/changed-files.txt"; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-            echo "Site-related files changed; running the deterministic build."
-          else
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "No site-related files changed; skipping the site build."
-          fi
 
       - name: Set up Node.js
-        if: steps.site-changes.outputs.changed == 'true'
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
 
       - name: Install dependencies
-        if: steps.site-changes.outputs.changed == 'true'
         run: npm ci
 
       - name: Build site
-        if: steps.site-changes.outputs.changed == 'true'
         run: npm run docs:build
 
       - name: Check site
-        if: steps.site-changes.outputs.changed == 'true'
         run: npm run docs:check
 
   pr-quality:
     name: PR typecheck, lint and changed tests
-    if: github.event_name == 'pull_request'
+    needs: changes
+    if: github.event_name == 'pull_request' && needs.changes.outputs.app == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -131,6 +187,8 @@ jobs:
 
   test-fast:
     name: Full fast test suite
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
