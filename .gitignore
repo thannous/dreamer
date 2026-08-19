@@ -73,6 +73,10 @@ supabase_windows_amd64.tar.gz
 # typescript
 *.tsbuildinfo
 
+# python
+__pycache__/
+*.pyc
+
 app-example
 
 # iOS - managed workflow (not tracked)
