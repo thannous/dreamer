@@ -16,7 +16,8 @@
         "UIBackgroundModes": [
           "audio"
         ]
-      }
+      },
+      "icon": "./assets/images/icon.png"
     },
     "android": {
       "package": "com.noctalia.meditation",
@@ -25,7 +26,8 @@
       "adaptiveIcon": {
         "backgroundColor": "#03040D",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "monochromeImage": "./assets/images/android-icon-monochrome.png",
+        "backgroundImage": "./assets/images/android-icon-background.png"
       },
       "permissions": [
         "android.permission.FOREGROUND_SERVICE",
@@ -45,7 +47,8 @@
         {
           "backgroundColor": "#FBFAF7",
           "dark": {
-            "backgroundColor": "#03040D"
+            "backgroundColor": "#03040D",
+            "image": "./assets/images/splash-icon-dark.png"
           },
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 120
