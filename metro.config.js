@@ -10,6 +10,9 @@ config.resolver.assetExts = Array.from(new Set([...config.resolver.assetExts, 'w
 config.resolver.blockList = [
   /node_modules[\\/]\.bin[\\/]\.[^\\/]+$/,
   /[\\/]\.env(?:\.[^\\/]*)?$/,
+  // The meditation app is a second Expo project inside this repo. Its own
+  // node_modules would collide with this one in Metro's haste map.
+  /apps[\\/]meditation[\\/].*/,
 ];
 
 // `withUniwindConfig` must stay the outermost wrapper.

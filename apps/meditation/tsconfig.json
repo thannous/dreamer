@@ -13,18 +13,10 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
-    "uniwind-types.d.ts"
+    "uniwind-types.d.ts",
+    "uniwind-env.d.ts"
   ],
   "exclude": [
-    "apps/**",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/__tests__/**",
-    "tests/**",
-    "maestro/**",
-    "supabase/functions/**",
-    "coverage/**",
-    "dist/**",
-    "dist-dev-nossg/**"
+    "node_modules"
   ]
 }

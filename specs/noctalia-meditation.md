@@ -64,10 +64,13 @@ Noctalia utilise `StyleSheet` + `constants/journalTheme.ts` + `constants/noctali
 
 ## 3. Structure du projet
 
-Nouveau dépôt/dossier autonome : `noctalia-meditation/` (sibling de `dreamer/`, **pas** un package du repo actuel).
+**Monorepo** : l'application vit dans `apps/meditation/` du dépôt `dreamer`, à côté de l'app journal qui reste à la racine (la déplacer dans `apps/journal/` serait une restructuration à part entière, à faire un jour, pas maintenant).
+
+Deux projets Expo dans un même dépôt demandent trois garde-fous, tous en place :
+le `tsconfig.json` de la racine exclut `apps/**` ; le `metro.config.js` de la racine ajoute `apps/meditation` à sa `blockList`, sans quoi les deux arbres `node_modules` entrent en collision dans la haste map ; et `jest`/`lint` de la racine listent leurs dossiers explicitement, donc ne voient pas le second projet. Chaque app garde ses propres dépendances et ses propres commandes.
 
 ```
-noctalia-meditation/
+apps/meditation/
 ├── app/                              # Expo Router
 │   ├── _layout.tsx                   # providers + fonts + splash
 │   ├── index.tsx                     # routeur de démarrage (redirection)
@@ -604,7 +607,7 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 
 1. **Étape « rappel » dans l'onboarding** : étape dédiée (recommandé, meilleure opt-in) ou fusionnée dans l'écran « intention » pour coller exactement aux 4 étapes de Zen ?
 2. **Abonnement** : abonnement propre à Meditation (retenu par défaut, seule option sans compte) ou, plus tard, Noctalia Plus unique couvrant les deux apps ? À rouvrir seulement si les comptes arrivent.
-3. **Dépôt** : nouveau dépôt Git autonome, ou dossier frère versionné dans le monorepo actuel avec CI séparée ?
+3. ~~**Dépôt**~~ — **tranché le 2026-08-19 : monorepo.** L'app vit dans `apps/meditation/` du dépôt `dreamer` (cf. §3).
 4. **Voix** : narrateurs enregistrés en studio, ou synthèse vocale premium (ElevenLabs) pour la v1 ?
 5. **Hébergement des pistes** : bucket Cloudflare R2 (retenu, cohérent avec le site) ou embarquer davantage de sessions au prix d'un bundle plus lourd ?
 6. ~~**NativeWind v4 ou Uniwind**~~ — **tranché le 2026-08-19 : Uniwind** (cf. [ADR-001](adr-001-nativewind-vs-uniwind.md)). Le §2 est mis à jour en conséquence.
