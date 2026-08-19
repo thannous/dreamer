@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React, { useMemo, type ComponentProps } from 'react';
-import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Platform, StyleSheet, useWindowDimensions, type ColorValue } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
@@ -10,17 +10,6 @@ import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
-
-function TabIcon({ icon, label, focused }: { icon: IconName; label: string; focused: boolean }) {
-  const { colors, mode } = useTheme();
-  const palette = getLucidPalette(colors, mode);
-  return (
-    <View style={styles.tabItem}>
-      <Ionicons name={focused ? icon : (`${icon}-outline` as IconName)} size={22} color={focused ? palette.accentStrong : palette.textMuted} />
-      <Text numberOfLines={1} style={[styles.tabLabel, { color: focused ? palette.text : palette.textMuted }]}>{label}</Text>
-    </View>
-  );
-}
 
 export default function LucidTabsLayout() {
   const { colors, mode } = useTheme();
@@ -39,8 +28,10 @@ export default function LucidTabsLayout() {
       tabBarButton: (props: ComponentProps<typeof HapticTab>) => (
         <HapticTab {...props} testID={testID} accessibilityLabel={title} />
       ),
-      tabBarIcon: ({ focused }: { focused: boolean }) => (
-        <TabIcon focused={focused} icon={icon} label={title} />
+      // L'icône reste seule dans son emplacement : le libellé est posé par le
+      // navigateur, qui seul connaît la hauteur disponible sous elle.
+      tabBarIcon: ({ color, focused }: { color: ColorValue; focused: boolean }) => (
+        <Ionicons name={focused ? icon : (`${icon}-outline` as IconName)} size={22} color={color} />
       ),
     });
 
@@ -57,7 +48,10 @@ export default function LucidTabsLayout() {
     () => ({
       headerShown: false,
       sceneStyle: { backgroundColor: palette.background },
-      tabBarShowLabel: false,
+      tabBarShowLabel: true,
+      tabBarLabelStyle: styles.tabLabel,
+      tabBarActiveTintColor: palette.accentStrong,
+      tabBarInactiveTintColor: palette.textMuted,
       tabBarHideOnKeyboard: true,
       tabBarButton: HapticTab,
       tabBarItemStyle: styles.tabBarItem,
@@ -87,9 +81,11 @@ export default function LucidTabsLayout() {
       compact,
       insets.bottom,
       mode,
+      palette.accentStrong,
       palette.background,
       palette.border,
       palette.overlay,
+      palette.textMuted,
       width,
     ]
   );
@@ -107,6 +103,5 @@ export default function LucidTabsLayout() {
 
 const styles = StyleSheet.create({
   tabBarItem: { height: '100%' },
-  tabItem: { flex: 1, minWidth: 46, alignItems: 'center', justifyContent: 'center', gap: 3 },
-  tabLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 10, maxWidth: 70, textAlign: 'center' },
+  tabLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 10, lineHeight: 13, textAlign: 'center' },
 });
