@@ -5,6 +5,7 @@ import { Platform, StyleSheet, useWindowDimensions, type ColorValue } from 'reac
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
+import { LucidGlass } from '@/components/lucid/LucidGlass';
 import { getLucidPalette } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -54,6 +55,10 @@ export default function LucidTabsLayout() {
       tabBarInactiveTintColor: palette.textMuted,
       tabBarHideOnKeyboard: true,
       tabBarButton: HapticTab,
+      // La barre flottait déjà au-dessus du contenu avec un overlay à 0,86 :
+      // c'était du verre qui s'ignorait. `tabBarBackground` le rend explicite,
+      // avec flou sur iOS et l'overlay seul partout ailleurs.
+      tabBarBackground: () => <LucidGlass pointerEvents="none" radius={24} style={StyleSheet.absoluteFill as never} />,
       tabBarItemStyle: styles.tabBarItem,
       tabBarStyle: {
         position: 'absolute' as const,
@@ -64,10 +69,10 @@ export default function LucidTabsLayout() {
         paddingTop: 7,
         paddingBottom: 6,
         paddingHorizontal: 4,
-        backgroundColor: palette.overlay,
-        borderTopColor: palette.border,
-        borderColor: palette.border,
-        borderWidth: 1,
+        backgroundColor: 'transparent',
+        borderTopColor: 'transparent',
+        borderColor: 'transparent',
+        borderWidth: 0,
         borderRadius: 24,
         elevation: 12,
         shadowColor: '#000',
@@ -83,8 +88,6 @@ export default function LucidTabsLayout() {
       mode,
       palette.accentStrong,
       palette.background,
-      palette.border,
-      palette.overlay,
       palette.textMuted,
       width,
     ]

@@ -16,6 +16,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { LucidGlass } from '@/components/lucid/LucidGlass';
 import { getLucidPalette } from '@/constants/lucidTheme';
 import { useOptionalLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -62,7 +63,7 @@ export function LucidScreen({
           contentStyle,
         ]}
       >
-        {status ? <View style={styles.statusRow}>{status}</View> : null}
+        {status ? <View style={styles.statusRow}><LucidGlass radius={16} style={styles.statusGlass}>{status}</LucidGlass></View> : null}
         {(eyebrow || title || subtitle || trailing) && (
           <View style={styles.headerRow}>
             <View style={styles.headerCopy}>
@@ -400,6 +401,7 @@ const styles = StyleSheet.create({
   content: { width: '100%', paddingHorizontal: 20, gap: 18 },
   headerRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 14, marginBottom: 2 },
   statusRow: { flexDirection: 'row', justifyContent: 'flex-end' },
+  statusGlass: { padding: 3 },
   headerCopy: { flex: 1, minWidth: 0, gap: 7 },
   eyebrow: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12, letterSpacing: 1.5, textTransform: 'uppercase' },
   title: { fontFamily: 'Fraunces_600SemiBold', fontSize: 34, lineHeight: 40, letterSpacing: -0.8 },
