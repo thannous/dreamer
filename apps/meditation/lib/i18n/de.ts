@@ -285,4 +285,7 @@ export const de: Record<keyof typeof en, string> = {
   'paywall.remaining.none': 'Diesen Monat keine kostenlose Sitzung mehr',
   'profile.calendar.summary': "An {practised} der letzten {total} Tage geübt",
   'search.results.zero': "Keine Sitzung",
+  'settings.video': "Bewegte Hintergründe",
+  'settings.video.on': "An",
+  'settings.video.off': "Aus",
 };

@@ -285,4 +285,7 @@ export const pt: Record<keyof typeof en, string> = {
   'paywall.remaining.none': 'Não resta nenhuma sessão gratuita este mês',
   'profile.calendar.summary': "Praticado {practised} dos últimos {total} dias",
   'search.results.zero': "Nenhuma sessão",
+  'settings.video': "Fundos animados",
+  'settings.video.on': "Ativados",
+  'settings.video.off': "Desativados",
 };

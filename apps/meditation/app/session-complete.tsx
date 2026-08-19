@@ -33,7 +33,7 @@ export default function SessionCompleteScreen() {
   };
 
   return (
-    <Screen variant="immersive">
+    <Screen variant="immersive" video="sleep">
       <View testID={TID.Screen.SessionComplete} className="flex-1 justify-between px-gutter pb-4 pt-16">
         <View className="gap-4">
           <Text variant="display">{t('complete.title')}</Text>

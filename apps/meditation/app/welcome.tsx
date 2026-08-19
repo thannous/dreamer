@@ -1,27 +1,12 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
-import Animated, { FadeIn, ReduceMotion } from 'react-native-reanimated';
-
+import { Beat } from '@/components/atmosphere/Beat';
 import { Screen } from '@/components/atmosphere/Screen';
 import { Button, Rule, Text } from '@/components/ui';
-import { Curve, Duration, StaggerDelayMs } from '@/constants/motion';
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
 import { areAccountsEnabled } from '@/lib/env';
-
-/**
- * One beat of the opening: a fade, eased out, offset by its rank. Opacity only
- * — the stagger is what carries the settle, so nothing needs to move. Beats
- * overlap by four fifths, so the five groups read as one wash rather than five
- * arrivals. `ReduceMotion.System` drops the delays too, so a user who asked for
- * less motion gets the screen whole and at once.
- */
-const beat = (rank: number) =>
-  FadeIn.duration(Duration.slow)
-    .easing(Curve.enter)
-    .delay(rank * StaggerDelayMs)
-    .reduceMotion(ReduceMotion.System);
 
 /**
  * First screen. Immersive atmosphere, one promise, one commitment.
@@ -38,27 +23,27 @@ export default function WelcomeScreen() {
   const { t } = useTranslation();
 
   return (
-    <Screen variant="immersive">
+    <Screen variant="immersive" video="welcome">
       <View testID={TID.Screen.Welcome} className="flex-1 justify-between px-gutter pb-4 pt-16">
         <View className="gap-4">
-          <Animated.View entering={beat(0)}>
+          <Beat rank={0}>
             <Text variant="overline">{t('welcome.tagline')}</Text>
-          </Animated.View>
-          <Animated.View entering={beat(1)}>
+          </Beat>
+          <Beat rank={1}>
             <Text variant="display">{t('welcome.title')}</Text>
-          </Animated.View>
-          <Animated.View entering={beat(2)}>
+          </Beat>
+          <Beat rank={2}>
             <Rule className="self-start" />
-          </Animated.View>
+          </Beat>
         </View>
 
         <View className="gap-6 pb-6">
-          <Animated.View entering={beat(3)}>
+          <Beat rank={3}>
             <Text variant="quote">{t('welcome.subtitle')}</Text>
-          </Animated.View>
+          </Beat>
 
           {/* Both buttons arrive together: the commitment is one beat, not two. */}
-          <Animated.View className="gap-3" entering={beat(4)}>
+          <Beat rank={4} className="gap-3">
             <Button
               testID={TID.Button.WelcomeStart}
               label={t('welcome.cta')}
@@ -71,7 +56,7 @@ export default function WelcomeScreen() {
                 onPress={() => router.push('/sign-in')}
               />
             ) : null}
-          </Animated.View>
+          </Beat>
         </View>
       </View>
     </Screen>

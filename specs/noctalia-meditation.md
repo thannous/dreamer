@@ -543,7 +543,7 @@ Le jour venu, la marche est courte : Supabase est déjà en place pour Noctalia,
 | Pistes audio de sessions | 24 | `.m4a` AAC **48 kbps mono** (débit retenu au §8.2), normalisées à −16 LUFS, fondus 1,5 s |
 | Boucles d'ambiance | 3 | `.m4a` ~40 kbps, 5 min, boucle sans couture (réutilisables depuis `assets/audio/sleep/` de Noctalia) |
 | ~~Artworks de sessions~~ | — | **Supprimé en L2** : l'artwork est peint depuis la paire d'accent de la catégorie (`SessionArtwork`) plus le grain. 24 bitmaps représentaient un poids réel pour ce que la palette exprime déjà, et le dégradé reste dans la marque par construction. |
-| Fonds vidéo | 3–4 | 1080×1920 MP4 H.264, muet, ≤ 6 Mo |
+| Fonds vidéo | ✅ 4 | Générés puis réencodés en 720×1278, muets, **696 Ko au total** — des dégradés flous se compressent énormément et le 1080p ne portait aucune information de plus. Placés par `Screen`, sous l'atmosphère. |
 | Avatars de narrateurs | 3 | 512×512 WebP |
 | Icône d'app + splash | ✅ | Croissant champagne dans un anneau fin, généré par `scripts/generate-brand-assets.py` — rendu analytique, aucune dépendance graphique. Sept fichiers, 115 Ko. Splash décliné : ambre profond sur papier (4,1:1), champagne sur encre (9,2:1). |
 | Illustrations d'états vides | ✅ 4 | Traits champagne dans le langage de l'atmosphère (`EmptyIllustration`) : signet vide, loupe sur ciel vide, pastilles de calendrier creuses, croissant dans une orbite rompue. Chacune montre une absence, jamais un échec. |
@@ -588,7 +588,7 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 | **L5 — Profil & séries** | Journal de pratique, séries, statistiques, calendrier | Écran 11 |
 | **L6 — Réglages** | Réglages, profil local + photo, langue, rappels planifiés (`notificationService` + mock), aide/FAQ, légal | Écrans 18–22, 24 |
 | **L7 — Monétisation** | RevenueCat (+ magasin simulé), règles d'accès pures, paywall contextuel, gating sur trois points de déclenchement | Écran 17 |
-| **L8 — Finition** | ✅ 4 locales · ✅ accessibilité · ✅ flux Maestro (écrits, non exécutés) · ✅ icône et splash · ✅ icônes d'interface et illustrations d'états vides · ⬜ fonds vidéo, préparation stores | Release candidate |
+| **L8 — Finition** | ✅ 4 locales · ✅ accessibilité · ✅ flux Maestro (écrits, non exécutés) · ✅ icône et splash · ✅ icônes et états vides · ✅ fonds vidéo · ⬜ préparation stores | Release candidate |
 
 ---
 
