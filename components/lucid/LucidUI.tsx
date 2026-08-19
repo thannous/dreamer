@@ -27,6 +27,7 @@ export function LucidScreen({
   eyebrow,
   title,
   subtitle,
+  status,
   trailing,
   scroll = true,
   contentStyle,
@@ -37,6 +38,10 @@ export function LucidScreen({
   eyebrow?: string;
   title?: string;
   subtitle?: string;
+  // Statut d'écran (synchronisation, mode). Il occupe sa propre ligne : posé à
+  // côté du titre, une pastille de 160px ampute la colonne de titre de moitié
+  // et coupe les mots. `trailing` reste réservé à une action de 44px.
+  status?: ReactNode;
   trailing?: ReactNode;
   scroll?: boolean;
   contentStyle?: ViewStyle;
@@ -57,6 +62,7 @@ export function LucidScreen({
           contentStyle,
         ]}
       >
+        {status ? <View style={styles.statusRow}>{status}</View> : null}
         {(eyebrow || title || subtitle || trailing) && (
           <View style={styles.headerRow}>
             <View style={styles.headerCopy}>
@@ -388,7 +394,8 @@ const styles = StyleSheet.create({
   screenContainer: { flex: 1 },
   content: { width: '100%', paddingHorizontal: 20, gap: 18 },
   headerRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 14, marginBottom: 2 },
-  headerCopy: { flex: 1, gap: 7 },
+  statusRow: { flexDirection: 'row', justifyContent: 'flex-end' },
+  headerCopy: { flex: 1, minWidth: 0, gap: 7 },
   eyebrow: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12, letterSpacing: 1.5, textTransform: 'uppercase' },
   title: { fontFamily: 'Fraunces_600SemiBold', fontSize: 34, lineHeight: 40, letterSpacing: -0.8 },
   subtitle: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 15, lineHeight: 22 },
@@ -401,8 +408,8 @@ const styles = StyleSheet.create({
   buttonReason: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 13, lineHeight: 18, textAlign: 'center' },
   sectionHeader: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 12, marginTop: 4 },
   sectionCopy: { flex: 1, gap: 3 },
-  sectionTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 20, lineHeight: 26 },
-  sectionCaption: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 19 },
+  sectionTitle: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 15, lineHeight: 20, letterSpacing: 0.2 },
+  sectionCaption: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 12, lineHeight: 16 },
   pill: { minHeight: 28, borderRadius: 14, paddingHorizontal: 10, paddingVertical: 5, alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 5 },
   pillLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 11, letterSpacing: 0.25 },
   progressTrack: { height: 7, borderRadius: 4, overflow: 'hidden' },

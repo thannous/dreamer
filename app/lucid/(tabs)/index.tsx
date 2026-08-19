@@ -42,7 +42,7 @@ export default function LucidTodayScreen() {
   const coaching = copy[week.coaching.action];
 
   return (
-    <LucidScreen testID="lucid-today" eyebrow={copy.eyebrow} title={copy.greeting} subtitle={content.chrome.tagline} trailing={<LucidPill label={syncStatus === 'synced' ? copy.synced : copy.local} tone={syncStatus === 'synced' ? 'cyan' : 'neutral'} icon={syncStatus === 'synced' ? 'cloud-done' : 'phone-portrait'} />}>
+    <LucidScreen testID="lucid-today" eyebrow={copy.eyebrow} title={copy.greeting} status={<LucidPill label={syncStatus === 'synced' ? copy.synced : copy.local} tone={syncStatus === 'synced' ? 'cyan' : 'neutral'} icon={syncStatus === 'synced' ? 'cloud-done' : 'phone-portrait'} />}>
       <LucidSectionHeader title={copy.daily} />
       {active && program ? (
         <LucidCard accent="violet">
