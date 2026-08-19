@@ -200,10 +200,8 @@ export async function handleAuthMarkUpgrade(ctx: ApiContext): Promise<Response> 
     });
 
     const platform = verifiedGuest.payload?.platform;
-    // Guest tokens are currently issued only after a verified Play Integrity
-    // verdict. Keep iOS unverified until the App Attest attestation/assertion
-    // exchange is implemented server-side; the platform string alone is not
-    // an integrity proof.
+    // Android guests are Play Integrity attested. iOS guests are fingerprint-gated
+    // without App Attest, so the device-account link is recorded as unverified.
     const integrityProvider = platform === 'android' ? 'play_integrity' : 'unknown';
     const integrityVerified = platform === 'android';
 

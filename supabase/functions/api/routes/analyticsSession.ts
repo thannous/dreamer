@@ -17,6 +17,9 @@ export async function handleAnalyticsGuestSession(req: Request): Promise<Respons
     }
     const requestHash = body.requestHash;
     const integrityToken = body.integrityToken;
+    if (body.platform === 'ios') {
+      return jsonResponse(await createAnalyticsGuestToken('ios'), 200);
+    }
     if (
       body.platform !== 'android' ||
       typeof requestHash !== 'string' ||
@@ -31,7 +34,7 @@ export async function handleAnalyticsGuestSession(req: Request): Promise<Respons
     const verdict = await verifyAndroidIntegrity({ integrityToken, requestHash });
     if (!verdict.ok) return jsonResponse({ error: 'Invalid integrity proof' }, 401);
 
-    return jsonResponse(await createAnalyticsGuestToken(), 200);
+    return jsonResponse(await createAnalyticsGuestToken('android'), 200);
   } catch (error) {
     console.warn('[api] analytics guest session failed', {
       message: error instanceof Error ? error.message : 'unknown',

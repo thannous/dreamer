@@ -15,6 +15,13 @@ Deno.test('analytics guest token is purpose-bound and contains no quota/device i
     assertEquals(payload.platform, 'android');
     assertStringIncludes(JSON.stringify(payload), 'session_id');
     assertEquals(/fingerprint|device[_-]?id|user_id|email/i.test(JSON.stringify(payload)), false);
+
+    const iosSession = await createAnalyticsGuestToken('ios');
+    assertEquals(await verifyAnalyticsGuestToken(iosSession.token), true);
+    const iosPayloadPart = iosSession.token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    const iosPayload = JSON.parse(atob(iosPayloadPart.padEnd(Math.ceil(iosPayloadPart.length / 4) * 4, '=')));
+    assertEquals(iosPayload.platform, 'ios');
+    assertEquals(/fingerprint|device[_-]?id|user_id|email/i.test(JSON.stringify(iosPayload)), false);
   } finally {
     if (previous == null) Deno.env.delete('GUEST_SESSION_SECRET');
     else Deno.env.set('GUEST_SESSION_SECRET', previous);

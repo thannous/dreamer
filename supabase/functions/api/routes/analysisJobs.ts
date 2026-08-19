@@ -1,5 +1,5 @@
-import { corsHeaders } from '../lib/constants.ts';
 import { requireUser } from '../lib/guards.ts';
+import { jsonResponse } from '../lib/http.ts';
 import {
   AI_REQUEST_LIMITS,
   aiInputErrorResponse,
@@ -24,20 +24,6 @@ type AnalysisJobAdmission = {
   new_count?: number | null;
   job?: AnalysisJobRow;
 };
-
-const jsonResponse = (
-  body: Record<string, unknown>,
-  status: number,
-  retryAfter?: number
-) =>
-  new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(retryAfter ? { 'Retry-After': String(retryAfter) } : {}),
-      ...corsHeaders,
-    },
-  });
 
 const serviceUnavailable = () =>
   jsonResponse({ error: 'Analysis service is temporarily unavailable' }, 503);
@@ -100,14 +86,14 @@ export const blockedAdmissionResponse = (admission: AnalysisJobAdmission): Respo
     return jsonResponse(
       { error: 'Analysis service is temporarily busy', code: admission.code, retryAfter },
       503,
-      retryAfter
+      { 'Retry-After': String(retryAfter) }
     );
   }
 
   return jsonResponse(
     { error: 'Too many analysis requests', code: admission.code ?? 'AI_ADMISSION_DENIED', retryAfter },
     429,
-    retryAfter
+    { 'Retry-After': String(retryAfter) }
   );
 };
 

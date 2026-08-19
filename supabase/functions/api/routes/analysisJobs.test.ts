@@ -26,6 +26,33 @@ Deno.test('analysis quota admission returns a typed upgrade response', async () 
   });
 });
 
+Deno.test('analysis admission backlog responses carry a Retry-After header with CORS', async () => {
+  const busy = blockedAdmissionResponse({
+    allowed: false,
+    code: 'AI_GLOBAL_BACKLOG_LIMIT',
+    retry_after_seconds: 12,
+  });
+
+  assertEquals(busy.status, 503);
+  assertEquals(busy.headers.get('Retry-After'), '12');
+  assertEquals(busy.headers.get('Content-Type'), 'application/json');
+  assertEquals(busy.headers.get('Access-Control-Allow-Origin'), '*');
+  assertEquals(await busy.json(), {
+    error: 'Analysis service is temporarily busy',
+    code: 'AI_GLOBAL_BACKLOG_LIMIT',
+    retryAfter: 12,
+  });
+
+  const denied = blockedAdmissionResponse({ allowed: false });
+  assertEquals(denied.status, 429);
+  assertEquals(denied.headers.get('Retry-After'), '30');
+  assertEquals(await denied.json(), {
+    error: 'Too many analysis requests',
+    code: 'AI_ADMISSION_DENIED',
+    retryAfter: 30,
+  });
+});
+
 const buildContext = (body: Record<string, unknown>, userId: string | null = 'user-1') => ({
   req: new Request('https://example.test/functions/v1/api/analysis-jobs', {
     method: 'POST',

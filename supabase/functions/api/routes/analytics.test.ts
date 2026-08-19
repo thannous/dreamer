@@ -63,6 +63,38 @@ Deno.test('activation insight allowlist excludes dream-derived semantic properti
   }), now), false);
 });
 
+Deno.test('purchase funnel events accept categorical properties only', () => {
+  const accepted: [string, Record<string, unknown>][] = [
+    ['paywall_plan_selected', { trigger: 'analysis_limit', plan: 'annual', tier: 'free' }],
+    ['purchase_started', { trigger: 'settings', plan: 'monthly', tier: 'free' }],
+    ['purchase_completed', { trigger: 'settings', plan: 'monthly', tier: 'plus' }],
+    ['purchase_failed', { trigger: 'stats_profile', plan: 'annual', reason: 'cancelled' }],
+    ['restore_completed', { trigger: 'direct', outcome: 'nothing_to_restore' }],
+    ['paywall_dismissed', { trigger: 'exploration_limit', tier: 'guest', plan_selected: false }],
+  ];
+  for (const [event_name, properties] of accepted) {
+    assertEquals(validateProductAnalyticsEvent(validEvent({ event_name, properties }), now), true, event_name);
+  }
+
+  // Price, currency, product or receipt identifiers are never accepted.
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'purchase_completed',
+    properties: { trigger: 'settings', plan: 'monthly', tier: 'plus', price: 3.49 },
+  }), now), false);
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'purchase_completed',
+    properties: { trigger: 'settings', plan: 'monthly', tier: 'plus', product_id: 'noctalia_plus' },
+  }), now), false);
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'purchase_failed',
+    properties: { trigger: 'settings', plan: 'monthly', reason: 'Card declined for user' },
+  }), now), false);
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'paywall_plan_selected',
+    properties: { trigger: 'settings', plan: 'lifetime', tier: 'free' },
+  }), now), false);
+});
+
 Deno.test('analytics validator rejects content, unknown fields, stale events, and non-mobile envelopes', () => {
   assertEquals(validateProductAnalyticsEvent(validEvent({
     properties: { step: 'intro', transcript: 'private dream' },

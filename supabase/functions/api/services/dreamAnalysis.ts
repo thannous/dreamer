@@ -44,6 +44,14 @@ export type DreamAnalysisDetails = {
   reflectionQuestions: string[];
 };
 
+/**
+ * Version of the analysis prompt + schema. Bump it whenever the system
+ * instruction, the user prompt template or the JSON schema changes, so an
+ * output-quality regression can be attributed to a prompt change. It is
+ * returned to the client and stored with the dream (`promptVersion`).
+ */
+export const ANALYSIS_PROMPT_VERSION = 'analysis-2026-08-19.1';
+
 export type StructuredDreamAnalysis = {
   title: string;
   interpretation: string;
@@ -51,6 +59,7 @@ export type StructuredDreamAnalysis = {
   theme: string;
   dreamType: string;
   imagePrompt: string;
+  promptVersion: string;
 } & DreamAnalysisDetails;
 
 const sanitizeNamedInsights = (
@@ -97,10 +106,15 @@ export const runDreamAnalysis = async (options: {
   const langName = ANALYSIS_LANG_NAMES[lang] ?? ANALYSIS_LANG_NAMES.en;
   const systemInstruction = ANALYSIS_SYSTEM_INSTRUCTIONS[lang] ?? ANALYSIS_SYSTEM_INSTRUCTIONS.en;
 
+  const primaryModel = resolveTextModel('GEMINI_MODEL', GEMINI_FLASH_MODEL);
+  const fallbackModel = resolveTextModel('GEMINI_FALLBACK_MODEL', GEMINI_FLASH_LITE_MODEL);
+  // Spend telemetry: categorical only (route, models, prompt version), never content.
+  console.log('[ai-spend] analysis', { route, primaryModel, fallbackModel, promptVersion: ANALYSIS_PROMPT_VERSION });
+
   const { text } = await callGeminiWithFallback(
     apiKey,
-    resolveTextModel('GEMINI_MODEL', GEMINI_FLASH_MODEL),
-    resolveTextModel('GEMINI_FALLBACK_MODEL', GEMINI_FLASH_LITE_MODEL),
+    primaryModel,
+    fallbackModel,
     [{ role: 'user', parts: [{ text: buildAnalysisPrompt(transcript, langName) }] }],
     systemInstruction,
     {
@@ -134,6 +148,7 @@ export const runDreamAnalysis = async (options: {
     theme,
     dreamType: String(analysis.dreamType ?? 'Symbolic Dream'),
     imagePrompt: String(analysis.imagePrompt ?? 'dreamlike, surreal night atmosphere'),
+    promptVersion: ANALYSIS_PROMPT_VERSION,
     ...sanitizeAnalysisDetails(analysis),
   };
 };

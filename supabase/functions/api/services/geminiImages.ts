@@ -1,3 +1,4 @@
+import { RETIRED_IMAGE_MODELS } from '../lib/models.ts';
 import {
   ApiError,
   extractInteractionImage,
@@ -14,11 +15,6 @@ type EnvReader = (name: string) => string | undefined;
 
 const readDenoEnv: EnvReader = (name) => Deno.env.get(name);
 
-const RETIRED_IMAGE_MODELS = new Set([
-  'gemini-2.5-flash-image-preview',
-  'gemini-3.1-flash-image-preview',
-  'gemini-3-pro-image-preview',
-]);
 
 const extractInlineData = (
   interaction: any

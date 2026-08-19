@@ -31,6 +31,8 @@ type FakeAdminResults = {
   removeError?: { message: string } | null;
   quotaError?: { code: string } | null;
   deleteUserError?: { message: string } | null;
+  identities?: Array<{ provider: string }>;
+  appMetadata?: Record<string, unknown>;
 };
 
 function fakeAdminClient(results: FakeAdminResults = {}) {
@@ -65,6 +67,19 @@ function fakeAdminClient(results: FakeAdminResults = {}) {
       }),
       auth: {
         admin: {
+          getUserById: (id: string) => {
+            calls.push(`auth.getUserById:${id}`);
+            return Promise.resolve({
+              data: {
+                user: {
+                  id,
+                  identities: results.identities ?? [],
+                  app_metadata: results.appMetadata ?? {},
+                },
+              },
+              error: null,
+            });
+          },
           deleteUser: (id: string) => {
             calls.push(`auth.deleteUser:${id}`);
             return Promise.resolve({ error: results.deleteUserError ?? null });
@@ -89,6 +104,7 @@ Deno.test('/account deletion removes storage, quota rows, then the auth user', a
     `storage.remove:${USER_ID}/dream.png`,
     `storage.list:dream-images:${USER_ID}/`,
     `db.delete:quota_usage.user_id=${USER_ID}`,
+    `auth.getUserById:${USER_ID}`,
     `auth.deleteUser:${USER_ID}`,
   ]);
 });
@@ -115,4 +131,45 @@ Deno.test('/account deletion reports a failure when the auth deletion fails', as
   const res = await handleDeleteAccount(context() as never, factory);
   assertEquals(res.status, 500);
   assertEquals(await res.json(), { error: 'Deletion failed' });
+});
+
+Deno.test('/account deletion revokes Apple tokens before deleting an Apple user', async () => {
+  const { factory, calls } = fakeAdminClient({
+    identities: [{ provider: 'apple' }],
+    appMetadata: { apple_refresh_token: 'apple-refresh' },
+  });
+  const revokeCalls: Array<{ refreshToken?: string | null }> = [];
+  const res = await handleDeleteAccount(context() as never, factory, async (input) => {
+    revokeCalls.push(input);
+  });
+  assertEquals(res.status, 200);
+  assertEquals(await res.json(), { deleted: true });
+  assertEquals(revokeCalls, [{ refreshToken: 'apple-refresh' }]);
+  assertEquals(calls.includes(`auth.getUserById:${USER_ID}`), true);
+  assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), true);
+  assertEquals(calls.indexOf(`auth.getUserById:${USER_ID}`) < calls.indexOf(`auth.deleteUser:${USER_ID}`), true);
+});
+
+Deno.test('/account deletion skips Apple revoke for non-Apple users', async () => {
+  const { factory } = fakeAdminClient({ identities: [{ provider: 'google' }] });
+  let revoked = false;
+  const res = await handleDeleteAccount(context() as never, factory, async () => {
+    revoked = true;
+  });
+  assertEquals(res.status, 200);
+  assertEquals(await res.json(), { deleted: true });
+  assertEquals(revoked, false);
+});
+
+Deno.test('/account deletion fails honestly when Apple revoke fails', async () => {
+  const { factory, calls } = fakeAdminClient({
+    identities: [{ provider: 'apple' }],
+    appMetadata: { apple_refresh_token: 'apple-refresh' },
+  });
+  const res = await handleDeleteAccount(context() as never, factory, async () => {
+    throw new Error('Apple token revocation is not configured');
+  });
+  assertEquals(res.status, 503);
+  assertEquals(await res.json(), { error: 'Apple token revocation failed' });
+  assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), false);
 });

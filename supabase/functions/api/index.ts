@@ -13,9 +13,8 @@
 // - DELETE /api/account -> { deleted }
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
-import { createClient } from 'jsr:@supabase/supabase-js@2';
-import { corsHeaders } from './lib/constants.ts';
 import { handleDeleteAccount } from './routes/account.ts';
+import { handleStoreAppleAuthToken } from './routes/appleAuthToken.ts';
 import { handleChat } from './routes/chat.ts';
 import { handleAnalyzeDream, handleAnalyzeDreamFull, handleCategorizeDream } from './routes/dreams.ts';
 import { handleCreateImageJob, handleGetImageJobStatus } from './routes/imageJobs.ts';
@@ -29,16 +28,13 @@ import {
 import { handleAuthMarkUpgrade, handleQuotaStatus } from './routes/quota.ts';
 import { handleSubscriptionRefresh, handleSubscriptionReconcile, handleSubscriptionSync } from './routes/subscription.ts';
 import { handleTranscribe } from './routes/transcribe.ts';
-import { buildSupabaseUserAuthHeaders, resolveSupabaseUserBearer } from './lib/authHeader.ts';
 import { handleProductAnalytics } from './routes/analytics.ts';
 import { handleAnalyticsGuestSession } from './routes/analyticsSession.ts';
 import {
   handleCreateAnalysisJob,
   handleGetAnalysisJobStatus,
 } from './routes/analysisJobs.ts';
-import type { ApiContext } from './types.ts';
-
-type RouteHandler = (ctx: ApiContext) => Promise<Response>;
+import { createApiHandler, type RouteHandler } from './router.ts';
 
 const routes = new Map<string, RouteHandler>([
   ['POST /guest/session', async (ctx) => handleGuestSession(ctx.req)],
@@ -53,6 +49,7 @@ const routes = new Map<string, RouteHandler>([
   ['POST /subscription/reconcile', handleSubscriptionReconcile],
   ['POST /quota/status', handleQuotaStatus],
   ['POST /auth/mark-upgrade', handleAuthMarkUpgrade],
+  ['POST /auth/apple-token', handleStoreAppleAuthToken],
   ['DELETE /account', handleDeleteAccount],
   ['POST /chat', handleChat],
   ['POST /transcribe', handleTranscribe],
@@ -67,49 +64,4 @@ const routes = new Map<string, RouteHandler>([
   ['POST /generateImageWithReference', handleGenerateImageWithReference],
 ]);
 
-serve(async (req: Request) => {
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
-
-  const { pathname } = new URL(req.url);
-  const segments = pathname.split('/').filter(Boolean); // [ 'api', ...]
-  const subPath = '/' + segments.slice(1).join('/'); // '/analyzeDream'
-
-  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-  const supabaseAnon = Deno.env.get('SUPABASE_ANON_KEY')!;
-  const userBearer = resolveSupabaseUserBearer(req.headers.get('Authorization'));
-  const supabase = createClient(supabaseUrl, supabaseAnon, {
-    global: { headers: buildSupabaseUserAuthHeaders(req.headers.get('Authorization')) },
-  });
-
-  const { data: authData } = userBearer
-    ? await supabase.auth.getUser(userBearer).catch(() => ({ data: null }))
-    : { data: null };
-  const user = authData?.user ?? null;
-
-  const storageBucket = Deno.env.get('SUPABASE_STORAGE_BUCKET') ?? 'dream-images';
-  const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? null;
-
-  const handler = routes.get(`${req.method} ${subPath}`);
-  if (!handler) {
-    if (!user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
-    }
-
-    return new Response(JSON.stringify({ error: 'Not found' }), {
-      status: 404,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
-  }
-
-  return await handler({
-    req,
-    supabase,
-    user,
-    supabaseUrl,
-    supabaseServiceRoleKey,
-    storageBucket,
-  });
-});
+serve(createApiHandler({ routes }));

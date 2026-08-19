@@ -1,7 +1,7 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
-import { corsHeaders } from '../lib/constants.ts';
 import { isValidUuid } from '../lib/aiRequestPolicy.ts';
+import { jsonResponse } from '../lib/http.ts';
 import type { ApiContext } from '../types.ts';
 
 type GuestQaDependencies = {
@@ -21,20 +21,6 @@ const FINGERPRINT_PATTERN = /^[a-f0-9]{64}$/;
 const PASSPORT_VALID_HOURS = 24;
 const DAILY_RESET_LIMIT = 3;
 const DAILY_PAID_CALL_LIMIT = 10;
-
-const jsonResponse = (
-  body: Record<string, unknown>,
-  status: number,
-  retryAfter?: number
-): Response =>
-  new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(retryAfter ? { 'Retry-After': String(retryAfter) } : {}),
-      ...corsHeaders,
-    },
-  });
 
 export const parseGuestQaOperatorIds = (value: string | undefined): Set<string> =>
   new Set(
@@ -143,7 +129,11 @@ export async function handleGuestQaEnroll(
     : result.code === 'QA_DEVICE_LIMIT'
       ? 409
       : 400;
-  return jsonResponse(result, status, retryAfter);
+  return jsonResponse(
+    result,
+    status,
+    retryAfter ? { 'Retry-After': String(retryAfter) } : undefined
+  );
 }
 
 export async function handleGuestQaRevoke(

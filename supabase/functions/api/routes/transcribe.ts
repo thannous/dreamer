@@ -1,5 +1,5 @@
-import { corsHeaders } from "../lib/constants.ts";
 import { requireGuestSession } from "../lib/guards.ts";
+import { jsonResponse } from "../lib/http.ts";
 import { AI_REQUEST_LIMITS } from "../lib/aiRequestPolicy.ts";
 import { admitSynchronousAiRequest } from "../services/aiAdmission.ts";
 import type { ApiContext } from "../types.ts";
@@ -32,15 +32,6 @@ type TranscribeDependencies = {
   fetch?: typeof fetch;
   admitRequest?: typeof admitSynchronousAiRequest;
 };
-
-const jsonResponse = (
-  body: Record<string, unknown>,
-  status: number,
-): Response =>
-  new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json", ...corsHeaders },
-  });
 
 const invalidRequest = (error: string): Response =>
   jsonResponse({ error }, 400);

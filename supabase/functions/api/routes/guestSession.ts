@@ -2,17 +2,21 @@ import { corsHeaders } from '../lib/constants.ts';
 import { resolveGuestQaPassport } from '../lib/guestQa.ts';
 import { createGuestToken } from '../lib/guestToken.ts';
 import { verifyAndroidIntegrity } from '../lib/playIntegrity.ts';
+import { getRemoteIp, isTurnstileConfigured, verifyTurnstileToken } from '../lib/turnstile.ts';
 
 type GuestSessionBody = {
   fingerprint?: string;
   requestHash?: string;
   integrityToken?: string;
+  turnstileToken?: string;
   platform?: string;
 };
 
 type GuestSessionDependencies = {
   resolveQaPassport?: typeof resolveGuestQaPassport;
   verifyIntegrity?: typeof verifyAndroidIntegrity;
+  verifyTurnstile?: typeof verifyTurnstileToken;
+  isTurnstileConfigured?: typeof isTurnstileConfigured;
 };
 
 export async function handleGuestSession(
@@ -24,6 +28,7 @@ export async function handleGuestSession(
     const fingerprint = String(body?.fingerprint ?? '').trim();
     const requestHash = String(body?.requestHash ?? '').trim();
     const integrityToken = String(body?.integrityToken ?? '').trim();
+    const turnstileToken = String(body?.turnstileToken ?? '').trim();
     const platform = String(body?.platform ?? '').trim() || 'unknown';
 
     if (!fingerprint) {
@@ -67,7 +72,37 @@ export async function handleGuestSession(
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
       }
-    } else {
+    } else if (platform === 'web') {
+      // Web guests are gated by a Cloudflare Turnstile challenge. Fail closed
+      // when the secret is not configured on this deployment.
+      const configured = (dependencies.isTurnstileConfigured ?? isTurnstileConfigured)();
+      if (!configured) {
+        return new Response(JSON.stringify({ error: 'Guest sessions disabled for this platform' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+      if (!turnstileToken) {
+        return new Response(JSON.stringify({ error: 'Missing Turnstile token' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+      const verdict = await (dependencies.verifyTurnstile ?? verifyTurnstileToken)({
+        token: turnstileToken,
+        remoteIp: getRemoteIp(req.headers),
+        expectedAction: 'guest_session',
+      });
+      if (!verdict.ok) {
+        console.warn('[api] /guest/session turnstile rejected', { reason: verdict.reason ?? 'unknown' });
+        return new Response(JSON.stringify({ error: 'Turnstile check failed' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+    } else if (platform !== 'ios') {
+      // iOS guests are fingerprint-gated (IDFV) without App Attest for launch.
+      // Android still requires Play Integrity. Unknown platforms stay closed.
       return new Response(JSON.stringify({ error: 'Guest sessions disabled for this platform' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },

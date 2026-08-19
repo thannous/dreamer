@@ -1,3 +1,4 @@
+import { GEMINI_MODELS, RETIRED_TEXT_PREVIEW_MODELS } from '../lib/models.ts';
 import {
   ApiError as GoogleGenAiApiError,
   GoogleGenAI,
@@ -33,15 +34,12 @@ export type GeminiGenerationConfig = {
   maxOutputTokens?: number;
 };
 
-export const GEMINI_FLASH_MODEL = 'gemini-3.6-flash';
-export const GEMINI_FLASH_LITE_MODEL = 'gemini-3.5-flash-lite';
-export const GEMINI_FLASH_IMAGE_MODEL = 'gemini-3.1-flash-image';
-export const GEMINI_FLASH_LITE_IMAGE_MODEL = 'gemini-3.1-flash-lite-image';
-
-const RETIRED_TEXT_PREVIEW_MODELS = new Set([
-  'gemini-3-flash-preview',
-  'gemini-3.1-flash-lite-preview',
-]);
+// Model identifiers are owned by lib/models.ts (single registry); these named
+// exports keep the existing import sites stable.
+export const GEMINI_FLASH_MODEL = GEMINI_MODELS.text.default;
+export const GEMINI_FLASH_LITE_MODEL = GEMINI_MODELS.text.fallback;
+export const GEMINI_FLASH_IMAGE_MODEL = GEMINI_MODELS.image.default;
+export const GEMINI_FLASH_LITE_IMAGE_MODEL = GEMINI_MODELS.image.lite;
 
 // Every 1.x/2.x text model is deprecated on the Interactions API; requesting
 // one 404s, so stale env overrides silently fall back to current defaults.

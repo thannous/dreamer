@@ -1,5 +1,6 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
+import { revokeAppleTokens } from '../lib/appleTokenRevoke.ts';
 import { corsHeaders } from '../lib/constants.ts';
 import type { ApiContext } from '../types.ts';
 
@@ -17,6 +18,7 @@ type StorageEntry = { id: string | null; name: string };
 
 // Injectable for tests; the default builds the real service-role client.
 type AdminClientFactory = (url: string, serviceRoleKey: string) => any;
+type AppleRevokeFn = typeof revokeAppleTokens;
 
 const defaultAdminClientFactory: AdminClientFactory = (url, serviceRoleKey) =>
   createClient(url, serviceRoleKey, {
@@ -57,9 +59,19 @@ async function deleteUserStorageObjects(
   return false;
 }
 
+function userHasAppleIdentity(user: { identities?: Array<{ provider?: string }> | null } | null): boolean {
+  return Boolean(user?.identities?.some((identity) => identity.provider === 'apple'));
+}
+
+function appleRefreshTokenFromUser(user: { app_metadata?: { apple_refresh_token?: unknown } } | null): string | null {
+  const token = user?.app_metadata?.apple_refresh_token;
+  return typeof token === 'string' && token.length > 0 ? token : null;
+}
+
 export async function handleDeleteAccount(
   ctx: ApiContext,
-  createAdminClient: AdminClientFactory = defaultAdminClientFactory
+  createAdminClient: AdminClientFactory = defaultAdminClientFactory,
+  revokeAppleUserTokens: AppleRevokeFn = revokeAppleTokens
 ): Promise<Response> {
   const { user, supabaseUrl, supabaseServiceRoleKey, storageBucket } = ctx;
 
@@ -92,7 +104,30 @@ export async function handleDeleteAccount(
     return jsonResponse({ error: 'Deletion failed' }, 500);
   }
 
-  // 3. Deleting the Auth user cascades to every table holding an
+  // 3. Sign in with Apple requires token revocation before the account is
+  //    destroyed (App Store guideline). Missing Apple REST credentials fail
+  //    the delete instead of skipping revoke.
+  const { data: authUserData, error: getUserError } = await adminClient.auth.admin.getUserById(userId);
+  if (getUserError || !authUserData?.user) {
+    console.warn('[api] /account: failed to load auth user before delete', {
+      message: getUserError?.message ?? 'missing user',
+    });
+    return jsonResponse({ error: 'Deletion failed' }, 500);
+  }
+  if (userHasAppleIdentity(authUserData.user)) {
+    try {
+      await revokeAppleUserTokens({
+        refreshToken: appleRefreshTokenFromUser(authUserData.user),
+      });
+    } catch (error) {
+      console.warn('[api] /account: Apple token revoke failed', {
+        message: error instanceof Error ? error.message : 'unknown',
+      });
+      return jsonResponse({ error: 'Apple token revocation failed' }, 503);
+    }
+  }
+
+  // 4. Deleting the Auth user cascades to every table holding an
   //    ON DELETE CASCADE FK to auth.users: dreams (20251222115718_remote_schema.sql),
   //    dream_chat_turns / dream_chat_messages (20260722134500), ai_jobs (20260316120000),
   //    dream_sync_receipts (20260316130000), subscription_state / subscription_events

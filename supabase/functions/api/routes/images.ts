@@ -10,6 +10,7 @@ import { optimizeImage } from '../services/image.ts';
 import { createStorageHelpers } from '../services/storage.ts';
 import { ensureImagePrompt, generateAndStoreImage } from '../services/imagePipeline.ts';
 import { requireGuestSession, requireUser } from '../lib/guards.ts';
+import { jsonResponse } from '../lib/http.ts';
 import {
   AI_REQUEST_LIMITS,
   aiInputErrorResponse,
@@ -32,12 +33,6 @@ const toCount = (value: unknown): number => {
   if (!Number.isFinite(value)) return 0;
   return Math.max(0, Math.floor(value));
 };
-
-const jsonResponse = (body: unknown, status: number) =>
-  new Response(JSON.stringify(body), {
-    status,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders },
-  });
 
 const normalizeEffectiveSubscriptionTier = (tier: unknown): 'free' | 'plus' =>
   tier === 'plus' ? 'plus' : 'free';

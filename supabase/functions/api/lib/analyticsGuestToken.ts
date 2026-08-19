@@ -1,11 +1,13 @@
 const encoder = new TextEncoder();
 const TOKEN_TTL_MS = 15 * 60 * 1000;
 
+type AnalyticsGuestPlatform = 'android' | 'ios';
+
 type AnalyticsGuestTokenPayload = {
   v: 1;
   purpose: 'product_analytics';
   session_id: string;
-  platform: 'android';
+  platform: AnalyticsGuestPlatform;
   iat: number;
   exp: number;
 };
@@ -52,13 +54,15 @@ const sign = async (data: string): Promise<string> => {
   return base64UrlEncode(new Uint8Array(signature));
 };
 
-export async function createAnalyticsGuestToken(): Promise<{ token: string; expiresAt: string }> {
+export async function createAnalyticsGuestToken(
+  platform: AnalyticsGuestPlatform = 'android'
+): Promise<{ token: string; expiresAt: string }> {
   const now = Date.now();
   const payload: AnalyticsGuestTokenPayload = {
     v: 1,
     purpose: 'product_analytics',
     session_id: crypto.randomUUID(),
-    platform: 'android',
+    platform,
     iat: Math.floor(now / 1000),
     exp: Math.floor((now + TOKEN_TTL_MS) / 1000),
   };
@@ -88,7 +92,7 @@ export async function verifyAnalyticsGuestToken(token: string | null): Promise<b
     return (
       payload.v === 1 &&
       payload.purpose === 'product_analytics' &&
-      payload.platform === 'android' &&
+      (payload.platform === 'android' || payload.platform === 'ios') &&
       typeof payload.session_id === 'string' &&
       typeof payload.exp === 'number' &&
       payload.exp > Math.floor(Date.now() / 1000)
