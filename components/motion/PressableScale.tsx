@@ -1,5 +1,5 @@
 import * as Haptics from 'expo-haptics';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Pressable, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 
@@ -23,6 +23,17 @@ export type PressableScaleProps = Omit<PressableProps, 'style'> & {
    * every tap in the app is how users end up turning haptics off system-wide.
    */
   haptic?: PressableScaleHaptic;
+  /**
+   * Extra style properties to cross-fade whenever they change — `['borderColor',
+   * 'backgroundColor']` on a surface that also carries a selected state.
+   *
+   * This exists because `transitionProperty` is a single declaration: a caller that
+   * sets its own in `style` silently replaces the press transition and the scale starts
+   * snapping. Declaring the extras here folds them into one declaration, at
+   * `DURATION.fast` — a colour change is a state change, not press feedback, so it does
+   * not run at press speed.
+   */
+  transitionProperties?: readonly (keyof ViewStyle)[];
   style?: StyleProp<ViewStyle>;
   className?: string;
   children?: React.ReactNode;
@@ -50,8 +61,10 @@ export const PressableScale = React.forwardRef<React.ComponentRef<typeof Pressab
     {
       scale = PRESS_SCALE,
       haptic = 'none',
+      transitionProperties,
       style,
       onPressIn,
+      onPressOut,
       hitSlop = HIT_SLOP,
       pressRetentionOffset = PRESS_RETENTION_OFFSET,
       disabled,
@@ -61,9 +74,16 @@ export const PressableScale = React.forwardRef<React.ComponentRef<typeof Pressab
     ref
   ) {
     const reduced = useReducedMotion();
+    // `pressed` is tracked here rather than read from Pressable's own style callback:
+    // react-native-web drops a function style once the Pressable is wrapped in an
+    // animated component, which silently strips every style the caller passed. A plain
+    // array survives both platforms. The cost is the same either way — one React render
+    // per press, none per frame.
+    const [pressed, setPressed] = useState(false);
 
     const handlePressIn = useCallback<NonNullable<PressableProps['onPressIn']>>(
       (event) => {
+        setPressed(true);
         if (haptic !== 'none' && !disabled) {
           // Fire and forget: a rejected haptic (simulator, unsupported hardware) must
           // never surface as an unhandled rejection, and never blocks the visual.
@@ -74,22 +94,45 @@ export const PressableScale = React.forwardRef<React.ComponentRef<typeof Pressab
       [disabled, haptic, onPressIn]
     );
 
-    const animatedStyle = useMemo(
-      () =>
-        ({ pressed }: { pressed: boolean }): (CSSStyle | StyleProp<ViewStyle>)[] => [
-          reduced
-            ? { opacity: pressed ? 0.7 : 1 }
-            : {
-                transform: [{ scale: pressed ? scale : 1 }],
-                opacity: pressed ? 0.92 : 1,
-                transitionProperty: ['transform', 'opacity'],
-                transitionDuration: DURATION.press,
-                transitionTimingFunction: EASE.out,
-              },
-          style,
-        ],
-      [reduced, scale, style]
+    const handlePressOut = useCallback<NonNullable<PressableProps['onPressOut']>>(
+      (event) => {
+        setPressed(false);
+        onPressOut?.(event);
+      },
+      [onPressOut]
     );
+
+    const animatedStyle = useMemo<(CSSStyle | StyleProp<ViewStyle>)[]>(() => {
+      const extra = transitionProperties ?? [];
+
+      return [
+        reduced
+          ? {
+              opacity: pressed ? 0.7 : 1,
+              // Reduced motion drops the travel, not the explanation: a colour that
+              // marks a selected state still crosses over.
+              ...(extra.length > 0
+                ? {
+                    transitionProperty: [...extra],
+                    transitionDuration: DURATION.fast,
+                    transitionTimingFunction: EASE.out,
+                  }
+                : null),
+            }
+          : {
+              transform: [{ scale: pressed ? scale : 1 }],
+              opacity: pressed ? 0.92 : 1,
+              transitionProperty: ['transform', 'opacity', ...extra],
+              transitionDuration: [
+                DURATION.press,
+                DURATION.press,
+                ...extra.map(() => DURATION.fast),
+              ],
+              transitionTimingFunction: EASE.out,
+            },
+        style,
+      ];
+    }, [pressed, reduced, scale, style, transitionProperties]);
 
     return (
       <AnimatedPressable
@@ -98,6 +141,7 @@ export const PressableScale = React.forwardRef<React.ComponentRef<typeof Pressab
         hitSlop={hitSlop}
         pressRetentionOffset={pressRetentionOffset}
         onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
         style={animatedStyle as PressableProps['style']}
         {...rest}
       >

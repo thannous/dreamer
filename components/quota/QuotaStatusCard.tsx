@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ActivityIndicator, Platform } from 'react-native';
+import { ProgressFill } from '@/components/motion';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -215,14 +216,9 @@ export const QuotaStatusCard: React.FC<Props> = ({
                 accessibilityLabel={row.label}
                 accessibilityValue={getProgressAccessibilityValue(row.usage, formattedValue)}
               >
-                <View
-                  style={[
-                    styles.progressFill,
-                    {
-                      backgroundColor: noctalia.accent.base,
-                      width: `${getProgress(row.usage)}%`,
-                    },
-                  ]}
+                <ProgressFill
+                  percent={getProgress(row.usage)}
+                  style={[styles.progressFill, { backgroundColor: noctalia.accent.base }]}
                 />
               </View>
             )}

@@ -1,10 +1,18 @@
+import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { GlassCard } from '@/components/inspiration/GlassCard';
+import { DURATION, EASE, ProgressFill, SPRING } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -29,6 +37,69 @@ import {
 } from '@/services/storageService';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
+
+/**
+ * The checkbox of a ritual step.
+ *
+ * Purpose: feedback. The tick is the whole reward for doing the step, and a box that
+ * simply appears filled reads as a repaint rather than as something the user just did.
+ *
+ * The dot settles with a spring because a finger caused it — the small overshoot is the
+ * difference between "the state changed" and "you did that". The box's own colours cross
+ * over as a CSS transition on the UI thread, so the whole row costs one React render per
+ * tap and none per frame. Under "reduce motion" both land immediately; the tick is still
+ * there, it just does not travel.
+ */
+function RitualStepCheckbox({
+  done,
+  accentColor,
+  restingBorderColor,
+  dotColor,
+}: {
+  done: boolean;
+  accentColor: string;
+  restingBorderColor: string;
+  dotColor: string;
+}) {
+  const reduced = useReducedMotion();
+  const progress = useSharedValue(done ? 1 : 0);
+
+  useEffect(() => {
+    const target = done ? 1 : 0;
+    progress.set(reduced ? target : withSpring(target, SPRING.snapBack));
+  }, [done, progress, reduced]);
+
+  const dotStyle = useAnimatedStyle(() => {
+    const value = progress.get();
+    return {
+      // The spring overshoots past 1, which is what gives the tick its pop. Opacity is
+      // clamped so the overshoot only ever reaches the scale.
+      opacity: Math.min(1, Math.max(0, value)),
+      transform: [{ scale: 0.4 + 0.6 * value }],
+    };
+  });
+
+  return (
+    <Animated.View
+      style={[
+        styles.checkbox,
+        {
+          borderColor: done ? accentColor : restingBorderColor,
+          backgroundColor: done ? accentColor : 'transparent',
+        },
+        reduced
+          ? null
+          : {
+              transitionProperty: ['borderColor', 'backgroundColor'],
+              transitionDuration: DURATION.fast,
+              transitionTimingFunction: EASE.out,
+            },
+      ]}
+    >
+      <Animated.View style={[styles.checkboxInner, { backgroundColor: dotColor }, dotStyle]} />
+    </Animated.View>
+  );
+}
 
 const RITUAL_ICONS: Record<RitualId, IconName> = {
   starter: 'moon.stars.fill',
@@ -145,6 +216,21 @@ export default function RitualDetailScreen() {
   const handleToggleStep = useCallback(
     (stepId: string) => {
       const todayKey = getLocalDateKey();
+
+      // One haptic per tap, fired here rather than inside the state updater: React is
+      // free to run an updater more than once, and a doubled buzz reads as a glitch.
+      // Finishing the last step is the only moment on this screen that earns the success
+      // pattern; every other tick is a selection. Both land with a visible change, so a
+      // user with haptics off loses nothing.
+      const stepsBefore = progressDate === todayKey ? (ritualProgress[ritualId] ?? {}) : {};
+      const stepCount = RITUALS.find((entry) => entry.id === ritualId)?.steps.length ?? 0;
+      const doneCount = Object.values({ ...stepsBefore, [stepId]: !stepsBefore[stepId] })
+        .filter(Boolean).length;
+      void (stepCount > 0 && doneCount === stepCount
+        ? Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+        : Haptics.selectionAsync()
+      ).catch(() => {});
+
       setRitualProgress((prev) => {
         const base = progressDate === todayKey ? prev : {};
         const ritualSteps = base[ritualId] ?? {};
@@ -166,7 +252,7 @@ export default function RitualDetailScreen() {
         return nextProgress;
       });
     },
-    [progressDate, ritualId],
+    [progressDate, ritualId, ritualProgress],
   );
 
   const handleOpenSleepSounds = useCallback(() => {
@@ -249,14 +335,9 @@ export default function RitualDetailScreen() {
                 { backgroundColor: noctalia.surface.soft },
               ]}
             >
-              <View
-                style={[
-                  styles.progressBarFill,
-                  {
-                    backgroundColor: noctalia.accent.base,
-                    width: `${Math.round(progressPercent * 100)}%`,
-                  },
-                ]}
+              <ProgressFill
+                percent={Math.round(progressPercent * 100)}
+                style={[styles.progressBarFill, { backgroundColor: noctalia.accent.base }]}
               />
             </View>
             <Text style={[styles.progressText, { color: noctalia.accent.text }]}>
@@ -367,24 +448,12 @@ export default function RitualDetailScreen() {
                     accessibilityLabel={t(step.titleKey)}
                     accessibilityHint={t(step.bodyKey)}
                   >
-                    <View
-                      style={[
-                        styles.checkbox,
-                        {
-                          borderColor: done ? noctalia.accent.base : checkboxBorderColor,
-                          backgroundColor: done ? noctalia.accent.base : 'transparent',
-                        },
-                      ]}
-                    >
-                      {done ? (
-                        <View
-                          style={[
-                            styles.checkboxInner,
-                            { backgroundColor: noctalia.text.onAccent },
-                          ]}
-                        />
-                      ) : null}
-                    </View>
+                    <RitualStepCheckbox
+                      done={!!done}
+                      accentColor={noctalia.accent.base}
+                      restingBorderColor={checkboxBorderColor}
+                      dotColor={noctalia.text.onAccent}
+                    />
                     <View style={styles.stepContent}>
                       <Text
                         style={[

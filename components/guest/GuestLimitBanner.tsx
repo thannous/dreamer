@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { ProgressFill } from '@/components/motion';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -72,7 +73,10 @@ export const GuestLimitBanner: React.FC = () => {
         {used >= GUEST_DREAM_LIMIT ? t('guest.limit.banner.reached') : t('guest.limit.banner.hint')}
       </Text>
       <View style={[styles.progressBar, { backgroundColor: noctalia.surface.soft }]}>
-        <View style={[styles.progressFill, { width: `${progress * 100}%`, backgroundColor: noctalia.action.primary }]} />
+        <ProgressFill
+          percent={progress * 100}
+          style={[styles.progressFill, { backgroundColor: noctalia.action.primary }]}
+        />
       </View>
       <Pressable
         style={[

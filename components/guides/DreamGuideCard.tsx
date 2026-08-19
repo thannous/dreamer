@@ -1,6 +1,7 @@
 import React, { memo, useCallback } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
+import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -28,18 +29,20 @@ export const DreamGuideCard = memo(function DreamGuideCard({
   const handlePress = useCallback(() => onPress(guide.id), [guide.id, onPress]);
 
   return (
-    <Pressable
+    <PressableScale
       onPress={handlePress}
       accessibilityRole="button"
       accessibilityLabel={content.title}
       testID={`dream-guide-${guide.id}`}
-      style={({ pressed }) => [
+      // The card already stands 126pt tall and the list packs them 12pt apart, so the
+      // default slop would only blur the boundary between two neighbours.
+      hitSlop={0}
+      style={[
         styles.card,
         {
           backgroundColor: noctalia.surface.raised,
           borderColor: noctalia.surface.border,
         },
-        pressed && styles.pressed,
       ]}
     >
       <View style={[styles.iconWrap, { backgroundColor: noctalia.surface.soft }]}>
@@ -59,7 +62,7 @@ export const DreamGuideCard = memo(function DreamGuideCard({
         <Text style={[styles.count, { color: noctalia.accent.text }]}>{metaLabel}</Text>
       </View>
       <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
-    </Pressable>
+    </PressableScale>
   );
 });
 
@@ -73,10 +76,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: ThemeLayout.spacing.md,
-  },
-  pressed: {
-    opacity: 0.82,
-    transform: [{ scale: 0.985 }],
   },
   iconWrap: {
     width: 48,

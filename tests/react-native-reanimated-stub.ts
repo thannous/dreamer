@@ -4,13 +4,33 @@
 // initialised. Touching a real RN component here throws
 // `new NativeEventEmitter() requires a non-null argument` at import time, before a
 // single test runs.
-import { FlatList, Image, ScrollView, Text, View } from './react-native-stub';
+import React from 'react';
+
+import { FlatList, Image, ScrollView } from './react-native-stub';
 
 const createAnimatedComponent = (Component: any) => Component;
 
+/**
+ * `Animated.View` / `Animated.Text` forward their props, unlike the plain RN stub's.
+ *
+ * Everything this repo animates declaratively — CSS transitions, keyframes, an animated
+ * width — lands in the `style` prop of one of these two. A stub that drops props renders
+ * the right tree and hides every motion decision inside it, so a test can assert that a
+ * bar exists but never that it starts at zero. Forwarding costs nothing and makes the
+ * style assertable; `testID` comes along for the ride so the element can be found at all.
+ */
+const forwardingHost = (tag: string) => {
+  const Component = ({ children, ...props }: any) => React.createElement(tag, props, children);
+  Component.displayName = `Animated.${tag === 'div' ? 'View' : 'Text'}`;
+  return Component;
+};
+
+const AnimatedView = forwardingHost('div');
+const AnimatedText = forwardingHost('span');
+
 const Animated = {
-  View,
-  Text,
+  View: AnimatedView,
+  Text: AnimatedText,
   ScrollView,
   FlatList,
   Image,
