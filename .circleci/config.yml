@@ -27,13 +27,18 @@ jobs:
             mode=pr
             base_revision=
 
-            if [[ "${CIRCLE_BRANCH:-}" == "master" ]]; then
+            if [[ "<< pipeline.parameters.force_full_validation >>" == "true" && \
+              "${CIRCLE_BRANCH:-}" == "master" ]]; then
               mode=full
+            elif [[ "<< pipeline.parameters.force_full_validation >>" == "true" ]]; then
+              mode=release
             elif [[ -n "${CIRCLE_TAG:-}" || "${CIRCLE_BRANCH:-}" == "release" || \
               "${CIRCLE_BRANCH:-}" == release/* ]]; then
               mode=release
-            elif [[ "<< pipeline.parameters.force_full_validation >>" == "true" ]]; then
-              mode=release
+            elif [[ "${CIRCLE_BRANCH:-}" == "master" ]]; then
+              mode=main
+              git fetch --no-tags --depth=2 origin master
+              base_revision="$(git rev-parse "${CIRCLE_SHA1}^" 2>/dev/null || true)"
             else
               git fetch --no-tags origin master:refs/remotes/origin/master
               base_revision="$(git merge-base "$CIRCLE_SHA1" origin/master || true)"

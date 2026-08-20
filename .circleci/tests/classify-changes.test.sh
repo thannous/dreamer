@@ -17,6 +17,12 @@ git -C "$test_root" add app/index.ts
 git -C "$test_root" commit -qm initial
 base_revision="$(git -C "$test_root" rev-parse HEAD)"
 
+parameters_json() {
+  printf \
+    '{"pipeline_kind":"%s","diff_base":"%s","run_noctalia":%s,"run_meditation":%s,"run_site":%s,"run_edge_functions":%s,"run_edge_contracts":%s,"run_changed_tests":%s,"run_full_tests":%s,"require_timing_baseline":%s,"publish_timing_baseline":%s,"save_site_npm_cache":%s,"save_edge_contracts_npm_cache":%s}' \
+    "$@"
+}
+
 assert_parameters() {
   local label="$1"
   local expected="$2"
@@ -24,6 +30,7 @@ assert_parameters() {
   local base="$4"
   local head="$5"
   local output="$test_root/parameters.json"
+  local actual
 
   (
     cd "$test_root"
@@ -39,16 +46,6 @@ assert_parameters() {
   fi
 }
 
-full='{"pipeline_kind":"full","diff_base":"","run_app":true,"run_site":true,"run_edge":true,"run_changed_tests":false,"require_timing_baseline":true,"publish_timing_baseline":true,"save_site_npm_cache":false}'
-release='{"pipeline_kind":"full","diff_base":"","run_app":true,"run_site":true,"run_edge":true,"run_changed_tests":false,"require_timing_baseline":true,"publish_timing_baseline":false,"save_site_npm_cache":false}'
-fallback='{"pipeline_kind":"pr","diff_base":"","run_app":true,"run_site":true,"run_edge":true,"run_changed_tests":false,"require_timing_baseline":false,"publish_timing_baseline":false,"save_site_npm_cache":false}'
-none="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":false,\"run_site\":false,\"run_edge\":false,\"run_changed_tests\":false,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
-
-assert_parameters "full mode" "$full" full "" "$base_revision"
-assert_parameters "release mode" "$release" release "" "$base_revision"
-assert_parameters "invalid PR base fail-safe" "$fallback" pr deadbeef "$base_revision"
-assert_parameters "no changes" "$none" pr "$base_revision" "$base_revision"
-
 commit_change() {
   local path="$1"
   mkdir -p "$test_root/$(dirname "$path")"
@@ -58,38 +55,93 @@ commit_change() {
   git -C "$test_root" rev-parse HEAD
 }
 
-head_revision="$(commit_change app/feature.ts)"
-expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":true,\"run_site\":false,\"run_edge\":false,\"run_changed_tests\":true,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
-assert_parameters "app change" "$expected" pr "$base_revision" "$head_revision"
+assert_change() {
+  local label="$1"
+  local path="$2"
+  local mode="$3"
+  shift 3
+  local expected
+  local head_revision
 
-git -C "$test_root" reset -q --hard "$base_revision"
-head_revision="$(commit_change docs-src/content/page.md)"
-expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":false,\"run_site\":true,\"run_edge\":false,\"run_changed_tests\":false,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":true}"
-assert_parameters "site source change" "$expected" pr "$base_revision" "$head_revision"
+  git -C "$test_root" reset -q --hard "$base_revision"
+  head_revision="$(commit_change "$path")"
+  expected="$(parameters_json affected "$base_revision" "$@")"
+  assert_parameters "$label" "$expected" "$mode" "$base_revision" "$head_revision"
+}
 
-git -C "$test_root" reset -q --hard "$base_revision"
-head_revision="$(commit_change supabase/functions/api/example.ts)"
-expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":true,\"run_site\":false,\"run_edge\":true,\"run_changed_tests\":true,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
-assert_parameters "Edge Function change" "$expected" pr "$base_revision" "$head_revision"
+full="$(parameters_json full "" true true true true true false true true true false false)"
+release="$(parameters_json full "" true true true true true false true true false false false)"
+fallback="$(parameters_json affected "" true true true true true false false false false false false)"
+none="$(parameters_json affected "$base_revision" false false false false false false false false false false false)"
 
-git -C "$test_root" reset -q --hard "$base_revision"
-head_revision="$(commit_change doc_web_interne/docs/runbook.md)"
-expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":false,\"run_site\":false,\"run_edge\":false,\"run_changed_tests\":false,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
-assert_parameters "internal docs change" "$expected" pr "$base_revision" "$head_revision"
+assert_parameters "full mode" "$full" full "" "$base_revision"
+assert_parameters "release mode" "$release" release "" "$base_revision"
+assert_parameters "invalid PR base fail-safe" "$fallback" pr deadbeef "$base_revision"
+assert_parameters "invalid main base fail-safe" "$fallback" main deadbeef "$base_revision"
+assert_parameters "no changes" "$none" pr "$base_revision" "$base_revision"
 
-git -C "$test_root" reset -q --hard "$base_revision"
-head_revision="$(commit_change scripts/check-jest-duration-regression.test.js)"
-expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":true,\"run_site\":false,\"run_edge\":false,\"run_changed_tests\":true,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
-assert_parameters "non-site script change" "$expected" pr "$base_revision" "$head_revision"
+assert_change \
+  "Noctalia app change" app/feature.ts pr \
+  true false false false false true false false false false false
 
-git -C "$test_root" reset -q --hard "$base_revision"
-head_revision="$(commit_change scripts/docs-check.js)"
-expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":true,\"run_site\":true,\"run_edge\":false,\"run_changed_tests\":true,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
-assert_parameters "site generator change" "$expected" pr "$base_revision" "$head_revision"
+assert_change \
+  "main uses affected Noctalia smoke" app/main-feature.ts main \
+  true false false false false true false false false false false
 
-git -C "$test_root" reset -q --hard "$base_revision"
-head_revision="$(commit_change .circleci/config.yml)"
-expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":true,\"run_site\":true,\"run_edge\":true,\"run_changed_tests\":true,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
-assert_parameters "CircleCI change" "$expected" pr "$base_revision" "$head_revision"
+assert_change \
+  "Meditation app change" apps/meditation/app/index.tsx pr \
+  false true false false false false false false false false false
+
+assert_change \
+  "site source change" docs-src/content/page.md pr \
+  false false true false false false false false false true false
+
+assert_change \
+  "Edge Function change" supabase/functions/api/lib/example.ts pr \
+  false false false true false false false false false false false
+
+assert_change \
+  "Edge route with Node contract" supabase/functions/api/routes/analytics.ts pr \
+  false false false true true false false false false false true
+
+assert_change \
+  "database migration change" supabase/migrations/20260820000000_example.sql pr \
+  false false false false true false false false false false true
+
+assert_change \
+  "internal docs change" doc_web_interne/docs/runbook.md pr \
+  false false false false false false false false false false false
+
+assert_change \
+  "verified shared content" data/dream-symbols.json pr \
+  true false true false false true false false false false false
+
+assert_change \
+  "root lockfile consumers" package-lock.json pr \
+  true false true false true true false false false false false
+
+assert_change \
+  "shared Node version" .nvmrc pr \
+  true true true false true true false false false false false
+
+assert_change \
+  "site generator change" scripts/docs-check.js pr \
+  false false true false false false false false false true false
+
+assert_change \
+  "Noctalia tooling change" scripts/check-jest-duration-regression.test.js pr \
+  true false false false false true false false false false false
+
+assert_change \
+  "Supabase control file" supabase/config.toml pr \
+  false false false true true false false false false false true
+
+assert_change \
+  "CircleCI control-plane change" .circleci/config.yml pr \
+  true true true true true true false false false false false
+
+assert_change \
+  "unknown global file fails closed" .gitignore pr \
+  true true true true true true false false false false false
 
 echo "CircleCI path classification tests passed."
