@@ -2,6 +2,11 @@ version: 2.1
 
 setup: true
 
+parameters:
+  force_full_validation:
+    type: boolean
+    default: false
+
 orbs:
   continuation: circleci/continuation@1.1.0
 
@@ -26,6 +31,8 @@ jobs:
               mode=full
             elif [[ -n "${CIRCLE_TAG:-}" || "${CIRCLE_BRANCH:-}" == "release" || \
               "${CIRCLE_BRANCH:-}" == release/* ]]; then
+              mode=release
+            elif [[ "<< pipeline.parameters.force_full_validation >>" == "true" ]]; then
               mode=release
             else
               git fetch --no-tags origin master:refs/remotes/origin/master

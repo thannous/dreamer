@@ -39,9 +39,9 @@ assert_parameters() {
   fi
 }
 
-full='{"pipeline_kind":"full","diff_base":"","run_app":true,"run_site":true,"run_edge":true,"run_changed_tests":false,"require_timing_baseline":false,"publish_timing_baseline":true,"save_site_npm_cache":false}'
-release='{"pipeline_kind":"full","diff_base":"","run_app":true,"run_site":true,"run_edge":true,"run_changed_tests":false,"require_timing_baseline":false,"publish_timing_baseline":false,"save_site_npm_cache":false}'
-fallback='{"pipeline_kind":"pr","diff_base":"","run_app":true,"run_site":true,"run_edge":true,"run_changed_tests":false,"require_timing_baseline":true,"publish_timing_baseline":false,"save_site_npm_cache":false}'
+full='{"pipeline_kind":"full","diff_base":"","run_app":true,"run_site":true,"run_edge":true,"run_changed_tests":false,"require_timing_baseline":true,"publish_timing_baseline":true,"save_site_npm_cache":false}'
+release='{"pipeline_kind":"full","diff_base":"","run_app":true,"run_site":true,"run_edge":true,"run_changed_tests":false,"require_timing_baseline":true,"publish_timing_baseline":false,"save_site_npm_cache":false}'
+fallback='{"pipeline_kind":"pr","diff_base":"","run_app":true,"run_site":true,"run_edge":true,"run_changed_tests":false,"require_timing_baseline":false,"publish_timing_baseline":false,"save_site_npm_cache":false}'
 none="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":false,\"run_site\":false,\"run_edge\":false,\"run_changed_tests\":false,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
 
 assert_parameters "full mode" "$full" full "" "$base_revision"
@@ -59,7 +59,7 @@ commit_change() {
 }
 
 head_revision="$(commit_change app/feature.ts)"
-expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":true,\"run_site\":false,\"run_edge\":false,\"run_changed_tests\":true,\"require_timing_baseline\":true,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
+expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":true,\"run_site\":false,\"run_edge\":false,\"run_changed_tests\":true,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
 assert_parameters "app change" "$expected" pr "$base_revision" "$head_revision"
 
 git -C "$test_root" reset -q --hard "$base_revision"
@@ -69,7 +69,7 @@ assert_parameters "site source change" "$expected" pr "$base_revision" "$head_re
 
 git -C "$test_root" reset -q --hard "$base_revision"
 head_revision="$(commit_change supabase/functions/api/example.ts)"
-expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":true,\"run_site\":false,\"run_edge\":true,\"run_changed_tests\":true,\"require_timing_baseline\":true,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
+expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":true,\"run_site\":false,\"run_edge\":true,\"run_changed_tests\":true,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
 assert_parameters "Edge Function change" "$expected" pr "$base_revision" "$head_revision"
 
 git -C "$test_root" reset -q --hard "$base_revision"
@@ -78,8 +78,18 @@ expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\"
 assert_parameters "internal docs change" "$expected" pr "$base_revision" "$head_revision"
 
 git -C "$test_root" reset -q --hard "$base_revision"
+head_revision="$(commit_change scripts/check-jest-duration-regression.test.js)"
+expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":true,\"run_site\":false,\"run_edge\":false,\"run_changed_tests\":true,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
+assert_parameters "non-site script change" "$expected" pr "$base_revision" "$head_revision"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+head_revision="$(commit_change scripts/docs-check.js)"
+expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":true,\"run_site\":true,\"run_edge\":false,\"run_changed_tests\":true,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
+assert_parameters "site generator change" "$expected" pr "$base_revision" "$head_revision"
+
+git -C "$test_root" reset -q --hard "$base_revision"
 head_revision="$(commit_change .circleci/config.yml)"
-expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":true,\"run_site\":true,\"run_edge\":true,\"run_changed_tests\":true,\"require_timing_baseline\":true,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
+expected="{\"pipeline_kind\":\"pr\",\"diff_base\":\"$base_revision\",\"run_app\":true,\"run_site\":true,\"run_edge\":true,\"run_changed_tests\":true,\"require_timing_baseline\":false,\"publish_timing_baseline\":false,\"save_site_npm_cache\":false}"
 assert_parameters "CircleCI change" "$expected" pr "$base_revision" "$head_revision"
 
 echo "CircleCI path classification tests passed."

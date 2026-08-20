@@ -98,12 +98,28 @@ jobs:
                 name: Test files changed since the PR base
                 environment:
                   JEST_CHANGED_SINCE: << parameters.diff_base >>
+                  JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
+                  JEST_JUNIT_OUTPUT_DIR: artifacts/test-results
+                  JEST_JUNIT_OUTPUT_NAME: jest.xml
                 command: |
                   set -euo pipefail
                   if ! git cat-file -e "${JEST_CHANGED_SINCE}^{commit}" 2>/dev/null; then
                     git fetch --no-tags origin "$JEST_CHANGED_SINCE"
                   fi
-                  npm run test:changed
+                  mkdir -p artifacts/test-results
+                  npm run test:changed -- \
+                    --json \
+                    --outputFile=artifacts/jest-results.json \
+                    --reporters=default \
+                    --reporters=jest-junit
+            - store_artifacts:
+                path: artifacts/jest-results.json
+                destination: jest-timing/jest-results.json
+            - store_test_results:
+                path: artifacts/test-results
+            - store_artifacts:
+                path: artifacts/test-results
+                destination: test-results
 
   test-fast:
     executor: node
@@ -237,6 +253,13 @@ workflows:
           filters:
             tags:
               only: /.*/
+
+  full-tests:
+    when:
+      equal:
+        - full
+        - << pipeline.parameters.pipeline_kind >>
+    jobs:
       - test-fast:
           require_timing_baseline: << pipeline.parameters.require_timing_baseline >>
           publish_timing_baseline: << pipeline.parameters.publish_timing_baseline >>

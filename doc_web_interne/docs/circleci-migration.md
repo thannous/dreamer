@@ -10,10 +10,11 @@ n'est modifiée par ce changement.
 flowchart LR
   GH[GitHub App trigger] --> S[Setup CircleCI small]
   S --> C{Classification des chemins}
-  C -->|app| N[Typecheck, lint, Jest]
+  C -->|app PR| N[Typecheck, lint, Jest ciblé + JUnit]
   C -->|site| D[docs:build et docs:check]
   C -->|edge| E[Deno check et test]
   C -->|aucun gate| Z[No-op explicite]
+  S -->|master, release, tag ou paramètre manuel| F[Jest exhaustif + timing]
   GH -. master .-> CF[Cloudflare Pages Git integration]
   GH -. build mobile autorisé séparément .-> EA[EAS]
 ```
@@ -28,8 +29,8 @@ de build mobile distant. La CI valide les sources mais ne duplique aucune mutati
 | GitHub Actions `quality.yml` | CircleCI | Déclenchement |
 | --- | --- | --- |
 | `changes` | setup `classify-and-continue` + `classify-changes.sh` | Toutes les pipelines, `small` |
-| `pr-quality` | `app-quality` | PR applicative ; aussi `master`/release pour un gate plus complet |
-| `test-fast` | `test-fast` + `store_test_results` | PR applicative et pipeline complète |
+| `pr-quality` | `app-quality` + JSON/JUnit des tests changés | PR applicative ; aussi `master`/release pour les contrôles statiques |
+| `test-fast` | `test-fast` + `store_test_results` | `master`, tag/release ou `force_full_validation=true` uniquement |
 | artifact `jest-timing` + téléchargement du dernier succès `master` | artifact `jest-timing` + cache préfixé `jest-timing-master-v1-` | baseline publiée uniquement après succès de `master` |
 | `site-build` | `site-build` | Sources site sur PR ; toujours sur `master`/release |
 | `edge-functions` | `edge-functions` | Supabase/Deno sur PR ; toujours sur `master`/release |
@@ -47,15 +48,19 @@ La classification reprend les expressions de `quality.yml` :
 
 - les fichiers sous `doc_web_interne/`, `marketing/`, `docs-src/`, `docs/`, les
   JSON sous `data/` et les Markdown n'activent pas à eux seuls les gates app ;
-- `docs-src/`, `docs/`, `data/`, `scripts/` et les manifests npm activent le site ;
+- `docs-src/`, `docs/`, `data/`, les générateurs/helpers site sous `scripts/` et
+  les manifests npm activent le site ; un script applicatif sans rapport ne
+  déclenche pas ce build ;
 - `supabase/` et `deno.lock` activent Deno ;
 - toute modification de `.circleci/` active les trois familles pour tester la CI ;
 - une base Git absente ou inutilisable active les trois familles par sécurité.
 
 Sur une PR, la base est le `merge-base` de la tête avec `origin/master`. Sur
-`master`, une branche `release`, `release/*` ou un tag, les trois familles sont
-forcées. Les tests Jest changés ne s'exécutent que si la base est utilisable ; la
-suite Jest complète reste obligatoire dès que `run_app=true`.
+`master`, une branche `release`, `release/*` ou un tag, les trois familles et la
+suite Jest exhaustive sont forcées. Une pipeline lancée manuellement avec
+`force_full_validation=true` prend le même chemin sans publier la baseline
+`master`. Sur PR, seuls les tests Jest liés au diff s'exécutent et produisent
+JSON/JUnit ; la suite exhaustive ne dépend jamais de `run_app` seul.
 
 ## Déclencheurs et prérequis CircleCI
 
@@ -87,10 +92,12 @@ release initial.
 Chaque `test-fast` stocke `artifacts/jest-results.json` comme artifact CircleCI.
 Une pipeline `master` réussie copie le JSON dans un cache immuable dont la clé
 contient un timestamp. Les tags et branches release exécutent la suite complète
-sans remplacer cette baseline. Une PR restaure la correspondance la plus récente du
-préfixe `jest-timing-master-v1-`, puis applique le budget de régression existant de
-20 %. La première bascule doit donc lancer et réussir une pipeline `master` avant
-de considérer le check PR obligatoire.
+sans remplacer cette baseline. Les pipelines exhaustives restaurent la
+correspondance la plus récente du préfixe `jest-timing-master-v1-` et gardent le
+budget de régression de 20 % strict dès que ce fichier existe. La première
+pipeline `master` peut amorcer la baseline explicitement. Les PR stockent leur
+propre JSON/JUnit de tests ciblés, sans comparaison trompeuse entre un sous-ensemble
+et la durée de la suite complète.
 
 La rétention des artifacts et caches dépend des réglages de stockage CircleCI ;
 la confirmer dans l'organisation après les premières exécutions. Le JSON reste
@@ -126,12 +133,12 @@ app-quality 8 min, Jest 10 min, site 8 min, Edge 5 min, no-op 1 min.
 | --- | --- | ---: |
 | Markdown/runbook seulement | setup small + no-op small | 10 |
 | Source site seulement | setup small + site medium | 85 |
-| App seulement | setup small + app medium + Jest medium | 185 |
-| Edge Function | setup small + app medium + Jest medium + Edge small | 210 |
+| App seulement | setup small + app medium, Jest ciblé inclus | 85 |
+| Edge Function | setup small + app medium, Jest ciblé inclus + Edge small | 110 |
 | `master`/release complet | setup small + app medium + Jest medium + site medium + Edge small | 290 |
 
 Exemple mensuel de planification : 80 PR app, 20 PR site et 10 pipelines complètes
-consomment environ 19 400 crédits, soit une marge estimée de 10 600 crédits. Le
+consomment environ 11 400 crédits, soit une marge estimée de 18 600 crédits. Le
 plafond théorique imposé par les timeouts est de 700 crédits pour une pipeline
 complète. Vérifier chaque mois `Plan Usage`, le nombre d'utilisateurs actifs et le
 stockage ; les crédits Free ne sont pas reportés au mois suivant.

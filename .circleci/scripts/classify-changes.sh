@@ -39,13 +39,13 @@ write_parameters() {
 
 if [[ "$mode" == "full" ]]; then
   echo "Full pipeline requested for master; publishing a reusable Jest baseline."
-  write_parameters full "" true true true false false true false
+  write_parameters full "" true true true false true true false
   exit 0
 fi
 
 if [[ "$mode" == "release" ]]; then
   echo "Full pipeline requested for a release branch or tag; preserving the master Jest baseline."
-  write_parameters full "" true true true false false false false
+  write_parameters full "" true true true false true false false
   exit 0
 fi
 
@@ -57,8 +57,8 @@ fi
 if [[ -z "$base_revision" ]] || \
   ! git cat-file -e "${base_revision}^{commit}" 2>/dev/null || \
   ! git cat-file -e "${head_revision}^{commit}" 2>/dev/null; then
-  echo "No usable PR base commit; running every validation without changed-tests selection."
-  write_parameters pr "" true true true false true false false
+  echo "No usable PR base commit; running every path gate without the exhaustive Jest suite."
+  write_parameters pr "" true true true false false false false
   exit 0
 fi
 
@@ -76,7 +76,7 @@ echo "Changed files:"
 cat "$changed_files"
 
 docs_social_or_chore='^(doc_web_interne/|marketing/|docs-src/|docs/|data/.+\.json$|.*\.mdx?$)'
-site_paths='^(\.circleci/|\.github/workflows/quality\.yml|docs-src/|docs/|data/|scripts/|package(-lock)?\.json$)'
+site_paths='^(\.circleci/|\.github/workflows/quality\.yml|docs-src/|docs/|data/|package(-lock)?\.json$|scripts/lib/|scripts/(docs-(build|check)\.js|build-(content-manifest|site-manifest|experience|guides-pages)\.js|check-(content-release-gates|public-url-stability|content-hub-contract|symbol-illustration-parity|docs-links|docs-shell|article-date-contract|intent-ownership|web-performance-contract|symbol-image-contract|image-seo-contract)\.js|generate-(symbol-hero-posters|image-seo-assets|symbol-responsive-images|sitemap-v2)\.js|validate-i18n-seo\.js)$)'
 edge_paths='^(\.circleci/|\.github/workflows/quality\.yml|supabase/|deno\.lock$)'
 
 if grep -Evq "$docs_social_or_chore" "$changed_files"; then
@@ -116,6 +116,6 @@ write_parameters \
   "$run_site" \
   "$run_edge" \
   "$run_app" \
-  "$run_app" \
+  false \
   false \
   "$save_site_npm_cache"
