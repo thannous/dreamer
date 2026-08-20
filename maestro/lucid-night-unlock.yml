@@ -1,0 +1,43 @@
+# The other half of C3: lucid-night-safety.yml proves the gate refuses and names
+# its condition. This one proves the gate OPENS once the conditions are met —
+# without it, a button wired to `false` would pass the suite.
+appId: com.tanuki75.noctalia.lucid
+---
+- runFlow: subflows/open-lucid-app.yml
+
+# Audio safety is accepted during onboarding, so only the playback route is left
+# to confirm on the Night screen itself.
+- runFlow:
+    file: subflows/complete-lucid-onboarding.yml
+    env:
+      ACCEPT_AUDIO_SAFETY: "true"
+
+- tapOn:
+    id: lucid-tab-night
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: lucid-night
+    timeout: 20000
+
+# Still refused, but the reason has shrunk: audio safety is no longer listed,
+# only the speaker remains. This is what proves the reason is computed, not fixed.
+- assertVisible:
+    id: lucid-night-start
+- assertVisible: ".*Still required.*|.*Encore nécessaire.*|.*Aún necesario.*|.*Noch nötig.*|.*Ancora necessario.*"
+- assertVisible: ".*phone speaker.*|.*haut-parleur du téléphone.*|.*altavoz del teléfono.*|.*Telefonlautsprecher.*|.*altoparlante del telefono.*"
+- assertNotVisible: ".*accept audio safety.*|.*accepter la sécurité audio.*|.*aceptar la seguridad de audio.*|.*Audio-Sicherheit bestätigen.*|.*accettare la sicurezza audio.*"
+
+# Confirm the last condition.
+- scrollUntilVisible:
+    element:
+      id: lucid-night-speaker
+    direction: DOWN
+- tapOn:
+    id: lucid-night-speaker
+- waitForAnimationToEnd
+
+# The gate opens: no condition left to name.
+- assertNotVisible: ".*Still required.*|.*Encore nécessaire.*|.*Aún necesario.*|.*Noch nötig.*|.*Ancora necessario.*"
+- assertVisible:
+    id: lucid-night-start

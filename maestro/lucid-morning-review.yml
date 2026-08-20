@@ -1,0 +1,103 @@
+# Ensure the bundle identifier matches the local Lucid Trainer dev build.
+appId: com.tanuki75.noctalia.lucid
+---
+- runFlow: subflows/open-lucid-app.yml
+- runFlow: subflows/complete-lucid-onboarding.yml
+
+# The morning review is reached from Night, which is where the user actually
+# stands the evening before.
+- tapOn:
+    id: lucid-tab-night
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: lucid-night
+    timeout: 20000
+- scrollUntilVisible:
+    element:
+      text: "Open morning review|Ouvrir le bilan du matin|Abrir revisión matinal|Morgenrückblick öffnen|Apri bilancio mattutino"
+    direction: DOWN
+    timeout: 30000
+- tapOn:
+    text: "Open morning review|Ouvrir le bilan du matin|Abrir revisión matinal|Morgenrückblick öffnen|Apri bilancio mattutino"
+- extendedWaitUntil:
+    visible:
+      id: lucid-morning
+    timeout: 30000
+
+# A morning review opens with every answer empty, so saving must be refused and
+# the refusal must name what is still missing.
+- scrollUntilVisible:
+    element:
+      id: lucid-morning-save
+    direction: DOWN
+    timeout: 30000
+- assertVisible: ".*Still to answer.*|.*À renseigner.*|.*Falta responder.*|.*Noch offen.*|.*Ancora da indicare.*"
+- tapOn:
+    id: lucid-morning-save
+- waitForAnimationToEnd
+- assertNotVisible: "Saved offline|Enregistré hors ligne|Guardado sin conexión|Offline gespeichert|Salvato offline"
+- assertVisible: ".*Still to answer.*|.*À renseigner.*|.*Falta responder.*|.*Noch offen.*|.*Ancora da indicare.*"
+- assertVisible:
+    id: lucid-morning
+
+# Answer the five required fields. Programme names are identical in the five
+# locales; everything else is matched through its translations.
+- scrollUntilVisible:
+    element:
+      text: "MILD"
+    direction: UP
+    timeout: 30000
+- tapOn:
+    text: "MILD"
+- scrollUntilVisible:
+    element:
+      text: "10 minutes|10 minutos|10 Minuten|10 minuti"
+    direction: DOWN
+    timeout: 30000
+- tapOn:
+    text: "10 minutes|10 minutos|10 Minuten|10 minuti"
+# "No lucidity" is the neutral outcome, and it is the one that keeps the
+# conditional lucidity score out of the required set.
+- scrollUntilVisible:
+    element:
+      text: "No lucidity|Pas de lucidité|Sin lucidez|Keine Klarheit|Nessuna lucidità"
+    direction: DOWN
+    timeout: 30000
+- tapOn:
+    text: "No lucidity|Pas de lucidité|Sin lucidez|Keine Klarheit|Nessuna lucidità"
+
+# Recall and sleep are 0–5 scales with no test identifiers of their own. Scroll
+# past both of them first, so the two rows of digits are on screen together and
+# their order is the order they are rendered in: recall, then sleep.
+- scrollUntilVisible:
+    element:
+      text: "Personal factors|Facteurs personnels|Factores personales|Persönliche Faktoren|Fattori personali"
+    direction: DOWN
+    timeout: 30000
+- tapOn:
+    text: "4"
+    index: 0
+- assertVisible: "4 / 5"
+- tapOn:
+    text: "4"
+    index: 1
+
+# Every required answer is in: the refusal disappears and the save goes through.
+- scrollUntilVisible:
+    element:
+      id: lucid-morning-save
+    direction: DOWN
+    timeout: 30000
+- assertNotVisible: ".*Still to answer.*|.*À renseigner.*|.*Falta responder.*|.*Noch offen.*|.*Ancora da indicare.*"
+- tapOn:
+    id: lucid-morning-save
+- extendedWaitUntil:
+    visible: "Saved offline|Enregistré hors ligne|Guardado sin conexión|Offline gespeichert|Salvato offline"
+    timeout: 30000
+- tapOn:
+    text: "Done|Terminé|Listo|Fertig|Fatto"
+- extendedWaitUntil:
+    visible:
+      id: lucid-night
+    timeout: 30000

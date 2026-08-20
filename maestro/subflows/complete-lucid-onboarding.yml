@@ -1,0 +1,97 @@
+appId: com.tanuki75.noctalia.lucid
+env:
+  # Les consentements restent à off par défaut : c'est l'état contre lequel
+  # le verrou de Nuit est spécifié. Un appelant qui veut prouver la
+  # transition inverse passe "true".
+  ACCEPT_AUDIO_SAFETY: "false"
+---
+# Walks the seven onboarding steps and leaves every optional consent off, which
+# is the state the Night safety gate is specified against. Along the way it
+# proves the `disabledReason` contract: a disabled step names its condition.
+- assertVisible:
+    id: lucid-onboarding-continue
+
+# Step 1 / 7 — intro. Nothing to answer, the step is already passable.
+- tapOn:
+    id: lucid-onboarding-continue
+- waitForAnimationToEnd
+
+# Step 2 / 7 — one goal. The primary action refuses until a card is picked and
+# says so under itself instead of leaving the user guessing.
+- extendedWaitUntil:
+    visible:
+      id: lucid-goal-improve_recall
+    timeout: 20000
+- assertVisible: ".*Pick one option to continue.*|.*Choisissez une option pour continuer.*|.*Elige una opción para continuar.*|.*Wähle eine Option, um fortzufahren.*|.*Scegli un’opzione per continuare.*"
+- tapOn:
+    id: lucid-goal-improve_recall
+- waitForAnimationToEnd
+- assertNotVisible: ".*Pick one option to continue.*|.*Choisissez une option pour continuer.*|.*Elige una opción para continuar.*|.*Wähle eine Option, um fortzufahren.*|.*Scegli un’opzione per continuare.*"
+- tapOn:
+    id: lucid-onboarding-continue
+- waitForAnimationToEnd
+
+# Step 3 / 7 — experience level.
+- extendedWaitUntil:
+    visible:
+      id: lucid-experience-beginner
+    timeout: 20000
+- tapOn:
+    id: lucid-experience-beginner
+- tapOn:
+    id: lucid-onboarding-continue
+- waitForAnimationToEnd
+
+# Step 4 / 7 — practice rhythm.
+- extendedWaitUntil:
+    visible:
+      id: lucid-weekly-target-3
+    timeout: 20000
+- tapOn:
+    id: lucid-weekly-target-3
+- tapOn:
+    id: lucid-onboarding-continue
+- waitForAnimationToEnd
+
+# Step 5 / 7 — sleep window. The seeded 22:30 default is a valid local time, so
+# the step is passable as it stands and needs no keyboard.
+- extendedWaitUntil:
+    visible: "22:30"
+    timeout: 20000
+- tapOn:
+    id: lucid-onboarding-continue
+- waitForAnimationToEnd
+
+# Step 6 / 7 — notifications. Decline explicitly: asking would raise the OS
+# permission dialog, which is not what this flow is here to exercise.
+- extendedWaitUntil:
+    visible: "Not now|Plus tard|Ahora no|Jetzt nicht|Non ora"
+    timeout: 20000
+- tapOn:
+    text: "Not now|Plus tard|Ahora no|Jetzt nicht|Non ora"
+- waitForAnimationToEnd
+- tapOn:
+    id: lucid-onboarding-continue
+- waitForAnimationToEnd
+
+# Step 7 / 7 — consent. Every switch stays off, audio safety included.
+- extendedWaitUntil:
+    visible: "Share minimal product analytics|Partager des analytics produit minimales|Compartir analítica mínima del producto|Minimale Produktanalyse teilen|Condividi analisi minime del prodotto"
+    timeout: 20000
+- runFlow:
+    when:
+      true: ${ACCEPT_AUDIO_SAFETY == 'true'}
+    commands:
+      - tapOn:
+          id: lucid-onboarding-audio-safety
+      - waitForAnimationToEnd
+- tapOn:
+    id: lucid-onboarding-continue
+
+# Completing onboarding is what releases the shell gate onto Today.
+- extendedWaitUntil:
+    visible:
+      id: lucid-today
+    timeout: 60000
+- assertVisible:
+    id: lucid-today

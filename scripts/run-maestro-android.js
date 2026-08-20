@@ -135,6 +135,14 @@ const SUITES = {
   onboarding: [
     'maestro/onboarding-persona-paths.yml',
   ],
+  // Companion application (com.tanuki75.noctalia.lucid): run with
+  // --env-file .env.lucid.mock so Metro serves the Lucid Trainer variant.
+  lucid: [
+    'maestro/lucid-smoke.yml',
+    'maestro/lucid-morning-review.yml',
+    'maestro/lucid-night-safety.yml',
+    'maestro/lucid-night-unlock.yml',
+  ],
   mock: [
     'maestro/mock-existing-user.yml',
     'maestro/mock-existing-quotas.yml',
