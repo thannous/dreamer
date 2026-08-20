@@ -23,7 +23,7 @@ répéter l'action sans nouvel anti-doublon.
 
 | Créneau | Master Instagram durable | SHA-256 | TikTok vérifié | Instagram | X | Légende exacte |
 |---|---|---|---|---|---|---|
-| 1 | `output/video/noctalia-social-execution-2026-08-20/HIGGS_2026-08-06_002_FP_CITY.mp4` | `0878191738340327cce75d19ecc9a04831cfe2804aaf75c631ce635a761f2f28` | [20/08 · 15:30](https://www.tiktok.com/@noctaliadreams/video/7672912656361098518) | 15:45 | 16:15 · programmé | `A utopian city floats above the clouds. Would you live here? #Noctalia #Dreamscape #SurrealDreams` |
+| 1 | `output/video/noctalia-social-execution-2026-08-20/HIGGS_2026-08-06_002_FP_CITY.mp4` | `0878191738340327cce75d19ecc9a04831cfe2804aaf75c631ce635a761f2f28` | [20/08 · 15:30](https://www.tiktok.com/@noctaliadreams/video/7672912656361098518) | [20/08 · 15:45](https://www.instagram.com/reel/DcQ6OU6pkea/) | 16:15 · programmé — URL à collecter | `A utopian city floats above the clouds. Would you live here? #Noctalia #Dreamscape #SurrealDreams` |
 | 2 | `output/video/noctalia-social-execution-2026-08-20/HIGGS_2026-08-06_003_FP_CITY.mp4` | `84285ad67b2ffffd0476617b85b40b494110869bfc40b19713b023ba58c4acd4` | [20/08 · 19:30](https://www.tiktok.com/@noctaliadreams/video/7672912710354357526) | 19:45 | 20:15 · programmé | `Racing through a city built for the sky. Could you keep up? #Noctalia #Dreamscape #SurrealDreams` |
 | 3 | `output/video/noctalia-social-execution-2026-08-20/HIGGS_2026-08-06_004_FP_CITY.mp4` | `fc76a8edbb7d65496e84b9db714ef16aa5de0f27dfde2eb963199d8bef92491b` | [20/08 · 22:30](https://www.tiktok.com/@noctaliadreams/video/7672912756110118166) | 22:45 | 23:15 · programmé | `A holographic skyline comes alive at sunset. What would you ask it? #Noctalia #Dreamscape #SurrealDreams` |
 
