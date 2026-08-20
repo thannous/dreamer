@@ -7,12 +7,13 @@ import {
   LUCID_TAB_BAR_INSET,
   LucidButton,
   LucidCard,
+  LucidIconTile,
   LucidPill,
   LucidScreen,
   LucidSectionHeader,
   LucidToggleRow,
 } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useAuth } from '@/context/AuthContext';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -587,13 +588,7 @@ export default function LucidSettingsScreen() {
       <LucidSectionHeader title={copy.account} />
       <LucidCard accent="accent">
         <View style={styles.accountTop}>
-          <View style={[styles.accountIcon, { backgroundColor: palette.accentSoft }]}>
-            <Ionicons
-              name={user ? 'person-circle' : 'person-outline'}
-              size={30}
-              color={palette.accent}
-            />
-          </View>
+          <LucidIconTile icon={user ? 'person-circle' : 'person-outline'} tone="accent" size="md" />
           <View style={styles.accountCopy}>
             <Text style={[styles.accountTitle, { color: palette.text }]}>
               {user ? copy.signed : copy.guest}
@@ -618,7 +613,7 @@ export default function LucidSettingsScreen() {
       {syncNeedsRecovery ? (
         <LucidCard accent="amber">
           <View style={styles.syncRecoveryHeader}>
-            <Ionicons name="cloud-offline-outline" size={24} color={palette.amber} />
+            <Ionicons name="cloud-offline-outline" size={LucidIcon.lg} color={palette.amber} />
             <View style={styles.counterCopy}>
               <Text style={[styles.accountTitle, { color: palette.text }]}>
                 {copy.syncRecovery}
@@ -665,13 +660,13 @@ export default function LucidSettingsScreen() {
                 {
                   backgroundColor: selected ? palette.accentSoft : palette.surface,
                   borderColor: selected ? palette.accent : palette.borderInteractive,
-                  opacity: pressed ? 0.76 : 1,
+                  opacity: pressed ? LucidPress.opacity : 1,
                 },
               ]}
             >
               <Ionicons
                 name={THEME_ICONS[option.value]}
-                size={20}
+                size={LucidIcon.md}
                 color={selected ? palette.accent : palette.textSecondary}
               />
               <Text
@@ -812,7 +807,7 @@ export default function LucidSettingsScreen() {
               {
                 backgroundColor: palette.surfaceRaised,
                 borderColor: palette.borderInteractive,
-                opacity: pressed ? 0.76 : 1,
+                opacity: pressed ? LucidPress.opacity : 1,
               },
             ]}
           >
@@ -938,9 +933,9 @@ export default function LucidSettingsScreen() {
               pressed && styles.pressed,
             ]}
           >
-            <Ionicons name={row.icon} size={21} color={palette.accent} />
+            <Ionicons name={row.icon} size={LucidIcon.md} color={palette.accent} />
             <Text style={[styles.settingLabel, { color: palette.text }]}>{row.label}</Text>
-            <Ionicons name="chevron-forward" size={19} color={palette.textMuted} />
+            <Ionicons name="chevron-forward" size={LucidIcon.md} color={palette.textMuted} />
           </Pressable>
         ))}
       </LucidCard>
@@ -969,12 +964,12 @@ function CounterButton({
       accessibilityRole="button"
       accessibilityState={{ disabled }}
       disabled={disabled}
-      hitSlop={6}
+      hitSlop={LucidSpace.xs}
       onPress={onPress}
       testID={testID}
-      style={({ pressed }) => [styles.counterButton, { opacity: disabled ? 0.38 : pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [styles.counterButton, { opacity: disabled ? 0.38 : pressed ? LucidPress.opacity : 1 }]}
     >
-      <Ionicons name={`${icon}-circle`} size={31} color={color} />
+      <Ionicons name={`${icon}-circle`} size={LucidIcon.xl} color={color} />
     </Pressable>
   );
 }
@@ -1032,7 +1027,7 @@ function AccessibilityStatusRow({
 }) {
   return (
     <View style={[styles.accessibilityRow, { borderTopColor: palette.border }]}>
-      <Ionicons name={icon} size={21} color={palette.accent} />
+      <Ionicons name={icon} size={LucidIcon.md} color={palette.accent} />
       <View style={styles.counterCopy}>
         <Text style={[styles.accountTitle, { color: palette.text }]}>{title}</Text>
         <Text style={[styles.accountSub, { color: palette.textSecondary }]}>{description}</Text>
@@ -1043,33 +1038,36 @@ function AccessibilityStatusRow({
 }
 
 const styles = StyleSheet.create({
-  accountTop: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  accountIcon: { width: 52, height: 52, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
-  accountCopy: { flex: 1, gap: 3 },
-  accountTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 15 },
-  accountSub: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 12, lineHeight: 17 },
-  optionGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 9 },
-  option: { minHeight: 52, minWidth: 104, flex: 1, borderRadius: 17, borderWidth: 1, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
-  optionLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 14 },
-  counter: { minHeight: 70, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10 },
-  counterCopy: { flex: 1, gap: 3 },
-  counterButtons: { flexDirection: 'row', gap: 4 },
+  accountTop: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  accountCopy: { flex: 1, gap: LucidSpace.xs },
+  accountTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  accountSub: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  optionGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
+  // Trois options, une ligne. À 104 de large et 9 de gouttière elles réclamaient
+  // 330px pour les 320 d'un écran de 360 dp, et le sélecteur se repliait en 2+1
+  // dès qu'on descendait sous 370 dp. À 92 et une gouttière de 8, la rangée
+  // redescend à 292px de minimum : elle tient, et `flex: 1` rend le reste.
+  option: { minHeight: 52, minWidth: 92, flex: 1, borderRadius: LucidRadius.lg, borderWidth: 1, paddingHorizontal: LucidSpace.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: LucidSpace.sm },
+  optionLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  counter: { minHeight: 70, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md, paddingVertical: LucidSpace.md },
+  counterCopy: { flex: 1, gap: LucidSpace.xs },
+  counterButtons: { flexDirection: 'row', gap: LucidSpace.xs },
   counterButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
-  timeRow: { flexDirection: 'row', gap: 12 },
-  timeField: { flex: 1, gap: 7 },
-  fieldLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 13 },
-  timeInput: { minHeight: 50, borderRadius: 15, borderWidth: 1, paddingHorizontal: 15, fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18, fontVariant: ['tabular-nums'], textAlign: 'center' },
-  zoneRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  zoneValue: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 12, lineHeight: 17 },
-  zoneButton: { minHeight: 44, maxWidth: '54%', borderRadius: 14, borderWidth: 1, paddingHorizontal: 12, alignItems: 'center', justifyContent: 'center' },
-  zoneButtonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 11, lineHeight: 15, textAlign: 'center' },
-  accessibilityRow: { minHeight: 70, borderTopWidth: StyleSheet.hairlineWidth, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 },
-  syncRecoveryHeader: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  feedback: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 13, lineHeight: 19 },
-  languages: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  language: { minHeight: 44, minWidth: 54, overflow: 'hidden', borderRadius: 14, borderWidth: 1, paddingHorizontal: 15, alignItems: 'center', justifyContent: 'center' },
-  languageLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12 },
-  settingRow: { minHeight: 57, flexDirection: 'row', alignItems: 'center', gap: 12 },
-  settingLabel: { flex: 1, fontFamily: 'SpaceGrotesk_700Bold', fontSize: 14 },
-  pressed: { opacity: 0.76 },
+  timeRow: { flexDirection: 'row', gap: LucidSpace.md },
+  timeField: { flex: 1, gap: LucidSpace.sm },
+  fieldLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  timeInput: { minHeight: 50, borderRadius: LucidRadius.md, borderWidth: 1, paddingHorizontal: LucidSpace.lg, fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h3[0], lineHeight: LucidType.h3[1], fontVariant: ['tabular-nums'], textAlign: 'center' },
+  zoneRow: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  zoneValue: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  zoneButton: { minHeight: 44, maxWidth: '54%', borderRadius: LucidRadius.md, borderWidth: 1, paddingHorizontal: LucidSpace.md, alignItems: 'center', justifyContent: 'center' },
+  zoneButtonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], textAlign: 'center' },
+  accessibilityRow: { minHeight: 70, borderTopWidth: StyleSheet.hairlineWidth, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md, paddingVertical: LucidSpace.md },
+  syncRecoveryHeader: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  feedback: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  languages: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
+  language: { minHeight: 44, minWidth: 54, overflow: 'hidden', borderRadius: LucidRadius.md, borderWidth: 1, paddingHorizontal: LucidSpace.lg, alignItems: 'center', justifyContent: 'center' },
+  languageLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  settingRow: { minHeight: 57, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  settingLabel: { flex: 1, fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  pressed: { opacity: LucidPress.opacity },
 });

@@ -2,7 +2,7 @@ import { BlurView } from 'expo-blur';
 import React, { type ReactNode } from 'react';
 import { Platform, StyleSheet, View, type ViewStyle } from 'react-native';
 
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidRadius } from '@/constants/lucidTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
@@ -30,7 +30,7 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 export function LucidGlass({
   children,
   style,
-  radius = 24,
+  radius = LucidRadius.xl,
   pointerEvents,
   testID,
 }: {

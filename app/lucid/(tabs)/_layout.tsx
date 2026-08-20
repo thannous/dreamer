@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { LucidGlass } from '@/components/lucid/LucidGlass';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -50,15 +50,27 @@ export default function LucidTabsLayout() {
       // L'icône reste seule dans son emplacement : c'est le navigateur qui empile
       // le libellé dessous, lui seul connaît la hauteur disponible.
       tabBarIcon: ({ color, focused }: { color: ColorValue; focused: boolean }) => (
-        <Ionicons name={focused ? icon : (`${icon}-outline` as IconName)} size={22} color={color} />
+        <Ionicons name={focused ? icon : (`${icon}-outline` as IconName)} size={LucidIcon.lg} color={color} />
       ),
       // Le libellé est repris au navigateur pour une raison : il le rend sans
       // plafond d'agrandissement. À 360 dp un onglet mesure 65px, où « Einstellungen »
       // tient déjà au pixel près ; à 200 % de taille système il pousserait la barre
       // hors de l'écran. `maxFontSizeMultiplier` borne le texte, `flexShrink` le
       // laisse céder dans son emplacement au lieu d'élargir la barre.
+      // `adjustsFontSizeToFit` est la pièce qui manquait : à 11px, « Programmes »
+      // demande 66px pour 59 disponibles et se faisait tronquer. Un libellé trop
+      // long rétrécit jusqu'à 85 % au lieu de perdre ses lettres — un problème de
+      // largeur se règle dans la largeur, jamais en raccourcissant la traduction.
       tabBarLabel: ({ color }: { color: ColorValue }) => (
-        <Text numberOfLines={1} maxFontSizeMultiplier={TAB_LABEL_MAX_FONT_SCALE} style={[styles.tabLabel, { color }]}>{title}</Text>
+        <Text
+          adjustsFontSizeToFit
+          minimumFontScale={0.85}
+          numberOfLines={1}
+          maxFontSizeMultiplier={TAB_LABEL_MAX_FONT_SCALE}
+          style={[styles.tabLabel, { color }]}
+        >
+          {title}
+        </Text>
       ),
     });
 
@@ -91,14 +103,14 @@ export default function LucidTabsLayout() {
         right: width > 760 ? (width - 720) / 2 : 12,
         bottom: Math.max(insets.bottom, 10),
         height: tabBarHeight,
-        paddingTop: 7,
-        paddingBottom: 6,
-        paddingHorizontal: 4,
+        paddingTop: LucidSpace.sm,
+        paddingBottom: LucidSpace.sm,
+        paddingHorizontal: LucidSpace.xs,
         backgroundColor: 'transparent',
         borderTopColor: 'transparent',
         borderColor: 'transparent',
         borderWidth: 0,
-        borderRadius: 24,
+        borderRadius: LucidRadius.xl,
         elevation: 12,
         shadowColor: '#000',
         shadowOpacity: mode === 'dark' ? 0.38 : 0.12,
@@ -135,5 +147,5 @@ const styles = StyleSheet.create({
   tabBarItem: { height: '100%', flexShrink: 1 },
   // Palier « overline » : 11/14. En dessous (10pt) le libellé passait sous les 11pt
   // des HIG et les 12sp de Material, sur l'élément le plus permanent de l'app.
-  tabLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 11, lineHeight: 14, textAlign: 'center', flexShrink: 1 },
+  tabLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], textAlign: 'center', flexShrink: 1 },
 });

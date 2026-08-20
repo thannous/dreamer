@@ -18,11 +18,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { LucidGlass } from '@/components/lucid/LucidGlass';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useOptionalLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
+
+// Trois opacités « désactivé » cohabitaient sans token : 0,45 / 0,38 / 0,55.
+const DISABLED_OPACITY = 0.45;
 
 // La barre d'onglets flotte à `max(insets.bottom, 10)` du bas et mesure 70 de
 // haut : le contenu doit réserver de quoi passer dessous sans s'y cacher.
@@ -239,7 +242,7 @@ export function LucidButton({
   const background = primary
     ? palette.accentStrong
     : danger
-      ? `${palette.danger}18`
+      ? palette.dangerSoft
       : variant === 'secondary'
         ? palette.surfaceRaised
         : 'transparent';
@@ -261,7 +264,7 @@ export function LucidButton({
           // le rouge tombait à 2,76:1 en sombre et 2,13:1 en clair ; plein, il
           // tient 8,49:1 et 6,31:1 sur la surface de carte.
           borderColor: danger ? palette.danger : primary ? palette.accentStrong : palette.borderInteractive,
-          opacity: disabled ? 0.45 : pressed ? 0.78 : 1,
+          opacity: disabled ? DISABLED_OPACITY : pressed ? LucidPress.opacity : 1,
         },
       ]}
     >
@@ -269,7 +272,7 @@ export function LucidButton({
         <ActivityIndicator color={foreground} />
       ) : (
         <>
-          {icon ? <Ionicons name={icon} color={foreground} size={19} /> : null}
+          {icon ? <Ionicons name={icon} color={foreground} size={LucidIcon.md} /> : null}
           <Text style={[styles.buttonLabel, { color: foreground }]}>{label}</Text>
         </>
       )}
@@ -283,6 +286,36 @@ export function LucidButton({
       <Text accessibilityLiveRegion="polite" style={[styles.buttonReason, { color: palette.amber }]}>{reason}</Text>
     </View>
   );
+}
+
+/**
+ * Tuile d'icône. Elle existait en dix exemplaires, dix géométries et trois
+ * recettes de fond — dont `${color}1F` et `${palette.accent}22`, des alphas
+ * calculés dont le rendu dépend de la surface en dessous. Le fond vient
+ * désormais d'un token opaque, toujours.
+ */
+export function LucidIconTile({ icon, tone = 'accent', size = 'md' }: { icon: IconName; tone?: 'accent' | 'amber' | 'neutral' | 'solid'; size?: 'sm' | 'md' | 'lg' }) {
+  const { colors, mode } = useTheme();
+  const palette = getLucidPalette(colors, mode);
+  // `solid` existe pour les surfaces déjà teintées en `accentSoft` : une tuile
+  // `accentSoft` y était invisible, fond sur fond.
+  const color = tone === 'solid' ? palette.backgroundDeep : tone === 'amber' ? palette.amber : tone === 'neutral' ? palette.textSecondary : palette.accent;
+  const background = tone === 'solid' ? palette.accent : tone === 'amber' ? palette.amberSoft : tone === 'neutral' ? palette.surfaceRaised : palette.accentSoft;
+  const box = size === 'sm' ? styles.tileSm : size === 'lg' ? styles.tileLg : styles.tileMd;
+  const glyph = size === 'sm' ? LucidIcon.md : size === 'lg' ? LucidIcon.xl : LucidIcon.lg;
+  return (
+    <View style={[box, { backgroundColor: background }]}>
+      <Ionicons name={icon} size={glyph} color={color} />
+    </View>
+  );
+}
+
+/** Surtitre. Un seul palier pour tous les libellés en capitales du module. */
+export function LucidOverline({ text, tone = 'muted' }: { text: string; tone?: 'muted' | 'accent' | 'amber' }) {
+  const { colors, mode } = useTheme();
+  const palette = getLucidPalette(colors, mode);
+  const color = tone === 'accent' ? palette.accentOn : tone === 'amber' ? palette.amber : palette.textMuted;
+  return <Text style={[styles.eyebrow, { color }]}>{text}</Text>;
 }
 
 export function LucidSectionHeader({ title, caption, action }: { title: string; caption?: string; action?: ReactNode }) {
@@ -306,7 +339,7 @@ export function LucidPill({ label, tone = 'accent', icon }: { label: string; ton
   const bg = tone === 'amber' ? palette.amberSoft : tone === 'neutral' ? palette.surfaceRaised : palette.accentSoft;
   return (
     <View style={[styles.pill, { backgroundColor: bg }]}>
-      {icon ? <Ionicons name={icon} size={13} color={color} /> : null}
+      {icon ? <Ionicons name={icon} size={LucidIcon.sm} color={color} /> : null}
       <Text style={[styles.pillLabel, { color }]}>{label}</Text>
     </View>
   );
@@ -328,14 +361,14 @@ export function LucidProgressBar({ value, accessibilityLabel }: { value: number;
   );
 }
 
-export function LucidMetric({ value, label, tone = 'neutral' }: { value: string; label: string; tone?: 'accent' | 'amber' | 'neutral' }) {
+export function LucidMetric({ value, label, tone = 'neutral', style }: { value: string; label: string; tone?: 'accent' | 'amber' | 'neutral'; style?: ViewStyle }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   // Une tuile ne se colore que si la couleur encode quelque chose. Par défaut
   // elle est neutre : trois tuiles vides en trois teintes ne disaient rien.
   const color = tone === 'accent' ? palette.accent : tone === 'amber' ? palette.amber : palette.text;
   return (
-    <View style={[styles.metric, { backgroundColor: palette.surfaceRaised }]}>
+    <View style={[styles.metric, { backgroundColor: palette.surfaceRaised }, style]}>
       <Text style={[styles.metricValue, { color }]}>{value}</Text>
       <Text style={[styles.metricLabel, { color: palette.textSecondary }]}>{label}</Text>
     </View>
@@ -374,20 +407,16 @@ export function LucidChoiceCard({
         {
           backgroundColor: selected ? palette.accentSoft : palette.surface,
           borderColor: selected ? palette.accent : palette.borderInteractive,
-          opacity: pressed ? 0.78 : 1,
+          opacity: pressed ? LucidPress.opacity : 1,
         },
       ]}
     >
-      {icon ? (
-        <View style={[styles.choiceIcon, { backgroundColor: selected ? `${palette.accent}22` : palette.surfaceRaised }]}>
-          <Ionicons name={icon} size={21} color={selected ? palette.accent : palette.textSecondary} />
-        </View>
-      ) : null}
+      {icon ? <LucidIconTile icon={icon} tone={selected ? 'solid' : 'neutral'} size="sm" /> : null}
       <View style={styles.choiceCopy}>
         <Text style={[styles.choiceTitle, { color: palette.text }]}>{title}</Text>
         {description ? <Text style={[styles.choiceDescription, { color: palette.textSecondary }]}>{description}</Text> : null}
       </View>
-      <Ionicons name={selected ? 'checkmark-circle' : 'ellipse-outline'} size={22} color={selected ? palette.accent : palette.textMuted} />
+      <Ionicons name={selected ? 'checkmark-circle' : 'ellipse-outline'} size={LucidIcon.lg} color={selected ? palette.accent : palette.textMuted} />
     </Pressable>
   );
 }
@@ -420,7 +449,7 @@ export function LucidToggleRow({
   const palette = getLucidPalette(colors, mode);
   return (
     <View style={[styles.toggleRow, { borderBottomColor: divider ? palette.border : 'transparent' }]}>
-      {icon ? <Ionicons name={icon} size={21} color={palette.accent} /> : null}
+      {icon ? <Ionicons name={icon} size={LucidIcon.md} color={palette.accent} /> : null}
       <View style={styles.toggleCopy}>
         <Text style={[styles.toggleTitle, { color: palette.text }]}>{title}</Text>
         {description ? <Text style={[styles.toggleDescription, { color: palette.textSecondary }]}>{description}</Text> : null}
@@ -450,8 +479,8 @@ export function LucidIconAction({ label, icon, onPress, role = 'button', tone = 
   const palette = getLucidPalette(colors, mode);
   const danger = tone === 'danger';
   return (
-    <Pressable accessibilityRole={role} accessibilityLabel={label} onPress={onPress} hitSlop={4} style={({ pressed }) => [styles.iconAction, { backgroundColor: danger ? `${palette.danger}18` : palette.surfaceRaised, borderColor: danger ? palette.danger : palette.borderInteractive, opacity: pressed ? 0.7 : 1 }]}>
-      <Ionicons name={icon} size={21} color={danger ? palette.danger : palette.text} />
+    <Pressable accessibilityRole={role} accessibilityLabel={label} onPress={onPress} hitSlop={4} style={({ pressed }) => [styles.iconAction, { backgroundColor: danger ? palette.dangerSoft : palette.surfaceRaised, borderColor: danger ? palette.danger : palette.borderInteractive, opacity: pressed ? LucidPress.opacity : 1 }]}>
+      <Ionicons name={icon} size={LucidIcon.md} color={danger ? palette.danger : palette.text} />
     </Pressable>
   );
 }
@@ -459,13 +488,13 @@ export function LucidIconAction({ label, icon, onPress, role = 'button', tone = 
 const styles = StyleSheet.create({
   root: { flex: 1 },
   screenContainer: { flex: 1 },
-  content: { width: '100%', paddingHorizontal: 20, gap: 12 },
-  headerRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 14, marginBottom: 2 },
+  content: { width: '100%', paddingHorizontal: LucidSpace.gutter, gap: LucidSpace.md },
+  headerRow: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.lg, marginBottom: LucidSpace.xs },
   statusRow: { flexDirection: 'row', justifyContent: 'flex-end' },
-  statusGlass: { padding: 3 },
-  footer: { paddingHorizontal: 20, paddingTop: 12, gap: 10 },
-  headerCopy: { flex: 1, minWidth: 0, gap: 7 },
-  eyebrow: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12, letterSpacing: 1.5, textTransform: 'uppercase' },
+  statusGlass: { padding: LucidSpace.xs },
+  footer: { paddingHorizontal: LucidSpace.gutter, paddingTop: LucidSpace.md, gap: LucidSpace.sm },
+  headerCopy: { flex: 1, minWidth: 0, gap: LucidSpace.sm },
+  eyebrow: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], letterSpacing: 1.5, textTransform: 'uppercase' },
   // Fraunces est la voix du produit, pas sa police d'interface. Deux graisses,
   // deux rôles, et rien d'autre :
   //   _600SemiBold — le titre d'écran. Un seul par écran, celui-ci.
@@ -475,34 +504,39 @@ const styles = StyleSheet.create({
   // Tout ce qui se scanne — titres de carte, valeurs, libellés, boutons —
   // descend sur Space Grotesk. Du serif sur chaque titre de carte donnait un ton
   // éditorial à un écran qu'on consulte, pas qu'on lit.
-  title: { fontFamily: 'Fraunces_600SemiBold', fontSize: 34, lineHeight: 40, letterSpacing: -0.8 },
-  subtitle: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 15, lineHeight: 22 },
-  card: { borderRadius: 24, borderWidth: 1, padding: 18, gap: 13 },
-  pressed: { opacity: 0.82, transform: [{ scale: 0.992 }] },
-  pressedWithoutMotion: { opacity: 0.82 },
-  button: { minHeight: 52, borderRadius: 16, borderWidth: 1, paddingHorizontal: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 9 },
-  buttonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 15, textAlign: 'center' },
-  buttonBlock: { gap: 8 },
-  buttonReason: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 13, lineHeight: 18, textAlign: 'center' },
-  sectionHeader: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 12, marginTop: 16 },
-  sectionCopy: { flex: 1, gap: 3 },
-  sectionTitle: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 15, lineHeight: 20, letterSpacing: 0.2 },
-  sectionCaption: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 12, lineHeight: 16 },
-  pill: { minHeight: 28, borderRadius: 14, paddingHorizontal: 10, paddingVertical: 5, alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 5 },
-  pillLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 11, letterSpacing: 0.25 },
-  progressTrack: { height: 7, borderRadius: 4, overflow: 'hidden' },
-  progressFill: { height: '100%', borderRadius: 4 },
-  metric: { flex: 1, minWidth: 92, borderRadius: 18, padding: 14, gap: 3 },
-  metricValue: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 22, lineHeight: 28, fontVariant: ['tabular-nums'] },
-  metricLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 12, lineHeight: 16 },
-  choice: { minHeight: 78, borderRadius: 19, borderWidth: 1, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12 },
-  choiceIcon: { width: 42, height: 42, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
-  choiceCopy: { flex: 1, gap: 3 },
-  choiceTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 15, lineHeight: 20 },
-  choiceDescription: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 18 },
-  toggleRow: { minHeight: 70, borderBottomWidth: StyleSheet.hairlineWidth, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 },
-  toggleCopy: { flex: 1, gap: 3 },
-  toggleTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 15, lineHeight: 20 },
-  toggleDescription: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 12, lineHeight: 17 },
-  iconAction: { width: 44, height: 44, borderRadius: 15, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  title: { fontFamily: 'Fraunces_600SemiBold', fontSize: LucidType.display[0], lineHeight: LucidType.display[1], letterSpacing: -0.8 },
+  subtitle: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  card: { borderRadius: LucidRadius.xl, borderWidth: 1, padding: LucidSpace.lg, gap: LucidSpace.md },
+  pressed: { opacity: LucidPress.opacity, transform: [{ scale: LucidPress.scale }] },
+  pressedWithoutMotion: { opacity: LucidPress.opacity },
+  button: { minHeight: 52, borderRadius: LucidRadius.lg, borderWidth: 1, paddingHorizontal: LucidSpace.lg, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: LucidSpace.sm },
+  buttonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1], textAlign: 'center' },
+  buttonBlock: { gap: LucidSpace.sm },
+  buttonReason: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1], textAlign: 'center' },
+  sectionHeader: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: LucidSpace.md, marginTop: LucidSpace.lg },
+  sectionCopy: { flex: 1, gap: LucidSpace.xs },
+  sectionTitle: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1], letterSpacing: 0.2 },
+  sectionCaption: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  pill: { minHeight: 28, borderRadius: LucidRadius.full, paddingHorizontal: LucidSpace.md, paddingVertical: LucidSpace.xs, alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: LucidSpace.xs },
+  pillLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], letterSpacing: 0.25 },
+  progressTrack: { height: 7, borderRadius: LucidRadius.full, overflow: 'hidden' },
+  progressFill: { height: '100%', borderRadius: LucidRadius.full },
+  metric: { flex: 1, minWidth: 92, borderRadius: LucidRadius.lg, padding: LucidSpace.md, gap: LucidSpace.xs },
+  metricValue: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h2[0], lineHeight: LucidType.h2[1], fontVariant: ['tabular-nums'] },
+  metricLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  choice: { minHeight: 78, borderRadius: LucidRadius.lg, borderWidth: 1, padding: LucidSpace.md, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  choiceCopy: { flex: 1, gap: LucidSpace.xs },
+  choiceTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  choiceDescription: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  toggleRow: { minHeight: 70, borderBottomWidth: StyleSheet.hairlineWidth, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md, paddingVertical: LucidSpace.md },
+  toggleCopy: { flex: 1, gap: LucidSpace.xs },
+  toggleTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  toggleDescription: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  iconAction: { width: 44, height: 44, borderRadius: LucidRadius.lg, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  // Une seule silhouette pour la tuile d'icône, en trois tailles. Elle existait
+  // en dix géométries et trois recettes de fond, dont deux alphas calculés dont
+  // le rendu dépendait de la surface en dessous.
+  tileSm: { width: 40, height: 40, borderRadius: LucidRadius.md, alignItems: 'center', justifyContent: 'center' },
+  tileMd: { width: 56, height: 56, borderRadius: LucidRadius.lg, alignItems: 'center', justifyContent: 'center' },
+  tileLg: { width: 72, height: 72, borderRadius: LucidRadius.xl, alignItems: 'center', justifyContent: 'center' },
 });

@@ -1,11 +1,10 @@
-import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { LucidButton, LucidCard, LucidChoiceCard, LucidIconAction, LucidScreen } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { LucidButton, LucidCard, LucidChoiceCard, LucidIconAction, LucidIconTile, LucidScreen } from '@/components/lucid/LucidUI';
+import { getLucidPalette, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { LucidRealityCheckContext, LucidRealityCheckMethod, LucidRealityCheckOutcome } from '@/lib/lucid/model';
@@ -40,7 +39,7 @@ export default function LucidRealityCheckScreen() {
   const save = async () => { if (method === null || context === null || outcome === null || !mindful) return; setSaving(true); try { await addRealityCheck({ method, context, outcome, mindful }); if (Platform.OS !== 'web') void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {}); Alert.alert(copy.saved, content.realityChecks.completionPrompt, [{ text: content.chrome.common.done, onPress: close }]); } finally { setSaving(false); } };
   return (
     <LucidScreen eyebrow={copy.eyebrow} title={copy.title} subtitle={copy.subtitle} trailing={<LucidIconAction label={content.chrome.common.cancel} icon="close" onPress={close} />} testID="lucid-reality-check">
-      <LucidCard accent="accent"><View style={styles.focus}><View style={[styles.eye, { backgroundColor: palette.accentSoft }]}><Ionicons name="eye" size={37} color={palette.accent} /></View><Text style={[styles.focusText, { color: palette.text }]}>{content.realityChecks.qualityPrinciples[0]}</Text></View></LucidCard>
+      <LucidCard accent="accent"><View style={styles.focus}><LucidIconTile icon="eye" tone="accent" size="lg" /><Text style={[styles.focusText, { color: palette.text }]}>{content.realityChecks.qualityPrinciples[0]}</Text></View></LucidCard>
       <Text style={[styles.section, { color: palette.text }]}>{copy.method}</Text>
       {/* Trois groupes exclusifs : sans conteneur nommé, un bouton radio s'annonce sans jamais dire de quel choix il fait partie. */}
       <View accessibilityRole="radiogroup" accessibilityLabel={copy.method} style={styles.group}>{METHODS.map((item) => <LucidChoiceCard key={item} title={copy[item]} selected={method === item} onPress={() => setMethod(item)} icon={item === 'nose_breathing' ? 'fitness' : item === 'finger_count' ? 'hand-left' : item === 'text_reread' ? 'text' : 'time'} />)}</View>
@@ -60,7 +59,7 @@ export default function LucidRealityCheckScreen() {
 // remplit sans écrire — le libellé sélectionné passe sur `accentOn`.
 function LucidPillButton({ label, groupLabel, selected, onPress }: { label: string; groupLabel: string; selected: boolean; onPress: () => void }) {
   const { colors, mode } = useTheme(); const palette = getLucidPalette(colors, mode);
-  return <Pressable accessibilityRole="radio" accessibilityLabel={`${groupLabel}, ${label}`} accessibilityState={{ selected, checked: selected }} onPress={onPress} style={({ pressed }) => [styles.pillButton, { backgroundColor: selected ? palette.accentSoft : palette.surfaceRaised, borderColor: selected ? palette.accent : palette.borderInteractive, opacity: pressed ? 0.78 : 1 }]}><Text style={[styles.pillButtonLabel, { color: selected ? palette.accentOn : palette.textSecondary }]}>{label}</Text></Pressable>;
+  return <Pressable accessibilityRole="radio" accessibilityLabel={`${groupLabel}, ${label}`} accessibilityState={{ selected, checked: selected }} onPress={onPress} style={({ pressed }) => [styles.pillButton, { backgroundColor: selected ? palette.accentSoft : palette.surfaceRaised, borderColor: selected ? palette.accent : palette.borderInteractive, opacity: pressed ? LucidPress.opacity : 1 }]}><Text style={[styles.pillButtonLabel, { color: selected ? palette.accentOn : palette.textSecondary }]}>{label}</Text></Pressable>;
 }
 
-const styles = StyleSheet.create({ focus: { alignItems: 'center', gap: 14, paddingVertical: 5 }, eye: { width: 72, height: 72, borderRadius: 25, alignItems: 'center', justifyContent: 'center' }, focusText: { fontFamily: 'Fraunces_500Medium', fontSize: 18, lineHeight: 25, textAlign: 'center' }, section: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 17, marginTop: 4 }, group: { gap: 12 }, wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, outcomes: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, pillButton: { minHeight: 44, justifyContent: 'center', borderRadius: 16, borderWidth: 1, paddingHorizontal: 13, paddingVertical: 10 }, pillButtonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12 } });
+const styles = StyleSheet.create({ focus: { alignItems: 'center', gap: LucidSpace.lg, paddingVertical: LucidSpace.xs }, focusText: { fontFamily: 'Fraunces_500Medium', fontSize: LucidType.h3[0], lineHeight: LucidType.h3[1], textAlign: 'center' }, section: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h3[0], lineHeight: LucidType.h3[1], marginTop: LucidSpace.xs }, group: { gap: LucidSpace.md }, wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm }, outcomes: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm }, pillButton: { minHeight: 44, justifyContent: 'center', borderRadius: LucidRadius.lg, borderWidth: 1, paddingHorizontal: LucidSpace.md, paddingVertical: LucidSpace.md }, pillButtonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] } });

@@ -28,6 +28,10 @@ jest.mock('@/components/auth/EmailAuthCard', () => ({
 }));
 
 jest.mock('@/components/lucid/LucidUI', () => ({
+  // Primitives ajoutées par C4 : le double doit suivre le composant, sinon
+  // l'écran rend `undefined` et la suite tombe sur « Element type is invalid ».
+  LucidIconTile: () => null,
+  LucidOverline: ({ text }: { text: string }) => <span>{text}</span>,
   LucidScreen: ({
     children,
     testID,
@@ -55,6 +59,9 @@ jest.mock('@/components/lucid/LucidUI', () => ({
 }));
 
 jest.mock('@/constants/lucidTheme', () => ({
+  // Les échelles sont des constantes pures : aucune raison de les simuler, et
+  // les simuler faisait planter les StyleSheet.create qui les lisent au chargement.
+  ...jest.requireActual('@/constants/lucidTheme'),
   getLucidPalette: () => ({ text: '#111', textSecondary: '#555' }),
 }));
 

@@ -4,8 +4,8 @@ import { router, useLocalSearchParams, type Href } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 
-import { LucidButton, LucidCard, LucidIconAction, LucidPill, LucidProgressBar, LucidScreen } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { LucidButton, LucidCard, LucidIconAction, LucidOverline, LucidPill, LucidProgressBar, LucidScreen } from '@/components/lucid/LucidUI';
+import { getLucidPalette, LucidIcon, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { LucidTechnique } from '@/lib/lucid/model';
@@ -78,31 +78,30 @@ export default function LucidSessionScreen() {
           // débloque le bouton de fin — il doit s'annoncer à chaque appui.
           <LucidCard key={`${session.id}-${index}`} accent={done ? 'accent' : 'none'} onPress={alreadyDone ? undefined : () => setChecked((values) => values.map((value, itemIndex) => itemIndex === index ? !value : value))} accessibilityRole="checkbox" accessibilityState={{ checked: done, disabled: alreadyDone }} accessibilityLabel={`${copy.step} ${index + 1}: ${stepText}`}>
             <View style={styles.stepRow}>
-              <View style={[styles.check, { backgroundColor: done ? palette.accent : palette.surfaceRaised, borderColor: done ? palette.accent : palette.borderInteractive }]}>{done ? <Ionicons name="checkmark" size={18} color={palette.backgroundDeep} /> : <Text style={[styles.checkNumber, { color: palette.textSecondary }]}>{index + 1}</Text>}</View>
-              <View style={styles.stepCopy}><Text style={[styles.stepLabel, { color: palette.textMuted }]}>{copy.step} {index + 1}</Text><Text style={[styles.stepText, { color: palette.text }]}>{stepText}</Text></View>
+              <View style={[styles.check, { backgroundColor: done ? palette.accent : palette.surfaceRaised, borderColor: done ? palette.accent : palette.borderInteractive }]}>{done ? <Ionicons name="checkmark" size={LucidIcon.md} color={palette.backgroundDeep} /> : <Text style={[styles.checkNumber, { color: palette.textSecondary }]}>{index + 1}</Text>}</View>
+              <View style={styles.stepCopy}><LucidOverline text={`${copy.step} ${index + 1}`} /><Text style={[styles.stepText, { color: palette.text }]}>{stepText}</Text></View>
             </View>
           </LucidCard>
         );
       })}
 
-      <LucidCard accent="amber"><View style={styles.notice}><Ionicons name="shield-checkmark" size={23} color={palette.amber} /><View style={styles.noticeCopy}><Text style={[styles.noticeLabel, { color: palette.amber }]}>{copy.caution}</Text><Text style={[styles.noticeText, { color: palette.textSecondary }]}>{session.caution}</Text></View></View></LucidCard>
-      <LucidCard><Text style={[styles.noticeLabel, { color: palette.accent }]}>{copy.reflect}</Text><Text style={[styles.reflection, { color: palette.text }]}>{session.reflectionPrompt}</Text></LucidCard>
+      <LucidCard accent="amber"><View style={styles.notice}><Ionicons name="shield-checkmark" size={LucidIcon.lg} color={palette.amber} /><View style={styles.noticeCopy}><LucidOverline text={copy.caution} tone="amber" /><Text style={[styles.noticeText, { color: palette.textSecondary }]}>{session.caution}</Text></View></View></LucidCard>
+      <LucidCard><LucidOverline text={copy.reflect} tone="accent" /><Text style={[styles.reflection, { color: palette.text }]}>{session.reflectionPrompt}</Text></LucidCard>
       <LucidButton label={alreadyDone ? copy.done : copy.complete} icon="checkmark-circle" disabled={!alreadyDone && progress < 1} disabledReason={`${copy.stepsChecked} ${checked.filter(Boolean).length} / ${checked.length}`} loading={saving} onPress={() => alreadyDone ? close() : void finish()} testID="lucid-session-complete" />
     </LucidScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  meta: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  stepRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 13 },
-  check: { width: 38, height: 38, borderRadius: 13, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  checkNumber: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 13 },
-  stepCopy: { flex: 1, gap: 4 },
-  stepLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 10, letterSpacing: 0.8, textTransform: 'uppercase' },
-  stepText: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 15, lineHeight: 22 },
-  notice: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
-  noticeCopy: { flex: 1, gap: 4 },
-  noticeLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.6 },
-  noticeText: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 19 },
-  reflection: { fontFamily: 'Fraunces_500Medium', fontSize: 18, lineHeight: 25 },
+  meta: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
+  stepRow: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.md },
+  // Même silhouette que LucidIconTile size="sm", plus le filet qui en fait une case.
+  check: { width: 40, height: 40, borderRadius: LucidRadius.md, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  checkNumber: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  stepCopy: { flex: 1, gap: LucidSpace.xs },
+  stepText: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  notice: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.md },
+  noticeCopy: { flex: 1, gap: LucidSpace.xs },
+  noticeText: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  reflection: { fontFamily: 'Fraunces_500Medium', fontSize: LucidType.h3[0], lineHeight: LucidType.h3[1] },
 });

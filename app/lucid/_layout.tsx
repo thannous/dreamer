@@ -2,7 +2,7 @@ import { Stack, router, usePathname } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { LucidSpace, LucidType, getLucidPalette } from '@/constants/lucidTheme';
 import { LucidButton } from '@/components/lucid/LucidUI';
 import { LucidTrainerProvider, useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -79,8 +79,8 @@ export default function LucidLayout() {
 }
 
 const styles = StyleSheet.create({
-  loading: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 14, padding: 24 },
-  loadingText: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 15 },
-  error: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, textAlign: 'center' },
-  retry: { minWidth: 180, marginTop: 6 },
+  loading: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: LucidSpace.lg, padding: LucidSpace.xl },
+  loadingText: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  error: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1], textAlign: 'center' },
+  retry: { minWidth: 180, marginTop: LucidSpace.sm },
 });

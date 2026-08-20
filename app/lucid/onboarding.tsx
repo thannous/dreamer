@@ -7,11 +7,12 @@ import {
   LucidButton,
   LucidCard,
   LucidChoiceCard,
+  LucidIconTile,
   LucidProgressBar,
   LucidScreen,
   LucidToggleRow,
 } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import type {
@@ -134,15 +135,13 @@ export default function LucidOnboardingScreen() {
       {step === 0 ? (
         <>
           <LucidCard accent="accent">
-            <View style={[styles.heroIcon, { backgroundColor: palette.accentSoft }]}>
-              <Ionicons name="moon" size={34} color={palette.accent} />
-            </View>
+            <LucidIconTile icon="moon" tone="accent" size="lg" />
             <Text style={[styles.heroTitle, { color: palette.text }]}>{content.chrome.tagline}</Text>
             <Text style={[styles.body, { color: palette.textSecondary }]}>{content.onboarding.wellbeingNotice}</Text>
           </LucidCard>
           {content.onboarding.consentItems.slice(0, 3).map((item) => (
             <View key={item} style={styles.pointRow}>
-              <Ionicons name="checkmark-circle" size={20} color={palette.accent} />
+              <Ionicons name="checkmark-circle" size={LucidIcon.md} color={palette.accent} />
               <Text style={[styles.pointText, { color: palette.textSecondary }]}>{item}</Text>
             </View>
           ))}
@@ -179,7 +178,7 @@ export default function LucidOnboardingScreen() {
             <TimeField label={copy.wake} value={wakeTime} onChange={setWakeTime} />
           </View>
           <View style={styles.pointRow}>
-            <Ionicons name="globe-outline" size={19} color={palette.accent} />
+            <Ionicons name="globe-outline" size={LucidIcon.md} color={palette.accent} />
             <Text style={[styles.pointText, { color: palette.textSecondary }]}>{timeZone}</Text>
           </View>
         </LucidCard>
@@ -192,7 +191,7 @@ export default function LucidOnboardingScreen() {
             <Text style={[styles.body, { color: palette.textSecondary }]}>{content.onboarding.notificationPermission}</Text>
             {notificationPermission === 'granted' ? (
               <View style={styles.pointRow}>
-                <Ionicons name="checkmark-circle" size={20} color={palette.success} />
+                <Ionicons name="checkmark-circle" size={LucidIcon.md} color={palette.success} />
                 <Text style={[styles.pointText, { color: palette.success }]}>{copy.enable}</Text>
               </View>
             ) : (
@@ -234,19 +233,19 @@ function TimeField({ label, value, onChange }: { label: string; value: string; o
 }
 
 const styles = StyleSheet.create({
-  heroIcon: { width: 62, height: 62, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  heroTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18, lineHeight: 24 },
-  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 14, lineHeight: 21 },
-  pointRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
-  pointText: { flex: 1, fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 19 },
-  frequencyRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  frequency: { flexGrow: 1, minWidth: 115, borderRadius: 17, borderWidth: 1, padding: 14, gap: 3 },
-  frequencyValue: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 22, lineHeight: 28, fontVariant: ['tabular-nums'] },
-  frequencyLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 11 },
-  timeRow: { flexDirection: 'row', gap: 12 },
-  timeField: { flex: 1, gap: 7 },
-  fieldLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12 },
-  timeInput: { minHeight: 54, borderRadius: 16, borderWidth: 1, paddingHorizontal: 16, fontFamily: 'SpaceGrotesk_700Bold', fontSize: 20, textAlign: 'center' },
-  actions: { flexDirection: 'row', gap: 10, marginTop: 4 },
+  heroTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h3[0], lineHeight: LucidType.h3[1] },
+  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  pointRow: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.md },
+  pointText: { flex: 1, fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  frequencyRow: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.md },
+  frequency: { flexGrow: 1, minWidth: 115, borderRadius: LucidRadius.lg, borderWidth: 1, padding: LucidSpace.lg, gap: LucidSpace.xs },
+  frequencyValue: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h2[0], lineHeight: LucidType.h2[1], fontVariant: ['tabular-nums'] },
+  frequencyLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1] },
+  timeRow: { flexDirection: 'row', gap: LucidSpace.md },
+  timeField: { flex: 1, gap: LucidSpace.sm },
+  fieldLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  // 54 est une hauteur de champ, pas un palier : elle reste littérale.
+  timeInput: { minHeight: 54, borderRadius: LucidRadius.lg, borderWidth: 1, paddingHorizontal: LucidSpace.lg, fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h3[0], lineHeight: LucidType.h3[1], textAlign: 'center' },
+  actions: { flexDirection: 'row', gap: LucidSpace.md, marginTop: LucidSpace.xs },
   primaryAction: { flex: 1 },
 });

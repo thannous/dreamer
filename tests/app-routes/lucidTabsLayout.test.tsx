@@ -53,6 +53,9 @@ jest.mock('@/components/haptic-tab', () => ({
 }));
 
 jest.mock('@/constants/lucidTheme', () => ({
+  // Les échelles sont des constantes pures : aucune raison de les simuler, et
+  // les simuler faisait planter les StyleSheet.create qui les lisent au chargement.
+  ...jest.requireActual('@/constants/lucidTheme'),
   getLucidPalette: () => ({
     accentStrong: '#4f2fa8',
     background: '#f6f3ff',

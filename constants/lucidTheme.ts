@@ -2,6 +2,41 @@ import type { ThemeColors } from '@/constants/journalTheme';
 
 export type LucidPalette = ReturnType<typeof getLucidPalette>;
 
+// Les quatre échelles non chromatiques. Sans elles, chaque écran a dû inventer
+// ses valeurs : le module comptait 13 tailles de texte, 15 rayons, 17 tailles
+// d'icône et 13 gaps — aucune sur une grille commune. Ce ne sont pas 58 fautes
+// de goût, ce sont 34 fichiers privés de barème.
+//
+// TOUTE VALEUR HORS ÉCHELLE EST UN BUG, PAS UNE INTENTION.
+//
+// Les paliers de texte reprennent ceux de global.css (l. 71-87), les rayons et
+// les tailles d'icône ceux de constants/journalTheme.ts : Lucid emprunte à
+// Noctalia ses barèmes déjà validés, pas sa teinte.
+
+/** Paliers typographiques : [fontSize, lineHeight]. */
+export const LucidType = {
+  display: [34, 40],
+  h1: [28, 34],
+  h2: [22, 28],
+  h3: [18, 24],
+  body: [16, 24],
+  bodySm: [14, 20],
+  caption: [12, 16],
+  overline: [11, 14],
+} as const;
+
+/** Rayons. `full` sert les pilules et les pastilles, jamais une carte. */
+export const LucidRadius = { sm: 8, md: 12, lg: 16, xl: 24, full: 999 } as const;
+
+/** Tailles d'icône. En dehors de ces quatre valeurs, c'est une erreur de frappe. */
+export const LucidIcon = { sm: 16, md: 20, lg: 24, xl: 32 } as const;
+
+/** Espacements. `gutter` est la marge latérale d'écran, elle ne se négocie pas. */
+export const LucidSpace = { xs: 4, sm: 8, md: 12, lg: 16, gutter: 20, xl: 24 } as const;
+
+/** Retour de pression, déclaré une fois. Quatre littéraux le contredisaient. */
+export const LucidPress = { opacity: 0.78, scale: 0.97 } as const;
+
 // Identité Lucid Trainer — « nuit jade ».
 //
 // Sœur de Noctalia par le vocabulaire : mêmes fontes, même rayon de carte (24),
@@ -49,7 +84,11 @@ export function getLucidPalette(colors: ThemeColors, mode: 'light' | 'dark') {
     amber: dark ? '#F0C48A' : '#8A5A12',
     amberSoft: dark ? '#2E2415' : '#FBEEDA',
     success: dark ? '#8FDCA9' : '#1F6B41',
+    // Les fonds sémantiques manquaient : à défaut, six sites calculaient un alpha
+    // (`${palette.danger}18`) dont le rendu dépend de la surface en dessous.
+    successSoft: dark ? '#0F2A1B' : '#E2F3E8',
     danger: dark ? '#FF9EA1' : '#A63B42',
+    dangerSoft: dark ? '#33191B' : '#FBE7E8',
     // Surface de chrome flottante (tab bar, pastille de statut). Elle est prévue
     // pour recevoir un flou par-dessus sur iOS ; l'opacité est le vrai design,
     // le flou est le bonus. Voir components/lucid/LucidGlass.tsx.

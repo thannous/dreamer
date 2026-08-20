@@ -11,7 +11,7 @@ import {
   LucidScreen,
   LucidSectionHeader,
 } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useAuth } from '@/context/AuthContext';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -334,7 +334,7 @@ export default function LucidDataScreen() {
       <LucidSectionHeader title={c.bridge} />
       <LucidCard accent="accent">
         <View style={styles.bridgeTop}>
-          <Ionicons name="link" size={25} color={palette.accent} />
+          <Ionicons name="link" size={LucidIcon.lg} color={palette.accent} />
           <LucidPill
             label={state!.preferences.noctaliaLinkEnabled ? 'opt-in' : 'off'}
             tone={state!.preferences.noctaliaLinkEnabled ? 'accent' : 'neutral'}
@@ -382,8 +382,8 @@ export default function LucidDataScreen() {
 }
 
 const styles = StyleSheet.create({
-  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 19 },
-  buttons: { flexDirection: 'row', gap: 9 },
+  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  buttons: { flexDirection: 'row', gap: LucidSpace.sm },
   flex: { flex: 1 },
   bridgeTop: {
     flexDirection: 'row',

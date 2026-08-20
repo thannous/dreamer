@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
 import { LucidButton, LucidCard, LucidIconAction, LucidMetric, LucidPill, LucidScreen } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidNow } from '@/hooks/useLucidNow';
@@ -104,4 +104,4 @@ export default function LucidWeeklyScreen() {
     </LucidScreen>
   );
 }
-const styles = StyleSheet.create({ metrics: { flexDirection: 'row', flexWrap: 'wrap', gap: 9 }, recommendation: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18, lineHeight: 24 }, body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 19 }, label: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 16 }, notes: { minHeight: 130, borderRadius: 18, borderWidth: 1, padding: 15, fontFamily: 'SpaceGrotesk_400Regular', fontSize: 14, lineHeight: 20, textAlignVertical: 'top' } });
+const styles = StyleSheet.create({ metrics: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm }, recommendation: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h3[0], lineHeight: LucidType.h3[1] }, body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] }, label: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1] }, notes: { minHeight: 130, borderRadius: LucidRadius.lg, borderWidth: 1, padding: LucidSpace.lg, fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1], textAlignVertical: 'top' } });

@@ -7,13 +7,14 @@ import {
   LUCID_TAB_BAR_INSET,
   LucidButton,
   LucidCard,
+  LucidIconTile,
   LucidMetric,
   LucidPill,
   LucidProgressBar,
   LucidScreen,
   LucidSectionHeader,
 } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidNow } from '@/hooks/useLucidNow';
@@ -58,7 +59,7 @@ export default function LucidTodayScreen() {
         </LucidCard>
       ) : (
         <LucidCard accent="accent">
-          <View style={[styles.emptyIcon, { backgroundColor: palette.accentSoft }]}><Ionicons name="map" size={28} color={palette.accent} /></View>
+          <LucidIconTile icon="map" tone="accent" size="md" />
           <Text style={[styles.cardTitle, { color: palette.text }]}>{content.programs.mild.title}</Text>
           <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.noProgram}</Text>
           <LucidButton label={copy.browse} icon="arrow-forward" onPress={() => router.push('/lucid/(tabs)/programs')} />
@@ -67,13 +68,13 @@ export default function LucidTodayScreen() {
 
       <View style={styles.twoColumn}>
         <LucidCard accent="accent" style={styles.halfCard} onPress={() => router.push('/lucid/reality-check')} accessibilityLabel={copy.doCheck}>
-          <Ionicons name="eye" size={25} color={palette.accent} />
+          <Ionicons name="eye" size={LucidIcon.lg} color={palette.accent} />
           <Text style={[styles.smallTitle, { color: palette.text }]}>{copy.reality}</Text>
           <Text style={[styles.smallBody, { color: palette.textSecondary }]}>{copy.realityBody}</Text>
           <Text style={[styles.inlineAction, { color: palette.accent }]}>{copy.doCheck} →</Text>
         </LucidCard>
         <LucidCard accent="amber" style={styles.halfCard} onPress={() => router.push('/lucid/morning')} accessibilityLabel={copy.log}>
-          <Ionicons name="sunny" size={25} color={palette.amber} />
+          <Ionicons name="sunny" size={LucidIcon.lg} color={palette.amber} />
           <Text style={[styles.smallTitle, { color: palette.text }]}>{copy.morning}</Text>
           <Text style={[styles.smallBody, { color: palette.textSecondary }]}>{copy.morningBody}</Text>
           <Text style={[styles.inlineAction, { color: palette.amber }]}>{copy.log} →</Text>
@@ -90,7 +91,7 @@ export default function LucidTodayScreen() {
       <LucidCard accent="accent" onPress={() => router.push('/lucid/weekly')} accessibilityLabel={copy.coach}>
         <View style={styles.cardTop}>
           <LucidPill label={copy.coach} tone="accent" icon="sparkles" />
-          <Ionicons name="arrow-forward" color={palette.textMuted} size={19} />
+          <Ionicons name="arrow-forward" color={palette.textMuted} size={LucidIcon.md} />
         </View>
         <Text style={[styles.bodyStrong, { color: palette.text }]}>{coaching}</Text>
         <Text style={[styles.smallBody, { color: palette.textSecondary }]}>{content.weeklyReview.coachingNote}</Text>
@@ -100,16 +101,15 @@ export default function LucidTodayScreen() {
 }
 
 const styles = StyleSheet.create({
-  cardTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  sessionLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 12 },
-  cardTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18, lineHeight: 24 },
-  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 14, lineHeight: 21 },
-  bodyStrong: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 16, lineHeight: 23 },
-  emptyIcon: { width: 52, height: 52, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
-  twoColumn: { flexDirection: 'row', gap: 12, alignItems: 'stretch' },
-  halfCard: { flex: 1, padding: 15 },
-  smallTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 15, lineHeight: 20 },
-  smallBody: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 12, lineHeight: 17 },
-  inlineAction: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12, marginTop: 'auto' },
-  metrics: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  cardTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: LucidSpace.md },
+  sessionLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  cardTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h3[0], lineHeight: LucidType.h3[1] },
+  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  bodyStrong: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1] },
+  twoColumn: { flexDirection: 'row', gap: LucidSpace.md, alignItems: 'stretch' },
+  halfCard: { flex: 1, padding: LucidSpace.lg },
+  smallTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  smallBody: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  inlineAction: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1], marginTop: 'auto' },
+  metrics: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.md },
 });

@@ -7,11 +7,12 @@ import {
   LUCID_TAB_BAR_INSET,
   LucidButton,
   LucidCard,
+  LucidIconTile,
   LucidScreen,
   LucidSectionHeader,
   LucidToggleRow,
 } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidNightAudio, type LucidNightRemaining } from '@/hooks/useLucidNightAudio';
@@ -59,7 +60,7 @@ export default function LucidNightScreen() {
   return (
     <LucidScreen testID="lucid-night" bottomInset={LUCID_TAB_BAR_INSET} eyebrow={copy.eyebrow} title={copy.title} subtitle={copy.subtitle}>
       <LucidCard accent={audio.plan ? 'accent' : 'none'}>
-        <View style={styles.activeTop}><View style={[styles.moon, { backgroundColor: audio.plan ? palette.accentSoft : palette.accentSoft }]}><Ionicons name={audio.plan ? 'radio' : 'moon'} size={31} color={audio.plan ? palette.accent : palette.accent} /></View><View style={styles.activeCopy}><Text style={[styles.cardTitle, { color: palette.text }]}>{audio.plan ? copy.active : copy.prep}</Text>{audio.plan ? <NightCountdown remaining={audio.remaining} suffix={copy.remaining} color={palette.textSecondary} /> : <Text style={[styles.body, { color: palette.textSecondary }]}>{content.nightSignals.intro}</Text>}</View></View>
+        <View style={styles.activeTop}><LucidIconTile icon={audio.plan ? 'radio' : 'moon'} /><View style={styles.activeCopy}><Text style={[styles.cardTitle, { color: palette.text }]}>{audio.plan ? copy.active : copy.prep}</Text>{audio.plan ? <NightCountdown remaining={audio.remaining} suffix={copy.remaining} color={palette.textSecondary} /> : <Text style={[styles.body, { color: palette.textSecondary }]}>{content.nightSignals.intro}</Text>}</View></View>
         <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.next}</Text>
         {audio.plan ? <LucidButton label={copy.stop} variant="danger" icon="stop" onPress={() => void audio.stopNight()} /> : <LucidButton label={copy.start} icon="moon" disabled={!safe || audio.isScheduling} disabledReason={missing.length ? `${copy.needs} ${missing.join(', ')}` : undefined} onPress={() => void start()} testID="lucid-night-start" />}
         {audio.error ? <Text style={[styles.error, { color: palette.danger }]}>{copy.failed} ({audio.error})</Text> : null}
@@ -71,16 +72,18 @@ export default function LucidNightScreen() {
         <LucidToggleRow title={copy.route} value={speaker} onValueChange={setSpeaker} icon="volume-low" testID="lucid-night-speaker" />
         <LucidToggleRow title={copy.fragile} value={fragile} onValueChange={setFragile} icon="bed" testID="lucid-night-fragile" />
         <LucidToggleRow title={copy.hearing} value={hearing} onValueChange={setHearing} icon="ear" testID="lucid-night-hearing" divider={false} />
-        {content.nightSignals.safeguards.map((item) => <View key={item} style={styles.safeguard}><Ionicons name="shield-checkmark" size={18} color={palette.accent} /><Text style={[styles.safeguardText, { color: palette.textSecondary }]}>{item}</Text></View>)}
+        {content.nightSignals.safeguards.map((item) => <View key={item} style={styles.safeguard}><Ionicons name="shield-checkmark" size={LucidIcon.md} color={palette.accent} /><Text style={[styles.safeguardText, { color: palette.textSecondary }]}>{item}</Text></View>)}
       </LucidCard>
 
       <LucidSectionHeader title={copy.library} caption={content.nightSignals.optionalLabel} />
-      <View accessibilityRole="radiogroup" accessibilityLabel={copy.library} style={styles.soundRow}>
-        {SLEEP_SOUNDS.map((sound) => {
-          const selected = sound.id === (audio.plan?.soundId ?? soundId);
-          return <Pressable key={sound.id} disabled={!!audio.plan} accessibilityRole="radio" accessibilityState={{ selected, disabled: !!audio.plan }} onPress={() => setSoundId(sound.id)} style={[styles.sound, { backgroundColor: selected ? palette.accentSoft : palette.surface, borderColor: selected ? palette.accent : palette.borderInteractive }]}><Ionicons name={sound.id === 'rain' ? 'rainy' : sound.id === 'ocean' ? 'water' : 'pulse'} size={24} color={selected ? palette.accent : palette.textSecondary} /><Text style={[styles.soundLabel, { color: palette.text }]}>{copy[sound.id]}</Text></Pressable>;
-        })}
-      </View>
+      <LucidCard>
+        <View accessibilityRole="radiogroup" accessibilityLabel={copy.library} style={styles.soundRow}>
+          {SLEEP_SOUNDS.map((sound) => {
+            const selected = sound.id === (audio.plan?.soundId ?? soundId);
+            return <Pressable key={sound.id} disabled={!!audio.plan} accessibilityRole="radio" accessibilityState={{ selected, disabled: !!audio.plan }} onPress={() => setSoundId(sound.id)} style={[styles.sound, { backgroundColor: selected ? palette.accentSoft : palette.surfaceRaised, borderColor: selected ? palette.accent : palette.borderInteractive }]}><Ionicons name={sound.id === 'rain' ? 'rainy' : sound.id === 'ocean' ? 'water' : 'pulse'} size={LucidIcon.lg} color={selected ? palette.accent : palette.textSecondary} /><Text style={[styles.soundLabel, { color: palette.text }]}>{copy[sound.id]}</Text></Pressable>;
+          })}
+        </View>
+      </LucidCard>
       <LucidButton label={copy.preview} variant="secondary" icon={audio.isPlaying ? 'volume-high' : 'play'} disabled={!safe || !audio.isLoaded || audio.isScheduling || !!audio.plan} onPress={() => void audio.preview()} />
 
       <LucidSectionHeader title={copy.volume} />
@@ -91,7 +94,7 @@ export default function LucidNightScreen() {
       </LucidCard>
 
       <LucidSectionHeader title={copy.timer} />
-      <View accessibilityRole="radiogroup" accessibilityLabel={copy.timer} style={styles.timerRow}>{[240, 360, 480].map((value) => <Pressable key={value} accessibilityRole="radio" accessibilityState={{ selected: timerMinutes === value }} onPress={() => setTimerMinutes(value)} style={[styles.timer, { backgroundColor: timerMinutes === value ? palette.amberSoft : palette.surface, borderColor: timerMinutes === value ? palette.amber : palette.borderInteractive }]}><Text style={[styles.timerValue, { color: timerMinutes === value ? palette.amber : palette.text }]}>{value / 60}</Text><Text style={[styles.timerLabel, { color: palette.textSecondary }]}>{copy.hours}</Text></Pressable>)}</View>
+      <LucidCard><View accessibilityRole="radiogroup" accessibilityLabel={copy.timer} style={styles.timerRow}>{[240, 360, 480].map((value) => <Pressable key={value} accessibilityRole="radio" accessibilityState={{ selected: timerMinutes === value }} onPress={() => setTimerMinutes(value)} style={[styles.timer, { backgroundColor: timerMinutes === value ? palette.amberSoft : palette.surfaceRaised, borderColor: timerMinutes === value ? palette.amber : palette.borderInteractive }]}><Text style={[styles.timerValue, { color: timerMinutes === value ? palette.amber : palette.text }]}>{value / 60}</Text><Text style={[styles.timerLabel, { color: palette.textSecondary }]}>{copy.hours}</Text></Pressable>)}</View></LucidCard>
 
       <LucidButton label={copy.morning} variant="ghost" icon="sunny" onPress={() => router.push('/lucid/morning')} />
     </LucidScreen>
@@ -99,5 +102,5 @@ export default function LucidNightScreen() {
 }
 
 const styles = StyleSheet.create({
-  activeTop: { flexDirection: 'row', alignItems: 'center', gap: 13 }, moon: { width: 58, height: 58, borderRadius: 20, alignItems: 'center', justifyContent: 'center' }, activeCopy: { flex: 1, gap: 4 }, cardTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18, lineHeight: 24 }, body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 19 }, error: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 12 }, soundRow: { flexDirection: 'row', gap: 9 }, sound: { flex: 1, minHeight: 88, borderRadius: 18, borderWidth: 1, padding: 12, gap: 8, justifyContent: 'center' }, soundLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12 }, levels: { flexDirection: 'row', gap: 7 }, level: { flex: 1, minHeight: 42, borderRadius: 12, alignItems: 'center', justifyContent: 'center' }, levelText: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 11 }, timerRow: { flexDirection: 'row', gap: 9 }, timer: { flex: 1, minHeight: 76, borderRadius: 18, borderWidth: 1, alignItems: 'center', justifyContent: 'center', gap: 2 }, timerValue: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 22, lineHeight: 28, fontVariant: ['tabular-nums'] }, timerLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 11 }, safeguard: { flexDirection: 'row', alignItems: 'flex-start', gap: 9 }, safeguardText: { flex: 1, fontFamily: 'SpaceGrotesk_400Regular', fontSize: 12, lineHeight: 17 },
+  activeTop: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md }, activeCopy: { flex: 1, gap: LucidSpace.xs }, cardTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h3[0], lineHeight: LucidType.h3[1] }, body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] }, error: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] }, soundRow: { flexDirection: 'row', gap: LucidSpace.sm }, sound: { flex: 1, minHeight: 88, borderRadius: LucidRadius.lg, borderWidth: 1, padding: LucidSpace.md, gap: LucidSpace.sm, justifyContent: 'center' }, soundLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] }, levels: { flexDirection: 'row', gap: LucidSpace.sm }, level: { flex: 1, minHeight: 44, borderRadius: LucidRadius.md, alignItems: 'center', justifyContent: 'center' }, levelText: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1] }, timerRow: { flexDirection: 'row', gap: LucidSpace.sm }, timer: { flex: 1, minHeight: 76, borderRadius: LucidRadius.lg, borderWidth: 1, alignItems: 'center', justifyContent: 'center', gap: LucidSpace.xs }, timerValue: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h2[0], lineHeight: LucidType.h2[1], fontVariant: ['tabular-nums'] }, timerLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1] }, safeguard: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.sm }, safeguardText: { flex: 1, fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
 });

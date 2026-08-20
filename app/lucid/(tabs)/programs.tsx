@@ -6,11 +6,12 @@ import { StyleSheet, Text, View } from 'react-native';
 import {
   LUCID_TAB_BAR_INSET,
   LucidCard,
+  LucidIconTile,
   LucidPill,
   LucidProgressBar,
   LucidScreen,
 } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { LucidTechnique } from '@/lib/lucid/model';
@@ -43,17 +44,16 @@ export default function LucidProgramsScreen() {
         const program = content.programs[id];
         const progress = state!.progress.find((item) => item.technique === id);
         const engaged = progress != null && progress.status !== 'paused';
-        const color = palette.accent;
         const status = progress?.status === 'completed' ? copy.completed : progress?.status === 'active' ? copy.active : copy.notStarted;
         return (
           <LucidCard key={id} accent={engaged ? 'accent' : 'none'} style={engaged ? { backgroundColor: palette.surfaceRaised } : undefined} onPress={() => router.push(`/lucid/program/${id}`)} accessibilityLabel={program.title} testID={`lucid-program-${id}`}>
             <View style={styles.topRow}>
-              <View style={[styles.programIcon, { backgroundColor: `${color}1F` }]}><Ionicons name={icon} size={27} color={color} /></View>
+              <LucidIconTile icon={icon} tone="accent" size="md" />
               <View style={styles.topCopy}>
                 <Text style={[styles.title, { color: palette.text }]}>{program.title}</Text>
                 <Text style={[styles.expanded, { color: palette.textSecondary }]}>{program.expandedName}</Text>
               </View>
-              <Ionicons name="chevron-forward" size={22} color={palette.textMuted} />
+              <Ionicons name="chevron-forward" size={LucidIcon.lg} color={palette.textMuted} />
             </View>
             <Text style={[styles.summary, { color: palette.textSecondary }]}>{program.summary}</Text>
             <View style={styles.metaRow}>
@@ -66,7 +66,7 @@ export default function LucidProgramsScreen() {
       })}
       <LucidCard>
         <View style={styles.noticeRow}>
-          <Ionicons name="shield-checkmark" size={24} color={palette.accent} />
+          <Ionicons name="shield-checkmark" size={LucidIcon.lg} color={palette.accent} />
           <Text style={[styles.notice, { color: palette.textSecondary }]}>{content.science.sleepPriority}</Text>
         </View>
       </LucidCard>
@@ -75,13 +75,12 @@ export default function LucidProgramsScreen() {
 }
 
 const styles = StyleSheet.create({
-  topRow: { flexDirection: 'row', alignItems: 'center', gap: 13 },
-  programIcon: { width: 54, height: 54, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
-  topCopy: { flex: 1, gap: 2 },
-  title: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18, lineHeight: 24 },
-  expanded: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 12, lineHeight: 17 },
-  summary: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 14, lineHeight: 21 },
-  metaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  noticeRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
-  notice: { flex: 1, fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 19 },
+  topRow: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  topCopy: { flex: 1, gap: LucidSpace.xs },
+  title: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h3[0], lineHeight: LucidType.h3[1] },
+  expanded: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  summary: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  metaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
+  noticeRow: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.md },
+  notice: { flex: 1, fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
 });

@@ -61,6 +61,9 @@ jest.mock('expo-router', () => ({
 }));
 
 jest.mock('@/constants/lucidTheme', () => ({
+  // Les échelles sont des constantes pures : aucune raison de les simuler, et
+  // les simuler faisait planter les StyleSheet.create qui les lisent au chargement.
+  ...jest.requireActual('@/constants/lucidTheme'),
   getLucidPalette: () => ({
     accent: '#7654d4',
     amber: '#9a6200',
@@ -93,6 +96,10 @@ jest.mock('@/context/LucidTrainerContext', () => {
 });
 
 jest.mock('@/components/lucid/LucidUI', () => ({
+  // Primitives ajoutées par C4 : le double doit suivre le composant, sinon
+  // l'écran rend `undefined` et la suite tombe sur « Element type is invalid ».
+  LucidIconTile: () => null,
+  LucidOverline: ({ text }: { text: string }) => <span>{text}</span>,
   LucidScreen: ({ children }: { children: React.ReactNode }) => <main>{children}</main>,
   LucidCard: ({ children }: { children: React.ReactNode }) => <section>{children}</section>,
   LucidIconAction: ({ label, onPress }: { label: string; onPress: () => void }) => (

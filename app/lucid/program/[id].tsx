@@ -7,12 +7,13 @@ import {
   LucidButton,
   LucidCard,
   LucidIconAction,
+  LucidIconTile,
   LucidPill,
   LucidProgressBar,
   LucidScreen,
   LucidSectionHeader,
 } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidNow } from '@/hooks/useLucidNow';
@@ -143,14 +144,12 @@ export default function LucidProgramDetailScreen() {
           // ou un bouton radio — jamais sur un rôle `button`.
           <LucidCard key={session.id} onPress={locked ? undefined : () => router.push(`/lucid/session/${id}/${session.session}`)} accessibilityState={locked ? { disabled: true } : undefined} accessibilityLabel={`${copy.session} ${session.session}, ${session.title}${locked ? `, ${copy.locked}` : done ? `, ${copy.complete}` : ''}`}>
             <View style={styles.sessionRow}>
-              <View style={[styles.sessionNumber, { backgroundColor: done ? palette.accentSoft : palette.surfaceRaised }]}>
-                {done ? <Ionicons name="checkmark" size={18} color={palette.accent} /> : <Text style={[styles.sessionNumberText, { color: locked ? palette.textMuted : palette.text }]}>{session.session}</Text>}
-              </View>
+              {done ? <LucidIconTile icon="checkmark" tone="accent" size="sm" /> : <View style={[styles.sessionNumber, { backgroundColor: palette.surfaceRaised }]}><Text style={[styles.sessionNumberText, { color: locked ? palette.textMuted : palette.text }]}>{session.session}</Text></View>}
               <View style={styles.sessionCopy}>
                 <Text style={[styles.sessionTitle, { color: locked ? palette.textMuted : palette.text }]}>{session.title}</Text>
                 <Text style={[styles.sessionMeta, { color: palette.textSecondary }]}>{session.durationMinutes} {copy.min} · {session.objective}</Text>
               </View>
-              <Ionicons name={locked ? 'lock-closed' : 'chevron-forward'} size={19} color={palette.textMuted} />
+              <Ionicons name={locked ? 'lock-closed' : 'chevron-forward'} size={LucidIcon.md} color={palette.textMuted} />
             </View>
           </LucidCard>
         );
@@ -180,24 +179,27 @@ function CalendarDay({ dateKey, label, locale, session, status }: { dateKey?: st
 }
 
 const styles = StyleSheet.create({
-  meta: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  bodyStrong: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 15, lineHeight: 22 },
-  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 19 },
-  twoColumn: { flexDirection: 'row', gap: 10, alignItems: 'stretch' },
-  half: { flex: 1, padding: 14 },
-  cardLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 13, lineHeight: 18 },
-  bullet: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 },
-  dot: { width: 6, height: 6, borderRadius: 3, marginTop: 6 },
-  bulletText: { flex: 1, fontFamily: 'SpaceGrotesk_400Regular', fontSize: 11, lineHeight: 16 },
-  sessionRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  sessionNumber: { width: 38, height: 38, borderRadius: 13, alignItems: 'center', justifyContent: 'center' },
-  sessionNumberText: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 14 },
-  sessionCopy: { flex: 1, gap: 3 },
-  sessionTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 14, lineHeight: 19 },
-  sessionMeta: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 11, lineHeight: 16 },
-  calendarGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  calendarDay: { minWidth: 86, flexGrow: 1, flexBasis: '22%', borderRadius: 17, borderWidth: 1, padding: 11, gap: 2 },
-  calendarSession: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 11 },
-  calendarDate: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 14, lineHeight: 20, fontVariant: ['tabular-nums'] },
-  calendarStatus: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 9, lineHeight: 13 },
+  meta: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
+  bodyStrong: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  twoColumn: { flexDirection: 'row', gap: LucidSpace.md, alignItems: 'stretch' },
+  half: { flex: 1, padding: LucidSpace.lg },
+  cardLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  bullet: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.sm },
+  // 6 est le diamètre de la pastille, pas un espacement ; le rayon la ferme.
+  dot: { width: 6, height: 6, borderRadius: LucidRadius.full, marginTop: LucidSpace.xs },
+  bulletText: { flex: 1, fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1] },
+  sessionRow: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  // Même silhouette que LucidIconTile size="sm" : la pastille numérotée et la
+  // tuile de séance terminée se succèdent dans la même colonne.
+  sessionNumber: { width: 40, height: 40, borderRadius: LucidRadius.md, alignItems: 'center', justifyContent: 'center' },
+  sessionNumberText: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  sessionCopy: { flex: 1, gap: LucidSpace.xs },
+  sessionTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  sessionMeta: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1] },
+  calendarGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
+  calendarDay: { minWidth: 86, flexGrow: 1, flexBasis: '22%', borderRadius: LucidRadius.lg, borderWidth: 1, padding: LucidSpace.md, gap: LucidSpace.xs },
+  calendarSession: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1] },
+  calendarDate: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1], fontVariant: ['tabular-nums'] },
+  calendarStatus: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1] },
 });

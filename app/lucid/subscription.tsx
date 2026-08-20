@@ -7,11 +7,12 @@ import {
   LucidButton,
   LucidCard,
   LucidIconAction,
+  LucidIconTile,
   LucidPill,
   LucidScreen,
   LucidSectionHeader,
 } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -588,22 +589,7 @@ export default function LucidSubscriptionScreen() {
     >
       <LucidCard accent={subscription.isActive ? 'accent' : 'none'}>
         <View style={styles.hero}>
-          <View
-            style={[
-              styles.heroIcon,
-              {
-                backgroundColor: subscription.isActive
-                  ? palette.accentSoft
-                  : palette.accentSoft,
-              },
-            ]}
-          >
-            <Ionicons
-              name="diamond"
-              size={34}
-              color={subscription.isActive ? palette.accent : palette.accent}
-            />
-          </View>
+          <LucidIconTile icon="diamond" tone="accent" size="lg" />
           <View style={styles.heroCopy}>
             <View style={styles.pills}>
               <LucidPill
@@ -624,7 +610,7 @@ export default function LucidSubscriptionScreen() {
         <View style={styles.features}>
           {copy.benefits.map((feature) => (
             <View key={feature} style={styles.featureRow}>
-              <Ionicons name="checkmark-circle" size={20} color={palette.accent} />
+              <Ionicons name="checkmark-circle" size={LucidIcon.md} color={palette.accent} />
               <Text style={[styles.featureText, { color: palette.textSecondary }]}>
                 {feature}
               </Text>
@@ -636,7 +622,7 @@ export default function LucidSubscriptionScreen() {
       {subscription.requiresAuth ? (
         <LucidCard accent="amber">
           <View style={styles.stateRow}>
-            <Ionicons name="person-circle" size={26} color={palette.amber} />
+            <Ionicons name="person-circle" size={LucidIcon.lg} color={palette.amber} />
             <View style={styles.stateCopy}>
               <Text accessibilityRole="header" style={[styles.cardTitle, { color: palette.text }]}>
                 {copy.signInTitle}
@@ -680,7 +666,7 @@ export default function LucidSubscriptionScreen() {
       {subscription.error ? (
         <LucidCard accent="amber">
           <View accessibilityLiveRegion="assertive" accessibilityRole="alert" style={styles.stateRow}>
-            <Ionicons name="cloud-offline" size={25} color={palette.amber} />
+            <Ionicons name="cloud-offline" size={LucidIcon.lg} color={palette.amber} />
             <View style={styles.stateCopy}>
               <Text style={[styles.cardTitle, { color: palette.text }]}>{copy.errorTitle}</Text>
               <Text style={[styles.cardBody, { color: palette.textSecondary }]}>
@@ -736,7 +722,7 @@ export default function LucidSubscriptionScreen() {
                     {
                       backgroundColor: selected ? palette.accentSoft : palette.surface,
                       borderColor: selected ? palette.accent : palette.borderInteractive,
-                      opacity: busy ? 0.55 : pressed ? 0.78 : 1,
+                      opacity: busy ? 0.55 : pressed ? LucidPress.opacity : 1,
                     },
                   ]}
                 >
@@ -760,7 +746,7 @@ export default function LucidSubscriptionScreen() {
                   </View>
                   <Ionicons
                     name={selected ? 'checkmark-circle' : 'ellipse-outline'}
-                    size={25}
+                    size={LucidIcon.lg}
                     color={selected ? palette.accent : palette.textMuted}
                   />
                 </Pressable>
@@ -790,7 +776,7 @@ export default function LucidSubscriptionScreen() {
       {!subscription.loading && !subscription.isActive && sortedPackages.length === 0 ? (
         <LucidCard>
           <View style={styles.stateRow}>
-            <Ionicons name="bag-handle" size={25} color={palette.textMuted} />
+            <Ionicons name="bag-handle" size={LucidIcon.lg} color={palette.textMuted} />
             <View style={styles.stateCopy}>
               <Text accessibilityRole="header" style={[styles.cardTitle, { color: palette.text }]}>
                 {copy.unavailableTitle}
@@ -834,7 +820,7 @@ export default function LucidSubscriptionScreen() {
                   ? 'alert-circle'
                   : 'information-circle'
             }
-            size={21}
+            size={LucidIcon.md}
             color={
               feedback.tone === 'success'
                 ? palette.success
@@ -851,7 +837,7 @@ export default function LucidSubscriptionScreen() {
         <View style={styles.stateRow}>
           <Ionicons
             name={subscription.isActive ? 'shield-checkmark' : 'shield-outline'}
-            size={25}
+            size={LucidIcon.lg}
             color={subscription.isActive ? palette.accent : palette.accent}
           />
           <View style={styles.stateCopy}>
@@ -890,141 +876,135 @@ const styles = StyleSheet.create({
   hero: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
-  },
-  heroIcon: {
-    width: 66,
-    height: 66,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
+    gap: LucidSpace.lg,
   },
   heroCopy: {
     flex: 1,
-    gap: 10,
+    gap: LucidSpace.md,
   },
   pills: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: LucidSpace.sm,
   },
   heroBody: {
     fontFamily: 'Fraunces_500Medium',
-    fontSize: 17,
-    lineHeight: 24,
+    fontSize: LucidType.h3[0],
+    lineHeight: LucidType.h3[1],
   },
   features: {
-    gap: 11,
+    gap: LucidSpace.md,
   },
   featureRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 10,
+    gap: LucidSpace.md,
   },
   featureText: {
     flex: 1,
     fontFamily: 'SpaceGrotesk_500Medium',
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: LucidType.bodySm[0],
+    lineHeight: LucidType.bodySm[1],
   },
   stateRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 12,
+    gap: LucidSpace.md,
   },
   stateCopy: {
     flex: 1,
-    gap: 6,
+    gap: LucidSpace.sm,
   },
   cardTitle: {
     fontFamily: 'SpaceGrotesk_700Bold',
-    fontSize: 16,
-    lineHeight: 21,
+    fontSize: LucidType.body[0],
+    lineHeight: LucidType.body[1],
   },
   cardBody: {
     fontFamily: 'SpaceGrotesk_400Regular',
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
   },
   loadingRow: {
     minHeight: 66,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
+    gap: LucidSpace.lg,
   },
   section: {
-    gap: 13,
+    gap: LucidSpace.md,
   },
   planList: {
-    gap: 11,
+    gap: LucidSpace.md,
   },
   plan: {
     minHeight: 104,
-    borderRadius: 20,
+    borderRadius: LucidRadius.lg,
     borderWidth: 1,
-    padding: 15,
+    padding: LucidSpace.lg,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: LucidSpace.md,
   },
   planCopy: {
     flex: 1,
-    gap: 5,
+    gap: LucidSpace.xs,
   },
   planHeading: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: LucidSpace.sm,
   },
   planName: {
     fontFamily: 'SpaceGrotesk_700Bold',
-    fontSize: 16,
-    lineHeight: 21,
+    fontSize: LucidType.body[0],
+    lineHeight: LucidType.body[1],
   },
   priceRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
     flexWrap: 'wrap',
-    gap: 6,
+    gap: LucidSpace.sm,
   },
   price: {
     fontFamily: 'SpaceGrotesk_700Bold',
-    fontSize: 22,
-    lineHeight: 28,
+    fontSize: LucidType.h2[0],
+    lineHeight: LucidType.h2[1],
     fontVariant: ['tabular-nums'],
   },
   period: {
     fontFamily: 'SpaceGrotesk_500Medium',
-    fontSize: 12,
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
   },
   billing: {
     fontFamily: 'SpaceGrotesk_400Regular',
-    fontSize: 12,
-    lineHeight: 17,
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
   },
   feedback: {
     minHeight: 52,
-    borderRadius: 16,
+    borderRadius: LucidRadius.lg,
     borderWidth: 1,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingHorizontal: LucidSpace.lg,
+    paddingVertical: LucidSpace.md,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: LucidSpace.md,
   },
   feedbackText: {
     flex: 1,
     // _600SemiBold n'est chargée nulle part (app/_layout.tsx ne charge que 400,
     // 500 et 700) : l'appeler retombait silencieusement sur la police système.
     fontFamily: 'SpaceGrotesk_700Bold',
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
   },
   storeNote: {
     fontFamily: 'SpaceGrotesk_400Regular',
-    fontSize: 11,
-    lineHeight: 16,
+    fontSize: LucidType.overline[0],
+    lineHeight: LucidType.overline[1],
     textAlign: 'center',
   },
 });
