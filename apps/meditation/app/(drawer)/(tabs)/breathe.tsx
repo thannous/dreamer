@@ -8,6 +8,7 @@ import { SessionArtwork } from '@/components/session/SessionArtwork';
 import { Rule, Text } from '@/components/ui';
 import { BREATHING_PATTERNS, type BreathingPattern } from '@/content/breathing';
 import { useTranslation } from '@/context/LanguageContext';
+import { useTabBarInset } from '@/hooks/useTabBarInset';
 import { TID } from '@/lib/testIDs';
 import { useSubscription } from '@/context/SubscriptionContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
@@ -57,13 +58,15 @@ function PatternCard({ pattern }: { pattern: BreathingPattern }) {
 }
 
 export default function BreatheTab() {
+  const tabBarInset = useTabBarInset();
   const { t } = useTranslation();
 
   return (
     <Screen variant="subtle" edges={['top']} video="breathe" videoOpacity={0.35}>
       <ScrollView
         testID={TID.Screen.Breathe}
-        contentContainerClassName="px-gutter pb-24 pt-4 gap-6"
+        contentContainerClassName="px-gutter pt-4 gap-6"
+        contentContainerStyle={{ paddingBottom: tabBarInset }}
         showsVerticalScrollIndicator={false}>
         <View className="gap-3">
           <Text variant="h1">{t('breathe.title')}</Text>

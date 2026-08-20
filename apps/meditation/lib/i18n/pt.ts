@@ -126,6 +126,9 @@ export const pt: Record<keyof typeof en, string> = {
   'player.unavailable.subtitle':
     'Esta sessão vem da biblioteca. Ligue-se uma vez e ela toca.',
   'player.scrub': 'Posição de reprodução',
+  'player.reveal': 'Mostrar os controlos',
+  'drawer.open': 'Abrir o menu',
+  'onboarding.reminder.at': 'Hora do lembrete',
 
   'mini.playing': 'A tocar',
 

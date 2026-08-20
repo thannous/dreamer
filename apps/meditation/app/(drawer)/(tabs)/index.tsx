@@ -7,6 +7,7 @@ import { SessionCard } from '@/components/session/SessionCard';
 import { Button, Card, Rule, Text } from '@/components/ui';
 import { sessionsInCategory, sessionsUpTo } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
+import { useTabBarInset } from '@/hooks/useTabBarInset';
 import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
 import { useOnboarding } from '@/context/OnboardingContext';
@@ -19,6 +20,7 @@ const QUICK_COUNT = 4;
 export default function HomeTab() {
   const router = useRouter();
   const { t } = useTranslation();
+  const tabBarInset = useTabBarInset();
   const { state } = useOnboarding();
   const { progress } = useLibrary();
 
@@ -43,7 +45,8 @@ export default function HomeTab() {
     <Screen variant="subtle" edges={['top']}>
       <ScrollView
         testID={TID.Screen.Home}
-        contentContainerClassName="px-gutter pb-10 pt-4 gap-8"
+        contentContainerClassName="px-gutter pt-4 gap-8"
+        contentContainerStyle={{ paddingBottom: tabBarInset }}
         showsVerticalScrollIndicator={false}>
         <View className="gap-1">
           <Text variant="h1">{t(greetingKey(hour))}</Text>

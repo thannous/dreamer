@@ -85,12 +85,14 @@ apps/meditation/
 │   │   ├── sign-in.tsx
 │   │   ├── email.tsx
 │   │   └── callback.tsx
-│   ├── (tabs)/
+│   ├── (drawer)/                     # tiroir latéral englobant les onglets
 │   │   ├── _layout.tsx
-│   │   ├── index.tsx                 # Accueil
-│   │   ├── breathe.tsx
-│   │   ├── search.tsx
-│   │   └── profile.tsx
+│   │   └── (tabs)/
+│   │       ├── _layout.tsx
+│   │       ├── index.tsx             # Accueil
+│   │       ├── breathe.tsx
+│   │       ├── search.tsx
+│   │       └── profile.tsx
 │   ├── session/[id].tsx
 │   ├── player/[id].tsx               # modal plein écran
 │   ├── breathe/[pattern].tsx         # exercice animé plein écran
@@ -160,10 +162,10 @@ La galerie de Zen compte 23 captures, dont 4 variantes en thème sombre : **19 �
 | 5 | *(ajout Noctalia, remplace rien)* rappel | `/(onboarding)/reminder` | Opt-in notification + heure. **Note :** si l'on veut rester strictement à 23 écrans, cette étape est fusionnée dans l'écran 4. Recommandation : la garder séparée (cf. §20 Q1) |
 | 6 | Sign in (Apple / Google / email) | `/(auth)/sign-in` | Construit mais **désactivé en v1.0** par `EXPO_PUBLIC_ACCOUNTS_ENABLED=false` (cf. §10) |
 | 7 | Saisie email | `/(auth)/email` | Idem : construit, inaccessible dans les builds store v1.0 |
-| 8 | Home — pratique du jour | `/(tabs)/index` | Salutation contextuelle, `TodayCard`, reprise en cours, sessions rapides (5/10/15 min), bandeau série |
-| 9 | Breathe — patterns | `/(tabs)/breathe` | 4 cartes : Apaisant · Carré · 4-7-8 · Cohérence cardiaque |
-| 10 | Search — catégories + bibliothèque | `/(tabs)/search` | Champ de recherche, grille de catégories, liste complète filtrable (durée, narrateur, thème) |
-| 11 | Profile — statistiques | `/(tabs)/profile` | Série en cours / record, sessions, minutes totales, calendrier de pratique, accès Favoris & Réglages |
+| 8 | Home — pratique du jour | `/(drawer)/(tabs)/index` | Salutation contextuelle, `TodayCard`, reprise en cours, sessions rapides (5/10/15 min), bandeau série |
+| 9 | Breathe — patterns | `/(drawer)/(tabs)/breathe` | 4 cartes : Apaisant · Carré · 4-7-8 · Cohérence cardiaque |
+| 10 | Search — catégories + bibliothèque | `/(drawer)/(tabs)/search` | Champ de recherche, grille de catégories, liste complète filtrable (durée, narrateur, thème) |
+| 11 | Profile — statistiques | `/(drawer)/(tabs)/profile` | Série en cours / record, sessions, minutes totales, calendrier de pratique, accès Favoris & Réglages |
 | 12 | Session detail | `/session/[id]` | Artwork, titre, durée, narrateur, description, liste de bénéfices, CTA lecture, favori, badge Plus |
 | 13 | Full-screen player | `/player/[id]` | Artwork dégradé animé, scrubber, ±15 s, play/pause, vitesse, minuteur de fondu, AirPlay/Cast (iOS), fond vidéo optionnel |
 | 14 | Breathing exercise animé | `/breathe/[pattern]` | Anneau respiratoire animé, phase (Inspire/Retiens/Expire/Pause), compte à rebours, haptique, ambiance sonore |
@@ -182,7 +184,7 @@ La galerie de Zen compte 23 captures, dont 4 variantes en thème sombre : **19 �
 
 ### 4.1 Détail des écrans clés
 
-**`/(tabs)/index` — Accueil**
+**`/(drawer)/(tabs)/index` — Accueil**
 - En-tête : salutation dépendant de l'heure (« Bonsoir » après 18 h), date, `StreakBadge`.
 - `TodayCard` : session recommandée du jour (déterministe par `hash(userId + date)` sur le catalogue, filtrée par les objectifs d'onboarding), artwork plein largeur, durée, CTA « Commencer ».
 - Section « Reprendre » : visible seulement si une session a une progression 5 % < p < 95 %.
@@ -416,7 +418,7 @@ Le catalogue est **statique et typé** (`content/sessions.ts`) en v1 — comme Z
 - Mode audio : `playsInSilentMode: true`, `shouldPlayInBackground: true`, ducking désactivé.
 - iOS : `UIBackgroundModes: ["audio"]`. Android : service de premier plan + notification média.
 - Reprise : la position est écrite toutes les 5 s et à chaque pause dans `progress`.
-- Mini-player : composant persistant rendu dans `(tabs)/_layout.tsx`, masqué sur `/player/[id]`.
+- Mini-player : composant persistant rendu dans `(drawer)/(tabs)/_layout.tsx`, masqué sur `/player/[id]`.
 - **Mode mock** (`EXPO_PUBLIC_MOCK_MODE=true`) : `services/mocks/audioServiceMock.ts` simule la progression sans fichier audio, pour l'E2E et le dev sans assets. Même convention que Noctalia : module conditionnel + `*Real` + `mocks/*Mock`, jamais d'import direct de l'implémentation.
 
 ### 8.2 Budget de taille — pourquoi tout embarquer est impossible

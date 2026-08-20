@@ -28,9 +28,11 @@ appId: com.noctalia.meditation
 - waitForAnimationToEnd:
     timeout: 6000
 
-# One touch brings the controls back, then the transport answers.
+# One touch anywhere brings the controls back — including over the artwork,
+# which is most of the screen and belongs to no control. Then the transport
+# answers, which is what proves the whole chrome returned and not just a part.
 - tapOn:
-    point: '50%,45%'
+    id: 'btn.player.reveal'
 - tapOn:
     id: 'btn.player.forward'
 - tapOn:
