@@ -14,7 +14,7 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | C2 | Instagram `@noctaliadreams` | 19:45 | `HIGGS_2026-08-06_003_FP_CITY.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcRV8lPJ6d2/) vérifié après 19:45 ; capturé `https://www.instagram.com/reel/DcRV8lPJ6d2/` |
 | C2 | X `@NoctaliaDreams` | 20:15 | `HIGGS_2026-08-06_003_FP_CITY.mp4` | **PROGRAMMÉ** | URL à collecter |
 | C3 | TikTok `@noctaliadreams` | 22:30 | `HIGGS_2026-08-06_004_FP_CITY.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672912756110118166) vérifié après 22:30 |
-| C3 | Instagram `@noctaliadreams` | 22:45 | `HIGGS_2026-08-06_004_FP_CITY.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcRrP-Bp0Tm/) vérifié après 22:45 ; capturé `https://www.instagram.com/reel/DcRrP-Bp0Tm/` |
+| C3 | Instagram `@noctaliadreams` | 22:45 | `HIGGS_2026-08-06_004_FP_CITY.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcRrP-Bp0Tm/) vérifié après 22:45 ; capturé `https://www.instagram.com/reel/DcRrP-Bp0Tm/` ; label IA natif absent |
 | C3 | X `@NoctaliaDreams` | 23:15 | `HIGGS_2026-08-06_004_FP_CITY.mp4` | **PROGRAMMÉ** | URL à collecter |
 
 ## Hero secondaire — 3 preuves
@@ -77,10 +77,14 @@ Vérifié le 20 août 2026, Europe/Paris, après 22:30/22:45. TikTok C3 est
 label créateur généré par IA.
 
 Instagram C3 est **PUBLIÉ** : même accroche commençant par
-`A holographic skyline comes alive at sunset.`, label IA natif activé, URL
-capturée `https://www.instagram.com/reel/DcRrP-Bp0Tm/` (aussi
-`https://www.instagram.com/noctaliadreams/reel/DcRrP-Bp0Tm/`). Les Reels C1
-`DcQ6OU6pkea` et C2 `DcRV8lPJ6d2` n'ont pas été retouchés.
+`A holographic skyline comes alive at sunset.`, URL capturée
+`https://www.instagram.com/reel/DcRrP-Bp0Tm/` (aussi
+`https://www.instagram.com/noctaliadreams/reel/DcRrP-Bp0Tm/`). Le label IA
+natif par publication n'est **pas** activé. L'édition web `Edit info` n'offre
+aucune bascule `Add AI label` (seulement Tag people, légende, lieu,
+collaborateurs et texte alternatif Accessibilité). Ne pas republier ni
+supprimer. Les Reels C1 `DcQ6OU6pkea` et C2 `DcRV8lPJ6d2` n'ont pas été
+retouchés.
 
 X C1, X C2 et X C3 restent **PROGRAMMÉ**, URL à collecter. Aucun status ID
 inventé. Heroes inchangés (`0/3`).
