@@ -989,9 +989,10 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   price: {
-    fontFamily: 'Fraunces_600SemiBold',
-    fontSize: 25,
-    lineHeight: 30,
+    fontFamily: 'SpaceGrotesk_700Bold',
+    fontSize: 22,
+    lineHeight: 28,
+    fontVariant: ['tabular-nums'],
   },
   period: {
     fontFamily: 'SpaceGrotesk_500Medium',

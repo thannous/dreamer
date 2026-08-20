@@ -194,6 +194,6 @@ const styles = StyleSheet.create({
   calendarGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   calendarDay: { minWidth: 86, flexGrow: 1, flexBasis: '22%', borderRadius: 17, borderWidth: 1, padding: 11, gap: 2 },
   calendarSession: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 11 },
-  calendarDate: { fontFamily: 'Fraunces_600SemiBold', fontSize: 17, lineHeight: 22 },
+  calendarDate: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 14, lineHeight: 20, fontVariant: ['tabular-nums'] },
   calendarStatus: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 9, lineHeight: 13 },
 });

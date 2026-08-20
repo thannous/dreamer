@@ -81,7 +81,7 @@ export function LucidScreen({
           <View style={styles.headerRow}>
             <View style={styles.headerCopy}>
               {eyebrow ? (
-                <Text style={[styles.eyebrow, { color: palette.accent }]}>{eyebrow}</Text>
+                <Text style={[styles.eyebrow, { color: palette.textMuted }]}>{eyebrow}</Text>
               ) : null}
               {title ? (
                 <Text accessibilityRole="header" style={[styles.title, { color: palette.text }]}>
@@ -425,6 +425,15 @@ const styles = StyleSheet.create({
   footer: { paddingHorizontal: 20, paddingTop: 12, gap: 10 },
   headerCopy: { flex: 1, minWidth: 0, gap: 7 },
   eyebrow: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12, letterSpacing: 1.5, textTransform: 'uppercase' },
+  // Fraunces est la voix du produit, pas sa police d'interface. Deux graisses,
+  // deux rôles, et rien d'autre :
+  //   _600SemiBold — le titre d'écran. Un seul par écran, celui-ci.
+  //   _500Medium   — la phrase de principe qu'on lit une fois : le rappel neutre
+  //                  du matin, le principe du test de réalité, l'invite de
+  //                  réflexion d'une séance.
+  // Tout ce qui se scanne — titres de carte, valeurs, libellés, boutons —
+  // descend sur Space Grotesk. Du serif sur chaque titre de carte donnait un ton
+  // éditorial à un écran qu'on consulte, pas qu'on lit.
   title: { fontFamily: 'Fraunces_600SemiBold', fontSize: 34, lineHeight: 40, letterSpacing: -0.8 },
   subtitle: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 15, lineHeight: 22 },
   card: { borderRadius: 24, borderWidth: 1, padding: 18, gap: 13 },
@@ -443,7 +452,7 @@ const styles = StyleSheet.create({
   progressTrack: { height: 7, borderRadius: 4, overflow: 'hidden' },
   progressFill: { height: '100%', borderRadius: 4 },
   metric: { flex: 1, minWidth: 92, borderRadius: 18, padding: 14, gap: 3 },
-  metricValue: { fontFamily: 'Fraunces_600SemiBold', fontSize: 25, lineHeight: 31 },
+  metricValue: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 22, lineHeight: 28, fontVariant: ['tabular-nums'] },
   metricLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 12, lineHeight: 16 },
   choice: { minHeight: 78, borderRadius: 19, borderWidth: 1, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12 },
   choiceIcon: { width: 42, height: 42, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },

@@ -235,13 +235,13 @@ function TimeField({ label, value, onChange }: { label: string; value: string; o
 
 const styles = StyleSheet.create({
   heroIcon: { width: 62, height: 62, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  heroTitle: { fontFamily: 'Fraunces_600SemiBold', fontSize: 22, lineHeight: 28 },
+  heroTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18, lineHeight: 24 },
   body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 14, lineHeight: 21 },
   pointRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
   pointText: { flex: 1, fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 19 },
   frequencyRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   frequency: { flexGrow: 1, minWidth: 115, borderRadius: 17, borderWidth: 1, padding: 14, gap: 3 },
-  frequencyValue: { fontFamily: 'Fraunces_600SemiBold', fontSize: 26 },
+  frequencyValue: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 22, lineHeight: 28, fontVariant: ['tabular-nums'] },
   frequencyLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 11 },
   timeRow: { flexDirection: 'row', gap: 12 },
   timeField: { flex: 1, gap: 7 },

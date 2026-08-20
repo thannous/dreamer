@@ -63,8 +63,8 @@ export default function LucidWeeklyScreen() {
     >
       <View style={styles.metrics}>
         <LucidMetric value={String(practiceDays)} label={copy.practice} />
-        <LucidMetric value={String(review.current.recalledDreams)} label={copy.recall} tone="accent" />
-        <LucidMetric value={String(review.current.lucidDreams)} label={copy.lucid} tone="amber" />
+        <LucidMetric value={String(review.current.recalledDreams)} label={copy.recall} />
+        <LucidMetric value={String(review.current.lucidDreams)} label={copy.lucid} />
       </View>
       <LucidCard accent="accent">
         <LucidPill label={copy.recommendation} tone="accent" icon="sparkles" />
@@ -104,4 +104,4 @@ export default function LucidWeeklyScreen() {
     </LucidScreen>
   );
 }
-const styles = StyleSheet.create({ metrics: { flexDirection: 'row', flexWrap: 'wrap', gap: 9 }, recommendation: { fontFamily: 'Fraunces_600SemiBold', fontSize: 21, lineHeight: 27 }, body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 19 }, label: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 16 }, notes: { minHeight: 130, borderRadius: 18, borderWidth: 1, padding: 15, fontFamily: 'SpaceGrotesk_400Regular', fontSize: 14, lineHeight: 20, textAlignVertical: 'top' } });
+const styles = StyleSheet.create({ metrics: { flexDirection: 'row', flexWrap: 'wrap', gap: 9 }, recommendation: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18, lineHeight: 24 }, body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 19 }, label: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 16 }, notes: { minHeight: 130, borderRadius: 18, borderWidth: 1, padding: 15, fontFamily: 'SpaceGrotesk_400Regular', fontSize: 14, lineHeight: 20, textAlignVertical: 'top' } });

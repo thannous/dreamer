@@ -83,8 +83,8 @@ export default function LucidTodayScreen() {
       <LucidSectionHeader title={copy.week} />
       <View style={styles.metrics}>
         <LucidMetric value={String(week.current.attempts)} label={copy.attempts} />
-        <LucidMetric value={week.current.recallRate == null ? '—' : `${Math.round(week.current.recallRate * 100)}%`} label={copy.recall} tone="accent" />
-        <LucidMetric value={String(week.current.lucidDreams)} label={copy.lucid} tone="amber" />
+        <LucidMetric value={week.current.recallRate == null ? '—' : `${Math.round(week.current.recallRate * 100)}%`} label={copy.recall} />
+        <LucidMetric value={String(week.current.lucidDreams)} label={copy.lucid} />
       </View>
 
       <LucidCard accent="accent" onPress={() => router.push('/lucid/weekly')} accessibilityLabel={copy.coach}>
@@ -102,7 +102,7 @@ export default function LucidTodayScreen() {
 const styles = StyleSheet.create({
   cardTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
   sessionLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 12 },
-  cardTitle: { fontFamily: 'Fraunces_600SemiBold', fontSize: 23, lineHeight: 29 },
+  cardTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18, lineHeight: 24 },
   body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 14, lineHeight: 21 },
   bodyStrong: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 16, lineHeight: 23 },
   emptyIcon: { width: 52, height: 52, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },

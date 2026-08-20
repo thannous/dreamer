@@ -46,7 +46,7 @@ export default function LucidProgramsScreen() {
         const color = palette.accent;
         const status = progress?.status === 'completed' ? copy.completed : progress?.status === 'active' ? copy.active : copy.notStarted;
         return (
-          <LucidCard key={id} accent={engaged ? 'accent' : 'none'} onPress={() => router.push(`/lucid/program/${id}`)} accessibilityLabel={program.title} testID={`lucid-program-${id}`}>
+          <LucidCard key={id} accent={engaged ? 'accent' : 'none'} style={engaged ? { backgroundColor: palette.surfaceRaised } : undefined} onPress={() => router.push(`/lucid/program/${id}`)} accessibilityLabel={program.title} testID={`lucid-program-${id}`}>
             <View style={styles.topRow}>
               <View style={[styles.programIcon, { backgroundColor: `${color}1F` }]}><Ionicons name={icon} size={27} color={color} /></View>
               <View style={styles.topCopy}>
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   topRow: { flexDirection: 'row', alignItems: 'center', gap: 13 },
   programIcon: { width: 54, height: 54, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   topCopy: { flex: 1, gap: 2 },
-  title: { fontFamily: 'Fraunces_600SemiBold', fontSize: 22, lineHeight: 27 },
+  title: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18, lineHeight: 24 },
   expanded: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 12, lineHeight: 17 },
   summary: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 14, lineHeight: 21 },
   metaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
