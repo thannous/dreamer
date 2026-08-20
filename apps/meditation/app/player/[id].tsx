@@ -77,13 +77,17 @@ export default function PlayerScreen() {
     <Screen variant="immersive" video="player" videoOpacity={0.4}>
       <SilenceProvider active={playing}>
         <View testID={TID.Screen.Player} className="flex-1">
-          <ProgressiveSilence className="px-gutter pt-2">
+          {/* The one thing that never withdraws. Everything else on this screen
+              can go quiet, but a player with no visible way out is hostile —
+              and the artwork, which is most of the screen, belongs to no
+              control, so there is nothing obvious left to press. */}
+          <View className="px-gutter pt-2">
             <BackLink
               testID={TID.Button.PlayerClose}
               label={t('player.close')}
               fallbackHref="/(drawer)/(tabs)"
             />
-          </ProgressiveSilence>
+          </View>
 
           {/* The artwork takes the height that is left rather than dictating it:
               sized from its width it would not shrink, and would spill over the

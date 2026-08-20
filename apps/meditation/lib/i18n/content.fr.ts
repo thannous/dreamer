@@ -15,7 +15,7 @@ export const contentFr = {
 
   'narrator.camille.bio': "Voix douce, rythme lent.",
   'narrator.adrien.bio': "Voix grave, phrases courtes.",
-  'narrator.wordless.bio': "Sans voix — souffle et silence.",
+  'narrator.wordless.bio': 'Souffle et silence, rien à suivre.',
 
   'session.sleep-descent.title': "Descendre le souffle",
   'session.sleep-descent.description': "Une expiration plus longue que l'inspiration, jusqu'à ce que le corps comprenne que la journée est finie.",

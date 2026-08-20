@@ -80,12 +80,21 @@ export default function SessionDetail() {
             <BenefitList session={session} />
           </View>
 
+          {/* A wordless session has no one guiding it, so it gets no "guided
+              by" and no name line — the label carries the whole idea, and the
+              player already says the same thing the same way. */}
           <Card>
-            <Text variant="overline">{t('session.narrator')}</Text>
-            <Text variant="h3" className="mt-2">
-              {session.narratorId === 'wordless' ? t('session.narrator.wordless') : narrator.name}
+            <Text variant="overline">
+              {session.narratorId === 'wordless'
+                ? t('session.narrator.wordless')
+                : t('session.narrator')}
             </Text>
-            <Text variant="bodySm" className="mt-1">
+            {session.narratorId === 'wordless' ? null : (
+              <Text variant="h3" className="mt-2">
+                {narrator.name}
+              </Text>
+            )}
+            <Text variant="bodySm" className="mt-2">
               {t(`narrator.${session.narratorId}.bio` as TranslationKey)}
             </Text>
           </Card>

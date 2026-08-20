@@ -128,6 +128,8 @@ export const fr: Record<keyof typeof en, string> = {
   "complete.dream.title": "Notez votre rêve au matin",
   "complete.dream.cta": "Ouvrir Noctalia",
   "complete.done": "Terminer",
+  "complete.streak": "{count} jours d'affilée",
+  "complete.streak.one": "Le premier jour de votre série",
   "breathe.title": "Respirer",
   "breathe.subtitle": "Quatre rythmes. Choisissez-en un et suivez-le.",
   "breathe.pattern.calm.name": "Apaisant",

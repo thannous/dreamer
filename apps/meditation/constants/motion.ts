@@ -40,7 +40,9 @@ export const BreathAmplitude = {
 } as const;
 
 /** Chrome fades out after this long without a touch, in immersive contexts. */
-export const SilenceDelayMs = 4000;
+// Six seconds, not four: four is barely enough to read the ambience and
+// timer rows before they vanish under your eyes.
+export const SilenceDelayMs = 6000;
 
 export const Curve = {
   /** Default for UI transitions. */

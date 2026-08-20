@@ -124,6 +124,8 @@ export const en = {
   "complete.dream.title": "Note your dream in the morning",
   "complete.dream.cta": "Open Noctalia",
   "complete.done": "Finish",
+  "complete.streak": "{count} days in a row",
+  "complete.streak.one": "The first day of your streak",
   "breathe.title": "Breathe",
   "breathe.subtitle": "Four rhythms. Choose one and follow it.",
   "breathe.pattern.calm.name": "Calming",

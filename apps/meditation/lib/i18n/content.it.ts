@@ -15,7 +15,7 @@ export const contentIt = {
 
   'narrator.camille.bio': 'Voce dolce, ritmo lento.',
   'narrator.adrien.bio': 'Voce grave, frasi brevi.',
-  'narrator.wordless.bio': 'Senza voce: respiro e silenzio.',
+  'narrator.wordless.bio': 'Respiro e silenzio, nulla da seguire.',
 
   'session.sleep-descent.title': 'Abbassare il respiro',
   'session.sleep-descent.description':
