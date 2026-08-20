@@ -46,6 +46,12 @@ export interface LucidSleepSchedule {
 
 export interface LucidAccessibilityPreferences {
   reduceMotion: boolean;
+  // Vestigiaux. Aucun écran ne les positionne — l'onboarding ne propose plus que
+  // `reduceMotion` — et personne ne les lit : la taille de texte et la sémantique
+  // lecteur d'écran appartiennent au système, pas à un mode applicatif, et
+  // `settings.tsx` le dit désormais au lieu de le promettre. Les retirer d'ici
+  // suppose de toucher `lib/lucid/domain.ts`, `app/lucid/onboarding.tsx` et les
+  // deux tests d'écran, qui fournissent encore les deux clés.
   largerText: boolean;
   screenReaderOptimized: boolean;
 }

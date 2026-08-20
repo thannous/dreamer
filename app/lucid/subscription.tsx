@@ -1015,7 +1015,9 @@ const styles = StyleSheet.create({
   },
   feedbackText: {
     flex: 1,
-    fontFamily: 'SpaceGrotesk_600SemiBold',
+    // _600SemiBold n'est chargée nulle part (app/_layout.tsx ne charge que 400,
+    // 500 et 700) : l'appeler retombait silencieusement sur la police système.
+    fontFamily: 'SpaceGrotesk_700Bold',
     fontSize: 13,
     lineHeight: 18,
   },

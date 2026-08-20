@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { Alert, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { LucidButton, LucidCard, LucidChoiceCard, LucidIconAction, LucidScreen } from '@/components/lucid/LucidUI';
 import { getLucidPalette } from '@/constants/lucidTheme';
@@ -34,25 +35,32 @@ export default function LucidRealityCheckScreen() {
   const [saving, setSaving] = useState(false);
   const missing = ([method === null ? copy.method : null, context === null ? copy.context : null, outcome === null ? copy.outcome : null, mindful ? null : copy.confirm] as (string | null)[]).filter((label): label is string => label !== null);
   const close = () => closeLucidRoute(router, LUCID_HOME_HREF);
-  const save = async () => { if (method === null || context === null || outcome === null || !mindful) return; setSaving(true); try { await addRealityCheck({ method, context, outcome, mindful }); Alert.alert(copy.saved, content.realityChecks.completionPrompt, [{ text: content.chrome.common.done, onPress: close }]); } finally { setSaving(false); } };
+  // Un test de réalité est une validation rare : elle mérite le seul retour que
+  // le corps perçoit sans regarder. Jamais l'unique retour — l'alerte reste.
+  const save = async () => { if (method === null || context === null || outcome === null || !mindful) return; setSaving(true); try { await addRealityCheck({ method, context, outcome, mindful }); if (Platform.OS !== 'web') void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {}); Alert.alert(copy.saved, content.realityChecks.completionPrompt, [{ text: content.chrome.common.done, onPress: close }]); } finally { setSaving(false); } };
   return (
     <LucidScreen eyebrow={copy.eyebrow} title={copy.title} subtitle={copy.subtitle} trailing={<LucidIconAction label={content.chrome.common.cancel} icon="close" onPress={close} />} testID="lucid-reality-check">
       <LucidCard accent="accent"><View style={styles.focus}><View style={[styles.eye, { backgroundColor: palette.accentSoft }]}><Ionicons name="eye" size={37} color={palette.accent} /></View><Text style={[styles.focusText, { color: palette.text }]}>{content.realityChecks.qualityPrinciples[0]}</Text></View></LucidCard>
       <Text style={[styles.section, { color: palette.text }]}>{copy.method}</Text>
-      {METHODS.map((item) => <LucidChoiceCard key={item} title={copy[item]} selected={method === item} onPress={() => setMethod(item)} icon={item === 'nose_breathing' ? 'fitness' : item === 'finger_count' ? 'hand-left' : item === 'text_reread' ? 'text' : 'time'} />)}
+      {/* Trois groupes exclusifs : sans conteneur nommé, un bouton radio s'annonce sans jamais dire de quel choix il fait partie. */}
+      <View accessibilityRole="radiogroup" accessibilityLabel={copy.method} style={styles.group}>{METHODS.map((item) => <LucidChoiceCard key={item} title={copy[item]} selected={method === item} onPress={() => setMethod(item)} icon={item === 'nose_breathing' ? 'fitness' : item === 'finger_count' ? 'hand-left' : item === 'text_reread' ? 'text' : 'time'} />)}</View>
       <Text style={[styles.section, { color: palette.text }]}>{copy.context}</Text>
-      <View style={styles.wrap}>{CONTEXTS.map((item) => <LucidPillButton key={item} label={copy[item]} selected={context === item} onPress={() => setContext(item)} />)}</View>
+      <View accessibilityRole="radiogroup" accessibilityLabel={copy.context} style={styles.wrap}>{CONTEXTS.map((item) => <LucidPillButton key={item} label={copy[item]} groupLabel={copy.context} selected={context === item} onPress={() => setContext(item)} />)}</View>
       <Text style={[styles.section, { color: palette.text }]}>{copy.outcome}</Text>
-      <View style={styles.outcomes}>{(['awake', 'dreaming', 'uncertain'] as const).map((item) => <LucidPillButton key={item} label={copy[item]} selected={outcome === item} onPress={() => setOutcome(item)} />)}</View>
-      <LucidChoiceCard title={copy.mindful} selected={mindful} onPress={() => setMindful((value) => !value)} icon="sparkles" />
+      <View accessibilityRole="radiogroup" accessibilityLabel={copy.outcome} style={styles.outcomes}>{(['awake', 'dreaming', 'uncertain'] as const).map((item) => <LucidPillButton key={item} label={copy[item]} groupLabel={copy.outcome} selected={outcome === item} onPress={() => setOutcome(item)} />)}</View>
+      {/* Une case isolée, pas un groupe : `checkbox`, pas `radio`. */}
+      <LucidChoiceCard title={copy.mindful} role="checkbox" selected={mindful} onPress={() => setMindful((value) => !value)} icon="sparkles" />
       <LucidButton label={copy.save} icon="checkmark" disabled={missing.length > 0} disabledReason={`${copy.incomplete} ${missing.join(', ')}`} loading={saving} onPress={() => void save()} testID="lucid-reality-save" />
     </LucidScreen>
   );
 }
 
-function LucidPillButton({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
+// Un `<Text onPress>` de 34pt sans état pressé : une dizaine de contrôles qu'on
+// vise mal et qui ne répondent pas au doigt. Pressable, 44 de haut, et la teinte
+// remplit sans écrire — le libellé sélectionné passe sur `accentOn`.
+function LucidPillButton({ label, groupLabel, selected, onPress }: { label: string; groupLabel: string; selected: boolean; onPress: () => void }) {
   const { colors, mode } = useTheme(); const palette = getLucidPalette(colors, mode);
-  return <View><Text accessibilityRole="button" accessibilityState={{ selected }} onPress={onPress} style={[styles.pillButton, { backgroundColor: selected ? palette.accentSoft : palette.surfaceRaised, borderColor: selected ? palette.accent : palette.borderInteractive, color: selected ? palette.accent : palette.textSecondary }]}>{label}</Text></View>;
+  return <Pressable accessibilityRole="radio" accessibilityLabel={`${groupLabel}, ${label}`} accessibilityState={{ selected, checked: selected }} onPress={onPress} style={({ pressed }) => [styles.pillButton, { backgroundColor: selected ? palette.accentSoft : palette.surfaceRaised, borderColor: selected ? palette.accent : palette.borderInteractive, opacity: pressed ? 0.78 : 1 }]}><Text style={[styles.pillButtonLabel, { color: selected ? palette.accentOn : palette.textSecondary }]}>{label}</Text></Pressable>;
 }
 
-const styles = StyleSheet.create({ focus: { alignItems: 'center', gap: 14, paddingVertical: 5 }, eye: { width: 72, height: 72, borderRadius: 25, alignItems: 'center', justifyContent: 'center' }, focusText: { fontFamily: 'Fraunces_500Medium', fontSize: 18, lineHeight: 25, textAlign: 'center' }, section: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 17, marginTop: 4 }, wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, outcomes: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, pillButton: { overflow: 'hidden', borderRadius: 16, borderWidth: 1, paddingHorizontal: 13, paddingVertical: 10, fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12 } });
+const styles = StyleSheet.create({ focus: { alignItems: 'center', gap: 14, paddingVertical: 5 }, eye: { width: 72, height: 72, borderRadius: 25, alignItems: 'center', justifyContent: 'center' }, focusText: { fontFamily: 'Fraunces_500Medium', fontSize: 18, lineHeight: 25, textAlign: 'center' }, section: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 17, marginTop: 4 }, group: { gap: 12 }, wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, outcomes: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, pillButton: { minHeight: 44, justifyContent: 'center', borderRadius: 16, borderWidth: 1, paddingHorizontal: 13, paddingVertical: 10 }, pillButtonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12 } });

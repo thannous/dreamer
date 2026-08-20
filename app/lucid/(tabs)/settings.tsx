@@ -74,7 +74,7 @@ const COPY = {
     reduceMotion: 'Reduce motion',
     reduceMotionBody: 'Keep decorative transitions to a minimum throughout Trainer.',
     systemText: 'System text size',
-    systemTextBody: 'Text follows the size selected in device accessibility settings.',
+    systemTextBody: 'Trainer inherits the size chosen in your device accessibility settings. It has no text size setting of its own.',
     screenReader: 'Screen reader labels',
     screenReaderBody: 'Buttons, toggles, progress and inputs expose names and states.',
     sync: 'Cloud sync',
@@ -136,7 +136,7 @@ const COPY = {
     reduceMotion: 'Réduire les mouvements',
     reduceMotionBody: 'Limiter au minimum les transitions décoratives dans le Trainer.',
     systemText: 'Taille de texte système',
-    systemTextBody: 'Le texte suit la taille choisie dans les réglages d’accessibilité de l’appareil.',
+    systemTextBody: 'Le Trainer hérite de la taille choisie dans les réglages d’accessibilité de l’appareil. Il n’a pas de réglage de taille propre.',
     screenReader: 'Libellés pour lecteur d’écran',
     screenReaderBody: 'Les boutons, interrupteurs, progressions et champs exposent leur nom et leur état.',
     sync: 'Synchronisation cloud',
@@ -198,7 +198,7 @@ const COPY = {
     reduceMotion: 'Reducir movimiento',
     reduceMotionBody: 'Mantiene al mínimo las transiciones decorativas del Trainer.',
     systemText: 'Tamaño de texto del sistema',
-    systemTextBody: 'El texto sigue el tamaño elegido en los ajustes de accesibilidad del dispositivo.',
+    systemTextBody: 'Trainer hereda el tamaño elegido en los ajustes de accesibilidad del dispositivo. No tiene un ajuste de tamaño propio.',
     screenReader: 'Etiquetas para lector de pantalla',
     screenReaderBody: 'Botones, interruptores, progreso y campos exponen su nombre y estado.',
     sync: 'Sincronización en nube',
@@ -260,7 +260,7 @@ const COPY = {
     reduceMotion: 'Bewegung reduzieren',
     reduceMotionBody: 'Beschränkt dekorative Übergänge im Trainer auf ein Minimum.',
     systemText: 'Systemtextgröße',
-    systemTextBody: 'Text folgt der in den Gerätehilfen gewählten Größe.',
+    systemTextBody: 'Trainer übernimmt die in den Bedienungshilfen des Geräts gewählte Größe. Eine eigene Textgröße gibt es hier nicht.',
     screenReader: 'Screenreader-Beschriftungen',
     screenReaderBody: 'Schaltflächen, Umschalter, Fortschritt und Felder geben Namen und Status aus.',
     sync: 'Cloud-Synchronisierung',
@@ -322,7 +322,7 @@ const COPY = {
     reduceMotion: 'Riduci movimento',
     reduceMotionBody: 'Mantiene al minimo le transizioni decorative del Trainer.',
     systemText: 'Dimensione testo di sistema',
-    systemTextBody: 'Il testo segue la dimensione scelta nelle impostazioni di accessibilità del dispositivo.',
+    systemTextBody: 'Trainer eredita la dimensione scelta nelle impostazioni di accessibilità del dispositivo. Non ha un’impostazione di dimensione propria.',
     screenReader: 'Etichette per lettore di schermo',
     screenReaderBody: 'Pulsanti, interruttori, avanzamento e campi espongono nome e stato.',
     sync: 'Sincronizzazione cloud',
@@ -847,6 +847,10 @@ export default function LucidSettingsScreen() {
           icon="accessibility"
           divider={false}
         />
+        {/* Deux constats, pas deux réglages : la taille de texte et la sémantique
+            lecteur d'écran appartiennent au système. Le Trainer n'a aucun
+            interrupteur à lui en face, et la copie ne doit rien promettre de plus
+            que ce qu'il fait — hériter, et ne jamais brider. */}
         <AccessibilityStatusRow
           icon="text"
           title={copy.systemText}

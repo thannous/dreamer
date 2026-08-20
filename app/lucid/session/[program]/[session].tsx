@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams, type Href } from 'expo-router';
 import React, { useMemo, useState } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 
 import { LucidButton, LucidCard, LucidIconAction, LucidPill, LucidProgressBar, LucidScreen } from '@/components/lucid/LucidUI';
 import { getLucidPalette } from '@/constants/lucidTheme';
@@ -58,6 +59,9 @@ export default function LucidSessionScreen() {
     setSaving(true);
     try {
       await completeProgramSession(technique, session.id, program.sessions.length);
+      // Terminer une séance est une validation rare : elle mérite le retour que
+      // le corps perçoit sans regarder. Jamais seul — l'alerte reste.
+      if (Platform.OS !== 'web') void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       Alert.alert(copy.done, session.reflectionPrompt, [{ text: content.chrome.common.done, onPress: close }]);
     } finally { setSaving(false); }
   };
@@ -70,7 +74,9 @@ export default function LucidSessionScreen() {
       {session.steps.map((stepText, index) => {
         const done = alreadyDone || checked[index];
         return (
-          <LucidCard key={`${session.id}-${index}`} accent={done ? 'accent' : 'none'} onPress={() => !alreadyDone && setChecked((values) => values.map((value, itemIndex) => itemIndex === index ? !value : value))} accessibilityLabel={`${copy.step} ${index + 1}: ${stepText}`}>
+          // Une étape se coche : c'est une case à cocher, et son état est ce qui
+          // débloque le bouton de fin — il doit s'annoncer à chaque appui.
+          <LucidCard key={`${session.id}-${index}`} accent={done ? 'accent' : 'none'} onPress={alreadyDone ? undefined : () => setChecked((values) => values.map((value, itemIndex) => itemIndex === index ? !value : value))} accessibilityRole="checkbox" accessibilityState={{ checked: done, disabled: alreadyDone }} accessibilityLabel={`${copy.step} ${index + 1}: ${stepText}`}>
             <View style={styles.stepRow}>
               <View style={[styles.check, { backgroundColor: done ? palette.accent : palette.surfaceRaised, borderColor: done ? palette.accent : palette.borderInteractive }]}>{done ? <Ionicons name="checkmark" size={18} color={palette.backgroundDeep} /> : <Text style={[styles.checkNumber, { color: palette.textSecondary }]}>{index + 1}</Text>}</View>
               <View style={styles.stepCopy}><Text style={[styles.stepLabel, { color: palette.textMuted }]}>{copy.step} {index + 1}</Text><Text style={[styles.stepText, { color: palette.text }]}>{stepText}</Text></View>

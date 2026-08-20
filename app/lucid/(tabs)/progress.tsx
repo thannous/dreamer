@@ -7,6 +7,7 @@ import {
   LUCID_TAB_BAR_INSET,
   LucidButton,
   LucidCard,
+  LucidIconAction,
   LucidMetric,
   LucidPill,
   LucidScreen,
@@ -46,7 +47,7 @@ export default function LucidProgressScreen() {
       </LucidCard>
       <LucidButton label={copy.weekly} variant="secondary" icon="calendar" onPress={() => router.push('/lucid/weekly')} />
       <LucidSectionHeader title={copy.history} />
-      {state!.experiments.length === 0 ? <LucidCard><Text style={[styles.empty, { color: palette.textSecondary }]}>{copy.empty}</Text><LucidButton label={content.morningReview.title} icon="sunny" onPress={() => router.push('/lucid/morning')} /></LucidCard> : state!.experiments.slice(0, 12).map((item) => <LucidCard key={item.id}><View style={styles.historyTop}><View style={styles.historyCopy}><Text style={[styles.methodName, { color: palette.text }]}>{content.programs[item.technique].title}</Text><Text style={[styles.methodMeta, { color: palette.textSecondary }]}>{new Intl.DateTimeFormat(content.locale, { dateStyle: 'medium' }).format(item.occurredAt)} · {item.result === 'lucid' ? copy.resultLucid : copy[item.result]}</Text></View><Ionicons accessibilityLabel={copy.confirm} name="trash-outline" size={19} color={palette.danger} onPress={() => confirmDelete(item.id)} /></View><View style={styles.historyScores}><LucidPill label={`${copy.recall}: ${item.recallLevel}/5`} /><LucidPill label={`${copy.sleep}: ${item.sleepQuality}/5`} tone="neutral" /></View>{item.notes ? <Text numberOfLines={2} style={[styles.small, { color: palette.textSecondary }]}>{item.notes}</Text> : null}</LucidCard>)}
+      {state!.experiments.length === 0 ? <LucidCard><Text style={[styles.empty, { color: palette.textSecondary }]}>{copy.empty}</Text><LucidButton label={content.morningReview.title} icon="sunny" onPress={() => router.push('/lucid/morning')} /></LucidCard> : state!.experiments.slice(0, 12).map((item) => { const date = new Intl.DateTimeFormat(content.locale, { dateStyle: 'medium' }).format(item.occurredAt); return <LucidCard key={item.id}><View style={styles.historyTop}><View style={styles.historyCopy}><Text style={[styles.methodName, { color: palette.text }]}>{content.programs[item.technique].title}</Text><Text style={[styles.methodMeta, { color: palette.textSecondary }]}>{date} · {item.result === 'lucid' ? copy.resultLucid : copy[item.result]}</Text></View>{/* Une icône de 19pt sans rôle, portant le même libellé sur les douze cartes : douze boutons « Supprimer » indiscernables. La cible fait 44 et nomme le bilan qu'elle détruit. */}<LucidIconAction label={`${copy.confirm}: ${content.programs[item.technique].title}, ${date}`} icon="trash-outline" tone="danger" onPress={() => confirmDelete(item.id)} /></View><View style={styles.historyScores}><LucidPill label={`${copy.recall}: ${item.recallLevel}/5`} /><LucidPill label={`${copy.sleep}: ${item.sleepQuality}/5`} tone="neutral" /></View>{item.notes ? <Text numberOfLines={2} style={[styles.small, { color: palette.textSecondary }]}>{item.notes}</Text> : null}</LucidCard>; })}
     </LucidScreen>
   );
 }

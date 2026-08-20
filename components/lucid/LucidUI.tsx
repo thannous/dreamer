@@ -10,6 +10,7 @@ import {
   Text,
   View,
   type AccessibilityRole,
+  type AccessibilityState,
   type ScrollViewProps,
   type ViewStyle,
 } from 'react-native';
@@ -132,6 +133,8 @@ export function LucidCard({
   accent = 'none',
   onPress,
   accessibilityLabel,
+  accessibilityRole,
+  accessibilityState,
   testID,
 }: {
   children: ReactNode;
@@ -139,6 +142,12 @@ export function LucidCard({
   accent?: 'none' | 'accent' | 'amber';
   onPress?: () => void;
   accessibilityLabel?: string;
+  // Le rôle décrit le mécanisme, pas l'habillage. Une carte qui ouvre un écran
+  // est un bouton (défaut), une étape de séance qu'on coche est une case à
+  // cocher — et son état coché doit s'annoncer, puisque c'est lui qui débloque
+  // le bouton de fin.
+  accessibilityRole?: AccessibilityRole;
+  accessibilityState?: AccessibilityState;
   testID?: string;
 }) {
   const { colors, mode } = useTheme();
@@ -167,11 +176,26 @@ export function LucidCard({
     style,
   ];
 
-  if (!onPress) return <View style={cardStyle}>{children}</View>;
+  // Sans `onPress` la carte retournait une View nue : elle perdait son libellé,
+  // et les séances verrouillées d'un programme devenaient muettes.
+  if (!onPress)
+    return (
+      <View
+        accessible={accessibilityLabel ? true : undefined}
+        accessibilityLabel={accessibilityLabel}
+        accessibilityRole={accessibilityRole}
+        accessibilityState={accessibilityState}
+        testID={testID}
+        style={cardStyle}
+      >
+        {children}
+      </View>
+    );
   return (
     <Pressable
-      accessibilityRole="button"
+      accessibilityRole={accessibilityRole ?? 'button'}
       accessibilityLabel={accessibilityLabel}
+      accessibilityState={accessibilityState}
       onPress={onPress}
       testID={testID}
       style={({ pressed }) => [
@@ -233,7 +257,10 @@ export function LucidButton({
         styles.button,
         {
           backgroundColor: background,
-          borderColor: danger ? `${palette.danger}66` : primary ? palette.accentStrong : palette.borderInteractive,
+          // La bordure délimite une cible tactile : 3:1 minimum. À 40% d'opacité
+          // le rouge tombait à 2,76:1 en sombre et 2,13:1 en clair ; plein, il
+          // tient 8,49:1 et 6,31:1 sur la surface de carte.
+          borderColor: danger ? palette.danger : primary ? palette.accentStrong : palette.borderInteractive,
           opacity: disabled ? 0.45 : pressed ? 0.78 : 1,
         },
       ]}
@@ -321,6 +348,7 @@ export function LucidChoiceCard({
   selected,
   onPress,
   icon,
+  role = 'radio',
   testID,
 }: {
   title: string;
@@ -328,13 +356,16 @@ export function LucidChoiceCard({
   selected: boolean;
   onPress: () => void;
   icon?: IconName;
+  // `radio` dans un groupe exclusif, `checkbox` pour une case isolée. Une case
+  // à cocher annoncée « bouton radio » promet un groupe qui n'existe pas.
+  role?: 'radio' | 'checkbox';
   testID?: string;
 }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   return (
     <Pressable
-      accessibilityRole="radio"
+      accessibilityRole={role}
       accessibilityState={{ selected, checked: selected }}
       onPress={onPress}
       testID={testID}
@@ -369,6 +400,7 @@ export function LucidToggleRow({
   disabled = false,
   icon,
   divider = true,
+  testID,
 }: {
   title: string;
   description?: string;
@@ -376,6 +408,10 @@ export function LucidToggleRow({
   onValueChange: (value: boolean) => void;
   disabled?: boolean;
   icon?: IconName;
+  // Posé sur l'interrupteur lui-même : c'est lui qui bascule, et son libellé
+  // d'accessibilité est le même que celui du titre — une sélection par texte
+  // matcherait deux nœuds.
+  testID?: string;
   // Le filet sépare deux lignes. La dernière d'un groupe n'a rien à séparer :
   // son filet doublait celui du bloc suivant ou flottait au bord de la carte.
   divider?: boolean;
@@ -393,6 +429,7 @@ export function LucidToggleRow({
         accessibilityLabel={title}
         disabled={disabled}
         onValueChange={onValueChange}
+        testID={testID}
         value={value}
         // Éteint, le rail était à 1,22:1 sur la carte en thème clair, et le
         // pouce blanc à 1,22:1 sur le rail : l'interrupteur off était invisible.
@@ -405,12 +442,16 @@ export function LucidToggleRow({
   );
 }
 
-export function LucidIconAction({ label, icon, onPress, role = 'button' }: { label: string; icon: IconName; onPress: () => void; role?: AccessibilityRole }) {
+// 44×44 : la seule cible tactile d'un écran qui n'a que la place d'une icône.
+// `tone="danger"` reprend l'habillage du bouton danger — une action destructive
+// se reconnaît avant d'être touchée, pas après.
+export function LucidIconAction({ label, icon, onPress, role = 'button', tone = 'neutral' }: { label: string; icon: IconName; onPress: () => void; role?: AccessibilityRole; tone?: 'neutral' | 'danger' }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
+  const danger = tone === 'danger';
   return (
-    <Pressable accessibilityRole={role} accessibilityLabel={label} onPress={onPress} style={({ pressed }) => [styles.iconAction, { backgroundColor: palette.surfaceRaised, borderColor: palette.borderInteractive, opacity: pressed ? 0.7 : 1 }]}>
-      <Ionicons name={icon} size={21} color={palette.text} />
+    <Pressable accessibilityRole={role} accessibilityLabel={label} onPress={onPress} hitSlop={4} style={({ pressed }) => [styles.iconAction, { backgroundColor: danger ? `${palette.danger}18` : palette.surfaceRaised, borderColor: danger ? palette.danger : palette.borderInteractive, opacity: pressed ? 0.7 : 1 }]}>
+      <Ionicons name={icon} size={21} color={danger ? palette.danger : palette.text} />
     </Pressable>
   );
 }

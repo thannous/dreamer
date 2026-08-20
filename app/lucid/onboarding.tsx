@@ -160,7 +160,7 @@ export default function LucidOnboardingScreen() {
       {step === 3 ? (
         <LucidCard>
           <Text style={[styles.body, { color: palette.textSecondary }]}>{content.onboarding.reminderExplanation}</Text>
-          <View accessibilityRole="radiogroup" style={styles.frequencyRow}>
+          <View accessibilityRole="radiogroup" accessibilityLabel={copy.reminders} style={styles.frequencyRow}>
             {[2, 3, 5, 7].map((value) => (
               <Pressable key={value} testID={`lucid-weekly-target-${value}`} accessibilityRole="radio" accessibilityState={{ selected: weeklyTarget === value }} onPress={() => setWeeklyTarget(value)} style={[styles.frequency, { backgroundColor: weeklyTarget === value ? palette.accentSoft : palette.surfaceRaised, borderColor: weeklyTarget === value ? palette.accent : palette.borderInteractive }]}>
                 <Text style={[styles.frequencyValue, { color: weeklyTarget === value ? palette.accent : palette.text }]}>{value}</Text>
@@ -214,7 +214,7 @@ export default function LucidOnboardingScreen() {
           <LucidToggleRow title={copy.analytics} description={content.privacy.analytics} value={analyticsConsent} onValueChange={setAnalyticsConsent} icon="analytics" />
           <LucidToggleRow title={copy.cloud} description={content.privacy.optionalSync} value={cloudSyncEnabled} onValueChange={setCloudSyncEnabled} icon="cloud-upload" />
           <LucidToggleRow title={copy.link} description={content.privacy.minimalTransfer} value={noctaliaLinkEnabled} onValueChange={setNoctaliaLinkEnabled} icon="link" />
-          <LucidToggleRow title={copy.safety} description={content.onboarding.audioPermission} value={audioSafetyAccepted} onValueChange={setAudioSafetyAccepted} icon="volume-low" divider={false} />
+          <LucidToggleRow title={copy.safety} description={content.onboarding.audioPermission} value={audioSafetyAccepted} onValueChange={setAudioSafetyAccepted} icon="volume-low" testID="lucid-onboarding-audio-safety" divider={false} />
         </LucidCard>
       ) : null}
 
