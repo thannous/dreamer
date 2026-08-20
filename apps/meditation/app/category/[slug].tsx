@@ -9,6 +9,7 @@ import { BackLink, Rule, Text } from '@/components/ui';
 import { CATEGORY_BY_SLUG, isCategorySlug } from '@/content/categories';
 import { sessionsInCategory } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
+import { TID } from '@/lib/testIDs';
 import type { TranslationKey } from '@/lib/i18n';
 
 export default function CategoryScreen() {
@@ -49,7 +50,13 @@ export default function CategoryScreen() {
           <Text variant="overline">{t('category.count', { count: sessions.length })}</Text>
           <Rule className="self-start" />
           {sessions.map((session) => (
-            <SessionCard key={session.id} session={session} />
+            <SessionCard
+              key={session.id}
+              session={session}
+              testID={
+                session.id === 'dream-threshold' ? TID.Option.SessionDreamThreshold : undefined
+              }
+            />
           ))}
         </View>
       </ScrollView>

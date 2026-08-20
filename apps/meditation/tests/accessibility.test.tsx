@@ -1,11 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import React from 'react';
+import * as ReactNative from 'react-native';
 
 import { NightBackground } from '@/components/atmosphere/NightBackground';
 import { ProgressScrubber } from '@/components/player/ProgressScrubber';
 import { StreakCalendar } from '@/components/profile/StreakCalendar';
 import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
+import { Text } from '@/components/ui/Text';
 import { TextField } from '@/components/ui/TextField';
 import { SEEK_STEP_SEC } from '@/lib/audio';
 import { calendarDays } from '@/lib/streak';
@@ -45,6 +47,22 @@ describe('text scaling', () => {
     // exactly what breaks the app for someone who needs larger type.
     render(<Button label="Commencer" />);
     expect(screen.getByText('Commencer').props.allowFontScaling).not.toBe(false);
+  });
+
+  it('scales the line box with Dynamic Type so enlarged glyphs are not cropped', () => {
+    const dimensions = jest.spyOn(ReactNative, 'useWindowDimensions').mockReturnValue({
+      width: 368,
+      height: 800,
+      scale: 3,
+      fontScale: 2,
+    });
+
+    render(<Text variant="h1">Titre agrandi</Text>);
+
+    expect(ReactNative.StyleSheet.flatten(screen.getByText('Titre agrandi').props.style)).toEqual(
+      expect.objectContaining({ lineHeight: 68 })
+    );
+    dimensions.mockRestore();
   });
 });
 

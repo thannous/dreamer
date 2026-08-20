@@ -18,9 +18,10 @@ type Props = {
   session: MeditationSession;
   /** `row` for lists, `feature` for the one hero card on a screen. */
   variant?: 'row' | 'feature';
+  testID?: string;
 };
 
-export function SessionCard({ session, variant = 'row' }: Props) {
+export function SessionCard({ session, variant = 'row', testID }: Props) {
   const router = useRouter();
   const { t } = useTranslation();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
@@ -36,6 +37,7 @@ export function SessionCard({ session, variant = 'row' }: Props) {
   if (variant === 'feature') {
     return (
       <AnimatedPressable
+        testID={testID}
         accessibilityRole="button"
         accessibilityLabel={`${title}. ${meta}`}
         onPress={open}
@@ -55,6 +57,7 @@ export function SessionCard({ session, variant = 'row' }: Props) {
 
   return (
     <AnimatedPressable
+      testID={testID}
       accessibilityRole="button"
       accessibilityLabel={`${title}. ${meta}`}
       onPress={open}

@@ -1,5 +1,9 @@
 import React from 'react';
-import { Text as RNText, type TextProps as RNTextProps } from 'react-native';
+import {
+  Text as RNText,
+  type TextProps as RNTextProps,
+  useWindowDimensions,
+} from 'react-native';
 
 export type TextVariant =
   | 'display'
@@ -35,6 +39,24 @@ const VARIANT: Record<TextVariant, string> = {
   quote: 'font-serif-italic text-h3',
 };
 
+/**
+ * React Native scales `fontSize`, but an explicit CSS line-height remains in
+ * layout points. Without scaling both together, Dynamic Type enlarges the
+ * glyphs inside their old line box and crops almost every label. Keep these in
+ * step with the matching tokens in `global.css`.
+ */
+const LINE_HEIGHT: Record<TextVariant, number> = {
+  display: 40,
+  h1: 34,
+  h2: 28,
+  h3: 24,
+  body: 24,
+  bodySm: 20,
+  caption: 16,
+  overline: 14,
+  quote: 24,
+};
+
 const TONE: Record<TextTone, string> = {
   default: 'text-ivory',
   muted: 'text-ivory-muted',
@@ -64,12 +86,24 @@ export type TextProps = RNTextProps & {
   className?: string;
 };
 
-export function Text({ variant = 'body', tone, className, ...rest }: TextProps) {
+export function Text({
+  variant = 'body',
+  tone,
+  className,
+  style,
+  maxFontSizeMultiplier = 2,
+  ...rest
+}: TextProps) {
+  const { fontScale } = useWindowDimensions();
   const resolvedTone = tone ?? DEFAULT_TONE[variant];
+  const effectiveScale =
+    maxFontSizeMultiplier == null ? fontScale : Math.min(fontScale, maxFontSizeMultiplier);
 
   return (
     <RNText
       className={`${VARIANT[variant]} ${TONE[resolvedTone]} ${className ?? ''}`}
+      maxFontSizeMultiplier={maxFontSizeMultiplier}
+      style={[style, { lineHeight: LINE_HEIGHT[variant] * effectiveScale }]}
       {...rest}
     />
   );

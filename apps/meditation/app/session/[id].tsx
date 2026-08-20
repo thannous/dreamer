@@ -52,7 +52,11 @@ export default function SessionDetail() {
 
   return (
     <Screen variant="immersive" edges={['top']}>
-      <BackLink label={t('common.back')} className="px-gutter pb-2 pt-2" />
+      <BackLink
+        testID={TID.Button.SessionBack}
+        label={t('common.back')}
+        className="px-gutter pb-2 pt-2"
+      />
 
       <ScrollView
         testID={TID.Screen.SessionDetail}
@@ -101,7 +105,9 @@ export default function SessionDetail() {
 
           {(entry?.completedCount ?? 0) > 0 ? (
             <Text variant="caption">
-              {t('session.completed', { count: entry?.completedCount ?? 0 })}
+              {(entry?.completedCount ?? 0) === 1
+                ? t('session.completed.one')
+                : t('session.completed', { count: entry?.completedCount ?? 0 })}
             </Text>
           ) : null}
 

@@ -30,6 +30,7 @@ function PatternCard({ pattern }: { pattern: BreathingPattern }) {
 
   return (
     <AnimatedPressable
+      testID={pattern.id === 'calm' ? TID.Option.BreatheCalm : undefined}
       accessibilityRole="button"
       onPress={() => {
         if (!gate.allowed) {

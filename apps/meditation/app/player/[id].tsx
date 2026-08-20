@@ -58,7 +58,9 @@ export default function PlayerScreen() {
     return (
       <Screen variant="immersive">
         <BackLink label={t('player.close')} className="px-gutter pt-2" />
-        <View className="flex-1 items-center justify-center gap-3 px-gutter">
+        <View
+          testID={TID.Screen.PlayerUnavailable}
+          className="flex-1 items-center justify-center gap-3 px-gutter">
           <EmptyIllustration name="offline" />
           <Text variant="h2" className="text-center">
             {t('player.unavailable.title')}
@@ -81,7 +83,7 @@ export default function PlayerScreen() {
               can go quiet, but a player with no visible way out is hostile —
               and the artwork, which is most of the screen, belongs to no
               control, so there is nothing obvious left to press. */}
-          <View className="px-gutter pt-2">
+          <View className="px-gutter pt-2" style={{ zIndex: 3 }}>
             <BackLink
               testID={TID.Button.PlayerClose}
               label={t('player.close')}

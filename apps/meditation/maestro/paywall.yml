@@ -10,10 +10,18 @@ appId: com.noctalia.meditation
     id: 'screen.search'
 
 # "Dream preparation" is entirely premium — the last category tile.
+- scrollUntilVisible:
+    element:
+      id: 'option.category.dream-prep'
+    direction: DOWN
 - tapOn:
-    point: '75%,58%'
+    id: 'option.category.dream-prep'
+- scrollUntilVisible:
+    element:
+      id: 'option.session.dream-threshold'
+    direction: DOWN
 - tapOn:
-    point: '50%,45%'
+    id: 'option.session.dream-threshold'
 - assertVisible:
     id: 'screen.session'
 
@@ -31,10 +39,12 @@ appId: com.noctalia.meditation
 - assertVisible:
     id: 'screen.session'
 
-# The same button now opens the session instead of the paywall.
+# The same button now passes the entitlement gate. Premium media is remote in
+# v1, so the clean simulator reaches the explicit offline state until a media
+# bucket is configured; that is still proof that the paywall no longer blocks.
 - tapOn:
     id: 'btn.session.play'
 - assertVisible:
-    id: 'screen.player'
+    id: 'screen.player.unavailable'
 - assertNotVisible:
     id: 'screen.paywall'

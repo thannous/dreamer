@@ -12,8 +12,18 @@ appId: com.noctalia.meditation
     id: 'screen.search'
 
 # The first row of the catalogue is the first free session.
+- scrollUntilVisible:
+    element:
+      id: 'option.session.sleep-descent'
+    direction: DOWN
+# Maestro considers the row visible even while the floating tab bar covers its
+# centre. Lift it into the unobstructed viewport before tapping it.
+- swipe:
+    start: 50%, 75%
+    end: 50%, 45%
+    duration: 400
 - tapOn:
-    point: '50%,72%'
+    id: 'option.session.sleep-descent'
 - assertVisible:
     id: 'screen.session'
 
@@ -44,6 +54,8 @@ appId: com.noctalia.meditation
     id: 'screen.session'
 
 # A started session shows up as resumable on the home screen.
+- tapOn:
+    id: 'btn.session.back'
 - tapOn:
     id: 'tab.home'
 - assertVisible:
