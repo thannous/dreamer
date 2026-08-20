@@ -1,0 +1,298 @@
+version: 2.1
+
+parameters:
+  pipeline_kind:
+    type: enum
+    enum:
+      - pr
+      - full
+    default: pr
+  diff_base:
+    type: string
+    default: ""
+  run_app:
+    type: boolean
+    default: false
+  run_site:
+    type: boolean
+    default: false
+  run_edge:
+    type: boolean
+    default: false
+  run_changed_tests:
+    type: boolean
+    default: false
+  require_timing_baseline:
+    type: boolean
+    default: false
+  publish_timing_baseline:
+    type: boolean
+    default: false
+  save_site_npm_cache:
+    type: boolean
+    default: false
+
+executors:
+  node:
+    docker:
+      - image: cimg/node:24.19.0
+    resource_class: medium
+    environment:
+      NPM_CONFIG_CACHE: /home/circleci/.npm
+
+  base:
+    docker:
+      - image: cimg/base:stable
+    resource_class: small
+
+commands:
+  install-node-dependencies:
+    parameters:
+      save_cache:
+        type: boolean
+        default: true
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - npm-node24-v1-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install dependencies
+          command: npm ci
+      - when:
+          condition: << parameters.save_cache >>
+          steps:
+            - save_cache:
+                key: npm-node24-v1-{{ checksum "package-lock.json" }}
+                paths:
+                  - /home/circleci/.npm
+
+jobs:
+  app-quality:
+    executor: node
+    parameters:
+      run_changed_tests:
+        type: boolean
+        default: false
+      diff_base:
+        type: string
+        default: ""
+    steps:
+      - install-node-dependencies
+      - run:
+          name: Typecheck application
+          command: npm run typecheck:app
+      - run:
+          name: Typecheck tests
+          command: npm run typecheck:tests
+      - run:
+          name: Lint
+          command: npm run lint
+      - run:
+          name: Enforce warning-free active scripts
+          command: npm run lint:scripts
+      - when:
+          condition: << parameters.run_changed_tests >>
+          steps:
+            - run:
+                name: Test files changed since the PR base
+                environment:
+                  JEST_CHANGED_SINCE: << parameters.diff_base >>
+                  JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
+                  JEST_JUNIT_OUTPUT_DIR: artifacts/test-results
+                  JEST_JUNIT_OUTPUT_NAME: jest.xml
+                command: |
+                  set -euo pipefail
+                  if ! git cat-file -e "${JEST_CHANGED_SINCE}^{commit}" 2>/dev/null; then
+                    git fetch --no-tags origin "$JEST_CHANGED_SINCE"
+                  fi
+                  mkdir -p artifacts/test-results
+                  npm run test:changed -- \
+                    --json \
+                    --outputFile=artifacts/jest-results.json \
+                    --reporters=default \
+                    --reporters=jest-junit
+            - store_artifacts:
+                path: artifacts/jest-results.json
+                destination: jest-timing/jest-results.json
+            - store_test_results:
+                path: artifacts/test-results
+            - store_artifacts:
+                path: artifacts/test-results
+                destination: test-results
+
+  test-fast:
+    executor: node
+    parameters:
+      require_timing_baseline:
+        type: boolean
+        default: false
+      publish_timing_baseline:
+        type: boolean
+        default: false
+    steps:
+      - install-node-dependencies:
+          save_cache: false
+      - when:
+          condition: << parameters.require_timing_baseline >>
+          steps:
+            - restore_cache:
+                keys:
+                  - jest-timing-master-v1-
+      - run:
+          name: Run Jest and capture timing JSON
+          environment:
+            JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
+            JEST_JUNIT_OUTPUT_DIR: artifacts/test-results
+            JEST_JUNIT_OUTPUT_NAME: jest.xml
+          command: |
+            mkdir -p artifacts/test-results
+            npm run test:fast -- \
+              --json \
+              --outputFile=artifacts/jest-results.json \
+              --reporters=default \
+              --reporters=jest-junit
+      - run:
+          name: Enforce the 20% duration budget or bootstrap the baseline
+          when: always
+          command: |
+            if [[ -f artifacts/jest-results.json ]]; then
+              node ./scripts/check-jest-duration-regression.js --allow-missing-baseline
+            fi
+      - when:
+          condition: << parameters.publish_timing_baseline >>
+          steps:
+            - run:
+                name: Prepare successful master timing baseline
+                command: |
+                  mkdir -p artifacts/baseline
+                  cp artifacts/jest-results.json artifacts/baseline/jest-results.json
+            - save_cache:
+                key: jest-timing-master-v1-{{ epoch }}
+                paths:
+                  - artifacts/baseline/jest-results.json
+      - store_artifacts:
+          path: artifacts/jest-results.json
+          destination: jest-timing/jest-results.json
+      - store_test_results:
+          path: artifacts/test-results
+      - store_artifacts:
+          path: artifacts/test-results
+          destination: test-results
+
+  site-build:
+    executor: node
+    parameters:
+      save_npm_cache:
+        type: boolean
+        default: false
+    steps:
+      - install-node-dependencies:
+          save_cache: << parameters.save_npm_cache >>
+      - run:
+          name: Build site
+          command: npm run docs:build
+      - run:
+          name: Check site
+          command: npm run docs:check
+
+  edge-functions:
+    executor: base
+    environment:
+      DENO_DIR: /home/circleci/.cache/deno
+      DENO_INSTALL: /home/circleci/.deno
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - deno-v1-{{ checksum "deno.lock" }}
+      - run:
+          name: Install Deno 2.7.14
+          command: |
+            curl -fsSL https://deno.land/install.sh | sh -s v2.7.14
+            echo 'export PATH="$DENO_INSTALL/bin:$PATH"' >> "$BASH_ENV"
+            "$DENO_INSTALL/bin/deno" --version
+      - run:
+          name: Check API Edge Function
+          working_directory: supabase/functions
+          command: deno check --frozen api/index.ts
+      - run:
+          name: Test API Edge Function
+          working_directory: supabase/functions
+          command: |
+            mkdir -p ../../artifacts/test-results
+            deno test \
+              --frozen \
+              --allow-env \
+              --junit-path=../../artifacts/test-results/deno.xml \
+              api
+      - save_cache:
+          key: deno-v1-{{ checksum "deno.lock" }}
+          paths:
+            - /home/circleci/.cache/deno
+      - store_test_results:
+          path: artifacts/test-results
+      - store_artifacts:
+          path: artifacts/test-results
+          destination: test-results
+
+  nothing-to-run:
+    executor: base
+    steps:
+      - run:
+          name: Confirm path-only no-op
+          command: echo "No app, site, or Edge Function checks are needed for these paths."
+
+workflows:
+  app:
+    when: << pipeline.parameters.run_app >>
+    jobs:
+      - app-quality:
+          run_changed_tests: << pipeline.parameters.run_changed_tests >>
+          diff_base: << pipeline.parameters.diff_base >>
+          filters:
+            tags:
+              only: /.*/
+
+  full-tests:
+    when:
+      equal:
+        - full
+        - << pipeline.parameters.pipeline_kind >>
+    jobs:
+      - test-fast:
+          require_timing_baseline: << pipeline.parameters.require_timing_baseline >>
+          publish_timing_baseline: << pipeline.parameters.publish_timing_baseline >>
+          filters:
+            tags:
+              only: /.*/
+
+  site:
+    when: << pipeline.parameters.run_site >>
+    jobs:
+      - site-build:
+          save_npm_cache: << pipeline.parameters.save_site_npm_cache >>
+          filters:
+            tags:
+              only: /.*/
+
+  edge:
+    when: << pipeline.parameters.run_edge >>
+    jobs:
+      - edge-functions:
+          filters:
+            tags:
+              only: /.*/
+
+  no-op:
+    when:
+      not:
+        or:
+          - << pipeline.parameters.run_app >>
+          - << pipeline.parameters.run_site >>
+          - << pipeline.parameters.run_edge >>
+    jobs:
+      - nothing-to-run:
+          filters:
+            tags:
+              only: /.*/

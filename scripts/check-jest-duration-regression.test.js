@@ -83,6 +83,32 @@ describe('check-jest-duration-regression', () => {
     expect(logger.error).not.toHaveBeenCalled();
   });
 
+  it('keeps the 20% budget strict when bootstrap is allowed and a baseline exists', () => {
+    const logger = { error: jest.fn(), log: jest.fn(), warn: jest.fn() };
+    const files = {
+      'baseline.json': JSON.stringify(jestResult(1_000, 2_000)),
+      'current.json': JSON.stringify(jestResult(1_000, 2_300)),
+    };
+    const fsImpl = {
+      existsSync: (filePath) => filePath in files,
+      readFileSync: (filePath) => files[filePath],
+    };
+
+    const result = checkJestDurationRegression({
+      allowMissingBaseline: true,
+      baselinePath: 'baseline.json',
+      currentPath: 'current.json',
+      fsImpl,
+      logger,
+    });
+
+    expect(result).toMatchObject({ passed: false, skipped: false });
+    expect(logger.error).toHaveBeenCalledWith(
+      expect.stringContaining('delta=+30.0%')
+    );
+    expect(logger.log).not.toHaveBeenCalled();
+  });
+
   it('reports a regression using injected JSON inputs', () => {
     const logger = { error: jest.fn(), log: jest.fn(), warn: jest.fn() };
     const files = {
