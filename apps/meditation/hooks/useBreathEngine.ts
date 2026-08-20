@@ -71,13 +71,13 @@ export function useBreathEngine({
   const animateRing = useCallback(() => {
     if (reducedMotion) {
       // The gauge takes over; a looping scale is exactly what was asked to stop.
-      scale.value = RING_SCALE_MIN;
+      scale.set(RING_SCALE_MIN);
       return;
     }
 
     const steps = ringKeyframes(pattern);
-    scale.value = RING_SCALE_MIN;
-    scale.value = withRepeat(
+    scale.set(RING_SCALE_MIN);
+    scale.set(withRepeat(
       withSequence(
         ...steps.map((step) =>
           withTiming(step.to, {
@@ -88,7 +88,7 @@ export function useBreathEngine({
       ),
       -1,
       false
-    );
+    ));
   }, [pattern, reducedMotion, scale]);
 
   const start = useCallback(() => {
@@ -110,7 +110,7 @@ export function useBreathEngine({
 
   const reset = useCallback(() => {
     cancelAnimation(scale);
-    scale.value = RING_SCALE_MIN;
+    scale.set(RING_SCALE_MIN);
     startedAtRef.current = null;
     accumulatedRef.current = 0;
     lastPhaseIndexRef.current = null;
@@ -130,11 +130,17 @@ export function useBreathEngine({
     const tick = setInterval(() => {
       const base = accumulatedRef.current;
       const live = startedAtRef.current === null ? 0 : Date.now() - startedAtRef.current;
-      setElapsedMs(Math.min(totalMs, base + live));
+      const nextElapsedMs = Math.min(totalMs, base + live);
+      setElapsedMs(nextElapsedMs);
+
+      if (nextElapsedMs >= totalMs) {
+        cancelAnimation(scale);
+        setRunning(false);
+      }
     }, TICK_MS);
 
     return () => clearInterval(tick);
-  }, [running, totalMs]);
+  }, [running, scale, totalMs]);
 
   // One tick at each phase boundary — the whole point of the haptic is that it
   // marks the transition, so it must never fire twice inside a phase.
@@ -150,12 +156,6 @@ export function useBreathEngine({
       Haptics.selectionAsync().catch(() => {});
     }
   }, [state.phaseIndex, running, hapticsEnabled, reducedMotion]);
-
-  useEffect(() => {
-    if (!finished || !running) return;
-    cancelAnimation(scale);
-    setRunning(false);
-  }, [finished, running, scale]);
 
   useEffect(() => () => cancelAnimation(scale), [scale]);
 
