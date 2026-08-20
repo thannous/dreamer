@@ -35,6 +35,7 @@ export default function GoalsStep() {
       {PRACTICE_GOALS.map((goal) => (
         <SelectableCard
           key={goal}
+          testID={goal === 'sleep' ? TID.Option.GoalSleep : undefined}
           label={t(`onboarding.goals.${goal}` as TranslationKey)}
           selected={state.goals.includes(goal)}
           onPress={() => toggle(goal)}

@@ -29,6 +29,7 @@ function CategoryTile({ category }: { category: Category }) {
 
   return (
     <AnimatedPressable
+      testID={category.slug === 'dream-prep' ? TID.Option.CategoryDreamPrep : undefined}
       accessibilityRole="button"
       onPress={() => router.push(`/category/${category.slug}`)}
       onPressIn={handlePressIn}
@@ -136,7 +137,15 @@ export default function SearchTab() {
               </Text>
             </View>
           ) : (
-            results.map((session) => <SessionCard key={session.id} session={session} />)
+            results.map((session) => (
+              <SessionCard
+                key={session.id}
+                session={session}
+                testID={
+                  session.id === 'sleep-descent' ? TID.Option.SearchSleepDescent : undefined
+                }
+              />
+            ))
           )}
         </View>
       </ScrollView>

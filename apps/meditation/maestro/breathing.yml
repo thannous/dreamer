@@ -10,7 +10,7 @@ appId: com.noctalia.meditation
 
 # First card: the calming rhythm, 4 in / 6 out. Free, so no paywall here.
 - tapOn:
-    point: '50%,30%'
+    id: 'option.breathe.calm'
 - assertVisible:
     id: 'screen.breathe.exercise'
 - assertVisible:
@@ -29,6 +29,7 @@ appId: com.noctalia.meditation
 # Pause, then leave: the exercise must not keep running behind the tab bar.
 - tapOn:
     id: 'btn.breathe.start'
-- back
+- tapOn:
+    id: 'btn.breathe.close'
 - assertVisible:
     id: 'screen.breathe'

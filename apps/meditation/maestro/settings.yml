@@ -10,10 +10,10 @@ appId: com.noctalia.meditation
 
 - scrollUntilVisible:
     element:
-      text: '.*'
+      id: 'btn.profile.settings'
     direction: DOWN
 - tapOn:
-    point: '50%,80%'
+    id: 'btn.profile.settings'
 - assertVisible:
     id: 'screen.settings'
 

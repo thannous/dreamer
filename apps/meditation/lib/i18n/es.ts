@@ -8,7 +8,7 @@ export const es: Record<keyof typeof en, string> = {
   'common.step': 'Paso {current} de {total}',
 
   'welcome.tagline': 'Noctalia Meditation',
-  'welcome.title': 'La calma antes\nde la noche',
+  'welcome.title': 'La calma\nantes de la noche',
   'welcome.subtitle':
     'Sesiones guiadas y respiración para frenar el día y preparar tu sueño.',
   'welcome.cta': 'Empezar',
@@ -20,7 +20,7 @@ export const es: Record<keyof typeof en, string> = {
   'onboarding.goals.stress': 'Aliviar el estrés',
   'onboarding.goals.focus': 'Recuperar la concentración',
   'onboarding.goals.anxiety': 'Calmar la ansiedad',
-  'onboarding.goals.gratitude': 'Cultivar la gratitud',
+  'onboarding.goals.gratitude': 'Practicar la gratitud',
   'onboarding.goals.dream-prep': 'Preparar mis sueños',
 
   'onboarding.experience.title': '¿Desde dónde partes?',
@@ -47,7 +47,7 @@ export const es: Record<keyof typeof en, string> = {
   'onboarding.reminder.hour': 'A las {time}',
   'onboarding.reminder.done': 'Terminar',
 
-  'auth.title': 'Qué bien verte otra vez',
+  'auth.title': 'Otra vez por aquí',
   'auth.subtitle': 'Inicia sesión para recuperar tus sesiones y tu racha.',
   'auth.apple': 'Continuar con Apple',
   'auth.google': 'Continuar con Google',
@@ -74,11 +74,12 @@ export const es: Record<keyof typeof en, string> = {
   'home.today.label': 'La práctica de hoy',
   'home.resume.title': 'Retomar',
   'home.resume.left': 'Quedan {count} min',
+  'home.resume.left.one': 'Queda 1 min',
   'home.quick.title': 'Si solo tienes un momento',
   'home.tonight.title': 'Para esta noche',
   'home.tonight.subtitle': 'Sesiones que llevan al sueño.',
   'home.breathe.title': 'O simplemente respirar',
-  'home.breathe.subtitle': 'Cuatro ritmos, de uno a veinte minutos.',
+  'home.breathe.subtitle': 'Cuatro ritmos, de uno a diez minutos.',
 
   'search.title': 'Buscar',
   'search.placeholder': 'Una palabra, una sensación, una duración…',
@@ -98,10 +99,11 @@ export const es: Record<keyof typeof en, string> = {
   'session.resume': 'Retomar',
   'session.replay': 'Practicar de nuevo',
   'session.completed': 'Practicada {count} veces',
+  'session.completed.one': 'Practicada una vez',
   'session.favorite.add': 'Guardar',
   'session.favorite.remove': 'Guardada',
   'session.premium.title': 'Incluida en Noctalia Plus',
-  'session.premium.cta': 'Descubrir Noctalia Plus',
+  'session.premium.cta': 'Ver Noctalia Plus',
 
   'category.count': '{count} sesiones',
 
@@ -124,13 +126,13 @@ export const es: Record<keyof typeof en, string> = {
   'player.timer.remaining': 'Se apaga en {time}',
   'player.unavailable.title': 'Aún no disponible sin conexión',
   'player.unavailable.subtitle':
-    'Esta sesión se transmite desde la biblioteca. Conéctate una vez y sonará.',
+    'Esta sesión se transmite desde el catálogo. Conéctate a internet una vez y sonará.',
   'player.scrub': 'Posición de reproducción',
   'player.reveal': 'Mostrar los controles',
   'drawer.open': 'Abrir el menú',
   'onboarding.reminder.at': 'Hora del recordatorio',
 
-  'mini.playing': 'Sonando',
+  'mini.playing': 'Abrir el reproductor',
 
   'complete.title': 'Ya está',
   'complete.minutes': '{count} minutos de práctica',
@@ -153,7 +155,7 @@ export const es: Record<keyof typeof en, string> = {
   'breathe.phase.inhale': 'Inspira',
   'breathe.phase.hold': 'Retén',
   'breathe.phase.exhale': 'Espira',
-  'breathe.phase.rest': 'Pausa',
+  'breathe.phase.rest': 'Descansa',
   'breathe.start': 'Empezar',
   'breathe.pause': 'Pausa',
   'breathe.resume': 'Retomar',
@@ -163,13 +165,13 @@ export const es: Record<keyof typeof en, string> = {
   'breathe.complete.title': 'La respiración se ha asentado',
 
   'profile.title': 'Tu práctica',
-  'profile.streak.current': 'Días seguidos',
+  'profile.streak.current': 'Racha actual',
   'profile.streak.longest': 'Récord',
   'profile.stats.sessions': 'Prácticas',
   'profile.stats.minutes': 'Minutos',
   'profile.calendar.title': 'Estas cinco semanas',
   'profile.empty.title': 'Nada registrado todavía',
-  'profile.empty.subtitle': 'Una sesión o un ejercicio de respiración inicia la cuenta.',
+  'profile.empty.subtitle': 'Una sesión o un ejercicio de respiración arranca el contador.',
   'profile.empty.cta': 'Encontrar una sesión',
   'profile.favorites': 'Sesiones guardadas',
   'profile.settings': 'Ajustes',
@@ -210,7 +212,7 @@ export const es: Record<keyof typeof en, string> = {
   'account.reset': 'Borrar mis datos',
   'account.reset.confirm': '¿Borrarlo todo?',
   'account.reset.body':
-    'Tu registro de práctica, tus sesiones guardadas y tus ajustes se eliminan de este dispositivo. No se puede deshacer.',
+    'Tu registro de práctica, tus sesiones guardadas y tus ajustes se eliminarán de este dispositivo. No se puede deshacer.',
   'account.reset.cancel': 'Cancelar',
   'account.reset.confirmed': 'Borrar',
 
@@ -234,10 +236,10 @@ export const es: Record<keyof typeof en, string> = {
   'reminders.hour': 'Hora',
   'reminders.days': 'Días',
   'reminders.days.every': 'Todos los días',
-  'reminders.next': 'Próximo recordatorio {when}',
+  'reminders.next': 'Próximo recordatorio: {when}',
   'reminders.denied':
-    'Las notificaciones están desactivadas para esta app. Actívalas en los ajustes del sistema.',
-  'reminders.notification.title': 'Un momento para ti',
+    'Las notificaciones están desactivadas para esta app. Actívalas en los ajustes de tu dispositivo.',
+  'reminders.notification.title': 'Es la hora',
   'reminders.notification.body': 'Unos minutos de práctica antes de la noche.',
 
   'help.title': 'Ayuda',
@@ -245,7 +247,7 @@ export const es: Record<keyof typeof en, string> = {
   'help.a1': 'No. Todo se guarda en tu dispositivo y no se envía a ninguna parte.',
   'help.q2': '¿Por qué algunas sesiones no suenan?',
   'help.a2':
-    'Se transmiten desde la biblioteca. Conéctate una vez y sonarán, y luego quedan disponibles.',
+    'Se transmiten desde el catálogo. Conéctate a internet una vez y sonarán, y luego quedan disponibles.',
   'help.q3': '¿Sigue sonando con la pantalla bloqueada?',
   'help.a3': 'Sí. Una sesión que se parase al bloquear la pantalla no serviría de nada.',
   'help.q4': '¿Cómo funciona la racha?',
@@ -265,12 +267,12 @@ export const es: Record<keyof typeof en, string> = {
     'Nada. No hay cuenta, ni analítica, ni servidor que guarde tu práctica.',
 
   'paywall.title': 'Noctalia Plus',
-  'paywall.subtitle': 'Toda la biblioteca, todos los ritmos, sin límite.',
+  'paywall.subtitle': 'Todo el catálogo, todos los ritmos, sin límite.',
   'paywall.reason.premium-session': 'Esta sesión forma parte de Noctalia Plus.',
   'paywall.reason.monthly-quota': 'Has usado tus tres sesiones gratuitas del mes.',
   'paywall.reason.premium-pattern': 'Este ritmo de respiración forma parte de Noctalia Plus.',
   'paywall.reason.premium-timer': 'Los temporizadores más largos forman parte de Noctalia Plus.',
-  'paywall.benefit.1': 'Las 24 sesiones, incluida la preparación al sueño',
+  'paywall.benefit.1': 'Las 24 sesiones, incluida la preparación para soñar',
   'paywall.benefit.2': 'Todos los ritmos de respiración',
   'paywall.benefit.3': 'Sin límite mensual',
   'paywall.benefit.4': 'Temporizadores de hasta treinta minutos',
@@ -287,6 +289,7 @@ export const es: Record<keyof typeof en, string> = {
   'paywall.active.body': 'Todo está desbloqueado. Gracias.',
   'paywall.error': 'La compra no se ha completado. No se ha cobrado nada.',
   'paywall.remaining': 'Te quedan {count} sesiones gratuitas este mes',
+  'paywall.remaining.one': 'Te queda 1 sesión gratuita este mes',
   'paywall.remaining.none': 'No queda ninguna sesión gratuita este mes',
   'profile.calendar.summary': "Practicado {practised} de los últimos {total} días",
   'search.results.zero': "Ninguna sesión",

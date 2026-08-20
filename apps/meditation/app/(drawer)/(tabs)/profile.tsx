@@ -101,6 +101,7 @@ export default function ProfileTab() {
               onPress={() => router.push('/favorites')}
             />
             <Button
+              testID={TID.Button.ProfileSettings}
               label={t('profile.settings')}
               variant="ghost"
               onPress={() => router.push('/settings')}

@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -53,7 +53,9 @@ export function OnboardingScreen({
 }: Props) {
   const router = useRouter();
   const { t } = useTranslation();
+  const { fontScale } = useWindowDimensions();
   const backPress = useSharedValue(0);
+  const largeText = fontScale >= 1.5;
 
   /**
    * The back link is the only control in this frame that is neither a Button
@@ -73,6 +75,20 @@ export function OnboardingScreen({
   const handleBackPressOut = () => {
     backPress.set(withTiming(0, { duration: Duration.fast, easing: Curve.standard }));
   };
+
+  const footer = (
+    <View className="gap-3 px-gutter pb-4 pt-2">
+      <Button
+        testID={TID.Button.OnboardingContinue}
+        label={ctaLabel}
+        onPress={onContinue}
+        disabled={!canContinue}
+      />
+      {onSkip ? (
+        <Button label={skipLabel ?? t('common.skip')} variant="ghost" onPress={onSkip} />
+      ) : null}
+    </View>
+  );
 
   return (
     <Screen variant="subtle">
@@ -114,19 +130,14 @@ export function OnboardingScreen({
           </View>
 
           <View className="gap-3">{children}</View>
+
+          {/* A pinned action steals too much of a small screen once Dynamic
+              Type reaches the accessibility sizes. Put it after the choices
+              instead: every card can then be read in full before continuing. */}
+          {largeText ? footer : null}
         </ScrollView>
 
-        <View className="gap-3 px-gutter pb-4 pt-2">
-          <Button
-            testID={TID.Button.OnboardingContinue}
-            label={ctaLabel}
-            onPress={onContinue}
-            disabled={!canContinue}
-          />
-          {onSkip ? (
-            <Button label={skipLabel ?? t('common.skip')} variant="ghost" onPress={onSkip} />
-          ) : null}
-        </View>
+        {largeText ? null : footer}
       </View>
     </Screen>
   );

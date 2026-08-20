@@ -61,7 +61,9 @@ export default function HomeTab() {
             <Rule className="self-start" />
             <SessionCard session={resume.session} />
             <Text variant="caption">
-              {t('home.resume.left', { count: toMinutes(resume.remainingSec) })}
+              {toMinutes(resume.remainingSec) === 1
+                ? t('home.resume.left.one')
+                : t('home.resume.left', { count: toMinutes(resume.remainingSec) })}
             </Text>
           </View>
         ) : null}

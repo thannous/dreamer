@@ -20,7 +20,7 @@ appId: com.noctalia.meditation
     id: 'btn.onboarding.continue'
     enabled: false
 - tapOn:
-    point: '50%,38%'
+    id: 'option.onboarding.goal.sleep'
 - tapOn:
     id: 'btn.onboarding.continue'
 
@@ -28,7 +28,7 @@ appId: com.noctalia.meditation
 - assertVisible:
     id: 'screen.onboarding.experience'
 - tapOn:
-    point: '50%,32%'
+    id: 'option.onboarding.experience.beginner'
 - tapOn:
     id: 'btn.onboarding.continue'
 
@@ -36,7 +36,7 @@ appId: com.noctalia.meditation
 - assertVisible:
     id: 'screen.onboarding.intention'
 - tapOn:
-    point: '50%,32%'
+    id: 'option.onboarding.intention.5'
 - tapOn:
     id: 'btn.onboarding.continue'
 
