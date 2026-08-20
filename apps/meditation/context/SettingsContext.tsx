@@ -22,9 +22,12 @@ const INITIAL_PROFILE: LocalProfile = { displayName: '', avatarUri: null };
 type SettingsContextValue = {
   profile: LocalProfile;
   reminders: ReminderSchedule;
+  /** Video backgrounds on the immersive screens. On by default. */
+  videoBackgrounds: boolean;
   loaded: boolean;
   setProfile: (patch: Partial<LocalProfile>) => Promise<void>;
   setReminders: (patch: Partial<ReminderSchedule>) => Promise<void>;
+  setVideoBackgrounds: (enabled: boolean) => Promise<void>;
 };
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
@@ -32,6 +35,7 @@ const SettingsContext = createContext<SettingsContextValue | null>(null);
 export const SettingsProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [profile, setProfileState] = useState<LocalProfile>(INITIAL_PROFILE);
   const [reminders, setRemindersState] = useState<ReminderSchedule>(DEFAULT_SCHEDULE);
+  const [videoBackgrounds, setVideoBackgroundsState] = useState(true);
   const [loaded, setLoaded] = useState(false);
 
   // Same synchronous mirror as the other providers: two edits in one tick must
@@ -45,9 +49,11 @@ export const SettingsProvider: React.FC<React.PropsWithChildren> = ({ children }
     Promise.all([
       readJson<LocalProfile>(StorageKey.profile, INITIAL_PROFILE),
       readJson<ReminderSchedule>(StorageKey.reminders, DEFAULT_SCHEDULE),
+      readJson<boolean>(StorageKey.playerPrefs, true),
     ])
-      .then(([storedProfile, storedReminders]) => {
+      .then(([storedProfile, storedReminders, storedVideo]) => {
         if (!mounted) return;
+        setVideoBackgroundsState(storedVideo !== false);
         const mergedProfile = { ...INITIAL_PROFILE, ...storedProfile };
         const mergedReminders = { ...DEFAULT_SCHEDULE, ...storedReminders };
         profileRef.current = mergedProfile;
@@ -78,9 +84,22 @@ export const SettingsProvider: React.FC<React.PropsWithChildren> = ({ children }
     await writeJson(StorageKey.reminders, next);
   }, []);
 
+  const setVideoBackgrounds = useCallback(async (enabled: boolean) => {
+    setVideoBackgroundsState(enabled);
+    await writeJson(StorageKey.playerPrefs, enabled);
+  }, []);
+
   const value = useMemo(
-    () => ({ profile, reminders, loaded, setProfile, setReminders }),
-    [profile, reminders, loaded, setProfile, setReminders]
+    () => ({
+      profile,
+      reminders,
+      videoBackgrounds,
+      loaded,
+      setProfile,
+      setReminders,
+      setVideoBackgrounds,
+    }),
+    [profile, reminders, videoBackgrounds, loaded, setProfile, setReminders, setVideoBackgrounds]
   );
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
@@ -93,9 +112,11 @@ export const useSettings = (): SettingsContextValue => {
     ctx ?? {
       profile: INITIAL_PROFILE,
       reminders: DEFAULT_SCHEDULE,
+      videoBackgrounds: true,
       loaded: false,
       setProfile: async () => {},
       setReminders: async () => {},
+      setVideoBackgrounds: async () => {},
     }
   );
 };

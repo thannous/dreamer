@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import Animated, { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { GlassCard } from '@/components/inspiration/GlassCard';
+import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -27,6 +29,37 @@ import {
   getSleepSoundPreferences,
   saveSleepSoundPreferences,
 } from '@/services/sleepSoundPreferences';
+
+/**
+ * Selected state on this screen is carried entirely by colour, so colour crosses over
+ * rather than repainting. The chips and cards are 44pt+ already and sit 5–10pt apart,
+ * which is why every one of them opts out of the default hit slop: overlapping slop in a
+ * radio group makes the gap between two options ambiguous.
+ */
+const SELECTION_TRANSITION = ['backgroundColor', 'borderColor'] as const;
+
+/**
+ * The hero icon breathes while audio plays.
+ *
+ * Purpose: state indication. Everything else on this screen looks identical playing or
+ * paused — the countdown is 15pt of text — and the sound itself is the kind of thing a
+ * user starts and then stops trusting they actually started. A 4 s cycle at 6 % scale is
+ * slower and shallower than anything else in the app on purpose: this screen's job is to
+ * put someone to sleep, so the motion has to be at the edge of noticeable.
+ *
+ * It runs as a Reanimated CSS animation — declared once, run on the UI thread, and gone
+ * the moment `playing` is false, so a paused player never breathes.
+ */
+const BREATHING = {
+  animationName: {
+    from: { transform: [{ scale: 1 }], opacity: 0.85 },
+    to: { transform: [{ scale: 1.06 }], opacity: 1 },
+  },
+  animationDuration: 4000,
+  animationIterationCount: 'infinite',
+  animationDirection: 'alternate',
+  animationTimingFunction: 'ease-in-out',
+} as const;
 
 function formatRemainingTime(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60);
@@ -110,6 +143,7 @@ export function SleepSoundsScreen() {
     void player.play();
   }, [player]);
 
+  const reducedMotion = useReducedMotion();
   const backButtonTop = insets.top + ThemeLayout.spacing.sm;
   const contentPaddingTop = backButtonTop + 44 + ThemeLayout.spacing.md;
   const isPreparing =
@@ -154,13 +188,19 @@ export function SleepSoundsScreen() {
         >
           <View style={styles.content}>
             <View style={styles.titleSection}>
-              <View style={[styles.heroIcon, { backgroundColor: noctalia.surface.soft }]}>
+              <Animated.View
+                style={[
+                  styles.heroIcon,
+                  { backgroundColor: noctalia.surface.soft },
+                  player.isPlaying && !reducedMotion ? BREATHING : null,
+                ]}
+              >
                 <IconSymbol
                   name="speaker.wave.2.fill"
                   size={30}
                   color={noctalia.accent.text}
                 />
-              </View>
+              </Animated.View>
               <Text style={[styles.title, { color: noctalia.text.primary }]}>
                 {copy.screenTitle}
               </Text>
@@ -178,14 +218,17 @@ export function SleepSoundsScreen() {
                   const selected = candidate.id === soundId;
                   const candidateCopy = copy.sounds[candidate.id];
                   return (
-                    <Pressable
+                    <PressableScale
                       key={candidate.id}
                       onPress={() => handleSelectSound(candidate.id)}
                       disabled={player.isPlaying}
+                      haptic={player.isPlaying ? 'none' : 'selection'}
+                      hitSlop={0}
+                      transitionProperties={SELECTION_TRANSITION}
                       testID={`sleep-sound-${candidate.id}`}
                       accessibilityRole="radio"
                       accessibilityState={{ checked: selected, disabled: player.isPlaying }}
-                      style={({ pressed }) => [
+                      style={[
                         styles.soundCard,
                         {
                           backgroundColor: selected
@@ -194,7 +237,6 @@ export function SleepSoundsScreen() {
                           borderColor: selected
                             ? noctalia.accent.base
                             : noctalia.surface.border,
-                          opacity: pressed ? 0.82 : 1,
                         },
                       ]}
                     >
@@ -227,7 +269,7 @@ export function SleepSoundsScreen() {
                           color={noctalia.accent.text}
                         />
                       ) : null}
-                    </Pressable>
+                    </PressableScale>
                   );
                 })}
               </View>
@@ -246,16 +288,23 @@ export function SleepSoundsScreen() {
                 {SLEEP_SOUND_TIMER_OPTIONS.map((minutes) => {
                   const selected = durationMinutes === minutes;
                   return (
-                    <Pressable
+                    <PressableScale
                       key={minutes}
                       onPress={() => handleSelectDuration(minutes)}
                       disabled={player.isPlaying}
+                      haptic={player.isPlaying ? 'none' : 'selection'}
+                      hitSlop={0}
+                      transitionProperties={SELECTION_TRANSITION}
                       testID={`sleep-duration-${minutes}`}
                       accessibilityRole="radio"
                       accessibilityState={{ checked: selected, disabled: player.isPlaying }}
                       style={[
                         styles.timerOption,
-                        selected && { backgroundColor: noctalia.accent.base },
+                        {
+                          // Declared on both branches so the transition has a value to
+                          // cross from; `undefined` would make it snap.
+                          backgroundColor: selected ? noctalia.accent.base : 'transparent',
+                        },
                       ]}
                     >
                       <Text
@@ -270,7 +319,7 @@ export function SleepSoundsScreen() {
                       >
                         {minutes} {copy.minutes}
                       </Text>
-                    </Pressable>
+                    </PressableScale>
                   );
                 })}
               </View>
@@ -286,13 +335,18 @@ export function SleepSoundsScreen() {
               >
                 {formatRemainingTime(player.remainingSeconds)}
               </Text>
-              <Pressable
+              <PressableScale
                 onPress={handleTogglePlayback}
                 disabled={isPreparing}
+                // Starting or stopping the sound is a commit, and on this screen it is
+                // the one action whose result the user may not hear for a second.
+                haptic={isPreparing ? 'none' : 'light'}
+                hitSlop={0}
+                transitionProperties={SELECTION_TRANSITION}
                 testID="sleep-playback-toggle"
                 accessibilityRole="button"
                 accessibilityLabel={primaryLabel}
-                style={({ pressed }) => [
+                style={[
                   styles.primaryButton,
                   {
                     backgroundColor: isPreparing
@@ -301,7 +355,6 @@ export function SleepSoundsScreen() {
                     borderColor: isPreparing
                       ? noctalia.action.disabledBorder
                       : noctalia.action.primaryBorder,
-                    opacity: pressed ? 0.85 : 1,
                   },
                 ]}
               >
@@ -324,7 +377,7 @@ export function SleepSoundsScreen() {
                 >
                   {primaryLabel}
                 </Text>
-              </Pressable>
+              </PressableScale>
 
               {player.error ? (
                 <Text style={[styles.errorText, { color: noctalia.status.danger.text }]}>

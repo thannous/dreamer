@@ -6,6 +6,7 @@
  * decisions (why 120 ms, why a spring here and a curve there) in one reviewable place.
  */
 export { PressableScale, type PressableScaleProps, type PressableScaleHaptic } from './PressableScale';
+export { ProgressFill, type ProgressFillProps } from './ProgressFill';
 export { Reveal, type RevealProps } from './Reveal';
 export {
   DURATION,

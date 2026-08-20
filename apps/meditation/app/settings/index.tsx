@@ -17,7 +17,7 @@ export default function SettingsScreen() {
   const router = useRouter();
   const { t, language } = useTranslation();
   const { preference, setPreference } = useTheme();
-  const { reminders } = useSettings();
+  const { reminders, videoBackgrounds, setVideoBackgrounds } = useSettings();
 
   const version = Constants.expoConfig?.version ?? '—';
 
@@ -64,6 +64,12 @@ export default function SettingsScreen() {
             value={t(`settings.theme.${preference}` as TranslationKey)}
             inline
             onPress={cycleTheme}
+          />
+          <SettingsRow
+            label={t('settings.video')}
+            value={videoBackgrounds ? t('settings.video.on') : t('settings.video.off')}
+            inline
+            onPress={() => setVideoBackgrounds(!videoBackgrounds)}
           />
           <SettingsRow
             testID={TID.Button.SettingsLanguage}

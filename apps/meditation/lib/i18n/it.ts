@@ -285,4 +285,7 @@ export const it: Record<keyof typeof en, string> = {
   'paywall.remaining.none': 'Nessuna sessione gratuita rimasta questo mese',
   'profile.calendar.summary': "Praticato {practised} degli ultimi {total} giorni",
   'search.results.zero': "Nessuna sessione",
+  'settings.video': "Sfondi animati",
+  'settings.video.on': "Attivi",
+  'settings.video.off': "Disattivati",
 };

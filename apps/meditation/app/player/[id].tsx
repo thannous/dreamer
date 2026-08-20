@@ -72,7 +72,8 @@ export default function PlayerScreen() {
   }
 
   return (
-    <Screen variant="immersive">
+    // Dimmer than elsewhere: the artwork is the subject on this screen.
+    <Screen variant="immersive" video="player" videoOpacity={0.4}>
       <View testID={TID.Screen.Player} className="flex-1">
         <ProgressiveSilence active={playing} className="px-gutter pt-2">
           <BackLink

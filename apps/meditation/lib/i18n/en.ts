@@ -252,4 +252,7 @@ export const en = {
   "paywall.remaining.none": "No free session left this month",
   'profile.calendar.summary': "Practised on {practised} of the last {total} days",
   'search.results.zero': "No session",
+  'settings.video': "Video backgrounds",
+  'settings.video.on': "On",
+  'settings.video.off': "Off",
 } as const;

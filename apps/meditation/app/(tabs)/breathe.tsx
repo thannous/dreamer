@@ -60,7 +60,7 @@ export default function BreatheTab() {
   const { t } = useTranslation();
 
   return (
-    <Screen variant="subtle" edges={['top']}>
+    <Screen variant="subtle" edges={['top']} video="breathe" videoOpacity={0.35}>
       <ScrollView
         testID={TID.Screen.Breathe}
         contentContainerClassName="px-gutter pb-24 pt-4 gap-6"

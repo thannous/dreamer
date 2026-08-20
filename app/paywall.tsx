@@ -4,6 +4,7 @@ import { ActivityIndicator, Linking, Pressable, ScrollView, StyleSheet, Text, Vi
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { PressableScale, Reveal } from '@/components/motion';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { Toast } from '@/components/Toast';
 import { PricingOption } from '@/components/subscription/PricingOption';
@@ -33,6 +34,12 @@ import { TID } from '@/lib/testIDs';
 
 const log = createScopedLogger('[Paywall]');
 const PAYWALL_MAX_WIDTH = 720;
+
+/**
+ * The purchase button changes colour when the selection makes it purchasable. Crossing
+ * that over — rather than repainting it — is the visual answer to picking a plan.
+ */
+const CTA_TRANSITION = ['backgroundColor', 'borderColor'] as const;
 
 export default function PaywallScreen() {
   const { colors, mode } = useTheme();
@@ -399,23 +406,23 @@ export default function PaywallScreen() {
                 {translateWithFallback(paywallVariant.cardSubtitleKey)}
               </Text>
 
-              <Pressable
-                style={({ pressed }) => [
+              <PressableScale
+                style={[
                   styles.primaryButton,
                   {
                     backgroundColor: noctalia.action.primary,
                     borderColor: noctalia.action.primaryBorder,
                   },
-                  pressed && styles.primaryButtonPressed,
                 ]}
                 onPress={handleOpenAuth}
+                hitSlop={0}
                 accessibilityRole="button"
                 testID={TID.Button.PaywallPurchase}
               >
                 <Text style={[styles.primaryLabel, { color: noctalia.action.primaryText }]}>
                   {translateWithFallback(paywallVariant.primaryLabelKey)}
                 </Text>
-              </Pressable>
+              </PressableScale>
 
               <Pressable
                 style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
@@ -465,29 +472,34 @@ export default function PaywallScreen() {
             </Pressable>
           </View>
 
-          {!isActive ? (
-            <View style={styles.kickerRow}>
-              <IconSymbol name="sparkles" size={13} color={noctalia.accent.text} />
-              <Text style={[styles.kickerText, { color: noctalia.accent.text }]}>
-                {translateWithFallback(paywallVariant.chipKey)}
+          {/* The paywall is a rare screen and a pitch: the offer arrives a beat before the
+              price, and the price a beat before the button. This is the one surface where
+              a staggered entrance is the point rather than decoration. */}
+          <Reveal index={0}>
+            {!isActive ? (
+              <View style={styles.kickerRow}>
+                <IconSymbol name="sparkles" size={13} color={noctalia.accent.text} />
+                <Text style={[styles.kickerText, { color: noctalia.accent.text }]}>
+                  {translateWithFallback(paywallVariant.chipKey)}
+                </Text>
+                <IconSymbol name="sparkles" size={13} color={noctalia.accent.text} />
+              </View>
+            ) : null}
+
+            <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>{headerTitle}</Text>
+            <Text style={[styles.headerSubtitle, { color: noctalia.text.secondary }]}>{headerSubtitle}</Text>
+
+            {isActive && formattedExpiryDate ? (
+              <Text style={[styles.expiryDate, { color: noctalia.text.secondary }]}>
+                {t('subscription.paywall.expiry_date', { date: formattedExpiryDate })}
+                {subscriptionStatus?.willRenew !== undefined
+                  ? subscriptionStatus.willRenew
+                    ? ` · ${t('subscription.paywall.auto_renew.on')}`
+                    : ` · ${t('subscription.paywall.auto_renew.off')}`
+                  : ''}
               </Text>
-              <IconSymbol name="sparkles" size={13} color={noctalia.accent.text} />
-            </View>
-          ) : null}
-
-          <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>{headerTitle}</Text>
-          <Text style={[styles.headerSubtitle, { color: noctalia.text.secondary }]}>{headerSubtitle}</Text>
-
-          {isActive && formattedExpiryDate ? (
-            <Text style={[styles.expiryDate, { color: noctalia.text.secondary }]}>
-              {t('subscription.paywall.expiry_date', { date: formattedExpiryDate })}
-              {subscriptionStatus?.willRenew !== undefined
-                ? subscriptionStatus.willRenew
-                  ? ` · ${t('subscription.paywall.auto_renew.on')}`
-                  : ` · ${t('subscription.paywall.auto_renew.off')}`
-                : ''}
-            </Text>
-          ) : null}
+            ) : null}
+          </Reveal>
 
           {loading ? (
             <View style={styles.loadingRow}>
@@ -498,6 +510,7 @@ export default function PaywallScreen() {
             </View>
           ) : null}
 
+          <Reveal index={1}>
           {!isActive ? (
             <View
               style={[
@@ -601,9 +614,10 @@ export default function PaywallScreen() {
               ))}
             </View>
           )}
+          </Reveal>
 
           {!isActive ? (
-            <View style={styles.pricingGrid}>
+            <Reveal index={2} style={styles.pricingGrid}>
               {packageOptions.map((pkg) => (
                 <PricingOption
                   key={pkg.id}
@@ -628,7 +642,7 @@ export default function PaywallScreen() {
                   style={styles.pricingOption}
                 />
               ))}
-            </View>
+            </Reveal>
           ) : null}
 
           {!loading && !requiresAuth && !isActive && sortedPackages.length === 0 ? (
@@ -637,10 +651,10 @@ export default function PaywallScreen() {
             </Text>
           ) : null}
 
-          <View style={styles.actions}>
+          <Reveal index={3} style={styles.actions}>
             {!isActive ? (
-              <Pressable
-                style={({ pressed }) => [
+              <PressableScale
+                style={[
                   styles.primaryButton,
                   {
                     backgroundColor: requiresAuth
@@ -652,10 +666,13 @@ export default function PaywallScreen() {
                       ? noctalia.action.primaryBorder
                       : noctalia.action.disabledBorder,
                   },
-                  !requiresAuth && pressed && canPurchase && styles.primaryButtonPressed,
                 ]}
+                transitionProperties={CTA_TRANSITION}
                 disabled={requiresAuth ? processing || loading : !canPurchase}
                 onPress={requiresAuth ? handleOpenAuth : handlePurchase}
+                // The button spans the screen and already clears 44pt; extra slop would
+                // only reach into the footnote above it.
+                hitSlop={0}
                 accessibilityRole="button"
                 testID={TID.Button.PaywallPurchase}
               >
@@ -680,7 +697,7 @@ export default function PaywallScreen() {
                         : translateWithFallback(paywallVariant.primaryLabelKey)}
                   </Text>
                 )}
-              </Pressable>
+              </PressableScale>
             ) : null}
 
             {!isActive && !requiresAuth && selectedTrialDays && selectedPackage ? (
@@ -721,8 +738,9 @@ export default function PaywallScreen() {
                 </Text>
               </Pressable>
             ) : null}
-          </View>
+          </Reveal>
 
+          <Reveal index={4}>
           {!requiresAuth ? (
             <Text style={[styles.notice, { color: noctalia.text.secondary }]}>
               {t('subscription.paywall.notice.store')}
@@ -752,6 +770,7 @@ export default function PaywallScreen() {
               </Text>
             </Pressable>
           </View>
+          </Reveal>
         </ScreenContainer>
       </ScrollView>
 
@@ -1028,9 +1047,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-  },
-  primaryButtonPressed: {
-    opacity: 0.9,
   },
   trialFootnote: {
     marginTop: 8,
