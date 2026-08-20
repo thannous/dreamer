@@ -4,6 +4,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import {
+  LUCID_TAB_BAR_INSET,
   LucidButton,
   LucidCard,
   LucidMetric,
@@ -42,7 +43,7 @@ export default function LucidTodayScreen() {
   const coaching = copy[week.coaching.action];
 
   return (
-    <LucidScreen testID="lucid-today" eyebrow={copy.eyebrow} title={copy.greeting} status={<LucidPill label={syncStatus === 'synced' ? copy.synced : copy.local} tone={syncStatus === 'synced' ? 'accent' : 'neutral'} icon={syncStatus === 'synced' ? 'cloud-done' : 'phone-portrait'} />}>
+    <LucidScreen testID="lucid-today" bottomInset={LUCID_TAB_BAR_INSET} eyebrow={copy.eyebrow} title={copy.greeting} status={<LucidPill label={syncStatus === 'synced' ? copy.synced : copy.local} tone={syncStatus === 'synced' ? 'accent' : 'neutral'} icon={syncStatus === 'synced' ? 'cloud-done' : 'phone-portrait'} />}>
       <LucidSectionHeader title={copy.daily} />
       {active && program ? (
         <LucidCard accent="accent">

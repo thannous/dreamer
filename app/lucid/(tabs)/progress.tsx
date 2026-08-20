@@ -3,7 +3,15 @@ import { router } from 'expo-router';
 import React, { useMemo } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 
-import { LucidButton, LucidCard, LucidMetric, LucidPill, LucidScreen, LucidSectionHeader } from '@/components/lucid/LucidUI';
+import {
+  LUCID_TAB_BAR_INSET,
+  LucidButton,
+  LucidCard,
+  LucidMetric,
+  LucidPill,
+  LucidScreen,
+  LucidSectionHeader,
+} from '@/components/lucid/LucidUI';
 import { getLucidPalette } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -27,7 +35,7 @@ export default function LucidProgressScreen() {
   const maxAttempts = Math.max(1, ...review.comparison.methods.map((method) => method.attempts));
   const confirmDelete = (id: string) => Alert.alert(copy.delete, undefined, [{ text: copy.cancel, style: 'cancel' }, { text: copy.confirm, style: 'destructive', onPress: () => void deleteExperiment(id) }]);
   return (
-    <LucidScreen testID="lucid-progress" eyebrow={copy.eyebrow} title={copy.title} subtitle={copy.subtitle}>
+    <LucidScreen bottomInset={LUCID_TAB_BAR_INSET} testID="lucid-progress" eyebrow={copy.eyebrow} title={copy.title} subtitle={copy.subtitle}>
       <LucidSectionHeader title={copy.overview} action={<LucidPill label={copy[review.trend.direction]} tone={review.trend.direction === 'improving' ? 'accent' : review.trend.direction === 'declining' ? 'amber' : 'neutral'} />} />
       <View style={styles.metrics}><LucidMetric value={String(review.current.attempts)} label={copy.attempts} /><LucidMetric value={review.current.recallRate == null ? '—' : `${Math.round(review.current.recallRate * 100)}%`} label={copy.recall} tone="accent" /><LucidMetric value={String(review.current.lucidDreams)} label={copy.lucid} tone="amber" /><LucidMetric value={avgSleep == null ? '—' : avgSleep.toFixed(1)} label={`${copy.sleep} / 5`} tone="accent" /></View>
       <LucidCard accent="accent"><View style={styles.coachTop}><LucidPill label={copy.coach} tone="accent" icon="sparkles" /><Ionicons name="phone-portrait" size={18} color={palette.textMuted} /></View><Text style={[styles.coachText, { color: palette.text }]}>{content.weeklyReview.adaptationRules[review.coaching.action === 'protect_sleep' ? 0 : review.coaching.action === 'strengthen_recall' ? 1 : 2] ?? content.weeklyReview.coachingNote}</Text><Text style={[styles.small, { color: palette.textSecondary }]}>{content.weeklyReview.coachingNote}</Text></LucidCard>

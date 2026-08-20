@@ -23,6 +23,10 @@ import { useTheme } from '@/context/ThemeContext';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
+// La barre d'onglets flotte à `max(insets.bottom, 10)` du bas et mesure 70 de
+// haut : le contenu doit réserver de quoi passer dessous sans s'y cacher.
+export const LUCID_TAB_BAR_INSET = 92;
+
 export function LucidScreen({
   children,
   eyebrow,
@@ -30,6 +34,8 @@ export function LucidScreen({
   subtitle,
   status,
   trailing,
+  bottomInset = 24,
+  footer,
   scroll = true,
   contentStyle,
   testID,
@@ -44,6 +50,13 @@ export function LucidScreen({
   // et coupe les mots. `trailing` reste réservé à une action de 44px.
   status?: ReactNode;
   trailing?: ReactNode;
+  // Réserve sous le dernier élément. `LUCID_TAB_BAR_INSET` sous les onglets, où
+  // la barre flotte par-dessus le contenu ; la valeur par défaut ailleurs. Les
+  // deux étaient confondues, et six écrans sans barre gardaient 132px de vide.
+  bottomInset?: number;
+  // Barre d'action épinglée hors du ScrollView. Dans le flux, elle sort de
+  // l'écran dès que le contenu dépasse — l'onboarding y perdait son bouton.
+  footer?: ReactNode;
   scroll?: boolean;
   contentStyle?: ViewStyle;
   testID?: string;
@@ -58,7 +71,7 @@ export function LucidScreen({
           styles.content,
           {
             paddingTop: Math.max(insets.top, 18) + 12,
-            paddingBottom: Math.max(insets.bottom, 20) + 112,
+            paddingBottom: Math.max(insets.bottom, 20) + bottomInset,
           },
           contentStyle,
         ]}
@@ -106,6 +119,9 @@ export function LucidScreen({
       ) : (
         content
       )}
+      {footer ? (
+        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 20) }]}>{footer}</View>
+      ) : null}
     </View>
   );
 }
@@ -352,6 +368,7 @@ export function LucidToggleRow({
   onValueChange,
   disabled = false,
   icon,
+  divider = true,
 }: {
   title: string;
   description?: string;
@@ -359,11 +376,14 @@ export function LucidToggleRow({
   onValueChange: (value: boolean) => void;
   disabled?: boolean;
   icon?: IconName;
+  // Le filet sépare deux lignes. La dernière d'un groupe n'a rien à séparer :
+  // son filet doublait celui du bloc suivant ou flottait au bord de la carte.
+  divider?: boolean;
 }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   return (
-    <View style={[styles.toggleRow, { borderBottomColor: palette.border }]}>
+    <View style={[styles.toggleRow, { borderBottomColor: divider ? palette.border : 'transparent' }]}>
       {icon ? <Ionicons name={icon} size={21} color={palette.accent} /> : null}
       <View style={styles.toggleCopy}>
         <Text style={[styles.toggleTitle, { color: palette.text }]}>{title}</Text>
@@ -398,10 +418,11 @@ export function LucidIconAction({ label, icon, onPress, role = 'button' }: { lab
 const styles = StyleSheet.create({
   root: { flex: 1 },
   screenContainer: { flex: 1 },
-  content: { width: '100%', paddingHorizontal: 20, gap: 18 },
+  content: { width: '100%', paddingHorizontal: 20, gap: 12 },
   headerRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 14, marginBottom: 2 },
   statusRow: { flexDirection: 'row', justifyContent: 'flex-end' },
   statusGlass: { padding: 3 },
+  footer: { paddingHorizontal: 20, paddingTop: 12, gap: 10 },
   headerCopy: { flex: 1, minWidth: 0, gap: 7 },
   eyebrow: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12, letterSpacing: 1.5, textTransform: 'uppercase' },
   title: { fontFamily: 'Fraunces_600SemiBold', fontSize: 34, lineHeight: 40, letterSpacing: -0.8 },
@@ -413,7 +434,7 @@ const styles = StyleSheet.create({
   buttonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 15, textAlign: 'center' },
   buttonBlock: { gap: 8 },
   buttonReason: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 13, lineHeight: 18, textAlign: 'center' },
-  sectionHeader: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 12, marginTop: 4 },
+  sectionHeader: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 12, marginTop: 16 },
   sectionCopy: { flex: 1, gap: 3 },
   sectionTitle: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 15, lineHeight: 20, letterSpacing: 0.2 },
   sectionCaption: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 12, lineHeight: 16 },

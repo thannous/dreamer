@@ -118,6 +118,16 @@ export default function LucidOnboardingScreen() {
       eyebrow={`${copy.step} ${step + 1} / ${STEP_COUNT}`}
       title={titles[step]}
       subtitle={step === 0 ? content.onboarding.intro : undefined}
+      // Épinglée : dans le flux, quatre interrupteurs de 70 de haut à l'étape 6
+      // poussaient « Configurer mon entraînement » hors de l'écran d'ouverture.
+      footer={
+        <View style={styles.actions}>
+          {step > 0 ? <LucidButton label={content.chrome.common.back} variant="secondary" onPress={() => setStep((value) => value - 1)} /> : null}
+          <View style={styles.primaryAction}>
+            <LucidButton label={step === STEP_COUNT - 1 ? copy.finish : content.chrome.common.continue} disabled={!canContinue} disabledReason={blockedReason} loading={saving} onPress={() => void next()} icon={step === STEP_COUNT - 1 ? 'sparkles' : 'arrow-forward'} testID="lucid-onboarding-continue" />
+          </View>
+        </View>
+      }
     >
       <LucidProgressBar value={(step + 1) / STEP_COUNT} accessibilityLabel={titles[step]} />
 
@@ -193,7 +203,7 @@ export default function LucidOnboardingScreen() {
           <LucidCard>
             <Text style={[styles.heroTitle, { color: palette.text }]}>{content.onboarding.accessibilityTitle}</Text>
             <Text style={[styles.body, { color: palette.textSecondary }]}>{content.onboarding.accessibilityBody}</Text>
-            <LucidToggleRow title={copy.reduceMotion} value={reduceMotion} onValueChange={setReduceMotion} icon="accessibility" />
+            <LucidToggleRow title={copy.reduceMotion} value={reduceMotion} onValueChange={setReduceMotion} icon="accessibility" divider={false} />
           </LucidCard>
         </>
       ) : null}
@@ -204,16 +214,10 @@ export default function LucidOnboardingScreen() {
           <LucidToggleRow title={copy.analytics} description={content.privacy.analytics} value={analyticsConsent} onValueChange={setAnalyticsConsent} icon="analytics" />
           <LucidToggleRow title={copy.cloud} description={content.privacy.optionalSync} value={cloudSyncEnabled} onValueChange={setCloudSyncEnabled} icon="cloud-upload" />
           <LucidToggleRow title={copy.link} description={content.privacy.minimalTransfer} value={noctaliaLinkEnabled} onValueChange={setNoctaliaLinkEnabled} icon="link" />
-          <LucidToggleRow title={copy.safety} description={content.onboarding.audioPermission} value={audioSafetyAccepted} onValueChange={setAudioSafetyAccepted} icon="volume-low" />
+          <LucidToggleRow title={copy.safety} description={content.onboarding.audioPermission} value={audioSafetyAccepted} onValueChange={setAudioSafetyAccepted} icon="volume-low" divider={false} />
         </LucidCard>
       ) : null}
 
-      <View style={styles.actions}>
-        {step > 0 ? <LucidButton label={content.chrome.common.back} variant="secondary" onPress={() => setStep((value) => value - 1)} /> : null}
-        <View style={styles.primaryAction}>
-          <LucidButton label={step === STEP_COUNT - 1 ? copy.finish : content.chrome.common.continue} disabled={!canContinue} disabledReason={blockedReason} loading={saving} onPress={() => void next()} icon={step === STEP_COUNT - 1 ? 'sparkles' : 'arrow-forward'} testID="lucid-onboarding-continue" />
-        </View>
-      </View>
     </LucidScreen>
   );
 }

@@ -4,6 +4,7 @@ import React, { useCallback, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import {
+  LUCID_TAB_BAR_INSET,
   LucidButton,
   LucidCard,
   LucidPill,
@@ -465,6 +466,7 @@ export default function LucidSettingsScreen() {
     return (
       <LucidScreen
         testID="lucid-settings"
+        bottomInset={LUCID_TAB_BAR_INSET}
         eyebrow={copy.eyebrow}
         title={copy.title}
         subtitle={content.chrome.common.loading}
@@ -577,6 +579,7 @@ export default function LucidSettingsScreen() {
   return (
     <LucidScreen
       testID="lucid-settings"
+      bottomInset={LUCID_TAB_BAR_INSET}
       eyebrow={copy.eyebrow}
       title={copy.title}
       subtitle={content.privacy.consentControl}
@@ -770,6 +773,7 @@ export default function LucidSettingsScreen() {
             void runSettingChange(() => updateAnalyticsConsent(value))
           }
           icon="analytics"
+          divider={false}
         />
       </LucidCard>
 
@@ -841,6 +845,7 @@ export default function LucidSettingsScreen() {
           disabled={savingSetting}
           onValueChange={changeAccessibility}
           icon="accessibility"
+          divider={false}
         />
         <AccessibilityStatusRow
           icon="text"

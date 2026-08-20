@@ -3,7 +3,13 @@ import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { LucidCard, LucidPill, LucidProgressBar, LucidScreen } from '@/components/lucid/LucidUI';
+import {
+  LUCID_TAB_BAR_INSET,
+  LucidCard,
+  LucidPill,
+  LucidProgressBar,
+  LucidScreen,
+} from '@/components/lucid/LucidUI';
 import { getLucidPalette } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -32,7 +38,7 @@ export default function LucidProgramsScreen() {
   const { state, content } = useLucidTrainer();
   const copy = COPY[content.locale];
   return (
-    <LucidScreen testID="lucid-programs" eyebrow={copy.eyebrow} title={copy.title} subtitle={copy.subtitle}>
+    <LucidScreen testID="lucid-programs" bottomInset={LUCID_TAB_BAR_INSET} eyebrow={copy.eyebrow} title={copy.title} subtitle={copy.subtitle}>
       {PROGRAMS.map(({ id, icon }) => {
         const program = content.programs[id];
         const progress = state!.progress.find((item) => item.technique === id);

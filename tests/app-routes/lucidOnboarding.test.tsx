@@ -110,21 +110,29 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   LucidScreen: ({
     children,
     eyebrow,
+    footer,
+    status,
     subtitle,
     testID,
     title,
   }: {
     children: React.ReactNode;
     eyebrow?: string;
+    // `footer` est épinglé hors du ScrollView dans le vrai composant : le double
+    // doit le rendre, sinon la barre d'action disparaît des tests.
+    footer?: React.ReactNode;
+    status?: React.ReactNode;
     subtitle?: string;
     testID?: string;
     title?: string;
   }) => (
     <main data-testid={testID}>
+      {status}
       <span>{eyebrow}</span>
       <h1>{title}</h1>
       {subtitle ? <p>{subtitle}</p> : null}
       {children}
+      {footer}
     </main>
   ),
   LucidToggleRow: ({

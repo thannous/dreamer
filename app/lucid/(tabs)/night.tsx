@@ -3,7 +3,14 @@ import { router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { LucidButton, LucidCard, LucidScreen, LucidSectionHeader, LucidToggleRow } from '@/components/lucid/LucidUI';
+import {
+  LUCID_TAB_BAR_INSET,
+  LucidButton,
+  LucidCard,
+  LucidScreen,
+  LucidSectionHeader,
+  LucidToggleRow,
+} from '@/components/lucid/LucidUI';
 import { getLucidPalette } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -43,7 +50,7 @@ export default function LucidNightScreen() {
   const formatTime = (seconds: number) => `${Math.floor(seconds / 3600)}h ${String(Math.floor((seconds % 3600) / 60)).padStart(2, '0')}m`;
 
   return (
-    <LucidScreen testID="lucid-night" eyebrow={copy.eyebrow} title={copy.title} subtitle={copy.subtitle}>
+    <LucidScreen testID="lucid-night" bottomInset={LUCID_TAB_BAR_INSET} eyebrow={copy.eyebrow} title={copy.title} subtitle={copy.subtitle}>
       <LucidCard accent={audio.plan ? 'accent' : 'none'}>
         <View style={styles.activeTop}><View style={[styles.moon, { backgroundColor: audio.plan ? palette.accentSoft : palette.accentSoft }]}><Ionicons name={audio.plan ? 'radio' : 'moon'} size={31} color={audio.plan ? palette.accent : palette.accent} /></View><View style={styles.activeCopy}><Text style={[styles.cardTitle, { color: palette.text }]}>{audio.plan ? copy.active : copy.prep}</Text><Text style={[styles.body, { color: palette.textSecondary }]}>{audio.plan ? `${formatTime(audio.remainingSeconds)} ${copy.remaining}` : content.nightSignals.intro}</Text></View></View>
         <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.next}</Text>
@@ -56,7 +63,7 @@ export default function LucidNightScreen() {
       <LucidCard>
         <LucidToggleRow title={copy.route} value={speaker} onValueChange={setSpeaker} icon="volume-low" />
         <LucidToggleRow title={copy.fragile} value={fragile} onValueChange={setFragile} icon="bed" />
-        <LucidToggleRow title={copy.hearing} value={hearing} onValueChange={setHearing} icon="ear" />
+        <LucidToggleRow title={copy.hearing} value={hearing} onValueChange={setHearing} icon="ear" divider={false} />
         {content.nightSignals.safeguards.map((item) => <View key={item} style={styles.safeguard}><Ionicons name="shield-checkmark" size={18} color={palette.accent} /><Text style={[styles.safeguardText, { color: palette.textSecondary }]}>{item}</Text></View>)}
       </LucidCard>
 
