@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useSyncExternalStore } from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import {
@@ -14,7 +14,7 @@ import {
 import { getLucidPalette } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
-import { useLucidNightAudio } from '@/hooks/useLucidNightAudio';
+import { useLucidNightAudio, type LucidNightRemaining } from '@/hooks/useLucidNightAudio';
 import { MAX_LUCID_NIGHT_VOLUME } from '@/lib/lucid/audio';
 import { SLEEP_SOUNDS, type SleepSoundId } from '@/lib/sleepSounds';
 
@@ -25,6 +25,14 @@ const COPY = {
   de: { eyebrow: 'Vor dem Schlaf', title: 'Eine ruhige Absicht setzen', subtitle: 'Nachtsignale sind optional. Schlaf ist wichtiger als jede Technik.', library: 'Signalbibliothek', rain: 'Sanfter Regen', ocean: 'Meeresimpuls', 'brown-noise': 'Braunes Rauschen', volume: 'Vorsichtige Lautstärke', timer: 'Nachtfenster', hours: 'Stunden', preview: '7 Sekunden anhören', start: 'Nachtsignale starten', stop: 'Signale stoppen', active: 'Signale aktiv', next: 'Bis zu vier lokale Signale werden terminiert. Verpasste Signale werden nie nachgeholt.', speaker: 'Nutze den Telefonlautsprecher leise. Schlafe nicht mit Kopfhörern.', systemVolume: 'Die Vorschau ist auf 30 % begrenzt. Nachtsignale folgen auch der Systemlautstärke.', cueTitle: 'Lucid Trainer', cueBody: 'Sanftes Realitätssignal. Nimm deine Umgebung wahr.', fragile: 'Mein Schlaf ist heute fragil', hearing: 'Ich habe Hörbedenken', route: 'Ich nutze den Telefonlautsprecher', safety: 'Audiosicherheit', prep: 'Vorbereitung heute', morning: 'Morgenrückblick öffnen', blocked: 'Signale erfordern alle Sicherheitsbedingungen und die Benachrichtigungsfreigabe.', needs: 'Noch nötig:', needAck: 'Audio-Sicherheit bestätigen', needSpeaker: 'Telefonlautsprecher', needRested: '„fragiler Schlaf“ abwählen', needHearing: '„Hörempfindlichkeit“ abwählen', failed: 'Nachtsignale oder Audio sind auf diesem Gerät nicht verfügbar.', remaining: 'verbleibend' },
   it: { eyebrow: 'Prima di dormire', title: 'Imposta un’intenzione calma', subtitle: 'I segnali notturni sono facoltativi. Il sonno conta più di ogni tecnica.', library: 'Libreria segnali', rain: 'Pioggia lieve', ocean: 'Impulso oceanico', 'brown-noise': 'Rumore marrone', volume: 'Volume prudente', timer: 'Finestra notturna', hours: 'ore', preview: 'Anteprima 7 secondi', start: 'Avvia segnali', stop: 'Ferma segnali', active: 'Segnali attivi', next: 'Vengono programmati fino a quattro segnali locali. Quelli persi non vengono mai ripetuti.', speaker: 'Usa l’altoparlante del telefono a volume basso. Non dormire con cuffie.', systemVolume: 'L’anteprima è limitata al 30 %. Le notifiche seguono anche il volume di sistema.', cueTitle: 'Lucid Trainer', cueBody: 'Segnale di realtà delicato. Osserva l’ambiente.', fragile: 'Il mio sonno è fragile stasera', hearing: 'Ho una sensibilità uditiva', route: 'Userò l’altoparlante del telefono', safety: 'Sicurezza audio', prep: 'Preparazione di stasera', morning: 'Apri bilancio mattutino', blocked: 'I segnali richiedono tutte le condizioni e il permesso notifiche.', needs: 'Ancora necessario:', needAck: 'accettare la sicurezza audio', needSpeaker: 'altoparlante del telefono', needRested: 'deselezionare «sonno fragile»', needHearing: 'deselezionare «fragilità uditiva»', failed: 'Le notifiche notturne o l’audio non sono disponibili.', remaining: 'rimanenti' },
 } as const;
+
+const formatTime = (seconds: number) => `${Math.floor(seconds / 3600)}h ${String(Math.floor((seconds % 3600) / 60)).padStart(2, '0')}m`;
+
+/* The only subscriber to the night tick: the gradient, the sound cards, the volume levels and the switches must not repaint every 15 seconds. */
+function NightCountdown({ remaining, suffix, color }: { remaining: LucidNightRemaining; suffix: string; color: string }) {
+  const seconds = useSyncExternalStore(remaining.subscribe, remaining.getSnapshot, remaining.getSnapshot);
+  return <Text style={[styles.body, { color }]}>{`${formatTime(seconds)} ${suffix}`}</Text>;
+}
 
 export default function LucidNightScreen() {
   const { colors, mode } = useTheme();
@@ -47,12 +55,11 @@ export default function LucidNightScreen() {
     if (!state!.preferences.audioCuesEnabled) await updatePreferences({ audioCuesEnabled: true });
     if (!(await audio.startNight())) Alert.alert(copy.safety, copy.blocked);
   };
-  const formatTime = (seconds: number) => `${Math.floor(seconds / 3600)}h ${String(Math.floor((seconds % 3600) / 60)).padStart(2, '0')}m`;
 
   return (
     <LucidScreen testID="lucid-night" bottomInset={LUCID_TAB_BAR_INSET} eyebrow={copy.eyebrow} title={copy.title} subtitle={copy.subtitle}>
       <LucidCard accent={audio.plan ? 'accent' : 'none'}>
-        <View style={styles.activeTop}><View style={[styles.moon, { backgroundColor: audio.plan ? palette.accentSoft : palette.accentSoft }]}><Ionicons name={audio.plan ? 'radio' : 'moon'} size={31} color={audio.plan ? palette.accent : palette.accent} /></View><View style={styles.activeCopy}><Text style={[styles.cardTitle, { color: palette.text }]}>{audio.plan ? copy.active : copy.prep}</Text><Text style={[styles.body, { color: palette.textSecondary }]}>{audio.plan ? `${formatTime(audio.remainingSeconds)} ${copy.remaining}` : content.nightSignals.intro}</Text></View></View>
+        <View style={styles.activeTop}><View style={[styles.moon, { backgroundColor: audio.plan ? palette.accentSoft : palette.accentSoft }]}><Ionicons name={audio.plan ? 'radio' : 'moon'} size={31} color={audio.plan ? palette.accent : palette.accent} /></View><View style={styles.activeCopy}><Text style={[styles.cardTitle, { color: palette.text }]}>{audio.plan ? copy.active : copy.prep}</Text>{audio.plan ? <NightCountdown remaining={audio.remaining} suffix={copy.remaining} color={palette.textSecondary} /> : <Text style={[styles.body, { color: palette.textSecondary }]}>{content.nightSignals.intro}</Text>}</View></View>
         <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.next}</Text>
         {audio.plan ? <LucidButton label={copy.stop} variant="danger" icon="stop" onPress={() => void audio.stopNight()} /> : <LucidButton label={copy.start} icon="moon" disabled={!safe || audio.isScheduling} disabledReason={missing.length ? `${copy.needs} ${missing.join(', ')}` : undefined} onPress={() => void start()} testID="lucid-night-start" />}
         {audio.error ? <Text style={[styles.error, { color: palette.danger }]}>{copy.failed} ({audio.error})</Text> : null}
@@ -61,14 +68,14 @@ export default function LucidNightScreen() {
       {/* Safety comes first: these three switches are what gate the button above. */}
       <LucidSectionHeader title={copy.safety} />
       <LucidCard>
-        <LucidToggleRow title={copy.route} value={speaker} onValueChange={setSpeaker} icon="volume-low" />
-        <LucidToggleRow title={copy.fragile} value={fragile} onValueChange={setFragile} icon="bed" />
-        <LucidToggleRow title={copy.hearing} value={hearing} onValueChange={setHearing} icon="ear" divider={false} />
+        <LucidToggleRow title={copy.route} value={speaker} onValueChange={setSpeaker} icon="volume-low" testID="lucid-night-speaker" />
+        <LucidToggleRow title={copy.fragile} value={fragile} onValueChange={setFragile} icon="bed" testID="lucid-night-fragile" />
+        <LucidToggleRow title={copy.hearing} value={hearing} onValueChange={setHearing} icon="ear" testID="lucid-night-hearing" divider={false} />
         {content.nightSignals.safeguards.map((item) => <View key={item} style={styles.safeguard}><Ionicons name="shield-checkmark" size={18} color={palette.accent} /><Text style={[styles.safeguardText, { color: palette.textSecondary }]}>{item}</Text></View>)}
       </LucidCard>
 
       <LucidSectionHeader title={copy.library} caption={content.nightSignals.optionalLabel} />
-      <View style={styles.soundRow}>
+      <View accessibilityRole="radiogroup" accessibilityLabel={copy.library} style={styles.soundRow}>
         {SLEEP_SOUNDS.map((sound) => {
           const selected = sound.id === (audio.plan?.soundId ?? soundId);
           return <Pressable key={sound.id} disabled={!!audio.plan} accessibilityRole="radio" accessibilityState={{ selected, disabled: !!audio.plan }} onPress={() => setSoundId(sound.id)} style={[styles.sound, { backgroundColor: selected ? palette.accentSoft : palette.surface, borderColor: selected ? palette.accent : palette.borderInteractive }]}><Ionicons name={sound.id === 'rain' ? 'rainy' : sound.id === 'ocean' ? 'water' : 'pulse'} size={24} color={selected ? palette.accent : palette.textSecondary} /><Text style={[styles.soundLabel, { color: palette.text }]}>{copy[sound.id]}</Text></Pressable>;
@@ -78,13 +85,13 @@ export default function LucidNightScreen() {
 
       <LucidSectionHeader title={copy.volume} />
       <LucidCard>
-        <View style={styles.levels}>{[0.1, 0.15, 0.2, 0.25, 0.3].map((value) => <Pressable key={value} accessibilityRole="radio" accessibilityState={{ selected: Math.abs(volume - value) < 0.01 }} onPress={() => void updatePreferences({ audioVolume: value })} style={[styles.level, { backgroundColor: Math.abs(volume - value) < 0.01 ? palette.accent : palette.surfaceRaised }]}><Text style={[styles.levelText, { color: Math.abs(volume - value) < 0.01 ? palette.backgroundDeep : palette.textSecondary }]}>{Math.round(value * 100)}%</Text></Pressable>)}</View>
+        <View accessibilityRole="radiogroup" accessibilityLabel={copy.volume} style={styles.levels}>{[0.1, 0.15, 0.2, 0.25, 0.3].map((value) => <Pressable key={value} accessibilityRole="radio" accessibilityState={{ selected: Math.abs(volume - value) < 0.01 }} onPress={() => void updatePreferences({ audioVolume: value })} style={[styles.level, { backgroundColor: Math.abs(volume - value) < 0.01 ? palette.accent : palette.surfaceRaised }]}><Text style={[styles.levelText, { color: Math.abs(volume - value) < 0.01 ? palette.backgroundDeep : palette.textSecondary }]}>{Math.round(value * 100)}%</Text></Pressable>)}</View>
         <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.speaker}</Text>
         <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.systemVolume}</Text>
       </LucidCard>
 
       <LucidSectionHeader title={copy.timer} />
-      <View style={styles.timerRow}>{[240, 360, 480].map((value) => <Pressable key={value} accessibilityRole="radio" accessibilityState={{ selected: timerMinutes === value }} onPress={() => setTimerMinutes(value)} style={[styles.timer, { backgroundColor: timerMinutes === value ? palette.amberSoft : palette.surface, borderColor: timerMinutes === value ? palette.amber : palette.borderInteractive }]}><Text style={[styles.timerValue, { color: timerMinutes === value ? palette.amber : palette.text }]}>{value / 60}</Text><Text style={[styles.timerLabel, { color: palette.textSecondary }]}>{copy.hours}</Text></Pressable>)}</View>
+      <View accessibilityRole="radiogroup" accessibilityLabel={copy.timer} style={styles.timerRow}>{[240, 360, 480].map((value) => <Pressable key={value} accessibilityRole="radio" accessibilityState={{ selected: timerMinutes === value }} onPress={() => setTimerMinutes(value)} style={[styles.timer, { backgroundColor: timerMinutes === value ? palette.amberSoft : palette.surface, borderColor: timerMinutes === value ? palette.amber : palette.borderInteractive }]}><Text style={[styles.timerValue, { color: timerMinutes === value ? palette.amber : palette.text }]}>{value / 60}</Text><Text style={[styles.timerLabel, { color: palette.textSecondary }]}>{copy.hours}</Text></Pressable>)}</View>
 
       <LucidButton label={copy.morning} variant="ghost" icon="sunny" onPress={() => router.push('/lucid/morning')} />
     </LucidScreen>

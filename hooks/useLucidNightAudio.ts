@@ -21,7 +21,9 @@ import {
   scheduleLucidNightCues,
 } from '@/services/lucidTrainerNotifications';
 
-const TICK_MS = 1000;
+// The countdown renders hours and minutes only, so a second-by-second tick would
+// buy nothing and cost ~28 800 wake-ups over an eight-hour night.
+const TICK_MS = 15_000;
 const NIGHT_CUE_SOURCES: Readonly<Record<string, AudioSource>> = {
   'lucid_cue_rain_very_low.wav': require('@/assets/lucid/audio/lucid_cue_rain_very_low.wav'),
   'lucid_cue_rain_low.wav': require('@/assets/lucid/audio/lucid_cue_rain_low.wav'),
@@ -32,6 +34,13 @@ const NIGHT_CUE_SOURCES: Readonly<Record<string, AudioSource>> = {
   'lucid_cue_brown_noise_very_low.wav': require('@/assets/lucid/audio/lucid_cue_brown_noise_very_low.wav'),
   'lucid_cue_brown_noise_low.wav': require('@/assets/lucid/audio/lucid_cue_brown_noise_low.wav'),
   'lucid_cue_brown_noise.wav': require('@/assets/lucid/audio/lucid_cue_brown_noise.wav'),
+};
+
+// The remaining seconds live outside React state: only the leaf that draws the
+// countdown subscribes, so a tick never re-renders the whole night screen.
+export type LucidNightRemaining = {
+  getSnapshot: () => number;
+  subscribe: (listener: () => void) => () => void;
 };
 
 export function useLucidNightAudio(params: {
@@ -52,10 +61,30 @@ export function useLucidNightAudio(params: {
   });
   const status = useAudioPlayerStatus(player);
   const [plan, setPlan] = useState<LucidNightSignalPlan | null>(null);
-  const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [isScheduling, setIsScheduling] = useState(false);
   const stopTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const remainingRef = useRef(0);
+  const remainingListenersRef = useRef<Set<() => void>>(new Set());
+
+  const setRemainingSeconds = useCallback((seconds: number) => {
+    if (remainingRef.current === seconds) return;
+    remainingRef.current = seconds;
+    remainingListenersRef.current.forEach((listener) => listener());
+  }, []);
+
+  const remaining = useMemo<LucidNightRemaining>(
+    () => ({
+      getSnapshot: () => remainingRef.current,
+      subscribe: (listener) => {
+        remainingListenersRef.current.add(listener);
+        return () => {
+          remainingListenersRef.current.delete(listener);
+        };
+      },
+    }),
+    []
+  );
 
   const clearStopTimer = useCallback(() => {
     if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
@@ -173,6 +202,7 @@ export function useLucidNightAudio(params: {
     params.soundId,
     params.timerMinutes,
     params.volume,
+    setRemainingSeconds,
     stopPlayback,
   ]);
 
@@ -186,7 +216,7 @@ export function useLucidNightAudio(params: {
     setPlan(null);
     setRemainingSeconds(0);
     await stopPlayback();
-  }, [stopPlayback]);
+  }, [setRemainingSeconds, stopPlayback]);
 
   useEffect(() => {
     let active = true;
@@ -206,7 +236,7 @@ export function useLucidNightAudio(params: {
     return () => {
       active = false;
     };
-  }, []);
+  }, [setRemainingSeconds]);
 
   useEffect(() => {
     if (!plan) return;
@@ -221,7 +251,7 @@ export function useLucidNightAudio(params: {
     tick();
     const interval = setInterval(tick, TICK_MS);
     return () => clearInterval(interval);
-  }, [plan, stopNight]);
+  }, [plan, setRemainingSeconds, stopNight]);
 
   useEffect(
     () => () => {
@@ -243,7 +273,7 @@ export function useLucidNightAudio(params: {
       isScheduling,
       plan,
       preview,
-      remainingSeconds,
+      remaining,
       startNight,
       stopNight,
     }),
@@ -252,7 +282,7 @@ export function useLucidNightAudio(params: {
       isScheduling,
       plan,
       preview,
-      remainingSeconds,
+      remaining,
       startNight,
       status.isLoaded,
       status.playing,
