@@ -156,6 +156,17 @@ export default function PaywallScreen() {
           ) : null}
         </View>
 
+        <View className="gap-3">
+          {offers.map((offer) => (
+            <PlanCard
+              key={offer.id}
+              offer={offer}
+              selected={selected === offer.id}
+              onPress={() => setSelected(offer.id)}
+            />
+          ))}
+        </View>
+
         <Card featured>
           <View className="gap-3">
             {BENEFITS.map((index) => (
@@ -169,17 +180,6 @@ export default function PaywallScreen() {
           </View>
         </Card>
 
-        <View className="gap-3">
-          {offers.map((offer) => (
-            <PlanCard
-              key={offer.id}
-              offer={offer}
-              selected={selected === offer.id}
-              onPress={() => setSelected(offer.id)}
-            />
-          ))}
-        </View>
-
         {failed ? <Text variant="bodySm">{t('paywall.error')}</Text> : null}
 
         <Text variant="caption" className="text-center">
@@ -189,7 +189,10 @@ export default function PaywallScreen() {
         </Text>
       </ScrollView>
 
-      <View className="gap-2 px-gutter pb-4">
+      {/* Chrome over scrolling content, so it says so: the hairline and the
+          raised fill are what tell the eye the page continues underneath
+          instead of ending at the button. */}
+      <View className="gap-2 border-t border-hairline bg-ink-raised px-gutter pb-4 pt-3">
         <Button
           testID={TID.Button.PaywallBuy}
           label={t('paywall.cta')}

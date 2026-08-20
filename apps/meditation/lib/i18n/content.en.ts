@@ -15,7 +15,7 @@ export const contentEn = {
 
   'narrator.camille.bio': "Soft voice, slow pace.",
   'narrator.adrien.bio': "Low voice, short sentences.",
-  'narrator.wordless.bio': "No voice — breath and silence.",
+  'narrator.wordless.bio': 'Breath and silence, nothing to follow.',
 
   'session.sleep-descent.title': "Letting the breath down",
   'session.sleep-descent.description': "An exhale longer than the inhale, until the body understands the day is over.",

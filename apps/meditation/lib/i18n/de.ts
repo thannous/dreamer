@@ -137,6 +137,8 @@ export const de: Record<keyof typeof en, string> = {
   'complete.dream.title': 'Notiere deinen Traum am Morgen',
   'complete.dream.cta': 'Noctalia öffnen',
   'complete.done': 'Fertig',
+  'complete.streak': '{count} Tage in Folge',
+  'complete.streak.one': 'Der erste Tag deiner Serie',
 
   'breathe.title': 'Atmen',
   'breathe.subtitle': 'Vier Rhythmen. Wähle einen und folge ihm.',

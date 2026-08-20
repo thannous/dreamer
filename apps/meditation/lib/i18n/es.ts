@@ -137,6 +137,8 @@ export const es: Record<keyof typeof en, string> = {
   'complete.dream.title': 'Anota tu sueño por la mañana',
   'complete.dream.cta': 'Abrir Noctalia',
   'complete.done': 'Terminar',
+  'complete.streak': '{count} días seguidos',
+  'complete.streak.one': 'El primer día de tu racha',
 
   'breathe.title': 'Respirar',
   'breathe.subtitle': 'Cuatro ritmos. Elige uno y síguelo.',
