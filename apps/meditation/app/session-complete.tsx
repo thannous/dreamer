@@ -63,7 +63,7 @@ export default function SessionCompleteScreen() {
             </Card>
           ) : null}
 
-          <Button label={t('complete.done')} onPress={() => router.replace('/(tabs)')} />
+          <Button label={t('complete.done')} onPress={() => router.replace('/(drawer)/(tabs)')} />
         </View>
       </View>
     </Screen>

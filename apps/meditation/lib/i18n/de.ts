@@ -126,6 +126,9 @@ export const de: Record<keyof typeof en, string> = {
   'player.unavailable.subtitle':
     'Diese Sitzung wird aus der Bibliothek gestreamt. Einmal verbinden, dann läuft sie.',
   'player.scrub': 'Wiedergabeposition',
+  'player.reveal': 'Bedienelemente einblenden',
+  'drawer.open': 'Menü öffnen',
+  'onboarding.reminder.at': 'Uhrzeit der Erinnerung',
 
   'mini.playing': 'Läuft gerade',
 

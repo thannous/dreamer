@@ -52,8 +52,15 @@ npm run lint       # eslint
    `BreathProvider`. Une surface qui respire lit `useBreath()` — elle ne démarre
    jamais sa propre boucle, sinon les rythmes dérivent et l'effet se casse. Toute
    plage d'opacité animée doit plafonner à 1,00 : au-delà, c'est écrêté.
-8. **Le verre est une texture d'appui.** Un `GlassCard` par écran au maximum,
-   jamais dans une liste qui défile. Partout ailleurs : `Card`.
+8. **Le verre vient des tokens, le flou est rare.** `bg-ink-card` et
+   `bg-ink-panel` sont translucides : les surfaces échantillonnent l'aurore
+   d'`Atmosphere` posée par `NightBackground`, et c'est ce qui les fait lire
+   comme du verre. Ne jamais les repasser en opaque — une carte opaque perce un
+   trou plat dans l'atmosphère. Le vrai `BlurView` reste réservé au chrome qui
+   flotte au-dessus d'un contenu qui bouge : la pilule d'onglets, et un
+   `GlassCard` par écran au maximum. Jamais dans une liste qui défile.
+   Corollaire : le fond doit rester plus profond que les cartes, sinon il n'y a
+   aucune séparation à voir.
 9. **Toute boucle infinie respecte `useReducedMotion()`.**
 10. **Pas d'animations de layout Reanimated** (`FadeInDown`, `Layout`, etc.) :
     elles restent bloquées en cours de route et laissent le composant à une

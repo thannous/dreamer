@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { ScopedTheme } from 'uniwind';
 
 import { GrainOverlay } from '@/components/atmosphere/GrainOverlay';
 import { Radius } from '@/constants/theme';
@@ -23,6 +24,11 @@ const RADIUS = { md: Radius.md, xl: Radius.xl, artwork: Radius.artwork } as cons
  *
  * The grain is what stops it reading as a stock gradient — same film as the
  * atmosphere and the glass.
+ *
+ * Its content is scoped to the dark theme because the gradient is dark in BOTH
+ * themes: without this, a title using the ordinary `ivory` tone resolves to ink
+ * in light mode and disappears into its own artwork. Scoping the surface rather
+ * than tagging each `Text` is what keeps the next screen from reintroducing it.
  */
 export function SessionArtwork({ accent, rounded = 'xl', className, children }: Props) {
   return (
@@ -36,7 +42,7 @@ export function SessionArtwork({ accent, rounded = 'xl', className, children }: 
         style={StyleSheet.absoluteFill}
       />
       <GrainOverlay opacity={0.05} />
-      {children}
+      <ScopedTheme theme="dark">{children}</ScopedTheme>
     </View>
   );
 }

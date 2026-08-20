@@ -33,6 +33,8 @@ export const TID = {
     PlayerForward: 'btn.player.forward',
     PlayerBack: 'btn.player.back',
     PlayerClose: 'btn.player.close',
+    /** The full-screen catcher that brings withdrawn chrome back. */
+    RevealControls: 'btn.player.reveal',
     BreatheStart: 'btn.breathe.start',
     PaywallClose: 'btn.paywall.close',
     PaywallBuy: 'btn.paywall.buy',

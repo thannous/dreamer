@@ -29,6 +29,7 @@
     "@expo-google-fonts/space-grotesk": "^0.4.1",
     "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-navigation/drawer": "^7.13.9",
     "expo": "~57.0.14",
     "expo-audio": "~57.0.3",
     "expo-blur": "~57.0.2",

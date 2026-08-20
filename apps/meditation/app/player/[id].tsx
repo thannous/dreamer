@@ -16,6 +16,7 @@ import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
 import { useSubscription } from '@/context/SubscriptionContext';
+import { SilenceProvider } from '@/context/SilenceContext';
 import { usePlayer } from '@/context/PlayerContext';
 import { FADE_TIMERS, formatTime, PLAYBACK_RATES } from '@/lib/audio';
 import type { TranslationKey } from '@/lib/i18n';
@@ -74,100 +75,109 @@ export default function PlayerScreen() {
   return (
     // Dimmer than elsewhere: the artwork is the subject on this screen.
     <Screen variant="immersive" video="player" videoOpacity={0.4}>
-      <View testID={TID.Screen.Player} className="flex-1">
-        <ProgressiveSilence active={playing} className="px-gutter pt-2">
-          <BackLink
-            testID={TID.Button.PlayerClose}
-            label={t('player.close')}
-            fallbackHref="/(tabs)"
-          />
-        </ProgressiveSilence>
+      <SilenceProvider active={playing}>
+        <View testID={TID.Screen.Player} className="flex-1">
+          <ProgressiveSilence className="px-gutter pt-2">
+            <BackLink
+              testID={TID.Button.PlayerClose}
+              label={t('player.close')}
+              fallbackHref="/(drawer)/(tabs)"
+            />
+          </ProgressiveSilence>
 
-        <View className="flex-1 justify-center px-gutter">
-          <SessionArtwork accent={session.accent} rounded="artwork" className="aspect-square" />
-        </View>
-
-        {/* The signature: while a session plays, everything but the artwork
-            withdraws after a few seconds. One touch brings it back. */}
-        <ProgressiveSilence active={playing} className="gap-5 px-gutter pb-4">
-          <View className="gap-1">
-            <Text variant="h2">{t(`session.${session.id}.title` as TranslationKey)}</Text>
-            <Text variant="bodySm">
-              {session.narratorId === 'wordless'
-                ? t('session.narrator.wordless')
-                : `${t('session.narrator')} ${narrator.name}`}
-            </Text>
+          {/* The artwork takes the height that is left rather than dictating it:
+              sized from its width it would not shrink, and would spill over the
+              close link above and the title below on a shorter screen. */}
+          <View className="flex-1 items-center justify-center px-gutter">
+            <SessionArtwork
+              accent={session.accent}
+              rounded="artwork"
+              className="h-full max-w-full aspect-square"
+            />
           </View>
 
-          <ProgressScrubber
-            positionSec={player.positionSec}
-            durationSec={player.durationSec}
-            onSeek={player.seekTo}
-          />
+          {/* The signature: while a session plays, everything but the artwork
+              withdraws after a few seconds. One touch brings it back. */}
+          <ProgressiveSilence className="gap-5 px-gutter pb-4">
+            <View className="gap-1">
+              <Text variant="h2">{t(`session.${session.id}.title` as TranslationKey)}</Text>
+              <Text variant="bodySm">
+                {session.narratorId === 'wordless'
+                  ? t('session.narrator.wordless')
+                  : `${t('session.narrator')} ${narrator.name}`}
+              </Text>
+            </View>
 
-          <PlayerControls playing={playing} onToggle={player.toggle} onSkip={player.skip} />
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerClassName="gap-2 pt-2">
-            {PLAYBACK_RATES.map((rate) => (
-              <Chip
-                key={rate}
-                label={`${rate}×`}
-                selected={player.rate === rate}
-                onPress={() => player.setRate(rate)}
-              />
-            ))}
-          </ScrollView>
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerClassName="gap-2">
-            {AMBIENCES.map((ambience) => (
-              <Chip
-                key={ambience.id}
-                label={t(`player.ambience.${ambience.id}` as TranslationKey)}
-                selected={player.ambienceId === ambience.id}
-                onPress={() => player.setAmbience(ambience.id)}
-              />
-            ))}
-          </ScrollView>
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerClassName="gap-2">
-            <Chip
-              label={t('player.timer.none')}
-              selected={player.fadeMinutes === null}
-              onPress={() => player.setFadeTimer(null)}
+            <ProgressScrubber
+              positionSec={player.positionSec}
+              durationSec={player.durationSec}
+              onSeek={player.seekTo}
             />
-            {FADE_TIMERS.map((minutes) => (
-              <Chip
-                key={minutes}
-                label={t('player.timer.minutes', { count: minutes })}
-                selected={player.fadeMinutes === minutes}
-                onPress={() => {
-                  const gate = gateForTimer(minutes);
-                  if (!gate.allowed) {
-                    openPaywall(gate.reason);
-                    return;
-                  }
-                  player.setFadeTimer(minutes);
-                }}
-              />
-            ))}
-          </ScrollView>
 
-          {player.fadeRemainingSec !== null ? (
-            <Text variant="caption" className="text-center">
-              {t('player.timer.remaining', { time: formatTime(player.fadeRemainingSec) })}
-            </Text>
-          ) : null}
-        </ProgressiveSilence>
-      </View>
+            <PlayerControls playing={playing} onToggle={player.toggle} onSkip={player.skip} />
+
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerClassName="gap-2 pt-2">
+              {PLAYBACK_RATES.map((rate) => (
+                <Chip
+                  key={rate}
+                  label={`${rate}×`}
+                  selected={player.rate === rate}
+                  onPress={() => player.setRate(rate)}
+                />
+              ))}
+            </ScrollView>
+
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerClassName="gap-2">
+              {AMBIENCES.map((ambience) => (
+                <Chip
+                  key={ambience.id}
+                  label={t(`player.ambience.${ambience.id}` as TranslationKey)}
+                  selected={player.ambienceId === ambience.id}
+                  onPress={() => player.setAmbience(ambience.id)}
+                />
+              ))}
+            </ScrollView>
+
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerClassName="gap-2">
+              <Chip
+                label={t('player.timer.none')}
+                selected={player.fadeMinutes === null}
+                onPress={() => player.setFadeTimer(null)}
+              />
+              {FADE_TIMERS.map((minutes) => (
+                <Chip
+                  key={minutes}
+                  label={t('player.timer.minutes', { count: minutes })}
+                  selected={player.fadeMinutes === minutes}
+                  onPress={() => {
+                    const gate = gateForTimer(minutes);
+                    if (!gate.allowed) {
+                      openPaywall(gate.reason);
+                      return;
+                    }
+                    player.setFadeTimer(minutes);
+                  }}
+                />
+              ))}
+            </ScrollView>
+
+            {player.fadeRemainingSec !== null ? (
+              <Text variant="caption" className="text-center">
+                {t('player.timer.remaining', { time: formatTime(player.fadeRemainingSec) })}
+              </Text>
+            ) : null}
+          </ProgressiveSilence>
+        </View>
+      </SilenceProvider>
     </Screen>
   );
 }

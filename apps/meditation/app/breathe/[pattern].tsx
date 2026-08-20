@@ -78,7 +78,7 @@ export default function BreatheExercise() {
 
   return (
     <Screen variant="immersive">
-      <BackLink label={t('player.close')} fallbackHref="/(tabs)" className="px-gutter pt-2" />
+      <BackLink label={t('player.close')} fallbackHref="/(drawer)/(tabs)" className="px-gutter pt-2" />
 
       <View
         testID={TID.Screen.BreatheExercise}

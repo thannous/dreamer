@@ -33,7 +33,9 @@ export function GlassCard({ featured = false, className, children, ...rest }: Pr
       <BlurView
         intensity={mode === 'dark' ? 24 : 16}
         tint={mode === 'dark' ? 'dark' : 'light'}
-        style={{ backgroundColor: colors.backgroundCard + toHex(GlassOpacity[mode]) }}>
+        // `glassTint` and not `backgroundCard`: the card colour is an rgba string
+        // now, and appending an alpha to it would produce nonsense.
+        style={{ backgroundColor: colors.glassTint + toHex(GlassOpacity[mode]) }}>
         <GrainOverlay />
         {/* zIndex keeps content above the absolutely-positioned grain on web. */}
         <View style={{ zIndex: 1 }}>
