@@ -136,26 +136,13 @@ jobs:
               --outputFile=artifacts/jest-results.json \
               --reporters=default \
               --reporters=jest-junit
-      - when:
-          condition: << parameters.require_timing_baseline >>
-          steps:
-            - run:
-                name: Enforce the 20% duration budget
-                when: always
-                command: |
-                  if [[ -f artifacts/jest-results.json ]]; then
-                    node ./scripts/check-jest-duration-regression.js
-                  fi
-      - unless:
-          condition: << parameters.require_timing_baseline >>
-          steps:
-            - run:
-                name: Report duration and allow baseline bootstrap
-                when: always
-                command: |
-                  if [[ -f artifacts/jest-results.json ]]; then
-                    node ./scripts/check-jest-duration-regression.js --allow-missing-baseline
-                  fi
+      - run:
+          name: Enforce the 20% duration budget or bootstrap the baseline
+          when: always
+          command: |
+            if [[ -f artifacts/jest-results.json ]]; then
+              node ./scripts/check-jest-duration-regression.js --allow-missing-baseline
+            fi
       - when:
           condition: << parameters.publish_timing_baseline >>
           steps:
