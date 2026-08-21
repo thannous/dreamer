@@ -13,9 +13,9 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | C2 | TikTok `@noctaliadreams` | 19:30 | `HIGGS_2026-08-06_006_FP_CITY.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672913741863800086) vérifié à 19:30 |
 | C2 | Instagram `@noctaliadreams` | 19:45 | `HIGGS_2026-08-06_006_FP_CITY.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcT6iUiJYRz/) vérifié à 19:45 ; capturé `https://www.instagram.com/reel/DcT6iUiJYRz/` ; aussi `https://www.instagram.com/p/DcT6iUiJYRz/` |
 | C2 | X `@NoctaliaDreams` | 20:15 | `HIGGS_2026-08-06_006_FP_CITY.mp4` | **PROGRAMMÉ** | URL à collecter |
-| C3 | TikTok `@noctaliadreams` | 22:30 | `NOC_REVEIL_S01_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | À vérifier après 22:30 |
-| C3 | Instagram `@noctaliadreams` | 22:45 | `NOC_REVEIL_S01_VIDEO_1080p_v01.mp4` | **PRÊT — DIRECT** | À vérifier après 22:45 |
-| C3 | X `@NoctaliaDreams` | 23:15 | `NOC_REVEIL_S01_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | À vérifier après 23:15 |
+| C3 | TikTok `@noctaliadreams` | 22:30 | `NOC_REVEIL_S01_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672913798419746070) vérifié à 22:30 |
+| C3 | Instagram `@noctaliadreams` | 22:45 | `NOC_REVEIL_S01_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcUQ3zvJqiw/) vérifié à 22:45 ; capturé `https://www.instagram.com/reel/DcUQ3zvJqiw/` ; aussi `https://www.instagram.com/p/DcUQ3zvJqiw/` |
+| C3 | X `@NoctaliaDreams` | 23:15 | `NOC_REVEIL_S01_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | URL à collecter |
 
 ## Hero secondaire — 3 preuves
 
@@ -33,9 +33,9 @@ Pour chaque ligne : attendre l'heure, vérifier le compte, le master exact, le
 hook et l'absence de doublon, puis ouvrir l'URL publique. En l'absence d'URL,
 conserver le statut préparatoire et ne jamais republier par supposition.
 
-- Principal : `4/9` vérifiées (TikTok C1+C2, Instagram C1+C2 ; X C1 et X C2 restent sans permalink).
+- Principal : `6/9` vérifiées (TikTok C1+C2+C3, Instagram C1+C2+C3 ; X C1, X C2 et X C3 restent sans permalink).
 - Hero secondaire : `0/3` avant vérification publique.
-- Total : `4/12` vérifiées après 19:45 ; aucune URL X inventée ; C3 inchangé.
+- Total : `6/12` vérifiées après 22:45 ; journée TikTok/Instagram C1–C3 complète ; aucune URL X inventée.
 
 ## Contrôle du 21/08 — C1
 
@@ -72,6 +72,25 @@ légende vérifiée avant Share. Label IA natif activé : *About this reel*,
 retouché ; son label IA natif reste volontairement vide.
 
 X C1 et X C2 restent **PROGRAMMÉ**, URL à collecter. Aucun status ID inventé.
-C3 reste **PROGRAMMÉ** / **PRÊT — DIRECT**. Heroes Pinterest, YouTube et
-Facebook restent **PROGRAMMÉ**.
+Heroes Pinterest, YouTube et Facebook restent **PROGRAMMÉ**.
+
+## Contrôle du 21/08 — C3
+
+Vérifié le 21 août 2026, Europe/Paris. TikTok C3 est **PUBLIÉ** à 22:30 :
+`https://www.tiktok.com/@noctaliadreams/video/7672913798419746070`, légende
+`The dream breaks just before you understand it. What do you remember? #Noctalia #DreamJournal #SurrealDreams`,
+label créateur IA activé.
+
+Instagram C3 est **PUBLIÉ** à 22:45 :
+`https://www.instagram.com/reel/DcUQ3zvJqiw/` (aussi
+`https://www.instagram.com/p/DcUQ3zvJqiw/` et
+`https://www.instagram.com/noctaliadreams/reel/DcUQ3zvJqiw/`). Même accroche ;
+légende vérifiée avant Share. Label IA natif activé : *About this reel*,
+`noctaliadreams added an AI label`. Les Reels C1 `DcTfpLsJKiG` et C2
+`DcT6iUiJYRz` n'ont pas été retouchés. Le label IA natif de C1 reste
+volontairement vide ; celui de C2 reste activé.
+
+X C1, X C2 et X C3 restent **PROGRAMMÉ**, URL à collecter. Aucun status ID
+inventé. Heroes Pinterest, YouTube et Facebook restent **PROGRAMMÉ**. La
+journée TikTok/Instagram C1–C3 est complète.
 
