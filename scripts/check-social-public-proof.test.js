@@ -103,6 +103,15 @@ describe('social public proof guard', () => {
       .toThrow('ÉCHEC — NON PUBLIÉ incompatible avec une URL publique');
   });
 
+  it('rejects a qualified failure that is not the explicit terminal status', () => {
+    const retryableFailure = register({ published: true })
+      .replace('**PUBLIÉ**', '**ÉCHEC — NON PUBLIÉ — À RÉESSAYER**')
+      .replace(`[URL](${proofUrl('TikTok', 0, 'main')})`, 'Aucune URL publique');
+
+    expect(() => validatePublicProof(retryableFailure, { requirePublished: true }))
+      .toThrow('statut PUBLIÉ manquant');
+  });
+
   it('rejects a future URL whose status is still scheduled', () => {
     const future = register({ published: true }).replace('**PUBLIÉ**', '**PROGRAMMÉ**');
     expect(() => validatePublicProof(future, { requirePublished: true }))

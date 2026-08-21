@@ -67,7 +67,7 @@ function isPublishedStatus(cell) {
 }
 
 function isTerminalFailureStatus(cell) {
-  return /ÉCHEC\s+—\s+NON\s+PUBLIÉ/iu.test(cell);
+  return /^\s*\*\*ÉCHEC\s+—\s+NON\s+PUBLIÉ\*\*(?:\s+—\s+.*)?$/iu.test(cell);
 }
 
 function assetFromCell(cell) {
