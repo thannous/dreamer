@@ -245,6 +245,9 @@ jobs:
   site-build:
     executor: node
     parameters:
+      diff_base:
+        type: string
+        default: ""
       save_npm_cache:
         type: boolean
         default: false
@@ -257,14 +260,26 @@ jobs:
       - run:
           name: Check site
           command: npm run docs:check
+      - run:
+          name: Test site tooling changed since the diff base
+          environment:
+            JEST_CHANGED_SINCE: << parameters.diff_base >>
+          command: |
+            set -euo pipefail
+            if [[ -n "$JEST_CHANGED_SINCE" ]] && \
+              ! git cat-file -e "${JEST_CHANGED_SINCE}^{commit}" 2>/dev/null; then
+              git fetch --no-tags origin "$JEST_CHANGED_SINCE"
+            fi
+            npm run test:changed -- --runInBand
 
   edge-functions:
-    executor: base
+    executor: node
     environment:
       DENO_DIR: /home/circleci/.cache/deno
       DENO_INSTALL: /home/circleci/.deno
     steps:
-      - checkout
+      - install-root-dependencies:
+          save_cache: false
       - restore_cache:
           keys:
             - deno-2.7.14-v2-{{ checksum "supabase/functions/deno.lock" }}
@@ -276,6 +291,9 @@ jobs:
             fi
             echo 'export PATH="$DENO_INSTALL/bin:$PATH"' >> "$BASH_ENV"
             "$DENO_INSTALL/bin/deno" --version
+      - run:
+          name: Lint Edge Functions
+          command: npx expo lint supabase/functions
       - run:
           name: Check Edge Function entrypoints
           working_directory: supabase/functions
@@ -379,6 +397,7 @@ workflows:
     when: << pipeline.parameters.run_site >>
     jobs:
       - site-build:
+          diff_base: << pipeline.parameters.diff_base >>
           save_npm_cache: << pipeline.parameters.save_site_npm_cache >>
           filters:
             tags:
