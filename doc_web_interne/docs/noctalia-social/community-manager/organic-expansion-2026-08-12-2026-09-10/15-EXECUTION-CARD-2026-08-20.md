@@ -23,10 +23,12 @@ répéter l'action sans nouvel anti-doublon.
 
 | Créneau | Master Instagram durable | SHA-256 | TikTok vérifié | Instagram | X | Légende exacte |
 |---|---|---|---|---|---|---|
-| 1 | `output/video/noctalia-social-execution-2026-08-20/HIGGS_2026-08-06_002_FP_CITY.mp4` | `0878191738340327cce75d19ecc9a04831cfe2804aaf75c631ce635a761f2f28` | [20/08 · 15:30](https://www.tiktok.com/@noctaliadreams/video/7672912656361098518) | 15:45 | 16:15 · programmé | `A utopian city floats above the clouds. Would you live here? #Noctalia #Dreamscape #SurrealDreams` |
-| 2 | `output/video/noctalia-social-execution-2026-08-20/HIGGS_2026-08-06_003_FP_CITY.mp4` | `84285ad67b2ffffd0476617b85b40b494110869bfc40b19713b023ba58c4acd4` | [20/08 · 19:30](https://www.tiktok.com/@noctaliadreams/video/7672912710354357526) | 19:45 | 20:15 · programmé | `Racing through a city built for the sky. Could you keep up? #Noctalia #Dreamscape #SurrealDreams` |
-| 3 | `output/video/noctalia-social-execution-2026-08-20/HIGGS_2026-08-06_004_FP_CITY.mp4` | `fc76a8edbb7d65496e84b9db714ef16aa5de0f27dfde2eb963199d8bef92491b` | [20/08 · 22:30](https://www.tiktok.com/@noctaliadreams/video/7672912756110118166) | 22:45 | 23:15 · programmé | `A holographic skyline comes alive at sunset. What would you ask it? #Noctalia #Dreamscape #SurrealDreams` |
+| 1 | `output/video/noctalia-social-execution-2026-08-20/HIGGS_2026-08-06_002_FP_CITY.mp4` | `0878191738340327cce75d19ecc9a04831cfe2804aaf75c631ce635a761f2f28` | [20/08 · 15:30](https://www.tiktok.com/@noctaliadreams/video/7672912656361098518) | [20/08 · 15:45](https://www.instagram.com/noctaliadreams/reel/DcQ6OU6pkea/) | [20/08 · 16:15](https://x.com/NoctaliaDreams/status/2090442479200002242) | `A utopian city floats above the clouds. Would you live here? #Noctalia #Dreamscape #SurrealDreams` |
+| 2 | `output/video/noctalia-social-execution-2026-08-20/HIGGS_2026-08-06_003_FP_CITY.mp4` | `84285ad67b2ffffd0476617b85b40b494110869bfc40b19713b023ba58c4acd4` | [20/08 · 19:30](https://www.tiktok.com/@noctaliadreams/video/7672912710354357526) | [20/08 · 19:45](https://www.instagram.com/noctaliadreams/reel/DcRV8lPJ6d2/) | [20/08 · 20:15](https://x.com/NoctaliaDreams/status/2090502877466779844) | `Racing through a city built for the sky. Could you keep up? #Noctalia #Dreamscape #SurrealDreams` |
+| 3 | `output/video/noctalia-social-execution-2026-08-20/HIGGS_2026-08-06_004_FP_CITY.mp4` | `fc76a8edbb7d65496e84b9db714ef16aa5de0f27dfde2eb963199d8bef92491b` | [20/08 · 22:30](https://www.tiktok.com/@noctaliadreams/video/7672912756110118166) | [20/08 · 22:45](https://www.instagram.com/noctaliadreams/reel/DcRrP-Bp0Tm/) — label IA natif absent | [20/08 · 23:15](https://x.com/NoctaliaDreams/status/2090548175711216121) | `A holographic skyline comes alive at sunset. What would you ask it? #Noctalia #Dreamscape #SurrealDreams` |
 
-Hero secondaire : `HIGGS_2026-08-06_002_FP_CITY.mp4`, programmé à 17:30 sur
-Pinterest, 18:00 sur YouTube et 18:15 sur Facebook. Une URL publique reste
-requise après chaque diffusion.
+Hero secondaire : `HIGGS_2026-08-06_002_FP_CITY.mp4`, publié à 17:30 sur
+[Pinterest](https://fr.pinterest.com/pin/1127940669218325376/), à 18:00 sur
+[YouTube](https://www.youtube.com/shorts/0mh9QJwh3Go) et à 18:15 sur
+[Facebook](https://www.facebook.com/reel/1416489937207759). Les trois URL
+publiques ont été vérifiées après diffusion.
